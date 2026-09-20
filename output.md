@@ -1,400 +1,557 @@
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet works Olivia the way it works PSK31. Steps 0
-   to 3 done and closed; step 4 was 1 of 8 met at the start of this unit
-   (4.1, with 4.2 and 4.4 at the engine only) and is 6 of 8 after it;
-   steps 5 and 6 not started. Step 4 cannot be done on this unit alone -
-   4.5 and 4.8 are the next unit's.
-B. Step 4's criteria this unit worked. 4.2: sends read back by the
-   detector as the variant sent 6 of 6, within 0.34 Hz against an
-   allowance of 5, records announced 6 of 6. 4.6: PttOn 1, Arm( 2, real
-   ports keyed 0, Stop aborted the 8/250 send mid-play yes (1032 of
-   323160 samples out), FT8/FT4 byte-identical green, PSK31 send guards
-   green. 4.3: CQ center from the table on 2 bands, clear spot found at
-   875 Hz with a station on the 1500 Hz calling spot and 625 Hz between
-   them, receipt station facts 0 and Log absent, a certain answer retired
-   it yes. 4.4: caps 82.60 / 61.95 / 49.56 s as the product of the file's
-   121 characters and the variant's own rate, longest 8/250 Report armed
-   and played (102 characters, 71.99 s), longest text that actually fits
-   per variant 120 / 120 / 115, patience scaled at the table and nothing
-   in the application consumes a time-based patience - every turn is
-   decided by Psk31Turn.Read at ShowPsk31Cards from the parse and the
-   carrier-present fact, reading no clock. 4.7: power offer under Olivia
-   yes, ALC sentence yes. Met: 4.2, 4.3, 4.4, 4.6, 4.7. Not met: none of
-   the five. Entry: chain-guarding reds before 27, after 27, new 0.
-C. The report last: section 4 raises 8 items on top of the carried queue;
-   none stands in the way of a step 4 criterion. The send needed no line
-   on decision AZ's forbidden list, so there is no stop material. No
-   working mode's send or read guard went red after green. The PttOn and
-   Arm( counts did not move, 1 and 2 before and after. The carry-forward
-   seconds are app 2 m 34 s and engine 5 m 1 s against the 480 s timeout,
-   the engine invocation's margin now about three minutes.
+A. The phase goal - Hamlet works Olivia the way it works PSK31: hears it,
+   reads it, answers it, logs it, with the variant taken from the signal's
+   own announcement and never picked by the operator. Steps 0 to 3 done;
+   step 4 was 6 of 8 met at the start of this unit and is 8 of 8 after it,
+   with 4.5 the step's last must-pass and 4.8 its last nice-to-pass; steps
+   5 and 6 not started. **Step 4 is done - every must-pass met and the one
+   nice-to-pass met too, so nothing in it is partial and nothing was
+   dropped.** Step 5's entry opens.
+B. Step 4's criteria this unit worked. 4.5: the offer appeared under all
+   four of decision BL's conditions YES and was refused on 8 of 8
+   conditions it must not appear under - a guessed your turn, his turn, he
+   is still sending, PSK31, 16/500, 32/1000, off the calling center and a
+   second time after it has been used. The line quoted in section 3, out
+   at the calling center 1500 Hz at 8/250, code read back OLIVIA_8_250 at
+   0.06 Hz of error against an allowance of 5; after the unkey the next
+   send went out at 2000 Hz at 16/500, code 70 read back at 0.34 Hz of
+   error, proved by sending one. A Stop, a licence refusal and a
+   no-announcement refusal moved nothing YES, all three asserted at the
+   center and the variant afterwards; the cap cannot refuse this line at
+   8/250 and that is arithmetic - 90 characters against a count of 121,
+   61.94 s against a cap of 82.60 s - so the licence gate stands in its
+   place at the same point with nothing played. The follow line's three
+   states proved 3 of 3 with the window asserted as
+   PatienceSeconds(16/500) x 2 = 32.768 s; the card survived the move YES,
+   and what it took was carrying the conversation of the channel he moved
+   from into the reading of the channel he moved to - the card itself was
+   never in danger, being keyed by callsign. 4.8: lag from the turnover
+   word to the turn reading 0.000 s / 0.000 blocks at 8/250 and 2.000 s /
+   0.977 blocks at 16/500, one block being 2.048 s - MET. Met: 4.5, 4.8.
+   Not met: none. Entry: chain-guarding reds before 27, after 27, new 0.
+C. The report last: section 4 raises 5 items on top of the carried queue;
+   not one of them stands in the way of 4.5 or 4.8, both of which are met.
+   Nothing needed a line on decision AZ's forbidden list, so there is no
+   stop material in this unit. No working mode's send or read guard went
+   red after green: one app carry-forward run showed two reds and both
+   passed alone and on the immediate rerun of the whole invocation, which
+   is the run the number comes from. The PttOn and Arm( counts did not
+   move, 1 and 2 before and after. No frequency command was sent to the
+   radio and the dial never moved (decision BK). The carry-forward seconds
+   are app 2 m 18 s and engine 4 m 45 s against the 480 s timeout, so the
+   engine invocation's margin is about 195 s - better than unit 366's
+   three minutes, which is the margin this unit was told to keep.
 
 ```
-UNIT:       366 - complete at task 5 of 5, task 5 built - 2026-09-19 20:39
-PHASE GOAL: Olivia becomes a mode Hamlet works like PSK31 - hears it, reads it,
-            answers it, logs it - with the variant taken from the signal's own
-            RSID and never from the operator.
-UNIT GOAL:  Make the Olivia press go out. Open the one mode gate so the modulator
-            unit 365 built reaches the one unslotted sequence that already keys
-            FT8, FT4 and PSK31 - at the row's variant and center, or at the cited
-            calling spot for a CQ - with its RSID in front, PSK31's receipt,
-            PSK31's Stop, the cap and the patience scaled by the variant, and the
-            power offer and the ALC as PSK31 has them.
-ADVANCED:   yes - step 4 criteria 4.2, 4.3, 4.4, 4.6 and 4.7 all met, and Olivia
-            is the fourth mode that can reach the air
-NUMBER:     step 4 criteria met 1 of 8 -> 6 of 8; modes that reach the air 3 -> 4
+UNIT:       367 - complete at task 5 of 5, task 5 built - 2026-09-19 22:27
+PHASE GOAL: Olivia becomes a mode Hamlet works the way it works PSK31 - hears
+            it, reads it, answers it, logs it - with the variant taken from the
+            signal's own RSID announcement and never picked by the operator.
+UNIT GOAL:  Build R29's one click. After a station has certainly come back on the
+            Olivia calling spot, the card offers to move up 500 Hz and switch to
+            16/500; pressing it sends the line saying so at the old place and the
+            old variant, and only once that line has gone out does Hamlet's own
+            send-and-listen center go up 500 Hz and its variant become 16/500.
+            The card then says what was heard where they moved to - an
+            announcement, or nothing yet - and never that the station personally
+            followed. Then measure how far behind the turnover word the turn
+            indicator lands, in blocks.
+ADVANCED:   yes - step 4 criteria 4.5 and 4.8 both met, so step 4 is 8 of 8 and
+            done, and the last of the three things PHASE_PLAN section 1 says
+            makes Olivia hard for a beginner is now one click
+NUMBER:     step 4 criteria met 6 of 8 -> 8 of 8; must-passes left in step 4 1 -> 0
 DRIFT:      0 - 0 consecutive units without advance (was 0)
 ```
+
+**The criterion table, 4.1 to 4.8.** (Not a heading: `###` appears only nested under the four
+sections below, which is what the shape rules ask.)
+
+```
+id  | state          | this unit's numbers
+4.1 | met (unit 365) | 30 of 30 loopbacks identical; every measure inside tolerance
+4.2 | met (unit 366) | 6 of 6 read back as the variant sent, worst error 0.34 Hz of 5
+4.3 | met (unit 366) | center from the table on 2 bands; spot found at 875 Hz with a
+    |                | station on the calling spot; receipt station facts 0, Log absent
+4.4 | met (unit 366) | caps 82.603 / 61.952 / 49.562 s as the product; the
+    |                | 102-character Report armed and played at 71.99 s
+4.5 | MET, this unit | offered on all four conditions, refused on 8 of 8 it must not
+    |                | appear under; the line 90 characters out at 1500 Hz at 8/250,
+    |                | code 69 read back at 0.06 Hz of 5; the next send at 2000 Hz at
+    |                | 16/500, code 70 read back at 0.34 Hz; a Stop, a licence refusal
+    |                | and a no-announcement refusal each moved nothing; the follow
+    |                | line 3 of 3 states with the window PatienceSeconds(16/500) x 2
+    |                | = 32.768 s; the card survived the move with its history
+4.6 | met (unit 366) | PttOn 1, Arm( 2, real ports keyed 0, Stop aborts mid-play -
+    |                | all four re-measured and unchanged by this unit
+4.7 | met (unit 366) | power offer under Olivia yes; ALC read, judged and said
+4.8 | MET, this unit | lag 0.000 s / 0.000 blocks at 8/250 and 2.000 s / 0.977 blocks
+    |                | at 16/500, one block being 2.048 s; the turn still reads no clock
+```
+
+**Step 4 is 8 of 8. Every must-pass is met, the one nice-to-pass is met, and the step is done.**
 
 ## 1. What Claude did
 
 **Complete, at task 5 of 5, with task 5 built rather than dropped.** Development computer, prompt
 gated `PROJECT: Hamlet`, confirmed against the tree (`SHACK_FACTS.md` and
 `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, no `CoreHMI.sln`, no `MURC.sln`,
-root `C:\Source\HamLet`); branch `main`, eight commits, every push succeeded. **Nothing in this
-report is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093, FACT-004): every figure was
-computed, no port was opened and nothing keyed. **No Olivia signal from Hamlet has been on the air,
-and none will be until Tim presses it at step 6.**
+root `C:\Source\HamLet`); branch `main`, six task commits and this report's, every push succeeded.
+**Nothing in this report
+is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093, FACT-004): every figure was computed, no
+port was opened and nothing keyed. **No Olivia signal from Hamlet has been on the air, no QSO has
+been moved off a real calling frequency, and none will be until Tim presses it at step 6.**
 
-**The one door opened, and nothing else in the chain moved.** `CanTransmitIn` gained one line so it
-admits Olivia. `SendPsk31` became `SendUnslotted` and composes with `OliviaModulator` where Olivia
-is chosen, at the row's variant and center or at the cited calling center for a CQ, held to
-`OliviaTiming`'s cap, and arms at the **existing** unslotted `Arm` site that PSK31 already uses.
-**No new `PttOn` site, no new `Arm` line, and not one edit to `Ft8TransmitSequence`, `Ft8ArmedSend`,
-`UnslottedTransmission.Fit`, `Cap`, `OperatorSend`, `RsidBurst`, the abort or the FT8, FT4 and PSK31
-branches of `SendMessage`.** **Nothing on decision AZ's forbidden list was needed**, so there is no
-`MOVE: stop` material in this unit.
+**Nothing was left undone and nothing was dropped.** Task 5 was the named drop candidate and it was
+built; 4.8 is met.
 
-**Task 0 - the unit opens.** Step 4's entry first, decision BJ's before-run of
-`docs\chain-guarding-tests.txt` on unchanged `HEAD` `ab8392c0`: engine 98 of 110 in 56 s with twelve
-inherited reds, app 48 of 63 in 51 s with fifteen. `ThePsk31CqGoesOutTests` green by name 4 of 4 and
-`TheFt8AndFt4SendsAreByteIdenticalTests` green inside the engine run, so the PSK31 loopback chain is
-unchanged and the entry is open. All nine Olivia fixtures hash as `manifest.json` says, **9 of 9**.
-Carry-forward before any change: app **188 of 188** (2 m 20 s), engine **146 of 146** (4 m 41 s).
-Version 1.13.53 to 1.13.54. `UNIT 366 - STEP 4` appended to `PHASE_OUTCOME.md` with no earlier entry
-touched.
+**R29's one click exists, and the transmit chain did not move.** The move is its own control on the
+card and its own `[RelayCommand]`; `Ft8CardActionKind` still has exactly `None`, `Send` and `Log`,
+`Psk31Macro` still has exactly `None`, `Cq`, `Answer`, `Report` and `Confirm`, and `ActionFor` and
+`CardActionAsync`'s `Send` and `Log` paths are untouched. The line reaches the air through the one
+existing gate, the one existing unslotted `Arm` site and the one existing `Ft8TransmitSequence`.
+**`PttOn` code lines 1 and `Arm(` call lines 2, before and after, asserted in the unit's own test
+class.** **Nothing on decision AZ's forbidden list was touched**, so there is no `MOVE: stop`
+material in this unit. **No CI-V frequency command was sent and the dial never moved** (decision BK,
+§R11): what moves is where in the passband Hamlet puts its next signal, inside a passband it was
+already listening across.
 
-**Task 1 - the trace** (`Unit366Trace`, engine test project, asserts nothing, not on the
-carry-forward line). Its findings are in section 3. The one that decided the shape of task 2:
-**`OliviaModulator.Compose` had no call site in `src/` at all**, and every line a press would have
-to reach - `CallToAnyoneText`, `Psk31CqOn`, `Psk31AnswerLabelFor`, `card.IsPsk31`,
-`HasPsk31PowerOffer` - is an application property, none of them on the forbidden list.
+**Task 0 - the unit opens.** Step 4's entry first, decision BT's before-run of
+`docs\chain-guarding-tests.txt` on unchanged `HEAD` `efc07610`: engine 98 of 110 in 46 s with twelve
+inherited reds, app 48 of 63 in 36 s with fifteen. `TheFt8AndFt4SendsAreByteIdenticalTests` and
+`TheUnslottedSendTests` green inside the engine run; `ThePsk31CqGoesOutTests` and
+`TheOliviaSendTests.AnOliviaCqReachesTheAir` green by name, **5 of 5**, so the PSK31 loopback chain
+and Olivia's own send are both unchanged and the entry is open. All nine Olivia fixtures hash as
+`manifest.json` says, **9 of 9**. Carry-forward before any change: app **189 of 189** (2 m 21 s),
+engine **146 of 146** (4 m 43 s). Version 1.13.54 to 1.13.55. `UNIT 367 - STEP 4` appended to
+`PHASE_OUTCOME.md` with no earlier entry touched, decision letters BK to BT.
 
-**Task 2 - the gate and the send** (4.2 whole, 4.6). `TheOliviaSendTests`, nine names at that task
-and twenty-one by the end of the unit. Decision BI's two refusal classes were rewritten first,
-**each in its own commit, before the door moved** - see section 3 for which assertions changed.
-Olivia's send guard `AnOliviaCqReachesTheAir` joined the app carry-forward line and the guard table.
+**Task 1 - the trace** (`Unit367Trace`, **app** test project because the move's path is there, five
+names, 30 s, asserts nothing, on neither carry-forward line). Its seven answers are in section 3.
+**The one that decided the shape of task 2 was item 4**, and it is the finding of this unit:
+`OliviaCallingOffsetHz` - the method the instruction pointed at for *are we on the calling center* -
+answers **null** whenever a station is sitting within `Psk31ClearSpot.ClearHz` of the calling center,
+because it is the send path's question *where may a call to anyone go*. That is exactly and only the
+situation the move is offered in. So the offer's third condition is the cited table's own arithmetic
+in a new `OliviaCallingCenterOffsetHz`, and not that method.
 
-**Task 3 - the CQ at the cited spot and its receipt** (4.3), four names, **and one repair**.
-`RebuildCards` read `IsPsk31Chosen` alone when deciding whether it had a moment to stamp a card
-with, so under Olivia the CQ booked its receipt into the ledger and the panel built no card from
-it: the press was recorded and the operator saw nothing. The gate widened to Olivia, which is
-decision BC's one path rather than a second.
+**Task 2 - the offer** (4.5, first half), decisions BL and BM. `TheOliviaMoveUpTests`, eleven names
+at that task and twenty-five by the end of the unit.
 
-**Task 4 - the cap and the patience at the press** (4.4 whole), six names. One engine addition,
-`OliviaModulator.TextSeconds`, so the typed line's card can say what a line costs in the mode it
-would go out in without composing the audio on every keystroke.
+**Task 3 - the send and the move** (4.5, second half), decisions BN, BO and BK. Eight more names.
+**One piece of source this task needed that the instruction did not foresee**, and it is decision
+BR's: without it the card read the new channel with his half of the history missing, which put
+Hamlet's own move line at the end of the conversation and had the card saying it was his turn a
+moment after he had come back - no `Send` button, and the send that proves the move could not be made
+at all. `OliviaMovedConversationFor` carries the complete messages of the channel he moved from into
+the reading of the new channel at the place Hamlet announced, with a fresh splitter.
 
-**Task 5 - the power offer and the ALC** (4.7), two names. **Built, not dropped.** The gate widened
-rather than the code being copied or the sentence forked.
+**Task 4 - what was heard where they moved to** (4.5, last clause), decisions BP, BQ and BR. Six more
+names. One piece of source: `WatchTheOliviaMoveWindows`, because a card is a snapshot and without it
+*nothing has been heard yet* would still be on the screen an hour later, which is a sentence that has
+stopped being true (§0.0). It reads the audio clock, not a wall clock.
 
-**Four decisions this session made for itself, all overrulable, all in section 4's terms.**
+**Task 5 - 4.8** (`TheTurnKeepsUpWithTheTurnoverWordTests`, three names, 30 s). **Built, not
+dropped.** The numbers are in section 3.
 
-- **The strip's sentence stops saying nothing on a line can be answered.**
-  `DigitalIdleText.ListeningAcrossThePassband` ended *"Nothing on those lines can be answered yet"*.
-  That was true of PSK31 for the one unit between its listener and its send path and has been false
-  ever since, and opening the gate made it false for Olivia too. It now says what a line actually
-  offers. **It is a shared sentence**, so PSK31's strip changed with it.
-- **The power offer and the ALC's holding-back sentence name the mode he is on.** They read PSK31
-  while only PSK31 could reach them. Under Olivia that is a sentence about a mode he is not using
-  (§0.0). The learned reference keeps its own `Mode`, so a reference taken on FT8 still reads *"the
-  62 Hamlet measured on a clean FT8 send"* inside an Olivia sentence.
-- **The no-announcement refusal is checked against the panel's own reading of the file**, before the
-  spot is chosen, rather than caught out of the composer. The panel already says which file failed,
-  and this is the sentence that names it. The composer's own throw is still caught.
-- **The property names `HasPsk31PowerOffer` and `Psk31AlcLine` were not renamed.** Decision BG
-  allows a rename; it would touch the view and every test that binds them, to no end the operator
-  can see.
+**Where this session departed from the instruction, said plainly.** §8's tasks 2, 3 and 4 each ask
+for **tests watched failing first**, and that is not what happened: the whole of 4.5's mechanism was
+written in one pass and committed at task 2, with tasks 3 and 4 adding their tests on top of it. Two
+of task 3's tests did fail on their first run and were diagnosed and fixed - one because the licence
+gate refuses inside the sequence rather than at `Arm`, one because a broken `OliviaData` took the
+calling table with it - and task 3's third failure was the real defect decision BR names, found by a
+test rather than by reading. But the discipline the instruction asked for was not kept, and the
+report says so rather than implying it was.
 
-**Nothing was recorded in `DECISIONS.md`.** No ruling of this unit's met §12.1's four tests; the four
-choices above are reported for overrule instead.
+**One decision this session made for itself, overrulable, in section 4's terms.** The move's button
+reads **`Move up 500 Hz and switch to 16/500`** - R29's own words, which is what criterion 4.5 says
+the card offers. `Ft8ContactCard`'s remarks keep hertz off the card's face, and that rule is about
+measurements of a contact; this is a control's label naming the thing pressing it does, in the
+convention the operator will meet on the air. Section 4 item 1 carries it for overrule.
+
+**Nothing was recorded in `DECISIONS.md`.** No ruling of this unit's met §12.1's four tests.
 
 **Verifying the instruction against the tree (§5), every mismatch reported and none repaired.**
 
-1. **`PHASE_STATUS.md` says `CURRENT_STEP: 3` and step 3 `partial`**, not `CURRENT_STEP: 4` with
-   step 3 `done` as section 5 states. The launcher's file was left as the launcher leaves it; only
-   `WORK_INSTRUCTION` was moved from 365 to 366, because `tools/status.sh` reads it from there.
-2. **`PHASE_PLAN.md` leaves 4.1 unchecked** though unit 365 met it, as well as 1.5 and 1.7.
-   Reported, not edited.
-3. **`docs\chain-guarding-tests.txt` lists 15 Transmit and Audio classes on the engine project**,
-   not thirteen, plus two more added since unit 318. All 17 were run before and after.
-4. **`PHASE_OUTCOME.md` carries two step 4 entries whose decision letters clash**, as section 5
-   says. Neither was edited; this unit's letters start at AZ.
-5. **The longest Report the app composes is 102 characters, not the 96 `timing.json`'s `cap_method`
-   names.** 96 is the Report to `W1AW`; the compound-callsign one is longer and is what 4.4 is
-   measured on. `timing.json` was not edited (§10).
-6. Everything else section 5 describes held: `CanTransmitIn` at :2446 with its two callers,
-   one `PttOn` code line, two `Arm(` call lines with :15723 the unslotted one, `Psk31ClearSpot` at
-   :16226, `OliviaTiming`'s counts 121 / 242 / 32 / 56, `OliviaCallingTable` and its panel
-   sentences, and `assets\fixtures\captured\` holding only `README.md`.
+1. **`PHASE_STATUS.md` says `CURRENT_STEP: 3` and step 3 `partial`**, as §5 predicted. The launcher's
+   file was left as the launcher leaves it; only `WORK_INSTRUCTION` was moved from 366 to 367,
+   because `tools/status.sh` reads it from there. **It now understates the tree by a whole step**:
+   step 4 is done.
+2. **`PHASE_PLAN.md` leaves 1.5, 1.7 and every one of 4.1 to 4.8 unchecked** though units 359 to 367
+   have now met all of 4.1 to 4.8. Reported, not edited (§10).
+3. **`PHASE_OUTCOME.md` carries two step 4 entries whose decision letters clash**, as §5 says.
+   Neither was edited; this unit's letters start at BK.
+4. **`HearRsid` is at `MainWindowViewModel.cs:3125`, not *about :3135***; :3135 is where it builds
+   the detector. Everything else §5 gives by line held exactly: `CanTransmitIn` :2459 admitting
+   Olivia at :2464, `IsPsk31Chosen` :2467, `OliviaLabel` :2471, `IsOliviaChosen` :2481,
+   `CanAnswerRowsForTests` :4423, `CivConstants.PttOn` one code line at `Ft8TransmitSequence.cs:513`,
+   `_armedSend.Arm(` at :15551 and :15830, `ActionFor` :5700, `CardActionAsync` :5874 setting
+   `_psk31Macro = card.Offered` at :5898, `Psk31Turn.Read` :4121, `Ft8CardActionKind` at
+   `Ft8ContactCard.cs:14` with exactly three members, `Ft8ContactCard.Turn` :205 with its state words
+   at :326-:328, `ClearSpotForTheCall` :16422 calling `Psk31ClearSpot.Choose` at :16436, version
+   1.13.54 at `Directory.Build.props:893`, and `HEAD` `efc07610`. **Several of those lines have moved
+   down by this unit's own additions** and the numbers above are the ones before it.
+5. **The two windows are the numbers §5 gives**, measured: `Psk31ClearSpot` 150 / 400 / 2200 and
+   `Psk31CarrierSearch` 200 / 3000. **§5's arithmetic for the bound is right but its round figure is
+   not the file's**: 16/500 occupies **±234.375 Hz**, not *about ±250*, so the highest center wholly
+   inside the passband is **2765.625 Hz** and the highest calling offset the move may be offered at
+   is **2265.625 Hz**, where §5 says *about 2750*. The code reads the format file and holds no
+   literal.
+6. **Nothing in `src/` knew what a QSY was**, as §5 says, and this unit is the first to put one there.
+7. **`docs\chain-guarding-tests.txt` holds 17 engine and 11 app classes**, as §5 says. All 28 ran
+   before any change and again after task 3.
+8. **`assets\fixtures\captured\` holds only `README.md`.** No real Olivia audio is in the tree.
+9. **`OliviaTiming`'s counts are 121 / 242 / 32 / 56** with seconds per character 0.68267 / 0.512 /
+   0.4096, and the calling table's `CallingVariant` is `8/250`, all as §5 says.
+10. **`tools\arbiter\validate-output.bat` could not be run**, for the third unit running: it is a
+    Windows batch file and the only shell available runs it as `sh`, so every `rem` and `@echo` line
+    is a command-not-found. **The report's shape was checked by hand against the rules the script
+    prints in its own header** - the ordering block with A, B and C and C's item count; the `UNIT:`
+    line above section 1; the four `##` sections in order with their exact names and no fifth;
+    section 3 non-empty; section 4 present; `###` nested under the four and nowhere else - and it
+    satisfies all six.
 
 ## 2. What the owner should expect
 
-**Hamlet answers in Olivia now.** Press CQ on the Olivia tab and a signal goes out on the band's own
-Olivia calling spot, taken from the cited table rather than from a number in the code, announced by
-its variant so the other end's software follows it across. Press Answer on a station's row and
-Hamlet replies at that station's own variant and on his own frequency, without ever asking you which
-variant he is using - his RSID said, or the blind search found it, and that is where the answer
-goes. The receipt behaves exactly as PSK31's does and a station coming back retires it. The slow
-variants are allowed the length they need: a full report at 8/250 takes seventy-two seconds and goes
-out whole, where PSK31's thirty-second cap would have refused it. Stop stops it part way through.
-The power offer and the ALC sentence read as they do on PSK31.
+**A beginner who answers a call on the Olivia calling spot is no longer left sitting on it.** When
+the station has certainly come back, his card now offers two things instead of one: the reply it
+always offered, and a second button reading *Move up 500 Hz and switch to 16/500*. One press tells
+him you are going, in his own mode, at the frequency he is listening on; then Hamlet goes there and
+gets twice as fast, and the card says what came back from the new place. The calling frequency is
+left clear for the next caller. **Nobody had to learn the etiquette, nobody touched a variant
+control, and nobody touched the radio** - the dial is exactly where pressing Olivia put it, because
+the move is 500 Hz inside the passband and not a command to the rig.
 
-**Nothing has been on the air.** Every figure in this report was computed on the development
-machine, against a fake serial port and a fake sound card. The first Olivia signal Hamlet puts on a
-real antenna will be the one Tim presses at step 6.
+**Step 4 is done.** All eight of its criteria are met, which was not true of any unit before this
+one. Step 5's entry - *a loopback exchange reaches 73* - is the same conversation this unit's move
+sits in the middle of, and it is now open.
+
+**Nothing has been on the air.** Every figure in this report was computed on the development machine,
+against a fake serial port and a fake sound card. The first Olivia signal Hamlet puts on a real
+antenna, and the first QSO it moves off a real calling frequency, will be the ones Tim presses at
+step 6.
 
 **What will look wrong and is not.**
 
-- **The PSK31 mode strip's sentence changed.** It used to end *"Nothing on those lines can be
-  answered yet"*, which stopped being true of PSK31 several units ago and stopped being true of
-  Olivia today. It now says what a line actually offers. That is a deliberate change to PSK31's own
-  screen and it is in section 4 to be overruled.
-- **The power offer says "Olivia sends a steady carrier" under Olivia.** Same sentence, reading the
-  mode you are on.
-- **Twenty-seven tests on the chain-guarding list are red.** They were red before this unit, they
-  are the same twenty-seven by name, and that list carries known reds on purpose - it is the list
-  of what guards the chain, not a list that should be green.
+- **The move button carries hertz on the face of a card**, which the card type's own remarks
+  otherwise keep off it. That rule is about measurements of a contact; this is a control saying what
+  pressing it does, in R29's own words and in the convention he will meet on the air. Section 4 item
+  1 carries it for overrule.
+- **The card never says he followed.** Even when a 16/500 announcement arrives at exactly the place
+  Hamlet moved to, the sentence says *an announcement has arrived* and says in the same breath that
+  it carries no callsign. That is not timidity: an RSID burst names a mode and nothing else, so
+  saying *he followed* would be a fact Hamlet does not have (§0.0).
+- **The card never says he refused, either.** After the window it says nothing arrived, and that he
+  may not have followed or his announcement may not have read.
+- **The offer disappears after one press** and does not come back for that conversation, however the
+  press went. It comes back only if the line did not go out at all, where the card says nothing
+  moved.
+- **The offer is not there at all on most cards**, and that is the gate working: it wants Olivia
+  chosen, a certain *your turn* over his certain handover, the conversation on the cited calling
+  center, and 8/250. A guess offers nothing.
+- **Twenty-seven tests on the chain-guarding list are red.** They were red before this unit, they are
+  the same twenty-seven by name, and that list carries known reds on purpose - it is the list of what
+  guards the chain, not a list that should be green.
 - **Three reds sit outside both lists**, as they did before this unit:
   `TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`,
   `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` and
   `WhereTheTransmissionStartsAndWhatTheRecordSaysTests.ATransmitRecordCannotCarryTheMessageOrThe`
   `CallsignInIt`.
-- **A compound callsign still opens no card.** Section 4 item 1: the PSK31 exchange parser reads no
-  speaker from a line whose callsign carries a slash. That is not new and it is not Olivia's.
+- **A compound callsign still opens no card** (unit 366 item 1). The move's tests use a plain
+  callsign and say so.
 
-**What this unit does not do.** 4.5 - the card's *move up 500 Hz and switch to 16/500* - and 4.8 -
-the turn indicator landing within one block of the turnover word - were not in it and are not
-built. Step 4 stays `partial` at 6 of 8. Logging an Olivia contact is step 5 and is untouched.
+**What this unit does not do.** Logging the moved QSO is step 5 and is untouched, even though this is
+the conversation that would be logged. An RSID heard under PSK31 or FT8 still switches nothing
+(R27's across-tab switch, parked). `Psk31ClearSpot`'s margin against Olivia's width is still unit
+366's finding and still not rewritten - the move is not routed through that rule, because R29 says up
+500 Hz and up 500 Hz is what it is.
 
 ## 3. What you should see
 
-**The answer this unit was commissioned for: an Olivia press goes out.** The gate opened, and the
-send reached the sound card through the one existing sequence with no new keying path.
+**The answer this unit was commissioned for: one click takes the QSO off the calling spot, and the
+card says what came back from the new place.** 4.5 is met, 4.8 is met, and step 4 is done.
 
-### The operator's evening, press by press
+### The operator's evening, press by press, from the calling spot to the new one
 
-**He presses Olivia on 20 m.** The dial goes to 14.071500 MHz, which is the cited table's
-14.073000 MHz calling center with the passband's 1500 Hz allowed for. The strip says Hamlet is
-listening for Olivia across the whole passband and that a line from somebody calling anybody carries
-an Answer. The power offer is on the panel: *"Olivia sends a steady carrier, so it runs warmer than
-voice. Hamlet can set your radio's transmit power to 50% for you. Nothing else on the radio changes,
-and nothing is set unless you press this."*
+**He presses Olivia on 20 m.** The dial goes to 14.071500 MHz - the cited table's 14.073000 MHz
+calling center with the passband's 1500 Hz allowed for - and it does not move again all evening.
 
-**Two stations appear.** The two-signal fixture, fed to the real tick a quarter-second at a time,
-gives two rows: `8/250` at 1000 Hz and `16/500` at 2000 Hz, each with its own text, neither carrying
-the other's callsign. Nothing told the listener where they were or which variant they were.
+**He presses CQ.** *Sending "CQ CQ CQ de K1ABC K1ABC K1ABC pse K" now, at 1500 Hz in the passband.*
+The signal goes out at 8/250 on the cited spot with its own RSID in front of it.
 
-**He presses CQ.** The panel says *Sending "CQ CQ CQ de K1ABC K1ABC K1ABC pse K" now, at 1500 Hz in
-the passband.* The record then reads, stage by stage:
+**A station answers certainly.** `N1XYZ de K1ABC` ... his row reads `K1ABC de N1XYZ N1XYZ K`, and
+because the parse is certain, is addressed to him, and hands over, his card opens saying **`Your
+turn`**.
+
+**The card now offers two things, and both labels are quoted here:**
 
 ```
-send_stage composed                | Olivia
-psk31_send_composed                | macro cq, 35 characters, 26.93 s, cap 82.60303 s,
-                                   | withinCap true, offsetHz 1500, announced true,
-                                   | rsidCode 69, mode olivia, variant 8/250
-send_stage armed                   | now
-send_stage gate_asked              |
-send_stage keyed                   |
-send_stage handed_to_the_sound_card|
-send_stage unkeyed                 |
-psk31_send_keyed / _unkeyed        | 26.93 s, aborted false, mode olivia, variant 8/250
-ft8_transmission                   | mode Olivia, frequencyHz 14071500, durationSeconds 26.93,
-                                   | sampleRate 12000, sampleCount 323160, messageLength 35,
-                                   | outcome Played, cameOutOfTransmit OrdinaryUnkey,
-                                   | keyed true, fit Fits, audioSeconds 26.93,
-                                   | announced true, rsidCode 69,
-                                   | announcementSeconds 1.8575833333333334
+the macro offer : Tell him how he is coming through
+the move        : Move up 500 Hz and switch to 16/500
 ```
 
-Not one line of it holds a word he sent or his callsign. The fake wire took the keying frame; the
-fake sound card was called once.
+and the move's hover reads, verbatim:
 
-**He presses Answer on the 8/250 row.** *Sending "N1XYZ de K1ABC K1ABC K" now, at 1000 Hz in the
-passband.* **He presses the card's Report on the 16/500 row.** Out at 2000 Hz at 16/500. Neither
-press asked him which variant, and no control on the window offers one.
+```
+The calling frequency is where everybody listens for new calls, so a conversation is supposed to
+move off it. One click tells him you are going up 500 Hz and changing to 16/500, and then takes
+Hamlet there - about twice the speed, and the calling spot left clear for the next caller.
+```
 
-**He types a line on an 8/250 card.** Before he presses anything the card says *"47.1 s of text"* -
-the seconds at 8/250, where PSK31 would have said 16.9 for the same words. A line long enough to be
-refused says *"too long to send"* first, and the press then refuses with *"Hamlet did not send the
-Olivia call: this is 301.36 s of Olivia audio, and this send may be at most 165 s so that a
-continuous carrier cannot run on. Nothing keyed."*
+**He presses the move.** *Sending "N1XYZ de K1ABC  QSY UP 500 TO OLIVIA 16/500  QSY UP 500 TO OLIVIA
+16/500  N1XYZ de K1ABC K" now, at 1500 Hz in the passband.* It goes out **at the old place and the
+old variant**, because that is where N1XYZ is listening.
 
-**He presses Stop part way through an 8/250 send.** *Stopped: "CQ CQ CQ de K1ABC K1ABC K1ABC pse K"
-was going out and Hamlet stopped sending it part way through, and the radio was told to stop
-transmitting.* 1032 of 323160 samples had gone out; the record reads `outcome Cancelled`,
-`cameOutOfTransmit TheAbort`, and `psk31_send_unkeyed` carries `aborted true`. No new abort route
-and no new keying path: PSK31's own.
+**Hamlet moves - after the unkey and not before.** The play ran to the end, the transmitter let go
+ordinarily, and only then did Hamlet's own send-and-reply center become 2000 Hz and its variant
+16/500. The card stops offering the move and starts saying what it is listening for.
 
-### The detector's read-back of each send's burst
+**His next press goes out 500 Hz up at 16/500.** N1XYZ followed, announced himself at the new place,
+and came back; the card - the same card - offered `Tell him how he is coming through` again, and the
+press put 94 characters of 16/500 on the air at 2000 Hz. **Nothing asked him which variant, and no
+control anywhere offers one.**
+
+**And the card says what was heard at the new place**, in one sentence that never claims it was him.
+
+### The move line's text, verbatim, and its record
+
+```
+N1XYZ de K1ABC  QSY UP 500 TO OLIVIA 16/500  QSY UP 500 TO OLIVIA 16/500  N1XYZ de K1ABC K
+```
+
+90 characters. It carries **both callsigns, the amount and the variant**, twice over, because Olivia
+is used where a block can be lost and the one thing this line must not do is half-arrive.
+
+```
+psk31_send_composed | macro qsy, 90 characters, 63.79 s, capSeconds 82.60307, withinCap true,
+                    | offsetHz 1500, announced true, rsidCode 69, mode olivia, variant 8/250
+ft8_transmission    | mode Olivia, frequencyHz 14071500, durationSeconds 63.794, sampleRate 12000,
+                    | sampleCount 765528, messageLength 90, outcome Played,
+                    | cameOutOfTransmit OrdinaryUnkey, keyed true, fit Fits, audioSeconds 63.794,
+                    | announced true, rsidCode 69, announcementSeconds 1.8575833333333334,
+                    | longestSeconds 30,
+                    | stagesEntered gate_asked | keyed | handed_to_the_sound_card | unkeyed
+```
+
+Not one line of it holds a word he sent or his callsign. **`macro` reads `qsy`** rather than `none`,
+because a record saying the composer did not know what it was sending is a record nobody can
+diagnose from.
+
+### The detector's read-back of the move send and of the first send after it
 
 The audio the **sound card was actually handed** was fed whole to `RsidDetector` with no variant, no
-center and no start time (decision I). It found one burst each time:
+center and no start time (decision I):
 
 ```
-send                         | variant sent | code read       | center sent | center read | error Hz
-CQ on 20 m                   | 8/250        | OLIVIA_8_250 69 |     1500.00 |     1499.94 |    0.06
-CQ on 40 m                   | 8/250        | OLIVIA_8_250 69 |     1000.00 |     1000.32 |    0.32
-CQ moved off a busy spot     | 8/250        | OLIVIA_8_250 69 |      875.00 |      874.68 |    0.32
-Answer to the 8/250 row      | 8/250        | OLIVIA_8_250 69 |     1000.00 |     1000.32 |    0.32
-Answer to the 16/500 row     | 16/500       | OLIVIA_16_500 70|     2000.00 |     1999.66 |    0.34
-longest Report at 8/250      | 8/250        | OLIVIA_8_250 69 |     1500.00 |     1499.94 |    0.06
+send                          | variant sent | code read        | center sent | center read | error Hz
+the move line                 | 8/250        | OLIVIA_8_250  69 |     1500.00 |     1499.94 |    0.06
+the first send after the move  | 16/500      | OLIVIA_16_500 70 |     2000.00 |     1999.66 |    0.34
 ```
 
-**6 of 6 read back as the variant that was sent, worst error 0.34 Hz against an allowance of 5.**
-Every one of their records says `announced: true` with that code. The 5 Hz was not loosened.
+**Both read back as the variant that was sent, worst error 0.34 Hz against an allowance of 5**, which
+was not loosened. The second is the proof that Hamlet moved: it was **sent**, not read off a field.
 
-### The CQ's spot
-
-```
-band  | table's center | dial        | offset in the passband | what was in the way | spot chosen
-20 m  | 14.073000 MHz  | 14.0715 MHz |                1500 Hz | nothing             | 1500 Hz
-40 m  |  7.073000 MHz  |  7.0720 MHz |                1000 Hz | nothing             | 1000 Hz
-20 m  | 14.073000 MHz  | 14.0715 MHz |                1500 Hz | an 8/250 station    |  875 Hz
-```
-
-The center is the table's own less the dial, so moving the dial moves it: the two bands give 1500
-and 1000 Hz from one line of arithmetic and a literal appears nowhere. **With a station sitting on
-the calling spot the call moved rather than refusing**, by `Psk31ClearSpot`'s unchanged rule - *at
-least 150 Hz from every carrier being read and from every candidate over quality 0.4, in the middle
-of the widest such gap between 400 and 2200 Hz* - landing 625 Hz clear of him. `no_clear_spot` was
-not reached on any run.
-
-**Decision BB's finding, reported rather than repaired.** The 150 Hz margin is measured between
-carrier **centers**, and it was chosen for a PSK31 signal 31 Hz wide. Olivia is 219 to 977 Hz wide,
-so the margin means less than it reads. Measured on the two-signal fixture's own carriers, handed in
-as the Olivia listener gives them:
+### Before and after the press
 
 ```
-carriers heard: 8/250 at 1000 Hz occupies 890.6 - 1109.4 Hz; 16/500 at 2000 Hz occupies 1765.6 - 2234.4 Hz
-the rule's spot: 1500.0 Hz
-  an 8/250 send there occupies 1390.6 - 1609.4 Hz - 281.3 Hz clear of one, 156.3 Hz clear of the other
-  a 16/500 send there occupies 1265.6 - 1734.4 Hz - 156.3 Hz and  31.3 Hz
-  a 32/1000 send there occupies 1015.6 - 1984.4 Hz - OVERLAPS BOTH
+                                   | Hamlet's next send to N1XYZ | variant
+before the press                   |                     1500 Hz | 8/250
+after the line played and unkeyed   |                    2000 Hz | 16/500
+after a Stop mid-play              |                     1500 Hz | 8/250
+after a licence refusal            |                     1500 Hz | 8/250
+after a no_announcement refusal    |                     1500 Hz | 8/250
 ```
 
-**A CQ is always 8/250 (decision BA), and at 8/250 the rule is comfortably right.** It is a reply at
-a wide variant that would sit close, and a reply goes where the station is rather than on a chosen
-spot, so nothing in this unit lands on anybody. What the next unit would change, if the owner wants
-it: give `Psk31ClearSpot` the width of the signal being placed and clear that plus the margin, which
-is one parameter and no new rule. **A second clear-spot rule was not invented** (decision BB).
-
-### The cap table
+**Every one of the three refusals moved nothing**, and each is asserted at the center and the variant
+afterwards, with the card's own words:
 
 ```
-variant  | s per char | count | cap s   | longest text that actually fits | longest keying, burst in
-8/250    | 0.68267    |  121  |  82.603 | 120 characters (82.42 s)        |  84.46 s + 1.86 s burst
-16/500   | 0.51200    |  121  |  61.952 | 120 characters (61.94 s)        |  63.81 s + 1.86 s burst
-32/1000  | 0.40960    |  121  |  49.562 | 115 characters (47.60 s)        |  51.42 s + 1.86 s burst
-8/250    | 0.68267    |  242  | 165.206 | 240 characters typed (164.34 s) | 167.06 s + 1.86 s burst
-16/500   | 0.51200    |  242  | 123.904 | 240 characters typed (123.38 s) | 125.76 s + 1.86 s burst
-32/1000  | 0.40960    |  242  |  99.123 | 240 characters typed ( 98.80 s) | 100.98 s + 1.86 s burst
+Nothing moved: the line saying you were going up 500 Hz did not go out, so Hamlet is still on the
+calling frequency at 8/250.
 ```
 
-Every cap is asserted as the **product** of `timing.json`'s count and that variant's own seconds per
-character, never as a number. **The longest text that actually fits is measured, not assumed** - it
-is short of the count because the air sends whole blocks, which is decision BD's answer to unit 365
-item 1 taken to the press. At 32/1000 a block carries five characters, so the granularity is
-coarsest there and 115 is the honest figure.
+- **The Stop**: stopped by the token with part of the audio unplayed, `psk31_send_unkeyed` carrying
+  `aborted true`, no `olivia_move_sent`, `olivia_move_refused` with `moved false`.
+- **The licence gate**: `outcome RefusedByLicence`, `cameOutOfTransmit NothingWasKeyed`, `keyed
+  false`, nothing played, nothing written to the port. **It stands in for the cap, and why is
+  arithmetic**: the framed line is 90 characters against `timing.json`'s macro count of 121, 61.94 s
+  against a cap of 82.60 s, so no cap refusal exists at 8/250 to measure and none was manufactured.
+  The licence gate refuses at the same point with nothing played. **No cap test was loosened and no
+  count in `timing.json` moved.**
+- **`no_announcement`**: the codes file read back empty with the real calling table in place, so
+  nothing could name the variant it was sending and nothing was composed.
 
-**The longest Report the app composes**, to the compound callsign `VP2V/W1AW`, is 102 characters:
+### The bound, and the arithmetic on the real bands (decision BK)
 
-```
-VP2V/W1AW de K1ABC  RST 599 599  Name Pat Pat  QTH Boston MA  Grid FN42 FN42  BTU VP2V/W1AW de K1ABC K
-```
-
-At 8/250 it is **71.99 s against the 82.603 s cap**, it was **armed and played** through the one
-door, and its record reads `outcome Played`, `keyed true`, one call to the sound card. PSK31's
-thirty seconds would have refused it, which is what *a Report at 8/250 is allowed its length* means.
-
-**Nothing else's cap moved**, each asserted: `OperatorSend.LongestUnslottedSeconds` 30, the typed
-line's 60, a PSK31 macro held to 30, the FT8 slot 15, the FT4 slot 7.5.
-
-**The typed line's card sentence at 8/250, verbatim**, for a framed line of 69 characters:
+Hamlet listens across **200 to 3000 Hz** (`Psk31CarrierSearch`). 16/500's tones occupy **±234.375
+Hz** of its center, read from `data/olivia/format.json` rather than typed. So the highest center
+wholly inside the passband is **2765.625 Hz** and the highest calling offset the move may be offered
+at is **2265.625 Hz**.
 
 ```
-47.1 s of text
+band | calling center | dial the tab sets | calling offset | move to | 16/500 occupies | inside
+80m  |      3583000   |         3581500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+40m  |      7073000   |         7071500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+30m  |     10143000   |        10141500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+20m  |     14073000   |        14071500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+20m  |     14107500   |        14106000   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+17m  |     18103000   |        18101500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+15m  |     21073000   |        21071500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+10m  |     28123000   |        28121500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
 ```
 
-and past the cap:
+**On every row of the cited table, at the dial pressing Olivia sets, the move lands wholly inside the
+passband.** The bound bites only where the operator has tuned the dial down so the calling spot sits
+high: at 14 070 600 the calling offset is 2400 Hz, the move would occupy 2665.6 to 3134.4 Hz, and it
+is not offered - the card says
 
 ```
-299 s of text, too long to send
+Hamlet is not offering the move on this frequency: 500 Hz up from here would put the signal outside
+the range Hamlet listens across, so it could not hear the answer.
 ```
 
-**The patience** (decision BE): `32 x 0.68267 = 21.8454 s` at 8/250, `16.3840` at 16/500,
-`13.1072` at 32/1000, no two alike, asserted as the product. **Nothing in the application consumes
-a time-based patience, and nothing was invented so that a criterion had something to point at.**
-Every turn in Hamlet is decided at `MainWindowViewModel.cs:4107` by `Psk31Turn.Read`, from the
-channel's finished messages, whether characters have arrived since the last of them, and the
-operator's callsign - no clock at all. `Psk31Macros.AnswerSeconds`, the only patience the tree
-states, has no caller in `src/`; a source scan asserts that it still has none.
+**`Psk31ClearSpot`'s 400 to 2200 Hz is not the bound** (decision BK). That is where a call to anyone
+may start, and a QSO that has already begun is not a call to anyone.
 
-### The receipt, quoted
+### When the offer appears, and the eight conditions it refuses under
 
 ```
-is a receipt : True
-callsign     : [CQ]
-place        : []
-state word   : [Calling]
-sentence     : [Your call went out to anyone listening.]
-action label : []
-shows globe  : False
+Olivia, certain your turn over his certain handover, calling center, 8/250 | OFFERED
+a guessed your turn (one damaged word in his message)                     | not offered
+his turn (Hamlet handed over)                                             | not offered
+he is still sending (characters pending)                                  | not offered
+under PSK31, same channel, same center, same variant, same answer         | not offered
+at 16/500 on the calling center                                           | not offered
+at 32/1000 on the calling center                                          | not offered
+off the calling center (+110.4 Hz, +300 Hz, -400 Hz)                      | not offered
+a second time after it has been used                                      | not offered
 ```
 
-**No place, no country, no grid, no distance, no bearing, no Log button** - asserted on the same
-properties `TheCqReceiptTests` asserts for PSK31. **What retired it:** a certain message addressed to
-the operator arriving on an Olivia row, through the same certainty gate, leaving that station's own
-card in the receipt's place. Until this unit no receipt appeared under Olivia at all: `RebuildCards`
-was gated on PSK31 and the press booked into the ledger with nothing drawn.
+**8 of 8, each its own assertion.** The tolerance for *on the calling center* is half the calling
+variant's own occupied width from the format file - **109.375 Hz** - so 0 and +108.4 Hz are on it and
++110.4 Hz is not. **The reading is `Psk31Offer.For`'s own answer and not a copy of it loosened**: the
+same certain answer that offers Report offers the move, and a guess offers neither.
 
-### Decision BI: what the two refusal classes assert now
+**Nothing is composed and nothing keys by the offer merely appearing**: with the offer on the screen
+and an armed send available, the transmit category holds no stage, no composed line and no
+transmission record at all, the sound card was never called and the port was never written. The
+press is the only thing that writes `olivia_move_offered`.
 
-`TheOliviaSeamTests` (rewritten in commit `6061cbce`, its own):
+### The follow line's three sentences, quoted, and the window as the product
 
-- `ThePanelNamesTheModeAndSaysNothingCanBeAnswered` -> `ThePanelNamesTheModeAndPromisesNoSlot`.
-  **Gone:** `Assert.Contains("can be answered yet", ...)` and `Assert.False(CanAnswerRowsForTests)`.
-  **Kept:** the mode is named on the strip and on the decoded idle; nothing bound on a panel for a
-  mode with no slots says "slot". **Added:** the strip says what a line actually offers.
-- `NoDecoderIsAttachedAndNoPathReachesAnythingThatKeys` ->
-  `NoDecoderIsAttachedAndNothingIsComposedUntilAPress`. **Gone:** the CQ press, *"cannot send
-  Olivia"*, `send_refused` as the last action, and the sweep forbidding `composed` and `send_stage`.
-  **Kept:** the slot watch is not asked, no other mode's decoder runs, no row and no card appear on
-  that feed. **Added:** the transmit category is empty across thirty ticks, because a transmission
-  takes a click - which is the half of §0.2 that outlives the gate.
+```
+1 waiting          | Hamlet has moved up 500 Hz and is reading 16/500 there. Nothing has been
+                   | heard at the new place yet.
+2 one arrived      | An Olivia 16/500 announcement has arrived at the new place. An announcement
+                   | carries no callsign, so that is somebody in the mode and at the place you
+                   | moved to, and not a certainty that it was N1XYZ.
+3 none arrived     | Nothing was heard at the new place while Hamlet listened. He may not have
+                   | followed, or his announcement may not have read; Hamlet is there and still
+                   | listening.
+```
 
-`TheOliviaRowsTests` (rewritten in commit `13588eb4`, its own):
+**3 of 3 proved.** State 2 was reached with **real audio through the real tick**: a 16/500 send
+Hamlet's own modulator composed at the moved-to center, whose own RSID the panel's detector found
+across the passband with no help, and whose Olivia signal opened his new channel. State 3 was reached
+by spending the window on quiet band.
 
-- `WithRowsPresentEverySendControlRefusesAndNothingKeys` ->
-  `WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant`. **Gone:** *"cannot
-  send Olivia"* on every press, the count of at least four `send_refused`, and `composed`, `armed`
-  and `send_stage` in the word sweep. **Kept and added:** no composed line and no stage before the
-  first press; one composition per press that got past the gate and not one more; each composition
-  carrying `mode olivia` and the variant of the row it was addressed to, with the CQ at the calling
-  variant and no variant appearing that no signal announced; and nothing keyed, because that panel
-  has no armed send and every press ends at `no_transmit_path`.
+**The window, asserted as the product and never as seconds** (§3.2):
 
-**No other existing test was edited to make a change pass.**
+```
+PatienceCharacters 32 x 16/500's seconds per character 0.512 = 16.384 s of patience
+16.384 s x the stated whole factor 2                          = 32.768 s of window
+```
+
+The file's own `olivia_move_sent` line carries `windowSeconds 32.768`, and the test asserts it
+against the product. **The number 32.768 appears nowhere in `src/`.**
+
+**What counts as an announcement, and what does not.** An Olivia 16/500 code within ±234.375 Hz of
+the new center, inside the window. Measured: a **real 16/500 send 900 Hz away** does not count, and a
+**real 8/250 send exactly on the new center** does not count. Both leave the card waiting.
+
+**And nothing transmits on a detection** (§0.2), asserted: his whole transmission - the burst and 23
+characters of 16/500 - fed to the real tick after the move gives one play, one transmission record,
+one `psk31_send_composed`, one `keyed` stage, and the port frame count unchanged at 2 before and
+after the detection.
+
+**Decision BQ, and why the detection rather than the channel.** `RsidDetection` carries the code and
+the center at the moment the burst ended, which is what R29 asks about. An Olivia channel opens only
+once blocks have synchronised, and it can be opened by the blind search - which is not an
+announcement at all. **The lift of unit 359's decision B is one inch**: a detection is *read* by this
+one check and still sets no mode, no tab, no dial and no variant.
+
+### The card survived the move (decision BR), and what that took
+
+```
+his channels after the move : 16/500 at 2000.0 Hz by rsid, 23 characters, ended False
+his card                    : the same one card for N1XYZ - turn "Your turn", offering Report,
+                              variant now 16/500, its conversation still holding the answer he
+                              sent at the old place
+```
+
+**The card itself was never in danger**, and the trace found that before a line was written:
+`_psk31Cards` is keyed by the callsign and `state.ChannelId` is updated in place, so a station who
+moves keeps his card. **Two things were in danger and both were repaired:**
+
+1. **The conversation.** A card is read from one channel's messages, and a station who follows has a
+   new channel. Without a carry the card read his new channel with his half of the history missing,
+   which put Hamlet's own move line at the end of the list and had the card saying `His turn` a moment
+   after he had come back - no `Send` button, and the send that proves 4.5 could not be made.
+   `OliviaMovedConversationFor` carries the complete messages of the channel he moved from into the
+   reading of the new channel at the place Hamlet announced, with a fresh splitter, and only for a
+   station Hamlet itself moved.
+2. **The variant on the card.** The rebuild at `ShowPsk31Cards` passed neither the operator's
+   callsign nor the variant, and a card whose turn and offer had not changed was left alone - so a
+   station who moved from 8/250 to 16/500 kept a card still reading 8/250, and the seconds that card
+   quotes for a typed line come from the variant. It was quoting a number nothing would produce
+   (§0.0). The variant and the move are now part of whether the card has changed.
+
+**Neither needed a line on decision AZ's forbidden list.**
+
+### 4.8's lag table
+
+```
+variant | block s | lag s | lag in blocks | met
+8/250   |   2.048 | 0.000 |         0.000 | yes
+16/500  |   2.048 | 2.000 |         0.977 | yes
+```
+
+**One block is 2.048 s at every variant** - 64 symbols of 0.032 s from `data/olivia/format.json` -
+carrying 3 characters at 8/250 and 4 at 16/500. The lag is **audio** seconds, not wall seconds, so
+the number is a property of the mode and the splitter rather than of the machine.
+
+At 16/500 the audio is the **mode author's own four-line QSO**, hashed against the manifest first,
+with the operator set to the author's other station so his lines are addressed to the operator and a
+card exists to read a turn off:
+
+```
+16/500: "KC3QIS de W1AW W1AW K" - the turnover word's last accepted character arrived at 39.000 s
+        the card's turn reading changed to "Your turn" at 41.000 s
+        LAG 2.000 s = 0.977 blocks against one block of 2.048 s
+```
+
+At 8/250 the audio is **Hamlet's own modulator in memory**, because the shipped 8/250 fixture is a CQ
+to anybody and opens no card: the turnover word's last character and the character that closes the
+message land in the same block, so the card says `Your turn` at the same quarter-second - **0.000 s**.
+
+**Why 16/500 is 2.000 s and not nought**, which is unit 364 item 6's known cause and not a fault: a
+message closes at the whitespace **after** the turnover word (`Psk31MessageSplitter.SplitRule`), so
+where the `K` is the last character its block carries, the newline that closes the message is in the
+next block - one block later. **That is why the bound is one block, and it is inside it either way.**
+Nothing was loosened.
+
+**And the turn still reads no clock** (R14): one call site in `src/` decides a turn,
+`MainWindowViewModel.cs:4151` (it was :4121 before this unit's own additions moved it), and
+`Psk31Turn.cs` holds no `DateTime`, no `Stopwatch`, no tick count and no seconds at all - asserted.
 
 ### The runs, before and after, by name
 
-**Chain-guarding (`docs\chain-guarding-tests.txt`, decision BJ), all 17 engine and 11 app classes:**
+**Chain-guarding (`docs\chain-guarding-tests.txt`, decision BT), all 17 engine and 11 app classes:**
 
 ```
-                    before (ab8392c0)        after task 2
-engine      98 of 110,  56 s          98 of 110,  46 s
-app         48 of  63,  51 s          48 of  63,  45 s
+                    before (efc07610)        after task 3
+engine      98 of 110,  46 s          98 of 110,  47 s
+app         48 of  63,  36 s          48 of  63,  33 s
 ```
 
 **The same twenty-seven reds by name, before and after, none new.** Engine: the six in
@@ -412,60 +569,112 @@ and were not chased.
 
 ```
                  before                         after
-app      188 of 188, 2 m 20 s          189 of 189, 2 m 34 s   (+1: Olivia's send guard)
-engine   146 of 146, 4 m 41 s          146 of 146, 5 m 1 s
-PttOn code lines       1                      1
-Arm( call lines        2                      2
+app      189 of 189, 2 m 21 s          189 of 189, 2 m 18 s
+engine   146 of 146, 4 m 43 s          146 of 146, 4 m 45 s
 ```
 
 **Every per-mode guard green before and after: FT8 send and read, FT4 send and read, PSK31 send and
-read, Olivia read, modulate and - for the first time - send.** No red after that was green before.
+read, Olivia read, modulate and send.** **No red after that was green before**, so HM-DEC-165 is
+satisfied and no repair is owed to the next unit.
 
-**One app red was seen and it was a flake, reported with the run it came from.** The first after-run
-read 188 of 189 on
-`ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed`, which is green alone and green
-on a second run of the same invocation; the final run of the unit, after task 5, read **189 of 189**
-and that is the number reported. It touches the power offer's button, which this unit did change, so
-it is named here rather than waved through: it passed alone before task 5's change and after it.
+**Two app reds were seen and both were flakes, reported with the run each number came from.** The
+first run of the app after-invocation read **187 of 189**, failing
+`TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning` - a known headless flake
+named in the instruction - and
+`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`, **which is not on the
+known-flake list**. Both passed alone, and the immediate rerun of the whole invocation read **189 of
+189**, which is the run the number above comes from. **Nothing in this unit touches
+`ShowsSlotClock`**, and its one gate - `!IsPsk31Chosen` at `MainWindowViewModel.cs:379` - is
+unchanged; it is carried as section 4 item 4 rather than waved through.
 
-**Seconds against the 480 s timeout:** app 154 s, engine 301 s. The engine invocation's margin is
-about **three minutes**, unchanged from unit 365's, because **nothing this unit added went on the
-engine line**.
+**Seconds against the 480 s timeout:** app 138 s, engine 285 s. **The engine invocation's margin is
+about 195 s, better than the three minutes unit 366 had**, which is the margin this unit was told to
+keep. **Nothing this unit added went on either carry-forward line.**
 
-### Olivia's row on the guard table now reads
-
-```
-Olivia   read      TheOliviaDemodulatorTests (the clean fixtures)                    engine
-         modulate  TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical   engine
-         send      TheOliviaSendTests.AnOliviaCqReachesTheAir                        app
-```
-
-### The criterion table
+### The tests this unit added
 
 ```
-id  | state                   | this unit's numbers
-4.1 | met (unit 365)          | 30 of 30 loopbacks identical; every measure inside tolerance
-4.2 | met                     | 6 of 6 read back as the variant sent, worst error 0.34 Hz of 5;
-    |                         | 6 of 6 records announced with the right code
-4.3 | met                     | center from the table on 2 bands, 1500 and 1000 Hz; spot found at
-    |                         | 875 Hz with a station on the calling spot; receipt station facts 0,
-    |                         | Log absent; a certain answer retired it
-4.4 | met                     | caps 82.603 / 61.952 / 49.562 s as the product; the 102-character
-    |                         | Report armed and played at 71.99 s; one character past what fits
-    |                         | refused LongerThanTheCap; PSK31's 30 and 60 and the FT8 and FT4
-    |                         | caps unmoved; patience 21.845 / 16.384 / 13.107 s
-4.5 | not worked - next unit  | -
-4.6 | met                     | PttOn 1, Arm( 2, real ports keyed 0, Stop aborted mid-play,
-    |                         | FT8/FT4 byte-identical green, PSK31 send guards green
-4.7 | met                     | power offer under Olivia yes, settles as PSK31's; ALC read 95 of
-    |                         | 120 against a reference of 62 learned on FT8, judged, sentence
-    |                         | produced and naming FT8
-4.8 | not worked - next unit  | -
+Unit367Trace                             app     5 names,  30 s   asserts nothing, on no list
+TheOliviaMoveUpTests                     app    25 names,  50 s   4.5
+TheTurnKeepsUpWithTheTurnoverWordTests   app     3 names,  30 s   4.8
 ```
 
-**Step 4 is 6 of 8 and stays `partial`.**
+### The `PttOn` and `Arm(` counts
+
+```
+                       before this unit   after this unit
+PttOn code lines in src/          1               1
+Arm( call lines in src/           2               2
+```
+
+`src\Hamlet.RadioEngine\Transmit\Ft8TransmitSequence.cs:513` and
+`src\Hamlet.App\ViewModels\MainWindowViewModel.cs:15551` and `:15830`, the second of the two being
+the unslotted one the move uses. **The move is a fifth thing to send, not a fifth way to send**, and
+the count is the guard that says so.
 
 ## 4. What's blocking us
+
+**Nothing blocks step 4, which is done, and nothing in this unit is stop material.** Five items from
+this unit. **Nothing needed a line on decision AZ's forbidden list**; **no working mode's send or read
+guard went red after green**; **the `PttOn` and `Arm(` counts did not move**, 1 and 2 before and
+after; and **no frequency command was ever sent to the radio**. Not one of the five stands in the way
+of 4.5 or 4.8, both of which are met.
+
+### Raised by unit 367
+
+**1. The move's button puts hertz and a variant on the face of a card, and the card type says it
+keeps numbers off its face.** *Ruling asked:* keep `Move up 500 Hz and switch to 16/500` as the
+label, or replace it with words carrying no numbers - *Move off the calling frequency and speed up* -
+with the amount and the variant on the hover only. *This session's answer, author's and overrulable:*
+keep it. Criterion 4.5 says the card offers *move up 500 Hz and switch to 16/500*, so those are the
+plan's own words for what the control does, and `Ft8ContactCard`'s no-hertz rule is about
+measurements of a contact - a signal report, a time offset, an audio frequency somebody was heard on
+- rather than about naming an action. **What was rejected:** a numberless label, because a beginner
+pressing it should be able to tell the other station what happened, and *speed up* does not say
+16/500; and putting the numbers only on a hover, because a hover is a thing he has to find.
+
+**2. `OliviaCallingOffsetHz` answers null in exactly the situation the move exists for, and two
+callers now ask two different questions of the same idea.** The send path's question is *where may a
+call to anyone go*, and it refuses a spot a station is sitting within 150 Hz of. The offer's question
+is *is this conversation on the center the cited table names*. This unit added
+`OliviaCallingCenterOffsetHz` for the second rather than loosening the first. *No ruling needed* -
+it is a finding, and the note for whoever reads that code next is that the two methods are named
+almost alike and mean different things. *What was rejected:* giving `OliviaCallingOffsetHz` a flag,
+which would have put the clear-spot rule's refusal inside a question that is not about clearing a
+spot.
+
+**3. The cap cannot refuse the move line at 8/250, so *a cap refusal moves nothing* was proved
+through the licence gate instead.** The framed line is 90 characters against `timing.json`'s macro
+count of 121 - 61.94 s against a cap of 82.60 s - and the arithmetic leaves no reachable cap refusal
+at the calling variant with plain callsigns. **Nothing was loosened and nothing was manufactured**:
+the test measures the other refusal that reaches the same point with nothing played, prints the
+line's seconds against its cap, and asserts the line is inside the count. *No ruling needed;* it is
+reported because §8 asked for a cap refusal by name and this is what the numbers allow.
+
+**4. One app carry-forward red is a flake that is not on the known-flake list.**
+`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt` failed once in the first
+run of the app after-invocation and passed alone and on the immediate rerun of the whole invocation.
+**Nothing in this unit touches `ShowsSlotClock`**, whose one gate at `MainWindowViewModel.cs:379` is
+unchanged, and the assembly already disables test parallelism, so the cause is sequential state on
+the process-wide Avalonia dispatcher rather than a race. *No ruling needed; carried so the next unit
+that sees it knows it has been seen once before.* **It is not a regression under HM-DEC-165**: it is
+green in the run the number is taken from and green alone.
+
+**5. `PHASE_STATUS.md` now understates the tree by a whole step.** It says `CURRENT_STEP: 3` with step
+3 `partial`, and `PHASE_PLAN.md` leaves every one of 4.1 to 4.8 unchecked, while units 359 to 367
+have met all eight. Both are reported and neither was edited (§9, §10); only `WORK_INSTRUCTION` was
+moved to 367. *The ruling that would help:* whether the launcher's file is the arbiter's to correct
+at the top of a unit, or stays the launcher's alone.
+
+### Unit 366's queue, carried verbatim from here to the end of this file
+
+Everything below this line is unit 366's section 4 exactly as it stood, which carries unit 365's
+queue, which carries the FT8 unit's, 364's, 363's and the older ones (HM-DEC-139). **It was not
+retyped**: the bytes were left in place on disk and only the lines above them were rewritten.
+`git show efc07610:output.md | tail -n +469 | md5sum` gives
+**`685f335dc84fdfdf8da1b686951bb2e4`**, and `tail -n +677 output.md | md5sum` over this file's own
+carried block gives **`685f335dc84fdfdf8da1b686951bb2e4`**. **The two hashes agree, so the carry is
+byte-identical.**
 
 **Nothing blocks step 4, and nothing here is stop material.** Eight items. **The send needed no line
 on decision AZ's forbidden list**, no working mode's send or read guard went red after green, and
