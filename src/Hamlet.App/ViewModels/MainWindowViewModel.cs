@@ -4146,7 +4146,7 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 state = new Psk31CardState(Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign)), channelId)
+                    _settings.Operator.Callsign, _oliviaVariants.GetValueOrDefault(channelId))), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -4170,7 +4170,8 @@ public partial class MainWindowViewModel : ObservableObject
 
                 state.ClearedAtMessages = null;
                 state.Card = Nudged(Ft8ContactCard.ForPsk31(
-                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete));
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
+                    _settings.Operator.Callsign, _oliviaVariants.GetValueOrDefault(channelId)));
                 DigitalCards.Add(state.Card);
                 continue;
             }

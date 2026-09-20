@@ -45,6 +45,9 @@ public sealed class TheOliviaSendTests : IDisposable
     /// <summary>20 m, where the cited table gives an Olivia calling center and a dial.</summary>
     private const long DialOn20m = 14_071_500;
 
+    /// <summary>The compound callsign the longest Report in the tree is addressed to.</summary>
+    private const string Compound = "VP2V/W1AW";
+
     /// <summary>The slowest variant's blocks of noise fed after each file, as unit 364 feeds it.</summary>
     private const int TailBlocks = 4;
 
@@ -622,6 +625,295 @@ public sealed class TheOliviaSendTests : IDisposable
 
         Assert.DoesNotContain(model.DigitalCards, c => c.IsCallToAnyone);
         Assert.Contains(model.DigitalCards, c => string.Equals(c.Callsign, "N1XYZ", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// **4.4: the cap a send is held to is `timing.json`'s count times that variant's seconds per
+    /// character, for a macro and for a typed line, and it is a literal nowhere.**
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    [Theory]
+    [InlineData("8/250")]
+    [InlineData("16/500")]
+    [InlineData("32/1000")]
+    public void TheCapIsTheCountTimesTheVariantsSecondsPerCharacter(string variant)
+    {
+        var timing = OliviaData.Current.Timing!;
+        var perCharacter = timing.SecondsPerCharacter[variant];
+
+        foreach (var kind in new[] { OliviaSendKind.Macro, OliviaSendKind.TypedLine })
+        {
+            var count = kind == OliviaSendKind.TypedLine ? timing.CapTypedCharacters : timing.CapMacroCharacters;
+            var composed = OliviaModulator.Compose("CQ de " + Mine, variant, 1500, 12000, 0.5f, kind);
+
+            _output.WriteLine(
+                $"{variant} {kind}: cap {composed.Cap:0.0000} s = {count} characters x {perCharacter:0.00000} s");
+
+            // **THE PRODUCT, NOT A NUMBER** (§3.2). The count is the file's and the rate is the
+            // variant's, and the cap the send is actually held to is what they make.
+            Assert.Equal(count * perCharacter, composed.Cap, 9);
+            Assert.NotEqual(OperatorSend.LongestUnslottedSeconds, composed.Cap);
+        }
+    }
+
+    /// <summary>
+    /// **4.4: PSK31's thirty seconds, the typed line's sixty, and the FT8 and FT4 caps have not
+    /// moved.**
+    /// </summary>
+    /// <remarks>
+    /// **THE CAP EXISTS SO A COMPOSING FAULT CANNOT LEAVE A CARRIER ON THE AIR**, and a unit that
+    /// raised somebody else's to make its own fit would have bought Olivia's length with the other
+    /// modes' exposure (decision BD).
+    /// </remarks>
+    [Fact]
+    public void NoOtherModesCapMoved()
+    {
+        var psk31 = Psk31Modulator.Compose("CQ de " + Mine, 12000, 1500, 0.5f);
+
+        _output.WriteLine($"OperatorSend.LongestUnslottedSeconds = {OperatorSend.LongestUnslottedSeconds}");
+        _output.WriteLine($"MainWindowViewModel.LongestTypedSeconds = {MainWindowViewModel.LongestTypedSeconds}");
+        _output.WriteLine($"a PSK31 macro is held to {psk31.Cap} s");
+        _output.WriteLine($"FT8 slot {Ft8Slots.SlotSeconds} s, FT4 slot {Ft8Sharp.Ft4Timing.SlotSeconds} s");
+
+        Assert.Equal(30, OperatorSend.LongestUnslottedSeconds);
+        Assert.Equal(60, MainWindowViewModel.LongestTypedSeconds);
+        Assert.Equal(30, psk31.Cap);
+        Assert.Equal(15, Ft8Slots.SlotSeconds);
+        Assert.Equal(7.5, Ft8Sharp.Ft4Timing.SlotSeconds);
+    }
+
+    /// <summary>
+    /// **4.4: the longest Report the app composes, to a compound callsign, is armed and plays at
+    /// 8/250 - the slow variant is allowed its length.**
+    /// </summary>
+    [Fact]
+    public void TheLongestReportAt8250IsArmedAndPlays()
+    {
+        var report = Psk31Macros.Report(Compound, Mine, "Pat", "Boston MA", "FN42AA");
+
+        FakeSink sink;
+        List<string> lines;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "366", _ => true))
+        {
+            var model = Listening(telemetry);
+
+            sink = Arm(model, telemetry).Sink;
+
+            // **AT A ROW'S OWN VARIANT AND CENTER**, which is where a Report goes (decision BA).
+            model.ShowOliviaChannelsForTests(
+            [
+                new OliviaChannel(
+                    93, "8/250", 1500, OliviaListener.FoundByRsid, 0,
+                    Mine + " de " + Compound + " " + Compound + " K\n", 9, 0, false),
+            ]);
+
+            foreach (var r in model.DigitalDecodes)
+            {
+                _output.WriteLine($"row [{r.Variant}] at {r.Hz} Hz, sender [{r.Sender}]: {r.Message}");
+            }
+
+            _output.WriteLine($"the longest Report is {report.Length} characters: \"{report}\"");
+
+            // **THROUGH THE ONE DOOR** (§0.2, §R10). `SendMessage` is the application's single send
+            // entry point and the card's Report button reaches it by calling it; this hands it the
+            // same text, so the mode gate, the variant, the composer, the cap, the licence gate and
+            // the one keying site all apply exactly as they do to a press.
+            //
+            // **WHY NOT THE CARD'S OWN BUTTON.** No card opens for this station: the PSK31 exchange
+            // parser reads no speaker from a line whose callsign carries a slash, so the row above
+            // shows an empty sender and no conversation is opened. That is a finding about the
+            // shared parser and it is reported rather than repaired here (§R14).
+            model.SendMessageCommand.Execute(report);
+
+            Settle(model);
+        }
+
+        lines = Lines();
+
+        var composed = Assert.Single(Events(lines, "psk31_send_composed"));
+        var record = Assert.Single(Events(lines, TransmitRecord.EventName));
+        var seconds = composed.GetProperty("seconds").GetDouble();
+        var cap = composed.GetProperty("capSeconds").GetDouble();
+
+        _output.WriteLine($"composed {composed.GetProperty("characters").GetInt32()} characters, {seconds:0.00} s against a cap of {cap:0.00} s");
+        _output.WriteLine("record   : " + record.GetRawText());
+
+        Assert.Equal(report.Length, composed.GetProperty("characters").GetInt32());
+        Assert.Equal("8/250", composed.GetProperty("variant").GetString());
+        Assert.True(composed.GetProperty("withinCap").GetBoolean(), "the Report did not fit the 8/250 cap");
+        Assert.True(seconds > OperatorSend.LongestUnslottedSeconds, "the Report is shorter than PSK31's own cap, so this proves nothing");
+        Assert.Equal("Played", record.GetProperty("outcome").GetString());
+        Assert.True(record.GetProperty("keyed").GetBoolean());
+        Assert.Equal(1, sink.TimesCalled);
+    }
+
+    /// <summary>
+    /// **4.4: a text one character past what fits at 8/250 is refused as `LongerThanTheCap`, in
+    /// PSK31's own words, and keys nothing.**
+    /// </summary>
+    [Fact]
+    public void OneCharacterPastWhatFitsAt8250IsRefusedAndKeysNothing()
+    {
+        // **MEASURED, NOT ASSUMED** (decision BD). The count in `timing.json` is a bound on the
+        // text and not a promise that a text of that length fits, because the air sends whole
+        // blocks; what fits is found by asking the composer.
+        var fits = 0;
+
+        for (var characters = 1; characters <= 512; characters++)
+        {
+            if (OliviaModulator.Compose(new string('A', characters), "8/250", 1500, 12000, 0.5f).Fit == UnslottedFit.Fits)
+            {
+                fits = characters;
+            }
+        }
+
+        var overTheCap = OliviaModulator.Compose(new string('A', fits + 1), "8/250", 1500, 12000, 0.5f);
+        var atTheEdge = OliviaModulator.Compose(new string('A', fits), "8/250", 1500, 12000, 0.5f);
+
+        _output.WriteLine($"the longest macro that fits at 8/250 is {fits} characters, {atTheEdge.TextSeconds:0.00} s against a cap of {atTheEdge.Cap:0.00} s");
+        _output.WriteLine($"one more is {overTheCap.TextSeconds:0.00} s, {overTheCap.Fit}");
+
+        Assert.Equal(UnslottedFit.Fits, atTheEdge.Fit);
+        Assert.Equal(UnslottedFit.LongerThanTheCap, overTheCap.Fit);
+
+        // **AND THE REFUSAL AT THE PRESS IS PSK31's OWN** - the same `Arm`, the same reason token,
+        // the same sentence shape - with nothing keyed.
+        FakeSink sink;
+        FakePort port;
+        string line;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "366", _ => true))
+        {
+            var model = Listening(telemetry);
+            var parts = Arm(model, telemetry);
+
+            sink = parts.Sink;
+            port = parts.Port;
+
+            model.ShowOliviaChannelsForTests(
+            [
+                new OliviaChannel(
+                    94, "8/250", 1500, OliviaListener.FoundByRsid, 0,
+                    Mine + " de N1XYZ N1XYZ K\n", 9, 0, false),
+            ]);
+
+            var card = Assert.Single(model.DigitalCards, c => string.Equals(c.Callsign, "N1XYZ", StringComparison.Ordinal));
+
+            // A typed line long enough that its framed text is past what fits at 8/250.
+            card.TypedText = new string('A', 400);
+
+            _output.WriteLine("the card says: " + card.TypedSecondsWord);
+
+            model.SendTypedPsk31Command.Execute(card);
+            line = model.DigitalSendLine;
+
+            Settle(model);
+        }
+
+        var lines = Lines();
+        var refused = Assert.Single(Events(lines, "psk31_send_refused"));
+
+        _output.WriteLine("send line: " + line);
+        _output.WriteLine("refused  : " + refused.GetRawText());
+
+        Assert.Equal("cap", refused.GetProperty("reason").GetString());
+        Assert.Equal("arm", refused.GetProperty("stage").GetString());
+        Assert.Equal("olivia", refused.GetProperty("mode").GetString());
+        // **NOTHING KEYED AND NOTHING PLAYED.** The sequence still writes down what it refused,
+        // which is §8.1's own rule - a send that produced silence is the case somebody has to
+        // diagnose - and every such record says the transmitter was never keyed.
+        foreach (var e in Events(lines, TransmitRecord.EventName))
+        {
+            _output.WriteLine("record   : " + e.GetRawText());
+
+            Assert.False(e.GetProperty("keyed").GetBoolean());
+        }
+
+        Assert.Equal(0, sink.TimesCalled);
+        Assert.Empty(port.Written);
+    }
+
+    /// <summary>
+    /// **4.4: the typed line's card states the seconds for the Olivia variant it would go at, not
+    /// for PSK31.**
+    /// </summary>
+    [Fact]
+    public void TheTypedLinesCardStatesTheSecondsForItsOwnVariant()
+    {
+        var model = Listening(null);
+
+        model.ShowOliviaChannelsForTests(
+        [
+            new OliviaChannel(95, "8/250", 1500, OliviaListener.FoundByRsid, 0, Mine + " de N1XYZ N1XYZ K\n", 9, 0, false),
+        ]);
+
+        var card = Assert.Single(model.DigitalCards, c => string.Equals(c.Callsign, "N1XYZ", StringComparison.Ordinal));
+
+        Assert.Equal("8/250", card.OliviaVariant);
+        Assert.True(card.IsOlivia);
+
+        const string typed = "tnx fer the call and the report";
+
+        card.TypedText = typed;
+
+        var framed = Psk31Macros.Typed(card.Callsign, Mine, typed);
+        var atPsk31 = Psk31Macros.TypedSeconds(card.Callsign, Mine, typed);
+        var atOlivia = OliviaModulator.TextSeconds("8/250", framed.Length);
+
+        _output.WriteLine($"typed: \"{typed}\", framed to {framed.Length} characters");
+        _output.WriteLine($"the same line would be {atPsk31:0.0} s at PSK31's rate and {atOlivia:0.0} s at 8/250");
+        _output.WriteLine($"the card says: \"{card.TypedSecondsWord}\"");
+
+        Assert.Equal(
+            atOlivia.ToString("0.#", CultureInfo.InvariantCulture) + " s of text",
+            card.TypedSecondsWord);
+
+        Assert.DoesNotContain(
+            atPsk31.ToString("0.#", CultureInfo.InvariantCulture) + " s", card.TypedSecondsWord, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// **4.4, the patience half (decision BE): where a turn is decided, and what a time-based
+    /// patience would be if anything consumed one.**
+    /// </summary>
+    /// <remarks>
+    /// **NOTHING IS INVENTED TO HAVE SOMETHING TO SCALE** (§R14). `Psk31Turn.Read` decides every
+    /// turn in this application from the channel's finished messages and its carrier-present fact,
+    /// and it reads no clock at all; `Psk31Macros.AnswerSeconds`, the only patience the tree
+    /// states, has no caller in `src/`. So what this asserts is that the table's patience scales
+    /// with the variant and is a figure in seconds nowhere, and where the turn is actually decided
+    /// is named here rather than a timer being added so that a criterion has something to point at.
+    /// </remarks>
+    [Fact]
+    public void ThePatienceScalesWithTheVariantAndTheTurnIsDecidedWithoutAClock()
+    {
+        var timing = OliviaData.Current.Timing!;
+
+        _output.WriteLine("the turn is decided at MainWindowViewModel.ShowPsk31Cards, by Psk31Turn.Read");
+        _output.WriteLine("Psk31Turn.Read takes: the channel's finished messages, whether characters have");
+        _output.WriteLine("arrived since the last of them, and the operator's callsign. No time at all.");
+        _output.WriteLine("rule: " + Psk31Turn.Rule);
+
+        foreach (var variant in new[] { "8/250", "16/500", "32/1000" })
+        {
+            var perCharacter = timing.SecondsPerCharacter[variant];
+
+            _output.WriteLine(
+                $"{variant}: patience {timing.PatienceSeconds(variant):0.0000} s = {timing.PatienceCharacters} characters x {perCharacter:0.00000} s");
+
+            Assert.Equal(timing.PatienceCharacters * perCharacter, timing.PatienceSeconds(variant), 9);
+        }
+
+        // **EACH VARIANT'S IS ITS OWN**, which is what makes it scaled rather than fixed.
+        Assert.NotEqual(timing.PatienceSeconds("8/250"), timing.PatienceSeconds("16/500"));
+        Assert.NotEqual(timing.PatienceSeconds("16/500"), timing.PatienceSeconds("32/1000"));
+
+        // **AND NO APPLICATION PATH CONSUMES A TIME-BASED PATIENCE**, which is decision BE's
+        // finding rather than a gap to fill: `AnswerSeconds` is called by tests alone.
+        var src = Path.Combine(Root(), "src");
+
+        Assert.DoesNotContain(Sites(src, "AnswerSeconds("), s => !s.Contains("public static double", StringComparison.Ordinal));
     }
 
     /// <summary>Press something on a listening, armed panel and give back what it left behind.</summary>

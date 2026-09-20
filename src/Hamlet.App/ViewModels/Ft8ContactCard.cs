@@ -125,9 +125,11 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// action, no Log link. The send door stays shut, and the Log is step 5's.</para>
     /// </remarks>
     /// <param name="operatorCallsign">The operator's own call, so the card can say what a typed line costs.</param>
+    /// <param name="oliviaVariant">The variant this station is being read at, or null on a PSK31 channel.</param>
     public static Ft8ContactCard ForPsk31(
         string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None,
-        string? grid = null, string offeredText = "", bool complete = false, string? operatorCallsign = null)
+        string? grid = null, string offeredText = "", bool complete = false, string? operatorCallsign = null,
+        string? oliviaVariant = null)
     {
         ArgumentNullException.ThrowIfNull(turn);
 
@@ -139,6 +141,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
         return new Ft8ContactCard(facts, operatorGrid, turn, offered, offeredText ?? "", complete)
         {
             OperatorCallsign = operatorCallsign ?? "",
+            OliviaVariant = oliviaVariant ?? "",
         };
     }
 
@@ -217,6 +220,21 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     public string OperatorCallsign { get; init; } = "";
 
+    /// <summary>The Olivia variant this station is being read at, or "" on a PSK31 channel.</summary>
+    /// <remarks>
+    /// <para>**SO THE CARD CAN SAY WHAT A LINE COSTS IN THE MODE IT WOULD GO OUT IN** (work
+    /// instruction 366 decision BD, criterion 4.4). A line that takes 39 s at PSK31's rate takes
+    /// about eighty at 8/250, and a card that quoted the PSK31 figure beside an Olivia send would
+    /// be telling the operator a number nothing will produce (§0.0).</para>
+    /// <para>**IT IS READ, NEVER OFFERED.** The variant comes from the channel this station is
+    /// being heard on, which came from his own RSID or the blind search; nothing on this card lets
+    /// anybody change it (R27).</para>
+    /// </remarks>
+    public string OliviaVariant { get; init; } = "";
+
+    /// <summary>True where this card's station is being read in Olivia.</summary>
+    public bool IsOlivia => OliviaVariant.Length > 0;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TypedSecondsWord))]
     private string _typedText = "";
@@ -246,10 +264,26 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
             try
             {
-                var seconds = Psk31Macros.TypedSeconds(Callsign, OperatorCallsign, clean);
+                // **IN THE MODE IT WOULD GO OUT IN** (work instruction 366 decision BD). On an
+                // Olivia card the seconds are this variant's whole blocks and the cap is
+                // `timing.json`'s count at this variant's rate, so the number he reads before he
+                // presses is the number the send will be held to.
+                var (seconds, cap) = IsOlivia
+                    ? (Hamlet.RadioEngine.Olivia.OliviaModulator.TextSeconds(
+                            OliviaVariant, Psk31Macros.Typed(Callsign, OperatorCallsign, clean).Length),
+                        Hamlet.RadioEngine.Olivia.OliviaData.Current.Timing?.CapSeconds(
+                            OliviaVariant, Hamlet.RadioEngine.Olivia.OliviaSendKind.TypedLine)
+                            ?? MainWindowViewModel.LongestTypedSeconds)
+                    : (Psk31Macros.TypedSeconds(Callsign, OperatorCallsign, clean),
+                        MainWindowViewModel.LongestTypedSeconds);
+
+                if (double.IsNaN(seconds) || double.IsNaN(cap))
+                {
+                    return "";
+                }
 
                 return seconds.ToString("0.#", CultureInfo.InvariantCulture) + " s of text"
-                    + (seconds > MainWindowViewModel.LongestTypedSeconds ? ", too long to send" : "");
+                    + (seconds > cap ? ", too long to send" : "");
             }
             catch (ArgumentException)
             {

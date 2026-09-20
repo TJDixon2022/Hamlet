@@ -165,6 +165,34 @@ public static class OliviaModulator
         };
     }
 
+    /// <summary>**How long this many characters take on the air at this variant, before the burst.**</summary>
+    /// <param name="variant">The variant, as the air names it.</param>
+    /// <param name="characters">How many characters the text is.</param>
+    /// <returns>The seconds, or NaN where the format carries no such variant.</returns>
+    /// <remarks>
+    /// <para>**THE SAME ARITHMETIC <c>Modulate</c> USES, WITHOUT MAKING THE AUDIO** (work
+    /// instruction 366 task 4, decision BD). <see cref="SymbolsFor"/> rounds the text up to whole
+    /// blocks, the last symbol's raised cosine runs a period past the last symbol, and the length
+    /// is that count of periods. A card that says what a line would cost is asked on every
+    /// keystroke, so it asks this and not the modulator.</para>
+    /// <para>**IT IS NOT THE TIMING TABLE'S SLOPE.** `timing.json`'s seconds per character is the
+    /// per-character rate measured across a long text and is what the caps are counted in; this is
+    /// what a particular text actually takes, which is longer because the air sends whole blocks.
+    /// **The difference is why 121 characters at 8/250 takes 84.46 s against an 82.60 s cap**, and
+    /// saying the slope figure on a card would be telling the operator a length he will not get.</para>
+    /// <para>**NEVER A FIGURE IN SECONDS** (`PHASE_PLAN.md` §3.2): every number in it is the
+    /// variant's own.</para>
+    /// </remarks>
+    public static double TextSeconds(string variant, int characters)
+    {
+        if (OliviaData.Current.Format is not { } format || format.Variant(variant) is not { } v)
+        {
+            return double.NaN;
+        }
+
+        return (SymbolsFor(format, v, characters) + 1) * v.SymbolSeconds;
+    }
+
     /// <summary>How many symbols this text takes at this variant: whole blocks.</summary>
     /// <param name="format">The format's facts.</param>
     /// <param name="variant">The variant.</param>
