@@ -347,6 +347,126 @@ public sealed class TheOliviaExportSaysOliviaTests : IDisposable
         Assert.Equal("OLIVIA", ContactModes.Olivia(null).AdifMode);
     }
 
+    /// <summary>
+    /// **6, work instruction 368 task 5: the whole exported file for one Olivia contact, field by
+    /// field against the citation the tree carries - and what criterion 5.4 still needs.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS NOT 5.4 AND IT DOES NOT CLAIM TO BE** (decision CC). 5.4 asks that the
+    /// export import cleanly into one named logger. There is no third-party logger on this
+    /// machine, a package would be a `MOVE: stop` (`PHASE_PLAN.md` §6), and the tests reach no
+    /// network (`TheTestsStayOffTheNetworkTests`) - so **nothing here has imported this file
+    /// into anything**, and no sentence in this unit says a logger read it.</para>
+    /// <para>**WHAT IT DOES INSTEAD** is check every field of the record against what the cited
+    /// specification requires of it, as that requirement is carried in this tree: the tag names
+    /// `AdifLog` writes, the pair `ContactModes` spells, the RST fields `AdifLog.IsRstMode`
+    /// decides between, the band, the frequency in megahertz, and the times in ADIF's own
+    /// shapes. **A file that is right by every check here can still be refused by a real
+    /// logger**, and finding that out is step 6's, at a machine with one on it.</para>
+    /// </remarks>
+    [Fact]
+    public void TheWholeExportedFileForOneOliviaContactCheckedAgainstTheCitation()
+    {
+        var corpus = Psk31Corpus.Load();
+        var model = OliviaPanel(corpus.Operator);
+
+        Work(model, corpus);
+
+        var entry = model.ContactLogEntryForStation(His, DialOn20m);
+
+        Assert.NotNull(entry);
+
+        var file = AdifLog.Header(AboutViewModel.AppVersion) + AdifLog.Record(entry!);
+
+        _output.WriteLine("THE WHOLE FILE, as it would go to another logger:");
+        _output.WriteLine(file);
+
+        var fields = AdifLog.Record(entry!)
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Where(l => l.StartsWith('<') && !l.StartsWith("<EOR", StringComparison.OrdinalIgnoreCase))
+            .Select(Tag)
+            .ToDictionary(t => t.Name, t => t.Value, StringComparer.Ordinal);
+
+        foreach (var (name, value) in fields)
+        {
+            _output.WriteLine($"  {name,-18} {value}");
+        }
+
+        // **THE HEADER IS A HEADER AND THE RECORD ENDS.** A reader that cannot find `<EOH>`
+        // and `<EOR>` has no records at all, whatever the fields say.
+        Assert.Contains("<EOH>", file, StringComparison.OrdinalIgnoreCase);
+        Assert.EndsWith("<EOR>\n", file, StringComparison.Ordinal);
+
+        // **EVERY LENGTH IS THE VALUE'S OWN.** `<CALL:4>W1AW` and not `<CALL:5>W1AW`, which is
+        // the one thing about the ADI format a reader cannot recover from.
+        foreach (var line in AdifLog.Record(entry!).Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                     .Where(l => l.StartsWith('<') && !l.StartsWith("<EOR", StringComparison.OrdinalIgnoreCase)))
+        {
+            var tag = Tag(line);
+
+            Assert.Equal(tag.Value.Length, tag.Length);
+        }
+
+        // **THE PAIR, THE WAY THE TABLE SPELLS IT** - the mode's own name and the variant the
+        // conversation ended at, and nothing composed here.
+        var card = Assert.Single(model.DigitalCards, c => c.Callsign == His);
+        var mode = ContactModes.Olivia(card.OliviaVariant);
+
+        Assert.Equal(mode.AdifMode, fields["MODE"]);
+        Assert.Equal(mode.AdifSubmode, fields["SUBMODE"]);
+
+        // **AN RST MODE CARRIES `RST_SENT` AND `RST_RCVD`**, and the reader agrees that is what
+        // they are: the same question `AdifLog` asks on the way back in.
+        Assert.Matches("^[0-9]{3}$", fields["RST_SENT"]);
+        Assert.Matches("^[0-9]{3}$", fields["RST_RCVD"]);
+        Assert.Equal(fields["RST_SENT"], AdifLog.ReadRecords(file).Single().Contact.RstSent);
+        Assert.Null(AdifLog.ReadRecords(file).Single().Contact.ReportSent);
+
+        // **THE BAND IS THE ONE THE DIAL IS IN, SPELLED THE WAY ADIF SPELLS IT.** Hamlet's own
+        // band plan writes `20 m` with a space, for a person to read; the cited enumeration's
+        // value is `20m`, and the record carries that.
+        Assert.Equal(
+            Hamlet.RadioEngine.Bands.HfBands.BandFor(DialOn20m)!.Name.Replace(" ", "", StringComparison.Ordinal),
+            fields["BAND"]);
+        Assert.Matches("^[0-9]+c?m$", fields["BAND"]);
+        Assert.Equal(
+            (DialOn20m / 1_000_000.0).ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture),
+            fields["FREQ"]);
+
+        // **THE TIMES IN ADIF'S OWN SHAPES**, `YYYYMMDD` and `HHMMSS`, and the off is not
+        // before the on.
+        Assert.Matches("^[0-9]{8}$", fields["QSO_DATE"]);
+        Assert.Matches("^[0-9]{6}$", fields["TIME_ON"]);
+        Assert.Matches("^[0-9]{6}$", fields["TIME_OFF"]);
+        Assert.True(
+            string.CompareOrdinal(fields["TIME_OFF"], fields["TIME_ON"]) >= 0,
+            "the contact ends before it starts");
+
+        // **BOTH GRIDS, AND HIS IS NOT THE OPERATOR'S.**
+        Assert.Equal(4, fields["GRIDSQUARE"].Length);
+        Assert.NotEqual(fields["GRIDSQUARE"], fields["MY_GRIDSQUARE"]);
+
+        // **AND THE PLAIN SENTENCE, WHICH IS THE DELIVERABLE** (decision CC).
+        _output.WriteLine("");
+        _output.WriteLine(
+            "CRITERION 5.4 IS NOT MET. No third-party logger is on this machine, installing one "
+            + "would be a MOVE: stop, and the tests reach no network, so nothing in this unit has "
+            + "imported this file into anything; every check above is Hamlet checking Hamlet. "
+            + "5.4 is carried to step 6, where Tim is at a machine with a logger on it.");
+    }
+
+    /// <summary>One ADI field line, split into its name, its declared length and its value.</summary>
+    private static (string Name, int Length, string Value) Tag(string line)
+    {
+        var close = line.IndexOf('>', StringComparison.Ordinal);
+        var head = line[1..close].Split(':');
+
+        return (
+            head[0],
+            int.Parse(head[1], System.Globalization.CultureInfo.InvariantCulture),
+            line[(close + 1)..]);
+    }
+
     /// <summary>A moment at the resolution ADIF writes it, or "(none)".</summary>
     private static string Moment(DateTime? at)
         => at is { } when
