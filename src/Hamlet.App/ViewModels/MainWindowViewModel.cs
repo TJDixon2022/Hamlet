@@ -275,6 +275,21 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private string _transmitRefusalReason = "";
 
+    /// <summary>The device the refusal was about, or "".</summary>
+    /// <remarks>
+    /// **THE THREE FACTS A DEVICE REFUSAL HAS TO CARRY** (work instruction 369 task
+    /// 2, criterion 0.4): this, <see cref="_transmitRefusalRate"/> and
+    /// <see cref="_transmitRefusalError"/>. They are kept rather than recomposed so
+    /// that the panel and the record say the same three things, from one place.
+    /// </remarks>
+    private string _transmitRefusalDevice = "";
+
+    /// <summary>The rate asked of it, or 0.</summary>
+    private int _transmitRefusalRate;
+
+    /// <summary>What the operating system said, or "".</summary>
+    private string _transmitRefusalError = "";
+
     private bool _updatingFromRig;
     private bool _rigSendPending;
     private ModeFollowState _modeFollow = ModeFollowState.Armed(false);
@@ -13814,6 +13829,9 @@ public partial class MainWindowViewModel : ObservableObject
         _armedSend = null;
         _transmitRefusal = "";
         _transmitRefusalReason = "";
+        _transmitRefusalDevice = "";
+        _transmitRefusalError = "";
+        _transmitRefusalRate = 0;
         _transmitSampleRate = Ft8Composer.DefaultSampleRate;
 
         var endpoint = (_settings.AudioOutputDeviceId ?? "").Trim();
@@ -13840,11 +13858,16 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (endpoint.Length == 0)
         {
-            _transmitRefusal =
-                "no transmit audio device is named in Settings. That is the radio's "
-                + "own USB audio input, and Hamlet will not choose one for you: "
-                + "playing FT8 into whatever the computer defaults to is not "
-                + "transmitting";
+            // **NO DEVICE CHOSEN IS ITS OWN FAULT AND ITS OWN SENTENCE** (work
+            // instruction 369 task 2, criterion 0.3). Until this unit the operator
+            // was told the device *would not open*, which named the wrong fault:
+            // nothing had failed to open, **nothing had been picked**, and Hamlet
+            // knew which. The sentence says the true reason and says what to do
+            // about it, and the word *Settings* in it opens the picker (0.0).
+            _transmitRefusal = NoTransmitDeviceSentence;
+
+            DigitalSendLine = NoTransmitDeviceSentence;
+
             RefuseTransmitPath("no_transmit_device");
             return;
         }
@@ -13859,12 +13882,25 @@ public partial class MainWindowViewModel : ObservableObject
         {
             // **THE STALE NAME, CAUGHT WHERE IT IS CHEAP.** A click must not put
             // an exception in front of an operator.
+            //
+            // **AND IT CARRIES THE THREE FACTS THAT MAKE IT DIAGNOSABLE** (work
+            // instruction 369 task 2, criterion 0.4, §0.0.1): which device was
+            // asked for, what rate was asked of it, and what the operating system
+            // said back. *The device could not be opened* on its own tells the
+            // operator nothing he can act on and tells a reader of the file even
+            // less.
+            _transmitRefusalDevice = endpoint;
+            _transmitRefusalRate = _transmitSampleRate;
+            _transmitRefusalError = ex.Message;
+
             _transmitRefusal =
-                "the transmit audio device named in Settings could not be opened: "
-                + ex.Message;
+                "the transmit audio device named in Settings could not be opened. "
+                + "Device: " + endpoint + ". Rate asked for: "
+                + _transmitSampleRate.ToString(CultureInfo.InvariantCulture)
+                + " samples per second. The operating system said: " + ex.Message;
 
             DigitalSendLine =
-                "Hamlet cannot transmit: " + _transmitRefusal + ".";
+                "Hamlet cannot transmit: " + _transmitRefusal;
 
             RefuseTransmitPath("transmit_device_would_not_open");
 
@@ -13948,8 +13984,85 @@ public partial class MainWindowViewModel : ObservableObject
     private void RefuseTransmitPath(string reason, int sampleRate = 0)
     {
         _transmitRefusalReason = reason;
-        AppEvents.TransmitPath(_telemetry, reason, sampleRate);
+
+        AppEvents.TransmitPath(
+            _telemetry, reason, sampleRate,
+            _transmitRefusalDevice, _transmitRefusalRate, _transmitRefusalError);
+
+        OnPropertyChanged(nameof(TransmitRefusalSentence));
+        OnPropertyChanged(nameof(HasTransmitRefusalSentence));
+        OnPropertyChanged(nameof(TransmitRefusalOffersSettings));
+        OnPropertyChanged(nameof(TransmitRefusalBeforeTheSettingsWord));
+        OnPropertyChanged(nameof(TransmitRefusalAfterTheSettingsWord));
     }
+
+    /// <summary>
+    /// **The whole of what the panel says when no transmit device is chosen**
+    /// (criterion 0.3).
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS ONE CONSTANT AND THE VIEW TAKES ITS THREE PIECES FROM IT**
+    /// (§0, on generated rather than hand-copied). The screen renders the word
+    /// *Settings* as the thing you press, so the sentence has to exist split as
+    /// well as whole; a second copy written into the `.axaml` is a second copy to
+    /// drift, and the test asserts the whole one.</para>
+    /// <para>**IT NAMES THE RADIO'S SOUND CARD RATHER THAN A DEVICE ID**, because
+    /// the thing the operator has to recognize in the picker is a name on a box
+    /// under his desk.</para>
+    /// </remarks>
+    internal const string NoTransmitDeviceSentence =
+        NoTransmitDeviceBefore + SettingsWord + NoTransmitDeviceAfter;
+
+    private const string NoTransmitDeviceBefore = "No transmit device is chosen. Open ";
+
+    private const string SettingsWord = "Settings";
+
+    private const string NoTransmitDeviceAfter = " and pick the radio's sound card.";
+
+    /// <summary>What the panel says about the refusal, or "".</summary>
+    /// <remarks>
+    /// **IT IS THE SENTENCE, NOT THE TOKEN.** `send_refused` carries the token so
+    /// two evenings compare the same word; this is what the operator reads, and a
+    /// click that does not transmit says why (§0.2).
+    /// </remarks>
+    public string TransmitRefusalSentence
+        => _transmitRefusalReason == "no_transmit_device"
+            ? NoTransmitDeviceSentence
+            : _transmitRefusal.Length == 0 ? "" : _transmitRefusal;
+
+    /// <summary>True where there is a refusal to say.</summary>
+    public bool HasTransmitRefusalSentence => TransmitRefusalSentence.Length > 0;
+
+    /// <summary>
+    /// **True where the sentence on the panel carries a Settings link.**
+    /// </summary>
+    /// <remarks>
+    /// Only the no-device refusal does. A device that will not open is not fixed by
+    /// opening the picker - it is fixed by plugging the radio back in, and sending
+    /// him to Settings would be advice that does not work.
+    /// </remarks>
+    public bool TransmitRefusalOffersSettings
+        => _transmitRefusalReason == "no_transmit_device";
+
+    /// <summary>The words before the Settings link.</summary>
+    public string TransmitRefusalBeforeTheSettingsWord
+        => TransmitRefusalOffersSettings ? NoTransmitDeviceBefore : "";
+
+    /// <summary>The link's own word.</summary>
+    public string TransmitRefusalSettingsWord => SettingsWord;
+
+    /// <summary>The words after the Settings link.</summary>
+    public string TransmitRefusalAfterTheSettingsWord
+        => TransmitRefusalOffersSettings ? NoTransmitDeviceAfter : "";
+
+    /// <summary>The sentence with one full stop at its end, never two.</summary>
+    /// <remarks>
+    /// The device refusal now ends with whatever the operating system said, and an
+    /// OS message usually punctuates itself. This is a period, not a repair: the
+    /// alternative is `endpoint".."` on the panel.
+    /// </remarks>
+    private static string Closed(string sentence)
+        => sentence.EndsWith('.') ? sentence : sentence + ".";
 
     /// <summary>The rate the armed send's endpoint declared, and composes at.</summary>
     /// <remarks>
@@ -15639,18 +15752,26 @@ public partial class MainWindowViewModel : ObservableObject
             // 2026-09-19 exactly - `read_back`, then silence.
             AppEvents.SendRefusedAfterReadBack(
                 _telemetry, _digitalMode.ToString(), "arm",
-                _transmitRefusalReason.Length == 0 ? "no_radio" : _transmitRefusalReason);
+                _transmitRefusalReason.Length == 0 ? "no_radio" : _transmitRefusalReason,
+                _transmitRefusalDevice, _transmitRefusalRate, _transmitRefusalError);
 
             // REFUSED WITH WORDS, NEVER SILENTLY, AND IT NAMES WHICH HALF IS
             // MISSING. `_transmitRefusal` is written by `BuildTheArmedSend` at
             // the moment the radio connected; empty means nothing has connected
             // at all, and that case keeps the sentence it has always had.
+            //
+            // **THE NO-DEVICE REFUSAL IS ITS OWN SENTENCE AND IS NOT WRAPPED**
+            // (criterion 0.3). *No transmit device is chosen* is the whole of what
+            // he needs to read, and putting it after *Hamlet composed "..." and sent
+            // nothing* buries the one word he has to act on.
             DigitalSendLine =
-                "Hamlet composed \"" + wanted + "\" and sent nothing: "
-                + (_transmitRefusal.Length == 0
-                    ? "no radio is connected and no transmit audio device is named "
-                      + "in Settings."
-                    : _transmitRefusal + ".");
+                TransmitRefusalOffersSettings
+                    ? NoTransmitDeviceSentence
+                    : "Hamlet composed \"" + wanted + "\" and sent nothing: "
+                      + (_transmitRefusal.Length == 0
+                          ? "no radio is connected and no transmit audio device is "
+                            + "named in Settings."
+                          : Closed(_transmitRefusal));
             return;
         }
 
@@ -15931,12 +16052,19 @@ public partial class MainWindowViewModel : ObservableObject
         {
             Psk31Events.SendRefused(_telemetry, "no_transmit_path", macro, "arm", tag);
 
+            // **THE NO-DEVICE REFUSAL IS ITS OWN SENTENCE HERE TOO** (criterion 0.3).
+            // The keyboard modes reach this return rather than the one above, and a
+            // refusal that named the wrong fault on one path and the right one on the
+            // other would be worse than either.
             DigitalSendLine =
-                "Hamlet composed the " + ChosenDigitalMode + " call and sent nothing: "
-                + (_transmitRefusal.Length == 0
-                    ? "no radio is connected and no transmit audio device is named "
-                      + "in Settings."
-                    : _transmitRefusal + ".");
+                TransmitRefusalOffersSettings
+                    ? NoTransmitDeviceSentence
+                    : "Hamlet composed the " + ChosenDigitalMode
+                      + " call and sent nothing: "
+                      + (_transmitRefusal.Length == 0
+                          ? "no radio is connected and no transmit audio device is "
+                            + "named in Settings."
+                          : Closed(_transmitRefusal));
 
             return;
         }

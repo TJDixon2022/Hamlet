@@ -3518,6 +3518,45 @@
                                    FontSize="11"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
+                        <!-- **NO TRANSMIT DEVICE CHOSEN, AND THE WORD THAT
+                             FIXES IT IS THE ONE YOU PRESS** (work instruction
+                             369 task 2, criterion 0.3).
+
+                             Until this unit a send with nothing picked was
+                             refused as `transmit_device_would_not_open`, which
+                             named the wrong fault: nothing had failed to open,
+                             nothing had been chosen, and the operator was left
+                             reading about a device that was never there. He
+                             found the cause himself after five days off the
+                             air.
+
+                             **THE SENTENCE IS THE VIEW MODEL'S AND IS NOT
+                             RETYPED HERE** (§0). Its three pieces come from one
+                             constant, so the words on the screen and the words
+                             the test asserts cannot drift apart. -->
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,14,0"
+                                    IsVisible="{Binding TransmitRefusalOffersSettings}">
+
+                            <TextBlock Text="{Binding TransmitRefusalBeforeTheSettingsWord}"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <Button x:Name="OpenSettingsFromTheRefusal"
+                                    Content="{Binding TransmitRefusalSettingsWord}"
+                                    Command="{Binding OpenSettingsCommand}"
+                                    Classes="hm-inline-link"
+                                    VerticalAlignment="Center"
+                                    FontSize="11" />
+
+                            <TextBlock Text="{Binding TransmitRefusalAfterTheSettingsWord}"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+
                         <!-- **THE TRANSMIT DRIVE AND THE POWER OFFER
                              LEFT THIS AREA IN WORK INSTRUCTION 337**
                              (R26, on the mockup): they are under the

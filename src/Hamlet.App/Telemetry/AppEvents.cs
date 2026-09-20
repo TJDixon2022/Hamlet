@@ -1744,17 +1744,40 @@ public static class AppEvents
     /// could not go and a send that vanished read the same. A refusal is a warning (§8.1); no
     /// text and no callsign go in it (§2.1).
     /// </remarks>
+    /// <param name="device">The endpoint the refusal was about, or "".</param>
+    /// <param name="rateAsked">The rate asked of it, or 0.</param>
+    /// <param name="osError">What the operating system said, or "".</param>
     public static void SendRefusedAfterReadBack(
-        ITelemetry? telemetry, string mode, string stage, string reason)
-        => telemetry?.Write(
-            TelemetryCategory.Transmit, "send_refused",
-            new Dictionary<string, object?>
-            {
-                ["mode"] = mode,
-                ["stage"] = stage,
-                ["reason"] = reason,
-            },
-            TelemetryLevel.Warn);
+        ITelemetry? telemetry, string mode, string stage, string reason,
+        string device = "", int rateAsked = 0, string osError = "")
+    {
+        if (telemetry is null)
+        {
+            return;
+        }
+
+        var payload = new Dictionary<string, object?>
+        {
+            ["mode"] = mode,
+            ["stage"] = stage,
+            ["reason"] = reason,
+        };
+
+        // **AND THE PRESS CARRIES THEM TOO, NOT ONLY THE CONNECT** (work instruction
+        // 369 task 2, criterion 0.4). The refusal is decided at connect and written
+        // to `transmit_path`; this is where the operator's own press lands, and a
+        // reader following one press should not have to find an earlier event to
+        // learn which device it was about.
+        if (device.Length > 0)
+        {
+            payload["device"] = device;
+            payload["rateAsked"] = rateAsked;
+            payload["osError"] = osError;
+        }
+
+        telemetry.Write(
+            TelemetryCategory.Transmit, "send_refused", payload, TelemetryLevel.Warn);
+    }
 
     /// <summary>
     /// **Whether a transmit path was built when the radio connected, and if not, why** (work
@@ -1768,16 +1791,43 @@ public static class AppEvents
     /// read-back with nothing after it, and the reason nothing was armed was decided here, at
     /// connect, and written only to the screen. A refusal is a warning (§8.1).
     /// </remarks>
-    public static void TransmitPath(ITelemetry? telemetry, string reason, int sampleRate)
-        => telemetry?.Write(
-            TelemetryCategory.Transmit, "transmit_path",
-            new Dictionary<string, object?>
-            {
-                ["outcome"] = reason == "built" ? "proceeded" : "refused",
-                ["reason"] = reason,
-                ["sampleRate"] = sampleRate,
-            },
+    /// <param name="device">The endpoint asked for, or "" where none was.</param>
+    /// <param name="rateAsked">The rate asked of it, or 0.</param>
+    /// <param name="osError">What the operating system said, or "".</param>
+    public static void TransmitPath(
+        ITelemetry? telemetry, string reason, int sampleRate,
+        string device = "", int rateAsked = 0, string osError = "")
+    {
+        if (telemetry is null)
+        {
+            return;
+        }
+
+        var payload = new Dictionary<string, object?>
+        {
+            ["outcome"] = reason == "built" ? "proceeded" : "refused",
+            ["reason"] = reason,
+            ["sampleRate"] = sampleRate,
+        };
+
+        // **THE THREE FACTS A DEVICE REFUSAL HAS TO CARRY** (work instruction 369
+        // task 2, criterion 0.4, §0.0.1). `transmit_device_would_not_open` said only
+        // that it would not open, so the file could not tell a device that had been
+        // unplugged from one whose format Hamlet cannot write, and neither could the
+        // operator. **They are written only where there is one**: an absent key and
+        // an empty one are different pictures, and every other refusal genuinely has
+        // no device to name.
+        if (device.Length > 0)
+        {
+            payload["device"] = device;
+            payload["rateAsked"] = rateAsked;
+            payload["osError"] = osError;
+        }
+
+        telemetry.Write(
+            TelemetryCategory.Transmit, "transmit_path", payload,
             reason == "built" ? TelemetryLevel.Info : TelemetryLevel.Warn);
+    }
 
     /// <summary>
     /// **The operator did something.** Written the moment the action is taken and

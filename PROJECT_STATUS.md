@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 369 - settings survive, and a refusal names the fault
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T16:59:47-04:00
-NOTE: Task 1 green: 15 of 15. Found the real fault - one unreadable value made LoadFrom discard the whole settings file; the loader now salvages property by property. Running the ALC and carry-forward tests for regressions.
+UPDATED: 2026-09-20T17:12:35-04:00
+NOTE: Task 2 green: 7 of 7 on TheRefusalNamesTheFaultTests. Running BindingHealth, the send-path tests and the full carry-forward list for regressions.
 
 ---
 

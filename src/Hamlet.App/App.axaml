@@ -248,6 +248,45 @@
             <Setter Property="TextElement.Foreground" Value="White" />
         </Style>
 
+        <!-- **A WORD INSIDE A SENTENCE THAT CAN BE PRESSED** (work instruction
+             369 task 2, criterion 0.3). *No transmit device is chosen. Open
+             Settings and pick the radio's sound card* has to put the operator in
+             the picker from the word itself; a button with the chrome above
+             would sit in the middle of the sentence as a second rectangle and
+             stop reading as a sentence at all.
+
+             **IT STILL SAYS IT CAN BE PRESSED** (§0.5.1, HM-DEC-087). The
+             underline and the amber are what separate it from the words either
+             side of it, and the hover deepens both. **Grey stays reserved for
+             what genuinely cannot be used**, so this is never greyed - if
+             Settings cannot be opened, the sentence is not shown at all. -->
+        <Style Selector="Button.hm-inline-link">
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="Button.hm-inline-link /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+        </Style>
+
+        <Style Selector="Button.hm-inline-link:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+        </Style>
+
+        <Style Selector="Button.hm-inline-link:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="TextElement.Foreground" Value="White" />
+        </Style>
+
         <!-- **A CHIP IS THE THING INSIDE IT** (unit 251 task 3). The Digital
              tab's mode strip draws its own three appearances - lit, chosen but
              the dial is elsewhere, and neither - and each of them is already a
