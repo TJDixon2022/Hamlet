@@ -1,17 +1,21 @@
-﻿STEP: 5 | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
-## Step 5 - Log and achievements
+﻿STEP: 0 | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
+## Step 0 - The seam
 
-**Delivers:** an Olivia contact logs with RST and grid, exports as ADIF `MODE=OLIVIA`
-with the variant as `SUBMODE` (`OLIVIA 16/500`), and the mode's records are revealed by
-the first Olivia contact and absent before it.
+**Delivers:** Olivia exists as a mode. The tab, the family color as text, the log mode,
+the telemetry mode field, the cited calling table, the RSID data, the Capture button.
+Pressing it tunes USB-D to the band's 8/250 spot and shows a panel that names itself and
+says nothing can be read yet.
 
-**Entry:** step 4 done; a loopback exchange reaches 73, checked first.
+**Entry:** `PHASE_STATUS.md` names this phase; `assets/fixtures/olivia/manifest.json`
+hashes match its nine files.
 
 **Exit:**
-- [ ] 5.1 An Olivia contact logs with RST and grid; the ADIF carries `MODE=OLIVIA` and the variant submode. *must-pass*
-- [ ] 5.2 Before the first Olivia contact no earned Olivia card is visible; after it the mode's records appear; the Modes badge counts it. *must-pass*
-- [ ] 5.3 The two inherited reds in `TheAchievementsScreenTests` are not made worse. *must-pass*
-- [ ] 5.4 The export imports cleanly into one named logger. *nice-to-pass*
+- [x] 0.1 Pressing Olivia tunes to the calling center for the band from `data/olivia-calling.json`, not a constant, and the panel names the mode and says nothing decodes yet. *must-pass*
+- [x] 0.2 The mode is in the Digital family, text color only; the log offers `OLIVIA`; the telemetry mode field says Olivia. *must-pass*
+- [x] 0.3 The Capture button from unit 344 is on the Olivia panel and writes a 48 kHz WAV as it does on PSK31. *must-pass*
+- [x] 0.4 `data/rsid-codes.json` and `data/olivia-calling.json` are in the tree with their citations and are read at startup; a malformed file is reported, not guessed. *must-pass*
+- [x] 0.5 Under Olivia no other mode's decoder runs and no path reaches the send chain; `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
+- [x] 0.6 The neighborhood map picks out the Olivia spot when the tab is selected. *nice-to-pass*
 
-**Depends on:** step 4.
+**Depends on:** nothing.
 

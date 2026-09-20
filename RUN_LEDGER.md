@@ -177,3 +177,5 @@ the owner reads instead of watching.
 | 3 | 2026-09-19T20:55 | 2026-09-19T22:28 | complete | 39.397907 | ran unattended, 240 turns, 9 denied call(s) worked around, report valid |
 | 4 | 2026-09-19T22:38 | 2026-09-19T23:54 | complete | 41.152798999999995 | ran unattended, 283 turns, 6 denied call(s) worked around, report valid |
 | phase | 2026-09-20T00:00 | 2026-09-20T00:00 | halted | 166.2965 | stop 4: the arbiter declared a decision the owner's |
+| 1 | 2026-09-20T09:33 | 2026-09-20T09:39 | complete | 2.0802184999999995 | ran unattended, 45 turns, 8 denied call(s) worked around, report valid |
+| phase | 2026-09-20T09:44 | 2026-09-20T09:44 | halted | 2.0802 | stop 4: the arbiter declared a decision the owner's |

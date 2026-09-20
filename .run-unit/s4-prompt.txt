@@ -51,6 +51,45 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
+**One item blocks everything, and it is yours: `install-phase.bat` has not been run.**
+Three items from this unit, all three the same fault from different sides. The carried
+queue from unit 368 follows below, verbatim per HM-DEC-139, and **nothing in it was
+answered by this unit** - this session changed no code and ruled on nothing, so every
+ask in it stands exactly where unit 368 left it.
+
+### Raised by unit 369
+
+**1. The hardening phase is staged but not installed, and only Tim can install it.**
+`docs\phase-hardening\` holds all three files; `docs\phase-olivia-run\` does not exist;
+root `PHASE_PLAN.md`, `PHASE_STATUS.md` and `PROJECT_CARD.md` all still name the Olivia
+phase. Commit `c71b6707` carries the extraction and the commit message the installer
+prints, but not the install. **Waiting on:** Tim running `C:\Source\HamLet\install-phase.bat`.
+**Where it sits in the tree:** nowhere yet - the phase layer is untouched.
+**Not the session's to do:** the script's own header says it is not a work unit's job,
+and work instruction 369 Â§5 says stop rather than repair. **First made:** 2026-09-20,
+this report.
+
+**2. Work instruction 369 task 2 asks for a refusal reason that already exists, and the
+instruction does not know it.** `no_transmit_device` is already the reason at
+`MainWindowViewModel.cs:13831`, with its own operator sentence. What is missing is the
+dictated wording and the *Settings* link. Meanwhile `transmit_device_would_not_open` at
+`:13852` carries the OS error but **not** the device name or the rate, and the rate is
+not read until after that branch returns. **Waiting on:** nothing from Tim - this is a
+note for whoever re-runs 369, so that criterion 0.4 is not built twice and 0.5 is not
+underestimated. **Where it sits in the tree:** both branches as cited, unchanged by this
+unit. **Overrulable, and reported not repaired**, per Â§5's *repair nothing but this
+unit's*. **First made:** 2026-09-20, this report.
+
+**3. `tools\status.sh` reads `WORK_INSTRUCTION` from `PHASE_STATUS.md`, so a
+mid-phase-change status names the outgoing unit.** `PROJECT_STATUS.md` currently says
+`WORK_INSTRUCTION: 368` while unit 369 is the one that ran. It is self-correcting here -
+the staged `PHASE_STATUS.md` already names 369 - so this needs **no ruling and no
+change**, and is recorded only so the next reader does not treat the stale line as
+evidence that 368 re-ran. **Waiting on:** nothing. **Where it sits in the tree:**
+`tools\status.sh`, the `sed` on line 7. **First made:** 2026-09-20, this report.
+
+### Asks still outstanding - carried from unit 368's section 4, per HM-DEC-139, verbatim
+
 **Nothing blocks step 5's must-passes, all three of which are met, and nothing in this unit is stop
 material.** Seven items from this unit. **Nothing needed a line on decision AZ's forbidden list**;
 **no working mode's send or read guard went red after green**; **the `PttOn` and `Arm(` counts did

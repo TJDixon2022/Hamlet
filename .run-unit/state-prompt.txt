@@ -47,635 +47,323 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 5 | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
-## Step 5 - Log and achievements
+﻿STEP: 0 | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
+## Step 0 - The seam
 
-**Delivers:** an Olivia contact logs with RST and grid, exports as ADIF `MODE=OLIVIA`
-with the variant as `SUBMODE` (`OLIVIA 16/500`), and the mode's records are revealed by
-the first Olivia contact and absent before it.
+**Delivers:** Olivia exists as a mode. The tab, the family color as text, the log mode,
+the telemetry mode field, the cited calling table, the RSID data, the Capture button.
+Pressing it tunes USB-D to the band's 8/250 spot and shows a panel that names itself and
+says nothing can be read yet.
 
-**Entry:** step 4 done; a loopback exchange reaches 73, checked first.
+**Entry:** `PHASE_STATUS.md` names this phase; `assets/fixtures/olivia/manifest.json`
+hashes match its nine files.
 
 **Exit:**
-- [ ] 5.1 An Olivia contact logs with RST and grid; the ADIF carries `MODE=OLIVIA` and the variant submode. *must-pass*
-- [ ] 5.2 Before the first Olivia contact no earned Olivia card is visible; after it the mode's records appear; the Modes badge counts it. *must-pass*
-- [ ] 5.3 The two inherited reds in `TheAchievementsScreenTests` are not made worse. *must-pass*
-- [ ] 5.4 The export imports cleanly into one named logger. *nice-to-pass*
+- [x] 0.1 Pressing Olivia tunes to the calling center for the band from `data/olivia-calling.json`, not a constant, and the panel names the mode and says nothing decodes yet. *must-pass*
+- [x] 0.2 The mode is in the Digital family, text color only; the log offers `OLIVIA`; the telemetry mode field says Olivia. *must-pass*
+- [x] 0.3 The Capture button from unit 344 is on the Olivia panel and writes a 48 kHz WAV as it does on PSK31. *must-pass*
+- [x] 0.4 `data/rsid-codes.json` and `data/olivia-calling.json` are in the tree with their citations and are read at startup; a malformed file is reported, not guessed. *must-pass*
+- [x] 0.5 Under Olivia no other mode's decoder runs and no path reaches the send chain; `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
+- [x] 0.6 The neighborhood map picks out the Olivia spot when the tab is selected. *nice-to-pass*
 
-**Depends on:** step 4.
+**Depends on:** nothing.
 
 
 --- the unit's report follows ---
 
+```
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet works Olivia the way it works PSK31: hears it,
-   reads it, answers it, logs it, with the variant taken from the signal's
-   own announcement and never picked by the operator. Steps 0 to 4 done,
-   step 4 closed at 8 of 8 by unit 367; step 5 was 0 of 4 at the start of
-   this unit and is 3 of 4 after it; step 6 is Tim's. **Step 5 is done on
-   its must-passes: 5.1, 5.2 and 5.3 are all met and 5.4, its only
-   nice-to-pass, is not met and could not be reached on this machine.**
-   All four verbs of the goal are now proved on the development machine -
-   hears, reads, answers and logs - and the one thing none of them is
-   proved on is a radio, which is step 6 and Tim's alone.
-B. Step 5's criteria this unit worked. Entry: step 4 done and the loopback
-   exchange reached 73 YES - his half the corpus's 01-textbook and
-   Hamlet's half its own macros, on the 20 m calling spot at 8/250, in
-   37.2 s, with each of Hamlet's three sends read back off the samples the
-   sound card was handed and demodulated to the macro it composed. 5.1:
-   the Olivia contact logged MODE=OLIVIA SUBMODE=OLIVIA 8/250, RST sent
-   599 received 599, grid FN31; a PSK31 contact in the same session still
-   logged MODE=PSK SUBMODE=PSK31 YES, and FT8 and FT4 are unchanged; the
-   record is quoted whole in section 3, and a QSO that moved logged
-   SUBMODE=OLIVIA 16/500. 5.2: before the first Olivia record, earned
-   Olivia cards 0, firsts naming Olivia 0, badge counts naming Olivia 0;
-   after it, the Modes card earned YES, first_olivia earned YES reading
-   "An Olivia contact", the badge's worked count 2 -> 3 of 6. 5.3:
-   TheAchievementsScreenTests before 9 passed / 1 failed, after 9 passed /
-   1 failed, the failing name TheWindowDrawsEverySixRows both times for
-   the same reason, third-red count 0. 5.4: NOT MET - no third-party
-   logger is on this machine, a package would be a MOVE: stop and the
-   tests reach no network, so nothing here imported the file into
-   anything. Met: 5.1, 5.2, 5.3. Not met: 5.4, carried to step 6. Entry:
-   chain-guarding reds before 27, after 27, new 0.
-C. The report last: section 4 raises 7 items on top of the carried queue;
-   not one of them stands in the way of 5.1, 5.2 or 5.3, all three of
-   which are met. No working mode's send or read guard went red after
-   green - the carry-forward list was 189 of 189 and 146 of 146 before the
-   first change and 190 of 190 and 146 of 146 after the last, with the
-   added name being Olivia's own log guard. The other five modes' log
-   records did not change shape, asserted rather than assumed; their badge
-   scores did change in one way and it is item 3 - a log holding all five
-   of the old table no longer earns the all-modes bonus until Olivia is
-   worked, because there are six modes to work now. The PttOn and Arm(
-   counts did not move, 1 and 2 before and after, and nothing needed a
-   line on decision AZ's forbidden list, so there is no stop material in
-   this unit. The carry-forward seconds are app 2 m 21 s and engine
-   4 m 38 s against the 480 s timeout, so the engine invocation's margin
-   is about 202 s and nothing was added to it.
+A. The phase goal - Hamlet holds what it has. Step 0 NOT STARTED (unchanged by this
+   unit), 1-5 not started. The phase is not installed in the tree at all: the goal
+   above is quoted from docs\phase-hardening\PHASE_STATUS.md, which is staged and
+   was never copied to the root.
 
-```
-UNIT:       368 - complete at task 5 of 5, task 5 built - 2026-09-20 03:45
-PHASE GOAL: Olivia becomes a mode Hamlet works the way it works PSK31 - hears
-            it, reads it, answers it, logs it - with the variant taken from the
-            signal's own RSID announcement and never picked by the operator.
-UNIT GOAL:  An Olivia contact reaches the operator's log as an Olivia contact.
-            The mode is read off the conversation and not off the tab, the RST
-            and the grid come the way PSK31's do, the export says MODE=OLIVIA
-            with the variant the QSO ended at as its SUBMODE through one object
-            that cannot set one without the other, and the achievements screen -
-            which named no earned Olivia card before the first contact - counts
-            the mode and reveals its records after it, with the inherited reds in
-            TheAchievementsScreenTests no worse than they were.
-ADVANCED:   yes - step 5 criteria 5.1, 5.2 and 5.3 all met, so step 5 has every
-            must-pass met and only 5.4, which needs a logger this machine does
-            not have, stands between the phase and step 6
-NUMBER:     step 5 criteria met 0 of 4 -> 3 of 4; must-passes left in step 5 3 -> 0
-DRIFT:      0 - 0 consecutive units without advance (was 0)
+B. Step 0's criteria 0.1 to 0.5 - NONE MET, and none attempted. No criterion moved,
+   because the unit stopped at its own §5 tripwire before task 0's first write.
+   0.1 settings survive an upgrade - not met, not attempted.
+   0.2 a field the file lacks takes its default - not met, not attempted.
+   0.3 a field the file has is never dropped - not met, not attempted.
+   0.4 no transmit device chosen is its own refusal - not met; PARTLY ALREADY IN
+       THE TREE before this unit, see section 1, and the work instruction did not
+       know that.
+   0.5 a device that will not open names device, rate and OS error - not met; the
+       OS error is carried today, the device name and the rate are not.
+
+C. The report last, and section 4 raises 3 items on top of the carried queue. All
+   three are the same fault seen from three sides: the hardening phase was staged
+   and committed but never installed, so the root still runs the Olivia phase.
+   Item 1 is the only thing Tim must act on, and it is one command.
 ```
 
-**The criterion table, 5.1 to 5.4.** (Not a heading: `###` appears only nested under the four
-sections below, which is what the shape rules ask.)
-
 ```
-id  | state          | this unit's numbers
-5.1 | MET, this unit | the loopback Olivia contact logged MODE=OLIVIA,
-    | must-pass      | SUBMODE=OLIVIA 8/250, RST_SENT 599, RST_RCVD 599,
-    |                | GRIDSQUARE FN31, BAND 20m, FREQ 14.071500; the QSO that
-    |                | moved logged SUBMODE=OLIVIA 16/500, the variant it ended
-    |                | at; PSK31 still MODE=PSK SUBMODE=PSK31, FT8 still
-    |                | MODE=FT8 with its decibels, FT4 still MODE=MFSK
-    |                | SUBMODE=FT4; a card with no readable variant logs
-    |                | MODE=OLIVIA with the SUBMODE tag absent; round trip
-    |                | through AdifLog's own reader identical on all nine fields
-5.2 | MET, this unit | before: earned Olivia cards 0, firsts naming Olivia 0,
-    | must-pass      | badge counts naming Olivia 0. after one record: Modes card
-    |                | earned yes, first_olivia earned yes reading "An Olivia
-    |                | contact", the badge 2 of 6 -> 3 of 6 with the same words.
-    |                | WorkableModes 5 -> 6, counted from the table; no literal
-    |                | five or six anywhere in the change
-5.3 | MET, this unit | TheAchievementsScreenTests 9 passed / 1 failed before and
-    | must-pass      | 9 passed / 1 failed after; the same one name,
-    |                | TheWindowDrawsEverySixRows, with the same message; no
-    |                | third name went red
-5.4 | NOT MET        | no third-party logger is on this machine, a package is a
-    | nice-to-pass   | MOVE: stop and the tests reach no network. The export was
-    |                | checked field by field against the citation the tree
-    |                | carries and round-tripped through Hamlet's own reader,
-    |                | which is Hamlet checking Hamlet. Carried to step 6
+UNIT:       369 - stopped at task 0 of 3 - 2026-09-20 09:36
+PHASE GOAL: Hamlet stops losing things it already had. Settings, window layout,
+            records and tests all survive an upgrade instead of quietly resetting,
+            and a thing that cannot happen says the true reason it cannot.
+UNIT GOAL:  A setting Tim chose once outlives an upgrade; a send with no transmit
+            device chosen refuses in its own name and points at Settings; a send
+            whose device will not open names the device, the rate and the OS error.
+ADVANCED:   no - stopped at the work instruction's own §5 phase check before task 0;
+            nothing in the tree was changed, so no criterion could move.
+NUMBER:     settings-file shapes that load whole 0 -> 0 (target was 3); the commit
+            that dropped the device - NOT IDENTIFIED, the search was never run.
+DRIFT:      carried - and this unit does not increment it. The stop is the
+            tripwire working, not a unit failing to advance: the environment the
+            unit was written against is not the environment on disk.
 ```
-
-**Step 5 is 3 of 4: every must-pass met, the one nice-to-pass not met and carried to step 6.**
 
 ## 1. What Claude did
 
-**Complete, at task 5 of 5, with task 5 built rather than dropped.** Development computer, prompt
-gated `PROJECT: Hamlet`, confirmed against the tree (`SHACK_FACTS.md` and
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, no `CoreHMI.sln`, no `MURC.sln`,
-root `C:\Source\HamLet`); branch `main`, six task commits and this report's, **every push
-succeeded**. **Nothing in this report is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093,
-FACT-004): every figure was computed, no port was opened and nothing keyed. **No Olivia signal from
-Hamlet has been on the air, and no Olivia record written in this unit is a contact anybody made** -
-every one of them is composed from a loopback exchange on this machine. The first real one will be
-Tim's, at step 6.
+**Stopped at task 0 of 3, before the first write, on the work instruction's own §5
+phase check.** Nothing in the repository was changed except `PROJECT_STATUS.md` and
+this file. No commit was made and nothing was pushed, because there is nothing to
+commit.
 
-**Nothing was left undone and nothing was dropped.** Task 5 was the named drop candidate and it was
-built; what it delivers is the measurement decision CC asks for and the plain sentence that 5.4 is
-not met.
+Provenance: machine QUIVERFULL, root `C:\Source\HamLet`, project claimed *Hamlet* and
+confirmed in the tree by `SHACK_FACTS.md`, `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs`
+and `Hamlet.sln`, branch `main`.
 
-**Nothing in this unit went near the transmit chain** (decision CD). It reads conversations that had
-already happened. **`PttOn` code lines 1 and `Arm(` call lines 2, before and after**, re-counted in
-the tree; **nothing on decision AZ's forbidden list was touched**, so there is no `MOVE: stop`
-material in this unit.
+### The §0 project gate passed
 
-**Task 0 - the unit opens.** The project gate first, then decision CG's before-run of
-`docs\chain-guarding-tests.txt` on unchanged `HEAD` `c395e6b8`: engine **98 of 110** in 46 s with
-twelve inherited reds, app **48 of 63** in 33 s with fifteen - the same twenty-seven carried as ask
-35. All nine Olivia fixtures hash as `manifest.json` says, **9 of 9**, checked by hand. Carry-forward
-before any change, both invocations: app **189 of 189** (2 m 21 s), engine **146 of 146** (4 m 37 s),
-so every per-mode send and read guard was green and step 4 is done in the tree as well as in the
-plan. **Then decision CE's entry**, measured before a line of `src` changed: an Olivia conversation
-on the 20 m calling spot at 8/250 carried to **73 on both halves of one card in 37.2 s**, with each
-of Hamlet's three sends read back off the samples the sound card was handed - announced
-`OLIVIA_8_250` code 69 at 1499.94 Hz and demodulated to the macro it composed. Version 1.13.55 to
-1.13.56. `UNIT 368 - STEP 5` appended to `PHASE_OUTCOME.md` with no earlier entry touched, decision
-letters BU to CG. **`PHASE_STATUS.md` corrected per decision CF** - see the mismatch list below for
-what it said first.
+All four checks, verified against the tree rather than the prompt:
 
-**Task 1 - the trace** (`Unit368Trace`, **app** test project because the log path is there, four
-names, asserts nothing about the product, on neither carry-forward line). Its seven answers are in
-section 3. **The one that decided the shape of tasks 2 and 3 was item 1**: an Olivia contact logged
-`MODE=PSK`, `SUBMODE=PSK31`, decided at `MainWindowViewModel.cs:15341`, `Psk31ContactWith`. **Item 2
-saved the unit a task**: the RST each way and the grid were already right, because `Psk31ReportsFor`
-and `Psk31GridFor` read the shared card dictionaries an Olivia row fills - so nothing was built for
-them (R14) and they are asserted instead.
+| Check | Required | Found |
+|---|---|---|
+| `SHACK_FACTS.md` | must exist | exists |
+| `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` | must exist | exists |
+| `CoreHMI.sln` | must not exist | absent |
+| `MURC.sln` | must not exist | absent |
+| root | `C:\Source\HamLet` | `C:\Source\HamLet` |
 
-**Task 2 - the mode is read off the conversation** (5.1, first half), decisions BU, BW and BX.
-`TheOliviaLogsAsOliviaTests`, four names. Three source changes: `ContactModes.Olivia(variant)`, which
-carries `MODE=OLIVIA` and the variant's submode as one object; `Psk31ContactWith`, which now asks the
-card which of the two keyboard modes it is; and `WriteLoggedContact`, whose telemetry gate was PSK31
-only (§R13). **Watched failing first, measured rather than asserted**: with the card reading
-disabled, three of the four new names go red and the fourth - decision BU's regression assertion -
-passes both ways, because it is about the modes that must not change.
+So this **is** Hamlet, and the §0 refusal text does not apply. What stopped the unit
+is the next check down.
 
-**Task 3 - the export** (5.1, second half), decisions BV and BW. `TheOliviaExportSaysOliviaTests`,
-five names at that task and six by the end of the unit. **One source change, and it is a defect task
-1 exposed**: `AdifLog.IsRstMode` asked `ContactModes.Named("PSK31")` and nothing else, so a record
-Hamlet had just written with `RST_SENT 599` came back out of its own reader as a **decibel** report
-of 599. Three of the five names were red before that change.
+### The §5 check that stopped it
 
-**Task 4 - the achievements** (5.2 and 5.3), decisions BY, BZ, CA and CB.
-`TheOliviaRecordsAppearTests`, five names. Four source changes plus one line of the owner's points
-file, and **two smaller repairs the change exposed**: `AchievementCategory.LivesAt` asked the band
-plan where Olivia lives and Olivia has no block there, so the one unworked mode a beginner is being
-invited to work was the one row that could not say where to find it; and `WhoIsThere` answered *the
-CQ list carries no voice* for Olivia, which is a sentence about a different mode.
+Work instruction 369 §5, first bullet:
 
-**Task 5 - what 5.4 can honestly reach** (decision CC). One more name on
-`TheOliviaExportSaysOliviaTests`: the whole exported file quoted and every field checked against the
-citation the tree carries. **Built, not dropped**, and its deliverable is the sentence in section 3
-saying 5.4 is not met.
+> `PHASE_STATUS.md` line 1 names *Hamlet holds what it has*; **if it is the Olivia
+> phase, stop and say so** - `install-phase.bat` did not run.
 
-**Four existing assertions were rewritten under §R12, named because they guarded the door this unit
-was told to open.** All four asserted, in one form or another, that the achievements count five
-modes: `TheAchievementsPageTests.TheFixtureLogsScoresMatchTheHandComputedArithmetic`
-(`Assert.Equal(5, WorkableModes)` and a modes score of 85), the twelve-contact total of 465 in that
-test and in `TheRanksCarryTheNamesInThePointsFile`, and in
-`TheCategoryPagesAreTradingCardsTests` the pinned band line
-*five modes to work · 5 of 5 · 85 pts · Gold* and the unworked modes named as {CW, FT4, PSK31}. Each
-was rewritten in place with its reason beside it, in task 4's own commit. **No test was loosened**,
-and the two rewritten to a rule rather than to a fixture are stricter than what they replaced.
+`PHASE_STATUS.md` line 1 reads:
 
-**One wording decision this session made for itself, overrulable, in section 4's terms.** The
-unworked Olivia row says **`reads as PSK31 on the CQ list`** rather than the longer
-*the CQ list cannot tell Olivia from PSK31*. **The shorter form was measured, not preferred**: the
-longer one clipped the mode's own name to nothing at 1400 px on the test host. Section 4 item 5
-carries it.
+```
+PHASE: Hamlet works Olivia the way it works PSK31
+```
 
-**Nothing was recorded in `DECISIONS.md`.** No ruling of this unit's met §12.1's four tests.
+It is the Olivia phase. **`install-phase.bat` did not run.** Stopped, as instructed.
 
-**Verifying the instruction against the tree (§5), every mismatch reported and none repaired.**
+### The evidence that it did not run, rather than ran and failed
 
-1. **`TheAchievementsScreenTests` has ONE inherited red, not two.** §5 and
-   `docs\carry-forward-tests.txt` both name
-   `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and `TheWindowDrawsEverySixRows` as the step's two
-   known reds. **The Wspr name passes**, before this unit and after it. 5.3 was therefore measured
-   against one red and not two, and *not made worse* was read as *the same names fail for the same
-   reasons and no new one does*. Section 4 item 1.
-2. **Decision CE's `CanLogRow` clause cannot hold for a keyboard mode.** `CanLogRow` refuses a
-   text-only row before it reads the callsigns, and since unit 364 an Olivia row is a text-only row -
-   so it answers **false** at the end of a completed Olivia QSO, and did so before this unit too. The
-   door a keyboard-mode contact is logged from is the card's own Log link, which reads **true**. Both
-   were measured and both are in section 3. Section 4 item 2.
-3. **`PHASE_STATUS.md` said `CURRENT_STEP: 3`, step 3 `partial`, step 4 `done`, `WORK_INSTRUCTION`
-   367**, exactly as §5 predicted. **Decision CF told this unit to correct it and it did**, at task 0:
-   `CURRENT_STEP: 5`, step 3 `done` and `WORK_INSTRUCTION: 368`, citing `PHASE_PLAN.md` §8's revision
-   of 2026-09-19 evening and units 363 to 367 in the commit message. `PHASE_PLAN.md`'s own checkboxes
-   were not touched.
-4. **`PHASE_PLAN.md` leaves 1.5, 1.7 and every one of 4.1 to 4.8 unchecked** though units 359 to 367
-   met all of them. Reported, not edited (§10).
-5. **`PHASE_OUTCOME.md` carries two step 4 entries whose decision letters clash**, as §5 says.
-   Neither was edited; this unit's letters start at BU and its entry is appended at the end.
-6. **Every code line §5 gives held, to within this unit's own additions.**
-   `MainWindowViewModel.ContactLogEntryForStation` :15224 calling `Ft8ContactLogEntry.For` :15243 with
-   an `Ft8StationConditions` at :15246 and the mode argument at :15276; `Psk31ContactWith` :15340 as
-   the one line §5 quotes; `Psk31ReportsFor` :15354 and `Psk31GridFor` :15316;
-   `Ft8ContactCard.OliviaVariant` :319 and `IsOlivia` :322; `ContactModes.Cite` :133, `Six` :138,
-   `Logged` :172 and `Named` :179; `AdifLog` writing `MODE` at :349 and `SUBMODE` at :356, reading
-   both back at :561-:562, `IsRstMode` at :593; `AchievementLog`'s mapping at :314;
-   `AchievementScores.WorkableModes` :311 reading **5**; `FirstsEarned` :200 adding `first_psk31` at
-   :223; `AchievementBadgePage.Firsts` :277 with `("first_psk31", "A PSK31 contact")`;
-   `achievement-points.json` `"first_psk31": 15` at :125; the Modes badge at :338;
-   `AchievementCategory.ModesFor` :666 with the unworked list at :676-:677; version **1.13.55** at
-   `Directory.Build.props:899`; `HEAD` `c395e6b8`. **§5 names `AchievementBadges.Firsts`; the type is
-   `AchievementBadgePage`, in `AchievementBadges.cs`.** **And §5 names four `ContactModes.Six` sites
-   and the tree has four**, the fourth being `AchievementsViewModel.cs:317`, which §5 does not
-   mention and which this unit deliberately left alone - section 4 item 4.
-7. **`assets\fixtures\captured\` holds only `README.md`.** No real Olivia audio is in the tree, and
-   nothing in this unit needed any.
-8. **`docs\chain-guarding-tests.txt` holds 17 engine and 11 app classes**, as §5 says. All 28 ran
-   before any change and again after task 4.
-9. **No copy of the ADIF submode enumeration is vendored under `data\`** - `data\vendor` holds only
-   `usno`. Every spelling check in this unit is against `ContactModes.Cite`'s own text and the
-   variant names in `data/olivia/format.json`, **with no network call**.
-10. **`tools\arbiter\validate-output.bat` could not be run**, for the fourth unit running: it is a
-    Windows batch file and the only shell available runs it as `sh`, so every `rem` and `@echo` line
-    is a command-not-found. **The report's shape was checked by hand against the rules the script
-    prints in its own header** - the ordering block with A, B and C and C's item count; the `UNIT:`
-    line above section 1; the four `##` sections in order with their exact names and no fifth;
-    section 3 non-empty; `###` nested under the four and nowhere else - and it satisfies all six.
+`install-phase.bat` archives the closing phase to `docs\phase-olivia-run\` and only
+then installs the staged one. The archive is the proof of passage, and it is absent:
+
+| What | State | What it proves |
+|---|---|---|
+| `docs\phase-hardening\PHASE_PLAN.md`, `PHASE_STATUS.md`, `PHASE_OUTCOME.md` | all three present, 10501 / 1724 / 1636 bytes, dated 2026-09-20 09:33 | the zip **was** extracted; the script's `:nostage` refusal would not have fired |
+| `docs\phase-olivia-run\` | **does not exist** | the script never reached its archive step |
+| root `PHASE_OUTCOME.md` | 68774 bytes, the Olivia phase's | `:nooutcome` and `:suspectoutcome` would not have fired either - 68774 is far above the 2000-byte floor |
+| root `PHASE_PLAN.md`, `PHASE_STATUS.md` | both still line-1 `PHASE: Hamlet works Olivia the way it works PSK31` | the install step never happened |
+| `PROJECT_CARD.md` lines 6-7 | `PHASE: Hamlet works Olivia the way it works PSK31`, `PHASE_SET: 2026-09-14` | untouched, as expected - the script leaves these to unit 369 |
+
+Every gate in the script would have passed. It was simply never executed.
+
+**What appears to have happened.** Commit `c71b6707`, message `phase: hardening`,
+carries the extraction and the unit-368 closing writes together: it **adds**
+`install-phase.bat`, `docs\phase-hardening\` (all three files) and the new
+`WORK_INSTRUCTIONS.md` for unit 369, **modifies** root `PHASE_OUTCOME.md`,
+`PHASE_STATUS.md` and `RUN_LEDGER.md`, and **deletes** `output.md`. The commit message
+is verbatim the one `install-phase.bat` prints at the end of a successful install:
+
+```
+Commit this before launching the loop:
+  git add -A && git commit -m "phase: hardening" && git push
+```
+
+So the zip was extracted and the closing instruction was followed, but the script
+between the two was skipped. That reading is consistent with every file above, and it
+is the only reading consistent with the archive being absent while the stage is whole.
+
+### Why stopping was right, beyond being instructed
+
+The stop is not bureaucratic. Task 0's first four actions would each have written a
+falsehood into a file the project treats as its memory:
+
+1. **"Append `UNIT 369` to `PHASE_OUTCOME.md` under step 0."** The `PHASE_OUTCOME.md`
+   at the root is the **Olivia** phase's 68774-byte outcome, whose step 0 is *"The seam
+   - Olivia exists as a mode."* Unit 369's settings-and-refusal record would have been
+   filed under it.
+2. **That file is the one thing `install-phase.bat` exists to protect.** Its own comment
+   calls the outcome file *"the thing worth protecting"*, it checks the archived copy's
+   byte count against the original, and it refuses outright if the archive already
+   exists. Appending to the root copy first would have carried unit 369's hardening
+   entry into the Olivia phase's permanent archive, and the byte-count check would then
+   have compared two files that both already contained it - so nothing downstream would
+   ever have caught it.
+3. **"Set `PROJECT_CARD.md`'s `PHASE` and `PHASE_SET`."** That would have left the card
+   naming the hardening phase while `PHASE_PLAN.md` and `PHASE_STATUS.md` beside it
+   still named Olivia - a half-installed phase, which is worse than an uninstalled one
+   because each file on its own looks authoritative.
+4. **"Record in `DECISIONS.md`, as Tim's ruling of 2026-09-20, the hardening phase set
+   and the Olivia phase archived at 38 of 40."** The Olivia phase **is not archived**.
+   Writing that, under Tim's name, into the file CLAUDE.md §0.4 says is never silently
+   edited, would have put a statement in the decision record that the tree contradicts.
+
+**I did not run `install-phase.bat` myself, and did not hand-install the phase.** Three
+reasons, and any one is sufficient:
+
+- The script's own header forbids it: *"RUN THIS YOURSELF, BEFORE THE LOOP. It is not a
+  work unit's job: the loop's shell has refused every write for the last several units
+  and the phase must not depend on it."*
+- The work instruction says *stop*, not *repair*. §5 also says **"repair nothing but
+  this unit's"**, and the phase install is not this unit's.
+- It ends in `pause` and would block a non-interactive session, and it moves three root
+  files - not something to do unasked on the owner's behalf.
+
+### Read-only reconnaissance, so the next session knows what it inherits
+
+Because the stop costs a session, I checked - **reading only, changing nothing** -
+whether the rest of §5's premises hold. They do, with one substantive surprise.
+
+**The unit is otherwise runnable.** The settings model and its migration path exist at
+`src\Hamlet.App\Settings\AppSettings.cs` and
+`src\Hamlet.App\Settings\SettingsMigrations.cs`; the settings UI is at
+`src\Hamlet.App\ViewModels\SettingsViewModel.cs` and
+`src\Hamlet.App\Views\SettingsWindow.axaml.cs`. Nothing in task 1's premise is missing.
+
+**The surprise, and it bears on B above.** Work instruction 369 task 2 reads as though
+`no_transmit_device` must be created. **It already exists.**
+`src\Hamlet.App\ViewModels\MainWindowViewModel.cs:13831` already refuses with
+`RefuseTransmitPath("no_transmit_device")` on `endpoint.Length == 0`, with its own
+sentence - *"no transmit audio device is named in Settings. That is the radio's own USB
+audio input, and Hamlet will not choose one for you: playing FT8 into whatever the
+computer defaults to is not transmitting"*. So criterion 0.4 is nearer than the
+instruction assumes, and what is actually missing is narrower: the specific sentence
+the instruction dictates, and the *Settings* link that opens the picker.
+
+What is genuinely absent is on the other branch. At
+`MainWindowViewModel.cs:13852`, `transmit_device_would_not_open` says *"the transmit
+audio device named in Settings could not be opened: "* plus `ex.Message`. **It carries
+the OS error text and neither the device name nor the rate** - and the rate is not even
+read until after that branch has returned, at `sink.EndpointSampleRate` further down. So
+criterion 0.5 needs real work and 0.4 needs less than a task.
+
+I am reporting this as a §5 mismatch and **repairing none of it**. It is stated as a
+read-off of two branches, not as a verified end-to-end claim; the next session should
+confirm it against a run rather than against this paragraph.
+
+### What was not done, and what the next unit inherits
+
+**All three tasks. Task 0, task 1 and task 2, none started.** The drop candidates §8
+named - none for tasks 0 and 1, the Settings link for task 2 - were not reached, so no
+sizing decision was made for the owner. The next unit inherits the whole of 369
+unchanged, plus the two findings above, and it can run as written the moment the phase
+is installed.
+
+**The carry-forward list was not run.** It is task 0's, and task 0 never opened.
+
+### The one thing this unit did write, and a wrinkle in it
+
+`PROJECT_STATUS.md`, via `tools\status.sh` with the clock, per the cadence. It reads
+`STATE: BLOCKED`, `TASK: 0 of 3`, `BALL: owner`, `UPDATED: 2026-09-20T09:36:11-04:00`.
+
+**Its `WORK_INSTRUCTION` line says `368 - the Olivia contact goes in the log`, and that
+is wrong but not a typo.** `tools\status.sh` derives that field with
+`sed -n "s/^WORK_INSTRUCTION: //p" PHASE_STATUS.md` - it reads the root
+`PHASE_STATUS.md`, which is still the Olivia file, which still names unit 368. I left it
+rather than hand-editing `PHASE_STATUS.md`, because editing that file is exactly the
+half-install described above. **It corrects itself the moment `install-phase.bat` runs**:
+the staged file already says `WORK_INSTRUCTION: 369 - settings survive, and a refusal
+names the fault`. Raised as item 3 in section 4.
 
 ## 2. What the owner should expect
 
-**The evening leaves something behind.** A station worked on Olivia now goes into the log as an
-Olivia contact - not as PSK31, which is what Hamlet wrote before this unit - with the report and the
-grid the card showed him, and the variant the QSO ended at. The export says `MODE=OLIVIA` with that
-variant as its `SUBMODE`, which is the pair every other logger and every award program reads. Open
-the achievements screen afterwards and the mode is there: a first he has earned, a card among the
-modes, and a badge that counts Olivia as one of the modes there are to work - where before his first
-Olivia contact nothing on that screen claimed he had worked it.
+**Nothing about Hamlet changed, and nothing about it is broken.** The app is exactly as
+unit 368 left it - Olivia decoding, logging and transmitting as it did last night. Your
+settings are not yet protected and a missing transmit device does not yet say the
+sentence unit 369 was written to give it; that work has not started, and it will take
+one session once the phase is in place.
 
-**And the defect this step existed to repair is repaired.** Every Olivia contact logged before this
-unit would have said `MODE=PSK, SUBMODE=PSK31` - a false statement about a contact, in the file the
-operator keeps forever. There are none in Tim's log, because nothing in this project has worked an
-Olivia station on the air yet; **the first Olivia record in his real log will be the one he makes at
-step 6, and it will say Olivia.**
+**What will look wrong but is not:** the panel will show `BLOCKED` with the ball in your
+court, and `PROJECT_STATUS.md` will name **work instruction 368** rather than 369. That
+line is read out of `PHASE_STATUS.md`, which is still the Olivia phase's file, and it
+will start saying 369 by itself as soon as the phase is installed. Nothing needs
+hand-editing to fix it.
 
-**Step 5 is done on its must-passes.** 5.1, 5.2 and 5.3 are met. 5.4 - *the export imports cleanly
-into one named logger* - is **not met and was not attempted**, because there is no logger on this
-machine to import it into, installing one would be a `MOVE: stop`, and the tests reach no network. It
-is carried to step 6, where Tim is at a machine with one.
+**What you need to do - one command, and it is thirty seconds.** From a command prompt:
 
-**Nothing has been on the air.** Every figure in this report was computed on the development machine
-against a fake serial port and a fake sound card, and the contact in it is a loopback exchange, not a
-station anybody worked (FACT-004).
+```
+C:\Source\HamLet\install-phase.bat
+```
 
-**One change will be visible in a score he already has.**
+It archives the Olivia phase to `docs\phase-olivia-run\` and installs the hardening
+phase at the root. It checks that this is Hamlet, that the staged files are all there,
+and that the archived copy matches the original byte for byte before it installs
+anything; it refuses rather than guessing, and it deletes nothing. It ends with `pause`,
+so you will see either `PHASE INSTALLED` or a `REFUSED:` line saying why - and if it
+refuses, nothing was changed and that message is what to send back.
 
-- **A log holding all five of the old modes loses 50 points until Olivia is worked.** The *all modes*
-  bonus is paid where every mode there is to work is in the log, and there are six now. The fixture
-  in the tests moved from `five modes to work · 5 of 5 · 85 pts` to `six modes to work · 5 of 6 · 35
-  pts`, and a real log with all five will move the same way. **That is the count telling the truth**,
-  not a scoring change: the bonus says *you have worked every mode*, and until he works Olivia he has
-  not. Section 4 item 3.
-
-**What will look wrong and is not.**
-
-- **The Olivia row appears among the modes he has not worked before he has worked one**, saying where
-  it lives and what the CQ list can see of it. **That is an invitation and not a claim**: it is what
-  every unworked mode gets, and it is expressly what criterion 5.2 allows. What is not there before
-  his first Olivia contact is an *earned* card, an *earned* first, or any count saying he worked it.
-- **The Olivia row says `reads as PSK31 on the CQ list`.** The CQ list is built from the digital
-  decoded list and reads any text-only row as PSK31, so a CQ heard on Olivia is on it under PSK31's
-  name. Saying *no one is calling in it* would be a claim the list cannot support (§0.0). Section 4
-  items 5 and 6.
-- **A contact whose variant Hamlet never measured logs `MODE=OLIVIA` with no `SUBMODE` at all** - the
-  tag absent from the file rather than empty in it. A variant Hamlet did not measure is a fact it
-  does not have, and writing the likely one would put a measurement in a permanent file that nobody
-  made.
-- **A QSO that moved logs the variant it ended at**, not the one it opened at. That is what the card
-  was showing him when he pressed Log, and ADIF has one `SUBMODE` tag, so there is no third answer.
-- **`first_olivia` is worth 15 points**, the same as `first_psk31`, in the owner's own points file
-  beside it. **That number is the arbiter's and is one line to change.** Section 4 item 3.
-- **The achievements window's per-mode *firsts* rows still show six rows and no Olivia row.** Those
-  rows are `ContactModes.Six` - Tim's own list of the modes he keeps a first in, ruled 2026-09-08 -
-  and this unit did not add to it. Olivia's first is in the Hall of Fame instead, which is where
-  decision CA put it. Section 4 item 4.
-- **Twenty-seven tests on the chain-guarding list are red.** They were red before this unit, they are
-  the same twenty-seven by name, and that list carries known reds on purpose.
-- **One test in `TheAchievementsScreenTests` is red** and was red before this unit. The instruction
-  says two; the second passes. Section 4 item 1.
-- **Three reds sit outside both lists**, as they did before this unit:
-  `TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`,
-  `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` and
-  `WhereTheTransmissionStartsAndWhatTheRecordSaysTests.ATransmitRecordCannotCarryTheMessageOrThe`
-  `CallsignInIt`.
-
-**What this unit does not do.** It does not put an Olivia file in front of a real logger - that is
-5.4 and step 6's. It does not touch the transmit chain, the dial, or any line on decision AZ's
-forbidden list. It does not add Olivia to `ContactModes.Six`, which is the operator's own list. And
-it does not chase the wider question of what the CQ list calls an Olivia row, which is bounded out of
-this unit by §9.
+Then commit it (`git add -A && git commit -m "phase: hardening (installed)" && git push`)
+and re-run unit 369 from the top. It will pass the check that stopped it and run all
+three tasks.
 
 ## 3. What you should see
 
-**The answer this unit was commissioned for: the evening leaves a record behind, and the record says
-Olivia.** 5.1, 5.2 and 5.3 are met; 5.4 is not met and could not be, on this machine.
+**The answer to the question this unit was commissioned to ask - *which commit dropped
+the transmit device setting?* - is: not known, because the search was never run.** No
+settings file was loaded, no fixture was built, and no commit was named. The number this
+unit was aimed at, settings-file shapes that load whole, stands at **0 of a target 3**,
+unmoved.
 
-### The operator's evening, from the 73 to the log window to the achievements screen
+In the application, **you will see no change of any kind.** Not a new sentence, not a
+new refusal, not a repaired setting. Hamlet opens, decodes and transmits exactly as it
+did before this session started, because this session changed no code.
 
-**He presses Olivia on 20 m and works a station.** His half of the exchange is the corpus's textbook
-QSO and Hamlet's half is its own macros, pressed one over at a time; the conversation runs to `73` on
-both sides, and **every one of Hamlet's three sends was read back off the samples the sound card was
-handed** - announced `OLIVIA_8_250`, code 69, at 1499.94 Hz, and demodulated to the macro that was
-composed:
-
-```
-over 1 | he sends  | CQ CQ CQ de W1AW W1AW W1AW pse K
-       | Hamlet    | W1AW de KC3QIS KC3QIS K                       23 chars from 8 blocks, 18.7 s
-over 2 | he sends  | KC3QIS de W1AW GA TNX FER CALL UR RST 599 599 NAME BOB BOB QTH NEWINGTON CT
-       |           | GRID FN31 FN31 HW? KC3QIS de W1AW K
-       | Hamlet    | W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00
-       |           | BTU W1AW de KC3QIS K                          96 chars from 32 blocks, 67.9 s
-over 3 | he sends  | KC3QIS de W1AW R R TNX TIM 73 73 KC3QIS de W1AW SK
-       | Hamlet    | W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK
-       |           |                                               62 chars from 21 blocks, 45.4 s
-```
-
-**At the end the card is open**, its turn reading `His turn`, its variant `8/250`, and its **Log link
-true**. The whole exchange took **37.2 s** of wall clock on this machine.
-
-**He presses Log, and what he saves says Olivia and says which Olivia.** Not PSK31, which is what
-this same exchange produced before this unit.
-
-**Then he opens the achievements screen and the mode is there**, where before the contact it was not:
-a Modes card he has earned, a Hall of Fame first reading *An Olivia contact*, and a badge that counts
-Olivia as one of the six modes there are to work.
-
-### The record, field by field, as it stands in the log and as it goes out in the ADIF
-
-**The contact that stayed on the calling spot** - quoted whole, exactly as the file carries it:
-
-```
-<CALL:4>W1AW
-<STATION_CALLSIGN:6>KC3QIS
-<QSO_DATE:8>20260920
-<TIME_ON:6>031502
-<TIME_OFF:6>031502
-<BAND:3>20m
-<MODE:6>OLIVIA
-<SUBMODE:12>OLIVIA 8/250
-<FREQ:9>14.071500
-<RST_SENT:3>599
-<RST_RCVD:3>599
-<GRIDSQUARE:4>FN31
-<MY_GRIDSQUARE:6>FN00DJ
-<EOR>
-```
-
-```
-field        | in the log         | where it came from
-MODE         | OLIVIA             | ContactModes.Olivia(the card's variant).AdifMode
-SUBMODE      | OLIVIA 8/250       | the same object's AdifSubmode - one object, both halves
-RST_SENT     | 599                | the RST inside the Report macro Hamlet actually sent
-RST_RCVD     | 599                | the corpus's own reading of his report line
-GRIDSQUARE   | FN31               | the grid the card was printing, read by the parser for certain
-MY_GRIDSQUARE| FN00DJ             | Settings, and it is a different tag from his
-BAND         | 20m                | the band the row's own dial is in, spelled as ADIF spells it
-FREQ         | 14.071500          | the row's own dial in MHz, six places
-TIME_ON/OFF  | 031502 / 031502    | the conversation's first and last moments
-report sent  | (absent)           | Olivia exchanged no decibel ratio, so the field stays empty
-report rcvd  | (absent)           | the same
-```
-
-**And the contact that moved** (decision BW) - opened on the calling spot at 8/250, taken up 500 Hz
-and widened by unit 367's one click, and finished at the new place:
-
-```
-<MODE:6>OLIVIA
-<SUBMODE:13>OLIVIA 16/500
-```
-
-**The variant logged is the one the conversation ended at**, because that is what the card was
-showing when he pressed Log. The test asserts the card ended at 16/500, asserts the record carries
-that variant, and asserts the record does **not** carry the variant it opened at.
-
-**What it logged before this unit**, from task 1's trace, on exactly the same exchange:
-
-```
-<MODE:3>PSK
-<SUBMODE:5>PSK31
-```
-
-**And the other four modes, asserted rather than assumed** (decision BU's regression assertion):
-
-```
-mode   | MODE  | SUBMODE | report field used
-PSK31  | PSK   | PSK31   | RST_SENT / RST_RCVD
-FT8    | FT8   | (none)  | the decibel field, RST null
-FT4    | MFSK  | FT4     | the decibel field
-Olivia | OLIVIA| OLIVIA <variant> or absent | RST_SENT / RST_RCVD
-```
-
-**None of the first three matches Olivia**, asked of `ContactModes` rather than of the strings.
-
-**A card with no readable variant** logs `MODE=OLIVIA` with the `SUBMODE` tag **absent from the file,
-not empty in it** - and still not PSK31, because answering the wrong mode to hide a missing variant
-would replace a missing fact with a false one.
-
-**The telemetry line** (§R13), which is new for Olivia - logging was a stage that reached the file in
-silence before this unit:
-
-```
-psk31_contact_logged | rstSent 599, rstReceived 599, mode OLIVIA, submode OLIVIA 8/250,
-                     | gridCarried true
-```
-
-The variant is **inside the submode** rather than in a field of its own, so it cannot disagree with
-the record. **No callsign, no grid, no name, no town and no text** - asserted by sweeping the line for
-each of them.
-
-### The achievements screen, before and after the first Olivia contact
-
-```
-                              | before                  | after one Olivia record
-log.Modes                     | FT8, PSK31              | FT8, PSK31, Olivia
-earned Modes cards naming it  | 0                       | 1, and it is earned
-firsts earned naming it       | 0                       | first_olivia
-what that first reads         | -                       | An Olivia contact
-the Modes badge               | six modes to work, 2 of 6 | six modes to work, 3 of 6
-the badge's next card         | One more mode           | One more mode
-```
-
-**Before the first contact, each its own assertion**: Olivia is not in `log.Modes`, no earned card
-names it, `first_olivia` is not earned, it is not what the page offers next (§3.1 keeps both keyboard
-modes' firsts off the window until they are earned), and neither the badge's standing nor its next
-card names it. **An unworked Olivia row is allowed and is drawn**, saying where the mode lives and
-what the CQ list can see of it - that is an invitation and it is what every unworked mode gets.
-
-**The count is composed and not typed.** `AchievementScores.WorkableModes` counts
-`ContactModes.Logged`'s contact modes and reads **6**; the badge's words are built from that count;
-WSPR is still not one of them, because nobody works anybody on a beacon. **There is no literal five
-or six anywhere in the change.**
-
-**The other five modes' scores.** An FT8-and-PSK31 log scores its modes against the owner's own
-points file - one per mode worked, a special where he set one - and that is unchanged, `first_psk31`
-is earned and `first_olivia` is not, and the total is still the sum of the eight badges. **One score
-did move and it is honest**: the twelve-contact fixture, which holds all five of the old table, went
-from `five modes to work · 5 of 5 · 85 pts · Gold` to `six modes to work · 5 of 6 · 35 pts · Gold`,
-and its page total from 465 to 415. The 50 is the *all modes* bonus, which says *you have worked
-every mode*; until Olivia is worked, he has not. Section 4 item 3.
-
-### `TheAchievementsScreenTests`, by name, before and after - 5.3's proof
-
-```
-                                 before   after
-passed                                9       9
-failed                                1       1
-```
-
-**The one red, both times, with its message:**
-
-```
-TheAchievementsScreenTests.TheWindowDrawsEverySixRows
-  System.InvalidOperationException : Sequence contains no matching element
-  at TheAchievementsScreenTests.cs:line 289
-```
-
-Line 289 is where the realized window is searched for an `ItemsControl` named
-`AchievementsModeRows`. **The same name, the same exception, the same line, before this unit and
-after it. No third name went red**, which is what decision CB asks and what *not made worse* means.
-
-**The mismatch, reported and not repaired:** §5 and `docs\carry-forward-tests.txt` name **two** known
-reds in this class. `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` **passes**, before and after.
-Section 4 item 1.
-
-### The round trip, and the sentence that says it is not 5.4
-
-The file Hamlet wrote was read back by **`AdifLog`'s own reader** and compared field by field: the
-mode, the submode, the band, both grids, the frequency, and the times to the second the format
-carries them at. **And the two reports come back in the field they went out in** - a readability and
-not a decibel figure - which they did not before this unit, because `AdifLog.IsRstMode` asked only
-PSK31 and read `599` back as a signal-to-noise ratio ninety times too large.
-
-Every field was also checked against what the cited specification requires of it as the tree carries
-that requirement: the header ends at `<EOH>` and the record at `<EOR>`; every declared length is its
-own value's length; the band is `20m` as the enumeration spells it and not `20 m` as Hamlet's band
-plan writes it for a person; the frequency is megahertz to six places; the times are `YYYYMMDD` and
-`HHMMSS` with the off not before the on; and both grids are present with his not being the
-operator's. The two submode spellings were checked against `ContactModes.Cite` - *ADIF Specification
-3.1.4, released 2022-12-06, https://www.adif.org/314/ADIF_314.htm, retrieved 2026-09-08* - as the
-citation the tree carries, **with no network call**, and every variant in
-`data/olivia/format.json` composes `OLIVIA ` plus the file's own name for it.
-
-**Said plainly, and it is the deliverable of task 5:**
-
-> **Criterion 5.4 is not met.** No third-party logger is on this machine, installing one would be a
-> `MOVE: stop`, and the tests reach no network - so nothing in this unit has imported this file into
-> anything. **Every check above is Hamlet reading Hamlet**, and a file that is right by all of them
-> can still be refused by Log4OM, N1MM or LoTW. 5.4 is carried to step 6, where Tim is at a machine
-> with a logger on it.
-
-### The trace's seven answers (task 1, before anything was built)
-
-1. **What an Olivia contact logged as**: `MODE=PSK`, `SUBMODE=PSK31`, with RST 599 each way, grid
-   FN31, band 20m, freq 14.071500 and both times present. The line that decided the mode was
-   `MainWindowViewModel.cs:15341`. Two other lines asked the same question of the same table:
-   `:15157`, the telemetry gate, and `AdifLog.cs:594`, `IsRstMode`. **All three needed changing and
-   all three were changed.**
-2. **5.1's *with RST and grid* already held.** `Psk31ReportsFor` and `Psk31GridFor` read the shared
-   card dictionaries an Olivia row fills, and they answered 599, 599 and FN31. **Nothing was built
-   there** (R14); they are asserted instead.
-3. **Where the variant was at logging time.** On a QSO that stayed put, the card, the channel's
-   next-send variant and the row all read `8/250`. After unit 367's one click with nothing yet heard
-   at the new place, the card still read `8/250`, the next send read `16/500` at 2000 Hz, and the row
-   read `8/250` - so **the card is the reading that says what the operator has actually been shown**,
-   which is what decision BW asks for.
-4. **What the achievements did with `MODE=OLIVIA`**: `AchievementLog.Modes` empty, `WorkableModes` 5,
-   `FirstsEarned` `[first_contact]`, the Modes badge `five modes to work · 0 of 5`, and the category
-   band line `five modes to work · 0 of 5 · 0 pts · unranked · 2 to Bronze`. **The record was
-   invisible to every mode-counting badge.** Four lines of `src` read `ContactModes.Six`:
-   `AchievementCategory.cs:676`, `AchievementsViewModel.cs:317`, `AchievementLog.cs:314` and
-   `AchievementScores.cs:311`; the badge's words were typed at `AchievementBadges.cs:338`.
-5. **`TheAchievementsScreenTests`**: 9 passed, 1 failed - the before-number above.
-6. **Which tests asserted the count**: `TheAchievementsPageTests.cs:176` and `:400`,
-   `TheCategoryPagesAreTradingCardsTests.cs:147` and `:1052`, and
-   `TheAchievementsScreenTests.cs:298`, `:318` and `:327`. Four assertions were §R12 rewrites; the
-   screen tests' three were untouched, because `AchievementsViewModel.Firsts` was left on
-   `ContactModes.Six`. `TheOliviaSeamTests.cs:258` asserts Olivia is **not** in `Six` and stays true.
-7. **Where the spelling can be checked**: `ContactModes.Cite` only. `data\vendor` holds `usno` and no
-   copy of the ADIF enumeration, so a test may assert the citation's own text and the spellings the
-   tree carries, and nothing else, with no network call.
-
-### The runs, before and after, by name
-
-**Chain-guarding (`docs\chain-guarding-tests.txt`, decision CG), all 17 engine and 11 app classes:**
-
-```
-                  before (c395e6b8)        after task 4
-engine      98 of 110,  46 s          98 of 110,  46 s
-app         48 of  63,  33 s          48 of  63,  33 s
-```
-
-**The same twenty-seven reds by name, before and after, none new.** Engine: the six in
-`TheTelemetryLineSaysWhatActuallyWentOutTests`, the three in
-`WhereTheTransmissionStartsAndWhatTheRecordSaysTests`, the two in
-`TheFitGuardAsksAboutTheGridTheSendIsOnTests`,
-`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed` and
-`TheLoopbackProvesTheWholeChainTests.AMessageHamletComposedLeavesThisMachineAndComesBackFromItsOwn`
-`Decoder`. App: the eight in `TheMenuIsUnderTheMouseTests`, the four in
-`TheWholeFt4ChainRunsFromOneRightClickTests`, the two in `TheWholeChainRunsFromOneRightClickTests`
-and `TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`. These are carried as ask 35
-and were not chased.
-
-**Carry-forward (`docs\carry-forward-tests.txt`, HM-DEC-165), two invocations, one build each:**
-
-```
-                 before                         after
-app      189 of 189, 2 m 21 s          190 of 190, 2 m 21 s
-engine   146 of 146, 4 m 37 s          146 of 146, 4 m 38 s
-```
-
-**Every per-mode guard green before and after: FT8 send and read, FT4 send and read, PSK31 send and
-read, Olivia read, modulate, send and now log.** **No red after that was green before**, so
-HM-DEC-165 is satisfied and no repair is owed to the next unit. **No flake was seen in either
-invocation**, so every number above comes from its first run.
-
-**One name joined the app line and none joined the engine line** (decision CG):
-`TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed`,
-Olivia's log guard, which is the fourth row of that mode's block on the per-mode guard table. **It
-cost nothing measurable**: 190 tests in the same 2 m 21 s as 189.
-
-**Seconds against the 480 s timeout:** app 141 s, engine 278 s. **The engine invocation's margin is
-about 202 s**, and nothing was added to it.
-
-### The tests this unit added
-
-```
-Unit368Trace                    app    4 names   asserts nothing about the product, on no list
-TheOliviaLogsAsOliviaTests      app    4 names   5.1 first half; ONE name on the app carry-forward
-TheOliviaExportSaysOliviaTests  app    6 names   5.1 second half, and task 5's measurement
-TheOliviaRecordsAppearTests     app    5 names   5.2
-```
-
-**Nothing was added to the engine test project at all**, which is where the carry-forward margin is
-tightest.
-
-### The `PttOn` and `Arm(` counts
-
-```
-                       before this unit   after this unit
-PttOn code lines in src/          1               1
-Arm( call lines in src/           2               2
-```
-
-`src\Hamlet.RadioEngine\Transmit\Ft8TransmitSequence.cs:513`, and
-`src\Hamlet.App\ViewModels\MainWindowViewModel.cs:15647` and `:15932` - the same two sites, moved
-down by this unit's own additions to that file. **Nothing in this unit is on the transmit path**, and
-nothing needed a line on decision AZ's forbidden list.
+The one thing you can see is on the panel: it now reads **BLOCKED**, with the ball in
+your court and a note saying the phase was never installed - where last night it read
+DONE.
 
 ## 4. What's blocking us
+
+**One item blocks everything, and it is yours: `install-phase.bat` has not been run.**
+Three items from this unit, all three the same fault from different sides. The carried
+queue from unit 368 follows below, verbatim per HM-DEC-139, and **nothing in it was
+answered by this unit** - this session changed no code and ruled on nothing, so every
+ask in it stands exactly where unit 368 left it.
+
+### Raised by unit 369
+
+**1. The hardening phase is staged but not installed, and only Tim can install it.**
+`docs\phase-hardening\` holds all three files; `docs\phase-olivia-run\` does not exist;
+root `PHASE_PLAN.md`, `PHASE_STATUS.md` and `PROJECT_CARD.md` all still name the Olivia
+phase. Commit `c71b6707` carries the extraction and the commit message the installer
+prints, but not the install. **Waiting on:** Tim running `C:\Source\HamLet\install-phase.bat`.
+**Where it sits in the tree:** nowhere yet - the phase layer is untouched.
+**Not the session's to do:** the script's own header says it is not a work unit's job,
+and work instruction 369 §5 says stop rather than repair. **First made:** 2026-09-20,
+this report.
+
+**2. Work instruction 369 task 2 asks for a refusal reason that already exists, and the
+instruction does not know it.** `no_transmit_device` is already the reason at
+`MainWindowViewModel.cs:13831`, with its own operator sentence. What is missing is the
+dictated wording and the *Settings* link. Meanwhile `transmit_device_would_not_open` at
+`:13852` carries the OS error but **not** the device name or the rate, and the rate is
+not read until after that branch returns. **Waiting on:** nothing from Tim - this is a
+note for whoever re-runs 369, so that criterion 0.4 is not built twice and 0.5 is not
+underestimated. **Where it sits in the tree:** both branches as cited, unchanged by this
+unit. **Overrulable, and reported not repaired**, per §5's *repair nothing but this
+unit's*. **First made:** 2026-09-20, this report.
+
+**3. `tools\status.sh` reads `WORK_INSTRUCTION` from `PHASE_STATUS.md`, so a
+mid-phase-change status names the outgoing unit.** `PROJECT_STATUS.md` currently says
+`WORK_INSTRUCTION: 368` while unit 369 is the one that ran. It is self-correcting here -
+the staged `PHASE_STATUS.md` already names 369 - so this needs **no ruling and no
+change**, and is recorded only so the next reader does not treat the stale line as
+evidence that 368 re-ran. **Waiting on:** nothing. **Where it sits in the tree:**
+`tools\status.sh`, the `sed` on line 7. **First made:** 2026-09-20, this report.
+
+### Asks still outstanding - carried from unit 368's section 4, per HM-DEC-139, verbatim
 
 **Nothing blocks step 5's must-passes, all three of which are met, and nothing in this unit is stop
 material.** Seven items from this unit. **Nothing needed a line on decision AZ's forbidden list**;

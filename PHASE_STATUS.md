@@ -1,12 +1,11 @@
-PHASE: Hamlet works Olivia the way it works PSK31
-PHASE_SET: 2026-09-14
-DESCRIPTION: A fourth digital mode, MFSK with error correction that reads below the noise, on the same cards, macros, typed line, log and achievements as PSK31; the variant chosen by the signal's own announcement, never by the operator.
-CURRENT_STEP: 3
-WORK_INSTRUCTION: 368 - the Olivia contact goes in the log, and the mode's records appear
-STEP: 0 | done | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
-STEP: 1 | done | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
-STEP: 2 | done | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
-STEP: 3 | partial | (PHASE_PLAN.md section 8, revision of 2026-09-19 evening, checks 3.0-3.6 on units 363 and 364; unit 365 decision AO; unit 368 decision CF) Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
-STEP: 4 | done | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
-STEP: 5 | partial | (unit 368: 5.1, 5.2 and 5.3 met, every must-pass; 5.4 not met - no logger on this machine, carried to step 6) Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
-STEP: 6 | not started | Tim at the radio - tune to the calling spot, see text, work a station, log it. Only he can close it.
+PHASE: Hamlet holds what it has
+PHASE_SET: 2026-09-20
+DESCRIPTION: A hardening phase, run unattended while Tim is away. Everything banked in the PSK31 and Olivia threads that is screen, record or test and needs neither the radio nor the owner. Judged by tests that ran and, at the end, by Tim at his window.
+CURRENT_STEP: 0
+WORK_INSTRUCTION: 369 - settings survive, and a refusal names the fault
+STEP: 0 | not started | Settings survive an upgrade, and a send that cannot go names the true fault - no device chosen is its own refusal with a Settings link; a device that will not open carries its name, rate and OS error.
+STEP: 1 | not started | Hamlet opens whole - at the size it opens at and every size measured by unit 354, CQ, the mode tabs, the send area and Stop are on the window; the panels give up height before the send area ever does.
+STEP: 2 | not started | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list.
+STEP: 3 | not started | The record says what was on screen - for every decoded row and every card, whether it was drawn, filtered, scrolled away or folded, so an empty-looking screen can be diagnosed from the file without a screenshot.
+STEP: 4 | not started | The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails.
+STEP: 5 | not started | Tim looks - at his window and, when he has time, at the radio, and says it passed.

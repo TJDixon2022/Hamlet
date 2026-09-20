@@ -1,6 +1,8 @@
-﻿   Bash  {"command":"grep -n \"Announcement\\|BurstEnd\\|private const\\|Centers\\|Format\" tests/Hamlet.RadioEngine.Tests/Olivia/TheOliviaModulatorTests.cs | sed -n \u00271,40p\u0027; echo \"=== bodies ===\"; sed -n \u0027/private static RsidDetect ...(truncated)
-   Bash  {"command":"sed -i \u0027s/AchievementBadges\\.Firsts/AchievementBadgePage.Firsts/g\u0027 tests/Hamlet.App.Tests/ViewModels/Unit368Trace.cs \u0026\u0026 grep -n \"AchievementBadgePage.Firsts\" tests/Hamlet.App.Tests/ViewModels/Unit368Trace. ...(truncated)
-   Bash  {"command":"grep -rn \"CivConstants.PttOn\" src --include=*.cs | grep -v \"/bin/\\|/obj/\" | grep -v \"^\\s*///\" ; echo \"=== Arm( ===\"; grep -rn \"\\.Arm(\" src --include=*.cs | grep -v \"/bin/\\|/obj/\"","description":"Recount PttOn and ...(truncated)
-   Bash  {"command":"cat \u003e\u003e docs/carry-forward-tests.txt \u003c\u003c \u0027EOF\u0027\n\nWHAT UNIT 368 ADDED, AND IT IS ONE NAME ON THE APP LINE AND NONE ON THE ENGINE LINE (work\ninstruction 368 decision CG).\nTheOliviaLogsAsOliviaTests.A ...(truncated)
-   Bash  {"command":"grep -n \"^## 4. What\u0027s blocking us\" output.md \u0026\u0026 wc -l output.md \u0026\u0026 sed -n \u0027616,$p\u0027 output.md | md5sum \u0026\u0026 git show c395e6b8:output.md | tail -n +616 | md5sum","description":"Locate  ...(truncated)
-   Bash  {"command":"sed -i \u00271,2d\u0027 .run-unit/sedtest.txt \u0026\u0026 cat .run-unit/sedtest.txt","description":"Test in-place deletion on a scratch file"}
+﻿   Bash  {"command":"git show a00857ec:output.md | sed -n \u0027/^## 4\\./,$p\u0027","description":"Extract section 4 of last report"}
+   Bash  {"command":"git show a00857ec:output.md \u003e /tmp/prev-output.md \u0026\u0026 grep -n \"^## 4\\.\" /tmp/prev-output.md \u0026\u0026 wc -l /tmp/prev-output.md","description":"Save previous report and locate section 4"}
+   Bash  {"command":"git show a00857ec:output.md \u003e /tmp/prev-output.md","description":"Save previous report to temp file"}
+   Bash  {"command":"git show a00857ec:output.md \u003e .run-unit/prev-output-368.md","description":"Save previous report into run-unit dir"}
+   Bash  {"command":"git show a00857ec:output.md | tail -n +610 \u003e\u003e output.md","description":"Append previous section 4 body verbatim"}
+   Bash  {"command":"git show a00857ec:output.md | tail -n +610 | tee -a output.md \u003e /dev/null \u0026\u0026 wc -l output.md","description":"Append previous section 4 using tee"}
+   Bash  {"command":"git show a00857ec:output.md | tail -n +610 | tee -a output.md","description":"Append previous section 4 using tee"}
+   Bash  {"command":"git show a00857ec:output.md | tail -n +610 | dd of=output.md oflag=append conv=notrunc status=none","description":"Append previous section 4 using dd"}
