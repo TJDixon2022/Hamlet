@@ -445,10 +445,13 @@ public partial class MainWindowViewModel : ObservableObject
         // drive it.
         FollowTheChosenMode(DigitalModeFor(value));
 
-        // **THE POWER OFFER BELONGS TO THIS MODE AND TO NO OTHER** (§R11). It is offered on
-        // the PSK31 panel because PSK31 is the continuous carrier; pressing FT8 takes it off
-        // the screen, and pressing PSK31 again brings it back unless he has answered it.
+        // **THE POWER OFFER BELONGS TO THE KEYBOARD MODES AND TO NO OTHER** (§R11, work
+        // instruction 366 decision BG). It is offered on the PSK31 and Olivia panels because those
+        // are the continuous carriers; pressing FT8 takes it off the screen, and pressing either of
+        // them again brings it back unless he has answered it. **The sentence names the mode**, so
+        // it is raised here too.
         OnPropertyChanged(nameof(HasPsk31PowerOffer));
+        OnPropertyChanged(nameof(Psk31PowerOffer));
     }
 
     /// <summary>Which mode the licence card should answer for.</summary>
@@ -16643,16 +16646,29 @@ public partial class MainWindowViewModel : ObservableObject
               + "then it reports what the meter read and judges nothing.";
 
     /// <summary>True while the power offer is on the panel.</summary>
-    public bool HasPsk31PowerOffer => IsPsk31Chosen && !_psk31PowerSettled;
+    /// <remarks>
+    /// **BOTH KEYBOARD MODES, BECAUSE THE REASON FOR THE OFFER IS TRUE OF BOTH** (work
+    /// instruction 366 decision BG, criterion 4.7). A keyboard mode keys a continuous signal for
+    /// as long as its text takes, which is what runs a radio warmer than voice does; Olivia does
+    /// it for longer than PSK31, not less. **The gate widens rather than the code being copied**,
+    /// so there is one offer, one sentence, one accept and one settle (§0, AF's spirit). The
+    /// property keeps its name: renaming it would touch the view and every test that binds it, to
+    /// no end the operator can see.
+    /// </remarks>
+    public bool HasPsk31PowerOffer => (IsPsk31Chosen || IsOliviaChosen) && !_psk31PowerSettled;
 
     /// <summary>What the power offer says.</summary>
     /// <remarks>
-    /// **IT SAYS WHAT WOULD CHANGE AND WHAT WOULD NOT** (HM-DEC-084, §0.0). An offer that
+    /// <para>**IT SAYS WHAT WOULD CHANGE AND WHAT WOULD NOT** (HM-DEC-084, §0.0). An offer that
     /// says only *set power to 50%* leaves the reader working out whether anything else on
-    /// his radio is about to move.
+    /// his radio is about to move.</para>
+    /// <para>**AND IT NAMES THE MODE HE IS ON** (work instruction 366 decision BG). It said PSK31
+    /// while the offer was PSK31's alone; under Olivia that would be a sentence about a mode he is
+    /// not using, which is §0.0 broken by a word. The sentence is not forked - it reads the mode
+    /// the same way the rest of the panel does.</para>
     /// </remarks>
     public string Psk31PowerOffer
-        => "PSK31 sends a steady carrier, so it runs warmer than voice. Hamlet can set "
+        => ChosenDigitalMode + " sends a steady carrier, so it runs warmer than voice. Hamlet can set "
         + "your radio's transmit power to " + Psk31PowerPercent
         + "% for you. Nothing else on the radio changes, and nothing is set unless you "
         + "press this.";
@@ -16836,7 +16852,13 @@ public partial class MainWindowViewModel : ObservableObject
                     + " against the "
                     + Psk31AlcReference!.Reading.ToString("0", CultureInfo.InvariantCulture)
                     + " Hamlet measured on a clean " + Psk31AlcReference.Mode
-                    + " send, and that is what makes PSK31 spread into the people either "
+                    // **THE MODE HE IS ON, NOT THE ONE THIS SENTENCE WAS WRITTEN FOR** (work
+                    // instruction 366 decision BG). It said PSK31 while only PSK31 could reach it;
+                    // an Olivia send told about PSK31 spreading is a sentence about a mode he is
+                    // not using (§0.0). The reference keeps its own mode, two clauses back,
+                    // because that is a fact about where the measurement came from.
+                    + " send, and that is what makes " + ChosenDigitalMode
+                    + " spread into the people either "
                     + "side of you. Turn the transmit drive on this screen down one step "
                     + "and send again."
 

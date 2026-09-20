@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Olivia;
+using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Psk31;
 using Hamlet.RadioEngine.Rsid;
 using Hamlet.RadioEngine.Telemetry;
@@ -916,6 +918,123 @@ public sealed class TheOliviaSendTests : IDisposable
         Assert.DoesNotContain(Sites(src, "AnswerSeconds("), s => !s.Contains("public static double", StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// **4.7: with Olivia chosen the power offer appears, offers half, and settles the same way it
+    /// does on PSK31.**
+    /// </summary>
+    /// <remarks>
+    /// **THE SAME GATE, NOT A SECOND ONE** (decision BG). What is asserted is that one property,
+    /// one sentence, one accept label and one settle answer for both modes, and that a slotted mode
+    /// still gets no offer at all.
+    /// </remarks>
+    [Fact]
+    public void ThePowerOfferAppearsUnderOliviaAndSettlesAsItDoesUnderPsk31()
+    {
+        var model = Listening(null);
+
+        _output.WriteLine("under Olivia : " + model.HasPsk31PowerOffer);
+        _output.WriteLine("offer        : " + model.Psk31PowerOffer);
+        _output.WriteLine("accept       : " + model.Psk31PowerAccept);
+
+        Assert.True(model.HasPsk31PowerOffer);
+        Assert.Contains(Mode, model.Psk31PowerOffer, StringComparison.Ordinal);
+        Assert.DoesNotContain("PSK31", model.Psk31PowerOffer, StringComparison.Ordinal);
+
+        // **HALF, AND NOTHING IS REQUIRED OF HIM** (HM-DEC-084, §R11).
+        Assert.Equal(50, MainWindowViewModel.Psk31PowerPercent);
+        Assert.Contains("50%", model.Psk31PowerOffer, StringComparison.Ordinal);
+        Assert.Contains("50%", model.Psk31PowerAccept, StringComparison.Ordinal);
+        Assert.Contains("nothing is set unless you press this", model.Psk31PowerOffer, StringComparison.Ordinal);
+
+        // **PRESSING FT8 TAKES IT OFF, AND PRESSING OLIVIA BRINGS IT BACK.**
+        model.ChooseDigitalModeCommand.Execute("FT8");
+        _output.WriteLine("under FT8    : " + model.HasPsk31PowerOffer);
+        Assert.False(model.HasPsk31PowerOffer);
+
+        model.ChooseDigitalModeCommand.Execute("PSK31");
+        _output.WriteLine("under PSK31  : " + model.HasPsk31PowerOffer + " - " + model.Psk31PowerOffer);
+        Assert.True(model.HasPsk31PowerOffer);
+        Assert.Contains("PSK31", model.Psk31PowerOffer, StringComparison.Ordinal);
+
+        model.ChooseDigitalModeCommand.Execute(Mode);
+        Assert.True(model.HasPsk31PowerOffer);
+
+        // **AND ANSWERING IT SETTLES IT, BY THE SAME ROUTE ON EITHER MODE.**
+        model.DeclinePsk31PowerCommand.Execute(null);
+
+        _output.WriteLine("after declining: " + model.HasPsk31PowerOffer);
+
+        Assert.False(model.HasPsk31PowerOffer);
+
+        model.ChooseDigitalModeCommand.Execute("PSK31");
+        Assert.False(model.HasPsk31PowerOffer);
+    }
+
+    /// <summary>
+    /// **4.7: the ALC is read during an Olivia send and its sentence names the mode the reference
+    /// was learned on.**
+    /// </summary>
+    /// <remarks>
+    /// **THE REFERENCE KEEPS ITS `Mode` FIELD** (decision BG). One learned on FT8 stays labeled FT8
+    /// in the sentence, because what it measures is what a clean send reads on this radio and the
+    /// mode it was taken on is part of that fact (§0.0).
+    /// </remarks>
+    [Fact]
+    public void TheAlcIsReadOnAnOliviaSendAndItsSentenceNamesWhereTheReferenceCameFrom()
+    {
+        string line;
+        List<string> lines;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "366", _ => true))
+        {
+            var model = Listening(telemetry);
+
+            Arm(model, telemetry);
+
+            // **LEARNED ON FT8, AS §R15 SAYS IT IS**, through the app's own learning path rather
+            // than a reference this test made up.
+            model.LearnTheAlcForTests(Reading(62), "FT8");
+            model.Psk31AlcForTests = Reading(95);
+
+            Assert.True(model.HasPsk31AlcReference);
+            Assert.Equal("FT8", model.Psk31AlcReference!.Mode);
+
+            model.SendCallToAnyoneCommand.Execute(null);
+
+            Settle(model);
+
+            line = model.Psk31AlcLine;
+
+            _output.WriteLine("reference : " + model.Psk31AlcReferenceLine);
+            _output.WriteLine("sentence  : " + line);
+        }
+
+        lines = Lines();
+
+        var read = Assert.Single(Events(lines, "psk31_send_alc"));
+
+        _output.WriteLine("alc read  : " + read.GetRawText());
+
+        Assert.NotEmpty(line);
+        Assert.Contains("FT8", line, StringComparison.Ordinal);
+        Assert.Equal("FT8", read.GetProperty("referenceMode").GetString());
+        Assert.Equal(95, read.GetProperty("alc").GetDouble());
+        Assert.True(read.GetProperty("judged").GetBoolean(), "the reference was learned, so the reading is judged");
+        Assert.True(read.GetProperty("pastTheZone").GetBoolean(), "95 against a reference of 62 is past the margin");
+
+        // **AND THE SENTENCE IS ABOUT THE MODE HE IS ON.** It named PSK31 while it was PSK31's
+        // alone; under Olivia that would be a sentence about a mode he is not using.
+        Assert.Contains(Mode, line, StringComparison.Ordinal);
+        Assert.DoesNotContain("PSK31 spread", line, StringComparison.Ordinal);
+
+        // **AND NOTHING WAS ASKED OF HIM AT THE RADIO** (§R11): the sentence points at a control on
+        // this screen, never at a knob on the rig.
+        foreach (var word in new[] { "meter", "on the radio", "on your radio's front" })
+        {
+            Assert.DoesNotContain(word, line, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     /// <summary>Press something on a listening, armed panel and give back what it left behind.</summary>
     private (FakeSink Sink, FakePort Port, List<string> Lines) Pressed(Action<MainWindowViewModel> press)
     {
@@ -1081,6 +1200,10 @@ public sealed class TheOliviaSendTests : IDisposable
             Thread.Sleep(10);
         }
     }
+
+    /// <summary>An ALC meter reading, as the poll would put it in the rig state.</summary>
+    private static RigValue Reading(double level)
+        => RigValue.Known(RigField.Alc, level, CivAlc.Describe((int)level), DateTime.UtcNow, "15 13");
 
     /// <summary>Where a row says its carrier sits, which is what the listener measured.</summary>
     private static double Hz(DigitalDecodeRow row)
