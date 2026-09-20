@@ -586,13 +586,25 @@ public static class AdifLog
 
     /// <summary>Whether this record's mode exchanges an RST rather than decibels.</summary>
     /// <remarks>
-    /// **THE PAIR, THROUGH THE TABLE THAT OWNS IT.** `MODE=PSK` alone is some kind of
+    /// <para>**THE PAIR, THROUGH THE TABLE THAT OWNS IT.** `MODE=PSK` alone is some kind of
     /// phase-shift keying and names no mode at all, so the question is asked of
-    /// <see cref="ContactModes"/> the way every other question about a mode is.
+    /// <see cref="ContactModes"/> the way every other question about a mode is.</para>
+    /// <para>**AND OLIVIA IS THE OTHER KEYBOARD MODE** (work instruction 368 task 3). Its
+    /// operators exchange a `599`-style RST in prose exactly as PSK31's do, and
+    /// `Psk31ContactReport` reads it out of the conversation the same way - so a record
+    /// Hamlet wrote with `RST_SENT 599` came back out of this reader as a **decibel**
+    /// report of 599, which is a readability read as a signal-to-noise ratio ninety times
+    /// too large. **The variant makes no difference**: `ContactModes.Olivia(null)` is the
+    /// entry any Olivia record matches, with or without a submode.</para>
     /// </remarks>
     private static bool IsRstMode(IReadOnlyDictionary<string, string> fields)
-        => ContactModes.Named("PSK31") is { } psk31
-           && psk31.Matches(Get(fields, "MODE"), Get(fields, "SUBMODE"));
+    {
+        var mode = Get(fields, "MODE");
+        var submode = Get(fields, "SUBMODE");
+
+        return (ContactModes.Named("PSK31") is { } psk31 && psk31.Matches(mode, submode))
+               || ContactModes.Olivia(null).Matches(mode, submode);
+    }
 
     /// <summary>A date and a time back into a moment, or null.</summary>
     private static DateTime? Moment(string? date, string? time)
