@@ -223,6 +223,16 @@ public sealed class AchievementScores
             earned.Add("first_psk31");
         }
 
+        // **AND THE OTHER KEYBOARD MODE** (work instruction 368 decision CA). It is earned
+        // the same way PSK31's is - off `log.Modes`, which is off the record's own pair -
+        // so a contact somebody else's logger wrote earns it exactly as one of Hamlet's
+        // does, and nothing earns it that the file does not say.
+        if (log.Modes.Any(m => string.Equals(
+                m, ContactModes.OliviaName, StringComparison.OrdinalIgnoreCase)))
+        {
+            earned.Add("first_olivia");
+        }
+
         if (log.Modes.Any(m => string.Equals(m, "CW", StringComparison.OrdinalIgnoreCase)))
         {
             earned.Add("first_cw_qso");
@@ -304,11 +314,16 @@ public sealed class AchievementScores
     /// **How many modes there are to work, which is not how many Hamlet knows.**
     /// </summary>
     /// <remarks>
-    /// **WSPR IS A BEACON AND NOBODY WORKS ANYBODY ON IT** (`ContactMode.IsContactMode`),
-    /// so an *all modes* bonus that waited for it would be a bonus he can never be paid.
-    /// The five are FT8, FT4, PSK31, CW and Voice.
+    /// <para>**WSPR IS A BEACON AND NOBODY WORKS ANYBODY ON IT** (`ContactMode.IsContactMode`),
+    /// so an *all modes* bonus that waited for it would be a bonus he can never be paid.</para>
+    /// <para>**AND IT COUNTS EVERY MODE THE LOG CAN WRITE, NOT THE SIX** (work instruction 368
+    /// decision BY). `ContactModes.Six` is the operator's own list of modes he keeps a first
+    /// in; this question is *how many modes are there to work*, and since the Olivia phase the
+    /// answer includes Olivia. Leaving it at five would have left a badge asking for five of
+    /// six and an *all modes* bonus payable without the mode the phase built. **The number is
+    /// nowhere typed** - it is a count of the table, here and on the badge that reads it.</para>
     /// </remarks>
-    public static int WorkableModes => ContactModes.Six.Count(m => m.IsContactMode);
+    public static int WorkableModes => ContactModes.Logged.Count(m => m.IsContactMode);
 
     private static int Continents(AchievementLog log, AchievementPoints points)
     {

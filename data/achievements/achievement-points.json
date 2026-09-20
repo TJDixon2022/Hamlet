@@ -21,6 +21,7 @@
 //     "first_dx"                your first contact in a DXCC entity other than your own (Hamlet
 //                               takes your own to be the entity of the first record in the log)
 //     "first_psk31"             your first PSK31 contact
+//     "first_olivia"            your first Olivia contact
 //     "first_cw_qso"            your first Morse (CW) contact
 //     "first_over_5000_miles"   your first contact 5,000 miles or more away
 //     "first_over_10000_miles"  your first contact 10,000 miles or more away
@@ -123,6 +124,7 @@
   "first_contact": 10,
   "first_dx": 25,
   "first_psk31": 15,
+  "first_olivia": 15,
   "first_cw_qso": 50,
   "first_over_5000_miles": 25,
   "first_over_10000_miles": 100,

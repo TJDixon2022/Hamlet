@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 368 - the Olivia contact goes in the log, and the mode's records appear
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T23:16:53-04:00
-NOTE: Task 3 committed: the pair exports and round-trips, and the moved QSO logs the variant it ended at.
+UPDATED: 2026-09-19T23:33:04-04:00
+NOTE: Task 4 committed: 5.2 met and 5.3 measured no worse; task 5 next, what 5.4 can honestly reach.
 
 ---
 

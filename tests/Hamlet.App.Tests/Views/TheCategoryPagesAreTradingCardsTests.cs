@@ -144,7 +144,19 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
             Assert.False(screen.Category!.HasLevelBar);
             Assert.Equal("Gold, the top level", screen.Category.NoNextLevelLine);
-            Assert.Equal("five modes to work · 5 of 5 · 85 pts · Gold", screen.Category.BandLine);
+
+            // **§R12, WORK INSTRUCTION 368.** This was pinned to
+            // "five modes to work · 5 of 5 · 85 pts · Gold", which was the badge's words, the
+            // fixture's count and the *all modes* bonus of 50 on top of 35, all typed as one
+            // string. Decision BY made Olivia one of the modes there are to work, so the words
+            // follow the count and the bonus is no longer paid at five of six - and the pin was
+            // guarding the door this unit was told to open. **The number is still not typed**:
+            // the count comes from AchievementScores.WorkableModes, which is a count of the
+            // table, and the words come from the badge that reads it.
+            Assert.Equal(6, AchievementScores.WorkableModes);
+            Assert.Equal(
+                AchievementBadgePage.ModesToWork + " · 5 of 6 · 35 pts · Gold",
+                screen.Category.BandLine);
         }
         finally
         {
@@ -1049,7 +1061,28 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                             // **MODES: WHERE EACH UNWORKED MODE LIVES, DRAWN.**
                             if (kind == AchievementKinds.Modes)
                             {
-                                Assert.Equal(new[] { "CW", "FT4", "PSK31" }, rows.Select(r => r.Place).OrderBy(p => p, StringComparer.Ordinal));
+                                // **§R12, WORK INSTRUCTION 368.** This named the three unworked modes
+                                // of one fixture - CW, FT4 and PSK31 - which is a fact about that log
+                                // and about a table with five workable modes in it, not about the rule.
+                                // Decision BY put Olivia among the modes there are to work, and on the
+                                // twelve-contact fixture, where all five of the old table were worked
+                                // and no Modes next card was drawn at all, this assertion had never
+                                // run. **The rule it was written for is asserted instead**: every row
+                                // drawn is a mode this log has not worked, and the rows are the
+                                // unworked modes the card has room for.
+                                var worked = opened.Page!.Log.Modes;
+                                var stillToWork = ContactModes.Logged
+                                    .Where(m => m.IsContactMode
+                                        && !worked.Contains(m.Name, StringComparer.OrdinalIgnoreCase))
+                                    .Select(m => m.Name)
+                                    .Take(rows.Count)
+                                    .OrderBy(p => p, StringComparer.Ordinal);
+
+                                Assert.Equal(stillToWork, rows.Select(r => r.Place).OrderBy(p => p, StringComparer.Ordinal));
+
+                                Assert.All(
+                                    rows,
+                                    r => Assert.DoesNotContain(r.Place, worked, StringComparer.OrdinalIgnoreCase));
 
                                 // **WORK INSTRUCTION 346 TASK 1, RULINGS 25 AND 26: EVERY ROW SAYS WHERE ITS MODE
                                 // LIVES AND WHO IS THERE, AND NONE IS EMPTY.**
@@ -3570,6 +3603,19 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
                 lives = Mhz(band.JumpHz) + " on " + band.Name;
             }
+            else if (string.Equals(row.Place, ContactModes.OliviaName, StringComparison.OrdinalIgnoreCase))
+            {
+                // **§R12, WORK INSTRUCTION 368.** Olivia has no block in the band plan - its
+                // calling spots are its own cited table, `data/bands/olivia-calling.json`, the
+                // same one the tab tunes from - so this helper asked `DigitalCallingFrequencies`
+                // for a list that is empty and took its first element. **The rule rulings 25 and
+                // 26 wrote is unchanged**: every row still says where its mode lives; what
+                // changed is that Olivia is now one of the modes there are to work.
+                var table = Hamlet.RadioEngine.Olivia.OliviaData.Current.Calling!;
+                var where = table.CallingRowFor(bet.Band) ?? table.Rows[0];
+
+                lives = Mhz(table.DialHzFor(where)!.Value) + " on " + where.Band;
+            }
             else
             {
                 var home = DigitalCallingFrequencies.BandsWith(row.Place);
@@ -3583,6 +3629,11 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             {
                 "CW" => AchievementCategory.NoMorseOnTheList,
                 "FT4" => "the CQ list cannot tell FT4 from FT8",
+
+                // **§R12, WORK INSTRUCTION 368**: the list reads a text-only row as PSK31 and an
+                // Olivia row is a text-only row, so it cannot tell the two keyboard modes apart -
+                // the same kind of fact the FT4 row states about FT8.
+                "Olivia" => AchievementCategory.ListCannotTellOlivia,
                 _ when callers.Count == 0 => "no one calling at " + calling.ReadAt,
                 _ => callers[0].Callsign
                     + (Miles(callers[0].Grid) is { } mi ? " · " + GridPath.DescribeMiles(mi).Replace(" miles", " mi", StringComparison.Ordinal) : "")

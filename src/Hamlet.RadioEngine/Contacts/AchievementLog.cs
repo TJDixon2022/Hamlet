@@ -311,7 +311,13 @@ public sealed class AchievementLog
             Entity: entity,
             Continent: DxccContinents.Of(entity),
             Band: Blank(contact.Band),
-            Mode: ContactModes.Six.FirstOrDefault(
+            // **EVERY MODE THE LOG CAN WRITE, AND NOT THE SIX** (work instruction 368
+            // decision BY). A record saying `MODE=OLIVIA` matched nothing here, so an
+            // Olivia contact was invisible to every mode-counting badge - the log said
+            // he had worked the mode and the screen said he had not (§0.0).
+            // `ContactModes.Logged` is the table's own answer to *what can a record
+            // say*, which is exactly the question being asked of it here.
+            Mode: ContactModes.Logged.FirstOrDefault(
                 m => m.Matches(contact.Mode, contact.Submode)),
             StartedUtc: contact.StartedUtc,
             EndedUtc: contact.EndedUtc,

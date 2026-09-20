@@ -171,6 +171,36 @@ public sealed class AchievementBadgePage
     /// <summary>What an unworked continent's badge says is next.</summary>
     public const string FirstHere = "A first here";
 
+    /// <summary>The Modes badge's meaning line, counted rather than typed.</summary>
+    /// <remarks>
+    /// <para>**THE NUMBER IS NOT IN THIS FILE** (work instruction 368 decision BY). It read
+    /// *five modes to work* as a string until the Olivia phase put a sixth mode in the log,
+    /// and a badge whose words and whose standing come from two different places is a badge
+    /// that can say *five modes to work · 0 of 6* (§0.0).</para>
+    /// <para>**THE WORD AND NOT THE DIGIT**, because the standing beside it already carries
+    /// the digits and *5 modes to work · 0 of 5* reads as an error.
+    /// <see cref="AchievementScores.WorkableModes"/> is a small count of a table that
+    /// changes about once a year, so the words for it are spelled out here and the one
+    /// nobody has written falls back to the figure rather than to silence.</para>
+    /// </remarks>
+    public static string ModesToWork => Spelled(AchievementScores.WorkableModes) + " modes to work";
+
+    /// <summary>A small count in words, or the figure where nobody has spelled it.</summary>
+    private static string Spelled(int count)
+        => count switch
+        {
+            2 => "two",
+            3 => "three",
+            4 => "four",
+            5 => "five",
+            6 => "six",
+            7 => "seven",
+            8 => "eight",
+            9 => "nine",
+            10 => "ten",
+            _ => count.ToString(CultureInfo.InvariantCulture),
+        };
+
     /// <summary>Build the page.</summary>
     /// <param name="log">The contacts.</param>
     /// <param name="points">The owner's points file, loaded or absent.</param>
@@ -279,6 +309,12 @@ public sealed class AchievementBadgePage
         ("first_contact", "Your first contact"),
         ("first_dx", "A DX contact"),
         ("first_psk31", "A PSK31 contact"),
+
+        // **THE OTHER KEYBOARD MODE** (work instruction 368 decision CA), in the shortened
+        // form unit 332 set, and worth what `first_psk31` is worth in the owner's own points
+        // file. **The value is the arbiter's and overrulable**: it is one line of
+        // `data/achievements/achievement-points.json` and nothing here reads a number.
+        ("first_olivia", "An Olivia contact"),
         ("first_cw_qso", "A Morse contact"),
         ("first_over_5000_miles", "Over 5,000 miles"),
         ("first_over_10000_miles", "Over 10,000 miles"),
@@ -335,7 +371,7 @@ public sealed class AchievementBadgePage
                 score),
 
             _ => new AchievementBadge(
-                kind, "Modes", "five modes to work", "modes", "#3E4650",
+                kind, "Modes", ModesToWork, "modes", "#3E4650",
                 NextMode(log), NextIsDoor: false,
                 score.Worked.ToString(CultureInfo.InvariantCulture) + " of "
                     + AchievementScores.WorkableModes.ToString(CultureInfo.InvariantCulture),
@@ -404,7 +440,7 @@ public sealed class AchievementBadgePage
 
         foreach (var first in unearned)
         {
-            if (!string.Equals(first.Key, AbsentUntilWorked, StringComparison.Ordinal))
+            if (!AbsentUntilWorked.Contains(first.Key, StringComparer.Ordinal))
             {
                 return first;
             }
@@ -413,8 +449,14 @@ public sealed class AchievementBadgePage
         return unearned[0];
     }
 
-    /// <summary>The one first §3.1 keeps off the window until it is earned.</summary>
-    private const string AbsentUntilWorked = "first_psk31";
+    /// <summary>The firsts §3.1 keeps off the window until they are earned.</summary>
+    /// <remarks>
+    /// **BOTH KEYBOARD MODES** (work instruction 368 decision BZ). §3.1 kept *A PSK31
+    /// contact* off the window until he had made one, for the reason that naming a mode's
+    /// achievement before he has worked it is the screen making him a promise about a mode
+    /// it has not yet shown him. Olivia is the same case and arrives the same way.
+    /// </remarks>
+    private static readonly string[] AbsentUntilWorked = ["first_psk31", "first_olivia"];
 
     /// <summary>
     /// The next continent card, **naming no continent he has not opened** (§3.1).

@@ -170,11 +170,16 @@ public sealed class TheAchievementsPageTests
         // special rate applies, and five of nine is not all of them.
         Assert.Equal(25, page.Scores.For(AchievementKinds.Bands).Points);
 
-        // **MODES: four at 5 and CW at 15 is 35, plus the 50 for all five = 85.** The
-        // *all* bonus is paid at five and not at six: WSPR is a beacon and nobody works
-        // anybody on it.
-        Assert.Equal(5, AchievementScores.WorkableModes);
-        Assert.Equal(85, page.Scores.For(AchievementKinds.Modes).Points);
+        // **MODES: four at 5 and CW at 15 is 35, and the *all* bonus of 50 is NOT paid.**
+        //
+        // **§R12, WORK INSTRUCTION 368.** This read `Assert.Equal(5, WorkableModes)` and 85
+        // points, which was the arithmetic of a table with five workable modes in it. Decision
+        // BY made the achievements count every mode the log can write, so Olivia is the sixth
+        // and this fixture - CW, FT8, FT4, PSK31 and Voice - is five of six. **WSPR is still
+        // not one of them**: it is a beacon and nobody works anybody on it, which is what
+        // `ContactMode.IsContactMode` says and what this count still asks.
+        Assert.Equal(6, AchievementScores.WorkableModes);
+        Assert.Equal(35, page.Scores.For(AchievementKinds.Modes).Points);
 
         // **STATES: nought, and it is nought rather than absent.** An ADIF record carries
         // `STATE` and `AchievementContact` does not read it yet, so the honest score is
@@ -216,17 +221,21 @@ public sealed class TheAchievementsPageTests
             "first_over_10000_miles", AchievementScores.FirstsEarned(log));
 
         // **THE TOTAL IS THE SUM OF THE EIGHT AND NOTHING ELSE.**
-        // 170 + 40 + 20 + 25 + 85 + 0 + 0 + 125 = 465.
-        Assert.Equal(465, page.Scores.Total);
+        // 170 + 40 + 20 + 25 + 35 + 0 + 0 + 125 = 415.
+        //
+        // **§R12, WORK INSTRUCTION 368**: it was 465 with the modes kind at 85, and the 50 of
+        // that was the *all modes* bonus this fixture no longer earns now that there are six
+        // modes to work and it has five of them. Nothing else in the sum moved.
+        Assert.Equal(415, page.Scores.Total);
         Assert.Equal(
             page.Badges.Sum(b => b.Score.Points ?? 0), page.Scores.Total);
 
         // **AND THE RANK IS THE THRESHOLDS PASSED, PLUS ONE.** The file's ranks are
-        // 25, 100, 250, 500, 1000, 2500, 5000, 10000; 465 has passed three of them, so he
-        // is Rank 4 with 35 to Rank 5.
+        // 25, 100, 250, 500, 1000, 2500, 5000, 10000; 415 has passed three of them, so he
+        // is Rank 4 with 85 to Rank 5.
         Assert.Equal(4, page.Scores.Rank);
-        Assert.Equal(35, page.Scores.ToNextRank);
-        Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", page.TotalLine);
+        Assert.Equal(85, page.Scores.ToNextRank);
+        Assert.Equal("Total 415 pts · Rank 4 · 85 to Rank 5", page.TotalLine);
 
         // **AND THE LINE UNDER THE TITLE SAYS IT, WITH THE RANK AND THE GAP.**
         Assert.True(page.HasTotal);
@@ -244,8 +253,10 @@ public sealed class TheAchievementsPageTests
     /// </summary>
     /// <remarks>
     /// **THE ONE PLACE A RANK IS SPOKEN IS THE TOTAL LINE**, and it says the rank and the gap to
-    /// the next, so both are asserted by name. The twelve-contact log totals 465, which is Rank 4
-    /// and 35 short of Rank 5 on the shipped thresholds.
+    /// the next, so both are asserted by name. The twelve-contact log totals 415, which is Rank 4
+    /// and 85 short of Rank 5 on the shipped thresholds. **§R12, work instruction 368**: the
+    /// total was 465 until decision BY made Olivia one of the modes there are to work and this
+    /// log stopped earning the *all modes* bonus. Nothing about ranks changed.
     /// </remarks>
     [Fact]
     public void TheRanksCarryTheNamesInThePointsFile()
@@ -275,21 +286,21 @@ public sealed class TheAchievementsPageTests
         }
 
         // **EMPTY AS SHIPPED: THE DEFAULTS SHOW.**
-        Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", Line(null));
+        Assert.Equal("Total 415 pts · Rank 4 · 85 to Rank 5", Line(null));
 
         // **PRESENT: EACH RANK BY ITS POSITION, AND THE GAP NAMES THE NEXT.**
         Assert.Equal(
-            "Total 465 pts · Ranger · 35 to Voyager",
+            "Total 415 pts · Ranger · 85 to Voyager",
             Line("[\"Listener\", \"Novice\", \"Operator\", \"Ranger\", \"Voyager\", \"Navigator\", \"Pathfinder\", \"Legend\"]"));
 
         // **SHORTER THAN THE RANKS: THE FIRST ONES NAMED, `Rank n` PAST ITS END.**
         Assert.Equal(
-            "Total 465 pts · Ranger · 35 to Rank 5",
+            "Total 415 pts · Ranger · 85 to Rank 5",
             Line("[\"Listener\", \"Novice\", \"Operator\", \"Ranger\"]"));
 
         // **NOT A LIST OF STRINGS: SKIPPED WHOLE, SO NO NAME LANDS ON THE WRONG RANK.**
-        Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", Line("[\"Listener\", 2, \"Operator\", \"Ranger\"]"));
-        Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", Line("\"Ranger\""));
+        Assert.Equal("Total 415 pts · Rank 4 · 85 to Rank 5", Line("[\"Listener\", 2, \"Operator\", \"Ranger\"]"));
+        Assert.Equal("Total 415 pts · Rank 4 · 85 to Rank 5", Line("\"Ranger\""));
     }
 
     /// <summary>

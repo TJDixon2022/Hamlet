@@ -673,7 +673,14 @@ public sealed class AchievementCategory
             .Select(m => EarnedBy(m, log.InMode(m), Pts(points.Special(kind, m) ?? per), operatorGrid, placeUnderCall: true))
             .ToList();
 
-        var unworked = ContactModes.Six
+        // **EVERY MODE THERE IS TO WORK, WHICH SINCE THE OLIVIA PHASE IS SIX** (work
+        // instruction 368 decisions BY and BZ). The badge's standing counts against
+        // `AchievementScores.WorkableModes`, so an unworked list read off a shorter table
+        // would leave the badge saying *one more mode* over a page with no card for it.
+        // **An unworked row is an invitation and not a claim that he worked it**, which is
+        // what every unworked mode gets and what 5.2 expressly allows before the first
+        // Olivia contact.
+        var unworked = ContactModes.Logged
             .Where(m => m.IsContactMode && !log.Modes.Contains(m.Name, StringComparer.OrdinalIgnoreCase))
             .Select(m => new NextCaller(m.Name, Joined(LivesAt(m.Name, bet.Band), WhoIsThere(calling, operatorGrid, m.Name))))
             .ToList();
@@ -709,6 +716,22 @@ public sealed class AchievementCategory
             var band = cw.FirstOrDefault(b => string.Equals(b.Name, betBand, StringComparison.Ordinal)) ?? cw.FirstOrDefault();
 
             return band is null ? "" : OnBand(band.JumpHz, band.Name);
+        }
+
+        // **OLIVIA'S SPOT IS IN ITS OWN CITED TABLE** (work instruction 368; unit 358 task 4).
+        // `DigitalCallingFrequencies` holds the band-plan blocks and Olivia has none - its
+        // calling frequencies are `data/bands/olivia-calling.json`, which is where the tab
+        // itself reads them from - so without this the one unworked mode a beginner is being
+        // invited to work was the one row that could not say where to find it. **The number is
+        // the table's own and is not written here** (§0).
+        if (string.Equals(mode, ContactModes.OliviaName, StringComparison.OrdinalIgnoreCase))
+        {
+            var table = Hamlet.RadioEngine.Olivia.OliviaData.Current.Calling;
+            var row = table?.CallingRowFor(betBand) ?? table?.Rows.FirstOrDefault();
+
+            return row is not null && table!.DialHzFor(row) is { } dial
+                ? OnBand(dial, row.Band)
+                : "";
         }
 
         var bands = Hamlet.RadioEngine.Bands.DigitalCallingFrequencies.BandsWith(mode);
@@ -755,7 +778,9 @@ public sealed class AchievementCategory
             case "PSK31":
                 break;
             default:
-                return NoVoiceOnTheList;
+                return string.Equals(mode, ContactModes.OliviaName, StringComparison.OrdinalIgnoreCase)
+                    ? ListCannotTellOlivia
+                    : NoVoiceOnTheList;
         }
 
         if (calling.ReadUtc is null)
@@ -977,6 +1002,22 @@ public sealed class AchievementCategory
 
     /// <summary>What the Voice row says: the CQ list is the digital decoded list.</summary>
     public const string NoVoiceOnTheList = "the CQ list carries no voice";
+
+    /// <summary>What the Olivia row says, for the reason the FT4 row has its own sentence.</summary>
+    /// <remarks>
+    /// <para>**THE LIST CANNOT TELL THE TWO KEYBOARD MODES APART** (work instruction 368, §0.0).
+    /// `CqSnapshot` reads a text-only row as `PSK31`, and since unit 364 an Olivia row is a
+    /// text-only row, so a CQ heard on Olivia is on that list under PSK31's name. Saying *no
+    /// one calling in it* would be a claim the list cannot support, and saying *the CQ list
+    /// carries no voice* - which is what the Voice branch answered before this unit - would be
+    /// a sentence about a different mode entirely.</para>
+    /// <para>**IT IS SHORTER THAN THE FT4 SENTENCE BECAUSE THE ROW IS** (work instruction 332's
+    /// rule, measured here rather than guessed). The mode's name is in the row's own left
+    /// column and its calling spot is in front of this, and the longer form - *the CQ list
+    /// cannot tell Olivia from PSK31* - clipped the mode's name to nothing at 1400 px on the
+    /// test host. The fact stated is the same one.</para>
+    /// </remarks>
+    public const string ListCannotTellOlivia = "reads as PSK31 on the CQ list";
 
     /// <summary>How many callers a next card lists.</summary>
     private const int ListedCallers = 3;
