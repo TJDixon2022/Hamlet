@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: RUNNING
-TASK: 2 of 3
+STATE: COMPLETE
+TASK: 3 of 3
 WORK_INSTRUCTION: 369 - settings survive, and a refusal names the fault
-BALL: claude
+BALL: owner
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T17:12:35-04:00
-NOTE: Task 2 green: 7 of 7 on TheRefusalNamesTheFaultTests. Running BindingHealth, the send-path tests and the full carry-forward list for regressions.
+UPDATED: 2026-09-20T17:23:03-04:00
+NOTE: Unit 369 complete. Step 0 done: the loader no longer discards a settings file over one bad value, the ALC reference persists, and the no-device refusal is its own sentence with a Settings link. output.md written; 0.1 answered as a negative and section 4 raises five items.
 
 ---
 
