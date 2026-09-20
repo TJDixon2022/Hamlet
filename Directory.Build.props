@@ -910,8 +910,15 @@
     src/Hamlet.App/Settings/, SettingsViewModel.cs, SettingsWindow.axaml or App.axaml.cs changed
     between 1.13.30 and 1.13.48, or between 1.13.30 and HEAD. No file under src changes at this task.
   -->
+  <!--
+    1.13.57 -> 1.13.58, WORK INSTRUCTION 371 TASK 0. A PATCH, CARRIED REPAIR AHEAD OF THE HARDENING
+    LOOP, THE MAN WHO ANSWERED THE CQ: a station answered Tim's PSK31 CQ twice on 2026-09-20, read as
+    addressed to him with a hand-back, and no card appeared because the parser was not certain.
+    Carry-forward before any change: engine 146 of 146, app 206 of 206. No file under src changes at
+    this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.57</Version>
+    <Version>1.13.58</Version>
   </PropertyGroup>
 
   <!--
