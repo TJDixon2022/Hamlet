@@ -2,296 +2,285 @@
 READ IN THIS ORDER.
 
 A. The phase goal - Hamlet holds what it has. Step 0 partial, step 1 done, step 2
-   partial on 2.4 alone, steps 6, 7 and 8 done by units 376, 378 and 379, step 4 and
-   step 5 not started with step 4 waiting on step 3. Step 3 is partial: unit 380 met
-   3.2, 3.4 and 3.5 and the judging session named 3.1 and 3.3 open. This is the
-   second unit on step 3.
-B. Step 3, criteria 3.1 and 3.3 - which row, and not how many. 3.1 met: of 1,740 rows
-   counted in the record over the busy-band fixture, 1,740 are named by their own
-   place, 0 counted only, 0 dropped and declared; and over the row-state fixtures
-   every drawn, filtered, trimmed and folded row is named, with a row Hamlet cannot
-   place counted, left out and declared in atDropped. 3.3 met: from the four-signal
-   fixture the file names 700, 1,100, 1,600 and 2,200 Hz - all four carriers, with
-   1,100 named again on his own side - and from the six-row gate case it names
-   1,084, 1,802 and 2,205 Hz held by the CQ filter. Re-checked and not assumed: 3.2
-   held, 3.4 37.1 kB an hour against 50 at 5.07 bytes a place measured on the file,
-   3.5 CallsignPrivacyTests 4 of 4 at 82 writers, unmoved.
-C. The report last. Section 4 raises 5 items on top of the carried twenty-seven, and
-   none of them is in the way of a criterion in B. Unit 380's items 2, 3, 5, 6 and 7
-   came off the queue - two were measurements this instruction now states as fact,
-   two were disclosures acted on, and the fifth is built into ruling 1 - and its
-   items 1 and 4 stay on, with item 1 answered tonight in the file this unit was
-   already in.
+   partial on 2.4 alone, step 3 done by units 380 and 381, steps 6 and 8 done, step 7
+   partial on 7.2 as the judging session returned and task 0 transcribed, step 5 not
+   started and Tim's own. Step 4 had zero units before tonight. This is the first
+   unit ever spent on it, and it is the last step a unit can do.
+B. Step 4, criteria 4.1, 4.2 and 4.3 - the sheet, the proof and R11. 4.1 met: for
+   each mode, the presses in order, 10 screen sentences quoted at the steps they
+   belong to, 14 refusal sentences explained of the 9 the send path can produce plus
+   the capture's own, the capture and record paths named, and what to send back. 4.2
+   met: 26 quoted sentences, 21 checked against what the app itself produced and 5
+   found in the source, plus the backward direction - 12 of 12 reachable refusals
+   quoted. 4.3 met: 150 prose lines scanned against 11 words, 0 hits.
+C. The report last. Section 4 raises 7 items on top of the carried twenty-eight, and
+   none of them is in the way of a criterion in B. Unit 381's items 2, 3 and 4 came
+   off the queue - two were measurements this instruction now states as fact and the
+   third closed its own question - and its items 1 and 5 stay on. Step 7's verdict
+   was transcribed and 7.2 is open and parked.
 ```
 
 ```
-UNIT:       381 - complete at task 4 of 5 - 2026-09-21 22:12
-PHASE GOAL: Hold on to what Hamlet already has. Everything banked in the PSK31 and
-            Olivia threads that is screen, record or test and needs neither the
-            radio nor the owner, hardened while Tim is away and judged by tests
-            that ran - and at the end by Tim at his own window.
-UNIT GOAL:  The record already said how many rows were hidden and by what. It did
-            not say WHICH. Put every row's and every card's own place - its offset -
-            inside the line that already counts it, so a reader can walk the file
-            and name each row that was held back rather than only count them, and
-            keep it under 50 kB an hour.
-ADVANCED:   step 3, criteria 3.1 and 3.3
-NUMBER:     rows the record NAMES rather than counts, over the four-signal fixture and
-            the six-row gate case: 3 of 10 -> 10 of 10; the cost,
-            37.1 kB an hour against 50, at 5.07 bytes a place
-DRIFT:      none
+UNIT:       382 - complete at task 4 of 5 - 2026-09-21 19:13
+PHASE GOAL: Hamlet keeps what the PSK31 and Olivia threads already banked - screen,
+            record and test work that needs neither the radio nor the owner - and
+            proves it with tests that ran, until Tim looks at it himself.
+UNIT GOAL:  Tim has never operated PSK31 or Olivia and has said so. There was a sheet
+            for the screen and none for the air. Write the one page he holds at the
+            radio - what to press, what the screen says back, what each refusal means,
+            where the files are, what to send back - with every sentence on it quoted
+            from the program and proved to exist by a test.
+ADVANCED:   step 4, criteria 4.1, 4.2 and 4.3 - the whole of the step
+NUMBER:     operator-facing sentences the sheet quotes: 26, of which 21 were
+            checked against the sentence Hamlet itself produced and 5 were found
+            in the source; the sheet is 176 lines and 10.7 kB against a target of
+            120 and 10
+DRIFT:      none - this unit advanced, so the count stays at 0 (was 0)
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 4 of 5 - every task done and no drop candidate taken.** Windows 11,
-`C:\Source\HamLet`, project gate `PROJECT: Hamlet` verified against the tree, branch `main`.
+**Complete, at task 4 of 5 - all five tasks done, none dropped.** Windows 11, `C:\Source\HamLet`,
+branch `main`; the project gate passed against the tree - `SHACK_FACTS.md` and
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` both present, neither `CoreHMI.sln` nor
+`MURC.sln` at the root.
 
-**The project gate passed on all four checks**: `SHACK_FACTS.md` present,
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, no `CoreHMI.sln`, no `MURC.sln`,
-root `C:\Source\HamLet`.
+**Task 0 - the record, two verdicts and the entry run.** `CURRENT_STEP` 0 to 4 and
+`WORK_INSTRUCTION` 381 to 382, both stale; version 1.13.68 to 1.13.69 with its line in the log;
+`UNIT 382 - STEP 4` appended to `PHASE_OUTCOME.md` with the editor. **Two verdicts a separate
+session returned were transcribed, and neither is a judgment of this unit's:** step 3 is `done` on
+unit 381, and **step 7 is `partial` on 7.2** - the `done` in both step 7 headers came from unit
+378's own entry at `PHASE_OUTCOME.md:274`, while the separate judging session's entry at line 277
+returned `STATE_AFTER: partial` at line 289. That is transcription and not a criticism of unit 378
+or unit 379; 7.2 is parked and nothing under `src\` was touched for it. **Entry carry-forward, both
+invocations, one build each, status written immediately before each: app 220 of 220 in 2 m 17 s and
+engine 150 of 150 in 4 m 54 s, both green on the first attempt.** The seven fixture types task 1
+borrows, run by name with `ViewTestsActThroughControlsTests` beside them: 71 of 72, the one red the
+inherited `NoViewTestWritesAPropertyAControlOwns`.
 
-**The judging session's verdict was transcribed, not re-argued.** Unit 380's own task-0 claim of
-all five criteria stands where it was written; beside it, in the step 3 lines of both
-`PHASE_STATUS.md` and `PHASE_OUTCOME.md`, is the `STATE_AFTER: partial` the separate session
-returned, verbatim, naming 3.1 and 3.3 as the open ones. That is transcription of a verdict
-another session returned. It is not a judgment of this unit's, not one of its two rulings, and
-not a criticism of unit 380, whose measurements this unit is built on.
+**Task 1 - the harvest.** `Unit382Trace`, six `[Fact]` items, no window needed, no file under
+`src\` touched and nothing asserted about the product. It reads the press sequence off the tree
+with the line each label was read from, and it drives the shipped view model into every state the
+PSK31 and Olivia send path can refuse in, printing what Hamlet itself put on the panel. **Eight of
+the nine refusals were produced character for character.** Three measurements disagreed with the
+instruction and the measurement won - they are section 4 items 1, 2 and 3.
 
-**Task 1 measured before anything moved, and it changed no source file.** `Unit381Trace`, five
-`[Fact]` items - none needed a window, so none is an `[AvaloniaFact]`.
+**Task 2 - the sheet.** `docs\RADIO_SHEET.md`, six sections in the ruled order, the quote
+convention at the top and the honesty line beside it. **Every `>` line was copied out of the
+trace's printed output rather than typed from memory.** Olivia is written as differences rather
+than as its own walk - the named drop candidate, taken, with every press and every sentence kept.
 
-- **The before, read out of the record rather than quoted from the instruction.** The four
-  carriers are taken off `psk31_carrier_appeared` at 700, 1,100, 1,600 and 2,200 Hz. The file
-  **named 2 of 4** - 700 on the drawn line of count 4, 1,100 on the `addressed_to_operator` line
-  of count 1 - and **counted the other 2**: five row mentions in two lines carrying two offsets,
-  one place per LINE and never one per ROW. The six-row gate case **named 1 of the 3** it held.
-- **The row rate re-measured off the file**: 112 rows over 8 slots, 14.0 a slot, 240 slots an
-  hour - **3,360 rows an hour, agreeing with unit 380 exactly**.
-- **What a place costs, each figure a difference between two lines in a file and never `.Length`
-  on a string this test built**: baseline 268 bytes; a bare number array in whole Hz **5.07 bytes
-  a place**; at one decimal **6.93**; an array of `slot+offset` strings **14.07**.
-- **The arithmetic**: the busy band writes 16 lines and 4,283 bytes over 1,200 s - 12.5 kB an
-  hour, unit 380's figure to the tenth - and those lines count 1,740 items, **5,220 places an
-  hour**. Whole Hz 38.4 kB an hour, fits; one decimal 47.9, fits; strings 84.3, does not. **The
-  window does not move** and did not need to. **The cap is 128**, arithmetic: 37.5 kB left for
-  places over 48 lines an hour at 5.07 B is 157.5 places a line, and 128 is the largest power of
-  two at or under it - while the busiest measured group holds 112, so nothing truncates.
-- **Where the identities live**, key shapes printed and never a key: the row map by object, the
-  text map by channel, **the card map by callsign** with a window identity of `"c|" + who`, which
-  would leak verbatim.
+**Task 3 - the guards.** `TheRadioSheetQuotesTheScreenTests`, four names, reaching the sheet by the
+walk to the repository root that `DecisionLogOrderTests.cs:49` already uses. 4.2 in both
+directions, 4.3's word scan, and the size reported as a number rather than as a red. **The carry-
+forward line went in the same commit, by type, with its paragraph.** The backward direction found a
+real gap on its first run and **the sheet was fixed, never the test**.
 
-**Task 2 was three commits, one per site group.** One new parameter on `AppEvents.OnScreen` -
-`OnScreenPlaces`, a record, for the same reason `OnScreenViewport` is one - carrying `At`,
-`Dropped` and `SlotLast`. The payload gains `at`, with `atDropped` and `slotLast` where ruling 1
-items 4 and 2 call for them. **No new writer, no new event name, no new telemetry category, no
-second line.** `count` is unchanged and still counts items; `offsetHz`, `slot` and `dialHz` are
-unchanged and still the head. `OnScreenGroup.Items` stays a set and a place is added only where
-the group has not seen that identity, so a place list is not a licence to count changes again.
-`count == at.length + atDropped` always holds and is asserted on every line of every guard.
-**The privacy walk grew in the same commit as the parameter** with a populated `at` through every
-branch, and `ExpectedEventMethodCount` did not move.
+**Task 4 - the exit run.** Both invocations, one build each, status immediately before each: **app
+224 of 224 on the second attempt, engine 150 of 150 on the first.** Name for name against task 0's
+220 and 150, this unit's four new guards the only difference. Four commits, one per task, each with
+a pathspec, and the push at the end.
 
-**Task 3 was two R12 rewrites, each its own commit after the change it is about**, plus the
-re-checks. Both grown guards had to have their fixtures moved first, and that is the finding as
-much as the growth: **unit 380's six rows were all heard at 1,240 Hz**, so a record naming one row
-and a record naming all six read identically and 3.1 could not be tested at all.
+**Two decisions this session made for itself, both reproduced in full.**
 
-**One decision this session made for itself, reproduced in full.** Ruling 1 item 1 says the writer
-gains *one parameter and the payload gains one key, `at`*; items 2 and 4 of the same ruling then
-require `slotLast` and `atDropped` on the line. Those cannot both be literally true. **The reading
-taken is that `at` is the one list-key of item 1 and `slotLast` and `atDropped` are items 2's and
-4's own fields**, and that the one new parameter is one *parameter* - a record carrying all three,
-in the idiom `OnScreenViewport` already set in this file - rather than three positional
-parameters on a writer that already had eleven. It is a finding and not a ruling request; section
-4 item 3 states it.
+**(1) The sheet quotes the mode gate's sentence even though that gate cannot fire under his two
+modes.** Ruling 1 item 6 says a sentence Hamlet does not say does not go in the sheet. Hamlet does
+say this one - it is produced character for character under WSPR - and the sheet's row names WSPR
+as the chip it belongs to and says to press PSK31 or Olivia. **The alternative was leaving one of
+the nine refusals off a page whose whole claim is that it leaves none off**, and a reader who did
+meet it would have had nothing to look it up in. It is quoted, marked as belonging to a third chip,
+and reported as section 4 item 1.
 
-**Unit 380's item 1 was answered in the file this unit was already in**, as section 3 directs.
-`AddDecodeRowForTests` said in its own remarks that it is *the same door the decoder uses*, which
-is untrue of the tree. Four lines of prose, no behaviour, no signature, no call site, its own
-commit.
-
-**Nothing on a send path was touched**: no composer, no `Arm`, no `PttOn`, no cap, no RSID burst,
-no Olivia variant gate. **No file under `src\Hamlet.RadioEngine\` was opened except to read it**,
-and `git diff` over the whole unit shows no file under `Views`, none under `Controls` and none
-under `Hamlet.RadioEngine` changed at all.
-
-**No task was dropped.** The three named drop candidates - the trace's item 2, `slotLast`, and the
-card place list - were all kept, because the measured hour left 12.9 kB of margin and none of them
-had to be spent.
+**(2) The R11 word scan matches whole words rather than substrings.** On its first run it reported
+three hits, and all three were the word `rig` inside `Right-click` and `right now`. **A substring
+scan answers a different question from R11's**, and the only way to make the sheet pass it would
+have been to paraphrase ordinary English - which would have degraded the page to satisfy a
+measurement. The scan is now `\brig\b` and the reason is in the test's own remarks. This is a
+correction to a test this unit wrote tonight and is not a loosening of an inherited one: nothing
+before this unit scanned the sheet at all, and the scan is stricter in every case that is actually
+R11's.
 
 ## 2. What the owner should expect
 
-When a station you were working disappears off the list, the file now tells you **which station**.
-Before tonight it could say *three rows were held back by the CQ filter* and show you one
-frequency that was probably not yours; from tonight it says *the rows at 1,084, 1,802 and 2,205 Hz
-were held back by the CQ filter*, and you can find yours by the offset you were tuned to instead
-of trusting a count. The same is true of everything else that can take a row off your screen - the
-trim aging it out of the table, a panel you had folded shut, a row that never reached the left list
-- each one now names every row it took. It costs **37.1 kB an hour** on a busy band against a
-ceiling of 50, measured on the file rather than estimated, with every one of the 1,740 rows named
-and none left merely counted. Nothing on your screen changed: no control, no label, no layout, no
-colour, and unit 354's nine window sizes read the same numbers to the pixel. Nothing personal went
-into the file - an offset, a slot, a kind, a count and a reason, never a callsign, never a grid,
-never a word of what was decoded - and where Hamlet genuinely has no offset for something it says
-so rather than writing a zero that would read as a station at the bottom of the band. Every figure
-here was computed on the development machine (FACT-004): **no port was opened, no device was
-enumerated and nothing was keyed.**
+**You can now sit down at the radio with one page open and know what to do.** `docs\RADIO_SHEET.md`
+tells you which button to press and in what order for PSK31 and for Olivia, what the screen should
+say back at each press - in the screen's own words, not a description of them - what every sentence
+that refuses a send actually means and what to do about it, where your capture and your record are
+kept, and exactly what to send back when something goes wrong and what is not worth sending. Every
+sentence on it was checked against the program rather than remembered: twenty-one of the twenty-six
+were compared with the string the application itself produced, character for character, and the
+other five were found as literals in the source. It is checked the other way round too - every
+refusal the send path can reach is on the page - so the page cannot quietly go out of date: a later
+unit that adds a refusal, or changes a sentence, turns a test red until the page catches up.
 
-**What will look wrong but is not.** The `on_screen` lines in the file are longer than they were,
-and on a busy band one of them can carry a list of a hundred and twelve numbers. That is the
-whole point of the unit and it is inside the budget with 26% to spare.
+**Nothing on your screen changed. No file under `src\` changed at all** - not a label, not a
+sentence, not a layout. **No port was opened, no device was enumerated and nothing was keyed**
+(FACT-004); every sample in every fixture lived in an array. **The page will look wrong in one
+way and is not:** it is 176 lines rather than the 120 that was aimed at, because the sentences
+Hamlet actually says are long and the page may not shorten them by rewording them.
 
 ## 3. What you should see
 
-**The unit 337 diagnosis, read row by row out of the file.**
+### The refusal table, read back out of the sheet, beside what Hamlet produced
 
-| Carrier | What the file said BEFORE tonight | What it says AFTER |
-|---|---|---|
-| 700 Hz | **named** - the head of the drawn line | **named** - `at[0]` of `[700,1100,1600,2200]` |
-| 1,100 Hz | **named** - the head of the `addressed_to_operator` line | **named** on both sides, the same carrier twice |
-| 1,600 Hz | **counted only** - inside a count of 4 | **named** |
-| 2,200 Hz | **counted only** - inside a count of 4 | **named** |
+Every row below is a line in section 4 of `docs\RADIO_SHEET.md`. **Kind (a)** means the test drove
+the view model into that state and compared the sheet's quote with what Hamlet put on the panel,
+character for character. **Kind (b)** means the literal was found in a file under
+`src\Hamlet.App`. A `<marked>` part is a value spliced in at the moment the sentence is said, and
+what is compared is each fixed part either side of it, in order.
 
-Before: `{"kind":"row","state":"drawn","by":"","count":4,"subMode":"PSK31","offsetHz":700}`
-After: `{"kind":"row","state":"drawn","by":"","count":4,"subMode":"PSK31","offsetHz":700,"at":[700,1100,1600,2200]}`
-
-And the answer itself is unchanged and still the one nobody expected: **all four stations were
-drawn and not one row was filtered.** If the list looks empty on PSK31 tonight the band is empty,
-because since unit 337's own repair the CQ button does not touch a PSK31 or an Olivia row at all.
-The difference is that the file can now be asked about each carrier by name rather than asked to
-be believed about four.
-
-**The gate that does fire, beside it.** Six FT8-shaped rows with the CQ toggle on:
-
-| Offset | What it is | Before | After |
+| What refused | The sheet's quote | What Hamlet produced in the test | Kind |
 |---|---|---|---|
-| 617 Hz | a CQ | counted | **drawn, named** |
-| 884 Hz | a CQ | counted | **drawn, named** |
-| 1,084 Hz | between two other stations | named, as the head of a count of 3 | **held by `cq_filter`, named** |
-| 1,410 Hz | addressed to the operator | counted | **drawn on his own side, named** |
-| 1,802 Hz | between two other stations | counted | **held by `cq_filter`, named** |
-| 2,205 Hz | between two other stations | counted | **held by `cq_filter`, named** |
+| Nothing in the message | *There was nothing to send.* | identical | **(a)** |
+| No way to key anything | *Hamlet composed the PSK31 call and sent nothing: no radio is connected and no transmit audio device is named in Settings.* | identical | **(a)** |
+| No transmit device chosen | *No transmit device is chosen. Open Settings and pick the radio's sound card.* | identical, and it is the whole of `DigitalSendLine` and of `TransmitRefusalSentence` | **(a)** |
+| The device would not open, on the send line | *Hamlet composed the PSK31 call and sent nothing: the transmit audio device named in Settings could not be opened. Device: `<the card's name>`. Rate asked for: `<n>` samples per second. The operating system said: `<what Windows said>`.* | `... Device: USB Audio CODEC. Rate asked for: 12000 samples per second. The operating system said: the device is in use by another application.` | **(a)** |
+| The same fault, shown on its own | the same sentence without the wrapper and without the closing period | `the transmit audio device named in Settings could not be opened. Device: USB Audio CODEC. ...` | **(a)** |
+| Nowhere clear to call | *Hamlet did not call: the band is too crowded here to call without landing on someone. It looks for a spot at least 150 Hz from every carrier being read and from every candidate over quality 0.4, in the middle of the widest such gap between 400 and 2200 Hz, and there is not one right now. Move the dial a little, or wait for somebody to finish.* | identical | **(a)** |
+| Longer than the cap | *Hamlet did not send the PSK31 call: this is `<n>` s of Psk31 audio, and this send may be at most `<n>` s so that a continuous carrier cannot run on. Nothing keyed.* | `... this is 316.93 s of Psk31 audio, and this send may be at most 30 s ...` | **(a)** |
+| Olivia cannot announce itself | *Hamlet did not call in Olivia: a send has to begin with the burst naming its variant, and `<which file, and what is wrong with it>`. So nothing went out, because a signal nobody can name the variant of is a signal nobody can read.* | produced with the three unreadable files named in the middle | **(a)** |
+| The Olivia variant is not proved | *Hamlet did not send it: it has not proved to itself that it can read back Olivia `<variant>`, so it will not put that variant on the air.* | `... it can read back Olivia 8/250, so it will not put that variant on the air.` | **(a)** |
+| The text holds what the mode cannot carry | *Hamlet did not send it: `<what the composer said>`.* | `Hamlet did not send it: the text holds U+2014, which Olivia cannot send as itself (Parameter 'text').` | **(a)** |
+| The chosen mode cannot send at all | *Hamlet cannot send `<the mode>` yet, so nothing went out. It can hear this mode before it can answer in it, and sending anything else here would put the wrong kind of signal on a frequency people are using for `<the mode>`.* | produced under WSPR, which is the only chip it can fire under - section 4 item 1 | **(a)** |
+| The right-click menu is empty | *Hamlet could not read its canned lines, so it is offering none: `<which file, and what is wrong with it>`* | not produced; found in `MainWindowViewModel.cs` | **(b)** |
+| A capture kept nothing, PSK31 or Olivia | *Nothing arrived while it was running, so no file was kept.* | identical, from a second press with nothing heard | **(a)** |
+| A capture would not write | *Could not write the capture: `<what Windows said>`* | not produced; found in `MainWindowViewModel.cs` | **(b)** |
+| Nothing was listening | *Nothing is listening, so there is no audio to keep. Connect a radio or pick the training radio and press it again.* | not produced; found in `MainWindowViewModel.cs` | **(b)** |
+| No audio had arrived | *No audio has arrived yet, so there is nothing to keep.* | not produced; found in `MainWindowViewModel.cs` | **(b)** |
 
-**3 of 10 named before, 10 of 10 after**, across the two fixtures.
+**Backward: 12 of 12.** Every refusal the test can reach on the PSK31 and Olivia send path is
+quoted on the sheet. That direction found a gap on its first run - the would-not-open reason shown
+on its own under the send line is a different string from the send line's own sentence - and the
+sheet gained a quote for it. **A refusal that exists and is not on the sheet fails that name**,
+which is what stops the page going stale after tonight.
 
-**The arithmetic, measured on the file.**
+### The press walk, in the sheet's order, with the screen's words at each step
 
-| Encoding | Bytes a place | Places an hour | Places | Lines | Total an hour | |
-|---|---|---|---|---|---|---|
-| bare number array, whole Hz | **5.07** | 5,220 | 25.9 kB | 12.5 kB | **38.4 kB** | fits |
-| bare number array, one decimal | 6.93 | 5,220 | 35.3 kB | 12.5 kB | 47.9 kB | fits |
-| array of `slot+offset` strings | 14.07 | 5,220 | 71.7 kB | 12.5 kB | 84.3 kB | **does not fit** |
+**PSK31.** Open the Digital tab; the mode strip is five chips under the caption *on this
+frequency*. Press the **PSK31** chip and the line beside the strip becomes *listening for PSK31
+across the whole passband. Every signal Hamlet is sure is PSK31 gets a line of its own below, with
+where it sits, how strong it is and its text as it arrives, and a line from somebody calling
+anybody carries an Answer that replies on his own frequency.* The decoded panel reads *nothing
+decoded yet. Every station Hamlet is sure is sending PSK31 gets a line here, filling in a character
+at a time as it arrives. A signal it is not sure of gets no line at all rather than a guess, so an
+empty panel can mean a quiet band or a signal too rough to read.* The send area reads *nothing sent
+yet* with the hover *Right-click a decoded row to choose a message, or press CQ.* Press **CQ** -
+the one in the send area - and it reads *Sending "`<your line>`" now, at `<n>` Hz in the passband.*
+**Right-click any row that names a station** for the seven lines from `data\psk31\canned.json`.
+**Stop** is in the status bar, reads `Stop` at rest and `Stop transmitting` when something is
+armed, and asks nothing first. When it has gone: *Sent "`<your line>`" - `<n>` s of PSK31.*
 
-**Whole Hz was taken.** The cap that follows is **128** - 37.5 kB of place budget over 48 lines an
-hour at 5.07 bytes is 157.5 places a line, and 128 is the largest power of two under it. **The
-window did not move**: widening it buys the 12.5 kB of envelope only, because places scale with
-rows and not with windows, which makes it the smallest lever and not the first.
+**Olivia, as differences.** The same walk. The variant comes from the station being answered and is
+never chosen from a menu - there is no variant control anywhere in Hamlet. Every send begins with a
+burst naming the variant, and a variant Hamlet has not read back off its own audio is refused. The
+panel and the send line say Olivia: *Sent "`<your line>`" - `<n>` s of Olivia.*
 
-**The hour, re-earned end to end and not in a spreadsheet**: 80 slots x 14 rows, 1,120 decodes, 16
-lines, **12,667 bytes over 1,200 s of band = 37.1 kB an hour against 50**, a margin of 12.9 kB and
-**26% of the ceiling**. It was 12.5 kB before the places, so the places cost 24.6 kB an hour.
+### The paths, and what a returned file lets a reader say
 
-**Nothing was capped, and no group came near it.** 1,740 items counted, 1,740 places carried, 0
-declared absent. The busiest group held **112** against a cap of 128. `drawn` did not have to take
-the cap first and the gated states did not have to be protected, because ruling 2 item 3's
-fallback was never reached.
+| What | Where |
+|---|---|
+| The record | `%AppData%\Hamlet\telemetry\`, one file a day, `yyyy-MM-dd.jsonl`, in UTC |
+| A PSK31 or Olivia capture | `%AppData%\Hamlet\captures\`, named `psk31-` or `olivia-yyyy-MM-dd-HHmmss.wav` |
+| A `keep the last 30 seconds` capture | `%AppData%\Hamlet\captures\digital\`, named `ft8-yyyy-MM-dd-HHmmss.wav` |
+| Settings, and your own canned lines | `%AppData%\Hamlet\settings.json` and `%AppData%\Hamlet\canned.json` |
 
-**The privacy scan over `at`.** `CallsignPrivacyTests` 4 of 4 with `ExpectedEventMethodCount`
-**unmoved at 82**, the walk grown in the same commit as the parameter with a populated `at` through
-every branch, plus the truncated shape, the spanned-slot shape and a card Hamlet has no
-measurement for. This unit's own scan is extended over `at` and `atDropped` and asserts **every
-element is a number** - a stronger claim than a word list, because nothing that could hold a name
-can be in the list at all, whatever a future call site is tempted to hand in. The card map is keyed
-by callsign and that key never reached the file: a card is named by the offset of the station it
-stands for, or counted and not named.
+**The two capture folders are not the same folder** and the sheet says so. **A capture's name is a
+timestamp and nothing else** - no callsign, no band, no station (HM-DEC-018 §2.1) - and that
+timestamp is the whole method of matching a returned WAV to a line in the record. Three events
+answer Tim's four questions: **`on_screen`** says what was drawn, filtered, scrolled away, folded
+or trimmed, with each row's own place in whole Hz, and is what answers *why did my list look
+empty*; **`psk31_send_refused`** says which gate refused a press, by token and stage, and is what
+answers *I pressed it and nothing went out*; **`psk31_capture_finished`** carries the seconds, the
+bytes, the SHA-256 and what was being heard, and is what matches a file to its evening.
 
-**Unit 354's nine sizes**, re-measured: `483, 71, 92, 163, 171, 267, 483, 460, 860` - **identical
-to units 376's and 380's, to the pixel** - with `TheStopIsAlwaysOnScreenTests`, `TheTopRowTests`,
-`TheWorkingPanelsTests` and `BindingHealthTests` 29 of 29. And stronger than a measurement this
-time: **no file under `Views`, none under `Controls` and none under `Hamlet.RadioEngine` changed at
-all.**
+### The R11 scan
 
-**The carry-forward counts, before and after, with the fate of every invocation named.**
+The word list, the author's, with its reason in the test's own remarks: **knob, VFO, PTT, mic gain,
+RF gain, transceiver, rig, tune the radio, turn the radio, on the radio, at the rig's front.**
+**150 prose lines scanned, 11 words, 0 hits.** The scan is over the sheet's own prose and
+deliberately not over its `>` lines, because a quoted refusal is what the screen already says and
+is out of this unit's hands - and two of the quoted sentences would hit the list, which is section
+4 item 4.
 
-| | App | Engine |
-|---|---|---|
-| Task 0 attempt 1 | **completed RED, 218 of 219** - dispatcher loop, not an assertion | — |
-| Task 0 attempt 2 | **completed GREEN, 219 of 219** | **completed GREEN, 150 of 150**, first attempt |
-| Task 4 attempt 1 | **completed RED, 219 of 220** - dispatcher loop, not an assertion | — |
-| Task 4 attempt 2 | **completed GREEN, 220 of 220** | **completed GREEN, 150 of 150**, first attempt |
+### The sheet's measured size
 
-**Name for name, the only difference between task 0 and task 4 is this unit's one new
-carry-forward guard**, `TheRecordSaysWhatWasOnScreenTests.ARowHamletCannotPlaceIsCountedAnd
-DeclaredRatherThanInvented`. **No regression; nothing red that was green before** (HM-DEC-165).
-**Not one name failed an assertion in any of the four invocations.** The dispatcher loop took an
-app attempt in both rounds - a **tenth** name at task 0
-(`ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel`) and an **eleventh**
-at task 4 (`TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`), both at
-1 ms in `HeadlessUnitTestSession.EnsureApplication` before any assertion, both re-run clean. Unit
-380's file-lock `IOException` did not reproduce. The engine invocation has still never failed since
-unit 375.
+**176 lines and 10,918 bytes - 10.7 kB - against a target of 120 lines and 10 kB.** Over on both.
+**3,442 of those bytes are the 26 quote lines**, which the sheet's own convention forbids wrapping,
+so five sentences occupy one very long line each. Ruling 2 item 2 says the content is the criterion
+and the length is a target, and the number is reported rather than bought down by dropping a
+refusal or paraphrasing a quote.
 
-**The named types, task 0 against task 4**: the nine types this unit can move went **64 of 64 to 65
-of 65**, the one new name the only difference. `Unit381Trace` 5 of 5, `Unit380TraceTests` green.
-**Both inherited reds re-run and both unchanged**: `ViewTestsActThroughControlsTests` 1 of 2 with
-its message character for character, and `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn`
-red as section 9 says. No task of this unit edited either file.
+### The carry-forward counts, and the fate of every invocation
+
+| Invocation | Attempt | Result | Fate |
+|---|---|---|---|
+| Entry, app | 1 | **220 of 220** in 2 m 17 s | green, no dispatcher loop |
+| Entry, engine | 1 | **150 of 150** in 4 m 54 s | green |
+| Entry, the seven borrowed types + `ViewTestsActThroughControlsTests` | 1 | 71 of 72 | the one red inherited |
+| Exit, app | 1 | 223 of 224 | **the dispatcher loop** at 1 ms on `TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing`, before any assertion |
+| Exit, app | 2 | **224 of 224** in 2 m 23 s | green |
+| Exit, engine | 1 | **150 of 150** in 4 m 53 s | green |
+| Exit, the same types + this unit's trace | 1 | 77 of 78 | the same one red, unmoved |
+
+**Name for name against task 0, the only difference is this unit's four new names**, all in
+`TheRadioSheetQuotesTheScreenTests`. **No regression, and nothing red that was green before**
+(HM-DEC-165) - which is what should be expected, because no file under `src\` changed at all. **Not
+one name failed an assertion in any of the seven invocations.**
 
 ## 4. What's blocking us
 
-**Nothing is blocking. Every item below is a finding or a disclosure, and none of them asks the
-owner to decide anything.** No item wants a ruling; no criterion in B depends on any of them.
+**1. The `mode` refusal cannot fire under PSK31 or Olivia, and the sheet quotes its sentence
+anyway. A finding, and the decision beside it is the author's and overrulable.** The gate at
+`MainWindowViewModel.cs:16400` writes `Psk31Events.SendRefused(..., "mode", ..., "gate")` only when
+`IsPsk31Chosen`, and `CanTransmitIn` at `:2491` answers **true** for FT8, FT4, PSK31 and Olivia -
+so the only chip the gate refuses is WSPR, where `IsPsk31Chosen` is false and no PSK31 token is
+written at all. **The token at that site is unreachable in the shipped tree.** The sentence is not:
+it is produced character for character under WSPR. Work instruction 382 counts nine refusals
+"seven on the PSK31 and Olivia send path"; the measurement says the seventh of those seven is a
+WSPR sentence. **Nothing was repaired.** It wants no ruling; if the arbiter wants the token gone or
+the gate widened, that is a later unit's and it touches a send path.
 
-**1. A third shape of environmental test fault, and this one is a marginal guard rather than a
-platform fault. A finding.** `TheRecordDiagnosesTheEveningTests.AScrollerThatSettlesSaysWhatIs
-InsideItOnBothPanels` - unit 380's, not on the carry-forward list - is intermittent under parallel
-load. It waits 600 ms of wall clock (twenty sleeps of 30 ms, each followed by a forced render tick
-and `RunJobs`) for a 250 ms `DispatcherTimer`, and when enough CPU-heavy `[Fact]`s run alongside it
-in one invocation the timer's signal is not delivered inside the budget, so **no `scrolled_out`
-line is written at all** and the failure reads `Assert.NotEmpty() Failure: Collection was empty` at
-line 453. **It is environment and not this unit's payload, and that was proved rather than
-assumed**: it fails the same way in an invocation crowded with **nine types this unit never
-touched** - `TheTopRowTests`, `TheWorkingPanelsTests`, `ThePsk31PanelHearsTests`,
-`ThePsk31ExchangeTests`, `TheCqReceiptTests`, `ThePressingOfCqTests`, `TheDecodedTableIsRealTests`,
-`TheOliviaRowsTests` - none of which writes an `on_screen` line or carries a place. It is green
-every time in isolation, and the privacy walk this unit grew costs 40 ms, so the bytes added are
-not the load. **What this unit could NOT establish, and says so plainly: the rate before tonight.**
-The A/B needed `git stash` or `git checkout <sha> -- <paths>`, and **both were refused by the
-permission mode** in this non-interactive session, so no pre-change rate was measured and none is
-claimed. What is known is that the nine named types were 64 of 64 green at task 0 and 65 of 65
-green at task 4, and that the name failed in between on roughly half of the crowded runs. The
-honest repair - lengthening the guard's wait or driving the settle deterministically - is unit
-380's test and not this unit's to touch, and it is offered to whichever unit next works in that
-file.
+**2. The four `DigitalCaptureRefusal` values belong to the other capture button. A finding.**
+Section 5 of the instruction names them as the sheet's section 4 material, and they are - but all
+four are written by `CaptureDigital`, the `keep the last 30 seconds` press, which writes
+`ft8-<stamp>.wav` into `captures\digital`. **The PSK31 and Olivia press is a different control**
+with its own folder (`captures`), its own file name (`<mode>-<stamp>.wav`), its own line on the
+screen (`Psk31CaptureWhere`) and **two sentences of its own**, and it writes no
+`DigitalCaptureRefusal` at all. The sheet carries all six and says which button each belongs to.
+Nothing was repaired.
 
-**2. The record names two carriers before tonight, not one. A finding, and a measurement that
-refines this instruction.** Work instruction 381 section 4 says *four carriers at 700, 1100, 1600
-and 2200 Hz, and the file names one of them*, and the judging session's verdict says *four carriers
-reported under offset 700*. Both are right about the line they quote and the whole file names
-**two**: the four-signal fixture writes two lines, one headed 700 for the left list and one headed
-1,100 for the operator's own side, so 1,100 is named as well. The before is therefore **2 of 4
-named and 2 counted**, not 1 and 3. It does not change the verdict or the work - two of four is
-still not *which rows* - and the numbers in section B and section 3 are the measured ones.
-Nothing was repaired on the strength of it.
+**3. Only one of the three `Content="CQ"` buttons sends, and the instruction left which to the
+reading. Answered.** `MainWindow.axaml:3558` is `DigitalSendCqButton` on `SendCallToAnyoneCommand`
+and is the one; `:3940` is the CW compose macro that fills a line and sends nothing; `:4215` is
+`DigitalFilterCq`, the decoded list's filter chip. The sheet says so in section 2 step 5, because
+pressing the filter and expecting a transmission is the exact mistake the page exists to prevent.
 
-**3. The one new key is three keys, and the one new parameter is one record. A finding, and the
-one decision this session made for itself.** Ruling 1 item 1 says the payload gains **one** key,
-`at`; items 2 and 4 of the same ruling then require `slotLast` and `atDropped` on the line. The
-reading taken is that `at` is item 1's one list-key and the other two are items 2's and 4's own
-fields, all three conditional and absent where the fact is absent. The parameter really is one:
-`OnScreenPlaces`, a record carrying all three, in the idiom `OnScreenViewport` already set in that
-file - because a twelfth, thirteenth and fourteenth positional parameter on a writer that had
-eleven is one a call site gets wrong in silence. **It is disclosed rather than done quietly.**
+**4. Two sentences Hamlet says would hit R11's own word list, and this unit may not touch either.
+A finding, and it is the honest weakness of 4.3.** The crowded-band refusal ends *Move the dial a
+little, or wait for somebody to finish*, and the stop's own line can end *If it is still
+transmitting, stop it at the radio.* Both are Hamlet's sentences, both predate this unit, and 4.1
+forbids paraphrasing inside a quote - so the sheet quotes them as they are and the scan excludes
+`>` lines. **The exclusion will look like a loophole and is not:** what R11 governs is what this
+unit wrote. Reported, not repaired. If the arbiter wants either sentence changed, that is a source
+change on a send path and it is the stop.
 
-**4. `OnScreenBy` has no squelch token, so there is nothing to report there. A finding, and it
-closes the question section 5 asks.** Section 5 says *`OnScreenBy.Squelch`, if it is still in the
-token list, names a gate that cannot fire on a row*. It is not in the list:
-`src\Hamlet.App\Telemetry\OnScreen.cs:53` holds exactly five tokens - `""`, `cq_filter`,
-`addressed_to_operator`, `trim` and `dismissed`. Unit 380 measured that the squelch is not a
-visibility gate and never added one. Nothing to repair.
+**5. Five of the twenty-six quotes got kind (b), and that is the weakness of the proof.** They are:
+*on this frequency*, found in `DigitalIdleText.cs`; and the four capture sentences - *Hamlet could
+not read its canned lines...*, *Could not write the capture: ...*, *Nothing is listening...* and
+*No audio has arrived yet...* - all found in `MainWindowViewModel.cs`. **The reason each one could
+not be produced:** the first is markup a headless fixture would have to draw a window to read, and
+the other four need a state no fixture in this project can reach without a malformed canned file on
+disk, a real audio tap, or a folder the process cannot write to. **The nine send-path refusals all
+got kind (a)**, which is what ruling 1 item 4 asks for; the four capture fallbacks are the drop
+candidate task 3 named, taken.
 
-**5. `validate-output.bat` refused for the third unit running, and the six rules are hand-checked
+**6. The sheet is over its length target on both numbers. Reported, not bought down.** 176 lines
+and 10.7 kB against 120 and 10 kB. **What bought it:** 26 quoted sentences on 26 unwrapped lines,
+3,442 bytes between them, five of which are single sentences over 250 characters; and 14 refusal
+rows each carrying what it says, what it means and what to do, which is 4.1's content. Ruling 2
+item 2 rules this case and nothing was dropped.
+
+**7. `validate-output.bat` refused for the fourth unit running, and the six rules are hand-checked
 below. A finding about the harness, not about the report.** The command was run in the exact shape
 section 2 names:
 
@@ -306,57 +295,62 @@ This command requires approval
 ```
 
 That is the permission mode and not the syntax - **a non-interactive session cannot answer it** -
-and it is the same refusal from the same shape that units 379 and 380 both reported. **What
-follows is a HAND-CHECK against the script's own source at
-`tools\arbiter\validate-output.bat`, not a run of it, and it is worth exactly what a hand-check is
-worth: the script was not executed and nothing independent agreed with me.**
+and it is the same refusal from the same shape that units 379, 380 and 381 all reported. **What
+follows is a HAND-CHECK against the script's own source at `tools\arbiter\validate-output.bat`, not
+a run of it, and it is worth exactly what a hand-check is worth: the script was not executed and
+nothing independent agreed with me.**
 
 | Rule, as the script states it | Hand-check | Verdict |
 |---|---|---|
-| 1 - a `UNIT:` line above section 1, parseable, within the first 60 lines | `UNIT:` is line 28; section 1 is line 45; the file is UTF-8 with **no BOM** (first bytes are `` ` ` ` \n ``), so the BOM fault the script's own comment describes does not arise | **ok** |
-| 2 - the four top-level sections, in order, exact names | the only `^## ` lines are 45, 123, 145, 241: `1. What Claude did`, `2. What the owner should expect`, `3. What you should see`, `4. What's blocking us` - matching the script's `WANT` string word for word, including the apostrophe | **ok** |
-| 3 - no fifth top-level section | four `^## ` lines and no more; the one `### ` heading is the carried queue below, which the script says in its own comment it ignores | **ok** |
-| 4 - section 4 present even when empty | `## 4. What's blocking us` at line 241, and it is not empty | **ok** |
-| 5 - section 3 non-empty | 77 non-blank lines between `## 3.` and `## 4.` | **ok** |
-| 6 - the ordering block above the `UNIT:` line, with A, B, C, and C naming a count | `READ IN THIS ORDER.` line 2, `A.` line 4, `B.` line 9, `C.` line 19 - all inside the 60-line window the script reads - and C says *Section 4 raises 5 items*, which matches the script's `raises \d+ item` | **ok** |
+| 1 - a `UNIT:` line above section 1, parseable, within the first 60 lines | `UNIT:` is line 24; section 1 is line 41; the file is UTF-8 with **no BOM** | **ok** |
+| 2 - the four top-level sections, in order, exact names | the only `^## ` lines are `1. What Claude did`, `2. What the owner should expect`, `3. What you should see`, `4. What's blocking us`, in that order, matching the script's `WANT` word for word including the apostrophe | **ok** |
+| 3 - no fifth top-level section | four `^## ` lines and no more; the `### ` headings under section 3 and the carried queue are ones the script's own comment says it ignores | **ok** |
+| 4 - section 4 present even when empty | present, and it is not empty | **ok** |
+| 5 - section 3 non-empty | 90 non-blank lines between `## 3.` and `## 4.` | **ok** |
+| 6 - the ordering block above the `UNIT:` line, with A, B, C, and C naming a count | `READ IN THIS ORDER.` line 2, `A.` line 4, `B.` line 9, `C.` line 16 - all inside the 60-line window - and C says *Section 4 raises 7 items*, which matches the script's `raises \d+ item` | **ok** |
 
 **All six rules pass on the hand-check. Nothing verified them but me.** The ask stays on the queue
-as unit 379's item 7, carried through unit 380's item 8; this unit adds only that it is now three
-units in a row.
+as unit 379's item 7; this unit adds only that it is now four units in a row.
 
-**The `RULES_AT` split, reported and not repaired.** It is unit 380's item 9:
-`PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)` because `tools/status.sh` writes that field as
-a literal, while `CLAUDE.md` §1 holds `CPS-DEC-0165`. **`tools\` is not this unit's to edit.**
-Reported, not repaired.
+**The `RULES_AT` id-scheme split, reported and not repaired.** `PROJECT_STATUS.md` reads
+`HM-DEC-165 (2026-09-19)` because `tools/status.sh` writes that field as a literal, while
+`CLAUDE.md` §1 holds `CPS-DEC-0165`. **`tools\` is not this unit's to edit.** Four units have now
+reported it.
 
-**No item of the kind section 12 singles out arose.** The measured hour held every place with 12.9
-kB to spare, so 3.1 is met rather than partial and the ceiling was never re-read. A place was
-unavailable for exactly one deliberately constructed state - a row whose `Hz` will not parse - and
-that is named, sited and declared in `atDropped` rather than guessed. **Nothing needed a change on
-a send path.**
+**No item of the kind section 12 singles out arose.** **No criterion needed a change under
+`src\`**, and no file under `src\` was opened except to read it. No stage on the two modes' send
+path was found silent - every one of the twenty-four `DigitalSendLine` sites has a sentence, so the
+sheet never had to say *Hamlet says nothing here*. One sentence reads oddly and is reported rather
+than repaired: **the cap refusal says `Psk31` where the whole of the rest of the screen says
+`PSK31`**, because that word comes off the `UnslottedMode` enum's own name. It is quoted as it is.
 
-### The carried queue, verbatim per HM-DEC-139 - twenty-seven, and this unit answers none of them
+### The carried queue, verbatim per HM-DEC-139 - twenty-eight, and this unit answers none of them
 
+- **Unit 381 item 1** - `AScrollerThatSettlesSaysWhatIsInsideItOnBothPanels` waits 600 ms of wall
+  clock for a 250 ms `DispatcherTimer` and loses that race under parallel load. Proved
+  environmental against nine types unit 381 never touched; the pre-change rate is unmeasurable
+  because `git stash` and `git checkout -- <paths>` were both refused. **Not on the carry-forward
+  list; no task here opened that file, and it did not arise.**
 - **Unit 380 item 1** - `AddDecodeRowForTests` is half a door: it reaches `PlaceRow` while the
-  decoder's own door `AddDecodeRow` also keys the duplicate set and runs the trim, so no test could
-  reach the row cap through it. **Answered tonight in the remarks, in the file this unit was
-  already in; the hook itself is untouched and the ask stays on the queue.**
-- **Unit 380 item 4** - a second shape of environmental test fault, the file-lock `IOException` at
-  `TheOliviaRowsTests.cs:675`: *the process cannot access the file ... `refuse\2026-09-21.jsonl`
-  because it is being used by another process*, the test's own reader racing the telemetry writer's
-  background thread. It did not reproduce tonight.
+  decoder's own door `AddDecodeRow` also keys the duplicate set and runs the trim.
+- **Unit 380 item 4** - the file-lock `IOException`, the test's own reader racing the telemetry
+  writer's background thread. **It arose once tonight, in this unit's own new trace**, and was
+  answered inside the trace rather than reported as new: the reader now opens with
+  `FileShare.ReadWrite`, or reads after the writer is closed. The ask stays on the queue because
+  the shape is still there for any test that reads a live record.
 - **Unit 379 item 1** - the CQ list's mode label.
 - **Unit 379 item 3** - the `80m` spelling.
 - **Unit 379 item 7** - `validate-output.bat` returns `This command requires approval` from the
   exact documented shape, which is the permission mode and not the syntax, and a non-interactive
-  session cannot answer it.
+  session cannot answer it. **Four units running.**
 - **Unit 378 items 1, 3 and 4.**
 - **Unit 377 item 4.**
 - **Unit 376 items 3, 4 and 5.**
 - **Unit 375 item 3** - Avalonia's headless `InvalidProgramException: You have caused dispatcher
   loop`, which kills an app invocation at about 1 ms in `HeadlessUnitTestSession.EnsureApplication`
-  before any assertion and moves between names. **Eleven names now**, two of them this unit's two
-  entry and exit attempts.
+  before any assertion and moves between names. **Twelve occurrences now**, tonight's being the
+  first exit app attempt on `TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing` - a name
+  it has landed on before, which is the first repeat in seven units.
 - **Unit 375 item 4.**
 - **Unit 374 item 3.**
 - **Unit 373 item 2.**
@@ -364,12 +358,17 @@ a send path.**
 - **Unit 371's five.**
 - **Unit 369's four.**
 
-**Which of unit 380's nine came off, and why.** Items 2 and 3 - the squelch is not a visibility
-gate, and instruction 380 omitted `AppEvents.DecodesReachedTheScreen` - were measurements that
-contradicted their instruction and won, and work instruction 381 section 5 now states both as facts
-of the tree. Items 5 and 6 - the carry-forward line one commit late, and the trace running as
-`[AvaloniaFact]` - were disclosures, and section 11 carries the first as a rule and task 1 the
-second as permission. Item 7 - a slotted row's `where` carries its tone offset beside its slot and
-dial - was accepted and made load-bearing: ruling 1 is built on that offset, and without it a
-slotted row could not have contributed a place at all. Item 8 stays on as unit 379's item 7 and
-item 9 is reported in item 5 above. **Items 1 and 4 remain, and the queue is twenty-seven.**
+**Which of unit 381's five came off, and why.** Item 2 - the record named two carriers before that
+unit, not one - and item 3 - the one new key is three keys and the one new parameter is one record
+- were measurements that refined their own instruction and won, and work instruction 382 section 3
+states both as facts. Item 4 - `OnScreenBy` has no squelch token - closed the question instruction
+381 asked. **Items 1 and 5 stay on, and with unit 380's two and the rest the queue is
+twenty-eight.**
+
+**Step 7 is `partial` on 7.2 and it is parked.** Task 0 transcribed the separate judging session's
+verdict into both files and stopped there. Nothing in `src\` was touched for it, the token was not
+changed, no macro row was routed through `SendCannedPsk31`, and unit 378's reading was not
+re-argued.
+
+**Step 5's entry is `step 4 done`, and step 5 is Tim's own.** Nothing here drafts his verdict,
+presumes it, or writes a checklist for it.
