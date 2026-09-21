@@ -3245,7 +3245,12 @@ public partial class MainWindowViewModel : ObservableObject
         string key, OnScreenKind kind, bool isTextOnly, OnScreenViewport seen, int left)
         => AppEvents.OnScreen(
             _telemetry, kind, OnScreenState.ScrolledOut, key, isTextOnly,
-            offsetHz: null, slot: "", dialHz: 0, count: left, ChosenDigitalMode, seen);
+            offsetHz: null, slot: "", dialHz: 0, count: left, ChosenDigitalMode,
+            // **THE SETTLE CARRIES NO PLACE LIST AND MUST NOT** (work instruction 381 section 6
+            // ruling 1 item 5). It is not put through the window, it carries a RANGE and a
+            // viewport rather than a set, and a row's scrolled-away state is arithmetic on that
+            // range - which is the only shape that survives a drag.
+            places: null, viewport: seen);
 
     /// <summary>Record a settle the view read off the decoded panel's scroller.</summary>
     /// <param name="first">First index inside the viewport, or -1.</param>

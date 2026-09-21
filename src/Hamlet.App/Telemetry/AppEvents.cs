@@ -1083,8 +1083,24 @@ public static class AppEvents
     /// <param name="count">1 for an item event, and <c>n</c> where one line stands for
     /// <c>n</c> items inside a sampling window.</param>
     /// <param name="subMode">The strip label the operator chose, or "" for unknown.</param>
+    /// <param name="places">
+    /// **Where every one of the <paramref name="count"/> items actually was** - unit 381's whole
+    /// subject - or null where the call site has no list to give.
+    /// </param>
     /// <param name="viewport">The scroller's numbers, on a <c>scrolled_out</c> line only.</param>
     /// <remarks>
+    /// <para>**WHAT A PLACE IS, AND WHAT IT IS NOT** (work instruction 381 section 6 ruling 1).
+    /// A place is **an audio offset in whole Hz, written as a number** - the figure Tim reads off
+    /// his own waterfall - and it is **never an identity**. The three maps behind this line are
+    /// keyed by a row object, by a channel and **by a callsign**; not one of those keys reaches
+    /// the file, and an item Hamlet has no offset for is **counted and not named** (HM-DEC-018
+    /// §2.1). The tenth of a hertz is deliberately dropped: unit 381 task 1 weighed it on the
+    /// file at **5.07 bytes a place in whole Hz against 6.93 at one decimal**, and a row is
+    /// identified by which carrier it is rather than by a tenth of a hertz nobody tunes to.</para>
+    /// <para>**AND `count` DOES NOT CHANGE MEANING BECAUSE A LIST ARRIVED.** It is still the
+    /// number of ITEMS, never the number of changes: a live PSK31 row is rebuilt four times a
+    /// second, and unit 380 measured 521 state changes across four carriers in 38 seconds. A
+    /// place list is not a licence to count changes again.</para>
     /// <para>**ONE WRITER, ONE EVENT NAME, AND R13 CUTS BOTH WAYS.** The rule is *no new event
     /// type where an existing writer will carry it*: none of the eleven existing writers carries
     /// what became of a row, and five new ones where one will do is the same fault from the other
@@ -1118,6 +1134,7 @@ public static class AppEvents
         long dialHz,
         int count,
         string? subMode,
+        OnScreenPlaces? places = null,
         OnScreenViewport? viewport = null)
     {
         if (telemetry is null)
@@ -1153,6 +1170,41 @@ public static class AppEvents
         if (dialHz > 0)
         {
             data["dialHz"] = dialHz;
+        }
+
+        // **WHERE EVERY ITEM THIS LINE COUNTS ACTUALLY WAS**, and not the head's place alone
+        // (work instruction 381 section 6 ruling 1). `offsetHz` above is unchanged and is still
+        // the head, so every reader and every guard written against unit 380's file goes on
+        // working - **the head is simply the first element of `at`**, in whole Hz.
+        //
+        // **A PLACE IS A NUMBER AND NEVER AN IDENTITY** (HM-DEC-018 §2.1). The three maps behind
+        // this line are keyed by a row object, by a channel and BY A CALLSIGN, and not one of
+        // those keys reaches this dictionary: an item Hamlet has no offset for is counted in
+        // `atDropped` rather than named by its key.
+        //
+        // **AN ABSENT FACT IS ABSENT AND NEVER ZERO** (§0.0). An empty list writes no `at`, no
+        // truncation writes no `atDropped`, and a group inside one slot writes no `slotLast`.
+        if (places is { } where)
+        {
+            if (where.At.Count > 0)
+            {
+                data["at"] = where.At;
+            }
+
+            // **TRUNCATION IS NEVER SILENT** (ruling 1 item 4). `count` still counts them all,
+            // so `count == at.length + atDropped` and a reader can check the file against
+            // itself.
+            if (where.Dropped > 0)
+            {
+                data["atDropped"] = where.Dropped;
+            }
+
+            // The span the places sit inside, where the group reached past its head's slot.
+            if (!string.IsNullOrEmpty(where.SlotLast)
+                && !string.Equals(where.SlotLast, slot, StringComparison.Ordinal))
+            {
+                data["slotLast"] = where.SlotLast;
+            }
         }
 
         if (viewport is { } seen)

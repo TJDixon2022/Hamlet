@@ -454,43 +454,58 @@ public sealed class CallsignPrivacyTests : IDisposable
         // provable rather than asserted. **Every one of the five states, both kinds, both
         // categories and the scrolled-out line's viewport numbers are walked**, so no branch of
         // the one writer escapes the scan.
+        // **AND THE PLACE LIST IS WALKED WITH THE PROFILE LOADED** (work instruction 381 section
+        // 6 ruling 1 item 6, criterion 3.5 re-earned rather than assumed). `at` is the newest
+        // ground and the most tempting of all: the thing a reader most wants to know about a
+        // hidden row is WHICH row, and the shortest way to say which is the callsign - which is
+        // exactly what the card map is keyed by. **A populated list goes through every branch**,
+        // so the scan reads real elements rather than an absent key, and the truncated shape and
+        // the spanned-slot shape are walked beside it.
+        var places = new OnScreenPlaces(new long[] { 617, 884, 1084, 1410, 1802, 2205 }, 0, "");
+        var truncated = new OnScreenPlaces(new long[] { 700, 1100, 1600 }, 9, "214150");
+        var placeless = new OnScreenPlaces(Array.Empty<long>(), 4, "");
+
         foreach (var became in Enum.GetValues<OnScreenState>())
         {
             // A slotted row, which goes in the Decode category.
             AppEvents.OnScreen(
                 telemetry, OnScreenKind.Row, became, OnScreenBy.CqFilter,
                 isTextOnly: false, offsetHz: 1240, slot: "214135", dialHz: 14_074_000,
-                count: 1, subMode: "FT8");
+                count: 6, subMode: "FT8", places: places);
 
             // A text row, which goes in the Psk31 category and has no slot and no dial.
             AppEvents.OnScreen(
                 telemetry, OnScreenKind.Row, became, OnScreenBy.Nothing,
                 isTextOnly: true, offsetHz: 1100.5, slot: "", dialHz: 0,
-                count: 7, subMode: "Olivia");
+                count: 12, subMode: "Olivia", places: truncated);
 
-            // A card, on both sides of the same choice.
+            // A card, on both sides of the same choice - one placed, one Hamlet has no
+            // measurement for, which is the shape that is counted and never named.
             AppEvents.OnScreen(
                 telemetry, OnScreenKind.Card, became, OnScreenBy.Dismissed,
                 isTextOnly: true, offsetHz: 700, slot: "", dialHz: 0,
-                count: 1, subMode: "PSK31");
+                count: 1, subMode: "PSK31",
+                places: new OnScreenPlaces(new long[] { 700 }, 0, ""));
 
             AppEvents.OnScreen(
                 telemetry, OnScreenKind.Card, became, OnScreenBy.AddressedToOperator,
                 isTextOnly: false, offsetHz: null, slot: "214150", dialHz: 14_074_000,
-                count: 1, subMode: "");
+                count: 4, subMode: "", places: placeless);
         }
 
-        // The scroll-settle shape, where the payload is widest.
+        // The scroll-settle shape, where the payload is widest, and it carries no place list.
         AppEvents.OnScreen(
             telemetry, OnScreenKind.Row, OnScreenState.ScrolledOut,
             PanelKeys.DigitalDecoded, isTextOnly: false, offsetHz: null, slot: "",
             dialHz: 0, count: 26, subMode: "FT8",
-            new OnScreenViewport(11, 18, 720.4, 141.2, 200));
+            places: null,
+            viewport: new OnScreenViewport(11, 18, 720.4, 141.2, 200));
 
         AppEvents.OnScreen(
             telemetry, OnScreenKind.Card, OnScreenState.Folded,
             PanelKeys.DigitalMine, isTextOnly: true, offsetHz: null, slot: "",
-            dialHz: 0, count: 3, subMode: "Olivia");
+            dialHz: 0, count: 3, subMode: "Olivia",
+            places: new OnScreenPlaces(new long[] { 1240, 1500, 1760 }, 0, "214205"));
 
         AppEvents.DigitalDecoderStarted(telemetry, "Ft8", 15.0, 48_000, "USB Audio CODEC");
 
