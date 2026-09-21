@@ -2,455 +2,449 @@
 READ IN THIS ORDER.
 
 A. The phase goal - Hamlet holds what it has. Step 0 partial, step 1 done, step 2
-   partial on 2.4 alone and deferred by R43, step 6 done by R42, step 7 done by unit
-   378, steps 3, 4 and 5 not started with step 3 waiting on this one. This is the
-   first unit ever spent on step 8.
-B. Step 8 - keyboard modes earn achievements. 8.1 MET: 8 of the eight kinds measured
-   for PSK31 and for Olivia against FT8 from a fixture log, 6 cells differed and ALL
-   SIX WERE ABOVE FT8 WITH NONE SHORT. 8.2 MET: a logged PSK31 contact earns 46 pts
-   and a logged Olivia contact earns 46 pts, against the FT8 contact's own 31 - the
-   seven mode-independent kinds equal cell for cell, the Hall of Fame a superset by
-   exactly the mode's own first. 8.3 MET: the quill WAS ALREADY THE SAME on both
-   keyboard row kinds and is now asserted, and the CQ list's Olivia label reads
-   "Olivia" where it read "PSK31". 8.4 MET on BOTH contacts: the total moved
-   "Total 0 pts · Rank 1 · 25 to Rank 2" -> "Total 46 pts · Rank 2 · 54 to Rank 3" on
-   the PSK31 contact and identically on the Olivia contact, TheAchievementsPageTests
-   12 of 12. The drop candidate was NOT taken.
-C. The report last. Section 4 raises 7 items on top of the carried queue, and none of
-   them is in the way of a criterion in B. Unit 378's item 2 came off the queue -
-   R43 had already ruled it - and its items 1, 3 and 4 stay on. The instruction calls
-   the carried queue twenty-one and its own enumeration lists TWENTY-TWO; all
-   twenty-two are carried below and the discrepancy is item 6.
+   partial on 2.4 alone, steps 6, 7 and 8 done by units 376, 378 and 379, step 4 and
+   step 5 not started with step 4 waiting on this one. This is the first unit ever
+   spent on step 3.
+B. Step 3 - the record says what was on screen. 3.1 met: 5 of the five row states
+   written, at 5 sites. 3.2 met: 4 of the four card states, the named drop candidate
+   not taken. 3.3 met: from the four-signal fixture with the CQ filter on, the record
+   alone says all four carriers were drawn on the left list and one was also on the
+   operator's own side, and the gate that hid a row was none - no row was filtered,
+   because unit 337's own repair took the CQ toggle off a text row. 3.4 met: 12.5 kB
+   an hour measured against 50, at a head budget of one line per state-and-gate group
+   per 120-second window from a measured 3,360 rows an hour and a measured 267-byte
+   line. 3.5 met: CallsignPrivacyTests 4 of 4 with the walk at 82 writers.
+C. The report last. Section 4 raises 9 items on top of the carried twenty-five, and
+   none of them is in the way of a criterion in B. Unit 379's items 4, 5 and 6 came
+   off the queue - two were disclosures already acted on and the third is the count,
+   stated here - and its items 1, 3 and 7 stay on.
 ```
 
 ```
-UNIT:       379 - complete at task 4 of 5 - 2026-09-21 15:53
-PHASE GOAL: Hamlet keeps what the PSK31 and Olivia threads already earned it - the
-            screen, record and test work that needs neither the radio nor the owner,
-            judged by tests that ran and, at the end, by Tim at his window.
-UNIT GOAL:  A station Tim works on PSK31 or on Olivia earns him exactly what the same
-            station worked on FT8 would earn him - the Modes badge, the Hall of Fame
-            first, the country, state, grid, continent and miles, the quill on the
-            row and the scores and total on the achievements page. Measured in three
-            columns FIRST, and connected only where a column was short.
-ADVANCED:   step 8, criteria 8.1, 8.2, 8.3 and 8.4 - the whole step, first unit spent
-            on it; it also clears step 3's entry, which reads step 8 done
-NUMBER:     of the eight achievement kinds, those a PSK31 contact reaches: 8 of 8 ->
-            8 of 8; and an Olivia contact: 8 of 8 -> 8 of 8. THE TABLE WAS ALREADY AT
-            PARITY AND THAT IS THE UNIT'S CENTRAL FINDING. What moved is not in it:
-            of the three achievement-screen facts an Olivia contact got wrong, 3 were
-            wrong before and 0 are wrong after
-DRIFT:      0 consecutive units without advance  (was 0)
+UNIT:       380 - complete at task 4 of 5 - 2026-09-21 17:02
+PHASE GOAL: Hamlet holds what it has. Bank the screen, record and test work already
+            won in the PSK31 and Olivia threads, unattended, needing neither the
+            radio nor the owner, and judge it by tests that ran and at the end by
+            Tim at his own window.
+UNIT GOAL:  Make a night that looked empty readable out of the file. For every
+            decoded row and every card, the record says what became of it on the
+            screen - drawn, held off the list by a gate it names, scrolled past,
+            behind a folded panel, or aged off the table - so the question that cost
+            a screenshot in September is answered from the record alone, at a size
+            that does not swamp a busy FT8 evening.
+ADVANCED:   step 3, criteria 3.1, 3.2, 3.3, 3.4 and 3.5 - the whole step
+NUMBER:     of the five visibility states a decoded row can be in, those the record
+            named before tonight: 0 of 5 -> 5 of 5; and for a card: 0 of 4 -> 4 of 4;
+            the cost, 12.5 kB an hour against 50
+DRIFT:      none
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 4 of 5 (tasks 0 to 4), on QUIVERFULL, project gate `PROJECT: Hamlet`
-verified against the tree - `SHACK_FACTS.md` and
+**Complete, at task 4 of 5** (tasks 0 to 4). Development machine, project gate checked
+against the tree and passed - `SHACK_FACTS.md` and
 `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, no `CoreHMI.sln`, no
-`MURC.sln`, root `C:\Source\HamLet`, solution `Hamlet.sln` - on branch `main`. Nothing was
-dropped: 8.4's named drop candidate, the Olivia half of the before-and-after on the page,
-was not taken.**
+`MURC.sln`, root `C:\Source\HamLet` - branch `main`.
 
-**Task 0 - the record and the entry run.** `PHASE_STATUS.md` `CURRENT_STEP` 0 -> 8 and
-`WORK_INSTRUCTION` 378 -> 379, both stale. **Step 7 transcribed as done** in
-`PHASE_STATUS.md` and `PHASE_OUTCOME.md` from unit 378's five met criteria and the judging
-session's `STATE_AFTER: done` - transcription of a verdict a separate session already
-returned, not a judgment of mine and not one of this unit's two rulings. **The two step 6
-headers were checked and they agree** at `done`, so the disagreement the reload named is
-already closed by unit 377's transcription of R42 and is not re-argued. Version 1.13.65 ->
-1.13.66 with its line in the version log. Carry-forward before any change, both invocations,
-one build each, status written immediately before each: **app 214 of 214 on the second
-attempt**, the first 213 of 214 with `TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizes
-StopIsInTheStatusBarAndOnTheWindow` dying at 1 ms of the headless dispatcher loop - unit
-375's item 3, a third name it had not landed on, re-run once and recorded; **engine 150 of
-150** first attempt. And the six achievement types by name outside the list: **43 of 45, both
-reds inherited**, which is the whole reason that run exists.
+**Nothing was dropped.** The instruction named one drop candidate, the scroll-settle
+reporter on the For You (cards) panel, and it was taken rather than dropped, so all
+four of 3.2's card states are written and 3.2 is met rather than partial.
 
-**Task 1 - the trace, and this task is criterion 8.1.** One `[Fact]`, `Unit379Trace`. It
-built nothing, changed no source file and asserted nothing about the product. One contact
-three times over - the same callsign, grid, band, dial and times, differing **only** in the
-mode pair - read in three columns across seven record facts, all eight achievement kinds,
-the Hall of Fame keys, the scores, the total, the record Hamlet itself builds, the Modes and
-Hall of Fame cards, the quill on three row kinds, the CQ list and the page's totals. **It
-found the eight kinds already at parity with zero cells short of FT8, the quill already
-identical, and three things genuinely wrong - all three Olivia's, none of them visible in the
-eight-kind table.**
+### Task 0 - the record and the entry run
 
-**One thing had to be fixed in the measurement itself before it measured anything.** The
-station was first `VK3ABC`, and `DxccPrefixes.EntityOf` **declined it** - `VK` is claimed by
-Australia, Heard I. and Lord Howe I., and the table returns nothing rather than guessing
-which. That silenced the countries and continents columns and made the quill read `None` on
-all three rows, which would have been a vacuous pass. The station moved to `YB1ABC` -
-Indonesia, one entity - and the measurement was re-taken. **The decline is the table obeying
-§0.0 and it is reported, not repaired.**
+`PHASE_STATUS.md` `CURRENT_STEP` 0 to 3 and `WORK_INSTRUCTION` 379 to 380, both stale.
+Version 1.13.66 to 1.13.67 with its line in the version log. The `UNIT 380 - STEP 3`
+entry appended to `PHASE_OUTCOME.md`. **Step 8 already read `done` in both files**, so
+there was nothing to transcribe; the step 6 and step 7 headers were checked and agree.
 
-**Task 2 - 8.2, two marked cells closed, one commit each, and then the assertion.** Both
-cells were Olivia's and both were on the Hall of Fame card, where the eight-kind table could
-not see them. (1) `AchievementCategory.EarnerOf` had rows for `first_psk31` and
-`first_cw_qso` and **none for `first_olivia`**, so the card was earned and scored at its full
-15 points with nobody's name on it. (2) `AchievementCategory.NextFirst` had the same hole, so
-the unearned card read **"Any station at all"**. Each repair is one case at the one place the
-fact is already derived; no second scorer, no second log reader, no mode branch anywhere else
-on the screen, and `LivesAt` already knew Olivia's calling spot from unit 358 so nothing new
-was built for it. Then `TheKeyboardModesEarnWhatFt8EarnsTests`, five names, **5 of 5** - the
-two contacts driven all the way through `ContactLogEntryForStation`, `ContactLogStore.Append`
-and the refresh a press of Log runs, then scored **against the FT8 contact's own numbers and
-never against a number typed in the test.**
+**The entry carry-forward, and the entry round is the one that broke.** App attempt 1,
+2 m 15 s: 215 of 216, and the red was **not an assertion** -
+`TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant`
+threw `System.IO.IOException` at `TheOliviaRowsTests.cs:675`, *the process cannot access
+the file ... refuse\2026-09-21.jsonl because it is being used by another process*.
+**That is a shape of environmental fault no prior unit has recorded** and it is section
+4's item 4. App attempt 2, 2 m 20 s: 215 of 216 again, the file-lock red **not
+reproduced**, and a different name lost at 1 ms to Avalonia's headless
+`InvalidProgramException: You've caused dispatcher loop` in
+`HeadlessUnitTestSession.EnsureApplication` -
+`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`, **a ninth
+name** that fault has landed on. That is unit 375's item 3, re-run once as directed,
+recorded and not chased. **The union of the two attempts is 216 of 216 and not one name
+failed an assertion.** Engine 150 of 150 green first time.
 
-**Task 3 - 8.3 and 8.4.** The CQ label repaired at `CqSnapshot`, one site, from the row's own
-variant. `TheQuillAndThePageMeanTheSameTests`, four names, **4 of 4**. **8.4 is met on both
-contacts and the drop candidate was not needed.**
+The eight types this unit can move: **71 of 71 green**, so any red met later was this
+unit's. `ViewTestsActThroughControlsTests` 1 of 2, the inherited red named so it could
+not be read as this unit's.
 
-**Task 4 - the exit run.** **App 216 of 216 in 2 m 22 s, green on the first attempt; engine
-150 of 150 in 5 m 1 s, green on the first attempt.** Name for name against task 0's 214 and
-150, the only differences this unit's own two guards. **No regression, nothing red that was
-green before** (HM-DEC-165). The six achievement types re-run in the same filtered shape:
-**43 of 45, identical to task 0**, the same two inherited reds, and the clipping one fails
-with the same message character for character. Two names added to
-`docs\carry-forward-tests.txt` with their paragraphs and the human-readable list changed to
-match.
+### Task 1 - the trace, which built nothing and decided the budget
 
-**Decisions I made for myself, reproduced in full.** Both of the unit's two rulings were
-spent in the work instruction, so I made none. Three judgment calls inside them:
+One `[Fact]` and one `[AvaloniaFact]`, run by name. Nothing was built, no source file
+changed, nothing repaired and nothing asserted about the product.
 
-1. **A cell where a keyboard mode reaches *more* than FT8 is not a gap and was not levelled
-   down.** Six cells differed and all six were above FT8. Ruling 1 item 3 makes only a
-   *short* cell the unit's, and R14 forbids rebuilding what the tree meets, so the six were
-   reported with their cause - the points file carries `first_psk31` and `first_olivia` and no
-   `first_ft8` at all - and nothing was changed to make FT8 catch up. **Levelling PSK31 and
-   Olivia down to FT8 would have satisfied "exactly as" and taken 15 points off him.**
-2. **The Hall of Fame card counts as a per-contact record 8.2 names.** 8.2's words are *the
-   Hall of Fame first for that mode, and every per-contact record the log can answer*. The
-   card's callsign, grid, band-and-mode line and date are exactly those records, so the two
-   empty cards were treated as marked cells and closed. They do not appear in item 2's table
-   because the *score* was right and only the card was wrong.
-3. **The CQ label is named from the row's `Variant`, which leaves one case it cannot answer,
-   and I reported it rather than putting a second mode fact on the row.** Ruling 2 item 2 says
-   the label comes from *the one fact the row already carries*; that is `Variant`. An Olivia
-   channel opened with no readable variant still reads `PSK31`. It is strictly narrower than
-   what it replaced - every Olivia row used to read `PSK31` - and it is item 1 in section 4.
+- **The four-signal fixture.** With the CQ filter off and with it **on**, the three
+  lists read identically: table 4, visible 4, mine 0, shown 4, mineCount 0, hidden 0.
+  Each run wrote **52 telemetry lines** - `psk31_line_parsed` 10, `psk31_squelch` 7,
+  `psk31_reading` 8, four carriers appearing and four retiring, and seven lines not
+  about the path at all. **Not one of the 52 names a list, a gate or a fate.**
+- **A gate that does fire.** Six FT8-shaped rows with the CQ filter on: table 6,
+  visible 2, mine 1, hidden 3 - **three rows on no list at all**, and nothing in the
+  file naming them or saying why.
+- **The row rate, counted.** 112 rows placed over 8 slots through the real path at the
+  shack's own 14-a-slot reading of 2026-09-04, 240 slots an hour: **3,360 rows an
+  hour**.
+- **The byte length, weighed on the file.** Envelope alone 142 bytes, a full slotted
+  candidate **267**, a lean text candidate 223. **One event per row is 876.1 kB an
+  hour, 17.5 times criterion 3.4's 50 kB**, so the literal reading of 3.1 is not
+  available on a busy band. 50 kB buys 191 lines an hour, one every 18.8 s, **0.80 of
+  a line per slot - less than one, so the window cannot be the slot.** A 120-second
+  window gives 6.4 lines. **That is where the sampling number came from.**
+- **The cards, the fold and the scroller.** One card appeared and one was dismissed
+  and the record said nothing about either. `panel_toggled` carried the key and
+  open/shut and not the 5 rows and 1 card behind each fold. The scroller read extent
+  720, viewport 141, first index 0 and last 7 at rest and first 11 and last 18 at
+  offset 200, with all 40 containers realized - **the index range is readable without
+  new view code**, so ruling 1 item 3 stands.
+- **The privacy walk before:** 81 writers against a guard reading 81.
 
-**Nothing on a send path was touched, and no engine file at all.** Both repairs are single
-sites in `src\Hamlet.App\ViewModels`: `AchievementCategory.cs` and `CqSnapshot.cs`. No
-composer, no `Arm`, no `PttOn`, no cap, no RSID burst, no Olivia variant gate, and nothing
-under `src\Hamlet.RadioEngine\Olivia\`, `\Psk31\`, `\Rsid\` or `\Transmit\` was opened. **No
-stop in `PHASE_PLAN.md` section 6 was reached.**
+### Task 2 - the writer, the sites, and the privacy walk
+
+`AppEvents.OnScreen`: **one** method, **one** event name, `on_screen`, carrying `kind`,
+`state`, `by`, `where`, `count` and the sub-mode. The category is chosen **inside the
+writer** from the item's own `IsTextOnly` - `Psk31` for a text row, `Decode` for a
+slotted one - and **no new telemetry category** was added. `OnScreenKind`,
+`OnScreenState`, `OnScreenBy` and `OnScreenViewport` are closed types rather than
+strings typed at call sites. A fact Hamlet does not have is **absent** and not zero.
+
+**The writes go where the decision is.** `OnDigitalDecodesChanged` and
+`ApplyDecodedFilter` are the two places a row is put on a list or kept off one, and
+both arrival paths - `PlaceRow` for a slotted row, the text-row builder for a PSK31 or
+Olivia one - run through them. `TrimDigitalDecodes` writes `removed`, `Reconcile`
+writes a card appearing and a card dismissed, `PersistPanel` writes what went behind a
+fold **beside `panel_toggled` and never instead of it**.
+
+**The last state is remembered off the row**, in maps the view model owns and nothing
+draws from - **two maps and not one**, because a text row has no object identity to
+keep: the builder replaces a PSK31 row with a new record four times a second, so kept
+by object the record would write `drawn` for every carrier on every tick, which is the
+second copy of `psk31_line_parsed` this step exists not to write.
+
+**Criterion 3.5 in the same commit as the writer.** `ExpectedEventMethodCount` 81 to
+82 and the walk grown with it over all five states, both kinds, both categories and the
+scroll-settle shape, so **no commit tip in this unit leaves a carry-forward name red**.
+
+**3.1 and 3.2 asserted off the file the run wrote**, never off a view-model property:
+`TheRecordSaysWhatWasOnScreenTests` 6 of 6.
+
+### Task 3 - the diagnosis, the size of an hour, and the drop candidate taken
+
+`TheRecordDiagnosesTheEveningTests` 6 of 6. The four-signal fixture with the CQ filter
+on, read out of the file; the case where a gate does fire asserted beside it; the cost
+measured end to end at **12.5 kB an hour**; the sampling shape asserted (20 rows in 3
+lines against 600 rows in 4); **both** panels' scroll settles driven through the real
+window, the real `ScrollChanged` and the real quarter-second settle; and unit 354's
+nine sizes re-measured.
+
+**One decision this session made for itself, reproduced in full.** *The `count` field
+counts rows and not changes.* Section 6 ruling 1 says `count` is *1 for an item event
+and n where one line stands for n items*, and the first implementation tallied changes.
+Measured, that is wrong by a factor of a hundred: a live PSK31 row is rebuilt four times
+a second and its reading re-parsed each time, which moves it between the operator's own
+side and the left list and back - **521 state changes across four carriers over 38
+seconds of the four-signal fixture**. A tally would have told a reader that 521 rows were
+on the screen when four were, which is exactly the §0.0 fault this step exists to
+prevent. The window therefore keeps a **set of identities** and writes its size. The
+identity is named to the channel at the text-row builder, because the obvious key - the
+first-heard `HHmmss` cell - **collides**: the four-signal fixture's four carriers all
+appear in the same second.
+
+### Task 4 - the exit run
+
+Three guard names added to `docs\carry-forward-tests.txt` by type and method with their
+paragraphs, and the human-readable list changed to match. **Exit carry-forward: app 219
+of 219 in 2 m 24 s and engine 150 of 150 in 4 m 55 s, both green on the first attempt.**
+The eight types re-run in the same filtered shape: 71 of 71, identical.
+`ViewTestsActThroughControlsTests` 1 of 2, the same inherited red with the same message
+character for character.
+
+**Nothing on a send path was touched** - no composer, no `Arm`, no `PttOn`, no cap, no
+RSID burst, no variant gate - and **no file under `src\Hamlet.RadioEngine\` was opened
+except to read it**.
 
 ## 2. What the owner should expect
 
-Tim, when you work a man on PSK31 or on Olivia tonight and press Log, that evening now counts
-for exactly what the same evening on FT8 would have counted for - **and most of it already
-did, which nobody had ever checked.** The country, the continent, his grid, the band and the
-miles have been landing on your board for a keyboard contact since the units that put the mode
-on the record itself; so has the Modes badge. Measured side by side tonight from one contact
-built three times over, a PSK31 contact and an Olivia contact each score **46 points where the
-same man worked on FT8 scores 31** - and the 15-point difference is in *their* favour, because
-your points file has a first-PSK31 card and a first-Olivia card and no first-FT8 card at all.
-That is your file's judgement and nothing here touched it. The quill on a keyboard-mode row
-was already the same feather with the same words as on an FT8 row, and there is now a test
-that says so. **Three things were genuinely wrong and all three were Olivia's.** The
-achievements page told you a station calling CQ on Olivia was calling on **PSK31** - it has
-said that since the unit that built the CQ list, which was written before Olivia existed
-here - and it now says Olivia, while an FT8-shaped row goes on saying nothing at all because
-it cannot tell FT8 from FT4. Your Olivia first in the Hall of Fame was earned and paid at full
-value **with nobody's name on it**: no callsign, no grid, no date, no `20 m · Olivia` line,
-where the PSK31 card carried all four. It now carries them. And the Olivia card, before you
-earn it, told you that working **"any station at all"** would earn it - which is not true and
-you could have acted on it; it now tells you where Olivia lives, from the same table the
-Olivia tab reads. **What will look wrong but is not:** the Olivia line reads `3.582 on 80m`
-where the PSK31 one reads `3.580 on 80 m` - the missing space is the Olivia calling file's own
-spelling of the band and it is the same string the Modes badge has shown since unit 358, so
-Hamlet is at least consistent with itself; and states and total miles do not move for a single
-short contact in **any** mode, FT8 included, because Hamlet writes no STATE for any mode and
-358 miles does not reach the first mileage tier. **Nothing was invented to make a number
-move**: a record Hamlet cannot answer is still absent, for these two modes exactly as for FT8.
-Every figure in this report was computed on the development machine (FACT-004) - **no port was
-opened, no device was enumerated and nothing was keyed.**
+When a night looks empty, you can send back the file and it will say why. For every line
+Hamlet decoded and every card it raised, the record now says what became of it on your
+screen - whether it was drawn, whether a filter you had left on held it off the list and
+which filter, whether you had scrolled past it, whether the panel holding it was folded
+shut, or whether it aged off the table when the list filled. **That means the empty-list
+question that needed a screenshot on 12 September is now answerable from the file alone**
+- and the answer it gives is worth knowing: on the four-signal test, with the CQ button
+**on**, the record says every one of the four stations was drawn and nothing at all was
+hidden. The CQ button has not touched a PSK31 or Olivia row since that fault was
+repaired, so if your keyboard-mode list looks empty tonight, the band is empty, and the
+file now says so instead of saying nothing. **It costs 12.5 kB an hour to know**, against
+a ceiling of 50, measured on a band as busy as the busiest evening this project has ever
+recorded.
+
+**What will look wrong but is not.** Nothing on your screen changed - no control, no
+label, no layout, no colour; the panels are the same size to the pixel at all nine window
+sizes. The file will have a new event in it called `on_screen`, and there will be **far
+fewer of them than there are rows**: one line stands for a whole two-minute window of
+rows in the same state, carrying how many there were and where the first of them sat.
+That is deliberate, and it is the only way both *every change is accounted for* and *it
+fits in 50 kB an hour* can be true at once. Nothing personal is in any of those lines -
+an offset, a slot, a dial, a kind, a count and a reason, and never a callsign, a grid or a
+word of what anybody typed.
+
+Every claim above was **computed on the development machine, not seen** (FACT-004): **no
+port was opened, no device was enumerated and nothing was keyed.**
 
 ## 3. What you should see
 
-**The eight kinds, FT8 beside PSK31 beside Olivia. One contact - `YB1ABC` at `OI33`, 20 m,
-from `FN00DJ` - built three times over, differing only in the mode pair.** This table is what
-makes 8.1 a measurement and 8.2 a comparison.
+### The unit 337 diagnosis, read out of the file
 
-| Kind | FT8 | PSK31 | Olivia | |
-|---|---|---|---|---|
-| `hall_of_fame` | 3 | **4** | **4** | MARKED, **above** FT8 |
-| `continents` | 1 | 1 | 1 | parity |
-| `countries` | 1 | 1 | 1 | parity |
-| `states` | 0 | 0 | 0 | parity, **all three nothing** |
-| `grids` | 1 | 1 | 1 | parity |
-| `total_miles` | 10058 | 10058 | 10058 | parity |
-| `bands` | 1 | 1 | 1 | parity |
-| `modes` | 1 | 1 | 1 | parity |
-| **score** `hall_of_fame` | 135 | **150** | **150** | MARKED, **above** |
-| **score** others | 50/5/0/1/0/5/5 | same | same | parity |
-| **TOTAL** | 201 | **216** | **216** | MARKED, **above** |
+The four-signal PSK31 fixture, carriers at 700, 1100, 1600 and 2200 Hz, driven through
+the real tap and tick **with the CQ filter on**.
 
-**Six cells marked, all six above FT8, none short - so nothing in this table was task 2's to
-close.** Before and after are the same table: it was already at parity and it still is. The
-Hall of Fame keys: FT8 earns `first_contact`, `first_over_5000_miles`,
-`first_over_10000_miles`; PSK31 those three plus `first_psk31`; Olivia those three plus
-`first_olivia`. **The asymmetry is the owner's file and not the scorer**, measured key by key:
-`first_psk31` 15 pts, `first_olivia` 15 pts, and **no such key in the file** for `first_ft8`,
-`first_ft4`, `first_cw`, `first_wspr` or `first_voice`.
+**Before tonight**, the whole record of that run was 52 lines, of which the ones about
+the path were `psk31_line_parsed` 10, `psk31_squelch` 7, `psk31_reading` 8, four carriers
+appearing and four retiring. **Not one of them named a list, a gate or a fate.** Per row,
+what the record said became of it: *nothing*, four times over. That is the gap that cost a
+screenshot in September.
 
-**The record Hamlet itself builds**, all sixteen `AdifContact` fields, the same textbook
-transcript replayed down the PSK31 panel and the Olivia panel and an FT8 exchange with the
-same station. **PSK31 and Olivia are identical field for field.**
+**After tonight**, the same run writes two more lines and they answer it:
 
-| Field | FT8 | PSK31 | Olivia |
+```
+{"kind":"row","state":"drawn","by":"","count":4,"subMode":"PSK31","offsetHz":700}
+{"kind":"row","state":"drawn","by":"addressed_to_operator","count":1,"subMode":"PSK31","offsetHz":1100}
+```
+
+Per row: **700 Hz drawn, 1600 Hz drawn, 2200 Hz drawn, 1100 Hz drawn and then moved to
+the operator's own side when it answered him. No row filtered, by any gate.** In his own
+words: *every station was drawn and nothing was hidden - if the list looks empty tonight
+the band is empty, because the CQ button does not touch a PSK31 or an Olivia row.*
+
+**And a gate that does fire is named, because a diagnosis that can only say *nothing was
+hidden* has not been tested.** Six FT8-shaped rows with the CQ toggle on: the record says
+`filtered` `by: cq_filter` `count: 3`, `drawn` `by: ""` `count: 2`, and `drawn`
+`by: addressed_to_operator` `count: 1`.
+
+### The nine states, and the site each is written at
+
+| Kind | State | Written at | By |
 |---|---|---|---|
-| `Call` / `StationCallsign` | W1AW / KC3QIS | same | same |
-| `Band` | `20m` | `20m` | `20m` |
-| `Mode` | `FT8` | `PSK` | `OLIVIA` |
-| `Submode` | **null** | `PSK31` | `OLIVIA 16/500` |
-| `ReportSent` | null | null | null |
-| `ReportReceived` | `-12` | **null** | **null** |
-| `RstSent` | **null** | `599` | `599` |
-| `RstReceived` | **null** | `599` | `599` |
-| `GridSquare` | `FN31` | `FN31` | `FN31` |
-| `MyGridSquare` | `FN00DJ` | `FN00DJ` | `FN00DJ` |
-| `State` | **null** | **null** | **null** |
-| `Comment` | null | null | null |
+| row | `drawn` | `OnDigitalDecodesChanged`, `ApplyDecodedFilter` | `""` or `addressed_to_operator` |
+| row | `filtered` | `OnDigitalDecodesChanged`, `ApplyDecodedFilter` | `cq_filter` |
+| row | `scrolled_out` | the decoded panel's `ScrollChanged` settle | `digital.decoded` |
+| row | `folded` | `PersistPanel`, beside `panel_toggled` | `digital.decoded`, `digital.mine` |
+| row | `removed` | `TrimDigitalDecodes` | `trim` |
+| card | `drawn` | `Reconcile` | `""` |
+| card | `scrolled_out` | the For You panel's `ScrollChanged` settle | `digital.mine` |
+| card | `folded` | `PersistPanel`, beside `panel_toggled` | `digital.mine` |
+| card | `removed` | `Reconcile` | `dismissed` |
 
-The four differences against FT8 are **what each mode exchanges, not a gap**: FT8 exchanges
-decibels and a keyboard mode exchanges RST, and only FT8 has no submode. **`State` is null in
-all three columns**, which proves section 6 ruling 1 item 2 by measurement rather than taking
-it from the paragraph: an FT8 contact Hamlet logged earns no state record either, so a
-keyboard mode earning none is parity and not a gap.
+**Five of five row states and four of four card states, from none of either.**
 
-**The Modes and Hall of Fame cards, titles verbatim, before and after.** `ModesToWork` reads
-`six modes to work` and `WorkableModes` is 6, counted from the table and nowhere typed.
+### The volume arithmetic
 
-| | Before | After |
+| | Measured |
+|---|---|
+| Rows an hour | **3,360** - 112 rows placed over 8 slots, 240 slots an hour |
+| Bytes a line | **267** full, 223 lean, of which **142** is the schema-B envelope |
+| One event per row | **876.1 kB an hour - 17.5 times the budget** |
+| What 50 kB buys | 191 lines an hour, one every 18.8 s, **0.80 a slot** |
+| Window chosen | **120 s**, one line per state-and-gate group, count carrying the rest |
+| **Measured cost of a busy hour** | **12.5 kB** - 16 lines and 4,283 bytes over 1,200 s of band |
+| Rows accounted for in that run | **1,120 of 1,120, exactly** |
+
+Thirty times the traffic writes one more line, and that line is a group the thin run
+never reaches.
+
+### The privacy walk
+
+**81 writers before, 82 after**, with `CallsignPrivacyTests` green at 4 of 4 and its walk
+grown in the same commit as the writer, over all five states, both kinds, both categories
+and the scroll-settle shape. Beside it, this unit's own scan proves what the walk cannot:
+the walk calls every writer by hand and shows it has nowhere to put a callsign; the scan
+drives **real rows and real cards through the real collections** and shows the **call
+sites** did not hand it one, checking 13 forbidden strings - the operator's callsign, his
+grid, every station in the fixture and several words of the decoded text - over the
+serialised JSON of every `on_screen` line.
+
+### Unit 354's nine sizes - the screen did not move
+
+| Size | Panel row | Unit 376 left it at |
 |---|---|---|
-| Modes / FT8 | `"FT8"` earned, `1 contact` | unchanged |
-| Modes / PSK31 | `"PSK31"` earned, `1 contact` | unchanged |
-| Modes / Olivia | `"Olivia"` earned, `1 contact` | unchanged |
-| HoF / PSK31 | `"A PSK31 contact"` earned, figure `1 contact`, callsign `YB1ABC`, `YB1ABC · Indonesia`, `20 m · PSK31`, `Sep 19, 2026` | unchanged |
-| HoF / Olivia | `"An Olivia contact"` earned, figure `""`, callsign `""`, callGrid `""`, bandMode `""`, date `""` | figure `1 contact`, callsign `YB1ABC`, `YB1ABC · Indonesia`, **`20 m · Olivia`**, `Sep 19, 2026` |
-| HoF / Olivia, unearned | `"An Olivia contact"` wants **`Any station at all`** | wants **`Olivia lives at 3.582 on 80m`** |
-| HoF / PSK31, unearned | `"A PSK31 contact"` wants `PSK31 lives at 3.580 on 80 m` | unchanged |
+| 1920 x 1040 | 483 | 483 |
+| 900 x 620 | 71 | 71 |
+| 1100 x 780 | 92 | 92 |
+| 1280 x 720 | 163 | 163 |
+| 1366 x 728 | 171 | 171 |
+| 1536 x 824 | 267 | 267 |
+| 1400 x 1040 | 483 | 483 |
+| 1920 x 1017 | 460 | 460 |
+| 2560 x 1400 | 860 | 860 |
 
-**The quill, row kind by row kind, for one station on an empty log.** Section 5 said both row
-kinds reach `MarkIfItOpensSomething`; it is proved.
+Identical at every one, with `TheStopIsAlwaysOnScreenTests`, `TheTopRowTests`,
+`TheWorkingPanelsTests` and `BindingHealthTests` green. The whole view-side change is two
+names on `ScrollViewer`s that already existed and two handlers that draw nothing.
 
-| | FT8 row | PSK31 row | Olivia row |
-|---|---|---|---|
-| `Nudge` | `Door` | `Door` | `Door` |
-| `NudgeTip` | `new area · would open something you have not seen yet` | identical | identical |
-| `NudgeReasonLine` | `A first contact in a new area · working him opens a set of cards you have not seen yet` | identical | identical |
-| `NudgeEarnsLine` | `A QSO first. The card comes with it.` | identical | identical |
-| `NudgePreview` | `HasPreview=True IsDoor=True` | identical | identical |
-| `IsTextOnly` / `HasVariant` | False / False | True / False | True / **True** |
+### The counts, and the fate of every invocation
 
-**Not one difference. 8.3's quill half was already met and the work was the assertion (R14).**
-
-**The CQ list the achievements page is handed, calls verbatim with their `Mode` field.**
-
-| Callsign | Grid | HeardUtc | Mode **before** | Mode **after** |
-|---|---|---|---|---|
-| `IK4LZH` (FT8 row) | `JN54` | `214130` | `""` | `""` |
-| `G4XYZ` (PSK31 row) | `""` | `193556` | `"PSK31"` | `"PSK31"` |
-| `W1AW` (Olivia row, variant `16/500`) | `""` | `193556` | **`"PSK31"`** | **`"Olivia"`** |
-
-**Section 5's prediction was right and is confirmed.** The FT8-shaped row still claims
-nothing, which is asserted, because it does not know whether it was FT8 or FT4.
-
-**The page's eight scores and the total, before the contact and after it, built the way
-`OpenAchievements` builds it. Identical for both modes.**
-
-| Badge | Before | After (PSK31) | After (Olivia) |
-|---|---|---|---|
-| `hall_of_fame` | 0 | **25** | **25** |
-| `continents` | 0 | **5** | **5** |
-| `countries` | 0 | **5** | **5** |
-| `states` | 0 | 0 | 0 |
-| `grids` | 0 | **1** | **1** |
-| `total_miles` | 0 | 0 | 0 |
-| `bands` | 0 | **5** | **5** |
-| `modes` | 0 | **5** | **5** |
-| **total line** | `Total 0 pts · Rank 1 · 25 to Rank 2` | `Total 46 pts · Rank 2 · 54 to Rank 3` | `Total 46 pts · Rank 2 · 54 to Rank 3` |
-
-**Six of the eight badges moved on each contact**, asserted as a difference and not as a
-figure, with nothing allowed to go backwards and the Modes badge and Hall of Fame asserted to
-be among what moved.
-
-**The carry-forward counts, and the six achievement types.**
-
-| | Task 0 | Task 4 |
+| Run | Task 0 | Task 4 |
 |---|---|---|
-| App carry-forward | **214 of 214** (2 m 18 s, second attempt) | **216 of 216** (2 m 22 s, first attempt) |
-| Engine carry-forward | **150 of 150** (4 m 54 s) | **150 of 150** (5 m 1 s) |
-| The six achievement types | **43 of 45** | **43 of 45** |
-| `TheAchievementsPageTests` (8.4 names it) | green | green |
+| App carry-forward | **216 of 216** (union of two attempts) | **219 of 219** |
+| Engine carry-forward | **150 of 150** | **150 of 150** |
+| The eight movable types | 71 of 71 | 71 of 71 |
+| `ViewTestsActThroughControlsTests` | 1 of 2 | 1 of 2 |
 
-The app's two additions are this unit's own guards and are the whole of the difference. **The
-six achievement types are identical before and after**, the same two inherited reds. This
-unit's own types: `TheKeyboardModesEarnWhatFt8EarnsTests` 5 of 5,
-`TheQuillAndThePageMeanTheSameTests` 4 of 4, `Unit379Trace` 1 of 1.
+The only differences are this unit's own three new guard names. **No regression.**
+
+**The fate of all four carry-forward invocations**, which is the only 2.4 evidence
+tonight produces:
+
+| Invocation | Fate |
+|---|---|
+| Task 0 app, attempt 1 | **completed red** - 215 of 216, a file-lock `IOException`, not an assertion |
+| Task 0 app, attempt 2 | **completed red** - 215 of 216, the headless dispatcher loop at 1 ms, a ninth name |
+| Task 0 engine | **completed green** - 150 of 150, first attempt |
+| Task 4 app | **completed green** - 219 of 219, first attempt |
+| Task 4 engine | **completed green** - 150 of 150, first attempt |
+
+**The exit round is one completed green round of both invocations.** The engine
+invocation has still never failed since unit 375.
 
 ## 4. What's blocking us
 
-**Nothing is blocking a criterion in B.** All four are met and 8.4's drop candidate was not
-taken.
+**Nothing is blocking. Nine items, most-blocking first; every one is a finding or a
+disclosure and none asks for a ruling.** No item here is in the way of a criterion this
+unit met.
 
-**1. The CQ list still cannot tell an Olivia channel with no readable variant from a PSK31
-row, and labels it `PSK31`. A finding, and it names a choice that is overrulable in one
-line.** `CqSnapshot` now names the mode from the row's own `Variant`, which is the one fact
-the row carries about which mode it is and the one section 6 ruling 2 item 2 points at. But
-the row keeps the variant **string**, while `Psk31ContactWith` answers the same question off
-**dictionary membership** - `_oliviaVariants.ContainsKey(channelId)` - precisely so that a
-channel with no readable variant cannot be called PSK31 in the log. So the log gets this right
-and the CQ list does not. It is strictly narrower than what it replaced, where **every** Olivia
-row read `PSK31`, and closing it means putting a mode fact on `DigitalDecodeRow` at the one
-builder that makes a text row, which is a change ruling 2 item 2 does not license. **A later
-unit's, or one line from Tim if he wants it now.**
+**1. `AddDecodeRowForTests` is half a door, and no test in this repository could reach
+the row cap through it. A finding.** Its own remarks say it is *the same door the decoder
+uses*; it calls `PlaceRow`, and the decoder's door is `AddDecodeRow`, which **also** keys
+the duplicate set and runs `TrimDigitalDecodes`. This unit's trim guard wrote nothing
+until that was found. It was **not repaired in place** - four or more test files call that
+hook and making it key the duplicate set would change what a repeated message does in
+every one of them, which is §12.6's rule and unit 297's own precedent for exactly this
+shape. A second hook, `AddDecodeRowThroughTheCapForTests`, was added beside it and named
+for what it adds. **The queue item is whether the original hook's remarks should be
+corrected, which is the next unit that touches that file's to do.**
 
-**2. `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` is red,
-inherited, and reported for the fourth unit running. A finding, not a ruling request.** It
-reports `TheStopIsAlwaysOnScreenTests.cs:102 writes OperatingMode`. Unit 375 wrote that line;
-unit 378 ruled it belongs to whichever unit next touches that file. **No task here touched
-it**, so it is reported and not repaired, exactly as unit 378's own rule directs.
+**2. Section 5 says *the squelch is the only gate on a text row*, and the measurement
+disagrees. A finding, and the instruction asked for it.** Over
+`psk31-snr-10db-1000hz.wav` the squelch wrote 27 lines on one carrier - 13 shut and 14
+open - and the row stayed on a list throughout, carrying 221 characters. **The squelch is
+not a gate on a text row's visibility at all**: it gates what the row *says*, and a
+carrier Hamlet cannot read still gets a row, carrying the heard-not-readable words instead
+of text. The consequence is that **a text row has no visibility gate whatever** except
+which of the two sides it is on, which is what makes 3.3's answer *nothing was hidden*.
 
-**3. The unearned Olivia card spells the band `80m` where PSK31's spells it `80 m`. A
-finding.** Olivia's calling spot comes from the Olivia calling table's own `Band` column and
-PSK31's from `DigitalCallingFrequencies`. It is **the same string the Modes badge has shown
-since unit 358**, so Hamlet is consistent with itself and this unit introduced nothing; the
-spelling belongs to `data/bands/olivia-calling.json`, which §0 says is the source of truth and
-which is not this unit's to edit. Reported, not repaired.
+**3. Section 5's list of what the record says today omits
+`AppEvents.DecodesReachedTheScreen`, at `MainWindowViewModel.cs:13583`. A finding.** That
+writer has carried a per-slot count of rows added, rows shown, rows for the operator and
+cards since unit 305. **R36's gap is real but narrower than the instruction states**:
+`decodes_drawn` can say four rows were drawn and three were not; it can never say which,
+where, or by what, and it is per slot and FT8 only. Nothing was repaired on account of
+it - the writer is untouched and `on_screen` sits beside it - but a reader of section 5
+would have thought the file said nothing at all about the screen, and it did.
 
-**4. The carry-forward line for task 2's guard landed in task 3's commit, one commit late. A
-disclosure, not a ruling request.** Section 11 asks that a carry-forward line edit go in the
-same commit as the test it names. `TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContact
-EarnsWhatTheSameFt8ContactEarns` was committed at task 2 and its line added at task 3. The
-list and the test are both in the tree and both green; only the commit boundary is wrong.
+**4. A new shape of environmental test fault, and it is 2.4 evidence. A finding.** At
+task 0, app attempt 1,
+`TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant`
+failed with `System.IO.IOException` at `TheOliviaRowsTests.cs:675`: *The process cannot
+access the file 'C:\Users\TimDi\AppData\Local\Temp\hamlet-olivia-rows-...\refuse\2026-09-21.jsonl'
+because it is being used by another process.* It is **not an assertion** and it is **not
+the dispatcher loop** - it is the test's own reader racing the telemetry writer's
+background thread. It did not reproduce on the re-run. **Every environmental break this
+phase has recorded until tonight was the dispatcher loop; this is a second, different
+one**, and 2.4's soak will keep meeting it. Queue.
 
-**5. A scratch file of mine, `probe379.py`, was committed by accident at task 3 and has been
-emptied and commented rather than deleted. A disclosure, not a ruling request.** It was a
-throwaway written at task 1 to print the shape of `data/callsigns/dxcc-prefixes.json` while I
-worked out why `VK3ABC` resolved to no entity. **It was never run** - the shell refused
-`python probe379.py` - and the question was answered by reading the file with `grep` instead.
-It had been left staged by a `git add -A` at task 1, and task 3's commit carried no pathspec,
-so it went in with that task's real files. `PHASE_PLAN.md` section 6 says *empty it, comment
-it, list it* rather than delete, so it is now a comment saying what it was, that it was never
-run, how it got in and that nothing reads it. **Listing it here is the third part of that
-rule.**
+**5. This unit's carry-forward line edit landed one commit late. A disclosure, already
+acted on.** Section 11 says a carry-forward line edit goes in the same commit as the test
+it names; this unit's three guards landed in tasks 2 and 3 and the line edit in task 4.
+**That is unit 379's item 4 repeated**, which section 2 of this instruction carried as a
+lesson rather than a queue item, so it is disclosed here plainly rather than quietly. No
+commit tip left a carry-forward name red at any point.
 
-**6. This instruction calls the carried queue twenty-one and its own enumeration lists
-twenty-two. A mismatch against the instruction, reported per section 5; a finding.** Section 3
-enumerates *unit 378's items 1, 3 and 4* (3); *unit 377's item 4* (1); *unit 376's items 3, 4
-and 5* (3); *unit 375's items 3 and 4* (2); *unit 374's item 3* (1); *unit 373's item 2* (1);
-*unit 372's items 4 and 7* (2); *unit 371's five* (5); *unit 369's four* (4) - **22**, and
-says "twenty-one" twice, as does section 12's ordering block. Unit 378's report carried
-nineteen and this unit adds three. **All twenty-two are carried below**; dropping one to reach
-the stated count would have lost an item.
+**6. Task 1's item 6 ran as `[AvaloniaFact]` and not `[Fact]`. A disclosure.** The
+instruction says *one `[Fact]` named `Unit380Trace`*. Item 6 is about a `ScrollViewer`,
+which only exists inside a built window, and a plain `[Fact]` cannot build one. The other
+six items are the `[Fact]` the instruction asks for, and item 6 is a second method in the
+same file run in the same filtered invocation. Splitting it also kept the six items that
+need no window clear of the headless dispatcher fault.
 
-**7. `validate-output.bat` still refuses, in the exact shape section 2 prescribes, and that
-is a finding about the harness.** Section 2 says to report the exact command and the exact
-refusal rather than hand-check silently. Three shapes were tried:
+**7. A slotted row's `where` carries its tone offset beside its slot and dial. A
+disclosure, and it widens the author's own ruling rather than narrowing it.** Section 6
+ruling 1 says *the row's offset in Hz for a text row and its slot and dial for a slotted
+row*. A slot and a dial name **fourteen rows at once** on a band as busy as the one this
+unit measured, and criterion 3.3 asks which row - so the tone offset goes on too. It adds
+a field and removes none, at 14 bytes a line inside a budget measured at a quarter of its
+ceiling. Overrulable in one line.
+
+**8. `validate-output.bat` refused again, in the exact shape section 2 predicted. Unit
+379's item 7, carried, and still a finding about the harness.** The command run,
+verbatim and in the shape the instruction specifies - forward slashes, a leading `./`,
+one command, no `cd` in front and no `cmd /c` around it:
 
 ```
 ./tools/arbiter/validate-output.bat output.md
-  -> This command requires approval
-
-sh tools/arbiter/validate-output.bat output.md
-  -> tools/arbiter/validate-output.bat: line 1: @echo: command not found
-     ... line 68: syntax error near unexpected token `('
-
-powershell -NoProfile -Command "<the script's own rule 1 check, verbatim>"
-  -> This command requires approval
 ```
 
-**The refusal is not the shape this time - it is the permission mode.** Section 2's diagnosis
-was that unit 378's five failures were shape, and it was right that `cd X && Y` and `cmd /c`
-are refused; my first attempt carried a `cd` prefix and was refused for that reason, and
-removing it changed the refusal from a shape error to **`This command requires approval`**,
-which is the sandbox and not the syntax. This session is non-interactive, so no approval can
-be given. `sh` cannot run a `.bat` at all - the second refusal above is `cmd` syntax reaching
-a POSIX shell - and the script's own checks run through `powershell`, which is refused on the
-same ground as the first. **So the shape section 2 found is correct and the tool is still
-unreachable from a non-interactive session.**
+The refusal, verbatim: `This command requires approval`. That is the permission mode and
+not the syntax, and a non-interactive session cannot answer it. **So the six rules were
+hand-checked against the script's own source, and this is a hand-check and not a
+validator run:**
 
-**The six rules were checked by hand against the script's own source instead, and all six
-pass**: rule 1, a parseable `UNIT:` line at line 27, above section 1 at line 46 and inside the
-60-line window the script reads; rules 2 and 3, exactly four `## ` headings - `1. What Claude
-did`, `2. What the owner should expect`, `3. What you should see`, `4. What's blocking us` - in
-that order with no fifth; rule 4, section 4 present at line 295; rule 5, section 3 non-empty,
-lines 172 to 294; rule 6, the ordering block above the `UNIT:` line with `READ IN THIS ORDER`,
-an `A.`, a `B.`, a `C.` and a committed count of section 4 items. **That is a hand-check and it
-is named as one** - it is not the script's own verdict, and the next unit should not read it as
-one.
+| Rule | Held by the script | Hand-checked |
+|---|---|---|
+| 1 | a `UNIT:` line above section 1, parseable | **ok** - line 24, above section 1 at line 42, inside the 60 lines the script reads, no BOM |
+| 2 | the four top-level sections, in order, exact names | **ok** - lines 42, 173, 202, 317, matching the script's `WANT` string exactly |
+| 3 | no fifth top-level section | **ok** - four `## ` headings and no more; `###` is ignored by the script's own reading |
+| 4 | section 4 present even when empty | **ok** - `## 4. What's blocking us` at line 317 |
+| 5 | section 3 non-empty | **ok** - 114 lines between the section 3 and section 4 headings |
+| 6 | the ordering block above `UNIT:`, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` at line 2, `A.` at 4, `B.` at 8, `C.` at 17, all inside the first 60 lines, and line 17 reads *Section 4 raises 9 items*, which is the `raises \d+ item` the script matches |
 
-**One more thing worth the next author's time, and it is a finding about the trace itself.**
-`Unit379Trace`'s first station, `VK3ABC`, resolved to **no DXCC entity**, because `VK` is
-claimed by Australia, Heard I. and Lord Howe I. and `DxccPrefixes` declines a shared prefix
-rather than guessing. With no entity there is no country, no continent and **no quill**, so
-the first run of the trace reported `Nudge=None` on all three rows and its own
-same-kind-same-words check passed **vacuously**. The station was moved to `YB1ABC` and the
-measurement re-taken, and the assertion type now checks that the FT8 row's quill says
-something **before** comparing the other two against it. The decline is the table obeying
-§0.0 and wants no repair; the lesson is that an equality test over three empty things passes.
+**A hand-check is one check, not two**, and CPS-DEC-066's whole point is that the script
+and the standard are two independent copies that must agree. Tonight only one of them
+was read. Queue.
 
-**No change on a send path was needed to reach any criterion in this step**, and that is
-stated here because the instruction asks for it as the first item if one had been found. R40
-licensed reading a log record and moving a number on a page, and that is all this unit did: no
-composer, no `Arm`, no `PttOn`, no cap, no RSID burst, no Olivia variant gate, and **no engine
-file at all.**
+**9. The `RULES_AT` id-scheme split, carried and not repaired.** `PROJECT_STATUS.md` reads
+`HM-DEC-165 (2026-09-19)` and `CLAUDE.md` §1 holds `CPS-DEC-0165`. `tools/status.sh`
+writes that field as a literal and `tools\` is not this unit's to edit. Reported, not
+repaired, as instructed.
 
----
+### The carried queue, verbatim per HM-DEC-139 - twenty-five, and this unit answers none
 
-**The carried queue, verbatim per HM-DEC-139. Twenty-two, and this unit answers none of
-them.** **Unit 378's item 2 came off it because R43 had already ruled it** - the five canned
-line-and-variant pairs refused by the 30-second fallback - and no timing row was written.
+- **Unit 379's item 1** - the CQ list cannot tell an Olivia channel with no readable
+  variant from a PSK31 row and labels it `PSK31`. Strictly narrower than what it replaced
+  and inside step 8, which is `done`; closing it means putting a mode fact on
+  `DigitalDecodeRow` at the text-row builder, which is the file this unit wrote in, and a
+  visibility unit that quietly reopened a closed step's criterion would be drift. Reported,
+  not repaired.
+- **Unit 379's item 3** - the unearned Olivia card spells the band `80m` where PSK31's
+  spells `80 m`. A finding about a data file inside a closed step.
+- **Unit 379's item 7** - `validate-output.bat` refuses with `This command requires
+  approval`.
+- **Unit 378's items 1, 3 and 4.**
+- **Unit 377's item 4.**
+- **Unit 376's items 3, 4 and 5.**
+- **Unit 375's items 3 and 4** - item 3 is the headless dispatcher loop, which this unit
+  met once more on a ninth name.
+- **Unit 374's item 3.**
+- **Unit 373's item 2.**
+- **Unit 372's items 4 and 7.**
+- **Unit 371's five.**
+- **Unit 369's four.**
 
-1. **Unit 378's item 1** - `ViewTestsActThroughControlsTests.NoViewTestWritesAProperty
-   AControlOwns` is red, inherited, and reports `TheStopIsAlwaysOnScreenTests.cs:102 writes
-   OperatingMode`. Unit 375 wrote that line. It belongs to whichever unit next touches that
-   file; no task here touched it. **Also section 4 item 2 above.**
-2. **Unit 378's item 3** - the canned file is read once per session. An author's choice,
-   stated and overrulable, and nothing in this unit touches it.
-3. **Unit 378's item 4** - `Unit378Trace` now prints the after, not the before. A note about
-   a trace. **`Unit379Trace` has the same property and that is correct**: the before is
-   preserved in this report, in `PHASE_OUTCOME.md` and in task 1's own commit message.
-4. **Unit 377's item 4** - `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red,
-   inherited, measured against the old embedded file and red there too, and not on the
-   carry-forward list. A finding. This unit did not repair it and did not chase it.
-5. **Unit 376's item 3.**
-6. **Unit 376's item 4.**
-7. **Unit 376's item 5.**
-8. **Unit 375's item 3** - Avalonia's headless `InvalidProgramException: You have caused
-   dispatcher loop`, which kills an app invocation at about 1 ms before any assertion and
-   moves between names. **It showed once in this unit**, at task 0, on
-   `TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow` - a
-   third name it had not landed on, after unit 378's two - and the single re-run was clean.
-   Recorded, not chased. **The engine invocation has still never failed since unit 375.**
-9. **Unit 375's item 4** -
-   `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`. It did not
-   show in this unit's three app invocations.
-10. **Unit 374's item 3** - `tools\run-carry-forward.sh`. The two command lines were run from
-    `docs\carry-forward-tests.txt` itself, as the instruction directs.
-11. **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
-12. **Unit 372's item 4.**
-13. **Unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes. Not ticked, not raised.
-14. **Unit 371's first.**
-15. **Unit 371's second.**
-16. **Unit 371's third.**
-17. **Unit 371's fourth.**
-18. **Unit 371's fifth.**
-19. **Unit 369's first.**
-20. **Unit 369's second.**
-21. **Unit 369's third** - `LearnedAlcReference.Ago()`.
-22. **Unit 369's fourth.**
+**Unit 379's items 4 and 5 came off the queue** - both were disclosures already acted on -
+**and its item 6, the queue count, is answered by this count: twenty-five.**
 
-**And the `RULES_AT` id-scheme split, carried and reported again, not repaired:**
-`PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1
-holds `CPS-DEC-0165`. The reload names it first among the disagreements. `tools/status.sh`
-writes the field as a literal, so repairing it means editing that script, and `tools\` is not
-this unit's.
+### The two inherited reds, reported and repaired neither
 
-**Step 3's entry reads *step 8 done*.** Step 8's four criteria are met on measured evidence
-and the judging session decides. Step 3's visibility telemetry was not started and no
-visibility event was added to any row.
+- `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns`, red for the
+  sixth unit running, naming `TheStopIsAlwaysOnScreenTests.cs:102 writes OperatingMode`.
+  Unit 378 ruled it belongs to whichever unit next touches that file. **No task of this
+  unit edited it**, so it is reported and not repaired. Its message is character for
+  character what it was at task 0.
+- `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn`. Reported, not repaired.

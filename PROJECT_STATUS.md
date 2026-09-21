@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: running
-TASK: TASK 4 of 5
+STATE: complete
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 380 - the record says what was on screen: one event a change, sampled, and unit 337 diagnosed from the file with no screenshot
-BALL: claude
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T16:51:32-04:00
-NOTE: Unit 380's three guard names are on docs/carry-forward-tests.txt by type and method with their paragraphs and the readable list changed to match - the unit 337 diagnosis, the 50 kB budget and the visibility privacy scan. Committing the list, then running the exit carry-forward app invocation, filtered and foregrounded, one build.
+UPDATED: 2026-09-21T17:04:53-04:00
+NOTE: Unit 380 complete. STEP 3's five criteria met, the first unit ever spent on it, and the drop candidate NOT taken. Measured first: one on_screen event per row would be 876 kB an hour - 17.5 times 3.4's 50 kB - so the window is 120 s by arithmetic and a busy hour MEASURED at 12.5 kB with all 1,120 rows accounted for. The unit 337 question is answered from the file alone: with the CQ filter ON all four carriers were drawn and NOT ONE ROW was filtered, because unit 337's own repair took that toggle off a text row. Two findings against the instruction, both measured: the squelch is not a visibility gate on a text row, and decodes_drawn already carried per-slot counts. The screen did not move - unit 354's nine sizes are unit 376's to the pixel. Exit carry-forward app 219 of 219 and engine 150 of 150, both green first attempt, no regression. Step 4's entry reads step 3 done.
 
 ---
 
