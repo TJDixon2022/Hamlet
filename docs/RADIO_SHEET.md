@@ -101,6 +101,9 @@ picker.
 the rate and what Windows said are the three things to copy if you send this back.
 > "Hamlet composed the PSK31 call and sent nothing: the transmit audio device named in Settings could not be opened. Device: <the card's name>. Rate asked for: <n> samples per second. The operating system said: <what Windows said>."
 
+The same fault under the send line, where the reason is shown on its own, reads:
+> "the transmit audio device named in Settings could not be opened. Device: <the card's name>. Rate asked for: <n> samples per second. The operating system said: <what Windows said>"
+
 **There is nowhere clear to call.** Hamlet looked for a gap and there is not one. Wait, or put
 the passband somewhere else.
 > "Hamlet did not call: the band is too crowded here to call without landing on someone. It looks for a spot at least 150 Hz from every carrier being read and from every candidate over quality 0.4, in the middle of the widest such gap between 400 and 2200 Hz, and there is not one right now. Move the dial a little, or wait for somebody to finish."
