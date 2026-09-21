@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: running
-TASK: TASK 3 of 4
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 374 - the order is measured where the height is actually given up, and the record names the mode the press was made under
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T08:33:54-04:00
-NOTE: Task 3: the network type needed nothing - 10 of 10 green, left on the list unmodified, no quarantine file created. The two tens are written into the list file.
+UPDATED: 2026-09-21T09:16:33-04:00
+NOTE: Task 4: The354LayoutReadsTheSameNumbersTwiceRunning went red on an assertion in the full list, cause not determined; quarantined with its numbers and taken off the app line in one commit. Exit run and streak next.
 
 ---
 

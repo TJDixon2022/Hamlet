@@ -1,0 +1,137 @@
+Quarantined tests
+=================
+
+WHAT THIS FILE IS, AND WHAT IT IS NOT.
+
+Created by unit 375 under work instruction 375 section 6, first ruling, item 3. Every name
+below is a test that IS KNOWN TO GO RED SOME RUNS AND GREEN OTHERS, whose cause has been
+measured as far as it could be, and which has been taken off the carry-forward command line
+in docs/carry-forward-tests.txt in the same commit that put it here. PHASE_PLAN.md R35: a
+flaking test on the carry-forward list is worse than none, because every later run of that
+list has to be argued about before it can be read.
+
+THIS IS NOT docs/carry-forward-dropped.txt. That file says in terms that nothing on it is
+deleted, retired or known red, and that every name on it was green when it came off the list.
+A name here is the opposite of that and must never be moved there.
+
+THIS IS NOT THE KNOWN-RED BLOCK at docs/carry-forward-tests.txt line 139 either. Those are
+inherited reds that nobody is chasing. A name here IS being chased - it carries what would
+take it off this file again, and the next unit to touch it starts from the numbers below
+rather than from a recollection.
+
+NOTHING HERE IS DELETED. The test still exists, still builds and still runs; it is only off
+the two command lines that prove nothing broke.
+
+Each entry carries: the full type and method, how many runs out of how many were red, the
+failure verbatim, the cause as far as it was determined, whether it is the test's own timing
+or the environment, and what would take it off this list again.
+
+
+-- 1. Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests -------------------
+      .The354LayoutReadsTheSameNumbersTwiceRunning
+
+QUARANTINED BY: unit 375, task 4, 2026-09-21.
+
+HOW OFTEN IT WAS RED.
+
+    On its own type, whole type, filtered, one build each   0 of 10 red
+    In the full app carry-forward invocation                1 of 7 completed runs red
+
+The ten isolated runs are unit 375 task 1's measurement of this type and they were green
+every time: 5 of 5, ten times over. THE ISOLATED MEASUREMENT DOES NOT REPRODUCE IT. It went
+red only when the whole app command line ran - 211 names in one headless session - which is
+why four units' worth of isolated poking never found it and why PHASE_PLAN.md R35 could only
+name the type and not the name. Of the nine full app invocations unit 375 ran, six completed
+green, one completed RED on this name, and two were lost to the dispatcher-loop session fault
+below before any assertion.
+
+THE FAILURE, VERBATIM, as the run printed it:
+
+    Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning [FAIL]
+      Failed ...The354LayoutReadsTheSameNumbersTwiceRunning [405 ms]
+      Error Message:
+       Assert.Equal() Failure: Collections differ
+    Expected: ["plain 900 x 620: class General; top row 285; card "..., "plain 1100 x 780: class General; top row 618; card"..., "licensed 1400 x 1040: class General; top row 216; "...]
+    Actual:   ["plain 900 x 620: class General; top row 285; card "..., "plain 1100 x 780: class General; top row 618; card"..., "licensed 1400 x 1040: class General; top row 216; "...]
+
+IT IS AN ASSERTION FAILURE AND NOT THE SESSION FAULT. It ran for 405 ms and disagreed; it did
+not die at 1 ms before asserting anything.
+
+THE CAUSE, AS FAR AS IT WAS DETERMINED - AND IT WAS NOT DETERMINED FULLY.
+
+The test realizes three windows - the plain fixture at 900 x 620 and at 1100 x 780 and the
+licensed one at 1400 x 1040 - measures every drawn box of each, does the whole thing a second
+time, and asserts the two readings are equal. So the assertion is that Hamlet's layout is a
+function of the window size and nothing else. The red says that on that run it was not: one
+of the three windows measured differently the second time through, in the same test, in the
+same session, at the same size.
+
+WHICH of the three moved, and by how much, IS NOT KNOWN. xUnit truncates each of these lines
+to its first fifty characters in a collection diff, and all three lines are identical for far
+longer than that, so the run that caught it could not say what had changed. Unit 375 added a
+line-by-line comparison to the test that names the window and prints both readings in full
+when they differ - the test is strictly more diagnosable than it was - and then ran the app
+invocation four more times WITHOUT REPRODUCING IT. So the better message is in the tree,
+unused, waiting for the next occurrence.
+
+TEST'S TIMING OR THE ENVIRONMENT: NOT ESTABLISHED, and it is not honest to pick one yet. What
+is known is that it needs the other 210 names in the session to show itself, which points at
+state left behind by another test or at work still in flight from one, rather than at
+anything the three windows do by themselves. It is NOT the dispatcher-loop fault. It is NOT
+believed to be the application getting the layout wrong, because the same three windows
+measure correctly on every other run and unit 374 measured this same layout stable across
+twelve heights at two widths - but that belief is not a measurement and is why this name is
+quarantined instead of being repaired blind.
+
+WHAT WOULD TAKE IT OFF THIS LIST.
+
+    1. One reproduction with the message that is now in the test, which names the window that
+       moved and prints both readings whole. That is the whole of what is missing.
+    2. Then either the moment it reads is fixed the way unit 375 fixed
+       TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns
+       - settle before reading, assert the rule and not a snapshot - or, if the two readings
+       differ because Hamlet's layout really does depend on something other than the window
+       size, THAT IS A FINDING ABOUT THE APPLICATION and it goes to the owner rather than
+       being smoothed out of the test.
+    3. Ten green full app invocations, not ten green runs of the type on its own, because the
+       type on its own was already green ten times out of ten and proved nothing.
+
+WHAT WAS NOT QUARANTINED WITH IT. The other four names of this type are untouched and STAY ON
+THE APP COMMAND LINE by name: AViewModelATestBuildsHasTheNetworkDenied,
+BuildingAViewModelMakesNoHttpClient, ThePlainFixtureTakesGeneralFromTheFixedAnswer and
+TheLicensedFixtureTakesTheFixedAnswerToo. Those four are the guard the type is named for -
+no HTTP client is made when a view model is built, and the fixtures answer from the fixed
+lookup rather than the network. THE NETWORK GUARD IS INTACT; what came off is a layout
+determinism check that happens to live in this type and guards nothing about the network.
+
+
+-- ENVIRONMENTAL, WITH NO NAME ATTACHED ---------------------------------------
+   Avalonia headless: InvalidProgramException "You've caused dispatcher loop"
+
+NOT A QUARANTINED NAME, AND IT CANNOT BE ONE. It is recorded here because this is the file
+where the carry-forward list's reasons live, and because the next unit will meet it.
+
+It kills a name after about 1 millisecond, BEFORE ANY ASSERTION RUNS, and IT MOVES BETWEEN
+NAMES, which is what says it is the session and not the test. The names it has landed on so
+far, across four units:
+
+    unit 373   TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizes...           once
+    unit 374   ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed
+               ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrors... two on one
+               ThePowerIsOfferedTests (again, on the re-run)                   attempt, then one
+    unit 375   TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning
+               TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselves...
+
+Five different names across four units. Unit 374 measured it killing 2 of 4 full app
+invocations; unit 375 measured it killing 2 of 9.
+
+HOW IT IS COUNTED, per work instruction 375 section 6, second ruling, FOR CRITERION 2.4 ONLY:
+a run that dies of it before any assertion is a LOST RUN. It is recorded with the name it
+landed on and the attempt number, it is re-run, and it counts neither toward a green streak
+nor against it. A run that dies on an ASSERTION is never re-run - that one is red and the
+streak restarts.
+
+WHAT WOULD TAKE IT OFF. Nobody has yet chased it to its cause. It is an Avalonia headless
+platform fault raised inside the test session's dispatcher, not a fault of any name it lands
+on, so the work is in how the headless session is set up and torn down between these window
+types, and it is nobody's criterion yet.

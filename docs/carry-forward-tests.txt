@@ -4,7 +4,7 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied|FullyQualifiedName~TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient|FullyQualifiedName~TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer|FullyQualifiedName~TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed"
 
     timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical"
 
@@ -187,7 +187,14 @@ the window at every size Hamlet can open at, which is what caught CQ at y 800 at
 
 TheTestsStayOffTheNetworkTests - no HTTP client is made when a view model is built,
 and one is made on the first fetch. Both halves, because either alone is easy to
-pass.
+pass. SINCE UNIT 375 IT IS ON THE LINE BY METHOD, FOUR NAMES AND NOT THE WHOLE
+TYPE: AViewModelATestBuildsHasTheNetworkDenied, BuildingAViewModelMakesNoHttpClient,
+ThePlainFixtureTakesGeneralFromTheFixedAnswer and TheLicensedFixtureTakesTheFixedAnswerToo.
+The type's fifth name, The354LayoutReadsTheSameNumbersTwiceRunning, is QUARANTINED in
+docs/quarantined-tests.txt with its cause and its numbers; it is a layout determinism
+check that happens to live in this type and guards nothing about the network, so all
+four network guards above are intact and none of this weakens what the type is named
+for.
 
 App 112 green before and 140 after, engine 86 and 102, on the invocations above
 plus this unit's other names.
@@ -459,7 +466,28 @@ sequence unwinding - is deterministic, is Hamlet's doing and not the test's, and
 in unit 375's report as a finding for the owner. It is NOT a known red and nothing here is
 quarantined for it.
 
-TheTestsStayOffTheNetworkTests was green ten times out of ten, with no name red and no
-session lost. R35's premise about it comes from unit 365's report and nothing in the tree had
-ever measured it; it was not reproduced here. It is left exactly as it was, on the line,
-unmodified, and docs/quarantined-tests.txt was NOT created, because neither name needed it.
+TheTestsStayOffTheNetworkTests was green ten times out of ten ON ITS OWN TYPE, with no name
+red and no session lost. R35's premise about it comes from unit 365's report and nothing in
+the tree had ever measured it, and the isolated measurement did not reproduce it.
+
+THEN IT WENT RED IN THE FULL APP INVOCATION, AT TASK 4, AND THAT SUPERSEDES THE PARAGRAPH
+ABOVE. The name is The354LayoutReadsTheSameNumbersTwiceRunning and the fault is an ASSERTION
+failure at 405 ms, not the dispatcher-loop session fault: the test realizes the same three
+windows twice and asserts the two readings are equal, and on that run one of the three
+measured differently the second time. It needs the other 210 names in the session to show
+itself, which is why ten runs of the type alone proved nothing. Of nine full app invocations
+this unit ran, six completed green, ONE COMPLETED RED ON THIS NAME, and two were lost to the
+dispatcher loop.
+
+WHICH of the three windows moved was NOT DETERMINED - xUnit truncates the collection diff to
+fifty characters and all three lines are identical far past that - so the name is QUARANTINED
+into docs/quarantined-tests.txt with its numbers, the failure verbatim, the cause as far as it
+went, and what would take it off, rather than repaired on a guess. Work instruction 375
+section 6 item 3 is where the shape comes from, and a flake quarantined with its cause named
+IS meeting 2.3. The test also gained a line-by-line comparison that names the window and
+prints both readings whole when they differ, so the next occurrence is legible; it is in the
+tree and has not yet caught one.
+
+THE TYPE CAME OFF THE APP LINE AS A WHOLE TYPE AND WENT BACK ON AS ITS FOUR SURVIVING NAMES,
+in the same commit, and the paragraph above under WHAT UNIT 356 ADDED was changed to match.
+All four network guards are intact; what came off guards nothing about the network.

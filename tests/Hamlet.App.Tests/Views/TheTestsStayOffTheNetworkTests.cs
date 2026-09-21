@@ -183,6 +183,20 @@ public sealed class TheTestsStayOffTheNetworkTests
             _output.WriteLine(line);
         }
 
+        // **THE DIFFERENCE IS NAMED RATHER THAN LEFT TO THE COLLECTION COMPARER** (work instruction 375
+        // task 4). This name went red on this assertion in the full app invocation while being green ten
+        // times out of ten on its own type, and xUnit's collection diff truncates each of these lines to
+        // its first fifty characters, so the run that caught it could not say WHICH window moved or by how
+        // much. Assert.Equal(first, second) is still what fails; this only makes the failure legible.
+        var moved = first.Zip(second, (a, b) => (First: a, Second: b))
+            .Where(pair => !string.Equals(pair.First, pair.Second, StringComparison.Ordinal))
+            .Select(pair => "  first  " + pair.First + Environment.NewLine + "  second " + pair.Second)
+            .ToList();
+
+        Assert.True(
+            moved.Count == 0,
+            "the same window measured differently on two consecutive reads:" + Environment.NewLine + string.Join(Environment.NewLine, moved));
+
         Assert.Equal(first, second);
     }
 
