@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: running
-TASK: TASK 1 of 5
+TASK: TASK 2 of 5
 WORK_INSTRUCTION: 379 - the keyboard modes earn what FT8 earns: measured first, then connected
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T15:28:51-04:00
-NOTE: Unit 379 task 1 complete: the three-column table is measured. Eight kinds at parity, 0 cells short of FT8; the quill already identical on all three row kinds; three Olivia-only gaps found on the achievements screen. Committing the trace.
+UPDATED: 2026-09-21T15:34:35-04:00
+NOTE: Unit 379 task 2: both marked cells closed and committed one each; the 8.2 assertion type is green 5 of 5 with the two contacts driven through ContactLogEntryForStation, ContactLogStore and the refresh, and scored against FT8's own numbers.
 
 ---
 
