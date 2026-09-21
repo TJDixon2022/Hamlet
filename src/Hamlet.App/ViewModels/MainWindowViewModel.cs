@@ -2827,6 +2827,26 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     internal const double OnScreenWindowSeconds = 120;
 
+    /// <summary>The most places one <c>on_screen</c> line may carry.</summary>
+    /// <remarks>
+    /// <para>**ARITHMETIC OFF UNIT 381 TASK 1'S MEASUREMENT AND NEVER A NUMBER ANYBODY LIKED**
+    /// (work instruction 381 section 6 ruling 1 item 4). Criterion 3.4 allows 50 kB an hour. The
+    /// lines themselves were re-measured on the file at **12.5 kB an hour**, leaving **37.5 kB for
+    /// places**; a bare whole-Hz number in an array was weighed on the file at **5.07 bytes**, so
+    /// the budget holds **7,562 places an hour**; and the sampler writes **48 lines an hour** on
+    /// the shack's own busy band, which is **157.5 places a line**. The cap is the largest power
+    /// of two at or under that: **128**.</para>
+    /// <para>**AND THE MEASURED BAND NEVER REACHES IT.** The busiest group eighty slots of
+    /// fourteen-a-slot produced held **112** items, so nothing is truncated and every row is
+    /// named. The cap exists because a group is bounded by nothing but the window, and a band
+    /// thirty times this one would reach it - **and when it does, the file says so through
+    /// `atDropped` rather than quietly naming the first hundred and twenty-eight.**</para>
+    /// <para>**THE GATED STATES ARE NOT THE ONES THAT SHOULD LOSE PLACES** (ruling 2 item 3).
+    /// This cap is per group, and `drawn`, `filtered`, `removed` and `folded` are each their own
+    /// group, so the bulk state cannot spend another state's share of it.</para>
+    /// </remarks>
+    internal const int OnScreenPlaceCap = 128;
+
     /// <summary>
     /// **The last state each row was in, off the row** (work instruction 380 section 6 ruling 2
     /// item 2).
@@ -2912,6 +2932,40 @@ public partial class MainWindowViewModel : ObservableObject
         /// would have told a reader that 521 rows were on the screen when four were.
         /// </remarks>
         public readonly HashSet<string> Items = new(StringComparer.Ordinal);
+
+        /// <summary>Where each of those items was, in whole Hz, in the order they arrived.</summary>
+        /// <remarks>
+        /// <para>**THIS IS THE LINE UNIT 381 EXISTS FOR.** Unit 380 kept the head's place and
+        /// dropped every other one on the floor, so the file said *three rows were held back by
+        /// the CQ filter* and named one of them. 3.1 asks for **the row's** offset and 3.3 asks
+        /// **which** rows were hidden; a count is the right half of both and the whole of
+        /// neither.</para>
+        /// <para>**ONE ELEMENT PER ITEM AND NOT PER CHANGE.** A place is added only where
+        /// <see cref="Items"/> has not seen that identity before, which is the same rule that
+        /// makes `count` count rows: a live PSK31 row is rebuilt four times a second, and 521
+        /// changes across four carriers would otherwise be 521 places for four rows.</para>
+        /// <para>**A NUMBER AND NEVER AN IDENTITY** (HM-DEC-018 §2.1). The set beside it is keyed
+        /// by a row object, by a channel and **by a callsign**; this list holds offsets.</para>
+        /// </remarks>
+        public readonly List<long> Places = new();
+
+        /// <summary>How many items have no element in <see cref="Places"/>.</summary>
+        /// <remarks>
+        /// **TRUNCATION IS NEVER SILENT, AND NEITHER IS AN ABSENT PLACE** (ruling 1 item 4). It
+        /// counts both: an item the cap left out, and an item Hamlet has no offset for at all -
+        /// a card it never measured, a row whose `Hz` will not parse. Either way
+        /// `Items.Count == Places.Count + Dropped`, so the line can be checked against itself
+        /// and a record Hamlet cannot answer is absent rather than invented (§0.0).
+        /// </remarks>
+        public int Dropped;
+
+        /// <summary>The last slot the group reached, where it spans more than its head's.</summary>
+        /// <remarks>
+        /// **THE FIELDS THAT REPEAT ARE WRITTEN ONCE AND THE FIELD THAT DIFFERS PER ROW** (ruling
+        /// 1 item 2), which is what makes a place cost five bytes instead of fourteen. The slot
+        /// stays on the line; this gives a reader the span the places sit inside.
+        /// </remarks>
+        public string SlotLast = "";
 
         public double? OffsetHz;
         public string Slot = "";
@@ -3146,7 +3200,36 @@ public partial class MainWindowViewModel : ObservableObject
             _onScreenWindow[key] = group;
         }
 
-        group.Items.Add(identity);
+        // **AND THE PLACE IS NO LONGER DROPPED ON THE FLOOR**, which is the whole of unit 381.
+        // Unit 380 added the identity here and kept the head's place alone; every other item's
+        // place went nowhere, so the file could say how many rows a gate held and never which.
+        //
+        // **ONLY AN ITEM THE GROUP HAS NOT SEEN CONTRIBUTES A PLACE.** `Add` answers exactly
+        // that, and it is the same rule that makes `count` count rows rather than changes.
+        if (!group.Items.Add(identity))
+        {
+            return;
+        }
+
+        if (offsetHz is { } hz && group.Places.Count < OnScreenPlaceCap)
+        {
+            // **WHOLE Hz.** A row is identified by which carrier it is, and a tenth of a hertz
+            // was weighed on the file at two more bytes a row to say nothing (task 1).
+            group.Places.Add((long)Math.Round(hz));
+        }
+        else
+        {
+            // **AN ITEM WITH NO PLACE IS COUNTED AND NOT NAMED** - a card Hamlet never measured,
+            // a row whose offset will not parse, or one the cap left out. The line says so
+            // through `atDropped`; it is never invented and never zero (§0.0).
+            group.Dropped++;
+        }
+
+        // The span the places sit inside, where the group ran past its head's slot.
+        if (!string.IsNullOrEmpty(slot))
+        {
+            group.SlotLast = slot;
+        }
     }
 
     /// <summary>Write the open window out, one line per group, and open a new one.</summary>
@@ -3167,7 +3250,10 @@ public partial class MainWindowViewModel : ObservableObject
             AppEvents.OnScreen(
                 _telemetry, key.Kind, key.State, key.By, key.Text,
                 group.OffsetHz, group.Slot, group.DialHz, group.Items.Count,
-                ChosenDigitalMode);
+                ChosenDigitalMode,
+                // **THE PLACE OF EVERY ITEM THE LINE COUNTS**, and `Items.Count` unchanged
+                // beside it: a place list is not a licence to count changes again.
+                new OnScreenPlaces(group.Places, group.Dropped, group.SlotLast));
         }
 
         _onScreenWindow.Clear();
