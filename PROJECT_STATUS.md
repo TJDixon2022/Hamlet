@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 374 - the order is measured where the height is actually given
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T22:31:47-04:00
-NOTE: Unit 374 complete at task 4 of 5. Step 1 DONE - 1.2 met, the guard counts 4 shrinks where it counted 0, and 1.1, 1.3 and 1.4 re-checked at 33 of 33. Step 2 partial - 2.1 met, cq_pressed says PSK31 where it said Ft8. Carry-forward 211 of 211 app, 146 of 146 engine.
+UPDATED: 2026-09-20T22:33:02-04:00
+NOTE: Unit 374 complete at task 4 of 5, pushed at 3cb65787. Step 1 DONE - 1.2 met, the guard counts 4 shrinks where it counted 0, 1.1, 1.3 and 1.4 re-checked at 33 of 33. Step 2 partial - 2.1 met, cq_pressed says PSK31 where it said Ft8. Carry-forward 211 of 211 app, 146 of 146 engine.
 
 ---
 
