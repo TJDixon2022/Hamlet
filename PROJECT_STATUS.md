@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 374 - the order is measured where the height is actually given
 BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T09:57:49-04:00
-NOTE: Unit 375 complete at task 4 of 5. 2.3 met, 2.4 NOT met - best streak 1 of 5, five runs lost to the headless dispatcher loop. Step 2 stays partial: 2.2 is parked and needs Tim's ruling, as does whether Hamlet may send its abort pair twice.
+UPDATED: 2026-09-21T09:58:44-04:00
+NOTE: Unit 375 complete and pushed at ee31e16e. 2.3 met, 2.4 not met. Two questions wait on Tim: criterion 2.2 (RSID, would announce four Olivia variants on the air) and whether Hamlet may send its abort pair twice.
 
 ---
 
