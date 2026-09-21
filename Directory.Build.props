@@ -1062,9 +1062,30 @@
     unit opens a port, enumerates a device or keys anything: every sample lives in an array
     (FACT-004), and R40 licenses reading a log record and moving a number on a page and
     nothing whatever on a send path.
+
+    1.13.66 -> 1.13.67, UNIT 380 TASK 0. A PATCH, STEP 3 OF THE HARDENING PHASE, THE FIRST UNIT
+    EVER SPENT ON IT - THE RECORD SAYS WHAT WAS ON SCREEN: ONE EVENT A CHANGE, SAMPLED, AND UNIT
+    337 DIAGNOSED FROM THE FILE WITH NO SCREENSHOT. R36 (Tim, 2026-09-11): the record says a
+    line was parsed but not whether the row was visible, filtered, scrolled away or in a folded
+    panel, and that gap is why the CQ-filter fault of unit 337 needed a screenshot to find.
+    R39 put steps 6, 7 and 8 ahead of steps 3 and 4 and made step 3 depend on step 8; units
+    376, 378 and 379 closed all three, so the order R39 names now arrives at step 3. THE
+    MEASUREMENT COMES FIRST AND IS ITS OWN TASK: task 1 builds nothing and repairs nothing - it
+    traces what the file says today over the four-signal fixture, counts the row rate off a busy
+    FT8 fixture and measures the byte length of one serialised telemetry line, and THAT
+    ARITHMETIC DECIDES THE SAMPLING BUDGET rather than a number somebody liked. One new writer
+    on AppEvents - on_screen, carrying kind, state, by, where, count and the sub-mode - called
+    at the six sites where a decoded row changes which list it is on, with no new telemetry
+    category and no second collection. The screen does not change: no control, no label, no
+    layout, no colour, and unit 354's nine sizes are re-measured to prove it. Nothing personal
+    goes in a payload (HM-DEC-018 2.1) and CallsignPrivacyTests' walk grows in the same commit
+    as the writer. PHASE_STATUS.md's CURRENT_STEP and WORK_INSTRUCTION were set to 3 and to this
+    instruction, both stale at 0 and 379. Nothing in this unit opens a port, enumerates a device
+    or keys anything: every sample lives in an array (FACT-004), and R36 licenses writing down
+    what the screen did and nothing else.
   -->
   <PropertyGroup>
-    <Version>1.13.66</Version>
+    <Version>1.13.67</Version>
   </PropertyGroup>
 
   <!--

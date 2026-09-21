@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: complete
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 379 - the keyboard modes earn what FT8 earns: measured first, then connected
-BALL: tim
+STATE: running
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 380 - the record says what was on screen: one event a change, sampled, and unit 337 diagnosed from the file with no screenshot
+BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T15:53:40-04:00
-NOTE: Unit 379 complete. STEP 8's four criteria met, the first unit ever spent on it, and 8.4's drop candidate not taken. Measured first: all eight achievement kinds were ALREADY at parity for PSK31 and Olivia against FT8, 0 cells short, and the quill was already the FT8 row's - both are findings, not repairs (R14). Three Olivia-only faults found and closed, none of them visible in the eight-kind table: an Olivia CQ read PSK31 on the achievements page since unit 335, the earned Olivia Hall of Fame card was paid at full value with nobody's name on it, and the unearned one said any station would earn it. A logged PSK31 or Olivia contact scores 46 pts against the same contact on FT8's 31; the page moves 0 to 46 on both. Exit carry-forward app 216 of 216, engine 150 of 150, no regression. Step 3's entry reads step 8 done.
+UPDATED: 2026-09-21T16:19:54-04:00
+NOTE: Task 0 measurements all in. Eight movable types 71 of 71 green; ViewTestsActThroughControlsTests 1 of 2 with the inherited red verbatim. UNIT 380 entry appended to PHASE_OUTCOME.md with its ENTRY line. Committing task 0 with a pathspec.
 
 ---
 
