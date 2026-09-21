@@ -4,7 +4,7 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied|FullyQualifiedName~TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient|FullyQualifiedName~TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer|FullyQualifiedName~TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed|FullyQualifiedName~Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference|FullyQualifiedName~TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText|FullyQualifiedName~TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText|FullyQualifiedName~TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContactEarnsWhatTheSameFt8ContactEarns|FullyQualifiedName~TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied|FullyQualifiedName~TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient|FullyQualifiedName~TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer|FullyQualifiedName~TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed|FullyQualifiedName~Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference|FullyQualifiedName~TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText|FullyQualifiedName~TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText|FullyQualifiedName~TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContactEarnsWhatTheSameFt8ContactEarns|FullyQualifiedName~TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row|FullyQualifiedName~TheRecordDiagnosesTheEveningTests.TheFourSignalFixtureWithTheCqFilterOnIsDiagnosedFromTheFile|FullyQualifiedName~TheRecordDiagnosesTheEveningTests.AnHourOfABusyBandCostsLessThanFiftyKilobytes|FullyQualifiedName~TheRecordSaysWhatWasOnScreenTests.NoOnScreenLineCarriesACallsignAGridOrAWordOfTheText"
 
     timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical"
 
@@ -118,6 +118,9 @@ TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecorded
 TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText   the hover guard, unit 378
 TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContactEarnsWhatTheSameFt8ContactEarns   the parity guard, unit 379
 TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row   the CQ label guard, unit 379
+TheRecordDiagnosesTheEveningTests.TheFourSignalFixtureWithTheCqFilterOnIsDiagnosedFromTheFile   the unit 337 diagnosis, unit 380
+TheRecordDiagnosesTheEveningTests.AnHourOfABusyBandCostsLessThanFiftyKilobytes   the 50 kB budget, unit 380
+TheRecordSaysWhatWasOnScreenTests.NoOnScreenLineCarriesACallsignAGridOrAWordOfTheText   the visibility privacy scan, unit 380
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
 
@@ -669,4 +672,53 @@ src/Hamlet.App/ViewModels.
 
 THE COST, measured on the same machine in one session: the two names together run in well under
 a second, open no device, make no sound and reach no network, and every sample lives in an array
+(FACT-004).
+
+
+-- what unit 380 added, and why these three ------------------------------------
+
+TheRecordDiagnosesTheEveningTests.TheFourSignalFixtureWithTheCqFilterOnIsDiagnosedFromTheFile.
+**IT IS THE UNIT 337 GUARD, AND IT IS THE ONE THING R36 ASKED FOR BY NAME.** On 2026-09-12 a
+PSK31 carrier put 262 characters on the air and Tim's list stayed empty, and the only way anybody
+found out why was a screenshot: the file said a line had been parsed and did not say whether the
+row reached the screen. This drives the four-signal fixture with the CQ filter ON through the
+real tap and tick, then opens the JSONL the run wrote and answers out of it - all four carriers
+drawn on the left list, one of them also on the operator's own side because it answered him, and
+NOT ONE ROW FILTERED. **It asserts on the file and never on a view-model property**, which is the
+whole point: a property that agrees with the record proves nothing about the file Tim sends back.
+A later unit that stops writing a row's fate, or that writes it without the offset that says
+which row, turns this red - and so does one that lets the CQ toggle touch a text row again.
+
+TheRecordDiagnosesTheEveningTests.AnHourOfABusyBandCostsLessThanFiftyKilobytes.
+**IT IS THE 50 kB GUARD, AND IT IS WHAT KEEPS TELEMETRY FROM BECOMING A LOG NOBODY CAN OPEN.**
+Criterion 3.4's ceiling is 50 kB an hour and unit 380 measured that one event per row would be
+876 kB - seventeen and a half times it - so the record is sampled into 120-second windows, one
+line per state-and-gate group, with a count carrying the rest. This drives eighty slots of the
+shack's own measured fourteen-a-slot band with the CQ toggle on and the trim firing, WEIGHS THE
+BYTES ON THE FILE and scales them by the fixture's own counted seconds: 12.5 kB an hour. **It
+also asserts that every one of the 1,120 rows is still accounted for exactly**, so the budget
+cannot be met by writing less rather than by sampling. A later unit that adds a field to the
+payload, or that writes a line per row, turns this red before the file reaches Tim.
+
+TheRecordSaysWhatWasOnScreenTests.NoOnScreenLineCarriesACallsignAGridOrAWordOfTheText.
+**IT IS THE SCAN CallsignPrivacyTests CANNOT DO.** That walk calls every AppEvents writer by hand
+with a profile loaded, which proves the writer has nowhere to put a callsign; this drives real
+rows and real cards through the real collections and scans what the CALL SITES actually handed
+it. The two are different questions and the second is the one that fails first: the thing a
+reader most wants to know about a hidden row is WHICH row, and the obvious way to say which is
+the station's callsign. It scans for the operator's own call, his grid, every station in the
+fixture and several words of the decoded text, over the serialised JSON (HM-DEC-018 section 2.1).
+
+**THE OTHER NAMES UNIT 380 WROTE ARE NOT ON THE LINE**, as R14 asks. The four drawn, filtered,
+trimmed and folded cases, the card appear-and-dismiss case, the gate-that-does-fire case, the
+sampling-shape case, the two-panel scroll settle and the nine-sizes re-measure are the unit's
+criterion tests and are run by the unit that changes that code. Unit380TraceTests is deliberately
+NOT on the list, for the reason Unit379Trace and Unit378Trace are not: it prints and asserts
+nothing about the product.
+
+**NOTHING WENT ON THE ENGINE LINE.** Unit 380 opened no file under src/Hamlet.RadioEngine except
+to read it.
+
+THE COST, measured on the same machine in one session: the three names together run in about two
+seconds, open no device, make no sound and reach no network, and every sample lives in an array
 (FACT-004).
