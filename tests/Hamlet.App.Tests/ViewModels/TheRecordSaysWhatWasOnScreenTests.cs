@@ -89,6 +89,26 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
         Assert.All(drawn, e => Assert.True(
             Has(e, "offsetHz") || Has(e, "slot"),
             "a drawn line with no where: " + e));
+
+        // **AND NOW THE PLACE OF EVERY ROW IT COUNTS, NOT THE HEAD'S ALONE** (criterion 3.1,
+        // work instruction 381 task 3). This is what the judging session read as missing: a
+        // line saying five rows were drawn and carrying one offset answers *how many* and not
+        // *which*.
+        Assert.All(drawn, EveryItemIsAccountedFor);
+
+        // The left list holds the five that nothing held back, and the file names all five.
+        Assert.Equal(
+            new long[] { 617, 884, 1084, 1802, 2205 },
+            Places(drawn.Where(e => Text(e, "by") == "")).OrderBy(hz => hz).ToArray());
+
+        // And the one addressed to him is named on his own side, by its own offset.
+        Assert.Equal(
+            new long[] { 1410 },
+            Places(drawn.Where(e => Text(e, "by") == "addressed_to_operator")).ToArray());
+
+        // **THE HEAD IS SIMPLY THE FIRST ELEMENT OF `at`**, so unit 380's readers still work.
+        Assert.All(drawn, e => Assert.Equal(
+            (long)Math.Round(Number(e, "offsetHz") ?? -1), Places(e).First()));
     }
 
     /// <summary>3.1: a row a gate held off the list says so, and names the gate.</summary>
@@ -123,6 +143,17 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
 
         // And the count adds up to what the toggle actually hid.
         Assert.Equal(3, filtered.Where(e => Text(e, "by") == "cq_filter").Sum(e => Count(e)));
+
+        // **AND THE FILE NAMES WHICH THREE** (criterion 3.1 and 3.3, work instruction 381 task
+        // 3). *Three rows were held back* is what a reader had before tonight; *the rows at
+        // 1,084, 1,802 and 2,205 Hz were held back by the CQ filter* is what the record says
+        // now, and the three are exactly the rows that are neither a CQ nor addressed to him.
+        Assert.All(filtered, EveryItemIsAccountedFor);
+
+        Assert.Equal(
+            new long[] { 1084, 1802, 2205 },
+            Places(filtered.Where(e => Text(e, "by") == "cq_filter"))
+                .OrderBy(hz => hz).ToArray());
     }
 
     /// <summary>3.1: the row cap says a row went, and says the trim took it.</summary>
@@ -152,6 +183,83 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
 
         // One row over the cap, so exactly one row was aged off.
         Assert.Equal(1, removed.Sum(e => Count(e)));
+
+        // **AND THE FILE NAMES WHICH ROW THE TRIM TOOK** (criterion 3.1). The rows go on at
+        // 500 Hz and up, oldest first, so the one that ages off is the one at 500 - and a
+        // reader who was working 500 Hz is told so instead of being told that a row went.
+        Assert.All(removed, EveryItemIsAccountedFor);
+
+        Assert.Equal(new long[] { 500 }, Places(removed).ToArray());
+    }
+
+    /// <summary>
+    /// 3.1: **a row Hamlet cannot place is declared absent, never invented and never zero.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**AN ABSENT FACT IS ABSENT** (CLAUDE.md §0.0, work instruction 381 task 3). A row
+    /// whose <c>Hz</c> will not parse has no place, and the temptation is to write a 0 - which
+    /// reads as a row heard at the bottom of the band. The line writes no element for it and
+    /// carries <c>atDropped</c> instead, so the file says plainly that it is not claiming to
+    /// name every row it counted.</para>
+    /// <para>**AND `count` STILL COUNTS IT**, which is what makes the arithmetic
+    /// <c>count == at.length + atDropped</c> a thing a reader can check the file against.</para>
+    /// </remarks>
+    [Fact]
+    public void ARowHamletCannotPlaceIsCountedAndDeclaredRatherThanInvented()
+    {
+        var lines = Run(model =>
+        {
+            var slot = new DateTime(2026, 9, 21, 21, 41, 0, DateTimeKind.Utc);
+
+            // Five rows Hamlet can place, and one it cannot: the decoder handed up a row
+            // whose offset cell is not a number.
+            foreach (var (hz, message) in new[]
+            {
+                ("617", "CQ TA3MPK KM39"),
+                ("884", "CQ DX EA3QQ JN11"),
+                ("1084", "KE9COB N5CH R+14"),
+                ("1802", "W4WTM " + OwnCall + " R-11"),
+                ("2205", "TNX FER QSO OM"),
+                ("", "KE9COB W1AW R+03"),
+            })
+            {
+                model.AddDecodeRowForTests(
+                    slot.ToString("HHmmss", CultureInfo.InvariantCulture),
+                    "-11", "0.2", hz, message, slot, 14_074_000);
+            }
+
+            model.ShowsCqOnly = true;
+        });
+
+        var filtered = OnScreen(lines)
+            .Where(e => Text(e, "state") == "filtered" && Text(e, "by") == "cq_filter")
+            .ToList();
+
+        Assert.NotEmpty(filtered);
+
+        foreach (var line in lines.Where(l => Name(l) == "on_screen"))
+        {
+            _output.WriteLine("  " + line);
+        }
+
+        // Four rows are neither a CQ nor addressed to him, and the file still counts four.
+        Assert.Equal(4, filtered.Sum(e => Count(e)));
+
+        // **THREE ARE NAMED AND ONE IS DECLARED**, which is the honest answer and not a
+        // silent gap: the placeless row is counted, absent from `at`, and confessed in
+        // `atDropped`.
+        Assert.Equal(
+            new long[] { 1084, 1802, 2205 },
+            Places(filtered).OrderBy(hz => hz).ToArray());
+
+        Assert.Equal(1, filtered.Sum(e => Dropped(e)));
+
+        // **NOTHING WAS INVENTED FOR IT.** A 0 would read as a row heard at the bottom of
+        // the band, and the whole point of `atDropped` is that the file does not do that.
+        Assert.DoesNotContain(Places(filtered), hz => hz == 0);
+
+        // And the arithmetic the reader checks the file with holds on every line.
+        Assert.All(OnScreen(lines), EveryItemIsAccountedFor);
     }
 
     /// <summary>3.1 and 3.2: what went behind a fold, which `panel_toggled` never said.</summary>
@@ -170,6 +278,12 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
         var folded = OnScreen(lines).Where(e => Text(e, "state") == "folded").ToList();
 
         Assert.NotEmpty(folded);
+
+        foreach (var line in lines.Where(
+            l => Name(l) == "on_screen" && l.Contains("folded", StringComparison.Ordinal)))
+        {
+            _output.WriteLine("  " + line);
+        }
 
         // The decoded panel folded over the rows that were on the left list.
         var decoded = folded
@@ -193,6 +307,32 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
         Assert.Contains(
             lines,
             l => Name(l) == "panel_toggled" && l.Contains("digital.decoded", StringComparison.Ordinal));
+
+        // **AND THE FOLD NAMES WHAT WAS BEHIND IT, ROW BY ROW** (criterion 3.1, work
+        // instruction 381 task 3). *Seven rows went behind the fold* and *the rows at 617,
+        // 884, 1,084, 1,310, 1,310, 1,802 and 2,205 Hz went behind the fold* are the
+        // difference between a count and a diagnosis - and the two at 1,310 are the carded
+        // station's own two rows, which is why a place list is not a set.
+        Assert.All(folded, EveryItemIsAccountedFor);
+
+        Assert.Equal(
+            new long[] { 617, 884, 1084, 1310, 1310, 1802, 2205 },
+            Places(decoded).OrderBy(hz => hz).ToArray());
+
+        // The For You fold names its row by its place too - the one row on his own side
+        // when the panel shut, which is the carded station's reply.
+        Assert.Equal(
+            new long[] { CardOffset },
+            Places(folded.Where(
+                e => Text(e, "by") == "digital.mine" && Text(e, "kind") == "row")).ToArray());
+
+        // **AND BOTH CARDS BEHIND THAT FOLD ARE NAMED BY THE OFFSET OF THE STATION THEY
+        // STAND FOR** - never by the callsign the card map is keyed by (HM-DEC-018 §2.1).
+        Assert.Equal(
+            new long[] { CardOffset, 1410 },
+            Places(folded.Where(
+                e => Text(e, "by") == "digital.mine" && Text(e, "kind") == "card"))
+                .OrderBy(hz => hz).ToArray());
     }
 
     /// <summary>3.2: a card appearing and a card dismissed are both in the file.</summary>
@@ -216,6 +356,18 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
         Assert.Contains(cards, e => Text(e, "state") == "drawn");
         Assert.Contains(
             cards, e => Text(e, "state") == "removed" && Text(e, "by") == "dismissed");
+
+        // **3.2 RE-CHECKED AND NOT ASSUMED, because the payload grew** (work instruction 381
+        // task 3). **A card's element is an offset or it is nothing** - never the callsign the
+        // card map is keyed by, which is the sharpest edge in this unit (HM-DEC-018 §2.1).
+        Assert.All(cards, EveryItemIsAccountedFor);
+
+        Assert.All(cards, e => Assert.All(
+            Places(e), hz => Assert.Equal(CardOffset, hz)));
+
+        // And a card Hamlet has a measurement for IS named, so the rule is not met by
+        // writing nothing at all.
+        Assert.Contains(cards, e => Places(e).Count > 0);
     }
 
     /// <summary>
@@ -262,6 +414,27 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
 
         Assert.All(onScreen, line => Assert.All(forbidden, word => Assert.DoesNotContain(
             word, line, StringComparison.OrdinalIgnoreCase)));
+
+        // **AND THE SCAN IS EXTENDED OVER `at` AND `atDropped`** (criterion 3.5 re-earned,
+        // work instruction 381 task 3). The list is the newest ground and the most tempting:
+        // the shortest way to say WHICH row is the callsign, and the card map is keyed by one.
+        // **EVERY ELEMENT IS A NUMBER**, so nothing that could hold a name can be in there at
+        // all - a stronger claim than scanning for the names this fixture happens to use.
+        var withPlaces = OnScreen(lines).Where(e => Has(e, "at")).ToList();
+
+        Assert.NotEmpty(withPlaces);
+
+        Assert.All(withPlaces, e => Assert.All(
+            e.GetProperty("at").EnumerateArray(),
+            element => Assert.Equal(JsonValueKind.Number, element.ValueKind)));
+
+        // `atDropped` is a number too, and it is only ever there where something was left out.
+        Assert.All(OnScreen(lines), e => Assert.True(
+            !Has(e, "atDropped") || Dropped(e) > 0,
+            "an atDropped of nothing, which claims a gap that is not there: " + e));
+
+        // And the scan is not vacuous: real places went through it.
+        Assert.Contains(withPlaces, e => Places(e).Count > 1);
     }
 
     // ---- the plumbing, and it drives the real collections ---------------------
@@ -296,12 +469,25 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
             .ToList();
     }
 
+    /// <summary>The six rows' own offsets, one each, in the order they are placed.</summary>
+    /// <remarks>
+    /// **SIX ROWS AT ONE OFFSET COULD NOT TEST CRITERION 3.1** (work instruction 381 task 3).
+    /// Unit 380's fixture heard every one of them at 1,240 Hz, so a record naming one row and a
+    /// record naming all six read identically. Each row now has the offset Tim would read off the
+    /// waterfall, which is what makes *the place of every row it counts* an assertion rather than
+    /// a sentence.
+    /// </remarks>
+    private static readonly int[] SixOffsets = { 617, 884, 1084, 1410, 1802, 2205 };
+
+    /// <summary>The offset the one carded station is heard on.</summary>
+    private const int CardOffset = 1310;
+
     /// <summary>Six rows covering every shape the two predicates have to read.</summary>
     private static void WithSixRows(MainWindowViewModel model, bool cqOnly)
     {
         var slot = new DateTime(2026, 9, 21, 21, 41, 0, DateTimeKind.Utc);
 
-        foreach (var message in new[]
+        var messages = new[]
         {
             "CQ TA3MPK KM39",
             "CQ DX EA3QQ JN11",
@@ -309,11 +495,15 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
             OwnCall + " W4WTM -07",
             "W4WTM " + OwnCall + " R-11",
             "TNX FER QSO OM",
-        })
+        };
+
+        for (var at = 0; at < messages.Length; at++)
         {
             model.AddDecodeRowForTests(
                 slot.ToString("HHmmss", CultureInfo.InvariantCulture),
-                "-11", "0.2", "1240", message, slot, 14_074_000);
+                "-11", "0.2",
+                SixOffsets[at].ToString(CultureInfo.InvariantCulture),
+                messages[at], slot, 14_074_000);
         }
 
         model.ShowsCqOnly = cqOnly;
@@ -333,7 +523,9 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
         {
             model.AddDecodeRowForTests(
                 slot.ToString("HHmmss", CultureInfo.InvariantCulture),
-                "-11", "0.2", "1240", message, slot, 14_074_000);
+                "-11", "0.2",
+                CardOffset.ToString(CultureInfo.InvariantCulture),
+                message, slot, 14_074_000);
 
             slot = slot.AddSeconds(15);
         }
@@ -375,4 +567,39 @@ public sealed class TheRecordSaysWhatWasOnScreenTests : IDisposable
 
     private static bool Has(JsonElement data, string field)
         => data.TryGetProperty(field, out _);
+
+    private static double? Number(JsonElement data, string field)
+        => data.TryGetProperty(field, out var value) && value.ValueKind == JsonValueKind.Number
+            ? value.GetDouble()
+            : null;
+
+    /// <summary>The places one line carries, in the order the file has them.</summary>
+    private static List<long> Places(JsonElement data)
+        => data.TryGetProperty("at", out var value) && value.ValueKind == JsonValueKind.Array
+            ? value.EnumerateArray().Select(e => e.GetInt64()).ToList()
+            : new List<long>();
+
+    /// <summary>The places a set of lines carries between them.</summary>
+    private static List<long> Places(IEnumerable<JsonElement> lines)
+        => lines.SelectMany(Places).ToList();
+
+    /// <summary>How many of a line's items it is NOT claiming to name.</summary>
+    private static int Dropped(JsonElement data)
+        => data.TryGetProperty("atDropped", out var value)
+            && value.ValueKind == JsonValueKind.Number
+                ? value.GetInt32()
+                : 0;
+
+    /// <summary>
+    /// **Every item the line counts is either named or declared missing, and never neither.**
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS THE ARITHMETIC A READER CHECKS THE FILE WITH** (work instruction 381 section 6
+    /// ruling 1 item 4). `count == at.length + atDropped` means a reader who sees no
+    /// `atDropped` knows the file is naming every row it counted, and one who sees an
+    /// `atDropped` knows exactly how many it is not claiming to name. **Truncation is never
+    /// silent, and neither is a place Hamlet never had.**
+    /// </remarks>
+    private static void EveryItemIsAccountedFor(JsonElement data)
+        => Assert.Equal(Count(data), Places(data).Count + Dropped(data));
 }
