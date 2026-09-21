@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 5
+TASK: TASK 2 of 5
 WORK_INSTRUCTION: 382 - the radio sheet: one page in Tim's hands, every sentence on it quoted from the screen
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T18:51:34-04:00
-NOTE: Unit382Trace green 6 of 6: eight of the nine refusals produced character for character, the mode gate measured unreachable under PSK31 and Olivia, and the four capture refusals proved to belong to the other capture button.
+UPDATED: 2026-09-21T18:54:34-04:00
+NOTE: docs/RADIO_SHEET.md written from the trace output: six sections, 25 quoted sentences on 25 unwrapped lines, measured 173 lines and 10.4 kB against a target of 120 and 10.
 
 ---
 
