@@ -47,421 +47,434 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 2 | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list.
-## Step 2 - The record says what was true
+﻿STEP: 7 | A PSK31 row right-clicks into a canned list - seven framed lines from an editable data file, one click sends - and the row's hover says what the row knows instead of repeating the text.
+## Step 7 - The canned list and the hover
 
-**Delivers:** R35.
+**Delivers:** R39's list and hover.
 
-**Entry:** step 1 done.
+**Entry:** step 6 done (R43: step 2 may be partial).
 
 **Exit:**
-- [ ] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
-- [ ] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
-- [ ] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
-- [ ] 2.4 The carry-forward list runs green five times in a row. *must-pass*
+- [ ] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed. *must-pass*
+- [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text. *must-pass*
+- [ ] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent. *must-pass*
+- [ ] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
+- [ ] 7.5 The mode chip's fill and the send-status line name the mode that was chosen, never the family: under Olivia the Olivia chip is filled and the PSK31 chip is not, and a 29-second Olivia CQ reads *29 s of Olivia* (Tim's screen, 2026-09-21). *must-pass*
 
-**Depends on:** step 1.
+**Depends on:** step 6 only.
 
 
 --- the unit's report follows ---
 
+```
 READ IN THIS ORDER.
 
 A. The phase goal - Hamlet holds what it has. Step 0 partial, step 1 done, step 2
-   partial with 2.1, 2.2 and 2.3 banked and 2.4 short at one round of five, step 6
-   done by R42 and recorded so at task 0, steps 3, 4, 5, 7 and 8 not started. This
-   unit is the first ever spent on 2.2, which was the owner's until R41 this morning.
-B. Step 2 - the record says what was true. 2.2 MET: the one RSID file is
-   assets/data/rsid-codes.json, carrying 8 codes with 8 tone sequences and both of
-   fldigi's tables, against 8 codes with 4 sequences and neither at task 0; every
-   listed code round-trips generator to detector, 24 of 24 at 3 centers where it was
-   12 of 12; and of the seven Olivia variants 7 are proved by loopback and 0 are
-   refused - 4/250, 4/500, 8/250, 8/500, 16/500, 16/1000 and 32/1000, each 10 of 10
-   identical on five texts at two centers, 70 of 70 cases. 2.1 and 2.3 carried met,
-   unaltered. 2.4 not attempted and it is the only thing holding step 2 open.
-C. The report last. Section 4 raises 5 items on top of the carried eighteen, and
-   none of them is in the way of a criterion in B - though item 1 bounds how much
-   Hamlet can say at four of the seven variants B has just opened, and item 2 is
-   about this unit's own commit history rather than about the tree it leaves.
-   Unit 376's items 1 and 2 came off the queue answered - R41 licensed this unit,
-   R42 closed step 6.
+   partial on 2.4 alone and deferred by R43, step 6 done by R42, steps 3, 4 and 5
+   not started with step 3 waiting on step 8, step 8 not started and waiting on
+   this one. This is the first unit ever spent on step 7.
+B. Step 7 - the canned list and the hover. 7.1 met: 7 of seven lines from
+   data/psk31/canned.json, a menu on 5 rows that had none, malformed reported.
+   7.2 met: 4 text lines write macro canned, 3 macro lines write their own token,
+   all 7 announced and capped, no text in the record. 7.3 met: 10 of R39's ten
+   facts on the hover, 0 absent because Hamlet lacks them on a PSK31 row and 1
+   absent on an Olivia row, text off and reachable by a click. 7.4 met. 7.5 met:
+   the chip was already right, the send line reads Sent "CQ CQ CQ de KC3QIS
+   KC3QIS KC3QIS pse K" - 29 s of Olivia. THE STEP IS DONE AND STEP 8's ENTRY
+   IS OPEN.
+C. The report last. Section 4 raises 4 items on top of the carried nineteen, and
+   none of them is in the way of a criterion in B. Unit 377's items 1, 2 and 3
+   came off the queue - R43 deferred the timing rows, section 6 ruling 1
+   answered the commit order, and the reader count was a finding with nothing
+   left in it.
+```
 
 ```
-UNIT:       377 - complete at task 4 of 5 - 2026-09-21 12:56
-PHASE GOAL: Hamlet keeps what it has already earned. Everything in the PSK31 and
-            Olivia work that is screen, record or test and needs neither the radio
-            nor the owner gets hardened, proved by tests that actually ran, and
-            judged at the end by Tim at his own window.
-UNIT GOAL:  One RSID data file instead of two that could disagree, carrying every
-            code fldigi knows with its tone sequence and fldigi's two tables, read
-            by the detector and by the burst generator, with every listed code
-            proved to round-trip through Hamlet's own generator and detector - and
-            R41's gate built on top of it: an Olivia variant goes on the air only
-            once Hamlet has modulated it and read its own audio back identical, and
-            a variant that has not stays off the air in a sentence that says so.
-ADVANCED:   step 2, criterion 2.2
-NUMBER:     Olivia variants Hamlet will transmit: 3 of 7 -> 7 of 7,
-            each of the 7 proved by a loopback run named in this report
+UNIT:       378 - complete at task 4 of 5 - 2026-09-21 14:52
+PHASE GOAL: Hamlet keeps what the PSK31 and Olivia threads already earned it -
+            screen, record and test work that needs neither the radio nor the
+            owner, judged by tests that ran and, at the end, by Tim at his window.
+UNIT GOAL:  A right-click on any PSK31 or Olivia row that names a station offers
+            Tim the seven things an operator actually says, from a file he can
+            edit without a session; one click sends the one he picked through the
+            one send door Hamlet already has, framed, announced, capped and
+            recorded with no text; and the hover stops reading him back the line
+            he is already looking at and tells him what the row knows instead.
+ADVANCED:   step 7, criteria 7.1, 7.2, 7.3, 7.4 and 7.5 - the whole step
+NUMBER:     PSK31 and Olivia rows that offer something on a right-click:
+            2 of 7 -> 7 of 7, and lines on the menu 1 -> 7
 DRIFT:      none
 ```
 
 ## 1. What Claude did
 
-**Five tasks, all five done. Seven commits, one push at the end.** The project gate was
-checked first and all four parts hold: `SHACK_FACTS.md` present,
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, neither `CoreHMI.sln` nor
-`MURC.sln` present, root `C:\Source\HamLet`.
+**Complete, at task 4 of 5 (tasks 0 to 4). Nothing was dropped.** Machine QUIVERFULL,
+project gate `PROJECT: Hamlet` verified against the tree - `SHACK_FACTS.md` and
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` both present, neither `CoreHMI.sln`
+nor `MURC.sln` exists, root `C:\Source\HamLet`. Branch `main`, six commits, pushed.
 
-**Task 0 - the record, step 6's close, the entry run.** Step 6 was recorded `done` in
-`PHASE_STATUS.md` and `PHASE_OUTCOME.md` citing **R42**, because `PHASE_PLAN.md` at HEAD
-ticks all four of step 6's criteria while both status files still said `partial`. That is
-transcription of the owner's ruling and is not one of this unit's two: **the band was not
-re-measured and no `.axaml` file was opened in this unit at all.** `CURRENT_STEP` 0 to 2,
-`WORK_INSTRUCTION` 376 to 377, version **1.13.63 to 1.13.64** with its line in the version
-log, and the `UNIT 377 - STEP 2` entry appended. Carry-forward before any change:
-**app 211 of 211, engine 146 of 146** - the counts unit 376's exit run left.
+**Task 0 - the record and the entry run.** `PHASE_STATUS.md` `CURRENT_STEP` 0 → 7 and
+`WORK_INSTRUCTION` 377 → 378, both stale where the rev4 commit left them. Version
+1.13.64 → 1.13.65 with its line in the version log. `UNIT 378 - STEP 7` appended to
+`PHASE_OUTCOME.md`. Entry carry-forward, both invocations, one build each, status written
+immediately before each: **app 212 of 212 in 2 m 23 s on the second attempt** - the first
+was 211 of 212, lost at 1 ms to Avalonia's headless `InvalidProgramException` in
+`HeadlessUnitTestSession.EnsureApplication` on
+`ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel`, which is
+unit 375's item 3, re-run once and recorded rather than chased - and **engine 150 of 150
+in 4 m 57 s**, green first time. Both exactly where unit 377's exit left them.
 
-**Task 1 - the trace, and 2.2's before measured instead of claimed.** `Unit377Trace`, one
-`[Fact]`, run by name. It built nothing, changed no source file and repaired nothing. It
-measured the two RSID files side by side, proved which one the engine was reading, put all
-seven variants through `OliviaModulator.Compose` and printed the exception verbatim for the
-four that threw, timed a loopback at every one of the seven, and read `OliviaFormat`'s parse
-to find out what a new key in a `variants` row would break. **The five named types ran
-44 of 44.** The tables are in section 3.
+**Task 1 - the trace. It built nothing and changed no source file.** One `[Fact]`,
+`Unit378Trace`, run by name, over a real view model with two fixtures: the eight PSK31
+corpus transcripts on their own carriers, and four Olivia channels at four variants.
+Eleven rows. It answered every question the instruction asked, and three of its answers
+decided what tasks 2 and 3 were allowed to do:
 
-**Task 2, first commit - one RSID file, and every reader moved with it in the one commit.**
-`assets\data\rsid-codes.json` is the embedded resource now, **with its `LogicalName`
-unchanged**; `RsidCodes.FilePath` moved; and **six** test reads moved with it, not the five
-section 5 listed (item 3 below). `data\rsid\rsid-codes.json` is **emptied and not deleted**,
-holding one key naming its replacement and this unit, and `TheOneRsidFileTests` scans every
-`.cs` and `.csproj` under `src\` and `tests\` - 1,259 files, in all three forms the path is
-written in this tree - and asserts none of them names it.
+- **7.1's before: 7 rows named a station, 2 had any menu at all, 5 named a station and
+  had no menu, and the most items any menu carried was one.**
+- **7.3's measurement: on all 11 rows the whole-message tip drew the row's own text, and
+  on all 11 a click on `DecodedRowWholeMessage` opened exactly the same string.** So
+  taking the text off the tip hides *detail*, which CLAUDE.md 0.5 allows. Had it opened
+  something else, the words would have stayed and 7.3 would have been partial. The
+  measurement decided it, not the criterion.
+- **7.5's before: the chip was already right and the send line was not.** Under FT8, FT4,
+  PSK31 and Olivia the chosen chip is the mode chosen and the only one. A real Olivia CQ
+  driven over `FakePort` and `FakeSink` left the panel reading, verbatim,
+  `Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of PSK31.`
 
-**Task 2, second commit - R41's gate.** `proved_by_loopback` on each row of
-`data\olivia\format.json`'s `variants`, read into `OliviaVariant`, **absent or false meaning
-not proved**; the refusal `variant_not_proved` at the app's Olivia send path, in front of the
-only `OliviaModulator.Compose` call in the whole application. **It landed with only the three
-variants the existing green loopback already proved marked true**, so after task 2 the set of
-variants Hamlet would transmit was exactly the three it would have transmitted at task 0.
+It also priced all seven lines at PSK31 and at every Olivia variant against the cap that
+actually applies (section 3), and located each of R39's ten facts by property or object.
 
-**Task 3 - the loopback, and four flags flipped beside the run that earned them.**
-`EachMacroAndATypedLineComeBackIdentical` went from three `[InlineData]` rows to seven and
-nothing else about its shape moved. **All seven came back 10 of 10 identical, 70 of 70
-cases.** The four flags went true in the same commit as that run. Two further commits:
-the R12 rewrite of `TheRsidBurstTests`' dead loop, in its own commit, and the refusal test
-with its carry-forward line.
+**Task 2 - the file, the reader, the menu and the send, in ONE commit.** One commit
+because landing the capability and landing the frame, the burst and the cap it rides in
+two would leave a commit in which Hamlet could do a thing it may not do (section 6 ruling
+1 item 9, which also answers unit 377's item 2). **There is no commit in this unit's
+history at which a canned line could reach the air unframed, unannounced or uncapped.**
 
-**Task 4 - the exit run and the record.** **App 212 of 212, engine 150 of 150**, name for
-name against task 0's 211 and 146, the only differences this unit's own new refusal name and
-the four new loopback theory cases. **No regression.**
+`data\psk31\canned.json` carries R39's seven in his order with his labels, the first three
+naming Hamlet's own `Answer`, `Report` and `Confirm` macros and the last four carrying
+text, with a leading `_note` saying what a row is, where his own copy goes and that a line
+goes out framed. It is `Content` with `CopyToOutputDirectory` and **not** an
+`EmbeddedResource`, because a file the operator is meant to edit must exist as a file.
+`Psk31CannedLines` reads `%AppData%\Hamlet\canned.json` first where he has made one and
+**Hamlet writes neither** - it does not create his copy, does not copy the shipped file
+there and does not repair it. A malformed file is **one note and no canned item**, never a
+partial read. The menu is on every row `Psk31StationOn` names a station on; the view model
+decides and the view draws, so the menu a test reads and the menu Tim sees are one list.
+`TheCannedListIsOfferedTests` **12 of 12**.
 
-**Nothing here is evidence about the radio** (FACT-004). No port was opened, no device
-enumerated, nothing was keyed, and every sample in this unit lived in an array.
+Then, **in its own commit**, the R12 rewrite. `ThePsk31ReadsTheConversationTests` went red
+exactly where section 5 said it would - `Assert.Single` on the flyout got seven. It is on
+the carry-forward list, so it was read twice before it was written. **Nothing was
+loosened**: `Assert.Null(model.SendMenuFor(row))` is untouched and still the first thing
+asked of every row, and the Answer item's command and parameter are still asserted by
+identity. **Four things are asserted that never were** - that a row naming a station has a
+menu where it had none, the file's order with R39's labels, that no item carries
+`SendMessageCommand` so no FT8 message can be on one of these rows, and the criterion's
+own number. **8 of 8** where it was 7 of 8.
 
-**No task was left undone and nothing was dropped.** Task 3 carried a drop candidate - the
-breadth of the sweep for the four new variants - and **it was not taken**, because task 1
-measured the whole seven-variant sweep at about **69 s of decode CPU**, which is seconds and
-not minutes.
+**Task 3 - the hover, and 7.5's two namings.** `DigitalDecodeRow.RowFacts` is one ordered
+string built in the view model, in R39's order. The inline `ToolTip.Tip` drawing
+`WholeMessage` is gone, so the pointer finds the facts. **When his carrier stopped** is now
+a fact, written in the one place `Ended` is set. An Olivia row is driven through the same
+hover and the same menu and reads the same string line for line. The chip is asserted on
+all four modes and was **not repaired** - it was already right (R14). `Psk31WentLine` now
+names `ChosenDigitalMode` in both of its sentences. `TheRowHoverSaysWhatItKnowsTests`
+**10 of 10**. `BindingHealthTests`, `TheWholeMessageTests`, `AWorkedStationIsDimTests`,
+`TheOliviaRowsReadLikePsk31Tests` and `TheRowShowsWhatWasHeardTests` were read first and
+are green.
+
+**Task 4 - one shortfall found while judging 7.3, and closed rather than reported.** 7.3's
+bar is *every fact Hamlet has is on the hover*. `Reading` is the **latest** complete
+message, so the grid - and the distance with it - vanished the moment a station said
+`73 SK`, while his conversation card still showed both. That is a fact Hamlet **has** and
+the hover did not reach, which section 6 ruling 2 item 2 calls a shortfall and not an
+absence, and it was reachable without walking the ledger. The row now carries the
+conversation's latest **certain** grid, by the card's own selection. Asserted, and the
+exit run was re-done over the change.
+
+**Exit carry-forward, both invocations, after the last change: app 214 of 214 in 2 m 15 s,
+engine 150 of 150 in 4 m 55 s, both green on the first attempt of the final run.** Name
+for name against task 0's 212 and 150, the only differences are this unit's own two
+additions. **No regression** (HM-DEC-165). The send guards were read first and none moved.
+
+**Decisions this session made for itself**, both transcribed in full in the work
+instruction's section 6 and in `PHASE_OUTCOME.md`: (1) the file's path and shape, the
+`%AppData%` override, the malformed-file refusal, the three macro rows being sent by the
+commands that already send them, the `canned` token at the macro cap, the menu being on
+every row that names a station, and the one-commit order; (2) the hover being built in the
+view model in R39's order with absent facts absent, the text coming off only because a
+click was proved to open it, and 7.5's chip being measured before it was touched. **That is
+two, which is R31's limit.** The nineteen carried asks got none.
+
+**No port was opened, no device was enumerated and nothing was keyed. Every sample lived
+in an array** (FACT-004).
 
 ## 2. What the owner should expect
 
-When somebody calls you in Olivia, Hamlet now answers him in **the variant he is using** -
-any of the seven the mode has, not the three it could manage this morning. Four of them,
-4/250, 4/500, 8/500 and 16/1000, were variants Hamlet could *hear* and could not *answer in*:
-the send threw, because the file that names a variant on the air carried no announcement for
-them. It does now.
-
-**It earned each of the four the only way that means anything: it sent to itself.** It made
-the audio exactly the way it would make it for the radio, listened to its own audio with its
-own ears - its own detector worked out which variant and which frequency, with nothing told
-to it - and counted the variant only because the words came back **exactly**, character for
-character, on every one of the seventy cases it tried. Where a variant has *not* been proved
-that way, Hamlet will not transmit it, and it says so: *"Hamlet did not send it: it has not
-proved to itself that it can read back Olivia 4/500, so it will not put that variant on the
-air."* That sentence is a test now, so it cannot quietly stop being true.
-
-And the file that names every one of these announcements **has stopped being two files that
-could disagree about what goes out of your radio.** There is one, it carries a tone sequence
-for every code fldigi knows plus both of fldigi's own tables, and a test walks the whole
-source tree to make sure nothing starts quietly reading the old shorter one again.
-
-**One thing to expect that is short of the mark, and it is item 1 in section 4.** At the four
-new variants, a long message will be refused with a length sentence rather than sent: the
-timing table has no measured rate for them yet, so they fall back to the plain thirty-second
-limit. A CQ or an answer goes at all seven. A full report goes at five of the seven, and a
-long typed line at three. Nothing goes out wrong - it is refused and said - but it is less
-than the mode can do, and fixing it changes how long a transmission may run, which is yours.
-
-**Every claim above was computed, not seen** (FACT-004). **No port was opened, no device was
-touched and nothing was keyed anywhere in this unit.**
+Right-click a station you are hearing on PSK31 or Olivia and you now get seven things to
+say to him - *Answer him*, *Send my report*, *Confirm and 73*, *Say again?*, *Please repeat
+your report*, *QRZ?*, *73 and out* - and one click sends the one you picked, with both
+callsigns in front of it and the hand-back behind, announced by the same burst and held to
+the same thirty seconds as everything else Hamlet sends. Before tonight a right-click
+offered you exactly one thing, and only where the parser was certain the station was
+calling CQ; on every other row it opened a card and nothing else. The seven live in
+`data\psk31\canned.json` beside the application - open it in an editor, change the words,
+add your own. Copy it to `%AppData%\Hamlet\canned.json` and Hamlet reads yours instead;
+it will never write over either one. If you break the file it tells you which file and
+which row is wrong and offers you nothing at all, rather than guessing at the half it
+could still read. Three of the seven are the macros Hamlet already had, sent by the
+buttons that already send them, so there is only ever one spelling of an answer. And the
+hover over a row has stopped reading you back the line you are already looking at: it now
+tells you who the station is, which country issued his callsign, his grid and how far
+away and which way, where he is in the passband and how loud, when you first heard him and
+when his carrier went, whether you have worked him before and whether this message is
+addressed to you, what the parser made of it and how sure it is, and what a click and a
+right-click will do. **What will look wrong but is not:** a hover with fewer lines on some
+rows. A fact Hamlet does not have is simply not drawn - no dash, no *unknown*, no empty
+label - so a station who has sent no grid has no grid line, and an Olivia row shows no
+decibels because the Olivia listener measures in its own units and a number in the
+decibel column meaning something else would be a claim nothing measured. The words of the
+message are still there: they are on the row, and one click on the message opens the whole
+of it, which was measured and proved before a single character came off the hover. Every
+claim above was computed, not seen (FACT-004); **no port was opened and nothing was
+keyed.**
 
 ## 3. What you should see
 
-### The two RSID files, before - this is what made 2.2 a measurement
+### The menu, row kind by row kind - before and after
+
+Measured by `Unit378Trace` over eight PSK31 corpus transcripts and four Olivia channels
+(one had ended and so is not listed). This is what makes 7.1 a measurement.
+
+| Row | `Psk31StationOn` | `Psk31CqOn` | Flyout BEFORE | Flyout AFTER |
+|---|---|---|---|---|
+| PSK31, W1AW, signed off | W1AW | null | **none** | 7 entries |
+| PSK31, G4XYZ, signed off | G4XYZ | null | **none** | 7 entries |
+| PSK31, VE3XN exchange, last speaker is the operator | null | null | none | none |
+| PSK31, F4DIA/EI4GNB, signed off | EI4GNB | null | **none** | 7 entries |
+| PSK31, K3ABC, report, **not certain** | null | null | none | none |
+| PSK31, JA1XYZ, **certain CQ DX** | JA1XYZ | JA1XYZ | 1 item, *Answer JA1XYZ* | 7 entries |
+| PSK31, N4ZEK exchange, last speaker is the operator | null | null | none | none |
+| PSK31, KD8WYT/P, report | KD8WYT/P | null | **none** | 7 entries |
+| Olivia 8/250, W1AW, **certain CQ** | W1AW | W1AW | 1 item, *Answer W1AW* | 7 entries |
+| Olivia 16/500, K3ABC, report | K3ABC | null | **none** | 7 entries |
+| Olivia 4/500, damaged callsign | null | null | none | none |
+| **Totals** | **7 name a station** | 2 are certain CQs | **2 of 7 had a menu** | **7 of 7, seven lines each** |
+
+### The seven lines, their characters, their seconds and the cap that applies
+
+Framed for `W1AW de KC3QIS`. The three macros as their own composers build them, the four
+texts as `Psk31Macros.Typed` frames them. **Every one passes `Psk31Macros.Sendable` with
+zero characters dropped** - Hamlet ships no line it cannot send. Seconds are
+`Psk31Modulator.SecondsFor` and `OliviaModulator.TextSeconds`; the announcement in front is
+not counted, as the cap does not count it. **A shaded cap is the 30-second fallback**, which
+is what a variant with no row in `data\olivia\timing.json` gets (R43, deferred).
+
+| Line | Chars | PSK31 (cap 30) | 4/250 (30\*) | 4/500 (30\*) | 8/250 (82.60) | 8/500 (30\*) | 16/500 (61.95) | 16/1000 (30\*) | 32/1000 (49.56) |
+|---|---|---|---|---|---|---|---|---|---|
+| Answer him | 23 | 7.84 ✓ | 12.30 ✓ | 6.15 ✓ | 16.42 ✓ | 8.21 ✓ | 12.32 ✓ | 6.16 ✓ | 10.27 ✓ |
+| Send my report | 97 | 24.86 ✓ | **50.19 ✗** | 25.10 ✓ | 67.62 ✓ | **33.81 ✗** | 51.23 ✓ | 25.62 ✓ | 40.99 ✓ |
+| Confirm and 73 | 62 | 16.26 ✓ | **31.76 ✗** | 15.88 ✓ | 43.04 ✓ | 21.52 ✓ | 32.80 ✓ | 16.40 ✓ | 26.66 ✓ |
+| Say again? | 65 | 18.40 ✓ | **33.81 ✗** | 16.90 ✓ | 45.09 ✓ | 22.54 ✓ | 34.85 ✓ | 17.42 ✓ | 26.66 ✓ |
+| Please repeat your report | 52 | 14.75 ✓ | 26.64 ✓ | 13.32 ✓ | 36.90 ✓ | 18.45 ✓ | 26.66 ✓ | 13.33 ✓ | 22.56 ✓ |
+| QRZ? | 47 | 14.05 ✓ | 24.59 ✓ | 12.30 ✓ | 32.80 ✓ | 16.40 ✓ | 24.61 ✓ | 12.30 ✓ | 20.51 ✓ |
+| 73 and out | 63 | 17.89 ✓ | **32.78 ✗** | 16.39 ✓ | 43.04 ✓ | 21.52 ✓ | 32.80 ✓ | 16.40 ✓ | 26.66 ✓ |
+
+**All seven fit at PSK31 and at every variant that has a timing row.** Five line-and-variant
+pairs are refused, every one of them at a variant taking the 30-second fallback. That is a
+finding, not a ruling request - R43 already ruled the timing rows deferred and the fallback
+the safe direction - and it is named again in section 4.
+
+### R39's ten facts: where each lives, and whether it reached the hover
+
+| Fact | Where it lives | On the hover |
+|---|---|---|
+| station | `DigitalDecodeRow.Sender`, from `Reading.Speaker` | yes |
+| country | `DxccPrefixes.EntityOf(row.Sender)` | yes |
+| grid | the conversation's latest **certain** `Psk31Exchange.Grid`, put on the row as `HisGrid` | yes |
+| distance | computed from `ObserverGrid` and `HisGrid` through `GridPath`, as the card does | yes |
+| offset | `DigitalDecodeRow.Hz` | yes |
+| strength | `DigitalDecodeRow.Snr` | yes on PSK31; **absent on Olivia**, see below |
+| started | `DigitalDecodeRow.Utc` - on one of these rows this is the **first-heard** time | yes |
+| stopped | `Ended` is the fact; the moment is new, `StoppedUtc`, written where `Ended` is | yes |
+| spoke to Tim | `HasWorkedBefore` / `WorkedTip` from the log; `Reading.IsForOperator` | yes, both |
+| parser kind and certainty | `Reading.Kind`, `Reading.IsCertain`, said in words | yes |
+
+**The one absence, and it is an absence rather than a shortfall.** An Olivia row draws no
+decibels. The Olivia listener measures a block's signal-to-noise in its own units, not
+decibels in 2500 Hz, and unit 364 (decision AF) already ruled that a number in the PSK31
+column meaning something else would be a claim nothing measured (§0.0). Hamlet does not
+have *how loud in decibels* for an Olivia channel, so the line is not drawn.
+
+**The shortfall this unit found and closed rather than reported:** the grid. Reading it off
+`Reading` alone - the latest complete message - lost it, and the distance with it, the
+moment the station signed off, while his card still showed both. The row now takes the
+conversation's latest certain grid.
+
+### The hover, before and after, verbatim
+
+**Before**, over the message on a row, for a station who has just sent his report:
 
 ```
-data/rsid/rsid-codes.json           889 bytes    assets/data/rsid-codes.json   2,988 bytes
+W1AW  ·  181139
 
-code name        | code | sequence in short | sequence in long | length | file's symbols
-BPSK31           |    1 | yes               | yes              | 15     | 15
-OLIVIA_8_250     |   69 | yes               | yes              | 15     | 15
-OLIVIA_16_500    |   70 | yes               | yes              | 15     | 15
-OLIVIA_32_1000   |   71 | yes               | yes              | 15     | 15
-OLIVIA_8_500     |   72 | NO                | yes              | 15     | 15
-OLIVIA_16_1000   |   73 | NO                | yes              | 15     | 15
-OLIVIA_4_500     |   74 | NO                | yes              | 15     | 15
-OLIVIA_4_250     |   75 | NO                | yes              | 15     | 15
-
-codes            : short 8, long 8
-tone sequences   : short 4, long 8
-squares          : short ABSENT, long 256 entries
-indices          : short ABSENT, long 12 entries
+KC3QIS de W1AW  RST 599 599  Name Hiram  QTH Newington  Grid FN31 FN31  BTU KC3QIS de W1AW K
 ```
 
-Both files carry the same symbol count (15), rate (10.7666015625 Hz), silence (5), first-tone
-offset (-7) and citation, and **the four sequences they share are identical tone for tone**.
-
-**Which file the engine was reading, proved and not assumed:** the embedded copy carried
-**8 codes and 4 sequences**, which matches the short file on both counts and the long file on
-codes only. So the engine read the short one, and `RsidBurst.TonesFor` answered **null** for
-codes 72, 73, 74 and 75.
-
-### The seven variants through `Compose`, before - one framed 38-character CQ at 1500 Hz
+**After**, on the same row:
 
 ```
-4/250    code 75   THREW  "the RSID codes carry no burst for Olivia 4/250, so the send cannot be announced"
-4/500    code 74   THREW  "the RSID codes carry no burst for Olivia 4/500, so the send cannot be announced"
-8/250    code 69   COMPOSED  231824 samples, 28.978 s, announcement 14861 samples, cap 82.60 s,
-                             read back OLIVIA_8_250 (69) at 1499.94 Hz
-8/500    code 72   THREW  "the RSID codes carry no burst for Olivia 8/500, so the send cannot be announced"
-16/500   code 70   COMPOSED  182672 samples, 22.834 s, announcement 14861 samples, cap 61.95 s,
-                             read back OLIVIA_16_500 (70) at 1499.94 Hz
-16/1000  code 73   THREW  "the RSID codes carry no burst for Olivia 16/1000, so the send cannot be announced"
-32/1000  code 71   COMPOSED  149904 samples, 18.738 s, announcement 14861 samples, cap 49.56 s,
-                             read back OLIVIA_32_1000 (71) at 1499.94 Hz
+W1AW
+United States of America
+Grid FN31 · 360 miles east-northeast
+1000 Hz · +10 dB
+Heard since 18:25:05 UTC
+This one is addressed to you.
+He sent a signal report, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
 ```
 
-The operator's sentence for a variant that threw was the existing catch at the Olivia send
-path: `"Hamlet did not send it: " + the message + "."`
+**And the words are still one click away.** `DecodedRowWholeMessage`'s own
+`OpenTheWholeMessageCommand` opens a popup bound to exactly the string the tip used to
+draw - proved on all 11 traced rows **before** anything came off, and asserted afterwards:
+the box opens and holds `RST 599 599`. Hiding detail, which §0.5 allows; leaving the words
+unreachable would have been hiding information, which it forbids.
 
-### The same two tables, after task 2 and task 3
+### 7.5: the chips, and the send line
 
-```
-assets/data/rsid-codes.json   2,988 bytes - AND IT IS THE ONLY RSID FILE THERE IS
+Measured at 14.0715 MHz **before anything was touched**, which is why this half is an
+assertion and not a repair (R14):
 
-code name        | code | tone sequence | length | file's symbols
-BPSK31           |    1 | yes           | 15     | 15
-OLIVIA_8_250     |   69 | yes           | 15     | 15
-OLIVIA_16_500    |   70 | yes           | 15     | 15
-OLIVIA_32_1000   |   71 | yes           | 15     | 15
-OLIVIA_8_500     |   72 | yes           | 15     | 15
-OLIVIA_16_1000   |   73 | yes           | 15     | 15
-OLIVIA_4_500     |   74 | yes           | 15     | 15
-OLIVIA_4_250     |   75 | yes           | 15     | 15
+| Chosen | FT8 | FT4 | PSK31 | WSPR | Olivia |
+|---|---|---|---|---|---|
+| FT8 | **chosen** (elsewhere) | plain | lit | plain | plain |
+| PSK31 | plain | plain | **chosen and lit** | plain | plain |
+| Olivia | plain | plain | lit | plain | **chosen** (elsewhere) |
 
-codes 8, tone sequences 8, squares 256 entries, indices 12 entries
-every code the file lists has a sequence: True
-every sequence is the file's own symbol count: True
+Exactly one chip is chosen on every mode, and it is the one he pressed. **7.5's first half
+was already met in the tree.**
 
-RsidCodes.FilePath                    assets/data/rsid-codes.json
-resource LogicalName                  Hamlet.RadioEngine.Data.Rsid.rsid-codes.json   (UNCHANGED)
-EMBEDDED copy in the assembly         8 codes, 8 tone sequences
-TREE copy at that path                8 codes, 8 tone sequences; codes match True, sequences match True
-data/rsid/rsid-codes.json             one key, replaced_by, naming its replacement and unit 377
-nothing under src/ or tests/ names the retired path   1,259 files scanned, 0 found
-```
+The send line was not. Every sentence in `Psk31WentLine` and `StopLine` was read; two named
+the mode and both named it as the literal `PSK31`.
 
-```
-ALL SEVEN THROUGH Compose, the same CQ at the same center and rate:
+- **Before:** `Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of PSK31.` — under
+  Olivia, reproduced exactly as Tim saw it on 2026-09-21.
+- **After:** `Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of Olivia.`
+- **And PSK31 still says PSK31:** `Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 13.3 s of PSK31.`
 
-4/250    code 75   COMPOSED  174352 samples, 21.794 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
-4/500    code 74   COMPOSED   96464 samples, 12.058 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
-8/250    code 69   COMPOSED  231824 samples, 28.978 s, announcement 14861, cap 82.60 s, read back at 1499.94 Hz
-8/500    code 72   COMPOSED  125200 samples, 15.650 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
-16/500   code 70   COMPOSED  182672 samples, 22.834 s, announcement 14861, cap 61.95 s, read back at 1499.94 Hz
-16/1000  code 73   COMPOSED  100624 samples, 12.578 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
-32/1000  code 71   COMPOSED  149904 samples, 18.738 s, announcement 14861, cap 49.56 s, read back at 1499.94 Hz
-
-THROWS: none.   The four 30.00 s caps are item 1 in section 4.
-```
-
-### The loopback table - what earned each flag
-
-Five texts (the four framed PSK31 macros and a 110-character typed line) at two centers,
-1000 Hz and 1500 Hz, at 8000 Hz. **The variant and the center are read off the burst by
-Hamlet's own detector and never taken from the test** (decision AT). Identical means
-character for character after `Unify`, with no tolerance of any kind.
-
-```
-variant  | cases | identical | chars in -> out      | audio s        | decode cpu s  | flag earned
-4/250    |  10   |    10     | 23,38,62,96,110 -> same | 14.6 - 58.7 | 0.344 - 1.578 | proved_by_loopback true
-4/500    |  10   |    10     | 23,38,62,96,110 -> same |  8.5 - 30.5 | 0.188 - 0.828 | proved_by_loopback true
-8/250    |  10   |    10     | 23,38,62,96,110 -> same | 18.7 - 78.1 | 0.484 - 2.250 | proved_by_loopback true
-8/500    |  10   |    10     | 23,38,62,96,110 -> same | 10.5 - 40.2 | 0.250 - 1.188 | proved_by_loopback true
-16/500   |  10   |    10     | 23,38,62,96,110 -> same | 14.6 - 59.7 | 0.391 - 1.813 | proved_by_loopback true
-16/1000  |  10   |    10     | 23,38,62,96,110 -> same |  8.5 - 31.0 | 0.203 - 0.969 | proved_by_loopback true
-32/1000  |  10   |    10     | 23,38,62,96,110 -> same | 12.6 - 47.4 | 0.375 - 2.891 | proved_by_loopback true
-
-70 of 70 identical.  0 blocks rejected on any case.  The detector named the right code on
-every case, within 0.32 Hz of the center it was given (1000.32 and 1499.94 Hz).
-```
-
-**No variant failed**, so there is no variant left off the air, and section 4 carries no
-failed-loopback item.
-
-### The generator-to-detector round trip, before and after
-
-```                                                         before        after
-TheRsidBurstTests.EveryCodeWithASequenceMakesTheFilesTones   4 sequences   8 sequences
-TheRsidBurstTests.EachBurstReadsBackAtThreeCentersAcross...  12 of 12      24 of 24
-```
-
-Eight codes at 500, 1500 and 2500 Hz, each detected as itself within 5 Hz. **That is 2.2's
-*every listed code round-trips through Hamlet's generator and detector*, and it is now a
-statement about all eight codes rather than about half of them.**
-
-### The five types, and the counts around them
-
-```
-task 1, the five types named in the instruction, filtered, one build       44 of 44   2 m 07 s
-task 2, the same five plus TheOneRsidFileTests and Unit377Trace            47 of 47   2 m 35 s
-task 3, TheRsidBurstTests and the seven-variant loopback                   15 of 15   1 m 26 s
-task 3, TheOliviaSendTests with the new refusal name                       24 of 24
-task 2, TheLoopbackGateTests                                                2 of 2
-```
+Both are read off the sentence the panel is actually left holding after a real send over
+`FakePort` and `FakeSink`, not off a format string. **Nothing about what is composed, armed
+or keyed changed.**
 
 ### The carry-forward counts, before and after
 
-```                     task 0 (entry)                    task 4 (exit)
-app        attempt 1   210 of 211  dispatcher loop       211 of 212  dispatcher loop
-           attempt 2   211 of 211  2 m 14 s              212 of 212  2 m 24 s
-engine     attempt 1   146 of 146  4 m 34 s              150 of 150  4 m 56 s
-```
+| | App | Engine |
+|---|---|---|
+| Task 0, before any change | **212 of 212** (2 m 23 s, second attempt) | **150 of 150** (4 m 57 s, first) |
+| Task 4, after the last change | **214 of 214** (2 m 15 s, first) | **150 of 150** (4 m 55 s, first) |
 
-**Name for name, the only differences are this unit's own additions**: the app gained
-`TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed`, and the engine
-gained the four new `[InlineData]` rows on the loopback name. **No regression, and nothing
-red that was green before** (HM-DEC-165). Olivia's send guard
-`TheOliviaSendTests.AnOliviaCqReachesTheAir` and the read guards were read first and are
-green.
+Name for name, the only differences are this unit's two additions:
+`TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText`
+and `TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText`, both
+on the app line by type and method with their paragraphs, and the human-readable list
+underneath changed to match. **No regression.** The dispatcher loop showed twice, both on
+the app invocation, both re-run clean.
 
-**The headless dispatcher loop showed twice**, at task 0 and at task 4, **both times on the
-app invocation, both times the same name** -
-`Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` - dying
-at **1 ms** in `HeadlessUnitTestSession.EnsureApplication` with
-`InvalidProgramException: You've caused dispatcher loop`, before any assertion. **Both single
-re-runs were clean.** That is unit 375's item 3: two lost invocations out of six, recorded
-and not chased. **The engine invocation has still never failed.**
+**And the send path is the same path.** After task 2 a canned line reaches the air through
+one `Compose`, one `Arm`, one `PttOn`, the same 30-second cap and the same RSID burst -
+asserted by one call to the sound card, a `psk31_send_composed` carrying `announced: true`
+with the BPSK31 code read out of the RSID file rather than typed, `capSeconds` equal to
+`OperatorSend.LongestUnslottedSeconds`, and a sweep of every line of the telemetry file
+finding neither callsign nor a word of the text. **The only thing that is new is what the
+text says.**
 
 ## 4. What's blocking us
 
-**1. The four new variants have no row in the timing table, so their cap is PSK31's plain
-thirty seconds and a long message at them will be refused rather than sent. THIS WANTS A
-RULING and it is the one item that bounds what section B just opened.** It is a finding about
-scope, not a fault in this unit's work, and **nothing goes out wrong** - the send is refused
-with a length sentence and nothing keys, which is the safe direction.
+**Nothing is blocking a criterion in B.** All five are met and the step is done.
 
-`data\olivia\timing.json` carries `seconds_per_character` for **three** variants: 8/250,
-16/500 and 32/1000. `OliviaTiming.CapSeconds` answers `NaN` for a variant it has no row for
-and `OliviaModulator.Compose` then falls back to `OperatorSend.LongestUnslottedSeconds`,
-**30 s**, which the trace read off the composed transmission for all four new variants
-against 82.60, 61.95 and 49.56 s at the three old ones. What that means, in measured seconds
-of data at each variant:
+**1. `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` is red, and
+it is inherited. A finding, not a ruling request.** It reports
+`TheStopIsAlwaysOnScreenTests.cs:102 writes OperatingMode, which the CW / Digital / Voice
+tab strip owns - press it instead`. That line was written by **unit 375**, in its own R12
+repair of the Stop name, and this unit changed neither file. It is not on the carry-forward
+list, so task 0 never saw it and it has been red through unit 376 and unit 377 unnoticed.
+It is a one-line repair - press the strip instead of writing the property - and it belongs
+to whichever unit next touches that file. **Reported, not repaired**, per the instruction's
+*report mismatches; repair nothing but this unit's*.
 
-```
-                     CQ 38   Answer 23   Confirm 62   Report 96   Typed 110    cap
-4/250                21.79       14.63        34.08       51.49       58.66   30.00  -> Confirm, Report and Typed refused
-4/500                12.06        8.47        18.20       26.91       30.49   30.00  -> Typed refused
-8/500                15.65       10.53        23.84       35.11       40.23   30.00  -> Report and Typed refused
-16/1000              12.58        8.48        18.72       26.91       31.01   30.00  -> Typed refused
-8/250, 16/500, 32/1000  -  all five fit, at 82.60, 61.95 and 49.56 s
-```
+**2. Five of the seven canned lines are refused by the 30-second fallback at a variant with
+no timing row. A finding, and R43 already ruled it.** Named with their seconds:
+*Send my report* at Olivia 4/250 (50.19 s) and at 8/500 (33.81 s), *Confirm and 73* at
+4/250 (31.76 s), *Say again?* at 4/250 (33.81 s), *73 and out* at 4/250 (32.78 s) - each
+against a 30.00 s cap. Every refusal is at 4/250 or 8/500, the two of the four fallback
+variants where the mode is slowest; at every variant that has a timing row all seven fit
+with margin. R43 deferred the rows and called the fallback the safe direction, and this
+unit wrote no timing row. **What Tim gets out of it:** on a slow Olivia variant his report
+will be refused before anything is keyed, in the sentence that already says so, and the
+four short lines will go.
 
-**So a CQ and an answer go at all seven; a full report goes at five of the seven; a long typed
-line at three.** The repair is to measure `seconds_per_character` for the four and write the
-rows, the way work instruction 361 task 5 measured the first three. **It wants a ruling
-because adding those rows lengthens what may go on the air**, which `PHASE_PLAN.md` section 6
-makes the owner's, and because **this unit has spent both of its two rulings** (R31). It is
-not a regression: before tonight those four variants could not transmit at all.
+**3. The canned file is read once per session. The author's choice, stated, and
+overrulable in one line.** A menu is built on every right-click and a disk read on the
+gesture is a cost the gesture should not carry, so an edit to `canned.json` is picked up
+the next time Hamlet starts. That is what *without a session* asks for and no more. If Tim
+wants an edit to take effect while Hamlet is running, that is a small change and a later
+unit's.
 
-**2. Section 11's two commits inside task 2 leave one commit in this unit's history -
-`604ee698` - at which Hamlet would transmit a variant it has not read back, which is what
-section 6 ruling 2 item 5 says no commit may do. THIS WANTS A RULING, on which of the two
-instructions governs for future units.** Section 11 says *within task 2 two commits - the file
-and its readers first, the gate second*; section 6 ruling 2 item 5 says *there is no commit in
-this unit's history where Hamlet would transmit a variant it has not read back.* Both cannot
-hold, because the moment the longer file is embedded and before the gate exists, the four
-variants compose. **This unit followed section 11, which is the more specific of the two.**
+**4. `Unit378Trace` now prints the after, not the before.** It is a trace: it prints and
+asserts nothing about the product, so it stayed green through tasks 2 and 3 and now reports
+seven entries per row and a hover of facts. **The before is preserved in this report, in
+`PHASE_OUTCOME.md` and in task 1's own commit message**, which is where the next unit should
+read it. It is deliberately not on the carry-forward list (R14).
 
-What is and is not at risk: the working tree was never left in that state between tasks, the
-two commits are minutes apart, and **nothing was pushed until the end of task 4**, so no build
-of that state existed anywhere. But `604ee698` is in the pushed history, and somebody who
-checks it out has a Hamlet that will transmit four unproved variants. **The clean answer for
-the next unit that does this is one commit, not two** - or the gate first and the file second,
-which also satisfies both - and that is the ruling being asked for.
+**No way was found for a canned line to reach the air unframed, unannounced or uncapped**,
+and that is stated here because the instruction asks for it as the first item if one had
+been found. There is no second composer, no second `Arm`, no second `PttOn` and no path
+that skips the cap; the file, the reader, the menu and the send landed in one commit so no
+commit in this unit's history leaves Hamlet able to do a thing it may not do.
 
-**3. Section 5 named five test reads of the retired RSID path. There are six. A FINDING, and
-this unit moved all six.** The sixth is
-`tests\Hamlet.RadioEngine.Tests\Rsid\Unit359Trace.cs` line 50, which reads the file from the
-tree to print its codes. It is a trace and asserts nothing, which is presumably why it was not
-found, but it reads the path and would have broken when the path was emptied. Moving it is not
-an R12 rewrite: it is a path this unit moved, and it asserts exactly what it did before -
-nothing. **`TheOneRsidFileTests`' scan is the reason this is now a fact rather than a hope:**
-it found two more stale literals on its first run, one of them in a comment this unit had
-written into the csproj minutes earlier.
+---
 
-**4. `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red, and it is inherited. A
-FINDING, measured and not assumed, and not repaired.** It expects `Offered` to be `None` after
-a damaged message and reads `Report`. It is **not on the carry-forward list**, so task 0 never
-saw it. It was run in isolation against the current tree (241 ms, red) and then **with the old
-four-sequence file embedded** (223 ms, red, same assertion, same values), so **it predates this
-unit**. Nothing this unit touched is near the exchange parser or the offered macro. It is
-reported rather than repaired, per section 10.
+**The carried queue, verbatim per HM-DEC-139. Nineteen, and this unit answers none of
+them.** Unit 377's items 1, 2 and 3 came off it: R43 deferred the timing rows, section 6
+ruling 1 answered the commit order, and the reader count was a finding with nothing left in
+it.
 
-**5. Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
-`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1 holds `CPS-DEC-0165` - the id-scheme
-split, carried in `PHASE_PLAN.md` section 7, and reported unrepaired by unit 376 as it was
-told to. **Reported again, not repaired.** Also noted, and needing nothing: `Unit377Trace`
-and the two new test types are deliberately **not** on the carry-forward line (R14) - the
-trace asserts nothing, and `TheOneRsidFileTests` and `TheLoopbackGateTests` are this unit's
-criterion tests, run by the unit that changes that code. Only the refusal name went on the
-line, as the instruction directed, and `docs\carry-forward-tests.txt` says so in its own
-paragraph.
+1. **Unit 377's item 4** - `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red,
+   inherited, measured against the old embedded file and red there too, and not on the
+   carry-forward list. A finding. This unit did not repair it and did not chase it.
+2. **Unit 376's item 3.**
+3. **Unit 376's item 4.**
+4. **Unit 376's item 5.**
+5. **Unit 375's item 3** - Avalonia's headless `InvalidProgramException: You have caused
+   dispatcher loop`, which kills an app invocation at about 1 ms before any assertion and
+   moves between names. **It showed twice in this unit**, on
+   `ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel` at task 0
+   and on `TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselves
+   RatherThanCollapsing` at the first exit run - two names it had not landed on before -
+   and both times the single re-run was clean. Recorded, not chased.
+6. **Unit 375's item 4** -
+   `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`. It did not
+   show in this unit's four app invocations.
+7. **Unit 374's item 3** - `tools\run-carry-forward.sh`. The two command lines were run
+   from `docs\carry-forward-tests.txt` itself, as the instruction directs.
+8. **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
+9. **Unit 372's item 4.**
+10. **Unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes. Not ticked, not raised.
+11. **Unit 371's first.**
+12. **Unit 371's second.**
+13. **Unit 371's third.**
+14. **Unit 371's fourth.**
+15. **Unit 371's fifth.**
+16. **Unit 369's first.**
+17. **Unit 369's second.**
+18. **Unit 369's third** - `LearnedAlcReference.Ago()`.
+19. **Unit 369's fourth.**
 
-**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - EIGHTEEN, and this unit answers none of them.**
+**And the `RULES_AT` id-scheme split, carried and reported again, not repaired:**
+`PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1
+holds `CPS-DEC-0165`. It is unit 377's item 5, carried in `PHASE_PLAN.md` section 7 and
+reported unrepaired by units 376 and 377. `tools/status.sh` writes the field as a literal,
+so repairing it means editing that script, which is not this unit's.
 
-- **Unit 376's item 3** - *The rig's rearrangement was not made, and the drop candidate's own
-  condition did not authorize dropping it. A FINDING, and a sizing decision the owner did not
-  make.* The rig column is `Auto`, so moving the drive box beside the LCD widens that column
-  and takes the width off the neighborhood card; the move costs pixels where it was supposed
-  to buy them.
-- **Unit 376's item 4** - *`TopRow`'s `MaxHeight="300"` does not bind the card's content; it
-  binds only the row's reported height. A FINDING, and it is unit 356's comment that is wrong
-  rather than that unit's work.* At 1100 x 780 `TopRow` draws 300 and the card inside it draws
-  623, viewport 623 and extent 623, so nothing scrolls.
-- **Unit 376's item 5** - *Section 5's count of the four types is 33 and the tree says 29. A
-  FINDING, no action needed.* Unit 374's 33 counted
-  `TheWindowGivesUpHeightInOneOrderTests`' four names as well.
-- **Unit 375's item 3** - the headless dispatcher loop, `InvalidProgramException: You have
-  caused dispatcher loop`, eight names across four units, an environmental cause with no name
-  attached in `docs\quarantined-tests.txt`, **and the single biggest obstacle to 2.4**. This
-  unit adds evidence: **two of its six carry-forward invocations were lost to it, both on the
-  app side, both on the same name, both clean on the single re-run.**
-- **Unit 375's item 4** -
-  `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable` went red once
-  in seventeen full invocations, on an assertion, message not captured, not reproduced in four
-  further runs. **It did not show in either of this unit's clean app invocations.**
-- **Unit 374's item 3** - `tools\run-carry-forward.sh` still does not match
-  `docs\carry-forward-tests.txt`. This unit ran the two command lines from the file itself, as
-  section 9 requires.
-- **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
-- **Unit 372's item 4**, and **unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes,
-  which are not ticked and are not to be raised again.
-- **Unit 371's five.**
-- **Unit 369's four**, including item 3, `LearnedAlcReference.Ago()`.
-
-**Two items came off the queue this unit, both by the owner's own rulings and neither by any
-work of this unit's:** unit 376's item 1 - criterion 2.2 and the four RSID tone sequences - is
-**answered by R41**, which is this unit's whole subject; and unit 376's item 2 - 6.1 at 214 px
-against 180 - is **answered by R42**, which closed step 6 and which task 0 transcribed into
-both status files.
+**Step 8's entry reads *step 7 done*, and step 7 is done.** It is open.

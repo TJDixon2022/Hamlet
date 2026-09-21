@@ -1,17 +1,11 @@
-﻿   Bash  {"command":"python -c \"\nimport json\nd=json.load(open(\u0027assets/data/rsid-codes.json\u0027))\nprint(\u0027keys\u0027, list(d.keys()))\nprint(\u0027codes\u0027, d[\u0027codes\u0027])\nprint(\u0027tone_sequences\u0027, {k:len(v) for k,v  ...(truncated)
-   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027ENTRY\u0027\n\n## UNIT 377 - STEP 2\n\nSTEP: 2\nADVANCED: step 2\nAPPROACH: give codes 72-75 their RSID tone sequences by making assets/data/rsid-codes.json the one RSID data f ...(truncated)
-   Bash  {"command":"for f in Rsid/TheRsidBurstTests Rsid/TheRsidDetectorTests Olivia/TheOliviaDataTests Olivia/TheOliviaModulatorTests Olivia/TheOliviaDemodulatorTests; do echo \"$f: facts $(grep -c \u0027\\[Fact\\]\u0027 tests/Hamlet.RadioEngine.T ...(truncated)
-   Bash  {"command":"cd /c/Source/HamLet \u0026\u0026 sh tools/status.sh running \"TASK 1 of 5\" claude none \"Unit 377 task 1 measured and green. The long file carries all eight sequences and both tables; the engine reads the short one, four sequen ...(truncated)
-   Bash  {"command":"git -C /c/Source/HamLet add -A \u0026\u0026 git -C /c/Source/HamLet status --short","description":"Stage task 1 changes"}
-   Bash  {"command":"git -C /c/Source/HamLet add -A","description":"Stage task 1 changes"}
-   Bash  {"command":"grep -rn \u0027\"rsid\"\u0027 --include=*.cs --include=*.csproj src tests \u0026\u0026 echo \"=== backslash form ===\" \u0026\u0026 grep -rn \u0027data\\\\\\\\rsid\\|data/rsid\u0027 --include=*.cs --include=*.csproj src tests"," ...(truncated)
-   Bash  {"command":"sed -i \u0027s#Path.Combine(root, \"data\", \"rsid\", \"rsid-codes.json\")#Path.Combine(root, \"assets\", \"data\", \"rsid-codes.json\")#g\u0027 tests/Hamlet.RadioEngine.Tests/Olivia/TheOliviaDataTests.cs tests/Hamlet.App.Tests/ ...(truncated)
-   Bash  {"command":"git stash push -u -m \"unit377-task2-wip\" \u0026\u0026 git status --short \u0026\u0026 git log --oneline -1","description":"Stash task 2 work in progress"}
-   Bash  {"command":"git stash push -u -m \"unit377-task2-wip\"","description":"Stash task 2 work in progress"}
-   Bash  {"command":"git checkout HEAD -- data/rsid/rsid-codes.json \u0026\u0026 head -3 data/rsid/rsid-codes.json","description":"Temporarily restore the old RSID file for the isolation check"}
-   Bash  {"command":"git checkout HEAD -- data/rsid/rsid-codes.json","description":"Temporarily restore the old RSID file for the isolation check"}
-   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit377Trace\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | sed -n \u0027/=== 1\\./,/=== 4\\./p\u00 ...(truncated)
-   Bash  {"command":"cmd //c tools\\\\arbiter\\\\validate-output.bat 2\u003e\u00261 | tail -25","timeout":180000,"description":"Run the output validator"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat\"","timeout":180000,"description":"Run the output validator"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat 2\u003e\u00261 | tail -30","timeout":180000,"description":"Run the output validator"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat","timeout":180000,"description":"Run the output validator"}
+﻿   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027XEOF\u0027\n\n## UNIT 378 - STEP 7\n\nSTEP: 7\nADVANCED: step 7\nAPPROACH: right-click any PSK31 or Olivia row that names a station into seven lines read from data/psk31/canned ...(truncated)
+   Bash  {"command":"sed -n \u0027175,215p\u0027 src/Hamlet.RadioEngine/Olivia/OliviaModulator.cs; echo \"=== variants ===\"; python -c \"\nimport json\nd=json.load(open(\u0027data/olivia/format.json\u0027))\nprint(list(d.keys()))\nprint(json.dumps( ...(truncated)
+   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~Unit378Trace\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | sed -n \u0027/1. THE MENU TODAY/,/7.1.s BEFORE/p\u0027" ...(truncated)
+   Bash  {"command":"grep -n \"format.json\\|FilePath\\|AppContext.BaseDirectory\\|Root()\" src/Hamlet.RadioEngine/Olivia/OliviaData.cs | head -20; echo \"=== csproj data refs ===\"; grep -n \"data\\\\\\\\\\|data/\" src/Hamlet.App/Hamlet.App.csproj  ...(truncated)
+   Bash  {"command":"awk \u0027NR\u003c745 \u0026\u0026 /^public .*class |^internal .*class |^public sealed class/ {print NR\": \"$0}\u0027 src/Hamlet.App/Settings/AppSettings.cs | tail -3","description":"Find class containing DataFolder"}
+   Bash  {"command":"python - \u003c\u003c\u0027PYEOF\u0027\nimport io,re\np=\u0027tests/Hamlet.App.Tests/ViewModels/TheCannedListIsOfferedTests.cs\u0027\ns=io.open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027\u0027\u0027        var pres ...(truncated)
+   Bash  {"command":"ls validate-output.bat 2\u003e\u00261 \u0026\u0026 cmd //c validate-output.bat 2\u003e\u00261 | tail -20","description":"Validate the report"}
+   Bash  {"command":"cmd //c tools\\\\arbiter\\\\validate-output.bat 2\u003e\u00261 | tail -30","timeout":180000,"description":"Run the output validator"}
+   Bash  {"command":"cd /c/Source/HamLet/tools/arbiter \u0026\u0026 cmd /c \"validate-output.bat C:\\Source\\HamLet\\output.md\" 2\u003e\u00261 | tail -30","timeout":180000,"description":"Validate output.md"}
+   Bash  {"command":"cmd /c \"cd /d C:\\Source\\HamLet\\tools\\arbiter \u0026\u0026 validate-output.bat C:\\Source\\HamLet\\output.md\" 2\u003e\u00261 | tail -30","timeout":180000,"description":"Validate output.md"}
+   Bash  {"command":"cmd /c \"tools\\arbiter\\validate-output.bat output.md\"","timeout":180000,"description":"Validate output.md"}

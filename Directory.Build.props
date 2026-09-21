@@ -1036,8 +1036,35 @@
     this unit opens a port, enumerates a device or keys anything: every sample lives in an array
     (FACT-004).
   -->
+  <!--
+    1.13.65 -> 1.13.66, UNIT 379 TASK 0. A PATCH, STEP 8 OF THE HARDENING PHASE, THE FIRST UNIT
+    EVER SPENT ON IT - THE KEYBOARD MODES EARN WHAT FT8 EARNS: MEASURED FIRST, THEN CONNECTED.
+    R40 (Tim, 2026-09-21): PSK31 and Olivia are not connected to the achievement system as FT8
+    is; the unit measures which of the Modes badge, the Hall of Fame firsts, the per-contact
+    records and the CQ-list quill each mode reaches today, then connects what is missing so a
+    PSK31 or Olivia contact earns exactly what an FT8 contact earns. R39 and R43 order step 8
+    next and defer 2.4; R42 closed step 6 and unit 378 closed step 7, which together opened
+    this entry. THE MEASUREMENT COMES FIRST AND IS ITS OWN TASK: criterion 8.1 is a trace, one
+    contact built three times over differing only in the mode pair - FT8, PSK/PSK31, OLIVIA -
+    read in three columns across all eight achievement kinds, and a cell where all three agree
+    is parity INCLUDING all three being nothing. Most of this machinery already exists and some
+    of it already counts PSK31 and Olivia, so a unit that rebuilt what the tree already does
+    would be spending the night on R14's forbidden work; what task 1 measures decides what
+    tasks 2 and 3 are allowed to touch. A repair goes at the one place the fact is already
+    derived - AchievementLog.Read, AchievementScores, or the single Ft8ContactLogEntry.For call
+    site in ContactLogEntryForStation - and never a second scorer, a second log reader or a
+    mode branch on the achievements screen. Nothing is invented to make a number move: a state
+    worked out from a callsign prefix would be a claim about where a man lives, so a record
+    Hamlet cannot answer stays absent (CLAUDE.md 0.0). PHASE_STATUS.md's CURRENT_STEP and
+    WORK_INSTRUCTION were set to 8 and to this instruction, and step 7 was transcribed as done
+    in PHASE_STATUS.md and PHASE_OUTCOME.md from unit 378's five met criteria and the judging
+    session's STATE_AFTER: done - transcription, not a judgment of this unit's. Nothing in this
+    unit opens a port, enumerates a device or keys anything: every sample lives in an array
+    (FACT-004), and R40 licenses reading a log record and moving a number on a page and
+    nothing whatever on a send path.
+  -->
   <PropertyGroup>
-    <Version>1.13.65</Version>
+    <Version>1.13.66</Version>
   </PropertyGroup>
 
   <!--

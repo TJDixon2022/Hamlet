@@ -1,111 +1,88 @@
 ﻿
-**1. The four new variants have no row in the timing table, so their cap is PSK31's plain
-thirty seconds and a long message at them will be refused rather than sent. THIS WANTS A
-RULING and it is the one item that bounds what section B just opened.** It is a finding about
-scope, not a fault in this unit's work, and **nothing goes out wrong** - the send is refused
-with a length sentence and nothing keys, which is the safe direction.
+**Nothing is blocking a criterion in B.** All five are met and the step is done.
 
-`data\olivia\timing.json` carries `seconds_per_character` for **three** variants: 8/250,
-16/500 and 32/1000. `OliviaTiming.CapSeconds` answers `NaN` for a variant it has no row for
-and `OliviaModulator.Compose` then falls back to `OperatorSend.LongestUnslottedSeconds`,
-**30 s**, which the trace read off the composed transmission for all four new variants
-against 82.60, 61.95 and 49.56 s at the three old ones. What that means, in measured seconds
-of data at each variant:
+**1. `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` is red, and
+it is inherited. A finding, not a ruling request.** It reports
+`TheStopIsAlwaysOnScreenTests.cs:102 writes OperatingMode, which the CW / Digital / Voice
+tab strip owns - press it instead`. That line was written by **unit 375**, in its own R12
+repair of the Stop name, and this unit changed neither file. It is not on the carry-forward
+list, so task 0 never saw it and it has been red through unit 376 and unit 377 unnoticed.
+It is a one-line repair - press the strip instead of writing the property - and it belongs
+to whichever unit next touches that file. **Reported, not repaired**, per the instruction's
+*report mismatches; repair nothing but this unit's*.
 
-```
-                     CQ 38   Answer 23   Confirm 62   Report 96   Typed 110    cap
-4/250                21.79       14.63        34.08       51.49       58.66   30.00  -> Confirm, Report and Typed refused
-4/500                12.06        8.47        18.20       26.91       30.49   30.00  -> Typed refused
-8/500                15.65       10.53        23.84       35.11       40.23   30.00  -> Report and Typed refused
-16/1000              12.58        8.48        18.72       26.91       31.01   30.00  -> Typed refused
-8/250, 16/500, 32/1000  -  all five fit, at 82.60, 61.95 and 49.56 s
-```
+**2. Five of the seven canned lines are refused by the 30-second fallback at a variant with
+no timing row. A finding, and R43 already ruled it.** Named with their seconds:
+*Send my report* at Olivia 4/250 (50.19 s) and at 8/500 (33.81 s), *Confirm and 73* at
+4/250 (31.76 s), *Say again?* at 4/250 (33.81 s), *73 and out* at 4/250 (32.78 s) - each
+against a 30.00 s cap. Every refusal is at 4/250 or 8/500, the two of the four fallback
+variants where the mode is slowest; at every variant that has a timing row all seven fit
+with margin. R43 deferred the rows and called the fallback the safe direction, and this
+unit wrote no timing row. **What Tim gets out of it:** on a slow Olivia variant his report
+will be refused before anything is keyed, in the sentence that already says so, and the
+four short lines will go.
 
-**So a CQ and an answer go at all seven; a full report goes at five of the seven; a long typed
-line at three.** The repair is to measure `seconds_per_character` for the four and write the
-rows, the way work instruction 361 task 5 measured the first three. **It wants a ruling
-because adding those rows lengthens what may go on the air**, which `PHASE_PLAN.md` section 6
-makes the owner's, and because **this unit has spent both of its two rulings** (R31). It is
-not a regression: before tonight those four variants could not transmit at all.
+**3. The canned file is read once per session. The author's choice, stated, and
+overrulable in one line.** A menu is built on every right-click and a disk read on the
+gesture is a cost the gesture should not carry, so an edit to `canned.json` is picked up
+the next time Hamlet starts. That is what *without a session* asks for and no more. If Tim
+wants an edit to take effect while Hamlet is running, that is a small change and a later
+unit's.
 
-**2. Section 11's two commits inside task 2 leave one commit in this unit's history -
-`604ee698` - at which Hamlet would transmit a variant it has not read back, which is what
-section 6 ruling 2 item 5 says no commit may do. THIS WANTS A RULING, on which of the two
-instructions governs for future units.** Section 11 says *within task 2 two commits - the file
-and its readers first, the gate second*; section 6 ruling 2 item 5 says *there is no commit in
-this unit's history where Hamlet would transmit a variant it has not read back.* Both cannot
-hold, because the moment the longer file is embedded and before the gate exists, the four
-variants compose. **This unit followed section 11, which is the more specific of the two.**
+**4. `Unit378Trace` now prints the after, not the before.** It is a trace: it prints and
+asserts nothing about the product, so it stayed green through tasks 2 and 3 and now reports
+seven entries per row and a hover of facts. **The before is preserved in this report, in
+`PHASE_OUTCOME.md` and in task 1's own commit message**, which is where the next unit should
+read it. It is deliberately not on the carry-forward list (R14).
 
-What is and is not at risk: the working tree was never left in that state between tasks, the
-two commits are minutes apart, and **nothing was pushed until the end of task 4**, so no build
-of that state existed anywhere. But `604ee698` is in the pushed history, and somebody who
-checks it out has a Hamlet that will transmit four unproved variants. **The clean answer for
-the next unit that does this is one commit, not two** - or the gate first and the file second,
-which also satisfies both - and that is the ruling being asked for.
+**No way was found for a canned line to reach the air unframed, unannounced or uncapped**,
+and that is stated here because the instruction asks for it as the first item if one had
+been found. There is no second composer, no second `Arm`, no second `PttOn` and no path
+that skips the cap; the file, the reader, the menu and the send landed in one commit so no
+commit in this unit's history leaves Hamlet able to do a thing it may not do.
 
-**3. Section 5 named five test reads of the retired RSID path. There are six. A FINDING, and
-this unit moved all six.** The sixth is
-`tests\Hamlet.RadioEngine.Tests\Rsid\Unit359Trace.cs` line 50, which reads the file from the
-tree to print its codes. It is a trace and asserts nothing, which is presumably why it was not
-found, but it reads the path and would have broken when the path was emptied. Moving it is not
-an R12 rewrite: it is a path this unit moved, and it asserts exactly what it did before -
-nothing. **`TheOneRsidFileTests`' scan is the reason this is now a fact rather than a hope:**
-it found two more stale literals on its first run, one of them in a comment this unit had
-written into the csproj minutes earlier.
+---
 
-**4. `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red, and it is inherited. A
-FINDING, measured and not assumed, and not repaired.** It expects `Offered` to be `None` after
-a damaged message and reads `Report`. It is **not on the carry-forward list**, so task 0 never
-saw it. It was run in isolation against the current tree (241 ms, red) and then **with the old
-four-sequence file embedded** (223 ms, red, same assertion, same values), so **it predates this
-unit**. Nothing this unit touched is near the exchange parser or the offered macro. It is
-reported rather than repaired, per section 10.
+**The carried queue, verbatim per HM-DEC-139. Nineteen, and this unit answers none of
+them.** Unit 377's items 1, 2 and 3 came off it: R43 deferred the timing rows, section 6
+ruling 1 answered the commit order, and the reader count was a finding with nothing left in
+it.
 
-**5. Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
-`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1 holds `CPS-DEC-0165` - the id-scheme
-split, carried in `PHASE_PLAN.md` section 7, and reported unrepaired by unit 376 as it was
-told to. **Reported again, not repaired.** Also noted, and needing nothing: `Unit377Trace`
-and the two new test types are deliberately **not** on the carry-forward line (R14) - the
-trace asserts nothing, and `TheOneRsidFileTests` and `TheLoopbackGateTests` are this unit's
-criterion tests, run by the unit that changes that code. Only the refusal name went on the
-line, as the instruction directed, and `docs\carry-forward-tests.txt` says so in its own
-paragraph.
+1. **Unit 377's item 4** - `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red,
+   inherited, measured against the old embedded file and red there too, and not on the
+   carry-forward list. A finding. This unit did not repair it and did not chase it.
+2. **Unit 376's item 3.**
+3. **Unit 376's item 4.**
+4. **Unit 376's item 5.**
+5. **Unit 375's item 3** - Avalonia's headless `InvalidProgramException: You have caused
+   dispatcher loop`, which kills an app invocation at about 1 ms before any assertion and
+   moves between names. **It showed twice in this unit**, on
+   `ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel` at task 0
+   and on `TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselves
+   RatherThanCollapsing` at the first exit run - two names it had not landed on before -
+   and both times the single re-run was clean. Recorded, not chased.
+6. **Unit 375's item 4** -
+   `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`. It did not
+   show in this unit's four app invocations.
+7. **Unit 374's item 3** - `tools\run-carry-forward.sh`. The two command lines were run
+   from `docs\carry-forward-tests.txt` itself, as the instruction directs.
+8. **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
+9. **Unit 372's item 4.**
+10. **Unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes. Not ticked, not raised.
+11. **Unit 371's first.**
+12. **Unit 371's second.**
+13. **Unit 371's third.**
+14. **Unit 371's fourth.**
+15. **Unit 371's fifth.**
+16. **Unit 369's first.**
+17. **Unit 369's second.**
+18. **Unit 369's third** - `LearnedAlcReference.Ago()`.
+19. **Unit 369's fourth.**
 
-**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - EIGHTEEN, and this unit answers none of them.**
+**And the `RULES_AT` id-scheme split, carried and reported again, not repaired:**
+`PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1
+holds `CPS-DEC-0165`. It is unit 377's item 5, carried in `PHASE_PLAN.md` section 7 and
+reported unrepaired by units 376 and 377. `tools/status.sh` writes the field as a literal,
+so repairing it means editing that script, which is not this unit's.
 
-- **Unit 376's item 3** - *The rig's rearrangement was not made, and the drop candidate's own
-  condition did not authorize dropping it. A FINDING, and a sizing decision the owner did not
-  make.* The rig column is `Auto`, so moving the drive box beside the LCD widens that column
-  and takes the width off the neighborhood card; the move costs pixels where it was supposed
-  to buy them.
-- **Unit 376's item 4** - *`TopRow`'s `MaxHeight="300"` does not bind the card's content; it
-  binds only the row's reported height. A FINDING, and it is unit 356's comment that is wrong
-  rather than that unit's work.* At 1100 x 780 `TopRow` draws 300 and the card inside it draws
-  623, viewport 623 and extent 623, so nothing scrolls.
-- **Unit 376's item 5** - *Section 5's count of the four types is 33 and the tree says 29. A
-  FINDING, no action needed.* Unit 374's 33 counted
-  `TheWindowGivesUpHeightInOneOrderTests`' four names as well.
-- **Unit 375's item 3** - the headless dispatcher loop, `InvalidProgramException: You have
-  caused dispatcher loop`, eight names across four units, an environmental cause with no name
-  attached in `docs\quarantined-tests.txt`, **and the single biggest obstacle to 2.4**. This
-  unit adds evidence: **two of its six carry-forward invocations were lost to it, both on the
-  app side, both on the same name, both clean on the single re-run.**
-- **Unit 375's item 4** -
-  `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable` went red once
-  in seventeen full invocations, on an assertion, message not captured, not reproduced in four
-  further runs. **It did not show in either of this unit's clean app invocations.**
-- **Unit 374's item 3** - `tools\run-carry-forward.sh` still does not match
-  `docs\carry-forward-tests.txt`. This unit ran the two command lines from the file itself, as
-  section 9 requires.
-- **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
-- **Unit 372's item 4**, and **unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes,
-  which are not ticked and are not to be raised again.
-- **Unit 371's five.**
-- **Unit 369's four**, including item 3, `LearnedAlcReference.Ago()`.
-
-**Two items came off the queue this unit, both by the owner's own rulings and neither by any
-work of this unit's:** unit 376's item 1 - criterion 2.2 and the four RSID tone sequences - is
-**answered by R41**, which is this unit's whole subject; and unit 376's item 2 - 6.1 at 214 px
-against 180 - is **answered by R42**, which closed step 6 and which task 0 transcribed into
-both status files.
+**Step 8's entry reads *step 7 done*, and step 7 is done.** It is open.
