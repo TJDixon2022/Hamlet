@@ -252,6 +252,87 @@ public sealed class Unit373TraceTests
             + "thing that chooses between them.");
     }
 
+    /// <summary>
+    /// **Task 2's measurement: what each candidate floor buys and what it costs.** For a ladder of
+    /// canvas floors, the panel row at every height in the 1.2 sweep, the three panels' viewports at
+    /// the bottom of it, and the number of heights at which anything shrank - which is the
+    /// precondition <c>TheWindowGivesUpHeightInOneOrderTests</c> reads.
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHY THIS IS MEASURED RATHER THAN ARGUED.** Work instruction 373 §6 asks for *the
+    /// smallest floor at which all three panels report a working scroller at 900 x 620*, and task 2
+    /// asks that 1.2's guard still be 4 of 4. This name is what says whether one floor can do both.
+    /// The floor is moved on the realized window by setting `WorkspaceCanvas.MinHeight`, which is the
+    /// same property the markup sets and nothing else.</para>
+    /// <para>**PRINTED, NOT ASSERTED.** It measures a property of the layout, not a rule, and §R14
+    /// says a unit writes the tests its criteria need and no others.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void WhatEachCandidateFloorBuysAndWhatItCosts()
+    {
+        foreach (var width in new[] { 1100.0, 900.0 })
+        {
+            _output.WriteLine("=== width " + Px(width));
+
+            foreach (var floor in new[] { 0.0, 120, 144, 160, 172, 185, 192, 240, 480 })
+            {
+                var rows = new List<double>();
+                var said = "";
+
+                foreach (var height in Heights)
+                {
+                    var window = TheWorkingPanelsTests.Realized(width, height, null);
+
+                    try
+                    {
+                        var canvas = window.GetVisualDescendants().OfType<Control>()
+                            .First(c => c.Name == "WorkspaceCanvas");
+
+                        canvas.MinHeight = floor;
+                        Pump(window);
+
+                        var panels = TheWorkingPanelsTests.Panels(window);
+
+                        rows.Add(panels[0].Rect.Height);
+
+                        if (Math.Abs(height - 620) < 0.5)
+                        {
+                            var decoded = Scroller(window, "decoded");
+                            var mine = Scroller(window, "For You");
+
+                            said = "at 620 the panel row is " + Px(panels[0].Rect.Height)
+                                + ", decoded viewport " + Px(decoded?.Viewport.Height ?? -1)
+                                + " extent " + Px(decoded?.Extent.Height ?? -1)
+                                + ", For You viewport " + Px(mine?.Viewport.Height ?? -1)
+                                + " extent " + Px(mine?.Extent.Height ?? -1);
+                        }
+                    }
+                    finally
+                    {
+                        window.Close();
+                    }
+                }
+
+                var shrinks = 0;
+
+                for (var i = 1; i < rows.Count; i++)
+                {
+                    if (rows[i] < rows[i - 1] - 0.5)
+                    {
+                        shrinks++;
+                    }
+                }
+
+                _output.WriteLine(
+                    "    floor " + Px(floor).PadLeft(5) + ": panel row " + string.Join(", ", rows.Select(r => Px(r).PadLeft(4)))
+                    + "  shrinks " + shrinks + " (1.2's guard needs 2 or more)");
+                _output.WriteLine("        " + said);
+            }
+
+            _output.WriteLine("");
+        }
+    }
+
     // ------------------------------------------------------------------------------------
 
     /// <summary>Every band pill's flag, label, badge border and the words that border is showing.</summary>

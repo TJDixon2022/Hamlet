@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 373 - the panels keep a floor and scroll inside themselves, an
 BALL: code
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T21:00:13-04:00
-NOTE: Unit 373 task 2 - chrome is 125/125/108 px so the floor is one number; putting the scroller and the measured floor on the panel canvas inside WorkspaceBoundary
+UPDATED: 2026-09-20T21:07:29-04:00
+NOTE: Unit 373 task 2 - 1.3 green at 3 of 3, panel row 0 px to 73 px at 900x620; now re-running the nine sizes and 1.2's guard
 
 ---
 
