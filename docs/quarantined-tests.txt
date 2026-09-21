@@ -105,6 +105,39 @@ lookup rather than the network. THE NETWORK GUARD IS INTACT; what came off is a 
 determinism check that happens to live in this type and guards nothing about the network.
 
 
+-- 2. NOT QUARANTINED, BUT NOT SETTLED EITHER --------------------------------
+      Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests
+        .WithNothingKeyedItSaysStopAndIsStillPressable
+
+RECORDED BY unit 375, task 4, so that the next unit does not meet it cold.
+
+IT IS NOT QUARANTINED because it was seen ONCE, in 17 full app invocations, and one
+occurrence is not a measurement. It is written down because work instruction 375 section 5
+says this name had never been red, and now it has been.
+
+    In the full app carry-forward invocation   1 of 17 runs red
+    On its own type, whole type, filtered      0 of 21 runs red
+                                               (10 before unit 375's repair, 10 after, and
+                                                one more run chasing this)
+
+It failed at 106 ms, so IT IS AN ASSERTION FAILURE AND NOT THE DISPATCHER-LOOP SESSION FAULT,
+which kills at about 1 ms. THE MESSAGE WAS NOT CAPTURED - the run's filter did not print the
+lines after "Error Message:" - and four further app invocations did not reproduce it, so what
+it disagreed about is NOT KNOWN. The test asserts that with nothing keyed the button says
+"Stop", carries no hm-live class, is enabled, has a command that can execute, is the only
+button bound to the stop command, and that a hit test at its centre lands on it. The hit test
+is the assertion most likely to depend on anything another test left behind, but that is a
+guess and is written here as one.
+
+IT IS NOT BELIEVED TO BE UNIT 375's DOING, and that is checked rather than asserted: unit
+375's only edit to this file added the Press helper and split Click into Press plus Pump, and
+THIS TEST CALLS NEITHER Click NOR Press. The diff touched no member it uses.
+
+WHAT WOULD SETTLE IT: run the app invocation with the failure message captured whole, and if
+it recurs, treat it the way unit 375 treated the other two - measure, then repair the moment
+or quarantine with the cause. If it never recurs, say so and take this entry out.
+
+
 -- ENVIRONMENTAL, WITH NO NAME ATTACHED ---------------------------------------
    Avalonia headless: InvalidProgramException "You've caused dispatcher loop"
 
@@ -121,9 +154,21 @@ far, across four units:
                ThePowerIsOfferedTests (again, on the re-run)                   attempt, then one
     unit 375   TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning
                TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselves...
+               BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
+               ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel
+               ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt
+               TheRecordNamesTheSubModePressedTests.TheCqPressWrites...(label: "Olivia")
 
-Five different names across four units. Unit 374 measured it killing 2 of 4 full app
-invocations; unit 375 measured it killing 2 of 9.
+EIGHT DIFFERENT NAMES ACROSS FOUR UNITS, six of them in unit 375 alone. Unit 374 measured it
+killing 2 of 4 full app invocations; unit 375 ran seventeen and it killed FIVE of them
+outright, and struck a sixth name inside a run that was already red on an assertion. It never
+once touched the engine invocation, which completed 146 of 146 all seven times it was run.
+
+IT IS THE SINGLE BIGGEST OBSTACLE TO CRITERION 2.4 and it is nobody's criterion. Unit 375
+could not get five consecutive completed green runs of both invocations: its best streak was
+one, and across the attempt one run in three was either lost to this or red. Until it is
+chased, every unit that ends in a carry-forward run will spend a paragraph on it, which is
+precisely what R35 says a flaking list costs.
 
 HOW IT IS COUNTED, per work instruction 375 section 6, second ruling, FOR CRITERION 2.4 ONLY:
 a run that dies of it before any assertion is a LOST RUN. It is recorded with the name it

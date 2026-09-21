@@ -18,4 +18,4 @@ cmd=$(sed -n "${line}p" docs/carry-forward-tests.txt)
 
 echo "===== $label - $which ====="
 sh tools/status.sh "running" "TASK 4 of 4" "claude" "none" "Task 4 $label: $which invocation of the carry-forward list."
-eval "$cmd" 2>&1 | grep -E "Passed!|Failed!|Failed Hamlet|Error Message|Assert\.|Expected|Actual|InvalidProgramException|dispatcher loop|\[FAIL\]"
+eval "$cmd" 2>&1 | grep -A 10 -E "Passed!|Failed!|Failed Hamlet|Error Message|\[FAIL\]"
