@@ -31,25 +31,41 @@ namespace Hamlet.App.Tests.Views;
 /// height and is whole on the window, so it is not the collapsed-to-nothing case §0.5 forbids. The
 /// scroller half is asserted of the decoded panel and the For You panel, which are the two
 /// <c>ThePanelScrollsTests</c> and <c>TheDecodedPanelScrollsItselfTests</c> are about.</para>
-/// <para>**THIS TYPE IS RED ON ONE NAME AND THAT IS DELIBERATE.**
-/// <see cref="TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing"/> fails against the tree,
-/// and unit 372 did not loosen it to make a criterion pass (`PHASE_PLAN.md` §6). **Criterion 1.3
-/// is `partial`**, measured, with the cause named. The other two names pass: the send area stays
-/// put and keeps its 22 px, and the header and the status bar are pinned.</para>
-/// <para>**WHY NOTHING WAS REPAIRED, IN NUMBERS.** At 1100 x 620 - the worst size that can be
-/// reached - the workspace region is given **51 px**, and it needs **138 px** before the panels get
-/// their first pixel: 26 px of the boundary's border and padding, and 112 px of the mode strip and
-/// the row beneath it. The deficit is **87 px**. At width 1100 the panel row's height is exactly
-/// *window height minus 707*, which reads 33 px at 740, 0 at 700 and 0 at 620. **The only pool of
-/// height above the panels is <c>TopRow</c>'s 300 px** - the radio's own face inside it measures
-/// 110 px, so some of it could be taken without clipping the picture. But taking the 87 px of
-/// deficit plus any usable viewport means taking about 147 px, and the grid would have to start
-/// taking it at 767 px of window height and below - **which includes 1280 x 720 and 1366 x 728, two
-/// of unit 354's nine sizes where the layout is sound today** and where unit 356 measured its cap as
-/// inert. There is no way to express *keep the panels at a floor and let the top row pay for it* in
-/// this grid, because the rest of the canvas varies with width as well as height, so the repair is a
-/// redesign of how root row 1 allocates height and not a layout number. **It was not made, and it is
-/// raised in unit 372's report section 4 as a finding that wants a ruling.**</para>
+/// <para>**UNIT 372 LEFT THIS TYPE RED ON ONE NAME, DELIBERATELY, AND UNIT 373 TURNED IT GREEN BY
+/// CHANGING THE LAYOUT.** The repair is at the site work instruction 373 §6 names: a measured floor
+/// and a scroller of its own on the panel canvas inside `WorkspaceBoundary`
+/// (`WorkspaceCanvasScroller` and `WorkspaceCanvas` in `MainWindow.axaml`), never on the tab row
+/// that carries the send area and never funded from <c>TopRow</c>'s 300 px cap. **At 900 x 620 and
+/// 1100 x 620 the panel row goes from 0 px to 73 px**: the decoded panel reads viewport 14 in an
+/// extent of 36 and scrolls to show all 36, For You reads viewport 25 in an extent of 371 and
+/// scrolls to show all 371, and the waterfall is 73 px of drawn surface instead of none.</para>
+/// <para>**ONE CLAUSE OF THIS TYPE WAS REWRITTEN UNDER §R12, AND THIS IS THE ACCOUNT OF IT.** Unit
+/// 372 wrote *each panel is whole on the window* while the canvas did not scroll, and with a canvas
+/// that does not scroll that clause is the right way to say *nothing is hidden*: a panel below the
+/// window's bottom edge was simply lost. **It is a test written while a door was shut, and it blocks
+/// the unit told to open the door** - a panel taller than its viewport is never whole on the window,
+/// so no scrolling canvas can ever satisfy it, and the clause would have had to be read as *the
+/// canvas may not scroll*, which is the opposite of criterion 1.3. §R12 makes that this session's to
+/// rewrite, in its own commit, so it guards the rule and not the shut door. **What replaces it
+/// asserts more, not less**: each panel's first row is on the window with the canvas at rest, and
+/// **each panel's last row is on the window once the canvas is scrolled to its end** - which is
+/// §0.5's actual rule, *nothing hidden, only scrolled*, and which *whole on the window* never
+/// checked, because a panel can be whole and still have unreachable content. Where the canvas does
+/// not scroll at all the two readings are identical and this is the old clause exactly.</para>
+/// <para>**AND ONE ASSERTION WAS ADDED THAT UNIT 372 DID NOT MAKE**: each list panel's scroller must
+/// report <c>viewport &gt; 0</c> in its own right. The inherited fault was a viewport of 0 with
+/// content behind it, and <c>extent &gt; viewport</c> alone does not forbid it - 36 in a viewport of
+/// 0 satisfies that comparison and is exactly the state §0.5 calls hiding information.</para>
+/// <para>**THE NUMBERS THE FLOOR WAS BUILT ON** (`Unit373TraceTests`, task 1). 125 px stand between
+/// `WorkspaceBoundary`'s outer edge and the first panel pixel at widths 900 and 1100, and 108 px at
+/// 1920 - **constant down the whole sweep at each width**, so the floor is one number and not three.
+/// Unit 372's 138 px at width 1100 is 13 px high; the measured figure is 125, being 13 px of the
+/// border's own top edge and padding plus 112 px of the mode strip and the readiness strip. Inside
+/// the canvas that leaves the panel row at canvas height minus 112, and all three panels report a
+/// working scroller only while the panel row is between 60 and 95 px - the decoded list's content
+/// measures 36 px and the panel's chrome takes 59 of the row. **The canvas floor's working band is
+/// 172 to 207 px and 185 is the number taken**, being the canvas Hamlet already draws at 1100 x 780,
+/// the size it opens at, so nothing changes at the opening size.</para>
 /// <para>**PINNED MEANS NO SCROLLING ANCESTOR** (HM-DEC-051). The header and the status bar are
 /// asserted whole on the window, at the top and at the bottom of it, and with no <c>ScrollViewer</c>
 /// anywhere above them - which is the crisp form of *pinned*, and the one a layout change could
@@ -67,12 +83,18 @@ public sealed class TheWindowHoldsBelowItsMinimumTests
     public TheWindowHoldsBelowItsMinimumTests(ITestOutputHelper output) => _output = output;
 
     /// <summary>
-    /// The sizes 1.3 is about: three below <c>MinHeight</c> at the opening width, and the smallest
-    /// size Hamlet will open at.
+    /// The sizes 1.3 is about: three below <c>MinHeight</c> at the opening width, the size all three
+    /// of those land on, and the smallest size Hamlet will open at.
     /// </summary>
+    /// <remarks>
+    /// **1100 x 620 IS NAMED IN ITS OWN RIGHT SINCE UNIT 373** (work instruction 373 task 2, which
+    /// asks for 900 x 620 and 1100 x 620). It is where 580, 540 and 500 all land, and a size the
+    /// criterion is about should be in the list under the name it is measured at rather than only
+    /// reached by asking for one the window will not take.
+    /// </remarks>
     private static readonly (double Width, double Height)[] Small =
     {
-        (1100, 580), (1100, 540), (1100, 500), (900, 620),
+        (1100, 580), (1100, 540), (1100, 500), (1100, 620), (900, 620),
     };
 
     /// <summary>The height the send area draws at the size Hamlet opens at, read rather than declared.</summary>
@@ -151,10 +173,11 @@ public sealed class TheWindowHoldsBelowItsMinimumTests
     }
 
     /// <summary>
-    /// **The working panels scroll inside themselves**: the decoded panel and the For You panel each
-    /// have a scroller whose extent exceeds its viewport, and scrolling it to the end shows its last
-    /// content. **Nothing is hidden, only scrolled** (§0.5) - a panel collapsed to nothing with its
-    /// content unreachable fails this, and so does a panel whose bottom is off the window.
+    /// **The working panels scroll inside themselves**: none of the three has collapsed, the decoded
+    /// panel and the For You panel each have a scroller reporting a viewport above zero and an
+    /// extent above it, and scrolling each to the end shows its last content. **Nothing is hidden,
+    /// only scrolled** (§0.5) - a panel collapsed to nothing with its content unreachable fails
+    /// this, and so does a panel whose last row cannot be brought onto the window.
     /// </summary>
     [AvaloniaFact]
     public void TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing()
@@ -178,9 +201,46 @@ public sealed class TheWindowHoldsBelowItsMinimumTests
 
                 Say(window, label);
 
-                foreach (var (name, rect) in TheWorkingPanelsTests.Panels(window))
+                // **THE CANVAS ITSELF, WHICH IS WHAT CARRIES THE FLOOR.** Its extent may exceed its
+                // viewport - that is the repair - but it may never clip: whatever the floor holds
+                // open has to be reachable by scrolling it.
+                var canvas = TheTopRowTests.Named<ScrollViewer>(window, "WorkspaceCanvasScroller");
+                var end = Math.Max(0, canvas.Extent.Height - canvas.Viewport.Height);
+
+                _output.WriteLine(
+                    "    the canvas viewport " + Px(canvas.Viewport.Height) + ", extent "
+                    + Px(canvas.Extent.Height) + ", so it scrolls " + Px(end) + " px");
+
+                if (canvas.Viewport.Height <= 0.5)
                 {
-                    // **THE PART THAT APPLIES TO ALL THREE**: it is drawn, and it is on the window.
+                    misses.Add(
+                        label + ": the panel canvas has a viewport of " + Px(canvas.Viewport.Height)
+                        + ", so nothing it holds can be seen at all.");
+                }
+
+                // **EVERY PANEL'S LAST ROW, READ WITH THE CANVAS SCROLLED TO ITS END.** This is the
+                // clause that replaced unit 372's *whole on the window* under §R12, and the reading
+                // is taken once for all three rather than per panel.
+                var atRest = TheWorkingPanelsTests.Panels(window);
+
+                canvas.Offset = new Vector(canvas.Offset.X, end);
+                Pump(window);
+
+                var atEnd = TheWorkingPanelsTests.Panels(window);
+
+                canvas.Offset = new Vector(canvas.Offset.X, 0);
+                Pump(window);
+
+                for (var i = 0; i < atRest.Count; i++)
+                {
+                    var (name, rect) = atRest[i];
+                    var scrolled = atEnd[i].Rect;
+
+                    _output.WriteLine(
+                        "    " + name.PadRight(10) + "at rest " + Box(rect)
+                        + "; canvas at its end " + Box(scrolled));
+
+                    // **THE PART THAT APPLIES TO ALL THREE**: it is drawn at all.
                     if (rect.Height <= 0.5)
                     {
                         misses.Add(
@@ -190,12 +250,24 @@ public sealed class TheWindowHoldsBelowItsMinimumTests
                         continue;
                     }
 
-                    if (!Whole(rect, bounds))
+                    // **AND THAT EVERY ROW OF IT CAN BE BROUGHT ONTO THE WINDOW.** Its first row is
+                    // on the window with the canvas at rest, and its last row is on the window with
+                    // the canvas scrolled to its end. Where the canvas does not scroll these are one
+                    // reading and this is *whole on the window* exactly.
+                    if (rect.Top < -0.5 || rect.Left < -0.5 || rect.Right > bounds.Width + 0.5)
                     {
                         misses.Add(
                             label + ": the " + name + " panel " + Box(rect)
-                            + " is not whole on the " + Box(bounds) + " window, so the bottom of "
-                            + "what it is showing cannot be seen.");
+                            + " does not start on the " + Box(bounds) + " window with the canvas at "
+                            + "rest, so the top of what it is showing cannot be seen.");
+                    }
+
+                    if (scrolled.Bottom > bounds.Height + 0.5)
+                    {
+                        misses.Add(
+                            label + ": the " + name + " panel ends at y " + Px(scrolled.Bottom)
+                            + " with the canvas scrolled to its end on a window " + Px(bounds.Height)
+                            + " px tall, so the bottom of what it is showing cannot be reached.");
                     }
 
                     if (name == "waterfall")
@@ -203,12 +275,26 @@ public sealed class TheWindowHoldsBelowItsMinimumTests
                         continue;
                     }
 
-                    // **AND THE PART THAT APPLIES TO A LIST**: it scrolls, and the end is reachable.
+                    // **AND THE PART THAT APPLIES TO A LIST**: it has a viewport of its own, it
+                    // scrolls, and the end is reachable.
                     var scroll = Scroller(window, name);
 
                     if (scroll is null)
                     {
                         misses.Add(label + ": the " + name + " panel has no scroller of its own");
+                        continue;
+                    }
+
+                    // **THE INHERITED FAULT WAS A VIEWPORT OF ZERO WITH CONTENT BEHIND IT**, and
+                    // `extent > viewport` alone does not forbid it: 36 in a viewport of 0 satisfies
+                    // that comparison and is the exact state §0.5 calls hiding information.
+                    if (scroll.Viewport.Height <= 0.5)
+                    {
+                        misses.Add(
+                            label + ": the " + name + " panel's scroller has a viewport of "
+                            + Px(scroll.Viewport.Height) + " holding an extent of "
+                            + Px(scroll.Extent.Height)
+                            + ", so its content is there and cannot be seen (CLAUDE.md 0.5).");
                         continue;
                     }
 
