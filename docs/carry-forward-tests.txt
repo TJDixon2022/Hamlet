@@ -4,7 +4,7 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied|FullyQualifiedName~TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient|FullyQualifiedName~TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer|FullyQualifiedName~TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed|FullyQualifiedName~Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference|FullyQualifiedName~TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText|FullyQualifiedName~TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied|FullyQualifiedName~TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient|FullyQualifiedName~TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer|FullyQualifiedName~TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed|FullyQualifiedName~Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference|FullyQualifiedName~TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText|FullyQualifiedName~TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText|FullyQualifiedName~TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContactEarnsWhatTheSameFt8ContactEarns|FullyQualifiedName~TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row"
 
     timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical"
 
@@ -116,6 +116,8 @@ TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed 
 Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference   unit 376
 TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText   the canned send guard, unit 378
 TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText   the hover guard, unit 378
+TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContactEarnsWhatTheSameFt8ContactEarns   the parity guard, unit 379
+TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row   the CQ label guard, unit 379
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
 
@@ -626,3 +628,45 @@ THE COST, measured on the same machine in one session: the two names together ru
 a second, open no device, make no sound and reach no network, and every sample lives in an array
 (FACT-004). App 212 of 212 before this unit and 214 of 214 after, the two names being the whole
 of the difference.
+
+WHAT UNIT 379 ADDED, AND WHY EACH ONE IS A GUARD RATHER THAN A CRITERION TEST
+-----------------------------------------------------------------------------
+
+TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContactEarnsWhatTheSameFt8ContactEarns.
+**IT IS THE PARITY GUARD.** R40 ruled that a PSK31 or Olivia contact earns exactly what an FT8
+contact earns. This is the one name that holds the whole of that down for the mode that had the
+gaps, and it holds it down END TO END: the contact is worked as a conversation, turned into a
+record by ContactLogEntryForStation, appended through ContactLogStore, re-read by the same
+refresh a press of Log runs, and only then scored. **Every figure is compared against the FT8
+contact's own numbers and not against a literal**, so it goes on meaning *the same as FT8* if the
+points file changes, if a band moves, or if the station's entity is re-read - and it fails if
+anything ever makes a keyboard-mode contact score less than the same contact on FT8. The seven
+kinds that do not turn on the mode are equal cell for cell; the Hall of Fame is a superset with
+the extra pinned to exactly first_olivia, so the mode cannot start earning a first that has
+nothing to do with it. A later unit that adds a mode branch to the scorer, or that stops putting
+the mode on the record, turns this red.
+
+TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row.
+**IT IS THE CQ LABEL GUARD, AND IT IS THERE BECAUSE THE FAULT IT CATCHES SURVIVED FOUR UNITS.**
+CqSnapshot named the mode from IsTextOnly - a question about a row's SHAPE - so from unit 335
+until this one the achievements page told him a station calling CQ on Olivia was calling on
+PSK31, which is a sentence stating something untrue about a station (CLAUDE.md 0.0). It asserts
+all THREE row kinds and not just the one that was wrong: the Olivia caller reads Olivia through
+the table that owns the spelling, the PSK31 caller still reads PSK31, and **the FT8-shaped row
+still claims nothing**, because it does not know whether it was FT8 or FT4. That third assertion
+is why a later unit cannot make this pass by labelling every text row Olivia.
+
+**THE OTHER NAMES UNIT 379 WROTE ARE NOT ON THE LINE**, as R14 asks. The PSK31 half of the parity
+comparison, the records-behind-the-counts comparison, the two Hall of Fame card cases - the
+earned card carrying the contact and the unearned card naming its own mode - the quill's
+three-row equality and 8.4's two before-and-after page drives are the unit's criterion tests and
+are run by the unit that changes that code. Unit379Trace is deliberately NOT on the list, for the
+reason Unit378Trace and Unit337Measure are not: it prints and asserts nothing about the product,
+and a name that cannot fail teaches nothing by being run.
+
+**NOTHING WENT ON THE ENGINE LINE.** Unit 379 changed no engine file: both repairs are in
+src/Hamlet.App/ViewModels.
+
+THE COST, measured on the same machine in one session: the two names together run in well under
+a second, open no device, make no sound and reach no network, and every sample lives in an array
+(FACT-004).

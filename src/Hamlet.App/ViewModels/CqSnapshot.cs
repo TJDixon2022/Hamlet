@@ -8,8 +8,9 @@ namespace Hamlet.App.ViewModels;
 /// <param name="Grid">The grid his CQ carried, or "" where it carried none.</param>
 /// <param name="HeardUtc">When the slot opened, as the list's `hhmmss`.</param>
 /// <param name="Mode">
-/// `PSK31` where the row is a PSK31 text row, and "" otherwise: **an FT8-shaped row does not say
-/// whether it was FT8 or FT4**, so no mode is claimed for it.
+/// **The mode the row itself says it is**: `Olivia` where the row carries an Olivia variant,
+/// `PSK31` where it is a text row that does not, and "" otherwise - **an FT8-shaped row does not
+/// say whether it was FT8 or FT4**, so no mode is claimed for it.
 /// </param>
 public sealed record CqCall(string Callsign, string Grid, string HeardUtc, string Mode = "");
 
@@ -71,13 +72,41 @@ public sealed class CqSnapshot
                 r.Sender.Trim().ToUpperInvariant(),
                 GridOf(r),
                 r.Utc,
-                r.IsTextOnly ? "PSK31" : ""))
+                ModeOf(r)))
             .GroupBy(c => c.Callsign, StringComparer.OrdinalIgnoreCase)
             .Select(g => g.FirstOrDefault(c => c.Grid.Length > 0) ?? g.First())
             .ToList();
 
         return new CqSnapshot(calls, readUtc);
     }
+
+    /// <summary>**The mode a row says it is**, from the row's own facts and never from a guess.</summary>
+    /// <remarks>
+    /// <para>**THIS LINE READ `r.IsTextOnly ? "PSK31" : ""` UNTIL WORK INSTRUCTION 379** (task 3,
+    /// criterion 8.3, section 6 ruling 2 item 2). It was written by unit 335, **before Olivia
+    /// existed in this tree**, and an Olivia row is a text-only row built by the same builder - so
+    /// the achievements page's next cards told him a station calling CQ on Olivia was calling on
+    /// PSK31. That is a sentence on the screen stating something untrue about a station (§0.0).
+    /// Measured before it moved: at task 1 the Olivia caller, on a row carrying the variant
+    /// `16/500`, came back `Mode="PSK31"`.</para>
+    /// <para>**THE VARIANT IS THE ROW'S OWN ANSWER TO WHICH MODE IT IS.** It is put on the row by
+    /// the one builder that makes a text row, from the variant dictionary `ShowOliviaChannels`
+    /// hands it, and `HasVariant` is *only on an Olivia row* by that property's own definition. No
+    /// second fact is invented and nothing about how a row came to be on the list is touched
+    /// (unit 335 section 10, still in force).</para>
+    /// <para>**AN FT8-SHAPED ROW GOES ON SAYING NOTHING**, because it does not know whether it was
+    /// FT8 or FT4 and naming one would be a claim nothing measured.</para>
+    /// <para>**WHAT THIS STILL CANNOT TELL APART, SAID PLAINLY**: an Olivia channel the listener
+    /// opened without a readable variant carries no variant on its row either, and it is labelled
+    /// `PSK31` here. The row keeps the variant string and not the dictionary membership that
+    /// `Psk31ContactWith` reads for the same question, so that is the one case this fact cannot
+    /// answer. It is strictly narrower than what it replaced - every Olivia row used to read
+    /// PSK31 - and it is reported rather than closed by putting a second mode fact on the row.</para>
+    /// </remarks>
+    private static string ModeOf(DigitalDecodeRow row)
+        => row.HasVariant ? ContactModes.OliviaName
+            : row.IsTextOnly ? "PSK31"
+            : "";
 
     /// <summary>The grid a row's CQ carried, or "".</summary>
     /// <remarks>

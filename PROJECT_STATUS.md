@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: running
-TASK: TASK 2 of 5
+TASK: TASK 3 of 5
 WORK_INSTRUCTION: 379 - the keyboard modes earn what FT8 earns: measured first, then connected
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T15:34:35-04:00
-NOTE: Unit 379 task 2: both marked cells closed and committed one each; the 8.2 assertion type is green 5 of 5 with the two contacts driven through ContactLogEntryForStation, ContactLogStore and the refresh, and scored against FT8's own numbers.
+UPDATED: 2026-09-21T15:37:59-04:00
+NOTE: Unit 379 task 3: the CQ label repaired at CqSnapshot - an Olivia CQ reads Olivia where it read PSK31 - and 8.3 and 8.4 asserted 4 of 4; the page moves 0 to 46 pts on BOTH contacts, so 8.4's drop candidate was not needed. Adding the carry-forward guards.
 
 ---
 
