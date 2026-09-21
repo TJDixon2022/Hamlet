@@ -9,6 +9,7 @@ namespace Hamlet.App.Tests.Views;
 
 /// <summary>
 /// Work instruction 372 task 2, criterion 1.2: **the order in which height is given up.**
+/// Rewritten by work instruction 374 task 2 under §R12, to §6's first ruling.
 /// </summary>
 /// <remarks>
 /// <para>**THE RULE IS THE TREE'S AND UNIT 356'S, NOT THIS UNIT'S.** It is written above
@@ -18,30 +19,47 @@ namespace Hamlet.App.Tests.Views;
 /// measure the order**, and a comment is not a test. R34 (Tim, 2026-09-14) was ruled about exactly
 /// this state of affairs: at 1100 x 780, the size Hamlet opens at, CQ was drawn at y 800 and the
 /// mode tabs at y 847, below a window 780 tall.</para>
-/// <para>**WHAT THE TREE ALREADY DID, MEASURED BEFORE THIS TYPE WAS WRITTEN**
-/// (<c>Unit372TraceTests</c>, at <c>d14badb1</c>): the send area is 22 px at every height from 780
-/// down to 620; <c>TopRow</c> is 300 px - its cap - at every one of them and never gives up a
-/// pixel; the working panels give up all of it, 73 px at 780, 33 at 740 and 0 from 700 down. So all
-/// four assertions below hold against the tree as it stands and **no source file was changed for
-/// this type.** That is the state R34 was ruled about - a rule that holds with nothing asserting it
-/// - and 1.2 asks for the rule *stated and held*, so the type is written and committed anyway.</para>
-/// <para>**WATCHED AGAINST THE TREE AT TASK 0, AND HOW.** The instruction asked for a worktree at
-/// task 0's commit; this session was not permitted to create one, so the same thing was established
-/// the way a worktree would have: <c>git diff d14badb1 -- src/</c> is **empty**, so the application
-/// these four names ran against is task 0's application byte for byte, and everything this unit had
-/// added was a test. **All four were green on that tree**, 4 of 4 in 17 s. Nothing was watched
-/// failing because there was nothing failing to watch, and that is the finding 1.2 was written to
-/// get rather than a step that was skipped.</para>
+/// <para>**WHY THIS TYPE WAS REWRITTEN, AND IT IS §R12 WORK RATHER THAN A LOOSENING.** As unit 372
+/// wrote it, the sweep was 780 down to 620 and <see cref="TheWorkingPanelsLoseHeightBeforeTheTopRow
+/// LosesAny"/> read the order of surrender off transitions inside that band. **Unit 373's floor
+/// then made the band flat**: <c>WorkspaceCanvas</c> keeps <c>MinHeight="185"</c> and a scroller of
+/// its own, so at width 1100 the panel row is 73 px at 780 and 73 px at every height down to 620,
+/// and nothing shrinks anywhere in the sweep. The name went red **on its own precondition** -
+/// <c>shrinks.Count &gt;= 2</c> - and not on the rule, which never broke. Unit 373 measured that no
+/// floor satisfies both criterion 1.3 and that precondition: floors below 145 px give the guard its
+/// two shrinks and leave the decoded viewport at 0, floors of 172 px and up give the panels a
+/// working scroller and give the guard one shrink or none, and there is nothing in the 27 px
+/// between. **The window the rule was being read through had gone flat, so the window is what
+/// moved.**</para>
+/// <para>**THE SWEEP NOW STARTS AT 920, AND THAT NUMBER IS MEASURED** (<c>Unit374TraceTests.
+/// TheHeightLadderAtTwoWidths</c>, task 1). At width 1100, over a ladder from 1040 to 620 in steps
+/// of 40, the panel row runs 331, 291, 251, 211, 171, 131, 91 px from 1040 down to 800, reaches
+/// 71 px at 780 and **stays at 71 px at 740, 700, 660 and 620** - so the floor begins to bind at
+/// 780, with seven shrink transitions above it and none below. A sweep topped at 840 gives the
+/// guard exactly two shrinks; **920 is taken, which gives four**, so the precondition is met with
+/// margin rather than on the edge. At width 900 the same ladder binds at 740 instead, one step
+/// lower, which is why the flat band below is asserted from the height the measurement names and
+/// not from an assumption.</para>
+/// <para>**NOTHING WAS REMOVED AND NOTHING WAS WEAKENED.** Every height from 780 to 620 is still in
+/// the sweep; <c>shrinks.Count &gt;= 2</c> stands at its threshold; the 0.5 px slack is unchanged;
+/// and everything <c>shrinks.Take(2)</c> asserted, it still asserts. **The type asserts the same
+/// four rules over nine heights where it asserted them over five, plus one rule it never asserted
+/// at all**: below the floor the panel row is constant, <c>TopRow</c> still gives up none, and the
+/// canvas scrolls instead. That last is what ties 1.2 to 1.3 rather than pitting them against each
+/// other - it states the rule unit 373's repair actually established.</para>
 /// <para>**WHY THE SWEEP STOPS AT 620.** That is <c>MinHeight</c>, and the window will not go below
 /// it: asked for 580, 540 and 500, a headless window drew 620 each time. What happens at and below
 /// the minimum is criterion 1.3's question and <c>TheWindowHoldsBelowItsMinimumTests</c>'.</para>
 /// <para>**BOTH WINDOWS, BECAUSE ONE OF THEM HAS NOTHING IN ITS PANELS.**
 /// <c>TheTopRowTests.Realized</c> declares the pinned facts and no decoded rows;
 /// <c>TheWorkingPanelsTests.Realized</c> carries the longest line the decoded list has to hold and
-/// a card. A claim about Hamlet rather than about one fixture has to hold on both.</para>
+/// a card. A claim about Hamlet rather than about one fixture has to hold on both. The two differ
+/// by 2 px in the panel row at every height, which is the card's own chrome and not a disagreement
+/// about the rule.</para>
 /// <para>**COMPUTED, NOT SEEN** (<c>SHACK_FACTS.md</c> FACT-004). Every number is a <c>Bounds</c>
-/// rectangle off a realized headless window. Nothing is pressed (CLAUDE.md §0.2), nothing is
-/// opened, and nothing here is evidence about the radio.</para>
+/// rectangle, or a <c>ScrollViewer</c>'s own extent and viewport, off a realized headless window.
+/// Nothing is pressed (CLAUDE.md §0.2), nothing is opened, and nothing here is evidence about the
+/// radio.</para>
 /// </remarks>
 public sealed class TheWindowGivesUpHeightInOneOrderTests
 {
@@ -52,9 +70,23 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
     public TheWindowGivesUpHeightInOneOrderTests(ITestOutputHelper output) => _output = output;
 
     /// <summary>
-    /// The descending sweep at width 1100, from the size Hamlet opens at down to <c>MinHeight</c>.
+    /// The descending sweep at width 1100, from above the size Hamlet opens at down to
+    /// <c>MinHeight</c>. **The top is task 1's measurement and not a guess**; the bottom five
+    /// heights are unit 372's own sweep, kept entire.
     /// </summary>
-    private static readonly double[] Sweep = { 780, 740, 700, 660, 620 };
+    private static readonly double[] Sweep = { 920, 880, 840, 800, 780, 740, 700, 660, 620 };
+
+    /// <summary>
+    /// The highest height at which the panel row has already stopped shrinking at width 1100 -
+    /// where unit 373's 185 px canvas floor begins to bind.
+    /// </summary>
+    /// <remarks>
+    /// **MEASURED, NOT CHOSEN** (<c>Unit374TraceTests.TheHeightLadderAtTwoWidths</c>): the panel row
+    /// is 91 px at 800 and 71 px at 780, and then 71 px at 740, 700, 660 and 620. It is a width-1100
+    /// number - at width 900 the same ladder binds one step lower, at 740 - and every name here
+    /// sweeps at width 1100.
+    /// </remarks>
+    private const double TheFloorBindsAt = 780;
 
     /// <summary>Unit 356's cap on <c>TopRow</c>, in <c>MainWindow.axaml</c> at the row itself.</summary>
     private const double TopRowCap = 300;
@@ -99,8 +131,16 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
     /// <summary>
     /// **The working panels lose height before <c>TopRow</c> loses any.** At the first two heights
     /// in the sweep where anything shrinks at all, the panels are strictly smaller than at the
-    /// height above and <c>TopRow</c> is unchanged.
+    /// height above and <c>TopRow</c> is unchanged - **and below the floor they stop surrendering
+    /// height altogether, the canvas scrolling in their place while <c>TopRow</c> still gives up
+    /// none.**
     /// </summary>
+    /// <remarks>
+    /// **THE SECOND HALF IS WORK INSTRUCTION 374 §6's ADDED ASSERTION**, and it is the one that
+    /// ties this criterion to 1.3 instead of setting them against each other. Unit 373's floor is
+    /// why nothing shrinks from <see cref="TheFloorBindsAt"/> down; *that* is the rule the floor
+    /// established, so it is asserted here rather than left to read as the absence of a shrink.
+    /// </remarks>
     [AvaloniaFact]
     public void TheWorkingPanelsLoseHeightBeforeTheTopRowLosesAny()
     {
@@ -151,6 +191,47 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
                     Which(plain) + ": from " + Px(above.Asked) + " to " + Px(here.Asked)
                     + " TopRow went " + Px(above.TopRow) + " -> " + Px(here.TopRow)
                     + ". It gave up height while the working panels still had some.");
+            }
+
+            // **AND BELOW THE FLOOR THE PANELS STOP SURRENDERING HEIGHT AT ALL** (work instruction
+            // 374 §6, clause 4). The canvas scrolls in their place, and `TopRow` still gives up
+            // nothing - so the band unit 373 made flat is asserted as flat rather than read as a
+            // failure to shrink.
+            var flat = read.Where(r => r.Asked <= TheFloorBindsAt + 0.5).ToList();
+            var atTheFloor = flat[0];
+
+            foreach (var row in flat)
+            {
+                _output.WriteLine(
+                    Which(plain) + " at " + Px(row.Asked) + ", below the floor: the panel row "
+                    + Px(row.PanelRow) + ", TopRow " + Px(row.TopRow) + ", the canvas viewport "
+                    + Px(row.Viewport) + " in an extent of " + Px(row.Extent));
+
+                Assert.True(
+                    Math.Abs(row.PanelRow - atTheFloor.PanelRow) <= 0.5,
+                    Which(plain) + ": the panel row is " + Px(row.PanelRow) + " px at "
+                    + Px(row.Asked) + " where it is " + Px(atTheFloor.PanelRow) + " px at "
+                    + Px(atTheFloor.Asked) + ". Below the floor it does not move, and it moved.");
+
+                Assert.True(
+                    Math.Abs(row.TopRow - atTheFloor.TopRow) <= 0.5,
+                    Which(plain) + ": TopRow is " + Px(row.TopRow) + " px at " + Px(row.Asked)
+                    + " where it is " + Px(atTheFloor.TopRow) + " px at " + Px(atTheFloor.Asked)
+                    + ". It gives up none of its height, at any height in the sweep.");
+
+                if (row.Asked >= atTheFloor.Asked - 0.5)
+                {
+                    // **AT THE FLOOR ITSELF NOTHING HAS TO SCROLL YET** - the canvas fills its
+                    // viewport exactly there, and what it does below is the assertion.
+                    continue;
+                }
+
+                Assert.True(
+                    row.Extent > row.Viewport + 0.5,
+                    Which(plain) + ": at " + Px(row.Asked) + " the canvas reports an extent of "
+                    + Px(row.Extent) + " in a viewport of " + Px(row.Viewport)
+                    + ". The panels stopped shrinking here, so the canvas has to be scrolling "
+                    + "instead, and nothing is being reached by scrolling.");
             }
         }
     }
@@ -261,8 +342,11 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
     /// <param name="PanelRow">The working panels' shared row height.</param>
     /// <param name="Panels">The three working panels' heights added up.</param>
     /// <param name="SendArea">The reserved send area's drawn height.</param>
+    /// <param name="Viewport">How much of the panel canvas <c>WorkspaceCanvasScroller</c> shows.</param>
+    /// <param name="Extent">How much of it there is - unit 373's floor, seen from the scroller.</param>
     private sealed record Measured(
-        double Asked, double Drawn, double TopRow, double PanelRow, double Panels, double SendArea);
+        double Asked, double Drawn, double TopRow, double PanelRow, double Panels, double SendArea,
+        double Viewport, double Extent);
 
     /// <summary>Realizes one window, reads the four numbers off it, and closes it.</summary>
     private static Measured Measure(double width, double height, bool plain)
@@ -274,6 +358,7 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
             Pump(window);
 
             var panels = TheWorkingPanelsTests.Panels(window);
+            var canvas = TheTopRowTests.Named<ScrollViewer>(window, "WorkspaceCanvasScroller");
 
             return new Measured(
                 height,
@@ -282,7 +367,9 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
                 panels[0].Rect.Height,
                 panels.Sum(p => p.Rect.Height),
                 TheTopRowTests.RectIn(
-                    TheTopRowTests.Named<Control>(window, "DigitalSendReserved"), window).Height);
+                    TheTopRowTests.Named<Control>(window, "DigitalSendReserved"), window).Height,
+                canvas.Viewport.Height,
+                canvas.Extent.Height);
         }
         finally
         {

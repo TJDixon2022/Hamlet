@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 374 - the order is measured where the height is actually given up, and the record names the mode the press was made under
 BALL: claude
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T22:06:25-04:00
-NOTE: Unit 374 task 1 measured - cq_pressed writes detail Ft8 under PSK31 and under Olivia; the slotted send sites never fire under either, and the unslotted path already writes Psk31 and Olivia. Committing the trace.
+UPDATED: 2026-09-20T22:11:01-04:00
+NOTE: Unit 374 task 2 - step 1 closes: 1.2 at 4 of 4, and 1.1, 1.3 and 1.4 re-checked green at 33 of 33 with the nine sizes unmoved. Committing the R12 rewrite on its own.
 
 ---
 
