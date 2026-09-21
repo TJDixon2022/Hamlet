@@ -989,8 +989,32 @@
     6 and to this instruction. Carry-forward before any change: app 210 of 210, engine 146 of 146.
     No file under src changes at this task.
   -->
+  <!--
+    1.13.63 -> 1.13.64, UNIT 377 TASK 0. A PATCH, STEP 2 OF THE HARDENING PHASE, CRITERION 2.2 -
+    ONE RSID FILE, SEVEN OLIVIA VARIANTS, AND NONE OF THEM ON THE AIR UNTIL HAMLET HAS READ ITS
+    OWN BACK. 2.2 is the one criterion in nine steps that a unit stopped on and handed to the
+    owner, and R41 of 2026-09-21 answers it in the larger direction: Hamlet may transmit at all
+    seven Olivia variants, each proved by loopback, and a variant that fails loopback stays off
+    the air in a sentence that says so. The tree keeps ONE RSID data file and it is
+    assets/data/rsid-codes.json - eight codes, eight tone sequences and fldigi's squares and
+    indices tables - with the csproj Include moved, its LogicalName unchanged, RsidCodes.FilePath
+    moved and every test read of the old path moved in the SAME commit, so the tree copy and the
+    embedded copy can never be two files; data/rsid/rsid-codes.json is EMPTIED to a key naming its
+    replacement and never deleted. proved_by_loopback goes on each row of data/olivia/format.json's
+    variants table, absent or false meaning not proved, and the gate stands at the app's Olivia
+    send path before OliviaModulator.Compose with reason variant_not_proved and an operator-facing
+    sentence - no new event and no new stage. The order is the safety: the file moves and the gate
+    is built with only the three variants the existing green loopback already proves marked true,
+    so no commit in this unit's history leaves Hamlet able to transmit a variant it has not read
+    back, and a flag is flipped only in the commit carrying the run that proved it. STEP 6 WAS
+    ALSO RECORDED DONE AT THIS TASK, transcribing R42 (Tim, 2026-09-21) into PHASE_STATUS.md and
+    PHASE_OUTCOME.md, which both still said partial while PHASE_PLAN.md at HEAD ticks all four of
+    step 6's criteria; and PHASE_STATUS.md's CURRENT_STEP and WORK_INSTRUCTION, stale at 0 and 376,
+    were set to 2 and to this instruction. Nothing in this unit opens a port, enumerates a device
+    or keys anything: every sample lives in an array (FACT-004).
+  -->
   <PropertyGroup>
-    <Version>1.13.63</Version>
+    <Version>1.13.64</Version>
   </PropertyGroup>
 
   <!--

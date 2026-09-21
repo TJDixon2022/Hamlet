@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: complete
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 376 - the top row comes down to one measured band, and the working panels take every pixel it gives up
-BALL: tim
+STATE: running
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 377 - one RSID file, seven Olivia variants, and none of them on the air until Hamlet has read its own back
+BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T11:30:30-04:00
-NOTE: Unit 376 complete. Step 6 partial: 6.2, 6.3 and 6.4 met, 6.1 partial at 214 px with the pills against 180 and 178 without it, with the arithmetic floor at 197 because the sun map may not shrink. The panels are 483 px from 450 and 424, and 92 from 71 at the opening size. Exit carry-forward app 211 of 211, engine 146 of 146, no regression. Criterion 2.2 waits on Tim: R38 (a) rests on a fact the tree contradicts.
+UPDATED: 2026-09-21T12:05:07-04:00
+NOTE: Unit 377 task 0 done: entry carry-forward app 211 of 211 on attempt 2 and engine 146 of 146, both at the counts unit 376 left. Outcome entry appended, step 6 recorded done per R42. Committing task 0 next, then task 1 measures both RSID files and the seven variants before anything moves.
 
 ---
 
