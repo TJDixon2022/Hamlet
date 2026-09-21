@@ -198,6 +198,42 @@ public sealed class TheStopIsAlwaysOnScreenTests
     /// **Keyed and mid-transmission, at the opening size: Stop is enabled in the status bar, and a real click
     /// fires the abort while the tones are still going and stops the sound.**
     /// </summary>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 375 TASK 2, UNDER R12: THE MOMENT THE WIRE IS READ IS NOW FIXED.** This name
+    /// was red in 3 of 7 runs for unit 372, 1 of 4 for unit 373, 0 of 5 for unit 374 and **4 of 10** for unit
+    /// 375, always the same way - the abort pair on the wire twice. It was reading the wire once, immediately
+    /// after <c>Click</c>, and asserting an exact snapshot of the list; but <c>Click</c> ends in <c>Pump</c>,
+    /// and whether the transmit sequence's own teardown has been pumped by the time that read happens is a
+    /// race. It was a timing assertion written as an equality.</para>
+    /// <para>**WHAT UNIT 375's TRACE MEASURED** (<see cref="Unit375TraceTests.WhoseSecondAbortPairIsIt"/>,
+    /// eight runs, with the stack recorded behind every frame). **The second pair is the sequence's, 8 of 8**:
+    /// every frame of it was written by <c>Ft8TransmitSequence.RunAsync</c> -> <c>PlayOverTimeAsync</c> ->
+    /// <c>TransmitAbort.Fire</c>, coming off the token the click cancelled. The click's own pair is written
+    /// by <c>MainWindowViewModel.StopSending</c> -> <c>Ft8ArmedSend.StopNow</c> -> <c>TransmitAbort.Fire</c>,
+    /// same-thread and no-await (CLAUDE.md section 0.2), **exactly once, 8 of 8**. So the click alone never
+    /// writes two pairs, the abort path is not at fault, and it is not touched.</para>
+    /// <para>**AND THERE IS NO MOMENT BEFORE SETTLE THAT IS FIXED**, which is the part worth writing down
+    /// because it is what a reader would get wrong. The sequence's teardown is not a dispatcher continuation
+    /// that a <c>Pump</c> would bound - it runs on the sequence's own task - so it races the click in real
+    /// time: the trace caught its pair **already on the wire the instant <c>MouseUp</c> returned** on 2 of 8
+    /// runs, landing inside the click's own pump on 4 more, and only after <c>await running</c> on the last
+    /// 2. Reading the wire after the press is therefore no more fixed than reading it after the pump was.
+    /// The only moment that does not race is **after the sequence has finished unwinding**, and 8 of 8 the
+    /// wire there was the same.</para>
+    /// <para>**SO THE WIRE IS READ WHERE IT HAS STOPPED CHANGING, AND WHAT IS ASSERTED IS THE RULE**, which
+    /// is strictly more than the snapshot it replaces. What the old line claimed about Hamlet - that the
+    /// click's abort is on the wire, behind the keying, as <c>CwStop</c> then <c>PttOff</c> - is kept whole.
+    /// What it also claimed - that nothing else had happened yet at that instant - was never a fact about
+    /// Hamlet but about thread scheduling, was false on a third of runs, and is gone. In its place the
+    /// settled wire is asserted, which the old test never looked at at all: **nothing keys again**, every
+    /// frame after the keying is an abort frame and nothing else, and they arrive in whole
+    /// <c>CwStop, PttOff</c> pairs, so the radio is never left keyed by a lone CW stop. That the pair is
+    /// there **twice** is asserted as the rule and not as a count of five, because whether Hamlet should put
+    /// it on the wire twice at all is unit 375 section 4's finding for the owner and not this test's to
+    /// bless.</para>
+    /// <para>**NOTHING IS OPENED** (<c>SHACK_FACTS.md</c> FACT-004): every frame here is a byte array handed
+    /// to a <see cref="FakePort"/>, and the audio ends at a <see cref="FakeSink"/> that makes no sound.</para>
+    /// </remarks>
     [AvaloniaFact]
     public async Task KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns()
     {
@@ -222,18 +258,50 @@ public sealed class TheStopIsAlwaysOnScreenTests
             Assert.True(stop.IsEffectivelyEnabled);
             Assert.Equal(new[] { KeyOn }, Frames(scene.Port));
 
-            Click(scene.Window, stop);
+            // **WHAT THE PRESS ITSELF PUT ON THE WIRE.** The abort is same-thread and no-await, so by the
+            // time this returns the click's own pair is on the wire, behind the keying and in order. The
+            // sequence's teardown may or may not have added its own by now - that is the race - so this
+            // reads the front of the wire, which the press fixes, and not its length, which it does not.
+            Press(scene.Window, stop);
 
-            var whileRunning = Frames(scene.Port);
+            var byTheClick = Frames(scene.Port);
 
-            _output.WriteLine("wire while running: " + string.Join(" | ", whileRunning));
+            _output.WriteLine("wire the instant the press returns: " + string.Join(" | ", byTheClick));
 
-            Assert.Equal(new[] { KeyOn, CwStop, PttOff }, whileRunning);
+            Assert.True(byTheClick.Length >= 3, "the press left only " + string.Join(" | ", byTheClick) + " on the wire");
+            Assert.Equal(new[] { KeyOn, CwStop, PttOff }, byTheClick.Take(3));
 
+            // **THE MOMENT THAT DOES NOT RACE**, and the one the old assertion was reaching for and missing:
+            // the sequence has finished unwinding and the wire has stopped changing.
+            Pump(scene.Window);
             await running;
             Pump(scene.Window);
 
+            var settled = Frames(scene.Port);
+            var afterTheKeying = settled.Skip(1).ToArray();
+
+            _output.WriteLine("wire settled: " + string.Join(" | ", settled));
             _output.WriteLine("sound stopped by the token " + scene.Sink.StoppedByTheToken + ", " + scene.Sink.PlayedSoFar + " samples played");
+
+            // It keyed once and never again: the abort is the end of the transmission, not a pause in it.
+            Assert.Equal(KeyOn, settled[0]);
+            Assert.DoesNotContain(KeyOn, afterTheKeying);
+
+            // Nothing after the keying is anything but the abort pair, and the click's own pair is still the
+            // first thing on the wire after it, in that order.
+            Assert.All(afterTheKeying, frame => Assert.True(
+                frame == CwStop || frame == PttOff,
+                "the wire carries " + frame + " after the abort, which is neither the CW stop nor the unkey: " + string.Join(" | ", settled)));
+            Assert.Equal(new[] { CwStop, PttOff }, afterTheKeying.Take(2));
+
+            // And they arrive in whole pairs - a lone CW stop with no unkey behind it would leave the radio
+            // keyed, which is the one shape of this wire that would matter at an antenna.
+            Assert.True(afterTheKeying.Length % 2 == 0, "the abort frames do not pair up: " + string.Join(" | ", settled));
+
+            for (var i = 0; i < afterTheKeying.Length; i += 2)
+            {
+                Assert.Equal(new[] { CwStop, PttOff }, afterTheKeying.Skip(i).Take(2));
+            }
 
             Assert.True(scene.Sink.StoppedByTheToken, "the sound ran to its end after the click");
         }
@@ -460,6 +528,24 @@ public sealed class TheStopIsAlwaysOnScreenTests
     /// </summary>
     private static void Click(Window window, Button button)
     {
+        Press(window, button);
+
+        Pump(window);
+    }
+
+    /// <summary>
+    /// <see cref="Click"/> without the pump that follows it, for a test that has to read something the press
+    /// itself did before any continuation has had a chance to run.
+    /// </summary>
+    /// <remarks>
+    /// The same real click and the same off-window guard; it stops one line earlier. Work instruction 375
+    /// task 2 split it out because the abort is same-thread and no-await (CLAUDE.md section 0.2), so the
+    /// instant this returns is a moment that cannot race, and the pump at the end of <see cref="Click"/> is
+    /// a moment that can - which is what made
+    /// <see cref="KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns"/> flake for four units.
+    /// </remarks>
+    private static void Press(Window window, Button button)
+    {
         Pump(window);
 
         var centre = Centre(button, window);
@@ -471,8 +557,6 @@ public sealed class TheStopIsAlwaysOnScreenTests
         window.MouseMove(centre);
         window.MouseDown(centre, MouseButton.Left);
         window.MouseUp(centre, MouseButton.Left);
-
-        Pump(window);
     }
 
     private static string[] Frames(FakePort port)
