@@ -549,9 +549,17 @@
     <Window.Resources>
         <!-- Neighborhood map -->
         <DataTemplate x:Key="widget.map" x:DataType="vm:MainWindowViewModel">
+            <!-- **THIS ONE PANEL'S BODY PADDING IS 4 AT THE FOOT, NOT 12** (work
+                 instruction 376 task 2, the unit's own choice and overrulable). The
+                 theme's 14,0,14,12 is every panel's and stays every panel's; this
+                 instance is the one panel standing in a band that criterion 6.1
+                 measures, and 8 px of blank under the sun map is 8 px the waterfall,
+                 the decoded text and For You do not have. Nothing inside the card
+                 moves and nothing is clipped - the padding is air. -->
             <ctl:CollapsiblePanel
                                   Family="Blue"
                                   Title="Neighborhood map"
+                                  Padding="14,0,14,4"
                                   Summary="{Binding MapSummary}"
                                   IsExpanded="{Binding MapExpanded, Mode=TwoWay}">
                 <!-- **THE HOW-TO IS ON A MARK** (Tim, 2026-09-08). It sat above
@@ -561,10 +569,34 @@
                      **AND THE MARK RIDES ON THE HEADER SINCE WORK INSTRUCTION 337**,
                      where the waterfall's own press rides, so it costs the card no row
                      of its own (R26: the top row is one short band). -->
+                <!-- **AND SINCE WORK INSTRUCTION 376 IT CARRIES THREE MARKS, NOT ONE**
+                     (R39, task 2; work instruction 376 section 6's second ruling). The
+                     color key and the rule-of-thumb line came off the card's face and
+                     wait here instead, **with the same words** - the legend's from
+                     `MapLegendControl.InWords`, which is built from the palette the map
+                     draws from, and the rule of thumb from `GreenZone.RuleOfThumb`,
+                     which is the very static the line on the card was bound to. Nothing
+                     is reworded, nothing is shortened, and neither is a fault, which is
+                     the one thing that may never come here.
+                     **THE HEADER COSTS THE CARD NO ROW**, which is why the marks are
+                     here and not on a line of their own: a line to hold two marks would
+                     have given back the height this unit came for. -->
                 <ctl:CollapsiblePanel.HeaderAction>
-                    <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
-                        Foreground="{StaticResource HmBlueBrush}"
-                        Text="hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
+                            Foreground="{StaticResource HmBlueBrush}"
+                            Text="hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune" />
+
+                        <ctl:HintMarkControl x:Name="MapLegendMark"
+                            Kind="Tip" HorizontalAlignment="Left"
+                            Foreground="{StaticResource HmBlueBrush}"
+                            Text="{x:Static ctl:MapLegendControl.InWords}" />
+
+                        <ctl:HintMarkControl x:Name="GreenZoneRuleOfThumbMark"
+                            Kind="Boundary" HorizontalAlignment="Left"
+                            Foreground="{StaticResource HmBlueBrush}"
+                            Text="{x:Static vm:GreenZone.RuleOfThumb}" />
+                    </StackPanel>
                 </ctl:CollapsiblePanel.HeaderAction>
 
                 <!-- **ONE CARD, TWO COLUMNS** (Tim, 2026-09-12, on
@@ -578,7 +610,13 @@
                       ColumnDefinitions="*,Auto"
                       ColumnSpacing="14">
                 <StackPanel Grid.Column="0" Spacing="4">
-                    <ctl:NeighborhoodMapControl Height="44"
+                    <!-- **THINNER SINCE WORK INSTRUCTION 376** (R39, task 2): 44 px to 32.
+                         Nothing about what it draws changed - the neighborhood labels, the
+                         listen-only hatch, the chosen block's outline, the calling spot's
+                         dashed line and every activity dot are placed as fractions of the
+                         control's own height, so the picture is the same picture at a
+                         shorter height and nothing is clipped off it. -->
+                    <ctl:NeighborhoodMapControl Height="32"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding MapLowHz}"
                         BandHighHz="{Binding MapHighHz}"
@@ -590,10 +628,17 @@
                         TuneCommand="{Binding TuneToDotCommand}"
                         SelectCommand="{Binding ShowNeighborhoodCommand}" />
 
-                    <!-- The key to the colors (HM-DEC-032). Without it the
-                         washes are decoration; with it they are a language the
-                         operator learns once. -->
-                    <ctl:MapLegendControl Margin="0,2,0,0" />
+                    <!-- **THE KEY TO THE COLORS IS ON THE HEADER'S SECOND MARK**
+                         (HM-DEC-032, R39, work instruction 376 task 2). It stood here as
+                         `MapLegendControl`, and it cost the card 17 px at 1920, 34 at 1400
+                         and **102 at 1100 x 780**, where it wrapped to six lines in a 196 px
+                         column - the size Hamlet opens at, and the size where the top row
+                         was taking a third of the window.
+                         **NOTHING IS LOST AND NOTHING IS REWORDED.** `MapLegendControl.InWords`
+                         is built from `ModePalette.Legend` - the same list the control draws -
+                         plus the two entries it draws by hand, so the hover says exactly what
+                         the swatches said. The control itself is untouched and still in the
+                         tree for any surface that has the room for it. -->
 
                     <!-- The status line, replacing the old mode line
                          (HM-DEC-029). Green when the frequency is theirs,
@@ -682,6 +727,7 @@
                                              (HM-DEC-029): green where the frequency is his,
                                              amber where it is listen-only. -->
                                         <TextBlock x:Name="GreenZoneModeLine"
+                                                   Margin="0,0,10,0"
                                                    Text="{Binding GreenZone.ModeLine}"
                                                    IsVisible="{Binding GreenZone.HasModeLine}"
                                                    FontSize="13"
@@ -689,32 +735,40 @@
                                                    VerticalAlignment="Center"
                                                    Foreground="{Binding PrivilegeStatus.Tone,
                                                        Converter={x:Static ctl:PrivilegeToneConverter.Text}}" />
-                                    </WrapPanel>
 
                                     <!-- **THE LICENSE PHRASE AND THE CITATION, SMALL, IN
                                          THEIR OWN WORDS.** One line where the side has the
                                          room; it wraps rather than running past the edge
-                                         where it does not. -->
+                                         where it does not.
+                                         **AND IT IS IN THE BAND'S OWN WRAP ROW SINCE WORK
+                                         INSTRUCTION 376** (R39: *the green zone one line*).
+                                         It had a line of its own beneath the band, the
+                                         frequency and the verdict; it now follows them in
+                                         the same row, so where there is width the whole
+                                         claim - `20 m 14.074 MHz · Digital · FT8 · yours to
+                                         use · 97.305(a)` - reads as one sentence and costs
+                                         one line, and where there is not it wraps under them
+                                         exactly as it did. **A wrap is not a clip**: every
+                                         word is still drawn. -->
                                     <TextBlock x:Name="GreenZoneLicenseLine"
                                                Text="{Binding GreenZone.LicensePhrase}"
                                                IsVisible="{Binding GreenZone.HasLicensePhrase}"
                                                FontSize="11"
                                                TextWrapping="Wrap"
+                                               VerticalAlignment="Center"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </WrapPanel>
 
-                                    <!-- **ONE LINE OF RULE OF THUMB** - and nothing about
-                                         whether a band is open, because Hamlet does not know
-                                         (§0.0). Under the license line since work instruction
-                                         337; it sat under the map before. **The mockup's own
-                                         sentence since work instruction 338** (ruling 2): the
-                                         `Rule of thumb:` prefix and the gray-edge clause came
-                                         off so the 1400 top row comes back to the mockup's
-                                         proportion; `GreenZone.RuleOfThumb` says why. -->
-                                    <TextBlock x:Name="GreenZoneRuleOfThumb"
-                                               Text="{x:Static vm:GreenZone.RuleOfThumb}"
-                                               FontSize="11"
-                                               TextWrapping="Wrap"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <!-- **THE RULE OF THUMB IS ON THE CARD HEADER'S THIRD
+                                         MARK** (R39, work instruction 376 task 2). It was one
+                                         line of `GreenZone.RuleOfThumb` here - and one line at
+                                         1920 is **150 px at 1100 x 780**, where it wrapped in a
+                                         196 px column, which is where this unit's pixels came
+                                         from. **The hover is bound to the same static**, so the
+                                         sentence is the sentence, and it is a `Boundary` mark
+                                         because what it says is what Hamlet cannot see past
+                                         (§0.0) - it still says nothing about whether a band is
+                                         open, because Hamlet does not know. -->
                                 </StackPanel>
 
                                 <!-- ============ RIGHT: WHAT IS WORTH DOING NOW ============ -->
@@ -2978,13 +3032,22 @@
          NOT collapsible (HM-DEC-021), and the whole strip it sits in is
          exempt from the canvas (HM-DEC-086). Padding cut from twenty by
          twelve, because the space around it was doing nothing. -->
+    <!-- **AND THE BOX AROUND IT IS TIGHTER SINCE WORK INSTRUCTION 376** (R39:
+         *the rig display shorter*; task 2). Padding 12,6 to 12,3 and the stack's
+         spacing 3 to 2 - **Hamlet's own chrome around the black, and not the black**.
+         The face itself keeps every element it draws; what it gave up is the blank
+         under the S-meter's wedge, `PadBottom` in `RigDisplayControl`, 10 px to 6.
+         Measured at task 1: the rig column wanted exactly 190 px at all three widths
+         and the neighborhood card wanted 190 as well, so the two columns TIE at 1920
+         and **cutting either one alone buys nothing** - the row is `Auto` and both
+         halves stretch to the taller. That is why this is here and not dropped. -->
     <Border Grid.Row="0" Grid.Column="1"
             VerticalAlignment="Stretch"
             Background="{StaticResource HmAmberTintBrush}"
             BorderBrush="{StaticResource HmAmberEdgeBrush}"
             BorderThickness="1" CornerRadius="8"
-            Padding="12,6" Margin="0">
-        <StackPanel Spacing="3">
+            Padding="12,3" Margin="0">
+        <StackPanel Spacing="2">
 
             <!-- THE STAR IS INSIDE THE BLACK (HM-DEC-070), which reverses
                  what HM-DEC-060 built. That ruling kept Hamlet's chrome off
@@ -3271,9 +3334,16 @@
          `ItemsControl`, bounds 43 pixels tall, with the badge nine pixels above
          its top. The row keeps its height and stops clipping what deliberately
          overhangs it. -->
+    <!-- **AND THE AIR AROUND THE ROW COMES IN WITH THE CARDS** (work instruction
+         376 task 2): margin 0,14,0,10 to 0,10,0,6. The 10 above the row is not
+         inside the band this unit measures - the band starts at the row's own top
+         edge - but it is height the three working panels get back all the same,
+         and the 6 below it is the gap between the pills and the card and is in
+         the band. **The badge still overhangs and is still not clipped**:
+         `ClipToBounds` is False here for the reason the note above gives. -->
     <ItemsControl Grid.Row="0" VerticalAlignment="Top"
                   ClipToBounds="False"
-                  ItemsSource="{Binding Bands}" Margin="0,14,0,10">
+                  ItemsSource="{Binding Bands}" Margin="0,10,0,6">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <StackPanel Orientation="Horizontal" Spacing="8" />
@@ -3323,15 +3393,22 @@
                          whether the band is in its element, and the card
                          dims when it is not — three carriers for one fact,
                          so color is never doing the work alone. -->
+                    <!-- **HALF HEIGHT SINCE WORK INSTRUCTION 376** (R39: *pills half
+                         height*; task 2). **Nothing came off the card**: the name, the
+                         day-night icon, the family bar and the activity pips are all four
+                         still drawn, and the width still carries the wavelength ratio
+                         (HM-DEC-141), so the three carriers of one fact are intact (§0.6).
+                         What went is the air around them - the padding from 8,6 to 8,2 and
+                         the stack's spacing from 4 to 2 - and the bar from 3 px to 2. -->
                     <Button Classes="hm-band"
                             Width="{Binding CardWidth}"
                             Opacity="{Binding CardOpacity}"
-                            Padding="8,6"
+                            Padding="8,2"
                             ToolTip.Tip="{Binding ActivityTooltip}"
                             ToolTip.ShowDelay="250"
                             Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
                             CommandParameter="{Binding}">
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="2">
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0"
                                            Text="{Binding Band.Name}"
@@ -3342,7 +3419,7 @@
                                                          Tint="{Binding CardIconTint}" />
                             </Grid>
 
-                            <Border Height="3" CornerRadius="2"
+                            <Border Height="2" CornerRadius="1"
                                     Background="{Binding CardBar}" />
 
                             <ctl:ActivityPipsControl

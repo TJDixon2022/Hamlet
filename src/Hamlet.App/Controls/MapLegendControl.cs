@@ -37,6 +37,26 @@ public sealed class MapLegendControl : Control
     private static readonly Pen VeilPen = new(VeilBrush, 2.5);
     private static readonly IBrush DotBrush = PanelPalette.Amber.TitleBrush;
 
+    /// <summary>
+    /// **The same key, in words** - what the legend says when it is read rather than looked at.
+    /// </summary>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 376 TASK 2, R39.** The legend moved off the neighborhood card to a
+    /// hover on the card's header, and a thing that comes off the card **goes to a hover carrying
+    /// the same words** (work instruction 376 section 6's second ruling). This is that sentence,
+    /// and it is built from <see cref="ModePalette.Legend"/> and from the two entries
+    /// <see cref="Layout"/> draws by hand, so the hover and the picture cannot drift apart
+    /// (§0: generated from the source of truth, never hand-copied).</para>
+    /// <para>**THE COLORS ARE STILL NAMED IN WORDS** (HM-DEC-032, §0.6). A map that uses color
+    /// needs a legend, and the legend names each family; what has changed is where it waits, not
+    /// whether it exists.</para>
+    /// </remarks>
+    public static string InWords { get; } =
+        "the map's colors: "
+        + string.Join(", ", ModePalette.Legend.Select(c => c.Label))
+        + ". Hatched is listen only - you may hear it and may not transmit there. A dot is a"
+        + " station heard just now.";
+
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
     {

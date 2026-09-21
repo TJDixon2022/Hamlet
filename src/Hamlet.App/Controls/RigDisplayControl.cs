@@ -54,7 +54,19 @@ public sealed class RigDisplayControl : Control
     private const double PadX = 22;
     private const double StripHeight = 30;
     private const double MeterHeight = 34;
-    private const double PadBottom = 10;
+
+    /// <summary>
+    /// The blank under the S-meter's wedge - **6 px since work instruction 376**, from 10.
+    /// </summary>
+    /// <remarks>
+    /// **R39: THE RIG DISPLAY SHORTER** (task 2), and this is the only part of the face that is
+    /// blank. Nothing the LCD draws moved: the status strip is placed from the top at
+    /// <see cref="StripHeight"/>, the digits under it, and the meter from the bottom at
+    /// <c>h - PadBottom - 4</c> - so the wedge, its scale and its labels keep the same distance
+    /// from the digits above them and only the empty band beneath the wedge is shorter. The
+    /// star is where HM-DEC-070 put it and the face is still not collapsible (HM-DEC-021).
+    /// </remarks>
+    private const double PadBottom = 6;
 
     /// <summary>
     /// True once the operator has tuned with the wheel (HM-DEC-141).
