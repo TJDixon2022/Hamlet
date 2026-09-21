@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 381 - the record names which row: every place in the window's 
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T17:55:00-04:00
-NOTE: Unit 381 task 3, the R12 growth. TheRecordSaysWhatWasOnScreenTests is 7 of 7 where it was 6 of 6: drawn, filtered, trim and the fold each now assert the place of EVERY row they count - the CQ filter's three held rows read 1084, 1802 and 2205 Hz by name, the trim's row reads 500 - and one new name asserts that a row Hamlet cannot place is counted, left out of at and confessed in atDropped with no zero invented. Its carry-forward line is in the same commit. Next: the two diagnosis names and the hour re-measured.
+UPDATED: 2026-09-21T17:58:26-04:00
+NOTE: Unit 381 task 3 complete. 3.3: the four-signal file now names 700, 1100, 1600 and 2200 by their own offsets where it named 700 and counted 4, and the gate case names the three rows the CQ filter held - 1084, 1802 and 2205 - where it counted 3. 3.1: every state names the place of every row it counts, and a row Hamlet cannot place is declared in atDropped rather than given a zero. 3.4 re-earned ON THE FILE at 37.1 kB an hour against 50, a margin of 12.9 kB, 1,740 of 1,740 items named, nothing truncated at a cap of 128. 3.5 CallsignPrivacyTests 4 of 4 at 82 writers, unmoved. The screen did not move: the nine sizes read 483, 71, 92, 163, 171, 267, 483, 460, 860 and no view, control or engine file changed at all. Next: task 4, the exit run.
 
 ---
 
