@@ -2854,12 +2854,12 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly Dictionary<DigitalDecodeRow, (OnScreenState State, string By)> _onScreenRows
         = new(RowIdentity.Instance);
 
-    /// <summary>The last state each text row was in, by the mark its channel was first heard at.</summary>
+    /// <summary>The last state each text row was in, by its channel.</summary>
     /// <remarks>
-    /// **THE FIRST-HEARD CELL IS WHAT A REPLACEMENT CARRIES OVER.** `_psk31FirstHeard` is kept
-    /// per channel and handed to every rebuild of that channel's row, so it is the one cell that
-    /// means *the same station's row* across the four replacements a second a live carrier
-    /// causes. It is an `HHmmss` mark and names nobody.
+    /// **THE CHANNEL IS WHAT A REPLACEMENT CARRIES OVER**, and see <see cref="TextRowKey"/> for
+    /// why the first-heard cell is not: the four-signal fixture's four carriers all appear in the
+    /// same second and share it. The key never leaves this process; what the file carries is a
+    /// count (§2.1).
     /// </remarks>
     private readonly Dictionary<string, (OnScreenState State, string By)> _onScreenTextRows
         = new(StringComparer.Ordinal);
@@ -2881,6 +2881,18 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>When the open window opened, or <c>MinValue</c> where none is.</summary>
     private DateTime _onScreenWindowUtc = DateTime.MinValue;
 
+    /// <summary>The moment the sampler reads, for a test that has to cross a window.</summary>
+    /// <remarks>
+    /// **THE SAME IDIOM AS <see cref="CardsNowForTests"/>**, and the same reason: a fixture that
+    /// drives a quarter of an hour of a busy band takes milliseconds of wall clock, so criterion
+    /// 3.4 could never be measured against a sampler reading `DateTime.UtcNow`. **Null outside a
+    /// test**, where the wall clock is the only clock.
+    /// </remarks>
+    internal DateTime? OnScreenNowForTests { get; set; }
+
+    /// <summary>The moment the sampler works to.</summary>
+    private DateTime OnScreenNow => OnScreenNowForTests ?? DateTime.UtcNow;
+
     /// <summary>One group's tally inside one window.</summary>
     /// <remarks>
     /// **THE HEAD OF THE WINDOW IS THE FIRST ITEM, AND THE COUNT IS ALL OF THEM** (work
@@ -2890,7 +2902,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private sealed class OnScreenGroup
     {
-        public int Count;
+        /// <summary>Which items have been in this state in this window, by identity.</summary>
+        /// <remarks>
+        /// **A SET AND NOT A TALLY, AND THE DIFFERENCE IS MEASURED.** `count` answers *how many
+        /// ROWS were hidden and by what*, so it counts rows and not changes. A live PSK31 row is
+        /// rebuilt four times a second and its reading is re-parsed each time, which moves it
+        /// between the operator's own side and the left list and back: over 38 seconds of the
+        /// four-signal fixture that is **521 state changes across four carriers**, and a tally
+        /// would have told a reader that 521 rows were on the screen when four were.
+        /// </remarks>
+        public readonly HashSet<string> Items = new(StringComparer.Ordinal);
+
         public double? OffsetHz;
         public string Slot = "";
         public long DialHz;
@@ -2918,8 +2940,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void NoteRowOnScreen(DigitalDecodeRow row, OnScreenState state, string by)
     {
+        var identity = IdentityOf(row);
+
         var known = row.IsTextOnly
-            ? _onScreenTextRows.TryGetValue(row.Utc, out var was)
+            ? _onScreenTextRows.TryGetValue(identity, out var was)
             : _onScreenRows.TryGetValue(row, out was);
 
         if (known && was.State == state && string.Equals(was.By, by, StringComparison.Ordinal))
@@ -2931,11 +2955,11 @@ public partial class MainWindowViewModel : ObservableObject
         {
             if (state == OnScreenState.Removed)
             {
-                _onScreenTextRows.Remove(row.Utc);
+                _onScreenTextRows.Remove(identity);
             }
             else
             {
-                _onScreenTextRows[row.Utc] = (state, by);
+                _onScreenTextRows[identity] = (state, by);
             }
         }
         else if (state == OnScreenState.Removed)
@@ -2957,9 +2981,73 @@ public partial class MainWindowViewModel : ObservableObject
                 : null;
 
         NoteOnScreen(
-            OnScreenKind.Row, state, by, row.IsTextOnly,
+            OnScreenKind.Row, state, by, row.IsTextOnly, identity,
             hz, row.IsTextOnly ? "" : row.Utc, row.IsTextOnly ? 0 : row.HeardOnHz);
     }
+
+    /// <summary>What makes two mentions of a row the same row, in memory and never in the file.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>A key unique to it inside one window.</returns>
+    /// <remarks>
+    /// **IT NEVER LEAVES THIS PROCESS.** It exists so a window's `count` counts rows rather than
+    /// changes; nothing built here is written, and the file carries a number (HM-DEC-018 §2.1).
+    /// </remarks>
+    private string IdentityOf(DigitalDecodeRow row)
+        => row.IsTextOnly
+            ? TextRowKey(row)
+            : "s|" + System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(row)
+                .ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>What makes two mentions of a text row the same station's row.</summary>
+    /// <param name="row">A text row.</param>
+    /// <returns>A key that survives the row being rebuilt.</returns>
+    /// <remarks>
+    /// <para>**THE CHANNEL, AND NOT THE FIRST-HEARD CELL.** A text row has no object identity -
+    /// the builder replaces it with a new record every time a character arrives - so something
+    /// else has to say *the same station's row*. The obvious candidate is the first-heard
+    /// `HHmmss` cell, and it is wrong: **the four-signal fixture's four carriers all appear in
+    /// the same second**, so all four share it, and keyed on it the record would say one row was
+    /// on the screen where four were. The channel is what the listener is actually holding.
+    /// </para>
+    /// <para>**AND AN ENDED ROW FALLS BACK TO ITS OWN CELLS**, because a channel that has been
+    /// retired is no longer in the map and a row on screen still has to be told from its
+    /// neighbour. **It never leaves this process** - what is written is a count (§2.1).</para>
+    /// </remarks>
+    private string TextRowKey(DigitalDecodeRow row)
+    {
+        // **A ROW ALREADY NAMED KEEPS ITS NAME.** A carrier that retires leaves its last row on
+        // the screen and drops out of `_psk31Rows`; the object does not change again from that
+        // moment, so the name it was given while the channel was live is remembered here and
+        // the ended row goes on being the same row rather than becoming a new one.
+        if (_onScreenTextKeys.TryGetValue(row, out var known))
+        {
+            return known;
+        }
+
+        var key = "t|ended|" + System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(row)
+            .ToString(CultureInfo.InvariantCulture);
+
+        foreach (var (id, live) in _psk31Rows)
+        {
+            if (ReferenceEquals(live, row))
+            {
+                key = "t|" + id.ToString(CultureInfo.InvariantCulture);
+                break;
+            }
+        }
+
+        _onScreenTextKeys[row] = key;
+
+        return key;
+    }
+
+    /// <summary>Which channel each text row object belongs to, by identity.</summary>
+    /// <remarks>
+    /// **IT IS A CACHE AND NOTHING READS IT BUT <see cref="TextRowKey"/>.** It never leaves this
+    /// process and what the file carries is a count (§2.1).
+    /// </remarks>
+    private readonly Dictionary<DigitalDecodeRow, string> _onScreenTextKeys
+        = new(RowIdentity.Instance);
 
     /// <summary>Which gate held a row off the left list.</summary>
     /// <param name="row">A row <see cref="WantsRow"/> has just refused after
@@ -3020,16 +3108,16 @@ public partial class MainWindowViewModel : ObservableObject
                 : null;
 
         NoteOnScreen(
-            OnScreenKind.Card, state, by, card.IsPsk31,
+            OnScreenKind.Card, state, by, card.IsPsk31, "c|" + who,
             hz, "", card.IsPsk31 ? 0 : tech?.DialHz ?? 0);
     }
 
     /// <summary>Put one change into the open window, rolling the window first if it has run.</summary>
     private void NoteOnScreen(
-        OnScreenKind kind, OnScreenState state, string by, bool isTextOnly,
+        OnScreenKind kind, OnScreenState state, string by, bool isTextOnly, string identity,
         double? offsetHz, string slot, long dialHz)
     {
-        var now = DateTime.UtcNow;
+        var now = OnScreenNow;
 
         if (_onScreenWindowUtc == DateTime.MinValue)
         {
@@ -3058,7 +3146,7 @@ public partial class MainWindowViewModel : ObservableObject
             _onScreenWindow[key] = group;
         }
 
-        group.Count++;
+        group.Items.Add(identity);
     }
 
     /// <summary>Write the open window out, one line per group, and open a new one.</summary>
@@ -3078,7 +3166,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             AppEvents.OnScreen(
                 _telemetry, key.Kind, key.State, key.By, key.Text,
-                group.OffsetHz, group.Slot, group.DialHz, group.Count,
+                group.OffsetHz, group.Slot, group.DialHz, group.Items.Count,
                 ChosenDigitalMode);
         }
 
@@ -3184,6 +3272,38 @@ public partial class MainWindowViewModel : ObservableObject
             PanelKeys.DigitalDecoded, OnScreenKind.Row, isTextOnly: false,
             new OnScreenViewport(first, last, extent, viewport, offset),
             Math.Max(0, DigitalVisibleDecodes.Count - shown));
+    }
+
+    /// <summary>Record a settle the view read off the For You panel's card scroller.</summary>
+    /// <param name="first">First index inside the viewport, or -1.</param>
+    /// <param name="last">Last index inside the viewport, or -1.</param>
+    /// <param name="extent">How tall the content is.</param>
+    /// <param name="viewport">How much of it is showing.</param>
+    /// <param name="offset">How far down it is scrolled.</param>
+    /// <remarks>
+    /// **THIS IS THE UNIT'S NAMED DROP CANDIDATE AND IT WAS NOT DROPPED** (work instruction 380
+    /// task 3). Without it a card's scroll-out is the one state of the five that nothing writes,
+    /// and 3.2 would be partial; the decoded panel's settle is the same mechanism and this is one
+    /// more call into it.
+    /// </remarks>
+    internal void CardsPanelScrolled(
+        int first, int last, double extent, double viewport, double offset)
+    {
+        if (viewport <= 0 || extent <= viewport + 0.5)
+        {
+            return;
+        }
+
+        var shown = first < 0 ? 0 : last - first + 1;
+
+        // **A CARD IS A TEXT-MODE CARD OR AN FT8 ONE AND THE PANEL HOLDS BOTH.** The line is
+        // about the PANEL rather than about one card, so it goes in the category of whichever
+        // mode the operator is actually on - which is the same switch he would reach for to
+        // quieten the thing he is not looking at.
+        NoteScrollSettled(
+            PanelKeys.DigitalMine, OnScreenKind.Card, DigitalCards.Any(c => c.IsPsk31),
+            new OnScreenViewport(first, last, extent, viewport, offset),
+            Math.Max(0, DigitalCards.Count - shown));
     }
 
     /// <summary>Record every ended PSK31 row a clear is about to take off the list.</summary>
@@ -4476,6 +4596,19 @@ public partial class MainWindowViewModel : ObservableObject
             // own selection**: the latest grid from a message he CERTAINLY sent (§R1), never one
             // read off a guess and never the operator's own out of his own report.
             row.HisGrid = HisGridOn(channel.Id, row.Sender);
+
+            // **THE ROW IS NAMED TO ITS CHANNEL BEFORE IT REACHES THE COLLECTION** (R36, step 3,
+            // the text-row builder of work instruction 380 section 6 ruling 2 item 1). Putting
+            // it on the table raises a reset, and the reset rebuilds the whole filter and asks
+            // the recorder what became of every row - so the recorder has to be able to say
+            // **the same station's row** at that moment. It cannot say it from the object: a
+            // live carrier is a new record four times a second. It cannot say it from the
+            // first-heard cell either: the four-signal fixture's four carriers all appear in the
+            // same second and would share it, and the record would say one row was on the screen
+            // where four were. The channel is the thing that means the same station, and this is
+            // the one place that is known. **The name never leaves this process; what the file
+            // carries is a count** (§2.1).
+            _onScreenTextKeys[row] = "t|" + channel.Id.ToString(CultureInfo.InvariantCulture);
 
             var index = shown is null ? -1 : IndexOfPsk31Row(shown);
 

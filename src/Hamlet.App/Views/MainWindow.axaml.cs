@@ -78,6 +78,9 @@ public partial class MainWindow : Window
         // model decides what it means. **It draws nothing and nothing on screen
         // depends on it** (§0.2).
         DigitalDecodedScroller.ScrollChanged += (_, _) => TheDecodedListMoved();
+
+        // **AND THE SAME FOR THE CARDS**, which is unit 380's named drop candidate, taken.
+        DigitalCardsScroller.ScrollChanged += (_, _) => TheCardsMoved();
     }
 
     /// <summary>How still a scroller has to be before the settle counts.</summary>
@@ -92,6 +95,9 @@ public partial class MainWindow : Window
     /// <summary>The timer waiting for the decoded list to come to rest, or null.</summary>
     private DispatcherTimer? _decodedSettle;
 
+    /// <summary>The timer waiting for the cards to come to rest, or null.</summary>
+    private DispatcherTimer? _cardsSettle;
+
     /// <summary>Restart the settle clock, because the list has just moved.</summary>
     private void TheDecodedListMoved()
     {
@@ -103,38 +109,60 @@ public partial class MainWindow : Window
         _decodedSettle.Start();
     }
 
-    /// <summary>The decoded list has been still for a quarter of a second.</summary>
+    /// <summary>Restart the settle clock, because the cards have just moved.</summary>
+    private void TheCardsMoved()
+    {
+        _cardsSettle ??= new DispatcherTimer { Interval = Settle };
+
+        _cardsSettle.Stop();
+        _cardsSettle.Tick -= OnCardsSettled;
+        _cardsSettle.Tick += OnCardsSettled;
+        _cardsSettle.Start();
+    }
+
+    /// <summary>The cards have been still for a quarter of a second.</summary>
     /// <param name="sender">The timer.</param>
     /// <param name="e">Nothing.</param>
-    /// <remarks>
-    /// **THE INDEX RANGE IS ARITHMETIC ON CONTAINERS THAT ALREADY EXIST.** The decoded
-    /// `ItemsControl` does not virtualize, so every bound row has a realized container, and
-    /// a container's bounds against the scroller's offset and viewport say whether it is
-    /// inside. **Nothing new is drawn to work it out** (work instruction 380 section 6 ruling
-    /// 2 item 3), and a row with no container yet is simply not counted rather than guessed
-    /// at (§0.0).
-    /// </remarks>
-    private void OnDecodedListSettled(object? sender, EventArgs e)
+    private void OnCardsSettled(object? sender, EventArgs e)
     {
-        _decodedSettle?.Stop();
+        _cardsSettle?.Stop();
 
         if (DataContext is not MainWindowViewModel panel)
         {
             return;
         }
 
-        var scroller = DigitalDecodedScroller;
-        var rows = DigitalDecodedRows;
+        var (first, last) = WhatIsInside(DigitalCardsScroller, DigitalContactCards);
 
+        panel.CardsPanelScrolled(
+            first, last,
+            DigitalCardsScroller.Extent.Height,
+            DigitalCardsScroller.Viewport.Height,
+            DigitalCardsScroller.Offset.Y);
+    }
+
+    /// <summary>Which indices of an items control are inside its scroller's viewport.</summary>
+    /// <param name="scroller">The scroller.</param>
+    /// <param name="items">The list inside it.</param>
+    /// <returns>The first and last index inside, or -1 and -1 where none is.</returns>
+    /// <remarks>
+    /// **IT IS ARITHMETIC ON CONTAINERS THAT ALREADY EXIST.** Neither of these lists
+    /// virtualizes, so every bound item has a realized container, and a container's bounds
+    /// against the offset and the viewport say whether it is inside. **Nothing new is drawn to
+    /// work it out** (work instruction 380 section 6 ruling 2 item 3), and an item with no
+    /// container yet is not counted rather than guessed at (§0.0).
+    /// </remarks>
+    private static (int First, int Last) WhatIsInside(ScrollViewer scroller, ItemsControl items)
+    {
         var top = scroller.Offset.Y;
         var bottom = top + scroller.Viewport.Height;
 
         var first = -1;
         var last = -1;
 
-        for (var at = 0; at < rows.ItemCount; at++)
+        for (var at = 0; at < items.ItemCount; at++)
         {
-            if (rows.ContainerFromIndex(at) is not Control container)
+            if (items.ContainerFromIndex(at) is not Control container)
             {
                 continue;
             }
@@ -155,8 +183,32 @@ public partial class MainWindow : Window
             last = at;
         }
 
+        return (first, last);
+    }
+
+    /// <summary>The decoded list has been still for a quarter of a second.</summary>
+    /// <param name="sender">The timer.</param>
+    /// <param name="e">Nothing.</param>
+    /// <remarks>
+    /// **THE INDEX RANGE IS ARITHMETIC ON CONTAINERS THAT ALREADY EXIST** - see
+    /// <see cref="WhatIsInside"/>. Nothing new is drawn to work it out.
+    /// </remarks>
+    private void OnDecodedListSettled(object? sender, EventArgs e)
+    {
+        _decodedSettle?.Stop();
+
+        if (DataContext is not MainWindowViewModel panel)
+        {
+            return;
+        }
+
+        var (first, last) = WhatIsInside(DigitalDecodedScroller, DigitalDecodedRows);
+
         panel.DecodedPanelScrolled(
-            first, last, scroller.Extent.Height, scroller.Viewport.Height, top);
+            first, last,
+            DigitalDecodedScroller.Extent.Height,
+            DigitalDecodedScroller.Viewport.Height,
+            DigitalDecodedScroller.Offset.Y);
     }
 
 

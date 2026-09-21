@@ -5525,7 +5525,11 @@
                                              with its Log button off the side. Disabled
                                              holds the content to the viewport, so a card
                                              wraps instead. -->
+                                        <!-- **THE NAME IS THE ONLY THING UNIT 380 ADDED HERE,
+                                             AND IT DRAWS NOTHING**, for the reason
+                                             `DigitalDecodedScroller`'s comment gives. -->
                                         <ScrollViewer Grid.Row="0"
+                                                      x:Name="DigitalCardsScroller"
                                                       VerticalScrollBarVisibility="Auto"
                                                       HorizontalScrollBarVisibility="Disabled"
                                                       IsVisible="{Binding HasDigitalCards}">
