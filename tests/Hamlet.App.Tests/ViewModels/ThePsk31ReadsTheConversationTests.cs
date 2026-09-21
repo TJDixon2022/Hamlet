@@ -417,16 +417,33 @@ public sealed class ThePsk31ReadsTheConversationTests
         }
     }
 
-    /// <summary>**Assertion 8: no click on a PSK31 row reaches a send path.**</summary>
+    /// <summary>**Assertion 8: no FT8 message is ever on a PSK31 row, and what the row offers is R39's seven.**</summary>
     /// <remarks>
-    /// **THE FT8 LEDGER IS GIVEN W1AW FIRST**, from an FT8 CQ, so the right-click menu and the
-    /// conversation card would both exist for a PSK31 row from W1AW if the guard were missing.
+    /// <para>**THE FT8 LEDGER IS GIVEN W1AW FIRST**, from an FT8 CQ, so the right-click menu and
+    /// the conversation card would both exist for a PSK31 row from W1AW if the guard were
+    /// missing.</para>
+    /// <para>**REWRITTEN BY WORK INSTRUCTION 378 TASK 2 UNDER §R12, AND IT ASSERTS MORE THAN IT
+    /// REPLACED.** What it asserted about the menu was the one-item door unit 323 opened: null
+    /// on every row that was not a certain CQ, and a single item bound to `AnswerPsk31Command`
+    /// where it was. R39 (Tim, 2026-09-21, ruled C) replaces both - a right-click on ANY row
+    /// that names a station offers the seven lines from `data/psk31/canned.json`. **Nothing here
+    /// is loosened**: `Assert.Null(model.SendMenuFor(row))` is untouched and still the first
+    /// thing asked of every row, `CanLogRow` is untouched, and the Answer item's command and
+    /// parameter are still asserted by identity on exactly the rows that carried them.</para>
+    /// <para>**AND FOUR THINGS ARE ASSERTED THAT NEVER WERE**: that a row naming a station has
+    /// a menu where it had none - five of unit 378's eleven traced rows were in that state - that
+    /// the seven arrive in the file's own order with R39's labels, that no item on a PSK31 row
+    /// carries `SendMessageCommand` so no FT8 message can ever be on one, and that nothing is
+    /// greyed or disabled, an absent line being a note with no command instead.</para>
     /// </remarks>
     [Fact]
-    public void NoClickOnAPsk31RowReachesASendPath()
+    public void NoFt8MessageIsOnAPsk31RowAndWhatItOffersIsTheCannedSeven()
     {
         var corpus = Psk31Corpus.Load();
         var model = Panel();
+        var canned = model.CannedLines;
+
+        Assert.True(canned.IsUsable, canned.Problem ?? "the shipped canned lines did not read");
 
         model.CardsNowForTests = DateTime.UtcNow;
 
@@ -440,6 +457,9 @@ public sealed class ThePsk31ReadsTheConversationTests
         var carriers = Carriers(corpus);
         var longest = carriers.Max(c => c.Transcript.Lines.Count);
         var looked = 0;
+        var named = 0;
+        var offered = 0;
+        var notACqAndOffered = 0;
 
         for (var step = 1; step <= longest; step++)
         {
@@ -449,27 +469,87 @@ public sealed class ThePsk31ReadsTheConversationTests
             {
                 // **NO FT8 MENU AND NO LOG ON ANY PSK31 ROW**, which is what this assertion
                 // has always been for: the FT8 options are 77-bit message shapes and none of
-                // them is a thing to send on PSK31.
+                // them is a thing to send on PSK31. **UNCHANGED BY UNIT 378.**
                 Assert.Null(model.SendMenuFor(row));
                 Assert.False(model.CanLogRow(row));
 
-                // **AND THE ONLY THING A ROW EVER OFFERS IS ONE ANSWER, ON A CERTAIN CQ**
-                // (§R12, work instruction 323 task 3). This asserted the flyout was always
-                // null, which is the shut door; the door is open from unit 323 and answering
-                // a station calling CQ is step 4's criterion. A row that is not a certain CQ
-                // still offers nothing at all.
+                // **THE RIGHT-CLICK OPENS THE CARD FIRST AND BUILDS THE MENU AFTERWARDS**
+                // (R29, `OnDecodedRowContextRequested`). That order is Tim's, the card is what
+                // the report and confirm lines are offered off, so the menu measured here is
+                // the menu a right-click actually produces rather than half of one.
+                model.OpenPsk31CardCommand.Execute(row);
+
                 var flyout = MainWindow.SendFlyoutFor(model, row);
+                var station = model.Psk31StationOn(row);
+
+                if (station is null)
+                {
+                    // **A ROW THAT NAMES NOBODY STILL OFFERS NOTHING**, and that has not
+                    // changed: free text and a damaged callsign are not stations to send to.
+                    Assert.Null(flyout);
+                    looked++;
+
+                    continue;
+                }
+
+                named++;
+
+                // **EVERY ROW THAT NAMES A STATION HAS A MENU** (criterion 7.1). Before unit
+                // 378 this was null on every row that was not a certain CQ.
+                Assert.NotNull(flyout);
+
+                var items = flyout!.Items.OfType<MenuItem>().ToList();
+
+                offered++;
 
                 if (model.Psk31CqOn(row) is null)
                 {
-                    Assert.Null(flyout);
+                    notACqAndOffered++;
+                }
+
+                // **THE SEVEN, IN THE FILE'S OWN ORDER, WITH R39's LABELS.**
+                Assert.Equal(canned.Lines.Count, items.Count);
+
+                for (var at = 0; at < items.Count; at++)
+                {
+                    var header = items[at].Header as string ?? "";
+
+                    Assert.StartsWith(canned.Lines[at].Label, header, StringComparison.Ordinal);
+
+                    // **NOTHING IS GREYED, HIDDEN OR DISABLED** (ruled 2026-09-06). What
+                    // Hamlet cannot do right now is a note with no command and no hit test.
+                    if (items[at].Command is null)
+                    {
+                        Assert.Contains(" - not offered: ", header, StringComparison.Ordinal);
+                        Assert.False(items[at].IsHitTestVisible);
+                    }
+                    else
+                    {
+                        Assert.Equal(canned.Lines[at].Label, header);
+                        Assert.True(items[at].IsEnabled);
+                        Assert.True(items[at].IsHitTestVisible);
+                    }
+
+                    // **NO FT8 MESSAGE IS EVER ON ONE OF THESE ITEMS**, which is the other half
+                    // of `SendMenuFor` being null: `SendMessageCommand` is the entry point that
+                    // arms an FT8 message, and nothing on a PSK31 row may carry it.
+                    Assert.NotSame(model.SendMessageCommand, items[at].Command);
+                }
+
+                // **THE ANSWER LINE, ON A CERTAIN CQ, STILL CARRIES THE COMMAND AND THE
+                // PARAMETER IT ALWAYS DID** - by identity, exactly as before, and now as one of
+                // seven rather than as the only one. §R1's certainty gate is intact: on a row
+                // that is not a certain CQ that line is a note saying so.
+                var answer = items[0];
+
+                if (model.Psk31CqOn(row) is not null)
+                {
+                    Assert.Same(model.AnswerPsk31Command, answer.Command);
+                    Assert.Same(row, answer.CommandParameter);
                 }
                 else
                 {
-                    var item = Assert.Single(flyout!.Items.OfType<MenuItem>());
-
-                    Assert.Same(model.AnswerPsk31Command, item.Command);
-                    Assert.Same(row, item.CommandParameter);
+                    Assert.Null(answer.Command);
                 }
 
                 looked++;
@@ -498,6 +578,16 @@ public sealed class ThePsk31ReadsTheConversationTests
 
         _output.WriteLine("PSK31 rows right-clicked: " + looked + ", cards on the panel: " + model.DigitalCards.Count
             + ", send line [" + model.DigitalSendLine + "]");
+
+        _output.WriteLine("rows naming a station: " + named + ", of those with a menu: " + offered
+            + ", of those NOT a certain CQ and offered anyway: " + notACqAndOffered);
+
+        // **THE CRITERION'S OWN NUMBER.** Every row that names a station has a menu, and some of
+        // them are not certain CQs - which is the whole of what unit 378 changed here. Both are
+        // asserted rather than printed, so a later unit that narrows the menu back to CQ rows
+        // turns this red.
+        Assert.Equal(named, offered);
+        Assert.True(notACqAndOffered > 0, "no row that names a station without being a certain CQ was offered a menu");
 
         // **NOBODY CLICKED, SO NOTHING IS IN FLIGHT AND NOTHING IS BEING SENT** (§0.2).
         // **This read `CanAnswerRowsForTests` too** - `CanTransmitIn`, the shut door - and
