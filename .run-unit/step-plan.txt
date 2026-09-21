@@ -1,15 +1,15 @@
-﻿STEP: 6 | The top gives back height - the pills, the neighborhood strip, the green zone and the rig display tightened to one band of about 180 px, the sun map keeping its size; the working panels get every pixel given up.
-## Step 6 - The top gives back height
+﻿STEP: 2 | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list.
+## Step 2 - The record says what was true
 
-**Delivers:** R39's top row.
+**Delivers:** R35.
 
-**Entry:** step 2 done, or partial with 2.1 and 2.3 met.
+**Entry:** step 1 done.
 
 **Exit:**
-- [ ] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 180 px at 1920 and at 1400, from 300; the working panels are taller by the difference. *must-pass*
-- [ ] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover. *must-pass*
-- [ ] 6.3 The sun map keeps its size and its dot. *must-pass*
-- [ ] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green. *must-pass*
+- [ ] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
+- [ ] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
+- [ ] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
+- [ ] 2.4 The carry-forward list runs green five times in a row. *must-pass*
 
-**Depends on:** step 2.
+**Depends on:** step 1.
 

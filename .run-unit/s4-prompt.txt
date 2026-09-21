@@ -51,100 +51,113 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-**1. Criterion 2.2 - the RSID tone sequences. THIS WANTS A RULING, it is Tim's, and it is
-not this unit's work.** R38 (a) permits giving codes 72-75 their tone sequences **on a
-stated fact**: *Hamlet's modulator makes only 8/250, 16/500 and 32/1000, so nothing
-announces a variant it cannot send.* **The arbiter read the tree line by line at authoring
-time and the tree does not support that fact**, and has sent the question back:
+**1. The four new variants have no row in the timing table, so their cap is PSK31's plain
+thirty seconds and a long message at them will be refused rather than sent. THIS WANTS A
+RULING and it is the one item that bounds what section B just opened.** It is a finding about
+scope, not a fault in this unit's work, and **nothing goes out wrong** - the send is refused
+with a length sentence and nothing keys, which is the safe direction.
 
-- `data\olivia\format.json` lines 61 to 67 carry **all seven variants** - 4/250, 4/500,
-  8/250, 8/500, 16/500, 16/1000, 32/1000 - and `OliviaModulator` is driven from that
-  table, **so the engine can modulate every one of them**.
-- **What keeps four of them off the air today is exactly the gate this change removes**:
-  `OliviaModulator.Compose` line 149 throws where `RsidBurst.TonesFor` is null.
-- **The send variant is not picked by the operator from a list of three.**
-  `MainWindowViewModel` line 16009 takes `_oliviaSendVariant`, set at lines 6027, 16533,
-  16789 and 16930 **from the variant of a decoded row or card**, and `OliviaListener` line
-  280 starts a channel **from an RSID detection's own variant**.
-- So an 8/500 burst on the air would become detectable, start a channel, make a card, and
-  **an answer to that station would be composed and transmitted at 8/500**. That is a
-  change to what goes on the air.
+`data\olivia\timing.json` carries `seconds_per_character` for **three** variants: 8/250,
+16/500 and 32/1000. `OliviaTiming.CapSeconds` answers `NaN` for a variant it has no row for
+and `OliviaModulator.Compose` then falls back to `OperatorSend.LongestUnslottedSeconds`,
+**30 s**, which the trace read off the composed transmission for all four new variants
+against 82.60, 61.95 and 49.56 s at the three old ones. What that means, in measured seconds
+of data at each variant:
 
-**R38 (a) permits the change on the ground that Hamlet's modulator makes only three
-variants, and the arbiter reads the tree as saying otherwise. The arbiter has not
-confirmed it with a run and neither has this unit** - nothing here touched
-`assets\data\rsid-codes.json`, `data\rsid\rsid-codes.json`, `RsidCodes`, `RsidBurst`,
-`RsidDetector`, `OliviaModulator` or the csproj's embedded resource. **Step 2 cannot close
-until Tim rules again, and no unit should take 2.2 until he does.**
+```
+                     CQ 38   Answer 23   Confirm 62   Report 96   Typed 110    cap
+4/250                21.79       14.63        34.08       51.49       58.66   30.00  -> Confirm, Report and Typed refused
+4/500                12.06        8.47        18.20       26.91       30.49   30.00  -> Typed refused
+8/500                15.65       10.53        23.84       35.11       40.23   30.00  -> Report and Typed refused
+16/1000              12.58        8.48        18.72       26.91       31.01   30.00  -> Typed refused
+8/250, 16/500, 32/1000  -  all five fit, at 82.60, 61.95 and 49.56 s
+```
 
-**And R38 (b) answered unit 375's item 2 - the duplicate abort pair - which is CLOSED.**
-The transmit sequence's teardown abort pair, sent after the click's own, is accepted: a
-duplicate unkey is the safe direction, nothing keys on it, and it is logged as tidy-up
-rather than a stop. Nothing in this unit touched it and nothing is to be done about it.
+**So a CQ and an answer go at all seven; a full report goes at five of the seven; a long typed
+line at three.** The repair is to measure `seconds_per_character` for the four and write the
+rows, the way work instruction 361 task 5 measured the first three. **It wants a ruling
+because adding those rows lengthens what may go on the air**, which `PHASE_PLAN.md` section 6
+makes the owner's, and because **this unit has spent both of its two rulings** (R31). It is
+not a regression: before tonight those four variants could not transmit at all.
 
-**2. Criterion 6.1 cannot reach 180 px with the pills counted while 6.3 stands. THIS IS A
-FINDING WITH ARITHMETIC, and it is the one item in the way of a criterion in B.** It does
-not want a ruling unless the owner wants to spend the last 34 pixels. The band with the
-pills is 214. Its parts, measured: the sun map's picture **134 px**, which 6.3 forbids
-shrinking; the neighborhood card's own header **27 px**; the pills at half height **30
-px**; the gap between the pills and the card **6 px**. That is **197 px before a single
-word would have to leave the window**, against the criterion's 180 - and the remaining 17
-px of the 214 are the map's caption (11) and the card's body padding (6).
-**The band without the pills is 178 and meets 180.** Three things could close the gap and
-all three are the owner's: shrink the sun map, take the neighborhood card's header (which
-would make it non-collapsible, against Â§0.5), or drop the pills from the band's
-definition, which section 6's first ruling deliberately did not do.
+**2. Section 11's two commits inside task 2 leave one commit in this unit's history -
+`604ee698` - at which Hamlet would transmit a variant it has not read back, which is what
+section 6 ruling 2 item 5 says no commit may do. THIS WANTS A RULING, on which of the two
+instructions governs for future units.** Section 11 says *within task 2 two commits - the file
+and its readers first, the gate second*; section 6 ruling 2 item 5 says *there is no commit in
+this unit's history where Hamlet would transmit a variant it has not read back.* Both cannot
+hold, because the moment the longer file is embedded and before the gate exists, the four
+variants compose. **This unit followed section 11, which is the more specific of the two.**
 
-**3. The rig's rearrangement was not made, and the drop candidate's own condition did not
-authorize dropping it. A FINDING, and a sizing decision the owner did not make.** Work
-instruction 376 task 2 made *drive and power beside the frequency* the drop candidate, to
-be dropped only if the card governed at both asserted widths **and** the band reached 180
-without it. The band reached 214, so the condition was not met. It was still not made,
-for a measured reason: the rig column is `Auto`, so moving the 120 px drive box and its
-two labels beside the 520 px LCD **widens that column and takes the width off the
-neighborhood card**, which at 1400 and 1100 makes the card taller - the move costs pixels
-where it was supposed to buy them. What was done instead is the other half of R39's
-sentence, *the rig display shorter*: the box's padding, its stack's spacing and the blank
-under the S-meter's wedge, 12 px in all, which is what the tie at 1920 required. **The
-drive, the note, the tip and the power offer are all still drawn and are asserted drawn at
-both widths on all three modes.**
+What is and is not at risk: the working tree was never left in that state between tasks, the
+two commits are minutes apart, and **nothing was pushed until the end of task 4**, so no build
+of that state existed anywhere. But `604ee698` is in the pushed history, and somebody who
+checks it out has a Hamlet that will transmit four unproved variants. **The clean answer for
+the next unit that does this is one commit, not two** - or the gate first and the file second,
+which also satisfies both - and that is the ruling being asked for.
 
-**4. `TopRow`'s `MaxHeight="300"` does not bind the card's content; it binds only the
-row's reported height. A FINDING, and it is unit 356's comment that is wrong rather than
-this unit's work.** Measured at 1100 x 780 before anything moved: `TopRow` draws 300,
-**and the card inside it draws 623** - the scroller's viewport is 623 and its extent 623,
-so nothing scrolls, and the card paints over 376 px of what is below it. The comment above
-`TopRow` says *the card body scrolls inside the cap, per Â§0.5*. It does not. This unit did
-not repair it - it is not in criterion 6.1 and the instruction forbids touching the cap -
-and after task 2 the overflow at that size is 89 px instead of 376.
+**3. Section 5 named five test reads of the retired RSID path. There are six. A FINDING, and
+this unit moved all six.** The sixth is
+`tests\Hamlet.RadioEngine.Tests\Rsid\Unit359Trace.cs` line 50, which reads the file from the
+tree to print its codes. It is a trace and asserts nothing, which is presumably why it was not
+found, but it reads the path and would have broken when the path was emptied. Moving it is not
+an R12 rewrite: it is a path this unit moved, and it asserts exactly what it did before -
+nothing. **`TheOneRsidFileTests`' scan is the reason this is now a fact rather than a hope:**
+it found two more stale literals on its first run, one of them in a comment this unit had
+written into the csproj minutes earlier.
 
-**5. Section 5's count of the four types is 33 and the tree says 29. A FINDING, no action
-needed.** `TheTopRowTests` 15 + `TheWorkingPanelsTests` 8 + `TheStopIsAlwaysOnScreenTests`
-5 + `BindingHealthTests` 1 = **29**, measured twice in this unit. Unit 374's 33 counted
-`TheWindowGivesUpHeightInOneOrderTests`' four names as well, which is the type it had just
-rewritten. The instruction's own name counts are right; only the total is off.
+**4. `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red, and it is inherited. A
+FINDING, measured and not assumed, and not repaired.** It expects `Offered` to be `None` after
+a damaged message and reads `Report`. It is **not on the carry-forward list**, so task 0 never
+saw it. It was run in isolation against the current tree (241 ms, red) and then **with the old
+four-sequence file embedded** (223 ms, red, same assertion, same values), so **it predates this
+unit**. Nothing this unit touched is near the exchange parser or the offered macro. It is
+reported rather than repaired, per section 10.
 
-**Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
-`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` Â§1 holds `CPS-DEC-0165` - the id-scheme split,
-carried in `PHASE_PLAN.md` Â§7. Reported, not repaired. Also noted: the instruction places
-`RigDriveAndPower` on `TopRow`'s row 1; it is at line 3079 **inside the rig face's border
-in row 0, column 1**, under the S-meter, and `TopRow`'s row 1 is an empty grid at line
-3201 carrying only comments. The band helper measures it wherever it is, so nothing
-depended on this.
+**5. Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
+`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1 holds `CPS-DEC-0165` - the id-scheme
+split, carried in `PHASE_PLAN.md` section 7, and reported unrepaired by unit 376 as it was
+told to. **Reported again, not repaired.** Also noted, and needing nothing: `Unit377Trace`
+and the two new test types are deliberately **not** on the carry-forward line (R14) - the
+trace asserts nothing, and `TheOneRsidFileTests` and `TheLoopbackGateTests` are this unit's
+criterion tests, run by the unit that changes that code. Only the refusal name went on the
+line, as the instruction directed, and `docs\carry-forward-tests.txt` says so in its own
+paragraph.
 
-**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - FIFTEEN, and this unit answers none of
-them.** Unit 375's item 3 (the headless dispatcher loop, `InvalidProgramException: You
-have caused dispatcher loop`, eight names across four units, an environmental cause with
-no name attached in `docs\quarantined-tests.txt`, and the single biggest obstacle to 2.4)
-and item 4 (`TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`
-went red once in seventeen full invocations, on an assertion, message not captured, not
-reproduced in four further runs). Unit 374's item 3 (`tools\run-carry-forward.sh` still
-does not match `docs\carry-forward-tests.txt`). Unit 373's item 2 (`ApplyBestBet`'s stale
-`BestBetLabel`). Unit 372's items 4 and 7 (the latter being `PHASE_PLAN.md`'s criterion
-checkboxes, which are not ticked and are not to be raised again). Unit 371's five. Unit
-369's four, including item 3, `LearnedAlcReference.Ago()`. **Neither of this unit's four
-carry-forward invocations was lost to the dispatcher loop, which is evidence on unit 375's
-item 3 and is recorded rather than acted on.**
+**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - EIGHTEEN, and this unit answers none of them.**
 
-**One item came off the queue this unit, by the owner's own ruling:** unit 375's item 2,
-the duplicate abort pair, is answered by R38 (b) and closed.
+- **Unit 376's item 3** - *The rig's rearrangement was not made, and the drop candidate's own
+  condition did not authorize dropping it. A FINDING, and a sizing decision the owner did not
+  make.* The rig column is `Auto`, so moving the drive box beside the LCD widens that column
+  and takes the width off the neighborhood card; the move costs pixels where it was supposed
+  to buy them.
+- **Unit 376's item 4** - *`TopRow`'s `MaxHeight="300"` does not bind the card's content; it
+  binds only the row's reported height. A FINDING, and it is unit 356's comment that is wrong
+  rather than that unit's work.* At 1100 x 780 `TopRow` draws 300 and the card inside it draws
+  623, viewport 623 and extent 623, so nothing scrolls.
+- **Unit 376's item 5** - *Section 5's count of the four types is 33 and the tree says 29. A
+  FINDING, no action needed.* Unit 374's 33 counted
+  `TheWindowGivesUpHeightInOneOrderTests`' four names as well.
+- **Unit 375's item 3** - the headless dispatcher loop, `InvalidProgramException: You have
+  caused dispatcher loop`, eight names across four units, an environmental cause with no name
+  attached in `docs\quarantined-tests.txt`, **and the single biggest obstacle to 2.4**. This
+  unit adds evidence: **two of its six carry-forward invocations were lost to it, both on the
+  app side, both on the same name, both clean on the single re-run.**
+- **Unit 375's item 4** -
+  `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable` went red once
+  in seventeen full invocations, on an assertion, message not captured, not reproduced in four
+  further runs. **It did not show in either of this unit's clean app invocations.**
+- **Unit 374's item 3** - `tools\run-carry-forward.sh` still does not match
+  `docs\carry-forward-tests.txt`. This unit ran the two command lines from the file itself, as
+  section 9 requires.
+- **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
+- **Unit 372's item 4**, and **unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes,
+  which are not ticked and are not to be raised again.
+- **Unit 371's five.**
+- **Unit 369's four**, including item 3, `LearnedAlcReference.Ago()`.
+
+**Two items came off the queue this unit, both by the owner's own rulings and neither by any
+work of this unit's:** unit 376's item 1 - criterion 2.2 and the four RSID tone sequences - is
+**answered by R41**, which is this unit's whole subject; and unit 376's item 2 - 6.1 at 214 px
+against 180 - is **answered by R42**, which closed step 6 and which task 0 transcribed into
+both status files.

@@ -99,6 +99,11 @@ station at his variant is R27's whole point.
 number; the sun map's height makes 197 the arithmetic minimum and 214 is what was
 reached with nothing lost. The criterion reads *at or under 220* and is checked.
 
+**R43 - Tim, 2026-09-21: the UI first; the timing question is deferred.** Step 2 stays
+partial where unit 377 left it - 2.4 open, the four new variants capped at the 30-second
+fallback and refused above it, which is the safe direction. That is not a stop and not
+the next unit's work. The arbiter goes to step 7, then step 8, before anything else.
+
 ## §4 The steps
 
 Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions plus
@@ -140,9 +145,9 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 1 done.
 
 **Exit:**
-- [ ] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
-- [ ] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
-- [ ] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
+- [x] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
+- [x] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
+- [x] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
 - [ ] 2.4 The carry-forward list runs green five times in a row. *must-pass*
 
 **Depends on:** step 1.
@@ -204,7 +209,7 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 
 **Delivers:** R39's list and hover.
 
-**Entry:** step 6 done.
+**Entry:** step 6 done (R43: step 2 may be partial).
 
 **Exit:**
 - [ ] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed. *must-pass*
@@ -213,7 +218,7 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 - [ ] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
 - [ ] 7.5 The mode chip's fill and the send-status line name the mode that was chosen, never the family: under Olivia the Olivia chip is filled and the PSK31 chip is not, and a 29-second Olivia CQ reads *29 s of Olivia* (Tim's screen, 2026-09-21). *must-pass*
 
-**Depends on:** step 6.
+**Depends on:** step 6 only.
 
 ## Step 8 - Keyboard modes earn achievements
 
@@ -255,5 +260,6 @@ names; the map bitmap's license; the id-scheme split.
 
 ## §8 Revision record
 
+- **2026-09-21, evening.** R43: UI first, the timing question deferred; 2.1-2.3 checked; step 7 depends on 6 only.
 - **2026-09-21, later.** R41 on the seven variants; R42 on 6.1; 7.5 added for the chip fill and the send line.
 - **2026-09-21.** R38 on unit 375's two questions; R39 and R40 from Tim; steps 6-8 added and step 3 made to depend on step 8 so the UI is worked first.

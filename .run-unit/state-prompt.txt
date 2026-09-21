@@ -47,20 +47,20 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 6 | The top gives back height - the pills, the neighborhood strip, the green zone and the rig display tightened to one band of about 180 px, the sun map keeping its size; the working panels get every pixel given up.
-## Step 6 - The top gives back height
+﻿STEP: 2 | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list.
+## Step 2 - The record says what was true
 
-**Delivers:** R39's top row.
+**Delivers:** R35.
 
-**Entry:** step 2 done, or partial with 2.1 and 2.3 met.
+**Entry:** step 1 done.
 
 **Exit:**
-- [ ] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 180 px at 1920 and at 1400, from 300; the working panels are taller by the difference. *must-pass*
-- [ ] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover. *must-pass*
-- [ ] 6.3 The sun map keeps its size and its dot. *must-pass*
-- [ ] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green. *must-pass*
+- [ ] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
+- [ ] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
+- [ ] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
+- [ ] 2.4 The carry-forward list runs green five times in a row. *must-pass*
 
-**Depends on:** step 2.
+**Depends on:** step 1.
 
 
 --- the unit's report follows ---
@@ -68,368 +68,400 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 READ IN THIS ORDER.
 
 A. The phase goal - Hamlet holds what it has. Step 0 partial, step 1 done, step 2
-   partial with 2.1 and 2.3 banked and 2.4 short at one round of five, steps 3, 4
-   and 5 not started, and steps 6, 7, 8 added to the plan on 2026-09-21 by R39 with
-   the UI worked before the record. This unit is the first spent on any of them.
-B. Step 6 - the top gives back height. 6.1 PARTIAL: the band measured 214 px at
-   1920 and 214 px at 1400 against 180, from 243 and 269 before, and the panel
-   row is 33 and 59 px taller - 483 at both, and the band without the pills is
-   178 from 190 and 216, which does meet 180. 6.2 MET: the map's color key and
-   the rule-of-thumb line moved to two marks on the neighborhood card's header
-   carrying the same words, and every pill, the strip, the band, the frequency,
-   the verdict, the license phrase, the heard count and the drive and power
-   offer are still drawn. 6.3 MET: the sun map is 246 x 134, before 246 x 134.
-   6.4 MET: the nine sizes are the same or larger at every one and larger at
-   eight, and the four types, 29 of 29.
-C. The report last. Section 4 raises 5 items on top of the carried fifteen, and
-   item 2 is in the way of a criterion in B - it is why 6.1 is partial. The first
-   item is not this unit's work at all: it is criterion 2.2, sent back to Tim.
+   partial with 2.1, 2.2 and 2.3 banked and 2.4 short at one round of five, step 6
+   done by R42 and recorded so at task 0, steps 3, 4, 5, 7 and 8 not started. This
+   unit is the first ever spent on 2.2, which was the owner's until R41 this morning.
+B. Step 2 - the record says what was true. 2.2 MET: the one RSID file is
+   assets/data/rsid-codes.json, carrying 8 codes with 8 tone sequences and both of
+   fldigi's tables, against 8 codes with 4 sequences and neither at task 0; every
+   listed code round-trips generator to detector, 24 of 24 at 3 centers where it was
+   12 of 12; and of the seven Olivia variants 7 are proved by loopback and 0 are
+   refused - 4/250, 4/500, 8/250, 8/500, 16/500, 16/1000 and 32/1000, each 10 of 10
+   identical on five texts at two centers, 70 of 70 cases. 2.1 and 2.3 carried met,
+   unaltered. 2.4 not attempted and it is the only thing holding step 2 open.
+C. The report last. Section 4 raises 5 items on top of the carried eighteen, and
+   none of them is in the way of a criterion in B - though item 1 bounds how much
+   Hamlet can say at four of the seven variants B has just opened, and item 2 is
+   about this unit's own commit history rather than about the tree it leaves.
+   Unit 376's items 1 and 2 came off the queue answered - R41 licensed this unit,
+   R42 closed step 6.
 
 ```
-UNIT:       376 - complete at task 4 of 5 - 2026-09-21 11:29
-PHASE GOAL: Hamlet holds what it has. Bank the screen, record and test work left
-            in the PSK31 and Olivia threads that needs neither the radio nor the
-            owner, and prove it with tests that ran - then let Tim look.
-UNIT GOAL:  The top row stops taking a third of the window. The pills, the
-            neighborhood strip, the green zone and the rig face come down to one
-            measured band, nothing in them is lost - the map's legend and the
-            rule-of-thumb line go to a hover that keeps their words - the sun map
-            keeps its size, and every pixel given up goes to the three working
-            panels.
-ADVANCED:   step 6, criteria 6.2, 6.3 and 6.4 met, 6.1 partial
-NUMBER:     the band at 1920, with the pills: 243 px -> 214 px, against 180
+UNIT:       377 - complete at task 4 of 5 - 2026-09-21 12:56
+PHASE GOAL: Hamlet keeps what it has already earned. Everything in the PSK31 and
+            Olivia work that is screen, record or test and needs neither the radio
+            nor the owner gets hardened, proved by tests that actually ran, and
+            judged at the end by Tim at his own window.
+UNIT GOAL:  One RSID data file instead of two that could disagree, carrying every
+            code fldigi knows with its tone sequence and fldigi's two tables, read
+            by the detector and by the burst generator, with every listed code
+            proved to round-trip through Hamlet's own generator and detector - and
+            R41's gate built on top of it: an Olivia variant goes on the air only
+            once Hamlet has modulated it and read its own audio back identical, and
+            a variant that has not stays off the air in a sentence that says so.
+ADVANCED:   step 2, criterion 2.2
+NUMBER:     Olivia variants Hamlet will transmit: 3 of 7 -> 7 of 7,
+            each of the 7 proved by a loopback run named in this report
 DRIFT:      none
 ```
 
 ## 1. What Claude did
 
-**COMPLETE, at task 4 of 5** (tasks 0 to 4), on this machine, gated `PROJECT: Hamlet`
-and verified against the tree - `SHACK_FACTS.md` and
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` both present, `CoreHMI.sln` and
-`MURC.sln` both absent, root `C:\Source\HamLet` - on `main`. Every task is committed on
-its own and pushed; the R12 rewrites are in a commit of their own, separate from the new
-tests, as section 11 requires. **No task was dropped and no drop candidate was taken.**
+**Five tasks, all five done. Seven commits, one push at the end.** The project gate was
+checked first and all four parts hold: `SHACK_FACTS.md` present,
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, neither `CoreHMI.sln` nor
+`MURC.sln` present, root `C:\Source\HamLet`.
 
-**Task 0 - the record and the entry run.** `PHASE_STATUS.md` and `PHASE_OUTCOME.md` both
-stopped at step 5 while `PHASE_PLAN.md` rev 2 carries steps 0 to 8, so
-`outcome-read.bat` was printing a six-step phase and **the next arbiter could not see
-steps 6, 7 and 8 at all**. Both files now carry all three as `not started` with the
-plan's own one-line summaries. `CURRENT_STEP` went 0 to 6 and `WORK_INSTRUCTION` 374 to
-376, both two units stale. Version 1.13.62 to 1.13.63 with its log line. Carry-forward
-before any change, both invocations, one build each, status written immediately before
-each: **app 210 of 210 in 2 m 27 s, engine 146 of 146 in 4 m 41 s**, both green on the
-first attempt and both exactly where unit 375's exit run left them.
+**Task 0 - the record, step 6's close, the entry run.** Step 6 was recorded `done` in
+`PHASE_STATUS.md` and `PHASE_OUTCOME.md` citing **R42**, because `PHASE_PLAN.md` at HEAD
+ticks all four of step 6's criteria while both status files still said `partial`. That is
+transcription of the owner's ruling and is not one of this unit's two: **the band was not
+re-measured and no `.axaml` file was opened in this unit at all.** `CURRENT_STEP` 0 to 2,
+`WORK_INSTRUCTION` 376 to 377, version **1.13.63 to 1.13.64** with its line in the version
+log, and the `UNIT 377 - STEP 2` entry appended. Carry-forward before any change:
+**app 211 of 211, engine 146 of 146** - the counts unit 376's exit run left.
 
-**Task 1 - the trace, and it is what makes 6.1 a measurement.** One `[AvaloniaFact]`
-that asserts nothing, at 1920 x 1040, 1400 x 1040 and 1100 x 780 on FT8, PSK31 and
-Olivia, with **one helper** measuring the band section 6's way: from the top of the
-band-pills row to the bottom of whichever of the neighborhood card, the rig face and
-`RigDriveAndPower` ends lowest, in the window's own frame, **both with the pills and
-without**. The element the instruction could not name is the **unnamed `ItemsControl` at
-`MainWindow.axaml` line 3274** - `Grid.Row="0"` of the strip grid, `ItemsSource="{Binding
-Bands}"`, `VerticalAlignment="Top"`, `ClipToBounds="False"`, `Margin="0,14,0,10"`, its
-items the `Button Classes="hm-band"` cards with the best-bet badge drawn over them -
-found by the class of its buttons and not by a name this unit added. The four types ran
-filtered, one build: **29 of 29**.
+**Task 1 - the trace, and 2.2's before measured instead of claimed.** `Unit377Trace`, one
+`[Fact]`, run by name. It built nothing, changed no source file and repaired nothing. It
+measured the two RSID files side by side, proved which one the engine was reading, put all
+seven variants through `OliviaModulator.Compose` and printed the exception verbatim for the
+four that threw, timed a loopback at every one of the seven, and read `OliviaFormat`'s parse
+to find out what a new key in a `variants` row would break. **The five named types ran
+44 of 44.** The tables are in section 3.
 
-**The question task 1 existed for, answered: the card governs at every width, and at
-1920 it governs by a tie.** The card wanted 190 px and the rig column wanted 190 px, so
-cutting either alone would have bought nothing there, and R39's four moves are not worth
-the same number of pixels. **Inside the card, the sun map's column is 145 px against the
-left stack's 126 at 1920**, so the card's own floor was already the map before this unit
-touched anything.
+**Task 2, first commit - one RSID file, and every reader moved with it in the one commit.**
+`assets\data\rsid-codes.json` is the embedded resource now, **with its `LogicalName`
+unchanged**; `RsidCodes.FilePath` moved; and **six** test reads moved with it, not the five
+section 5 listed (item 3 below). `data\rsid\rsid-codes.json` is **emptied and not deleted**,
+holding one key naming its replacement and this unit, and `TheOneRsidFileTests` scans every
+`.cs` and `.csproj` under `src\` and `tests\` - 1,259 files, in all three forms the path is
+written in this tree - and asserts none of them names it.
 
-**Task 2 - R39's four moves**, taken in the order the measurement said pays and
-re-measured after each. The pills at half height: padding 8,6 to 8,2, spacing 4 to 2, the
-family bar 3 px to 2, the row's margin 0,14,0,10 to 0,10,0,6, and **nothing off the
-card** - the name, the day-night icon, the bar and the activity pips are all four still
-drawn and the width still carries the wavelength ratio. The neighborhood strip 44 px to
-32, every label and dot placed as a fraction of the control's own height. The legend off
-the card to a second mark on its header, carrying `MapLegendControl.InWords`, **built
-from `ModePalette.Legend`** so the hover cannot drift from the picture. The green zone on
-one row: the band, the frequency, the verdict and the license phrase in one `WrapPanel`,
-with the rule-of-thumb line on a third mark bound to the same `GreenZone.RuleOfThumb`
-static it was bound to before. The rig face shorter by its chrome and not its content:
-the box's padding 12,6 to 12,3, its stack's spacing 3 to 2, and `RigDisplayControl`'s
-`PadBottom` 10 to 6, which is the blank under the S-meter's wedge. The card's own body
-padding is 14,0,14,4 on this instance only.
+**Task 2, second commit - R41's gate.** `proved_by_loopback` on each row of
+`data\olivia\format.json`'s `variants`, read into `OliviaVariant`, **absent or false meaning
+not proved**; the refusal `variant_not_proved` at the app's Olivia send path, in front of the
+only `OliviaModulator.Compose` call in the whole application. **It landed with only the three
+variants the existing green loopback already proved marked true**, so after task 2 the set of
+variants Hamlet would transmit was exactly the three it would have transmitted at task 0.
 
-**The drop candidate was not dropped and its condition was not met.** *Drive and power
-beside the frequency* may be dropped only if the card governed at both asserted widths
-**and** the band reached 180 without it; the band reached 214. What the measurement
-showed instead is that **moving the drive block beside the LCD would widen the rig's
-`Auto` column and take that width off the card**, which at 1400 and 1100 makes the card
-taller - the move would have cost pixels rather than bought them. So the rig was
-shortened where shortening it is free, which is what the tie at 1920 required, and the
-rearrangement was not made. **This is a sizing decision the owner did not make, and it is
-reported as one** - see section 4, item 3.
+**Task 3 - the loopback, and four flags flipped beside the run that earned them.**
+`EachMacroAndATypedLineComeBackIdentical` went from three `[InlineData]` rows to seven and
+nothing else about its shape moved. **All seven came back 10 of 10 identical, 70 of 70
+cases.** The four flags went true in the same commit as that run. Two further commits:
+the R12 rewrite of `TheRsidBurstTests`' dead loop, in its own commit, and the refusal test
+with its carry-forward line.
 
-**Task 3 - the evidence.** Four names, one per criterion, all measured by the same
-helper; the 6.1 name is on the carry-forward app line with its paragraph and its place in
-the human-readable list. **Seven names went red on the move and all seven were rewritten
-under R12 in their own commit**, each asserting more than it replaced: see section 3.
-`TopRowTarget = 190` was **kept at 190 and documented rather than split** - it names the
-band *without* the pills, its four readers still pass at 178 inside their 10%, and
-retuning it would have moved four readers onto a number none of them was written for.
+**Task 4 - the exit run and the record.** **App 212 of 212, engine 150 of 150**, name for
+name against task 0's 211 and 146, the only differences this unit's own new refusal name and
+the four new loopback theory cases. **No regression.**
 
-**Task 4 - the exit run.** Carry-forward after the last change, both invocations, status
-written immediately before each: **app 211 of 211 in 2 m 18 s, engine 146 of 146 in
-4 m 39 s.** Name for name against task 0's 210 and 146, the only difference is this
-unit's new 6.1 name. **No regression and nothing red that was green before**
-(HM-DEC-165). Four full invocations in the unit and **not one was lost to the headless
-dispatcher-loop fault**, which is recorded because criterion 2.4 turns on it.
+**Nothing here is evidence about the radio** (FACT-004). No port was opened, no device
+enumerated, nothing was keyed, and every sample in this unit lived in an array.
 
-**Decisions this session made for itself**, reproduced in full: (1) the rig's
-rearrangement was not dropped but was **reduced to what the measurement said was worth
-pixels** - chrome, not content - for the reason above; (2) `TopRowTarget` stays one
-number, documented, for the reason above; (3) the new 6.1 name asserts the band **at or
-under the 214 px this unit reached**, with 180 named in its failure message, rather than
-asserting 180 and going in red - the criterion is reported partial in every record
-instead, and the constant holds the ground taken so the next unit cannot give it back
-quietly.
+**No task was left undone and nothing was dropped.** Task 3 carried a drop candidate - the
+breadth of the sweep for the four new variants - and **it was not taken**, because task 1
+measured the whole seven-variant sweep at about **69 s of decode CPU**, which is seconds and
+not minutes.
 
 ## 2. What the owner should expect
 
-The top of your window has stopped taking a third of it. At 1920 the band that holds the
-band cards, the neighborhood strip, the green block and the radio's face is **214 pixels
-where it was 243**, and at 1400 it is **214 where it was 269** - and the waterfall, the
-decoded text and For You are each **483 pixels tall where they were 450 and 424**. At the
-size Hamlet opens at, 1100 x 780, the band is **389 where it was 676** and those three
-panels are **92 pixels where they were stuck at their 71-pixel floor**. Nothing you read
-up there is gone: the map's color key and the rule-of-thumb line now wait under the
-pointer on the neighborhood card's own header, in exactly the words they used, beside the
-mark that was already there - and the sun map is precisely the size it was, with the same
-dot on your grid. The band cards are half as tall and still carry their name, their icon,
-their family bar and their activity pips. **What you will notice and should not read as a
-fault:** the license phrase now sits at the end of the band line rather than on a line of
-its own, and drops under it where the window is narrow; the band card row sits slightly
-closer to the neighborhood card; and the radio's face has a little less blank under the
-S-meter. **What was asked for and not reached:** the target was 180 pixels with the band
-cards counted and it stands at 214, because the sun map is 134 pixels of that on its own
-and it was not allowed to shrink. Every appearance claim here is computed off a realized
-headless window, not seen (FACT-004).
+When somebody calls you in Olivia, Hamlet now answers him in **the variant he is using** -
+any of the seven the mode has, not the three it could manage this morning. Four of them,
+4/250, 4/500, 8/500 and 16/1000, were variants Hamlet could *hear* and could not *answer in*:
+the send threw, because the file that names a variant on the air carried no announcement for
+them. It does now.
+
+**It earned each of the four the only way that means anything: it sent to itself.** It made
+the audio exactly the way it would make it for the radio, listened to its own audio with its
+own ears - its own detector worked out which variant and which frequency, with nothing told
+to it - and counted the variant only because the words came back **exactly**, character for
+character, on every one of the seventy cases it tried. Where a variant has *not* been proved
+that way, Hamlet will not transmit it, and it says so: *"Hamlet did not send it: it has not
+proved to itself that it can read back Olivia 4/500, so it will not put that variant on the
+air."* That sentence is a test now, so it cannot quietly stop being true.
+
+And the file that names every one of these announcements **has stopped being two files that
+could disagree about what goes out of your radio.** There is one, it carries a tone sequence
+for every code fldigi knows plus both of fldigi's own tables, and a test walks the whole
+source tree to make sure nothing starts quietly reading the old shorter one again.
+
+**One thing to expect that is short of the mark, and it is item 1 in section 4.** At the four
+new variants, a long message will be refused with a length sentence rather than sent: the
+timing table has no measured rate for them yet, so they fall back to the plain thirty-second
+limit. A CQ or an answer goes at all seven. A full report goes at five of the seven, and a
+long typed line at three. Nothing goes out wrong - it is refused and said - but it is less
+than the mode can do, and fixing it changes how long a transmission may run, which is yours.
+
+**Every claim above was computed, not seen** (FACT-004). **No port was opened, no device was
+touched and nothing was keyed anywhere in this unit.**
 
 ## 3. What you should see
 
-**TASK 1'S COMPONENT TABLE - BEFORE, and it is what makes 6.1 a measurement.** Pixels,
-window frame, all three modes at each width.
+### The two RSID files, before - this is what made 2.2 a measurement
 
 ```
-                        1920 x 1040        1400 x 1040        1100 x 780
-                        FT8 PSK31 Oliv     FT8 PSK31 Oliv     FT8   PSK31  Oliv
-BAND WITH PILLS         243   243   243    269   269   269    676    706   676
-BAND WITHOUT PILLS      190   190   190    216   216   216    623    653   623
-  short of 180 by        63    63    63     89    89    89    496    526   496
-GOVERNING COLUMN        card, and at 1920 by a TIE: card wants 190, rig wants 190
-                                           card 216 / rig 190  card 623 / rig 190
-TopRow drawn (cap 300)  198   198   198    224   224   224    300    300   300
-  card scroller         viewport 190 = extent 190             viewport 623 = extent 623
-band row (pills)         43    43    43     43    43    43     43     43    43
-neighborhood card       190   190   190    216   216   216    623    653   623
-  strip                  44    44    44     44    44    44     44     44    44
-  legend                 17    17    17     34    34    34    102    102   102
-  GreenZoneBlock         55    67    55     88   100    88    427    457   427
-    band / frequency     16/11 16/11 16/11  16/11 16/11 16/11  16/11  16/11 16/11
-    mode line            11    11    11     11    11    11     84     84    84
-    license line          9     9     9     27    27    27    150    150   150
-    rule of thumb         9     9     9     18    18    18    150    150   150
-    heard grid           35    35    35     29    29    29     29     29    29
-  GreenZoneMap          145   145   145    145   145   145    145    145   145
-    gray line           134   134   134    134   134   134    134    134   134
-    clock caption         9     9     9      9     9     9      9      9     9
-rig face Border         190   190   190    216   216   216    623    623   623
-  RigDisplayControl     110   110   110    110   110   110    110    110   110
-  RigDriveAndPower       49    49    49     49    49    49     49     49    49
-PANEL ROW               450   450   450    424   424   424     71     71    71
+data/rsid/rsid-codes.json           889 bytes    assets/data/rsid-codes.json   2,988 bytes
+
+code name        | code | sequence in short | sequence in long | length | file's symbols
+BPSK31           |    1 | yes               | yes              | 15     | 15
+OLIVIA_8_250     |   69 | yes               | yes              | 15     | 15
+OLIVIA_16_500    |   70 | yes               | yes              | 15     | 15
+OLIVIA_32_1000   |   71 | yes               | yes              | 15     | 15
+OLIVIA_8_500     |   72 | NO                | yes              | 15     | 15
+OLIVIA_16_1000   |   73 | NO                | yes              | 15     | 15
+OLIVIA_4_500     |   74 | NO                | yes              | 15     | 15
+OLIVIA_4_250     |   75 | NO                | yes              | 15     | 15
+
+codes            : short 8, long 8
+tone sequences   : short 4, long 8
+squares          : short ABSENT, long 256 entries
+indices          : short ABSENT, long 12 entries
 ```
 
-**THE SAME TABLE AFTER TASK 2.**
+Both files carry the same symbol count (15), rate (10.7666015625 Hz), silence (5), first-tone
+offset (-7) and citation, and **the four sequences they share are identical tone for tone**.
+
+**Which file the engine was reading, proved and not assumed:** the embedded copy carried
+**8 codes and 4 sequences**, which matches the short file on both counts and the long file on
+codes only. So the engine read the short one, and `RsidBurst.TonesFor` answered **null** for
+codes 72, 73, 74 and 75.
+
+### The seven variants through `Compose`, before - one framed 38-character CQ at 1500 Hz
 
 ```
-                        1920 x 1040        1400 x 1040        1100 x 780
-                        FT8 PSK31 Oliv     FT8 PSK31 Oliv     FT8   PSK31  Oliv
-BAND WITH PILLS         214   214   214    214   214   214    389    430   400
-BAND WITHOUT PILLS      178   178   178    178   178   178    353    394   364
-  against 180           34 over, all three  34 over, all three
-  without the pills     2 UNDER 180         2 UNDER 180
-GOVERNING COLUMN        card, and again by a TIE: card 178, rig 178
-                                           card 178 / rig 178  card 353+ / rig 178
-TopRow drawn (cap 300)  186   186   186    186   186   186    300    300   300
-band row (pills)         30    30    30     30    30    30     30     30    30
-neighborhood card       178   178   178    178   178   178    353    394   364
-  strip                  32    32    32     32    32    32     32     32    32
-  legend                 ON THE HEADER MARK - MapLegendControl.InWords, same words
-  GreenZoneBlock         55    67    55     68    80    68    (one row: band,
-    band / frequency     16/11 16/11 16/11  16/11 16/11 16/11  frequency, verdict
-    mode line            11    11    11     11    11    11     and license phrase
-    license line          9     9     9     27    27    27     in one WrapPanel)
-    rule of thumb        ON THE HEADER MARK - GreenZone.RuleOfThumb, same static
-    heard grid           35    35    35     29    29    29     29     29    29
-  GreenZoneMap          145   145   145    145   145   145    145    145   145
-    gray line           134   134   134    134   134   134    134    134   134
-    clock caption         9     9     9      9     9     9      9      9     9
-rig face Border         178   178   178    178   178   178    353    394   364
-  RigDisplayControl     106   106   106    106   106   106    106    106   106
-  RigDriveAndPower       49    49    49     49    49    49     49     49    49
-PANEL ROW               483   483   483    483   483   483     92     92    92
+4/250    code 75   THREW  "the RSID codes carry no burst for Olivia 4/250, so the send cannot be announced"
+4/500    code 74   THREW  "the RSID codes carry no burst for Olivia 4/500, so the send cannot be announced"
+8/250    code 69   COMPOSED  231824 samples, 28.978 s, announcement 14861 samples, cap 82.60 s,
+                             read back OLIVIA_8_250 (69) at 1499.94 Hz
+8/500    code 72   THREW  "the RSID codes carry no burst for Olivia 8/500, so the send cannot be announced"
+16/500   code 70   COMPOSED  182672 samples, 22.834 s, announcement 14861 samples, cap 61.95 s,
+                             read back OLIVIA_16_500 (70) at 1499.94 Hz
+16/1000  code 73   THREW  "the RSID codes carry no burst for Olivia 16/1000, so the send cannot be announced"
+32/1000  code 71   COMPOSED  149904 samples, 18.738 s, announcement 14861 samples, cap 49.56 s,
+                             read back OLIVIA_32_1000 (71) at 1499.94 Hz
 ```
 
-**THE PANEL ROW AT UNIT 354'S NINE SIZES, before and after** - 6.4's own number, and
-6.1's *taller by the difference*:
+The operator's sentence for a variant that threw was the existing catch at the Olivia send
+path: `"Hamlet did not send it: " + the message + "."`
+
+### The same two tables, after task 2 and task 3
 
 ```
-  1920 x 1040   450 -> 483      1366 x 728    88 -> 171
-   900 x 620     71 ->  71      1536 x 824   228 -> 267
-  1100 x 780     71 ->  92      1400 x 1040  424 -> 483
-  1280 x 720     88 -> 163      1920 x 1017  427 -> 460
-                                2560 x 1400  827 -> 860
+assets/data/rsid-codes.json   2,988 bytes - AND IT IS THE ONLY RSID FILE THERE IS
+
+code name        | code | tone sequence | length | file's symbols
+BPSK31           |    1 | yes           | 15     | 15
+OLIVIA_8_250     |   69 | yes           | 15     | 15
+OLIVIA_16_500    |   70 | yes           | 15     | 15
+OLIVIA_32_1000   |   71 | yes           | 15     | 15
+OLIVIA_8_500     |   72 | yes           | 15     | 15
+OLIVIA_16_1000   |   73 | yes           | 15     | 15
+OLIVIA_4_500     |   74 | yes           | 15     | 15
+OLIVIA_4_250     |   75 | yes           | 15     | 15
+
+codes 8, tone sequences 8, squares 256 entries, indices 12 entries
+every code the file lists has a sequence: True
+every sequence is the file's own symbol count: True
+
+RsidCodes.FilePath                    assets/data/rsid-codes.json
+resource LogicalName                  Hamlet.RadioEngine.Data.Rsid.rsid-codes.json   (UNCHANGED)
+EMBEDDED copy in the assembly         8 codes, 8 tone sequences
+TREE copy at that path                8 codes, 8 tone sequences; codes match True, sequences match True
+data/rsid/rsid-codes.json             one key, replaced_by, naming its replacement and unit 377
+nothing under src/ or tests/ names the retired path   1,259 files scanned, 0 found
 ```
 
-Same or larger at every one of the nine, larger at eight, and
-`DigitalTransmitDriveNote` - one of the five controls criterion 1.1 names - is drawn at
-all nine.
+```
+ALL SEVEN THROUGH Compose, the same CQ at the same center and rate:
 
-**THE FOUR TYPES.** `TheTopRowTests` 15, `TheWorkingPanelsTests` 8,
-`TheStopIsAlwaysOnScreenTests` 5, `BindingHealthTests` 1: **29 of 29 at task 1 and 29 of
-29 at task 3**, one build each, filtered.
+4/250    code 75   COMPOSED  174352 samples, 21.794 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
+4/500    code 74   COMPOSED   96464 samples, 12.058 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
+8/250    code 69   COMPOSED  231824 samples, 28.978 s, announcement 14861, cap 82.60 s, read back at 1499.94 Hz
+8/500    code 72   COMPOSED  125200 samples, 15.650 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
+16/500   code 70   COMPOSED  182672 samples, 22.834 s, announcement 14861, cap 61.95 s, read back at 1499.94 Hz
+16/1000  code 73   COMPOSED  100624 samples, 12.578 s, announcement 14861, cap 30.00 s, read back at 1499.94 Hz
+32/1000  code 71   COMPOSED  149904 samples, 18.738 s, announcement 14861, cap 49.56 s, read back at 1499.94 Hz
 
-**THE CARRY-FORWARD COUNTS.** Before: app **210 of 210** (2 m 27 s), engine **146 of
-146** (4 m 41 s). After: app **211 of 211** (2 m 18 s), engine **146 of 146** (4 m 39 s).
-The one extra name is this unit's 6.1 guard.
+THROWS: none.   The four 30.00 s caps are item 1 in section 4.
+```
 
-**THE SEVEN R12 REWRITES, name for name, and what each asserts now that it did not
-before.**
+### The loopback table - what earned each flag
 
-- `TheTopRowTests.TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest` took the
-  legend as a control standing on the card and **said nothing at all about what it said**.
-  It now asserts both marks are drawn and on the card, that they carry
-  `MapLegendControl.InWords` and `GreenZone.RuleOfThumb` **word for word**, that the
-  legend's sentence names every `ModePalette.Legend` label plus *listen only* and *heard
-  just now*, and that **no `MapLegendControl` has come back onto the card**.
-- `TheTopRowTests.AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` kept every number
-  it asserted, including the same sentence by `Assert.Equal`; the sentence is read off the
-  header mark, and the mark is **also asserted to be drawn and to be on the card**, which
-  the old line never said.
-- `TheTopRowTests.Unit351TraceTheCheckInTheGreenBlock` prints the block's four lines and
-  **both marks with their sentences**, where it printed five lines.
-- `TheWindowGivesUpHeightInOneOrderTests.TheWorkingPanelsLoseHeightBeforeTheTopRowLosesAny`
-  - **this one guards step 1's criterion 1.2 and is the one to read.** It went red on a
-  single number: unit 374's `TheFloorBindsAt = 780`. The floor now binds at **740**,
-  because the shorter top row lets the panels go on shrinking one step lower - the panel
-  row is **92 px at 780 where it was 71**. The flat band is now **found in the sweep**
-  instead of declared, every assertion it made it still makes, and **780 is kept as a
-  ceiling with a new assertion that the floor may only ever bind lower** - so height put
-  back into the top row is caught here rather than passing quietly.
-- `TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth` asserted one
-  rectangle was below another; it now asserts the mark is drawn and **holds
-  `GreenZone.RuleOfThumb` itself**, so the sentence cannot be shortened or lost.
-- `TheGreenZoneTests.TheMapRegionRendersWithItsRuleOfThumbAndNoClaimOfOpenness` keeps
-  `Assert.Equal` on the sentence and both *want daylight* / *want dark* checks, and adds
-  that **the mark is inside the neighborhood card** - the words are reachable from the
-  surface they came off, not merely alive in a static.
-- `Unit332TwoWidthsTests.TheGreenZoneAtFourteenHundredAndNineteenTwenty` prints the
-  regions that are still in the panel and **both marks' sentences** beneath them.
+Five texts (the four framed PSK31 macros and a 110-character typed line) at two centers,
+1000 Hz and 1500 Hz, at 8000 Hz. **The variant and the center are read off the burst by
+Hamlet's own detector and never taken from the test** (decision AT). Identical means
+character for character after `Unify`, with no tolerance of any kind.
 
-**THE FOUR NEW NAMES.** `Unit376TheTopBandTests` - the 6.1 guard on the carry-forward
-list, plus 6.2, 6.3 and 6.4, plus the task 1 trace, which is deliberately **not** on the
-list because it asserts nothing.
+```
+variant  | cases | identical | chars in -> out      | audio s        | decode cpu s  | flag earned
+4/250    |  10   |    10     | 23,38,62,96,110 -> same | 14.6 - 58.7 | 0.344 - 1.578 | proved_by_loopback true
+4/500    |  10   |    10     | 23,38,62,96,110 -> same |  8.5 - 30.5 | 0.188 - 0.828 | proved_by_loopback true
+8/250    |  10   |    10     | 23,38,62,96,110 -> same | 18.7 - 78.1 | 0.484 - 2.250 | proved_by_loopback true
+8/500    |  10   |    10     | 23,38,62,96,110 -> same | 10.5 - 40.2 | 0.250 - 1.188 | proved_by_loopback true
+16/500   |  10   |    10     | 23,38,62,96,110 -> same | 14.6 - 59.7 | 0.391 - 1.813 | proved_by_loopback true
+16/1000  |  10   |    10     | 23,38,62,96,110 -> same |  8.5 - 31.0 | 0.203 - 0.969 | proved_by_loopback true
+32/1000  |  10   |    10     | 23,38,62,96,110 -> same | 12.6 - 47.4 | 0.375 - 2.891 | proved_by_loopback true
+
+70 of 70 identical.  0 blocks rejected on any case.  The detector named the right code on
+every case, within 0.32 Hz of the center it was given (1000.32 and 1499.94 Hz).
+```
+
+**No variant failed**, so there is no variant left off the air, and section 4 carries no
+failed-loopback item.
+
+### The generator-to-detector round trip, before and after
+
+```                                                         before        after
+TheRsidBurstTests.EveryCodeWithASequenceMakesTheFilesTones   4 sequences   8 sequences
+TheRsidBurstTests.EachBurstReadsBackAtThreeCentersAcross...  12 of 12      24 of 24
+```
+
+Eight codes at 500, 1500 and 2500 Hz, each detected as itself within 5 Hz. **That is 2.2's
+*every listed code round-trips through Hamlet's generator and detector*, and it is now a
+statement about all eight codes rather than about half of them.**
+
+### The five types, and the counts around them
+
+```
+task 1, the five types named in the instruction, filtered, one build       44 of 44   2 m 07 s
+task 2, the same five plus TheOneRsidFileTests and Unit377Trace            47 of 47   2 m 35 s
+task 3, TheRsidBurstTests and the seven-variant loopback                   15 of 15   1 m 26 s
+task 3, TheOliviaSendTests with the new refusal name                       24 of 24
+task 2, TheLoopbackGateTests                                                2 of 2
+```
+
+### The carry-forward counts, before and after
+
+```                     task 0 (entry)                    task 4 (exit)
+app        attempt 1   210 of 211  dispatcher loop       211 of 212  dispatcher loop
+           attempt 2   211 of 211  2 m 14 s              212 of 212  2 m 24 s
+engine     attempt 1   146 of 146  4 m 34 s              150 of 150  4 m 56 s
+```
+
+**Name for name, the only differences are this unit's own additions**: the app gained
+`TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed`, and the engine
+gained the four new `[InlineData]` rows on the loopback name. **No regression, and nothing
+red that was green before** (HM-DEC-165). Olivia's send guard
+`TheOliviaSendTests.AnOliviaCqReachesTheAir` and the read guards were read first and are
+green.
+
+**The headless dispatcher loop showed twice**, at task 0 and at task 4, **both times on the
+app invocation, both times the same name** -
+`Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` - dying
+at **1 ms** in `HeadlessUnitTestSession.EnsureApplication` with
+`InvalidProgramException: You've caused dispatcher loop`, before any assertion. **Both single
+re-runs were clean.** That is unit 375's item 3: two lost invocations out of six, recorded
+and not chased. **The engine invocation has still never failed.**
 
 ## 4. What's blocking us
 
-**1. Criterion 2.2 - the RSID tone sequences. THIS WANTS A RULING, it is Tim's, and it is
-not this unit's work.** R38 (a) permits giving codes 72-75 their tone sequences **on a
-stated fact**: *Hamlet's modulator makes only 8/250, 16/500 and 32/1000, so nothing
-announces a variant it cannot send.* **The arbiter read the tree line by line at authoring
-time and the tree does not support that fact**, and has sent the question back:
+**1. The four new variants have no row in the timing table, so their cap is PSK31's plain
+thirty seconds and a long message at them will be refused rather than sent. THIS WANTS A
+RULING and it is the one item that bounds what section B just opened.** It is a finding about
+scope, not a fault in this unit's work, and **nothing goes out wrong** - the send is refused
+with a length sentence and nothing keys, which is the safe direction.
 
-- `data\olivia\format.json` lines 61 to 67 carry **all seven variants** - 4/250, 4/500,
-  8/250, 8/500, 16/500, 16/1000, 32/1000 - and `OliviaModulator` is driven from that
-  table, **so the engine can modulate every one of them**.
-- **What keeps four of them off the air today is exactly the gate this change removes**:
-  `OliviaModulator.Compose` line 149 throws where `RsidBurst.TonesFor` is null.
-- **The send variant is not picked by the operator from a list of three.**
-  `MainWindowViewModel` line 16009 takes `_oliviaSendVariant`, set at lines 6027, 16533,
-  16789 and 16930 **from the variant of a decoded row or card**, and `OliviaListener` line
-  280 starts a channel **from an RSID detection's own variant**.
-- So an 8/500 burst on the air would become detectable, start a channel, make a card, and
-  **an answer to that station would be composed and transmitted at 8/500**. That is a
-  change to what goes on the air.
+`data\olivia\timing.json` carries `seconds_per_character` for **three** variants: 8/250,
+16/500 and 32/1000. `OliviaTiming.CapSeconds` answers `NaN` for a variant it has no row for
+and `OliviaModulator.Compose` then falls back to `OperatorSend.LongestUnslottedSeconds`,
+**30 s**, which the trace read off the composed transmission for all four new variants
+against 82.60, 61.95 and 49.56 s at the three old ones. What that means, in measured seconds
+of data at each variant:
 
-**R38 (a) permits the change on the ground that Hamlet's modulator makes only three
-variants, and the arbiter reads the tree as saying otherwise. The arbiter has not
-confirmed it with a run and neither has this unit** - nothing here touched
-`assets\data\rsid-codes.json`, `data\rsid\rsid-codes.json`, `RsidCodes`, `RsidBurst`,
-`RsidDetector`, `OliviaModulator` or the csproj's embedded resource. **Step 2 cannot close
-until Tim rules again, and no unit should take 2.2 until he does.**
+```
+                     CQ 38   Answer 23   Confirm 62   Report 96   Typed 110    cap
+4/250                21.79       14.63        34.08       51.49       58.66   30.00  -> Confirm, Report and Typed refused
+4/500                12.06        8.47        18.20       26.91       30.49   30.00  -> Typed refused
+8/500                15.65       10.53        23.84       35.11       40.23   30.00  -> Report and Typed refused
+16/1000              12.58        8.48        18.72       26.91       31.01   30.00  -> Typed refused
+8/250, 16/500, 32/1000  -  all five fit, at 82.60, 61.95 and 49.56 s
+```
 
-**And R38 (b) answered unit 375's item 2 - the duplicate abort pair - which is CLOSED.**
-The transmit sequence's teardown abort pair, sent after the click's own, is accepted: a
-duplicate unkey is the safe direction, nothing keys on it, and it is logged as tidy-up
-rather than a stop. Nothing in this unit touched it and nothing is to be done about it.
+**So a CQ and an answer go at all seven; a full report goes at five of the seven; a long typed
+line at three.** The repair is to measure `seconds_per_character` for the four and write the
+rows, the way work instruction 361 task 5 measured the first three. **It wants a ruling
+because adding those rows lengthens what may go on the air**, which `PHASE_PLAN.md` section 6
+makes the owner's, and because **this unit has spent both of its two rulings** (R31). It is
+not a regression: before tonight those four variants could not transmit at all.
 
-**2. Criterion 6.1 cannot reach 180 px with the pills counted while 6.3 stands. THIS IS A
-FINDING WITH ARITHMETIC, and it is the one item in the way of a criterion in B.** It does
-not want a ruling unless the owner wants to spend the last 34 pixels. The band with the
-pills is 214. Its parts, measured: the sun map's picture **134 px**, which 6.3 forbids
-shrinking; the neighborhood card's own header **27 px**; the pills at half height **30
-px**; the gap between the pills and the card **6 px**. That is **197 px before a single
-word would have to leave the window**, against the criterion's 180 - and the remaining 17
-px of the 214 are the map's caption (11) and the card's body padding (6).
-**The band without the pills is 178 and meets 180.** Three things could close the gap and
-all three are the owner's: shrink the sun map, take the neighborhood card's header (which
-would make it non-collapsible, against §0.5), or drop the pills from the band's
-definition, which section 6's first ruling deliberately did not do.
+**2. Section 11's two commits inside task 2 leave one commit in this unit's history -
+`604ee698` - at which Hamlet would transmit a variant it has not read back, which is what
+section 6 ruling 2 item 5 says no commit may do. THIS WANTS A RULING, on which of the two
+instructions governs for future units.** Section 11 says *within task 2 two commits - the file
+and its readers first, the gate second*; section 6 ruling 2 item 5 says *there is no commit in
+this unit's history where Hamlet would transmit a variant it has not read back.* Both cannot
+hold, because the moment the longer file is embedded and before the gate exists, the four
+variants compose. **This unit followed section 11, which is the more specific of the two.**
 
-**3. The rig's rearrangement was not made, and the drop candidate's own condition did not
-authorize dropping it. A FINDING, and a sizing decision the owner did not make.** Work
-instruction 376 task 2 made *drive and power beside the frequency* the drop candidate, to
-be dropped only if the card governed at both asserted widths **and** the band reached 180
-without it. The band reached 214, so the condition was not met. It was still not made,
-for a measured reason: the rig column is `Auto`, so moving the 120 px drive box and its
-two labels beside the 520 px LCD **widens that column and takes the width off the
-neighborhood card**, which at 1400 and 1100 makes the card taller - the move costs pixels
-where it was supposed to buy them. What was done instead is the other half of R39's
-sentence, *the rig display shorter*: the box's padding, its stack's spacing and the blank
-under the S-meter's wedge, 12 px in all, which is what the tie at 1920 required. **The
-drive, the note, the tip and the power offer are all still drawn and are asserted drawn at
-both widths on all three modes.**
+What is and is not at risk: the working tree was never left in that state between tasks, the
+two commits are minutes apart, and **nothing was pushed until the end of task 4**, so no build
+of that state existed anywhere. But `604ee698` is in the pushed history, and somebody who
+checks it out has a Hamlet that will transmit four unproved variants. **The clean answer for
+the next unit that does this is one commit, not two** - or the gate first and the file second,
+which also satisfies both - and that is the ruling being asked for.
 
-**4. `TopRow`'s `MaxHeight="300"` does not bind the card's content; it binds only the
-row's reported height. A FINDING, and it is unit 356's comment that is wrong rather than
-this unit's work.** Measured at 1100 x 780 before anything moved: `TopRow` draws 300,
-**and the card inside it draws 623** - the scroller's viewport is 623 and its extent 623,
-so nothing scrolls, and the card paints over 376 px of what is below it. The comment above
-`TopRow` says *the card body scrolls inside the cap, per §0.5*. It does not. This unit did
-not repair it - it is not in criterion 6.1 and the instruction forbids touching the cap -
-and after task 2 the overflow at that size is 89 px instead of 376.
+**3. Section 5 named five test reads of the retired RSID path. There are six. A FINDING, and
+this unit moved all six.** The sixth is
+`tests\Hamlet.RadioEngine.Tests\Rsid\Unit359Trace.cs` line 50, which reads the file from the
+tree to print its codes. It is a trace and asserts nothing, which is presumably why it was not
+found, but it reads the path and would have broken when the path was emptied. Moving it is not
+an R12 rewrite: it is a path this unit moved, and it asserts exactly what it did before -
+nothing. **`TheOneRsidFileTests`' scan is the reason this is now a fact rather than a hope:**
+it found two more stale literals on its first run, one of them in a comment this unit had
+written into the csproj minutes earlier.
 
-**5. Section 5's count of the four types is 33 and the tree says 29. A FINDING, no action
-needed.** `TheTopRowTests` 15 + `TheWorkingPanelsTests` 8 + `TheStopIsAlwaysOnScreenTests`
-5 + `BindingHealthTests` 1 = **29**, measured twice in this unit. Unit 374's 33 counted
-`TheWindowGivesUpHeightInOneOrderTests`' four names as well, which is the type it had just
-rewritten. The instruction's own name counts are right; only the total is off.
+**4. `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red, and it is inherited. A
+FINDING, measured and not assumed, and not repaired.** It expects `Offered` to be `None` after
+a damaged message and reads `Report`. It is **not on the carry-forward list**, so task 0 never
+saw it. It was run in isolation against the current tree (241 ms, red) and then **with the old
+four-sequence file embedded** (223 ms, red, same assertion, same values), so **it predates this
+unit**. Nothing this unit touched is near the exchange parser or the offered macro. It is
+reported rather than repaired, per section 10.
 
-**Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
-`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` §1 holds `CPS-DEC-0165` - the id-scheme split,
-carried in `PHASE_PLAN.md` §7. Reported, not repaired. Also noted: the instruction places
-`RigDriveAndPower` on `TopRow`'s row 1; it is at line 3079 **inside the rig face's border
-in row 0, column 1**, under the S-meter, and `TopRow`'s row 1 is an empty grid at line
-3201 carrying only comments. The band helper measures it wherever it is, so nothing
-depended on this.
+**5. Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
+`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1 holds `CPS-DEC-0165` - the id-scheme
+split, carried in `PHASE_PLAN.md` section 7, and reported unrepaired by unit 376 as it was
+told to. **Reported again, not repaired.** Also noted, and needing nothing: `Unit377Trace`
+and the two new test types are deliberately **not** on the carry-forward line (R14) - the
+trace asserts nothing, and `TheOneRsidFileTests` and `TheLoopbackGateTests` are this unit's
+criterion tests, run by the unit that changes that code. Only the refusal name went on the
+line, as the instruction directed, and `docs\carry-forward-tests.txt` says so in its own
+paragraph.
 
-**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - FIFTEEN, and this unit answers none of
-them.** Unit 375's item 3 (the headless dispatcher loop, `InvalidProgramException: You
-have caused dispatcher loop`, eight names across four units, an environmental cause with
-no name attached in `docs\quarantined-tests.txt`, and the single biggest obstacle to 2.4)
-and item 4 (`TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`
-went red once in seventeen full invocations, on an assertion, message not captured, not
-reproduced in four further runs). Unit 374's item 3 (`tools\run-carry-forward.sh` still
-does not match `docs\carry-forward-tests.txt`). Unit 373's item 2 (`ApplyBestBet`'s stale
-`BestBetLabel`). Unit 372's items 4 and 7 (the latter being `PHASE_PLAN.md`'s criterion
-checkboxes, which are not ticked and are not to be raised again). Unit 371's five. Unit
-369's four, including item 3, `LearnedAlcReference.Ago()`. **Neither of this unit's four
-carry-forward invocations was lost to the dispatcher loop, which is evidence on unit 375's
-item 3 and is recorded rather than acted on.**
+**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - EIGHTEEN, and this unit answers none of them.**
 
-**One item came off the queue this unit, by the owner's own ruling:** unit 375's item 2,
-the duplicate abort pair, is answered by R38 (b) and closed.
+- **Unit 376's item 3** - *The rig's rearrangement was not made, and the drop candidate's own
+  condition did not authorize dropping it. A FINDING, and a sizing decision the owner did not
+  make.* The rig column is `Auto`, so moving the drive box beside the LCD widens that column
+  and takes the width off the neighborhood card; the move costs pixels where it was supposed
+  to buy them.
+- **Unit 376's item 4** - *`TopRow`'s `MaxHeight="300"` does not bind the card's content; it
+  binds only the row's reported height. A FINDING, and it is unit 356's comment that is wrong
+  rather than that unit's work.* At 1100 x 780 `TopRow` draws 300 and the card inside it draws
+  623, viewport 623 and extent 623, so nothing scrolls.
+- **Unit 376's item 5** - *Section 5's count of the four types is 33 and the tree says 29. A
+  FINDING, no action needed.* Unit 374's 33 counted
+  `TheWindowGivesUpHeightInOneOrderTests`' four names as well.
+- **Unit 375's item 3** - the headless dispatcher loop, `InvalidProgramException: You have
+  caused dispatcher loop`, eight names across four units, an environmental cause with no name
+  attached in `docs\quarantined-tests.txt`, **and the single biggest obstacle to 2.4**. This
+  unit adds evidence: **two of its six carry-forward invocations were lost to it, both on the
+  app side, both on the same name, both clean on the single re-run.**
+- **Unit 375's item 4** -
+  `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable` went red once
+  in seventeen full invocations, on an assertion, message not captured, not reproduced in four
+  further runs. **It did not show in either of this unit's clean app invocations.**
+- **Unit 374's item 3** - `tools\run-carry-forward.sh` still does not match
+  `docs\carry-forward-tests.txt`. This unit ran the two command lines from the file itself, as
+  section 9 requires.
+- **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
+- **Unit 372's item 4**, and **unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes,
+  which are not ticked and are not to be raised again.
+- **Unit 371's five.**
+- **Unit 369's four**, including item 3, `LearnedAlcReference.Ago()`.
+
+**Two items came off the queue this unit, both by the owner's own rulings and neither by any
+work of this unit's:** unit 376's item 1 - criterion 2.2 and the four RSID tone sequences - is
+**answered by R41**, which is this unit's whole subject; and unit 376's item 2 - 6.1 at 214 px
+against 180 - is **answered by R42**, which closed step 6 and which task 0 transcribed into
+both status files.
