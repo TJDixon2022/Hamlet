@@ -430,3 +430,36 @@ which is the build and the two headless window types as it has been since unit 3
 373's name into the app project list below the lines, where it had been on the command line
 since that unit but had never been listed - a bookkeeping mismatch, reported and not a
 change to what anything runs.
+
+WHAT UNIT 375 MEASURED. NOTHING WAS ADDED TO EITHER LINE AND NOTHING WAS TAKEN OFF.
+
+Criterion 2.3 asks that the two names R35 records as flaking in headless runs be run ten
+times each and then made deterministic or quarantined with their cause named. Both were run
+ten times, whole type, filtered, one build each. THE NUMBERS, so that the next unit starts
+from them rather than from a recollection:
+
+    TheStopIsAlwaysOnScreenTests        RED 4 OF 10 before, GREEN 10 OF 10 after
+    TheTestsStayOffTheNetworkTests      GREEN 10 OF 10, nothing done to it
+
+Every red was the same name -
+TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns -
+and every one was an ASSERTION failure, not the headless dispatcher-loop session fault. It
+read the wire once after the click and asserted an exact snapshot; the abort pair was on the
+wire twice about a third of the time. Unit 375 traced the writers with a stack behind every
+frame: the second pair is the transmit sequence's own teardown coming off the token, 8 of 8,
+and never the click's StopNow, which writes its pair exactly once. The teardown runs on the
+sequence's task rather than as a dispatcher job, so it races the click in real time and NO
+MOMENT BEFORE THE SEQUENCE SETTLES IS FIXED. The name was repaired on the test's side under
+R12 - it now reads the wire where it has stopped changing and asserts the rule rather than
+the snapshot - and it stays on the line. THE ABORT PATH WAS NOT TOUCHED and no file under
+src changed in the whole unit.
+
+That the abort pair reaches the wire twice at all - once from the click, once from the
+sequence unwinding - is deterministic, is Hamlet's doing and not the test's, and is raised
+in unit 375's report as a finding for the owner. It is NOT a known red and nothing here is
+quarantined for it.
+
+TheTestsStayOffTheNetworkTests was green ten times out of ten, with no name red and no
+session lost. R35's premise about it comes from unit 365's report and nothing in the tree had
+ever measured it; it was not reproduced here. It is left exactly as it was, on the line,
+unmodified, and docs/quarantined-tests.txt was NOT created, because neither name needed it.
