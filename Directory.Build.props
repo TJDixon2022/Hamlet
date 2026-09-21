@@ -1108,9 +1108,33 @@
     380. Nothing in this unit opens a port, enumerates a device or keys anything: every sample
     lives in an array (FACT-004), and R36 licenses writing down what the screen did and nothing
     else.
+
+    1.13.68 -> 1.13.69, UNIT 382 TASK 0. A PATCH, STEP 4 OF THE HARDENING PHASE, THE FIRST UNIT
+    EVER SPENT ON IT - THE RADIO SHEET: ONE PAGE IN TIM'S HANDS, EVERY SENTENCE ON IT QUOTED FROM
+    THE SCREEN. R37 is the licence: Tim has never operated PSK31 or Olivia at the radio and has
+    said so, unit 349's sheet is about the screen page by page, and there is no file in docs
+    named for the radio at all. This unit writes docs/RADIO_SHEET.md - what to press in order for
+    each of the two keyboard modes, what the screen says back at each press in the screen's own
+    words, what each refusal sentence means and what to do about it, where the capture and the
+    record are, and what to send back when it fails. 4.1 says every sentence is QUOTED from the
+    tree and not paraphrased, so the night's real work is the harvest: the send path can put 24
+    different lines in front of the operator and nine of them are refusals with their own
+    recorded token. 4.2 is asserted in BOTH directions by one new type,
+    TheRadioSheetQuotesTheScreenTests - forward, that every quoted line exists in an
+    operator-facing string, by kind (a) where a fixture drives the view model into the state and
+    compares character for character and by kind (b) where the literal is found in the source;
+    backward, that every reachable refusal on the PSK31 and Olivia send path is quoted in the
+    sheet, because forward alone would pass a sheet that quoted one sentence and left out eight.
+    4.3 is R11 turned into a test: a word scan over the sheet's own prose, never over its quotes,
+    because a quoted refusal is what the screen says and Hamlet naming a Windows sound card is
+    not an instruction to touch the rig. NO FILE UNDER src CHANGES AT ALL. PHASE_STATUS.md's
+    CURRENT_STEP and WORK_INSTRUCTION were set to 4 and to this instruction, both stale at 0 and
+    381, and two verdicts another session returned were transcribed - step 3 done on unit 381,
+    and step 7 partial on 7.2, which is parked. Nothing in this unit opens a port, enumerates a
+    device or keys anything, and nothing in it is evidence about the radio (FACT-004).
   -->
   <PropertyGroup>
-    <Version>1.13.68</Version>
+    <Version>1.13.69</Version>
   </PropertyGroup>
 
   <!--
