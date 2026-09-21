@@ -65,7 +65,15 @@
        cited facts join them (work instruction 361 decision H), read the same way. -->
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\bands\olivia-calling.json" LogicalName="Hamlet.RadioEngine.Data.Bands.olivia-calling.json" />
-    <EmbeddedResource Include="..\..\data\rsid\rsid-codes.json" LogicalName="Hamlet.RadioEngine.Data.Rsid.rsid-codes.json" />
+    <!-- **ONE RSID FILE, AND IT IS THE LONG ONE** (work instruction 377 section 6, criterion 2.2).
+         `assets\data\rsid-codes.json` carries all eight codes WITH a tone sequence each - 72 to 75
+         from the same ported encoder - and fldigi's Squares and indices tables, where the file
+         embedded here until unit 377 carried four sequences and neither table. **THE LogicalName
+         DOES NOT MOVE**: the path is where the file lives and the logical name is what the
+         assembly knows it by, and nothing downstream of the name has to change. The retired path
+         is emptied, not deleted, and `TheOneRsidFileTests` is the only thing in the tree that
+         names it. -->
+    <EmbeddedResource Include="..\..\assets\data\rsid-codes.json" LogicalName="Hamlet.RadioEngine.Data.Rsid.rsid-codes.json" />
     <EmbeddedResource Include="..\..\data\olivia\format.json" LogicalName="Hamlet.RadioEngine.Data.Olivia.format.json" />
     <EmbeddedResource Include="..\..\data\olivia\timing.json" LogicalName="Hamlet.RadioEngine.Data.Olivia.timing.json" />
   </ItemGroup>

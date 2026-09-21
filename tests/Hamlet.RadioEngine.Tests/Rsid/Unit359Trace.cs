@@ -23,7 +23,7 @@ namespace Hamlet.RadioEngine.Tests.Rsid;
 /// file's own tone sequences up against the tone energies, measures the PSK31 macros as they
 /// are composed today against their caps with the burst in front, hashes today's CQ, and
 /// counts the keying and arming sites. **It asserts nothing**, so it cannot become a wall.</para>
-/// <para>**EVERY RSID NUMBER IS READ FROM `data/rsid/rsid-codes.json`** (R27). Nothing here
+/// <para>**EVERY RSID NUMBER IS READ FROM `assets/data/rsid-codes.json`** (R27). Nothing here
 /// types a code, a tone, a spacing or a symbol rate.</para>
 /// <para>**COMPUTED, NOT SEEN**, and nothing here is evidence about the radio (FACT-004).</para>
 /// </remarks>
@@ -47,7 +47,7 @@ public sealed class Unit359Trace
     {
         var root = Root();
 
-        using var data = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json")));
+        using var data = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json")));
         var file = data.RootElement;
         var rate = file.GetProperty("symbol_rate_hz").GetDouble();
         var symbols = file.GetProperty("symbols").GetInt32();

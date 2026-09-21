@@ -4,7 +4,7 @@ namespace Hamlet.RadioEngine.Rsid;
 
 /// <summary>
 /// **The RSID mode codes and their tone sequences, read from
-/// <c>data/rsid/rsid-codes.json</c>.**
+/// <c>assets/data/rsid-codes.json</c>.**
 /// </summary>
 /// <remarks>
 /// <para>**PORTED DATA, CITED, AND NOTHING ELSE** (`PHASE_PLAN.md` R27). The codes and the
@@ -19,7 +19,14 @@ namespace Hamlet.RadioEngine.Rsid;
 public sealed class RsidCodes
 {
     /// <summary>The file's name, as a sentence about it names it.</summary>
-    public const string FilePath = "data/rsid/rsid-codes.json";
+    /// <remarks>
+    /// **ONE FILE, AND IT MOVED HERE IN UNIT 377** (criterion 2.2, work instruction 377 section 6).
+    /// The tree carried two RSID files that could disagree: a short one the engine read, with four
+    /// tone sequences and neither of fldigi's tables, and this one, with a sequence for every code
+    /// it lists and both tables. The engine reads this one now. **The embedded resource's
+    /// `LogicalName` did not move with it**, so nothing downstream of the name changed.
+    /// </remarks>
+    public const string FilePath = "assets/data/rsid-codes.json";
 
     private RsidCodes(
         string source,

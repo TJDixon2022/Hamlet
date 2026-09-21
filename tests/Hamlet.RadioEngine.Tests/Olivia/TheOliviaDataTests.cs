@@ -13,7 +13,7 @@ namespace Hamlet.RadioEngine.Tests.Olivia;
 /// <para>**EVERY VALUE HERE COMES OUT OF A CITED FILE** (`PHASE_PLAN.md` R27, R29,
 /// HM-DEC-054). The numbers below are in the test because a test has to say what it
 /// expects; they are nowhere under `src`, which reads them from
-/// `data/bands/olivia-calling.json` and `data/rsid/rsid-codes.json`.</para>
+/// `data/bands/olivia-calling.json` and `assets/data/rsid-codes.json`.</para>
 /// <para>**A FILE THAT CANNOT BE READ IS A SENTENCE, NOT A GUESS** (§0.0). The last test
 /// hands the reader a broken copy of each and asserts that no value comes back and that
 /// the sentence names the file.</para>
@@ -56,7 +56,7 @@ public sealed class TheOliviaDataTests
         var root = RepoRoot();
         var fromTree = OliviaData.Read(
             File.ReadAllText(Path.Combine(root, "data", "bands", "olivia-calling.json")),
-            File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json")));
+            File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json")));
 
         Assert.Null(fromTree.Problem);
         Assert.Equal(shipped.Calling.Rows, fromTree.Calling!.Rows);
@@ -133,7 +133,7 @@ public sealed class TheOliviaDataTests
     {
         var root = RepoRoot();
         var calling = File.ReadAllText(Path.Combine(root, "data", "bands", "olivia-calling.json"));
-        var rsid = File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json"));
+        var rsid = File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json"));
 
         // **CUT OFF HALF WAY**, which is what a bad copy looks like.
         var brokenCalling = OliviaData.Read(calling[..(calling.Length / 2)], rsid);
@@ -233,7 +233,7 @@ public sealed class TheOliviaDataTests
         // **AND THE FILE IN THE TREE IS THE ONE EMBEDDED.**
         var fromTree = OliviaData.Read(
             File.ReadAllText(Path.Combine(root, "data", "bands", "olivia-calling.json")),
-            File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json")),
+            File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json")),
             File.ReadAllText(Path.Combine(root, "data", "olivia", "format.json")));
 
         Assert.Null(fromTree.Problem);
@@ -249,7 +249,7 @@ public sealed class TheOliviaDataTests
     {
         var root = RepoRoot();
         var calling = File.ReadAllText(Path.Combine(root, "data", "bands", "olivia-calling.json"));
-        var rsid = File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json"));
+        var rsid = File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json"));
         var format = File.ReadAllText(Path.Combine(root, "data", "olivia", "format.json"));
 
         var cutOff = OliviaData.Read(calling, rsid, format[..(format.Length / 2)]);

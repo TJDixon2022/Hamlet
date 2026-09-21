@@ -32,11 +32,14 @@ namespace Hamlet.RadioEngine.Tests.Olivia;
 [Collection(CpuMeasuredAlone.Name)]
 public sealed class Unit377Trace
 {
-    /// <summary>The short path, as the tree carries it today.</summary>
-    private const string ShortPath = "data/rsid/rsid-codes.json";
-
-    /// <summary>The long path, written 2026-09-20, which nothing reads today.</summary>
-    private const string LongPath = "assets/data/rsid-codes.json";
+    /// <summary>The one RSID data file, which is what task 2 made it.</summary>
+    /// <remarks>
+    /// **THE RETIRED PATH IS NOT NAMED HERE** (task 2, section 6 ruling 1). Until task 2 this
+    /// trace read both files side by side, and that reading is in the unit's history at the task 1
+    /// commit; from task 2 there is one RSID file and only `TheOneRsidFileTests` names the path
+    /// that used to hold the other one.
+    /// </remarks>
+    private const string OnePath = "assets/data/rsid-codes.json";
 
     /// <summary>The rate the modulator tests use, so the costs here are comparable to theirs.</summary>
     private const int Rate = 8000;
@@ -57,7 +60,7 @@ public sealed class Unit377Trace
     {
         var root = RepoRoot();
 
-        PartOneTheTwoFilesSideBySide(root);
+        PartOneTheOneRsidFile(root);
         PartTwoWhichFileTheEngineIsReading(root);
 
         var composed = PartThreeTheSevenVariantsThroughComposeToday();
@@ -66,77 +69,60 @@ public sealed class Unit377Trace
         PartSixWhatANewKeyInAVariantRowWouldDo(root);
     }
 
-    /// <summary>**Item 1: every code, both files, sequence by sequence, table by table.**</summary>
-    private void PartOneTheTwoFilesSideBySide(string root)
+    /// <summary>**Item 1: the one RSID file - every code, its sequence, its length, both tables.**</summary>
+    /// <remarks>
+    /// **THIS WAS A TWO-FILE TABLE AT TASK 1 AND IS A ONE-FILE TABLE FROM TASK 2.** The before is
+    /// in the unit's history at the task 1 commit and in the report; this is the after.
+    /// </remarks>
+    private void PartOneTheOneRsidFile(string root)
     {
-        _output.WriteLine("=== 1. THE TWO RSID FILES SIDE BY SIDE - 2.2's BEFORE ===");
+        _output.WriteLine("=== 1. THE ONE RSID FILE ===");
 
-        var shortText = File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json"));
-        var longText = File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json"));
+        var at = Path.Combine(root, "assets", "data", "rsid-codes.json");
+        var text = File.ReadAllText(at);
+        var file = RsidCodes.Parse(text);
 
-        var shortFile = RsidCodes.Parse(shortText);
-        var longFile = RsidCodes.Parse(longText);
-
-        _output.WriteLine($"{ShortPath,-32} {shortText.Length,6} characters, {new FileInfo(Path.Combine(root, "data", "rsid", "rsid-codes.json")).Length} bytes");
-        _output.WriteLine($"{LongPath,-32} {longText.Length,6} characters, {new FileInfo(Path.Combine(root, "assets", "data", "rsid-codes.json")).Length} bytes");
+        _output.WriteLine($"{OnePath,-32} {text.Length,6} characters, {new FileInfo(at).Length} bytes");
         _output.WriteLine("");
 
-        _output.WriteLine($"symbols        : short {shortFile.Symbols}, long {longFile.Symbols}");
-        _output.WriteLine($"symbol rate Hz : short {shortFile.SymbolRateHz}, long {longFile.SymbolRateHz}");
-        _output.WriteLine($"silence before : short {shortFile.SilenceSymbolsBefore}, long {longFile.SilenceSymbolsBefore}");
-        _output.WriteLine($"first tone     : short {shortFile.FirstToneOffsetSymbols}, long {longFile.FirstToneOffsetSymbols}");
-        _output.WriteLine($"source         : short \"{shortFile.Source}\"");
-        _output.WriteLine($"                 long  \"{longFile.Source}\"");
+        _output.WriteLine($"symbols        : {file.Symbols}");
+        _output.WriteLine($"symbol rate Hz : {file.SymbolRateHz}");
+        _output.WriteLine($"silence before : {file.SilenceSymbolsBefore}");
+        _output.WriteLine($"first tone     : {file.FirstToneOffsetSymbols}");
+        _output.WriteLine($"source         : \"{file.Source}\"");
         _output.WriteLine("");
 
-        _output.WriteLine("code name        | code | sequence in short | sequence in long | length | file's symbols");
+        _output.WriteLine("code name        | code | tone sequence | length | file's symbols");
 
-        foreach (var name in shortFile.Codes.Keys.Concat(longFile.Codes.Keys).Distinct(StringComparer.Ordinal).OrderBy(n => shortFile.CodeOf(n) ?? longFile.CodeOf(n)))
+        foreach (var (name, code) in file.Codes.OrderBy(c => c.Value))
         {
-            var code = shortFile.CodeOf(name) ?? longFile.CodeOf(name);
-            var inShort = shortFile.ToneSequences.TryGetValue(name, out var s);
-            var inLong = longFile.ToneSequences.TryGetValue(name, out var l);
-            var length = inLong ? l!.Count : inShort ? s!.Count : 0;
+            var has = file.ToneSequences.TryGetValue(name, out var tones);
 
             _output.WriteLine(
-                $"{name,-16} | {code,4} | {(inShort ? "yes" : "NO "),-17} | {(inLong ? "yes" : "NO "),-16} | "
-                + $"{(length == 0 ? "-" : length.ToString()),-6} | {longFile.Symbols}");
+                $"{name,-16} | {code,4} | {(has ? "yes" : "NO "),-13} | {(has ? tones!.Count.ToString() : "-"),-6} | {file.Symbols}");
         }
 
         _output.WriteLine("");
-        _output.WriteLine($"codes          : short {shortFile.Codes.Count}, long {longFile.Codes.Count}");
-        _output.WriteLine($"tone sequences : short {shortFile.ToneSequences.Count}, long {longFile.ToneSequences.Count}");
-        _output.WriteLine($"every sequence is the file's own symbol count: short {shortFile.ToneSequences.Values.All(v => v.Count == shortFile.Symbols)}, long {longFile.ToneSequences.Values.All(v => v.Count == longFile.Symbols)}");
+        _output.WriteLine($"codes          : {file.Codes.Count}");
+        _output.WriteLine($"tone sequences : {file.ToneSequences.Count}");
+        _output.WriteLine($"every code the file lists has a sequence: {file.Codes.Keys.All(file.ToneSequences.ContainsKey)}");
+        _output.WriteLine($"every sequence is the file's own symbol count: {file.ToneSequences.Values.All(v => v.Count == file.Symbols)}");
 
         // **THE TWO TABLES `RsidCodes` DOES NOT PARSE**, read straight off the JSON so the answer
         // is the file's and not the parser's.
-        foreach (var (what, text) in new[] { (ShortPath, shortText), (LongPath, longText) })
-        {
-            using var document = JsonDocument.Parse(text);
-            var keys = document.RootElement.EnumerateObject().Select(p => p.Name).ToArray();
-            var squares = document.RootElement.TryGetProperty("squares", out var q) ? q.GetArrayLength() : -1;
-            var indices = document.RootElement.TryGetProperty("indices", out var i) ? i.GetArrayLength() : -1;
+        using var document = JsonDocument.Parse(text);
+        var keys = document.RootElement.EnumerateObject().Select(p => p.Name).ToArray();
+        var squares = document.RootElement.TryGetProperty("squares", out var q) ? q.GetArrayLength() : -1;
+        var indices = document.RootElement.TryGetProperty("indices", out var i) ? i.GetArrayLength() : -1;
 
-            _output.WriteLine("");
-            _output.WriteLine($"{what}");
-            _output.WriteLine($"  top-level keys : {string.Join(", ", keys)}");
-            _output.WriteLine($"  squares        : {(squares < 0 ? "ABSENT" : squares + " entries")}");
-            _output.WriteLine($"  indices        : {(indices < 0 ? "ABSENT" : indices + " entries")}");
-
-            if (document.RootElement.TryGetProperty("_note", out var note))
-            {
-                _output.WriteLine($"  _note          : {note.GetString()}");
-            }
-        }
-
-        // **AND WHERE THE TWO FILES AGREE ON A SEQUENCE, DO THEY AGREE TONE FOR TONE.**
         _output.WriteLine("");
+        _output.WriteLine($"  top-level keys : {string.Join(", ", keys)}");
+        _output.WriteLine($"  squares        : {(squares < 0 ? "ABSENT" : squares + " entries")}");
+        _output.WriteLine($"  indices        : {(indices < 0 ? "ABSENT" : indices + " entries")}");
 
-        foreach (var (name, tones) in shortFile.ToneSequences)
+        if (document.RootElement.TryGetProperty("_note", out var note))
         {
-            var same = longFile.ToneSequences.TryGetValue(name, out var other) && other!.SequenceEqual(tones);
-
-            _output.WriteLine($"  {name,-16} shared by both files, identical tone for tone: {same}");
+            _output.WriteLine($"  _note          : {note.GetString()}");
         }
     }
 
@@ -154,21 +140,18 @@ public sealed class Unit377Trace
         _output.WriteLine("");
         _output.WriteLine($"EMBEDDED copy in the assembly : {embedded!.Codes.Count} codes, {embedded.ToneSequences.Count} tone sequences");
 
-        foreach (var (path, parts) in new[] { (ShortPath, new[] { "data", "rsid", "rsid-codes.json" }), (LongPath, new[] { "assets", "data", "rsid-codes.json" }) })
-        {
-            var tree = RsidCodes.Parse(File.ReadAllText(Path.Combine(new[] { root }.Concat(parts).ToArray())));
-            var sameCodes = tree.Codes.Count == embedded.Codes.Count
-                            && tree.Codes.All(c => embedded.CodeOf(c.Key) == c.Value);
-            var sameSequences = tree.ToneSequences.Count == embedded.ToneSequences.Count
-                                && tree.ToneSequences.All(s => embedded.ToneSequences.TryGetValue(s.Key, out var t) && t!.SequenceEqual(s.Value));
+        var tree = RsidCodes.Parse(File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json")));
+        var sameCodes = tree.Codes.Count == embedded.Codes.Count
+                        && tree.Codes.All(c => embedded.CodeOf(c.Key) == c.Value);
+        var sameSequences = tree.ToneSequences.Count == embedded.ToneSequences.Count
+                            && tree.ToneSequences.All(s => embedded.ToneSequences.TryGetValue(s.Key, out var t) && t!.SequenceEqual(s.Value));
 
-            _output.WriteLine(
-                $"TREE copy at {path,-32}: {tree.Codes.Count} codes, {tree.ToneSequences.Count} tone sequences; "
-                + $"codes match the embedded copy {sameCodes}, sequences match {sameSequences}");
-        }
+        _output.WriteLine(
+            $"TREE copy at {OnePath,-32}: {tree.Codes.Count} codes, {tree.ToneSequences.Count} tone sequences; "
+            + $"codes match the embedded copy {sameCodes}, sequences match {sameSequences}");
 
         _output.WriteLine("");
-        _output.WriteLine("THE ENGINE IS READING THE FILE WHOSE SEQUENCE COUNT MATCHES THE EMBEDDED COPY'S.");
+        _output.WriteLine("THE TREE COPY AND THE EMBEDDED COPY ARE ONE FILE, AND THERE IS NO SECOND ONE TO DISAGREE WITH.");
         _output.WriteLine($"Burst available for each of the eight codes, from the embedded copy the engine actually uses:");
 
         foreach (var (name, code) in embedded.Codes.OrderBy(c => c.Value))

@@ -161,7 +161,7 @@ public sealed class TheOliviaSeamTests : IDisposable
     public async Task AnUnreadableTableMovesNothingAndThePanelSaysWhy()
     {
         var root = RepoRoot();
-        var rsid = File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json"));
+        var rsid = File.ReadAllText(Path.Combine(root, "assets", "data", "rsid-codes.json"));
         var broken = OliviaData.Read("{ \"rows\": [", rsid);
 
         Assert.NotNull(broken.Problem);
