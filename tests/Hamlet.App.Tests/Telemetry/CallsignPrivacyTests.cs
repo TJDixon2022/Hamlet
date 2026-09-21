@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 81;
+    private const int ExpectedEventMethodCount = 82;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -444,6 +444,53 @@ public sealed class CallsignPrivacyTests : IDisposable
                 TimeSpan.FromMilliseconds(42)));
 
         AppEvents.DecodesReachedTheScreen(telemetry, 4, 4, 12, 1, 2);
+
+        // **WHAT BECAME OF A ROW AND OF A CARD ON THE SCREEN** (R36, work instruction 380 task
+        // 2, criterion 3.5). **This is the newest ground the rule has to cover and one of the
+        // most tempting**: the thing a reader most wants to know about a hidden row is WHICH
+        // row, and the obvious way to say which is the station's callsign. It is not a
+        // parameter of this method, and neither is a grid nor a word of the text - an offset, a
+        // slot, a dial, a kind, a count and a reason are, and this walk is what keeps that
+        // provable rather than asserted. **Every one of the five states, both kinds, both
+        // categories and the scrolled-out line's viewport numbers are walked**, so no branch of
+        // the one writer escapes the scan.
+        foreach (var became in Enum.GetValues<OnScreenState>())
+        {
+            // A slotted row, which goes in the Decode category.
+            AppEvents.OnScreen(
+                telemetry, OnScreenKind.Row, became, OnScreenBy.CqFilter,
+                isTextOnly: false, offsetHz: 1240, slot: "214135", dialHz: 14_074_000,
+                count: 1, subMode: "FT8");
+
+            // A text row, which goes in the Psk31 category and has no slot and no dial.
+            AppEvents.OnScreen(
+                telemetry, OnScreenKind.Row, became, OnScreenBy.Nothing,
+                isTextOnly: true, offsetHz: 1100.5, slot: "", dialHz: 0,
+                count: 7, subMode: "Olivia");
+
+            // A card, on both sides of the same choice.
+            AppEvents.OnScreen(
+                telemetry, OnScreenKind.Card, became, OnScreenBy.Dismissed,
+                isTextOnly: true, offsetHz: 700, slot: "", dialHz: 0,
+                count: 1, subMode: "PSK31");
+
+            AppEvents.OnScreen(
+                telemetry, OnScreenKind.Card, became, OnScreenBy.AddressedToOperator,
+                isTextOnly: false, offsetHz: null, slot: "214150", dialHz: 14_074_000,
+                count: 1, subMode: "");
+        }
+
+        // The scroll-settle shape, where the payload is widest.
+        AppEvents.OnScreen(
+            telemetry, OnScreenKind.Row, OnScreenState.ScrolledOut,
+            PanelKeys.DigitalDecoded, isTextOnly: false, offsetHz: null, slot: "",
+            dialHz: 0, count: 26, subMode: "FT8",
+            new OnScreenViewport(11, 18, 720.4, 141.2, 200));
+
+        AppEvents.OnScreen(
+            telemetry, OnScreenKind.Card, OnScreenState.Folded,
+            PanelKeys.DigitalMine, isTextOnly: true, offsetHz: null, slot: "",
+            dialHz: 0, count: 3, subMode: "Olivia");
 
         AppEvents.DigitalDecoderStarted(telemetry, "Ft8", 15.0, 48_000, "USB Audio CODEC");
 

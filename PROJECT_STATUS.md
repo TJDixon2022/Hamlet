@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: running
-TASK: TASK 1 of 5
+TASK: TASK 2 of 5
 WORK_INSTRUCTION: 380 - the record says what was on screen: one event a change, sampled, and unit 337 diagnosed from the file with no screenshot
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T16:28:07-04:00
-NOTE: Task 1 measured, all seven items. The budget is decided by arithmetic: 3360 rows an hour counted off a 14-decode slot over 8 slots, one on_screen line 267 bytes measured on the file (142 of it the schema-B envelope), so one event per row is 876 kB an hour - 17.5 times 3.4's 50 kB. 50 kB buys 191 lines an hour, one every 18.8 s, 0.80 a slot - LESS THAN ONE, so the sampling window cannot be the slot. Two findings against section 5: the squelch is not a visibility gate on a text row at all, and decodes_drawn already carries per-slot counts section 5 does not mention. Committing the trace.
+UPDATED: 2026-09-21T16:30:36-04:00
+NOTE: AppEvents.OnScreen landed - one writer, one event name, the category chosen inside it from the item's own IsTextOnly and never at a call site - with OnScreenKind, OnScreenState, OnScreenBy and OnScreenViewport as closed types so a token cannot be mistyped. CallsignPrivacyTests grown 81 to 82 IN THE SAME COMMIT, its walk writing all five states on both kinds in both categories plus the scroll-settle shape: 4 of 4 green, no commit tip leaves a carry-forward name red.
 
 ---
 

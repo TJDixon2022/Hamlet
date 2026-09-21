@@ -1062,6 +1062,126 @@ public static class AppEvents
             decodes > 0 && rowsAdded == 0 ? TelemetryLevel.Warn : TelemetryLevel.Info);
 
     /// <summary>
+    /// **What became of a decoded row, or a card, on the screen** (R36, work instruction 380
+    /// section 6 ruling 1, criterion 3.1 and 3.2).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="kind">A row or a card.</param>
+    /// <param name="state">Which of the five things became of it.</param>
+    /// <param name="by">
+    /// The gate or the panel that did it - <see cref="OnScreenBy"/>, a <c>PanelKeys</c> value,
+    /// or empty where nothing did.
+    /// </param>
+    /// <param name="isTextOnly">
+    /// True for a PSK31 or Olivia item, false for a slotted one. **It chooses the category and
+    /// it is a fact about the item**, handed in by the call site rather than decided there.
+    /// </param>
+    /// <param name="offsetHz">Where a text row sits, or where the station a card stands for
+    /// sits, or null.</param>
+    /// <param name="slot">A slotted row's slot as <c>HHmmss</c>, or "".</param>
+    /// <param name="dialHz">The dial it was heard on, or 0.</param>
+    /// <param name="count">1 for an item event, and <c>n</c> where one line stands for
+    /// <c>n</c> items inside a sampling window.</param>
+    /// <param name="subMode">The strip label the operator chose, or "" for unknown.</param>
+    /// <param name="viewport">The scroller's numbers, on a <c>scrolled_out</c> line only.</param>
+    /// <remarks>
+    /// <para>**ONE WRITER, ONE EVENT NAME, AND R13 CUTS BOTH WAYS.** The rule is *no new event
+    /// type where an existing writer will carry it*: none of the eleven existing writers carries
+    /// what became of a row, and five new ones where one will do is the same fault from the other
+    /// side. <see cref="DecodesReachedTheScreen"/> is the nearest thing in the tree and it is a
+    /// per-slot COUNT - it can say four rows were drawn and three were not, and it cannot say
+    /// WHICH, or WHERE, or BY WHAT, which is the whole of R36's complaint.</para>
+    /// <para>**THE CATEGORY IS CHOSEN HERE AND NEVER AT A CALL SITE.** A text row is the
+    /// operator's PSK31 story and goes in <see cref="TelemetryCategory.Psk31"/>; a slotted row is
+    /// FT8's and goes in <see cref="TelemetryCategory.Decode"/>. That is the switch he already
+    /// uses for each mode, and the <c>Psk31</c> member's own remarks say why the two are not one:
+    /// a switch somebody turns off to quieten FT8 would take the PSK31 answers with it. **No new
+    /// category** - the enum's comment makes adding one a deliberate act, it would need a
+    /// Settings switch, and nothing in this step licenses it.</para>
+    /// <para>**AN OFFSET, A SLOT, A KIND, A COUNT, A REASON** (HM-DEC-018 §2.1, and the
+    /// <c>Psk31</c> category's own narrower line). There is no parameter here that could hold a
+    /// callsign, a grid, an operator's name or a word of decoded text, and the privacy walk in
+    /// <c>CallsignPrivacyTests</c> scans the serialised JSON rather than trusting this
+    /// sentence.</para>
+    /// <para>**IT IS A READING AND NOTHING ACTS ON IT** (CLAUDE.md §0.2). Nothing on the screen
+    /// changes because a line was written, and nothing the screen does depends on one having
+    /// been.</para>
+    /// </remarks>
+    public static void OnScreen(
+        ITelemetry? telemetry,
+        OnScreenKind kind,
+        OnScreenState state,
+        string by,
+        bool isTextOnly,
+        double? offsetHz,
+        string slot,
+        long dialHz,
+        int count,
+        string subMode,
+        OnScreenViewport? viewport = null)
+    {
+        if (telemetry is null)
+        {
+            return;
+        }
+
+        var data = new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            ["kind"] = kind == OnScreenKind.Card ? "card" : "row",
+            ["state"] = Word(state),
+            ["by"] = by ?? "",
+            ["count"] = count,
+            ["subMode"] = string.IsNullOrWhiteSpace(subMode)
+                ? StartupSnapshot.Unknown
+                : subMode,
+        };
+
+        // **WHERE IT WAS, IN WHICHEVER TERMS THE ITEM HAS.** A text row has an audio offset
+        // and no slot; a slotted row has both a slot and a dial. **A fact Hamlet does not have
+        // is absent rather than zero** (§0.0): a `slot` of "" and a `dialHz` of 0 would read as
+        // a row heard at the bottom of the band in the first second of the day.
+        if (offsetHz is { } hz)
+        {
+            data["offsetHz"] = Math.Round(hz, 1);
+        }
+
+        if (!string.IsNullOrEmpty(slot))
+        {
+            data["slot"] = slot;
+        }
+
+        if (dialHz > 0)
+        {
+            data["dialHz"] = dialHz;
+        }
+
+        if (viewport is { } seen)
+        {
+            data["firstIndex"] = seen.First;
+            data["lastIndex"] = seen.Last;
+            data["extent"] = Math.Round(seen.Extent, 1);
+            data["viewport"] = Math.Round(seen.Viewport, 1);
+            data["offset"] = Math.Round(seen.Offset, 1);
+        }
+
+        telemetry.Write(
+            isTextOnly ? TelemetryCategory.Psk31 : TelemetryCategory.Decode,
+            "on_screen",
+            data);
+    }
+
+    /// <summary>The five states as the file spells them.</summary>
+    private static string Word(OnScreenState state)
+        => state switch
+        {
+            OnScreenState.Drawn => "drawn",
+            OnScreenState.Filtered => "filtered",
+            OnScreenState.ScrolledOut => "scrolled_out",
+            OnScreenState.Folded => "folded",
+            _ => "removed",
+        };
+
+    /// <summary>
     /// **The owner's points file was read, or was not** (work instruction 331 task 6, §R13).
     /// </summary>
     /// <param name="telemetry">The sink, or null.</param>
