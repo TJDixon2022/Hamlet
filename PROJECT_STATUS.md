@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 377 - one RSID file, seven Olivia variants, and none of them o
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T12:36:34-04:00
-NOTE: Unit 377 task 3: the loopback ran and all seven variants came back 10 of 10 identical, 70 of 70 cases, so the four flags are flipped true in this same commit. The burst loopback went 12 of 12 to 24 of 24 across three centers. Committing the run and the flags together.
+UPDATED: 2026-09-21T12:40:02-04:00
+NOTE: Unit 377 task 3 complete: the refusal test is green inside TheOliviaSendTests 24 of 24, and it is on the app carry-forward line by type and method with its paragraph and the human-readable list changed to match. Committing, then task 4's exit run.
 
 ---
 

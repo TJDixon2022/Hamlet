@@ -311,6 +311,94 @@ public sealed class TheOliviaSendTests : IDisposable
     }
 
     /// <summary>
+    /// **R41's gate: a variant Hamlet has not read back off its own audio is refused at the send
+    /// path, with the true reason, and nothing is composed and nothing is keyed.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE FILE IS NOT EDITED** (§10), the way the name above does not edit it: a reading
+    /// of the real format with `proved_by_loopback` taken out of every row is handed to the panel,
+    /// which is exactly the state a variant that has never been through the loopback leaves it in.
+    /// **Absent means not proved** - that is the rule this asserts from the outside.</para>
+    /// <para>**IT IS WRITTEN SO IT STAYS TRUE WHEN EVERY VARIANT IS PROVED.** All seven rows of
+    /// the shipped file are `proved_by_loopback: true` as unit 377 leaves them, so an unproved
+    /// variant has to be made rather than found, and this name goes on asserting the gate for the
+    /// eighth variant nobody has added yet.</para>
+    /// <para>**NOTHING PERSONAL IN THE EVENT** (HM-DEC-018 §2.1): the refusal carries the variant
+    /// and the reason and never the text or a callsign. **AND NOTHING AT THE RADIO** (R11): the
+    /// sentence does not mention a knob, a meter or the rig.</para>
+    /// </remarks>
+    [Fact]
+    public void AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed()
+    {
+        FakeSink sink;
+        FakePort port;
+        string line;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "377", _ => true))
+        {
+            var model = Listening(telemetry);
+            var parts = Arm(model, telemetry);
+
+            sink = parts.Sink;
+            port = parts.Port;
+
+            // **THE CALLING TABLE AND THE CODES ARE THE REAL ONES**, so the refusal being measured
+            // is the loopback gate's and not the announcement's: with the codes missing the send
+            // would be refused one gate earlier, for another reason, and prove nothing about this.
+            var format = File.ReadAllText(Path.Combine(Root(), "data", "olivia", "format.json"));
+
+            model.UseOliviaDataForTests(
+                OliviaData.Read(
+                    File.ReadAllText(Path.Combine(Root(), "data", "bands", "olivia-calling.json")),
+                    File.ReadAllText(Path.Combine(Root(), "assets", "data", "rsid-codes.json")),
+                    format.Replace(", \"proved_by_loopback\": true", "", StringComparison.Ordinal)));
+
+            model.SendCallToAnyoneCommand.Execute(null);
+            line = model.DigitalSendLine;
+
+            Settle(model);
+        }
+
+        var lines = Lines();
+        var refused = Assert.Single(Events(lines, "psk31_send_refused"));
+
+        _output.WriteLine("send line: " + line);
+        _output.WriteLine("psk31_send_refused: " + refused.GetRawText());
+
+        // **THE REASON IS THE TRUE ONE** (§0.0). `cannot_compose` would say the composer tried and
+        // failed; `no_announcement` would say the file carries no burst. Neither is what happened.
+        Assert.Equal("variant_not_proved", refused.GetProperty("reason").GetString());
+
+        // **NO NEW EVENT AND NO NEW STAGE** (R13): it is the refusal that already existed.
+        Assert.Equal("compose", refused.GetProperty("stage").GetString());
+        Assert.Equal(OliviaCallingTable.CallingVariant, refused.GetProperty("variant").GetString());
+
+        // **NOTHING WAS COMPOSED AND NOTHING WAS KEYED**: no sound card call, nothing on the wire
+        // - so no `Arm` and no `PttOn` - no transmission record and no composed stage.
+        Assert.Equal(0, sink.TimesCalled);
+        Assert.Empty(port.Written);
+        Assert.Empty(Events(lines, TransmitRecord.EventName));
+        Assert.Empty(Events(lines, "psk31_send_composed"));
+        Assert.DoesNotContain(SendStage.Composed, Stages(lines));
+
+        // **AND THE OPERATOR IS TOLD, IN A SENTENCE THAT SAYS THE TRUE REASON** (§0.0, R19).
+        Assert.Contains("it has not proved to itself that it can read back Olivia", line, StringComparison.Ordinal);
+        Assert.Contains(OliviaCallingTable.CallingVariant, line, StringComparison.Ordinal);
+        Assert.Contains("will not put that variant on the air", line, StringComparison.Ordinal);
+
+        // **NOTHING AT THE RADIO** (R11) and **nothing personal in the record** (HM-DEC-018 §2.1).
+        foreach (var word in new[] { "dial", "VFO", "on the radio", "meter", "ALC", "knob" })
+        {
+            Assert.DoesNotContain(word, line, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var word in new[] { Mine, "FN42", "Boston", "Pat" })
+        {
+            Assert.DoesNotContain(word, refused.GetRawText(), StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    /// <summary>
     /// **4.6: Stop pressed part way through an 8/250 send aborts it by PSK31's own path, with an
     /// ordinary unkey and the abort's record.**
     /// </summary>
