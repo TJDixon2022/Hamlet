@@ -1132,9 +1132,29 @@
     381, and two verdicts another session returned were transcribed - step 3 done on unit 381,
     and step 7 partial on 7.2, which is parked. Nothing in this unit opens a port, enumerates a
     device or keys anything, and nothing in it is evidence about the radio (FACT-004).
+
+    1.13.69 -> 1.13.70, UNIT 383 TASK 0. A PATCH, STEP 4 OF THE HARDENING PHASE, THE SECOND UNIT
+    SPENT ON IT - 4.3 MEASURED OVER THE WHOLE SHEET, AND THE CANNED MACRO ROWS RECORDED AS
+    CANNED. The separate judging session that read unit 382's report returned STATE_AFTER:
+    partial on step 4, with 4.1 and 4.2 met and 4.3 open, because the R11 word scan excludes the
+    sheet's quoted lines and the one sentence that actually sends the operator to the rig is
+    inside a quote. ARBITER.md section 8 makes that verdict the evidence, so this unit's task 0
+    transcribes it into both record files and repairs nothing. The scan is then rewritten to
+    cover EVERY line of docs/RADIO_SHEET.md with no exclusion, against two tiers - tier 1, the
+    instructions, a red anywhere in the sheet's own prose, and tier 2, the hardware nouns,
+    counted and printed and never a red - with a quoted hit permitted only as a declared,
+    closed-list exception proved character for character to be a sentence Hamlet itself
+    produces. The word list is the union of the sheet's own eleven with the two R11 lists
+    already in the tree, so the page is held to the list Hamlet's own sentences are held to. NO
+    FILE UNDER src CHANGES FOR 4.3. The night's second half is step 7's 7.2, the named drop
+    candidate: all seven canned rows to write psk31_send_composed with macro canned, the macro's
+    own token kept in a second key so nothing the record said before is lost, the press MARKED
+    and never re-routed, R1's certainty gate untouched. Nothing in this unit opens a port,
+    enumerates a device or keys anything, and nothing in it is evidence about the radio
+    (FACT-004).
   -->
   <PropertyGroup>
-    <Version>1.13.69</Version>
+    <Version>1.13.70</Version>
   </PropertyGroup>
 
   <!--
