@@ -512,6 +512,18 @@ public sealed class AchievementCategory
             "first_contact" => log.Contacts,
             "first_dx" => log.Contacts.Where(c => c.Entity is not null && mine is not null && !Same(c.Entity, mine)),
             "first_psk31" => log.InMode("PSK31"),
+
+            // **AND THE OTHER KEYBOARD MODE** (work instruction 379 task 2, criterion 8.2).
+            // Without this row the key fell to the empty default below, so `first_olivia` was
+            // **earned and scored with nobody's name on it**: measured at task 1 on one log
+            // holding both contacts, `A PSK31 contact` carried `1 contact`, the callsign, the
+            // grid, `20 m · PSK31` and the date, and `An Olivia contact` carried five empty
+            // strings for the same facts. The score agreed and the card did not, which is the
+            // worse half - a page saying he earned a first and unable to say who gave it to him.
+            // **The name is the table's** (`ContactModes.OliviaName`), so this row and the log's
+            // own `Mode.Name` cannot come to disagree about the spelling.
+            "first_olivia" => log.InMode(ContactModes.OliviaName),
+
             "first_cw_qso" => log.InMode("CW"),
             "first_over_5000_miles" => log.Contacts.Where(c => c.Miles >= 5000),
             "first_over_10000_miles" => log.Contacts.Where(c => c.Miles >= 10000),
