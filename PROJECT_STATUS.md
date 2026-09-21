@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: running
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 380 - the record says what was on screen: one event a change, sampled, and unit 337 diagnosed from the file with no screenshot
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T16:19:54-04:00
-NOTE: Task 0 measurements all in. Eight movable types 71 of 71 green; ViewTestsActThroughControlsTests 1 of 2 with the inherited red verbatim. UNIT 380 entry appended to PHASE_OUTCOME.md with its ENTRY line. Committing task 0 with a pathspec.
+UPDATED: 2026-09-21T16:28:07-04:00
+NOTE: Task 1 measured, all seven items. The budget is decided by arithmetic: 3360 rows an hour counted off a 14-decode slot over 8 slots, one on_screen line 267 bytes measured on the file (142 of it the schema-B envelope), so one event per row is 876 kB an hour - 17.5 times 3.4's 50 kB. 50 kB buys 191 lines an hour, one every 18.8 s, 0.80 a slot - LESS THAN ONE, so the sampling window cannot be the slot. Two findings against section 5: the squelch is not a visibility gate on a text row at all, and decodes_drawn already carries per-slot counts section 5 does not mention. Committing the trace.
 
 ---
 
