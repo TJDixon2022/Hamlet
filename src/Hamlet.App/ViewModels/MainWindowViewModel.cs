@@ -2478,6 +2478,33 @@ public partial class MainWindowViewModel : ObservableObject
             || string.Equals(chosen, "PSK31", StringComparison.Ordinal)
             || string.Equals(chosen, OliviaLabel, StringComparison.Ordinal);
 
+    /// <summary>
+    /// **The sub-mode the press was made under, for the record: PSK31, Olivia, FT8, FT4 - never a
+    /// mapped family** (`PHASE_PLAN.md` criterion 2.1, work instruction 374 §6's second ruling).
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHAT WAS WRONG, AND IT WAS WRITTEN DOWN TWICE ON HIS OWN EVENINGS** (§R35, seen
+    /// 2026-09-11 and 2026-09-14). The operator-action events wrote <c>_digitalMode.ToString()</c>,
+    /// and <see cref="DigitalMode"/> has **two** members: <see cref="DigitalModeFor"/> answers
+    /// <c>Ft4</c> for the string `FT4` and <c>Ft8</c> for everything else, PSK31 and Olivia
+    /// included. That mapping is right for a grid, a cutter and a decoder and **wrong as a name for
+    /// what the operator pressed** - so an evening spent on PSK31 read as an evening on FT8, and
+    /// the file Tim would send back could not be told from one.</para>
+    /// <para>**THE TRUE VALUE WAS ALREADY IN THIS FILE.** <see cref="ChosenDigitalMode"/> is the
+    /// canonical strip label, set in exactly one place - the chip press - through
+    /// <c>DigitalModeChip.Canonical</c>, which answers one of the strip's four labels or null.
+    /// <c>send_refused</c> already wrote it this way; the other sites did not follow.</para>
+    /// <para>**AND NOTHING CHOSEN IS NOT FT8.** Where he has pressed nothing, this is
+    /// <see cref="StartupSnapshot.Unknown"/>, exactly as <c>send_refused</c> writes it - writing
+    /// <c>Ft8</c> for a mode nobody picked is the same lie in smaller print (§0.0).</para>
+    /// <para>**IT IS NOT WHICH DECODER RAN.** <c>DigitalDecoderStarted</c> keeps
+    /// <c>_digitalMode</c> deliberately: under PSK31 the decoder that starts genuinely is FT8's,
+    /// and renaming it would put a lie in the file to take one out.</para>
+    /// <para>**NOTHING PERSONAL** (HM-DEC-018 §2.1): a mode label, and no callsign, grid or typed
+    /// word anywhere near it.</para>
+    /// </remarks>
+    private string PressedSubMode => ChosenDigitalMode ?? StartupSnapshot.Unknown;
+
     /// <summary>True while the operator has PSK31 pressed.</summary>
     private bool IsPsk31Chosen
         => string.Equals(ChosenDigitalMode, "PSK31", StringComparison.Ordinal);
@@ -13399,6 +13426,12 @@ public partial class MainWindowViewModel : ObservableObject
 
         _digitalDecoderAnnounced = shape;
 
+        // **THIS ONE KEEPS THE MAPPED FAMILY, AND THAT IS THE POINT OF IT** (work instruction 374
+        // §6's second ruling, criterion 2.1). Every other site that wrote `_digitalMode.ToString()`
+        // was answering *which sub-mode did he press*, and answering it wrongly - see
+        // <see cref="PressedSubMode"/>. This one answers **which decoder started**, and under PSK31
+        // the decoder that starts genuinely is FT8's. Writing `PSK31` here would put a lie in the
+        // file to take one out.
         AppEvents.DigitalDecoderStarted(
             _telemetry,
             _digitalMode.ToString(),
@@ -16745,7 +16778,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         AppEvents.OperatorAction(
-            _telemetry, "psk31_answer_pressed", OperatingMode, _digitalMode.ToString());
+            _telemetry, "psk31_answer_pressed", OperatingMode, PressedSubMode);
 
         _psk31Macro = Psk31Macro.Answer;
         _psk31SendAtHz = OffsetOn(row!);
@@ -16889,7 +16922,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         AppEvents.OperatorAction(
-            _telemetry, "psk31_typed_pressed", OperatingMode, _digitalMode.ToString());
+            _telemetry, "psk31_typed_pressed", OperatingMode, PressedSubMode);
 
         _psk31Macro = Psk31Macro.None;
         _psk31Typed = true;
@@ -16976,7 +17009,7 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31Asked.Add(station);
 
         AppEvents.OperatorAction(
-            _telemetry, "psk31_card_opened", OperatingMode, _digitalMode.ToString());
+            _telemetry, "psk31_card_opened", OperatingMode, PressedSubMode);
 
         RefreshPsk31Card(station);
 
@@ -18376,7 +18409,7 @@ public partial class MainWindowViewModel : ObservableObject
         // 305 task 2). He pressed this and nothing recorded it, so *he did not
         // press* and *he pressed and nothing happened* were the same file.
         AppEvents.OperatorAction(
-            _telemetry, "cq_pressed", OperatingMode, _digitalMode.ToString());
+            _telemetry, "cq_pressed", OperatingMode, PressedSubMode);
 
         SendMessage(CallToAnyoneText);
     }

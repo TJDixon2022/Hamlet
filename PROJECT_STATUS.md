@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 374 - the order is measured where the height is actually given up, and the record names the mode the press was made under
 BALL: claude
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T22:11:01-04:00
-NOTE: Unit 374 task 2 - step 1 closes: 1.2 at 4 of 4, and 1.1, 1.3 and 1.4 re-checked green at 33 of 33 with the nine sizes unmoved. Committing the R12 rewrite on its own.
+UPDATED: 2026-09-20T22:16:30-04:00
+NOTE: Unit 374 task 3 - 2.1 met: the four presses write PSK31, Olivia, FT8, FT4 and unknown where nothing is chosen; 12 of 12 new, 70 of 70 on the readers and the send guards, none of the four readers needed changing.
 
 ---
 
