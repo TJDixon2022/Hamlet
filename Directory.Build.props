@@ -952,8 +952,25 @@
     dispatcher-loop session fault, not an assertion, and it named a different test on each of two
     runs - and engine 146 of 146. No file under src changes at this task.
   -->
+  <!--
+    1.13.61 -> 1.13.62, UNIT 375 TASK 0. A PATCH, STEP 2 OF THE HARDENING PHASE, FIRST UNIT AIMED
+    AT IT, THE TWO HEADLESS FLAKES ARE MEASURED AND SETTLED AND THE LIST RUNS GREEN FIVE TIMES
+    RUNNING: criteria 2.3 and 2.4, both must-pass and both untouched by any unit. The two names are
+    TheStopIsAlwaysOnScreenTests and TheTestsStayOffTheNetworkTests, each run ten times, each then
+    made deterministic on the test's side under R12 or quarantined into docs/quarantined-tests.txt
+    with its cause named and taken off the carry-forward command line in the same commit. NOTHING
+    IN THIS UNIT CHANGES THE APPLICATION: if the measurement says the second abort pair is written
+    by Hamlet rather than by the test reading too early, work instruction 375 section 6 item 2
+    stops rather than repairs, and the finding goes to the owner. Criterion 2.2, the RSID tone
+    sequences for codes 72-75, is NOT ATTEMPTED and is parked - it would put an announcement on the
+    air for four Olivia variants Hamlet refuses to announce today - so step 2 stays partial. Step
+    2's state token was repaired here from "not started" to "partial" in PHASE_STATUS.md and
+    PHASE_OUTCOME.md, where it disagreed with its own prose. Carry-forward before any change: app
+    211 of 211, engine 146 of 146, both green on the first attempt. No file under src changes in
+    this unit at all.
+  -->
   <PropertyGroup>
-    <Version>1.13.61</Version>
+    <Version>1.13.62</Version>
   </PropertyGroup>
 
   <!--
