@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Avalonia;
@@ -7,6 +8,7 @@ using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
 using Hamlet.App.Controls;
 using Hamlet.App.ViewModels;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Hamlet.App.Tests.Views;
@@ -58,6 +60,60 @@ public sealed class Unit376TheTopBandTests
         (1920, 1040), (900, 620), (1100, 780), (1280, 720), (1366, 728),
         (1536, 824), (1400, 1040), (1920, 1017), (2560, 1400),
     };
+
+    /// <summary>
+    /// **Task 1's before table, measured on this unit's own trace before one pixel moved.**
+    /// </summary>
+    /// <remarks>
+    /// <para>By width: the band with the pills, the band without them, and the working panels' row,
+    /// at 1040 px of window on all three modes - FT8, PSK31 and Olivia measured identically at both
+    /// widths. **Criterion 6.1's *the working panels are taller by the difference* is arithmetic
+    /// against these numbers** (work instruction 376 §6's first ruling, point 5) and never against
+    /// a constant chosen in a test.</para>
+    /// <para>**THESE ARE THIS UNIT'S OWN MEASUREMENTS**, printed by
+    /// <see cref="Unit376TraceWhatTheBandIsMadeOfBeforeOnePixelMoves"/> at task 1 and quoted here:
+    /// 1920 - 243, 190, 450. 1400 - 269, 216, 424.</para>
+    /// </remarks>
+    public static readonly (double Width, double WithPills, double WithoutPills, double PanelRow)[] Before =
+    {
+        (1920, 243, 190, 450),
+        (1400, 269, 216, 424),
+    };
+
+    /// <summary>
+    /// The panel row at unit 354's nine sizes before this unit changed anything, in the order
+    /// <see cref="Unit354Sizes"/> lists them.
+    /// </summary>
+    /// <remarks>
+    /// **MEASURED AT TASK 1 ON THE PINNED-FACTS WINDOW.** Unit 374 recorded 452, 73, 73, 90, 90,
+    /// 230, 426, 429, 829 on the window with content, which is 2 px taller at every size - the
+    /// card's own chrome, as <c>TheWindowGivesUpHeightInOneOrderTests</c> records. **After this
+    /// unit every one of the nine must be the same or larger** (criterion 6.4).
+    /// </remarks>
+    public static readonly double[] BeforeAtUnit354Sizes =
+    {
+        450, 71, 71, 88, 88, 228, 424, 427, 827,
+    };
+
+    /// <summary>
+    /// **What the band measured after R39's four moves, and what it may never again exceed.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS A RATCHET AND NOT THE CRITERION.** 6.1 asks for 180 px with the pills and
+    /// the band reached 214: the sun map is 134 px and may not shrink (6.3), the neighborhood
+    /// card's own header is 26 px, the pills at half height are 30 and the gap to the card is 6,
+    /// so **197 px is the arithmetic floor of the band with the pills** before one word would have
+    /// to leave the window. The band WITHOUT the pills is 178 and does meet 180. The criterion is
+    /// reported as partial with these numbers, and this constant holds the ground that was taken
+    /// so that the next unit cannot give it back without a red.</para>
+    /// </remarks>
+    public const double BandReachedWithThePills = 214;
+
+    /// <summary>The band without the pills, after the moves - and it is inside 6.1's 180.</summary>
+    public const double BandReachedWithoutThePills = 178;
+
+    /// <summary>The working panels' row after the moves, at 1920 and at 1400 alike.</summary>
+    public const double PanelRowReached = 483;
 
     private readonly ITestOutputHelper _output;
 
@@ -128,6 +184,365 @@ public sealed class Unit376TheTopBandTests
 
         _output.WriteLine("");
     }
+
+    // ------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// **Criterion 6.1: the top row is one measured band, and every pixel it gave up went to the
+    /// working panels** - at 1920 and at 1400, on the tallest of FT8, PSK31 and Olivia.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE BAND IS MEASURED BOTH WAYS AND ASSERTED BOTH WAYS.** With the pills it is
+    /// asserted against <see cref="BandReachedWithThePills"/>, the ground this unit took, with
+    /// 6.1's 180 named in the failure message: the criterion is **not** met on that reading and is
+    /// reported partial, because the sun map's 134 px may not shrink (6.3) and the card's header,
+    /// the pills and the gap put the arithmetic floor at about 197. Without the pills - the reading
+    /// <c>TheTopRowTests.Measured</c> has always taken - it is asserted against 6.1's 180 itself,
+    /// which it meets at 178.</para>
+    /// <para>**AND THE PANELS ARE TALLER BY THE DIFFERENCE**, computed against
+    /// <see cref="Before"/> - task 1's own table, measured before one pixel moved - and quoted in
+    /// the failure message. Not against a constant chosen here (work instruction 376 §6's first
+    /// ruling, point 5).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference()
+    {
+        var misses = new List<string>();
+
+        foreach (var (width, wasWithPills, wasWithoutPills, wasPanelRow) in Before)
+        {
+            foreach (var mode in Modes)
+            {
+                var window = TheTopRowTests.Realized(width, TheTopRowTests.WindowHeight, null, null);
+                var model = (MainWindowViewModel)window.DataContext!;
+
+                try
+                {
+                    model.ChosenDigitalMode = mode;
+                    Pump(window);
+
+                    var band = Band(window);
+                    var panelRow = PanelRow(window);
+                    var where = Px(width) + " on " + mode;
+
+                    _output.WriteLine(
+                        where + ": the band is " + Px(band.WithPills) + " px with the pills from "
+                        + Px(wasWithPills) + ", " + Px(band.WithoutPills) + " without from "
+                        + Px(wasWithoutPills) + ", and the panel row " + Px(panelRow) + " from "
+                        + Px(wasPanelRow) + ". " + band.Governs);
+
+                    if (band.WithPills > BandReachedWithThePills + 0.5)
+                    {
+                        misses.Add(
+                            where + ": the band with the pills is " + Px(band.WithPills)
+                            + " px where this unit brought it to " + Px(BandReachedWithThePills)
+                            + " from " + Px(wasWithPills) + ", against criterion 6.1's "
+                            + Px(BandTarget) + ". Height has gone back into the top row.");
+                    }
+
+                    if (band.WithoutPills > BandTarget + 0.5)
+                    {
+                        misses.Add(
+                            where + ": the band without the pills is " + Px(band.WithoutPills)
+                            + " px, against criterion 6.1's " + Px(BandTarget) + ", from "
+                            + Px(wasWithoutPills) + " before.");
+                    }
+
+                    // **TALLER BY THE DIFFERENCE**, and the difference is arithmetic on the before
+                    // table: whatever the band gave up, the three working panels have it.
+                    var gave = wasWithPills - band.WithPills;
+
+                    if (panelRow < wasPanelRow + gave - 0.5)
+                    {
+                        misses.Add(
+                            where + ": the band gave up " + Px(gave) + " px - " + Px(wasWithPills)
+                            + " to " + Px(band.WithPills) + " - and the panel row went "
+                            + Px(wasPanelRow) + " to " + Px(panelRow) + ", which is "
+                            + Px(wasPanelRow + gave - panelRow) + " px short of it.");
+                    }
+                }
+                finally
+                {
+                    model.ChosenDigitalMode = "FT8";
+                    window.Close();
+                }
+            }
+        }
+
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
+    /// <summary>
+    /// **Criterion 6.2: nothing left the window.** Every pill, the strip, the band, the frequency,
+    /// the verdict, the license phrase, the best bet, the heard count, the drive and the power
+    /// offer are drawn by name at both widths and on every mode - and the two lines that moved to
+    /// a hover still say what they said, in an operator-facing string.
+    /// </summary>
+    /// <remarks>
+    /// **THE HOVER IS THE POINT OF THIS NAME** (work instruction 376 §6's second ruling). A thing
+    /// that comes off the card goes to a hover **carrying the same words**, so *hiding detail*
+    /// never becomes hiding information (CLAUDE.md §0.5). The legend's sentence is built from
+    /// <c>ModePalette.Legend</c> - the list the map draws its washes from - and the rule of thumb's
+    /// is the static the card's own line was bound to, so neither can drift from what it replaced.
+    /// </remarks>
+    [AvaloniaFact]
+    public void NothingLeftTheWindowAndTheTwoLinesThatMovedStillSayWhatTheySaid()
+    {
+        var misses = new List<string>();
+
+        foreach (var (width, _, _, _) in Before)
+        {
+            foreach (var mode in Modes)
+            {
+                var window = TheTopRowTests.Realized(width, TheTopRowTests.WindowHeight, null, null);
+                var model = (MainWindowViewModel)window.DataContext!;
+
+                try
+                {
+                    model.ChosenDigitalMode = mode;
+                    Pump(window);
+
+                    var where = Px(width) + " on " + mode;
+                    var card = TheTopRowTests.Card(window);
+
+                    // **EVERY PILL.** One button per band in the model, each drawn and each with
+                    // its name in it - the row is half as tall and carries what it carried.
+                    var pills = Pills(window).GetVisualDescendants().OfType<Button>()
+                        .Where(b => b.Classes.Contains("hm-band")).ToList();
+
+                    if (pills.Count != model.Bands.Count || pills.Any(b => !b.IsEffectivelyVisible))
+                    {
+                        misses.Add(
+                            where + ": the band row draws " + pills.Count + " pills of "
+                            + model.Bands.Count + ", " + pills.Count(b => b.IsEffectivelyVisible)
+                            + " of them drawn.");
+                    }
+
+                    foreach (var name in new[]
+                    {
+                        "GreenZoneBand", "GreenZoneFrequency", "GreenZoneModeLine",
+                        "GreenZoneLicenseLine", "GreenZoneHeard", "GreenZoneHeardWindow",
+                        "DigitalTransmitDriveBox", "DigitalTransmitDriveNote",
+                        "DigitalTransmitDriveTip",
+                    })
+                    {
+                        var control = Named(window, name);
+
+                        if (control is null || !control.IsEffectivelyVisible)
+                        {
+                            misses.Add(
+                                where + ": " + name
+                                + (control is null ? " is not on the window at all." : " is not drawn."));
+                        }
+                    }
+
+                    // **THE STRIP ITSELF**, thinner and still drawn with height to draw in.
+                    var strip = window.GetVisualDescendants().OfType<NeighborhoodMapControl>()
+                        .FirstOrDefault();
+
+                    if (strip is null || !strip.IsEffectivelyVisible || strip.Bounds.Height < 24)
+                    {
+                        misses.Add(
+                            where + ": the neighborhood strip is "
+                            + (strip is null ? "absent" : Px(strip.Bounds.Height) + " px tall") + ".");
+                    }
+
+                    // **THE BEST BET AND THE POWER OFFER ARE DRAWN WHEN THERE IS ONE**, which is
+                    // the rule; the fixture pins no best bet, so a flat *it is drawn* would be a
+                    // test of the fixture rather than of the window.
+                    foreach (var (name, expected, why) in new[]
+                    {
+                        ("GreenZoneBestBet", model.GreenZone.HasBestBet, "the green zone has a best bet"),
+                        ("DigitalPsk31PowerLine", model.HasPsk31PowerOffer, "there is a power offer"),
+                    })
+                    {
+                        var control = Named(window, name);
+
+                        if (control is null || control.IsEffectivelyVisible != expected)
+                        {
+                            misses.Add(
+                                where + ": " + name + " is "
+                                + (control is null ? "absent" : control.IsEffectivelyVisible ? "drawn" : "not drawn")
+                                + " where " + why + " is " + expected + ".");
+                        }
+                    }
+
+                    // **NOTHING WAS BOUGHT BY COLLAPSING THE CARD.**
+                    if (!card.IsExpanded)
+                    {
+                        misses.Add(where + ": the neighborhood card is collapsed.");
+                    }
+
+                    // **AND THE TWO THAT MOVED STILL SAY WHAT THEY SAID.**
+                    foreach (var (name, words, what) in new[]
+                    {
+                        ("MapLegendMark", MapLegendControl.InWords, "the map's color key"),
+                        ("GreenZoneRuleOfThumbMark", GreenZone.RuleOfThumb, "the rule of thumb"),
+                    })
+                    {
+                        var mark = Named(window, name) as HintMarkControl;
+
+                        if (mark is null || !mark.IsEffectivelyVisible || mark.Text != words
+                            || words.Trim().Length == 0
+                            || !mark.GetVisualAncestors().Contains(card))
+                        {
+                            misses.Add(
+                                where + ": " + what + " is not on a drawn mark on the card in its own"
+                                + " words - the mark says [" + (mark?.Text ?? "nothing") + "] where the"
+                                + " words are [" + words + "].");
+                        }
+                    }
+
+                    foreach (var word in ModePalette.Legend.Select(c => c.Label)
+                        .Concat(new[] { "listen only", "heard just now" }))
+                    {
+                        if (!MapLegendControl.InWords.Contains(word, StringComparison.Ordinal))
+                        {
+                            misses.Add(
+                                where + ": the legend's hover does not name [" + word
+                                + "], which the legend on the card named.");
+                        }
+                    }
+                }
+                finally
+                {
+                    model.ChosenDigitalMode = "FT8";
+                    window.Close();
+                }
+            }
+        }
+
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
+    /// <summary>
+    /// **Criterion 6.3: the sun map keeps its size and its dot.** Its rectangle is what task 1
+    /// measured before the band came down, and the one marker is still the operator's own grid.
+    /// </summary>
+    [AvaloniaFact]
+    public void TheSunMapIsTheSizeItWasAndStillCarriesHisGrid()
+    {
+        var misses = new List<string>();
+
+        foreach (var (width, _, _, _) in Before)
+        {
+            foreach (var mode in Modes)
+            {
+                var window = TheTopRowTests.Realized(width, TheTopRowTests.WindowHeight, null, null);
+                var model = (MainWindowViewModel)window.DataContext!;
+
+                try
+                {
+                    model.ChosenDigitalMode = mode;
+                    Pump(window);
+
+                    var map = TheTopRowTests.Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
+                    var caption = Named(window, "GreenZoneClockCaption");
+                    var where = Px(width) + " on " + mode;
+
+                    _output.WriteLine(
+                        where + ": the sun map is " + Px(map.Bounds.Width) + " x "
+                        + Px(map.Bounds.Height) + " at grid " + map.OperatorGrid);
+
+                    if (Math.Abs(map.Bounds.Width - SunMapWidth) > 0.5
+                        || Math.Abs(map.Bounds.Height - SunMapHeight) > 0.5)
+                    {
+                        misses.Add(
+                            where + ": the sun map is " + Px(map.Bounds.Width) + " x "
+                            + Px(map.Bounds.Height) + " where task 1 measured " + Px(SunMapWidth)
+                            + " x " + Px(SunMapHeight) + " before the band came down. It is not a"
+                            + " source of pixels (6.3).");
+                    }
+
+                    if (!map.IsEffectivelyVisible
+                        || string.IsNullOrWhiteSpace(map.OperatorGrid)
+                        || map.OperatorGrid != model.GreenZone.OperatorGrid)
+                    {
+                        misses.Add(
+                            where + ": the sun map's one marker is his grid, and the map is "
+                            + (map.IsEffectivelyVisible ? "drawn" : "not drawn") + " at ["
+                            + map.OperatorGrid + "] where the green zone holds ["
+                            + model.GreenZone.OperatorGrid + "].");
+                    }
+
+                    if (caption is null || !caption.IsEffectivelyVisible)
+                    {
+                        misses.Add(where + ": the caption under the sun map is not drawn.");
+                    }
+                }
+                finally
+                {
+                    model.ChosenDigitalMode = "FT8";
+                    window.Close();
+                }
+            }
+        }
+
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
+    /// <summary>
+    /// **Criterion 6.4: unit 354's nine sizes hold with the new top** - at every one of them the
+    /// working panels' row is the same or taller than task 1 measured it, and the drive note,
+    /// which criterion 1.1 names, is still on the window.
+    /// </summary>
+    /// <remarks>
+    /// **STEP 1 IS CLOSED AND THIS IS WHERE IT STAYS CLOSED.** <c>DigitalTransmitDriveNote</c> is
+    /// one of the five controls criterion 1.1 asserts at all nine sizes; making it false would be
+    /// a regression under HM-DEC-165 rather than a trade.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheNineSizesHoldAndThePanelsAreNeverShorterThanTheyWere()
+    {
+        var misses = new List<string>();
+
+        for (var i = 0; i < Unit354Sizes.Length; i++)
+        {
+            var (width, height) = Unit354Sizes[i];
+            var was = BeforeAtUnit354Sizes[i];
+            var window = TheTopRowTests.Realized(width, height, null, null);
+
+            try
+            {
+                Pump(window);
+
+                var panelRow = PanelRow(window);
+                var note = Named(window, "DigitalTransmitDriveNote");
+
+                _output.WriteLine(
+                    Size(width, height) + ": the panel row is " + Px(panelRow) + " where it was "
+                    + Px(was) + ", the band " + Px(Band(window).WithPills) + " with the pills");
+
+                if (panelRow < was - 0.5)
+                {
+                    misses.Add(
+                        Size(width, height) + ": the panel row is " + Px(panelRow)
+                        + " px where task 1 measured " + Px(was) + ". Every one of the nine is the"
+                        + " same or larger after this unit, and this one is smaller.");
+                }
+
+                if (note is null || !note.IsEffectivelyVisible)
+                {
+                    misses.Add(
+                        Size(width, height) + ": DigitalTransmitDriveNote is "
+                        + (note is null ? "not on the window" : "not drawn")
+                        + ", and criterion 1.1 names it at all nine sizes.");
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
+    /// <summary>The sun map's width, as task 1 measured it before anything moved.</summary>
+    public const double SunMapWidth = 246;
+
+    /// <summary>The sun map's height, as task 1 measured it before anything moved.</summary>
+    public const double SunMapHeight = 134;
 
     // ------------------------------------------------------------------------------------
 

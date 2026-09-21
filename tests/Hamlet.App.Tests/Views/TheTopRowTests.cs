@@ -42,6 +42,20 @@ namespace Hamlet.App.Tests.Views;
 public sealed class TheTopRowTests
 {
     /// <summary>R26: *about 190 px tall at 1920*; the instruction's tolerance is 10%.</summary>
+    /// <remarks>
+    /// <para>**IT NAMES THE BAND WITHOUT THE PILLS, AND WORK INSTRUCTION 376 LEFT IT AT 190 ON
+    /// PURPOSE.** <see cref="Measured.TopRowHeight"/> spans two rectangles, the neighborhood card
+    /// and the rig face, and the band-pills row above them is in neither - so this number and its
+    /// four readers measure the narrower of the two readings work instruction 376 §6's first ruling
+    /// names. Unit 376 brought that reading from 190 px to 178 at 1920 and from 216 to 178 at 1400,
+    /// which is inside this target's 10%, so every reader still guards what it guarded.</para>
+    /// <para>**THE CRITERION'S OWN NUMBER IS ELSEWHERE, AND DELIBERATELY NOT HERE**:
+    /// <c>Unit376TheTopBandTests.BandTarget</c> is criterion 6.1's 180, measured by the one helper
+    /// over the band **with** the pills, beside <c>BandReachedWithThePills</c> and
+    /// <c>BandReachedWithoutThePills</c>. Retuning this constant to 178 would have moved four
+    /// readers onto a number none of them was written for, and splitting it in two here would have
+    /// put the criterion's arithmetic in the type that measures the narrower thing.</para>
+    /// </remarks>
     public const double TopRowTarget = 190;
 
     /// <summary>The window height both widths are measured at - the unit's choice.</summary>
