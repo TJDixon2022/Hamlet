@@ -162,6 +162,48 @@ public sealed class TheRowHoverSaysWhatItKnowsTests : IDisposable
         Assert.Contains("He is calling CQ, read for certain", hover, StringComparison.Ordinal);
     }
 
+    /// <summary>**7.3: his grid stays on the hover after he has gone on talking.**</summary>
+    /// <remarks>
+    /// **A FACT HAMLET HAS AND THE HOVER DOES NOT REACH IS A SHORTFALL, NOT AN ABSENCE** (work
+    /// instruction 378 section 6 ruling 2 item 2). `Reading` is the LATEST complete message, so
+    /// reading the grid off it alone would drop his grid - and the distance with it - the moment
+    /// he said `73 SK`, while his conversation card still showed both. The row takes the
+    /// conversation's latest CERTAIN grid instead, which is the card's own selection.
+    /// </remarks>
+    [Fact]
+    public void HisGridStaysOnTheHoverAfterHeHasGoneOnTalking()
+    {
+        var model = Panel("PSK31");
+
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(1, 1000, 10, HisReport) });
+
+        var withTheGrid = model.DigitalDecodes.Single(r => r.IsTextOnly).RowFacts;
+
+        Assert.Contains("Grid FN31 · ", withTheGrid, StringComparison.Ordinal);
+
+        // He signs off. His latest message carries no grid at all.
+        model.ShowPsk31ChannelsForTests(new[]
+        {
+            new Psk31Channel(
+                1, 1000, 10,
+                HisReport + Mine + " de " + His + "  R R  TNX  73 73  " + Mine + " de " + His + " SK\n"),
+        });
+
+        var row = model.DigitalDecodes.Single(r => r.IsTextOnly);
+
+        _output.WriteLine("---- after he signed off ----");
+        _output.WriteLine(row.RowFacts);
+        _output.WriteLine("-----------------------------");
+
+        // **THE LATEST MESSAGE HAS NO GRID IN IT** - which is exactly the state that used to
+        // lose it - and the hover still has his, and the distance with it.
+        Assert.Null(row.Reading!.Grid);
+        Assert.Equal("FN31", row.HisGrid);
+        Assert.Contains("Grid FN31 · ", row.RowFacts, StringComparison.Ordinal);
+        Assert.Contains(" miles ", row.RowFacts, StringComparison.Ordinal);
+        Assert.Contains("He signed off, read for certain", row.RowFacts, StringComparison.Ordinal);
+    }
+
     /// <summary>**7.3: the moment his carrier stopped is said once it has stopped.**</summary>
     [Fact]
     public void WhenHisCarrierWentIsSaidOnceItHasGone()

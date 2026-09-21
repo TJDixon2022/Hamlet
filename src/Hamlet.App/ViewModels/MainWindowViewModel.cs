@@ -2807,6 +2807,25 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Stations whose answer has already been written down, so it is written once.</summary>
     private readonly HashSet<string> _psk31AnswersTaken = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>The grid a station has certainly sent on this channel, over the whole conversation, or "".</summary>
+    /// <param name="id">Which channel.</param>
+    /// <param name="station">Whose grid - the row's sender, which is the latest message's speaker.</param>
+    /// <returns>His grid, or "" where he has sent none Hamlet is sure of.</returns>
+    /// <remarks>
+    /// **THE SAME SELECTION THE CARD ALREADY MAKES** (work instruction 320 item 41), read from
+    /// the same conversation rather than worked out a second way: the latest grid from a message
+    /// he certainly sent, never one off a guess and never the operator's own grid out of his own
+    /// report. **Nothing here composes, arms or keys** (§0.2).
+    /// </remarks>
+    private string HisGridOn(int id, string station)
+        => station.Length > 0 && _psk31Readings.TryGetValue(id, out var talk)
+            ? talk.Messages
+                .Where(m => m.Exchange is { IsCertain: true, Grid: { Length: > 0 } }
+                    && Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station))
+                .Select(m => m.Exchange.Grid!)
+                .LastOrDefault() ?? ""
+            : "";
+
     /// <summary>The latest complete message on a channel, fed only what arrived since last time.</summary>
     /// <param name="channel">The channel as the listener lists it now.</param>
     /// <returns>The parse of its latest complete message, or null where none has finished.</returns>
@@ -4048,6 +4067,14 @@ public partial class MainWindowViewModel : ObservableObject
             _workedBefore ??= ReadWorkedBefore();
 
             row.WorkedBefore = WorkedBeforeNote(row.Sender);
+
+            // **AND HIS GRID FROM THE WHOLE CONVERSATION, NOT FROM HIS LATEST MESSAGE**
+            // (criterion 7.3, R39). He sends it once and then goes on talking, so a hover that
+            // read only `Reading.Grid` would lose his grid - and the distance with it - the
+            // moment he said anything else, while his card still showed both. **It is the card's
+            // own selection**: the latest grid from a message he CERTAINLY sent (§R1), never one
+            // read off a guess and never the operator's own out of his own report.
+            row.HisGrid = HisGridOn(channel.Id, row.Sender);
 
             var index = shown is null ? -1 : IndexOfPsk31Row(shown);
 

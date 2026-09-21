@@ -676,6 +676,19 @@ public sealed partial record DigitalDecodeRow(
     /// </remarks>
     public string StoppedUtc { get; set; } = "";
 
+    /// <summary>The grid this row's station has sent, over the whole conversation, or "".</summary>
+    /// <remarks>
+    /// <para>**THE CONVERSATION'S AND NOT THE LATEST MESSAGE'S** (criterion 7.3). `Reading` is
+    /// the latest complete message, so a station who sent his grid in his report and then said
+    /// `73 SK` would have had no grid on the hover while his conversation card still showed
+    /// one - a fact Hamlet HAS and the hover did not reach, which is a shortfall and not an
+    /// absence.</para>
+    /// <para>**THE LATEST CERTAIN ONE WINS AND A GUESS IS NEVER TAKEN** (§R1), which is the
+    /// same rule and the same selection the card already uses, set by the panel in the one place
+    /// it builds these rows.</para>
+    /// </remarks>
+    public string HisGrid { get; set; } = "";
+
     /// <summary>
     /// **What this row knows, in R39's order - the hover, and never the text again.**
     /// </summary>
@@ -727,7 +740,14 @@ public sealed partial record DigitalDecodeRow(
 
             // 3. His grid and how far away he is - **IF HE SENT ONE**, and from a message the
             //    parser is sure of (§R1). A grid read off a guess is not his grid.
-            if (Reading is { IsCertain: true, Grid: { Length: > 0 } grid })
+            //    **THE CONVERSATION'S GRID OUTRANKS THE LATEST MESSAGE'S**, because he sends it
+            //    once and then goes on talking; the latest message is the fallback for a row
+            //    whose conversation the panel has not handed over.
+            var his = HisGrid.Length > 0
+                ? HisGrid
+                : Reading is { IsCertain: true, Grid: { Length: > 0 } sent } ? sent : "";
+
+            if (his is { Length: > 0 } grid)
             {
                 var here = OperatorLocation.FromGrid(ObserverGrid);
                 var there = OperatorLocation.FromGrid(grid);
