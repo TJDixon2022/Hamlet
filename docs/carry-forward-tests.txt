@@ -749,9 +749,20 @@ reader can see the weak ones; **backward**, that every refusal reachable on the 
 send path is quoted somewhere on the sheet, which is the direction that matters after tonight -
 a later unit that adds a tenth refusal turns this red until the sheet carries it, and forward
 alone would pass a sheet that quoted one sentence and left eight out; **R11**, a word scan over
-the sheet's own prose lines and deliberately NOT over its quotes, because a quoted refusal is
-what the screen already says and is out of the sheet's hands; and **the size**, reported as a
+EVERY line of the sheet, quotes included, in two tiers, with a tier-1 phrase in the sheet's own
+prose a red always and a tier-1 phrase inside a quote allowed only as a declared exception proved
+to be a sentence Hamlet itself produces; and **the size**, reported as a
 number and never as a red, because a length assertion that failed could only be answered by
 dropping a refusal or paraphrasing a quote and both are forbidden. A unit that changes a sentence
 under `src/Hamlet.App` that the sheet quotes turns this red, and the repair is the sheet.
 It opens no device, keys nothing and reaches no network (FACT-004), and runs in about a second.
+
+**ONE NAME IN IT WAS RENAMED BY UNIT 383 AND THE OLD NAME IS GONE** (R12, and it is the same four
+questions, not a fifth). `NoSentenceThisUnitWroteTellsHimToTouchTheRadio` is now
+`NoLineOfTheSheetSendsHimToTheRadioExceptWhereHamletsOwnWordsDo`, because *this unit wrote* is
+exactly the reading the judging session rejected: R11 governs the page Tim reads, not the subset
+of it a session happened to type. A run that reports the old name is a run from before unit 383.
+The rewrite ASSERTS MORE THAN IT REPLACED - every line instead of the prose only, 11 tier-1
+phrases and 11 tier-2 words instead of 11 words, the declared exception list closed in both
+directions with each entry proved to be Hamlet's own sentence and its neighbouring prose asserted
+free of tier-1 - and the type is four names, as it was.

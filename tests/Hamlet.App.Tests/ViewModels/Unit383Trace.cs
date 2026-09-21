@@ -15,7 +15,6 @@ using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Psk31;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Transmit;
-using Hamlet.RadioEngine.Transport;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -32,8 +31,8 @@ namespace Hamlet.App.Tests.ViewModels;
 /// report's section 4 - which is how unit 380 found the squelch, unit 381 the second named
 /// carrier and unit 382 that the <c>mode</c> token cannot fire.</para>
 /// <para>**COMPUTED, NOT SEEN** (FACT-004). No port is opened, no device is enumerated, nothing
-/// is keyed and every sample lives in an array. The one wire here is
-/// <see cref="MuteWire"/>, which is a fake that takes nothing on purpose.</para>
+/// is keyed and every sample lives in an array. The one wire here is <see cref="MuteWire"/>, the
+/// fake that takes nothing on purpose, which lives beside `FakePort` and `FakeSink`.</para>
 /// <para>**EVERY ITEM IS A <c>[Fact]</c>**: none of the six needs a window. The menu items below
 /// are built by <see cref="MainWindow.SendFlyoutFor"/>, which
 /// <c>TheCannedListIsOfferedTests</c> has driven from a plain fact since unit 378.</para>
@@ -855,70 +854,4 @@ public sealed class Unit383Trace : IDisposable
         return here!.FullName;
     }
 
-    /// <summary>
-    /// **A wire that opens nothing and takes nothing**, which is the state
-    /// `MainWindowViewModel.cs:19587` exists to describe.
-    /// </summary>
-    /// <remarks>
-    /// **NO PORT IS EVER OPENED IN THIS PROJECT** (FACT-004). `FakePort` keeps every frame it is
-    /// handed; this one refuses every frame it is handed, and counts them. That is the only
-    /// difference, and it is the difference between *the radio was told to stop* and *neither
-    /// frame got out*.
-    /// </remarks>
-    private sealed class MuteWire : ISerialPort
-    {
-        /// <summary>
-        /// What this wire says when it will not take a frame.
-        /// </summary>
-        /// <remarks>
-        /// **DELIBERATELY NOT `the port took nothing`**, which is the sentence's own fallback
-        /// where neither attempt recorded a reason. A fake whose words are the fallback's words
-        /// would leave a reader unable to say which of the two he was looking at.
-        /// </remarks>
-        public const string Refusal = "the wire would not take the frame";
-
-        /// <summary>How many frames it was handed and would not take.</summary>
-        public int Refused { get; private set; }
-
-        /// <summary>Nothing is ever written, and this says so.</summary>
-        public IReadOnlyList<byte[]> Written => [];
-
-        /// <inheritdoc/>
-        public bool IsOpen { get; private set; } = true;
-
-        /// <inheritdoc/>
-        public string PortName => "MUTE1";
-
-        /// <inheritdoc/>
-        public int BaudRate => 115_200;
-
-        /// <inheritdoc/>
-        public void Open() => IsOpen = true;
-
-        /// <inheritdoc/>
-        public void Close() => IsOpen = false;
-
-        /// <inheritdoc/>
-        public ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken)
-            => ValueTask.FromResult(0);
-
-        /// <inheritdoc/>
-        public ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
-        {
-            Refused++;
-
-            throw new IOException(Refusal);
-        }
-
-        /// <inheritdoc/>
-        public void Write(ReadOnlySpan<byte> buffer)
-        {
-            Refused++;
-
-            throw new IOException(Refusal);
-        }
-
-        /// <inheritdoc/>
-        public void Dispose() => IsOpen = false;
-    }
 }

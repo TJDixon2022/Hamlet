@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -20,8 +21,9 @@ namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
 /// **Criteria 4.2 and 4.3: every sentence `docs/RADIO_SHEET.md` quotes is one Hamlet says, every
-/// refusal Hamlet can say on the PSK31 and Olivia send path is on the sheet, and no sentence the
-/// unit wrote tells the operator to touch the radio.**
+/// refusal Hamlet can say on the PSK31 and Olivia send path is on the sheet, and no line of the
+/// sheet - quotes included - sends the operator to the radio except the sentences Hamlet itself
+/// says, which are declared one by one and proved to be its own.**
 /// </summary>
 /// <remarks>
 /// <para>**IT IS ASSERTED IN BOTH DIRECTIONS, AND THE BACKWARD ONE IS THE POINT** (work
@@ -58,6 +60,71 @@ public sealed class TheRadioSheetQuotesTheScreenTests : IDisposable
 
     /// <summary>The same target in bytes.</summary>
     private const int TargetBytes = 10 * 1024;
+
+    /// <summary>
+    /// **Tier 1: the instructions** (work instruction 383 section 6 ruling 1 item 2).
+    /// </summary>
+    /// <remarks>
+    /// Each one names the box or a control on it **and tells the reader to do something to it**,
+    /// which is the shape R11 forbids: *go and operate it*. The first nine are the union of the
+    /// phrase-shaped entries of the three lists in this tree - the eleven this type used before
+    /// tonight, <c>TheOliviaSendTests.cs:390</c> and <c>TheAlcSentenceTests.cs:44-49</c> - and the
+    /// last two are the ALC list's own, which name a meter on the front of the radio and are on
+    /// this list for the reason that list gives: a sentence that needs one of them has handed the
+    /// judgement back to the person this path exists to spare. **Whole words, case insensitive.**
+    /// </remarks>
+    private static readonly string[] Tier1 =
+    {
+        "move the dial", "turn the dial", "set the dial", "tune the radio", "turn the radio",
+        "turn the knob", "at the radio", "on the radio", "at the rig's front", "ALC bar",
+        "marked zone",
+    };
+
+    /// <summary>
+    /// **Tier 2: the hardware nouns, counted and never a red** (ruling 1 item 3).
+    /// </summary>
+    /// <remarks>
+    /// These name the box and its controls and are **not by themselves an instruction**. *A chip
+    /// is lit when the dial is inside that mode's block* describes where the receiver is tuned and
+    /// asks for nothing; *pick the radio's sound card* names a Windows device; *Connect a radio or
+    /// pick the training radio* is Hamlet saying what it has no way to hear through. Turning any
+    /// of those red would push the page into paraphrasing English, or into dropping a quote, and
+    /// both are forbidden. **What they buy instead is a number in the report.**
+    /// </remarks>
+    private static readonly string[] Tier2 =
+    {
+        "knob", "dial", "VFO", "PTT", "mic gain", "RF gain", "meter", "ALC", "rig",
+        "transceiver", "radio",
+    };
+
+    /// <summary>
+    /// **The closed list of tier-1 phrases the sheet is allowed to carry inside a quote** (ruling
+    /// 1 item 4).
+    /// </summary>
+    /// <remarks>
+    /// <para>**ONE ENTRY PER SENTENCE, WITH ITS SITE AND ONE LINE SAYING WHY HAMLET SAYS IT.**
+    /// The list is closed in both directions: a quoted tier-1 hit that matches no entry is a red,
+    /// and an entry that matches nothing on the sheet is a red too, so it cannot rot into a
+    /// standing permission.</para>
+    /// <para>**NEITHER SENTENCE MAY BE REWRITTEN TO PASS THIS SCAN** (`PHASE_PLAN.md` §6, work
+    /// instruction 383 section 9). One of them is what Hamlet says when its own unkey did not get
+    /// out, and the only correct advice at that moment is the advice it gives.</para>
+    /// </remarks>
+    private static readonly DeclaredSentence[] Declared =
+    {
+        new(
+            "the band is too crowded here to call",
+            "MainWindowViewModel.cs:16800-16804, the refusal whose token at :16798 is "
+            + "no_clear_spot",
+            "Hamlet looked for a spot at least 150 Hz from everything it can hear and there was "
+            + "not one, and the band is the only thing that changes that."),
+        new(
+            "neither frame got out",
+            "MainWindowViewModel.cs:19587, StopLine, where an abort was fired and neither the CW "
+            + "stop nor the PTT-off frame reached the radio",
+            "Hamlet told the radio to stop and nothing it sent got there, so the radio may still "
+            + "be transmitting and Hamlet has no way left to stop it."),
+    };
 
     /// <summary>Where a value is spliced into a sentence the sheet quotes.</summary>
     private static readonly Regex Spliced = new("<[^<>]*>", RegexOptions.Compiled);
@@ -201,63 +268,199 @@ public sealed class TheRadioSheetQuotesTheScreenTests : IDisposable
     // ------------------------------------------------------------------
 
     /// <summary>
-    /// **No sentence this unit wrote tells the operator to touch the radio.**
+    /// **No line of the sheet sends him to the radio, except the sentences Hamlet itself says -
+    /// and those are declared, one by one, and proved to be Hamlet's.**
     /// </summary>
     /// <remarks>
-    /// <para>**THE SCAN IS OVER THE SHEET'S OWN PROSE AND NOT OVER ITS QUOTES**, and the exclusion
-    /// is not a loophole. A `&gt;` line is a sentence HAMLET says, quoted; it is what is already on
-    /// the screen and it is out of this unit's hands. *Open Settings and pick the radio's sound
-    /// card* is Hamlet naming a Windows audio device, not asking anybody to reach for anything -
-    /// and *Move the dial a little* is a sentence the send path has said since unit 323. Rewriting
-    /// either one to pass a word scan would be paraphrasing inside a quote, which criterion 4.1
-    /// forbids. **What R11 governs is what THIS unit wrote**, which is the prose, and that is what
-    /// is scanned.</para>
-    /// <para>**THE WORD LIST IS THE AUTHOR'S** (work instruction 382 section 6 ruling 2 item 1),
-    /// and every entry is here with the reason it is on the list.</para>
+    /// <para>**EVERY LINE IS SCANNED, QUOTES INCLUDED** (work instruction 383 section 6 ruling 1
+    /// item 1). Unit 382's scan excluded the `&gt; ` lines, and the separate session that judged
+    /// unit 382 named that exclusion as the reason 4.3 was not met: the one sentence on the page
+    /// that actually tells the operator to operate the transceiver is inside a quote, so a scan
+    /// that skips the quotes cannot see the thing the criterion is about. **No line is excluded
+    /// here for any reason. One scan, one number, every line.**</para>
+    /// <para>**AND THE WORD LIST IS WIDER, BECAUSE THE EXCLUSION WAS ONLY HALF OF IT** (ruling 1
+    /// item 2). Unit 383 task 1 measured the eleven words unit 382 used over all 176 lines and
+    /// got ZERO hits - *dial* was not on that list at all - so widening the scan to the quotes
+    /// and changing nothing else would still have reported nothing. The list here is the union of
+    /// those eleven with the two R11 lists already in this tree,
+    /// <c>TheOliviaSendTests.cs:390</c> and <c>TheAlcSentenceTests.cs:44-49</c>, so the sheet is
+    /// held to the same list Hamlet's own sentences are held to rather than to one written
+    /// tonight.</para>
+    /// <para>**TWO TIERS, AND ONLY ONE OF THEM IS AN ASSERTION** (ruling 1 item 3).
+    /// <see cref="Tier1"/> is the instructions - *move the dial*, *at the radio*, *turn the knob*
+    /// - and **a tier-1 phrase anywhere in the sheet's own prose is a red, always, with no
+    /// exception of any kind**. <see cref="Tier2"/> is the hardware nouns - *dial*, *radio*,
+    /// *rig* - which name the box and its controls and are **not by themselves an instruction**:
+    /// *a chip is lit when the dial is inside that mode's block* describes where the receiver is
+    /// tuned, and *pick the radio's sound card* names a Windows device. **A tier-2 word is
+    /// counted, listed with its line and printed as a number, and is never a red** - the number
+    /// is the point, so that nobody has to take this scan on trust.</para>
+    /// <para>**A TIER-1 PHRASE INSIDE A QUOTE PASSES ONLY AS A DECLARED EXCEPTION** (ruling 1
+    /// item 4), and an exception earns all three of: it is in <see cref="Declared"/>, a closed
+    /// list with one entry per sentence carrying the site and one line saying why Hamlet says it;
+    /// the sentence is proved here to be one Hamlet itself produces, by kind (a) or kind (b), the
+    /// same two kinds this type already uses; and **the sheet's own prose beside it carries no
+    /// tier-1 phrase of its own**, which is what stops the exception becoming a place to put an
+    /// instruction. **An undeclared quoted hit is a red, and so is a declared entry that is not
+    /// on the sheet.**</para>
+    /// <para>**WHAT THIS READING DOES NOT CLAIM** (ruling 1 item 6). Criterion 4.3 reads *no
+    /// sentence tells the operator to touch the radio*. Under the strictest reading of that, a
+    /// declared exception is still a sentence on the page that does - the page quotes it, and a
+    /// man reading the page reads it. The remedy would be a change to a sentence Hamlet says,
+    /// and one of the two is the sentence it says when its own unkey did not get out, where the
+    /// only correct advice is the advice it gives; changing either is the owner's and not a
+    /// unit's. **The exception list is therefore the honest limit of what a unit can reach**, and
+    /// it is reported as a finding with a number rather than argued away.</para>
     /// </remarks>
     [Fact]
-    public void NoSentenceThisUnitWroteTellsHimToTouchTheRadio()
+    public void NoLineOfTheSheetSendsHimToTheRadioExceptWhereHamletsOwnWordsDo()
     {
-        // Each word names a control or a surface on the transceiver itself, which is the thing
-        // R11 says Hamlet never asks him to touch. "rig" and "transceiver" name the box;
-        // "knob", "VFO", "PTT", "mic gain" and "RF gain" name controls on it; the four phrases
-        // are the shapes an instruction to go and operate it takes in English.
-        var words = new[]
-        {
-            "knob", "VFO", "PTT", "mic gain", "RF gain", "transceiver", "rig",
-            "tune the radio", "turn the radio", "on the radio", "at the rig's front",
-        };
+        var sheet = Sheet();
+        var numbered = sheet.Select((line, at) => (At: at + 1, Line: line)).ToList();
 
-        var prose = Sheet().Where(line => !line.StartsWith("> ", StringComparison.Ordinal)).ToList();
-        var hits = new List<string>();
-
-        foreach (var line in prose)
-        {
-            foreach (var word in words)
-            {
-                // **WHOLE WORDS, BECAUSE A SUBSTRING SCAN ANSWERS A DIFFERENT QUESTION.** `rig`
-                // inside `Right-click` and inside `right now` is not R11's word, and a scan that
-                // counted it would push the sheet into paraphrasing English to pass a test.
-                if (Regex.IsMatch(
-                        line,
-                        "\\b" + Regex.Escape(word) + "\\b",
-                        RegexOptions.IgnoreCase))
-                {
-                    hits.Add("\"" + word + "\" in: " + line.Trim());
-                }
-            }
-        }
+        var tier1 = Hits(numbered, Tier1);
+        var tier2 = Hits(numbered, Tier2);
 
         _output.WriteLine(
-            prose.Count + " prose lines scanned against " + words.Length + " words: "
-            + hits.Count + " hits.");
+            sheet.Count + " lines scanned, ALL of them - " + sheet.Count(IsQuote)
+            + " quote lines and " + sheet.Count(l => !IsQuote(l)) + " prose - against "
+            + Tier1.Length + " tier-1 phrases and " + Tier2.Length + " tier-2 words.");
+        _output.WriteLine("");
 
-        foreach (var hit in hits)
+        // ------------------------------------------------------------------
+        // Tier 1 in the sheet's own prose: a red, always.
+        // ------------------------------------------------------------------
+        var inProse = tier1.Where(hit => !IsQuote(hit.Line)).ToList();
+
+        _output.WriteLine("TIER 1 IN THE SHEET'S OWN PROSE: " + inProse.Count + "  (the assertion)");
+
+        foreach (var hit in inProse)
         {
-            _output.WriteLine("  " + hit);
+            _output.WriteLine("  line " + hit.At + "  \"" + hit.Word + "\"  " + hit.Line.Trim());
         }
 
-        Assert.Empty(hits);
+        // ------------------------------------------------------------------
+        // Tier 1 inside a quote: declared, proved, and nothing beside it.
+        // ------------------------------------------------------------------
+        var inQuotes = tier1.Where(hit => IsQuote(hit.Line)).ToList();
+        var said = WhatHamletSays();
+        var sources = OperatorFacingSources();
+
+        var undeclared = new List<string>();
+        var unproved = new List<string>();
+        var beside = new List<string>();
+        var found = new List<string>();
+
+        _output.WriteLine("");
+        _output.WriteLine("TIER 1 INSIDE A QUOTE: " + inQuotes.Count);
+
+        foreach (var hit in inQuotes)
+        {
+            var quote = Quoted(hit.Line);
+            var declared = Declared
+                .Where(one => hit.Line.Contains(one.Marker, StringComparison.Ordinal))
+                .ToList();
+
+            if (declared.Count != 1)
+            {
+                _output.WriteLine(
+                    "  line " + hit.At + "  \"" + hit.Word + "\"  UNDECLARED - "
+                    + declared.Count + " entries in the list match it.");
+
+                undeclared.Add("line " + hit.At + ": " + Short(quote));
+
+                continue;
+            }
+
+            var entry = declared[0];
+
+            found.Add(entry.Marker);
+
+            _output.WriteLine("  line " + hit.At + "  \"" + hit.Word + "\"  declared.");
+            _output.WriteLine("        " + Short(quote));
+            _output.WriteLine("        site : " + entry.Site);
+            _output.WriteLine("        why  : " + entry.Why);
+
+            // (a) It is proved to be a sentence Hamlet itself produces.
+            var parts = FixedParts(quote);
+            var produced = said
+                .Where(one => Holds(one.Sentence, parts))
+                .OrderBy(one => Math.Abs(one.Sentence.Length - quote.Length))
+                .FirstOrDefault();
+
+            if (produced.Sentence is not null)
+            {
+                _output.WriteLine(
+                    "        proof: kind (a), produced by the shipped view model - "
+                    + produced.Label);
+            }
+            else
+            {
+                var literal = sources.FirstOrDefault(one => Holds(one.Text, parts));
+
+                if (literal.Name is null)
+                {
+                    _output.WriteLine("        proof: NONE - Hamlet does not say this sentence.");
+
+                    unproved.Add("line " + hit.At + ": " + Short(quote));
+                }
+                else
+                {
+                    _output.WriteLine("        proof: kind (b), the literal in " + literal.Name);
+                }
+            }
+
+            // (c) The sheet's own prose beside it says nothing of its own.
+            foreach (var line in Beside(sheet, hit.At))
+            {
+                foreach (var phrase in Tier1)
+                {
+                    if (Whole(line, phrase))
+                    {
+                        beside.Add("beside line " + hit.At + ", \"" + phrase + "\": " + line.Trim());
+                    }
+                }
+            }
+
+            _output.WriteLine(
+                "        beside: " + Beside(sheet, hit.At).Count
+                + " prose lines, and they carry no tier-1 phrase of their own.");
+        }
+
+        // A declared exception that is not on the sheet is dead wood, and the list is closed.
+        var missing = Declared
+            .Where(one => !found.Contains(one.Marker, StringComparer.Ordinal))
+            .Select(one => one.Marker)
+            .ToList();
+
+        // ------------------------------------------------------------------
+        // Tier 2: counted, listed, printed - never a red.
+        // ------------------------------------------------------------------
+        _output.WriteLine("");
+        _output.WriteLine(
+            "TIER 2 MENTIONS OF THE RIG'S HARDWARE: " + tier2.Count + " in all - "
+            + tier2.Count(hit => !IsQuote(hit.Line)) + " in the sheet's own prose and "
+            + tier2.Count(hit => IsQuote(hit.Line)) + " inside quotes. NONE OF THEM IS A RED.");
+
+        foreach (var hit in tier2)
+        {
+            _output.WriteLine(
+                "  line " + hit.At.ToString(CultureInfo.InvariantCulture).PadLeft(3) + "  "
+                + (IsQuote(hit.Line) ? "quote" : "prose") + "  \"" + hit.Word + "\"   "
+                + Short(hit.Line.Trim()));
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine(
+            "This page mentions the radio's own hardware " + tier2.Count
+            + " times and instructs the operator to touch it " + inProse.Count
+            + " times in its own voice.");
+
+        Assert.Empty(inProse);
+        Assert.Empty(undeclared);
+        Assert.Empty(unproved);
+        Assert.Empty(beside);
+        Assert.Empty(missing);
     }
 
     // ------------------------------------------------------------------
@@ -302,9 +505,97 @@ public sealed class TheRadioSheetQuotesTheScreenTests : IDisposable
     // The sheet.
     // ------------------------------------------------------------------
 
+    /// <summary>One declared exception: a tier-1 phrase the sheet may carry inside a quote.</summary>
+    /// <param name="Marker">Enough of the sentence to name it, and nothing that varies.</param>
+    /// <param name="Site">Where under `src/Hamlet.App` Hamlet says it.</param>
+    /// <param name="Why">One line: why Hamlet says it, in the register the sheet uses.</param>
+    private readonly record struct DeclaredSentence(string Marker, string Site, string Why);
+
     /// <summary>Every line of the sheet.</summary>
     private static List<string> Sheet()
         => File.ReadAllLines(Path.Combine(Root(), "docs", "RADIO_SHEET.md")).ToList();
+
+    /// <summary>Whether a line is one of the sheet's quotes.</summary>
+    private static bool IsQuote(string line)
+        => line.StartsWith("> ", StringComparison.Ordinal);
+
+    /// <summary>What a quote line says, between its first and its last double quote.</summary>
+    private static string Quoted(string line)
+    {
+        var opens = line.IndexOf('"');
+        var shuts = line.LastIndexOf('"');
+
+        return opens >= 0 && shuts > opens ? line[(opens + 1)..shuts] : line[2..];
+    }
+
+    /// <summary>Whether a line carries a phrase as whole words, in any case.</summary>
+    /// <remarks>
+    /// **WHOLE WORDS, BECAUSE A SUBSTRING SCAN ANSWERS A DIFFERENT QUESTION.** Unit 382 measured
+    /// that a substring scan matches `rig` inside `Right-click` and inside `right now`, and a
+    /// scan that counted those would push the sheet into paraphrasing English to pass a test.
+    /// </remarks>
+    private static bool Whole(string line, string phrase)
+        => Regex.IsMatch(line, "\\b" + Regex.Escape(phrase) + "\\b", RegexOptions.IgnoreCase);
+
+    /// <summary>Every whole-word hit of any of the phrases, over the lines handed in.</summary>
+    private static List<(int At, string Line, string Word)> Hits(
+        List<(int At, string Line)> lines, string[] phrases)
+    {
+        var hits = new List<(int At, string Line, string Word)>();
+
+        foreach (var (at, line) in lines)
+        {
+            foreach (var phrase in phrases)
+            {
+                if (Whole(line, phrase))
+                {
+                    hits.Add((at, line, phrase));
+                }
+            }
+        }
+
+        return hits;
+    }
+
+    /// <summary>
+    /// **The sheet's own prose beside a quote: what it means and what to do, for that row.**
+    /// </summary>
+    /// <param name="sheet">Every line.</param>
+    /// <param name="at">The quote's line number, counting from one.</param>
+    /// <returns>The prose lines that touch the quote, above it and below it.</returns>
+    /// <remarks>
+    /// **THE PARAGRAPH THAT TOUCHES IT AND NOT THE WHOLE SECTION.** The sheet writes a refusal as
+    /// a paragraph of its own - what it means, then what to do - and then the quote, so the prose
+    /// beside a quote is the run of non-blank, non-quote lines immediately above it and
+    /// immediately below it. That is the text a man reads in the same breath as the sentence, and
+    /// it is the text ruling 1 item 4(c) says may add no instruction of its own.
+    /// </remarks>
+    private static List<string> Beside(List<string> sheet, int at)
+    {
+        var beside = new List<string>();
+
+        for (var up = at - 2; up >= 0; up--)
+        {
+            if (sheet[up].Trim().Length == 0 || IsQuote(sheet[up]))
+            {
+                break;
+            }
+
+            beside.Add(sheet[up]);
+        }
+
+        for (var down = at; down < sheet.Count; down++)
+        {
+            if (sheet[down].Trim().Length == 0 || IsQuote(sheet[down]))
+            {
+                break;
+            }
+
+            beside.Add(sheet[down]);
+        }
+
+        return beside;
+    }
 
     /// <summary>
     /// **Every sentence the sheet quotes: the text between the first and the last double quote on
@@ -478,6 +769,12 @@ public sealed class TheRadioSheetQuotesTheScreenTests : IDisposable
         said.Add(new("the device would not open, the send line", openLine, true));
         said.Add(new("the device would not open, the refusal", openSentence, true));
 
+        // **THE STOP WHOSE TWO FRAMES GOT NOWHERE**, which is the sentence safety turns on and
+        // the sheet's second declared exception (work instruction 383 section 6 ruling 1 item 5).
+        // **It is not a refusal**: nothing refused a send, and the backward direction above is
+        // about the send path's own refusals.
+        said.Add(new("the stop, neither frame out", TheStopThatReachedNothing(), false));
+
         // The send that goes, which is the pair of sentences the walk in sections 2 and 3 ends on.
         said.AddRange(ASendThatGoes("PSK31"));
         said.AddRange(ASendThatGoes("Olivia"));
@@ -506,6 +803,36 @@ public sealed class TheRadioSheetQuotesTheScreenTests : IDisposable
         Settle(model);
 
         return new(label, model.DigitalSendLine, true);
+    }
+
+    /// <summary>
+    /// **The stop press over a wire that takes nothing: what the operator is left looking at.**
+    /// </summary>
+    /// <remarks>
+    /// **NOTHING IS ARMED, NOTHING IS COMPOSED AND NOTHING IS KEYED** (§0.2, FACT-004). The abort
+    /// is fired at <see cref="MuteWire"/>, which refuses both frames, and that is precisely the
+    /// state `MainWindowViewModel.cs:19587` exists to describe - the one moment where Hamlet has
+    /// nothing left to try and says so.
+    /// </remarks>
+    private string TheStopThatReachedNothing()
+    {
+        using var telemetry = new JsonlTelemetry(_folder, "383", _ => true);
+
+        var model = Panel(telemetry, "PSK31");
+        var wire = new MuteWire();
+        var sink = new FakeSink();
+
+        model.UseRigPortForTests(wire);
+        model.UseArmedSendForTests(
+            new Ft8ArmedSend(new Ft8TransmitSequence(wire, sink, guard: null, telemetry)));
+
+        model.StopSendingCommand.Execute(null);
+        Settle(model);
+
+        Assert.Equal(0, sink.TimesCalled);
+        Assert.Empty(wire.Written);
+
+        return model.DigitalSendLine;
     }
 
     /// <summary>Drive one of the two transmit-path refusals, and keep both of its sentences.</summary>

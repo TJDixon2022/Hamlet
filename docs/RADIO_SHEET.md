@@ -83,7 +83,8 @@ and a finished send reads:
 ## 4. When it refuses
 
 Each one is a sentence Hamlet can put in the send area, with what it means and what to do.
-Nothing was keyed in any of them.
+Nothing was keyed in any of them **except the last**, which is not a refusal at all: it is what
+Hamlet says when a transmission was already going out and its own stop did not get through.
 
 **Nothing was in the message.** Your callsign is not set, or the line was empty. Set it in
 Settings and press again.
@@ -142,6 +143,12 @@ yet, and `Could not write the capture` means the folder would not take the file.
 > "Nothing is listening, so there is no audio to keep. Connect a radio or pick the training radio and press it again."
 
 > "No audio has arrived yet, so there is nothing to keep."
+
+**Stop was pressed and nothing Hamlet sent got through.** This is the one sentence on this page
+that asks you to do something yourself, and it is Hamlet's own: it has no way left to stop the
+transmission and says so rather than reporting a stop it did not achieve. Do what the sentence
+says, then send it back with the record - the part in angle brackets is what the port said.
+> "Hamlet told the radio to stop and neither frame got out: <what the port said>. If it is still transmitting, stop it at the radio."
 
 ## 5. Where the files are
 

@@ -59,6 +59,78 @@ internal sealed class FakePort : ISerialPort
 }
 
 /// <summary>
+/// **A wire that opens nothing and takes nothing.**
+/// </summary>
+/// <remarks>
+/// <para>**NO PORT IS EVER OPENED IN THIS PROJECT** (`SHACK_FACTS.md` FACT-004).
+/// <see cref="FakePort"/> keeps every frame it is handed; this one refuses every
+/// frame it is handed, and counts them. That is the only difference, and it is the
+/// difference between *the radio was told to stop* and *neither frame got out* -
+/// the state `MainWindowViewModel.cs:19587` exists to describe, and the one
+/// sentence on the radio sheet that safety turns on (work instruction 383 section
+/// 6 ruling 1 item 5).</para>
+/// <para>**IT LIVES HERE RATHER THAN IN EACH TEST THAT NEEDS IT**, beside the two
+/// fakes it stands with, because unit 383 needs it in two files and two copies of a
+/// fake are two places for it to drift.</para>
+/// </remarks>
+internal sealed class MuteWire : ISerialPort
+{
+    /// <summary>
+    /// What this wire says when it will not take a frame.
+    /// </summary>
+    /// <remarks>
+    /// **DELIBERATELY NOT `the port took nothing`**, which is the sentence's own
+    /// fallback where neither attempt recorded a reason. A fake whose words are the
+    /// fallback's words would leave a reader unable to say which he was looking at.
+    /// </remarks>
+    public const string Refusal = "the wire would not take the frame";
+
+    /// <summary>How many frames it was handed and would not take.</summary>
+    public int Refused { get; private set; }
+
+    /// <summary>Nothing is ever written, and this says so.</summary>
+    public IReadOnlyList<byte[]> Written => [];
+
+    /// <inheritdoc/>
+    public bool IsOpen { get; private set; } = true;
+
+    /// <inheritdoc/>
+    public string PortName => "MUTE1";
+
+    /// <inheritdoc/>
+    public int BaudRate => 115_200;
+
+    /// <inheritdoc/>
+    public void Open() => IsOpen = true;
+
+    /// <inheritdoc/>
+    public void Close() => IsOpen = false;
+
+    /// <inheritdoc/>
+    public ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken)
+        => ValueTask.FromResult(0);
+
+    /// <inheritdoc/>
+    public ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
+    {
+        Refused++;
+
+        throw new IOException(Refusal);
+    }
+
+    /// <inheritdoc/>
+    public void Write(ReadOnlySpan<byte> buffer)
+    {
+        Refused++;
+
+        throw new IOException(Refusal);
+    }
+
+    /// <inheritdoc/>
+    public void Dispose() => IsOpen = false;
+}
+
+/// <summary>
 /// A transmit sink that opens no device, makes no sound, and counts.
 /// </summary>
 /// <remarks>
