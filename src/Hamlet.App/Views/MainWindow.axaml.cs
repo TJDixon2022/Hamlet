@@ -363,22 +363,39 @@ public partial class MainWindow : Window
     /// </remarks>
     internal static MenuFlyout? SendFlyoutFor(MainWindowViewModel vm, DigitalDecodeRow? row)
     {
-        // **A PSK31 CQ ROW OFFERS ONE THING: ANSWER HIM** (work instruction 323 task 3).
-        // It is a one-item menu and not the FT8 menu: the FT8 options are message shapes
-        // packed into 77 bits and none of them is a thing to send on PSK31, which is why
-        // `SendMenuFor` answers null for these rows and still does.
-        if (vm?.Psk31AnswerLabelFor(row) is { } answer)
+        // **A PSK31 OR OLIVIA ROW THAT NAMES A STATION OFFERS R39's SEVEN LINES** (Tim,
+        // 2026-09-21, ruled C; work instruction 378 section 6 ruling 1 item 8). Until unit 378
+        // this was a ONE-ITEM menu on a certain CQ and nothing at all on every other row: five
+        // of the seven rows that named a station on unit 378's own trace had no menu.
+        //
+        // **IT IS NOT THE FT8 MENU**, which is why `SendMenuFor` answers null for these rows and
+        // still does: the FT8 options are message shapes packed into 77 bits and none of them is
+        // a thing to send on PSK31.
+        //
+        // **THE VIEW MODEL DECIDES AND THIS DRAWS.** What each line reads, which command it
+        // carries and which of them are absent with a reason is `Psk31CannedMenuFor`'s answer, so
+        // the menu a test reads and the menu Tim sees are one list.
+        //
+        // **NOTHING IS GREYED, HIDDEN, SORTED AWAY OR DISABLED** (ruled 2026-09-06). An entry
+        // with no command is a note - the same `Note` an absent FT8 message already gets - and a
+        // note cannot be hit.
+        if (vm?.Psk31CannedMenuFor(row) is { Count: > 0 } canned)
         {
-            var one = new MenuFlyout();
+            var offered = new MenuFlyout();
 
-            one.Items.Add(new MenuItem
+            foreach (var entry in canned)
             {
-                Header = answer,
-                Command = vm.AnswerPsk31Command,
-                CommandParameter = row,
-            });
+                offered.Items.Add(entry.IsNote
+                    ? Note(entry.Label)
+                    : new MenuItem
+                    {
+                        Header = entry.Label,
+                        Command = entry.Command,
+                        CommandParameter = entry.Parameter,
+                    });
+            }
 
-            return one;
+            return offered;
         }
 
         var menu = vm?.SendMenuFor(row);

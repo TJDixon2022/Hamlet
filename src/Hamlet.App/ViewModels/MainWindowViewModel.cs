@@ -16001,7 +16001,20 @@ public partial class MainWindowViewModel : ObservableObject
         // and not cleared here**: the press is taken at the moment the line is armed, below, so
         // every refusal above that point leaves it for the command to see and say nothing moved.
         var moving = _oliviaMove;
-        var macro = typed ? "typed" : moving is not null ? "qsy" : Psk31MacroToken.For(kind);
+
+        // **AND A CANNED LINE IS ITS OWN TOKEN TOO** (criterion 7.2, §R13, work instruction 378
+        // section 6 ruling 1 item 7). `typed` would say the operator wrote it; `canned` says he
+        // picked it off the list in `data/psk31/canned.json`. **The text itself is not here and
+        // never is** (HM-DEC-018, §2.1), and neither is the label he clicked.
+        //
+        // **IT IS READ BEFORE `typed`, AND `typed` IS FALSE ON THIS PATH ANYWAY.** The canned
+        // send sets `_psk31Typed` false itself, so the cap chosen below is the macro's thirty
+        // seconds rather than the typed line's sixty.
+        var canned = _psk31Canned;
+        var macro = typed ? "typed"
+            : canned ? "canned"
+            : moving is not null ? "qsy"
+            : Psk31MacroToken.For(kind);
         var at = _psk31SendAtHz;
 
         // **THE VARIANT IS THE ROW'S OR THE TABLE'S, NEVER A CONTROL'S** (R27, decision BA).
@@ -16011,6 +16024,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         _psk31Macro = Psk31Macro.Cq;
         _psk31Typed = false;
+        _psk31Canned = false;
         _psk31SendAtHz = null;
         _oliviaSendVariant = null;
 
@@ -16894,6 +16908,22 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private bool _psk31Typed;
 
+    /// <summary>True while the send being composed is one of the canned lines Tim picked off a menu.</summary>
+    /// <remarks>
+    /// <para>**IT IS A FLAG BESIDE THE CALL, THE SHAPE <see cref="_psk31Typed"/> ALREADY SET**
+    /// (work instruction 378 section 6 ruling 1 item 7, §R13). It is set immediately before
+    /// <see cref="SendMessage"/> and read once in <see cref="SendUnslotted"/>, which is where the
+    /// macro token on `psk31_send_composed` is chosen; nothing else reads it and nothing else
+    /// writes it.</para>
+    /// <para>**A CANNED LINE TAKES THE MACRO CAP OF THIRTY SECONDS, NOT THE TYPED LINE'S SIXTY.**
+    /// The sixty was raised for a paragraph somebody typed; a canned line is a telegram and it is
+    /// the safe direction. It is why this is its own flag rather than a second way of being
+    /// typed: `typed` is what chooses the longer cap.</para>
+    /// <para>**IT IS NOT A FIFTH VALUE OF <see cref="Psk31Macro"/>**, for
+    /// <see cref="_psk31Typed"/>'s own reason.</para>
+    /// </remarks>
+    private bool _psk31Canned;
+
     /// <summary>The most a line the operator typed may be, framed, on the air.</summary>
     /// <remarks>
     /// <para>**SIXTY SECONDS, AND IT IS THIS UNIT'S NUMBER** (work instruction 357 task 3,
@@ -17117,6 +17147,220 @@ public partial class MainWindowViewModel : ObservableObject
     /// <returns>The label, or null.</returns>
     internal string? Psk31AnswerLabelFor(DigitalDecodeRow? row)
         => Psk31CqOn(row) is { } station && (IsPsk31Chosen || IsOliviaChosen) ? "Answer " + station : null;
+
+    // -------------------------------------------------------------------------
+    // R39's canned list: the seven lines a right-click offers (criteria 7.1, 7.2, 7.4).
+    // -------------------------------------------------------------------------
+
+    /// <summary>The canned lines as they were last read, read once per session.</summary>
+    /// <remarks>
+    /// **READ ONCE, BECAUSE A MENU IS BUILT ON EVERY RIGHT-CLICK.** Reading the file on each
+    /// press would put a disk read on the gesture; the operator's edit is picked up next time
+    /// Hamlet starts, which is what *without a session* asks for and no more. **Hamlet never
+    /// writes it** (ruling 1 item 2).
+    /// </remarks>
+    private Psk31CannedSet? _canned;
+
+    /// <summary>Hand the panel a reading of the canned file, for a test.</summary>
+    /// <param name="set">What a test read, whole or broken.</param>
+    /// <remarks>
+    /// **THE SEAM READS AND NEVER SENDS** (FACT-004, §0.2). It is the shape
+    /// <see cref="UseOliviaDataForTests"/> already uses, and it exists because the malformed
+    /// case has to be provable without breaking the shipped file.
+    /// </remarks>
+    internal void UseCannedLinesForTests(Psk31CannedSet set) => _canned = set;
+
+    /// <summary>The canned lines, read on first use.</summary>
+    internal Psk31CannedSet CannedLines => _canned ??= Psk31CannedLines.Read();
+
+    /// <summary>
+    /// **The seven lines a right-click offers on this row, in the file's own order.**
+    /// </summary>
+    /// <param name="row">The row the mouse was over.</param>
+    /// <returns>The entries, or null where the row names no station.</returns>
+    /// <remarks>
+    /// <para>**EVERY ROW THAT NAMES A STATION, CQ OR NOT** (R39, work instruction 378 section 6
+    /// ruling 1 item 8). <see cref="Psk31StationOn"/> is the question, not
+    /// <see cref="Psk31CqOn"/> - that one keeps its job as the answer line's own condition,
+    /// because what it gates is a callsign going on the air in a message addressed to somebody.
+    /// </para>
+    /// <para>**A MALFORMED FILE IS ONE NOTE AND NO CANNED ITEM** (ruling 1 item 4, §0.0). No
+    /// partial read, no skipped row and no silent fallback to a set written in here.</para>
+    /// <para>**THREE OF THE SEVEN ARE HAMLET'S OWN MACROS AND ARE SENT BY THE COMMANDS THAT SEND
+    /// THEM TODAY** (ruling 1 item 5) - <see cref="AnswerPsk31Command"/> and the card's own
+    /// <see cref="CardActionCommand"/> - unchanged, with their own record tokens and §R1's
+    /// certainty gate intact. Writing a second answer beside the one Hamlet already sends is two
+    /// spellings of one act.</para>
+    /// <para>**IT READS AND SENDS NOTHING** (§0.2). It composes no audio, arms nothing and keys
+    /// nothing; it answers what the menu should say.</para>
+    /// </remarks>
+    internal IReadOnlyList<Psk31CannedEntry>? Psk31CannedMenuFor(DigitalDecodeRow? row)
+    {
+        if (Psk31StationOn(row) is not { } station)
+        {
+            return null;
+        }
+
+        var set = CannedLines;
+
+        if (!set.IsUsable)
+        {
+            return new[]
+            {
+                new Psk31CannedEntry(
+                    "Hamlet could not read its canned lines, so it is offering none: "
+                    + (set.Problem ?? set.Path + " carries no lines at all."),
+                    null,
+                    null),
+            };
+        }
+
+        var entries = new List<Psk31CannedEntry>(set.Lines.Count);
+
+        foreach (var line in set.Lines)
+        {
+            entries.Add(line.IsText
+                ? new Psk31CannedEntry(
+                    line.Label, SendCannedPsk31Command, new Psk31CannedPress(station, line.Label, line.Text))
+                : MacroEntry(line, station, row!));
+        }
+
+        return entries;
+    }
+
+    /// <summary>One macro row: the command that sends it today, or a note saying why not.</summary>
+    private Psk31CannedEntry MacroEntry(Psk31CannedLine line, string station, DigitalDecodeRow row)
+    {
+        // **THE ANSWER IS THE ROW'S OWN COMMAND AND KEEPS §R1's GATE.** A guessed CQ offers
+        // nothing to click: answering a callsign that did not read cleanly would put a
+        // neighbour's call on the air in a message addressed to him.
+        if (line.Macro == Psk31CannedMacro.Answer)
+        {
+            if (Psk31CqOn(row) is null)
+            {
+                return Absent(line,
+                    "the parser is not certain he is calling CQ on this row, and Hamlet does not "
+                    + "answer a callsign it did not read cleanly");
+            }
+
+            return MacroTextFor(Psk31Macro.Answer, station).Length == 0
+                ? Absent(line, "your callsign is not set in Settings, and a macro is not sent with a blank in it")
+                : new(line.Label, AnswerPsk31Command, row);
+        }
+
+        var wanted = line.Macro == Psk31CannedMacro.Report ? Psk31Macro.Report : Psk31Macro.Confirm;
+
+        // **WITH NO NAME, LOCATION OR GRID IN SETTINGS THE REPORT CANNOT BE BUILT AT ALL**
+        // (§0.0). `Psk31Macros` refuses it by name, so the item is simply not there, and it is
+        // not an item drawn grey (§0.5.1).
+        if (MacroTextFor(wanted, station).Length == 0)
+        {
+            return Absent(line,
+                wanted == Psk31Macro.Report
+                    ? "your name, location or grid square is not set in Settings, and a report is "
+                      + "not sent with a blank in it"
+                    : "your callsign is not set in Settings, and a macro is not sent with a blank in it");
+        }
+
+        var card = DigitalCards.FirstOrDefault(
+            c => c.IsPsk31 && Ft8MessageSplit.IsSameStation(c.Callsign, station));
+
+        if (card is null)
+        {
+            return Absent(line, "his conversation card is not open yet");
+        }
+
+        // **THE CARD'S OWN OFFER, UNCHANGED** (ruling 1 item 5). `Psk31Offer` answers only on a
+        // certain your-turn, and that gate is not loosened here: where the card is not offering
+        // this macro right now, the item is absent with the reason said.
+        return card.Offered == wanted
+                && card.ActionKind == Ft8CardActionKind.Send
+                && card.ActionMessage.Length > 0
+            ? new(line.Label, CardActionCommand, card)
+            : Absent(line, "it is not your turn on this contact, or the parser is not certain whose it is");
+    }
+
+    /// <summary>A macro Hamlet cannot compose right now, said as a note rather than drawn grey.</summary>
+    private static Psk31CannedEntry Absent(Psk31CannedLine line, string why)
+        => new(line.Label + " - not offered: " + why + ".", null, null);
+
+    /// <summary>
+    /// **Send one of the canned lines: one click, framed, through the one unslotted door.**
+    /// </summary>
+    /// <param name="press">Which line, and whose row it was picked on.</param>
+    /// <remarks>
+    /// <para>**IT IS NOT A SECOND SEND PATH** (§0.2, §R10, §10, work instruction 378 section 6
+    /// ruling 1 item 6). It is <see cref="SendTypedPsk31"/>'s own route with the words coming
+    /// from a file instead of a text box: <see cref="Psk31Macros.Typed"/> puts both callsigns in
+    /// front and the hand-back behind, <see cref="SendMessage"/> is the door, and the composer,
+    /// the arming, the burst, the licence gate, the cap and the one `PttOn` site are all the ones
+    /// that already exist. **There is no second composer, no second `Arm` and no second
+    /// `PttOn`.**</para>
+    /// <para>**AND IT IS REACHED BY A CLICK AND BY NOTHING ELSE** (§0.2). No decode, no tick and
+    /// no parse calls it.</para>
+    /// <para>**THE CAP IS THE MACRO'S THIRTY SECONDS.** `_psk31Typed` is left false on purpose;
+    /// the sixty was raised for a paragraph somebody typed and a canned line is a telegram. A
+    /// line that will not fit is refused by the cap that already refuses, in the sentence that
+    /// already says so.</para>
+    /// <para>**THE RECORD CARRIES `canned`, THE CHARACTERS AND THE SECONDS, AND NOTHING ELSE**
+    /// (HM-DEC-018 §2.1): not the line, not the label and not a callsign.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void SendCannedPsk31(Psk31CannedPress? press)
+    {
+        if (press is null)
+        {
+            return;
+        }
+
+        var (clean, dropped) = Psk31Macros.Sendable(press.Text);
+
+        // **A LINE THE VARICODE CANNOT CARRY DOES NOT SEND, AND THE PANEL SAYS WHICH LINE**
+        // (§0.0, §8.1). A press that produced silence is the case somebody has to diagnose.
+        if (clean.Length == 0)
+        {
+            DigitalSendLine =
+                "Hamlet did not send \"" + press.Label + "\": the line in "
+                + CannedLines.Path + " holds nothing PSK31 can send"
+                + (dropped > 0
+                    ? " - all " + dropped.ToString(CultureInfo.InvariantCulture)
+                      + " characters are outside the Latin-1 set it carries."
+                    : ".");
+
+            return;
+        }
+
+        string framed;
+
+        try
+        {
+            framed = Psk31Macros.Typed(press.Station, _settings.Operator.Callsign ?? "", clean);
+        }
+        catch (ArgumentException error)
+        {
+            DigitalSendLine = "Hamlet did not send \"" + press.Label + "\": " + error.Message;
+
+            return;
+        }
+
+        // **AN OPERATOR ACTION IN THE EXISTING WRITER, AND NOT A NEW EVENT TYPE** (§R13, ruling 1
+        // item 7). It carries the sub-mode he pressed, exactly as the CQ, answer, typed and card
+        // presses have since unit 374.
+        AppEvents.OperatorAction(
+            _telemetry, "psk31_canned_pressed", OperatingMode, PressedSubMode);
+
+        _psk31Macro = Psk31Macro.None;
+        _psk31Typed = false;
+        _psk31Canned = true;
+        _psk31SendAtHz = Psk31OffsetOf(press.Station);
+        _oliviaSendVariant = OliviaVariantOf(press.Station);
+
+        SendMessage(framed);
+
+        // **HIS CARD IS UP BEFORE THE CARRIER HAS FINISHED**, exactly as the answer press leaves
+        // it: the click moved the conversation and the panel says so at once.
+        RefreshPsk31Card(press.Station);
+    }
 
     /// <summary>Which offset a station's carrier is on, or null where he is not being heard.</summary>
     /// <remarks>

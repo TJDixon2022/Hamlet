@@ -1,0 +1,58 @@
+{
+ "_note": [
+  "THE SEVEN LINES A RIGHT-CLICK OFFERS on any PSK31 or Olivia row that names a station.",
+  "Ruled by Tim on 2026-09-21 (PHASE_PLAN.md R39, ruled C), written by work instruction 378.",
+  "",
+  "WHAT A ROW IS. Each entry in \"lines\" has a \"label\", which is what the menu item reads,",
+  "and then EITHER a \"macro\" naming one of Hamlet's own three - answer, report, confirm -",
+  "OR a \"text\" carrying the words to send. A row may not have both, and a row with neither",
+  "is a row Hamlet cannot read.",
+  "",
+  "WHAT GOES ON THE AIR. A \"text\" line is framed before it is sent: both callsigns in front",
+  "and the hand-back behind, exactly as a line you type on a card is framed -",
+  "W1AW de KC3QIS  <your line>  BTU W1AW de KC3QIS K. You write the middle; Hamlet writes",
+  "the rest. A \"macro\" line is the macro Hamlet already composes, unchanged.",
+  "",
+  "WHAT IS SENT IS HELD TO THE SAME LIMIT AS EVERYTHING ELSE: thirty seconds of audio on",
+  "PSK31, and the same count of characters charged at the variant's own rate on Olivia. A",
+  "line that will not fit is refused before anything is keyed, in a sentence saying so.",
+  "PSK31 carries the Latin-1 set and nothing else, so a character outside it is dropped.",
+  "",
+  "YOUR OWN COPY. Put a copy of this file at %AppData%\\Hamlet\\canned.json and Hamlet reads",
+  "that one instead of this one - the same folder settings.json and scan-segments.json live",
+  "in. Hamlet never writes either file, never creates your copy and never repairs it. If",
+  "your copy cannot be read, the menu says so and offers nothing rather than guessing.",
+  "",
+  "AMERICAN SPELLING throughout (PSK31 plan R19)."
+ ],
+ "lines": [
+  {
+   "label": "Answer him",
+   "macro": "answer"
+  },
+  {
+   "label": "Send my report",
+   "macro": "report"
+  },
+  {
+   "label": "Confirm and 73",
+   "macro": "confirm"
+  },
+  {
+   "label": "Say again?",
+   "text": "PSE RPT ALL AFTER YOUR CALL"
+  },
+  {
+   "label": "Please repeat your report",
+   "text": "PSE RPT UR RST"
+  },
+  {
+   "label": "QRZ?",
+   "text": "QRZ? QRZ? PSE AGN"
+  },
+  {
+   "label": "73 and out",
+   "text": "73 AND THANKS FOR THE QSO"
+  }
+ ]
+}

@@ -41,6 +41,18 @@
                       LogicalName="Hamlet.App.Data.bylines.json" />
   </ItemGroup>
 
+  <!-- **THE CANNED LINES ARE A FILE AND NOT A RESOURCE** (R39, work instruction 378
+       section 6 ruling 1 item 1). They are `Content` copied beside the application
+       rather than embedded like `bylines.json`, because Tim is meant to OPEN this one:
+       R39 asks that he add his own lines without waiting for a session, and a resource
+       compiled into the assembly is a file nobody can edit. His own copy goes at
+       %AppData%\Hamlet\canned.json and is read first; Hamlet writes neither. -->
+  <ItemGroup>
+    <Content Include="..\..\data\psk31\canned.json"
+             Link="data\psk31\canned.json"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <!-- **THE MARKS, WHERE AVALONIA LOOKS FOR A RESOURCE.** They are not `/data`:
        that folder holds cited facts the application reads and reasons from, and a
        logo is neither cited nor reasoned from. It is a resource of the shell, and
