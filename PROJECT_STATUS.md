@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: blocked
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 374 - the order is measured where the height is actually given up, and the record names the mode the press was made under
-BALL: tim
+STATE: running
+TASK: TASK 0 of 4
+WORK_INSTRUCTION: 376 - the top row comes down to one measured band, and the working panels take every pixel it gives up
+BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T09:58:44-04:00
-NOTE: Unit 375 complete and pushed at ee31e16e. 2.3 met, 2.4 not met. Two questions wait on Tim: criterion 2.2 (RSID, would announce four Olivia variants on the air) and whether Hamlet may send its abort pair twice.
+UPDATED: 2026-09-21T10:51:20-04:00
+NOTE: Unit 376 task 0 done: the record carries steps 6, 7 and 8, CURRENT_STEP is 6, version 1.13.63, and the entry carry-forward is app 210 of 210 and engine 146 of 146, both green first time. Next: task 1, the trace that measures the band before one pixel moves.
 
 ---
 

@@ -969,8 +969,28 @@
     211 of 211, engine 146 of 146, both green on the first attempt. No file under src changes in
     this unit at all.
   -->
+  <!--
+    1.13.62 -> 1.13.63, UNIT 376 TASK 0. A PATCH, STEP 6 OF THE HARDENING PHASE, THE FIRST UNIT
+    AIMED AT IT AND AT ANY OF R39'S THREE UI STEPS, THE TOP ROW COMES DOWN TO ONE MEASURED BAND
+    AND THE WORKING PANELS TAKE EVERY PIXEL IT GIVES UP: criteria 6.1, 6.2, 6.3 and 6.4, all four
+    must-pass and all four untouched by any unit. The band - pills, neighborhood strip, green zone,
+    rig display - is measured band by band before one pixel moves, at 1920, 1400 and 1100 and on
+    FT8, PSK31 and Olivia, both with the pills and without, because work instruction 376 section 6's
+    first ruling makes 6.1's 180 a measurement against a before rather than a target. Then R39's
+    four moves in the order the measurement says pays: the pills at half height, the neighborhood
+    strip thinner with MapLegendControl on a hover, the green zone on one line with
+    GreenZoneRuleOfThumb on a hover, and the rig display shorter. Nothing leaves the window -
+    what comes off the card goes to a hover that keeps its words - the sun map keeps its size and
+    its dot, and nothing is bought by clipping or by collapsing. Steps 6, 7 and 8 were ALSO ADDED
+    TO THE RECORD AT THIS TASK: PHASE_STATUS.md and PHASE_OUTCOME.md both stopped at step 5 while
+    PHASE_PLAN.md rev 2 of 2026-09-21 carries steps 0 to 8, so tools/arbiter/outcome-read.bat was
+    printing a six-step phase and the next arbiter could not see steps 6, 7 and 8 at all; and
+    PHASE_STATUS.md's CURRENT_STEP and WORK_INSTRUCTION, two units stale at 0 and 374, were set to
+    6 and to this instruction. Carry-forward before any change: app 210 of 210, engine 146 of 146.
+    No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.62</Version>
+    <Version>1.13.63</Version>
   </PropertyGroup>
 
   <!--
