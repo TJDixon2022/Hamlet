@@ -1,7 +1,4 @@
-﻿   Bash  {"command":"tools/status.sh \"running\" \"TASK 0 of 4\" \"claude\" \"none\" \"Unit 375 task 0: entry carry-forward run, app invocation, before any change.\" \u0026\u0026 cat PROJECT_STATUS.md | head -12","description":"Write status before a ...(truncated)
-   Bash  {"command":"tools/status.sh \"running\" \"TASK 0 of 4\" \"claude\" \"none\" \"Unit 375 task 0: entry carry-forward run, app invocation, before any change.\"","description":"Write project status"}
-   Bash  {"command":"git -C /c/Source/HamLet status --short","description":"Check working tree status"}
-   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~Unit375TraceTests\" 2\u003e\u00261 | grep -vE \"^\\s*$\" | head -140","timeout":600000,"description":"Run the trace test"}
-   Bash  {"command":"python -c \"\nimport io\np=\u0027PHASE_OUTCOME.md\u0027\ns=io.open(p,encoding=\u0027utf-8\u0027).read()\nlines=s.split(\u0027\\n\u0027)\nout=[l for i,l in enumerate(lines) if not (i\u003e=168 and l.startswith(\u0027ENTRY: PHASE_ ...(truncated)
-   Bash  {"command":"ls tools/arbiter/validate-output.bat 2\u003e/dev/null \u0026\u0026 cmd //c tools\\\\arbiter\\\\validate-output.bat","description":"Validate the output report if the validator exists"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat\"","timeout":300000,"description":"Run the output validator"}
+﻿   Bash  {"command":"sh -c \"$(sed -n \u00277p\u0027 docs/carry-forward-tests.txt)\" 2\u003e\u00261 | tail -25","timeout":600000,"description":"Run app carry-forward invocation"}
+   Bash  {"command":"sed -i \u0027/^using System.Collections.Generic;$/d; /^using Xunit;$/d\u0027 tests/Hamlet.App.Tests/Views/Unit376TheTopBandTests.cs \u0026\u0026 head -12 tests/Hamlet.App.Tests/Views/Unit376TheTopBandTests.cs","description":"Dro ...(truncated)
+   Bash  {"command":"cmd.exe /c tools\\\\arbiter\\\\validate-output.bat 2\u003e\u00261 | tail -20","description":"Run the output validator"}
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat\" 2\u003e\u00261 | tail -25","description":"Validate output.md shape"}

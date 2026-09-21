@@ -88,6 +88,17 @@ badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill ea
 reaches today, then connects what is missing so a PSK31 or Olivia contact earns exactly
 what an FT8 contact earns.
 
+**R41 - Tim, 2026-09-21: Hamlet may transmit at all seven Olivia variants, each proved
+by loopback.** R38 (a) rested on a wrong fact - the modulator is table-driven and makes
+every variant in `data/olivia/format.json`. The four missing RSID sequences go in; a
+variant goes on the air only once Hamlet's own modulator and demodulator round-trip it;
+a variant that fails loopback stays off the air with a sentence saying so. Answering a
+station at his variant is R27's whole point.
+
+**R42 - Tim, 2026-09-21, on 6.1:** met at the measured floor. 180 px was the author's
+number; the sun map's height makes 197 the arithmetic minimum and 214 is what was
+reached with nothing lost. The criterion reads *at or under 220* and is checked.
+
 ## §4 The steps
 
 Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions plus
@@ -130,7 +141,7 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 
 **Exit:**
 - [ ] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
-- [ ] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; a test asserts every listed code round-trips through Hamlet's generator and detector. *must-pass*
+- [ ] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
 - [ ] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
 - [ ] 2.4 The carry-forward list runs green five times in a row. *must-pass*
 
@@ -182,10 +193,10 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 2 done, or partial with 2.1 and 2.3 met.
 
 **Exit:**
-- [ ] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 180 px at 1920 and at 1400, from 300; the working panels are taller by the difference. *must-pass*
-- [ ] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover. *must-pass*
-- [ ] 6.3 The sun map keeps its size and its dot. *must-pass*
-- [ ] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green. *must-pass*
+- [x] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 220 px at 1920 and at 1400, from 300 (R42: 214 reached, floor 197); the working panels are taller by the difference. *must-pass*
+- [x] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover. *must-pass*
+- [x] 6.3 The sun map keeps its size and its dot. *must-pass*
+- [x] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green. *must-pass*
 
 **Depends on:** step 2.
 
@@ -200,6 +211,7 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 - [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text. *must-pass*
 - [ ] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent. *must-pass*
 - [ ] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
+- [ ] 7.5 The mode chip's fill and the send-status line name the mode that was chosen, never the family: under Olivia the Olivia chip is filled and the PSK31 chip is not, and a 29-second Olivia CQ reads *29 s of Olivia* (Tim's screen, 2026-09-21). *must-pass*
 
 **Depends on:** step 6.
 
@@ -243,4 +255,5 @@ names; the map bitmap's license; the id-scheme split.
 
 ## §8 Revision record
 
+- **2026-09-21, later.** R41 on the seven variants; R42 on 6.1; 7.5 added for the chip fill and the send line.
 - **2026-09-21.** R38 on unit 375's two questions; R39 and R40 from Tim; steps 6-8 added and step 3 made to depend on step 8 so the UI is worked first.

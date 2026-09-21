@@ -1,82 +1,98 @@
 ﻿
-### Our own items, most-blocking first
+**1. Criterion 2.2 - the RSID tone sequences. THIS WANTS A RULING, it is Tim's, and it is
+not this unit's work.** R38 (a) permits giving codes 72-75 their tone sequences **on a
+stated fact**: *Hamlet's modulator makes only 8/250, 16/500 and 32/1000, so nothing
+announces a variant it cannot send.* **The arbiter read the tree line by line at authoring
+time and the tree does not support that fact**, and has sent the question back:
 
-**1. Criterion 2.2 - the RSID tone sequences - is parked, and step 2 cannot close until Tim
-rules. THIS WANTS A RULING.** `assets\data\rsid-codes.json` has tone sequences for codes 72,
-73, 74 and 75; `RsidCodes.FilePath` names the other path, which has the four codes and no
-sequences for them. **Finishing this would change what goes on the air.**
-`OliviaModulator.Compose` at lines 149-155 gates the announcement burst on
-`RsidBurst.TonesFor(...)` being non-null and, where it is non-null, composes that burst **into
-the audio that is transmitted** - so giving those four codes their sequences makes Hamlet
-announce four Olivia variants it refuses to announce today, and **those four sequences have not
-been checked against the mode author's fixtures the way the existing four were**. That is one
-of `PHASE_PLAN.md` section 6's three stops. The arbiter held it for the owner and this unit did
-not touch it. **Step 2 stays `partial` on any reading and 2.2 is not ticked.**
+- `data\olivia\format.json` lines 61 to 67 carry **all seven variants** - 4/250, 4/500,
+  8/250, 8/500, 16/500, 16/1000, 32/1000 - and `OliviaModulator` is driven from that
+  table, **so the engine can modulate every one of them**.
+- **What keeps four of them off the air today is exactly the gate this change removes**:
+  `OliviaModulator.Compose` line 149 throws where `RsidBurst.TonesFor` is null.
+- **The send variant is not picked by the operator from a list of three.**
+  `MainWindowViewModel` line 16009 takes `_oliviaSendVariant`, set at lines 6027, 16533,
+  16789 and 16930 **from the variant of a decoded row or card**, and `OliviaListener` line
+  280 starts a channel **from an RSID detection's own variant**.
+- So an 8/500 burst on the air would become detectable, start a channel, make a card, and
+  **an answer to that station would be composed and transmitted at 8/500**. That is a
+  change to what goes on the air.
 
-**2. Hamlet sends its abort pair to the radio twice, and that is the owner's to accept or not.
-THIS WANTS A RULING.** Measured, not inferred, and deterministic - 8 of 8 runs. Clicking Stop
-mid-transmission puts `CwStop` then `PttOff` on the wire from
-`MainWindowViewModel.StopSending` -> `Ft8ArmedSend.StopNow` -> `TransmitAbort.Fire`, and then
-the transmit sequence, unwinding off the token that same click cancelled, puts **the same pair
-on the wire again** from `Ft8TransmitSequence.RunAsync` -> `PlayOverTimeAsync` ->
-`TransmitAbort.Fire`. **Nothing was changed about it**: section 6 item 2 says the abort path is
-not this unit's, and it was not touched. **What it would mean at the radio, if anything:** the
-second pair is a CW-abort and a PTT-off sent to a rig that the first pair already stopped and
-unkeyed, so it is very likely a no-op - but *very likely* is not a session's call, and the
-honest answer is that nobody has watched an IC-7300 receive it. It is **not** a transmit-safety
-defect in the sense of CLAUDE.md 0.2: the abort still fires same-thread and no-await, still on
-one click, and it errs toward stopping rather than toward keying.
+**R38 (a) permits the change on the ground that Hamlet's modulator makes only three
+variants, and the arbiter reads the tree as saying otherwise. The arbiter has not
+confirmed it with a run and neither has this unit** - nothing here touched
+`assets\data\rsid-codes.json`, `data\rsid\rsid-codes.json`, `RsidCodes`, `RsidBurst`,
+`RsidDetector`, `OliviaModulator` or the csproj's embedded resource. **Step 2 cannot close
+until Tim rules again, and no unit should take 2.2 until he does.**
 
-**3. The dispatcher loop is what stands between Hamlet and criterion 2.4, and it is nobody's
-criterion. THIS IS A FINDING, not a ruling request.** Avalonia's headless
-`InvalidProgramException: You've caused dispatcher loop` killed **5 of 17** full app
-invocations outright at about 1 ms, before any assertion, on **five different names in this
-unit and eight across four units**. It cannot be quarantined as a name because it is not a
-name. It is written into `docs\quarantined-tests.txt` as an environmental cause with no name
-attached, with every name it has landed on. **Until somebody is told to chase it, every unit
-that ends in a carry-forward run will spend a paragraph on it**, which is exactly the cost R35
-says a flaking list carries. It never once touched the engine invocation.
+**And R38 (b) answered unit 375's item 2 - the duplicate abort pair - which is CLOSED.**
+The transmit sequence's teardown abort pair, sent after the click's own, is accepted: a
+duplicate unkey is the safe direction, nothing keys on it, and it is logged as tidy-up
+rather than a stop. Nothing in this unit touched it and nothing is to be done about it.
 
-**4. `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable` went red
-once, and section 5 records it as a name that had never been red. THIS IS A FINDING.** Once in
-17 full app invocations, at **106 ms**, so **an assertion and not the session fault**. **Its
-message was not captured** - the run's filter did not print the lines after `Error Message:` -
-and four further app invocations did not reproduce it, so what it disagreed about is not known
-and it is **recorded rather than quarantined**, because one occurrence is not a measurement.
-**It is not this unit's doing, and that is checked rather than claimed:** the only edit to that
-file added the `Press` helper and split `Click` into `Press` plus `Pump`, and **that test calls
-neither**.
+**2. Criterion 6.1 cannot reach 180 px with the pills counted while 6.3 stands. THIS IS A
+FINDING WITH ARITHMETIC, and it is the one item in the way of a criterion in B.** It does
+not want a ruling unless the owner wants to spend the last 34 pixels. The band with the
+pills is 214. Its parts, measured: the sun map's picture **134 px**, which 6.3 forbids
+shrinking; the neighborhood card's own header **27 px**; the pills at half height **30
+px**; the gap between the pills and the card **6 px**. That is **197 px before a single
+word would have to leave the window**, against the criterion's 180 - and the remaining 17
+px of the 214 are the map's caption (11) and the card's body padding (6).
+**The band without the pills is 178 and meets 180.** Three things could close the gap and
+all three are the owner's: shrink the sun map, take the neighborhood card's header (which
+would make it non-collapsible, against Â§0.5), or drop the pills from the band's
+definition, which section 6's first ruling deliberately did not do.
 
-### Mismatches found against the tree, repaired or reported per section 5
+**3. The rig's rearrangement was not made, and the drop candidate's own condition did not
+authorize dropping it. A FINDING, and a sizing decision the owner did not make.** Work
+instruction 376 task 2 made *drive and power beside the frequency* the drop candidate, to
+be dropped only if the card governed at both asserted widths **and** the band reached 180
+without it. The band reached 214, so the condition was not met. It was still not made,
+for a measured reason: the rig column is `Auto`, so moving the 120 px drive box and its
+two labels beside the 520 px LCD **widens that column and takes the width off the
+neighborhood card**, which at 1400 and 1100 makes the card taller - the move costs pixels
+where it was supposed to buy them. What was done instead is the other half of R39's
+sentence, *the rig display shorter*: the box's padding, its stack's spacing and the blank
+under the S-meter's wedge, 12 px in all, which is what the tie at 1920 required. **The
+drive, the note, the tip and the power offer are all still drawn and are asserted drawn at
+both widths on all three modes.**
 
-- **Repaired, and it was ours:** step 2's state token read `not started` in both
-  `PHASE_STATUS.md` and `PHASE_OUTCOME.md` while the prose said 2.1 was met. Both now read
-  `partial`. Task 0.
-- **Reported, not repaired, not ours:** `PROJECT_STATUS.md` `RULES_AT` reads
-  `HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1 holds `CPS-DEC-0165` - the id-scheme
-  split, carried in `PHASE_PLAN.md` section 7.
-- Everything else in section 5 was read against the tree and **held**: both test files and
-  their five names each, line 231, the known-red block at line 139, the two command lines,
-  `Directory.Build.props` line 956 at `1.13.61`, and the four gate facts.
+**4. `TopRow`'s `MaxHeight="300"` does not bind the card's content; it binds only the
+row's reported height. A FINDING, and it is unit 356's comment that is wrong rather than
+this unit's work.** Measured at 1100 x 780 before anything moved: `TopRow` draws 300,
+**and the card inside it draws 623** - the scroller's viewport is 623 and its extent 623,
+so nothing scrolls, and the card paints over 376 px of what is below it. The comment above
+`TopRow` says *the card body scrolls inside the cap, per Â§0.5*. It does not. This unit did
+not repair it - it is not in criterion 6.1 and the instruction forbids touching the cap -
+and after task 2 the overflow at that size is 89 px instead of 376.
 
-### The carried queue, verbatim per HM-DEC-139 - thirteen, and this unit answers none of them
+**5. Section 5's count of the four types is 33 and the tree says 29. A FINDING, no action
+needed.** `TheTopRowTests` 15 + `TheWorkingPanelsTests` 8 + `TheStopIsAlwaysOnScreenTests`
+5 + `BindingHealthTests` 1 = **29**, measured twice in this unit. Unit 374's 33 counted
+`TheWindowGivesUpHeightInOneOrderTests`' four names as well, which is the type it had just
+rewritten. The instruction's own name counts are right; only the total is off.
 
-Unit 374's **item 1** (the app count of 207 rather than 206) was **absorbed into work
-instruction 375 section 5**, which states the expected count, and its **item 2** was **closed by
-unit 374 itself**, the unit having written the name into the list. The remaining thirteen are
-carried unanswered:
+**Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
+`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` Â§1 holds `CPS-DEC-0165` - the id-scheme split,
+carried in `PHASE_PLAN.md` Â§7. Reported, not repaired. Also noted: the instruction places
+`RigDriveAndPower` on `TopRow`'s row 1; it is at line 3079 **inside the rig face's border
+in row 0, column 1**, under the S-meter, and `TopRow`'s row 1 is an empty grid at line
+3201 carrying only comments. The band helper measures it wherever it is, so nothing
+depended on this.
 
-1. **Unit 374 item 3** - `tools/run-carry-forward.sh` still does not match the list. Parked by
-   section 9; the two command lines were run from `docs\carry-forward-tests.txt` itself.
-2. **Unit 373 item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
-3. **Unit 372 item 4** - the flake measurement. *Not an ask but a finding recorded for this
-   unit*, and section 5 took it up as evidence - **it is now answered by measurement**: its two
-   unchased candidates were the click's `StopNow` and the sequence's unkey, and the trace says
-   the second pair is the sequence's, 8 of 8.
-4. **Unit 372 item 7** - `PHASE_PLAN.md`'s criterion checkboxes. Parked by section 9; not
-   ticked, not raised again.
-5. **Unit 371's five.**
-6. **Unit 369's four** - including `LearnedAlcReference.Ago()`.
+**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - FIFTEEN, and this unit answers none of
+them.** Unit 375's item 3 (the headless dispatcher loop, `InvalidProgramException: You
+have caused dispatcher loop`, eight names across four units, an environmental cause with
+no name attached in `docs\quarantined-tests.txt`, and the single biggest obstacle to 2.4)
+and item 4 (`TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`
+went red once in seventeen full invocations, on an assertion, message not captured, not
+reproduced in four further runs). Unit 374's item 3 (`tools\run-carry-forward.sh` still
+does not match `docs\carry-forward-tests.txt`). Unit 373's item 2 (`ApplyBestBet`'s stale
+`BestBetLabel`). Unit 372's items 4 and 7 (the latter being `PHASE_PLAN.md`'s criterion
+checkboxes, which are not ticked and are not to be raised again). Unit 371's five. Unit
+369's four, including item 3, `LearnedAlcReference.Ago()`. **Neither of this unit's four
+carry-forward invocations was lost to the dispatcher loop, which is evidence on unit 375's
+item 3 and is recorded rather than acted on.**
 
-**R31's limit was two rulings and the arbiter spent both**, so none of the thirteen is answered
-here.
+**One item came off the queue this unit, by the owner's own ruling:** unit 375's item 2,
+the duplicate abort pair, is answered by R38 (b) and closed.

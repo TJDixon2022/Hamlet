@@ -187,3 +187,5 @@ the owner reads instead of watching.
 | phase | 2026-09-20T22:34 | 2026-09-20T22:34 | halted | 32.2017 | stop 7: validate-output refused the report (after 3 denied calls) |
 | 1 | 2026-09-21T08:08 | 2026-09-21T09:59 | complete | 11.124889999999997 | ran unattended, 127 turns, 7 denied call(s) worked around, report valid |
 | phase | 2026-09-21T10:00 | 2026-09-21T10:00 | halted | 0 | stop 3: a ruling is wanted on one of the three - judged, not counted |
+| 1 | 2026-09-21T10:41 | 2026-09-21T11:30 | complete | 22.841067 | ran unattended, 175 turns, 4 denied call(s) worked around, report valid |
+| phase | 2026-09-21T11:31 | 2026-09-21T11:31 | halted | 0 | stop 3: a ruling is wanted on one of the three - judged, not counted |

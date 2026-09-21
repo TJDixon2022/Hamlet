@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-21T07:59:39-04:00  root C:\Source\HamLet
+measured 2026-09-21T10:28:14-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -7,12 +7,6 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0165.
-  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
-  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
-  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
-  UNCOMMITTED      SESSION.lock is modified and uncommitted.
-  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
-  UNCOMMITTED      output.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -24,14 +18,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 8cfc9208
-  uncommitted at the root : 6
-      M PHASE_OUTCOME.md
-      M PHASE_STATUS.md
-      M RUN_LEDGER.md
-      D SESSION.lock
-      D WORK_INSTRUCTIONS.md
-      D output.md
+  HEAD   : c92bd2e1
+  uncommitted at the root : 0
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -45,7 +33,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  173 lines, 10501 bytes
+  246 lines, 15675 bytes
   PHASE: Hamlet holds what it has
   PHASE_SET: 2026-09-20
   DESCRIPTION: A hardening phase, run unattended while Tim is away. Everything banked in the PSK31 and Olivia threads that is screen, record or test and needs neither the radio nor the owner. Judged by tests that ran and, at the end, by Tim at his window.
@@ -55,6 +43,9 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 3 | The record says what was on screen - for every decoded row and every card, whether it was drawn, filtered, scrolled away or folded, so an empty-looking screen can be diagnosed from the file without a screenshot.
   STEP: 4 | The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails.
   STEP: 5 | Tim looks - at his window and, when he has time, at the radio, and says it passed.
+  STEP: 6 | The top gives back height - the pills, the neighborhood strip, the green zone and the rig display tightened to one band of about 180 px, the sun map keeping its size; the working panels get every pixel given up.
+  STEP: 7 | A PSK31 row right-clicks into a canned list - seven framed lines from an editable data file, one click sends - and the row's hover says what the row knows instead of repeating the text.
+  STEP: 8 | PSK31 and Olivia count for achievements - the Modes badge, the Hall of Fame firsts and the records from a PSK31 or Olivia contact, exactly as an FT8 contact earns them; measured first, then connected.
   
   ---
   
@@ -109,6 +100,30 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   was for the screen; there is none for the radio. One page, in his words, for the two
   keyboard modes.
   
+  **R38 - Tim, 2026-09-21, on unit 375's two questions.** (a) Codes 72-75's tone sequences
+  ship in `rsid-codes.json`: they are the detector's data, and Hamlet's modulator makes only
+  8/250, 16/500 and 32/1000, so nothing announces a variant it cannot send. (b) The transmit
+  sequence's teardown abort pair, sent after the click's own, is accepted: a duplicate unkey
+  is the safe direction and nothing keys on it; logged as tidy-up, not a stop.
+  
+  **R39 - Tim, 2026-09-21: the UI comes first.** Steps 6, 7 and 8 are worked before steps 3
+  and 4; step 3 depends on step 8. Ruled A on the top row: tighten everything to one band
+  of about 180 px - pills half height, the neighborhood strip thinner with its legend on
+  hover, the green zone one line, the rig display shorter with drive and power beside the
+  frequency - and the sun map keeps its size. Ruled C on the canned list: seven lines -
+  *Answer him Â· Send my report Â· Confirm and 73 Â· Say again? Â· Please repeat your report Â·
+  QRZ? Â· 73 and out* - each framed with the callsigns and the hand-back, one click sends,
+  read from `data/psk31/canned.json` so Tim adds his own without a session. The hover on a
+  PSK31 row says what the row knows - station, country, grid and distance if sent, offset
+  and strength, when he started and stopped, whether he spoke to Tim, the parser's kind and
+  certainty, what a click and a right-click do - never the text again.
+  
+  **R40 - Tim, 2026-09-21: keyboard modes earn achievements like FT8.** PSK31 and Olivia are
+  not connected to the achievement system as FT8 is. The unit measures which of the Modes
+  badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each mode
+  reaches today, then connects what is missing so a PSK31 or Olivia contact earns exactly
+  what an FT8 contact earns.
+  
   ## Â§4 The steps
   
   Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions plus
@@ -161,7 +176,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Delivers:** R36.
   
-  **Entry:** step 2 done.
+  **Entry:** step 8 done (R39: the UI steps come first).
   
   **Exit:**
   - [ ] 3.1 Every decoded row writes one event when its visibility changes: drawn, filtered out (by which filter), scrolled out of view, in a folded panel, or removed - with the row's offset or slot and no callsign or text. *must-pass*
@@ -170,7 +185,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [ ] 3.4 The events are sampled so that a busy FT8 evening adds under 50 kB an hour, measured. *must-pass*
   - [ ] 3.5 The privacy scan is green over every new event. *must-pass*
   
-  **Depends on:** step 2.
+  **Depends on:** step 8.
   
   ## Step 4 - The radio sheet
   
@@ -196,9 +211,51 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Depends on:** step 4.
   
+  ## Step 6 - The top gives back height
+  
+  **Delivers:** R39's top row.
+  
+  **Entry:** step 2 done, or partial with 2.1 and 2.3 met.
+  
+  **Exit:**
+  - [ ] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 180 px at 1920 and at 1400, from 300; the working panels are taller by the difference. *must-pass*
+  - [ ] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover. *must-pass*
+  - [ ] 6.3 The sun map keeps its size and its dot. *must-pass*
+  - [ ] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green. *must-pass*
+  
+  **Depends on:** step 2.
+  
+  ## Step 7 - The canned list and the hover
+  
+  **Delivers:** R39's list and hover.
+  
+  **Entry:** step 6 done.
+  
+  **Exit:**
+  - [ ] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed. *must-pass*
+  - [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text. *must-pass*
+  - [ ] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent. *must-pass*
+  - [ ] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
+  
+  **Depends on:** step 6.
+  
+  ## Step 8 - Keyboard modes earn achievements
+  
+  **Delivers:** R40.
+  
+  **Entry:** step 7 done.
+  
+  **Exit:**
+  - [ ] 8.1 The report names, for PSK31 and for Olivia, which of the Modes badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each reaches today, measured from a fixture log. *must-pass*
+  - [ ] 8.2 A logged PSK31 contact and a logged Olivia contact each earn the Modes badge's mode, the Hall of Fame first for that mode, and every per-contact record - country, state, grid, continent, miles - exactly as an FT8 contact earns them. *must-pass*
+  - [ ] 8.3 The quill on a PSK31 or Olivia row means the same as on an FT8 row, from the same nudge. *must-pass*
+  - [ ] 8.4 The scores and the total move on the achievements page for those contacts; `TheAchievementsPageTests` green. *must-pass*
+  
+  **Depends on:** step 7.
+  
   ## Â§5 Dependencies
   
-  Step 0 depends on nothing; steps 1-5 are one pipeline.
+  Step 0 depends on nothing. The order the arbiter works is 1, 2, 6, 7, 8, 3, 4, 5 - the UI steps before the record steps by R39 - expressed in each step's Depends on.
   
   ## Â§6 Branching
   
@@ -219,9 +276,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   Every open ask of the Olivia phase from unit 368's queue; the PSK31 demodulator on
   real air, waiting on a capture; Olivia 5.4 and 6.1; real flags on country cards; rank
   names; the map bitmap's license; the id-scheme split.
+  
+  ## Â§8 Revision record
+  
+  - **2026-09-21.** R38 on unit 375's two questions; R39 and R40 from Tim; steps 6-8 added and step 3 made to depend on step 8 so the UI is worked first.
 
   --- PHASE_STATUS.md ---
-  11 lines, 6361 bytes
+  11 lines, 10710 bytes
   PHASE: Hamlet holds what it has
   PHASE_SET: 2026-09-20
   DESCRIPTION: A hardening phase, run unattended while Tim is away. Everything banked in the PSK31 and Olivia threads that is screen, record or test and needs neither the radio nor the owner. Judged by tests that ran and, at the end, by Tim at his window.
@@ -229,19 +290,19 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   WORK_INSTRUCTION: 374 - the order is measured where the height is actually given up, and the record names the mode the press was made under
   STEP: 0 | partial | Settings survive an upgrade, and a send that cannot go names the true fault - no device chosen is its own refusal with a Settings link; a device that will not open carries its name, rate and OS error. Unit 369: 0.2 to 0.5 met and measured. 0.1 is met on unit 369's completed negative, ruled in work instruction 372 section 6, author's and overrulable: 119 commits searched, an empty diff over every settings path, the mechanism named and repaired.
   STEP: 1 | done | Hamlet opens whole - at the size it opens at and every size measured by unit 354, CQ, the mode tabs, the send area and Stop are on the window; the panels give up height before the send area ever does. Unit 373: 1.3 MET - the panel canvas inside WorkspaceBoundary keeps a measured 185 px floor and a scroller of its own, so the panel row goes from 0 px to 73 px at 900 x 620 and at 1100 x 620, the decoded panel reads viewport 14 in an extent of 36 and For You viewport 25 in an extent of 371, both scroll to their last content, the send area is still 22 px in its sibling row and TopRow still 300; TheWindowHoldsBelowItsMinimumTests 3 of 3 where unit 372 left it 2 of 3 committed red. 1.4 MET - the inherited red was measured, not guessed: a badge IS drawn for 40 m and wears HM-DEC-046's clock-guess label, so the test was asserting one of two ruled labels instead of the rule and was rewritten under R12; BindingHealthTests 1 of 1, TheTopRowTests 15 of 15, TheWorkingPanelsTests 8 of 8, TheStopIsAlwaysOnScreenTests 5 of 5. 1.1 met and re-checked green. 1.2 REGRESSED TO PARTIAL and it is why the step is not done: the rule holds and three of its four names are green, but TheWindowGivesUpHeightInOneOrderTests.TheWorkingPanelsLoseHeightBeforeTheTopRowLosesAny is red on its sweep precondition, because with a floor the panels no longer run short anywhere between 780 and 620. Measured at two widths: no floor satisfies both that precondition and criterion 1.3. Unit 374: 1.2 MET and THE STEP IS DONE. Work instruction 374 section 6's first ruling extended the sweep upward instead of retuning the floor, and the top is measured rather than chosen - at width 1100 the panel row runs 331 px at 1040 down to 91 px at 800, reaches 71 px at 780 and stays there to 620, so the floor begins to bind at 780 with seven shrink transitions above it and none below; a sweep topped at 840 gives the guard two shrinks and 920 was taken, which gives four. TheWindowGivesUpHeightInOneOrderTests is 4 of 4 where it was 3 of 4, over nine heights where it swept five, with every height from 780 to 620 kept, shrinks.Count >= 2 at its threshold, the 0.5 px slack unchanged and one assertion ADDED: below the floor the panel row is constant at 71 or 73 px, TopRow still gives up none of its 300, and the canvas scrolls instead - 185 px of extent in a viewport of 145, 105, 65 and 25. 1.1, 1.3 and 1.4 were RE-CHECKED AND NOT ASSUMED: TheWindowHoldsBelowItsMinimumTests 3 of 3 and unmodified, BindingHealthTests 1 of 1, TheTopRowTests 15 of 15, TheWorkingPanelsTests 8 of 8, TheStopIsAlwaysOnScreenTests 5 of 5, 33 of 33 together. The panel row at unit 354's nine sizes is 452, 73, 73, 90, 90, 230, 426, 429, 829, identical to unit 373's, and git diff against this unit's task 0 over src/ reads empty for the whole of tasks 1 and 2: this unit changed a test and not the layout.
-  STEP: 2 | not started | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list. Unit 374: 2.1 MET. Measured before it was repaired - under PSK31 and under Olivia, cq_pressed wrote detail Ft8, and so did psk31_answer_pressed, psk31_typed_pressed and psk31_card_opened, because all four wrote _digitalMode.ToString() and DigitalMode has two members with PSK31 and Olivia both mapping to Ft8. The four now carry ChosenDigitalMode, the canonical strip label set in the one place the chip press assigns it, or StartupSnapshot.Unknown where nothing has been pressed: PSK31 writes PSK31, Olivia writes Olivia, FT8 writes FT8, FT4 writes FT4 and nothing chosen writes unknown. The send events were MEASURED PER PATH AND NOT EDITED - under PSK31 and Olivia the press leaves by SendUnslotted above the three slotted writes, and the unslotted send_stage already recorded detail Psk31 and Olivia; the slotted sites are reached only under FT8 and FT4, where the family IS the sub-mode, so nothing there changed. DigitalDecoderStarted at 13404 keeps _digitalMode by work instruction 374 section 6's ruling, because it names which decoder started and under PSK31 that decoder genuinely is FT8's; parts.AppDigitalMode at 9413 is the startup snapshot and is out of scope. Evidence: TheRecordNamesTheSubModePressedTests, one type, 12 of 12, asserting from a fixture and sweeping every line for the callsign, the grid and the typed words. Unit305ActionTests, Unit305HonestTests, CallsignPrivacyTests and ThePsk31SeamTests were read and NONE had to change. Not one sample of composed audio, no Arm site and no PttOn site was touched. 2.2 (the RSID codes and their tone sequences), 2.3 (the two headless flakes) and 2.4 (the five green runs) are the rest and are NOT STARTED.
+  STEP: 2 | partial | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list. Unit 374: 2.1 MET. Measured before it was repaired - under PSK31 and under Olivia, cq_pressed wrote detail Ft8, and so did psk31_answer_pressed, psk31_typed_pressed and psk31_card_opened, because all four wrote _digitalMode.ToString() and DigitalMode has two members with PSK31 and Olivia both mapping to Ft8. The four now carry ChosenDigitalMode, the canonical strip label set in the one place the chip press assigns it, or StartupSnapshot.Unknown where nothing has been pressed: PSK31 writes PSK31, Olivia writes Olivia, FT8 writes FT8, FT4 writes FT4 and nothing chosen writes unknown. The send events were MEASURED PER PATH AND NOT EDITED - under PSK31 and Olivia the press leaves by SendUnslotted above the three slotted writes, and the unslotted send_stage already recorded detail Psk31 and Olivia; the slotted sites are reached only under FT8 and FT4, where the family IS the sub-mode, so nothing there changed. DigitalDecoderStarted at 13404 keeps _digitalMode by work instruction 374 section 6's ruling, because it names which decoder started and under PSK31 that decoder genuinely is FT8's; parts.AppDigitalMode at 9413 is the startup snapshot and is out of scope. Evidence: TheRecordNamesTheSubModePressedTests, one type, 12 of 12, asserting from a fixture and sweeping every line for the callsign, the grid and the typed words. Unit305ActionTests, Unit305HonestTests, CallsignPrivacyTests and ThePsk31SeamTests were read and NONE had to change. Not one sample of composed audio, no Arm site and no PttOn site was touched. 2.2 (the RSID codes and their tone sequences), 2.3 (the two headless flakes) and 2.4 (the five green runs) are the rest and are NOT STARTED. Unit 375: 2.3 MET, 2.4 NOT MET, 2.2 NOT ATTEMPTED and the step stays PARTIAL. 2.3 - both named types were run ten times, whole type, filtered, one build each. TheStopIsAlwaysOnScreenTests was RED 4 OF 10, always the same name, KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns, and always an assertion and never the session fault: the abort pair was on the wire twice. Unit375TraceTests recorded the stack behind every frame over eight runs and named the writers instead of inferring them - the click's own pair is MainWindowViewModel.StopSending to Ft8ArmedSend.StopNow to TransmitAbort.Fire, written exactly once 8 of 8, and THE SECOND PAIR IS THE TRANSMIT SEQUENCE'S OWN TEARDOWN, Ft8TransmitSequence.RunAsync to PlayOverTimeAsync to TransmitAbort.Fire, 8 of 8 and never StopNow, so work instruction 375 section 6 item 2's stop was NOT reached and the abort path was not touched. The teardown runs on the sequence's task and not as a dispatcher job, so it races the click in real time: its pair was already on the wire when MouseUp returned on 2 of 8 runs, landed inside the click's own pump on 4, and only after await running on 2 - NO MOMENT BEFORE THE SEQUENCE SETTLES IS FIXED, and the first repair attempted at task 2 assumed one was and was still 3 of 10 red. The name now reads the wire where it has stopped changing and asserts the rule rather than a snapshot, and it is 10 OF 10 GREEN. It asserts MORE than it replaced: the click's own abort behind the keying as CwStop then PttOff is kept whole, the scheduling claim that nothing else had happened yet is gone because it was never a fact about Hamlet, and the settled wire is asserted where the old test never looked - it keyed once and never again, every later frame is an abort frame and nothing else, and they arrive in whole CwStop-PttOff pairs so no lone CW stop can leave the radio keyed. TheTestsStayOffTheNetworkTests was GREEN 10 OF 10 on its own type and R35's premise about it was not reproduced in isolation - AND THEN IT WENT RED ON AN ASSERTION IN THE FULL APP INVOCATION, on The354LayoutReadsTheSameNumbersTwiceRunning at 405 ms, 1 of 7 completed full-list runs. It needs the other 210 names in the session to show itself, which is why four units of isolated poking never found it. WHICH of its three windows measured differently was NOT DETERMINED - xUnit truncates the collection diff to fifty characters and all three lines match far past that - and four further invocations did not reproduce it, so the name is QUARANTINED into the new docs/quarantined-tests.txt with its numbers, the failure verbatim, the cause as far as it went and what would take it off, rather than repaired on a guess; a flake quarantined with its cause named IS meeting 2.3. It came off the app command line in the same commit, the whole-type entry rewritten as its FOUR SURVIVING NAMES, with the human-readable list changed to match; all four network guards are intact and what came off guards nothing about the network. NO FILE UNDER src CHANGED IN THE WHOLE UNIT - git diff over src against task 0 reads empty. 2.4 NOT MET, and it is the unit's shortfall: the target is five consecutive completed green runs of both invocations and THE BEST STREAK WAS ONE. Across SEVENTEEN full app invocations, ten completed green, two completed RED on assertions and FIVE WERE LOST OUTRIGHT to Avalonia's headless InvalidProgramException 'You have caused dispatcher loop', which kills at about 1 ms before any assertion and moves between names - six names in this unit alone and EIGHT ACROSS FOUR UNITS, written into the quarantine file as an environmental cause with no name attached. The engine invocation never once failed: 146 of 146 on all seven runs. The exit carry-forward after the last change was app 210 of 210 and engine 146 of 146, name for name against task 0's app 211 of 211 with the quarantined name the only difference - NO REGRESSION. One further finding, recorded and not quarantined: TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable, which section 5 says had never been red, went red once in 17 full invocations at 106 ms and so on an assertion; its message was not captured and four more runs did not reproduce it, and it is NOT unit 375's doing - the unit's only edit to that file added the Press helper and split Click, and that test calls neither.
   STEP: 3 | not started | The record says what was on screen - for every decoded row and every card, whether it was drawn, filtered, scrolled away or folded, so an empty-looking screen can be diagnosed from the file without a screenshot.
   STEP: 4 | not started | The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails.
   STEP: 5 | not started | Tim looks - at his window and, when he has time, at the radio, and says it passed.
 
   --- PHASE_OUTCOME.md ---
-  150 lines, 37072 bytes
+  184 lines, 54676 bytes
   PHASE: Hamlet holds what it has
   PHASE_SET: 2026-09-20
   DESCRIPTION: A hardening phase, run unattended while Tim is away. Everything banked in the PSK31 and Olivia threads that is screen, record or test and needs neither the radio nor the owner. Judged by tests that ran and, at the end, by Tim at his window.
   STEP: 0 | partial | Settings survive an upgrade, and a send that cannot go names the true fault - no device chosen is its own refusal with a Settings link; a device that will not open carries its name, rate and OS error. 0.2 to 0.5 met and measured; 0.1's search is complete and its answer is a NEGATIVE - no commit in that window touched the loader, and the line that dropped the device is named in the report and predates 1.13.30.
   STEP: 1 | done | Hamlet opens whole - at the size it opens at and every size measured by unit 354, CQ, the mode tabs, the send area and Stop are on the window; the panels give up height before the send area ever does.
-  STEP: 2 | not started | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list.
+  STEP: 2 | partial | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list. 2.1 met by unit 374; 2.3 and 2.4 are unit 375's; 2.2 is parked for the owner.
   STEP: 3 | not started | The record says what was on screen - for every decoded row and every card, whether it was drawn, filtered, scrolled away or folded, so an empty-looking screen can be diagnosed from the file without a screenshot.
   STEP: 4 | not started | The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails.
   STEP: 5 | not started | Tim looks - at his window and, when he has time, at the radio, and says it passed.
@@ -386,6 +447,40 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: done
   STATE_WHY: All four exit criteria are backed by quoted measurements, the nine-size and 1100x780 ladders showing CQ, tabs, send area, drive note and Stop whole, a sweep of 920 to 620 yielding 4 shrink transitions with the send area constant at 22 px and never the thing that leaves, a flat band below 780 where the canvas scrolls at extent 185 against viewports of 145, 105, 65 and 25 while the send area stays, and BindingHealthTests plus the layout types green at 33 of 33, with the remaining section 4 items being findings that touch no criterion.
+  
+  ## UNIT 375 - STEP 2
+  
+  STEP: 2
+  ADVANCED: step 2
+  APPROACH: run the two named headless flakes ten times each, repair them in the test under R12 or quarantine them into a named non-carry-forward list with the cause stated, and run the carry-forward list green five times in a row
+  MOVE: continue
+  WHY: step 2 has had no unit aimed at it, and 2.3 is the criterion every later step's evidence rests on - steps 3 and 4 both end in a carry-forward run, and the Stop name was red in 3 of 7 runs for unit 372, 1 of 4 for unit 373 and 0 of 5 for unit 374, so every run of that list has had to be argued about for three units.
+  DECIDED: author's, overrulable, two, both transcribed in work instruction 375 section 6. (1) Settling a flake means fixing the moment the test reads, not asking less: the repair is on the test's side under R12 and must assert more than it replaced; ten green runs do not excuse leaving line 231's unfixed moment alone; a quarantined name goes in a new docs/quarantined-tests.txt and comes off the carry-forward command line in the same commit, never into carry-forward-dropped.txt which states nothing on it is a known red; and if the measurement shows the second abort pair is written by the application rather than by the test reading too early, that is what keys and the unit stops, quarantines with the cause named, and hands it to the owner. (2) For criterion 2.4 only, a run killed by Avalonia's headless InvalidProgramException 'You have caused dispatcher loop' before any assertion is a LOST RUN: recorded with the name it landed on, re-run, counting neither toward the five nor against them; five consecutive completed green runs meet 2.4, more than five lost runs make it partial, and a red on an assertion restarts the streak. Criterion 2.2 is not attempted and is parked for the owner - giving codes 72-75 their tone sequences would make Hamlet announce four Olivia variants on the air that it refuses to announce today, which is PHASE_PLAN.md section 6's stop.
+  LICENCE: PHASE_PLAN.md R35, R31 and section 6 - a test's shape and a mechanism are the arbiter's and never a stop, and a flake quarantined with its cause named IS meeting 2.3; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.0, 0.2; HM-DEC-018 section 2.1, HM-DEC-139, HM-DEC-155, HM-DEC-165; FACT-004
+  COST: one session, five tasks (0 to 4), each committed on its own.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: PHASE_STATUS.md line 1 names this phase. Carry-forward before any change, both invocations, one build each, status written immediately before each: app 211 of 211 in 2 m 20 s, engine 146 of 146 in 4 m 42 s. Both green on the first attempt - neither invocation was lost to the headless dispatcher-loop fault, so neither was re-run - and both counts are exactly where unit 374's exit run left them. Step 2's state token was ALSO REPAIRED AT THIS TASK: PHASE_STATUS.md and PHASE_OUTCOME.md both carried "STEP: 2 | not started" while the same line's own prose said "Unit 374: 2.1 MET" and PROJECT_STATUS.md said step 2 partial, so tools/arbiter/outcome-read.bat was printing step 2 as not started with 0 units spent. The token was wrong and the prose was right; both files now read partial. No file under src changes at this task.
+  ACCOMPLISHED_FINAL: The list Hamlet runs to prove nothing broke can be believed further than it could this morning, and where it still cannot, the reason is written down instead of being argued about again next unit. The test that was red some nights and green others now checks the same thing every time, and it checks more than it did. The second one turned out not to be the test the plan thought it was: it is green on its own and only misbehaves with the whole list around it, so it is set aside by name with its numbers and what would bring it back. What is NOT finished is the five clean runs in a row - the headless test session itself killed five of seventeen attempts outright, and that fault, not any test, is what stands between Hamlet and a list that can be read at a glance.
+  EXIT: carry-forward after the last change, both invocations, one build each: app 210 of 210, engine 146 of 146. Name for name against task 0's app 211 of 211 the only difference is the quarantined name - NO REGRESSION, and nothing red that was green before (HM-DEC-165). The app invocation of that exit round was LOST to the dispatcher loop on ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel and re-run per section 6's second ruling; both attempts are recorded here. THE FIVE-RUN STREAK WAS NOT ACHIEVED and 2.4 IS NOT MET: the best streak was ONE completed green round of both invocations, broken by an assertion red. Seventeen full app invocations in the unit - ten completed green, two completed red on assertions, FIVE LOST OUTRIGHT to Avalonia's headless InvalidProgramException 'You have caused dispatcher loop' at about 1 ms before any assertion, on six different names, eight across four units now. Seven engine invocations, 146 of 146 every one, never once touched by it. docs/quarantined-tests.txt was created with one quarantined name, one recorded-but-not-quarantined name, and the dispatcher loop as an environmental cause with no name attached. No file under src changed in the whole unit.
+  FATE: executed, complete at task 4 of 5 (tasks 0 to 4), with criterion 2.4 not met and reported as not met.
+  STATE_AFTER: partial
+  STATE_WHY: STEP 2 STAYS PARTIAL AND DOES NOT CLOSE, because 2.2 is the owner's. 2.1 carried met from unit 374. 2.3 MET. Both named types were run ten times each, whole type, filtered, one build each. TheStopIsAlwaysOnScreenTests was RED 4 OF 10 - runs 2, 3, 4 and 6 - always on KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns, always an ASSERTION and never the session fault, and always the same way: expected KeyOn, CwStop, PttOff and got that plus a second CwStop and PttOff. WHOSE SECOND PAIR IT IS WAS SETTLED BY MEASUREMENT, not inference: Unit375TraceTests recorded the stack behind every frame across eight runs, and the second pair was written by Ft8TransmitSequence.RunAsync to PlayOverTimeAsync to TransmitAbort.Fire in 8 of 8, while the click's own StopNow wrote its pair exactly once in 8 of 8. THE CLICK ALONE NEVER PRODUCED TWO PAIRS, so work instruction 375 section 6 item 2's stop was not reached, and the abort path, StopNow and the sequence's unkey were not touched. The teardown is not a dispatcher continuation - it runs on the sequence's own task - so it races the click in real time: its pair was already on the wire the instant MouseUp returned on 2 of 8 runs, landed inside the click's own pump on 4, and only after await running on 2. NO MOMENT BEFORE THE SEQUENCE SETTLES IS FIXED, and the first repair written at task 2 assumed one was and was still 3 of 10 red; the second reads the wire where it has stopped changing and is 10 OF 10 GREEN. IT ASSERTS MORE THAN IT REPLACED, name for name: the click's own abort behind the keying, CwStop then PttOff, is kept whole; the claim that nothing else had happened at that instant is gone, because that was never a fact about Hamlet but about thread scheduling and was false on a third of runs; and the SETTLED wire is now asserted where the old test never looked at all - it keyed once and never again, every frame after the keying is an abort frame and nothing else, the click's pair is still the first of them in order, and they arrive in WHOLE CwStop-PttOff pairs, so no lone CW stop can leave the radio keyed. That the pair is on the wire twice is asserted as that rule and NOT as a count of five, because whether Hamlet should send it twice is the owner's question. TheTestsStayOffTheNetworkTests was GREEN 10 OF 10 on its own type, and R35's premise about it - carried from unit 365's report and never measured in the tree - WAS NOT REPRODUCED IN ISOLATION. It then went RED ON AN ASSERTION IN THE FULL APP INVOCATION, on The354LayoutReadsTheSameNumbersTwiceRunning at 405 ms, 1 of 7 completed full-list runs, which supersedes task 3's conclusion that the type needed nothing. It needs the other 210 names in the session to show itself, which is why isolated runs proved nothing for four units. WHICH of its three windows measured differently on the second read was NOT DETERMINED: xUnit truncates the collection diff to fifty characters and all three lines are identical far past that, and four further app invocations did not reproduce it. Repairing it blind would be guessing, so it is QUARANTINED into the new docs/quarantined-tests.txt with its numbers, the failure verbatim, the cause as far as it went, whether it is timing or environment - not established, and said so - and the three things that would take it off; PHASE_PLAN.md section 6 and work instruction 375 section 6 item 3 both make a flake quarantined with its cause named a way of MEETING 2.3. It came off the app command line IN THE SAME COMMIT, the whole-type entry rewritten as its four surviving names in type-and-method form, with the human-readable list changed to match so the two cannot disagree. ALL FOUR NETWORK GUARDS ARE INTACT - what came off is a layout determinism check that happens to live in that type and guards nothing about the network. The test also gained a line-by-line comparison naming the window that moved, so the next occurrence is legible. NO FILE UNDER src CHANGED IN THE WHOLE UNIT: git diff over src/ against this unit's task 0 commit reads empty. 2.4 NOT MET, and it is this unit's shortfall, reported as not met rather than rounded. The criterion is five consecutive completed green runs of both invocations and THE BEST STREAK WAS ONE, broken by an assertion red. Across seventeen full app invocations: ten completed green, two completed red on assertions, and FIVE LOST OUTRIGHT to Avalonia's headless InvalidProgramException 'You have caused dispatcher loop', which kills a name at about 1 ms before any assertion and moves between names - six names in this unit, eight across four units, and it struck a sixth name inside a run that was already red. Seven engine invocations, 146 of 146 every single one, never touched by it. That fault is written into the quarantine file as an environmental cause with no name attached, because it cannot be quarantined as a name, and it is nobody's criterion yet while being the single biggest obstacle to 2.4. One further finding is recorded and NOT quarantined: TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable, which section 5 records as never having been red, went red once in 17 full invocations at 106 ms and therefore on an assertion; its message was not captured, four more runs did not reproduce it, and it is NOT this unit's doing - the only edit to that file added the Press helper and split Click into Press plus Pump, and that test calls neither. 2.2 NOT ATTEMPTED and parked for the owner: OliviaModulator.Compose lines 149-155 gate the announcement burst on RsidBurst.TonesFor being non-null and compose it into transmitted audio, so giving codes 72-75 their tone sequences would make Hamlet announce four Olivia variants on the air that it refuses to announce today, and those four sequences have not been checked against the mode author's fixtures the way the existing four were. That is a change to what goes on the air, which PHASE_PLAN.md section 6 makes the owner's, and STEP 2 CANNOT CLOSE UNTIL HE RULES.
+  MEASURED: THE TWENTY RUNS OF TASK 1, whole type, filtered, one build each. TheStopIsAlwaysOnScreenTests before the repair: 5, 4, 4, 4, 5, 4, 5, 5, 5, 5 of 5 - four red, every one the same name and every one an assertion. After the repair: 5 of 5, ten times, 10 OF 10 GREEN. TheTestsStayOffTheNetworkTests: 5 of 5, ten times, 10 OF 10 GREEN on its own type. THE WIRE, from the trace, eight runs with the stack behind every frame: before the click 1 frame, KeyOn; the instant MouseUp returned 3 frames on 6 runs and 5 on 2; after the click's own pump 3 on 4 runs and 5 on 4; after await running 5 FRAMES ON ALL EIGHT - KeyOn, CwStop, PttOff, CwStop, PttOff. Frame 0 written by Ft8TransmitSequence.RunAsync off AtSlotBoundaryAsync; frames 1 and 2 by MainWindowViewModel.StopSending to Ft8ArmedSend.StopNow to TransmitAbort.Fire, 8 of 8; frames 3 and 4 by Ft8TransmitSequence.RunAsync to PlayOverTimeAsync to TransmitAbort.Fire, 8 of 8 and never once StopNow. SEVENTEEN FULL APP INVOCATIONS: green 211, green 211, LOST on The354Layout, green 211, RED on The354Layout at 405 ms, green 211, green 211, green 211, LOST on TheWindowHoldsBelowItsMinimum, LOST on BindingHealthTests, LOST on ThePowerIsOffered, green 210, green 210, RED on WithNothingKeyedItSaysStopAndIsStillPressable at 106 ms with a second name lost to the dispatcher loop in the same run, LOST on TheRecordNamesTheSubModePressed label Olivia, green 210, green 210. SEVEN ENGINE INVOCATIONS: 146 of 146, every one. The app total is 211 before the quarantine and 210 after, and the four theory cases of the surviving network names are the whole of the difference. Nothing in any of this is evidence about the radio (FACT-004): every port in the unit is a FakePort or a TracingPort and every sink a FakeSink, no device was opened and nothing was keyed.
+  
+  ## UNIT 1 - STEP 2
+  
+  STEP: 2
+  APPROACH: run the two named headless flakes ten times each, repair them in the test under R12 or quarantine them into a named non-carry-forward list with the cause stated, and run the carry-forward list green five times in a row
+  HIT: section 4 wants a ruling: yes - Item 1 holds step 2 open until the owner rules on giving four RSID codes tone sequences that would go out on the air, and item 2 asks him to accept or reject a duplicate CW stop and PTT off pair sent to the radio, both of which touch keying and transmit.
+  MOVE: continue
+  WHY: step 2 has had no unit aimed at it, and 2.3 is the criterion every later step's evidence rests on - steps 3 and 4 both end in a carry-forward run, and the Stop name was red in 3 of 7 runs for unit 372, 1 of 4 for unit 373 and 0 of 5 for unit 374, so every run of that list has had to be argued about for three units.
+  DECIDED: author's, overrulable, three - two given to the unit in work instruction 375 section 6, and one scoping decision the unit is told not to touch. (1) Settling a flake means fixing the moment the test reads, not asking less: the repair is on the test's side under R12 and must assert more than it replaced, ten green runs do not excuse leaving line 231's unfixed moment alone, a quarantined name goes in a new docs\quarantined-tests.txt and comes off the carry-forward command line in the same commit rather than into carry-forward-dropped.txt which states nothing on it is a known red - and if the measurement shows the second abort pair is written by the application rather than by the test reading too early, that is what keys and the unit stops, quarantines with the cause named, and hands it to the owner. (2) For criterion 2.4 only, a run killed by Avalonia's headless InvalidProgramException 'You've caused dispatcher loop' before any assertion is a lost run: recorded with the name it landed on, re-run, counting neither toward the five nor against them, because unit 374 measured it killing 2 of 4 app invocations and moving between three names across three units, so it cannot be quarantined as a name; five consecutive completed green runs meet 2.4, more than five lost runs make it partial, and a red on an assertion restarts the streak. (3) THE SCOPING DECISION, AND IT IS THE OWNER'S TO OVERRULE FIRST: criterion 2.2 is not attempted and is parked. OliviaModulator.Compose lines 149-155 gate the announcement burst on RsidBurst.TonesFor being non-null and compose it into transmitted audio, so giving codes 72-75 their tone sequences makes Hamlet announce four Olivia variants on the air that it refuses to announce today, and those four sequences have not been checked against the mode author's fixtures the way the existing four were. That is a change to what goes on the air - PHASE_PLAN.md section 6's stop - so no unit takes it without Tim's word, and step 2 cannot close until he rules. The phase was not halted for it because 2.3 and 2.4 are a full night of work that touches nothing outside the fence, and halting would have spent the night Tim asked to use.
+  LICENCE: PHASE_PLAN.md R35, R31 and section 6 - a test's shape and a mechanism are the arbiter's and never a stop, and a flake quarantined with its cause named IS meeting 2.3; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.0, 0.2; HM-DEC-018 section 2.1, HM-DEC-139, HM-DEC-155, HM-DEC-165; FACT-004
+  COST: 11.124889999999997
+  ACCOMPLISHED: The list Hamlet runs to prove nothing broke can be believed. Two tests that were red some nights and green others are each run ten times, and each is either made to check the same thing every time or set aside with the reason written down - so when a later unit says the list was green, that sentence means something. And if the reason one of them wavers turns out to be that Hamlet sends its stop command to the radio twice, that is written down and handed to Tim rather than quietly smoothed over.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: 2.1 is carried met and 2.3 is met with measured support, 4 of 10 red then 0 of 10 after the repair plus a named quarantine with its cause, while 2.4 reached only 1 of 5 green rounds and 2.2 is untouched pending the owner's on-air ruling, so with 2.4 still reachable by further work the step is not blocked.
 
   --- CLAUDE.md ---
   1389 lines, 198638 bytes
@@ -408,17 +503,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 957 bytes
+  19 lines, 870 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: COMPLETED
-  TASK: 4 of 5
+  STATE: blocked
+  TASK: TASK 4 of 4
   WORK_INSTRUCTION: 374 - the order is measured where the height is actually given up, and the record names the mode the press was made under
   BALL: tim
-  NEXT_PASTE: OUTPUT.md -> Claude Web
+  NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-20T22:33:02-04:00
-  NOTE: Unit 374 complete at task 4 of 5, pushed at 3cb65787. Step 1 DONE - 1.2 met, the guard counts 4 shrinks where it counted 0, 1.1, 1.3 and 1.4 re-checked at 33 of 33. Step 2 partial - 2.1 met, cq_pressed says PSK31 where it said Ft8. Carry-forward 211 of 211 app, 146 of 146 engine.
+  UPDATED: 2026-09-21T09:58:44-04:00
+  NOTE: Unit 375 complete and pushed at ee31e16e. 2.3 met, 2.4 not met. Two questions wait on Tim: criterion 2.2 (RSID, would announce four Olivia variants on the air) and whether Hamlet may send its abort pair twice.
   
   ---
   
