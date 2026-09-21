@@ -76,6 +76,24 @@ public sealed record Psk31CannedSet(
 /// </remarks>
 public sealed record Psk31CannedPress(string Station, string Label, string Text);
 
+/// <summary>What one press on a canned MACRO line carries: the command that already sends it.</summary>
+/// <param name="Send">The command that sends this macro today, unchanged.</param>
+/// <param name="Parameter">What that command is handed, unchanged - the row, or the card.</param>
+/// <remarks>
+/// <para>**IT MARKS THE PRESS AND IT DOES NOT RE-ROUTE THE SEND** (work instruction 383 section 6
+/// ruling 2 item 3). Criterion 7.2 asks that every canned send write `macro: canned`, and until
+/// unit 383 the three macro rows wrote their own token because they are sent by the commands that
+/// send them - <c>AnswerPsk31Command</c> and the card's own <c>CardActionCommand</c>. Writing a
+/// second answer beside the one Hamlet already sends is two spellings of one act, so what changed
+/// is that the press is KNOWN to have come off the list by the time the composer chooses the
+/// token. **The send itself is still made by the command in <see cref="Send"/>, handed the
+/// parameter in <see cref="Parameter"/>, with §R1's certainty gate exactly where it was.**</para>
+/// <para>**AND IT CARRIES NOTHING PERSONAL** (HM-DEC-018 §2.1): no label, no text, no callsign.
+/// It is two references to things the menu already built.</para>
+/// </remarks>
+public sealed record Psk31CannedMacroPress(
+    System.Windows.Input.ICommand Send, object? Parameter);
+
 /// <summary>One line on the canned menu: what it reads, and what a click does - or nothing.</summary>
 /// <param name="Label">What the item reads.</param>
 /// <param name="Command">What a click runs, or null where this is a note.</param>

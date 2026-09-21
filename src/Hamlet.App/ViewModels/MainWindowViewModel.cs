@@ -16729,6 +16729,19 @@ public partial class MainWindowViewModel : ObservableObject
             : canned ? "canned"
             : moving is not null ? "qsy"
             : Psk31MacroToken.For(kind);
+
+        // **AND WHICH OF THE SEVEN IT WAS, SO NOTHING THE RECORD SAID BEFORE IS LOST**
+        // (criterion 7.2, work instruction 383 section 6 ruling 2 item 2). Until unit 383 the
+        // three macro rows wrote `answer`, `report` and `confirm` here while the four text rows
+        // wrote `canned`, so the criterion's own word was written by four of seven. All seven now
+        // write `canned` above, and the macro's own token is kept BESIDE it rather than instead of
+        // it: a reader can still say which line went out. **A text row says so in the same word
+        // the file uses for it** - it carries text and not one of Hamlet's three macros - and
+        // **it is absent on every send that did not come off the list**, so no line of the record
+        // written before tonight changes shape. **No label, no text, no callsign** (§2.1).
+        var cannedMacro = canned
+            ? kind == Psk31Macro.None ? "text" : Psk31MacroToken.For(kind)
+            : null;
         var at = _psk31SendAtHz;
 
         // **THE VARIANT IS THE ROW'S OR THE TABLE'S, NEVER A CONTROL'S** (R27, decision BA).
@@ -16863,7 +16876,8 @@ public partial class MainWindowViewModel : ObservableObject
             offsetHz,
             composed.AnnouncedCode,
             composed.AnnouncementSeconds,
-            tag);
+            tag,
+            cannedMacro);
 
         SendStage.Entered(
             _telemetry,
@@ -17901,10 +17915,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>**A MALFORMED FILE IS ONE NOTE AND NO CANNED ITEM** (ruling 1 item 4, §0.0). No
     /// partial read, no skipped row and no silent fallback to a set written in here.</para>
     /// <para>**THREE OF THE SEVEN ARE HAMLET'S OWN MACROS AND ARE SENT BY THE COMMANDS THAT SEND
-    /// THEM TODAY** (ruling 1 item 5) - <see cref="AnswerPsk31Command"/> and the card's own
-    /// <see cref="CardActionCommand"/> - unchanged, with their own record tokens and §R1's
-    /// certainty gate intact. Writing a second answer beside the one Hamlet already sends is two
-    /// spellings of one act.</para>
+    /// THEM TODAY** (work instruction 378 section 6 ruling 1 item 5) -
+    /// <see cref="AnswerPsk31Command"/> and the card's own <see cref="CardActionCommand"/> -
+    /// unchanged, with §R1's certainty gate intact. Writing a second answer beside the one Hamlet
+    /// already sends is two spellings of one act, and that reasoning still stands.</para>
+    /// <para>**WHAT UNIT 383 ADDED IS A MARK ON THE PRESS AND NOT A SECOND ROUTE** (criterion
+    /// 7.2, work instruction 383 section 6 ruling 2). Those two commands are now reached through
+    /// <see cref="SendCannedMacroPsk31Command"/>, which records that this press came off the
+    /// canned list and then hands the press straight to them with the parameter they always took.
+    /// **No macro row is routed through <see cref="SendCannedPsk31Command"/>**, no gate moves, and
+    /// the notes below are the ones that were here before.</para>
     /// <para>**IT READS AND SENDS NOTHING** (§0.2). It composes no audio, arms nothing and keys
     /// nothing; it answers what the menu should say.</para>
     /// </remarks>
@@ -17959,7 +17979,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             return MacroTextFor(Psk31Macro.Answer, station).Length == 0
                 ? Absent(line, "your callsign is not set in Settings, and a macro is not sent with a blank in it")
-                : new(line.Label, AnswerPsk31Command, row);
+                : new(line.Label, SendCannedMacroPsk31Command, new Psk31CannedMacroPress(AnswerPsk31Command, row));
         }
 
         var wanted = line.Macro == Psk31CannedMacro.Report ? Psk31Macro.Report : Psk31Macro.Confirm;
@@ -17990,7 +18010,7 @@ public partial class MainWindowViewModel : ObservableObject
         return card.Offered == wanted
                 && card.ActionKind == Ft8CardActionKind.Send
                 && card.ActionMessage.Length > 0
-            ? new(line.Label, CardActionCommand, card)
+            ? new(line.Label, SendCannedMacroPsk31Command, new Psk31CannedMacroPress(CardActionCommand, card))
             : Absent(line, "it is not your turn on this contact, or the parser is not certain whose it is");
     }
 
@@ -18074,6 +18094,46 @@ public partial class MainWindowViewModel : ObservableObject
         // **HIS CARD IS UP BEFORE THE CARRIER HAS FINISHED**, exactly as the answer press leaves
         // it: the click moved the conversation and the panel says so at once.
         RefreshPsk31Card(press.Station);
+    }
+
+    /// <summary>
+    /// **Mark a press that came off the canned menu, and let the command that sends it send it.**
+    /// </summary>
+    /// <param name="press">Which command sends this row, and what it is handed.</param>
+    /// <remarks>
+    /// <para>**IT IS NOT A SEND PATH AT ALL** (§0.2, criterion 7.2, work instruction 383 section 6
+    /// ruling 2 item 3). It composes nothing, arms nothing, keys nothing and chooses nothing: it
+    /// sets one bool and calls the command the menu already built. The three macro rows still go
+    /// out through <see cref="AnswerPsk31Command"/> and the card's own
+    /// <see cref="CardActionCommand"/>, with §R1's certainty gate, the cap, the burst, the licence
+    /// gate and the one <c>PttOn</c> site all exactly where they were. **Nothing here re-routes a
+    /// macro row through <see cref="SendCannedPsk31Command"/>**, which unit 378's reasoning above
+    /// rules out and this unit keeps.</para>
+    /// <para>**WHY IT EXISTS.** Criterion 7.2 asks that every canned send write
+    /// `psk31_send_composed` with `macro: canned`, and four of the seven did. The other three
+    /// wrote their own token because nothing downstream could tell a macro pressed off the list
+    /// from the same macro pressed on the card - the two are the same act with the same words.
+    /// This is the one place that difference exists, so this is where it is recorded.</para>
+    /// <para>**AND IT IS REACHED BY A CLICK AND BY NOTHING ELSE** (§0.2). No decode, no tick and
+    /// no parse calls it; the only construction of a <see cref="Psk31CannedMacroPress"/> in the
+    /// tree is <see cref="Psk31CannedMenuFor"/>'s.</para>
+    /// <para>**NOTHING PERSONAL GOES ANYWHERE** (HM-DEC-018 §2.1): the press carries a command and
+    /// the parameter that command already took, and the label he clicked is not recorded.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void SendCannedMacroPsk31(Psk31CannedMacroPress? press)
+    {
+        if (press is null)
+        {
+            return;
+        }
+
+        // **BEFORE THE COMMAND AND NOT AFTER IT.** The token is chosen inside the send, so the
+        // mark has to be on before the press reaches it; `SendUnslotted` clears it again in the
+        // same place it clears `_psk31Typed`, so one press marks one send.
+        _psk31Canned = true;
+
+        press.Send.Execute(press.Parameter);
     }
 
     /// <summary>Which offset a station's carrier is on, or null where he is not being heard.</summary>

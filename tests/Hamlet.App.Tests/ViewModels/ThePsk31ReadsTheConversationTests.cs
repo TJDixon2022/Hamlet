@@ -430,6 +430,15 @@ public sealed class ThePsk31ReadsTheConversationTests
     /// is loosened**: `Assert.Null(model.SendMenuFor(row))` is untouched and still the first
     /// thing asked of every row, `CanLogRow` is untouched, and the Answer item's command and
     /// parameter are still asserted by identity on exactly the rows that carried them.</para>
+    /// <para>**GROWN AGAIN BY WORK INSTRUCTION 383 TASK 3 UNDER §R12, AND IT ASSERTS MORE THAN
+    /// IT REPLACED.** Criterion 7.2 asks that every canned send write `macro: canned`, and the
+    /// three macro rows wrote their own token because nothing downstream could tell a macro
+    /// pressed off the list from the same macro pressed on the card. The Answer item now carries
+    /// the command that marks the press, so where this asserted TWO identities it asserts THREE
+    /// and a type: the marking command on the item, `AnswerPsk31Command` itself inside the press,
+    /// the row itself inside the press, and that the press is NOT `SendCannedPsk31Command` -
+    /// which is the thing unit 378's reasoning and §R1's gate forbid. **The send is still made by
+    /// the command it was always made by.**</para>
     /// <para>**AND FOUR THINGS ARE ASSERTED THAT NEVER WERE**: that a row naming a station has
     /// a menu where it had none - five of unit 378's eleven traced rows were in that state - that
     /// the seven arrive in the file's own order with R39's labels, that no item on a PSK31 row
@@ -536,16 +545,26 @@ public sealed class ThePsk31ReadsTheConversationTests
                     Assert.NotSame(model.SendMessageCommand, items[at].Command);
                 }
 
-                // **THE ANSWER LINE, ON A CERTAIN CQ, STILL CARRIES THE COMMAND AND THE
-                // PARAMETER IT ALWAYS DID** - by identity, exactly as before, and now as one of
-                // seven rather than as the only one. §R1's certainty gate is intact: on a row
-                // that is not a certain CQ that line is a note saying so.
+                // **THE ANSWER LINE, ON A CERTAIN CQ, STILL REACHES THE COMMAND AND THE
+                // PARAMETER IT ALWAYS DID** - by identity, both of them - and §R1's certainty
+                // gate is intact: on a row that is not a certain CQ that line is a note saying
+                // so. **Since unit 383 it reaches them one step in** (criterion 7.2, work
+                // instruction 383 section 6 ruling 2 item 3): the item carries the command that
+                // MARKS a press as having come off the canned list, and that press carries
+                // `AnswerPsk31Command` itself with the row itself. The send is still made by
+                // `AnswerPsk31Command`, and nothing on this menu routes a macro row through
+                // `SendCannedPsk31Command`, which is asserted here too.
                 var answer = items[0];
 
                 if (model.Psk31CqOn(row) is not null)
                 {
-                    Assert.Same(model.AnswerPsk31Command, answer.Command);
-                    Assert.Same(row, answer.CommandParameter);
+                    Assert.Same(model.SendCannedMacroPsk31Command, answer.Command);
+
+                    var press = Assert.IsType<Psk31CannedMacroPress>(answer.CommandParameter);
+
+                    Assert.Same(model.AnswerPsk31Command, press.Send);
+                    Assert.Same(row, press.Parameter);
+                    Assert.NotSame(model.SendCannedPsk31Command, press.Send);
                 }
                 else
                 {

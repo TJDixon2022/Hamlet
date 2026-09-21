@@ -750,6 +750,10 @@ public static class Psk31Events
     /// <param name="rsidCode">The RSID code the audio begins with, or null where it begins with none.</param>
     /// <param name="announcementSeconds">How much of <paramref name="seconds"/> is the announcement.</param>
     /// <param name="tag">The mode and variant an Olivia send adds, from <see cref="Olivia"/>, or null on PSK31.</param>
+    /// <param name="cannedMacro">
+    /// Which of the canned list's seven this was - `answer`, `report`, `confirm` or `text` - or
+    /// null where the send did not come off the list.
+    /// </param>
     /// <remarks>
     /// <para>**THE LENGTH AND NOT THE TEXT** (§2.1). A macro carries the operator's callsign
     /// twice over, and a count says everything a diagnosis needs.</para>
@@ -757,6 +761,12 @@ public static class Psk31Events
     /// the burst, so the record says the burst is there and which code it names.</para>
     /// <para>**`withinCap` MEASURES THE TEXT** (`PHASE_PLAN.md` R32 (a); work instruction 360),
     /// the burst taken off, as the sequence's cap does.</para>
+    /// <para>**`cannedMacro` IS WRITTEN ONLY WHERE THERE IS ONE** (criterion 7.2, work
+    /// instruction 383 section 6 ruling 2 item 2). All seven canned rows write `macro: canned`,
+    /// and this keeps which one it was, so nothing the record said before unit 383 is lost. **A
+    /// send that did not come off the list carries no such key at all**, which is why it is added
+    /// here rather than written null: every line this writer produced before tonight has exactly
+    /// the shape it had, and no reader or guard written against it has to change.</para>
     /// </remarks>
     public static void SendComposed(
         ITelemetry? telemetry,
@@ -767,23 +777,41 @@ public static class Psk31Events
         double? offsetHz,
         int? rsidCode = null,
         double announcementSeconds = 0,
-        IReadOnlyDictionary<string, object?>? tag = null)
+        IReadOnlyDictionary<string, object?>? tag = null,
+        string? cannedMacro = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_send_composed",
             Tagged(
-                new Dictionary<string, object?>(StringComparer.Ordinal)
-                {
-                    ["macro"] = kind,
-                    ["characters"] = characters,
-                    ["seconds"] = Math.Round(seconds, 2),
-                    ["capSeconds"] = capSeconds,
-                    ["withinCap"] = seconds - announcementSeconds <= capSeconds,
-                    ["offsetHz"] = offsetHz is { } hz ? Math.Round(hz, 1) : null,
-                    ["announced"] = rsidCode is not null,
-                    ["rsidCode"] = rsidCode,
-                },
+                WithCannedMacro(
+                    new Dictionary<string, object?>(StringComparer.Ordinal)
+                    {
+                        ["macro"] = kind,
+                        ["characters"] = characters,
+                        ["seconds"] = Math.Round(seconds, 2),
+                        ["capSeconds"] = capSeconds,
+                        ["withinCap"] = seconds - announcementSeconds <= capSeconds,
+                        ["offsetHz"] = offsetHz is { } hz ? Math.Round(hz, 1) : null,
+                        ["announced"] = rsidCode is not null,
+                        ["rsidCode"] = rsidCode,
+                    },
+                    cannedMacro),
                 tag));
+
+    /// <summary>Adds the canned row's own token where the send came off the canned list.</summary>
+    /// <param name="fields">The line so far.</param>
+    /// <param name="cannedMacro">Which of the seven, or null.</param>
+    /// <returns>The same fields, with one key added where there is one to add.</returns>
+    private static Dictionary<string, object?> WithCannedMacro(
+        Dictionary<string, object?> fields, string? cannedMacro)
+    {
+        if (cannedMacro is not null)
+        {
+            fields["cannedMacro"] = cannedMacro;
+        }
+
+        return fields;
+    }
 
     /// <summary>A send was refused before anything went out.</summary>
     /// <param name="telemetry">Sink, or null.</param>

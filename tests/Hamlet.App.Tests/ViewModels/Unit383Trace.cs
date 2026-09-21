@@ -598,9 +598,19 @@ public sealed class Unit383Trace : IDisposable
                 return null;
             }
 
+            // **THE MARKING COMMAND IS NAMED WITH WHAT IT HANDS THE PRESS TO** (criterion 7.2,
+            // and after task 3 this is what a macro row carries): the send is still made by
+            // `AnswerPsk31Command` or by the card's own `CardActionCommand`, one step in.
+            var inner = (items[at].CommandParameter as Psk31CannedMacroPress)?.Send;
+
             command = ReferenceEquals(pressed, model.SendCannedPsk31Command) ? "SendCannedPsk31Command"
                 : ReferenceEquals(pressed, model.AnswerPsk31Command) ? "AnswerPsk31Command"
                 : ReferenceEquals(pressed, model.CardActionCommand) ? "CardActionCommand"
+                : ReferenceEquals(pressed, model.SendCannedMacroPsk31Command)
+                    ? "SendCannedMacroPsk31Command -> "
+                      + (ReferenceEquals(inner, model.AnswerPsk31Command) ? "AnswerPsk31Command"
+                          : ReferenceEquals(inner, model.CardActionCommand) ? "CardActionCommand"
+                          : inner?.GetType().Name ?? "nothing")
                 : pressed.GetType().Name;
 
             pressed.Execute(items[at].CommandParameter);
