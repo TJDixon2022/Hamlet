@@ -124,12 +124,49 @@ public sealed class TheRecordDiagnosesTheEveningTests : IDisposable
         // tell which carrier it is about.
         Assert.All(drawn, e => Assert.True(Has(e, "offsetHz"), "a drawn row with no where"));
 
+        // **AND NOW ALL FOUR CARRIERS BY THEIR OWN OFFSETS, WHICH IS THE WHOLE OF 3.3**
+        // (work instruction 381 task 3). This assertion is the one the judging session's
+        // verdict turns on: unit 380's line reported four carriers under a single offset of
+        // 700, and `Has(e, "offsetHz")` above passed on a line naming one row of four. **A
+        // criterion that can be passed by naming one row of four is why this unit exists.**
+        Assert.All(OnScreen(lines), EveryItemIsAccountedFor);
+
+        Assert.Equal(
+            new long[] { 700, 1100, 1600, 2200 },
+            Places(drawn.Where(e => Text(e, "by") == "")).OrderBy(hz => hz).ToArray());
+
+        // And the one that answered him is named on his own side by its own offset, so a
+        // reader can see the SAME carrier counted on both sides rather than guessing.
+        Assert.Equal(
+            new long[] { 1100 },
+            Places(drawn.Where(e => Text(e, "by") == "addressed_to_operator")).ToArray());
+
+        // **NOTHING WAS INVENTED FOR A CARRIER HAMLET COULD NOT PLACE**, and nothing had to
+        // be: every row of this fixture is named.
+        Assert.Equal(0, OnScreen(lines).Sum(e => Dropped(e)));
+
         // **THE CATEGORY IS THE ONE THE OPERATOR ALREADY USES FOR THAT MODE.** A text row's
         // fate is in the PSK31 switch, not in FT8's, so quietening FT8 does not take the
         // keyboard-mode answers with it.
         Assert.All(
             lines.Where(l => Name(l) == "on_screen"),
             l => Assert.Contains("\"category\":\"psk31\"", l, StringComparison.Ordinal));
+
+        _output.WriteLine("");
+        _output.WriteLine("THE FOUR CARRIERS, ROW BY ROW, OUT OF THE FILE:");
+
+        foreach (var hz in Places(drawn).Distinct().OrderBy(hz => hz))
+        {
+            var sides = drawn
+                .Where(e => Places(e).Contains(hz))
+                .Select(e => Text(e, "by") == "addressed_to_operator"
+                    ? "drawn on his own side"
+                    : "drawn on the left list")
+                .ToList();
+
+            _output.WriteLine("  " + hz.ToString(CultureInfo.InvariantCulture)
+                + " Hz : " + string.Join(", and ", sides));
+        }
 
         _output.WriteLine("");
         _output.WriteLine("THE UNIT 337 ANSWER, IN THE OPERATOR'S WORDS, OUT OF THE FILE:");
@@ -148,23 +185,32 @@ public sealed class TheRecordDiagnosesTheEveningTests : IDisposable
     [Fact]
     public void AGateThatDoesFireIsNamedAndCounted()
     {
+        // **SIX ROWS AT SIX OFFSETS, BECAUSE SIX ROWS AT ONE OFFSET CANNOT TEST 3.3** (work
+        // instruction 381 task 3). Unit 380 heard all six at 1,240 Hz, so the record could
+        // name every row it held and still read exactly like a record naming one of them.
+        var offsets = new[] { 617, 884, 1084, 1410, 1802, 2205 };
+
+        var messages = new[]
+        {
+            "CQ TA3MPK KM39",
+            "CQ DX EA3QQ JN11",
+            "KE9COB N5CH R+14",
+            OwnCall + " W4WTM -07",
+            "W4WTM " + OwnCall + " R-11",
+            "TNX FER QSO OM",
+        };
+
         var lines = Run(model =>
         {
             var slot = new DateTime(2026, 9, 21, 21, 41, 0, DateTimeKind.Utc);
 
-            foreach (var message in new[]
-            {
-                "CQ TA3MPK KM39",
-                "CQ DX EA3QQ JN11",
-                "KE9COB N5CH R+14",
-                OwnCall + " W4WTM -07",
-                "W4WTM " + OwnCall + " R-11",
-                "TNX FER QSO OM",
-            })
+            for (var at = 0; at < messages.Length; at++)
             {
                 model.AddDecodeRowForTests(
                     slot.ToString("HHmmss", CultureInfo.InvariantCulture),
-                    "-11", "0.2", "1240", message, slot, 14_074_000);
+                    "-11", "0.2",
+                    offsets[at].ToString(CultureInfo.InvariantCulture),
+                    messages[at], slot, 14_074_000);
             }
         }, cqOnly: true);
 
@@ -202,6 +248,37 @@ public sealed class TheRecordDiagnosesTheEveningTests : IDisposable
         Assert.All(
             lines.Where(l => Name(l) == "on_screen"),
             l => Assert.Contains("\"category\":\"decode\"", l, StringComparison.Ordinal));
+
+        // **AND THE FILE NAMES WHICH THREE ROWS THE CQ FILTER HELD** (criterion 3.3, work
+        // instruction 381 task 3). Before tonight this line said `count: 3` and carried one
+        // offset; a reader whose station vanished at 2,205 Hz was told three rows went
+        // somewhere and shown a number that was not his.
+        Assert.All(OnScreen(lines), EveryItemIsAccountedFor);
+
+        Assert.Equal(
+            new long[] { 1084, 1802, 2205 },
+            Places(held).OrderBy(hz => hz).ToArray());
+
+        // The two on the left and the one on his own side are named too, so all six rows of
+        // the fixture are accounted for BY PLACE and not only by count.
+        Assert.Equal(
+            new long[] { 617, 884 },
+            Places(rows.Where(e => Text(e, "state") == "drawn" && Text(e, "by") == ""))
+                .OrderBy(hz => hz).ToArray());
+
+        Assert.Equal(
+            new long[] { 1410 },
+            Places(rows.Where(e => Text(e, "state") == "drawn"
+                && Text(e, "by") == "addressed_to_operator")).ToArray());
+
+        _output.WriteLine("");
+        _output.WriteLine("WHICH ROWS THE CQ FILTER HELD, BY OFFSET, OUT OF THE FILE:");
+
+        foreach (var hz in Places(held).OrderBy(hz => hz))
+        {
+            _output.WriteLine("  " + hz.ToString(CultureInfo.InvariantCulture)
+                + " Hz : held off the list by cq_filter");
+        }
     }
 
     /// <summary>
@@ -275,6 +352,31 @@ public sealed class TheRecordDiagnosesTheEveningTests : IDisposable
             + " kB against 3.4's 50 kB");
         _output.WriteLine("  window in force     : "
             + MainWindowViewModel.OnScreenWindowSeconds + " s");
+
+        // **3.4 RE-EARNED AND NOT ASSUMED, because unit 381 added bytes to every line**
+        // (work instruction 381 task 3). The margin is stated rather than left to be read
+        // off the pass, and every place the file carries is counted here too.
+        var places = OnScreen(lines).Sum(e => Places(e).Count);
+        var dropped = OnScreen(lines).Sum(e => Dropped(e));
+        var margin = BudgetBytesAnHour - anHour;
+
+        _output.WriteLine("  places carried      : " + places
+            + ", declared absent: " + dropped
+            + ", against " + OnScreen(lines).Sum(e => Count(e)) + " items counted");
+        _output.WriteLine("  bytes a place, measured on THIS file: "
+            + (places > 0
+                ? (bytes / (double)places).ToString("0.00", CultureInfo.InvariantCulture)
+                : "n/a")
+            + " including its share of the envelope");
+        _output.WriteLine("  MARGIN UNDER 3.4's 50 kB : "
+            + (margin / 1024).ToString("0.0", CultureInfo.InvariantCulture)
+            + " kB, which is "
+            + (margin / BudgetBytesAnHour * 100).ToString("0", CultureInfo.InvariantCulture)
+            + "% of the ceiling");
+        _output.WriteLine("  largest group       : " + OnScreen(lines).Max(e => Count(e))
+            + " items against a cap of " + MainWindowViewModel.OnScreenPlaceCap
+            + " - "
+            + (dropped == 0 ? "NOTHING TRUNCATED" : "truncated, and the file says so"));
         _output.WriteLine("");
 
         foreach (var line in onScreen)
@@ -299,6 +401,24 @@ public sealed class TheRecordDiagnosesTheEveningTests : IDisposable
             OnScreen(lines), e => Text(e, "state") == "filtered" && Text(e, "by") == "cq_filter");
         Assert.Contains(
             OnScreen(lines), e => Text(e, "state") == "removed" && Text(e, "by") == "trim");
+
+        // **AND EVERY ONE OF THOSE ROWS IS NAMED BY ITS OWN PLACE, NOT JUST COUNTED** - which
+        // is what unit 381 spends the margin on and what 3.1 asks for on a busy band rather
+        // than on a six-row fixture (work instruction 381 task 3).
+        Assert.All(OnScreen(lines), EveryItemIsAccountedFor);
+
+        Assert.Equal(Slots * PerSlot, Places(
+            OnScreen(lines).Where(e => Text(e, "state") == "filtered")).Count);
+
+        // **NOTHING WAS TRUNCATED AND NOTHING WAS INVENTED ON THIS BAND.** The busiest group
+        // holds 112 items against a cap of 128, so the file is naming every row it counts -
+        // and where a future band does reach the cap, `atDropped` says so rather than the
+        // file quietly naming the first hundred and twenty-eight.
+        Assert.Equal(0, dropped);
+
+        Assert.True(
+            OnScreen(lines).Max(e => Count(e)) <= MainWindowViewModel.OnScreenPlaceCap,
+            "a group over the cap with nothing declared");
     }
 
     /// <summary>The sampler holds one line per group per window, and no more.</summary>
@@ -637,6 +757,34 @@ public sealed class TheRecordDiagnosesTheEveningTests : IDisposable
 
     private static bool Has(JsonElement data, string field)
         => data.TryGetProperty(field, out _);
+
+    /// <summary>The places one line carries, in the order the file has them.</summary>
+    private static List<long> Places(JsonElement data)
+        => data.TryGetProperty("at", out var value) && value.ValueKind == JsonValueKind.Array
+            ? value.EnumerateArray().Select(e => e.GetInt64()).ToList()
+            : new List<long>();
+
+    /// <summary>The places a set of lines carries between them.</summary>
+    private static List<long> Places(IEnumerable<JsonElement> lines)
+        => lines.SelectMany(Places).ToList();
+
+    /// <summary>How many of a line's items it is NOT claiming to name.</summary>
+    private static int Dropped(JsonElement data)
+        => data.TryGetProperty("atDropped", out var value)
+            && value.ValueKind == JsonValueKind.Number
+                ? value.GetInt32()
+                : 0;
+
+    /// <summary>
+    /// **Every item the line counts is either named or declared missing, and never neither.**
+    /// </summary>
+    /// <remarks>
+    /// **THE ARITHMETIC A READER CHECKS THE FILE WITH** (work instruction 381 section 6 ruling 1
+    /// item 4): <c>count == at.length + atDropped</c>. A reader who sees no <c>atDropped</c>
+    /// knows the file is naming every row it counted.
+    /// </remarks>
+    private static void EveryItemIsAccountedFor(JsonElement data)
+        => Assert.Equal(Count(data), Places(data).Count + Dropped(data));
 
     private static string Root()
     {
