@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 373 - the panels keep a floor and scroll inside themselves, and the last red comes off 1.4
 BALL: code
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T20:52:03-04:00
-NOTE: Unit 373 task 1 - Unit373TraceTests written, running the chrome-per-width sweep and the badge print
+UPDATED: 2026-09-20T21:00:13-04:00
+NOTE: Unit 373 task 2 - chrome is 125/125/108 px so the floor is one number; putting the scroller and the measured floor on the panel canvas inside WorkspaceBoundary
 
 ---
 

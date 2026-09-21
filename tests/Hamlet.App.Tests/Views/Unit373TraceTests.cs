@@ -73,7 +73,12 @@ public sealed class Unit373TraceTests
                     var bounds = window.Bounds;
                     var boundary = TheTopRowTests.Named<Border>(window, "WorkspaceBoundary");
                     var boundaryAt = TheTopRowTests.RectIn(boundary, window);
-                    var canvas = boundary.GetVisualChildren().OfType<Panel>().FirstOrDefault();
+                    // **THE CANVAS IS NAMED SINCE TASK 2.** Before the floor it was the border's
+                    // only child and was found that way; it is now inside `WorkspaceCanvasScroller`,
+                    // so it is found by its name and the search still answers on either tree.
+                    var canvas = (Panel?)window.GetVisualDescendants().OfType<Control>()
+                            .FirstOrDefault(c => c.Name == "WorkspaceCanvas")
+                        ?? boundary.GetVisualChildren().OfType<Panel>().FirstOrDefault();
                     var canvasAt = canvas is null ? default : TheTopRowTests.RectIn(canvas, window);
                     var panels = TheWorkingPanelsTests.Panels(window);
                     var chrome = panels[0].Rect.Top - boundaryAt.Top;
