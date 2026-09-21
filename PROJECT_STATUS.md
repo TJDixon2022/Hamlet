@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: working
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 378 - the canned list on a right-click, and a hover that says what the row knows instead of what it says
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T14:04:44-04:00
-NOTE: Unit 378 task 0 done: entry carry-forward app 212 of 212 (second attempt) and engine 150 of 150, exactly unit 377's exit; version 1.13.65, step 7 recorded as current. Task 1 next - the trace.
+UPDATED: 2026-09-21T14:11:48-04:00
+NOTE: Unit 378 task 1 measured: 7 of 11 rows name a station, only 2 have any menu, 1 item at most; the text is reachable by a click on all 11 so it may come off the tip; the Olivia chip is already the only chosen one; the send line reads 29 s of PSK31 under Olivia, verbatim; 5 of the seven lines are refused by the 30 s fallback at 4/250 and 8/500.
 
 ---
 
