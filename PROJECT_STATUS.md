@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 382 - the radio sheet: one page in Tim's hands, every sentence on it quoted from the screen
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T18:41:52-04:00
-NOTE: Entry runs all recorded - app 220 of 220 and engine 150 of 150 first time, and the seven borrowed fixture types 71 of 72 with only the inherited ViewTestsActThroughControlsTests red; version 1.13.68 to 1.13.69 and both verdicts transcribed.
+UPDATED: 2026-09-21T18:51:34-04:00
+NOTE: Unit382Trace green 6 of 6: eight of the nine refusals produced character for character, the mode gate measured unreachable under PSK31 and Olivia, and the four capture refusals proved to belong to the other capture button.
 
 ---
 
