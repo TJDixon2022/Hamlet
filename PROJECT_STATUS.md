@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: RUNNING
-TASK: TASK 3 of 5
+STATE: COMPLETED
+TASK: TASK 4 of 5
 WORK_INSTRUCTION: 372 - Hamlet opens whole, and the send area is never the thing that leaves
-BALL: claude
-NEXT_PASTE: none yet
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T20:09:27-04:00
-NOTE: Task 3 - 1.3 is partial: the panels collapse to 0 at 620 and the repair needs a canvas redesign, measured; committing
+UPDATED: 2026-09-20T20:24:23-04:00
+NOTE: Unit 372 complete - 1.1 and 1.2 met and measured, 1.3 partial with its numbers, 1.4 not met on an inherited red
 
 ---
 
