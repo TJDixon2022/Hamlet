@@ -11,6 +11,11 @@ namespace Hamlet.RadioEngine.Olivia;
 /// <param name="ToneSpacingHz">How far apart the tones are, which is also the symbol rate.</param>
 /// <param name="SymbolSeconds">How long one symbol lasts.</param>
 /// <param name="FirstToneOffsetHz">Where the lowest tone sits against the center; negative is below it.</param>
+/// <param name="ProvedByLoopback">
+/// Whether Hamlet has read this variant back off its own audio, which is what lets it go on the
+/// air (`PHASE_PLAN.md` R41). **Absent or false means not proved**, and a variant that is not
+/// proved is refused at the send path in a sentence that says so.
+/// </param>
 public sealed record OliviaVariant(
     string Name,
     int Tones,
@@ -18,7 +23,8 @@ public sealed record OliviaVariant(
     int BitsPerSymbol,
     double ToneSpacingHz,
     double SymbolSeconds,
-    double FirstToneOffsetHz);
+    double FirstToneOffsetHz,
+    bool ProvedByLoopback = false);
 
 /// <summary>
 /// **The facts of the Olivia format a receiver must match bit for bit, read from
@@ -269,7 +275,16 @@ public sealed class OliviaFormat
                 + tones + " tones across " + bandwidth.ToString(CultureInfo.InvariantCulture) + " Hz");
         }
 
-        return new OliviaVariant(name, tones, bandwidth, bits, spacing, symbol, offset);
+        // **ABSENT OR FALSE MEANS NOT PROVED** (`PHASE_PLAN.md` R41, work instruction 377 section 6
+        // ruling 2). A row that says nothing about it, or a value of any kind other than the
+        // literal `true`, leaves the variant unproved, because the safe direction is off the air
+        // and a file Hamlet cannot read must never become a file that permits everything. **This
+        // is the one key in a row that is NOT strict**: an unreadable value here does not fail the
+        // file, it refuses the variant, which is the same answer a missing key gives.
+        var proved = row.TryGetProperty("proved_by_loopback", out var p)
+                     && p.ValueKind == JsonValueKind.True;
+
+        return new OliviaVariant(name, tones, bandwidth, bits, spacing, symbol, offset, proved);
     }
 
     private static JsonElement Value(JsonElement root, string name, string what)

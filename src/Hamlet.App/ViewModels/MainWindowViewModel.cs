@@ -16033,6 +16033,31 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **AND HAMLET DOES NOT PUT A VARIANT ON THE AIR IT HAS NOT READ BACK** (`PHASE_PLAN.md`
+        // R41, Tim 2026-09-21; work instruction 377 section 6 ruling 2). **THIS IS THE ONE SITE
+        // WHERE AUDIO BECOMES A TRANSMISSION**, and the gate stands here rather than in the
+        // engine: `OliviaModulator.Compose` is a library call and the loopback proof itself goes
+        // through it, so gating the engine would make the proof impossible to write without a
+        // bypass, and a bypass is the hole. **The air is the app.**
+        //
+        // **THE OPERATOR DOES NOT PICK THE VARIANT - THE AIR DOES** (R27, decision BA):
+        // `_oliviaSendVariant` comes from a decoded row or a card, and a channel starts at an RSID
+        // detection's own variant, which is exactly why this has to be a gate and not a menu.
+        //
+        // **ABSENT OR FALSE MEANS NOT PROVED**, so a format that could not be read refuses every
+        // variant rather than permitting every variant. **NO NEW EVENT AND NO NEW STAGE** (R13):
+        // it is the refusal that already exists, with a truer reason on it.
+        if (olivia && !OliviaVariantIsProved(variant!))
+        {
+            Psk31Events.SendRefused(_telemetry, "variant_not_proved", macro, "compose", tag);
+
+            DigitalSendLine =
+                "Hamlet did not send it: it has not proved to itself that it can read back Olivia "
+                + variant + ", so it will not put that variant on the air.";
+
+            return;
+        }
+
         // **A CLEAR SPOT HAMLET FINDS, NOT A FIXED OFFSET** (§R6). The rule is
         // `Psk31ClearSpot.Rule` and it is stated in one place; this reads it. **A reply
         // skips it and goes out where the station being replied to is** - see
@@ -16739,6 +16764,22 @@ public partial class MainWindowViewModel : ObservableObject
         => _olivia.Rsid is { } codes
            && codes.CodeOf(OliviaModulator.AnnouncedAs(variant)) is { } code
            && RsidBurst.TonesFor(codes, code) is not null;
+
+    /// <summary>Whether Hamlet has read this variant back off its own audio, so it may transmit it.</summary>
+    /// <param name="variant">The variant the send would go at.</param>
+    /// <returns>True only where the format table says the variant is proved by loopback.</returns>
+    /// <remarks>
+    /// <para>**R41's GATE, READ FROM THE TABLE THE MODULATOR IS ALREADY DRIVEN FROM** (work
+    /// instruction 377 section 6 ruling 2). `data/olivia/format.json` carries
+    /// `proved_by_loopback` on each row of its `variants` table, and a flag there is only ever set
+    /// true in the same commit as the run that proved it.</para>
+    /// <para>**ABSENT OR FALSE MEANS NOT PROVED**, and so does a format that could not be read:
+    /// the safe direction is off the air, and a file Hamlet cannot read must not become a file
+    /// that permits everything. **The panel's own reading and not the process's**, the way
+    /// <see cref="CanAnnounceOlivia"/> asks, so the gate and the sentence come from one object.</para>
+    /// </remarks>
+    private bool OliviaVariantIsProved(string variant)
+        => _olivia.Format?.Variant(variant) is { ProvedByLoopback: true };
 
     private IEnumerable<double> OliviaCentersHeard()
         => _oliviaShown

@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 377 - one RSID file, seven Olivia variants, and none of them o
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T12:23:51-04:00
-NOTE: Unit 377 task 2 first commit ready: one RSID file, every reader moved with it, the retired path emptied and guarded. The one app red found, TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn, was measured against the old embedded file and is identical there - inherited, not this unit's, and not on the carry-forward list.
+UPDATED: 2026-09-21T12:31:15-04:00
+NOTE: Unit 377 task 2 complete. The gate is in: proved true for 8/250, 16/500 and 32/1000 only, and 4/250, 4/500, 8/500 and 16/1000 refused with variant_not_proved. App Olivia types 83 of 84, the one red the inherited move-up name. The set Hamlet will transmit is the same three it would have transmitted at task 0.
 
 ---
 

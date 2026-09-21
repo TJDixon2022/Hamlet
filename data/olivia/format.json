@@ -57,13 +57,17 @@
   "value": "tone_spacing_hz = bandwidth_hz / tones; symbol_seconds = 1 / tone_spacing_hz; first_tone_offset_hz = -(tones - 1) / 2 * tone_spacing_hz",
   "cite": "pj_mfsk.h:1719-1723 and :2060-2063: SymbolLen = 2^(BitsPerSymbol + 7 - log2(Bandwidth / 125)) at 8000 Hz, carriers 2 bins of SymbolLen apart (:68, :717) and symbols SymbolLen / 2 apart, so the spacing and the symbol rate are both Bandwidth / Tones; fldigi's olivia.cxx places the carriers with fc_offset = Bandwidth * (1 - 0.5 / Tones) / 2 below the center and the +1 bin of :1723 puts their middle on it (assets/reference/olivia-fixture-generator.cpp line 13)"
  },
+ "proved_by_loopback_rule": {
+  "value": "a variant goes on the air only once Hamlet's own modulator and demodulator have round-tripped it: Hamlet composes the text through the same OliviaModulator.Compose the send uses, Hamlet's own RSID detector reads the variant and the center off that audio, Hamlet's demodulator is built from what the detector said, and the text comes back identical character for character on clean audio in process. ABSENT OR FALSE MEANS NOT PROVED, because the safe direction is off the air and a file Hamlet cannot read must not become a file that permits everything. A flag here is only ever set true in the same commit as the run that proved it.",
+  "cite": "PHASE_PLAN.md R41, Tim 2026-09-21; work instruction 377 section 6 ruling 2; the runs are TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical, which is on the engine carry-forward line"
+ },
  "variants": [
-  { "variant": "4/250", "tones": 4, "bandwidth_hz": 250, "bits_per_symbol": 2, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -93.75 },
-  { "variant": "4/500", "tones": 4, "bandwidth_hz": 500, "bits_per_symbol": 2, "tone_spacing_hz": 125.0, "symbol_seconds": 0.008, "first_tone_offset_hz": -187.5 },
-  { "variant": "8/250", "tones": 8, "bandwidth_hz": 250, "bits_per_symbol": 3, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -109.375 },
-  { "variant": "8/500", "tones": 8, "bandwidth_hz": 500, "bits_per_symbol": 3, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -218.75 },
-  { "variant": "16/500", "tones": 16, "bandwidth_hz": 500, "bits_per_symbol": 4, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -234.375 },
-  { "variant": "16/1000", "tones": 16, "bandwidth_hz": 1000, "bits_per_symbol": 4, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -468.75 },
-  { "variant": "32/1000", "tones": 32, "bandwidth_hz": 1000, "bits_per_symbol": 5, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -484.375 }
+  { "variant": "4/250", "tones": 4, "bandwidth_hz": 250, "bits_per_symbol": 2, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -93.75, "proved_by_loopback": false },
+  { "variant": "4/500", "tones": 4, "bandwidth_hz": 500, "bits_per_symbol": 2, "tone_spacing_hz": 125.0, "symbol_seconds": 0.008, "first_tone_offset_hz": -187.5, "proved_by_loopback": false },
+  { "variant": "8/250", "tones": 8, "bandwidth_hz": 250, "bits_per_symbol": 3, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -109.375, "proved_by_loopback": true },
+  { "variant": "8/500", "tones": 8, "bandwidth_hz": 500, "bits_per_symbol": 3, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -218.75, "proved_by_loopback": false },
+  { "variant": "16/500", "tones": 16, "bandwidth_hz": 500, "bits_per_symbol": 4, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -234.375, "proved_by_loopback": true },
+  { "variant": "16/1000", "tones": 16, "bandwidth_hz": 1000, "bits_per_symbol": 4, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -468.75, "proved_by_loopback": false },
+  { "variant": "32/1000", "tones": 32, "bandwidth_hz": 1000, "bits_per_symbol": 5, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -484.375, "proved_by_loopback": true }
  ]
 }
