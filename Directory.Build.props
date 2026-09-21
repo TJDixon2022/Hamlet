@@ -1013,8 +1013,31 @@
     were set to 2 and to this instruction. Nothing in this unit opens a port, enumerates a device
     or keys anything: every sample lives in an array (FACT-004).
   -->
+  <!--
+    1.13.64 -> 1.13.65, UNIT 378 TASK 0. A PATCH, STEP 7 OF THE HARDENING PHASE, THE FIRST UNIT
+    EVER SPENT ON IT - THE CANNED LIST ON A RIGHT-CLICK, AND A HOVER THAT SAYS WHAT THE ROW KNOWS
+    INSTEAD OF WHAT IT SAYS. R39 (Tim, 2026-09-21) ruled C on the canned list: seven lines -
+    Answer him, Send my report, Confirm and 73, Say again?, Please repeat your report, QRZ?,
+    73 and out - each framed with the callsigns and the hand-back, one click sends, read from
+    data/psk31/canned.json so Tim adds his own without a session; and the hover on a PSK31 row
+    says what the row knows and never the text again. R43 orders step 7 next and defers 2.4, so
+    step 7 is the only step whose entry is open. The file is Content with CopyToOutputDirectory
+    and not an embedded resource, because it is a file the operator is meant to edit, with
+    %AppData%/Hamlet/canned.json read first where he has made one and Hamlet never writing
+    either; a malformed file is one note on the menu and no canned item, never a partial read.
+    Three of the seven lines ARE Hamlet's existing Answer, Report and Confirm macros and are sent
+    by the commands that send them today rather than written a second time; the four text rows go
+    through Psk31Macros.Typed and the one unslotted door at the 30-second macro cap, writing
+    macro canned with no text and no callsign. The menu appears on every row Psk31StationOn names
+    a station on rather than only a certain CQ. The reader, the file, the menu and the send land
+    in ONE commit, because landing the capability before its frame, its burst and its cap would
+    leave a commit in which Hamlet could do a thing it may not do. PHASE_STATUS.md's CURRENT_STEP
+    and WORK_INSTRUCTION, stale at 0 and 377, were set to 7 and to this instruction. Nothing in
+    this unit opens a port, enumerates a device or keys anything: every sample lives in an array
+    (FACT-004).
+  -->
   <PropertyGroup>
-    <Version>1.13.64</Version>
+    <Version>1.13.65</Version>
   </PropertyGroup>
 
   <!--
