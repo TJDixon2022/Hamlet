@@ -823,10 +823,49 @@ public sealed class TheTopRowTests
     /// the band he is on wears it, and a best bet elsewhere does not.</para>
     /// <para>**WORK INSTRUCTION 350 TASK 3: AT 1400 AS WELL** (the arbiter's ruling 51), in the same
     /// loop, with the assertions unchanged. Nothing is pressed (§0.2).</para>
+    /// <para>**REWRITTEN UNDER §R12 BY UNIT 373, AND THIS IS THE ACCOUNT OF IT** (work instruction
+    /// 373 §6's second ruling and task 3). **It was asserting one of HM-DEC-046's two ruled labels
+    /// instead of the rule**, and that is why it failed. It collected badged pills by filtering
+    /// visible `TextBlock`s for the exact words *best bet now*, so a pill wearing the other ruled
+    /// label - *likely, going on the hour* - was invisible to it and `Assert.Single` got an empty
+    /// collection.</para>
+    /// <para>**THE CAUSE, MEASURED BEFORE ANYTHING CHANGED** (`Unit373TraceTests.
+    /// TheBestBetBadgeAtBothWidths`, run at 20:53 local on 2026-09-20). At 1920 and at 1400, with
+    /// the best bet set by hand on *40 m*, **the badge `Border` is `IsEffectivelyVisible` and is
+    /// wearing *likely, going on the hour***. The application is right and was never wrong: nothing
+    /// is missing, nothing is hidden, and the badge says exactly what HM-DEC-046 requires a clock
+    /// guess to say.</para>
+    /// <para>**AND WHY IT WAS GREEN FOR UNIT 371 AND RED FOR UNIT 372 ON A BYTE-IDENTICAL TREE.**
+    /// `MainWindowViewModel.RankBands` passes `DateTime.Now.Hour` to `BandOpportunities.Rank`, so
+    /// **which band the fixture's startup reload stamps a label onto is the wall clock's choice**.
+    /// `ApplyBestBet` writes `BestBetLabel` only onto the band it badges, and the fixture then clears
+    /// every `IsBestBet` without clearing the label - so at an hour whose table ranks *40 m* first,
+    /// *40 m* is left carrying the clock-guess label and this name went red; at any other hour it
+    /// went green. It was measured red at hour 20 and green at hour 21 of the same day, on the same
+    /// tree. **That is the whole of the flake and it is not a fault in what Hamlet shows an
+    /// operator**: the stale label is on a band whose badge is not drawn.</para>
+    /// <para>**WHAT THE REWRITE ASSERTS, AND IT IS MORE THAN BEFORE, NOT LESS.** The badge is found
+    /// by **the badge `Border` itself** rather than by its words, so no wording can hide one from the
+    /// count; exactly one pill wears it, **and it is the band the ranking marked** - which the old
+    /// form never checked, since `Assert.Single` would have been satisfied by a badge on the wrong
+    /// band; the words it wears are **the band's own `BestBetLabel` carried to the screen unchanged**
+    /// and are **one of the two labels HM-DEC-046 rules**, taken from `BandRanking.BadgeLabel` itself
+    /// rather than written here as literals; and the two ruled labels are checked to differ, which is
+    /// the rule - *an observation and a clock guess never wear the same words*. The four assertions
+    /// the old form made about the green block are kept exactly.</para>
     /// </remarks>
     [AvaloniaFact]
     public void TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow()
     {
+        // **THE TWO RULED LABELS, FROM THE RULE ITSELF** (§0: generate from the source of truth
+        // rather than copying). `BandRanking.BadgeLabel` is the only thing that chooses between
+        // them, so it is what says what they are.
+        var empty = Array.Empty<BandOpportunity>();
+        var observed = new BandRanking(empty, true).BadgeLabel;
+        var guessed = new BandRanking(empty, false).BadgeLabel;
+
+        Assert.NotEqual(observed, guessed);
+
         foreach (var width in new[] { 1920.0, 1400.0 })
         {
             var window = Realized(width);
@@ -836,11 +875,24 @@ public sealed class TheTopRowTests
                 var model = (MainWindowViewModel)window.DataContext!;
                 var here = Named<TextBlock>(window, "GreenZoneBand").Text;
 
-                foreach (var bestName in new[] { "20 m", "40 m" })
+                // **BOTH RULED LABELS ARE EXERCISED, AND THAT IS WHAT MAKES THIS NAME
+                // DETERMINISTIC.** The old form read whichever label the hour's ranking happened to
+                // leave on a band, so the same tree was green at one hour and red at the next. Here
+                // the label is written onto the badged band the way `ApplyBestBet` writes it, once
+                // for an observation and once for a clock guess, and the rule has to hold for both.
+                foreach (var (bestName, earned) in
+                    from name in new[] { "20 m", "40 m" }
+                    from label in new[] { observed, guessed }
+                    select (name, label))
                 {
                     foreach (var band in model.Bands)
                     {
                         band.IsBestBet = band.Band.Name == bestName;
+
+                        if (band.IsBestBet)
+                        {
+                            band.BestBetLabel = earned;
+                        }
                     }
 
                     model.NotifyGreenZoneForTests();
@@ -851,24 +903,37 @@ public sealed class TheTopRowTests
                         window.UpdateLayout();
                     }
 
-                    var badged = window.GetVisualDescendants().OfType<TextBlock>()
-                        .Where(t => t.IsEffectivelyVisible && t.Text == "best bet now")
-                        .Select(t => (t.DataContext as BandButtonViewModel)?.Band.Name)
-                        .ToList();
+                    // **FOUND BY THE BADGE, NOT BY ITS WORDS.** The badge is the
+                    // `IsHitTestVisible="False"` border bound to `IsBestBet` at `MainWindow.axaml`
+                    // 3313, and it is the only such border inside a band pill.
+                    var badged = Badges(window).Where(b => b.Drawn).ToList();
                     var bet = Named<Button>(window, "GreenZoneBestBet");
                     var said = bet.Content as string ?? "";
                     var checkDrawn = said.Contains(GreenZone.OnIt.Trim(), StringComparison.Ordinal);
 
                     _output.WriteLine(
-                        "at " + Px(width) + " best bet " + bestName + ": pills wearing the badge [" + string.Join(", ", badged)
+                        "at " + Px(width) + " best bet " + bestName + " earning [" + earned
+                        + "]: pills wearing the badge ["
+                        + string.Join(", ", badged.Select(b => b.Name + " [" + b.Shown + "]"))
                         + "]; green block band [" + here + "], best bet [" + said + "] visible "
                         + bet.IsEffectivelyVisible + ", check drawn " + checkDrawn);
 
-                    Assert.Single(badged);
+                    var one = Assert.Single(badged);
+
+                    // **THE BADGE IS ON THE BAND THE RANKING MARKED**, which the old form never
+                    // checked: one badge somewhere would have satisfied it.
+                    Assert.Equal(bestName, one.Name);
+
+                    // **AND IT WEARS THE WORDS ITS RANKING EARNED**, carried to the screen
+                    // unchanged, and one of the two HM-DEC-046 allows and no third thing.
+                    Assert.Equal(earned, one.Label);
+                    Assert.Equal(one.Label, one.Shown);
+                    Assert.Contains(one.Shown, new[] { observed, guessed });
+
                     Assert.True(bet.IsEffectivelyVisible, "the green block's best bet is not drawn");
-                    Assert.StartsWith(badged[0] + "", said, StringComparison.Ordinal);
+                    Assert.StartsWith(one.Name, said, StringComparison.Ordinal);
                     Assert.Equal("20 m", here);
-                    Assert.Equal(badged[0] == here, checkDrawn);
+                    Assert.Equal(one.Name == here, checkDrawn);
                 }
             }
             finally
@@ -876,6 +941,46 @@ public sealed class TheTopRowTests
                 window.Close();
             }
         }
+    }
+
+    /// <summary>What each band pill's badge is doing: whether it is drawn and the words it wears.</summary>
+    /// <param name="Name">The band the pill draws.</param>
+    /// <param name="Label">The band's own <c>BestBetLabel</c>, which is what the ranking gave it.</param>
+    /// <param name="Drawn">Whether the badge border is effectively visible.</param>
+    /// <param name="Shown">The words the badge's own text block is showing.</param>
+    public sealed record Badge(string Name, string Label, bool Drawn, string Shown);
+
+    /// <summary>Every band pill's badge, found by the border rather than by its words.</summary>
+    /// <param name="window">The realized window.</param>
+    /// <remarks>
+    /// **FINDING IT BY ITS TEXT IS THE FAULT THIS REPLACES.** A filter on the words can only see a
+    /// badge wearing the words it is looking for, so it reports *no badge* and *a badge saying
+    /// something else* identically - and those two want opposite repairs.
+    /// </remarks>
+    public static List<Badge> Badges(Window window)
+    {
+        var found = new List<Badge>();
+
+        foreach (var pill in window.GetVisualDescendants().OfType<Control>()
+            .Where(c => c.DataContext is BandButtonViewModel))
+        {
+            if (pill.DataContext is not BandButtonViewModel band
+                || found.Any(f => f.Name == band.Band.Name))
+            {
+                continue;
+            }
+
+            var badge = pill.GetVisualDescendants().OfType<Border>()
+                .FirstOrDefault(b => !b.IsHitTestVisible && b.Child is TextBlock);
+
+            found.Add(new Badge(
+                band.Band.Name,
+                band.BestBetLabel,
+                badge?.IsEffectivelyVisible == true,
+                badge?.Child is TextBlock text ? text.Text ?? "" : ""));
+        }
+
+        return found;
     }
 
     /// <summary>
