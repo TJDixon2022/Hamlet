@@ -578,6 +578,34 @@ public sealed class AchievementCategory
                     CallersFrom(calling, operatorGrid, c => c.Mode == "PSK31" ? Earns(PlaceOf(c)) : null),
                     NoOneCalling);
 
+            // **AND THE OTHER KEYBOARD MODE, THE SAME WAY** (work instruction 379 task 2,
+            // criterion 8.2). Without this case `first_olivia` fell to the default below and the
+            // card read **`Any station at all`** - measured at task 1 on a log holding every
+            // workable mode but Olivia. That is a sentence telling him that working anybody at
+            // all earns the Olivia first, and it is not true: only an Olivia contact earns it
+            // (§0.0). **Nothing new is built for it** - `LivesAt` has known Olivia's calling spot
+            // since unit 358 and reads it from `data/bands/olivia-calling.json`, the same table
+            // the tab itself reads, and it was already reached from the Modes badge's unworked
+            // list. This card was the one place that asked and never got the answer.
+            case "first_olivia":
+                return NextCard(
+                    next.Said, pointsLine,
+                    LivesAt(ContactModes.OliviaName, bet.Band) is { Length: > 0 } spot
+                        ? ContactModes.OliviaName + " lives at " + spot
+                        : "Any " + ContactModes.OliviaName + " contact",
+                    calling,
+
+                    // **AND WHO ON THE LIST COULD EARN IT.** A caller counts where the CQ list
+                    // says he is calling on Olivia, which is the row's own mode and not a guess
+                    // about a text row (work instruction 379 task 3 makes the list able to say
+                    // so; until it does this finds nobody, which is honest rather than wrong).
+                    CallersFrom(
+                        calling, operatorGrid,
+                        c => string.Equals(c.Mode, ContactModes.OliviaName, StringComparison.OrdinalIgnoreCase)
+                            ? Earns(PlaceOf(c))
+                            : null),
+                    NoOneCalling);
+
             // **THE CQ LIST IS THE DIGITAL DECODED LIST AND CARRIES NO MORSE**, so saying no one is
             // calling in Morse would be a claim about a list that could never show one (§0.0).
             case "first_cw_qso":
