@@ -54,14 +54,43 @@ public sealed class TheRsidBurstTests
             Assert.Equal(tones, measured);
         }
 
-        // **A CODE WITH NO SEQUENCE MAKES NOTHING, AND NONE IS DERIVED** (decision C).
-        foreach (var (name, code) in Codes.Codes.Where(c => !Codes.ToneSequences.ContainsKey(c.Key)))
-        {
-            _output.WriteLine($"{name,-16} {code,3}  no sequence in the file");
+        // **AND NOW EVERY CODE THE FILE LISTS HAS ONE** (work instruction 377 task 3, criterion
+        // 2.2, R12). Until unit 377 the engine read a file carrying four sequences for eight
+        // codes, and the loop that stood here asserted that the four codes with no sequence made
+        // nothing and that `Samples` threw - decision C's *none is derived*. The one RSID file
+        // carries a sequence for every code it lists, so that loop iterated ZERO times and
+        // asserted nothing at all. **It is replaced by the assertion 2.2 actually makes**, which
+        // is stronger and not weaker: every code in the file has a sequence, of the file's own
+        // length, and a code added without one fails here instead of passing silently.
+        _output.WriteLine($"codes {Codes.Codes.Count}, tone sequences {Codes.ToneSequences.Count}, symbols {Codes.Symbols}");
 
-            Assert.Null(RsidBurst.TonesFor(Codes, code));
-            Assert.Throws<ArgumentException>(() => RsidBurst.Samples(Codes, code, 1000, 8000, Peak));
+        foreach (var (name, code) in Codes.Codes.OrderBy(c => c.Value))
+        {
+            var tones = RsidBurst.TonesFor(Codes, code);
+
+            _output.WriteLine($"{name,-16} {code,3}  {(tones is null ? "NO SEQUENCE IN THE FILE" : tones.Count + " tones")}");
+
+            Assert.True(Codes.ToneSequences.ContainsKey(name), name + " is a code the file lists with no tone sequence");
+            Assert.NotNull(tones);
+            Assert.Equal(Codes.Symbols, tones!.Count);
+
+            // **AND THE BURST IS MADE**, rather than the sequence merely being present: the old
+            // loop's other half asserted `Samples` threw where there was none, and this asserts
+            // the other side of the same rule for every code there is.
+            Assert.NotEmpty(RsidBurst.Samples(Codes, code, 1000, 8000, Peak));
         }
+
+        Assert.Equal(Codes.Codes.Count, Codes.ToneSequences.Count);
+
+        // **A CODE THE FILE DOES NOT CARRY STILL MAKES NOTHING, AND NONE IS DERIVED** (decision
+        // C). The rule the old loop existed for is kept whole and is now asserted where it can
+        // still be true: on a code that is not in the file at all.
+        var unknown = Enumerable.Range(0, 256).First(c => !Codes.Codes.Values.Contains(c));
+
+        _output.WriteLine($"code {unknown} is in no row of the file: TonesFor is null and Samples throws");
+
+        Assert.Null(RsidBurst.TonesFor(Codes, unknown));
+        Assert.Throws<ArgumentException>(() => RsidBurst.Samples(Codes, unknown, 1000, 8000, Peak));
     }
 
     /// <summary>**Loopback: each burst, at three centers across the passband, reads back as itself.**</summary>

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: running
-TASK: TASK 2 of 5
+TASK: TASK 3 of 5
 WORK_INSTRUCTION: 377 - one RSID file, seven Olivia variants, and none of them on the air until Hamlet has read its own back
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T12:31:15-04:00
-NOTE: Unit 377 task 2 complete. The gate is in: proved true for 8/250, 16/500 and 32/1000 only, and 4/250, 4/500, 8/500 and 16/1000 refused with variant_not_proved. App Olivia types 83 of 84, the one red the inherited move-up name. The set Hamlet will transmit is the same three it would have transmitted at task 0.
+UPDATED: 2026-09-21T12:32:00-04:00
+NOTE: Unit 377 task 3: the dead second loop in TheRsidBurstTests - zero iterations since the file moved - is rewritten under R12 to assert what 2.2 actually claims, that every code the file lists has a sequence of the file's own length and makes a burst, with decision C's none-is-derived rule kept on a code the file does not carry. Running it.
 
 ---
 
