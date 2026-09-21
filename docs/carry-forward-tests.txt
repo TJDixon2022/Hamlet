@@ -135,7 +135,8 @@ TheOliviaDriftTests                                     unit 362
 TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise   unit 363, by method since 364
 TheOliviaListenerTests                                  unit 363
 TheOliviaRetireTests                                    unit 364
-TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical   Olivia's modulate guard, unit 365
+TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical   Olivia's modulate guard, unit 365,
+                                                        and since unit 377 R41's loopback gate for all seven variants
 
 -- known reds, NEVER on the list above ---------------------------------------
 
@@ -322,6 +323,26 @@ OliviaModulator at 8/250, 16/500 and 32/1000, at 1000 Hz and 1500 Hz, each read 
 untouched OliviaDemodulator to the exact string. Thirty of thirty when it was added, each decode
 0.4 to 2.3 s of CPU. Olivia still has no send guard: nothing sends Olivia until the unit that
 opens the gate.
+
+WHAT UNIT 377 CHANGED ABOUT THIS NAME, AND IT IS NOW THE GATE ITSELF. The paragraph above is
+still true of what the name does; what moved is HOW MUCH IT COVERS AND WHAT TURNS ON IT.
+PHASE_PLAN.md R41 (Tim, 2026-09-21) lets Hamlet transmit at all seven Olivia variants, each
+proved by loopback, and work instruction 377 section 6 makes THIS NAME the proof. It carries
+SEVEN [InlineData] rows now, not three - 4/250, 4/500, 8/250, 8/500, 16/500, 16/1000 and
+32/1000 - and nothing else about its shape moved: the variant and the center are still read off
+the burst by the detector and never taken from the test (decision AT), and identical still means
+character for character after Unify, with no tolerance of any kind added to make a variant pass.
+
+WHAT TURNS ON IT. data/olivia/format.json carries proved_by_loopback on each variant row, and
+MainWindowViewModel refuses an Olivia send at an unproved variant before it composes anything.
+A flag there is true only because these cases came back identical. **If a variant goes red
+here, the answer is to set its flag false and take it off the air - not to loosen this name.**
+
+THE COST. Seventy cases, five texts at two centers at each of seven variants, all 70 identical
+when unit 377 added them. Decode CPU ran 0.188 s at 4/500 to 2.891 s at 32/1000 per case. The
+four new variants carry 40 of the 70 cases; measured against the same engine invocation before
+and after, they added about a minute and a half to it, which is why they are five texts at two
+centers and not more.
 
 WHAT UNIT 366 ADDED, AND IT IS THE UNIT THAT OPENED THE GATE.
 TheOliviaSendTests.AnOliviaCqReachesTheAir, on the app invocation, by type and method (work

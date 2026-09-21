@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 377 - one RSID file, seven Olivia variants, and none of them o
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T12:32:00-04:00
-NOTE: Unit 377 task 3: the dead second loop in TheRsidBurstTests - zero iterations since the file moved - is rewritten under R12 to assert what 2.2 actually claims, that every code the file lists has a sequence of the file's own length and makes a burst, with decision C's none-is-derived rule kept on a code the file does not carry. Running it.
+UPDATED: 2026-09-21T12:36:34-04:00
+NOTE: Unit 377 task 3: the loopback ran and all seven variants came back 10 of 10 identical, 70 of 70 cases, so the four flags are flipped true in this same commit. The burst loopback went 12 of 12 to 24 of 24 across three centers. Committing the run and the flags together.
 
 ---
 

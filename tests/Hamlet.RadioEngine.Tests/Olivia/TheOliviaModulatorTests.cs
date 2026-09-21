@@ -64,9 +64,24 @@ public sealed class TheOliviaModulatorTests
     /// reads the burst off that audio, and what it says is what the demodulator is built with; the
     /// variant the loop asked for only checks the detection.
     /// </remarks>
+    /// <remarks>
+    /// **ALL SEVEN SINCE UNIT 377** (`PHASE_PLAN.md` R41, criterion 2.2). It was 8/250, 16/500 and
+    /// 32/1000 - the three whose RSID code carried a tone sequence, so the three
+    /// <see cref="OliviaModulator.Compose"/> would make at all. The one RSID file carries a
+    /// sequence for every code, and R41 makes THIS NAME the gate: a variant is marked
+    /// `proved_by_loopback` in `data/olivia/format.json` only because these cases came back
+    /// identical, and a variant that fails here stays false and stays off the air. **Nothing else
+    /// about the name's shape moved** - the variant and the center are still read off the burst by
+    /// the detector and never taken from the test (decision AT), and identical still means
+    /// character for character after `Unify` with no tolerance of any kind.
+    /// </remarks>
     [Theory]
+    [InlineData("4/250")]
+    [InlineData("4/500")]
     [InlineData("8/250")]
+    [InlineData("8/500")]
     [InlineData("16/500")]
+    [InlineData("16/1000")]
     [InlineData("32/1000")]
     public void EachMacroAndATypedLineComeBackIdentical(string variant)
     {
