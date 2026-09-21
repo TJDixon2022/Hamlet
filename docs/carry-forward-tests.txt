@@ -339,11 +339,14 @@ MainWindowViewModel refuses an Olivia send at an unproved variant before it comp
 A flag there is true only because these cases came back identical. **If a variant goes red
 here, the answer is to set its flag false and take it off the air - not to loosen this name.**
 
-THE COST. Seventy cases, five texts at two centers at each of seven variants, all 70 identical
-when unit 377 added them. Decode CPU ran 0.188 s at 4/500 to 2.891 s at 32/1000 per case. The
-four new variants carry 40 of the 70 cases; measured against the same engine invocation before
-and after, they added about a minute and a half to it, which is why they are five texts at two
-centers and not more.
+THE COST, MEASURED ON THE SAME MACHINE IN ONE SESSION. Seventy cases, five texts at two centers
+at each of seven variants, all 70 identical when unit 377 added them. Decode CPU ran 0.188 s at
+4/500 to 2.891 s at 32/1000 per case. The four new variants carry 40 of the 70 cases, and
+THE ENGINE INVOCATION WENT FROM 146 TESTS IN 4 m 34 s TO 150 IN 4 m 56 s - about 22 seconds for
+the four extra theory cases, on an invocation with about 180 s of margin against its 480 s
+timeout. Task 1 of unit 377 measured the whole seven-variant sweep at about 69 s of decode CPU
+before it was written, which is what licensed keeping it whole; the next name added here still
+has to be weighed against that margin.
 
 WHAT UNIT 366 ADDED, AND IT IS THE UNIT THAT OPENED THE GATE.
 TheOliviaSendTests.AnOliviaCqReachesTheAir, on the app invocation, by type and method (work
