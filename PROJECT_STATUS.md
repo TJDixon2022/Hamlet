@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: running
-TASK: TASK 3 of 4
+STATE: complete
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 376 - the top row comes down to one measured band, and the working panels take every pixel it gives up
-BALL: claude
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T11:18:32-04:00
-NOTE: Unit 376 task 3: the four criterion names are written and green - 6.1 partial at 214 px with the pills and 178 without, 6.2, 6.3 and 6.4 met - and the 6.1 name is on the carry-forward app line with its paragraph. Four types plus the new type 34 of 34. Next: task 4, the exit run.
+UPDATED: 2026-09-21T11:30:30-04:00
+NOTE: Unit 376 complete. Step 6 partial: 6.2, 6.3 and 6.4 met, 6.1 partial at 214 px with the pills against 180 and 178 without it, with the arithmetic floor at 197 because the sun map may not shrink. The panels are 483 px from 450 and 424, and 92 from 71 at the opening size. Exit carry-forward app 211 of 211, engine 146 of 146, no regression. Criterion 2.2 waits on Tim: R38 (a) rests on a fact the tree contradicts.
 
 ---
 

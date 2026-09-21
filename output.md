@@ -1,0 +1,368 @@
+READ IN THIS ORDER.
+
+A. The phase goal - Hamlet holds what it has. Step 0 partial, step 1 done, step 2
+   partial with 2.1 and 2.3 banked and 2.4 short at one round of five, steps 3, 4
+   and 5 not started, and steps 6, 7, 8 added to the plan on 2026-09-21 by R39 with
+   the UI worked before the record. This unit is the first spent on any of them.
+B. Step 6 - the top gives back height. 6.1 PARTIAL: the band measured 214 px at
+   1920 and 214 px at 1400 against 180, from 243 and 269 before, and the panel
+   row is 33 and 59 px taller - 483 at both, and the band without the pills is
+   178 from 190 and 216, which does meet 180. 6.2 MET: the map's color key and
+   the rule-of-thumb line moved to two marks on the neighborhood card's header
+   carrying the same words, and every pill, the strip, the band, the frequency,
+   the verdict, the license phrase, the heard count and the drive and power
+   offer are still drawn. 6.3 MET: the sun map is 246 x 134, before 246 x 134.
+   6.4 MET: the nine sizes are the same or larger at every one and larger at
+   eight, and the four types, 29 of 29.
+C. The report last. Section 4 raises 5 items on top of the carried fifteen, and
+   item 2 is in the way of a criterion in B - it is why 6.1 is partial. The first
+   item is not this unit's work at all: it is criterion 2.2, sent back to Tim.
+
+```
+UNIT:       376 - complete at task 4 of 5 - 2026-09-21 11:29
+PHASE GOAL: Hamlet holds what it has. Bank the screen, record and test work left
+            in the PSK31 and Olivia threads that needs neither the radio nor the
+            owner, and prove it with tests that ran - then let Tim look.
+UNIT GOAL:  The top row stops taking a third of the window. The pills, the
+            neighborhood strip, the green zone and the rig face come down to one
+            measured band, nothing in them is lost - the map's legend and the
+            rule-of-thumb line go to a hover that keeps their words - the sun map
+            keeps its size, and every pixel given up goes to the three working
+            panels.
+ADVANCED:   step 6, criteria 6.2, 6.3 and 6.4 met, 6.1 partial
+NUMBER:     the band at 1920, with the pills: 243 px -> 214 px, against 180
+DRIFT:      none
+```
+
+## 1. What Claude did
+
+**COMPLETE, at task 4 of 5** (tasks 0 to 4), on this machine, gated `PROJECT: Hamlet`
+and verified against the tree - `SHACK_FACTS.md` and
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` both present, `CoreHMI.sln` and
+`MURC.sln` both absent, root `C:\Source\HamLet` - on `main`. Every task is committed on
+its own and pushed; the R12 rewrites are in a commit of their own, separate from the new
+tests, as section 11 requires. **No task was dropped and no drop candidate was taken.**
+
+**Task 0 - the record and the entry run.** `PHASE_STATUS.md` and `PHASE_OUTCOME.md` both
+stopped at step 5 while `PHASE_PLAN.md` rev 2 carries steps 0 to 8, so
+`outcome-read.bat` was printing a six-step phase and **the next arbiter could not see
+steps 6, 7 and 8 at all**. Both files now carry all three as `not started` with the
+plan's own one-line summaries. `CURRENT_STEP` went 0 to 6 and `WORK_INSTRUCTION` 374 to
+376, both two units stale. Version 1.13.62 to 1.13.63 with its log line. Carry-forward
+before any change, both invocations, one build each, status written immediately before
+each: **app 210 of 210 in 2 m 27 s, engine 146 of 146 in 4 m 41 s**, both green on the
+first attempt and both exactly where unit 375's exit run left them.
+
+**Task 1 - the trace, and it is what makes 6.1 a measurement.** One `[AvaloniaFact]`
+that asserts nothing, at 1920 x 1040, 1400 x 1040 and 1100 x 780 on FT8, PSK31 and
+Olivia, with **one helper** measuring the band section 6's way: from the top of the
+band-pills row to the bottom of whichever of the neighborhood card, the rig face and
+`RigDriveAndPower` ends lowest, in the window's own frame, **both with the pills and
+without**. The element the instruction could not name is the **unnamed `ItemsControl` at
+`MainWindow.axaml` line 3274** - `Grid.Row="0"` of the strip grid, `ItemsSource="{Binding
+Bands}"`, `VerticalAlignment="Top"`, `ClipToBounds="False"`, `Margin="0,14,0,10"`, its
+items the `Button Classes="hm-band"` cards with the best-bet badge drawn over them -
+found by the class of its buttons and not by a name this unit added. The four types ran
+filtered, one build: **29 of 29**.
+
+**The question task 1 existed for, answered: the card governs at every width, and at
+1920 it governs by a tie.** The card wanted 190 px and the rig column wanted 190 px, so
+cutting either alone would have bought nothing there, and R39's four moves are not worth
+the same number of pixels. **Inside the card, the sun map's column is 145 px against the
+left stack's 126 at 1920**, so the card's own floor was already the map before this unit
+touched anything.
+
+**Task 2 - R39's four moves**, taken in the order the measurement said pays and
+re-measured after each. The pills at half height: padding 8,6 to 8,2, spacing 4 to 2, the
+family bar 3 px to 2, the row's margin 0,14,0,10 to 0,10,0,6, and **nothing off the
+card** - the name, the day-night icon, the bar and the activity pips are all four still
+drawn and the width still carries the wavelength ratio. The neighborhood strip 44 px to
+32, every label and dot placed as a fraction of the control's own height. The legend off
+the card to a second mark on its header, carrying `MapLegendControl.InWords`, **built
+from `ModePalette.Legend`** so the hover cannot drift from the picture. The green zone on
+one row: the band, the frequency, the verdict and the license phrase in one `WrapPanel`,
+with the rule-of-thumb line on a third mark bound to the same `GreenZone.RuleOfThumb`
+static it was bound to before. The rig face shorter by its chrome and not its content:
+the box's padding 12,6 to 12,3, its stack's spacing 3 to 2, and `RigDisplayControl`'s
+`PadBottom` 10 to 6, which is the blank under the S-meter's wedge. The card's own body
+padding is 14,0,14,4 on this instance only.
+
+**The drop candidate was not dropped and its condition was not met.** *Drive and power
+beside the frequency* may be dropped only if the card governed at both asserted widths
+**and** the band reached 180 without it; the band reached 214. What the measurement
+showed instead is that **moving the drive block beside the LCD would widen the rig's
+`Auto` column and take that width off the card**, which at 1400 and 1100 makes the card
+taller - the move would have cost pixels rather than bought them. So the rig was
+shortened where shortening it is free, which is what the tie at 1920 required, and the
+rearrangement was not made. **This is a sizing decision the owner did not make, and it is
+reported as one** - see section 4, item 3.
+
+**Task 3 - the evidence.** Four names, one per criterion, all measured by the same
+helper; the 6.1 name is on the carry-forward app line with its paragraph and its place in
+the human-readable list. **Seven names went red on the move and all seven were rewritten
+under R12 in their own commit**, each asserting more than it replaced: see section 3.
+`TopRowTarget = 190` was **kept at 190 and documented rather than split** - it names the
+band *without* the pills, its four readers still pass at 178 inside their 10%, and
+retuning it would have moved four readers onto a number none of them was written for.
+
+**Task 4 - the exit run.** Carry-forward after the last change, both invocations, status
+written immediately before each: **app 211 of 211 in 2 m 18 s, engine 146 of 146 in
+4 m 39 s.** Name for name against task 0's 210 and 146, the only difference is this
+unit's new 6.1 name. **No regression and nothing red that was green before**
+(HM-DEC-165). Four full invocations in the unit and **not one was lost to the headless
+dispatcher-loop fault**, which is recorded because criterion 2.4 turns on it.
+
+**Decisions this session made for itself**, reproduced in full: (1) the rig's
+rearrangement was not dropped but was **reduced to what the measurement said was worth
+pixels** - chrome, not content - for the reason above; (2) `TopRowTarget` stays one
+number, documented, for the reason above; (3) the new 6.1 name asserts the band **at or
+under the 214 px this unit reached**, with 180 named in its failure message, rather than
+asserting 180 and going in red - the criterion is reported partial in every record
+instead, and the constant holds the ground taken so the next unit cannot give it back
+quietly.
+
+## 2. What the owner should expect
+
+The top of your window has stopped taking a third of it. At 1920 the band that holds the
+band cards, the neighborhood strip, the green block and the radio's face is **214 pixels
+where it was 243**, and at 1400 it is **214 where it was 269** - and the waterfall, the
+decoded text and For You are each **483 pixels tall where they were 450 and 424**. At the
+size Hamlet opens at, 1100 x 780, the band is **389 where it was 676** and those three
+panels are **92 pixels where they were stuck at their 71-pixel floor**. Nothing you read
+up there is gone: the map's color key and the rule-of-thumb line now wait under the
+pointer on the neighborhood card's own header, in exactly the words they used, beside the
+mark that was already there - and the sun map is precisely the size it was, with the same
+dot on your grid. The band cards are half as tall and still carry their name, their icon,
+their family bar and their activity pips. **What you will notice and should not read as a
+fault:** the license phrase now sits at the end of the band line rather than on a line of
+its own, and drops under it where the window is narrow; the band card row sits slightly
+closer to the neighborhood card; and the radio's face has a little less blank under the
+S-meter. **What was asked for and not reached:** the target was 180 pixels with the band
+cards counted and it stands at 214, because the sun map is 134 pixels of that on its own
+and it was not allowed to shrink. Every appearance claim here is computed off a realized
+headless window, not seen (FACT-004).
+
+## 3. What you should see
+
+**TASK 1'S COMPONENT TABLE - BEFORE, and it is what makes 6.1 a measurement.** Pixels,
+window frame, all three modes at each width.
+
+```
+                        1920 x 1040        1400 x 1040        1100 x 780
+                        FT8 PSK31 Oliv     FT8 PSK31 Oliv     FT8   PSK31  Oliv
+BAND WITH PILLS         243   243   243    269   269   269    676    706   676
+BAND WITHOUT PILLS      190   190   190    216   216   216    623    653   623
+  short of 180 by        63    63    63     89    89    89    496    526   496
+GOVERNING COLUMN        card, and at 1920 by a TIE: card wants 190, rig wants 190
+                                           card 216 / rig 190  card 623 / rig 190
+TopRow drawn (cap 300)  198   198   198    224   224   224    300    300   300
+  card scroller         viewport 190 = extent 190             viewport 623 = extent 623
+band row (pills)         43    43    43     43    43    43     43     43    43
+neighborhood card       190   190   190    216   216   216    623    653   623
+  strip                  44    44    44     44    44    44     44     44    44
+  legend                 17    17    17     34    34    34    102    102   102
+  GreenZoneBlock         55    67    55     88   100    88    427    457   427
+    band / frequency     16/11 16/11 16/11  16/11 16/11 16/11  16/11  16/11 16/11
+    mode line            11    11    11     11    11    11     84     84    84
+    license line          9     9     9     27    27    27    150    150   150
+    rule of thumb         9     9     9     18    18    18    150    150   150
+    heard grid           35    35    35     29    29    29     29     29    29
+  GreenZoneMap          145   145   145    145   145   145    145    145   145
+    gray line           134   134   134    134   134   134    134    134   134
+    clock caption         9     9     9      9     9     9      9      9     9
+rig face Border         190   190   190    216   216   216    623    623   623
+  RigDisplayControl     110   110   110    110   110   110    110    110   110
+  RigDriveAndPower       49    49    49     49    49    49     49     49    49
+PANEL ROW               450   450   450    424   424   424     71     71    71
+```
+
+**THE SAME TABLE AFTER TASK 2.**
+
+```
+                        1920 x 1040        1400 x 1040        1100 x 780
+                        FT8 PSK31 Oliv     FT8 PSK31 Oliv     FT8   PSK31  Oliv
+BAND WITH PILLS         214   214   214    214   214   214    389    430   400
+BAND WITHOUT PILLS      178   178   178    178   178   178    353    394   364
+  against 180           34 over, all three  34 over, all three
+  without the pills     2 UNDER 180         2 UNDER 180
+GOVERNING COLUMN        card, and again by a TIE: card 178, rig 178
+                                           card 178 / rig 178  card 353+ / rig 178
+TopRow drawn (cap 300)  186   186   186    186   186   186    300    300   300
+band row (pills)         30    30    30     30    30    30     30     30    30
+neighborhood card       178   178   178    178   178   178    353    394   364
+  strip                  32    32    32     32    32    32     32     32    32
+  legend                 ON THE HEADER MARK - MapLegendControl.InWords, same words
+  GreenZoneBlock         55    67    55     68    80    68    (one row: band,
+    band / frequency     16/11 16/11 16/11  16/11 16/11 16/11  frequency, verdict
+    mode line            11    11    11     11    11    11     and license phrase
+    license line          9     9     9     27    27    27     in one WrapPanel)
+    rule of thumb        ON THE HEADER MARK - GreenZone.RuleOfThumb, same static
+    heard grid           35    35    35     29    29    29     29     29    29
+  GreenZoneMap          145   145   145    145   145   145    145    145   145
+    gray line           134   134   134    134   134   134    134    134   134
+    clock caption         9     9     9      9     9     9      9      9     9
+rig face Border         178   178   178    178   178   178    353    394   364
+  RigDisplayControl     106   106   106    106   106   106    106    106   106
+  RigDriveAndPower       49    49    49     49    49    49     49     49    49
+PANEL ROW               483   483   483    483   483   483     92     92    92
+```
+
+**THE PANEL ROW AT UNIT 354'S NINE SIZES, before and after** - 6.4's own number, and
+6.1's *taller by the difference*:
+
+```
+  1920 x 1040   450 -> 483      1366 x 728    88 -> 171
+   900 x 620     71 ->  71      1536 x 824   228 -> 267
+  1100 x 780     71 ->  92      1400 x 1040  424 -> 483
+  1280 x 720     88 -> 163      1920 x 1017  427 -> 460
+                                2560 x 1400  827 -> 860
+```
+
+Same or larger at every one of the nine, larger at eight, and
+`DigitalTransmitDriveNote` - one of the five controls criterion 1.1 names - is drawn at
+all nine.
+
+**THE FOUR TYPES.** `TheTopRowTests` 15, `TheWorkingPanelsTests` 8,
+`TheStopIsAlwaysOnScreenTests` 5, `BindingHealthTests` 1: **29 of 29 at task 1 and 29 of
+29 at task 3**, one build each, filtered.
+
+**THE CARRY-FORWARD COUNTS.** Before: app **210 of 210** (2 m 27 s), engine **146 of
+146** (4 m 41 s). After: app **211 of 211** (2 m 18 s), engine **146 of 146** (4 m 39 s).
+The one extra name is this unit's 6.1 guard.
+
+**THE SEVEN R12 REWRITES, name for name, and what each asserts now that it did not
+before.**
+
+- `TheTopRowTests.TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest` took the
+  legend as a control standing on the card and **said nothing at all about what it said**.
+  It now asserts both marks are drawn and on the card, that they carry
+  `MapLegendControl.InWords` and `GreenZone.RuleOfThumb` **word for word**, that the
+  legend's sentence names every `ModePalette.Legend` label plus *listen only* and *heard
+  just now*, and that **no `MapLegendControl` has come back onto the card**.
+- `TheTopRowTests.AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` kept every number
+  it asserted, including the same sentence by `Assert.Equal`; the sentence is read off the
+  header mark, and the mark is **also asserted to be drawn and to be on the card**, which
+  the old line never said.
+- `TheTopRowTests.Unit351TraceTheCheckInTheGreenBlock` prints the block's four lines and
+  **both marks with their sentences**, where it printed five lines.
+- `TheWindowGivesUpHeightInOneOrderTests.TheWorkingPanelsLoseHeightBeforeTheTopRowLosesAny`
+  - **this one guards step 1's criterion 1.2 and is the one to read.** It went red on a
+  single number: unit 374's `TheFloorBindsAt = 780`. The floor now binds at **740**,
+  because the shorter top row lets the panels go on shrinking one step lower - the panel
+  row is **92 px at 780 where it was 71**. The flat band is now **found in the sweep**
+  instead of declared, every assertion it made it still makes, and **780 is kept as a
+  ceiling with a new assertion that the floor may only ever bind lower** - so height put
+  back into the top row is caught here rather than passing quietly.
+- `TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth` asserted one
+  rectangle was below another; it now asserts the mark is drawn and **holds
+  `GreenZone.RuleOfThumb` itself**, so the sentence cannot be shortened or lost.
+- `TheGreenZoneTests.TheMapRegionRendersWithItsRuleOfThumbAndNoClaimOfOpenness` keeps
+  `Assert.Equal` on the sentence and both *want daylight* / *want dark* checks, and adds
+  that **the mark is inside the neighborhood card** - the words are reachable from the
+  surface they came off, not merely alive in a static.
+- `Unit332TwoWidthsTests.TheGreenZoneAtFourteenHundredAndNineteenTwenty` prints the
+  regions that are still in the panel and **both marks' sentences** beneath them.
+
+**THE FOUR NEW NAMES.** `Unit376TheTopBandTests` - the 6.1 guard on the carry-forward
+list, plus 6.2, 6.3 and 6.4, plus the task 1 trace, which is deliberately **not** on the
+list because it asserts nothing.
+
+## 4. What's blocking us
+
+**1. Criterion 2.2 - the RSID tone sequences. THIS WANTS A RULING, it is Tim's, and it is
+not this unit's work.** R38 (a) permits giving codes 72-75 their tone sequences **on a
+stated fact**: *Hamlet's modulator makes only 8/250, 16/500 and 32/1000, so nothing
+announces a variant it cannot send.* **The arbiter read the tree line by line at authoring
+time and the tree does not support that fact**, and has sent the question back:
+
+- `data\olivia\format.json` lines 61 to 67 carry **all seven variants** - 4/250, 4/500,
+  8/250, 8/500, 16/500, 16/1000, 32/1000 - and `OliviaModulator` is driven from that
+  table, **so the engine can modulate every one of them**.
+- **What keeps four of them off the air today is exactly the gate this change removes**:
+  `OliviaModulator.Compose` line 149 throws where `RsidBurst.TonesFor` is null.
+- **The send variant is not picked by the operator from a list of three.**
+  `MainWindowViewModel` line 16009 takes `_oliviaSendVariant`, set at lines 6027, 16533,
+  16789 and 16930 **from the variant of a decoded row or card**, and `OliviaListener` line
+  280 starts a channel **from an RSID detection's own variant**.
+- So an 8/500 burst on the air would become detectable, start a channel, make a card, and
+  **an answer to that station would be composed and transmitted at 8/500**. That is a
+  change to what goes on the air.
+
+**R38 (a) permits the change on the ground that Hamlet's modulator makes only three
+variants, and the arbiter reads the tree as saying otherwise. The arbiter has not
+confirmed it with a run and neither has this unit** - nothing here touched
+`assets\data\rsid-codes.json`, `data\rsid\rsid-codes.json`, `RsidCodes`, `RsidBurst`,
+`RsidDetector`, `OliviaModulator` or the csproj's embedded resource. **Step 2 cannot close
+until Tim rules again, and no unit should take 2.2 until he does.**
+
+**And R38 (b) answered unit 375's item 2 - the duplicate abort pair - which is CLOSED.**
+The transmit sequence's teardown abort pair, sent after the click's own, is accepted: a
+duplicate unkey is the safe direction, nothing keys on it, and it is logged as tidy-up
+rather than a stop. Nothing in this unit touched it and nothing is to be done about it.
+
+**2. Criterion 6.1 cannot reach 180 px with the pills counted while 6.3 stands. THIS IS A
+FINDING WITH ARITHMETIC, and it is the one item in the way of a criterion in B.** It does
+not want a ruling unless the owner wants to spend the last 34 pixels. The band with the
+pills is 214. Its parts, measured: the sun map's picture **134 px**, which 6.3 forbids
+shrinking; the neighborhood card's own header **27 px**; the pills at half height **30
+px**; the gap between the pills and the card **6 px**. That is **197 px before a single
+word would have to leave the window**, against the criterion's 180 - and the remaining 17
+px of the 214 are the map's caption (11) and the card's body padding (6).
+**The band without the pills is 178 and meets 180.** Three things could close the gap and
+all three are the owner's: shrink the sun map, take the neighborhood card's header (which
+would make it non-collapsible, against §0.5), or drop the pills from the band's
+definition, which section 6's first ruling deliberately did not do.
+
+**3. The rig's rearrangement was not made, and the drop candidate's own condition did not
+authorize dropping it. A FINDING, and a sizing decision the owner did not make.** Work
+instruction 376 task 2 made *drive and power beside the frequency* the drop candidate, to
+be dropped only if the card governed at both asserted widths **and** the band reached 180
+without it. The band reached 214, so the condition was not met. It was still not made,
+for a measured reason: the rig column is `Auto`, so moving the 120 px drive box and its
+two labels beside the 520 px LCD **widens that column and takes the width off the
+neighborhood card**, which at 1400 and 1100 makes the card taller - the move costs pixels
+where it was supposed to buy them. What was done instead is the other half of R39's
+sentence, *the rig display shorter*: the box's padding, its stack's spacing and the blank
+under the S-meter's wedge, 12 px in all, which is what the tie at 1920 required. **The
+drive, the note, the tip and the power offer are all still drawn and are asserted drawn at
+both widths on all three modes.**
+
+**4. `TopRow`'s `MaxHeight="300"` does not bind the card's content; it binds only the
+row's reported height. A FINDING, and it is unit 356's comment that is wrong rather than
+this unit's work.** Measured at 1100 x 780 before anything moved: `TopRow` draws 300,
+**and the card inside it draws 623** - the scroller's viewport is 623 and its extent 623,
+so nothing scrolls, and the card paints over 376 px of what is below it. The comment above
+`TopRow` says *the card body scrolls inside the cap, per §0.5*. It does not. This unit did
+not repair it - it is not in criterion 6.1 and the instruction forbids touching the cap -
+and after task 2 the overflow at that size is 89 px instead of 376.
+
+**5. Section 5's count of the four types is 33 and the tree says 29. A FINDING, no action
+needed.** `TheTopRowTests` 15 + `TheWorkingPanelsTests` 8 + `TheStopIsAlwaysOnScreenTests`
+5 + `BindingHealthTests` 1 = **29**, measured twice in this unit. Unit 374's 33 counted
+`TheWindowGivesUpHeightInOneOrderTests`' four names as well, which is the type it had just
+rewritten. The instruction's own name counts are right; only the total is off.
+
+**Not repaired, as instructed:** `PROJECT_STATUS.md` `RULES_AT` reads
+`HM-DEC-165 (2026-09-19)` while `CLAUDE.md` §1 holds `CPS-DEC-0165` - the id-scheme split,
+carried in `PHASE_PLAN.md` §7. Reported, not repaired. Also noted: the instruction places
+`RigDriveAndPower` on `TopRow`'s row 1; it is at line 3079 **inside the rig face's border
+in row 0, column 1**, under the S-meter, and `TopRow`'s row 1 is an empty grid at line
+3201 carrying only comments. The band helper measures it wherever it is, so nothing
+depended on this.
+
+**THE CARRIED QUEUE, VERBATIM PER HM-DEC-139 - FIFTEEN, and this unit answers none of
+them.** Unit 375's item 3 (the headless dispatcher loop, `InvalidProgramException: You
+have caused dispatcher loop`, eight names across four units, an environmental cause with
+no name attached in `docs\quarantined-tests.txt`, and the single biggest obstacle to 2.4)
+and item 4 (`TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`
+went red once in seventeen full invocations, on an assertion, message not captured, not
+reproduced in four further runs). Unit 374's item 3 (`tools\run-carry-forward.sh` still
+does not match `docs\carry-forward-tests.txt`). Unit 373's item 2 (`ApplyBestBet`'s stale
+`BestBetLabel`). Unit 372's items 4 and 7 (the latter being `PHASE_PLAN.md`'s criterion
+checkboxes, which are not ticked and are not to be raised again). Unit 371's five. Unit
+369's four, including item 3, `LearnedAlcReference.Ago()`. **Neither of this unit's four
+carry-forward invocations was lost to the dispatcher loop, which is evidence on unit 375's
+item 3 and is recorded rather than acted on.**
+
+**One item came off the queue this unit, by the owner's own ruling:** unit 375's item 2,
+the duplicate abort pair, is answered by R38 (b) and closed.

@@ -101,7 +101,7 @@ public sealed class Unit376TheTopBandTests
     /// <remarks>
     /// <para>**THIS IS A RATCHET AND NOT THE CRITERION.** 6.1 asks for 180 px with the pills and
     /// the band reached 214: the sun map is 134 px and may not shrink (6.3), the neighborhood
-    /// card's own header is 26 px, the pills at half height are 30 and the gap to the card is 6,
+    /// card's own header is 27 px, the pills at half height are 30 and the gap to the card is 6,
     /// so **197 px is the arithmetic floor of the band with the pills** before one word would have
     /// to leave the window. The band WITHOUT the pills is 178 and does meet 180. The criterion is
     /// reported as partial with these numbers, and this constant holds the ground that was taken
