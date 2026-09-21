@@ -2688,6 +2688,12 @@ public partial class MainWindowViewModel : ObservableObject
 
         row.Ended = true;
 
+        // **AND WHEN, BESIDE THE FACT THAT HE WENT** (criterion 7.3, R39). The hover says when
+        // his carrier stopped, and *he went* and *he went forty minutes ago* are different facts
+        // on a panel that stays up. **It is written here and nowhere else**, in the one place
+        // `Ended` is set, so the fact and the moment cannot disagree.
+        row.StoppedUtc = DateTime.UtcNow.ToString("HHmmss", CultureInfo.InvariantCulture);
+
         if (reading is not null)
         {
             _psk31EndedReadings[row] = reading;
@@ -18168,13 +18174,24 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="macro">Which macro it was.</param>
     /// <param name="result">What now did.</param>
     /// <returns>One line, in the register the rest of this area uses.</returns>
-    private static string Psk31WentLine(string wanted, string macro, Ft8BoundaryResult result)
+    /// <remarks>
+    /// **THE MODE IT NAMES IS THE ONE HE CHOSE, NEVER THE FAMILY UNDERNEATH IT** (criterion
+    /// 7.5, work instruction 378 section 6 ruling 2 item 5). Until unit 378 both sentences
+    /// below carried the literal `PSK31`, so on 2026-09-21 an Olivia CQ that went out in
+    /// twenty-nine seconds told Tim it was *29 s of PSK31* - a sentence stating something
+    /// untrue about a send (§0.0). It is now `ChosenDigitalMode`, the same canonical strip
+    /// label unit 374 put in the record, so the chip, the record and this sentence cannot
+    /// come to disagree about one transmission. **Nothing about what is composed, armed or
+    /// keyed changes**: this method reads a finished run and writes a sentence.
+    /// </remarks>
+    private string Psk31WentLine(string wanted, string macro, Ft8BoundaryResult result)
     {
         var run = result.Run;
+        var mode = ChosenDigitalMode;
 
         if (run is null)
         {
-            return "Hamlet composed the PSK31 " + macro
+            return "Hamlet composed the " + mode + " " + macro
                 + " and nothing went out: it was no longer armed when the send ran.";
         }
 
@@ -18201,7 +18218,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return "Sent \"" + wanted + "\" - "
-            + Psk31Events.Say(Math.Round(run.SecondsOffered, 1)) + " s of PSK31.";
+            + Psk31Events.Say(Math.Round(run.SecondsOffered, 1)) + " s of " + mode + ".";
     }
 
     /// <summary>Hands the armed send its boundary, at most once per boundary.</summary>

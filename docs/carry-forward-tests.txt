@@ -4,7 +4,7 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied|FullyQualifiedName~TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient|FullyQualifiedName~TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer|FullyQualifiedName~TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed|FullyQualifiedName~Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied|FullyQualifiedName~TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient|FullyQualifiedName~TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer|FullyQualifiedName~TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaSendTests.AnUnprovedVariantIsRefusedAndNothingIsComposedOrKeyed|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4|FullyQualifiedName~TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing|FullyQualifiedName~TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed|FullyQualifiedName~Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference|FullyQualifiedName~TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText|FullyQualifiedName~TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText"
 
     timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical"
 
@@ -114,6 +114,8 @@ TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence  
 TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing   unit 373
 TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed  unit 374
 Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference   unit 376
+TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText   the canned send guard, unit 378
+TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText   the hover guard, unit 378
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
 
@@ -580,3 +582,47 @@ cannot fail teaches nothing by being run.
 **NOTHING WENT ON THE ENGINE LINE.** The engine's loopback guard was already there by name; it
 covers four more variants than it did, and that is a change to what the line proves rather than
 a change to what it runs.
+
+WHAT UNIT 378 ADDED. TWO NAMES, both on the app invocation, both by type and method.
+
+TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText.
+**IT IS THE CANNED SEND GUARD**, and it is here for the reason the mode guards are here
+(HM-DEC-165). PHASE_PLAN.md R39 (Tim, 2026-09-21, ruled C) lets a right-click offer seven lines
+from data/psk31/canned.json and one click send the chosen one. **The thing that must never come
+apart is that this new text walks the one door and nothing else**: this name right-clicks a real
+row, takes the item the menu built, executes its own command with its own parameter, and asserts
+that what went out was framed by Psk31Macros.Typed with both callsigns and the hand-back, that
+psk31_send_composed carries macro canned, that the cap on it was the MACRO's 30 s and not the
+typed line's 60, that withinCap is true, that announced is true with the BPSK31 code read out of
+the RSID file rather than typed, that the sound card was called exactly once and the wire was
+written to, and that NO LINE IN THE WHOLE TELEMETRY FILE holds either callsign or a word of the
+text (HM-DEC-018 section 2.1). A later unit that gives the canned route a composer of its own, or
+the typed line's cap, or lets the text into the record, turns this red.
+
+TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText.
+**IT IS THE HOVER GUARD.** R39 also ruled that the hover on one of these rows says what the row
+knows and never the text again. It asserts R39's order line by line - station, country, grid and
+distance, offset and strength, when he started, whether the message is addressed to him, the
+parser's kind and certainty, and last what a click and a right-click do - that the distance is a
+computed reading and not a placeholder, and that NO PART OF THE TEXT is in the hover in any form:
+not the message, not the whole message, not a truncation. **And it asserts the other half, which
+is what makes taking the text off legal at all** (CLAUDE.md 0.5): the words are still one click
+away, because OpenTheWholeMessageCommand opens exactly the string the tip used to draw. A later
+unit that puts the text back on the hover, or that takes the click away and leaves the hover as
+facts, turns this red - the second would be hiding information rather than detail.
+
+**THE OTHER NAMES UNIT 378 WROTE ARE NOT ON THE LINE**, as R14 asks. The file's own shape and its
+_note, the varicode and cap sweep over all seven shipped lines, the seven malformed-file cases,
+the operator's-copy-wins case, the seven entries on every row that names a station on both modes,
+the absent-not-unknown case, the stopped-clock case, 7.4's Olivia-reads-the-same case and 7.5's
+four chip cases are the unit's criterion tests and are run by the unit that changes that code.
+Unit378Trace is deliberately NOT on the list for the reason Unit337Measure, Unit344Measure and
+unit 376's trace are not: it prints and asserts nothing about the product, and a name that cannot
+fail teaches nothing by being run.
+
+**NOTHING WENT ON THE ENGINE LINE.** Unit 378 changed no engine file.
+
+THE COST, measured on the same machine in one session: the two names together run in well under
+a second, open no device, make no sound and reach no network, and every sample lives in an array
+(FACT-004). App 212 of 212 before this unit and 214 of 214 after, the two names being the whole
+of the difference.

@@ -1,7 +1,9 @@
 ﻿using Hamlet.RadioEngine.Contacts;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Controls;
@@ -664,6 +666,179 @@ public sealed partial record DigitalDecodeRow(
     /// a list of unworked stations would be worse than the label this replaced.
     /// </remarks>
     public string? WorkedTip => HasWorkedBefore ? _workedBefore : null;
+
+    /// <summary>When this row's carrier stopped, as the clock read it, or "".</summary>
+    /// <remarks>
+    /// **THE MOMENT, BESIDE <see cref="Ended"/>'s FACT** (criterion 7.3). `Ended` says his
+    /// carrier has gone and the hover says when, because *he went* and *he went forty minutes
+    /// ago* are different facts on a panel that stays up. **It is set in the one place
+    /// `Ended` is set** and nowhere else, so the two can never disagree.
+    /// </remarks>
+    public string StoppedUtc { get; set; } = "";
+
+    /// <summary>
+    /// **What this row knows, in R39's order - the hover, and never the text again.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**TIM, 2026-09-21 (PHASE_PLAN.md R39, ruled C)**: *the hover on a PSK31 row says
+    /// what the row knows - station, country, grid and distance if sent, offset and strength,
+    /// when he started and stopped, whether he spoke to Tim, the parser's kind and certainty,
+    /// what a click and a right-click do - never the text again.* Until unit 378 the hover over
+    /// the message read the message back to him.</para>
+    /// <para>**A FACT HAMLET DOES NOT HAVE IS ABSENT** (criterion 7.3, §0.0). The line is not
+    /// drawn at all: not *unknown*, not a dash, not an empty label. A station who has sent no
+    /// grid has no grid line and no distance line, and a row whose carrier is still up has no
+    /// stopped line.</para>
+    /// <para>**THE TEXT IS NOWHERE IN IT, IN ANY FORM** - not the message, not the whole
+    /// message, not the payload and not a truncation of one. **It is still one click away**:
+    /// `DecodedRowWholeMessage`'s own `OpenTheWholeMessageCommand` opens exactly the string the
+    /// tip used to draw, which unit 378's trace proved on all eleven of its rows before this
+    /// changed. Taking it off the tip hides detail, which §0.5 allows; hiding information, which
+    /// §0.5 forbids, is what leaving it unreachable would have been.</para>
+    /// <para>**IT IS BUILT HERE AND NOT IN THE MARKUP** (work instruction 378 section 6 ruling 2
+    /// item 1), so the hover a test reads and the hover Tim sees are one string.</para>
+    /// <para>**ONLY ON A PSK31 OR OLIVIA ROW.** An FT8 row keeps <see cref="WorkedTip"/>, which
+    /// is what it has always had: its three fields are already labeled and already explained by
+    /// <see cref="PayloadHelp"/>, and R39's ruling is about the keyboard modes.</para>
+    /// </remarks>
+    public string RowFacts
+    {
+        get
+        {
+            if (!IsTextOnly)
+            {
+                return "";
+            }
+
+            var said = new List<string>();
+
+            // 1. Who the station is.
+            if (Sender.Length > 0)
+            {
+                said.Add(Sender);
+            }
+
+            // 2. Which entity issued his callsign. **A FACT ABOUT THE LICENSE AND NEVER A
+            //    LOCATION** (HM-DEC-038), which is why the grid below is its own line.
+            if (DxccPrefixes.EntityOf(Sender) is { Length: > 0 } entity)
+            {
+                said.Add(entity);
+            }
+
+            // 3. His grid and how far away he is - **IF HE SENT ONE**, and from a message the
+            //    parser is sure of (§R1). A grid read off a guess is not his grid.
+            if (Reading is { IsCertain: true, Grid: { Length: > 0 } grid })
+            {
+                var here = OperatorLocation.FromGrid(ObserverGrid);
+                var there = OperatorLocation.FromGrid(grid);
+
+                said.Add(here is { } from && there is { } to
+                    ? "Grid " + grid + " · "
+                      + GridPath.DescribeMiles(GridPath.MilesBetween(from, to))
+                      + " " + OperatorLocation.DescribeCompass(GridPath.BearingDegrees(from, to))
+                    : "Grid " + grid);
+            }
+
+            // 4. Where in the passband he is, and how loud. **THE CELLS ARE THE MEASUREMENTS**,
+            //    read back rather than measured a second time; a cell that says nothing was
+            //    measured draws no line.
+            var place = new List<string>();
+
+            if (Hz.Length > 0 && Hz != NoMeasurement)
+            {
+                place.Add(Hz + " Hz");
+            }
+
+            if (Snr.Length > 0 && Snr != NoMeasurement)
+            {
+                place.Add(Snr + " dB");
+            }
+
+            if (HasVariant)
+            {
+                place.Add("Olivia " + Variant);
+            }
+
+            if (place.Count > 0)
+            {
+                said.Add(string.Join(" · ", place));
+            }
+
+            // 5. When he started, and when he stopped. On these rows the `Utc` cell is the
+            //    moment his carrier was FIRST HEARD, which is exactly what R39 asks for.
+            if (Clock(Utc) is { Length: > 0 } since)
+            {
+                said.Add("Heard since " + since + " UTC");
+            }
+
+            said.Add(Clock(StoppedUtc) is { Length: > 0 } went
+                ? "His carrier went at " + went + " UTC"
+                : "");
+
+            // 6. Whether he has spoken to Tim before, in unit 274's own wording, and whether
+            //    this message is addressed to him.
+            if (WorkedTip is { Length: > 0 } worked)
+            {
+                said.Add(worked);
+            }
+
+            if (Reading is { IsForOperator: true })
+            {
+                said.Add("This one is addressed to you.");
+            }
+
+            // 7. What the parser made of his latest complete message, and how sure it is.
+            //    **THE CERTAINTY IS SAID IN WORDS** (§R1, §0.6), never by weight or color.
+            if (Reading is { } reading)
+            {
+                said.Add(KindInWords(reading.Kind)
+                    + (reading.Speaker is null ? ", and Hamlet could not name who sent it"
+                        : reading.IsCertain ? ", read for certain"
+                        : ", but the callsign is a guess"));
+            }
+
+            // 8. And last, what the two clicks do.
+            said.Add(HasWholeMessage
+                ? "Click the message to read the whole of it. Right-click for the lines you can send."
+                : "Right-click for the lines you can send.");
+
+            return string.Join("\n", said.Where(l => l.Length > 0));
+        }
+    }
+
+    /// <summary>True where <see cref="RowFacts"/> has something to say.</summary>
+    public bool HasRowFacts => RowFacts.Length > 0;
+
+    /// <summary>
+    /// **The row-wide hover: the facts on a PSK31 or Olivia row, the worked sentence elsewhere.**
+    /// </summary>
+    /// <remarks>
+    /// **NULL AND NOT THE EMPTY STRING**, for <see cref="WorkedTip"/>'s own reason: Avalonia
+    /// draws an empty tooltip for `""`, and a blank box following the pointer down a list would
+    /// be worse than nothing.
+    /// </remarks>
+    public string? RowHover => IsTextOnly ? (HasRowFacts ? RowFacts : null) : WorkedTip;
+
+    /// <summary>`HHmmss` as a reader sees a clock, or "".</summary>
+    private static string Clock(string? cell)
+        => cell is { Length: 6 } six && six.All(char.IsDigit)
+            ? six[..2] + ":" + six[2..4] + ":" + six[4..]
+            : cell ?? "";
+
+    /// <summary>What the parser made of the message, in words a reader has (§R1).</summary>
+    private static string KindInWords(Hamlet.RadioEngine.Psk31.Psk31LineKind kind)
+        => kind switch
+        {
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.Cq => "He is calling CQ",
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.Answer => "He answered a station",
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.Report => "He sent a signal report",
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.Ack => "He rogered",
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.Chat => "He is talking",
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.Closing => "He said 73 and handed back",
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.End => "He signed off",
+            Hamlet.RadioEngine.Psk31.Psk31LineKind.Garbage => "More of it was damaged than was readable",
+            _ => "Nothing in it to read",
+        };
 
     /// <inheritdoc/>
     /// <remarks>

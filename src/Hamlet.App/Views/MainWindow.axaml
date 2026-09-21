@@ -4944,7 +4944,7 @@
                                                       ColumnDefinitions="24,76,48,*"
                                                       Background="Transparent"
                                                       Opacity="{Binding RowOpacity}"
-                                                      ToolTip.Tip="{Binding WorkedTip}"
+                                                      ToolTip.Tip="{Binding RowHover}"
                                                       ContextRequested="OnDecodedRowContextRequested">
                                                     <!-- **THE NUDGE: A LIFT PLUS THE QUILL** (Tim, 2026-09-10, no
                                                          HM-DEC id assigned). **Not a lift alone** - on a night when the
@@ -5198,14 +5198,22 @@
                                                                            FontFamily="Consolas,Menlo,monospace"
                                                                            FontSize="12" Margin="0,1,0,1" />
                                                             </Button.Content>
-                                                            <ToolTip.Tip>
-                                                                <TextBlock x:Name="DecodedRowWholeMessageTip"
-                                                                           Text="{Binding WholeMessage}"
-                                                                           TextWrapping="Wrap"
-                                                                           MaxWidth="460"
-                                                                           FontFamily="Consolas,Menlo,monospace"
-                                                                           FontSize="12" />
-                                                            </ToolTip.Tip>
+                                                            <!-- **THE HOVER STOPPED REPEATING THE WORDS ON 2026-09-21**
+                                                                 (R39, ruled C; work instruction 378 task 3). This tip
+                                                                 drew `WholeMessage` - the line he is already looking at,
+                                                                 read back to him. The tip is gone, so the pointer finds
+                                                                 `DecodedRowGrid`'s `RowHover` instead and he is told who
+                                                                 the station is, where he is, how loud, when he started,
+                                                                 whether he has spoken to him and what a click will do.
+
+                                                                 **THE WORDS ARE STILL ONE CLICK AWAY AND NOTHING IS
+                                                                 HIDDEN** (§0.5). This button's own `Command` is
+                                                                 `OpenTheWholeMessageCommand`, which opens the popup
+                                                                 below bound to exactly the string this tip drew; unit
+                                                                 378's task 1 trace proved that on all eleven of its rows
+                                                                 BEFORE this was taken off. Hiding detail is allowed;
+                                                                 hiding information is not, and leaving the words
+                                                                 unreachable would have been the second. -->
                                                         </Button>
 
                                                         <!-- **AND AN FT8 ROW, OR A PSK31 ROW WITH
