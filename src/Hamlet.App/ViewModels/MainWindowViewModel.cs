@@ -14403,10 +14403,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// </param>
     /// <returns>The row, so a test can look at what became of it.</returns>
     /// <remarks>
-    /// **THE SAME DOOR THE DECODER USES**, so what is tested is the placement
-    /// rule and not a second copy of it. Synthesising audio for five rows whose
-    /// only interesting property is their to-field would spend seconds of decode
-    /// on a question about a string comparison (§5).
+    /// <para>**IT REACHES <see cref="PlaceRow"/>, WHICH IS HALF THE DECODER'S DOOR** - and this
+    /// sentence used to say it was the same door, which was not true of the tree (unit 380's
+    /// item 1, corrected by unit 381 in the file it was already in). The decoder's own door is
+    /// <c>AddDecodeRow</c>, which keys the duplicate set and runs the trim as well as placing
+    /// the row, so **no test could ever reach the row cap through this hook**. Use
+    /// <see cref="AddDecodeRowThroughTheCapForTests"/> where the cap or the trim is the
+    /// subject.</para>
+    /// <para>**WHAT IT IS STILL RIGHT FOR** is the placement rule itself. Synthesising audio for
+    /// five rows whose only interesting property is their to-field would spend seconds of decode
+    /// on a question about a string comparison (§5).</para>
     /// </remarks>
     internal DigitalDecodeRow AddDecodeRowForTests(
         string utc, string snr, string dt, string hz, string message,
