@@ -333,6 +333,65 @@ public sealed class Unit373TraceTests
         }
     }
 
+    /// <summary>
+    /// **Task 2's re-run of unit 354's nine sizes**, so the floor's cost can be put beside unit
+    /// 372's row rather than described. The panel row, the canvas's viewport and extent, and the
+    /// send area's height at each.
+    /// </summary>
+    /// <remarks>
+    /// **THE CHANGE AT 1280 x 720 AND 1366 x 728 IS EXPECTED AND RULED** (work instruction 373 §6):
+    /// the panel row drew 50 and 86 px there, and a 50 px panel is not a working panel. The numbers
+    /// are reported and not apologized for.
+    /// </remarks>
+    [AvaloniaFact]
+    public void ThePanelRowAtUnitThreeFiftyFoursNineSizes()
+    {
+        // Unit 372's row, at the same nine sizes and in the same order, so the two can be read off
+        // one line each.
+        var before = new[] { 450.0, 0, 71, 50, 86, 228, 424, 427, 827 };
+        var sizes = new[]
+        {
+            (1920.0, 1040.0), (900, 620), (1100, 780), (1280, 720), (1366, 728),
+            (1536, 824), (1400, 1040), (1920, 1017), (2560, 1400),
+        };
+
+        var after = new List<double>();
+
+        for (var i = 0; i < sizes.Length; i++)
+        {
+            var (width, height) = sizes[i];
+            var window = TheWorkingPanelsTests.Realized(width, height, null);
+
+            try
+            {
+                Pump(window);
+
+                var panels = TheWorkingPanelsTests.Panels(window);
+                var canvas = TheTopRowTests.Named<ScrollViewer>(window, "WorkspaceCanvasScroller");
+                var send = TheTopRowTests.RectIn(
+                    TheTopRowTests.Named<Control>(window, "DigitalSendReserved"), window);
+
+                after.Add(panels[0].Rect.Height);
+
+                _output.WriteLine(
+                    Px(width) + " x " + Px(height) + ": panel row " + Px(before[i]).PadLeft(5)
+                    + " -> " + Px(panels[0].Rect.Height).PadLeft(5)
+                    + "  canvas viewport " + Px(canvas.Viewport.Height).PadLeft(6)
+                    + " extent " + Px(canvas.Extent.Height).PadLeft(6)
+                    + (canvas.Extent.Height > canvas.Viewport.Height + 0.5 ? "  SCROLLS" : "  fits  ")
+                    + "  send area " + Px(send.Height));
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine("    unit 372: " + string.Join(", ", before.Select(Px)));
+        _output.WriteLine("    unit 373: " + string.Join(", ", after.Select(Px)));
+    }
+
     // ------------------------------------------------------------------------------------
 
     /// <summary>Every band pill's flag, label, badge border and the words that border is showing.</summary>

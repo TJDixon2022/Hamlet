@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 373 - the panels keep a floor and scroll inside themselves, and the last red comes off 1.4
 BALL: code
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T21:10:54-04:00
-NOTE: Unit 373 task 3 - 1.4's best-bet red; the badge is drawn wearing the clock-guess label so the test is the thing to rewrite under R12
+UPDATED: 2026-09-20T21:31:47-04:00
+NOTE: Unit 373 task 4 - carry-forward exit green both sides, records written; composing output.md
 
 ---
 
