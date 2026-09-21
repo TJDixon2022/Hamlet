@@ -7,6 +7,9 @@ STEP: 2 | The record says what was true - the send press records the mode it was
 STEP: 3 | The record says what was on screen - for every decoded row and every card, whether it was drawn, filtered, scrolled away or folded, so an empty-looking screen can be diagnosed from the file without a screenshot.
 STEP: 4 | The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails.
 STEP: 5 | Tim looks - at his window and, when he has time, at the radio, and says it passed.
+STEP: 6 | The top gives back height - the pills, the neighborhood strip, the green zone and the rig display tightened to one band of about 180 px, the sun map keeping its size; the working panels get every pixel given up.
+STEP: 7 | A PSK31 row right-clicks into a canned list - seven framed lines from an editable data file, one click sends - and the row's hover says what the row knows instead of repeating the text.
+STEP: 8 | PSK31 and Olivia count for achievements - the Modes badge, the Hall of Fame firsts and the records from a PSK31 or Olivia contact, exactly as an FT8 contact earns them; measured first, then connected.
 
 ---
 
@@ -61,6 +64,30 @@ filtered, scrolled away or in a folded panel. That gap is why the CQ-filter faul
 was for the screen; there is none for the radio. One page, in his words, for the two
 keyboard modes.
 
+**R38 - Tim, 2026-09-21, on unit 375's two questions.** (a) Codes 72-75's tone sequences
+ship in `rsid-codes.json`: they are the detector's data, and Hamlet's modulator makes only
+8/250, 16/500 and 32/1000, so nothing announces a variant it cannot send. (b) The transmit
+sequence's teardown abort pair, sent after the click's own, is accepted: a duplicate unkey
+is the safe direction and nothing keys on it; logged as tidy-up, not a stop.
+
+**R39 - Tim, 2026-09-21: the UI comes first.** Steps 6, 7 and 8 are worked before steps 3
+and 4; step 3 depends on step 8. Ruled A on the top row: tighten everything to one band
+of about 180 px - pills half height, the neighborhood strip thinner with its legend on
+hover, the green zone one line, the rig display shorter with drive and power beside the
+frequency - and the sun map keeps its size. Ruled C on the canned list: seven lines -
+*Answer him · Send my report · Confirm and 73 · Say again? · Please repeat your report ·
+QRZ? · 73 and out* - each framed with the callsigns and the hand-back, one click sends,
+read from `data/psk31/canned.json` so Tim adds his own without a session. The hover on a
+PSK31 row says what the row knows - station, country, grid and distance if sent, offset
+and strength, when he started and stopped, whether he spoke to Tim, the parser's kind and
+certainty, what a click and a right-click do - never the text again.
+
+**R40 - Tim, 2026-09-21: keyboard modes earn achievements like FT8.** PSK31 and Olivia are
+not connected to the achievement system as FT8 is. The unit measures which of the Modes
+badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each mode
+reaches today, then connects what is missing so a PSK31 or Olivia contact earns exactly
+what an FT8 contact earns.
+
 ## §4 The steps
 
 Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions plus
@@ -113,7 +140,7 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 
 **Delivers:** R36.
 
-**Entry:** step 2 done.
+**Entry:** step 8 done (R39: the UI steps come first).
 
 **Exit:**
 - [ ] 3.1 Every decoded row writes one event when its visibility changes: drawn, filtered out (by which filter), scrolled out of view, in a folded panel, or removed - with the row's offset or slot and no callsign or text. *must-pass*
@@ -122,7 +149,7 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 - [ ] 3.4 The events are sampled so that a busy FT8 evening adds under 50 kB an hour, measured. *must-pass*
 - [ ] 3.5 The privacy scan is green over every new event. *must-pass*
 
-**Depends on:** step 2.
+**Depends on:** step 8.
 
 ## Step 4 - The radio sheet
 
@@ -148,9 +175,51 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 
 **Depends on:** step 4.
 
+## Step 6 - The top gives back height
+
+**Delivers:** R39's top row.
+
+**Entry:** step 2 done, or partial with 2.1 and 2.3 met.
+
+**Exit:**
+- [ ] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 180 px at 1920 and at 1400, from 300; the working panels are taller by the difference. *must-pass*
+- [ ] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover. *must-pass*
+- [ ] 6.3 The sun map keeps its size and its dot. *must-pass*
+- [ ] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green. *must-pass*
+
+**Depends on:** step 2.
+
+## Step 7 - The canned list and the hover
+
+**Delivers:** R39's list and hover.
+
+**Entry:** step 6 done.
+
+**Exit:**
+- [ ] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed. *must-pass*
+- [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text. *must-pass*
+- [ ] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent. *must-pass*
+- [ ] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
+
+**Depends on:** step 6.
+
+## Step 8 - Keyboard modes earn achievements
+
+**Delivers:** R40.
+
+**Entry:** step 7 done.
+
+**Exit:**
+- [ ] 8.1 The report names, for PSK31 and for Olivia, which of the Modes badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each reaches today, measured from a fixture log. *must-pass*
+- [ ] 8.2 A logged PSK31 contact and a logged Olivia contact each earn the Modes badge's mode, the Hall of Fame first for that mode, and every per-contact record - country, state, grid, continent, miles - exactly as an FT8 contact earns them. *must-pass*
+- [ ] 8.3 The quill on a PSK31 or Olivia row means the same as on an FT8 row, from the same nudge. *must-pass*
+- [ ] 8.4 The scores and the total move on the achievements page for those contacts; `TheAchievementsPageTests` green. *must-pass*
+
+**Depends on:** step 7.
+
 ## §5 Dependencies
 
-Step 0 depends on nothing; steps 1-5 are one pipeline.
+Step 0 depends on nothing. The order the arbiter works is 1, 2, 6, 7, 8, 3, 4, 5 - the UI steps before the record steps by R39 - expressed in each step's Depends on.
 
 ## §6 Branching
 
@@ -171,3 +240,7 @@ Step 0 depends on nothing; steps 1-5 are one pipeline.
 Every open ask of the Olivia phase from unit 368's queue; the PSK31 demodulator on
 real air, waiting on a capture; Olivia 5.4 and 6.1; real flags on country cards; rank
 names; the map bitmap's license; the id-scheme split.
+
+## §8 Revision record
+
+- **2026-09-21.** R38 on unit 375's two questions; R39 and R40 from Tim; steps 6-8 added and step 3 made to depend on step 8 so the UI is worked first.

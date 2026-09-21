@@ -182,3 +182,8 @@ the owner reads instead of watching.
 | 1 | 2026-09-20T16:38 | 2026-09-20T17:23 | complete | 19.234482500000006 | ran unattended, 207 turns, 6 denied call(s) worked around, report valid |
 | phase | 2026-09-20T17:30 | 2026-09-20T17:30 | halted | 19.2345 | refused: the decision block named no step and no criterion |
 | 1 | 2026-09-20T19:35 | 2026-09-20T20:25 | complete | 16.45659 | ran unattended, 156 turns, 14 denied call(s) worked around, report valid |
+| 2 | 2026-09-20T20:34 | 2026-09-20T21:36 | complete | 15.745063499999992 | ran unattended, 137 turns, 2 denied call(s) worked around, report valid |
+| 3 | 2026-09-20T21:44 | 2026-09-20T22:33 | failed | 14.387669500000003 | run-unit exit 4: 3 denied call(s), is_error=False, terminal=completed |
+| phase | 2026-09-20T22:34 | 2026-09-20T22:34 | halted | 32.2017 | stop 7: validate-output refused the report (after 3 denied calls) |
+| 1 | 2026-09-21T08:08 | 2026-09-21T09:59 | complete | 11.124889999999997 | ran unattended, 127 turns, 7 denied call(s) worked around, report valid |
+| phase | 2026-09-21T10:00 | 2026-09-21T10:00 | halted | 0 | stop 3: a ruling is wanted on one of the three - judged, not counted |
