@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 380 - the record says what was on screen: one event a change, 
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T16:30:36-04:00
-NOTE: AppEvents.OnScreen landed - one writer, one event name, the category chosen inside it from the item's own IsTextOnly and never at a call site - with OnScreenKind, OnScreenState, OnScreenBy and OnScreenViewport as closed types so a token cannot be mistyped. CallsignPrivacyTests grown 81 to 82 IN THE SAME COMMIT, its walk writing all five states on both kinds in both categories plus the scroll-settle shape: 4 of 4 green, no commit tip leaves a carry-forward name red.
+UPDATED: 2026-09-21T16:38:58-04:00
+NOTE: The six sites are wired and 3.1 and 3.2 are asserted OFF THE RECORD, never off a list: TheRecordSaysWhatWasOnScreenTests 6 of 6. A finding while doing it - AddDecodeRowForTests is HALF A DOOR, reaching PlaceRow and not AddDecodeRow, so no test in this repository could ever reach the row cap through it; a second hook was added beside it rather than widening it, and it is reported. The eight movable types plus TheStopIsAlwaysOnScreenTests, TheTopRowTests, TheWorkingPanelsTests and BindingHealthTests: 100 of 100 green.
 
 ---
 

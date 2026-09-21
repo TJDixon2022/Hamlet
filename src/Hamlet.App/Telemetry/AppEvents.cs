@@ -1117,7 +1117,7 @@ public static class AppEvents
         string slot,
         long dialHz,
         int count,
-        string subMode,
+        string? subMode,
         OnScreenViewport? viewport = null)
     {
         if (telemetry is null)

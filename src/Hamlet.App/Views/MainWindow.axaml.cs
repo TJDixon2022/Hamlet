@@ -1,6 +1,7 @@
 using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Threading;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Contacts;
 
@@ -70,6 +71,92 @@ public partial class MainWindow : Window
                 vm.KeepTheCanvas();
             }
         };
+
+        // **WHERE THE DECODED LIST HAS BEEN SCROLLED TO** (R36, criterion 3.1). Which
+        // rows are inside a viewport is a fact the view knows and the view model
+        // cannot, exactly as the mouse position is, so the view reads it and the view
+        // model decides what it means. **It draws nothing and nothing on screen
+        // depends on it** (§0.2).
+        DigitalDecodedScroller.ScrollChanged += (_, _) => TheDecodedListMoved();
+    }
+
+    /// <summary>How still a scroller has to be before the settle counts.</summary>
+    /// <remarks>
+    /// **A QUARTER OF A SECOND** (work instruction 380 section 6 ruling 1 item 3). A drag
+    /// raises `ScrollChanged` on every frame; a line each would be hundreds of lines about
+    /// one gesture, against a measured budget of 191 lines an hour. What a diagnosis needs
+    /// is where he came to rest.
+    /// </remarks>
+    private static readonly TimeSpan Settle = TimeSpan.FromMilliseconds(250);
+
+    /// <summary>The timer waiting for the decoded list to come to rest, or null.</summary>
+    private DispatcherTimer? _decodedSettle;
+
+    /// <summary>Restart the settle clock, because the list has just moved.</summary>
+    private void TheDecodedListMoved()
+    {
+        _decodedSettle ??= new DispatcherTimer { Interval = Settle };
+
+        _decodedSettle.Stop();
+        _decodedSettle.Tick -= OnDecodedListSettled;
+        _decodedSettle.Tick += OnDecodedListSettled;
+        _decodedSettle.Start();
+    }
+
+    /// <summary>The decoded list has been still for a quarter of a second.</summary>
+    /// <param name="sender">The timer.</param>
+    /// <param name="e">Nothing.</param>
+    /// <remarks>
+    /// **THE INDEX RANGE IS ARITHMETIC ON CONTAINERS THAT ALREADY EXIST.** The decoded
+    /// `ItemsControl` does not virtualize, so every bound row has a realized container, and
+    /// a container's bounds against the scroller's offset and viewport say whether it is
+    /// inside. **Nothing new is drawn to work it out** (work instruction 380 section 6 ruling
+    /// 2 item 3), and a row with no container yet is simply not counted rather than guessed
+    /// at (§0.0).
+    /// </remarks>
+    private void OnDecodedListSettled(object? sender, EventArgs e)
+    {
+        _decodedSettle?.Stop();
+
+        if (DataContext is not MainWindowViewModel panel)
+        {
+            return;
+        }
+
+        var scroller = DigitalDecodedScroller;
+        var rows = DigitalDecodedRows;
+
+        var top = scroller.Offset.Y;
+        var bottom = top + scroller.Viewport.Height;
+
+        var first = -1;
+        var last = -1;
+
+        for (var at = 0; at < rows.ItemCount; at++)
+        {
+            if (rows.ContainerFromIndex(at) is not Control container)
+            {
+                continue;
+            }
+
+            var start = container.Bounds.Y;
+            var end = start + container.Bounds.Height;
+
+            if (end <= top || start >= bottom)
+            {
+                continue;
+            }
+
+            if (first < 0)
+            {
+                first = at;
+            }
+
+            last = at;
+        }
+
+        panel.DecodedPanelScrolled(
+            first, last, scroller.Extent.Height, scroller.Viewport.Height, top);
     }
 
 

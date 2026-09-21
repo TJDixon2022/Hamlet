@@ -4868,7 +4868,16 @@
                                          column, so the table fills whatever height
                                          that column has and the cap would only be a
                                          smaller ceiling than the screen's. -->
+                                    <!-- **THE NAME IS THE ONLY THING UNIT 380 ADDED HERE, AND
+                                         IT DRAWS NOTHING** (work instruction 380 section 6
+                                         ruling 2 item 3). A `ScrollChanged` handler needs a
+                                         scroller it can reach; the code-behind reads what this
+                                         one settles at and hands the numbers to the view model,
+                                         which is how R36's *scrolled away* is answered from the
+                                         file. No control, no visual element, no layout change,
+                                         and nothing on screen depends on it (§0.2). -->
                                     <ScrollViewer Grid.Row="2"
+                                                  x:Name="DigitalDecodedScroller"
                                                   Margin="0,6,0,0"
                                                   VerticalScrollBarVisibility="Auto"
                                                   HorizontalScrollBarVisibility="Disabled"

@@ -2240,10 +2240,27 @@ public partial class MainWindowViewModel : ObservableObject
                     // there is no position to compute for a row on its own.
                     _mineAll.Add(row);
                     rebuild = true;
+
+                    // **THE RIGHT-HAND SIDE IS NOT HIDDEN AND THE RECORD SAYS SO**
+                    // (R36, criterion 3.1). It is on the screen in its own column,
+                    // which is why `DigitalHiddenCount` does not count it either.
+                    NoteRowOnScreen(
+                        row, OnScreenState.Drawn, OnScreenBy.AddressedToOperator);
                 }
                 else if (WantsRow(row))
                 {
                     DigitalVisibleDecodes.Insert(SideIndexOf(at, WantsRow), row);
+
+                    NoteRowOnScreen(row, OnScreenState.Drawn, OnScreenBy.Nothing);
+                }
+                else
+                {
+                    // **THE ROW THAT NEVER ARRIVED, AND THIS IS THE WHOLE OF R36.**
+                    // A filtered-out row raises no change on the visible collection
+                    // at all, which is precisely why nothing in the file knew it
+                    // existed: the evening of 2026-09-12 needed a screenshot
+                    // because this line was not here.
+                    NoteRowOnScreen(row, OnScreenState.Filtered, GateThatHeld(row));
                 }
 
                 at++;
@@ -2781,8 +2798,392 @@ public partial class MainWindowViewModel : ObservableObject
                 _digitalDecodeKeyOrder.RemoveAt(0);
             }
 
+            NoteRowOnScreen(oldest, OnScreenState.Removed, OnScreenBy.Trim);
+
             _digitalTrimmed++;
         }
+    }
+
+    // ---- WHAT BECAME OF IT ON THE SCREEN (R36, step 3) -----------------------
+
+    /// <summary>
+    /// **How long one sampling window is, and the number is arithmetic** (criterion 3.4, work
+    /// instruction 380 section 6 ruling 2 item 5).
+    /// </summary>
+    /// <remarks>
+    /// <para>**MEASURED, NOT CHOSEN.** Unit 380 task 1 counted 14 rows a slot placed through the
+    /// real path over eight slots - 3,360 rows an hour at 240 slots - and measured one
+    /// serialised `on_screen` line on the file at 267 bytes, of which 142 is the schema-B
+    /// envelope. One event per row is 876 kB an hour, **17.5 times** the 50 kB criterion 3.4
+    /// allows. 50 kB buys 191 lines an hour, one every 18.8 seconds, **0.80 of a line per
+    /// slot** - so the window cannot be the slot, and the literal reading of 3.1 is not
+    /// available on a busy band.</para>
+    /// <para>**WHAT 120 SECONDS BUYS.** Thirty windows an hour. On a busy FT8 evening the groups
+    /// that actually fire are drawn, filtered by the CQ toggle, filtered as addressed to the
+    /// operator and removed by the trim - four - which is 120 lines an hour and **31.3 kB**,
+    /// leaving room inside 50 kB for the fold, the cards and the scroll settles. Six groups is
+    /// 46.9 kB and still inside. The arithmetic is re-measured end to end in the unit's own
+    /// guard rather than trusted to this paragraph.</para>
+    /// </remarks>
+    internal const double OnScreenWindowSeconds = 120;
+
+    /// <summary>
+    /// **The last state each row was in, off the row** (work instruction 380 section 6 ruling 2
+    /// item 2).
+    /// </summary>
+    /// <remarks>
+    /// <para>**NOT A BOUND PROPERTY ON <see cref="DigitalDecodeRow"/>.** A bound property is one
+    /// the view can read, and then the record is a thing the screen depends on rather than a
+    /// reading of it (§0.2). This map is the view model's own and nothing draws from it.</para>
+    /// <para>**AND IT IS WHY A REBUILD DOES NOT WRITE `drawn` FIVE TIMES.**
+    /// <see cref="ApplyDecodedFilter"/> walks every row on every toggle; without a memory of
+    /// where each row already was, one press of the CQ button would write a line for every row
+    /// on the table whether or not anything about it moved.</para>
+    /// <para>**KEYED BY IDENTITY AND NOT BY VALUE.** `DigitalDecodeRow` is a record, so two rows
+    /// carrying the same cells are equal by value - and on a busy band two stations can repeat
+    /// one message in one slot. Keyed by value they would be one entry and the second row's fate
+    /// would never be written.</para>
+    /// <para>**A TEXT ROW IS NOT KEPT HERE**, because it has no identity to keep: the builder
+    /// REPLACES a PSK31 row with a new record every time another character arrives, four times a
+    /// second, and each replacement raises a reset that rebuilds the whole filter. Kept by object
+    /// this map would write `drawn` for every carrier on every tick - which is the second copy of
+    /// `psk31_line_parsed` this step exists not to write - and would never let an old object go.
+    /// <see cref="_onScreenTextRows"/> keeps those by the channel's first-heard mark instead,
+    /// which is what survives a replacement.</para>
+    /// </remarks>
+    private readonly Dictionary<DigitalDecodeRow, (OnScreenState State, string By)> _onScreenRows
+        = new(RowIdentity.Instance);
+
+    /// <summary>The last state each text row was in, by the mark its channel was first heard at.</summary>
+    /// <remarks>
+    /// **THE FIRST-HEARD CELL IS WHAT A REPLACEMENT CARRIES OVER.** `_psk31FirstHeard` is kept
+    /// per channel and handed to every rebuild of that channel's row, so it is the one cell that
+    /// means *the same station's row* across the four replacements a second a live carrier
+    /// causes. It is an `HHmmss` mark and names nobody.
+    /// </remarks>
+    private readonly Dictionary<string, (OnScreenState State, string By)> _onScreenTextRows
+        = new(StringComparer.Ordinal);
+
+    /// <summary>The last state each card was in, by the station it stands for.</summary>
+    /// <remarks>
+    /// **THE CALLSIGN IS THE KEY AND NEVER LEAVES THIS DICTIONARY** (HM-DEC-018 §2.1). A card is
+    /// rebuilt from the ledger rather than kept, so the object identity a row has is not
+    /// available here; the station is what makes two cards the same card. **What is written is a
+    /// count and an offset.**
+    /// </remarks>
+    private readonly Dictionary<string, (OnScreenState State, string By)> _onScreenCards
+        = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>What has accumulated in the window that is open.</summary>
+    private readonly Dictionary<(OnScreenKind Kind, OnScreenState State, string By, bool Text),
+        OnScreenGroup> _onScreenWindow = new();
+
+    /// <summary>When the open window opened, or <c>MinValue</c> where none is.</summary>
+    private DateTime _onScreenWindowUtc = DateTime.MinValue;
+
+    /// <summary>One group's tally inside one window.</summary>
+    /// <remarks>
+    /// **THE HEAD OF THE WINDOW IS THE FIRST ITEM, AND THE COUNT IS ALL OF THEM** (work
+    /// instruction 380 section 6 ruling 1 item 2). That is what lets a reader answer *how many
+    /// rows were hidden and by what* exactly, and *which row* for the head, on a budget that
+    /// cannot carry a line each.
+    /// </remarks>
+    private sealed class OnScreenGroup
+    {
+        public int Count;
+        public double? OffsetHz;
+        public string Slot = "";
+        public long DialHz;
+    }
+
+    /// <summary>Reference identity for a record that is equal by value.</summary>
+    private sealed class RowIdentity : IEqualityComparer<DigitalDecodeRow>
+    {
+        public static readonly RowIdentity Instance = new();
+
+        public bool Equals(DigitalDecodeRow? x, DigitalDecodeRow? y) => ReferenceEquals(x, y);
+
+        public int GetHashCode(DigitalDecodeRow row)
+            => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(row);
+    }
+
+    /// <summary>Note what became of one decoded row.</summary>
+    /// <param name="row">The row.</param>
+    /// <param name="state">What became of it.</param>
+    /// <param name="by">The gate or the panel that did it, or <see cref="OnScreenBy.Nothing"/>.</param>
+    /// <remarks>
+    /// **A STATE A ROW IS ALREADY IN IS NOT A CHANGE**, and criterion 3.1 asks for one event
+    /// *when its visibility changes*. This is the one place that decision is made, so no call
+    /// site has to remember it.
+    /// </remarks>
+    private void NoteRowOnScreen(DigitalDecodeRow row, OnScreenState state, string by)
+    {
+        var known = row.IsTextOnly
+            ? _onScreenTextRows.TryGetValue(row.Utc, out var was)
+            : _onScreenRows.TryGetValue(row, out was);
+
+        if (known && was.State == state && string.Equals(was.By, by, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        if (row.IsTextOnly)
+        {
+            if (state == OnScreenState.Removed)
+            {
+                _onScreenTextRows.Remove(row.Utc);
+            }
+            else
+            {
+                _onScreenTextRows[row.Utc] = (state, by);
+            }
+        }
+        else if (state == OnScreenState.Removed)
+        {
+            _onScreenRows.Remove(row);
+        }
+        else
+        {
+            _onScreenRows[row] = (state, by);
+        }
+
+        // **THE TONE OFFSET GOES ON A SLOTTED ROW TOO, BESIDE ITS SLOT AND ITS DIAL.** Section 6
+        // ruling 1 names *its slot and dial* for a slotted row; a slot names fourteen rows at
+        // once on a busy band and criterion 3.3 asks WHICH row. This adds a field and removes
+        // none, and it is reported rather than done quietly.
+        double? hz = double.TryParse(
+            row.Hz, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : null;
+
+        NoteOnScreen(
+            OnScreenKind.Row, state, by, row.IsTextOnly,
+            hz, row.IsTextOnly ? "" : row.Utc, row.IsTextOnly ? 0 : row.HeardOnHz);
+    }
+
+    /// <summary>Which gate held a row off the left list.</summary>
+    /// <param name="row">A row <see cref="WantsRow"/> has just refused after
+    /// <see cref="IsForHim"/> said no.</param>
+    /// <returns>The gate's stable token.</returns>
+    /// <remarks>
+    /// <para>**THERE IS EXACTLY ONE GATE THAT CAN REACH HERE, AND SAYING SO IS THE POINT.**
+    /// <see cref="WantsRow"/> refuses a row for two reasons: it is addressed to the operator, or
+    /// `DecodedFilterRule` did not want its addressee. The first is already taken by the arm
+    /// above every call site of this - a row on the operator's own side is DRAWN and not
+    /// filtered - so what is left is the CQ toggle.</para>
+    /// <para>**AND A TEXT ROW CANNOT REACH HERE AT ALL.** `WantsRow` returns early for one: a
+    /// PSK31 or Olivia row is not held back by the CQ toggle since work instruction 337's own
+    /// repair, so for a text row `!IsForHim` and `WantsRow` are the same answer. That is measured
+    /// in unit 380's trace and it is the answer criterion 3.3 reads out of the file: **the gate
+    /// that emptied Tim's list on 2026-09-12 no longer applies to a text row.** The assertion
+    /// below is a statement of that, not a defence against it.</para>
+    /// </remarks>
+    private string GateThatHeld(DigitalDecodeRow row)
+        => row.IsTextOnly ? OnScreenBy.AddressedToOperator : OnScreenBy.CqFilter;
+
+    /// <summary>Note what became of one contact card.</summary>
+    /// <param name="card">The card.</param>
+    /// <param name="state">What became of it.</param>
+    /// <param name="by">What did it, or <see cref="OnScreenBy.Nothing"/>.</param>
+    private void NoteCardOnScreen(Ft8ContactCard card, OnScreenState state, string by)
+    {
+        var who = card.Callsign;
+
+        if (who.Length > 0
+            && _onScreenCards.TryGetValue(who, out var was)
+            && was.State == state
+            && string.Equals(was.By, by, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        if (who.Length > 0)
+        {
+            if (state == OnScreenState.Removed)
+            {
+                _onScreenCards.Remove(who);
+            }
+            else
+            {
+                _onScreenCards[who] = (state, by);
+            }
+        }
+
+        // **WHERE THE STATION THE CARD STANDS FOR SITS**, read off what was measured about him
+        // and kept past the table. A card Hamlet has no measurement for writes no `where` at
+        // all, because an absent fact is absent and never zero (§0.0).
+        var tech = who.Length > 0 ? _technicalSeen.GetValueOrDefault(who) : null;
+
+        double? hz = tech is not null && double.TryParse(
+            tech.AudioHz, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : null;
+
+        NoteOnScreen(
+            OnScreenKind.Card, state, by, card.IsPsk31,
+            hz, "", card.IsPsk31 ? 0 : tech?.DialHz ?? 0);
+    }
+
+    /// <summary>Put one change into the open window, rolling the window first if it has run.</summary>
+    private void NoteOnScreen(
+        OnScreenKind kind, OnScreenState state, string by, bool isTextOnly,
+        double? offsetHz, string slot, long dialHz)
+    {
+        var now = DateTime.UtcNow;
+
+        if (_onScreenWindowUtc == DateTime.MinValue)
+        {
+            _onScreenWindowUtc = now;
+        }
+        else if ((now - _onScreenWindowUtc).TotalSeconds >= OnScreenWindowSeconds)
+        {
+            FlushOnScreen();
+            _onScreenWindowUtc = now;
+        }
+
+        var key = (kind, state, by ?? "", isTextOnly);
+
+        if (!_onScreenWindow.TryGetValue(key, out var group))
+        {
+            // **THE FIRST ITEM IN THE GROUP IS THE HEAD AND ITS PLACE IS KEPT.** Every later one
+            // adds to the count, so the file says how many and by what exactly, and which one for
+            // the head.
+            group = new OnScreenGroup
+            {
+                OffsetHz = offsetHz,
+                Slot = slot,
+                DialHz = dialHz,
+            };
+
+            _onScreenWindow[key] = group;
+        }
+
+        group.Count++;
+    }
+
+    /// <summary>Write the open window out, one line per group, and open a new one.</summary>
+    /// <remarks>
+    /// **ONE LINE PER GROUP PER WINDOW IS THE WHOLE OF THE SAMPLING**, and the budget it holds to
+    /// is <see cref="OnScreenWindowSeconds"/>'s, which is arithmetic off unit 380 task 1's
+    /// measured row rate and measured line length.
+    /// </remarks>
+    private void FlushOnScreen()
+    {
+        if (_onScreenWindow.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var (key, group) in _onScreenWindow)
+        {
+            AppEvents.OnScreen(
+                _telemetry, key.Kind, key.State, key.By, key.Text,
+                group.OffsetHz, group.Slot, group.DialHz, group.Count,
+                ChosenDigitalMode);
+        }
+
+        _onScreenWindow.Clear();
+        _onScreenWindowUtc = DateTime.MinValue;
+    }
+
+    /// <summary>Close the open window now, so a test can read what it holds.</summary>
+    internal void FlushOnScreenForTests() => FlushOnScreen();
+
+    /// <summary>How many groups are waiting in the open window, for a test.</summary>
+    internal int OnScreenWindowGroupsForTests => _onScreenWindow.Count;
+
+    /// <summary>Record every row and card behind a panel that has just folded or opened.</summary>
+    /// <param name="key">The panel, a <c>PanelKeys</c> value.</param>
+    /// <param name="expanded">True where it is now open.</param>
+    /// <remarks>
+    /// <para>**WHAT WAS INSIDE IT, WHICH IS EXACTLY WHAT `panel_toggled` DOES NOT CARRY** (unit
+    /// 380 task 1 item 5). The fold has been recorded at the panel level since HM-DEC-021; that
+    /// a panel shut says nothing about whether anything was behind it, and *the band was quiet*
+    /// and *you had it folded over five rows* were the same file.</para>
+    /// <para>**BESIDE <see cref="AppEvents.PanelToggled"/> AND NEVER INSTEAD OF IT** (work
+    /// instruction 380 section 6 ruling 2 item 1).</para>
+    /// <para>**OPENING IS A CHANGE TOO.** A row that was behind a fold and is now drawn has had
+    /// its visibility change, and 3.1 asks for an event when it changes - in either direction.
+    /// </para>
+    /// </remarks>
+    private void NoteFoldOnScreen(string key, bool expanded)
+    {
+        if (key == PanelKeys.DigitalDecoded)
+        {
+            foreach (var row in DigitalVisibleDecodes)
+            {
+                NoteRowOnScreen(
+                    row,
+                    expanded ? OnScreenState.Drawn : OnScreenState.Folded,
+                    expanded ? OnScreenBy.Nothing : key);
+            }
+        }
+        else if (key == PanelKeys.DigitalMine)
+        {
+            foreach (var row in DigitalMineDecodes)
+            {
+                NoteRowOnScreen(
+                    row,
+                    expanded ? OnScreenState.Drawn : OnScreenState.Folded,
+                    expanded ? OnScreenBy.AddressedToOperator : key);
+            }
+
+            foreach (var card in DigitalCards)
+            {
+                NoteCardOnScreen(
+                    card,
+                    expanded ? OnScreenState.Drawn : OnScreenState.Folded,
+                    expanded ? OnScreenBy.Nothing : key);
+            }
+        }
+    }
+
+    /// <summary>A scroller settled: say what is inside its viewport and how much left it.</summary>
+    /// <param name="key">The panel the scroller belongs to, a <c>PanelKeys</c> value.</param>
+    /// <param name="kind">Whether the panel holds rows or cards.</param>
+    /// <param name="isTextOnly">Which category the line belongs in.</param>
+    /// <param name="seen">What the scroller read.</param>
+    /// <param name="left">How many items are outside the viewport.</param>
+    /// <remarks>
+    /// <para>**PER PANEL AT EACH SETTLE, NEVER PER ROW** (work instruction 380 section 6 ruling 1
+    /// item 3). A row's scrolled-away state is arithmetic on the range this carries, and it is
+    /// the only shape that survives a drag: a line per row on a fling would be hundreds of lines
+    /// about one gesture, and a budget of 191 lines an hour would be gone in a second.</para>
+    /// <para>**IT IS NOT PUT THROUGH THE WINDOW.** The settle already rate-limits it - a quarter
+    /// of a second of stillness - and grouping two settles into one line would lose the range
+    /// that is the whole point of it.</para>
+    /// </remarks>
+    private void NoteScrollSettled(
+        string key, OnScreenKind kind, bool isTextOnly, OnScreenViewport seen, int left)
+        => AppEvents.OnScreen(
+            _telemetry, kind, OnScreenState.ScrolledOut, key, isTextOnly,
+            offsetHz: null, slot: "", dialHz: 0, count: left, ChosenDigitalMode, seen);
+
+    /// <summary>Record a settle the view read off the decoded panel's scroller.</summary>
+    /// <param name="first">First index inside the viewport, or -1.</param>
+    /// <param name="last">Last index inside the viewport, or -1.</param>
+    /// <param name="extent">How tall the content is.</param>
+    /// <param name="viewport">How much of it is showing.</param>
+    /// <param name="offset">How far down it is scrolled.</param>
+    /// <remarks>
+    /// **THE VIEW HANDS IN NUMBERS AND THE VIEW MODEL DECIDES WHAT THEY MEAN.** The code-behind
+    /// owns only the facts the view knows and the view model cannot - which is what a scroller
+    /// read - exactly as `MainWindow`'s own remarks say of the mouse position.
+    /// </remarks>
+    internal void DecodedPanelScrolled(
+        int first, int last, double extent, double viewport, double offset)
+    {
+        if (viewport <= 0 || extent <= viewport + 0.5)
+        {
+            return;
+        }
+
+        var shown = first < 0 ? 0 : last - first + 1;
+
+        NoteScrollSettled(
+            PanelKeys.DigitalDecoded, OnScreenKind.Row, isTextOnly: false,
+            new OnScreenViewport(first, last, extent, viewport, offset),
+            Math.Max(0, DigitalVisibleDecodes.Count - shown));
     }
 
     /// <summary>Record every ended PSK31 row a clear is about to take off the list.</summary>
@@ -5809,13 +6210,18 @@ public partial class MainWindowViewModel : ObservableObject
     /// update. A card that is wanted and already present is never touched by this
     /// method at all.
     /// </remarks>
-    private static void Reconcile(
+    private void Reconcile(
         ObservableCollection<Ft8ContactCard> live, List<Ft8ContactCard> wanted)
     {
         for (var at = live.Count - 1; at >= 0; at--)
         {
             if (!wanted.Contains(live[at]))
             {
+                // **A CARD GOING IS AS OBSERVABLE AS A CARD ARRIVING** (criterion 3.2).
+                // He dismissed it, or the station aged out of the ledger; either way the
+                // panel has one fewer card on it and until now nothing said so.
+                NoteCardOnScreen(live[at], OnScreenState.Removed, OnScreenBy.Dismissed);
+
                 live.RemoveAt(at);
             }
         }
@@ -5827,6 +6233,8 @@ public partial class MainWindowViewModel : ObservableObject
             if (standing < 0)
             {
                 live.Insert(at, wanted[at]);
+
+                NoteCardOnScreen(wanted[at], OnScreenState.Drawn, OnScreenBy.Nothing);
             }
             else if (standing != at)
             {
@@ -6447,10 +6855,21 @@ public partial class MainWindowViewModel : ObservableObject
             if (IsForHim(row))
             {
                 _mineAll.Add(row);
+                NoteRowOnScreen(row, OnScreenState.Drawn, OnScreenBy.AddressedToOperator);
             }
             else if (WantsRow(row))
             {
                 DigitalVisibleDecodes.Add(row);
+                NoteRowOnScreen(row, OnScreenState.Drawn, OnScreenBy.Nothing);
+            }
+            else
+            {
+                // **THE WHOLESALE REBUILD IS ONLY EVER AN ANSWER TO SOMETHING HE DID** -
+                // a toggle, the order button, a clear - so this is the line that says
+                // what pressing CQ did to the rows already on the table. **A row already
+                // in this state writes nothing**: the map above is what keeps one press
+                // from writing a line for every row that did not move.
+                NoteRowOnScreen(row, OnScreenState.Filtered, GateThatHeld(row));
             }
         }
 
@@ -9614,6 +10033,12 @@ public partial class MainWindowViewModel : ObservableObject
         _settings.SetPanelExpanded(key, expanded);
         SettingsStore.Save(_settings);
         AppEvents.PanelToggled(_telemetry, key, expanded);
+
+        // **BESIDE `panel_toggled` AND NEVER INSTEAD OF IT** (work instruction 380 section 6
+        // ruling 2 item 1). The fold has been recorded at the panel level since HM-DEC-021;
+        // what was never recorded is what was behind it, so *the band was quiet* and *you had
+        // it folded over five rows and a card* left the same file (R36).
+        NoteFoldOnScreen(key, expanded);
     }
 
     /// <summary>Reload the happening-now feed by hand. Always works, whatever
@@ -13706,6 +14131,32 @@ public partial class MainWindowViewModel : ObservableObject
         DigitalDecodes.Insert(InsertAt(row), row);
 
         return row;
+    }
+
+    /// <summary>Put one decode on the table through the WHOLE door, cap and all.</summary>
+    /// <param name="decode">What a slot would have produced.</param>
+    /// <returns>True where a row was added.</returns>
+    /// <remarks>
+    /// <para>**IT EXISTS BECAUSE <see cref="AddDecodeRowForTests"/> IS HALF A DOOR**, and that is
+    /// reported rather than quietly widened (§12.6, and unit 297's own finding about
+    /// <see cref="AddSentRowForTests"/>, which was half a door for the same reason). That hook's
+    /// remarks say it is *the same door the decoder uses*; it calls <see cref="PlaceRow"/>, and
+    /// the decoder's door is <c>AddDecodeRow</c>, which ALSO keys the duplicate set and runs
+    /// <see cref="TrimDigitalDecodes"/>. **No test in this repository could reach the row cap
+    /// through that hook**, which is what unit 380 found when its trim guard wrote nothing.
+    /// </para>
+    /// <para>**WIDENING THE EXISTING HOOK WAS NOT DONE HERE**, for the reason unit 297 gave of
+    /// its own: many test files call it, and making it key the duplicate set would change what a
+    /// repeated message does in every one of them. This is a second door beside it, named for
+    /// what it adds.</para>
+    /// </remarks>
+    internal bool AddDecodeRowThroughTheCapForTests(Ft8Decode decode)
+    {
+        var added = AddDecodeRow(decode);
+
+        RaiseDigitalDecodeChanges();
+
+        return added;
     }
 
     /// <summary>Put one row on the table without a decoder, for tests.</summary>
