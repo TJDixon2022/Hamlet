@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: running
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 377 - one RSID file, seven Olivia variants, and none of them on the air until Hamlet has read its own back
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T12:05:07-04:00
-NOTE: Unit 377 task 0 done: entry carry-forward app 211 of 211 on attempt 2 and engine 146 of 146, both at the counts unit 376 left. Outcome entry appended, step 6 recorded done per R42. Committing task 0 next, then task 1 measures both RSID files and the seven variants before anything moves.
+UPDATED: 2026-09-21T12:10:41-04:00
+NOTE: Unit 377 task 1 measured and green. The long file carries all eight sequences and both tables; the engine reads the short one, four sequences, proved by matching the embedded copy. Four of seven variants throw at Compose today. The whole seven-variant sweep is about 69 s of decode CPU, so task 3 needs no drop. Five types 44 of 44 before.
 
 ---
 
