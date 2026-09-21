@@ -1083,9 +1083,34 @@
     instruction, both stale at 0 and 379. Nothing in this unit opens a port, enumerates a device
     or keys anything: every sample lives in an array (FACT-004), and R36 licenses writing down
     what the screen did and nothing else.
+
+    1.13.67 -> 1.13.68, UNIT 381 TASK 0. A PATCH, STEP 3 OF THE HARDENING PHASE, THE SECOND UNIT
+    SPENT ON IT - THE RECORD NAMES WHICH ROW: EVERY PLACE IN THE WINDOW'S OWN LINE, AND UNIT 337
+    ANSWERED ROW BY ROW. The separate judging session that read unit 380's report against step
+    3's criteria returned STATE_AFTER: partial, naming exactly two things - 3.1's per row offset
+    or slot and 3.3's which rows were hidden - because the sampled on_screen line carries one
+    head offset and a count, so four carriers were reported under offset 700 and three filtered
+    rows under a bare count of 3. That verdict is this unit's input and it is not re-argued.
+    Unit 380 proved one line per row costs 876 kB an hour, 17.5 times 3.4's ceiling, and this is
+    the other reading of the same criterion pair: the places go INSIDE the line that is already
+    paid for, where a bare offset costs about six bytes against an envelope of 142. ONE new
+    parameter on AppEvents.OnScreen and ONE new payload key, at - an array holding the place of
+    every item the line counts, in the order they entered the window - with no new writer, no
+    new event name, no new telemetry category and no second line, and count and the head's
+    offsetHz, slot and dialHz all unchanged so every guard written against tonight's file goes
+    on working. The list carries places and NEVER identities: the card map is keyed by callsign
+    and that key does not go near the file (HM-DEC-018 2.1). Truncation is never silent -
+    atDropped carries what was left out and count still counts them all. 3.4's 50 kB an hour is
+    a hard ceiling that is not loosened: if the measured hour will not hold every place, 3.1 is
+    reported partial and the ceiling holds. The screen does not change: no control, no label, no
+    layout, no colour, and unit 354's nine sizes are re-measured to prove it. PHASE_STATUS.md's
+    CURRENT_STEP and WORK_INSTRUCTION were set to 3 and to this instruction, both stale at 0 and
+    380. Nothing in this unit opens a port, enumerates a device or keys anything: every sample
+    lives in an array (FACT-004), and R36 licenses writing down what the screen did and nothing
+    else.
   -->
   <PropertyGroup>
-    <Version>1.13.67</Version>
+    <Version>1.13.68</Version>
   </PropertyGroup>
 
   <!--
