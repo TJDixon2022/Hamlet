@@ -431,28 +431,32 @@ public sealed class TheGreenZoneTests
             foreach (var name in new[]
             {
                 "GreenZoneBand", "GreenZoneFrequency", "GreenZoneModeLine", "GreenZoneLicenseLine",
-                "GreenZoneHeard", "GreenZoneRuleOfThumb",
+                "GreenZoneHeard",
             })
             {
                 Assert.True(Named<TextBlock>(window, name).IsEffectivelyVisible, name + " is not drawn");
             }
 
-            // **THE COUNT IS ON THE RIGHT OF THE LEFT BLOCK AND THE RULE OF THUMB UNDER THE
-            // LICENSE LINE** - rewritten under R12 in work instruction 337, where the map left
-            // this panel for the card's right end and the rule of thumb came into the left block.
+            // **THE COUNT IS ON THE RIGHT OF THE LEFT BLOCK, AND THE RULE OF THUMB IS ON THE
+            // NEIGHBORHOOD CARD'S HEADER MARK** - rewritten under R12 in work instruction 376,
+            // where R39 sent it to a hover. It stood under the license line until then.
+            // **IT ASSERTS MORE THAN IT REPLACED**: the old line said only that one rectangle was
+            // below another, and said nothing about the words; this says the mark is drawn, and
+            // that what it holds is `GreenZone.RuleOfThumb` itself - the same static the line on
+            // the card was bound to - so the sentence cannot be quietly shortened or lost.
             var left = Named<Control>(window, "GreenZoneLeft");
             var leftAt = left.TranslatePoint(new Point(0, 0), panel)!.Value;
             var heard = Named<TextBlock>(window, "GreenZoneHeard");
-            var rule = Named<TextBlock>(window, "GreenZoneRuleOfThumb");
-            var license = Named<TextBlock>(window, "GreenZoneLicenseLine");
+            var rule = Named<HintMarkControl>(window, "GreenZoneRuleOfThumbMark");
 
             Assert.True(
                 heard.TranslatePoint(new Point(0, 0), panel)!.Value.X >= leftAt.X + left.Bounds.Width,
                 "the heard count is not right of the left block");
             Assert.True(
-                rule.TranslatePoint(new Point(0, 0), panel)!.Value.Y
-                    >= license.TranslatePoint(new Point(0, 0), panel)!.Value.Y + license.Bounds.Height - 0.5,
-                "the rule of thumb is not under the license line");
+                rule.IsEffectivelyVisible && rule.Text == GreenZone.RuleOfThumb
+                    && GreenZone.RuleOfThumb.Trim().Length > 0,
+                "the rule of thumb is not on a drawn mark in its own words: the mark says ["
+                + rule.Text + "] where the sentence is [" + GreenZone.RuleOfThumb + "]");
         }
         finally
         {
@@ -520,11 +524,14 @@ public sealed class TheGreenZoneTests
             Assert.True(map.Bounds.Height > 40, "the map has no height");
             Assert.Equal(HisGrid, map.OperatorGrid);
 
-            var rule = Named<TextBlock>(window, "GreenZoneRuleOfThumb");
+            // **AND SINCE WORK INSTRUCTION 376 THE SENTENCE IS ON THE CARD'S HEADER MARK** (§R12;
+            // R39 sent it to a hover, and work instruction 376 §6's second ruling requires the
+            // hover to carry the same words). It stood in the green block until then.
+            var rule = Named<HintMarkControl>(window, "GreenZoneRuleOfThumbMark");
 
             _output.WriteLine("rule: " + rule.Text);
 
-            Assert.True(rule.IsEffectivelyVisible);
+            Assert.True(rule.IsEffectivelyVisible, "the mark holding the rule of thumb is not drawn");
 
             // **REWRITTEN UNDER R12 IN WORK INSTRUCTION 338.** The arbiter's ruling 2 shortened
             // the line to the mockup's own words, so the `Rule of thumb:` prefix is gone and this
@@ -533,6 +540,13 @@ public sealed class TheGreenZoneTests
             Assert.Equal(GreenZone.RuleOfThumb, rule.Text);
             Assert.Contains("want daylight", rule.Text ?? "", StringComparison.Ordinal);
             Assert.Contains("want dark", rule.Text ?? "", StringComparison.Ordinal);
+
+            // **AND THE WORDS ARE STILL REACHABLE FROM THE CARD** (work instruction 376 task 3):
+            // the mark is inside the neighborhood card, so the sentence did not merely survive in
+            // a static somewhere - it is on the surface it came off, one hover away.
+            Assert.Contains(
+                Views.TheTopRowTests.Card(window).GetVisualDescendants(),
+                v => ReferenceEquals(v, rule));
 
             // **NOTHING ON THE PANEL SAYS A BAND IS OPEN** (§0.0).
             foreach (var text in VisibleText(Panel(window)).Select(t => t.Text ?? ""))

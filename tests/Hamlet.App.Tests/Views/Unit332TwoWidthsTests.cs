@@ -62,7 +62,10 @@ public sealed class Unit332TwoWidthsTests
                 _output.WriteLine("WINDOW " + F(width) + " - green zone panel "
                     + F(panel.Bounds.Width) + " x " + F(panel.Bounds.Height));
 
-                foreach (var name in new[] { "GreenZoneLeft", "GreenZoneMap", "GreenZoneRight", "GreenZoneRuleOfThumb" })
+                // **THE RULE OF THUMB LEFT THIS PANEL IN WORK INSTRUCTION 376** (R39) for a mark on
+                // the neighborhood card's header, so this trace prints the regions that are here
+                // and the mark's own sentence below.
+                foreach (var name in new[] { "GreenZoneLeft", "GreenZoneMap", "GreenZoneRight" })
                 {
                     var region = Named<Control>(window, name);
                     var at = region.TranslatePoint(new Point(0, 0), panel) ?? default;
@@ -72,11 +75,18 @@ public sealed class Unit332TwoWidthsTests
                         + F(region.Bounds.Height));
                 }
 
-                foreach (var name in new[] { "GreenZoneBand", "GreenZoneModeLine", "GreenZoneLicenseLine", "GreenZoneRuleOfThumb" })
+                foreach (var name in new[] { "GreenZoneBand", "GreenZoneModeLine", "GreenZoneLicenseLine" })
                 {
                     var text = Named<TextBlock>(window, name);
 
                     _output.WriteLine("  " + name.PadRight(22) + " " + Lines(text) + " line(s): " + text.Text);
+                }
+
+                foreach (var name in new[] { "MapLegendMark", "GreenZoneRuleOfThumbMark" })
+                {
+                    var mark = Named<HintMarkControl>(window, name);
+
+                    _output.WriteLine("  " + name.PadRight(22) + " on hover: " + mark.Text);
                 }
 
                 // **THE PILLS CAME OFF IN WORK INSTRUCTION 334** (R21); what is left to count is

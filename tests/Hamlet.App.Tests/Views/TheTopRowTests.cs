@@ -157,13 +157,14 @@ public sealed class TheTopRowTests
                 var card = Card(window);
                 var block = Block(window);
                 var strip = window.GetVisualDescendants().OfType<NeighborhoodMapControl>().First();
-                var legend = window.GetVisualDescendants().OfType<MapLegendControl>().First();
+                var legendMark = Named<HintMarkControl>(window, "MapLegendMark");
+                var ruleMark = Named<HintMarkControl>(window, "GreenZoneRuleOfThumbMark");
                 var band = Named<TextBlock>(window, "GreenZoneBand");
                 var left = Named<Control>(window, "GreenZoneLeft");
                 var heard = Named<TextBlock>(window, "GreenZoneHeard");
                 var label = Named<TextBlock>(window, "GreenZoneHeardLabel");
                 var sparkline = Named<SparklineControl>(window, "GreenZoneSparkline");
-                var wrapped = new[] { "GreenZoneLicenseLine", "GreenZoneRuleOfThumb" }
+                var wrapped = new[] { "GreenZoneLicenseLine" }
                     .Select(name => Named<TextBlock>(window, name))
                     .Where(t => t.IsEffectivelyVisible && t.TextLayout.TextLines.Count > 1)
                     .Select(t => t.Name + " (" + t.TextLayout.TextLines.Count + " lines)")
@@ -172,7 +173,8 @@ public sealed class TheTopRowTests
                 _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed");
                 _output.WriteLine("  card     : " + Box(RectIn(card, window)));
                 _output.WriteLine("  strip    : " + Box(RectIn(strip, window)));
-                _output.WriteLine("  legend   : " + Box(RectIn(legend, window)));
+                _output.WriteLine("  legend   : on the header mark, [" + legendMark.Text + "]");
+                _output.WriteLine("  rule     : on the header mark, [" + ruleMark.Text + "]");
                 _output.WriteLine("  block    : " + Box(RectIn(block, window)));
                 _output.WriteLine("  left     : " + Box(RectIn(left, window)));
                 _output.WriteLine("  label    : " + Box(RectIn(label, window)) + " visible " + label.IsEffectivelyVisible);
@@ -188,9 +190,43 @@ public sealed class TheTopRowTests
 
                 Assert.True(block.GetVisualAncestors().Contains(card), "at " + Px(width) + " the green block is not inside the card");
                 Assert.True(
-                    RectIn(block, window).Top >= RectIn(legend, window).Bottom - 0.5
-                    && RectIn(block, window).Top >= RectIn(strip, window).Bottom - 0.5,
-                    "at " + Px(width) + " the green block is not under the strip and the legend");
+                    RectIn(block, window).Top >= RectIn(strip, window).Bottom - 0.5,
+                    "at " + Px(width) + " the green block is not under the strip");
+
+                // **THE LEGEND AND THE RULE OF THUMB ARE ON THE CARD'S HEADER, IN THE SAME WORDS**
+                // (work instruction 376 task 3, §R12; R39 sent them there). This name used to
+                // assert that the legend stood on the card and said nothing at all about what it
+                // said; it now asserts that both marks are on the card, that each carries an
+                // operator-facing sentence, and that those sentences are the ones the card drew -
+                // the legend's built from `ModePalette.Legend`, which is the list the map itself
+                // draws from, and the rule of thumb's the very static the line was bound to. So
+                // *hiding detail* stays on the right side of CLAUDE.md §0.5 and never becomes
+                // hiding information.
+                foreach (var (mark, words, what) in new[]
+                {
+                    (legendMark, MapLegendControl.InWords, "the map's color key"),
+                    (ruleMark, GreenZone.RuleOfThumb, "the rule of thumb"),
+                })
+                {
+                    Assert.True(
+                        mark.GetVisualAncestors().Contains(card) && mark.IsEffectivelyVisible,
+                        "at " + Px(width) + " the mark holding " + what + " is not drawn on the card");
+                    Assert.True(
+                        mark.Text == words && words.Trim().Length > 0,
+                        "at " + Px(width) + " the mark holding " + what + " says [" + mark.Text
+                        + "] where the words it moved from the card are [" + words + "]");
+                }
+
+                foreach (var word in ModePalette.Legend.Select(c => c.Label)
+                    .Concat(new[] { "listen only", "heard just now" }))
+                {
+                    Assert.Contains(word, MapLegendControl.InWords, StringComparison.Ordinal);
+                }
+
+                Assert.True(
+                    !card.GetVisualDescendants().OfType<MapLegendControl>().Any(),
+                    "at " + Px(width) + " the legend is drawn on the card as well as on its header,"
+                    + " which is the height this unit came for going back onto the card");
 
                 // **THE BAND IS THE LARGEST TEXT IN THE BLOCK AND IN THE CARD.**
                 Assert.True(band.IsEffectivelyVisible, "at " + Px(width) + " the band is not drawn");
@@ -601,7 +637,11 @@ public sealed class TheTopRowTests
                 var pills = window.GetVisualDescendants().OfType<ItemsControl>()
                     .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
                 var below = window.Bounds.Height - RectIn(pills, window).Bottom;
-                var rule = Named<TextBlock>(window, "GreenZoneRuleOfThumb");
+                // **THE RULE OF THUMB IS READ OFF THE HEADER'S MARK SINCE WORK INSTRUCTION 376**
+                // (§R12; R39 sent it there). The sentence asserted below is the same sentence,
+                // word for word, and it is now also asserted to be DRAWN where the operator can
+                // reach it rather than merely to exist.
+                var rule = Named<HintMarkControl>(window, "GreenZoneRuleOfThumbMark");
                 var heard = Named<TextBlock>(window, "GreenZoneHeard");
                 var sparkline = Named<SparklineControl>(window, "GreenZoneSparkline");
 
@@ -644,6 +684,10 @@ public sealed class TheTopRowTests
                     "at " + Px(width) + " the rig panel is " + Px(m.Rig.Height) + " px and the card " + Px(m.Card.Height));
 
                 Assert.Equal("20 m and up want daylight along the path; 40 m and down want dark.", rule.Text);
+
+                Assert.True(
+                    rule.IsEffectivelyVisible && rule.GetVisualAncestors().Contains(Card(window)),
+                    "at " + Px(width) + " the mark holding the rule of thumb is not drawn on the card");
 
                 Assert.True(
                     heard.IsEffectivelyVisible && (heard.Text ?? "").Length > 0,
@@ -1664,13 +1708,24 @@ public sealed class TheTopRowTests
 
             _output.WriteLine("    left band line " + Box(RectIn(bandLine, window)) + ", " + (shown.Count == 0 ? 0 : wraps + 1) + " rows");
 
-            foreach (var name in new[] { "GreenZoneBand", "GreenZoneFrequency", "GreenZoneModeLine", "GreenZoneLicenseLine", "GreenZoneRuleOfThumb" })
+            // **THE RULE OF THUMB IS NOT IN THIS LIST SINCE WORK INSTRUCTION 376** - it is on the
+            // card's header mark, printed under it, and this trace prints what stands in the block.
+            foreach (var name in new[] { "GreenZoneBand", "GreenZoneFrequency", "GreenZoneModeLine", "GreenZoneLicenseLine" })
             {
                 var t = Named<TextBlock>(window, name);
 
                 _output.WriteLine(
                     "      " + name.PadRight(24) + Box(RectIn(t, window)) + " visible " + t.IsEffectivelyVisible + "; "
                     + Lines(t) + " [" + t.Text + "]");
+            }
+
+            foreach (var name in new[] { "MapLegendMark", "GreenZoneRuleOfThumbMark" })
+            {
+                var mark = Named<HintMarkControl>(window, name);
+
+                _output.WriteLine(
+                    "      " + name.PadRight(24) + Box(RectIn(mark, window)) + " visible "
+                    + mark.IsEffectivelyVisible + "; [" + mark.Text + "]");
             }
 
             foreach (var part in left.Children.Skip(3).Where(c => c.IsVisible))

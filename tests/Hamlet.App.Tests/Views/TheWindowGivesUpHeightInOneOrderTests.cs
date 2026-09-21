@@ -77,16 +77,23 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
     private static readonly double[] Sweep = { 920, 880, 840, 800, 780, 740, 700, 660, 620 };
 
     /// <summary>
-    /// The highest height at which the panel row has already stopped shrinking at width 1100 -
-    /// where unit 373's 185 px canvas floor begins to bind.
+    /// The highest window height at which the floor is allowed to begin binding at width 1100 -
+    /// unit 374's measured 780, kept as a ceiling rather than as the answer.
     /// </summary>
     /// <remarks>
-    /// **MEASURED, NOT CHOSEN** (<c>Unit374TraceTests.TheHeightLadderAtTwoWidths</c>): the panel row
-    /// is 91 px at 800 and 71 px at 780, and then 71 px at 740, 700, 660 and 620. It is a width-1100
-    /// number - at width 900 the same ladder binds one step lower, at 740 - and every name here
-    /// sweeps at width 1100.
+    /// <para>**MEASURED, NOT CHOSEN** (<c>Unit374TraceTests.TheHeightLadderAtTwoWidths</c>): the
+    /// panel row was 91 px at 800 and 71 px at 780, and then 71 px at 740, 700, 660 and 620, so
+    /// unit 373's 185 px canvas floor began to bind at 780.</para>
+    /// <para>**AND SINCE WORK INSTRUCTION 376 IT IS A CEILING, NOT A CONSTANT** (§R12; the name
+    /// went red on this number and on nothing else). Unit 376 took 29 px out of the top row, so
+    /// the panels go on shrinking one step further down: the panel row is 92 px at 780 - where it
+    /// was 71 - and 71 px at 740 and below, and **the floor now begins to bind at 740**. The rule
+    /// this name exists for never moved. So the height the flat band starts at is **read off the
+    /// sweep** instead of written here, and this number stays as the assertion that it can only
+    /// ever move DOWN: a change that puts height back into the top row would make the floor bind
+    /// higher again, and that is caught here rather than passing quietly.</para>
     /// </remarks>
-    private const double TheFloorBindsAt = 780;
+    private const double TheFloorBindsNoHigherThan = 780;
 
     /// <summary>Unit 356's cap on <c>TopRow</c>, in <c>MainWindow.axaml</c> at the row itself.</summary>
     private const double TopRowCap = 300;
@@ -138,7 +145,8 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
     /// <remarks>
     /// **THE SECOND HALF IS WORK INSTRUCTION 374 §6's ADDED ASSERTION**, and it is the one that
     /// ties this criterion to 1.3 instead of setting them against each other. Unit 373's floor is
-    /// why nothing shrinks from <see cref="TheFloorBindsAt"/> down; *that* is the rule the floor
+    /// why nothing shrinks from the floor down - <see cref="TheFloorBindsNoHigherThan"/> is how far
+    /// up the sweep that is allowed to start; *that* is the rule the floor
     /// established, so it is asserted here rather than left to read as the absence of a shrink.
     /// </remarks>
     [AvaloniaFact]
@@ -197,8 +205,23 @@ public sealed class TheWindowGivesUpHeightInOneOrderTests
             // 374 §6, clause 4). The canvas scrolls in their place, and `TopRow` still gives up
             // nothing - so the band unit 373 made flat is asserted as flat rather than read as a
             // failure to shrink.
-            var flat = read.Where(r => r.Asked <= TheFloorBindsAt + 0.5).ToList();
+            // **THE FLAT BAND IS FOUND IN THE SWEEP, NOT DECLARED** (work instruction 376 task 3,
+            // §R12). The lowest height in the sweep is on the floor by construction - the window
+            // will not go below `MinHeight` - so the flat band is every height whose panel row
+            // matches it, and the highest of those is where the floor begins to bind.
+            var lowest = read[^1];
+            var flat = read.Where(r => Math.Abs(r.PanelRow - lowest.PanelRow) <= 0.5).ToList();
             var atTheFloor = flat[0];
+
+            // **AND IT MAY ONLY EVER BIND LOWER.** Height taken out of the top row is height the
+            // panels keep, so the point where they stop shrinking moves DOWN the sweep; if it
+            // moves up, the top row has taken height back.
+            Assert.True(
+                atTheFloor.Asked <= TheFloorBindsNoHigherThan + 0.5,
+                Which(plain) + ": the panel row stops shrinking at " + Px(atTheFloor.Asked)
+                + " px of window, where unit 374 measured it stopping at "
+                + Px(TheFloorBindsNoHigherThan) + ". The floor binds higher than it did, which is"
+                + " the top row taking height back from the working panels.");
 
             foreach (var row in flat)
             {
