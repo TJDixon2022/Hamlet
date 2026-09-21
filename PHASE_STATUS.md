@@ -1,10 +1,10 @@
 PHASE: Hamlet holds what it has
 PHASE_SET: 2026-09-20
 DESCRIPTION: A hardening phase, run unattended while Tim is away. Everything banked in the PSK31 and Olivia threads that is screen, record or test and needs neither the radio nor the owner. Judged by tests that ran and, at the end, by Tim at his window.
-CURRENT_STEP: 1
-WORK_INSTRUCTION: 372 - Hamlet opens whole, and the send area is never the thing that leaves
-HEARTBEAT: 2026-09-20 20:20:44
-STEP: 0 | done | Settings survive an upgrade, and a send that cannot go names the true fault - no device chosen is its own refusal with a Settings link; a device that will not open carries its name, rate and OS error. Unit 369: 0.2 to 0.5 met and measured. 0.1 is met on unit 369's completed negative, ruled in work instruction 372 section 6, author's and overrulable: 119 commits searched, an empty diff over every settings path, the mechanism named and repaired.
+CURRENT_STEP: 0
+WORK_INSTRUCTION: 373 - the panels keep a floor and scroll inside themselves, and the last red comes off 1.4
+HEARTBEAT: 2026-09-20 20:34:41
+STEP: 0 | partial | Settings survive an upgrade, and a send that cannot go names the true fault - no device chosen is its own refusal with a Settings link; a device that will not open carries its name, rate and OS error. Unit 369: 0.2 to 0.5 met and measured. 0.1 is met on unit 369's completed negative, ruled in work instruction 372 section 6, author's and overrulable: 119 commits searched, an empty diff over every settings path, the mechanism named and repaired.
 STEP: 1 | partial | Hamlet opens whole - at the size it opens at and every size measured by unit 354, CQ, the mode tabs, the send area and Stop are on the window; the panels give up height before the send area ever does. Unit 372: 1.1 met and measured at all nine sizes; 1.2 met, asserted for the first time and no source file needed changing; 1.3 PARTIAL - all three working panels draw 0 px at 900 x 620 and below, with their content unreachable, and the repair is a redesign of how root row 1 allocates height rather than a layout number, so it was measured and not made; 1.4 NOT MET on an inherited red, TheTopRowTests 14 of 15 at TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow, which is unchanged since unit 371 and is not unit 372's.
 STEP: 2 | not started | The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list.
 STEP: 3 | not started | The record says what was on screen - for every decoded row and every card, whether it was drawn, filtered, scrolled away or folded, so an empty-looking screen can be diagnosed from the file without a screenshot.

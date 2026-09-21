@@ -1,8 +1,14 @@
-﻿   Bash  {"command":"git show a00857ec:output.md | sed -n \u0027/^## 4\\./,$p\u0027","description":"Extract section 4 of last report"}
-   Bash  {"command":"git show a00857ec:output.md \u003e /tmp/prev-output.md \u0026\u0026 grep -n \"^## 4\\.\" /tmp/prev-output.md \u0026\u0026 wc -l /tmp/prev-output.md","description":"Save previous report and locate section 4"}
-   Bash  {"command":"git show a00857ec:output.md \u003e /tmp/prev-output.md","description":"Save previous report to temp file"}
-   Bash  {"command":"git show a00857ec:output.md \u003e .run-unit/prev-output-368.md","description":"Save previous report into run-unit dir"}
-   Bash  {"command":"git show a00857ec:output.md | tail -n +610 \u003e\u003e output.md","description":"Append previous section 4 body verbatim"}
-   Bash  {"command":"git show a00857ec:output.md | tail -n +610 | tee -a output.md \u003e /dev/null \u0026\u0026 wc -l output.md","description":"Append previous section 4 using tee"}
-   Bash  {"command":"git show a00857ec:output.md | tail -n +610 | tee -a output.md","description":"Append previous section 4 using tee"}
-   Bash  {"command":"git show a00857ec:output.md | tail -n +610 | dd of=output.md oflag=append conv=notrunc status=none","description":"Append previous section 4 using dd"}
+﻿   Bash  {"command":"git show HEAD:output.md | sed -n \u0027/^## 4\\./,$p\u0027","description":"Extract unit 371 section 4 items"}
+   Bash  {"command":"git show HEAD:output.md \u003e /tmp/u371.md \u0026\u0026 grep -n \"^## 4\" /tmp/u371.md","description":"Save unit 371 report and find section 4"}
+   Bash  {"command":"git show HEAD:output.md \u003e /tmp/u371.md","description":"Save unit 371 report to temp file"}
+   Bash  {"command":"git show HEAD:output.md \u003e .run-unit/u371-report.md","description":"Save unit 371 report into scratch dir"}
+   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027ENTRY\u0027\n\n## UNIT 372 - STEP 1\n\nSTEP: 1\nADVANCED: step 1\nAPPROACH: shrink the window below the minimums and assert by measuring that the working panels give up height  ...(truncated)
+   Bash  {"command":"for i in 1 2 3 4 5 6; do echo \"--- run $i ---\"; timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~TheStopIsAlwaysOnScreenTests\" --logger \"console;verbosity=normal\" 2\u003e\ ...(truncated)
+   Bash  {"command":"for i in 1 2 3 4 5 6; do timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns\" 2\u003e\u00 ...(truncated)
+   Bash  {"command":"git check-ignore -v .run-unit/unit372-flake.sh || echo \"NOT IGNORED\"","description":"Check if scratch dir is ignored"}
+   Bash  {"command":"git worktree add ../HamLet-u372-watch d14badb1 2\u003e\u00261 | tail -5","description":"Create worktree at task 0 commit"}
+   Bash  {"command":"git worktree add ../HamLet-u372-watch d14badb1","timeout":180000,"description":"Create worktree at task 0 commit"}
+   Bash  {"command":"git worktree add .u372-watch d14badb1","timeout":180000,"description":"Create worktree inside repo at task 0 commit"}
+   Bash  {"command":"grep -n \"Grid.Row=\\\"0\\\"\\|Grid.Row=\\\"1\\\"\\|Grid.Row=\\\"2\\\"\\|Grid.Row=\\\"3\\\"\\|Grid.Row=\\\"4\\\"\" src/Hamlet.App/Views/MainWindow.axaml | awk -F: \u0027$1 \u003e 2890 \u0026\u0026 $1 \u003c 4400\u0027","descript ...(truncated)
+   Bash  {"command":"cmd //c tools\\\\arbiter\\\\validate-output.bat 2\u003e\u00261 | tail -30","timeout":300000,"description":"Run the output validator"}
+   Bash  {"command":"cmd /c \"tools\\arbiter\\validate-output.bat C:\\Source\\HamLet\\output.md\"","timeout":300000,"description":"Validate the report shape"}

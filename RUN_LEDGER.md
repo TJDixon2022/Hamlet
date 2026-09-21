@@ -181,3 +181,4 @@ the owner reads instead of watching.
 | phase | 2026-09-20T09:44 | 2026-09-20T09:44 | halted | 2.0802 | stop 4: the arbiter declared a decision the owner's |
 | 1 | 2026-09-20T16:38 | 2026-09-20T17:23 | complete | 19.234482500000006 | ran unattended, 207 turns, 6 denied call(s) worked around, report valid |
 | phase | 2026-09-20T17:30 | 2026-09-20T17:30 | halted | 19.2345 | refused: the decision block named no step and no criterion |
+| 1 | 2026-09-20T19:35 | 2026-09-20T20:25 | complete | 16.45659 | ran unattended, 156 turns, 14 denied call(s) worked around, report valid |
