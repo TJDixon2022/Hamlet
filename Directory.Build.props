@@ -1225,8 +1225,15 @@
     10.3's last 36 px, the sun map at the band's left edge, the named drop candidate. No file under
     src changes at this task.
   -->
+  <!--
+    1.13.76 -> 1.13.77, WORK INSTRUCTION 390 TASK 0. A PATCH, STEP 7 OF THE HARDENING PHASE, THE
+    PHASE CLOSES: 7.5 (the mode chips become buttons and read ChosenDigitalMode, as does the send
+    line), the favorites row becomes chips, 9.3's RST editable with heard and yours told apart
+    (Tim's ruling A, 2026-09-22), and 9.2, 9.4, 9.5, 7.2, 4.3, 0.1 and 10.3 taken to a tick or an
+    honest untick. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.76</Version>
+    <Version>1.13.77</Version>
   </PropertyGroup>
 
   <!--

@@ -633,3 +633,15 @@ STATE_AFTER: partial
 STATE_WHY: 9.1 is met and backed by cited test lines, but 9.2, 9.3, 9.4 and 9.5 are still unmet, and not all of them wait on a stop reason, because the 17.48.33 parse fault is in the engine and is not a stop.
 ADVANCED: yes
 ATTEMPT: 9.1 | unit 2 launched 2026-09-22T18:15:23.912Z | yes | executed | re-measure step 9's five criteria at HEAD clause by clause from the KC3FL replays, close only off-send-path shortfalls such as 9.1's card_dismissed token, and stand the sun map at the band's left edge spanning the pills row so it reaches the band's full 214
+
+## UNIT 390 - STEP 7
+
+STEP: 7
+APPROACH: make the mode strip a row of pressable buttons that read the chosen mode, and the send line likewise, turn the favorites drop-down into chips, make the RST fields editable with heard and yours told apart, and take every other open criterion to a tick or an honest untick with its number
+MOVE: continue
+WHY: PHASE_PLAN.md criterion 7.5 has been open since 2026-09-21 and Tim saw it tonight; 9.3 is ruled A; the owner asked for the phase wrapped up so the next can start fresh
+DECIDED: the favorites chips' look is the author's, overrulable; the words heard and yours are the author's
+LICENCE: PHASE_PLAN.md R39 (7.5), R44 (9.3), R46 (10.6), section 6; Tim 2026-09-22 ruling A; R12, R13, R14, R19; HM-DEC-165
+COST: one session, six tasks (0 to 5), committed per task; drop from the back.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.76 to 1.13.77. PHASE_STATUS.md CURRENT_STEP 0 to 7 and WORK_INSTRUCTION 389 to 390. PHASE_PLAN.md ticks nothing at this task. MISMATCH: 7.5 already carries [x] in PHASE_PLAN.md although work instruction 390 says it was never authored; the tick is not moved here and task 1 measures it. Entry round, both command lines as docs/carry-forward-tests.txt prints them at lines 7 (62 terms) and 9 (25 terms), unedited, one build each: APP attempt 1 261 of 266 with 5 lost to the headless dispatcher loop at 1 ms, re-run 265 of 266 with 1 lost the same way on a different name, so every one of the 266 names green in at least one attempt and none red on an assertion; ENGINE 150 of 150 first time in 4 m 55 s.
