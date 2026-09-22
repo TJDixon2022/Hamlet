@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 2 of 6
+STATE: COMPLETED
+TASK: TASK 5 of 6
 WORK_INSTRUCTION: 386 - the list proves itself five times over a tree that has stopped moving, and the false Olivia row gets its correction
-BALL: code
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T08:30:11-04:00
-NOTE: Task 2 - 2.6: measuring the two COST lines and the commits of 2026-09-14 before a word is appended to the archived Olivia record
+UPDATED: 2026-09-22T09:33:48-04:00
+NOTE: Unit 386 complete - 2.4 met at 3 of 5 strict and 5 of 5 counted over a tree frozen at a91d6ed6 with an empty diff, 2.6 met with the false row unedited
 
 ---
 
