@@ -88,7 +88,7 @@ public sealed class TheTurnMovesOnEveryHandBackTests
 
         _output.WriteLine($"his second hand-back: [{second.TurnWord}] guess {second.TurnIsGuess}, offered {second.Offered}");
 
-        Assert.Equal("Your turn?",second.TurnWord);
+        Assert.Equal("Your turn?", second.TurnWord);
         Assert.True(second.TurnIsGuess);
     }
 
@@ -160,7 +160,7 @@ public sealed class TheTurnMovesOnEveryHandBackTests
         _output.WriteLine("the card reads: " + after.TurnWord);
         _output.WriteLine("the sentence  : " + after.Sentence);
 
-        Assert.Equal("Your turn?",after.TurnWord);
+        Assert.Equal("Your turn?", after.TurnWord);
         Assert.Contains("guess", after.Sentence, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -192,7 +192,7 @@ public sealed class TheTurnMovesOnEveryHandBackTests
 
         _output.WriteLine($"olivia: first [{first.TurnWord}] then [{second.TurnWord}] guess {second.TurnIsGuess}");
 
-        Assert.Equal("Your turn?",second.TurnWord);
+        Assert.Equal("Your turn?", second.TurnWord);
         Assert.True(second.TurnIsGuess);
     }
 
