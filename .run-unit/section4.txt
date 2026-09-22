@@ -1,88 +1,108 @@
 ﻿
-**Nothing is blocking a criterion in B.** All five are met and the step is done.
+**1. 4.3 is met on the measurement, and partial under the strictest reading. A finding
+with a number, not a ruling request.** 183 lines scanned with nothing excluded; **0**
+tier-1 phrases in the sheet's own voice; **2** inside quotes, both declared, both proved
+character for character to be sentences Hamlet itself produces; **9** tier-2 mentions
+counted. Under the strictest reading of *no sentence tells the operator to touch the
+radio*, a declared exception is still a sentence on the page that does - the page quotes
+it and a man reading the page reads it. **The remedy would be a change to a sentence
+Hamlet says.** One of the two is what Hamlet says when its own unkey did not get out, and
+the only correct advice at that moment is the advice it gives; changing either is a change
+to what the product tells the operator about a send and about the radio's safety, and that
+is the owner's. **This is the honest limit of what a unit can reach**, and nothing is asked
+for here.
 
-**1. `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` is red, and
-it is inherited. A finding, not a ruling request.** It reports
-`TheStopIsAlwaysOnScreenTests.cs:102 writes OperatingMode, which the CW / Digital / Voice
-tab strip owns - press it instead`. That line was written by **unit 375**, in its own R12
-repair of the Stop name, and this unit changed neither file. It is not on the carry-forward
-list, so task 0 never saw it and it has been red through unit 376 and unit 377 unnoticed.
-It is a one-line repair - press the strip instead of writing the property - and it belongs
-to whichever unit next touches that file. **Reported, not repaired**, per the instruction's
-*report mismatches; repair nothing but this unit's*.
+**2. No quoted tier-1 hit failed its proof, so the item that would have been first does
+not exist.** Both declared sentences are kind (a) - produced by the shipped view model,
+character for character. Nothing on the sheet says something the screen does not.
 
-**2. Five of the seven canned lines are refused by the 30-second fallback at a variant with
-no timing row. A finding, and R43 already ruled it.** Named with their seconds:
-*Send my report* at Olivia 4/250 (50.19 s) and at 8/500 (33.81 s), *Confirm and 73* at
-4/250 (31.76 s), *Say again?* at 4/250 (33.81 s), *73 and out* at 4/250 (32.78 s) - each
-against a 30.00 s cap. Every refusal is at 4/250 or 8/500, the two of the four fallback
-variants where the mode is slowest; at every variant that has a timing row all seven fit
-with margin. R43 deferred the rows and called the fallback the safe direction, and this
-unit wrote no timing row. **What Tim gets out of it:** on a slow Olivia variant his report
-will be refused before anything is keyed, in the sentence that already says so, and the
-four short lines will go.
+**3. `_psk31Canned` has exactly one consumer and it is the token expression** - four
+mentions, one read, at `MainWindowViewModel.cs:16727`. Ruling 2 item 4's stop was not
+reached, so task 3 ran. What it did: it marks the press and re-routes nothing, and the
+three macro rows still send through `AnswerPsk31Command` and the card's own
+`CardActionCommand`. A finding, not a ruling request.
 
-**3. The canned file is read once per session. The author's choice, stated, and
-overrulable in one line.** A menu is built on every right-click and a disk read on the
-gesture is a cost the gesture should not carry, so an edit to `canned.json` is picked up
-the next time Hamlet starts. That is what *without a session* asks for and no more. If Tim
-wants an edit to take effect while Hamlet is running, that is a small change and a later
-unit's.
+**4. A third name has joined the environmental family, and this unit's own load may be why
+it showed.** `TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend` went red on **both**
+attempts of the exit named-type run with **two different failures** - unit 380's file-lock
+`IOException` on the temp `jsonl`, then a wall-clock loss where the record had not been
+written when the wait gave up - and is **green on its own in 273 ms**. It is not on the
+carry-forward list and the carry-forward invocation was green. **It waits on wall time
+under parallel load, which is unit 381's item 1's shape**, and the invocation it lost in
+grew from 104 names to 112 tonight because this unit added them. **Recorded, not chased,
+and not quarantined** - a finding for whoever picks up 2.3 or 2.4.
 
-**4. `Unit378Trace` now prints the after, not the before.** It is a trace: it prints and
-asserts nothing about the product, so it stayed green through tasks 2 and 3 and now reports
-seven entries per row and a hover of facts. **The before is preserved in this report, in
-`PHASE_OUTCOME.md` and in task 1's own commit message**, which is where the next unit should
-read it. It is deliberately not on the carry-forward list (R14).
+**5. The two inherited reds, reported and repaired neither**, verbatim and unmoved from
+task 0 to task 4: `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns`,
+`Assert.Empty` failure - *TheStopIsAlwaysOnScreenTests.cs:102 writes OperatingMode, which
+the CW / Digital / Voice tab strip owns - press it instead*; and
+`TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn`, `Assert.Equal` failure. Neither is
+on the carry-forward list and neither is this unit's.
 
-**No way was found for a canned line to reach the air unframed, unannounced or uncapped**,
-and that is stated here because the instruction asks for it as the first item if one had
-been found. There is no second composer, no second `Arm`, no second `PttOn` and no path
-that skips the cap; the file, the reader, the menu and the send landed in one commit so no
-commit in this unit's history leaves Hamlet able to do a thing it may not do.
+**6. One measurement refined the instruction and the measurement won.** Section 5 names
+three sites for *stop it at the radio* and treats them alike. Measured: **`:19154` is the
+SLOTTED path** - `WentLine`, FT8 and FT4 - and so is not reachable in this unit's two
+modes at all; `:18913` is the unslotted cancelled-run line; `:19587` is the stop press's
+own. **The sheet quotes `:19587`, which is the one a fixture produced whole.** `:18913`
+says the same thing in different words - *Nothing Hamlet sent to stop the radio got out -
+if it is still transmitting, stop it at the radio* - and **is not on the sheet**, because
+no fixture here reached a cancelled run whose abort got nowhere. It is not a gap in any
+criterion (4.2's backward direction is about refusals, and it is 12 of 12), but it is a
+second operator-facing sentence about the same moment, and a later unit could quote it.
+**A finding.**
 
----
+**7. The sheet moved further over its target and the number is reported.** 183 lines and
+11,585 bytes against 120 and 10,240, from unit 382's 176 and 10,918. **What bought it is
+the stop sentence and the four lines that explain it**, which ruling 1 item 5 put there
+because a page read at the radio that leaves out what Hamlet says when its own unkey did
+not get out would be hiding the one sentence safety turns on. Nothing was dropped to pay
+for it.
 
-**The carried queue, verbatim per HM-DEC-139. Nineteen, and this unit answers none of
-them.** Unit 377's items 1, 2 and 3 came off it: R43 deferred the timing rows, section 6
-ruling 1 answered the commit order, and the reader count was a finding with nothing left in
-it.
+**8. Two decisions about shape that the owner should see.** Two new carry-forward names
+were added that the instruction did not ask for (section 1, decision 1), and two commits
+were merged that section 11 would have split (section 1, decisions 2 and 3), in both cases
+to avoid leaving a commit tip with a carry-forward name red. **Findings, and both are
+reversible in one line.**
 
-1. **Unit 377's item 4** - `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` is red,
-   inherited, measured against the old embedded file and red there too, and not on the
-   carry-forward list. A finding. This unit did not repair it and did not chase it.
-2. **Unit 376's item 3.**
-3. **Unit 376's item 4.**
-4. **Unit 376's item 5.**
-5. **Unit 375's item 3** - Avalonia's headless `InvalidProgramException: You have caused
-   dispatcher loop`, which kills an app invocation at about 1 ms before any assertion and
-   moves between names. **It showed twice in this unit**, on
-   `ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel` at task 0
-   and on `TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselves
-   RatherThanCollapsing` at the first exit run - two names it had not landed on before -
-   and both times the single re-run was clean. Recorded, not chased.
-6. **Unit 375's item 4** -
-   `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`. It did not
-   show in this unit's four app invocations.
-7. **Unit 374's item 3** - `tools\run-carry-forward.sh`. The two command lines were run
-   from `docs\carry-forward-tests.txt` itself, as the instruction directs.
-8. **Unit 373's item 2** - `ApplyBestBet`'s stale `BestBetLabel`.
-9. **Unit 372's item 4.**
-10. **Unit 372's item 7** - `PHASE_PLAN.md`'s criterion checkboxes. Not ticked, not raised.
-11. **Unit 371's first.**
-12. **Unit 371's second.**
-13. **Unit 371's third.**
-14. **Unit 371's fourth.**
-15. **Unit 371's fifth.**
-16. **Unit 369's first.**
-17. **Unit 369's second.**
-18. **Unit 369's third** - `LearnedAlcReference.Ago()`.
-19. **Unit 369's fourth.**
+**9. The `RULES_AT` id-scheme split is reported and not repaired**, as it has been by five
+units now. `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)` because `tools/status.sh`
+writes that field as a literal, while `CLAUDE.md` Â§1 holds `CPS-DEC-0165`. **`tools\` is
+not this unit's to edit.**
 
-**And the `RULES_AT` id-scheme split, carried and reported again, not repaired:**
-`PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-165 (2026-09-19)` while `CLAUDE.md` section 1
-holds `CPS-DEC-0165`. It is unit 377's item 5, carried in `PHASE_PLAN.md` section 7 and
-reported unrepaired by units 376 and 377. `tools/status.sh` writes the field as a literal,
-so repairing it means editing that script, which is not this unit's.
+**10. `validate-output.bat` refused again - a sixth unit running - and the six rules were
+hand-checked instead.** The exact command, in the shape section 2 prescribes:
 
-**Step 8's entry reads *step 7 done*, and step 7 is done.** It is open.
+```
+./tools/arbiter/validate-output.bat output.md
+```
+
+The exact refusal: `This command requires approval`. **It is the permission mode and not
+the syntax**, and a non-interactive session cannot answer the prompt. **What follows is a
+HAND-CHECK against the script's own source, not a run of it**, and nothing below was
+produced by the validator:
+
+| Rule, from the script's own header | Hand-check |
+|---|---|
+| 1 - a `UNIT:` line above section 1, parseable | **ok** - line 29, within the 60 lines it reads |
+| 2 - the four top-level sections, in order, exact names | **ok** - `## 1. What Claude did` (48), `## 2. What the owner should expect` (115), `## 3. What you should see` (141), `## 4. What's blocking us` (315) |
+| 3 - no fifth top-level section | **ok** - there are exactly four `## ` lines; every deeper heading is `### `, which its pattern `^## ` does not match |
+| 4 - section 4 present even when empty | **ok** - present and not empty, with a straight apostrophe as its own matcher expects |
+| 5 - section 3 non-empty | **ok** - lines 141 to 314 |
+| 6 - the ordering block above the `UNIT:` line, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` line 1, `A.` line 3, `B.` line 10, `C.` line 20, and C says *raises 10 items*, which its `raises \d+ item` pattern matches |
+
+### The carried queue, verbatim per HM-DEC-139 - twenty-nine, and this unit answers none
+
+Unit 382's item 5; unit 381's item 1; unit 380's items 1 and 4; unit 379's items 1, 3 and
+7; unit 378's items 1, 3 and 4; unit 377's item 4; unit 376's items 3, 4 and 5; unit 375's
+items 3 and 4; unit 374's item 3; unit 373's item 2; unit 372's items 4 and 7; unit 371's
+five; unit 369's four.
+
+**Which of unit 382's five came off.** Items 1, 2 and 3 came off, answered in instruction
+383 section 3: the `mode` refusal token at `:16400` cannot fire under PSK31 or Olivia and
+the token stays exactly as it is; the four `DigitalCaptureRefusal` values belong to the
+thirty-second FT8 press; only `DigitalSendCqButton` at `MainWindow.axaml:3558` sends.
+**Item 4 - that a sentence Hamlet says would hit R11's word list and the scan excluded
+quotes - was this unit's whole subject and is answered tonight**: the scan now covers every
+line, the hit is found, and it is declared and proved rather than excluded. **Item 5 stays
+on** - five of the twenty-six quotes got kind (b) rather than kind (a), which is still five
+of twenty-seven, and nothing tonight was licensed to reach those states.

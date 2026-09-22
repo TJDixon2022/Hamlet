@@ -1,0 +1,7 @@
+PROTOCOL: 2
+PROJECT: fate-fixture
+STATE: COMPLETED
+TASK: 8 of 8
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-09-12 13:48

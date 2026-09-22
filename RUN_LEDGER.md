@@ -192,3 +192,10 @@ the owner reads instead of watching.
 | 1 | 2026-09-21T11:51 | 2026-09-21T12:57 | complete | 24.232530499999992 | ran unattended, 198 turns, 17 denied call(s) worked around, report valid |
 | phase | 2026-09-21T12:59 | 2026-09-21T12:59 | halted | 0 | stop 3: a ruling is wanted on one of the three - judged, not counted |
 | 1 | 2026-09-21T13:51 | 2026-09-21T14:53 | complete | 34.28825450000001 | ran unattended, 225 turns, 11 denied call(s) worked around, report valid |
+| 2 | 2026-09-21T15:06 | 2026-09-21T15:55 | complete | 23.973417499999996 | ran unattended, 191 turns, 14 denied call(s) worked around, report valid |
+| 3 | 2026-09-21T16:06 | 2026-09-21T17:05 | complete | 38.310687500000014 | ran unattended, 263 turns, 9 denied call(s) worked around, report valid |
+| 4 | 2026-09-21T17:14 | 2026-09-21T18:16 | complete | 22.815561999999986 | ran unattended, 186 turns, 7 denied call(s) worked around, report valid |
+| 5 | 2026-09-21T18:28 | 2026-09-21T19:16 | complete | 24.00254899999999 | ran unattended, 217 turns, 3 denied call(s) worked around, report valid |
+| 6 | 2026-09-21T19:28 | 2026-09-21T20:21 | complete | 23.4784715 | ran unattended, 188 turns, 9 denied call(s) worked around, report valid |
+| 7 | 2026-09-21T20:33 | 2026-09-21T20:56 | failed | 4.7155615 | run-unit exit 4: 4 denied call(s), is_error=True, terminal=api_error |
+| phase | 2026-09-21T20:57 | 2026-09-21T20:57 | halted | 166.8690 | stop 6: denied 4 and could not complete - is_error True, terminal api_error |

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: TASK 0 of 5
-WORK_INSTRUCTION: 383 - 4.3 measured over the whole sheet, and the canned macro rows recorded as canned
+TASK: TASK 1 of 5
+WORK_INSTRUCTION: 384 - the carry-forward list, five rounds in a row, on a tree that does not move
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T20:46:18-04:00
-NOTE: Round 0 engine invocation GREEN 150 of 150 in 4 m 54 s on the first attempt - unit 383's exact exit number. Round 0 closes: app lost twice to the dispatcher loop (1 then 3 occurrences, all 1 ms, no assertion failure), engine green. Now writing task 0's record edits - outcome entry, version bump, PHASE_STATUS step and instruction, the judging session's verdict transcribed.
+UPDATED: 2026-09-21T20:48:57-04:00
+NOTE: Task 0 committed (9832f972): the record set to step 2, version 1.13.71, the judging session's step 4 verdict transcribed and the step cut down at partial, 19 plan criteria ticked where a separate session certified them. Task 1 now: writing Unit384Trace, which reads the two command lines out of docs/carry-forward-tests.txt and counts what each term actually matches - no file under src or tests changes for it beyond the trace type itself.
 
 ---
 

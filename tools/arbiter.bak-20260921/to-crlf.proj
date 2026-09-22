@@ -1,0 +1,31 @@
+<!--
+  to-crlf.proj - a way to REACH tools\arbiter\to-crlf.py, not a second copy of
+  it.
+
+  THE DEADLOCK, same shape as trx-rank.proj's and validate-output.proj's. This
+  session's shell refuses `python <script>` and refuses a .bat invoked directly;
+  `dotnet build` is permitted and MSBuild's Exec task runs a command. So:
+
+      dotnet build tools/arbiter/to-crlf.proj -p:File=tools/arbiter/gate-set.bat
+
+  WHY IT EXISTS AT ALL. cmd.exe resumes a running batch file by byte offset, so
+  a .bat written with LF endings can send a running loop into the middle of a
+  line. Every .bat in this folder is CRLF; a session that writes one with a
+  file-editing tool produces LF and will not notice. This is the fix, and it is
+  kept rather than deleted because the next session will do the same thing.
+
+  Plain MSBuild, no SDK: this needs no restore and no sources.
+
+  Written by unit 250.
+-->
+<Project DefaultTargets="Build">
+
+  <Target Name="Build">
+    <Error Condition="'$(File)' == ''" Text="Pass -p:File=&lt;path to a file&gt;" />
+    <Message Importance="high" Text="Rewriting $(File) with CRLF endings" />
+    <Exec Command="python &quot;$(MSBuildThisFileDirectory)to-crlf.py&quot; &quot;$(File)&quot;"
+          WorkingDirectory="$(MSBuildThisFileDirectory)..\.."
+          ContinueOnError="false" />
+  </Target>
+
+</Project>

@@ -10,6 +10,7 @@ STEP: 5 | Tim looks - at his window and, when he has time, at the radio, and say
 STEP: 6 | The top gives back height - the pills, the neighborhood strip, the green zone and the rig display tightened to one band of about 180 px, the sun map keeping its size; the working panels get every pixel given up.
 STEP: 7 | A PSK31 row right-clicks into a canned list - seven framed lines from an editable data file, one click sends - and the row's hover says what the row knows instead of repeating the text.
 STEP: 8 | PSK31 and Olivia count for achievements - the Modes badge, the Hall of Fame firsts and the records from a PSK31 or Olivia contact, exactly as an FT8 contact earns them; measured first, then connected.
+STEP: 9 | The contact Tim had - every card has an X; a station's live carrier is visible and holds the send buttons so Tim never keys on top of him; Log is on every conversation card from the start; every hand-back moves the turn, certain or guessed.
 
 ---
 
@@ -104,10 +105,20 @@ partial where unit 377 left it - 2.4 open, the four new variants capped at the 3
 fallback and refused above it, which is the safe direction. That is not a stop and not
 the next unit's work. The arbiter goes to step 7, then step 8, before anything else.
 
+**R44 - Tim, 2026-09-21, from the KC3FL contact.** Every card has an X; a live carrier is
+visible and gates the buttons; Log on every card from the start; every hand-back moves the
+turn. Step 9.
+
+**R45 - the record's format, from the ClaudeProjectStatus arbiter, 2026-09-21.** Every
+criterion is `- [ ] N.k text`, met is `[x]`, text identical in both states; a criterion
+only the owner can judge ends with the owner's-verdict marker and nothing in the loop flips it;
+no must-pass markers on criterion lines. Criteria marked *(nice to have)* in their text are not needed
+for `done`. A unit's ADVANCES names `step N criterion k` or `none - clears a blocker:
+<what>`; its WHY cites a line of this plan.
+
 ## §4 The steps
 
-Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions plus
-`docs/carry-forward-tests.txt` run as its comment says.
+Exit criteria carry ids `N.k`; met is `[x]`; R45 gives the form. A step's exit is its own assertions plus `docs/carry-forward-tests.txt` run as its comment says.
 
 ## Step 0 - Settings survive, and a refusal names the fault
 
@@ -116,11 +127,11 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** `PHASE_STATUS.md` names this phase; `TheSendReachesTheAirTests` green, run first.
 
 **Exit:**
-- [ ] 0.1 The commit and line between 1.13.30 and 1.13.48 that dropped the transmit device on load are named in the report. *must-pass*
-- [ ] 0.2 Settings files reconstructed from the tree at 1.13.30, 1.13.40 and HEAD each load with every value intact - transmit device, receive device, grid, callsign, license class, power offer, ALC reference - a missing new field takes its default, nothing present is dropped, and the file round-trips. *must-pass*
-- [ ] 0.3 At arm time, no transmit device chosen yields `send_refused reason no_transmit_device` and the sentence *No transmit device is chosen. Open Settings and pick the radio's sound card*, with Settings opened from the sentence. *must-pass*
-- [ ] 0.4 A chosen device that will not open yields `transmit_device_would_not_open` carrying the device name, the rate asked and the OS error text, in the event and on the panel. *must-pass*
-- [ ] 0.5 `TheSendReachesTheAirTests`, `TheUnslottedSendTests` and the byte-identical tests green and unedited. *must-pass*
+- [ ] 0.1 The commit and line between 1.13.30 and 1.13.48 that dropped the transmit device on load are named in the report.
+- [ ] 0.2 Settings files reconstructed from the tree at 1.13.30, 1.13.40 and HEAD each load with every value intact - transmit device, receive device, grid, callsign, license class, power offer, ALC reference - a missing new field takes its default, nothing present is dropped, and the file round-trips.
+- [ ] 0.3 At arm time, no transmit device chosen yields `send_refused reason no_transmit_device` and the sentence *No transmit device is chosen. Open Settings and pick the radio's sound card*, with Settings opened from the sentence.
+- [ ] 0.4 A chosen device that will not open yields `transmit_device_would_not_open` carrying the device name, the rate asked and the OS error text, in the event and on the panel.
+- [ ] 0.5 `TheSendReachesTheAirTests`, `TheUnslottedSendTests` and the byte-identical tests green and unedited.
 
 **Depends on:** nothing.
 
@@ -131,10 +142,10 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 0 done; unit 354's nine-size test present and run first.
 
 **Exit:**
-- [x] 1.1 At 1100×780 and at each of unit 354's nine sizes, CQ, the mode tabs, the send area, the drive note and Stop are inside the window, asserted by measuring. *must-pass*
-- [x] 1.2 The rule is stated and holds: when the window is too short, the working panels give up height first, then the top row; the send area's height is constant across sizes and it is never the thing that leaves. *must-pass*
-- [x] 1.3 Below the sum of the minimums, the panels scroll inside themselves and the send area stays put. *must-pass*
-- [x] 1.4 `BindingHealthTests` and the sheet's layout tests green. *must-pass*
+- [x] 1.1 At 1100×780 and at each of unit 354's nine sizes, CQ, the mode tabs, the send area, the drive note and Stop are inside the window, asserted by measuring.
+- [x] 1.2 The rule is stated and holds: when the window is too short, the working panels give up height first, then the top row; the send area's height is constant across sizes and it is never the thing that leaves.
+- [x] 1.3 Below the sum of the minimums, the panels scroll inside themselves and the send area stays put.
+- [x] 1.4 `BindingHealthTests` and the sheet's layout tests green.
 
 **Depends on:** step 0.
 
@@ -145,10 +156,11 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 1 done.
 
 **Exit:**
-- [x] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
-- [x] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
-- [x] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
-- [ ] 2.4 The carry-forward list runs green five times in a row. *must-pass*
+- [x] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family.
+- [x] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence.
+- [x] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`.
+- [ ] 2.4 The carry-forward list runs green five times in a row.
+- [ ] 2.6 The archived Olivia record `docs/phase-olivia-run/PHASE_OUTCOME.md` gains an appended entry stating that its `UNIT 2 - STEP 1` of 2026-09-14 never ran - the launcher graded unit 358's leftover report as a second unit's - with the evidence (identical cost, no commit); the false row is not edited, per the append-only rule.
 
 **Depends on:** step 1.
 
@@ -159,11 +171,11 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 8 done (R39: the UI steps come first).
 
 **Exit:**
-- [x] 3.1 Every decoded row writes one event when its visibility changes: drawn, filtered out (by which filter), scrolled out of view, in a folded panel, or removed - with the row's offset or slot and no callsign or text. *must-pass*
-- [x] 3.2 Every card writes the same on appear, fold, scroll-out and dismiss. *must-pass*
-- [x] 3.3 From the four-signal PSK31 fixture with the CQ filter on, the record alone says which rows were hidden and by what - the unit 337 fault reproduced and diagnosed from the file with no screenshot. *must-pass*
-- [x] 3.4 The events are sampled so that a busy FT8 evening adds under 50 kB an hour, measured. *must-pass*
-- [x] 3.5 The privacy scan is green over every new event. *must-pass*
+- [x] 3.1 Every decoded row writes one event when its visibility changes: drawn, filtered out (by which filter), scrolled out of view, in a folded panel, or removed - with the row's offset or slot and no callsign or text.
+- [x] 3.2 Every card writes the same on appear, fold, scroll-out and dismiss.
+- [x] 3.3 From the four-signal PSK31 fixture with the CQ filter on, the record alone says which rows were hidden and by what - the unit 337 fault reproduced and diagnosed from the file with no screenshot.
+- [x] 3.4 The events are sampled so that a busy FT8 evening adds under 50 kB an hour, measured.
+- [x] 3.5 The privacy scan is green over every new event.
 
 **Depends on:** step 8.
 
@@ -174,9 +186,9 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 3 done.
 
 **Exit:**
-- [x] 4.1 For each mode: what to press and in what order; what should appear at each step, in the words the screen uses; what each refusal sentence means and what to do; where a capture goes and what to copy where; what to send back if it fails. Every sentence quoted from the tree, not paraphrased. *must-pass*
-- [x] 4.2 A test asserts every quoted sentence exists in an operator-facing string. *must-pass*
-- [ ] 4.3 No sentence tells the operator to touch the radio (R11). *must-pass*
+- [x] 4.1 For each mode: what to press and in what order; what should appear at each step, in the words the screen uses; what each refusal sentence means and what to do; where a capture goes and what to copy where; what to send back if it fails. Every sentence quoted from the tree, not paraphrased.
+- [x] 4.2 A test asserts every quoted sentence exists in an operator-facing string.
+- [ ] 4.3 No sentence tells the operator to touch the radio (R11).
 
 **Depends on:** step 3.
 
@@ -187,7 +199,7 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 4 done.
 
 **Exit:**
-- [ ] 5.1 Tim says it passed. No script can evaluate this. *must-pass*
+- [ ] 5.1 Tim says it passed at his window and at the radio. No script can evaluate this.   *owner's verdict*
 
 **Depends on:** step 4.
 
@@ -198,10 +210,10 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 2 done, or partial with 2.1 and 2.3 met.
 
 **Exit:**
-- [x] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 220 px at 1920 and at 1400, from 300 (R42: 214 reached, floor 197); the working panels are taller by the difference. *must-pass*
-- [x] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover. *must-pass*
-- [x] 6.3 The sun map keeps its size and its dot. *must-pass*
-- [x] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green. *must-pass*
+- [x] 6.1 The top row - pills, neighborhood strip, green zone, rig display - measures at or under 220 px at 1920 and at 1400, from 300 (R42: 214 reached, floor 197); the working panels are taller by the difference.
+- [x] 6.2 Nothing is lost: every pill, the strip's segments, the band and frequency, the best bet, the heard count, the drive and power offer are present; the strip's legend and the rule-of-thumb line move to a hover.
+- [x] 6.3 The sun map keeps its size and its dot.
+- [x] 6.4 Unit 354's nine sizes hold with the new top; `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`, `BindingHealthTests` green.
 
 **Depends on:** step 2.
 
@@ -212,11 +224,11 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 6 done (R43: step 2 may be partial).
 
 **Exit:**
-- [x] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed. *must-pass*
-- [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text. *must-pass*
-- [x] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent. *must-pass*
-- [x] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
-- [x] 7.5 The mode chip's fill and the send-status line name the mode that was chosen, never the family: under Olivia the Olivia chip is filled and the PSK31 chip is not, and a 29-second Olivia CQ reads *29 s of Olivia* (Tim's screen, 2026-09-21). *must-pass*
+- [x] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed.
+- [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text.
+- [x] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent.
+- [x] 7.4 Olivia rows get the same list and hover by construction, asserted.
+- [x] 7.5 The mode chip's fill and the send-status line name the mode that was chosen, never the family: under Olivia the Olivia chip is filled and the PSK31 chip is not, and a 29-second Olivia CQ reads *29 s of Olivia* (Tim's screen, 2026-09-21).
 
 **Depends on:** step 6 only.
 
@@ -227,12 +239,30 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 7 done.
 
 **Exit:**
-- [x] 8.1 The report names, for PSK31 and for Olivia, which of the Modes badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each reaches today, measured from a fixture log. *must-pass*
-- [x] 8.2 A logged PSK31 contact and a logged Olivia contact each earn the Modes badge's mode, the Hall of Fame first for that mode, and every per-contact record - country, state, grid, continent, miles - exactly as an FT8 contact earns them. *must-pass*
-- [x] 8.3 The quill on a PSK31 or Olivia row means the same as on an FT8 row, from the same nudge. *must-pass*
-- [x] 8.4 The scores and the total move on the achievements page for those contacts; `TheAchievementsPageTests` green. *must-pass*
+- [x] 8.1 The report names, for PSK31 and for Olivia, which of the Modes badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each reaches today, measured from a fixture log.
+- [x] 8.2 A logged PSK31 contact and a logged Olivia contact each earn the Modes badge's mode, the Hall of Fame first for that mode, and every per-contact record - country, state, grid, continent, miles - exactly as an FT8 contact earns them.
+- [x] 8.3 The quill on a PSK31 or Olivia row means the same as on an FT8 row, from the same nudge.
+- [x] 8.4 The scores and the total move on the achievements page for those contacts; `TheAchievementsPageTests` green.
 
 **Depends on:** step 7.
+
+## Step 9 - The contact Tim had
+
+**Delivers:** R44 - the four things Tim saw in the KC3FL contact of 2026-09-21 17:44-17:48
+UTC, read from the record: he answered, Tim sent the Report on top of the station's live
+carrier, the station's 363-character reply was garbled, his second hand-back did not move
+the card, and there was no way to log him.
+
+**Entry:** step 8 done.
+
+**Exit:**
+- [ ] 9.1 Every conversation card and every receipt has a dismiss X; dismissing removes it and writes `card_dismissed`.
+- [ ] 9.2 While a station's carrier is on the air his row and his card carry a color and the word *sending*; Report, Confirm, the canned lines and the typed line are held - greyed with *he is still sending* - until his carrier drops, and a send attempted during it is refused with that sentence and `send_refused reason his_carrier_live`; replayed from the 17:45:40-17:45:44 record as a fixture, Tim's Report would have been held.
+- [ ] 9.3 Log is on every conversation card from the moment it exists, with the RST fields editable and defaulted to what was exchanged if anything was; a logged contact with no certain 73 logs what is known and nothing invented.
+- [ ] 9.4 Every parsed line addressed to the operator with a hand-back moves the card's turn to *your turn* - marked as a guess when uncertain - not only the first answer; replayed from the 17:48:33 record, the card reads *your turn?*.
+- [ ] 9.5 The four are on PSK31 and Olivia cards alike, asserted.
+
+**Depends on:** step 8.
 
 ## §5 Dependencies
 
@@ -263,3 +293,4 @@ names; the map bitmap's license; the id-scheme split.
 - **2026-09-21, evening.** R43: UI first, the timing question deferred; 2.1-2.3 checked; step 7 depends on 6 only.
 - **2026-09-21, later.** R41 on the seven variants; R42 on 6.1; 7.5 added for the chip fill and the send line.
 - **2026-09-21.** R38 on unit 375's two questions; R39 and R40 from Tim; steps 6-8 added and step 3 made to depend on step 8 so the UI is worked first.
+- **2026-09-21, night.** Converted to the ClaudeProjectStatus arbiter's format (R45): no must-pass markers, 5.1 carries the owner's-verdict marker; 2.6 added for the false Olivia record entry; step 9 added from the KC3FL contact (R44).
