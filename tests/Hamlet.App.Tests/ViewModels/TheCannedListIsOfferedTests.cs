@@ -202,9 +202,26 @@ public sealed class TheCannedListIsOfferedTests : IDisposable
 
                 if (station is null)
                 {
-                    // **A ROW THAT NAMES NOBODY STILL OFFERS NOTHING**, which is what it did
-                    // before and is the honest state: there is no station to send anything to.
-                    Assert.Null(flyout);
+                    // **A ROW THAT NAMES NOBODY OFFERS NO SEND LINE, AND SINCE R46(b) IT STILL
+                    // OPENS A MENU** (criterion 10.2, work instruction 387 task 4). What it
+                    // carries is `Capture` and *make a card anyway* and nothing else: there is
+                    // still no station to send anything to, and that has not changed - what
+                    // changed is that the rows Hamlet could not read a callsign out of are no
+                    // longer the only rows with nothing on them at all.
+                    Assert.NotNull(flyout);
+
+                    var bare = flyout!.Items.OfType<MenuItem>().ToList();
+
+                    Assert.Equal(2, bare.Count);
+                    Assert.StartsWith("Capture", bare[0].Header as string ?? "", StringComparison.Ordinal);
+                    Assert.StartsWith("Make a card anyway", bare[1].Header as string ?? "", StringComparison.Ordinal);
+
+                    // **AND NOT ONE OF THE SEVEN**, so nothing is offered to a station Hamlet
+                    // has not read.
+                    Assert.All(
+                        bare,
+                        item => Assert.DoesNotContain(
+                            Ruled[0], item.Header as string ?? "", StringComparison.Ordinal));
 
                     continue;
                 }
@@ -217,10 +234,13 @@ public sealed class TheCannedListIsOfferedTests : IDisposable
 
                 withAMenu++;
 
-                // **SEVEN ENTRIES, IN THE FILE'S ORDER, WITH R39's LABELS.** An entry Hamlet
-                // cannot do right now is a note saying why, never a missing row and never a
-                // row drawn grey.
-                Assert.Equal(7, entries.Count);
+                // **SEVEN ENTRIES, IN THE FILE'S ORDER, WITH R39's LABELS**, and since R46(b)
+                // (criterion 10.2, work instruction 387 task 4) **A TAIL OF TWO** on every
+                // decoded row: `Capture` and *make a card anyway*. The seven still come first
+                // and still come in the file's order; nothing about them moved.
+                Assert.Equal(9, entries.Count);
+                Assert.StartsWith("Capture", entries[7].Header as string ?? "", StringComparison.Ordinal);
+                Assert.StartsWith("Make a card anyway", entries[8].Header as string ?? "", StringComparison.Ordinal);
 
                 for (var at = 0; at < Ruled.Length; at++)
                 {
@@ -228,10 +248,21 @@ public sealed class TheCannedListIsOfferedTests : IDisposable
 
                     Assert.StartsWith(Ruled[at], header, StringComparison.Ordinal);
 
+                    // **AN ENTRY HAMLET CANNOT DO RIGHT NOW IS A NOTE SAYING WHY** (2026-09-06),
+                    // **EXCEPT THE LINES R46(b) NAMES**, which are drawn grey and carry the word
+                    // *callsign* - work instruction 387 section 6 ruling 2(a) item 1. Both are
+                    // still unhittable and both still say why; what changed is only which signal
+                    // the one case wears.
                     if (entries[at].Command is null)
                     {
-                        Assert.Contains(" - not offered: ", header, StringComparison.Ordinal);
-                        Assert.False(entries[at].IsHitTestVisible);
+                        Assert.True(
+                            header.Contains(" - not offered: ", StringComparison.Ordinal)
+                            || (!entries[at].IsEnabled
+                                && header.Contains("callsign", StringComparison.OrdinalIgnoreCase)),
+                            "[" + header + "] carries no command but is neither a note saying why "
+                            + "nor a line drawn grey for want of his callsign.");
+
+                        Assert.False(entries[at].IsHitTestVisible && entries[at].IsEnabled);
                     }
                     else
                     {
@@ -335,11 +366,23 @@ public sealed class TheCannedListIsOfferedTests : IDisposable
 
         var row = model.DigitalDecodes.First(r => model.Psk31StationOn(r) is not null);
         var flyout = MainWindow.SendFlyoutFor(model, row);
-        var only = Assert.Single(flyout!.Items.OfType<MenuItem>());
+        var items = flyout!.Items.OfType<MenuItem>().ToList();
 
-        _output.WriteLine("the menu says: " + (only.Header as string ?? ""));
+        foreach (var item in items)
+        {
+            _output.WriteLine("the menu says: " + (item.Header as string ?? ""));
+        }
 
-        // **ONE NOTE, AND NO CANNED ITEM AT ALL.** A note carries no command and cannot be hit.
+        // **ONE NOTE, AND NO CANNED ITEM AT ALL**, and since R46(b) the two lines every decoded
+        // row carries behind it - `Capture` and *make a card anyway* (criterion 10.2). A file
+        // Hamlet could not read still costs the operator every canned line and not one more:
+        // what he gets instead of the seven is the sentence, and the audio.
+        Assert.Equal(3, items.Count);
+        Assert.StartsWith("Capture", items[1].Header as string ?? "", StringComparison.Ordinal);
+        Assert.StartsWith("Make a card anyway", items[2].Header as string ?? "", StringComparison.Ordinal);
+
+        var only = items[0];
+
         Assert.Null(only.Command);
         Assert.False(only.IsHitTestVisible);
         Assert.Contains("could not read its canned lines", only.Header as string ?? "", StringComparison.Ordinal);
@@ -741,7 +784,11 @@ public sealed class TheCannedListIsOfferedTests : IDisposable
             var flyout = MainWindow.SendFlyoutFor(model, row);
             var items = flyout!.Items.OfType<MenuItem>().ToList();
 
-            Assert.Equal(7, items.Count);
+            // **THE SEVEN FIRST, AND R46(b)'s TWO BEHIND THEM** (criterion 10.2). The index
+            // below still reaches the canned line it always reached.
+            Assert.Equal(9, items.Count);
+            Assert.StartsWith("Capture", items[7].Header as string ?? "", StringComparison.Ordinal);
+            Assert.StartsWith("Make a card anyway", items[8].Header as string ?? "", StringComparison.Ordinal);
 
             if (items[at].Command is { } pressed)
             {

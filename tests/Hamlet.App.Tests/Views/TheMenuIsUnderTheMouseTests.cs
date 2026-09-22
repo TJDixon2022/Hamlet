@@ -287,13 +287,22 @@ public sealed class TheMenuIsUnderTheMouseTests
     }
 
     /// <summary>
-    /// **A row that names no station puts nothing under the mouse.**
+    /// **A row that names no station offers no send line - and since R46(b) it still opens a
+    /// menu, carrying `Capture` and *make a card anyway* and nothing else.**
     /// </summary>
     /// <remarks>
-    /// `ABCDEFGHIJKLM` is not booked by the ledger at all, so there is no station
-    /// to send anything to. The breakage: an empty box appearing over free text,
-    /// which reads as *Hamlet has nothing to offer this station* rather than
-    /// *this is not a station*.
+    /// <para>**REWRITTEN UNDER R12 AND WORK INSTRUCTION 387 SECTION 6 RULING 2(a), AND THIS IS
+    /// NOT LOOSENING A TEST.** It asserted `Assert.Null(flyout)` - that a row the ledger books no
+    /// station for puts *nothing* under the mouse. **The owner replaced the thing it asserted**:
+    /// R46(b), 2026-09-22, *a right-click on any decoded row opens the menu, whether or not the
+    /// parser read a callsign*, off his own screen. The later ruling wins.</para>
+    /// <para>**WHAT IT ASSERTED IS STILL ASSERTED, AND MORE.** The breakage it was written for was
+    /// an empty box over free text, reading as *Hamlet has nothing to offer this station* rather
+    /// than *this is not a station* - so the menu is asserted here to be **exactly two lines and
+    /// not one of the send options**: nothing is offered to a station Hamlet has not read, and the
+    /// box is not empty either. `ABCDEFGHIJKLM` is still not booked by the ledger.</para>
+    /// <para>**AND THESE ARE THE ROWS TIM MOST WANTS A CAPTURE FROM**, which is why R46(b) is
+    /// about them: what he could not read is exactly what is worth keeping the audio of.</para>
     /// </remarks>
     [AvaloniaFact]
     public async Task ARowThatNamesNoStationPutsNothingUnderTheMouse()
@@ -305,7 +314,25 @@ public sealed class TheMenuIsUnderTheMouseTests
         _output.WriteLine("flyout for a row with no station: "
             + (flyout is null ? "none" : flyout.Items.Count + " items"));
 
-        Assert.Null(flyout);
+        Assert.NotNull(flyout);
+
+        var items = flyout!.Items.OfType<MenuItem>().ToList();
+
+        foreach (var item in items)
+        {
+            _output.WriteLine("  " + item.Header);
+        }
+
+        // **TWO LINES, AND THEY ARE THE TWO R46(b) NAMES.**
+        Assert.Equal(2, items.Count);
+        Assert.StartsWith("Capture", items[0].Header as string ?? "", StringComparison.Ordinal);
+        Assert.StartsWith("Make a card anyway", items[1].Header as string ?? "", StringComparison.Ordinal);
+
+        // **AND NOT ONE SEND OPTION**: there is still no station to send anything to, and the
+        // one command that arms is not reachable from this row.
+        Assert.All(
+            items,
+            item => Assert.NotSame(scene.Panel.SendMessageCommand, item.Command));
 
         scene.Window.Close();
     }

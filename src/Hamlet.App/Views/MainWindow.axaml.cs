@@ -467,10 +467,14 @@ public partial class MainWindow : Window
 
         var flyout = SendFlyoutFor(vm, row);
 
-        // **HANDLED EITHER WAY.** A row with no station has no menu, and letting
-        // the request travel on would hand it to whatever is above the table.
+        // **HANDLED EITHER WAY**, and letting the request travel on would hand it
+        // to whatever is above the table.
         e.Handled = true;
 
+        // **EVERY DECODED ROW OPENS A MENU SINCE R46(b)** (criterion 10.2, work
+        // instruction 387 task 4). This used to return here where the row named no
+        // station, which made the rows Tim most wants a capture from the only rows
+        // with nothing on them at all; `SendFlyoutFor` no longer answers null.
         if (flyout is null)
         {
             return;
@@ -518,30 +522,38 @@ public partial class MainWindow : Window
         // **NOTHING IS GREYED, HIDDEN, SORTED AWAY OR DISABLED** (ruled 2026-09-06). An entry
         // with no command is a note - the same `Note` an absent FT8 message already gets - and a
         // note cannot be hit.
-        if (vm?.Psk31CannedMenuFor(row) is { Count: > 0 } canned)
+        if (vm is null)
+        {
+            return null;
+        }
+
+        if (vm.Psk31CannedMenuFor(row) is { Count: > 0 } canned)
         {
             var offered = new MenuFlyout();
 
             foreach (var entry in canned)
             {
-                offered.Items.Add(entry.IsNote
-                    ? Note(entry.Label)
-                    : new MenuItem
-                    {
-                        Header = entry.Label,
-                        Command = entry.Command,
-                        CommandParameter = entry.Parameter,
-                    });
+                offered.Items.Add(Draw(entry));
             }
+
+            Always(offered, vm, row);
 
             return offered;
         }
 
-        var menu = vm?.SendMenuFor(row);
+        var menu = vm.SendMenuFor(row);
 
+        // **A ROW WITH NO SEND LINES STILL OPENS A MENU SINCE R46(b)** (criterion 10.2). It
+        // carries `Capture` and *make a card anyway* and nothing else, which is the whole of what
+        // the rows Hamlet could not read a callsign out of get - and they are the rows Tim most
+        // wants a capture from.
         if (menu is null)
         {
-            return null;
+            var bare = new MenuFlyout();
+
+            Always(bare, vm, row);
+
+            return bare;
         }
 
         var flyout = new MenuFlyout();
@@ -593,7 +605,71 @@ public partial class MainWindow : Window
             });
         }
 
+        Always(flyout, vm, row);
+
         return flyout;
+    }
+
+    /// <summary>
+    /// **Adds the two lines every decoded row carries** - `Capture` and *make a card anyway*,
+    /// R46(b) and criterion 10.2.
+    /// </summary>
+    /// <param name="flyout">The menu being built.</param>
+    /// <param name="vm">The panel, which decides what the two lines say and do.</param>
+    /// <param name="row">The row the mouse was over.</param>
+    /// <remarks>
+    /// <para>**THE VIEW MODEL DECIDES AND THIS DRAWS**, the rule this file already keeps for the
+    /// canned lines: both entries come out of <c>MainWindowViewModel.RowMenuAlwaysFor</c>, so the
+    /// list a test reads and the list Tim sees are one list.</para>
+    /// <para>**THEY GO AT THE FOOT AND BEHIND A RULE THE EYE CAN SEE**, because neither is a
+    /// send: everything above may arm a transmission and neither of these does.</para>
+    /// </remarks>
+    private static void Always(MenuFlyout flyout, MainWindowViewModel vm, DigitalDecodeRow? row)
+    {
+        var always = vm.RowMenuAlwaysFor(row);
+
+        if (always.Count == 0)
+        {
+            return;
+        }
+
+        if (flyout.Items.Count > 0)
+        {
+            flyout.Items.Add(new Separator());
+        }
+
+        foreach (var entry in always)
+        {
+            flyout.Items.Add(Draw(entry));
+        }
+    }
+
+    /// <summary>
+    /// **Draws one of the view model's entries: a line to click, a line drawn grey, or a note.**
+    /// </summary>
+    /// <param name="entry">What the view model answered.</param>
+    /// <returns>The item.</returns>
+    /// <remarks>
+    /// <para>**NOTHING IS GREYED, HIDDEN, SORTED AWAY OR DISABLED** (ruled 2026-09-06) **EXCEPT
+    /// THE LINES R46(b) NAMES** (work instruction 387 section 6 ruling 2(a) item 1): a line that
+    /// cannot be sent because Hamlet does not know the operator's own callsign is drawn grey and
+    /// carries the word saying so. Every other line keeps the note.</para>
+    /// <para>**WHICH IT IS, IS THE VIEW MODEL'S ANSWER AND NOT A JUDGEMENT MADE HERE.**</para>
+    /// </remarks>
+    private static Control Draw(Psk31CannedEntry entry)
+    {
+        if (entry.IsNote)
+        {
+            return Note(entry.Label);
+        }
+
+        return new MenuItem
+        {
+            Header = entry.Label,
+            Command = entry.Command,
+            CommandParameter = entry.Parameter,
+            IsEnabled = !entry.Disabled,
+        };
     }
 
     /// <summary>What one option reads as, without anybody having to hover.</summary>

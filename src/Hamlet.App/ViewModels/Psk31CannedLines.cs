@@ -96,18 +96,32 @@ public sealed record Psk31CannedMacroPress(
 
 /// <summary>One line on the canned menu: what it reads, and what a click does - or nothing.</summary>
 /// <param name="Label">What the item reads.</param>
-/// <param name="Command">What a click runs, or null where this is a note.</param>
+/// <param name="Command">What a click runs, or null where this is a note or a disabled line.</param>
 /// <param name="Parameter">What the command is handed.</param>
+/// <param name="Disabled">True where this is a line drawn grey rather than a sentence.</param>
 /// <remarks>
-/// **A NOTE CARRIES NO COMMAND AND CANNOT BE CLICKED** (the 2026-09-06 ruling, §0.5.1). Nothing
-/// on this menu is greyed, hidden, sorted away or disabled: what Hamlet cannot do right now is
-/// ABSENT, with a note beside it saying why.
+/// <para>**A NOTE CARRIES NO COMMAND AND CANNOT BE CLICKED** (the 2026-09-06 ruling, §0.5.1).
+/// What Hamlet cannot do right now is ABSENT, with a note beside it saying why, and that is
+/// still the rule for every line on this menu but one.</para>
+/// <para>**THE ONE EXCEPTION IS R46(b)** (Tim, 2026-09-22; work instruction 387 section 6 ruling
+/// 2(a) item 1): *lines that need his callsign are disabled and say why*. The later ruling wins,
+/// and it wins **narrowly** - only for the lines that cannot be sent because Hamlet does not know
+/// the operator's own callsign. Grey is this project's reserved signal for a control that
+/// genuinely cannot be used (§0.5.1, HM-DEC-087) and that is exactly this case: the line is real,
+/// it is his, and it will work the moment he fills Settings in. **Every other line keeps the
+/// 2026-09-06 rule and the note.**</para>
 /// </remarks>
 public sealed record Psk31CannedEntry(
-    string Label, System.Windows.Input.ICommand? Command, object? Parameter)
+    string Label,
+    System.Windows.Input.ICommand? Command,
+    object? Parameter,
+    bool Disabled = false)
 {
     /// <summary>True where this entry is a sentence rather than something to click.</summary>
-    public bool IsNote => Command is null;
+    public bool IsNote => Command is null && !Disabled;
+
+    /// <summary>True where a click would do something.</summary>
+    public bool IsLive => Command is not null;
 }
 
 /// <summary>

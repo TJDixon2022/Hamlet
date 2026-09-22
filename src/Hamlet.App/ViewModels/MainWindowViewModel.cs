@@ -18121,22 +18121,27 @@ public partial class MainWindowViewModel : ObservableObject
             }
 
             return MacroTextFor(Psk31Macro.Answer, station).Length == 0
-                ? Absent(line, "your callsign is not set in Settings, and a macro is not sent with a blank in it")
+                ? NeedsHisCallsign(line)
                 : new(line.Label, SendCannedMacroPsk31Command, new Psk31CannedMacroPress(AnswerPsk31Command, row));
         }
 
         var wanted = line.Macro == Psk31CannedMacro.Report ? Psk31Macro.Report : Psk31Macro.Confirm;
 
         // **WITH NO NAME, LOCATION OR GRID IN SETTINGS THE REPORT CANNOT BE BUILT AT ALL**
-        // (§0.0). `Psk31Macros` refuses it by name, so the item is simply not there, and it is
-        // not an item drawn grey (§0.5.1).
+        // (§0.0). `Psk31Macros` refuses it by name.
+        //
+        // **AND SINCE R46(b) THIS ONE LINE IS DRAWN GREY RATHER THAN SAID AS A NOTE** (work
+        // instruction 387 section 6 ruling 2(a) item 1): a line that needs the operator's own
+        // callsign is his, it is real, and it will work the moment Settings carries it - which
+        // is what grey means in this project (§0.5.1, HM-DEC-087). Everything else on this menu
+        // keeps the 2026-09-06 rule and the note.
         if (MacroTextFor(wanted, station).Length == 0)
         {
-            return Absent(line,
-                wanted == Psk31Macro.Report
-                    ? "your name, location or grid square is not set in Settings, and a report is "
-                      + "not sent with a blank in it"
-                    : "your callsign is not set in Settings, and a macro is not sent with a blank in it");
+            return wanted == Psk31Macro.Report
+                ? Absent(line,
+                    "your name, location or grid square is not set in Settings, and a report is "
+                    + "not sent with a blank in it")
+                : NeedsHisCallsign(line);
         }
 
         var card = DigitalCards.FirstOrDefault(
@@ -18157,9 +18162,66 @@ public partial class MainWindowViewModel : ObservableObject
             : Absent(line, "it is not your turn on this contact, or the parser is not certain whose it is");
     }
 
+    /// <summary>
+    /// **The two lines every decoded row carries, whatever the parser made of it** - R46(b),
+    /// criterion 10.2, work instruction 387 task 4.
+    /// </summary>
+    /// <param name="row">The row the mouse was over, or null.</param>
+    /// <returns>Capture and *make a card anyway*, in that order, always both.</returns>
+    /// <remarks>
+    /// <para>**THIS IS WHY THE MENU CAN OPEN ON A ROW THAT NAMES NOBODY.** Until tonight
+    /// <see cref="Psk31CannedMenuFor"/> answered null on such a row and
+    /// <c>MainWindow.SendFlyoutFor</c> then answered null too, so the rows Tim most wants a
+    /// capture from - the ones Hamlet could not read a callsign out of - were the only rows with
+    /// nothing on them at all. Unit 387 task 1 measured it: **3 of 9 fixture rows offered a
+    /// menu.**</para>
+    /// <para>**NEITHER LINE ARMS ANYTHING** (§0.2, §10). Capture is
+    /// <see cref="CapturePsk31Command"/>, the panel's own press, which records the audio and
+    /// decodes nothing; the card line opens a card. Every send on this panel still goes through
+    /// one click on a named button.</para>
+    /// <para>**CAPTURE IS LIVE ON EVERY ROW**, because the audio is the band's and not the row's:
+    /// what Hamlet could not read is exactly what is worth keeping.</para>
+    /// <para>**AND WHERE HAMLET READ NO CALLSIGN THE CARD LINE IS A NOTE AND NOT A DISABLED
+    /// ITEM** (the 2026-09-06 rule, kept by section 6 ruling 2(a) item 2 - R46(b)'s disabling is
+    /// for the lines that need *his* callsign and reaches no further). A card stands for a
+    /// station, and on this row Hamlet has not read one; **the note says that rather than
+    /// offering a card with nobody on it** (§0.0: a refusal says the true reason, and a sentence
+    /// on the screen is a claim).</para>
+    /// </remarks>
+    internal IReadOnlyList<Psk31CannedEntry> RowMenuAlwaysFor(DigitalDecodeRow? row)
+    {
+        var lines = new List<Psk31CannedEntry>(2)
+        {
+            new(Psk31CaptureLine, CapturePsk31Command, null),
+        };
+
+        lines.Add(Psk31StationOn(row) is not null
+            ? new("Make a card anyway", OpenPsk31CardCommand, row)
+            : new(
+                "Make a card anyway - Hamlet read no callsign on this row, so a card would have "
+                + "nobody on it. Capture the audio and the card follows when a call comes through.",
+                null,
+                null));
+
+        return lines;
+    }
+
     /// <summary>A macro Hamlet cannot compose right now, said as a note rather than drawn grey.</summary>
     private static Psk31CannedEntry Absent(Psk31CannedLine line, string why)
         => new(line.Label + " - not offered: " + why + ".", null, null);
+
+    /// <summary>
+    /// **A line that needs the operator's own callsign: drawn grey, with the word that says why**
+    /// - R46(b), and the only line on this menu that is.
+    /// </summary>
+    /// <remarks>
+    /// **THE WORD IS THE POINT.** Grey on its own is a control somebody has to guess about; the
+    /// reason travels with it, and it names the one thing that would make the line work.
+    /// </remarks>
+    /// <param name="line">The canned line.</param>
+    /// <returns>The entry, disabled.</returns>
+    private static Psk31CannedEntry NeedsHisCallsign(Psk31CannedLine line)
+        => new(line.Label + " - needs your callsign in Settings", null, null, Disabled: true);
 
     /// <summary>
     /// **Send one of the canned lines: one click, framed, through the one unslotted door.**
