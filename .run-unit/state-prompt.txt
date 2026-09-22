@@ -74,9 +74,9 @@ FOLLOWS: report   the criterion was chosen because the last report
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 10 criterion 1  and gave this WHY:
+The instruction it produced named  step 9 criterion 1  and gave this WHY:
 
-step 10 is R46, ruled by the owner this morning off his own screen, and it is the only step left in this phase whose criteria a unit can reach - 0.1 is a completed negative closed to units, 4.3 and 5.1 are the owner's, and 7.2 and step 9 need a grading pass rather than a night; and 10.1 is the phase goal's own sentence, because Hamlet did not hold what it had.
+The step handed over was 0. Its only open criterion, 0.1, is closed to units by instruction 386 ruling 1, which no arbiter may overrule. Step 9's five criteria (PHASE_PLAN.md step 9, R44) landed at e5e4bee0 and have never been graded because the launcher graded the wrong report, so measuring them is the largest block a unit can move. 10.3's last 36 px wait only on a layout decision, which PHASE_PLAN.md section 6 makes the arbiter's.
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -85,56 +85,28 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 10 | What Tim saw on 2026-09-22 - favorites are back, measured for when they vanished; a right-click on any row opens the menu; the sun map takes the top band's full height; a blind-found keyboard-mode carrier shows text only when its blocks decode.
-## Step 10 - What Tim saw on 2026-09-22
+﻿STEP: 9 | The contact Tim had - every card has an X; a station's live carrier is visible and holds the send buttons so Tim never keys on top of him; Log is on every conversation card from the start; every hand-back moves the turn, certain or guessed.
+## Step 9 - The contact Tim had
 
-**Delivers:** R46.
+**Delivers:** R44 - the four things Tim saw in the KC3FL contact of 2026-09-21 17:44-17:48
+UTC, read from the record: he answered, Tim sent the Report on top of the station's live
+carrier, the station's 363-character reply was garbled, his second hand-back did not move
+the card, and there was no way to log him.
 
-**Entry:** step 9 done.
+**Entry:** step 8 done.
 
 **Exit:**
-- [x] 10.1 The report names the unit and the line that removed favorites or their list, and whether the saved frequencies survive in the settings file; favorites are restored - the star saves the dial and mode with a name, the list opens from the rig display, one click tunes, and the list persists across an upgrade under step 0's loader. **Unit 387: `a51bc2a6`, 2026-08-27 14:08, work instruction 029, `src/Hamlet.App/Views/MainWindow.axaml` - named with `git log -S`, not from a comment. Tim's ruling of that date removed the recent-places row and `ABANDONED_WIDGETS.md` records it; the favorites `ComboBox`, the favorite's name and its note left in the same `Grid` in the same commit AND ARE RECORDED NOWHERE. NOT this phase's own step 6: the star was measured drawn and clickable at 1920, 1400 and 1100x780 with `_starRect [62,2 67x26]` at all three, so the bail at `DrawStar` has never fired, and unit 376's `1c187df6` moved `PadBottom` 10 to 6, which is vertical. THE SAVED FREQUENCIES SURVIVE: 2 of 2 through today's loader and 2 of 2 again after a save-and-load, frequency and mode intact. BACK BY: a caret beside the star opening the view model's own `FavoriteMenu`, measured drawn and hittable at all nine of unit 354's sizes - star `[62,2 67x26]`, caret `[130,2 18x26]`, never overlapping - one line per saved place, `Manage favorites` at the foot, and one click measured putting a dial 20 kHz away back on 14,074,000 Hz. The top band did not grow by one pixel: 214 with the pills at 1920 and 1400.**
-- [x] 10.2 A right-click on any decoded row - callsign read or not, live or ended - opens the menu; lines needing a callsign are disabled with a word; Capture and *make a card anyway* are always present. **Unit 387: 9 OF 9 FIXTURE ROWS OPEN A MENU WHERE 3 OF 9 DID, measured before and after on the same mixed fixture - six PSK31 carriers and four Olivia channels, station read and not, live and ended. `Capture` is live on every one of them and is the panel's own `CapturePsk31Command` asserted by reference, not a second way to start a capture. The lines that cannot be sent because Hamlet does not know the operator's own callsign are drawn grey and carry the word - *Answer him - needs your callsign in Settings* - and with his callsign, name, location and grid all set NOT ONE line on any row is grey and 15 live send lines remain, so no sendable line became unsendable. QUALIFIED, AND THE QUALIFICATION IS THE UNIT'S OWN FINDING: *make a card anyway* is present on every row, but on a row the parser read no callsign out of it is a NOTE saying why rather than a card - `OpenPsk31Card` returns at its first statement when `Psk31StationOn` is null (measured: the card count goes 0 to 0), so a working card there would be the second mechanism section 6 ruling 2(a) item 3 forbids building. A judging session should read that clause against R46(b)'s intent.**
-- [ ] 10.3 The sun map fills the top band's height at 1920 and at 1400, the band no taller than 6.1 allows, its dot and caption kept. **Unit 387: NOT MET AND REPORTED PARTIAL WITH BOTH NUMBERS, under section 6 ruling 2(b)'s *stop at what fits*. The map is 246 x 134 in a band of 214 - 62.6% of it, Tim's *two thirds* exactly - and it CANNOT BE MORE. Measured: the map already GOVERNS its card. `GreenZoneLeft` wants 25 px at 1920 and 54 at 1400, the map's column wants 145 in a row of 146, the card wants 178 and the rig column wants 178 TIED WITH MARGIN 0, so every pixel the map takes the card takes and the band takes - and the band is ratcheted at 214 by `Unit376TheTopBandTests.BandReachedWithThePills`, which the carry-forward name `TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts, tighter than 6.1's ceiling of 220. THE ATTEMPT WAS MADE AND MEASURED: letting the map take the height available to it put it at 698 x 381, the card at 424 and THE BAND AT 460 PX, 240 over the ceiling; it was reverted in the same task. The 80 px the map does not have are the pills row and its margins (36), the card's own header and padding (32) and the caption and its gap (11). What shipped: the 134 stops being the mockup's dimension and becomes the band's budget with the arithmetic beside it, and `TheSunMapIsTheSizeItWasAndStillCarriesHisGrid` is REWRITTEN UNDER R12 AND RULING 2(b) to assert R46(c)'s rule in both directions - the map may never be smaller, and it may never leave a pixel of its own row unused, which nothing in the tree asserted before - with the band asserted beside it and every assertion about the grid marker and the caption kept.**
-- [x] 10.4 A blind-found Olivia or PSK31 carrier shows characters only from blocks the decoder reports confident; otherwise the row reads *heard, not readable yet*; replayed from the 13:37 UTC record, the 4/500 row shows no text. **Unit 387, THE NAMED DROP CANDIDATE, NOT DROPPED: task 1 found the per-block confidence already crossing the seam, so nothing had to be invented. Replayed, the 4/500 row at 1500 Hz reads `heard, not readable yet` and carries NOT ONE of the characters nobody sent. The gate is both of the engine's own numbers: at least `OliviaBlindSearch.ConfirmBlocks` blocks read - the same bar the blind search clears before it names a row, whose own remark says *one block barely through is what a wrong row can do* - AND more blocks read than refused, which is the half nothing consulted: `BlocksRejected` had crossed the seam since unit 364 and the row path asked only `BlocksDecoded > 0`, so ONE ACCEPTED BLOCK IN TWELVE PUT ITS CHARACTERS ON THE SCREEN. Six boundary cases measured: 1/0 quiet, 1/11 quiet (Tim's row), 2/3 quiet, 2/2 shown, 2/0 shown, 12/11 shown, each asserting the row is EITHER the sentence OR what the channel read and never something between. An RSID-announced channel is not gated at all - the same one-block-in-twelve channel is withheld when the search found it and shown when the station announced it - and the gate is one-way, so a fade never takes words back. PSK31 needed nothing: its squelch already does this and `Psk31Listener` says so. NO ENGINE FILE CHANGED.**
-- [x] 10.5 `BindingHealthTests`, `TheTopRowTests`, `TheSettingsSurviveAnUpgradeTests` and the carry-forward list green. **Unit 387 exit round, both command lines unedited, one build each, status written immediately before every invocation: APP 265 OF 265 in 2 m 42 s and ENGINE 150 OF 150 in 4 m 55 s, against the entry round's app 245 of 245 and engine 150 of 150 - the difference being this unit's twenty new names and nothing else. NO REGRESSION and nothing red that was green before (HM-DEC-165). `BindingHealthTests`, `TheTopRowTests` and `TheSettingsSurviveAnUpgradeTests` are all on that line and all green, the last at 16 of 16 with this unit's own new name in it. THE APP LINE TOOK THREE ATTEMPTS AND ALL OF IT IS RECORDED: attempt 1 lost one name to the headless dispatcher loop at 1 ms before any assertion, attempt 2 lost three, attempt 3 was clean on every one of the 265; across all three not one name ran and disagreed after this unit's own red was repaired. The engine line was green on its first attempt and has never once met the fault.**
+- [x] 9.1 Every conversation card and every receipt has a dismiss X; dismissing removes it and writes `card_dismissed`. **Unit 389, measured at HEAD clause by clause: THE X is one unconditional `hm-cardx` button in the one card template, asserted drawn with its command (`Unit297CardBindingTests`) and pressed on a PSK31 card, an Olivia card and a receipt; DISMISSING REMOVES IT - 0 cards after the press on each, his row and the ledger untouched; WRITES `card_dismissed` - the press wrote `card_cleared` (unit 385's reading) and was that token's ONLY writer, so it was renamed in place: `card_cleared` 1 -> 0 occurrences under src, `card_dismissed` 0 -> 1, asserted once and `card_cleared` never in `TheCardOffersLogAndAnXTests`, on Olivia in `TheFourAreOnOliviaCardsTooTests`, and walked by `CallsignPrivacyTests` with nothing personal. Exit carry-forward app 266 of 266, engine 150 of 150.**
+- [ ] 9.2 While a station's carrier is on the air his row and his card carry a color and the word *sending*; Report, Confirm, the canned lines and the typed line are held - greyed with *he is still sending* - until his carrier drops, and a send attempted during it is refused with that sentence and `send_refused reason his_carrier_live`; replayed from the 17:45:40-17:45:44 record as a fixture, Tim's Report would have been held. **Unit 389, UNTICKED, NOT MET: the row's green `sending` met; the card's color and word met tonight (`CardSendingWord`, the row's green, asserted drawn); refused with the sentence and `send_refused reason his_carrier_live` met. NOT MET and ON THE SEND PATH, so left: 1 OF 4 controls is greyed with *he is still sending* - the typed line; Report and Confirm are already withheld by R1 mid-over and not drawn, and the canned lines become one note; and the hold ends at his hand-back, not when his carrier drops. The replay is a constructed fixture, not the record, and presses the typed line, not the Report.**
+- [ ] 9.3 Log is on every conversation card from the moment it exists, with the RST fields editable and defaulted to what was exchanged if anything was; a logged contact with no certain 73 logs what is known and nothing invented. **Unit 389, UNTICKED, NOT MET on one clause: Log from the moment the card exists, the RST defaulted from the exchange and nothing invented are met and asserted; THE RST FIELDS ARE NOT EDITABLE - `LogContactWindow` draws every observed field as text by Tim's ruling of 2026-09-07, which this clause would reverse, so it is his and was not built.**
+- [ ] 9.4 Every parsed line addressed to the operator with a hand-back moves the card's turn to *your turn* - marked as a guess when uncertain - not only the first answer; replayed from the 17:48:33 record, the card reads *your turn?*. **Unit 389, UNTICKED: every parsed hand-back moves the turn, marked when uncertain, met; the card now reads *Your turn?* where it read *Your turn, a guess*; BUT THE REPLAY IS A CONSTRUCTED FIXTURE whose over parses, where unit 385 measured Tim's 17:48:33 over as garbled and completing no message - that site is in the engine and was not opened.**
+- [ ] 9.5 The four are on PSK31 and Olivia cards alike, asserted. **Unit 389, UNTICKED: the four as HEAD has them are alike and each is now driven on an Olivia channel - the hold's word, button, note and canned note, Log, the X with `card_dismissed`, and the turn - with nothing left to identity; not ticked because two of the four, 9.2 and 9.3, are not met on either mode.**
 
-**Depends on:** step 9.
+**Depends on:** step 8.
 
-## Â§5 Dependencies
-
-Step 0 depends on nothing. The order the arbiter works is 1, 2, 6, 7, 8, 3, 4, 5 - the UI steps before the record steps by R39 - expressed in each step's Depends on.
-
-## Â§6 Branching
-
-- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
-  fact the product states to the operator about the radio, a contact or a send. A hint,
-  a label, a number, a layout, a test's shape, a mechanism arithmetic will not allow:
-  decide, mark author's, continue.
-- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
-- **A must-pass missed by a little**: ship, report, `partial`, move on. Never loosen a test.
-- **A flake cannot be made deterministic**: quarantine it with its cause named; that is
-  meeting 2.3, not missing it.
-- **Anything would change what goes on the air, or what keys.** `MOVE: stop`.
-- **A package is needed.** `MOVE: stop`.
-- **A file must be deleted.** Empty it, comment it, list it.
-
-## Â§7 Carried
-
-Every open ask of the Olivia phase from unit 368's queue; the PSK31 demodulator on
-real air, waiting on a capture; Olivia 5.4 and 6.1; real flags on country cards; rank
-names; the map bitmap's license; the id-scheme split.
-
-## Â§8 Revision record
-
-- **2026-09-21, evening.** R43: UI first, the timing question deferred; 2.1-2.3 checked; step 7 depends on 6 only.
-- **2026-09-21, later.** R41 on the seven variants; R42 on 6.1; 7.5 added for the chip fill and the send line.
-- **2026-09-21.** R38 on unit 375's two questions; R39 and R40 from Tim; steps 6-8 added and step 3 made to depend on step 8 so the UI is worked first.
-- **2026-09-21, night.** Converted to the ClaudeProjectStatus arbiter's format (R45): no must-pass markers, 5.1 carries the owner's-verdict marker; 2.6 added for the false Olivia record entry; step 9 added from the KC3FL contact (R44).
-- **2026-09-22.** Step 10 and R46 added from Tim's screen: favorites, the right-click on any row, the sun map at full height, blind-found text gated.
 
 --- what the script saw ---
-criteria-count.bat saw step 10 criterion 1 flip from unmet to met in
+criteria-count.bat saw step 9 criterion 1 flip from unmet to met in
 PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
 Answer one more line after WHY:
 HONEST: yes   if the report shows that criterion honestly met
@@ -144,343 +116,321 @@ HONEST: no    if the marker was turned without the criterion being met
 
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet holds what it has. Steps 1, 2, 3, 6 and 8 done, step 2
-   closed last night by a judging session; step 0 partial with 0.1 cut down and
-   closed to units; step 4 partial with 4.3 logged to the owner; step 7 partial on
-   an unjudged 7.2; step 9's work landed at e5e4bee0 and ungraded; step 5 Tim's own
-   and it ends the run. Step 10 is the only step a unit can move and this is the
-   first unit ever spent on it.
-B. Step 10 - what Tim saw on 2026-09-22, R46. 10.1 MET: the unit and line that took
-   favorites off the screen are work instruction 029's a51bc2a6 of 2026-08-27
-   14:08, src/Hamlet.App/Views/MainWindow.axaml, where the favorites ComboBox, the
-   favorite's name and its note left in the same Grid as Tim's ruled removal of the
-   recent-places row and were written down nowhere; the saved frequencies DO
-   survive the loader, 2 of 2 and 2 of 2 again after a save; and favorites are back
-   by a caret beside the star on the rig face opening the view model's own
-   FavoriteMenu, drawn and hittable at all nine of unit 354's sizes, one click
-   measured tuning a dial 20 kHz away back to 14,074,000 Hz.
-   10.2 MET, with one qualification named in section 4: 9 of 9 fixture rows open a
-   menu where 3 of 9 did.
-   10.3 NOT MET: the sun map is 246 x 134 where it was 246 x 134, in a band of
-   214 px against 6.1's ceiling of 220 - because the map already governs that band
-   and letting it fill measured the band at 460.
-   10.4 MET, and it was the named drop candidate and was not dropped.
-   10.5 MET: app 265 of 265, engine 150 of 150.
-C. The report last. Section 4 raises 7 items on top of the carried fifty-three,
-   and none of them is in the way of a criterion in B - item 1 qualifies 10.2 and
-   item 2 is 10.3's own arithmetic, and both are reported in B already. In one
-   line: what took favorites away was NOT this phase's own step 6 but an earlier
-   ruling of Tim's - 2026-08-27, the recent-places row - which a unit obeyed by
-   deleting the favorites list in the same commit without being asked to and
-   without writing it down.
+A. The phase goal - Hamlet holds what it has. Steps 1, 2, 3, 6 and 8 done; step 0
+   partial with 0.1 closed to units by instruction 386; step 4 partial with 4.3
+   logged to the owner; step 7 partial on an unjudged 7.2; step 5 Tim's own and it
+   ends the run. Step 9's work landed at e5e4bee0 and had never been graded; step 10
+   partial on 10.3 alone, the map 178 of the band's 214.
+B. Step 9 - 9.1 met (ticked tonight); 9.2 not met: the four controls are held but
+   only 1 of 4 is greyed with "he is still sending", and the hold ends at his
+   hand-back, not when his carrier drops; 9.3 not met: the RST fields are not
+   editable; 9.4 met differently: its rule is met and the card now reads "Your
+   turn?", but the 17:48:33 replay is a constructed fixture, not the record; 9.5
+   met differently: the four are alike on both modes, but two of them fall short.
+   card_dismissed 0 -> 1 writer (the dismiss press, renamed in place from
+   card_cleared). The 17:45:40 replay is held, with 0 keyings, but it is a
+   constructed fixture that presses the typed line, not the Report. The 17:48:33
+   replay reads "Your turn?". Step 10 - 10.3 partial: the map is 393 x 214 in a
+   band of 214 at 1920 on all three modes and at 1400 on FT8 and Olivia; at 1400
+   on PSK31 with the dial off 14.070 it stays 327 x 178. The pills are 1 row at
+   1920 and 1400. The fallback switches at 1399 px (1451 on PSK31 off its
+   frequency).
+C. The report last. Section 4 raises 7 items on top of the carried queue, and
+   items 1 to 4 are in the way of a criterion in B: 9.2, 9.3, the two replays,
+   and 10.3's one case. Yes: two step 9 shortfalls sit on the send path, 9.2's
+   greying and its release at the hand-back, and both were left exactly as they
+   stand.
 
 ```
-UNIT:       387 - complete at task 6 of 7 - 2026-09-22 11:36
-PHASE GOAL: Hamlet keeps what it has already earned - the screen, record and test
-            work banked in the PSK31 and Olivia threads - proved by tests that ran
-            without the radio or the owner, and at the end by Tim at his window.
-UNIT GOAL:  Give Tim back the four things off his own screen on 2026-09-22:
-            favorites, with the change that took them named before anything was
-            rebuilt; a right-click menu on every decoded row and not only the ones
-            that named a station; the sun map filling its band; and no invented
-            characters from a carrier the blind search found but cannot read.
-ADVANCED:   step 10, criteria 10.1, 10.2, 10.4 and 10.5 - 10.3 measured, reported
-            partial and left unticked
-NUMBER:     decoded rows that open a right-click menu: 3 of 9 -> 9 of 9;
-            and the sun map's share of its band: 62.6% -> 62.6%
+UNIT:       389 - complete at task 4 of 5 - 2026-09-22 14:55
+PHASE GOAL: Hamlet keeps what the PSK31 and Olivia threads already earned - the
+            screen, the record and the tests - hardened without the radio or the
+            owner, proved by tests that ran, and judged at the end by Tim at his
+            window.
+UNIT GOAL:  Measure unit 385's five step 9 fixes against HEAD in the criteria's
+            own words, so a judging session can grade them for the first time.
+            Close the small shortfalls that are off the send path, report the ones
+            on it, and stand the sun map at the band's left edge so it fills the
+            band's 214 px.
+ADVANCED:   step 9, criteria 9.1 (met and ticked), with 9.2 and 9.4 moved and
+            9.2 to 9.5 measured for grading; step 10, criterion 10.3 moved, not met
+NUMBER:     step 9 clauses met at HEAD: 23 of 23 claimed by unit 385 -> 13 of 23
+            measured at entry -> 17 of 23 after tonight; the sun map's share of its
+            band: 83.2% -> 100% at 1920 and 1400 (83.2% at 1400 on PSK31 off
+            14.070)
 DRIFT:      none
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 6 of 7 - every one of the seven tasks was entered, and the named drop
-candidate was taken rather than dropped.** Windows 11, `C:\Source\HamLet`, branch `main`, project
-claimed Hamlet and the gate's four conditions all hold: `SHACK_FACTS.md` present,
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, neither `CoreHMI.sln` nor
-`MURC.sln` at the root.
+**Complete at task 4 of 5 (tasks 0 to 4). Nothing was dropped, including the named drop candidate, task 3.** Claude Code on QUIVERFULL, `PROJECT: Hamlet` confirmed against the tree (`SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, no `CoreHMI.sln` or `MURC.sln`, root `C:\Source\HamLet`), branch `main`. **No port was opened, nothing was enumerated and nothing was keyed** (FACT-004).
 
-**Task 0 - the record and the entry round.** Version 1.13.73 to 1.13.74 with its line in the
-version log; `PHASE_STATUS.md` `CURRENT_STEP` 0 to 10 and `WORK_INSTRUCTION` 386 to 387, both
-stale as section 5 said. Its `STEP: 2` line already read `done` and was left alone; its `STEP: 9`
-line gained one sentence carrying section 6 ruling 1 and nothing else. `PHASE_PLAN.md` ticked
-nothing. The instrument was counted rather than assumed: line 7 carries **59** filter terms and
-line 9 **25**, exactly section 5's numbers, and both are read out of the file by a one-line script
-and evaluated rather than retyped, so nothing this unit did could edit either command line. Entry
-round **app 245 of 245 and engine 150 of 150, both green on the first attempt** - section 5's
-expected numbers exactly, so unlike unit 386 this unit's measurement agreed with its instruction.
+| Commit | Task |
+|---|---|
+| `chore(unit389): task 0` | 1.13.75 -> 1.13.76, step 9 and unit 389, the three launcher files unaltered, entry round |
+| `test(unit389): task 1` | `Unit389TraceTests`, the clause table, the token, the replays, the left-edge budget |
+| `feat(unit389): task 2` | `card_dismissed`, the card's green word, *Your turn?* |
+| `feat(unit389): task 3` | the sun map at the band's left edge |
+| `docs(unit389): task 4` | the exit round, the plan, the status lines, this report |
 
-**Task 1 - the trace, and no file under `src` moved.** All four items measured before anything was
-built. It is not on the carry-forward list, for the reason `Unit378Trace` is not.
+**Task 0.** Version bumped with its log line. `PHASE_STATUS.md` set to step 9 and unit 389. The three launcher files' diffs were read. `PHASE_OUTCOME.md` appends 17 lines, `PHASE_STATUS.md` rewrites only its `CURRENT_STEP` and `HEARTBEAT` header lines, and `RUN_LEDGER.md` appends one row. **All three were committed unaltered.** `## UNIT 389 - STEP 9` appended. Entry round: **app 265 of 265, engine 150 of 150, both first attempt.**
 
-**Task 2 - 10.1.** The archaeology first, because the record comes before the rebuild, then the
-caret on the rig face.
+**Task 1, the trace, no file under `src`.** Step 9's four line-7 types, read off `ad3b70ab`'s diff to the line, ran together in one build: **19 of 19**. The clause table is in section 3. `card_cleared` had **one** writer, the dismiss press. Both replays are constructed fixtures. The left-edge budget found something the instruction did not know: **at 1400 the card decides, not the pills.** The pills would have 960.9 of the 675 px they need. The card slot would be 400.9 against `CardFloor` 400, so the card's break-even is a window of about 1399 px.
 
-**Task 3 - 10.3.** The attempt was made, measured, and reverted in the same task; the assertion was
-rewritten under R12 and the criterion is reported partial with both numbers.
+**Task 2, off the send path only.** Closed:
+- **9.1's token.** Renamed in place, because the press was the only writer. The privacy walk and every reader changed in the same commit.
+- **9.2's card colour.** The card's existing `SendingWord` was bound nowhere. It is now `CardSendingWord`, in the row's own green, asserted drawn.
+- **9.4's word.** A guessed your-turn now reads *Your turn?*.
 
-**Task 4 - 10.2.** Every decoded row opens a menu; three existing names rewritten under R12 because
-the owner replaced what they asserted.
+Left: the send-path shortfalls, 9.3's editable RST (Tim's ruling), and both replays. Details are in section 4.
 
-**Task 5 - 10.4, the named drop candidate, NOT dropped**, because task 1 item 4 found the per-block
-confidence already crossing the seam.
+**Task 3, the named drop candidate, built and held.** `BandGovernsTheMapPanel` is handed the pills row. It lays out map, card, rig from the left wherever two things hold: a map as tall as the whole band leaves the pills their one row to its right, and the card keeps its floor within its row. Otherwise it keeps unit 388's stage A. **This is decided by measured widths each layout, not by a window size.** The pills never wrapped and the band never grew, so **nothing was reverted.**
 
-**Task 6 - the exit round, the plan, the status and this report.** The exit app invocation's first
-attempt found a red on an assertion that was **this unit's own** and on a carry-forward name; it
-was repaired under R12 and committed rather than worked around, and the round was re-run.
+**Task 4.** Exit round: **app 266 of 266, engine 150 of 150, both first attempt.** `PHASE_PLAN.md`: 9.1 ticked with tonight's numbers. 9.2 to 9.5 and 10.3 are left unticked, with their reasons beside them. The header state words were not touched.
 
 ### The decisions this unit made for itself, reproduced in full
 
-**1. The band's ceiling for 10.3 is 214 and not 220, and that is a disagreement with the
-instruction.** Section 6 ruling 2(b) and section 8 task 3 both name 6.1's **220 px** as the
-constraint. The tree's own carry-forward guard is **tighter**:
-`Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts the
-band at or under `BandReachedWithThePills`, which is **214**, and section 8 task 3 also says that
-name must be green when this unit finishes, while section 10 says do not loosen a carry-forward
-test. **I took the tighter of the two**, so the band never moved off 214. Reversible in one line
-if the owner would rather have the 6 px.
-
-**2. *Make a card anyway* is a note on a row that names nobody, not a working card.** Section 6
-ruling 2(a) item 3 says `OpenPsk31CardCommand` already fires on the right-click, that an item
-naming what that press did is not a second mechanism, and that I do not build one. **Task 1
-measured that the press does not in fact make a card on such a row** - `OpenPsk31Card` returns at
-its first statement when `Psk31StationOn` is null, and the card count goes 0 to 0. Given the
-instruction forbids building a second mechanism, the line is **present on every row** and, where
-Hamlet read no callsign, is a note saying why. Section 4 item 1.
-
-**3. Three names outside this unit were rewritten under R12.** `ARowThatNamesNoStationPutsNothing-`
-`UnderTheMouse`, `EveryRowThatNamesAStationOffersTheSevenOnBothModes` and
-`NoFt8MessageIsOnAPsk31RowAndWhatItOffersIsTheCannedSeven` all asserted that a row naming nobody
-puts nothing under the mouse, which is exactly what R46(b) supersedes. **All three now assert
-more**, not less - the menu is exactly two lines and neither carries `SendMessageCommand`.
-
-**4. Three new carry-forward names were added** - `TheFavoritesAreBackOnTheRigDisplayTests`,
-`TheMenuIsOnEveryDecodedRowTests` and `TheBlindCarrierShowsNoInventedTextTests` - each in the same
-commit as the code it guards, and `TheSettingsSurviveAnUpgradeTests` grew a name rather than a
-second type being written.
-
-**5. The app line was run three times at the exit round rather than twice.** Section 1's rule is
-one re-run for a lost attempt; two attempts were lost with zero assertion failures, and 10.5 asks
-for the list green. **All three attempts are recorded** in section 3 and in `PHASE_OUTCOME.md`,
-and the third stands.
+1. **9.1 is the only criterion ticked.** Ruling 1 item 5 ticks a criterion only when every clause is met. 9.4's replay and 9.5's *the four* both depend on a shortfall a unit cannot close, so I did not tick them. That leaves a judging session to read them.
+2. **The card's word follows the hold, not the carrier.** I bound the card's existing `SendingWord` rather than adding a second property. It means *his carrier is up and he has handed nothing back*, which is the hold's own reading. Building a second reading would have been a second mechanism.
+3. **Only *Your turn, a guess* became *Your turn?*.** *His turn, a guess* is unchanged, because 9.4 names only the one word (R14).
+4. **The view test for the card's green reads the card, not the row.** The headless window does not realize the decoded rows. The row's word is unit 385's, asserted on the view model, and drawn with the same resource.
+5. **The sun map's rewritten test asserts where the map must stand, case by case, from a table.** It does not read the panel's own answer. PSK31 at 1400 on the fixture's dial is asserted to fall back, and PSK31 at 1400 on 14.070 is asserted to stand at the left edge.
+6. **Pushed after every task**, because the session's own prompt asked for it. Instruction 389 section 11 says to push once at the end.
 
 ## 2. What the owner should expect
 
-**Your stars are back, and they are on the radio face where you had them.** Press the star to save
-where the dial is - it takes the frequency, the mode and the block it is in, and names it for you -
-and press it again to take it off. Beside it there is now a small caret: press that and your whole
-list drops down, with one line for every place you saved and `Manage favorites…` at the foot, and
-one click on any line puts the dial there. The Radio menu keeps its own copy of the list; two ways
-in is not a defect. If you have saved nothing yet the list says so in a sentence rather than
-opening empty. **Your saved frequencies were never lost** - they have been sitting in the settings
-file the whole time, and they load, save and load again with the dial and the mode intact,
-including ones saved before Hamlet had a notes field.
+**Of the four things that went wrong with KC3FL, here is what now holds on your screen.**
 
-**And the record now says what took them.** On 2026-08-27 you ruled the `recent · places you have
-been` row out of the strip above the tabs. The unit that did it removed the favorites list, the
-favorite's name and its note **in the same commit**, was never asked to, and wrote it down
-nowhere - not in `ABANDONED_WIDGETS.md`, which records the half you ruled, and not in its own
-commit message. Nothing went red, so nobody knew for twenty-six days. The star itself never left:
-it has been drawn and clickable at every window size the whole time, which is measured in section
-3. **It was not this phase's own step 6.**
+- **The X holds.** It takes any card or receipt away, and the record now calls the press `card_dismissed`, the plan's own word.
+- **The hold holds, but not the way 9.2 describes it.** While he is mid-over, nothing you press goes out: 0 keyings, and the refusal says *he is still sending*. His card now says *he is still sending* in the same green his row uses for *sending*. But only the typed line's Send is **greyed** with that sentence. The Report or Confirm button is simply not offered mid-over, because Hamlet is not yet sure it is your turn. The canned lines become one note. And the hold lets go the moment he hands back with `K` or `BTU`, not when his carrier finally drops. That is unit 385's deliberate correction: his row lingers for 9 s on PSK31, and 23 to 38 s on Olivia. Those two differences are on the send path, so they were **measured and left alone**.
+- **Log holds.** It is on his card from the moment the card exists, with his report filled in and nothing invented. **But you still cannot edit the RST fields.** Your own ruling of 2026-09-07 made everything Hamlet heard read-only in the Log dialog, and 9.3 asks for the opposite. That choice is yours.
+- **The turn holds.** Every hand-back moves the card, and a guessed one now reads *Your turn?*. **But the garbled over you actually got at 17:48:33 still would not move it.** It never becomes a parsed line. That fault is in the engine, and no unit has been licensed to open it.
 
-**A right-click now gives you something on every line you can see.** It used to give you nothing at
-all on a line Hamlet could not read a callsign out of - which are the lines you most want a capture
-from. Every decoded row now offers `Capture` and `Make a card anyway`, and `Capture` is the same
-button the panel has, not a second one. On the lines that do name a station you get everything you
-got before, unchanged, plus those two. **One thing looks like a step backwards and is not**: the
-lines that need your own callsign - `Answer him`, `Confirm and 73` - are now drawn grey with the
-words *needs your callsign in Settings* instead of vanishing with a note. That is you asking for
-them to be disabled and say why, and it is the only place anything is greyed. Nothing you could
-send before has become unsendable; that is asserted directly.
+Neither replay is your record, which is not on this machine. Both are fixtures built to R44's timings.
 
-**The row on 14.072 has stopped lying to you.** A carrier the blind search finds now shows nothing
-at all until Hamlet is reading more of its blocks than it is throwing away - so
-`4/500 sending Hk7DYYYzfzYXTDYY...` reads `heard, not readable yet` instead. The row is still
-there, in the same place, at the same frequency; only what it says has changed. A station that
-announced itself with an RSID is untouched, because it told Hamlet which mode it is.
+**The sun map now fills the whole band**, 393 x 214, standing at the left edge with the pills in one row to its right. That holds at 1920 and at 1400. **What will look wrong but is not:** at 1400 on PSK31 with your dial off 14.070, the card also says *PSK31 lives at 14.070; you are at 14.074*. It then has no room beside a full-height map, so the map drops back between the card and the rig at 327 x 178. Below about 1400 px wide it always does that.
 
-**The sun map is the one thing you asked for that you do not get, and the reason is arithmetic.**
-It is already the tallest thing in the band it sits in: the band is 214 px, the map's column wants
-145 of it, and the rest is the band-pill row, the card's own header and padding, and the caption.
-Every pixel the map takes, the top band takes - and the top band is capped so the working panels
-below it keep their height. Letting the map fill was tried and measured: the map went to 698 x 381
-and **the band to 460 px**, more than twice its cap. It was put back the same hour. What did change
-is that the map's height is no longer a number copied off a mockup, and a test now fails if the map
-ever leaves a pixel of its own row unused - so the day that band has room, the map takes it.
-
-**Every claim above is computed, not seen** (FACT-004). **No port was opened, no device was
-enumerated and nothing was keyed.** No send path, modulator, `Arm` site or `PttOn` site was touched
-at any task, and no file under `src/Hamlet.RadioEngine/` changed at all.
+Every claim here is computed, not seen (FACT-004). **No port was opened, nothing was enumerated, and nothing was keyed.**
 
 ## 3. What you should see
 
-### 10.1's archaeology - the criterion, and it is a table and not a sentence
+### Step 9, clause by clause, before and after
 
-| Commit | Short | Unit | Date | File and line | The line, quoted |
-|---|---|---|---|---|---|
-| `a51bc2a6b...` | `a51bc2a6` | work instruction **029** | **2026-08-27 14:08** | `src/Hamlet.App/Views/MainWindow.axaml`, the `<Grid Grid.Column="1">` block above the tabs | `<ComboBox ItemsSource="{Binding Favorites}"` / `SelectedItem="{Binding SelectedFavorite}"` / `PlaceholderText="places you chose"` / `MinWidth="180" FontSize="12"` / `IsVisible="{Binding HasFavorites}">` |
-| same | `a51bc2a6` | 029 | 2026-08-27 | same block | `<TextBlock Text="favorites" FontSize="11" ... IsVisible="{Binding HasFavorites}" />` |
-| same | `a51bc2a6` | 029 | 2026-08-27 | same block | `<TextBlock Text="{Binding FavoriteHere}" FontSize="12" TextTrimming="CharacterEllipsis" ... />` |
-| same | `a51bc2a6` | 029 | 2026-08-27 | same block | `<TextBox Text="{Binding FavoriteNote, Mode=TwoWay}" IsVisible="{Binding IsFavorite}" Watermark="why this one" ... />` |
+"Met differently" and "met by R1" are reported in those words, not rounded up (ruling 1 item 1). File paths are under `tests/Hamlet.App.Tests/ViewModels/` unless named.
 
-The commit's subject: **`fix(app): the header says each thing once, and nothing sits above the
-tabs`**, 149 lines removed from `MainWindow.axaml`. What ran, and what it returned:
+| Clause | Before (entry) | After | Test and assertion line |
+|---|---|---|---|
+| 9.1 X on every card and every receipt | met | met | one unconditional `hm-cardx` in the one template, `Views/Unit297CardBindingTests.cs:117-118`; pressed on a card and a receipt, `TheCardOffersLogAndAnXTests.cs:158`, `:207` |
+| 9.1 dismissing removes it | met | met | `TheCardOffersLogAndAnXTests.cs:158`; Olivia `TheFourAreOnOliviaCardsTooTests.cs:143` |
+| 9.1 writes `card_dismissed` | **not met** (`card_cleared`) | **met** | `TheCardOffersLogAndAnXTests.cs:172`; Olivia `TheFourAreOnOliviaCardsTooTests.cs:151` |
+| 9.2 his row carries a color | met | met | `DecodedRowSendingWord`, `HmGreenBrush`, in the markup; no view assertion (the headless window does not realize the rows) |
+| 9.2 his row carries the word *sending* | met | met | `TheCarrierHoldsTheButtonsTests.cs:320` |
+| 9.2 his card carries a color | **not met** | **met** | `TheCarrierHoldsTheButtonsTests.cs:416`, the drawn `CardSendingWord` in that exact brush |
+| 9.2 his card carries the word | met differently: only in grey notes | **met** | `:415`; Olivia `TheFourAreOnOliviaCardsTooTests.cs:84` |
+| 9.2 the four are held | met differently: Report and Confirm *already withheld by R1* | unchanged | `:329`, `:333`, `:340`; 0 keyings `:104` |
+| 9.2 greyed with *he is still sending* | **not met: 1 of 4** | **not met: 1 of 4** (send path, left) | `:333` typed line only |
+| 9.2 until his carrier drops | met differently: ends at his hand-back | unchanged (send path, left) | `:252` |
+| 9.2 a send during it refused with the sentence | met | met | `:108` |
+| 9.2 `send_refused reason his_carrier_live` | met | met | `:115` |
+| 9.2 replayed from the 17:45:40-17:45:44 record, the Report held | met differently: a constructed fixture, the typed line | unchanged | `:291`, `:297` |
+| 9.3 Log from the moment the card exists | met | met | `TheCardOffersLogAndAnXTests.cs:80`; Olivia `TheFourAreOnOliviaCardsTooTests.cs:138` |
+| 9.3 RST fields editable | **not met** | **not met** (Tim's 2026-09-07 ruling) | no assertion; `LogContactWindow.axaml:63-75` draws them as text |
+| 9.3 defaulted to what was exchanged | met | met | `TheCardOffersLogAndAnXTests.cs:128`; both reports `ThePsk31LogsWithRstTests.cs:99-100` |
+| 9.3 no certain 73: what is known, nothing invented | met | met | `TheCardOffersLogAndAnXTests.cs:133-134` |
+| 9.4 every parsed hand-back moves the turn to *your turn* | met | met | `TheTurnMovesOnEveryHandBackTests.cs:81`, `:91` |
+| 9.4 marked as a guess when uncertain | met | met | `:92` |
+| 9.4 not only the first answer | met | met | `:91` (the second hand-back) |
+| 9.4 replayed from 17:48:33, reads *your turn?* | **not met**: *Your turn, a guess* | met differently: reads *Your turn?*, from a fixture that is not the record | `:163` |
+| 9.5 the four alike on PSK31 and Olivia | met differently: partly *by identity* | met: every one driven on Olivia | `TheFourAreOnOliviaCardsTooTests.cs:84-94`, `:138-151`, `:181`; `TheTurnMovesOnEveryHandBackTests.cs:195` |
+| 9.5 asserted | met | met | the same |
 
-```
-git log --oneline -S "which favorite you landed on at the left" -- src/Hamlet.App/Views/MainWindow.axaml
-  -> c949c89c feat(app): put the star in the black, and the name on the strip
+**Count: 23 clauses. Unit 385 claimed 23; 13 were met at entry and 17 are met now.**
 
-git log --oneline -S "THE RECENT-PLACES ROW IS NOT HERE ANY MORE" -- src/Hamlet.App/Views/MainWindow.axaml
-  -> a51bc2a6 fix(app): the header says each thing once, and nothing sits above the tabs
+### 9.2's four controls, mid-over
 
-git show --stat --format="%h %ad %an" --date=iso a51bc2a6
-  -> a51bc2a6  2026-08-27 14:08:11 -0400
-     src/Hamlet.App/Views/MainWindow.axaml  | 149 +++-------------
+| Control | Held | Greyed | Words |
+|---|---|---|---|
+| Report | yes: *already withheld by R1*, `Offered None`, not drawn | no | *he is still sending* as `OfferNote`, where the button stands |
+| Confirm | yes: *already withheld by R1*, the same one button | no | the same `OfferNote` |
+| The canned lines | yes: the seven become one note (the menu's own ruling of 2026-09-06) | no | *Hamlet is offering nothing to send: he is still sending. The lines come back the moment his carrier drops.* |
+| The typed line | yes | **yes**: `CanSendTyped False`, bound to `IsEnabled` | *he is still sending* as `TypedHoldNote` |
 
-git log --oneline --date=format:"%Y-%m-%d %H:%M" a51bc2a6~12..a51bc2a6
-  -> ee34bf39  2026-08-27 13:55  docs(docs): take in work instruction 029
-     ... a51bc2a6 is the ninth commit after the intake and before the next
-```
+### `card_cleared`'s writers
 
-**The honest answer is two things happened and only one of them was ruled**, which is what 10.1
-asks for rather than a single culprit. Tim's ruling of 2026-08-27 took the
-`recent · places you have been · forget this place` row out of the strip above the tabs, and
-`ABANDONED_WIDGETS.md` records that removal under *The recent-places row*, with what it did, why it
-existed and where it might go. **The favorites half left in the same `<Grid>` in the same commit and
-is recorded nowhere**: not in `ABANDONED_WIDGETS.md`, not in the commit message - which names only
-the frequency block and the recent row - and not in the comment left behind at
-`MainWindow.axaml:3277`, which says the recent row is gone and that `FavoritesViewModel` is still in
-the tree, and does not mention that the way to the favorites list went with it.
-
-**And it was not this phase's own step 6 - candidate (2) is false, measured.**
-
-| Where | `_starRect`, measured | Bail fired? |
+| Where | Before | After |
 |---|---|---|
-| 1920 x 1040 | `[62,2 67x26]` | no |
-| 1400 x 1040 | `[62,2 67x26]` | no |
-| 1100 x 780 | `[62,2 67x26]` | no |
+| `MainWindowViewModel.cs` `ClearCard`, the dismiss press | `card_cleared`, the only writer | `card_dismissed` |
+| anything else under `src` | none | none; `card_cleared` occurs **0** times |
 
-The rig face is **520 x 106** at all three. Unit 376's `1c187df6` moved `RigDisplayControl.PadBottom`
-from 10 to 6, which is **vertical**; the bail at `DrawStar` tests **horizontal** room
-(`clockX - 14 - x`) against a face whose `MeasureOverride` floors the width at 520, so it has never
-fired and could not.
+### The two replays, quoted
 
-**Do the saved frequencies survive?** Yes. Over a 1.13.30-shaped file **this unit's test wrote from
-a literal in the test** - the operator's own settings file was never opened, copied or quoted
-(HM-DEC-018 §2.1) - today's loader returned **2 of 2** favorites with frequency, mode, band, name
-and note; saved by today's writer and loaded again, **2 of 2**, frequency and mode intact.
+- **9.2's replay is `TheReportHeSentOnTopOfTheCarrierWouldNowBeHeld`.** A test callsign's carrier at 1726 Hz, mid-over (*"... R R NAME BOB QTH ERIE AND THE RIG HERE IS"*). The typed line *"R R TNX FER RPRT"* is pressed. Result: 0 keyings, one `psk31_send_refused` with `his_carrier_live`. **It is not the record**, the moment exists only in a comment, and it presses the typed line, not the Report.
+- **9.4's replay is `AtTheSecondHandBackTheCardReadsYourTurnQuestion`** (renamed tonight). Its second over is *"KC3QIS de W1ABC R R NAME BOB 5#9 QTH ERIE BTU KC3QIS de W1ABC K"*, and the card now reads **`Your turn?`**. **It is not the record either.** This over parses, while the one Tim got at 17:48:33 was garbled and completed no message (unit 385's item 2).
 
-### The star and the caret, after
+### The band, at 1920, 1400 and 1100 x 780
 
-| Size | Face | Star | Caret | Overlap |
-|---|---|---|---|---|
-| 1920 x 1040 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 900 x 620 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 1100 x 780 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 1280 x 720 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 1366 x 728 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 1536 x 824 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 1400 x 1040 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 1920 x 1017 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
-| 2560 x 1400 | 520 x 106 | `[62,2 67x26]` | `[130,2 18x26]` | none |
+Numbers are from `Unit389TraceTests`, before and after task 3. FT8 and Olivia measure identically.
 
-**All nine of unit 354's sizes**, with every press made by a headless pointer at the coordinates the
-control itself drew. One press on the star saved `14,074,000 Hz`, mode and band with the name
-`14.074, FT8 city`; a second press removed it. The caret's list read `14.074, FT8 city`,
-`14.076, FT8 city`, `Manage favorites…`, and **one click on the first line moved a dial parked 20 kHz
-away back to 14,074,000 Hz**. With nothing saved the list reads *Nothing saved here yet - press the
-star to save where you are.*, hittable `False`, with `Manage favorites…` under it. **The top band is
-214 px with the pills and 178 without, at 1920 and at 1400 - unmoved.**
-
-### The menu counts, before and after
-
-| | Before | After |
-|---|---|---|
-| rows offering a menu | **3 of 9** | **9 of 9** |
-| rows offering nothing at all | 6 of 9 | **0 of 9** |
-| items on a row that names a station | 7 | 9 (the seven, then `Capture`, then `Make a card anyway`) |
-| items on a row that names nobody | 0 | 2 |
-| lines drawn grey with a full profile | 0 | **0** |
-| live send lines across the fixture | 15 | **15** |
-
-The six that offered nothing were a carrier heard with nothing read off it, a fragment with no
-callsign, a second fragment, an ended exchange, and the two blind-found Olivia rows. `SendFlyoutFor`
-returned null where `Psk31CannedMenuFor` was null **and** `SendMenuFor` was null, and
-`Psk31CannedMenuFor` answered null wherever `Psk31StationOn(row)` did. With no callsign in Settings
-the menu now reads: `GREY Answer him - needs your callsign in Settings`, `note Send my report - not
-offered: your name, location or grid square is not set…`, `GREY Confirm and 73 - needs your callsign
-in Settings`, then `Say again?`, `Please repeat your report`, `QRZ?`, `73 and out` all live.
-
-### The map and the band at both widths, against 220
-
-| Width | Mode | Band with pills | Band without | Map | Caption | Map's share of the band | Against 220 |
+| Size, mode | Pills | Rows | Map | Card | Caption | WithPills | WithoutPills |
 |---|---|---|---|---|---|---|---|
-| 1920 | FT8 / PSK31 / Olivia | **214** | 178 | **246 x 134** | 9 | **62.6%** | inside by 6 |
-| 1400 | FT8 / PSK31 / Olivia | **214** | 178 | **246 x 134** | 9 | **62.6%** | inside by 6 |
+| 1920 before | 16,83 1888 wide | 1 | 1017,119 327 x 178 | 987 x 178 | in the card's Favorites row | 214 | 178 |
+| **1920 after, all three modes** | **423,83 1481 wide** | **1** | **16,83 393 x 214** | **423,119 921 x 178** | 1109,237 220 x 9 | **214** | 178 |
+| 1400 before | 16,83 1368 wide | 1 | 497,119 327 x 178 | 467 x 178 | 248,275 | 214 | 178 |
+| **1400 after, FT8 and Olivia** | **423,83 961 wide** | **1** | **16,83 393 x 214** | **423,119 401 x 178** | 589,275 220 x 9 | **214** | 178 |
+| 1400 after, PSK31 at 14.074 | 16,83 1368 wide | 1 | 497,119 327 x 178 (stage A) | 467 x 178 | 248,278 | 214 | 178 |
+| 1400 after, PSK31 at 14.070 | left edge | 1 | 16,83 393 x 214 | | | 214 | |
+| 1100 x 780, all, before and after | 16,83 1068 wide | 1 | 278,119 246 x 134 (stage A) | 248 x 393 / 434 / 404 | 173,471 80 x 36 | 429 / 470 / 440 | 393 / 434 / 404 |
 
-**Why it cannot be more, measured rather than argued.** `GreenZoneLeft` wants **25 px** at 1920 and
-**54 px** at 1400; the map's own column wants **145** - 134 and 2 px of gap and the 9 px caption - in
-a card row of **146**; the card wants **178** and the rig column wants **178**, *tied with margin 0*.
-So the map governs, and every pixel it takes the card takes and the band takes. The band is ratcheted
-at **214** by a carry-forward name. **The attempt was made:** with the map taking the height available
-to it, the map measured **698 x 381**, the card **424** and **the band 460 px** - 240 over 6.1's
-ceiling and 246 over the ratchet. It was reverted in the same task. The 80 px the map does not have
-are the pills row and its margins (36), the card's own header and padding (32), and the caption and
-its gap (11).
+- **Map top minus band top is 0 px, and band bottom minus map bottom is 0 px, wherever the map stands at the left edge.** The margins are the pills row's own top (its 10 px margin is outside the band) and the band's bottom (the card, the rig and `RigDriveAndPower`).
+- **Aspect:** 1.8364 against the picture's 1.8358.
+- **The rig face** is 546 wide at x 1358 (1920) and x 838 (1400), before and after.
+- **The switch** was found by halving from 1100 to 1920 at 1040 tall: **1399 px on FT8 and Olivia, 1451 on PSK31** on the fixture's dial.
 
-The panel row at unit 354's nine sizes after all of tonight's work: **483, 71, 92, 163, 171, 267,
-483, 460, 860** - identical to unit 381's, to the pixel.
+### The nine sizes
 
-### 10.4 - the 13:37 UTC row, replayed
+| Size | Unit 381 / 388 | Tonight |
+|---|---|---|
+| 1920 x 1040 | 483 | 483 |
+| 900 x 620 | 71 | 71 |
+| 1100 x 780 | 92 | 92 |
+| 1280 x 720 | 163 | 163 |
+| 1366 x 728 | 171 | 171 |
+| 1536 x 824 | 267 | 267 |
+| 1400 x 1040 | 483 | 483 |
+| 1920 x 1017 | 460 | 460 |
+| 2560 x 1400 | 860 | 860 |
 
-| Blocks read | Blocks refused | Found by | The row reads |
-|---|---|---|---|
-| 1 | 0 | blind | `heard, not readable yet` |
-| **1** | **11** | **blind** | **`heard, not readable yet`** - Tim's own row |
-| 2 | 3 | blind | `heard, not readable yet` |
-| 2 | 2 | blind | what the channel read |
-| 2 | 0 | blind | what the channel read |
-| 12 | 11 | blind | what the channel read |
-| 1 | 11 | **RSID** | what the channel read - not gated at all |
+### The entry and exit rounds, name for name
 
-The 4/500 row at 1500 Hz carries **not one** of the characters nobody sent, reads exactly
-`heard, not readable yet`, and keeps its variant and its place. Every case asserts the row is
-**either** the sentence **or** what the channel read and never something between. The gate is both of
-the engine's own numbers: at least `OliviaBlindSearch.ConfirmBlocks` blocks read - whose own remark
-says *one block barely through is what a wrong row can do* - **and more blocks read than refused**,
-which is the half nothing consulted: `BlocksRejected` has crossed the seam since unit 364 and the row
-path asked only `BlocksDecoded > 0`, so **one accepted block in twelve put its characters on the
-screen**. It is one-way: once confident, a fade never takes the words back. **No engine file changed
-at all**, and PSK31 needed nothing - its squelch already does this and `Psk31Listener` says so.
+| Invocation | Entry | Exit |
+|---|---|---|
+| app (line 7) | **265 of 265**, 2 m 27 s, first attempt | **266 of 266**, 2 m 41 s, first attempt |
+| engine (line 9) | **150 of 150**, 4 m 57 s, first attempt | **150 of 150**, 4 m 54 s, first attempt |
 
-### The entry and the exit rounds, name for name
-
-| | Entry (task 0) | Exit (task 6) | Difference |
-|---|---|---|---|
-| app | **245 of 245**, 2 m 33 s, green first attempt | **265 of 265**, 2 m 42 s, green on attempt 3 | +20, this unit's own new names |
-| engine | **150 of 150**, 4 m 52 s, green first attempt | **150 of 150**, 4 m 55 s, green first attempt | none |
-
-The twenty: `TheFavoritesAreBackOnTheRigDisplayTests` **5**, `TheMenuIsOnEveryDecodedRowTests` **4**,
-`TheBlindCarrierShowsNoInventedTextTests` **10**, and `TheSettingsSurviveAnUpgradeTests` **+1**.
-**No regression and nothing red that was green before** (HM-DEC-165).
-
-**All three exit app attempts, recorded.** Attempt 1: **263 of 265** - one **red on an assertion**,
-`ThePsk31ReadsTheConversationTests.NoFt8MessageIsOnAPsk31RowAndWhatItOffersIsTheCannedSeven`, a
-carry-forward name and **this unit's own**, repaired under R12 and committed; plus one name lost to
-the dispatcher loop. Attempt 2, after the repair: **264 of 265**, one name lost, **no assertion
-failure**. Attempt 3: **265 of 265 clean**. Five occurrences of
-`InvalidProgramException: You've caused dispatcher loop` across the night's five app invocations,
-**every one at about 1 ms before any assertion**, on `ThePsk31OfferTests.TheOfferIsOneButtonAndIt-`
-`IsTheOneTheEngineNamed`, `TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelThe-`
-`OperatorPressed` at Olivia twice and FT4 once, and
-`TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow`. Recorded, not
-chased. **The engine invocation was green on the first attempt both times and has never once met the
-fault.**
+- **All 265 entry names were green at exit.** The one added name is `TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord`. One name was renamed in its type, `TheTurnMovesOnEveryHandBackTests.AtTheSecondHandBackTheCardReadsYourTurnQuestion`. **No regression.**
+- **No dispatcher loop, no file lock and no test-host crash in any invocation tonight.**
+- Carry-forward line 7 has **62** filter terms and line 9 has **25**, before and after, unedited.
+- `TheMenuIsUnderTheMouseTests` is **0 of 8**, on the same `RightClickRow` scene precondition as unit 388's exit.
+- `ViewTestsActThroughControlsTests` is **1 of 2**. It scanned 52 files and found one offender, `TheStopIsAlwaysOnScreenTests.cs:102`, as before.
+- Rewritten under R12:
+  - `Unit376TheTopBandTests.TheSunMapIsTheSizeItWasAndStillCarriesHisGrid`
+  - `TheTopRowTests.TheWorldClockIsAtTheCardsRightEndWithOneMarker`
+  - `TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth`
+  - `TheTurnMovesOnEveryHandBackTests`' three *Your turn?* assertions
+  - `TheAnswerYouHeardTests`, one line
+  - `ThePsk31ConversationCardTests`, one line
 
 ## 4. What's blocking us
 
-**Nothing blocks a criterion in B.** Seven items. Items 1 and 2 qualify 10.2 and 10.3 and are already
-stated in B.
+**Items 1 to 4 are in the way of a criterion in B. Items 5 to 7 are findings.**
+
+**1. 9.2 falls short in two places, and both are on the send path, so they were left.** *A finding with numbers. Changing either needs a licence, because each changes whether a send control is enabled.*
+- **Only 1 of 4 controls is greyed.** Report and Confirm are withheld by R1 mid-over, and the canned lines become a note.
+- **The hold ends at his hand-back, not when his carrier drops.** Unit 385 measured that holding to the drop would refuse every answer for 9 s after a PSK31 `K`, and 22.94 to 38.23 s after an Olivia one.
+
+Unit 385's claim was *"3 of the four controls held with one sentence and the fourth already withheld by R1"*. Measured, all four are held, three carry the sentence, and one is greyed.
+
+**2. 9.3's *RST fields editable* reverses your ruling of 2026-09-07.** *A ruling request.* That ruling says observed fields are not editable in the Log dialog: *nothing typed overwrites anything observed*. 9.3 is later, and the later ruling normally wins. But this changes what goes into your permanent log, so I did not build it.
+- **Option A:** editable RST fields that record they were typed rather than heard.
+- **Option B:** keep them read-only and reword 9.3.
+- **Industry standard:** A. Loggers let you correct an RST, and keeping the "heard" or "typed" mark keeps your ruling's intent.
+
+**3. Neither replay is the record, and 9.4's is not what you got.** *A finding. Its remedy needs your file, or a licence to open the engine.* Your `2026-09-21.jsonl` is not on this machine. Unit 385's item 2 measured that `Psk31MessageSplitter` completes nothing from a garbled over, and that site is under `src\Hamlet.RadioEngine\Psk31\`.
+
+**4. 10.3 at 1400 on PSK31 with the dial off 14.070 falls back to stage A.** *A finding. Whether it blocks 10.3 is a judging session's reading.* The card also draws *PSK31 lives at 14.070; you are at 14.074*, and at 401 px wide that no longer fits in 178 px. Any fix would cost one of three things you ruled on: the map's full height, the rig's width, or the strayed line. On 14.070 the same window stands at the left edge. The fallback is what keeps that line on the screen.
+
+**5. The card's green word and the row's *sending* can disagree for a few seconds.** *A finding.* The card follows the hold, which ends at his hand-back. The row follows his carrier. For the 9 s (PSK31) to 38 s (Olivia) tail after a `K`, his row still says *sending* while his card no longer does.
+
+**6. *Your turn?* now stands beside the unchanged *His turn, a guess*.** *Author's. It is one line either way if you want them to match.* R14 held me to the one word 9.4 names.
+
+**7. `validate-output.bat` - see the last line of this section.**
+
+### On the four carried asks that touch tonight
+
+- **Unit 388's item 1, the map at 1400 needs the pills row elsewhere.** Answered tonight by instruction 389 ruling 2, as author and overrulable. The map moved to the left edge instead of moving the pills. At 1400 the pills have 961 of 675 px and stay one row, the map is 393 x 214, and the band is 214. PSK31 off 14.070 is the one exception (item 4).
+- **Unit 388's item 2, `CardFloor = 400` and the caption's place.** The floor was left at 400, and it is now what sets the switch at 1399. The caption did not move: it stays in the card's Favorites row, at 1109,237 at 1920 and 589,275 at 1400.
+- **Unit 388's item 5, `TheTopRowTests` on line 7.** Counted again: **0** occurrences. Not repaired.
+- **Unit 387's item 1, *make a card anyway* on a nameless row.** Still Tim's. Tonight's step 9 measurement read cards that name someone, so it does not touch it.
+
+### The reload's disagreements
+
+- **The `RULES_AT` split, the twelfth unit running.** `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)` and `CLAUDE.md` holds `CPS-DEC-0165`. `tools\` is not mine to edit.
+- **The `PHASE_OUTCOME` header says step 6 is done, and its last entry says partial.** That is R42: the header is right and the entry is history.
+- **The three launcher files had only appends and header or ledger lines.** All three were committed unaltered with task 0. No judging session's line was edited, and the `.run-unit/` launcher files were left alone.
+
+### Section 5's lines against the tree
+
+Every line of section 5 matched the tree:
+- version 1.13.75
+- `PHASE_STATUS.md` stale at step 0 and unit 388
+- `HEAD` at `3d980458`
+- `docs/carry-forward-tests.txt` 866 lines, line 7 at 62 terms and line 9 at 25
+- 265 and 150
+- `card_dismissed` 0 times in `src`
+- `TopRow`, `BandRow` and the pills in the markup as described
+- unit 388's 961 px and 1114 px break-even
+
+**One measurement went beyond it and wins:** at 1400 the card, not the pills, decides the left-edge map, at 400.9 px against a floor of 400.
+
+**`validate-output.bat`:** hand-checked, not run. The exact command, `./tools/arbiter/validate-output.bat output.md`, returned `This command requires approval`, so the table below checks the six rules in the script's own header by hand.
+
+| Rule, from the script's header | Hand-check |
+|---|---|
+| 1 - a `UNIT:` line above section 1, parseable | **ok** - inside the fenced block, above `## 1.` |
+| 2 - the four top-level sections, in order, exact names | **ok** |
+| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; everything deeper is `### ` |
+| 4 - section 4 present even when empty | **ok** - present, with a straight apostrophe |
+| 5 - section 3 non-empty | **ok** |
+| 6 - the ordering block above `UNIT:`, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` on line 1, then `A.`, `B.`, `C.`, with *raises 7 items* |
+
+### Unit 388's section 4, carried per HM-DEC-139, verbatim
+
+**One item is in the way of a criterion in B: item 1, 10.3's last 36 px.** The other six are findings and choices.
+
+**1. The map reaching the band's full 214 at 1400 needs the pills row to stand somewhere else. That is a layout decision about your pills.** *A finding with its numbers, not a ruling I can make.*
+
+With the map between the card and the rig face, the pills get the room left of the map: 343 px at 1400, against the 675 they need. As a non-wrapping `StackPanel` they would be clipped (a lost pill). As a `WrapPanel` they wrap to two rows and the band goes to 252.
+
+The ways to 214 at 1400 are:
+- move the map to the band's left edge, which gives the pills 961 px;
+- move the pills out of the row above the card;
+- narrow the pills.
+
+**Each one changes where your pills or your map sit on the screen**, against your 2026-08-26 and 2026-09-12 arrangements. What I rejected and why: moving the map left without asking, because it relocates the pills you reach for first and moves the map away from the mockup's place.
+
+**2. `CardFloor = 400` and the caption's place are my choices, and both are overrulable.** *Author's, marked in the code.* Section 1 decisions 1 and 2 have the reasoning. Lowering the floor lets the map grow at more widths, at the cost of more wrapping in the green block.
+
+**3. The exit's first app attempt crashed the test host, and the cause was not determined.** *A finding, not called environmental.*
+
+Attempt 1 ran 214 names with one red, which was this unit's own and is repaired. Then the host crashed. That red's press had never reached the button, because the test didn't move the headless mouse first. I made two changes:
+- the press now moves first, as `TheStopIsAlwaysOnScreenTests.Press` does;
+- every window now shuts any list a press opened before it closes.
+
+The crash did not recur in two further attempts. Whether it came from a popup outliving its window or from something else is **not determined**.
+
+**4. `TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant` went red on a file lock in both entry attempts.** *Inherited, recorded, not chased.* The error was `IOException` on its own temp `refuse\2026-09-22.jsonl`, *being used by another process*, at 7 to 8 s. The type alone was 7 of 7, and it was green in both completed exit attempts. Nothing under `src` or `tests` had moved since unit 387's exit when it first failed.
+
+**5. Section 5's mismatch, confirmed and not repaired: 10.5's ticked text says `TheTopRowTests` is on the carry-forward line, and it is not.** Line 7 has **0** occurrences. The line carries `Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference`, `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` and (renamed tonight) `TheFavoritesAreUnderTheGreenZoneTests`.
+
+**6. Two tests beyond the ruled one were rewritten under R12.** *Decisions of mine, stated in section 1 decision 4.* They are `TheTopRowTests.TheWorldClockIsAtTheCardsRightEndWithOneMarker` and `TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth`. Both asserted the map inside the card at 134, which is what rev7 replaced. Neither is on the carry-forward line.
+
+**7. The renamed type's file keeps its old name.** *A consequence of the permission mode.* `git mv` and `rm` are refused. A later session with those permissions can rename `TheFavoritesAreBackOnTheRigDisplayTests.cs` to match its type in one command.
+
+#### On the carried items tonight's work touched (unit 388's)
+
+- **Unit 387's item 2 - 214 against 220.** Answered by Tim, not by me: rev7's 10.3 reads *the band itself does not grow, 214 px stands.* Carried closed.
+- **Unit 387's item 3 - 1100 x 780.** Re-measured and in section 3 beside the old numbers. Not ruled on.
+- **Unit 387's item 4 - `TheMenuIsUnderTheMouseTests`.** 0 of 8 at entry and 0 of 8 at exit, on the same precondition. Tonight's layout did not touch `DigitalDecodedRows` or `DigitalMineRows`, and I did not repair it.
+- **Unit 387's items 1, 5, 6 and 7.** Not mine and not re-recorded. The `RULES_AT` split is **the eleventh unit running**: `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)`, `CLAUDE.md` holds `CPS-DEC-0165`, and `tools\` is not mine to edit.
+- **Unit 383's inherited reds.** Not hunted. `ViewTestsActThroughControlsTests` scanned 52 view test files at exit and **the offender count is still one**, `TheStopIsAlwaysOnScreenTests.cs:102`. Tonight's view tests act through the control with a headless pointer and write nothing a control owns.
+- **The reload's second disagreement.** The `PHASE_OUTCOME` header says step 6 is done while the last entry for it says partial. That is R42: Tim closed step 6 by ruling after the judging session's `partial`. The header is right and the entry is history.
+- **`docs/RADIO_SHEET.md`.** None of the strings I changed or added is quoted there. The one note reused (*Nothing saved here yet…*) is unit 387's, word for word.
+
+#### Asks still outstanding - carried per HM-DEC-139, verbatim (unit 388's)
+
+**The queue stands at sixty and this unit answers none of them**, beyond item 2 of unit 387's, which Tim answered in rev7. It is the fifty-three unit 387 carried plus unit 387's own seven, read out of unit 387's `output.md` at `752a9b62`.
+
+**Unit 387's own seven, verbatim:**
 
 **1. *Make a card anyway* is a note on a row that names nobody, because a working card there is the
 second mechanism the instruction forbids.** *A finding that wants a ruling if the owner disagrees.*
@@ -543,48 +493,7 @@ launcher fault twice over, and 0.1's cut-down. **Neither is mine. Neither was to
 literal; `CLAUDE.md` §1 holds `CPS-DEC-0165`. **`tools\` is not this unit's to edit**, and section 9
 parks it.
 
-### On the carried items that tonight's work touched
-
-- **Unit 386's item 3 - a stale expected test count beat an instruction and the measurement won.**
-  It did not recur. Section 5's expected **245 and 150** were exactly what the entry round returned.
-- **Unit 383's inherited reds.** `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` and
-  `TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend` were not gone hunting for and neither file was
-  opened. `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` **was run**, because
-  task 3's trap sits next to it: it scanned **51** view test files, two of them this unit's new ones,
-  and named only the one pre-existing offender, `TheStopIsAlwaysOnScreenTests.cs:102`. **This unit made
-  it no worse and did not make it green**; both of this unit's view tests act through the control with
-  a headless pointer and read the private rectangles without writing anything.
-- **`docs/RADIO_SHEET.md` (section 9, parked).** Checked: none of the strings this unit changed or
-  added is quoted by the sheet. `TheRadioSheetQuotesTheScreenTests` is on the carry-forward line and
-  was green at the exit round.
-
-**`validate-output.bat` - hand-checked, not run, an eighth unit running.** The exact command, in the
-shape section 2 prescribes:
-
-```
-./tools/arbiter/validate-output.bat output.md
-```
-
-The exact refusal: `This command requires approval`. **It is the permission mode and not the syntax**,
-and a non-interactive session cannot answer the prompt. **What follows is a hand-check against the
-script's own header rules as units 385 and 386 transcribed them, and not a run of the validator.**
-
-| Rule, from the script's own header | Hand-check |
-|---|---|
-| 1 - a `UNIT:` line above section 1, parseable | **ok** - inside the fenced block above section 1 and within the leading 60 lines |
-| 2 - the four top-level sections, in order, exact names | **ok** - `## 1. What Claude did`, `## 2. What the owner should expect`, `## 3. What you should see`, `## 4. What's blocking us` |
-| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; every deeper heading is `### `, which `^## ` does not match |
-| 4 - section 4 present even when empty | **ok** - present, not empty, straight apostrophe in the heading |
-| 5 - section 3 non-empty | **ok** - the archaeology table, the star's nine sizes, the menu counts, the map and band numbers, 10.4's seven cases and both rounds |
-| 6 - the ordering block above the `UNIT:` line, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` on line 1, `A.` line 3, `B.` line 9, `C.` line 25, the `UNIT:` line at 34 and section 1 at 50; and C says *raises 7 items*, which `raises \d+ item` matches |
-
-### Asks still outstanding - carried per HM-DEC-139, verbatim
-
-**The queue stands at fifty-three and this unit answers none of them.** It is the forty-seven unit 386
-carried plus unit 386's own six, read out of unit 386's committed `output.md` at `283c6fa6` rather
-than reconstructed from memory.
-
-**Unit 386's own six, verbatim:**
+**Unit 386's own six, verbatim, as unit 387 carried them:**
 
 **1. The two counts differ by two rounds, and that difference is the night's finding.** *A
 finding, and ruling 1 asks for it by name.* **Two invocations of the soak's twelve were lost** -
@@ -667,7 +576,7 @@ line went in with the hold's narrowing at `d86d4ccd`.
 
 **8. The `RULES_AT` id split.** *Reported, not repaired.* `tools\` is not a unit's.
 
-**Unit 383's ten, carried by units 385 and 386, verbatim:**
+**Unit 383's ten, carried by units 385, 386 and 387, verbatim:**
 
 **1. 4.3 is met on the measurement, and partial under the strictest reading.** 183 lines scanned;
 **0** tier-1 phrases in the sheet's own voice; **2** inside quotes, both declared and proved
@@ -705,7 +614,7 @@ the instruction did not ask for, and two commits merged that section 11 would ha
 
 **10. `validate-output.bat` refused again** and the six rules were hand-checked instead.
 
-**And the queue of twenty-nine that units 385 and 386 carried by reference, unanswered here:**
+**And the queue of twenty-nine that units 385, 386 and 387 carried by reference, unanswered here:**
 
 Unit 382's item 5; unit 381's item 1; unit 380's items 1 and 4; unit 379's items 1, 3 and 7; unit
 378's items 1, 3 and 4; unit 377's item 4; unit 376's items 3, 4 and 5; unit 375's items 3 and 4;

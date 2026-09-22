@@ -205,3 +205,5 @@ the owner reads instead of watching.
 | 1 | 2026-09-22T10:22 | 2026-09-22T11:41 | complete | 43.3960615 | ran unattended, 310 turns, 13 denied call(s) worked around, report valid |
 | phase | 2026-09-22T11:53 | 2026-09-22T11:53 | ending | 43.3961 | ENDED - the arbiter raised one of the three for the owner. stop 4: the arbiter declared a decision the owner's |
 | 1 | 2026-09-22T13:14 | 2026-09-22T14:08 | complete | 11.630765599999995 | ran unattended, 219 turns, 5 denied call(s) worked around, report valid |
+| 2 | 2026-09-22T14:15 | 2026-09-22T14:58 | complete | 12.394016599999993 | ran unattended, 255 turns, 6 denied call(s) worked around, report valid |
+| phase | 2026-09-22T14:59 | 2026-09-22T14:59 | ending | 11.6308 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |

@@ -51,8 +51,115 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-**Nothing blocks a criterion in B.** Seven items. Items 1 and 2 qualify 10.2 and 10.3 and are already
-stated in B.
+**Items 1 to 4 are in the way of a criterion in B. Items 5 to 7 are findings.**
+
+**1. 9.2 falls short in two places, and both are on the send path, so they were left.** *A finding with numbers. Changing either needs a licence, because each changes whether a send control is enabled.*
+- **Only 1 of 4 controls is greyed.** Report and Confirm are withheld by R1 mid-over, and the canned lines become a note.
+- **The hold ends at his hand-back, not when his carrier drops.** Unit 385 measured that holding to the drop would refuse every answer for 9 s after a PSK31 `K`, and 22.94 to 38.23 s after an Olivia one.
+
+Unit 385's claim was *"3 of the four controls held with one sentence and the fourth already withheld by R1"*. Measured, all four are held, three carry the sentence, and one is greyed.
+
+**2. 9.3's *RST fields editable* reverses your ruling of 2026-09-07.** *A ruling request.* That ruling says observed fields are not editable in the Log dialog: *nothing typed overwrites anything observed*. 9.3 is later, and the later ruling normally wins. But this changes what goes into your permanent log, so I did not build it.
+- **Option A:** editable RST fields that record they were typed rather than heard.
+- **Option B:** keep them read-only and reword 9.3.
+- **Industry standard:** A. Loggers let you correct an RST, and keeping the "heard" or "typed" mark keeps your ruling's intent.
+
+**3. Neither replay is the record, and 9.4's is not what you got.** *A finding. Its remedy needs your file, or a licence to open the engine.* Your `2026-09-21.jsonl` is not on this machine. Unit 385's item 2 measured that `Psk31MessageSplitter` completes nothing from a garbled over, and that site is under `src\Hamlet.RadioEngine\Psk31\`.
+
+**4. 10.3 at 1400 on PSK31 with the dial off 14.070 falls back to stage A.** *A finding. Whether it blocks 10.3 is a judging session's reading.* The card also draws *PSK31 lives at 14.070; you are at 14.074*, and at 401 px wide that no longer fits in 178 px. Any fix would cost one of three things you ruled on: the map's full height, the rig's width, or the strayed line. On 14.070 the same window stands at the left edge. The fallback is what keeps that line on the screen.
+
+**5. The card's green word and the row's *sending* can disagree for a few seconds.** *A finding.* The card follows the hold, which ends at his hand-back. The row follows his carrier. For the 9 s (PSK31) to 38 s (Olivia) tail after a `K`, his row still says *sending* while his card no longer does.
+
+**6. *Your turn?* now stands beside the unchanged *His turn, a guess*.** *Author's. It is one line either way if you want them to match.* R14 held me to the one word 9.4 names.
+
+**7. `validate-output.bat` - see the last line of this section.**
+
+### On the four carried asks that touch tonight
+
+- **Unit 388's item 1, the map at 1400 needs the pills row elsewhere.** Answered tonight by instruction 389 ruling 2, as author and overrulable. The map moved to the left edge instead of moving the pills. At 1400 the pills have 961 of 675 px and stay one row, the map is 393 x 214, and the band is 214. PSK31 off 14.070 is the one exception (item 4).
+- **Unit 388's item 2, `CardFloor = 400` and the caption's place.** The floor was left at 400, and it is now what sets the switch at 1399. The caption did not move: it stays in the card's Favorites row, at 1109,237 at 1920 and 589,275 at 1400.
+- **Unit 388's item 5, `TheTopRowTests` on line 7.** Counted again: **0** occurrences. Not repaired.
+- **Unit 387's item 1, *make a card anyway* on a nameless row.** Still Tim's. Tonight's step 9 measurement read cards that name someone, so it does not touch it.
+
+### The reload's disagreements
+
+- **The `RULES_AT` split, the twelfth unit running.** `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)` and `CLAUDE.md` holds `CPS-DEC-0165`. `tools\` is not mine to edit.
+- **The `PHASE_OUTCOME` header says step 6 is done, and its last entry says partial.** That is R42: the header is right and the entry is history.
+- **The three launcher files had only appends and header or ledger lines.** All three were committed unaltered with task 0. No judging session's line was edited, and the `.run-unit/` launcher files were left alone.
+
+### Section 5's lines against the tree
+
+Every line of section 5 matched the tree:
+- version 1.13.75
+- `PHASE_STATUS.md` stale at step 0 and unit 388
+- `HEAD` at `3d980458`
+- `docs/carry-forward-tests.txt` 866 lines, line 7 at 62 terms and line 9 at 25
+- 265 and 150
+- `card_dismissed` 0 times in `src`
+- `TopRow`, `BandRow` and the pills in the markup as described
+- unit 388's 961 px and 1114 px break-even
+
+**One measurement went beyond it and wins:** at 1400 the card, not the pills, decides the left-edge map, at 400.9 px against a floor of 400.
+
+**`validate-output.bat`:** hand-checked, not run. The exact command, `./tools/arbiter/validate-output.bat output.md`, returned `This command requires approval`, so the table below checks the six rules in the script's own header by hand.
+
+| Rule, from the script's header | Hand-check |
+|---|---|
+| 1 - a `UNIT:` line above section 1, parseable | **ok** - inside the fenced block, above `## 1.` |
+| 2 - the four top-level sections, in order, exact names | **ok** |
+| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; everything deeper is `### ` |
+| 4 - section 4 present even when empty | **ok** - present, with a straight apostrophe |
+| 5 - section 3 non-empty | **ok** |
+| 6 - the ordering block above `UNIT:`, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` on line 1, then `A.`, `B.`, `C.`, with *raises 7 items* |
+
+### Unit 388's section 4, carried per HM-DEC-139, verbatim
+
+**One item is in the way of a criterion in B: item 1, 10.3's last 36 px.** The other six are findings and choices.
+
+**1. The map reaching the band's full 214 at 1400 needs the pills row to stand somewhere else. That is a layout decision about your pills.** *A finding with its numbers, not a ruling I can make.*
+
+With the map between the card and the rig face, the pills get the room left of the map: 343 px at 1400, against the 675 they need. As a non-wrapping `StackPanel` they would be clipped (a lost pill). As a `WrapPanel` they wrap to two rows and the band goes to 252.
+
+The ways to 214 at 1400 are:
+- move the map to the band's left edge, which gives the pills 961 px;
+- move the pills out of the row above the card;
+- narrow the pills.
+
+**Each one changes where your pills or your map sit on the screen**, against your 2026-08-26 and 2026-09-12 arrangements. What I rejected and why: moving the map left without asking, because it relocates the pills you reach for first and moves the map away from the mockup's place.
+
+**2. `CardFloor = 400` and the caption's place are my choices, and both are overrulable.** *Author's, marked in the code.* Section 1 decisions 1 and 2 have the reasoning. Lowering the floor lets the map grow at more widths, at the cost of more wrapping in the green block.
+
+**3. The exit's first app attempt crashed the test host, and the cause was not determined.** *A finding, not called environmental.*
+
+Attempt 1 ran 214 names with one red, which was this unit's own and is repaired. Then the host crashed. That red's press had never reached the button, because the test didn't move the headless mouse first. I made two changes:
+- the press now moves first, as `TheStopIsAlwaysOnScreenTests.Press` does;
+- every window now shuts any list a press opened before it closes.
+
+The crash did not recur in two further attempts. Whether it came from a popup outliving its window or from something else is **not determined**.
+
+**4. `TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant` went red on a file lock in both entry attempts.** *Inherited, recorded, not chased.* The error was `IOException` on its own temp `refuse\2026-09-22.jsonl`, *being used by another process*, at 7 to 8 s. The type alone was 7 of 7, and it was green in both completed exit attempts. Nothing under `src` or `tests` had moved since unit 387's exit when it first failed.
+
+**5. Section 5's mismatch, confirmed and not repaired: 10.5's ticked text says `TheTopRowTests` is on the carry-forward line, and it is not.** Line 7 has **0** occurrences. The line carries `Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference`, `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` and (renamed tonight) `TheFavoritesAreUnderTheGreenZoneTests`.
+
+**6. Two tests beyond the ruled one were rewritten under R12.** *Decisions of mine, stated in section 1 decision 4.* They are `TheTopRowTests.TheWorldClockIsAtTheCardsRightEndWithOneMarker` and `TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth`. Both asserted the map inside the card at 134, which is what rev7 replaced. Neither is on the carry-forward line.
+
+**7. The renamed type's file keeps its old name.** *A consequence of the permission mode.* `git mv` and `rm` are refused. A later session with those permissions can rename `TheFavoritesAreBackOnTheRigDisplayTests.cs` to match its type in one command.
+
+#### On the carried items tonight's work touched (unit 388's)
+
+- **Unit 387's item 2 - 214 against 220.** Answered by Tim, not by me: rev7's 10.3 reads *the band itself does not grow, 214 px stands.* Carried closed.
+- **Unit 387's item 3 - 1100 x 780.** Re-measured and in section 3 beside the old numbers. Not ruled on.
+- **Unit 387's item 4 - `TheMenuIsUnderTheMouseTests`.** 0 of 8 at entry and 0 of 8 at exit, on the same precondition. Tonight's layout did not touch `DigitalDecodedRows` or `DigitalMineRows`, and I did not repair it.
+- **Unit 387's items 1, 5, 6 and 7.** Not mine and not re-recorded. The `RULES_AT` split is **the eleventh unit running**: `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)`, `CLAUDE.md` holds `CPS-DEC-0165`, and `tools\` is not mine to edit.
+- **Unit 383's inherited reds.** Not hunted. `ViewTestsActThroughControlsTests` scanned 52 view test files at exit and **the offender count is still one**, `TheStopIsAlwaysOnScreenTests.cs:102`. Tonight's view tests act through the control with a headless pointer and write nothing a control owns.
+- **The reload's second disagreement.** The `PHASE_OUTCOME` header says step 6 is done while the last entry for it says partial. That is R42: Tim closed step 6 by ruling after the judging session's `partial`. The header is right and the entry is history.
+- **`docs/RADIO_SHEET.md`.** None of the strings I changed or added is quoted there. The one note reused (*Nothing saved here yetâ€¦*) is unit 387's, word for word.
+
+#### Asks still outstanding - carried per HM-DEC-139, verbatim (unit 388's)
+
+**The queue stands at sixty and this unit answers none of them**, beyond item 2 of unit 387's, which Tim answered in rev7. It is the fifty-three unit 387 carried plus unit 387's own seven, read out of unit 387's `output.md` at `752a9b62`.
+
+**Unit 387's own seven, verbatim:**
 
 **1. *Make a card anyway* is a note on a row that names nobody, because a working card there is the
 second mechanism the instruction forbids.** *A finding that wants a ruling if the owner disagrees.*
@@ -115,48 +222,7 @@ launcher fault twice over, and 0.1's cut-down. **Neither is mine. Neither was to
 literal; `CLAUDE.md` Â§1 holds `CPS-DEC-0165`. **`tools\` is not this unit's to edit**, and section 9
 parks it.
 
-### On the carried items that tonight's work touched
-
-- **Unit 386's item 3 - a stale expected test count beat an instruction and the measurement won.**
-  It did not recur. Section 5's expected **245 and 150** were exactly what the entry round returned.
-- **Unit 383's inherited reds.** `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` and
-  `TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend` were not gone hunting for and neither file was
-  opened. `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` **was run**, because
-  task 3's trap sits next to it: it scanned **51** view test files, two of them this unit's new ones,
-  and named only the one pre-existing offender, `TheStopIsAlwaysOnScreenTests.cs:102`. **This unit made
-  it no worse and did not make it green**; both of this unit's view tests act through the control with
-  a headless pointer and read the private rectangles without writing anything.
-- **`docs/RADIO_SHEET.md` (section 9, parked).** Checked: none of the strings this unit changed or
-  added is quoted by the sheet. `TheRadioSheetQuotesTheScreenTests` is on the carry-forward line and
-  was green at the exit round.
-
-**`validate-output.bat` - hand-checked, not run, an eighth unit running.** The exact command, in the
-shape section 2 prescribes:
-
-```
-./tools/arbiter/validate-output.bat output.md
-```
-
-The exact refusal: `This command requires approval`. **It is the permission mode and not the syntax**,
-and a non-interactive session cannot answer the prompt. **What follows is a hand-check against the
-script's own header rules as units 385 and 386 transcribed them, and not a run of the validator.**
-
-| Rule, from the script's own header | Hand-check |
-|---|---|
-| 1 - a `UNIT:` line above section 1, parseable | **ok** - inside the fenced block above section 1 and within the leading 60 lines |
-| 2 - the four top-level sections, in order, exact names | **ok** - `## 1. What Claude did`, `## 2. What the owner should expect`, `## 3. What you should see`, `## 4. What's blocking us` |
-| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; every deeper heading is `### `, which `^## ` does not match |
-| 4 - section 4 present even when empty | **ok** - present, not empty, straight apostrophe in the heading |
-| 5 - section 3 non-empty | **ok** - the archaeology table, the star's nine sizes, the menu counts, the map and band numbers, 10.4's seven cases and both rounds |
-| 6 - the ordering block above the `UNIT:` line, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` on line 1, `A.` line 3, `B.` line 9, `C.` line 25, the `UNIT:` line at 34 and section 1 at 50; and C says *raises 7 items*, which `raises \d+ item` matches |
-
-### Asks still outstanding - carried per HM-DEC-139, verbatim
-
-**The queue stands at fifty-three and this unit answers none of them.** It is the forty-seven unit 386
-carried plus unit 386's own six, read out of unit 386's committed `output.md` at `283c6fa6` rather
-than reconstructed from memory.
-
-**Unit 386's own six, verbatim:**
+**Unit 386's own six, verbatim, as unit 387 carried them:**
 
 **1. The two counts differ by two rounds, and that difference is the night's finding.** *A
 finding, and ruling 1 asks for it by name.* **Two invocations of the soak's twelve were lost** -
@@ -239,7 +305,7 @@ line went in with the hold's narrowing at `d86d4ccd`.
 
 **8. The `RULES_AT` id split.** *Reported, not repaired.* `tools\` is not a unit's.
 
-**Unit 383's ten, carried by units 385 and 386, verbatim:**
+**Unit 383's ten, carried by units 385, 386 and 387, verbatim:**
 
 **1. 4.3 is met on the measurement, and partial under the strictest reading.** 183 lines scanned;
 **0** tier-1 phrases in the sheet's own voice; **2** inside quotes, both declared and proved
@@ -277,7 +343,7 @@ the instruction did not ask for, and two commits merged that section 11 would ha
 
 **10. `validate-output.bat` refused again** and the six rules were hand-checked instead.
 
-**And the queue of twenty-nine that units 385 and 386 carried by reference, unanswered here:**
+**And the queue of twenty-nine that units 385, 386 and 387 carried by reference, unanswered here:**
 
 Unit 382's item 5; unit 381's item 1; unit 380's items 1 and 4; unit 379's items 1, 3 and 7; unit
 378's items 1, 3 and 4; unit 377's item 4; unit 376's items 3, 4 and 5; unit 375's items 3 and 4;
