@@ -5174,6 +5174,16 @@
                                                                    IsVisible="{Binding HasEndedWord}"
                                                                    Foreground="{StaticResource HmTextMutedBrush}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
+                                                        <!-- **AND WHILE HE IS STILL ON THE AIR**
+                                                             (R44, criterion 9.2), in the same
+                                                             place the row already says he
+                                                             stopped, so the two words are read
+                                                             in one glance and cannot disagree. -->
+                                                        <TextBlock Grid.Column="3" x:Name="DecodedRowSendingWord"
+                                                                   Text="{Binding SendingWord}"
+                                                                   IsVisible="{Binding HasSendingWord}"
+                                                                   Foreground="{StaticResource HmGreenBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
                                                         <!-- **THE WHOLE MESSAGE ON HOVER AND
                                                              ON A CLICK** (Tim, 2026-09-14: *"I
                                                              should be able to hover and see a
@@ -5805,9 +5815,19 @@
                                                                      what would go out
                                                                      without it being on
                                                                      the face. -->
+                                                                <!-- **HELD WHILE HE IS STILL
+                                                                     SENDING** (R44, criterion
+                                                                     9.2). The button stays where
+                                                                     it was and greys, with
+                                                                     `OfferNote` beside it saying
+                                                                     why; §0.5.1's grey is for
+                                                                     what genuinely cannot be
+                                                                     used, and this cannot: the
+                                                                     send path refuses it too. -->
                                                                 <Button Grid.Column="1"
                                                                         Classes="hm-cardaction"
                                                                         IsVisible="{Binding HasAction}"
+                                                                        IsEnabled="{Binding CanPressAction}"
                                                                         VerticalAlignment="Center"
                                                                         Content="{Binding ActionLabel}"
                                                                         Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).CardActionCommand}"
@@ -5997,11 +6017,23 @@
                                                                                    TextWrapping="Wrap"
                                                                                    Text="{Binding TypedNote}"
                                                                                    Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                                        <!-- **AND WHY THE SEND IS HELD**
+                                                                             (R44, criterion 9.2), in the one
+                                                                             sentence the card, the button and
+                                                                             the record all say. Silent when
+                                                                             his carrier is down. -->
+                                                                        <TextBlock x:Name="Psk31TypedHoldNote"
+                                                                                   FontSize="11"
+                                                                                   TextWrapping="Wrap"
+                                                                                   Text="{Binding TypedHoldNote}"
+                                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
                                                                     </StackPanel>
 
                                                                     <Button x:Name="Psk31TypedSend"
                                                                             Grid.Column="1"
                                                                             Classes="hm-cardaction"
+                                                                            IsEnabled="{Binding CanSendTyped}"
                                                                             Content="Send"
                                                                             Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).SendTypedPsk31Command}"
                                                                             CommandParameter="{Binding}"

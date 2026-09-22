@@ -211,10 +211,14 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// calling center, at 8/250, under Olivia, on a certain reading, and whether the move has already
     /// gone out are all the shell's questions, and this type asks none of them.
     /// </param>
+    /// <param name="carrierIsLive">
+    /// Whether this station's carrier is still on the air, read off his row's own `Ended`
+    /// (R44, criterion 9.2). **Handed in, never worked out here** (§0.1).
+    /// </param>
     public static Ft8ContactCard ForPsk31(
         string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None,
         string? grid = null, string offeredText = "", bool complete = false, string? operatorCallsign = null,
-        string? oliviaVariant = null, OliviaMoveOffer? move = null)
+        string? oliviaVariant = null, OliviaMoveOffer? move = null, bool carrierIsLive = false)
     {
         ArgumentNullException.ThrowIfNull(turn);
 
@@ -225,6 +229,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
         return new Ft8ContactCard(facts, operatorGrid, turn, offered, offeredText ?? "", complete)
         {
+            CarrierIsLive = carrierIsLive,
             OperatorCallsign = operatorCallsign ?? "",
             OliviaVariant = oliviaVariant ?? "",
             Move = move ?? OliviaMoveOffer.Nothing,
@@ -421,6 +426,17 @@ public sealed partial class Ft8ContactCard : ObservableObject
         => _turn is not null
             && !(_turn.State == Psk31TurnState.HisTurn && _turn.IsCertain);
 
+    /// <summary>**True where the typed line may be sent**: the block is there and he is not still sending.</summary>
+    /// <remarks>
+    /// **THE BLOCK STAYS AND THE BUTTON IS HELD** (R44, 9.2, and §0.5.1). Hiding the text he has
+    /// already typed would take his words away and explain nothing; the button greys and
+    /// <see cref="TypedHoldNote"/> says why.
+    /// </remarks>
+    public bool CanSendTyped => CanType && !CarrierIsLive;
+
+    /// <summary>What the card says beside the held typed-line button, or "".</summary>
+    public string TypedHoldNote => CarrierIsLive ? HeIsStillSending : "";
+
     /// <summary>**Whose turn it is, in words, where FT8's card has its state word.**</summary>
     /// <remarks>
     /// <para>**A GUESS SAYS SO IN WORDS** (§R1, §0.6): *a guess* is part of the word, so printed in
@@ -441,6 +457,35 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>True where the turn word is a guess or an unknown.</summary>
     public bool TurnIsGuess => _turn is { IsCertain: false };
 
+    /// <summary>**The one sentence the live-carrier hold says, everywhere it is said.**</summary>
+    /// <remarks>
+    /// **ONE SENTENCE SO THE THREE PLACES CANNOT DRIFT** (work instruction 385 ruling 1 item 3,
+    /// §0.0): the word on the card, the note beside the held button, and the refusal the send
+    /// path writes are this string and not three spellings of it.
+    /// </remarks>
+    public const string HeIsStillSending = "he is still sending";
+
+    /// <summary>**True while this station's carrier is still on the air** (R44, 9.2).</summary>
+    /// <remarks>
+    /// **THE ROW'S OWN LIVENESS, HANDED IN** - `row.Ended` is written in one place and this card
+    /// is built from it, so the card and the row cannot disagree about whether he is sending.
+    /// </remarks>
+    public bool CarrierIsLive { get; init; }
+
+    /// <summary>What the card says while his carrier is up, or "" when it is not.</summary>
+    public string SendingWord => CarrierIsLive ? HeIsStillSending : "";
+
+    /// <summary>
+    /// **True where the offered button may be pressed**: there is one, and he is not still
+    /// sending.
+    /// </summary>
+    /// <remarks>
+    /// **HELD, NOT HIDDEN** (§0.5.1). The button stays where it was with the sentence beside it,
+    /// because a control that vanishes teaches nothing; and the press is refused at the send path
+    /// too, so this is the convenience and never the safety (ruling 1 item 2).
+    /// </remarks>
+    public bool CanPressAction => HasAction && !CarrierIsLive;
+
     /// <summary>What the card says beside the macro it offers, or "" where it says nothing.</summary>
     /// <remarks>
     /// **THE DOUBT IS SAID AND IT DOES NOT STOP HIM** (work instruction 371 task 1), which is the
@@ -449,9 +494,11 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// **nothing goes out until he clicks** (§0.2).
     /// </remarks>
     public string OfferNote
-        => _offered != Psk31Macro.None && _turn is { IsCertain: false }
-            ? "not sure it is your turn"
-            : "";
+        => CarrierIsLive
+            ? HeIsStillSending
+            : _offered != Psk31Macro.None && _turn is { IsCertain: false }
+                ? "not sure it is your turn"
+                : "";
 
     /// <summary>What a PSK31 card says: whose turn, and why nothing is offered where nothing is.</summary>
     /// <remarks>

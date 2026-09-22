@@ -425,6 +425,8 @@ public sealed partial record DigitalDecodeRow(
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Ended)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EndedWord)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasEndedWord)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SendingWord)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasSendingWord)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RowOpacity)));
         }
     }
@@ -432,8 +434,20 @@ public sealed partial record DigitalDecodeRow(
     /// <summary>The word an ended row carries, or "". The word is the unit's (work instruction 355).</summary>
     public string EndedWord => Ended ? "ended" : "";
 
+    /// <summary>**What the row says while this station's carrier is still on the air**, or "".</summary>
+    /// <remarks>
+    /// **R44, CRITERION 9.2: HIS ROW SAYS IT TOO**, beside the word that says when he stopped. A
+    /// keyboard row is live exactly while its carrier has not stopped, which is `Ended`, written
+    /// in one place - so the two words cannot disagree. It reads what the row already holds and
+    /// sets no state.
+    /// </remarks>
+    public string SendingWord => IsTextOnly && !Ended && !HeardNotReadable ? "sending" : "";
+
     /// <summary>True where <see cref="EndedWord"/> has something to say.</summary>
     public bool HasEndedWord => Ended;
+
+    /// <summary>True where <see cref="SendingWord"/> has something to say.</summary>
+    public bool HasSendingWord => SendingWord.Length > 0;
 
     /// <summary>The Olivia variant this row's station is read at, or "" on every other row.</summary>
     public string Variant { get; init; } = "";

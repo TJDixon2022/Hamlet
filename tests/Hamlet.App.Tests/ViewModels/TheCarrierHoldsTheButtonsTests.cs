@@ -236,6 +236,77 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
         NothingPersonal();
     }
 
+    /// <summary>
+    /// **His row and his card say he is sending, and the four controls are held with the one
+    /// sentence** - ruling 1 item 2 (a) and (b), and item 3.
+    /// </summary>
+    [Fact]
+    public void HisRowAndHisCardSayItAndTheFourControlsAreHeld()
+    {
+        var model = Panel(out _, out var telemetry);
+
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, HisOver) });
+
+        var card = Assert.Single(model.DigitalCards);
+        var row = Assert.Single(model.DigitalDecodes, r => r.IsTextOnly);
+
+        _output.WriteLine($"row  : sending [{row.SendingWord}] ended [{row.EndedWord}]");
+        _output.WriteLine($"card : live {card.CarrierIsLive}, word [{card.SendingWord}], note [{card.OfferNote}], "
+            + $"press {card.CanPressAction}, typed send {card.CanSendTyped}, typed note [{card.TypedHoldNote}]");
+
+        // (a) **HIS ROW AND HIS CARD SAY IT.**
+        Assert.Equal("sending", row.SendingWord);
+        Assert.True(row.HasSendingWord);
+        Assert.Equal("", row.EndedWord);
+        Assert.True(card.CarrierIsLive);
+        Assert.Equal(Ft8ContactCard.HeIsStillSending, card.SendingWord);
+
+        // (b) **THE FOUR CONTROLS ARE HELD**: the offered macro, the typed line, and the canned
+        // lines, each with the same sentence. Report and Confirm are the one offered button.
+        Assert.True(card.HasAction, "there is no button to hold, so this proves nothing");
+        Assert.False(card.CanPressAction);
+        Assert.Equal(Ft8ContactCard.HeIsStillSending, card.OfferNote);
+        Assert.True(card.CanType, "the typed block is hidden rather than held");
+        Assert.False(card.CanSendTyped);
+        Assert.Equal(Ft8ContactCard.HeIsStillSending, card.TypedHoldNote);
+
+        var canned = model.Psk31CannedMenuFor(row);
+
+        Assert.NotNull(canned);
+        _output.WriteLine($"canned: {canned!.Count} entries, first [{canned[0].Label}]");
+        Assert.All(canned, entry => Assert.True(entry.IsNote));
+        Assert.Contains(Ft8ContactCard.HeIsStillSending, canned[0].Label, StringComparison.Ordinal);
+
+        // **AND ALL OF IT LETS GO WHEN HIS CARRIER DROPS** (ruling 1 item 4).
+        model.ShowPsk31ChannelsForTests(Array.Empty<Psk31Channel>());
+
+        var after = Assert.Single(model.DigitalCards);
+        var ended = Assert.Single(model.DigitalDecodes, r => r.IsTextOnly);
+
+        _output.WriteLine($"after : row sending [{ended.SendingWord}] ended [{ended.EndedWord}], "
+            + $"card live {after.CarrierIsLive}, press {after.CanPressAction}, typed send {after.CanSendTyped}");
+
+        Assert.Equal("", ended.SendingWord);
+        Assert.Equal("ended", ended.EndedWord);
+        Assert.False(after.CarrierIsLive);
+        Assert.True(after.CanPressAction);
+        Assert.True(after.CanSendTyped);
+        Assert.Equal("", after.TypedHoldNote);
+        // **THE LINES COME BACK.** Two of the seven stay notes for reasons of their own - an
+        // Answer wants a certain CQ and a Confirm wants his turn - so what the release means here
+        // is that the menu is the seven again, that lines are pressable, and that not one note
+        // still blames his carrier.
+        var back = model.Psk31CannedMenuFor(ended)!;
+
+        _output.WriteLine($"canned after: {back.Count} entries, {back.Count(e => !e.IsNote)} pressable");
+
+        Assert.Equal(7, back.Count);
+        Assert.Contains(back, entry => !entry.IsNote);
+        Assert.DoesNotContain(back, entry => entry.Label.Contains(Ft8ContactCard.HeIsStillSending, StringComparison.Ordinal));
+
+        telemetry.Dispose();
+    }
+
     private List<JsonElement> Events(string name)
         => Directory.GetFiles(_folder, "*.jsonl")
             .SelectMany(File.ReadAllLines)

@@ -4792,6 +4792,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void ShowPsk31Cards(int channelId, Psk31ChannelReading reading, bool sending)
     {
+        // **WHETHER THAT CHANNEL'S CARRIER IS STILL UP** (R44, 9.2). Read off the row this
+        // channel already has - `row.Ended` is written in one place - so the card and the row
+        // cannot disagree, and a channel with no row at all is not live.
+        var carrierIsLive = _psk31Rows.TryGetValue(channelId, out var channelRow) && !channelRow.Ended;
+
         var mine = _settings.Operator.Callsign;
 
         // **A MAN WHO ANSWERED YOU GETS A CARD, SURE OR NOT** (work instruction 371 task 1). Until
@@ -4923,7 +4928,7 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 state = new Psk31CardState(Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, variantHere, move)), channelId)
+                    _settings.Operator.Callsign, variantHere, move, carrierIsLive)), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -4948,7 +4953,7 @@ public partial class MainWindowViewModel : ObservableObject
                 state.ClearedAtMessages = null;
                 state.Card = Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, variantHere, move));
+                    _settings.Operator.Callsign, variantHere, move, carrierIsLive));
                 DigitalCards.Add(state.Card);
                 continue;
             }
@@ -4959,6 +4964,7 @@ public partial class MainWindowViewModel : ObservableObject
             // and the seconds that card quotes for a typed line come from the variant, so it was
             // quoting a number nothing would produce (§0.0).
             if (state.Card.Turn == turn
+                && state.Card.CarrierIsLive == carrierIsLive
                 && state.Card.Offered == offered
                 && state.Card.Facts.Grid == grid
                 && state.Card.ShowsLogLink == complete
@@ -4973,7 +4979,7 @@ public partial class MainWindowViewModel : ObservableObject
             // which is the same fault one line up by another route.
             var fresh = Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, variantHere, move));
+                    _settings.Operator.Callsign, variantHere, move, carrierIsLive));
             var index = DigitalCards.IndexOf(state.Card);
 
             state.Card = fresh;
@@ -17814,7 +17820,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// **ONE SENTENCE, SO THE GREY BUTTON, THE REFUSAL LINE AND THE RECORD CANNOT DRIFT**
     /// (ruling 1 item 3, §0.0).
     /// </remarks>
-    internal const string HeIsStillSending = "he is still sending";
+    internal const string HeIsStillSending = Ft8ContactCard.HeIsStillSending;
 
     /// <summary>The stable reason token the record carries for that hold.</summary>
     internal const string HisCarrierLiveReason = "his_carrier_live";
@@ -18033,6 +18039,21 @@ public partial class MainWindowViewModel : ObservableObject
                 new Psk31CannedEntry(
                     "Hamlet could not read its canned lines, so it is offering none: "
                     + (set.Problem ?? set.Path + " carries no lines at all."),
+                    null,
+                    null),
+            };
+        }
+
+        // **AND NOTHING IS OFFERED TO SEND WHILE HIS CARRIER IS UP** (R44, 9.2). This menu greys
+        // nothing and disables nothing by its own ruling of 2026-09-06 - an entry with no command
+        // is a note - so the hold here is the seven lines becoming one note that says why.
+        if (HisCarrierIsLive(station))
+        {
+            return new[]
+            {
+                new Psk31CannedEntry(
+                    "Hamlet is offering nothing to send: " + HeIsStillSending
+                    + ". The lines come back the moment his carrier drops.",
                     null,
                     null),
             };
