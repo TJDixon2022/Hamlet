@@ -4792,10 +4792,6 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void ShowPsk31Cards(int channelId, Psk31ChannelReading reading, bool sending)
     {
-        // **WHETHER THAT CHANNEL'S CARRIER IS STILL UP** (R44, 9.2). Read off the row this
-        // channel already has - `row.Ended` is written in one place - so the card and the row
-        // cannot disagree, and a channel with no row at all is not live.
-        var carrierIsLive = _psk31Rows.TryGetValue(channelId, out var channelRow) && !channelRow.Ended;
 
         var mine = _settings.Operator.Callsign;
 
@@ -4928,7 +4924,7 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 state = new Psk31CardState(Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, variantHere, move, carrierIsLive)), channelId)
+                    _settings.Operator.Callsign, variantHere, move, HisCarrierIsLive(station))), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -4953,7 +4949,7 @@ public partial class MainWindowViewModel : ObservableObject
                 state.ClearedAtMessages = null;
                 state.Card = Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, variantHere, move, carrierIsLive));
+                    _settings.Operator.Callsign, variantHere, move, HisCarrierIsLive(station)));
                 DigitalCards.Add(state.Card);
                 continue;
             }
@@ -4964,7 +4960,7 @@ public partial class MainWindowViewModel : ObservableObject
             // and the seconds that card quotes for a typed line come from the variant, so it was
             // quoting a number nothing would produce (§0.0).
             if (state.Card.Turn == turn
-                && state.Card.CarrierIsLive == carrierIsLive
+                && state.Card.CarrierIsLive == HisCarrierIsLive(station)
                 && state.Card.Offered == offered
                 && state.Card.Facts.Grid == grid
                 && state.Card.ShowsLogLink == complete
@@ -4979,7 +4975,7 @@ public partial class MainWindowViewModel : ObservableObject
             // which is the same fault one line up by another route.
             var fresh = Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, variantHere, move, carrierIsLive));
+                    _settings.Operator.Callsign, variantHere, move, HisCarrierIsLive(station)));
             var index = DigitalCards.IndexOf(state.Card);
 
             state.Card = fresh;
@@ -6810,6 +6806,13 @@ public partial class MainWindowViewModel : ObservableObject
         {
             psk31.ClearedAtMessages = psk31.Messages;
             DigitalCards.Remove(psk31.Card);
+
+            // **AND THE SCREEN'S OWN RECORD SAYS IT WENT, AND BY WHOSE HAND** (work instruction
+            // 385 ruling 2 item 3, criterion 9.1). Unit 380's writer already records a card
+            // leaving with `dismissed` when the reconcile drops one; a card he took off himself
+            // left no such line at all, so the file could not tell an empty panel he made from
+            // one Hamlet made.
+            NoteCardOnScreen(psk31.Card, OnScreenState.Removed, OnScreenBy.Dismissed);
             OnPropertyChanged(nameof(HasDigitalCards));
 
             return;
@@ -17825,17 +17828,28 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The stable reason token the record carries for that hold.</summary>
     internal const string HisCarrierLiveReason = "his_carrier_live";
 
-    /// <summary>**Whether the station a send is addressed to still has a carrier on the air.**</summary>
+    /// <summary>
+    /// **Whether the station a send is addressed to is still sending** - his carrier is up and he
+    /// has not handed the turn back (R44, criterion 9.2).
+    /// </summary>
     /// <param name="station">Who the send is addressed to, or "" for a call to anybody.</param>
-    /// <returns>True only where that station has a row of his own that has not ended.</returns>
+    /// <returns>True only while that station is mid-over.</returns>
     /// <remarks>
-    /// <para>**THE ROW'S OWN LIVENESS IS THE FACT** (ruling 1 item 1). `row.Ended` is written in
-    /// one place, `EndOrRemovePsk31Row`, so the fact and the moment cannot disagree, and an
-    /// Olivia row carries the same field - which is what makes 9.5 an identity rather than a
-    /// second rule.</para>
-    /// <para>**NOBODY ON THE FREQUENCY IS NOT A HOLD.** An empty station, an unknown station and
-    /// a station whose row has ended all answer false, so a guard that could silence the operator
-    /// on an empty band cannot exist here.</para>
+    /// <para>**THE CARRIER IS THE FACT, AND THE HAND-BACK IS WHAT ENDS IT** (ruling 1 item 1 as
+    /// the measurement corrected it; ruling 1 item 4, which is the safety). The carrier alone
+    /// would be the whole answer if a row ended when a station stopped - but it does not.
+    /// `Psk31Listener.RetiredWithinSeconds` is **9 s**, and an Olivia channel is retired
+    /// `OliviaTiming.RetireAfterCharacters` - 56 characters - after its last block, which is
+    /// **22.94 s at 32/1000, 28.67 s at 16/500 and 38.23 s at 8/250**. A hold on the carrier alone
+    /// would therefore refuse the operator's answer for nine seconds after a PSK31 hand-back and
+    /// for over half a minute after an Olivia one: **a gate that sticks, which ruling 1 item 4
+    /// says is worse than the fault it fixes.**</para>
+    /// <para>**SO THE HOLD IS THE OVER, NOT THE TAIL.** He is still sending while characters are
+    /// arriving, and while his carrier is up and the last thing he completed did not hand the turn
+    /// over. The moment he says `K`, `BTU` or `73` the hold lets go, which is the moment the
+    /// operator is supposed to answer - and the carrier dropping releases it too.</para>
+    /// <para>**NOBODY ON THE FREQUENCY IS NOT A HOLD.** An empty station, an unknown station and a
+    /// station whose row has ended all answer false.</para>
     /// </remarks>
     internal bool HisCarrierIsLive(string? station)
     {
@@ -17846,12 +17860,31 @@ public partial class MainWindowViewModel : ObservableObject
             return false;
         }
 
-        foreach (var row in DigitalDecodes)
+        foreach (var (id, row) in _psk31Rows)
         {
-            if (row.IsTextOnly
-                && !row.Ended
-                && Psk31StationOn(row) is { } on
-                && Ft8MessageSplit.IsSameStation(on, who))
+            if (row.Ended
+                || Psk31StationOn(row) is not { } on
+                || !Ft8MessageSplit.IsSameStation(on, who))
+            {
+                continue;
+            }
+
+            if (!_psk31Readings.TryGetValue(id, out var reading))
+            {
+                // **A LIVE ROW HAMLET HAS READ NOTHING FROM IS A STATION MID-OVER**: he is on the
+                // air and has handed nothing back.
+                return true;
+            }
+
+            if (reading.Splitter.Pending.Trim().Length > 0)
+            {
+                return true;
+            }
+
+            var last = reading.Messages
+                .LastOrDefault(m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, who));
+
+            if (last is null || !last.Exchange.HandsOver)
             {
                 return true;
             }

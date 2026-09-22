@@ -37,8 +37,14 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
     private const string Mine = "KC3QIS";
     private const string Him = "W1ABC";
 
-    /// <summary>His over, addressed to the operator and handing the turn back.</summary>
+    /// <summary>His first over, addressed to the operator and handing the turn back.</summary>
     private const string HisOver = Mine + " de " + Him + " GM TNX CALL UR 599 599 BTU " + Mine + " de " + Him + " K\n";
+
+    /// <summary>
+    /// **And then he starts sending again**: his carrier is up and this over is not finished, so
+    /// he has handed nothing back. This is the moment R44 names.
+    /// </summary>
+    private const string MidOver = HisOver + Mine + " de " + Him + " R R NAME BOB QTH ERIE AND THE RIG HERE IS";
 
     private readonly ITestOutputHelper _output;
     private readonly string _folder = Path.Combine(Path.GetTempPath(), "hamlet-hold-" + Guid.NewGuid().ToString("N"));
@@ -69,17 +75,23 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
     {
         var model = Panel(out var radio, out var telemetry);
 
-        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, HisOver) });
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, MidOver) });
 
         var card = Assert.Single(model.DigitalCards);
         var row = Assert.Single(model.DigitalDecodes, r => r.IsTextOnly);
 
-        // **HIS CARRIER IS UP** - the fact the hold reads.
+        // **HE IS MID-OVER** - his carrier is up and he has handed nothing back.
         Assert.False(row.Ended);
         Assert.True(model.HisCarrierIsLive(Him));
-        Assert.True(card.HasAction, "the card has nothing to press, so this proves nothing");
 
-        model.CardActionCommand.Execute(card);
+        // **THE CONTROL THAT WAS LIVE HERE IS THE TYPED LINE.** The offered macro is already
+        // withheld mid-over by §R1's own certainty gate, which is why the typed line and the
+        // canned lines are what this criterion had to reach.
+        Assert.Equal(Psk31Macro.None, card.Offered);
+        Assert.True(card.CanType);
+
+        card.TypedText = "HELLO OM";
+        model.SendTypedPsk31Command.Execute(card);
         Settle(model);
 
         _output.WriteLine("screen: " + model.DigitalSendLine);
@@ -115,11 +127,12 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
     {
         var model = Panel(out var radio, out var telemetry);
 
-        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, HisOver) });
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, MidOver) });
 
         var card = Assert.Single(model.DigitalCards);
 
-        model.CardActionCommand.Execute(card);
+        card.TypedText = "HELLO OM";
+        model.SendTypedPsk31Command.Execute(card);
         Settle(model);
 
         Assert.Equal(0, radio.Sink.TimesCalled);
@@ -134,7 +147,8 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
 
         var after = Assert.Single(model.DigitalCards);
 
-        model.CardActionCommand.Execute(after);
+        after.TypedText = "HELLO OM";
+        model.SendTypedPsk31Command.Execute(after);
         Settle(model);
 
         _output.WriteLine($"after his carrier dropped: keyings {radio.Sink.TimesCalled}, line [{model.DigitalSendLine}]");
@@ -183,7 +197,7 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
     {
         var model = Panel(out var radio, out var telemetry);
 
-        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, HisOver) });
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, MidOver) });
 
         Assert.True(model.HisCarrierIsLive(Him));
 
@@ -191,6 +205,51 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
         Settle(model);
 
         _output.WriteLine($"a CQ while he is sending: keyings {radio.Sink.TimesCalled}, line [{model.DigitalSendLine}]");
+
+        Assert.Equal(1, radio.Sink.TimesCalled);
+
+        telemetry.Dispose();
+
+        Assert.Empty(Events("psk31_send_refused"));
+    }
+
+    /// <summary>
+    /// **A hand-back releases the hold while his carrier is still up** - the measurement that
+    /// corrected ruling 1 item 1.
+    /// </summary>
+    /// <remarks>
+    /// **A ROW OUTLIVES THE OVER BY A LONG WAY.** `Psk31Listener.RetiredWithinSeconds` is 9 s, and
+    /// an Olivia channel is retired 56 characters after its last block - 22.94 s at 32/1000 up to
+    /// 38.23 s at 8/250. Holding on the carrier alone would have refused every answer for that
+    /// long after the other man said `K`, which is the gate that sticks ruling 1 item 4 forbids.
+    /// **So the hold ends at the hand-back**, which is the moment the operator is meant to answer.
+    /// </remarks>
+    [Fact]
+    public void AHandBackReleasesTheHoldWhileHisCarrierIsStillUp()
+    {
+        var model = Panel(out var radio, out var telemetry);
+
+        // Mid-over: held.
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, MidOver) });
+
+        Assert.True(model.HisCarrierIsLive(Him));
+
+        // He finishes the over and hands back - **and his carrier is still up**, because a row
+        // lives on for seconds after the man has stopped.
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, MidOver + " BTU " + Mine + " de " + Him + " K\n") });
+
+        var row = Assert.Single(model.DigitalDecodes, r => r.IsTextOnly);
+        var card = Assert.Single(model.DigitalCards);
+
+        _output.WriteLine($"after his hand-back: row ended {row.Ended}, held {model.HisCarrierIsLive(Him)}, "
+            + $"press {card.CanPressAction}");
+
+        Assert.False(row.Ended, "the fixture no longer has his carrier up, so this proves nothing");
+        Assert.False(model.HisCarrierIsLive(Him));
+        Assert.True(card.CanPressAction);
+
+        model.CardActionCommand.Execute(card);
+        Settle(model);
 
         Assert.Equal(1, radio.Sink.TimesCalled);
 
@@ -213,15 +272,14 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
     {
         var model = Panel(out var radio, out var telemetry);
 
-        // 17:44 - his carrier appears and he calls the operator.
-        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1726, 10.0, HisOver) });
+        // 17:44 - his carrier appears, he calls the operator, and he is sending again.
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1726, 10.0, MidOver) });
 
         var card = Assert.Single(model.DigitalCards);
 
-        // 17:45:40 - the operator presses the offered Report while that carrier is still up.
-        Assert.Equal(Psk31Macro.Report, card.Offered);
-
-        model.CardActionCommand.Execute(card);
+        // 17:45:40 - the operator sends while that over is still running.
+        card.TypedText = "R R TNX FER RPRT";
+        model.SendTypedPsk31Command.Execute(card);
         Settle(model);
 
         _output.WriteLine("what he would see now: " + model.DigitalSendLine);
@@ -245,7 +303,7 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
     {
         var model = Panel(out _, out var telemetry);
 
-        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, HisOver) });
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, MidOver) });
 
         var card = Assert.Single(model.DigitalCards);
         var row = Assert.Single(model.DigitalDecodes, r => r.IsTextOnly);
@@ -261,9 +319,10 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
         Assert.True(card.CarrierIsLive);
         Assert.Equal(Ft8ContactCard.HeIsStillSending, card.SendingWord);
 
-        // (b) **THE FOUR CONTROLS ARE HELD**: the offered macro, the typed line, and the canned
-        // lines, each with the same sentence. Report and Confirm are the one offered button.
-        Assert.True(card.HasAction, "there is no button to hold, so this proves nothing");
+        // (b) **THE FOUR CONTROLS ARE HELD.** Report and Confirm are the one offered button, and
+        // mid-over §R1's certainty gate has already withheld it - so what this unit had to hold is
+        // the typed line and the canned lines, and the button is held too wherever one is offered.
+        Assert.Equal(Psk31Macro.None, card.Offered);
         Assert.False(card.CanPressAction);
         Assert.Equal(Ft8ContactCard.HeIsStillSending, card.OfferNote);
         Assert.True(card.CanType, "the typed block is hidden rather than held");
@@ -289,7 +348,6 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
         Assert.Equal("", ended.SendingWord);
         Assert.Equal("ended", ended.EndedWord);
         Assert.False(after.CarrierIsLive);
-        Assert.True(after.CanPressAction);
         Assert.True(after.CanSendTyped);
         Assert.Equal("", after.TypedHoldNote);
         // **THE LINES COME BACK.** Two of the seven stay notes for reasons of their own - an
