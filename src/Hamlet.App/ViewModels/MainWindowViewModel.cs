@@ -1230,8 +1230,75 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public IReadOnlyList<DigitalModeChip> DigitalModeChips
         => DigitalModeChip.For(
-            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
-            ChosenDigitalMode);
+                Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
+                ChosenDigitalMode)
+            .Select(chip => OnOliviasDial(chip))
+            .Select(chip => chip with { Hover = ChipHover(chip) })
+            .ToList();
+
+    /// <summary>Olivia's chip is lit where the dial is on its cited dial on this band.</summary>
+    /// <param name="chip">The chip as the map lit it.</param>
+    /// <returns>The chip, with Olivia's lit fact taken from its own table.</returns>
+    /// <remarks>
+    /// **OLIVIA HAS NO BLOCK ON THE MAP** - its spot is in its own cited table - so the map never
+    /// lit it, and on its own dial the chip read *chosen, the dial is not there*, which is false
+    /// (work instruction 390 task 1, measured). Its *here* is the dial its press tunes to.
+    /// </remarks>
+    private DigitalModeChip OnOliviasDial(DigitalModeChip chip)
+    {
+        if (!string.Equals(chip.Label, OliviaLabel, StringComparison.Ordinal)
+            || _olivia.Calling is not { } calling
+            || calling.CallingRowFor(SelectedBand.Band.Name) is not { } row)
+        {
+            return chip;
+        }
+
+        return chip with { IsLit = calling.DialHzFor(row) == FrequencyHz };
+    }
+
+    /// <summary>What a mode chip's hover says: where a press takes the radio on this band.</summary>
+    /// <param name="chip">The chip.</param>
+    /// <returns>*14.070 · PSK31*, or a sentence saying there is no cited row here.</returns>
+    /// <remarks>
+    /// **FROM THE SAME ROWS THE PRESS TUNES BY** (work instruction 390 task 1), so the hover and
+    /// the press cannot disagree: <see cref="DigitalCallingFrequencies"/> for the band-plan modes
+    /// and the Olivia calling table for Olivia, whose spot is named by its center and whose dial
+    /// is given beside it because the two differ. Nothing here is a number of its own.
+    /// </remarks>
+    private string ChipHover(DigitalModeChip chip)
+    {
+        var bandName = SelectedBand.Band.Name;
+        string where;
+
+        if (string.Equals(chip.Label, OliviaLabel, StringComparison.Ordinal))
+        {
+            var row = _olivia.Calling?.CallingRowFor(bandName);
+
+            if (row is null)
+            {
+                return "No Olivia calling spot on " + bandName + " - a press says which bands have one";
+            }
+
+            where = ChipMegahertz(row.CenterHz) + " · Olivia"
+                + (_olivia.Calling!.DialHzFor(row) is { } dial
+                    ? " (dial " + ChipMegahertz(dial) + ")"
+                    : " - the table gives no dial, so a press cannot tune");
+        }
+        else if (DigitalCallingFrequencies.Find(bandName, chip.Label) is { } block)
+        {
+            where = ChipMegahertz(block.JumpHz) + " · " + chip.Label;
+        }
+        else
+        {
+            return "No " + chip.Label + " on " + bandName + " in the band data - a press says where there is one";
+        }
+
+        return chip.IsChosenElsewhere ? where + " - chosen, the dial is not there" : where;
+    }
+
+    /// <summary>Hertz as the megahertz a hover reads, *14.070*, a fourth place only when it is used.</summary>
+    private static string ChipMegahertz(long hz)
+        => (hz / 1_000_000.0).ToString("0.000#", CultureInfo.InvariantCulture);
 
     /// <summary>
     /// **The panel under the neighborhood map: the license on one line, and then what is

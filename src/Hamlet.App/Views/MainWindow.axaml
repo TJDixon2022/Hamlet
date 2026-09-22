@@ -501,6 +501,18 @@
             <Setter Property="Margin" Value="0,0,0,-1" />
         </Style>
 
+        <!-- **A MODE CHIP AT REST LOOKS LIKE A TAB, AND DARKENS UNDER THE MOUSE**
+             (work instruction 390 task 1, §0.5.1). Set here and not on the Border, so
+             the hover's setter is not beaten by a local value. -->
+        <Style Selector="Border.hm-modeface">
+            <Setter Property="Background" Value="{StaticResource HmSlateTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+        </Style>
+        <Style Selector="Button.hm-modechip:pointerover Border.hm-modeface">
+            <Setter Property="Background" Value="#E4E0D5" />
+            <Setter Property="BorderBrush" Value="{x:Static ctl:ModePalette.DigitalInk}" />
+        </Style>
+
         <Style Selector="Button.hm-band">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
@@ -4063,8 +4075,12 @@
                             BorderThickness="1">
                         <Grid ColumnDefinitions="Auto,Auto,Auto,*">
 
+                            <!-- **TUNE TO:, SINCE WORK INSTRUCTION 390** (Tim, 2026-09-22:
+                                 *"How do you know - take me to FT8, take me to FT4?"*). A press
+                                 retunes the radio and that is the whole promise; *on this
+                                 frequency* described a band, not a button. -->
                             <TextBlock Grid.Column="0"
-                                       Text="on this frequency"
+                                       Text="tune to:"
                                        VerticalAlignment="Center"
                                        Margin="0,0,12,0"
                                        FontSize="12"
@@ -4113,23 +4129,35 @@
                                              the operator sees and a fourth
                                              rectangle is not drawn around
                                              them. -->
-                                        <Button Classes="hm-chip"
+                                        <!-- **A ROW OF BUTTONS SINCE WORK INSTRUCTION
+                                             390** (Tim, 2026-09-22: *"None of it screams
+                                             click me."*). Raised like the CW / Digital /
+                                             Voice tabs above - the same slate tint and
+                                             edge, a heavier bottom edge, full-strength
+                                             words - with the hand cursor, a hover that
+                                             darkens it and says where it goes, and the
+                                             chosen one filled.
+
+                                             **THE FILL IS THE MODE HE CHOSE** (criterion
+                                             7.5). It was the dial's block until unit 390,
+                                             and Olivia's 20 m dial sits in PSK31's, so
+                                             PSK31 was filled under Olivia. -->
+                                        <Button Classes="hm-chip hm-modechip"
                                                 Padding="0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Cursor="Hand"
+                                                ToolTip.Tip="{Binding Hover}"
                                                 Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ChooseDigitalModeCommand}"
                                                 CommandParameter="{Binding Label}">
                                             <Panel>
-                                                <!-- **LIT: THE DIAL IS IN THIS
-                                                     MODE'S BLOCK.** A
-                                                     measurement, and the map is
-                                                     what answers it. -->
-                                                <Border Padding="10,3" CornerRadius="5"
+                                                <!-- **CHOSEN, AND THE DIAL IS IN
+                                                     ITS BLOCK.** -->
+                                                <Border Padding="12,4" CornerRadius="6"
                                                         Background="{x:Static ctl:ModePalette.DigitalFill}"
                                                         BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
-                                                        BorderThickness="1"
-                                                        IsVisible="{Binding IsLit}">
+                                                        BorderThickness="1,1,1,2"
+                                                        IsVisible="{Binding IsFilledHere}">
                                                     <TextBlock Text="{Binding Label}" FontSize="12"
                                                                FontWeight="SemiBold"
                                                                Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
@@ -4137,37 +4165,39 @@
 
                                                 <!-- **CHOSEN, BUT THE DIAL IS
                                                      SOMEWHERE ELSE.** He pressed
-                                                     it and the radio is not
-                                                     there: the tune has not
-                                                     landed, it did not take, or
-                                                     this band has no block for
-                                                     it. **AN OUTLINE AND NOT A
-                                                     FILL**, because a fill is
-                                                     what says the dial is here
-                                                     and this is precisely the
-                                                     case where it is not (§0.0,
-                                                     HM-DEC-092). The dotted edge
-                                                     and the italic carry it
-                                                     without colour, per §0.6. -->
-                                                <Border Padding="10,3" CornerRadius="5"
-                                                        Background="Transparent"
+                                                     it and the radio is not there:
+                                                     the tune has not landed, it did
+                                                     not take, or this band has no
+                                                     block for it. Still filled - it
+                                                     is his choice (7.5) - and told
+                                                     apart by the italic and by the
+                                                     hover's *the dial is not there*,
+                                                     so a remembered press is never
+                                                     drawn as a reading of the radio
+                                                     (§0.0, HM-DEC-092, §0.6). -->
+                                                <Border Padding="12,4" CornerRadius="6"
+                                                        Background="{x:Static ctl:ModePalette.DigitalFill}"
                                                         BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
-                                                        BorderThickness="1"
+                                                        BorderThickness="1,1,1,2"
                                                         IsVisible="{Binding IsChosenElsewhere}">
                                                     <TextBlock Text="{Binding Label}" FontSize="12"
+                                                               FontWeight="SemiBold"
                                                                FontStyle="Italic"
                                                                Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
                                                 </Border>
 
-                                                <!-- Neither: a mode that lives
-                                                     on this band and that he has
-                                                     not asked for. -->
-                                                <Border Padding="10,3" CornerRadius="5"
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        IsVisible="{Binding IsPlain}">
+                                                <!-- Not chosen: a raised button,
+                                                     whatever block the dial is in.
+                                                     Its hover state is the style
+                                                     `hm-modeface` in this window's
+                                                     styles. -->
+                                                <Border Classes="hm-modeface"
+                                                        Padding="12,4" CornerRadius="6"
+                                                        BorderThickness="1,1,1,2"
+                                                        IsVisible="{Binding IsUnfilled}">
                                                     <TextBlock Text="{Binding Label}" FontSize="12"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
                                                 </Border>
                                             </Panel>
                                         </Button>

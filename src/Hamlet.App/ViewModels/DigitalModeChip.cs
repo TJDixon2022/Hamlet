@@ -29,6 +29,26 @@ namespace Hamlet.App.ViewModels;
 /// </param>
 public sealed record DigitalModeChip(string Label, bool IsLit, bool IsChosen)
 {
+    /// <summary>Whether the chip is drawn filled: it is the mode he chose.</summary>
+    /// <remarks>
+    /// **THE FILL IS THE CHOICE, NOT THE BLOCK** (criterion 7.5, work instruction 390 task 1). It
+    /// was drawn from <see cref="IsLit"/> until unit 390, and Olivia's cited 20 m dial, 14.0715, is
+    /// inside PSK31's block - so under Olivia the PSK31 chip was filled and the Olivia chip an
+    /// outline, two chips indicated and the filled one wrong (Tim's screen, 2026-09-22). The chosen
+    /// chip with the dial elsewhere is still told apart, by the italic and by its hover, never by
+    /// filling a chip he did not press.
+    /// </remarks>
+    public bool IsFilled => IsChosen;
+
+    /// <summary>A chip that is filled with the dial inside its block.</summary>
+    public bool IsFilledHere => IsChosen && IsLit;
+
+    /// <summary>A chip he has not chosen: drawn as a raised button, whatever block the dial is in.</summary>
+    public bool IsUnfilled => !IsChosen;
+
+    /// <summary>What the chip's hover says: where a press takes the dial, from the cited row.</summary>
+    public string Hover { get; init; } = "";
+
     /// <summary>True where the chip is picked but the dial is not in its block.</summary>
     /// <remarks>
     /// **THE ONE STATE THE STRIP HAD NO WAY TO DRAW.** He asked for FT8 and the
