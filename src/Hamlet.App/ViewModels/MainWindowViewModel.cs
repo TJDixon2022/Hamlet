@@ -3992,7 +3992,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>**A CHANNEL THAT HAS ENDED IS NOT LISTED**, so the PSK31 path ends its row as it ends a
     /// carrier's that went: kept with its words and marked ended, or taken off where it read
     /// nothing.</para>
-    /// <para>**THE TEXT IS THE CHANNEL'S ACCEPTED TEXT AND NOTHING ELSE** (§3.3, §R9).</para>
+    /// <para>**THE TEXT IS THE CHANNEL'S ACCEPTED TEXT AND NOTHING ELSE** (§3.3, §R9)**, AND
+    /// SINCE R46(d) A BLIND-FOUND CARRIER'S TEXT WAITS FOR THE BLOCK DECODING TO BE CONFIDENT**
+    /// - see <see cref="TheBlocksAreConfident"/>.</para>
     /// </remarks>
     private void ShowOliviaChannels(IReadOnlyList<OliviaChannel> channels)
     {
@@ -4006,14 +4008,89 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         ShowPsk31Channels(
-            live.Select(c => new Psk31Channel(
-                    c.Id,
-                    double.IsNaN(c.ShownCenterHz) ? c.CenterHz : c.ShownCenterHz,
-                    double.NaN,
-                    c.Text,
-                    Readable: c.BlocksDecoded > 0))
+            live.Select(c =>
+                {
+                    var confident = TheBlocksAreConfident(c);
+
+                    return new Psk31Channel(
+                        c.Id,
+                        double.IsNaN(c.ShownCenterHz) ? c.CenterHz : c.ShownCenterHz,
+                        double.NaN,
+
+                        // **NO CHARACTERS AT ALL UNTIL THE BLOCKS ARE CONFIDENT** (R46(d), R9).
+                        // The row is not hidden and it is not blank: `ShowPsk31Channels` writes
+                        // `heard, not readable yet` in its place, which is the sentence that has
+                        // been in the tree since work instruction 324.
+                        confident ? c.Text : "",
+                        Readable: confident);
+                })
                 .ToList(),
             _oliviaVariants);
+    }
+
+    /// <summary>
+    /// Blind-found channels whose block decoding has already been confident once, so that what
+    /// was read is never taken back off the screen.
+    /// </summary>
+    private readonly HashSet<int> _oliviaEarnedItsText = new();
+
+    /// <summary>
+    /// **Whether this channel's block decoding is confident enough to show what it read** -
+    /// criterion 10.4, R46(d), R9.
+    /// </summary>
+    /// <param name="channel">The channel, as the listener lists it now.</param>
+    /// <returns>True where its characters may be shown.</returns>
+    /// <remarks>
+    /// <para>**THE FAULT THIS IS FOR.** Tim's screen on 2026-09-22 carried a row on 14.072 at
+    /// 13:37 UTC reading `4/500 sending Hk7DYYYzfzYXTDYY...`, **which is Hamlet telling him a
+    /// station sent characters that no station sent.** The blind search had named a row, and a
+    /// handful of blocks had scraped over the demodulator's own threshold on a variant that was
+    /// not the one being transmitted.</para>
+    /// <para>**A STATION THAT ANNOUNCED ITSELF IS NOT TOUCHED.** An RSID says which variant this
+    /// is; there is nothing to be unsure about, so a channel found by RSID shows what it read the
+    /// moment it reads anything, exactly as it did before. **The gate is for the blind search
+    /// alone**, which is what R46(d) says.</para>
+    /// <para>**BOTH HALVES ARE THE ENGINE'S OWN NUMBERS AND NEITHER IS INVENTED HERE.**</para>
+    /// <para>1. **At least <see cref="OliviaBlindSearch.ConfirmBlocks"/> blocks read**, which is
+    /// the same bar the blind search itself clears before it will name a row at all, and its own
+    /// remark says why it is not one: *one block barely through is what a wrong row can do*.</para>
+    /// <para>2. **And more blocks read than refused.** This is the half the tree did not have.
+    /// `BlocksDecoded` and `BlocksRejected` have crossed the seam since work instruction 364 and
+    /// nothing consulted the second one: the row path asked only `BlocksDecoded > 0`, so **one
+    /// accepted block in twelve put its characters on the screen**, which is precisely the shape
+    /// of Tim's row. A carrier genuinely being read reads most of what it is handed; a wrong row
+    /// scrapes a few through and throws the rest away, and that difference is the measurement.
+    /// **No threshold is tuned here** - it is a majority, and it is stated rather than fitted.
+    /// </para>
+    /// <para>**IT IS ONE-WAY.** Once a channel has been confident its text stays on the screen
+    /// even if a fade makes the next blocks fail, because *what was read is never taken back off
+    /// the screen* is already this path's rule and a row that flickered between words and a
+    /// sentence would be worse than either.</para>
+    /// <para>**THE ROW IS NOT HIDDEN AND NOTHING IS INVENTED** (§0.0, and section 10). The row
+    /// stays where it is, at its own place, saying <see cref="HeardNotReadableYet"/> - what
+    /// changes is what it says, not whether it is there.</para>
+    /// </remarks>
+    private bool TheBlocksAreConfident(OliviaChannel channel)
+    {
+        if (channel.Found != OliviaListener.FoundBlind)
+        {
+            return channel.BlocksDecoded > 0;
+        }
+
+        if (_oliviaEarnedItsText.Contains(channel.Id))
+        {
+            return true;
+        }
+
+        if (channel.BlocksDecoded < OliviaBlindSearch.ConfirmBlocks
+            || channel.BlocksDecoded < channel.BlocksRejected)
+        {
+            return false;
+        }
+
+        _oliviaEarnedItsText.Add(channel.Id);
+
+        return true;
     }
 
     /// <summary>Write down what the Olivia channels just did, as the PSK31 row events.</summary>
