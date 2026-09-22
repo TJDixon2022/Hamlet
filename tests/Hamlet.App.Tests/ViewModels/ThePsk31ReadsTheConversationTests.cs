@@ -494,9 +494,24 @@ public sealed class ThePsk31ReadsTheConversationTests
 
                 if (station is null)
                 {
-                    // **A ROW THAT NAMES NOBODY STILL OFFERS NOTHING**, and that has not
+                    // **A ROW THAT NAMES NOBODY STILL OFFERS NO SEND LINE**, and that has not
                     // changed: free text and a damaged callsign are not stations to send to.
-                    Assert.Null(flyout);
+                    //
+                    // **REWRITTEN UNDER R12 BY WORK INSTRUCTION 387 TASK 4 (criterion 10.2).**
+                    // It asserted `Assert.Null(flyout)`; R46(b), 2026-09-22, off Tim's own
+                    // screen, says a right-click on ANY decoded row opens the menu. The later
+                    // ruling wins, and what it opens on these rows is exactly `Capture` and
+                    // *make a card anyway* - **asserted here to be two lines and neither of
+                    // them a send**, so the thing this assertion protected is protected harder.
+                    Assert.NotNull(flyout);
+
+                    var bare = flyout!.Items.OfType<MenuItem>().ToList();
+
+                    Assert.Equal(2, bare.Count);
+                    Assert.StartsWith("Capture", bare[0].Header as string ?? "", StringComparison.Ordinal);
+                    Assert.StartsWith("Make a card anyway", bare[1].Header as string ?? "", StringComparison.Ordinal);
+                    Assert.All(bare, item => Assert.NotSame(model.SendMessageCommand, item.Command));
+
                     looked++;
 
                     continue;
@@ -524,14 +539,24 @@ public sealed class ThePsk31ReadsTheConversationTests
                 // of 2026-09-06 and a note cannot be hit. **What it guards now is both halves**:
                 // the seven where he is not sending, the one note where he is, and never a
                 // pressable line on top of a man mid-over.
+                // **AND SINCE R46(b) EVERY MENU CARRIES A TAIL OF TWO** (criterion 10.2, work
+                // instruction 387 task 4): `Capture` and *make a card anyway*, on every decoded
+                // row, behind a rule because neither is a send. The send lines are what comes
+                // before them and they are counted below without it.
+                Assert.Equal(2, TheTail(items));
+
+                var sendLines = items.Count - 2;
+
                 if (model.HisCarrierIsLive(station))
                 {
                     held++;
 
-                    var note = Assert.Single(items);
-
                     // **A NOTE IS A MENU ITEM WITH NO COMMAND AND NO HIT TEST**, which is this
                     // menu's own way of saying a thing is not on offer.
+                    Assert.Equal(1, sendLines);
+
+                    var note = items[0];
+
                     Assert.Null(note.Command);
                     Assert.False(note.IsHitTestVisible);
                     Assert.Contains(
@@ -543,20 +568,29 @@ public sealed class ThePsk31ReadsTheConversationTests
                 }
 
                 // **THE SEVEN, IN THE FILE'S OWN ORDER, WITH R39's LABELS.**
-                Assert.Equal(canned.Lines.Count, items.Count);
+                Assert.Equal(canned.Lines.Count, sendLines);
 
-                for (var at = 0; at < items.Count; at++)
+                for (var at = 0; at < sendLines; at++)
                 {
                     var header = items[at].Header as string ?? "";
 
                     Assert.StartsWith(canned.Lines[at].Label, header, StringComparison.Ordinal);
 
-                    // **NOTHING IS GREYED, HIDDEN OR DISABLED** (ruled 2026-09-06). What
-                    // Hamlet cannot do right now is a note with no command and no hit test.
+                    // **NOTHING IS GREYED, HIDDEN OR DISABLED** (ruled 2026-09-06) **EXCEPT THE
+                    // LINES R46(b) NAMES** - the ones that cannot be sent because Hamlet does not
+                    // know the operator's own callsign, which are drawn grey and carry the word
+                    // (work instruction 387 section 6 ruling 2(a) item 1). Either way the line
+                    // cannot be hit and either way it says why.
                     if (items[at].Command is null)
                     {
-                        Assert.Contains(" - not offered: ", header, StringComparison.Ordinal);
-                        Assert.False(items[at].IsHitTestVisible);
+                        Assert.True(
+                            header.Contains(" - not offered: ", StringComparison.Ordinal)
+                            || (!items[at].IsEnabled
+                                && header.Contains("callsign", StringComparison.OrdinalIgnoreCase)),
+                            "[" + header + "] carries no command but is neither a note saying why "
+                            + "nor a line drawn grey for want of his callsign.");
+
+                        Assert.False(items[at].IsHitTestVisible && items[at].IsEnabled);
                     }
                     else
                     {
@@ -716,4 +750,29 @@ public sealed class ThePsk31ReadsTheConversationTests
             "2026-09-11 " + at, "yyyy-MM-dd HH:mm:ss",
             CultureInfo.InvariantCulture,
             DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+
+    /// <summary>
+    /// **How many of the last items are R46(b)'s two** - `Capture` and *make a card anyway*,
+    /// which every decoded row carries since work instruction 387 task 4 (criterion 10.2).
+    /// </summary>
+    /// <param name="items">The menu's items, in order.</param>
+    /// <returns>Two where both are there, so the caller can assert it.</returns>
+    /// <remarks>
+    /// **IT COUNTS RATHER THAN TRIMMING**, so a menu that lost one of the two fails on the count
+    /// instead of quietly being read as one send line longer.
+    /// </remarks>
+    private static int TheTail(IReadOnlyList<MenuItem> items)
+    {
+        if (items.Count < 2)
+        {
+            return items.Count;
+        }
+
+        var capture = (items[^2].Header as string ?? "")
+            .StartsWith("Capture", StringComparison.Ordinal);
+        var card = (items[^1].Header as string ?? "")
+            .StartsWith("Make a card anyway", StringComparison.Ordinal);
+
+        return (capture ? 1 : 0) + (card ? 1 : 0);
+    }
 }
