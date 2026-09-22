@@ -1207,8 +1207,18 @@
     nine to write application code under src since unit 385. No file under src changes at this
     task.
   -->
+  <!--
+    1.13.74 -> 1.13.75, WORK INSTRUCTION 388 TASK 0. A PATCH, STEP 10 OF THE HARDENING PHASE, THE
+    BAND GOVERNS THE MAP: the second unit spent on step 10, whose two criteria tonight are rev7's
+    (Tim, 2026-09-22, at 752a9b62) - 10.3 reworded so the sun map grows to the top band's existing
+    214 px and the band does not grow, the width coming from the neighborhood strip; and 10.6 added,
+    favorites as one drop-down under the green zone inside the neighborhood card the way Hamlet had
+    them before 2026-08-27, the star on the rig face still saving and unit 387's caret beside it
+    removed. Code under src/Hamlet.App/Views and Controls only, nowhere near a send path. No file
+    under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.74</Version>
+    <Version>1.13.75</Version>
   </PropertyGroup>
 
   <!--

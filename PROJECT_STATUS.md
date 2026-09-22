@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 6 of 7
-WORK_INSTRUCTION: 387 - the four things Tim saw on his own screen, and the first of them is a thing Hamlet used to have
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: RUNNING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 388 - the band governs the map, and favorites go back where Tim had them
+BALL: claude
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T11:41:31-04:00
-NOTE: Unit 387 complete - 10.1, 10.2, 10.4 and 10.5 met and ticked; 10.3 not met and reported partial with the arithmetic; exit app 265 of 265 and engine 150 of 150, pushed
+UPDATED: 2026-09-22T13:28:04-04:00
+NOTE: Entry round - engine 150 of 150 first attempt; running TheMenuIsUnderTheMouseTests once for its entry count (unit 387 item 4)
 
 ---
 
