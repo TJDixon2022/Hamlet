@@ -131,10 +131,10 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 0 done; unit 354's nine-size test present and run first.
 
 **Exit:**
-- [ ] 1.1 At 1100×780 and at each of unit 354's nine sizes, CQ, the mode tabs, the send area, the drive note and Stop are inside the window, asserted by measuring. *must-pass*
-- [ ] 1.2 The rule is stated and holds: when the window is too short, the working panels give up height first, then the top row; the send area's height is constant across sizes and it is never the thing that leaves. *must-pass*
-- [ ] 1.3 Below the sum of the minimums, the panels scroll inside themselves and the send area stays put. *must-pass*
-- [ ] 1.4 `BindingHealthTests` and the sheet's layout tests green. *must-pass*
+- [x] 1.1 At 1100×780 and at each of unit 354's nine sizes, CQ, the mode tabs, the send area, the drive note and Stop are inside the window, asserted by measuring. *must-pass*
+- [x] 1.2 The rule is stated and holds: when the window is too short, the working panels give up height first, then the top row; the send area's height is constant across sizes and it is never the thing that leaves. *must-pass*
+- [x] 1.3 Below the sum of the minimums, the panels scroll inside themselves and the send area stays put. *must-pass*
+- [x] 1.4 `BindingHealthTests` and the sheet's layout tests green. *must-pass*
 
 **Depends on:** step 0.
 
@@ -159,11 +159,11 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 8 done (R39: the UI steps come first).
 
 **Exit:**
-- [ ] 3.1 Every decoded row writes one event when its visibility changes: drawn, filtered out (by which filter), scrolled out of view, in a folded panel, or removed - with the row's offset or slot and no callsign or text. *must-pass*
-- [ ] 3.2 Every card writes the same on appear, fold, scroll-out and dismiss. *must-pass*
-- [ ] 3.3 From the four-signal PSK31 fixture with the CQ filter on, the record alone says which rows were hidden and by what - the unit 337 fault reproduced and diagnosed from the file with no screenshot. *must-pass*
-- [ ] 3.4 The events are sampled so that a busy FT8 evening adds under 50 kB an hour, measured. *must-pass*
-- [ ] 3.5 The privacy scan is green over every new event. *must-pass*
+- [x] 3.1 Every decoded row writes one event when its visibility changes: drawn, filtered out (by which filter), scrolled out of view, in a folded panel, or removed - with the row's offset or slot and no callsign or text. *must-pass*
+- [x] 3.2 Every card writes the same on appear, fold, scroll-out and dismiss. *must-pass*
+- [x] 3.3 From the four-signal PSK31 fixture with the CQ filter on, the record alone says which rows were hidden and by what - the unit 337 fault reproduced and diagnosed from the file with no screenshot. *must-pass*
+- [x] 3.4 The events are sampled so that a busy FT8 evening adds under 50 kB an hour, measured. *must-pass*
+- [x] 3.5 The privacy scan is green over every new event. *must-pass*
 
 **Depends on:** step 8.
 
@@ -174,8 +174,8 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 3 done.
 
 **Exit:**
-- [ ] 4.1 For each mode: what to press and in what order; what should appear at each step, in the words the screen uses; what each refusal sentence means and what to do; where a capture goes and what to copy where; what to send back if it fails. Every sentence quoted from the tree, not paraphrased. *must-pass*
-- [ ] 4.2 A test asserts every quoted sentence exists in an operator-facing string. *must-pass*
+- [x] 4.1 For each mode: what to press and in what order; what should appear at each step, in the words the screen uses; what each refusal sentence means and what to do; where a capture goes and what to copy where; what to send back if it fails. Every sentence quoted from the tree, not paraphrased. *must-pass*
+- [x] 4.2 A test asserts every quoted sentence exists in an operator-facing string. *must-pass*
 - [ ] 4.3 No sentence tells the operator to touch the radio (R11). *must-pass*
 
 **Depends on:** step 3.
@@ -212,11 +212,11 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 6 done (R43: step 2 may be partial).
 
 **Exit:**
-- [ ] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed. *must-pass*
+- [x] 7.1 Right-click on a PSK31 row shows the seven lines from `data/psk31/canned.json`; one click sends the chosen line framed through the one unslotted sequence; the file's format is documented at its top; a malformed file is reported, not guessed. *must-pass*
 - [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text. *must-pass*
-- [ ] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent. *must-pass*
-- [ ] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
-- [ ] 7.5 The mode chip's fill and the send-status line name the mode that was chosen, never the family: under Olivia the Olivia chip is filled and the PSK31 chip is not, and a 29-second Olivia CQ reads *29 s of Olivia* (Tim's screen, 2026-09-21). *must-pass*
+- [x] 7.3 The hover on a PSK31 row is the facts of R39 and never the text; a fact Hamlet lacks is absent. *must-pass*
+- [x] 7.4 Olivia rows get the same list and hover by construction, asserted. *must-pass*
+- [x] 7.5 The mode chip's fill and the send-status line name the mode that was chosen, never the family: under Olivia the Olivia chip is filled and the PSK31 chip is not, and a 29-second Olivia CQ reads *29 s of Olivia* (Tim's screen, 2026-09-21). *must-pass*
 
 **Depends on:** step 6 only.
 
@@ -227,10 +227,10 @@ Exit criteria carry ids `N.k`; met is `[x]`. A step's exit is its own assertions
 **Entry:** step 7 done.
 
 **Exit:**
-- [ ] 8.1 The report names, for PSK31 and for Olivia, which of the Modes badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each reaches today, measured from a fixture log. *must-pass*
-- [ ] 8.2 A logged PSK31 contact and a logged Olivia contact each earn the Modes badge's mode, the Hall of Fame first for that mode, and every per-contact record - country, state, grid, continent, miles - exactly as an FT8 contact earns them. *must-pass*
-- [ ] 8.3 The quill on a PSK31 or Olivia row means the same as on an FT8 row, from the same nudge. *must-pass*
-- [ ] 8.4 The scores and the total move on the achievements page for those contacts; `TheAchievementsPageTests` green. *must-pass*
+- [x] 8.1 The report names, for PSK31 and for Olivia, which of the Modes badge, the Hall of Fame firsts, the per-contact records and the CQ-list quill each reaches today, measured from a fixture log. *must-pass*
+- [x] 8.2 A logged PSK31 contact and a logged Olivia contact each earn the Modes badge's mode, the Hall of Fame first for that mode, and every per-contact record - country, state, grid, continent, miles - exactly as an FT8 contact earns them. *must-pass*
+- [x] 8.3 The quill on a PSK31 or Olivia row means the same as on an FT8 row, from the same nudge. *must-pass*
+- [x] 8.4 The scores and the total move on the achievements page for those contacts; `TheAchievementsPageTests` green. *must-pass*
 
 **Depends on:** step 7.
 

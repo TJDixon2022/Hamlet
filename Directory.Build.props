@@ -1152,9 +1152,26 @@
     and never re-routed, R1's certainty gate untouched. Nothing in this unit opens a port,
     enumerates a device or keys anything, and nothing in it is evidence about the radio
     (FACT-004).
+
+    1.13.70 -> 1.13.71, UNIT 384 TASK 0. A PATCH, STEP 2 OF THE HARDENING PHASE, THE THIRD UNIT
+    SPENT ON IT - THE CARRY-FORWARD LIST, FIVE ROUNDS IN A ROW, ON A TREE THAT DOES NOT MOVE.
+    Criterion 2.4 asks that the carry-forward list run green five times in a row, and it is the
+    last must-pass in this phase that a unit rather than the owner can close: 4.3's remedy is a
+    change to a sentence Hamlet says and 0.1 is met on a ruled negative. NO FILE UNDER src,
+    tests, assets OR data CHANGES BETWEEN THE FIRST COUNTED ROUND AND THE LAST - that is what
+    makes five rounds five rounds, and it is proved with a printed git diff against task 1's
+    commit rather than claimed. Task 1 writes one trace type that reads the list out of the tree
+    and counts what each command line actually matches, because 2.4 is a measurement of the list
+    as it already is. The rounds are counted by a rule written before the first one ran (work
+    instruction 384 section 6 ruling 1), and the report carries TWO counts - the strict count of
+    rounds green on the first attempt with no re-run, and the counted streak that allows one
+    re-run of an invocation lost to one of the three recorded environmental shapes. Step 4 is
+    cut down at partial by ruling 2 and no task here opens docs/RADIO_SHEET.md. Nothing in this
+    unit opens a port, enumerates a device or keys anything, and nothing in it is evidence about
+    the radio (FACT-004).
   -->
   <PropertyGroup>
-    <Version>1.13.70</Version>
+    <Version>1.13.71</Version>
   </PropertyGroup>
 
   <!--
