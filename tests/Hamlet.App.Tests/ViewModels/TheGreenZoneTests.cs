@@ -430,10 +430,29 @@ public sealed class TheGreenZoneTests
             // 2026-09-22): the band governs the map, which grows to the band's height and is no
             // longer held at the mockup's 134. So what is asserted is rev7's rule: never smaller
             // than 134, and as tall as the card it stands beside.
+            // **REWRITTEN UNDER R12 A THIRD TIME IN WORK INSTRUCTION 389** (section 6 ruling 2
+            // item 5). At 1400 the map stands at the band's left edge and is as tall as the whole
+            // band, the pills row included - so what is asserted is that, and that no pill stands
+            // over it: the map is left of the card, from the pills' top to the band's bottom, and
+            // every pill starts at or right of the map's right edge. Never smaller than 134 stays.
             var card = Views.TheTopRowTests.RectIn(Views.TheTopRowTests.Card(window), window);
+            var band = Views.Unit376TheTopBandTests.Band(window);
+            var mapAt = Views.TheTopRowTests.RectIn(map, window);
+            var pills = Views.Unit376TheTopBandTests.Pills(window).GetVisualDescendants().OfType<Button>()
+                .Where(b => b.Classes.Contains("hm-band"))
+                .Select(b => Views.TheTopRowTests.RectIn(b, window))
+                .ToList();
+
+            _output.WriteLine("map " + F(mapAt.X) + "," + F(mapAt.Y) + " " + F(mapAt.Width) + " x " + F(mapAt.Height)
+                + ", band " + F(band.TopWithPills) + " to " + F(band.Bottom) + ", card from x " + F(card.Left)
+                + ", first pill from x " + F(pills.Min(p => p.Left)));
 
             Assert.True(map.Bounds.Height >= ClockHeight - 0.5, "the map is smaller than " + F(ClockHeight));
-            Assert.InRange(map.Bounds.Height, card.Height - 0.5, card.Height + 0.5);
+            Assert.InRange(mapAt.Top, band.TopWithPills - 0.5, band.TopWithPills + 0.5);
+            Assert.InRange(mapAt.Bottom, band.Bottom - 0.5, band.Bottom + 0.5);
+            Assert.InRange(map.Bounds.Height, band.WithPills - 0.5, band.WithPills + 0.5);
+            Assert.True(mapAt.Right <= card.Left + 0.5, "the map is not left of the card");
+            Assert.All(pills, p => Assert.True(p.Left >= mapAt.Right - 0.5, "a pill stands over the map"));
 
             foreach (var name in new[]
             {

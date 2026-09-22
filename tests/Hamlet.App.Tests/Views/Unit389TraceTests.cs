@@ -59,6 +59,134 @@ public sealed class Unit389TraceTests
         }
     }
 
+    /// <summary>
+    /// **After task 3: where the map stands, how tall it is against the band, the pills' rows, the
+    /// card and the caption - and the window width at which the map switches place.** Asserts
+    /// nothing.
+    /// </summary>
+    [AvaloniaFact]
+    public void Unit389TraceTheLeftEdgeAfterAndWhereItSwitches()
+    {
+        foreach (var (width, height) in Unit376TheTopBandTests.Sizes)
+        {
+            foreach (var mode in Unit376TheTopBandTests.Modes)
+            {
+                var window = TheTopRowTests.Realized(width, height, null, null);
+                var model = (MainWindowViewModel)window.DataContext!;
+
+                try
+                {
+                    model.ChosenDigitalMode = mode;
+                    Unit376TheTopBandTests.Pump(window);
+
+                    var band = Unit376TheTopBandTests.Band(window);
+                    var row = TheTopRowTests.Named<BandGovernsTheMapPanel>(window, "BandRow");
+                    var map = TheTopRowTests.RectIn(TheTopRowTests.Named<Control>(window, "GreenZoneGrayLine"), window);
+                    var pills = TheTopRowTests.RectIn(Unit376TheTopBandTests.Pills(window), window);
+                    var card = TheTopRowTests.RectIn(TheTopRowTests.Card(window), window);
+                    var caption = TheTopRowTests.RectIn(TheTopRowTests.Named<Control>(window, "GreenZoneClockCaption"), window);
+                    var buttons = Unit376TheTopBandTests.Pills(window).GetVisualDescendants().OfType<Button>()
+                        .Where(b => b.Classes.Contains("hm-band")).ToList();
+                    var rows = buttons.Select(b => Math.Round(TheTopRowTests.RectIn(b, window).Top)).Distinct().Count();
+                    var rightmost = buttons.Max(b => TheTopRowTests.RectIn(b, window).Right);
+
+                    _output.WriteLine("AFTER " + Px(width) + " x " + Px(height) + " on " + mode + ": left edge "
+                        + row.MapIsAtTheLeftEdge + ", reach " + Px(row.PillsReach));
+                    _output.WriteLine("  map " + Box(map) + " (" + (map.Width / map.Height).ToString("0.0000", CultureInfo.InvariantCulture)
+                        + "); band with pills " + Px(band.WithPills) + " y " + Px(band.TopWithPills) + " to " + Px(band.Bottom)
+                        + ", without " + Px(band.WithoutPills) + "; map top - band top " + Px(map.Top - band.TopWithPills)
+                        + ", band bottom - map bottom " + Px(band.Bottom - map.Bottom));
+                    _output.WriteLine("  pills " + Box(pills) + ", " + buttons.Count + " in " + rows + " row(s), rightmost ends x "
+                        + Px(rightmost) + ", order " + string.Join(" ", buttons.Select(b => Px(TheTopRowTests.RectIn(b, window).Left))));
+                    _output.WriteLine("  card " + Box(card) + ", rig " + Box(band.Rig) + ", caption " + Box(caption)
+                        + " [" + ((TextBlock)TheTopRowTests.Named<Control>(window, "GreenZoneClockCaption")).Text + "]");
+
+                    if (width == 1400)
+                    {
+                        // The card's lines that take more than one text line's height.
+                        var body = TheTopRowTests.Named<Control>(window, "NeighborhoodCardBody");
+
+                        foreach (var part in body.GetVisualDescendants().OfType<TextBlock>()
+                            .Where(t => t.IsEffectivelyVisible && t.DesiredSize.Height > 16))
+                        {
+                            _output.WriteLine("    tall text " + Px(part.DesiredSize.Height) + " [" + part.Name + "] [" + part.Text + "]");
+                        }
+                    }
+                }
+                finally
+                {
+                    model.ChosenDigitalMode = "FT8";
+                    window.Close();
+                }
+            }
+        }
+
+        foreach (var mode in Unit376TheTopBandTests.Modes)
+        {
+            var low = 1100.0;
+            var high = 1920.0;
+
+            while (high - low > 1)
+            {
+                var mid = Math.Floor((low + high) / 2);
+
+                if (AtTheLeftEdge(mid, mode))
+                {
+                    high = mid;
+                }
+                else
+                {
+                    low = mid;
+                }
+            }
+
+            _output.WriteLine("SWITCH on " + mode + ": stage A at " + Px(low) + " px wide, the left edge from " + Px(high)
+                + " (window 1040 tall)");
+        }
+
+        // PSK31 with the dial where PSK31 lives, so the strayed line has nothing to say.
+        var onIts = TheTopRowTests.Realized(1400, TheTopRowTests.WindowHeight, null, null);
+        var psk31 = (MainWindowViewModel)onIts.DataContext!;
+
+        try
+        {
+            psk31.ChosenDigitalMode = "PSK31";
+            psk31.FrequencyHz = 14_070_000;
+            Unit376TheTopBandTests.Pump(onIts);
+
+            var map = TheTopRowTests.RectIn(TheTopRowTests.Named<Control>(onIts, "GreenZoneGrayLine"), onIts);
+
+            _output.WriteLine("PSK31 AT 14.070 AT 1400: left edge "
+                + TheTopRowTests.Named<BandGovernsTheMapPanel>(onIts, "BandRow").MapIsAtTheLeftEdge
+                + ", map " + Box(map) + ", band " + Px(Unit376TheTopBandTests.Band(onIts).WithPills)
+                + ", strayed line drawn " + TheTopRowTests.Named<Control>(onIts, "GreenZoneStrayedLine").IsEffectivelyVisible);
+        }
+        finally
+        {
+            psk31.ChosenDigitalMode = "FT8";
+            onIts.Close();
+        }
+    }
+
+    private static bool AtTheLeftEdge(double width, string mode)
+    {
+        var window = TheTopRowTests.Realized(width, TheTopRowTests.WindowHeight, null, null);
+        var model = (MainWindowViewModel)window.DataContext!;
+
+        try
+        {
+            model.ChosenDigitalMode = mode;
+            Unit376TheTopBandTests.Pump(window);
+
+            return TheTopRowTests.Named<BandGovernsTheMapPanel>(window, "BandRow").MapIsAtTheLeftEdge;
+        }
+        finally
+        {
+            model.ChosenDigitalMode = "FT8";
+            window.Close();
+        }
+    }
+
     private void Print(double width, double height, string mode, Window window)
     {
         var band = Unit376TheTopBandTests.Band(window);

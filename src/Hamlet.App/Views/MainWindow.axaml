@@ -3401,7 +3401,11 @@
          and the 6 below it is the gap between the pills and the card and is in
          the band. **The badge still overhangs and is still not clipped**:
          `ClipToBounds` is False here for the reason the note above gives. -->
+    <!-- **NAMED SINCE WORK INSTRUCTION 389** so `BandRow` can move its left edge to where a sun
+         map at the band's left edge ends (PHASE_PLAN.md 10.3). Its order, its one row and its
+         top and bottom margins are the markup's; only the left margin is ever written. -->
     <ItemsControl Grid.Row="0" VerticalAlignment="Top"
+                  x:Name="BandPills"
                   ClipToBounds="False"
                   ItemsSource="{Binding Bands}" Margin="0,10,0,6">
         <ItemsControl.ItemsPanel>

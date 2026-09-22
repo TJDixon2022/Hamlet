@@ -421,6 +421,17 @@ public sealed class Unit376TheTopBandTests
     /// still the operator's grid and its caption is kept.
     /// </summary>
     /// <remarks>
+    /// <para>**REWRITTEN UNDER R12 A THIRD TIME, BY WORK INSTRUCTION 389 SECTION 6 RULING 2 ITEM 5.**
+    /// The map now stands at the band's left edge wherever the pills keep their one row to its
+    /// right and the card keeps its floor between it and the rig face. **What it asserts now**, at
+    /// every case in <see cref="SunMapCases"/>: whether the map is at the left edge, per the table
+    /// and not per the panel; at the left edge, the map from the pills row's top to the band's
+    /// bottom within 0.5 px, map then card then rig from the left, and no pill left of the map's
+    /// right edge; in the fallback, unit 388's stage A exactly, the pills row full width above; the
+    /// pills one row, all of them, in their own order, on the window, at every case including
+    /// 1100 x 780; the band still 214 at 1920 and 1400. **Kept whole**: the 246 x 134 floor, the
+    /// aspect, the grid marker, and the caption's words wholly drawn on the window. Unit 388's
+    /// account follows.</para>
     /// <para>**REWRITTEN UNDER R12 A SECOND TIME, BY WORK INSTRUCTION 388 SECTION 6 RULING 1 ITEM 6,
     /// AND THIS IS NOT LOOSENING A TEST.** Tim replaced what it asserted at `752a9b62` (rev7,
     /// 2026-09-22): *the band itself does not grow, 214 px stands ... unit 387's reading that the
@@ -464,24 +475,34 @@ public sealed class Unit376TheTopBandTests
     {
         var misses = new List<string>();
 
-        foreach (var (width, _, _, _) in Before)
+        foreach (var (width, height, mode, dialHz, atTheLeftEdge) in SunMapCases)
         {
-            foreach (var mode in Modes)
             {
-                var window = TheTopRowTests.Realized(width, TheTopRowTests.WindowHeight, null, null);
+                var window = TheTopRowTests.Realized(width, height, null, null);
                 var model = (MainWindowViewModel)window.DataContext!;
 
                 try
                 {
                     model.ChosenDigitalMode = mode;
+
+                    if (dialHz > 0)
+                    {
+                        model.FrequencyHz = dialHz;
+                    }
+
                     Pump(window);
 
                     var map = TheTopRowTests.Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
                     var caption = Named(window, "GreenZoneClockCaption");
                     var band = Band(window);
-                    var where = Px(width) + " on " + mode;
+                    var row = TheTopRowTests.Named<BandGovernsTheMapPanel>(window, "BandRow");
+                    var where = Size(width, height) + " on " + mode + (dialHz > 0 ? " at " + Px(dialHz) + " Hz" : "");
                     var mapAt = TheTopRowTests.RectIn(map, window);
                     var captionAt = caption is null ? default : TheTopRowTests.RectIn(caption, window);
+                    var pills = Pills(window).GetVisualDescendants().OfType<Button>()
+                        .Where(b => b.Classes.Contains("hm-band"))
+                        .Select(b => TheTopRowTests.RectIn(b, window))
+                        .ToList();
 
                     _output.WriteLine(
                         where + ": the sun map is " + Px(map.Bounds.Width) + " x "
@@ -503,20 +524,79 @@ public sealed class Unit376TheTopBandTests
                             + " asks for more map, and it is not a source of pixels.");
                     }
 
-                    // **REV7's RULE: THE MAP'S HEIGHT IS THE BAND'S** (work instruction 388 section
-                    // 6 ruling 1 item 6). Stage A stands the map beside the card, top to bottom of
-                    // the band's card-and-rig row - the band without the pills - so that is what
-                    // it must fill, within the row's own outer edges and nothing more. Stage B,
-                    // beside the pills as well, would make it the band with the pills.
-                    var shortBy = band.WithoutPills - map.Bounds.Height;
+                    // **REV7's RULE: THE MAP'S HEIGHT IS THE BAND'S** (work instruction 389 section
+                    // 6 ruling 2 items 1 to 4). Where it stands at the band's left edge it runs from
+                    // the pills row's top to the band's bottom - the band WITH the pills - within
+                    // 0.5 px at each end, and the card stands between it and the rig face. Which
+                    // case stands there is this table's, never the panel's own word.
+                    var rigAt = band.Rig;
+                    var cardAt = band.Card;
 
-                    if (Math.Abs(mapAt.Top - band.TopWithoutPills) > 0.5 || shortBy > 0.5)
+                    if (row.MapIsAtTheLeftEdge != atTheLeftEdge)
                     {
                         misses.Add(
-                            where + ": the sun map runs y " + Px(mapAt.Top) + " to " + Px(mapAt.Bottom)
-                            + " where the band's row runs y " + Px(band.TopWithoutPills) + " to "
-                            + Px(band.Bottom) + ", " + Px(shortBy) + " px short. Rev7: the band"
-                            + " governs the map, and the map takes the band's height.");
+                            where + ": the sun map is " + (row.MapIsAtTheLeftEdge ? "" : "NOT ") + "at the band's"
+                            + " left edge, where it " + (atTheLeftEdge ? "must be" : "must fall back to stage A") + ".");
+                    }
+                    else if (atTheLeftEdge)
+                    {
+                        if (Math.Abs(mapAt.Top - band.TopWithPills) > 0.5 || Math.Abs(mapAt.Bottom - band.Bottom) > 0.5)
+                        {
+                            misses.Add(
+                                where + ": the sun map runs y " + Px(mapAt.Top) + " to " + Px(mapAt.Bottom)
+                                + " where the band with the pills runs y " + Px(band.TopWithPills) + " to "
+                                + Px(band.Bottom) + ". Rev7: the band governs the map, and the map takes the"
+                                + " band's whole height.");
+                        }
+
+                        if (mapAt.Right > cardAt.Left + 0.5 || cardAt.Right > rigAt.Left + 0.5)
+                        {
+                            misses.Add(
+                                where + ": the map " + Px(mapAt.Left) + " to " + Px(mapAt.Right) + ", the card "
+                                + Px(cardAt.Left) + " to " + Px(cardAt.Right) + " and the rig face from "
+                                + Px(rigAt.Left) + " are not map, card, rig from the left.");
+                        }
+
+                        if (pills.Any(p => p.Left < mapAt.Right - 0.5))
+                        {
+                            misses.Add(where + ": a pill starts left of the map's right edge " + Px(mapAt.Right) + ".");
+                        }
+                    }
+                    else
+                    {
+                        // **THE FALLBACK IS STAGE A**: between the card and the rig face, from the
+                        // top of their row, the pills row full width above; and where the card
+                        // does not govern the row, as tall as the row.
+                        if (Math.Abs(mapAt.Top - band.TopWithoutPills) > 0.5
+                            || mapAt.Left < cardAt.Right - 0.5 || mapAt.Right > rigAt.Left + 0.5
+                            || Math.Abs(pills.Min(p => p.Left) - cardAt.Left) > 0.5)
+                        {
+                            misses.Add(
+                                where + ": the fallback is not stage A - map " + Px(mapAt.Left) + "," + Px(mapAt.Top)
+                                + " to " + Px(mapAt.Right) + ", card to " + Px(cardAt.Right) + ", rig from "
+                                + Px(rigAt.Left) + ", first pill at " + Px(pills.Min(p => p.Left)) + ".");
+                        }
+
+                        if (width >= 1400 && band.WithoutPills - map.Bounds.Height > 0.5)
+                        {
+                            misses.Add(
+                                where + ": in stage A the map is " + Px(map.Bounds.Height) + " in a row of "
+                                + Px(band.WithoutPills) + ".");
+                        }
+                    }
+
+                    // **THE PILLS KEEP ONE ROW, ALL OF THEM, IN THEIR OWN ORDER, ON THE WINDOW**
+                    // (ruling 2 item 2), at every size here including the fallback's.
+                    var tops = pills.Select(p => Math.Round(p.Top)).Distinct().Count();
+
+                    if (pills.Count != model.Bands.Count || tops != 1
+                        || pills.Zip(pills.Skip(1), (a, b) => b.Left > a.Right - 0.5).Any(ok => !ok)
+                        || pills.Max(p => p.Right) > width + 0.5)
+                    {
+                        misses.Add(
+                            where + ": the pills are " + pills.Count + " of " + model.Bands.Count + " in " + tops
+                            + " row(s), lefts " + string.Join(" ", pills.Select(p => Px(p.Left)))
+                            + ", the last ending at " + Px(pills.Max(p => p.Right)) + ".");
                     }
 
                     // **AND IT KEEPS ITS OWN PROPORTIONS** (HM-DEC-092): the width follows the
@@ -533,8 +613,9 @@ public sealed class Unit376TheTopBandTests
                     }
 
                     // **AND 6.1's CEILING IS NOT SUPERSEDED** (ruling 2(b)): the map may not have
-                    // grown by making the band taller.
-                    if (band.WithPills > BandReachedWithThePills + 0.5)
+                    // grown by making the band taller - at 1920 and 1400, where the band is 214. At
+                    // 1100 x 780 the card governs the band, as it did before work instruction 388.
+                    if (width >= 1400 && band.WithPills > BandReachedWithThePills + 0.5)
                     {
                         misses.Add(
                             where + ": the band is " + Px(band.WithPills) + " px with the pills"
@@ -564,7 +645,7 @@ public sealed class Unit376TheTopBandTests
                     else if (((TextBlock)caption).Text != "where the sun is · you"
                         || captionAt.Width < 1 || captionAt.Height < 1
                         || captionAt.Left < 0 || captionAt.Right > width + 0.5
-                        || captionAt.Bottom > TheTopRowTests.WindowHeight + 0.5)
+                        || captionAt.Bottom > height + 0.5)
                     {
                         misses.Add(
                             where + ": the sun map's caption reads [" + ((TextBlock)caption).Text + "] at ["
@@ -639,6 +720,25 @@ public sealed class Unit376TheTopBandTests
 
         Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
     }
+
+    /// <summary>
+    /// **Where the sun map must stand in each case** (work instruction 389 section 6 ruling 2):
+    /// the window, the mode, the dial (0 for the fixture's own 14.074), and whether the map is at
+    /// the band's left edge.
+    /// </summary>
+    /// <remarks>
+    /// **MEASURED, NOT CHOSEN** (<c>Unit389TraceTests</c>, task 3): the left edge holds from 1399 px
+    /// on FT8 and Olivia and from 1451 on PSK31 at the fixture's dial, because there the card also
+    /// says *PSK31 lives at 14.070; you are at 14.074* and is too tall beside the map at 1400. With
+    /// the dial where PSK31 lives, 1400 holds on PSK31 too. 1100 x 780 is the fallback on all three.
+    /// </remarks>
+    public static readonly (double Width, double Height, string Mode, long DialHz, bool AtTheLeftEdge)[] SunMapCases =
+    {
+        (1920, 1040, "FT8", 0, true), (1920, 1040, "PSK31", 0, true), (1920, 1040, "Olivia", 0, true),
+        (1400, 1040, "FT8", 0, true), (1400, 1040, "PSK31", 0, false), (1400, 1040, "PSK31", 14_070_000, true),
+        (1400, 1040, "Olivia", 0, true),
+        (1100, 780, "FT8", 0, false), (1100, 780, "PSK31", 0, false), (1100, 780, "Olivia", 0, false),
+    };
 
     /// <summary>The sun map's width, as task 1 measured it before anything moved.</summary>
     public const double SunMapWidth = 246;

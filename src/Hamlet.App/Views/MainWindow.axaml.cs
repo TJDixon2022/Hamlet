@@ -42,6 +42,13 @@ public partial class MainWindow : Window
             }
         };
 
+        // **THE SUN MAP'S ROW IS HANDED THE PILLS ROW ABOVE IT** (work instruction 389 task 3), so
+        // where the window is wide enough the map can stand at the band's left edge beside them.
+        if (this.FindControl<Controls.BandGovernsTheMapPanel>("BandRow") is { } bandRow)
+        {
+            bandRow.Pills = this.FindControl<Control>("BandPills");
+        }
+
         // Arrow keys = ±10 Hz, the headphone-tuning path (HM-DEC-015).
         AddHandler(KeyDownEvent, OnTuneKey, handledEventsToo: false);
 

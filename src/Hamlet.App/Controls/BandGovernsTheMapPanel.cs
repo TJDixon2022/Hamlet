@@ -25,6 +25,17 @@ namespace Hamlet.App.Controls;
 /// back - down to <see cref="MapFloor"/>, the
 /// 246 x 134 map units 337 and 376 kept, and never below it - and where even that is not enough the
 /// card governs exactly as it did before this unit. **The map never takes width from the rig face.**</para>
+/// <para>**AND WHERE THE WINDOW ALLOWS IT, THE MAP STANDS AT THE BAND'S LEFT EDGE** (PHASE_PLAN.md
+/// 10.3; work instruction 389 section 6 ruling 2, author's and overrulable). The band is the pills
+/// row and this row together, 214 px at 1920 and at 1400, and the map beside the card alone could
+/// only ever be this row's 178 of it. So where a map as tall as the whole band still leaves the
+/// pills their one row to its right and the card at least <see cref="CardFloor"/>, the map comes
+/// first, reaches up beside the pills by <see cref="PillsReach"/>, and the pills row is moved to
+/// start where the map ends; the card stands between the map and the rig face, and the rig face
+/// keeps its width and its place at the right. **Where either would not fit, it is exactly the
+/// shape above** - decided by measured widths each layout, never by a window size written here.
+/// The row's own height does not change by one pixel either way: the map reaches into the pills
+/// row's height, which the band already had.</para>
 /// </remarks>
 public sealed class BandGovernsTheMapPanel : Panel
 {
@@ -48,8 +59,34 @@ public sealed class BandGovernsTheMapPanel : Panel
 
     private double _mapHeight = MapFloor;
 
+    private double _pillsReach;
+
+    private bool _atTheLeftEdge;
+
     /// <summary>The height the map was last given, for a test and the report to read.</summary>
     public double MapHeight => _mapHeight;
+
+    /// <summary>
+    /// **True where the map was last laid out at the band's left edge**, reaching up beside the
+    /// pills; false where it stands between the card and the rig face at this row's height.
+    /// </summary>
+    public bool MapIsAtTheLeftEdge => _atTheLeftEdge;
+
+    /// <summary>
+    /// How far above this row the map reaches when it is at the left edge: the pills row's own
+    /// height and the gap under it, measured, and 0 where it is not.
+    /// </summary>
+    public double PillsReach => _atTheLeftEdge ? _pillsReach : 0;
+
+    /// <summary>
+    /// **The band-pills row above this one**, handed in by the window. Null leaves the map where
+    /// stage A put it, between the card and the rig face.
+    /// </summary>
+    /// <remarks>
+    /// **ITS LEFT MARGIN IS THE ONE THING OF IT THIS PANEL WRITES**, so the pills start where the
+    /// map ends; its top, its bottom and its order are left exactly as the markup has them.
+    /// </remarks>
+    public Control? Pills { get; set; }
 
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
@@ -67,6 +104,14 @@ public sealed class BandGovernsTheMapPanel : Panel
 
         var rowHeight = rig.DesiredSize.Height;
         var width = availableSize.Width;
+
+        if (!double.IsInfinity(width) && Pills is { } pills && AtTheLeftEdge(pills))
+        {
+            return new Size(width, rowHeight);
+        }
+
+        PlacePills(0);
+        _atTheLeftEdge = false;
 
         if (double.IsInfinity(width))
         {
@@ -134,6 +179,59 @@ public sealed class BandGovernsTheMapPanel : Panel
 
             return card.DesiredSize.Height <= rowHeight + 0.5;
         }
+
+        // **THE MAP AT THE BAND'S LEFT EDGE, IF BOTH NEIGHBOURS STILL FIT** (work instruction 389
+        // ruling 2 items 1 to 3). The pills are asked for their one row with nothing beside them;
+        // the map is made as tall as this row and the pills' reach together, which is the band;
+        // then the pills must fit to its right and the card between it and the rig must keep its
+        // floor and this row's height. Either failing is the stage A shape below, unchanged.
+        bool AtTheLeftEdge(Control pills)
+        {
+            pills.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            var need = pills.DesiredSize.Width - pills.Margin.Left - pills.Margin.Right;
+            var reach = pills.DesiredSize.Height - pills.Margin.Top;
+            var tall = rowHeight + reach;
+
+            map.Measure(new Size(double.PositiveInfinity, tall));
+
+            var mapWidth = map.DesiredSize.Width;
+            var slot = width - mapWidth - rig.DesiredSize.Width;
+
+            if (reach <= 0
+                || width - mapWidth < need
+                || slot - card.Margin.Left - card.Margin.Right < CardFloor)
+            {
+                return false;
+            }
+
+            card.Measure(new Size(slot, double.PositiveInfinity));
+
+            if (card.DesiredSize.Height > rowHeight + 0.5)
+            {
+                return false;
+            }
+
+            _pillsReach = reach;
+            _mapHeight = tall;
+            _atTheLeftEdge = true;
+            PlacePills(mapWidth);
+
+            return true;
+        }
+    }
+
+    /// <summary>Moves the pills row's left edge, and nothing else about it.</summary>
+    private void PlacePills(double left)
+    {
+        if (Pills is not { } pills || Math.Abs(pills.Margin.Left - left) < 0.01)
+        {
+            return;
+        }
+
+        var margin = pills.Margin;
+
+        pills.Margin = new Thickness(left, margin.Top, margin.Right, margin.Bottom);
     }
 
     /// <inheritdoc/>
@@ -151,6 +249,17 @@ public sealed class BandGovernsTheMapPanel : Panel
         var rigWidth = rig.DesiredSize.Width;
         var mapWidth = map.DesiredSize.Width;
         var cardWidth = Math.Max(0, finalSize.Width - rigWidth - mapWidth);
+
+        if (_atTheLeftEdge)
+        {
+            // The map first, from the pills row's top to this row's bottom; then the card; then
+            // the rig face at the same x and width it has in the shape below.
+            map.Arrange(new Rect(0, -_pillsReach, mapWidth, map.DesiredSize.Height));
+            card.Arrange(new Rect(mapWidth, 0, cardWidth, finalSize.Height));
+            rig.Arrange(new Rect(mapWidth + cardWidth, 0, rigWidth, finalSize.Height));
+
+            return finalSize;
+        }
 
         card.Arrange(new Rect(0, 0, cardWidth, finalSize.Height));
         map.Arrange(new Rect(cardWidth, 0, mapWidth, Math.Min(finalSize.Height, map.DesiredSize.Height)));
