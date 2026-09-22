@@ -4,6 +4,39 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-167
+date: 2026-09-22
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md, PROJECT_CARD.md, docs/phase-hardening-run/, docs/phase-cw/, work instruction 391 task 0, HM-DEC-151
+---
+
+**The hardening phase is archived with 5.1 open, and the CW phase - *CW decodes
+again* - is the phase in force from today.** Tim, 2026-09-22.
+
+**What is archived, and at what.** *Hamlet holds what it has*, set 2026-09-20, closes
+with every criterion a session can move ticked and one left: **5.1**, Tim's verdict at
+his window and at the radio. It is his and is not carried into the new phase as debt.
+The run folder is `docs/phase-hardening-run/`.
+
+**What is set.** *CW decodes again*: a restore phase. The CW decoder read on the air on
+2026-08-25 and reads nothing now; the floors that recorded what it produced have been red
+since 2026-08-31 (HM-DEC-151 named them inherited and "not a licence to leave the CW reds
+alone forever") and no CW test has been run since 2026-09-05. Six steps: the break
+measured and named; the engine's CW code restored to the last commit that read and
+adapted so today's app builds; a CW read guard on the carry-forward list; the inherited
+reds repaired or retired with reasons; the August rework re-applied one piece at a time
+on numbers; and Tim at the radio. The rulings that shape it are R47 to R52 in
+`PHASE_PLAN.md`, in his words.
+
+**Why a ruling and not an edit.** `PROJECT_CARD.md` holds standing facts and is changed
+only by ruling (CLAUDE.md 13.3), and `PHASE` and `PHASE_SET` are two of them. This entry
+is what licenses those two lines moving from the hardening phase to this one.
+
+**Whose words are whose.** The phase name and description are taken from `PHASE_PLAN.md`
+as `install-phase.bat` wrote them; the wording above is work instruction 391 task 0's
+recording of his ruling, not a session's own conclusion. Nothing was rejected in the
+recording.
+
+---
 id: HM-DEC-166
 date: 2026-09-20
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md, PROJECT_CARD.md, docs/phase-olivia-run/, work instruction 369 task 0

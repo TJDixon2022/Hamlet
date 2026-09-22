@@ -1232,8 +1232,15 @@
     (Tim's ruling A, 2026-09-22), and 9.2, 9.4, 9.5, 7.2, 4.3, 0.1 and 10.3 taken to a tick or an
     honest untick. No file under src changes at this task.
   -->
+  <!--
+    1.13.77 -> 1.13.78, WORK INSTRUCTION 391 TASK 0. A PATCH, STEP 0 OF THE CW PHASE, THE BREAK
+    IS MEASURED AND NAMED: the three CW floor tests run at HEAD case by case with their numbers,
+    main walked back in a detached worktree to the newest commit where all three are green, the
+    commit after it that turned one red named, and the app's seams into the Cw namespace listed.
+    HM-DEC-167 archives the hardening phase with 5.1 open. No file under src changes in this unit.
+  -->
   <PropertyGroup>
-    <Version>1.13.77</Version>
+    <Version>1.13.78</Version>
   </PropertyGroup>
 
   <!--
