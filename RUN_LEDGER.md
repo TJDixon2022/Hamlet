@@ -204,3 +204,4 @@ the owner reads instead of watching.
 | phase | 2026-09-22T09:48 | 2026-09-22T09:48 | failure | 10.9133 | STOPPED, AND A STOP IS FAILURE - refused: ADVANCES named no step and criterion, and no unit or criterion it unblocks |
 | 1 | 2026-09-22T10:22 | 2026-09-22T11:41 | complete | 43.3960615 | ran unattended, 310 turns, 13 denied call(s) worked around, report valid |
 | phase | 2026-09-22T11:53 | 2026-09-22T11:53 | ending | 43.3961 | ENDED - the arbiter raised one of the three for the owner. stop 4: the arbiter declared a decision the owner's |
+| 1 | 2026-09-22T13:14 | 2026-09-22T14:08 | complete | 11.630765599999995 | ran unattended, 219 turns, 5 denied call(s) worked around, report valid |

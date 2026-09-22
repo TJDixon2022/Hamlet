@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 5
-WORK_INSTRUCTION: 388 - the band governs the map, and favorites go back where Tim had them
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 389 - step 9 proved at HEAD so it can be graded, and the sun map to the band's left edge
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T14:08:32-04:00
-NOTE: Unit 388 complete - 10.6 met and ticked (Favorites drop-down under the green zone, caret gone, band 214); 10.3 partial at stage A (map 327x178 of a 214 band), stage B reverted at 1400 on two pill rows; exit app 265 names green after one own red repaired, engine 150 of 150
+UPDATED: 2026-09-22T14:19:15-04:00
+NOTE: Unit 389 task 0 - entry app 265 of 265 first attempt; engine invocation (line 9) running now, about 5 m
 
 ---
 
