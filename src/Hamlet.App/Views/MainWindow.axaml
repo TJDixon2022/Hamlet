@@ -924,6 +924,21 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- **FAVORITES, ONE DROP-DOWN IN THE EMPTY ROW UNDER THE GREEN ZONE**
+                         (PHASE_PLAN.md 10.6, rev7; Tim, 2026-09-22, marked on his screen; work
+                         instruction 388 task 2). Where he had them before a51bc2a6 of 2026-08-27:
+                         one control reading *Favorites*, opening the named spots, one click tunes.
+                         The list is `FavoriteMenu`, the Radio menu's own, so nothing about a
+                         favorite is decided in two places. It never holds a selection, and with
+                         nothing saved it still opens, to a note (§0.0, §0.5.1). The star on the
+                         rig face keeps saving. Measured at task 1, this row stood empty - 55 px
+                         at 1920 and 42 at 1400 - so it costs the top band nothing there. -->
+                    <ctl:FavoritesDropDownControl x:Name="GreenZoneFavorites"
+                                                  HorizontalAlignment="Left"
+                                                  FontSize="11" Padding="8,1" MinHeight="0"
+                                                  Favorites="{Binding FavoriteMenu}"
+                                                  ManageFavoritesCommand="{Binding ManageFavoritesCommand}" />
+
                     <!-- A lookup disagreeing with a hand-set class. Both
                          values, the source, and the operator decides — never
                          a silent overwrite (HM-DEC-028). -->
@@ -3093,23 +3108,19 @@
                 SMeterLevel="{Binding SMeterLevel}"
                 IsFavorite="{Binding IsFavorite}"
                 FavoriteLabel="{Binding FavoriteLabel}"
-                ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}"
-                Favorites="{Binding FavoriteMenu}"
-                ManageFavoritesCommand="{Binding ManageFavoritesCommand}" />
+                ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
 
-            <!-- **THE LIST COMES BACK ON THE RIG FACE AND NOT IN A STRIP** (R46(a),
-                 work instruction 387 task 2). `FavoriteMenu` is the same list the
-                 Radio menu shows, built by the same `RebuildMenus`, and each line
-                 carries the same `TuneToFavorite` with its own `FavoriteTuned`
-                 telemetry - nothing about a favorite is decided in two places.
-
-                 **WHY HERE.** The strip that used to carry it went out at a51bc2a6
-                 on 2026-08-27, in the same commit as Tim's ruled removal of the
-                 recent-places row and with no ruling of its own; the slot it sat in
-                 is the one he ruled must read the same in every mode, so it does not
-                 go back there. And the top band may not grow by one pixel (6.1, and
-                 the guard that ratchets it at 214), while a caret inside the black
-                 costs no height at all. -->
+            <!-- **THE STAR SAVES HERE; THE LIST IS UNDER THE GREEN ZONE** (PHASE_PLAN.md
+                 10.6, rev7; Tim, 2026-09-22, marked on his screen; work instruction 388
+                 task 2). Unit 387 brought the list back as a caret beside this star,
+                 opening `FavoriteMenu`. Tim ruled that is not where his hand goes for it:
+                 before a51bc2a6 of 2026-08-27 it was a drop-down beside the green block, and
+                 the empty row under the green zone is where it lived and where it goes. So
+                 the caret came off this face and `GreenZoneFavorites` in the neighborhood
+                 card opens the same list - the Radio menu's own, built by `RebuildMenus`,
+                 each line carrying `TuneToFavorite` with its `FavoriteTuned` telemetry. The
+                 star keeps saving, and the Radio menu keeps its copy: two ways in is not a
+                 defect. -->
 
             <!-- THE HINT RETIRES ONCE IT HAS BEEN USED (HM-DEC-141). It is a
                  line somebody needs exactly once, and a line that stays on

@@ -106,6 +106,22 @@ public sealed class Unit388TraceTests
         _output.WriteLine("    map             : " + Box(mapRect) + ", aspect " + (mapRect.Width / mapRect.Height).ToString("0.0000", CultureInfo.InvariantCulture));
         _output.WriteLine("    caption         : " + Box(captionRect) + ", gap " + Px(captionRect.Top - mapRect.Bottom)
             + ", width wanted " + Px(caption.DesiredSize.Width));
+        var favorites = window.GetVisualDescendants().OfType<FavoritesDropDownControl>().FirstOrDefault();
+
+        if (favorites is not null)
+        {
+            _output.WriteLine("  favorites         : " + Box(In(favorites, window)) + ", desired "
+                + Px(favorites.DesiredSize.Width) + " x " + Px(favorites.DesiredSize.Height)
+                + ", padding " + favorites.Padding + ", border " + favorites.BorderThickness);
+
+            foreach (var part in favorites.GetVisualDescendants().OfType<Control>())
+            {
+                _output.WriteLine("    " + part.GetType().Name.PadRight(18) + ": " + Box(In(part, window))
+                    + ", desired " + Px(part.DesiredSize.Width) + " x " + Px(part.DesiredSize.Height)
+                    + (part is TextBlock t ? " [" + t.Text + "]" : ""));
+            }
+        }
+
         _output.WriteLine("  rig border        : " + Box(band.Rig) + ", wants " + Px(band.RigWants));
         _output.WriteLine("  RigDriveAndPower  : " + Box(In(drive, window)));
 
