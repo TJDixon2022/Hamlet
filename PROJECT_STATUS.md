@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 388 - the band governs the map, and favorites go back where Ti
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T13:41:16-04:00
-NOTE: Task 3 stage A measured - map 327x178 at 1920 and 1400, band 214; at 1100 the map holds its 246x134 floor behind a 400 px card floor; running the screen and layout guard types to find what rev7 turned red
+UPDATED: 2026-09-22T13:44:59-04:00
+NOTE: Task 3 stage B experiment built - map reaching 36 px up beside the pills, pills in a WrapPanel limited to the room left of the map; measuring band and pill rows with the trace now
 
 ---
 

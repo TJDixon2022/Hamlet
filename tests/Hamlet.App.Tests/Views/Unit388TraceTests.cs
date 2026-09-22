@@ -90,7 +90,9 @@ public sealed class Unit388TraceTests
 
         _output.WriteLine("  pills             : " + buttons.Count + " buttons, their widths plus 8 px spacing = "
             + Px(buttonsWidth) + " of a row " + Px(pillsRect.Width) + " wide, spare " + Px(pillsRect.Width - buttonsWidth)
-            + "; rightmost pill ends at x " + Px(buttons.Max(b => In(b, window).Right)));
+            + "; rightmost pill ends at x " + Px(buttons.Max(b => In(b, window).Right))
+            + "; rows of pills " + buttons.Select(b => Math.Round(In(b, window).Top)).Distinct().Count()
+            + "; the map starts at x " + Px(In(Named(window, "GreenZoneGrayLine"), window).Left));
         _output.WriteLine("  card              : " + Box(cardRect) + ", header and top padding "
             + Px(bodyRect.Top - cardRect.Top) + ", bottom padding " + Px(cardRect.Bottom - bodyRect.Bottom)
             + ", left padding " + Px(bodyRect.Left - cardRect.Left) + ", right padding " + Px(cardRect.Right - bodyRect.Right));
