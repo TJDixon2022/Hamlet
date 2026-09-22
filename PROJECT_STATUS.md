@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: RUNNING
-TASK: TASK 1 of 5
+STATE: BLOCKED
+TASK: TASK 0 of 0
 WORK_INSTRUCTION: 384 - the carry-forward list, five rounds in a row, on a tree that does not move
-BALL: claude
+BALL: web
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T20:48:57-04:00
-NOTE: Task 0 committed (9832f972): the record set to step 2, version 1.13.71, the judging session's step 4 verdict transcribed and the step cut down at partial, 19 plan criteria ticked where a separate session certified them. Task 1 now: writing Unit384Trace, which reads the two command lines out of docs/carry-forward-tests.txt and counts what each term actually matches - no file under src or tests changes for it beyond the trace type itself.
+UPDATED: 2026-09-21T22:01:19-04:00
+NOTE: No WORK_INSTRUCTIONS.md at the root - 6c6232cc deleted it and wrote no replacement; nothing was executed
 
 ---
 
