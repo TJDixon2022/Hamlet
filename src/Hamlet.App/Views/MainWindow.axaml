@@ -986,9 +986,37 @@
                      **AT THE CARD'S RIGHT END, AT THE MOCKUP'S SIZE, SINCE WORK
                      INSTRUCTION 337** (R26). It used to fill the green zone's height and
                      grow with its width, which is how the zone reached two thirds of the
-                     window. **The height is the unit's choice, marked as its own: 134 px,
-                     the mockup's**; the width follows the picture's own proportions, so no
-                     place moves off the pixel the projection puts it on (HM-DEC-092). -->
+                     window. The width follows the picture's own proportions, so no place
+                     moves off the pixel the projection puts it on (HM-DEC-092).
+
+                     **THE HEIGHT IS THE BAND'S BUDGET AND NOT THE MOCKUP'S NUMBER** (R46(c),
+                     Tim 2026-09-22; work instruction 387 section 6 ruling 2(b)). Unit 337 chose
+                     134 px off the mockup and marked it as its own choice; unit 376 then kept
+                     it at 134 on the author's wording of 6.3, *keeps its size* read as *stays
+                     134 px*. R46(c) supersedes that wording - **but the number it is superseded
+                     to is the same number, and unit 387 measured why rather than assuming it.**
+
+                     **THE MAP ALREADY GOVERNS THIS CARD.** `GreenZoneLeft` wants 25 px at 1920
+                     and 54 at 1400; the map's column wants 145 - 134 and the caption and the
+                     2 px between them - in a row of 146; the card wants 178 and the rig column
+                     wants 178, tied with margin 0. **So every pixel the map takes, the card
+                     takes and the top band takes.** The band is 214 with the pills and is
+                     ratcheted there by `Unit376TheTopBandTests.BandReachedWithThePills`, which
+                     the carry-forward name
+                     `TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts, under
+                     6.1's ceiling of 220.
+
+                     **MEASURED AND NOT ARGUED**: unit 387 task 3 let the map take the height
+                     available to it and the map went to 698 x 381, the card to 424 and the band
+                     to 460 px - **240 px over 6.1's ceiling and 246 over the ratchet**. The
+                     80 px of band the map does not have are the pills row and its margins (36),
+                     this card's own header and padding (32) and the caption and its gap (11),
+                     and not one of them is the map's to take. So 134 stays, **as the largest
+                     height the band can pay for rather than as a picture's dimension**, and
+                     `TheSunMapFillsTheBandItSitsInTests` holds the ground both ways: the map may
+                     never shrink, and it may never leave a pixel of its own row unused.
+
+                     **THE DOT AND THE CAPTION ARE KEPT** (ruling 2(b)). -->
                 <StackPanel x:Name="GreenZoneMap"
                             Grid.Column="1"
                             Spacing="2"

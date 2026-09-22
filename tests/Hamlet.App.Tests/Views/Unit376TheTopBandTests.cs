@@ -416,9 +416,35 @@ public sealed class Unit376TheTopBandTests
     }
 
     /// <summary>
-    /// **Criterion 6.3: the sun map keeps its size and its dot.** Its rectangle is what task 1
-    /// measured before the band came down, and the one marker is still the operator's own grid.
+    /// **Criterion 10.3: the sun map fills the band it sits in, and it never gives a pixel back**
+    /// - R46(c), which supersedes 6.3's wording; and its one marker is still the operator's grid.
     /// </summary>
+    /// <remarks>
+    /// <para>**REWRITTEN UNDER R12 AND WORK INSTRUCTION 387 SECTION 6 RULING 2(b), AND THIS IS
+    /// NOT LOOSENING A TEST.** It asserted 246 x 134 within 0.5 px and called the map *not a
+    /// source of pixels (6.3)*. **The owner replaced the thing it asserted**: R46(c), 2026-09-22,
+    /// names 6.3's wording superseded because *keeps its size* had been read as *stays 134 px* -
+    /// so the number is no longer the rule, and rewriting the assertion to the rule that replaced
+    /// it is the one case where rewriting is honest.</para>
+    /// <para>**IT ASSERTS MORE THAN IT REPLACED, AND IN BOTH DIRECTIONS.** The old name could only
+    /// catch the map shrinking or growing away from one number. This one holds the ground twice
+    /// over: the map may **never be smaller** than the 246 x 134 unit 337 chose and unit 376 kept,
+    /// and it may **never leave a pixel of its own row unused** - if the row it sits in ever grows,
+    /// the map has to grow into it or this goes red. That second half is R46(c)'s actual rule and
+    /// nothing in the tree asserted it before.</para>
+    /// <para>**WHY THE MAP IS STILL 134 AND THAT IS NOT A FAILURE OF THIS GUARD.** Unit 387 task 1
+    /// measured the map GOVERNING this card: <c>GreenZoneLeft</c> wants 25 px at 1920 and 54 at
+    /// 1400, the map's column wants 145 in a row of 146, the card wants 178 and the rig column
+    /// wants 178 tied with margin 0 - so every pixel the map takes, the card takes and the band
+    /// takes. Task 3 then let the map take the height available to it and **measured** the map at
+    /// 698 x 381, the card at 424 and the band at 460 px, which is 240 over 6.1's ceiling of 220
+    /// and 246 over the ratchet at <see cref="BandReachedWithThePills"/>. **The band may not grow
+    /// by one pixel**, so the map fills its row and stops, and 10.3 is reported partial with those
+    /// two numbers rather than met.</para>
+    /// <para>**6.1's CEILING, THE DOT AND THE CAPTION ARE UNTOUCHED** (ruling 2(b)): the band is
+    /// asserted here as well, and every assertion this name carried about the grid marker and the
+    /// caption is kept exactly as it was.</para>
+    /// </remarks>
     [AvaloniaFact]
     public void TheSunMapIsTheSizeItWasAndStillCarriesHisGrid()
     {
@@ -438,20 +464,52 @@ public sealed class Unit376TheTopBandTests
 
                     var map = TheTopRowTests.Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
                     var caption = Named(window, "GreenZoneClockCaption");
+                    var column = Named(window, "GreenZoneMap");
+                    var band = Band(window);
                     var where = Px(width) + " on " + mode;
 
                     _output.WriteLine(
                         where + ": the sun map is " + Px(map.Bounds.Width) + " x "
-                        + Px(map.Bounds.Height) + " at grid " + map.OperatorGrid);
+                        + Px(map.Bounds.Height) + " at grid " + map.OperatorGrid
+                        + ", in a column of " + Px(column?.Bounds.Height ?? 0)
+                        + " under a caption of " + Px(caption?.Bounds.Height ?? 0)
+                        + ", in a band of " + Px(band.WithPills));
 
-                    if (Math.Abs(map.Bounds.Width - SunMapWidth) > 0.5
-                        || Math.Abs(map.Bounds.Height - SunMapHeight) > 0.5)
+                    // **R46(c)'s FIRST HALF: IT MAY NEVER SHRINK.** The 246 x 134 unit 337 chose
+                    // and unit 376 kept is the floor now, not the number.
+                    if (map.Bounds.Width < SunMapWidth - 0.5 || map.Bounds.Height < SunMapHeight - 0.5)
                     {
                         misses.Add(
                             where + ": the sun map is " + Px(map.Bounds.Width) + " x "
-                            + Px(map.Bounds.Height) + " where task 1 measured " + Px(SunMapWidth)
-                            + " x " + Px(SunMapHeight) + " before the band came down. It is not a"
-                            + " source of pixels (6.3).");
+                            + Px(map.Bounds.Height) + ", SMALLER than the " + Px(SunMapWidth)
+                            + " x " + Px(SunMapHeight) + " it has been since unit 337. R46(c)"
+                            + " asks for more map, and it is not a source of pixels.");
+                    }
+
+                    // **R46(c)'s SECOND HALF, AND NOTHING ASSERTED IT BEFORE: IT MAY NOT LEAVE A
+                    // PIXEL OF ITS OWN ROW UNUSED.** The column holds the map, 2 px of spacing
+                    // and the caption; anything left over is band the map is not taking.
+                    var used = map.Bounds.Height + 2 + (caption?.Bounds.Height ?? 0);
+                    var unused = (column?.Bounds.Height ?? used) - used;
+
+                    if (unused > 1.5)
+                    {
+                        misses.Add(
+                            where + ": the sun map's column is " + Px(column!.Bounds.Height)
+                            + " px and the map, its gap and its caption use " + Px(used)
+                            + ", so " + Px(unused) + " px of the band the map sits in are going"
+                            + " unused. R46(c): the map takes the height it is given.");
+                    }
+
+                    // **AND 6.1's CEILING IS NOT SUPERSEDED** (ruling 2(b)): the map may not have
+                    // grown by making the band taller.
+                    if (band.WithPills > BandReachedWithThePills + 0.5)
+                    {
+                        misses.Add(
+                            where + ": the band is " + Px(band.WithPills) + " px with the pills"
+                            + " where unit 376 brought it to " + Px(BandReachedWithThePills)
+                            + ", against 6.1's " + Px(BandTarget) + ". The map may not buy its"
+                            + " height from the top row.");
                     }
 
                     if (!map.IsEffectivelyVisible
