@@ -245,7 +245,9 @@ public sealed class ThePsk31ConversationCardTests
 
         _output.WriteLine("then [KC3QIS de W1AW 5#9 K]: card word [" + guessCard.StateWord + "], sentence [" + guessCard.Sentence + "]");
 
-        Assert.Contains("guess", guessCard.StateWord, StringComparison.Ordinal);
+        // The card's word is 9.4's own, *your turn?* (work instruction 389, rewritten under R12
+        // from a *guess* in the word); the sentence under it still says *guess* in words.
+        Assert.Equal("Your turn?", guessCard.StateWord);
         Assert.Contains("guess", guessCard.Sentence, StringComparison.Ordinal);
         Assert.True(guessCard.TurnIsGuess);
     }

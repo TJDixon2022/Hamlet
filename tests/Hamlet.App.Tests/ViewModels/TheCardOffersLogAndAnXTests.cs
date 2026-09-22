@@ -165,8 +165,13 @@ public sealed class TheCardOffersLogAndAnXTests : IDisposable
         model.FlushOnScreenForTests();
         telemetry.Dispose();
 
-        // **THE PRESS IS IN THE RECORD**, through the writer that already carries card presses.
+        // **THE PRESS IS IN THE RECORD**, through the writer that already carries card presses,
+        // as `card_dismissed` - 9.1's own token (work instruction 389 ruling 1 item 3).
         var press = Assert.Single(
+            Events("operator_action"),
+            e => e.GetProperty("action").GetString() == "card_dismissed");
+
+        Assert.DoesNotContain(
             Events("operator_action"),
             e => e.GetProperty("action").GetString() == "card_cleared");
 

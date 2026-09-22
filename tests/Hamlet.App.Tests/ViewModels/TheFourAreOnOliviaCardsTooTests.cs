@@ -79,6 +79,19 @@ public sealed class TheFourAreOnOliviaCardsTooTests : IDisposable
         Assert.True(card.CarrierIsLive);
         Assert.False(card.CanSendTyped);
 
+        // **AND THE REST OF 9.2's HOLD, DRIVEN ON OLIVIA RATHER THAN CLAIMED BY IDENTITY** (work
+        // instruction 389): the card's word, the offered button, and the canned lines as one note.
+        Assert.Equal(Ft8ContactCard.HeIsStillSending, card.SendingWord);
+        Assert.False(card.CanPressAction);
+        Assert.Equal(Ft8ContactCard.HeIsStillSending, card.OfferNote);
+        Assert.Equal(Ft8ContactCard.HeIsStillSending, card.TypedHoldNote);
+
+        var canned = model.Psk31CannedMenuFor(row);
+
+        Assert.NotNull(canned);
+        Assert.All(canned!, entry => Assert.True(entry.IsNote));
+        Assert.Contains(Ft8ContactCard.HeIsStillSending, canned![0].Label, StringComparison.Ordinal);
+
         card.TypedText = "HELLO OM";
         model.SendTypedPsk31Command.Execute(card);
         Settle(model);
@@ -131,6 +144,11 @@ public sealed class TheFourAreOnOliviaCardsTooTests : IDisposable
         Assert.Contains(model.DigitalDecodes, r => r.IsTextOnly);
 
         telemetry.Dispose();
+
+        // **AND THE PRESS IS WRITTEN IN 9.1's TOKEN ON OLIVIA TOO** (work instruction 389).
+        Assert.Single(
+            Events("operator_action"),
+            e => e.GetProperty("action").GetString() == "card_dismissed");
     }
 
     /// <summary>

@@ -115,9 +115,10 @@ public sealed class TheAnswerYouHeardTests : IDisposable
         Assert.Equal(Him, card.Callsign);
         Assert.DoesNotContain(model.DigitalCards, c => c.Callsign == Ft8ContactLedger.CallToAnyone);
 
-        // **AND IT SAYS IT IS A GUESS** (§0.0).
+        // **AND IT SAYS IT IS A GUESS** (§0.0), in 9.4's own word since work instruction 389
+        // (rewritten under R12: the word was *Your turn, a guess* and the plan's is *your turn?*).
         Assert.True(card.TurnIsGuess);
-        Assert.Contains("guess", card.TurnWord, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("Your turn?", card.TurnWord);
 
         // **REPORT IS OFFERED, WITH THE DOUBT BESIDE IT.**
         Assert.Equal(Psk31Macro.Report, card.Offered);

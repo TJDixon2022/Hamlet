@@ -6868,8 +6868,11 @@ public partial class MainWindowViewModel : ObservableObject
         // unlogged card warns rather than clearing, and the record says which of
         // the two this was, because a card that vanished and a card that asked
         // first are different evenings.
+        // **`card_dismissed`, THE PLAN'S OWN TOKEN** (PHASE_PLAN.md 9.1; work instruction 389
+        // section 6 ruling 1 item 3). This press was the only writer of `card_cleared`, so the
+        // word was renamed in place and there is one spelling of the press, not two.
         AppEvents.OperatorAction(
-            _telemetry, "card_cleared", OperatingMode,
+            _telemetry, "card_dismissed", OperatingMode,
             who.Length == 0 ? "no_card" : "asked");
 
         if (who.Length == 0)

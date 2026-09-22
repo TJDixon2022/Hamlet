@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Avalonia.Controls;
+using Avalonia.Headless.XUnit;
+using Avalonia.VisualTree;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
+using Hamlet.App.Views;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Psk31;
@@ -363,6 +367,77 @@ public sealed class TheCarrierHoldsTheButtonsTests : IDisposable
         Assert.DoesNotContain(back, entry => entry.Label.Contains(Ft8ContactCard.HeIsStillSending, StringComparison.Ordinal));
 
         telemetry.Dispose();
+    }
+
+    /// <summary>
+    /// **His card carries a color and the word, drawn on the window** - 9.2's first clause for the
+    /// card, measured on the drawn control and not only on the view model (work instruction 389
+    /// task 2).
+    /// </summary>
+    /// <remarks>
+    /// **THE CARD'S WORD WAS BOUND NOWHERE BEFORE WORK INSTRUCTION 389**: `SendingWord` existed on
+    /// the card and the card said the sentence only as the grey notes beside the held controls.
+    /// The color is the row's own green, looked up by the resource key both are drawn with.
+    /// </remarks>
+    [AvaloniaFact]
+    public void HisCardIsDrawnInTheSendingGreenWithTheWord()
+    {
+        var model = Panel(out _, out var telemetry);
+
+        // Arranged before the window exists, as TheTopRowTests.Realized arranges them: both
+        // panels open, so the card is realized to be read.
+        model.DigitalDecodedExpanded = true;
+        model.DigitalMineExpanded = true;
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(5, 1500, 10.0, MidOver) });
+
+        var window = new MainWindow { DataContext = model, Width = 1920, Height = 1040 };
+
+        try
+        {
+            window.Show();
+
+            for (var i = 0; i < 5; i++)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                window.UpdateLayout();
+            }
+
+            Assert.True(window.TryFindResource("HmGreenBrush", out var green), "HmGreenBrush is not a resource");
+
+            var drawn = window.GetVisualDescendants().OfType<TextBlock>().ToList();
+            var cardWord = Assert.Single(drawn, t => t.Name == "CardSendingWord");
+
+            _output.WriteLine($"card: [{cardWord.Text}] visible {cardWord.IsEffectivelyVisible} {cardWord.Bounds.Width:0.#} px, "
+                + $"brush {cardWord.Foreground}");
+
+            Assert.True(cardWord.IsEffectivelyVisible);
+            Assert.True(cardWord.Bounds.Width > 0);
+            Assert.Equal(Ft8ContactCard.HeIsStillSending, cardWord.Text);
+            Assert.Same(green, cardWord.Foreground);
+
+            // **THE ROW'S WORD IS UNIT 385's** and is asserted on the view model at
+            // HisRowAndHisCardSayItAndTheFourControlsAreHeld; its green is the same resource
+            // (MainWindow.axaml, DecodedRowSendingWord). This window does not realize the decoded
+            // rows, so it is not read here.
+
+            // **AND IT GOES WHEN HIS CARRIER DOES.**
+            model.ShowPsk31ChannelsForTests(Array.Empty<Psk31Channel>());
+
+            for (var i = 0; i < 5; i++)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                window.UpdateLayout();
+            }
+
+            Assert.DoesNotContain(
+                window.GetVisualDescendants().OfType<TextBlock>(),
+                t => t.Name == "CardSendingWord" && t.IsEffectivelyVisible);
+        }
+        finally
+        {
+            window.Close();
+            telemetry.Dispose();
+        }
     }
 
     private List<JsonElement> Events(string name)

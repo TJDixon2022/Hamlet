@@ -5669,6 +5669,27 @@
                                                                                FontWeight="SemiBold" />
                                                                 </Border>
 
+                                                                <!-- **WHILE HE IS STILL SENDING, THE CARD
+                                                                     SAYS IT IN A COLOR AND A WORD** (PHASE_PLAN.md
+                                                                     9.2; work instruction 389 ruling 1 item 3).
+                                                                     The card's `SendingWord` existed and was
+                                                                     bound nowhere, so the card carried the
+                                                                     sentence only as the grey notes beside the
+                                                                     held controls. The green is the row's own
+                                                                     `sending` green, and the words carry the
+                                                                     meaning without it (§0.6). Display only:
+                                                                     what is held and what is refused is
+                                                                     unchanged. -->
+                                                                <TextBlock Grid.Column="3"
+                                                                           x:Name="CardSendingWord"
+                                                                           Text="{Binding SendingWord}"
+                                                                           IsVisible="{Binding CarrierIsLive}"
+                                                                           VerticalAlignment="Center"
+                                                                           Margin="8,0,0,0"
+                                                                           FontSize="11"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="{StaticResource HmGreenBrush}" />
+
                                                                 <!-- **THE `i`, AND EVERY
                                                                      TECHNICAL DETAIL IS
                                                                      BEHIND IT** (Tim's

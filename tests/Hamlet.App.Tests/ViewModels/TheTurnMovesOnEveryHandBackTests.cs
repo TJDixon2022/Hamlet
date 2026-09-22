@@ -22,6 +22,9 @@ namespace Hamlet.App.Tests.ViewModels;
 /// parsed hand-backs already move the card - to *Your turn* and then, after Hamlet has answered
 /// and he comes back again, to *Your turn, a guess*. There is no second turn tracker here and
 /// none was written; what this does is pin the behaviour so it cannot quietly stop being true.</para>
+/// <para>**THE GUESSED WORD IS THE PLAN'S SINCE WORK INSTRUCTION 389**: *Your turn?*, where 9.4
+/// says *the card reads* your turn?. The three assertions on it were rewritten under R12 from
+/// *Your turn, a guess*, and the sentence under the word still says *guess*.</para>
 /// <para>**MOVING THE CARD IS NOT OFFERING A SEND**, and that is the distinction the whole
 /// criterion turns on. §R1's certainty gate is untouched: a guessed turn offers the Report that
 /// unit 371 licensed and never the Confirm, which claims a contact. **Nothing here transmits.**</para>
@@ -85,7 +88,7 @@ public sealed class TheTurnMovesOnEveryHandBackTests
 
         _output.WriteLine($"his second hand-back: [{second.TurnWord}] guess {second.TurnIsGuess}, offered {second.Offered}");
 
-        Assert.Equal("Your turn, a guess", second.TurnWord);
+        Assert.Equal("Your turn?",second.TurnWord);
         Assert.True(second.TurnIsGuess);
     }
 
@@ -130,10 +133,15 @@ public sealed class TheTurnMovesOnEveryHandBackTests
     /// <remarks>
     /// **THE TIMINGS ARE R44's AND THE CALLSIGN IS THIS TEST'S.** The owner's record of 2026-09-21
     /// is not on this machine (FACT-004), so this is a constructed fixture in the shape R44 states.
-    /// The card's word is quoted character for character rather than paraphrased.
+    /// The card's word is quoted character for character rather than paraphrased. **AND IT IS NOT
+    /// WHAT TIM GOT AT 17:48:33**: this over parses (`5#9` is a damaged report inside a clean
+    /// frame), where unit 385's own section 4 item 2 measured that his was garbled and completed no
+    /// message at all - work instruction 389 reports that, and the engine site stays unopened.
+    /// Renamed by work instruction 389 from <c>...ReadsYourTurnAGuess</c>, because it no longer
+    /// does.
     /// </remarks>
     [Fact]
-    public void AtTheSecondHandBackTheCardReadsYourTurnAGuess()
+    public void AtTheSecondHandBackTheCardReadsYourTurnQuestion()
     {
         var model = Panel();
 
@@ -152,7 +160,7 @@ public sealed class TheTurnMovesOnEveryHandBackTests
         _output.WriteLine("the card reads: " + after.TurnWord);
         _output.WriteLine("the sentence  : " + after.Sentence);
 
-        Assert.Equal("Your turn, a guess", after.TurnWord);
+        Assert.Equal("Your turn?",after.TurnWord);
         Assert.Contains("guess", after.Sentence, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -184,7 +192,7 @@ public sealed class TheTurnMovesOnEveryHandBackTests
 
         _output.WriteLine($"olivia: first [{first.TurnWord}] then [{second.TurnWord}] guess {second.TurnIsGuess}");
 
-        Assert.Equal("Your turn, a guess", second.TurnWord);
+        Assert.Equal("Your turn?",second.TurnWord);
         Assert.True(second.TurnIsGuess);
     }
 

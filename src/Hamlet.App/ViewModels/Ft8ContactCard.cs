@@ -443,12 +443,16 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// grey it still reads as one. *Unknown* where Hamlet cannot tell.</para>
     /// <para>**THE WORDING IS A SESSION'S** (work instruction 319), not a ruling, beside unit 316's
     /// *guess* and *unknown* on the row.</para>
+    /// <para>**EXCEPT A GUESSED *YOUR TURN*, WHICH IS THE PLAN'S** (PHASE_PLAN.md 9.4, R44: *the
+    /// card reads* your turn?; work instruction 389 section 6 ruling 1 item 3). The question mark
+    /// is the doubt, in the card's words and not in a color. The other turn words are unchanged
+    /// (R14).</para>
     /// </remarks>
     public string TurnWord => _turn is not { } turn
         ? ""
         : turn.State switch
         {
-            Psk31TurnState.YourTurn => turn.IsCertain ? "Your turn" : "Your turn, a guess",
+            Psk31TurnState.YourTurn => turn.IsCertain ? "Your turn" : "Your turn?",
             Psk31TurnState.HisTurn => turn.IsCertain ? "His turn" : "His turn, a guess",
             Psk31TurnState.HeIsSending => "He is still sending",
             _ => "Unknown",

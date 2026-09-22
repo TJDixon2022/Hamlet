@@ -511,6 +511,10 @@ public sealed class CallsignPrivacyTests : IDisposable
 
         AppEvents.OperatorAction(telemetry, "cq_pressed", "Digital", "14 characters");
 
+        // The card's X, in 9.1's token (work instruction 389): the press and which of the two it
+        // was, and never whose card.
+        AppEvents.OperatorAction(telemetry, "card_dismissed", "Digital", "asked");
+
         AppEvents.SendRefusedAfterReadBack(telemetry, "Ft8", "arm", "no_transmit_device");
 
         AppEvents.TransmitPath(telemetry, "no_transmit_device", 0);
