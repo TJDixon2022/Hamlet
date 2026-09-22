@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 0 of 6
+STATE: COMPLETED
+TASK: TASK 5 of 6
 WORK_INSTRUCTION: 390 - the phase closes: every open thing a session can take, taken
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T16:43:00-04:00
-NOTE: Entry app: every name green across two attempts, only dispatcher-loop losses, no assertion red; engine line 9 (25 terms) running
+UPDATED: 2026-09-22T17:25:29-04:00
+NOTE: Unit 390 complete, all six tasks - 7.5 earned, 9.3 under ruling A, 9.2/9.4/9.5/7.2/4.3/0.1/10.3 ticked with numbers, favorites as chips; unticked 9 to 1 (5.1, Tim's); exit app 278/278, engine 150/150 first time
 
 ---
 
