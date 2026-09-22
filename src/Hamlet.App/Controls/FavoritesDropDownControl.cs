@@ -12,6 +12,11 @@ namespace Hamlet.App.Controls;
 /// 2026-09-22, marked on his screen); work instruction 388 task 2.
 /// </summary>
 /// <remarks>
+/// <para>**OFF THE WINDOW SINCE WORK INSTRUCTION 390.** The row under the green zone is now
+/// `FavoriteChips`, one chip per saved spot (Tim, 2026-09-22: *"Favorites looks boring! Sex it
+/// up"*). Nothing in the application places this control; it stays in the tree only because
+/// `Unit388TraceTests` names the type and a session here cannot delete a file (PHASE_PLAN.md §6:
+/// empty it, comment it, list it). Listed in unit 390's report as a file to remove.</para>
 /// <para>**WHERE HE HAD THEM.** Before `a51bc2a6` of 2026-08-27 the list was a `ComboBox` beside
 /// the green block reading *favorites*, and picking a line tuned there and let the box go back to
 /// reading its name. That commit took it off with no ruling of its own; unit 387 brought the list

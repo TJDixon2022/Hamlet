@@ -2843,8 +2843,17 @@ public sealed class TheTopRowTests
     /// <param name="telemetry">Where the model records, or null for nowhere.</param>
     /// <param name="afterEachPass">Read-only hook for the unit 353 trace, or null.</param>
     internal static Window Realized(double width, double height, JsonlTelemetry? telemetry, Action<int, Window>? afterEachPass)
+        => Realized(width, height, telemetry, afterEachPass, FixtureSettings());
+
+    /// <summary>The same window, built from <paramref name="settings"/> - work instruction 390, so saved favorites load as they do at startup.</summary>
+    /// <param name="width">How wide the window is.</param>
+    /// <param name="height">How tall the window is.</param>
+    /// <param name="settings">The settings, from <see cref="FixtureSettings"/> with anything added.</param>
+    internal static Window Realized(double width, double height, AppSettings settings)
+        => Realized(width, height, null, null, settings);
+
+    private static Window Realized(double width, double height, JsonlTelemetry? telemetry, Action<int, Window>? afterEachPass, AppSettings settings)
     {
-        var settings = FixtureSettings();
 
         // **GENERAL FOR KC3QIS, HANDED IN** (work instruction 355 task 4): the class is already set here, and
         // the resolve that confirms it asked callook.info at construction until the seam.

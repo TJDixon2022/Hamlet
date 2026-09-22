@@ -513,6 +513,47 @@
             <Setter Property="BorderBrush" Value="{x:Static ctl:ModePalette.DigitalInk}" />
         </Style>
 
+        <!-- **A FAVORITE IS A PILL** (work instruction 390 task 2): white on the card with
+             the slate edge and rounded ends, darker under the mouse, and its ✕ shown
+             only while the mouse is on it. -->
+        <Style Selector="Button.hm-favchip">
+            <Setter Property="Padding" Value="9,1,4,1" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+        <Style Selector="Button.hm-favchip /template/ ContentPresenter">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="11" />
+        </Style>
+        <Style Selector="Button.hm-favchip:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#EDEAE1" />
+            <Setter Property="BorderBrush" Value="{x:Static ctl:ModePalette.DigitalInk}" />
+        </Style>
+        <Style Selector="Button.hm-favchip:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E4E0D5" />
+        </Style>
+        <Style Selector="Button.hm-favforget">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="Padding" Value="3,0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+        <Style Selector="Button.hm-favforget /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="Button.hm-favchip:pointerover Button.hm-favforget">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="Button.hm-favforget:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E4E0D5" />
+        </Style>
+
         <Style Selector="Button.hm-band">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
@@ -951,13 +992,68 @@
                          choice and overrulable). Under the map it cost the map 11 px of the band;
                          here it costs nothing, because this row is already paid for. The words are
                          unchanged. -->
-                    <Grid ColumnDefinitions="Auto,*">
-                        <ctl:FavoritesDropDownControl x:Name="GreenZoneFavorites"
-                                                      Grid.Column="0"
-                                                      HorizontalAlignment="Left"
-                                                      FontSize="11" Padding="8,1" MinHeight="0"
-                                                      Favorites="{Binding FavoriteMenu}"
-                                                      ManageFavoritesCommand="{Binding ManageFavoritesCommand}" />
+                    <!-- **CHIPS SINCE WORK INSTRUCTION 390** (Tim, 2026-09-22: *"Favorites looks
+                         boring! Sex it up"*). The drop-down was a grey button with a caret; the
+                         row is now one chip per saved spot in the band pills' style - the spot's
+                         frequency and mode in its family's ink (text color only, §0.5, and the
+                         mode is written, §0.6), the name he gave it beside, one click tunes, a ✕
+                         on hover forgets it. The chips are `FavoriteChips`, rebuilt with the Radio
+                         menu's `FavoriteMenu` from the one list. One row that scrolls sideways,
+                         never a second row: the band does not grow for favorites. -->
+                    <Grid x:Name="GreenZoneFavoritesRow" ColumnDefinitions="*,Auto">
+                        <ScrollViewer Grid.Column="0"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      VerticalAlignment="Center">
+                            <Panel>
+                                <ItemsControl x:Name="GreenZoneFavorites"
+                                              ItemsSource="{Binding FavoriteChips}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="4" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:FavoriteChip">
+                                            <Button Classes="hm-favchip"
+                                                    Cursor="Hand"
+                                                    ToolTip.Tip="{Binding Hover}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TuneToFavoriteCommand}"
+                                                    CommandParameter="{Binding Favorite}">
+                                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                                    <TextBlock x:Name="FavoriteSpot"
+                                                               Text="{Binding Spot}"
+                                                               FontSize="11" FontWeight="SemiBold"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{Binding Family, Converter={x:Static ctl:ModeFamilyConverter.Ink}}" />
+                                                    <TextBlock x:Name="FavoriteName"
+                                                               Text="{Binding Name}"
+                                                               MaxWidth="140"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               FontSize="11"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                                    <Button x:Name="FavoriteForget"
+                                                            Classes="hm-favforget"
+                                                            Content="✕"
+                                                            Cursor="Hand"
+                                                            ToolTip.Tip="Forget this spot"
+                                                            Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ForgetFavoriteCommand}"
+                                                            CommandParameter="{Binding Favorite}" />
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <TextBlock x:Name="GreenZoneFavoritesEmpty"
+                                           Text="no spots saved yet - press ☆ to keep this one"
+                                           IsVisible="{Binding !HasFavorites}"
+                                           FontSize="11" FontStyle="Italic"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </Panel>
+                        </ScrollViewer>
 
                         <TextBlock x:Name="GreenZoneClockCaption"
                                    Grid.Column="1"
@@ -4153,7 +4249,12 @@
                                             <Panel>
                                                 <!-- **CHOSEN, AND THE DIAL IS IN
                                                      ITS BLOCK.** -->
-                                                <Border Padding="12,4" CornerRadius="6"
+                                                <!-- **12,2 AND A 2 PX BOTTOM EDGE IS ONE PIXEL
+                                                     SHORTER THAN THE 10,3 IT REPLACED**: 12,4
+                                                     made the strip 3 px taller and the panels
+                                                     paid for it at 900 x 620 (measured, unit 390
+                                                     task 2). -->
+                                                <Border Padding="12,2" CornerRadius="6"
                                                         Background="{x:Static ctl:ModePalette.DigitalFill}"
                                                         BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
                                                         BorderThickness="1,1,1,2"
@@ -4175,7 +4276,7 @@
                                                      so a remembered press is never
                                                      drawn as a reading of the radio
                                                      (§0.0, HM-DEC-092, §0.6). -->
-                                                <Border Padding="12,4" CornerRadius="6"
+                                                <Border Padding="12,2" CornerRadius="6"
                                                         Background="{x:Static ctl:ModePalette.DigitalFill}"
                                                         BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
                                                         BorderThickness="1,1,1,2"
@@ -4192,7 +4293,7 @@
                                                      `hm-modeface` in this window's
                                                      styles. -->
                                                 <Border Classes="hm-modeface"
-                                                        Padding="12,4" CornerRadius="6"
+                                                        Padding="12,2" CornerRadius="6"
                                                         BorderThickness="1,1,1,2"
                                                         IsVisible="{Binding IsUnfilled}">
                                                     <TextBlock Text="{Binding Label}" FontSize="12"

@@ -39,6 +39,13 @@ namespace Hamlet.App.Tests.Views;
 /// (`ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns`): the star and the
 /// drop-down are hit with a headless pointer where the window laid them out.</para>
 /// <para>**NOTHING IS KEYED AND NO PORT IS OPENED** (FACT-004).</para>
+/// <para>**AND UNDER R12 AGAIN, WORK INSTRUCTION 390 TASK 2**: the drop-down became a row of chips
+/// (Tim, 2026-09-22, *"Favorites looks boring! Sex it up"*). Its two names that opened the
+/// drop-down - `TheDropDownUnderTheGreenZoneOpensTheNamedSpotsAndOneClickTunes` and
+/// `WithNothingSavedTheListSaysSoRatherThanOpeningEmpty` - asserted a control that is no longer on
+/// the window and were taken out; `TheFavoritesAreChipsTests` asserts what replaced them - the chips
+/// under the green block, one click tuning, the ✕ forgetting and persisting, and the empty row's
+/// sentence. The two star names are unedited; the band name now measures the chip row.</para>
 /// </remarks>
 public sealed class TheFavoritesAreUnderTheGreenZoneTests
 {
@@ -195,152 +202,6 @@ public sealed class TheFavoritesAreUnderTheGreenZoneTests
     }
 
     /// <summary>
-    /// **The drop-down under the green zone opens the named spots, one click tunes, and the
-    /// control reads *Favorites* again afterwards** - at 1920 and at 1400.
-    /// </summary>
-    /// <remarks>
-    /// <para>The list is the view model's own `FavoriteMenu` - the same list the Radio menu shows -
-    /// asserted by identity, so nothing about a favorite is decided in two places.</para>
-    /// <para>**WHERE IT IS**: inside the neighborhood card, under the green block, and wholly on
-    /// the card - the row Tim marked.</para>
-    /// </remarks>
-    [AvaloniaFact]
-    public void TheDropDownUnderTheGreenZoneOpensTheNamedSpotsAndOneClickTunes()
-    {
-        foreach (var width in new[] { 1920.0, 1400.0 })
-        {
-            var window = TheTopRowTests.Realized(width, TheTopRowTests.WindowHeight, null, null);
-
-            try
-            {
-                var model = (MainWindowViewModel)window.DataContext!;
-                var rig = Rig(window);
-                var dropDown = DropDown(window);
-
-                Assert.Same(model.FavoriteMenu, dropDown.Favorites);
-
-                // Two saved places, put there through the star rather than by hand: the first
-                // where the dial already is, the second 2 kHz up.
-                Paint(window, rig);
-                Press(window, rig, StarRect(rig));
-
-                var first = model.Favorites[0].FrequencyHz;
-
-                model.FrequencyHz = first + 2_000;
-
-                Paint(window, rig);
-                Press(window, rig, StarRect(rig));
-
-                Assert.Equal(2, model.Favorites.Count);
-
-                AssertItIsUnderTheGreenZone(window, dropDown, Px(width));
-
-                Click(window, dropDown);
-
-                var flyout = dropDown.ListShown;
-
-                Assert.NotNull(flyout);
-
-                var items = flyout!.Items.OfType<MenuItem>().ToList();
-
-                foreach (var item in items)
-                {
-                    _output.WriteLine(Px(width) + ": the drop-down offers: " + item.Header);
-                }
-
-                // One line per saved place, plus `Manage favorites…`.
-                Assert.Equal(model.FavoriteMenu.Count + 1, items.Count);
-
-                for (var i = 0; i < model.FavoriteMenu.Count; i++)
-                {
-                    Assert.Equal(model.FavoriteMenu[i].Label, items[i].Header);
-                    Assert.Same(model.FavoriteMenu[i].Tune, items[i].Command);
-                }
-
-                Assert.Equal("Manage favorites…", items[^1].Header);
-                Assert.Same(model.ManageFavoritesCommand, items[^1].Command);
-
-                // **ONE CLICK TUNES.** The dial is moved somewhere neither favorite is, and the
-                // first line is clicked exactly as a mouse would click it - no second click, no
-                // confirm.
-                model.FrequencyHz = first + 20_000;
-
-                var line = items[0];
-
-                Assert.True(line.Command!.CanExecute(line.CommandParameter));
-
-                line.Command.Execute(line.CommandParameter);
-
-                Assert.Equal(first, model.FrequencyHz);
-
-                // **AND IT READS FAVORITES AGAIN**, holding no selection that stops being true the
-                // moment the dial moves (§0.0).
-                Assert.Equal("Favorites", dropDown.Content);
-
-                _output.WriteLine(
-                    Px(width) + ": one click on [" + line.Header + "] put the dial back on "
-                    + model.FrequencyHz.ToString("#,0", CultureInfo.InvariantCulture)
-                    + " Hz from " + (first + 20_000).ToString("#,0", CultureInfo.InvariantCulture)
-                    + ", and the control reads [" + dropDown.Content + "]");
-            }
-            finally
-            {
-                CloseWithTheListShut(window);
-            }
-        }
-    }
-
-    /// <summary>
-    /// **With nothing saved the drop-down is still there, still enabled, and opens to a note** -
-    /// not an empty box, not a disabled item and never a greyed control.
-    /// </summary>
-    /// <remarks>
-    /// The 2026-09-06 rule and §0.5.1: nothing is greyed, hidden, sorted away or disabled, and an
-    /// entry with no command is a note that cannot be hit. The note is the one the rig face's list
-    /// offered, reused and not reworded.
-    /// </remarks>
-    [AvaloniaFact]
-    public void WithNothingSavedTheListSaysSoRatherThanOpeningEmpty()
-    {
-        var window = TheTopRowTests.Realized(1920, 1040, null, null);
-
-        try
-        {
-            var model = (MainWindowViewModel)window.DataContext!;
-            var dropDown = DropDown(window);
-
-            Assert.Empty(model.Favorites);
-            Assert.True(dropDown.IsEffectivelyVisible, "the drop-down is hidden with nothing saved");
-            Assert.True(dropDown.IsEffectivelyEnabled, "the drop-down is greyed with nothing saved");
-
-            Click(window, dropDown);
-
-            var flyout = dropDown.ListShown;
-
-            Assert.NotNull(flyout);
-
-            var items = flyout!.Items.OfType<MenuItem>().ToList();
-
-            foreach (var item in items)
-            {
-                _output.WriteLine("  the empty list offers: [" + item.Header + "] hittable " + item.IsHitTestVisible);
-            }
-
-            Assert.Equal(2, items.Count);
-            Assert.Equal("Nothing saved here yet - press the star to save where you are.", items[0].Header);
-            Assert.Null(items[0].Command);
-            Assert.False(items[0].IsHitTestVisible);
-            Assert.Equal("Manage favorites…", items[^1].Header);
-            Assert.NotNull(items[^1].Command);
-            Assert.Equal("Favorites", dropDown.Content);
-        }
-        finally
-        {
-            CloseWithTheListShut(window);
-        }
-    }
-
-    /// <summary>
     /// **The band did not grow to make room for the drop-down** - rev7's *214 px stands*, and the
     /// ratchet unit 376 took.
     /// </summary>
@@ -362,13 +223,13 @@ public sealed class TheFavoritesAreUnderTheGreenZoneTests
                 Unit376TheTopBandTests.Pump(window);
 
                 var band = Unit376TheTopBandTests.Band(window);
-                var dropDown = TheTopRowTests.RectIn(DropDown(window), window);
+                var row = TheTopRowTests.RectIn(TheTopRowTests.Named<Grid>(window, "GreenZoneFavoritesRow"), window);
 
                 _output.WriteLine(
                     Px(width) + ": the band is " + Px(band.WithPills) + " px with the pills and "
                     + Px(band.WithoutPills) + " without, against the ratchet of "
-                    + Px(Unit376TheTopBandTests.BandReachedWithThePills) + "; the drop-down is at "
-                    + Box(dropDown));
+                    + Px(Unit376TheTopBandTests.BandReachedWithThePills) + "; the favorites row is at "
+                    + Box(row));
 
                 if (band.WithPills > Unit376TheTopBandTests.BandReachedWithThePills + 0.5)
                 {
@@ -392,40 +253,6 @@ public sealed class TheFavoritesAreUnderTheGreenZoneTests
 
     private static RigDisplayControl Rig(Window window)
         => window.GetVisualDescendants().OfType<RigDisplayControl>().Single();
-
-    private static FavoritesDropDownControl DropDown(Window window)
-        => window.GetVisualDescendants().OfType<FavoritesDropDownControl>().Single();
-
-    /// <summary>
-    /// Shuts the list a press opened, then closes the window - so no popup outlives the window it
-    /// was opened from into the next test of the session.
-    /// </summary>
-    /// <param name="window">The window.</param>
-    private static void CloseWithTheListShut(Window window)
-    {
-        foreach (var dropDown in window.GetVisualDescendants().OfType<FavoritesDropDownControl>())
-        {
-            dropDown.ListShown?.Hide();
-        }
-
-        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-        window.Close();
-    }
-
-    private static void AssertItIsUnderTheGreenZone(Window window, Control dropDown, string where)
-    {
-        var card = TheTopRowTests.RectIn(TheTopRowTests.Card(window), window);
-        var block = TheTopRowTests.RectIn(TheTopRowTests.Named<Border>(window, "GreenZoneBlock"), window);
-        var at = TheTopRowTests.RectIn(dropDown, window);
-
-        Assert.True(dropDown.IsEffectivelyVisible, where + ": the drop-down is not drawn");
-        Assert.True(
-            at.Top >= block.Bottom - 0.5 && at.Left >= block.Left - 0.5 && at.Right <= block.Right + 0.5,
-            where + ": the drop-down " + Box(at) + " is not under the green block " + Box(block));
-        Assert.True(
-            card.Contains(at),
-            where + ": the drop-down " + Box(at) + " is not wholly inside the neighborhood card " + Box(card));
-    }
 
     /// <summary>
     /// Runs the control's own `Render` over its own laid-out bounds, so what it drew and the hit

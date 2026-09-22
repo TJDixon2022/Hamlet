@@ -8541,14 +8541,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The Radio menu's Recent submenu (HM-DEC-072).</summary>
     public ObservableCollection<TuneMenuItem> RecentMenu { get; } = new();
 
-    /// <summary>Rebuild the two submenus from the two lists.</summary>
+    /// <summary>The favorites row under the green zone: one chip per saved spot (work instruction 390).</summary>
+    public ObservableCollection<FavoriteChip> FavoriteChips { get; } = new();
+
+    /// <summary>Rebuild the two submenus and the chip row from the two lists.</summary>
     private void RebuildMenus()
     {
         FavoriteMenu.Clear();
+        FavoriteChips.Clear();
         foreach (var favorite in Favorites)
         {
             var target = favorite;
             FavoriteMenu.Add(new TuneMenuItem(target.Name, () => TuneToFavorite(target)));
+            FavoriteChips.Add(new FavoriteChip(target));
         }
 
         RecentMenu.Clear();
@@ -9960,6 +9965,24 @@ public partial class MainWindowViewModel : ObservableObject
 
         AppEvents.FavoriteTuned(_telemetry, favorite.BandName);
         TuneTo(favorite.FrequencyHz);
+    }
+
+    /// <summary>Forget one saved spot: the ✕ on its chip (work instruction 390).</summary>
+    /// <param name="favorite">The spot.</param>
+    /// <remarks>
+    /// The same removal the star makes on the spot the dial is on, with the same event, so a
+    /// forgotten spot reads the same in the record whichever way it went.
+    /// </remarks>
+    [RelayCommand]
+    private void ForgetFavorite(Favorite? favorite)
+    {
+        if (favorite is null || !Favorites.Remove(favorite))
+        {
+            return;
+        }
+
+        AppEvents.FavoriteRemoved(_telemetry, favorite.BandName);
+        PersistFavorites();
     }
 
     /// <summary>Rename, reorder and delete favorites.</summary>
