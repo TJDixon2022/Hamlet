@@ -3065,7 +3065,23 @@
                 SMeterLevel="{Binding SMeterLevel}"
                 IsFavorite="{Binding IsFavorite}"
                 FavoriteLabel="{Binding FavoriteLabel}"
-                ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
+                ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}"
+                Favorites="{Binding FavoriteMenu}"
+                ManageFavoritesCommand="{Binding ManageFavoritesCommand}" />
+
+            <!-- **THE LIST COMES BACK ON THE RIG FACE AND NOT IN A STRIP** (R46(a),
+                 work instruction 387 task 2). `FavoriteMenu` is the same list the
+                 Radio menu shows, built by the same `RebuildMenus`, and each line
+                 carries the same `TuneToFavorite` with its own `FavoriteTuned`
+                 telemetry - nothing about a favorite is decided in two places.
+
+                 **WHY HERE.** The strip that used to carry it went out at a51bc2a6
+                 on 2026-08-27, in the same commit as Tim's ruled removal of the
+                 recent-places row and with no ruling of its own; the slot it sat in
+                 is the one he ruled must read the same in every mode, so it does not
+                 go back there. And the top band may not grow by one pixel (6.1, and
+                 the guard that ratchets it at 214), while a caret inside the black
+                 costs no height at all. -->
 
             <!-- THE HINT RETIRES ONCE IT HAS BEEN USED (HM-DEC-141). It is a
                  line somebody needs exactly once, and a line that stays on

@@ -4,7 +4,9 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Hamlet.App.Controls;
@@ -148,6 +150,27 @@ public sealed class RigDisplayControl : Control
     public static readonly StyledProperty<ICommand?> ToggleFavoriteCommandProperty =
         AvaloniaProperty.Register<RigDisplayControl, ICommand?>(nameof(ToggleFavoriteCommand));
 
+    /// <summary>
+    /// **The saved places, each with its own way there** - R46(a), work instruction 387.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE VIEW MODEL DECIDES AND THIS DRAWS**, the rule already in force at
+    /// <c>MainWindow.axaml.cs</c>. Every line's words and every line's command are
+    /// <c>MainWindowViewModel.FavoriteMenu</c>'s, which is the same list the Radio menu shows
+    /// and is built by the same <c>RebuildMenus</c>; **the list a test reads and the list Tim
+    /// sees are one list**, and nothing here decides what a favorite is called or what tuning
+    /// to one does.</para>
+    /// <para>**NOTHING IS REWRITTEN** (R14). Each line already carries <c>TuneToFavorite</c>
+    /// with its own <c>FavoriteTuned</c> telemetry; this only gives that list a door on the rig
+    /// face, which is where R46(a) says Tim had it.</para>
+    /// </remarks>
+    public static readonly StyledProperty<IEnumerable<ViewModels.TuneMenuItem>?> FavoritesProperty =
+        AvaloniaProperty.Register<RigDisplayControl, IEnumerable<ViewModels.TuneMenuItem>?>(nameof(Favorites));
+
+    /// <summary>Rename, reorder and delete - the window the Radio menu already opens.</summary>
+    public static readonly StyledProperty<ICommand?> ManageFavoritesCommandProperty =
+        AvaloniaProperty.Register<RigDisplayControl, ICommand?>(nameof(ManageFavoritesCommand));
+
     private readonly double _bigWidth;
     private readonly double _smallWidth;
     private readonly double _sepWidth;
@@ -163,12 +186,23 @@ public sealed class RigDisplayControl : Control
     /// </remarks>
     private Rect _starRect = default;
 
+    /// <summary>
+    /// Where the caret that opens the saved list was last drawn, for hit testing - `default`
+    /// where the strip ran too short to draw it.
+    /// </summary>
+    /// <remarks>
+    /// **IT IS A SECOND TARGET AND NOT A SECOND STAR.** The star saves where you are; this
+    /// opens where you have been. They are adjacent and they do not overlap, which is asserted
+    /// rather than eyeballed.
+    /// </remarks>
+    private Rect _listRect = default;
+
     static RigDisplayControl()
     {
         AffectsRender<RigDisplayControl>(
             FrequencyHzProperty, BandLowHzProperty, BandHighHzProperty,
             ModeTextProperty, FilterTextProperty, SMeterLevelProperty,
-            IsFavoriteProperty, FavoriteLabelProperty);
+            IsFavoriteProperty, FavoriteLabelProperty, FavoritesProperty);
     }
 
     /// <summary>Creates the display; the UTC clock repaints once a second.</summary>
@@ -253,6 +287,20 @@ public sealed class RigDisplayControl : Control
         set => SetValue(ToggleFavoriteCommandProperty, value);
     }
 
+    /// <summary>The saved places, each with its own way there.</summary>
+    public IEnumerable<ViewModels.TuneMenuItem>? Favorites
+    {
+        get => GetValue(FavoritesProperty);
+        set => SetValue(FavoritesProperty, value);
+    }
+
+    /// <summary>What the list's last line runs.</summary>
+    public ICommand? ManageFavoritesCommand
+    {
+        get => GetValue(ManageFavoritesCommandProperty);
+        set => SetValue(ManageFavoritesCommandProperty, value);
+    }
+
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
         => new(
@@ -323,14 +371,24 @@ public sealed class RigDisplayControl : Control
     /// word is dropped rather than overlapped if the clock ever gets close, which
     /// the minimum width already prevents; a layout that is only correct because
     /// of a constant somewhere else is one refactor from being wrong.</para>
+    /// <para>**AND THE CARET BESIDE IT OPENS THE LIST** (R46(a), work instruction 387). Tim had
+    /// a favorites list and a unit took it off the screen on 2026-08-27 without ruling that it
+    /// should go; it comes back **here**, on the rig face, because that is where he had the star
+    /// and because **the top band may not grow by one pixel** (6.1, and the carry-forward guard
+    /// that ratchets it at 214). A glyph inside the black is the one door that costs no height
+    /// at all. The Radio menu keeps its own copy: two ways in is not a defect.</para>
+    /// <para>**THE CARET IS DROPPED BEFORE THE WORD IS**, on the same rule as the word, and its
+    /// hit rectangle is zeroed with it - so a caret that is not drawn cannot be hit.</para>
     /// </remarks>
     private void DrawStar(DrawingContext context, double x, double clockX)
     {
         var brush = IsFavorite ? StarOnBrush : StarOffBrush;
         var glyph = Make(IsFavorite ? "★" : "☆", 15, brush);
         var word = Make(FavoriteLabel, 12, brush);
+        var caret = Make("▾", 13, brush);
 
         var wordWidth = word.WidthIncludingTrailingWhitespace;
+        var caretWidth = caret.WidthIncludingTrailingWhitespace;
         var full = glyph.WidthIncludingTrailingWhitespace + 5 + wordWidth;
 
         // A gap the clock is never allowed inside.
@@ -339,6 +397,7 @@ public sealed class RigDisplayControl : Control
         if (room < glyph.WidthIncludingTrailingWhitespace)
         {
             _starRect = default;
+            _listRect = default;
             return;
         }
 
@@ -350,6 +409,21 @@ public sealed class RigDisplayControl : Control
         {
             context.DrawText(
                 word, new Point(x + glyph.WidthIncludingTrailingWhitespace + 5, 9));
+        }
+
+        // **THE CARET SITS CLEAR OF THE STAR'S OWN TARGET**, which runs to `x + full + 6`, so
+        // the two rectangles cannot overlap and a press cannot mean both things.
+        var caretX = x + (drawWord ? full : glyph.WidthIncludingTrailingWhitespace) + 11;
+
+        if (room >= caretX + caretWidth - x)
+        {
+            context.DrawText(caret, new Point(caretX, 8));
+
+            _listRect = new Rect(caretX - 4, 2, caretWidth + 8, StripHeight - 4);
+        }
+        else
+        {
+            _listRect = default;
         }
 
         // Padded outward, because a target the size of a glyph is a target
@@ -471,8 +545,10 @@ public sealed class RigDisplayControl : Control
     {
         base.OnPointerMoved(e);
 
+        var at = e.GetPosition(this);
+
         Cursor = new Cursor(
-            _starRect.Contains(e.GetPosition(this))
+            _starRect.Contains(at) || _listRect.Contains(at)
                 ? StandardCursorType.Hand
                 : StandardCursorType.SizeNorthSouth);
     }
@@ -482,7 +558,19 @@ public sealed class RigDisplayControl : Control
     {
         base.OnPointerPressed(e);
 
-        if (!_starRect.Contains(e.GetPosition(this)))
+        var at = e.GetPosition(this);
+
+        // **THE CARET IS ASKED FIRST**, because it is the smaller of the two targets and the
+        // rectangles are built not to overlap; asking it first means a fault in that arithmetic
+        // shows up as the list opening rather than as a frequency silently being saved.
+        if (_listRect.Contains(at))
+        {
+            OpenTheSavedList();
+            e.Handled = true;
+            return;
+        }
+
+        if (!_starRect.Contains(at))
         {
             return;
         }
@@ -497,6 +585,61 @@ public sealed class RigDisplayControl : Control
         e.Handled = true;
     }
 
+    /// <summary>
+    /// **The saved places, on the rig face, one click from where the dial is** - R46(a).
+    /// </summary>
+    /// <remarks>
+    /// <para>**EVERY LINE IS THE VIEW MODEL'S** - <c>FavoriteMenu</c>'s words and
+    /// <c>FavoriteMenu</c>'s commands, which are the Radio menu's own. Nothing here decides what a
+    /// favorite is called, what tuning to one does or what it records.</para>
+    /// <para>**NOTHING IS GREYED, HIDDEN, SORTED AWAY OR DISABLED** (ruled 2026-09-06). With
+    /// nothing saved the list is not an empty box and not a disabled item: it is a note saying so,
+    /// and a note carries no command and cannot be hit.</para>
+    /// <para>**IT OPENS A LIST AND SENDS NOTHING** (§0.2). No composer, no arming, no keying.</para>
+    /// </remarks>
+    private void OpenTheSavedList()
+    {
+        SavedListUnderThePointer = null;
+
+        var flyout = new MenuFlyout();
+        var saved = Favorites?.ToList() ?? new List<ViewModels.TuneMenuItem>();
+
+        if (saved.Count == 0)
+        {
+            flyout.Items.Add(new MenuItem
+            {
+                Header = "Nothing saved here yet - press the star to save where you are.",
+                IsHitTestVisible = false,
+            });
+        }
+        else
+        {
+            foreach (var item in saved)
+            {
+                flyout.Items.Add(new MenuItem { Header = item.Label, Command = item.Tune });
+            }
+        }
+
+        if (ManageFavoritesCommand is { } manage)
+        {
+            flyout.Items.Add(new Separator());
+            flyout.Items.Add(new MenuItem { Header = "Manage favorites…", Command = manage });
+        }
+
+        SavedListUnderThePointer = flyout;
+
+        flyout.ShowAt(this, showAtPointer: true);
+    }
+
+    /// <summary>The list the last press on the caret put up, for a test to read.</summary>
+    /// <remarks>
+    /// **RECORDED FOR A TEST AND READ BY NOTHING IN THE APPLICATION**, the shape
+    /// <c>MainWindow.SendFlyoutUnderTheMouse</c> already uses. A headless test can press the real
+    /// caret on a real rig face and read back exactly what appeared; without it the only evidence
+    /// would be a popup's presence in a visual tree, which says nothing about what was in it.
+    /// </remarks>
+    internal MenuFlyout? SavedListUnderThePointer { get; private set; }
+
     /// <inheritdoc/>
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
@@ -504,7 +647,7 @@ public sealed class RigDisplayControl : Control
 
         var at = e.GetPosition(this);
 
-        if (_starRect.Contains(at))
+        if (_starRect.Contains(at) || _listRect.Contains(at))
         {
             return;
         }

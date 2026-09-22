@@ -812,4 +812,99 @@ public sealed class TheSettingsSurviveAnUpgradeTests : IDisposable
 
         _output.WriteLine("next session reads: " + next.Psk31AlcReferenceLine);
     }
+
+    /// <summary>
+    /// **Criterion 10.1's last clause: the saved places survive the upgrade** - a favorite saved
+    /// before this unit and a favorite saved by tonight's star both load, and both keep the dial
+    /// and the mode a click has to tune back to.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS NAME GREW RATHER THAN A SECOND ONE BEING WRITTEN** (R12, work instruction 387
+    /// task 2). `TheSevenNamedValuesLoadFromTheFileWrittenAt_1_13_30` already proves the loader
+    /// keeps `Assert.Single(loaded.Favorites)`; what it does not prove is that a favorite written
+    /// **before notes existed** still loads beside one written after, which is the case
+    /// `AppSettings.cs:1097` says is defaulted rather than required - **and that is exactly the
+    /// case a restored feature meets on the first evening somebody upgrades**.</para>
+    /// <para>**THE FILE IS THIS TEST'S OWN AND NOT THE OPERATOR'S** (HM-DEC-018 §2.1). Nothing
+    /// personal is read: no real callsign, no real grid and nobody's own frequencies.</para>
+    /// </remarks>
+    [Fact]
+    public void AFavoriteSavedBeforeNotesAndOneSavedTonightBothSurviveTheUpgrade()
+    {
+        // Two rows: the first as a version before the note field wrote one - the key is simply
+        // absent - and the second as tonight's star writes one, every field present.
+        var path = Write("settings-favorites-across-the-upgrade.json", """
+            {
+              "ReconnectOnStartup": false,
+              "Favorites": [
+                {
+                  "FrequencyHz": 7030000,
+                  "Name": "7.030, the CW watering hole",
+                  "Mode": "CW",
+                  "BandName": "40 m",
+                  "Neighborhood": "CW",
+                  "SavedUtc": "2026-07-04T13:00:00Z"
+                },
+                {
+                  "FrequencyHz": 14070150,
+                  "Name": "14.070, PSK31 corner",
+                  "Mode": "USB-D",
+                  "BandName": "20 m",
+                  "Neighborhood": "PSK31 corner",
+                  "SavedUtc": "2026-09-22T14:30:00Z",
+                  "Note": "a clear spot"
+                }
+              ]
+            }
+            """);
+
+        var loaded = SettingsStore.LoadFrom(path);
+
+        Assert.Equal(2, loaded.Favorites.Count);
+
+        // **THE ONE WRITTEN BEFORE NOTES LOADS**, with the note defaulted and not missing.
+        var older = loaded.Favorites[0];
+
+        Assert.Equal(7_030_000, older.FrequencyHz);
+        Assert.Equal("CW", older.Mode);
+        Assert.Equal("40 m", older.BandName);
+        Assert.NotNull(older.Note);
+
+        // **AND THE ONE TONIGHT'S STAR WOULD WRITE LOADS BESIDE IT.**
+        var newer = loaded.Favorites[1];
+
+        Assert.Equal(14_070_150, newer.FrequencyHz);
+        Assert.Equal("USB-D", newer.Mode);
+        Assert.Equal("a clear spot", newer.Note);
+
+        // **AND THE NEXT UPGRADE DOES NOT COST THEM EITHER**: saved by today's writer and read
+        // back by today's loader, both rows keep the dial and the mode a click tunes to.
+        var written = Path.Combine(_folder, "after-the-upgrade.json");
+
+        SettingsStore.SaveTo(loaded, written);
+
+        var again = SettingsStore.LoadFrom(written);
+
+        Assert.Equal(2, again.Favorites.Count);
+        Assert.Equal(older.FrequencyHz, again.Favorites[0].FrequencyHz);
+        Assert.Equal(older.Mode, again.Favorites[0].Mode);
+        Assert.Equal(newer.FrequencyHz, again.Favorites[1].FrequencyHz);
+        Assert.Equal(newer.Mode, again.Favorites[1].Mode);
+
+        // **AND THE LIST ON THE RIG FACE IS BUILT FROM THEM**, so what survived the upgrade is
+        // what Tim can click back to: `FavoriteMenu` is the list the caret opens.
+        var model = new MainWindowViewModel(again, null);
+
+        Assert.Equal(2, model.Favorites.Count);
+        Assert.Equal(2, model.FavoriteMenu.Count);
+        Assert.True(model.HasFavorites);
+
+        foreach (var line in model.FavoriteMenu)
+        {
+            _output.WriteLine("the rig face's list would read: " + line.Label);
+
+            Assert.False(string.IsNullOrWhiteSpace(line.Label));
+            Assert.NotNull(line.Tune);
+        }
+    }
 }
