@@ -122,6 +122,18 @@ and then the arbiter kicks in at the end and moves forward. The goal is always t
 forward. I want unattended development to be maximized."* Consequence: every criterion
 below is a named test or a named number a report can carry; only 5.1 is his.
 
+**R53 - Tim, 2026-09-22, on unit 391's item 1: step 1 restores to `7e209cb4`.** Ruled B.
+Unit 391 measured that the two clean synthetics have been red since `8e3ee277` of
+2026-08-21, so no commit since then is green on all three floor tests and 0.2's literal
+answer is `07f0397a` of 08-21, four days before the evening the floors were set on. He
+chose the evening: `7e209cb4` (2026-08-25) is green on `TheCapturesThatDecodeKeepDecodingTests`
+36 of 36 and `TheAdjudicatedReadingsKeepReadingTests` 13 of 13, runs the captures type in
+97 s where HEAD takes 1995 s, and has the fewest seams. **Step 1's named commit is
+`7e209cb4`, not 0.2's answer.** The two clean synthetics start step 1 red; they are
+step 3's repairs under R49 and are not retired. Rejected: `07f0397a` (green on all three,
+but 32 of the 37 capture floors were never run against it and it has seven app-facing
+types missing).
+
 ## §3 What is different from the phases before it
 
 This phase moves the decode path, which no phase since 08-31 has. Two consequences the
@@ -158,12 +170,13 @@ says - never the whole suite.
 
 **Delivers:** R48 and R50.
 
-**Entry:** step 0 done, and the named commit read from its report.
+**Entry:** step 0 done or partial with 0.1 and 0.2 answered in unit 391's report; the
+named commit is `7e209cb4` by R53.
 
 **Exit:**
 - [ ] 1.1 Every file under `src\Hamlet.RadioEngine\Cw` outside the transmit list in §3 is the named commit's, adapted only where today's app or tests would not build; every adaptation is listed in the report with its file and its reason, and the transmit files are byte-identical to HEAD before the step.
 - [ ] 1.2 `Hamlet.sln` builds with warnings as errors, both Hamlet test projects included.
-- [ ] 1.3 The three floor tests are green at HEAD, every case, in one filtered run each, with characters and elements printed beside every floor.
+- [ ] 1.3 `TheCapturesThatDecodeKeepDecodingTests` and `TheAdjudicatedReadingsKeepReadingTests` are green at HEAD, every case, in one filtered run each, with characters and elements printed beside every floor; `CwFixtureTests.TheCleanRecordingsDecodeExactly` is run and its two cases reported with what they read, red or green (R53: they are step 3's).
 - [ ] 1.4 The app's CW tests are green by name: `TheSheetSaysWhatEachElementWasSentAtTests`, `ReturningToCwShowsCwTests`, `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`, `VoiceTests`.
 - [ ] 1.5 The carry-forward list is green on both lines, and nothing is red that was green at the step's entry.
 - [ ] 1.6 `git diff` over `src\Hamlet.App` between the step's entry and its exit is empty, or every hunk is listed in the report with the seam it serves.
@@ -256,6 +269,12 @@ nowhere to route - work it or halt.
 - **Anything would change what keys or transmits, or a byte of the transmit files in
   §3.** `MOVE: stop`.
 - **A package is needed.** `MOVE: stop`.
+- **The `UNIT:` line of every report carries no parentheses**, and no `&`, `|`, `<`, `>`
+  or `^`. `validate-output.bat` rule 1 echoes that line inside a parenthesized block, so a
+  `)` in it ends the block early and kills the run before its exit code is recorded; the
+  loop then halts at stop 11 with the unit's work done and unjudged. Units 390 and 391 both
+  died this way on 2026-09-22. Until the layer is repaired, the instruction says so and the
+  unit obeys it. Write *tasks 0 to 3, none dropped* with commas, never in brackets.
 - **A file must be deleted.** A retired test file is deleted in its own commit with the
   reason in the message and in `docs\cw-retired-tests.txt`; any other file is emptied,
   commented, listed.
@@ -274,3 +293,6 @@ including hardening 5.1.
 
 - **2026-09-22.** Written from the interview: R47 to R52; six steps; the three floor tests
   named from the tree; the transmit files fenced in §3.
+- **2026-09-22, night.** R53 from unit 391's report: step 1 restores to `7e209cb4`; 1.3
+  reworded so the two clean synthetics are reported, not required, at step 1; §6 gains the
+  `UNIT:` line rule after units 390 and 391 died in `validate-output.bat` rule 1.
