@@ -1,12 +1,59 @@
 Read ARBITER.md at this repository root and act as it says.
 
 You are the arbiter. Author the next WORK_INSTRUCTIONS.md.
+============================================================
+ THE PHASE, AND THE STEP YOU ARE AUTHORING AGAINST
+============================================================
 
-Read first, in this order:
-  .run-unit\reload.txt   - the measured picture, disagreements first
-  PHASE_PLAN.md          - what the phase is for
-  PHASE_OUTCOME.md       - what has been tried and what it hit
-  output.md              - the last unit's report, if there is one
+PHASE GOAL: Hamlet holds what it has
+
+THE STEP TO WORK: step 0 - Settings survive an upgrade, and a send that cannot go names the true fault - no device chosen is its own refusal with a Settings link; a device that will not open carries its name, rate and OS error. 0.2 to 0.5 met and measured; 0.1's search is complete and its answer is a NEGATIVE - no commit in that window touched the loader, and the line that dropped the device is named in the report and predates 1.13.30.  [partial]
+
+ITS UNMET CRITERIA. THESE ARE THE WORK:
+  - [ ] 0.1 The commit and line between 1.13.30 and 1.13.48 that dropped the transmit device on load are named in the report.
+
+already met, for context only:
+  - [x] 0.2 Settings files reconstructed from the tree at 1.13.30, 1.13.40 and HEAD each load with every value intact - transmit device, receive device, grid, callsign, license class, power offer, ALC reference - a missing new field takes its default, nothing present is dropped, and the file round-trips.
+  - [x] 0.3 At arm time, no transmit device chosen yields `send_refused reason no_transmit_device` and the sentence *No transmit device is chosen. Open Settings and pick the radio's sound card*, with Settings opened from the sentence.
+  - [x] 0.4 A chosen device that will not open yields `transmit_device_would_not_open` carrying the device name, the rate asked and the OS error text, in the event and on the panel.
+  - [x] 0.5 `TheSendReachesTheAirTests`, `TheUnslottedSendTests` and the byte-identical tests green and unedited.
+
+THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
+  step 2 - The record says what was true - the send press records the mode it was pressed under; every RSID code fldigi knows is in the data file with its tone sequence; the two headless flakes are made deterministic or named as environment and quarantined off the carry-forward list. 2.1 met by unit 374; 2.3 met by unit 375; 2.2 MET by unit 377 under R41 - one RSID file with a tone sequence for all eight codes and both fldigi tables, the detector reading every one, 24 of 24 generator-to-detector round trips from 12, and all seven Olivia variants proved by loopback 70 of 70 and gated so an unproved one is refused in a sentence. 2.4 is the only thing holding the step open, and it is not unit 377's.  [partial]
+    - [ ] 2.4 The carry-forward list runs green five times in a row.
+    - [ ] 2.6 The archived Olivia record `docs/phase-olivia-run/PHASE_OUTCOME.md` gains an appended entry stating that its `UNIT 2 - STEP 1` of 2026-09-14 never ran - the launcher graded unit 358's leftover report as a second unit's - with the evidence (identical cost, no commit); the false row is not edited, per the append-only rule.
+  step 4 - The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails. Unit 382, the FIRST UNIT EVER SPENT ON THIS STEP: 4.1, 4.2 and 4.3 all met, and the drop candidate in task 2 taken with the content kept. THIS IS UNIT 382's OWN TASK-0 AND TASK-4 ACCOUNT, written before a judging session has read it. 4.1 MET: docs/RADIO_SHEET.md, six sections - before you press anything, PSK31 press by press, Olivia press by press, when it refuses, where the files are, if it fails - with 26 sentences QUOTED and not one paraphrased, the presses in order for both modes, 14 refusal rows each carrying what it says, what it means and what to do, both capture folders named as two, and section 6 asking for nothing personal (HM-DEC-018 2.1). Olivia is written as DIFFERENCES rather than as its own walk, which was the named drop candidate: every press and every sentence is still there, and it says plainly that the variant comes from the station being answered and is never chosen from a menu. 4.2 MET IN BOTH DIRECTIONS, in one new type, TheRadioSheetQuotesTheScreenTests, 4 of 4: FORWARD 21 of 26 quotes compared CHARACTER FOR CHARACTER against what the shipped view model itself produced - kind (a) - and 5 found as literals under src/Hamlet.App - kind (b) - with the test naming the kind for each; BACKWARD 12 of 12 reachable refusals quoted, a direction that FOUND A REAL GAP and the sheet was fixed rather than the test. 4.3 MET: 150 prose lines scanned against the eleven words, 0 hits, on whole words, with the reason for excluding the quote lines in the test's own remarks. THE HARVEST IS THE NIGHT'S REAL MEASUREMENT: EIGHT OF THE NINE REFUSALS ARE PRODUCIBLE FROM A FIXTURE and the ninth, the mode gate's token at 16400, IS NOT REACHABLE UNDER PSK31 OR OLIVIA AT ALL. The sheet is 176 lines and 10,918 bytes against a target of 120 and 10 kB - over on both, content won under ruling 2 item 2 and the number is reported. NO FILE UNDER src CHANGED AT ALL. Exit carry-forward APP 224 OF 224 and ENGINE 150 OF 150 against task 0's 220 and 150, this unit's four new guards the only difference - NO REGRESSION. STEP 5's ENTRY IS step 4 done, AND STEP 5 IS TIM'S OWN AND ENDS THE RUN. TRANSCRIBED BY UNIT 384 TASK 0 - ANOTHER SESSION'S WORD, NOT A JUDGMENT OF UNIT 384'S AND NOT A CRITICISM OF UNIT 383: the separate judging session that read unit 383's report returned FATE: executed and STATE_AFTER: partial at PHASE_OUTCOME.md:446-448, verbatim - "4.1 and 4.2 are met with measured support, 27 quotes with 22 proved produced by the application and 12 of 12 reachable refusals quoted, but 4.3 is not met as written because the page still carries two sentences that send the operator to the rig, which the unit itself declares and counts rather than removes, and the plan line it conflicts with is not one of the three things the phase stops for." So step 4 is PARTIAL ON 4.3 for the second unit running, and unit 383's own 4.3-MET account above is its own account and not a verdict. WORK INSTRUCTION 384 SECTION 6 RULING 2 ITEM 1, in one sentence: step 4 is cut down at partial and no unit in this phase works 4.3 again - the only remedies left are deleting a quoted refusal, which 4.2's backward direction forbids and which would hide from Tim what Hamlet says when its own unkey did not get out, or changing a sentence Hamlet says, which is the owner's - so the question is logged to the owner, the sheet is not opened, and nothing in unit 384 waited on it.  [partial]
+    - [ ] 4.3 No sentence tells the operator to touch the radio (R11).
+  step 5 - Tim looks - at his window and, when he has time, at the radio, and says it passed.  [not started]
+    - [ ] 5.1 Tim says it passed at his window and at the radio. No script can evaluate this.   *owner's verdict*
+  step 7 - READ AND LEFT WHERE IT STOOD BY UNIT 384 TASK 0, WITH THE STATE WORD DELIBERATELY UNCHANGED: UNIT 383'S OWN ACCOUNT, attributed and not promoted, says 7.2 IS MET - seven of seven canned rows write psk31_send_composed with macro canned where four did, with the macro's own token kept beside it in cannedMacro, and the Answer macro sent off the canned list and off the card composed 116,371 samples each, equal one by one (PHASE_OUTCOME.md:433 and its MEASURED: line). NO SEPARATE JUDGING SESSION HAS READ UNIT 383'S REPORT AGAINST STEP 7, and ARBITER.md section 8 makes a judging session's STATE_AFTER the evidence rather than a unit's own claim, so the step STAYS PARTIAL and 7.2 STAYS UNTICKED in PHASE_PLAN.md (work instruction 384 section 6 ruling 2 item 3). Unit 384 did not re-run 7.2, re-prove it or tick it. CORRECTED BY UNIT 382 TASK 0, AND IT IS TRANSCRIPTION OF A VERDICT A SEPARATE SESSION RETURNED - NOT A JUDGMENT OF UNIT 382'S, NOT ONE OF ITS TWO RULINGS, AND NOT A CRITICISM OF UNIT 378 OR OF UNIT 379: 7.1, 7.3, 7.4 AND 7.5 ARE MET AND 7.2 IS OPEN. The done that stood in this header came from unit 378's OWN entry at PHASE_OUTCOME.md:274, which unit 378 wrote at the end of its own night. The SEPARATE JUDGING SESSION's entry - ## UNIT 1 - STEP 7 at PHASE_OUTCOME.md:277 - returned STATE_AFTER: partial at line 289, verbatim: "Four of the five criteria are met with quoted measurements, but 7.2 requires every canned send to write psk31_send_composed with macro canned, and the report states only the four text lines do so while the three macro rows write their own token, so a must-pass criterion is met in part." ARBITER.md section 8 is explicit that STATE_AFTER is not a unit's own opinion handed back to it and that the separate session's verdict is the evidence, so STEP 7 IS PARTIAL ON 7.2. 7.2 is parked: no file under src was touched for it tonight, and unit 378's design reason is stated in the tree at MainWindowViewModel.cs:17903 - the three macro rows are sent by the commands that send them today, keeping R1's certainty gate. WHAT UNIT 379 TRANSCRIBED HERE, SUPERSEDED BY THE LINE ABOVE AND KEPT SO THE READING STAYS VISIBLE: unit 379 read a STATE_AFTER: done that was in the file and wrote that unit 378 met all five criteria with none rounded up. The canned list and the hover - R39's list and hover: right-click on a PSK31 row shows the seven lines from data/psk31/canned.json and one click sends the chosen line framed through the one unslotted sequence; every canned send begins with its RSID and is recorded with no text; the row hover is facts and never the text; Olivia rows get the same by construction. DONE BY UNIT 378, the first unit ever spent on it: 7.1, 7.2, 7.3, 7.4 and 7.5 all met, with 7.2's distinction stated - the four text lines write macro canned and the three macro lines write their own tokens, because that is what they are - and with 7.5's chip met by measurement rather than repair. Rows offering something on a right-click went from 2 of 7 to 7 of 7 and the menu from one line to seven. STEP 8's ENTRY, WHICH READS step 7 done, IS THEREFORE OPEN.  [partial]
+    - [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text.
+  step 9 - The contact Tim had - every card has an X; a station's live carrier is visible and holds the send buttons so Tim never keys on top of him; Log is on every conversation card from the start; every hand-back moves the turn, certain or guessed.  [not started]
+    - [ ] 9.1 Every conversation card and every receipt has a dismiss X; dismissing removes it and writes `card_dismissed`.
+    - [ ] 9.2 While a station's carrier is on the air his row and his card carry a color and the word *sending*; Report, Confirm, the canned lines and the typed line are held - greyed with *he is still sending* - until his carrier drops, and a send attempted during it is refused with that sentence and `send_refused reason his_carrier_live`; replayed from the 17:45:40-17:45:44 record as a fixture, Tim's Report would have been held.
+    - [ ] 9.3 Log is on every conversation card from the moment it exists, with the RST fields editable and defaulted to what was exchanged if anything was; a logged contact with no certain 73 logs what is known and nothing invented.
+    - [ ] 9.4 Every parsed line addressed to the operator with a hand-back moves the card's turn to *your turn* - marked as a guess when uncertain - not only the first answer; replayed from the 17:48:33 record, the card reads *your turn?*.
+    - [ ] 9.5 The four are on PSK31 and Olivia cards alike, asserted.
+
+ADVANCES MUST NAME ONE OF THE CRITERIA ABOVE. Everything below this block is
+context for CHOOSING among them - what has been tried, and what the last unit
+reported. None of it is a list of work to do.
+
+
+THE PLAN, THE ATTEMPT RECORD AND THE LAST REPORT ARE ALL IN THIS PROMPT -
+the criteria above, the rest below. One thing is not:
+
+  .run-unit\reload.txt   - the measured picture, disagreements first.
+                           READ THIS. Nothing else here carries it.
+
+  PHASE_PLAN.md          - open it if you need a step's full text. The
+                           criteria above are quoted from it verbatim.
+
+  output.md              - the last report. A bounded extract is at the
+                           BOTTOM of this prompt. Open the whole file only
+                           to check something the extract raised about a
+                           criterion - never as your starting point, and
+                           never to find work in it.
 
 Run the loop test before you propose an approach.
 
@@ -18,5 +65,153 @@ question the last report left in its section 4 - take your own
 recommendation, put it in DECIDED marked author's, overrulable, and
 author the unit on it.
 
+PROGRESS IS COUNTED IN CRITERIA, AND THE COUNT IS THE SCRIPT'S - ARBITER.md
+section 7. ADVANCES must read  step N criterion k  - one line of PHASE_PLAN.md
+in the form  - [ ] N.k  - or  none - clears a blocker:  naming the unit number
+or criterion it unblocks. The launcher counts that criterion before and after
+the unit; if it did not flip, the unit did not advance, and two such units in a
+row are stop 10. A STEP WHOSE STATE IN PHASE_OUTCOME.md IS done IS CLOSED: do
+not author into it. The launcher refuses it before the unit runs, and only the
+owner reopens a step, by a ruling in the plan.
+
+THE OWNER'S VERDICT IS MARKED AND ENDS THE RUN - ARBITER.md section 7. A
+criterion ending *owner's verdict* is the owner's alone: never name one in
+ADVANCES, and never author a unit toward a verdict the loop cannot give.
+
+YOUR SELF-RULINGS ARE BOUNDED - the owner's ruling of 2026-09-14. At most two
+self-rulings that authorize work outside the instruction's tasks, each citing
+the plan line it applies; if a third is needed, the plan or the instruction
+is unclear - report it as a mismatch instead of ruling a third time.
+Decisions about how to carry out an assigned task are uncapped, and every
+one is reported. NO SELF-RULING MAY OVERRULE AN EARLIER ARBITER RULING -
+only the owner does that, and a report claiming one halts the loop.
+
 Write WORK_INSTRUCTIONS.md and end it with the ARBITER-DECISION
 block exactly as ARBITER.md section 7 specifies. Write nothing else.
+
+============================================================
+ THE PREVIOUS UNIT-S REPORT - EVIDENCE, NOT A LIST OF WORK
+============================================================
+
+Read this as EVIDENCE ABOUT A CRITERION: what was measured, what was found, what
+a check missed. It is NOT the next thing to work on, and a question it raises is
+not a task. THE WORK IS THE UNMET CRITERIA AT THE TOP OF THIS PROMPT. If nothing
+here bears on one of them, author from them anyway.
+
+THIS REPORT WAS TOO LONG FOR ITS SHARE OF THE PROMPT AND WAS SELECTED FROM.
+Kept, in this order: section 4, then any line naming a mismatch, then section 3.
+The whole file is at the repository root if you need the rest.
+
+## 4. What's blocking us
+
+**Nothing blocks step 9.** Eight items, findings unless marked; none is in the way of a criterion.
+
+### Raised by this unit
+
+**1. The measurement disagreed with holding on the carrier alone, and the measurement won.**
+
+*A finding, as section 6 says.* Ruling 1 item 1's choice of fact was right - `HeIsSending` was
+never true while a carrier was up. But a row outlives the man: **9 s** on PSK31
+(`Psk31Listener.RetiredWithinSeconds`) and **22.94 s to 38.23 s** on Olivia
+(`OliviaTiming.RetireAfterCharacters`, 56 characters). A hold on `row.Ended` alone refused the
+operator's answer for that long after the other man said `K` - **the gate that sticks ruling 1
+item 4 forbids**, and it turned 25 names red. The hold is now *carrier up **and** nothing handed
+back*, which released 21 of those 25 immediately; the other four were §R12 rewrites.
+
+**2. The second hand-back Tim watched is not a parsed line at all, and its site is in the engine.**
+
+*A finding that wants a licence, not a ruling.* `Psk31MessageSplitter` completes a message on a
+turnover word that follows **clean** callsigns (`FollowsASign`), so a garbled over completes
+nothing, its text stays pending, and the card sits at *He is still sending*. Measured: **0 messages
+from the garbled over against 1 from the same words with clean calls.** 9.4 as written - *every
+parsed line ... moves the turn* - is met, and this is the case underneath it. **Nothing was
+repaired**: the site is `src\Hamlet.RadioEngine\Psk31\`, which section 6 forbids this unit to open.
+
+**3. 9.1's token is `card_cleared`, not `card_dismissed`.**
+
+*A finding.* Ruling 2 item 3 names `card_dismissed` for the press. `ClearCardCommand` has written
+`card_cleared` through `AppEvents.OperatorAction` since unit 305, and R13 forbids a second writer
+where one exists - a second spelling of one press is exactly what it forbids. **The token was left
+as it is** and the card's *leaving* is recorded with `dismissed`, which is unit 380's own word.
+
+**4. Section 5 is out of date about what a guessed turn offers.**
+
+*A mismatch, reported.* It cites `Psk31Offer.cs:36` for *a guessed your turn ... offers nothing*.
+Since unit 371 a guessed hand-back to the operator offers the **Report** - which asserts nothing
+about the contact - and never the **Confirm**. The tests assert the tree.
+
+**5. The owner's telemetry for 2026-09-21 is not on this machine.**
+
+*A finding about evidence.* `%AppData%\Hamlet\telemetry\2026-09-21.jsonl` does not exist here, so
+every fixture was **constructed to R44's stated timings** with a test callsign, and no replay in
+this unit is described as his record.
+
+**6. The `## UNIT 7 - STEP 2` row was appended to, never edited.**
+
+*As instructed.* The correction is in this unit's own entry: unit 384's run ended on an API 529
+after task 0, it wrote no `output.md`, and that row was graded from unit 383's leftover report.
+
+**7. One commit carries two pieces.**
+
+*A finding about this unit's shape.* 9.1's `NoteCardOnScreen` line lives in the same file as the
+hold's narrowing and went in with it (`d86d4ccd`) rather than in a commit of its own.
+
+**8. The `RULES_AT` id split, for the seventh unit running.**
+
+*Reported, not repaired.* `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)`; `CLAUDE.md` section
+1 holds `CPS-DEC-0165`. `tools\` is not this unit's.
+
+### Asks still outstanding - carried from unit 383's section 4, per HM-DEC-139, verbatim
+
+**The queue stands at thirty-nine and this unit answers none of them.** The words below are unit
+383's, from its line under `## 4. What's blocking us` to its end, as committed in `6c6232cc^` -
+the report that commit deleted from the working tree. **Work instruction 384's own section 3 was
+deleted with it and is not recoverable, so nothing is recorded as answered by unit 384.**
+
+On the three that this unit's work touched: **unit 383's item 1** (4.3 and the radio sheet) - no
+task here opened `docs\RADIO_SHEET.md`, its test or any string it quotes; it stays the owner's.
+**Unit 383's item 5** (two inherited reds) - `TheOliviaMoveUpTests.cs` was **not edited**, so
+`ItIsNotOfferedOnAGuessedYourTurn` stays red and is not this unit's; `ViewTestsActThroughControlsTests`
+likewise. **Unit 383's item 4** (`TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend`) - not
+quarantined, not chased, not this unit's; it did not appear in any run here.
+
+
+**1. 4.3 is met on the measurement, and partial under the strictest reading. A finding
+with a number, not a ruling request.** 183 lines scanned with nothing excluded; **0**
+tier-1 phrases in the sheet's own voice; **2** inside quotes, both declared, both proved
+character for character to be sentences Hamlet itself produces; **9** tier-2 mentions
+counted. Under the strictest reading of *no sentence tells the operator to touch the
+radio*, a declared exception is still a sentence on the page that does - the page quotes
+it and a man reading the page reads it. **The remedy would be a change to a sentence
+Hamlet says.** One of the two is what Hamlet says when its own unkey did not get out, and
+the only correct advice at that moment is the advice it gives; changing either is a change
+to what the product tells the operator about a send and about the radio's safety, and that
+is the owner's. **This is the honest limit of what a unit can reach**, and nothing is asked
+for here.
+
+**2. No quoted tier-1 hit failed its proof, so the item that would have been first does
+not exist.** Both declared sentences are kind (a) - produced by the shipped view model,
+character for character. Nothing on the sheet says something the screen does not.
+
+**3. `_psk31Canned` has exactly one consumer and it is the token expression** - four
+mentions, one read, at `MainWindowViewModel.cs:16727`. Ruling 2 item 4's stop was not
+reached, so task 3 ran. What it did: it marks the press and re-routes nothing, and the
+three macro rows still send through `AnswerPsk31Command` and the card's own
+`CardActionCommand`. A finding, not a ruling request.
+
+**4. A third name has joined the environmental family, and this unit's own load may be why
+it showed.** `TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend` went red on **both**
+attempts of the exit named-type run with **two different failures** - unit 380's file-lock
+`IOException` on the temp `jsonl`, then a wall-clock loss where the record had not been
+written when the wait gave up - and is **green on its own in 273 ms**. It is not on the
+carry-forward list and the carry-forward invocation was green. **It waits on wall time
+under parallel load, which is unit 381's item 1's shape**, and the invocation it lost in
+grew from 104 names to 112 tonight because this unit added them. **Recorded, not chased,
+and not quarantined** - a finding for whoever picks up 2.3 or 2.4.
+
+**5. The two inherited reds, reported and repaired neither**, verbatim and unmoved from
+task 0 to task 4: `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns`,
+`Assert.Empty` failure - *TheStopIsAlwaysOnScreenTests.cs:102 writes OperatingMode, which
+the CW / Digital / Voice tab strip owns - press it instead*; and
+## 3. What you should see
+

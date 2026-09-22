@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 6 of 6
-WORK_INSTRUCTION: 385 - the contact Tim had: an X, a carrier that holds the buttons, Log from the start, and a turn that moves every time
-BALL: tim
+STATE: EXECUTING
+TASK: TASK 0 of 6
+WORK_INSTRUCTION: 386 - the list proves itself five times over a tree that has stopped moving, and the false Olivia row gets its correction
+BALL: code
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T00:04:16-04:00
-NOTE: Unit 385 complete - step 9's five criteria met; the hold is the over not the tail, Log from the start, the turn moves, exit app 245 of 245
+UPDATED: 2026-09-22T08:21:48-04:00
+NOTE: Task 0 - round 0, engine, attempt 1: app lost both attempts to the dispatcher loop, 4 occurrences at 1 ms, not one assertion failed
 
 ---
 

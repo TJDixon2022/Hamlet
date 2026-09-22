@@ -1180,8 +1180,20 @@
     unit touches read 108 of 109, the one red being the inherited
     TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn. No file under src changes at this task.
   -->
+  <!--
+    1.13.72 -> 1.13.73, WORK INSTRUCTION 386 TASK 0. A PATCH, STEP 2 OF THE HARDENING PHASE, THE
+    LIST PROVES ITSELF: this unit writes NO APPLICATION CODE AT ALL - not one file under src, and
+    after task 2 not one under tests, assets or data either - because that is the measurement.
+    2.4 asks for five consecutive green rounds of docs/carry-forward-tests.txt over a tree that
+    does not move between the first and the last, which is true for the first time now that step 9
+    landed at e5e4bee0 and no block of code is left in the phase; the frozen commit is named in the
+    report and an empty git diff is printed against it. 2.6 appends a correction to the archived
+    Olivia record's false UNIT 2 - STEP 1 row without editing one character of it. 0.1 is cut down
+    as a completed negative by this instruction's section 6 ruling 1, stays unticked, and is logged
+    to the owner. No file under src changes at this task or at any task of this unit.
+  -->
   <PropertyGroup>
-    <Version>1.13.72</Version>
+    <Version>1.13.73</Version>
   </PropertyGroup>
 
   <!--
