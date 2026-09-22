@@ -469,6 +469,7 @@ public sealed class ThePsk31ReadsTheConversationTests
         var named = 0;
         var offered = 0;
         var notACqAndOffered = 0;
+        var held = 0;
 
         for (var step = 1; step <= longest; step++)
         {
@@ -514,6 +515,31 @@ public sealed class ThePsk31ReadsTheConversationTests
                 if (model.Psk31CqOn(row) is null)
                 {
                     notACqAndOffered++;
+                }
+
+                // **REWRITTEN UNDER R12 BY WORK INSTRUCTION 385 TASK 2 (criterion 9.2).** It
+                // asserted the seven on every row that names a station. While that station is
+                // mid-over - his carrier up and nothing handed back - the menu is now one note
+                // saying he is still sending, because this menu greys nothing by its own ruling
+                // of 2026-09-06 and a note cannot be hit. **What it guards now is both halves**:
+                // the seven where he is not sending, the one note where he is, and never a
+                // pressable line on top of a man mid-over.
+                if (model.HisCarrierIsLive(station))
+                {
+                    held++;
+
+                    var note = Assert.Single(items);
+
+                    // **A NOTE IS A MENU ITEM WITH NO COMMAND AND NO HIT TEST**, which is this
+                    // menu's own way of saying a thing is not on offer.
+                    Assert.Null(note.Command);
+                    Assert.False(note.IsHitTestVisible);
+                    Assert.Contains(
+                        Ft8ContactCard.HeIsStillSending,
+                        note.Header as string ?? "",
+                        StringComparison.Ordinal);
+
+                    continue;
                 }
 
                 // **THE SEVEN, IN THE FILE'S OWN ORDER, WITH R39's LABELS.**

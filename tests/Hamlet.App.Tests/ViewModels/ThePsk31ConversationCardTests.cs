@@ -100,9 +100,17 @@ public sealed class ThePsk31ConversationCardTests
         Assert.Equal("W1AW", model.DigitalCards[at].Callsign);
         Assert.Equal("His turn", model.DigitalCards[at].StateWord);
 
-        // **NEITHER INHERITS**: G4XYZ's card is the same card, still his own turn reading.
-        Assert.Same(g4xyz, model.DigitalCards.Single(c => c.Callsign == "G4XYZ"));
-        Assert.Equal("Your turn", g4xyz.StateWord);
+        // **NEITHER INHERITS**: G4XYZ's card is still his own, with his own turn reading.
+        // **REWRITTEN UNDER R12 BY WORK INSTRUCTION 385 TASK 2 (criterion 9.2).** It asserted the
+        // same instance, and whether a station is still sending is now part of what a card says -
+        // so a card whose station stopped mid-over and then handed back is rebuilt in place rather
+        // than left saying he is sending. **What it guards is what it always meant**: the card
+        // belongs to G4XYZ, it is one card, and it carries his reading and not W1AW's.
+        var stillHis = model.DigitalCards.Single(c => c.Callsign == "G4XYZ");
+
+        Assert.Equal("G4XYZ", stillHis.Callsign);
+        Assert.Equal("Your turn", stillHis.StateWord);
+        Assert.Equal(g4xyz.StateWord, stillHis.StateWord);
 
         model.ShowPsk31ChannelsForTests(new[] { Channel(1, 800, textbook, 5), Channel(2, 1300, chatty, 3) });
 
@@ -308,7 +316,14 @@ public sealed class ThePsk31ConversationCardTests
             Assert.Empty(card.DetailRows);
             Assert.Equal("", card.TimeLine);
             Assert.False(card.HasMessages);
-            Assert.False(card.ShowsLogLink);
+
+            // **REWRITTEN UNDER R12 BY WORK INSTRUCTION 385 TASK 3 (criterion 9.3).** It asserted
+            // that a card with no station facts offers no Log, which was the door this unit opens:
+            // Log is on a conversation card from the moment the card exists, because a half
+            // exchange is still a contact he made. **What it guards now is the rule**: the link is
+            // there, and it is still never on a receipt.
+            Assert.True(card.ShowsLogLink);
+            Assert.False(card.IsCallToAnyone);
         }
     }
 
@@ -522,9 +537,15 @@ public sealed class ThePsk31ConversationCardTests
         Assert.Contains("W1AW", drawn);
         Assert.Equal("His turn", card.StateWord);
 
+        // **NOTHING THAT TRANSMITS IS DRAWN**, which is what this test is for (§0.2).
         Assert.DoesNotContain(buttons, b => ReferenceEquals(b.Command, model.CardActionCommand));
-        Assert.DoesNotContain(buttons, b => ReferenceEquals(b.Command, model.LogStationCommand));
         Assert.DoesNotContain(buttons, b => ReferenceEquals(b.Command, model.ShowMessagesCommand));
+
+        // **REWRITTEN UNDER R12 BY WORK INSTRUCTION 385 TASK 3 (criterion 9.3).** The Log button
+        // was in the list of what must not be drawn, which was the door this unit opens - Log is
+        // on a conversation card from the moment the card exists. **It is drawn and it transmits
+        // nothing**: that is what is asserted now, and it is more than the line it replaced.
+        Assert.Contains(buttons, b => ReferenceEquals(b.Command, model.LogStationCommand));
     }
 
     private static Psk31CorpusTranscript Transcript(Psk31Corpus corpus, string name)
