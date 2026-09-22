@@ -199,3 +199,4 @@ the owner reads instead of watching.
 | 6 | 2026-09-21T19:28 | 2026-09-21T20:21 | complete | 23.4784715 | ran unattended, 188 turns, 9 denied call(s) worked around, report valid |
 | 7 | 2026-09-21T20:33 | 2026-09-21T20:56 | failed | 4.7155615 | run-unit exit 4: 4 denied call(s), is_error=True, terminal=api_error |
 | phase | 2026-09-21T20:57 | 2026-09-21T20:57 | halted | 166.8690 | stop 6: denied 4 and could not complete - is_error True, terminal api_error |
+| phase | 2026-09-21T21:25 | 2026-09-21T21:25 | failure | 0 | STOPPED, AND A STOP IS FAILURE - refused: ADVANCES named no step and criterion, and no unit or criterion it unblocks |

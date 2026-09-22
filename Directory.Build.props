@@ -1170,8 +1170,18 @@
     unit opens a port, enumerates a device or keys anything, and nothing in it is evidence about
     the radio (FACT-004).
   -->
+  <!--
+    1.13.71 -> 1.13.72, WORK INSTRUCTION 385 TASK 0. A PATCH, STEP 9 OF THE HARDENING PHASE, THE
+    CONTACT TIM HAD: the first unit ever spent on step 9, whose five criteria come from R44 (Tim,
+    2026-09-21, from his own four-minute PSK31 contact) - an X on every card, a live carrier that
+    holds the send controls, Log from the moment the card exists, and a turn that moves on every
+    hand-back. Entry carry-forward: engine 150 of 150; app 225 of 226 on the first attempt with one
+    dispatcher loop at 1 ms before any assertion, 226 of 226 on the re-run. The named types this
+    unit touches read 108 of 109, the one red being the inherited
+    TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.71</Version>
+    <Version>1.13.72</Version>
   </PropertyGroup>
 
   <!--

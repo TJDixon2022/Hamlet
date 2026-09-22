@@ -128,10 +128,12 @@ Exit criteria carry ids `N.k`; met is `[x]`; R45 gives the form. A step's exit i
 
 **Exit:**
 - [ ] 0.1 The commit and line between 1.13.30 and 1.13.48 that dropped the transmit device on load are named in the report.
-- [ ] 0.2 Settings files reconstructed from the tree at 1.13.30, 1.13.40 and HEAD each load with every value intact - transmit device, receive device, grid, callsign, license class, power offer, ALC reference - a missing new field takes its default, nothing present is dropped, and the file round-trips.
-- [ ] 0.3 At arm time, no transmit device chosen yields `send_refused reason no_transmit_device` and the sentence *No transmit device is chosen. Open Settings and pick the radio's sound card*, with Settings opened from the sentence.
-- [ ] 0.4 A chosen device that will not open yields `transmit_device_would_not_open` carrying the device name, the rate asked and the OS error text, in the event and on the panel.
-- [ ] 0.5 `TheSendReachesTheAirTests`, `TheUnslottedSendTests` and the byte-identical tests green and unedited.
+- [x] 0.2 Settings files reconstructed from the tree at 1.13.30, 1.13.40 and HEAD each load with every value intact - transmit device, receive device, grid, callsign, license class, power offer, ALC reference - a missing new field takes its default, nothing present is dropped, and the file round-trips.
+- [x] 0.3 At arm time, no transmit device chosen yields `send_refused reason no_transmit_device` and the sentence *No transmit device is chosen. Open Settings and pick the radio's sound card*, with Settings opened from the sentence.
+- [x] 0.4 A chosen device that will not open yields `transmit_device_would_not_open` carrying the device name, the rate asked and the OS error text, in the event and on the panel.
+- [x] 0.5 `TheSendReachesTheAirTests`, `TheUnslottedSendTests` and the byte-identical tests green and unedited.
+
+*0.2 to 0.5 ticked by work instruction 385 task 0, transcribing the judging session's own verdict at `PHASE_OUTCOME.md:41`, verbatim: "Criteria 0.2 to 0.5 are met with quoted sentences, counts and green unedited suites." That is another session's verdict carried up to the record, not a judgment of this unit's. 0.1 stays unticked and step 0 stays `partial`.*
 
 **Depends on:** nothing.
 
