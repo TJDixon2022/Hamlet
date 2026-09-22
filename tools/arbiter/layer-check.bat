@@ -60,7 +60,7 @@ rem  THIS IS THE FAILURE MODE OF THIS SCRIPT: it goes stale and
 rem  reports green on a project that is behind. It cannot detect
 rem  that on its own - see the limit printed below.
 rem ============================================================
-set "LIST_UPDATED=2026-09-12"
+set "LIST_UPDATED=2026-09-19"
 set "LIST_UNIT=060"
 
 set "RC=0"
@@ -146,6 +146,17 @@ call :cap "watchdog reads tolerant"  "tools\arbiter\watchdog.bat"    "readkey\.b
 call :cap "watchdog watches the tree" "tools\arbiter\run-unit-watched.bat" "set .FLOORMS="    "PHASE_UPLIFT.md 16"
 call :cap "from-env reader"          "tools\arbiter\outcome-append.bat" "^:fromenv"          "PHASE_UPLIFT.md 17"
 call :cap "from-env caller"          "tools\arbiter\run-phase.bat"   "outcome-append\.bat. --from-env" "PHASE_UPLIFT.md 17"
+call :cap "progress counted in criteria" "tools\arbiter\run-phase.bat" "criteria-count\.bat"  "PHASE_UPLIFT.md 18"
+call :cap "owner's verdict halts the run" "tools\arbiter\run-phase.bat" "^:ownerwait"         "PHASE_UPLIFT.md 19"
+call :cap "attempts recorded per criterion" "tools\arbiter\run-phase.bat" "^:attemptid"   "PHASE_UPLIFT.md 20"
+call :cap "a report must be this unit's own" "tools\arbiter\run-phase.bat" "^:ownreport" "PHASE_UPLIFT.md 21"
+call :cap "a failed approach is not repeated" "tools\arbiter\run-phase.bat" "^:approachrepeat" "PHASE_UPLIFT.md 22"
+call :cap "the prompt leads with the plan" "tools\arbiter\run-phase.bat" "^:promptplan" "PHASE_UPLIFT.md 23"
+call :cap "no advance redirects, not halts" "tools\arbiter\run-phase.bat" "^:redirectnow" "PHASE_UPLIFT.md 24"
+call :cap "an ending is demonstrated" "tools\arbiter\run-phase.bat" "^:exhausttest" "PHASE_UPLIFT.md 25"
+call :cap "every halt names ending or stop" "tools\arbiter\run-phase.bat" "^:verdictof" "PHASE_UPLIFT.md 26"
+call :cap "the header is reconciled" "tools\arbiter\run-phase.bat" "^:reconcile" "PHASE_UPLIFT.md 27"
+call :cap "the card is reconciled too" "tools\arbiter\run-phase.bat" "^:reconcilecard" "PHASE_UPLIFT.md 28"
 call :cap "reload present"           "tools\arbiter\reload.bat"      "*"                      "PHASE_UPLIFT.md 3"
 call :cap "CRLF pinned for .bat"     ".gitattributes"                "eol=crlf"               "PHASE_UPLIFT.md 13" req
 call :cap "panel per-field degrade"  "app\PROJECT_ANNUNCIATOR.html"  "function deriveStatus"  "PHASE_UPLIFT.md 14"

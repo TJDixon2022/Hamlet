@@ -113,13 +113,13 @@ echo.
 rem --- the position, step by step --------------------------------
 echo   THE POSITION
 echo   ------------
-powershell -NoProfile -Command "$ok='not started','in progress','partial','blocked','done'; $f='%FILE%'; $steps = @(Select-String -Path $f -Pattern '^STEP: ' | ForEach-Object { $_.Line } | Where-Object { $p=$_.Substring(6).Split('|'); $p.Count -ge 2 -and $ok -contains $p[1].Trim() }); if($steps.Count -eq 0){ '   (no steps listed yet - this phase has no plan instantiated)'; exit }; foreach($s in $steps){ $p = $s.Substring(6).Split('|'); $n = $p[0].Trim(); $st = $p[1].Trim(); $what = if($p.Count -gt 2){ $p[2].Trim() } else { '' }; $units = @(Select-String -Path $f -Pattern ('^## UNIT .* STEP ' + [regex]::Escape($n) + '\s*$')).Count; '   step {0}  [{1}]  {2}' -f $n, $st.PadRight(11), $what; '        units spent: {0}' -f $units }"
+powershell -NoProfile -Command "$ok='not started','in progress','partial','blocked','done'; $f=$env:FILE; $steps = @(Select-String -Path $f -Pattern '^STEP: ' | ForEach-Object { $_.Line } | Where-Object { $p=$_.Substring(6).Split('|'); $p.Count -ge 2 -and $ok -contains $p[1].Trim() }); if($steps.Count -eq 0){ '   (no steps listed yet - this phase has no plan instantiated)'; exit }; foreach($s in $steps){ $p = $s.Substring(6).Split('|'); $n = $p[0].Trim(); $st = $p[1].Trim(); $what = if($p.Count -gt 2){ $p[2].Trim() } else { '' }; $units = @(Select-String -Path $f -Pattern ('^## UNIT .* STEP ' + [regex]::Escape($n) + '\s*$')).Count; '   step {0}  [{1}]  {2}' -f $n, $st.PadRight(11), $what; '        units spent: {0}' -f $units }"
 echo.
 
 rem --- the approaches already tried ------------------------------
 echo   APPROACHES ALREADY TRIED
 echo   ------------------------
-powershell -NoProfile -Command "$f='%FILE%'; $t = Get-Content -LiteralPath $f; $cur=''; $out=@(); for($i=0;$i -lt $t.Count;$i++){ if($t[$i] -match '^## UNIT (\S+) . STEP (\S+)\s*$'){ $cur = 'unit ' + $matches[1] + ', step ' + $matches[2] }; if($t[$i] -match '^APPROACH: (.*)$'){ $out += ('   ' + $cur.PadRight(22) + '  ' + $matches[1]) } }; if($out.Count){ $out } else { '   (none recorded yet)' }"
+powershell -NoProfile -Command "$f=$env:FILE; $t = Get-Content -LiteralPath $f; $cur=''; $out=@(); for($i=0;$i -lt $t.Count;$i++){ if($t[$i] -match '^## UNIT (\S+) . STEP (\S+)\s*$'){ $cur = 'unit ' + $matches[1] + ', step ' + $matches[2] }; if($t[$i] -match '^APPROACH: (.*)$'){ $out += ('   ' + $cur.PadRight(22) + '  ' + $matches[1]) } }; if($out.Count){ $out } else { '   (none recorded yet)' }"
 
 if not defined WANTED goto :done
 
@@ -128,7 +128,8 @@ echo   THE LOOP TEST: has this approach been tried?
 echo   --------------------------------------------
 echo   asking about : %WANTED%
 echo.
-powershell -NoProfile -Command "$f='%FILE%'; $w='%WANTED%'; $hits = Select-String -Path $f -Pattern ('^APPROACH: .*' + [regex]::Escape($w)) -AllMatches; if($hits){ '   TRIED BEFORE - ' + $hits.Count + ' entr(y/ies) match:'; $hits | ForEach-Object { '     ' + $_.Line.Trim() } } else { '   NOT FOUND in any entry.' }"
+powershell -NoProfile -Command "$f=$env:FILE; $w=$env:WANTED; $hits = Select-String -Path $f -Pattern ('^APPROACH: .*' + [regex]::Escape($w)) -AllMatches; if($hits){ '   TRIED BEFORE - ' + $hits.Count + ' entr(y/ies) match:'; $hits | ForEach-Object { '     ' + $_.Line.Trim() } } else { '   NOT FOUND in any entry.' }"
+if errorlevel 1 set "LOOPTESTFAILED=1"
 echo.
 echo   This is a READING, not a verdict. Whether a resemblance
 echo   amounts to a loop is the arbiter's judgment, and a script
@@ -137,8 +138,17 @@ echo   it cannot see.
 
 :done
 echo.
+if defined LOOPTESTFAILED (
+  echo   THE LOOP TEST DID NOT RUN. The reader above failed instead of
+  echo   answering, so there is NO verdict on this approach and the
+  echo   absence of one must not be read as NOT FOUND. Exit 3 says so,
+  echo   because a caller that reads only the exit code would otherwise
+  echo   believe a check ran that did not.
+  echo.
+)
 echo   Read complete.
 set "RC=0"
+if defined LOOPTESTFAILED set "RC=3"
 goto :end
 
 rem ============================================================

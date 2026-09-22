@@ -23,6 +23,19 @@ rem                                    3 = could not remove
 rem      status   0 = free             1 = held (live holder)
 rem                                    2 = usage / bad root
 rem                                    5 = held by a stale lock
+rem                                    6 = held, holder UNDETERMINED
+rem
+rem  STATUS 6 IS NEW, 067 task 4, AND IT SPLITS AN EXIT 1 THAT WAS
+rem  CARRYING TWO ANSWERS. Until now "the holder is running" and "the
+rem  holder could not be determined" both left 1, so a caller could act
+rem  on the difference only by reading the prose. run-unit.bat now has
+rem  to state on its refusal WHETHER THE OWNER WAS FOUND ALIVE, and a
+rem  refusal that says alive when it means could-not-tell is the kind of
+rem  confident sentence this whole layer exists to stop. NOTHING ABOUT
+rem  WHAT IS BROKEN CHANGES: 6 is still held, still refuses --force, and
+rem  every existing caller written as `if errorlevel 1` reads it as held
+rem  exactly as it read 1. THE NUMBER IS THE ARBITER'S - author's,
+rem  overrulable - under the owner's ruling of 2026-09-12.
 rem
 rem  ONE EXIT POINT, AND WHY. Every path sets RC and jumps to
 rem  :end. Nothing calls exit /b from inside a parenthesised
@@ -275,6 +288,7 @@ if "%ALIVE%"=="?" echo HELD - holder liveness UNKNOWN. Not reported as stale; un
 call :printholder
 set "RC=1"
 if "%ALIVE%"=="0" set "RC=5"
+if "%ALIVE%"=="?" set "RC=6"
 goto :end
 
 rem ============================================================
@@ -366,7 +380,8 @@ echo.
 echo   root defaults to C:\Source\ClaudeProjectStatus
 echo   take    : 0 taken, 1 held, 2 usage, 3 write failed, 4 lost a race
 echo   release : 0 removed, 1 not there, 2 usage, 3 remove failed
-echo   status  : 0 free, 1 held, 2 usage, 5 stale
+echo   status  : 0 free, 1 held, 2 usage, 5 stale, 6 held by an
+echo             undetermined holder ^(unknown is not stale^)
 echo.
 set "RC=2"
 goto :end

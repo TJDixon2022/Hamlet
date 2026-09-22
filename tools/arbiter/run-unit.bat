@@ -26,7 +26,15 @@ rem         launched and no lock was taken
 rem
 rem  THE LOCK IS RELEASED ON EVERY PATH OUT, including every
 rem  failure above. CLAUDE_CODE.md section 5's "one writer at a
-rem  time", made mechanical.
+rem  time", made mechanical. Every arm sets RC and reaches :end,
+rem  which releases whenever TOOK is 1; there is no exit /b anywhere
+rem  else in this file. 067 task 4 re-walked all of them.
+rem
+rem  AND A LOCK WHOSE OWNER IS GONE IS NOT A LOCK. Exit 1 above now
+rem  means the lock is held BY SOMETHING THAT EXISTS. Where the pid in
+rem  SESSION.lock names no running process the lock is cleared, taken,
+rem  and a ledger note says so - never by an age test. See the block at
+rem  the lock itself.
 rem
 rem  ---------------------------------------------------------------
 rem  PERMISSION POSTURE, ruled by the owner 2026-08-28.
@@ -296,12 +304,104 @@ echo  nothing to deny.
 echo.
 
 rem --- the lock, before anything is launched ---------------------
+rem  A LOCK WHOSE OWNING PROCESS IS GONE IS NOT A LOCK. 067 task 4.
+rem  The arbiter's, author's, overrulable, under the owner's ruling of
+rem  2026-09-12 that the arbiter stops for three things only.
+rem
+rem  WHY THIS EXISTS. HamLet, 2026-09-14: iteration 1 left the session
+rem  lock behind, iteration 2 could not take it, nothing ran, and the
+rem  night ended on a file. Under the owner's ruling of 2026-09-14 that
+rem  stopping is failure, an infrastructure leak ending a night is
+rem  failure - so the lock is asked the question the watchdog already
+rem  asks of a process tree: IS THE OWNER STILL THERE.
+rem
+rem  BY PROCESS EXISTENCE, NEVER BY AGE. The owner's ruling of
+rem  2026-09-12: a timeout measures quiet, not death, and the twelve-
+rem  minute rule it replaced killed three productive units in two days.
+rem  There is no maximum lock life here and no age test anywhere on this
+rem  path. lock.bat already measures liveness with tasklist against the
+rem  pid in the file, and already refuses --force on a live or an
+rem  undetermined holder; this reads its exit code and does not
+rem  reimplement the question.
+rem
+rem  THE LOCK IS NOT WEAKENED. A live owner still refuses, exactly as
+rem  before. Two sessions in one tree is what it prevents and that is
+rem  untouched. UNKNOWN IS NOT DEAD: where the holder could not be
+rem  determined this refuses too, and says which of the two it was -
+rem  which is what lock.bat status exit 6 was added to make sayable.
 echo Taking the session lock...
+call "%HERE%lock.bat" take "%ROOT%"
+if not errorlevel 1 goto :gotlock
+
+echo.
+echo The lock was not taken. Asking whether its owner is still running.
+rem  THE PID IS READ FROM THE FILE, through readkey.bat rather than
+rem  findstr - 058. It is for the refusal message; the DECISION is
+rem  lock.bat's exit code, so the pid and the verdict cannot disagree.
+set "LPID="
+if exist "%ROOT%\SESSION.lock" call "%HERE%readkey.bat" "%ROOT%\SESSION.lock" "PID" LPID >nul
+if not defined LPID set "LPID=unknown"
+call "%HERE%lock.bat" status "%ROOT%" >nul
+set "LSRC=%ERRORLEVEL%"
+echo   lock.bat status : exit %LSRC%   holder pid in the file: %LPID%
+if "%LSRC%"=="0" goto :lockfreenow
+if "%LSRC%"=="5" goto :lockorphan
+if "%LSRC%"=="6" goto :lockunknown
+goto :locklive
+
+rem  IT WENT AWAY WHILE WE WERE ASKING. Not a race we lost - a holder
+rem  that finished between the take and the status. One retry, and no
+rem  loop: a second refusal is a refusal.
+:lockfreenow
+echo   The lock was gone by the time it was asked about. Taking it again.
 call "%HERE%lock.bat" take "%ROOT%"
 if not errorlevel 1 goto :gotlock
 echo.
 echo REFUSED: the session lock is held. NOTHING WAS LAUNCHED.
+echo   holder pid : %LPID%, and it was taken again between the two asks.
 echo A second writer in one tree is the failure this lock exists to stop.
+set "RC=1"
+goto :end
+
+:lockorphan
+echo.
+echo AN ORPHANED LOCK: pid %LPID% IS NOT RUNNING, so this is not a lock.
+echo   Asked by process existence and never by age. Clearing it, taking
+echo   it, and writing a ledger line saying so - an orphan cleared in
+echo   silence is a leak nobody ever learns about.
+call "%HERE%lock.bat" take --force "%ROOT%"
+if errorlevel 1 goto :lockforcefailed
+call :orphanledger
+goto :gotlock
+
+:lockforcefailed
+echo.
+echo REFUSED: the orphaned lock could not be broken. NOTHING WAS LAUNCHED.
+echo   holder pid : %LPID%, which lock.bat reports as not running.
+echo   The file is there and could not be removed. That is a permission
+echo   or a handle, not a second session, and it is the owner's.
+set "RC=1"
+goto :end
+
+:locklive
+echo.
+echo REFUSED: the session lock is held AND ITS OWNER IS ALIVE.
+echo NOTHING WAS LAUNCHED.
+echo   holder pid : %LPID% - FOUND RUNNING.
+echo A second writer in one tree is the failure this lock exists to stop,
+echo and a live holder is exactly the case it exists for.
+set "RC=1"
+goto :end
+
+:lockunknown
+echo.
+echo REFUSED: the session lock is held and ITS OWNER COULD NOT BE
+echo DETERMINED. NOTHING WAS LAUNCHED.
+echo   holder pid : %LPID% - liveness UNKNOWN, and unknown is not dead.
+echo Not running and could not be determined are different facts, and
+echo only the first licenses a break. Release it by hand with
+echo   lock.bat release "%ROOT%"
+echo if you are certain, and know that you are certain by hand.
 set "RC=1"
 goto :end
 
@@ -626,6 +726,24 @@ if not defined ENDED set "ENDED=%STARTED%"
 if not defined COST set "COST=unknown"
 call "%HERE%ledger.bat" "%UNIT%" "%STARTED%" "%ENDED%" "failed" "run-unit exit %RC%: %NDENIED% denied call(s), is_error=%ISERR%, terminal=%TERMREASON%" "%COST%" "%ROOT%" >nul
 goto :end
+
+rem ============================================================
+rem  AN ORPHANED LOCK IS NEVER CLEARED IN SILENCE. 067 task 4.
+rem  RUN_LEDGER.md is what the owner reads instead of watching, and a
+rem  leak that is repaired quietly is a leak he never learns is
+rem  happening. A note row, not a run line, so the run that follows is
+rem  still counted once - the shape run-phase.bat already uses for its
+rem  no-advance and blocker-clear notes.
+rem
+rem  THE CLOCK IS READ, NEVER COMPOSED. CLAUDE_CODE.md section 11.
+:orphanledger
+set "ONOW="
+for /f "usebackq delims=" %%D in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyy-MM-ddTHH:mm')"`) do set "ONOW=%%D"
+if not defined ONOW set "ONOW=unknown"
+call "%HERE%ledger.bat" "%UNIT%" "%ONOW%" "%ONOW%" "note" "an orphaned session lock was cleared by unit %UNIT% before this run - SESSION.lock named pid %LPID% and that process is not running. Asked by process existence, never by age." "none - not a run" "%ROOT%" >nul
+if errorlevel 1 echo   NOTE: the orphaned-lock ledger line was NOT appended.
+if not errorlevel 1 echo   Ledger line written: an orphaned lock held by pid %LPID% was cleared.
+goto :eof
 
 rem ============================================================
 rem  CLAUDE_CODE.md section 6's block, written to a file rather
