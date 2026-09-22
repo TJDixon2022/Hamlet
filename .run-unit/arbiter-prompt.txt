@@ -31,6 +31,8 @@ THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
     - [ ] 9.3 Log is on every conversation card from the moment it exists, with the RST fields editable and defaulted to what was exchanged if anything was; a logged contact with no certain 73 logs what is known and nothing invented.
     - [ ] 9.4 Every parsed line addressed to the operator with a hand-back moves the card's turn to *your turn* - marked as a guess when uncertain - not only the first answer; replayed from the 17:48:33 record, the card reads *your turn?*.
     - [ ] 9.5 The four are on PSK31 and Olivia cards alike, asserted.
+  step 10 - What Tim saw on 2026-09-22 - favorites are back, measured for when they vanished; a right-click on any row opens the menu; the sun map takes the top band's full height; a blind-found keyboard-mode carrier shows text only when its blocks decode.  [partial]
+    - [ ] 10.3 The sun map fills the top band's height at 1920 and at 1400, the band no taller than 6.1 allows, its dot and caption kept. **Unit 387: NOT MET AND REPORTED PARTIAL WITH BOTH NUMBERS, under section 6 ruling 2(b)'s *stop at what fits*. The map is 246 x 134 in a band of 214 - 62.6% of it, Tim's *two thirds* exactly - and it CANNOT BE MORE. Measured: the map already GOVERNS its card. `GreenZoneLeft` wants 25 px at 1920 and 54 at 1400, the map's column wants 145 in a row of 146, the card wants 178 and the rig column wants 178 TIED WITH MARGIN 0, so every pixel the map takes the card takes and the band takes - and the band is ratcheted at 214 by `Unit376TheTopBandTests.BandReachedWithThePills`, which the carry-forward name `TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts, tighter than 6.1's ceiling of 220. THE ATTEMPT WAS MADE AND MEASURED: letting the map take the height available to it put it at 698 x 381, the card at 424 and THE BAND AT 460 PX, 240 over the ceiling; it was reverted in the same task. The 80 px the map does not have are the pills row and its margins (36), the card's own header and padding (32) and the caption and its gap (11). What shipped: the 134 stops being the mockup's dimension and becomes the band's budget with the arithmetic beside it, and `TheSunMapIsTheSizeItWasAndStillCarriesHisGrid` is REWRITTEN UNDER R12 AND RULING 2(b) to assert R46(c)'s rule in both directions - the map may never be smaller, and it may never leave a pixel of its own row unused, which nothing in the tree asserted before - with the band asserted beside it and every assertion about the grid marker and the caption kept.**
 
 ADVANCES MUST NAME ONE OF THE CRITERIA ABOVE. Everything below this block is
 context for CHOOSING among them - what has been tried, and what the last unit
@@ -94,6 +96,7 @@ REFUSED BEFORE THE UNIT RUNS if you name that criterion again, and the
 iteration is spent on the refusal. yes means it succeeded and does not
 block; blocker means it cleared something and moved no criterion.
 
+  10.1 | unit 1 launched 2026-09-22T14:22:32.665Z | yes | executed | name the commit and line that dropped the favorites star and put favorites back on the rig display, open the right-click menu on every decoded row, give the sun map the top band's full height, and show no text from a blind-found carrier until its blocks decode
   2.4 | unit 1 launched 2026-09-22T12:13:28.481Z | yes | executed | soak the carry-forward list five consecutive green rounds on a tree frozen after the phase's last code change, naming the frozen commit and printing the empty diff, and append 2.6's correction to the archived Olivia record in the same unit
 
 If every route you can see at a criterion is recorded as no, say so in WHY
@@ -116,97 +119,110 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-**Nothing blocks 2.4 or 2.6; both are met.** Six items, findings unless marked. None is in the
-way of a criterion in B.
+**Nothing blocks a criterion in B.** Seven items. Items 1 and 2 qualify 10.2 and 10.3 and are already
+stated in B.
 
-**1. The two counts differ by two rounds, and that difference is the night's finding.** *A
-finding, and ruling 1 asks for it by name.* **Two invocations of the soak's twelve were lost** -
-round 1 app attempt 1, three occurrences at 1 ms on
-`TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`,
-`TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo` and
-`ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel`; and round 5 app
-attempt 1, one occurrence at 1 ms on
-`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`. Both landed in
-`HeadlessUnitTestSession.EnsureApplication` before any assertion, both were recovered on the
-single allowed re-run, and neither is a red. **Counting round 0 and the exit round, four of ten
-app attempts were lost and zero were red on an assertion.** What that means in one line: **the
-carry-forward list did not fail once tonight; the Avalonia headless harness failed four times**,
-and the gap between 3 and 5 is entirely the harness. The fault's cause is nobody's criterion and
-was not chased, per section 9.
+**1. *Make a card anyway* is a note on a row that names nobody, because a working card there is the
+second mechanism the instruction forbids.** *A finding that wants a ruling if the owner disagrees.*
+Section 6 ruling 2(a) item 3 states that `OpenPsk31CardCommand` already fires on the right-click and
+that an item naming what that press did *is not a second mechanism, and you do not build one*.
+**Measured at task 1: the press does not make a card on such a row.** `OpenPsk31Card`'s first
+statement is a return where `Psk31StationOn(row)` is null (`MainWindowViewModel.cs:17931`), and the
+card count goes **0 to 0**. A card is keyed by callsign throughout - `_psk31Cards`, `RefreshPsk31Card`,
+`DigitalCards.FirstOrDefault(c => IsSameStation(c.Callsign, …))` - so making one for a nameless row is
+a new mechanism, not a wiring job. The line is therefore **present on every row** and, where Hamlet
+read no callsign, reads *Make a card anyway - Hamlet read no callsign on this row, so a card would
+have nobody on it. Capture the audio and the card follows when a call comes through.* **10.2's words
+are met** - Capture and the card line are always present - **and R46(b)'s intent is met in part.** If
+Tim wants a card keyed by the row's place rather than a callsign, that is a unit's worth of work and
+it is his call.
 
-**2. No name went red on an assertion, so task 4 was not entered.** *A finding, and the reason
-this unit reports complete at task 5 of 6 rather than at 6 of 6.* Task 4 is conditional by its
-own terms. `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`, the one
-name section 5 flags as not quarantined and not settled, **was green in all ten app invocations
-tonight** and did not need the capture the quarantine file asks for. **Nothing was quarantined,
-nothing came off the command line, and nothing was added to the list.**
+**2. The band's ceiling for 10.3 is 214 in the tree and 220 in the instruction, and I took 214.** *A
+mismatch, reported as section 5 directs.* Section 6 ruling 2(b) and section 8 task 3 both name 6.1's
+**220 px**; `Unit376TheTopBandTests.BandReachedWithThePills` is **214** and the carry-forward name
+`TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts it, while section 8 task 3 says
+that name must be green at the end and section 10 says never loosen a carry-forward test. **Taking the
+6 px would have turned that name red**, so I did not. It would have bought the map 134 to 140 px -
+62.6% to 65.4% of the band - and it is reversible in one line if the owner would rather have it.
 
-**3. Section 5's expected green app count was stale and my measurement won.** *A finding, and a
-mismatch reported as section 5 directs.* Section 5 says a green app invocation is **226 of 226**
-and calls it unit 385's exit run. The measured total on all ten app invocations tonight is
-**245**. Unit 385's committed `output.md` settles it: its own table reads *app: 226 of 226 ->
-**245 of 245** (+19, this unit's four types)*. **226 is unit 385's entry number carried into the
-instruction as its exit**, from before its four new types joined the app line. The number a green
-round must match is 245 of 245, and every round tonight was judged against 245.
+**3. At 1100 x 780 - the size Hamlet opens at - there IS height beside the map, and spending it costs
+width.** *A finding for the owner, logged and not worked.* At that size the card wants **353 px**
+against the rig column's 178, so the green-zone text governs and roughly **176 px** beside the map go
+unused. The map could take them - but its width follows the picture's own proportions (HM-DEC-092), so
+a 321 px map is a **590 px** map on a 1036 px card: it would take the width the text needs, the text
+would wrap taller, and the map would grow again. **That is a layout trade about a screen and it is
+Tim's**, not an arbiter's.
 
-**4. The identical-cost fingerprint appears twice more in the Olivia file, and both pairs were
-left exactly as they stand.** *A finding, asking for nothing, and explicitly not a widening of
-2.6.* Section 6 ruling 2(a) makes 2.6 the `UNIT 2 - STEP 1` row and only that row, so nothing was
-edited and nothing else was corrected. But while reading the two `COST:` lines the criterion asks
-for, two further pairs came out of the same file: line 102 in `## UNIT 1 - STEP 1` and line 117 in
-`## UNIT 2 - STEP 2` both read `COST: 11.789573999999998`, and line 183 in `## UNIT 2 - STEP 3`
-and line 210 in `## UNIT 3 - STEP 3` both read `COST: 17.930809499999995`. **Whether those are the
-same launcher fault or a judging session legitimately grading twice off one run was not
-determined and is not claimed either way.** It is written into the appended entry and here so the
-next reader does not have to find it again.
+**4. Eight names in `TheMenuIsUnderTheMouseTests` fail on a scene precondition, and I could not prove
+whether they were red before tonight.** *A finding, reported honestly rather than called
+environmental.* The failure is `expected both decoded lists in the window, found DigitalDecodedRows` -
+`RightClickRow` needs both `DigitalDecodedRows` and `DigitalMineRows` realized and finds one - and it
+fires **before any menu assertion**, including in the one name this unit rewrote. **The type is not on
+the carry-forward list, so it cannot fail a round.** What I can state: nothing this unit changed
+touches either list, their visibility, the panel layout or the parse that classifies a row as the
+operator's; the panel row at unit 354's nine sizes is identical to unit 381's to the pixel; and
+`BindingHealthTests`, `TheTopRowTests`, `TheWorkingPanelsTests`, `TheStopIsAlwaysOnScreenTests`,
+`TheDecodedColumnsLineUpTests` and `ClippingTests` are all green. **What I could not do is run the
+pre-unit tree to prove inheritance**: `git stash push`, `git worktree add` and
+`git checkout <ref> -- <paths>` were each refused by the permission mode. So it is recorded as
+*not proved inherited, strongly evidenced as inherited*, and not claimed either way.
 
-**5. The launcher fault has now happened twice, in two phases, and both false rows are
-unedited.** *A finding, logged to the owner.* The Olivia phase's `## UNIT 2 - STEP 1` of
-2026-09-14, corrected tonight; and this phase's own `## UNIT 7 - STEP 2`, which unit 385
-corrected on 2026-09-21 - `.run-unit/last-run.json` reading `terminal_reason api_error` with
-`api_error_status 529`, a `COST:` of 4.7155615 matching that session, one commit (`9832f972`,
-task 0) and a `STATE_WHY` describing unit 383's night. **Neither row was edited and neither was
-re-recorded.** Twice is a pattern rather than an accident, and the remedy - a launcher that does
-not write `FATE: executed` for a session that never ran, and a grading pass that does not score a
-stale `output.md` - is outside any unit's reach.
+**5. The 10.4 gate writes no telemetry line of its own.** *A finding, and R14 is why.* R13 asks for
+telemetry on every stage, and a gate that withholds text from the screen is arguably one. I added **no
+new writer**, so `CallsignPrivacyTests` is unmoved and green at 4 of 4 and its walk did not have to
+grow. The two numbers the gate reads - `blocksDecoded` and `blocksRejected` - are already written per
+channel by the listener's own events, so the decision is reconstructible from the record; **the
+decision itself is not in the file.** A later unit that wants it can add a field to an existing writer
+rather than a second writer.
 
-**6. 0.1 was cut down by this instruction's section 6 ruling 1 and no search was re-run.** *A
-finding, and the rewording is the owner's.* Criterion 0.1 asks a unit to name a commit between
-1.13.30 and 1.13.48 that dropped the transmit device on load; across those 119 commits **zero**
-touch any settings path and **zero** touch any path in the repository whose name contains
-`settings`, so the criterion presupposes a commit that does not exist. **0.1 stays unticked and
-was not ticked**, because a tick would imply a commit was named. **No file under
-`src/Hamlet.App/Settings/` was opened and no `git log` was run over that window** - that search
-is complete and repeating it is the loop. The remedy is to reword 0.1 so a completed negative
-satisfies it, which is a change to the plan and therefore Tim's.
+**6. Unit 386's items 5 and 6 are the owner's and were not re-recorded**, as section 3 directs. The
+launcher fault twice over, and 0.1's cut-down. **Neither is mine. Neither was touched.**
 
-**Nothing here asks for a ruling.** No criterion was found to need a change under `src`; the
-question did not arise, because nothing on the list failed.
+**7. The `RULES_AT` id split, for the tenth unit running.** *Reported, not repaired.*
+`PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)` because `tools/status.sh` writes that field as a
+literal; `CLAUDE.md` §1 holds `CPS-DEC-0165`. **`tools\` is not this unit's to edit**, and section 9
+parks it.
 
-**`validate-output.bat` - hand-checked, not run, a seventh unit running.** The exact command, in
-the shape section 2 prescribes:
+### On the carried items that tonight's work touched
+
+- **Unit 386's item 3 - a stale expected test count beat an instruction and the measurement won.**
+  It did not recur. Section 5's expected **245 and 150** were exactly what the entry round returned.
+- **Unit 383's inherited reds.** `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn` and
+  `TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend` were not gone hunting for and neither file was
+  opened. `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` **was run**, because
+  task 3's trap sits next to it: it scanned **51** view test files, two of them this unit's new ones,
+  and named only the one pre-existing offender, `TheStopIsAlwaysOnScreenTests.cs:102`. **This unit made
+  it no worse and did not make it green**; both of this unit's view tests act through the control with
+  a headless pointer and read the private rectangles without writing anything.
+- **`docs/RADIO_SHEET.md` (section 9, parked).** Checked: none of the strings this unit changed or
+  added is quoted by the sheet. `TheRadioSheetQuotesTheScreenTests` is on the carry-forward line and
+  was green at the exit round.
+
+**`validate-output.bat` - hand-checked, not run, an eighth unit running.** The exact command, in the
+shape section 2 prescribes:
 
 ```
 ./tools/arbiter/validate-output.bat output.md
 ```
 
-The exact refusal: `This command requires approval`. **It is the permission mode and not the
-syntax**, and a non-interactive session cannot answer the prompt. **What follows is a hand-check
-against the script's own header rules as unit 385 transcribed them, and not a run of the
-validator**; nothing below was produced by it.
+The exact refusal: `This command requires approval`. **It is the permission mode and not the syntax**,
+and a non-interactive session cannot answer the prompt. **What follows is a hand-check against the
+script's own header rules as units 385 and 386 transcribed them, and not a run of the validator.**
 
 | Rule, from the script's own header | Hand-check |
 |---|---|
-| 1 - a `UNIT:` line above section 1, parseable | **ok** - line 29, above section 1 at line 47 and within the 60 lines it reads |
-| 2 - the four top-level sections, in order, exact names | **ok** - `## 1. What Claude did` (47), `## 2. What the owner should expect` (133), `## 3. What you should see` (169), `## 4. What's blocking us` (297) |
-| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; every deeper heading is `### `, which its pattern `^## ` does not match, and the script's own header says in terms that it ignores `###` and deeper |
-| 4 - section 4 present even when empty | **ok** - present, not empty, straight apostrophe in the heading as its matcher expects |
-| 5 - section 3 non-empty | **ok** - lines 169 to 296: the invocation table, the frozen commit, the printed diff, the two counts, the cost arithmetic, 2.6's evidence and the entry/exit comparison |
-| 6 - the ordering block above the `UNIT:` line, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` on line 1, `A.` line 3, `B.` line 8, `C.` line 20, and C says *raises 6 items*, which `raises \d+ item` matches |
+| 1 - a `UNIT:` line above section 1, parseable | **ok** - inside the fenced block above section 1 and within the leading 60 lines |
+| 2 - the four top-level sections, in order, exact names | **ok** - `## 1. What Claude did`, `## 2. What the owner should expect`, `## 3. What you should see`, `## 4. What's blocking us` |
+| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; every deeper heading is `### `, which `^## ` does not match |
+| 4 - section 4 present even when empty | **ok** - present, not empty, straight apostrophe in the heading |
+| 5 - section 3 non-empty | **ok** - the archaeology table, the star's nine sizes, the menu counts, the map and band numbers, 10.4's seven cases and both rounds |
+| 6 - the ordering block above the `UNIT:` line, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` on line 1, `A.` line 3, `B.` line 9, `C.` line 25, the `UNIT:` line at 34 and section 1 at 50; and C says *raises 7 items*, which `raises \d+ item` matches |
 
-### On the three carried items that tonight's work touched
+### Asks still outstanding - carried per HM-DEC-139, verbatim
 
-- **Unit 385's item 1 - the hold reads the carrier *and* the hand-back.** Nothing here reopened
-  it. Its only bearing tonight is that the four names it produced -
-## 3. What you should see
+**The queue stands at fifty-three and this unit answers none of them.** It is the forty-seven unit 386
+carried plus unit 386's own six, read out of unit 386's committed `output.md` at `283c6fa6` rather
+than reconstructed from memory.
+
+**Unit 386's own six, verbatim:**
 

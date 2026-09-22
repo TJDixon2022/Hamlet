@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: TASK 5 of 6
-WORK_INSTRUCTION: 386 - the list proves itself five times over a tree that has stopped moving, and the false Olivia row gets its correction
+TASK: TASK 6 of 7
+WORK_INSTRUCTION: 387 - the four things Tim saw on his own screen, and the first of them is a thing Hamlet used to have
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T09:33:48-04:00
-NOTE: Unit 386 complete - 2.4 met at 3 of 5 strict and 5 of 5 counted over a tree frozen at a91d6ed6 with an empty diff, 2.6 met with the false row unedited
+UPDATED: 2026-09-22T11:41:31-04:00
+NOTE: Unit 387 complete - 10.1, 10.2, 10.4 and 10.5 met and ticked; 10.3 not met and reported partial with the arithmetic; exit app 265 of 265 and engine 150 of 150, pushed
 
 ---
 

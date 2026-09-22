@@ -1,4 +1,13 @@
-﻿   Bash  {"command":"file PHASE_OUTCOME.md docs/phase-olivia-run/PHASE_OUTCOME.md \u0026\u0026 head -c 16 PHASE_OUTCOME.md | xxd | head -2 \u0026\u0026 echo \"--- olivia ---\" \u0026\u0026 head -c 16 docs/phase-olivia-run/PHASE_OUTCOME.md | xxd | he ...(truncated)
-   Bash  {"command":"awk \u0027NR\u003e=156 \u0026\u0026 NR\u003c=492\u0027 PHASE_OUTCOME.md | grep -o \"dispatcher loop[^.]*\\.\" | head -40","description":"Extract dispatcher loop mentions"}
-   Bash  {"command":"git show e5e4bee0:output.md | sed -n \u0027/^## 4\\./,$p\u0027 | head -200","description":"Read unit 385 section 4 and the carried queue"}
+﻿   Bash  {"command":"awk \u0027NR\u003e=11 {print NR\": \"substr($0,1,300)}\u0027 PHASE_STATUS.md","description":"Show remaining PHASE_STATUS lines truncated"}
+   Bash  {"command":"grep -n -o \"^STEP: 9 .\\{0,600\\}\" PHASE_STATUS.md; grep -n -o \"^STEP: 10 .\\{0,900\\}\" PHASE_STATUS.md","description":"Show step 9 and 10 lines"}
+   Bash  {"command":"grep -n -o \"^STEP: 10 .\\{0,900\\}\" PHASE_STATUS.md","description":"Show step 10 line"}
+   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --no-build --filter \"FullyQualifiedName~Unit387Trace\" -v n 2\u003e\u00261 | grep -vE \"^\\s*$\" | head -180","timeout":560000,"description":"Run the unit 3 ...(truncated)
+   Bash  {"command":"grep -E \"_starRect|rig face|Passed |Failed |error|Exception|model:|places dropdown|the word favorite|Radio menu\" /c/Users/TimDi/.claude/projects/C--Source-HamLet/c52879fc-381e-47d0-9a40-7086bd9aff54/tool-results/bdmkbyx81.txt  ...(truncated)
+   Bash  {"command":"git stash push -- src tests \u0026\u0026 git log --oneline -1","description":"Stash task 4 work to test HEAD"}
+   Bash  {"command":"git stash push -- src tests","description":"Stash task 4 work in progress"}
+   Bash  {"command":"git show HEAD -- src/Hamlet.App/Views/MainWindow.axaml | grep -E \"^[+-]\" | grep -vE \"^[+-]\\s*(\u003c!--|.*--\u003e|\\*\\*|[A-Za-z`].*)$\" | head -30","description":"Check task 3\u0027s axaml change is comment-only"}
+   Bash  {"command":"git worktree add /c/Source/hamlet-u387-check 6d4caef5 2\u003e\u00261 | tail -3","timeout":180000,"description":"Create a worktree at the pre-unit-387 commit"}
+   Bash  {"command":"git worktree add /c/Source/hamlet-u387-check 6d4caef5","timeout":180000,"description":"Create a worktree at the pre-unit-387 commit"}
+   Bash  {"command":"git checkout 6d4caef5 -- src tests","description":"Temporarily restore the pre-unit tree to test inheritance"}
+   Bash  {"command":"sed -i \u0027s/Assert.Single(model.DigitalDecodes.Where(r =\u003e r.IsTextOnly))/Assert.Single(model.DigitalDecodes, r =\u003e r.IsTextOnly)/\u0027 tests/Hamlet.App.Tests/ViewModels/TheBlindCarrierShowsNoInventedTextTests.cs \u0 ...(truncated)
    Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run the output validator"}
