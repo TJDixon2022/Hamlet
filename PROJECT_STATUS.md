@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 0 of 5
+STATE: COMPLETED
+TASK: TASK 4 of 5
 WORK_INSTRUCTION: 383 - 4.3 measured over the whole sheet, and the canned macro rows recorded as canned
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-21T19:37:58-04:00
-NOTE: Task 0 entry measurement complete on both carry-forward invocations: app 224 of 224 and engine 150 of 150, both green on the first attempt, no dispatcher loop and no file lock. Now running the nine named types outside the list - the sheet, the canned list, the send paths and the two inherited reds - so a red met later can be told from one inherited.
+UPDATED: 2026-09-21T20:20:36-04:00
+NOTE: Unit 383 complete, both criteria taken and the drop candidate not dropped. 4.3 MET on the measurement: 183 lines scanned with nothing excluded, 0 tier-1 phrases in the sheet's own voice, 2 inside quotes both declared and both proved character for character to be Hamlet's own, 9 tier-2 mentions counted and printed; the page now carries what Hamlet says when its own stop did not get out, and no sentence under src was changed. Said plainly: under the strictest reading a declared exception is still a sentence on the page that sends him to the rig, and that remedy is the owner's. 7.2 MET: 7 of 7 canned rows write macro canned where four did, the macro's own token kept in a second key, the press marked and never re-routed, and the same macro off the list and off the card composed 116,371 samples each, equal one by one. Exit carry-forward app 226 of 226 and engine 150 of 150 against task 0's 224 and 150, this unit's two new guards the only difference - no regression, and four invocations with no environmental fault. Step 5 is open and it is Tim's own.
 
 ---
 
