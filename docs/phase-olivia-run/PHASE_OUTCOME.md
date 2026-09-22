@@ -359,3 +359,39 @@ ACCOMPLISHED: an upgrade never again forgets what Tim chose, and a send that can
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: The report's step 0 is the hardening phase's, not this Olivia step, and against this step's own criteria the plan shows 0.1 to 0.6 all ticked with the phase since carried through step 5, while this unit changed nothing and left Olivia tuning, decoding, logging and transmitting as before.
+
+## CORRECTION TO THE RECORD - THE UNIT 2 - STEP 1 ENTRY OF 2026-09-14 RECORDS A RUN THAT NEVER RAN
+
+WRITTEN BY: work instruction 386, unit 386, step 2 of the hardening phase "Hamlet holds what it has", on 2026-09-22, under criterion 2.6 and work instruction 386 section 6 ruling 2.
+CORRECTS: the entry headed `## UNIT 2 - STEP 1` at line 39 of this file. NOTHING IN THAT ENTRY IS EDITED. Not one character of it is altered - not its FATE, not its STATE_AFTER, not its STATE_WHY. This file is append-only and criterion 2.6's own last clause says so in terms. What follows is a new entry that stands beside the old one; a reader who finds the old one must read this one too.
+
+WHAT THE FALSE ENTRY CLAIMS: that a unit executed step 1 of the Olivia phase on 2026-09-14 - `FATE: executed`, an APPROACH describing Hamlet's own RSID detector and an RSID burst generator in front of every PSK31 send, and a set of DECIDED rulings A and B - and was then graded `STATE_AFTER: not started`.
+
+WHAT IS TRUE: NO SUCH RUN EXECUTED. The entry was written by the launcher for a session that halted on the session lock before it did any work, and the grade beneath it was produced by a judging session reading the PREVIOUS unit's leftover report. Unit 359 said so at the time, in its own WHY at line 59 of this file: "the UNIT 2 - STEP 1 entry above records a run that halted on the session lock and never executed, so the approach is untried." This entry carries the measurement behind that sentence so the claim no longer rests on one unit's word.
+
+THE EVIDENCE, MEASURED ON 2026-09-22 AND NOT COPIED FROM THE INSTRUCTION THAT ASKED FOR IT.
+
+(1) IDENTICAL COST. Criterion 2.6's first half. The two COST figures were read out of this file at the lines named:
+
+    line 33, in `## UNIT 1 - STEP 0`   COST: 15.045699500000005
+    line 48, in `## UNIT 2 - STEP 1`   COST: 15.045699500000005
+
+They agree to every one of seventeen digits. A cost figure is an accumulated dollar total over a session's API calls; two independent sessions cannot produce the same one to fifteen significant figures. The `## UNIT 2 - STEP 1` row is carrying `## UNIT 1 - STEP 0`'s cost because it is the same session's cost - unit 358's - attached to a run that never happened.
+
+(2) NO COMMIT. Criterion 2.6's second half, established with git over 2026-09-14 rather than asserted. What was run:
+
+    git log --since=2026-09-14T00:00:00 --until=2026-09-15T00:00:00 --pretty=format:"%s"
+
+What came back: SEVENTY-SEVEN commits, belonging to exactly ELEVEN units and no others - 349, 350, 351, 352, 353, 354, 355, 356, 357, 358 and 359. THERE IS NO TWELFTH UNIT. And the gap where the phantom run would have to sit is empty:
+
+    git log --since=2026-09-14T11:48:00 --until=2026-09-14T12:17:00 --pretty=format:"%h %ad %s"
+
+returns exactly two commits and nothing between them - `1444962f` at 11:48:17 -0400, "docs(unit358): the report - complete at task 6 of 6, Olivia exists as a mode", which is unit 358's last, and `c93159b6` at 12:16:33 -0400, "chore(unit359): the unit opens - step 0 done, fixtures 9 of 9, carry-forward app 144 engine 86, 1.13.46", which is unit 359's first. TWENTY-EIGHT MINUTES, ZERO COMMITS. A unit that executed step 1 - a detector, a burst generator, an RSID prefix on every PSK31 send - and committed nothing at all does not exist.
+
+(3) THE STATE_WHY IS THE PREVIOUS UNIT'S. The false entry's STATE_WHY reads "The unit delivered only step 0 ... it built no detector, no burst generator ..." - which is a true and accurate description of unit 358's night, the night of `## UNIT 1 - STEP 0` immediately above it. The judging session graded unit 358's leftover report a second time and filed the verdict under a unit that had not run.
+
+WHAT THIS DOES NOT SAY. It does not say unit 358 or unit 359 did anything wrong; both ran, both committed, both are honestly recorded. It does not reopen step 1, which unit 359 executed and which this phase closed. It does not ask for a ruling. And it does not touch the false row.
+
+ONE OBSERVATION, RECORDED BECAUSE IT WAS MEASURED, ASKING FOR NOTHING AND CORRECTING NOTHING. The identical-cost fingerprint appears twice more in this file and both pairs are left exactly as they stand, because criterion 2.6 names the `## UNIT 2 - STEP 1` row and only that row: line 102 in `## UNIT 1 - STEP 1` and line 117 in `## UNIT 2 - STEP 2` both read `COST: 11.789573999999998`, and line 183 in `## UNIT 2 - STEP 3` and line 210 in `## UNIT 3 - STEP 3` both read `COST: 17.930809499999995`. Whether those are the same launcher fault or a judging session legitimately graded twice from one run was NOT determined here and is not claimed either way - it is written down so the next reader does not have to find it again.
+
+AND THE FAULT HAS NOW HAPPENED TWICE, IN TWO PHASES. The hardening phase's own `PHASE_OUTCOME.md` carries a `## UNIT 7 - STEP 2` row with the same shape: `FATE: executed` on a run that died at task 0, a `COST:` of 4.7155615 matching `.run-unit/last-run.json`'s record of a session that terminated on an api_error with status 529 after 72 turns, and a STATE_WHY describing a unit that "worked only on steps 4 and 7", which is the previous unit's night. Unit 385 appended that correction in that file on 2026-09-21. That row is likewise unedited. Both are logged to the owner; neither is chased.
