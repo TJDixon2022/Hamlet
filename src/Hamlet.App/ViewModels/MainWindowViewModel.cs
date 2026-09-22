@@ -6689,6 +6689,7 @@ public partial class MainWindowViewModel : ObservableObject
                 {
                     _psk31Macro = card.Offered;
                     _psk31SendAtHz = Psk31OffsetOf(card.Callsign);
+                    _psk31SendTo = card.Callsign;
                     _oliviaSendVariant = OliviaVariantOf(card.Callsign);
 
                     SendMessage(card.ActionMessage);
@@ -16409,6 +16410,34 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **AND HAMLET DOES NOT KEY ON TOP OF A MAN WHO IS STILL SENDING** (R44, Tim,
+        // 2026-09-21, from his own contact; work instruction 385 ruling 1). He answered a
+        // station, the station's carrier was still up, and Hamlet composed and sent anyway -
+        // which is the one thing a keyboard operator must never do.
+        // **THE FACT IS THE CARRIER AND NOT THE PARSER** (ruling 1 item 1, and task 1 measured
+        // it): `Psk31TurnState.HeIsSending` means characters are still arriving after the last
+        // complete message, and over a whole visit it was never once true while his carrier was
+        // up, while `row.Ended` answered correctly at every moment.
+        // **IT IS A READING OF A LIVE FACT AND NEVER A LATCH** (ruling 1 item 4): it is false the
+        // moment his row ends, and false where there is no station at all, so it cannot leave
+        // Hamlet unable to transmit.
+        // **AND IT REFUSES, IT NEVER CAUSES.** No send is started, delayed or altered here; this
+        // is a gate above the one composer, exactly as `variant_not_proved` is.
+        if (HisCarrierIsLive(_psk31SendTo))
+        {
+            AppEvents.OperatorAction(
+                _telemetry, "send_refused", OperatingMode, HisCarrierLiveReason);
+
+            Psk31Events.SendRefused(_telemetry, HisCarrierLiveReason, kind: null, "gate");
+
+            DigitalSendLine =
+                "Hamlet did not send that: " + HeIsStillSending + ". Transmitting now would put "
+                + "your signal on top of his, and neither of you would be readable. It goes out "
+                + "the moment his carrier drops.";
+
+            return;
+        }
+
         // **PSK31 LEAVES BY ITS OWN ARM, BEHIND THE SAME DOOR** (work instruction 323
         // task 1c, `PHASE_PLAN.md` §R10). Everything above this line is the one entry
         // point every send goes through - the record of the press, the empty check and
@@ -16651,6 +16680,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private Psk31Macro _psk31Macro = Psk31Macro.Cq;
 
+    /// <summary>
+    /// **Who the next PSK31 or Olivia send is addressed to, or "" for a call to anybody.**
+    /// </summary>
+    /// <remarks>
+    /// **IT RIDES BESIDE THE OFFSET, SET BY THE SAME CALLERS** (work instruction 385 task 2,
+    /// ruling 1). `_psk31SendAtHz` says where the send goes; this says whose frequency that is,
+    /// which is the question the live-carrier hold asks. A call to anybody is addressed to nobody
+    /// and is never held: there is no man to key on top of.
+    /// </remarks>
+    private string _psk31SendTo = "";
+
     /// <summary>Where the next PSK31 send goes out, or null to find a clear spot.</summary>
     /// <remarks>
     /// **A REPLY GOES OUT WHERE HE IS** (work instruction 323 task 3). §R6's clear spot is
@@ -16753,6 +16793,7 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31Typed = false;
         _psk31Canned = false;
         _psk31SendAtHz = null;
+        _psk31SendTo = "";
         _oliviaSendVariant = null;
 
         // **NO BURST, NO SEND, AND THE PANEL'S OWN READING OF THE FILE DECIDES** (work instruction
@@ -17297,6 +17338,7 @@ public partial class MainWindowViewModel : ObservableObject
         // every other caller sets them, and put back by `SendUnslotted`.
         _psk31Macro = Psk31Macro.None;
         _psk31SendAtHz = press.FromHz;
+        _psk31SendTo = press.Station;
         _oliviaSendVariant = press.FromVariant;
 
         SendMessage(text);
@@ -17565,6 +17607,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         _psk31Macro = Psk31Macro.Answer;
         _psk31SendAtHz = OffsetOn(row!);
+        _psk31SendTo = Psk31StationOn(row) ?? "";
 
         // **AT HIS VARIANT AS WELL AS HIS FREQUENCY** (R27, R28, decision BA). The row carries
         // the variant its own RSID announced, or the one the blind search found; the answer goes
@@ -17726,6 +17769,7 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31Macro = Psk31Macro.None;
         _psk31Typed = true;
         _psk31SendAtHz = Psk31OffsetOf(station);
+        _psk31SendTo = station;
         _oliviaSendVariant = OliviaVariantOf(station);
 
         SendMessage(framed);
@@ -17763,6 +17807,51 @@ public partial class MainWindowViewModel : ObservableObject
             : "";
 
         RefreshPsk31Card(station);
+    }
+
+    /// <summary>The one sentence the hold says, in all three places it is said.</summary>
+    /// <remarks>
+    /// **ONE SENTENCE, SO THE GREY BUTTON, THE REFUSAL LINE AND THE RECORD CANNOT DRIFT**
+    /// (ruling 1 item 3, §0.0).
+    /// </remarks>
+    internal const string HeIsStillSending = "he is still sending";
+
+    /// <summary>The stable reason token the record carries for that hold.</summary>
+    internal const string HisCarrierLiveReason = "his_carrier_live";
+
+    /// <summary>**Whether the station a send is addressed to still has a carrier on the air.**</summary>
+    /// <param name="station">Who the send is addressed to, or "" for a call to anybody.</param>
+    /// <returns>True only where that station has a row of his own that has not ended.</returns>
+    /// <remarks>
+    /// <para>**THE ROW'S OWN LIVENESS IS THE FACT** (ruling 1 item 1). `row.Ended` is written in
+    /// one place, `EndOrRemovePsk31Row`, so the fact and the moment cannot disagree, and an
+    /// Olivia row carries the same field - which is what makes 9.5 an identity rather than a
+    /// second rule.</para>
+    /// <para>**NOBODY ON THE FREQUENCY IS NOT A HOLD.** An empty station, an unknown station and
+    /// a station whose row has ended all answer false, so a guard that could silence the operator
+    /// on an empty band cannot exist here.</para>
+    /// </remarks>
+    internal bool HisCarrierIsLive(string? station)
+    {
+        var who = (station ?? "").Trim();
+
+        if (who.Length == 0)
+        {
+            return false;
+        }
+
+        foreach (var row in DigitalDecodes)
+        {
+            if (row.IsTextOnly
+                && !row.Ended
+                && Psk31StationOn(row) is { } on
+                && Ft8MessageSplit.IsSameStation(on, who))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>The station a PSK31 row names, or null where it names nobody.</summary>
@@ -18087,6 +18176,7 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31Typed = false;
         _psk31Canned = true;
         _psk31SendAtHz = Psk31OffsetOf(press.Station);
+        _psk31SendTo = press.Station;
         _oliviaSendVariant = OliviaVariantOf(press.Station);
 
         SendMessage(framed);
