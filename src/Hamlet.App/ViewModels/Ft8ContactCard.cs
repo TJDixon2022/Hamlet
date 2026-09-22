@@ -780,7 +780,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// and the one place a PSK31 Log ever appears is his card - never the receipt (§R8).</para>
     public bool ShowsLogLink
         => IsPsk31
-            ? _psk31Complete
+            ? !IsCallToAnyone
             : !IsCallToAnyone && ActionKind != Ft8CardActionKind.Log;
 
     /// <summary>What the always-available Log control reads.</summary>
