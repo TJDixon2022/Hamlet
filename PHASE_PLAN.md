@@ -11,6 +11,7 @@ STEP: 6 | The top gives back height - the pills, the neighborhood strip, the gre
 STEP: 7 | A PSK31 row right-clicks into a canned list - seven framed lines from an editable data file, one click sends - and the row's hover says what the row knows instead of repeating the text.
 STEP: 8 | PSK31 and Olivia count for achievements - the Modes badge, the Hall of Fame firsts and the records from a PSK31 or Olivia contact, exactly as an FT8 contact earns them; measured first, then connected.
 STEP: 9 | The contact Tim had - every card has an X; a station's live carrier is visible and holds the send buttons so Tim never keys on top of him; Log is on every conversation card from the start; every hand-back moves the turn, certain or guessed.
+STEP: 10 | What Tim saw on 2026-09-22 - favorites are back, measured for when they vanished; a right-click on any row opens the menu; the sun map takes the top band's full height; a blind-found keyboard-mode carrier shows text only when its blocks decode.
 
 ---
 
@@ -115,6 +116,17 @@ only the owner can judge ends with the owner's-verdict marker and nothing in the
 no must-pass markers on criterion lines. Criteria marked *(nice to have)* in their text are not needed
 for `done`. A unit's ADVANCES names `step N criterion k` or `none - clears a blocker:
 <what>`; its WHY cites a line of this plan.
+
+**R46 - Tim, 2026-09-22, four things on his screen.** (a) **Favorites vanished.** Saved
+frequencies - the star on the rig display - so a clear, productive CW spot can be returned
+to. Tim had them; a unit since removed them or their list, and the record must say which
+before they are rebuilt; the saved frequencies may still be in his settings file. (b) A
+right-click on any decoded row opens the menu, whether or not the parser read a callsign;
+lines that need his callsign are disabled and say why; Capture and *make a card anyway*
+are always on it. (c) The sun map takes the top band's full height - unit 376 kept it at
+246 x 134 on the author's wording of 6.3, which is superseded. (d) A carrier the blind
+search found shows text only when the mode's block decoding is confident (R9); the row
+`4/500 sending Hk7DYYYzfzYXTDYY...` on 14.072 at 13:37 UTC was the fault.
 
 ## §4 The steps
 
@@ -266,6 +278,21 @@ the card, and there was no way to log him.
 
 **Depends on:** step 8.
 
+## Step 10 - What Tim saw on 2026-09-22
+
+**Delivers:** R46.
+
+**Entry:** step 9 done.
+
+**Exit:**
+- [ ] 10.1 The report names the unit and the line that removed favorites or their list, and whether the saved frequencies survive in the settings file; favorites are restored - the star saves the dial and mode with a name, the list opens from the rig display, one click tunes, and the list persists across an upgrade under step 0's loader.
+- [ ] 10.2 A right-click on any decoded row - callsign read or not, live or ended - opens the menu; lines needing a callsign are disabled with a word; Capture and *make a card anyway* are always present.
+- [ ] 10.3 The sun map fills the top band's height at 1920 and at 1400, the band no taller than 6.1 allows, its dot and caption kept.
+- [ ] 10.4 A blind-found Olivia or PSK31 carrier shows characters only from blocks the decoder reports confident; otherwise the row reads *heard, not readable yet*; replayed from the 13:37 UTC record, the 4/500 row shows no text.
+- [ ] 10.5 `BindingHealthTests`, `TheTopRowTests`, `TheSettingsSurviveAnUpgradeTests` and the carry-forward list green.
+
+**Depends on:** step 9.
+
 ## §5 Dependencies
 
 Step 0 depends on nothing. The order the arbiter works is 1, 2, 6, 7, 8, 3, 4, 5 - the UI steps before the record steps by R39 - expressed in each step's Depends on.
@@ -296,3 +323,4 @@ names; the map bitmap's license; the id-scheme split.
 - **2026-09-21, later.** R41 on the seven variants; R42 on 6.1; 7.5 added for the chip fill and the send line.
 - **2026-09-21.** R38 on unit 375's two questions; R39 and R40 from Tim; steps 6-8 added and step 3 made to depend on step 8 so the UI is worked first.
 - **2026-09-21, night.** Converted to the ClaudeProjectStatus arbiter's format (R45): no must-pass markers, 5.1 carries the owner's-verdict marker; 2.6 added for the false Olivia record entry; step 9 added from the KC3FL contact (R44).
+- **2026-09-22.** Step 10 and R46 added from Tim's screen: favorites, the right-click on any row, the sun map at full height, blind-found text gated.

@@ -40,7 +40,45 @@ heard, what went out. THE WORDING OF A HINT, A LABEL, A TARGET, A CARD'S
 NEXT LINE, OR A NAME IS NEVER A PROMISE AND NEVER A STOP, so a step
 waiting only on such wording is not blocked.
 
-Answer with exactly two lines and nothing else:
+THE COUNT IS THE SCRIPT'S. Whether this unit advanced the plan is decided by
+criteria-count.bat, which reads the - [ ] and - [x] criterion lines of
+PHASE_PLAN.md before and after the unit - not by you, and not by the report.
+You judge the step's state, and, only where you are told a criterion
+flipped, whether it was honestly met.
+
+SELF-RULINGS ARE BOUNDED - the owner's ruling of 2026-09-14. A unit may make
+at most two self-rulings that authorize work outside its instruction's
+tasks, each citing the plan line it applies; a third needed means the plan
+is unclear, and the unit reports it as a mismatch instead of ruling. Its
+decisions about HOW to carry out an assigned task are uncapped, and all of
+them are reported. NO SELF-RULING MAY OVERRULE AN EARLIER ARBITER RULING -
+only the owner does that.
+
+ONE QUESTION ABOUT IT, answered in one word. Does this unit's report claim a
+ruling that reverses, withdraws or overrules an earlier arbiter ruling? Do
+not judge intent and do not count the unit's decisions - only whether a
+reversal of an earlier ruling is CLAIMED. Answer one more line:
+REVERSES: yes   or   REVERSES: no
+and where it is yes, one more line quoting that ruling from the report:
+REVERSED: the ruling as the report states it
+
+A SECOND QUESTION, ALSO IN ONE WORD. The instruction that produced this
+report chose one criterion to advance. Does that choice FOLLOW FROM THE
+PLAN - the step and criteria above - or ONLY FROM THE PREVIOUS REPORT,
+which is to say from what the last unit raised rather than from what the
+phase is for? Do not judge whether the choice was wise, and do not judge
+the author. Judge only what the instruction CITES for it. Answer:
+FOLLOWS: plan     the criterion and its reasoning come from the plan
+FOLLOWS: report   the criterion was chosen because the last report
+                  raised it, and the plan is cited for form only
+and where it is report, one more line saying what it cited instead:
+FOLLOWED: one sentence, plain text
+
+The instruction it produced named  step 2 criterion 4  and gave this WHY:
+
+step 2 holds the last two criteria in this phase a unit can reach - 4.3 is cut down and logged, 5.1 is Tim at his window, 7.2 and the whole of step 9 need a judging session rather than a unit, and step 0's 0.1 is a completed negative I re-measured myself and cut down tonight; and 2.4 counts only over a tree that does not move, which is true for the first time now that step 9 landed at e5e4bee0 and no block of code is left in the phase, exactly as work instructions 384 and 385 both said it would be.
+
+Answer with the lines asked for above and nothing else, beginning with:
 
 STATE: one of the five words above
 WHY: one sentence, plain text, no punctuation beyond commas and full stops
@@ -55,331 +93,491 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 **Entry:** step 1 done.
 
 **Exit:**
-- [x] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family. *must-pass*
-- [x] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence. *must-pass*
-- [x] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`. *must-pass*
-- [ ] 2.4 The carry-forward list runs green five times in a row. *must-pass*
+- [x] 2.1 `cq_pressed` and every send event carry the sub-mode the press was made under - PSK31, Olivia, FT8, FT4 - never a mapped family.
+- [x] 2.2 `data/rsid/rsid-codes.json` is replaced by `assets/data/rsid-codes.json`, which carries tone sequences for codes 72-75 and the two tables; the detector reads all of them; every listed code round-trips through Hamlet's generator and detector; and under R41 every Olivia variant in `format.json` is proved by loopback - Hamlet modulates, Hamlet reads back identical - before its RSID sequence lets it on the air, with a variant that fails staying refused in a sentence.
+- [x] 2.3 `TheStopIsAlwaysOnScreenTests` and `TheTestsStayOffTheNetworkTests` are run ten times each; either made deterministic with the cause named, or quarantined into a named non-carry-forward list with the environmental cause stated. No flaking test remains on `docs/carry-forward-tests.txt`.
+- [x] 2.4 The carry-forward list runs green five times in a row. **Unit 386, 2026-09-22, and the two counts stand in the same sentence because work instruction 384 section 6 ruling 1 says neither may stand alone: 3 of 5 rounds were green on the first attempt with no re-run, and 5 of 5 were counted under ruling 1's re-run rule.** Over a tree frozen at commit `a91d6ed64674558df638310e931120a410a069ea`, with `git diff a91d6ed6 -- src tests assets data docs` printed empty at the end of round 5 and no commit made during the soak. Every round was both command lines as `docs/carry-forward-tests.txt` prints them at lines 7 and 9, unedited, one build each, foregrounded, with a status line immediately before each; a green round is app 245 of 245 and engine 150 of 150. **TWELVE invocations across the five rounds: ten green, TWO lost to the headless dispatcher loop at 1 ms before any assertion - round 1 app attempt 1 and round 5 app attempt 1, both recovered on the single allowed re-run - and NOT ONE RED ON AN ASSERTION.** The engine invocation was 150 of 150 on the first attempt in all five rounds and has never once met the fault. The difference between the two counts is the night's finding and it is the whole value of reporting two: the list itself did not fail once, and the 2 of 5 shortfall in the strict count is the Avalonia headless test window falling over, which is nobody's criterion.
+- [x] 2.6 The archived Olivia record `docs/phase-olivia-run/PHASE_OUTCOME.md` gains an appended entry stating that its `UNIT 2 - STEP 1` of 2026-09-14 never ran - the launcher graded unit 358's leftover report as a second unit's - with the evidence (identical cost, no commit); the false row is not edited, per the append-only rule. **Unit 386, 2026-09-22, task 2, commit `a91d6ed6`.** The correction is appended at the end of that file and the evidence was measured rather than copied: identical cost, `COST: 15.045699500000005` at line 33 in `## UNIT 1 - STEP 0` and the same seventeen digits at line 48 in `## UNIT 2 - STEP 1`; no commit, `git log` over 2026-09-14 returning 77 commits belonging to exactly eleven units, 349 to 359 and no twelfth, with zero commits in the 28 minutes between `1444962f` at 11:48:17 and `c93159b6` at 12:16:33. **The false row is unedited - the diff is 36 insertions and 0 deletions, and the BOM+CRLF file is unnormalised.**
 
 **Depends on:** step 1.
 
+
+--- what the script saw ---
+criteria-count.bat saw step 2 criterion 4 flip from unmet to met in
+PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
+Answer one more line after WHY:
+HONEST: yes   if the report shows that criterion honestly met
+HONEST: no    if the marker was turned without the criterion being met
 
 --- the unit's report follows ---
 
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet holds what it has. Step 0 partial, step 1 done, step 2
-   partial on 2.4 alone and deferred by R43, step 3 done, steps 6 and 8 done, step 5
-   not started and Tim's own. Step 4 was partial on 4.3 alone, which is the judging
-   session's word on unit 382 and not a unit's own; step 7 was partial on 7.2 alone.
-   Those two criteria were every must-pass a unit could still close, and this unit was
-   aimed at both - 4.3 first, 7.2 as the drop candidate. BOTH WERE TAKEN AND NEITHER
-   WAS DROPPED.
-B. Step 4, criterion 4.3 - R11 measured over the whole page. MET under section 6
-   ruling 1's reading, and partial under the strictest one, which is said here and in
-   section 4 rather than argued away: 183 lines scanned, ALL of them, against 11
-   tier-1 phrases and 11 tier-2 words; 0 tier-1 hits in the sheet's own prose (the
-   assertion, and it is zero); 2 tier-1 hits inside quotes, both declared, EACH PROVED
-   KIND (a) - produced character for character by the shipped view model - with its
-   site; 9 tier-2 mentions counted and listed. 4.1 and 4.2 re-checked and held: 27
-   quotes, 22 kind (a), 5 kind (b), 12 of 12 reachable refusals quoted. And step 7,
-   criterion 7.2 MET: 7 of 7 canned rows write macro canned, where four did, with the
-   macro's own token kept in cannedMacro.
-C. The report last. Section 4 raises 10 items on top of the carried twenty-nine, and
-   none of them is in the way of a criterion in B. Unit 382's items 1, 2 and 3 came
-   off - answered in instruction 383 section 3 - its item 4 was this unit's subject and
-   is answered, and its item 5 stays on. Under the strictest reading of 4.3 a declared
-   exception is still a sentence on the page that sends him to the rig; the remedy
-   would be a change to a sentence Hamlet says, one of which is what it says when its
-   own unkey did not get out, and that is the owner's and not a unit's.
+A. The phase goal - Hamlet holds what it has. Steps 1, 3, 6 and 8 done; step 0
+   partial with 0.1 cut down tonight as a completed negative; step 4 partial with
+   4.3 cut down and logged to the owner; step 7 partial on an unjudged 7.2; step 9
+   worked by unit 385 and ungraded; step 5 Tim's own. Step 2 is the last step a
+   unit can move and this unit is the third spent on it.
+B. Step 2 - the record says what was true. 2.1, 2.2 and 2.3 carried met and
+   untouched. 2.6 MET: the Olivia entry appended at the end of
+   docs/phase-olivia-run/PHASE_OUTCOME.md, evidence COST: 15.045699500000005 at
+   line 33 and COST: 15.045699500000005 at line 48 - the same seventeen digits -
+   and git log over 2026-09-14 returning 77 commits belonging to exactly eleven
+   units, 349 to 359 and no twelfth, with zero commits in the 28 minutes between
+   unit 358's last and unit 359's first; the false row unedited, 36 insertions and
+   0 deletions. 2.4 MET: 3 of 5 rounds green on the first attempt with no re-run,
+   and 5 of 5 under ruling 1's re-run rule, over a tree frozen at
+   a91d6ed64674558df638310e931120a410a069ea with git diff printed empty; 2
+   invocations of the soak's 12 lost to the dispatcher loop and 0 red on an
+   assertion.
+C. The report last. Section 4 raises 6 items on top of the carried forty-seven,
+   and none of them is in the way of a criterion in B. The difference between the
+   two counts in B means this: the carry-forward list itself did not fail once in
+   seventeen invocations tonight, and the whole of the 2-round gap between strict
+   and counted is the Avalonia headless test window falling over before any
+   assertion ran - so "green" now has a number for the list and a separate number
+   for the harness, and nobody has to argue about which one they were told.
 
 ```
-UNIT:       383 - complete at task 4 of 5 - 2026-09-21 20:17
-PHASE GOAL: Hamlet keeps what it has already earned. A hardening phase run while Tim
-            is away: the screen, the record and the tests of the PSK31 and Olivia work,
-            judged by tests that actually ran and, at the end, by Tim at his own window.
-UNIT GOAL:  Answer the judging session on step 4. Scan every line of the radio sheet -
-            its quotes included - against a wider list of the ways a page can send a man
-            to his transceiver, let a quoted hit through only where the test proves the
-            line is Hamlet's own sentence, and put the one sentence safety turns on onto
-            the page. Then close 7.2 by recording that a press came off the canned list,
-            without moving one byte of what goes on the air.
-ADVANCED:   step 4, criterion 4.3 - met on the measurement; 4.1 and 4.2 re-checked and
-            held. Step 7, criterion 7.2 - met, all seven rows. The drop candidate was
-            not taken.
-NUMBER:     lines scanned 183 of 183; tier-1 hits in prose 0; declared quoted
-            exceptions 2, each with its site and each proved kind (a); tier-2 mentions
-            9; canned rows writing macro canned 7 of 7
+UNIT:       386 - complete at task 5 of 6 - 2026-09-22 09:31
+PHASE GOAL: Hold on to what Hamlet already does. Everything banked in the PSK31
+            and Olivia threads that is screen, record or test and needs neither
+            the radio nor the owner, judged by tests that ran and, at the end, by
+            Tim at his window.
+UNIT GOAL:  Prove that the list which proves nothing broke can itself be trusted -
+            five consecutive green rounds of both invocations over a tree that
+            does not move between the first and the last, with the frozen commit
+            named and two counts reported rather than one; and make the archived
+            Olivia record tell the truth about the unit of 2026-09-14 that never
+            ran, by appending to it and never editing it.
+ADVANCED:   step 2, criteria 2.4 and 2.6
+NUMBER:     consecutive green rounds of the carry-forward list over a tree that
+            did not move: 3 of 5 strict, 5 of 5 counted; and false rows in the
+            archived Olivia record now carrying a correction: 0 of 1 -> 1 of 1
 DRIFT:      none
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 4 of 5 (tasks 0 to 4), with nothing dropped.** Machine: this
-development machine, no radio attached. Project claimed and confirmed against the tree:
-Hamlet - `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` both
-present, neither `CoreHMI.sln` nor `MURC.sln` at the root, root `C:\Source\HamLet`.
-Branch `main`. All five tasks were committed on their own; task 3 took two commits, as
-section 11 asks.
+**Complete at task 5 of 6.** Tasks 0, 1, 2, 3 and 5 were done in full. **Task 4 was correctly
+not entered and no task was dropped**: task 4 exists only if a name goes red on an assertion,
+and in seventeen invocations of the carry-forward list tonight **not one name ran and
+disagreed**. That is not a task skipped for time - it is the task's own precondition never
+arising, and it is reported here rather than left to be inferred. The trace's named drop
+candidate, task 1 item 4, was **taken rather than dropped**.
 
-**Task 0 - the record, the verdict, the entry run.** `PHASE_STATUS.md`'s `CURRENT_STEP`
-read a stale `0` and `WORK_INSTRUCTION` a stale `382`; they now read `4` and this
-instruction. Version 1.13.69 to 1.13.70 with its line in the version log. **One verdict
-another session returned was transcribed and it is not a judgment of this unit's and not
-a criticism of unit 382**, whose harvest and whose two-direction proof tonight was built
-on: step 4 is `partial`, 4.1 and 4.2 met, **4.3 open** (`PHASE_OUTCOME.md:416-417`). Step
-7's line was left exactly as unit 382 wrote it. The entry carry-forward, before any change
-under `src\` or `tests\`, with status written immediately before each invocation: **app
-224 of 224 in 2 m 23 s and engine 150 of 150 in 4 m 56 s, both green on the first
-attempt**, name for name where unit 382's exit left them. The nine types this unit would
-touch or borrow, run by name outside the list: **102 of 104, and both reds are the
-inherited ones section 5 names.**
+Machine `C:\Source\HamLet`, project claimed and confirmed Hamlet (`SHACK_FACTS.md` and
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` both present, neither `CoreHMI.sln` nor
+`MURC.sln` at the root), branch `main`.
 
-**Task 1 - the trace, and it repaired nothing.** `Unit383Trace`, six `[Fact]` items, 6 of
-6 green in one filtered invocation. It wrote no sheet, built no product code and changed
-no file under `src\`. What it measured is in section 3; the two things worth putting
-first are that **the eleven words over all 176 lines gave ZERO hits**, so the word list
-had missed the sentence as surely as the exclusion had, and that **the sentence safety
-turns on is reachable from a fixture**, produced whole over a wire that takes nothing.
+**No file under `src` was changed at any task of this unit, and no file under `tests`, `assets`
+or `data` at any task at all.** That is not a restriction worked around; it is the measurement,
+and the empty diff in section 3 is what makes the night's number mean anything.
 
-**Task 2 - 4.3.** `NoSentenceThisUnitWroteTellsHimToTouchTheRadio` is gone and the name is
-`NoLineOfTheSheetSendsHimToTheRadioExceptWhereHamletsOwnWordsDo`, because *this unit
-wrote* is exactly the reading the judging session rejected. The rewrite asserts more than
-it replaced, listed in section 3. The sheet gained the stop sentence with what it means
-and what to do beside it, and section 4's opener now says plainly that this one alone is
-not a refusal. **No sentence under `src\` was changed, reworded or softened.**
+### Task 0 - the record and the entry round
 
-**Task 3 - 7.2, and it was not dropped.** All seven canned rows write
-`psk31_send_composed` with `macro: canned`. The three macro rows are **marked and never
-re-routed**: they still go out through `AnswerPsk31Command` and the card's own
-`CardActionCommand`, reached one step in through a command that sets one bool and hands
-the press straight on. The macro's own token is kept in a second key, `cannedMacro`,
-added only where there is one, so **every line the writer produced before tonight has
-exactly the shape it had**.
+Version 1.13.72 -> 1.13.73 with its line in the version log. `PHASE_STATUS.md` `CURRENT_STEP`
+9 -> 2 and `WORK_INSTRUCTION` 385 -> 386, both stale; its `STEP: 0` line gained section 6
+ruling 1's cut-down of 0.1. `PHASE_PLAN.md` ticked nothing at this task. The
+`## UNIT 386 - STEP 2` entry was appended to `PHASE_OUTCOME.md` in the house shape.
 
-**Task 4 - the exit run.** App **226 of 226** and engine **150 of 150**, both green on the
-first attempt, against task 0's 224 and 150 with this unit's own two new guards the only
-difference. **No regression and nothing red that was green before** (HM-DEC-165).
+**The instrument, counted rather than assumed:** `docs/carry-forward-tests.txt` line 7 carries
+**59** filter terms and line 9 carries **25** - section 5's numbers exactly - both beginning
+`timeout 480 dotnet test`, both used unedited all night.
 
-**Four decisions this session made for itself, reproduced in full.**
+**Round 0, the entry round and not one of the five.** Engine 150 of 150 green on the first
+attempt. **The app lost both attempts to the headless dispatcher loop** - 243 of 245 twice,
+four occurrences at 1 ms each across two attempts, no name repeated, **and not one assertion
+failure in either**. The tree was green on the merits and the app test window was what fell
+over. Full numbers in section 3's table.
 
-1. **The two new 7.2 guards were put on `docs/carry-forward-tests.txt` permanently**,
-   which the instruction did not ask for. The reason: 7.2 came open in the first place
-   because nothing in the tree asserted the criterion's own word, so four of seven rows
-   writing it stayed invisible until somebody read a paragraph. A criterion closed with
-   nothing guarding it can come open the same way. It costs about a second a run.
-2. **`ThePsk31ReadsTheConversationTests` was grown in the same commit as the source change
-   rather than in its own commit after it.** It is a carry-forward name and the change
-   turns it red; splitting them would leave a commit tip with a carry-forward name red,
-   which HM-DEC-165 forbids. The named R12 rewrite, `TheCannedListIsOfferedTests`, did get
-   its own commit after the change, as section 11 asks.
-3. **Task 2's sheet and test are one commit, not two.** The sheet's new quote and the kind
-   (a) proof of it are mutually dependent - the sheet alone turns the forward direction
-   red, and the test alone turns the closed exception list red - so either order leaves a
-   red tip.
-4. **`MuteWire`, the wire that takes nothing, was put beside `FakePort` and `FakeSink`**
-   rather than written twice, because this unit needs it in two files.
+### Task 1 - the trace, and it said the night would fit before the night was spent
+
+Nothing built. **What a round costs**, from round 0's own clock: one round of both invocations
+with no re-run is 7 m 31 s, five counted rounds 37 m 15 s, and five rounds each taking the full
+one-app re-run allowance 50 m 0 s. Said at task 1, not at round 4.
+
+**The frozen point**, measured with git: `git status --short` read two lines and
+`git rev-parse HEAD` read `3133bad8`; the frozen commit is task 2's and is printed below.
+
+**The prior - the drop candidate, taken.** Tallied out of `PHASE_OUTCOME.md`'s own ENTRY and
+EXIT lines for units 375 to 385, counting only what the record states: **46 full app
+invocations** - 375 seventeen, 376 two, 377 four, 378 three, 379 three, 380 three, 381 four,
+382 three, 383 two, 384 two, 385 three - of which **27 were green on the first attempt, 17 were
+lost outright to the dispatcher loop, and 2 were red on an assertion**, both of those two in
+unit 375. **A 37 per cent loss rate**, at which five rounds green on the *first* attempt is
+about a one-in-ten night and five rounds *counted* under the one-re-run rule is about even
+money. That arithmetic is why ruling 1 asks for two numbers, and it is what makes tonight's
+result readable instead of lucky-looking.
+
+### Task 2 - 2.6, and the tree freezes here
+
+A new entry appended at the end of `docs/phase-olivia-run/PHASE_OUTCOME.md`. **The
+`## UNIT 2 - STEP 1` row at line 39 was not edited** - not its `FATE`, not its `STATE_AFTER`,
+not its `STATE_WHY`. The diff is **36 insertions and 0 deletions**, and the file is still
+BOM + CRLF, unnormalised. Evidence measured rather than copied; quoted in section 3.
+
+**Commit `a91d6ed64674558df638310e931120a410a069ea`. That is the frozen point.**
+
+### Task 3 - the soak
+
+Rounds 1 to 5, both command lines unedited, one build each, foregrounded, **a status line
+written immediately before every single invocation** - which is why the lines were run by hand
+rather than from a script, exactly as section 8 licenses when the two requirements collide.
+**No file was written during the soak and no commit was made**: `git rev-parse HEAD` still read
+`a91d6ed6` when round 5 ended.
+
+### Task 5 - the exit round and the record
+
+Exit round both green on the first attempt. `PHASE_PLAN.md`: **2.4 and 2.6 ticked, each with
+tonight's own numbers written beside it in the plan's own text**, and nothing else ticked - 0.1
+is left unticked under section 6 ruling 1. `PHASE_STATUS.md`'s `STEP: 2` line rewritten to what
+tonight measured.
+
+**One decision this session made for itself, reproduced in full.** Step 2 has exactly five
+criteria - 2.1, 2.2, 2.3, 2.4 and 2.6; there is no 2.5 - and all five now carry a tick, so no
+criterion of this step is left for a unit to reach. **The state word was nevertheless left at
+`partial` and not moved to `done`.** Closing a step is a judging session's and not a unit's,
+which is the discipline unit 384 applied when it left step 7 exactly where unit 383 put it; what
+says 2.4 and 2.6 are met is this unit's own account with its numbers beside it, and a unit that
+grades its own step is the fault this phase has already recorded twice. The plan and the status
+line both say so in terms.
 
 ## 2. What the owner should expect
 
-The page you would carry to the radio has now been read line by line - **every line, the
-quoted sentences included** - against a list of the ways a page can send a man to his
-transceiver, and the number is printed rather than asserted. **Where the page speaks in
-its own voice it never sends you to the rig: nought times out of 183 lines.** Twice,
-Hamlet's own words do, and both are quoted on the page because they are what the screen
-says: the one about a band too crowded to call, and - new tonight - the one Hamlet says
-when it told the radio to stop and nothing it sent got there. Each is named on the page,
-each is proved by a test to be the program's own sentence rather than something a session
-wrote, and the page's own advice beside them adds nothing of its own. The page also
-mentions the radio's hardware nine times in the ordinary way - *the dial*, *the radio's
-sound card* - and that count is printed too, so nobody has to take the scan on trust.
-**And when you click a line off your canned list, the record now says the line came off
-the list, whichever of the seven it was**, while still saying which one - the answer, the
-report, the confirm, or one of the four you can edit. **Nothing on your screen changed.
-Nothing about what goes on the air changed**, and that is proved rather than promised: the
-same macro sent off the list and sent the old way composed 116,371 samples each, equal one
-by one. No port was opened, no device was enumerated and nothing was keyed (FACT-004).
+For a month every unit has finished by telling you the carry-forward list came back green, and
+nobody had ever shown that sentence meant anything. **It means something now.** The whole list -
+every test that guards a mode you can already use - was run end to end five times in a row over
+a version of Hamlet that did not change by one character between the first run and the last.
+The exact version it was frozen at is written down, `a91d6ed6`, and the proof that nothing moved
+is printed rather than claimed. **And the record now says it as two numbers instead of one:
+three of the five came back clean the first time, and five of the five came back clean once you
+forgive the test window itself falling over and allow one second go.** The gap between three and
+five is the whole point of saying both - because in all seventeen runs of the list tonight,
+**not one test of Hamlet's ever disagreed**. Every single failure was the test harness
+collapsing before it had run anything, which is a fault in the tooling and not in your radio
+program. From here on, when a unit says the list came back green, you can ask which number they
+mean.
 
-**What will look wrong and is not.** The sheet is now 183 lines and 11.3 kB against a
-target of 120 and 10 kB - further over than unit 382 left it, and what bought it is the
-stop sentence and the four lines explaining it. Content is the criterion and the number is
-reported, never bought down by dropping a refusal. Two test names are still red and
-neither is this unit's: they were red before it started and section 4 names them.
+**And the archived record of the Olivia run has stopped claiming a unit ran which never ran.**
+There was an entry dated 2026-09-14 saying a session had built the RSID detector and put an
+announcement in front of every PSK31 send. It never happened - the launcher wrote the entry for
+a session that died on a lock, and a grading pass then scored the previous unit's homework a
+second time under it. The correction is now appended beneath it with the proof beside it: the
+two entries carry the identical cost figure to seventeen digits, which two separate sessions
+cannot do, and git says that of the 77 commits made that day every one belongs to one of eleven
+named units and none to a twelfth. **Not one character of the false entry was altered** - it
+stays exactly as written, with the truth standing next to it.
+
+**What will look wrong but is not.** Step 2 now has every one of its five criteria ticked in the
+plan, yet its state still reads `partial`. That is deliberate: a unit does not close its own
+step. And the report's strict count is 3 of 5 rather than 5 of 5, which reads like a shortfall -
+it is not one. 2.4 asks for five green rounds in a row and it got five; the second number simply
+makes visible how much of the noise belongs to the harness.
+
+**Every claim above was computed, not seen (FACT-004): no port was opened, nothing was
+enumerated, and nothing was keyed.** Every sample tonight lived in an array, and no task of this
+unit opened a file under `src`.
 
 ## 3. What you should see
 
-### The scan, four numbers side by side
+**Every invocation of the night, one row each.**
 
-Measured at task 1 on the sheet as unit 382 left it, 176 lines:
+| Round | Invocation | Attempt | Result | Wall | Lost to |
+|---|---|---|---|---|---|
+| 0 (entry) | app | 1 | 243 of 245 - **lost** | 2 m 37 s | dispatcher loop, **1 ms**, `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer` and `TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo` |
+| 0 (entry) | app | 2 | 243 of 245 - **lost** | 2 m 30 s | dispatcher loop, **1 ms**, `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed` and `Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` |
+| 0 (entry) | engine | 1 | **150 of 150** | 4 m 54 s | - |
+| 1 | app | 1 | 242 of 245 - **lost** | 2 m 38 s | dispatcher loop, **1 ms**, `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`, `TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo` and `ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel` |
+| 1 | app | 2 | **245 of 245** | 2 m 39 s | - |
+| 1 | engine | 1 | **150 of 150** | 4 m 53 s | - |
+| 2 | app | 1 | **245 of 245** | 2 m 40 s | - |
+| 2 | engine | 1 | **150 of 150** | 4 m 54 s | - |
+| 3 | app | 1 | **245 of 245** | 2 m 26 s | - |
+| 3 | engine | 1 | **150 of 150** | 4 m 53 s | - |
+| 4 | app | 1 | **245 of 245** | 2 m 36 s | - |
+| 4 | engine | 1 | **150 of 150** | 4 m 56 s | - |
+| 5 | app | 1 | 244 of 245 - **lost** | 2 m 37 s | dispatcher loop, **1 ms**, `ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt` |
+| 5 | app | 2 | **245 of 245** | 2 m 34 s | - |
+| 5 | engine | 1 | **150 of 150** | 4 m 55 s | - |
+| exit | app | 1 | **245 of 245** | 2 m 37 s | - |
+| exit | engine | 1 | **150 of 150** | 4 m 54 s | - |
 
-| Scan | Hits |
-|---|---|
-| the eleven words, **prose only** - what the test reported before tonight | **0** |
-| the eleven words, **every line** | **0** |
-| **tier 1** (11 phrases), every line | **1** |
-| **tier 2** (11 words), every line | **8** |
+**Seventeen invocations - ten app and seven engine.** Six app green, four app lost, **zero app
+red on an assertion**. Seven engine of seven green on the first attempt; the engine invocation
+has never once met the fault, in this unit or in any before it. Every lost attempt died at
+**1 ms** with `System.InvalidProgramException : You've caused dispatcher loop` in
+`Avalonia.Threading.Dispatcher.ResetForUnitTests` under
+`Avalonia.Headless.HeadlessUnitTestSession.EnsureApplication` - **before any assertion ran** -
+and the message was captured verbatim rather than inferred from the millisecond figure alone.
+No name was lost twice.
 
-**The second number is the finding of the night.** Widening the scan to the quotes and
-changing nothing else would still have reported nothing, because *dial* was not on the
-eleven at all. Both halves had to move, and section 6 ruling 1 moved both.
+### The frozen commit and the printed diff
 
-After task 2, on the sheet as it now stands, 183 lines: **tier 1 in the sheet's own prose
-0**, tier 1 inside quotes **2**, tier 2 **9** - 2 in prose and 7 inside quotes.
+**The frozen commit is `a91d6ed64674558df638310e931120a410a069ea`**, task 2's. At the end of
+round 5, exactly as ruling 1 requires:
 
-### The declared exception list, in full
+```
+$ git diff a91d6ed64674558df638310e931120a410a069ea -- src tests assets data docs
+$
+```
 
-**1. `move the dial`, sheet line 110.**
+**Nothing at all.** No file under `src`, `tests`, `assets` or `data` moved, and **no line of
+`docs/carry-forward-tests.txt` changed** between the first counted round and the last. Nothing
+was added to the list tonight. `git rev-parse HEAD` still read `a91d6ed6` - the soak committed
+nothing.
 
-> "Hamlet did not call: the band is too crowded here to call without landing on someone. It looks for a spot at least 150 Hz from every carrier being read and from every candidate over quality 0.4, in the middle of the widest such gap between 400 and 2200 Hz, and there is not one right now. Move the dial a little, or wait for somebody to finish."
+The whole-tree diff against the same commit is given as well, because a scoped diff that hides
+two files is not a proof:
 
-- **Site:** `MainWindowViewModel.cs:16800-16804`, the refusal whose token at `:16798` is
-  `no_clear_spot`; the tail is `:16803`.
-- **Proof: kind (a)** - driven from a fixture with a band that has no gap anywhere a call
-  could go, and compared character for character with what Hamlet put in
-  `DigitalSendLine`.
-- **Why Hamlet says it:** it looked for a spot at least 150 Hz from everything it can hear
-  and there was not one, and the band is the only thing that changes that.
-- **The sheet's own prose beside it**, 2 lines, carries no tier-1 phrase: *There is nowhere
-  clear to call. Hamlet looked for a gap and there is not one. Wait, or put the passband
-  somewhere else.*
+```
+$ git diff a91d6ed64674558df638310e931120a410a069ea --stat
+ .run-unit/watched.cpu | 5 ++++-
+ PROJECT_STATUS.md     | 6 +++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+```
 
-**2. `at the radio`, sheet line 151 - new tonight.**
+Neither is Hamlet and neither is on the list: `PROJECT_STATUS.md` is rewritten by
+`sh tools/status.sh` before every invocation because section 7 requires it, and
+`.run-unit/watched.cpu` is the launcher's own watchdog heartbeat.
 
-> "Hamlet told the radio to stop and neither frame got out: <what the port said>. If it is still transmitting, stop it at the radio."
+### The two counts
 
-- **Site:** `MainWindowViewModel.cs:19587`, `StopLine`, where an abort was fired and
-  neither the CW stop nor the PTT-off frame reached the radio.
-- **Proof: kind (a)** - produced whole from a fixture over `MuteWire`, a wire that refuses
-  every frame. The wire was handed 2 frames and took none; the sound card was called 0
-  times.
-- **Why Hamlet says it:** it told the radio to stop and nothing it sent got there, so the
-  radio may still be transmitting and Hamlet has no way left to stop it.
-- **The sheet's own prose beside it**, 4 lines, carries no tier-1 phrase: *This is the one
-  sentence on this page that asks you to do something yourself, and it is Hamlet's own: it
-  has no way left to stop the transmission and says so rather than reporting a stop it did
-  not achieve. Do what the sentence says, then send it back with the record.*
+**Three of five rounds were green on the first attempt with no re-run, and five of five were
+counted under ruling 1's re-run rule** - rounds 2, 3 and 4 strict, rounds 1 and 5 counted after
+a single allowed re-run of the app invocation. Two of the soak's twelve invocations were lost to
+the dispatcher loop and **none was red on an assertion**.
 
-**Neither sentence was reworded, softened, shortened or given a Hamlet-side alternative**,
-and no file under `src\` was changed for 4.3 at all.
+### Task 1's arithmetic against what the night actually took
 
-### The tier-2 disclosure, in full - counted, never a red
-
-Nine mentions. Lines 1 and 35 are the sheet's own prose (*The radio sheet*, and *A chip is
-lit when the dial is inside that mode's block*); lines 23, 78, 95, 99, 110, 143 and 151
-are inside quotes (*pick the radio's sound card* twice, the Olivia idle panel, *no radio is
-connected*, the crowded band's *dial*, *Connect a radio or pick the training radio*, and
-the new stop sentence). **This page mentions the radio's own hardware 9 times and instructs
-the operator to touch it 0 times in its own voice.**
-
-### What the sheet gained, line for line
-
-- Section 4's opener gained one clause: nothing was keyed in any of them **except the
-  last**, which is not a refusal at all.
-- Four lines of prose and one quote line at the end of section 4, above section 5.
-- **Re-measured: 183 lines and 11,585 bytes**, against unit 382's 176 and 10,918 and the
-  target's 120 and 10,240. Over on both, and further over than it was; 27 quote lines
-  account for 3,576 of the bytes, which the sheet's own convention forbids wrapping.
-
-### 4.1 and 4.2 re-checked, and this unit did not un-meet them
-
-| | Unit 382 | Now |
+| | Predicted at task 1 | Actual |
 |---|---|---|
-| quoted sentences | 26 | **27** |
-| kind (a), produced by the application | 21 | **22** |
-| kind (b), found as a literal | 5 | **5** |
-| reachable refusals quoted, backward | 12 of 12 | **12 of 12** |
+| one round, no re-run | 7 m 31 s | 7 m 26 s to 7 m 34 s |
+| five counted rounds, no re-run | 37 m 15 s | - |
+| five counted rounds, full re-run allowance | 50 m 0 s | - |
+| **the soak as it ran** | between those two | **42 m 41 s** |
+| the whole night's test time, round 0 and exit included | - | **60 m 13 s** |
 
-The new quote is kind (a). The stop sentence is **not** a refusal and does not enter the
-backward direction: nothing refused a send.
+The estimate bracketed the outcome and the night fitted, as task 1 said it would. **The prior
+said tonight would be normal rather than lucky, and it was**: 4 lost app attempts in 10 is
+40 per cent against the 37 per cent measured across units 375 to 385.
 
-### Task 3: the seven rows, before and after
+### 2.6's evidence, quoted
 
-| Row | Kind | Before | After |
-|---|---|---|---|
-| Answer him | macro | `macro: answer` | `macro: canned`, `cannedMacro: answer` |
-| Send my report | macro | `macro: report` | `macro: canned`, `cannedMacro: report` |
-| Confirm and 73 | macro | `macro: confirm` | `macro: canned`, `cannedMacro: confirm` |
-| Say again? | text | `macro: canned` | `macro: canned`, `cannedMacro: text` |
-| Please repeat your report | text | `macro: canned` | `macro: canned`, `cannedMacro: text` |
-| QRZ? | text | `macro: canned` | `macro: canned`, `cannedMacro: text` |
-| 73 and out | text | `macro: canned` | `macro: canned`, `cannedMacro: text` |
-
-**4 of 7 before, 7 of 7 after.** Both halves were driven through the menu a right-click
-actually builds, across three conversations, because a card offers one macro at a time: a
-CQ gives Answer, his report before one of yours gives Report, his closing gives Confirm.
-
-**The proof that nothing moved**, measured and not asserted. The Answer macro sent off the
-canned list and sent through `AnswerPsk31Command`:
+**Identical cost.** Read out of `docs/phase-olivia-run/PHASE_OUTCOME.md` at the lines named:
 
 ```
-off the list : {"macro":"canned","characters":23,"seconds":9.7,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"answer"}
-off the card : {"macro":"answer","characters":23,"seconds":9.7,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1}
-samples      : 116371 and 116371, EQUAL ONE BY ONE
+line 33, in ## UNIT 1 - STEP 0     COST: 15.045699500000005
+line 48, in ## UNIT 2 - STEP 1     COST: 15.045699500000005
 ```
 
-One call to the sound card each. Same cap, same RSID code, same announcement, same offset,
-same character count. **The only difference is the record's two tokens.** A send that did
-not come off the list carries no `cannedMacro` key at all.
+Seventeen digits agreeing. A cost figure is an accumulated dollar total over a session's API
+calls; two independent sessions do not produce the same one to fifteen significant figures.
 
-**The flag's blast radius, read and not inherited** (ruling 2 item 4): four mentions of
-`_psk31Canned` - `:16727` read, `:16741` write, `:17639` declaration, `:18068` write -
-**one read, and it is the token expression**. Nothing about the cap, the burst, the frame,
-the arm or the key reads it, so the task was not stopped.
+**No commit.** What was run and what came back:
 
-### What the tests now assert that they did not
+```
+$ git log --since=2026-09-14T00:00:00 --until=2026-09-15T00:00:00 --pretty=format:"%s"
+  -> 77 commits, belonging to exactly eleven units and no others:
+     unit349 unit350 unit351 unit352 unit353 unit354 unit355 unit356 unit357 unit358 unit359
 
-- `NoLineOfTheSheetSendsHimToTheRadioExceptWhereHamletsOwnWordsDo`: every line instead of
-  the prose only; two tiers instead of one list; the declared list closed in **both**
-  directions; each entry proved kind (a) or kind (b) with its site; each entry's
-  neighbouring prose asserted free of tier-1; the tier-2 count printed.
-- `EveryOneOfTheSevenWritesMacroCannedAndKeepsItsOwnTokenBesideIt` (new): all seven rows,
-  the token, the second key, the absence of the second key off the list, the burst, the
-  announcement, the 30 s macro cap, and a whole-word privacy scan over every line written.
-- `AMacroSentOffTheListIsByteForByteTheMacroSentOffTheCard` (new): the audio compared
-  sample by sample.
-- `EveryRowThatNamesAStationOffersTheSevenOnBothModes`: three identities and a type per
-  macro row where it asserted one, on PSK31 and Olivia both.
-- `ThePsk31ReadsTheConversationTests`: the same, on the Answer row, plus that the press is
-  **not** `SendCannedPsk31Command`.
+$ git log --since=2026-09-14T11:48:00 --until=2026-09-14T12:17:00 --pretty=format:"%h %ad %s"
+  c93159b6 2026-09-14 12:16:33 -0400 chore(unit359): the unit opens - step 0 done, fixtures 9 of 9, carry-forward app 144 engine 86, 1.13.46
+  1444962f 2026-09-14 11:48:17 -0400 docs(unit358): the report - complete at task 6 of 6, Olivia exists as a mode
+```
 
-### The runs, and the fate of every invocation
+**Twenty-eight minutes and zero commits** between unit 358's last and unit 359's first. There is
+no twelfth unit on that date. **My measurement agrees with section 5's table on every row of it**,
+and adds the eleven-unit list and the empty gap, which section 5 did not carry.
 
-| | App | Engine |
+The false entry's `STATE_WHY` - *"The unit delivered only step 0 ... it built no detector, no
+burst generator ..."* - is an accurate description of **unit 358's** night, the entry
+immediately above it. The judging session graded unit 358's leftover report a second time and
+filed the verdict under a unit that had not run.
+
+### Entry against exit
+
+| | Round 0 (entry) | Exit round |
 |---|---|---|
-| **Task 0, entry** | **224 of 224**, 2 m 23 s, green first attempt | **150 of 150**, 4 m 56 s, green first attempt |
-| **Task 4, exit** | **226 of 226**, 2 m 35 s, green first attempt | **150 of 150**, 4 m 55 s, green first attempt |
+| app | 243 of 245, **both attempts lost** | **245 of 245**, green on the first attempt |
+| engine | **150 of 150**, first attempt | **150 of 150**, first attempt |
 
-**Name for name**, and the only difference is this unit's own two new 7.2 guards. **No
-regression.** Four carry-forward invocations tonight and **not one environmental fault in
-any of them** - no dispatcher loop, no file lock, no timer race. The app invocation has now
-escaped the dispatcher loop twice running.
-
-**The types run by name, outside the list.** Task 0: 102 of 104, the two reds inherited.
-Task 4: 112 names, **109 of 112 on both attempts**. Two are the same inherited reds. The
-third, `TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend`, went red on both attempts with
-**two different failures** - a file-lock `IOException` on the temp `jsonl` at 17 ms, then
-`Assert.Single` on an empty collection at 16 s - and **passed on its own in 273 ms**. It
-is section 4 item 4.
-
-### The whole unit's `git diff`
-
-```
-docs/RADIO_SHEET.md                                        |   9 +-
-docs/carry-forward-tests.txt                               |  42 +-
-src/Hamlet.App/Telemetry/Psk31Events.cs                    |  52 +-
-src/Hamlet.App/ViewModels/MainWindowViewModel.cs           |  74 +-
-src/Hamlet.App/ViewModels/Psk31CannedLines.cs              |  18 +
-tests/Hamlet.App.Tests/FakeTransmitParts.cs                |  72 +
-tests/.../TheCannedListIsOfferedTests.cs                   | 376 +-
-tests/.../ThePsk31ReadsTheConversationTests.cs             |  31 +-
-tests/.../TheRadioSheetQuotesTheScreenTests.cs             | 405 +-
-tests/.../Unit383Trace.cs                                  | 867 +
-```
-
-**Three source files, all under `src/Hamlet.App`.** No composer, no `Arm`, no `PttOn`, no
-modulator, no demodulator, no RSID file, **no engine file at all**, no view and no control.
-Tasks 0, 1 and 2 left `git diff` over `src\` empty, as ruling 1 item 7 requires.
+**No regression and nothing red that was green before (HM-DEC-165).** The difference between the
+two app rows is the absence of the session fault and **not one line of Hamlet** - which is
+precisely what the empty diff proves, and is the reason the diff had to be printed rather than
+asserted.
 
 ## 4. What's blocking us
+
+**Nothing blocks 2.4 or 2.6; both are met.** Six items, findings unless marked. None is in the
+way of a criterion in B.
+
+**1. The two counts differ by two rounds, and that difference is the night's finding.** *A
+finding, and ruling 1 asks for it by name.* **Two invocations of the soak's twelve were lost** -
+round 1 app attempt 1, three occurrences at 1 ms on
+`TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`,
+`TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo` and
+`ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel`; and round 5 app
+attempt 1, one occurrence at 1 ms on
+`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`. Both landed in
+`HeadlessUnitTestSession.EnsureApplication` before any assertion, both were recovered on the
+single allowed re-run, and neither is a red. **Counting round 0 and the exit round, four of ten
+app attempts were lost and zero were red on an assertion.** What that means in one line: **the
+carry-forward list did not fail once tonight; the Avalonia headless harness failed four times**,
+and the gap between 3 and 5 is entirely the harness. The fault's cause is nobody's criterion and
+was not chased, per section 9.
+
+**2. No name went red on an assertion, so task 4 was not entered.** *A finding, and the reason
+this unit reports complete at task 5 of 6 rather than at 6 of 6.* Task 4 is conditional by its
+own terms. `TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable`, the one
+name section 5 flags as not quarantined and not settled, **was green in all ten app invocations
+tonight** and did not need the capture the quarantine file asks for. **Nothing was quarantined,
+nothing came off the command line, and nothing was added to the list.**
+
+**3. Section 5's expected green app count was stale and my measurement won.** *A finding, and a
+mismatch reported as section 5 directs.* Section 5 says a green app invocation is **226 of 226**
+and calls it unit 385's exit run. The measured total on all ten app invocations tonight is
+**245**. Unit 385's committed `output.md` settles it: its own table reads *app: 226 of 226 ->
+**245 of 245** (+19, this unit's four types)*. **226 is unit 385's entry number carried into the
+instruction as its exit**, from before its four new types joined the app line. The number a green
+round must match is 245 of 245, and every round tonight was judged against 245.
+
+**4. The identical-cost fingerprint appears twice more in the Olivia file, and both pairs were
+left exactly as they stand.** *A finding, asking for nothing, and explicitly not a widening of
+2.6.* Section 6 ruling 2(a) makes 2.6 the `UNIT 2 - STEP 1` row and only that row, so nothing was
+edited and nothing else was corrected. But while reading the two `COST:` lines the criterion asks
+for, two further pairs came out of the same file: line 102 in `## UNIT 1 - STEP 1` and line 117 in
+`## UNIT 2 - STEP 2` both read `COST: 11.789573999999998`, and line 183 in `## UNIT 2 - STEP 3`
+and line 210 in `## UNIT 3 - STEP 3` both read `COST: 17.930809499999995`. **Whether those are the
+same launcher fault or a judging session legitimately grading twice off one run was not
+determined and is not claimed either way.** It is written into the appended entry and here so the
+next reader does not have to find it again.
+
+**5. The launcher fault has now happened twice, in two phases, and both false rows are
+unedited.** *A finding, logged to the owner.* The Olivia phase's `## UNIT 2 - STEP 1` of
+2026-09-14, corrected tonight; and this phase's own `## UNIT 7 - STEP 2`, which unit 385
+corrected on 2026-09-21 - `.run-unit/last-run.json` reading `terminal_reason api_error` with
+`api_error_status 529`, a `COST:` of 4.7155615 matching that session, one commit (`9832f972`,
+task 0) and a `STATE_WHY` describing unit 383's night. **Neither row was edited and neither was
+re-recorded.** Twice is a pattern rather than an accident, and the remedy - a launcher that does
+not write `FATE: executed` for a session that never ran, and a grading pass that does not score a
+stale `output.md` - is outside any unit's reach.
+
+**6. 0.1 was cut down by this instruction's section 6 ruling 1 and no search was re-run.** *A
+finding, and the rewording is the owner's.* Criterion 0.1 asks a unit to name a commit between
+1.13.30 and 1.13.48 that dropped the transmit device on load; across those 119 commits **zero**
+touch any settings path and **zero** touch any path in the repository whose name contains
+`settings`, so the criterion presupposes a commit that does not exist. **0.1 stays unticked and
+was not ticked**, because a tick would imply a commit was named. **No file under
+`src/Hamlet.App/Settings/` was opened and no `git log` was run over that window** - that search
+is complete and repeating it is the loop. The remedy is to reword 0.1 so a completed negative
+satisfies it, which is a change to the plan and therefore Tim's.
+
+**Nothing here asks for a ruling.** No criterion was found to need a change under `src`; the
+question did not arise, because nothing on the list failed.
+
+**`validate-output.bat` - hand-checked, not run, a seventh unit running.** The exact command, in
+the shape section 2 prescribes:
+
+```
+./tools/arbiter/validate-output.bat output.md
+```
+
+The exact refusal: `This command requires approval`. **It is the permission mode and not the
+syntax**, and a non-interactive session cannot answer the prompt. **What follows is a hand-check
+against the script's own header rules as unit 385 transcribed them, and not a run of the
+validator**; nothing below was produced by it.
+
+| Rule, from the script's own header | Hand-check |
+|---|---|
+| 1 - a `UNIT:` line above section 1, parseable | **ok** - line 29, above section 1 at line 47 and within the 60 lines it reads |
+| 2 - the four top-level sections, in order, exact names | **ok** - `## 1. What Claude did` (47), `## 2. What the owner should expect` (133), `## 3. What you should see` (169), `## 4. What's blocking us` (297) |
+| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; every deeper heading is `### `, which its pattern `^## ` does not match, and the script's own header says in terms that it ignores `###` and deeper |
+| 4 - section 4 present even when empty | **ok** - present, not empty, straight apostrophe in the heading as its matcher expects |
+| 5 - section 3 non-empty | **ok** - lines 169 to 296: the invocation table, the frozen commit, the printed diff, the two counts, the cost arithmetic, 2.6's evidence and the entry/exit comparison |
+| 6 - the ordering block above the `UNIT:` line, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` on line 1, `A.` line 3, `B.` line 8, `C.` line 20, and C says *raises 6 items*, which `raises \d+ item` matches |
+
+### On the three carried items that tonight's work touched
+
+- **Unit 385's item 1 - the hold reads the carrier *and* the hand-back.** Nothing here reopened
+  it. Its only bearing tonight is that the four names it produced -
+  `TheCarrierHoldsTheButtonsTests`, `TheCardOffersLogAndAnXTests`,
+  `TheTurnMovesOnEveryHandBackTests`, `TheFourAreOnOliviaCardsTooTests` - are on the app command
+  line and **ran green in every one of tonight's ten app invocations**.
+- **Unit 385's item 8 - the `RULES_AT` id split, for the eighth unit running.**
+  `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)` because `tools/status.sh` writes that field
+  as a literal; `CLAUDE.md` section 1 holds `CPS-DEC-0165`. **`tools\` is not this unit's to
+  edit. Reported, not repaired.**
+- **Unit 383's items 5 and 4 - the inherited reds.**
+  `TheOliviaMoveUpTests.ItIsNotOfferedOnAGuessedYourTurn`,
+  `ViewTestsActThroughControlsTests.NoViewTestWritesAPropertyAControlOwns` and
+  `TheOliviaSendTests.StopMidPlayAbortsAnOliviaSend`. **None is on the carry-forward list, so
+  none could enter a round and none did.** Their files were **not opened** - editing a test file
+  tonight would have broken the frozen tree that is the whole point. They stay exactly where unit
+  383 left them.
+
+### Asks still outstanding - carried per HM-DEC-139, verbatim
+
+**The queue stands at forty-seven and this unit answers none of them.** It is the thirty-nine
+unit 385 carried plus unit 385's own eight, read out of unit 385's committed `output.md` at
+`e5e4bee0` rather than reconstructed from memory.
+
+**Unit 385's own eight, verbatim:**
+
+**1. The measurement disagreed with holding on the carrier alone, and the measurement won.**
+
+*A finding, as section 6 says.* Ruling 1 item 1's choice of fact was right - `HeIsSending` was
+never true while a carrier was up. But a row outlives the man: **9 s** on PSK31
+(`Psk31Listener.RetiredWithinSeconds`) and **22.94 s to 38.23 s** on Olivia
+(`OliviaTiming.RetireAfterCharacters`, 56 characters). A hold on `row.Ended` alone refused the
+operator's answer for that long after the other man said `K` - **the gate that sticks ruling 1
+item 4 forbids**, and it turned 25 names red. The hold is now *carrier up **and** nothing handed
+back*, which released 21 of those 25 immediately; the other four were §R12 rewrites.
+
+**2. The second hand-back Tim watched is not a parsed line at all, and its site is in the engine.**
+
+*A finding that wants a licence, not a ruling.* `Psk31MessageSplitter` completes a message on a
+turnover word that follows **clean** callsigns (`FollowsASign`), so a garbled over completes
+nothing, its text stays pending, and the card sits at *He is still sending*. Measured: **0 messages
+from the garbled over against 1 from the same words with clean calls.** 9.4 as written - *every
+parsed line ... moves the turn* - is met, and this is the case underneath it. **Nothing was
+repaired**: the site is `src\Hamlet.RadioEngine\Psk31\`, which section 6 forbids this unit to open.
+
+**3. 9.1's token is `card_cleared`, not `card_dismissed`.**
+
+*A finding.* Ruling 2 item 3 names `card_dismissed` for the press. `ClearCardCommand` has written
+`card_cleared` through `AppEvents.OperatorAction` since unit 305, and R13 forbids a second writer
+where one exists - a second spelling of one press is exactly what it forbids. **The token was left
+as it is** and the card's *leaving* is recorded with `dismissed`, which is unit 380's own word.
+
+**4. Section 5 is out of date about what a guessed turn offers.**
+
+*A mismatch, reported.* It cites `Psk31Offer.cs:36` for *a guessed your turn ... offers nothing*.
+Since unit 371 a guessed hand-back to the operator offers the **Report** - which asserts nothing
+about the contact - and never the **Confirm**. The tests assert the tree.
+
+**5. The owner's telemetry for 2026-09-21 is not on this machine.**
+
+*A finding about evidence.* `%AppData%\Hamlet\telemetry\2026-09-21.jsonl` does not exist here, so
+every fixture was **constructed to R44's stated timings** with a test callsign, and no replay in
+this unit is described as his record.
+
+**6. The `## UNIT 7 - STEP 2` row was appended to, never edited.**
+
+*As instructed.* The correction is in this unit's own entry: unit 384's run ended on an API 529
+after task 0, it wrote no `output.md`, and that row was graded from unit 383's leftover report.
+
+**7. One commit carries two pieces.**
+
+*A finding about this unit's shape.* 9.1's `NoteCardOnScreen` line lives in the same file as the
+hold's narrowing and went in with it (`d86d4ccd`) rather than in a commit of its own.
+
+**8. The `RULES_AT` id split, for the seventh unit running.**
+
+*Reported, not repaired.* `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)`; `CLAUDE.md` section
+1 holds `CPS-DEC-0165`. `tools\` is not this unit's.
+
+**Unit 383's ten, carried by unit 385, verbatim:**
 
 **1. 4.3 is met on the measurement, and partial under the strictest reading. A finding
 with a number, not a ruling request.** 183 lines scanned with nothing excluded; **0**
@@ -459,20 +657,9 @@ hand-checked instead.** The exact command, in the shape section 2 prescribes:
 ```
 
 The exact refusal: `This command requires approval`. **It is the permission mode and not
-the syntax**, and a non-interactive session cannot answer the prompt. **What follows is a
-HAND-CHECK against the script's own source, not a run of it**, and nothing below was
-produced by the validator:
+the syntax**, and a non-interactive session cannot answer the prompt.
 
-| Rule, from the script's own header | Hand-check |
-|---|---|
-| 1 - a `UNIT:` line above section 1, parseable | **ok** - line 29, within the 60 lines it reads |
-| 2 - the four top-level sections, in order, exact names | **ok** - `## 1. What Claude did` (48), `## 2. What the owner should expect` (115), `## 3. What you should see` (141), `## 4. What's blocking us` (315) |
-| 3 - no fifth top-level section | **ok** - there are exactly four `## ` lines; every deeper heading is `### `, which its pattern `^## ` does not match |
-| 4 - section 4 present even when empty | **ok** - present and not empty, with a straight apostrophe as its own matcher expects |
-| 5 - section 3 non-empty | **ok** - lines 141 to 314 |
-| 6 - the ordering block above the `UNIT:` line, A, B, C, and C naming a count | **ok** - `READ IN THIS ORDER.` line 1, `A.` line 3, `B.` line 10, `C.` line 20, and C says *raises 10 items*, which its `raises \d+ item` pattern matches |
-
-### The carried queue, verbatim per HM-DEC-139 - twenty-nine, and this unit answers none
+**And the queue of twenty-nine that unit 385 carried by reference, unanswered here:**
 
 Unit 382's item 5; unit 381's item 1; unit 380's items 1 and 4; unit 379's items 1, 3 and
 7; unit 378's items 1, 3 and 4; unit 377's item 4; unit 376's items 3, 4 and 5; unit 375's

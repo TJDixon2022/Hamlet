@@ -1,4 +1,301 @@
-﻿
+READ IN THIS ORDER.
+
+A. The phase goal - Hamlet holds what it has. Steps 1, 3, 6 and 8 done; step 0
+   partial with 0.1 cut down tonight as a completed negative; step 4 partial with
+   4.3 cut down and logged to the owner; step 7 partial on an unjudged 7.2; step 9
+   worked by unit 385 and ungraded; step 5 Tim's own. Step 2 is the last step a
+   unit can move and this unit is the third spent on it.
+B. Step 2 - the record says what was true. 2.1, 2.2 and 2.3 carried met and
+   untouched. 2.6 MET: the Olivia entry appended at the end of
+   docs/phase-olivia-run/PHASE_OUTCOME.md, evidence COST: 15.045699500000005 at
+   line 33 and COST: 15.045699500000005 at line 48 - the same seventeen digits -
+   and git log over 2026-09-14 returning 77 commits belonging to exactly eleven
+   units, 349 to 359 and no twelfth, with zero commits in the 28 minutes between
+   unit 358's last and unit 359's first; the false row unedited, 36 insertions and
+   0 deletions. 2.4 MET: 3 of 5 rounds green on the first attempt with no re-run,
+   and 5 of 5 under ruling 1's re-run rule, over a tree frozen at
+   a91d6ed64674558df638310e931120a410a069ea with git diff printed empty; 2
+   invocations of the soak's 12 lost to the dispatcher loop and 0 red on an
+   assertion.
+C. The report last. Section 4 raises 6 items on top of the carried forty-seven,
+   and none of them is in the way of a criterion in B. The difference between the
+   two counts in B means this: the carry-forward list itself did not fail once in
+   seventeen invocations tonight, and the whole of the 2-round gap between strict
+   and counted is the Avalonia headless test window falling over before any
+   assertion ran - so "green" now has a number for the list and a separate number
+   for the harness, and nobody has to argue about which one they were told.
+
+```
+UNIT:       386 - complete at task 5 of 6 - 2026-09-22 09:31
+PHASE GOAL: Hold on to what Hamlet already does. Everything banked in the PSK31
+            and Olivia threads that is screen, record or test and needs neither
+            the radio nor the owner, judged by tests that ran and, at the end, by
+            Tim at his window.
+UNIT GOAL:  Prove that the list which proves nothing broke can itself be trusted -
+            five consecutive green rounds of both invocations over a tree that
+            does not move between the first and the last, with the frozen commit
+            named and two counts reported rather than one; and make the archived
+            Olivia record tell the truth about the unit of 2026-09-14 that never
+            ran, by appending to it and never editing it.
+ADVANCED:   step 2, criteria 2.4 and 2.6
+NUMBER:     consecutive green rounds of the carry-forward list over a tree that
+            did not move: 3 of 5 strict, 5 of 5 counted; and false rows in the
+            archived Olivia record now carrying a correction: 0 of 1 -> 1 of 1
+DRIFT:      none
+```
+
+## 1. What Claude did
+
+**Complete at task 5 of 6.** Tasks 0, 1, 2, 3 and 5 were done in full. **Task 4 was correctly
+not entered and no task was dropped**: task 4 exists only if a name goes red on an assertion,
+and in seventeen invocations of the carry-forward list tonight **not one name ran and
+disagreed**. That is not a task skipped for time - it is the task's own precondition never
+arising, and it is reported here rather than left to be inferred. The trace's named drop
+candidate, task 1 item 4, was **taken rather than dropped**.
+
+Machine `C:\Source\HamLet`, project claimed and confirmed Hamlet (`SHACK_FACTS.md` and
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` both present, neither `CoreHMI.sln` nor
+`MURC.sln` at the root), branch `main`.
+
+**No file under `src` was changed at any task of this unit, and no file under `tests`, `assets`
+or `data` at any task at all.** That is not a restriction worked around; it is the measurement,
+and the empty diff in section 3 is what makes the night's number mean anything.
+
+### Task 0 - the record and the entry round
+
+Version 1.13.72 -> 1.13.73 with its line in the version log. `PHASE_STATUS.md` `CURRENT_STEP`
+9 -> 2 and `WORK_INSTRUCTION` 385 -> 386, both stale; its `STEP: 0` line gained section 6
+ruling 1's cut-down of 0.1. `PHASE_PLAN.md` ticked nothing at this task. The
+`## UNIT 386 - STEP 2` entry was appended to `PHASE_OUTCOME.md` in the house shape.
+
+**The instrument, counted rather than assumed:** `docs/carry-forward-tests.txt` line 7 carries
+**59** filter terms and line 9 carries **25** - section 5's numbers exactly - both beginning
+`timeout 480 dotnet test`, both used unedited all night.
+
+**Round 0, the entry round and not one of the five.** Engine 150 of 150 green on the first
+attempt. **The app lost both attempts to the headless dispatcher loop** - 243 of 245 twice,
+four occurrences at 1 ms each across two attempts, no name repeated, **and not one assertion
+failure in either**. The tree was green on the merits and the app test window was what fell
+over. Full numbers in section 3's table.
+
+### Task 1 - the trace, and it said the night would fit before the night was spent
+
+Nothing built. **What a round costs**, from round 0's own clock: one round of both invocations
+with no re-run is 7 m 31 s, five counted rounds 37 m 15 s, and five rounds each taking the full
+one-app re-run allowance 50 m 0 s. Said at task 1, not at round 4.
+
+**The frozen point**, measured with git: `git status --short` read two lines and
+`git rev-parse HEAD` read `3133bad8`; the frozen commit is task 2's and is printed below.
+
+**The prior - the drop candidate, taken.** Tallied out of `PHASE_OUTCOME.md`'s own ENTRY and
+EXIT lines for units 375 to 385, counting only what the record states: **46 full app
+invocations** - 375 seventeen, 376 two, 377 four, 378 three, 379 three, 380 three, 381 four,
+382 three, 383 two, 384 two, 385 three - of which **27 were green on the first attempt, 17 were
+lost outright to the dispatcher loop, and 2 were red on an assertion**, both of those two in
+unit 375. **A 37 per cent loss rate**, at which five rounds green on the *first* attempt is
+about a one-in-ten night and five rounds *counted* under the one-re-run rule is about even
+money. That arithmetic is why ruling 1 asks for two numbers, and it is what makes tonight's
+result readable instead of lucky-looking.
+
+### Task 2 - 2.6, and the tree freezes here
+
+A new entry appended at the end of `docs/phase-olivia-run/PHASE_OUTCOME.md`. **The
+`## UNIT 2 - STEP 1` row at line 39 was not edited** - not its `FATE`, not its `STATE_AFTER`,
+not its `STATE_WHY`. The diff is **36 insertions and 0 deletions**, and the file is still
+BOM + CRLF, unnormalised. Evidence measured rather than copied; quoted in section 3.
+
+**Commit `a91d6ed64674558df638310e931120a410a069ea`. That is the frozen point.**
+
+### Task 3 - the soak
+
+Rounds 1 to 5, both command lines unedited, one build each, foregrounded, **a status line
+written immediately before every single invocation** - which is why the lines were run by hand
+rather than from a script, exactly as section 8 licenses when the two requirements collide.
+**No file was written during the soak and no commit was made**: `git rev-parse HEAD` still read
+`a91d6ed6` when round 5 ended.
+
+### Task 5 - the exit round and the record
+
+Exit round both green on the first attempt. `PHASE_PLAN.md`: **2.4 and 2.6 ticked, each with
+tonight's own numbers written beside it in the plan's own text**, and nothing else ticked - 0.1
+is left unticked under section 6 ruling 1. `PHASE_STATUS.md`'s `STEP: 2` line rewritten to what
+tonight measured.
+
+**One decision this session made for itself, reproduced in full.** Step 2 has exactly five
+criteria - 2.1, 2.2, 2.3, 2.4 and 2.6; there is no 2.5 - and all five now carry a tick, so no
+criterion of this step is left for a unit to reach. **The state word was nevertheless left at
+`partial` and not moved to `done`.** Closing a step is a judging session's and not a unit's,
+which is the discipline unit 384 applied when it left step 7 exactly where unit 383 put it; what
+says 2.4 and 2.6 are met is this unit's own account with its numbers beside it, and a unit that
+grades its own step is the fault this phase has already recorded twice. The plan and the status
+line both say so in terms.
+
+## 2. What the owner should expect
+
+For a month every unit has finished by telling you the carry-forward list came back green, and
+nobody had ever shown that sentence meant anything. **It means something now.** The whole list -
+every test that guards a mode you can already use - was run end to end five times in a row over
+a version of Hamlet that did not change by one character between the first run and the last.
+The exact version it was frozen at is written down, `a91d6ed6`, and the proof that nothing moved
+is printed rather than claimed. **And the record now says it as two numbers instead of one:
+three of the five came back clean the first time, and five of the five came back clean once you
+forgive the test window itself falling over and allow one second go.** The gap between three and
+five is the whole point of saying both - because in all seventeen runs of the list tonight,
+**not one test of Hamlet's ever disagreed**. Every single failure was the test harness
+collapsing before it had run anything, which is a fault in the tooling and not in your radio
+program. From here on, when a unit says the list came back green, you can ask which number they
+mean.
+
+**And the archived record of the Olivia run has stopped claiming a unit ran which never ran.**
+There was an entry dated 2026-09-14 saying a session had built the RSID detector and put an
+announcement in front of every PSK31 send. It never happened - the launcher wrote the entry for
+a session that died on a lock, and a grading pass then scored the previous unit's homework a
+second time under it. The correction is now appended beneath it with the proof beside it: the
+two entries carry the identical cost figure to seventeen digits, which two separate sessions
+cannot do, and git says that of the 77 commits made that day every one belongs to one of eleven
+named units and none to a twelfth. **Not one character of the false entry was altered** - it
+stays exactly as written, with the truth standing next to it.
+
+**What will look wrong but is not.** Step 2 now has every one of its five criteria ticked in the
+plan, yet its state still reads `partial`. That is deliberate: a unit does not close its own
+step. And the report's strict count is 3 of 5 rather than 5 of 5, which reads like a shortfall -
+it is not one. 2.4 asks for five green rounds in a row and it got five; the second number simply
+makes visible how much of the noise belongs to the harness.
+
+**Every claim above was computed, not seen (FACT-004): no port was opened, nothing was
+enumerated, and nothing was keyed.** Every sample tonight lived in an array, and no task of this
+unit opened a file under `src`.
+
+## 3. What you should see
+
+**Every invocation of the night, one row each.**
+
+| Round | Invocation | Attempt | Result | Wall | Lost to |
+|---|---|---|---|---|---|
+| 0 (entry) | app | 1 | 243 of 245 - **lost** | 2 m 37 s | dispatcher loop, **1 ms**, `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer` and `TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo` |
+| 0 (entry) | app | 2 | 243 of 245 - **lost** | 2 m 30 s | dispatcher loop, **1 ms**, `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed` and `Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` |
+| 0 (entry) | engine | 1 | **150 of 150** | 4 m 54 s | - |
+| 1 | app | 1 | 242 of 245 - **lost** | 2 m 38 s | dispatcher loop, **1 ms**, `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`, `TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo` and `ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel` |
+| 1 | app | 2 | **245 of 245** | 2 m 39 s | - |
+| 1 | engine | 1 | **150 of 150** | 4 m 53 s | - |
+| 2 | app | 1 | **245 of 245** | 2 m 40 s | - |
+| 2 | engine | 1 | **150 of 150** | 4 m 54 s | - |
+| 3 | app | 1 | **245 of 245** | 2 m 26 s | - |
+| 3 | engine | 1 | **150 of 150** | 4 m 53 s | - |
+| 4 | app | 1 | **245 of 245** | 2 m 36 s | - |
+| 4 | engine | 1 | **150 of 150** | 4 m 56 s | - |
+| 5 | app | 1 | 244 of 245 - **lost** | 2 m 37 s | dispatcher loop, **1 ms**, `ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt` |
+| 5 | app | 2 | **245 of 245** | 2 m 34 s | - |
+| 5 | engine | 1 | **150 of 150** | 4 m 55 s | - |
+| exit | app | 1 | **245 of 245** | 2 m 37 s | - |
+| exit | engine | 1 | **150 of 150** | 4 m 54 s | - |
+
+**Seventeen invocations - ten app and seven engine.** Six app green, four app lost, **zero app
+red on an assertion**. Seven engine of seven green on the first attempt; the engine invocation
+has never once met the fault, in this unit or in any before it. Every lost attempt died at
+**1 ms** with `System.InvalidProgramException : You've caused dispatcher loop` in
+`Avalonia.Threading.Dispatcher.ResetForUnitTests` under
+`Avalonia.Headless.HeadlessUnitTestSession.EnsureApplication` - **before any assertion ran** -
+and the message was captured verbatim rather than inferred from the millisecond figure alone.
+No name was lost twice.
+
+### The frozen commit and the printed diff
+
+**The frozen commit is `a91d6ed64674558df638310e931120a410a069ea`**, task 2's. At the end of
+round 5, exactly as ruling 1 requires:
+
+```
+$ git diff a91d6ed64674558df638310e931120a410a069ea -- src tests assets data docs
+$
+```
+
+**Nothing at all.** No file under `src`, `tests`, `assets` or `data` moved, and **no line of
+`docs/carry-forward-tests.txt` changed** between the first counted round and the last. Nothing
+was added to the list tonight. `git rev-parse HEAD` still read `a91d6ed6` - the soak committed
+nothing.
+
+The whole-tree diff against the same commit is given as well, because a scoped diff that hides
+two files is not a proof:
+
+```
+$ git diff a91d6ed64674558df638310e931120a410a069ea --stat
+ .run-unit/watched.cpu | 5 ++++-
+ PROJECT_STATUS.md     | 6 +++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+```
+
+Neither is Hamlet and neither is on the list: `PROJECT_STATUS.md` is rewritten by
+`sh tools/status.sh` before every invocation because section 7 requires it, and
+`.run-unit/watched.cpu` is the launcher's own watchdog heartbeat.
+
+### The two counts
+
+**Three of five rounds were green on the first attempt with no re-run, and five of five were
+counted under ruling 1's re-run rule** - rounds 2, 3 and 4 strict, rounds 1 and 5 counted after
+a single allowed re-run of the app invocation. Two of the soak's twelve invocations were lost to
+the dispatcher loop and **none was red on an assertion**.
+
+### Task 1's arithmetic against what the night actually took
+
+| | Predicted at task 1 | Actual |
+|---|---|---|
+| one round, no re-run | 7 m 31 s | 7 m 26 s to 7 m 34 s |
+| five counted rounds, no re-run | 37 m 15 s | - |
+| five counted rounds, full re-run allowance | 50 m 0 s | - |
+| **the soak as it ran** | between those two | **42 m 41 s** |
+| the whole night's test time, round 0 and exit included | - | **60 m 13 s** |
+
+The estimate bracketed the outcome and the night fitted, as task 1 said it would. **The prior
+said tonight would be normal rather than lucky, and it was**: 4 lost app attempts in 10 is
+40 per cent against the 37 per cent measured across units 375 to 385.
+
+### 2.6's evidence, quoted
+
+**Identical cost.** Read out of `docs/phase-olivia-run/PHASE_OUTCOME.md` at the lines named:
+
+```
+line 33, in ## UNIT 1 - STEP 0     COST: 15.045699500000005
+line 48, in ## UNIT 2 - STEP 1     COST: 15.045699500000005
+```
+
+Seventeen digits agreeing. A cost figure is an accumulated dollar total over a session's API
+calls; two independent sessions do not produce the same one to fifteen significant figures.
+
+**No commit.** What was run and what came back:
+
+```
+$ git log --since=2026-09-14T00:00:00 --until=2026-09-15T00:00:00 --pretty=format:"%s"
+  -> 77 commits, belonging to exactly eleven units and no others:
+     unit349 unit350 unit351 unit352 unit353 unit354 unit355 unit356 unit357 unit358 unit359
+
+$ git log --since=2026-09-14T11:48:00 --until=2026-09-14T12:17:00 --pretty=format:"%h %ad %s"
+  c93159b6 2026-09-14 12:16:33 -0400 chore(unit359): the unit opens - step 0 done, fixtures 9 of 9, carry-forward app 144 engine 86, 1.13.46
+  1444962f 2026-09-14 11:48:17 -0400 docs(unit358): the report - complete at task 6 of 6, Olivia exists as a mode
+```
+
+**Twenty-eight minutes and zero commits** between unit 358's last and unit 359's first. There is
+no twelfth unit on that date. **My measurement agrees with section 5's table on every row of it**,
+and adds the eleven-unit list and the empty gap, which section 5 did not carry.
+
+The false entry's `STATE_WHY` - *"The unit delivered only step 0 ... it built no detector, no
+burst generator ..."* - is an accurate description of **unit 358's** night, the entry
+immediately above it. The judging session graded unit 358's leftover report a second time and
+filed the verdict under a unit that had not run.
+
+### Entry against exit
+
+| | Round 0 (entry) | Exit round |
+|---|---|---|
+| app | 243 of 245, **both attempts lost** | **245 of 245**, green on the first attempt |
+| engine | **150 of 150**, first attempt | **150 of 150**, first attempt |
+
+**No regression and nothing red that was green before (HM-DEC-165).** The difference between the
+two app rows is the absence of the session fault and **not one line of Hamlet** - which is
+precisely what the empty diff proves, and is the reason the diff had to be printed rather than
+asserted.
+
+## 4. What's blocking us
+
 **Nothing blocks 2.4 or 2.6; both are met.** Six items, findings unless marked. None is in the
 way of a criterion in B.
 
@@ -122,7 +419,7 @@ never true while a carrier was up. But a row outlives the man: **9 s** on PSK31
 (`OliviaTiming.RetireAfterCharacters`, 56 characters). A hold on `row.Ended` alone refused the
 operator's answer for that long after the other man said `K` - **the gate that sticks ruling 1
 item 4 forbids**, and it turned 25 names red. The hold is now *carrier up **and** nothing handed
-back*, which released 21 of those 25 immediately; the other four were Â§R12 rewrites.
+back*, which released 21 of those 25 immediately; the other four were §R12 rewrites.
 
 **2. The second hand-back Tim watched is not a parsed line at all, and its site is in the engine.**
 
@@ -236,7 +533,7 @@ reversible in one line.**
 
 **9. The `RULES_AT` id-scheme split is reported and not repaired**, as it has been by five
 units now. `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)` because `tools/status.sh`
-writes that field as a literal, while `CLAUDE.md` Â§1 holds `CPS-DEC-0165`. **`tools\` is
+writes that field as a literal, while `CLAUDE.md` §1 holds `CPS-DEC-0165`. **`tools\` is
 not this unit's to edit.**
 
 **10. `validate-output.bat` refused again - a sixth unit running - and the six rules were

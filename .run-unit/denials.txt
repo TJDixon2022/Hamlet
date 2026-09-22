@@ -1,4 +1,4 @@
-﻿   Bash  {"command":"tools/status.sh RUNNING \"TASK 0 of 5\" claude \"output.md -\u003e Claude Web\" \"Unit 384 opening. Entry round (round 0) starting: app invocation of the carry-forward list, foregrounded, one build, against the tree as unit 383  ...(truncated)
-   Bash  {"command":"tools/status.sh RUNNING \"TASK 0 of 5\" claude \"output.md -\u003e Claude Web\" \"Unit 384 opening. Entry round (round 0) starting: app invocation of the carry-forward list, foregrounded, one build, against the tree as unit 383  ...(truncated)
-   Bash  {"command":"./tools/status.sh RUNNING \"TASK 0 of 5\" claude \"output.md -\u003e Claude Web\" \"Unit 384 opening. Entry round (round 0) starting: app invocation of the carry-forward list, foregrounded, one build, against the tree as unit 38 ...(truncated)
-   Bash  {"command":"git -C /c/Source/HamLet status --short -- PHASE_STATUS.md PHASE_OUTCOME.md PHASE_PLAN.md Directory.Build.props PROJECT_STATUS.md","description":"Check task 0 file changes"}
+﻿   Bash  {"command":"file PHASE_OUTCOME.md docs/phase-olivia-run/PHASE_OUTCOME.md \u0026\u0026 head -c 16 PHASE_OUTCOME.md | xxd | head -2 \u0026\u0026 echo \"--- olivia ---\" \u0026\u0026 head -c 16 docs/phase-olivia-run/PHASE_OUTCOME.md | xxd | he ...(truncated)
+   Bash  {"command":"awk \u0027NR\u003e=156 \u0026\u0026 NR\u003c=492\u0027 PHASE_OUTCOME.md | grep -o \"dispatcher loop[^.]*\\.\" | head -40","description":"Extract dispatcher loop mentions"}
+   Bash  {"command":"git show e5e4bee0:output.md | sed -n \u0027/^## 4\\./,$p\u0027 | head -200","description":"Read unit 385 section 4 and the carried queue"}
+   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run the output validator"}
