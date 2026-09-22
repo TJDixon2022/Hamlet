@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: RUNNING
-TASK: TASK 3 of 5
+STATE: COMPLETED
+TASK: TASK 4 of 5
 WORK_INSTRUCTION: 388 - the band governs the map, and favorites go back where Tim had them
-BALL: claude
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T13:44:59-04:00
-NOTE: Task 3 stage B experiment built - map reaching 36 px up beside the pills, pills in a WrapPanel limited to the room left of the map; measuring band and pill rows with the trace now
+UPDATED: 2026-09-22T14:08:32-04:00
+NOTE: Unit 388 complete - 10.6 met and ticked (Favorites drop-down under the green zone, caret gone, band 214); 10.3 partial at stage A (map 327x178 of a 214 band), stage B reverted at 1400 on two pill rows; exit app 265 names green after one own red repaired, engine 150 of 150
 
 ---
 

@@ -285,7 +285,7 @@ public sealed class TheFavoritesAreUnderTheGreenZoneTests
             }
             finally
             {
-                window.Close();
+                CloseWithTheListShut(window);
             }
         }
     }
@@ -336,7 +336,7 @@ public sealed class TheFavoritesAreUnderTheGreenZoneTests
         }
         finally
         {
-            window.Close();
+            CloseWithTheListShut(window);
         }
     }
 
@@ -395,6 +395,22 @@ public sealed class TheFavoritesAreUnderTheGreenZoneTests
 
     private static FavoritesDropDownControl DropDown(Window window)
         => window.GetVisualDescendants().OfType<FavoritesDropDownControl>().Single();
+
+    /// <summary>
+    /// Shuts the list a press opened, then closes the window - so no popup outlives the window it
+    /// was opened from into the next test of the session.
+    /// </summary>
+    /// <param name="window">The window.</param>
+    private static void CloseWithTheListShut(Window window)
+    {
+        foreach (var dropDown in window.GetVisualDescendants().OfType<FavoritesDropDownControl>())
+        {
+            dropDown.ListShown?.Hide();
+        }
+
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+        window.Close();
+    }
 
     private static void AssertItIsUnderTheGreenZone(Window window, Control dropDown, string where)
     {
@@ -456,6 +472,11 @@ public sealed class TheFavoritesAreUnderTheGreenZoneTests
         var inWindow = TheTopRowTests.RectIn(control, window);
         var at = new Point(inWindow.X + inControl.X, inWindow.Y + inControl.Y);
 
+        // **THE POINTER ARRIVES BEFORE IT PRESSES**, as a mouse does and as
+        // `TheStopIsAlwaysOnScreenTests.Press` does: the headless mouse is one device across every
+        // window of the session, and without the move a press can land on the last window's
+        // pointer-over state rather than this one's.
+        Avalonia.Headless.HeadlessWindowExtensions.MouseMove(window, at);
         Avalonia.Headless.HeadlessWindowExtensions.MouseDown(window, at, MouseButton.Left);
         Avalonia.Headless.HeadlessWindowExtensions.MouseUp(window, at, MouseButton.Left);
 
