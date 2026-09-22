@@ -16214,7 +16214,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var written = WriteLoggedContact(model.Entry);
+        var written = WriteLoggedContact(model.Entry, model.SentSource, model.ReceivedSource);
 
         // **A FAILED WRITE IS SAID OUT LOUD.** A log entry that silently did not
         // land is worse than one that never existed: he would believe the contact
@@ -16244,7 +16244,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// (§R13, §0.0.1). A line saying a contact was logged, beside a file that never
     /// took it, is a record of something that did not happen.</para>
     /// </remarks>
-    private bool WriteLoggedContact(AdifContact entry)
+    /// <param name="sentSource">Where the RST sent came from on the dialog: `heard`, `yours`, or null for the ledger's own.</param>
+    /// <param name="receivedSource">Where the RST received came from: `heard`, `yours`, or null for the ledger's own.</param>
+    private bool WriteLoggedContact(AdifContact entry, string? sentSource = null, string? receivedSource = null)
     {
         var written = ContactLogStore.Append(entry, AboutViewModel.AppVersion);
 
@@ -16258,7 +16260,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             Psk31Events.ContactLogged(
                 _telemetry, entry.RstSent, entry.RstReceived, entry.Mode, entry.Submode,
-                !string.IsNullOrWhiteSpace(entry.GridSquare));
+                !string.IsNullOrWhiteSpace(entry.GridSquare), sentSource, receivedSource);
         }
 
         return written;
@@ -16287,6 +16289,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     internal bool WriteLoggedContactForTests(AdifContact entry)
         => WriteLoggedContact(entry);
+
+    /// <summary>Writes one contact the way the Save button does, with where each RST came from.</summary>
+    /// <param name="entry">The record.</param>
+    /// <param name="sentSource">`heard`, `yours`, or null.</param>
+    /// <param name="receivedSource">`heard`, `yours`, or null.</param>
+    /// <returns>True where the file took it.</returns>
+    internal bool WriteLoggedContactForTests(AdifContact entry, string? sentSource, string? receivedSource)
+        => WriteLoggedContact(entry, sentSource, receivedSource);
 
     /// <summary>
     /// **The log record one row would produce, before any window is opened.**

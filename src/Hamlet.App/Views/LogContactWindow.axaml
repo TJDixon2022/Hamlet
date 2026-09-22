@@ -37,7 +37,9 @@
                  HERE.** Tim's ruling: Hamlet populates what it can and the
                  operator adds notes. Nothing typed overwrites anything
                  observed, and the surest way to keep that true is that there is
-                 nowhere to type over it. -->
+                 nowhere to type over it. **EXCEPT THE TWO REPORTS, SINCE WORK
+                 INSTRUCTION 390** (Tim's ruling A, 2026-09-22): those are boxes, and
+                 a typed value is marked his and never heard. -->
             <TextBlock x:Name="LogContactSummary"
                        Text="{Binding Summary}"
                        FontSize="12" TextWrapping="Wrap"
@@ -59,7 +61,26 @@
                                            Foreground="{StaticResource HmSlateEdgeBrush}" />
                             </StackPanel>
 
-                            <StackPanel Grid.Column="1" Spacing="2">
+                            <!-- **THE TWO REPORTS ARE HIS TO CORRECT** (criterion 9.3, Tim's
+                                 ruling A of 2026-09-22, superseding the 2026-09-07 read-only
+                                 line for these two rows only). The box holds what was heard,
+                                 and the mark under it says whose the value is: *heard by
+                                 Hamlet*, or *yours* the moment it differs. -->
+                            <StackPanel Grid.Column="1" Spacing="2"
+                                        IsVisible="{Binding IsReport}">
+                                <TextBox x:Name="LogReportBox"
+                                         Text="{Binding Report.Text, Mode=TwoWay, FallbackValue=''}"
+                                         FontFamily="Consolas,Menlo,monospace"
+                                         Width="90" HorizontalAlignment="Left" />
+                                <TextBlock x:Name="LogReportMark"
+                                           Text="{Binding Report.Mark, FallbackValue=''}"
+                                           FontSize="10"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmGreenBrush}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="2"
+                                        IsVisible="{Binding IsReading}">
                                 <TextBlock Classes="hm-heard"
                                            Text="{Binding Value}"
                                            IsVisible="{Binding Observed}"

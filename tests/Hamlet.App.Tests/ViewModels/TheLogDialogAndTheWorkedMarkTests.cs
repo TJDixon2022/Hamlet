@@ -119,7 +119,10 @@ public sealed class TheLogDialogAndTheWorkedMarkTests : IDisposable
     /// **THE OBSERVED FIELDS ARE NOT EDITABLE AT ALL**, which is the surest way to
     /// keep this true: there is nowhere to type over them. This asserts the model
     /// as well, so a later edit that made them editable would have to break a test
-    /// to do it.
+    /// to do it. **Since work instruction 390 the two reports are boxes** (Tim's
+    /// ruling A, 2026-09-22), and this still holds unedited: with nothing typed in
+    /// them the entry is the observed record with the notes and nothing else;
+    /// `TheRstIsYoursToCorrectTests` asserts what a typed report does.
     /// </remarks>
     [Fact]
     public void NothingTypedOverwritesAnythingObserved()

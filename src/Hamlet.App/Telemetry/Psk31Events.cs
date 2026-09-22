@@ -1023,14 +1023,22 @@ public static class Psk31Events
     /// <para>**AN UNREAD REPORT IS ABSENT HERE TOO** (§0.0), so a file showing
     /// `rstReceived: null` is a contact whose report Hamlet never read rather than one
     /// it forgot to write down.</para>
+    /// <para>**AND WHICH IT WAS, SINCE WORK INSTRUCTION 390** (criterion 9.3, Tim's ruling A):
+    /// `rstSentSource` and `rstReceivedSource` are `heard` where the value is the one the exchange
+    /// carried, `yours` where the operator typed it on the Log dialog, and null where no report
+    /// went in - so a corrected report is never read back later as one Hamlet heard.</para>
     /// </remarks>
+    /// <param name="rstSentSource">`heard`, `yours`, or null.</param>
+    /// <param name="rstReceivedSource">`heard`, `yours`, or null.</param>
     public static void ContactLogged(
         ITelemetry? telemetry,
         string? rstSent,
         string? rstReceived,
         string? mode,
         string? submode,
-        bool gridCarried)
+        bool gridCarried,
+        string? rstSentSource = null,
+        string? rstReceivedSource = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_contact_logged",
@@ -1038,6 +1046,8 @@ public static class Psk31Events
             {
                 ["rstSent"] = string.IsNullOrWhiteSpace(rstSent) ? null : rstSent,
                 ["rstReceived"] = string.IsNullOrWhiteSpace(rstReceived) ? null : rstReceived,
+                ["rstSentSource"] = string.IsNullOrWhiteSpace(rstSent) ? null : rstSentSource ?? "heard",
+                ["rstReceivedSource"] = string.IsNullOrWhiteSpace(rstReceived) ? null : rstReceivedSource ?? "heard",
                 ["mode"] = mode,
                 ["submode"] = submode,
                 ["gridCarried"] = gridCarried,

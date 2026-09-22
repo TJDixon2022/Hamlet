@@ -23,6 +23,15 @@ namespace Hamlet.App.ViewModels;
 public sealed record LogField(
     string Label, string Value, string AdifField, string WhenAbsent = "")
 {
+    /// <summary>The report he may correct, on the two RST rows; null on every other row.</summary>
+    public LogReport? Report { get; init; }
+
+    /// <summary>True on a row that is a text box rather than a reading.</summary>
+    public bool IsReport => Report is not null;
+
+    /// <summary>True on a row that is a reading and cannot be typed over.</summary>
+    public bool IsReading => Report is null;
+
     /// <summary>True where Hamlet observed this and did not have to be told.</summary>
     /// <remarks>
     /// **OBSERVED IS A FACT ABOUT WHERE THE VALUE CAME FROM, NOT ABOUT WHETHER IT
@@ -44,6 +53,65 @@ public sealed record LogField(
 }
 
 /// <summary>
+/// One report on the Log dialog that the operator may correct - RST sent or RST received
+/// (criterion 9.3, Tim's ruling A of 2026-09-22).
+/// </summary>
+/// <remarks>
+/// <para>**HEARD AND YOURS ARE TOLD APART, AND A VALUE HAMLET DID NOT HEAR IS NEVER MARKED
+/// HEARD** (§0.0). The box starts holding what the exchange carried, marked *heard by Hamlet*;
+/// the moment what is in it differs from that, it is his and is marked *yours*. A contact with no
+/// heard report starts blank, and anything typed into it is *yours*.</para>
+/// <para>**`Source` IS A STABLE TOKEN FOR THE RECORD** (HM-DEC-077): `heard`, `yours`, or null
+/// where the box is empty and the field is left out of the file.</para>
+/// </remarks>
+public sealed partial class LogReport : ObservableObject
+{
+    /// <summary>The mark on a value the exchange carried.</summary>
+    public const string HeardMark = "heard by Hamlet";
+
+    /// <summary>The mark on a value he typed.</summary>
+    public const string YoursMark = "yours - typed by you";
+
+    /// <summary>The mark on an empty box with nothing heard.</summary>
+    public const string EmptyMark = "Hamlet did not hear this - type it if you have it";
+
+    /// <summary>Creates one report box.</summary>
+    /// <param name="heard">What the exchange carried, or "".</param>
+    public LogReport(string heard)
+    {
+        Heard = heard.Trim();
+        _text = Heard;
+    }
+
+    /// <summary>What the exchange carried, or "".</summary>
+    public string Heard { get; }
+
+    /// <summary>What is in the box.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Mark), nameof(Source), nameof(IsYours))]
+    private string _text;
+
+    /// <summary>The value the entry will carry, or null where the box is empty.</summary>
+    public string? Value => Text.Trim().Length > 0 ? Text.Trim() : null;
+
+    /// <summary>`heard`, `yours`, or null where the box is empty.</summary>
+    public string? Source => Value is null
+        ? null
+        : Heard.Length > 0 && string.Equals(Value, Heard, StringComparison.Ordinal) ? "heard" : "yours";
+
+    /// <summary>True where what is in the box is his.</summary>
+    public bool IsYours => Source == "yours";
+
+    /// <summary>What the dialog says under the box.</summary>
+    public string Mark => Source switch
+    {
+        "heard" => HeardMark,
+        "yours" => YoursMark,
+        _ => Heard.Length > 0 ? "empty - left out of the file" : EmptyMark,
+    };
+}
+
+/// <summary>
 /// The Log dialog: what Hamlet observed, and a place for what the operator wants
 /// to add.
 /// </summary>
@@ -51,7 +119,10 @@ public sealed record LogField(
 /// <para>**HAMLET POPULATES WHAT IT CAN AND THE OPERATOR ADDS NOTES** (Tim's
 /// ruling, 2026-09-07). **Nothing he types overwrites anything the radio heard**:
 /// the observed fields are not editable here at all, and his words go in
-/// `COMMENT` and nowhere else.</para>
+/// `COMMENT` and nowhere else. **The two reports are the one exception since work
+/// instruction 390** (Tim's ruling A, 2026-09-22, criterion 9.3): each is a
+/// <see cref="LogReport"/> box, and what he types there is marked *yours* and never
+/// *heard*.</para>
 /// <para>**A FIELD HAMLET COULD NOT OBSERVE IS EMPTY AND SAYS SO** rather than
 /// carrying something plausible. A log outlives everything else in this project
 /// and there is nothing later that could tell a guessed report from a heard one
@@ -85,8 +156,13 @@ public sealed partial class LogContactViewModel : ObservableObject
             // contact. **Showing the wrong one would be worse than a blank box**:
             // `Summary` counts an empty field as something Hamlet did not hear, so a
             // report it read and is about to write would be reported as missed.
-            new("Report you sent", observed.RstSent ?? observed.ReportSent ?? "", "RST_SENT"),
-            new("Report they sent", observed.RstReceived ?? observed.ReportReceived ?? "", "RST_RCVD"),
+            //
+            // **AND SINCE WORK INSTRUCTION 390 THE TWO REPORTS ARE HIS TO CORRECT** (Tim's
+            // ruling A, 2026-09-22, criterion 9.3): each is a box holding what was exchanged,
+            // marked *heard*, and anything he types in its place is marked *yours*. This
+            // supersedes the 2026-09-07 read-only line for these two rows only.
+            ReportRow("Report you sent", observed.RstSent ?? observed.ReportSent ?? "", "RST_SENT"),
+            ReportRow("Report they sent", observed.RstReceived ?? observed.ReportReceived ?? "", "RST_RCVD"),
             new("Started", Moment(observed.StartedUtc), "QSO_DATE, TIME_ON"),
             new("Ended", Moment(observed.EndedUtc), "TIME_OFF"),
             new("Band", observed.Band ?? "", "BAND"),
@@ -147,6 +223,15 @@ public sealed partial class LogContactViewModel : ObservableObject
               + "empty because it did not hear them, and they will be left out of "
               + "the file rather than written blank.";
 
+    /// <summary>Where the RST sent in the entry came from: `heard`, `yours`, or null.</summary>
+    public string? SentSource => ReportFor("RST_SENT")?.Source;
+
+    /// <summary>Where the RST received in the entry came from: `heard`, `yours`, or null.</summary>
+    public string? ReceivedSource => ReportFor("RST_RCVD")?.Source;
+
+    private LogReport? ReportFor(string adif)
+        => Fields.FirstOrDefault(f => f.AdifField == adif)?.Report;
+
     /// <summary>What the operator typed. His, and nothing else touches it.</summary>
     [ObservableProperty]
     private string _notes = "";
@@ -164,11 +249,66 @@ public sealed partial class LogContactViewModel : ObservableObject
     /// **THE NOTES ARE ADDED AND NOTHING OBSERVED IS REPLACED.** This is a `with`
     /// over the record the ledger produced, touching one field.
     /// </remarks>
+    /// <remarks>
+    /// **AND THE TWO REPORTS CARRY THE VALUE IN THE BOX** (criterion 9.3). Where the box still
+    /// holds what was heard the field is left exactly as the ledger made it; where he changed it,
+    /// his value goes in the field the report was already in - the RST for a keyboard mode, the
+    /// decibels for FT8 and FT4 - and an emptied box leaves the field out of the file.
+    /// </remarks>
     public AdifContact Entry
-        => _observed with
+        => WithReports(_observed with
         {
             Comment = string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim(),
-        };
+        });
+
+    private AdifContact WithReports(AdifContact entry)
+    {
+        var sent = ReportFor("RST_SENT");
+        var received = ReportFor("RST_RCVD");
+        var rst = UsesRst(_observed);
+
+        if (sent is not null && sent.Value != NullIfEmpty(sent.Heard))
+        {
+            entry = rst
+                ? entry with { RstSent = sent.Value, ReportSent = null }
+                : entry with { ReportSent = sent.Value, RstSent = null };
+        }
+
+        if (received is not null && received.Value != NullIfEmpty(received.Heard))
+        {
+            entry = rst
+                ? entry with { RstReceived = received.Value, ReportReceived = null }
+                : entry with { ReportReceived = received.Value, RstReceived = null };
+        }
+
+        return entry;
+    }
+
+    /// <summary>Whether this contact's reports are RSTs rather than decibels.</summary>
+    /// <remarks>
+    /// The field a report is already in decides it; with neither heard, the mode does - PSK31 and
+    /// Olivia exchange an RST, through `ContactModes`, the table that owns the pair.
+    /// </remarks>
+    private static bool UsesRst(AdifContact contact)
+    {
+        if (contact.RstSent is not null || contact.RstReceived is not null)
+        {
+            return true;
+        }
+
+        if (contact.ReportSent is not null || contact.ReportReceived is not null)
+        {
+            return false;
+        }
+
+        return (ContactModes.Named("PSK31") is { } psk31 && psk31.Matches(contact.Mode, contact.Submode))
+               || ContactModes.Olivia(null).Matches(contact.Mode, contact.Submode);
+    }
+
+    private static string? NullIfEmpty(string value) => value.Length > 0 ? value : null;
+
+    private static LogField ReportRow(string label, string heard, string adif)
+        => new(label, heard, adif) { Report = new LogReport(heard) };
 
     /// <summary>Accept the entry.</summary>
     [RelayCommand]
