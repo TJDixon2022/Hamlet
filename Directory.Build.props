@@ -1192,8 +1192,23 @@
     as a completed negative by this instruction's section 6 ruling 1, stays unticked, and is logged
     to the owner. No file under src changes at this task or at any task of this unit.
   -->
+  <!--
+    1.13.73 -> 1.13.74, WORK INSTRUCTION 387 TASK 0. A PATCH, STEP 10 OF THE HARDENING PHASE,
+    WHAT TIM SAW ON 2026-09-22: the first unit ever spent on step 10, whose five criteria come
+    from R46 (Tim, 2026-09-22, off his own screen) - favorites are gone from the rig display and
+    the record must name the unit and the line that took them before they are rebuilt; a
+    right-click opens a menu on every decoded row and not only on the rows that named a station;
+    the sun map takes the top band's full height instead of the 134 px unit 376 kept it at; and a
+    carrier the blind search found shows characters only from blocks the decoder reports
+    confident. Step 10's entry reads step 9 done and step 9 is ungraded - the work landed at
+    e5e4bee0 and its four new guards then ran in twelve carry-forward invocations over a frozen
+    tree with no red on an assertion - so this instruction's section 6 ruling 1 rules the entry
+    open on the landed and proved code, and 9.1 to 9.5 stay unticked. This is the first unit in
+    nine to write application code under src since unit 385. No file under src changes at this
+    task.
+  -->
   <PropertyGroup>
-    <Version>1.13.73</Version>
+    <Version>1.13.74</Version>
   </PropertyGroup>
 
   <!--
