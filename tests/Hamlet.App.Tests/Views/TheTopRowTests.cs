@@ -338,20 +338,29 @@ public sealed class TheTopRowTests
                     "  clock : " + Box(clockAt) + ", markers " + drawn.Markers + ", "
                     + Px(cardAt.Right - clockAt.Right) + " px from the card's right edge");
 
-                Assert.True(clock.GetVisualAncestors().Contains(card), "at " + Px(width) + " the world clock is not in the card");
+                // **REWRITTEN UNDER R12 IN WORK INSTRUCTION 388.** PHASE_PLAN.md 10.3 rev7 (Tim,
+                // 2026-09-22): *the band governs the map*. The clock stood inside the card, under
+                // its header and over its caption, at the mockup's 134 px, and this asserted that;
+                // it now stands just past the card's right end, between the card and the rig face,
+                // as tall as the card beside it. What is still asserted is what R26 wanted: it is
+                // at the card's right, clear of the green block, with one marker at his grid.
+                var rigAt = RectIn(RigPanel(window), window);
+
+                Assert.False(clock.GetVisualAncestors().Contains(card), "at " + Px(width) + " the world clock is still inside the card's chrome");
                 Assert.False(
                     clock.GetVisualAncestors().Contains(block),
                     "at " + Px(width) + " the world clock is inside the green block rather than at the card's right end");
 
                 Assert.True(
-                    clockAt.Left >= blockAt.Right - 0.5,
-                    "at " + Px(width) + " the clock starts at x=" + Px(clockAt.Left) + " and the green block ends at x="
-                    + Px(blockAt.Right) + ", so it is not at the card's right");
+                    clockAt.Left >= cardAt.Right - 0.5 && clockAt.Right <= rigAt.Left + 0.5,
+                    "at " + Px(width) + " the clock " + Box(clockAt) + " is not between the card " + Box(cardAt)
+                    + " and the rig face " + Box(rigAt));
                 Assert.True(
-                    cardAt.Right - clockAt.Right <= 40,
-                    "at " + Px(width) + " the clock ends " + Px(cardAt.Right - clockAt.Right) + " px short of the card's right edge");
+                    clockAt.Left - cardAt.Right <= 40,
+                    "at " + Px(width) + " the clock starts " + Px(clockAt.Left - cardAt.Right) + " px past the card's right edge");
 
-                Assert.InRange(clockAt.Height, ClockHeight * 0.9, ClockHeight * 1.1);
+                Assert.InRange(clockAt.Height, cardAt.Height - 0.5, cardAt.Height + 0.5);
+                Assert.True(clockAt.Height >= ClockHeight - 0.5, "at " + Px(width) + " the clock is smaller than the mockup's " + Px(ClockHeight));
 
                 Assert.Equal(HisGrid, clock.OperatorGrid);
                 Assert.Equal(1, drawn.Markers);

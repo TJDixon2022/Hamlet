@@ -426,7 +426,14 @@ public sealed class TheGreenZoneTests
             // **REWRITTEN UNDER R12 IN WORK INSTRUCTION 337.** The map filled the green zone's
             // height and took the pills' width; R26 moves it to the card's right end at the
             // mockup's height, so that height is what is asserted.
-            Assert.InRange(map.Bounds.Height, ClockHeight - 0.5, ClockHeight + 0.5);
+            // **REWRITTEN UNDER R12 AGAIN IN WORK INSTRUCTION 388.** PHASE_PLAN.md 10.3 rev7 (Tim,
+            // 2026-09-22): the band governs the map, which grows to the band's height and is no
+            // longer held at the mockup's 134. So what is asserted is rev7's rule: never smaller
+            // than 134, and as tall as the card it stands beside.
+            var card = Views.TheTopRowTests.RectIn(Views.TheTopRowTests.Card(window), window);
+
+            Assert.True(map.Bounds.Height >= ClockHeight - 0.5, "the map is smaller than " + F(ClockHeight));
+            Assert.InRange(map.Bounds.Height, card.Height - 0.5, card.Height + 0.5);
 
             foreach (var name in new[]
             {

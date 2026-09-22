@@ -606,9 +606,9 @@
                      the clock column is `Auto` at a fixed picture height and the left
                      takes the rest, so the card is as tall as the left stack and no
                      picture grows it. -->
+                <!-- **ONE COLUMN SINCE WORK INSTRUCTION 388**: the clock left for `TopRow`. -->
                 <Grid x:Name="NeighborhoodCardBody"
-                      ColumnDefinitions="*,Auto"
-                      ColumnSpacing="14">
+                      ColumnDefinitions="*">
                 <StackPanel Grid.Column="0" Spacing="4">
                     <!-- **THINNER SINCE WORK INSTRUCTION 376** (R39, task 2): 44 px to 32.
                          Nothing about what it draws changed - the neighborhood labels, the
@@ -933,11 +933,31 @@
                          nothing saved it still opens, to a note (§0.0, §0.5.1). The star on the
                          rig face keeps saving. Measured at task 1, this row stood empty - 55 px
                          at 1920 and 42 at 1400 - so it costs the top band nothing there. -->
-                    <ctl:FavoritesDropDownControl x:Name="GreenZoneFavorites"
-                                                  HorizontalAlignment="Left"
-                                                  FontSize="11" Padding="8,1" MinHeight="0"
-                                                  Favorites="{Binding FavoriteMenu}"
-                                                  ManageFavoritesCommand="{Binding ManageFavoritesCommand}" />
+                    <!-- **AND THE SUN MAP'S CAPTION SHARES THE ROW, AT ITS RIGHT END, BESIDE THE
+                         MAP** (PHASE_PLAN.md 10.3 rev7, *its dot and caption kept*; work
+                         instruction 388 section 6 ruling 1 item 4, where it goes the unit's own
+                         choice and overrulable). Under the map it cost the map 11 px of the band;
+                         here it costs nothing, because this row is already paid for. The words are
+                         unchanged. -->
+                    <Grid ColumnDefinitions="Auto,*">
+                        <ctl:FavoritesDropDownControl x:Name="GreenZoneFavorites"
+                                                      Grid.Column="0"
+                                                      HorizontalAlignment="Left"
+                                                      FontSize="11" Padding="8,1" MinHeight="0"
+                                                      Favorites="{Binding FavoriteMenu}"
+                                                      ManageFavoritesCommand="{Binding ManageFavoritesCommand}" />
+
+                        <TextBlock x:Name="GreenZoneClockCaption"
+                                   Grid.Column="1"
+                                   Margin="12,0,0,0"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"
+                                   TextWrapping="Wrap"
+                                   Text="where the sun is · you"
+                                   FontSize="11"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                    </Grid>
 
                     <!-- A lookup disagreeing with a hand-set class. Both
                          values, the source, and the operator decides — never
@@ -993,61 +1013,12 @@
                     </Border>
                 </StackPanel>
 
-                <!-- ============ THE CARD'S RIGHT END: THE WORLD'S CLOCK ============ -->
-                <!-- **THE NIGHT SIDE IS THE SUN AND THE CLOCK, AND THE ONE MARKER IS
-                     HIS GRID.** No station dots and no paths (Tim: *"without the orphan
-                     dots, maybe just a dot at my grid"*).
-
-                     **AT THE CARD'S RIGHT END, AT THE MOCKUP'S SIZE, SINCE WORK
-                     INSTRUCTION 337** (R26). It used to fill the green zone's height and
-                     grow with its width, which is how the zone reached two thirds of the
-                     window. The width follows the picture's own proportions, so no place
-                     moves off the pixel the projection puts it on (HM-DEC-092).
-
-                     **THE HEIGHT IS THE BAND'S BUDGET AND NOT THE MOCKUP'S NUMBER** (R46(c),
-                     Tim 2026-09-22; work instruction 387 section 6 ruling 2(b)). Unit 337 chose
-                     134 px off the mockup and marked it as its own choice; unit 376 then kept
-                     it at 134 on the author's wording of 6.3, *keeps its size* read as *stays
-                     134 px*. R46(c) supersedes that wording - **but the number it is superseded
-                     to is the same number, and unit 387 measured why rather than assuming it.**
-
-                     **THE MAP ALREADY GOVERNS THIS CARD.** `GreenZoneLeft` wants 25 px at 1920
-                     and 54 at 1400; the map's column wants 145 - 134 and the caption and the
-                     2 px between them - in a row of 146; the card wants 178 and the rig column
-                     wants 178, tied with margin 0. **So every pixel the map takes, the card
-                     takes and the top band takes.** The band is 214 with the pills and is
-                     ratcheted there by `Unit376TheTopBandTests.BandReachedWithThePills`, which
-                     the carry-forward name
-                     `TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts, under
-                     6.1's ceiling of 220.
-
-                     **MEASURED AND NOT ARGUED**: unit 387 task 3 let the map take the height
-                     available to it and the map went to 698 x 381, the card to 424 and the band
-                     to 460 px - **240 px over 6.1's ceiling and 246 over the ratchet**. The
-                     80 px of band the map does not have are the pills row and its margins (36),
-                     this card's own header and padding (32) and the caption and its gap (11),
-                     and not one of them is the map's to take. So 134 stays, **as the largest
-                     height the band can pay for rather than as a picture's dimension**, and
-                     `TheSunMapFillsTheBandItSitsInTests` holds the ground both ways: the map may
-                     never shrink, and it may never leave a pixel of its own row unused.
-
-                     **THE DOT AND THE CAPTION ARE KEPT** (ruling 2(b)). -->
-                <StackPanel x:Name="GreenZoneMap"
-                            Grid.Column="1"
-                            Spacing="2"
-                            VerticalAlignment="Top">
-                    <ctl:GrayLineMapControl x:Name="GreenZoneGrayLine"
-                                            Height="134"
-                                            HorizontalAlignment="Left"
-                                            Utc="{Binding GrayLineUtc}"
-                                            OperatorGrid="{Binding GreenZone.OperatorGrid}"
-                                            RenderedCommand="{Binding GreenZoneRenderedCommand}" />
-
-                    <TextBlock x:Name="GreenZoneClockCaption"
-                               Text="where the sun is · you"
-                               FontSize="11"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
-                </StackPanel>
+                <!-- **THE WORLD'S CLOCK IS NOT IN THIS CARD ANY MORE** (PHASE_PLAN.md 10.3,
+                     rev7; work instruction 388 task 3). It stood at the card's right end under
+                     the card's header and padding and over its caption, so every pixel it took
+                     the card took, and unit 387 measured the band at 460 px letting it grow.
+                     It is now its own column in `TopRow`, between this card and the rig face,
+                     as tall as the band row - see `GreenZoneMap` there. -->
                 </Grid>
             </ctl:CollapsiblePanel>
         </DataTemplate>
@@ -3059,8 +3030,18 @@
                      looks exactly like it does now. We do not need to change the
                      neighborhood."). The template is the one the canvas used, so
                      there is one definition of this panel and not two. -->
-                <ScrollViewer Grid.Row="0" Grid.Column="0"
-                              x:Name="TopRowCardScroller"
+                <!-- **THE BAND GOVERNS THE MAP** (PHASE_PLAN.md 10.3, rev7 - Tim, 2026-09-22:
+                     *vertical space is the concern, not horizontal; the band governs the map*;
+                     work instruction 388 task 3, stage A). The card, the sun map and the rig face
+                     stand side by side in one panel that asks its questions in a fixed order: the
+                     rig face says how tall the row is, the map is made that tall at its own
+                     proportions (HM-DEC-092), and the card takes the width that is left - so the
+                     width the map needs comes from the neighborhood side and never from the rig.
+                     Where the card could not then fit its words in the row, the map gives width
+                     back, never below the 246 x 134 it has been since unit 337. -->
+                <ctl:BandGovernsTheMapPanel x:Name="BandRow"
+                                            Grid.Row="0" Grid.ColumnSpan="2">
+                <ScrollViewer x:Name="TopRowCardScroller"
                               Margin="0,0,14,0"
                               HorizontalScrollBarVisibility="Disabled"
                               VerticalScrollBarVisibility="Auto">
@@ -3069,6 +3050,30 @@
                                     Content="{Binding}"
                                     ContentTemplate="{StaticResource widget.map}" />
                 </ScrollViewer>
+
+                <!-- ============ THE WORLD'S CLOCK, BETWEEN THE CARD AND THE RIG ============ -->
+                <!-- **THE NIGHT SIDE IS THE SUN AND THE CLOCK, AND THE ONE MARKER IS HIS
+                     GRID.** No station dots and no paths (Tim: *"without the orphan dots, maybe
+                     just a dot at my grid"*). The width follows the picture's own proportions,
+                     so no place moves off the pixel the projection puts it on (HM-DEC-092).
+
+                     **OUT OF THE CARD'S CHROME SINCE WORK INSTRUCTION 388.** Unit 387 measured
+                     the 80 px of band the map did not have inside the card: the pills row and
+                     its margins (36), the card's header and padding (32), the caption and its
+                     gap (11). Standing here, beside the card rather than in it, the header, the
+                     padding and the caption are beside the map instead of stacked on it, and the
+                     map is as tall as the rig face. The caption kept its words and moved into the
+                     card's Favorites row, beside the map. -->
+                <Border x:Name="GreenZoneMap"
+                        Margin="0,0,14,0"
+                        VerticalAlignment="Top">
+                    <ctl:GrayLineMapControl x:Name="GreenZoneGrayLine"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Utc="{Binding GrayLineUtc}"
+                                            OperatorGrid="{Binding GreenZone.OperatorGrid}"
+                                            RenderedCommand="{Binding GreenZoneRenderedCommand}" />
+                </Border>
 
 
     <!-- Frequency face: the rig's own LCD on the console. Deliberately
@@ -3084,8 +3089,7 @@
          and the neighborhood card wanted 190 as well, so the two columns TIE at 1920
          and **cutting either one alone buys nothing** - the row is `Auto` and both
          halves stretch to the taller. That is why this is here and not dropped. -->
-    <Border Grid.Row="0" Grid.Column="1"
-            VerticalAlignment="Stretch"
+    <Border VerticalAlignment="Stretch"
             Background="{StaticResource HmAmberTintBrush}"
             BorderBrush="{StaticResource HmAmberEdgeBrush}"
             BorderThickness="1" CornerRadius="8"
@@ -3309,6 +3313,7 @@
             </StackPanel>
         </StackPanel>
     </Border>
+                </ctl:BandGovernsTheMapPanel>
 
     <!-- WHERE YOU ARE AND WHETHER YOU MAY TRANSMIT, which is not decoration
          and does not get dropped for space (HM-DEC-029, HM-DEC-141). It moves

@@ -416,10 +416,24 @@ public sealed class Unit376TheTopBandTests
     }
 
     /// <summary>
-    /// **Criterion 10.3: the sun map fills the band it sits in, and it never gives a pixel back**
-    /// - R46(c), which supersedes 6.3's wording; and its one marker is still the operator's grid.
+    /// **Criterion 10.3, rev7: the band governs the map** - the map as tall as the band's row, at
+    /// its own proportions, never smaller than 246 x 134, the band still 214; its one marker is
+    /// still the operator's grid and its caption is kept.
     /// </summary>
     /// <remarks>
+    /// <para>**REWRITTEN UNDER R12 A SECOND TIME, BY WORK INSTRUCTION 388 SECTION 6 RULING 1 ITEM 6,
+    /// AND THIS IS NOT LOOSENING A TEST.** Tim replaced what it asserted at `752a9b62` (rev7,
+    /// 2026-09-22): *the band itself does not grow, 214 px stands ... unit 387's reading that the
+    /// map governs the band is superseded - the band governs the map.* The column arithmetic below
+    /// unit 387 wrote measured a map inside the card, under its header and over its caption; the
+    /// map is not there any more, so that arithmetic no longer measured anything. **What it asserts
+    /// now**: the map runs the full height of the band's card-and-rig row, top to bottom, within
+    /// 0.5 px; its width follows its height at the picture's own proportions (HM-DEC-092); it is
+    /// never smaller than 246 x 134; the band is still 214; and every assertion about the grid
+    /// marker and the caption is kept, the caption's now also asserting its words and that it is
+    /// wholly on the window. The band with the pills is the second stage's target and is reported,
+    /// not asserted, while the map stands beside the card and not beside the pills.</para>
+    /// <para>**UNIT 387's ACCOUNT, KEPT BELOW SO THE HISTORY STAYS READABLE.**</para>
     /// <para>**REWRITTEN UNDER R12 AND WORK INSTRUCTION 387 SECTION 6 RULING 2(b), AND THIS IS
     /// NOT LOOSENING A TEST.** It asserted 246 x 134 within 0.5 px and called the map *not a
     /// source of pixels (6.3)*. **The owner replaced the thing it asserted**: R46(c), 2026-09-22,
@@ -464,16 +478,19 @@ public sealed class Unit376TheTopBandTests
 
                     var map = TheTopRowTests.Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
                     var caption = Named(window, "GreenZoneClockCaption");
-                    var column = Named(window, "GreenZoneMap");
                     var band = Band(window);
                     var where = Px(width) + " on " + mode;
+                    var mapAt = TheTopRowTests.RectIn(map, window);
+                    var captionAt = caption is null ? default : TheTopRowTests.RectIn(caption, window);
 
                     _output.WriteLine(
                         where + ": the sun map is " + Px(map.Bounds.Width) + " x "
                         + Px(map.Bounds.Height) + " at grid " + map.OperatorGrid
-                        + ", in a column of " + Px(column?.Bounds.Height ?? 0)
-                        + " under a caption of " + Px(caption?.Bounds.Height ?? 0)
-                        + ", in a band of " + Px(band.WithPills));
+                        + ", y " + Px(mapAt.Top) + " to " + Px(mapAt.Bottom)
+                        + ", in a band of " + Px(band.WithPills) + " with the pills and "
+                        + Px(band.WithoutPills) + " without (y " + Px(band.TopWithoutPills) + " to "
+                        + Px(band.Bottom) + "), its caption at [" + Px(captionAt.X) + "," + Px(captionAt.Y)
+                        + " " + Px(captionAt.Width) + "x" + Px(captionAt.Height) + "]");
 
                     // **R46(c)'s FIRST HALF: IT MAY NEVER SHRINK.** The 246 x 134 unit 337 chose
                     // and unit 376 kept is the floor now, not the number.
@@ -486,19 +503,33 @@ public sealed class Unit376TheTopBandTests
                             + " asks for more map, and it is not a source of pixels.");
                     }
 
-                    // **R46(c)'s SECOND HALF, AND NOTHING ASSERTED IT BEFORE: IT MAY NOT LEAVE A
-                    // PIXEL OF ITS OWN ROW UNUSED.** The column holds the map, 2 px of spacing
-                    // and the caption; anything left over is band the map is not taking.
-                    var used = map.Bounds.Height + 2 + (caption?.Bounds.Height ?? 0);
-                    var unused = (column?.Bounds.Height ?? used) - used;
+                    // **REV7's RULE: THE MAP'S HEIGHT IS THE BAND'S** (work instruction 388 section
+                    // 6 ruling 1 item 6). Stage A stands the map beside the card, top to bottom of
+                    // the band's card-and-rig row - the band without the pills - so that is what
+                    // it must fill, within the row's own outer edges and nothing more. Stage B,
+                    // beside the pills as well, would make it the band with the pills.
+                    var shortBy = band.WithoutPills - map.Bounds.Height;
 
-                    if (unused > 1.5)
+                    if (Math.Abs(mapAt.Top - band.TopWithoutPills) > 0.5 || shortBy > 0.5)
                     {
                         misses.Add(
-                            where + ": the sun map's column is " + Px(column!.Bounds.Height)
-                            + " px and the map, its gap and its caption use " + Px(used)
-                            + ", so " + Px(unused) + " px of the band the map sits in are going"
-                            + " unused. R46(c): the map takes the height it is given.");
+                            where + ": the sun map runs y " + Px(mapAt.Top) + " to " + Px(mapAt.Bottom)
+                            + " where the band's row runs y " + Px(band.TopWithoutPills) + " to "
+                            + Px(band.Bottom) + ", " + Px(shortBy) + " px short. Rev7: the band"
+                            + " governs the map, and the map takes the band's height.");
+                    }
+
+                    // **AND IT KEEPS ITS OWN PROPORTIONS** (HM-DEC-092): the width follows the
+                    // height at the picture's 246 : 134, and nothing is stretched or cropped.
+                    var aspect = map.Bounds.Width / map.Bounds.Height;
+
+                    if (Math.Abs(aspect - SunMapWidth / SunMapHeight) > 0.01)
+                    {
+                        misses.Add(
+                            where + ": the sun map is " + Px(map.Bounds.Width) + " x " + Px(map.Bounds.Height)
+                            + ", an aspect of " + aspect.ToString("0.0000", CultureInfo.InvariantCulture)
+                            + " against the picture's " + (SunMapWidth / SunMapHeight).ToString("0.0000", CultureInfo.InvariantCulture)
+                            + ". HM-DEC-092: no place moves off the pixel the projection puts it on.");
                     }
 
                     // **AND 6.1's CEILING IS NOT SUPERSEDED** (ruling 2(b)): the map may not have
@@ -523,9 +554,22 @@ public sealed class Unit376TheTopBandTests
                             + model.GreenZone.OperatorGrid + "].");
                     }
 
+                    // **THE CAPTION IS KEPT, WHOLLY DRAWN AND WHOLLY ON THE WINDOW** (ruling 1
+                    // item 4), with its words unchanged - beside the map, in the card's
+                    // Favorites row, since work instruction 388.
                     if (caption is null || !caption.IsEffectivelyVisible)
                     {
-                        misses.Add(where + ": the caption under the sun map is not drawn.");
+                        misses.Add(where + ": the sun map's caption is not drawn.");
+                    }
+                    else if (((TextBlock)caption).Text != "where the sun is · you"
+                        || captionAt.Width < 1 || captionAt.Height < 1
+                        || captionAt.Left < 0 || captionAt.Right > width + 0.5
+                        || captionAt.Bottom > TheTopRowTests.WindowHeight + 0.5)
+                    {
+                        misses.Add(
+                            where + ": the sun map's caption reads [" + ((TextBlock)caption).Text + "] at ["
+                            + Px(captionAt.X) + "," + Px(captionAt.Y) + " " + Px(captionAt.Width) + "x"
+                            + Px(captionAt.Height) + "], and it must be its own words, wholly drawn, on the window.");
                     }
                 }
                 finally
