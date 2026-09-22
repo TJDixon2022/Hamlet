@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 388 - the band governs the map, and favorites go back where Tim had them
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-22T13:28:04-04:00
-NOTE: Entry round - engine 150 of 150 first attempt; running TheMenuIsUnderTheMouseTests once for its entry count (unit 387 item 4)
+UPDATED: 2026-09-22T13:30:32-04:00
+NOTE: Task 1 trace - Unit388Trace written (band parts, width budget, pills appetite, the empty row under the green zone); building and running it now
 
 ---
 
