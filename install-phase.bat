@@ -2,7 +2,7 @@
 setlocal EnableExtensions
 
 rem  install-phase.bat
-rem  Generated 2026-09-20 for: Hamlet-phase-hardening-2026-09-20.zip
+rem  Generated 2026-09-22 for: Hamlet-phase-cw-391-2026-09-22.zip
 rem
 rem  Installs the new phase layer at the repository root.
 rem  RUN THIS YOURSELF, BEFORE THE LOOP. It is not a work unit's job:
@@ -19,8 +19,8 @@ set "REPO=%~1"
 if "%REPO%"=="" set "REPO=C:\Source\HamLet"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
-set "STAGE=%REPO%\docs\phase-hardening"
-set "ARCHIVE=%REPO%\docs\phase-olivia-run"
+set "STAGE=%REPO%\docs\phase-cw"
+set "ARCHIVE=%REPO%\docs\phase-hardening-run"
 
 echo.
 echo   Repo root : %REPO%
@@ -78,15 +78,15 @@ echo.
 echo   ================================================================
 echo    PHASE INSTALLED
 echo   ================================================================
-echo    Archived : docs\phase-olivia-run\  (plan, status, outcome)
+echo    Archived : docs\phase-hardening-run\  (plan, status, outcome)
 echo    Installed: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md
 echo.
-echo    STILL TO DO, and unit 369 does it with its file tools:
+echo    STILL TO DO, and unit 391 does it with its file tools:
 echo      PROJECT_CARD.md  PHASE and PHASE_SET
 echo      DECISIONS.md     the ruling that set them
 echo.
 echo    Commit this before launching the loop:
-echo      git add -A ^&^& git commit -m "phase: hardening" ^&^& git push
+echo      git add -A ^&^& git commit -m "phase: cw" ^&^& git push
 echo   ================================================================
 echo.
 goto :end
@@ -124,7 +124,7 @@ goto :end
 
 :already
 echo.
-echo   REFUSED: docs\phase-olivia-run\PHASE_OUTCOME.md already exists,
+echo   REFUSED: docs\phase-hardening-run\PHASE_OUTCOME.md already exists,
 echo   so this has already run. Nothing was changed.
 goto :end
 
@@ -144,13 +144,13 @@ goto :end
 :archivefailed
 echo.
 echo   REFUSED: the archive copy did not match the original.
-echo   The new phase was NOT installed. Check docs\phase-olivia-run\.
+echo   The new phase was NOT installed. Check docs\phase-hardening-run\.
 goto :end
 
 :installfailed
 echo.
 echo   FAILED: the archive succeeded but the install did not.
-echo   The old files are in docs\phase-olivia-run\. Copy the three files from
+echo   The old files are in docs\phase-hardening-run\. Copy the three files from
 echo   %STAGE% to the root by hand.
 goto :end
 

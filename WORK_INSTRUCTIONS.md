@@ -1,96 +1,185 @@
-# Work instruction 390 - the phase closes: every open thing a session can take, taken
+# Work instruction 391 - the break is measured and named
 
-**Seed under `--seed`.** The last unit of *Hamlet holds what it has*. It takes every
-unticked criterion a session can move, in one pass, and then the phase halts at 5.1 for
-Tim. Nothing new is opened. **Six tasks, drop from the back.**
+**Seed under `--seed`.** The first unit of *CW decodes again*, step 0. It builds nothing.
+It runs the three CW floor tests at HEAD and writes down every number, finds the newest
+commit on `main` where all three were green, names the commit after it that turned one
+red, and lists the seams step 1 will have to cross. **Four tasks, drop from the back.**
 
-**Status.** `tools/status.sh`, real clock, after every commit and every task. **Write
-files as UTF-8.**
+**Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
+immediately before every `dotnet test`. **Write files as UTF-8.**
 
 ---
 
 ## 0. The project gate
 
 ```
-SHACK_FACTS.md                                          must exist
-src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs     must exist
-CoreHMI.sln                                             must not exist
-MURC.sln                                                must not exist
-root                                                    C:\Source\HamLet
-```
+STOP. Verify the project before reading any further.
 
-**If any of the four is wrong, stop and say so in `output.md` section 4. Write nothing
-else.** The refusal text: *This is not Hamlet. Nothing was changed.*
+PROJECT: Hamlet
+
+Check the repository root:
+  MUST EXIST:      SHACK_FACTS.md
+  MUST EXIST:      src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs
+  MUST NOT EXIST:  CoreHMI.sln
+  MUST NOT EXIST:  MURC.sln
+  root             C:\Source\HamLet
+
+If all four are not as stated, you are in the wrong repository.
+REFUSE. Do not read the rest of this file, do not summarise it, do not
+adapt it to whatever project you are actually in, and change nothing.
+Reply with only: the path you are in, which checks failed, and
+"wrong project - nothing done."
+
+If all four hold, say "Hamlet confirmed" and continue.
+```
 
 ---
 
 ## 1. The rules that killed sessions
 
-**HM-DEC-155.** No suite; only this unit's names and `docs\carry-forward-tests.txt` as its
-top comment says. Never background and poll.
+**HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run
+as its top comment says: two invocations, one build each, a status line immediately
+before each. **Never background and poll.** A `dotnet test` with no `--filter` is a
+violation, whatever it is for. The engine project has never completed whole and the
+watchdog kills at twelve minutes of silence.
 
-## 2. The tool fact
+**The CW namespace crashes the test host intermittently (HM-OPEN-063)** and
+`TheIntegratorBandwidthTable.Write` runs 362 s. **One type per invocation, each with its
+own `timeout`.** A run that dies before any assertion is a lost run: record the name it
+landed on, re-run it once, and count neither way. A red on an assertion is red and is
+never re-run.
+
+## 2. The tool facts
 
 Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm`
-is refused; Python cannot run here; `-m` more than once for a multi-line commit.
+is refused; Python cannot run here; `-m` more than once for a multi-line commit. **A bare
+`git worktree`, `git checkout` and `git show` are refused at the prompt** (unit 390's
+denials). Multi-step commands go into a script under `.run-unit\unit391-<name>.sh` and
+are run with `sh .run-unit/unit391-<name>.sh`, as units 387 to 389 did. `.run-unit\` is
+not committed.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139 from unit 389's queue, **verbatim in section 4**. Answered here:
-**9.3's conflict with the 2026-09-07 ruling - Tim ruled A on 2026-09-22** (task 3).
-**7.5 never built** (task 1). **Favorites look boring** (task 2).
+Carried per HM-DEC-139 from unit 390's queue, **verbatim in section 4**: all nine items,
+none of them CW, none of them this phase's. Say once that they are carried and not this
+unit's to answer.
 
 ---
 
 ## 4. Why this unit exists
 
 ```
-PHASE GOAL: Hamlet holds what it has.
-UNIT GOAL:  The phase's open criteria that a session can move - 7.5, 9.3, 4.3,
-            7.2, 0.1, 10.3's report, 9.2/9.4/9.5's re-measure - taken in one
-            pass, plus the favorites row made worth looking at; then the loop
-            halts at 5.1.
-ADVANCES:   step 7 criterion 5
-DRIFT:      carried.
+PHASE GOAL: CW decodes again.
+UNIT GOAL:  The break measured at HEAD in numbers, the commit to go back to
+            named, the commit that broke it named, and the seams listed.
+ADVANCES:   step 0 criterion 2
+DRIFT:      0 - the first unit of the phase
 ```
 
-**Tim, 2026-09-22:** *"This phase seems like it's gotten very confused. Can we write
-something that's just going to wrap it all up and we'll start fresh?"* This is that. Every
-step's open items in one unit, each with its criterion id; the record after this reads as
-a phase that finished, not one that trailed off.
+**The number this unit is aimed at is unknown, and that is the finding.** The last
+measurement of the CW floors in the tree is unit 239's on 2026-09-03:
+`docs\unit239-failing-set.txt`, 51 names, six of them cases of
+`TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid` and two of them
+`CwFixtureTests.TheCleanRecordingsDecodeExactly`. No CW test has been run since
+2026-09-05. Tim, 2026-09-22: *"The CW currently has taken many steps backwards and no
+longer decodes anything."* This unit replaces that sentence with numbers.
 
-**And two things from his screen tonight:** *"Note Olivia and PSK31 still both indicated.
-Why wasn't that fixed?"* - 7.5, in the plan since the 21st, never authored. And
-*"Favorites looks boring! Sex it up"* - the drop-down 388 built is a grey button with a
-caret.
+**What the record says and this unit checks rather than trusts.** The decoder source
+under `src\Hamlet.RadioEngine\Cw` was last changed 2026-08-28 to 08-31 and once on
+09-03; the floors in `TheCapturesThatDecodeKeepDecodingTests` were set on 2026-08-25
+through that same harness; unit 204 on 2026-08-31 already saw six of them red. So the
+commit this unit is looking for is expected between 2026-08-25 and 2026-08-28. **If it
+is not there, say so and keep walking back; do not stop at the expectation.**
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-- The mode chip's fill binding and the send-status line's mode word (units 374, 376):
-  what they read - the family or `ChosenDigitalMode`.
-- The favorites row 388 built under the green zone: its control, its data, the star on
-  the rig face, the caret 389 may have removed.
-- The Log dialog and the 2026-09-07 read-only ruling (`HM-DEC-` number: find it); the RST
-  fields; how a heard value is stored versus one the operator typed.
-- `docs/RADIO_SHEET.md` and unit 383's word list for 4.3; 7.2's canned-send events.
-- Unit 389's report on 9.2, 9.4, 9.5 - what measured, what did not, and why.
-- 0.1's negative from unit 369; 10.3's measure from unit 389.
+**Nothing here describes the tree.** Check every claim against the files and report
+any mismatch. Report the mismatch; do not repair the instruction.
 
-**Report every mismatch; repair nothing but this unit's.**
+- The three floor tests exist under `tests\Hamlet.RadioEngine.Tests\Cw` by these names:
+  `TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid`,
+  `TheAdjudicatedReadingsKeepReadingTests`, `CwFixtureTests.TheCleanRecordingsDecodeExactly`.
+  How many cases each has today.
+- `docs\unit239-failing-set.txt` has 51 lines; which are cases of the three above.
+- Which CW names the known-reds block of `docs\carry-forward-tests.txt` carries.
+- `PROJECT_STATUS.md` reads unit 390 and `Directory.Build.props` reads 1.13.77.
+- Every capture the floor table names is on disk under `tests\fixtures\cw\captured`.
+- `git log` over `src\Hamlet.RadioEngine\Cw` since 2026-08-24: the commits, their dates.
+
+**Expected reds, so they are not rediscovered:** the six floor cases and the two clean
+synthetics in `docs\unit239-failing-set.txt`. Everything else red at HEAD is a finding
+to write down, not to chase.
 
 ## 6. Rulings in force
 
-**`PHASE_PLAN.md` R33-R46 and §6.** **Tim, 2026-09-22, ruling A on 9.3**: RST editable,
-heard values marked *heard*, typed values marked *yours*, both kept in the record; this
-supersedes the 2026-09-07 read-only line for the RST fields only. **R45** on the form of
-ADVANCES. **R12**, **R13**, **R14**, **R19**, **HM-DEC-165**. **§0.0** a value Hamlet did
-not hear is never shown as heard.
+**`PHASE_PLAN.md` R47 to R52 and §6**, transcribed there in full with what was rejected;
+read them before task 1 and do not re-argue either side. The two this unit stands on:
+
+**R47 - Tim, 2026-09-22:** *"So this phase is get CW working."* *"We've got a bunch of
+saved WAV files you can use. So we use those."* Step 0 is the bench: the saved captures
+and synthetics through the decoder as it stands, before anything is built. Rejected:
+starting from a capture at the radio; starting from git history alone.
+
+**R48 - Tim, 2026-09-22, ruled A:** find the last commit where the floors were green,
+bring the decoder back to it, then re-apply the rework's pieces one at a time, each kept
+only if the floors stay green. Rejected: repairing the current design forward; measuring
+both and halting for a ruling. **This unit finds the commit. It does not restore
+anything.**
+
+**`CLAUDE.md` §0.0:** a floor is a count and says nothing about correctness; no sentence
+in the report may say the decoder *reads* on the strength of a count. **§0.2:** nothing
+that keys is touched. **§12.6:** repair nothing on the way past. **HM-DEC-155**,
+**HM-DEC-139**, **HM-DEC-165**, **FACT-004** every result here is an indication,
+**FACT-006** this machine has no radio.
+
+**Record this ruling in `DECISIONS.md` at task 0, verbatim, newest first, above
+HM-DEC-166:**
+
+```
+---
+id: HM-DEC-167
+date: 2026-09-22
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md, PROJECT_CARD.md, docs/phase-hardening-run/, docs/phase-cw/, work instruction 391 task 0, HM-DEC-151
+---
+
+**The hardening phase is archived with 5.1 open, and the CW phase - *CW decodes
+again* - is the phase in force from today.** Tim, 2026-09-22.
+
+**What is archived, and at what.** *Hamlet holds what it has*, set 2026-09-20, closes
+with every criterion a session can move ticked and one left: **5.1**, Tim's verdict at
+his window and at the radio. It is his and is not carried into the new phase as debt.
+The run folder is `docs/phase-hardening-run/`.
+
+**What is set.** *CW decodes again*: a restore phase. The CW decoder read on the air on
+2026-08-25 and reads nothing now; the floors that recorded what it produced have been red
+since 2026-08-31 (HM-DEC-151 named them inherited and "not a licence to leave the CW reds
+alone forever") and no CW test has been run since 2026-09-05. Six steps: the break
+measured and named; the engine's CW code restored to the last commit that read and
+adapted so today's app builds; a CW read guard on the carry-forward list; the inherited
+reds repaired or retired with reasons; the August rework re-applied one piece at a time
+on numbers; and Tim at the radio. The rulings that shape it are R47 to R52 in
+`PHASE_PLAN.md`, in his words.
+
+**Why a ruling and not an edit.** `PROJECT_CARD.md` holds standing facts and is changed
+only by ruling (CLAUDE.md 13.3), and `PHASE` and `PHASE_SET` are two of them. This entry
+is what licenses those two lines moving from the hardening phase to this one.
+
+**Whose words are whose.** The phase name and description are taken from `PHASE_PLAN.md`
+as `install-phase.bat` wrote them; the wording above is work instruction 391 task 0's
+recording of his ruling, not a session's own conclusion. Nothing was rejected in the
+recording.
+```
+
+And one row at the top of the table in `CLAUDE.md` §1, in the table's own form, dated
+2026-09-22, headline **The CW phase, *CW decodes again*, is the phase in force; the
+hardening phase is archived with 5.1 Tim's**, ref HM-DEC-167.
 
 ## 7. Status cadence
 
-As the header says.
+As the header says. `NOTE` says what is moving inside the task - *floors: 21 of 36 cases
+run, 4 red so far* - never the task name.
 
 ---
 
@@ -98,107 +187,102 @@ As the header says.
 
 ### Task 0 - the record
 
-Append `UNIT 390` to `PHASE_OUTCOME.md` under step 7. Patch-bump. Run the carry-forward
-list.
+Append `## UNIT 391 - STEP 0` to `PHASE_OUTCOME.md` in the shape of the existing entries
+(`STEP`, `APPROACH`, `MOVE`, `WHY`, `DECIDED`, `LICENCE`, `COST`, `ACCOMPLISHED`, `ENTRY`),
+copying the decision block's fields from the foot of this file. `PHASE_STATUS.md` already
+names unit 391. Patch-bump `Directory.Build.props` 1.13.77 to 1.13.78. `PROJECT_CARD.md`
+`PHASE: CW decodes again` and `PHASE_SET: 2026-09-22`. `DECISIONS.md` HM-DEC-167 and the
+`CLAUDE.md` row, verbatim from section 6. **Entry round:** `docs\carry-forward-tests.txt`
+both lines, as its comment says. Commit.
 
 **Drop candidate:** none.
 
-### Task 1 - 7.5: the chip and the send line say the chosen mode, and the chips say press me
+### Task 1 - the three floor tests at HEAD (0.1)
 
-**Tim, 2026-09-22:** *"None of it screams click me. How do you know - take me to FT8, take
-me to FT4? It's just kind of, oh by the way, this is on the band."* The mode strip is a
-row of words with one tinted. It becomes **a row of buttons**: raised like the CW /
-Digital / Voice tabs above them, a hand cursor, a hover state, each one plainly a thing
-to press; the chosen one filled; the label *on this frequency* becomes **tune to:**,
-because a press retunes the radio and that is the whole promise. The hover on each says
-where it goes - *14.070 · PSK31* - from the cited row.
+This is the measurement, so it is the trace. One invocation per type, filtered,
+foregrounded, `timeout 900`, a status line before each:
 
-**And 7.5.** The filled chip and the *N s of <mode>* on the send-status line read
-`ChosenDigitalMode`, the same field the record reads since unit 374 - never the family.
-Under Olivia the Olivia chip is filled and the PSK31 chip is not; a 29-second Olivia CQ
-reads *29 s of Olivia*.
+- `FullyQualifiedName~TheCapturesThatDecodeKeepDecodingTests`
+- `FullyQualifiedName~TheAdjudicatedReadingsKeepReadingTests`
+- `FullyQualifiedName~CwFixtureTests.TheCleanRecordingsDecodeExactly`
 
-**Test watched failing first:** `TheChipSaysTheChosenModeTests`, app: under each of FT8,
-FT4, PSK31 and Olivia exactly one chip is filled and it is the chosen one; each chip is a
-button with the hand cursor and a hover naming its frequency from the cited row; the label
-reads *tune to:*; the send line names the chosen mode after a fed send; `BindingHealthTests`,
-`VoiceTests`.
+Use `--logger "console;verbosity=detailed"` so the `_output.WriteLine` lines with the
+measured characters and elements beside each floor reach the console, and keep the whole
+output in `.run-unit\unit391-floors-head.txt`. **The report's section 3 leads with one
+table**: every case, green or red, measured characters and elements, the floor, the
+difference. A lost run is re-run once and recorded as lost.
 
-**Drop candidate:** the hover's frequency. Keep the buttons and 7.5. **Ticks 7.5.**
+**Drop candidate:** none. Without this table nothing else in the unit means anything.
 
-### Task 2 - the favorites row is chips
+### Task 2 - the seams (0.4)
 
-The row under the green zone becomes **a row of chips**, one per saved spot, in the style
-of the band pills above: the spot's frequency and mode in the mode's family color as
-text, the name Tim gave it beside, one click tunes, a small ✕ on hover forgets it, and the
-star on the rig face fills when the dial is on a saved spot. Empty, the row reads *no
-spots saved yet - press ☆ to keep this one*. The drop-down goes.
+From the tree, with `git ls-files` and `grep` in a script: every file under
+`src\Hamlet.App` and `tests\Hamlet.App.Tests` that names a type from
+`src\Hamlet.RadioEngine\Cw` (`using Hamlet.RadioEngine.Cw` or a `Cw`-namespace type by
+name - `CwDecoder`, `CwDecodeReport`, `CwProbabilisticResult`, `CwCharacter`,
+`CwTransmitter`, `CwPhrasebook`, `MorseAlphabet`, and whatever else the grep finds), and
+for each file the members it touches. This is the list step 1 adapts against; it goes in
+section 3 as a table: file, type, members. **Do not judge whether a member exists at the
+older commit yet** - that is task 3's, once the commit is known.
 
-**Test watched failing first:** `TheFavoritesAreChipsTests`, app: three saved spots render
-as three chips with the right words and colors; a click tunes; ✕ forgets and the list
-persists; the empty sentence; the star fills on a saved spot; `TheTopRowTests` green and
-the band no taller.
+**Drop candidate:** the members column. Keep the file-and-type list.
 
-**Drop candidate:** the ✕ on hover. Keep the chips. **Refines 10.6; reports it.**
+### Task 3 - the last green commit, and the first red one (0.2, 0.3)
 
-### Task 3 - 9.3: RST editable, heard and yours told apart
+`git log --format="%h %ad %s" --date=short -- src/Hamlet.RadioEngine/Cw tests/Hamlet.RadioEngine.Tests/Cw tests/fixtures/cw`
+from HEAD back to 2026-08-24. Then, newest first, for each commit that touched
+`src\Hamlet.RadioEngine\Cw`: in a script, `git worktree add --detach C:/Source/HamLet-wt391 <hash>`,
+run the three floor tests **as that commit has them** inside the worktree (same filters,
+same timeout, a status line before each, output kept under
+`.run-unit\unit391-floors-<hash>.txt`), then `git worktree remove --force C:/Source/HamLet-wt391`.
+Stop at the first commit where all three are green: **that is 0.2**. Then the commit after
+it in the walk (the newest one that was red on the way down) is **0.3**, with the cases it
+turned red read out of its output.
 
-On the Log dialog the RST fields are editable. A value Hamlet heard is filled in and marked
-*heard*; a value Tim types replaces it and is marked *yours*; the log entry and the ADIF
-carry the value used, and the record carries which it was. Nothing else in the dialog
-changes from the 2026-09-07 ruling.
+Report for 0.2: hash, date, message, the count of commits between it and HEAD touching
+`src\Hamlet.RadioEngine\Cw`. Then finish 0.4: for every member task 2 listed, whether it
+exists in that commit's `src\Hamlet.RadioEngine\Cw` (`git show <hash>:<path>` in the
+script, grep the member).
 
-**Test watched failing first:** `TheRstIsYoursToCorrectTests`, app: a heard 599 is shown
-and marked; typing 579 replaces it, marks it, logs it; a contact with no heard report
-starts blank and marked *yours* when typed; `ThePsk31LogsWithRstTests` green.
+**If no commit back to 2026-08-24 is green on all three:** `PHASE_PLAN.md` §6 - take the
+newest commit green on `TheCapturesThatDecodeKeepDecodingTests` alone, name it for 0.2
+with that qualification stated, and say which of the other two was red there and how.
+**If a floor test does not exist at a candidate commit**, it counts as green there and the
+report says so - a test that was not yet written could not have been red.
 
-**Drop candidate:** none. **Ticks 9.3.**
+**The worktree is removed before the unit ends, whatever else happens**, and
+`git worktree list` in the report proves it.
 
-### Task 4 - the re-measures: 9.2, 9.4, 9.5, 7.2, 4.3, 0.1
-
-Each as unit 389 left it, taken to a tick or an honest untick with the number:
-
-- **9.2**: the hold as built - releases on hand-back, greys the typed Send, offers no
-  Report mid-over. State it, assert it, tick it as *met as built*; if the plan's wording
-  must change to match, say which words.
-- **9.4**: every parsed hand-back moves the turn; assert on the fixture; tick. The garbled
-  hand-back is the demodulator's, named in section 4, not this criterion's.
-- **9.5**: the four on Olivia as on PSK31; assert; tick.
-- **7.2**: a canned send announced, recorded, capped; assert; tick.
-- **4.3**: no sentence on the radio sheet sends the operator to the radio; assert against
-  unit 383's list; tick.
-- **0.1**: the negative stands as unit 369 measured it twice; tick with *met as a negative*.
-
-**Test watched failing first:** the existing tests for each, run by name.
-
-**Drop candidate:** any that does not measure out - untick, report the number, move on.
-
-### Task 5 - 10.3's report
-
-The map as 389 left it - 393 × 214 at the band's left edge; 327 × 178 when the strayed
-line shows or under 1400 wide. State it, assert it, tick it.
-
-**Drop candidate:** the whole task.
+**Drop candidate:** 0.3, whole. If the walk is running out of clock after 0.2 is named,
+name 0.2, say 0.3 was dropped, and stop.
 
 ---
 
-## 9. Parked
+## 9. Parked - do not touch, do not raise
 
-- **5.1.** Tim's. The loop halts there.
-- **The demodulator on real air.** Waiting on a capture. Not this phase's.
-- **Anything new.** The next phase is written fresh.
+- **Every red at HEAD that is not one of the three floor tests.** Step 3's. Write it in
+  the table if it was seen; chase nothing.
+- **The test host crash inside `Cw`** (HM-OPEN-063). Recorded when it lands; not chased.
+- **The restore itself.** Step 1's. This unit changes no file under `src`.
+- **The keying sweep, `competing`, the scanner, the 80% goal.** Carried in the plan's §7.
+- **Hardening 5.1 and unit 390's nine items.** Tim's. Carried in section 4 verbatim.
 
 ## 10. What not to do
 
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Do not open anything new.** Close what is open.
-- **Do not show a typed RST as heard.**
-- **Do not touch the demodulator or what keys. No package. Report mismatches; repair
-  nothing but this unit's. Write American. Write files as UTF-8.**
+- **Do not change a file under `src`.** This unit measures. A restore begun here is a
+  restore nobody can judge against a number.
+- **Do not lower a floor, edit a floor test, or add a case to one.** The numbers in the
+  table are the evidence; a floor moved to make a case green is a lie in the record.
+- **Do not leave the worktree behind.** A second working copy beside the tree is a
+  second tree the next unit can edit by mistake.
+- **Do not touch what keys.** No file named in `PHASE_PLAN.md` §3 is opened for writing.
+- **Report mismatches; repair nothing. Write American. Write files as UTF-8.**
 
 ## 11. Committing and pushing
 
-Commit per task; push at the end.
+Commit per task. Push at the end and say the push succeeded, or say it was refused and
+why.
 
 ---
 
@@ -210,36 +294,40 @@ owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet holds what it has. After this unit every criterion a
-   session can move is met or honestly unmet; 5.1 waits on Tim.
-B. The criteria, one line each, met or not, with the number.
-C. The report last, and section 4 carries the queue.
+A. The phase goal - CW decodes again. Step 0 is this unit's; steps 1 to 5 are
+   not started. After this unit step 0 is done, or partial with 0.3 dropped.
+B. Step 0's criteria, one line each, met or not: 0.1 the table at HEAD, 0.2 the
+   green commit, 0.3 the red commit, 0.4 the seams.
+C. The report last. Section 4 raises <n> items - unit 390's nine carried and
+   this unit's own, counted - and none of them is in the way of a criterion in B.
 ```
 
 ```
-UNIT:       390 - <complete|stopped> at task N of 6, <which dropped> - <date time>
+UNIT:       391 - <complete|stopped> at task N of 4, <which dropped> - <date time>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   yes
-NUMBER:     unticked criteria a session can move <n> -> <m>
-DRIFT:      carried
+ADVANCED:   yes | no - <why, on the line>
+NUMBER:     floor cases red at HEAD: unknown -> <n> of <m>
+DRIFT:      0
 ```
 
-**Section 2 tells Tim in one paragraph what he sees now: a row of mode buttons with one lit,
-favorites as chips, RST his to correct. Every appearance claim is computed, not seen.**
+**Section 3 leads with the answer:** the commit for 0.2 by hash and date, and the table
+of every floor case at HEAD with its numbers. Then the seams. **Section 2 tells Tim in
+one paragraph what is now known that was not: how many of the floors are red today, and
+what date the decoder last kept them all.** No visible change in the application; say so.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 7
-APPROACH: make the mode strip a row of pressable buttons that read the chosen mode, and the send line likewise, turn the favorites drop-down into chips, make the RST fields editable with heard and yours told apart, and take every other open criterion to a tick or an honest untick with its number
+STEP: 0
+APPROACH: run the three CW floor tests at HEAD case by case with their numbers, then walk main backward in a detached worktree to the newest commit where all three are green and name the commit after it that turned one red
 MOVE: continue
-WHY: PHASE_PLAN.md criterion 7.5 has been open since 2026-09-21 and Tim saw it tonight; 9.3 is ruled A; the owner asked for the phase wrapped up so the next can start fresh
-STATE: partial
-DECIDED: the favorites chips' look is the author's, overrulable; the words heard and yours are the author's
-LICENCE: PHASE_PLAN.md R39 (7.5), R44 (9.3), R46 (10.6), section 6; Tim 2026-09-22 ruling A; R12, R13, R14, R19; HM-DEC-165
-ACCOMPLISHED: the phase is closed as far as a session can close it, with one chip lit, favorites worth looking at, and a log Tim can correct
-ADVANCES: step 7 criterion 5
+WHY: PHASE_PLAN.md step 0 criterion 0.2 asks for the newest commit on main at which all three floor tests are green, and criterion 0.1 for every case at HEAD with its measured characters and elements beside its floor
+STATE: not started
+DECIDED: the worktree path C:/Source/HamLet-wt391 and the 900 s timeout per type are the author's, overrulable
+LICENCE: PHASE_PLAN.md R47, R48, section 6; HM-DEC-155; HM-DEC-139; HM-DEC-165; FACT-004
+ACCOMPLISHED: Tim knows what broke and when, in numbers, and step 1 knows which commit to go back to and which seams it will cross
+ADVANCES: step 0 criterion 2
 END-ARBITER-DECISION
 ```
