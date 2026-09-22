@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Avalonia.Controls;
 using Hamlet.App.Settings;
@@ -33,6 +34,12 @@ namespace Hamlet.App.Tests.ViewModels;
 public sealed class TheCannedListIsOfferedTests : IDisposable
 {
     private const string His = "W1AW";
+
+    /// <summary>The station whose report is on the air before one of the operator's.</summary>
+    private const string Reporting = "K3ABC";
+
+    /// <summary>The station who is signing off, which is what a Confirm answers.</summary>
+    private const string Signing = "K4XYZ";
 
     private const string Mine = "KC3QIS";
 
@@ -256,13 +263,26 @@ public sealed class TheCannedListIsOfferedTests : IDisposable
                     }
                     else if (line.Macro == Psk31CannedMacro.Answer)
                     {
-                        Assert.Same(model.AnswerPsk31Command, entry.Command);
-                        Assert.Same(row, entry.CommandParameter);
+                        // **THE MARK IS ON THE PRESS AND THE SEND IS STILL THE SAME COMMAND'S**
+                        // (criterion 7.2, work instruction 383 section 6 ruling 2 item 3). Both
+                        // identities that were asserted here are still asserted, one step in.
+                        Assert.Same(model.SendCannedMacroPsk31Command, entry.Command);
+
+                        var press = Assert.IsType<Psk31CannedMacroPress>(entry.CommandParameter);
+
+                        Assert.Same(model.AnswerPsk31Command, press.Send);
+                        Assert.Same(row, press.Parameter);
+                        Assert.NotSame(model.SendCannedPsk31Command, press.Send);
                     }
                     else
                     {
-                        Assert.Same(model.CardActionCommand, entry.Command);
-                        Assert.IsType<Ft8ContactCard>(entry.CommandParameter);
+                        Assert.Same(model.SendCannedMacroPsk31Command, entry.Command);
+
+                        var press = Assert.IsType<Psk31CannedMacroPress>(entry.CommandParameter);
+
+                        Assert.Same(model.CardActionCommand, press.Send);
+                        Assert.IsType<Ft8ContactCard>(press.Parameter);
+                        Assert.NotSame(model.SendCannedPsk31Command, press.Send);
                     }
                 }
 
@@ -467,9 +487,357 @@ public sealed class TheCannedListIsOfferedTests : IDisposable
         Assert.Contains("Sent \"" + sent + "\"", line, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// **7.2: all seven of the canned list write `macro: canned`, and the macro's own token is
+    /// kept beside it.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**WRITTEN BY WORK INSTRUCTION 383 TASK 3, AND IT IS THE CRITERION'S OWN WORD.** 7.2
+    /// reads *every canned send begins with its RSID, carries `announced`, counts against the cap,
+    /// and writes `psk31_send_composed` with `macro: canned` and no text*. Unit 378 met the RSID,
+    /// the `announced`, the cap and the no-text for all seven, and the separate judging session
+    /// that read its report returned `partial` naming this: **only the four text rows wrote the
+    /// token, and the three macro rows wrote their own.** All seven write it now.</para>
+    /// <para>**AND NOTHING THE RECORD SAID BEFORE IS LOST** (section 6 ruling 2 item 2). The
+    /// macro's own token is kept in a second key, so a reader can still say which of the seven
+    /// went out: `answer`, `report`, `confirm`, or `text` for the four that carry text rather than
+    /// one of Hamlet's three macros. **The key is absent on any send that did not come off the
+    /// list**, which is asserted here on a plain CQ.</para>
+    /// <para>**THREE CONVERSATIONS, BECAUSE A CARD OFFERS ONE MACRO AT A TIME**: a CQ gives
+    /// Answer, his report before one of yours gives Report, and his closing gives Confirm. That is
+    /// the only way all seven can be pressed, and it is what a right-click actually builds.</para>
+    /// <para>**NOTHING PERSONAL REACHES THE FILE** (HM-DEC-018 §2.1): every line written by all
+    /// seven presses is scanned for both callsigns, the grid, the operator's name, his location,
+    /// the labels he clicked and words out of the lines themselves.</para>
+    /// </remarks>
+    [Fact]
+    public void EveryOneOfTheSevenWritesMacroCannedAndKeepsItsOwnTokenBesideIt()
+    {
+        var shipped = Psk31CannedLines.ReadFrom(Psk31CannedLines.ShippedPath);
+        var written = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+        var everyLine = new List<string>();
+
+        foreach (var station in new[] { His, Reporting, Signing })
+        {
+            for (var at = 0; at < shipped.Lines.Count; at++)
+            {
+                var press = PressOneOfTheSeven(station, at, out var composed, out var lines);
+
+                everyLine.AddRange(lines);
+
+                if (composed is null)
+                {
+                    _output.WriteLine(
+                        "  " + shipped.Lines[at].Label.PadRight(26) + station
+                        + "  not offered on this row");
+
+                    continue;
+                }
+
+                _output.WriteLine(
+                    "  " + shipped.Lines[at].Label.PadRight(26) + station + "  " + press);
+                _output.WriteLine("        " + composed.Value.GetRawText());
+
+                written.TryAdd(shipped.Lines[at].Label, composed.Value.Clone());
+            }
+        }
+
+        // **ALL SEVEN, AND NOT FOUR OF THEM.**
+        Assert.Equal(7, shipped.Lines.Count);
+        Assert.Equal(shipped.Lines.Count, written.Count);
+
+        foreach (var line in shipped.Lines)
+        {
+            var composed = written[line.Label];
+
+            Assert.Equal("canned", composed.GetProperty("macro").GetString());
+
+            // **THE SECOND KEY SAYS WHICH OF THE SEVEN IT WAS**, so nothing is lost.
+            var kept = composed.GetProperty("cannedMacro").GetString();
+
+            Assert.Equal(
+                line.IsText ? "text" : line.Macro switch
+                {
+                    Psk31CannedMacro.Answer => "answer",
+                    Psk31CannedMacro.Report => "report",
+                    _ => "confirm",
+                },
+                kept);
+
+            // **AND EVERYTHING UNIT 378 EARNED IS STILL EARNED**: the burst, the announcement,
+            // the macro's thirty-second cap, and the length in place of the text.
+            Assert.True(composed.GetProperty("announced").GetBoolean());
+            Assert.Equal(
+                OliviaData.Current.Rsid!.CodeOf(Psk31Modulator.AnnouncedAs),
+                composed.GetProperty("rsidCode").GetInt32());
+            Assert.Equal(
+                OperatorSend.LongestUnslottedSeconds,
+                composed.GetProperty("capSeconds").GetDouble());
+            Assert.True(composed.GetProperty("withinCap").GetBoolean());
+            Assert.True(composed.GetProperty("characters").GetInt32() > 0);
+
+            _output.WriteLine(
+                line.Label.PadRight(26) + "macro: canned   cannedMacro: " + kept);
+        }
+
+        // **A SEND THAT DID NOT COME OFF THE LIST CARRIES NO SUCH KEY AT ALL**, so no line the
+        // record wrote before tonight changes shape.
+        var cq = ACallToAnyone();
+
+        Assert.Equal("cq", cq.GetProperty("macro").GetString());
+        Assert.False(cq.TryGetProperty("cannedMacro", out _));
+
+        _output.WriteLine("a call to anyone writes: " + cq.GetRawText());
+
+        // **NOTHING PERSONAL, ANYWHERE IN THE FILE** (§2.1).
+        foreach (var line in everyLine)
+        {
+            foreach (var secret in new[]
+                     {
+                         His, Reporting, Signing, Mine, "FN00DJ", "Tim", "Pennsylvania",
+                         "QRZ", "BTU", "Answer him", "73 and out",
+                     })
+            {
+                // **WHOLE WORDS, BECAUSE THE RECORD HAS ITS OWN VOCABULARY.** A substring scan
+                // finds the operator's name inside `timestamp`, which is a false alarm that
+                // would teach the next reader to ignore this assertion.
+                Assert.False(
+                    Regex.IsMatch(line, "\\b" + Regex.Escape(secret) + "\\b", RegexOptions.IgnoreCase),
+                    "\"" + secret + "\" reached the record: " + line);
+            }
+        }
+    }
+
+    /// <summary>
+    /// **7.2: what goes on the air did not move - the same macro off the list and off the card is
+    /// byte for byte the same transmission.**
+    /// </summary>
+    /// <remarks>
+    /// **THE PROOF IS THE AUDIO AND NOT THE ASSURANCE** (section 6 ruling 2 item 5). The Answer
+    /// macro is sent twice over: once by pressing it on the canned menu, which is the press unit
+    /// 383 marked, and once by the command that sent it before there was a canned menu at all.
+    /// **The composed samples are compared one by one**, and the cap, the burst, the announcement
+    /// and the number of calls to the sound card are compared with them. **The only difference
+    /// between the two is the record's two tokens**, which is the whole of what this unit changed.
+    /// </remarks>
+    [Fact]
+    public void AMacroSentOffTheListIsByteForByteTheMacroSentOffTheCard()
+    {
+        var offTheList = TheAnswerMacro(offTheCannedMenu: true);
+        var offTheCard = TheAnswerMacro(offTheCannedMenu: false);
+
+        _output.WriteLine("off the list : " + offTheList.Composed.GetRawText());
+        _output.WriteLine("off the card : " + offTheCard.Composed.GetRawText());
+        _output.WriteLine(
+            "samples      : " + offTheList.Samples.Length + " and " + offTheCard.Samples.Length);
+
+        // **ONE TRANSMISSION EACH, THROUGH THE ONE DOOR** (§0.2).
+        Assert.Equal(1, offTheList.TimesCalled);
+        Assert.Equal(1, offTheCard.TimesCalled);
+
+        // **BYTE FOR BYTE**, and the length first so a failure says which it was.
+        Assert.Equal(offTheCard.Samples.Length, offTheList.Samples.Length);
+        Assert.Equal(offTheCard.Samples, offTheList.Samples);
+
+        foreach (var key in new[] { "characters", "seconds", "capSeconds", "rsidCode", "offsetHz" })
+        {
+            Assert.Equal(
+                offTheCard.Composed.GetProperty(key).GetRawText(),
+                offTheList.Composed.GetProperty(key).GetRawText());
+        }
+
+        Assert.Equal(
+            offTheCard.Composed.GetProperty("announced").GetBoolean(),
+            offTheList.Composed.GetProperty("announced").GetBoolean());
+
+        // **AND THE ONLY DIFFERENCE IS THE RECORD'S TWO TOKENS.**
+        Assert.Equal("answer", offTheCard.Composed.GetProperty("macro").GetString());
+        Assert.False(offTheCard.Composed.TryGetProperty("cannedMacro", out _));
+
+        Assert.Equal("canned", offTheList.Composed.GetProperty("macro").GetString());
+        Assert.Equal("answer", offTheList.Composed.GetProperty("cannedMacro").GetString());
+    }
+
     // -------------------------------------------------------------------------
     // The fixtures.
     // -------------------------------------------------------------------------
+
+    /// <summary>What one press left behind: the audio, the record, and how often it played.</summary>
+    private readonly record struct WhatWentOut(
+        float[] Samples, int TimesCalled, JsonElement Composed);
+
+    /// <summary>Send the Answer macro, off the canned menu or off the command that sends it.</summary>
+    private WhatWentOut TheAnswerMacro(bool offTheCannedMenu)
+    {
+        FakeSink sink;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "383", _ => true))
+        {
+            var model = Panel("PSK31", telemetry);
+
+            ShowThree(model);
+
+            var port = new FakePort();
+
+            sink = new FakeSink();
+
+            model.UseRigPortForTests(port);
+            model.UseArmedSendForTests(
+                new Ft8ArmedSend(new Ft8TransmitSequence(port, sink, guard: null, telemetry)));
+
+            var row = model.DigitalDecodes.First(r => model.Psk31StationOn(r) == His);
+
+            model.CardsNowForTests = DateTime.UtcNow;
+            model.OpenPsk31CardCommand.Execute(row);
+
+            if (offTheCannedMenu)
+            {
+                var flyout = MainWindow.SendFlyoutFor(model, row);
+                var item = flyout!.Items.OfType<MenuItem>().First();
+
+                Assert.Equal("Answer him", item.Header as string);
+
+                item.Command!.Execute(item.CommandParameter);
+            }
+            else
+            {
+                model.AnswerPsk31Command.Execute(row);
+            }
+
+            Settle(model);
+        }
+
+        var composed = Assert.Single(Composed(TheFile()));
+
+        return new(sink.LastSamples, sink.TimesCalled, composed.Clone());
+    }
+
+    /// <summary>Press one of the seven on one station's row, and keep what it wrote.</summary>
+    private string PressOneOfTheSeven(
+        string station, int at, out JsonElement? composed, out List<string> lines)
+    {
+        var what = "not offered";
+
+        composed = null;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "383", _ => true))
+        {
+            var model = Panel("PSK31", telemetry);
+
+            ShowThree(model);
+
+            var port = new FakePort();
+            var sink = new FakeSink();
+
+            model.UseRigPortForTests(port);
+            model.UseArmedSendForTests(
+                new Ft8ArmedSend(new Ft8TransmitSequence(port, sink, guard: null, telemetry)));
+
+            var row = model.DigitalDecodes.First(r => model.Psk31StationOn(r) == station);
+
+            model.CardsNowForTests = DateTime.UtcNow;
+            model.OpenPsk31CardCommand.Execute(row);
+
+            var flyout = MainWindow.SendFlyoutFor(model, row);
+            var items = flyout!.Items.OfType<MenuItem>().ToList();
+
+            Assert.Equal(7, items.Count);
+
+            if (items[at].Command is { } pressed)
+            {
+                what = (items[at].CommandParameter as Psk31CannedMacroPress) is { } macro
+                    ? "SendCannedMacroPsk31Command -> "
+                      + (ReferenceEquals(macro.Send, model.AnswerPsk31Command)
+                          ? "AnswerPsk31Command"
+                          : "CardActionCommand")
+                    : "SendCannedPsk31Command";
+
+                pressed.Execute(items[at].CommandParameter);
+                Settle(model);
+            }
+        }
+
+        lines = TheFile();
+
+        var written = Composed(lines).ToList();
+
+        if (written.Count > 0)
+        {
+            composed = written[^1];
+        }
+
+        return what;
+    }
+
+    /// <summary>A plain call to anyone, which did not come off the canned list.</summary>
+    private JsonElement ACallToAnyone()
+    {
+        using (var telemetry = new JsonlTelemetry(_folder, "383", _ => true))
+        {
+            var model = Panel("PSK31", telemetry);
+            var port = new FakePort();
+            var sink = new FakeSink();
+
+            model.UseRigPortForTests(port);
+            model.UseArmedSendForTests(
+                new Ft8ArmedSend(new Ft8TransmitSequence(port, sink, guard: null, telemetry)));
+
+            model.SendCallToAnyoneCommand.Execute(null);
+            Settle(model);
+        }
+
+        return Assert.Single(Composed(TheFile())).Clone();
+    }
+
+    /// <summary>Everything written so far, and then the folder is emptied for the next press.</summary>
+    private List<string> TheFile()
+    {
+        var lines = Directory.GetFiles(_folder, "*.jsonl").SelectMany(File.ReadAllLines).ToList();
+
+        foreach (var file in Directory.GetFiles(_folder, "*.jsonl"))
+        {
+            File.Delete(file);
+        }
+
+        return lines;
+    }
+
+    /// <summary>Every `psk31_send_composed` payload in the lines handed in.</summary>
+    private static IEnumerable<JsonElement> Composed(IEnumerable<string> lines)
+        => Events(lines, "psk31_send_composed");
+
+    /// <summary>Let a send that a click fired finish, and run what it posted to the UI thread.</summary>
+    private static void Settle(MainWindowViewModel model)
+    {
+        for (var tries = 0; tries < 2000 && model.HasSomethingToStop; tries++)
+        {
+            Thread.Sleep(10);
+        }
+
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+    }
+
+    /// <summary>Three stations: one calling CQ, one reporting, one signing off.</summary>
+    /// <remarks>
+    /// **ALL SEVEN CAN ONLY BE PRESSED ACROSS THREE CONVERSATIONS**, because a card offers one
+    /// macro at a time and which one is the conversation's own answer (`Psk31Offer.Table`): a CQ
+    /// gives Answer, his report before one of yours gives Report, and his closing gives Confirm.
+    /// </remarks>
+    private static void ShowThree(MainWindowViewModel model)
+    {
+        const string CallingCq = "CQ CQ CQ de " + His + " " + His + " pse K\n";
+        const string HisReport = Mine + " de " + Reporting + "  RST 599 599  BTU " + Mine
+            + " de " + Reporting + " K\n";
+        const string HisClosing = Mine + " de " + Signing + "  TNX FER QSO 73 GL  BTU " + Mine
+            + " de " + Signing + " K\n";
+
+        model.ShowPsk31ChannelsForTests(new[]
+        {
+            new Psk31Channel(1, 1000, 10, CallingCq),
+            new Psk31Channel(2, 1500, 12, HisReport),
+            new Psk31Channel(3, 2000, 8, HisClosing),
+        });
+    }
 
     /// <summary>One event's own payload - the `data` object the writer nests it in.</summary>
     private static IEnumerable<JsonElement> Events(IEnumerable<string> lines, string name)
