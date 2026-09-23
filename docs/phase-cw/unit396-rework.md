@@ -272,6 +272,12 @@ twelve, 021410 among them, unchanged. Printer:
 ABOVE 2 to 3, the only distance that moved, away from the word. Transmit files nothing. Out,
 reverted next.
 
+**Piece 31, `b7147b1f`, task 2, measured.** Patch 139 lines, `CwUnitEstimator.cs`, 113
+insertions and 4 deletions; applied clean, piece commit `ee3dcca8`. Build 0 errors in 5 s. Captures
+**37 of 37 in 94 s wall**, 1.56 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of
+2 in 3 s. Printer: the seven SETTLED lines identical to section 1. Transmit files nothing. Out,
+reverted next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
