@@ -37,6 +37,16 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// recording's characters while turning another's into placeholders has traded
 /// one failure for another, and printing both counts beside each other is what
 /// makes that visible.</para>
+/// <para>**RE-MEASURED 2026-09-23 AS NAMED CHARACTERS, UNDER R57** (HM-DEC-168,
+/// work instruction 408). The floor used to count every character emitted, and a
+/// placeholder is a character, so a change that stopped printing what the decoder
+/// could not name read as a floor lowered: unit 405 threw away two greens on that
+/// reading. **A floor now counts named characters, and the element floor counts
+/// the elements inside them.** Placeholders are counted and printed and asserted
+/// on nothing. Every row was measured at `c19ecf61`, where on all 37 the named
+/// count is the old total less the placeholders exactly, so the re-measurement
+/// took nothing real away; the old totals are in
+/// `docs/phase-cw/unit408-floors.md`.</para>
 /// </remarks>
 public sealed class TheCapturesThatDecodeKeepDecodingTests
 {
@@ -52,43 +62,44 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
     /// floor was set.
     /// </summary>
     /// <remarks>
-    /// The three numbers are characters emitted, elements seen, and characters
-    /// marked unsure. The first two are asserted as floors and the third is
-    /// printed; see this class's own remarks for why.
+    /// The three numbers are named characters settled, the elements inside
+    /// them, and placeholders settled. The first two are asserted as floors and
+    /// the third is printed; see this class's own remarks for why, and R57 for
+    /// why a placeholder is not a character a floor counts.
     /// </remarks>
     public static TheoryData<string, int, int, int> Floors { get; } = new()
     {
         // Adjudicated or independently corroborated content.
-        { "cw-2026-08-17-013347", 59, 108, 2 },
-        { "cw-2026-08-17-134712", 63, 98, 10 },
-        { "cw-2026-08-18-004507", 50, 118, 1 },
-        { "unadjudicated/cw-2026-08-24-012403", 22, 65, 0 },
+        { "cw-2026-08-17-013347", 57, 106, 2 },
+        { "cw-2026-08-17-134712", 21, 41, 42 },
+        { "cw-2026-08-18-004507", 49, 117, 1 },
+        { "unadjudicated/cw-2026-08-24-012403", 21, 62, 1 },
 
         // The seven W1AW propagation-bulletin captures of 2026-08-22.
-        { "unadjudicated/cw-2026-08-22-031838", 57, 126, 3 },
-        { "unadjudicated/cw-2026-08-22-031905", 42, 118, 6 },
-        { "unadjudicated/cw-2026-08-22-031948", 34, 114, 3 },
-        { "unadjudicated/cw-2026-08-22-032012", 44, 120, 1 },
-        { "unadjudicated/cw-2026-08-22-032050", 53, 123, 9 },
-        { "unadjudicated/cw-2026-08-22-032113", 55, 118, 8 },
-        { "unadjudicated/cw-2026-08-22-032129", 66, 119, 1 },
+        { "unadjudicated/cw-2026-08-22-031838", 42, 93, 15 },
+        { "unadjudicated/cw-2026-08-22-031905", 36, 108, 6 },
+        { "unadjudicated/cw-2026-08-22-031948", 31, 111, 3 },
+        { "unadjudicated/cw-2026-08-22-032012", 43, 119, 1 },
+        { "unadjudicated/cw-2026-08-22-032050", 44, 105, 9 },
+        { "unadjudicated/cw-2026-08-22-032113", 47, 102, 8 },
+        { "unadjudicated/cw-2026-08-22-032129", 65, 114, 1 },
 
         // Nothing adjudicated in any of these.
-        { "cw-2026-08-17-013622", 55, 84, 0 },
-        { "unadjudicated/cw-2026-08-18-003016", 57, 149, 3 },
-        { "unadjudicated/cw-2026-08-18-003126", 54, 144, 6 },
-        { "unadjudicated/cw-2026-08-18-003758", 63, 121, 10 },
-        { "unadjudicated/cw-2026-08-23-001520", 5, 45, 1 },
-        { "unadjudicated/cw-2026-08-23-001831", 55, 124, 10 },
-        { "unadjudicated/cw-2026-08-23-001952", 75, 142, 13 },
-        { "unadjudicated/cw-2026-08-23-002016", 75, 136, 17 },
+        { "cw-2026-08-17-013622", 51, 80, 4 },
+        { "unadjudicated/cw-2026-08-18-003016", 54, 146, 3 },
+        { "unadjudicated/cw-2026-08-18-003126", 48, 131, 6 },
+        { "unadjudicated/cw-2026-08-18-003758", 44, 93, 19 },
+        { "unadjudicated/cw-2026-08-23-001520", 1, 1, 4 },
+        { "unadjudicated/cw-2026-08-23-001831", 44, 108, 11 },
+        { "unadjudicated/cw-2026-08-23-001952", 56, 113, 19 },
+        { "unadjudicated/cw-2026-08-23-002016", 44, 84, 31 },
 
 
         // **THE EVENING OF 2026-08-25**, banked after four units of asking.
         // Counts measured through this harness on the day the floors were set;
         // where they differ from `MANIFEST.md` the tree is what is asserted and
         // the difference is in that unit's report.
-        { "unadjudicated/cw-2026-08-25-011552", 30, 89, 8 },   // K1ZJA call, early lock
+        { "unadjudicated/cw-2026-08-25-011552", 22, 74, 8 },   // K1ZJA call, early lock
         // **LOWERED 2026-08-25 UNDER TIM'S RULING, NOT SILENTLY.** The re-read
         // costs this recording twelve of the sixteen elements it used to see and
         // two of its four characters, and it is the only capture in the tree the
@@ -96,18 +107,18 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         // it and the floor stays rather than retiring — it is simply set to what
         // the decoder now produces, with the loss on the record. Why the replay
         // destroys this one recording is its own question and it is unanswered.
-        { "unadjudicated/cw-2026-08-25-012748", 2, 4, 0 },   // **Bug A**, and the one capture the re-read hurts
-        { "unadjudicated/cw-2026-08-25-012823", 41, 62, 15 },   // **the negative control** — the tone lands 50 Hz off and the reading is soup
-        { "unadjudicated/cw-2026-08-25-012922", 50, 112, 5 },   // lock recovering
-        { "unadjudicated/cw-2026-08-25-013010", 54, 131, 6 },   // a whole contact; the gate must not damage it
-        { "unadjudicated/cw-2026-08-25-013150", 58, 139, 7 },   // `CQ CQ CQ DE ND4K`
-        { "unadjudicated/cw-2026-08-25-013303", 54, 146, 10 },   // **the beat-the-chain case**
-        { "unadjudicated/cw-2026-08-25-013402", 61, 161, 5 },   // nought unsure at the old grid ceiling
-        { "unadjudicated/cw-2026-08-25-013520", 60, 153, 5 },   // **the reference case**
-        { "unadjudicated/cw-2026-08-25-013637", 63, 164, 3 },   // gap clusters merge at speed, the joint-cutter fixture
-        { "unadjudicated/cw-2026-08-25-021410", 47, 99, 11 },   // a machine fist with separable gaps, still miscut
-        { "unadjudicated/cw-2026-08-25-021629", 47, 96, 20 },   // 24 % duty: `559 559 IN MI MI` buried
-        { "unadjudicated/cw-2026-08-25-021825", 41, 74, 16 },   // 18 % duty: an eight-second call in thirty seconds
+        { "unadjudicated/cw-2026-08-25-012748", 2, 3, 2 },   // **Bug A**, and the one capture the re-read hurts
+        { "unadjudicated/cw-2026-08-25-012823", 26, 40, 15 },   // **the negative control** — the tone lands 50 Hz off and the reading is soup
+        { "unadjudicated/cw-2026-08-25-012922", 45, 106, 5 },   // lock recovering
+        { "unadjudicated/cw-2026-08-25-013010", 48, 122, 6 },   // a whole contact; the gate must not damage it
+        { "unadjudicated/cw-2026-08-25-013150", 51, 123, 7 },   // `CQ CQ CQ DE ND4K`
+        { "unadjudicated/cw-2026-08-25-013303", 44, 127, 10 },   // **the beat-the-chain case**
+        { "unadjudicated/cw-2026-08-25-013402", 56, 150, 5 },   // nought unsure at the old grid ceiling
+        { "unadjudicated/cw-2026-08-25-013520", 55, 147, 5 },   // **the reference case**
+        { "unadjudicated/cw-2026-08-25-013637", 60, 157, 3 },   // gap clusters merge at speed, the joint-cutter fixture
+        { "unadjudicated/cw-2026-08-25-021410", 36, 88, 11 },   // a machine fist with separable gaps, still miscut
+        { "unadjudicated/cw-2026-08-25-021629", 27, 65, 20 },   // 24 % duty: `559 559 IN MI MI` buried
+        { "unadjudicated/cw-2026-08-25-021825", 25, 49, 16 },   // 18 % duty: an eight-second call in thirty seconds
 
         // **THE MISS OF 2026-08-26.** The operator sat on 14.0275 MHz hearing
         // fast CW while the terminal said nothing decoded yet. Floored at its
@@ -164,19 +175,46 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
     /// as they did when this was written.
     /// </remarks>
     /// <param name="name">The recording.</param>
-    /// <param name="characters">What it emitted when the floor was set.</param>
-    /// <param name="elements">What it saw when the floor was set.</param>
-    /// <param name="unsure">What it marked when the floor was set, for the trade.</param>
+    /// <param name="named">The named characters it settled when the floor was set.</param>
+    /// <param name="elements">The elements inside those named characters.</param>
+    /// <param name="placeholders">The placeholders it settled then, for the record.</param>
     [Theory]
     [MemberData(nameof(Floors))]
     public void EachStillProducesWhatItDid(
-        string name, int characters, int elements, int unsure)
+        string name, int named, int elements, int placeholders)
     {
         var audio = WavAudio.Read(
             Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
 
         var decoder = new CwDecoder(audio.SampleRate, 600);
         var hop = decoder.Tracker.HopSamples;
+
+        // **WHAT IS COUNTED IS WHAT SETTLED, SPLIT BY WHETHER IT HAS A NAME**
+        // (R57, HM-DEC-168). A placeholder is something the decoder heard and
+        // could not name, and a change that stops printing one has taken nothing
+        // real away; so it is counted beside the floor and never inside it. The
+        // elements are counted over the named characters for the same reason: a
+        // suppressed placeholder takes its own elements with it.
+        var namedNow = 0;
+        var elementsNow = 0;
+        var placeholdersNow = 0;
+
+        decoder.CharacterSettled += c =>
+        {
+            if (c.IsWordGap)
+            {
+                return;
+            }
+
+            if (c.IsUnreadable)
+            {
+                placeholdersNow++;
+                return;
+            }
+
+            namedNow++;
+            elementsNow += Math.Max(1, c.Pattern.Length);
+        };
 
         for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
         {
@@ -189,10 +227,11 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         var report = decoder.Report;
 
         _output.WriteLine(
-            $"{name}: {report.CharactersEmitted} characters against a floor of "
-            + $"{characters}, {report.ElementsSeen} elements against {elements}, "
-            + $"{report.CharactersUnsure} unsure where {unsure} were marked when "
-            + $"the floor was set, at {report.ToneHz:0} Hz");
+            $"{name}: {namedNow} named against a floor of {named}, "
+            + $"{elementsNow} named elements against {elements}, "
+            + $"{placeholdersNow} placeholders where {placeholders} settled when "
+            + $"the floor was set, {report.CharactersEmitted} emitted in all, "
+            + $"at {report.ToneHz:0} Hz");
 
         if (Anchored.Contains(name))
         {
@@ -205,13 +244,12 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         else
         {
             Assert.True(
-                report.CharactersEmitted >= characters,
-                $"{name} fell from {characters} characters to "
-                + $"{report.CharactersEmitted}");
+                namedNow >= named,
+                $"{name} fell from {named} named characters to {namedNow}");
         }
 
         Assert.True(
-            report.ElementsSeen >= elements,
-            $"{name} fell from {elements} elements to {report.ElementsSeen}");
+            elementsNow >= elements,
+            $"{name} fell from {elements} named elements to {elementsNow}");
     }
 }

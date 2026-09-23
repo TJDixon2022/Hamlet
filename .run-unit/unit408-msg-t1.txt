@@ -1,0 +1,3 @@
+unit408 task 1: the floors re-measured under R57 - all 37 capture rows carry named characters, named elements and placeholders, named and its elements the floors, placeholders printed and asserted on nothing; named 1295 of 1594 emitted, 299 placeholders, every row named equal to emitted less placeholders so no named character lost; captures 37 of 37, adjudicated 13 of 13 with every reading identical to entry; the 17:37 bench replay reads 46 named 0 placeholders, not the sidecar's session counts, and the sidecar txt is absent; table in docs/phase-cw/unit408-floors.md
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
