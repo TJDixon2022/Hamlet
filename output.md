@@ -1,212 +1,226 @@
 ```
 READ IN THIS ORDER.
 
-A. PHASE GOAL - CW decodes again. Steps 1, 2 and 4 done; step 3 partial on
-   3.6 alone; step 5 is Tim's.
-B. THIS STEP - step 3, the inherited reds. 3.1 to 3.5 met; 3.6, 2 of eight
-   with a verdict - none of #6 #15 #42 #43 #44 #45 went green at a kept
-   commit; #45 and #6 went green only under changes put back for lowering
-   capture rows; #6 #15 #43 #44 #45 stay open at attack 2 with their counts
-   restarted, #42 stays open, not attacked.
-C. THIS REPORT - the six-red table leads section 3;
-   section 4 raises 5 items and items 1, 2 and 3 stand in the way of 3.6.
+A. PHASE GOAL - CW decodes again. Steps 1, 2 and 4 done, their criteria
+   all met; step 3 partial on 3.6 alone; step 5 is Tim's.
+B. THIS STEP - step 3, the inherited reds. 3.1 to 3.5 met; 3.6, 4 of
+   eight with a verdict - #6 went green on the tracker switch and #42 on
+   the radio's word, both kept; #15 #43 #44 moved and stay open, #45 stays
+   open, not attacked.
+C. THIS REPORT - the red table leads section 3; section 4 raises 5 items
+   and items 1, 2 and 3 stand in the way of 3.6. #45's fault is a
+   placeholder the floors count and no red has three no-movement attacks,
+   so whether 3.6 can close under the head's count rule is Tim's to weigh.
 ```
 
 ```
-UNIT:       405 - complete at task 4 of 4, tasks 0 to 4, none dropped - 2026-09-23 13:27
-PHASE GOAL: get the engine's CW decoder back to what it produced on 2026-08-25, held there by three floor tests, then let Tim judge it at the radio
-UNIT GOAL:  make a second, better-aimed try at each of the six test recordings the decoder still gets wrong, starting from the causes unit 402 named, and keep only a change that clears one without costing any other recording
-ADVANCED:   no - no red reached a verdict; the two changes that turned a red green each lowered real capture rows, and the rest moved a number without turning a test green
-NUMBER:     of 3.6's eight 2 with a verdict; this unit 0 green, 5 moved, 1 not attacked
-DRIFT:      1 consecutive units without advance  (was 0)
+UNIT:       406 - complete at task 5 of 5, tasks 0 to 5, none dropped - 2026-09-23 14:54
+PHASE GOAL: bring the engine's CW decoder back to what it read on the air on 2026-08-25, hold it there with three floor tests, clear the inherited reds, then have Tim judge it at the radio
+UNIT GOAL:  find and fix the tone tracker's move that takes the mix off a single sender, and give #42's test the radio's own word that the operator is sending, keeping only a change that turns a red green and costs no recording
+ADVANCED:   yes - step 3 criterion 6, from 2 to 4 of eight with a verdict; #6 and #42 green at kept commits with every floor row identical
+NUMBER:     of 3.6's eight 4 with a verdict; this unit 2 green, 3 moved, 1 not attacked
+DRIFT:      0 consecutive units without advance  (was 1)
 ```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4. All of tasks 0 to 4 were done and none was dropped.** Machine
-QUIVERFULL, project Hamlet, branch main. The gate held: SHACK_FACTS.md and
-CwProbabilisticDecoder.cs are present, there is no CoreHMI.sln or MURC.sln, and the root is
-C:\Source\HamLet. Every item in section 5 matched the tree, with no mismatch. Commits `63c28f7a`,
-`a0256e3e`, `d40d6653` and `ef34d601` were each pushed and each push succeeded. The report commit
-follows them, and whether its push succeeded is in `PROJECT_STATUS.md`'s NOTE, written after the
-push. The session ran from 12:28 to 13:27, well inside
-task 2's clock rule, so #6 was attacked.
+**Complete at task 5 of 5. All of tasks 0 to 5 were done and none was dropped.** Machine
+QUIVERFULL, project Hamlet, branch main, gate confirmed. Commits `cca21dea`, `b66a220e`,
+`775907b6`, `099b3a2a`, `0fe55b79` and `13a09580` were each pushed, and each push succeeded.
+Every section 5 item matched the tree. HM-DEC-127's text lives in the decision table of
+`CLAUDE.md`, line 397, not in `DECISIONS.md`.
 
-**Task 0.** Version 1.13.91 to 1.13.92. `PHASE_STATUS.md` was set to 405 and step 3, and
-`PHASE_OUTCOME.md` got its entry. The `f74b6d51` diff over `src`, `tests` and the list was empty,
-so the lines at entry are unit 404's exit: engine 178, app 278. Every type was run at entry and
-matches unit 404's numbers (table in `docs/phase-cw/unit405-reds.md` section 1).
+**Task 0, the entry round.** Version 1.13.92 to 1.13.93, and `PHASE_STATUS.md` set to 406 and
+step 3. Under decision 7 the carry-forward lines at entry are unit 405's exit. The floors match
+unit 405's exit row for row: captures 37 of 37, adjudicated 13 of 13, synthetics 2 of 2. The
+reds: #6 0.75, #15 0.54, #42 70, #43 5 + 37, #44 3 + 21, #45 1 + 3. The tracker readers are the
+grep for `CwToneTracker` plus `ThePitchCanBeHeldTests`, compiled only, ten types. Two of those
+ten need a note:
 
-**Task 1, the trace.** A new printer, `TheSixRedsTraceTests`, asserts nothing and is on neither
-line. Its output is in `.run-unit/unit405-trace.txt`. It named a line for five of the six reds
-and a property for #42:
+- `WhatBandwidthTheDecoderListensThroughTests` is 4 of 6 at entry. Two reds, outside the 51-name
+  set, are left alone.
+- `TheGateHasItsOwnWindowNowTests` **did not fit 300 s, nor 590 s alone.** The test host was
+  killed with no result both times. Its two short methods run 4 of 4 in 1 s.
+  `EveryWidthLeavesTheEmptyRecordingsSilent` went unmeasured at entry and at exit.
 
-- **#15 and #43:** the doubled fit comes from the unit estimator, not the speed grid.
-  `CwUnitEstimator.cs` 96, through the tenth-percentile seed at 507, takes a few 15 to 35 ms noise
-  marks as the dit cluster. At the read where #15 leaves 12 for 22.9, the grid itself prefers 12.
-- **#44:** held gaps of 15/1127/323 ms, from `MeasureGaps` 221 to 231, put the character gap past
-  the word gap. Every element then reads as its own letter.
-- **#45:** the flush settles a trailing unreadable character (`CwProbabilisticStream.cs` 501 to
-  507). With B1 and B2 applied uncommitted, tightfist-easy settles `VVVTESTDETESTK`.
-- **#6:** `C` and `Q` are whole in the envelope. The stream mixes them at the tracker's unmeasured
-  600 Hz, 40 Hz off the sender, so they arrive 8 dB down and the lattice reads them as key-up
-  (`CwDecoder.cs` 585 to 589).
-- **#42:** the only property separating the fixture's guard spans from the real captures' is the
-  generator's flat -82 dBFS residue. 46 of `013347`'s 59 floor characters and 28 of `013622`'s 55
-  sit inside the guard's own-send spans.
+**Task 1, the trace.** The printer `TheTrackerSwitchTraceTests` asserts nothing, and no `src`
+file changed. Findings are in `docs/phase-cw/unit406-reds.md` section 2. The printer disturbs
+nothing: #6, #15 and every capture print their test's own numbers.
 
-**Task 2, the attacks.** Five changes were built and measured one type per invocation, and none
-was kept. `src` at exit is identical to entry.
+- **The cause.** Of the ten moves away from a single sender, nine go through the hold at
+  `CwToneTracker.cs` 959. That hold makes a deferred move *before* the survey is analysed, and
+  it never checks that the survey still finds keying there. The comment at 1084 promises that
+  re-confirmation.
+- **7 of the 9 are stale holds.** The survey read at execution admits nothing, or admits only
+  the sender's own bin.
+- **No known-right switch is stale.** The two-station fixture's real handover is not a `Switch`
+  call. It is a cold move at 1004.
+- **#6's first 1.54 s** is the tracker's initial 600 Hz (`CwToneTracker.cs` 382), not a switch
+  still to be made.
+- **#42.** The radio's word on the audio clock takes `during` from 70 to 0. It also takes
+  `OwnTransmitSeconds` from 9.08 to 0.00 s, because line 501 skips the guard along with the
+  tracker. A wall clock never resumes decoding.
 
-- **A1**, B1 and B2 together: #45 green, but 6 capture rows lower.
-- **S1**, at line 96: #15 0.54 to 0.61 and #43 moved, but 14 capture rows lower.
-- **G1**, gap order: #44 moved at no cost, but turned no red green.
-- **M1 and M2**, re-mixing the held window at the tracker's new pitch: #6 0.75 to 0.86, green,
-  but 11 and 10 capture rows lower.
+**Task 2, the tracker change.** Two shapes were tried:
 
-Widening the printer's pitch line then showed that on every single-sender case the misses follow
-`CwToneTracker.Switch` moving the mixdown 25 to 85 Hz off the sender, reported as measured: 575
-for 615 on coverage-easy and exchange-easy, 700 for 640 on #15, 550 and 725 for 640 on #6's two
-tails.
+- **H1**: a held switch goes only if the survey still admits the held pitch. It took #6 to 0.89
+  and moved #15, #43 and #44. But it cost captures 35 of 37, with `031838` down 57 to 37: on
+  real captures, stale holds moved onto the station. **Put back.**
+- **H2**, the narrower shape at the same property: a held switch is dropped only when the
+  survey finds the keying back at the bank already being listened to. #6 went from 0.75 to
+  0.82 against 0.79. Every floor row, gate type, speed reader and tracker reader was identical
+  to entry. **Kept, `775907b6`.**
 
-**Task 3.** Six rows marked *attack 2* were added to `reds-3.6.md`, and the attack table to
-section 3 of `unit405-reds.md`. No red went green at a kept commit, so the failing set's closing
-line and 3.1's tick are unchanged. 3.6 is not ticked.
+**Task 3.** Two attacks:
 
-**Task 4.** The exit round is identical to entry on every floor and every type. The app line lost
-three different names to the dispatcher loop before any assertion across two runs, and counts
-278. 3.5 is re-confirmed.
+- **#42, kept at `099b3a2a`.** Its event pumps a chunk at a time and reports
+  `RadioIsTransmitting` from the recipe's span, 1.00 to 13.00 s, on audio time. Both
+  assertions and the 13 s window are unchanged. `CwDecoder.cs` got one change: while decoding
+  is suspended, the transmit guard alone is handed each hop's level. #42 went from 70 to 0,
+  with own transmit 9.5 s. Every floor row was identical.
+- **G1 on top, put back.** It moved #44 from 3 + 21 to 4 + 16, but turned no red green.
 
-**Decisions the session made for itself**, reproduced in full:
+**Task 4, the record.** Six attack-3 rows are in `reds-3.6.md`, and the attack table is in
+`unit406-reds.md` section 3. The failing set's closing line now reads 47 green and 4 red-open,
+and 3.1's tick sentence has a clause for #6 and #42. **3.6 is not ticked.**
 
-1. **#42 was not attacked, although task 1 found a separating property.** The instruction says
-   the change must be conditioned on the property found. The property found is that the
-   fixture's mutes sit at -82.8 to -81.6 dBFS in every span, which is the generator's residue
-   constant (`CwFixtureGenerator.cs` 672 to 688), with the fixture at 8 kHz and 15 dB quieter.
-   A skip conditioned on that would turn #42 green on synthetic audio and never fire on the air,
-   which would present a test result as a repair (CLAUDE.md 0.0, §12.5, HM-DEC-091). I read
-   decision 4 as covering a property that does not separate the operator's sending from anyone
-   else's. **Rejected:** building the residue-keyed skip to show the number move. It would have
-   been a measurement of the fixture, not of the decoder.
-2. **M2 replaced M1 on the same cause**, as unit 402's A2 replaced A1. M1 re-mixed whenever the
-   pitch moved while the text was empty, which is broader than the trace. M2 re-mixes only before
-   the window's first read, which is the stretch the trace named. Both are recorded, and both are
-   out.
-3. **S1 and G1 were gated beyond the keep rule's first answer**, for the record. S1's cost on the
-   captures (14 rows) is now known. G1 was run on every floor and every red-holding type, so the
-   next unit inherits a change that is measured and costs nothing.
-4. **The tracker switch found in task 2 was not attacked.** Task 1 did not name it. The tracker's
-   switching is governed by HM-DEC-095 and HM-DEC-127, and the cold-start bin choice is
-   HM-OPEN-033, scheduled as its own work order. It is written up as the common cause for the
-   next unit (section 4, item 3).
-5. **B2 was rebuilt from unit 402's description**, because 402's diff is not in the tree: at the
-   flush, a character the alphabet does not know, still inside the delay, is not settled. It
-   reproduced 402's own-type result, #45 1 + 3 on `CharacterDecoded`.
-6. **The status file was written as `STATE: EXECUTING` and `BALL: code`.** Unit 404's run script
-   wrote `ACTIVE` and `claude`, which are not among CLAUDE.md 13.1's values.
+**Task 5, the exit round.** Engine line 178 of 178, app line 278 of 278. The floors and every
+type are identical to entry, apart from #6 and #42 now green. The transmit files and
+`src/Hamlet.App` print nothing. 3.5 is re-confirmed.
+
+**Decisions I made myself, in full:**
+
+1. **The `CwDecoder.cs` line for #42 is not a clock.** Decision 2's text says *if task 1 finds
+   that the change needs a line under `src`, it goes in `CwDecoder.cs` only. One example is a
+   clock...* The decision block's shorter wording says *allowed only if the trace needs an
+   audio clock*. The trace needed no clock, because `nowUtc` is a parameter the test can fill
+   with audio time. What it did need was the guard, because otherwise the unchanged first
+   assertion goes red. I read the text over the block, made the change, and kept it under the
+   keep rule. It is item 1 in section 4.
+2. **H1's gate stopped at the floors.** Once captures fell to 35 of 37, the remaining gate
+   types were not run for H1. It was out either way.
+3. **G1's captures were run for the record.** Its reds had already sent it back.
+4. **`HamletDoesNotDecodeYourOwnSendingTests`, 6 of 6, was run beyond task 3's list.** It
+   exercises the suspended arm I changed.
+5. **#45 is marked *not attacked*.** Its fixture makes no `Switch` call at all, so decision 5's
+   condition applies. Its number did not move under either shape.
+6. **`.run-unit` is not committed.** That covers this unit's scripts and logs, as the
+   instruction says. An untracked capture, `tests/fixtures/cw/captured/unadjudicated/cw-2026-09-23-173723.wav`,
+   appeared at 13:37 local, before the entry round. It is not this session's. I left it alone
+   and did not commit it.
 
 ## 2. What the owner should expect
 
-Nothing the decoder does has changed. `src` is byte-for-byte what it was at the start. Five of
-the six reds moved under a change built for them, and none of those changes was kept:
+Two of the six reds now pass, and nothing else moved. #6 is the fast fist with no run-up. Its
+share went from 0.75 to 0.82 because the tracker no longer carries out a held move that the
+current survey contradicts. That is how its second call used to lose three or four letters on
+two of the three seeds. #42 is the operator's own full break-in preamble. Nothing comes out
+during it now that the test tells the decoder the radio is transmitting, the way the radio
+tells Hamlet on the air. The cost of that is the first `TE` after the preamble, which falls
+inside the 500 ms resume and is not read. Every one of the 37 captures, 13 adjudicated
+readings and 2 synthetics produced exactly the numbers it did at entry. #15, #43 and #44 moved
+only under a first shape that cost two capture floors, so it was not kept. #45 did not move.
 
-- #45's trailing placeholder went away, but six recordings' floors count their own trailing
-  placeholders and fell by one to three characters.
-- #6's first word came back at 0.86 against a 0.79 bar, but ten recordings' counts moved, some up
-  and some down by as many as ten characters.
-- #15 went from 0.54 to 0.61, and coverage-easy lost all seven strangers on the settled
-  transcript, but fourteen recordings fell.
-- #44's second call came out whole on the settled transcript, and nothing else moved, but no test
-  turned green, so the rule sends it back.
+**What will look wrong but is not:**
 
-#42 was not touched, because the only thing that tells its fixture apart from the two real
-recordings is a constant in the fixture generator.
-
-**What will look wrong but is not:** `reds-3.6.md` shows every attacked red at *sequence 0 of 3*
-after unit 402 recorded *attempt 1 of 3*. That follows the record head's own rule that movement
-restarts the count, as decision 3 asked; the disagreement is item 4 below. `TheSixRedsTraceTests`
-appears in the test list and passes, because it asserts nothing.
+- `OwnTransmitSeconds` in #42's output reads 9.5 s where it used to read 9.08. The guard now
+  measures each 5 ms hop while decoding is suspended, instead of the tracker's 40 ms window.
+- `TheTrackerSwitchTraceTests` appears in the test list and passes, because it asserts
+  nothing.
+- `reds-3.6.md` shows #15, #43 and #44 at *0 of 3* again. They moved, and the head's rule
+  restarts the count on movement.
 
 ## 3. What you should see
 
 | red | cause as traced | change | before | after | moved | kept | sequence |
 |---|---|---|---|---|---|---|---|
-| #6 | start of a bare call mixed at the unmeasured 600 Hz for a 640 Hz sender, read as key-up; the tails follow a tracker switch to 550 and 725 Hz | M1, M2: re-mix the held window at the new pitch | 0.75 | 0.86, green | yes | no: captures 26 and 27 of 37 | 0 of 3, restarts |
-| #15 | dit cluster of noise marks, `CwUnitEstimator.cs` 96; upstream, mix at a measured 700 Hz for 640 | S1: marks under 0.45 of the element gap left out | 0.54 | 0.61 | yes | no: captures 23 of 37 | 0 of 3, restarts |
-| #42 | the only separating property is the generator's residue; the captures' floors count own-send slivers | none | 70 | 70 | - | not attacked | 0 of 3, broken |
-| #43 | as #15; mix at 575 Hz for 615 from 22 to 28.5 s | A1; S1 | 5 + 37 | A1 4 + 7; S1 6 + 25 | yes | no | 0 of 3, restarts |
-| #44 | held gaps 15/1127/323 ms, `MeasureGaps` 221 to 231; mix at 575 for 615 | A1; G1: an out-of-order gap reading is not separated | 3 + 21 | A1 0 + 7; G1 4 + 16 | yes | no: G1 cost nothing, no red green | 0 of 3, restarts |
-| #45 | the flush settles a trailing unreadable character | A1: B1 and B2 together | 1 + 3 | 0 + 0, green | yes | no: captures 31 of 37 | 0 of 3, restarts |
+| #6 | the tails on two seeds follow a stale held switch at `CwToneTracker.cs` 959 to 550 and 725 Hz, while the survey admits the 640 Hz sender's own bin | H1; **H2 at 957** | 0.75 | H1 0.89; **H2 0.82** | yes | **yes, `775907b6`** | **green, verdict** |
+| #15 | seed 15485863: stale hold to 700 Hz; seed 104729: the survey re-admits a 700 Hz image about 23 dB down while the sender sends dahs only | H1, H2, G1 on H2 | 0.54 | H1 0.61; H2 0.54 | yes, under H1 | no: H1 cost captures 35 of 37 | 0 of 3, restarts |
+| #42 | the test never gives the decoder the radio's report; given it, the guard goes blind while suspended | the event reports `RadioIsTransmitting` from the recipe's span on audio time; the suspended arm feeds the guard | 70 | 0 | yes | **yes, `099b3a2a`** | **green, verdict** |
+| #43 | four stale holds off 615 Hz, each on a survey admitting nothing | H1, H2, G1 on H2 | 5 + 37 | H1 4 + 32; H2 5 + 37 | yes, under H1 | no: H1 cost captures | 0 of 3, restarts |
+| #44 | stale hold to 575 Hz at 11.5 s on a survey admitting nothing; held gaps 15/1127/323 ms | H1, H2; G1 on H2 | 3 + 21 | H1 2 + 20; H2 3 + 21; G1 4 + 16 | yes, under H1 and G1 | no: H1 cost captures; G1 turned no red green | 0 of 3, restarts |
+| #45 | no `Switch` call on its fixture; the trailing placeholder the flush settles | none of its own (decision 5) | 1 + 3 | 1 + 3 under H1, H2, G1 | no | not attacked | 0 of 3, broken |
 
-**The answer to the question this unit was commissioned to ask:** a second attack from traced
-causes turned two of the six green, #45 and #6. Neither could be kept, because each lowers real
-capture rows. 3.6 stays at 2 of eight with a verdict.
+**The answer to the question this unit was commissioned to ask:** the tracker's switch was the
+cause for #6, and a change at its line turned #6 green at no cost. For #43 and #44 the same
+line is the cause. But the one shape that reached them also blocked moves onto the station on
+five real captures, so it was not kept. The radio's word turned #42 green. 3.6 went from 2 to
+4 of eight with a verdict.
 
-**Gate numbers for each kept change:** none; no change was kept. The measured costs are in
-`docs/phase-cw/unit405-reds.md` section 3.
+**Gate numbers for each kept change:**
 
-**Exit round, at `ef34d601`:**
+| kept change | gate |
+|---|---|
+| H2, `775907b6` | captures 37 of 37, every row identical to entry; adjudicated 13 of 13; synthetics 2 of 2; `CwAcquisitionWindowTests` 11 of 12, only #6 changed; `CwReceiverFixtureTests` 23 of 27 identical; `CwFixtureTests` 22 of 23, `CwAdjudicationTests` 11, `CwEmissionGateTests` 8, `CwDisplacementFloorTests` 6, `CapturedSignalTests` 13, `CwSpeedSilenceTests` 4, `WhyTheGateDidNotFireTests` 2, `CwTwoStationTests` 5, each identical; tracker readers identical, `WhatBandwidth` 4 of 6 as entry at 48 against 50 |
+| #42, `099b3a2a` | `CwReceiverFixtureTests` 24 of 27, only #42 changed; captures 37 of 37 every row identical; adjudicated 13 of 13; synthetics 2 of 2; `CwEmissionGateTests` 8 of 8; `HamletDoesNotDecodeYourOwnSendingTests` 6 of 6 |
+
+**Exit round, at `13a09580`:**
 
 | line or type | exit |
 |---|---|
-| engine line | 178 of 178 in 369 s |
-| app line | 277 of 278, then 276 of 278; three different names lost to the dispatcher loop before any assertion, each green in the other run: 278 of 278 |
+| engine line | 178 of 178 in 375 s |
+| app line | 278 of 278 in 173 s, no dispatcher loss |
 | captures, adjudicated, synthetics | 37 of 37 with every row identical to entry, 13 of 13, 2 of 2 |
-| the ten red-holding and speed-reader types | each identical to entry |
-| transmit files against `7e209cb4`; `src` and `src/Hamlet.App` from `f74b6d51` | nothing printed |
+| red-holding types | acquisition 11 of 12, #6 green; receiver fixtures 24 of 27, #42 green; fixture 22 of 23 as entry; adjudication 11 of 11 |
+| gate, displacement, the four speed readers | each identical to entry |
+| tracker readers | each identical to entry; gate-window reader's short methods 4 of 4, `EveryWidthLeavesTheEmptyRecordingsSilent` unmeasured |
+| transmit files against `7e209cb4`; `src/Hamlet.App` from `527b1659` | nothing printed |
 
-**Visible change: none.** This unit changed no decoder code. What it leaves is a traced cause
-common to four of the reds, and one measured, zero-cost change (G1) for the next unit to pair with
-a green.
+**Visible change:** in the app, a single station no longer loses letters when the tracker
+carries out a held move that the current survey contradicts. While the radio reports
+transmitting, the report's own-transmit time keeps counting. Nothing that keys or transmits
+was touched.
 
 ## 4. What's blocking us
 
-1. **#42 cannot turn green by a decoder repair without lowering two capture floors.** Stands in
-   the way of 3.6.
-   - **Ruling asked:** may the character floors of `cw-2026-08-17-013347` (59) and
-     `cw-2026-08-17-013622` (55) be re-expressed so they do not count characters read inside
-     the transmit guard's own-send spans? Or is #42 to be judged some other way?
-   - **Reasoning:** 46 of `013347`'s 59 floor characters and 28 of `013622`'s 55 sit inside
-     spans the guard itself marks as the operator transmitting, and they are the `E I H S`
-     slivers #42 exists to forbid. Any skip that fires on real own-send audio takes them off the
-     floors, which section 6 forbids. The only property that separates the fixture is the
-     generator's residue. So #42 can be neither greened nor honestly attacked, and it can never
-     reach section 6's three-attack parking.
-   - **Rejected:** a skip keyed to the flat residue, which is a fixture artifact; and lowering
-     the floors in this unit, which section 6 forbids and is the owner's call.
-2. **#45 and #6 each have a green that the capture floors refuse.**
-   - **Ruling asked:** does a change that turns a red green while moving capture rows count as
-     *a floor lowered*, when the rows lost are trailing placeholders (#45)? Or, for #6, when rows
-     move both ways, `002016` up 75 to 93 and `021410` down 47 to 37?
-   - **Reasoning:** the keep rule counts any lower row. B2 removes only placeholders the flush
-     settles after the audio ends. M2 re-takes the envelope at the pitch the tracker moved to
-     before the first read, which changes real decodes in both directions. HM-DEC-091 says a
-     change that costs one recording is not a fix, and I did not keep either.
-   - **Rejected:** narrowing either change until the floors hold. That would be fitted to the
-     floors rather than traced.
-3. **The shared upstream cause is `CwToneTracker.Switch` (1092, 1154 to 1169), and a 3.6 unit
-   needs leave to change it.** Stands in the way of #15, #43 and #44 in practice.
-   - **Ruling asked:** may the next 3.6 unit change the tracker's switch, or does HM-OPEN-033's
-     own work order come first?
-   - **Reasoning:** on every single-sender case, every miss follows the tracker moving the mix 25
-     to 85 Hz off the one station, reported as measured. The estimator and gap lines this unit
-     attacked are where that wrong pitch becomes a wrong reading. `CwDecoder.cs` 658 to 665
-     already says the fault is upstream.
-   - **Rejected:** attacking it here. Task 1 did not name it, and HM-DEC-095 and HM-DEC-127 rule
-     that code.
-4. **`reds-3.6.md`'s head and unit 402's rows disagree about the count, as section 5 expected.**
-   - **Ruling asked:** which counts, the head's *movement restarts the count* or the rows'
-     *attempt 1 of 3*?
-   - **Reasoning:** this unit's rows follow the head (decision 3), so every attacked red is at 0
-     of 3. Under the head's rule, a red whose attacks keep moving it never reaches parking, so
-     section 6's three-attack exit may not arrive for any of the six. That bears on stop 10's
-     two-unit count, which the arbiter flagged as the owner's to weigh.
-   - **Rejected:** rewriting either, as the instruction says.
-5. **G1 is measured and costs nothing, but the keep rule sends it back.** Does not block.
-   - **Ruling asked:** may a change that moves a red on its own event and on the settled
-     transcript, with every floor and type identical or up, be kept without a red turning green?
-   - **Reasoning:** G1 took #44 from 3 + 21 to 4 + 16, and settled from 0 + 7 to 0 + 3 with the
-     second call whole. It kept captures 37 of 37 (`021825` up by one), adjudicated 13, synthetics
-     2, and every type identical. It was put back under unit 402's keep rule, which the
-     instruction says not to re-argue.
-   - **Rejected:** keeping it. That is the rule's owner's change to make, not the session's.
+1. **The guard line in `CwDecoder.cs` goes beyond the decision block's wording.** Stands in the
+   way of 3.6, because #42's verdict rests on it.
+   - **Ruling asked:** does #42's green stand with `ObserveOwnTransmission` in the suspended
+     arm? Or does the decision block's *only if the trace needs an audio clock* govern, which
+     puts #42 back to red-open?
+   - **Reasoning:** the radio's word alone empties the preamble but blinds the transmit guard,
+     so the test's unchanged first assertion reads 0.00 s against > 3. The line feeds the guard
+     each hop's level and nothing else. The survey still hears none of the sidetone, and
+     nothing is suspended or resumed on it. It cannot reach a capture, because no capture calls
+     `RadioIsTransmitting`, and every row is identical.
+   - **Rejected:** changing `Report.OwnTransmitSeconds` to count the radio-reported time. That
+     would satisfy an assertion about the guard without the guard noticing anything. Also
+     rejected: feeding the whole tracker while suspended, which lets the survey retune to the
+     sidetone, as `CwDecoder.cs` 503 to 507 forbids.
+2. **#45 cannot move under the instruction as written.** Stands in the way of 3.6.
+   - **Ruling asked:** is #45 to get a change of its own in a later unit? If not, how does it
+     reach a verdict?
+   - **Reasoning:** its fixture makes no `Switch` call, and its only fault is the trailing
+     placeholder that the capture floors themselves count. Decision 5 gave it no change, so it
+     is *not attacked*, and the head's rule breaks its sequence. It can reach neither green nor
+     section 6's parking.
+   - **Rejected:** B2 again. It is on section 10's list, and it costs six capture rows.
+3. **#15, #43 and #44 have a traced line and no keepable shape yet.** Stands in the way of 3.6.
+   - **Ruling asked:** may the next unit attack the HM-DEC-127 floor's reading level? And is a
+     property that tells a stale hold onto the station apart from one off it to be sought, or
+     parked?
+   - **Reasoning:** #43's and #44's moves are stale holds on a survey that admits nothing. H1
+     caught them, but on `031838`, `032113` and `032129` the same kind of hold moved onto the
+     station, so the property does not separate the two. #15's seed 104729 is not stale. There
+     the survey re-admits an image 23 dB below the sender, and HM-DEC-127's 25 dB floor does
+     not refuse it. The floor compares against `_readingDb`, and line 1076 overwrites that with
+     each confirmed candidate's own level, the image's included. That is a traced line for a
+     next attack, inside a ruled decision.
+   - **Rejected:** narrowing H1 to the reds' seconds or pitches. That would be fitting the
+     shape to the rows it lost.
+4. **The count rule, again.** Does not block this unit's result.
+   - **Ruling asked:** none new. It stays logged for Tim under section 3 item 4 of the
+     instruction.
+   - **Reasoning:** #15, #43 and #44 have now moved in 402, 405 and 406. Under the head's rule,
+     none of them will ever reach three no-movement attacks. So 3.6 closes only by greens, and
+     #45 has no route to one (item 2).
+   - **Rejected:** rewriting either count, as the instruction says.
+5. **Two tracker readers do not fully measure.** Does not block.
+   - **Ruling asked:** may `TheGateHasItsOwnWindowNowTests.EveryWidthLeavesTheEmptyRecordingsSilent`
+     be run at a longer timeout outside the Bash tool's 600 s ceiling, or be left out of the
+     tracker-reader list? And are `WhatBandwidthTheDecoderListensThroughTests`'s two reds known?
+   - **Reasoning:** the gate-window method did not finish in 590 s alone at entry, so it is
+     unmeasured on either side of this unit's changes. `WhatBandwidth`'s
+     `MostRealRecordingsSitInTheWidestWindow` and `HoldingTheWindowLongInTimeReadsMore(004507)`,
+     48 against 50, were red at entry and identical at exit. Neither is in the 51-name set.
+   - **Rejected:** repairing either here. Neither is this unit's.
