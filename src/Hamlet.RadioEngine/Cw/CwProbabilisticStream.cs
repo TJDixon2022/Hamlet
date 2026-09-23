@@ -96,9 +96,6 @@ public sealed class CwProbabilisticStream
     private readonly float[] _mixedI;
     private readonly float[] _mixedQ;
     private readonly double[] _envelope;
-
-    /// <summary>What each held hop was demodulated at, beside the envelope itself.</summary>
-    private readonly double[] _mixedAt;
     private readonly double[] _taper;
     private readonly double _taperWeight;
 
@@ -127,40 +124,10 @@ public sealed class CwProbabilisticStream
     /// <summary>How many characters have been settled since this stream started.</summary>
     private long _settledCount;
 
-    /// <summary>
-    /// Whether <see cref="CwJointCutter"/> decides where the characters are cut.
-    /// </summary>
-    /// <remarks>
-    /// **AN INSTANCE FLAG AND NEVER A STATIC.** The first build of this was a
-    /// mutable static on the decoder, and xUnit runs test classes in parallel, so
-    /// the decode path read whichever value another test had left behind — which
-    /// is how the offline route measured itself as having changed nothing while
-    /// the streaming route plainly had.
-    /// </remarks>
-    public bool UseJointCutter { get; set; }
-
     /// <summary>Creates a stream.</summary>
     /// <param name="sampleRate">Samples per second.</param>
     public CwProbabilisticStream(int sampleRate)
-        : this(sampleRate, CwProbabilisticDecoder.IntegratorBandwidthHz)
     {
-    }
-
-    /// <summary>Listen at a stated integrator width.</summary>
-    /// <param name="sampleRate">Samples per second.</param>
-    /// <param name="integratorHz">The integrator's equivalent noise bandwidth.</param>
-    /// <remarks>
-    /// **THE WIDTH IS A PARAMETER HERE AND A CONSTANT IN PRODUCTION**, exactly as
-    /// it already is on <see cref="CwProbabilisticDecoder.Envelope(
-    /// IReadOnlyList{float}, int, double, double)"/>. It is open so the trade
-    /// between rejecting a competing station and rounding the top of a fast dit
-    /// can be swept through the whole decoder rather than through the offline
-    /// envelope alone, which is the only form of the sweep that can say what a
-    /// width does to a character.
-    /// </remarks>
-    public CwProbabilisticStream(int sampleRate, double integratorHz)
-    {
-
         _sampleRate = Math.Max(1_000, sampleRate);
         _hopSamples = Math.Max(
             1, (int)(_sampleRate * CwProbabilisticDecoder.HopMilliseconds / 1000.0));
@@ -170,7 +137,7 @@ public sealed class CwProbabilisticStream
         // centred-versus-trailing difference survived unnoticed; the length and
         // the taper both come from one place now.
         _windowSamples = CwProbabilisticDecoder.IntegratorWindow(
-            _sampleRate, integratorHz);
+            _sampleRate, CwProbabilisticDecoder.IntegratorBandwidthHz);
 
         _taper = CwProbabilisticDecoder.IntegratorTaper(_windowSamples);
         _taperWeight = _taper.Sum();
@@ -187,7 +154,6 @@ public sealed class CwProbabilisticStream
         _mixedI = new float[_windowSamples];
         _mixedQ = new float[_windowSamples];
         _envelope = new double[_windowHops];
-        _mixedAt = new double[_windowHops];
 
         // **A GUARD SET ONLY IN A METHOD NOTHING CALLS IS A GUARD THAT DOES NOT
         // EXIST.** This was assigned in `Restart()` alone, and `Restart()` is
@@ -214,14 +180,6 @@ public sealed class CwProbabilisticStream
     /// that works.
     /// </remarks>
     public double ToneHz { get; set; } = 600;
-
-    /// <summary>The exponent the posterior is normalised at.</summary>
-    /// <remarks>
-    /// Carried through so a sweep runs inside the decoder rather than beside it.
-    /// It cannot change what is read (see <see cref="CwDecoder"/>).
-    /// </remarks>
-    public double PosteriorTemperature { get; set; }
-        = CwProbabilisticDecoder.Temperature;
 
     /// <summary>What the last read made of the window.</summary>
     public CwProbabilisticResult Last { get; private set; } = CwProbabilisticResult.None;
@@ -281,13 +239,6 @@ public sealed class CwProbabilisticStream
     public void Process(ReadOnlySpan<float> samples)
     {
         var step = 2 * Math.PI * ToneHz / _sampleRate;
-
-        // What the audio now going into the window is being demodulated at, so a
-        // re-read can tell whether the window is stale (<see cref="MixedAtHz"/>).
-        if (samples.Length > 0)
-        {
-            MixedAtHz = ToneHz;
-        }
 
         foreach (var sample in samples)
         {
@@ -385,142 +336,6 @@ public sealed class CwProbabilisticStream
         LeadingEdgeChanged?.Invoke(Array.Empty<CwCharacter>());
     }
 
-    /// <summary>How many hops of audio this stream is currently holding.</summary>
-    /// <remarks>
-    /// What a re-read has to replay to put the window back where it was. It is a
-    /// count of hops rather than of seconds so that the replay is hop-aligned by
-    /// construction and cannot depend on the shape of arriving chunks.
-    /// </remarks>
-    public int HeldHops => _envelopeCount;
-
-    /// <summary>How many samples this stream has taken in.</summary>
-    /// <remarks>
-    /// The stream's own place on the audio clock, which is behind the tap's
-    /// whenever a chunk holds more than one hop. A re-read has to ask the tap for
-    /// the audio *the stream* has seen, not the audio that has arrived, or the
-    /// replay would depend on the shape of the chunk it happened to fire inside.
-    /// </remarks>
-    public long SamplesSeen => _samplesSeen;
-
-    /// <summary>The pitch the newest hop in the window was mixed at.</summary>
-    public double MixedAtHz { get; private set; } = double.NaN;
-
-    /// <summary>
-    /// How far the pitch a held hop was mixed at can be from a given pitch,
-    /// across everything the window is holding.
-    /// </summary>
-    /// <param name="pitchHz">The pitch to compare against.</param>
-    /// <returns>The largest difference in hertz, or nought where nothing is held.</returns>
-    /// <remarks>
-    /// <para>**THE NEWEST HOP'S PITCH IS THE WRONG QUESTION, AND ASKING IT MADE
-    /// THE RE-READ NEVER FIRE ON ANY CAPTURE IN THE TREE.** The tracker walks its
-    /// bank long before its survey admits a candidate, so by the time a pitch is
-    /// *measured* the newest audio is usually already being mixed at something
-    /// close to it — while the front of the same window is still at the bank
-    /// centre the decoder started from. Comparing against the newest hop said
-    /// "already close enough" every time.</para>
-    /// <para>What decides whether a window is worth reading again is whether
-    /// **any** of the audio in it was demodulated somewhere else, so that is what
-    /// this measures.</para>
-    /// </remarks>
-    public double MixedSpreadFrom(double pitchHz)
-    {
-        var worst = 0.0;
-
-        for (var i = 0; i < _envelopeCount; i++)
-        {
-            var gap = Math.Abs(_mixedAt[i] - pitchHz);
-
-            if (gap > worst)
-            {
-                worst = gap;
-            }
-        }
-
-        return worst;
-    }
-
-    /// <summary>
-    /// How many times this stream has re-read audio it already held, at a pitch
-    /// it learned afterwards.
-    /// </summary>
-    public int ReReads { get; private set; }
-
-    /// <summary>
-    /// Read audio the stream has already seen again, at a pitch it has since
-    /// measured.
-    /// </summary>
-    /// <param name="audio">
-    /// Exactly the samples the window is holding, oldest first, from the tap.
-    /// </param>
-    /// <param name="toneHz">The measured pitch to read them at.</param>
-    /// <remarks>
-    /// <para>**THE FIRST SECONDS OF EVERY STATION ARE DEMODULATED AT A GUESS,
-    /// AND UNTIL NOW THEY STAYED THAT WAY FOR THE REST OF THE CONTACT.** The
-    /// stream mixes each sample as it arrives, at whatever pitch the tracker
-    /// believed at that moment, and the tracker believes the middle of a bank
-    /// until its survey admits a candidate. Measured across this repository's
-    /// captures, that first measurement lands two to seven seconds in on half of
-    /// them, and the window is still holding every sample from the start when it
-    /// does.</para>
-    /// <para>**WHAT IT COSTS IN MEMORY IS NOTHING, BECAUSE THE AUDIO IS ALREADY
-    /// KEPT.** `AudioTap` holds thirty seconds of raw samples for the capture
-    /// button and the keying meter, so a re-read reads what the decoder already
-    /// has rather than retaining anything new.</para>
-    /// <para>**NOTHING ALREADY SAID IS SAID AGAIN OR TAKEN BACK** (§0.0). The
-    /// settled mark and the settled count are carried across untouched, so the
-    /// replay re-derives characters that have already been announced and drops
-    /// them on the same test that stops a window being re-read twice a second
-    /// from repeating itself. What the re-read is for is the characters that have
-    /// *not* settled yet: it makes the first emission right rather than editing
-    /// history.</para>
-    /// <para>**AND THE AUDIO CLOCK IS REWOUND BEFORE THE REPLAY AND LANDS BACK
-    /// WHERE IT WAS.** Every character's moment, and the settled mark itself, are
-    /// counted in hops since the stream started; replaying without rewinding
-    /// would stamp the replayed audio as though it were new and put every
-    /// character after it in the wrong place.</para>
-    /// </remarks>
-    public void ReadAgain(ReadOnlySpan<float> audio, double toneHz)
-    {
-        var hops = audio.Length / _hopSamples;
-
-        if (hops <= 0 || hops != _envelopeCount)
-        {
-            // The tap could not give back exactly what the window is holding, so
-            // there is nothing to re-read against. Saying nothing is right here:
-            // a partial replay would be a window built from two pitches.
-            return;
-        }
-
-        _envelopeCount = 0;
-        _mixWrite = 0;
-        _mixFilled = 0;
-        _hopsSinceRead = 0;
-        _sampleInHop = 0;
-        _phase = 0;
-        _troughRun = 0;
-        _troughMisses = 0;
-        _structureHeld = false;
-        _heldGaps = default;
-
-        // **THE REFILL GUARD IS STOOD DOWN FOR THE REPLAY AND ONLY FOR IT.** It
-        // exists to stop a window that was emptied on a station change being read
-        // back before it holds one sender's audio, and this window is being
-        // refilled with the same sender's audio it already held.
-        _refillHops = 1;
-
-        _hopsSeen -= hops;
-        _samplesSeen -= audio.Length;
-
-        ToneHz = toneHz;
-        ReReads++;
-
-        Process(audio);
-
-        _refillHops = Math.Max(
-            1, (int)(RefillSeconds * 1000.0 / CwProbabilisticDecoder.HopMilliseconds));
-    }
-
     /// <summary>Settle everything still inside the delay, because nothing else is coming.</summary>
     public void Flush()
     {
@@ -562,15 +377,12 @@ public sealed class CwProbabilisticStream
 
         if (_envelopeCount < _windowHops)
         {
-            _mixedAt[_envelopeCount] = ToneHz;
             _envelope[_envelopeCount++] = magnitude;
         }
         else
         {
             Array.Copy(_envelope, 1, _envelope, 0, _windowHops - 1);
-            Array.Copy(_mixedAt, 1, _mixedAt, 0, _windowHops - 1);
             _envelope[_windowHops - 1] = magnitude;
-            _mixedAt[_windowHops - 1] = ToneHz;
         }
 
         _hopsSeen++;
@@ -679,9 +491,7 @@ public sealed class CwProbabilisticStream
                     _heldGaps.CharacterMilliseconds,
                     _heldGaps.WordMilliseconds,
                 }
-                : null,
-            UseJointCutter,
-            PosteriorTemperature);
+                : null);
 
         Last = result;
 
@@ -750,9 +560,7 @@ public sealed class CwProbabilisticStream
             (int)Math.Round(result.WordsPerMinute),
             at)
         {
-            Posterior = character.Posterior,
             SpanLogLikelihoodRatio = character.SpanLogLikelihoodRatio,
-            MarginLlr = character.MarginLlr,
             SpanHops = character.SpanHops,
         };
     }

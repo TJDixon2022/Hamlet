@@ -1,4 +1,4 @@
-﻿using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Audio;
 
 namespace Hamlet.RadioEngine.Cw;
 
@@ -41,25 +41,6 @@ public readonly record struct CwProbabilisticResult(
     bool EndsInsideCharacter = false)
 {
     /// <summary>
-    /// The winning path's own elements, marks and gaps, in the order they were
-    /// sent.
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE CHARACTERS WERE ALWAYS HERE AND THE ELEMENTS THEY WERE BUILT
-    /// FROM WERE NOT.** A reader could see that Hamlet said `E` and not that it
-    /// had seen one 55 ms mark, and the two most common failures on this corpus —
-    /// a mark split in two, and a mark invented out of a notch in the noise — are
-    /// both invisible at the character level and obvious at this one.</para>
-    /// <para>**CARRIED, NOT ACTED ON.** Nothing in the decode reads this back;
-    /// it is produced by the same walk that spells the text, so it cannot
-    /// disagree with what was read.</para>
-    /// <para>Empty where the gate is closed, or where the result is
-    /// <see cref="None"/>.</para>
-    /// </remarks>
-    public IReadOnlyList<CwElement> Elements { get; init; }
-        = Array.Empty<CwElement>();
-
-    /// <summary>
     /// True when the winning speed sits at either end of the search, so it may
     /// be a limit rather than a measurement.
     /// </summary>
@@ -84,10 +65,6 @@ public readonly record struct CwProbabilisticResult(
 /// <param name="Text">The letter, or a space for a word gap.</param>
 /// <param name="Pattern">The dits and dahs behind it, or "" for a word gap.</param>
 /// <param name="EndHop">Which hop of the window it ended at.</param>
-/// <param name="MarginLlr">
-/// How much better the winning reading was than the nearest alternative
-/// arriving at the same place. Recorded and read by nothing.
-/// </param>
 /// <param name="SpanHops">
 /// How many hops the character spans, from the start of its first mark to the
 /// end of its last, so the ratio can be read per hop.
@@ -95,10 +72,6 @@ public readonly record struct CwProbabilisticResult(
 /// <param name="SpanLogLikelihoodRatio">
 /// How much better this character's own span is explained by the keying the path
 /// chose than by the key having been up throughout it.
-/// </param>
-/// <param name="Posterior">
-/// The probability that the character ends where the path says, marginalised
-/// over every path. NaN where none could be computed.
 /// </param>
 /// <remarks>
 /// <para>**A CHARACTER READ FROM A SIGNAL AND A CHARACTER MINTED FROM NOISE ARE
@@ -125,51 +98,8 @@ public readonly record struct CwProbabilisticCharacter(
     string Pattern,
     int EndHop,
     double SpanLogLikelihoodRatio = 0,
-    int SpanHops = 0,
-    double MarginLlr = double.NaN,
-    double Posterior = double.NaN)
+    int SpanHops = 0)
 {
-    /// <summary>
-    /// The probability that this character ends where the path says it does,
-    /// marginalised over every path through the lattice.
-    /// </summary>
-    /// <remarks>
-    /// **THE FIRST QUANTITY HERE THAT CANNOT GROW WITH LOUDNESS.** Five others
-    /// have been measured against correctness and all five were negative, each
-    /// being a difference of path scores carrying an unbounded level term. This
-    /// is a ratio over the sum of all paths, so the level cancels in the
-    /// normalisation. NaN where no posterior could be computed, which is not a
-    /// probability of nought (§0.0).
-    /// </remarks>
-    public double PathPosterior => Posterior;
-
-    /// <summary>
-    /// How much better the winning reading was than the nearest alternative
-    /// arriving at the same place.
-    /// </summary>
-    /// <remarks>
-    /// <para>**NOTHING READS THIS AND THAT IS DELIBERATE.** It is recorded so
-    /// that tomorrow's thresholds come from a real distribution rather than from
-    /// a guess, which is the mistake every constant in this file has had to be
-    /// walked back from at least once.</para>
-    /// <para>**WHY THE QUANTITY BESIDE IT IS NOT ENOUGH.**
-    /// <see cref="SpanLogLikelihoodRatio"/> scores a character against the key
-    /// never having gone down, and on audio that is never silent the null is
-    /// wrong: measured on the pile-up of 2026-08-26, characters carved out of
-    /// continuous tone scored eight thousand to twenty-nine thousand against
-    /// silence while the plausible tail scored forty-one to four hundred — the
-    /// soup outscoring the copy a hundred to one. Against a *second-best
-    /// reading* rather than against silence, a letter carved out of a continuous
-    /// tone has an alternative that fits about as well, and the margin collapses
-    /// toward nought.</para>
-    /// <para>This tree has its own reason to want it: unit 1.11.10 recorded that
-    /// the short-character bias needs a per-character expectation, and a margin
-    /// against the runner-up is one that does not care how many elements a
-    /// character has.</para>
-    /// <para><see cref="double.NaN"/> where the path had no alternative to
-    /// compare against, which is not the same as a margin of nought.</para>
-    /// </remarks>
-    public double MarginLlr { get; init; } = MarginLlr;
     /// <summary>
     /// The character's own evidence per hop, in the units
     /// <see cref="CwProbabilisticResult.LikelihoodRatio"/> is measured in.
@@ -225,7 +155,7 @@ public readonly record struct CwProbabilisticCharacter(
 /// recording holding no station it wins and there is nothing to emit. That is
 /// HM-DEC-120 by construction; it is still tested rather than assumed.</para>
 /// </remarks>
-public static partial class CwProbabilisticDecoder
+public static class CwProbabilisticDecoder
 {
     /// <summary>
     /// The log-likelihood ratio per hop below which nothing is emitted from a
@@ -525,23 +455,8 @@ public static partial class CwProbabilisticDecoder
     /// <para>**AND A WINNER AT EITHER END IS NOW SAID OUT LOUD**, so a range
     /// limit is never again mistaken for a measurement
     /// (<see cref="CwProbabilisticResult.SpeedIsAtTheEdge"/>).</para>
-    /// <para>**LOWERED TO THIRTY, PROVISIONALLY, BY TIM'S RULING IN WORK
-    /// INSTRUCTION 056.** Nothing in the corpus, the bulletins, or any capture the
-    /// operator has sent runs above about twenty-eight words a minute, and the
-    /// ceiling was paying for a speed nobody here sends at. What it costs is
-    /// <see cref="CwUnitEstimator.LongestSafeHoldOverMs"/>, which is one dit at
-    /// this value: at forty the safe bound was 30 ms and sat just under the 32 to
-    /// 53 ms dropouts unit 053 measured, so the bridging could never reach the
-    /// fault it was built for. At thirty the bound is 40 ms and reaches the lower
-    /// half of them.</para>
-    /// <para>**THE CONDITION THAT RAISES IT AGAIN IS RECORDED WITH THE VALUE**:
-    /// the ceiling rises the day a capture shows something faster worth reading.
-    /// Not the day a fit lands at the edge — <see cref="SlowestWpm"/>'s own
-    /// remarks say why an edge winner is not evidence — but the day a recording in
-    /// the tree holds a sender above this and somebody wants it read. Rejected:
-    /// keeping forty, on the measurement above.</para>
     /// </remarks>
-    public const double FastestWpm = 30;
+    public const double FastestWpm = 40;
 
     /// <summary>How far apart the speed hypotheses sit.</summary>
     /// <remarks>
@@ -753,8 +668,7 @@ public static partial class CwProbabilisticDecoder
         double toneHz,
         double? atWordsPerMinute,
         IReadOnlyList<double>? gapMilliseconds)
-        => Decode(
-            envelope, toneHz, atWordsPerMinute, gapMilliseconds, ungated: false);
+        => Decode(envelope, toneHz, atWordsPerMinute, gapMilliseconds, ungated: false);
 
     /// <summary>Read an envelope, returning what the path spelled whatever it scored.</summary>
     /// <param name="envelope">Envelope magnitudes, one every hop.</param>
@@ -787,49 +701,7 @@ public static partial class CwProbabilisticDecoder
         double toneHz,
         bool ungated,
         double noiseSpanSeconds)
-        => Decode(
-            envelope, toneHz, null, null, ungated,
-            jointly: false, noiseSpanSeconds);
-
-    /// <summary>Read an envelope, with the joint cutter deciding the cuts.</summary>
-    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
-    /// <param name="toneHz">The pitch it was taken at.</param>
-    /// <param name="atWordsPerMinute">A speed to hold, or null to fit one.</param>
-    /// <param name="gapMilliseconds">This sender's three gap classes, or null.</param>
-    /// <param name="jointly">Whether <see cref="CwJointCutter"/> decides the cuts.</param>
-    /// <returns>What it read.</returns>
-    public static CwProbabilisticResult Decode(
-        IReadOnlyList<double> envelope,
-        double toneHz,
-        double? atWordsPerMinute,
-        IReadOnlyList<double>? gapMilliseconds,
-        bool jointly)
-        => Decode(
-            envelope, toneHz, atWordsPerMinute, gapMilliseconds,
-            ungated: false, jointly);
-
-    /// <summary>Read an envelope, normalising the posterior at a stated exponent.</summary>
-    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
-    /// <param name="toneHz">The pitch it was taken at.</param>
-    /// <param name="atWordsPerMinute">A speed to hold, or null to fit one.</param>
-    /// <param name="gapMilliseconds">This sender's three gap classes, or null.</param>
-    /// <param name="jointly">Whether the joint cutter decides the cuts.</param>
-    /// <param name="alpha">The exponent the posterior is normalised at.</param>
-    /// <returns>What it read.</returns>
-    /// <remarks>
-    /// **THE EXPONENT CANNOT CHANGE WHAT IS READ.** It multiplies the whole path
-    /// score, so the argmax is untouched and only the normalisation moves.
-    /// </remarks>
-    public static CwProbabilisticResult Decode(
-        IReadOnlyList<double> envelope,
-        double toneHz,
-        double? atWordsPerMinute,
-        IReadOnlyList<double>? gapMilliseconds,
-        bool jointly,
-        double alpha)
-        => Decode(
-            envelope, toneHz, atWordsPerMinute, gapMilliseconds,
-            ungated: false, jointly, NoiseSpanSeconds, alpha);
+        => Decode(envelope, toneHz, null, null, ungated, noiseSpanSeconds);
 
     private static CwProbabilisticResult Decode(
         IReadOnlyList<double> envelope,
@@ -837,9 +709,7 @@ public static partial class CwProbabilisticDecoder
         double? atWordsPerMinute,
         IReadOnlyList<double>? gapMilliseconds,
         bool ungated,
-        bool jointly = false,
-        double noiseSpanSeconds = NoiseSpanSeconds,
-        double alpha = Temperature)
+        double noiseSpanSeconds = NoiseSpanSeconds)
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
@@ -861,17 +731,14 @@ public static partial class CwProbabilisticDecoder
         var bestLastKind = -1;
         IReadOnlyList<CwProbabilisticCharacter> bestCharacters =
             Array.Empty<CwProbabilisticCharacter>();
-        IReadOnlyList<CwElement> bestElements = Array.Empty<CwElement>();
 
         var from = atWordsPerMinute ?? SlowestWpm;
         var to = atWordsPerMinute ?? FastestWpm;
 
         for (var wpm = from; wpm <= to + 1e-9; wpm += WpmStep)
         {
-            var (score, characters, lastKind, elements) =
-                DecodeAt(
-                    envelope.Count, wpm, keyDown, keyUp, gapMilliseconds,
-                    jointly, alpha);
+            var (score, characters, lastKind) =
+                DecodeAt(envelope.Count, wpm, keyDown, keyUp, gapMilliseconds);
 
             if (score > bestScore)
             {
@@ -879,7 +746,6 @@ public static partial class CwProbabilisticDecoder
                 bestWpm = wpm;
                 bestCharacters = characters;
                 bestLastKind = lastKind;
-                bestElements = elements;
             }
         }
 
@@ -895,10 +761,7 @@ public static partial class CwProbabilisticDecoder
         {
             return new CwProbabilisticResult(
                 ratio, bestWpm, string.Concat(bestCharacters.Select(c => c.Text)),
-                toneHz, bestCharacters, insideCharacter)
-            {
-                Elements = bestElements,
-            };
+                toneHz, bestCharacters, insideCharacter);
         }
 
         if (ratio < Gate)
@@ -926,10 +789,7 @@ public static partial class CwProbabilisticDecoder
             string.Concat(judged.Select(c => c.Text)),
             toneHz,
             judged,
-            insideCharacter)
-        {
-            Elements = bestElements,
-        };
+            insideCharacter);
     }
 
     /// <summary>
@@ -1255,8 +1115,6 @@ public static partial class CwProbabilisticDecoder
     /// This sender's own three gap lengths, or null to expect one, three and
     /// seven units.
     /// </param>
-    /// <param name="jointly">Whether the joint cutter decides the cuts.</param>
-    /// <param name="alpha">The exponent the posterior is normalised at.</param>
     /// <returns>The best total score and what it spells.</returns>
     /// <remarks>
     /// **EVERY PATH IS A CHAIN OF WHOLE ELEMENTS THAT MUST ALTERNATE.** A
@@ -1269,16 +1127,13 @@ public static partial class CwProbabilisticDecoder
     private static (
         double Score,
         IReadOnlyList<CwProbabilisticCharacter> Characters,
-        int LastKind,
-        IReadOnlyList<CwElement> Elements)
+        int LastKind)
         DecodeAt(
         int count,
         double wpm,
         double[] keyDown,
         double[] keyUp,
-        IReadOnlyList<double>? gapMilliseconds = null,
-        bool jointly = false,
-        double alpha = Temperature)
+        IReadOnlyList<double>? gapMilliseconds = null)
     {
         var unit = 1200.0 / wpm / HopMilliseconds;
 
@@ -1303,41 +1158,18 @@ public static partial class CwProbabilisticDecoder
             upTo[i + 1] = upTo[i] + keyUp[i];
         }
 
-        // **THE LATTICE IS INDEXED BY (HOP, KIND), AND THAT IS THIS UNIT**
-        // (Tim's ruling of 2026-08-29). It used to be indexed by hop alone, with
-        // the alternation rule checked as `wasDown[j] == kind.IsKeyDown` against
-        // **the winning path's parity at j** rather than against a state.
-        //
-        // **TWO THINGS WERE WRONG WITH THAT AND ONLY ONE WAS NOTICED.** The
-        // known one: a forward or backward sum has to range over all paths
-        // reaching j, and those do not share a parity, so there was nothing
-        // well-defined to sum and no posterior could be computed at all. The
-        // live one: if the best path into j ended key-down while a slightly
-        // worse one ended key-up, that worse path could legally be extended by a
-        // key-down segment and **the search could not see it.** Paths were being
-        // discarded for a reason that is not part of the model.
-        //
-        // Five kinds, so this is five times the state and the same enumeration.
-        var kinds = Kinds.Length;
-        var best = new double[count + 1, kinds];
-        var second = new double[count + 1, kinds];
-        var fromHop = new int[count + 1, kinds];
-        var fromKind = new int[count + 1, kinds];
+        var best = new double[count + 1];
+        var fromHop = new int[count + 1];
+        var kindAt = new int[count + 1];
+        var wasDown = new bool[count + 1];
 
-        for (var i = 0; i <= count; i++)
-        {
-            for (var k = 0; k < kinds; k++)
-            {
-                best[i, k] = double.NegativeInfinity;
-                second[i, k] = double.NegativeInfinity;
-                fromHop[i, k] = -1;
-                fromKind[i, k] = -1;
-            }
-        }
+        Array.Fill(best, double.NegativeInfinity);
+        Array.Fill(fromHop, -1);
+        best[0] = 0;
 
         for (var i = 1; i <= count; i++)
         {
-            for (var k = 0; k < kinds; k++)
+            for (var k = 0; k < Kinds.Length; k++)
             {
                 var kind = Kinds[k];
                 var want = gapHops is not null && !kind.IsKeyDown
@@ -1351,6 +1183,17 @@ public static partial class CwProbabilisticDecoder
                 {
                     var j = i - span;
 
+                    if (double.IsNegativeInfinity(best[j]))
+                    {
+                        continue;
+                    }
+
+                    // Elements must alternate: a mark cannot follow a mark.
+                    if (j > 0 && wasDown[j] == kind.IsKeyDown)
+                    {
+                        continue;
+                    }
+
                     var evidence = kind.IsKeyDown
                         ? downTo[i] - downTo[j]
                         : upTo[i] - upTo[j];
@@ -1360,104 +1203,23 @@ public static partial class CwProbabilisticDecoder
                     // it ever were not.
                     var off = Math.Log(Math.Max(span, 1e-9) / want)
                         / LengthToleranceShare;
-                    var step = evidence - (0.5 * off * off);
+                    var score = best[j] + evidence - (0.5 * off * off);
 
-                    if (j == 0)
+                    if (score > best[i])
                     {
-                        // **THE FIRST ELEMENT MAY BE ANY KIND.** Nothing precedes
-                        // it, so there is no parity to alternate against.
-                        Offer(best, second, fromHop, fromKind, i, k, step, 0, -1);
-
-                        continue;
-                    }
-
-                    for (var kj = 0; kj < kinds; kj++)
-                    {
-                        var from = best[j, kj];
-
-                        if (double.IsNegativeInfinity(from))
-                        {
-                            continue;
-                        }
-
-                        // Elements must alternate: a mark cannot follow a mark.
-                        // **Checked against the state now, not against whichever
-                        // path happened to win at j.**
-                        if (Kinds[kj].IsKeyDown == kind.IsKeyDown)
-                        {
-                            continue;
-                        }
-
-                        Offer(
-                            best, second, fromHop, fromKind, i, k,
-                            from + step, j, kj);
+                        best[i] = score;
+                        fromHop[i] = j;
+                        kindAt[i] = k;
+                        wasDown[i] = kind.IsKeyDown;
                     }
                 }
             }
         }
 
-        var lastKind = -1;
-        var total = double.NegativeInfinity;
-
-        for (var k = 0; k < kinds; k++)
-        {
-            if (best[count, k] > total)
-            {
-                total = best[count, k];
-                lastKind = k;
-            }
-        }
-
-        if (lastKind < 0)
-        {
-            return (
-                double.NegativeInfinity,
-                Array.Empty<CwProbabilisticCharacter>(),
-                -1,
-                Array.Empty<CwElement>());
-        }
-
-        var (spelled, walked) = Spell(
-            count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
-            unit, gapHops, jointly,
-            Posterior(count, downTo, upTo, unit, gapHops, alpha));
-
-        return (total, spelled, lastKind, walked);
-    }
-
-    /// <summary>Offer one candidate transition into a state, keeping two.</summary>
-    /// <param name="best">The winning score at each state.</param>
-    /// <param name="second">The runner-up score at each state.</param>
-    /// <param name="fromHop">Where the winner came from.</param>
-    /// <param name="fromKind">What kind the winner came from.</param>
-    /// <param name="i">The hop being entered.</param>
-    /// <param name="k">The kind being entered.</param>
-    /// <param name="score">What this candidate scores.</param>
-    /// <param name="j">The hop it comes from.</param>
-    /// <param name="kj">The kind it comes from, or -1 for the start.</param>
-    /// <remarks>
-    /// **THE RUNNER-UP IS KEPT WITHIN THE NEW INDEXING**, so `MarginLlr` still
-    /// means what it meant: how much better the winning way into this state is
-    /// than the next best way into the same state.
-    /// </remarks>
-    private static void Offer(
-        double[,] best, double[,] second, int[,] fromHop, int[,] fromKind,
-        int i, int k, double score, int j, int kj)
-    {
-        if (score > best[i, k])
-        {
-            second[i, k] = best[i, k];
-            best[i, k] = score;
-            fromHop[i, k] = j;
-            fromKind[i, k] = kj;
-
-            return;
-        }
-
-        if (score > second[i, k])
-        {
-            second[i, k] = score;
-        }
+        return (
+            best[count],
+            Spell(count, fromHop, kindAt, downTo, upTo),
+            kindAt[count]);
     }
 
     /// <summary>
@@ -1493,48 +1255,12 @@ public static partial class CwProbabilisticDecoder
         return marked;
     }
 
-    /// <summary>The element stream the first pass produced, marks and gaps.</summary>
-    private static List<CwElement> ElementsOf(
-        int count, int lastKind, int[,] fromHop, int[,] fromKind)
-    {
-        var walk = new List<CwElement>();
-        var at = count;
-        var atKind = lastKind;
-
-        while (at > 0 && atKind >= 0 && fromHop[at, atKind] >= 0)
-        {
-            walk.Add(new CwElement(
-                Kinds[atKind].IsKeyDown, fromHop[at, atKind], at));
-
-            var nextAt = fromHop[at, atKind];
-
-            atKind = fromKind[at, atKind];
-            at = nextAt;
-        }
-
-        walk.Reverse();
-
-        return walk;
-    }
-
     /// <summary>Walk the winning path back and turn it into letters.</summary>
     /// <param name="count">How many hops there were.</param>
     /// <param name="fromHop">Where each hop's best segment started.</param>
-    /// <param name="lastKind">Which kind the winning path ends on.</param>
-    /// <param name="fromKind">Which kind each state's best segment came from.</param>
+    /// <param name="kindAt">Which kind that segment was.</param>
     /// <param name="downTo">Cumulative key-down log-likelihood, hop by hop.</param>
     /// <param name="upTo">Cumulative key-up log-likelihood, hop by hop.</param>
-    /// <param name="best">The winning score at each hop.</param>
-    /// <param name="second">The runner-up score at each hop.</param>
-    /// <param name="unit">The fitted clock, in hops per unit.</param>
-    /// <param name="gapHops">This sender's own gap lengths, or null.</param>
-    /// <param name="jointly">
-    /// Whether <see cref="CwJointCutter"/> decides the character boundaries.
-    /// **A parameter and never a static** — xUnit runs test classes in parallel
-    /// and a mutable static read by the decode path is read by whichever test is
-    /// running at the time, which is how the first build of this measured itself
-    /// as having changed nothing.
-    /// </param>
     /// <returns>The text.</returns>
     /// <remarks>
     /// **EACH CHARACTER'S OWN SPAN IS SCORED AGAINST ALL-KEY-UP ON THE WAY
@@ -1543,55 +1269,16 @@ public static partial class CwProbabilisticDecoder
     /// element gaps inside a character contribute nothing and why the length
     /// penalty is left out.
     /// </remarks>
-    /// <param name="posterior">The state posteriors, or null where none.</param>
-    private static (
-        IReadOnlyList<CwProbabilisticCharacter> Characters,
-        IReadOnlyList<CwElement> Elements)
-        Spell(
-        int count, int lastKind, int[,] fromHop, int[,] fromKind,
-        double[] downTo, double[] upTo,
-        double[,] best, double[,] second, double unit, double[]? gapHops,
-        bool jointly, double[,]? posterior)
+    private static IReadOnlyList<CwProbabilisticCharacter> Spell(
+        int count, int[] fromHop, int[] kindAt, double[] downTo, double[] upTo)
     {
-        if (jointly)
-        {
-            return SpellJointly(
-                count, lastKind, fromHop, fromKind, downTo, upTo, unit, gapHops);
-        }
-
-        // How much better the winning path was than the nearest alternative
-        // arriving at the same hop; see `CwProbabilisticCharacter.MarginLlr`.
-        // The posterior at the state the path is actually in, or NaN where none
-        // could be computed — which is not a probability of nought (§0.0).
-        static double At(double[,]? posterior, int at, int k)
-            => posterior is null || k < 0 ? double.NaN : posterior[at, k];
-
-        static double Margin(double[,] best, double[,] second, int at, int k)
-            => k < 0
-               || double.IsNegativeInfinity(second[at, k])
-               || double.IsNegativeInfinity(best[at, k])
-                ? double.NaN
-                : best[at, k] - second[at, k];
-
         var path = new List<(int Kind, int StartHop, int EndHop)>();
         var at = count;
-        var atKind = lastKind;
 
-        // The margin is read at the state the path is actually in, so a
-        // character's `MarginLlr` still says how much better the winning way in
-        // was than the next best way into the same state.
-        var marginAt = new Dictionary<int, int>();
-
-        while (at > 0 && atKind >= 0 && fromHop[at, atKind] >= 0)
+        while (at > 0 && fromHop[at] >= 0)
         {
-            path.Add((atKind, fromHop[at, atKind], at));
-            marginAt[at] = atKind;
-
-            var nextAt = fromHop[at, atKind];
-            var nextKind = fromKind[at, atKind];
-
-            at = nextAt;
-            atKind = nextKind;
+            path.Add((kindAt[at], fromHop[at], at));
+            at = fromHop[at];
         }
 
         path.Reverse();
@@ -1640,12 +1327,7 @@ public static partial class CwProbabilisticDecoder
                 characters.Add(new CwProbabilisticCharacter(
                     MorseAlphabet.Lookup(spelled) ?? "#", spelled, startHop,
                     spanRatio,
-                    spanFrom < 0 ? 0 : startHop - spanFrom,
-                    Margin(
-                        best, second, startHop,
-                        marginAt.TryGetValue(startHop, out var mk) ? mk : -1),
-                    At(posterior, startHop,
-                        marginAt.TryGetValue(startHop, out var pk) ? pk : -1)));
+                    spanFrom < 0 ? 0 : startHop - spanFrom));
 
                 pattern.Clear();
                 spanRatio = 0;
@@ -1664,75 +1346,9 @@ public static partial class CwProbabilisticDecoder
 
             characters.Add(new CwProbabilisticCharacter(
                 MorseAlphabet.Lookup(spelled) ?? "#", spelled, count, spanRatio,
-                spanFrom < 0 ? 0 : count - spanFrom,
-                Margin(
-                    best, second, count,
-                    marginAt.TryGetValue(count, out var lk) ? lk : lastKind),
-                At(posterior, count,
-                    marginAt.TryGetValue(count, out var pl) ? pl : lastKind)));
+                spanFrom < 0 ? 0 : count - spanFrom));
         }
 
-        // **THE SAME WALK, HANDED OUT RATHER THAN RECOMPUTED.** The path above
-        // already is the element stream; turning it into `CwElement`s here costs
-        // one pass and cannot disagree with what was spelled, where a second
-        // traversal built for the record could.
-        var walked = new List<CwElement>(path.Count);
-
-        foreach (var (k, startHop, endHop) in path)
-        {
-            walked.Add(new CwElement(Kinds[k].IsKeyDown, startHop, endHop));
-        }
-
-        return (characters, walked);
-    }
-
-    /// <summary>
-    /// The same path, cut into characters by <see cref="CwJointCutter"/>.
-    /// </summary>
-    /// <remarks>
-    /// The first pass still decides where the key went down and up; what changes
-    /// is only where those elements are divided into letters, and that decision
-    /// is now made together with what the letters are.
-    /// </remarks>
-    private static (
-        IReadOnlyList<CwProbabilisticCharacter> Characters,
-        IReadOnlyList<CwElement> Elements)
-        SpellJointly(
-        int count, int lastKind, int[,] fromHop, int[,] fromKind,
-        double[] downTo, double[] upTo, double unit, double[]? gapHops)
-    {
-        var elements = ElementsOf(count, lastKind, fromHop, fromKind);
-        var cut = CwJointCutter.Cut(elements, unit, gapHops);
-        var characters = new List<CwProbabilisticCharacter>();
-
-        var marks = elements.Where(e => e.IsMark).ToList();
-
-        foreach (var c in cut)
-        {
-            // The evidence for the span, on the same scale the old path used, so
-            // `spanLlr` keeps meaning what it meant on every sheet already
-            // written (HM-DEC-091: one source).
-            var first = marks[c.FirstMark];
-            var last = marks[c.FirstMark + c.MarkCount - 1];
-
-            var ratio = 0.0;
-
-            for (var m = c.FirstMark; m < c.FirstMark + c.MarkCount; m++)
-            {
-                ratio += downTo[marks[m].EndHop] - downTo[marks[m].StartHop]
-                    - (upTo[marks[m].EndHop] - upTo[marks[m].StartHop]);
-            }
-
-            characters.Add(new CwProbabilisticCharacter(
-                c.Text, c.Pattern, last.EndHop, ratio,
-                last.EndHop - first.StartHop, c.Margin));
-
-            if (c.EndsWord)
-            {
-                characters.Add(new CwProbabilisticCharacter(" ", "", last.EndHop));
-            }
-        }
-
-        return (characters, elements);
+        return characters;
     }
 }
