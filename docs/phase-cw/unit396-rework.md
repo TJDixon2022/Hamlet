@@ -159,6 +159,16 @@ code lines. Applied clean; piece commit `952fb690`. Build rc 1 in 1 s, two error
 `CwToneTracker.CoarseSpacingHz` (lines 174 and 180). Not the seam: out under decision 4, no floor
 run. Transmit files nothing against `7e209cb4`. Reverted in the next commit.
 
+**Piece 15, `4c6e4321`, task 2.** Patch 241 lines over four files; `CwPitchChoice.cs` "already
+exists in working directory", dropped under decision 3, and the check re-made on the other three,
+182 lines (`unit396-piece-15-4c6e4321-nochoice.patch`). On the kept state all three fail. After
+piece 3 only `CwDecodeReport:65` and `CwDecoder:286` fail; after 1, 2, 3, 5, 7, 9, 10, 11 the same
+two. Piece 12's raw patch does not apply after 3, so piece 12 *as committed* (`git diff 56a90616
+14155613 -- Cw`, the resolution and seam included) was used as the prior: after it alone,
+`CwDecodeReport:65` and `CwToneTracker:773` fail; after 3 and 12 in either order, only
+`CwDecodeReport:65`, whose context is unit 392's `PitchChoice` seam. Needs 3 and 12: *dependent,
+out*. `src` clean after (`unit396-deps15.sh`, `unit396-deps15b.sh`).
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
