@@ -111,6 +111,27 @@ Decision 16 (`.run-unit\unit396-deps.sh`): after 5, 7, 8, 9 or 10 alone, rc 1 (8
 apply alone themselves); after 7 then 8, rc 1; **after 7 then 9, rc 0**; after 7, 9, 10, rc 0.
 Needs 7 and 9: *dependent, out*. `src` clean after.
 
+**Piece 12, `f27174b5`, task 2, measured.** Patch 172 lines, `CwDecodeReport.cs` and
+`CwDecoder.cs`, 119 insertions and 3 deletions. `--check` rc 1; `--3way` merged `CwDecodeReport.cs`
+and left one conflict block in `CwDecoder.cs`, theirs being piece 3's `Retuned()` with the piece's
+`Unlock()` line added; resolved to ours, keeping unit 392's `Retuned() => Unlock()`, which already
+unlocks (decision 3). Piece commit `ad5fa332`. Build: `CS8907` on the seam property
+`PitchWasAsserted => false`; removed in `14155613` (decision 4). Build 0 errors in 7 s. Captures
+**37 of 37 in 97 s wall**, 1.61 min test time, the compare against entry printed no difference in
+37 rows; adjudicated 13 of 13 in 30 s; synthetics 0 of 2 in 3 s, the same placeholders. Printer:
+
+```
+ SETTLED [■ ■ ■ M ■ ■ ■ ■ T O MTT T  Y M TT ■ ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM]
+ SETTLED DISTANCE WEEKEND 5 [ FLEN]
+ SETTLED DISTANCE THINKING 5 [T ■RIG]
+ SETTLED DISTANCE FLEX 1 [FLE]
+ SETTLED [TE MP NEVEN T REV■R G O T AB OV E ■7 5 F ES ■CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO]
+ SETTLED DISTANCE ABOVE 2 [AB OV]
+ SETTLED DISTANCE BREEZE 2 [BR EE]
+```
+
+Transmit files nothing against `7e209cb4`. Nothing moved: out, both commits reverted in the next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 

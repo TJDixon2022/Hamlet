@@ -33,12 +33,6 @@ namespace Hamlet.RadioEngine.Cw;
 /// transcript comes out unspaced (HM-DEC-142). Distinct from an empty
 /// transcript, which is the decoder producing nothing.
 /// </param>
-/// <param name="PitchWasAsserted">
-/// True where the operator said he could hear a station and Hamlet took the
-/// loudest bin in the band, rather than finding one itself.
-/// **`PitchWasMeasured` stays false throughout**, because nothing was measured;
-/// this says who chose the number instead (Tim's ruling of 2026-08-26).
-/// </param>
 /// <param name="PitchWasMeasured">
 /// True when <see cref="ToneHz"/> came from keying the survey admitted, false
 /// when it is the middle of whatever bank the tracker is pointed at. **The two
@@ -64,9 +58,19 @@ public readonly record struct CwDecodeReport(
     double OwnTransmitSeconds = 0,
     bool WordSpacingUnmeasured = false,
     CwCompetitor? Competitor = null,
-    bool PitchWasMeasured = false,
-    bool PitchWasAsserted = false)
+    bool PitchWasMeasured = false)
 {
+    /// <summary>
+    /// True when the pitch is one the operator asserted. Never, for this decoder.
+    /// </summary>
+    /// <remarks>
+    /// **FALSE BECAUSE NOTHING HERE TAKES AN ASSERTION** (work instruction 392, a
+    /// seam for today's application). The operator's assertion came with the
+    /// August rework, which step 1 took out; this decoder follows the survey and
+    /// nothing else.
+    /// </remarks>
+    public bool PitchWasAsserted => false;
+
     /// <summary>What chose <see cref="ToneHz"/>.</summary>
     /// <remarks>
     /// **ONLY THE TWO ANSWERS THIS DECODER CAN GIVE** (work instruction 392, a seam
