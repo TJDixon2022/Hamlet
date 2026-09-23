@@ -40,7 +40,6 @@
   <ItemGroup>
     <Compile Remove="Audio\TheReadPathDoesNotAllocateTests.cs" />
     <Compile Remove="Audio\TheTapIsNotBehindTheDecoderTests.cs" />
-    <Compile Remove="Cw\ABlipDoesNotShiftEverythingAfterItTests.cs" />
     <Compile Remove="Cw\AMoveStartsTheDecoderFreshTests.cs" />
     <Compile Remove="Cw\AStationIsABinThatSwingsTests.cs" />
     <Compile Remove="Cw\EveryElementCarriesItsOwnPitchTests.cs" />

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 5
+TASK: TASK 3 of 5
 WORK_INSTRUCTION: 398 - the excluded files, classified and retired under R49
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T02:43:37-04:00
-NOTE: task 2: build after the 7th and last retirement commit, warnings as errors
+UPDATED: 2026-09-23T02:44:57-04:00
+NOTE: task 3: re-include 1 of 7, the set's #1 - running the type
 
 ---
 
