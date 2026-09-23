@@ -257,5 +257,28 @@ build, the four compiled types that the task 0 grep found reading `WordsPerMinut
 | C, a hop the guard blocks goes to `Skip` | `CwDecoder.cs` 590 | #42 70 to 0, green, 61 in all | **captures 35 of 37**: `cw-2026-08-17-013347` 59 to 48 characters, 108 to 68 elements; `013622` 55 to 13 and 84 to 20, both red; **adjudicated 12 of 13**, `VA3VRR` red; the rest as at entry | no, put back and the tree rebuilt at `7e65aac4` |
 | D, #6 and #15 | - | - | - | not attacked: decision 7 attacks them only on a cause the trace names at a line, and it named none |
 
+## 4. Exit
+
+| line or type | entry | exit |
+|---|---|---|
+| app carry-forward line | 278 of 278 in 156 s, unit 401's exit | 277 of 278 in 161 s and 275 of 278 in 171 s. Every loss was a different name, lost to the headless dispatcher loop at 1 ms and green in the other run, so each counts neither way: 278 of 278 |
+| engine carry-forward line | 178 of 178 in 374 s, unit 401's exit | 178 of 178 in 371 s |
+| `TheCapturesThatDecodeKeepDecodingTests` | 37 of 37 | 37 of 37, every row identical to entry (diff rc 0), 92 s |
+| `TheAdjudicatedReadingsKeepReadingTests` | 13 of 13 | 13 of 13, identical but the time, 29 s |
+| `CwFixtureTests.TheCleanRecordingsDecodeExactly` | 2 of 2 | 2 of 2 |
+| `CwAcquisitionWindowTests` | 10 of 12, #6 0.75, #15 0.54 | 10 of 12, every share identical |
+| `CwEmissionGateTests` | 7 of 8 | **8 of 8**, #24 names 18 |
+| `CwAdjudicationTests` | 10 of 11 | **11 of 11**, #41 names 10 and 11 |
+| `CwReceiverFixtureTests` | 23 of 27 | 23 of 27, every count identical: #42 70, #43 5+37, #44 3+21, #45 1+3 |
+| `CwFixtureTests` | 22 of 23 | 22 of 23, the same `fading-18wpm` case |
+| `CwDisplacementFloorTests` | 6 of 6 | 6 of 6 |
+
+The eleven transmit files show nothing against `7e209cb4`. `git diff --stat 162f0259 HEAD -- src`
+lists only `src/Hamlet.RadioEngine/Cw/CwDecoder.cs`, 21 insertions and 2 deletions, and nothing
+under `src/Hamlet.App`. Against `162f0259`, `tests` and `docs` list `PARKED.md`, `reds-3.6.md`,
+this file, the failing set's line 52, and the printer `TheEightRedsTests.cs`.
+`git status --short tests` printed nothing. **No regression. 3.5 is re-confirmed on its own
+sentence.** 3.6 is not ticked: 2 of 8 have a verdict.
+
 Every put-back went through `.run-unit/unit402-putback.sh` (`git checkout -- <path>`), followed by a
 build. `git diff --stat HEAD -- src tests` printed nothing after group C was put back.
