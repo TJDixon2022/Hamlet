@@ -1269,7 +1269,7 @@
     gate raised under R58 (HM-DEC-168). No file under src changes at this task.
   -->
   <PropertyGroup>
-    <Version>1.13.95</Version>
+    <Version>1.13.96</Version>
   </PropertyGroup>
 
   <!--
