@@ -205,6 +205,12 @@ insertions; applied clean, piece commit `b381460b`. Build 0 errors in 6 s. Captu
 94 s wall**, 1.55 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 4 s.
 Printer: the seven SETTLED lines identical to section 1. Transmit files nothing. Out, reverted next.
 
+**Piece 23, `b8cad1f9`, task 2, measured as a pair with 22.** Patch 124 lines, `CwAccuracy.cs`,
+113 insertions; *No such file or directory* alone. Piece 22's patch then 23's applied clean
+(`unit396-pair23.sh`), pair commit `c89bdd44`. Build 0 errors in 5 s. Captures **37 of 37 in 98 s
+wall**, 1.62 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 4 s. Printer:
+the seven SETTLED lines identical to section 1. Transmit files nothing. Out, reverted next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
