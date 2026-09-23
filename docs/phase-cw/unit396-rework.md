@@ -82,4 +82,27 @@ of `unit395-floors-exit-1.txt` and `unit396-floors-1.txt` printed no difference 
 
 ## 2. The pieces
 
+The rows are in `unit395-rework.md` section 2 under `### Judged by unit 396`. Below, one paragraph
+per piece: the dependency sequence for a dependent piece, the captures wall time and the SETTLED
+lines for a measured one.
+
+**Piece 10, `4786c7e7`, task 1.** Patch `.run-unit\unit396-piece-10-4786c7e7.patch`, 121 lines,
+`CwToneSurvey.cs` only, 68 insertions and 2 deletions. On the kept state: `git apply --check` rc 1
+(`patch failed: src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs:20`), `--3way` conflicted, the file
+restored to HEAD. Decision 16, each prior applied to a clean `Cw`, the target checked, `Cw`
+restored, never committed (`.run-unit\unit396-deps10.sh`):
+
+| Applied first | Target `--check` |
+|---|---|
+| piece 5 `9de394da` alone | rc 1 |
+| piece 7 `7fb89d5e` alone | rc 1 |
+| piece 8 `1bf4372d` alone | prior itself did not apply; rc 1 |
+| piece 9 `44cf3fc8` alone | prior itself did not apply; rc 1 |
+| 7 then 8 | rc 1 |
+| 7 then 9 | **rc 0** |
+| 7 then 8 then 9 | rc 0 |
+
+It needs 7 and 9, two out pieces: *dependent, out*, not applied, no build, no run. `src` clean
+after.
+
 ## 3. Exit

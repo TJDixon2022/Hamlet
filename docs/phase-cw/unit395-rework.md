@@ -156,6 +156,17 @@ out and `src` is byte-identical to `5688a8a5`.
 Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
 it.
 
+### Judged by unit 396
+
+Same rules, same kept state: `src` byte-identical to `5688a8a5` before every piece. Numbers
+before piece 10 are unit 396's entry, `docs\phase-cw\unit396-rework.md` section 1, identical to
+section 3.1 and 3.1a here. Decision 16's `git apply --check` sequence for each dependent row is in
+that file's section 2.
+
+| n | Hash | Claim | Number before | Number after | Captures wall | Kept or out | Why |
+|---|---|---|---|---|---|---|---|
+| 10 | 4786c7e7 | both gate derivations measured, neither ships | the entry state, pieces 1 to 9 out: 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; synthetics 0 of 2 | not run: nothing applied, the tree is the entry state | none | **out**, dependent on `7fb89d5e` and `44cf3fc8`, out; nothing applied, no piece commit | its one file, `CwToneSurvey.cs`, did not apply on the kept state and `--3way` conflicted. Applied after each out piece alone - 5, 7, 8, 9 - it still did not apply; after 7 then 9 it applied clean, and after 7, 8, 9; after 7 then 8 it did not. So it needs two out pieces, 7 and 9, and decision 5 lists it and does not apply it. Its 12 code lines add a keying `Duty` to the survey's record and `Shut`, `StuckOpen` and `Truncated` verdicts on it, the rest doc comment. Out under decision 5. |
+
 ## 3. The numbers
 
 ### 3.1 The numbers before piece 1, at entry
