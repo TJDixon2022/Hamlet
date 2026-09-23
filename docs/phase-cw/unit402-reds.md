@@ -240,3 +240,22 @@ printer feeds fiftieths of a second). `CharacterSettled` 54 in all, 30 before 13
   doubled speed hypothesis wins in `CwProbabilisticDecoder`'s speed grid (`SlowestWpm` 8 at 438,
   `FastestWpm` 40 at 459), where every 12 wpm element can be re-read as two at 24. **No single line
   found.**
+
+## 3. The attacks
+
+Every change was built once, then run one type per invocation, `--no-build`. Before group A's
+build, the four compiled types that the task 0 grep found reading `WordsPerMinute` or
+`SpeedIsReacquiring` were run on the unchanged binary as their baseline: `CapturedSignalTests` 13 of
+13, `CwSpeedSilenceTests` 4 of 4, `WhyTheGateDidNotFireTests` 2 of 2, `CwTwoStationTests` 5 of 5.
+
+| change | file and line | red's own number | gate | kept |
+|---|---|---|---|---|
+| A1, a follow under the full passband, 60 Hz, is not a discontinuity | `CwDecoder.cs` 691 | #24 none to 18, green; #41 green | every type as at entry, every capture row identical; but `CwSpeedSilenceTests.OneStationsSpeedIsStillNamed` printed `named: 12, 21` against `named: 12` at entry. The printer found a 50 Hz follow on `exchange-easy` at 15.25 s naming 21 for a 12 wpm sender | no, replaced by A2 before any commit, because it names a speed no character supports (§0.0, HM-DEC-090) |
+| A2, the same at half the passband, 30 Hz | `CwDecoder.cs` 691 | #24 18 wpm, green; #41 82 of 144 polls at 10 and 11, green | captures 37 of 37 every row identical; adjudicated 13 of 13, identical but the time; synthetics 2 of 2; `CwFixtureTests` 22 of 23 as at entry; displacement 6 of 6; `CwEmissionGateTests` 8 of 8; `CwAdjudicationTests` 11 of 11; `CwAcquisitionWindowTests` 10 of 12 and `CwReceiverFixtureTests` 23 of 27 as at entry, every share and count identical; `CapturedSignalTests` 13, `CwSpeedSilenceTests` 4 (`exchange-easy` names 12 only; two-station 10, 11), `WhyTheGateDidNotFireTests` 2, `CwTwoStationTests` 5 (final speed none, reading 22) | **yes, `7e65aac4`** |
+| B1, line 203 reads `CharacterSettled` | `CwReceiverFixtureTests.cs` 203 | #43 5+37 to 4+7; #44 3+21 to 0+7; #45 1+3 to 1+0; none green | own type only (decision 4) | no, put back |
+| B2, the flush does not settle a trailing unreadable character inside the delay | `CwProbabilisticStream.cs` 507 | #45 1+3 to 1+3; #43, #44 unchanged | own type only, measured for movement; it could not turn #45 green on `CharacterDecoded`, which keeps 3 strangers | no, put back, no movement |
+| C, a hop the guard blocks goes to `Skip` | `CwDecoder.cs` 590 | #42 70 to 0, green, 61 in all | **captures 35 of 37**: `cw-2026-08-17-013347` 59 to 48 characters, 108 to 68 elements; `013622` 55 to 13 and 84 to 20, both red; **adjudicated 12 of 13**, `VA3VRR` red; the rest as at entry | no, put back and the tree rebuilt at `7e65aac4` |
+| D, #6 and #15 | - | - | - | not attacked: decision 7 attacks them only on a cause the trace names at a line, and it named none |
+
+Every put-back went through `.run-unit/unit402-putback.sh` (`git checkout -- <path>`), followed by a
+build. `git diff --stat HEAD -- src tests` printed nothing after group C was put back.
