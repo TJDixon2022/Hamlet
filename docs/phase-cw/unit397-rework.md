@@ -243,3 +243,35 @@ cannot be applied. Not the seam: **out under decision 4**, no floor run, reverte
 commit. Transmit files silent. **45 of 45 judged.**
 
 ## 3. The exit round, task 2
+
+HEAD `3af36501`, every piece 34 to 45 out: `git diff --stat 5688a8a5 HEAD -- src` prints nothing.
+
+**The carry-forward lines**, as `docs\carry-forward-tests.txt` prints them at lines 7 and 9, one
+build each, a status line immediately before each:
+
+| Line | Entry, unit 396's exit under decision 20 | Exit |
+|---|---|---|
+| App | 278 of 278 in 155 s | **278 of 278 in 167 s**, nothing lost |
+| Engine | 176 of 176 in 374 s of 480 | **176 of 176 in 374 s of 480** |
+
+No regression. `.run-unit\unit397-carry-exit-{app,eng}.txt`.
+
+**The floors**, one invocation per type, `--no-build` after the engine line's build:
+
+- `TheCapturesThatDecodeKeepDecodingTests`: **37 of 37 green in 92 s**; the compare of
+  `unit397-floors-1.txt` and `unit397-floors-exit-1.txt` printed no difference in 37 rows, so the
+  kept state's table is section 1's, every row.
+- `TheAdjudicatedReadingsKeepReadingTests`: **13 of 13 green in 29 s**.
+- `CwFixtureTests.TheCleanRecordingsDecodeExactly`: **0 of 2** in 4 s, red as at entry under R53,
+  `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■`.
+
+**The printer at exit**, 2 of 2 in 6 s, identical to entry: 021410 WEEKEND 5, THINKING 5, FLEX 1;
+013637 ABOVE 2, BREEZE 2; both settled texts as section 1.
+
+**The trees at exit.** The eleven transmit files against `7e209cb4`: nothing. `src` against
+`5688a8a5`: nothing - no piece kept. `git diff --stat ee0ea0dc HEAD` over the two floor test files:
+nothing; the floor table is the step's entry table. `git worktree list`: the root and the three
+preflight trees. **Decision 14's log check**, `ee0ea0dc..HEAD` by `unit397-log.sh`: every one of the
+27 piece or pair commits of units 395 to 397 that touched `src` is followed by its revert, `step 4
+piece n out`, before the next piece starts; the seam and drop follow-ups of pieces 2, 3 and 12 sit
+between their piece and its revert.

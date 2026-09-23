@@ -67,3 +67,17 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
   `CwToneTracker.CoarseSpacingHz` is private there; not the seam, so out under decision 4.
 - **396 item 3** - Piece 30, the squelch on an unadmitted pitch, is the only piece of 33 that moved a
   printed number, and it moved ABOVE 2 to 3 and unsure up on 25 captures; out under R51.
+- **397 item 1** - Of pieces 34 to 45, 4 were never run for want of a chain longer than section 6's
+  pair (37, 38, 40, 44 - `aeea24f2`, `a37cfcff`, `ee2cba8d`, `9c2a7f99`), decision 16; with 396
+  item 1 the step's total is 14 of 45, and 39, 41 and 45 were applied but did not build on types
+  only those chains declare (`CwElement`, piece 44's `_window`).
+- **397 item 2** - Piece 44's `CwKeyingMeter` half, a reused buffer for the meter's six-second
+  read, merged clean alone; decision 5 lists a dependent piece whole, so it was never measured on
+  its own.
+- **397 item 3** - Piece 34, the 12 ms key-down hold-over in `CwUnitEstimator`, turned 14 captures
+  and one adjudicated anchor red while raising 004507 50 to 53 and 002016 75 to 77; piece 42, the
+  decode worker thread, left the captures identical and emptied both clean synthetics' text. Both
+  out under R51.
+- **397 item 4** - Section 5 mismatches of unit 397: `PROJECT_STATUS.md` at HEAD reads unit 390,
+  `TASK 5 of 6`, not unit 396 `TASK 3 of 4`; the working copy was overwritten by this unit's
+  first status call before it was read.
