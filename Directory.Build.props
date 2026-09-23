@@ -1239,8 +1239,13 @@
     commit after it that turned one red named, and the app's seams into the Cw namespace listed.
     HM-DEC-167 archives the hardening phase with 5.1 open. No file under src changes in this unit.
   -->
+  <!--
+    1.13.78 -> 1.13.79, WORK INSTRUCTION 392 TASK 0. A PATCH, STEP 1 OF THE CW PHASE, THE DECODER
+    READS AGAIN: src\Hamlet.RadioEngine\Cw brought back to 7e209cb4 (R53), the seams adapted until
+    today's app and tests build, every adaptation listed, the transmit files untouched.
+  -->
   <PropertyGroup>
-    <Version>1.13.78</Version>
+    <Version>1.13.79</Version>
   </PropertyGroup>
 
   <!--
