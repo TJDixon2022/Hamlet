@@ -137,6 +137,10 @@ piece; for piece 1 that is section 3.1 and 3.1a.
 
 | 3 | 3e84ac74 | let go of a pitch measured on a frequency the radio has left | the entry state, pieces 1 and 2 out | every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, pieces `8d454ab9` and `4b8a89a3`, both reverted in the next commit | applied clean but did not build: `CwDecoder.cs(427,17): error CS0111: Type 'CwDecoder' already defines a member called 'Retuned' with the same parameter types` - unit 392's one-line seam `Retuned() => Unlock()`; met under decision 4 in `4b8a89a3` by removing the seam line and adding its `Unlock()` call to the piece's `Retuned`, which moves nothing else; built clean, 37 of 37, 13 of 13, nothing moved. The piece acts only when the dial moves, which no floor case does. Out under R51. |
 
+| 4 | 39a42c3f | put the margin's share of the span on the sheet | the entry state, pieces 1 to 3 out | the entry state: nothing was applied, so the tree is byte-identical to the one task 0 measured and that run is its measurement | 92 s, task 0's run | **out**, nothing to apply, no piece commit | its one hunk adds `CwCharacter.MarginShareForRecord`, which unit 392's seam already carries with the same arithmetic; `git apply` refused it and `--3way` conflicted on the doc comment; the hunk was dropped under decision 3 and the file restored to HEAD, leaving an empty piece. It adds a record figure and no decode path, so it could not move a floor. Out under R51. |
+
+| 5 | 9de394da | open the two constants a sweep has to vary | the entry state, pieces 1 to 4 out | every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, piece `fa26b78b`, reverted in the next commit | applied clean and built clean; 37 of 37, 13 of 13; nothing moved - it turns the integrator width and confirmation window into constructor parameters defaulting to the constants, and nothing passes them. Out under R51. |
+
 Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
 it.
 
