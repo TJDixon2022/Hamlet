@@ -181,6 +181,31 @@ above them. `TheAdjudicatedReadingsKeepReadingTests` 13 of 13 green in 29 s wall
 `CwFixtureTests.TheCleanRecordingsDecodeExactly` 0 of 2, `clean-12wpm` and `clean-18wpm` red as
 R53 expects, in 3 s. Outputs `.run-unit\unit395-floors-2.txt` and `-3.txt`.
 
+### 3.1a The printer at entry, the numbers before piece 1
+
+`Cw\TheReworkNumbersPrinterTests`, run alone, 2 of 2 (it asserts nothing), 10 s wall; output
+`.run-unit\unit395-printer-entry.txt`. **Decision on the text member:** `CwDecoder.Reading` is
+the last window only, and `CwDecodeHarness` takes text from `CharacterDecoded`, which re-emits
+the leading edge at every revision (`FFRLELETT`, `NEVVENEN`). The `CharacterSettled` text holds
+each final character once and has the sidecar's shape (`FLENT 66O`, `AB OV E`, `BR EE Z E`).
+**Pieces are judged on the settled distances**; the harness-text distances are printed and
+recorded beside them. The printer was built twice, once to find this and once with the settled
+distances added.
+
+| Capture | Settled text | Word | Distance | Nearest substring | Harness-text distance |
+|---|---|---|---|---|---|
+| 021410 | `■ ■ ■ M ■ ■ ■ ■ T O MTT T  Y M TT ■ ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM` | WEEKEND | 5 | ` FLEN` | 5 |
+| | | THINKING | 5 | `T ■RIG` | 5 |
+| | | FLEX | 1 | `FLE` | 2 |
+| 013637 | `TE MP NEVEN T REV■R G O T AB OV E ■7 5 F ES ■CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO` | ABOVE | 2 | `AB OV` | 3 |
+| | | BREEZE | 2 | `BR EE` | 3 |
+
+**021410 in the floors harness does not carry `ATEEKEND` or `TTHINKING`.** Those are the app's
+readings on the evening, a minute of listening fed in 960-sample chunks; the harness pumps one
+hop at a time from the start of the file, and its settled text carries only the tail
+(`■RIGHR IS ■ FLENT 66O`, the sidecar's `■RIGHR IS ■ FLENX 66O`). So WEEKEND and THINKING start
+at 5, the nearest a 7- and 8-letter word gets to text with no trace of either, and FLEX at 1.
+
 ### 3.2 The carry-forward lines at entry
 
 - **App**, line 7 as printed: 276 of 278 in 171 s, 2 lost to the headless dispatcher loop
