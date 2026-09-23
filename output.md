@@ -1,375 +1,354 @@
+```
 READ IN THIS ORDER.
 
-A. The phase goal - CW decodes again. Step 0 is this unit's; steps 1 to 5 are
-   not started. After this unit step 0 is done: all four criteria have their
-   answer, and none was dropped.
-B. Step 0's criteria, one line each, met or not:
-   0.1 the table at HEAD - met: 52 cases, 20 red, every case with its numbers.
-   0.2 the green commit - met: 07f0397a, 2026-08-21, 84 Cw commits before HEAD.
-       It predates the 08-25 floors; see section 4 item 1.
-   0.3 the red commit - met: 8e3ee277, 2026-08-21, both clean synthetics.
-   0.4 the seams - met: 30 files, 145 file-and-type rows, each checked at 07f0397a.
-C. The report last. Section 4 raises 15 items: unit 390's nine, carried, and
-   six of this unit's own. None of them is in the way of a criterion in B.
-   Item 1 decides where step 1 restores to, so it bears on step 1, not on step 0.
+A. The phase goal - CW decodes again. Step 0 closed on unit 391's answers at
+   task 1 of this unit; step 1 is this unit's; steps 2 to 5 are not started.
+   After this unit step 1 is partial: 1.5 is not met.
+B. Step 1's criteria, one line each, met or not:
+   1.1 met - the folder is 7e209cb4's plus six listed hunks and the kept
+       CwPitchChoice.cs; the eleven transmit files print nothing against 7e209cb4.
+   1.2 met - Hamlet.sln 0 warnings 0 errors, both Hamlet test projects built,
+       22 test files excluded and listed, tools/Hamlet.PitchRank out of the build.
+   1.3 met - captures 37 of 37 and adjudicated 13 of 13 green; synthetics 2 of 2
+       red, reported with what they read.
+   1.4 met - the four app CW tests, 13 of 13 green.
+   1.5 NOT MET - engine line 150 of 150; app line red on one test green at entry,
+       TheOliviaRowsTests, twice, by an IOException on its own telemetry file.
+   1.6 met - three changes in MainWindowViewModel.cs, each with its seam.
+C. The report last. Section 4 raises 19 items - unit 390's nine and unit 391's
+   five carried, and this unit's own five - and item 1, the Olivia rows red, is
+   in the way of 1.5 in B.
+```
 
-UNIT:       391 - complete at task 3 of 4 (tasks 0 to 3, none dropped) - 2026-09-22 19:17
-PHASE GOAL: bring Hamlet's CW receive back to the last point where it produced what its guards
-            recorded, prove it with the floor tests, keep it guarded, and let Tim confirm it on the air.
-UNIT GOAL:  put numbers on the break at HEAD, name the newest commit where all three floor tests
-            were green and the commit that first turned one red, and list the seams step 1 crosses.
-ADVANCED:   yes - step 0's four criteria each have a measured answer; no file under src changed.
-NUMBER:     floor cases red at HEAD: unknown -> 20 of 52
+```
+UNIT:       392 - complete at task 4 of 6, tasks 0 to 4, task 5 dropped - 2026-09-22 20:50
+PHASE GOAL: get the CW decoder reading again by going back to the last code that read, then keep it from breaking silently, clear the inherited reds and judge the August rework on numbers, with Tim at the radio as the final judge
+UNIT GOAL:  put the engine's Cw folder back to 7e209cb4, change only what today's app and tests need to build, list every change, and show the captures and adjudicated floor tests green at HEAD
+ADVANCED:   yes - captures and adjudicated floor cases went from 18 red to 0 red at HEAD on the restored decoder; step 1 is partial on 1.5
+NUMBER:     captures and adjudicated cases red at HEAD: 18 of 50 -> 0 of 50; synthetics 2 of 2 red -> 2 of 2 red
 DRIFT:      0
+```
 
 ## 1. What Claude did
 
-**Complete: tasks 0 to 3 of 4, none dropped.** Claude Code on QUIVERFULL, `C:\Source\HamLet`, on
-`main`. The gate passed: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, no
-`CoreHMI.sln`, no `MURC.sln`. Commits `3d6a2c12`, `52789b1a`, `3c5d7e84`, `356eb86b` and the
-report commit, each pushed; `main...origin/main` showed nothing ahead after each push.
+**Complete at task 4 of 6: tasks 0 to 4 done, task 5 dropped.** Task 5 was the named drop
+candidate. Task 4 ended at 20:48 and the unit started at 20:06, so less than forty minutes of
+the hour were left. Step 1 is **partial**: 1.5 is not met. Windows 11, `C:\Source\HamLet`,
+Hamlet confirmed by the gate, branch `main`, pushed after every task.
 
-- **Task 0, the record.** Version 1.13.77 to 1.13.78. `PROJECT_CARD.md` changed to
-  `PHASE: CW decodes again` and `PHASE_SET: 2026-09-22`. HM-DEC-167 was written into
-  `DECISIONS.md` verbatim above HM-DEC-166. The `CLAUDE.md` section 1 row went above HM-DEC-165,
-  and `PHASE_OUTCOME.md` got `## UNIT 391 - STEP 0`. **Entry round:** both
-  carry-forward lines ran unedited, one build each, with a status line before each: **app 278 of 278
-  (2 m 46 s), engine 150 of 150 (5 m)**, both green on the first attempt.
-- **Task 1, the floors at HEAD.** One type per invocation, filtered, with detailed console output
-  and a status line before each: **captures 19 green / 18 red of 37, adjudicated 13 of 13 green,
-  clean synthetics 0 of 2 (both read the empty string)**. No run was lost.
-- **Task 2, the seams.** The grep scripts are under `.run-unit\`. 30 files name a Cw type, 145
-  file-and-type rows, with members found by grep. Written to `docs/phase-cw/unit391-seams.md`.
-- **Task 3, the walk.** I walked 85 commits touching `src/Hamlet.RadioEngine/Cw`, newest first,
-  each in `C:/Source/HamLet-wt391` and removed after. 0.2 is `07f0397a` and 0.3 is `8e3ee277`.
-  I then checked every seam member at 07f0397a. Written to `docs/phase-cw/unit391-walk.md`.
-  **`git worktree list` at the end:**
+**Task 0.** Version 1.13.78 to 1.13.79. `PHASE_STATUS.md` named unit 391 at step 0, so I set
+it to *392 - the decoder reads again* at step 1. Entry round, both carry-forward lines as the
+file prints them, one build each, with a status line before each:
+- **App:** 276 of 278 in 181 s. Two tests were lost to the headless dispatcher loop before any
+  assertion ran. I re-ran the line once (§6): 277 of 278 in 161 s, one lost the same way. Each
+  lost test passed in the other run, so nothing was red on an assertion.
+- **Engine:** 150 of 150 in 301 s.
 
-```
-C:/Source/HamLet                       3c5d7e84 [main]
-C:/Users/TimDi/preflight-trees/206bd90 263949d7 (detached HEAD)
-C:/Users/TimDi/preflight-trees/8e3ee27 07f0397a (detached HEAD)
-C:/Users/TimDi/preflight-trees/f595938 351784ae (detached HEAD)
-```
+`git diff --stat 3d6a2c12 HEAD -- src tests` printed nothing, so unit 391's floor run is this
+unit's entry measurement (decision 2).
 
-  `HamLet-wt391` is gone. The three `preflight-trees` were there before this session. I didn't make
-  them and didn't touch them (section 4, item 5).
+**Task 1, the trace.** `docs/phase-cw/unit392-seams.md` sections 1 to 6:
+- Unit 391's 145 app seam rows re-checked at `7e209cb4`: 136 whole. Of the 9 rows with an
+  absent type, 6 are the same word on another type (`Outcome`, `Envelope`). The 3 real ones
+  are `CwElementPitch`, `CwStreamSplit` and `CwPitchChoice`, all in `MainWindowViewModel`.
+- 13 engine test files name a HEAD-only type.
+- None of the 33 files at `7e209cb4` names a HEAD-only type.
+- `Tap` is fed at device rate at both commits, with no resampler in either.
+- `DigitalMode` is 865e66d8's and absent at `7e209cb4`.
+- 0.1 to 0.4 ticked per decision 1.
 
-**Decisions I made for myself, in full:**
+**Task 2, the restore. One commit, `9fbb4728`.** Transmit diff empty. Checked out
+`7e209cb4 -- src/Hamlet.RadioEngine/Cw` and deleted six HEAD-only files, then built five
+times:
+- **Build 1:** 2 errors, crefs in a kept file.
+- **Build 2:** 134 errors.
+- **Build 3:** 8 errors.
+- **Build 4:** clean. A non-incremental rebuild was also clean: 9 projects, 0 warnings, 0 errors.
 
-1. **Timeout.** The captures type's timeout went from the instruction's 900 s to 2700 s. The
-   first run under 900 s was cut off at 18 of 37 cases (8 red, each matching the full run).
-   The whole type took 1995 s. The instruction marked 900 s as the author's and overrulable.
-2. **Walk order.** At each commit the walk ran the cheapest type first (the clean synthetics,
-   about 10 s) and stopped at the first red type. The captures and adjudicated types ran only
-   where the synthetics were green. A commit red on one type is red on the three, so this changes
-   no answer, only the cost.
-3. **Walking past 2026-08-24.** The task 3 fallback's condition held: no commit back to 08-24 was
-   green on all three. I kept walking under section 4's *"If it is not there, say so and keep
-   walking back"* and found an all-three green 34 commits further down. I named that for 0.2
-   rather than the fallback's captures-only commit, because it meets criterion 0.2 as written.
-   Section 4 item 1 puts the choice to Tim.
-4. **One probe outside the walk.** I ran captures and adjudicated at `7e209cb4`, the commit that
-   set the 08-25 floors, so step 1 has a second restore point on numbers.
-5. **Overlap with the long runs.** The harness caps a foreground call at 600 s. The two long
-   captures runs and the probe were moved to the background by it, or started there. While they
-   ran I did grep work and the synthetics-only walk, which runs `dotnet test` in a second tree. I
-   waited for completion with one bounded loop in a single call rather than repeated checks. This
-   bends HM-DEC-155's *never background and poll*, and I'm saying so (item 4).
+The result:
+- **Six engine-side hunks** in `CwDecoder`, `CwDecodeReport` and `CwCharacter`.
+- **Three app changes** in `MainWindowViewModel`.
+- **22 test files excluded** from compilation, not retired.
+- **`tools/Hamlet.PitchRank`** out of the solution build.
+- **Kept:** `CwPitchChoice.cs` only. **Deleted:** nine HEAD-only files.
+
+**Task 3.** Each floor type ran in its own foreground invocation:
+- **Captures:** 37 of 37 green in 97 s. Unit 391 had 19 of 37 in 1995 s.
+- **Adjudicated:** 13 of 13 in 33 s.
+- **Clean synthetics:** 2 of 2 red, reading placeholders.
+- **App CW tests:** 13 of 13 green.
+
+**Task 4.** Carry-forward at exit:
+- **Engine:** 150 of 150 in 297 s.
+- **App:** 274 of 278 in 159 s. Three were lost to the dispatcher loop. **One was red:
+  `TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant`,**
+  an `IOException` because another process held its own `refuse\2026-09-23.jsonl`.
+- **App re-run once:** 275 of 278 in 170 s. Two were lost to the dispatcher loop, and the same
+  Olivia test failed with the same `IOException`.
+
+**Regression, by name, under HM-DEC-165:** that Olivia test passed at entry and was red at exit.
+The evidence that the restore did not cause it:
+- It is not an assertion red.
+- The test builds no CW decoder. It feeds `TapForTests` with no audio input.
+- Run alone, it passed at `617215f0`, the tree before the restore, in a temporary worktree
+  since removed. It also passed alone on the restored tree. Each run took 8 s.
+
+The one change that touches its run is the app test assembly losing
+`ThePitchControlsAreOffThePanelTests`, which changes what runs beside it. That is a guess and
+is marked as one. **1.5 is not ticked.** No other test was red that had been green at entry.
+
+**Author's decisions applied, all overrulable:**
+1. **Decision 1:** 0.1 to 0.4 ticked, each with one bold sentence naming the unit and the file.
+2. **Decision 2:** unit 391's floor run is the entry measurement, because the diff was empty.
+3. **Decision 3:** 22 files excluded by `<Compile Remove>`, with a comment naming this unit and
+   step 3 in each test project. Listed with their missing names in section 3.
+4. **Decision 4, and the keep list changed during the build.** Task 1 wrote a keep list of four:
+   `CwElementPitch`, `CwStreamSplit`, `CwJointCutter` and `CwPitchChoice`. `ElementPitchLine`
+   feeds `CwElementPitch` from `read.Elements`, which only HEAD's decoder produces. Keeping the
+   file could not make the line build unless a HEAD-only type went back through `7e209cb4`'s
+   decode function, which section 9 of the instruction parks. So I changed the line (app
+   change 2), and three of the four had no user left outside Cw. **Kept: `CwPitchChoice.cs`.**
+5. **Decision 5:** timeouts 900, 600, 300 and 480 s, as given. Every run finished inside the
+   harness's 600 s, foreground. Nothing was backgrounded this unit.
+6. **Mine, not in the instruction: `tools/Hamlet.PitchRank`'s six `Build.0` lines taken out of
+   `Hamlet.sln`.** It was added 2026-08-28 to measure the rework, and it names seven HEAD-only
+   types and overloads. It stays in the solution and in the tree, unedited. I treated it the way
+   decision 3 treats a test.
+7. **Mine: `DecodeQueueDroppedChunks` and `DecodeQueueDroppedSamples` return nought**, not NaN
+   and not an app change. This decoder has no queue, HEAD returned nought whenever its queue
+   was not running, and the app already writes nought when there is no decoder.
+8. **Mine: `UseJointCutter` and the ranked sentence became app changes rather than shims.** A
+   switch that silently did nothing, or `CwPitchRank` recreated only to return null, would each
+   have been the worse lie.
+
+**One error of mine, corrected in the record.** Task 0's PHASE_OUTCOME line said adjudicated
+was 13 of 13 red at entry. Unit 391 measured 13 of 13 **green**. It was corrected at task 3,
+with the correction stated on the line.
 
 ## 2. What the owner should expect
 
-**Today 20 of the 52 floor cases are red.** That's 18 of 37 captures and both clean synthetics.
-The 13 adjudicated readings all pass, but that's a count and not a verdict on the decoder. **The
-decoder last kept all three floor tests green on 2026-08-21, at `07f0397a`, an hour before
-`8e3ee277` replaced threshold decoding with the likelihood decoder.** From that commit on, the
-clean `CQ DE W1AW K` came out as the wrong letters. From 08-25 it came out as unsure marks only.
-From 09-03 (`43efc525`, the decoder fed from a queue) it came out as nothing, and it still does.
-On the evening of 08-25 (`7e209cb4`) both capture-based tests were fully green (36 of 36 and 13
-of 13), while the synthetics were already red. So "read on the air on 08-25" and "the floors were
-green" are true of the captures, not of the synthetics. **There's no visible change in the
-application.** Nothing under `src` changed. What looks wrong but isn't: 07f0397a is older than
-the 08-25 evening the phase description names. That's the measurement, not a slip, and item 1
-asks which point step 1 goes back to.
+The CW decoder in the build is now the one from the evening of 2026-08-25 (`7e209cb4`), and the
+CW tab is as it was in September; nothing on the screen moved. Three things on the capture sheet
+changed:
+- The element-pitch line now says *not measured (the decoder in this build does not say where
+  each element began and ended ...)*.
+- The *ranked* pitch sentence can no longer appear.
+- The margin figures on the span-ratio line print *unmeasured*.
+
+The August rework is out of the build: the joint cutter, the ranking, the spectral peak, the
+posterior, the decode queue and the operator's pitch assertion. `UseJointDecoder` in the
+settings file is read by nothing. `pitch-rank` is no longer built with the solution. What
+looks wrong but is not: the two clean synthetics still fail, now showing `■` marks rather than
+nothing. R53 makes them step 3's. The floor tables say the captures produce at least what they
+produced on 08-25. That is a count, not a reading, and whether it reads on the air is yours to
+say at step 5.
 
 ## 3. What you should see
 
-**0.2: `07f0397a`, 2026-08-21 10:23 -0400, "feat(engine): give the gate its own analysis window".**
-Green on all three there, as that commit had them: clean synthetics 2 of 2 exact; captures 5 of 5
-(five recordings, character floors only); adjudicated not yet written (added 08-25 at `f96b21fb`),
-so it counts green. **84 commits between it and HEAD touch `src\Hamlet.RadioEngine\Cw`.**
+**The floor table: 50 of 50 captures and adjudicated cases green at HEAD, against 32 of 50 in
+unit 391's run; the two synthetics red at both.** Nothing a user sees on the screen changes;
+the capture sheet changes as section 2 says.
 
-**0.3: `8e3ee277`, 2026-08-21 11:44 -0400, "feat(engine): decode CW by likelihood instead of by
-threshold"**, 07f0397a's direct child. It turned red **`CwFixtureTests.TheCleanRecordingsDecodeExactly`
-`clean-12wpm`** (read `ENCCTCMQQQ T DDEDE  A WWEWRJ11E1AAAWW W T...`) and **`clean-18wpm`** (read
-`E KCTCGQ Q N DEDE E WWAJ11AARW W N K`), both against `CQ DE W1AW K`. Captures stayed 5 of 5
-there.
+**Captures, every case** (measured, floor, difference; the last column is unit 391's characters
+and elements at HEAD and its result there). Wall 97 s, against unit 391's 1995 s.
 
-### 0.1 - every floor case at HEAD
+| Capture | Result | Chars | Floor | Diff | Elements | Floor | Diff | Unsure (then) | Tone Hz | HEAD, unit 391 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `cw-2026-08-17-013347` | green | 59 | 59 | 0 | 108 | 108 | 0 | 2 (2) | 625 | 58 / 108, green (count floor retired, anchor) |
+| `cw-2026-08-17-013622` | green | 55 | 55 | 0 | 84 | 84 | 0 | 4 (0) | 600 | 53 / 86, red |
+| `cw-2026-08-17-134712` | green | 63 | 63 | 0 | 98 | 98 | 0 | 42 (10) | 500 | 54 / 81, red (count floor retired, anchor) |
+| `cw-2026-08-18-004507` | green | 50 | 50 | 0 | 118 | 118 | 0 | 1 (1) | 500 | 50 / 119, green (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-18-003016` | green | 57 | 57 | 0 | 149 | 149 | 0 | 3 (3) | 670 | 54 / 146, red |
+| `unadjudicated/cw-2026-08-18-003126` | green | 54 | 54 | 0 | 144 | 144 | 0 | 6 (6) | 665 | 53 / 142, red |
+| `unadjudicated/cw-2026-08-18-003758` | green | 63 | 63 | 0 | 121 | 121 | 0 | 19 (10) | 500 | 61 / 123, green (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-20-014854` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 600 | 0 / 0, green |
+| `unadjudicated/cw-2026-08-20-014935` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 825 | 0 / 0, green |
+| `unadjudicated/cw-2026-08-22-014113` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 600 | 0 / 0, green |
+| `unadjudicated/cw-2026-08-22-014308` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 575 | 0 / 0, green |
+| `unadjudicated/cw-2026-08-22-031838` | green | 57 | 57 | 0 | 126 | 126 | 0 | 15 (3) | 525 | 33 / 116, red (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-22-031905` | green | 42 | 42 | 0 | 118 | 118 | 0 | 6 (6) | 300 | 37 / 120, green (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-22-031948` | green | 34 | 34 | 0 | 114 | 114 | 0 | 3 (3) | 500 | 31 / 119, green (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-22-032012` | green | 44 | 44 | 0 | 120 | 120 | 0 | 1 (1) | 500 | 43 / 119, red (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-22-032050` | green | 53 | 53 | 0 | 123 | 123 | 0 | 9 (9) | 325 | 49 / 115, red (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-22-032113` | green | 55 | 55 | 0 | 118 | 118 | 0 | 8 (8) | 650 | 48 / 126, green (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-22-032129` | green | 66 | 66 | 0 | 119 | 119 | 0 | 1 (1) | 650 | 43 / 123, green (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-23-001520` | green | 5 | 5 | 0 | 45 | 45 | 0 | 4 (1) | 600 | 7 / 39, red |
+| `unadjudicated/cw-2026-08-23-001831` | green | 55 | 55 | 0 | 124 | 124 | 0 | 11 (10) | 525 | 53 / 124, red |
+| `unadjudicated/cw-2026-08-23-001952` | green | 75 | 75 | 0 | 142 | 142 | 0 | 19 (13) | 525 | 60 / 120, red |
+| `unadjudicated/cw-2026-08-23-002016` | green | 75 | 75 | 0 | 136 | 136 | 0 | 31 (17) | 525 | 75 / 136, green |
+| `unadjudicated/cw-2026-08-24-012403` | green | 22 | 22 | 0 | 65 | 65 | 0 | 1 (0) | 440 | 24 / 71, green (count floor retired, anchor) |
+| `unadjudicated/cw-2026-08-25-011552` | green | 30 | 30 | 0 | 89 | 89 | 0 | 8 (8) | 500 | 32 / 89, green |
+| `unadjudicated/cw-2026-08-25-012748` | green | 4 | 2 | 2 | 16 | 4 | 12 | 2 (0) | 395 | 2 / 4, green |
+| `unadjudicated/cw-2026-08-25-012823` | green | 41 | 41 | 0 | 62 | 62 | 0 | 15 (15) | 450 | 35 / 57, red |
+| `unadjudicated/cw-2026-08-25-012922` | green | 50 | 50 | 0 | 112 | 112 | 0 | 5 (5) | 475 | 44 / 111, red |
+| `unadjudicated/cw-2026-08-25-013010` | green | 54 | 54 | 0 | 131 | 131 | 0 | 6 (6) | 475 | 56 / 132, green |
+| `unadjudicated/cw-2026-08-25-013150` | green | 58 | 58 | 0 | 139 | 139 | 0 | 7 (7) | 495 | 61 / 132, red |
+| `unadjudicated/cw-2026-08-25-013303` | green | 54 | 54 | 0 | 146 | 146 | 0 | 10 (10) | 500 | 52 / 141, red |
+| `unadjudicated/cw-2026-08-25-013402` | green | 61 | 61 | 0 | 161 | 161 | 0 | 5 (5) | 525 | 59 / 154, red |
+| `unadjudicated/cw-2026-08-25-013520` | green | 60 | 60 | 0 | 153 | 153 | 0 | 5 (5) | 540 | 62 / 155, green |
+| `unadjudicated/cw-2026-08-25-013637` | green | 63 | 63 | 0 | 164 | 164 | 0 | 3 (3) | 550 | 62 / 158, red |
+| `unadjudicated/cw-2026-08-25-021410` | green | 47 | 47 | 0 | 99 | 99 | 0 | 11 (11) | 550 | 40 / 97, red |
+| `unadjudicated/cw-2026-08-25-021629` | green | 47 | 47 | 0 | 96 | 96 | 0 | 20 (20) | 500 | 26 / 71, red |
+| `unadjudicated/cw-2026-08-25-021825` | green | 41 | 41 | 0 | 74 | 74 | 0 | 16 (16) | 400 | 61 / 94, green |
+| `unadjudicated/cw-2026-08-26-125941` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 400 | 0 / 0, green |
 
-**TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid - 19 green, 18 red of 37, 1995 s.**
-Diff is measured minus floor. Where the count floor is retired (an adjudicated anchor covers the
-recording, Tim 2026-08-25), only elements are asserted. Unsure is printed, never asserted; the
-bracket is what was marked when the floor was set.
+**Adjudicated,** 13 of 13 green in 33 s, where unit 391 had 13 of 13 in 364 s. All seven
+required anchors were found: `VA3VRR` 6 of 6, `MP/4 QNIK` 9 of 12, `DE KD0UN KD0UN K` 16 of 16,
+`N HANDLING THIS MESSAG` 22 of 57, `, AND` 5 of 35, `110, AND 110 WITH A MEAN OF 117` 31 of 36,
+and `R OTHER WEBSITES MENTI` 22 of 51. The five retired anchors all appear in what was read.
+The shortfall fact reads 153 of 384 adjudicated characters, 40 %. Per case:
+`docs/phase-cw/unit392-floors.md`.
 
-| Capture | Result | Chars | Floor | Diff | Elements | Floor | Diff | Unsure (then) | Tone Hz |
-|---|---|---|---|---|---|---|---|---|---|
-| `cw-2026-08-17-013347` | green (count floor retired, anchor) | 58 | 59 | -1 | 108 | 108 | 0 | 21 (2) | 614 |
-| `cw-2026-08-17-134712` | red (count floor retired, anchor) | 54 | 63 | -9 | 81 | 98 | -17 | 36 (10) | 501 |
-| `cw-2026-08-18-004507` | green (count floor retired, anchor) | 50 | 50 | 0 | 119 | 118 | 1 | 2 (1) | 501 |
-| `unadjudicated/cw-2026-08-24-012403` | green (count floor retired, anchor) | 24 | 22 | 2 | 71 | 65 | 6 | 4 (0) | 440 |
-| `unadjudicated/cw-2026-08-22-031838` | red (count floor retired, anchor) | 33 | 57 | -24 | 116 | 126 | -10 | 6 (3) | 500 |
-| `unadjudicated/cw-2026-08-22-031905` | green (count floor retired, anchor) | 37 | 42 | -5 | 120 | 118 | 2 | 5 (6) | 500 |
-| `unadjudicated/cw-2026-08-22-031948` | green (count floor retired, anchor) | 31 | 34 | -3 | 119 | 114 | 5 | 0 (3) | 500 |
-| `unadjudicated/cw-2026-08-22-032012` | red (count floor retired, anchor) | 43 | 44 | -1 | 119 | 120 | -1 | 5 (1) | 500 |
-| `unadjudicated/cw-2026-08-22-032050` | red (count floor retired, anchor) | 49 | 53 | -4 | 115 | 123 | -8 | 9 (9) | 500 |
-| `unadjudicated/cw-2026-08-22-032113` | green (count floor retired, anchor) | 48 | 55 | -7 | 126 | 118 | 8 | 11 (8) | 500 |
-| `unadjudicated/cw-2026-08-22-032129` | green (count floor retired, anchor) | 43 | 66 | -23 | 123 | 119 | 4 | 8 (1) | 500 |
-| `cw-2026-08-17-013622` | red | 53 | 55 | -2 | 86 | 84 | 2 | 23 (0) | 601 |
-| `unadjudicated/cw-2026-08-18-003016` | red | 54 | 57 | -3 | 146 | 149 | -3 | 1 (3) | 669 |
-| `unadjudicated/cw-2026-08-18-003126` | red | 53 | 54 | -1 | 142 | 144 | -2 | 8 (6) | 669 |
-| `unadjudicated/cw-2026-08-18-003758` | green (count floor retired, anchor) | 61 | 63 | -2 | 123 | 121 | 2 | 19 (10) | 498 |
-| `unadjudicated/cw-2026-08-23-001520` | red | 7 | 5 | 2 | 39 | 45 | -6 | 6 (1) | 600 |
-| `unadjudicated/cw-2026-08-23-001831` | red | 53 | 55 | -2 | 124 | 124 | 0 | 18 (10) | 527 |
-| `unadjudicated/cw-2026-08-23-001952` | red | 60 | 75 | -15 | 120 | 142 | -22 | 28 (13) | 521 |
-| `unadjudicated/cw-2026-08-23-002016` | green | 75 | 75 | 0 | 136 | 136 | 0 | 34 (17) | 521 |
-| `unadjudicated/cw-2026-08-25-011552` | green | 32 | 30 | 2 | 89 | 89 | 0 | 10 (8) | 500 |
-| `unadjudicated/cw-2026-08-25-012748` | green | 2 | 2 | 0 | 4 | 4 | 0 | 0 (0) | 400 |
-| `unadjudicated/cw-2026-08-25-012823` | red | 35 | 41 | -6 | 57 | 62 | -5 | 27 (15) | 500 |
-| `unadjudicated/cw-2026-08-25-012922` | red | 44 | 50 | -6 | 111 | 112 | -1 | 11 (5) | 492 |
-| `unadjudicated/cw-2026-08-25-013010` | green | 56 | 54 | 2 | 132 | 131 | 1 | 10 (6) | 501 |
-| `unadjudicated/cw-2026-08-25-013150` | red | 61 | 58 | 3 | 132 | 139 | -7 | 23 (7) | 501 |
-| `unadjudicated/cw-2026-08-25-013303` | red | 52 | 54 | -2 | 141 | 146 | -5 | 14 (10) | 501 |
-| `unadjudicated/cw-2026-08-25-013402` | red | 59 | 61 | -2 | 154 | 161 | -7 | 10 (5) | 536 |
-| `unadjudicated/cw-2026-08-25-013520` | green | 62 | 60 | 2 | 155 | 153 | 2 | 8 (5) | 536 |
-| `unadjudicated/cw-2026-08-25-013637` | red | 62 | 63 | -1 | 158 | 164 | -6 | 13 (3) | 536 |
-| `unadjudicated/cw-2026-08-25-021410` | red | 40 | 47 | -7 | 97 | 99 | -2 | 6 (11) | 540 |
-| `unadjudicated/cw-2026-08-25-021629` | red | 26 | 47 | -21 | 71 | 96 | -25 | 10 (20) | 504 |
-| `unadjudicated/cw-2026-08-25-021825` | green | 61 | 41 | 20 | 94 | 74 | 20 | 39 (16) | 394 |
-| `unadjudicated/cw-2026-08-26-125941` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 404 |
-| `unadjudicated/cw-2026-08-20-014854` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 608 |
-| `unadjudicated/cw-2026-08-20-014935` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 742 |
-| `unadjudicated/cw-2026-08-22-014113` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 607 |
-| `unadjudicated/cw-2026-08-22-014308` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 606 |
+**Clean synthetics,** red on the assertion in 7 s. `clean-12wpm` reads `■ ■ ■ ■ ■  ■ ■ ■ ■■`
+and `clean-18wpm` reads `■ ■ ■  ■■■`, both expected to read `CQ DE W1AW K`. HEAD read `""`.
 
-**TheAdjudicatedReadingsKeepReadingTests - 13 of 13 green, 364 s.** The eight required anchors
-were all found: `VA3VRR`; `MP/4 QNIK` (reads `AA4MP/4 QNIK` whole); `DE KD0UN KD0UN K`;
-`N HANDLING THIS MESSAG`; `, AND`; `110, AND 110 WITH A MEAN OF 117`; `R OTHER WEBSITES MENTI`;
-and the fact `TheShortfallIsPrintedRatherThanPapered`. The five retired readings passed as
-retired; two of their anchors appear (`INT`, `OPAGATION`) and three don't (`N4`, `DICTED 10.7`,
-`ULLETIN CAN BE FO`).
+**The 1.1 adaptation table, every hunk of `git diff 7e209cb4 HEAD -- src/Hamlet.RadioEngine/Cw`:**
+4 files, 165 insertions, 1 deletion. `git diff --stat 7e209cb4 HEAD -- <the eleven transmit
+files>` printed nothing at task 2 and at task 4. This is the proof of 1.1 before any seam was
+touched:
 
-**CwFixtureTests.TheCleanRecordingsDecodeExactly - 0 of 2, 10 s.** `clean-12wpm` and `clean-18wpm`
-both read `""` against `CQ DE W1AW K`.
+```
+git diff --stat 7e209cb4 -- src/Hamlet.RadioEngine/Cw
+ src/Hamlet.RadioEngine/Cw/CwElementPitch.cs | 266 ++++++++++++++++++
+ src/Hamlet.RadioEngine/Cw/CwJointCutter.cs  | 344 +++++++++++++++++++++++
+ src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs  |  72 +++++
+ src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs  | 410 ++++++++++++++++++++++++++++
+ 4 files changed, 1092 insertions(+)
+```
 
-**Against `docs\unit239-failing-set.txt` (2026-09-03):** it lists 2 capture cases (`001520`,
-`013637`) and both synthetics, all four red here. **The other 16 red capture cases are not on
-that list.** That's a finding, not chased (section 9).
+Three of those four were deleted later in task 2 (section 1, decision 4).
 
-### Every walked commit, in one line each
+| # | File | Hunk | What | Why |
+|---|---|---|---|---|
+| 1 | `CwPitchChoice.cs` | `@@ -0,0 +1,72` | the file, HEAD's copy | kept: `CwDecodeReport.PitchChoice` returns it and the app reads it |
+| 2 | `CwCharacter.cs` | `@@ -144,0 +145,36` | `WidestRecordedLlr` 1,000,000; `MarginLlr { get; init; } = NaN`; `MarginShareForRecord`, HEAD's arithmetic | the app's sheet reads all three and a sidecar test sets `MarginLlr`; NaN because this decoder never compares two paths, and the sheet prints *unmeasured* |
+| 3 | `CwDecodeReport.cs` | `@@ -62,0 +63,23` | `PitchWasAsserted => false`; `PitchChoice => PitchWasMeasured ? Keying : NotChosen` | nothing takes an assertion; at `7e209cb4` an unmeasured pitch is the middle of the bank |
+| 4 | `CwDecoder.cs` | `@@ -350,0 +351,12` | `DigitalMode { get; set; }` | set by `MainWindowViewModel.cs:14155`; 865e66d8's gate |
+| 5 | `CwDecoder.cs` | `@@ -353,0 +366,21` | queue counters return nought; `Retuned() => Unlock()` | there is no queue; the lock is the part of HEAD's `Retuned` this decoder has |
+| 6 | `CwDecoder.cs` | `@@ -468 +501` | `DecodingSuspended` becomes `DecodingSuspended \|\| DigitalMode` | the gate: tap fed, chunk counted, stream skipped, nothing decoded |
 
-In `docs/phase-cw/unit391-walk.md`, 85 rows. The clean synthetics were red at all 84 commits
-above 07f0397a, in three stages: wrong letters from `8e3ee277` (08-21), unsure marks only from
-`07260a2a` (08-25), and nothing from `43efc525` (09-03). **Probe at `7e209cb4` (08-25 14:54, the
-floors' own commit):** captures **36 of 36** in 97 s, adjudicated **13 of 13** in 37 s; the
-synthetics are 0 of 2 at `ca252057`, the same decoder source. Whether any newer commit is green on
-captures was not measured.
+**The exclusion table: 22 files, excluded not retired.** Only one has a name in
+`docs/unit239-failing-set.txt`: `ABlipDoesNotShiftEverythingAfterItTests`. None is a
+carry-forward or 1.4 test.
 
-### 0.4 - the seams
-
-30 files have a `using Hamlet.RadioEngine.Cw` and name one of the 102 types declared under
-`src\Hamlet.RadioEngine\Cw`: 9 under `src\Hamlet.App` and 21 under `tests\Hamlet.App.Tests`.
-Twenty-seven files matched only the word `Outcome` with no Cw using, and `AchievementsViewModel.cs`
-named Cw types in a comment. I dropped those 28 as name-only.
-
-**What doesn't exist at 07f0397a**, from the right-hand column below. 12 rows name a type absent
-there, 4 of them the ambiguous `Outcome`. The real gaps are all in `MainWindowViewModel`,
-`ScanViewModel` and two app tests:
-- **Types absent:** `CwProbabilisticDecoder`, `CwProbabilisticStream`, `CwElementPitch`,
-  `CwPitchChoice`, `CwStreamSplit`, `Envelope` and `CwAccuracy.Outcome`.
-- **`CwDecoder` members absent:** `AssertStation`, `AssertAt`, `Lock`, `Unlock`, `IsLocked`,
-  `LockedToneHz`, `PitchWasAsserted`, `Ranked`, `Reading`, `Retuned`, `LeadingEdge`,
-  `ListeningAfresh`, `DigitalMode`, `DecodingSuspended`, `RadioIsTransmitting`,
-  `DecodeQueueDroppedChunks` and `DecodeQueueDroppedSamples`.
-- **`CwCharacter` members absent:** `MarginLlr`, `MarginShareForRecord`,
-  `SpanLogLikelihoodRatio` and `WidestRecordedLlr`.
-
-Every transmit-side type the app names (`CwTransmitter`, `KeyerCwSender`, `TransmitChain`,
-`TransmitReadiness`, `TransmissionWatch`, `TransmitNotes`, `ICwSender`, `AutoCall*`) exists at
-07f0397a with every member listed. The members column is a grep, not a compiler (method in the
-doc's head); step 1's build is the real check.
-
-| File | Type | Members touched (grep) | At 07f0397a |
+| Project | File | Missing name it quotes | In unit239 |
 |---|---|---|---|
-| `src/Hamlet.App/Controls/CwTerminalControl.cs` | CwCharacter | High Low Unreadable | all there |
-| `src/Hamlet.App/Controls/CwTerminalControl.cs` | CwConfidence | High Low Unreadable | all there |
-| `src/Hamlet.App/Controls/CwTerminalControl.cs` | MorseAlphabet | Unreadable | all there |
-| `src/Hamlet.App/Controls/ModePalette.cs` | CwConfidence | High Low Unreadable | all there |
-| `src/Hamlet.App/Telemetry/AppEvents.cs` | CwDecodeReport | Clipping NearlySilent | all there |
-| `src/Hamlet.App/Telemetry/AppEvents.cs` | CwReadiness | AsEvent Reason | all there |
-| `src/Hamlet.App/Telemetry/AppEvents.cs` | Outcome | - | **type absent** |
-| `src/Hamlet.App/Telemetry/AppEvents.cs` | TransmitChain | - | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | AutoCallOutcome | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | AutoCallSettings | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | AutoCallStop | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | AutoCallTransmission | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | AutoCallWindow | Empty | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | AutoCaller | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | CwCharacter | - | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | CwDecoder | CharacterSettled Tracker | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | CwMessage | Clean | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | KeyerCwSender | - | all there |
-| `src/Hamlet.App/ViewModels/AutoCallViewModel.cs` | TransmitReadiness | - | all there |
-| `src/Hamlet.App/ViewModels/CwTranscript.cs` | CwCharacter | IsUnstable Unstable | all there |
-| `src/Hamlet.App/ViewModels/CwTranscript.cs` | CwReadingStage | IsUnstable Unstable | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | ContactScript | Answering Calling Confirming Exchanging Offer Pieces | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | ContactStage | Answering Calling Confirming Exchanging Offer Pieces | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | CwDuration | Of | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | CwMessage | Clean MaximumLength PieceCount | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | CwReadiness | Check Outcome Ready | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | CwReadyState | Check Outcome Ready | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | CwTransmitter | Abort Check SendAsync SupportsCharacterSpacing | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | Outcome | - | **type absent** |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | SendOption | Answering Calling Confirming Exchanging Offer Pieces | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | SwrReport | Citation Describe For IsHigh | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | TransmissionEnd | Begin Elapsed Expected Keyed Message Observe Outcome Progress Remaining Stop Stopped | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | TransmissionWatch | Begin Elapsed Expected Keyed Message Observe Outcome Progress Remaining Stop Stopped | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | TransmitChain | Describe | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | TransmitContext | Abort Check SendAsync SupportsCharacterSpacing | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | TransmitEvidence | Describe | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | TransmitNotes | Citation Describe For IsHigh | all there |
-| `src/Hamlet.App/ViewModels/CwTransmitViewModel.cs` | TransmitOutcome | Abort Check SendAsync SupportsCharacterSpacing | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CallsignResolver | From Sender StationHeard | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | ContactStage | Calling | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwCase | Append FileName NoRecording Readable Recording Row Session | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwCaseRoster | Append FileName NoRecording Readable Recording Row Session | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwCharacter | IsWordGap MarginLlr MarginShareForRecord Settled SpanLogLikelihoodRatio Stage WidestRecordedLlr | type there; **missing: MarginLlr MarginShareForRecord SpanLogLikelihoodRatio WidestRecordedLlr** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwCounterDelta | At Count Note Over | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwCounterSample | At Count Note Over | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwCounterTrail | At Count Note Over | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwCountsCover | Append FileName NoRecording Readable Recording Row Session | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwDecodeReport | Clipping Describe NearlySilent None Summarize | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwDecodeStory | Clipping Describe NearlySilent None Summarize | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwDecoder | AssertStation CharacterDecoded CharacterSettled DecodeQueueDroppedChunks DecodeQueueDroppedSamples DecodingSuspended DigitalMode IsLocked LeadingEdge Listen ListeningAfresh Lock LockedToneHz PitchWasAsserted RadioIsTransmitting Ranked Reading Report Retuned SampleRate SpeedIsReacquiring Tap Unlock WordsPerMinute | type there; **missing: AssertStation DecodeQueueDroppedChunks DecodeQueueDroppedSamples DecodingSuspended DigitalMode IsLocked LeadingEdge ListeningAfresh Lock LockedToneHz PitchWasAsserted RadioIsTransmitting Ranked Reading Retuned Unlock** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwElementPitch | Measure MeasureAll | **type absent** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwKeyingMeter | Keying Listening NoKeying None Reading Reset Update Window | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwMessage | PieceCount Split | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwPitchChoice | Keying OperatorAssertion Ranked StrongestBin | **type absent** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwProbabilisticDecoder | - | **type absent** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwProbabilisticStream | CharacterSettled SamplesSeen ToneHz WindowSeconds | **type absent** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwReadiness | Check ListenOnly Outcome Ready Reason TransmitReadiness | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwStreamSplit | Divide LeastTrustedMarks None | **type absent** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | CwTransmitter | Abort Check | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | Envelope | Decode None Run Runs Text WordsPerMinute | **type absent** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | KeyerCwSender | Abort IsSending | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | KeyingEnvelope | Measure Score | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | KeyingReading | Keying Listening NoKeying None Reading Reset Update Window | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | KeyingVerdict | Keying Listening NoKeying None Reading Reset Update Window | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | Outcome | Block None Score | **type absent** |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | SendOption | Calling | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | TransmissionEnd | Expected IsSending Keyed Message Observe Outcome Progress Stop Stopped | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | TransmitChain | BrokeAt Describe | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | TransmitContext | Abort Check | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | TransmitEvidence | BrokeAt Describe TransmitChain | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | TransmitOutcome | Abort Check | all there |
-| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | TransmitReadiness | Check ListenOnly Outcome Ready Reason | all there |
-| `src/Hamlet.App/ViewModels/PhrasebookViewModel.cs` | CwPhrase | Heading NewOperator NewOperatorNote OfKind Summary | all there |
-| `src/Hamlet.App/ViewModels/PhrasebookViewModel.cs` | CwPhrasebook | Heading NewOperator NewOperatorNote OfKind Summary | all there |
-| `src/Hamlet.App/ViewModels/PhrasebookViewModel.cs` | PhraseKind | Heading NewOperator NewOperatorNote OfKind Summary | all there |
-| `src/Hamlet.App/ViewModels/ScanViewModel.cs` | CwCharacter | - | all there |
-| `src/Hamlet.App/ViewModels/ScanViewModel.cs` | CwDecoder | CharacterSettled Ranked | type there; **missing: Ranked** |
-| `tests/Hamlet.App.Tests/Cw/TheSheetSaysWhatEachElementWasSentAtTests.cs` | CwDecodeReport | - | all there |
-| `tests/Hamlet.App.Tests/Telemetry/ARefusedPressLeavesALineTests.cs` | CwDecoder | Tap | all there |
-| `tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs` | CwConfidence | High | all there |
-| `tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs` | CwDecodeReport | - | all there |
-| `tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs` | Outcome | - | **type absent** |
-| `tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs` | TransmitChain | - | all there |
-| `tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs` | TransmitReadiness | Check Outcome | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | CwMessage | MaximumLength | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | CwReadiness | BreakInOff ModeUnknown Outcome Ready Reason | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | CwReadyState | BreakInOff ModeUnknown Outcome Ready Reason | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | CwSendOutcome | Refused Sent | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | CwSendResult | Refused Sent | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | CwTransmitter | - | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | ICwSender | Refused Sent | all there |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | Outcome | - | **type absent** |
-| `tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs` | TransmitContext | - | all there |
-| `tests/Hamlet.App.Tests/Telemetry/ThePressActuallyWritesItsCaptureTests.cs` | CwDecoder | SampleRate Tap | all there |
-| `tests/Hamlet.App.Tests/Telemetry/Unit305SettledTests.cs` | CwReadyState | Check NotInMorse Reason | all there |
-| `tests/Hamlet.App.Tests/Telemetry/Unit305SettledTests.cs` | TransmitReadiness | Check NotInMorse Reason | all there |
-| `tests/Hamlet.App.Tests/ViewModels/AHeldVerdictPrintsNoMeasurementsTests.cs` | KeyingReading | Keying None | all there |
-| `tests/Hamlet.App.Tests/ViewModels/AHeldVerdictPrintsNoMeasurementsTests.cs` | KeyingVerdict | Keying None | all there |
-| `tests/Hamlet.App.Tests/ViewModels/ASheetSaysWhichInstrumentSpokeTests.cs` | CwCase | Header Recording Row | all there |
-| `tests/Hamlet.App.Tests/ViewModels/ASheetSaysWhichInstrumentSpokeTests.cs` | CwCaseRoster | Header Recording Row | all there |
-| `tests/Hamlet.App.Tests/ViewModels/ASheetSaysWhichInstrumentSpokeTests.cs` | CwCountsCover | Header Recording Row | all there |
-| `tests/Hamlet.App.Tests/ViewModels/AutoCallFaceTests.cs` | CwMessage | Clean | all there |
-| `tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs` | CwCase | Append Header NoRecording Readable Recording Row | all there |
-| `tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs` | CwCaseRoster | Append Header NoRecording Readable Recording Row | all there |
-| `tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs` | CwCharacter | - | all there |
-| `tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs` | CwCountsCover | Append Header NoRecording Readable Recording Row | all there |
-| `tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs` | CwDecoder | CharacterSettled Flush Listen Report SampleRate Tap WordsPerMinute | all there |
-| `tests/Hamlet.App.Tests/ViewModels/DummyLoadNoticeTests.cs` | TransmitNotes | For | all there |
-| `tests/Hamlet.App.Tests/ViewModels/ScannerFaceTests.cs` | CwCharacter | High Low | all there |
-| `tests/Hamlet.App.Tests/ViewModels/ScannerFaceTests.cs` | CwConfidence | High Low | all there |
-| `tests/Hamlet.App.Tests/ViewModels/ScannerFaceTests.cs` | MorseAlphabet | WordGap | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | CwMessage | MaximumLength | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | CwReadiness | Ready Reason | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | CwReadyState | Ready Reason | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | CwSendOutcome | Sent | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | CwSendResult | Sent | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | CwTransmitter | - | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | ICwSender | Sent | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs` | TransmitContext | - | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | ContactStage | Calling | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | CwDuration | DefaultWpm Dit Of | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | CwMessage | MaximumLength | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | CwSendOutcome | Refused Sent | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | CwSendResult | Refused Sent | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | CwTransmitter | - | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | ICwSender | Refused Sent | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | SendOption | Calling | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs` | TransmitContext | - | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendLengthIsLegibleTests.cs` | ContactStage | Calling | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendLengthIsLegibleTests.cs` | CwDuration | Of | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SendLengthIsLegibleTests.cs` | SendOption | Calling | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs` | CwCharacter | - | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs` | CwDecoder | CharacterSettled Flush Process | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs` | CwMessage | - | all there |
-| `tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs` | CwProbabilisticStream | CharacterSettled Flush Process | **type absent** |
-| `tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs` | CwCharacter | High | all there |
-| `tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs` | CwConfidence | High | all there |
-| `tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs` | MorseAlphabet | WordGap | all there |
-| `tests/Hamlet.App.Tests/ViewModels/TwoStageTranscriptTests.cs` | CwCharacter | High IsUnstable Provisional Settled Unstable | all there |
-| `tests/Hamlet.App.Tests/ViewModels/TwoStageTranscriptTests.cs` | CwConfidence | High IsUnstable Provisional Settled Unstable | all there |
-| `tests/Hamlet.App.Tests/ViewModels/TwoStageTranscriptTests.cs` | CwReadingStage | High IsUnstable Provisional Settled Unstable | all there |
-| `tests/Hamlet.App.Tests/ViewModels/UnresolvedLicenseTests.cs` | TransmitContext | Check | all there |
-| `tests/Hamlet.App.Tests/Views/HistoryRecedesAndCurrentCopyDoesNotTests.cs` | CwCharacter | High Low Unreadable | all there |
-| `tests/Hamlet.App.Tests/Views/HistoryRecedesAndCurrentCopyDoesNotTests.cs` | CwConfidence | High Low Unreadable | all there |
-| `tests/Hamlet.App.Tests/Views/ThePitchControlsAreOffThePanelTests.cs` | CwDecoder | AssertAt AssertStation LockedToneHz PitchWasAsserted Unlock | type there; **missing: AssertAt AssertStation LockedToneHz PitchWasAsserted Unlock** |
+| engine | `Audio/TheReadPathDoesNotAllocateTests.cs` | `CwKeyingMeter.WindowSizings` | no |
+| engine | `Audio/TheTapIsNotBehindTheDecoderTests.cs` | `CwDecoder.ProcessDelayForTests` | no |
+| engine | `Cw/ABlipDoesNotShiftEverythingAfterItTests.cs` | `CwReferenceDecoder` | yes |
+| engine | `Cw/AMoveStartsTheDecoderFreshTests.cs` | `CwDecoder.PitchWasAsserted`, `CwDecoder.Ranked` | no |
+| engine | `Cw/AStationIsABinThatSwingsTests.cs` | `CwSwingSurvey` | no |
+| engine | `Cw/EveryElementCarriesItsOwnPitchTests.cs` | `CwProbabilisticResult.Elements`, `CwElementPitch` | no |
+| engine | `Cw/FittingKeyUpAgainstAssumingItTests.cs` | `CwProbabilisticDecoder.FittedLogLikelihoods` | no |
+| engine | `Cw/IsTheHertzABiasOrAFloorTests.cs` | `CwSpectralPeak` | no |
+| engine | `Cw/NoSenderIsSplitInTwoTests.cs` | `CwStreamSplit`, `CwProbabilisticResult.Elements` | no |
+| engine | `Cw/NothingActsOnTheAdmissionVerdictTests.cs` | `CwDecodeReport` parameter `PitchChoice` | no |
+| engine | `Cw/TheCleanReadsStayCleanTests.cs` | `CwAccuracy` | no |
+| engine | `Cw/TheFirstSecondsAreReadAgainTests.cs` | `CwProbabilisticStream.ReReads` | no |
+| engine | `Cw/ThePeakAgainstASecondSignalTests.cs` | `CwSpectralPeak` | no |
+| engine | `Cw/ThePeakFindsThePitchTheTrackerMissedTests.cs` | `CwSpectralPeak` | no |
+| engine | `Cw/ThePosteriorSurvivesItsOwnArithmeticTests.cs` | `CwProbabilisticDecoder.Posterior`, `LogSum` | no |
+| engine | `Cw/TheProbabilisticDecoderTests.cs` | `CwAccuracy` | no |
+| engine | `Cw/TheQuietestBinNoLongerWinsTests.cs` | `CwPitchRanking`, `CwDecoder.RankThePitch` | no |
+| engine | `Cw/TheReferenceDecoderIsPortedFaithfullyTests.cs` | `CwReferenceDecoder` | no |
+| engine | `Cw/TheScoreSaysWhatItIsMeasuringTests.cs` | `CwAccuracy` | no |
+| engine | `Cw/WhatDecodeScoringCostsTests.cs` | `CwToneTracker.CoarseSpacingHz` | no |
+| engine | `Cw/WhereHamletAndTheReferenceDivergeTests.cs` | `CwProbabilisticResult.Elements`, 5-argument `Decode` | no |
+| app | `Views/ThePitchControlsAreOffThePanelTests.cs` | `CwDecoder.AssertAt`, `CwDecoder.PitchWasAsserted` | no |
+
+**The 1.6 app changes:** `git diff 10512248 HEAD -- src/Hamlet.App` is one file,
+`MainWindowViewModel.cs`, 21 insertions and 43 deletions in six diff hunks.
+
+| # | Where | What changed | Seam |
+|---|---|---|---|
+| 1 | line 11080, `@@ -11080,5` | `UseJointCutter = _settings.UseJointDecoder` dropped from the decoder's construction | no joint cutter; a shim would be a switch that does nothing |
+| 2 | `ElementPitchLine`, `@@ -12405,8`, `-12414`, `-12416,3`, `-12421,11` | 7e209cb4's `Decode(envelope, toneHz)`; *nothing was read, so no element was measured, which is too few ...* or *not measured (the decoder in this build does not say where each element began and ended ...)* | `CwProbabilisticResult.Elements` does not exist at `7e209cb4`; an empty list would print a count of elements nobody measured |
+| 3 | `ToneForTheRecord`, `@@ -12487,15` | the *ranked* branch removed | `CwPitchRank` is in a deleted file and this decoder never ranks |
+
+**Carry-forward, entry beside exit:**
+
+| Line | Entry | Exit |
+|---|---|---|
+| App | 276 of 278 in 181 s, 2 lost; re-run 277 of 278 in 161 s, 1 lost; no assertion red | 274 of 278 in 159 s, 3 lost and **`TheOliviaRowsTests...EachPressCarriesItsRowsVariant` red, IOException**; re-run 275 of 278 in 170 s, 2 lost and the same red |
+| Engine | 150 of 150 in 301 s | 150 of 150 in 297 s |
+
+`git worktree list` at exit: the root and the three preflight trees under
+`C:/Users/TimDi/preflight-trees/`, untouched. The diagnostic tree `C:/Source/HamLet-wt392` was
+removed.
 
 ## 4. What's blocking us
 
-**Nothing blocks step 0. Item 1 decides where step 1 restores to, and step 1 can start on the
-commit named here unless you rule otherwise.**
+**Item 1 is in the way of 1.5. Nothing else blocks.**
 
-**1. Which commit step 1 restores `src\Hamlet.RadioEngine\Cw` to.** *A ruling request; not blocking.*
-0.2 as written is `07f0397a` (08-21). It's the only commit green on all three, but it's from
-before the 08-25 evening, the adjudicated anchors, and 32 of the 37 capture floors. Whether it
-meets today's floor table is unknown until step 1 runs it. `PHASE_PLAN.md` §6 and task 3 give a
-fallback for this case: the newest commit green on the captures type alone. I didn't walk for
-that. One probe shows `7e209cb4` (08-25) green on captures 36 of 36 and adjudicated 13 of 13,
-with the synthetics red.
+**1. `TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant`
+passed at entry and was red twice at exit on the carry-forward app line.** *A regression by
+HM-DEC-165's letter, and a ruling request.* The failure is not on an assertion. It is
+`IOException: The process cannot access the file ...\refuse\2026-09-23.jsonl because it is
+being used by another process`, at the test's own `Lines(folder)` (line 675,
+`File.ReadAllLines`), reading a file that `JsonlTelemetry`'s background writer thread appends
+to. The test builds no CW decoder. Run alone, it passed on the tree before the restore and on
+the restored tree, 8 s each.
 
-| | Restore to | For | Against |
+| | Ruling | For | Against |
 |---|---|---|---|
-| **A** | `07f0397a` (08-21) | Green on all three; the synthetics decode exactly; the literal 0.2 | Loses 08-22 to 08-25; today's captures and adjudicated tables were never run against it; 7 app-facing types and 21 members are missing, so more seams |
-| **B** | the newest commit green on captures alone, found by one more unit's walk from HEAD down (at least as new as `7e209cb4`) | Keeps the decoder the floors were set on; two of three tests green; fewer seams | Synthetics red from the start; R49 forbids retiring them, so step 1.3 can't be met on the synthetics without a repair |
-| **C** | `7e209cb4` directly | As B, with no further walk | Not proven the newest green; commits after it may hold more |
+| **A** | Adapt the test's wiring under R12 so `Lines` opens with `FileShare.ReadWrite` (or disposes the telemetry before reading), then re-run the app line | Reading a log another thread is appending to is the test's race, and the assertions stay untouched | It changes a carry-forward test in a unit about CW |
+| **B** | Accept 1.5 as met, with this finding as evidence the restore did not cause it | No code moves | HM-DEC-165 is about exactly this kind of *probably not us* |
+| **C** | Hold step 1 partial and make A the next unit's first task | Keeps the rule literal and the fix small | One more unit before step 2 |
 
-**Industry standard:** A. You go back to the last build green on the whole guard set, and
-re-apply from there (R48, R51). **My recommendation, author's:** A for step 1. The first thing
-step 1 measures is today's three floor tests against 07f0397a's decoder, and if the captures
-floors fail there, B's walk is the next unit.
+**Industry standard:** A. A test that reads a file while a writer thread may hold it is flaky
+whatever else changed. **My recommendation:** C, so the fix lands in its own commit with the
+before and after runs beside it.
+
+**2. Section 5 mismatches:**
+- **HEAD at entry was `a1fd388c`,** one arbiter commit past the `4baf986c` the instruction names.
+  `src` and `tests` were identical to `3d6a2c12` either way.
+- **`CLAUDE.md` §1's top row reads HM-DEC-167.** That is neither `PROJECT_STATUS.md`'s
+  HM-DEC-165, which `tools/status.sh` writes as a literal, nor the reload's `CPS-DEC-0167`. I did
+  not edit `CLAUDE.md`.
+- **`CwProbabilisticDecoder.Envelope` exists at `7e209cb4`.** The instruction lists it among the
+  members to check. It was never a seam; the absent `Envelope` is a record in `CwReferenceDecoder`.
+- **Keeping `CwElementPitch` could not make `ElementPitchLine` build.** Its input,
+  `CwProbabilisticResult.Elements`, comes from HEAD's decoder (section 1, decision 4).
+- **`tools/Hamlet.PitchRank` is in `Hamlet.sln` and uses seven HEAD-only names.** The
+  instruction does not mention it.
+- **The clean synthetics do not read the empty string at the restored decoder.** They read `■`
+  placeholders.
+- **Held as stated:** version 1.13.78; `PROJECT_STATUS.md` read unit 391; the 45 commits
+  `1a84188e` down to `2068f868`; 20 files, 6684 insertions and 98 deletions; the ten `A` rows as
+  named; the eleven transmit files identical; `tests/Hamlet.RadioEngine.Tests/Cw`, 34 files; the
+  four 1.4 tests exist; `docs\unit239-failing-set.txt` has 51 lines;
+  `docs\cw-retired-tests.txt` absent and not created; three preflight worktrees.
+
+**3. Three of my own decisions that you may want to reverse.** *Author's, overrulable.* Each
+is in section 1:
+- `pitch-rank` taken out of the solution build.
+- The queue counters return nought.
+- The element-pitch line now says *not measured*.
+
+The first two are one-line reversals. The third is step 4's to bring back with the rework's
+elements if they earn their place.
+
+**4. Task 5 dropped.** It was the named drop candidate, dropped on the clock rule. The failing
+set at the restored decoder is unmeasured, and step 3 inherits it. Four previously
+uncompilable tests now compile against thin seams: `NoCwDecodeInDigitalModeTests`,
+`AHeldPitchDoesNotOutliveItsEvidenceTests`, `WhereAcquisitionPointsTests` and
+`TheSpanRatioReachesTheSidecarTests`. None has been run.
+
+**5. The headless dispatcher loop cost 8 lost runs across the four app-line invocations.** *A
+finding.* The lost tests were never the same twice, and each passed in the other run. It is the
+§6 lost run, recorded and not chased.
+
+**`validate-output.bat`:** not run, since it asked for approval in earlier units. I checked this
+file against its rules by hand: the ordering block and `UNIT:` above section 1, a `UNIT:` line
+with no parentheses and none of `& | < > ^`, four sections in order with the canonical names,
+and section 4 present.
+
+### Asks still outstanding
+
+**Carried per HM-DEC-139: unit 391's items 2 to 6 and unit 390's nine, verbatim. None is this
+unit's to answer. Unit 391's item 1 is answered by R53.**
+
+**Unit 391's items 2 to 6, verbatim:**
 
 **2. Section 5 mismatches:**
 - **The failing set has 2 cases of `EachStillProducesWhatItDid`, not six** (`001520`, `013637`).
@@ -405,7 +384,7 @@ instruction's own reasoning they're "a second tree the next unit can edit by mis
 **6. `PHASE_PLAN.md` 0.1 to 0.4 are not ticked.** The instruction didn't ask me to; the judge
 ticks them.
 
-### Asks still outstanding
+**Unit 390's queue as unit 391 carried it, verbatim:**
 
 **Carried per HM-DEC-139, verbatim, from unit 390. None is CW, none is this phase's, and none is
 this unit's to answer.**
