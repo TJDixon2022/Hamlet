@@ -106,4 +106,17 @@ WEBSITES MENTI` not found. Synthetics 0 of 2, the same placeholders. Printer:
 Transmit files silent against `7e209cb4`. Floors red and no named number improved: **out**,
 reverted in the next commit. The outputs are `.run-unit\unit397-p34-{1,2,3,printer}.txt`.
 
+**Piece 35, `dfb357ef`**, *the four configurations, and a carrier count that does not work*. The
+`Cw` patch was 23 lines, `CwSpectralPeak.cs`, 12 insertions, a public `AverageSpectrum` wrapping
+the private `Average`. It refused on the kept state: *No such file or directory* - the file is
+piece 28's. Decision 16's sequence on a clean `Cw`: after 28 alone, `patch failed:
+CwSpectralPeak.cs:177`; after 28 then 32, check rc 0. The failure after 28 alone is piece 32's
+context lines around the insertion point, not a name the piece uses, so as unit 396 did for piece
+33 on piece 31's context, piece 28 was applied and piece 35 merged under `--3way` on it: applied
+cleanly, 255 lines, 243 of piece 28 and 12 of piece 35, no conflict marker. One pair under decision
+5, commit `2669b5f9`. Build 0 errors in 6 s. Captures **37 of 37 in 94 s**, every row identical to
+entry; adjudicated 13 of 13 in 29 s; synthetics 0 of 2, the same placeholders; printer identical
+to entry, WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2. Transmit files silent. Nothing moved:
+**out**, reverted in the next commit.
+
 ## 3. The exit round, task 2
