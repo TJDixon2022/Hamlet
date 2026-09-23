@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 405 - the second attack on the six reds
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 406 - the tracker switch, and #42 given the radio's word
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T13:29:14-04:00
-NOTE: Unit 405 complete, report pushed: 5 changes on 5 reds, none kept - #45 and #6 green only under changes that lowered capture rows, #15 #43 #44 moved; #42 not attacked; src identical to entry; floors green at exit; 3.6 at 2 of 8
+UPDATED: 2026-09-23T14:02:15-04:00
+NOTE: Task 0 done, committing: entry round matches 405 exit, six reds at 0.75 0.54 70 5+37 3+21 1+3; task 1 trace at the switch next
 
 ---
 
