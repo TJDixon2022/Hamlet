@@ -33,12 +33,6 @@ namespace Hamlet.RadioEngine.Cw;
 /// transcript comes out unspaced (HM-DEC-142). Distinct from an empty
 /// transcript, which is the decoder producing nothing.
 /// </param>
-/// <param name="PitchWasAsserted">
-/// True where the operator said he could hear a station and Hamlet took the
-/// loudest bin in the band, rather than finding one itself.
-/// **`PitchWasMeasured` stays false throughout**, because nothing was measured;
-/// this says who chose the number instead (Tim's ruling of 2026-08-26).
-/// </param>
 /// <param name="PitchWasMeasured">
 /// True when <see cref="ToneHz"/> came from keying the survey admitted, false
 /// when it is the middle of whatever bank the tracker is pointed at. **The two
@@ -50,26 +44,6 @@ namespace Hamlet.RadioEngine.Cw;
 /// **Null says the survey did not find one and never that the frequency is
 /// clear** (HM-DEC-009).
 /// </param>
-/// <param name="PitchChoice">
-/// How <see cref="ToneHz"/> came to be chosen — from keying, from the strongest
-/// bin, from a ranking, from the operator, or not at all.
-/// </param>
-/// <param name="Rank">
-/// What the ranking chose and what it beat, where the ranking supplied
-/// <see cref="ToneHz"/>. **Null says the pitch did not come from a ranking**, and
-/// never that the ranking found nothing.
-/// **The runner-up is carried because a wrong pick is otherwise a mystery
-/// afterwards** (§0.0.1): a winner three times its runner-up and a winner a
-/// hundredth above it are different situations, and the sheet cannot tell them
-/// apart from the winner alone.
-/// </param>
-/// <remarks>
-/// **`PitchWasMeasured` AND `PitchChoice` ANSWER DIFFERENT QUESTIONS AND BOTH
-/// ARE KEPT.** The first says whether keying was found, which is the claim
-/// §0.0 cares about; the second says which of four things supplied the number.
-/// A pitch chosen because its bin was loudest is not measured and is also not
-/// nothing, and before this there was no way to say so.
-/// </remarks>
 public readonly record struct CwDecodeReport(
     AudioLevel Level,
     double ToneHz,
@@ -84,11 +58,31 @@ public readonly record struct CwDecodeReport(
     double OwnTransmitSeconds = 0,
     bool WordSpacingUnmeasured = false,
     CwCompetitor? Competitor = null,
-    bool PitchWasMeasured = false,
-    bool PitchWasAsserted = false,
-    CwPitchChoice PitchChoice = CwPitchChoice.NotChosen,
-    CwPitchRank? Rank = null)
+    bool PitchWasMeasured = false)
 {
+    /// <summary>
+    /// True when the pitch is one the operator asserted. Never, for this decoder.
+    /// </summary>
+    /// <remarks>
+    /// **FALSE BECAUSE NOTHING HERE TAKES AN ASSERTION** (work instruction 392, a
+    /// seam for today's application). The operator's assertion came with the
+    /// August rework, which step 1 took out; this decoder follows the survey and
+    /// nothing else.
+    /// </remarks>
+    public bool PitchWasAsserted => false;
+
+    /// <summary>What chose <see cref="ToneHz"/>.</summary>
+    /// <remarks>
+    /// **ONLY THE TWO ANSWERS THIS DECODER CAN GIVE** (work instruction 392, a seam
+    /// for today's application). A measured pitch came from keying the survey
+    /// admitted; an unmeasured one is the middle of the bank the tracker is
+    /// pointed at, which nothing chose (see <see cref="PitchWasMeasured"/>). The
+    /// strongest bin, the ranking and the operator's assertion arrived after this
+    /// decoder was written and are not in the build.
+    /// </remarks>
+    public CwPitchChoice PitchChoice
+        => PitchWasMeasured ? CwPitchChoice.Keying : CwPitchChoice.NotChosen;
+
     /// <summary>
     /// How far above the band a tone has to stand before it is worth mentioning.
     /// </summary>

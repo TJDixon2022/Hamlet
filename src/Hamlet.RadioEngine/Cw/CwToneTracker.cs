@@ -128,14 +128,7 @@ public sealed class CwToneTracker
     public const double MaximumToneHz = 900;
 
     /// <summary>Spacing of the survey bank, in hertz.</summary>
-    /// <summary>How far apart the survey's coarse bins sit, in hertz.</summary>
-    /// <remarks>
-    /// **PUBLIC BECAUSE IT IS THE RESOLUTION OF EVERY PITCH THIS TRACKER
-    /// REPORTS.** A difference smaller than one bin is below what the survey
-    /// could have told anybody, so it is the natural bar for deciding whether a
-    /// pitch has really changed — which is what `CwDecoder`'s re-read asks.
-    /// </remarks>
-    public const double CoarseSpacingHz = 25;
+    private const double CoarseSpacingHz = 25;
 
     /// <summary>Spacing of the reading bank, in hertz.</summary>
     /// <remarks>
@@ -254,38 +247,6 @@ public sealed class CwToneTracker
     /// survey preferring its neighbor, rather than a different signal.</remarks>
     private const double ConfirmWithinHz = CoarseSpacingHz;
 
-    /// <summary>
-    /// How far back a candidate may look for its second agreeing survey.
-    /// </summary>
-    /// <remarks>
-    /// <para>**TWO IS BACK TO BACK, WHICH IS WHERE THIS STARTED.** A survey runs
-    /// every <see cref="SurveyEveryHops"/> hops, half a second apart, so a window
-    /// of two means this survey and the one immediately before it.</para>
-    /// <para>The number is a parameter on the constructor so it can be swept, and
-    /// this constant is what the application uses.</para>
-    /// <para>**IT STAYS AT TWO, AND THAT IS MEASURED RATHER THAN INHERITED.**
-    /// Tim ruled on 2026-08-26 that a station may confirm on non-consecutive
-    /// evidence if a window could be found that confirmed `cw-2026-08-25-012823`
-    /// and left every other capture's acquisition untouched. Swept at 3, 4, 6 and
-    /// 8 surveys, which is one and a half to four seconds:</para>
-    /// <para>Every longer window **moved acquisition on 16 to 20 of the 37
-    /// captures** where the condition allows none, and **cost adjudicated
-    /// anchors** — 11 of 12 at three surveys, 10 at four, 9 at six and eight.
-    /// Silence held on both empty captures at every length (HM-DEC-120).</para>
-    /// <para>**AND IT DID NOT FIX THE CAPTURE IT WAS RULED FOR.** At no window
-    /// does `012823` confirm the 500 Hz its station sits on. The ruling's premise
-    /// was that an intermittently-admitted station alternates 500, 450, 500, 450
-    /// and so never finds a consecutive pair. Measured survey by survey, **500 Hz
-    /// is never admitted as keying even once** in thirty seconds, while the
-    /// survey names it `Strongest` repeatedly. There is no alternation, and a
-    /// window cannot help a candidate that is never nominated.</para>
-    /// <para>The obstacle is <see cref="CwToneSurvey"/>'s admission, which is the
-    /// same wall that stops `cw-2026-08-22-014113` (no bin admitted at all, in
-    /// any survey, in thirty seconds) and `cw-2026-08-26-125941`. Do not re-open
-    /// this number without re-opening that.</para>
-    /// </remarks>
-    public const int ConfirmWithinSurveys = 2;
-
     private readonly double[] _coarseHz;
     private readonly double[] _coarseCoefficient;
     private readonly double[] _coarseDb;
@@ -336,23 +297,8 @@ public sealed class CwToneTracker
     private int _hannHops;
     private int _gateHannHops;
 
-    /// <summary>
-    /// What the last few surveys said, so a fluke has to happen twice.
-    /// </summary>
-    /// <remarks>
-    /// <para>**IT USED TO BE ONE SLOT AND THAT IS WHY AN INTERMITTENT STATION
-    /// COULD NEVER CONFIRM.** Every survey overwrote it, including the surveys
-    /// that found nothing keyed anywhere, so a station admitted every other
-    /// survey met a `NaN` on each of its own turns and confirmed on none of
-    /// them. On `cw-2026-08-25-012823` the tracker rode the correct 500 Hz for
-    /// eleven seconds on the unconfirmed cold-start path and the first pitch it
-    /// ever confirmed was a rival fifty hertz away.</para>
-    /// <para>A ring of the last few findings asks the same question over a short
-    /// window instead of strictly back to back. Two independent agreements still
-    /// stand between a candidate and the tracker, which is what HM-DEC-095
-    /// requires; what changes is that they need not be consecutive.</para>
-    /// </remarks>
-    private readonly double[] _recentKeyedHz;
+    /// <summary>What the previous survey said, so a fluke has to happen twice.</summary>
+    private double _previousKeyedHz = double.NaN;
 
     /// <summary>The last pitch keying was actually found at.</summary>
     private double _lastKeyedHz = double.NaN;
@@ -370,17 +316,6 @@ public sealed class CwToneTracker
 
     /// <summary>What is reported as the tone, which is not the instant winner.</summary>
     private double _reportedHz = double.NaN;
-
-    /// <summary>
-    /// The pitch the strongest bin chose at acquisition, or NaN.
-    /// </summary>
-    /// <remarks>
-    /// **KEPT APART FROM `_reportedHz` ON PURPOSE.** That one means keying the
-    /// survey admitted and it is what `HasMeasuredPitch` answers from; this one
-    /// means the loudest bin in the band and nothing more. Folding them together
-    /// would make the sheet claim a measurement nobody took (§0.0).
-    /// </remarks>
-    private double _chosenHz = double.NaN;
 
     /// <summary>A move that is waiting for the character in progress to end.</summary>
     private double _heldSwitchHz = double.NaN;
@@ -402,25 +337,7 @@ public sealed class CwToneTracker
     /// <param name="sampleRate">Samples per second.</param>
     /// <param name="startingToneHz">Where to begin looking, from the operator's setting.</param>
     public CwToneTracker(int sampleRate, double startingToneHz)
-        : this(sampleRate, startingToneHz, null)
     {
-    }
-
-    /// <summary>Track, with the confirmation window a sweep needs to vary.</summary>
-    /// <param name="sampleRate">Samples per second.</param>
-    /// <param name="startingToneHz">Where to point the bank before anything is measured.</param>
-    /// <param name="confirmWithinSurveys">
-    /// How far back a candidate may look for its second agreeing survey, or null
-    /// for <see cref="ConfirmWithinSurveys"/>.
-    /// </param>
-    public CwToneTracker(
-        int sampleRate, double startingToneHz, int? confirmWithinSurveys)
-    {
-        var window = Math.Max(2, confirmWithinSurveys ?? ConfirmWithinSurveys);
-
-        _recentKeyedHz = new double[window - 1];
-        Array.Fill(_recentKeyedHz, double.NaN);
-
         SampleRate = Math.Max(1_000, sampleRate);
         HopSamples = Math.Max(4, SampleRate / 200);
         MaximumWindowSamples = HopSamples * NarrowWindowHops;
@@ -523,27 +440,9 @@ public sealed class CwToneTracker
     /// survey found the keying, which is a measurement over three seconds, and
     /// the middle of the bank until it has one.
     /// </remarks>
-    /// <remarks>
-    /// **THREE RUNGS SINCE 2026-08-27, AND THE MIDDLE ONE IS NEW.** Keying the
-    /// survey admitted still wins. Below it now sits the bin the strongest-bin
-    /// rule chose, by Tim's ruling of that date; below that, the bank centre,
-    /// which is a starting point and not a finding.
-    /// </remarks>
-    public double ToneHz => !double.IsNaN(_reportedHz)
-        ? _reportedHz
-        : !double.IsNaN(_chosenHz)
-            ? _chosenHz
-            : _fineHz[_fineHz.Length / 2];
-
-    /// <summary>How the pitch being reported came to be chosen.</summary>
-    /// <remarks>
-    /// **THE SHEET RECORDS THE PROVENANCE AND NOT ONLY THE NUMBER** (§0.0.1,
-    /// work instruction 033 task 8). A pitch found from keying, a pitch chosen
-    /// because its bin was loudest, and a pitch the operator supplied are three
-    /// different claims, and until this existed the sheet could only tell the
-    /// first from the rest.
-    /// </remarks>
-    public CwPitchChoice PitchChoice { get; private set; } = CwPitchChoice.NotChosen;
+    public double ToneHz => double.IsNaN(_reportedHz)
+        ? _fineHz[_fineHz.Length / 2]
+        : _reportedHz;
 
     /// <summary>True once a pitch has actually been measured from keying.</summary>
     /// <remarks>
@@ -587,43 +486,6 @@ public sealed class CwToneTracker
     /// </summary>
     /// <returns>One entry per admitted bin.</returns>
     public IReadOnlyList<KeyingCandidate> CoarseCandidates() => _survey.Candidates();
-
-    /// <summary>
-    /// Where the survey should write what every admission test said, or null to
-    /// measure nothing.
-    /// </summary>
-    /// <remarks>
-    /// **NOTHING IN THE APPLICATION SETS THIS.** It exists because for four days
-    /// the survey reported a verdict and no instrument could say which of its
-    /// seven tests refused a bin or by how much, and three units were spent
-    /// building mechanisms downstream of a decision nobody could see.
-    /// </remarks>
-    public List<BinReading>? SurveyReadings
-    {
-        get => _survey.Readings;
-        set => _survey.Readings = value;
-    }
-
-    /// <summary>Where to collect every bin's raw run stream, or null.</summary>
-    public List<BinRuns>? SurveyRunStreams
-    {
-        get => _survey.RunStreams;
-        set => _survey.RunStreams = value;
-    }
-
-    /// <summary>Candidate A: place the gate above the band floor (2026-08-26).</summary>
-    public double? GateAboveBandFloorDb
-    {
-        get => _survey.GateAboveBandFloorDb;
-        set => _survey.GateAboveBandFloorDb = value;
-    }
-
-    /// <summary>Candidate B: a bin's two levels must be two things (2026-08-26).</summary>
-    public double? MinimumLevelSpreadDb
-    {
-        get => _survey.MinimumLevelSpreadDb;
-        set => _survey.MinimumLevelSpreadDb = value;
-    }
 
     /// <summary>
     /// Where the strongest tone in the fine bank actually sits, between the bins.
@@ -774,41 +636,6 @@ public sealed class CwToneTracker
     /// is exactly what the operator needs).</para>
     /// </remarks>
     public int StationChanges { get; private set; }
-
-    /// <summary>
-    /// The radio is somewhere else now, so everything measured about where it
-    /// used to be is discarded.
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE HOLD IS RIGHT AND IT COULD NOT LET GO.** The tracker keeps
-    /// the pitch it last measured and keeps pointing the filter at it whenever
-    /// the survey's three seconds of history hold nothing — that is what carries
-    /// a slow sender across his own gaps, and it is untouched while the dial
-    /// stays put. The evidence for it is audio from a frequency the receiver is
-    /// no longer on, and a QSY destroys that evidence outright.</para>
-    /// <para>On 2026-08-26 the operator tuned to 14.0275 MHz and the sidecar
-    /// there reported a pitch of 300 Hz measured twenty-four minutes and one QSY
-    /// earlier. The decoder mixed at 300 while the station keyed above 400, and
-    /// refused everything — correctly, because nothing was being keyed at
-    /// 300.</para>
-    /// <para>**IT DOES NOT RESET THE WHOLE TRACKER.** The bank stays where it is
-    /// pointed and the speed the tracker has learned survives, because a fist is
-    /// a fact about the operator's ear and his habits rather than about a
-    /// frequency. What goes is what was measured from the old audio: the
-    /// reported pitch, the keyed pitch the cold-start path gates on, the level
-    /// the displacement guard compares against, and the survey history whose
-    /// samples came from the old frequency.</para>
-    /// </remarks>
-    public void Forget()
-    {
-        _reportedHz = double.NaN;
-        _chosenHz = double.NaN;
-        PitchChoice = CwPitchChoice.NotChosen;
-        _lastKeyedHz = double.NaN;
-        _readingDb = double.NaN;
-        _survey.Reset();
-        _fineSurvey.Reset();
-    }
 
     /// <summary>
     /// How many of those moves were to a different station (HM-DEC-123).
@@ -1134,17 +961,9 @@ public sealed class CwToneTracker
         }
 
         var coarse = _survey.Analyze();
+        var previous = _previousKeyedHz;
 
-        // The ring holds what the previous surveys found, oldest first, and this
-        // survey's finding is pushed in after the question has been asked of it.
-        var recent = _recentKeyedHz.ToArray();
-
-        for (var i = 0; i < _recentKeyedHz.Length - 1; i++)
-        {
-            _recentKeyedHz[i] = _recentKeyedHz[i + 1];
-        }
-
-        _recentKeyedHz[^1] = coarse.Keyed?.ToneHz ?? double.NaN;
+        _previousKeyedHz = coarse.Keyed?.ToneHz ?? double.NaN;
 
         if (_keyedProtects > 0)
         {
@@ -1177,39 +996,17 @@ public sealed class CwToneTracker
             // moving the filter, not about why it is being moved: a character
             // finished from a different part of the band is a letter nobody sent
             // however the move came to be made.
-            // **AND THE STRONGEST BIN NOW CHOOSES, NOT ONLY POINTS** (Tim's
-            // ruling of 2026-08-27, amending HM-DEC-095). Eight statistics were
-            // measured against choosing a pitch by how it is keyed and all eight
-            // were wrong on the four captures he can hear, while the strongest
-            // bin was right on all four. So keying structure is demoted from the
-            // chooser to a check on the winner.
-            //
-            // **THE CHOICE IS RECORDED AS A CHOICE AND NOT AS A MEASUREMENT.**
-            // `HasMeasuredPitch` still means keying the survey admitted and it
-            // stays false here, because a loud bin is where to point the filter
-            // and is not evidence that anybody is sending (§0.0). What the sheet
-            // gains is `PitchChoice`, which says which of the two it was.
             if (!MidCharacter
                 && double.IsNaN(_lastKeyedHz)
-                && coarse.Strongest is { } loudest)
+                && coarse.Strongest is { } loudest
+                && Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
             {
-                if (Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
-                {
-                    CenterFineBank(loudest.ToneHz);
-                    _fineSurvey.Reset();
-                    _tracked = _fineHz.Length / 2;
-                    _reportedHz = double.NaN;
-                    Retunes++;
-                    Follows++;
-                }
-
-                // **POINT AT THE LOUDEST BIN, NOT AT WHATEVER THE BANK IS
-                // CENTRED ON.** Before the ruling the centre was taken and the
-                // bin structure inside the bank was ignored, which is how a
-                // station sitting fifty hertz off a bank centre was decoded at
-                // the centre and read as noise.
-                _chosenHz = loudest.ToneHz;
-                PitchChoice = CwPitchChoice.StrongestBin;
+                CenterFineBank(loudest.ToneHz);
+                _fineSurvey.Reset();
+                _tracked = _fineHz.Length / 2;
+                _reportedHz = double.NaN;
+                Retunes++;
+                Follows++;
             }
 
             return;
@@ -1229,23 +1026,7 @@ public sealed class CwToneTracker
         // estimator has learned. Measured across the suite it fixed four tests and
         // broke ten, including decodes that had nothing wrong with them. The delay
         // is the price of not being dragged around by noise.
-        // **WITHIN A SHORT WINDOW RATHER THAN STRICTLY BACK TO BACK** (Tim's
-        // ruling of 2026-08-26). A station admitted every other survey used to be
-        // barred from ever confirming, because the surveys in between overwrote
-        // the only slot the rule had to remember with `NaN`.
-        var agrees = false;
-
-        foreach (var earlier in recent)
-        {
-            if (!double.IsNaN(earlier)
-                && Math.Abs(earlier - keyed.ToneHz) <= ConfirmWithinHz)
-            {
-                agrees = true;
-                break;
-            }
-        }
-
-        if (!agrees)
+        if (double.IsNaN(previous) || Math.Abs(previous - keyed.ToneHz) > ConfirmWithinHz)
         {
             // Refusing to believe it is keying does not make it stop existing.
             Verdict = new ToneVerdict(
@@ -1322,7 +1103,6 @@ public sealed class CwToneTracker
             _tracked = NearestFine(exact.ToneHz);
 
             _reportedHz = exact.ToneHz;
-            PitchChoice = CwPitchChoice.Keying;
             KeyingFoundAt(exact.ToneHz);
             Verdict = new ToneVerdict(exact, Filtered(coarse.Interference));
             return;
@@ -1330,7 +1110,6 @@ public sealed class CwToneTracker
 
         _tracked = NearestFine(keyed.ToneHz);
         _reportedHz = keyed.ToneHz;
-        PitchChoice = CwPitchChoice.Keying;
         Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
     }
 
@@ -1388,7 +1167,6 @@ public sealed class CwToneTracker
         _tracked = _fineHz.Length / 2;
 
         _reportedHz = toneHz;
-        PitchChoice = CwPitchChoice.Keying;
         KeyingFoundAt(toneHz);
         Retunes++;
 

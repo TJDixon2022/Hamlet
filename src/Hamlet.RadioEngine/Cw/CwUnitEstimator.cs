@@ -1,4 +1,4 @@
-﻿namespace Hamlet.RadioEngine.Cw;
+namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>What a stretch of envelope says the sender's timing is.</summary>
 /// <param name="UnitMilliseconds">
@@ -345,222 +345,7 @@ public static class CwUnitEstimator
             db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
         }
 
-        return Runs(db, Cut(db), hysteresisDb, hopMilliseconds);
-    }
-
-    /// <summary>
-    /// The same runs, and how many the short-run floor threw away without merging
-    /// what they separated.
-    /// </summary>
-    /// <param name="envelope">Envelope magnitudes.</param>
-    /// <param name="hopMilliseconds">How long one hop lasts.</param>
-    /// <param name="dropped">
-    /// How many runs the trigger produced that <see cref="ShortestRunHops"/>
-    /// refused to record.
-    /// </param>
-    /// <param name="hysteresisDb">How deep the trigger is.</param>
-    /// <returns>Mark lengths and gap lengths, in milliseconds.</returns>
-    /// <remarks>
-    /// **A COUNT, BECAUSE THE FILTER IS SILENT AND ITS FAILURE IS NOT** (work
-    /// instruction 056, task 4). Unit 054 established that `Runs` drops a run
-    /// shorter than the floor **without merging the two runs it separated**, so
-    /// every duration after such a drop is wrong, and that at one hop the
-    /// hysteresis makes the line unreachable. Whether a real capture at a real
-    /// signal-to-noise ratio reaches it was never measured, and could not be,
-    /// because nothing counted. §0.0.1: a fault the app's own record cannot see is
-    /// a fault nobody can diagnose.
-    /// </remarks>
-    public static (IReadOnlyList<double> Marks, IReadOnlyList<double> Gaps)
-        Elements(
-            IReadOnlyList<double> envelope,
-            double hopMilliseconds,
-            out int dropped,
-            double hysteresisDb = HysteresisDb)
-    {
-        ArgumentNullException.ThrowIfNull(envelope);
-
-        var db = new double[envelope.Count];
-
-        for (var i = 0; i < envelope.Count; i++)
-        {
-            db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
-        }
-
-        return Runs(db, Cut(db), hysteresisDb, hopMilliseconds, out dropped);
-    }
-
-    /// <summary>
-    /// How far below the loudest signal the key-down threshold sits, in decibels,
-    /// or NaN to keep the Otsu split.
-    /// </summary>
-    /// <remarks>
-    /// <para>**REFERENCED TO THE LOUDEST SIGNAL RATHER THAN TO A SPLIT OF
-    /// EVERYTHING** (work instruction 054, task 2). Otsu asks where the two
-    /// classes divide, and on a passband holding two stations the second station
-    /// is one of the classes — so the cut lands in the middle of it and its fades
-    /// and peaks are counted as elements of the first. A setback from the high
-    /// percentile has no opinion about anything but the loudest thing present.</para>
-    /// <para>**MEASURED AND REFUSED ON THREE GROUNDS, AND NaN SHIPS** (work
-    /// instruction 054, task 2). The reasoning is right about what it does to dah
-    /// scatter and the decoder reads worse anyway.</para>
-    /// <list type="number">
-    /// <item>**A setback under six decibels cannot work at all, and that is
-    /// arithmetic rather than a corpus accident.** The Schmitt trigger opens at
-    /// the cut plus `HysteresisDb`, which is 6 dB, so a setback of 5 puts the
-    /// opening threshold one decibel *above* the envelope's own ninety-eighth
-    /// percentile and nothing is ever key-down. **Setbacks of 3, 4 and 5 produce
-    /// fewer than eight marks on every capture in the corpus**, so the order's
-    /// recommended peak − 5 dB is unreachable while the hysteresis is ±6.</item>
-    /// <item>**The usable range is not monotonic.** On `cw-2026-08-17-013347` dah
-    /// CV runs 0.444 at Otsu, **0.113 at −6**, 0.413 at −8, 0.531 at −10 and
-    /// 0.486 at −12. It dips and comes back, and §12.5's standard is not to adopt
-    /// off a curve like that.</item>
-    /// <item>**The one candidate that helps costs precision.** At −6 dB the corpus
-    /// reads **0.840 against a floor of 0.888**, yield 0.630 against 0.745, and
-    /// substitutions 33 against 17.</item>
-    /// </list>
-    /// <para>**THE FINDING IS REAL AND IS THE REASON THIS IS KEPT.** At −6 dB the
-    /// worst captures improve exactly as the order predicted — `013347` 0.444 to
-    /// 0.113, `134712` 0.647 to 0.275, worst-in-corpus 0.647 to 0.275 — while the
-    /// captures that already read cleanly get worse, `004507` going 0.015 to
-    /// 0.113. **Referencing to the peak buys the hard captures and sells the easy
-    /// ones**, which is the trade this project has been making by accident and
-    /// must not make on purpose.</para>
-    /// </remarks>
-    public static double PeakSetbackDb { get; set; } = double.NaN;
-
-    /// <summary>The key-down threshold for this envelope, in decibels.</summary>
-    /// <param name="db">The envelope in decibels.</param>
-    /// <returns>The cut.</returns>
-    /// <remarks>
-    /// **THE HYSTERESIS IS APPLIED AROUND WHATEVER THIS RETURNS** and is not
-    /// changed by the reference. Only where the trigger sits moves.
-    /// </remarks>
-    public static double Cut(double[] db)
-    {
-        ArgumentNullException.ThrowIfNull(db);
-
-        if (double.IsNaN(PeakSetbackDb) || db.Length == 0)
-        {
-            return Otsu(db);
-        }
-
-        var sorted = (double[])db.Clone();
-
-        Array.Sort(sorted);
-
-        // The ninety-eighth percentile rather than the maximum: a click is louder
-        // than the station and is not the station.
-        var at = 0.98 * (sorted.Length - 1);
-        var low = (int)Math.Floor(at);
-        var high = Math.Min(low + 1, sorted.Length - 1);
-        var peak = sorted[low] + ((sorted[high] - sorted[low]) * (at - low));
-
-        return peak - PeakSetbackDb;
-    }
-
-    /// <summary>How far above the noise floor the key-down threshold sits.</summary>
-    /// <remarks>
-    /// **BUILT, SWEPT, AND NOT ADOPTED** (work instruction 051, task 3). Kept
-    /// with its numbers so the next session finds the measurement rather than
-    /// spending an evening rebuilding it; see <see cref="Threshold"/> for the
-    /// three independent reasons it was refused.
-    /// </remarks>
-    public static double Fraction { get; set; } = 0.5;
-
-    /// <summary>
-    /// The smallest swing between noise and signal that counts as a station.
-    /// </summary>
-    /// <remarks>
-    /// **THIS IS THE "NO STATION HERE" TEST AND IT IS LOAD-BEARING NOW.** Otsu
-    /// always returned a number, so an empty band got a threshold through the
-    /// middle of its own hiss and every bin read 45 to 69 per cent duty. A
-    /// percentile threshold has to say when there is nothing to put a threshold
-    /// between.
-    /// </remarks>
-    public static double MinimumSwingDb { get; set; } = 6.0;
-
-    /// <summary>
-    /// The key-down threshold, from the envelope's own percentiles.
-    /// </summary>
-    /// <param name="db">The envelope in decibels.</param>
-    /// <returns>The threshold in decibels.</returns>
-    /// <remarks>
-    /// <para>**OTSU ASSUMES TWO CLASSES OF COMPARABLE MASS AND A BAND MOSTLY
-    /// SILENT HAS ONE** (work instruction 051, task 3). On
-    /// `cw-2026-08-30-001650` the station occupies about twelve per cent of the
-    /// file, so Otsu split the noise distribution down the middle and returned a
-    /// threshold inside the hiss. Measured over the last fifteen seconds, every
-    /// bin from 450 to 775 Hz then read 45 to 69 per cent duty and nothing stood
-    /// out; with a threshold above the noise exactly one fifty-hertz band lit up
-    /// and the rest of the passband went to zero. **Same audio, opposite
-    /// verdicts.**</para>
-    /// <para>**THE PERCENTILES ARE CHOSEN TO BE ROBUST TO THE THING THAT BROKE
-    /// OTSU.** The twentieth is noise even when a signal is busy; the
-    /// ninety-eighth is signal even when a click is louder than it. Neither
-    /// depends on the two having comparable mass, which is the assumption that
-    /// failed.</para>
-    /// <para>**AND THE HYSTERESIS IS UNTOUCHED.** The ±6 dB Schmitt trigger is
-    /// measured and it works; only where the trigger sits has changed.</para>
-    /// <para>**IT IS NOT WIRED IN, AND THREE INDEPENDENT MEASUREMENTS REFUSED
-    /// IT.** The reasoning above is sound about the failing case and the corpus
-    /// says it is wrong about every other one.</para>
-    /// <list type="number">
-    /// <item>**The fraction sweep is not monotonic**, and the order forbids
-    /// adopting off a curve that is not: precision runs 0.601, 0.728, 0.751,
-    /// 0.703, 0.770, 0.787, 0.742, 0.738 across fractions 0.20 to 0.60. It goes
-    /// up, down, up, down.</item>
-    /// <item>**Every candidate is far below the floor.** The best is 0.787 at a
-    /// fraction of 0.50, against 0.888 with Otsu and a hard floor of 0.858.</item>
-    /// <item>**It fails its own acceptance criterion**, which was that on
-    /// known-good captures the threshold lands within a decibel or two of where
-    /// it lands today. Measured, it lands **0.6 to 4.9 dB higher**, median about
-    /// 3.0, and higher on every single capture — which is why yield collapsed.
-    /// On `cw-2026-08-17-013347` the twentieth percentile falls at −110 dB,
-    /// because that recording is mostly digital silence and a percentile of
-    /// silence is not a noise floor.</item>
-    /// </list>
-    /// <para>**SO OTSU IS RIGHT EXACTLY WHERE THE ORDER PREDICTED IT WOULD BE** —
-    /// where signal and noise have comparable mass — and the fault it has is real
-    /// and is confined to the case where they do not. **What could not be done
-    /// this unit is verify a repair**, because the two captures the fault was
-    /// measured on are not in this repository.</para>
-    /// </remarks>
-    public static double Threshold(double[] db)
-    {
-        ArgumentNullException.ThrowIfNull(db);
-
-        if (db.Length == 0)
-        {
-            return 0;
-        }
-
-        var sorted = (double[])db.Clone();
-
-        Array.Sort(sorted);
-
-        var floor = Percentile(sorted, 20);
-        var peak = Percentile(sorted, 98);
-
-        if (peak - floor < MinimumSwingDb)
-        {
-            // **NOTHING HERE.** Returning a threshold above everything means no
-            // hop is ever key-down, which is the honest answer for a band with
-            // no station in it — and the answer Otsu could not give (§0.0).
-            return sorted[^1] + 1;
-        }
-
-        return floor + (Fraction * (peak - floor));
-    }
-
-    /// <summary>One percentile of an already-sorted array.</summary>
-    private static double Percentile(double[] sorted, double share)
-    {
-        var at = (share / 100.0) * (sorted.Length - 1);
-        var low = (int)Math.Floor(at);
-        var high = Math.Min(low + 1, sorted.Length - 1);
-
-        return sorted[low] + ((sorted[high] - sorted[low]) * (at - low));
+        return Runs(db, Otsu(db), hysteresisDb, hopMilliseconds);
     }
 
     /// <summary>
@@ -568,16 +353,11 @@ public static class CwUnitEstimator
     /// variance inside them.
     /// </summary>
     /// <remarks>
-    /// <para>Otsu's method over a histogram of the envelope in decibels. It is a
+    /// Otsu's method over a histogram of the envelope in decibels. It is a
     /// measurement of this recording rather than a level anybody chose, which is
-    /// what lets the trigger depth be the only constant here.</para>
-    /// <para>**PUBLIC SO THE TWO THRESHOLDS CAN BE COMPARED SIDE BY SIDE** (work
-    /// instruction 051, task 3), which is the acceptance criterion that decided
-    /// whether the percentile threshold could be adopted.</para>
+    /// what lets the trigger depth be the only constant here.
     /// </remarks>
-    /// <param name="db">The envelope in decibels.</param>
-    /// <returns>The split, in decibels.</returns>
-    public static double Otsu(double[] db)
+    private static double Otsu(double[] db)
     {
         var low = double.MaxValue;
         var high = double.MinValue;
@@ -650,109 +430,16 @@ public static class CwUnitEstimator
         return low + ((bestBin + 0.5) * width);
     }
 
-    /// <summary>
-    /// How long a key-down may dip below the trigger without ending, in
-    /// milliseconds.
-    /// </summary>
-    /// <remarks>
-    /// <para>**SIZED FROM THE FADING AND BOUNDED BY THE SHORTEST REAL GAP** (work
-    /// instruction 054, task 3). Unit 053 measured dropouts inside key-down at 32
-    /// to 53 ms on this corpus, and this unit measured that the existing bridging
-    /// absorbs 20 ms and gives out at 30 — so the fading sits just past what is
-    /// already handled.</para>
-    /// <para>**THE BOUND IS THE INTER-ELEMENT GAP AND IT IS ASSERTED, NOT
-    /// REMEMBERED.** At the fastest speed the decoder considers, one dit is the
-    /// gap, so the hold-over must be shorter than a dit at
-    /// <see cref="CwProbabilisticDecoder.FastestWpm"/> or it bridges a real gap
-    /// and welds two elements into one. That bound is what stops this being sized
-    /// to the fading alone.</para>
-    /// <para>**TWELVE MILLISECONDS, ADOPTED ON A MONOTONIC REGION AND BOUNDED BY
-    /// A FLOOR.** Swept over the whole corpus, precision reads 0.888 at nought,
-    /// 0.888 at 8, **0.894 at 12**, 0.905 at 16 and 0.898 at 24. Nought through
-    /// sixteen is non-decreasing, so sixteen is the top of the monotonic region
-    /// and was the first candidate.</para>
-    /// <para>**SIXTEEN COST AN ANCHOR AND IS NOT TAKEN.** It broke
-    /// `cw-2026-08-22-031838`'s adjudicated run `, AND` in
-    /// `TheAdjudicatedReadingsKeepReadingTests`, and §12.5 does not let a floor be
-    /// lowered to fit a change. Twelve holds every floor in the suite, and it is
-    /// the better point on two of the three numbers anyway: yield **0.750**
-    /// against 0.745 at nought and 0.742 at sixteen, and substitutions **15**
-    /// against 17 and 18. The 1.1 points of precision given up against sixteen buy
-    /// an anchor that stays.</para>
-    /// <para>**IT IS THREE HOPS, AND IT STILL DOES NOT REACH THE FADING.** The
-    /// dropouts unit 053 measured run 32 to 53 ms. The safe bound was 30 when
-    /// this was written and is 40 now, because
-    /// <see cref="CwProbabilisticDecoder.FastestWpm"/> came down to thirty (work
-    /// instruction 056, task 1) — so for the first time the bound reaches the
-    /// lower half of the fading, and the hold-over still does not, because
-    /// twelve is where the locks put it rather than where the bound does.</para>
-    /// <para>**RE-SWEPT ACROSS THE WHOLE NEWLY LEGAL RANGE AND TWELVE SURVIVED**
-    /// (work instruction 056, task 1). Precision reads **0.901 at 12, 0.926 at
-    /// 16, 0.939 at 20, 0.939 at 24**, then falls: 0.930 at 28, 0.920 at 32,
-    /// 0.910 at 36 and 40. Yield is flat at 0.878 through 24 and drops to 0.841
-    /// by 36. On the average alone the answer would be 20 — monotonic to it,
-    /// tied with 24, and 3.8 points of precision better than 12.</para>
-    /// <para>**AND IT COSTS THE SAME ANCHOR SIXTEEN COST, WHICH IS WHY IT IS NOT
-    /// TAKEN.** `cw-2026-08-22-031838`'s adjudicated `, AND` survives at twelve
-    /// and does not at sixteen or at twenty: the read goes `, 2, 2, AND 2` to
-    /// `, 2, 2,■AND■2■` to `, 2, 2,■■AND■■■`. **The mechanism is visible in that
-    /// progression** — bridging inside a key-down lengthens the mark and shortens
-    /// the gap after it, so the character gaps this sender leaves fall below what
-    /// separates them from element gaps and the spacing collapses into blocks.
-    /// Tim's ruling with this order settles what to do about it: the average
-    /// floor may move only when every individual lock holds, and a change that
-    /// drops one is reverted regardless of what it does to the average.</para>
-    /// <para>**WHAT THE OLD REMARKS CLAIMED FOR TWELVE NO LONGER HOLDS AND IS
-    /// CORRECTED HERE.** It said twelve bought 0.6 points of precision over
-    /// nought; that was measured at a ceiling of forty words a minute. What
-    /// twelve buys now is measured above and is nothing at all over sixteen or
-    /// twenty on the average — it buys one adjudicated anchor, and that is the
-    /// whole of its case.</para>
-    /// <para>**DIT SCATTER BARELY MOVED AND THE DECODE IMPROVED ANYWAY**, which is
-    /// worth recording because dit CV was the measure this change was expected to
-    /// be judged on. Across the whole sweep it changes by hundredths and not
-    /// always downward — `134712` runs 0.432, 0.432, 0.432, 0.428, 0.441, 0.462.
-    /// **The scatter was a poor proxy for the reading**, and the reading is what
-    /// the goal is stated in.</para>
-    /// </remarks>
-    public static double HoldOverMilliseconds { get; set; } = 12.0;
-
-    /// <summary>The longest hold-over that cannot bridge a real gap.</summary>
-    /// <remarks>
-    /// A dit at the fastest speed the decoder will consider. At 30 words a minute
-    /// that is 40 ms, and the inter-element gap is one dit, so anything at or
-    /// above it can weld two elements together.
-    /// </remarks>
-    public static double LongestSafeHoldOverMs
-        => 1200.0 / CwProbabilisticDecoder.FastestWpm;
-
     /// <summary>Mark and gap lengths from a two-level trigger.</summary>
-    /// <remarks>
-    /// **THE HOLD-OVER APPLIES ONLY INSIDE A KEY-DOWN THAT HAS ALREADY BEEN
-    /// ADMITTED.** A dip while the key is up is not extended into an element —
-    /// that would turn a noise crossing into a mark, which is the opposite of
-    /// what this is for (§0.0, HM-DEC-120).
-    /// </remarks>
     private static (List<double> Marks, List<double> Gaps) Runs(
         double[] db, double cut, double hysteresisDb, double hopMilliseconds)
-        => Runs(db, cut, hysteresisDb, hopMilliseconds, out _);
-
-    private static (List<double> Marks, List<double> Gaps) Runs(
-        double[] db, double cut, double hysteresisDb, double hopMilliseconds,
-        out int dropped)
     {
-        dropped = 0;
-
         var on = cut + hysteresisDb;
         var off = cut - hysteresisDb;
         var marks = new List<double>();
         var gaps = new List<double>();
         var keyDown = db[0] > on;
         var runStart = 0;
-
-        var holdHops = (int)Math.Floor(
-            Math.Min(HoldOverMilliseconds, LongestSafeHoldOverMs - 1e-9)
-            / hopMilliseconds);
 
         for (var i = 1; i < db.Length; i++)
         {
@@ -763,23 +450,11 @@ public static class CwUnitEstimator
                 continue;
             }
 
-            // **A KEY-DOWN THAT COMES BACK INSIDE THE HOLD-OVER NEVER ENDED.**
-            // Look ahead: if the trigger reopens within the hold, this dip is a
-            // fade in the middle of one element rather than the end of it.
-            if (keyDown && holdHops > 0 && ReopensWithin(db, i, holdHops, on))
-            {
-                continue;
-            }
-
             var hops = i - runStart;
 
             if (hops >= ShortestRunHops)
             {
                 (keyDown ? marks : gaps).Add(hops * hopMilliseconds);
-            }
-            else
-            {
-                dropped++;
             }
 
             keyDown = !keyDown;
@@ -787,27 +462,6 @@ public static class CwUnitEstimator
         }
 
         return (marks, gaps);
-    }
-
-    /// <summary>Whether the trigger reopens within the hold-over.</summary>
-    /// <param name="db">The envelope in decibels.</param>
-    /// <param name="from">Where the dip began.</param>
-    /// <param name="holdHops">How many hops the hold-over covers.</param>
-    /// <param name="on">The level that reopens the trigger.</param>
-    /// <returns>True where the key comes back before the hold-over runs out.</returns>
-    private static bool ReopensWithin(double[] db, int from, int holdHops, double on)
-    {
-        var last = Math.Min(from + holdHops, db.Length - 1);
-
-        for (var i = from + 1; i <= last; i++)
-        {
-            if (db[i] > on)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /// <summary>

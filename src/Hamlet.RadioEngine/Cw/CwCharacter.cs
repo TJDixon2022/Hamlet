@@ -131,46 +131,6 @@ public sealed record CwCharacter(
     public int SpanHops { get; init; }
 
     /// <summary>
-    /// How much better the winning reading was than the nearest alternative
-    /// arriving at the same place.
-    /// </summary>
-    /// <remarks>
-    /// **RECORDED AND READ BY NOTHING** (§0.0.1). See
-    /// <see cref="CwProbabilisticCharacter.MarginLlr"/> for what it is and why
-    /// the quantity beside it is not enough. It goes to the capture sidecar and
-    /// to the record, and to no display: a number a reader cannot calibrate is
-    /// worse on a screen than absent.
-    /// </remarks>
-    public double MarginLlr { get; init; } = double.NaN;
-
-    /// <summary>
-    /// The probability that this character is what the path says, marginalised
-    /// over every path through the lattice.
-    /// </summary>
-    /// <remarks>
-    /// **THE FIRST CONFIDENCE HERE THAT CANNOT GROW WITH LOUDNESS.** Five
-    /// quantities have been measured against correctness and all five were
-    /// negative — the fit ratio at −0.179 and −0.203, `MarginLlr` at −0.351,
-    /// `MarginShareForRecord` at −0.345, `SpanMarginForRecord` at −0.190 — each
-    /// a difference of path scores carrying an unbounded level term. A posterior
-    /// is a ratio over the sum of all paths, so the level cancels.
-    /// **NaN where none could be computed, which is not a probability of nought**
-    /// (§0.0).
-    /// </remarks>
-    public double Posterior { get; init; } = double.NaN;
-
-    /// <summary>The widest either likelihood figure may be written as.</summary>
-    /// <remarks>
-    /// **A MILLION, BECAUSE THE RECORD HAS PRINTED QUADRILLIONS.** The
-    /// `6:27306879.3` family is a per-hop log-likelihood on a recording whose
-    /// noise estimate went to nothing, and a sheet carrying it is a sheet nobody
-    /// reads the rest of. Clamping is a statement about the *record's* range and
-    /// not about the measurement, so a clamped figure is written with a mark
-    /// saying it was clamped rather than silently.
-    /// </remarks>
-    public const double WidestRecordedLlr = 1_000_000;
-
-    /// <summary>
     /// The character's own evidence per hop, in the units the window ratio uses.
     /// </summary>
     /// <remarks>
@@ -184,31 +144,33 @@ public sealed record CwCharacter(
         => SpanHops <= 0 ? 0 : SpanLogLikelihoodRatio / SpanHops;
 
     /// <summary>
-    /// How far ahead the winning reading finished, as a share of the evidence
-    /// the character carried at all.
+    /// The widest likelihood figure the capture sheet prints before it says it
+    /// clamped.
     /// </summary>
     /// <remarks>
-    /// <para>**DIMENSIONLESS BY CONSTRUCTION, WHICH IS THE POINT.** Both figures
-    /// are sums of log-likelihoods computed through the same noise estimate, so
-    /// the estimate cancels in the quotient. Unit 1.11.14 measured the raw
-    /// <see cref="MarginLlr"/> across this repository's captures and found it
-    /// reaching 2.98 × 10⁸ on one recording and 1.8 on another, which is the
-    /// same incomparability <see cref="SpanMarginForRecord"/> exists to escape.
-    /// Measured across the same 1,580 characters, this quotient's entire
-    /// observed range is −20.1 to +2.45.</para>
-    /// <para>**IT IS NOT A SECOND COPY OF WHAT THE SHEET ALREADY PRINTS.** Both
-    /// inputs are clamped at <see cref="WidestRecordedLlr"/> before they reach a
-    /// record, so on precisely the recordings where the raw margin runs to
-    /// hundreds of millions the printed figure is `>1000000` and the quotient
-    /// cannot be recovered from it.</para>
-    /// <para>**AND IT DOES NOT SEPARATE A GOOD CHARACTER FROM A BAD ONE.**
-    /// Split by whether the recording carries an adjudicated anchor, the medians
-    /// are 0.004 and 0.005. What it says instead is worth reading on its own: the
-    /// runner-up path is almost always within a few thousandths of the winner,
-    /// so a character's second-best reading fitting nearly as well is the normal
-    /// case rather than the suspicious one.</para>
-    /// <para>Nought where the character carried no span to measure against,
-    /// which is not the same as a margin of nought (§0.0).</para>
+    /// **A BOUND ON WHAT THE RECORD CARRIES, NOT A MEASUREMENT** (work instruction
+    /// 392, a seam for today's application). HEAD's value, so the sheet's clamp
+    /// reads the same whichever decoder is in the build.
+    /// </remarks>
+    public const double WidestRecordedLlr = 1_000_000;
+
+    /// <summary>
+    /// The margin between the winning path and its best rival over this
+    /// character. Not measured by this decoder.
+    /// </summary>
+    /// <remarks>
+    /// **NaN, BECAUSE THIS DECODER NEVER COMPARES TWO PATHS AND NEVER SETS IT**
+    /// (work instruction 392, a seam for today's application and its tests;
+    /// §0.0). The figure belongs to the posterior the August rework added and
+    /// step 1 took back out; the sheet prints NaN as "unmeasured". HEAD's shape,
+    /// so a test of the sheet can still hand it a figure.
+    /// </remarks>
+    public double MarginLlr { get; init; } = double.NaN;
+
+    /// <summary>The margin's share of the span, for the record.</summary>
+    /// <remarks>
+    /// HEAD's arithmetic (work instruction 392). NaN wherever
+    /// <see cref="MarginLlr"/> is, which for this decoder is always.
     /// </remarks>
     public double MarginShareForRecord
         => double.IsNaN(SpanLogLikelihoodRatio)

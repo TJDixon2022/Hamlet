@@ -41,4 +41,14 @@
     <Compile Include="..\Hamlet.RadioEngine.Tests\Psk31\Psk31Corpus.cs" Link="Shared\Psk31Corpus.cs" />
   </ItemGroup>
 
+  <!-- EXCLUDED FROM COMPILATION, NOT RETIRED (work instruction 392, CW phase step 1,
+       decision 3). src\Hamlet.RadioEngine\Cw is 7e209cb4's (R53) and each file below
+       names a type or member that commit does not have; the missing name each quotes
+       is listed in docs\phase-cw\unit392-seams.md. The files stay in the tree
+       unedited. Step 3 retires or repairs each one under R49, one at a time, and
+       takes its line out of this group when it does. -->
+  <ItemGroup>
+    <Compile Remove="Views\ThePitchControlsAreOffThePanelTests.cs" />
+  </ItemGroup>
+
 </Project>

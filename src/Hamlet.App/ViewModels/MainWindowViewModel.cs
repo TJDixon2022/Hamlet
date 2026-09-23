@@ -11077,11 +11077,11 @@ public partial class MainWindowViewModel : ObservableObject
         // speaker level and its quite separate USB output level.
         _capture = WasapiAudioDevices.Health(_settings.AudioInputDeviceId);
 
-        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz)
-        {
-            // His switch, off unless he throws it (Tim's ruling of 2026-08-27).
-            UseJointCutter = _settings.UseJointDecoder,
-        };
+        // **NO JOINT CUTTER IN THIS BUILD** (work instruction 392). The decoder is
+        // 2026-08-25's, which has none, so `UseJointDecoder` is kept in the
+        // settings file and read by nothing until step 4 judges the cutter on
+        // numbers (Tim's ruling of 2026-08-27 made it his switch, off by default).
+        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
 
         // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
         // RECORDING** (HM-DEC-091). The decoder's counters run from here until
@@ -12402,33 +12402,22 @@ public partial class MainWindowViewModel : ObservableObject
         var envelope = CwProbabilisticDecoder.Envelope(
             audio.Samples, audio.SampleRate, report.ToneHz);
 
-        var read = CwProbabilisticDecoder.Decode(
-            envelope, report.ToneHz, null, null, false);
+        var read = CwProbabilisticDecoder.Decode(envelope, report.ToneHz);
 
-        var measured = CwElementPitch.MeasureAll(
-            read.Elements, audio.Samples, audio.SampleRate, report.ToneHz,
-            CwProbabilisticDecoder.HopMilliseconds);
-
-        var division = CwStreamSplit.Divide(measured);
-
-        if (division.Trusted < 2 * CwStreamSplit.LeastTrustedMarks)
+        if (read.Text.Length == 0)
         {
-            return $"{division.Trusted} elements were long enough to measure a "
-                   + "pitch from, which is too few to say anything about how they "
-                   + "spread";
+            return "nothing was read, so no element was measured, which is too "
+                   + "few to say anything about how they spread";
         }
 
-        return string.Format(
-            CultureInfo.InvariantCulture,
-            "{0} elements measured, gathering at {1:0.0} and {2:0.0} Hz, "
-            + "{3:0.0} Hz apart with {4:0.0} Hz of scatter inside them  "
-            + "(measured over this recording; whether that is one operator or two "
-            + "is not something Hamlet can yet tell you)",
-            division.Trusted,
-            division.LowerHz,
-            division.UpperHz,
-            division.ApartHz,
-            division.ScatterHz);
+        // **NO ELEMENT PITCHES IN THIS BUILD, AND THE LINE SAYS SO** (work
+        // instruction 392, §0.0). The decoder is 2026-08-25's: it chooses where
+        // every element begins and ends but does not hand those places out, and
+        // the per-element measurement came with the August rework that step 4
+        // judges on numbers. A spread printed without them would be a
+        // measurement nobody made.
+        return "not measured  (the decoder in this build does not say where each "
+               + "element began and ended, so no element's own pitch was measured)";
     }
 
     /// <summary>
@@ -12484,21 +12473,10 @@ public partial class MainWindowViewModel : ObservableObject
                 + "moment. Hamlet did not find keying here)";
         }
 
-        // **THE RANKING IS SAID FIRST, BECAUSE IT IS WHAT SUPPLIED THE NUMBER**
-        // (Tim's ruling of 2026-08-28). The survey may well have admitted keying
-        // somewhere too, but the mixer was run at the ranking's winner and the
-        // sheet has to report the pitch the decode used. **Both scores go on the
-        // line**, so a pick that only just beat its runner-up can be told from
-        // one that walked it (§0.0.1).
-        if (report.Rank is { } rank)
-        {
-            return $"{report.ToneHz:0.0} Hz  (ranked: the band was decoded at "
-                + $"every candidate pitch and this one read best, at "
-                + $"{rank.Score:0.00} against {rank.RunnerUpScore:0.00} for "
-                + $"{rank.RunnerUpHz:0.0} Hz. Scoring measures keying and not "
-                + "loudness, and it is not the survey admitting a station)";
-        }
-
+        // **NO RANKING IN THIS BUILD** (work instruction 392). The decoder is
+        // 2026-08-25's and never decodes the band at every candidate pitch, so the
+        // ranked sentence of Tim's ruling of 2026-08-28 has nothing to report
+        // until step 4 judges the ranking on numbers.
         if (report.PitchWasMeasured)
         {
             return $"{report.ToneHz:0.0} Hz  (measured from the keying the "
