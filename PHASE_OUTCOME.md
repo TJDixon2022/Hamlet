@@ -5,7 +5,7 @@ STEP: 0 | not started | The break is measured and named - the three floor tests 
 STEP: 1 | done | The decoder reads again - src\Hamlet.RadioEngine\Cw restored to the named commit and adapted only where today's app or tests would not build; the solution builds; the three floor tests green; the app's CW tests green; the carry-forward list green; nothing under src\Hamlet.App changed without a listed reason.
 STEP: 2 | not started | CW cannot break silently again - a CW read guard on the engine carry-forward line beside FT8, FT4, PSK31 and Olivia, watched red against a broken decoder before it was trusted, and measured to fit the line's timeout.
 STEP: 3 | partial | The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.
-STEP: 4 | partial | The August rework is judged on numbers - each piece of the 2026-08-28 to 08-31 rework re-applied in its own commit and kept only if the three floor tests stay green and a named number moves; a piece that moves nothing goes back out and the report says so.
+STEP: 4 | done | The August rework is judged on numbers - each piece of the 2026-08-28 to 08-31 rework re-applied in its own commit and kept only if the three floor tests stay green and a named number moves; a piece that moves nothing goes back out and the report says so.
 STEP: 5 | not started | Tim at the radio - CW on 40 m, text on the CW tab that reads as what was sent, and he says it read.
 
 ## UNIT 391 - STEP 0
@@ -454,3 +454,34 @@ TASK 2, THE CHAINS: S applied clean, built clean, nothing moved, out - 3c742c4a,
 TASK 3, THE SIX REDS, HEAD AGAIN because no chain was kept: CwAcquisitionWindowTests 10 of 12, #6 0.75, #15 0.54; CwReceiverFixtureTests 23 of 27, #42 70, #43 5 + 37, #44 3 + 21, #45 1 + 3; CwAdjudicationTests 11 of 11; CwFixtureTests 22 of 23, fading-18wpm red as parked under 400 item 4. Every number equals unit 402's before column. A record for 3.6, not an attempt.
 TASK 4, THE EXIT ROUND: ENGINE 178 of 178 in 372 s; APP 277 of 278 in 165 s, TheCarrierHoldsTheButtonsTests lost to the dispatcher loop before any assertion, re-run once 278 of 278 in 168 s. Floors: captures 37 of 37 in 92 s every row identical to entry, adjudicated 13 of 13 in 29 s, clean synthetics 2 of 2 in 2 s. Transmit files print nothing against 7e209cb4; git diff bc2484d5 HEAD over src, and over src/Hamlet.App, prints nothing. 4.7 ticked in PHASE_PLAN.md.
 FATE: executed, complete at task 4 of 4, tasks 0 to 4, none dropped; 2 chains judged, 0 kept, 2 out, 14 of the fourteen with a verdict.
+
+## UNIT 2 - STEP 4
+
+STEP: 4
+APPROACH: apply the fourteen chained rework pieces inside their dependency chains found by git apply --check, overlapping chains merged, each chain one commit judged once on the three floor tests and the printer distances, kept with floors raised or reverted, a row per chain
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - All four items say no ruling is needed and cover a merge rule, build links, a test slowdown and a dispatcher loop, none of which involve transmit, money or what the product promises the operator.
+MOVE: work around
+WHY: 4.7 is the one open criterion of step 4 and nobody has tried it - units 395 to 397 left the fourteen unapplied because section 6 then allowed only a pair, and R55 made a chain of any length one piece; 3.6's first attack is recorded no and unit 403 cleared its blocker without moving it, and section 5 of the plan routes to the independent step when one stalls, so the loop works 4.7 and returns to 3.6.
+DECIDED: author's, overrulable - a chain is the smallest ordered set of earlier pieces after which the piece passes git apply --check; nested chains are judged once as the longer and overlapping chains are merged; chains are applied smallest first; a setting a piece shipped off stays off; task 3's record of the six reds is not a 3.6 attempt; the per-type timeouts
+LICENCE: PHASE_PLAN.md R50, R51, R55, criteria 4.3, 4.4 and 4.7, section 6 on chains, floors and transmit files, section 3; CLAUDE.md 0.0 and 0.2; HM-DEC-091; HM-DEC-155; HM-DEC-165
+COST: 6.859046
+ACCOMPLISHED: every piece of the August rework has been put back and measured - the fourteen that could not go in alone go in with what they stood on, and each group earns its place on the numbers or comes back out, so none of that work is left unjudged
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: All seven exit criteria of step 4 are now met, and for 4.7 the report shows both chains applied in their own commits, 3c742c4a and bfd97867, and reverted in 675d846f and 264b97ce, with the before and after numbers quoted, each of the 14 pieces given a verdict, no floor raised, a row per chain in the table, and green floors at exit.
+ADVANCED: yes
+ATTEMPT: 4.7 | unit 2 launched 2026-09-23T14:15:04.634Z | yes | executed | apply the fourteen chained rework pieces inside their dependency chains found by git apply --check, overlapping chains merged, each chain one commit judged once on the three floor tests and the printer distances, kept with floors raised or reverted, a row per chain
+
+## UNIT 405 - STEP 3
+
+STEP: 3
+APPROACH: second attack on the six reds: easy tier on the settled event with the trailing flush settle combined, doubled-speed fit traced to the speed grid, guard spans told apart from real captures for 42, bare-start first character for 6
+MOVE: work around
+WHY: 3.6 is the one open criterion outside Tim's verdict now that step 4 is done; unit 402's generic trace-and-change is recorded no, so this unit starts at the causes and combinations 402 named but never tried - B1 with B2 together, a conditioned guard skip, the doubled-speed line - and loop-test found nothing like it; 3.6 flips only if all six go green, because #6 and #15 have no attacks toward parking, so a non-flip is the likely honest result, and the three-tries rule may meet stop 10's two-unit count on the next 3.6 unit, which is the owner's to weigh.
+STATE: partial
+DECIDED: author's, overrulable - B1 and B2 judged together as one attack on #43 to #45; attack order easy tier, speed fit, #42, #6, kept changes the base for later ones; rows marked attack 2 with the sequence under the record head's rule and the head-versus-row disagreement reported not rewritten; a red with no traced line or property is not attacked; #42's skip only on a traced property separating own-send spans; entry lines are unit 404's exit if the f74b6d51 diff over src, tests and the list is empty; #6 the drop candidate at four hours; the per-type timeouts
+LICENCE: PHASE_PLAN.md 3.6, R49, R50, R55, section 3, section 6 on floors, transmit and three tries; unit 402's standing definitions in reds-3.6.md; CLAUDE.md 0.0 and 0.2; HM-DEC-090, HM-DEC-091, HM-DEC-155, HM-DEC-165
+ADVANCES: step 3 criterion 6
+COST: one session, five tasks, 0 to 4, committed per task and per kept change; #6's attack is the drop candidate under task 2's clock rule.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.91 to 1.13.92. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 404; set to 405 - the second attack on the six reds and CURRENT_STEP 3. HEAD at entry f74b6d51; every section 5 item as stated; git diff f74b6d51 HEAD over src, tests and the list prints nothing, so both carry-forward lines at entry are unit 404's exit, ENGINE 178 of 178, APP 278 of 278 (decision 5). Floors: captures 37 of 37 in 93 s, every row identical to unit 404's exit table; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s. CwAcquisitionWindowTests 10 of 12, #6 0.75, #15 0.54; CwReceiverFixtureTests 23 of 27, #42 70, #43 5 + 37, #44 3 + 21, #45 1 + 3; CwFixtureTests 22 of 23, fading-18wpm parked; CwAdjudicationTests 11 of 11; CwEmissionGateTests 8 of 8; CwDisplacementFloorTests 6 of 6; CapturedSignalTests 13 of 13; CwSpeedSilenceTests 4 of 4; WhyTheGateDidNotFireTests 2 of 2; CwTwoStationTests 5 of 5. The eleven transmit files print nothing against 7e209cb4.

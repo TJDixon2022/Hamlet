@@ -1250,8 +1250,14 @@
     mode the writer can grant (1.5, R12), then a CW read guard on the engine carry-forward line,
     watched red against a broken decoder that is never committed and measured against 480 s.
   -->
+  <!--
+    1.13.91 -> 1.13.92, WORK INSTRUCTION 405 TASK 0. A PATCH, STEP 3 OF THE CW PHASE, THE SECOND
+    ATTACK ON THE SIX REDS: #6, #15, #42, #43, #44 and #45 attacked from the causes unit 402 named,
+    B1 and B2 together on the easy tier, a change kept only if a red turns green and nothing else
+    moves down. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.91</Version>
+    <Version>1.13.92</Version>
   </PropertyGroup>
 
   <!--
