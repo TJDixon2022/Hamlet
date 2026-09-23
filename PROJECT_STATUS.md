@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 5
+TASK: TASK 2 of 5
 WORK_INSTRUCTION: 406 - the tracker switch, and #42 given the radio's word
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T14:14:51-04:00
-NOTE: Task 1 done, committing: stale held switch at 959 named as cause for #6 #43 #44 tails; #42 needs the guard observing while suspended
+UPDATED: 2026-09-23T14:26:56-04:00
+NOTE: Task 2 H2: gate-window reader short methods
 
 ---
 

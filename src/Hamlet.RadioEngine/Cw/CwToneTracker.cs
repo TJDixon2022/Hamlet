@@ -953,14 +953,29 @@ public sealed class CwToneTracker
     /// </remarks>
     private void ReadSurvey()
     {
-        // A move that was waiting for a character to finish goes now.
+        var coarse = _survey.Analyze();
+
+        // A move that was waiting for a character to finish goes now, **unless
+        // the survey it is going on finds the keying back where the tracker
+        // already listens** (work instruction 406). The hold promised that the
+        // candidate is re-confirmed while it waits, and nothing did: on the
+        // single-sender reds the moves away from the one station were holds that
+        // went on a survey admitting only the station being read. A survey that
+        // admits nothing says nothing either way, and there the hold still goes,
+        // because on real captures those are moves onto the station.
         if (!double.IsNaN(_heldSwitchHz) && !MidCharacter)
         {
-            Switch(_heldSwitchHz);
+            var backHere = coarse.Keyed is { } found
+                && Math.Abs(found.ToneHz - _fineHz[_fineHz.Length / 2]) <= ConfirmWithinHz
+                && Math.Abs(found.ToneHz - _heldSwitchHz) > ConfirmWithinHz;
+
+            if (!backHere)
+            {
+                Switch(_heldSwitchHz);
+            }
+
             _heldSwitchHz = double.NaN;
         }
-
-        var coarse = _survey.Analyze();
         var previous = _previousKeyedHz;
 
         _previousKeyedHz = coarse.Keyed?.ToneHz ?? double.NaN;
