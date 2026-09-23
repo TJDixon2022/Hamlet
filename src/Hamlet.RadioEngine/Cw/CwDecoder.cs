@@ -507,6 +507,18 @@ public sealed class CwDecoder
             // was being read is still there when he stops.
             _suspendedChunks++;
 
+            // **AND THE GUARD STILL HEARS THE RECEIVER GO QUIET** (work
+            // instruction 406). What the guard answers is whether the receiver
+            // is muted, which is not the radio's question and decides nothing
+            // here: the radio has already said it is sending. Skipping the
+            // guard with the survey made the report say the operator's own
+            // transmission lasted no time at all while he sent for twelve
+            // seconds. Only the guard is fed; the survey still hears none of it.
+            if (DecodingSuspended)
+            {
+                ObserveOwnTransmission(chunk.Samples);
+            }
+
             // **BUT THE AUDIO CLOCK KEEPS RUNNING.** Dropping the samples without
             // letting time pass would stamp every character read afterwards as
             // though the transmission had never happened.
@@ -542,6 +554,26 @@ public sealed class CwDecoder
             Step(
                 chunk.Samples.Slice(offset, take),
                 chunk.FirstSampleIndex + offset);
+        }
+    }
+
+    /// <summary>Hand the transmit guard the level of each hop, and nothing else.</summary>
+    /// <param name="samples">Audio heard while decoding is suspended.</param>
+    private void ObserveOwnTransmission(ReadOnlySpan<float> samples)
+    {
+        var hop = _tracker.HopSamples;
+
+        for (var offset = 0; offset < samples.Length; offset += hop)
+        {
+            var take = Math.Min(hop, samples.Length - offset);
+            var sumSquares = 0.0;
+
+            foreach (var s in samples.Slice(offset, take))
+            {
+                sumSquares += s * s;
+            }
+
+            _tracker.Guard.Observe(20 * Math.Log10(Math.Sqrt(sumSquares / take) + 1e-12));
         }
     }
 

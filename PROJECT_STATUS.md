@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 5
+TASK: TASK 3 of 5
 WORK_INSTRUCTION: 406 - the tracker switch, and #42 given the radio's word
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T14:26:56-04:00
-NOTE: Task 2 H2: gate-window reader short methods
+UPDATED: 2026-09-23T14:30:40-04:00
+NOTE: Task 3: extra check, HamletDoesNotDecodeYourOwnSendingTests on the suspended arm
 
 ---
 

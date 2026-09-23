@@ -277,9 +277,33 @@ public sealed class CwReceiverFixtureTests
             }
         };
 
+        // **THE RADIO SAYS IT IS SENDING, AS IT DOES ON THE AIR** (HM-DEC-147,
+        // R12, work instruction 406). The span is the recipe's own-transmit
+        // preamble, ending where the sidecar puts the message, and never
+        // anything measured from the audio. The clock handed over is the
+        // audio's, because the pump runs far faster than the air does.
+        var recipe = CwFixtureCatalogue.All.Single(r => r.Name == "qsk-preamble");
+        var messageStart = double.Parse(
+            File.ReadAllLines(Path.Combine(CwFixtureCatalogue.Folder, "qsk-preamble.txt"))
+                .Single(l => l.StartsWith("messageStart", StringComparison.Ordinal))
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)[1],
+            System.Globalization.CultureInfo.InvariantCulture);
+        var sendingFrom = messageStart - recipe.PreambleSeconds;
+        var epoch = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         using var source = new BufferedAudioSource(audio);
         decoder.Listen(source);
-        source.PumpAll();
+
+        for (var at = 0L; !source.IsFinished; at += BufferedAudioSource.DefaultChunkSamples)
+        {
+            var from = at / (double)audio.SampleRate;
+            var to = Math.Min(audio.Samples.Length, at + BufferedAudioSource.DefaultChunkSamples)
+                / (double)audio.SampleRate;
+
+            decoder.RadioIsTransmitting(to > sendingFrom && from < messageStart, epoch.AddSeconds(from));
+            source.PumpOnce();
+        }
+
         decoder.Flush();
 
         _output.WriteLine($"{during} characters during the preamble, {total} in all");
