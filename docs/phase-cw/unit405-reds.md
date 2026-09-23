@@ -176,6 +176,39 @@ moves.** The change was then put back through `.run-unit\unit405-putback.sh`. `g
 HEAD -- src tests` printed nothing but the new printer, and the rebuilt binary printed HEAD's
 tightfist-easy `VVVTESTDETESTK ■` again (`.run-unit\unit405-trace-b-after.txt`).
 
+### 2.5 Added in task 2: the pitch the stream is mixing at
+
+When S1 left #15's third seed at 0.16 with its noise marks still growing, the printer's
+mix-pitch line was widened from the first 3 s to the whole run and added to group B, with the
+tracker's `Retunes` and `Follows` beside it. It is the printer only, and no `src` file changed for
+it (`.run-unit\unit405-trace-b-mix.txt`, `-d-mix.txt`). **It moves the cause of #15, #43 and #44
+upstream of the lines named above:**
+
+| case | mixdown pitch against the sender | where the misses are |
+|---|---|---|
+| coverage-easy, 615 Hz | 625 from 1.54 s, 615 from 10.04, 600 from 13.04, **575 from 22.04 to 28.54**, then 625 | every stranger and doubled-fit read, 22.6 to 32.5 s |
+| exchange-easy, 615 Hz | 625 from 1.54 s, **575 from 11.54**, 585 from 19.04, 625 from 20.04 | `I` 12.92, `M` 14.12, `,` 16.32 s inside the 575 stretch; the `T`s after it, under gaps read from windows holding it |
+| tightfist-easy, 615 Hz | 625, 620, then 615 from 5.04 s | none but the trailing `■` |
+| #15 seed 7919, 640 Hz | 650 from 1.54 s to 28.54 | none; 0.95 |
+| #15 seed 104729 | 650, then **700 from 20.54 s**, 685, 700 | fit leaves 12 for 22.9 at 21.50 s |
+| #15 seed 15485863 | 650, then **700 from 7.54 s**, 685 | noise marks grow from 8.5 s; 0.11 |
+| #6 seed 104729 | 650, 640 from 3.54 s, 650, 640 | first character only; 0.89 |
+| #6 seed 7919 | 650, 635, 640, 625, 650, **550 from 10.54 s**, 650 from 12.54 | first character and the second call's tail; 0.68 |
+| #6 seed 15485863 | 650, 640, **725 from 10.54 s** | first character and the second call's tail; 0.68 |
+
+Every move to a pitch 25 to 85 Hz off these single-sender recordings comes with a `Retunes`
+increment, and all but two with a `Follows`. That is `CwToneTracker.Switch` (1154 to 1169),
+reached from line 1092 when the coarse survey admits a keyed candidate outside the fine bank's
+reach. On a recording with one station, the bin it moves to holds noise and the station's skirt,
+and each pitch is reported as measured. The stream mixes at it (`CwDecoder.cs` 568 to 589), and
+the marks come through attenuated: dropouts inside marks, sub-element noise marks, and the unit
+estimator and gap lines above. **Lines 96 and 221 to 231 are where the wrong pitch becomes a
+wrong reading. The tracker's switch is where the pitch goes wrong.** `CwDecoder.cs` 658 to 665
+already records the same thing for the window clear: "every one of the three was the tracker
+leaving a station it was reading for a bin holding noise ... what is wrong is upstream of it."
+The #6 second-call tails on 7919 and 15485863 trace to the same switch at 10.54 s. This unit
+attacked the causes task 1 named. The switch is named here for the next unit and was not changed.
+
 ### Findings, one per red
 
 - **#45.** Cause at a line: `CwProbabilisticStream.cs` 501 to 507 settles a trailing unreadable

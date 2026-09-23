@@ -135,6 +135,22 @@ public sealed class TheSixRedsTraceTests
         var settled = new List<CwCharacter>();
         var rows = new List<string>();
         var lastLattice = double.NaN;
+        var mixHz = double.NaN;
+        var original = (Action<ToneReading>)OnReadingField.GetValue(decoder)!;
+
+        OnReadingField.SetValue(decoder, (Action<ToneReading>)(r =>
+        {
+            original(r);
+
+            if (stream.ToneHz != mixHz)
+            {
+                mixHz = stream.ToneHz;
+                _output.WriteLine($"B-mix | {name} | {r.SampleIndex / (double)audio.SampleRate:0.000} s "
+                    + $"| stream mixes at {stream.ToneHz:0.0} Hz | tracker {decoder.Tracker.ToneHz:0.0} "
+                    + $"measured {decoder.Tracker.HasMeasuredPitch} | retunes {decoder.Tracker.Retunes} "
+                    + $"follows {decoder.Tracker.Follows} | sender {recipe.ToneHz:0}");
+            }
+        }));
 
         decoder.CharacterSettled += c =>
         {
@@ -241,12 +257,13 @@ public sealed class TheSixRedsTraceTests
             {
                 original(r);
 
-                if (stream.ToneHz != mixHz && r.SampleIndex < 3 * audio.SampleRate)
+                if (stream.ToneHz != mixHz)
                 {
                     mixHz = stream.ToneHz;
                     _output.WriteLine($"D-mix | {label} | seed {seed} | {r.SampleIndex / (double)audio.SampleRate:0.000} s "
                         + $"| stream mixes at {stream.ToneHz:0.0} Hz | tracker {decoder.Tracker.ToneHz:0.0} "
-                        + $"measured {decoder.Tracker.HasMeasuredPitch} | sender 640");
+                        + $"measured {decoder.Tracker.HasMeasuredPitch} | retunes {decoder.Tracker.Retunes} "
+                        + $"follows {decoder.Tracker.Follows} | sender 640");
                 }
             }));
 

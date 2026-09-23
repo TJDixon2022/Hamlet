@@ -1,0 +1,30 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.HalfAMinuteOfNoiseProducesNothing [3 s]
+  Standard Output Messages:
+ characters 0, elements 0, tone False, wpm none
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom [3 s]
+  Standard Output Messages:
+ real signal reported 18 wpm
+
+
+[xUnit.net 00:00:07.75]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.TheTapKnowsWhetherAnyAudioHasArrived [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 4) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 5) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 64) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 52) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.TheBoundsAreTheRadiosOwn [< 1 ms]
+
+Test Run Successful.
+Total tests: 8
+     Passed: 8
+ Total time: 8.0089 Seconds
+RC=0 WALL=8s
