@@ -195,6 +195,17 @@ begun at 00:37:24; its revert landed after minute 42 and no piece after it was s
 10). The next unit starts at **piece 34, `e6b1ece7`**, from the same list, on the entry state:
 every piece 1 to 33 is out and `src` is byte-identical to `5688a8a5`.
 
+### Judged by unit 397
+
+Same rules, same kept state: `src` byte-identical to `5688a8a5` before every piece. Numbers
+before piece 34 are unit 397's entry, `docs\phase-cw\unit397-rework.md` section 1, identical to
+unit 396's exit and to section 3.1 and 3.1a here. Each piece's paragraph, and decision 16's
+sequence for a dependent row, is in that file's section 2.
+
+| n | Hash | Claim | Number before | Number after | Captures wall | Kept or out | Why |
+|---|---|---|---|---|---|---|---|
+| 34 | e6b1ece7 | a key-down that comes back inside twelve milliseconds never ended | the entry state, pieces 1 to 33 out: 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; synthetics 0 of 2 | **captures 23 of 37, 14 red** - 134712 63 to 49 ch, 031838 57 to 43, 012823 41 to 34, 012922 50 to 44, 001831 55 to 51, among them; 004507 50 to 53 and 002016 75 to 77 rose; **adjudicated 12 of 13**, 032012 lost its anchor `R OTHER WEBSITES MENTI`; 021410 47 to 45 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; synthetics 0 of 2 | 82 s | **out**, piece `9627bc0b`, reverted in the next commit | applied clean, `CwUnitEstimator.cs` 91 insertions: a 12 ms hold-over inside an admitted key-down in the estimator's run lengths. Built clean. Fourteen captures fell below their floors and one adjudicated anchor was lost, so the floors did not stay green; no named number improved - WEEKEND and ABOVE unchanged, 021410 lost two characters. Out under R51 and 4.2. |
+
 ## 3. The numbers
 
 ### 3.1 The numbers before piece 1, at entry

@@ -82,4 +82,28 @@ files, 165 insertions, 1 deletion, as the instruction says.
 
 ## 2. The pieces, task 1
 
+**Piece 34, `e6b1ece7`**, *a key-down that comes back inside twelve milliseconds never ended*.
+The `Cw` patch, eleven transmit files excluded by path, was 124 lines, one file,
+`CwUnitEstimator.cs`, 91 insertions; `git apply --check` clean, applied clean, nothing dropped.
+Piece commit `9627bc0b`; build 0 errors in 8 s. Captures **23 of 37 in 82 s wall**, 14 red on
+their floor assertion: 031948 34 to 31, 012922 50 to 44, 013402 elements 161 to 157, 003758 63
+to 57, 032050 53 to 51, 001952 75 to 72, 012823 41 to 34, 032129 66 to 64, 001831 55 to 51,
+021410 47 to 45, 031905 42 to 40, 031838 57 to 43, 134712 63 to 49, 021629 47 to 44; rose:
+004507 50 to 53, 002016 75 to 77, 032113 elements 118 to 119. Adjudicated **12 of 13 in 27 s**:
+`cw-2026-08-22-032012` gave `" AF 117.1. LINKS TO A R T I C L E S OR OT"...`, anchor `R OTHER
+WEBSITES MENTI` not found. Synthetics 0 of 2, the same placeholders. Printer:
+
+```
+ SETTLED [■ ■ ■ M ■ ■ ■ ■ T O MM T Y M TT ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM]
+ SETTLED DISTANCE WEEKEND 5 [ FLEN]
+ SETTLED DISTANCE THINKING 5 [T ■RIG]
+ SETTLED DISTANCE FLEX 1 [FLE]
+ SETTLED [TE MP NEVEN T REV■R G OT AB OV E ■7 5 F ES ■CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO]
+ SETTLED DISTANCE ABOVE 2 [AB OV]
+ SETTLED DISTANCE BREEZE 2 [BR EE]
+```
+
+Transmit files silent against `7e209cb4`. Floors red and no named number improved: **out**,
+reverted in the next commit. The outputs are `.run-unit\unit397-p34-{1,2,3,printer}.txt`.
+
 ## 3. The exit round, task 2
