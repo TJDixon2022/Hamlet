@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 5 of 5
-WORK_INSTRUCTION: 406 - the tracker switch, and #42 given the radio's word
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 407 - the station still keying, and #45's tail on the air's terms
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T14:55:33-04:00
-NOTE: Unit 406 complete, report pushed: #6 green on a held tracker switch no longer going against its survey, #42 green on the radio's word, both kept with every floor row identical; #15 #43 #44 moved, #45 not attacked; 3.6 at 4 of 8
+UPDATED: 2026-09-23T15:13:44-04:00
+NOTE: Unit 407 task 0 entry round, speed readers green, tracker readers next: scoring running
 
 ---
 

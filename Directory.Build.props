@@ -1256,8 +1256,14 @@
     B1 and B2 together on the easy tier, a change kept only if a red turns green and nothing else
     moves down. No file under src changes at this task.
   -->
+  <!--
+    1.13.93 -> 1.13.94, WORK INSTRUCTION 407 TASK 0. A PATCH, STEP 3 OF THE CW PHASE, THE STATION
+    STILL KEYING: whether the pitch being read is still keying when a held tracker move goes, traced
+    on #15, #43 and #44 before any change, and #45's event given the air's trailing silence under
+    R12. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.93</Version>
+    <Version>1.13.94</Version>
   </PropertyGroup>
 
   <!--
