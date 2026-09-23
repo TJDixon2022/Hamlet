@@ -119,4 +119,14 @@ entry; adjudicated 13 of 13 in 29 s; synthetics 0 of 2, the same placeholders; p
 to entry, WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2. Transmit files silent. Nothing moved:
 **out**, reverted in the next commit.
 
+**Piece 36, `efc33267`**, *the sheet stops lying about arithmetic, and tonight's captures land*.
+The `Cw` patch was 40 lines, `CwCounterTrail.cs`, 24 insertions and 1 deletion - the deletion and
+its insertion are line 1 gaining a byte-order mark - checked and applied clean. Not taken under
+R50 and decision 24: `MainWindowViewModel.cs`, one test, 18 fixture files. Piece commit
+`c08f766d`; build 0 errors in 6 s. Captures **37 of 37 in 94 s**, every row identical; adjudicated
+13 of 13 in 29 s; synthetics 0 of 2, the same placeholders; printer identical to entry. Transmit
+files silent. The change makes `CwCounterTrail` return no delta when a counter went backwards
+inside the window, a sheet fact outside the decode. Nothing moved: **out**, reverted in the next
+commit.
+
 ## 3. The exit round, task 2
