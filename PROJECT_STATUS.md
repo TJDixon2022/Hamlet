@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 403 - the same recording, two builds
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T09:53:13-04:00
-NOTE: Printer re-run at a902cdf8; captures floor running there again in the proven build, about 95 s
+UPDATED: 2026-09-23T09:55:19-04:00
+NOTE: Task 2 pushed - the capture reads identically at HEAD and a902cdf8; committing the 37-row comparison, 0 rows differ
 
 ---
 
