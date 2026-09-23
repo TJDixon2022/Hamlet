@@ -147,6 +147,12 @@ piece; for piece 1 that is section 3.1 and 3.1a.
 
 | 8 | 1bf4372d | the separation bound must not move, and the reason is upstream | the entry state, pieces 1 to 7 out | as a pair with piece 7: every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, pair commit `433180c4`, reverted in the next commit | did not apply alone: its `Record` call and `Readings` guard are piece 7's, out. Tried once as a pair with piece 7 under decision 5 in one commit; built clean, 37 of 37, 13 of 13, nothing moved. Its only code change is to lift the separation arithmetic into `Spread`, same arithmetic, and to measure it on refused bins when an instrument is watching. Out under R51. |
 
+| 9 | 44cf3fc8 | build both gate-threshold derivations, both off by default | the entry state, pieces 1 to 8 out | as a pair with piece 7: every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, pair commit `11ae2b56`, reverted in the next commit | did not apply alone, both files conflicting; `git apply --check` after piece 7 alone applied clean, so it needs one out piece, and it was tried once as a pair with piece 7 under decision 5; built clean, 37 of 37, 13 of 13, nothing moved - both derivations ship off. Out under R51. |
+
+**The clock rule fired after piece 9.** No piece after it was started (decision 10). The next unit
+starts at **piece 10, `4786c7e7`**, from the same list, on the entry state: every piece 1 to 9 is
+out and `src` is byte-identical to `5688a8a5`.
+
 Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
 it.
 
