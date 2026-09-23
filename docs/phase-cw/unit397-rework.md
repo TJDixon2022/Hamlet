@@ -164,4 +164,14 @@ the same type. `CwElement` is `public readonly record struct CwElement(bool IsMa
 int EndHop)`, declared in piece 38's `CwElementPitch.cs` and nowhere at HEAD. Not the seam:
 **out under decision 4**, no floor run, reverted in the next commit. Transmit files silent.
 
+**Piece 40, `ee2cba8d`**, *the element streams agree, so the reading is lost after them*. The
+`Cw` patch was 78 lines, `CwUnitEstimator.cs`, 52 insertions: an `Elements` overload with an `out
+int dropped` count and a `Runs` overload that counts the runs `ShortestRunHops` refuses. `--check`
+failed at line 348; `--3way` left one conflict block at 348 to 567, HEAD's `Otsu(db)` against the
+piece's `Cut(db)`; cleaned with `unit397-clean.sh`. `Cut(` occurs 0 times in HEAD's file; it is
+declared by piece 33, `4935a4f8`, and the new overload calls it. Decision 16's sequence,
+`unit397-deps40.sh`: target failed at 348 after 31, after 33 (itself refusing), after 34, after 31
+and 34; at 694 after 31 and 33; cleared only after 31, 33, 34. Three out pieces: **out under
+decision 5**, listed and not applied, no piece commit, no run.
+
 ## 3. The exit round, task 2
