@@ -1,4 +1,4 @@
-# Work instruction 403 - the same recording, two builds
+﻿# Work instruction 403 - the same recording, two builds
 
 **Seed under `--seed`.** It builds no feature and repairs nothing. It decodes one
 recording - the one Tim made at 12:55 UTC this morning - through the decoder as it stands
@@ -43,7 +43,7 @@ its own `timeout`. A run that dies before any assertion is lost, re-run once, co
 neither way; a red on an assertion is red.
 
 **The `UNIT:` line of the report carries no parentheses**, and no `&`, `|`, `<`, `>` or
-`^` (`PHASE_PLAN.md` §6). Write *tasks 0 to 3, none dropped* with commas.
+`^` (`PHASE_PLAN.md` Â§6). Write *tasks 0 to 3, none dropped* with commas.
 
 ## 2. The tool facts
 
@@ -65,9 +65,7 @@ R54 anything that blocks no criterion here is parked in `docs\phase-cw\PARKED.md
 PHASE GOAL: CW decodes again.
 UNIT GOAL:  Decode Tim's 12:55 UTC capture through the decoder at HEAD and
             through the decoder at a902cdf8, and print both transcripts.
-ADVANCES:   none - clears a blocker: whether 7e65aac4 cost the decoder on the
-            air, which decides whether step 3's remaining repairs are built on
-            a decoder that reads or one that does not
+ADVANCES:   none - clears a blocker: criterion 3.6
 DRIFT:      0
 ```
 
@@ -87,7 +85,7 @@ placeholders are single digits.
 **The hypothesis this unit tests and does not assume:** holding one speed across a small
 follow let a wrong speed persist, so elements resolve and characters will not name. **It
 may be wrong.** The capture was made on a different signal from any fixture and nothing
-here controls for that. Print both and let the numbers speak; §0.0 forbids calling either
+here controls for that. Print both and let the numbers speak; Â§0.0 forbids calling either
 transcript correct, because nobody knows what was sent.
 
 ---
@@ -105,10 +103,10 @@ Check, and report any mismatch rather than repairing it:
 
 ## 6. Rulings in force
 
-`PHASE_PLAN.md` R47 to R55 and §6. The ones that bind here: **R50** the restore is the
-engine folder only; **R51** a piece is kept only on a named number; **§6** a floor is
-never lowered; **CLAUDE.md §0.0** never present a guess as a decode - neither transcript
-in this unit is "what was sent" and no sentence may say so; **§0.2** nothing that keys is
+`PHASE_PLAN.md` R47 to R55 and Â§6. The ones that bind here: **R50** the restore is the
+engine folder only; **R51** a piece is kept only on a named number; **Â§6** a floor is
+never lowered; **CLAUDE.md Â§0.0** never present a guess as a decode - neither transcript
+in this unit is "what was sent" and no sentence may say so; **Â§0.2** nothing that keys is
 touched; **HM-DEC-091** a change that reads one recording and quietly costs another is not
 a fix; **FACT-004** every number here is an indication; **FACT-006** no radio on this
 machine.
@@ -196,7 +194,7 @@ unit; `git diff` over `src` between entry and exit prints nothing, and the repor
 - **Do not change a file under `src`.** Not one line, not to test a theory.
 - **Do not revert `7e65aac4`.** Measuring is not ruling.
 - **Do not assert any text against either transcript**, and do not write in any report
-  that either is correct or nearer correct. Nobody knows what was sent (§0.0).
+  that either is correct or nearer correct. Nobody knows what was sent (Â§0.0).
 - **Do not adjudicate the capture** or add it to any floor table.
 - **No unfiltered `dotnet test`. Never background and poll. Do not leave the worktree.**
 - **Report mismatches; repair nothing. American spelling. UTF-8.**
@@ -243,6 +241,6 @@ STATE: partial
 DECIDED: the worktree path C:/Source/HamLet-wt403, the printer's name and the per-type timeouts are the author's, overrulable
 LICENCE: PHASE_PLAN.md R49, R50, R51, R55, section 6; CLAUDE.md 0.0 and 0.2; HM-DEC-091; HM-DEC-155; HM-DEC-139; FACT-004
 ACCOMPLISHED: Tim can see what the same recording reads as under both decoders, and rule on 7e65aac4 from two transcripts rather than from one impression
-ADVANCES: none - clears a blocker: whether 7e65aac4 cost the decoder on the air
+ADVANCES: none - clears a blocker: criterion 3.6
 END-ARBITER-DECISION
 ```

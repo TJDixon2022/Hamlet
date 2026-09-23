@@ -227,3 +227,4 @@ the owner reads instead of watching.
 | phase | 2026-09-23T05:29 | 2026-09-23T05:29 | ending | 37.1080 | ENDED - nothing is left but the owner-s verdict. stop 1: the phase is waiting on the owner's verdict - criteria 5.1 |
 | 1 | 2026-09-23T08:10 | 2026-09-23T08:58 | complete | 5.784130800000002 | ran unattended, 111 turns, 9 denied call(s) worked around, report valid |
 | 1 | 2026-09-23T08:59 | 2026-09-23T08:59 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |
+| phase | 2026-09-23T09:32 | 2026-09-23T09:32 | failure | 0 | STOPPED, AND A STOP IS FAILURE - refused: ADVANCES named no step and criterion, and no unit or criterion it unblocks |

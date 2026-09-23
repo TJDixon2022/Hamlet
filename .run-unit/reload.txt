@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-23T08:59:31-04:00  root C:\Source\HamLet
+measured 2026-09-23T09:32:33-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -7,10 +7,6 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0167.
-  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
-  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
-  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
-  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -22,12 +18,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : eb7fe57c
-  uncommitted at the root : 4
-      M PHASE_OUTCOME.md
-      M PHASE_STATUS.md
-      M RUN_LEDGER.md
-      M WORK_INSTRUCTIONS.md
+  HEAD   : 7fc2ccfc
+  uncommitted at the root : 0
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -393,7 +385,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   DESCRIPTION: A restore phase. The CW decoder read on the air on 2026-08-25 and reads nothing now; the floors that recorded what it produced have been red since 2026-08-31 and nobody has run them since. The engine's CW code goes back to the last commit that read, adapted so today's app builds; the floors go green and stay green under a guard every unit runs; the inherited reds are repaired or retired with reasons; the August rework goes back in one piece at a time on numbers. Judged by three named tests and, at the end, by Tim at the radio.
   CURRENT_STEP: 0
   WORK_INSTRUCTION: 402 - the eight reds, first attempt
-  HEARTBEAT: 2026-09-23 08:59:29
+  HEARTBEAT: 2026-09-23 08:59:39
   STEP: 0 | not started | The break is measured and named - the three floor tests run at HEAD case by case with their numbers, the newest commit on main where all three were green is named, and the first commit after it that turned one red is named.
   STEP: 1 | done | The decoder reads again - src\Hamlet.RadioEngine\Cw restored to the named commit and adapted only where today's app or tests would not build; the solution builds; the three floor tests green; the app's CW tests green; the carry-forward list green; nothing under src\Hamlet.App changed without a listed reason.
   STEP: 2 | not started | CW cannot break silently again - a CW read guard on the engine carry-forward line beside FT8, FT4, PSK31 and Olivia, watched red against a broken decoder before it was trusted, and measured to fit the line's timeout.
