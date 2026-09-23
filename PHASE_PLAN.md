@@ -236,7 +236,7 @@ named commit is `7e209cb4` by R53.
 **Entry:** step 2 done, the three floor tests green at entry, the commit list from 4.1 written before any piece is re-applied.
 
 **Exit:**
-- [ ] 4.1 Before any piece goes back in, the report lists every commit between the commit step 0 named and 2026-09-03 that touched `src\Hamlet.RadioEngine\Cw`, from `git log`, with the files each touched and what its message claimed.
+- [x] 4.1 Before any piece goes back in, the report lists every commit between the commit step 0 named and 2026-09-03 that touched `src\Hamlet.RadioEngine\Cw`, from `git log`, with the files each touched and what its message claimed. **Met by unit 395: 84 commits from `07f0397a` to 2026-09-03, 39 in the tree by R53's restore and the 45 pieces numbered oldest first, none touching a transmit file, in `docs\phase-cw\unit395-rework.md` section 1.**
 - [ ] 4.2 Each piece is re-applied in its own commit and judged in the same unit: kept only if the three floor tests stay green and one named number moves - 021410 above its floor of 47 characters or its text nearer `WEEKEND`, `THINKING`, `FLEX` than `ATEEKEND`, `TTHINKING`, `FLENX`; 013637 nearer `ABOVE`, `BREEZE` than `AB OVE`, `BREE Z E`; or any capture above its character floor with no capture below its own.
 - [ ] 4.3 A piece that moves nothing is taken back out in the next commit, and the report says which and what it measured.
 - [ ] 4.4 Every kept piece's numbers are written into the floor table as the new floors, and the floors only rise.

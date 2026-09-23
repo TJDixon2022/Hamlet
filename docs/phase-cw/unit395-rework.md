@@ -7,7 +7,121 @@ the printer's texts and distances, and the exit round. Every number here is an i
 
 ## 1. The list
 
-Written at task 1.
+Criterion 4.1. Made by `.run-unit\unit395-list.sh`: `git log --reverse --date=short
+--format="%h|%ad|%s" --name-only 07f0397a..HEAD --until=2026-09-04 -- src/Hamlet.RadioEngine/Cw`,
+then `git diff-tree --name-only -r` for each hash's files outside `Cw` and `git log -1 --format=%b`
+for its body. **84 commits: 39 up to `7e209cb4`, 45 after it.** `7e209cb4` itself touches nothing
+under `Cw`; the last Cw commit at or before it is `ca252057`. The same log over the eleven
+transmit files, over `07f0397a..` and over `7e209cb4..`, **printed nothing**: no commit in either
+table touches a transmit file. The claim column is the subject, with a clause from the body where
+the subject alone does not say what changed. `Cw\` below means `src\Hamlet.RadioEngine\Cw\`.
+Files outside `Cw` are named and are never re-applied (R50); root docs such as `OUTPUT.md`,
+`PROJECT_STATUS.md`, `WORK_INSTRUCTIONS.md` and the `ANALYSIS-*.md` files are listed as *docs*.
+
+### 1.1 In the tree by R53's restore, not a piece
+
+The 39 Cw commits after `07f0397a`, 0.2's literal answer, up to and including `7e209cb4`.
+
+| # | Hash | Date | Files under Cw | Claim |
+|---|---|---|---|---|
+| a1 | 8e3ee277 | 08-21 | CwDecoder, CwProbabilisticDecoder, CwProbabilisticStream | decode CW by likelihood instead of by threshold |
+| a2 | f28657b6 | 08-21 | CwDecoder, CwProbabilisticStream | stop decoding the operator's own sending, and stop the screen moving |
+| a3 | 866d2259 | 08-21 | CwDecoder, CwProbabilisticDecoder | point every reported number at the decoder that decodes |
+| a4 | 4bc3bce8 | 08-21 | CwCharacter, CwDecoder, CwGapClasses, CwGate, CwSettledPass, CwSignalWatch, CwTiming | delete the old CW decoder |
+| a5 | 7fb7f5d0 | 08-21 | CwDecoder | hold the tracker inside a character again |
+| a6 | 55362633 | 08-21 | CwDecoder, CwProbabilisticDecoder, CwProbabilisticStream | let the decoder say where it is in a character |
+| a7 | 67ac0796 | 08-21 | CwDecoder, CwProbabilisticStream, CwToneTracker | build the window clear, and say why it is not switched on |
+| a8 | d0fd0b56 | 08-21 | CwDecoder | empty the window when Hamlet crosses to somebody else |
+| a9 | 62a4648a | 08-21 | CwDecoder, CwProbabilisticStream | turn the window clear off, and keep the machinery |
+| a10 | ceb3bd5d | 08-21 | CwToneSurvey, CwToneTracker | show what the survey admitted, not only what it chose |
+| a11 | df5f7e4c | 08-21 | CwProbabilisticDecoder | find where characters break, and measure three fixes that do not work |
+| a12 | 7f2e90f4 | 08-22 | CwProbabilisticDecoder | score a segment's length as a ratio, not as a difference |
+| a13 | 76b295cc | 08-22 | CwProbabilisticStream, CwUnitEstimator | measure the sender's dit instead of searching for it |
+| a14 | 58768058 | 08-22 | CwProbabilisticDecoder, CwProbabilisticStream, CwUnitEstimator | take a sender's gap lengths from the gaps |
+| a15 | f48e6b19 | 08-22 | CwProbabilisticStream, CwUnitEstimator | use a sender's own gap lengths once the structure has held |
+| a16 | 3b7f7e13 | 08-23 | CwCharacter, CwProbabilisticDecoder, CwProbabilisticStream | score every character's own span against the key never going down |
+| a17 | baf51ff0 | 08-23 | CwProbabilisticStream | set the refill guard where a fresh stream can see it |
+| a18 | 2eb40706 | 08-23 | CwProbabilisticDecoder | put two senders in one passband and measure what survives |
+| a19 | 7907cc0e | 08-23 | CwProbabilisticDecoder, CwProbabilisticStream | window the integrator, and make the two envelope paths agree |
+| a20 | fe104f02 | 08-23 | CwProbabilisticDecoder | measure what each integrator width buys and what it costs |
+| a21 | 3c4b1b16 | 08-23 | CwCompetitor, CwDecodeReport, CwDecoder, CwToneTracker | say when somebody else is keying in the same passband |
+| a22 | f93c388f | 08-24 | CwProbabilisticDecoder | carry each character's span length, and measure the margins |
+| a23 | 07d8dc23 | 08-24 | CwCharacter, CwProbabilisticDecoder, CwProbabilisticStream | let each character answer for itself, and keep the window as a guard |
+| a24 | 4e4b9bac | 08-24 | CwDecoder, CwToneTracker | let the operator hold the decoder's pitch |
+| a25 | c052d100 | 08-24 | CwProbabilisticDecoder | record the premise reproduced in-tree, and what disagreed |
+| a26 | b65ac6b4 | 08-24 | CwProbabilisticDecoder | take the noise scale from the Rayleigh identity, over a rolling span |
+| a27 | 1a5d9285 | 08-24 | CwProbabilisticDecoder | re-express the guard in the units the scale now uses |
+| a28 | ab95f4d9 | 08-24 | CwProbabilisticDecoder | move the guard to 1.40, inside the same measured gap |
+| a29 | 61b423aa | 08-24 | CwProbabilisticDecoder | read nothing from digital silence rather than noise from a floor |
+| a30 | b022d925 | 08-24 | CwProbabilisticDecoder | keep the quarter point as the silence test, and say what it costs |
+| a31 | ff6590d6 | 08-24 | CwToneTracker | report where an admitted station sits, not which bin found it |
+| a32 | 13661992 | 08-24 | CwDecodeReport, CwDecoder, CwToneTracker | say when the reported pitch is a bank centre rather than a station |
+| a33 | aa5a93c7 | 08-24 | CwDecoder, CwToneTracker | hold the last measured pitch, and withdraw a refinement measured worse |
+| a34 | 13119e6e | 08-24 | CwProbabilisticDecoder | raise the speed ceiling to forty, and say when a winner is at the edge |
+| a35 | 07260a2a | 08-25 | CwProbabilisticDecoder | put a floor under what a character has to prove before it prints |
+| a36 | 7c8a5f00 | 08-25 | KeyingEnvelope | put the recording's keying duty on the capture sheet |
+| a37 | cf83821f | 08-25 | CwKeyingMeter, KeyingEnvelope | let the keying witness look where the decoder looks |
+| a38 | 2f52f6db | 08-25 | CwKeyingMeter | the witness judges on element length, guarded by the swing |
+| a39 | ca252057 | 08-25 | CwDecoder | one decoder, whatever size the audio arrives in |
+
+### 1.2 The 45 pieces, oldest first
+
+Every commit after `7e209cb4` to 2026-09-03 that touched `Cw`, in `git log --reverse` order. By
+day: 2 on 08-25, 11 on 08-26, 4 on 08-27, 4 on 08-28, 10 on 08-29, 6 on 08-30, 4 on 08-31, 4 on
+09-03, as the instruction counted. A piece is the row's `Cw` diff only.
+
+| n | Hash | Date | Files under Cw | Files outside Cw, not re-applied | Claim |
+|---|---|---|---|---|---|
+| 1 | 2068f868 | 08-25 | CwDecoder, CwProbabilisticStream, CwToneTracker | src\Hamlet.RadioEngine\Audio\AudioTap.cs; 2 tests | read the first seconds again, at the note they were sent on - re-mix the window once the first pitch is measured, from the tap's raw audio |
+| 2 | 6fc36a1e | 08-25 | CwCharacter, CwProbabilisticDecoder, CwProbabilisticStream | src\Hamlet.App MainWindowViewModel | log how close the argument was, beside how loud it was - score a character against the second-best reading |
+| 3 | 3e84ac74 | 08-26 | CwDecoder, CwToneTracker | MainWindowViewModel; 1 test | let go of a pitch measured on a frequency the radio has left |
+| 4 | 39a42c3f | 08-26 | CwCharacter | props; MainWindowViewModel; 1 app test | put the margin's share of the span on the sheet |
+| 5 | 9de394da | 08-26 | CwDecoder, CwProbabilisticStream, CwToneTracker | none | open the integrator width and confirmation window as constructor parameters for a sweep; nothing in the app passes either |
+| 6 | 3d4694e5 | 08-26 | CwToneTracker | props | record that the confirmation window stays at two, and why |
+| 7 | 7fb89d5e | 08-26 | CwToneSurvey, CwToneTracker | none | record which admission test refused which bin, and by how much |
+| 8 | 1bf4372d | 08-26 | CwToneSurvey | props | the separation bound must not move, and the reason is upstream |
+| 9 | 44cf3fc8 | 08-26 | CwToneSurvey, CwToneTracker | none | build both gate-threshold derivations, both off by default |
+| 10 | 4786c7e7 | 08-26 | CwToneSurvey | props | both gate derivations measured, neither ships |
+| 11 | f2e1db7a | 08-26 | CwToneSurvey, CwToneTracker | none | collect the raw run stream, marks and gaps apart, only when a caller asks |
+| 12 | f27174b5 | 08-26 | CwDecodeReport, CwDecoder | docs; MainWindowViewModel | the operator may assert a station, and Hamlet finds the pitch |
+| 13 | 386fdb5d | 08-26 | CwDecoder, CwJointCutter, CwProbabilisticDecoder, CwProbabilisticStream | props; src\Hamlet.App AppSettings, MainWindowViewModel | decide the cuts and the characters together, behind a setting |
+| 14 | 8ca6a633 | 08-27 | CwPitchRanking | docs; 1 test | rank candidate pitches by what the decoder reads at each; not wired |
+| 15 | 4c6e4321 | 08-27 | CwDecodeReport, CwDecoder, CwPitchChoice, CwToneTracker | docs; 1 test | let the strongest bin choose the note where nothing is confirmed, and record that it did |
+| 16 | 501e8e2d | 08-27 | CwPitchRanking | docs; 2 tests | bank the key-up analysis and delete CwPitchRanking |
+| 17 | f9c11989 | 08-27 | CwProbabilisticDecoder | docs; 1 test | fit the key-up state, measure it, and ship nothing |
+| 18 | b48d1158 | 08-28 | CwPitchRanking | docs; 1 test; tools\Hamlet.PitchRank | rank candidate pitches against one band-wide noise floor |
+| 19 | 0f2089f3 | 08-28 | CwDecodeReport, CwDecoder, CwPitchChoice | docs; MainWindowViewModel; 1 test; tools\Hamlet.PitchRank | let the ranking supply the mixdown pitch, and leave it off |
+| 20 | ac1d56da | 08-28 | CwReferenceDecoder | docs; 1 test; tools\Hamlet.PitchRank | port the reference decoder's chain into the engine |
+| 21 | 62262b94 | 08-28 | CwDecoder | docs; data\bands; MainWindowViewModel; 3 tests | start the decoder fresh when the dial actually moves |
+| 22 | 0f48c33e | 08-29 | CwAccuracy | docs; 1 test | score a decode against what was actually sent |
+| 23 | b8cad1f9 | 08-29 | CwAccuracy | docs; tools\Hamlet.PitchRank | test every confidence the decoder has against correctness |
+| 24 | fc1ee77f | 08-29 | CwProbabilisticDecoder | docs | index the lattice by hop and kind |
+| 25 | 71b4f044 | 08-29 | CwProbabilisticDecoder.Posterior, CwProbabilisticDecoder | docs; 1 test | a posterior over the lattice, in the log domain |
+| 26 | 68a18d66 | 08-29 | CwCharacter, CwProbabilisticDecoder, CwProbabilisticStream | docs; tools\Hamlet.PitchRank | carry the posterior to each character and measure it |
+| 27 | a91d8fe7 | 08-29 | CwDecoder, CwProbabilisticDecoder.Posterior, CwProbabilisticDecoder, CwProbabilisticStream | docs; tools\Hamlet.PitchRank | a temperature on the path score, swept; ships at 1.0, the decode untouched |
+| 28 | ade52536 | 08-29 | CwSpectralPeak | docs; cwbench.py; 1 test; tools\Hamlet.PitchRank, tools\cwbench | the bench's run-merging bug is not in Hamlet, and here is why |
+| 29 | efcd5242 | 08-29 | CwDecoder | docs; 1 test; tools\Hamlet.PitchRank, tools\cwbench | find the pitch from the band rather than from a bin already chosen |
+| 30 | 95a5e063 | 08-29 | CwDecoder | docs | assert nothing from a pitch nobody judged to be a station |
+| 31 | b7147b1f | 08-29 | CwUnitEstimator | docs; 1 test; tools\Hamlet.PitchRank | measure the percentile threshold and refuse it, three ways |
+| 32 | c8685e4d | 08-30 | CwSpectralPeak | docs; 1 test; tools\Hamlet.PitchRank | the peak window buys nothing, and N4L does not come back |
+| 33 | 4935a4f8 | 08-30 | CwUnitEstimator | docs; tools\Hamlet.PitchRank | measure the peak-referenced threshold and refuse it |
+| 34 | e6b1ece7 | 08-30 | CwUnitEstimator | docs; tools\Hamlet.PitchRank | a key-down that comes back inside twelve milliseconds never ended |
+| 35 | dfb357ef | 08-30 | CwSpectralPeak | docs; tools\Hamlet.PitchRank | the four configurations, and a carrier count that does not work |
+| 36 | efc33267 | 08-30 | CwCounterTrail | docs; MainWindowViewModel; 1 test; 18 fixture files | the sheet stops lying about arithmetic, and tonight's captures land |
+| 37 | aeea24f2 | 08-30 | CwDecoder, CwSwingSurvey | docs; 1 test; tools\Hamlet.PitchRank | admit a station by how far its bin swings, not by its average |
+| 38 | a37cfcff | 08-31 | CwElementPitch, CwJointCutter, CwProbabilisticDecoder, CwUnitEstimator | docs; 1 test; tools\Hamlet.PitchRank, tools\cwbench, tools\write-status.py | lower the speed ceiling to thirty, and carry every element out |
+| 39 | a09b36a7 | 08-31 | CwStreamSplit | docs; 1 test; tools\Hamlet.PitchRank | measure whether two people are sending, and withhold the verdict |
+| 40 | ee2cba8d | 08-31 | CwUnitEstimator | 1 test; tools\Hamlet.PitchRank | the element streams agree, so the reading is lost after them |
+| 41 | 2828ab69 | 08-31 | CwStreamSplit | docs; tools\Hamlet.PitchRank | report work instruction 056 - the streams agree, the reading is lost after |
+| 42 | 43efc525 | 09-03 | CwDecoder | src\Hamlet.RadioEngine\Audio AudioHandoff, WasapiAudioSource; 1 test | the tap is fed from the callback, the decoder from a queue |
+| 43 | 865e66d8 | 09-03 | CwDecoder | MainWindowViewModel; 1 test | no CW decode in Digital mode |
+| 44 | 9c2a7f99 | 09-03 | CwDecoder, CwKeyingMeter | docs; MainWindowViewModel; src\Hamlet.RadioEngine\Audio Ft8SlotWatch, ReusableWindow; 1 test | a reader on a timer stops allocating the audio it reads |
+| 45 | 1a84188e | 09-03 | CwKeyingMeter | docs; src\Hamlet.App Telemetry\AppEvents, MainWindowViewModel; src\Hamlet.RadioEngine\Audio AudioArrival, CallbackBudget, DigitalCaptureSheet, WasapiAudioSource; 3 tests | the callback budget is set, not inherited, and overruns are counted |
+
+Pieces 15 and 19 wrote `CwPitchChoice.cs`, already in the tree as the one HEAD-only file unit
+392 kept; their hunks on it are dropped as already in the tree when they come up. Pieces 1, 42,
+44 and 45 changed files under `src\Hamlet.RadioEngine\Audio`, which is outside `Cw` and not
+taken (R50); a piece whose `Cw` half needs its `Audio` half fails to build and is out, decision 4.
 
 ## 2. The pieces judged
 
