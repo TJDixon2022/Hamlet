@@ -1,0 +1,14 @@
+Preparing worktree (detached HEAD a902cdf8)
+Updating files:  80% (1809/2259)Updating files:  81% (1830/2259)Updating files:  82% (1853/2259)Updating files:  83% (1875/2259)Updating files:  84% (1898/2259)Updating files:  85% (1921/2259)Updating files:  86% (1943/2259)Updating files:  87% (1966/2259)Updating files:  88% (1988/2259)Updating files:  89% (2011/2259)Updating files:  90% (2034/2259)Updating files:  91% (2056/2259)Updating files:  92% (2079/2259)Updating files:  93% (2101/2259)Updating files:  94% (2124/2259)Updating files:  95% (2147/2259)Updating files:  96% (2169/2259)Updating files:  97% (2192/2259)Updating files:  98% (2214/2259)Updating files:  99% (2237/2259)Updating files: 100% (2259/2259)Updating files: 100% (2259/2259), done.
+HEAD is now at a902cdf8 step 4 piece 45 out: 1a84188e moved nothing
+worktree at a902cdf860702aefd5039b36e7aa662fb3aac4fb
+copied printer, HEAD harness, capture wav
+src diff in worktree against a902cdf8 printed above, empty means none
+build rc=0 in 2 s
+printer rc=0 in 6 s
+captures rc=0 in 92 s
+worktree removed rc=0
+C:/Source/HamLet                       bab02a85 [main]
+C:/Users/TimDi/preflight-trees/206bd90 263949d7 (detached HEAD)
+C:/Users/TimDi/preflight-trees/8e3ee27 07f0397a (detached HEAD)
+C:/Users/TimDi/preflight-trees/f595938 351784ae (detached HEAD)

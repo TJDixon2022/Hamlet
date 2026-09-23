@@ -1,0 +1,7 @@
+ transcript: [■ ■■ ■ ■■ ■ ■■■ ■■■ ■EE ■ E■E ■ ■ EEE■■■■ ■ ■ ■ ■ ■ ■■ ■T ES T IVDW <BT> ■ ■ ■■ ■ ■ ■■■ ■ ■ ■■ ■ ■]
+ characters emitted: 61
+ characters unsure: 45
+ elements seen: 93
+ elements resolved: 93
+ winning speed: 30 wpm
+ tone admitted: 615 Hz, measured True
