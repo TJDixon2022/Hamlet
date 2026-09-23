@@ -167,3 +167,21 @@ was told `RadioIsTransmitting(true)` for every chunk overlapping the span, and `
 - **What the radio's word costs the message.** Suspension runs to 13.5 s under
   `ResumeAfter`, so the settled text starts `STDETESTK`. The first `TE` of the message is not
   read. The test asserts nothing about it.
+
+## 3. The attacks
+
+Decision 3's order: the tracker change, then #42, then G1. Each change was built once and run one
+type per invocation with `--no-build`, starting with the reds' own types, then the gate. Every
+put-back went through `.run-unit\unit406-putback.sh` and left `git diff --stat HEAD -- src tests`
+empty, and the tree was rebuilt afterwards.
+
+| change | file and line | reds' numbers | gate | kept |
+|---|---|---|---|---|
+| H1, the first shape: a held switch goes only if the survey it goes on still admits keying within 25 Hz of the held pitch; otherwise the hold is dropped | `CwToneTracker.cs` 957, `ReadSurvey` | **#6 0.75 to 0.89, green**; #15 0.54 to 0.61; #43 5 + 37 to 4 + 32; #44 3 + 21 to 2 + 20; #45 1 + 3; #42 70 | captures **35 of 37**: `003016` 57 to 55 and `031838` 57 to 37 red; also lower `031905` 42 to 37, `032113` 55 to 48, `032129` 66 to 44; up `013402` 61 to 62, `013520` 60 to 61; adjudicated 13 of 13; synthetics 2 of 2. The stale holds on those captures moved onto the station, which ends at 650 Hz | no, put back. The remaining gate types were not run once the floors failed |
+| **H2**, the narrower shape at the same property: a held switch is dropped only when the survey it goes on admits the keying back within 25 Hz of the bank's centre and not within 25 Hz of the held pitch. A survey admitting nothing lets the hold go, as before | `CwToneTracker.cs` 957 | **#6 0.75 to 0.82 against 0.79, green**; #15 0.54; #43 5 + 37; #44 3 + 21; #45 1 + 3; #42 70 | captures 37 of 37, **every row identical to entry**; adjudicated 13 of 13; synthetics 2 of 2; `CwReceiverFixtureTests`, `CwFixtureTests`, `CwAdjudicationTests`, `CwEmissionGateTests`, `CwDisplacementFloorTests`, the four speed readers and every tracker reader identical to entry; `WhatBandwidthTheDecoderListensThroughTests` 4 of 6 as entry, 48 against 50; the gate-window reader's short methods 4 of 4 | **yes, `775907b6`** |
+| #42 given the radio's word: the test's event pumps a chunk at a time and reports `RadioIsTransmitting` from the recipe's span, 1.00 to 13.00 s, on the audio clock; the decoder's suspended arm hands the transmit guard each hop's level and nothing else | `CwReceiverFixtureTests.cs` 280; `CwDecoder.cs` 513 and `ObserveOwnTransmission` | **#42 70 to 0, green**, own transmit 9.08 to 9.5 s against > 3; the others as H2 | `CwReceiverFixtureTests` 24 of 27, only #42 changed; captures 37 of 37 every row identical; adjudicated 13 of 13; synthetics 2 of 2; `CwEmissionGateTests` 8 of 8; `HamletDoesNotDecodeYourOwnSendingTests` 6 of 6 | **yes, `099b3a2a`** |
+| G1 on top of H2 and #42's change, as one attack on #44 (decision 4): a clipped reading whose character gap comes out past its word gap is returned not separated | `CwUnitEstimator.cs` after 237 | #44 3 + 21 to 4 + 16; #43 5 + 37; #45 1 + 3; #6 0.82; #15 0.54; #42 green | captures 37 of 37, only `021825` up, 41 to 42 characters and 74 to 75 elements | no, put back: no red turned green |
+
+**3.6 is not ticked.** Four of the eight have a verdict: #24 and #41 by unit 402, #6 and #42 by
+this unit. #15, #43, #44 and #45 are red-open, and each count is at 0 of 3: #15, #43 and #44
+moved under H1, and #45 was not attacked.

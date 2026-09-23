@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 3 of 5
+TASK: TASK 4 of 5
 WORK_INSTRUCTION: 406 - the tracker switch, and #42 given the radio's word
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T14:33:59-04:00
-NOTE: Task 3 closing: G1 moved #44 3+21 to 4+16 but no red green, put back; #6 and #42 kept green
+UPDATED: 2026-09-23T14:35:28-04:00
+NOTE: Task 4 done, committing: rows for #6 #42 green, #15 #43 #44 moved, #45 not attacked; 4 of eight with a verdict
 
 ---
 
