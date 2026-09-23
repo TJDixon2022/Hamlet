@@ -222,6 +222,11 @@ piece commit `e91ed185`. Build 0 errors in 6 s. Captures **37 of 37 in 94 s wall
 row differs; adjudicated 13 of 13 in 28 s; synthetics 0 of 2 in 3 s. Printer: the seven SETTLED
 lines identical to section 1. Transmit files nothing. Out, reverted next.
 
+**Piece 26, `68a18d66`, task 2.** Patch 137 lines over `CwCharacter`, `CwProbabilisticDecoder`,
+`CwProbabilisticStream`. Kept state: all three fail. After 2: only `CwProbabilisticDecoder:1530`.
+After 25: all three. After 2, 25; 2, 5, 25; 2, 5, 17, 25: 1530 (`unit396-deps26.sh`). *Dependent,
+out*. `src` clean after.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
