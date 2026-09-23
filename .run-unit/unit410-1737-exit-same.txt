@@ -1,0 +1,3 @@
+named 46, placeholders 0
+scored region "CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I", 29 edits against an inferred key, 29 at entry
+scored region, against an inferred key: "CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I" is 29 edits from "CQ CQ CQ DE WB6RED WB6RED"

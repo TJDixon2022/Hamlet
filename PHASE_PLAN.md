@@ -99,10 +99,10 @@ says - never the whole suite.
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [ ] 0.1 A scorer in the test project measures edit distance between a decode and a key over a scored region the key file names, reports edits, scored length and whether the key is exact or inferred, and is watched failing first on a case whose answer is known by construction.
-- [ ] 0.2 Every recording in the tree that has a key - `cw-2026-09-23-173723` and the three adjudicated anchors - is scored at HEAD and tabled with its three parts, and the table is the phase's baseline in `docs/phase-correctness/baseline.md`.
-- [ ] 0.3 The report names, from the baseline, what kind of error dominates: characters wrong, characters missing, characters added, or word boundaries misplaced, counted per case rather than asserted.
-- [ ] 0.4 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [x] 0.1 A scorer in the test project measures edit distance between a decode and a key over a scored region the key file names, reports edits, scored length and whether the key is exact or inferred, and is watched failing first on a case whose answer is known by construction.
+- [x] 0.2 Every recording in the tree that has a key - `cw-2026-09-23-173723` and the three adjudicated anchors - is scored at HEAD and tabled with its three parts, and the table is the phase's baseline in `docs/phase-correctness/baseline.md`.
+- [x] 0.3 The report names, from the baseline, what kind of error dominates: characters wrong, characters missing, characters added, or word boundaries misplaced, counted per case rather than asserted.
+- [x] 0.4 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
 
 **Depends on:** nothing.
 

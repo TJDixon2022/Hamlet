@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 3 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 410 - the number exists
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T19:05:30-04:00
-NOTE: Kinds counted: 17:37 29 edits = 15 spaces added, 4 wrong, 10 added letters, 14 letters-only; writing them into baseline.md
+UPDATED: 2026-09-23T19:19:25-04:00
+NOTE: Unit 410 complete: baseline 33 edits over 46 chars against inferred keys, 17:37 29 over 25; there 15 boundaries and 14 letters, so the bench letters are not all right; section 4 parks 2 items
 
 ---
 

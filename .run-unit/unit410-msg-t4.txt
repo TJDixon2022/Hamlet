@@ -1,0 +1,5 @@
+unit410 task 4: exit round - engine 178 of 178, app 277 of 278 with one lost to the dispatcher loop and green alone, captures 37 of 37 and adjudicated 13 of 13 identical to entry, synthetics 2 of 2, 17:37 5 of 5; src, src/Hamlet.App and the transmit files print nothing; 0.1 to 0.4 ticked; output.md
+
+Baseline 33 edits over 46 characters against inferred keys, 17:37 29 over 25; on 17:37 15 boundaries and 14 letters, 14 letters-only. Two items parked in docs/phase-correctness/PARKED.md: the nine other adjudicated recordings kept out of the total, and the bench letters not all right.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
