@@ -1,0 +1,12 @@
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwDecodeReport.cs(88,10): error CS8907: Parameter 'PitchWasAsserted' is unread. Did you forget to use it to initialize the property with that name? [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwDecodeReport.cs(89,19): error CS8907: Parameter 'PitchChoice' is unread. Did you forget to use it to initialize the property with that name? [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+
+Build FAILED.
+
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwDecodeReport.cs(88,10): error CS8907: Parameter 'PitchWasAsserted' is unread. Did you forget to use it to initialize the property with that name? [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwDecodeReport.cs(89,19): error CS8907: Parameter 'PitchChoice' is unread. Did you forget to use it to initialize the property with that name? [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:01.37
+RC=1 WALL=2s

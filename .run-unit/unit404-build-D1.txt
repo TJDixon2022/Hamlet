@@ -1,0 +1,14 @@
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwCharacter.cs(208,19): error CS0102: The type 'CwCharacter' already contains a definition for 'MarginLlr' [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwCharacter.cs(195,25): error CS0102: The type 'CwCharacter' already contains a definition for 'WidestRecordedLlr' [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwDecoder.cs(662,17): error CS0111: Type 'CwDecoder' already defines a member called 'Retuned' with the same parameter types [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+
+Build FAILED.
+
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwCharacter.cs(208,19): error CS0102: The type 'CwCharacter' already contains a definition for 'MarginLlr' [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwCharacter.cs(195,25): error CS0102: The type 'CwCharacter' already contains a definition for 'WidestRecordedLlr' [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwDecoder.cs(662,17): error CS0111: Type 'CwDecoder' already defines a member called 'Retuned' with the same parameter types [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+    0 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:01.72
+RC=1 WALL=2s

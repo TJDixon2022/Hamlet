@@ -1,0 +1,38 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheReworkNumbersPrinterTests.TheNumbersOf021410 [25 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021410: 40 characters, 97 elements, 6 unsure, at 540 Hz
+ TEXT    [IG  TUUTUBBEE T XXTXMEMT T  R R R S HIHIIIHEHI I N DTDT T  ■ E RRIIMGEGHHRR R I ISS S  ■  I FFRLELETT TNT  E B6E6D6E6MOEOAAM]
+ SETTLED [■NG A ■■ TUBE XMT R HIHI DT ■ RIGHR IS ■ ■ FLENT 66OAM]
+ SETTLED DISTANCE WEEKEND 5 [ FLEN]
+ SETTLED DISTANCE THINKING 5 [ HIHI ]
+ SETTLED DISTANCE FLEX 1 [FLE]
+ TEXT DISTANCE WEEKEND 5 [BBEE ]
+ TEXT DISTANCE THINKING 5 [ HIHII]
+ TEXT DISTANCE FLEX 2 [LE]
+
+
+[xUnit.net 00:01:00.97]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheReworkNumbersPrinterTests.TheNumbersOf013637 [35 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013637: 62 characters, 158 elements, 13 unsure, at 536 Hz
+ TEXT    [■<HH><HH>S NEVVENEN E T T NE NEVVERER T GTGOEOT ET ADAB NB OIOVEVE T 77 H 5U5F EF ESES ■ ■C CLLEAEARR S SKKYY IY LILITEITE T BIBRER EE ME Z EZ E A ALLLL D DAEDAYY E JJUJUSTST IT AAAWE WE S SO]
+ SETTLED [■■■■ ■■■■■ ■ ■■VER GOT AB OVE 7 5F ES ■ CLEAR SKY LITE BR EE Z E ALL DAY JUST AWE SO]
+ SETTLED DISTANCE ABOVE 1 [AB OVE]
+ SETTLED DISTANCE BREEZE 2 [BR EE]
+ TEXT DISTANCE ABOVE 2 [OVE]
+ TEXT DISTANCE BREEZE 2 [BRER E]
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 1.0202 Minutes
+RC=0 WALL=61s
