@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: TASK 4 of 5
 WORK_INSTRUCTION: 398 - the excluded files, classified and retired under R49
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T02:59:10-04:00
-NOTE: task 4: exit round, clean synthetics running
+UPDATED: 2026-09-23T03:02:03-04:00
+NOTE: Unit 398 complete: 3.2 ticked on 20 tests retired under R49 from 7 files, 31 audio-asserting facts left excluded red-open, 7 files re-included with 18 of 19 facts green, the set's #1 green; floors and both lines green at exit, no regression
 
 ---
 

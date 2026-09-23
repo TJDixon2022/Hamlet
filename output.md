@@ -1,262 +1,323 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - CW decodes again. Steps 0, 1 and 2 are ticked on every
-   criterion; the outcome file holds 0 and 2 at not started, a layer
-   mismatch reported here, and the launcher named step 0 for this unit on
-   that reading; step 3 is partial at 3.1 and 3.3 with 21 reds open and
-   nothing retirable; step 4 was this unit's, partial at 4.1 and 4.3 at
-   entry with 33 of 45 pieces judged and none kept; step 5 is Tim's. After
-   this unit step 4 has every criterion ticked with 0 kept and 14 never
-   applied for want of a chain.
-B. The criteria, one line each, met or not: 4.1 met by unit 395; 4.2 45
-   of 45 judged, 27 applied in their own or a pair commit, 0 kept on a
-   named number, 14 listed dependent and never applied, 4 with nothing to
-   apply - ticked per decision 22 with all three counts and the 14 hashes;
-   4.3 45 out across units 395 to 397, each applied one reverted in the
-   next commit, re-confirmed at 45 of 45; 4.4 no piece kept and no floor
-   moved, the floor table byte-identical to the step's entry - ticked; 4.5
-   this report's section 3 leads with the 45-row table - ticked; 4.6
-   floors and both lines green at exit, the synthetics red at both ends
-   under R53 - ticked.
-C. The report last. Section 4 raises 0 items in the way of a criterion in
-   B; everything carried from before this phase and every finding that
-   blocks nothing is in docs/phase-cw/PARKED.md under R54, not here.
+A. The phase goal - CW decodes again. Steps 0, 1, 2 and 4 are ticked on
+   every criterion; the outcome file holds 0 and 2 at not started and 4 at
+   partial, a layer mismatch reported here, and the launcher named step 0
+   for this unit on that reading; step 3 is this unit's, partial at 3.1 and
+   3.3 at entry with 21 reds open in the set and 22 test files excluded
+   from compilation, nothing yet retired; step 5 is Tim's. After this unit
+   step 3 is partial at 3.1, 3.2 and 3.3 with 20 tests in 7 files retired
+   under R49, 31 facts left excluded and red-open because they assert a
+   decode result, 7 files re-included, and 3.4 and 3.5 waiting on the
+   decode repairs.
+B. The criteria, one line each, met or not: 3.1 met by unit 394, its #1
+   now green, 3 of 3, re-included by this unit, so the set stands at 31
+   green and 20 red-open; 3.2 20 retirements each quoting its missing name
+   in this report and carrying its four fields in docs/cw-retired-tests.txt,
+   ticked after a green build following the last retirement; 3.3 nothing
+   that reads audio and asserts characters, elements, a tone or a speed
+   retired, 31 such facts listed red-open, its clause added; 3.4 not met,
+   the known-reds block and the set's closing line untouched; 3.5 not
+   ticked, the step not at its exit, floors green at task 0 and task 4
+   with no file under src changed.
+C. The report last. Section 4 raises 0 items and none is in the way of a
+   criterion in B; everything carried from before this phase and every
+   finding that blocks nothing is in docs/phase-cw/PARKED.md under R54,
+   not here.
 ```
 
 ```
-UNIT:       397 - complete at task 2 of 3, none dropped - 2026-09-23 02:18
-PHASE GOAL: Get the CW decoder reading real on-air audio again, by putting it back where it last worked and then deciding, on measured numbers, which of the August changes earn their way back in.
-UNIT GOAL:  Finish step 4 - put pieces 34 to 45 of the August rework back one at a time on the restored decoder, keep only one that moves a named number with the floors green, and tick the step's last four criteria at piece 45.
-ADVANCED:   yes - the last 12 pieces were judged, so all 45 are, and 4.2, 4.4, 4.5 and 4.6 are ticked; nothing was kept, and the decoder is unchanged.
-NUMBER:     pieces judged 33 -> 45 of 45, kept 0, out 45, never applied for want of a chain 14; 021410 47 -> 47 characters, WEEKEND at distance 5 -> 5; 013637 ABOVE at 2 -> 2; captures type 92 s -> 92 s; engine line 374 s -> 374 s of 480
+UNIT:       398 - complete at task 4 of 5, tasks 0 to 4, none dropped - 2026-09-23 03:00
+PHASE GOAL: Get the CW decoder reading real on-air audio again - put it back where it last worked, judge the August changes on numbers, and clear the inherited reds by repair or by a recorded retirement, until Tim hears it read at the radio.
+UNIT GOAL:  Sort the 22 test files that could not compile against the restored decoder, one fact at a time, under Tim's R49 rule - retire each fact that tests a mechanism no longer in the decoder and asserts no decode result, leave every fact that asserts what the decoder reads excluded and named as a repair owed, and put back and run every fact that still compiles.
+ADVANCED:   yes - 3.2 flipped from open to ticked on 20 retirements that each quote the missing name and carry all four fields, after a green build; #1 of the set now has a measurement, green.
+NUMBER:     excluded files 22 -> 12; tests retired 0 -> 20 in 7 files; facts red-open outside the set 32, 31 still excluded and 1 re-included red; set names green 30 -> 31, red-open 21 -> 20; floors 37 of 37, 13 of 13, 0 of 2 at both ends; engine line 374 s -> 374 s of 480
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 2 of 3 - tasks 0, 1 and 2 all done, nothing dropped.** The clock rule never
-fired: piece 45 was judged at 02:04, minute 21 of the hour that began with the first status line
-at 01:43. Windows 11 machine, Hamlet confirmed at `C:\Source\HamLet` by the gate's four checks,
-branch `main`. Every commit pushed; the last push succeeded.
+**Complete, at task 4 of 5 - tasks 0, 1, 2, 3 and 4 all done, nothing dropped.** Neither clock rule
+fired: the last re-include ended at 02:47, minute 16 of the hour that began with the first status
+line at 02:31, and task 4 started at minute 17. Windows 11 machine, Hamlet confirmed at
+`C:\Source\HamLet` by the gate's four checks, branch `main`. Every commit pushed; the last push,
+`4d4e552f`, succeeded; this report rides in one more.
 
-**Task 0, entry** (`5e6dd4e8`). Version 1.13.83 to 1.13.84. `PHASE_STATUS.md` read `CURRENT_STEP: 0`
-and `WORK_INSTRUCTION: 396 - pieces 10 onward, on the same numbers`; set to `CURRENT_STEP: 4` and
-`397 - pieces 34 to 45, the list to its end`. `PHASE_OUTCOME.md` and `PHASE_STATUS.md` went into task
-0's commit as whole files, as units 393 to 396's did. Unit 396's scripts copied to `unit397-*` with the
-unit number and task labels changed. **Decision 20 applied**: `git diff --stat e2b31a40 HEAD -- src
-tests docs/carry-forward-tests.txt` printed nothing, so unit 396's exit runs are the entry numbers
-for both lines. Floors run in full: 37 of 37, 13 of 13, synthetics 0 of 2, every capture row and the
-printer identical to unit 396's exit.
+**Task 0, entry** (`305bec69`). Version 1.13.84 to 1.13.85. `PHASE_STATUS.md` read `CURRENT_STEP: 0`
+and `WORK_INSTRUCTION: 397 - pieces 34 to 45, the list to its end`; set to `CURRENT_STEP: 3` and
+`398 - the excluded files, classified and retired under R49`. `PHASE_OUTCOME.md` and
+`PHASE_STATUS.md` went into task 0's commit as whole files, as units 393 to 397's did. Unit 397's
+floors, carry, build, commit, transmit, cmp and nums scripts copied to `unit398-*` with the unit number
+and task labels changed. **Decision 4 applied**: `git diff --stat 3af36501 HEAD -- src tests
+docs/carry-forward-tests.txt` printed nothing, so unit 397's exit runs are the entry numbers for
+both lines. Floors run in full after one build: 37 of 37 in 94 s, every capture row identical to unit
+397's exit; 13 of 13 in 29 s; synthetics 0 of 2 in 3 s. Transmit files and `src` silent.
 
-**Task 1, pieces 34 to 45**, one row each in `docs\phase-cw\unit395-rework.md` section 2 under
-`### Judged by unit 397`, one paragraph each in `docs\phase-cw\unit397-rework.md` section 2:
+**Task 1, the classification** (`10a6b715`), committed before any test file was touched. All 22
+files read; every name each file's code uses under `Cw` grepped by `.run-unit/unit398-grep.sh`,
+`unit398-grep2.sh` and `unit398-grep3.sh`; 92 facts, a `[Theory]` counted once, one row each in
+`docs\phase-cw\unit398-excluded.md` section 2. Retired 20, stays red-open 31, re-include 19,
+retirable but left with a stays-whole file 15, naming nothing absent but held with the file 4, the
+app's 3 left under decision 6. The finding that moved the plan: **unit 392's `CwAccuracy` is doc
+prose only in `TheCleanReadsStayCleanTests` and `TheProbabilisticDecoderTests`**, so both were
+re-include whole, not stays whole, the same finding unit 394 made for #1.
 
-| n | Hash | Piece or pair commit | Revert or row commit | Outcome |
-|---|---|---|---|---|
-| 34 | e6b1ece7 | `9627bc0b` | `4c932f96` | measured; 14 captures and 1 adjudicated anchor red; out |
-| 35 | dfb357ef | `2669b5f9`, pair with 28 | `49cd3ed9` | measured; nothing moved; out |
-| 36 | efc33267 | `c08f766d` | `356ab900` | measured; nothing moved; out |
-| 37 | aeea24f2 | none | `e19042ae` | dependent on 19, 29, 30; not applied |
-| 38 | a37cfcff | none | `6b4d4b16` | dependent on 13, 34 and more; not applied |
-| 39 | a09b36a7 | `2b9c5d10` | `a95fc8fb` | did not build, `CwElement`; out |
-| 40 | ee2cba8d | none | `a2f4618e` | dependent on 31, 33, 34; not applied |
-| 41 | 2828ab69 | `548d7007`, pair with 39 | `85b97b15` | did not build, `CwElement`; out |
-| 42 | 43efc525 | `ec9dec4a` | `6d484e97` | measured; captures identical, synthetics emptied; out |
-| 43 | 865e66d8 | none | `0f659396` | already in the tree as unit 392's seam; empty; out |
-| 44 | 9c2a7f99 | none | `f860651d` | dependent on 1, 19, 29, 37; not applied |
-| 45 | 1a84188e | `25bc3bcf` | `a902cdf8` | did not build, `_window`; out |
+**Task 2, the retirements**, one file per commit, then the tick:
 
-Task 1's record commit is `3af36501`.
+| Commit | File | What went |
+|---|---|---|
+| `ceb06af9` | `Cw/TheScoreSaysWhatItIsMeasuringTests.cs` | deleted, 8 tests, csproj line out |
+| `30176620` | `Cw/ThePosteriorSurvivesItsOwnArithmeticTests.cs` | deleted, 6 tests, csproj line out |
+| `fa7b8911` | `Cw/FittingKeyUpAgainstAssumingItTests.cs` | deleted, 1 test, csproj line out |
+| `732051f2` | `Audio/TheReadPathDoesNotAllocateTests.cs` | trimmed, 1 fact out, 3 kept |
+| `a1dff1ad` | `Audio/TheTapIsNotBehindTheDecoderTests.cs` | trimmed, 2 facts out, 1 kept |
+| `60a2fa36` | `Cw/NothingActsOnTheAdmissionVerdictTests.cs` | trimmed, 1 fact out, 1 kept |
+| `41497e5a` | `Cw/WhatDecodeScoringCostsTests.cs` | trimmed, 1 fact out, 2 kept |
+| `48b420c9` | `PHASE_PLAN.md`, the doc's section 3 | 3.2 ticked, 3.3's clause |
 
-**Task 2, exit round** (`2164449d`): both carry-forward lines, the three floor types, the printer,
-the transmit and `src` checks, decision 14's log check. 4.2, 4.4, 4.5 and 4.6 ticked in the root
-`PHASE_PLAN.md`; 4.3's sentence updated to 45 of 45. `PARKED.md` got `397 item 1` to `397 item 4`.
+`dotnet build Hamlet.sln -warnaserror` after the last retirement: exit 0, 15 s.
 
-**Decisions applied.** Unit 395's 1 to 11 and unit 396's 12 to 19 as the step's rules; this unit's 20
-(entry lines from unit 396's exit), 21 (exit round run in full), 22 (the ticks, each worded to its
-criterion), 24 (the app and Audio halves of 36, 42, 43, 44, 45 not taken), 25 (the docs), 26 (section
-3's table), 27 (timeouts, nothing backgrounded, minute 42). Decision 23 changed no row. **No
-self-ruling** authorized work outside the tasks.
+**Task 3, the re-includes**, in task 1's order, every one built:
 
-**How-to decisions made during the tasks, each overrulable:**
+| Commit | File | Result |
+|---|---|---|
+| `ba998d84` | `Cw/ABlipDoesNotShiftEverythingAfterItTests.cs`, the set's #1 | 3 green; 3.1 gains its clause |
+| `fd2e7258` | `Audio/TheTapIsNotBehindTheDecoderTests.cs` | 1 green |
+| `447b939c` | `Cw/NothingActsOnTheAdmissionVerdictTests.cs` | 1 green |
+| `6657865e` | `Cw/WhatDecodeScoringCostsTests.cs` | 2 green |
+| `6b8e19a9` | `Audio/TheReadPathDoesNotAllocateTests.cs` | 3 green |
+| `997029fd` | `Cw/TheCleanReadsStayCleanTests.cs` | 2 facts green, 1 red-open on one case |
+| `7a297abf` | `Cw/TheProbabilisticDecoderTests.cs` | 6 green, 11 cases |
 
-1. **Piece 35 went in as a pair with 28, with 35 merged under `--3way`.** `--check` cleared only
-   after 28 and 32. The only extra need was piece 32's context lines, not any name the piece uses.
-   Unit 396 merged piece 33 on piece 31's context the same way, so this is one pair, not a chain of
-   three.
-2. **Piece 42's `OnSamples` conflict was resolved to the piece's own lines.** About 580 lines of
-   out pieces' bodies came in as "theirs" context; they were not taken. Its `DecodeQueueDroppedChunks`
-   and `DecodeQueueDroppedSamples` were dropped as already in the tree, because unit 392's seam
-   declares both and decision 3 keeps the seam. 175 of its 181 lines went in.
-3. **Piece 43 is out as empty under decision 17.** Both of its code lines are unit 392's seam; what
-   remained was a doc comment and a blank line.
-4. **Piece 44 was listed dependent as a whole.** Its `CwKeyingMeter` half was not split off and
-   measured alone, because decision 5 judges the whole piece. Parked as 397 item 2.
-5. **Piece 45 was applied and built rather than listed dependent**, because it applied clean. The
-   build error names the dependency, piece 44's `_window`.
+**Task 4, the exit round** (`4d4e552f`): app 278 of 278 in 160 s, engine 176 of 176 in 374 s; floors
+37 of 37, 13 of 13, 0 of 2, every capture identical; transmit files, `src`, the carry-forward list and
+the failing set unchanged. **No regression.** `PARKED.md` gains `398 item 1` to `398 item 4`.
 
-**Regressions: none.** Every capture, adjudicated reading, line and printer number at exit is what it
-was at entry.
+**Decisions of the instruction applied:** 1, step 3 resumed on the 22 files; 2, per-fact retirement
+under both R49 sentences, doubt resolved toward staying; 3, `CoarseSpacingHz` private at HEAD, used
+for one retirement, `WhatDecodeScoringCostsTests.AShortScoringWindowBreaksTheSilenceProperty`;
+4, the lines at entry from unit 397's exit; 5, nothing under `src` changed and 3.5 not ticked; 6, the
+app file left and listed; 7, #1 re-included first; 8, whole-file deletions only where every fact
+retired, trims where survivors name nothing absent, stays-whole files left unedited; 9, the retired
+file's header and line shape; 10, the doc; 11, 3.2 ticked after the green build, 3.3 and 3.1 clauses,
+nothing else ticked; 12 and 13, clock and timeouts, neither rule reached.
 
-**Section 5 mismatches.** HEAD, `Directory.Build.props` line 1254, `PHASE_STATUS.md`, `PHASE_OUTCOME.md`,
-the five root files, `CLAUDE.md` line 360 (HM-DEC-167; the reload reads `CPS-DEC-0167`),
-`PARKED.md`, `unit395-rework.md`, both diffs, the printer, lines 107 and 108, the carry-forward file,
-the 21 `Compile Remove` items and the worktrees all matched the instruction. **One mismatch:**
-`PROJECT_STATUS.md` at HEAD reads unit 390, `STATE: COMPLETED`, `TASK: TASK 5 of 6`, not unit 396,
-`TASK 3 of 4`. **One slip of my own:** my first command ran `tools/status.sh` with no arguments. That
-blanked the working copy of `PROJECT_STATUS.md` before I had read it, so I can't say what the layer
-had written there. The next call, 17 seconds later, wrote a proper `EXECUTING` status. Both are
-parked as 397 item 4.
+**Decisions I made for myself, about how to carry out assigned tasks, none authorizing work
+outside them - no self-ruling was used:**
+
+1. **The 5-argument `CwProbabilisticDecoder.Decode` is private at HEAD** (`CwProbabilisticDecoder.cs:706`),
+   treated like `CoarseSpacingHz` under decision 3. It changes no verdict: every fact that calls it
+   also asserts elements on audio and stays.
+2. **`PitchChoice` as a `CwDecodeReport` constructor parameter counts as an absent member.** The
+   record's positional parameters end at `PitchWasMeasured` (`CwDecodeReport.cs:47` to `61`);
+   `PitchChoice` exists only as a property at line 83, and the fact names it as a parameter. On that
+   I retired `NothingActsOnTheAdmissionVerdictTests.AnUnmeasuredPitchIsStillReportedAndSaysSo`.
+3. **That fact reads no audio.** The instruction's table says it asserts `CharactersEmitted > 0` on
+   audio. The fact builds the report by hand with the literal `CharactersEmitted: 61`, and no `.wav`,
+   generator or decoder is involved, so R49's second sentence does not reach it. Decision 2's "a count
+   of characters emitted is characters" governs a count *obtained from audio*; this one is a
+   constant the test set itself. If Tim reads it the other way, the fact comes back from `60a2fa36`'s
+   parent and its line comes out of `docs\cw-retired-tests.txt`.
+4. **Doubt went toward staying for facts on buffers outside decision 2's list of audio** - hand-built
+   sines in `EveryElementCarriesItsOwnPitchTests` and random noise in `NoiseHasAPeakToo` - when they
+   assert a hertz. Every such fact is in a file that stays whole anyway, so no retirement rests on it.
+5. **A fact in a stays-whole file that names nothing absent** is marked *names nothing absent, held
+   with the file* rather than *re-include*, because decision 8 keeps the file whole and unedited.
 
 ## 2. What the owner should expect
 
-Nothing changes on the CW tab. All 45 pieces of the August rework have now been judged one at a
-time against the decoder that read on the air on 2026-08-25, and none of them stayed. 27 went back
-in and came straight out in the next commit. 14 were never run because each needed two or more
-other pieces that were themselves out, and the plan allows only one pair. 4 had nothing to apply.
-None of the 27 improved a named number. The twelve this unit took split like this:
-- Piece 34 turned 14 captures red.
-- Piece 42, the decode worker thread, emptied the two clean synthetics' text.
-- Three did not compile without the pieces they depend on.
-- The rest moved nothing.
+Nothing changes on the CW tab, and nothing under `src` changed: the decoder that read on the air is
+byte-identical to the one unit 397 left, and its floors are green at both ends. **Twenty dead tests
+are gone**, each with a line in `docs\cw-retired-tests.txt` naming what it tested that no longer
+exists: `CwAccuracy` (8, a text-scoring harness), `LogSum` and `Posterior` (6, arithmetic of a
+decoder path the restore removed), `FittedLogLikelihoods` (1), `CwKeyingMeter.WindowSizings` (1),
+`CwDecoder.ProcessDelayForTests` (2), a `PitchChoice` constructor parameter (1), and the private
+`CoarseSpacingHz` (1). **Thirty-one tests stay out and red** because they assert what the decoder
+reads - text, a pitch, a speed, elements - through types the August rework brought and the restore
+removed; those are the repairs still ahead, listed by name in the doc. Seven files compile and run
+again. **The set's #1 now has a measurement: green.** One re-included test is red on real audio -
+`003758` no longer contains `AA4MP/4 QNIK` in `TheCleanReadsStayCleanTests`, though the anchored
+`TheAdjudicatedReadingsKeepReadingTests` stays green - and it is parked as a repair.
 
-`021410` is still 47 characters, WEEKEND at distance 5 in the settled text. `013637` still has `AB OV E`,
-ABOVE at distance 2. Every floor is green at its old number, both carry-forward lines are green, and
-the two clean synthetics are red as they have been since step 1 (R53). **What will look wrong but is
-not:** 45 revert commits titled *moved nothing*, some of them on pieces that moved numbers the wrong
-way or did not build. Decision 9 fixes that title, and each commit body and doc row gives the real
-reason. The next step on the plan is step 3's repairs under R49, now that step 4's verdict is in.
+**What will look wrong but is not:** `PHASE_OUTCOME.md` still says step 0 and step 2 are *not started*
+and step 4 *partial* with every criterion ticked in the plan - the layer's lines, not edited.
+`PROJECT_STATUS.md` says `RULES_AT: HM-DEC-165` while `CLAUDE.md`'s top row is HM-DEC-167 - the
+status script writes it as a literal, parked since 390. Twelve files are still excluded from
+compilation; that is correct under R49, not unfinished work.
 
 ## 3. What you should see
 
-**Step 4, all 45 pieces.** E is the kept state before every piece: 021410 47 characters, WEEKEND 5,
-THINKING 5, FLEX 1; 013637 63 characters, ABOVE 2, BREEZE 2; synthetics 0 of 2 reading placeholders.
-*Identical* means all 37 captures identical in characters, elements, unsure and tone, the five
-distances identical, and synthetics 0 of 2.
+**No visible change - this unit sorts the test pile so the dead tests are gone on the record and the
+live ones are named as repairs.** The answer the unit was commissioned for: 3.2 is ticked on 20
+retirements, and not one retired test asserts a decode result.
 
-| n | Number before | Number after | Kept or out | Hash | Captures wall |
-|---|---|---|---|---|---|
-| 1 | E; 004507 50, 003758 63, 031948 34, 012748 4 | 021410 and 013637 unchanged; 004507 49, 003758 58, 031948 31, 012748 2 | out | 2068f868 | 94 s |
-| 2 | E | identical | out | 6fc36a1e | 95 s |
-| 3 | E | identical | out | 3e84ac74 | 94 s |
-| 4 | E | not run, nothing to apply, already in the tree | out | 39a42c3f | 92 s, task 0's run |
-| 5 | E | identical | out | 9de394da | 94 s |
-| 6 | E | pair with 5, comment only, piece 5's run: identical | out | 3d4694e5 | 94 s, piece 5's run |
-| 7 | E | identical | out | 7fb89d5e | 94 s |
-| 8 | E | pair with 7: identical | out | 1bf4372d | 94 s |
-| 9 | E | pair with 7: identical | out | 44cf3fc8 | 94 s |
-| 10 | E | not run, dependent on 7 and 9 | out | 4786c7e7 | none |
-| 11 | E | not run, dependent on 7 and 9 | out | f2e1db7a | none |
-| 12 | E | identical | out | f27174b5 | 97 s |
-| 13 | E | not run, dependent on 2, 5 and more | out | 386fdb5d | none |
-| 14 | E | not run, did not build | out | 8ca6a633 | none |
-| 15 | E | not run, dependent on 3 and 12 | out | 4c6e4321 | none |
-| 16 | E | not run, empty | out | 501e8e2d | none |
-| 17 | E | identical | out | f9c11989 | 94 s |
-| 18 | E | not run, did not build | out | b48d1158 | none |
-| 19 | E | not run, dependent on 15, 18 and their chain | out | 0f2089f3 | none |
-| 20 | E | identical | out | ac1d56da | 93 s |
-| 21 | E | not run, dependent on 1 and 3 at least | out | 62262b94 | none |
-| 22 | E | identical | out | 0f48c33e | 94 s |
-| 23 | E | pair with 22: identical | out | b8cad1f9 | 98 s |
-| 24 | E | not run, dependent on 2 and 13 at least | out | fc1ee77f | none |
-| 25 | E | identical | out | 71b4f044 | 94 s |
-| 26 | E | not run, dependent on 2, 25 and 24 | out | 68a18d66 | none |
-| 27 | E | not run, dependent on 25, 26 and their chain | out | a91d8fe7 | none |
-| 28 | E | identical | out | ade52536 | 94 s |
-| 29 | E | not run, dependent on 19, 3 and their chains | out | efcd5242 | none |
-| 30 | E; 021410 11 unsure, 013637 3 unsure | characters identical; unsure up on 25 of 37; **ABOVE 2 to 3** | out | 95a5e063 | 93 s |
-| 31 | E | identical | out | b7147b1f | 94 s |
-| 32 | E | pair with 28: identical | out | c8685e4d | 93 s |
-| 33 | E | identical | out | 4935a4f8 | 93 s |
-| 34 | E | **captures 23 of 37, 14 red; adjudicated 12 of 13**; 021410 47 to 45, WEEKEND 5; ABOVE 2; 004507 50 to 53, 002016 75 to 77 | out | e6b1ece7 | 82 s |
-| 35 | E | pair with 28: identical | out | dfb357ef | 94 s |
-| 36 | E | identical | out | efc33267 | 94 s |
-| 37 | E | not run, dependent on 19, 29 and 30 | out | aeea24f2 | none |
-| 38 | E | not run, dependent on 13, 34 and more | out | a37cfcff | none |
-| 39 | E | not run, did not build, `CwElement` | out | a09b36a7 | none |
-| 40 | E | not run, dependent on 31, 33 and 34 | out | ee2cba8d | none |
-| 41 | E | pair with 39: not run, did not build, `CwElement` | out | 2828ab69 | none |
-| 42 | E | captures and distances identical; **synthetics 0 of 2, both empty** | out | 43efc525 | 94 s |
-| 43 | E | not run, already in the tree, empty | out | 865e66d8 | none |
-| 44 | E | not run, dependent on 1, 19, 29 and 37 | out | 9c2a7f99 | none |
-| 45 | E | not run, did not build, `_window` | out | 1a84188e | none |
+**The classification, all 22 files, as `docs\phase-cw\unit398-excluded.md` section 2 carries it.**
+*Absent* is what `grep -rnw` over `src/Hamlet.RadioEngine/Cw` at HEAD printed: *nothing*, or the line.
 
-**The captures at entry and at exit.** Entry is the numbers before piece 34; exit is the kept state
-on `3af36501`'s tree. The compare printed no difference in 37 rows.
+| # | File | Fact | Absent at HEAD, as grep printed | Audio | Asserts | Verdict |
+|---|---|---|---|---|---|---|
+| 1 | `Audio/TheReadPathDoesNotAllocateTests` | `ARepeatingReaderAllocatesNothingAfterTheFirstCall` | none | no | bytes allocated | re-include |
+| 2 | | `AFixedSpanReadRepeatedlyAllocatesNothing` | none | no | bytes allocated | re-include |
+| 3 | | `TheKeyingMeterSizesItsWindowOnceAndReusesIt` | `CwKeyingMeter.WindowSizings` - nothing | no | a sizing count | **retired** |
+| 4 | | `ReadingTheArrivalRatioAllocatesNothing` | none | no | bytes allocated | re-include |
+| 5 | `Audio/TheTapIsNotBehindTheDecoderTests` | `TheTapIsWholeWhileTheDecoderCrawls` | `CwDecoder.ProcessDelayForTests` - nothing | zeros pumped | sample count, callback time | **retired** |
+| 6 | | `AFullQueueDropsAndCounts` | `CwDecoder.ProcessDelayForTests` - nothing | zeros pumped | sample and drop counts | **retired** |
+| 7 | | `TheTapIsFedOnceWhicheverWayTheAudioArrives` | none | zeros pumped | sample count | re-include |
+| 8 | `Cw/ABlipDoesNotShiftEverythingAfterItTests`, #1 | `ASubMinimumBlipInAGapChangesNothingAfterIt` | none | yes | text | re-include |
+| 9 | | `ThreeBlipsChangeNothingEither` | none | yes | text | re-include |
+| 10 | | `ADitLongInjectionIsNoticed` | none | yes | text | re-include |
+| 11 | `Cw/AMoveStartsTheDecoderFreshTests` | `NothingTheDecoderLearnedSurvivesTheMove` | none | yes | characters | held with the file |
+| 12 | | `ARetunedDecoderMatchesOneThatHasNeverListened` | `CwDecoder.PitchWasAsserted`, `CwDecoder.Ranked` - not on `CwDecoder` | yes | character counts | stays red-open |
+| 13 | | `TheDecoderReadsTheNewStationAfterTheMove` | none | yes | characters | held with the file |
+| 14 | `Cw/AStationIsABinThatSwingsTests` | `TheRefusedCqIsFoundNearFiveEightyThree` | `CwSwingSurvey` - nothing | yes | a hertz | stays red-open |
+| 15 | | `TheNoisePickNoLongerWins` | `CwSwingSurvey` | yes | a hertz | stays red-open |
+| 16 | | `TheMarginBetweenSilenceAndAStation` | `CwSwingSurvey` | yes | swing in dB | retirable, left with the file |
+| 17 | | `EveryCaptureOfTheEveningRanks` | `CwSwingSurvey` | yes | a candidate pitch; doubt | stays red-open |
+| 18 | `Cw/EveryElementCarriesItsOwnPitchTests` | `ADahResolvesToAboutFiveHertz` | `CwElementPitch` - nothing | sine; doubt | a hertz | stays red-open |
+| 19 | | `ADitResolvesToAboutEighteenHertz` | `CwElementPitch` | sine; doubt | a hertz | stays red-open |
+| 20 | | `TooShortToMeasureSaysSoRatherThanGuessing` | `CwElementPitch` | sine; doubt | no hertz | stays red-open |
+| 21 | | `AGapIsNotMeasured` | `CwElementPitch`, `CwElement` - nothing | sine; doubt | hertz per element | stays red-open |
+| 22 | | `TwoSendersThirteenHertzApartAreSeparableOnTheirDahs` | `CwElementPitch` | sine; doubt | hertz apart | stays red-open |
+| 23 | | `TheElementStreamComesOutWithTheText` | `CwProbabilisticResult.Elements`, private 5-arg `Decode` | `.wav` | elements | stays red-open |
+| 24 | `Cw/FittingKeyUpAgainstAssumingItTests` | `WhatFittingKeyUpDoesToEveryRecording` | `CwProbabilisticDecoder.FittedLogLikelihoods` - nothing | yes | `Cases.Length` is 9 | **retired** |
+| 25 | `Cw/IsTheHertzABiasOrAFloorTests` | `TheErrorAcrossCarriersSpeedsAndDuties` | `CwSpectralPeak` - nothing | yes | a pitch found | stays red-open |
+| 26 | | `AShortBurstInALongRecordingIsFoundBetterOverTheLoudestStretch` | `CwSpectralPeak` | yes | a pitch found | stays red-open |
+| 27 | | `TheCarrierThatRetiredN4L` | `CwSpectralPeak` | yes | a pitch found | stays red-open |
+| 28 | `Cw/NoSenderIsSplitInTwoTests` | `ASenderHamletAlreadyReadsIsNeverDivided` | `CwStreamSplit`, `CwElementPitch`, `Elements` | yes | no division by pitch; doubt | stays red-open |
+| 29 | | `TheTwoSenderCaptureIsNotYetDividedEither` | same | yes | hertz apart | stays red-open |
+| 30 | | `TooFewLongMarksIsReportedAndNotResolved` | `CwStreamSplit`, `CwElement` | no | a refusal | retirable, left with the file |
+| 31 | `Cw/NothingActsOnTheAdmissionVerdictTests` | `TheDecoderExposesTheVerdictAndTheEmitPathDoesNotConsultIt` | none | no | constants and a flag | re-include |
+| 32 | | `AnUnmeasuredPitchIsStillReportedAndSaysSo` | `PitchChoice` as a constructor parameter - not in `CwDecodeReport.cs:47` to `61` | no, a literal 61 | a literal it set | **retired** |
+| 33 | `Cw/TheCleanReadsStayCleanTests` | `EachCleanCaptureStillContainsItsTruth` | none, `CwAccuracy` prose only | yes | text | re-include |
+| 34 | | `EachCleanCaptureStillNamesAsManyCharacters` | none | yes | named characters | re-include |
+| 35 | | `EveryFloorWasMeasuredAndNotHopedFor` | none | yes | named characters | re-include |
+| 36 | `Cw/TheFirstSecondsAreReadAgainTests` | `AnEmptyBandIsNeverReadAgain` | `CwProbabilisticStream.ReReads` - nothing | yes | characters | stays red-open |
+| 37 | | `TheReplayFiresTheSameWhateverTheBufferSize` | `ReReads` | yes | a re-read count | retirable, left with the file |
+| 38 | | `NothingIsSaidTwice` | `ReReads` | yes | settled characters | stays red-open |
+| 39 | | `TheCallsignTheReReadRecovers` | none | yes | text | held with the file |
+| 40 | `Cw/ThePeakAgainstASecondSignalTests` | `WhereThePeakSwitchesFromOneStationToTheOther` | `CwSpectralPeak` | yes | `Assert.True(true)` | retirable, left with the file |
+| 41 | | `WhetherThePeakWalksBetweenThemWithinOneRecording` | `CwSpectralPeak` | yes | pitches found | stays red-open |
+| 42 | | `WhatTheOldTrackerDoesOnTheSameMix` | none | yes | nothing | held with the file |
+| 43 | `Cw/ThePeakFindsThePitchTheTrackerMissedTests` | `AGeneratedToneIsFoundToWithinAHertz` | `CwSpectralPeak` | yes | a hertz | stays red-open |
+| 44 | | `ThePeakAgreesWithTheKeyedBin` | `CwSpectralPeak` | yes | a hertz | stays red-open |
+| 45 | | `TooLittleAudioReturnsNothing` | `CwSpectralPeak` | no | no peak | retirable, left with the file |
+| 46 | | `NoiseHasAPeakToo` | `CwSpectralPeak` | noise; doubt | a pitch found | stays red-open |
+| 47 | `Cw/ThePosteriorSurvivesItsOwnArithmeticTests` | `LogSumStaysFinite` | `CwProbabilisticDecoder.LogSum` - nothing | no | finite | **retired** |
+| 48 | | `TwoEqualTermsDoubleTheEvidence` | `LogSum` | no | arithmetic | **retired** |
+| 49 | | `NegativeInfinityIsTheIdentity` | `LogSum` | no | arithmetic | **retired** |
+| 50 | | `EveryPosteriorIsAProbability` | `CwProbabilisticDecoder.Posterior` - nothing | `.wav` | range 0 to 1 | **retired** |
+| 51 | | `DigitalSilenceProducesNothingRatherThanANumber` | `Posterior` | no | range 0 to 1 | **retired** |
+| 52 | | `NoHopsProduceNoPosterior` | `Posterior` | no | null | **retired** |
+| 53 | `Cw/TheProbabilisticDecoderTests` | `ItReadsWhatTheReferenceReads` | none, `CwAccuracy` prose only | yes | text, speed | re-include |
+| 54 | | `TheSpeedIsFoundAndNotTold` | none | yes | text, speed | re-include |
+| 55 | | `ARecordingWithNoStationInItSaysNothing` | none | yes | no characters | re-include |
+| 56 | | `TheGateSitsInAWideGap` | none | yes | ratios | re-include |
+| 57 | | `ItKeepsUpWithLiveAudio` | none | yes | text | re-include |
+| 58 | | `NothingIsSettledFromAnEmptyBandLive` | none | yes | no characters | re-include |
+| 59 | `Cw/TheQuietestBinNoLongerWinsTests` | `AnEmptyBinScoresNearNothing` | `CwPitchRanking` - nothing | yes | bin scores; doubt | stays red-open |
+| 60 | | `TheStationWinsTheBand` | `CwPitchRanking`, private `CoarseSpacingHz` | yes | a hertz | stays red-open |
+| 61 | | `OnRealAudioTheBareScorePicksAnEmptyBin` | same | yes | a hertz | stays red-open |
+| 62 | | `TheRankingDoesNotYetDriveTheDecode` | `CwDecoder.RankThePitch` - nothing | no | a switch | retirable, left with the file |
+| 63 | | `WithTheRankingOffTheSheetReportsTheTrackersPitch` | `Rankings`, `CwDecoder.Ranked`, `Rank` - nothing | yes | counters | retirable, left with the file |
+| 64 | | `NothingIsRankedFromTooLittleAudio` | `CwPitchRanking` | yes | no pitch; doubt | stays red-open |
+| 65 | | `DigitalSilenceIsNotRanked` | `CwPitchRanking` | no | not ranked | retirable, left with the file |
+| 66 | | `TheFloorIsAddedInPower` | `CwPitchRanking` | no | arithmetic | retirable, left with the file |
+| 67 | | `TheCandidatesAreTheTrackersOwnBins` | `CwPitchRanking`, private `CoarseSpacingHz` | no | the grid | retirable, left with the file |
+| 68 | `Cw/TheReferenceDecoderIsPortedFaithfullyTests` | `AcquisitionFindsTheNetAndTheTrackerRefinesIt` | `CwReferenceDecoder` - nothing | yes | a hertz | stays red-open |
+| 69 | | `TheNetReadsExactlyAsTheReferenceReadsIt` | `CwReferenceDecoder` | yes | text, dit, dah | stays red-open |
+| 70 | | `NoClockFitsNoise` | `CwReferenceDecoder` | no | no clock | retirable, left with the file |
+| 71 | | `EightMarksAreNeededBeforeAClockIsFittedAtAll` | `CwReferenceDecoder` | no | no clock | retirable, left with the file |
+| 72 | | `ATextbookFistFitsAndAnImpossibleSpeedDoesNot` | `CwReferenceDecoder` | no | a dit from numbers | retirable, left with the file |
+| 73 | | `AHeavyFistIsAdmittedByScatterWhereTheRatioBandRefusesIt` | `CwReferenceDecoder` | no | a clock | retirable, left with the file |
+| 74 | | `TheGateRefusesAWindowWithTooLittleContrast` | `CwReferenceDecoder` | no | keyed hops | retirable, left with the file |
+| 75 | | `TheSilenceControlsBehaveAsMeasured` | `CwReferenceDecoder` | yes | a character count | stays red-open |
+| 76 | | `AnAllZeroBufferIsRefused` | `CwReferenceDecoder` | zeros into a decoder | no characters | stays red-open |
+| 77 | `Cw/TheScoreSaysWhatItIsMeasuringTests` | `APerfectReadScoresOne` | `CwAccuracy` - nothing | no | a score of two strings | **retired** |
+| 78 | | `ABlockIsADeletionAndNotASubstitution` | `CwAccuracy` | no | same | **retired** |
+| 79 | | `RefusingEverythingYieldsNothing` | `CwAccuracy` | no | same | **retired** |
+| 80 | | `OnlyTheSpanWithTruthIsScored` | `CwAccuracy` | no | same | **retired** |
+| 81 | | `InsertionsAndDeletionsAreCountedApart` | `CwAccuracy` | no | same | **retired** |
+| 82 | | `NothingReadIsScoredAsEveryCharacterLost` | `CwAccuracy` | no | same | **retired** |
+| 83 | | `SpacingIsNormalizedRatherThanScored` | `CwAccuracy` | no | same | **retired** |
+| 84 | | `TheScoreIsDeterministic` | `CwAccuracy` | no | same | **retired** |
+| 85 | `Cw/WhatDecodeScoringCostsTests` | `OneDecodeAtOnePitchCostsThis` | none | yes | characters above 0 | re-include |
+| 86 | | `APitchWithNothingOnItIsTheCheapCase` | none | yes | rows ran | re-include |
+| 87 | | `AShortScoringWindowBreaksTheSilenceProperty` | `CwToneTracker.CoarseSpacingHz` - `CwToneTracker.cs:131: private const double CoarseSpacingHz = 25;`, private at HEAD | yes | `broken.Count >= 0` | **retired** |
+| 88 | `Cw/WhereHamletAndTheReferenceDivergeTests` | `TheElementStreamsAgreeOverTheCallsign` | `CwProbabilisticResult.Elements`, private 5-arg `Decode` | yes | elements | stays red-open |
+| 89 | | `TheShortRunFloorDiscardsAlmostNothing` | `CwUnitEstimator.Elements` with `out` - only the 3-argument form at `CwUnitEstimator.cs:334` | yes | dropped runs; doubt | stays red-open |
+| 90 | app `Views/ThePitchControlsAreOffThePanelTests` | `HoldThisPitchIsNotOnThePanel` | none | no | a screen fact | left, decision 6 |
+| 91 | | `ACaptureCannotReportAnAssertedPitch` | none | no | a screen fact | left, decision 6 |
+| 92 | | `TheEngineStillCarriesTheCapability` | `CwDecoder.AssertAt` - nothing | no | a lock | left, decision 6, parked |
 
-| Capture | Characters | Elements | Unsure | Tone | Exit |
-|---|---|---|---|---|---|
-| cw-2026-08-17-013347 | 59 | 108 | 2 | 625 | same |
-| cw-2026-08-17-013622 | 55 | 84 | 4 | 600 | same |
-| cw-2026-08-17-134712 | 63 | 98 | 42 | 500 | same |
-| cw-2026-08-18-004507 | 50 | 118 | 1 | 500 | same |
-| unadjudicated/cw-2026-08-18-003016 | 57 | 149 | 3 | 670 | same |
-| unadjudicated/cw-2026-08-18-003126 | 54 | 144 | 6 | 665 | same |
-| unadjudicated/cw-2026-08-18-003758 | 63 | 121 | 19 | 500 | same |
-| unadjudicated/cw-2026-08-20-014854 | 0 | 0 | 0 | 600 | same |
-| unadjudicated/cw-2026-08-20-014935 | 0 | 0 | 0 | 825 | same |
-| unadjudicated/cw-2026-08-22-014113 | 0 | 0 | 0 | 600 | same |
-| unadjudicated/cw-2026-08-22-014308 | 0 | 0 | 0 | 575 | same |
-| unadjudicated/cw-2026-08-22-031838 | 57 | 126 | 15 | 525 | same |
-| unadjudicated/cw-2026-08-22-031905 | 42 | 118 | 6 | 300 | same |
-| unadjudicated/cw-2026-08-22-031948 | 34 | 114 | 3 | 500 | same |
-| unadjudicated/cw-2026-08-22-032012 | 44 | 120 | 1 | 500 | same |
-| unadjudicated/cw-2026-08-22-032050 | 53 | 123 | 9 | 325 | same |
-| unadjudicated/cw-2026-08-22-032113 | 55 | 118 | 8 | 650 | same |
-| unadjudicated/cw-2026-08-22-032129 | 66 | 119 | 1 | 650 | same |
-| unadjudicated/cw-2026-08-23-001520 | 5 | 45 | 4 | 600 | same |
-| unadjudicated/cw-2026-08-23-001831 | 55 | 124 | 11 | 525 | same |
-| unadjudicated/cw-2026-08-23-001952 | 75 | 142 | 19 | 525 | same |
-| unadjudicated/cw-2026-08-23-002016 | 75 | 136 | 31 | 525 | same |
-| unadjudicated/cw-2026-08-24-012403 | 22 | 65 | 1 | 440 | same |
-| unadjudicated/cw-2026-08-25-011552 | 30 | 89 | 8 | 500 | same |
-| unadjudicated/cw-2026-08-25-012748 | 4 | 16 | 2 | 395 | same |
-| unadjudicated/cw-2026-08-25-012823 | 41 | 62 | 15 | 450 | same |
-| unadjudicated/cw-2026-08-25-012922 | 50 | 112 | 5 | 475 | same |
-| unadjudicated/cw-2026-08-25-013010 | 54 | 131 | 6 | 475 | same |
-| unadjudicated/cw-2026-08-25-013150 | 58 | 139 | 7 | 495 | same |
-| unadjudicated/cw-2026-08-25-013303 | 54 | 146 | 10 | 500 | same |
-| unadjudicated/cw-2026-08-25-013402 | 61 | 161 | 5 | 525 | same |
-| unadjudicated/cw-2026-08-25-013520 | 60 | 153 | 5 | 540 | same |
-| unadjudicated/cw-2026-08-25-013637 | 63 | 164 | 3 | 550 | same |
-| unadjudicated/cw-2026-08-25-021410 | 47 | 99 | 11 | 550 | same |
-| unadjudicated/cw-2026-08-25-021629 | 47 | 96 | 20 | 500 | same |
-| unadjudicated/cw-2026-08-25-021825 | 41 | 74 | 16 | 400 | same |
-| unadjudicated/cw-2026-08-26-125941 | 0 | 0 | 0 | 400 | same |
+**The retirements, as `docs\cw-retired-tests.txt` carries them** below its four-line header:
 
-**The printer**, identical at entry and at exit:
+```
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.APerfectReadScoresOne | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.ABlockIsADeletionAndNotASubstitution | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.RefusingEverythingYieldsNothing | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.OnlyTheSpanWithTruthIsScored | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.InsertionsAndDeletionsAreCountedApart | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.NothingReadIsScoredAsEveryCharacterLost | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.SpacingIsNormalizedRatherThanScored | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.TheScoreIsDeterministic | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.ThePosteriorSurvivesItsOwnArithmeticTests.LogSumStaysFinite | missing: CwProbabilisticDecoder.LogSum | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.ThePosteriorSurvivesItsOwnArithmeticTests.TwoEqualTermsDoubleTheEvidence | missing: CwProbabilisticDecoder.LogSum | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.ThePosteriorSurvivesItsOwnArithmeticTests.NegativeInfinityIsTheIdentity | missing: CwProbabilisticDecoder.LogSum | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.ThePosteriorSurvivesItsOwnArithmeticTests.EveryPosteriorIsAProbability | missing: CwProbabilisticDecoder.Posterior | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.ThePosteriorSurvivesItsOwnArithmeticTests.DigitalSilenceProducesNothingRatherThanANumber | missing: CwProbabilisticDecoder.Posterior | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.ThePosteriorSurvivesItsOwnArithmeticTests.NoHopsProduceNoPosterior | missing: CwProbabilisticDecoder.Posterior | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.FittingKeyUpAgainstAssumingItTests.WhatFittingKeyUpDoesToEveryRecording | missing: CwProbabilisticDecoder.FittedLogLikelihoods | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Audio.TheReadPathDoesNotAllocateTests.TheKeyingMeterSizesItsWindowOnceAndReusesIt | missing: CwKeyingMeter.WindowSizings | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Audio.TheTapIsNotBehindTheDecoderTests.TheTapIsWholeWhileTheDecoderCrawls | missing: CwDecoder.ProcessDelayForTests | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Audio.TheTapIsNotBehindTheDecoderTests.AFullQueueDropsAndCounts | missing: CwDecoder.ProcessDelayForTests | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.NothingActsOnTheAdmissionVerdictTests.AnUnmeasuredPitchIsStillReportedAndSaysSo | missing: CwDecodeReport constructor parameter PitchChoice | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.WhatDecodeScoringCostsTests.AShortScoringWindowBreaksTheSilenceProperty | missing: CwToneTracker.CoarseSpacingHz, private at HEAD | unit 398 | 2026-09-23
+```
 
-| Capture | Settled text | Word | Distance |
+**The re-includes, each built and run by type**, `timeout 600`, `--no-build`:
+
+| File | Build | Run | Facts green or red |
 |---|---|---|---|
-| 021410 | `■ ■ ■ M ■ ■ ■ ■ T O MTT T  Y M TT ■ ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM` | WEEKEND / THINKING / FLEX | 5 / 5 / 1 |
-| 013637 | `TE MP NEVEN T REV■R G O T AB OV E ■7 5 F ES ■CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO` | ABOVE / BREEZE | 2 / 2 |
+| `ABlipDoesNotShiftEverythingAfterItTests` | exit 0, 8 s | 3 of 3, 3 s | all green; clean, blipped and three-blip all `CQ DE W1AW K`, the dit control `CQ ME W1AW K` |
+| `TheTapIsNotBehindTheDecoderTests` | exit 0, 6 s | 1 of 1, 2 s | green |
+| `NothingActsOnTheAdmissionVerdictTests` | exit 0, 6 s | 1 of 1, 2 s | green |
+| `WhatDecodeScoringCostsTests` | exit 0, 6 s | 2 of 2, 6 s | both green; 21 characters at the 12 s window |
+| `TheReadPathDoesNotAllocateTests` | exit 0, 5 s | 3 of 3, 2 s | all green |
+| `TheCleanReadsStayCleanTests` | exit 0, 5 s | 6 of 7 cases, 20 s | `EachCleanCaptureStillContainsItsTruth` **red-open** on `cw-2026-08-18-003758`: wants `AA4MP/4 QNIK`, reads `■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETMP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ...`; green on `012403` and `013347`. Named-character counts green: 21 of floor 20, 44 of 42, 57 of 9 |
+| `TheProbabilisticDecoderTests` | exit 0, 5 s | 11 of 11 cases, 9 s | all six facts green |
 
-**The runs.**
+**Carry-forward lines and floors:**
 
 | Run | Entry | Exit |
 |---|---|---|
-| App carry-forward line | 278 of 278 in 155 s, unit 396's exit under decision 20 | 278 of 278 in 167 s |
-| Engine carry-forward line | 176 of 176 in 374 s of 480, unit 396's exit under decision 20 | 176 of 176 in 374 s of 480 |
-| Captures type | 37 of 37 in 95 s | 37 of 37 in 92 s |
-| Adjudicated type | 13 of 13 in 29 s | 13 of 13 in 29 s |
-| Clean synthetics | 0 of 2 in 3 s, placeholders | 0 of 2 in 4 s, the same placeholders |
-| Printer | 2 of 2 in 5 s | 2 of 2 in 6 s |
+| App line | 278 of 278, 167 s, unit 397's exit under decision 4 | 278 of 278, 160 s |
+| Engine line | 176 of 176, 374 s, unit 397's exit under decision 4 | 176 of 176, 374 s of 480 |
+| Captures type | 37 of 37, 94 s | 37 of 37, 91 s, every row identical |
+| Adjudicated type | 13 of 13, 29 s | 13 of 13, 29 s |
+| Clean synthetics | 0 of 2, 3 s, R53 | 0 of 2, `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■` |
 
-Decision 20's diff, `git diff --stat e2b31a40 HEAD -- src tests docs/carry-forward-tests.txt`, output:
-*(empty)*. At exit the eleven transmit files printed nothing against `7e209cb4`, `src` printed nothing
-against `5688a8a5`, and the two floor test files printed nothing against `ee0ea0dc`. `git worktree
-list` shows the root and the three preflight trees.
+Decision 4's diff, `git diff --stat 3af36501 HEAD -- src tests docs/carry-forward-tests.txt`,
+printed nothing. At exit: the eleven transmit files nothing against `7e209cb4`; `git diff --stat
+5688a8a5 HEAD -- src` nothing; `git diff --stat 7e2abb7e HEAD -- tests` 8 files, 833 deletions -
+exactly the 3 deleted, the 4 trimmed and the engine csproj; `git worktree list` the root and the
+three preflight trees.
+
+**Section 5 checks:** HEAD was `7e2abb7e` as named; `Directory.Build.props` line 1254 read
+`1.13.84`; `PROJECT_STATUS.md` at HEAD read unit 390, `TASK 5 of 6`, the working copy unit 397
+`COMPLETED`, `TASK 2 of 3` - a mismatch, `398 item 4`; `PHASE_STATUS.md` read `CURRENT_STEP: 0`,
+`WORK_INSTRUCTION: 397`, set as section 5 asks; `PHASE_OUTCOME.md` as described, paired entries for
+392 to 397; the modified and untracked root and `tools\arbiter\` files as listed, plus `SESSION.lock`,
+left; `CLAUDE.md` line 360 is the top row, HM-DEC-167; `PARKED.md` two headings, 38 items;
+`docs\cw-retired-tests.txt` absent at entry; 21 and 1 `<Compile Remove>` lines as stated; 34 files
+under `Cw`, the grep as the table above; `Cw` against `7e209cb4` 4 files as stated; the carry-forward
+lines, guard row and known-reds lines where stated; the printer and the two capture rows as stated.
+Mismatches beyond `PROJECT_STATUS.md`: the instruction's table calls `NothingActsOnTheAdmissionVerdictTests`'
+second fact an audio fact and it is not; unit 392's `CwAccuracy` is prose only in two files; the app
+file carries 3 facts, not 1. All in `398 item 4`.
 
 ## 4. What's blocking us
 
-Nothing blocks a criterion of step 4; every one is ticked. The unit's findings that block nothing
-are `397 item 1` to `397 item 4` in `docs\phase-cw\PARKED.md` under R54:
-- item 1: the 14 unrun chains, the step's total.
-- item 2: piece 44's meter half.
-- item 3: what pieces 34 and 42 moved.
-- item 4: the `PROJECT_STATUS.md` mismatch and the status file I blanked.
-
-The layer mismatch persists and is reported, not repaired: `PHASE_OUTCOME.md` and `PHASE_STATUS.md`
-hold steps 0 and 2 at `not started` with every criterion of both `[x]` in the plan.
+Nothing. No criterion of step 3 that this unit could reach is waiting on a ruling. 3.4 and 3.5 wait on
+the decode repairs R49 orders next, which are the next units' work, not a question. Everything this
+unit found that blocks nothing is `398 item 1` to `398 item 4` in `docs\phase-cw\PARKED.md`.
