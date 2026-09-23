@@ -1,207 +1,301 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - CW decodes again. Step 0 is ticked on all four criteria
-   and its state line still reads not started, a layer mismatch reported
-   here; step 1 was partial at entry on 1.5 alone; step 2 is this unit's
-   second half; steps 3 to 5 are not started. After this unit step 1 is
-   done and step 2 is done.
+A. The phase goal - CW decodes again. Steps 0, 1 and 2 are ticked on every
+   criterion; the outcome file holds 0 and 2 at not started and 1 at done,
+   a layer mismatch reported here; step 3 is this unit's, at 3.1; steps 4
+   and 5 are not started. After this unit step 3 is in progress with 3.1
+   met, and 3.3 met with it.
 B. The criteria, one line each, met or not:
-   1.5 met - engine 150 of 150 at task 0; app line after the repair 277 and
-       275 of 278, every loss the dispatcher loop and green in the other run,
-       no red on an assertion; TheOliviaRowsTests green in every run.
-   2.1 met - line 9 carries the adjudicated type and the thirteen 08-25
-       captures, and the guard table has a CW row naming them and unit 393.
-   2.2 met - 20 of 26 red against a CwDecoder that hands nothing on, every
-       case that asserts a decode; 26 of 26 green with the file put back.
-   2.3 met - engine line 301 s before, 372 s and 373 s after, of 480.
-   2.4 met - app 278 of 278, engine 176 of 176 at exit, nothing red that was
-       green at task 0.
-C. The report last. Section 4 raises 23 items - unit 390's nine, unit 391's
-   five and unit 392's four carried, and this unit's own five - and none is
-   in the way of a criterion in B. Item 1 is a regression the guard caused
-   and this unit repaired by a self-ruling you may overrule.
+   3.1 met - all 51 names run by type at HEAD and classified with numbers in
+       docs/phase-cw/unit394-reds.md: 30 green, 21 red-open, none repaired,
+       retired or unmeasured.
+   3.2 not met, vacuous - no retirement was made, so nothing to quote and no
+       docs/cw-retired-tests.txt; left open.
+   3.3 met - no audio-reading test retired; every one of the 21 reds reads
+       audio and is listed red-open with its number and what it asserts.
+   3.4 not this unit's - the known-reds block is unchanged, decision 7.
+   3.5 not ticked, the step's exit - at this unit's exit the floors are 37 of
+       37 and 13 of 13, both lines green but for dispatcher-loop losses with
+       no red on an assertion, and the synthetics red at both ends under R53.
+C. The report last. Section 4 raises 29 items - unit 390's nine, unit 391's
+   five, unit 392's four and unit 393's five carried, and this unit's own
+   six - and none is in the way of a criterion in B. Task 3, the clean
+   synthetics measured four ways, was dropped on its own clock rule and is
+   the next unit's first measurement.
 ```
 
 ```
-UNIT:       393 - complete at task 4 of 5, tasks 0 to 4, none dropped - 2026-09-22 21:47
-PHASE GOAL: get the CW decoder reading again from the last code that read, make sure no later unit can break it without the list going red, clear the inherited reds, judge the August rework on numbers, and end with Tim hearing it read at the radio
-UNIT GOAL:  get both carry-forward lines green again by fixing the Olivia rows test's file read, which closes step 1, then put a CW read guard on the engine line, show it refusing a broken decoder, and show the line still fits its 480 s, which closes step 2
-ADVANCED:   yes - step 1's last criterion and all four of step 2's are ticked on measured runs, and CW now has a read guard on the list every unit runs
-NUMBER:     app line red on an assertion-free IOException: 1 -> 0; CW names on the engine line: 0 -> 2 terms, 26 cases; engine line wall time 301 s -> 373 s of 480
+UNIT:       394 - complete at task 4 of 5, tasks 0, 1, 2 and 4, task 3 dropped on its clock rule - 2026-09-22 23:00
+PHASE GOAL: get the CW decoder reading again from the last code that read, keep it from breaking silently, clear the inherited CW reds one at a time under R49, judge the August rework on numbers, and end with Tim hearing it read at the radio
+UNIT GOAL:  run every one of the 51 inherited CW reds against the restored decoder, one type per invocation, and put a classification and a number beside every name, so step 3 repairs from a list and not a guess
+ADVANCED:   yes - step 3 criterion 3.1 is ticked on measured runs, and 3.3 with it
+NUMBER:     of the 51 inherited CW names, classified at HEAD: 0 -> 51; green 30, red-repaired 0, red-retired 0, red-open 21, unmeasured 0; engine line 375 s -> 371 s of 480
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 5: tasks 0 to 4 done, none dropped.** Claude Code on the dev machine,
-Hamlet confirmed at the gate, branch `main`. Started 21:00, the last task committed at 21:46.
-Five commits, all pushed: `05b729eb`, `d6dbe8e2`, `bbefa9d7`, `f180cdb6`, `e09608c4`.
+**Complete at task 4 of 5. I ran tasks 0, 1, 2 and 4. Task 3 was dropped under its own clock
+rule: task 2 ended at 22:44, 41 minutes into the hour that began at 22:03, leaving 19 minutes
+against the rule's 25. Task 3 was the named drop candidate.** QUIVERFULL, `C:\Source\HamLet`,
+Hamlet confirmed by the gate's four checks, branch `main`.
 
-**Task 0, the record and the entry round.** Version 1.13.79 to 1.13.80. `PHASE_STATUS.md` read
-`CURRENT_STEP: 0` with `WORK_INSTRUCTION: 392 - the decoder reads again`. I set it to
-`CURRENT_STEP: 1` and `393 - the list is green, and CW is on it`. I appended `## UNIT 393 - STEP
-1` to `PHASE_OUTCOME.md` in unit 392's shape, with a line per task added as each finished. At
-entry the app line was 278 of 278 in 170 s. The race did not land, and nothing was lost. The
-engine line was 150 of 150 in 301 s. The floors were 37 of 37 in 97 s, 13 of 13 in 33 s, and 0
-of 2 in 7 s, the synthetics reading `■` placeholders. The eleven transmit files printed nothing
-against `7e209cb4`.
+**Task 0, the record and the entry round (`02c64ae2`).** I appended `## UNIT 394 - STEP 3` to
+`PHASE_OUTCOME.md` with the decision block's fields. `PHASE_STATUS.md` read `CURRENT_STEP: 0` and
+`WORK_INSTRUCTION: 393 - the list is green, and CW is on it`; I set them to 3 and
+`394 - the pile is counted, name by name`. The version went from 1.13.80 to 1.13.81. The entry
+round ran both lines of `docs\carry-forward-tests.txt` as its comment says, one build each, with a
+status line before each: app 278 of 278 in 170 s; engine 176 of 176 in 375 s, of which 26 are CW
+(176 less 150). The floors, one type per invocation: captures 37 of 37 in 97 s, with `001520`
+and `013637` of the failing set green in it; adjudicated 13 of 13, 30 s of test time; clean
+synthetics 0 of 2 in 5 s, the `■` placeholders R53 expects. The eleven transmit files printed
+nothing against `7e209cb4`. **Slip:** my edit adding the `ENTRY` line to `PHASE_OUTCOME.md` failed
+on an ambiguous match, so task 0's commit went without it. It rode in task 1's commit, and the
+line says so.
 
-**Task 1, the trace, then the repair (1.5).** The two share modes, as the sources have them:
-- **The writer:** `JsonlTelemetry.cs:188`, `File.AppendAllText(path, line + Environment.NewLine);`,
-  inside `WriteLoop` on the background thread started in the constructor. It opens the file for
-  writing and shares read.
-- **The reader:** `TheOliviaRowsTests.cs:675`,
-  `Directory.GetFiles(folder, "*.jsonl").SelectMany(File.ReadAllLines)`. It is called at line 306,
-  `var before = Lines(folder);`, inside the `using` of line 279 that owns the writer. It opens for
-  reading and shares read only. That refuses a handle already open for writing.
+**Task 1, the pile run by type (`c7fc1ecf`).** I ran thirteen invocations, one per compiled type,
+each `--no-build` after task 0's engine-line build (decision 5), with `timeout 600`, the detailed
+logger, and a status line naming the type and its ordinal. No run died before an assertion and
+nothing was re-run. **`OneDecoderNotTwoTests` did not finish inside 600 s.** The whole-type run
+printed 81 green and no red before `timeout` killed it at 601 s, and every case of
+`ListeningAndFeedingReadTheSame` was green, the set's three among them. Under decision 5 I split it
+by method and ran `TheBufferSizeChangesNothing` alone. That run printed 47 green and no red before
+it too was killed. Six of its 53 cases are unmeasured at the cap, and none is in the set.
+**Deviation, reported:** the first call, at `timeout 600` plus the status line, passed the
+harness's 600 s foreground cap by about a second, and the harness moved it to the background. I
+did not poll it; the notice of its end was the only read. I ran the split at `timeout 580` so it
+stayed in the foreground. `ABlipDoesNotShiftEverythingAfterItTests` was not run, because it is
+excluded from compilation, and I read it instead (decision 4).
 
-Alone before the edit: 7 of 7 in 99 s. The edit: `Lines` now opens each file with `new
-FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)` under a `StreamReader`
-and reads line by line to the end. No assertion or case moved. `git diff --stat` showed that
-one file under `tests` and nothing under `src`. The app line then ran 277 of 278 in 160 s. One
-name was lost to the dispatcher loop: `TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed`
-Olivia, the same name unit 392 lost. I re-ran it once: 275 of 278 in 167 s, with three
-`TheFavoritesAreUnderTheGreenZoneTests` names lost the same way. Each lost name was green in the
-other run. No run had a red on an assertion, and `TheOliviaRowsTests` was green in both. 1.5 is
-ticked.
+**Task 2, the classification (`73b0bec0`).** `docs\phase-cw\unit394-reds.md` sections 1 to 4:
+**30 green, 0 red-repaired, 0 red-retired, 21 red-open, 0 unmeasured.** No red has a wiring
+cause. All 20 that ran fail on a decode result the console printed: characters, share or speed.
+The one excluded file reads audio and asserts characters, so R49's second sentence forbids retiring
+it. **No repair and no retirement was made, and `docs\cw-retired-tests.txt` was not created.**
+3.1 and 3.3 are ticked in `PHASE_PLAN.md`; 3.2 is left open as vacuous.
+`git diff --stat 02c64ae2 HEAD -- src` prints nothing.
 
-**Task 2, the guard on line 9 (2.1, 2.3).** Decision 2's clause was appended, taking line 9 from
-25 terms to 27. The guard table has its CW row, and the foot has a `WHAT UNIT 393 ADDED`
-paragraph. **The first engine run was 175 of 176 in 300 s, and the red was not CW.**
-`TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes` failed its CPU ceiling:
-`demodulator cpu 26.563 s` against 20. The decode itself was perfect: CER 0, 251 of 251
-characters. The ceiling reads process CPU, and that type is not in the `CpuMeasuredAlone`
-collection, so it measured the CW cases running beside it. It was green at task 0 and red here
-on an assertion. **By HM-DEC-165 that is a regression the guard caused.** Per the rule, it was
-not re-run. Self-ruling 1 below repaired its wiring. The line was then measured again as a
-changed tree: 176 of 176 in 372 s, under decision 3's 420 s. 2.1 and 2.3 are ticked. All 26 CW
-cases on the line passed. The line runs at normal verbosity, so the 26 are counted as 176 less
-150, and each is named in task 3's runs.
+**Task 4, the exit round (`af4ce62b`).** App line 277 of 278 in 172 s, with 1 lost to the
+headless dispatcher loop. I re-ran it once: 275 of 278 in 169 s, with 3 lost the same way. Each
+lost name was green in the other run, and nothing went red on an assertion. Engine line 176 of
+176 in 371 s. Floors 37 of 37, 13 of 13, and synthetics 0 of 2 reading the same placeholders as
+at entry. The transmit files printed nothing against `7e209cb4`, and `src` printed nothing since
+`02c64ae2`. **There is no regression.** Section 5 of the doc.
 
-**Task 3, the guard watched (2.2).** I inserted one line into `CwDecoder.Process` after the tap
-takes the chunk: `if (chunk.Samples.Length >= 0) return;`. It is written as a condition because
-the build treats warnings as errors and would refuse a bare `return` above reachable code. It
-touches no transmit file. `git diff --stat HEAD -- src` showed `CwDecoder.cs` alone. Red run: 20
-of 26 red in 6 s. Green run, with the file put back by `git checkout HEAD --`: 26 of 26 in 32 s.
-`git status --short src` printed nothing after the put-back and after the green run, and the
-break was never committed. The six that stayed green in the red run cannot go red on any
-decoder. Five are readings Tim retired on 2026-08-30, which the test prints as `RETIRED` and does
-not assert. The sixth is `TheShortfallIsPrintedRatherThanPapered`. Everything else is in
-`docs/phase-cw/unit393-guard.md`.
-
-**Task 4, the exit round (2.4).** The app line was 278 of 278 in 159 s, and the engine line 176
-of 176 in 373 s, nothing lost. The floors were 37 of 37 (runner 98 s), 13 of 13 (runner 31 s)
-and 0 of 2 (5 s). The transmit files printed nothing against `7e209cb4`, and `git diff --stat
-HEAD -- src` printed nothing. 2.4 is ticked.
-
-**Regressions:** one, named. `TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes`, red
-in task 2's first engine run on its CPU ceiling, green at task 0. It was repaired in the same
-task, and it is green in the second task 2 run and at exit. Nothing else was red that had been
-green at task 0.
-
-**Author's decisions applied, all seven:**
-1. The repair is the reader's share mode, in the test only, as written.
-2. The guard is the adjudicated type whole plus the thirteen 08-25 captures by display name, as
-   written.
-3. Fit is 420 s. The line measured 372 s and 373 s, so the 08-25 clause stayed on.
-4. The break is one hunk in `CwDecoder.cs`, never committed, watched by the guard's own filter.
-5. Step 2's entry was taken as satisfied at task 1's tick, with the floors green at task 0.
-6. 1.5 was ticked at task 1 and re-confirmed at task 4.
-7. The timeouts were as given. Every run finished inside its own.
-
-**Self-rulings, one of two used:**
-1. **`TheOliviaDemodulatorTests` into the `CpuMeasuredAlone` collection.** The change is one
-   `[Collection(CpuMeasuredAlone.Name)]` attribute and a remark saying why, in
-   `tests/Hamlet.RadioEngine.Tests/Olivia/TheOliviaDemodulatorTests.cs`. No ceiling, case or
-   assertion moved. It cites `PHASE_PLAN.md` 2.4 and R12, and the collection's own remark at
-   `TheOliviaBlindSearchTests.cs:186-192`: *a ceiling read off a shared clock measures the
-   neighbors*. It rode in the task 2 commit, so that commit is not the carry-forward file alone,
-   as the instruction asked. It costs wall time: the type now runs after every parallel
-   collection, alone. The 372 s includes that.
-
-**Decisions on how to carry out tasks, reported:**
-- I ran each carry-forward line in its own tool call, because the harness caps one call at
-  600 s.
-- `PHASE_OUTCOME.md` and `PHASE_STATUS.md` were committed whole at task 0. See section 4, item 2.
-- I added one line per task to this unit's `PHASE_OUTCOME.md` entry, as unit 392 did.
+**Author's decisions applied, all overrulable:** 1, step 3's entry taken as satisfied on step 2's
+four ticks, with the outcome file's *not started* reported, not repaired; 2, the set is 51
+distinct names run by type, and the known-reds block adds none; 3, the four classifications as
+written, of which only green and red-open occurred; 4, the excluded file classified from its
+source, red-open; 5, `--no-build` and `timeout 600` per type with a split by method on a timeout,
+applied to `OneDecoderNotTwoTests` at 580 s as above; 6, not applied, because task 3 was dropped;
+7, nothing on or off either line, and the known-reds block untouched; 8, the task 0 and task 4
+floor runs cover every commit; 9, the timeouts as listed. **I made no self-ruling.** Every
+repair: none. Every retirement: none. Every regression: none.
 
 ## 2. What the owner should expect
 
-Nothing changes on the CW tab or anywhere else you can see. The decoder is the same one unit 392
-restored, byte for byte. A test that read its own log while the log was still being written now
-reads it in a way the writer allows, so it no longer fails for no reason on a busy machine. From
-this unit on, every unit that runs the list will see CW go red if the decoder stops producing
-what it produced on the evening of 2026-08-25, or loses one of the anchors you confirmed. That
-is a count, not a claim that it reads, and saying it reads is yours at step 5. **What will look
-wrong but is not:** the engine line now takes about 6 minutes instead of 5, and one Olivia test
-type now runs by itself at the end of that line, because its CPU ceiling was reading CW's work
-as its own. The two clean synthetics are still red. They are step 3's, and they stay off the
-list until they are green.
+Nothing changes on the CW tab. This unit ran tests and changed nothing under `src`. The pile of
+CW tests called *inherited* since August now has a result beside every one of its 51 names.
+**30 of them are green on the decoder you heard read on 2026-08-25.** Green means each
+assertion held, not that CW works. **21 are red on a decode result and wait their turn.** 14 of
+those assert the characters read, 5 the share of a message, and 2 a speed. The largest group is
+generated audio of `CQ DE W1AW K` that comes back as `■` placeholders or the wrong letters: the
+two clean synthetics, the six `CwDisplacementFloorTests`, and the speed test on an 18 wpm signal.
+Four receiver-tier recordings come back with the right tone and the wrong letters. **Nothing was
+retired.** The one test that cannot compile decodes audio and compares text, and R49 keeps those.
+Task 3 was dropped, so **where the two clean synthetics fail is still not measured.** The next
+unit measures it first. What will look wrong but is not: the app line lost a few names to the
+headless dispatcher loop at exit. That is the known lost run, and each lost name was green in the
+other run.
 
 ## 3. What you should see
 
-**No visible change. This unit makes the list catch a CW regression from here on.**
+**The 51 names**, in the order of `docs\unit239-failing-set.txt`, prefix
+`Hamlet.RadioEngine.Tests.Cw.` dropped, copied from `docs\phase-cw\unit394-reds.md` section 2:
 
-**Every carry-forward run this unit made:**
-
-| When | Line | Count | Wall time | Lost before an assertion | Red on an assertion |
+| # | Name | Type | Class | Number | Reason |
 |---|---|---|---|---|---|
-| Task 0 | app | 278 of 278 | 170 s | none | none |
-| Task 0 | engine, 25 terms | 150 of 150 | 301 s | none | none |
-| Task 1 | app | 277 of 278 | 160 s | `TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed` Olivia | none |
-| Task 1, re-run once | app | 275 of 278 | 167 s | `TheFavoritesAreUnderTheGreenZoneTests`: `TheStarIsDrawnAndHittable...`, `PressingTheStarSaves...`, `TheWayBackInCostTheTopBandNothing` | none |
-| Task 2 | engine, 27 terms | 175 of 176 | 300 s | none | `TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes`, CPU 26.6 s of 20 |
-| Task 2, after self-ruling 1 | engine, 27 terms | 176 of 176 | 372 s | none | none |
-| Task 4 | app | 278 of 278 | 159 s | none | none |
-| Task 4 | engine, 27 terms | 176 of 176 | 373 s | none | none |
+| 1 | `ASubMinimumBlipInAGapChangesNothingAfterIt` | `ABlipDoesNotShiftEverythingAfterItTests` | red-open | not run: file excluded by `<Compile Remove>` | asserts **characters**: generates `CQ DE W1AW K` at 18 wpm and asserts the text read with a 10 ms blip equals the text read without; not retirable under R49's second sentence; see the note below the table |
+| 2 | `ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis(startHz: 500)` | `ARecordingWithKeyingInItIsReadTests` | green | passed | - |
+| 3 | `...WhereTheTrackerStartsDoesNotDecideThis(startHz: 550)` | `ARecordingWithKeyingInItIsReadTests` | green | passed | - |
+| 4 | `...WhereTheTrackerStartsDoesNotDecideThis(startHz: 600)` | `ARecordingWithKeyingInItIsReadTests` | green | passed | - |
+| 5 | `CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-134712")` | `CapturedSignalTests` | green | passed | - |
+| 6 | `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 25, floor: 0.79)` | `CwAcquisitionWindowTests` | red-open | *25 words a minute tuned onto mid-transmission came back 0.75 of the message against a bar of 0.79* | asserts **share** of the message |
+| 7 | `...AFastFistIsReadWithoutARunUp(wordsPerMinute: 28, floor: 0.79)` | `CwAcquisitionWindowTests` | green | bare 0.95 | - |
+| 8 | `...AFastFistIsReadWithoutARunUp(wordsPerMinute: 30, floor: 0.79)` | `CwAcquisitionWindowTests` | green | bare 0.88 | - |
+| 9 | `...AFastFistIsReadWithoutARunUp(wordsPerMinute: 35, floor: 0.78)` | `CwAcquisitionWindowTests` | green | bare 0.89 | - |
+| 10 | `...TheSameFistWithARunUpDoesNot(wordsPerMinute: 25)` | `CwAcquisitionWindowTests` | green | run-up 0.95 | - |
+| 11 | `...TheSameFistWithARunUpDoesNot(wordsPerMinute: 28)` | `CwAcquisitionWindowTests` | green | run-up 0.84 | - |
+| 12 | `...TheSameFistWithARunUpDoesNot(wordsPerMinute: 30)` | `CwAcquisitionWindowTests` | green | run-up 0.88 | - |
+| 13 | `...TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 18)` | `CwAcquisitionWindowTests` | green | run-up 1.00 | - |
+| 14 | `...TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 3)` | `CwAcquisitionWindowTests` | green | run-up 0.98 | - |
+| 15 | `...TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 18)` | `CwAcquisitionWindowTests` | red-open | *12 words a minute at 18 dB came back 0.63 of the message*, bar 0.66 | asserts **share** of the message; the same speed at 6 dB and 3 dB is green at 0.96 and 1.00 |
+| 16 | `...TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 3)` | `CwAcquisitionWindowTests` | green | run-up 1.00 | - |
+| 17 | `...TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 6)` | `CwAcquisitionWindowTests` | green | run-up 0.96 | - |
+| 18 | `CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400)` | `CwDisplacementFloorTests` | red-open | read `■ ■■ ■`, expected to end `CQ DE W1AW K` | asserts **characters** |
+| 19 | `...AStationElsewhereIsStillFound(toneHz: 500)` | `CwDisplacementFloorTests` | red-open | read `■ ■■ ■`, expected to end `CQ DE W1AW K` | asserts **characters** |
+| 20 | `...AStationElsewhereIsStillFound(toneHz: 750)` | `CwDisplacementFloorTests` | red-open | read `■ ■■ ■`, expected to end `CQ DE W1AW K` | asserts **characters** |
+| 21 | `...AStationElsewhereIsStillFound(toneHz: 875)` | `CwDisplacementFloorTests` | red-open | read `■ ■■ ■`, expected to end `CQ DE W1AW K` | asserts **characters** |
+| 22 | `CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead` | `CwDisplacementFloorTests` | red-open | read ending `VIVVV E KCTCGQQ N DEDE E WWAJ11AARW W N K`, expected to end `CQ DE W1AW K` | asserts **characters** |
+| 23 | `CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage` | `CwDisplacementFloorTests` | red-open | read `■ ■■ ■`, expected to end `CQ DE W1AW K` | asserts **characters** |
+| 24 | `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom` | `CwEmissionGateTests` | red-open | *real signal reported none wpm*; `Assert.NotNull` on the speed, then 14 to 24 | asserts **speed** on an 18 wpm generated signal; the noise half, no speed from noise, held |
+| 25 | `CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm")` | `CwFixtureTests` | red-open | *clean-12wpm gave back 0 of 9, short of the 100% it has to manage* | asserts **share**; R53's synthetic |
+| 26 | `...EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm")` | `CwFixtureTests` | red-open | *clean-18wpm gave back 0 of 9, short of the 100% it has to manage* | asserts **share**; R53's synthetic |
+| 27 | `...EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm")` | `CwFixtureTests` | green | passed | - |
+| 28 | `...EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm")` | `CwFixtureTests` | green | passed | - |
+| 29 | `...EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm")` | `CwFixtureTests` | green | passed | - |
+| 30 | `...EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm")` | `CwFixtureTests` | red-open | *prosigns-18wpm gave back 0 of 16, short of the 100% it has to manage* | asserts **share** |
+| 31 | `CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")` | `CwFixtureTests` | red-open | read `■ ■ ■ ■ ■  ■ ■ ■ ■■` against `CQ DE W1AW K` | asserts **characters**; R53, the floor synthetic, step 3's repair, not retirable |
+| 32 | `CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")` | `CwFixtureTests` | red-open | read `■ ■ ■  ■■■` against `CQ DE W1AW K` | asserts **characters**; R53, as above |
+| 33 | `CwFixtureTests.TheProsignRecordingDecodesItsProsigns` | `CwFixtureTests` | red-open | `<BT>` not found in `■ ■ ■■ ■■■ ■■ ■ ■■■ ■■■ ■■ ■ ■■■ ■■■■■■ ■`··· | asserts **characters** |
+| 34 | `CwLowDutyTests.AStationKeyedForAMomentReadsAsAStrongStation` | `CwLowDutyTests` | green | passed | - |
+| 35 | `CwLowDutyTests.TheHeldFigureLetsGoWhenTheStationStops` | `CwLowDutyTests` | green | passed | - |
+| 36 | `CwLowDutyTests.TheToneIsFoundWhereItActuallyIs` | `CwLowDutyTests` | green | passed | - |
+| 37 | `CwRefiningRetuneTests.AHandoverToAnotherStationStillResets` | `CwRefiningRetuneTests` | green | passed | - |
+| 38 | `CwRefiningRetuneTests.AMoveBeforeAnythingHasBeenReadIsAFollow` | `CwRefiningRetuneTests` | green | passed | - |
+| 39 | `CwRefiningRetuneTests.TheSurveySettlingBetweenTwoBinsIsNotAStationChange` | `CwRefiningRetuneTests` | green | passed | - |
+| 40 | `CwSurveyThresholdPinTests.TheToneInTheInterferenceCaptureIsStillFound` | `CwSurveyThresholdPinTests` | green | passed | - |
+| 41 | `Fixtures.CwAdjudicationTests.ASpeedChangeInRealisticAudio` | `Fixtures.CwAdjudicationTests` | red-open | *no speed was ever named*; `Assert.NotEmpty` on the speeds | asserts **speed** across the two-station recording; also the known-reds block's line 158 |
+| 42 | `Fixtures.CwReceiverFixtureTests.NothingIsEmittedDuringTheOperatorsOwnTransmission` | `Fixtures.CwReceiverFixtureTests` | red-open | *70 characters during the preamble, 134 in all* against 0; *own transmit measured: 9.1 s*, its over-3 s assertion held | asserts **characters** emitted inside the operator's own transmission, on `qsk-preamble.wav` |
+| 43 | `Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "coverage-easy")` | `Fixtures.CwReceiverFixtureTests` | red-open | 5 characters unreadable, 37 not in the message, reads `VVEVSVVAW■11S■22E2H33E3S44E4H55NB6E6MZ77NO88T8MO99T9MO900■■SKRYNTTTTMEQUTOOA?TDDEENXITE/TTEENMO■00TKCCAAEARLLALL` against `1234567890QRZ?DE/N0CALL` | asserts **characters** |
+| 44 | `...TheEasyTierIsReadWhole(name: "exchange-easy")` | `Fixtures.CwReceiverFixtureTests` | red-open | 3 unreadable, 21 not in the message, reads `VVEVSVVNKCECMZQQENCCTCMQQQ■■TNENMO■00TKCCAAEARLLALLTNENMOTTT00TKCCAAEARTEELAETEILNKKK` against `CQCQDEN0CALLN0CALLK` | asserts **characters** |
+| 45 | `...TheEasyTierIsReadWhole(name: "tightfist-easy")` | `Fixtures.CwReceiverFixtureTests` | red-open | 1 unreadable, 3 not in the message (H, I, I), reads `VEVHVVTETEIESTSTTTDDEEETETEISTSTTTKKK■` against `TESTDETESTK` | asserts **characters** |
+| 46 | `OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-23-001952")` | `OneDecoderNotTwoTests` | green | passed | - |
+| 47 | `...ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-012922")` | `OneDecoderNotTwoTests` | green | passed | - |
+| 48 | `...ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-005051")` | `OneDecoderNotTwoTests` | green | passed | - |
+| 49 | `TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001520", ...)` | floor type | green | passed, task 0 | - |
+| 50 | `TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013637", ...)` | floor type | green | passed, task 0 | - |
+| 51 | `ThePitchCanBeHeldTests.UnlockingLetsTheTrackerSteerAgain` | `ThePitchCanBeHeldTests` | green | passed | - |
 
-**Task 3, the guard alone,** `timeout 300`:
+**By what the 21 red-open assert:** characters 14, share 5, speed 2. **#1 cannot run.** Its file
+is excluded from compilation, and all three of its facts decode generated audio and compare text.
 
-| Case | Floor or anchor | Broken decoder | Put back |
-|---|---|---|---|
-| 08-25-013520 | 60 chars, 153 elements | red, 60 to 0 | green |
-| 08-25-013637 | 63, 164 | red, 63 to 0 | green |
-| 08-25-012922 | 50, 112 | red, 50 to 0 | green |
-| 08-25-013402 | 61, 161 | red, 61 to 0 | green |
-| 08-25-013150 | 58, 139 | red, 58 to 0 | green |
-| 08-25-013010 | 54, 131 | red, 54 to 0 | green |
-| 08-25-021825 | 41, 74 | red, 41 to 0 | green |
-| 08-25-012748 | 2, 4 | red, 2 to 0 | green |
-| 08-25-012823 | 41, 62 | red, 41 to 0 | green |
-| 08-25-013303 | 54, 146 | red, 54 to 0 | green |
-| 08-25-011552 | 30, 89 | red, 30 to 0 | green |
-| 08-25-021410 | 47, 99 | red, 47 to 0 | green |
-| 08-25-021629 | 47, 96 | red, 47 to 0 | green |
-| 08-17-013347 | `VA3VRR` | red, not found in "" | green |
-| 08-18-003758 | `MP/4 QNIK` | red, not found in "" | green |
-| 08-24-012403 | `DE KD0UN KD0UN K` | red, not found in "" | green |
-| 08-18-004507 | `N HANDLING THIS MESSAG` | red, not found in "" | green |
-| 08-22-031838 | `, AND` | red, not found in "" | green |
-| 08-22-031948 | `110, AND 110 W...` | red, not found in "" | green |
-| 08-22-032012 | `R OTHER WEBSITES MENTI` | red, not found in "" | green |
-| 08-17-134712 | `N4`, retired 2026-08-30 | green, not asserted | green |
-| 08-22-031905, 032050, 032113, 032129 | retired 2026-08-30, squelch | green, not asserted | green |
-| `TheShortfallIsPrintedRatherThanPapered` | none | green | green |
-| **Total** | | **20 of 26 red, 6 s** | **26 of 26 green, 32 s** |
+**The runs by type**, `--no-build`, `timeout 600` each:
 
-**The three floor tests:**
+| Type | File added | Cases in the type | Cases in the set | Green | Red | Lost | Wall time |
+|---|---|---|---|---|---|---|---|
+| `ABlipDoesNotShiftEverythingAfterItTests` | 2026-08-29 | 3 | 1 | - | - | - | not run, excluded from compilation |
+| `ARecordingWithKeyingInItIsReadTests` | 2026-08-20 | 5 | 3 | 5 | 0 | 0 | 14 s |
+| `CapturedSignalTests` | 2026-08-16 | 13 | 1 | 13 | 0 | 0 | 42 s |
+| `CwAcquisitionWindowTests` | 2026-08-18 | 12 | 12 | 10 | 2 | 0 | 18 s |
+| `CwDisplacementFloorTests` | 2026-08-18 | 6 | 6 | 0 | 6 | 0 | 13 s |
+| `CwEmissionGateTests` | 2026-08-16 | 8 | 1 | 7 | 1 | 0 | 8 s |
+| `CwFixtureTests` | 2026-08-14 | 23 | 9 | 14 | 9 | 0 | 14 s |
+| `CwLowDutyTests` | 2026-08-16 | 4 | 3 | 4 | 0 | 0 | 21 s |
+| `CwRefiningRetuneTests` | 2026-08-18 | 3 | 3 | 3 | 0 | 0 | 6 s |
+| `CwSurveyThresholdPinTests` | 2026-08-17 | 3 | 1 | 3 | 0 | 0 | 7 s |
+| `Fixtures.CwAdjudicationTests` | 2026-08-17 | 11 | 1 | 10 | 1 | 0 | 13 s |
+| `Fixtures.CwReceiverFixtureTests` | 2026-08-17 | 27 | 4 | 23 | 4 | 0 | 14 s |
+| `OneDecoderNotTwoTests` | 2026-08-25 | 106 | 3 | 100 | 0 | 0 | 601 s, timed out; split 580 s, timed out |
+| `TheCapturesThatDecodeKeepDecodingTests` | before 08-25 | 37 | 2 | 37 | 0 | 0 | 97 s, task 0 |
+| `ThePitchCanBeHeldTests` | 2026-08-24 | 5 | 1 | 5 | 0 | 0 | 3 s |
 
-| Type | Entry | Exit |
+`OneDecoderNotTwoTests`: 106 cases, 100 green, 0 red, 6 unmeasured at the cap, none in the set.
+Outside the set, the thirteen types carry three more reds, all in `CwFixtureTests`:
+`NothingTheDecoderWasSureOfIsWrong` on `fading-18wpm`, `noisy-18wpm` and `interference-18wpm`,
+each asserting that no confident character is wrong. For example, *invented 'N', pattern [-.],
+score 17.94*. Section 3 of the doc.
+
+**Task 3's eight-row table:** not run, task 3 dropped.
+
+**Carry-forward lines and floors, entry and exit:**
+
+| Run | Entry, task 0 | Exit, task 4 |
 |---|---|---|
-| `TheCapturesThatDecodeKeepDecodingTests` | 37 of 37, 97 s | 37 of 37, runner 98 s |
-| `TheAdjudicatedReadingsKeepReadingTests` | 13 of 13, 33 s | 13 of 13, runner 31 s |
-| `CwFixtureTests.TheCleanRecordingsDecodeExactly` | 0 of 2, 7 s, reading `■` placeholders | 0 of 2, 5 s, the same |
-
-Entry times are wall times measured by the script. Exit times for the first two are the test
-runner's totals, because the script's wall-time line was cut from the kept console.
+| App line | 278 of 278 in 170 s | 277 of 278 in 172 s, 1 lost to the dispatcher loop; re-run once, 275 of 278 in 169 s, 3 lost the same way; each lost name green in the other run, no red on an assertion |
+| Engine line, `timeout 480` | 176 of 176 in 375 s, 26 of them CW | 176 of 176 in 371 s |
+| `TheCapturesThatDecodeKeepDecodingTests`, `timeout 900` | 37 of 37 in 97 s | 37 of 37, 92 s test time |
+| `TheAdjudicatedReadingsKeepReadingTests`, `timeout 600` | 13 of 13, 30 s test time | 13 of 13, 30 s test time |
+| `CwFixtureTests.TheCleanRecordingsDecodeExactly`, `timeout 300` | 0 of 2 in 5 s, `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■` | 0 of 2 in 7 s, the same two readings; R53 |
+| Eleven transmit files against `7e209cb4` | nothing | nothing |
 
 ## 4. What's blocking us
 
-**Nothing blocks a criterion. Item 1 is a regression this unit caused and repaired by a
-self-ruling; the rest are findings. Unit 392's item 1 is answered by this instruction, its option
-A in the order of its option C, and is dropped from the queue. The rest of the queue is carried
-per HM-DEC-139, below.**
+**Nothing blocks a criterion. This unit's six items are findings and mismatches, and none needs
+a ruling to proceed. Unit 393's five, unit 392's items 2 to 5, unit 391's items 2 to 6 and unit
+390's nine are carried per HM-DEC-139, verbatim, below. None of them is this unit's to answer.
+Unit 393's item 1, the Olivia demodulator type in `CpuMeasuredAlone`, is a self-ruling you may
+overrule, carried as such.**
+
+**1. Task 3 was dropped on its clock rule, so the two clean synthetics are unmeasured four ways.**
+*A finding.* Task 2 ended at 22:44 with 19 minutes of the hour left. The four-way printer,
+`Cw\CwCleanSyntheticsDiagnosisTests.cs`, was not written. The next unit makes this measurement
+before any repair of #25, 26, 31 and 32, as the instruction says. Tonight's runs add one
+indication. `CwDisplacementFloorTests` generates its audio in memory through `CwSignal.Generate`
+and reads the same kind of placeholders, `■ ■■ ■`. So the committed `.wav` path alone is unlikely
+to be the whole of it. That is a guess from one pattern, not a measurement.
+
+**2. `ABlipDoesNotShiftEverythingAfterItTests` names `CwReferenceDecoder` only in doc prose.**
+*A mismatch with section 5, decision 4 and unit 392's table.* The name occurs once, at line 30,
+inside a `<para>` of the class remarks. The code never uses it, and prose in backticks does not
+bind. So the name unit 392 quoted is not what keeps the file out of the build, or not alone.
+The file's code names `CwSignal.Generate`, `CwSignalRequest`, `CwSignal.DefaultToneHz`,
+`BufferedAudioSource.PumpAll`, `CwDecoder.Listen`, `Flush` and `Reading.Text`. Every one but
+`Reading.Text` is used by a compiled engine test. `Reading.Text` appears elsewhere only in
+`AMoveStartsTheDecoderFreshTests.cs`, which is itself excluded. I opened nothing under `src` and did
+not build the file, so which name fails is not measured. The classification does not depend on
+it: the file is red-open either way. **Option A:** the next step 3 unit re-includes the file in
+one build to read the real error, and rewires it under R12 if the error is a renamed member.
+**Option B:** leave it for step 4's verdict. **My recommendation:** A. It is one build, and it
+may turn an uncompilable test into a runnable one.
+
+**3. `OneDecoderNotTwoTests` does not fit in one 600 s call, and the harness caps at 600 s.**
+*A finding against HM-DEC-155.* The whole type ran over 600 s. Its slower method alone ran over
+580 s, with 47 of 53 green, 0 red and 6 unmeasured. A `timeout 600` inside a call that also
+writes a status line is over the harness's cap by about a second. The first call was moved to
+the background by the harness, not by me, and was not polled. A type this slow needs splitting
+below the method, by case, if its last six cases are ever wanted. They are not in the set.
+
+**4. Section 5 mismatches:**
+- **The excluded files outside the set number twenty-one, not twenty.** Unit 392's table has 22
+  rows, 21 engine and 1 app, and removing `ABlipDoesNotShiftEverythingAfterItTests` leaves 21.
+  All 21 are listed in the doc's section 4.
+- **`PHASE_STATUS.md` read `CURRENT_STEP: 0` and `WORK_INSTRUCTION: 393`,** as stated, and is now
+  3 and 394. Its `STEP: 0` and `STEP: 2` lines still read `not started`. They belong to the layer,
+  and I did not edit them.
+- **`PHASE_OUTCOME.md` holds step 0 and step 2 at `not started`** with every criterion `[x]`, and
+  carries the paired `## UNIT 392` / `## UNIT 1` and `## UNIT 393` / `## UNIT 2` entries. As
+  stated, reported, not edited. I committed it and `PHASE_STATUS.md` whole, as unit 393 did, so the
+  layer's uncommitted lines rode in `02c64ae2`.
+- **`docs\phase-cw\PHASE_PLAN.md` is a second copy that differs from the root `PHASE_PLAN.md`.**
+  Units tick the root copy, and I did too. The instruction does not mention the second copy.
+- **`SESSION.lock` is untracked at the root,** and the instruction does not list it. I left it as
+  found.
+- **`CLAUDE.md` §1's top row reads HM-DEC-167** at line 360. `PROJECT_STATUS.md` says HM-DEC-165
+  because `tools/status.sh` writes it as a literal.
+- **Held as stated:** HEAD `9fe8bab4`; 1.13.80 at line 1254; `PROJECT_STATUS.md` at unit 393,
+  `COMPLETED`, `TASK 4 of 5`; the five root files and the three `tools\arbiter\` entries; the
+  failing set's 51 lines in the fifteen rows as counted; `docs\carry-forward-tests.txt` at 918
+  lines, line 7 with 65 terms, line 9 with 27 and `timeout 480`, the known-reds block at 153 with
+  its CW lines at 158 and 159, `WHAT UNIT 393 ADDED` at 900; `ASpeedChangeInRealisticAudio` at
+  line 41 of the set; 21 and 1 `<Compile Remove>`, 19 under `Cw\`; 6 fixture `.wav`s, the
+  receiver tier, 49 unadjudicated captures; no `docs\cw-retired-tests.txt`; the Cw diff of 4
+  files, 165 and 1; the transmit files silent; three preflight worktrees.
+
+**5. The failing set is not all of its types' reds.** *A finding for step 3's scope.*
+`CwFixtureTests.NothingTheDecoderWasSureOfIsWrong` is red on `fading-18wpm`, `noisy-18wpm` and
+`interference-18wpm`, and none of the three is in `docs\unit239-failing-set.txt`. Criterion 3.1's
+set does not reach them, so step 3 can close with them red unless the plan says otherwise.
+
+**6. The headless dispatcher loop lost 4 names across the two exit app runs,** and none at entry.
+*A finding, recorded and not chased (§6).* No name was lost twice.
+
+**`validate-output.bat`:** not run. It asked for approval in earlier units. I checked this file
+against its rules by hand: the ordering block and `UNIT:` above section 1; a `UNIT:` line with no
+parentheses and none of `& | < > ^`; four sections in order with the canonical names; section 4
+present.
+
+**`git worktree list`:** the root and the three preflight trees, nothing else.
+**`git diff --stat 02c64ae2 HEAD -- src` at the end:** prints nothing. **Push:** all four task
+commits pushed without refusal. This report goes in a fifth commit.
+
+### Asks still outstanding
+
+**Carried per HM-DEC-139, verbatim: unit 393's five, unit 392's items 2 to 5, unit 391's items 2
+to 6, and unit 390's nine. None is this unit's to answer.**
+
+**Unit 393's five, verbatim:**
 
 **1. Putting the CW guard on the engine line turned an Olivia test red, and I moved that test's
 type into `CpuMeasuredAlone` to repair it.** *Self-ruling 1, author's, overrulable.*
@@ -264,21 +358,6 @@ cases that do assert all refused the broken decoder.
 
 **5. The headless dispatcher loop lost 4 names across the two task 1 app runs,** and none in
 the entry or exit runs. *A finding, recorded and not chased (§6).* None was lost twice.
-
-**`validate-output.bat`:** not run. It asked for approval in earlier units. I checked this file
-against its rules by hand: the ordering block and `UNIT:` above section 1; a `UNIT:` line with no
-parentheses and none of `& | < > ^`; four sections in order with the canonical names; section 4
-present.
-
-**`git worktree list`:** the root and the three preflight trees, nothing else.
-**`git diff --stat HEAD -- src` at the end:** prints nothing. **Push:** all five commits pushed
-without refusal.
-
-### Asks still outstanding
-
-**Carried per HM-DEC-139: unit 392's items 2 to 5, unit 391's items 2 to 6 and unit 390's nine,
-verbatim. None is this unit's to answer. Unit 392's item 1 is answered by this instruction and
-dropped.**
 
 **Unit 392's items 2 to 5, verbatim:**
 
