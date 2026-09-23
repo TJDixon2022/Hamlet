@@ -191,3 +191,65 @@ its assertion is only the ending.
 | `NothingIsRefusedBeforeAnythingIsBeingRead` (#23) | red | green | green |
 
 Nothing was put back.
+
+## 4. The close-out
+
+Task 3 started at minute 11 (05:07).
+
+**The known-reds block, before** (lines 158 and 159):
+
+```
+    CwAdjudicationTests.ASpeedChangeInRealisticAudio
+    the 51 CW cases in docs/unit239-failing-set.txt
+```
+
+**After** (one line, now line 159 because the guard table gained a row):
+
+```
+    CW: none. The 51 names of docs/unit239-failing-set.txt were run, classified and closed out by the CW phase under R49 (units 394, 398, 400 and 401): its closing line carries the count each way, every red-open name stands with its number in docs/phase-cw/unit394-reds.md section 2, each is a repair owed under R49, not an inherited red, and none is on either line above.
+```
+
+The block's heading, its introduction and its other six lines stand. `CwAdjudicationTests.ASpeedChangeInRealisticAudio`
+is #41 of the set, so it is still counted: it is red-open by number in the closing line.
+
+**`grep -n "Cw\|CW" docs/carry-forward-tests.txt` after the edit:**
+
+```
+9:    timeout 480 dotnet test ... |FullyQualifiedName~CwFixtureTests.TheCleanRecordingsDecodeExactly"
+27:    CW     read  TheAdjudicatedReadingsKeepReadingTests, and the 08-25 cases of ...   engine   unit 393
+28:                 CwFixtureTests.TheCleanRecordingsDecodeExactly, the two clean synthetics   engine   unit 401
+159:    CW: none. The 51 names of docs/unit239-failing-set.txt were run, classified and closed out ...
+882:mode in the family's ink (USB-D digital, CW Morse, USB voice) and the name beside; one click
+900 to 916: the WHAT UNIT 393 ADDED paragraph
+920 onward: the WHAT UNIT 401 CHANGED paragraph
+```
+
+What each hit is: 9 is the guard's own term on the engine line; 27 and 28 are the guard table's CW
+row; 159 is the known-reds block's CW line, which names no test; 882 describes the UI; 900 to 916 and
+the unit 401 paragraph describe the guard. **No hit names a CW test as a known red.**
+
+**The closing line**, appended to `docs/unit239-failing-set.txt` as line 52. `git diff` over the file
+shows one added line and nothing else:
+
+```
+# Closed out by the CW phase, CW decodes again, 2026-09-23, units 394 to 401: of the 51 names above, 31 green at HEAD without repair, 12 repaired (#25 #26 #30 #31 #32 #33 by unit 400, and #18 #19 #20 #21 #22 #23 by unit 401), 0 retired, 8 red-open with their numbers in docs/phase-cw/unit394-reds.md section 2 (#6 #15 #24 #41 #42 #43 #44 #45), each a repair owed under R49 and HM-DEC-151.
+```
+
+31 + 12 + 0 + 8 = 51.
+
+**Line 9**, before: 27 `FullyQualifiedName` terms ending
+`|(FullyQualifiedName~TheCapturesThatDecodeKeepDecodingTests&DisplayName~cw-2026-08-25)"`. After: 28,
+ending `...&DisplayName~cw-2026-08-25)|FullyQualifiedName~CwFixtureTests.TheCleanRecordingsDecodeExactly"`.
+Edited with an editor tool.
+
+**The guard-table row**, line 28, under the CW row:
+
+```
+                 CwFixtureTests.TheCleanRecordingsDecodeExactly, the two clean synthetics   engine   unit 401
+```
+
+**The paragraph** `WHAT UNIT 401 CHANGED` follows the unit 393 paragraph at the file's end.
+
+**The engine line as it now reads**, one invocation with one build, `timeout 480`: **178 of 178 in
+374 s wall** (test duration 6 m 8 s), against 176 of 176 in 374 s at unit 400's exit. It fits inside
+480 s and the term stays.
