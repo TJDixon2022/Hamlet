@@ -205,4 +205,15 @@ placeholders `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■�
 attach a source, which now routes the decode through the worker, and nothing came back. No named
 number improved: **out**, reverted in the next commit. Transmit files silent.
 
+**Piece 43, `865e66d8`**, *no CW decode in Digital mode*. The `Cw` patch was 48 lines,
+`CwDecoder.cs`, 22 insertions and 1 deletion, in three hunks: the `DigitalMode` property with its
+doc comment, `if (DecodingSuspended || DigitalMode)`, and one blank line. Not taken under R50 and
+decision 24: `MainWindowViewModel.cs`, one test. `--check` failed at line 649; `--3way` merged the
+condition and conflicted only on the property's doc comment - HEAD's reads *865e66d8's GATE,
+CARRIED ACROSS THE RESTORE (work instruction 392, a seam for today's application)*. At HEAD,
+after `unit397-clean.sh`, `public bool DigitalMode { get; set; }` is line 361 and `if
+(DecodingSuspended || DigitalMode)` line 501: both code hunks already in the tree as unit 392's
+seam, dropped under decision 3, as unit 395 did for piece 4. What is left is a doc comment and a
+blank line: **out under decision 17**, no piece commit, no run.
+
 ## 3. The exit round, task 2
