@@ -217,6 +217,18 @@ sequence for a dependent row, is in that file's section 2.
 | 44 | 9c2a7f99 | a reader on a timer stops allocating the audio it reads | the entry state, pieces 1 to 43 out | not run: nothing applied, the tree is the entry state | none | **out**, dependent on `2068f868`, `0f2089f3`, `efcd5242` and `aeea24f2`, out; nothing applied, no piece commit | the `Cw` half alone, decision 24; `Audio\ReusableWindow` is at HEAD already, `Audio\Ft8SlotWatch`, `MainWindowViewModel` and the test not taken. `CwKeyingMeter.cs` merged clean. `CwDecoder.cs:1147` failed `--check` and `--3way` conflicted: its four hunks replace `Tap.Window` with a reused buffer inside the held-audio re-read (piece 1), the swing survey (piece 37), the peak (piece 29) and the ranking (piece 19), and `grep` finds none of `Tap.Window`, `ReadHeldAudioAgain`, `MaybeSwing`, `MaybePeak`, `MaybeRank` or `_reReadAt` in HEAD's `CwDecoder.cs`. Four out pieces, three of them dependent themselves. Out under decision 5. The meter half alone is parked as 397 item 2. |
 | 45 | 1a84188e | the callback budget is set, not inherited | the entry state, pieces 1 to 44 out | not run: did not build | none | **out**, piece `25bc3bcf`, reverted in the next commit | the `Cw` half alone, decision 24; the app telemetry, `MainWindowViewModel`, the four `Audio` files and three tests not taken. `CwKeyingMeter.cs` 11 insertions, a `WindowSizings => _window.Sizings` count, applied clean; did not build: `CwKeyingMeter.cs(192,33): error CS0103: The name '_window' does not exist in the current context`. `_window` is piece 44's field; 44 is out and dependent on four out pieces, so the pair with 44 cannot be applied. Not the seam. Out under decision 4. **The last piece: 45 of 45 judged.** |
 
+### Chains under 4.7, judged by unit 404
+
+R55 and section 6: a chain of any length is one piece, applied in one commit and judged once. The
+chains, how they were found and why fourteen pieces made two chains, are in
+`docs\phase-cw\unit404-chains.md`. Same kept state as above: `src` at `bc2484d5`, as `7e65aac4`
+left it, before each chain. Numbers before are unit 404's entry round, identical to section 3.1
+and 3.1a here.
+
+| Chain | Pieces | Number before | Number after | Captures wall | Kept or out | Why |
+|---|---|---|---|---|---|---|
+| S, the survey, carrying `4786c7e7` and `f2e1db7a` | 7 `7fb89d5e`, 9 `44cf3fc8`, 10 `4786c7e7`, 11 `f2e1db7a` | entry: 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; captures 37 of 37 at their floors, 012748 4 over a floor of 2; adjudicated 13 of 13; synthetics 2 of 2 | every one of the 37 captures identical in characters, elements, unsure and tone; both printer texts identical, the five distances identical; adjudicated 13 of 13; synthetics 2 of 2 | 94 s | **out**, chain commit `3c742c4a`, reverted in `675d846f` | all four applied in order under `--3way` with no conflict and no adaptation, `CwToneSurvey.cs` and `CwToneTracker.cs`, 364 insertions; built clean with warnings as errors. Nothing moved: the two gate derivations ship off, the refusal record and the run streams are collected only when a caller asks, and the `Duty` verdicts are recorded beside the survey's choice and change none. Out under R51 and 4.3. |
+
 ## 3. The numbers
 
 ### 3.1 The numbers before piece 1, at entry
