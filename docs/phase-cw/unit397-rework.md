@@ -155,4 +155,13 @@ after 2, 5, 13, 31, 33, 34, 827 fails. Two out pieces at least, 13 and 34, and 1
 under decision 5**, listed and not applied, no piece commit, no run. `CwElementPitch` did not
 come back and the excluded tests that name it stay excluded.
 
+**Piece 39, `a09b36a7`**, *measure whether two people are sending, and withhold the verdict*. The
+`Cw` patch was 402 lines, one new file `CwStreamSplit.cs`, 396 lines; checked and applied clean.
+Piece commit `2b9c5d10`. Build failed in 2 s, 3 errors, the first
+`CwStreamSplit.cs(210,57): error CS0246: The type or namespace name 'CwElement' could not be found
+(are you missing a using directive or an assembly reference?)`, the other two at 280 and 281 on
+the same type. `CwElement` is `public readonly record struct CwElement(bool IsMark, int StartHop,
+int EndHop)`, declared in piece 38's `CwElementPitch.cs` and nowhere at HEAD. Not the seam:
+**out under decision 4**, no floor run, reverted in the next commit. Transmit files silent.
+
 ## 3. The exit round, task 2
