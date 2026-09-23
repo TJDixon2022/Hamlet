@@ -132,6 +132,13 @@ span:
 The sweep's four figures per case, and the mix's value-and-hop segments, are in the run output
 `.run-unit\unit409-table-entry2.txt` under `keying-why` and `seg`.
 
+## Task 2 - the tracker change
+
+**No change was made.** Section 2 shows 0 of 5 single-sender cases apart, and the instruction
+reads: *if none are apart, task 2 makes no change and says so, and the unit goes to task 3.* No
+file under `src` changed. There was nothing to trace to `CwToneTracker`, so nothing was built,
+kept or reverted.
+
 ## 3. The table at exit, and the three parked reds
 
 Written at task 3.

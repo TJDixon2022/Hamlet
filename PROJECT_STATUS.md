@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 4
+TASK: TASK 2 of 4
 WORK_INSTRUCTION: 409 - the decoder and the sweep agree about the pitch
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T17:32:20-04:00
-NOTE: Entry table measured twice, identical: 5 of 38 single-sender, 0 apart; writing it into docs/phase-cw/unit409-pitch.md section 2
+UPDATED: 2026-09-23T17:33:19-04:00
+NOTE: Task 1 committed with 0 of 5 single-sender cases apart; task 2 records that it makes no tracker change, as the instruction orders
 
 ---
 
