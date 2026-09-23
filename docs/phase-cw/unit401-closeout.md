@@ -253,3 +253,27 @@ Edited with an editor tool.
 **The engine line as it now reads**, one invocation with one build, `timeout 480`: **178 of 178 in
 374 s wall** (test duration 6 m 8 s), against 176 of 176 in 374 s at unit 400's exit. It fits inside
 480 s and the term stays.
+
+Close-out commit `29ede63d`.
+
+## 5. The exit round
+
+Written at task 4.
+
+## 6. The ticks and clauses as written in `PHASE_PLAN.md`
+
+**3.4, ticked:** *Unit 401: lines 158 and 159 of the known-reds block replaced by one CW line naming
+no test and pointing at the set's closing line and `unit394-reds.md`; grep over the file at exit
+finds no CW test named as a known red; the closing line written - 51 names, 31 green at HEAD without
+repair, 12 repaired, 0 retired, 8 red-open by number (#6, #15, #24, #41, #42, #43, #44, #45); the
+step's goal sentence stays partial on the 8 red-open under R49's own clause, red with its number and
+the step partial, each a repair owed under HM-DEC-151; `CwFixtureTests.TheCleanRecordingsDecodeExactly`
+on the engine line, 178 of 178 in 374 s of 480.*
+
+**2.3, clause added:** *the two clean synthetics joined the engine line by unit 401 once green, 178
+of 178 in 374 s.*
+
+**3.1, clause added** (task 2 landed 6 of 6): *#18 to #23 green by unit 401 on the settled
+transcript and a band of 0.005, the set at 43 green and 8 red-open.*
+
+**3.5** is re-confirmed at task 4, section 5.
