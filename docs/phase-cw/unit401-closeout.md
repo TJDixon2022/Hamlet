@@ -258,7 +258,30 @@ Close-out commit `29ede63d`.
 
 ## 5. The exit round
 
-Written at task 4.
+Task 4 started at minute 18 (05:14:47). The engine line is the edited line 9.
+
+| run | entry | exit |
+|---|---|---|
+| app line, one build | 277 of 278 twice on dispatcher losses (unit 400's exit, decision 6) | **278 of 278** in 156 s |
+| engine line, one build | 176 of 176 in 374 s (unit 400's exit) | **178 of 178** in 374 s, test duration 6 m 9 s |
+| captures | 37 of 37 in 94 s | 37 of 37 in 92 s, every row identical to entry |
+| adjudicated | 13 of 13 in 29 s | 13 of 13 in 29 s, every line identical but the total time |
+| clean synthetics | 2 of 2 in 1 s | 2 of 2 in 1 s |
+| `CwFixtureTests` whole | 22 of 23 | 22 of 23, identical by case to entry and to task 2 |
+| `CwDisplacementFloorTests` | 0 of 6 | 6 of 6, as at task 2 |
+| `CwEmissionGateTests` | 7 of 8 | 7 of 8, identical by case, #24 red |
+
+No red on an assertion on either line. **No regression.** 3.5 stands: all three floor tests and
+both lines are green at the exit of this unit's last commit that touched `tests` or a line.
+
+- `git diff --stat 7e209cb4 HEAD --` the eleven transmit files: nothing.
+- `git diff --stat 5688a8a5 HEAD -- src`: nothing.
+- `git diff --stat bf7bae57 HEAD -- tests docs` before the exit commit: `carry-forward-tests.txt`,
+  `unit401-closeout.md`, `unit239-failing-set.txt`, `CwDisplacementFloorTests.cs`,
+  `TheDisplacementFloorFourWaysTests.cs`. The exit commit adds `PARKED.md`.
+- `git status --short tests`: nothing.
+- `git worktree list`: the root and the three preflight trees.
+- `PARKED.md` gains `401 item 1` to `401 item 3`.
 
 ## 6. The ticks and clauses as written in `PHASE_PLAN.md`
 

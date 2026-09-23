@@ -134,3 +134,16 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
   whole add was refused and the first repair commit made nothing. The prosigns writer was deleted
   with `rm -f` inside the script instead. The first clean-fixture writer also lacked `using Xunit;`
   and its build failed; that attempt judged nothing and was re-run whole.
+- **401 item 1** - #24's cause, printed by `TheDisplacementFloorFourWaysTests`: on
+  `CwEmissionGateTests`' real signal the decoder emits 9 characters, `Reading.Text` is
+  `CQ DE W1AW K` at 18.46 wpm, and `WordsPerMinute` is null only because `SpeedIsReacquiring` is true
+  at the end of the signal (`CwDecoder.cs` 445). The CW tab's speed reads the same property
+  (`MainWindowViewModel.cs` 11268 and 11361). The cause is under `src`, which R50 and this phase's
+  units leave alone.
+- **401 item 2** - Instruction 401's section 5 said `docs\carry-forward-tests.txt` was 919 lines and
+  `CwDisplacementFloorTests.cs` 114. They were 918 and 113 at entry. Every line number the
+  instruction quoted matched.
+- **401 item 3** - At a band of 0.005, `AStationElsewhereIsStillFound(750)` moves twice and reads
+  `■ E ■ E I ■ ■ 5EE E ■E EE ■ VVV CQ DE W1AW K`, and the 500 Hz case reads blocks and wrong letters
+  before its call. Both are green because the theory asserts only the ending. At 0.01, every case
+  moves once and reads `TV VVV VVV CQ DE W1AW K`.
