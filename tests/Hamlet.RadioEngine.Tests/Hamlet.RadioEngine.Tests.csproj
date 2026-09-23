@@ -52,7 +52,6 @@
     <Compile Remove="Cw\TheFirstSecondsAreReadAgainTests.cs" />
     <Compile Remove="Cw\ThePeakAgainstASecondSignalTests.cs" />
     <Compile Remove="Cw\ThePeakFindsThePitchTheTrackerMissedTests.cs" />
-    <Compile Remove="Cw\ThePosteriorSurvivesItsOwnArithmeticTests.cs" />
     <Compile Remove="Cw\TheProbabilisticDecoderTests.cs" />
     <Compile Remove="Cw\TheQuietestBinNoLongerWinsTests.cs" />
     <Compile Remove="Cw\TheReferenceDecoderIsPortedFaithfullyTests.cs" />
