@@ -1,0 +1,3 @@
+unit408 task 2: 3.6 closed on R58's pass - #45 green by B2 at 0bcf04e6; G1 on B2 took #44 0 plus 7 to 0 plus 3 with the second call whole, turned no red green and went out, never committed; M2 dropped as the named candidate, #6 green since unit 406; #15 0.54, #43 4 plus 7, #44 0 plus 7 parked in PARKED.md with the units that attacked each; reds-3.6.md rows marked 408 and its closing line; the failing set's closing line 31 green, 17 repaired, 0 retired, 3 parked; 3.6 ticked
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

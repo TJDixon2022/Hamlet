@@ -155,3 +155,22 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
   `CwDecoder.cs` 590 still hands those hops to the stream. Skipping them turned #42 green and cost
   `cw-2026-08-17-013347` 59 to 48 characters, `013622` 55 to 13, and `VA3VRR`. So the guard also
   blocks hops on real captures where somebody else was sending. Put back.
+
+## 3.6 reds parked as owed by the closing pass (R58, unit 408)
+
+R58 closes 3.6 on unit 408's single pass: whatever is still red after it is parked here with its
+numbers, and no later unit attacks it. Each is owed under R49 and HM-DEC-151, none retired. All
+three trace to `CwToneTracker.Switch` moving the mix off a single sender (unit 405 section 2.5,
+units 406 and 407), which is 3.8's under R56. Rows in `docs\phase-cw\reds-3.6.md`.
+
+- **408, #15** - `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 18)`,
+  **0.54** against 0.66, unmoved at 408's exit. Attacked by 405 (S1, 0.61, out) and 406 (H1 0.61,
+  H2 0.54, G1 0.54); read and not attacked by 402 and 407; measured under 408's B2, 0.54.
+- **408, #43** - `CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "coverage-easy")`, **4 + 7**
+  on the settled transcript at 408's exit, from 5 + 37 on the leading edge. Attacked by 402 (4 + 7,
+  out), 405 (A1 4 + 7, S1 6 + 25, out) and 406 (H1 4 + 32, out); not attacked by 407; 408's B2 kept
+  at 4 + 7, G1 on B2 4 + 7, out.
+- **408, #44** - `CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "exchange-easy")`, **0 + 7**
+  on the settled transcript at 408's exit, from 3 + 21. Attacked by 402 (0 + 7, out), 405 (A1 0 + 7,
+  G1 4 + 16, out) and 406 (H1 2 + 20, G1 on H2 4 + 16, out); not attacked by 407; 408's B2 kept at
+  0 + 7, G1 on B2 0 + 3 with the second call whole, out because no red turned green.
