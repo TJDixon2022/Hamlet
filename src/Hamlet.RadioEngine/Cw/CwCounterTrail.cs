@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Cw;
+﻿namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>
 /// What the decoder's counters read at a moment on the audio clock.
@@ -143,6 +143,29 @@ public sealed class CwCounterTrail
         var start = At(Math.Max(0, endSamplesSeen - windowSamples));
 
         if (end is not { } last || start is not { } first)
+        {
+            return null;
+        }
+
+        // **COUNTERS THAT WENT BACKWARDS MEAN THEY WERE RESET INSIDE THIS
+        // WINDOW, AND A DELTA ACROSS A RESET IS NOT A DELTA** (work instruction
+        // 055, task 1). `CwDecoder.Retuned` zeroes them when the operator moves,
+        // because a count earned on another frequency does not belong on this
+        // sheet — and this trail keeps its samples from before that, so
+        // subtracting one from the other produced a negative.
+        //
+        // **IT REACHED THE OPERATOR.** `cw-2026-08-31-003229`'s sidecar reads
+        // `inThis -250 characters emitted, -96 unsure, -466 elements seen, -466
+        // resolved`. That is the sheet he diagnoses everything with, lying about
+        // arithmetic.
+        //
+        // **SAYING SO IS THE ANSWER RATHER THAN CLAMPING TO ZERO** (§0.0). Nought
+        // characters in this recording and a window that cannot be measured are
+        // different facts, and the second is the true one here.
+        if (last.ElementsSeen < first.ElementsSeen
+            || last.ElementsResolved < first.ElementsResolved
+            || last.CharactersEmitted < first.CharactersEmitted
+            || last.CharactersUnsure < first.CharactersUnsure)
         {
             return null;
         }
