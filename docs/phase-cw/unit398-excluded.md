@@ -196,3 +196,26 @@ engine files; names nothing absent, held with the file 4; the app's 3 left under
 first - `TheTapIsNotBehindTheDecoderTests` 1, `NothingActsOnTheAdmissionVerdictTests` 1,
 `WhatDecodeScoringCostsTests` 2, `TheReadPathDoesNotAllocateTests` 3; then the two whole files the
 grep freed, `TheCleanReadsStayCleanTests` 3, `TheProbabilisticDecoderTests` 6.
+
+## 3. The retirements
+
+One file per commit, in task 1's order. `docs/cw-retired-tests.txt` was created at the first
+retirement with a four-line header naming R49 and this phase; it carries 20 lines after the last.
+
+| Commit | File | Kind | Tests retired | Missing name, as grep printed it |
+|---|---|---|---|---|
+| `ceb06af9` | `Cw/TheScoreSaysWhatItIsMeasuringTests.cs` | deleted, csproj line out | 8 | `CwAccuracy` - nothing |
+| `30176620` | `Cw/ThePosteriorSurvivesItsOwnArithmeticTests.cs` | deleted, csproj line out | 6 | `CwProbabilisticDecoder.LogSum`, `Posterior` - nothing |
+| `fa7b8911` | `Cw/FittingKeyUpAgainstAssumingItTests.cs` | deleted, csproj line out | 1 | `CwProbabilisticDecoder.FittedLogLikelihoods` - nothing |
+| `732051f2` | `Audio/TheReadPathDoesNotAllocateTests.cs` | trimmed, 3 facts kept | 1 | `CwKeyingMeter.WindowSizings` - nothing |
+| `a1dff1ad` | `Audio/TheTapIsNotBehindTheDecoderTests.cs` | trimmed, 1 fact kept | 2 | `CwDecoder.ProcessDelayForTests` - nothing |
+| `60a2fa36` | `Cw/NothingActsOnTheAdmissionVerdictTests.cs` | trimmed, 1 fact kept | 1 | `CwDecodeReport` constructor parameter `PitchChoice` - not among the parameters at `CwDecodeReport.cs:47` to `61` |
+| `41497e5a` | `Cw/WhatDecodeScoringCostsTests.cs` | trimmed, 2 facts kept | 1 | `CwToneTracker.CoarseSpacingHz` - `CwToneTracker.cs:131: private const double CoarseSpacingHz = 25;`, private at HEAD |
+
+A retired fact went whole - attribute, doc comment, method. No private helper went with one:
+`Filled` and `Measure`, `FakeSource`, `Capture` and `Tail` are all used by a surviving fact. No
+surviving fact's line changed. The three deleted files were excluded from compilation, so no
+compiled test used anything in them.
+
+After the last retirement, `dotnet build Hamlet.sln -warnaserror`: exit 0, 0 errors, 15 s. The
+engine csproj carries 18 `<Compile Remove>` lines, down from 21.

@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 398 - the excluded files, classified and retired under R49
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T02:43:31-04:00
-NOTE: task 2: trimmed WhatDecodeScoringCostsTests, commit 7 of 7; the build after the last retirement next
+UPDATED: 2026-09-23T02:43:37-04:00
+NOTE: task 2: build after the 7th and last retirement commit, warnings as errors
 
 ---
 
