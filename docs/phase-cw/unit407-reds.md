@@ -249,3 +249,14 @@ transmit reads 0.00 s and no chunk is suspended.
   because it is judged only inside that attack. G1 is not made, because decision 5 allows it
   only on top of a kept or measured tracker change, and this instruction's section 10 forbids
   G1 alone.
+
+## 3. The attacks
+
+### Task 2 - #45 given the air's trailing silence
+
+**No change.** Decision 4 allows the event change only if task 1's printer shows the decoder
+settling the placeholder away under the padding. It shows the opposite. tightfist-easy's settled
+transcript goes from 1 + 0 to 4 + 0 under 2.0 s of digital zero. coverage-easy goes from 4 + 7
+to 8 + 7 and exchange-easy from 0 + 7 to 4 + 7 (section 2.4). `CwReceiverFixtureTests.cs` is not
+touched, nothing was built, and nothing was run for this task. #45 stays at 1 + 3 on its own
+test, *not attacked*. B1 alone is not made.
