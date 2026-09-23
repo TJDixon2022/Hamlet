@@ -231,4 +231,15 @@ decision 5**, listed and not applied, no piece commit, no run. The `CwKeyingMete
 clean on its own; a piece is its whole `Cw` diff under decision 3 and decision 5 lists a
 dependent piece whole, so it was not split off and measured - parked as `397 item 2`.
 
+**Piece 45, `1a84188e`**, *the callback budget is set, not inherited*, the last piece. The `Cw`
+patch was 22 lines, `CwKeyingMeter.cs`, 11 insertions: `public int WindowSizings =>
+_window.Sizings`. Not taken under R50 and decision 24: `Telemetry\AppEvents`,
+`MainWindowViewModel.cs`, `Audio\AudioArrival`, `Audio\CallbackBudget`,
+`Audio\DigitalCaptureSheet`, `Audio\WasapiAudioSource`, three tests. Checked and applied clean.
+Piece commit `25bc3bcf`. Build failed in 2 s, 1 error: `CwKeyingMeter.cs(192,33): error CS0103:
+The name '_window' does not exist in the current context`. `_window` is the `ReusableWindow` field
+piece 44 adds to the meter; piece 44 is out and dependent on four out pieces, so a pair with it
+cannot be applied. Not the seam: **out under decision 4**, no floor run, reverted in the next
+commit. Transmit files silent. **45 of 45 judged.**
+
 ## 3. The exit round, task 2
