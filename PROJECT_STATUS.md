@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 1 of 4
 WORK_INSTRUCTION: 410 - the number exists
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T18:57:44-04:00
-NOTE: Entry round: floors done; 17:37 capture tests alone for the text at HEAD
+UPDATED: 2026-09-23T19:01:01-04:00
+NOTE: Scorer green 12 of 12 after 12 of 12 red on the stub; recording task 1 in PHASE_OUTCOME and committing
 
 ---
 

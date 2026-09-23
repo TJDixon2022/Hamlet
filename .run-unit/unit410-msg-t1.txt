@@ -1,0 +1,5 @@
+unit410 task 1: the scorer - CwScorer in the engine test project gives edits, scored length and the key's kind with its alignment; TheScorerCountsWhatAHandCountsTests 12 of 12 red against a stub that threw, then 12 of 12 green
+
+Whole scores a region the key file names; Within aligns a fragment key to the stretch of the decode that fits it best and scores nothing either side; FromFirst is the 17:37 key file's rule. Spaces are characters. Ties go to a character in place, then missing, then added. No file under src changed.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
