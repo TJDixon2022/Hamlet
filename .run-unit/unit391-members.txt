@@ -1,0 +1,145 @@
+src/Hamlet.App/Controls/CwTerminalControl.cs | CwCharacter | CwCharacter.cs | High Low Unreadable
+src/Hamlet.App/Controls/CwTerminalControl.cs | CwConfidence | CwCharacter.cs | High Low Unreadable
+src/Hamlet.App/Controls/CwTerminalControl.cs | MorseAlphabet | MorseAlphabet.cs | Unreadable
+src/Hamlet.App/Controls/ModePalette.cs | CwConfidence | CwCharacter.cs | High Low Unreadable
+src/Hamlet.App/Telemetry/AppEvents.cs | CwDecodeReport | CwDecodeReport.cs | Clipping NearlySilent
+src/Hamlet.App/Telemetry/AppEvents.cs | CwReadiness | TransmitReadiness.cs | AsEvent Reason
+src/Hamlet.App/Telemetry/AppEvents.cs | Outcome | CwAccuracy.cs |
+src/Hamlet.App/Telemetry/AppEvents.cs | TransmitChain | TransmitChain.cs |
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | AutoCallOutcome | AutoCall.cs | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | AutoCallSettings | AutoCall.cs | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | AutoCallStop | AutoCall.cs | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | AutoCallTransmission | AutoCall.cs | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | AutoCallWindow | AutoCallAnswers.cs | Empty
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | AutoCaller | AutoCall.cs | Answered Cause FrequencyLabel IsUsable OperatorStopped Refusal Round RoundLimit RunAsync Sentence Stop Transmitted
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | CwCharacter | CwCharacter.cs |
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | CwDecoder | CwDecoder.cs | CharacterSettled Tracker
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | CwMessage | CwMessage.cs | Clean
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | KeyerCwSender | KeyerCwSender.cs |
+src/Hamlet.App/ViewModels/AutoCallViewModel.cs | TransmitReadiness | TransmitReadiness.cs |
+src/Hamlet.App/ViewModels/CwTranscript.cs | CwCharacter | CwCharacter.cs | IsUnstable Unstable
+src/Hamlet.App/ViewModels/CwTranscript.cs | CwReadingStage | CwCharacter.cs | IsUnstable Unstable
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | ContactScript | ContactStage.cs | Answering Calling Confirming Exchanging Offer Pieces
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | ContactStage | ContactStage.cs | Answering Calling Confirming Exchanging Offer Pieces
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | CwDuration | CwDuration.cs | Of
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | CwMessage | CwMessage.cs | Clean MaximumLength PieceCount
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | CwReadiness | TransmitReadiness.cs | Check Outcome Ready
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | CwReadyState | TransmitReadiness.cs | Check Outcome Ready
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | CwTransmitter | CwTransmitter.cs | Abort Check SendAsync SupportsCharacterSpacing
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | Outcome | CwAccuracy.cs |
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | SendOption | ContactStage.cs | Answering Calling Confirming Exchanging Offer Pieces
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | SwrReport | TransmitNotes.cs | Citation Describe For IsHigh
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | TransmissionEnd | TransmissionWatch.cs | Begin Elapsed Expected Keyed Message Observe Outcome Progress Remaining Stop Stopped
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | TransmissionWatch | TransmissionWatch.cs | Begin Elapsed Expected Keyed Message Observe Outcome Progress Remaining Stop Stopped
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | TransmitChain | TransmitChain.cs | Describe
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | TransmitContext | CwTransmitter.cs | Abort Check SendAsync SupportsCharacterSpacing
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | TransmitEvidence | TransmitChain.cs | Describe
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | TransmitNotes | TransmitNotes.cs | Citation Describe For IsHigh
+src/Hamlet.App/ViewModels/CwTransmitViewModel.cs | TransmitOutcome | CwTransmitter.cs | Abort Check SendAsync SupportsCharacterSpacing
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CallsignResolver | CallsignResolver.cs | From Sender StationHeard
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | ContactStage | ContactStage.cs | Calling
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwCase | CwCaseRoster.cs | Append FileName NoRecording Readable Recording Row Session
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwCaseRoster | CwCaseRoster.cs | Append FileName NoRecording Readable Recording Row Session
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwCharacter | CwCharacter.cs | IsWordGap MarginLlr MarginShareForRecord Settled SpanLogLikelihoodRatio Stage WidestRecordedLlr
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwCounterDelta | CwCounterTrail.cs | At Count Note Over
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwCounterSample | CwCounterTrail.cs | At Count Note Over
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwCounterTrail | CwCounterTrail.cs | At Count Note Over
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwCountsCover | CwCaseRoster.cs | Append FileName NoRecording Readable Recording Row Session
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwDecodeReport | CwDecodeReport.cs | Clipping Describe NearlySilent None Summarize
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwDecodeStory | CwDecodeReport.cs | Clipping Describe NearlySilent None Summarize
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwDecoder | CwDecoder.cs | AssertStation CharacterDecoded CharacterSettled DecodeQueueDroppedChunks DecodeQueueDroppedSamples DecodingSuspended DigitalMode IsLocked LeadingEdge Listen ListeningAfresh Lock LockedToneHz PitchWasAsserted RadioIsTransmitting Ranked Reading Report Retuned SampleRate SpeedIsReacquiring Tap Unlock WordsPerMinute
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwElementPitch | CwElementPitch.cs | Measure MeasureAll
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwKeyingMeter | CwKeyingMeter.cs | Keying Listening NoKeying None Reading Reset Update Window
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwMessage | CwMessage.cs | PieceCount Split
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwPitchChoice | CwPitchChoice.cs | Keying OperatorAssertion Ranked StrongestBin
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwProbabilisticDecoder | CwProbabilisticDecoder.Posterior.cs |
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwProbabilisticStream | CwProbabilisticStream.cs | CharacterSettled SamplesSeen ToneHz WindowSeconds
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwReadiness | TransmitReadiness.cs | Check ListenOnly Outcome Ready Reason TransmitReadiness
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwStreamSplit | CwStreamSplit.cs | Divide LeastTrustedMarks None
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | CwTransmitter | CwTransmitter.cs | Abort Check
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | Envelope | CwReferenceDecoder.cs | Decode None Run Runs Text WordsPerMinute
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | KeyerCwSender | KeyerCwSender.cs | Abort IsSending
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | KeyingEnvelope | KeyingEnvelope.cs | Measure Score
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | KeyingReading | CwKeyingMeter.cs | Keying Listening NoKeying None Reading Reset Update Window
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | KeyingVerdict | CwKeyingMeter.cs | Keying Listening NoKeying None Reading Reset Update Window
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | Outcome | CwAccuracy.cs | Block None Score
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | SendOption | ContactStage.cs | Calling
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | TransmissionEnd | TransmissionWatch.cs | Expected IsSending Keyed Message Observe Outcome Progress Stop Stopped
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | TransmitChain | TransmitChain.cs | BrokeAt Describe
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | TransmitContext | CwTransmitter.cs | Abort Check
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | TransmitEvidence | TransmitChain.cs | BrokeAt Describe TransmitChain
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | TransmitOutcome | CwTransmitter.cs | Abort Check
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs | TransmitReadiness | TransmitReadiness.cs | Check ListenOnly Outcome Ready Reason
+src/Hamlet.App/ViewModels/PhrasebookViewModel.cs | CwPhrase | CwPhrasebook.cs | Heading NewOperator NewOperatorNote OfKind Summary
+src/Hamlet.App/ViewModels/PhrasebookViewModel.cs | CwPhrasebook | CwPhrasebook.cs | Heading NewOperator NewOperatorNote OfKind Summary
+src/Hamlet.App/ViewModels/PhrasebookViewModel.cs | PhraseKind | CwPhrasebook.cs | Heading NewOperator NewOperatorNote OfKind Summary
+src/Hamlet.App/ViewModels/ScanViewModel.cs | CwCharacter | CwCharacter.cs |
+src/Hamlet.App/ViewModels/ScanViewModel.cs | CwDecoder | CwDecoder.cs | CharacterSettled Ranked
+tests/Hamlet.App.Tests/Cw/TheSheetSaysWhatEachElementWasSentAtTests.cs | CwDecodeReport | CwDecodeReport.cs |
+tests/Hamlet.App.Tests/Telemetry/ARefusedPressLeavesALineTests.cs | CwDecoder | CwDecoder.cs | Tap
+tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs | CwConfidence | CwCharacter.cs | High
+tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs | CwDecodeReport | CwDecodeReport.cs |
+tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs | Outcome | CwAccuracy.cs |
+tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs | TransmitChain | TransmitChain.cs |
+tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs | TransmitReadiness | TransmitReadiness.cs | Check Outcome
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | CwMessage | CwMessage.cs | MaximumLength
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | CwReadiness | TransmitReadiness.cs | BreakInOff ModeUnknown Outcome Ready Reason
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | CwReadyState | TransmitReadiness.cs | BreakInOff ModeUnknown Outcome Ready Reason
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | CwSendOutcome | ICwSender.cs | Refused Sent
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | CwSendResult | ICwSender.cs | Refused Sent
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | CwTransmitter | CwTransmitter.cs |
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | ICwSender | ICwSender.cs | Refused Sent
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | Outcome | CwAccuracy.cs |
+tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs | TransmitContext | CwTransmitter.cs |
+tests/Hamlet.App.Tests/Telemetry/ThePressActuallyWritesItsCaptureTests.cs | CwDecoder | CwDecoder.cs | SampleRate Tap
+tests/Hamlet.App.Tests/Telemetry/Unit305SettledTests.cs | CwReadyState | TransmitReadiness.cs | Check NotInMorse Reason
+tests/Hamlet.App.Tests/Telemetry/Unit305SettledTests.cs | TransmitReadiness | TransmitReadiness.cs | Check NotInMorse Reason
+tests/Hamlet.App.Tests/ViewModels/AHeldVerdictPrintsNoMeasurementsTests.cs | KeyingReading | CwKeyingMeter.cs | Keying None
+tests/Hamlet.App.Tests/ViewModels/AHeldVerdictPrintsNoMeasurementsTests.cs | KeyingVerdict | CwKeyingMeter.cs | Keying None
+tests/Hamlet.App.Tests/ViewModels/ASheetSaysWhichInstrumentSpokeTests.cs | CwCase | CwCaseRoster.cs | Header Recording Row
+tests/Hamlet.App.Tests/ViewModels/ASheetSaysWhichInstrumentSpokeTests.cs | CwCaseRoster | CwCaseRoster.cs | Header Recording Row
+tests/Hamlet.App.Tests/ViewModels/ASheetSaysWhichInstrumentSpokeTests.cs | CwCountsCover | CwCaseRoster.cs | Header Recording Row
+tests/Hamlet.App.Tests/ViewModels/AutoCallFaceTests.cs | CwMessage | CwMessage.cs | Clean
+tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs | CwCase | CwCaseRoster.cs | Append Header NoRecording Readable Recording Row
+tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs | CwCaseRoster | CwCaseRoster.cs | Append Header NoRecording Readable Recording Row
+tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs | CwCharacter | CwCharacter.cs |
+tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs | CwCountsCover | CwCaseRoster.cs | Append Header NoRecording Readable Recording Row
+tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs | CwDecoder | CwDecoder.cs | CharacterSettled Flush Listen Report SampleRate Tap WordsPerMinute
+tests/Hamlet.App.Tests/ViewModels/DummyLoadNoticeTests.cs | TransmitNotes | TransmitNotes.cs | For
+tests/Hamlet.App.Tests/ViewModels/ScannerFaceTests.cs | CwCharacter | CwCharacter.cs | High Low
+tests/Hamlet.App.Tests/ViewModels/ScannerFaceTests.cs | CwConfidence | CwCharacter.cs | High Low
+tests/Hamlet.App.Tests/ViewModels/ScannerFaceTests.cs | MorseAlphabet | MorseAlphabet.cs | WordGap
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | CwMessage | CwMessage.cs | MaximumLength
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | CwReadiness | TransmitReadiness.cs | Ready Reason
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | CwReadyState | TransmitReadiness.cs | Ready Reason
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | CwSendOutcome | ICwSender.cs | Sent
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | CwSendResult | ICwSender.cs | Sent
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | CwTransmitter | CwTransmitter.cs |
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | ICwSender | ICwSender.cs | Sent
+tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs | TransmitContext | CwTransmitter.cs |
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | ContactStage | ContactStage.cs | Calling
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | CwDuration | CwDuration.cs | DefaultWpm Dit Of
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | CwMessage | CwMessage.cs | MaximumLength
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | CwSendOutcome | ICwSender.cs | Refused Sent
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | CwSendResult | ICwSender.cs | Refused Sent
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | CwTransmitter | CwTransmitter.cs |
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | ICwSender | ICwSender.cs | Refused Sent
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | SendOption | ContactStage.cs | Calling
+tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs | TransmitContext | CwTransmitter.cs |
+tests/Hamlet.App.Tests/ViewModels/SendLengthIsLegibleTests.cs | ContactStage | ContactStage.cs | Calling
+tests/Hamlet.App.Tests/ViewModels/SendLengthIsLegibleTests.cs | CwDuration | CwDuration.cs | Of
+tests/Hamlet.App.Tests/ViewModels/SendLengthIsLegibleTests.cs | SendOption | ContactStage.cs | Calling
+tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs | CwCharacter | CwCharacter.cs |
+tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs | CwDecoder | CwDecoder.cs | CharacterSettled Flush Process
+tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs | CwMessage | CwMessage.cs |
+tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs | CwProbabilisticStream | CwProbabilisticStream.cs | CharacterSettled Flush Process
+tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs | CwCharacter | CwCharacter.cs | High
+tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs | CwConfidence | CwCharacter.cs | High
+tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs | MorseAlphabet | MorseAlphabet.cs | WordGap
+tests/Hamlet.App.Tests/ViewModels/TwoStageTranscriptTests.cs | CwCharacter | CwCharacter.cs | High IsUnstable Provisional Settled Unstable
+tests/Hamlet.App.Tests/ViewModels/TwoStageTranscriptTests.cs | CwConfidence | CwCharacter.cs | High IsUnstable Provisional Settled Unstable
+tests/Hamlet.App.Tests/ViewModels/TwoStageTranscriptTests.cs | CwReadingStage | CwCharacter.cs | High IsUnstable Provisional Settled Unstable
+tests/Hamlet.App.Tests/ViewModels/UnresolvedLicenseTests.cs | TransmitContext | CwTransmitter.cs | Check
+tests/Hamlet.App.Tests/Views/HistoryRecedesAndCurrentCopyDoesNotTests.cs | CwCharacter | CwCharacter.cs | High Low Unreadable
+tests/Hamlet.App.Tests/Views/HistoryRecedesAndCurrentCopyDoesNotTests.cs | CwConfidence | CwCharacter.cs | High Low Unreadable
+tests/Hamlet.App.Tests/Views/ThePitchControlsAreOffThePanelTests.cs | CwDecoder | CwDecoder.cs | AssertAt AssertStation LockedToneHz PitchWasAsserted Unlock

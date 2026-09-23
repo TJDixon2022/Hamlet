@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD d0fd0b56)
+HEAD is now at d0fd0b56 feat(engine): empty the window when Hamlet crosses to somebody else

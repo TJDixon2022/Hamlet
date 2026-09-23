@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 2068f868)
+HEAD is now at 2068f868 feat(engine): read the first seconds again, at the note they were sent on

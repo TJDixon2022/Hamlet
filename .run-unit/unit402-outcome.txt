@@ -1,0 +1,13 @@
+
+## UNIT 402 - STEP 3
+
+STEP: 3
+APPROACH: attack the eight red-open tests of the failing set by number - trace each of #6 #15 #24 #41 #42 #43 #44 #45 to a cause at a file and line with a printer asserting nothing, then one change per cause in the decoder outside the transmit files or the easy tier's event under R12, each kept only on a red to green with the floors and every green held, attempt 1 of 3 written to docs/phase-cw/reds-3.6.md
+MOVE: continue
+WHY: R55 opened 3.6 and 4.7 and no unit has attacked either; 3.6 is the decode work the phase goal names, and its three-attempt parking count cannot start until each red is attacked once, so this unit makes that first attack on all eight on a measured trace, with the decoder licensed by R55's own words and the transmit files still fenced; it will probably not flip 3.6, which is why the next arbiter should take 4.7 before 3.6's second attempt.
+DECIDED: author's, overrulable - as WORK_INSTRUCTIONS.md 402 decisions 1 to 11 and its ARBITER-DECISION block.
+LICENCE: PHASE_PLAN.md R55, 3.6 and section 6's 3.6 line; R49; R50; R54; section 3; section 5; section 6's first, floor and stop lines; 3.1's tick for the event precedent; 3.5's own sentence; HM-DEC-090; HM-DEC-091; HM-DEC-127; HM-DEC-151; HM-DEC-155; HM-DEC-165; R12; R14; CLAUDE.md 0.0, 0.2 and 12.5; FACT-004; FACT-006; ARBITER.md sections 3 and 7; docs/phase-cw/PARKED.md 401 item 1; docs/phase-cw/unit394-reds.md section 2
+ADVANCES: step 3 criterion 6
+COST: one session, five tasks, 0 to 4, committed per task; task 2 group D is the drop candidate at minute 36.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.88 to 1.13.89. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 401; set to 402 - the eight reds, first attempt and CURRENT_STEP 3. HEAD at entry 306774fc as named. git diff --stat 162f0259 HEAD over src, tests, the carry-forward list and the failing set printed nothing, so the lines at entry are unit 401's exit runs, APP 278 of 278 in 156 s, ENGINE 178 of 178 in 374 s. Floors 37 of 37 every row identical to unit 401 exit, 13 of 13, 2 of 2. CwAcquisitionWindowTests 10 of 12, #6 0.75 and #15 0.54; CwEmissionGateTests 7 of 8; CwAdjudicationTests 10 of 11; CwReceiverFixtureTests 23 of 27, #42 70 during the preamble; CwFixtureTests 22 of 23; CwDisplacementFloorTests 6 of 6. Transmit files nothing against 7e209cb4; src nothing since 5688a8a5.

@@ -1,0 +1,19 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.56]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.73]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:03.93]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignsFixtureAtABandTests.OffDiskAndAtABandOf002 [2 s]
+  Standard Output Messages:
+ ROW | prosigns-18wpm | disk | [■ ■■■ A ■■ ■ ■■■ ■■ ■ ■■■ ■■■■ ■■■ ■■■■■] | BT False | SK False | mistakes 0 | share 1 of 16 | high 1 of 29 | 8 wpm
+ ROW | prosigns-18wpm | 0.02 | [W1AW DE K2ABC <BT> R TU <SK>] | BT True | SK True | mistakes 0 | share 16 of 16 | high 16 of 16 | 18 wpm
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 4.1962 Seconds

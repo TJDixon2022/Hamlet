@@ -1,0 +1,51 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.53]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm") [FAIL]
+[xUnit.net 00:00:00.53]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:00.53]       Collection: ["invented 'T', pattern [-], score 959.04", "said 'E' where 'C' was sent, pattern [.], score 11"···, "invented 'E', pattern [.], score 1534.56", "invented 'A', pattern [.-], score 1405.35", "invented 'R', pattern [.-.], score 1322.37", ···]
+[xUnit.net 00:00:00.53]       Stack Trace:
+[xUnit.net 00:00:00.54]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(134,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name)
+[xUnit.net 00:00:00.54]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.54]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm") [296 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["invented 'T', pattern [-], score 959.04", "said 'E' where 'C' was sent, pattern [.], score 11"···, "invented 'E', pattern [.], score 1534.56", "invented 'A', pattern [.-], score 1405.35", "invented 'R', pattern [.-.], score 1322.37", ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 134
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-18wpm") [118 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "noisy-18wpm") [122 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "prosigns-18wpm") [258 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-12wpm") [250 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "interference-18wpm") [120 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsOnDisk [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm") [125 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm") [239 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm") [250 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm") [250 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm") [115 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm") [115 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-12wpm") [26 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-18wpm") [12 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "fading-18wpm") [33 ms]
+[xUnit.net 00:00:03.24]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "interference-18wpm") [13 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "noisy-18wpm") [12 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "prosigns-18wpm") [21 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [251 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [115 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheProsignRecordingDecodesItsProsigns [241 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheWholeSetStaysSmallEnoughToCommit [1 ms]
+
+Test Run Failed.
+Total tests: 23
+     Passed: 22
+     Failed: 1
+ Total time: 3.4837 Seconds

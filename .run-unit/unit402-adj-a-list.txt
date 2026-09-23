@@ -1,0 +1,11 @@
+Passed Fixtures.CwAdjudicationTests.AFadeInRealisticAudio
+Passed Fixtures.CwAdjudicationTests.AFastFistInRealisticAudio
+Passed Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 400)
+Passed Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 500)
+Passed Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 750)
+Passed Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 875)
+Passed Fixtures.CwAdjudicationTests.ASpeedChangeInRealisticAudio
+Passed Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -10)
+Passed Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -3)
+Passed Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -6)
+Passed Fixtures.CwAdjudicationTests.ClearingTheScreenLeavesTheDecoderAloneOnRealisticAudio

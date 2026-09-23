@@ -1,0 +1,26 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+index 8411b04c..ce052e3c 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ -1056,8 +1056,19 @@ public static class CwProbabilisticDecoder
+         // already records as encoding a physical impossibility.
+         if (quarter <= 0)
+         {
+-            sigma = double.NaN;
+-            amplitude = double.NaN;
++            // UNIT 399 WAY 4, UNCOMMITTED: a scale where the quarter point is nought and the 97th
++            // percentile is not, sigma at one hundredth of that percentile, amplitude unchanged.
++            var top = PercentileOf(scratch, take, 97);
++            if (top <= 0)
++            {
++                sigma = double.NaN;
++                amplitude = double.NaN;
++
++                return;
++            }
++
++            sigma = top / 100;
++            amplitude = Math.Max(top, sigma * 1.05);
+ 
+             return;
+         }

@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 386fdb5d)
+HEAD is now at 386fdb5d feat(engine): decide the cuts and the characters together, behind a setting

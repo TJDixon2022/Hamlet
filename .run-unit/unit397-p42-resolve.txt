@@ -1,0 +1,31 @@
+    /// <summary>One chunk from the source, on the device's callback thread.</summary>
+    /// <remarks>
+    /// <para>**THE TAP IS FED HERE AND THE DECODER IS NOT.** FT8 reads the tap,
+    /// and **FT8 must never depend on the CW decoder keeping up**. Before this
+    /// unit the only feed into the tap was `Process`, which ran the tracker, the
+    /// mixer and the probabilistic decoder on this same call - so the tap
+    /// received audio at whatever fraction of real time the CW decode happened
+    /// to run at, and on the shack machine on 2026-09-03 that was 13%.</para>
+    /// <para>**AND IT RETURNS IN THE TIME TWO COPIES TAKE.** Both are bounded by
+    /// the chunk length and neither decodes anything. Whatever the decoder does
+    /// now, the device's callback is no longer waiting for it.</para>
+    /// </remarks>
+    private void OnSamples(in AudioChunk chunk)
+    {
+        var handoff = _handoff;
+
+        if (handoff is null)
+        {
+            // No source attached through Listen, so nothing has promised to
+            // drain a queue. Decode inline, which is the fixture path.
+            Process(chunk);
+
+            return;
+        }
+
+        Tap.Take(chunk.Samples, chunk.SampleRate);
+        handoff.Offer(chunk.FirstSampleIndex, chunk.SampleRate, chunk.Samples);
+    }
+
+    /// <summary>How many chunks are waiting for the decode worker.</summary>
+    public int DecodeQueueDepth => _handoff?.Depth ?? 0;

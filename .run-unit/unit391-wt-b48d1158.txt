@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD b48d1158)
+HEAD is now at b48d1158 feat(engine): rank candidate pitches against one band-wide noise floor

@@ -1,0 +1,56 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:33.90]     Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant [FAIL]
+  Failed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant [7 s]
+  Error Message:
+   System.IO.IOException : The process cannot access the file 'C:\Users\TimDi\AppData\Local\Temp\hamlet-olivia-rows-4808ad2ed1864d0384d127d5809ac85a\refuse\2026-09-23.jsonl' because it is being used by another process.
+  Stack Trace:
+     at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)
+   at System.IO.File.ReadAllLines(String path, Encoding encoding)
+   at System.Linq.Enumerable.SelectManySingleSelectorIterator`2.ToList()
+   at Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.Lines(String folder) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOliviaRowsTests.cs:line 675
+   at Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOliviaRowsTests.cs:line 306
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ card: W1AW, offered Report, action Send
+
+
+[xUnit.net 00:02:18.89]     Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing [FAIL]
+  Failed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing [1 ms]
+  Error Message:
+   System.InvalidProgramException : You've caused dispatcher loop
+  Stack Trace:
+     at Avalonia.Threading.Dispatcher.ResetForUnitTests()
+   at Avalonia.Headless.HeadlessUnitTestSession.EnsureApplication()
+   at Avalonia.Headless.HeadlessUnitTestSession.<>c__DisplayClass10_0`1.<DispatchCore>b__0()
+--- End of stack trace from previous location ---
+[xUnit.net 00:02:23.96]     Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.AClickTunesTheStarFillsAndTheCrossForgetsAndThatPersists [FAIL]
+  Failed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.AClickTunesTheStarFillsAndTheCrossForgetsAndThatPersists [1 ms]
+  Error Message:
+   System.InvalidProgramException : You've caused dispatcher loop
+  Stack Trace:
+     at Avalonia.Threading.Dispatcher.ResetForUnitTests()
+   at Avalonia.Headless.HeadlessUnitTestSession.EnsureApplication()
+   at Avalonia.Headless.HeadlessUnitTestSession.<>c__DisplayClass10_0`1.<DispatchCore>b__0()
+--- End of stack trace from previous location ---
+[xUnit.net 00:02:28.98]     Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeSavedSpotsAreThreeChipsWithTheirWordsAndTheirFamilysInk [FAIL]
+  Failed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeSavedSpotsAreThreeChipsWithTheirWordsAndTheirFamilysInk [1 ms]
+  Error Message:
+   System.InvalidProgramException : You've caused dispatcher loop
+  Stack Trace:
+     at Avalonia.Threading.Dispatcher.ResetForUnitTests()
+   at Avalonia.Headless.HeadlessUnitTestSession.EnsureApplication()
+   at Avalonia.Headless.HeadlessUnitTestSession.<>c__DisplayClass10_0`1.<DispatchCore>b__0()
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     4, Passed:   274, Skipped:     0, Total:   278, Duration: 2 m 29 s - Hamlet.App.Tests.dll (net8.0)

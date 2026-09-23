@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 67ac0796)
+HEAD is now at 67ac0796 feat(engine): build the window clear, and say why it is not switched on

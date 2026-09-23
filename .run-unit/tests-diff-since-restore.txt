@@ -1,0 +1,19 @@
+ .../Audio/TheReadPathDoesNotAllocateTests.cs       |  41 ----
+ .../Audio/TheTapIsNotBehindTheDecoderTests.cs      | 104 --------
+ .../Hamlet.RadioEngine.Tests/Cw/CwDecodeHarness.cs |  11 +-
+ .../Cw/CwDisplacementFloorTests.cs                 |  17 +-
+ tests/Hamlet.RadioEngine.Tests/Cw/CwFixtures.cs    |  16 +-
+ .../Cw/FittingKeyUpAgainstAssumingItTests.cs       | 197 ---------------
+ .../Cw/NothingActsOnTheAdmissionVerdictTests.cs    |  31 ---
+ .../Cw/TheCleanSyntheticsFourWaysTests.cs          | 107 +++++++++
+ .../Cw/TheDisplacementFloorFourWaysTests.cs        | 117 +++++++++
+ .../Cw/TheEightRedsTests.cs                        | 267 +++++++++++++++++++++
+ .../ThePosteriorSurvivesItsOwnArithmeticTests.cs   | 183 --------------
+ .../Cw/TheProsignsFixtureAtABandTests.cs           |  55 +++++
+ .../Cw/TheScoreSaysWhatItIsMeasuringTests.cs       | 166 -------------
+ .../Cw/WhatDecodeScoringCostsTests.cs              | 101 --------
+ .../Hamlet.RadioEngine.Tests.csproj                |  10 -
+ tests/fixtures/cw/clean-12wpm.wav                  | Bin 200044 -> 200044 bytes
+ tests/fixtures/cw/clean-18wpm.wav                  | Bin 137644 -> 137644 bytes
+ tests/fixtures/cw/prosigns-18wpm.wav               | Bin 237910 -> 237910 bytes
+ 18 files changed, 581 insertions(+), 842 deletions(-)

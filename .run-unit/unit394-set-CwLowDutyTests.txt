@@ -1,0 +1,36 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwLowDutyTests.TheHeldFigureLetsGoWhenTheStationStops [6 s]
+  Standard Output Messages:
+ held 36.8 dB, and 10.0 dB half a minute later
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwLowDutyTests.TheToneIsFoundWhereItActuallyIs [8 s]
+  Standard Output Messages:
+ sent 575 Hz, found 575 Hz
+ sent 595 Hz, found 600 Hz
+ sent 627 Hz, found 625 Hz
+ sent 700 Hz, found 700 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwLowDutyTests.AStationKeyedForAMomentReadsAsAStrongStation [2 s]
+  Standard Output Messages:
+ tone 625 Hz, snr 36.8 dB, hasTone True
+
+
+[xUnit.net 00:00:21.05]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwLowDutyTests.AnEmptyBandStillReadsAsEmpty [3 s]
+  Standard Output Messages:
+ empty band: snr 10.4 dB, tone False
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 21.3022 Seconds

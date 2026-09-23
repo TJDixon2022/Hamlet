@@ -1,0 +1,58 @@
+7e65aac4 2026-09-23 08:33:02 -0400 step 3 repair 3.6: #24 #41 a follow under half the passband is not a speed discontinuity, CwDecoder 691, CwEmissionGateTests 8 of 8 and CwAdjudicationTests 11 of 11, kept on both greens with captures 37 of 37 every row identical, adjudicated 13, synthetics 2, CwFixtureTests 22 of 23, displacement 6, CwSpeedSilenceTests 4, CwTwoStationTests 5, CapturedSignalTests 13, WhyTheGateDidNotFireTests 2, all as at entry; full passband measured first and put back for naming 21 on exchange-easy
+a902cdf8 2026-09-23 02:04:36 -0400 step 4 piece 45 out: 1a84188e moved nothing
+25bc3bcf 2026-09-23 02:04:21 -0400 step 4 piece 45 of 45: 1a84188e the callback budget is set, not inherited - CwKeyingMeter, the Cw half alone
+6d484e97 2026-09-23 02:03:02 -0400 step 4 piece 42 out: 43efc525 moved nothing
+ec9dec4a 2026-09-23 02:00:17 -0400 step 4 piece 42 of 45: 43efc525 the tap is fed from the callback, the decoder from a queue - CwDecoder, the Cw half alone; OnSamples conflict resolved to the piece's own lines, its two DecodeQueueDropped properties dropped as unit 392's seam
+85b97b15 2026-09-23 01:59:37 -0400 step 4 piece 41 out: 2828ab69 moved nothing
+548d7007 2026-09-23 01:59:21 -0400 step 4 piece 41 of 45: 2828ab69 report work instruction 056 - the streams agree, the reading is lost after - CwStreamSplit, as a pair with piece 39 a09b36a7 under decision 5
+a95fc8fb 2026-09-23 01:58:31 -0400 step 4 piece 39 out: a09b36a7 moved nothing
+2b9c5d10 2026-09-23 01:58:12 -0400 step 4 piece 39 of 45: a09b36a7 measure whether two people are sending, and withhold the verdict - CwStreamSplit
+356ab900 2026-09-23 01:56:47 -0400 step 4 piece 36 out: efc33267 moved nothing
+c08f766d 2026-09-23 01:54:12 -0400 step 4 piece 36 of 45: efc33267 the sheet stops lying about arithmetic, and tonight's captures land - CwCounterTrail, the Cw half alone
+49cd3ed9 2026-09-23 01:54:02 -0400 step 4 piece 35 out: dfb357ef moved nothing
+2669b5f9 2026-09-23 01:51:25 -0400 step 4 piece 35 of 45: dfb357ef the four configurations, and a carrier count that does not work - CwSpectralPeak, as a pair with piece 28 ade52536 under decision 5, piece 35 merged under --3way
+4c932f96 2026-09-23 01:50:50 -0400 step 4 piece 34 out: e6b1ece7 moved nothing
+9627bc0b 2026-09-23 01:48:14 -0400 step 4 piece 34 of 45: e6b1ece7 a key-down that comes back inside twelve milliseconds never ended - CwUnitEstimator
+e9449d0a 2026-09-23 01:21:30 -0400 step 4 piece 33 out: 4935a4f8 moved nothing
+8b709643 2026-09-23 01:18:55 -0400 step 4 piece 33 of 45: 4935a4f8 measure the peak-referenced threshold and refuse it - CwUnitEstimator, merged under --3way
+38610a35 2026-09-23 01:18:39 -0400 step 4 piece 32 out: c8685e4d moved nothing
+832a3db3 2026-09-23 01:16:05 -0400 step 4 piece 32 of 45: c8685e4d the peak window buys nothing, and N4L does not come back - as a pair with piece 28, ade52536, which it needs, decision 5; CwSpectralPeak
+e14f42e0 2026-09-23 01:15:53 -0400 step 4 piece 31 out: b7147b1f moved nothing
+ee3dcca8 2026-09-23 01:13:20 -0400 step 4 piece 31 of 45: b7147b1f measure the percentile threshold and refuse it, three ways - CwUnitEstimator
+9302155c 2026-09-23 01:13:10 -0400 step 4 piece 30 out: 95a5e063 moved nothing
+9c70a121 2026-09-23 01:10:19 -0400 step 4 piece 30 of 45: 95a5e063 assert nothing from a pitch nobody judged to be a station - CwDecoder; its second hunk placed in the class by hand, its context being piece 19's out ranking, decision 3
+c1a7dfc6 2026-09-23 01:09:04 -0400 step 4 piece 28 out: ade52536 moved nothing
+d14c9970 2026-09-23 01:06:12 -0400 step 4 piece 28 of 45: ade52536 the bench's run-merging bug is not in Hamlet, and here is why - CwSpectralPeak, new file
+8cae3b66 2026-09-23 01:05:20 -0400 step 4 piece 25 out: 71b4f044 moved nothing
+e91ed185 2026-09-23 01:02:47 -0400 step 4 piece 25 of 45: 71b4f044 a posterior over the lattice, in the log domain - CwProbabilisticDecoder.Posterior new, CwProbabilisticDecoder
+35102716 2026-09-23 01:02:15 -0400 step 4 piece 23 out: b8cad1f9 moved nothing
+c89bdd44 2026-09-23 00:59:37 -0400 step 4 piece 23 of 45: b8cad1f9 test every confidence the decoder has against correctness - as a pair with piece 22, 0f48c33e, which it needs, decision 5; CwAccuracy
+60f4453a 2026-09-23 00:59:27 -0400 step 4 piece 22 out: 0f48c33e moved nothing
+b381460b 2026-09-23 00:56:55 -0400 step 4 piece 22 of 45: 0f48c33e score a decode against what was actually sent - CwAccuracy, new file
+c9681461 2026-09-23 00:56:21 -0400 step 4 piece 20 out: ac1d56da moved nothing
+304ec791 2026-09-23 00:53:48 -0400 step 4 piece 20 of 45: ac1d56da port the reference decoder's chain into the engine - CwReferenceDecoder, new file
+306419f2 2026-09-23 00:53:14 -0400 step 4 piece 18 out: b48d1158 moved nothing
+5dd24810 2026-09-23 00:53:01 -0400 step 4 piece 18 of 45: b48d1158 rank candidate pitches against one band-wide noise floor - CwPitchRanking, new file
+8d8a37f4 2026-09-23 00:52:55 -0400 step 4 piece 17 out: f9c11989 moved nothing
+0bec4dd6 2026-09-23 00:50:16 -0400 step 4 piece 17 of 45: f9c11989 fit the key-up state, measure it, and ship nothing - CwProbabilisticDecoder
+3a74cf45 2026-09-23 00:49:18 -0400 step 4 piece 14 out: 8ca6a633 moved nothing
+952fb690 2026-09-23 00:49:03 -0400 step 4 piece 14 of 45: 8ca6a633 rank candidate pitches by what the decoder reads at each; not wired - CwPitchRanking, new file
+f5ef1ff8 2026-09-23 00:47:32 -0400 step 4 piece 12 out: f27174b5 moved nothing
+14155613 2026-09-23 00:44:45 -0400 step 4 piece 12 seam: f27174b5 - remove unit 392's PitchWasAsserted => false property, which the piece's record parameter now supplies; decision 4, moves no behavior
+ad5fa332 2026-09-23 00:44:14 -0400 step 4 piece 12 of 45: f27174b5 the operator may assert a station, and Hamlet finds the pitch - CwDecoder and CwDecodeReport; the Retuned hunk dropped as already in the tree by unit 392's seam, decision 3
+ed22ff7d 2026-09-23 00:11:51 -0400 step 4 piece 9 out: 44cf3fc8 moved nothing
+11ae2b56 2026-09-23 00:09:19 -0400 step 4 piece 9 of 45: 44cf3fc8 build both gate-threshold derivations, both off by default - as a pair with piece 7, 7fb89d5e, which it depends on, decision 5; Cw diffs only, CwToneSurvey, CwToneTracker
+cd9da33c 2026-09-23 00:08:58 -0400 step 4 piece 8 out: 1bf4372d moved nothing
+433180c4 2026-09-23 00:06:26 -0400 step 4 piece 8 of 45: 1bf4372d the separation bound must not move, and the reason is upstream - as a pair with piece 7, 7fb89d5e, which it depends on, decision 5; Cw diffs only, CwToneSurvey, CwToneTracker
+248c6465 2026-09-23 00:06:05 -0400 step 4 piece 7 out: 7fb89d5e moved nothing
+1e72c135 2026-09-23 00:03:34 -0400 step 4 piece 7 of 45: 7fb89d5e record which admission test refused which bin, and by how much - its Cw diff only, CwToneSurvey, CwToneTracker
+37a322aa 2026-09-23 00:03:12 -0400 step 4 piece 5 out: 9de394da moved nothing
+fa26b78b 2026-09-23 00:00:41 -0400 step 4 piece 5 of 45: 9de394da open the two constants a sweep has to vary - its Cw diff only, CwDecoder, CwProbabilisticStream, CwToneTracker
+c1868852 2026-09-23 00:00:05 -0400 step 4 piece 3 out: 3e84ac74 moved nothing
+4b8a89a3 2026-09-22 23:57:32 -0400 step 4 piece 3 of 45: meet the seam - 3e84ac74's Retuned replaces unit 392's one-line Retuned seam and keeps its Unlock call, no other behavior moved - decision 4
+8d454ab9 2026-09-22 23:57:06 -0400 step 4 piece 3 of 45: 3e84ac74 let go of a pitch measured on a frequency the radio has left - its Cw diff only, CwDecoder, CwToneTracker; MainWindowViewModel and its test not taken, R50
+0d3e08a6 2026-09-22 23:57:00 -0400 step 4 piece 2 out: 6fc36a1e moved nothing
+0246f209 2026-09-22 23:54:14 -0400 step 4 piece 2 of 45: drop 6fc36a1e's CwCharacter hunk, MarginLlr and WidestRecordedLlr, already in the tree as unit 392's seam - decision 3
+99db35fc 2026-09-22 23:53:54 -0400 step 4 piece 2 of 45: 6fc36a1e log how close the argument was, beside how loud it was - its Cw diff only, CwCharacter, CwProbabilisticDecoder, CwProbabilisticStream; MainWindowViewModel not taken, R50
+4fa4b593 2026-09-22 23:53:37 -0400 step 4 piece 1 out: 2068f868 moved nothing
+5cf8f9c8 2026-09-22 23:50:18 -0400 step 4 piece 1 of 45: 2068f868 read the first seconds again, at the note they were sent on - its Cw diff only, CwDecoder, CwProbabilisticStream, CwToneTracker; AudioTap.cs and its tests not taken, R50

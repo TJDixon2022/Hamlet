@@ -1,0 +1,51 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.59]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.76]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.77]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:32.32]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheDisplacementFloorFourWaysTests.PrintTheRows [30 s]
+  Standard Output Messages:
+ ROW | image | way 1 | band 0 | retunes 1 | ends False retunes-is-1 True | '■ ■■ ■'
+ ROW | image | way 2 | band 0 | retunes 1 | ends False retunes-is-1 True | '■ ■ ■ ■ ■ ■ ■A ■ ■ ■■'
+ ROW | image | way 3 | band 0.002 | retunes 1 | ends True retunes-is-1 True | 'T TEEV VVV VVV CQ DE W1AW K'
+ ROW | image | way 4 | band 0.005 | retunes 1 | ends True retunes-is-1 True | 'T TEEV VVV VVV CQ DE W1AW K'
+ ROW | image | way 5 | band 0.01 | retunes 1 | ends True retunes-is-1 True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | image | way 6 | band 0.02 | retunes 1 | ends True retunes-is-1 True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-400 | way 1 | band 0 | retunes 1 | ends False | '■ ■■ ■'
+ ROW | elsewhere-400 | way 2 | band 0 | retunes 1 | ends False | '■ ■ ■ ■ ■ ■ ■A ■ ■ ■■'
+ ROW | elsewhere-400 | way 3 | band 0.002 | retunes 1 | ends True | 'T TEEV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-400 | way 4 | band 0.005 | retunes 1 | ends True | 'T TEEV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-400 | way 5 | band 0.01 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-400 | way 6 | band 0.02 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-500 | way 1 | band 0 | retunes 1 | ends False | '■ ■■ ■'
+ ROW | elsewhere-500 | way 2 | band 0 | retunes 1 | ends False | '■ ■ ■ ■ ■ ■ ■A ■ ■ ■■'
+ ROW | elsewhere-500 | way 3 | band 0.002 | retunes 1 | ends True | '■ ■ T TEET ETET ETET ETET EETT EETT E■ CQ DE W1AW K'
+ ROW | elsewhere-500 | way 4 | band 0.005 | retunes 1 | ends True | '■ ■ ■T TEET ETET ETET ETET EETT EET■■ CQ DE W1AW K'
+ ROW | elsewhere-500 | way 5 | band 0.01 | retunes 1 | ends True | '■ ■ ■ EEET VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-500 | way 6 | band 0.02 | retunes 1 | ends True | 'T TEEV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-750 | way 1 | band 0 | retunes 1 | ends False | '■ ■■ ■'
+ ROW | elsewhere-750 | way 2 | band 0 | retunes 1 | ends False | '■ ■ ■ ■ ■ ■ ■A ■ ■ ■■'
+ ROW | elsewhere-750 | way 3 | band 0.002 | retunes 1 | ends False | '■ ■ T TTTT TTTT TTTT TTTT TTTT TTT■■ ■■ OT W1AW K'
+ ROW | elsewhere-750 | way 4 | band 0.005 | retunes 2 | ends True | '■ E ■ E I ■ ■ 5EE E ■E EE ■ VVV CQ DE W1AW K'
+ ROW | elsewhere-750 | way 5 | band 0.01 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-750 | way 6 | band 0.02 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-875 | way 1 | band 0 | retunes 1 | ends False | '■ ■■ ■'
+ ROW | elsewhere-875 | way 2 | band 0 | retunes 1 | ends False | '■ ■ ■ ■ ■ ■ ■A ■ ■ ■■'
+ ROW | elsewhere-875 | way 3 | band 0.002 | retunes 1 | ends True | 'T TEEV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-875 | way 4 | band 0.005 | retunes 1 | ends True | 'T TEEV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-875 | way 5 | band 0.01 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | elsewhere-875 | way 6 | band 0.02 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | refused-before | way 1 | band 0.06 | retunes 1 | ends False | '5V H VEVVVSVV I VVHVIVVV E KCTCGQQ N DEDE E WWAJ11AARW W N K'
+ ROW | refused-before | way 2 | band 0.06 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW | refused-before | way 6 | band 0.02 | retunes 1 | ends True | 'TV VVV VVV CQ DE W1AW K'
+ ROW24 | characters 9 | reading-wpm 18.46 | reading-text ' CQ DE W1AW K ' | wpm null | reacquiring True | settled 'CQ DE W1AW K'
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 32.5971 Seconds

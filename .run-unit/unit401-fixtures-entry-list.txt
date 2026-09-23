@@ -1,0 +1,23 @@
+Failed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm")
+Passed CwFixtureTests.EveryFixtureIsOnDisk
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-12wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "fading-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "interference-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "noisy-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "prosigns-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-12wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-18wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "interference-18wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "noisy-18wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "prosigns-18wpm")
+Passed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")
+Passed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")
+Passed CwFixtureTests.TheProsignRecordingDecodesItsProsigns
+Passed CwFixtureTests.TheWholeSetStaysSmallEnoughToCommit

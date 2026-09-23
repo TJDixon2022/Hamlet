@@ -1,0 +1,37 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheReworkNumbersPrinterTests.TheNumbersOf021410 [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021410: 47 characters, 99 elements, 11 unsure, at 550 Hz
+ TEXT    [M E T O TTT TO MAMA T  T A ■■ TY M EM T T ■ ■ G O O D B NZ M MM ■ EHI I N DTDT T  ■E ■RRIIMGEGHHRR R I ISS S  ■  ■ I FFRLELETT TNT  E B6■6D6E6MOEOAAM]
+ SETTLED [■ ■ ■ M ■ ■ ■ ■ T O MTT T  Y M TT ■ ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM]
+ SETTLED DISTANCE WEEKEND 5 [ FLEN]
+ SETTLED DISTANCE THINKING 5 [T ■RIG]
+ SETTLED DISTANCE FLEX 1 [FLE]
+ TEXT DISTANCE WEEKEND 5 [RLELE]
+ TEXT DISTANCE THINKING 5 [EHI I ]
+ TEXT DISTANCE FLEX 2 [LE]
+
+
+[xUnit.net 00:00:04.31]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheReworkNumbersPrinterTests.TheNumbersOf013637 [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013637: 63 characters, 164 elements, 3 unsure, at 550 Hz
+ TEXT    [■MP P NE NEVVENEN T T T NE NEVVE RE R T GEG OEOT ET ADAB NB OIOV EV E ■T ■77 H 5 U5 F ■F I SES ■ ■CCLLEAEAR R S S K KYY IY LILI TEI TE T BIBR ER EE ME Z EZ E A ALLLL D DAEDAYY  JJUJUSTST IT AAAWE WE S SO]
+ SETTLED [TE MP NEVEN T REV■R G O T AB OV E ■7 5 F ES ■CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO]
+ SETTLED DISTANCE ABOVE 2 [AB OV]
+ SETTLED DISTANCE BREEZE 2 [BR EE]
+ TEXT DISTANCE ABOVE 3 [VVE]
+ TEXT DISTANCE BREEZE 3 [BR E]
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 4.5612 Seconds

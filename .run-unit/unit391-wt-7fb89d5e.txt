@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 7fb89d5e)
+HEAD is now at 7fb89d5e feat(engine): record which admission test refused which bin, and by how much

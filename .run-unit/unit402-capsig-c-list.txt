@@ -1,0 +1,13 @@
+Passed CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-013347")
+Passed CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-013622")
+Passed CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-134712")
+Passed CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-18-004507")
+Passed CapturedSignalTests.TheCapturesAreGenuinelyDifferentRecordings
+Passed CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-013347")
+Passed CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-013622")
+Passed CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-134712")
+Passed CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-18-004507")
+Passed CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-013347")
+Passed CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-013622")
+Passed CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-134712")
+Passed CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-18-004507")

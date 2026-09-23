@@ -1,0 +1,203 @@
+ C | own transmit 9.1 s | guard spans 13, first 1.02 s, last ends 11.66 s, blocked total 9.2 s
+ C | CharacterDecoded | 116 in all | 56 before 13 s | E@2.09 I@2.74 S@3.00 ■@3.06 E@3.50 ■@3.06 E@3.40 S@3.90 S@3.90 E@4.14 I@4.50 E@4.14 I@4.49 U@5.00 ■@5.08 I@5.50 ■@5.08 S@5.80 E@6.00 S@5.80 H@6.17 E@6.50 H@6.17 S@6.64 E@6.90 S@6.64 E@6.90 E@7.37 E@7.37 E@7.61 I@8.00 E@7.61 I@7.93 I@8.33 I@8.34 E@8.57 S@9.00 E@8.57 S@8.93 E@9.27 E@9.50 E@9.27 E@9.41 E@9.76 S@10.00 E@9.76 H@10.14 I@10.50 H@10.14 ■@11.00 ■@10.98 E@11.21 E@11.21 5@12.00 ■@12.50 <HH>@12.41
+ C | CharacterSettled | 54 in all | 30 before 13 s | I@0.19 ■@0.97 I@1.37 R@1.86 E@2.09 ■@3.06 E@3.41 S@3.90 E@4.14 I@4.49 ■@5.08 S@5.80 H@6.17 S@6.64 E@6.90 E@7.37 E@7.61 I@7.93 I@8.33 E@8.57 S@8.93 E@9.27 E@9.41 E@9.76 H@10.14 ■@10.98 E@11.21 E@11.57 ■@12.03 ■@12.80
+ C | LeadingEdge | 49 distinct before 13 s
+ C | counted characters reaching neither LeadingEdge nor CharacterSettled: 0
+ D | 12 wpm 18 dB run-up | seed 7919 | share 0.95 | wpm 12 | settled '4V CQ CQ DE N0CALL N0CALL ■' | kinds [4/V]VCQCQDEN0CALLN0CALL(+■)
+ D | 12 wpm 18 dB run-up | seed 104729 | share 0.58 | wpm 23 | settled '■ AV CQ CQ DE N0CAL TTTT ■ E I I I I E E H S S E S 5 TTMEE E E' | kinds (+■)[A/V]VCQCQDEN0CAL(+T)(+T)(+T)(+T)(+■)(+E)(+I)(+I)(+I)(+I)(+E)(+E)(+H)(+S)(+S)(+E)(+S)[5/L](+T)[T/N][M/0][E/C][E/A][E/L][E/K]
+ D | 12 wpm 18 dB run-up | seed 15485863 | share 0.11 | wpm 23 | settled '4V C TTTT ■ E S E I H E E 5 I E S E I I I IEEHSSES5S5 ESEIIIIEEHS E E ES5 E T2 O' | kinds [4/V]VC(+T)(+T)(+T)(+T)(+■)(+E)(+S)(+E)(+I)(+H)(+E)(+E)(+5)(+I)(+E)(+S)(+E)[I/Q](+I)[I/Q](+I)(+E)(+E)(+H)(+S)[S/D]E(+S)(+5)(+S)(+5)(+E)(+S)(+E)(+I)(+I)(+I)(+I)(+E)(+E)[H/N][S/0][E/A][E/L](+E)(+S)[5/N][E/C][T/L][2/L](+O)
+ D | 25 wpm 18 dB bare | seed 7919 | share 0.68 | wpm 25 | settled '■ A CQ DE N0CALL N0CE ■ ■ T' | kinds (+■)[A/Q]CQDEN0CALLN0C(+E)[■/A][■/L](+T)
+ D | 25 wpm 18 dB bare | seed 104729 | share 0.89 | wpm 25 | settled '■ A CQ DE N0CALL N0CALL K' | kinds (+■)[A/Q]CQDEN0CALLN0CALLK
+ D | 25 wpm 18 dB bare | seed 15485863 | share 0.68 | wpm 25 | settled '■ A CQ DE N0CALL N0CE ■ E ■EHE' | kinds (+■)[A/Q]CQDEN0CALLN0C(+E)[■/A][E/L](+■)(+E)(+H)(+E)
+ B | coverage-easy | CharacterDecoded | 112 characters | unreadable 5 | strangers 37 | ends False | 'VVEVSVVAW■11S■22E2H33E3S44E4H55NB6E6MZ77NO88T8MO99T9MO900■■SKRYNTTTTMEQUTOOA?TDDEENXITE/TTEENMO■00TKCCAAEARLLALL' against '1234567890QRZ?DE/N0CALL'
+ B | coverage-easy | LeadingEdge last | 0 characters | unreadable 0 | strangers 0 | ends False | '' against '1234567890QRZ?DE/N0CALL'
+ B | coverage-easy | CharacterSettled | 36 characters | unreadable 4 | strangers 7 | ends False | 'VVV1234567890■A■YTTMT■■DETEETEN0CALL' against '1234567890QRZ?DE/N0CALL'
+ B | tightfist-easy | CharacterDecoded | 38 characters | unreadable 1 | strangers 3 | ends False | 'VEVHVVTETEIESTSTTTDDEEETETEISTSTTTKKK■' against 'TESTDETESTK'
+ B | tightfist-easy | LeadingEdge last | 0 characters | unreadable 0 | strangers 0 | ends False | '' against 'TESTDETESTK'
+ B | tightfist-easy | CharacterSettled | 15 characters | unreadable 1 | strangers 0 | ends False | 'VVVTESTDETESTK■' against 'TESTDETESTK'
+ B | exchange-easy | CharacterDecoded | 85 characters | unreadable 3 | strangers 21 | ends False | 'VVEVSVVNKCECMZQQENCCTCMQQQ■■TNENMO■00TKCCAAEARLLALLTNENMOTTT00TKCCAAEARTEELAETEILNKKK' against 'CQCQDEN0CALLN0CALLK'
+ B | exchange-easy | LeadingEdge last | 0 characters | unreadable 0 | strangers 0 | ends False | '' against 'CQCQDEN0CALLN0CALLK'
+ B | exchange-easy | CharacterSettled | 29 characters | unreadable 0 | strangers 7 | ends False | 'VVVCQCQIM,CALLNT0CETETEEETEEK' against 'CQCQDEN0CALLN0CALLK'
+ A | #24 0.00 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 0.25 s | tone 600
+ A | #24 0.25 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 0.50 s | tone 600
+ A | #24 0.50 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 0.75 s | tone 600
+ A | #24 0.75 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 1.00 s | tone 600
+ A | #24 1.00 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 1.25 s | tone 600
+ A | #24 1.25 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 1.50 s | tone 600
+ A | #24 1.50 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.22 s | tone 625
+ A | #24 1.75 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.47 s | tone 625
+ A | #24 2.00 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.72 s | tone 625
+ A | #24 2.25 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.97 s | tone 625
+ A | #24 2.50 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.22 s | tone 625
+ A | #24 2.75 s | text 5 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.47 s | tone 625
+ A | #24 3.00 s | text 5 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.72 s | tone 625
+ A | #24 3.25 s | text 6 | last-wpm 17.78 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.97 s | tone 625
+ A | #24 3.50 s | text 6 | last-wpm 17.78 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.22 s | tone 625
+ A | #24 3.75 s | text 8 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.47 s | tone 625
+ A | #24 4.00 s | text 8 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.72 s | tone 640
+ A | #24 4.25 s | text 8 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.97 s | tone 640
+ A | #24 4.50 s | text 8 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.22 s | tone 640
+ A | #24 4.75 s | text 9 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.47 s | tone 640
+ A | #24 5.00 s | text 9 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.72 s | tone 640
+ A | #24 5.25 s | text 9 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.97 s | tone 640
+ A | #24 5.50 s | text 9 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.22 s | tone 640
+ A | #24 5.75 s | text 9 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.47 s | tone 640
+ A | #24 6.00 s | text 9 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.72 s | tone 620
+ A | #24 6.25 s | text 10 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.97 s | tone 620
+ A | #24 6.50 s | text 10 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.22 s | tone 620
+ A | #24 6.75 s | text 11 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.47 s | tone 620
+ A | #24 7.00 s | text 11 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.72 s | tone 620
+ A | #24 7.25 s | text 12 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.97 s | tone 620
+ A | #24 7.50 s | text 12 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.22 s | tone 620
+ A | #24 7.75 s | text 13 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.47 s | tone 620
+ A | #24 8.00 s | text 13 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.72 s | tone 620
+ A | #24 8.25 s | text 13 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.97 s | tone 620
+ A | #24 8.50 s | text 13 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 7.07 s | tone 620
+ A | #24 flushed | text 14 | last-wpm 18.46 | wpm null | reacquiring True | retunes 1 | follows 1 | since 7.07 s | tone 620
+ A | #24 | 8.6 s of audio | polls 35 | null for text empty 11, reacquiring 24, outside bounds 0 | reading ' CQ DE W1AW K '
+ A | #41 0.00 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 0.25 s | tone 600
+ A | #41 0.25 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 0.50 s | tone 600
+ A | #41 0.50 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 0.75 s | tone 600
+ A | #41 0.75 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 1.00 s | tone 600
+ A | #41 1.00 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 1.25 s | tone 600
+ A | #41 1.25 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 0 | follows 0 | since 1.50 s | tone 600
+ A | #41 1.50 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.22 s | tone 625
+ A | #41 1.75 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.47 s | tone 625
+ A | #41 2.00 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.72 s | tone 625
+ A | #41 2.25 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 0.97 s | tone 625
+ A | #41 2.50 s | text 0 | last-wpm 0.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.22 s | tone 625
+ A | #41 2.75 s | text 3 | last-wpm 10.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.47 s | tone 625
+ A | #41 3.00 s | text 3 | last-wpm 10.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.72 s | tone 625
+ A | #41 3.25 s | text 3 | last-wpm 10.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 1.97 s | tone 625
+ A | #41 3.50 s | text 3 | last-wpm 10.00 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.22 s | tone 625
+ A | #41 3.75 s | text 3 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.47 s | tone 625
+ A | #41 4.00 s | text 3 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.72 s | tone 625
+ A | #41 4.25 s | text 4 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 2.97 s | tone 625
+ A | #41 4.50 s | text 4 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.22 s | tone 625
+ A | #41 4.75 s | text 5 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.47 s | tone 625
+ A | #41 5.00 s | text 5 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.72 s | tone 625
+ A | #41 5.25 s | text 5 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 3.97 s | tone 625
+ A | #41 5.50 s | text 5 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.22 s | tone 625
+ A | #41 5.75 s | text 5 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.47 s | tone 625
+ A | #41 6.00 s | text 5 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.72 s | tone 625
+ A | #41 6.25 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 4.97 s | tone 625
+ A | #41 6.50 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.22 s | tone 625
+ A | #41 6.75 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.47 s | tone 625
+ A | #41 7.00 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.72 s | tone 625
+ A | #41 7.25 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 5.97 s | tone 625
+ A | #41 7.50 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.22 s | tone 625
+ A | #41 7.75 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.47 s | tone 625
+ A | #41 8.00 s | text 6 | last-wpm 10.91 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.72 s | tone 625
+ A | #41 8.25 s | text 8 | last-wpm 11.16 | wpm null | reacquiring True | retunes 1 | follows 1 | since 6.97 s | tone 625
+ A | #41 8.50 s | text 8 | last-wpm 11.16 | wpm null | reacquiring True | retunes 1 | follows 1 | since 7.22 s | tone 625
+ A | #41 8.75 s | text 8 | last-wpm 11.16 | wpm null | reacquiring True | retunes 1 | follows 1 | since 7.47 s | tone 625
+ A | #41 9.00 s | text 8 | last-wpm 11.16 | wpm null | reacquiring True | retunes 1 | follows 1 | since 7.72 s | tone 625
+ A | #41 9.25 s | text 8 | last-wpm 11.16 | wpm null | reacquiring True | retunes 1 | follows 1 | since 7.97 s | tone 625
+ A | #41 9.50 s | text 8 | last-wpm 11.16 | wpm null | reacquiring True | retunes 2 | follows 2 | since 0.22 s | tone 600
+ A | #41 9.75 s | text 9 | last-wpm 11.16 | wpm null | reacquiring True | retunes 2 | follows 2 | since 0.47 s | tone 600
+ A | #41 10.00 s | text 9 | last-wpm 11.16 | wpm null | reacquiring True | retunes 2 | follows 2 | since 0.72 s | tone 600
+ A | #41 10.25 s | text 11 | last-wpm 11.16 | wpm null | reacquiring True | retunes 2 | follows 2 | since 0.97 s | tone 600
+ A | #41 10.50 s | text 11 | last-wpm 11.16 | wpm null | reacquiring True | retunes 2 | follows 2 | since 1.22 s | tone 600
+ A | #41 10.75 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 1.47 s | tone 600
+ A | #41 11.00 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 1.72 s | tone 600
+ A | #41 11.25 s | text 12 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 1.97 s | tone 600
+ A | #41 11.50 s | text 12 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 2.22 s | tone 600
+ A | #41 11.75 s | text 12 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 2.47 s | tone 600
+ A | #41 12.00 s | text 12 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 2.72 s | tone 600
+ A | #41 12.25 s | text 12 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 2.97 s | tone 600
+ A | #41 12.50 s | text 12 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 3.22 s | tone 600
+ A | #41 12.75 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 3.47 s | tone 600
+ A | #41 13.00 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 2 | follows 2 | since 3.72 s | tone 600
+ A | #41 13.25 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 3.97 s | tone 600
+ A | #41 13.50 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 4.22 s | tone 600
+ A | #41 13.75 s | text 12 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 4.47 s | tone 600
+ A | #41 14.00 s | text 12 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 4.72 s | tone 600
+ A | #41 14.25 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 4.97 s | tone 600
+ A | #41 14.50 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 5.22 s | tone 600
+ A | #41 14.75 s | text 11 | last-wpm 10.43 | wpm null | reacquiring True | retunes 2 | follows 2 | since 5.47 s | tone 600
+ A | #41 15.00 s | text 11 | last-wpm 10.43 | wpm null | reacquiring True | retunes 2 | follows 2 | since 5.72 s | tone 600
+ A | #41 15.25 s | text 12 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 5.97 s | tone 600
+ A | #41 15.50 s | text 12 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 6.22 s | tone 600
+ A | #41 15.75 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 2 | follows 2 | since 6.47 s | tone 600
+ A | #41 16.00 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 0.22 s | tone 625
+ A | #41 16.25 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 0.47 s | tone 625
+ A | #41 16.50 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 0.72 s | tone 625
+ A | #41 16.75 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 0.97 s | tone 625
+ A | #41 17.00 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 1.22 s | tone 625
+ A | #41 17.25 s | text 12 | last-wpm 11.16 | wpm null | reacquiring True | retunes 3 | follows 3 | since 1.47 s | tone 625
+ A | #41 17.50 s | text 12 | last-wpm 11.16 | wpm null | reacquiring True | retunes 3 | follows 3 | since 1.72 s | tone 625
+ A | #41 17.75 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 1.97 s | tone 625
+ A | #41 18.00 s | text 11 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 2.22 s | tone 625
+ A | #41 18.25 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 2.47 s | tone 625
+ A | #41 18.50 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 2.72 s | tone 625
+ A | #41 18.75 s | text 12 | last-wpm 10.43 | wpm null | reacquiring True | retunes 3 | follows 3 | since 2.97 s | tone 625
+ A | #41 19.00 s | text 12 | last-wpm 10.43 | wpm null | reacquiring True | retunes 3 | follows 3 | since 3.22 s | tone 625
+ A | #41 19.25 s | text 13 | last-wpm 10.43 | wpm null | reacquiring True | retunes 3 | follows 3 | since 3.47 s | tone 625
+ A | #41 19.50 s | text 13 | last-wpm 10.43 | wpm null | reacquiring True | retunes 3 | follows 3 | since 3.72 s | tone 625
+ A | #41 19.75 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 3.97 s | tone 625
+ A | #41 20.00 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 4.22 s | tone 625
+ A | #41 20.25 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 4.47 s | tone 625
+ A | #41 20.50 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 4.72 s | tone 625
+ A | #41 20.75 s | text 12 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 4.97 s | tone 625
+ A | #41 21.00 s | text 12 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 5.22 s | tone 625
+ A | #41 21.25 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 5.47 s | tone 625
+ A | #41 21.50 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 5.72 s | tone 625
+ A | #41 21.75 s | text 10 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 5.97 s | tone 625
+ A | #41 22.00 s | text 10 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 6.22 s | tone 625
+ A | #41 22.25 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 6.47 s | tone 625
+ A | #41 22.50 s | text 11 | last-wpm 10.67 | wpm null | reacquiring True | retunes 3 | follows 3 | since 6.72 s | tone 625
+ A | #41 22.75 s | text 12 | last-wpm 11.16 | wpm null | reacquiring True | retunes 3 | follows 3 | since 6.97 s | tone 625
+ A | #41 23.00 s | text 12 | last-wpm 11.16 | wpm null | reacquiring True | retunes 3 | follows 3 | since 7.22 s | tone 625
+ A | #41 23.25 s | text 0 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 7.47 s | tone 625
+ A | #41 23.50 s | text 0 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 7.72 s | tone 625
+ A | #41 23.75 s | text 0 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 7.97 s | tone 625
+ A | #41 24.00 s | text 0 | last-wpm 10.91 | wpm null | reacquiring True | retunes 3 | follows 3 | since 8.22 s | tone 625
+ A | #41 24.25 s | text 0 | last-wpm 11.16 | wpm null | reacquiring True | retunes 3 | follows 3 | since 8.47 s | tone 625
+ A | #41 24.50 s | text 0 | last-wpm 11.16 | wpm null | reacquiring True | retunes 3 | follows 3 | since 8.72 s | tone 625
+ A | #41 24.75 s | text 0 | last-wpm 11.16 | wpm null | reacquiring True | retunes 3 | follows 3 | since 8.97 s | tone 625
+ A | #41 25.00 s | text 0 | last-wpm 11.16 | wpm null | reacquiring True | retunes 4 | follows 4 | since 0.22 s | tone 725
+ A | #41 25.25 s | text 15 | last-wpm 10.91 | wpm null | reacquiring True | retunes 4 | follows 4 | since 0.47 s | tone 725
+ A | #41 25.50 s | text 15 | last-wpm 10.91 | wpm null | reacquiring True | retunes 4 | follows 4 | since 0.72 s | tone 725
+ A | #41 25.75 s | text 14 | last-wpm 10.67 | wpm null | reacquiring True | retunes 4 | follows 4 | since 0.97 s | tone 725
+ A | #41 26.00 s | text 14 | last-wpm 10.67 | wpm null | reacquiring True | retunes 4 | follows 4 | since 1.22 s | tone 725
+ A | #41 26.25 s | text 14 | last-wpm 11.43 | wpm null | reacquiring True | retunes 4 | follows 4 | since 1.47 s | tone 725
+ A | #41 26.50 s | text 14 | last-wpm 11.43 | wpm null | reacquiring True | retunes 4 | follows 4 | since 1.72 s | tone 725
+ A | #41 26.75 s | text 13 | last-wpm 11.43 | wpm null | reacquiring True | retunes 4 | follows 4 | since 1.97 s | tone 725
+ A | #41 27.00 s | text 13 | last-wpm 11.43 | wpm null | reacquiring True | retunes 4 | follows 4 | since 2.22 s | tone 735
+ A | #41 27.25 s | text 13 | last-wpm 14.12 | wpm null | reacquiring True | retunes 4 | follows 4 | since 2.47 s | tone 735
+ A | #41 27.50 s | text 13 | last-wpm 14.12 | wpm null | reacquiring True | retunes 4 | follows 4 | since 2.72 s | tone 735
+ A | #41 27.75 s | text 12 | last-wpm 19.20 | wpm null | reacquiring True | retunes 4 | follows 4 | since 2.97 s | tone 735
+ A | #41 28.00 s | text 12 | last-wpm 19.20 | wpm null | reacquiring True | retunes 4 | follows 4 | since 3.22 s | tone 735
+ A | #41 28.25 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 3.47 s | tone 735
+ A | #41 28.50 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 3.72 s | tone 730
+ A | #41 28.75 s | text 14 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 3.97 s | tone 730
+ A | #41 29.00 s | text 14 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 4.22 s | tone 730
+ A | #41 29.25 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 4.47 s | tone 730
+ A | #41 29.50 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 4.72 s | tone 730
+ A | #41 29.75 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 4.97 s | tone 730
+ A | #41 30.00 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 5.22 s | tone 730
+ A | #41 30.25 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 5.47 s | tone 730
+ A | #41 30.50 s | text 13 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 5.72 s | tone 730
+ A | #41 30.75 s | text 22 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 5.97 s | tone 730
+ A | #41 31.00 s | text 22 | last-wpm 20.87 | wpm null | reacquiring True | retunes 4 | follows 4 | since 6.22 s | tone 730
+ A | #41 31.25 s | text 23 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 6.47 s | tone 730
+ A | #41 31.50 s | text 23 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 6.72 s | tone 730
+ A | #41 31.75 s | text 22 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 6.97 s | tone 730
+ A | #41 32.00 s | text 22 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 7.22 s | tone 730
+ A | #41 32.25 s | text 21 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 7.47 s | tone 730
+ A | #41 32.50 s | text 21 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 7.72 s | tone 730
+ A | #41 32.75 s | text 23 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 7.97 s | tone 730
+ A | #41 33.00 s | text 23 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 8.22 s | tone 730
+ A | #41 33.25 s | text 21 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 8.47 s | tone 730
+ A | #41 33.50 s | text 21 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 8.72 s | tone 730
+ A | #41 33.75 s | text 22 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 8.97 s | tone 730
+ A | #41 34.00 s | text 22 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 9.22 s | tone 730
+ A | #41 34.25 s | text 20 | last-wpm 21.82 | wpm null | reacquiring True | retunes 4 | follows 4 | since 9.47 s | tone 730
+ A | #41 34.50 s | text 20 | last-wpm 21.82 | wpm null | reacquiring True | retunes 6 | follows 4 | since 9.72 s | tone 725
+ A | #41 34.75 s | text 20 | last-wpm 21.82 | wpm null | reacquiring True | retunes 6 | follows 4 | since 9.97 s | tone 725
+ A | #41 35.00 s | text 20 | last-wpm 21.82 | wpm null | reacquiring True | retunes 6 | follows 4 | since 10.22 s | tone 725
+ A | #41 35.25 s | text 19 | last-wpm 21.82 | wpm null | reacquiring True | retunes 6 | follows 4 | since 10.47 s | tone 725
+ A | #41 35.50 s | text 19 | last-wpm 21.82 | wpm null | reacquiring True | retunes 6 | follows 4 | since 10.72 s | tone 725
+ A | #41 35.75 s | text 19 | last-wpm 21.82 | wpm null | reacquiring True | retunes 6 | follows 4 | since 10.76 s | tone 725
+ A | #41 flushed | text 19 | last-wpm 21.82 | wpm null | reacquiring True | retunes 6 | follows 4 | since 10.76 s | tone 725
+ A | #41 | 35.8 s of audio | polls 144 | null for text empty 19, reacquiring 125, outside bounds 0 | reading ' WCALL DE W1XYZ K #'

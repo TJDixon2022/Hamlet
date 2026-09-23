@@ -1,0 +1,3 @@
+Preparing worktree (detached HEAD ee2cba8d)
+Updating files:  97% (748/770)Updating files:  98% (755/770)Updating files:  99% (763/770)Updating files: 100% (770/770)Updating files: 100% (770/770), done.
+HEAD is now at ee2cba8d test(engine): the element streams agree, so the reading is lost after them

@@ -1,0 +1,23 @@
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "interference-18wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "noisy-18wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")
+Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheProsignRecordingDecodesItsProsigns
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsOnDisk
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-12wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "fading-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "interference-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "noisy-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "prosigns-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-12wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "prosigns-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheWholeSetStaysSmallEnoughToCommit

@@ -1,0 +1,6 @@
+Passed CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400)
+Passed CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 500)
+Passed CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 750)
+Passed CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 875)
+Passed CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead
+Passed CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage

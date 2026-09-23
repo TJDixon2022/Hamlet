@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD c8685e4d)
+HEAD is now at c8685e4d test(engine): the peak window buys nothing, and N4L does not come back

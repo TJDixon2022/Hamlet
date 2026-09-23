@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 8ca6a633)
+HEAD is now at 8ca6a633 feat(engine): rank candidate pitches by what the decoder reads at each

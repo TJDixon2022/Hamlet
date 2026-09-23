@@ -1,0 +1,43 @@
+=== CwAcquisitionWindowTests
+Total tests: 12
+     Passed: 10
+     Failed: 2
+ Total time: 17.3973 Seconds
+Failed CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 25, floor: 0.79000000000000004)
+Failed CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 18)
+Passed CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 28, floor: 0.79000000000000004)
+Passed CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 30, floor: 0.79000000000000004)
+Passed CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 35, floor: 0.78000000000000003)
+Passed CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 25)
+Passed CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 28)
+Passed CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 30)
+Passed CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 18)
+Passed CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 3)
+Passed CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 3)
+Passed CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 6)
+=== CwSensitivityTests
+Total tests: 2
+     Passed: 1
+     Failed: 1
+ Total time: 39.0668 Seconds
+Failed CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore
+Passed CwSensitivityTests.ItGoesQuietRatherThanInventingLettersInTheNoise
+=== EveryCharacterCarriesItsOwnEvidenceTests
+Total tests: 3
+     Passed: 3
+ Total time: 5.8931 Seconds
+Passed EveryCharacterCarriesItsOwnEvidenceTests.ARealCharacterIsExplainedFarBetterByKeyingThanBySilence
+Passed EveryCharacterCarriesItsOwnEvidenceTests.AudioHoldingNoStationCarriesNoSpanRatios
+Passed EveryCharacterCarriesItsOwnEvidenceTests.TheEvidenceFallsAwayAsTheSignalDoes
+=== WhereAcquisitionPointsTests
+Total tests: 2
+     Passed: 2
+ Total time: 20.9308 Seconds
+Passed WhereAcquisitionPointsTests.ARecordingHoldingNothingEmitsNothing
+Passed WhereAcquisitionPointsTests.WhereTheTrackerEndsUpOnTheFour
+=== CwRefusalFloorTableTests
+Total tests: 1
+     Passed: 1
+ Total time: 6.7908 Seconds
+Passed CwRefusalFloorTableTests.TheTwoScalesArePutSideBySide
+04:41:45

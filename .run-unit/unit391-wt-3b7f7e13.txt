@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 3b7f7e13)
+HEAD is now at 3b7f7e13 feat(engine): score every character's own span against the key never going down

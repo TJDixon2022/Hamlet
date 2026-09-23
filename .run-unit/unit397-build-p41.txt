@@ -1,0 +1,19 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Ft8Sharp.Deep.Tests -> C:\Source\HamLet\tests\Ft8Sharp.Deep.Tests\bin\Debug\net8.0\Ft8Sharp.Deep.Tests.dll
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwStreamSplit.cs(223,23): error CS0246: The type or namespace name 'CwElement' could not be found (are you missing a using directive or an assembly reference?) [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwStreamSplit.cs(295,23): error CS0246: The type or namespace name 'CwElement' could not be found (are you missing a using directive or an assembly reference?) [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwStreamSplit.cs(294,47): error CS0246: The type or namespace name 'CwElement' could not be found (are you missing a using directive or an assembly reference?) [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+  Ft8Sharp.Tests -> C:\Source\HamLet\tests\Ft8Sharp.Tests\bin\Debug\net8.0\Ft8Sharp.Tests.dll
+
+Build FAILED.
+
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwStreamSplit.cs(223,23): error CS0246: The type or namespace name 'CwElement' could not be found (are you missing a using directive or an assembly reference?) [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwStreamSplit.cs(295,23): error CS0246: The type or namespace name 'CwElement' could not be found (are you missing a using directive or an assembly reference?) [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwStreamSplit.cs(294,47): error CS0246: The type or namespace name 'CwElement' could not be found (are you missing a using directive or an assembly reference?) [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+    0 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:01.29

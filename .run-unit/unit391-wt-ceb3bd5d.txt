@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD ceb3bd5d)
+HEAD is now at ceb3bd5d test(engine): show what the survey admitted, not only what it chose

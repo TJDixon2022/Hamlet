@@ -1,0 +1,171 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.54]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm") [FAIL]
+[xUnit.net 00:00:00.54]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:00.54]       Collection: ["invented 'R', pattern [.-.], score 922.11", "invented 'N', pattern [-.], score 974.20", "invented 'M', pattern [--], score 974.20", "said 'Q' where 'C' was sent, pattern [--.-], score"···, "said 'E' where 'Q' was sent, pattern [.], score 12"···, ···]
+[xUnit.net 00:00:00.54]       Stack Trace:
+[xUnit.net 00:00:00.54]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(134,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name)
+[xUnit.net 00:00:00.54]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.54]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.36]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "noisy-18wpm") [FAIL]
+[xUnit.net 00:00:01.36]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.36]       Collection: ["invented 'N', pattern [-.], score 17.94", "invented 'D', pattern [-..], score 17.80", "invented 'E', pattern [.], score 17.80", "invented 'E', pattern [.], score 17.06", "invented 'W', pattern [.--], score 20.06", ···]
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(134,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name)
+[xUnit.net 00:00:01.36]            at InvokeStub_CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(Object, Span`1)
+[xUnit.net 00:00:01.36]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm") [312 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["invented 'R', pattern [.-.], score 922.11", "invented 'N', pattern [-.], score 974.20", "invented 'M', pattern [--], score 974.20", "said 'Q' where 'C' was sent, pattern [--.-], score"···, "said 'E' where 'Q' was sent, pattern [.], score 12"···, ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 134
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-18wpm") [697 ms]
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "noisy-18wpm") [121 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["invented 'N', pattern [-.], score 17.94", "invented 'D', pattern [-..], score 17.80", "invented 'E', pattern [.], score 17.80", "invented 'E', pattern [.], score 17.06", "invented 'W', pattern [.--], score 20.06", ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 134
+   at InvokeStub_CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "prosigns-18wpm") [1 s]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-12wpm") [1 s]
+[xUnit.net 00:00:04.84]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "interference-18wpm") [FAIL]
+[xUnit.net 00:00:04.84]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:04.84]       Collection: ["invented 'N', pattern [-.], score 634.07", "invented 'D', pattern [-..], score 630.35", "invented 'E', pattern [.], score 630.35", "invented 'E', pattern [.], score 603.27", "invented 'W', pattern [.--], score 702.26", ···]
+[xUnit.net 00:00:04.84]       Stack Trace:
+[xUnit.net 00:00:04.84]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(134,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name)
+[xUnit.net 00:00:04.84]            at InvokeStub_CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(Object, Span`1)
+[xUnit.net 00:00:04.84]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "interference-18wpm") [122 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["invented 'N', pattern [-.], score 634.07", "invented 'D', pattern [-..], score 630.35", "invented 'E', pattern [.], score 630.35", "invented 'E', pattern [.], score 603.27", "invented 'W', pattern [.--], score 702.26", ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 134
+   at InvokeStub_CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsOnDisk [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm") [120 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm") [231 ms]
+[xUnit.net 00:00:07.07]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm") [FAIL]
+[xUnit.net 00:00:07.07]       prosigns-18wpm gave back 0 of 16, short of the 100% it has to manage
+[xUnit.net 00:00:07.07]       Stack Trace:
+[xUnit.net 00:00:07.07]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(154,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(String name)
+[xUnit.net 00:00:07.07]            at InvokeStub_CwFixtureTests.EveryRecordingGivesBackTheShareItShould(Object, Span`1)
+[xUnit.net 00:00:07.07]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm") [1 s]
+  Error Message:
+   prosigns-18wpm gave back 0 of 16, short of the 100% it has to manage
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 154
+   at InvokeStub_CwFixtureTests.EveryRecordingGivesBackTheShareItShould(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:08.54]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm") [FAIL]
+[xUnit.net 00:00:08.54]       clean-12wpm gave back 0 of 9, short of the 100% it has to manage
+[xUnit.net 00:00:08.55]       Stack Trace:
+[xUnit.net 00:00:08.55]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(154,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(String name)
+[xUnit.net 00:00:08.55]            at InvokeStub_CwFixtureTests.EveryRecordingGivesBackTheShareItShould(Object, Span`1)
+[xUnit.net 00:00:08.55]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm") [1 s]
+  Error Message:
+   clean-12wpm gave back 0 of 9, short of the 100% it has to manage
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 154
+   at InvokeStub_CwFixtureTests.EveryRecordingGivesBackTheShareItShould(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm") [116 ms]
+[xUnit.net 00:00:09.36]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm") [FAIL]
+[xUnit.net 00:00:09.36]       clean-18wpm gave back 0 of 9, short of the 100% it has to manage
+[xUnit.net 00:00:09.36]       Stack Trace:
+[xUnit.net 00:00:09.36]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(154,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(String name)
+[xUnit.net 00:00:09.36]            at InvokeStub_CwFixtureTests.EveryRecordingGivesBackTheShareItShould(Object, Span`1)
+[xUnit.net 00:00:09.36]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm") [700 ms]
+  Error Message:
+   clean-18wpm gave back 0 of 9, short of the 100% it has to manage
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 154
+   at InvokeStub_CwFixtureTests.EveryRecordingGivesBackTheShareItShould(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-12wpm") [19 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-18wpm") [11 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "fading-18wpm") [22 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "interference-18wpm") [12 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "noisy-18wpm") [11 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "prosigns-18wpm") [18 ms]
+[xUnit.net 00:00:10.95]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [FAIL]
+[xUnit.net 00:00:10.95]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:10.95]                  ↓ (pos 0)
+[xUnit.net 00:00:10.95]       Expected: "CQ DE W1AW K"
+[xUnit.net 00:00:10.95]       Actual:   "■ ■ ■ ■ ■  ■ ■ ■ ■■"
+[xUnit.net 00:00:10.95]                  ↑ (pos 0)
+[xUnit.net 00:00:10.95]       Stack Trace:
+[xUnit.net 00:00:10.95]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name)
+[xUnit.net 00:00:10.95]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.95]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:11.65]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [FAIL]
+[xUnit.net 00:00:11.65]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:11.65]                  ↓ (pos 0)
+[xUnit.net 00:00:11.65]       Expected: "CQ DE W1AW K"
+[xUnit.net 00:00:11.65]       Actual:   "■ ■ ■  ■■■"
+[xUnit.net 00:00:11.65]                  ↑ (pos 0)
+[xUnit.net 00:00:11.65]       Stack Trace:
+[xUnit.net 00:00:11.65]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name)
+[xUnit.net 00:00:11.65]            at InvokeStub_CwFixtureTests.TheCleanRecordingsDecodeExactly(Object, Span`1)
+[xUnit.net 00:00:11.65]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [1 s]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "CQ DE W1AW K"
+Actual:   "■ ■ ■ ■ ■  ■ ■ ■ ■■"
+           ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 96
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [707 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "CQ DE W1AW K"
+Actual:   "■ ■ ■  ■■■"
+           ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 96
+   at InvokeStub_CwFixtureTests.TheCleanRecordingsDecodeExactly(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:13.54]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheProsignRecordingDecodesItsProsigns [FAIL]
+[xUnit.net 00:00:13.54]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:13.54]       String:    "■ ■ ■■ ■■■ ■■ ■ ■■■ ■■■ ■■ ■ ■■■ ■■■■■■ ■"···
+[xUnit.net 00:00:13.54]       Not found: "<BT>"
+[xUnit.net 00:00:13.54]       Stack Trace:
+[xUnit.net 00:00:13.54]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(115,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheProsignRecordingDecodesItsProsigns()
+[xUnit.net 00:00:13.54]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:13.54]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:13.54]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheProsignRecordingDecodesItsProsigns [1 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "■ ■ ■■ ■■■ ■■ ■ ■■■ ■■■ ■■ ■ ■■■ ■■■■■■ ■"···
+Not found: "<BT>"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheProsignRecordingDecodesItsProsigns() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 115
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheWholeSetStaysSmallEnoughToCommit [3 ms]
+
+Test Run Failed.
+Total tests: 23
+     Passed: 14
+     Failed: 9
+ Total time: 13.7979 Seconds

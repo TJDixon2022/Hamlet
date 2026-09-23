@@ -1,0 +1,134 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:19.54]     Hamlet.RadioEngine.Tests.Cw.CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore [FAIL]
+[xUnit.net 00:00:19.54]       Assert.NotNull() Failure: Value of type 'Nullable<double>' does not have a value
+[xUnit.net 00:00:19.54]       Stack Trace:
+[xUnit.net 00:00:19.54]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwSensitivityTests.cs(40,0): at Hamlet.RadioEngine.Tests.Cw.CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore()
+[xUnit.net 00:00:19.54]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:19.54]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:19.54]       Output:
+[xUnit.net 00:00:19.54]           18.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           17.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           16.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           15.0 dB  right  0.75  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           14.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           13.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           12.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           11.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]           10.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]            9.0 dB  right  0.72  wrong  0.17  emitted   9
+[xUnit.net 00:00:19.54]            8.0 dB  right  0.72  wrong  0.17  emitted   9
+[xUnit.net 00:00:19.54]            7.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]            6.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]            5.0 dB  right  0.78  wrong  0.11  emitted   9
+[xUnit.net 00:00:19.54]            4.0 dB  right  0.72  wrong  0.14  emitted   9
+[xUnit.net 00:00:19.54]            3.0 dB  right  0.53  wrong  0.31  emitted  13
+[xUnit.net 00:00:19.54]            2.0 dB  right  0.56  wrong  0.25  emitted  14
+[xUnit.net 00:00:19.54]            1.0 dB  right  0.67  wrong  0.25  emitted  13
+[xUnit.net 00:00:19.54]            0.0 dB  right  0.67  wrong  0.22  emitted  12
+[xUnit.net 00:00:19.54]           -1.0 dB  right  0.67  wrong  0.19  emitted  11
+[xUnit.net 00:00:19.54]           -2.0 dB  right  0.72  wrong  0.19  emitted  10
+[xUnit.net 00:00:19.54]           -3.0 dB  right  0.78  wrong  0.17  emitted  10
+[xUnit.net 00:00:19.54]           -4.0 dB  right  0.78  wrong  0.19  emitted  10
+[xUnit.net 00:00:19.54]           -5.0 dB  right  0.75  wrong  0.22  emitted  10
+[xUnit.net 00:00:19.54]           -6.0 dB  right  0.58  wrong  0.11  emitted   7
+[xUnit.net 00:00:19.54]           -7.0 dB  right  0.08  wrong  0.03  emitted   1
+[xUnit.net 00:00:19.54]           -8.0 dB  right  0.00  wrong  0.00  emitted   0
+[xUnit.net 00:00:19.54]           -9.0 dB  right  0.00  wrong  0.00  emitted   0
+[xUnit.net 00:00:19.54]          -10.0 dB  right  0.00  wrong  0.00  emitted   0
+[xUnit.net 00:00:19.54]          -11.0 dB  right  0.00  wrong  0.00  emitted   0
+[xUnit.net 00:00:19.54]          -12.0 dB  right  0.00  wrong  0.00  emitted   0
+[xUnit.net 00:00:19.54]         
+[xUnit.net 00:00:19.54]         never read 80% of the message at any level
+  Failed Hamlet.RadioEngine.Tests.Cw.CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore [19 s]
+  Error Message:
+   Assert.NotNull() Failure: Value of type 'Nullable<double>' does not have a value
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwSensitivityTests.cs:line 40
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+   18.0 dB  right  0.78  wrong  0.11  emitted   9
+   17.0 dB  right  0.78  wrong  0.11  emitted   9
+   16.0 dB  right  0.78  wrong  0.11  emitted   9
+   15.0 dB  right  0.75  wrong  0.11  emitted   9
+   14.0 dB  right  0.78  wrong  0.11  emitted   9
+   13.0 dB  right  0.78  wrong  0.11  emitted   9
+   12.0 dB  right  0.78  wrong  0.11  emitted   9
+   11.0 dB  right  0.78  wrong  0.11  emitted   9
+   10.0 dB  right  0.78  wrong  0.11  emitted   9
+    9.0 dB  right  0.72  wrong  0.17  emitted   9
+    8.0 dB  right  0.72  wrong  0.17  emitted   9
+    7.0 dB  right  0.78  wrong  0.11  emitted   9
+    6.0 dB  right  0.78  wrong  0.11  emitted   9
+    5.0 dB  right  0.78  wrong  0.11  emitted   9
+    4.0 dB  right  0.72  wrong  0.14  emitted   9
+    3.0 dB  right  0.53  wrong  0.31  emitted  13
+    2.0 dB  right  0.56  wrong  0.25  emitted  14
+    1.0 dB  right  0.67  wrong  0.25  emitted  13
+    0.0 dB  right  0.67  wrong  0.22  emitted  12
+   -1.0 dB  right  0.67  wrong  0.19  emitted  11
+   -2.0 dB  right  0.72  wrong  0.19  emitted  10
+   -3.0 dB  right  0.78  wrong  0.17  emitted  10
+   -4.0 dB  right  0.78  wrong  0.19  emitted  10
+   -5.0 dB  right  0.75  wrong  0.22  emitted  10
+   -6.0 dB  right  0.58  wrong  0.11  emitted   7
+   -7.0 dB  right  0.08  wrong  0.03  emitted   1
+   -8.0 dB  right  0.00  wrong  0.00  emitted   0
+   -9.0 dB  right  0.00  wrong  0.00  emitted   0
+  -10.0 dB  right  0.00  wrong  0.00  emitted   0
+  -11.0 dB  right  0.00  wrong  0.00  emitted   0
+  -12.0 dB  right  0.00  wrong  0.00  emitted   0
+ 
+ never read 80% of the message at any level
+
+
+[xUnit.net 00:00:38.89]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwSensitivityTests.ItGoesQuietRatherThanInventingLettersInTheNoise [19 s]
+  Standard Output Messages:
+   18.0 dB  right  0.78  wrong  0.11  emitted   9
+   17.0 dB  right  0.78  wrong  0.11  emitted   9
+   16.0 dB  right  0.78  wrong  0.11  emitted   9
+   15.0 dB  right  0.75  wrong  0.11  emitted   9
+   14.0 dB  right  0.78  wrong  0.11  emitted   9
+   13.0 dB  right  0.78  wrong  0.11  emitted   9
+   12.0 dB  right  0.78  wrong  0.11  emitted   9
+   11.0 dB  right  0.78  wrong  0.11  emitted   9
+   10.0 dB  right  0.78  wrong  0.11  emitted   9
+    9.0 dB  right  0.72  wrong  0.17  emitted   9
+    8.0 dB  right  0.72  wrong  0.17  emitted   9
+    7.0 dB  right  0.78  wrong  0.11  emitted   9
+    6.0 dB  right  0.78  wrong  0.11  emitted   9
+    5.0 dB  right  0.78  wrong  0.11  emitted   9
+    4.0 dB  right  0.72  wrong  0.14  emitted   9
+    3.0 dB  right  0.53  wrong  0.31  emitted  13
+    2.0 dB  right  0.56  wrong  0.25  emitted  14
+    1.0 dB  right  0.67  wrong  0.25  emitted  13
+    0.0 dB  right  0.67  wrong  0.22  emitted  12
+   -1.0 dB  right  0.67  wrong  0.19  emitted  11
+   -2.0 dB  right  0.72  wrong  0.19  emitted  10
+   -3.0 dB  right  0.78  wrong  0.17  emitted  10
+   -4.0 dB  right  0.78  wrong  0.19  emitted  10
+   -5.0 dB  right  0.75  wrong  0.22  emitted  10
+   -6.0 dB  right  0.58  wrong  0.11  emitted   7
+   -7.0 dB  right  0.08  wrong  0.03  emitted   1
+   -8.0 dB  right  0.00  wrong  0.00  emitted   0
+   -9.0 dB  right  0.00  wrong  0.00  emitted   0
+  -10.0 dB  right  0.00  wrong  0.00  emitted   0
+  -11.0 dB  right  0.00  wrong  0.00  emitted   0
+  -12.0 dB  right  0.00  wrong  0.00  emitted   0
+ 
+ worst wrong share 0.31 at 3.0 dB
+
+
+
+Test Run Failed.
+Total tests: 2
+     Passed: 1
+     Failed: 1
+ Total time: 39.1478 Seconds

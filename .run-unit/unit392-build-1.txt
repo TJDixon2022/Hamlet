@@ -1,0 +1,11 @@
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwElementPitch.cs(8,16): error CS1574: XML comment has cref attribute 'CwSpectralPeak' that could not be resolved [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwElementPitch.cs(245,31): error CS1574: XML comment has cref attribute 'CwSpectralPeak' that could not be resolved [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+
+Build FAILED.
+
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwElementPitch.cs(8,16): error CS1574: XML comment has cref attribute 'CwSpectralPeak' that could not be resolved [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwElementPitch.cs(245,31): error CS1574: XML comment has cref attribute 'CwSpectralPeak' that could not be resolved [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.70

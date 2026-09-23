@@ -1,0 +1,60 @@
+exit 1 in 15 s
+Failed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm") [287 ms]
+Failed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "noisy-18wpm") [116 ms]
+Failed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "interference-18wpm") [118 ms]
+Failed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm") [1 s]
+Failed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm") [1 s]
+Failed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm") [689 ms]
+Failed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [1 s]
+Failed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [717 ms]
+Failed CwFixtureTests.TheProsignRecordingDecodesItsProsigns [1 s]
+14
+Total tests: 23
+     Passed: 14
+     Failed: 9
+ Total time: 13.7458 Seconds
+Failed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm")
+Failed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm")
+Failed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm")
+Failed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "fading-18wpm")
+Failed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "interference-18wpm")
+Failed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "noisy-18wpm")
+Failed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")
+Failed CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")
+Failed CwFixtureTests.TheProsignRecordingDecodesItsProsigns
+Passed CwFixtureTests.EveryFixtureIsOnDisk
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-12wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "clean-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "fading-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "interference-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "noisy-18wpm")
+Passed CwFixtureTests.EveryFixtureIsStillTheAudioItWasGeneratedFrom(name: "prosigns-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm")
+Passed CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-12wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "clean-18wpm")
+Passed CwFixtureTests.NothingTheDecoderWasSureOfIsWrong(name: "prosigns-18wpm")
+Passed CwFixtureTests.TheWholeSetStaysSmallEnoughToCommit
+exit 1 in 20 s
+Failed TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 }) [1 s]
+6
+Total tests: 7
+     Passed: 6
+     Failed: 1
+ Total time: 18.9300 Seconds
+Failed TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 })
+Passed TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/cw-2026-08-17-013347, Truth = VA3VRR, Ruling = HM-DEC-145, NamedFloor = 9 })
+Passed TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-24-012403, Truth = DE KD0UN KD0UN K, Ruling = work instruction 011, NamedFloor = 20 })
+Passed TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/cw-2026-08-17-013347, Truth = VA3VRR, Ruling = HM-DEC-145, NamedFloor = 9 })
+Passed TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 })
+Passed TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-24-012403, Truth = DE KD0UN KD0UN K, Ruling = work instruction 011, NamedFloor = 20 })
+Passed TheCleanReadsStayCleanTests.EveryFloorWasMeasuredAndNotHopedFor
+exit 0 in 1 s
+2
+Total tests: 2
+     Passed: 2
+ Total time: 0.5056 Seconds
+Passed TheSurveyAlreadyUsesAShortWindowTests.TheDefaultWindowIsThreeSeconds
+Passed TheSurveyAlreadyUsesAShortWindowTests.ThirtySecondsOfHopsLeavesThreeSecondsOfHistory
+03:41:27

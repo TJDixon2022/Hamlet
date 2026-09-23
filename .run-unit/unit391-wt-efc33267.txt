@@ -1,0 +1,3 @@
+Preparing worktree (detached HEAD efc33267)
+Updating files:  92% (701/761)Updating files:  93% (708/761)Updating files:  94% (716/761)Updating files:  95% (723/761)Updating files:  96% (731/761)Updating files:  97% (739/761)Updating files:  98% (746/761)Updating files:  99% (754/761)Updating files: 100% (761/761)Updating files: 100% (761/761), done.
+HEAD is now at efc33267 fix(engine): the sheet stops lying about arithmetic, and tonight's captures land

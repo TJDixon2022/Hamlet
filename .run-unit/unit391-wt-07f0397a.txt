@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 07f0397a)
+HEAD is now at 07f0397a feat(engine): give the gate its own analysis window

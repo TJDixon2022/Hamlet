@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 61b423aa)
+HEAD is now at 61b423aa fix(engine): read nothing from digital silence rather than noise from a floor

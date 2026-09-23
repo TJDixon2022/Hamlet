@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD baf51ff0)
+HEAD is now at baf51ff0 fix(engine): set the refill guard where a fresh stream can see it

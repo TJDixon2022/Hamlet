@@ -1,0 +1,3 @@
+Preparing worktree (detached HEAD 4935a4f8)
+Updating files:  97% (722/742)Updating files:  98% (728/742)Updating files:  99% (735/742)Updating files: 100% (742/742)Updating files: 100% (742/742), done.
+HEAD is now at 4935a4f8 test(engine): measure the peak-referenced threshold and refuse it

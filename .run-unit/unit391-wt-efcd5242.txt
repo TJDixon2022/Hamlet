@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD efcd5242)
+HEAD is now at efcd5242 feat(engine): find the pitch from the band rather than from a bin already chosen

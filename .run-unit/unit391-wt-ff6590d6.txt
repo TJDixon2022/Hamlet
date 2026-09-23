@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD ff6590d6)
+HEAD is now at ff6590d6 feat(engine): report where an admitted station sits, not which bin found it

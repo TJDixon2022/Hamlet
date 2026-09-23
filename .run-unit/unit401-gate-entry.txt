@@ -1,0 +1,44 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.HalfAMinuteOfNoiseProducesNothing [3 s]
+  Standard Output Messages:
+ characters 0, elements 0, tone False, wpm none
+
+
+[xUnit.net 00:00:07.68]     Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom [FAIL]
+[xUnit.net 00:00:07.68]       Assert.NotNull() Failure: Value of type 'Nullable<int>' does not have a value
+[xUnit.net 00:00:07.68]       Stack Trace:
+[xUnit.net 00:00:07.68]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwEmissionGateTests.cs(107,0): at Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom()
+[xUnit.net 00:00:07.68]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:07.68]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:07.68]       Output:
+[xUnit.net 00:00:07.68]         real signal reported none wpm
+  Failed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom [3 s]
+  Error Message:
+   Assert.NotNull() Failure: Value of type 'Nullable<int>' does not have a value
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwEmissionGateTests.cs:line 107
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ real signal reported none wpm
+
+
+[xUnit.net 00:00:07.69]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.TheTapKnowsWhetherAnyAudioHasArrived [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 4) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 5) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 64) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 52) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.TheBoundsAreTheRadiosOwn [< 1 ms]
+
+Test Run Failed.
+Total tests: 8
+     Passed: 7
+     Failed: 1
+ Total time: 7.9320 Seconds

@@ -1,0 +1,2 @@
+src\Hamlet.RadioEngine\Cw\CwElementPitch.cs(245,31): error CS1574: XML comment has cref attribute 'CwSpectralPeak' that could not be resolved
+src\Hamlet.RadioEngine\Cw\CwElementPitch.cs(8,16): error CS1574: XML comment has cref attribute 'CwSpectralPeak' that could not be resolved

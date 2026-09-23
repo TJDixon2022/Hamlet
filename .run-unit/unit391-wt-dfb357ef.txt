@@ -1,0 +1,3 @@
+Preparing worktree (detached HEAD dfb357ef)
+Updating files:  95% (710/742)Updating files:  96% (713/742)Updating files:  97% (720/742)Updating files:  98% (728/742)Updating files:  99% (735/742)Updating files: 100% (742/742)Updating files: 100% (742/742), done.
+HEAD is now at dfb357ef test(tools): the four configurations, and a carrier count that does not work

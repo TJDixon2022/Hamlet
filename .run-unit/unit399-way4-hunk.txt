@@ -1,0 +1,18 @@
+        if (quarter <= 0)
+        {
+            // UNIT 399 WAY 4, UNCOMMITTED: a scale where the quarter point is nought and the 97th
+            // percentile is not, sigma at one hundredth of that percentile, amplitude unchanged.
+            var top = PercentileOf(scratch, take, 97);
+            if (top <= 0)
+            {
+                sigma = double.NaN;
+                amplitude = double.NaN;
+
+                return;
+            }
+
+            sigma = top / 100;
+            amplitude = Math.Max(top, sigma * 1.05);
+
+            return;
+        }

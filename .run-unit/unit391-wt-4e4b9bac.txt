@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 4e4b9bac)
+HEAD is now at 4e4b9bac feat(engine): let the operator hold the decoder's pitch, and show that it is held

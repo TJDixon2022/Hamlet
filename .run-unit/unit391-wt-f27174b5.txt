@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD f27174b5)
+HEAD is now at f27174b5 feat(engine): the operator may assert a station, and Hamlet finds the pitch

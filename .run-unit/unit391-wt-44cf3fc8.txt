@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 44cf3fc8)
+HEAD is now at 44cf3fc8 test(engine): build both gate-threshold derivations, both off by default

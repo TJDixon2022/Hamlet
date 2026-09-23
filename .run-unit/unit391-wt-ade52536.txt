@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD ade52536)
+HEAD is now at ade52536 test(tests): the bench's run-merging bug is not in Hamlet, and here is why

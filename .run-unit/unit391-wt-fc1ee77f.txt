@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD fc1ee77f)
+HEAD is now at fc1ee77f feat(engine): index the lattice by hop and kind

@@ -1,0 +1,151 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.57]     Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 875) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.EndsWith() Failure: String end does not match
+[xUnit.net 00:00:02.57]       String:       "■ ■■ ■"
+[xUnit.net 00:00:02.57]       Expected end: "CQ DE W1AW K"
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs(95,0): at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz)
+[xUnit.net 00:00:02.57]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.57]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         875 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+  Failed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 875) [2 s]
+  Error Message:
+   Assert.EndsWith() Failure: String end does not match
+String:       "■ ■■ ■"
+Expected end: "CQ DE W1AW K"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs:line 95
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ 875 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+
+
+[xUnit.net 00:00:04.93]     Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 750) [FAIL]
+[xUnit.net 00:00:04.93]       Assert.EndsWith() Failure: String end does not match
+[xUnit.net 00:00:04.93]       String:       "■ ■■ ■"
+[xUnit.net 00:00:04.93]       Expected end: "CQ DE W1AW K"
+[xUnit.net 00:00:04.93]       Stack Trace:
+[xUnit.net 00:00:04.93]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs(95,0): at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz)
+[xUnit.net 00:00:04.93]            at InvokeStub_CwDisplacementFloorTests.AStationElsewhereIsStillFound(Object, Span`1)
+[xUnit.net 00:00:04.93]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:04.93]       Output:
+[xUnit.net 00:00:04.93]         750 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+  Failed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 750) [2 s]
+  Error Message:
+   Assert.EndsWith() Failure: String end does not match
+String:       "■ ■■ ■"
+Expected end: "CQ DE W1AW K"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs:line 95
+   at InvokeStub_CwDisplacementFloorTests.AStationElsewhereIsStillFound(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ 750 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+
+
+[xUnit.net 00:00:07.30]     Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 500) [FAIL]
+[xUnit.net 00:00:07.30]       Assert.EndsWith() Failure: String end does not match
+[xUnit.net 00:00:07.30]       String:       "■ ■■ ■"
+[xUnit.net 00:00:07.30]       Expected end: "CQ DE W1AW K"
+[xUnit.net 00:00:07.30]       Stack Trace:
+[xUnit.net 00:00:07.30]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs(95,0): at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz)
+[xUnit.net 00:00:07.30]            at InvokeStub_CwDisplacementFloorTests.AStationElsewhereIsStillFound(Object, Span`1)
+[xUnit.net 00:00:07.30]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:07.30]       Output:
+[xUnit.net 00:00:07.30]         500 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+  Failed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 500) [2 s]
+  Error Message:
+   Assert.EndsWith() Failure: String end does not match
+String:       "■ ■■ ■"
+Expected end: "CQ DE W1AW K"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs:line 95
+   at InvokeStub_CwDisplacementFloorTests.AStationElsewhereIsStillFound(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ 500 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+
+
+[xUnit.net 00:00:09.64]     Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400) [FAIL]
+[xUnit.net 00:00:09.64]       Assert.EndsWith() Failure: String end does not match
+[xUnit.net 00:00:09.64]       String:       "■ ■■ ■"
+[xUnit.net 00:00:09.64]       Expected end: "CQ DE W1AW K"
+[xUnit.net 00:00:09.64]       Stack Trace:
+[xUnit.net 00:00:09.64]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs(95,0): at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz)
+[xUnit.net 00:00:09.64]            at InvokeStub_CwDisplacementFloorTests.AStationElsewhereIsStillFound(Object, Span`1)
+[xUnit.net 00:00:09.64]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:09.64]       Output:
+[xUnit.net 00:00:09.64]         400 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+  Failed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400) [2 s]
+  Error Message:
+   Assert.EndsWith() Failure: String end does not match
+String:       "■ ■■ ■"
+Expected end: "CQ DE W1AW K"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(Double toneHz) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs:line 95
+   at InvokeStub_CwDisplacementFloorTests.AStationElsewhereIsStillFound(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ 400 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+
+
+[xUnit.net 00:00:11.97]     Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage [FAIL]
+[xUnit.net 00:00:11.97]       Assert.EndsWith() Failure: String end does not match
+[xUnit.net 00:00:11.97]       String:       "■ ■■ ■"
+[xUnit.net 00:00:11.97]       Expected end: "CQ DE W1AW K"
+[xUnit.net 00:00:11.97]       Stack Trace:
+[xUnit.net 00:00:11.97]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs(72,0): at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage()
+[xUnit.net 00:00:11.97]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:11.97]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:11.97]       Output:
+[xUnit.net 00:00:11.97]         400 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+  Failed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage [2 s]
+  Error Message:
+   Assert.EndsWith() Failure: String end does not match
+String:       "■ ■■ ■"
+Expected end: "CQ DE W1AW K"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs:line 72
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ 400 Hz from 600, noise 0: 1 moves, '■ ■■ ■'
+
+
+[xUnit.net 00:00:12.28]     Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead [FAIL]
+[xUnit.net 00:00:12.28]       Assert.EndsWith() Failure: String end does not match
+[xUnit.net 00:00:12.28]       String:       ···"VIVVV E KCTCGQQ N DEDE E WWAJ11AARW W N K"
+[xUnit.net 00:00:12.28]       Expected end: "CQ DE W1AW K"
+[xUnit.net 00:00:12.28]       Stack Trace:
+[xUnit.net 00:00:12.28]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs(111,0): at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead()
+[xUnit.net 00:00:12.28]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:12.28]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:12.28]       Output:
+[xUnit.net 00:00:12.28]         400 Hz from 600, noise 0.06: 1 moves, '5V H VEVVVSVV I VVHVIVVV E KCTCGQQ N DEDE E WWAJ11AARW W N K'
+[xUnit.net 00:00:12.29]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead [312 ms]
+  Error Message:
+   Assert.EndsWith() Failure: String end does not match
+String:       ···"VIVVV E KCTCGQQ N DEDE E WWAJ11AARW W N K"
+Expected end: "CQ DE W1AW K"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwDisplacementFloorTests.cs:line 111
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ 400 Hz from 600, noise 0.06: 1 moves, '5V H VEVVVSVV I VVHVIVVV E KCTCGQQ N DEDE E WWAJ11AARW W N K'
+
+
+
+Test Run Failed.
+Total tests: 6
+     Failed: 6
+ Total time: 12.5312 Seconds

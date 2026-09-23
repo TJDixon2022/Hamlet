@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 71b4f044)
+HEAD is now at 71b4f044 feat(engine): a posterior over the lattice, in the log domain

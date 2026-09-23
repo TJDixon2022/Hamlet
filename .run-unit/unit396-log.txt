@@ -1,0 +1,62 @@
+55ae0e93 unit395 task 0: entry round - app 276 of 278 twice, 4 names lost to the dispatcher loop, none twice, 
+6eb97b4c unit395 task 1: 4.1 met - the list of 84 Cw commits from 07f0397a to 2026-09-03 with files and claim,
+5688a8a5 unit395 task 1: the printer - TheReworkNumbersPrinterTests decodes 021410 and 013637 as the floor tes
+5cf8f9c8 step 4 piece 1 of 45: 2068f868 read the first seconds again, at the note they were sent on - its Cw d
+4fa4b593 step 4 piece 1 out: 2068f868 moved nothing
+99db35fc step 4 piece 2 of 45: 6fc36a1e log how close the argument was, beside how loud it was - its Cw diff o
+0246f209 step 4 piece 2 of 45: drop 6fc36a1e's CwCharacter hunk, MarginLlr and WidestRecordedLlr, already in t
+0d3e08a6 step 4 piece 2 out: 6fc36a1e moved nothing
+8d454ab9 step 4 piece 3 of 45: 3e84ac74 let go of a pitch measured on a frequency the radio has left - its Cw 
+4b8a89a3 step 4 piece 3 of 45: meet the seam - 3e84ac74's Retuned replaces unit 392's one-line Retuned seam an
+c1868852 step 4 piece 3 out: 3e84ac74 moved nothing
+fa26b78b step 4 piece 5 of 45: 9de394da open the two constants a sweep has to vary - its Cw diff only, CwDecod
+37a322aa step 4 piece 5 out: 9de394da moved nothing
+1e72c135 step 4 piece 7 of 45: 7fb89d5e record which admission test refused which bin, and by how much - its C
+248c6465 step 4 piece 7 out: 7fb89d5e moved nothing
+433180c4 step 4 piece 8 of 45: 1bf4372d the separation bound must not move, and the reason is upstream - as a 
+cd9da33c step 4 piece 8 out: 1bf4372d moved nothing
+11ae2b56 step 4 piece 9 of 45: 44cf3fc8 build both gate-threshold derivations, both off by default - as a pair
+ed22ff7d step 4 piece 9 out: 44cf3fc8 moved nothing
+45b26f65 unit395 task 3: exit round - app 277 of 278 twice, 1 name lost to the dispatcher loop each run, diffe
+259eba0a unit395 report: complete at task 3 of 4, pieces 10 to 45 not started on the clock rule; 4.1 met - 84 
+a0fc4faf unit396 task 0: entry - decision 12 applies, the lines are unit 395 exit runs; floors 37 of 37 in 93 
+94b5dff6 step 4 piece 10 of 45: 4786c7e7 dependent on 7fb89d5e and 44cf3fc8, out - applies only after pieces 7
+3b73c3b1 step 4 piece 11 of 45: f2e1db7a dependent on 7fb89d5e and 44cf3fc8, out - applies only after pieces 7
+ad5fa332 step 4 piece 12 of 45: f27174b5 the operator may assert a station, and Hamlet finds the pitch - CwDec
+14155613 step 4 piece 12 seam: f27174b5 - remove unit 392's PitchWasAsserted => false property, which the piec
+f5ef1ff8 step 4 piece 12 out: f27174b5 moved nothing
+ddb40581 step 4 piece 13 of 45: 386fdb5d dependent on 6fc36a1e, 9de394da and more, out - decision 5, nothing a
+56a90616 step 4 piece 13 row: the unit395-rework.md row the previous commit missed
+952fb690 step 4 piece 14 of 45: 8ca6a633 rank candidate pitches by what the decoder reads at each; not wired -
+3a74cf45 step 4 piece 14 out: 8ca6a633 moved nothing
+2ac93165 step 4 piece 15 of 45: 4c6e4321 dependent on 3e84ac74 and f27174b5, out - CwPitchChoice hunks already
+ac25f1d0 step 4 piece 16 of 45: 501e8e2d nothing to apply, out - it deletes CwPitchRanking, which only piece 1
+0bec4dd6 step 4 piece 17 of 45: f9c11989 fit the key-up state, measure it, and ship nothing - CwProbabilisticD
+8d8a37f4 step 4 piece 17 out: f9c11989 moved nothing
+5dd24810 step 4 piece 18 of 45: b48d1158 rank candidate pitches against one band-wide noise floor - CwPitchRan
+306419f2 step 4 piece 18 out: b48d1158 moved nothing
+d6854975 step 4 piece 19 of 45: 0f2089f3 dependent on 4c6e4321, b48d1158 and their chain, out - CwPitchChoice 
+304ec791 step 4 piece 20 of 45: ac1d56da port the reference decoder's chain into the engine - CwReferenceDecod
+c9681461 step 4 piece 20 out: ac1d56da moved nothing
+53806d19 step 4 piece 21 of 45: 62262b94 dependent on 2068f868 and 3e84ac74 at least, out - decision 5, nothin
+b381460b step 4 piece 22 of 45: 0f48c33e score a decode against what was actually sent - CwAccuracy, new file
+60f4453a step 4 piece 22 out: 0f48c33e moved nothing
+c89bdd44 step 4 piece 23 of 45: b8cad1f9 test every confidence the decoder has against correctness - as a pair
+35102716 step 4 piece 23 out: b8cad1f9 moved nothing
+cf222086 step 4 piece 24 of 45: fc1ee77f dependent on 6fc36a1e and 386fdb5d at least, out - decision 5, nothin
+e91ed185 step 4 piece 25 of 45: 71b4f044 a posterior over the lattice, in the log domain - CwProbabilisticDeco
+8cae3b66 step 4 piece 25 out: 71b4f044 moved nothing
+7b2f677d step 4 piece 26 of 45: 68a18d66 dependent on 6fc36a1e, 71b4f044 and fc1ee77f, out - decision 5, nothi
+d1c31c82 step 4 piece 27 of 45: a91d8fe7 dependent on 71b4f044, 68a18d66 and their chain, out - decision 5, no
+d14c9970 step 4 piece 28 of 45: ade52536 the bench's run-merging bug is not in Hamlet, and here is why - CwSpe
+c1a7dfc6 step 4 piece 28 out: ade52536 moved nothing
+93f0f1bd step 4 piece 29 of 45: efcd5242 dependent on 0f2089f3, 3e84ac74 and their chains, out - decision 5, n
+9c70a121 step 4 piece 30 of 45: 95a5e063 assert nothing from a pitch nobody judged to be a station - CwDecoder
+9302155c step 4 piece 30 out: 95a5e063 moved nothing
+ee3dcca8 step 4 piece 31 of 45: b7147b1f measure the percentile threshold and refuse it, three ways - CwUnitEs
+e14f42e0 step 4 piece 31 out: b7147b1f moved nothing
+832a3db3 step 4 piece 32 of 45: c8685e4d the peak window buys nothing, and N4L does not come back - as a pair 
+38610a35 step 4 piece 32 out: c8685e4d moved nothing
+8b709643 step 4 piece 33 of 45: 4935a4f8 measure the peak-referenced threshold and refuse it - CwUnitEstimator
+e9449d0a step 4 piece 33 out: 4935a4f8 moved nothing
+e2b31a40 unit396 task 2: pieces 10 to 33 judged, 0 kept, 24 out; 13 applied and each reverted in the next comm

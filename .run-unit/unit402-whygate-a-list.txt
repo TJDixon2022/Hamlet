@@ -1,0 +1,2 @@
+Passed WhyTheGateDidNotFireTests.WhatEachRefusalWouldCost
+Passed WhyTheGateDidNotFireTests.WhereTheCharactersCameFrom

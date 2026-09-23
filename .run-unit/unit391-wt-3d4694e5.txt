@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 3d4694e5)
+HEAD is now at 3d4694e5 test(engine): record that the confirmation window stays at two, and why

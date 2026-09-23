@@ -1,0 +1,3 @@
+Preparing worktree (detached HEAD 2828ab69)
+Updating files:  97% (751/771)Updating files:  98% (756/771)Updating files:  99% (764/771)Updating files: 100% (771/771)Updating files: 100% (771/771), done.
+HEAD is now at 2828ab69 docs(docs): report work instruction 056 — the streams agree, the reading is lost after

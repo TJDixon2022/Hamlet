@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 7fb7f5d0)
+HEAD is now at 7fb7f5d0 fix(engine): hold the tracker inside a character again

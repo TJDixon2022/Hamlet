@@ -1,0 +1,7 @@
+cd /c/Source/HamLet
+R=.run-unit
+P2=$R/unit395-piece-2-6fc36a1e.patch
+P5=$R/unit395-piece-5-9de394da.patch
+P17=$R/unit396-piece-17-f9c11989.patch
+P25=$R/unit396-piece-25-71b4f044.patch
+sh $R/unit396-deps.sh $R/unit396-piece-26-68a18d66.patch "" "$P2" "$P25" "$P2 $P25" "$P2 $P5 $P25" "$P2 $P5 $P17 $P25"

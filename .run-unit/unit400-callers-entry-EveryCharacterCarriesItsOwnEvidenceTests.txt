@@ -1,0 +1,48 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesItsOwnEvidenceTests.TheEvidenceFallsAwayAsTheSignalDoes [291 ms]
+  Standard Output Messages:
+ 18 dB  median span ratio 119177.0
+  1 dB  median span ratio 2354.4
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesItsOwnEvidenceTests.ARealCharacterIsExplainedFarBetterByKeyingThanBySilence [132 ms]
+  Standard Output Messages:
+ Q  188129.6
+ N  63814.7
+ D  106955.6
+ E  18936.5
+ D  145762.2
+ E  26549.0
+ E  27160.4
+ W  180440.7
+ W  185873.6
+ A  99972.9
+ J  204877.1
+ 1  238424.5
+ 1  176118.4
+ A  45252.9
+ A  56710.9
+ R  67164.4
+ W  119177.0
+ W  146728.1
+ N  87682.1
+ K  171668.7
+
+
+[xUnit.net 00:00:05.69]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.EveryCharacterCarriesItsOwnEvidenceTests.AudioHoldingNoStationCarriesNoSpanRatios [5 s]
+  Standard Output Messages:
+ 0 characters emitted
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 5.9466 Seconds

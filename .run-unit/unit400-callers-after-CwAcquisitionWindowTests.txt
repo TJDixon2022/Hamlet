@@ -1,0 +1,102 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 28, floor: 0.79000000000000004) [537 ms]
+  Standard Output Messages:
+ 28 wpm at 18 dB, bare: 0.89
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 30, floor: 0.79000000000000004) [433 ms]
+  Standard Output Messages:
+ 30 wpm at 18 dB, bare: 0.88
+
+
+[xUnit.net 00:00:02.13]     Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 25, floor: 0.79000000000000004) [FAIL]
+[xUnit.net 00:00:02.13]       25 words a minute tuned onto mid-transmission came back 0.75 of the message against a bar of 0.79
+[xUnit.net 00:00:02.13]       Stack Trace:
+[xUnit.net 00:00:02.13]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwAcquisitionWindowTests.cs(94,0): at Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(Int32 wordsPerMinute, Double floor)
+[xUnit.net 00:00:02.13]            at InvokeStub_CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(Object, Span`1)
+[xUnit.net 00:00:02.13]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.13]       Output:
+[xUnit.net 00:00:02.13]         25 wpm at 18 dB, bare: 0.75
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 35, floor: 0.78000000000000003) [343 ms]
+  Standard Output Messages:
+ 35 wpm at 18 dB, bare: 0.86
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 25, floor: 0.79000000000000004) [577 ms]
+  Error Message:
+   25 words a minute tuned onto mid-transmission came back 0.75 of the message against a bar of 0.79
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(Int32 wordsPerMinute, Double floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwAcquisitionWindowTests.cs:line 94
+   at InvokeStub_CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ 25 wpm at 18 dB, bare: 0.75
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 25) [672 ms]
+  Standard Output Messages:
+ 25 wpm at 18 dB, run-up: 0.95
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 28) [1 s]
+  Standard Output Messages:
+ 28 wpm at 18 dB, run-up: 0.82
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 30) [1 s]
+  Standard Output Messages:
+ 30 wpm at 18 dB, run-up: 0.81
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 6) [2 s]
+  Standard Output Messages:
+ 12 wpm at 6 dB, run-up: 0.93
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 18) [2 s]
+  Standard Output Messages:
+ 10 wpm at 18 dB, run-up: 1.00
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 3) [2 s]
+  Standard Output Messages:
+ 12 wpm at 3 dB, run-up: 0.96
+
+
+[xUnit.net 00:00:14.30]     Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 18) [FAIL]
+[xUnit.net 00:00:14.30]       12 words a minute at 18 dB came back 0.54 of the message
+[xUnit.net 00:00:14.30]       Stack Trace:
+[xUnit.net 00:00:14.30]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwAcquisitionWindowTests.cs(142,0): at Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(Int32 wordsPerMinute, Double snrDb)
+[xUnit.net 00:00:14.30]            at InvokeStub_CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(Object, Span`1)
+[xUnit.net 00:00:14.30]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:14.30]       Output:
+[xUnit.net 00:00:14.30]         12 wpm at 18 dB, run-up: 0.54
+  Failed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 18) [1 s]
+  Error Message:
+   12 words a minute at 18 dB came back 0.54 of the message
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(Int32 wordsPerMinute, Double snrDb) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\CwAcquisitionWindowTests.cs:line 142
+   at InvokeStub_CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ 12 wpm at 18 dB, run-up: 0.54
+
+
+[xUnit.net 00:00:17.28]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 3) [2 s]
+  Standard Output Messages:
+ 10 wpm at 3 dB, run-up: 0.98
+
+
+
+Test Run Failed.
+Total tests: 12
+     Passed: 10
+     Failed: 2
+ Total time: 17.5338 Seconds

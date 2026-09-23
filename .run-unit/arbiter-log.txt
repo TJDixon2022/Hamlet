@@ -1,0 +1,5 @@
+74f640fa 2026-09-21 21:05:12 -0400 layer: take ClaudeProjectStatus tools\arbiter through unit 082
+1d9943e1 2026-09-13 19:55:24 -0400 layer: take ClaudeProjectStatus tools\arbiter through unit 063
+230e6c04 2026-09-13 16:43:47 -0400 layer: take ClaudeProjectStatus tools\arbiter from units 061 and 062
+ece57888 2026-09-12 14:19:28 -0400 chore(unit332): 1.13.17, the step 6 append, five files emptied, and the false cannot-work sentence gone
+48027b31 2026-09-11 17:49:00 -0400 chore(unit323): task 1a - the record opens and the list is green before anything moves

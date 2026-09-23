@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 7f2e90f4)
+HEAD is now at 7f2e90f4 fix(engine): score a segment's length as a ratio, not as a difference

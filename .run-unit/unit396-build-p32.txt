@@ -1,0 +1,17 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Ft8Sharp.Deep.Tests -> C:\Source\HamLet\tests\Ft8Sharp.Deep.Tests\bin\Debug\net8.0\Ft8Sharp.Deep.Tests.dll
+  Ft8Sharp.Tests -> C:\Source\HamLet\tests\Ft8Sharp.Tests\bin\Debug\net8.0\Ft8Sharp.Tests.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.ScopeCheck -> C:\Source\HamLet\tools\Hamlet.ScopeCheck\bin\Debug\net8.0\scope-check.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.71

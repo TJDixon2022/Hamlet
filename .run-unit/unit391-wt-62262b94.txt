@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 62262b94)
+HEAD is now at 62262b94 feat(engine): start the decoder fresh when the dial actually moves

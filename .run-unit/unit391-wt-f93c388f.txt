@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD f93c388f)
+HEAD is now at f93c388f test(engine): carry each character's span length, and measure the margins

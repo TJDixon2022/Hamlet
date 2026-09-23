@@ -1,0 +1,4 @@
+Total tests: 36
+== rc=0 seconds=97
+36
+0

@@ -1,0 +1,418 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-23-001952") [6 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001952: fed 525.0 Hz, heard 525.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-005051") [8 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005051: fed 450.0 Hz, heard 450.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-012922") [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012922: fed 475.0 Hz, heard 475.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-23-001520") [10 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001520: fed 600.0 Hz, heard 600.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-021629") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021629: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-002424") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002424: fed 475.0 Hz, heard 475.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-005158") [6 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005158: fed 750.0 Hz, heard 750.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-004844") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004844: fed 430.0 Hz, heard 430.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-003408") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003408: fed 625.0 Hz, heard 625.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-23-002016") [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-002016: fed 525.0 Hz, heard 525.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-18-003758") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-014113") [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014113: fed 600.0 Hz, heard 600.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-032129") [6 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032129: fed 650.0 Hz, heard 650.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-004915") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004915: fed 430.0 Hz, heard 430.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-002759") [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002759: fed 600.0 Hz, heard 600.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-014308") [7 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014308: fed 575.0 Hz, heard 575.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-003212") [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003212: fed 575.0 Hz, heard 575.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "cw-2026-08-17-134712") [7 s]
+  Standard Output Messages:
+ cw-2026-08-17-134712: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-20-014854") [6 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854: fed 600.0 Hz, heard 600.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "cw-2026-08-17-013622") [4 s]
+  Standard Output Messages:
+ cw-2026-08-17-013622: fed 600.0 Hz, heard 600.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-031905") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031905: fed 300.0 Hz, heard 300.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-26-125941") [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-26-125941: fed 400.0 Hz, heard 400.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-23-001831") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001831: fed 525.0 Hz, heard 525.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-18-003126") [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003126: fed 665.0 Hz, heard 665.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-18-003016") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016: fed 670.0 Hz, heard 670.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-031838") [6 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031838: fed 525.0 Hz, heard 525.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "cw-2026-08-17-013347") [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347: fed 625.0 Hz, heard 625.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-011552") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-011552: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-013150") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013150: fed 495.0 Hz, heard 495.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-013303") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013303: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-002829") [7 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002829: fed 800.0 Hz, heard 800.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-012748") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012748: fed 395.0 Hz, heard 395.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-003229") [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003229: fed 600.0 Hz, heard 600.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "cw-2026-08-18-004507") [5 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-032050") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032050: fed 325.0 Hz, heard 325.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-005243") [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005243: fed 575.0 Hz, heard 575.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-002734") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002734: fed 625.0 Hz, heard 625.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-004902") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004902: fed 425.0 Hz, heard 425.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-032012") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032012: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-012823") [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012823: fed 450.0 Hz, heard 450.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-013520") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013520: fed 540.0 Hz, heard 540.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-013010") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013010: fed 475.0 Hz, heard 475.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-003419") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003419: fed 600.0 Hz, heard 600.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-013402") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013402: fed 525.0 Hz, heard 525.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-24-012403") [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-24-012403: fed 440.0 Hz, heard 440.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-31-002443") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002443: fed 475.0 Hz, heard 475.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-013637") [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013637: fed 550.0 Hz, heard 550.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-20-014935") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935: fed 825.0 Hz, heard 825.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-021825") [6 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021825: fed 400.0 Hz, heard 400.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-031948") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031948: fed 500.0 Hz, heard 500.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-021410") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021410: fed 550.0 Hz, heard 550.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-22-032113") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032113: fed 650.0 Hz, heard 650.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-005218") [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005218: fed 800.0 Hz, heard 800.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-31-002759") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002759: 600.0 Hz, 101 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-28-005158") [15 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005158: 750.0 Hz, 85 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-24-012403") [11 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-24-012403: 440.0 Hz, 31 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-31-003229") [12 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003229: 600.0 Hz, 125 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "cw-2026-08-17-013622") [9 s]
+  Standard Output Messages:
+ cw-2026-08-17-013622: 600.0 Hz, 75 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-23-001520") [25 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001520: 600.0 Hz, 11 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-014308") [19 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014308: 575.0 Hz, 0 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "cw-2026-08-18-004507") [13 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507: 500.0 Hz, 80 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-25-013303") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013303: 500.0 Hz, 85 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-031905") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031905: 300.0 Hz, 57 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-28-004844") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004844: 430.0 Hz, 66 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-31-002443") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002443: 475.0 Hz, 0 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-28-004902") [8 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004902: 425.0 Hz, 64 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-25-013520") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013520: 540.0 Hz, 90 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-032113") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032113: 650.0 Hz, 86 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-032129") [15 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032129: 650.0 Hz, 97 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-25-013402") [8 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013402: 525.0 Hz, 89 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-31-003419") [9 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003419: 600.0 Hz, 97 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-25-013010") [8 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013010: 475.0 Hz, 83 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "cw-2026-08-17-013347") [9 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 625.0 Hz, 84 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-031838") [16 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031838: 525.0 Hz, 76 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-031948") [8 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031948: 500.0 Hz, 47 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-18-003016") [8 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016: 670.0 Hz, 77 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-28-005051") [19 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005051: 450.0 Hz, 55 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-014113") [12 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014113: 600.0 Hz, 0 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-22-032012") [8 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032012: 500.0 Hz, 62 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-26-125941") [12 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-26-125941: 400.0 Hz, 0 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-25-021825") [15 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021825: 400.0 Hz, 67 characters
+
+
+The active test run was aborted. Reason: Test host process crashed
+
+Test Run Aborted.
+Total tests: Unknown
+     Passed: 81
+ Total time: 9.9936 Minutes

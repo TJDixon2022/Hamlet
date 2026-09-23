@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD b65ac6b4)
+HEAD is now at b65ac6b4 feat(engine): take the noise scale from the Rayleigh identity, over a rolling span

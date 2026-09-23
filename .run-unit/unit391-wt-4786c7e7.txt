@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 4786c7e7)
+HEAD is now at 4786c7e7 test(engine): both gate derivations measured, neither ships

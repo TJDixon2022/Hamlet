@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 07d8dc23)
+HEAD is now at 07d8dc23 feat(engine): let each character answer for itself, and keep the window as a guard

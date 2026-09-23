@@ -1,0 +1,8 @@
+Passed CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 4)
+Passed CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 5)
+Passed CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 52)
+Passed CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 64)
+Passed CwEmissionGateTests.HalfAMinuteOfNoiseProducesNothing
+Passed CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom
+Passed CwEmissionGateTests.TheBoundsAreTheRadiosOwn
+Passed CwEmissionGateTests.TheTapKnowsWhetherAnyAudioHasArrived

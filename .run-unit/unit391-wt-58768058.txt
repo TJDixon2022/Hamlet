@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 58768058)
+HEAD is now at 58768058 feat(engine): take a sender's gap lengths from the gaps, and measure what that costs

@@ -1,0 +1,62 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-013622") [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-013622: 20 elements, 13 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-134712") [6 s]
+  Standard Output Messages:
+ cw-2026-08-17-134712: 98 elements, 63 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-18-004507") [5 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507: 118 elements, 50 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-013347") [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 68 elements, 48 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-134712") [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-134712: 7.011900 MHz CW 500 Hz pitch 600 Hz S-meter S4
+   tone 500 Hz, snr 38.7 dB, 63 characters: ■ RT NT T ■  ■ ■  ■ R R SD ' E4LLM<AS> ZTQ  ■ T ■KK  ■  ■ ■ ■ ■EE■ E■ E E ■ ■ E■ ■ ■
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-013347") [1 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 14.055000 MHz CW 500 Hz pitch 600 Hz S-meter S7
+   tone 625 Hz, snr 32.2 dB, 48 characters: IT R RIITIINNNN TT TTTNTNTTNTNTTNTTNTNT TT TTTTTTN TEN TN TN TTTTTTTNTNN TTN TTTNTNTTNTNT TNT TNTNT T ■  ■ ■  ■ ■
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-013622") [1 s]
+  Standard Output Messages:
+ cw-2026-08-17-013622: 14.055000 MHz CW 500 Hz pitch 600 Hz S-meter S4
+   tone 600 Hz, snr 24.0 dB, 13 characters: U TIIT■EU■T A AET
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-18-004507") [2 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507: 7.051900 MHz CW 500 Hz pitch 600 Hz S-meter S4
+   tone 500 Hz, snr 47.8 dB, 50 characters: E A A T  T SE AEARRRRR ■ L D D M OO T  T N N E E T  T N <BT><BT>  ■E ■E A A NA C C H H E SESTATA TA TI I G O TO N N I HEHATANTNDDLLIINNGG  T THHIEISS T MEMESSSSSASANAGG E  E A PE
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-013347") [1 s]
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-18-004507") [2 s]
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-134712") [3 s]
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-013622") [1 s]
+[xUnit.net 00:00:37.27]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheCapturesAreGenuinelyDifferentRecordings [7 ms]
+
+Test Run Successful.
+Total tests: 13
+     Passed: 13
+ Total time: 37.5224 Seconds

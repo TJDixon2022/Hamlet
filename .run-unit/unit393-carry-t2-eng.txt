@@ -1,0 +1,24 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:21.92]     Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes [FAIL]
+  Failed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes [15 s]
+  Error Message:
+   olivia-16-500-qso-snr-10db.wav: demodulator cpu 26.563 s
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.DecodesWithin(String file, Nullable`1 ceiling) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Olivia\TheOliviaDemodulatorTests.cs:line 263
+   at Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Olivia\TheOliviaDemodulatorTests.cs:line 49
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav: detector OLIVIA_16_500 variant 16/500 at 1000.37 Hz (cpu 71.453 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.05); characters 251 of 251; blocks decoded 63, rejected 0; offset -0.37 Hz, symbol phase 5, block phase 14, mean block snr 17.68; first block 2.341 s, last 129.317 s; demodulator cpu 26.563 s
+ block snr: lowest 13.81, tenth 15.21, median 17.24, highest 21.62 (threshold 4)
+
+
+
+Failed!  - Failed:     1, Passed:   175, Skipped:     0, Total:   176, Duration: 4 m 54 s - Hamlet.RadioEngine.Tests.dll (net8.0)

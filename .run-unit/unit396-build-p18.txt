@@ -1,0 +1,17 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Ft8Sharp.Deep.Tests -> C:\Source\HamLet\tests\Ft8Sharp.Deep.Tests\bin\Debug\net8.0\Ft8Sharp.Deep.Tests.dll
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwPitchRanking.cs(225,29): error CS0122: 'CwToneTracker.CoarseSpacingHz' is inaccessible due to its protection level [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwPitchRanking.cs(232,38): error CS0122: 'CwToneTracker.CoarseSpacingHz' is inaccessible due to its protection level [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+  Ft8Sharp.Tests -> C:\Source\HamLet\tests\Ft8Sharp.Tests\bin\Debug\net8.0\Ft8Sharp.Tests.dll
+
+Build FAILED.
+
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwPitchRanking.cs(225,29): error CS0122: 'CwToneTracker.CoarseSpacingHz' is inaccessible due to its protection level [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+C:\Source\HamLet\src\Hamlet.RadioEngine\Cw\CwPitchRanking.cs(232,38): error CS0122: 'CwToneTracker.CoarseSpacingHz' is inaccessible due to its protection level [C:\Source\HamLet\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:01.46

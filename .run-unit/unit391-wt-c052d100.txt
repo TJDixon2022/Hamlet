@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD c052d100)
+HEAD is now at c052d100 docs(docs): record the premise reproduced in-tree, and what disagreed

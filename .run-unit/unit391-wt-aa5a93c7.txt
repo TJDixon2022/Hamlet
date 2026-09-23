@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD aa5a93c7)
+HEAD is now at aa5a93c7 feat(engine): hold the last measured pitch, and withdraw a refinement measured worse

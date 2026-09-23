@@ -207,3 +207,23 @@ the owner reads instead of watching.
 | 1 | 2026-09-22T13:14 | 2026-09-22T14:08 | complete | 11.630765599999995 | ran unattended, 219 turns, 5 denied call(s) worked around, report valid |
 | 2 | 2026-09-22T14:15 | 2026-09-22T14:58 | complete | 12.394016599999993 | ran unattended, 255 turns, 6 denied call(s) worked around, report valid |
 | phase | 2026-09-22T14:59 | 2026-09-22T14:59 | ending | 11.6308 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
+| phase | 2026-09-22T17:26 | 2026-09-22T17:26 | failure | 0 | STOPPED, AND A STOP IS FAILURE - stop 11: nothing was launched - run exit 2, and output.md was written after this unit was launched |
+| phase | 2026-09-22T18:01 | 2026-09-22T18:01 | ending | 0 | ENDED - nothing is left but the owner-s verdict. stop 1: the phase is waiting on the owner's verdict - criteria 5.1 |
+| phase | 2026-09-22T19:18 | 2026-09-22T19:18 | failure | 0 | STOPPED, AND A STOP IS FAILURE - stop 11: nothing was launched - run exit 2, and output.md was written after this unit was launched |
+| 1 | 2026-09-22T20:06 | 2026-09-22T20:51 | complete | 8.7401892 | ran unattended, 191 turns, 15 denied call(s) worked around, report valid |
+| 2 | 2026-09-22T21:00 | 2026-09-22T21:49 | complete | 3.499198799999999 | ran unattended, 93 turns, 3 denied call(s) worked around, report valid |
+| 3 | 2026-09-22T22:03 | 2026-09-22T23:01 | complete | 4.033674599999999 | ran unattended, 114 turns, 6 denied call(s) worked around, report valid |
+| phase | 2026-09-22T23:03 | 2026-09-22T23:03 | ending | 12.2394 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
+| 1 | 2026-09-22T23:29 | 2026-09-23T00:27 | complete | 5.8675254 | ran unattended, 147 turns, 9 denied call(s) worked around, report valid |
+| 2 | 2026-09-23T00:37 | 2026-09-23T01:36 | complete | 8.2814368 | ran unattended, 236 turns, 8 denied call(s) worked around, report valid |
+| 3 | 2026-09-23T01:43 | 2026-09-23T02:19 | complete | 5.770728200000002 | ran unattended, 156 turns, 10 denied call(s) worked around, report valid |
+| 3 | 2026-09-23T02:20 | 2026-09-23T02:20 | note | none - not a run | no advance - step 4 criterion 2 flipped, and the state judge did not find it honestly met: no |
+| 4 | 2026-09-23T02:31 | 2026-09-23T03:02 | complete | 6.718268799999998 | ran unattended, 131 turns, 8 denied call(s) worked around, report valid |
+| 5 | 2026-09-23T03:13 | 2026-09-23T03:44 | complete | 3.5265805999999995 | ran unattended, 91 turns, 8 denied call(s) worked around, report valid |
+| 5 | 2026-09-23T03:45 | 2026-09-23T03:45 | note | none - not a run | blocker-clear - cleared a blocker: the two clean synthetics, the third floor test, red since 8e3ee277 and step 3's repair under R53, without which step 3 criteria 3.4 and 3.5 cannot be met; set names #25, #26, #31 and #32 |
+| 6 | 2026-09-23T04:05 | 2026-09-23T04:44 | complete | 4.036833199999999 | ran unattended, 100 turns, 6 denied call(s) worked around, report valid |
+| 6 | 2026-09-23T04:45 | 2026-09-23T04:45 | note | none - not a run | no advance - step 3 criterion 3 was met and is met |
+| 7 | 2026-09-23T04:56 | 2026-09-23T05:28 | complete | 2.9067488000000004 | ran unattended, 90 turns, 4 denied call(s) worked around, report valid |
+| phase | 2026-09-23T05:29 | 2026-09-23T05:29 | ending | 37.1080 | ENDED - nothing is left but the owner-s verdict. stop 1: the phase is waiting on the owner's verdict - criteria 5.1 |
+| 1 | 2026-09-23T08:10 | 2026-09-23T08:58 | complete | 5.784130800000002 | ran unattended, 111 turns, 9 denied call(s) worked around, report valid |
+| 1 | 2026-09-23T08:59 | 2026-09-23T08:59 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |

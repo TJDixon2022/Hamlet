@@ -1,0 +1,91 @@
+FILE src/Hamlet.RadioEngine/Cw/CwAccuracy.cs | types: CwAccuracy CwScore Outcome 
+  TYPE CwAccuracy
+    outside Cw: tools/Hamlet.PitchRank/Program.cs tools/cwbench/ablate.py 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/TheCleanReadsStayCleanTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheProbabilisticDecoderTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheScoreSaysWhatItIsMeasuringTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwAccuracy.cs 
+  TYPE CwScore
+    outside Cw: none
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwAccuracy.cs 
+  TYPE Outcome
+    outside Cw: src/Ft8Sharp/porting-notes.md src/Hamlet.App/Licensing/GridResolver.cs src/Hamlet.App/Licensing/LicenseResolver.cs src/Hamlet.App/Telemetry/AppEvents.cs src/Hamlet.App/ViewModels/CwTransmitViewModel.cs src/Hamlet.App/ViewModels/DecisionLogViewModel.cs src/Hamlet.App/ViewModels/MainWindowViewModel.cs src/Hamlet.App/ViewModels/ReceiveHelpViewModel.cs src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs src/Hamlet.RadioEngine/Rig/ReceiverSetupVoice.cs src/Hamlet.RadioEngine/Rig/RigWriteResult.cs src/Hamlet.RadioEngine/Rig/SettingChange.cs src/Hamlet.RadioEngine/Telemetry/Outcome.cs src/Hamlet.RadioEngine/Telemetry/TransmitRecord.cs src/Hamlet.RadioEngine/Transmit/Ft8ArmedSend.cs src/Hamlet.RadioEngine/Transmit/Ft8TransmitSequence.cs tests/Ft8Sharp.Tests/Dsp/AlignmentSweep.cs tests/Ft8Sharp.Tests/Dsp/Ft8AlignmentSweepControlTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8SearchRecoveryTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8StrongMissSweepTests.cs tests/Ft8Sharp.Tests/Ldpc/Ft8LdpcCorrectingPowerTests.cs tests/Ft8Sharp.Tests/Ldpc/Unit223Arithmetic.cs tests/Ft8Sharp.Tests/Ldpc/Unit223SumProduct.cs tests/Hamlet.App.Tests/Licensing/GridResolverTests.cs tests/Hamlet.App.Tests/Licensing/LicenseResolverTests.cs tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs tests/Hamlet.App.Tests/Telemetry/DecisionEmissionTests.cs tests/Hamlet.App.Tests/Telemetry/Unit304ReplayTests.cs tests/Hamlet.App.Tests/Telemetry/Unit305StageTests.cs tests/Hamlet.App.Tests/ViewModels/OneClickOneFt4TransmissionTests.cs tests/Hamlet.App.Tests/ViewModels/TheApplicationSendsAtTheLevelTheOperatorSetTests.cs tests/Hamlet.App.Tests/ViewModels/TheContactStandsAfterHisLastTransmissionTests.cs tests/Hamlet.App.Tests/ViewModels/TheLicenceGateHoldsFromTheClickTests.cs tests/Hamlet.App.Tests/ViewModels/TheLoopbackThroughTheApplicationsSendPathTests.cs tests/Hamlet.App.Tests/ViewModels/TheReadoutSaysWhatTheCardWasHandedTests.cs tests/Hamlet.App.Tests/ViewModels/TheSendPathComposesAtTheEndpointsRateTests.cs tests/Hamlet.App.Tests/ViewModels/TheSendPathReachesARealRadioTests.cs tests/Hamlet.App.Tests/ViewModels/TheWholeChainRunsFromOneRightClickTests.cs tests/Hamlet.App.Tests/ViewModels/TheWholeContactWalksThroughTheApplicationTests.cs tests/Hamlet.App.Tests/ViewModels/TheWholeFt4ChainRunsFromOneRightClickTests.cs tests/Hamlet.App.Tests/ViewModels/Unit295ReportLegTraceTests.cs tests/Hamlet.App.Tests/ViewModels/Unit383Trace.cs tests/Hamlet.App.Tests/Views/TheMenuIsUnderTheMouseTests.cs tests/Hamlet.App.Tests/Views/TheOperatorCanStopItTests.cs tests/Hamlet.App.Tests/Views/TheStatusBarStopsLecturingTests.cs tests/Hamlet.App.Tests/Views/TheStopIsAlwaysOnScreenTests.cs tests/Hamlet.App.Tests/Views/TheTopRowTests.cs tests/Hamlet.App.Tests/Views/WhichPathsPutNarrationOnTheBarTests.cs tests/Hamlet.RadioEngine.Tests/Audio/TheLoopbackProvesTheWholeChainTests.cs tests/Hamlet.RadioEngine.Tests/Audio/TheSinkPlaysToANamedEndpointTests.cs tests/Hamlet.RadioEngine.Tests/Audio/TheStopStopsARealEndpointTests.cs tests/Hamlet.RadioEngine.Tests/Rig/ModeFollowTests.cs tests/Hamlet.RadioEngine.Tests/Rig/ScopeOutputWriteTests.cs tests/Hamlet.RadioEngine.Tests/Rig/TheRoundTripLandsInTheSamePlaceTests.cs tests/Hamlet.RadioEngine.Tests/Rig/TheTuneInSetsOnlyWhatIsInTheWayTests.cs tests/Hamlet.RadioEngine.Tests/Telemetry/DecisionRecordTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/HamletDoesNotKeyWhatNobodyCanReadTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/OneClickSendsExactlyOneMessageTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/OneFt4ClickOneFt4TransmissionThroughTheSameAbortTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheFitGuardAsksAboutTheGridTheSendIsOnTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheFt8AndFt4SendsAreByteIdenticalTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheLicenceGateIsInsideThePathTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheOperatorsStopFiresFromEveryStateTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheStopStopsTheAudioTooTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheUnkeyHappensWhateverGoesWrongTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheUnslottedSendTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/Unit303SentMeansSentTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/WhereTheTransmissionStartsAndWhatTheRecordSaysTests.cs tools/Hamlet.PitchRank/Program.cs tools/Hamlet.ScopeCheck/Program.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/CwTransmitTests.cs tests/Hamlet.RadioEngine.Tests/Cw/LiveFireTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TransmissionWatchTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/AutoCall.cs src/Hamlet.RadioEngine/Cw/CwAccuracy.cs src/Hamlet.RadioEngine/Cw/ICwSender.cs src/Hamlet.RadioEngine/Cw/TransmissionWatch.cs src/Hamlet.RadioEngine/Cw/TransmitReadiness.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwElementPitch.cs | types: CwElementPitch 
+  TYPE CwElementPitch
+    outside Cw: src/Hamlet.App/ViewModels/MainWindowViewModel.cs tools/Hamlet.PitchRank/Program.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/EveryElementCarriesItsOwnPitchTests.cs tests/Hamlet.RadioEngine.Tests/Cw/NoSenderIsSplitInTwoTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwElementPitch.cs src/Hamlet.RadioEngine/Cw/CwJointCutter.cs src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwJointCutter.cs | types: Cutting CwElement CwJointCutter 
+  TYPE Cutting
+    outside Cw: tests/Ft8Sharp.Tests/Dsp/Ft4Unit294SnrAgreementTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8Unit251SnrAgreementTests.cs tests/Hamlet.RadioEngine.Tests/Audio/TheSlotCutterTests.cs 
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwJointCutter.cs src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs 
+  TYPE CwElement
+    outside Cw: none
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/EveryElementCarriesItsOwnPitchTests.cs tests/Hamlet.RadioEngine.Tests/Cw/NoSenderIsSplitInTwoTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwElementPitch.cs src/Hamlet.RadioEngine/Cw/CwJointCutter.cs src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs 
+  TYPE CwJointCutter
+    outside Cw: none
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwDecoder.cs src/Hamlet.RadioEngine/Cw/CwJointCutter.cs src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs | types: CwPitchChoice 
+  TYPE CwPitchChoice
+    outside Cw: src/Hamlet.App/ViewModels/MainWindowViewModel.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/NothingActsOnTheAdmissionVerdictTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheQuietestBinNoLongerWinsTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs src/Hamlet.RadioEngine/Cw/CwDecoder.cs src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs src/Hamlet.RadioEngine/Cw/CwToneTracker.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs | types: CwPitchRank CwPitchRanking 
+  TYPE CwPitchRank
+    outside Cw: none
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs src/Hamlet.RadioEngine/Cw/CwDecoder.cs src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs 
+  TYPE CwPitchRanking
+    outside Cw: tools/Hamlet.PitchRank/Program.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/TheQuietestBinNoLongerWinsTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwDecoder.cs src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.Posterior.cs | types: CwProbabilisticDecoder 
+  CwProbabilisticDecoder also declared at 7e209cb4 - not HEAD-only
+FILE src/Hamlet.RadioEngine/Cw/CwReferenceDecoder.cs | types: CwReferenceCharacter CwReferenceDecoder CwReferenceResult Envelope RunSet 
+  TYPE CwReferenceCharacter
+    outside Cw: none
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwReferenceDecoder.cs 
+  TYPE CwReferenceDecoder
+    outside Cw: tools/Hamlet.PitchRank/Program.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/ABlipDoesNotShiftEverythingAfterItTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheReferenceDecoderIsPortedFaithfullyTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwReferenceDecoder.cs 
+  TYPE CwReferenceResult
+    outside Cw: none
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwReferenceDecoder.cs 
+  TYPE Envelope
+    outside Cw: src/Hamlet.App/ViewModels/MainWindowViewModel.cs src/Hamlet.RadioEngine/Training/SignalSynthesizer.cs tests/Hamlet.RadioEngine.Tests/Psk31/ThePsk31ModulatorTests.cs tools/Hamlet.PitchRank/Program.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/EachCharacterAnswersForItselfTests.cs tests/Hamlet.RadioEngine.Tests/Cw/EveryElementCarriesItsOwnPitchTests.cs tests/Hamlet.RadioEngine.Tests/Cw/FittingKeyUpAgainstAssumingItTests.cs tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwTwoInOnePassband.cs tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/TheIntegratorBandwidthTable.cs tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/TheTwoStationTable.cs tests/Hamlet.RadioEngine.Tests/Cw/NoSenderIsSplitInTwoTests.cs tests/Hamlet.RadioEngine.Tests/Cw/OneUnitThroughBothClassifiersTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheNoiseScaleTable.cs tests/Hamlet.RadioEngine.Tests/Cw/ThePosteriorSurvivesItsOwnArithmeticTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheQuietestBinNoLongerWinsTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheShortRunFilterDropsWithoutMergingTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheTwoEnvelopePathsAgreeTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheUnitIsMeasuredNotSearchedTests.cs tests/Hamlet.RadioEngine.Tests/Cw/WhatAFlatMarginDoesToShortCharactersTests.cs tests/Hamlet.RadioEngine.Tests/Cw/WhatDecodeScoringCostsTests.cs tests/Hamlet.RadioEngine.Tests/Cw/WhatTheWindowRatioIsMadeOfTests.cs tests/Hamlet.RadioEngine.Tests/Cw/WhereHamletAndTheReferenceDivergeTests.cs tests/Hamlet.RadioEngine.Tests/Cw/WhereTheGapsActuallySitTests.cs tests/Hamlet.RadioEngine.Tests/Cw/WhereTheKeyUpStateSitsTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs src/Hamlet.RadioEngine/Cw/CwReferenceDecoder.cs src/Hamlet.RadioEngine/Cw/CwSwingSurvey.cs src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs src/Hamlet.RadioEngine/Cw/KeyingEnvelope.cs 
+  TYPE RunSet
+    outside Cw: none
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwReferenceDecoder.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwSpectralPeak.cs | types: CwSpectralPeak 
+  TYPE CwSpectralPeak
+    outside Cw: tools/Hamlet.PitchRank/Program.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/IsTheHertzABiasOrAFloorTests.cs tests/Hamlet.RadioEngine.Tests/Cw/TheAdjudicatedReadingsKeepReadingTests.cs tests/Hamlet.RadioEngine.Tests/Cw/ThePeakAgainstASecondSignalTests.cs tests/Hamlet.RadioEngine.Tests/Cw/ThePeakFindsThePitchTheTrackerMissedTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwDecoder.cs src/Hamlet.RadioEngine/Cw/CwElementPitch.cs src/Hamlet.RadioEngine/Cw/CwSpectralPeak.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs | types: CwStreamDivision CwStreamSplit 
+  TYPE CwStreamDivision
+    outside Cw: none
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/NoSenderIsSplitInTwoTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs 
+  TYPE CwStreamSplit
+    outside Cw: src/Hamlet.App/ViewModels/MainWindowViewModel.cs tools/Hamlet.PitchRank/Program.cs 
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/NoSenderIsSplitInTwoTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs 
+FILE src/Hamlet.RadioEngine/Cw/CwSwingSurvey.cs | types: Candidate CwSwingSurvey 
+  TYPE Candidate
+    outside Cw: src/Ft8Sharp.Deep/Ft8DeepCombineCounts.cs src/Ft8Sharp.Deep/Ft8DeepHearing.cs src/Ft8Sharp.Deep/Ft8DeepRepeatDecoder.cs src/Ft8Sharp/Dsp/Ft8SlotDecoder.cs src/Hamlet.RadioEngine/Audio/Ft8Reception.cs src/Hamlet.RadioEngine/Olivia/OliviaSearchStream.cs src/Hamlet.RadioEngine/Rsid/RsidDetector.cs tests/Ft8Sharp.Deep.Tests/Ft8DeepSlotDecoderTests.cs tests/Ft8Sharp.Deep.Tests/Ft8DeepSubtractionTests.cs tests/Ft8Sharp.Tests/Dsp/Ft4DecoderProvenanceTests.cs tests/Ft8Sharp.Tests/Dsp/Ft4PlacementTests.cs tests/Ft8Sharp.Tests/Dsp/Ft4Unit294SnrAgreementTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8DeepIdentityTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8LadderHarness.cs tests/Ft8Sharp.Tests/Dsp/Ft8ReferenceWavTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8SlotDecoderPassbandTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8SlotDecoderTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8Unit247CombiningTraceTests.cs tests/Ft8Sharp.Tests/Dsp/Ft8Unit251SnrAgreementTests.cs 
+    engine Cw tests: none
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwDecoder.cs src/Hamlet.RadioEngine/Cw/CwSwingSurvey.cs src/Hamlet.RadioEngine/Cw/CwToneTracker.cs 
+  TYPE CwSwingSurvey
+    outside Cw: none
+    engine Cw tests: tests/Hamlet.RadioEngine.Tests/Cw/AStationIsABinThatSwingsTests.cs 
+    inside Cw at HEAD: src/Hamlet.RadioEngine/Cw/CwDecoder.cs src/Hamlet.RadioEngine/Cw/CwSwingSurvey.cs 

@@ -1,0 +1,30 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwRefiningRetuneTests.AHandoverToAnotherStationStillResets [997 ms]
+  Standard Output Messages:
+ 6 moves, 4 of them to a different station
+ settled ' CQ CQ  DE N0CALL K ■ E■ E■ ■B W1XYZ K ■'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwRefiningRetuneTests.AMoveBeforeAnythingHasBeenReadIsAFollow [1 s]
+  Standard Output Messages:
+ 3 moves, 2 follows
+
+
+[xUnit.net 00:00:05.11]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwRefiningRetuneTests.TheSurveySettlingBetweenTwoBinsIsNotAStationChange [2 s]
+  Standard Output Messages:
+ 5 moves, 1 of them to a different station
+ settled ' E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT ■ ■ '
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 5.3643 Seconds

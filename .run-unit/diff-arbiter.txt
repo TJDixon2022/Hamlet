@@ -1,0 +1,13 @@
+diff --git a/tools/arbiter/run-phase.bat b/tools/arbiter/run-phase.bat
+index ef9fe072..3a8a6938 100644
+--- a/tools/arbiter/run-phase.bat
++++ b/tools/arbiter/run-phase.bat
+@@ -2650,7 +2650,7 @@ if not exist "%ROOT%\ARBITER.md" (
+ set "ARBPROMPT=%WORK%\arbiter-prompt.txt"
+ set "ARBJSON=%WORK%\arbiter.json"
+ call :writearbprompt
+-powershell -NoProfile -Command "$allow = Get-Content -LiteralPath '%ARBTOOLS%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' }; $p = Get-Content -LiteralPath '%ARBPROMPT%' -Raw; $a = @('-p', $p, '--output-format', 'json', '--restricted', '--tools', 'Read,Write,Bash'); foreach($r in $allow){ $a += '--allowedTools'; $a += $r.Trim() }; Push-Location '%ROOT%'; & claude @a 2>&1 | Set-Content -LiteralPath '%ARBJSON%' -Encoding utf8; Pop-Location"
++powershell -NoProfile -Command "$allow = Get-Content -LiteralPath '%ARBTOOLS%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' }; $p = Get-Content -LiteralPath '%ARBPROMPT%' -Raw; $a = @('-p', $p, '--output-format', 'json', '--model', 'claude-fable-5-1', '--restricted', '--tools', 'Read,Write,Bash'); foreach($r in $allow){ $a += '--allowedTools'; $a += $r.Trim() }; Push-Location '%ROOT%'; & claude @a 2>&1 | Set-Content -LiteralPath '%ARBJSON%' -Encoding utf8; Pop-Location"
+ if not exist "%ARBJSON%" goto :eof
+ for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%ARBJSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ throw }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ 'ARBRC=1'; exit }; if($j.is_error){ 'ARBRC=1' } else { 'ARBRC=0' }; $d=@($j.permission_denials); 'ARBDENIED=' + $d.Count"`) do set "%%A=%%B"
+ if not "%ARBDENIED%"=="0" echo       NOTE: the arbiter was denied %ARBDENIED% call^(s^) - its scope held

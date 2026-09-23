@@ -1,0 +1,77 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EveryFloorWasMeasuredAndNotHopedFor [6 s]
+  Standard Output Messages:
+ captured/unadjudicated/cw-2026-08-24-012403: floor 20, actual 21
+ captured/unadjudicated/cw-2026-08-18-003758: floor 42, actual 44
+ captured/cw-2026-08-17-013347: floor 9, actual 57
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-24-012403, Truth = DE KD0UN KD0UN K, Ruling = work instruction 011, NamedFloor = 20 }) [2 s]
+  Standard Output Messages:
+ captured/unadjudicated/cw-2026-08-24-012403 (work instruction 011)
+   looking for "DE KD0UN KD0UN K"
+   reads: E DEQ 6Q E ■Q DE KD0UN KD0UN K 
+
+
+[xUnit.net 00:00:10.63]     Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 }) [FAIL]
+[xUnit.net 00:00:10.63]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:10.63]       String:    " ■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETM"···
+[xUnit.net 00:00:10.63]       Not found: "AA4MP/4 QNIK"
+[xUnit.net 00:00:10.63]       Stack Trace:
+[xUnit.net 00:00:10.63]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheCleanReadsStayCleanTests.cs(109,0): at Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(CleanRead read)
+[xUnit.net 00:00:10.63]            at InvokeStub_TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(Object, Span`1)
+[xUnit.net 00:00:10.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:10.63]       Output:
+[xUnit.net 00:00:10.63]         captured/unadjudicated/cw-2026-08-18-003758 (HM-DEC-126)
+[xUnit.net 00:00:10.63]           looking for "AA4MP/4 QNIK"
+[xUnit.net 00:00:10.63]           reads:  ■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETMP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ■ ■ ■E ■ ■ ■ ■ EAN E
+  Failed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 }) [1 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    " ■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETM"···
+Not found: "AA4MP/4 QNIK"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(CleanRead read) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheCleanReadsStayCleanTests.cs:line 109
+   at InvokeStub_TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ captured/unadjudicated/cw-2026-08-18-003758 (HM-DEC-126)
+   looking for "AA4MP/4 QNIK"
+   reads:  ■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETMP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ■ ■ ■E ■ ■ ■ ■ EAN E
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/cw-2026-08-17-013347, Truth = VA3VRR, Ruling = HM-DEC-145, NamedFloor = 9 }) [2 s]
+  Standard Output Messages:
+ captured/cw-2026-08-17-013347 (HM-DEC-145)
+   looking for "VA3VRR"
+   reads:  E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT ■ ■ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-24-012403, Truth = DE KD0UN KD0UN K, Ruling = work instruction 011, NamedFloor = 20 }) [2 s]
+  Standard Output Messages:
+ captured/unadjudicated/cw-2026-08-24-012403: 21 named against a floor of 20, 1 blocks, 5 per cent blocks
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 }) [1 s]
+  Standard Output Messages:
+ captured/unadjudicated/cw-2026-08-18-003758: 44 named against a floor of 42, 19 blocks, 30 per cent blocks
+
+
+[xUnit.net 00:00:18.65]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/cw-2026-08-17-013347, Truth = VA3VRR, Ruling = HM-DEC-145, NamedFloor = 9 }) [2 s]
+  Standard Output Messages:
+ captured/cw-2026-08-17-013347: 57 named against a floor of 9, 2 blocks, 3 per cent blocks
+
+
+
+Test Run Failed.
+Total tests: 7
+     Passed: 6
+     Failed: 1
+ Total time: 18.9300 Seconds

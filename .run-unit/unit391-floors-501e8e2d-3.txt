@@ -1,0 +1,62 @@
+== 501e8e2d FullyQualifiedName~CwFixtureTests.TheCleanRecordingsDecodeExactly started 2026-09-22T18:56:37-04:00
+  Determining projects to restore...
+  Restored C:\Source\HamLet-wt391\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj (in 184 ms).
+  Restored C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\Hamlet.RadioEngine.Tests.csproj (in 184 ms).
+  Hamlet.RadioEngine -> C:\Source\HamLet-wt391\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.07]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.19]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.20]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.85]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [FAIL]
+[xUnit.net 00:00:02.85]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.85]                  ↓ (pos 0)
+[xUnit.net 00:00:02.85]       Expected: "CQ DE W1AW K"
+[xUnit.net 00:00:02.85]       Actual:   "■ ■ ■ ■ ■  ■ ■ ■ ■■"
+[xUnit.net 00:00:02.85]                  ↑ (pos 0)
+[xUnit.net 00:00:02.85]       Stack Trace:
+[xUnit.net 00:00:02.86]         C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name)
+[xUnit.net 00:00:02.86]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.86]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [1 s]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "CQ DE W1AW K"
+Actual:   "■ ■ ■ ■ ■  ■ ■ ■ ■■"
+           ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name) in C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 96
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.59]     Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [FAIL]
+[xUnit.net 00:00:03.59]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:03.59]                  ↓ (pos 0)
+[xUnit.net 00:00:03.59]       Expected: "CQ DE W1AW K"
+[xUnit.net 00:00:03.59]       Actual:   "■ ■ ■  ■■■"
+[xUnit.net 00:00:03.59]                  ↑ (pos 0)
+[xUnit.net 00:00:03.59]       Stack Trace:
+[xUnit.net 00:00:03.59]         C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name)
+[xUnit.net 00:00:03.59]            at InvokeStub_CwFixtureTests.TheCleanRecordingsDecodeExactly(Object, Span`1)
+[xUnit.net 00:00:03.59]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.59]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [738 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "CQ DE W1AW K"
+Actual:   "■ ■ ■  ■■■"
+           ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(String name) in C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\Cw\CwFixtureTests.cs:line 96
+   at InvokeStub_CwFixtureTests.TheCleanRecordingsDecodeExactly(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+
+Test Run Failed.
+Total tests: 2
+     Failed: 2
+ Total time: 3.9792 Seconds
+== rc=1 seconds=6

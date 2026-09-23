@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 6fc36a1e)
+HEAD is now at 6fc36a1e feat(engine): log how close the argument was, beside how loud it was

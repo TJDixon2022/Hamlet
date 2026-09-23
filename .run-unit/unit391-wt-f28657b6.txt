@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD f28657b6)
+HEAD is now at f28657b6 feat(app): stop decoding the operator's own sending, and stop the screen moving

@@ -1,0 +1,1498 @@
+== LOG
+@@8e3ee277|2026-08-21|feat(engine): decode CW by likelihood instead of by threshold
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@f28657b6|2026-08-21|feat(app): stop decoding the operator's own sending, and stop the screen moving
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@866d2259|2026-08-21|fix(app): point every reported number at the decoder that decodes
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@4bc3bce8|2026-08-21|refactor(engine): delete the old CW decoder
+
+src/Hamlet.RadioEngine/Cw/CwCharacter.cs
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwGapClasses.cs
+src/Hamlet.RadioEngine/Cw/CwGate.cs
+src/Hamlet.RadioEngine/Cw/CwSettledPass.cs
+src/Hamlet.RadioEngine/Cw/CwSignalWatch.cs
+src/Hamlet.RadioEngine/Cw/CwTiming.cs
+@@7fb7f5d0|2026-08-21|fix(engine): hold the tracker inside a character again
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@55362633|2026-08-21|fix(engine): let the decoder say where it is in a character
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@67ac0796|2026-08-21|feat(engine): build the window clear, and say why it is not switched on
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@d0fd0b56|2026-08-21|feat(engine): empty the window when Hamlet crosses to somebody else
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@62a4648a|2026-08-21|fix(engine): turn the window clear off, and keep the machinery
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ceb3bd5d|2026-08-21|test(engine): show what the survey admitted, not only what it chose
+
+src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@df5f7e4c|2026-08-21|test(engine): find where characters break, and measure three fixes that do not work
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@7f2e90f4|2026-08-22|fix(engine): score a segment's length as a ratio, not as a difference
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@76b295cc|2026-08-22|feat(engine): measure the sender's dit instead of searching for it
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@58768058|2026-08-22|feat(engine): take a sender's gap lengths from the gaps, and measure what that costs
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@f48e6b19|2026-08-22|feat(engine): use a sender's own gap lengths once the structure has held
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@3b7f7e13|2026-08-23|feat(engine): score every character's own span against the key never going down
+
+src/Hamlet.RadioEngine/Cw/CwCharacter.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@baf51ff0|2026-08-23|fix(engine): set the refill guard where a fresh stream can see it
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@2eb40706|2026-08-23|test(tests): put two senders in one passband and measure what survives
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@7907cc0e|2026-08-23|feat(engine): window the integrator, and make the two envelope paths agree
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@fe104f02|2026-08-23|test(tests): measure what each integrator width buys and what it costs
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@3c4b1b16|2026-08-23|feat(engine): say when somebody else is keying in the same passband
+
+src/Hamlet.RadioEngine/Cw/CwCompetitor.cs
+src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@f93c388f|2026-08-24|test(engine): carry each character's span length, and measure the margins
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@07d8dc23|2026-08-24|feat(engine): let each character answer for itself, and keep the window as a guard
+
+src/Hamlet.RadioEngine/Cw/CwCharacter.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@4e4b9bac|2026-08-24|feat(engine): let the operator hold the decoder's pitch, and show that it is held
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@c052d100|2026-08-24|docs(docs): record the premise reproduced in-tree, and what disagreed
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@b65ac6b4|2026-08-24|feat(engine): take the noise scale from the Rayleigh identity, over a rolling span
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@1a5d9285|2026-08-24|fix(engine): re-express the guard in the units the scale now uses
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ab95f4d9|2026-08-24|fix(engine): move the guard to 1.40, inside the same measured gap
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@61b423aa|2026-08-24|fix(engine): read nothing from digital silence rather than noise from a floor
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@b022d925|2026-08-24|fix(engine): keep the quarter point as the silence test, and say what it costs
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ff6590d6|2026-08-24|feat(engine): report where an admitted station sits, not which bin found it
+
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@13661992|2026-08-24|feat(engine): say when the reported pitch is a bank centre rather than a station
+
+src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@aa5a93c7|2026-08-24|feat(engine): hold the last measured pitch, and withdraw a refinement measured worse
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@13119e6e|2026-08-24|fix(engine): raise the speed ceiling to forty, and say when a winner is at the edge
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@07260a2a|2026-08-25|fix(engine): put a floor under what a character has to prove before it prints
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@7c8a5f00|2026-08-25|feat(app): put the recording's keying duty on the capture sheet
+
+src/Hamlet.RadioEngine/Cw/KeyingEnvelope.cs
+@@cf83821f|2026-08-25|fix(engine): let the keying witness look where the decoder looks
+
+src/Hamlet.RadioEngine/Cw/CwKeyingMeter.cs
+src/Hamlet.RadioEngine/Cw/KeyingEnvelope.cs
+@@2f52f6db|2026-08-25|fix(engine): the witness judges on element length, guarded by the swing
+
+src/Hamlet.RadioEngine/Cw/CwKeyingMeter.cs
+@@ca252057|2026-08-25|fix(engine): one decoder, whatever size the audio arrives in
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@2068f868|2026-08-25|feat(engine): read the first seconds again, at the note they were sent on
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@6fc36a1e|2026-08-25|feat(engine): log how close the argument was, beside how loud it was
+
+src/Hamlet.RadioEngine/Cw/CwCharacter.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@3e84ac74|2026-08-26|fix(engine): let go of a pitch measured on a frequency the radio has left
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@39a42c3f|2026-08-26|feat(engine): put the margin's share of the span on the sheet
+
+src/Hamlet.RadioEngine/Cw/CwCharacter.cs
+@@9de394da|2026-08-26|test(engine): open the two constants a sweep has to vary
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@3d4694e5|2026-08-26|test(engine): record that the confirmation window stays at two, and why
+
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@7fb89d5e|2026-08-26|feat(engine): record which admission test refused which bin, and by how much
+
+src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@1bf4372d|2026-08-26|test(engine): the separation bound must not move, and the reason is upstream
+
+src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+@@44cf3fc8|2026-08-26|test(engine): build both gate-threshold derivations, both off by default
+
+src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@4786c7e7|2026-08-26|test(engine): both gate derivations measured, neither ships
+
+src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+@@f2e1db7a|2026-08-26|test(engine): collect the raw run stream, marks and gaps apart
+
+src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@f27174b5|2026-08-26|feat(engine): the operator may assert a station, and Hamlet finds the pitch
+
+src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@386fdb5d|2026-08-26|feat(engine): decide the cuts and the characters together, behind a setting
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwJointCutter.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@8ca6a633|2026-08-27|feat(engine): rank candidate pitches by what the decoder reads at each
+
+src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs
+@@4c6e4321|2026-08-27|feat(engine): let the strongest bin choose the note, and record that it did
+
+src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs
+src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@501e8e2d|2026-08-27|chore(engine): bank the key-up analysis and delete CwPitchRanking
+
+src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs
+@@f9c11989|2026-08-27|feat(engine): fit the key-up state, measure it, and ship nothing
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@b48d1158|2026-08-28|feat(engine): rank candidate pitches against one band-wide noise floor
+
+src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs
+@@0f2089f3|2026-08-28|feat(engine): let the ranking supply the mixdown pitch, and leave it off
+
+src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs
+@@ac1d56da|2026-08-28|feat(engine): port the reference decoder's chain into the engine
+
+src/Hamlet.RadioEngine/Cw/CwReferenceDecoder.cs
+@@62262b94|2026-08-28|feat(engine): start the decoder fresh when the dial actually moves
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@0f48c33e|2026-08-29|feat(engine): score a decode against what was actually sent
+
+src/Hamlet.RadioEngine/Cw/CwAccuracy.cs
+@@b8cad1f9|2026-08-29|test(tools): test every confidence the decoder has against correctness
+
+src/Hamlet.RadioEngine/Cw/CwAccuracy.cs
+@@fc1ee77f|2026-08-29|feat(engine): index the lattice by hop and kind
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@71b4f044|2026-08-29|feat(engine): a posterior over the lattice, in the log domain
+
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.Posterior.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@68a18d66|2026-08-29|test(engine): carry the posterior to each character and measure it
+
+src/Hamlet.RadioEngine/Cw/CwCharacter.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@a91d8fe7|2026-08-29|feat(engine): a temperature on the path score, swept
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.Posterior.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ade52536|2026-08-29|test(tests): the bench's run-merging bug is not in Hamlet, and here is why
+
+src/Hamlet.RadioEngine/Cw/CwSpectralPeak.cs
+@@efcd5242|2026-08-29|feat(engine): find the pitch from the band rather than from a bin already chosen
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@95a5e063|2026-08-29|feat(engine): assert nothing from a pitch nobody judged to be a station
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@b7147b1f|2026-08-29|test(engine): measure the percentile threshold and refuse it, three ways
+
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@c8685e4d|2026-08-30|test(engine): the peak window buys nothing, and N4L does not come back
+
+src/Hamlet.RadioEngine/Cw/CwSpectralPeak.cs
+@@4935a4f8|2026-08-30|test(engine): measure the peak-referenced threshold and refuse it
+
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@e6b1ece7|2026-08-30|feat(engine): a key-down that comes back inside twelve milliseconds never ended
+
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@dfb357ef|2026-08-30|test(tools): the four configurations, and a carrier count that does not work
+
+src/Hamlet.RadioEngine/Cw/CwSpectralPeak.cs
+@@efc33267|2026-08-30|fix(engine): the sheet stops lying about arithmetic, and tonight's captures land
+
+src/Hamlet.RadioEngine/Cw/CwCounterTrail.cs
+@@aeea24f2|2026-08-30|feat(engine): admit a station by how far its bin swings, not by its average
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwSwingSurvey.cs
+@@a37cfcff|2026-08-31|feat(engine): lower the speed ceiling to thirty, and carry every element out
+
+src/Hamlet.RadioEngine/Cw/CwElementPitch.cs
+src/Hamlet.RadioEngine/Cw/CwJointCutter.cs
+src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@a09b36a7|2026-08-31|feat(engine): measure whether two people are sending, and withhold the verdict
+
+src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs
+@@ee2cba8d|2026-08-31|test(engine): the element streams agree, so the reading is lost after them
+
+src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@2828ab69|2026-08-31|docs(docs): report work instruction 056 — the streams agree, the reading is lost after
+
+src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs
+@@43efc525|2026-09-03|feat(engine): the tap is fed from the callback, the decoder from a queue
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@865e66d8|2026-09-03|feat(engine): no CW decode in Digital mode
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@9c2a7f99|2026-09-03|perf(engine): a reader on a timer stops allocating the audio it reads
+
+src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+src/Hamlet.RadioEngine/Cw/CwKeyingMeter.cs
+@@1a84188e|2026-09-03|feat(engine): the callback budget is set, not inherited, and overruns are counted
+
+src/Hamlet.RadioEngine/Cw/CwKeyingMeter.cs
+== ALLFILES per hash
+## 8e3ee277
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/CwTranscript.cs
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheProbabilisticDecoderTests.cs
+tools/reference-decoder/README.md
+tools/reference-decoder/reference_decoder.py
+## body
+The old decoder thresholded the envelope into hard key-down and key-up
+runs, fitted a speed by clustering those run lengths, and picked its
+analysis width from the fitted speed. Every stage depended on the one
+before and the evidence was thrown away at the first step, so nothing
+downstream could recover from a wrong commit. And it was a loop with
+positive feedback: chatter shortens the fitted dit, a short dit reads as
+a fast fist, a fast fist widens the bandwidth, more noise crosses the
+threshold. Senders working near fourteen words a minute fitted at
+## f28657b6
+CLAUDE.md
+DECISIONS.md
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+src/Hamlet.App/Views/MainWindow.axaml
+tests/Hamlet.App.Tests/ViewModels/SentTextNeverEntersTheReceivedStreamTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/HamletDoesNotDecodeYourOwnSendingTests.cs
+## body
+He keyed the radio by hand and the terminal filled with fragments of his
+own transmission, with nothing on screen to say they were his. Break-in
+is full, so the receiver opens between elements and the sidetone arrives
+chopped by transmit-receive switching and decodes as a page of isolated
+letters that looks exactly like a weak station being read. The decoder
+was behaving correctly on input it should never have been given.
+
+The subtler half is what makes it a ruling rather than a fix: with CW
+## 866d2259
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+src/Hamlet.App/Views/MainWindow.axaml
+tests/Hamlet.RadioEngine.Tests/Cw/TheOperatorCanSayHowFastItIsTests.cs
+## body
+clockFit reported a dah of 15.72 dits beside text a different decoder
+produced. It read CwSpeedEstimator, which fits a clock by clustering run
+lengths and averaging in key-up gaps, and which has decoded nothing since
+the decoder was replaced: all three of its emit sites are guarded by
+LooksLikeMorse and none reaches a screen. decoderWpm came from the same
+place and the character counters were incremented on that dead path, so a
+sidecar said "0 characters emitted" and "nothing read" about an instant
+when the terminal was showing text.
+## 4bc3bce8
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+src/Hamlet.App/Views/MainWindow.axaml
+tests/Hamlet.App.Tests/ViewModels/CaseRosterSurvivesAnEveningTests.cs
+tests/Hamlet.App.Tests/ViewModels/CwTerminalTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ACarrierClockDoesNotSeparateTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AHeavyFistIsStillMorseTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ARecordingWithKeyingInItIsReadTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ASmearIsNotTwoLengthsTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwBoundaryMarginTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwDecodeHarness.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwDecoderTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwEdgeCharacterTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwFloorSweepTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwMarkBoundaryTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwNoteHonestyTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwRefusalFloorTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwSensitivity.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwSettledPassTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwTwoClassGapTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwAdjudicationTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFarnsworthTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwLeadingEdgeAccuracyTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwSettledGapTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwSettledSilenceTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwTwoStationTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/MarkAmplitudeTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/QuietMarksAreNotThisSendersTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheGateHasItsOwnWindowNowTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheStationInTheOtherRecordingIsVa3vrrTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheStationInTheRecordingIsN4LTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/WhatBandwidthTheDecoderListensThroughTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/WhereTheTransitionsClusterTests.cs
+## body
+Tim ruled it out and it was still in the tree, producing numbers that looked
+like measurements of the reading and were not. The gate, the run-length clock
+fit, the settled pass, the signal watch and the gap classes are gone, and
+CwDecoder is a host around the tone tracker, the tap and the probabilistic
+stream.
+
+Two things the tracker used to be fed by the gate have no honest supplier now.
+The mid-character interlock is the expensive one: with it unset the sensitivity
+## 7fb7f5d0
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+## body
+The stopgap Tim ruled for tonight. MidCharacter has had no supplier since the
+gate was deleted, and the sweep went from inventing nothing to 0.11 of the
+message at eighteen decibels, which is HM-DEC-120 broken.
+
+A constant true restores the sweep exactly: 1.00 right and 0.00 invented at
+every level from eighteen decibels down, 27 characters, 26 at three, 22 at two.
+
+AND IT SILENCES EVERY REAL RECORDING. The constant holds every move, not only
+## 55362633
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+## body
+The interlock Tim ruled for. CwToneTracker.MidCharacter now reads the winning
+Viterbi path's last segment: a mark or the gap between two marks of one character
+holds the tracker, the gap between characters or between words lets it go. The
+path already chose where every element and every character begins and ends, over
+the whole window up to the newest audio, so nothing is inferred and no threshold
+is formed. It is half a second old at worst and the tracker asks on the same half
+second.
+
+## 67ac0796
+Directory.Build.props
+OUTPUT.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+## body
+Tim ruled that the decoder's window is cleared when the tracker moves to another
+station, so that a decode is never made over twelve seconds mixed at two pitches.
+The machinery is here: CwProbabilisticStream.Restart drops the envelope and the
+leading edge while keeping the audio clock and the settled mark, a refill guard
+stops a short window guessing, CwToneTracker.StationChanges separates leaving a
+station from finding one, and the terminal has a sentence for the silence.
+
+Nothing calls Restart, and that is the finding. The tracker declares a station
+## d0fd0b56
+Directory.Build.props
+OUTPUT.md
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.App.Tests/Views/TheFollowedSentenceReachesTheScreenTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/WhenTheWindowIsEmptiedTests.cs
+## body
+The clear Tim ruled for is switched on, on the line he ruled: a move of at least
+the decoder's own filter width, made while somebody was being read. The width is
+read from CwProbabilisticDecoder.BandwidthHz rather than written as a literal, so
+the line moves if that filter ever does, and the reference is the pitch one
+reading earlier, so a jump crosses it and a two-step settle onto one station does
+not.
+
+The order's safety argument does not hold. It fires three times on the
+## 62a4648a
+WORK_INSTRUCTIONS.md
+write-status.bat
+## body
+Ruled off. It fired three times across the corpus where the order that shipped it
+predicted nought, and every one of the three was the tracker leaving a station it
+was reading for a bin holding noise. The clear was right to fire on moves that
+should never have been made, and the defect is upstream of it.
+
+Fifteen decibels is back to 0.94 right and 0.00 invented, nine and eight to 0.94
+and 0.92, and all six recordings are character for character what they were.
+
+## ceb3bd5d
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+## body
+The verdict says which bin won and never what it beat, so three fires on the
+sensitivity sweep could not be explained without adding a way to look.
+CwToneSurvey.Candidates runs the same examination and hands back every admitted
+bin; CwToneTracker.CoarseCandidates passes it through. Nothing the survey decides
+changes.
+
+What it shows: on a fixture sending at 640 Hz, two of the three fires had the
+station's own bin fail admission while 600 and 675 stayed in, and both of those
+## df5f7e4c
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+## body
+Elements per character across the tree: 1.43, 1.80 and 1.56 on the three
+recordings the operator reads as a page of E and T, 2.34 to 3.33 on the rest.
+English Morse averages near three.
+
+The mechanism is arithmetic. The length penalty divides by the segment's own
+expected length, so the gap between characters is allowed three times the scatter
+of the gap inside one, and the two costs cross at one and a half units instead of
+two. Every gap longer than one and a half dits is called a character gap and the
+## 7f2e90f4
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheProbabilisticDecoderTests.cs
+tools/reference-decoder/README.md
+tools/reference-decoder/reference_decoder.py
+## body
+Tim's ruling, diagnosed and measured last session. The penalty divided by each
+kind's own expected length, so the gap between characters was allowed three times
+the scatter of the gap inside one and the two costs crossed at 1.5 units instead
+of 2. At a two-unit gap the element reading cost 4.08 and the character reading
+0.45 with an identical evidence term, so nothing argued back, and every gap over
+one and a half dits broke the character.
+
+ln(span / want) / 0.35 puts both crossovers at the geometric mean, 1.73 units, and
+## 76b295cc
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheUnitIsMeasuredNotSearchedTests.cs
+## body
+The speed grid could not tell the speeds apart. On cw-2026-08-18-004507 the
+likelihood spans 0.05 out of 33 across the whole range from eleven words a minute
+to thirty-two, so the winner was decided in the fourth significant figure and
+changed with the window.
+
+The same information is in two medians. Any level the envelope is cut at catches
+the skirts of every mark, so a mark reads long and the gap beside it reads short
+by about the same amount: their average is the dit with the bias gone. The cut is
+## 58768058
+CLAUDE_CODE.md.bak-1.2
+Directory.Build.props
+OUTPUT.md
+PHASE_GOAL.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/WhereTheGapsActuallySitTests.cs
+## body
+The coupling is real: a boundary at a multiple of the estimated unit ties the
+letter spacing to the speed, so one wrong number breaks both. On
+cw-2026-08-18-004507, whose unit measures fifty milliseconds, twice the unit lands
+inside that sender's own element-gap cluster and every letter comes apart.
+
+CwUnitEstimator.MeasureGaps clusters the gaps with 3-means on the logarithms, puts
+each boundary at the geometric mean of adjacent centroids, and holds the two
+inside 1.3 to 2.6 and 3.5 to 6.5 dits as a clip rather than as the estimate. It is
+## f48e6b19
+Directory.Build.props
+OUTPUT.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/WhereTheGapsActuallySitTests.cs
+## body
+Ruled: the trough must survive several consecutive reads before the measured gap
+lengths are used. Counted read by read first, on every capture and on generated
+Morse: the longest run of consecutive troughs is 36 on cw-2026-08-18-004507 and 23
+to 52 on generated Morse, against 1, 3, 4 and 6 on the captures that must not
+change. Nothing measured sits between ten and twenty-three, and the requirement is
+twelve, in the middle of that empty stretch.
+
+Twelve reads is six seconds of audio the first read never saw, which is longer
+## 3b7f7e13
+CW_CODE_REVIEW.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/EveryCharacterCarriesItsOwnEvidenceTests.cs
+## body
+The window's likelihood ratio is one number for everything read out of that
+window, so a letter lifted out of a clean signal and a letter the path
+assembled out of the noise beside it reach the capture sheet looking
+identical. Nothing beside a wrong decode said which it was holding.
+
+Each character is now scored over its own marks against all-key-up over the
+same span, which the cumulative sums already in DecodeAt make two subtractions
+per mark. The element gaps inside a character cancel exactly, because both
+## baf51ff0
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheRefillGuardActuallyRunsTests.cs
+## body
+_refillHops was assigned in Restart() and nowhere else, and Restart() is
+reachable only behind CwDecoder.ClearOnAStationChange, which is const false.
+So a fresh stream carried nought, the comparison it guards is never true
+against nought, and the guard has never run on a first fill: the one fill
+every session begins with.
+
+The movement it causes is reported rather than tuned away. On the generated
+sweep the first three seconds are no longer read, and what was in them was
+## 2eb40706
+ANALYSIS-cw-two-stations-2026-08-23.md
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFixtureGenerator.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwTwoInOnePassband.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/TheTwoStationTable.cs
+## body
+Nothing in this repository had measured what the decoder does with two
+stations in one passband. Every fixture held one sender and all nine captures
+were analysed as though one were present.
+
+The band is rendered once and both stations go on top of it, which is the
+difference from Join and the reason a separate method exists: summing two
+finished fixtures would sum two noise floors and put the band three decibels
+up without saying so. The fixture's own difficulty is measured rather than
+## 7907cc0e
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-two-stations-2026-08-23.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheTwoEnvelopePathsAgreeTests.cs
+## body
+A boxcar's first sidelobe is thirteen decibels down, so a station a hundred
+hertz away entered the envelope at minus sixteen: attenuated rather than
+rejected. A Hann taper of the boxcar's own main-lobe width puts it at minus
+forty-two for one multiply per sample.
+
+The length follows from a named bandwidth rather than the other way round, and
+both envelope paths now take their window and their taper from one place. A
+boxcar can be summed in any order and a taper cannot: the streaming path
+## fe104f02
+ANALYSIS-cw-integrator-bandwidth-2026-08-23.md
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwTwoInOnePassband.cs
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/TheIntegratorBandwidthTable.cs
+## body
+The ordered grid this unit was asked to sweep returns a tie: every width from
+60 down to 20 hertz reads the wanted station whole at every offset from 40 Hz
+out and every level down from equal. Rejection did not choose the number.
+
+What narrowing costs was measured too. Sensitivity: nothing to nought
+decibels. A fast fist: nothing to thirty-five words a minute, including a
+75 ms integrator on a 34 ms dit, because a segmental decoder scores a span
+rather than thresholding a level. The gate's margin: real, and the binding
+## 3c4b1b16
+PROJECT_STATUS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheOperatorIsToldAboutASecondStationTests.cs
+## body
+The survey has admitted every keyed bin for as long as it has existed and
+CoarseCandidates has handed them out. Until now the only caller in the tree
+was none: the verdict said which bin won and the runners-up went on the floor.
+So this is plumbing rather than detection.
+
+It says the offset, the strength relative to the station being read, and the
+control on the front of the radio that changes it, because a diagnosis is not
+help. Nothing is written to the radio.
+## f93c388f
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/ZzMarginProbe.cs
+## body
+Task 1 of the emit-decision unit. Element counts increment only inside
+CharacterSettled, which fires only for characters the stream emits, so a
+window the gate refused reports zero elements as a direct consequence of zero
+characters. There is no second counting path and no second blocker.
+
+The span length travels with the ratio now, because an absolute span ratio is
+meaningless across recordings: a correct character on 004507 scores about
+three thousand and one on 013347 scores eleven billion. Divided by its own hop
+## 07d8dc23
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/EachCharacterAnswersForItselfTests.cs
+## body
+The window ratio asks whether a stretch of band averaged better than silence,
+and then every character in that stretch inherits the one answer. So a window
+that averaged well carries its own soup through, and a window that averaged
+badly takes a correct read down with it. On this corpus it is anti-correlated
+with correctness: cw-2026-08-17-134712 carries an adjudicated N4L and scores
+4.64, while cw-2026-08-20-014854 holds no keying at all and scores 7.98.
+
+The emit decision now belongs to the character, on its own span against the key
+## 4e4b9bac
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-integrator-bandwidth-2026-08-23.md
+ANALYSIS-cw-two-stations-2026-08-23.md
+CLAUDE_CODE.md
+CLAUDE_CODE.md.bak-20260824-102543
+PROJECT_STATUS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+src/Hamlet.App/Views/MainWindow.axaml
+tests/Hamlet.RadioEngine.Tests/Cw/ThePitchCanBeHeldTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ZzMarginProbe.cs
+## body
+The tone tracker is measurably the largest source of soup in this decoder: a
+clean generated station through the production path produced twenty-two
+characters that were never sent, and the same window with the pitch nailed
+produced none. This does not change what the tracker does. It lets the
+operator take it out of the path.
+
+The lock takes an interpolated peak through the fine bank rather than a bin
+centre, because a bin is a measurement of a bin: holding one means holding a
+## c052d100
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-two-stations-2026-08-23.md
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/ZzPremise.cs
+## body
+Task 1 of the noise-scale unit. The three figures are reproduced with the
+captures now present, and Hamlet disagrees with all three in ways worth
+keeping.
+
+012403 at 439.81 Hz forced to 20 WPM scores 13.94 rather than 11.3, and is
+still refused by a gate of 15. The pitch matters: 450 gives 12.44 and the
+radio's own CwPitch of 600 gives 10.36 on a station that is not there.
+
+## b65ac6b4
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-emit-decision-2026-08-24.md
+ANALYSIS-cw-integrator-bandwidth-2026-08-23.md
+ANALYSIS-cw-noise-scale-2026-08-24.md
+Directory.Build.props
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheNoiseScaleTable.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ZzPremise.cs
+## body
+The scale was the quarter point times six tenths, which is 0.455 sigma: two
+and a fifth times too small, so every quadratic term was inflated about four
+and eight tenths times. For a Rayleigh envelope the quarter point is sigma
+times the root of twice the log of four thirds, so sigma is the quarter point
+over 0.758528. That is an identity and there is nothing in it to tune.
+
+Key-up is now a proper Rayleigh density. The missing log-of-the-magnitude term
+is what let noise score as evidence: without it the noise hypothesis was
+## 1a5d9285
+ANALYSIS-cw-two-stations-2026-08-23.md
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/DoesAStrongSignalClearEightyPercentTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ZzLost.cs
+## body
+Fifteen was calibrated when the noise scale was 0.455 sigma, which inflated
+every quadratic term about four and eight tenths times. Unit 1.11.4 corrected
+the scale and the model got better at reading while this number stayed where it
+was, so four recordings that read the day before read nothing.
+
+The figure comes from the corpus's own window ratios, measured per window
+because a per-window guard is what a recording meets. The gap is 0.840, the
+highest window either empty capture produces, to 1.684, the highest that
+## ab95f4d9
+## body
+ARecordingWithNoStationInItSaysNothing requires an empty band to score under
+half the guard, which is a standing claim that the separation is comfortable
+rather than merely correct. On cw-2026-08-20-014854's whole-file ratio of 0.65
+that needs a guard above 1.30, and the gap's midpoint of 1.25 failed it while
+holding the silence property.
+
+One and four tenths satisfies both, sits in the same measured gap of 0.840 to
+1.684, and reads the same 84.2 per cent of cw-2026-08-24-012403 with two fewer
+## 61b423aa
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-emit-decision-2026-08-24.md
+ANALYSIS-cw-integrator-bandwidth-2026-08-23.md
+Directory.Build.props
+PROJECT_STATUS.md
+## body
+Lowering the guard exposed a fault fifteen had been masking, and it broke the
+one property that is never traded: three seconds of an all-zero buffer emitted
+characters.
+
+Where a quarter of the estimation span is exactly nought the quarter point is
+nought, sigma falls to its floor, and every log-likelihood becomes a ratio of
+two arbitrary numbers. The model is being asked what the noise looks like in
+audio that has no noise, and it answers.
+## b022d925
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-noise-scale-2026-08-24.md
+## body
+The specification's literal form was tried and is worse. Refusing only where a
+span is wholly silent takes clean-12wpm, clean-18wpm and prosigns-18wpm from
+nine, nine and sixteen characters to nought: over a wholly silent span both
+hypotheses score the same, so a mark costs no more than a gap and the length
+penalty alone decides, which on fixtures made of tone and exact silence is most
+of the recording.
+
+The quarter point costs those two clean fixtures two and three characters
+## ff6590d6
+PROJECT_STATUS.md
+## body
+The coarse bank is twenty-five hertz apart and the fine bank five, so the
+reported pitch was quantised to a grid nobody transmits on. Where the survey
+has admitted a candidate, its pitch is now measured by an interpolated
+transform peak in the fine bank's own neighbourhood.
+
+It refines a choice already made and never makes one. HM-DEC-095 settles that a
+note is chosen by how it is keyed and never by how loud it is, and a transform
+peak is a loudness measurement, so it is not allowed near the choice: the
+## 13661992
+ANALYSIS-cw-two-stations-2026-08-23.md
+Directory.Build.props
+PROJECT_STATUS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ZzPitch.cs
+## body
+Until the survey admits a keying candidate the tracker answers with the middle
+of whatever bank it is pointed at, and the capture sheet printed that as a
+measurement. Across the corpus it read 300 Hz on a station at 499.8 and 825 Hz
+on a recording holding nothing at all.
+
+The sheet now says which of the three it is: a measured pitch, a bank centre
+nobody keyed at, or no tone. The pitch is written to a tenth of a hertz because
+that is what it is now measured to.
+## aa5a93c7
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-emit-decision-2026-08-24.md
+ANALYSIS-cw-two-stations-2026-08-23.md
+PROJECT_STATUS.md
+## body
+Task 4. The mixdown now falls back to the last pitch the survey actually
+measured rather than to the middle of whatever bank the tracker is pointed at,
+so it stops swinging off a station that is still there every time three seconds
+of survey history run dry. Where the survey has admitted a candidate the
+tracker's own rules still decide which one, untouched. The operator's lock
+takes the measured pitch too, so it can no longer lock onto a bank centre.
+
+And task 2's refinement is withdrawn. It improved two captures by a hertz or
+## 13119e6e
+ANALYSIS-cw-baseline-2026-08-23.md
+ANALYSIS-cw-emit-decision-2026-08-24.md
+ANALYSIS-cw-integrator-bandwidth-2026-08-23.md
+ANALYSIS-cw-noise-scale-2026-08-24.md
+ANALYSIS-cw-two-stations-2026-08-23.md
+Directory.Build.props
+PROJECT_STATUS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+## body
+The remarks argued for forty while the constant read 32, logged as HM-OPEN-058
+on 2026-08-23 and parked in every unit since. What settled it is not the
+contradiction but two live captures: on 2026-08-25 two First Class CW
+Operators' Club members measured 30.9 and 30.8 words a minute and Hamlet
+reported 32 for both, which is the top of its own search. One notch faster and
+the grid could not have followed them, and the failure would have looked like a
+decoder fault rather than a range limit.
+
+## 07260a2a
+## body
+Nothing stopped the decoder emitting letters out of silence. On a calling
+frequency the silence is most of the file, and characters carrying nine
+tenths and one and eight tenths of evidence per hop reached the screen as
+`E` beside real characters carrying thousands.
+
+The floor moves from nought to one, in the units the window guard already
+uses. Nought was ruled because it is where keying and silence explain the
+audio equally well, and that reasoning still holds; what it misses is that a
+## 7c8a5f00
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+## body
+Thirteen captures on the evening of 2026-08-25, one band, one input level,
+the tone locked within a few hertz on twelve of them. Sorted by how much of
+each recording had the key down, the outcomes sort themselves: ten between
+38 and 47 per cent read back with nought to eight characters unsure, one at
+24 per cent buried its content in forty-eight characters of noise, one at 18
+per cent gave eight seconds of station and twenty-two of invented text. The
+number was nowhere on the sheet and the envelope it comes from already
+existed.
+## cf83821f
+Directory.Build.props
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.App.Tests/ViewModels/AHeldVerdictPrintsNoMeasurementsTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheKeyingWitnessSaysNothingImpossibleTests.cs
+## body
+The independent sweep ran 400 to 1200 hertz while the tracker runs 300 to
+900, which is the radio's own CW pitch range (§4). The meter exists to tell
+the operator when the decoder is looking in the wrong place, and a meter that
+cannot look where the decoder is looking cannot do that: on
+`cw-2026-08-22-031905` the decoder tracks 300 Hz and the sweep could not
+examine that pitch at all, and on `cw-2026-08-22-032050` it tracks 325. At
+the top the sweep answered 1000 Hz on `cw-2026-08-23-001520`, three hundred
+hertz above anything the decoder will ever track. It now takes both ends from
+## 2f52f6db
+tests/Hamlet.RadioEngine.Tests/Cw/TheKeyingWitnessSaysNothingImpossibleTests.cs
+## body
+Tim ruled the move on 2026-08-25 on the condition that the silence property
+survives it. It does, and the requirement that makes it survive was already in
+the tree.
+
+The old figure was the middle of every threshold crossing, and noise crosses a
+threshold hundreds of times, so on a recording holding a real station the
+chatter outnumbers the elements several to one and the median lands among the
+chatter: four milliseconds beside an adjudicated `VA3VRR`, three beside an
+## ca252057
+tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwAdjudicationTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/OneDecoderNotTwoTests.cs
+## body
+The decode was a function of the sound card's buffer size, which is not a fact
+about the audio. `Process` set the mixer's pitch once per chunk from the
+tracker's state after the tracker had consumed that whole chunk, then mixed the
+whole chunk down at that one pitch — so with a chunk four hops long the first
+three hops were mixed at a pitch the tracker only reached at the end of the
+fourth.
+
+The application feeds 960 samples at a time and the floors harness feeds 240,
+## 2068f868
+src/Hamlet.RadioEngine/Audio/AudioTap.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheCapturesThatDecodeKeepDecodingTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheFirstSecondsAreReadAgainTests.cs
+## body
+The stream mixes each sample as it arrives, at whatever the tracker believed
+then, and until the survey admits a candidate the tracker answers with the
+middle of the bank it is pointed at. Across the thirty-six captures the first
+measured pitch lands two to seven seconds in on half of them, and the window
+is still holding every sample since the start when it does — demodulated at a
+number nobody keyed at.
+
+`AudioTap` already keeps thirty seconds of raw audio for the capture button, so
+## 6fc36a1e
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+## body
+`spanLlr` scores a character against the key never having gone down, and on
+audio that is never silent the null is wrong. Measured on the pile-up of
+2026-08-26, characters carved out of continuous tone scored eight thousand to
+twenty-nine thousand against silence while the plausible tail scored forty-one
+to four hundred — the soup outscoring the copy a hundred to one.
+
+Against a second-best *reading* rather than against silence, a letter carved
+out of continuous tone has an alternative that fits about as well and the
+## 3e84ac74
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AHeldPitchDoesNotOutliveItsEvidenceTests.cs
+## body
+The operator tuned to 14.0275 MHz on 2026-08-26, sat listening to fast CW,
+and the terminal said nothing decoded yet. The sidecar written there
+reported `toneHz 300.0 Hz (measured from the keying the survey admitted)`
+and `tonePeak 50.2` — both measured twenty-four minutes and one QSY
+earlier, from audio at a frequency the receiver was no longer on. The
+decoder mixed at 300 Hz while the station in front of him keyed above 400,
+and refused everything.
+
+## 39a42c3f
+Directory.Build.props
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.App.Tests/ViewModels/TheSpanRatioReachesTheSidecarTests.cs
+## body
+The raw margin does not survive being compared across recordings: unit
+1.11.14 measured it reaching 2.98 x 10^8 on one capture and 1.8 on
+another, because `best - second` is a difference of path scores and a
+path score carries each recording's own noise estimate.
+
+The quotient escapes that by construction. Both figures are sums of
+log-likelihoods through the same noise estimate, so the estimate cancels.
+Measured over the same 1,580 characters, the whole observed range is
+## 9de394da
+## body
+The integrator width and the confirmation window are constants in
+production and parameters on the constructor, which is the pattern
+`CwProbabilisticDecoder.Envelope` already carries for the width alone.
+
+Nothing in the application passes either. They exist so a constant can be
+swept through the whole decoder and judged by the characters it produces,
+which is the only judge this project accepts for a number that decides
+what the display asserts. A width measured through the offline envelope
+## 3d4694e5
+Directory.Build.props
+## body
+Tim ruled that a station may confirm on non-consecutive evidence if a
+window could be found that confirmed `cw-2026-08-25-012823` and left
+every other capture's acquisition untouched. Swept at three, four, six
+and eight surveys, no window can.
+
+Every longer window moved acquisition on sixteen to twenty of the
+thirty-seven captures where the condition allows none, and cost
+adjudicated anchors: eleven of twelve at three surveys, ten at four, nine
+## 7fb89d5e
+## body
+The survey applies seven tests to every bin and reported one answer:
+admitted, or nothing. So a station the operator could hear was refused
+and no instrument in this tree could say which test refused it or by how
+much it missed.
+
+Three consecutive units were spent building mechanisms downstream of that
+decision. Each measured dead and each correctly shipped nothing, because
+every one of them was reasoning about a candidate that had never been
+## 1bf4372d
+Directory.Build.props
+## body
+The instrument names the refusing test on all four stations Hamlet cannot
+read: separation, short by 1.8 to 2.3 against a bar of four. It names the
+same test refusing pure noise by the same amount.
+
+Swept as a bound: at four it takes two of the four stations and one
+silence control already leaks a bin; at three it takes all four and the
+two controls leak nine and eight bins; at two, a hundred and sixteen and
+a hundred and eleven. The stations' best separations at their own pitches
+## 44cf3fc8
+## body
+Tim's ruling of 2026-08-26 names two ways the gate's threshold could come
+from something that knows noise from keying, and asks for both to be
+built and measured.
+
+A: the threshold sits a stated distance above the band's own noise floor,
+which `_bandNoise` already computes for the lift, instead of halfway
+between the bin's own two levels. It falls back to the old placement
+where the band floor could not be worked out, because a threshold from an
+## 4786c7e7
+Directory.Build.props
+## body
+Candidate A costs adjudicated anchors at every setting — nine of twelve
+at three decibels over the band floor, eight at ten, nine at twenty —
+where the acceptance requires all twelve. And its quiet is half a jammed
+gate: at three decibels the silence controls produce no marks in 88.8%
+and 90.6% of bins, of which 44.8% and 45.5% are the gate stuck wide open
+rather than shut. It jams open on the stations too, at duty 1.00.
+
+Candidate B works as a mechanism, with no stuck-open bins at any setting,
+## f2e1db7a
+## body
+The marks alone cannot answer a quantisation question. Morse puts marks
+at one unit and three, and gaps at one, three and seven, so a stream
+carrying only the marks has thrown away three of the five multiples the
+structure is made of.
+
+Collected only when a caller asks for it, never in the application.
+
+Refs: HM-DEC-095
+## f27174b5
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+## body
+Tim's ruling of 2026-08-26. Six families of admission statistic have been
+measured across five units and none of them can find a station the
+operator can plainly hear. Waiting for the survey to agree with him is
+waiting for something that does not happen.
+
+So he supplies the evidence and Hamlet supplies the number. Pressing "I
+hear a station" now points the decoder at the strongest keyed bin and
+holds it, released by clearing it or by the dial moving.
+## 386fdb5d
+Directory.Build.props
+src/Hamlet.App/Settings/AppSettings.cs
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+## body
+The element-to-character decision was the only stage of the decode path
+never revisited since the corpus began, and a per-gap threshold fails at
+both ends of the range for opposite reasons: on one capture the three gap
+classes are perfectly separable and a `W` still split into `A T E`, and
+on another at thirty words a minute the element and character gaps sit
+four milliseconds apart, where no threshold can work in principle.
+
+So a gap is no longer classified on its own length. A span of marks is
+## 8ca6a633
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/WhatRankingChoosesTests.cs
+## body
+Built as work instruction 032 specifies and deliberately not wired to the
+tracker, because measuring it answered the unit's question in the negative.
+
+Ranking is pure: envelopes in, an ordering out. The shortlist may be drawn by
+energy and the choice may not be, which is the distinction HM-DEC-095 turns
+on, and Rank orders only by what each candidate read. Scoring is ungated,
+because a gated decode returns nothing below the floor and every candidate
+under it would then score alike.
+## 4c6e4321
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/WhereAcquisitionPointsTests.cs
+## body
+Task 2 of work instruction 033, implementing Tim's ruling of 2026-08-27.
+
+Where nothing has ever been confirmed, the tracker now commits to the loudest
+bin in the band rather than to whatever the fine bank happens to be centred on.
+ToneHz gains a middle rung: keying the survey admitted still wins, the chosen
+bin sits under it, and the bank centre stays the bottom, which is a starting
+point and not a finding.
+
+## 501e8e2d
+ANALYSIS-cw-key-up-is-not-noise-2026-08-27.md
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/WhatRankingChoosesTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/WhereTheKeyUpStateSitsTests.cs
+## body
+Task 1 of work instruction 035. The analysis is committed at the root; both
+captures it names were already in the tree with their sidecars.
+
+CwPitchRanking and its tests are deleted by Tim's ruling. No caller, no
+prospect of one, and a measured record of choosing wrongly on all four
+captures. Its lesson goes to section 4 as an ask rather than into a class
+nobody calls.
+
+## f9c11989
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/FittingKeyUpAgainstAssumingItTests.cs
+## body
+Tasks 3 and 4 of work instruction 035. The model is built exactly as the order
+specifies and it is not wired to anything, because measuring it answered the
+question in the negative.
+
+Both states are fitted from the same local span, each with its own location and
+its own width, and both widths are floored at the noise scale so two locations
+that land close together cannot make every hop infinitely surprising.
+
+## b48d1158
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheQuietestBinNoLongerWinsTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+The decoder's own score cannot compare two pitches, because it estimates
+both the noise scale and the keyed level from the envelope it is scoring.
+A bin the receiver's filter has emptied has almost no noise left, so its
+residual wobble scores against a tiny sigma and looks like the cleanest
+keying in the band. Ranking on the bare score picks the station on one of
+forty-four captures.
+
+Standing every candidate on one floor measured across the band takes that
+## 0f2089f3
+PROJECT_STATUS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheQuietestBinNoLongerWinsTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+The ranked pitch now drives the mixdown, and the report carries the pitch
+the decode actually used rather than the tracker's, so the capture sheet,
+the duty line and the panel cannot say one number while the letters on the
+screen were read at another. The sheet says the pitch was ranked and prints
+both scores.
+
+It ships switched off. Driving the live decode costs two adjudicated
+anchors: cw-2026-08-17-013347 falls from VA3VRR to nothing and
+## ac1d56da
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheReferenceDecoderIsPortedFaithfullyTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+Same algorithm, same constants, same order, function for function, so the
+two can be read side by side and a disagreement is a porting bug rather
+than a design difference. Measured against cwdecoder.py over all
+forty-four captures: the two agree on the acquired pitch, on whether a
+clock fits, on the gate contrast, on the character count and on the
+transcript character for character. The only differences anywhere are the
+fitted dah on 032012 and the fitted dit on 005218, each under a
+millisecond, which is accumulation order.
+## 62262b94
+PROJECT_STATUS.md
+data/bands/mode-receiver-conditions.json
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.App.Tests/ViewModels/ANudgeIsNotAMoveTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AHeldPitchDoesNotOutliveItsEvidenceTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AMoveStartsTheDecoderFreshTests.cs
+## body
+Tim's ruling of 2026-08-29: when the frequency changes, clear and reset.
+
+What was already right, and the work order is wrong about: Retuned() has
+existed since HM-DEC-111 and already cleared the measured pitch, the
+operator's lock and the held tonePeak. What survived a move was the
+reading itself — the twelve-second envelope window, the speed hypothesis
+fitted to it, the settled mark, and the element and character counters a
+sidecar reports. So a sheet written after a QSY described this frequency
+## 0f48c33e
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheScoreSaysWhatItIsMeasuringTests.cs
+## body
+This project has never measured a percentage. Every unit counted characters
+emitted, characters unsure and blocks, and none of those is accuracy: until
+now nothing compared what Hamlet read against what was sent, while the phase
+goal is stated as a percentage.
+
+Two numbers, never reported apart. Yield counts every truth character, so
+refusing everything scores nought. Precision counts only what Hamlet
+asserted, so refusing almost everything scores one. Either alone can be made
+## b8cad1f9
+PROJECT_STATUS.md
+tools/Hamlet.PitchRank/Program.cs
+## body
+Unit 046 task 2 asks for a forward-backward posterior and then for its
+correlation with correctness, stopping the unit if that is not positive.
+
+The posterior cannot be computed over this lattice without the restructuring
+the task forbids: best[] is indexed by hop alone, and the alternation
+constraint is checked against wasDown[j], which is the winning path's parity
+rather than a state dimension. A correct forward-backward needs (hop, kind).
+
+## fc1ee77f
+PROJECT_STATUS.md
+## body
+Tim's ruling of 2026-08-29. The alternation rule was checked as
+wasDown[j] == kind.IsKeyDown, against the winning path's parity at j rather
+than against a state, and two things were wrong with that.
+
+The known one: a forward or backward sum ranges over all paths reaching j
+and those do not share a parity, so there was nothing well-defined to sum
+and no posterior could be computed at all.
+
+## 71b4f044
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/ThePosteriorSurvivesItsOwnArithmeticTests.cs
+## body
+Forward-backward over the (hop, kind) lattice the last commit made possible.
+It is different in kind from the five quantities measured negative: those are
+differences of path scores carrying an unbounded loudness term, and a
+posterior is a ratio over the sum of all paths, so the level terms cancel in
+the normalisation and it cannot grow with loudness by construction.
+
+Log domain throughout. Nothing exponentiates a raw score: LogSum factors out
+the larger term so Math.Exp only ever sees a non-positive number, and a gap
+## 68a18d66
+PROJECT_STATUS.md
+tools/Hamlet.PitchRank/Program.cs
+## body
+The unit's gate. Over 301 aligned characters the posterior correlates
++0.050 with correctness — the first quantity of six that is not negative,
+and on this sample the standard error is about 0.058, so it is positive in
+sign and indistinguishable from zero in magnitude. Median 0.8433 on right
+characters against 0.8382 on wrong.
+
+The threshold sweep says the same thing more usefully. Precision runs 0.804
+at no threshold, peaks at 0.822 around 0.70, and then falls: 0.803, 0.777,
+## a91d8fe7
+PROJECT_STATUS.md
+tools/Hamlet.PitchRank/Program.cs
+## body
+Unit 049 task 3. The exponent multiplies the whole path score, so the
+Viterbi argmax cannot move and the decode is untouched — only the
+normalisation changes. It is threaded from CwDecoder through the stream so
+the sweep runs inside the decoder the operator uses rather than beside it,
+and it ships at 1.0, which is no temperature at all.
+
+The first two points already say something. At alpha 1.0 the medians are
+0.8433 right against 0.8382 wrong, separation +0.0051, correlation +0.050.
+## ade52536
+PROJECT_STATUS.md
+cwbench.py
+tests/Hamlet.RadioEngine.Tests/Cw/ABlipDoesNotShiftEverythingAfterItTests.cs
+tools/Hamlet.PitchRank/Program.cs
+tools/cwbench/README.md
+tools/cwbench/cwbench.py
+## body
+Task 2 of work instruction 050, and the answer is no. The bench dropped short
+runs out of a run-length list without merging the neighbours they separated, so
+two adjacent gaps were counted as two and every duration after one was wrong.
+
+Hamlet cannot have that bug, and the reason is structural rather than careful.
+The shipping decoder never builds a run list to filter: a segment is a span the
+lattice path chooses, and a span the bounds refuse is not a run that was dropped
+— its hops are still there and the neighbouring spans lengthen over them.
+## efcd5242
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/ThePeakFindsThePitchTheTrackerMissedTests.cs
+tools/Hamlet.PitchRank/Program.cs
+tools/cwbench/ablate.py
+## body
+Task 3 of work instruction 050. Corpus precision 0.766 to 0.858, yield 0.768 to
+0.914, over 384 adjudicated characters. The phase goal is 0.85.
+
+The tone tracker follows a bin it has committed to, and on four captures of
+twelve it sits more than a hundred hertz from the station: 300 and 325 where the
+station is at 500, and 650 twice. CwSpectralPeak has nothing to be loyal to. It
+averages the magnitude spectrum over eight seconds, takes the largest bin in the
+range Morse is worked in, and fits a parabola through it and its neighbours. On
+## 95a5e063
+PROJECT_STATUS.md
+## body
+Task 2 of work instruction 051. On 2026-08-30 at 7.058 MHz sixty-one characters
+reached the screen from a pitch the survey had admitted no keying at, and the
+capture sheet said so in the same breath — unkeyed YES — because the field was
+computed, printed, and read by nothing.
+
+It is the same condition the sheet prints, asked one step earlier of the same
+field, not a second test for the same state. Blocks rather than deletions, so no
+character position is lost and the counts still count: what goes is the
+## b7147b1f
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/TheAdjudicatedReadingsKeepReadingTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+Task 3 of work instruction 051, built exactly as specified and not adopted. The
+reasoning is right about the failing case and the corpus says it is wrong about
+every other one.
+
+The fraction sweep is not monotonic, and the order forbids adopting off a curve
+that is not: precision runs 0.601, 0.728, 0.751, 0.703, 0.770, 0.787, 0.742,
+0.738 across fractions 0.20 to 0.60. Up, down, up, down.
+
+## c8685e4d
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/IsTheHertzABiasOrAFloorTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+Tasks 4 and 5 of work instruction 052. FindOverLoudestStretch is built and
+measured and is not wired in, because it changes nothing worth having.
+
+On the real corpus the peak over the whole file, over the loudest eight seconds
+and over the loudest four agree to between 0.01 and 0.16 Hz on every capture. On
+cw-2026-08-17-134712 they read 501.16, 501.04 and 500.99 — a spread of 0.16 Hz
+against a residual of about 1.1. So task 5's answer is no: N4L does not return
+and the anchor stays as unit 051 re-expressed it.
+## 4935a4f8
+PROJECT_STATUS.md
+tools/Hamlet.PitchRank/Program.cs
+## body
+Task 2 of work instruction 054, built as specified and not adopted. The reasoning
+is right about what it does to dah scatter and the decoder reads worse anyway.
+
+A setback under six decibels cannot work at all, and that is arithmetic rather
+than a corpus accident: the Schmitt trigger opens at the cut plus HysteresisDb,
+which is 6 dB, so a setback of 5 puts the opening threshold a decibel above the
+envelope's own 98th percentile and nothing is ever key-down. Setbacks of 3, 4 and
+5 produce fewer than eight marks on every capture, so the order's recommended
+## e6b1ece7
+PROJECT_STATUS.md
+tools/Hamlet.PitchRank/Program.cs
+## body
+Task 3 of work instruction 054, and the one change this unit ships. Precision
+0.888 to 0.894, yield 0.745 to 0.750, substitutions 17 to 15.
+
+Swept over the whole corpus: precision 0.888 at nought, 0.888 at 8, 0.894 at 12,
+0.905 at 16, 0.898 at 24. Nought through sixteen is non-decreasing, so sixteen
+was the first candidate and it broke cw-2026-08-22-031838's adjudicated run ", AND".
+Section 12.5 does not let a floor be lowered to fit a change, so twelve is taken —
+and it is the better point on two of the three numbers anyway, best yield and
+## dfb357ef
+PROJECT_STATUS.md
+tools/Hamlet.PitchRank/Program.cs
+## body
+Task 4 lands and task 5 does not.
+
+Task 4, the four configurations measured:
+
+  otsu      hold 0 ms   yield 0.745  precision 0.888  subs 17
+  otsu      hold 12 ms  yield 0.750  precision 0.894  subs 15
+  peak-6dB  hold 0 ms   yield 0.630  precision 0.840  subs 33
+  peak-6dB  hold 12 ms  yield 0.630  precision 0.840  subs 33
+## efc33267
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.RadioEngine.Tests/Cw/TheSheetDoesNotLieAboutArithmeticTests.cs
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002424.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002424.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002443.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002443.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002734.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002734.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002759.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002759.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002829.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-002829.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003212.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003212.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003229.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003229.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003408.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003408.wav
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003419.txt
+tests/fixtures/cw/captured/unadjudicated/cw-2026-08-31-003419.wav
+## body
+Task 1 of work instruction 055. Unit 054 landed the hold-over at 12 ms, adopted,
+and the peak-referenced threshold, built and refused. Corpus baseline at head:
+precision 0.894, yield 0.750, substitutions 15. The clean-read lock exists from
+unit 053 and governs, so it was not rebuilt.
+
+Nine captures from 2026-08-31 are in the tree as fixtures with their sidecars —
+the first time in eleven units that the audio an order is written about is
+actually here. 003212 and 003229 the refused CQ, 002424 and 002443 the noise
+## aeea24f2
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/AStationIsABinThatSwingsTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+Task 2 of work instruction 055, and the unit's reason. cw-2026-08-31-003229 held
+a station calling CQ, Hamlet's survey admitted no keying at all, and with the
+squelch wired every one of its 43 characters became a block.
+
+It now reads at 587.5 Hz and emits 57 named characters against 38 blocks. The
+bench reads that station at 583.5. cw-2026-08-31-002443, which emitted 48 Es from
+510 Hz because that was the loudest average bin, now emits nothing at all.
+
+## a37cfcff
+PROJECT_STATUS.md
+WORK_INSTRUCTIONS.md
+tests/Hamlet.RadioEngine.Tests/Cw/EveryElementCarriesItsOwnPitchTests.cs
+tools/Hamlet.PitchRank/Program.cs
+tools/cwbench/elements.py
+tools/write-status.py
+## body
+Work instruction 056, tasks 1 and 2.
+
+Tim's ruling with this order lowers `FastestWpm` from 40 to 30, provisionally,
+with the condition that raises it again recorded beside the value: the ceiling
+rises the day a capture shows something faster worth reading. Nothing in the
+corpus or in any capture the operator has sent runs above about twenty-eight.
+The hold-over's safe bound is one dit at that ceiling, so it rises 30 ms to 40
+and for the first time reaches the lower half of the 32 to 53 ms dropouts unit
+## a09b36a7
+PROJECT_STATUS.md
+tests/Hamlet.RadioEngine.Tests/Cw/NoSenderIsSplitInTwoTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+Work instruction 056, task 3.
+
+`CwStreamSplit` clusters an admitted station's marks by the pitch measured over
+each mark's own samples, and reports what it found: the two centres, their
+counts, how far apart they stand, the scatter inside them, the separation in
+units of that scatter, and how many times the marks cross the boundary in the
+order they were sent.
+
+## ee2cba8d
+tests/Hamlet.RadioEngine.Tests/Cw/WhereHamletAndTheReferenceDivergeTests.cs
+tools/Hamlet.PitchRank/Program.cs
+## body
+Work instruction 056, task 4, and its finding is a negative one.
+
+Same audio, same pitch, and over the seconds the reference bench reads `CQ` —
+13.50 to 14.72 on `cw-2026-08-31-003229` — the two element streams hold the same
+eight marks and the same seven gaps in the same order. Nine of the fifteen
+durations agree inside one hop and the worst disagrees by three. The absolute
+times differ by a constant 48 ms, which is a centred 33 ms Hann against a
+centred 25 ms boxcar, and a constant offset cancels for a length.
+## 2828ab69
+ANALYSIS-cw-integrator-bandwidth-2026-08-23.md
+ANALYSIS-cw-noise-scale-2026-08-24.md
+OUTPUT.md
+PROJECT_STATUS.md
+tools/Hamlet.PitchRank/Program.cs
+## body
+Six tasks of six, with task 6 not dropped.
+
+The unit's centre was why Hamlet reads letters where an independent decoder
+reads `CQ`. It does not. Over the seconds the reference reads the call on
+`cw-2026-08-31-003229` the two element streams hold the same eight marks and
+seven gaps in the same order, nine of fifteen inside one hop and the worst
+inside three, so none of the four causes the order named can be the difference.
+Each was measured out anyway. What diverges is Hamlet's streaming path from
+## 43efc525
+src/Hamlet.RadioEngine/Audio/AudioHandoff.cs
+src/Hamlet.RadioEngine/Audio/WasapiAudioSource.cs
+tests/Hamlet.RadioEngine.Tests/Audio/TheTapIsNotBehindTheDecoderTests.cs
+## body
+Work instruction 238, task 2. The tap was fed only by CwDecoder.Process, and
+Process ran the tracker, the mixer and the probabilistic decoder on WASAPI's
+own callback thread before returning. So the tap filled at whatever fraction of
+real time the CW decode happened to run at, and on the shack machine on
+2026-09-03 that was 13% - four consecutive press captures byte-identical
+prefixes of one another, and every "fifteen-second slot" handed to FT8 was
+720,000 samples spanning two minutes in fragments.
+
+## 865e66d8
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+tests/Hamlet.RadioEngine.Tests/Audio/NoCwDecodeInDigitalModeTests.cs
+## body
+Work instruction 238, task 5 - the named drop candidate, taken rather than
+dropped because with task 2 done it is a small, well-specified tidy-up.
+
+When the operating mode is Digital, Process takes the audio for the tap,
+advances the audio clock and returns, on HM-DEC-147's own suspension path
+rather than a second route. Two places that must agree about what "take it but
+do not read it" means would drift; one place cannot.
+
+## 9c2a7f99
+OPEN_ISSUES.md
+PROJECT_STATUS.md
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+src/Hamlet.RadioEngine/Audio/Ft8SlotWatch.cs
+src/Hamlet.RadioEngine/Audio/ReusableWindow.cs
+tests/Hamlet.RadioEngine.Tests/Audio/TheReadPathDoesNotAllocateTests.cs
+## body
+Work instruction 239, task 3. Task 2 stopped a reader holding the lock the
+audio callback needs. This is the other half of the same fault: a reader that
+allocates on a timer still stops the writer, because every one of these reads
+is a float[] far over the 85,000-byte large object heap threshold, and the
+large object heap is collected only on a generation 2 collection, which
+suspends every thread in the process - the one carrying audio included.
+
+What was being churned, counted from the call sites at 48 kHz:
+## 1a84188e
+PROJECT_STATUS.md
+src/Hamlet.App/Telemetry/AppEvents.cs
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+src/Hamlet.RadioEngine/Audio/AudioArrival.cs
+src/Hamlet.RadioEngine/Audio/CallbackBudget.cs
+src/Hamlet.RadioEngine/Audio/DigitalCaptureSheet.cs
+src/Hamlet.RadioEngine/Audio/WasapiAudioSource.cs
+tests/Hamlet.RadioEngine.Tests/Audio/AReaderNeverBlocksTheWriterTests.cs
+tests/Hamlet.RadioEngine.Tests/Audio/TheCallbackBudgetTests.cs
+tests/Hamlet.RadioEngine.Tests/Audio/TheReadPathDoesNotAllocateTests.cs
+## body
+Work instruction 239, task 4. Unit 238 measured the longest audio callback and
+asserted it against 20,000 microseconds, which is 960 samples at 48 kHz - what
+BufferedAudioSource hands the decoder, a different quantity in a different part
+of the pipeline. The device's own period was never read. Against the real
+figure the shack machine's worst callback of 91,372 us is 91% of its budget
+rather than four and a half times it, and only one of those readings could lead
+anybody anywhere.
+
+== TRANSMIT LOG
+== TRANSMIT LOG 7e209cb4..
+== END

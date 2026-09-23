@@ -1,0 +1,69 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.40]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.73]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.73]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.ReturningToCwShowsCwTests.EachTabShowsItsOwnWorkspace [1 s]
+  Standard Output Messages:
+ lap 1 on Digital: CW on screen False, Digital on screen True
+ lap 1 on Voice: CW on screen False, Voice on screen True
+ lap 2 on Digital: CW on screen False, Digital on screen True
+ lap 2 on Voice: CW on screen False, Voice on screen True
+
+
+  Passed Hamlet.App.Tests.Views.ReturningToCwShowsCwTests.ExactlyOneTabIsCheckedAndItIsTheOneShowing [207 ms]
+  Standard Output Messages:
+ mode "CW", checked: CW
+ mode "Digital", checked: Digital
+ mode "Voice", checked: Voice
+ mode "CW", checked: CW
+
+
+  Passed Hamlet.App.Tests.Views.ReturningToCwShowsCwTests.TheRoundTripComesBackToSendAndReceive [201 ms]
+  Standard Output Messages:
+ fresh                    mode="CW"  send 320x175  receive 1012x424
+ back on CW, lap 1        mode="CW"  send 320x175  receive 1012x424
+ back on CW, lap 2        mode="CW"  send 320x175  receive 1012x424
+
+
+  Passed Hamlet.App.Tests.VoiceTests.TheStaleCannotWorkSentenceIsNowhereInTheSource [77 ms]
+  Passed Hamlet.App.Tests.VoiceTests.TheSweepIsActuallyReadingTheCopy [119 ms]
+  Passed Hamlet.App.Tests.VoiceTests.NoOperatorFacingStringUsesABritishSpelling [70 ms]
+  Passed Hamlet.App.Tests.VoiceTests.NoPassageOfCopyCarriesTwoEmDashes [97 ms]
+  Passed Hamlet.App.Tests.VoiceTests.CommentsAreNotMistakenForCopy [< 1 ms]
+  Passed Hamlet.App.Tests.Views.BindingHealthTests.TheMainWindowBindsWithoutOneComplaint [111 ms]
+  Passed Hamlet.App.Tests.Cw.TheSheetSaysWhatEachElementWasSentAtTests.SilenceProducesNoSpread [314 ms]
+  Standard Output Messages:
+ nothing was read, so no element was measured, which is too few to say anything about how they spread
+
+
+[xUnit.net 00:00:05.71]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.TheSheetSaysWhatEachElementWasSentAtTests.TheLineNeverSaysTwoOperators(toneHz: 500) [196 ms]
+  Standard Output Messages:
+ not measured  (the decoder in this build does not say where each element began and ended, so no element's own pitch was measured)
+
+
+  Passed Hamlet.App.Tests.Cw.TheSheetSaysWhatEachElementWasSentAtTests.TheLineNeverSaysTwoOperators(toneHz: 600) [232 ms]
+  Standard Output Messages:
+ not measured  (the decoder in this build does not say where each element began and ended, so no element's own pitch was measured)
+
+
+  Passed Hamlet.App.Tests.Cw.TheSheetSaysWhatEachElementWasSentAtTests.AnUnmeasuredPitchSaysSoRatherThanPrintingNumbers [< 1 ms]
+  Standard Output Messages:
+ not measured  (no pitch was measured, so there is nothing for an element's own pitch to be measured against)
+
+
+
+Test Run Successful.
+Total tests: 13
+     Passed: 13
+ Total time: 6.1190 Seconds

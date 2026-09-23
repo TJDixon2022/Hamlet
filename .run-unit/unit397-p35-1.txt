@@ -1,0 +1,210 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.44]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.61]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.61]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013520", characters: 60, elements: 153, unsure: 5) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013520: 60 characters against a floor of 60, 153 elements against 153, 5 unsure where 5 were marked when the floor was set, at 540 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001520", characters: 5, elements: 45, unsure: 1) [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001520: 5 characters against a floor of 5, 45 elements against 45, 4 unsure where 1 were marked when the floor was set, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013637", characters: 63, elements: 164, unsure: 3) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013637: 63 characters against a floor of 63, 164 elements against 164, 3 unsure where 3 were marked when the floor was set, at 550 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-031948", characters: 34, elements: 114, unsure: 3) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031948: 34 characters against a floor of 34, 114 elements against 114, 3 unsure where 3 were marked when the floor was set, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012922", characters: 50, elements: 112, unsure: 5) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012922: 50 characters against a floor of 50, 112 elements against 112, 5 unsure where 5 were marked when the floor was set, at 475 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013402", characters: 61, elements: 161, unsure: 5) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013402: 61 characters against a floor of 61, 161 elements against 161, 5 unsure where 5 were marked when the floor was set, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-17-013622", characters: 55, elements: 84, unsure: 0) [2 s]
+  Standard Output Messages:
+ cw-2026-08-17-013622: 55 characters against a floor of 55, 84 elements against 84, 4 unsure where 0 were marked when the floor was set, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013150", characters: 58, elements: 139, unsure: 7) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013150: 58 characters against a floor of 58, 139 elements against 139, 7 unsure where 7 were marked when the floor was set, at 495 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003758", characters: 63, elements: 121, unsure: 10) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758: 63 characters against a floor of 63, 121 elements against 121, 19 unsure where 10 were marked when the floor was set, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-17-013347", characters: 59, elements: 108, unsure: 2) [2 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 59 characters against a floor of 59, 108 elements against 108, 2 unsure where 2 were marked when the floor was set, at 625 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-014113", characters: 0, elements: 0, unsure: 0) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014113: 0 characters against a floor of 0, 0 elements against 0, 0 unsure where 0 were marked when the floor was set, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013010", characters: 54, elements: 131, unsure: 6) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013010: 54 characters against a floor of 54, 131 elements against 131, 6 unsure where 6 were marked when the floor was set, at 475 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003016", characters: 57, elements: 149, unsure: 3) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016: 57 characters against a floor of 57, 149 elements against 149, 3 unsure where 3 were marked when the floor was set, at 670 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-014308", characters: 0, elements: 0, unsure: 0) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014308: 0 characters against a floor of 0, 0 elements against 0, 0 unsure where 0 were marked when the floor was set, at 575 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021825", characters: 41, elements: 74, unsure: 16) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021825: 41 characters against a floor of 41, 74 elements against 74, 16 unsure where 16 were marked when the floor was set, at 400 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-20-014854", characters: 0, elements: 0, unsure: 0) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854: 0 characters against a floor of 0, 0 elements against 0, 0 unsure where 0 were marked when the floor was set, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032050", characters: 53, elements: 123, unsure: 9) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032050: 53 characters against a floor of 53, 123 elements against 123, 9 unsure where 9 were marked when the floor was set, at 325 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032113", characters: 55, elements: 118, unsure: 8) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032113: 55 characters against a floor of 55, 118 elements against 118, 8 unsure where 8 were marked when the floor was set, at 650 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-18-004507", characters: 50, elements: 118, unsure: 1) [2 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507: 50 characters against a floor of 50, 118 elements against 118, 1 unsure where 1 were marked when the floor was set, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012748", characters: 2, elements: 4, unsure: 0) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012748: 4 characters against a floor of 2, 16 elements against 4, 2 unsure where 0 were marked when the floor was set, at 395 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001952", characters: 75, elements: 142, unsure: 13) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001952: 75 characters against a floor of 75, 142 elements against 142, 19 unsure where 13 were marked when the floor was set, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012823", characters: 41, elements: 62, unsure: 15) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012823: 41 characters against a floor of 41, 62 elements against 62, 15 unsure where 15 were marked when the floor was set, at 450 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-24-012403", characters: 22, elements: 65, unsure: 0) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-24-012403: 22 characters against a floor of 22, 65 elements against 65, 1 unsure where 0 were marked when the floor was set, at 440 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-26-125941", characters: 0, elements: 0, unsure: 0) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-26-125941: 0 characters against a floor of 0, 0 elements against 0, 0 unsure where 0 were marked when the floor was set, at 400 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013303", characters: 54, elements: 146, unsure: 10) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013303: 54 characters against a floor of 54, 146 elements against 146, 10 unsure where 10 were marked when the floor was set, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032129", characters: 66, elements: 119, unsure: 1) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032129: 66 characters against a floor of 66, 119 elements against 119, 1 unsure where 1 were marked when the floor was set, at 650 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003126", characters: 54, elements: 144, unsure: 6) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003126: 54 characters against a floor of 54, 144 elements against 144, 6 unsure where 6 were marked when the floor was set, at 665 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-011552", characters: 30, elements: 89, unsure: 8) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-011552: 30 characters against a floor of 30, 89 elements against 89, 8 unsure where 8 were marked when the floor was set, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001831", characters: 55, elements: 124, unsure: 10) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001831: 55 characters against a floor of 55, 124 elements against 124, 11 unsure where 10 were marked when the floor was set, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032012", characters: 44, elements: 120, unsure: 1) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032012: 44 characters against a floor of 44, 120 elements against 120, 1 unsure where 1 were marked when the floor was set, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021410", characters: 47, elements: 99, unsure: 11) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021410: 47 characters against a floor of 47, 99 elements against 99, 11 unsure where 11 were marked when the floor was set, at 550 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-031905", characters: 42, elements: 118, unsure: 6) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031905: 42 characters against a floor of 42, 118 elements against 118, 6 unsure where 6 were marked when the floor was set, at 300 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-031838", characters: 57, elements: 126, unsure: 3) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031838: 57 characters against a floor of 57, 126 elements against 126, 15 unsure where 3 were marked when the floor was set, at 525 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-17-134712", characters: 63, elements: 98, unsure: 10) [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-134712: 63 characters against a floor of 63, 98 elements against 98, 42 unsure where 10 were marked when the floor was set, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-002016", characters: 75, elements: 136, unsure: 17) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-002016: 75 characters against a floor of 75, 136 elements against 136, 31 unsure where 17 were marked when the floor was set, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021629", characters: 47, elements: 96, unsure: 20) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021629: 47 characters against a floor of 47, 96 elements against 96, 20 unsure where 20 were marked when the floor was set, at 500 Hz
+
+
+[xUnit.net 00:01:32.82]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-20-014935", characters: 0, elements: 0, unsure: 0) [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935: 0 characters against a floor of 0, 0 elements against 0, 0 unsure where 0 were marked when the floor was set, at 825 Hz
+
+
+
+Test Run Successful.
+Total tests: 37
+     Passed: 37
+ Total time: 1.5512 Minutes

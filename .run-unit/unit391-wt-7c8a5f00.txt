@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 7c8a5f00)
+HEAD is now at 7c8a5f00 feat(app): put the recording's keying duty on the capture sheet

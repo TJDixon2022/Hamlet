@@ -1,0 +1,3 @@
+Preparing worktree (detached HEAD 43efc525)
+Updating files:  91% (917/1007)Updating files:  92% (927/1007)Updating files:  93% (937/1007)Updating files:  94% (947/1007)Updating files:  95% (957/1007)Updating files:  96% (967/1007)Updating files:  97% (977/1007)Updating files:  98% (987/1007)Updating files:  99% (997/1007)Updating files: 100% (1007/1007)Updating files: 100% (1007/1007), done.
+HEAD is now at 43efc525 feat(engine): the tap is fed from the callback, the decoder from a queue

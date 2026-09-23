@@ -1,0 +1,105 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.43]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.55]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.55]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant [8 s]
+  Standard Output Messages:
+ card: W1AW, offered Report, action Send
+ answer 8/250      : 
+ open card 8/250   : 
+ answer 16/500     : 
+ open card 16/500  : 
+ answer 8/250      : 
+ open card 8/250   : 
+ answer 16/500     : Hamlet composed the Olivia call and sent nothing: no radio is connected and no transmit audio device is named in Settings.
+ open card 16/500  : 
+ CQ                : Hamlet composed the Olivia call and sent nothing: no radio is connected and no transmit audio device is named in Settings.
+ card Send         : Hamlet composed the Olivia call and sent nothing: no radio is connected and no transmit audio device is named in Settings.
+ typed line        : Hamlet composed the Olivia call and sent nothing: no radio is connected and no transmit audio device is named in Settings.
+ transmit: operator_action {"action":"psk31_card_opened","mode":"Digital","detail":"Olivia"}
+ transmit: operator_action {"action":"psk31_answer_pressed","mode":"Digital","detail":"Olivia"}
+ transmit: operator_action {"action":"send_requested","mode":"Digital","detail":"22 characters"}
+ transmit: send_stage {"stage":"composed","entered":true,"detail":"Olivia","slotted":false}
+ transmit: operator_action {"action":"psk31_card_opened","mode":"Digital","detail":"Olivia"}
+ transmit: operator_action {"action":"cq_pressed","mode":"Digital","detail":"Olivia"}
+ transmit: operator_action {"action":"send_requested","mode":"Digital","detail":"35 characters"}
+ transmit: send_stage {"stage":"composed","entered":true,"detail":"Olivia","slotted":false}
+ transmit: operator_action {"action":"card_action","mode":"Digital","detail":"Send"}
+ transmit: operator_action {"action":"send_requested","mode":"Digital","detail":"92 characters"}
+ transmit: send_stage {"stage":"composed","entered":true,"detail":"Olivia","slotted":false}
+ transmit: operator_action {"action":"psk31_typed_pressed","mode":"Digital","detail":"Olivia"}
+ transmit: operator_action {"action":"send_requested","mode":"Digital","detail":"52 characters"}
+ transmit: send_stage {"stage":"composed","entered":true,"detail":"Olivia","slotted":false}
+ composed: {"macro":"answer","characters":22,"seconds":14.64,"capSeconds":61.952,"withinCap":true,"offsetHz":2500,"announced":true,"rsidCode":70,"mode":"olivia","variant":"16/500"}
+ composed: {"macro":"cq","characters":35,"seconds":26.93,"capSeconds":82.60307,"withinCap":true,"offsetHz":625,"announced":true,"rsidCode":69,"mode":"olivia","variant":"8/250"}
+ composed: {"macro":"report","characters":92,"seconds":65.84,"capSeconds":82.60307,"withinCap":true,"offsetHz":1500,"announced":true,"rsidCode":69,"mode":"olivia","variant":"8/250"}
+ composed: {"macro":"typed","characters":52,"seconds":39.22,"capSeconds":165.20614,"withinCap":true,"offsetHz":1500,"announced":true,"rsidCode":69,"mode":"olivia","variant":"8/250"}
+ variants composed at: 16/500, 8/250
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.EachRowIsRetiredWithinItsWindowAndStaysListedAsEnded [15 s]
+  Standard Output Messages:
+ 16/500 ended at 51.50 s; rows still open: 8/250
+ 8/250 ended at 67.25 s; rows still open: 
+ row: 8/250   at 1000 Hz, snr [—], ended True, sender [] "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+ row: 16/500  at 2000 Hz, snr [—], ended True, sender [] "CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K"
+ 8/250: last accepted block ends 28.962 s; window 38.230 s (56 x 0.68267); ended at 67.250 s, 38.288 s after it; center at the end 996.09, now 996.09; row Hz 1000 then 1000
+ 16/500: last accepted block ends 22.818 s; window 28.672 s (56 x 0.512); ended at 51.500 s, 28.682 s after it; center at the end 2019.53, now 2019.53; row Hz 2000 then 2000
+ retire event: {"carrierId":1,"offsetHz":2000,"reason":"SignalGone","lifetimeSeconds":48,"charactersEmitted":38,"linesParsed":0,"secondsSinceLastCharacter":22.8,"mode":"olivia","variant":"16/500","windowSeconds":28.672,"retireFactor":56}
+ retire event: {"carrierId":2,"offsetHz":1000,"reason":"SignalGone","lifetimeSeconds":63.8,"charactersEmitted":38,"linesParsed":0,"secondsSinceLastCharacter":32.5,"mode":"olivia","variant":"8/250","windowSeconds":38.23,"retireFactor":56}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.TheTwoSignalFileIsTwoRowsEachWithItsVariantAndItsOwnText [7 s]
+  Standard Output Messages:
+ row: 8/250   at 1000 Hz, snr [—], ended False, sender [] "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+ row: 16/500  at 2000 Hz, snr [—], ended False, sender [] "CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K"
+ most rows at any tick 2
+ 8/250: CER 0.0000 against its own half; EI4GNB appears 0 times
+ 16/500: CER 0.0000 against its own half; KC3QIS appears 0 times
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.EachTabFeedsOnlyItsOwnListener [7 s]
+  Standard Output Messages:
+ under Olivia: Olivia listener 297359 samples, PSK31 listener 0
+ under PSK31: Olivia listener 0 samples, PSK31 listener 297359
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.TheRowEventsSayOliviaAndTheVariantAndCarryNoTextOrCallsign [7 s]
+  Standard Output Messages:
+ psk31_audio_level x1: {"reason":"sampled","inputPeakDb":-9.4,"inputRmsDb":-20.8,"inputFloorDb":-20.8,"clipping":false,"nearlySilent":false,"mode":"olivia"}
+ psk31_carrier_appeared x2: {"carrierId":2,"offsetHz":1000.3,"strengthDb":null,"quality":null,"passesAsCandidate":null,"found":"rsid","mode":"olivia","variant":"8/250"}
+ psk31_squelch x6: {"offsetHz":1000.3,"open":false,"quality":0,"threshold":4,"mode":"olivia","variant":"8/250"}
+ psk31_reading x6: {"offsetHz":1000.3,"reading":false,"afcHz":0,"mode":"olivia","variant":"8/250"}
+ psk31_line_parsed x1: {"offsetHz":1500,"kind":"Cq","certain":true,"turnover":true,"toOperator":false,"characters":32,"mode":"olivia","variant":"16/500"}
+ psk31_row_ended x3: {"offsetHz":1000,"characters":38,"lines":0,"lifetimeSeconds":33.7,"mode":"olivia","variant":"8/250"}
+ psk31_carrier_retired x2: {"carrierId":2,"offsetHz":1000,"reason":"ListeningStopped","lifetimeSeconds":33.7,"charactersEmitted":38,"linesParsed":0,"secondsSinceLastCharacter":37.2,"mode":"olivia","variant":"8/250"}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.TheNoRsidFileIsOneRowFoundBlind [35 s]
+  Standard Output Messages:
+ row: 8/250   at 1000 Hz, snr [—], ended False, sender [W1AW] "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\nKC3QIS de W1AW W1AW K\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\n"
+ most rows at any tick 1
+ CER 0.0000
+
+
+[xUnit.net 00:01:31.74]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsTests.TheNoiseOnlyFileIsNoRowAndNoCharacter [5 s]
+  Standard Output Messages:
+ most rows at any tick 0, characters on any row 0
+
+
+
+Test Run Successful.
+Total tests: 7
+     Passed: 7
+ Total time: 1.5337 Minutes

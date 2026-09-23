@@ -1,0 +1,9 @@
+Failed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 })
+Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/cw-2026-08-17-013347, Truth = VA3VRR, Ruling = HM-DEC-145, NamedFloor = 9 })
+Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-24-012403, Truth = DE KD0UN KD0UN K, Ruling = work instruction 011, NamedFloor = 20 })
+Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/cw-2026-08-17-013347, Truth = VA3VRR, Ruling = HM-DEC-145, NamedFloor = 9 })
+Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-18-003758, Truth = AA4MP/4 QNIK, Ruling = HM-DEC-126, NamedFloor = 42 })
+Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EachCleanCaptureStillNamesAsManyCharacters(read: CleanRead { Name = captured/unadjudicated/cw-2026-08-24-012403, Truth = DE KD0UN KD0UN K, Ruling = work instruction 011, NamedFloor = 20 })
+Passed Hamlet.RadioEngine.Tests.Cw.TheCleanReadsStayCleanTests.EveryFloorWasMeasuredAndNotHopedFor
+Passed Hamlet.RadioEngine.Tests.Cw.TheSurveyAlreadyUsesAShortWindowTests.TheDefaultWindowIsThreeSeconds
+Passed Hamlet.RadioEngine.Tests.Cw.TheSurveyAlreadyUsesAShortWindowTests.ThirtySecondsOfHopsLeavesThreeSecondsOfHistory

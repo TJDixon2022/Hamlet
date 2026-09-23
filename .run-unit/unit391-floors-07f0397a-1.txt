@@ -1,0 +1,45 @@
+== 07f0397a FullyQualifiedName~TheCapturesThatDecodeKeepDecodingTests started 2026-09-22T19:04:09-04:00
+  Determining projects to restore...
+  Restored C:\Source\HamLet-wt391\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj (in 184 ms).
+  Restored C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\Hamlet.RadioEngine.Tests.csproj (in 184 ms).
+  Hamlet.RadioEngine -> C:\Source\HamLet-wt391\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet-wt391\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.94]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.06]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.07]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003126", floor: 34) [871 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003126: 35 emitted against a floor of 34, 392 elements at 675 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-17-013347", floor: 8) [1 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 8 emitted against a floor of 8, 144 elements at 625 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003016", floor: 38) [779 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016: 38 emitted against a floor of 38, 379 elements at 655 Hz
+
+
+[xUnit.net 00:00:05.96]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-18-004507", floor: 25) [843 ms]
+  Standard Output Messages:
+ cw-2026-08-18-004507: 25 emitted against a floor of 25, 314 elements at 505 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003758", floor: 14) [803 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758: 14 emitted against a floor of 14, 401 elements at 475 Hz
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 6.3570 Seconds
+== rc=0 seconds=8

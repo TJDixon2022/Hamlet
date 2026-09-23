@@ -5,34 +5,27 @@ You are the arbiter. Author the next WORK_INSTRUCTIONS.md.
  THE PHASE, AND THE STEP YOU ARE AUTHORING AGAINST
 ============================================================
 
-PHASE GOAL: Hamlet holds what it has
+PHASE GOAL: CW decodes again
 
-THE STEP TO WORK: step 0 - Settings survive an upgrade, and a send that cannot go names the true fault - no device chosen is its own refusal with a Settings link; a device that will not open carries its name, rate and OS error. 0.2 to 0.5 met and measured; 0.1's search is complete and its answer is a NEGATIVE - no commit in that window touched the loader, and the line that dropped the device is named in the report and predates 1.13.30.  [partial]
+THE STEP TO WORK: step 0 - The break is measured and named - the three floor tests run at HEAD case by case with their numbers, the newest commit on main where all three were green is named, and the first commit after it that turned one red is named.  [not started]
 
 ITS UNMET CRITERIA. THESE ARE THE WORK:
-  - [ ] 0.1 The commit and line between 1.13.30 and 1.13.48 that dropped the transmit device on load are named in the report.
+  none - every criterion of this step is met
 
 already met, for context only:
-  - [x] 0.2 Settings files reconstructed from the tree at 1.13.30, 1.13.40 and HEAD each load with every value intact - transmit device, receive device, grid, callsign, license class, power offer, ALC reference - a missing new field takes its default, nothing present is dropped, and the file round-trips.
-  - [x] 0.3 At arm time, no transmit device chosen yields `send_refused reason no_transmit_device` and the sentence *No transmit device is chosen. Open Settings and pick the radio's sound card*, with Settings opened from the sentence.
-  - [x] 0.4 A chosen device that will not open yields `transmit_device_would_not_open` carrying the device name, the rate asked and the OS error text, in the event and on the panel.
-  - [x] 0.5 `TheSendReachesTheAirTests`, `TheUnslottedSendTests` and the byte-identical tests green and unedited.
+  - [x] 0.1 The three floor tests run at HEAD by name, filtered, foregrounded, with a timeout, one type per invocation, and every case is listed in the report as green or red with its measured characters and elements beside its floor. **Unit 391 ran them at HEAD, 20 of 52 cases red, every case with its numbers in `docs/phase-cw/unit391-floors-head.md`.**
+  - [x] 0.2 The newest commit on `main` at which all three floor tests are green - each run at that commit as that commit has them - is named by hash and date, with the count of commits between it and HEAD that touch `src\Hamlet.RadioEngine\Cw`. **Unit 391 named `07f0397a` of 2026-08-21, 84 Cw commits before HEAD, in `docs/phase-cw/unit391-walk.md`; R53 then named `7e209cb4` as step 1's commit.**
+  - [x] 0.3 The first commit after it at which any floor test has a red case is named by hash and date, with the cases it turned red. **Unit 391 named `8e3ee277`, the likelihood decoder, which turned both clean synthetics red, in `docs/phase-cw/unit391-walk.md`.**
+  - [x] 0.4 The report lists every type under `src\Hamlet.App` and `tests\Hamlet.App.Tests` that references a type in `src\Hamlet.RadioEngine\Cw`, and for each whether the member it uses exists at the named commit, so step 1 knows its seams before it opens a file. **Unit 391 listed the 145 rows in `docs/phase-cw/unit391-seams.md`; unit 392 re-checked every row at `7e209cb4`, the commit R53 named, in `docs/phase-cw/unit392-seams.md`.**
 
 THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
-  step 4 - The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails. Unit 382, the FIRST UNIT EVER SPENT ON THIS STEP: 4.1, 4.2 and 4.3 all met, and the drop candidate in task 2 taken with the content kept. THIS IS UNIT 382's OWN TASK-0 AND TASK-4 ACCOUNT, written before a judging session has read it. 4.1 MET: docs/RADIO_SHEET.md, six sections - before you press anything, PSK31 press by press, Olivia press by press, when it refuses, where the files are, if it fails - with 26 sentences QUOTED and not one paraphrased, the presses in order for both modes, 14 refusal rows each carrying what it says, what it means and what to do, both capture folders named as two, and section 6 asking for nothing personal (HM-DEC-018 2.1). Olivia is written as DIFFERENCES rather than as its own walk, which was the named drop candidate: every press and every sentence is still there, and it says plainly that the variant comes from the station being answered and is never chosen from a menu. 4.2 MET IN BOTH DIRECTIONS, in one new type, TheRadioSheetQuotesTheScreenTests, 4 of 4: FORWARD 21 of 26 quotes compared CHARACTER FOR CHARACTER against what the shipped view model itself produced - kind (a) - and 5 found as literals under src/Hamlet.App - kind (b) - with the test naming the kind for each; BACKWARD 12 of 12 reachable refusals quoted, a direction that FOUND A REAL GAP and the sheet was fixed rather than the test. 4.3 MET: 150 prose lines scanned against the eleven words, 0 hits, on whole words, with the reason for excluding the quote lines in the test's own remarks. THE HARVEST IS THE NIGHT'S REAL MEASUREMENT: EIGHT OF THE NINE REFUSALS ARE PRODUCIBLE FROM A FIXTURE and the ninth, the mode gate's token at 16400, IS NOT REACHABLE UNDER PSK31 OR OLIVIA AT ALL. The sheet is 176 lines and 10,918 bytes against a target of 120 and 10 kB - over on both, content won under ruling 2 item 2 and the number is reported. NO FILE UNDER src CHANGED AT ALL. Exit carry-forward APP 224 OF 224 and ENGINE 150 OF 150 against task 0's 220 and 150, this unit's four new guards the only difference - NO REGRESSION. STEP 5's ENTRY IS step 4 done, AND STEP 5 IS TIM'S OWN AND ENDS THE RUN. TRANSCRIBED BY UNIT 384 TASK 0 - ANOTHER SESSION'S WORD, NOT A JUDGMENT OF UNIT 384'S AND NOT A CRITICISM OF UNIT 383: the separate judging session that read unit 383's report returned FATE: executed and STATE_AFTER: partial at PHASE_OUTCOME.md:446-448, verbatim - "4.1 and 4.2 are met with measured support, 27 quotes with 22 proved produced by the application and 12 of 12 reachable refusals quoted, but 4.3 is not met as written because the page still carries two sentences that send the operator to the rig, which the unit itself declares and counts rather than removes, and the plan line it conflicts with is not one of the three things the phase stops for." So step 4 is PARTIAL ON 4.3 for the second unit running, and unit 383's own 4.3-MET account above is its own account and not a verdict. WORK INSTRUCTION 384 SECTION 6 RULING 2 ITEM 1, in one sentence: step 4 is cut down at partial and no unit in this phase works 4.3 again - the only remedies left are deleting a quoted refusal, which 4.2's backward direction forbids and which would hide from Tim what Hamlet says when its own unkey did not get out, or changing a sentence Hamlet says, which is the owner's - so the question is logged to the owner, the sheet is not opened, and nothing in unit 384 waited on it.  [partial]
-    - [ ] 4.3 No sentence tells the operator to touch the radio (R11).
-  step 5 - Tim looks - at his window and, when he has time, at the radio, and says it passed.  [not started]
-    - [ ] 5.1 Tim says it passed at his window and at the radio. No script can evaluate this.   *owner's verdict*
-  step 7 - READ AND LEFT WHERE IT STOOD BY UNIT 384 TASK 0, WITH THE STATE WORD DELIBERATELY UNCHANGED: UNIT 383'S OWN ACCOUNT, attributed and not promoted, says 7.2 IS MET - seven of seven canned rows write psk31_send_composed with macro canned where four did, with the macro's own token kept beside it in cannedMacro, and the Answer macro sent off the canned list and off the card composed 116,371 samples each, equal one by one (PHASE_OUTCOME.md:433 and its MEASURED: line). NO SEPARATE JUDGING SESSION HAS READ UNIT 383'S REPORT AGAINST STEP 7, and ARBITER.md section 8 makes a judging session's STATE_AFTER the evidence rather than a unit's own claim, so the step STAYS PARTIAL and 7.2 STAYS UNTICKED in PHASE_PLAN.md (work instruction 384 section 6 ruling 2 item 3). Unit 384 did not re-run 7.2, re-prove it or tick it. CORRECTED BY UNIT 382 TASK 0, AND IT IS TRANSCRIPTION OF A VERDICT A SEPARATE SESSION RETURNED - NOT A JUDGMENT OF UNIT 382'S, NOT ONE OF ITS TWO RULINGS, AND NOT A CRITICISM OF UNIT 378 OR OF UNIT 379: 7.1, 7.3, 7.4 AND 7.5 ARE MET AND 7.2 IS OPEN. The done that stood in this header came from unit 378's OWN entry at PHASE_OUTCOME.md:274, which unit 378 wrote at the end of its own night. The SEPARATE JUDGING SESSION's entry - ## UNIT 1 - STEP 7 at PHASE_OUTCOME.md:277 - returned STATE_AFTER: partial at line 289, verbatim: "Four of the five criteria are met with quoted measurements, but 7.2 requires every canned send to write psk31_send_composed with macro canned, and the report states only the four text lines do so while the three macro rows write their own token, so a must-pass criterion is met in part." ARBITER.md section 8 is explicit that STATE_AFTER is not a unit's own opinion handed back to it and that the separate session's verdict is the evidence, so STEP 7 IS PARTIAL ON 7.2. 7.2 is parked: no file under src was touched for it tonight, and unit 378's design reason is stated in the tree at MainWindowViewModel.cs:17903 - the three macro rows are sent by the commands that send them today, keeping R1's certainty gate. WHAT UNIT 379 TRANSCRIBED HERE, SUPERSEDED BY THE LINE ABOVE AND KEPT SO THE READING STAYS VISIBLE: unit 379 read a STATE_AFTER: done that was in the file and wrote that unit 378 met all five criteria with none rounded up. The canned list and the hover - R39's list and hover: right-click on a PSK31 row shows the seven lines from data/psk31/canned.json and one click sends the chosen line framed through the one unslotted sequence; every canned send begins with its RSID and is recorded with no text; the row hover is facts and never the text; Olivia rows get the same by construction. DONE BY UNIT 378, the first unit ever spent on it: 7.1, 7.2, 7.3, 7.4 and 7.5 all met, with 7.2's distinction stated - the four text lines write macro canned and the three macro lines write their own tokens, because that is what they are - and with 7.5's chip met by measurement rather than repair. Rows offering something on a right-click went from 2 of 7 to 7 of 7 and the menu from one line to seven. STEP 8's ENTRY, WHICH READS step 7 done, IS THEREFORE OPEN.  [partial]
-    - [ ] 7.2 Every canned send begins with its RSID, carries `announced`, counts against the cap, and writes `psk31_send_composed` with `macro: canned` and no text.
-  step 9 - The contact Tim had - every card has an X; a station's live carrier is visible and holds the send buttons so Tim never keys on top of him; Log is on every conversation card from the start; every hand-back moves the turn, certain or guessed.  [not started]
-    - [ ] 9.1 Every conversation card and every receipt has a dismiss X; dismissing removes it and writes `card_dismissed`.
-    - [ ] 9.2 While a station's carrier is on the air his row and his card carry a color and the word *sending*; Report, Confirm, the canned lines and the typed line are held - greyed with *he is still sending* - until his carrier drops, and a send attempted during it is refused with that sentence and `send_refused reason his_carrier_live`; replayed from the 17:45:40-17:45:44 record as a fixture, Tim's Report would have been held.
-    - [ ] 9.3 Log is on every conversation card from the moment it exists, with the RST fields editable and defaulted to what was exchanged if anything was; a logged contact with no certain 73 logs what is known and nothing invented.
-    - [ ] 9.4 Every parsed line addressed to the operator with a hand-back moves the card's turn to *your turn* - marked as a guess when uncertain - not only the first answer; replayed from the 17:48:33 record, the card reads *your turn?*.
-    - [ ] 9.5 The four are on PSK31 and Olivia cards alike, asserted.
-  step 10 - What Tim saw on 2026-09-22 - favorites are back, measured for when they vanished; a right-click on any row opens the menu; the sun map takes the top band's full height; a blind-found keyboard-mode carrier shows text only when its blocks decode.  [partial]
-    - [ ] 10.3 The sun map grows to the top band's existing height at 1920 and at 1400 - the band itself does not grow, 214 px stands - keeping its aspect; the width it needs comes from the neighborhood strip beside it; its dot and caption kept. (Tim, 2026-09-22: vertical space is the concern, not horizontal; unit 387's reading that the map governs the band is superseded - the band governs the map.) **Unit 387: NOT MET AND REPORTED PARTIAL WITH BOTH NUMBERS, under section 6 ruling 2(b)'s *stop at what fits*. The map is 246 x 134 in a band of 214 - 62.6% of it, Tim's *two thirds* exactly - and it CANNOT BE MORE. Measured: the map already GOVERNS its card. `GreenZoneLeft` wants 25 px at 1920 and 54 at 1400, the map's column wants 145 in a row of 146, the card wants 178 and the rig column wants 178 TIED WITH MARGIN 0, so every pixel the map takes the card takes and the band takes - and the band is ratcheted at 214 by `Unit376TheTopBandTests.BandReachedWithThePills`, which the carry-forward name `TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts, tighter than 6.1's ceiling of 220. THE ATTEMPT WAS MADE AND MEASURED: letting the map take the height available to it put it at 698 x 381, the card at 424 and THE BAND AT 460 PX, 240 over the ceiling; it was reverted in the same task. The 80 px the map does not have are the pills row and its margins (36), the card's own header and padding (32) and the caption and its gap (11). What shipped: the 134 stops being the mockup's dimension and becomes the band's budget with the arithmetic beside it, and `TheSunMapIsTheSizeItWasAndStillCarriesHisGrid` is REWRITTEN UNDER R12 AND RULING 2(b) to assert R46(c)'s rule in both directions - the map may never be smaller, and it may never leave a pixel of its own row unused, which nothing in the tree asserted before - with the band asserted beside it and every assertion about the grid marker and the caption kept.** **Unit 388, UNTICKED AND PARTIAL AT STAGE A: the map left the card's chrome for its own column in `TopRow` between the card and the rig face, and is now 327 x 178 at 1920 and 1400 where it was 246 x 134 - the full height of the band's card-and-rig row, 178 of the band's 214, 83.2% where it was 62.6% - at its own aspect, its width from the card and never the rig, its grid marker kept and its caption, words unchanged, beside it in the card's Favorites row; the band 214. Stage B, the map beside the pills as well, HELD AT 1920 (393 x 214, the band's whole height) AND FAILED AT 1400: the pills had 343 of the 675 px they need, wrapped to two rows, and the band went to 252, so it was reverted in the same task. With the map between the card and the rig face, the band's full 214 at 1400 needs the pills row to stand somewhere other than above the card, which is a layout change to Tim's pills and his.**
+  step 2 - CW cannot break silently again - a CW read guard on the engine carry-forward line beside FT8, FT4, PSK31 and Olivia, watched red against a broken decoder before it was trusted, and measured to fit the line's timeout.  [not started]
+  step 3 - The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.  [partial]
+    - [ ] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count.
+  step 4 - The August rework is judged on numbers - each piece of the 2026-08-28 to 08-31 rework re-applied in its own commit and kept only if the three floor tests stay green and a named number moves; a piece that moves nothing goes back out and the report says so.  [partial]
+    - [ ] 4.7 Each of the fourteen pieces unit 395 listed as dependent on a chain longer than a pair - `4786c7e7`, `f2e1db7a`, `386fdb5d`, `4c6e4321`, `0f2089f3`, `62262b94`, `fc1ee77f`, `68a18d66`, `a91d8fe7`, `efcd5242`, `aeea24f2`, `a37cfcff`, `ee2cba8d`, `9c2a7f99` - is applied inside its chain, each chain in its own commit and judged as one piece under 4.2's rule, kept or taken back out under 4.3, floors raised under 4.4 if kept, and a row per chain added to 4.5's table; a chain that will not build after its seams are adapted is listed with its errors and counts as out.
+  step 5 - Tim at the radio - CW on 40 m, text on the CW tab that reads as what was sent, and he says it read.  [not started]
+    - [ ] 5.1 Tim, at the radio, on CW on 40 m, sees text on the CW tab that reads as what was sent, and says it read. No script can evaluate this.   *owner's verdict*
 
 ADVANCES MUST NAME ONE OF THE CRITERIA ABOVE. Everything below this block is
 context for CHOOSING among them - what has been tried, and what the last unit
@@ -96,9 +89,17 @@ REFUSED BEFORE THE UNIT RUNS if you name that criterion again, and the
 iteration is spent on the refusal. yes means it succeeded and does not
 block; blocker means it cleared something and moved no criterion.
 
-  10.1 | unit 1 launched 2026-09-22T14:22:32.665Z | yes | executed | name the commit and line that dropped the favorites star and put favorites back on the rig display, open the right-click menu on every decoded row, give the sun map the top band's full height, and show no text from a blind-found carrier until its blocks decode
-  10.6 | unit 1 launched 2026-09-22T17:14:06.980Z | yes | executed | move the sun map out of the neighborhood card's chrome into its own band-height column beside the card and then beside the pills row, width from the neighborhood side, and put favorites back as one drop-down under the green zone in place of unit 387's rig-face caret
-  2.4 | unit 1 launched 2026-09-22T12:13:28.481Z | yes | executed | soak the carry-forward list five consecutive green rounds on a tree frozen after the phase's last code change, naming the frozen commit and printing the empty diff, and append 2.6's correction to the archived Olivia record in the same unit
+  1.1 | unit 1 launched 2026-09-23T00:06:24.417Z | yes | executed | restore src/Hamlet.RadioEngine/Cw to 7e209cb4 keeping the transmit files at HEAD, adapt the seams until Hamlet.sln builds, run the three floor tests and the app CW tests
+  1.5 | unit 2 launched 2026-09-23T01:00:14.396Z | yes | executed | repair TheOliviaRowsTests Lines helper to open its telemetry file with FileShare.ReadWrite under R12 and re-run the app line for 1.5, then put a CW read guard on the engine carry-forward line - the adjudicated type whole and the 08-25 captures by display name - watched red against a broken CwDecoder in an uncommitted change and measured against the line's 480 s
+  3.1 | unit 3 launched 2026-09-23T02:03:39.488Z | yes | executed | run every name in docs/unit239-failing-set.txt and the known-reds block by type at HEAD, classify each green, red-repaired, red-retired or red-open under R49, and retire the ones naming a missing Cw type into docs/cw-retired-tests.txt
+  3.2 | unit 4 launched 2026-09-23T06:31:01.787Z | yes | executed | classify the 22 excluded test files fact by fact under R49 by grep of each missing name under Cw at HEAD and by what each fact asserts, retire every mechanism fact naming a missing name in its own commit into docs/cw-retired-tests.txt, leave every audio-asserting fact excluded and listed red-open, re-include and measure the set's one excluded name
+  3.3 | unit 6 launched 2026-09-23T08:04:59.407Z | no | executed | correct CwDecodeHarness to take its characters from CwDecoder.CharacterSettled, the transcript the CW tab shows, measured against every compiled caller before it is committed, then regenerate the two clean fixtures with a noise band of 0.02 so TheCleanRecordingsDecodeExactly goes green with the floors unmoved, and tick 3.5 with its R53 qualification
+  3.4 | unit 5 launched 2026-09-23T07:13:14.484Z | blocker | executed | measure the two clean synthetics four ways then repair the restored decoder so CwFixtureTests.TheCleanRecordingsDecodeExactly goes green with the captures and adjudicated floors unchanged - the repair being the fixtures regenerated with a noise band under HM-DEC-127, the decoder measured with its digital-silence refusal bypassed in an uncommitted change and never changed in a commit
+  3.4 | unit 7 launched 2026-09-23T08:56:33.499Z | yes | executed | close 3.4 on its letter - the known-reds block loses its two CW lines for one line naming no test and the failing set gets its closing line with the count each way, the third floor test joins the engine line as unit 393 promised, after the six CwDisplacementFloorTests reds are traced four ways and repaired on the settled event and the smallest band that reads under HM-DEC-127
+  3.6 | unit 1 launched 2026-09-23T12:10:11.696Z | no | executed | attack the eight red-open tests of the failing set by number - trace each of #6 #15 #24 #41 #42 #43 #44 #45 to a cause at a file and line with a printer asserting nothing, then one change per cause in the decoder outside the transmit files or the easy tier's event under R12, each kept only on a red to green with the floors and every green held, attempt 1 of 3 written to docs/phase-cw/reds-3.6.md
+  4.1 | unit 1 launched 2026-09-23T03:29:37.217Z | yes | executed | list every Cw commit after 7e209cb4 to 2026-09-03 from git log with files and message, then re-apply the rework pieces one commit at a time restricted to src/Hamlet.RadioEngine/Cw, floors after each, kept only if a named number moves and taken back out otherwise
+  4.2 | unit 3 launched 2026-09-23T05:43:19.902Z | no | executed | re-apply the rework pieces 34 to 45 one commit at a time restricted to src/Hamlet.RadioEngine/Cw, floors and printer after each, kept only if a named number moves and reverted otherwise, then tick 4.2, 4.4, 4.5 and 4.6 at piece 45
+  4.3 | unit 2 launched 2026-09-23T04:37:15.341Z | yes | executed | re-apply the rework pieces 10 to 45 one commit at a time restricted to src/Hamlet.RadioEngine/Cw, floors and printer after each, kept only if a named number moves and reverted otherwise, 4.3 ticked on the reverts
 
 If every route you can see at a criterion is recorded as no, say so in WHY
 and choose another criterion or another step. Do not restate a failed
@@ -120,92 +121,64 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-**One item is in the way of a criterion in B: item 1, 10.3's last 36 px.** The other six are findings and choices.
+Nothing. No criterion of step 3 needs a ruling: 3.6 can always be met by the three-attempt
+verdict. The two findings that block nothing are `PARKED.md` 402 items 1 and 2.
 
-**1. The map reaching the band's full 214 at 1400 needs the pills row to stand somewhere else. That is a layout decision about your pills.** *A finding with its numbers, not a ruling I can make.*
+   mismatch reported here, and the launcher named step 0 on that reading.
+**Mismatches against section 5:**
+  at `not started`. This is the layer mismatch every unit since 392 has reported, and I repaired
+## 3. What you should see
 
-With the map between the card and the rig face, the pills get the room left of the map: 343 px at 1400, against the 675 they need. As a non-wrapping `StackPanel` they would be clipped (a lost pill). As a `WrapPanel` they wrap to two rows and the band goes to 252.
+**The answer: 2 of the 8 are green, #24 and #41, at `7e65aac4`, on a decoder change.**
 
-The ways to 214 at 1400 are:
-- move the map to the band's left edge, which gives the pills 961 px;
-- move the pills out of the row above the card;
-- narrow the pills.
+| red | what it asserts | number at task 0 | cause traced | change made | number after | kept or put back | attempt |
+|---|---|---|---|---|---|---|---|
+| #6 | share, 25 wpm bare, bar 0.79 | 0.75 | first character and tail, no line | none | 0.75 | - | not attacked |
+| #15 | share, 12 wpm 18 dB, bar 0.66 | 0.54 | 23 wpm fitted to 12 on two seeds, no line | none | 0.54 | - | not attacked |
+| #24 | a speed is named on a real 18 wpm call | none | `CwDecoder.cs` 682 to 686, a 25 Hz follow restarting the 12 s hold | `CwDecoder.cs` 691, half-passband line | 18 | kept, `7e65aac4` | **green** |
+| #41 | some speed named across the two-station file | 0 of 144 polls | same | same | 82 of 144, at 10 and 11 | kept, `7e65aac4` | **green** |
+| #42 | 0 characters in the preamble | 70 | `CwDecoder.cs` 590, the stream fed while the guard blocks | blocked hops skipped | 0 | put back, two captures and `VA3VRR` red | attempt 1 of 3 |
+| #43 | coverage-easy read whole | 5+37 | leading edge re-raised, `CwDecoder.cs` 139 to 142 | line 203 settled | 4+7 | put back | attempt 1 of 3 |
+| #44 | exchange-easy read whole | 3+21 | same | same | 0+7 | put back | attempt 1 of 3 |
+| #45 | tightfist-easy read whole | 1+3 | same, plus a trailing `■` | line 203 settled; the flush tail | 1+0; 1+3 | both put back | attempt 1 of 3 |
 
-**Each one changes where your pills or your map sit on the screen**, against your 2026-08-26 and 2026-09-12 arrangements. What I rejected and why: moving the map left without asking, because it relocates the pills you reach for first and moves the map away from the mockup's place.
+**Gate runs, by change and by type:**
 
-**2. `CardFloor = 400` and the caption's place are my choices, and both are overrulable.** *Author's, marked in the code.* Section 1 decisions 1 and 2 have the reasoning. Lowering the floor lets the map grow at more widths, at the cost of more wrapping in the green block.
+| type | entry | A2 | C |
+|---|---|---|---|
+| captures | 37 | 37, rows identical | **35**: 013347 59 to 48 characters and 108 to 68 elements; 013622 55 to 13 and 84 to 20 |
+| adjudicated | 13 | 13 | **12**, `VA3VRR` |
+| synthetics | 2 | 2 | 2 |
+| `CwFixtureTests` | 22 of 23 | 22 | 22 |
+| displacement | 6 | 6 | 6 |
+| `CwEmissionGateTests` | 7 of 8 | **8** | 8 |
+| `CwAdjudicationTests` | 10 of 11 | **11** | 11 |
+| `CwAcquisitionWindowTests` | 10 of 12 | 10 | 10 |
+| `CwReceiverFixtureTests` | 23 of 27 | 23 | **24**, #42 |
+| `CapturedSignalTests` | 13 | 13 | 13 |
+| `CwSpeedSilenceTests` | 4 | 4 | 4 |
+| `WhyTheGateDidNotFireTests` | 2 | 2 | 2 |
+| `CwTwoStationTests` | 5 | 5 | 5 |
 
-**3. The exit's first app attempt crashed the test host, and the cause was not determined.** *A finding, not called environmental.*
+A1 gave the same counts as A2 but named 21 on `exchange-easy`. B1 and B2 ran on
+`CwReceiverFixtureTests` only, 23 of 27 each.
 
-Attempt 1 ran 214 names with one red, which was this unit's own and is repaired. Then the host crashed. That red's press had never reached the button, because the test didn't move the headless mouse first. I made two changes:
-- the press now moves first, as `TheStopIsAlwaysOnScreenTests.Press` does;
-- every window now shuts any list a press opened before it closes.
+**Entry and exit:**
 
-The crash did not recur in two further attempts. Whether it came from a popup outliving its window or from something else is **not determined**.
+| | entry | exit |
+|---|---|---|
+| app line | 278 of 278 in 156 s | 277 of 278 in 161 s and 275 of 278 in 171 s, dispatcher losses only, different names: 278 |
+| engine line | 178 of 178 in 374 s | 178 of 178 in 371 s |
+| floors | 37, 13, 2 | 37 with every row identical, 13, 2 |
 
-**4. `TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant` went red on a file lock in both entry attempts.** *Inherited, recorded, not chased.* The error was `IOException` on its own temp `refuse\2026-09-22.jsonl`, *being used by another process*, at 7 to 8 s. The type alone was 7 of 7, and it was green in both completed exit attempts. Nothing under `src` or `tests` had moved since unit 387's exit when it first failed.
+**The closing line, as written:** `# Closed out by the CW phase, CW decodes again, 2026-09-23, units
+394 to 402: of the 51 names above, 31 green at HEAD without repair, 14 repaired (#25 #26 #30 #31
+#32 #33 by unit 400, #18 #19 #20 #21 #22 #23 by unit 401, and #24 #41 by unit 402), 0 retired, 6
+red-open with their attempts in docs/phase-cw/reds-3.6.md (#6 #15 #42 #43 #44 #45), each a repair
+owed under R49, R55 and HM-DEC-151.`
 
-**5. Section 5's mismatch, confirmed and not repaired: 10.5's ticked text says `TheTopRowTests` is on the carry-forward line, and it is not.** Line 7 has **0** occurrences. The line carries `Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference`, `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` and (renamed tonight) `TheFavoritesAreUnderTheGreenZoneTests`.
+**3.1's clause:** *#24 and #41 green by unit 402 on a follow under half the passband no longer
+counting as a speed discontinuity, the set at 45 green and 6 red-open.*
 
-**6. Two tests beyond the ruled one were rewritten under R12.** *Decisions of mine, stated in section 1 decision 4.* They are `TheTopRowTests.TheWorldClockIsAtTheCardsRightEndWithOneMarker` and `TheGreenZoneTests.NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth`. Both asserted the map inside the card at 134, which is what rev7 replaced. Neither is on the carry-forward line.
-
-**7. The renamed type's file keeps its old name.** *A consequence of the permission mode.* `git mv` and `rm` are refused. A later session with those permissions can rename `TheFavoritesAreBackOnTheRigDisplayTests.cs` to match its type in one command.
-
-### On the carried items tonight's work touched
-
-- **Unit 387's item 2 - 214 against 220.** Answered by Tim, not by me: rev7's 10.3 reads *the band itself does not grow, 214 px stands.* Carried closed.
-- **Unit 387's item 3 - 1100 x 780.** Re-measured and in section 3 beside the old numbers. Not ruled on.
-- **Unit 387's item 4 - `TheMenuIsUnderTheMouseTests`.** 0 of 8 at entry and 0 of 8 at exit, on the same precondition. Tonight's layout did not touch `DigitalDecodedRows` or `DigitalMineRows`, and I did not repair it.
-- **Unit 387's items 1, 5, 6 and 7.** Not mine and not re-recorded. The `RULES_AT` split is **the eleventh unit running**: `PROJECT_STATUS.md` reads `HM-DEC-165 (2026-09-19)`, `CLAUDE.md` holds `CPS-DEC-0165`, and `tools\` is not mine to edit.
-- **Unit 383's inherited reds.** Not hunted. `ViewTestsActThroughControlsTests` scanned 52 view test files at exit and **the offender count is still one**, `TheStopIsAlwaysOnScreenTests.cs:102`. Tonight's view tests act through the control with a headless pointer and write nothing a control owns.
-- **The reload's second disagreement.** The `PHASE_OUTCOME` header says step 6 is done while the last entry for it says partial. That is R42: Tim closed step 6 by ruling after the judging session's `partial`. The header is right and the entry is history.
-- **`docs/RADIO_SHEET.md`.** None of the strings I changed or added is quoted there. The one note reused (*Nothing saved here yet…*) is unit 387's, word for word.
-
-**`validate-output.bat`: hand-checked, not run. This is the ninth unit running.** The exact command was `./tools/arbiter/validate-output.bat output.md`, and the answer was `This command requires approval`. That is the permission mode, which a non-interactive session cannot answer. The table below is a hand-check against the rules the script's own header lists. It is not a run of the validator.
-
-| Rule, from the script's header | Hand-check |
-|---|---|
-| 1 - a `UNIT:` line above section 1, parseable | **ok** - line 22, inside the fenced block; section 1 at line 38 |
-| 2 - the four top-level sections, in order, exact names | **ok** - lines 38, 81, 93, 209 |
-| 3 - no fifth top-level section | **ok** - exactly four `## ` lines; everything deeper is `### ` |
-| 4 - section 4 present even when empty | **ok** - present, not empty, straight apostrophe |
-| 5 - section 3 non-empty | **ok** |
-| 6 - the ordering block above `UNIT:`, A, B, C, C naming a count | **ok** - `READ IN THIS ORDER.` line 1, `A.` 3, `B.` 8, `C.` 15 with *raises 7 items* |
-
-### Asks still outstanding - carried per HM-DEC-139, verbatim
-
-**The queue stands at sixty and this unit answers none of them**, beyond item 2 of unit 387's, which Tim answered in rev7. It is the fifty-three unit 387 carried plus unit 387's own seven, read out of unit 387's `output.md` at `752a9b62`.
-
-**Unit 387's own seven, verbatim:**
-
-**1. *Make a card anyway* is a note on a row that names nobody, because a working card there is the
-second mechanism the instruction forbids.** *A finding that wants a ruling if the owner disagrees.*
-Section 6 ruling 2(a) item 3 states that `OpenPsk31CardCommand` already fires on the right-click and
-that an item naming what that press did *is not a second mechanism, and you do not build one*.
-**Measured at task 1: the press does not make a card on such a row.** `OpenPsk31Card`'s first
-statement is a return where `Psk31StationOn(row)` is null (`MainWindowViewModel.cs:17931`), and the
-card count goes **0 to 0**. A card is keyed by callsign throughout - `_psk31Cards`, `RefreshPsk31Card`,
-`DigitalCards.FirstOrDefault(c => IsSameStation(c.Callsign, …))` - so making one for a nameless row is
-a new mechanism, not a wiring job. The line is therefore **present on every row** and, where Hamlet
-read no callsign, reads *Make a card anyway - Hamlet read no callsign on this row, so a card would
-have nobody on it. Capture the audio and the card follows when a call comes through.* **10.2's words
-are met** - Capture and the card line are always present - **and R46(b)'s intent is met in part.** If
-Tim wants a card keyed by the row's place rather than a callsign, that is a unit's worth of work and
-it is his call.
-
-**2. The band's ceiling for 10.3 is 214 in the tree and 220 in the instruction, and I took 214.** *A
-mismatch, reported as section 5 directs.* Section 6 ruling 2(b) and section 8 task 3 both name 6.1's
-**220 px**; `Unit376TheTopBandTests.BandReachedWithThePills` is **214** and the carry-forward name
-`TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference` asserts it, while section 8 task 3 says
-that name must be green at the end and section 10 says never loosen a carry-forward test. **Taking the
-6 px would have turned that name red**, so I did not. It would have bought the map 134 to 140 px -
-62.6% to 65.4% of the band - and it is reversible in one line if the owner would rather have it.
-
-**3. At 1100 x 780 - the size Hamlet opens at - there IS height beside the map, and spending it costs
-width.** *A finding for the owner, logged and not worked.* At that size the card wants **353 px**
-against the rig column's 178, so the green-zone text governs and roughly **176 px** beside the map go
-unused. The map could take them - but its width follows the picture's own proportions (HM-DEC-092), so
-a 321 px map is a **590 px** map on a 1036 px card: it would take the width the text needs, the text
-would wrap taller, and the map would grow again. **That is a layout trade about a screen and it is
-Tim's**, not an arbiter's.
+Both repairs are **decoder** repairs. No test event was changed in a commit.
 

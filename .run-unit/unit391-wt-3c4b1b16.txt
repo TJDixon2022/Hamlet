@@ -1,0 +1,2 @@
+Preparing worktree (detached HEAD 3c4b1b16)
+HEAD is now at 3c4b1b16 feat(engine): say when somebody else is keying in the same passband
