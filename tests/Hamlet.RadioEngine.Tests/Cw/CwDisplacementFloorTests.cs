@@ -42,7 +42,8 @@ public sealed class CwDisplacementFloorTests
         var decoder = new CwDecoder(audio.SampleRate, startHz);
         var read = new System.Text.StringBuilder();
 
-        decoder.CharacterDecoded += c => read.Append(c.Text);
+        // The settled transcript the CW tab shows, not the leading edge (unit 400 decision 3, R12).
+        decoder.CharacterSettled += c => read.Append(c.Text);
 
         using var source = new Hamlet.RadioEngine.Audio.BufferedAudioSource(audio);
         decoder.Listen(source);
