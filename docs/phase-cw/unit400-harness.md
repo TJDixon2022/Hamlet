@@ -297,3 +297,54 @@ bar the total-time line; `TheCleanReadsStayCleanTests` 6 of 7 and `TheSurveyAlre
 2 of 2, identical by case to task 2. **Decision 8 holds; the fixture is kept.**
 
 **The set.** #30 and #33 green: **37 green and 14 red-open**.
+
+## 5. The exit round (task 4)
+
+**The carry-forward lines**, as `docs/carry-forward-tests.txt` prints them, one build each, a status
+line before each:
+
+| Line | Entry (unit 399's exit, decision 6) | Exit |
+|---|---|---|
+| app | 278 of 278 in 166 s | 277 of 278 in 161 s, then 277 of 278 in 166 s on the one re-run |
+| engine | 176 of 176 in 374 s | **176 of 176 in 374 s** of 480 |
+
+The app line's two losses are the headless dispatcher loop, `System.InvalidProgramException : You've
+caused dispatcher loop` in `Avalonia.Threading.Dispatcher.ResetForUnitTests`, 1 ms each, before any
+assertion: the first run lost `TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "Olivia")`,
+the re-run lost `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`, and
+neither name failed in the other run. Under section 1 of the instruction a name lost in one run and
+green in the other is neither: **no red on an assertion on either line, no regression**. This is the
+shape step 1's 1.5 was ticked on.
+
+**The three floor tests at exit**, `--no-build` after the engine line's build:
+
+| Floor test | Entry | Exit |
+|---|---|---|
+| `TheCapturesThatDecodeKeepDecodingTests` | 37 of 37 in 94 s | 37 of 37 in 92 s, every row identical to entry |
+| `TheAdjudicatedReadingsKeepReadingTests` | 13 of 13 in 29 s | 13 of 13 in 29 s, identical to entry bar the total-time line |
+| `CwFixtureTests.TheCleanRecordingsDecodeExactly` | 0 of 2 in 4 s | **2 of 2 in 1 s** |
+
+**The other types at exit**, each against its last measurement: `CwFixtureTests` 22 green and 1 red
+(`NothingTheDecoderWasSureOfIsWrong` on `fading-18wpm`), identical by case to task 3;
+`TheCleanReadsStayCleanTests` 6 of 7 and `TheSurveyAlreadyUsesAShortWindowTests` 2 of 2, identical
+by case to task 0; `CwAcquisitionWindowTests` 10 of 12, `CwSensitivityTests` 1 of 2,
+`EveryCharacterCarriesItsOwnEvidenceTests` 3 of 3, `WhereAcquisitionPointsTests` 2 of 2,
+`CwRefusalFloorTableTests` 1 of 1, each identical by case to task 0 and task 1.
+
+**Tree checks at exit.** The eleven transmit files: nothing against `7e209cb4`.
+`git diff --stat 5688a8a5 HEAD -- src`: nothing. `git diff --stat 0aa08d32 HEAD -- tests`:
+
+```
+ .../Hamlet.RadioEngine.Tests/Cw/CwDecodeHarness.cs |  11 ++++-
+ tests/Hamlet.RadioEngine.Tests/Cw/CwFixtures.cs    |  16 ++++--
+ .../Cw/TheProsignsFixtureAtABandTests.cs           |  55 +++++++++++++++++++++
+ tests/fixtures/cw/clean-12wpm.wav                  | Bin 200044 -> 200044 bytes
+ tests/fixtures/cw/clean-18wpm.wav                  | Bin 137644 -> 137644 bytes
+ tests/fixtures/cw/prosigns-18wpm.wav               | Bin 237910 -> 237910 bytes
+ 6 files changed, 76 insertions(+), 6 deletions(-)
+```
+
+The harness, the requests, task 3's printer and the three regenerated files, nothing else, no pinned
+caller. `git status --short tests`: nothing. No `ANALYSIS-cw-*.md` page modified or untracked at the
+root. `docs/carry-forward-tests.txt`, `docs/unit239-failing-set.txt` and `docs/cw-retired-tests.txt`:
+nothing against `0aa08d32`. `git worktree list`: the root and the three preflight trees.
