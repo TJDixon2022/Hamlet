@@ -132,6 +132,28 @@ unlocks (decision 3). Piece commit `ad5fa332`. Build: `CS8907` on the seam prope
 
 Transmit files nothing against `7e209cb4`. Nothing moved: out, both commits reverted in the next.
 
+**Piece 13, `386fdb5d`, task 2.** Patch 600 lines: `CwDecoder.cs` 14, `CwJointCutter.cs` 328 new,
+`CwProbabilisticDecoder.cs` 120, `CwProbabilisticStream.cs` 16. `--check` rc 1 on three files;
+`--3way` merged `CwProbabilisticStream.cs`, conflicted in the other two, and added
+`CwJointCutter.cs` to the index. **The first decision 16 pass was contaminated** - the added file
+was still on disk, so every target check also failed on it - and was discarded; the file was
+removed (`unit396-clean.sh`), `deps.sh` now cleans `Cw` before and after each chain, and the pass
+re-run (`unit396-deps13.sh`). The failing files by chain:
+
+| Applied first | Target `--check` fails on |
+|---|---|
+| nothing | CwDecoder:422, CwProbabilisticDecoder:1262, CwProbabilisticStream:148 |
+| piece 1 | the same three |
+| piece 2 | CwDecoder:422, CwProbabilisticStream:148 |
+| piece 3 | the same three |
+| piece 5 | CwDecoder:422, CwProbabilisticDecoder:1262 |
+| 2, 3 | CwDecoder:422, CwProbabilisticStream:148 |
+| 1, 2, 3 | CwDecoder:422, CwProbabilisticStream:148 |
+| 1, 2, 3, 5, 12 | CwDecoder:422 (12 itself rc 1 on that chain) |
+| 1, 2, 3, 5 to 12 | CwDecoder:422 (12 itself rc 1) |
+
+Needs 2 and 5 and whatever the `CwDecoder` hunk stands on: *dependent, out*. `src` clean after.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
