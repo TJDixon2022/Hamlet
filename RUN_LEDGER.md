@@ -228,3 +228,5 @@ the owner reads instead of watching.
 | 1 | 2026-09-23T08:10 | 2026-09-23T08:58 | complete | 5.784130800000002 | ran unattended, 111 turns, 9 denied call(s) worked around, report valid |
 | 1 | 2026-09-23T08:59 | 2026-09-23T08:59 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |
 | phase | 2026-09-23T09:32 | 2026-09-23T09:32 | failure | 0 | STOPPED, AND A STOP IS FAILURE - refused: ADVANCES named no step and criterion, and no unit or criterion it unblocks |
+| 1 | 2026-09-23T09:35 | 2026-09-23T10:11 | complete | 2.381359200000001 | ran unattended, 85 turns, 8 denied call(s) worked around, report valid |
+| 1 | 2026-09-23T10:12 | 2026-09-23T10:12 | note | none - not a run | blocker-clear - cleared a blocker: criterion 3.6 |

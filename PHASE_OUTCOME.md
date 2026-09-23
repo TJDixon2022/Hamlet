@@ -418,3 +418,34 @@ TASK 2, THE CAPTURE AT a902cdf8: worktree C:/Source/HamLet-wt403, HEAD's CwDecod
 TASK 3, THE FIXTURES: TheCapturesThatDecodeKeepDecodingTests 37 of 37 at both builds, no case differs in characters, elements, unsure or tone, commit c4db4090.
 TASK 4, THE EXIT ROUND: floors 37 of 37 every row identical to entry, 13 of 13, 2 of 2; ENGINE 178 of 178 in 372 s; APP 276 and 277 of 278, the three losses dispatcher loops before any assertion, different names in each run, 278 counting neither way. git diff 6c287f0f HEAD over src prints nothing.
 FATE: executed, complete at task 4 of 4, tasks 0 to 4, none dropped; the capture reads the same under both builds, and so do all 37 capture cases.
+
+## UNIT 1 - STEP 3
+
+STEP: 3
+APPROACH: decode Tim's 12:55 UTC capture through the decoder at HEAD and at a902cdf8, the commit before unit 402's speed repair, and print both transcripts with their counts, changing no file under src
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Section 4 says nothing blocks a criterion, and item 4 hands Tim the question of why last night's reading differed, which is a diagnostic question about decode quality and not a decision about keying, money or what the product promises the operator.
+MOVE: work around
+WHY: PHASE_PLAN.md step 3 orders the remaining repairs one at a time under R49, and the operator reports the decoder reading worse on the air than before 7e65aac4, so whether that commit cost the decoder decides whether the remaining repairs are built on a decoder that reads
+DECIDED: the worktree path C:/Source/HamLet-wt403, the printer's name and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R49, R50, R51, R55, section 6; CLAUDE.md 0.0 and 0.2; HM-DEC-091; HM-DEC-155; HM-DEC-139; FACT-004
+COST: 2.381359200000001
+ACCOMPLISHED: Tim can see what the same recording reads as under both decoders, and rule on 7e65aac4 from two transcripts rather than from one impression
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 3.1 to 3.5 are ticked with measured support, but 3.6 is still open with six reds, #6, #15, #42, #43, #44 and #45, lacking a verdict, and this unit only compared two builds on one capture, which adds nothing toward 3.6.
+ADVANCED: blocker
+ATTEMPT: 3.6 | unit 1 launched 2026-09-23T13:34:59.001Z | blocker | executed | decode Tim's 12:55 UTC capture through the decoder at HEAD and at a902cdf8, the commit before unit 402's speed repair, and print both transcripts with their counts, changing no file under src
+
+## UNIT 404 - STEP 4
+
+STEP: 4
+APPROACH: apply the fourteen chained rework pieces inside their dependency chains found by git apply --check, overlapping chains merged, each chain one commit judged once on the three floor tests and the printer distances, kept with floors raised or reverted, a row per chain
+MOVE: work around
+WHY: 4.7 is the one open criterion of step 4 and nobody has tried it - units 395 to 397 left the fourteen unapplied because section 6 then allowed only a pair, and R55 made a chain of any length one piece; 3.6's first attack is recorded no and unit 403 cleared its blocker without moving it, and section 5 of the plan routes to the independent step when one stalls, so the loop works 4.7 and returns to 3.6.
+STATE: partial
+DECIDED: author's, overrulable - a chain is the smallest ordered set of earlier pieces after which the piece passes git apply --check; nested chains are judged once as the longer and overlapping chains are merged; chains are applied smallest first; a setting a piece shipped off stays off; task 3's record of the six reds is not a 3.6 attempt; the per-type timeouts
+LICENCE: PHASE_PLAN.md R50, R51, R55, criteria 4.3, 4.4 and 4.7, section 6 on chains, floors and transmit files, section 3; CLAUDE.md 0.0 and 0.2; HM-DEC-091; HM-DEC-155; HM-DEC-165
+ADVANCES: step 4 criterion 7
+COST: one session, five tasks, 0 to 4, committed per task and per chain; task 3 is the drop candidate.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.90 to 1.13.91. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 403; set to 404 - the fourteen go back in as chains and CURRENT_STEP 4. HEAD at entry bc2484d5, no commit after it; 7e65aac4 is the newest commit touching src; the eleven transmit files print nothing against 7e209cb4. ENGINE line 178 of 178 in 372 s; APP line 277 of 278 in 170 s, Unit376TheTopBandTests lost to the dispatcher loop before any assertion, re-run once 278 of 278 in 169 s. Floors: captures 37 of 37 in 92 s, every row identical to unit 395 section 3.1; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s. Printer: 021410 47 characters, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 characters, ABOVE 2, BREEZE 2, settled distances.
