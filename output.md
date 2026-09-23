@@ -1,186 +1,212 @@
 ```
 READ IN THIS ORDER.
 
-A. PHASE GOAL - CW decodes again. Steps 1 and 2 done; step 3 partial on 3.6,
-   six reds open; step 4 partial on 4.7 alone; step 5 is Tim's.
-B. THIS STEP - step 4, the August rework judged on numbers. 4.1 to 4.6 met;
-   4.7, the fourteen as chains, met by this unit: 2 chains judged, 14 of the
-   fourteen with a verdict, both chains out, ticked in PHASE_PLAN.md.
-C. THIS REPORT - the chain table leads section 3; section 4 raises 4 items
-   and none stands in the way of 4.7.
+A. PHASE GOAL - CW decodes again. Steps 1, 2 and 4 done; step 3 partial on
+   3.6 alone; step 5 is Tim's.
+B. THIS STEP - step 3, the inherited reds. 3.1 to 3.5 met; 3.6, 2 of eight
+   with a verdict - none of #6 #15 #42 #43 #44 #45 went green at a kept
+   commit; #45 and #6 went green only under changes put back for lowering
+   capture rows; #6 #15 #43 #44 #45 stay open at attack 2 with their counts
+   restarted, #42 stays open, not attacked.
+C. THIS REPORT - the six-red table leads section 3;
+   section 4 raises 5 items and items 1, 2 and 3 stand in the way of 3.6.
 ```
 
 ```
-UNIT:       404 - complete at task 4 of 4, tasks 0 to 4, none dropped - 2026-09-23 12:22
+UNIT:       405 - complete at task 4 of 4, tasks 0 to 4, none dropped - 2026-09-23 13:27
 PHASE GOAL: get the engine's CW decoder back to what it produced on 2026-08-25, held there by three floor tests, then let Tim judge it at the radio
-UNIT GOAL:  put the fourteen August rework pieces that could not go in alone back in with the pieces they stand on, one commit per chain, and keep or remove each chain on the floors and the named numbers
-ADVANCED:   yes - step 4 criterion 7, every one of the fourteen has a verdict and each chain has its row
-NUMBER:     chains judged 2, kept 0, out 2, of the fourteen 14 with a verdict
-DRIFT:      0
+UNIT GOAL:  make a second, better-aimed try at each of the six test recordings the decoder still gets wrong, starting from the causes unit 402 named, and keep only a change that clears one without costing any other recording
+ADVANCED:   no - no red reached a verdict; the two changes that turned a red green each lowered real capture rows, and the rest moved a number without turning a test green
+NUMBER:     of 3.6's eight 2 with a verdict; this unit 0 green, 5 moved, 1 not attacked
+DRIFT:      1 consecutive units without advance  (was 0)
 ```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4. All tasks, 0 to 4, were done and none was dropped.** Machine
+**Complete at task 4 of 4. All of tasks 0 to 4 were done and none was dropped.** Machine
 QUIVERFULL, project Hamlet, branch main. The gate held: SHACK_FACTS.md and
 CwProbabilisticDecoder.cs are present, there is no CoreHMI.sln or MURC.sln, and the root is
-C:\Source\HamLet. Section 5 matched the tree with no mismatch: HEAD was bc2484d5, 7e65aac4 was the
-newest src commit, all fourteen hashes are in unit395-rework.md, and the printer exists. The
-floors at entry were 37, 13 and 2. Every commit was pushed and every push succeeded: d8f07a93,
-95094c02, 3c742c4a, 675d846f, f9f22961, bfd97867, 264b97ce, d062d5e9, ad2b80da, then the task 4
-commit.
+C:\Source\HamLet. Every item in section 5 matched the tree, with no mismatch. Commits `63c28f7a`,
+`a0256e3e`, `d40d6653` and `ef34d601` were each pushed and each push succeeded. The report commit
+follows them, and whether its push succeeded is in `PROJECT_STATUS.md`'s NOTE, written after the
+push. The session ran from 12:28 to 13:27, well inside
+task 2's clock rule, so #6 was attacked.
 
-**Task 0, record and entry round.**
-- The version went from 1.13.90 to 1.13.91. PHASE_STATUS.md now reads 404 and CURRENT_STEP 4.
-- Engine line: 178 of 178 in 372 s.
-- App line: 277 of 278. One name was lost to the dispatcher loop before any assertion. The re-run
-  gave 278 of 278.
-- Captures: 37 of 37 in 92 s. Every row is identical to unit 395's section 3.1.
-- Adjudicated: 13 of 13. Clean synthetics: 2 of 2.
-- Printer: WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2.
+**Task 0.** Version 1.13.91 to 1.13.92. `PHASE_STATUS.md` was set to 405 and step 3, and
+`PHASE_OUTCOME.md` got its entry. The `f74b6d51` diff over `src`, `tests` and the list was empty,
+so the lines at entry are unit 404's exit: engine 178, app 278. Every type was run at entry and
+matches unit 404's numbers (table in `docs/phase-cw/unit405-reds.md` section 1).
 
-**Task 1, the trace.** No code was written. The pieces are the 45 Cw-only diffs. They were checked
-on a scratch repo that holds HEAD's Cw folder. For each of the fourteen, the search:
-1. tried the piece alone;
-2. tried it after its named dependencies;
-3. tried it after the whole prefix;
-4. then removed links newest first, keeping a removal only if nothing refused more.
+**Task 1, the trace.** A new printer, `TheSixRedsTraceTests`, asserts nothing and is on neither
+line. Its output is in `.run-unit/unit405-trace.txt`. It named a line for five of the six reds
+and a property for #42:
 
-That produced an irreducible chain for each of the fourteen (docs\phase-cw\unit404-chains.md
-section 2). The grouping rules gave **two chains, not unit 395's three**:
-- S has 4 pieces.
-- D has 24 pieces, because every decoder-side chain runs through 3e84ac74 and f27174b5.
+- **#15 and #43:** the doubled fit comes from the unit estimator, not the speed grid.
+  `CwUnitEstimator.cs` 96, through the tenth-percentile seed at 507, takes a few 15 to 35 ms noise
+  marks as the dit cluster. At the read where #15 leaves 12 for 22.9, the grid itself prefers 12.
+- **#44:** held gaps of 15/1127/323 ms, from `MeasureGaps` 221 to 231, put the character gap past
+  the word gap. Every element then reads as its own letter.
+- **#45:** the flush settles a trailing unreadable character (`CwProbabilisticStream.cs` 501 to
+  507). With B1 and B2 applied uncommitted, tightfist-easy settles `VVVTESTDETESTK`.
+- **#6:** `C` and `Q` are whole in the envelope. The stream mixes them at the tracker's unmeasured
+  600 Hz, 40 Hz off the sender, so they arrive 8 dB down and the lattice reads them as key-up
+  (`CwDecoder.cs` 585 to 589).
+- **#42:** the only property separating the fixture's guard spans from the real captures' is the
+  generator's flat -82 dBFS residue. 46 of `013347`'s 59 floor characters and 28 of `013622`'s 55
+  sit inside the guard's own-send spans.
 
-**A decision the session made: two build links.** 0f2089f3 calls CwPitchRanking, which b48d1158
-creates. efcd5242 calls CwSpectralPeak, which ade52536 creates. The apply check cannot see a
-type. Without these two pieces, D could not compile by construction, and its verdict would have
-said nothing about the work. So both were added to D. Section 4 item 2 covers this.
+**Task 2, the attacks.** Five changes were built and measured one type per invocation, and none
+was kept. `src` at exit is identical to entry.
 
-**Task 2, the chains, smallest first.**
-- **S** applied with no conflict and needed no adaptation. It built clean. Nothing moved, so it is
-  out.
-- **D** applied under --3way with no conflict. Three pieces had hunks not taken:
-  - the CwPitchChoice.cs hunks of 4c6e4321 and 0f2089f3, already in the tree (decision 3);
-  - the meter hunk of 9c2a7f99, which the build did not need (parked as 397 item 2).
+- **A1**, B1 and B2 together: #45 green, but 6 capture rows lower.
+- **S1**, at line 96: #15 0.54 to 0.61 and #43 moved, but 14 capture rows lower.
+- **G1**, gap order: #44 moved at no cost, but turned no red green.
+- **M1 and M2**, re-mixing the held window at the tracker's new pitch: #6 0.75 to 0.86, green,
+  but 11 and 10 capture rows lower.
 
-  **Adaptations, all in src\Hamlet.RadioEngine\Cw, all under decision 4.** In each case the
-  chain's member was kept and unit 392's seam copy removed. There were five build errors:
-  - CwCharacter.cs: WidestRecordedLlr and MarginLlr, CS0102;
-  - CwDecoder.cs: Retuned, CS0111;
-  - CwDecodeReport.cs: the PitchWasAsserted and PitchChoice properties, CS8907.
+Widening the printer's pitch line then showed that on every single-sender case the misses follow
+`CwToneTracker.Switch` moving the mixdown 25 to 85 Hz off the sender, reported as measured: 575
+for 615 on coverage-easy and exchange-easy, 700 for 640 on #15, 550 and 725 for 640 on #6's two
+tails.
 
-  After that it built clean with warnings as errors. It was then measured and is out. The numbers
-  are in section 3.
+**Task 3.** Six rows marked *attack 2* were added to `reds-3.6.md`, and the attack table to
+section 3 of `unit405-reds.md`. No red went green at a kept commit, so the failing set's closing
+line and 3.1's tick are unchanged. 3.6 is not ticked.
 
-**Task 3.** No chain was kept, so this task measured HEAD again. All six reds read exactly as unit
-402 left them. This was not a 3.6 attempt.
+**Task 4.** The exit round is identical to entry on every floor and every type. The app line lost
+three different names to the dispatcher loop before any assertion across two runs, and counts
+278. 3.5 is re-confirmed.
 
-**Task 4, exit round.**
-- Engine line: 178 of 178.
-- App line: 277 of 278. The one name lost was a different one, again to the dispatcher loop before
-  any assertion. The re-run gave 278 of 278.
-- Floors: 37 of 37 with every row identical to entry, 13 of 13, 2 of 2.
-- The transmit files show no diff against 7e209cb4.
-- git diff bc2484d5 HEAD over src shows no diff, and over src\Hamlet.App it also shows none.
-- 4.7 is ticked. **No regression:** nothing green at entry is red at exit.
+**Decisions the session made for itself**, reproduced in full:
+
+1. **#42 was not attacked, although task 1 found a separating property.** The instruction says
+   the change must be conditioned on the property found. The property found is that the
+   fixture's mutes sit at -82.8 to -81.6 dBFS in every span, which is the generator's residue
+   constant (`CwFixtureGenerator.cs` 672 to 688), with the fixture at 8 kHz and 15 dB quieter.
+   A skip conditioned on that would turn #42 green on synthetic audio and never fire on the air,
+   which would present a test result as a repair (CLAUDE.md 0.0, §12.5, HM-DEC-091). I read
+   decision 4 as covering a property that does not separate the operator's sending from anyone
+   else's. **Rejected:** building the residue-keyed skip to show the number move. It would have
+   been a measurement of the fixture, not of the decoder.
+2. **M2 replaced M1 on the same cause**, as unit 402's A2 replaced A1. M1 re-mixed whenever the
+   pitch moved while the text was empty, which is broader than the trace. M2 re-mixes only before
+   the window's first read, which is the stretch the trace named. Both are recorded, and both are
+   out.
+3. **S1 and G1 were gated beyond the keep rule's first answer**, for the record. S1's cost on the
+   captures (14 rows) is now known. G1 was run on every floor and every red-holding type, so the
+   next unit inherits a change that is measured and costs nothing.
+4. **The tracker switch found in task 2 was not attacked.** Task 1 did not name it. The tracker's
+   switching is governed by HM-DEC-095 and HM-DEC-127, and the cold-start bin choice is
+   HM-OPEN-033, scheduled as its own work order. It is written up as the common cause for the
+   next unit (section 4, item 3).
+5. **B2 was rebuilt from unit 402's description**, because 402's diff is not in the tree: at the
+   flush, a character the alphabet does not know, still inside the delay, is not settled. It
+   reproduced 402's own-type result, #45 1 + 3 on `CharacterDecoded`.
+6. **The status file was written as `STATE: EXECUTING` and `BALL: code`.** Unit 404's run script
+   wrote `ACTIVE` and `claude`, which are not among CLAUDE.md 13.1's values.
 
 ## 2. What the owner should expect
 
-Tim, putting the August work back in whole did not earn any of it a place. The survey pieces
-changed nothing the floors or the printer measure. The decoder group moved one number, ABOVE on
-013637 from 2 to 1, but it cost a lot:
-- 021410 fell from 47 characters to 40;
-- three captures and both clean synthetics went below their floors;
-- decoding ran so much slower that the captures test got through 5 of its 37 cases in the time
-  the whole set took before.
+Nothing the decoder does has changed. `src` is byte-for-byte what it was at the start. Five of
+the six reds moved under a change built for them, and none of those changes was kept:
 
-Both groups are back out. The tree's src is byte-identical to this morning's, and the decoder on
-the air is the one you had at the start of the unit. **What will look wrong but is not:**
-- The git log shows a 24-piece decoder commit landing and being reverted.
-- The working tree still carries loop files this unit did not write and did not commit:
-  .run-unit state files, SESSION.lock and a report copy.
+- #45's trailing placeholder went away, but six recordings' floors count their own trailing
+  placeholders and fell by one to three characters.
+- #6's first word came back at 0.86 against a 0.79 bar, but ten recordings' counts moved, some up
+  and some down by as many as ten characters.
+- #15 went from 0.54 to 0.61, and coverage-easy lost all seven strangers on the settled
+  transcript, but fourteen recordings fell.
+- #44's second call came out whole on the settled transcript, and nothing else moved, but no test
+  turned green, so the rule sends it back.
+
+#42 was not touched, because the only thing that tells its fixture apart from the two real
+recordings is a constant in the fixture generator.
+
+**What will look wrong but is not:** `reds-3.6.md` shows every attacked red at *sequence 0 of 3*
+after unit 402 recorded *attempt 1 of 3*. That follows the record head's own rule that movement
+restarts the count, as decision 3 asked; the disagreement is item 4 below. `TheSixRedsTraceTests`
+appears in the test list and passes, because it asserts nothing.
 
 ## 3. What you should see
 
-**The chain table.** Distances are on the settled text.
+| red | cause as traced | change | before | after | moved | kept | sequence |
+|---|---|---|---|---|---|---|---|
+| #6 | start of a bare call mixed at the unmeasured 600 Hz for a 640 Hz sender, read as key-up; the tails follow a tracker switch to 550 and 725 Hz | M1, M2: re-mix the held window at the new pitch | 0.75 | 0.86, green | yes | no: captures 26 and 27 of 37 | 0 of 3, restarts |
+| #15 | dit cluster of noise marks, `CwUnitEstimator.cs` 96; upstream, mix at a measured 700 Hz for 640 | S1: marks under 0.45 of the element gap left out | 0.54 | 0.61 | yes | no: captures 23 of 37 | 0 of 3, restarts |
+| #42 | the only separating property is the generator's residue; the captures' floors count own-send slivers | none | 70 | 70 | - | not attacked | 0 of 3, broken |
+| #43 | as #15; mix at 575 Hz for 615 from 22 to 28.5 s | A1; S1 | 5 + 37 | A1 4 + 7; S1 6 + 25 | yes | no | 0 of 3, restarts |
+| #44 | held gaps 15/1127/323 ms, `MeasureGaps` 221 to 231; mix at 575 for 615 | A1; G1: an out-of-order gap reading is not separated | 3 + 21 | A1 0 + 7; G1 4 + 16 | yes | no: G1 cost nothing, no red green | 0 of 3, restarts |
+| #45 | the flush settles a trailing unreadable character | A1: B1 and B2 together | 1 + 3 | 0 + 0, green | yes | no: captures 31 of 37 | 0 of 3, restarts |
 
-| Chain | Pieces | Number before | Number after | Kept or out |
-|---|---|---|---|---|
-| S, the survey, carrying 4786c7e7 and f2e1db7a | 7fb89d5e, 44cf3fc8, 4786c7e7, f2e1db7a | 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; captures 37 of 37, adjudicated 13 of 13, synthetics 2 of 2 | every one of the 37 captures identical in characters, elements, unsure and tone; both texts and the five distances identical; 13 of 13; 2 of 2 | **out**, 3c742c4a reverted in 675d846f |
-| D, the decoder, carrying 386fdb5d, 4c6e4321, 0f2089f3, 62262b94, fc1ee77f, 68a18d66, a91d8fe7, efcd5242, aeea24f2, a37cfcff, ee2cba8d, 9c2a7f99 | 2068f868, 6fc36a1e, 3e84ac74, 9de394da, f27174b5, 386fdb5d, 4c6e4321, b48d1158, 0f2089f3, 62262b94, fc1ee77f, 71b4f044, 68a18d66, a91d8fe7, ade52536, efcd5242, 95a5e063, b7147b1f, 4935a4f8, e6b1ece7, aeea24f2, a37cfcff, ee2cba8d, 9c2a7f99 | the same | see the notes below the table | **out**, bfd97867 reverted in 264b97ce |
+**The answer to the question this unit was commissioned to ask:** a second attack from traced
+causes turned two of the six green, #45 and #6. Neither could be kept, because each lowers real
+capture rows. 3.6 stays at 2 of eight with a verdict.
 
-**Chain D's numbers after**, against the entry numbers above:
-- **Captures: killed at the 300 s timeout with 5 of 37 cases done.** At entry all 37 took 92 s.
-  - 013520: 60 to 62 characters.
-  - 001520: elements 45 to 39, **red**.
-  - 013637: 63 to 62 characters, **red**.
-  - 031948: 34 to 31 characters. It is anchored, so the count is printed and not asserted.
-  - 012922: 50 to 44 characters, **red**.
-  - 32 cases were not reached.
-- **Adjudicated: killed at 180 s.** 4 of 13 green, none red, 9 not reached.
-- **Synthetics: 0 of 2.** The expected text is `CQ DE W1AW K`; they gave `■■ ■■ W1AW K` and
-  `■Q DE W1AW K`.
-- **Printer.**
-  - 021410: **47 to 40 characters**; WEEKEND 5, THINKING 5, FLEX 1.
-  - 013637: 62 characters, 13 unsure; **ABOVE 2 to 1** (nearest `AB OVE`); BREEZE 2.
+**Gate numbers for each kept change:** none; no change was kept. The measured costs are in
+`docs/phase-cw/unit405-reds.md` section 3.
 
-The per-chain detail and the build errors quoted in full are in docs\phase-cw\unit395-rework.md
-section 2, under *Chains under 4.7, judged by unit 404*. The trace is in
-docs\phase-cw\unit404-chains.md.
+**Exit round, at `ef34d601`:**
 
-**Floors raised: none.** No chain was kept.
+| line or type | exit |
+|---|---|
+| engine line | 178 of 178 in 369 s |
+| app line | 277 of 278, then 276 of 278; three different names lost to the dispatcher loop before any assertion, each green in the other run: 278 of 278 |
+| captures, adjudicated, synthetics | 37 of 37 with every row identical to entry, 13 of 13, 2 of 2 |
+| the ten red-holding and speed-reader types | each identical to entry |
+| transmit files against `7e209cb4`; `src` and `src/Hamlet.App` from `f74b6d51` | nothing printed |
 
-**Task 3: the six reds at HEAD, beside unit 402.**
-
-| Red | Test | Unit 402 before | Unit 404, HEAD |
-|---|---|---|---|
-| #6 | CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp, 25 wpm | 0.75 of the message, bar 0.79 | 0.75 |
-| #15 | CwAcquisitionWindowTests.TheSlowEndReadsTheMessage, 12 wpm 18 dB | 0.54 | 0.54 |
-| #42 | CwReceiverFixtureTests.NothingIsEmittedDuringTheOperatorsOwnTransmission | 70 | 70 |
-| #43 | TheEasyTierIsReadWhole coverage-easy, unreadable + not in message | 5 + 37 | 5 + 37 |
-| #44 | TheEasyTierIsReadWhole exchange-easy | 3 + 21 | 3 + 21 |
-| #45 | TheEasyTierIsReadWhole tightfist-easy | 1 + 3 | 1 + 3 |
-
-Totals by type:
-- CwAcquisitionWindowTests: 10 of 12.
-- CwReceiverFixtureTests: 23 of 27.
-- CwAdjudicationTests: 11 of 11.
-- CwFixtureTests: 22 of 23. The red case is fading-18wpm's confident-mistakes case, the one
-  already parked as 400 item 4.
+**Visible change: none.** This unit changed no decoder code. What it leaves is a traced cause
+common to four of the reds, and one measured, zero-cost change (G1) for the next unit to pair with
+a green.
 
 ## 4. What's blocking us
 
-Nothing blocks 4.7 or any other criterion. Four items are recorded for the arbiter.
-
-1. **The merge rule judged twelve of the fourteen as one 24-piece verdict.**
-   - **Ruling asked: none needed for 4.7. It is recorded so the reader knows what the verdict
-     covers.**
-   - **Reasoning:** the instruction's rule merges chains that share any piece. 3e84ac74 and
-     f27174b5 sit in every decoder-side chain, so the lattice, the estimator and the hooks became
-     one chain.
-   - That chain carries two links that were already out on their own for measured harm:
-     - e6b1ece7, which alone turned 14 captures red in unit 397. Only a37cfcff and ee2cba8d stand
-       on it.
-     - 95a5e063, which alone raised unsure on 25 captures in unit 396. Only aeea24f2 and
-       9c2a7f99 stand on it.
-   - So D's result cannot say whether the lattice chain, fc1ee77f and 68a18d66 on 2, 3, 5, 12 and
-     13, would have held the floors on its own. Inside D it moved ABOVE by one.
-   - **Rejected:** splitting D myself. The rule is the author's, and the instruction marks it as
-     overrulable by the author, not by the session.
-2. **Two build links added by the session.**
-   - **Ruling asked: none. Recorded as a decision made for itself.** b48d1158 and ade52536 went
-     into D even though they are not in any minimal apply-check chain.
-   - **Reasoning:** 0f2089f3 and efcd5242 call the types those two pieces create. Without them
-     the chain fails to compile by construction, and its verdict would say nothing about the
-     work.
-   - **Rejected:** the literal chain. It turns a guaranteed compile error into an out that tells
-     nobody anything.
-3. **Chain D made the decode several times slower,** and the fixed per-type timeouts cut its
-   measurement short. The captures test ran 5 cases in 300 s, and the printer took 61 s against
-   5 s.
-   - **Ruling asked: none.** The verdict does not depend on the cases not reached, because three
-     reds on assertion already put the chain out.
-   - The slowdown was measured and not traced. A future unit that reapplies any part of D should
-     expect the engine line's 480 s to be at risk.
-4. **The dispatcher loop lost one app name at entry and one at exit,** a different name each
-   time, both before any assertion. Each re-run was 278 of 278. **Ruling asked: none.**
+1. **#42 cannot turn green by a decoder repair without lowering two capture floors.** Stands in
+   the way of 3.6.
+   - **Ruling asked:** may the character floors of `cw-2026-08-17-013347` (59) and
+     `cw-2026-08-17-013622` (55) be re-expressed so they do not count characters read inside
+     the transmit guard's own-send spans? Or is #42 to be judged some other way?
+   - **Reasoning:** 46 of `013347`'s 59 floor characters and 28 of `013622`'s 55 sit inside
+     spans the guard itself marks as the operator transmitting, and they are the `E I H S`
+     slivers #42 exists to forbid. Any skip that fires on real own-send audio takes them off the
+     floors, which section 6 forbids. The only property that separates the fixture is the
+     generator's residue. So #42 can be neither greened nor honestly attacked, and it can never
+     reach section 6's three-attack parking.
+   - **Rejected:** a skip keyed to the flat residue, which is a fixture artifact; and lowering
+     the floors in this unit, which section 6 forbids and is the owner's call.
+2. **#45 and #6 each have a green that the capture floors refuse.**
+   - **Ruling asked:** does a change that turns a red green while moving capture rows count as
+     *a floor lowered*, when the rows lost are trailing placeholders (#45)? Or, for #6, when rows
+     move both ways, `002016` up 75 to 93 and `021410` down 47 to 37?
+   - **Reasoning:** the keep rule counts any lower row. B2 removes only placeholders the flush
+     settles after the audio ends. M2 re-takes the envelope at the pitch the tracker moved to
+     before the first read, which changes real decodes in both directions. HM-DEC-091 says a
+     change that costs one recording is not a fix, and I did not keep either.
+   - **Rejected:** narrowing either change until the floors hold. That would be fitted to the
+     floors rather than traced.
+3. **The shared upstream cause is `CwToneTracker.Switch` (1092, 1154 to 1169), and a 3.6 unit
+   needs leave to change it.** Stands in the way of #15, #43 and #44 in practice.
+   - **Ruling asked:** may the next 3.6 unit change the tracker's switch, or does HM-OPEN-033's
+     own work order come first?
+   - **Reasoning:** on every single-sender case, every miss follows the tracker moving the mix 25
+     to 85 Hz off the one station, reported as measured. The estimator and gap lines this unit
+     attacked are where that wrong pitch becomes a wrong reading. `CwDecoder.cs` 658 to 665
+     already says the fault is upstream.
+   - **Rejected:** attacking it here. Task 1 did not name it, and HM-DEC-095 and HM-DEC-127 rule
+     that code.
+4. **`reds-3.6.md`'s head and unit 402's rows disagree about the count, as section 5 expected.**
+   - **Ruling asked:** which counts, the head's *movement restarts the count* or the rows'
+     *attempt 1 of 3*?
+   - **Reasoning:** this unit's rows follow the head (decision 3), so every attacked red is at 0
+     of 3. Under the head's rule, a red whose attacks keep moving it never reaches parking, so
+     section 6's three-attack exit may not arrive for any of the six. That bears on stop 10's
+     two-unit count, which the arbiter flagged as the owner's to weigh.
+   - **Rejected:** rewriting either, as the instruction says.
+5. **G1 is measured and costs nothing, but the keep rule sends it back.** Does not block.
+   - **Ruling asked:** may a change that moves a red on its own event and on the settled
+     transcript, with every floor and type identical or up, be kept without a red turning green?
+   - **Reasoning:** G1 took #44 from 3 + 21 to 4 + 16, and settled from 0 + 7 to 0 + 3 with the
+     second call whole. It kept captures 37 of 37 (`021825` up by one), adjudicated 13, synthetics
+     2, and every type identical. It was put back under unit 402's keep rule, which the
+     instruction says not to re-argue.
+   - **Rejected:** keeping it. That is the rule's owner's change to make, not the session's.

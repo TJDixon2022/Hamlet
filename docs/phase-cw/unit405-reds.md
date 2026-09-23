@@ -263,3 +263,30 @@ floors they would lower.
 **3.6 is not ticked. Of eight, two have a verdict** (#24 and #41, green by unit 402). None of the
 six went green at a kept commit, so the closing line of `docs\unit239-failing-set.txt` and 3.1's
 tick sentence are unchanged.
+
+## 4. Exit
+
+HEAD `ef34d601` at the round, one type per invocation, `--no-build` after one build.
+
+| line or type | entry | exit |
+|---|---|---|
+| engine carry-forward line | 178 of 178, unit 404's exit (decision 5) | 178 of 178 in 369 s |
+| app carry-forward line | 278 of 278, unit 404's exit | 277 of 278 in 164 s, then 276 of 278 in 153 s. Each loss was a different name to the headless dispatcher loop before any assertion (`You've caused dispatcher loop` in `EnsureApplication`), and each is green in the other run, so each counts neither way: 278 of 278 |
+| `TheCapturesThatDecodeKeepDecodingTests` | 37 of 37 | 37 of 37 in 92 s, every row identical to entry |
+| `TheAdjudicatedReadingsKeepReadingTests` | 13 of 13 | 13 of 13 in 29 s |
+| `CwFixtureTests.TheCleanRecordingsDecodeExactly` | 2 of 2 | 2 of 2 |
+| `CwAcquisitionWindowTests` | 10 of 12, #6 0.75, #15 0.54 | identical |
+| `CwReceiverFixtureTests` | 23 of 27, #42 70, #43 5 + 37, #44 3 + 21, #45 1 + 3 | identical |
+| `CwFixtureTests` | 22 of 23 | identical |
+| `CwAdjudicationTests`, `CwEmissionGateTests`, `CwDisplacementFloorTests` | 11, 8, 6 | identical |
+| `CapturedSignalTests`, `CwSpeedSilenceTests`, `WhyTheGateDidNotFireTests`, `CwTwoStationTests` | 13, 4, 2, 5 | identical |
+
+The eleven transmit files print nothing against `7e209cb4`. `git diff f74b6d51 HEAD` over `src`,
+and over `src\Hamlet.App`, prints nothing. Over `tests` it prints only the new printer,
+`TheSixRedsTraceTests.cs`, which asserts nothing and is on neither line.
+
+**3.5 re-confirmed on its own sentence.** Every commit of this unit (`63c28f7a`, `a0256e3e`,
+`d40d6653`, `ef34d601` and the report) left `src` identical to entry. The three floor tests are
+green at entry and at exit, with every capture row identical, and both carry-forward lines are
+green. The changes that turned floors red in task 2 were measured uncommitted and put back before
+any commit.
