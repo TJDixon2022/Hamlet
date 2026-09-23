@@ -38,7 +38,6 @@
        unedited. Step 3 retires or repairs each one under R49, one at a time, and
        takes its line out of this group when it does. -->
   <ItemGroup>
-    <Compile Remove="Audio\TheReadPathDoesNotAllocateTests.cs" />
     <Compile Remove="Cw\AMoveStartsTheDecoderFreshTests.cs" />
     <Compile Remove="Cw\AStationIsABinThatSwingsTests.cs" />
     <Compile Remove="Cw\EveryElementCarriesItsOwnPitchTests.cs" />
