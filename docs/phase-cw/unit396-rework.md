@@ -283,7 +283,14 @@ reverted next.
 clean (`unit396-pair32.sh`), pair commit `832a3db3`. Build 0 errors in 6 s. Captures **37 of 37
 in 93 s wall**, 1.54 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 3 s.
 Printer: the seven SETTLED lines identical to section 1. Transmit files nothing. Out, reverted
-next. **The clock rule fired here**; piece 33 was not started.
+next.
+
+**Piece 33, `4935a4f8`, task 2, measured.** Started 01:18:51, minute 41. Patch 83 lines,
+`CwUnitEstimator.cs`, 71 insertions and 1 deletion. `--check` rc 1 at 345; `--3way` rc 0, merged
+clean. Piece commit `8b709643`. Build 0 errors in 6 s. Captures **37 of 37 in 93 s wall**, 1.54
+min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 3 s. Printer: the seven
+SETTLED lines identical to section 1. Transmit files nothing. Out, reverted next. **The clock rule
+fired after it**; piece 34 was not started.
 
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
