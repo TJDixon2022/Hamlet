@@ -278,6 +278,13 @@ insertions and 4 deletions; applied clean, piece commit `ee3dcca8`. Build 0 erro
 2 in 3 s. Printer: the seven SETTLED lines identical to section 1. Transmit files nothing. Out,
 reverted next.
 
+**Piece 32, `c8685e4d`, task 2, measured as a pair with 28.** Patch 106 lines, `CwSpectralPeak.cs`,
+90 insertions and 1 deletion; refused alone, the file absent. Piece 28's patch then 32's applied
+clean (`unit396-pair32.sh`), pair commit `832a3db3`. Build 0 errors in 6 s. Captures **37 of 37
+in 93 s wall**, 1.54 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 3 s.
+Printer: the seven SETTLED lines identical to section 1. Transmit files nothing. Out, reverted
+next. **The clock rule fired here**; piece 33 was not started.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
