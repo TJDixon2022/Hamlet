@@ -156,6 +156,19 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
   `cw-2026-08-17-013347` 59 to 48 characters, `013622` 55 to 13, and `VA3VRR`. So the guard also
   blocks hops on real captures where somebody else was sending. Put back.
 
+## Raised by unit 408, blocking no criterion
+
+- **408 item 1** - The 17:37 sidecar, `cw-2026-09-23-173723.txt`, is not in the tree, and the bench
+  replay of the WAV does not reproduce its counts: 46 named and 0 placeholders against the 85
+  emitted and 26 unsure the key file quotes. The sidecar counts the CW tab's whole session; the WAV
+  is the tap's last 30 s, read cold. A capture's sidecar and its bench replay describe two decoders
+  with different histories.
+- **408 item 2** - `CwEmissionGate.cs`, which instruction 408 named, does not exist; the bar is
+  `CwProbabilisticDecoder.CharacterMargin`. Its value was not raised, because every higher value
+  measured costs named characters (`docs\phase-cw\unit408-floors.md` section 4).
+- **408 item 3** - Where a word was nothing but a below-bar placeholder, the screen now shows two
+  spaces where it showed ` ■ `, since word gaps carry no evidence and are never judged.
+
 ## 3.6 reds parked as owed by the closing pass (R58, unit 408)
 
 R58 closes 3.6 on unit 408's single pass: whatever is still red after it is parked here with its
