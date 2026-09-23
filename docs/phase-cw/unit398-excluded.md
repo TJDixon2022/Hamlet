@@ -246,3 +246,29 @@ is in `docs\unit239-failing-set.txt` except #1.
 **The excluded files now:** 22 at entry; 3 deleted, 7 re-included; **12 remain excluded**, 11 in the
 engine csproj and the app's one - the 11 stays-whole engine files of section 2 and the app's file
 under decision 6.
+
+## 5. The exit round
+
+After the last commit of task 3, `7a297abf`. Both carry-forward lines as `docs\carry-forward-tests.txt`
+prints them, one build each, a status line before each; then the floors `--no-build` on the
+engine line's build.
+
+| Run | Entry, unit 397's exit under decision 4 | Exit |
+|---|---|---|
+| App line, line 7 | 278 of 278, 167 s | **278 of 278, 160 s**, nothing lost |
+| Engine line, line 9 | 176 of 176, 374 s | **176 of 176, 374 s** of 480 |
+| `TheCapturesThatDecodeKeepDecodingTests` | 37 of 37, 94 s | **37 of 37, 91 s**, every row identical to unit 397's exit, `diff` rc 0 |
+| `TheAdjudicatedReadingsKeepReadingTests` | 13 of 13, 29 s | **13 of 13, 29 s** |
+| `CwFixtureTests.TheCleanRecordingsDecodeExactly` | 0 of 2, R53 | **0 of 2**, `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■`, as at entry |
+
+**No regression**: nothing green at task 0 or at unit 397's exit is red here.
+
+- The eleven transmit files against `7e209cb4`: nothing.
+- `git diff --stat 5688a8a5 HEAD -- src`: nothing.
+- `git diff --stat 7e2abb7e HEAD -- docs/carry-forward-tests.txt docs/unit239-failing-set.txt`: nothing.
+- `git diff --stat 7e2abb7e HEAD -- tests`: 8 files, 833 deletions - the 3 deleted files
+  (`TheScoreSaysWhatItIsMeasuringTests`, `ThePosteriorSurvivesItsOwnArithmeticTests`,
+  `FittingKeyUpAgainstAssumingItTests`), the 4 trimmed (`TheReadPathDoesNotAllocateTests`,
+  `TheTapIsNotBehindTheDecoderTests`, `NothingActsOnTheAdmissionVerdictTests`,
+  `WhatDecodeScoringCostsTests`), and `Hamlet.RadioEngine.Tests.csproj`, 10 lines out. Nothing else.
+- `git worktree list`: the root and the three preflight trees.

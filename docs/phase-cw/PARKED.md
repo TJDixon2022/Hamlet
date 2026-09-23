@@ -81,3 +81,23 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
 - **397 item 4** - Section 5 mismatches of unit 397: `PROJECT_STATUS.md` at HEAD reads unit 390,
   `TASK 5 of 6`, not unit 396 `TASK 3 of 4`; the working copy was overwritten by this unit's
   first status call before it was read.
+- **398 item 1** - 15 facts in 7 engine files that stay excluded whole name an absent name and
+  assert none of the four, so they are retirable on R49's letter, and were left with their files
+  under decision 8 because a sibling fact asserts a decode result; each is a row of
+  `unit398-excluded.md` section 2 marked *retirable, left with the file*. 4 facts in those files
+  name nothing absent and are held with them.
+- **398 item 2** - The app's `ThePitchControlsAreOffThePanelTests.TheEngineStillCarriesTheCapability`
+  names `CwDecoder.AssertAt`, absent under `Cw` at HEAD, and asserts no decode result; retirable on
+  R49's letter, left with the file under decision 6 and R50 as the screen phase's. Its other two
+  facts name nothing absent.
+- **398 item 3** - `TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth` on
+  `cw-2026-08-18-003758`, re-included by unit 398, is red on a decode result: `AA4MP/4 QNIK` is not
+  in the text, which carries `EEEETMP/4 QNIKK`. Outside the 51-name set and off both carry-forward
+  lines; a repair for the decode units under R49.
+- **398 item 4** - Section 5 mismatches of unit 398: `PROJECT_STATUS.md` at HEAD read unit 390,
+  `TASK 5 of 6`, the working copy unit 397; `PHASE_STATUS.md` read `CURRENT_STEP: 0`, `WORK_INSTRUCTION:
+  397`; the instruction's table says `NothingActsOnTheAdmissionVerdictTests` asserts `CharactersEmitted
+  > 0` on audio, but the fact builds the report by hand with the literal 61 and reads no audio;
+  unit 392's quoted `CwAccuracy` is doc prose only in `TheCleanReadsStayCleanTests` and
+  `TheProbabilisticDecoderTests`, so both compiled and were re-included; the app file carries 3 facts,
+  2 of them `[AvaloniaFact]`.
