@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 407 - the station still keying, and #45's tail on the air's terms
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T15:13:44-04:00
-NOTE: Unit 407 task 0 entry round, speed readers green, tracker readers next: scoring running
+UPDATED: 2026-09-23T15:22:37-04:00
+NOTE: Unit 407 task 1 - trace run 10 of 10; still-keying property holds on every move off the sender but breaks on known-right moves, and 2 s of padding takes #45 from 1 to 4 settled placeholders; writing section 2
 
 ---
 
