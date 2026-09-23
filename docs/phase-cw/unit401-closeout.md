@@ -79,3 +79,66 @@ against the engine csproj's eleven `<Compile Remove>` items at lines 41 to 51:
 
 None of the eleven excluded files reads `CharacterDecoded`. Only `CwDisplacementFloorTests.cs` is
 touched by this unit; the others are left.
+
+## 2. The trace: the six displacement cases four ways, and #24
+
+`TheDisplacementFloorFourWaysTests.PrintTheRows`, one build of 8 s, run alone, 33 s, asserting
+nothing; output `.run-unit/unit401-fourways.txt`. Start 600 Hz, 18 wpm, `Message` as the
+displacement type's. Way 1 is `CharacterDecoded` at the test's noise (the type as it stands at
+entry); way 2 `CharacterSettled` at the test's noise; ways 3 to 6 `CharacterSettled` at 0.002,
+0.005, 0.01, 0.02. The sixth case prints its own band and 0.02 only. `image` and `elsewhere-400`
+generate the same audio (400 Hz from 600 at noise 0) and print the same rows, as they should.
+
+| case | way | band | Retunes | ends `CQ DE W1AW K` | text |
+|---|---|---|---|---|---|
+| image (#18) | 1 | 0 | 1 | no | `■ ■■ ■` |
+| image | 2 | 0 | 1 | no | `■ ■ ■ ■ ■ ■ ■A ■ ■ ■■` |
+| image | 3 | 0.002 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| image | 4 | 0.005 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| image | 5 | 0.01 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| image | 6 | 0.02 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| elsewhere-400 | 1 | 0 | 1 | no | `■ ■■ ■` |
+| elsewhere-400 | 2 | 0 | 1 | no | `■ ■ ■ ■ ■ ■ ■A ■ ■ ■■` |
+| elsewhere-400 | 3 | 0.002 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| elsewhere-400 | 4 | 0.005 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| elsewhere-400 | 5 | 0.01 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| elsewhere-400 | 6 | 0.02 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| elsewhere-500 | 1 | 0 | 1 | no | `■ ■■ ■` |
+| elsewhere-500 | 2 | 0 | 1 | no | `■ ■ ■ ■ ■ ■ ■A ■ ■ ■■` |
+| elsewhere-500 | 3 | 0.002 | 1 | yes | `■ ■ T TEET ETET ETET ETET EETT EETT E■ CQ DE W1AW K` |
+| elsewhere-500 | 4 | 0.005 | 1 | yes | `■ ■ ■T TEET ETET ETET ETET EETT EET■■ CQ DE W1AW K` |
+| elsewhere-500 | 5 | 0.01 | 1 | yes | `■ ■ ■ EEET VVV VVV CQ DE W1AW K` |
+| elsewhere-500 | 6 | 0.02 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| elsewhere-750 | 1 | 0 | 1 | no | `■ ■■ ■` |
+| elsewhere-750 | 2 | 0 | 1 | no | `■ ■ ■ ■ ■ ■ ■A ■ ■ ■■` |
+| elsewhere-750 | 3 | 0.002 | 1 | **no** | `■ ■ T TTTT TTTT TTTT TTTT TTTT TTT■■ ■■ OT W1AW K` |
+| elsewhere-750 | 4 | 0.005 | 2 | yes | `■ E ■ E I ■ ■ 5EE E ■E EE ■ VVV CQ DE W1AW K` |
+| elsewhere-750 | 5 | 0.01 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| elsewhere-750 | 6 | 0.02 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| elsewhere-875 | 1 | 0 | 1 | no | `■ ■■ ■` |
+| elsewhere-875 | 2 | 0 | 1 | no | `■ ■ ■ ■ ■ ■ ■A ■ ■ ■■` |
+| elsewhere-875 | 3 | 0.002 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| elsewhere-875 | 4 | 0.005 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| elsewhere-875 | 5 | 0.01 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| elsewhere-875 | 6 | 0.02 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| refused-before (#23) | 1 | 0.06 | 1 | no | `5V H VEVVVSVV I VVHVIVVV E KCTCGQQ N DEDE E WWAJ11AARW W N K` |
+| refused-before | 2 | 0.06 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| refused-before | 6 | 0.02 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+
+**Finding (a), the settled event alone:** it changes the sixth case's ending and no other. The
+sixth case (`NothingIsRefusedBeforeAnythingIsBeingRead`, noise 0.06) goes from the leading edge's
+`...WWAJ11AARW W N K` to `TV VVV VVV CQ DE W1AW K`. The five silent cases still show blocks on the
+settled transcript at noise 0.
+
+**Finding (b), the smallest band:** **0.005.** At 0.002 the 750 Hz case ends `OT W1AW K`; at 0.005
+all five silent cases end with `CQ DE W1AW K` and the image case shows `Retunes` 1. The 750 Hz case
+at 0.005 shows `Retunes` 2. `AStationElsewhereIsStillFound` asserts only the ending, so that is
+recorded here and does not fail the case. At 0.01 and 0.02 every case also shows `Retunes` 1.
+
+**#24**, the request `CwEmissionGateTests` builds (`CQ DE W1AW K`, 18 wpm, 620 Hz, amplitude 0.5,
+noise 0.02, seed 5), after `Flush`: `Report.CharactersEmitted` 9, `Reading.WordsPerMinute` 18.46,
+`Reading.Text` `' CQ DE W1AW K '`, `WordsPerMinute` **null**, `SpeedIsReacquiring` **True**; the
+settled transcript is `CQ DE W1AW K`. The reading has text and a speed inside 14 to 24; the guarded
+property returns null because `SpeedIsReacquiring` is true at the end of the signal
+(`CwDecoder.cs` line 445). The cause is under `src`. It is recorded here and not changed (R50,
+decision 5), and #24 stays red-open.
