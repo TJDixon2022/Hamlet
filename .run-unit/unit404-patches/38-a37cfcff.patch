@@ -1,0 +1,549 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwElementPitch.cs b/src/Hamlet.RadioEngine/Cw/CwElementPitch.cs
+new file mode 100644
+index 00000000..48fcd0b8
+--- /dev/null
++++ b/src/Hamlet.RadioEngine/Cw/CwElementPitch.cs
+@@ -0,0 +1,266 @@
++namespace Hamlet.RadioEngine.Cw;
++
++/// <summary>
++/// The frequency of one keyed element, measured over that element's own samples.
++/// </summary>
++/// <remarks>
++/// <para>**EVERY OTHER PITCH IN THIS ENGINE IS A PITCH FOR A WHOLE RECORDING.**
++/// <see cref="CwSpectralPeak"/> averages a spectrum over seconds, the tone survey
++/// ranks bins over its whole window, and the decoder mixes down at one number for
++/// as long as it is tracking. All three answer *where is the station*, and none of
++/// them can answer *were these two dahs sent by the same person*, because both
++/// questions have been folded into one average before either is asked.</para>
++/// <para>**THE RESOLUTION IS THE ELEMENT'S OWN LENGTH AND NOTHING BUYS PAST IT.**
++/// A transform over T seconds separates tones 1/T apart, so a 190 ms dah resolves
++/// to about 5 Hz and a 55 ms dit to about 18 Hz. The parabola below refines the
++/// peak *within* that limit, which is worth having; it does not lift the limit,
++/// and a caller comparing two elements has to carry the length of the shorter one
++/// as the error on the comparison (<see cref="ResolutionHz"/>).</para>
++/// <para>**IT MEASURES AND DECIDES NOTHING.** No admission, no tracking, no
++/// emission depends on a number from here. That is deliberate for the reason unit
++/// 055 recorded after a catastrophic regression: swing said whether a station was
++/// there and was fed to the mixdown as well, and the corpus fell from 0.894 to
++/// 0.470. A measurement added to the record is not the same thing as a
++/// measurement added to the decision path, and this one is the first kind.</para>
++/// </remarks>
++public static class CwElementPitch
++{
++    /// <summary>
++    /// How far either side of the mixdown pitch the peak is looked for, in hertz.
++    /// </summary>
++    /// <remarks>
++    /// **SIXTY, WHICH IS WIDER THAN THE FILTER THE ELEMENT CAME THROUGH.** The
++    /// decoder's integrator is 45 Hz wide
++    /// (<see cref="CwProbabilisticDecoder.IntegratorBandwidthHz"/>), so anything
++    /// this could find beyond about 22 Hz from the mixdown pitch has already been
++    /// attenuated on its way in. The search is deliberately wider than that: a
++    /// peak found at the very edge of the band is evidence the mixdown is
++    /// mispointed, and a search that stopped at the filter's own edge could never
++    /// produce that evidence.
++    /// </remarks>
++    public const double SearchHz = 60.0;
++
++    /// <summary>The shortest element worth measuring, in milliseconds.</summary>
++    /// <remarks>
++    /// **TWENTY, BECAUSE BELOW IT THE ANSWER IS WIDER THAN THE SEARCH.** A 20 ms
++    /// element resolves to 50 Hz, which is most of the band being searched, and a
++    /// figure whose error bar covers its own search range is not a measurement. A
++    /// shorter element gets <see cref="double.NaN"/>, which is *nobody measured*
++    /// rather than *it was at the mixdown pitch* (§0.0).
++    /// </remarks>
++    public const double ShortestMilliseconds = 20.0;
++
++    /// <summary>What an element of a given length can resolve, in hertz.</summary>
++    /// <param name="milliseconds">How long the element ran.</param>
++    /// <returns>The Rayleigh limit, or infinity for a length of nought.</returns>
++    /// <remarks>
++    /// The error a caller must carry on any comparison between two elements is
++    /// this figure for the shorter of the two. **A split between two senders that
++    /// does not clear it is a split invented by the measurement** (task 3).
++    /// </remarks>
++    public static double ResolutionHz(double milliseconds)
++        => milliseconds <= 0 ? double.PositiveInfinity : 1000.0 / milliseconds;
++
++    /// <summary>Measure one element's own frequency.</summary>
++    /// <param name="samples">The whole recording.</param>
++    /// <param name="sampleRate">Samples per second.</param>
++    /// <param name="aroundHz">The pitch the decoder was mixing down at.</param>
++    /// <param name="firstSample">The element's first sample.</param>
++    /// <param name="sampleCount">How many samples it spans.</param>
++    /// <returns>
++    /// The measured pitch in hertz, or <see cref="double.NaN"/> where the element
++    /// is too short to measure, runs off the end of the audio, or holds no peak.
++    /// </returns>
++    /// <remarks>
++    /// <para>**A DIRECT TRANSFORM AT THE ELEMENT'S OWN BIN SPACING**, rather than
++    /// a padded FFT. The element is whatever length it is, and zero-padding it to
++    /// a power of two would put the bins closer together without putting any more
++    /// information between them — the interpolation would then be fitting a
++    /// parabola through three samples of one main lobe and reporting a precision
++    /// the audio never had. Summing the transform at k/T for a handful of k costs
++    /// less than the pad and cannot mislead about its own resolution.</para>
++    /// <para>**HANN, BECAUSE A RECTANGLE'S MAIN LOBE IS TWO BINS WIDE.** A
++    /// parabola needs three points on one lobe to mean anything, and a rectangular
++    /// window rarely gives three. The Hann lobe spans four, at the cost of a
++    /// resolution figure 1.5 times the Rayleigh limit — which is why
++    /// <see cref="ResolutionHz"/> is the honest number to compare against and not
++    /// the interpolated spread.</para>
++    /// </remarks>
++    public static double Measure(
++        IReadOnlyList<float> samples,
++        int sampleRate,
++        double aroundHz,
++        int firstSample,
++        int sampleCount)
++    {
++        ArgumentNullException.ThrowIfNull(samples);
++
++        if (sampleRate <= 0 || firstSample < 0 || sampleCount <= 0
++            || firstSample + sampleCount > samples.Count)
++        {
++            return double.NaN;
++        }
++
++        var milliseconds = 1000.0 * sampleCount / sampleRate;
++
++        if (milliseconds < ShortestMilliseconds)
++        {
++            return double.NaN;
++        }
++
++        // The element's own bin spacing. Everything below is in units of it.
++        var binHz = (double)sampleRate / sampleCount;
++
++        var lowest = (int)Math.Floor((aroundHz - SearchHz) / binHz);
++        var highest = (int)Math.Ceiling((aroundHz + SearchHz) / binHz);
++
++        lowest = Math.Max(1, lowest);
++        highest = Math.Min(sampleCount / 2 - 1, highest);
++
++        // One bin either side of the peak is needed for the parabola, so a search
++        // with no room for three bins has no answer to give.
++        if (highest - lowest < 2)
++        {
++            return double.NaN;
++        }
++
++        var magnitudes = new double[highest - lowest + 1];
++
++        for (var k = lowest; k <= highest; k++)
++        {
++            var omega = -2 * Math.PI * k / sampleCount;
++            double real = 0;
++            double imaginary = 0;
++
++            for (var n = 0; n < sampleCount; n++)
++            {
++                // Hann, computed inline rather than cached: the window length is
++                // this element's and changes from one element to the next, so a
++                // cached table would be rebuilt every call anyway.
++                var w = 0.5 * (1 - Math.Cos(2 * Math.PI * n / (sampleCount - 1)));
++                var value = samples[firstSample + n] * w;
++                var angle = omega * n;
++
++                real += value * Math.Cos(angle);
++                imaginary += value * Math.Sin(angle);
++            }
++
++            magnitudes[k - lowest] = Math.Sqrt((real * real) + (imaginary * imaginary));
++        }
++
++        var peak = 0;
++
++        for (var i = 1; i < magnitudes.Length; i++)
++        {
++            if (magnitudes[i] > magnitudes[peak])
++            {
++                peak = i;
++            }
++        }
++
++        // **A PEAK ON THE EDGE OF THE SEARCH IS NOT A PEAK.** It is the largest
++        // thing that was looked at, which is a different claim, and it has no
++        // neighbour on one side to fit a parabola through.
++        if (peak == 0 || peak == magnitudes.Length - 1)
++        {
++            return double.NaN;
++        }
++
++        return Interpolate(magnitudes, peak, lowest, binHz);
++    }
++
++    /// <summary>Measure every mark in an element stream over its own samples.</summary>
++    /// <param name="elements">The stream the decoder walked.</param>
++    /// <param name="samples">The audio those hops index into.</param>
++    /// <param name="sampleRate">Samples per second.</param>
++    /// <param name="aroundHz">The pitch the decoder was mixing down at.</param>
++    /// <param name="hopMilliseconds">How long one hop is.</param>
++    /// <param name="firstHopAtSample">
++    /// Which sample the stream's hop nought sits at, for a window that does not
++    /// begin at the start of the recording.
++    /// </param>
++    /// <returns>The same elements, each mark carrying its own measured pitch.</returns>
++    /// <remarks>
++    /// <para>**GAPS ARE NOT MEASURED AND ARE NOT GIVEN A NOUGHT.** The frequency
++    /// of a stretch where nobody is keying is the frequency of whatever noise was
++    /// loudest, which is a real number and a meaningless one. They keep
++    /// <see cref="double.NaN"/>, which is the only honest entry (§0.0).</para>
++    /// <para>**THE HOP IS A CENTRE AND THE ELEMENT IS A SPAN.** The envelope's
++    /// hop <c>h</c> is taken at sample <c>h * hop</c>, so a mark running from hop
++    /// <c>a</c> to hop <c>b</c> spans the samples between those two centres. The
++    /// integrator that produced those hops is 33 ms wide and centred, so the
++    /// first and last few milliseconds of the span carry the mark's own edges
++    /// rounded off — which costs a little of the element and cannot move its
++    /// frequency, since a slower rise does not change what the tone is.</para>
++    /// </remarks>
++    public static IReadOnlyList<CwElement> MeasureAll(
++        IReadOnlyList<CwElement> elements,
++        IReadOnlyList<float> samples,
++        int sampleRate,
++        double aroundHz,
++        double hopMilliseconds,
++        int firstHopAtSample = 0)
++    {
++        ArgumentNullException.ThrowIfNull(elements);
++        ArgumentNullException.ThrowIfNull(samples);
++
++        var perHop = sampleRate * hopMilliseconds / 1000.0;
++
++        if (perHop <= 0)
++        {
++            return elements;
++        }
++
++        var measured = new List<CwElement>(elements.Count);
++
++        foreach (var element in elements)
++        {
++            if (!element.IsMark)
++            {
++                measured.Add(element);
++
++                continue;
++            }
++
++            var first = firstHopAtSample + (int)Math.Round(element.StartHop * perHop);
++            var last = firstHopAtSample + (int)Math.Round(element.EndHop * perHop);
++
++            measured.Add(element with
++            {
++                PitchHz = Measure(
++                    samples, sampleRate, aroundHz, first, last - first),
++            });
++        }
++
++        return measured;
++    }
++
++    /// <summary>Where the peak sits between the bins either side of it.</summary>
++    /// <remarks>
++    /// **ON THE LOGARITHM, WHICH IS WHERE A HANN LOBE IS NEARLY A PARABOLA.**
++    /// Fitting the linear magnitude biases the answer toward the centre bin;
++    /// fitting the decibels does not, and the whole point of interpolating is to
++    /// beat the bin. A fit landing more than a bin away is a fit to something that
++    /// is not a peak, and the bin itself is then the honest answer, which is the
++    /// same guard <see cref="CwSpectralPeak"/> carries.
++    /// </remarks>
++    private static double Interpolate(
++        double[] magnitudes, int peak, int firstBin, double binHz)
++    {
++        var a = Math.Log(magnitudes[peak - 1] + 1e-30);
++        var b = Math.Log(magnitudes[peak] + 1e-30);
++        var c = Math.Log(magnitudes[peak + 1] + 1e-30);
++
++        var denominator = a - (2 * b) + c;
++        var bin = firstBin + peak;
++
++        if (denominator == 0)
++        {
++            return bin * binHz;
++        }
++
++        var offset = 0.5 * (a - c) / denominator;
++
++        return Math.Abs(offset) > 1 ? bin * binHz : (bin + offset) * binHz;
++    }
++}
+diff --git a/src/Hamlet.RadioEngine/Cw/CwJointCutter.cs b/src/Hamlet.RadioEngine/Cw/CwJointCutter.cs
+index 833c3f7e..e4a899df 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwJointCutter.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwJointCutter.cs
+@@ -1,4 +1,4 @@
+-namespace Hamlet.RadioEngine.Cw;
++﻿namespace Hamlet.RadioEngine.Cw;
+ 
+ /// <summary>
+ /// One element of the stream the first pass produced: a mark or a gap, with the
+@@ -9,6 +9,22 @@ namespace Hamlet.RadioEngine.Cw;
+ /// <param name="EndHop">Where it ended.</param>
+ public readonly record struct CwElement(bool IsMark, int StartHop, int EndHop)
+ {
++    /// <summary>What frequency this element itself was sent at, in hertz.</summary>
++    /// <remarks>
++    /// <para>**NOT SET BY THE DECODE PATH, BECAUSE THE DECODE PATH HAS NO
++    /// AUDIO.** Everything above works from the envelope, which was mixed down at
++    /// one pitch before any of it ran, so the pitch of an individual element is
++    /// not a thing the dynamic program could know. It is filled in afterwards by
++    /// <see cref="CwElementPitch"/> from the samples the element spans, and until
++    /// then it is <see cref="double.NaN"/>.</para>
++    /// <para>**NaN IS NOBODY MEASURED AND IS NOT A PITCH OF NOUGHT** (§0.0). It
++    /// is also what a `default(CwElement)` carries, and a reader that treats the
++    /// two the same is right to: neither was measured.</para>
++    /// <para>**NOTHING IN THE DECODE READS IT.** It reaches the record and the
++    /// stream separation and stops there.</para>
++    /// </remarks>
++    public double PitchHz { get; init; } = double.NaN;
++
+     /// <summary>How many hops it spans.</summary>
+     public int Hops => EndHop - StartHop;
+ }
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+index ff1677a6..c6b4c88f 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ -1,4 +1,4 @@
+-using Hamlet.RadioEngine.Audio;
++﻿using Hamlet.RadioEngine.Audio;
+ 
+ namespace Hamlet.RadioEngine.Cw;
+ 
+@@ -40,6 +40,25 @@ public readonly record struct CwProbabilisticResult(
+     IReadOnlyList<CwProbabilisticCharacter> Characters,
+     bool EndsInsideCharacter = false)
+ {
++    /// <summary>
++    /// The winning path's own elements, marks and gaps, in the order they were
++    /// sent.
++    /// </summary>
++    /// <remarks>
++    /// <para>**THE CHARACTERS WERE ALWAYS HERE AND THE ELEMENTS THEY WERE BUILT
++    /// FROM WERE NOT.** A reader could see that Hamlet said `E` and not that it
++    /// had seen one 55 ms mark, and the two most common failures on this corpus —
++    /// a mark split in two, and a mark invented out of a notch in the noise — are
++    /// both invisible at the character level and obvious at this one.</para>
++    /// <para>**CARRIED, NOT ACTED ON.** Nothing in the decode reads this back;
++    /// it is produced by the same walk that spells the text, so it cannot
++    /// disagree with what was read.</para>
++    /// <para>Empty where the gate is closed, or where the result is
++    /// <see cref="None"/>.</para>
++    /// </remarks>
++    public IReadOnlyList<CwElement> Elements { get; init; }
++        = Array.Empty<CwElement>();
++
+     /// <summary>
+     /// True when the winning speed sits at either end of the search, so it may
+     /// be a limit rather than a measurement.
+@@ -506,8 +525,23 @@ public static partial class CwProbabilisticDecoder
+     /// <para>**AND A WINNER AT EITHER END IS NOW SAID OUT LOUD**, so a range
+     /// limit is never again mistaken for a measurement
+     /// (<see cref="CwProbabilisticResult.SpeedIsAtTheEdge"/>).</para>
++    /// <para>**LOWERED TO THIRTY, PROVISIONALLY, BY TIM'S RULING IN WORK
++    /// INSTRUCTION 056.** Nothing in the corpus, the bulletins, or any capture the
++    /// operator has sent runs above about twenty-eight words a minute, and the
++    /// ceiling was paying for a speed nobody here sends at. What it costs is
++    /// <see cref="CwUnitEstimator.LongestSafeHoldOverMs"/>, which is one dit at
++    /// this value: at forty the safe bound was 30 ms and sat just under the 32 to
++    /// 53 ms dropouts unit 053 measured, so the bridging could never reach the
++    /// fault it was built for. At thirty the bound is 40 ms and reaches the lower
++    /// half of them.</para>
++    /// <para>**THE CONDITION THAT RAISES IT AGAIN IS RECORDED WITH THE VALUE**:
++    /// the ceiling rises the day a capture shows something faster worth reading.
++    /// Not the day a fit lands at the edge — <see cref="SlowestWpm"/>'s own
++    /// remarks say why an edge winner is not evidence — but the day a recording in
++    /// the tree holds a sender above this and somebody wants it read. Rejected:
++    /// keeping forty, on the measurement above.</para>
+     /// </remarks>
+-    public const double FastestWpm = 40;
++    public const double FastestWpm = 30;
+ 
+     /// <summary>How far apart the speed hypotheses sit.</summary>
+     /// <remarks>
+@@ -827,13 +861,14 @@ public static partial class CwProbabilisticDecoder
+         var bestLastKind = -1;
+         IReadOnlyList<CwProbabilisticCharacter> bestCharacters =
+             Array.Empty<CwProbabilisticCharacter>();
++        IReadOnlyList<CwElement> bestElements = Array.Empty<CwElement>();
+ 
+         var from = atWordsPerMinute ?? SlowestWpm;
+         var to = atWordsPerMinute ?? FastestWpm;
+ 
+         for (var wpm = from; wpm <= to + 1e-9; wpm += WpmStep)
+         {
+-            var (score, characters, lastKind) =
++            var (score, characters, lastKind, elements) =
+                 DecodeAt(
+                     envelope.Count, wpm, keyDown, keyUp, gapMilliseconds,
+                     jointly, alpha);
+@@ -844,6 +879,7 @@ public static partial class CwProbabilisticDecoder
+                 bestWpm = wpm;
+                 bestCharacters = characters;
+                 bestLastKind = lastKind;
++                bestElements = elements;
+             }
+         }
+ 
+@@ -859,7 +895,10 @@ public static partial class CwProbabilisticDecoder
+         {
+             return new CwProbabilisticResult(
+                 ratio, bestWpm, string.Concat(bestCharacters.Select(c => c.Text)),
+-                toneHz, bestCharacters, insideCharacter);
++                toneHz, bestCharacters, insideCharacter)
++            {
++                Elements = bestElements,
++            };
+         }
+ 
+         if (ratio < Gate)
+@@ -887,7 +926,10 @@ public static partial class CwProbabilisticDecoder
+             string.Concat(judged.Select(c => c.Text)),
+             toneHz,
+             judged,
+-            insideCharacter);
++            insideCharacter)
++        {
++            Elements = bestElements,
++        };
+     }
+ 
+     /// <summary>
+@@ -1428,7 +1470,8 @@ public static partial class CwProbabilisticDecoder
+     private static (
+         double Score,
+         IReadOnlyList<CwProbabilisticCharacter> Characters,
+-        int LastKind)
++        int LastKind,
++        IReadOnlyList<CwElement> Elements)
+         DecodeAt(
+         int count,
+         double wpm,
+@@ -1568,16 +1611,19 @@ public static partial class CwProbabilisticDecoder
+ 
+         if (lastKind < 0)
+         {
+-            return (double.NegativeInfinity, Array.Empty<CwProbabilisticCharacter>(), -1);
++            return (
++                double.NegativeInfinity,
++                Array.Empty<CwProbabilisticCharacter>(),
++                -1,
++                Array.Empty<CwElement>());
+         }
+ 
+-        return (
+-            total,
+-            Spell(
+-                count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
+-                unit, gapHops, jointly,
+-                Posterior(count, downTo, upTo, unit, gapHops, alpha)),
+-            lastKind);
++        var (spelled, walked) = Spell(
++            count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
++            unit, gapHops, jointly,
++            Posterior(count, downTo, upTo, unit, gapHops, alpha));
++
++        return (total, spelled, lastKind, walked);
+     }
+ 
+     /// <summary>Offer one candidate transition into a state, keeping two.</summary>
+@@ -1699,7 +1745,10 @@ public static partial class CwProbabilisticDecoder
+     /// penalty is left out.
+     /// </remarks>
+     /// <param name="posterior">The state posteriors, or null where none.</param>
+-    private static IReadOnlyList<CwProbabilisticCharacter> Spell(
++    private static (
++        IReadOnlyList<CwProbabilisticCharacter> Characters,
++        IReadOnlyList<CwElement> Elements)
++        Spell(
+         int count, int lastKind, int[,] fromHop, int[,] fromKind,
+         double[] downTo, double[] upTo,
+         double[,] best, double[,] second, double unit, double[]? gapHops,
+@@ -1824,7 +1873,18 @@ public static partial class CwProbabilisticDecoder
+                     marginAt.TryGetValue(count, out var pl) ? pl : lastKind)));
+         }
+ 
+-        return characters;
++        // **THE SAME WALK, HANDED OUT RATHER THAN RECOMPUTED.** The path above
++        // already is the element stream; turning it into `CwElement`s here costs
++        // one pass and cannot disagree with what was spelled, where a second
++        // traversal built for the record could.
++        var walked = new List<CwElement>(path.Count);
++
++        foreach (var (k, startHop, endHop) in path)
++        {
++            walked.Add(new CwElement(Kinds[k].IsKeyDown, startHop, endHop));
++        }
++
++        return (characters, walked);
+     }
+ 
+     /// <summary>
+@@ -1835,7 +1895,10 @@ public static partial class CwProbabilisticDecoder
+     /// is only where those elements are divided into letters, and that decision
+     /// is now made together with what the letters are.
+     /// </remarks>
+-    private static IReadOnlyList<CwProbabilisticCharacter> SpellJointly(
++    private static (
++        IReadOnlyList<CwProbabilisticCharacter> Characters,
++        IReadOnlyList<CwElement> Elements)
++        SpellJointly(
+         int count, int lastKind, int[,] fromHop, int[,] fromKind,
+         double[] downTo, double[] upTo, double unit, double[]? gapHops)
+     {
+@@ -1871,6 +1934,6 @@ public static partial class CwProbabilisticDecoder
+             }
+         }
+ 
+-        return characters;
++        return (characters, elements);
+     }
+ }
+diff --git a/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs b/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+index f3223628..aff653f1 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@ -638,11 +638,35 @@ public static class CwUnitEstimator
+     /// against 0.745 at nought and 0.742 at sixteen, and substitutions **15**
+     /// against 17 and 18. The 1.1 points of precision given up against sixteen buy
+     /// an anchor that stays.</para>
+-    /// <para>**IT IS THREE HOPS, AND IT DOES NOT REACH THE FADING.** The dropouts
+-    /// unit 053 measured run 32 to 53 ms and the safe bound here is 30, so this
+-    /// cannot bridge them and does not claim to. What it does is extend the
+-    /// bridging from the 20 ms the hysteresis already absorbs to about 25, and the
+-    /// corpus says that is worth 0.6 points of precision and two substitutions.</para>
++    /// <para>**IT IS THREE HOPS, AND IT STILL DOES NOT REACH THE FADING.** The
++    /// dropouts unit 053 measured run 32 to 53 ms. The safe bound was 30 when
++    /// this was written and is 40 now, because
++    /// <see cref="CwProbabilisticDecoder.FastestWpm"/> came down to thirty (work
++    /// instruction 056, task 1) — so for the first time the bound reaches the
++    /// lower half of the fading, and the hold-over still does not, because
++    /// twelve is where the locks put it rather than where the bound does.</para>
++    /// <para>**RE-SWEPT ACROSS THE WHOLE NEWLY LEGAL RANGE AND TWELVE SURVIVED**
++    /// (work instruction 056, task 1). Precision reads **0.901 at 12, 0.926 at
++    /// 16, 0.939 at 20, 0.939 at 24**, then falls: 0.930 at 28, 0.920 at 32,
++    /// 0.910 at 36 and 40. Yield is flat at 0.878 through 24 and drops to 0.841
++    /// by 36. On the average alone the answer would be 20 — monotonic to it,
++    /// tied with 24, and 3.8 points of precision better than 12.</para>
++    /// <para>**AND IT COSTS THE SAME ANCHOR SIXTEEN COST, WHICH IS WHY IT IS NOT
++    /// TAKEN.** `cw-2026-08-22-031838`'s adjudicated `, AND` survives at twelve
++    /// and does not at sixteen or at twenty: the read goes `, 2, 2, AND 2` to
++    /// `, 2, 2,■AND■2■` to `, 2, 2,■■AND■■■`. **The mechanism is visible in that
++    /// progression** — bridging inside a key-down lengthens the mark and shortens
++    /// the gap after it, so the character gaps this sender leaves fall below what
++    /// separates them from element gaps and the spacing collapses into blocks.
++    /// Tim's ruling with this order settles what to do about it: the average
++    /// floor may move only when every individual lock holds, and a change that
++    /// drops one is reverted regardless of what it does to the average.</para>
++    /// <para>**WHAT THE OLD REMARKS CLAIMED FOR TWELVE NO LONGER HOLDS AND IS
++    /// CORRECTED HERE.** It said twelve bought 0.6 points of precision over
++    /// nought; that was measured at a ceiling of forty words a minute. What
++    /// twelve buys now is measured above and is nothing at all over sixteen or
++    /// twenty on the average — it buys one adjudicated anchor, and that is the
++    /// whole of its case.</para>
+     /// <para>**DIT SCATTER BARELY MOVED AND THE DECODE IMPROVED ANYWAY**, which is
+     /// worth recording because dit CV was the measure this change was expected to
+     /// be judged on. Across the whole sweep it changes by hundredths and not

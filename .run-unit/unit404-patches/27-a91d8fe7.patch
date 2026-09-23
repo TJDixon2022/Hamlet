@@ -1,0 +1,269 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+index 83d1277a..722de2ef 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@ -994,6 +994,20 @@ public sealed class CwDecoder
+     /// <summary>What the ranking chose, and what it beat.</summary>
+     public CwPitchRank Ranked => _ranked;
+ 
++    /// <summary>The scaling exponent the posterior is normalised at.</summary>
++    /// <remarks>
++    /// **IT CANNOT MOVE A CHARACTER, WHICH IS WHY IT IS SAFE TO SWEEP.** The
++    /// temperature multiplies the whole path score, so the Viterbi argmax is
++    /// unchanged and only the normalisation moves. Nothing in the application
++    /// sets it; it exists so unit 049's sweep can be run through the decoder the
++    /// operator actually uses rather than around it.
++    /// </remarks>
++    public double PosteriorTemperature
++    {
++        get => _probabilistic.PosteriorTemperature;
++        set => _probabilistic.PosteriorTemperature = value;
++    }
++
+     /// <summary>Whether the ranking supplies the mixdown pitch.</summary>
+     /// <remarks>
+     /// <para>**OFF, AND THE MACHINERY STAYS** — `ClearOnAStationChange`'s
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.Posterior.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.Posterior.cs
+index ad32c5a5..58e9c6d3 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.Posterior.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.Posterior.cs
+@@ -35,6 +35,23 @@ public static partial class CwProbabilisticDecoder
+     /// </remarks>
+     private const double LogSumFloor = -700;
+ 
++    /// <summary>The scaling exponent on the path score.</summary>
++    /// <remarks>
++    /// <para>**ONE, WHICH IS NO TEMPERATURE AT ALL, UNTIL A SWEEP SAYS
++    /// OTHERWISE.** Unit 049 measured the over-counting the evidence term commits
++    /// and it is 2.22, not the eighty-nine an order supposed: the sum runs over
++    /// five-millisecond hops rather than raw samples, so two hundred terms a
++    /// second stand against ninety independent degrees of freedom at 45 Hz. That
++    /// implies an alpha near 0.45.</para>
++    /// <para>**BUT THE OVER-COUNT IS NOT WHAT MAKES THE MODEL OVERCONFIDENT.**
++    /// Measured on the same corpus, the evidence per element runs 4.9 to 467 nats
++    /// against a duration penalty of 0.136 for a span a fifth off its expected
++    /// length — a ratio near two thousand. A 2.22 over-count does not explain
++    /// that, so the figure this constant should take is a measurement rather than
++    /// a derivation, and it is swept.</para>
++    /// </remarks>
++    public const double Temperature = 1.0;
++
+     /// <summary>
+     /// The probability of each state, marginalised over every path through the
+     /// lattice.
+@@ -50,6 +67,32 @@ public static partial class CwProbabilisticDecoder
+     /// </returns>
+     public static double[,]? Posterior(
+         int count, double[] downTo, double[] upTo, double unit, double[]? gapHops)
++        => Posterior(count, downTo, upTo, unit, gapHops, Temperature);
++
++    /// <summary>
++    /// The same, at a stated temperature, so the exponent can be swept.
++    /// </summary>
++    /// <param name="count">How many hops there are.</param>
++    /// <param name="downTo">Cumulative key-down log-likelihood.</param>
++    /// <param name="upTo">Cumulative key-up log-likelihood.</param>
++    /// <param name="unit">The dit, in hops.</param>
++    /// <param name="gapHops">This sender's own gap lengths, or null.</param>
++    /// <param name="alpha">
++    /// The scaling exponent on the path score. One leaves it untouched; below one
++    /// flattens the distribution.
++    /// </param>
++    /// <returns>The posterior at each state, or null.</returns>
++    /// <remarks>
++    /// **THE TEMPERATURE MULTIPLIES THE WHOLE PATH SCORE AND SO CANNOT MOVE THE
++    /// ARGMAX.** Scaling every path by one positive constant leaves the largest
++    /// largest, which is why this changes the posterior and not one character of
++    /// the decode. Scaling the evidence term alone is a different question and a
++    /// different task, because it shifts the balance against the duration penalty
++    /// and does change what is read.
++    /// </remarks>
++    public static double[,]? Posterior(
++        int count, double[] downTo, double[] upTo, double unit,
++        double[]? gapHops, double alpha)
+     {
+         ArgumentNullException.ThrowIfNull(downTo);
+         ArgumentNullException.ThrowIfNull(upTo);
+@@ -60,14 +103,14 @@ public static partial class CwProbabilisticDecoder
+         }
+ 
+         var kinds = Kinds.Length;
+-        var alpha = new double[count + 1, kinds];
++        var forward = new double[count + 1, kinds];
+         var beta = new double[count + 1, kinds];
+ 
+         for (var i = 0; i <= count; i++)
+         {
+             for (var k = 0; k < kinds; k++)
+             {
+-                alpha[i, k] = double.NegativeInfinity;
++                forward[i, k] = double.NegativeInfinity;
+                 beta[i, k] = double.NegativeInfinity;
+             }
+         }
+@@ -83,7 +126,8 @@ public static partial class CwProbabilisticDecoder
+                 for (var span = shortest; span <= ceiling; span++)
+                 {
+                     var j = i - span;
+-                    var step = StepOf(i, j, k, downTo, upTo, unit, gapHops);
++                    var step = alpha
++                        * StepOf(i, j, k, downTo, upTo, unit, gapHops);
+ 
+                     if (j == 0)
+                     {
+@@ -97,16 +141,16 @@ public static partial class CwProbabilisticDecoder
+                     for (var kj = 0; kj < kinds; kj++)
+                     {
+                         if (Kinds[kj].IsKeyDown == Kinds[k].IsKeyDown
+-                            || double.IsNegativeInfinity(alpha[j, kj]))
++                            || double.IsNegativeInfinity(forward[j, kj]))
+                         {
+                             continue;
+                         }
+ 
+-                        total = LogSum(total, alpha[j, kj] + step);
++                        total = LogSum(total, forward[j, kj] + step);
+                     }
+                 }
+ 
+-                alpha[i, k] = total;
++                forward[i, k] = total;
+             }
+         }
+ 
+@@ -142,7 +186,7 @@ public static partial class CwProbabilisticDecoder
+ 
+                         total = LogSum(
+                             total,
+-                            StepOf(i, j, k, downTo, upTo, unit, gapHops)
++                            (alpha * StepOf(i, j, k, downTo, upTo, unit, gapHops))
+                             + beta[i, k]);
+                     }
+                 }
+@@ -156,7 +200,7 @@ public static partial class CwProbabilisticDecoder
+ 
+         for (var k = 0; k < kinds; k++)
+         {
+-            all = LogSum(all, alpha[count, k]);
++            all = LogSum(all, forward[count, k]);
+         }
+ 
+         if (double.IsNegativeInfinity(all) || double.IsNaN(all))
+@@ -172,7 +216,7 @@ public static partial class CwProbabilisticDecoder
+         {
+             for (var k = 0; k < kinds; k++)
+             {
+-                var joint = alpha[i, k] + beta[i, k];
++                var joint = forward[i, k] + beta[i, k];
+ 
+                 // Clamped at the top because floating error can put a ratio a
+                 // whisker over one, and a probability above one is a number
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+index ee0d5808..ff1677a6 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ -774,6 +774,29 @@ public static partial class CwProbabilisticDecoder
+             envelope, toneHz, atWordsPerMinute, gapMilliseconds,
+             ungated: false, jointly);
+ 
++    /// <summary>Read an envelope, normalising the posterior at a stated exponent.</summary>
++    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
++    /// <param name="toneHz">The pitch it was taken at.</param>
++    /// <param name="atWordsPerMinute">A speed to hold, or null to fit one.</param>
++    /// <param name="gapMilliseconds">This sender's three gap classes, or null.</param>
++    /// <param name="jointly">Whether the joint cutter decides the cuts.</param>
++    /// <param name="alpha">The exponent the posterior is normalised at.</param>
++    /// <returns>What it read.</returns>
++    /// <remarks>
++    /// **THE EXPONENT CANNOT CHANGE WHAT IS READ.** It multiplies the whole path
++    /// score, so the argmax is untouched and only the normalisation moves.
++    /// </remarks>
++    public static CwProbabilisticResult Decode(
++        IReadOnlyList<double> envelope,
++        double toneHz,
++        double? atWordsPerMinute,
++        IReadOnlyList<double>? gapMilliseconds,
++        bool jointly,
++        double alpha)
++        => Decode(
++            envelope, toneHz, atWordsPerMinute, gapMilliseconds,
++            ungated: false, jointly, NoiseSpanSeconds, alpha);
++
+     private static CwProbabilisticResult Decode(
+         IReadOnlyList<double> envelope,
+         double toneHz,
+@@ -781,7 +804,8 @@ public static partial class CwProbabilisticDecoder
+         IReadOnlyList<double>? gapMilliseconds,
+         bool ungated,
+         bool jointly = false,
+-        double noiseSpanSeconds = NoiseSpanSeconds)
++        double noiseSpanSeconds = NoiseSpanSeconds,
++        double alpha = Temperature)
+     {
+         ArgumentNullException.ThrowIfNull(envelope);
+ 
+@@ -812,7 +836,7 @@ public static partial class CwProbabilisticDecoder
+             var (score, characters, lastKind) =
+                 DecodeAt(
+                     envelope.Count, wpm, keyDown, keyUp, gapMilliseconds,
+-                    jointly);
++                    jointly, alpha);
+ 
+             if (score > bestScore)
+             {
+@@ -1391,6 +1415,7 @@ public static partial class CwProbabilisticDecoder
+     /// seven units.
+     /// </param>
+     /// <param name="jointly">Whether the joint cutter decides the cuts.</param>
++    /// <param name="alpha">The exponent the posterior is normalised at.</param>
+     /// <returns>The best total score and what it spells.</returns>
+     /// <remarks>
+     /// **EVERY PATH IS A CHAIN OF WHOLE ELEMENTS THAT MUST ALTERNATE.** A
+@@ -1410,7 +1435,8 @@ public static partial class CwProbabilisticDecoder
+         double[] keyDown,
+         double[] keyUp,
+         IReadOnlyList<double>? gapMilliseconds = null,
+-        bool jointly = false)
++        bool jointly = false,
++        double alpha = Temperature)
+     {
+         var unit = 1200.0 / wpm / HopMilliseconds;
+ 
+@@ -1550,7 +1576,7 @@ public static partial class CwProbabilisticDecoder
+             Spell(
+                 count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
+                 unit, gapHops, jointly,
+-                Posterior(count, downTo, upTo, unit, gapHops)),
++                Posterior(count, downTo, upTo, unit, gapHops, alpha)),
+             lastKind);
+     }
+ 
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+index 57a3ac81..fcf5ae16 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ -215,6 +215,14 @@ public sealed class CwProbabilisticStream
+     /// </remarks>
+     public double ToneHz { get; set; } = 600;
+ 
++    /// <summary>The exponent the posterior is normalised at.</summary>
++    /// <remarks>
++    /// Carried through so a sweep runs inside the decoder rather than beside it.
++    /// It cannot change what is read (see <see cref="CwDecoder"/>).
++    /// </remarks>
++    public double PosteriorTemperature { get; set; }
++        = CwProbabilisticDecoder.Temperature;
++
+     /// <summary>What the last read made of the window.</summary>
+     public CwProbabilisticResult Last { get; private set; } = CwProbabilisticResult.None;
+ 
+@@ -672,7 +680,8 @@ public sealed class CwProbabilisticStream
+                     _heldGaps.WordMilliseconds,
+                 }
+                 : null,
+-            UseJointCutter);
++            UseJointCutter,
++            PosteriorTemperature);
+ 
+         Last = result;
+ 

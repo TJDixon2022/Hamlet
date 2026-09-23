@@ -1,0 +1,600 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+index 86b15f4c..a031f460 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@ -422,6 +422,20 @@ public sealed class CwDecoder
+     /// </remarks>
+     public bool PitchWasAsserted => _asserted;
+ 
++    /// <summary>
++    /// Whether <see cref="CwJointCutter"/> decides where characters are cut.
++    /// </summary>
++    /// <remarks>
++    /// Behind `AppSettings.UseJointDecoder` in the application, by Tim's ruling
++    /// of 2026-08-27: the operator is at the radio and a switch he can throw is
++    /// worth more than a change he cannot compare against.
++    /// </remarks>
++    public bool UseJointCutter
++    {
++        get => _probabilistic.UseJointCutter;
++        set => _probabilistic.UseJointCutter = value;
++    }
++
+     /// <summary>
+     /// The operator says he can hear a station; decode at the loudest bin in the
+     /// band and hold it.
+diff --git a/src/Hamlet.RadioEngine/Cw/CwJointCutter.cs b/src/Hamlet.RadioEngine/Cw/CwJointCutter.cs
+new file mode 100644
+index 00000000..833c3f7e
+--- /dev/null
++++ b/src/Hamlet.RadioEngine/Cw/CwJointCutter.cs
+@@ -0,0 +1,328 @@
++namespace Hamlet.RadioEngine.Cw;
++
++/// <summary>
++/// One element of the stream the first pass produced: a mark or a gap, with the
++/// hops it spans.
++/// </summary>
++/// <param name="IsMark">True for key down.</param>
++/// <param name="StartHop">Where it began.</param>
++/// <param name="EndHop">Where it ended.</param>
++public readonly record struct CwElement(bool IsMark, int StartHop, int EndHop)
++{
++    /// <summary>How many hops it spans.</summary>
++    public int Hops => EndHop - StartHop;
++}
++
++/// <summary>
++/// Where the characters are cut, decided jointly with what the characters are.
++/// </summary>
++/// <remarks>
++/// <para>**THE LETTERS WERE ALREADY RIGHT AND THE CUTS WERE WRONG.** Measured
++/// across the corpus on 2026-08-26: `USEDTOUSEAFIRM`, `OUTOFALT`, `TTHINKING`,
++/// `FLENX`, `AB OVE`, `BREE Z E` — every one of them correct elements divided in
++/// the wrong places. The element-to-character decision was the only stage of the
++/// decode path never revisited since the corpus began.</para>
++/// <para>**WHY A PER-GAP THRESHOLD CANNOT BE MADE TO WORK.** It fails at both
++/// ends of the range and for opposite reasons. On `cw-2026-08-25-021410` the
++/// three gap classes measure 53, 221 and 913 milliseconds — 0.81, 3.36 and 13.9
++/// units, with wide dead zones between them, perfectly separable — and the old
++/// cutter still split a `W` into `A T E`. On `cw-2026-08-25-013637` at thirty
++/// words a minute the element and character gaps sit **four milliseconds apart**,
++/// 24 against 28, where no threshold can work even in principle.</para>
++/// <para>**WHAT REPLACES IT.** A gap is not classified on its own length. A span
++/// of marks is proposed as a character, and then the character's own pattern says
++/// what every length inside it should have been: which marks were dits and which
++/// were dahs, that the gaps between them were single units, and that the gap
++/// closing it was three units or seven. The reading that explains all of those
++/// lengths at once wins. **A `W` is `.--` and its two dahs are three units each;
++/// `A T E` needs those same two marks to be a dah, then a dah, with a
++/// three-unit gap in between that is not there.** That is the argument the old
++/// cutter had no way to make.</para>
++/// <para>**THE §0.0 GUARD IS THE FIRST CONSTRAINT AND NOT THE LAST.** No language
++/// model, no letter-frequency prior, no dictionary, no word list. The only
++/// knowledge here is the Morse table and the fitted clock. A decoder carrying an
++/// English prior invents plausible words out of marginal audio, which is exactly
++/// the confident lie this application exists to prevent — so the one term that is
++/// not a duration fit is a flat bonus for being a character at all, it is small
++/// against the timing terms, and a span no letter explains emits a block rather
++/// than the least-bad letter.</para>
++/// </remarks>
++public static class CwJointCutter
++{
++    /// <summary>
++    /// How much a span is worth for being a real character rather than a block.
++    /// </summary>
++    /// <remarks>
++    /// <para>**SMALL AGAINST THE TIMING TERMS, DELIBERATELY** (§0.0). A length
++    /// penalty of one is a mark about a third off its expected length, and this
++    /// sits well under that: it decides between a letter and a block where the
++    /// timing evidence is near enough level, and it cannot rescue a letter whose
++    /// lengths are wrong.</para>
++    /// <para>The order this was built under forbids raising it to reach an
++    /// acceptance line. If the timing terms cannot divide a stream, that is the
++    /// finding.</para>
++    /// </remarks>
++    public const double ValidityBonus = 0.35;
++
++    /// <summary>The longest run of marks considered as one character.</summary>
++    /// <remarks>
++    /// Eight, which covers every entry in the table including the error prosign.
++    /// The cost is linear in this and the streams are short.
++    /// </remarks>
++    public const int LongestPattern = 8;
++
++    /// <summary>The scatter a length may show, as a share of the log ratio.</summary>
++    /// <remarks>
++    /// **THE SAME NUMBER THE FIRST PASS USES**, deliberately: two stages scoring
++    /// the same quantity on two scales cannot be compared, and the second pass is
++    /// re-deciding what the first proposed rather than measuring something else.
++    /// </remarks>
++    public const double LengthToleranceShare = 0.35;
++
++    /// <summary>What one character came out as.</summary>
++    /// <param name="Text">The letter, or a block where none explained the span.</param>
++    /// <param name="Pattern">The marks it was read from.</param>
++    /// <param name="EndHop">Where the last mark ended.</param>
++    /// <param name="FirstMark">Index of its first mark in the stream.</param>
++    /// <param name="MarkCount">How many marks it spans.</param>
++    /// <param name="EndsWord">True where the gap closing it was read as a word gap.</param>
++    /// <param name="Margin">
++    /// How much better this reading was than the best reading of the **same
++    /// span** as a **different character**. See <see cref="Cut"/>.
++    /// </param>
++    public readonly record struct Cutting(
++        string Text,
++        string Pattern,
++        int EndHop,
++        int FirstMark,
++        int MarkCount,
++        bool EndsWord,
++        double Margin);
++
++    private static double Penalty(int hops, double want)
++    {
++        var off = Math.Log(Math.Max(hops, 1e-9) / Math.Max(want, 1e-9))
++            / LengthToleranceShare;
++
++        return 0.5 * off * off;
++    }
++
++    /// <summary>
++    /// Cut a stream of elements into characters, deciding the cuts and the
++    /// characters together.
++    /// </summary>
++    /// <param name="elements">The marks and gaps the first pass produced, in order.</param>
++    /// <param name="unitHops">The fitted clock, in hops per unit.</param>
++    /// <param name="gapHops">
++    /// This sender's own three gap lengths in hops — inside a character, between
++    /// characters, between words — or null where they were not measured.
++    /// </param>
++    /// <returns>The characters, in order.</returns>
++    /// <remarks>
++    /// <para>**THE MARGIN THAT FALLS OUT OF THIS IS THE ONE WORTH HAVING.** The
++    /// margin the first pass records is a difference between two paths that are
++    /// free to re-segment, so there is always a trivially different alternative
++    /// arriving at the same hop and the number separates nothing — measured on
++    /// 2026-08-26 at 0.1 to 3.4 on right answers and 0.0 to 1.9 on wrong ones.
++    /// Here second-best is **the same span read as a different character**, which
++    /// is the comparison a reader actually cares about.</para>
++    /// <para>Nothing here retracts settled text (§0.0): the caller emits with the
++    /// pipeline's existing lag and this only decides what is emitted.</para>
++    /// </remarks>
++    public static IReadOnlyList<Cutting> Cut(
++        IReadOnlyList<CwElement> elements,
++        double unitHops,
++        IReadOnlyList<double>? gapHops = null)
++    {
++        ArgumentNullException.ThrowIfNull(elements);
++
++        // **THIS SENDER'S OWN GAPS WHERE THEY WERE MEASURED, AND MULTIPLES OF
++        // THE DIT ONLY WHERE THEY WERE NOT** (HM-DEC-115). Real operators send
++        // Farnsworth: on a traffic net the character gap runs six times the
++        // element gap rather than three, and the word gap is nowhere near seven
++        // dits. Scoring a closing gap against 3u and 7u on that audio calls every
++        // word gap a character gap, which is exactly what the first build of this
++        // did — every space on `cw-2026-08-25-013637` disappeared.
++        //
++        // The first pass already fits these three classes and steers by them; the
++        // second pass has to read the same numbers or the two stages disagree
++        // about where the words are (HM-DEC-091: one source).
++        var insideWant = gapHops is { Count: 3 } ? gapHops[0] : unitHops;
++        var characterWant = gapHops is { Count: 3 } ? gapHops[1] : 3 * unitHops;
++        var wordWant = gapHops is { Count: 3 } ? gapHops[2] : 7 * unitHops;
++
++        // Marks in order, and the gap that follows each of them. The gap after
++        // the last mark may be absent, which is the end of the stream.
++        var marks = new List<CwElement>();
++        var gapAfter = new List<int>();
++
++        for (var i = 0; i < elements.Count; i++)
++        {
++            if (!elements[i].IsMark)
++            {
++                continue;
++            }
++
++            marks.Add(elements[i]);
++            gapAfter.Add(
++                i + 1 < elements.Count && !elements[i + 1].IsMark
++                    ? elements[i + 1].Hops
++                    : -1);
++        }
++
++        var n = marks.Count;
++
++        if (n == 0 || unitHops <= 0)
++        {
++            return Array.Empty<Cutting>();
++        }
++
++        // best[m] is the score of the best reading of marks 0..m-1 as whole
++        // characters. from[m] says where the last character began.
++        var best = new double[n + 1];
++        var from = new int[n + 1];
++        var what = new Cutting[n + 1];
++
++        Array.Fill(best, double.NegativeInfinity);
++        Array.Fill(from, -1);
++        best[0] = 0;
++
++        for (var end = 1; end <= n; end++)
++        {
++            var longest = Math.Min(LongestPattern, end);
++
++            for (var take = 1; take <= longest; take++)
++            {
++                var start = end - take;
++
++                if (double.IsNegativeInfinity(best[start]))
++                {
++                    continue;
++                }
++
++                // The gaps inside the character are single units, whatever the
++                // character turns out to be, so they are scored once.
++                var inside = 0.0;
++
++                for (var m = start; m < end - 1; m++)
++                {
++                    inside += Penalty(gapAfter[m], insideWant);
++                }
++
++                // The gap closing it is three units or seven, and which one is
++                // part of the same decision rather than a separate threshold.
++                var closing = gapAfter[end - 1];
++                var endsWord = false;
++                var closingCost = 0.0;
++
++                if (closing >= 0)
++                {
++                    var asCharacter = Penalty(closing, characterWant);
++                    var asWord = Penalty(closing, wordWant);
++
++                    endsWord = asWord < asCharacter;
++                    closingCost = Math.Min(asCharacter, asWord);
++                }
++
++                // **THE CHARACTER'S OWN PATTERN SAYS WHAT ITS MARKS SHOULD HAVE
++                // BEEN**, which is the whole of the idea. Every entry in the
++                // table with this many elements is tried, and the one whose dits
++                // and dahs explain these lengths best wins.
++                var bestText = "";
++                var bestPattern = "";
++                var bestMarks = double.PositiveInfinity;
++                var secondMarks = double.PositiveInfinity;
++
++                foreach (var (pattern, text) in MorseAlphabet.All)
++                {
++                    if (pattern.Length != take)
++                    {
++                        continue;
++                    }
++
++                    var cost = 0.0;
++
++                    for (var m = 0; m < take; m++)
++                    {
++                        cost += Penalty(
++                            marks[start + m].Hops,
++                            (pattern[m] == '-' ? 3 : 1) * unitHops);
++                    }
++
++                    if (cost < bestMarks)
++                    {
++                        secondMarks = bestMarks;
++                        bestMarks = cost;
++                        bestText = text;
++                        bestPattern = pattern;
++                    }
++                    else if (cost < secondMarks)
++                    {
++                        secondMarks = cost;
++                    }
++                }
++
++                // **AND A SPAN NO LETTER EXPLAINS EMITS A BLOCK.** The block is
++                // scored on the same timing terms with the mark classes taken at
++                // whichever of one or three unit fits each mark, and without the
++                // bonus — so it loses to a letter that fits and beats one that
++                // does not (§0.0).
++                var blockMarks = 0.0;
++
++                for (var m = start; m < end; m++)
++                {
++                    blockMarks += Math.Min(
++                        Penalty(marks[m].Hops, unitHops),
++                        Penalty(marks[m].Hops, 3 * unitHops));
++                }
++
++                var letterScore = bestPattern.Length == take
++                    ? -(bestMarks + inside + closingCost) + ValidityBonus
++                    : double.NegativeInfinity;
++
++                var blockScore = -(blockMarks + inside + closingCost);
++
++                var takeLetter = letterScore >= blockScore;
++                var score = best[start] + (takeLetter ? letterScore : blockScore);
++
++                if (score <= best[end])
++                {
++                    continue;
++                }
++
++                // The constrained margin: the same span, the same boundaries,
++                // read as the next-best character. Infinite where no second
++                // reading of this length exists at all, which is honest — there
++                // was nothing to be confused with.
++                var margin = takeLetter && !double.IsPositiveInfinity(secondMarks)
++                    ? secondMarks - bestMarks
++                    : double.NaN;
++
++                best[end] = score;
++                from[end] = start;
++
++                what[end] = new Cutting(
++                    takeLetter ? bestText : "■",
++                    takeLetter ? bestPattern : new string('?', take),
++                    marks[end - 1].EndHop,
++                    start,
++                    take,
++                    endsWord,
++                    margin);
++            }
++        }
++
++        var read = new List<Cutting>();
++        var at = n;
++
++        while (at > 0 && from[at] >= 0)
++        {
++            read.Add(what[at]);
++            at = from[at];
++        }
++
++        read.Reverse();
++
++        return read;
++    }
++}
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+index bbf83c67..57c28eb0 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ -700,7 +700,8 @@ public static class CwProbabilisticDecoder
+         double toneHz,
+         double? atWordsPerMinute,
+         IReadOnlyList<double>? gapMilliseconds)
+-        => Decode(envelope, toneHz, atWordsPerMinute, gapMilliseconds, ungated: false);
++        => Decode(
++            envelope, toneHz, atWordsPerMinute, gapMilliseconds, ungated: false);
+ 
+     /// <summary>Read an envelope, returning what the path spelled whatever it scored.</summary>
+     /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+@@ -733,7 +734,26 @@ public static class CwProbabilisticDecoder
+         double toneHz,
+         bool ungated,
+         double noiseSpanSeconds)
+-        => Decode(envelope, toneHz, null, null, ungated, noiseSpanSeconds);
++        => Decode(
++            envelope, toneHz, null, null, ungated,
++            jointly: false, noiseSpanSeconds);
++
++    /// <summary>Read an envelope, with the joint cutter deciding the cuts.</summary>
++    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
++    /// <param name="toneHz">The pitch it was taken at.</param>
++    /// <param name="atWordsPerMinute">A speed to hold, or null to fit one.</param>
++    /// <param name="gapMilliseconds">This sender's three gap classes, or null.</param>
++    /// <param name="jointly">Whether <see cref="CwJointCutter"/> decides the cuts.</param>
++    /// <returns>What it read.</returns>
++    public static CwProbabilisticResult Decode(
++        IReadOnlyList<double> envelope,
++        double toneHz,
++        double? atWordsPerMinute,
++        IReadOnlyList<double>? gapMilliseconds,
++        bool jointly)
++        => Decode(
++            envelope, toneHz, atWordsPerMinute, gapMilliseconds,
++            ungated: false, jointly);
+ 
+     private static CwProbabilisticResult Decode(
+         IReadOnlyList<double> envelope,
+@@ -741,6 +761,7 @@ public static class CwProbabilisticDecoder
+         double? atWordsPerMinute,
+         IReadOnlyList<double>? gapMilliseconds,
+         bool ungated,
++        bool jointly = false,
+         double noiseSpanSeconds = NoiseSpanSeconds)
+     {
+         ArgumentNullException.ThrowIfNull(envelope);
+@@ -770,7 +791,9 @@ public static class CwProbabilisticDecoder
+         for (var wpm = from; wpm <= to + 1e-9; wpm += WpmStep)
+         {
+             var (score, characters, lastKind) =
+-                DecodeAt(envelope.Count, wpm, keyDown, keyUp, gapMilliseconds);
++                DecodeAt(
++                    envelope.Count, wpm, keyDown, keyUp, gapMilliseconds,
++                    jointly);
+ 
+             if (score > bestScore)
+             {
+@@ -1147,6 +1170,7 @@ public static class CwProbabilisticDecoder
+     /// This sender's own three gap lengths, or null to expect one, three and
+     /// seven units.
+     /// </param>
++    /// <param name="jointly">Whether the joint cutter decides the cuts.</param>
+     /// <returns>The best total score and what it spells.</returns>
+     /// <remarks>
+     /// **EVERY PATH IS A CHAIN OF WHOLE ELEMENTS THAT MUST ALTERNATE.** A
+@@ -1165,7 +1189,8 @@ public static class CwProbabilisticDecoder
+         double wpm,
+         double[] keyDown,
+         double[] keyUp,
+-        IReadOnlyList<double>? gapMilliseconds = null)
++        IReadOnlyList<double>? gapMilliseconds = null,
++        bool jointly = false)
+     {
+         var unit = 1200.0 / wpm / HopMilliseconds;
+ 
+@@ -1262,7 +1287,9 @@ public static class CwProbabilisticDecoder
+ 
+         return (
+             best[count],
+-            Spell(count, fromHop, kindAt, downTo, upTo, best, second),
++            Spell(
++                count, fromHop, kindAt, downTo, upTo, best, second, unit, gapHops,
++                jointly),
+             kindAt[count]);
+     }
+ 
+@@ -1299,6 +1326,24 @@ public static class CwProbabilisticDecoder
+         return marked;
+     }
+ 
++    /// <summary>The element stream the first pass produced, marks and gaps.</summary>
++    private static List<CwElement> ElementsOf(
++        int count, int[] fromHop, int[] kindAt)
++    {
++        var walk = new List<CwElement>();
++        var at = count;
++
++        while (at > 0 && fromHop[at] >= 0)
++        {
++            walk.Add(new CwElement(Kinds[kindAt[at]].IsKeyDown, fromHop[at], at));
++            at = fromHop[at];
++        }
++
++        walk.Reverse();
++
++        return walk;
++    }
++
+     /// <summary>Walk the winning path back and turn it into letters.</summary>
+     /// <param name="count">How many hops there were.</param>
+     /// <param name="fromHop">Where each hop's best segment started.</param>
+@@ -1307,6 +1352,15 @@ public static class CwProbabilisticDecoder
+     /// <param name="upTo">Cumulative key-up log-likelihood, hop by hop.</param>
+     /// <param name="best">The winning score at each hop.</param>
+     /// <param name="second">The runner-up score at each hop.</param>
++    /// <param name="unit">The fitted clock, in hops per unit.</param>
++    /// <param name="gapHops">This sender's own gap lengths, or null.</param>
++    /// <param name="jointly">
++    /// Whether <see cref="CwJointCutter"/> decides the character boundaries.
++    /// **A parameter and never a static** — xUnit runs test classes in parallel
++    /// and a mutable static read by the decode path is read by whichever test is
++    /// running at the time, which is how the first build of this measured itself
++    /// as having changed nothing.
++    /// </param>
+     /// <returns>The text.</returns>
+     /// <remarks>
+     /// **EACH CHARACTER'S OWN SPAN IS SCORED AGAINST ALL-KEY-UP ON THE WAY
+@@ -1317,8 +1371,15 @@ public static class CwProbabilisticDecoder
+     /// </remarks>
+     private static IReadOnlyList<CwProbabilisticCharacter> Spell(
+         int count, int[] fromHop, int[] kindAt, double[] downTo, double[] upTo,
+-        double[] best, double[] second)
++        double[] best, double[] second, double unit, double[]? gapHops,
++        bool jointly)
+     {
++        if (jointly)
++        {
++            return SpellJointly(
++                count, fromHop, kindAt, downTo, upTo, unit, gapHops);
++        }
++
+         // How much better the winning path was than the nearest alternative
+         // arriving at the same hop; see `CwProbabilisticCharacter.MarginLlr`.
+         static double Margin(double[] best, double[] second, int at)
+@@ -1407,4 +1468,51 @@ public static class CwProbabilisticDecoder
+ 
+         return characters;
+     }
++
++    /// <summary>
++    /// The same path, cut into characters by <see cref="CwJointCutter"/>.
++    /// </summary>
++    /// <remarks>
++    /// The first pass still decides where the key went down and up; what changes
++    /// is only where those elements are divided into letters, and that decision
++    /// is now made together with what the letters are.
++    /// </remarks>
++    private static IReadOnlyList<CwProbabilisticCharacter> SpellJointly(
++        int count, int[] fromHop, int[] kindAt,
++        double[] downTo, double[] upTo, double unit, double[]? gapHops)
++    {
++        var elements = ElementsOf(count, fromHop, kindAt);
++        var cut = CwJointCutter.Cut(elements, unit, gapHops);
++        var characters = new List<CwProbabilisticCharacter>();
++
++        var marks = elements.Where(e => e.IsMark).ToList();
++
++        foreach (var c in cut)
++        {
++            // The evidence for the span, on the same scale the old path used, so
++            // `spanLlr` keeps meaning what it meant on every sheet already
++            // written (HM-DEC-091: one source).
++            var first = marks[c.FirstMark];
++            var last = marks[c.FirstMark + c.MarkCount - 1];
++
++            var ratio = 0.0;
++
++            for (var m = c.FirstMark; m < c.FirstMark + c.MarkCount; m++)
++            {
++                ratio += downTo[marks[m].EndHop] - downTo[marks[m].StartHop]
++                    - (upTo[marks[m].EndHop] - upTo[marks[m].StartHop]);
++            }
++
++            characters.Add(new CwProbabilisticCharacter(
++                c.Text, c.Pattern, last.EndHop, ratio,
++                last.EndHop - first.StartHop, c.Margin));
++
++            if (c.EndsWord)
++            {
++                characters.Add(new CwProbabilisticCharacter(" ", "", last.EndHop));
++            }
++        }
++
++        return characters;
++    }
+ }
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+index d1d8b63a..ae4f83d1 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ -127,6 +127,18 @@ public sealed class CwProbabilisticStream
+     /// <summary>How many characters have been settled since this stream started.</summary>
+     private long _settledCount;
+ 
++    /// <summary>
++    /// Whether <see cref="CwJointCutter"/> decides where the characters are cut.
++    /// </summary>
++    /// <remarks>
++    /// **AN INSTANCE FLAG AND NEVER A STATIC.** The first build of this was a
++    /// mutable static on the decoder, and xUnit runs test classes in parallel, so
++    /// the decode path read whichever value another test had left behind — which
++    /// is how the offline route measured itself as having changed nothing while
++    /// the streaming route plainly had.
++    /// </remarks>
++    public bool UseJointCutter { get; set; }
++
+     /// <summary>Creates a stream.</summary>
+     /// <param name="sampleRate">Samples per second.</param>
+     public CwProbabilisticStream(int sampleRate)
+@@ -148,6 +160,7 @@ public sealed class CwProbabilisticStream
+     /// </remarks>
+     public CwProbabilisticStream(int sampleRate, double integratorHz)
+     {
++
+         _sampleRate = Math.Max(1_000, sampleRate);
+         _hopSamples = Math.Max(
+             1, (int)(_sampleRate * CwProbabilisticDecoder.HopMilliseconds / 1000.0));
+@@ -658,7 +671,8 @@ public sealed class CwProbabilisticStream
+                     _heldGaps.CharacterMilliseconds,
+                     _heldGaps.WordMilliseconds,
+                 }
+-                : null);
++                : null,
++            UseJointCutter);
+ 
+         Last = result;
+ 

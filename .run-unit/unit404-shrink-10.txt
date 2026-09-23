@@ -1,0 +1,11 @@
+START TARGET 10 CHAIN 1,2,3,4,5,6,7,8,9 LINKREJ 1 ( 4:CwCharacter.cs:1@166 ) TARGETREJ 0
+keep 9  (TARGET 10 CHAIN 1,2,3,4,5,6,7,8 LINKREJ 1 ( 4:CwCharacter.cs:1@166 ) TARGETREJ 5 ( CwToneSurvey.cs:5@20 48 319 337 645 ))
+drop 8
+keep 7  (TARGET 10 CHAIN 1,2,3,4,5,6,9 LINKREJ 7 ( 4:CwCharacter.cs:1@166 9:CwToneSurvey.cs:5@16 43 289 303 610 9:CwToneTracker.cs:1@575 ) TARGETREJ 5 ( CwToneSurvey.cs:5@20 48 319 337 645 ))
+drop 6
+drop 5
+drop 4
+drop 3
+drop 2
+drop 1
+FINAL TARGET 10 CHAIN 7,9 LINKREJ 0 TARGETREJ 0

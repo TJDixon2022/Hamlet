@@ -1,0 +1,116 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs b/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+index b97859f2..e1b4f45b 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+@@ -1,5 +1,21 @@
+ namespace Hamlet.RadioEngine.Cw;
+ 
++/// <summary>
++/// Every run one bin's gate produced on one survey pass, marks and gaps apart.
++/// </summary>
++/// <param name="ToneHz">The bin.</param>
++/// <param name="MarksMs">Key-down runs, in milliseconds.</param>
++/// <param name="GapsMs">Key-up runs, in milliseconds.</param>
++/// <remarks>
++/// **FOR ASKING WHETHER A RUN STREAM IS QUANTISED**, which is the one family of
++/// question four measured amplitude axes could not answer. Nothing in the
++/// application collects these.
++/// </remarks>
++public readonly record struct BinRuns(
++    double ToneHz,
++    IReadOnlyList<double> MarksMs,
++    IReadOnlyList<double> GapsMs);
++
+ /// <summary>
+ /// What every admission test said about one bin on one survey pass.
+ /// </summary>
+@@ -336,6 +352,62 @@ public sealed class CwToneSurvey
+     /// </remarks>
+     public List<BinReading>? Readings { get; set; }
+ 
++    /// <summary>
++    /// Where the survey should write the raw run stream of every bin it gates,
++    /// or null to collect none.
++    /// </summary>
++    /// <remarks>
++    /// **THE MARKS ALONE CANNOT ANSWER A QUANTISATION QUESTION.** Morse puts
++    /// marks at one unit and three, and gaps at one, three and seven; a stream
++    /// that only carries the marks has thrown away three of the five multiples
++    /// the structure is made of. Collected only when a caller asks, and never in
++    /// the application (§8).
++    /// </remarks>
++    public List<BinRuns>? RunStreams { get; set; }
++
++    private void RecordRuns(int bin)
++    {
++        if (RunStreams is null)
++        {
++            return;
++        }
++
++        var marks = new List<double>();
++        var gaps = new List<double>();
++        var i = 0;
++
++        while (i < _filled)
++        {
++            var start = i;
++            var on = _mask[i];
++
++            while (i < _filled && _mask[i] == on && !_blocked[i])
++            {
++                i++;
++            }
++
++            if (i == start)
++            {
++                i++;
++                continue;
++            }
++
++            // The same truncation rule the marks use: a run touching either end
++            // of the history, or a blocked stretch, is not a measured length.
++            var truncated = (start > 0 && _blocked[start - 1])
++                || (i < _filled && _blocked[i])
++                || start == 0
++                || i >= _filled;
++
++            if (!truncated)
++            {
++                (on ? marks : gaps).Add((i - start) * _hopSeconds * 1000);
++            }
++        }
++
++        RunStreams.Add(new BinRuns(_binHz[bin], marks, gaps));
++    }
++
+     /// <summary>
+     /// Place the gate this far above the band's own noise floor, instead of
+     /// halfway between the bin's own two levels. Null keeps the old placement.
+@@ -796,6 +868,8 @@ public sealed class CwToneSurvey
+ 
+         Deglitch();
+ 
++        RecordRuns(bin);
++
+         var marks = CollectMarks();
+ 
+         if (marks < MinimumMarks)
+diff --git a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+index c2e7abe3..b8db827b 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@ -575,6 +575,13 @@ public sealed class CwToneTracker
+         set => _survey.Readings = value;
+     }
+ 
++    /// <summary>Where to collect every bin's raw run stream, or null.</summary>
++    public List<BinRuns>? SurveyRunStreams
++    {
++        get => _survey.RunStreams;
++        set => _survey.RunStreams = value;
++    }
++
+     /// <summary>Candidate A: place the gate above the band floor (2026-08-26).</summary>
+     public double? GateAboveBandFloorDb
+     {

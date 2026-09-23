@@ -1,0 +1,241 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs b/src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
+index b1cdd97a..a1d03159 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs
+@@ -50,6 +50,17 @@ namespace Hamlet.RadioEngine.Cw;
+ /// **Null says the survey did not find one and never that the frequency is
+ /// clear** (HM-DEC-009).
+ /// </param>
++/// <param name="PitchChoice">
++/// How <see cref="ToneHz"/> came to be chosen — from keying, from the strongest
++/// bin, from the operator, or not at all.
++/// </param>
++/// <remarks>
++/// **`PitchWasMeasured` AND `PitchChoice` ANSWER DIFFERENT QUESTIONS AND BOTH
++/// ARE KEPT.** The first says whether keying was found, which is the claim
++/// §0.0 cares about; the second says which of four things supplied the number.
++/// A pitch chosen because its bin was loudest is not measured and is also not
++/// nothing, and before this there was no way to say so.
++/// </remarks>
+ public readonly record struct CwDecodeReport(
+     AudioLevel Level,
+     double ToneHz,
+@@ -65,7 +76,8 @@ public readonly record struct CwDecodeReport(
+     bool WordSpacingUnmeasured = false,
+     CwCompetitor? Competitor = null,
+     bool PitchWasMeasured = false,
+-    bool PitchWasAsserted = false)
++    bool PitchWasAsserted = false,
++    CwPitchChoice PitchChoice = CwPitchChoice.NotChosen)
+ {
+     /// <summary>
+     /// How far above the band a tone has to stand before it is worth mentioning.
+diff --git a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+index a031f460..3cb2faff 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@ -286,7 +286,10 @@ public sealed class CwDecoder
+         (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
+         Competitor: _tracker.Competitor,
+         PitchWasMeasured: _tracker.HasMeasuredPitch,
+-        PitchWasAsserted: _asserted);
++        PitchWasAsserted: _asserted,
++        PitchChoice: _asserted
++            ? CwPitchChoice.OperatorAssertion
++            : _tracker.PitchChoice);
+ 
+     /// <summary>Everything inside the decision delay, handed over whole.</summary>
+     /// <remarks>
+diff --git a/src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs b/src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs
+new file mode 100644
+index 00000000..2d69466f
+--- /dev/null
++++ b/src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs
+@@ -0,0 +1,53 @@
++namespace Hamlet.RadioEngine.Cw;
++
++/// <summary>How the pitch being decoded at came to be chosen.</summary>
++/// <remarks>
++/// <para>**BECAUSE "MEASURED" STOPPED BEING ONE QUESTION** when Tim's ruling of
++/// 2026-08-27 let the strongest bin choose the note at acquisition. Before it,
++/// a pitch either came from keying the survey admitted or it was a starting
++/// point nobody had confirmed, and one flag said which. After it there is a
++/// third case — chosen because that bin was the loudest thing in the band — and
++/// folding that into "measured" would claim the survey found keying it never
++/// found (§0.0).</para>
++/// <para>**IT IS NOT A RANKING AND THE ORDER MEANS NOTHING.** Each value names
++/// a different provenance, and the sheet prints the name rather than comparing
++/// them.</para>
++/// </remarks>
++public enum CwPitchChoice
++{
++    /// <summary>Nothing has chosen. The bank centre is a starting point.</summary>
++    /// <remarks>
++    /// **THE HONEST DEFAULT.** A tracker that has never confirmed anything is
++    /// pointed somewhere, and where it is pointed is not a finding about the
++    /// band.
++    /// </remarks>
++    NotChosen,
++
++    /// <summary>Keying the survey admitted, confirmed across two surveys.</summary>
++    /// <remarks>
++    /// The strongest provenance there is, and the only one that sets
++    /// <see cref="CwDecodeReport.PitchWasMeasured"/>.
++    /// </remarks>
++    Keying,
++
++    /// <summary>The loudest bin in the band, with no keying confirmed.</summary>
++    /// <remarks>
++    /// <para>**TIM'S RULING OF 2026-08-27.** Eight statistics were measured
++    /// against choosing a pitch by how it is keyed and all eight were wrong on
++    /// the four captures he can hear, while the strongest bin was right on all
++    /// four. So the strongest bin may choose, and keying structure is demoted to
++    /// a check on the winner.</para>
++    /// <para>**IT IS A CHOICE AND NOT A MEASUREMENT**, and the difference is the
++    /// whole reason this enum exists. A loud bin is where to point the filter; it
++    /// is not evidence that anybody is sending.</para>
++    /// </remarks>
++    StrongestBin,
++
++    /// <summary>The operator said he could hear a station there.</summary>
++    /// <remarks>
++    /// **NO SHEET MAY EVER IMPLY HAMLET FOUND WHAT A HUMAN FOUND** (§0.0). Unit
++    /// 1.11.21 built this and it beats every automatic scheme on the four
++    /// captures that matter.
++    /// </remarks>
++    OperatorAssertion,
++}
+diff --git a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+index b8db827b..3c9b6f0d 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@ -371,6 +371,17 @@ public sealed class CwToneTracker
+     /// <summary>What is reported as the tone, which is not the instant winner.</summary>
+     private double _reportedHz = double.NaN;
+ 
++    /// <summary>
++    /// The pitch the strongest bin chose at acquisition, or NaN.
++    /// </summary>
++    /// <remarks>
++    /// **KEPT APART FROM `_reportedHz` ON PURPOSE.** That one means keying the
++    /// survey admitted and it is what `HasMeasuredPitch` answers from; this one
++    /// means the loudest bin in the band and nothing more. Folding them together
++    /// would make the sheet claim a measurement nobody took (§0.0).
++    /// </remarks>
++    private double _chosenHz = double.NaN;
++
+     /// <summary>A move that is waiting for the character in progress to end.</summary>
+     private double _heldSwitchHz = double.NaN;
+ 
+@@ -512,9 +523,27 @@ public sealed class CwToneTracker
+     /// survey found the keying, which is a measurement over three seconds, and
+     /// the middle of the bank until it has one.
+     /// </remarks>
+-    public double ToneHz => double.IsNaN(_reportedHz)
+-        ? _fineHz[_fineHz.Length / 2]
+-        : _reportedHz;
++    /// <remarks>
++    /// **THREE RUNGS SINCE 2026-08-27, AND THE MIDDLE ONE IS NEW.** Keying the
++    /// survey admitted still wins. Below it now sits the bin the strongest-bin
++    /// rule chose, by Tim's ruling of that date; below that, the bank centre,
++    /// which is a starting point and not a finding.
++    /// </remarks>
++    public double ToneHz => !double.IsNaN(_reportedHz)
++        ? _reportedHz
++        : !double.IsNaN(_chosenHz)
++            ? _chosenHz
++            : _fineHz[_fineHz.Length / 2];
++
++    /// <summary>How the pitch being reported came to be chosen.</summary>
++    /// <remarks>
++    /// **THE SHEET RECORDS THE PROVENANCE AND NOT ONLY THE NUMBER** (§0.0.1,
++    /// work instruction 033 task 8). A pitch found from keying, a pitch chosen
++    /// because its bin was loudest, and a pitch the operator supplied are three
++    /// different claims, and until this existed the sheet could only tell the
++    /// first from the rest.
++    /// </remarks>
++    public CwPitchChoice PitchChoice { get; private set; } = CwPitchChoice.NotChosen;
+ 
+     /// <summary>True once a pitch has actually been measured from keying.</summary>
+     /// <remarks>
+@@ -773,6 +802,8 @@ public sealed class CwToneTracker
+     public void Forget()
+     {
+         _reportedHz = double.NaN;
++        _chosenHz = double.NaN;
++        PitchChoice = CwPitchChoice.NotChosen;
+         _lastKeyedHz = double.NaN;
+         _readingDb = double.NaN;
+         _survey.Reset();
+@@ -1146,17 +1177,39 @@ public sealed class CwToneTracker
+             // moving the filter, not about why it is being moved: a character
+             // finished from a different part of the band is a letter nobody sent
+             // however the move came to be made.
++            // **AND THE STRONGEST BIN NOW CHOOSES, NOT ONLY POINTS** (Tim's
++            // ruling of 2026-08-27, amending HM-DEC-095). Eight statistics were
++            // measured against choosing a pitch by how it is keyed and all eight
++            // were wrong on the four captures he can hear, while the strongest
++            // bin was right on all four. So keying structure is demoted from the
++            // chooser to a check on the winner.
++            //
++            // **THE CHOICE IS RECORDED AS A CHOICE AND NOT AS A MEASUREMENT.**
++            // `HasMeasuredPitch` still means keying the survey admitted and it
++            // stays false here, because a loud bin is where to point the filter
++            // and is not evidence that anybody is sending (§0.0). What the sheet
++            // gains is `PitchChoice`, which says which of the two it was.
+             if (!MidCharacter
+                 && double.IsNaN(_lastKeyedHz)
+-                && coarse.Strongest is { } loudest
+-                && Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
++                && coarse.Strongest is { } loudest)
+             {
+-                CenterFineBank(loudest.ToneHz);
+-                _fineSurvey.Reset();
+-                _tracked = _fineHz.Length / 2;
+-                _reportedHz = double.NaN;
+-                Retunes++;
+-                Follows++;
++                if (Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
++                {
++                    CenterFineBank(loudest.ToneHz);
++                    _fineSurvey.Reset();
++                    _tracked = _fineHz.Length / 2;
++                    _reportedHz = double.NaN;
++                    Retunes++;
++                    Follows++;
++                }
++
++                // **POINT AT THE LOUDEST BIN, NOT AT WHATEVER THE BANK IS
++                // CENTRED ON.** Before the ruling the centre was taken and the
++                // bin structure inside the bank was ignored, which is how a
++                // station sitting fifty hertz off a bank centre was decoded at
++                // the centre and read as noise.
++                _chosenHz = loudest.ToneHz;
++                PitchChoice = CwPitchChoice.StrongestBin;
+             }
+ 
+             return;
+@@ -1269,6 +1322,7 @@ public sealed class CwToneTracker
+             _tracked = NearestFine(exact.ToneHz);
+ 
+             _reportedHz = exact.ToneHz;
++            PitchChoice = CwPitchChoice.Keying;
+             KeyingFoundAt(exact.ToneHz);
+             Verdict = new ToneVerdict(exact, Filtered(coarse.Interference));
+             return;
+@@ -1276,6 +1330,7 @@ public sealed class CwToneTracker
+ 
+         _tracked = NearestFine(keyed.ToneHz);
+         _reportedHz = keyed.ToneHz;
++        PitchChoice = CwPitchChoice.Keying;
+         Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
+     }
+ 
+@@ -1333,6 +1388,7 @@ public sealed class CwToneTracker
+         _tracked = _fineHz.Length / 2;
+ 
+         _reportedHz = toneHz;
++        PitchChoice = CwPitchChoice.Keying;
+         KeyingFoundAt(toneHz);
+         Retunes++;
+ 

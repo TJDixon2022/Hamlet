@@ -1,0 +1,41 @@
+START TARGET 40 CHAIN 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39 LINKREJ 4 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 15:CwDecodeReport.cs:1@65 19:CwDecodeReport.cs:1@77 ) TARGETREJ 0 DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs )
+drop 39
+drop 38
+drop 37
+drop 36
+drop 35
+keep 34  (TARGET 40 CHAIN 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33 LINKREJ 4 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 15:CwDecodeReport.cs:1@65 19:CwDecodeReport.cs:1@77 ) TARGETREJ 1 ( CwUnitEstimator.cs:1@694 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs ))
+keep 33  (TARGET 40 CHAIN 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34 LINKREJ 4 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 15:CwDecodeReport.cs:1@65 19:CwDecodeReport.cs:1@77 ) TARGETREJ 1 ( CwUnitEstimator.cs:1@348 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs ))
+drop 32
+keep 31  (TARGET 40 CHAIN 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34 LINKREJ 5 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 15:CwDecodeReport.cs:1@65 19:CwDecodeReport.cs:1@77 33:CwUnitEstimator.cs:1@345 ) TARGETREJ 1 ( CwUnitEstimator.cs:1@348 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs ))
+drop 30
+drop 29
+drop 28
+drop 27
+drop 26
+drop 25
+drop 24
+drop 23
+drop 22
+drop 21
+drop 20
+drop 19
+drop 18
+drop 17
+drop 16
+drop 15
+drop 14
+drop 13
+drop 12
+drop 11
+drop 10
+drop 9
+drop 8
+drop 7
+drop 6
+drop 5
+drop 4
+drop 3
+drop 2
+drop 1
+FINAL TARGET 40 CHAIN 31,33,34 LINKREJ 0 TARGETREJ 0

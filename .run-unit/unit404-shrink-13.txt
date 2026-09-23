@@ -1,0 +1,14 @@
+START TARGET 13 CHAIN 1,2,3,4,5,6,7,8,9,10,11,12 LINKREJ 2 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 ) TARGETREJ 0
+keep 12  (TARGET 13 CHAIN 1,2,3,4,5,6,7,8,9,10,11 LINKREJ 1 ( 4:CwCharacter.cs:1@166 ) TARGETREJ 1 ( CwDecoder.cs:1@422 ))
+drop 11
+drop 10
+drop 9
+drop 8
+drop 7
+drop 6
+keep 5  (TARGET 13 CHAIN 1,2,3,4,12 LINKREJ 2 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 ) TARGETREJ 1 ( CwProbabilisticStream.cs:1@148 ))
+drop 4
+keep 3  (TARGET 13 CHAIN 1,2,5,12 LINKREJ 2 ( 12:CwDecodeReport.cs:1@58 12:CwDecoder.cs:1@339 ) TARGETREJ 0)
+keep 2  (TARGET 13 CHAIN 1,3,5,12 LINKREJ 1 ( 12:CwDecodeReport.cs:1@58 ) TARGETREJ 3 ( CwProbabilisticDecoder.cs:3@1262 1307 1317 ))
+drop 1
+FINAL TARGET 13 CHAIN 2,3,5,12 LINKREJ 1 ( 12:CwDecodeReport.cs:1@58 ) TARGETREJ 0

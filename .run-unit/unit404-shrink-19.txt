@@ -1,0 +1,20 @@
+START TARGET 19 CHAIN 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 LINKREJ 3 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 15:CwDecodeReport.cs:1@65 ) TARGETREJ 1 ( CwDecodeReport.cs:1@77 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs )
+drop 18
+drop 17
+drop 16
+keep 15  (TARGET 19 CHAIN 1,2,3,4,5,6,7,8,9,10,11,12,13,14 LINKREJ 2 ( 4:CwCharacter.cs:1@166 12:CwDecodeReport.cs:1@58 ) TARGETREJ 3 ( CwDecodeReport.cs:2@52 77 CwDecoder.cs:1@289 ) DROPPED( 19:CwPitchChoice.cs ))
+drop 14
+drop 13
+keep 12  (TARGET 19 CHAIN 1,2,3,4,5,6,7,8,9,10,11,15 LINKREJ 3 ( 4:CwCharacter.cs:1@166 15:CwDecodeReport.cs:1@65 15:CwDecoder.cs:1@286 ) TARGETREJ 2 ( CwDecodeReport.cs:1@77 CwDecoder.cs:1@289 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs ))
+drop 11
+drop 10
+drop 9
+drop 8
+drop 7
+drop 6
+drop 5
+drop 4
+keep 3  (TARGET 19 CHAIN 1,2,12,15 LINKREJ 4 ( 12:CwDecodeReport.cs:1@58 12:CwDecoder.cs:1@339 15:CwDecodeReport.cs:1@65 15:CwToneTracker.cs:1@773 ) TARGETREJ 2 ( CwDecodeReport.cs:1@77 CwDecoder.cs:1@362 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs ))
+drop 2
+keep 1  (TARGET 19 CHAIN 3,12,15 LINKREJ 2 ( 12:CwDecodeReport.cs:1@58 15:CwDecodeReport.cs:1@65 ) TARGETREJ 3 ( CwDecodeReport.cs:1@77 CwDecoder.cs:2@738 915 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs ))
+FINAL TARGET 19 CHAIN 1,3,12,15 LINKREJ 2 ( 12:CwDecodeReport.cs:1@58 15:CwDecodeReport.cs:1@65 ) TARGETREJ 1 ( CwDecodeReport.cs:1@77 ) DROPPED( 15:CwPitchChoice.cs 19:CwPitchChoice.cs )
