@@ -111,3 +111,26 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
 - **399 item 2** - The first exit app run lost 3 names to the headless dispatcher loop, all 1 ms,
   `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed` and two
   `TheTestsStayOffTheNetworkTests` facts; the re-run was 278 of 278.
+- **400 item 1** - `CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore` is red at unit 400's
+  entry on `Assert.NotNull` of the sweep's threshold, a compiled name outside the 51-name set that
+  no document under `docs` named; red the same way under the corrected harness and at exit. Its
+  sweep gives right 0.78 at most levels and never crosses the bar; the numbers at both ends are in
+  `unit400-harness.md` section 2.
+- **400 item 2** - Section 5 mismatches of unit 400: `PHASE_STATUS.md` read `CURRENT_STEP: 0` and
+  `WORK_INSTRUCTION: 399`; `CwDecodeHarness.cs` was 90 lines, not 91 (every line number quoted
+  held); `TheIntegratorBandwidthTable.cs` lives under `Cw\Fixtures\` and reaches the harness through
+  `CwTwoInOnePassband.Tracked`, not by `CwDecodeHarness.Decode` in its own text; `PARKED.md` carried
+  44 bulleted items, one of them struck, so 43 standing.
+- **400 item 3** - The exit app line lost one name per run to the headless dispatcher loop, 1 ms
+  each: `TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "Olivia")`,
+  then `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`; 277 of 278
+  in each run, neither name failed in the other.
+- **400 item 4** - Under the harness reading the settled transcript,
+  `NothingTheDecoderWasSureOfIsWrong` went green on `noisy-18wpm` and `interference-18wpm` and stays
+  red on `fading-18wpm` (394 item 5's cases, outside the set). The three `ANALYSIS` page writers
+  now read the settled list through the same harness and were not run.
+- **400 item 5** - Decision 9's shape, `git rm` of the temporary writer, fails on a file that was
+  never tracked: git refuses the path, and when the path was named in the commit's `git add` the
+  whole add was refused and the first repair commit made nothing. The prosigns writer was deleted
+  with `rm -f` inside the script instead. The first clean-fixture writer also lacked `using Xunit;`
+  and its build failed; that attempt judged nothing and was re-run whole.
