@@ -4,233 +4,252 @@ READ IN THIS ORDER.
 A. The phase goal - CW decodes again. Steps 0, 1, 2 and 4 are ticked on
    every criterion; the outcome file holds 0 and 2 at not started and 4 at
    partial, a layer mismatch reported here, and the launcher named step 0
-   for this unit on that reading; step 3 is this unit's, partial at 3.1,
-   3.2 and 3.3 at entry with 20 reds open in the set, every one a decode
-   result, and the third floor test red at every commit of the phase;
-   step 5 is Tim's. After this unit the third floor test is green 2 of 2,
-   the harness reads the settled transcript, the set stands at 37 green
-   and 14 red-open, and 3.4 still waits on the 14 repairs left.
+   for this unit on that reading; step 3 is this unit's, at 3.1, 3.2, 3.3
+   and 3.5 met at entry with 3.4 open and 14 reds open in the set, every
+   one a decode result, and all three floor tests green at entry; step 5
+   is Tim's. After this unit the set stands at 43 green and 8 red-open,
+   the known-reds block names no CW test, the failing set carries its
+   closing line, the third floor test is on the engine line, and 3.4 is
+   met on its letter with the step partial under R49.
 B. The criteria, one line each, met or not: 3.1 met by unit 394, its
-   sentence gaining #25, #26, #31, #32 and #30, #33; 3.2 met by unit 398,
-   nothing retired here; 3.3 met, nothing retired here; 3.4 not met, the
-   known-reds block and the set's closing line untouched, 14 reds left;
-   3.5 ticked with its R53 qualification at 7d1ffde6 - floors 37 of 37,
-   13 of 13 and 2 of 2 at task 4, lines app 277 of 278 in each of two
-   runs with each loss the dispatcher loop and green in the other run,
-   engine 176 of 176 in 374 s, no file under src changed. The unit named
-   3.5 in ADVANCES; it flipped.
+   sentence gaining #18 to #23; 3.2 met by unit 398, nothing retired here;
+   3.3 met, nothing retired here; 3.4 met - the block's CW line names no
+   test, the closing line reads 31/12/0/8, the engine line 178 of 178 in
+   374 s; 3.5 re-confirmed - floors 37 of 37, 13 of 13 and 2 of 2 at
+   task 4, lines app 278 of 278, engine 178 of 178 in 374 s, no file under
+   src changed. The unit named 3.4 in ADVANCES as step 3 criterion 4; it
+   flipped.
 C. The report last. Section 4 raises 0 items and none is in the way of a
    criterion in B; everything carried from before this phase and every
    finding that blocks nothing is in docs/phase-cw/PARKED.md under R54,
-   not here.
+   not here. Every non-owner criterion of the plan is now ticked; 5.1 is
+   Tim's and no unit is authored toward it.
 ```
 
 ```
-UNIT:       400 - complete at task 4 of 5, none dropped, tasks 0 to 4 all run - 2026-09-23 04:43
-PHASE GOAL: get the CW decoder that worked on the air in August working again, proved by three named floor tests and in the end by Tim at the radio
-UNIT GOAL:  make the test harness read the same settled characters the CW tab shows, prove that costs no test that was green, then give the clean fixtures a quiet band so the third floor test goes green with its assertion untouched and nothing under src changed
-ADVANCED:   yes - step 3 criterion 3.5 ticked at 7d1ffde6 with its R53 qualification
-NUMBER:     harness cost 0 cases in 5 caller types, 0 pinned; clean synthetics 0 of 2 -> 2 of 2 at band 0.02; set names green 31 -> 37, red-open 20 -> 14; prosigns green, #30 and #33; floors 37 of 37 and 13 of 13 at both ends; engine line 374 s -> 374 s of 480
+UNIT:       401 - complete at task 4 of 5, none dropped - 2026-09-23 05:27
+PHASE GOAL: get the CW decoder that worked on the air in August working again, proved by three named floor tests, kept from breaking silently by a guard every unit runs, with the old pile of CW reds dealt with, and in the end confirmed by Tim at the radio
+UNIT GOAL:  measure the six displacement reds and repair them in the test where the numbers allow, then close out the CW pile on the plan's own wording - the known-reds block names no CW test, the failing set carries its count each way, and the clean synthetics join the engine guard - with the floors unmoved and nothing under src changed
+ADVANCED:   yes - step 3 criterion 4, the known-reds block names no CW test and the set carries its closing line
+NUMBER:     displacement 0 of 6 -> 6 of 6 on both the settled event and band 0.005; set names green 37 -> 43, red-open 14 -> 8; known-reds CW lines 2 -> 0 naming a test; engine line 176 in 374 s -> 178 in 374 s of 480; floors 37 of 37, 13 of 13, 2 of 2 at both ends
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
 **Complete at task 4 of 5, tasks 0 to 4, none dropped.** Claude Code on Tim's Windows machine,
-Hamlet (gate: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, no `CoreHMI.sln` or
-`MURC.sln`, root `C:\Source\HamLet`), branch `main`. The unit's first status line was at 04:05:37; it
-finished at 04:43.
+Hamlet confirmed at the gate, branch `main`. The unit's hour started at 04:57:08, the first status
+line of task 0. Task 2 started at minute 7, task 3 at minute 11 and task 4 at minute 18, all inside
+decision 11's clock. Every commit was pushed, and each push returned 0.
 
-**Commits, all pushed to `origin/main`:**
+**Commits:**
 
-| Hash | Task | What it changed |
-|---|---|---|
-| `cc373cfc` | 0 | entry round; `PHASE_OUTCOME.md` entry, `PHASE_STATUS.md` whole, version 1.13.86 to 1.13.87, doc section 1 |
-| `bec38668` | 1 | `CwDecodeHarness.cs` line 71 `CharacterDecoded` to `CharacterSettled` plus its remark; doc section 2 |
-| `7d1ffde6` | 2 | **the repair**: `CwFixtures.cs` clean requests gain `NoiseAmplitude: 0.02` and the comments decision 7 names; `clean-12wpm.wav` and `clean-18wpm.wav` regenerated; doc section 3 |
-| `d11096ca` | 3 | `prosigns-18wpm` request gains `NoiseAmplitude: 0.02`; `prosigns-18wpm.wav` regenerated; sibling printer `TheProsignsFixtureAtABandTests.cs` added; doc section 4 |
-| `5e70860d` | 4 | exit round, doc section 5 |
-| `52f4a8e0` | 4 | the ticks in `PHASE_PLAN.md`: 3.5, the 3.1 and 1.3 clauses; doc section 6 |
-| `08576089` | 4 | `PARKED.md` 400 items 1 to 5 |
+| hash | what it changed |
+|---|---|
+| `bb854ac8` | task 0: `PHASE_OUTCOME.md` entry `## UNIT 401 - STEP 3` appended, `PHASE_STATUS.md` whole, version 1.13.87 to 1.13.88, `unit401-closeout.md` section 1 |
+| `034bb82e` | task 1: `TheDisplacementFloorFourWaysTests.cs`, a printer asserting nothing; doc section 2 |
+| `8ed230ad` | step 3 repair (a): `CwDisplacementFloorTests` line 45 reads `CharacterSettled`, 1 of 6 |
+| `377eb7b3` | step 3 repair (b): the five silent cases at a band of 0.005, class-remark paragraph, 6 of 6; doc section 3 |
+| `29ede63d` | task 3: the known-reds block, the closing line, line 9's term, the guard-table row, the `WHAT UNIT 401 CHANGED` paragraph; doc section 4 |
+| `dd4d1d07` | ticks: 3.4 ticked, 2.3 and 3.1 clauses; doc section 6 |
+| `162f0259` | task 4: exit round into doc section 5, `PARKED.md` 401 items 1 to 3, the outcome entry's task lines |
 
-**Task 0.** Section 5 verified against the tree; the mismatches are in section 3 below. Decision 6's
-diff printed nothing, so unit 399's exit runs are the entry lines. One build and then the floors:
-37 of 37 with every row identical to unit 399's exit, 13 of 13, 0 of 2. `CwFixtureTests` 14 green
-and 9 red. The caller baseline had one surprise: `CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore`
-is red at entry on `Assert.NotNull`. It is a compiled name outside the set that no document names.
-It was red before anything changed, so it is baseline and not a regression, and it is parked as
-400 item 1.
+**Task 0, entry.** `PHASE_STATUS.md` read `CURRENT_STEP: 0` and `WORK_INSTRUCTION: 400 - the harness
+reads the transcript`. It is now `3` and `401 - the pile is closed out on R49's letter`. It rode
+whole in task 0's commit, as did `PHASE_OUTCOME.md`. Decision 6's diff (`git diff --stat 5e70860d
+HEAD -- src tests docs/carry-forward-tests.txt docs/unit239-failing-set.txt`) printed nothing, so
+unit 400's exit runs were the entry numbers for the two lines. One build of 16 s, warnings as
+errors. Captures 37 of 37 in 94 s, every row identical to unit 400's exit. Adjudicated 13 of 13 in
+29 s. Clean synthetics 2 of 2. `CwFixtureTests` 22 of 23 (`fading-18wpm` confident-mistakes red),
+`CwDisplacementFloorTests` 0 of 6, `CwEmissionGateTests` 7 of 8. Transmit files and `src` printed
+nothing. `grep -rl unit239-failing-set tools .claude` printed nothing.
 
-**Task 1.** The harness change was built and run uncommitted against `CwFixtureTests` whole, the five
-caller types, `TheCleanReadsStayCleanTests` and `TheSurveyAlreadyUsesAShortWindowTests`, every case by
-name. **No case green at task 0 went red.** Two red cases went green:
-`NothingTheDecoderWasSureOfIsWrong` on `noisy-18wpm` and on `interference-18wpm`. They are outside
-the set, 394 item 5's cases. The synthetics stayed 0 of 2 off disk, as the instruction expected.
-Decision 4's first branch applied, with no pin, and the change was committed.
+**Task 1, the trace (decision 7).** 33 decodes plus #24, in 33 s. **Finding (a):** the settled
+event alone turns the sixth case (noise 0.06) to `TV VVV VVV CQ DE W1AW K` and leaves every silent
+case in blocks. **Finding (b):** 0.005 is the smallest band where all five silent cases end with the
+call and the image case moves once; at 0.002 the 750 Hz case ends `OT W1AW K`. **#24:** 9
+characters, reading `CQ DE W1AW K` at 18.46 wpm, `WordsPerMinute` null because `SpeedIsReacquiring`
+is true. The cause is under `src`, so it was written down and left.
 
-**Task 2.** Band 0.02 was tried first and held, so 0.04 and 0.01 were not regenerated. `CwFixtureTests`
-went from 16 green to 20 green, with `TheCleanRecordingsDecodeExactly` 2 of 2, the share and
-confident-mistakes cases green on both clean names, and the drift guard 6 of 6. Captures were 37 of
-37 with every row identical to entry, adjudicated 13 of 13. Decision 8 held. **Two slips of mine,
-both caught before anything was committed from them.** The first writer fact lacked
-`using Xunit;`, its build failed, and the script carried on and ran `CwFixtureTests` against the old
-files and the new requests. That run judged no band, and step 2 was re-run whole from a script that
-stops on a failed build. Then the first commit attempt named the deleted writer in `git add`. The
-writer had never been tracked, so git refused the whole add and nothing was committed. The commit
-was made again without that path. Both are 400 item 5.
+**Task 2, the repair (decision 8).** Both changes were reached and both kept. Nothing was put back.
+(a) 0 of 6 to 1 of 6, #23 red to green, no case green to red. (b) 6 of 6. Before (b) was committed:
+captures 37 of 37 with every row identical, adjudicated 13 of 13, and `CwFixtureTests` and
+`CwEmissionGateTests` identical by case to task 0. No assertion, `Retunes` count or expected text
+moved. The file changed only at line 45, the two silent call sites (five cases) and the class
+remark.
 
-**Task 3.** Started at minute 16, inside decision 13's clock. In memory at 0.02 the sibling printer
-gave `W1AW DE K2ABC <BT> R TU <SK>`, 0 confident mistakes, 16 of 16. The file was regenerated the same
-way. `CwFixtureTests` went to 22 of 23, the one red being `fading-18wpm`'s confident-mistakes case,
-red since task 0. Captures and adjudicated were unmoved, and decision 8 held. The prosigns writer
-was deleted with `rm -f` inside the script, because `git rm` refuses a file that was never tracked.
+**Task 3, the close-out (decisions 2, 3, 4, 9).** Every edit was made as the instruction gave it,
+and the engine line with the new term ran 178 of 178 in 374 s of 480.
 
-**Task 4.** Both lines, the three floor tests, every fixture-reading type and every caller type were
-run; the numbers are in section 3. **No regression.** The ticks went in their own commit.
+**Task 4, exit.** Both lines are green with no red on an assertion. The floors are unmoved, and so
+is every measured type. No regression. 3.5 stands.
 
-**Decisions applied**, all of the instruction's: 1 (step 3, the clean synthetics first); 2 (the trace);
-3 (settled characters, option a); 4 (first branch, nothing costed, no pin); 5 (nothing under `src`
-at any commit); 6 (entry lines from unit 399's exit); 7 (band 0.02); 8 (held for both repairs);
-9 (temporary writer facts, run by filter). For decision 9, `git rm` was usable only on the first
-writer, before the commit. The second was removed with `rm -f`, a how-to decision reported here.
-10 (prosigns, held); 11 (the ticks); 12 (the doc, six sections); 13 (clock: task 3 at minute 16, task
-4 at about minute 26); 14 (timeouts as listed).
+**Decisions applied**, all 12 as written: 1 (3.4 on its letter, step partial under R49), 2 (one CW
+line naming no test), 3 (the term on line 9, inside 480 s, kept), 4 (the closing line, counts
+summing to 51), 5 (no `src` change), 6 (entry lines from unit 400's exit), 7 (the printer), 8 (both
+changes, each on its own evidence), 9 (the ticks), 10 (the doc, six sections), 11 (clock) and 12
+(timeouts; nothing backgrounded). **Decisions I made for myself about how to carry out tasks:**
 
-**Self-rulings: none.** There were two how-to decisions, both uncapped and reported here. The 3.5
-sentence says *app 277 of 278 in each of two runs ...* because no run printed 278, and it gives the
-dispatcher-loop reason in place of the template's single `<n> of 278`. The prosigns printer is a
-sibling file and does not add a second fact to `TheCleanSyntheticsFourWaysTests`, which section 5
-said not to edit.
+- 2.3's clause gives the engine line's count, 178 of 178 in 374 s, not the synthetics' own 2 of 2.
+  The line's count is the one 2.3 measures.
+- The new known-reds CW line takes the place of line 158. Because the guard table gained a row, it
+  is now line 159.
+- The printer prints `image` and `elsewhere-400` as separate rows even though they generate the same
+  audio. The decision names six cases.
+- Task 0's checks of the lines against unit 400 used `unit401-cmp.sh` and `unit401-adjcmp.sh`,
+  copies of unit 400's scripts with only the unit number changed.
+
+**No self-ruling that authorizes work outside the tasks was used.**
+
+**Mismatches against the instruction**, reported and not repaired:
+
+- `docs\carry-forward-tests.txt` was 918 lines at entry, not 919.
+- `CwDisplacementFloorTests.cs` was 113 lines, not 114. Every quoted line number matched.
+- The `CharacterDecoded` grep also hits `TheReworkNumbersPrinterTests.cs` line 18, a remark. None
+  of the listed files is excluded from compilation.
+- **The layer's `ADVANCES` misrecording:** `PHASE_OUTCOME.md`'s `## UNIT 6 - STEP 3` entry carries
+  `ADVANCED: no` and `ATTEMPT: 3.3 ...` for unit 400, whose `ADVANCES` read `step 3 criterion 3.5`
+  and whose 3.5 flipped. The launcher's parse stopped at the `.`. This unit's entry writes
+  `ADVANCES: step 3 criterion 4`. The existing entry was not edited, and `tools\arbiter\` was not
+  touched.
+- The outcome file still holds steps 0 and 2 at `not started` and step 4 at `partial`, with every
+  criterion `[x]`. That is the layer's, and it was not edited.
+- `CLAUDE.md` §1's top row is at line 360, the 2026-09-22 CW-phase row, which the instruction calls
+  HM-DEC-167. `PROJECT_STATUS.md` writes HM-DEC-165 as a literal (390 item 9).
+
+**Regressions:** none.
 
 ## 2. What the owner should expect
 
-Nothing changed on the CW tab and nothing changed under `src`. The test harness that nearly every CW
-fixture test reads through now collects the same characters the CW tab's transcript keeps: the
-settled ones, from `CwDecoder.CharacterSettled`. Before, it collected the running leading edge,
-which re-announces a letter every time the decoder revises it, so one letter could appear three
-times in the text the tests compared. That follows your R12, that a session rewrites its own tests,
-and the arbiter's answer to unit 399's question. The two clean synthetics, and the prosigns one,
-now carry a quiet noise band under the tone, the way `fading-18wpm` and every off-air fixture
-already do, under your HM-DEC-127 of August. **The third floor test is green, 2 of 2, for the first
-time in the phase**, giving back `CQ DE W1AW K` at 12 and 18 wpm, every letter high. The prosigns
-fixture went the same way and is green. The harness change cost nothing: every test green before is
-green after, and two confident-mistakes cases on the noisy and interference fixtures went from red
-to green. The decoder that worked on the air is unchanged, and its captures and adjudicated floors
-are green and unmoved, row for row.
+Nothing changed on the CW tab, and nothing changed under `src`. The decoder that read on the air is
+the same code, and its three floor tests are green. The list every unit runs before and after its
+work now also guards the third floor test, the two clean synthetics, so they cannot go red again
+without a unit seeing it. The file that told every unit since September that CW's reds were
+inherited and not chased now says something else: all 51 were run, 12 were repaired (six by unit
+400 and six here), none was retired, and 8 are owed by number under your R49. The six displacement
+cases went green, 6 of 6. It took two changes to the test: it now takes the transcript the CW tab
+shows, and its five silent cases now carry a band of 0.005 in place of exact digital silence. No
+assertion moved. With 3.4 ticked, every criterion the loop can move is done, and 5.1 is yours at
+the radio.
 
-**What will look wrong but is not:** the app line printed 277 of 278 twice. Each time one different
-name died in 1 ms on the Avalonia headless dispatcher loop before reaching an assertion, and each is
-green in the other run, the same shape step 1's 1.5 was ticked on. The three `.wav` files show
-the same byte sizes as before: same length, different samples. `CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore`
-is red, and was red before this unit started.
+**What will look wrong but is not:**
+
+- Step 3 is still partial. R49's own clause says a red decode result stays red with its number and
+  the step partial. The 8 are #6, #15, #24, #41 and #42 to #45.
+- At 0.005 the 750 Hz displacement case moves twice and shows blocks before the call. It is green
+  because the test asserts only the ending (401 item 3).
 
 ## 3. What you should see
 
-**The answer: `CwFixtureTests.TheCleanRecordingsDecodeExactly` 0 of 2 -> 2 of 2**, from repair
-commit `7d1ffde6` onward. 3.5 is ticked on that commit.
+**The answer: 3.4 met, and the displacement type went from 0 of 6 to 6 of 6.**
 
-**The caller table**, task 0 against the corrected harness at task 1, identical again at exit:
+**The printer's rows** (`TheDisplacementFloorFourWaysTests`, asserting nothing). Way 1 is the
+leading edge at the test's noise, way 2 the settled transcript at the test's noise, ways 3 to 6 the
+settled transcript at the band shown:
 
-| Type | Cases | Task 0 | Corrected | Moved | Run |
+| case | way | band | Retunes | ends with call | text |
 |---|---|---|---|---|---|
-| `CwFixtureTests` | 23 | 14 green, 9 red | 16 green, 7 red | `NothingTheDecoderWasSureOfIsWrong` noisy and interference, red to green | yes |
-| `CwAcquisitionWindowTests` | 12 | 10 green, #6 and #15 red | the same | nothing | yes |
-| `CwSensitivityTests` | 2 | 1 green, `TheDecoderReadsAsFarDownAsItDidBefore` red | the same | nothing by case; emitted count 19 or 20 to 9 per level | yes |
-| `EveryCharacterCarriesItsOwnEvidenceTests` | 3 | 3 green | 3 green | nothing | yes |
-| `WhereAcquisitionPointsTests` | 2 | 2 green | 2 green | nothing | yes |
-| `CwRefusalFloorTableTests` | 1 | 1 green | 1 green | nothing | yes |
-| `TheCleanSyntheticsFourWaysTests` | 3 | - | 3 of 3, asserts nothing; `TEXT` and `SETTLED` agree on every row | - | once, for the record |
-| `TheCwBaselineTable`, `TheTwoStationTable`, `TheIntegratorBandwidthTable` | 1 each | - | - | - | **not run**: they write an `ANALYSIS-cw-*.md` page at the root and assert only that it exists |
-| `TheOperatorIsToldAboutASecondStationTests` | - | - | - | - | not run: builds its own decoder, does not call the harness |
+| image / elsewhere-400 / 500 / 750 / 875 | 1 | 0 | 1 | no | `■ ■■ ■` |
+| same five | 2 | 0 | 1 | no | `■ ■ ■ ■ ■ ■ ■A ■ ■ ■■` |
+| image, 400, 875 | 3 | 0.002 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| 500 | 3 | 0.002 | 1 | yes | `■ ■ T TEET ETET ... E■ CQ DE W1AW K` |
+| 750 | 3 | 0.002 | 1 | **no** | `■ ■ T TTTT ... ■■ OT W1AW K` |
+| image, 400, 875 | 4 | 0.005 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| 500 | 4 | 0.005 | 1 | yes | `■ ■ ■T TEET ... EET■■ CQ DE W1AW K` |
+| 750 | 4 | 0.005 | 2 | yes | `■ E ■ E I ■ ■ 5EE E ■E EE ■ VVV CQ DE W1AW K` |
+| image, 400, 750, 875 | 5 | 0.01 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| 500 | 5 | 0.01 | 1 | yes | `■ ■ ■ EEET VVV VVV CQ DE W1AW K` |
+| image, 400, 750, 875 | 6 | 0.02 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| 500 | 6 | 0.02 | 1 | yes | `T TEEV VVV VVV CQ DE W1AW K` |
+| refused-before | 1 | 0.06 | 1 | no | `5V H VEVVVSVV I ... WWAJ11AARW W N K` |
+| refused-before | 2 | 0.06 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
+| refused-before | 6 | 0.02 | 1 | yes | `TV VVV VVV CQ DE W1AW K` |
 
-**`CwFixtureTests`, all 23 cases:**
+Every row, case by case, is in `docs/phase-cw/unit401-closeout.md` section 2.
 
-| Case | Task 0 | Task 1 | After 0.02 on clean | After prosigns |
-|---|---|---|---|---|
-| `EveryFixtureIsOnDisk` | green | green | green | green |
-| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` x6 | green | green | green | green |
-| `EveryRecordingGivesBackTheShareItShould` clean-12wpm #25, clean-18wpm #26 | red | red | green | green |
-| ... fading, interference, noisy | green | green | green | green |
-| ... prosigns-18wpm #30 | red | red | red, 1 of 16 | green |
-| `NothingTheDecoderWasSureOfIsWrong` clean-12, clean-18, prosigns | green | green | green | green |
-| ... fading-18wpm | red | red | red | red |
-| ... interference-18wpm, noisy-18wpm | red | green | green | green |
-| `TheCleanRecordingsDecodeExactly` clean-12wpm #31, clean-18wpm #32 | red | red | green | green |
-| `TheProsignRecordingDecodesItsProsigns` #33 | red | red | red | green |
-| `TheWholeSetStaysSmallEnoughToCommit` | green | green | green | green |
-| **Total** | 14 / 9 | 16 / 7 | 20 / 3 | **22 / 1** |
+**`CwDisplacementFloorTests`:**
 
-**The harness hunk**, `tests/Hamlet.RadioEngine.Tests/Cw/CwDecodeHarness.cs`, plus an eight-line
-remark on `Decode(MonoAudio, ...)`:
+| case | task 0 | after (a) `8ed230ad` | after (b) `377eb7b3` |
+|---|---|---|---|
+| `TheTrackerDoesNotLeaveAStationForItsOwnImage` #18 | red | red | green |
+| `AStationElsewhereIsStillFound(400)` | red | red | green |
+| `AStationElsewhereIsStillFound(500)` | red | red | green |
+| `AStationElsewhereIsStillFound(750)` | red | red | green |
+| `AStationElsewhereIsStillFound(875)` | red | red | green |
+| `NothingIsRefusedBeforeAnythingIsBeingRead` #23 | red | green | green |
 
-```diff
--        decoder.CharacterDecoded += characters.Add;
-+        decoder.CharacterSettled += characters.Add;
+**#24's four numbers:** `Report.CharactersEmitted` 9, `Reading.WordsPerMinute` 18.46,
+`WordsPerMinute` null, `SpeedIsReacquiring` true. #24 stays red-open, and its cause is under `src`
+(401 item 1).
+
+**The known-reds block's CW lines, before:**
+
+```
+    CwAdjudicationTests.ASpeedChangeInRealisticAudio
+    the 51 CW cases in docs/unit239-failing-set.txt
 ```
 
-**The app lines**, read and not written. At HEAD, `MainWindowViewModel.cs` 11117
-`_decoder.LeadingEdge += Transcript.OfferEdge;`, 11118 `_decoder.CharacterSettled += Transcript.Settle;`,
-and 11123 `_decoder.CharacterDecoded += _ =>`, which sets two timestamps. At `7e209cb4`: 3251
-`_decoder.CharacterSettled += Transcript.Settle;` and 3256 `_decoder.CharacterDecoded += _ =>`.
+**After:**
 
-**The band and the request lines:** 0.02, the first tried.
-
-```diff
--            new CwSignalRequest(Call, WordsPerMinute: 12),
-+            new CwSignalRequest(Call, WordsPerMinute: 12, NoiseAmplitude: 0.02),
--            new CwSignalRequest(Call, WordsPerMinute: 18),
-+            new CwSignalRequest(Call, WordsPerMinute: 18, NoiseAmplitude: 0.02),
--            new CwSignalRequest("W1AW DE K2ABC ^BT R TU ^SK", WordsPerMinute: 18),
-+            new CwSignalRequest(
-+                "W1AW DE K2ABC ^BT R TU ^SK", WordsPerMinute: 18, NoiseAmplitude: 0.02),
+```
+    CW: none. The 51 names of docs/unit239-failing-set.txt were run, classified and closed out by the CW phase under R49 (units 394, 398, 400 and 401): its closing line carries the count each way, every red-open name stands with its number in docs/phase-cw/unit394-reds.md section 2, each is a repair owed under R49, not an inherited red, and none is on either line above.
 ```
 
-`Clean: true`, `Sent`, the speeds, `ReadableShare` and every assertion are unchanged.
+The exit grep of `Cw\|CW` over the file hits lines 9, 27, 28, 159, 882, 900 to 916 and 920 to 929.
+None of the hits names a CW test as a known red.
 
-**The prosigns fixture:** off disk, it gave 1 of 16 at 8 wpm with no `<BT>` or `<SK>`. In memory at
-0.02 it gave `W1AW DE K2ABC <BT> R TU <SK>`, 16 of 16, all high, 18 wpm, no confident mistake. It was
-regenerated, and #30 and #33 are green.
+**The closing line**, line 52 of `docs/unit239-failing-set.txt`. It is the file's one added line:
 
-**The carry-forward lines and floors:**
+```
+# Closed out by the CW phase, CW decodes again, 2026-09-23, units 394 to 401: of the 51 names above, 31 green at HEAD without repair, 12 repaired (#25 #26 #30 #31 #32 #33 by unit 400, and #18 #19 #20 #21 #22 #23 by unit 401), 0 retired, 8 red-open with their numbers in docs/phase-cw/unit394-reds.md section 2 (#6 #15 #24 #41 #42 #43 #44 #45), each a repair owed under R49 and HM-DEC-151.
+```
 
-| | Entry | Exit |
+**Line 9's appended term**, the 28th: `|FullyQualifiedName~CwFixtureTests.TheCleanRecordingsDecodeExactly`
+inside the closing quote. **The guard-table row**, line 28:
+`CwFixtureTests.TheCleanRecordingsDecodeExactly, the two clean synthetics   engine   unit 401`.
+
+**The runs:**
+
+| run | entry | exit |
 |---|---|---|
-| app line | 278 of 278 in 166 s, unit 399's exit under decision 6 | 277 of 278 in 161 s; re-run 277 of 278 in 166 s; the losses were `TheCqPressWritesTheLabelTheOperatorPressed(label: "Olivia")` then `ThePlainFixtureTakesGeneralFromTheFixedAnswer`, dispatcher loop, 1 ms, each green in the other run |
-| engine line | 176 of 176 in 374 s, the same | 176 of 176 in 374 s of 480 |
+| app line | 277 of 278 twice on dispatcher losses, unit 400's exit via decision 6 | 278 of 278 in 156 s |
+| engine line | 176 of 176 in 374 s, unit 400's exit via decision 6 | 178 of 178 in 374 s; also 178 of 178 in 374 s at task 3 |
 | captures | 37 of 37 in 94 s | 37 of 37 in 92 s, every row identical |
-| adjudicated | 13 of 13 in 29 s | 13 of 13 in 29 s, identical |
-| clean synthetics | 0 of 2 in 4 s, `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■` | **2 of 2** |
+| adjudicated | 13 of 13 in 29 s | 13 of 13 in 29 s |
+| clean synthetics | 2 of 2 | 2 of 2 |
+| `CwFixtureTests` | 22 of 23 | 22 of 23, identical by case |
+| `CwEmissionGateTests` | 7 of 8 | 7 of 8, identical by case |
 
-Decision 6's diff, `git diff --stat 80b1aa3e HEAD -- src tests docs/carry-forward-tests.txt`, printed
-nothing at task 0.
+Decision 6's diff: `git diff --stat 5e70860d HEAD -- src tests docs/carry-forward-tests.txt
+docs/unit239-failing-set.txt` printed nothing.
 
-**Tree at exit:** the transmit files show nothing against `7e209cb4`, and `src` shows nothing
-against `5688a8a5`. `git diff --stat 0aa08d32 HEAD -- tests` lists exactly `CwDecodeHarness.cs`,
-`CwFixtures.cs`, `TheProsignsFixtureAtABandTests.cs` and the three `.wav` files. `git status --short tests`
-is empty, and there is no `ANALYSIS-cw-*.md` page. `git worktree list` shows the root and the three
-preflight trees.
+At exit:
 
-**The ticks as written** are in `PHASE_PLAN.md` and quoted in `docs/phase-cw/unit400-harness.md`
-section 6. 3.5 is ticked with the R53 qualification, naming `7d1ffde6` and the condition that it
-stands only while every later commit of the step keeps all three tests and both lines green. 3.1
-gains the clause for #25, #26, #31, #32 and #30, #33, with the set at 37 green and 14 red-open. 1.3
-gains *the two clean synthetics green 2 of 2 from unit 400.* 3.4 is not touched.
+- `git diff --stat 5688a8a5 HEAD -- src`: nothing.
+- The eleven transmit files against `7e209cb4`: nothing.
+- `git diff --stat bf7bae57 HEAD -- tests docs`: exactly `carry-forward-tests.txt`, `PARKED.md`,
+  `unit401-closeout.md`, `unit239-failing-set.txt`, `CwDisplacementFloorTests.cs` and
+  `TheDisplacementFloorFourWaysTests.cs`.
+- `git status --short tests`: nothing.
+- `git worktree list`: the root and the three preflight trees.
 
-**Section 5 mismatches, reported, not repaired:**
-- `PHASE_STATUS.md` read `CURRENT_STEP: 0` and `WORK_INSTRUCTION: 399 - the clean synthetics get a band`. It was set to 3 and `400 - the harness reads the transcript`. Its `STEP: 0` and `STEP: 2` lines still read `not started`, and step 4 `partial`; those are the layer's.
-- `PHASE_OUTCOME.md` holds step 0 and step 2 at `not started` and steps 3 and 4 at `partial`, with the paired `UNIT 399` and `UNIT 5` entries. Only this unit's entry was appended, and it rode whole in task 0's commit along with `PHASE_STATUS.md`.
-- `CwDecodeHarness.cs` was 90 lines, not 91; every quoted line number held.
-- `TheIntegratorBandwidthTable.cs` is under `Cw\Fixtures\`.
-- `PARKED.md` carried 44 bullets, one struck.
-- `CLAUDE.md` §1's top row is HM-DEC-167 at line 360. `PROJECT_STATUS.md` says HM-DEC-165.
-- Everything else in section 5 held.
+**The tick and clause sentences as written:**
 
-**Git hygiene:** the layer's uncommitted root files, `tools/arbiter/*` and `.run-unit/` are left as
-found. The Gmail, Google Calendar and Google Drive connectors in this session need authorizing in
-claude.ai's connector settings. This unit did not use them.
+- **3.4:** *Unit 401: lines 158 and 159 of the known-reds block replaced by one CW line naming no
+  test and pointing at the set's closing line and `unit394-reds.md`; grep over the file at exit finds
+  no CW test named as a known red; the closing line written - 51 names, 31 green at HEAD without
+  repair, 12 repaired, 0 retired, 8 red-open by number (#6, #15, #24, #41, #42, #43, #44, #45); the
+  step's goal sentence stays partial on the 8 red-open under R49's own clause, red with its number and
+  the step partial, each a repair owed under HM-DEC-151; `CwFixtureTests.TheCleanRecordingsDecodeExactly`
+  on the engine line, 178 of 178 in 374 s of 480.*
+- **2.3 clause:** *the two clean synthetics joined the engine line by unit 401 once green, 178 of 178
+  in 374 s.*
+- **3.1 clause:** *#18 to #23 green by unit 401 on the settled transcript and a band of 0.005, the
+  set at 43 green and 8 red-open.*
+- **3.5:** re-confirmed at task 4 with nothing red that was green. Its sentence stands unedited.
 
 ## 4. What's blocking us
 
-Nothing. No criterion of step 3 waits on a ruling: 3.4 waits on the 14 red-open repairs R49 already
-orders, one at a time. The findings that block nothing, 400 items 1 to 5, are in
-`docs/phase-cw/PARKED.md`.
+Nothing. No criterion of step 3 waits on a ruling. This unit's findings that block nothing are
+`401 item 1` to `401 item 3` in `docs/phase-cw/PARKED.md`, under R54: #24's cause under `src`, two
+line-count mismatches, and the 750 Hz case's two moves at 0.005.
