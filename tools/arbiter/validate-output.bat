@@ -96,9 +96,18 @@ rem  report of a fault it does not have. Found by running this against
 rem  a BOM'd fixture, not by reading it.
 set "UNITLINE="
 for /f "usebackq delims=" %%L in (`powershell -NoProfile -Command "$l=(Get-Content -LiteralPath '%FILE%' -TotalCount 60 | Where-Object { $_.TrimStart([char]0xFEFF) -like 'UNIT:*' } | Select-Object -First 1); if($l){ $l.TrimStart([char]0xFEFF) }"`) do set "UNITLINE=%%L"
+rem  THE VALUE IS NOT ECHOED INSIDE THIS BLOCK. It is the report-s own
+rem  text, and %UNITLINE% is substituted at PARSE time, so a ")" in the
+rem  UNIT: line closed the block early: cmd aborted the whole
+rem  run-unit.bat call, watched.rc was never written, run-unit-watched
+rem  returned 2 as "unknown", and run-phase halted at stop 11 "nothing
+rem  was launched" with the unit-s work COMPLETE AND UNJUDGED. HamLet
+rem  lost units 390 and 391 to it on 2026-09-22, both with a bracket in
+rem  that line, while every report without one validated. :showval below
+rem  echoes it flat, under delayed expansion, so no character in a
+rem  report can reach cmd-s parser.
 if defined UNITLINE (
   echo   ok      rule 1  UNIT: line present
-  echo                   %UNITLINE%
 ) else (
   echo   FAILED  rule 1  no UNIT: line above section 1
   echo                   Section 8: output.md is overwritten in place, so
@@ -106,6 +115,7 @@ if defined UNITLINE (
   echo                   and "this is last week's report" are the same file.
   set /a FAILED+=1
 )
+if defined UNITLINE call :showval UNITLINE
 
 rem --- rules 2 and 3: the four top-level sections ----------------
 set "SECS="
@@ -118,9 +128,12 @@ if "%SECS%"=="%WANT%" (
 ) else (
   echo   FAILED  rule 2/3  the top-level sections are not the four expected
   echo                   expected : %WANT%
-  echo                   found    : %SECS%
   set /a FAILED+=1
 )
+rem  SECS is the report-s own headings and carries the same hazard as
+rem  UNITLINE above, so it is echoed flat too.
+if not "%SECS%"=="%WANT%" echo                   found    :
+if not "%SECS%"=="%WANT%" call :showval SECS
 
 rem --- rule 4: section 4 present even when empty -----------------
 rem  RULE 4 IS A HEADING AND NOT A KEY: VALUE, so readkey.bat cannot
@@ -204,3 +217,17 @@ rem ============================================================
 echo.
 echo validate-output exit %RC%
 endlocal & exit /b %RC%
+
+rem ============================================================
+rem  ECHO A REPORT-WRITTEN VALUE WITHOUT LETTING IT REACH THE PARSER.
+rem  %VAR% is substituted while the line is parsed, so ")" "&" "|" "<"
+rem  ">" and "^" in a report-s own text are read as cmd syntax. Delayed
+rem  expansion substitutes AFTER parsing, so the value is echoed as
+rem  written and nothing in it is executed. Enabled here only, inside
+rem  a nested setlocal, so the rest of this file keeps "!" as a plain
+rem  character.
+:showval
+setlocal EnableDelayedExpansion
+echo                   !%~1!
+endlocal
+goto :eof
