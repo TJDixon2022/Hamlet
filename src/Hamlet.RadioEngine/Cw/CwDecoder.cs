@@ -671,6 +671,7 @@ public sealed class CwDecoder
             WindowClears++;
         }
 
+        var fromHz = _lastPitchHz;
         _lastPitchHz = pitch;
 
         // **THE TRACKER MOVED, SO THE WINDOW HOLDS SOMEBODY ELSE** (HM-DEC-095).
@@ -679,11 +680,29 @@ public sealed class CwDecoder
         // measured through a filter pointed at empty band. A refinement within
         // the station being read is not a move in that sense (HM-DEC-123), which
         // is why this counts follows rather than every retune.
+        //
+        // **AND A FOLLOW THAT KEEPS THE OLD PITCH INSIDE THE PASSBAND IS NOT A
+        // HANDOVER EITHER.** The mixdown filter is
+        // <see cref="CwProbabilisticDecoder.BandwidthHz"/> wide about the pitch,
+        // so a move under half of that leaves where it was listening inside what
+        // it now hears, and the held window is still about the same sender.
+        // Counting those held the speed unnamed through a whole 18 wpm call that
+        // had followed 600 to 625 Hz, and through the first station of the
+        // two-station fixture, which follows 25 Hz three times before the real
+        // 100 Hz handover. The full width was measured first and let a 50 Hz
+        // follow on `exchange-easy` name 21 words a minute for a 12 wpm sender,
+        // which is a speed no character supports (work instruction 402,
+        // HM-DEC-090, §0.0).
         if (_tracker.Follows != _lastFollows)
         {
             _lastFollows = _tracker.Follows;
-            _samplesAtDiscontinuity = reading.SampleIndex;
-            _hasFollowed = true;
+
+            if (double.IsNaN(fromHz)
+                || Math.Abs(pitch - fromHz) >= CwProbabilisticDecoder.BandwidthHz / 2)
+            {
+                _samplesAtDiscontinuity = reading.SampleIndex;
+                _hasFollowed = true;
+            }
 
             // **THE TRACKER'S OWN CLASSIFICATION IS NOT WHAT DECIDES THE
             // CLEAR.** `StationChanges` is left exactly as it was and nothing

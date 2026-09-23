@@ -75,6 +75,8 @@ public sealed class TheEightRedsTests
             ("#24", real),
             ("#41", (MonoAudio)WavAudio.Read(Path.Combine(
                 CwFixtureCatalogue.Folder, CwFixtureCatalogue.TwoStationName + ".wav"))),
+            ("exchange-easy", (MonoAudio)WavAudio.Read(Path.Combine(
+                CwFixtureCatalogue.Folder, "exchange-easy.wav"))),
         })
         {
             var decoder = new CwDecoder(audio.SampleRate, 600);
