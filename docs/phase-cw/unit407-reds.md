@@ -286,3 +286,9 @@ stays at 0.54, #43 at 5 + 37 and #44 at 3 + 21, each *not attacked*.
 | hold a tracker move while the bank's centre is still keying | `CwToneTracker.cs` 966 | not made: the property does not separate, broken by `032113` at 26.535 s and the two handovers | not run | - |
 | line 1091 keeps the reading level of the station being read | `CwToneTracker.cs` 1091 | not made: it is judged only inside the tracker attack, and on #15 seed 104729 no station was ever confirmed, so there was no reading level to keep | not run | - |
 | G1 on top of the tracker change | `CwUnitEstimator.cs` after 237 | not made: no tracker change under it | not run | - |
+
+**3.6 is not ticked. Four of the eight have a verdict:** #24 and #41 by unit 402, #6 and #42 by
+unit 406. #15, #43, #44 and #45 are red-open. Each is *not attacked* in this unit, which breaks
+its sequence, so each count stays at 0 of 3. No red went green, so the closing line of
+`docs\unit239-failing-set.txt` and 3.1's tick sentence in `PHASE_PLAN.md` are unchanged. This is
+the third 3.6 unit in a row that did not flip the criterion.
