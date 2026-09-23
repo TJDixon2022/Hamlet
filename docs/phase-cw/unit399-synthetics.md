@@ -146,3 +146,77 @@ same way.
 
 After the put-back the script printed `git diff --stat 5688a8a5 HEAD -- src` and
 `git status --short -- src`, both empty, and the restored tree was built again in 6 s.
+
+## 3. The band - none chosen, nothing regenerated
+
+Decision 3 wants the smallest of 0.01, 0.02 and 0.04 at which way 2 or way 3 gives `CQ DE W1AW K`
+exactly, the speed within one and every letter high, on both fixtures, judged the way the floor
+test judges. **No band of the three did.** At 0.01, 0.02 and 0.04 alike the harness text was
+`QQQ T DDEDE  A WWEWRJ11E1AAAWW W T KK` on `clean-12wpm` and `Q N DEDE E WWAJ11AARW W N K` on
+`clean-18wpm`. Speed and confidence held: 12 and 18 wpm, 29 of 29 and 20 of 20 high. The settled
+text was exact on both at all three. So under decision 3, **nothing is regenerated**,
+`CwFixtures.cs` and the two `.wav` files are unchanged, the writer fact of decision 10 was never
+written, and the unit goes to task 4.
+
+The request lines stand as they were at entry:
+
+```
+new CwSignalRequest(Call, WordsPerMinute: 12),
+new CwSignalRequest(Call, WordsPerMinute: 18),
+```
+
+The drift test was not re-run for a regeneration because there was none. At entry it was green
+6 of 6.
+
+**Why no band can meet this assertion today, for the arbiter.** `CwDecodeHarness.Decode` builds its
+text from `CwDecoder.CharacterDecoded`, which `CwDecoder.cs` line 266 documents as *the same leading
+edge, one character at a time*. Every revision of the leading edge is appended, so any audio the
+decoder reads letter by letter comes back with its revisions in the text. `CharacterSettled`, line
+269, *a character that is final and will not be revised*, gave `CQ DE W1AW K` on every banded run.
+Putting a band under the tone removes the digital-silence refusal, which is what way 1 shows as
+`■`. It does not change which event the harness reads. Way 4 shows the same from the decoder's side:
+with the refusal bypassed, the files off disk give the same revision-laden text the band gives. Which
+of the two moves is not this unit's to choose: the harness, whose text is the assertion's input, or
+the fixtures plus the harness. Decision 3 says the decoder route is the next arbiter's, and the same
+applies to this. It is section 4 of the report.
+
+## 4. `CwFixtureTests`, the 23 cases, and the two other fixture-reading types
+
+Nothing was regenerated, so there is no *after* for task 2. The task 0 baseline, by name, against
+the task 4 exit run in section 6:
+
+| Case | Task 0 |
+|---|---|
+| `EveryFixtureIsOnDisk` | green |
+| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` clean-12wpm | green |
+| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` clean-18wpm | green |
+| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` prosigns-18wpm | green |
+| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` noisy-18wpm | green |
+| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` fading-18wpm | green |
+| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` interference-18wpm | green |
+| `TheCleanRecordingsDecodeExactly` clean-12wpm | red, #31 |
+| `TheCleanRecordingsDecodeExactly` clean-18wpm | red, #32 |
+| `TheProsignRecordingDecodesItsProsigns` | red, #33 |
+| `NothingTheDecoderWasSureOfIsWrong` clean-12wpm | green |
+| `NothingTheDecoderWasSureOfIsWrong` clean-18wpm | green |
+| `NothingTheDecoderWasSureOfIsWrong` prosigns-18wpm | green |
+| `NothingTheDecoderWasSureOfIsWrong` noisy-18wpm | red, outside the set, 394 item 5 |
+| `NothingTheDecoderWasSureOfIsWrong` fading-18wpm | red, outside the set, 394 item 5 |
+| `NothingTheDecoderWasSureOfIsWrong` interference-18wpm | red, outside the set, 394 item 5 |
+| `EveryRecordingGivesBackTheShareItShould` clean-12wpm | red, #25 |
+| `EveryRecordingGivesBackTheShareItShould` clean-18wpm | red, #26 |
+| `EveryRecordingGivesBackTheShareItShould` prosigns-18wpm | red, #30 |
+| `EveryRecordingGivesBackTheShareItShould` noisy-18wpm | green |
+| `EveryRecordingGivesBackTheShareItShould` fading-18wpm | green |
+| `EveryRecordingGivesBackTheShareItShould` interference-18wpm | green |
+| `TheWholeSetStaysSmallEnoughToCommit` | green |
+
+14 green, 9 red. The red numbers are as `unit394-reds.md` sections 1 and 2 have them, and that file
+is not edited. `TheCleanReadsStayCleanTests` was 6 green and 1 red-open on `003758`, and
+`TheSurveyAlreadyUsesAShortWindowTests` was 2 of 2 (section 1).
+
+## 5. The prosigns fixture - not reached
+
+Task 3 runs only if task 2 committed a regeneration, and task 2 did not. `prosigns-18wpm` was not
+measured with a band, nothing was regenerated, and #30 and #33 stay red-open with their numbers in
+`unit394-reds.md`. The clock did not decide it. Task 2 finished at 03:25, minute 11 of the unit.
