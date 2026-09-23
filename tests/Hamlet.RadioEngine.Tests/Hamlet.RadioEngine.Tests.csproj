@@ -44,7 +44,6 @@
     <Compile Remove="Cw\EveryElementCarriesItsOwnPitchTests.cs" />
     <Compile Remove="Cw\IsTheHertzABiasOrAFloorTests.cs" />
     <Compile Remove="Cw\NoSenderIsSplitInTwoTests.cs" />
-    <Compile Remove="Cw\NothingActsOnTheAdmissionVerdictTests.cs" />
     <Compile Remove="Cw\TheCleanReadsStayCleanTests.cs" />
     <Compile Remove="Cw\TheFirstSecondsAreReadAgainTests.cs" />
     <Compile Remove="Cw\ThePeakAgainstASecondSignalTests.cs" />
