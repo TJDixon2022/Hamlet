@@ -44,7 +44,6 @@
     <Compile Remove="Cw\AMoveStartsTheDecoderFreshTests.cs" />
     <Compile Remove="Cw\AStationIsABinThatSwingsTests.cs" />
     <Compile Remove="Cw\EveryElementCarriesItsOwnPitchTests.cs" />
-    <Compile Remove="Cw\FittingKeyUpAgainstAssumingItTests.cs" />
     <Compile Remove="Cw\IsTheHertzABiasOrAFloorTests.cs" />
     <Compile Remove="Cw\NoSenderIsSplitInTwoTests.cs" />
     <Compile Remove="Cw\NothingActsOnTheAdmissionVerdictTests.cs" />
