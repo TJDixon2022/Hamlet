@@ -211,6 +211,11 @@ Printer: the seven SETTLED lines identical to section 1. Transmit files nothing.
 wall**, 1.62 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 4 s. Printer:
 the seven SETTLED lines identical to section 1. Transmit files nothing. Out, reverted next.
 
+**Piece 24, `fc1ee77f`, task 2.** Patch 320 lines, `CwProbabilisticDecoder.cs`, 159 insertions
+and 58 deletions. `--check` rc 1 at 1416; `--3way` seven conflict blocks between lines 1161 and
+1587. After 2: fails at 1468. After 17: 1416. After 2, 17: 1468. After 2, 5, 13, 17 and 1, 2, 5, 13,
+17: 1468, piece 13 rc 1 (`unit396-deps24.sh`). *Dependent, out*. `src` clean after.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
