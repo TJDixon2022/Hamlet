@@ -105,4 +105,13 @@ restored, never committed (`.run-unit\unit396-deps10.sh`):
 It needs 7 and 9, two out pieces: *dependent, out*, not applied, no build, no run. `src` clean
 after.
 
+**Piece 11, `f2e1db7a`, task 2.** Patch 116 lines, `CwToneSurvey.cs` and `CwToneTracker.cs`, 81
+insertions. On the kept state `--check` rc 1 on both files, `--3way` conflicted in both, restored.
+Decision 16 (`.run-unit\unit396-deps.sh`): after 5, 7, 8, 9 or 10 alone, rc 1 (8, 9 and 10 do not
+apply alone themselves); after 7 then 8, rc 1; **after 7 then 9, rc 0**; after 7, 9, 10, rc 0.
+Needs 7 and 9: *dependent, out*. `src` clean after.
+
+(The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
+before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
+
 ## 3. Exit
