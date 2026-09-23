@@ -255,8 +255,8 @@ adjudicated 13 of 13 in 30 s, its printed lines identical to entry bar the total
 holds; the fixtures are kept.**
 
 **The caller types were not re-run here.** None of the five, nor `CwSensitivity.cs`, names
-`clean-12wpm`, `clean-18wpm` or `CwFixtures.` (grep, empty). Under `tests` the two names and
-`CwFixtures.All` are read by `CwFixtures.cs`, `CwFixtureTests.cs`, `TheCleanSyntheticsFourWaysTests.cs`
+`clean-12wpm`, `clean-18wpm` or `CwFixtures.` (grep, empty). Under `tests`, a grep for the two names or
+`CwFixtures.All` matches `CwFixtures.cs`, `CwFixtureTests.cs`, `TheCleanSyntheticsFourWaysTests.cs`
 (the printer, asserting nothing), `Fixtures/CwFixtureGenerator.cs` and
 `EveryElementCarriesItsOwnPitchTests.cs`, the last excluded from compilation by the csproj's line 43.
 
@@ -348,3 +348,31 @@ The harness, the requests, task 3's printer and the three regenerated files, not
 caller. `git status --short tests`: nothing. No `ANALYSIS-cw-*.md` page modified or untracked at the
 root. `docs/carry-forward-tests.txt`, `docs/unit239-failing-set.txt` and `docs/cw-retired-tests.txt`:
 nothing against `0aa08d32`. `git worktree list`: the root and the three preflight trees.
+
+## 6. The ticks as written
+
+In the root `PHASE_PLAN.md`, decision 11, the repair commit `7d1ffde6`:
+
+**3.5, ticked:** *Unit 400: captures 37 of 37 and adjudicated 13 of 13 at the exit of every commit
+of the step since `ee0ea0dc`; the two clean synthetics red at every commit before `7d1ffde6` under
+R53, which named them step 3's repair, and green 2 of 2 at the exit of every commit from it; app 277
+of 278 in each of two runs, each loss a different name to the dispatcher loop before an assertion
+and green in the other run, and engine 176 of 176 in 374 s at the unit's exit. The tick stands while
+every later commit of the step keeps all three green and both lines green; a later unit that finds
+one red un-ticks it and names the commit.*
+
+The app count is written as it was measured rather than as the instruction's `<n> of 278`
+placeholder assumed: no run printed 278 of 278, and the sentence says why that is not a red on an
+assertion. *Since `ee0ea0dc`* for the captures and adjudicated types rests on the earlier units'
+recorded exits; this unit measured them at task 0, after task 2's and task 3's regenerations, and
+at task 4.
+
+**3.1, a clause added:** *#25, #26, #31 and #32 green by unit 400 on the harness reading the settled
+transcript and the regenerated clean fixtures under HM-DEC-127, the set at 35 green and 16
+red-open; #30 and #33 green by unit 400 on the regenerated prosigns fixture, the set at 37 green and
+14 red-open.*
+
+**1.3, a clause added:** *the two clean synthetics green 2 of 2 from unit 400.*
+
+3.4 is not touched: the known-reds block and the set's closing line are unchanged, 14 reds open.
+`docs/phase-cw/unit394-reds.md` section 2 is not edited; this document carries the new rows.
