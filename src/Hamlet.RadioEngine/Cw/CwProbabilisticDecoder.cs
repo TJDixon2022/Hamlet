@@ -155,7 +155,7 @@ public readonly record struct CwProbabilisticCharacter(
 /// recording holding no station it wins and there is nothing to emit. That is
 /// HM-DEC-120 by construction; it is still tested rather than assumed.</para>
 /// </remarks>
-public static partial class CwProbabilisticDecoder
+public static class CwProbabilisticDecoder
 {
     /// <summary>
     /// The log-likelihood ratio per hop below which nothing is emitted from a

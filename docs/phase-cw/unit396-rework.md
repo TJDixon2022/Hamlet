@@ -216,6 +216,12 @@ and 58 deletions. `--check` rc 1 at 1416; `--3way` seven conflict blocks between
 1587. After 2: fails at 1468. After 17: 1416. After 2, 17: 1468. After 2, 5, 13, 17 and 1, 2, 5, 13,
 17: 1468, piece 13 rc 1 (`unit396-deps24.sh`). *Dependent, out*. `src` clean after.
 
+**Piece 25, `71b4f044`, task 2, measured.** Patch 277 lines: `CwProbabilisticDecoder.Posterior.cs`
+new, 258 lines, and one line of `CwProbabilisticDecoder.cs`. Applied clean on the kept state,
+piece commit `e91ed185`. Build 0 errors in 6 s. Captures **37 of 37 in 94 s wall**, 1.55 min, no
+row differs; adjudicated 13 of 13 in 28 s; synthetics 0 of 2 in 3 s. Printer: the seven SETTLED
+lines identical to section 1. Transmit files nothing. Out, reverted next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
