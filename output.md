@@ -1,303 +1,286 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - CW decodes again. Step 0 closed on unit 391's answers at
-   task 1 of this unit; step 1 is this unit's; steps 2 to 5 are not started.
-   After this unit step 1 is partial: 1.5 is not met.
-B. Step 1's criteria, one line each, met or not:
-   1.1 met - the folder is 7e209cb4's plus six listed hunks and the kept
-       CwPitchChoice.cs; the eleven transmit files print nothing against 7e209cb4.
-   1.2 met - Hamlet.sln 0 warnings 0 errors, both Hamlet test projects built,
-       22 test files excluded and listed, tools/Hamlet.PitchRank out of the build.
-   1.3 met - captures 37 of 37 and adjudicated 13 of 13 green; synthetics 2 of 2
-       red, reported with what they read.
-   1.4 met - the four app CW tests, 13 of 13 green.
-   1.5 NOT MET - engine line 150 of 150; app line red on one test green at entry,
-       TheOliviaRowsTests, twice, by an IOException on its own telemetry file.
-   1.6 met - three changes in MainWindowViewModel.cs, each with its seam.
-C. The report last. Section 4 raises 19 items - unit 390's nine and unit 391's
-   five carried, and this unit's own five - and item 1, the Olivia rows red, is
-   in the way of 1.5 in B.
+A. The phase goal - CW decodes again. Step 0 is ticked on all four criteria
+   and its state line still reads not started, a layer mismatch reported
+   here; step 1 was partial at entry on 1.5 alone; step 2 is this unit's
+   second half; steps 3 to 5 are not started. After this unit step 1 is
+   done and step 2 is done.
+B. The criteria, one line each, met or not:
+   1.5 met - engine 150 of 150 at task 0; app line after the repair 277 and
+       275 of 278, every loss the dispatcher loop and green in the other run,
+       no red on an assertion; TheOliviaRowsTests green in every run.
+   2.1 met - line 9 carries the adjudicated type and the thirteen 08-25
+       captures, and the guard table has a CW row naming them and unit 393.
+   2.2 met - 20 of 26 red against a CwDecoder that hands nothing on, every
+       case that asserts a decode; 26 of 26 green with the file put back.
+   2.3 met - engine line 301 s before, 372 s and 373 s after, of 480.
+   2.4 met - app 278 of 278, engine 176 of 176 at exit, nothing red that was
+       green at task 0.
+C. The report last. Section 4 raises 23 items - unit 390's nine, unit 391's
+   five and unit 392's four carried, and this unit's own five - and none is
+   in the way of a criterion in B. Item 1 is a regression the guard caused
+   and this unit repaired by a self-ruling you may overrule.
 ```
 
 ```
-UNIT:       392 - complete at task 4 of 6, tasks 0 to 4, task 5 dropped - 2026-09-22 20:50
-PHASE GOAL: get the CW decoder reading again by going back to the last code that read, then keep it from breaking silently, clear the inherited reds and judge the August rework on numbers, with Tim at the radio as the final judge
-UNIT GOAL:  put the engine's Cw folder back to 7e209cb4, change only what today's app and tests need to build, list every change, and show the captures and adjudicated floor tests green at HEAD
-ADVANCED:   yes - captures and adjudicated floor cases went from 18 red to 0 red at HEAD on the restored decoder; step 1 is partial on 1.5
-NUMBER:     captures and adjudicated cases red at HEAD: 18 of 50 -> 0 of 50; synthetics 2 of 2 red -> 2 of 2 red
+UNIT:       393 - complete at task 4 of 5, tasks 0 to 4, none dropped - 2026-09-22 21:47
+PHASE GOAL: get the CW decoder reading again from the last code that read, make sure no later unit can break it without the list going red, clear the inherited reds, judge the August rework on numbers, and end with Tim hearing it read at the radio
+UNIT GOAL:  get both carry-forward lines green again by fixing the Olivia rows test's file read, which closes step 1, then put a CW read guard on the engine line, show it refusing a broken decoder, and show the line still fits its 480 s, which closes step 2
+ADVANCED:   yes - step 1's last criterion and all four of step 2's are ticked on measured runs, and CW now has a read guard on the list every unit runs
+NUMBER:     app line red on an assertion-free IOException: 1 -> 0; CW names on the engine line: 0 -> 2 terms, 26 cases; engine line wall time 301 s -> 373 s of 480
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 6: tasks 0 to 4 done, task 5 dropped.** Task 5 was the named drop
-candidate. Task 4 ended at 20:48 and the unit started at 20:06, so less than forty minutes of
-the hour were left. Step 1 is **partial**: 1.5 is not met. Windows 11, `C:\Source\HamLet`,
-Hamlet confirmed by the gate, branch `main`, pushed after every task.
+**Complete at task 4 of 5: tasks 0 to 4 done, none dropped.** Claude Code on the dev machine,
+Hamlet confirmed at the gate, branch `main`. Started 21:00, the last task committed at 21:46.
+Five commits, all pushed: `05b729eb`, `d6dbe8e2`, `bbefa9d7`, `f180cdb6`, `e09608c4`.
 
-**Task 0.** Version 1.13.78 to 1.13.79. `PHASE_STATUS.md` named unit 391 at step 0, so I set
-it to *392 - the decoder reads again* at step 1. Entry round, both carry-forward lines as the
-file prints them, one build each, with a status line before each:
-- **App:** 276 of 278 in 181 s. Two tests were lost to the headless dispatcher loop before any
-  assertion ran. I re-ran the line once (§6): 277 of 278 in 161 s, one lost the same way. Each
-  lost test passed in the other run, so nothing was red on an assertion.
-- **Engine:** 150 of 150 in 301 s.
+**Task 0, the record and the entry round.** Version 1.13.79 to 1.13.80. `PHASE_STATUS.md` read
+`CURRENT_STEP: 0` with `WORK_INSTRUCTION: 392 - the decoder reads again`. I set it to
+`CURRENT_STEP: 1` and `393 - the list is green, and CW is on it`. I appended `## UNIT 393 - STEP
+1` to `PHASE_OUTCOME.md` in unit 392's shape, with a line per task added as each finished. At
+entry the app line was 278 of 278 in 170 s. The race did not land, and nothing was lost. The
+engine line was 150 of 150 in 301 s. The floors were 37 of 37 in 97 s, 13 of 13 in 33 s, and 0
+of 2 in 7 s, the synthetics reading `■` placeholders. The eleven transmit files printed nothing
+against `7e209cb4`.
 
-`git diff --stat 3d6a2c12 HEAD -- src tests` printed nothing, so unit 391's floor run is this
-unit's entry measurement (decision 2).
+**Task 1, the trace, then the repair (1.5).** The two share modes, as the sources have them:
+- **The writer:** `JsonlTelemetry.cs:188`, `File.AppendAllText(path, line + Environment.NewLine);`,
+  inside `WriteLoop` on the background thread started in the constructor. It opens the file for
+  writing and shares read.
+- **The reader:** `TheOliviaRowsTests.cs:675`,
+  `Directory.GetFiles(folder, "*.jsonl").SelectMany(File.ReadAllLines)`. It is called at line 306,
+  `var before = Lines(folder);`, inside the `using` of line 279 that owns the writer. It opens for
+  reading and shares read only. That refuses a handle already open for writing.
 
-**Task 1, the trace.** `docs/phase-cw/unit392-seams.md` sections 1 to 6:
-- Unit 391's 145 app seam rows re-checked at `7e209cb4`: 136 whole. Of the 9 rows with an
-  absent type, 6 are the same word on another type (`Outcome`, `Envelope`). The 3 real ones
-  are `CwElementPitch`, `CwStreamSplit` and `CwPitchChoice`, all in `MainWindowViewModel`.
-- 13 engine test files name a HEAD-only type.
-- None of the 33 files at `7e209cb4` names a HEAD-only type.
-- `Tap` is fed at device rate at both commits, with no resampler in either.
-- `DigitalMode` is 865e66d8's and absent at `7e209cb4`.
-- 0.1 to 0.4 ticked per decision 1.
+Alone before the edit: 7 of 7 in 99 s. The edit: `Lines` now opens each file with `new
+FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)` under a `StreamReader`
+and reads line by line to the end. No assertion or case moved. `git diff --stat` showed that
+one file under `tests` and nothing under `src`. The app line then ran 277 of 278 in 160 s. One
+name was lost to the dispatcher loop: `TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed`
+Olivia, the same name unit 392 lost. I re-ran it once: 275 of 278 in 167 s, with three
+`TheFavoritesAreUnderTheGreenZoneTests` names lost the same way. Each lost name was green in the
+other run. No run had a red on an assertion, and `TheOliviaRowsTests` was green in both. 1.5 is
+ticked.
 
-**Task 2, the restore. One commit, `9fbb4728`.** Transmit diff empty. Checked out
-`7e209cb4 -- src/Hamlet.RadioEngine/Cw` and deleted six HEAD-only files, then built five
-times:
-- **Build 1:** 2 errors, crefs in a kept file.
-- **Build 2:** 134 errors.
-- **Build 3:** 8 errors.
-- **Build 4:** clean. A non-incremental rebuild was also clean: 9 projects, 0 warnings, 0 errors.
+**Task 2, the guard on line 9 (2.1, 2.3).** Decision 2's clause was appended, taking line 9 from
+25 terms to 27. The guard table has its CW row, and the foot has a `WHAT UNIT 393 ADDED`
+paragraph. **The first engine run was 175 of 176 in 300 s, and the red was not CW.**
+`TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes` failed its CPU ceiling:
+`demodulator cpu 26.563 s` against 20. The decode itself was perfect: CER 0, 251 of 251
+characters. The ceiling reads process CPU, and that type is not in the `CpuMeasuredAlone`
+collection, so it measured the CW cases running beside it. It was green at task 0 and red here
+on an assertion. **By HM-DEC-165 that is a regression the guard caused.** Per the rule, it was
+not re-run. Self-ruling 1 below repaired its wiring. The line was then measured again as a
+changed tree: 176 of 176 in 372 s, under decision 3's 420 s. 2.1 and 2.3 are ticked. All 26 CW
+cases on the line passed. The line runs at normal verbosity, so the 26 are counted as 176 less
+150, and each is named in task 3's runs.
 
-The result:
-- **Six engine-side hunks** in `CwDecoder`, `CwDecodeReport` and `CwCharacter`.
-- **Three app changes** in `MainWindowViewModel`.
-- **22 test files excluded** from compilation, not retired.
-- **`tools/Hamlet.PitchRank`** out of the solution build.
-- **Kept:** `CwPitchChoice.cs` only. **Deleted:** nine HEAD-only files.
+**Task 3, the guard watched (2.2).** I inserted one line into `CwDecoder.Process` after the tap
+takes the chunk: `if (chunk.Samples.Length >= 0) return;`. It is written as a condition because
+the build treats warnings as errors and would refuse a bare `return` above reachable code. It
+touches no transmit file. `git diff --stat HEAD -- src` showed `CwDecoder.cs` alone. Red run: 20
+of 26 red in 6 s. Green run, with the file put back by `git checkout HEAD --`: 26 of 26 in 32 s.
+`git status --short src` printed nothing after the put-back and after the green run, and the
+break was never committed. The six that stayed green in the red run cannot go red on any
+decoder. Five are readings Tim retired on 2026-08-30, which the test prints as `RETIRED` and does
+not assert. The sixth is `TheShortfallIsPrintedRatherThanPapered`. Everything else is in
+`docs/phase-cw/unit393-guard.md`.
 
-**Task 3.** Each floor type ran in its own foreground invocation:
-- **Captures:** 37 of 37 green in 97 s. Unit 391 had 19 of 37 in 1995 s.
-- **Adjudicated:** 13 of 13 in 33 s.
-- **Clean synthetics:** 2 of 2 red, reading placeholders.
-- **App CW tests:** 13 of 13 green.
+**Task 4, the exit round (2.4).** The app line was 278 of 278 in 159 s, and the engine line 176
+of 176 in 373 s, nothing lost. The floors were 37 of 37 (runner 98 s), 13 of 13 (runner 31 s)
+and 0 of 2 (5 s). The transmit files printed nothing against `7e209cb4`, and `git diff --stat
+HEAD -- src` printed nothing. 2.4 is ticked.
 
-**Task 4.** Carry-forward at exit:
-- **Engine:** 150 of 150 in 297 s.
-- **App:** 274 of 278 in 159 s. Three were lost to the dispatcher loop. **One was red:
-  `TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant`,**
-  an `IOException` because another process held its own `refuse\2026-09-23.jsonl`.
-- **App re-run once:** 275 of 278 in 170 s. Two were lost to the dispatcher loop, and the same
-  Olivia test failed with the same `IOException`.
+**Regressions:** one, named. `TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes`, red
+in task 2's first engine run on its CPU ceiling, green at task 0. It was repaired in the same
+task, and it is green in the second task 2 run and at exit. Nothing else was red that had been
+green at task 0.
 
-**Regression, by name, under HM-DEC-165:** that Olivia test passed at entry and was red at exit.
-The evidence that the restore did not cause it:
-- It is not an assertion red.
-- The test builds no CW decoder. It feeds `TapForTests` with no audio input.
-- Run alone, it passed at `617215f0`, the tree before the restore, in a temporary worktree
-  since removed. It also passed alone on the restored tree. Each run took 8 s.
+**Author's decisions applied, all seven:**
+1. The repair is the reader's share mode, in the test only, as written.
+2. The guard is the adjudicated type whole plus the thirteen 08-25 captures by display name, as
+   written.
+3. Fit is 420 s. The line measured 372 s and 373 s, so the 08-25 clause stayed on.
+4. The break is one hunk in `CwDecoder.cs`, never committed, watched by the guard's own filter.
+5. Step 2's entry was taken as satisfied at task 1's tick, with the floors green at task 0.
+6. 1.5 was ticked at task 1 and re-confirmed at task 4.
+7. The timeouts were as given. Every run finished inside its own.
 
-The one change that touches its run is the app test assembly losing
-`ThePitchControlsAreOffThePanelTests`, which changes what runs beside it. That is a guess and
-is marked as one. **1.5 is not ticked.** No other test was red that had been green at entry.
+**Self-rulings, one of two used:**
+1. **`TheOliviaDemodulatorTests` into the `CpuMeasuredAlone` collection.** The change is one
+   `[Collection(CpuMeasuredAlone.Name)]` attribute and a remark saying why, in
+   `tests/Hamlet.RadioEngine.Tests/Olivia/TheOliviaDemodulatorTests.cs`. No ceiling, case or
+   assertion moved. It cites `PHASE_PLAN.md` 2.4 and R12, and the collection's own remark at
+   `TheOliviaBlindSearchTests.cs:186-192`: *a ceiling read off a shared clock measures the
+   neighbors*. It rode in the task 2 commit, so that commit is not the carry-forward file alone,
+   as the instruction asked. It costs wall time: the type now runs after every parallel
+   collection, alone. The 372 s includes that.
 
-**Author's decisions applied, all overrulable:**
-1. **Decision 1:** 0.1 to 0.4 ticked, each with one bold sentence naming the unit and the file.
-2. **Decision 2:** unit 391's floor run is the entry measurement, because the diff was empty.
-3. **Decision 3:** 22 files excluded by `<Compile Remove>`, with a comment naming this unit and
-   step 3 in each test project. Listed with their missing names in section 3.
-4. **Decision 4, and the keep list changed during the build.** Task 1 wrote a keep list of four:
-   `CwElementPitch`, `CwStreamSplit`, `CwJointCutter` and `CwPitchChoice`. `ElementPitchLine`
-   feeds `CwElementPitch` from `read.Elements`, which only HEAD's decoder produces. Keeping the
-   file could not make the line build unless a HEAD-only type went back through `7e209cb4`'s
-   decode function, which section 9 of the instruction parks. So I changed the line (app
-   change 2), and three of the four had no user left outside Cw. **Kept: `CwPitchChoice.cs`.**
-5. **Decision 5:** timeouts 900, 600, 300 and 480 s, as given. Every run finished inside the
-   harness's 600 s, foreground. Nothing was backgrounded this unit.
-6. **Mine, not in the instruction: `tools/Hamlet.PitchRank`'s six `Build.0` lines taken out of
-   `Hamlet.sln`.** It was added 2026-08-28 to measure the rework, and it names seven HEAD-only
-   types and overloads. It stays in the solution and in the tree, unedited. I treated it the way
-   decision 3 treats a test.
-7. **Mine: `DecodeQueueDroppedChunks` and `DecodeQueueDroppedSamples` return nought**, not NaN
-   and not an app change. This decoder has no queue, HEAD returned nought whenever its queue
-   was not running, and the app already writes nought when there is no decoder.
-8. **Mine: `UseJointCutter` and the ranked sentence became app changes rather than shims.** A
-   switch that silently did nothing, or `CwPitchRank` recreated only to return null, would each
-   have been the worse lie.
-
-**One error of mine, corrected in the record.** Task 0's PHASE_OUTCOME line said adjudicated
-was 13 of 13 red at entry. Unit 391 measured 13 of 13 **green**. It was corrected at task 3,
-with the correction stated on the line.
+**Decisions on how to carry out tasks, reported:**
+- I ran each carry-forward line in its own tool call, because the harness caps one call at
+  600 s.
+- `PHASE_OUTCOME.md` and `PHASE_STATUS.md` were committed whole at task 0. See section 4, item 2.
+- I added one line per task to this unit's `PHASE_OUTCOME.md` entry, as unit 392 did.
 
 ## 2. What the owner should expect
 
-The CW decoder in the build is now the one from the evening of 2026-08-25 (`7e209cb4`), and the
-CW tab is as it was in September; nothing on the screen moved. Three things on the capture sheet
-changed:
-- The element-pitch line now says *not measured (the decoder in this build does not say where
-  each element began and ended ...)*.
-- The *ranked* pitch sentence can no longer appear.
-- The margin figures on the span-ratio line print *unmeasured*.
-
-The August rework is out of the build: the joint cutter, the ranking, the spectral peak, the
-posterior, the decode queue and the operator's pitch assertion. `UseJointDecoder` in the
-settings file is read by nothing. `pitch-rank` is no longer built with the solution. What
-looks wrong but is not: the two clean synthetics still fail, now showing `■` marks rather than
-nothing. R53 makes them step 3's. The floor tables say the captures produce at least what they
-produced on 08-25. That is a count, not a reading, and whether it reads on the air is yours to
-say at step 5.
+Nothing changes on the CW tab or anywhere else you can see. The decoder is the same one unit 392
+restored, byte for byte. A test that read its own log while the log was still being written now
+reads it in a way the writer allows, so it no longer fails for no reason on a busy machine. From
+this unit on, every unit that runs the list will see CW go red if the decoder stops producing
+what it produced on the evening of 2026-08-25, or loses one of the anchors you confirmed. That
+is a count, not a claim that it reads, and saying it reads is yours at step 5. **What will look
+wrong but is not:** the engine line now takes about 6 minutes instead of 5, and one Olivia test
+type now runs by itself at the end of that line, because its CPU ceiling was reading CW's work
+as its own. The two clean synthetics are still red. They are step 3's, and they stay off the
+list until they are green.
 
 ## 3. What you should see
 
-**The floor table: 50 of 50 captures and adjudicated cases green at HEAD, against 32 of 50 in
-unit 391's run; the two synthetics red at both.** Nothing a user sees on the screen changes;
-the capture sheet changes as section 2 says.
+**No visible change. This unit makes the list catch a CW regression from here on.**
 
-**Captures, every case** (measured, floor, difference; the last column is unit 391's characters
-and elements at HEAD and its result there). Wall 97 s, against unit 391's 1995 s.
+**Every carry-forward run this unit made:**
 
-| Capture | Result | Chars | Floor | Diff | Elements | Floor | Diff | Unsure (then) | Tone Hz | HEAD, unit 391 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `cw-2026-08-17-013347` | green | 59 | 59 | 0 | 108 | 108 | 0 | 2 (2) | 625 | 58 / 108, green (count floor retired, anchor) |
-| `cw-2026-08-17-013622` | green | 55 | 55 | 0 | 84 | 84 | 0 | 4 (0) | 600 | 53 / 86, red |
-| `cw-2026-08-17-134712` | green | 63 | 63 | 0 | 98 | 98 | 0 | 42 (10) | 500 | 54 / 81, red (count floor retired, anchor) |
-| `cw-2026-08-18-004507` | green | 50 | 50 | 0 | 118 | 118 | 0 | 1 (1) | 500 | 50 / 119, green (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-18-003016` | green | 57 | 57 | 0 | 149 | 149 | 0 | 3 (3) | 670 | 54 / 146, red |
-| `unadjudicated/cw-2026-08-18-003126` | green | 54 | 54 | 0 | 144 | 144 | 0 | 6 (6) | 665 | 53 / 142, red |
-| `unadjudicated/cw-2026-08-18-003758` | green | 63 | 63 | 0 | 121 | 121 | 0 | 19 (10) | 500 | 61 / 123, green (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-20-014854` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 600 | 0 / 0, green |
-| `unadjudicated/cw-2026-08-20-014935` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 825 | 0 / 0, green |
-| `unadjudicated/cw-2026-08-22-014113` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 600 | 0 / 0, green |
-| `unadjudicated/cw-2026-08-22-014308` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 575 | 0 / 0, green |
-| `unadjudicated/cw-2026-08-22-031838` | green | 57 | 57 | 0 | 126 | 126 | 0 | 15 (3) | 525 | 33 / 116, red (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-22-031905` | green | 42 | 42 | 0 | 118 | 118 | 0 | 6 (6) | 300 | 37 / 120, green (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-22-031948` | green | 34 | 34 | 0 | 114 | 114 | 0 | 3 (3) | 500 | 31 / 119, green (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-22-032012` | green | 44 | 44 | 0 | 120 | 120 | 0 | 1 (1) | 500 | 43 / 119, red (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-22-032050` | green | 53 | 53 | 0 | 123 | 123 | 0 | 9 (9) | 325 | 49 / 115, red (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-22-032113` | green | 55 | 55 | 0 | 118 | 118 | 0 | 8 (8) | 650 | 48 / 126, green (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-22-032129` | green | 66 | 66 | 0 | 119 | 119 | 0 | 1 (1) | 650 | 43 / 123, green (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-23-001520` | green | 5 | 5 | 0 | 45 | 45 | 0 | 4 (1) | 600 | 7 / 39, red |
-| `unadjudicated/cw-2026-08-23-001831` | green | 55 | 55 | 0 | 124 | 124 | 0 | 11 (10) | 525 | 53 / 124, red |
-| `unadjudicated/cw-2026-08-23-001952` | green | 75 | 75 | 0 | 142 | 142 | 0 | 19 (13) | 525 | 60 / 120, red |
-| `unadjudicated/cw-2026-08-23-002016` | green | 75 | 75 | 0 | 136 | 136 | 0 | 31 (17) | 525 | 75 / 136, green |
-| `unadjudicated/cw-2026-08-24-012403` | green | 22 | 22 | 0 | 65 | 65 | 0 | 1 (0) | 440 | 24 / 71, green (count floor retired, anchor) |
-| `unadjudicated/cw-2026-08-25-011552` | green | 30 | 30 | 0 | 89 | 89 | 0 | 8 (8) | 500 | 32 / 89, green |
-| `unadjudicated/cw-2026-08-25-012748` | green | 4 | 2 | 2 | 16 | 4 | 12 | 2 (0) | 395 | 2 / 4, green |
-| `unadjudicated/cw-2026-08-25-012823` | green | 41 | 41 | 0 | 62 | 62 | 0 | 15 (15) | 450 | 35 / 57, red |
-| `unadjudicated/cw-2026-08-25-012922` | green | 50 | 50 | 0 | 112 | 112 | 0 | 5 (5) | 475 | 44 / 111, red |
-| `unadjudicated/cw-2026-08-25-013010` | green | 54 | 54 | 0 | 131 | 131 | 0 | 6 (6) | 475 | 56 / 132, green |
-| `unadjudicated/cw-2026-08-25-013150` | green | 58 | 58 | 0 | 139 | 139 | 0 | 7 (7) | 495 | 61 / 132, red |
-| `unadjudicated/cw-2026-08-25-013303` | green | 54 | 54 | 0 | 146 | 146 | 0 | 10 (10) | 500 | 52 / 141, red |
-| `unadjudicated/cw-2026-08-25-013402` | green | 61 | 61 | 0 | 161 | 161 | 0 | 5 (5) | 525 | 59 / 154, red |
-| `unadjudicated/cw-2026-08-25-013520` | green | 60 | 60 | 0 | 153 | 153 | 0 | 5 (5) | 540 | 62 / 155, green |
-| `unadjudicated/cw-2026-08-25-013637` | green | 63 | 63 | 0 | 164 | 164 | 0 | 3 (3) | 550 | 62 / 158, red |
-| `unadjudicated/cw-2026-08-25-021410` | green | 47 | 47 | 0 | 99 | 99 | 0 | 11 (11) | 550 | 40 / 97, red |
-| `unadjudicated/cw-2026-08-25-021629` | green | 47 | 47 | 0 | 96 | 96 | 0 | 20 (20) | 500 | 26 / 71, red |
-| `unadjudicated/cw-2026-08-25-021825` | green | 41 | 41 | 0 | 74 | 74 | 0 | 16 (16) | 400 | 61 / 94, green |
-| `unadjudicated/cw-2026-08-26-125941` | green | 0 | 0 | 0 | 0 | 0 | 0 | 0 (0) | 400 | 0 / 0, green |
+| When | Line | Count | Wall time | Lost before an assertion | Red on an assertion |
+|---|---|---|---|---|---|
+| Task 0 | app | 278 of 278 | 170 s | none | none |
+| Task 0 | engine, 25 terms | 150 of 150 | 301 s | none | none |
+| Task 1 | app | 277 of 278 | 160 s | `TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed` Olivia | none |
+| Task 1, re-run once | app | 275 of 278 | 167 s | `TheFavoritesAreUnderTheGreenZoneTests`: `TheStarIsDrawnAndHittable...`, `PressingTheStarSaves...`, `TheWayBackInCostTheTopBandNothing` | none |
+| Task 2 | engine, 27 terms | 175 of 176 | 300 s | none | `TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes`, CPU 26.6 s of 20 |
+| Task 2, after self-ruling 1 | engine, 27 terms | 176 of 176 | 372 s | none | none |
+| Task 4 | app | 278 of 278 | 159 s | none | none |
+| Task 4 | engine, 27 terms | 176 of 176 | 373 s | none | none |
 
-**Adjudicated,** 13 of 13 green in 33 s, where unit 391 had 13 of 13 in 364 s. All seven
-required anchors were found: `VA3VRR` 6 of 6, `MP/4 QNIK` 9 of 12, `DE KD0UN KD0UN K` 16 of 16,
-`N HANDLING THIS MESSAG` 22 of 57, `, AND` 5 of 35, `110, AND 110 WITH A MEAN OF 117` 31 of 36,
-and `R OTHER WEBSITES MENTI` 22 of 51. The five retired anchors all appear in what was read.
-The shortfall fact reads 153 of 384 adjudicated characters, 40 %. Per case:
-`docs/phase-cw/unit392-floors.md`.
+**Task 3, the guard alone,** `timeout 300`:
 
-**Clean synthetics,** red on the assertion in 7 s. `clean-12wpm` reads `■ ■ ■ ■ ■  ■ ■ ■ ■■`
-and `clean-18wpm` reads `■ ■ ■  ■■■`, both expected to read `CQ DE W1AW K`. HEAD read `""`.
-
-**The 1.1 adaptation table, every hunk of `git diff 7e209cb4 HEAD -- src/Hamlet.RadioEngine/Cw`:**
-4 files, 165 insertions, 1 deletion. `git diff --stat 7e209cb4 HEAD -- <the eleven transmit
-files>` printed nothing at task 2 and at task 4. This is the proof of 1.1 before any seam was
-touched:
-
-```
-git diff --stat 7e209cb4 -- src/Hamlet.RadioEngine/Cw
- src/Hamlet.RadioEngine/Cw/CwElementPitch.cs | 266 ++++++++++++++++++
- src/Hamlet.RadioEngine/Cw/CwJointCutter.cs  | 344 +++++++++++++++++++++++
- src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs  |  72 +++++
- src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs  | 410 ++++++++++++++++++++++++++++
- 4 files changed, 1092 insertions(+)
-```
-
-Three of those four were deleted later in task 2 (section 1, decision 4).
-
-| # | File | Hunk | What | Why |
-|---|---|---|---|---|
-| 1 | `CwPitchChoice.cs` | `@@ -0,0 +1,72` | the file, HEAD's copy | kept: `CwDecodeReport.PitchChoice` returns it and the app reads it |
-| 2 | `CwCharacter.cs` | `@@ -144,0 +145,36` | `WidestRecordedLlr` 1,000,000; `MarginLlr { get; init; } = NaN`; `MarginShareForRecord`, HEAD's arithmetic | the app's sheet reads all three and a sidecar test sets `MarginLlr`; NaN because this decoder never compares two paths, and the sheet prints *unmeasured* |
-| 3 | `CwDecodeReport.cs` | `@@ -62,0 +63,23` | `PitchWasAsserted => false`; `PitchChoice => PitchWasMeasured ? Keying : NotChosen` | nothing takes an assertion; at `7e209cb4` an unmeasured pitch is the middle of the bank |
-| 4 | `CwDecoder.cs` | `@@ -350,0 +351,12` | `DigitalMode { get; set; }` | set by `MainWindowViewModel.cs:14155`; 865e66d8's gate |
-| 5 | `CwDecoder.cs` | `@@ -353,0 +366,21` | queue counters return nought; `Retuned() => Unlock()` | there is no queue; the lock is the part of HEAD's `Retuned` this decoder has |
-| 6 | `CwDecoder.cs` | `@@ -468 +501` | `DecodingSuspended` becomes `DecodingSuspended \|\| DigitalMode` | the gate: tap fed, chunk counted, stream skipped, nothing decoded |
-
-**The exclusion table: 22 files, excluded not retired.** Only one has a name in
-`docs/unit239-failing-set.txt`: `ABlipDoesNotShiftEverythingAfterItTests`. None is a
-carry-forward or 1.4 test.
-
-| Project | File | Missing name it quotes | In unit239 |
+| Case | Floor or anchor | Broken decoder | Put back |
 |---|---|---|---|
-| engine | `Audio/TheReadPathDoesNotAllocateTests.cs` | `CwKeyingMeter.WindowSizings` | no |
-| engine | `Audio/TheTapIsNotBehindTheDecoderTests.cs` | `CwDecoder.ProcessDelayForTests` | no |
-| engine | `Cw/ABlipDoesNotShiftEverythingAfterItTests.cs` | `CwReferenceDecoder` | yes |
-| engine | `Cw/AMoveStartsTheDecoderFreshTests.cs` | `CwDecoder.PitchWasAsserted`, `CwDecoder.Ranked` | no |
-| engine | `Cw/AStationIsABinThatSwingsTests.cs` | `CwSwingSurvey` | no |
-| engine | `Cw/EveryElementCarriesItsOwnPitchTests.cs` | `CwProbabilisticResult.Elements`, `CwElementPitch` | no |
-| engine | `Cw/FittingKeyUpAgainstAssumingItTests.cs` | `CwProbabilisticDecoder.FittedLogLikelihoods` | no |
-| engine | `Cw/IsTheHertzABiasOrAFloorTests.cs` | `CwSpectralPeak` | no |
-| engine | `Cw/NoSenderIsSplitInTwoTests.cs` | `CwStreamSplit`, `CwProbabilisticResult.Elements` | no |
-| engine | `Cw/NothingActsOnTheAdmissionVerdictTests.cs` | `CwDecodeReport` parameter `PitchChoice` | no |
-| engine | `Cw/TheCleanReadsStayCleanTests.cs` | `CwAccuracy` | no |
-| engine | `Cw/TheFirstSecondsAreReadAgainTests.cs` | `CwProbabilisticStream.ReReads` | no |
-| engine | `Cw/ThePeakAgainstASecondSignalTests.cs` | `CwSpectralPeak` | no |
-| engine | `Cw/ThePeakFindsThePitchTheTrackerMissedTests.cs` | `CwSpectralPeak` | no |
-| engine | `Cw/ThePosteriorSurvivesItsOwnArithmeticTests.cs` | `CwProbabilisticDecoder.Posterior`, `LogSum` | no |
-| engine | `Cw/TheProbabilisticDecoderTests.cs` | `CwAccuracy` | no |
-| engine | `Cw/TheQuietestBinNoLongerWinsTests.cs` | `CwPitchRanking`, `CwDecoder.RankThePitch` | no |
-| engine | `Cw/TheReferenceDecoderIsPortedFaithfullyTests.cs` | `CwReferenceDecoder` | no |
-| engine | `Cw/TheScoreSaysWhatItIsMeasuringTests.cs` | `CwAccuracy` | no |
-| engine | `Cw/WhatDecodeScoringCostsTests.cs` | `CwToneTracker.CoarseSpacingHz` | no |
-| engine | `Cw/WhereHamletAndTheReferenceDivergeTests.cs` | `CwProbabilisticResult.Elements`, 5-argument `Decode` | no |
-| app | `Views/ThePitchControlsAreOffThePanelTests.cs` | `CwDecoder.AssertAt`, `CwDecoder.PitchWasAsserted` | no |
+| 08-25-013520 | 60 chars, 153 elements | red, 60 to 0 | green |
+| 08-25-013637 | 63, 164 | red, 63 to 0 | green |
+| 08-25-012922 | 50, 112 | red, 50 to 0 | green |
+| 08-25-013402 | 61, 161 | red, 61 to 0 | green |
+| 08-25-013150 | 58, 139 | red, 58 to 0 | green |
+| 08-25-013010 | 54, 131 | red, 54 to 0 | green |
+| 08-25-021825 | 41, 74 | red, 41 to 0 | green |
+| 08-25-012748 | 2, 4 | red, 2 to 0 | green |
+| 08-25-012823 | 41, 62 | red, 41 to 0 | green |
+| 08-25-013303 | 54, 146 | red, 54 to 0 | green |
+| 08-25-011552 | 30, 89 | red, 30 to 0 | green |
+| 08-25-021410 | 47, 99 | red, 47 to 0 | green |
+| 08-25-021629 | 47, 96 | red, 47 to 0 | green |
+| 08-17-013347 | `VA3VRR` | red, not found in "" | green |
+| 08-18-003758 | `MP/4 QNIK` | red, not found in "" | green |
+| 08-24-012403 | `DE KD0UN KD0UN K` | red, not found in "" | green |
+| 08-18-004507 | `N HANDLING THIS MESSAG` | red, not found in "" | green |
+| 08-22-031838 | `, AND` | red, not found in "" | green |
+| 08-22-031948 | `110, AND 110 W...` | red, not found in "" | green |
+| 08-22-032012 | `R OTHER WEBSITES MENTI` | red, not found in "" | green |
+| 08-17-134712 | `N4`, retired 2026-08-30 | green, not asserted | green |
+| 08-22-031905, 032050, 032113, 032129 | retired 2026-08-30, squelch | green, not asserted | green |
+| `TheShortfallIsPrintedRatherThanPapered` | none | green | green |
+| **Total** | | **20 of 26 red, 6 s** | **26 of 26 green, 32 s** |
 
-**The 1.6 app changes:** `git diff 10512248 HEAD -- src/Hamlet.App` is one file,
-`MainWindowViewModel.cs`, 21 insertions and 43 deletions in six diff hunks.
+**The three floor tests:**
 
-| # | Where | What changed | Seam |
-|---|---|---|---|
-| 1 | line 11080, `@@ -11080,5` | `UseJointCutter = _settings.UseJointDecoder` dropped from the decoder's construction | no joint cutter; a shim would be a switch that does nothing |
-| 2 | `ElementPitchLine`, `@@ -12405,8`, `-12414`, `-12416,3`, `-12421,11` | 7e209cb4's `Decode(envelope, toneHz)`; *nothing was read, so no element was measured, which is too few ...* or *not measured (the decoder in this build does not say where each element began and ended ...)* | `CwProbabilisticResult.Elements` does not exist at `7e209cb4`; an empty list would print a count of elements nobody measured |
-| 3 | `ToneForTheRecord`, `@@ -12487,15` | the *ranked* branch removed | `CwPitchRank` is in a deleted file and this decoder never ranks |
-
-**Carry-forward, entry beside exit:**
-
-| Line | Entry | Exit |
+| Type | Entry | Exit |
 |---|---|---|
-| App | 276 of 278 in 181 s, 2 lost; re-run 277 of 278 in 161 s, 1 lost; no assertion red | 274 of 278 in 159 s, 3 lost and **`TheOliviaRowsTests...EachPressCarriesItsRowsVariant` red, IOException**; re-run 275 of 278 in 170 s, 2 lost and the same red |
-| Engine | 150 of 150 in 301 s | 150 of 150 in 297 s |
+| `TheCapturesThatDecodeKeepDecodingTests` | 37 of 37, 97 s | 37 of 37, runner 98 s |
+| `TheAdjudicatedReadingsKeepReadingTests` | 13 of 13, 33 s | 13 of 13, runner 31 s |
+| `CwFixtureTests.TheCleanRecordingsDecodeExactly` | 0 of 2, 7 s, reading `■` placeholders | 0 of 2, 5 s, the same |
 
-`git worktree list` at exit: the root and the three preflight trees under
-`C:/Users/TimDi/preflight-trees/`, untouched. The diagnostic tree `C:/Source/HamLet-wt392` was
-removed.
+Entry times are wall times measured by the script. Exit times for the first two are the test
+runner's totals, because the script's wall-time line was cut from the kept console.
 
 ## 4. What's blocking us
 
-**Item 1 is in the way of 1.5. Nothing else blocks.**
+**Nothing blocks a criterion. Item 1 is a regression this unit caused and repaired by a
+self-ruling; the rest are findings. Unit 392's item 1 is answered by this instruction, its option
+A in the order of its option C, and is dropped from the queue. The rest of the queue is carried
+per HM-DEC-139, below.**
 
-**1. `TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant`
-passed at entry and was red twice at exit on the carry-forward app line.** *A regression by
-HM-DEC-165's letter, and a ruling request.* The failure is not on an assertion. It is
-`IOException: The process cannot access the file ...\refuse\2026-09-23.jsonl because it is
-being used by another process`, at the test's own `Lines(folder)` (line 675,
-`File.ReadAllLines`), reading a file that `JsonlTelemetry`'s background writer thread appends
-to. The test builds no CW decoder. Run alone, it passed on the tree before the restore and on
-the restored tree, 8 s each.
+**1. Putting the CW guard on the engine line turned an Olivia test red, and I moved that test's
+type into `CpuMeasuredAlone` to repair it.** *Self-ruling 1, author's, overrulable.*
+`TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes` asserts the demodulator uses under
+20 s of CPU, measured as process CPU. Beside the CW cases it read 26.563 s with every character
+correct. It was not re-run. With the type in the collection the list's own Olivia types already
+use, it is green at 372 s and 373 s.
 
 | | Ruling | For | Against |
 |---|---|---|---|
-| **A** | Adapt the test's wiring under R12 so `Lines` opens with `FileShare.ReadWrite` (or disposes the telemetry before reading), then re-run the app line | Reading a log another thread is appending to is the test's race, and the assertions stay untouched | It changes a carry-forward test in a unit about CW |
-| **B** | Accept 1.5 as met, with this finding as evidence the restore did not cause it | No code moves | HM-DEC-165 is about exactly this kind of *probably not us* |
-| **C** | Hold step 1 partial and make A the next unit's first task | Keeps the rule literal and the fix small | One more unit before step 2 |
+| **A** | Keep it: the type runs alone | Same fix and same reason as its three Olivia neighbors; no ceiling moved | The line went from 300 s to 372 s between the two task 2 runs, most of it this |
+| **B** | Put the CW guard types in a collection of their own instead | Olivia stays parallel | Changes wiring on the guard, and still costs time |
+| **C** | Measure the demodulator's own thread CPU rather than the process's | The ceiling then means what it says | A test-shape change beyond wiring, and a larger edit |
 
-**Industry standard:** A. A test that reads a file while a writer thread may hold it is flaky
-whatever else changed. **My recommendation:** C, so the fix lands in its own commit with the
-before and after runs beside it.
+**Industry standard:** C, since a per-thread measure is the honest one. **My recommendation:** A,
+which is already in and matches the file's precedent. The instruction's section 5 check on
+`CpuMeasuredAlone` covered `TheOliviaBlindSearchTests`, `TheOliviaDriftTests` and
+`TheOliviaBelowTheNoiseTests` but not this type. So decision 2's claim that the CPU-ceilinged
+Olivia names run after the parallel collections was true for three types and not for the fourth.
+
+**2. Section 5 mismatches:**
+- **`docs\carry-forward-tests.txt` ended at line 897,** not 898. The last line is unit 390's
+  `TheRstIsYoursToCorrectTests` paragraph, as stated.
+- **`TheOliviaMoveUpTests` calls `Lines()` at more sites than listed.** There are also calls at
+  837, 1019, 1114 and 1253, and a direct `File.ReadAllLines` at 1230. `Lines()` is defined at
+  1367.
+- **`125941` is not an 08-25 case.** It is `cw-2026-08-26-125941`, so the guard's display-name
+  match does not select it. Task 3's note that it "stays green" does not apply. All thirteen
+  08-25 cases have floors above nought, and all thirteen went red.
+- **`PHASE_STATUS.md` read `CURRENT_STEP: 0`,** as the instruction said, and is now 1. Its
+  `STEP: 1` and `STEP: 2` lines still read `partial` and `not started`. Those are the layer's, and
+  I did not edit them.
+- **I committed `PHASE_OUTCOME.md` and `PHASE_STATUS.md` whole.** Task 0 asks the unit to write
+  both, and git commits a file whole. So the layer's uncommitted `## UNIT 1 - STEP 1` entry and
+  `HEARTBEAT` line went into `05b729eb` with this unit's changes. I edited neither.
+  `RUN_LEDGER.md`, `WORK_INSTRUCTIONS.md` and the three `tools\arbiter\` entries are left as found
+  and uncommitted. `PROJECT_STATUS.md` is written by `tools/status.sh` and stays uncommitted.
+- **`PHASE_OUTCOME.md` holds step 0 at `not started`** with all four of its criteria `[x]`, and
+  carries both `## UNIT 392 - STEP 1` and `## UNIT 1 - STEP 1`. As stated, reported, not edited.
+- **`CLAUDE.md` §1's top row reads HM-DEC-167.** `PROJECT_STATUS.md` says HM-DEC-165, which
+  `tools/status.sh` writes as a literal.
+- **Held as stated:** HEAD `e7c036fc`; 1.13.79; `PROJECT_STATUS.md` at unit 392, `COMPLETED`,
+  `TASK 4 of 6`; the five root files and the three `tools\arbiter\` entries; `TheOliviaRowsTests`
+  lines 279, 306 and 674-675; `JsonlTelemetry` lines 30, 62, 146-159 and 188, and no `FileShare`;
+  `TheOliviaExportSaysOliviaTests` at 582; line 7 with 65 terms, line 9 with 25 and `timeout
+  480`; the guard table; the known-reds block; the thirteen 08-25 passes in
+  `unit392-floors-1.txt`; `CpuMeasuredAlone` at 193-194 with `DisableParallelization = true`;
+  the Cw diff of 4 files, 165 and 1; the transmit files silent; 21 and 1 `<Compile Remove>`;
+  51 lines in the failing set; no `cw-retired-tests.txt`; three preflight worktrees.
+
+**3. Two sibling helpers read the telemetry file the same way and are on neither line.**
+`TheOliviaMoveUpTests.Lines()` and `TheOliviaExportSaysOliviaTests` at 582 both use
+`File.ReadAllLines` on a file `JsonlTelemetry`'s writer may hold. They can fail the same way on a
+busy machine. I did not edit them. The same one-method fix applies if either goes on a line.
+
+**4. Six of the guard's 26 cases can never go red.** *A finding.* Five adjudicated readings carry
+a `Retired` reason from your rulings of 2026-08-30 and are printed, not asserted, and
+`TheShortfallIsPrintedRatherThanPapered` asserts no decode. They cost about a second. The 20
+cases that do assert all refused the broken decoder.
+
+**5. The headless dispatcher loop lost 4 names across the two task 1 app runs,** and none in
+the entry or exit runs. *A finding, recorded and not chased (§6).* None was lost twice.
+
+**`validate-output.bat`:** not run. It asked for approval in earlier units. I checked this file
+against its rules by hand: the ordering block and `UNIT:` above section 1; a `UNIT:` line with no
+parentheses and none of `& | < > ^`; four sections in order with the canonical names; section 4
+present.
+
+**`git worktree list`:** the root and the three preflight trees, nothing else.
+**`git diff --stat HEAD -- src` at the end:** prints nothing. **Push:** all five commits pushed
+without refusal.
+
+### Asks still outstanding
+
+**Carried per HM-DEC-139: unit 392's items 2 to 5, unit 391's items 2 to 6 and unit 390's nine,
+verbatim. None is this unit's to answer. Unit 392's item 1 is answered by this instruction and
+dropped.**
+
+**Unit 392's items 2 to 5, verbatim:**
 
 **2. Section 5 mismatches:**
 - **HEAD at entry was `a1fd388c`,** one arbiter commit past the `4baf986c` the instruction names.
@@ -337,16 +320,6 @@ uncompilable tests now compile against thin seams: `NoCwDecodeInDigitalModeTests
 **5. The headless dispatcher loop cost 8 lost runs across the four app-line invocations.** *A
 finding.* The lost tests were never the same twice, and each passed in the other run. It is the
 §6 lost run, recorded and not chased.
-
-**`validate-output.bat`:** not run, since it asked for approval in earlier units. I checked this
-file against its rules by hand: the ordering block and `UNIT:` above section 1, a `UNIT:` line
-with no parentheses and none of `& | < > ^`, four sections in order with the canonical names,
-and section 4 present.
-
-### Asks still outstanding
-
-**Carried per HM-DEC-139: unit 391's items 2 to 6 and unit 390's nine, verbatim. None is this
-unit's to answer. Unit 391's item 1 is answered by R53.**
 
 **Unit 391's items 2 to 6, verbatim:**
 
