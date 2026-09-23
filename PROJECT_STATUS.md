@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 399 - the clean synthetics get a band
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T03:18:19-04:00
-NOTE: task 0: entry floors 37, 13, 0 of 2 as expected; TheSurveyAlreadyUsesAShortWindowTests running
+UPDATED: 2026-09-23T03:24:00-04:00
+NOTE: task 1: ways 1 to 4 measured, band gives exact settled text but not exact harness text; writing section 2 of the doc
 
 ---
 

@@ -50,8 +50,8 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
   line.
 - **393 item 4** - Six of the guard's 26 cases can never go red.
 - **393 item 5** - The headless dispatcher loop lost 4 names across the two task 1 app runs.
-- **394 item 1** - Task 3 was dropped on its clock rule, so the two clean synthetics are
-  unmeasured four ways.
+- ~~**394 item 1** - Task 3 was dropped on its clock rule, so the two clean synthetics are
+  unmeasured four ways.~~ *measured by unit 399, task 1*
 - **394 item 2** - `ABlipDoesNotShiftEverythingAfterItTests` names `CwReferenceDecoder` only in
   doc prose.
 - **394 item 3** - `OneDecoderNotTwoTests` does not fit in one 600 s call, and the harness caps at
