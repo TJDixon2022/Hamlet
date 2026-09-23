@@ -185,4 +185,24 @@ error CS0246: The type or namespace name 'CwElement' could not be found`, at 294
 `CwElementPitch.ResolutionHz`. Not the seam: **out under decision 4**, no floor run, reverted in
 the next commit. Transmit files silent.
 
+**Piece 42, `43efc525`**, *the tap is fed from the callback, the decoder from a queue*. The `Cw`
+patch was 235 lines, `CwDecoder.cs`, 181 insertions and 4 deletions: an `AudioHandoff` queue and
+one `cw-decode` worker thread built in `Listen`, `StopWorker`, `DrainHandoff`, a private
+`Process(chunk, takeIntoTap)`, a `Flush` that waits for the queue to drain, and an `OnSamples` that
+feeds the tap and queues the chunk. Not taken under R50 and decision 24: `Audio\AudioHandoff.cs`,
+`Audio\WasapiAudioSource.cs`, one test; the `Audio` types are at HEAD already. `--check` failed at
+line 728; `--3way` merged every hunk but one, `OnSamples` (conflict lines 784 to 1365 of the
+merged file), where the piece's side carried about 580 lines of bodies from out pieces - the
+held-audio re-read and the ranking - as context. Resolved under decision 3 by
+`unit397-p42-resolve.sh`: HEAD's surroundings kept, the one-line `OnSamples` replaced with the
+piece's own, and the piece's `DecodeQueueDepth` taken; its `DecodeQueueDroppedChunks` and
+`DecodeQueueDroppedSamples` dropped as already in the tree, because unit 392's seam declares both
+at lines 397 and 400 (at nought, unit 392's standing decision) and the seam is kept. Staged diff
+175 insertions, 4 deletions; line endings LF as HEAD. Piece commit `ec9dec4a`; build 0 errors in
+7 s. Captures **37 of 37 in 94 s**, every row identical; adjudicated 13 of 13 in 29 s; printer
+identical to entry. **Synthetics 0 of 2, both `Actual: ""`**, where the entry state gives the
+placeholders `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■`, and in 0.67 s against 2.7 s: the synthetics
+attach a source, which now routes the decode through the worker, and nothing came back. No named
+number improved: **out**, reverted in the next commit. Transmit files silent.
+
 ## 3. The exit round, task 2
