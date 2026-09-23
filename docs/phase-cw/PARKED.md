@@ -101,3 +101,13 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
   unit 392's quoted `CwAccuracy` is doc prose only in `TheCleanReadsStayCleanTests` and
   `TheProbabilisticDecoderTests`, so both compiled and were re-included; the app file carries 3 facts,
   2 of them `[AvaloniaFact]`.
+- **399 item 1** - Section 5 mismatches of unit 399: `PHASE_STATUS.md` read `CURRENT_STEP: 0`,
+  `WORK_INSTRUCTION: 398`; `CwConfidence` has `High`, `Low` and `Unreadable` and no medium, so
+  decision 2's *high, medium, low* is printed as high, low, unreadable; no compiled file named
+  `Fixtures\CwFixtureGenerator.cs` reads `CwFixtures.` (the grep's compiled readers are
+  `CwFixtureTests`, `TheCleanReadsStayCleanTests` and `TheSurveyAlreadyUsesAShortWindowTests`), and
+  the grep also lists the four excluded files; `RayleighQuarterPoint` at line 404 is a constant, not
+  a method.
+- **399 item 2** - The first exit app run lost 3 names to the headless dispatcher loop, all 1 ms,
+  `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed` and two
+  `TheTestsStayOffTheNetworkTests` facts; the re-run was 278 of 278.

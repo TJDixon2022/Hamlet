@@ -220,3 +220,31 @@ is not edited. `TheCleanReadsStayCleanTests` was 6 green and 1 red-open on `0037
 Task 3 runs only if task 2 committed a regeneration, and task 2 did not. `prosigns-18wpm` was not
 measured with a band, nothing was regenerated, and #30 and #33 stay red-open with their numbers in
 `unit394-reds.md`. The clock did not decide it. Task 2 finished at 03:25, minute 11 of the unit.
+
+## 6. The exit round
+
+| Run | Entry | Exit |
+|---|---|---|
+| App carry-forward line | 278 of 278 in 160 s, unit 398's exit, decision 5 | first run 275 of 278 in 162 s, 3 lost to the dispatcher loop at 1 ms each; re-run **278 of 278 in 166 s** |
+| Engine carry-forward line | 176 of 176 in 374 s, unit 398's exit, decision 5 | **176 of 176 in 374 s** of 480 |
+| Captures type | 37 of 37 in 94 s | **37 of 37 in 92 s**, every row identical to entry |
+| Adjudicated type | 13 of 13 in 29 s | **13 of 13 in 29 s**, every printed line identical |
+| `TheCleanRecordingsDecodeExactly` | 0 of 2 in 4 s | **0 of 2 in 3 s**, the same two texts |
+| `CwFixtureTests` whole | 14 green, 9 red of 23 | 14 green, 9 red, every case by name identical |
+| `TheCleanReadsStayCleanTests` | 6 green, 1 red-open on 003758 | identical |
+| `TheSurveyAlreadyUsesAShortWindowTests` | 2 of 2 | identical |
+
+The lost names in the first app run were `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed`,
+`TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer` and
+`TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo`. Each threw
+`InvalidProgramException: You've caused dispatcher loop` from `Dispatcher.ResetForUnitTests`,
+not an assertion, and each was green on the re-run, so none counts either way.
+
+**No regression.** Nothing that was green at task 0 or at unit 398's exit is red.
+
+Tree checks at exit: the eleven transmit files printed nothing against `7e209cb4`;
+`git diff --stat 5688a8a5 HEAD -- src` printed nothing; `git diff --stat 7345a4f9 HEAD -- tests`
+lists only `Cw/TheCleanSyntheticsFourWaysTests.cs`, 107 lines, because nothing was regenerated;
+`git status --short tests` printed nothing; `docs/carry-forward-tests.txt`,
+`docs/unit239-failing-set.txt` and `docs/cw-retired-tests.txt` are unchanged since `7345a4f9`;
+`git worktree list` shows the root and the three preflight trees.
