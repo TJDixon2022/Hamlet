@@ -1262,8 +1262,14 @@
     on #15, #43 and #44 before any change, and #45's event given the air's trailing silence under
     R12. No file under src changes at this task.
   -->
+  <!--
+    1.13.94 -> 1.13.95, WORK INSTRUCTION 408 TASK 0. A PATCH, STEP 3 OF THE CW PHASE, THE FLOORS
+    STOP COUNTING JUNK, AND THE GATE STOPS PRINTING IT: the 37 capture floors re-measured as named
+    characters under R57, 3.6's single closing pass with B2, M2 and G1 rebuilt, then the emission
+    gate raised under R58 (HM-DEC-168). No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.94</Version>
+    <Version>1.13.95</Version>
   </PropertyGroup>
 
   <!--

@@ -584,3 +584,17 @@ STATE_WHY: Criteria 3.1 to 3.5 are met and ticked, but 3.6 is still at 4 of eigh
 ADVANCED: no
 ATTEMPT: 3.6 | unit 5 launched 2026-09-23T19:02:37.455Z | no | executed | hold a tracker move off the pitch being read while that bank is still on/off keying, traced first on #15 #43 #44 against the five captures H1 cost and the handovers; #45's easy-tier event pumps the air's trailing silence before Flush and reads the settled transcript under R12
 REASON: 3.6 | unit 5 launched 2026-09-23T19:02:37.455Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 408 - STEP 3
+
+STEP: 3
+APPROACH: re-measure the 37 capture floors as named characters and placeholders under R57, take 3.6's single closing pass with B2, M2 and G1 rebuilt under the new rule, then raise the emission gate so characters the decoder scores in the single digits are not printed
+MOVE: continue
+WHY: PHASE_PLAN.md step 3 criterion 9 asks for all 37 capture rows re-measured once under R57 with the old count, the named count and the placeholder count printed per row
+STATE: partial
+DECIDED: the gate's bar, the separate-column form of the floor table and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R49, R55, R57, R58, section 6; HM-DEC-168; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0
+ADVANCES: step 3 criterion 9
+COST: one session, five tasks, 0 to 4, committed per task and per kept change; M2 and #6 the drop candidate of task 2, the 37-fixture sweep that of task 3.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.94 to 1.13.95. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 407; set to 408 - the floors stop counting junk, and the gate stops printing it, and CURRENT_STEP 3. HM-DEC-168 in DECISIONS.md and its row at the top of CLAUDE.md section 1. Section 5 against the tree: src\Hamlet.RadioEngine\Cw\CwEmissionGate.cs does not exist - the bar is CwProbabilisticDecoder.CharacterMargin, 1.0, a character's span log-likelihood ratio per hop, applied in CwProbabilisticDecoder.Marked, and CwEmissionGateTests is a test type; the 17:37 WAV and key.md are on disk and already tracked, committed in 65b4f9d0, and its .txt sidecar is not on disk; the floor table holds 37 rows counted from CwDecodeReport.CharactersEmitted, placeholders included; reds-3.6.md holds #15 #43 #44 #45 open; unit405-reds.md describes B2, M2 and G1 in prose and 405's diffs are not in the tree. Entry round, one type per invocation after one build: ENGINE 178 of 178 in 371 s; APP 276 of 278 in 157 s, both losses ThePsk31ConversationCardTests to the dispatcher loop before an assertion, then 278 of 278 in 160 s on the one re-run; captures 37 of 37 in 91 s, every row identical to unit 407's exit table; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 1 s.

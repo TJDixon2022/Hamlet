@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-168
+date: 2026-09-23
+refs: PHASE_PLAN.md R56 R57 R58, docs/phase-cw/unit405-reds.md, work instruction 408, HM-DEC-091, HM-DEC-095, HM-DEC-127
+---
+
+**A CW floor counts named characters, not placeholders, and the emission gate is repaired
+before the tone tracker.** Tim, 2026-09-23.
+
+**Why.** The capture floors count every character the decoder emits, and a placeholder is a
+character, so a change that stops the decoder printing what it does not believe reads as a
+regression. Unit 405 turned two inherited reds green and threw both changes away on that
+reading; units 406 and 407 then spent themselves on the same four reds under the same rule.
+Tim, at the radio: *"I hate all the false positive garbage."*
+
+**What is ruled.** A floor is the count of named characters. A row that falls solely because
+placeholders were suppressed is not a floor lowered; a row whose named count falls is a
+regression. All 37 rows are re-measured once with both numbers printed, and the three
+adjudicated readings are the independent check that nothing real was lost. The emission gate
+is repaired first; leave to change `CwToneTracker` is granted by R56 for the unit after,
+without overruling HM-DEC-095 or HM-DEC-127.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 408 task 0's
+record of it. Nothing was rejected in the recording.
+
+---
 id: HM-DEC-167
 date: 2026-09-22
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md, PROJECT_CARD.md, docs/phase-hardening-run/, docs/phase-cw/, work instruction 391 task 0, HM-DEC-151
