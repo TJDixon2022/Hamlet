@@ -151,6 +151,16 @@ this unit to run all night."* Two consequences, both binding on the arbiter:
    or transmits, spend past the budget, or change a fact the product states, in order to
    meet a criterion, stops. A unit that merely notices such a thing parks it.
 
+**R55 - Tim, 2026-09-23, morning: the loop keeps working the decoder before he judges.**
+Ruled B. With every loop criterion ticked and 5.1 the only one open, the phase halted on
+his verdict while eight reds stayed open under R49 and fourteen rework pieces were never
+tried. He chose to extend rather than close: **3.6** takes the eight by number, **4.7**
+takes the fourteen as chains, and 5.1 waits until both have a verdict. Rejected: ticking
+5.1 now and carrying both into the next phase (the next phase is to be interviewed on a
+correctness number, not on this pile); closing by ruling as done-partial. Standing note
+from the same ruling: a capture Tim transcribes himself is the next phase's step 0, and
+nothing in 3.6 or 4.7 is a substitute for it.
+
 ## §3 What is different from the phases before it
 
 This phase moves the decode path, which no phase since 08-31 has. Two consequences the
@@ -226,6 +236,7 @@ named commit is `7e209cb4` by R53.
 - [x] 3.3 No test that reads audio and asserts characters, elements, a tone or a speed is retired; each such red is green or is listed red-open with its number and the reason it stays. **Unit 394, task 2: nothing retired; all 21 reds of the set read audio and are listed red-open in `docs\phase-cw\unit394-reds.md` section 2, each with its number and what it asserts - characters 14, share 5, speed 2. Unit 398, task 2: 20 retired from the excluded files, none asserting characters, elements, a tone or a speed from audio; the 31 excluded facts that do are left excluded and listed red-open in `docs\phase-cw\unit398-excluded.md` section 2.**
 - [x] 3.4 The known-reds block of `docs\carry-forward-tests.txt` names no CW test, and `docs\unit239-failing-set.txt` carries a closing line naming this phase and the count that went each way. **Unit 401: lines 158 and 159 of the known-reds block replaced by one CW line naming no test and pointing at the set's closing line and `unit394-reds.md`; grep over the file at exit finds no CW test named as a known red; the closing line written - 51 names, 31 green at HEAD without repair, 12 repaired, 0 retired, 8 red-open by number (#6, #15, #24, #41, #42, #43, #44, #45); the step's goal sentence stays partial on the 8 red-open under R49's own clause, red with its number and the step partial, each a repair owed under HM-DEC-151; `CwFixtureTests.TheCleanRecordingsDecodeExactly` on the engine line, 178 of 178 in 374 s of 480.**
 - [x] 3.5 The three floor tests are green at the exit of every commit of the step, and the carry-forward list is green on both lines. **Unit 400: captures 37 of 37 and adjudicated 13 of 13 at the exit of every commit of the step since `ee0ea0dc`; the two clean synthetics red at every commit before `7d1ffde6` under R53, which named them step 3's repair, and green 2 of 2 at the exit of every commit from it; app 277 of 278 in each of two runs, each loss a different name to the dispatcher loop before an assertion and green in the other run, and engine 176 of 176 in 374 s at the unit's exit. The tick stands while every later commit of the step keeps all three green and both lines green; a later unit that finds one red un-ticks it and names the commit.**
+- [ ] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count.
 
 **Depends on:** step 2. Independent of step 4: when one blocks the arbiter works the other.
 
@@ -242,6 +253,7 @@ named commit is `7e209cb4` by R53.
 - [x] 4.4 Every kept piece's numbers are written into the floor table as the new floors, and the floors only rise. **Ticked by unit 397: no piece kept, no floor moved, the floor table byte-identical to the step's entry - `git diff --stat ee0ea0dc HEAD` over both floor test files prints nothing - and no floor lowered.**
 - [x] 4.5 Section 3 of the last report of the step leads with one table: piece, number before, number after, kept or out. **Ticked by unit 397: its report's section 3 leads with the 45-row table, rows 1 to 33 from units 395 and 396 and rows 34 to 45 its own.**
 - [x] 4.6 The three floor tests and the carry-forward list are green at exit. **Ticked by unit 397's exit round on `3af36501`'s tree, `src` byte-identical to `5688a8a5`: captures 37 of 37 in 92 s with every row identical to entry, adjudicated 13 of 13 in 29 s; app line 278 of 278 in 167 s, engine line 176 of 176 in 374 s of 480; the two clean synthetics red at both ends, 0 of 2 reading placeholders, under R53.**
+- [ ] 4.7 Each of the fourteen pieces unit 395 listed as dependent on a chain longer than a pair - `4786c7e7`, `f2e1db7a`, `386fdb5d`, `4c6e4321`, `0f2089f3`, `62262b94`, `fc1ee77f`, `68a18d66`, `a91d8fe7`, `efcd5242`, `aeea24f2`, `a37cfcff`, `ee2cba8d`, `9c2a7f99` - is applied inside its chain, each chain in its own commit and judged as one piece under 4.2's rule, kept or taken back out under 4.3, floors raised under 4.4 if kept, and a row per chain added to 4.5's table; a chain that will not build after its seams are adapted is listed with its errors and counts as out.
 
 **Depends on:** step 2. Independent of step 3: when one blocks the arbiter works the other.
 
@@ -286,7 +298,11 @@ nowhere to route - work it or halt.
 - **A CW test costs more than 300 s** (`TheIntegratorBandwidthTable.Write` was measured at
   362 s): it never goes on a carry-forward line and is run alone with its own timeout.
 - **A piece in step 4 helps only with another**: the arbiter may re-apply two together
-  once, says so, and the pair is judged as one piece under 4.2.
+  once, says so, and the pair is judged as one piece under 4.2. **Under 4.7 (R55) a chain of
+  any length is one piece**, applied in one commit and judged once.
+- **A red under 3.6 that three consecutive units have attacked without movement is parked,
+  not chased**, and the criterion closes on that verdict; the loop is never held on a single
+  test.
 - **A floor would have to be lowered to go green.** Never. Report the number, `partial`.
 - **Anything would change what keys or transmits, or a byte of the transmit files in
   §3.** `MOVE: stop`.
@@ -315,6 +331,10 @@ including hardening 5.1.
 
 - **2026-09-22.** Written from the interview: R47 to R52; six steps; the three floor tests
   named from the tree; the transmit files fenced in §3.
+- **2026-09-23, morning.** R55: 3.6 (the eight reds by number, green or parked after three
+  tries) and 4.7 (the fourteen chained pieces, each chain one commit, one verdict); §6's pair
+  rule extended to chains under 4.7 and a three-tries rule for 3.6. Written after the loop
+  halted at stop 1 with every loop criterion ticked.
 - **2026-09-22, late.** R54: 9.2 parked; a ruling is wanted only when a criterion of the step in
   hand needs it; carried asks and findings that touch the three stops but block nothing go to
   `docs\phase-cw\PARKED.md`. Written after the loop halted at stop 3 on unit 389's carried ask.
