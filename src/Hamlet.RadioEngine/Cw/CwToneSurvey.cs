@@ -1,6 +1,80 @@
 namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>
+/// What every admission test said about one bin on one survey pass.
+/// </summary>
+/// <param name="ToneHz">The bin.</param>
+/// <param name="Refused">
+/// Which test refused it, or `null` where it was admitted.
+/// </param>
+/// <param name="Marks">How many whole marks the bin's gate produced.</param>
+/// <param name="Dits">How many of them fell in the short cluster.</param>
+/// <param name="Dahs">How many fell in the long one.</param>
+/// <param name="DitMilliseconds">The short cluster's mean.</param>
+/// <param name="DahMilliseconds">The long cluster's mean.</param>
+/// <param name="Ratio">The two clusters' quotient.</param>
+/// <param name="Separation">How far apart they sit in their own scatter.</param>
+/// <param name="LiftDb">How far the bin stands over the band.</param>
+/// <param name="KeyedDb">The level the marks were measured at.</param>
+/// <remarks>
+/// <para>**A VERDICT IS NOT A MEASUREMENT, AND FOR FOUR DAYS ONLY THE VERDICT
+/// EXISTED.** The survey applies seven tests to each bin and reported one
+/// answer: admitted, or nothing. So a station the operator could hear was
+/// refused and no instrument in this tree could say which test refused it or by
+/// how much it missed. Three consecutive units built a mechanism downstream of
+/// that decision, measured it dead, and correctly shipped nothing — each of them
+/// reasoning about a candidate that was never nominated.</para>
+/// <para>**IT RECORDS EVERY BIN, INCLUDING THE ONES THAT HOLD NOTHING.** A
+/// refusal is only legible beside the refusals of bins nobody claims hold a
+/// station, which is the same reason the empty captures are controls rather
+/// than a formality (§0.0.1).</para>
+/// <para>Nothing reads this in the application. It is switched on by handing the
+/// survey somewhere to put it, and off by not doing so, so the cost on the audio
+/// thread is one null check per bin (§8).</para>
+/// </remarks>
+public readonly record struct BinReading(
+    double ToneHz,
+    string? Refused,
+    int Marks,
+    int Dits,
+    int Dahs,
+    double DitMilliseconds,
+    double DahMilliseconds,
+    double Ratio,
+    double Separation,
+    double LiftDb,
+    double KeyedDb)
+{
+    /// <summary>True where every test passed.</summary>
+    public bool Admitted => Refused is null;
+
+    /// <summary>
+    /// How far the refusing test missed by, in that test's own units.
+    /// </summary>
+    /// <remarks>
+    /// **IN THE TEST'S OWN UNITS AND NOT NORMALISED**, because the question a
+    /// reader asks is "how much would this bound have to move", and a figure
+    /// scaled to make two tests comparable answers a question nobody asked.
+    /// `NaN` where the bin was admitted, or where the refusing test has no
+    /// distance — a bin with no two clusters is not a near miss.
+    /// </remarks>
+    public double MissedBy => Refused switch
+    {
+        "marks" => CwToneSurvey.MinimumMarks - Marks,
+        "dits" => 3 - Dits,
+        "dahs" => 3 - Dahs,
+        "ratio" => Ratio < CwToneSurvey.MinimumRatio
+            ? CwToneSurvey.MinimumRatio - Ratio
+            : Ratio - CwToneSurvey.MaximumRatio,
+        "dit" => DitMilliseconds < CwToneSurvey.ShortestDitMs
+            ? CwToneSurvey.ShortestDitMs - DitMilliseconds
+            : DitMilliseconds - CwToneSurvey.LongestDitMs,
+        "separation" => CwToneSurvey.MinimumSeparation - Separation,
+        _ => double.NaN,
+    };
+}
+
+/// <summary>
 /// A pitch that looks like somebody keying, and the measurements that say so.
 /// </summary>
 /// <param name="ToneHz">Where it is.</param>
@@ -177,6 +251,32 @@ public sealed class CwToneSurvey
     /// into a run of imaginary dits and takes the cluster measurement with it.
     /// </remarks>
     private const double HysteresisDb = 3.0;
+
+    /// <summary>
+    /// Where to write what every admission test said, or null to measure nothing.
+    /// </summary>
+    /// <remarks>
+    /// **OFF UNLESS SOMEBODY IS LOOKING** (§8). Nothing in the application sets
+    /// it; a test does, reads the list, and drops it. On the audio thread it is
+    /// one null check per bin per pass.
+    /// </remarks>
+    public List<BinReading>? Readings { get; set; }
+
+    private void Record(
+        int bin,
+        string? refused,
+        int marks = 0,
+        int dits = 0,
+        int dahs = 0,
+        double dit = double.NaN,
+        double dah = double.NaN,
+        double ratio = double.NaN,
+        double separation = double.NaN,
+        double liftDb = double.NaN,
+        double keyedDb = double.NaN)
+        => Readings?.Add(new BinReading(
+            _binHz[bin], refused, marks, dits, dahs,
+            dit, dah, ratio, separation, liftDb, keyedDb));
 
     /// <summary>How far away a bin has to be to count as "the band" rather than
     /// this signal leaking sideways.</summary>
@@ -485,6 +585,8 @@ public sealed class CwToneSurvey
         // makes this follow a fade instead of being stranded above one.
         if (!Clusters(bin, out var low, out var high, out var midpoint))
         {
+            Record(bin, "clusters");
+
             return null;
         }
 
@@ -548,7 +650,14 @@ public sealed class CwToneSurvey
 
         var marks = CollectMarks();
 
-        return marks < MinimumMarks ? null : Judge(bin, marks, liftDb, high);
+        if (marks < MinimumMarks)
+        {
+            Record(bin, "marks", marks, liftDb: liftDb, keyedDb: high);
+
+            return null;
+        }
+
+        return Judge(bin, marks, liftDb, high);
     }
 
     /// <summary>Two levels in this bin's history, and where they meet.</summary>
@@ -749,6 +858,10 @@ public sealed class CwToneSurvey
 
             if (dits == 0 || dahs == 0)
             {
+                Record(
+                    bin, dits == 0 ? "dits" : "dahs", count, dits, dahs,
+                    liftDb: liftDb, keyedDb: keyedDb);
+
                 return null;
             }
 
@@ -768,6 +881,10 @@ public sealed class CwToneSurvey
         // Three of each, or the "clusters" are one outlier and everything else.
         if (dits < 3 || dahs < 3 || dit <= 0)
         {
+            Record(
+                bin, dits < 3 ? "dits" : dahs < 3 ? "dahs" : "dit", count,
+                dits, dahs, dit, dah, liftDb: liftDb, keyedDb: keyedDb);
+
             return null;
         }
 
@@ -776,6 +893,16 @@ public sealed class CwToneSurvey
         if (ratio < MinimumRatio || ratio > MaximumRatio
             || dit < ShortestDitMs || dit > LongestDitMs)
         {
+            // **THE RATIO IS NAMED FIRST WHERE BOTH FAIL**, because it is the
+            // test the band was written for and the dit bound is a sanity check
+            // around it. A reader wants the reason, not the first line that
+            // happened to be false.
+            Record(
+                bin,
+                ratio < MinimumRatio || ratio > MaximumRatio ? "ratio" : "dit",
+                count, dits, dahs, dit, dah, ratio,
+                liftDb: liftDb, keyedDb: keyedDb);
+
             return null;
         }
 
@@ -785,6 +912,10 @@ public sealed class CwToneSurvey
         // tells them apart on all three recordings.
         var spread = Scatter(count, split, dit, true) + Scatter(count, split, dah, false);
         var separation = spread > 1e-6 ? (dah - dit) / spread : 0;
+
+        Record(
+            bin, separation < MinimumSeparation ? "separation" : null,
+            count, dits, dahs, dit, dah, ratio, separation, liftDb, keyedDb);
 
         return separation < MinimumSeparation
             ? null
