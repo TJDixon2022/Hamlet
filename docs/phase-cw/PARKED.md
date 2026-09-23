@@ -60,3 +60,10 @@ its report commit. Created by unit 395, task 0, from unit 394's `output.md` sect
 - **394 item 5** - The failing set is not all of its types' reds: three
   `CwFixtureTests.NothingTheDecoderWasSureOfIsWrong` cases outside it.
 - **394 item 6** - The headless dispatcher loop lost 4 names across the two exit app runs.
+- **396 item 1** - Of pieces 1 to 33, 10 were never run for want of a chain longer than section 6's
+  pair (10, 11, 13, 15, 19, 21, 24, 26, 27, 29), decision 16; the posterior chain 24 to 27 and the
+  ranking chain 14 to 19 cannot be judged on their own numbers under decision 5.
+- **396 item 2** - Pieces 14 and 18, `CwPitchRanking`, do not build on the restored tracker:
+  `CwToneTracker.CoarseSpacingHz` is private there; not the seam, so out under decision 4.
+- **396 item 3** - Piece 30, the squelch on an unadmitted pitch, is the only piece of 33 that moved a
+  printed number, and it moved ABOVE 2 to 3 and unsure up on 25 captures; out under R51.

@@ -292,7 +292,32 @@ min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 3 s. Pri
 SETTLED lines identical to section 1. Transmit files nothing. Out, reverted next. **The clock rule
 fired after it**; piece 34 was not started.
 
-(The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
+(A note on piece 11's paragraph: the first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
-## 3. Exit
+## 3. Exit, task 3
+
+The kept state is the entry state: pieces 10 to 33 judged, none kept, and `git diff --stat
+5688a8a5 HEAD -- src` prints nothing. Run whole under decision 13, HEAD `e2b31a40`.
+
+- **App**, line 7 as printed: **278 of 278 in 155 s**, nothing lost to the dispatcher loop, no
+  re-run. Entry, by decision 12: 277 of 278 twice. `.run-unit\unit396-carry-exit-app.txt`.
+- **Engine**, line 9 as printed: **176 of 176 in 374 s** of 480. Entry: 176 of 176 in 372 s.
+  `.run-unit\unit396-carry-exit-eng.txt`.
+- **Captures**: **37 of 37 in 92 s wall**, 1.53 min, every capture's characters, elements, unsure
+  and tone identical to section 1 - the compare printed no difference in 37 rows.
+  `.run-unit\unit396-floors-exit-1.txt`.
+- **Adjudicated**: 13 of 13 in 29 s. **Clean synthetics**: 0 of 2 in 3 s, `■ ■ ■ ■ ■  ■ ■ ■ ■■`
+  and `■ ■ ■  ■■■`, red as at entry under R53.
+- **Printer**, run although nothing was kept, 5 s: the seven SETTLED lines identical to section 1 -
+  WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2.
+- **Transmit files** against `7e209cb4`: nothing, at entry, after every piece, and at exit.
+- **`src`** against `5688a8a5`: nothing.
+- **No regression.** Nothing green at task 0 or at unit 395's exit is red at task 3.
+
+**Decision 14, on the log** (`.run-unit\unit396-log.sh`, `ee0ea0dc..HEAD`): 20 commits applied a
+piece across units 395 and 396 - 395's pieces 1, 2, 3, 5, 7, the 7-and-8 pair and the 7-and-9 pair;
+396's pieces 12, 14, 17, 18, 20, 22, the 22-and-23 pair, 25, 28, 30, 31, the 28-and-32 pair and 33 -
+and each is followed immediately by its `out` revert, the only commits between being the piece's
+own seam or drop follow-up (2, 3, 12). The other 13 out pieces - 4, 6, 10, 11, 13, 15, 16, 19, 21,
+24, 26, 27, 29 - were never applied. 4.3 ticked, 33 of 33.
