@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 398 - the excluded files, classified and retired under R49
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T02:42:37-04:00
-NOTE: task 2: retired FittingKeyUpAgainstAssumingItTests, 1 test, commit 3 of 7; the four trims next
+UPDATED: 2026-09-23T02:43:23-04:00
+NOTE: task 2: trimmed TheReadPathDoesNotAllocateTests, commit 4 of 7; TheTapIsNotBehindTheDecoderTests next
 
 ---
 

@@ -115,47 +115,6 @@ public sealed class TheReadPathDoesNotAllocateTests
         Assert.Equal(1, window.Sizings);
     }
 
-    /// <summary>The keying meter sizes its buffer once and reuses it.</summary>
-    /// <remarks>
-    /// <para>**STATED AS A COUNT RATHER THAN AS AN ALLOCATION MEASUREMENT, AND
-    /// THAT WAS NOT THE FIRST ATTEMPT.** This began as the difference between
-    /// two arms - the meter handed audio, and the meter reading the same audio
-    /// from the tap - which is the most direct statement of the claim and could
-    /// not be made to hold. Each arm allocates about 81.7 MB in the meter's own
-    /// pitch sweep, so isolating a 1.15 MB read means resolving two eighty-
-    /// megabyte figures to better than a part in seven thousand, and beside two
-    /// hundred other tests the runtime's per-thread counter does not do that.
-    /// Warming both arms did not fix it and taking the floor of five rounds did
-    /// not either.</para>
-    /// <para>**SO THE CLAIM IS MADE WHERE IT IS EXACT.** The buffer is sized once
-    /// or it is not; that is an integer the meter keeps, it needs no precision at
-    /// all, and it cannot be true while the meter is still copying its window.
-    /// The allocation figures that matter are asserted directly on
-    /// `ReusableWindow` in the two tests above, at zero bytes over a hundred
-    /// reads, where there is no large number to subtract from.</para>
-    /// </remarks>
-    [Fact]
-    public void TheKeyingMeterSizesItsWindowOnceAndReusesIt()
-    {
-        var tap = Filled();
-        var meter = new CwKeyingMeter();
-
-        Assert.Equal(0, meter.WindowSizings);
-
-        for (var i = 0; i < 20; i++)
-        {
-            meter.Update(tap);
-        }
-
-        _output.WriteLine("20 readings, buffer sizings : " + meter.WindowSizings);
-        _output.WriteLine("the window is " + (6 * Rate * 4)
-            + " bytes, and before this change every reading allocated one");
-        _output.WriteLine("so 20 readings churned "
-            + (6L * Rate * 4 * 20 / 1024 / 1024) + " MB and now churn none");
-
-        Assert.Equal(1, meter.WindowSizings);
-    }
-
     /// <summary>Reading the arrival ratio allocates nothing at all.</summary>
     /// <remarks>
     /// **IT IS READ EVERY SLOT AND ON EVERY SIDECAR**, and task 2 took away the
