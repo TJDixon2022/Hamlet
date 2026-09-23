@@ -159,10 +159,10 @@ says - never the whole suite.
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [ ] 0.1 The three floor tests run at HEAD by name, filtered, foregrounded, with a timeout, one type per invocation, and every case is listed in the report as green or red with its measured characters and elements beside its floor.
-- [ ] 0.2 The newest commit on `main` at which all three floor tests are green - each run at that commit as that commit has them - is named by hash and date, with the count of commits between it and HEAD that touch `src\Hamlet.RadioEngine\Cw`.
-- [ ] 0.3 The first commit after it at which any floor test has a red case is named by hash and date, with the cases it turned red.
-- [ ] 0.4 The report lists every type under `src\Hamlet.App` and `tests\Hamlet.App.Tests` that references a type in `src\Hamlet.RadioEngine\Cw`, and for each whether the member it uses exists at the named commit, so step 1 knows its seams before it opens a file.
+- [x] 0.1 The three floor tests run at HEAD by name, filtered, foregrounded, with a timeout, one type per invocation, and every case is listed in the report as green or red with its measured characters and elements beside its floor. **Unit 391 ran them at HEAD, 20 of 52 cases red, every case with its numbers in `docs/phase-cw/unit391-floors-head.md`.**
+- [x] 0.2 The newest commit on `main` at which all three floor tests are green - each run at that commit as that commit has them - is named by hash and date, with the count of commits between it and HEAD that touch `src\Hamlet.RadioEngine\Cw`. **Unit 391 named `07f0397a` of 2026-08-21, 84 Cw commits before HEAD, in `docs/phase-cw/unit391-walk.md`; R53 then named `7e209cb4` as step 1's commit.**
+- [x] 0.3 The first commit after it at which any floor test has a red case is named by hash and date, with the cases it turned red. **Unit 391 named `8e3ee277`, the likelihood decoder, which turned both clean synthetics red, in `docs/phase-cw/unit391-walk.md`.**
+- [x] 0.4 The report lists every type under `src\Hamlet.App` and `tests\Hamlet.App.Tests` that references a type in `src\Hamlet.RadioEngine\Cw`, and for each whether the member it uses exists at the named commit, so step 1 knows its seams before it opens a file. **Unit 391 listed the 145 rows in `docs/phase-cw/unit391-seams.md`; unit 392 re-checked every row at `7e209cb4`, the commit R53 named, in `docs/phase-cw/unit392-seams.md`.**
 
 **Depends on:** nothing.
 
