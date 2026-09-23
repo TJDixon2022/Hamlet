@@ -133,6 +133,8 @@ piece; for piece 1 that is section 3.1 and 3.1a.
 |---|---|---|---|---|---|---|---|
 | 1 | 2068f868 | read the first seconds again, at the note they were sent on | 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; 004507 50, 003758 63, 031948 34, 012748 4; synthetics 0 of 2 | 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; 004507 49, 003758 58, 031948 31, 012748 2; synthetics 0 of 2 | 94 s | **out**, piece `5cf8f9c8`, reverted in the next commit | applied clean and built; captures 37 of 37 and adjudicated 13 of 13 green; no named number moved and no capture rose, while four fell - 004507, 003758 and 031948 are anchored, so their counts are printed and not asserted, and 012748 fell from 4 to its floor of 2; the other 33 identical. Out under R51. |
 
+| 2 | 6fc36a1e | log how close the argument was, beside how loud it was | the entry state, piece 1 out: 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; synthetics 0 of 2 | every one of the 37 captures identical in characters, elements, unsure and tone; the five distances identical; synthetics 0 of 2 | 95 s | **out**, pieces `99db35fc` and `0246f209`, both reverted in the next commit | applied clean without piece 1 but did not build: `CwCharacter.cs(179,25): error CS0102: The type 'CwCharacter' already contains a definition for 'WidestRecordedLlr'`, and the same for `MarginLlr` - its `CwCharacter` hunk is unit 392's seam, already in the tree, so it was dropped in `0246f209` under decision 3; then built clean, 37 of 37, 13 of 13, and nothing moved. Out under R51. |
+
 Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
 it.
 
