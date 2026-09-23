@@ -61,6 +61,15 @@ internal static class CwDecodeHarness
     /// <param name="audio">The audio.</param>
     /// <param name="expectedToneHz">Where to tell the decoder to start looking.</param>
     /// <returns>The result.</returns>
+    /// <remarks>
+    /// **THE CHARACTERS ARE THE SETTLED ONES**, because that is the transcript
+    /// the operator reads: `MainWindowViewModel` builds the CW tab's transcript
+    /// from `CharacterSettled`, and did at `7e209cb4`, the evening the decoder
+    /// read on the air. `CharacterDecoded` is the leading edge raised again at
+    /// every revision, which no operator sees as text; collecting it appended
+    /// every version of a letter and counted each guess as a decode. Unit 400,
+    /// R12, HM-DEC-091.
+    /// </remarks>
     public static CwDecodeResult Decode(
         MonoAudio audio,
         double expectedToneHz = CwSignal.DefaultToneHz)
@@ -68,7 +77,7 @@ internal static class CwDecodeHarness
         var decoder = new CwDecoder(audio.SampleRate, expectedToneHz);
 
         var characters = new List<CwCharacter>();
-        decoder.CharacterDecoded += characters.Add;
+        decoder.CharacterSettled += characters.Add;
 
         using var source = new BufferedAudioSource(audio);
         decoder.Listen(source);

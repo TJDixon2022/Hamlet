@@ -72,3 +72,110 @@ red at task 0 with `Assert.NotNull() Failure` on the sweep's threshold: its swee
 read from. It is not a name in `docs/unit239-failing-set.txt` and no document under `docs` names it.
 It was red before this unit changed anything; it is task 0's baseline for decision 4, and it is
 parked as `400 item 1`, blocking no criterion of step 3's that this unit works.
+
+## 2. The harness, measured before it was committed (task 1)
+
+**What the tree says.** `src/Hamlet.RadioEngine/Cw/CwDecoder.cs`, read and not written: line 114
+subscribes the probabilistic stream's `CharacterSettled`, counts it into the HM-DEC-091 counters
+(*the counters count what reached the screen*) and raises `CharacterSettled` at line 132; lines 135
+to 143 raise `LeadingEdge` and then `CharacterDecoded` once for every character of every leading
+edge list, at line 141. Line 266: `CharacterDecoded` is *the same leading edge, one character at a
+time*; line 269: `CharacterSettled` is *a character that is final and will not be revised*.
+
+`src/Hamlet.App/ViewModels/MainWindowViewModel.cs` at HEAD, read and not written:
+
+```
+11117        _decoder.LeadingEdge += Transcript.OfferEdge;
+11118        _decoder.CharacterSettled += Transcript.Settle;
+11123        _decoder.CharacterDecoded += _ =>     (sets _lastDecodeUtc and _lastCharacterUtc, nothing else)
+```
+
+The comment above them, lines 11106 to 11112: *the settled pass ... is what the transcript keeps*.
+At `7e209cb4`, by `git show 7e209cb4:src/Hamlet.App/ViewModels/MainWindowViewModel.cs | grep -n
+"CharacterSettled\|CharacterDecoded"` in `.run-unit/unit400-task1.sh`:
+
+```
+3251:        _decoder.CharacterSettled += Transcript.Settle;
+3256:        _decoder.CharacterDecoded += _ =>
+3308:            _decoder.CharacterSettled -= Transcript.Settle;
+```
+
+**The hunk**, `tests/Hamlet.RadioEngine.Tests/Cw/CwDecodeHarness.cs`, the only change under `tests`
+for the harness - line 71 and the remark decision 3 names:
+
+```diff
++    /// <remarks>
++    /// **THE CHARACTERS ARE THE SETTLED ONES**, because that is the transcript
++    /// the operator reads: `MainWindowViewModel` builds the CW tab's transcript
++    /// from `CharacterSettled`, and did at `7e209cb4`, the evening the decoder
++    /// read on the air. `CharacterDecoded` is the leading edge raised again at
++    /// every revision, which no operator sees as text; collecting it appended
++    /// every version of a letter and counted each guess as a decode. Unit 400,
++    /// R12, HM-DEC-091.
++    /// </remarks>
+     public static CwDecodeResult Decode(
+         MonoAudio audio,
+ ...
+-        decoder.CharacterDecoded += characters.Add;
++        decoder.CharacterSettled += characters.Add;
+```
+
+The record, the derived lists, the speed and the in-memory overload are unchanged. The build with
+it: 0 errors under warnings as errors, 7 s.
+
+**The two synthetics under the corrected harness, off disk, no band** - still 0 of 2, as expected:
+the correction alone is not the repair.
+
+```
+clean-12wpm  Actual: "■■ ■ ■"                       (entry "■ ■ ■ ■ ■  ■ ■ ■ ■■")
+clean-18wpm  Actual: "■ ■ ■ ■ ■ ■■■■■ A  ■ ■ ■■"    (entry "■ ■ ■  ■■■")
+```
+
+**Every asserting type, case by case, task 0 against the corrected harness:**
+
+| Type | Task 0 | Corrected harness | Moved |
+|---|---|---|---|
+| `CwFixtureTests` | 14 green, 9 red | 16 green, 7 red | `NothingTheDecoderWasSureOfIsWrong` on `noisy-18wpm` and on `interference-18wpm` red to green; no case green to red |
+| `CwAcquisitionWindowTests` | 10 green, #6 and #15 red | 10 green, #6 and #15 red | nothing |
+| `CwSensitivityTests` | 1 green, 1 red | 1 green, 1 red | nothing by case; the sweep's numbers moved, below |
+| `EveryCharacterCarriesItsOwnEvidenceTests` | 3 green | 3 green | nothing |
+| `WhereAcquisitionPointsTests` | 2 green | 2 green | nothing |
+| `CwRefusalFloorTableTests` | 1 green | 1 green | nothing |
+| `TheCleanReadsStayCleanTests` | 6 green, 1 red-open on `003758` | the same | nothing |
+| `TheSurveyAlreadyUsesAShortWindowTests` | 2 green | 2 green | nothing |
+
+**No case green at task 0 is red under the corrected harness**, so decision 4's first branch holds:
+no pin, no `DecodeLeadingEdge`, nothing put back. The two confident-mistakes cases that went green
+are not names in the 51-name set; they are `394 item 5`'s cases, reported here as numbers and
+licensing nothing. `fading-18wpm`'s confident-mistakes case stays red.
+
+**The sensitivity sweep's numbers**, `CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore`,
+red at both ends on `Assert.NotNull` of its threshold. The share right is the same at every level
+from 4 dB up; the count emitted fell from 19 or 20 to 9 at every level from 4 dB up, which is the
+revisions no longer counted, and the share wrong moved at 0, 1, 2, 3, 8 and 9 dB:
+
+| dB | entry right / wrong / emitted | corrected right / wrong / emitted |
+|---|---|---|
+| 0 | 0.67 / 0.14 / 26 | 0.67 / 0.22 / 12 |
+| 1 | 0.67 / 0.14 / 27 | 0.67 / 0.25 / 13 |
+| 2 | 0.53 / 0.31 / 28 | 0.56 / 0.25 / 14 |
+| 3 | 0.61 / 0.19 / 26 | 0.53 / 0.31 / 13 |
+| 4 | 0.72 / 0.14 / 19 | 0.72 / 0.14 / 9 |
+| 5 to 7, 10 to 14, 16 to 18 | 0.78 / 0.11 / 20 | 0.78 / 0.11 / 9 |
+| 8, 9 | 0.72 / 0.14 / 19 | 0.72 / 0.17 / 9 |
+| 15 | 0.75 / 0.11 / 19 | 0.75 / 0.11 / 9 |
+
+**Unit 399's printer, once for the record** (`TheCleanSyntheticsFourWaysTests`, 3 of 3 in 8 s,
+asserting nothing). `TEXT` is now the harness and `SETTLED` the printer's own pass; they agree on
+every row:
+
+| Way | Fixture | Band | TEXT | SETTLED | wpm | letters | high | exact |
+|---|---|---|---|---|---|---|---|---|
+| 1 | clean-12wpm | disk | `■■ ■ ■` | the same | 8 | 4 | 0 | no |
+| 1 | clean-18wpm | disk | `■ ■ ■ ■ ■ ■■■■■ A  ■ ■ ■■` | the same | 18 | 15 | 1 | no |
+| 2 | clean-12wpm | 0.02 | `CQ DE W1AW K` | the same | 12 | 9 | 9 | yes |
+| 2 | clean-18wpm | 0.02 | `CQ DE W1AW K` | the same | 18 | 9 | 9 | yes |
+| 3 | clean-12wpm | 0.01 | `CQ DE W1AW K` | the same | 12 | 9 | 9 | yes |
+| 3 | clean-18wpm | 0.01 | `CQ DE W1AW K` | the same | 18 | 9 | 9 | yes |
+| 3 | clean-12wpm | 0.04 | `CQ DE W1AW K` | the same | 12 | 9 | 9 | yes |
+| 3 | clean-18wpm | 0.04 | `CQ DE W1AW K` | the same | 18 | 9 | 9 | yes |
