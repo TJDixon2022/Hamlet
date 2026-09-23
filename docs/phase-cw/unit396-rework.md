@@ -244,6 +244,34 @@ at 363; `--3way` three blocks, the second being `MaybePeak(...)` beside `MaybeRa
 19's call. After 3; 12 as committed; 19 (rc 1 itself); 3, 12; 1, 3, 12, 18: rc 1 at 363 every time
 (`unit396-deps29.sh`). *Dependent, out*. `src` clean after.
 
+**Piece 30, `95a5e063`, task 2, measured.** Patch 69 lines, `CwDecoder.cs`, 51 insertions, 12
+code lines. `--check` rc 1 at 1086; `--3way` one block, ours empty, theirs 440 lines of pieces 19
+and 29. `-C2` and `-C1` refused; `-C0` applied, hunk 1 with its context, hunk 2 "context reduced
+to (0/0) to apply fragment at 796", which is after the class's closing brace; the brace moved below
+the two members by hand, nothing else (`unit396-p30.sh`, `unit396-p30b.sh`). Every name it uses is
+at HEAD. Piece commit `9c70a121`. Build 0 errors in 5 s. Captures **37 of 37 in 93 s wall**, 1.54
+min; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 4 s, the same placeholders.
+
+Every capture's characters and elements identical; unsure, before to after: 013347 2 to 49, 013622
+4 to 55, 134712 42 to 63, 003016 3 to 4, 003126 6 to 7, 031838 15 to 24, 031905 6 to 10, 032012 1
+to 9, 032050 9 to 44, 032113 8 to 36, 032129 1 to 17, 001520 4 to 5, 001831 11 to 34, 001952 19 to
+75, 002016 31 to 34, 011552 8 to 9, 012823 15 to 41, 012922 5 to 43, 013010 6 to 10, 013150 7 to
+25, 013303 10 to 13, 013402 5 to 12, 013637 3 to 31, 021629 20 to 47, 021825 16 to 33; the other
+twelve, 021410 among them, unchanged. Printer:
+
+```
+ SETTLED [■ ■ ■ M ■ ■ ■ ■ T O MTT T  Y M TT ■ ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM]
+ SETTLED DISTANCE WEEKEND 5 [ FLEN]
+ SETTLED DISTANCE THINKING 5 [T ■RIG]
+ SETTLED DISTANCE FLEX 1 [FLE]
+ SETTLED [■■ ■■ ■■■■■ ■ ■■■■■ ■ ■ ■ ■■ ■■ ■ ■■ ■ ■ ■■ ■■LEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO]
+ SETTLED DISTANCE ABOVE 3 [AWE]
+ SETTLED DISTANCE BREEZE 2 [BR EE]
+```
+
+ABOVE 2 to 3, the only distance that moved, away from the word. Transmit files nothing. Out,
+reverted next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
