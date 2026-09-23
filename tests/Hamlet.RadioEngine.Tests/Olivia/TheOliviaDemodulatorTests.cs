@@ -25,7 +25,11 @@ namespace Hamlet.RadioEngine.Tests.Olivia;
 /// DEMODULATOR'S OWN** (2.5, §6), measured as process CPU around the decode alone; the detector's
 /// CPU is printed beside it.</para>
 /// <para>**COMPUTED, NOT SEEN**, and nothing here is evidence about the radio (FACT-004).</para>
+/// <para>**RUN ALONE, BECAUSE THE CPU IS THE PROCESS'S** (<see cref="CpuMeasuredAlone"/>). Unit
+/// 393 put the CW read guard on the engine carry-forward line and the -10 dB decode, running beside
+/// it, read 26.6 s of process CPU against the 20 s ceiling with every character correct.</para>
 /// </remarks>
+[Collection(CpuMeasuredAlone.Name)]
 public sealed class TheOliviaDemodulatorTests
 {
     private const double CpuCeilingSeconds = 20.0;

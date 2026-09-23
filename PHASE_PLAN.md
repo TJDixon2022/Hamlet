@@ -190,9 +190,9 @@ named commit is `7e209cb4` by R53.
 **Entry:** step 1 done, the three floor tests green at entry.
 
 **Exit:**
-- [ ] 2.1 `docs\carry-forward-tests.txt` carries a CW read guard on the engine line and a CW row in its guard table beside FT8, FT4, PSK31 and Olivia, naming the test and the unit that added it.
+- [x] 2.1 `docs\carry-forward-tests.txt` carries a CW read guard on the engine line and a CW row in its guard table beside FT8, FT4, PSK31 and Olivia, naming the test and the unit that added it. **Unit 393: line 9 carries `TheAdjudicatedReadingsKeepReadingTests` whole and the thirteen `cw-2026-08-25` cases of `TheCapturesThatDecodeKeepDecodingTests` by display name, and the table has a CW row naming both and unit 393.**
 - [ ] 2.2 The guard was watched red against a deliberately broken decoder in an uncommitted change and green after the change was taken back, both runs in the report; a guard that has never refused is not a guard.
-- [ ] 2.3 The engine invocation with the guard on it completes inside its timeout, measured, with the wall time before and after; if the whole of the three floor tests does not fit, the guard is the 08-25 captures and the two clean synthetics selected by display name, and the report says which and why.
+- [x] 2.3 The engine invocation with the guard on it completes inside its timeout, measured, with the wall time before and after; if the whole of the three floor tests does not fit, the guard is the 08-25 captures and the two clean synthetics selected by display name, and the report says which and why. **Unit 393: 150 of 150 in 301 s before, 176 of 176 in 372 s after, against 480; the guard is the 08-25 captures and the adjudicated type, the synthetics off it as known reds under R53.**
 - [ ] 2.4 The carry-forward list is green on both lines after the change, and nothing is red that was green at entry.
 
 **Depends on:** step 1.
