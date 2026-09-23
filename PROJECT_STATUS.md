@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 3 of 4
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 403 - the same recording, two builds
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T09:55:19-04:00
-NOTE: Task 2 pushed - the capture reads identically at HEAD and a902cdf8; committing the 37-row comparison, 0 rows differ
+UPDATED: 2026-09-23T10:09:51-04:00
+NOTE: Exit round green - floors 37, 13, 2 identical to entry, engine 178, app 278 counting 3 dispatcher losses neither way, src unchanged; committing then writing output.md
 
 ---
 
