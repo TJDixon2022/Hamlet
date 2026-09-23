@@ -1,0 +1,40 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:03.78]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow [3 s]
+  Standard Output Messages:
+ FT8 1920 x 1040 licensed: window 0,0 1920 x 1040; status bar 16,978 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 900 x 620 licensed: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1100 x 780 licensed: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1280 x 720 licensed: window 0,0 1280 x 720; status bar 16,658 1248 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1177,663 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1366 x 728 licensed: window 0,0 1366 x 728; status bar 16,666 1334 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1263,671 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1536 x 824 licensed: window 0,0 1536 x 824; status bar 16,762 1504 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1433,767 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1400 x 1040 licensed: window 0,0 1400 x 1040; status bar 16,978 1368 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1297,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1920 x 1017 licensed: window 0,0 1920 x 1017; status bar 16,955 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,960 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 2560 x 1400 licensed: window 0,0 2560 x 1400; status bar 16,1338 2528 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 2457,1343 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1920 x 1040 licensed: window 0,0 1920 x 1040; status bar 16,978 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 900 x 620 licensed: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1100 x 780 licensed: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1280 x 720 licensed: window 0,0 1280 x 720; status bar 16,658 1248 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1177,663 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1366 x 728 licensed: window 0,0 1366 x 728; status bar 16,666 1334 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1263,671 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1536 x 824 licensed: window 0,0 1536 x 824; status bar 16,762 1504 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1433,767 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1400 x 1040 licensed: window 0,0 1400 x 1040; status bar 16,978 1368 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1297,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1920 x 1017 licensed: window 0,0 1920 x 1017; status bar 16,955 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,960 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 2560 x 1400 licensed: window 0,0 2560 x 1400; status bar 16,1338 2528 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 2457,1343 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Digital tab 900 x 620 plain: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Digital tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ CW tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Voice tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 4.0888 Seconds
+RC=0 WALL=5s

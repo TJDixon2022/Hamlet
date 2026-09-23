@@ -4,6 +4,38 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-169
+date: 2026-09-23
+refs: PHASE_PLAN.md R59 R60 R61, docs/phase-cw-run/, docs/phase-correctness/, PROJECT_CARD.md, work instruction 410 task 0, PHASE_GOAL.md
+---
+
+**The restore phase is archived with 5.1 open, and *Hamlet reads a CQ call correctly* is
+the phase in force.** Tim, 2026-09-23.
+
+**What is archived.** *CW decodes again*, set 2026-09-22, closes with all 29 loop criteria
+ticked: the decoder restored to 2026-08-25 and reading in 97 s where HEAD took 1995 s, a CW
+read guard on the carry-forward line, the inherited reds cleared or parked, the August
+rework judged and discarded on numbers, the floors re-expressed as named characters, and an
+emission gate that took placeholders across the 37 captures from 299 to 28 with no named
+character lost. **5.1, Tim's verdict at the radio, is open and stays his.** The run folder
+is `docs/phase-cw-run/`.
+
+**What is set.** *Hamlet reads a CQ call correctly*: the first phase in this project to
+score text. Edit distance against a key over a scored region, keys inferred from the fixed
+form of a CQ call or exact by construction from the generator, unsure-per-real carried as
+a guard so a decoder cannot score well by going quiet, then the fault the first measurement
+names - letters right, word boundaries wrong. `PHASE_GOAL.md`'s 80 percent is what it
+measures toward and not what it promises.
+
+**Why a ruling and not an edit.** `PROJECT_CARD.md` holds standing facts and is changed
+only by ruling (CLAUDE.md 13.3), and `PHASE` and `PHASE_SET` are two of them.
+
+**Whose words are whose.** The phase name and yardstick are Tim's ruling; the wording is
+work instruction 410 task 0's record of it. Rejected at the interview: W1AW bulletins as
+the yardstick, kept as a confirming measurement; unsure-per-real alone as the yardstick,
+kept as the guard.
+
+---
 id: HM-DEC-168
 date: 2026-09-23
 refs: PHASE_PLAN.md R56 R57 R58, docs/phase-cw/unit405-reds.md, work instruction 408, HM-DEC-091, HM-DEC-095, HM-DEC-127

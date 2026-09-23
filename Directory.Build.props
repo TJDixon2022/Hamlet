@@ -1268,8 +1268,14 @@
     characters under R57, 3.6's single closing pass with B2, M2 and G1 rebuilt, then the emission
     gate raised under R58 (HM-DEC-168). No file under src changes at this task.
   -->
+  <!--
+    1.13.96 -> 1.13.97, WORK INSTRUCTION 410 TASK 0. A PATCH, STEP 0 OF THE CORRECTNESS PHASE, THE
+    NUMBER EXISTS: a scorer in the engine test project that reports edits, scored length and the
+    key's kind, the 17:37 capture and the three adjudicated recordings scored at HEAD into a
+    baseline, and the error kinds counted (HM-DEC-169). No file under src changes in this unit.
+  -->
   <PropertyGroup>
-    <Version>1.13.96</Version>
+    <Version>1.13.97</Version>
   </PropertyGroup>
 
   <!--
