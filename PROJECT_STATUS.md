@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 4
+TASK: TASK 2 of 4
 WORK_INSTRUCTION: 410 - the number exists
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T19:01:01-04:00
-NOTE: Scorer green 12 of 12 after 12 of 12 red on the stub; recording task 1 in PHASE_OUTCOME and committing
+UPDATED: 2026-09-23T19:02:40-04:00
+NOTE: Baseline 33 edits over 46 characters against inferred keys, 17:37 at 29 over 25; committing the table
 
 ---
 

@@ -1,0 +1,5 @@
+unit410 task 2: the baseline - 33 edits over 46 characters against inferred keys over 4 recordings; 17:37 29 over 25, 013347 0 over 6, 134712 1 over 3, 003758 3 over 12; the nine other adjudicated recordings 124 over 363, outside the total
+
+TheBaselineIsScoredTests prints the table, 1 of 1 in 35 s. docs/phase-correctness/baseline.md. No file under src changed.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
