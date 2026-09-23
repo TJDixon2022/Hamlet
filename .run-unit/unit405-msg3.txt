@@ -1,0 +1,3 @@
+unit405 task 3: the record - six attack-2 rows in reds-3.6.md, #6 #15 #43 #44 #45 moved so each count starts again at 0 of 3, #42 not attacked and its sequence broken; attack table in unit405-reds.md section 3; no red green at a kept commit, failing-set closing line and 3.1 unchanged; 3.6 not ticked, 2 of eight with a verdict
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

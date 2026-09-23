@@ -229,3 +229,37 @@ attacked the causes task 1 named. The switch is named here for the next unit and
 - **#42.** A measurable property was found, and it is the generator's residue, not the operator's
   sending. The real captures' spans hold the same own sending, and their floors count it. Not
   attacked; the reasoning is in section 3.
+
+## 3. The attacks
+
+Decision 2's order: the easy tier, the speed fit, #42, #6. Each change was built once, then run
+one type per invocation with `--no-build`, starting with the red's own type and then the gate. The
+first failing gate settled the keep rule for a change. G1 was then gated on everything for the
+record, because it cost nothing. After each put-back, `git diff --stat HEAD -- src tests` printed
+nothing but the printer, and the tree was rebuilt.
+
+| change | file and line | red's number | gate | kept |
+|---|---|---|---|---|
+| A1, B1 and B2 together (decision 1): line 203 reads `CharacterSettled`; at the flush, a trailing character the alphabet does not know, still inside the delay, is not settled | `CwReceiverFixtureTests.cs` 203; `CwProbabilisticStream.cs` 513 | **#45 1 + 3 to 0 + 0, green**; #43 5 + 37 to 4 + 7; #44 3 + 21 to 0 + 7; #42 70 | captures **31 of 37**: `134712` 63 to 60 characters and 98 to 95 elements, `001952` 75 to 74, `002016` 75 to 74, `011552` 30 to 28, `013010` 54 to 52, `013303` 54 to 53; the six floors count the trailing placeholders B2 stops settling | no, put back |
+| S1, marks shorter than 0.45 of the element gap are left out of the dit cluster | `CwUnitEstimator.cs` 96 | #15 0.54 to 0.61 (seeds 0.95, 0.74, 0.16; the third ends at 38 wpm on a noise-filled window); #43 5 + 37 to 6 + 25, settled 4 + 7 to 3 + 0; #44 3 + 21; #6 0.75 | captures **23 of 37**, 14 lower, among them `021825` 41 to 32 characters and 74 to 60 elements, `021629` 47 to 39, `031838` 57 to 51, `021410` 47 to 42 | no, put back |
+| G1, a clipped gap reading out of order (character over word) is not separated, so the stream keeps the last gaps it stood behind | `CwUnitEstimator.cs` after 237 | #44 3 + 21 to 4 + 16, settled 0 + 7 to 0 + 3 with the second call whole; #43, #45, #42, #6, #15 as entry | captures 37 of 37, only `021825` moved, up 41 to 42 characters and 74 to 75 elements; adjudicated 13 of 13; synthetics 2 of 2; `CwAcquisitionWindowTests`, `CwFixtureTests`, `CwAdjudicationTests`, `CwEmissionGateTests`, `CwDisplacementFloorTests` identical to entry | no, put back: the keep rule needs a red to turn green, and none did |
+| #42 | - | 70 | - | **not attacked**: the only property separating the fixture's spans is the generator's residue (section 2.3); a skip keyed to it would not repair the decoder, and one keyed to own-send spans lowers `013347` and `013622` |
+| M1, while nothing has been read, the held envelope is mixed again from the held audio when the tracker moves | `CwProbabilisticStream.cs` 241, new `Remix` | **#6 0.75 to 0.86, green**; 28, 30 and 35 wpm bare 0.89, 0.88, 0.86 to 1.00; no share lower; #15 0.54 | captures **26 of 37**, rows moving both ways: `002016` 75 to 93, `032050` 53 to 69, but `021825` 41 to 27, `021629` 47 to 34, `021410` 47 to 37, `012748` 4 to 0 | no, put back |
+| M2, M1 restricted to before the window's first read, which is the stretch the trace named | as M1 | **#6 0.86, green**; the same shares as M1 | captures **27 of 37**, ten lower: `012748` 4 to 0, `021410` 47 to 37, `021629` 47 to 34, `031838` 57 to 47, `012823` 41 to 36, `012922` 50 to 44, `011552` 30 to 28, `013303` 54 to 52, `001831` 55 to 53, `001952` 75 to 73 | no, put back |
+
+**No change was kept, so `src` at exit is identical to entry.** No speed change reached the four
+speed readers' gate. S1, M1 and M2 all failed the captures floor first, so the readers were not
+run for them.
+
+**The one thing the six reds share is upstream of every line attacked.** Section 2.5: on each
+single-sender case the misses follow `CwToneTracker.Switch` moving the mixdown 25 to 85 Hz off
+the sender, and the pitch is reported as measured. The estimator and gap lines turn that into
+wrong characters. The flush and the start mix are the two ends of the same window. The capture
+floors do not show it the same way. Every change that moved a red also moved real captures,
+because those floors count what the decoder produces on real audio, including own-send slivers and
+trailing placeholders. That pairs this unit's two green-but-not-kept results (#45 and #6) with the
+floors they would lower.
+
+**3.6 is not ticked. Of eight, two have a verdict** (#24 and #41, green by unit 402). None of the
+six went green at a kept commit, so the closing line of `docs\unit239-failing-set.txt` and 3.1's
+tick sentence are unchanged.

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 4
+TASK: TASK 3 of 4
 WORK_INSTRUCTION: 405 - the second attack on the six reds
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T13:08:05-04:00
-NOTE: Task 2 done: A1 #45 green but 6 captures lower, S1 #15 0.61 and #43 moved but 14 captures lower, G1 #44 moved floors clean, M1 and M2 #6 green 0.86 but 10-11 captures lower; none kept; recording
+UPDATED: 2026-09-23T13:08:22-04:00
+NOTE: Task 3 record: task 2 pushed, 0 kept; writing six attack-2 rows in reds-3.6.md and the attack table, 3.6 at 2 of 8 with a verdict
 
 ---
 
