@@ -67,17 +67,6 @@ public readonly record struct CwDecodeReport(
     bool PitchWasMeasured = false,
     bool PitchWasAsserted = false)
 {
-    /// <summary>
-    /// True when the pitch is one the operator asserted. Never, for this decoder.
-    /// </summary>
-    /// <remarks>
-    /// **FALSE BECAUSE NOTHING HERE TAKES AN ASSERTION** (work instruction 392, a
-    /// seam for today's application). The operator's assertion came with the
-    /// August rework, which step 1 took out; this decoder follows the survey and
-    /// nothing else.
-    /// </remarks>
-    public bool PitchWasAsserted => false;
-
     /// <summary>What chose <see cref="ToneHz"/>.</summary>
     /// <remarks>
     /// **ONLY THE TWO ANSWERS THIS DECODER CAN GIVE** (work instruction 392, a seam
