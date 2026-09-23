@@ -179,3 +179,86 @@ every row:
 | 3 | clean-18wpm | 0.01 | `CQ DE W1AW K` | the same | 18 | 9 | 9 | yes |
 | 3 | clean-12wpm | 0.04 | `CQ DE W1AW K` | the same | 12 | 9 | 9 | yes |
 | 3 | clean-18wpm | 0.04 | `CQ DE W1AW K` | the same | 18 | 9 | 9 | yes |
+
+## 3. The two clean fixtures get their band (task 2)
+
+**The band: 0.02**, the first tried under decision 7, because it gave `CQ DE W1AW K` exactly off
+disk on both regenerated files through the corrected harness, the speed within one and every
+letter high; so 0.04 and 0.01 were not tried as regenerations. It is the band unit 399 measured
+exact in memory and the band `fading-18wpm` already carries.
+
+**The request lines**, `tests/Hamlet.RadioEngine.Tests/Cw/CwFixtures.cs`:
+
+```diff
+-            new CwSignalRequest(Call, WordsPerMinute: 12),
++            new CwSignalRequest(Call, WordsPerMinute: 12, NoiseAmplitude: 0.02),
+ ...
+-            new CwSignalRequest(Call, WordsPerMinute: 18),
++            new CwSignalRequest(Call, WordsPerMinute: 18, NoiseAmplitude: 0.02),
+```
+
+`Clean: true` stays; its doc comment gains *A band under the tone is the air, not an impairment
+(HM-DEC-127).* The comment above the two fixtures gains three lines naming unit 399's measurement,
+this unit, HM-OPEN-018 and HM-DEC-127. `Sent`, speed, `ReadableShare` and every assertion are
+unchanged.
+
+**The regeneration.** A temporary `Cw/Unit400WriteTheCleanFixtures.cs`, one `[Fact]` writing only
+the two files through `WavAudio.Write(CwFixtures.PathOf(fixture), CwSignal.Generate(fixture.Request))`,
+run once by `--filter "FullyQualifiedName~Unit400WriteTheCleanFixtures"`, 1 of 1 in 1 s;
+`git status --short tests/fixtures/cw` then listed exactly `clean-12wpm.wav` and `clean-18wpm.wav`
+(200044 and 137644 bytes, the same sizes as before); the writer was deleted with `git rm` in the
+script and the project rebuilt. `CwFixtures.WriteAll` was not called.
+
+**One lost attempt, said plainly.** The first writer file lacked `using Xunit;`; its build failed,
+the script went on without stopping, the writer never ran, and a `CwFixtureTests` run judged the
+**old** files against the **new** requests (14 green, 9 red, the drift guard red on both clean
+names, the texts as at task 1). Nothing was committed from it and it judges no band. The writer
+was rewritten with the `using`, the script made to stop on a failed build or writer, and the whole
+of step 2 run again; the numbers below are that run's.
+
+**The drift guard** `EveryFixtureIsStillTheAudioItWasGeneratedFrom`: 6 of 6.
+
+**The 23 cases of `CwFixtureTests`**, task 0, task 1 (corrected harness) and after the regeneration:
+
+| Case | Task 0 | Task 1 | Band 0.02 |
+|---|---|---|---|
+| `EveryFixtureIsOnDisk` | green | green | green |
+| `EveryFixtureIsStillTheAudioItWasGeneratedFrom` clean-12wpm | green | green | green |
+| ... clean-18wpm | green | green | green |
+| ... fading-18wpm | green | green | green |
+| ... interference-18wpm | green | green | green |
+| ... noisy-18wpm | green | green | green |
+| ... prosigns-18wpm | green | green | green |
+| `EveryRecordingGivesBackTheShareItShould` clean-12wpm (#25) | red | red | **green** |
+| ... clean-18wpm (#26) | red | red | **green** |
+| ... fading-18wpm | green | green | green |
+| ... interference-18wpm | green | green | green |
+| ... noisy-18wpm | green | green | green |
+| ... prosigns-18wpm (#30) | red | red | red, *gave back 1 of 16* |
+| `NothingTheDecoderWasSureOfIsWrong` clean-12wpm | green | green | green |
+| ... clean-18wpm | green | green | green |
+| ... fading-18wpm | red | red | red |
+| ... interference-18wpm | red | green | green |
+| ... noisy-18wpm | red | green | green |
+| ... prosigns-18wpm | green | green | green |
+| `TheCleanRecordingsDecodeExactly` clean-12wpm (#31) | red | red | **green** |
+| ... clean-18wpm (#32) | red | red | **green** |
+| `TheProsignRecordingDecodesItsProsigns` (#33) | red | red | red |
+| `TheWholeSetStaysSmallEnoughToCommit` | green | green | green |
+| **Total** | 14 green, 9 red | 16 green, 7 red | **20 green, 3 red** |
+
+**Decision 8, on the regenerated files:** the four cases of each clean name green in one run;
+captures 37 of 37 in 93 s with every row identical to entry (`unit400-cmp.sh`, diff empty);
+adjudicated 13 of 13 in 30 s, its printed lines identical to entry bar the total-time line;
+`TheCleanReadsStayCleanTests` 6 of 7, the red `003758` as at task 0 and task 1;
+`TheSurveyAlreadyUsesAShortWindowTests` 2 of 2; both identical by case to task 1. **Decision 8
+holds; the fixtures are kept.**
+
+**The caller types were not re-run here.** None of the five, nor `CwSensitivity.cs`, names
+`clean-12wpm`, `clean-18wpm` or `CwFixtures.` (grep, empty). Under `tests` the two names and
+`CwFixtures.All` are read by `CwFixtures.cs`, `CwFixtureTests.cs`, `TheCleanSyntheticsFourWaysTests.cs`
+(the printer, asserting nothing), `Fixtures/CwFixtureGenerator.cs` and
+`EveryElementCarriesItsOwnPitchTests.cs`, the last excluded from compilation by the csproj's line 43.
+
+**The set.** #25, #26, #31 and #32 green: 31 green and 20 red-open become **35 green and 16
+red-open**.

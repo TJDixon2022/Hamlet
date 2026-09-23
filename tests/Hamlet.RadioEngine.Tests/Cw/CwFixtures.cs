@@ -11,7 +11,8 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// <param name="Request">Everything needed to regenerate it exactly.</param>
 /// <param name="Clean">
 /// True when nothing was done to the signal, so the decode can be asserted
-/// character for character.
+/// character for character. A band under the tone is the air, not an
+/// impairment (HM-DEC-127).
 /// </param>
 /// <param name="ReadableShare">
 /// The share of the message that has to come back resolved, as a guard against
@@ -59,14 +60,17 @@ internal static class CwFixtures
     {
         // The three speeds a newcomer actually meets. Twelve is a patient
         // operator, eighteen is ordinary, twenty-five is a contest.
+        // A quiet band under the tone, measured exact at 0.01, 0.02 and 0.04 by
+        // unit 399 and given here by unit 400: tone against exact digital silence
+        // is a signal no receiver produces (HM-OPEN-018, HM-DEC-127).
         new CwFixture(
             "clean-12wpm", Call, 12,
-            new CwSignalRequest(Call, WordsPerMinute: 12),
+            new CwSignalRequest(Call, WordsPerMinute: 12, NoiseAmplitude: 0.02),
             Clean: true),
 
         new CwFixture(
             "clean-18wpm", Call, 18,
-            new CwSignalRequest(Call, WordsPerMinute: 18),
+            new CwSignalRequest(Call, WordsPerMinute: 18, NoiseAmplitude: 0.02),
             Clean: true),
 
         // **`clean-25wpm` RETIRED 2026-08-17, AND THIS IS ITS REASON**
