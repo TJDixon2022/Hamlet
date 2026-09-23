@@ -19,6 +19,16 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// this project knows to manufacture that image**, so it is kept rather than
 /// corrected, while the fixture the shipped test decodes was given a band
 /// (HM-DEC-127, second half).</para>
+/// <para>**UNIT 401: THE SILENCE IS NOW A BAND OF 0.005.** The restored decoder
+/// refuses exact digital silence by design (HM-OPEN-018, unit 399): measured on
+/// the settled transcript at noise 0, every silent case read blocks. A band is
+/// the floor of the air (HM-DEC-127). 0.005 is the smallest of 0.002, 0.005, 0.01
+/// and 0.02 at which all five silent cases end with the call and the image case
+/// moves once (docs/phase-cw/unit401-closeout.md section 2; at 0.002 the 750 Hz
+/// case did not). It sits 5 dB under the 0.0089 image on an amplitude of 0.5, so
+/// the image is still in the audio above the band, but no longer over nothing:
+/// the type proves the tracker holds a station whose image stands 5 dB over the
+/// noise, not over exact silence.</para>
 /// <para>**IT IS NOT A PREFERENCE FOR LOUDNESS AND HM-DEC-095 IS NOT AMENDED.**
 /// That ruling governs which of several signals to read when nothing is being
 /// read yet, where loudness picked a carrier over a station. Here something is
@@ -67,7 +77,7 @@ public sealed class CwDisplacementFloorTests
     [Fact]
     public void TheTrackerDoesNotLeaveAStationForItsOwnImage()
     {
-        var run = Decode(400, 600, 0);
+        var run = Decode(400, 600, 0.005);
 
         Assert.Equal(1, run.Moves);
         Assert.EndsWith("CQ DE W1AW K", run.Text, StringComparison.Ordinal);
@@ -91,7 +101,7 @@ public sealed class CwDisplacementFloorTests
     [InlineData(875)]
     public void AStationElsewhereIsStillFound(double toneHz)
     {
-        var run = Decode(toneHz, 600, 0);
+        var run = Decode(toneHz, 600, 0.005);
 
         Assert.EndsWith("CQ DE W1AW K", run.Text, StringComparison.Ordinal);
     }

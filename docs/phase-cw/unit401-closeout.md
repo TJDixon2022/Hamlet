@@ -142,3 +142,52 @@ settled transcript is `CQ DE W1AW K`. The reading has text and a speed inside 14
 property returns null because `SpeedIsReacquiring` is true at the end of the signal
 (`CwDecoder.cs` line 445). The cause is under `src`. It is recorded here and not changed (R50,
 decision 5), and #24 stays red-open.
+
+## 3. The displacement repair
+
+Task 2 started at minute 7 of the unit's hour (first status line 04:57:08), inside decision 11's
+clock. Both changes were reached and both kept.
+
+**Change (a)**, line 45 `CharacterDecoded` to `CharacterSettled` with a one-line remark citing unit
+400 decision 3 and R12. One build of 6 s. The type 0 of 6 to **1 of 6**: `NothingIsRefusedBeforeAnythingIsBeingRead`
+red to green, no case green to red. Kept, commit `8ed230ad`.
+
+**Change (b)**, the `noise` argument at the two silent call sites (line 69, the image case, and
+line 93, the four-case theory, five cases between them) from 0 to **0.005**, the smallest band the
+printer found for all five, and a class-remark paragraph. The sixth call site keeps 0.06. One build
+of 7 s. The type **6 of 6** in 4 s. Its printed lines:
+
+```
+400 Hz from 600, noise 0.005: 1 moves, 'T TEEV VVV VVV CQ DE W1AW K'
+400 Hz from 600, noise 0.06: 1 moves, 'TV VVV VVV CQ DE W1AW K'
+500 Hz from 600, noise 0.005: 1 moves, '■ ■ ■T TEET ETET ETET ETET EETT EET■■ CQ DE W1AW K'
+750 Hz from 600, noise 0.005: 2 moves, '■ E ■ E I ■ ■ 5EE E ■E EE ■ VVV CQ DE W1AW K'
+875 Hz from 600, noise 0.005: 1 moves, 'T TEEV VVV VVV CQ DE W1AW K'
+```
+
+Against the 0.0089 image the remark describes (thirty-five decibels under 0.5), 0.005 is 5 dB under
+it. The image is still in the audio above the band, but no longer over exact silence. The remark
+says so plainly: the type now proves the tracker holds a station whose image stands 5 dB over the
+noise, not over nothing. `Assert.Equal(1, run.Moves)` and every `EndsWith` stand as written. The 500
+and 750 Hz cases carry blocks and wrong letters before the call. The 750 Hz case moves twice, and
+its assertion is only the ending.
+
+**Neighbors after change (b), before its commit**, `--no-build`, against task 0:
+
+| type | task 0 | after (b) |
+|---|---|---|
+| captures | 37 of 37 | 37 of 37 in 92 s, every row identical |
+| adjudicated | 13 of 13 | 13 of 13 in 29 s, every line identical but the total time |
+| `CwFixtureTests` whole (includes the two clean synthetics) | 22 of 23 | 22 of 23, identical by case |
+| `CwEmissionGateTests` | 7 of 8 | 7 of 8, identical by case |
+
+| case | task 0 | after (a) | after (b) |
+|---|---|---|---|
+| `TheTrackerDoesNotLeaveAStationForItsOwnImage` (#18) | red | red | green |
+| `AStationElsewhereIsStillFound(400)` | red | red | green |
+| `AStationElsewhereIsStillFound(500)` | red | red | green |
+| `AStationElsewhereIsStillFound(750)` | red | red | green |
+| `AStationElsewhereIsStillFound(875)` | red | red | green |
+| `NothingIsRefusedBeforeAnythingIsBeingRead` (#23) | red | green | green |
+
+Nothing was put back.
