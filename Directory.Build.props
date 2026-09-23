@@ -1244,8 +1244,14 @@
     READS AGAIN: src\Hamlet.RadioEngine\Cw brought back to 7e209cb4 (R53), the seams adapted until
     today's app and tests build, every adaptation listed, the transmit files untouched.
   -->
+  <!--
+    1.13.79 -> 1.13.80, WORK INSTRUCTION 393 TASK 0. A PATCH, STEPS 1 AND 2 OF THE CW PHASE, THE
+    LIST IS GREEN, AND CW IS ON IT: TheOliviaRowsTests reads its own telemetry file with a share
+    mode the writer can grant (1.5, R12), then a CW read guard on the engine carry-forward line,
+    watched red against a broken decoder that is never committed and measured against 480 s.
+  -->
   <PropertyGroup>
-    <Version>1.13.79</Version>
+    <Version>1.13.80</Version>
   </PropertyGroup>
 
   <!--

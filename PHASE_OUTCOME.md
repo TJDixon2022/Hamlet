@@ -1,8 +1,8 @@
-PHASE: CW decodes again
+﻿PHASE: CW decodes again
 PHASE_SET: 2026-09-22
 DESCRIPTION: A restore phase. The CW decoder read on the air on 2026-08-25 and reads nothing now; the floors that recorded what it produced have been red since 2026-08-31 and nobody has run them since. The engine's CW code goes back to the last commit that read, adapted so today's app builds; the floors go green and stay green under a guard every unit runs; the inherited reds are repaired or retired with reasons; the August rework goes back in one piece at a time on numbers. Judged by three named tests and, at the end, by Tim at the radio.
 STEP: 0 | not started | The break is measured and named - the three floor tests run at HEAD case by case with their numbers, the newest commit on main where all three were green is named, and the first commit after it that turned one red is named.
-STEP: 1 | not started | The decoder reads again - src\Hamlet.RadioEngine\Cw restored to the named commit and adapted only where today's app or tests would not build; the solution builds; the three floor tests green; the app's CW tests green; the carry-forward list green; nothing under src\Hamlet.App changed without a listed reason.
+STEP: 1 | partial | The decoder reads again - src\Hamlet.RadioEngine\Cw restored to the named commit and adapted only where today's app or tests would not build; the solution builds; the three floor tests green; the app's CW tests green; the carry-forward list green; nothing under src\Hamlet.App changed without a listed reason.
 STEP: 2 | not started | CW cannot break silently again - a CW read guard on the engine carry-forward line beside FT8, FT4, PSK31 and Olivia, watched red against a broken decoder before it was trusted, and measured to fit the line's timeout.
 STEP: 3 | not started | The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.
 STEP: 4 | not started | The August rework is judged on numbers - each piece of the 2026-08-28 to 08-31 rework re-applied in its own commit and kept only if the three floor tests stay green and a named number moves; a piece that moves nothing goes back out and the report says so.
@@ -41,3 +41,32 @@ TASK 3, THE FLOORS (1.3, 1.4): captures 37 of 37 green in 97 s, adjudicated 13 o
 TASK 4, CARRY-FORWARD AT EXIT (1.5): ENGINE 150 of 150 in 297 s. APP 274 of 278 in 159 s, 3 lost to the dispatcher loop and TheOliviaRowsTests.WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant red on an IOException reading its own telemetry file; re-run once, 275 of 278 in 170 s, 2 lost the same way and the same Olivia IOException. Green at entry, red at exit: a regression by HM-DEC-165's letter. Alone it passed at 617215f0, before the restore, and at the restored tree; the test builds no CW decoder. 1.5 not met.
 TASK 5: dropped, the named drop candidate; task 4 ended at 20:48 with the unit started at 20:06.
 FATE: executed, complete at task 4 of 6, tasks 0 to 4, task 5 dropped; step 1 partial, 1.5 not met.
+
+## UNIT 1 - STEP 1
+
+STEP: 1
+APPROACH: restore src/Hamlet.RadioEngine/Cw to 7e209cb4 keeping the transmit files at HEAD, adapt the seams until Hamlet.sln builds, run the three floor tests and the app CW tests
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open question in this unit is whether to change how a test reads its own telemetry file, which is test shape and outside the three, and the carried items are findings, tick rewordings and mismatches that do not ask the owner to decide anything about transmit, money or what the product promises the operator.
+MOVE: continue
+WHY: PHASE_PLAN.md step 1 criterion 1.1 asks that every file under src\Hamlet.RadioEngine\Cw outside the transmit list be the named commit's, adapted only where today's app or tests would not build, and R53 names that commit as 7e209cb4; step 0's four criteria are answered in unit 391's report and its entry line accepts them.
+DECIDED: author's, overrulable - step 0 is ticked from unit 391's answers with 0.4 re-checked at 7e209cb4, citing step 1's entry line; tests naming an absent engine name are excluded from compilation and listed, not retired, citing 1.1 and R49; a HEAD-only Cw file the app or a 1.4 test uses and the restored decode path does not call is kept and listed, citing 1.1 and R50; unit 391's floor run is the entry measurement because src and tests are byte-identical to the tree it measured; timeouts 900, 600, 300 and 480 s
+LICENCE: PHASE_PLAN.md R48, R50, R53, section 3, section 6, step 1 entry; HM-DEC-155; HM-DEC-165; HM-DEC-091; CLAUDE.md 0.0 and 0.2; FACT-004
+COST: 8.7401892
+ACCOMPLISHED: the decoder that read on the air on 2026-08-25 is back in the build with today's app around it, the captures and adjudicated floors are green again at HEAD, and every seam crossed to get there is written down
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 1.1, 1.2, 1.3, 1.4 and 1.6 are met with measured evidence, but 1.5 is not met because TheOliviaRowsTests was green at entry and red twice at exit, and a flaky telemetry file lock is not one of the three stops, so the step is not blocked.
+ADVANCED: yes
+ATTEMPT: 1.1 | unit 1 launched 2026-09-23T00:06:24.417Z | yes | executed | restore src/Hamlet.RadioEngine/Cw to 7e209cb4 keeping the transmit files at HEAD, adapt the seams until Hamlet.sln builds, run the three floor tests and the app CW tests
+
+## UNIT 393 - STEP 1
+
+STEP: 1
+APPROACH: repair TheOliviaRowsTests Lines helper to open its telemetry file with FileShare.ReadWrite under R12 and re-run the app line for 1.5, then put a CW read guard on the engine carry-forward line - the adjudicated type whole and the 08-25 captures by display name - watched red against a broken CwDecoder in an uncommitted change and measured against the line's 480 s
+MOVE: continue
+WHY: PHASE_PLAN.md step 1 criterion 1.5 is the one open criterion of the current step and unit 392 measured its cause as a share-mode race in the test's own file read, not the restore; step 2 depends on step 1 alone and has nowhere else to route, so it follows in the same unit under R52 once 1.5 is ticked.
+DECIDED: author's, overrulable - the repair is the reader's share mode in the test only, citing 1.5 and R12; the guard is TheAdjudicatedReadingsKeepReadingTests whole plus the thirteen cw-2026-08-25 cases of TheCapturesThatDecodeKeepDecodingTests by display name inside one compound clause, the captures type whole not attempted and the two clean synthetics deferred to step 3, citing 2.1, 2.3, R53 and the list's known-red rule; fit is under 420 s measured, citing 2.3; the break for 2.2 is one hunk in CwDecoder.cs, never a transmit file, never committed, watched by the guard's own filter; step 2's entry is satisfied inside the unit at task 1's tick; 1.5 ticked at task 1 and re-confirmed at task 4; timeouts 900, 600, 300, 300, 300 and the lines as printed
+LICENCE: PHASE_PLAN.md R49, R52, R53, section 3, section 6, step 1 exit 1.5, step 2 entry and exit 2.1 to 2.4; HM-DEC-165; HM-DEC-155; HM-DEC-139; R12; R14; CLAUDE.md 0.0 and 0.2; FACT-004; docs/carry-forward-tests.txt top comment and its known-red rule
+COST: one session, five tasks, 0 to 4, committed per task; tasks 2 and 3 together are the drop candidate.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.79 to 1.13.80. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 392; set to 393 - the list is green, and CW is on it and CURRENT_STEP 1. HEAD at entry e7c036fc as named. Entry round, both lines of docs/carry-forward-tests.txt as its comment says, one build each, a status line before each: APP 278 of 278 in 170 s, no red and nothing lost, TheOliviaRowsTests green; ENGINE 150 of 150 in 301 s. Floors at entry, one type per invocation: captures 37 of 37 in 97 s, adjudicated 13 of 13 in 33 s, clean synthetics 0 of 2 in 7 s reading placeholders as R53 expects. The eleven transmit files printed nothing against 7e209cb4.
