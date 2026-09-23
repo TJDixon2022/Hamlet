@@ -307,3 +307,127 @@ to keep time.
 | `tests/Hamlet.App.Tests/Views/HistoryRecedesAndCurrentCopyDoesNotTests.cs` | CwCharacter | type there | none |
 | `tests/Hamlet.App.Tests/Views/HistoryRecedesAndCurrentCopyDoesNotTests.cs` | CwConfidence | type there | none |
 | `tests/Hamlet.App.Tests/Views/ThePitchControlsAreOffThePanelTests.cs` | CwDecoder | type there | AssertAt AssertStation PitchWasAsserted |
+
+The grep over-lists: `CwProbabilisticStream.SamplesSeen` and `ScanViewModel`'s
+`CwDecoder.Ranked` are listed above as absent, and task 2's build raised neither, so both
+names appear there only in comments or on another type.
+
+---
+
+Sections 7 to 10 were written by task 4, after task 2's commit `9fbb4728`, from the build and
+from `git diff`.
+
+## 7. What the restore kept and deleted, as built (1.1)
+
+Task 2 ran `.run-unit/unit392-restore.sh`: the transmit diff printed nothing;
+`git checkout 7e209cb4 -- src/Hamlet.RadioEngine/Cw` moved the ten `M` files; `git rm` took out
+the six files section 4 marked deleted. **1.1's proof, pasted before a seam was touched:**
+
+```
+git diff --stat 7e209cb4 -- src/Hamlet.RadioEngine/Cw
+ src/Hamlet.RadioEngine/Cw/CwElementPitch.cs | 266 ++++++++++++++++++
+ src/Hamlet.RadioEngine/Cw/CwJointCutter.cs  | 344 +++++++++++++++++++++++
+ src/Hamlet.RadioEngine/Cw/CwPitchChoice.cs  |  72 +++++
+ src/Hamlet.RadioEngine/Cw/CwStreamSplit.cs  | 410 ++++++++++++++++++++++++++++
+ 4 files changed, 1092 insertions(+)
+```
+
+**The keep list changed during the build, and this is why.** `ElementPitchLine` calls
+`CwElementPitch.MeasureAll(read.Elements, ...)`, and `read.Elements` is the list of marks and
+gaps HEAD's decoder hands out from its winning path. 7e209cb4's `CwProbabilisticResult` has no
+such member: its path is walked in the private `Spell` and only characters come out. Keeping
+`CwElementPitch` therefore did not make the line buildable. The two ways to make it build were
+to thread `CwElement`, a type from a HEAD-only file, back through 7e209cb4's decode function,
+which section 9 of the instruction parks (*nothing from a HEAD-only file goes back into the
+decode path here, however small*), or to change the line in the app. The line was changed
+(section 9 below, hunk 2), after which nothing outside Cw named `CwElementPitch`,
+`CwStreamSplit` or `CwJointCutter`, and decision 4 deleted all three. **Kept: `CwPitchChoice.cs`
+only**, because `CwDecodeReport.PitchChoice` returns it and `MainWindowViewModel.cs` reads it.
+Deleted: the other nine.
+
+**`tools/Hamlet.PitchRank`** (section 4): its six `Build.0` lines were taken out of
+`Hamlet.sln`, so the project stays in the solution and in the tree, unedited, and
+`dotnet build Hamlet.sln` no longer builds it. The `ActiveCfg` lines stay. Restoring the six lines
+puts it back. It would not compile against the restored engine: it names `CwAccuracy`,
+`CwPitchRanking`, `CwReferenceDecoder`, `CwSpectralPeak`, `CwElementPitch`, `CwStreamSplit` and
+`CwProbabilisticDecoder.DecodeUngated`'s HEAD overloads.
+
+## 8. The 1.1 adaptation table - every hunk of `git diff 7e209cb4 HEAD -- src/Hamlet.RadioEngine/Cw`
+
+`git diff --stat 7e209cb4 HEAD -- src/Hamlet.RadioEngine/Cw` at task 4: 4 files, 165
+insertions, 1 deletion. **Nothing else is in that diff.**
+
+| # | File | Hunk | What | Why, and why it is honest |
+|---|---|---|---|---|
+| 1 | `CwPitchChoice.cs` | `@@ -0,0 +1,72` | the whole file, HEAD's copy | kept HEAD-only file: `CwDecodeReport.PitchChoice` returns it and `MainWindowViewModel.ToneForTheRecord` and `EmittedWithoutKeying` read it (decision 4) |
+| 2 | `CwCharacter.cs` | `@@ -144,0 +145,36` | `WidestRecordedLlr` const 1,000,000; `MarginLlr { get; init; } = NaN`; `MarginShareForRecord`, HEAD's arithmetic | `MainWindowViewModel.Clamped` and `SpanRatioLine` read all three; `TheSpanRatioReachesTheSidecarTests` sets `MarginLlr`. The const bounds what the sheet prints, not a measurement; the margin is NaN because this decoder never compares two paths and never sets it, and the sheet prints NaN as *unmeasured* |
+| 3 | `CwDecodeReport.cs` | `@@ -62,0 +63,23` | `PitchWasAsserted => false`; `PitchChoice => PitchWasMeasured ? Keying : NotChosen` | `ToneForTheRecord` and `EmittedWithoutKeying` read both. Nothing in this build takes an operator's assertion, so false is true; at 7e209cb4 an unmeasured pitch is the middle of the bank (`CwToneTracker.cs` line 441 there), which is `NotChosen` |
+| 4 | `CwDecoder.cs` | `@@ -350,0 +351,12` | `DigitalMode { get; set; }` | set from `MainWindowViewModel.cs:14155`; 865e66d8's gate, carried across (instruction, task 2) |
+| 5 | `CwDecoder.cs` | `@@ -353,0 +366,21` | `DecodeQueueDroppedChunks => 0`, `DecodeQueueDroppedSamples => 0`, `Retuned() => Unlock()` | the counters feed `AudioArrival` at `MainWindowViewModel.cs:7480`. This decoder has no queue, so nothing is dropped from one; HEAD's own figure was nought whenever its queue was not running, and the app already writes nought when there is no decoder. **Author's, overrulable: nought, not an app hunk.** `Retuned` is called at 13275 when the dial moves 500 Hz; the lock is the part of HEAD's `Retuned` this decoder has state for |
+| 6 | `CwDecoder.cs` | `@@ -468 +501` | `if (DecodingSuspended)` becomes `if (DecodingSuspended \|\| DigitalMode)` | the gate: in Digital the tap still takes the audio, the chunk is counted as suspended, the stream is skipped by its length, and nothing is decoded - 7e209cb4's own suspended arm |
+
+The adaptation to `CwElementPitch.cs` in task 2 (two `<see cref="CwSpectralPeak"/>` turned to
+`<c>`, because the cref no longer resolved under warnings as errors) went out with the file.
+
+## 9. The exclusion table (1.2) - every `<Compile Remove>`
+
+22 files, 21 engine and 1 app, each left in the tree unedited; the missing name is quoted from
+task 2's build (`.run-unit/unit392-errors-2.txt` and `-3.txt`, not committed). **In
+`docs\unit239-failing-set.txt`:** only `ABlipDoesNotShiftEverythingAfterItTests`
+(`ASubMinimumBlipInAGapChangesNothingAfterIt`). None is on either carry-forward line and none
+is a 1.4 test.
+
+| Project | File | Missing name it quotes | In unit239 |
+|---|---|---|---|
+| engine | `Audio/TheReadPathDoesNotAllocateTests.cs` | `CwKeyingMeter.WindowSizings` | no |
+| engine | `Audio/TheTapIsNotBehindTheDecoderTests.cs` | `CwDecoder.ProcessDelayForTests` | no |
+| engine | `Cw/ABlipDoesNotShiftEverythingAfterItTests.cs` | `CwReferenceDecoder` | **yes** |
+| engine | `Cw/AMoveStartsTheDecoderFreshTests.cs` | `CwDecoder.PitchWasAsserted`, `CwDecoder.Ranked` | no |
+| engine | `Cw/AStationIsABinThatSwingsTests.cs` | `CwSwingSurvey` | no |
+| engine | `Cw/EveryElementCarriesItsOwnPitchTests.cs` | `CwProbabilisticResult.Elements`, `CwElementPitch` | no |
+| engine | `Cw/FittingKeyUpAgainstAssumingItTests.cs` | `CwProbabilisticDecoder.FittedLogLikelihoods` | no |
+| engine | `Cw/IsTheHertzABiasOrAFloorTests.cs` | `CwSpectralPeak` | no |
+| engine | `Cw/NoSenderIsSplitInTwoTests.cs` | `CwStreamSplit`, `CwProbabilisticResult.Elements` | no |
+| engine | `Cw/NothingActsOnTheAdmissionVerdictTests.cs` | `CwDecodeReport` constructor parameter `PitchChoice` | no |
+| engine | `Cw/TheCleanReadsStayCleanTests.cs` | `CwAccuracy` | no |
+| engine | `Cw/TheFirstSecondsAreReadAgainTests.cs` | `CwProbabilisticStream.ReReads` | no |
+| engine | `Cw/ThePeakAgainstASecondSignalTests.cs` | `CwSpectralPeak` | no |
+| engine | `Cw/ThePeakFindsThePitchTheTrackerMissedTests.cs` | `CwSpectralPeak` | no |
+| engine | `Cw/ThePosteriorSurvivesItsOwnArithmeticTests.cs` | `CwProbabilisticDecoder.Posterior`, `LogSum` | no |
+| engine | `Cw/TheProbabilisticDecoderTests.cs` | `CwAccuracy` | no |
+| engine | `Cw/TheQuietestBinNoLongerWinsTests.cs` | `CwPitchRanking`, `CwDecoder.RankThePitch` | no |
+| engine | `Cw/TheReferenceDecoderIsPortedFaithfullyTests.cs` | `CwReferenceDecoder` | no |
+| engine | `Cw/TheScoreSaysWhatItIsMeasuringTests.cs` | `CwAccuracy` | no |
+| engine | `Cw/WhatDecodeScoringCostsTests.cs` | `CwToneTracker.CoarseSpacingHz` | no |
+| engine | `Cw/WhereHamletAndTheReferenceDivergeTests.cs` | `CwProbabilisticResult.Elements`, 5-argument `Decode` | no |
+| app | `Views/ThePitchControlsAreOffThePanelTests.cs` | `CwDecoder.AssertAt`, `CwDecoder.PitchWasAsserted` | no |
+
+`TheCleanReadsStayCleanTests.cs` and `TheProbabilisticDecoderTests.cs` were excluded from
+section 3's grep, which found `CwAccuracy` in both, not from a compiler error: the compiler
+stops reporting binding errors in a file once its declarations fail, and build 2 had not yet
+reached them. `TheProbabilisticDecoderTests.cs` exists at 7e209cb4; the name that excludes it
+came with its 43-line change since. Build 4 and the non-incremental rebuild after it, with all 22
+removed, were clean on both test projects. **Each is excluded, not retired: step 3
+retires or repairs each under R49 with the quoted name as its evidence.**
+
+Engine tests that task 2's build 2 raised and that were **not** excluded, because a seam in
+section 8 gave them their name: `Audio/NoCwDecodeInDigitalModeTests.cs` (`DigitalMode`),
+`Cw/AHeldPitchDoesNotOutliveItsEvidenceTests.cs` (`Retuned`), `Cw/WhereAcquisitionPointsTests.cs`
+(`CwDecodeReport.PitchChoice`), and the app test `ViewModels/TheSpanRatioReachesTheSidecarTests.cs`
+(`CwCharacter.MarginLlr` settable). They compile; whether they are green is task 5's measure.
+
+## 10. The 1.6 app hunks - `git diff 10512248 HEAD -- src/Hamlet.App`
+
+One file, `MainWindowViewModel.cs`, 21 insertions and 43 deletions, three changes in six diff
+hunks. Every other file under `src/Hamlet.App` is byte-identical to the step's entry.
+
+| # | Where | Diff hunks | What changed | The seam it serves |
+|---|---|---|---|---|
+| 1 | `StartListening`, line 11080 | `@@ -11080,5 +11080,5` | `new CwDecoder(...) { UseJointCutter = _settings.UseJointDecoder }` becomes `new CwDecoder(...)`, with a comment that the build has no joint cutter | the restored decoder has no joint cutter. A shim property that accepted the switch and did nothing would be a control that silently does nothing (task 2's rule), so the hunk wins. `AppSettings.UseJointDecoder` is kept, so the settings file round-trips; it ships off (Tim, 2026-08-27) and has no control on screen |
+| 2 | `ElementPitchLine`, line 12405 | `@@ -12405,8`, `@@ -12414`, `@@ -12416,3`, `@@ -12421,11` | decode with 7e209cb4's public `Decode(envelope, toneHz)`; nothing read gives *nothing was read, so no element was measured, which is too few to say anything about how they spread*; anything read gives *not measured (the decoder in this build does not say where each element began and ended, so no element's own pitch was measured)* | `CwProbabilisticResult.Elements` does not exist at 7e209cb4 (section 7). An empty list would have made the sheet say *0 elements were long enough to measure a pitch from* on audio it had read, which is a measurement nobody made (§0.0). The no-tone branch is unchanged |
+| 3 | `ToneForTheRecord`, line 12487 | `@@ -12487,15 +12476,4` | the `report.Rank is { } rank` branch and its *ranked* sentence removed, with a comment | `CwDecodeReport.Rank` would need `CwPitchRank` from deleted `CwPitchRanking.cs`; this decoder never ranks, so the branch could never be taken, and re-creating the type to return null from it would be a HEAD-only type put back to make a caller build |
+
+**What the operator's capture sheet says differently:** the element-pitch line (hunk 2), and
+the ranked sentence never appears (hunk 3). With the restored decoder the sheet's margin figures
+print *unmeasured* (section 8, row 2), and the *emitted without keying* line can only name the
+middle of the bank or keying, never the strongest bin, the ranking or an assertion (row 3).

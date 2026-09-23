@@ -174,12 +174,12 @@ says - never the whole suite.
 named commit is `7e209cb4` by R53.
 
 **Exit:**
-- [ ] 1.1 Every file under `src\Hamlet.RadioEngine\Cw` outside the transmit list in §3 is the named commit's, adapted only where today's app or tests would not build; every adaptation is listed in the report with its file and its reason, and the transmit files are byte-identical to HEAD before the step.
-- [ ] 1.2 `Hamlet.sln` builds with warnings as errors, both Hamlet test projects included.
+- [x] 1.1 Every file under `src\Hamlet.RadioEngine\Cw` outside the transmit list in §3 is the named commit's, adapted only where today's app or tests would not build; every adaptation is listed in the report with its file and its reason, and the transmit files are byte-identical to HEAD before the step. **Unit 392: the folder is 7e209cb4's plus six hunks in three files and the kept `CwPitchChoice.cs`, each in the table of `docs/phase-cw/unit392-seams.md` section 8; the eleven transmit files printed nothing against 7e209cb4 at task 2 and at task 4.**
+- [x] 1.2 `Hamlet.sln` builds with warnings as errors, both Hamlet test projects included. **Unit 392, task 2: 0 warnings, 0 errors, non-incremental, 22 test files excluded from compilation with their missing names and `tools/Hamlet.PitchRank` out of the solution build, `docs/phase-cw/unit392-seams.md` sections 7 and 9.**
 - [x] 1.3 `TheCapturesThatDecodeKeepDecodingTests` and `TheAdjudicatedReadingsKeepReadingTests` are green at HEAD, every case, in one filtered run each, with characters and elements printed beside every floor; `CwFixtureTests.TheCleanRecordingsDecodeExactly` is run and its two cases reported with what they read, red or green (R53: they are step 3's). **Unit 392, task 3: captures 37 of 37 green in 97 s, adjudicated 13 of 13 in 33 s, the two clean synthetics red reading placeholders, every case in `docs/phase-cw/unit392-floors.md`.**
 - [x] 1.4 The app's CW tests are green by name: `TheSheetSaysWhatEachElementWasSentAtTests`, `ReturningToCwShowsCwTests`, `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`, `VoiceTests`. **Unit 392, task 3: 13 of 13 green in one invocation, `docs/phase-cw/unit392-floors.md`.**
 - [ ] 1.5 The carry-forward list is green on both lines, and nothing is red that was green at the step's entry.
-- [ ] 1.6 `git diff` over `src\Hamlet.App` between the step's entry and its exit is empty, or every hunk is listed in the report with the seam it serves.
+- [x] 1.6 `git diff` over `src\Hamlet.App` between the step's entry and its exit is empty, or every hunk is listed in the report with the seam it serves. **Unit 392: three changes in `MainWindowViewModel.cs`, each with its seam in `docs/phase-cw/unit392-seams.md` section 10.**
 
 **Depends on:** step 0.
 
