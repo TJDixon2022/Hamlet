@@ -183,6 +183,12 @@ nothing. Out, reverted in the next commit.
 applied clean, piece commit `5dd24810`. Build rc 1 in 1 s, CS0122 on `CwToneTracker.CoarseSpacingHz`
 at lines 225 and 232. Out under decision 4, no floor run; transmit files nothing; reverted next.
 
+**Piece 19, `0f2089f3`, task 2.** Patch 318 lines over three files. `--3way` merged
+`CwPitchChoice.cs` to a file with no diff against HEAD - already in the tree, dropped - and
+conflicted in the other two. Checked without it (288 lines, `unit396-deps19.sh`): `CwDecodeReport:52`
+and `CwDecoder:289` fail on the kept state and after 3; 12 as committed; 18; 3 and 12; 3, 12, 15;
+3, 12, 15, 18 (15 itself rc 1 on the chain). *Dependent, out*. `src` clean after.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
