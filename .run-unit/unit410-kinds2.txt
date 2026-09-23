@@ -1,0 +1,38 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.42]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.59]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.60]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.AKeyInsideADecodeScoresOnlyItsStretch(decode: "E WVRR VA3VRRT", key: "VA3VRR", edits: 0, region: "VA3VRR") [5 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.AKeyInsideADecodeScoresOnlyItsStretch(decode: "EEMP/4 QNIKK", key: "AA4MP/4 QNIK", edits: 3, region: "EEMP/4 QNIK") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.AKeyInsideADecodeScoresOnlyItsStretch(decode: "XXVA3VRRYY", key: "VA3VRR", edits: 0, region: "VA3VRR") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.EachKindIsCountedWhereAHandCountsIt(region: "CQQ", key: "CQ", wrong: 0, missing: 0, added: 1, spaceAdded: 0, spaceMissing: 0) [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.EachKindIsCountedWhereAHandCountsIt(region: "D E", key: "DE", wrong: 0, missing: 0, added: 0, spaceAdded: 1, spaceMissing: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.EachKindIsCountedWhereAHandCountsIt(region: "DEWB", key: "DE WB", wrong: 0, missing: 0, added: 0, spaceAdded: 0, spaceMissing: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.EachKindIsCountedWhereAHandCountsIt(region: "DEW B 6 RE D", key: "DE WB6RED", wrong: 0, missing: 0, added: 0, spaceAdded: 4, spaceMissing: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.EachKindIsCountedWhereAHandCountsIt(region: "", key: "CQ", wrong: 0, missing: 2, added: 0, spaceAdded: 0, spaceMissing: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.EachKindIsCountedWhereAHandCountsIt(region: "CQ DX", key: "CQ DE", wrong: 1, missing: 0, added: 0, spaceAdded: 0, spaceMissing: 0) [< 1 ms]
+[xUnit.net 00:00:01.63]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheEditsAreWhatAHandCounts(region: "CQ", key: "CQ", edits: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheEditsAreWhatAHandCounts(region: "KITTEN", key: "SITTING", edits: 3) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheEditsAreWhatAHandCounts(region: "D E", key: "DE", edits: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheEditsAreWhatAHandCounts(region: "CQQ", key: "CQ", edits: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheEditsAreWhatAHandCounts(region: "", key: "CQ", edits: 2) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheEditsAreWhatAHandCounts(region: "CQ DX", key: "CQ DE", edits: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheEditsAreWhatAHandCounts(region: "DEWB", key: "DE WB", edits: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheKeysKindIsCarriedThrough [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheScorerCountsWhatAHandCountsTests.TheRegionRunsFromTheFirstOpeningToTheLastCharacter [< 1 ms]
+
+Test Run Successful.
+Total tests: 18
+     Passed: 18
+ Total time: 1.8942 Seconds
+RC=0 WALL=5s

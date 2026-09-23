@@ -120,4 +120,70 @@ public sealed class TheBaselineIsScoredTests
                 seventeen.Region, TheSeventeenThirtySevenCaptureTests.InferredKey),
             seventeen.Edits);
     }
+
+    private void Kinds(string name, CwScore score)
+    {
+        var kinds = CwScorer.Kinds(score);
+
+        _output.WriteLine(
+            $"kinds | {name} | {score.Edits} | {kinds.Wrong} | {kinds.Missing} | {kinds.Added} | "
+            + $"{kinds.SpaceAdded} | {kinds.SpaceMissing} | {kinds.Boundaries} | "
+            + $"{CwScorer.LettersOnly(score)}");
+    }
+
+    /// <remarks>
+    /// Proves 0.3: per case, the edits split into characters wrong, missing and
+    /// added, and word boundaries misplaced either way, counted from the scorer's
+    /// alignment and not asserted. Beside them, the edits left when spaces cost
+    /// nothing, which rests on no tie rule. 17:37's alignment is printed whole.
+    /// The only assertion is that the kinds add up to the edits.
+    /// </remarks>
+    [Fact]
+    public void TheErrorKindsArePrinted()
+    {
+        _output.WriteLine(
+            "kinds | recording | edits | wrong | missing | added | space added | space missing | boundaries | letters-only edits");
+
+        var seventeen = SeventeenThirtySeven();
+        var scores = new List<(string Name, CwScore Score)>
+        {
+            (TheSeventeenThirtySevenCaptureTests.Name, seventeen),
+        };
+
+        scores.AddRange(Anchors.Select(name => (name, Adjudicated(
+            TheAdjudicatedReadingsKeepReadingTests.All.Single(r => r.Name == name)))));
+
+        foreach (var (name, score) in scores)
+        {
+            Kinds(name, score);
+        }
+
+        var all = scores.Select(s => CwScorer.Kinds(s.Score)).ToList();
+
+        _output.WriteLine(
+            $"kinds total | {all.Sum(k => k.Edits)} | {all.Sum(k => k.Wrong)} | {all.Sum(k => k.Missing)} | "
+            + $"{all.Sum(k => k.Added)} | {all.Sum(k => k.SpaceAdded)} | {all.Sum(k => k.SpaceMissing)} | "
+            + $"{all.Sum(k => k.Boundaries)} | {scores.Sum(s => CwScorer.LettersOnly(s.Score))}");
+
+        _output.WriteLine("17:37 alignment, key over decode, . same, x wrong, - missing, + added:");
+        _output.WriteLine("  key    " + string.Concat(seventeen.Steps.Select(s => s.Key == ' ' ? '_' : s.Key ?? ' ')));
+        _output.WriteLine("  decode " + string.Concat(seventeen.Steps.Select(s => s.Decoded == ' ' ? '_' : s.Decoded ?? ' ')));
+        _output.WriteLine("  edit   " + string.Concat(seventeen.Steps.Select(s => s.Edit switch
+        {
+            CwEdit.Same => '.',
+            CwEdit.Wrong => 'x',
+            CwEdit.Missing => '-',
+            _ => '+',
+        })));
+
+        foreach (var (name, score) in scores.Skip(1))
+        {
+            _output.WriteLine($"{name}: key `{score.Key}` region `{score.Region}`");
+        }
+
+        foreach (var (_, score) in scores)
+        {
+            Assert.Equal(score.Edits, CwScorer.Kinds(score).Edits);
+        }
+    }
 }

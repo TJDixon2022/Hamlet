@@ -1,0 +1,5 @@
+unit410 task 3: what kind of error - 17:37 29 edits are 15 spaces added, 4 letters wrong, 10 letters added and none missing, 14 edits letters-only; boundaries the largest kind and not a majority; baseline over four 16 boundaries, 7 wrong, 10 added, 18 letters-only
+
+CwScorer.Kinds and CwScorer.LettersOnly. The alignment now takes the fewest letter edits at equal edit count, after the first tie rule miscounted the hand case DEW B 6 RE D; edit counts and the baseline table unchanged. 18 of 18 hand cases, TheBaselineIsScoredTests 2 of 2. No file under src changed.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

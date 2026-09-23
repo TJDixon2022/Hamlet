@@ -84,6 +84,36 @@ public sealed class TheScorerCountsWhatAHandCountsTests
         Assert.Equal(region, score.Region);
     }
 
+    /// <summary>
+    /// Pairs whose one kind of error a hand names: wrong, missing, added, a space
+    /// added, a space missing.
+    /// </summary>
+    public static TheoryData<string, string, int, int, int, int, int> KindPairs { get; } = new()
+    {
+        { "CQ DX", "CQ DE", 1, 0, 0, 0, 0 },
+        { "", "CQ", 0, 2, 0, 0, 0 },
+        { "CQQ", "CQ", 0, 0, 1, 0, 0 },
+        { "D E", "DE", 0, 0, 0, 1, 0 },
+        { "DEWB", "DE WB", 0, 0, 0, 0, 1 },
+        // Every letter right and every space wrong: 17:37 as the sidecar read it,
+        // cut to the first callsign. One space missing before W, one added after
+        // each of W, B, 6 and E.
+        { "DEW B 6 RE D", "DE WB6RED", 0, 0, 0, 4, 1 },
+    };
+
+    /// <remarks>Proves 0.3's counting: each kind is counted from the alignment, and they add up to the edits.</remarks>
+    [Theory]
+    [MemberData(nameof(KindPairs))]
+    public void EachKindIsCountedWhereAHandCountsIt(
+        string region, string key, int wrong, int missing, int added, int spaceAdded, int spaceMissing)
+    {
+        var score = CwScorer.Whole(region, key, CwKeyKind.Inferred);
+        var kinds = CwScorer.Kinds(score);
+
+        Assert.Equal(new CwErrorKinds(wrong, missing, added, spaceAdded, spaceMissing), kinds);
+        Assert.Equal(score.Edits, kinds.Edits);
+    }
+
     /// <remarks>
     /// Proves the 17:37 key file's own rule: from the first `C` of the first `CQ`
     /// to the last character emitted, and nothing before it.

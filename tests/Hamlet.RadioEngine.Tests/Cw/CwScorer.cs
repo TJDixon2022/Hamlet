@@ -50,6 +50,25 @@ public sealed record CwScore(
 }
 
 /// <summary>
+/// A score's edits split by kind, counted from its alignment (work instruction 410,
+/// task 3; PHASE_PLAN.md 0.3). The five counts add up to the edits.
+/// </summary>
+/// <param name="Wrong">A letter in the place of a different letter.</param>
+/// <param name="Missing">A letter of the key with nothing in the decode.</param>
+/// <param name="Added">A letter in the decode the key does not have.</param>
+/// <param name="SpaceAdded">A space where none was sent: added, or in the place of a letter.</param>
+/// <param name="SpaceMissing">No space where one was sent: missing, or a letter in its place.</param>
+public readonly record struct CwErrorKinds(
+    int Wrong, int Missing, int Added, int SpaceAdded, int SpaceMissing)
+{
+    /// <summary>Word boundaries misplaced, either way.</summary>
+    public int Boundaries => SpaceAdded + SpaceMissing;
+
+    /// <summary>Every edit, which is the score's.</summary>
+    public int Edits => Wrong + Missing + Added + Boundaries;
+}
+
+/// <summary>
 /// Edit distance between a decode and a key over a scored region: the instrument
 /// the correctness phase is measured with (work instruction 410, task 1).
 /// </summary>
@@ -57,11 +76,18 @@ public sealed record CwScore(
 /// <para>**SPACES ARE CHARACTERS HERE.** Word boundaries are the fault the phase
 /// is investigating, so a space missing or added costs an edit like any letter,
 /// and nothing is collapsed, folded or trimmed inside the region.</para>
-/// <para>**WHERE TWO ALIGNMENTS TIE, THE SCORER TAKES A CHARACTER IN PLACE, THEN
-/// A KEY CHARACTER MISSING, THEN A DECODED CHARACTER ADDED**, reading back from
-/// the end. The edit count does not depend on the choice; the breakdown into
-/// kinds and the edges of a <see cref="Within"/> region do, and this is the rule
-/// they follow.</para>
+/// <para>**THE EDIT COUNT IS LEVENSHTEIN AND DEPENDS ON NO CHOICE. THE ALIGNMENT
+/// DOES.** Where several alignments reach the fewest edits, the scorer takes the
+/// one with the fewest edits that touch no space: a letter is counted wrong,
+/// missing or added only where no equally short alignment reads it right. Where
+/// that still ties, it takes a character in place, then a key character missing,
+/// then a decoded character added, reading back from the end. The breakdown into
+/// kinds and the edges of a <see cref="Within"/> region follow this rule, and
+/// <see cref="LettersOnly"/> is the view that follows none.</para>
+/// <para>The first rule written took a character in place before anything else
+/// and nothing more; it split `DEW B 6 RE D` against `DE WB6RED` into a letter
+/// wrong, a letter added and three spaces, where a hand reads every letter right
+/// and five spaces wrong. It was replaced before any recording was broken down.</para>
 /// </remarks>
 public static class CwScorer
 {
@@ -97,20 +123,84 @@ public static class CwScorer
         return from < 0 ? "" : decode[from..].Trim();
     }
 
+    /// <summary>Splits a score's edits by kind, from the alignment it was counted on.</summary>
+    /// <remarks>
+    /// An edit touching a space on either side is a word boundary misplaced, and
+    /// is counted as one of those and nothing else. A letter swapped for a space
+    /// is one edit and is counted once, on the side of the space: a space where
+    /// none was sent if the space is the decode's, none where one was sent if it
+    /// is the key's.
+    /// </remarks>
+    /// <param name="score">The score.</param>
+    /// <returns>The counts, adding up to the score's edits.</returns>
+    public static CwErrorKinds Kinds(CwScore score)
+    {
+        int wrong = 0, missing = 0, added = 0, spaceAdded = 0, spaceMissing = 0;
+
+        foreach (var step in score.Steps)
+        {
+            if (step.Edit == CwEdit.Same)
+            {
+                continue;
+            }
+
+            if (step.Decoded == ' ')
+            {
+                spaceAdded++;
+            }
+            else if (step.Key == ' ')
+            {
+                spaceMissing++;
+            }
+            else if (step.Edit == CwEdit.Wrong)
+            {
+                wrong++;
+            }
+            else if (step.Edit == CwEdit.Missing)
+            {
+                missing++;
+            }
+            else
+            {
+                added++;
+            }
+        }
+
+        return new CwErrorKinds(wrong, missing, added, spaceAdded, spaceMissing);
+    }
+
+    /// <summary>The same pair scored with every space taken out of both.</summary>
+    /// <remarks>
+    /// A second view that does not rest on how the alignment breaks a tie: what
+    /// is left when word boundaries cost nothing at all.
+    /// </remarks>
+    /// <param name="score">The score.</param>
+    /// <returns>The edits between the region and the key, both without spaces.</returns>
+    public static int LettersOnly(CwScore score)
+        => Whole(score.Region.Replace(" ", ""), score.Key.Replace(" ", ""), score.Kind).Edits;
+
     private static CwScore Align(string decode, string key, CwKeyKind kind, bool freeEnds)
     {
         var m = key.Length;
         var n = decode.Length;
         var cost = new int[m + 1, n + 1];
 
-        for (var i = 0; i <= m; i++)
+        // Each edit weighs `edit`, and one that touches no space weighs one more,
+        // so the least total is the fewest edits first and the fewest letter
+        // edits among those second. `edit` exceeds any count of letter edits.
+        var edit = m + n + 1;
+
+        int Step(char? k, char? d)
+            => k == d ? 0 : k == ' ' || d == ' ' ? edit : edit + 1;
+
+        for (var i = 1; i <= m; i++)
         {
-            cost[i, 0] = i;
+            cost[i, 0] = cost[i - 1, 0] + Step(key[i - 1], null);
         }
 
-        for (var j = 0; j <= n; j++)
+        for (var j = 1; j <= n; j++)
         {
-            cost[0, j] = freeEnds ? 0 : j;
+            cost[0, j] = freeEnds ? 0 : cost[0, j - 1] + Step(null, decode[j - 1]);
         }
 
         for (var i = 1; i <= m; i++)
@@ -118,8 +208,10 @@ public static class CwScorer
             for (var j = 1; j <= n; j++)
             {
                 cost[i, j] = Math.Min(
-                    cost[i - 1, j - 1] + (key[i - 1] == decode[j - 1] ? 0 : 1),
-                    Math.Min(cost[i - 1, j] + 1, cost[i, j - 1] + 1));
+                    cost[i - 1, j - 1] + Step(key[i - 1], decode[j - 1]),
+                    Math.Min(
+                        cost[i - 1, j] + Step(key[i - 1], null),
+                        cost[i, j - 1] + Step(null, decode[j - 1])));
             }
         }
 
@@ -147,7 +239,7 @@ public static class CwScorer
         while (a > 0 || (b > 0 && !freeEnds))
         {
             if (a > 0 && b > 0
-                && cost[a, b] == cost[a - 1, b - 1] + (key[a - 1] == decode[b - 1] ? 0 : 1))
+                && cost[a, b] == cost[a - 1, b - 1] + Step(key[a - 1], decode[b - 1]))
             {
                 steps.Add(new CwStep(
                     key[a - 1] == decode[b - 1] ? CwEdit.Same : CwEdit.Wrong,
@@ -155,7 +247,7 @@ public static class CwScorer
                 a--;
                 b--;
             }
-            else if (a > 0 && cost[a, b] == cost[a - 1, b] + 1)
+            else if (a > 0 && cost[a, b] == cost[a - 1, b] + Step(key[a - 1], null))
             {
                 steps.Add(new CwStep(CwEdit.Missing, key[a - 1], null));
                 a--;
@@ -169,6 +261,7 @@ public static class CwScorer
 
         steps.Reverse();
 
-        return new CwScore(cost[m, end], m, kind, decode[b..end], key, steps);
+        return new CwScore(
+            steps.Count(s => s.Edit != CwEdit.Same), m, kind, decode[b..end], key, steps);
     }
 }
