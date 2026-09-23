@@ -169,6 +169,16 @@ two. Piece 12's raw patch does not apply after 3, so piece 12 *as committed* (`g
 `CwDecodeReport:65`, whose context is unit 392's `PitchChoice` seam. Needs 3 and 12: *dependent,
 out*. `src` clean after (`unit396-deps15.sh`, `unit396-deps15b.sh`).
 
+**Piece 16, `501e8e2d`, task 2.** Its `Cw` diff deletes `CwPitchRanking.cs` only; the file is
+not in the tree (piece 14 out). `--check` and `--3way` refused, nothing changed. Empty.
+
+**Piece 17, `f9c11989`, task 2, measured.** Patch 212 lines, `CwProbabilisticDecoder.cs`, 201
+insertions; applied clean, piece commit `0bec4dd6`. Build 0 errors in 6 s. Captures **37 of 37 in
+94 s wall**, 1.55 min, no row differs from entry; adjudicated 13 of 13 in 29 s; synthetics 0 of 2
+in 4 s, `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■` as at entry. Printer: the seven SETTLED lines
+identical to section 1 - WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2. Transmit files
+nothing. Out, reverted in the next commit.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
