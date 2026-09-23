@@ -282,6 +282,48 @@ public sealed class CwDecoder
     public bool IsLocked => !double.IsNaN(_lockedToneHz);
 
     /// <summary>
+    /// The operator has moved the dial, so everything measured about the old
+    /// frequency stops being a claim about what is on the air.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A HELD PITCH DOES NOT OUTLIVE ITS EVIDENCE** (Tim's ruling of
+    /// 2026-08-26; HM-DEC-009's principle). The tracker keeps the last pitch it
+    /// actually measured and mixes at it whenever the survey's three seconds of
+    /// history run dry, which is most of the time between characters on a slow
+    /// sender — that hold is what made the W1AW nights work and it is untouched
+    /// while the radio stays put.</para>
+    /// <para>**WHAT IT COULD NOT DO WAS LET GO.** On 2026-08-26 the operator
+    /// tuned to 14.0275 MHz and the sidecar written there reported a pitch of
+    /// 300 Hz measured twenty-four minutes and one QSY earlier, from audio that
+    /// no longer existed. The decoder mixed at 300 while the station sat above
+    /// 400, so the window guard saw two tenths against a bar of 1.40 and rightly
+    /// refused — a correct refusal of a demodulation at a number nobody was
+    /// keying at.</para>
+    /// <para>**IT IS THE FREQUENCY AND NOT A TIMER**, because a measurement's
+    /// evidence is gone the moment the dial moves and is not gone at all while
+    /// it does not, however long that is. A station is entitled to pause.</para>
+    /// <para>The held peak goes with it for the same reason: a figure whose own
+    /// caveat says it is not about this recording must not survive into a
+    /// recording of somewhere else.</para>
+    /// </remarks>
+    public void Retuned()
+    {
+        _lastMeasuredToneHz = double.NaN;
+
+        // **THE HELD PEAK GOES WITH IT, FOR THE SAME REASON AND NO OTHER.** It
+        // rises at once and falls about a decibel a second (HM-DEC-090), so it
+        // survives a station's gaps by design and it survived this QSY by
+        // accident: the sheet written on 14.0275 MHz reported 50.2 dB, a peak
+        // measured on another frequency. Its own caveat already says it is not a
+        // figure about this recording; carrying it here made it not a figure
+        // about this frequency either, which is a claim nothing on the sheet
+        // qualified.
+        _lastSnrDb = double.NaN;
+
+        _tracker.Forget();
+    }
+
+    /// <summary>
     /// Hold the mixdown at the strongest tone measured right now.
     /// </summary>
     /// <returns>The pitch it locked to, or NaN if there was nothing to lock to.</returns>
