@@ -245,3 +245,23 @@ at 5, the nearest a 7- and 8-letter word gets to text with no trace of either, a
   `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed`). Each lost name absent from
   the other run's failures, so green there; no red on an assertion.
 - **Engine**, line 9 as printed: 176 of 176 in 375 s of 480.
+
+### 3.3 The exit round, task 3
+
+The kept state is the entry state: 9 pieces judged, none kept, and `git diff --stat 5688a8a5 HEAD
+-- src` prints nothing.
+
+- **App**, line 7: 277 of 278 in 162 s, 1 lost to the dispatcher loop
+  (`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`); re-run once, 277
+  of 278 in 147 s, 1 lost the same way
+  (`TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing`).
+  Neither lost twice, no red on an assertion.
+- **Engine**, line 9: 176 of 176 in 372 s of 480.
+- **Captures**: 37 of 37 in 92 s wall, 1.53 min test time, every capture's characters, elements,
+  unsure and tone identical to section 3.1. `.run-unit\unit395-floors-exit-1.txt`.
+- **Adjudicated**: 13 of 13 in 29 s. **Clean synthetics**: 0 of 2, red as at entry under R53.
+- **Printer** at exit: not re-run; `src` is byte-identical to the tree the entry printer and the
+  piece 9 revert ran on, and the last printer run, the 7 and 9 pair's, printed the entry numbers.
+  The numbers at exit are section 3.1a's: WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2.
+- **Transmit files** against `7e209cb4`: nothing, at entry, after every piece, and at exit.
+- **No regression.** Nothing green at task 0 is red at task 3.
