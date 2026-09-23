@@ -179,6 +179,10 @@ in 4 s, `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■` a
 identical to section 1 - WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2. Transmit files
 nothing. Out, reverted in the next commit.
 
+**Piece 18, `b48d1158`, task 2.** Patch 308 lines, `CwPitchRanking.cs` new, 302 insertions;
+applied clean, piece commit `5dd24810`. Build rc 1 in 1 s, CS0122 on `CwToneTracker.CoarseSpacingHz`
+at lines 225 and 232. Out under decision 4, no floor run; transmit files nothing; reverted next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
