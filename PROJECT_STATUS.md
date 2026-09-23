@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: TASK 4 of 5
 WORK_INSTRUCTION: 399 - the clean synthetics get a band
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T03:41:25-04:00
-NOTE: task 4: exit round, floors done; TheSurveyAlreadyUsesAShortWindowTests running
+UPDATED: 2026-09-23T03:43:44-04:00
+NOTE: Unit 399 complete: clean synthetics measured four ways, no band meets the exact-text assertion because the harness text carries leading-edge revisions while the settled text is exact; nothing regenerated, third floor test still 0 of 2; floors and both lines green at exit, no regression; one ruling asked in section 4
 
 ---
 
