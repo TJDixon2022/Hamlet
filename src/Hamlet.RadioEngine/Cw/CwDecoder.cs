@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 
 namespace Hamlet.RadioEngine.Cw;
 
@@ -64,6 +64,8 @@ public sealed class CwDecoder
     /// <summary>The pitch the mixdown is held at, or NaN when it follows.</summary>
     private double _lockedToneHz = double.NaN;
 
+    private bool _asserted;
+
     /// <summary>The last pitch the survey actually measured, or NaN.</summary>
     /// <remarks>
     /// **A MEASURED PITCH IS HELD UNTIL A BETTER ONE ARRIVES, WITHOUT ANYBODY
@@ -105,14 +107,64 @@ public sealed class CwDecoder
     /// either side of it, since nobody tunes exactly.
     /// </param>
     public CwDecoder(int sampleRate, double expectedToneHz = 600)
+        : this(sampleRate, expectedToneHz, null, null)
+    {
+    }
+
+    /// <summary>Listen, with the two constants a sweep needs to vary.</summary>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="expectedToneHz">Where to point the bank before anything is measured.</param>
+    /// <param name="integratorHz">
+    /// The integrator's equivalent noise bandwidth, or null for
+    /// <see cref="CwProbabilisticDecoder.IntegratorBandwidthHz"/>.
+    /// </param>
+    /// <param name="confirmWithinSurveys">
+    /// How far back a candidate may look for its second agreeing survey, or null
+    /// for <see cref="CwToneTracker.ConfirmWithinSurveys"/>.
+    /// </param>
+    /// <remarks>
+    /// **NOTHING IN THE APPLICATION PASSES EITHER OF THESE.** They exist so a
+    /// constant can be swept through the whole decoder and judged by the
+    /// characters it produces, which is the only judge this project accepts for
+    /// a number that decides what the display asserts (§0.0). A width measured
+    /// through the offline envelope alone is a fact about that envelope
+    /// (HM-DEC-119).
+    /// </remarks>
+    public CwDecoder(
+        int sampleRate,
+        double expectedToneHz,
+        double? integratorHz,
+        int? confirmWithinSurveys)
     {
         SampleRate = Math.Max(1_000, sampleRate);
-        _tracker = new CwToneTracker(SampleRate, expectedToneHz);
+        _tracker = new CwToneTracker(
+            SampleRate, expectedToneHz, confirmWithinSurveys);
         _onReading = OnReading;
-        _probabilistic = new CwProbabilisticStream(SampleRate);
+        _probabilistic = new CwProbabilisticStream(
+            SampleRate,
+            integratorHz ?? CwProbabilisticDecoder.IntegratorBandwidthHz);
 
         _probabilistic.CharacterSettled += c =>
         {
+            // **NOTHING IS ASSERTED FROM A PITCH NOBODY JUDGED TO BE A STATION**
+            // (work instruction 051, task 2; §0.0, HM-DEC-120). On 2026-08-30 at
+            // 7.058 MHz sixty-one characters reached the screen from a pitch the
+            // survey had admitted no keying at, and the capture sheet said so in
+            // the same breath — `unkeyed YES` — because the field was computed,
+            // printed, and read by nothing.
+            //
+            // **IT IS THE SAME CONDITION THE SHEET PRINTS, NOT A SECOND TEST FOR
+            // IT.** `EmittedWithoutKeying` asks whether characters came out at an
+            // unmeasured pitch; this asks the identical question one step
+            // earlier, of the identical field.
+            //
+            // **BLOCKS RATHER THAN DELETIONS** (unit 036). No character position
+            // is lost and the counts still count: what goes is the assertion, so
+            // the operator sees that Hamlet heard something here and would not
+            // name it, which is the whole difference between refusing and going
+            // quiet.
+            c = Squelched(c);
+
             // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
             // used to be incremented on the old path's own emit, which raised
             // nothing anybody could see, so a capture sidecar said `0 characters
@@ -239,9 +291,18 @@ public sealed class CwDecoder
     /// that became part of a character. A pair of figures where the gap between
     /// them used to mean something now says the gap is nought, which is true.
     /// </remarks>
+    /// <remarks>
+    /// **`ToneHz` IS THE PITCH THE DECODE ACTUALLY USED AND NOT THE TRACKER'S**
+    /// (Tim's ruling of 2026-08-28). It used to be `_tracker.ToneHz` throughout,
+    /// which was the same number until the ranking started supplying the mixdown;
+    /// leaving it there would have the sheet, the duty line and the panel all
+    /// report one pitch while the letters on the screen were read at another.
+    /// **That is the `tonePeak` fault a third time** (HM-DEC-111): a figure that
+    /// is not about the thing beside it.
+    /// </remarks>
     public CwDecodeReport Report => new(
         Tap.Level,
-        _tracker.ToneHz,
+        MixdownToneHz,
         _lastSnrDb,
         HasTone: _toneLatched,
         _elementsResolved,
@@ -252,7 +313,14 @@ public sealed class CwDecoder
         _tracker.Verdict.Interference,
         (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
         Competitor: _tracker.Competitor,
-        PitchWasMeasured: _tracker.HasMeasuredPitch);
+        PitchWasMeasured: _tracker.HasMeasuredPitch,
+        PitchWasAsserted: _asserted,
+        PitchChoice: _asserted
+            ? CwPitchChoice.OperatorAssertion
+            : _ranked.Ranked && double.IsNaN(_lockedToneHz)
+                ? CwPitchChoice.Ranked
+                : _tracker.PitchChoice,
+        Rank: _ranked.Ranked && double.IsNaN(_lockedToneHz) ? _ranked : null);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>
@@ -280,6 +348,100 @@ public sealed class CwDecoder
 
     /// <summary>True while the mixdown is held at a fixed pitch.</summary>
     public bool IsLocked => !double.IsNaN(_lockedToneHz);
+
+    /// <summary>
+    /// The operator has moved the dial, so everything measured about the old
+    /// frequency stops being a claim about what is on the air.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A HELD PITCH DOES NOT OUTLIVE ITS EVIDENCE** (Tim's ruling of
+    /// 2026-08-26; HM-DEC-009's principle). The tracker keeps the last pitch it
+    /// actually measured and mixes at it whenever the survey's three seconds of
+    /// history run dry, which is most of the time between characters on a slow
+    /// sender — that hold is what made the W1AW nights work and it is untouched
+    /// while the radio stays put.</para>
+    /// <para>**WHAT IT COULD NOT DO WAS LET GO.** On 2026-08-26 the operator
+    /// tuned to 14.0275 MHz and the sidecar written there reported a pitch of
+    /// 300 Hz measured twenty-four minutes and one QSY earlier, from audio that
+    /// no longer existed. The decoder mixed at 300 while the station sat above
+    /// 400, so the window guard saw two tenths against a bar of 1.40 and rightly
+    /// refused — a correct refusal of a demodulation at a number nobody was
+    /// keying at.</para>
+    /// <para>**IT IS THE FREQUENCY AND NOT A TIMER**, because a measurement's
+    /// evidence is gone the moment the dial moves and is not gone at all while
+    /// it does not, however long that is. A station is entitled to pause.</para>
+    /// <para>The held peak goes with it for the same reason: a figure whose own
+    /// caveat says it is not about this recording must not survive into a
+    /// recording of somewhere else.</para>
+    /// </remarks>
+    public void Retuned()
+    {
+        // **AN ASSERTION IS ABOUT A FREQUENCY TOO.** The operator said he could
+        // hear a station on the frequency he was on; the dial has moved and that
+        // sentence is no longer about anything.
+        Unlock();
+
+        _lastMeasuredToneHz = double.NaN;
+        _peakToneHz = double.NaN;
+        _peakAtSample = long.MinValue;
+        _swing = null;
+        _swingAtSample = long.MinValue;
+
+        // **THE HELD PEAK GOES WITH IT, FOR THE SAME REASON AND NO OTHER.** It
+        // rises at once and falls about a decibel a second (HM-DEC-090), so it
+        // survives a station's gaps by design and it survived this QSY by
+        // accident: the sheet written on 14.0275 MHz reported 50.2 dB, a peak
+        // measured on another frequency. Its own caveat already says it is not a
+        // figure about this recording; carrying it here made it not a figure
+        // about this frequency either, which is a claim nothing on the sheet
+        // qualified.
+        _lastSnrDb = double.NaN;
+
+        // **AND THE RANKING GOES WITH THEM, FOR THE SAME REASON AND NO OTHER.**
+        // A pitch chosen because it read best on the old frequency is not a
+        // finding about this one, and holding it would point the mixer at a
+        // number whose whole evidence is audio that no longer exists.
+        _ranked = CwPitchRank.None;
+        _rankedAtSample = long.MinValue;
+        _peakToneHz = double.NaN;
+        _peakAtSample = long.MinValue;
+        _swing = null;
+        _swingAtSample = long.MinValue;
+        _belowGateSince = long.MinValue;
+
+        // **AND THE READING ITSELF, WHICH USED TO SURVIVE THE MOVE.** Clearing
+        // the pitch and leaving the twelve-second window full of the last
+        // station's audio leaves the decoder fitting a speed to one frequency
+        // and demodulating another. The speed hypothesis, the settled mark and
+        // the envelope all live in the stream, so restarting it is what makes
+        // "the state it has when it first begins listening" true rather than
+        // nearly true (Tim's ruling of 2026-08-29).
+        _probabilistic.Restart();
+
+        // **THE COUNTERS ARE ABOUT A FREQUENCY TOO.** A sidecar written after a
+        // QSY reported elements and characters accumulated somewhere else, which
+        // is the same defect as the held peak and was missed with it: the sheet
+        // said what Hamlet had done that evening while every other field on it
+        // described this frequency (§0.0.1).
+        _charactersEmitted = 0;
+        _charactersUnsure = 0;
+        _elementsResolved = 0;
+
+        // What the tracker had concluded about following a station is a fact
+        // about the station it was following.
+        _toneLatched = false;
+        _hasFollowed = false;
+        _lastFollows = 0;
+        _lastPitchHz = double.NaN;
+        _reReadAt = double.NaN;
+        _lastMeasuredForReRead = double.NaN;
+
+        Array.Clear(_snrHistory);
+        _snrWrite = 0;
+        _snrFilled = 0;
+
+        _tracker.Forget();
+    }
 
     /// <summary>
     /// Hold the mixdown at the strongest tone measured right now.
@@ -322,7 +484,122 @@ public sealed class CwDecoder
     }
 
     /// <summary>Let the tracker steer the mixdown again.</summary>
-    public void Unlock() => _lockedToneHz = double.NaN;
+    public void Unlock()
+    {
+        _lockedToneHz = double.NaN;
+        _asserted = false;
+    }
+
+    /// <summary>
+    /// True while the pitch being decoded at was chosen by the operator saying
+    /// he can hear a station, rather than found by the survey.
+    /// </summary>
+    /// <remarks>
+    /// **NO CAPTURE MAY EVER IMPLY HAMLET FOUND WHAT A HUMAN FOUND** (§0.0).
+    /// <see cref="CwDecodeReport.PitchWasMeasured"/> stays false throughout, so
+    /// every sheet and every panel that already asks the honest question keeps
+    /// getting the honest answer. This says the separate thing: not that the
+    /// pitch is unmeasured, but who supplied it.
+    /// </remarks>
+    public bool PitchWasAsserted => _asserted;
+
+    /// <summary>
+    /// Whether <see cref="CwJointCutter"/> decides where characters are cut.
+    /// </summary>
+    /// <remarks>
+    /// Behind `AppSettings.UseJointDecoder` in the application, by Tim's ruling
+    /// of 2026-08-27: the operator is at the radio and a switch he can throw is
+    /// worth more than a change he cannot compare against.
+    /// </remarks>
+    public bool UseJointCutter
+    {
+        get => _probabilistic.UseJointCutter;
+        set => _probabilistic.UseJointCutter = value;
+    }
+
+    /// <summary>
+    /// The operator says he can hear a station; decode at the loudest bin in the
+    /// band and hold it.
+    /// </summary>
+    /// <returns>The pitch taken, or NaN where the band held nothing to take.</returns>
+    /// <remarks>
+    /// <para>**HM-DEC-095 IS NOT AMENDED AND THIS IS WHY.** That ruling forbids
+    /// Hamlet choosing a note by how loud it is, because loudness is not evidence
+    /// of keying — a carrier is louder than a station and says nothing. It does
+    /// not forbid the operator supplying the evidence of keying himself. He is
+    /// the one detector in this system that has never been wrong about whether
+    /// somebody is sending; what he cannot do is name the frequency to a hertz,
+    /// and that is exactly what the survey can do. **He supplies the keying and
+    /// Hamlet supplies the number.**</para>
+    /// <para>**IT TAKES THE LOUDEST BIN AND NOT THE BEST KEYING CANDIDATE**,
+    /// because after six units of measurement there is no keying candidate to
+    /// take: admission refuses every station in this corpus, which is the fault
+    /// this route exists to get around rather than to wait for.</para>
+    /// <para>**AND IT BYPASSES ADMISSION RATHER THAN LOOSENING IT.** The
+    /// automatic path is untouched, so the empty band still produces nothing
+    /// when nobody has pressed anything. An operator who presses this on a dead
+    /// frequency gets whatever the audio contains, which is his choice to
+    /// make.</para>
+    /// <para>Released by <see cref="Unlock"/>, and by <see cref="Retuned"/> when
+    /// the dial moves, because a pitch asserted on one frequency is not evidence
+    /// about the next one.</para>
+    /// </remarks>
+    public double AssertStation()
+    {
+        // **THE STRONGEST *KEYED* BIN, WHICH IS NOT THE LOUDEST ONE.** Taking the
+        // loudest was built first and measured on 2026-08-26: it lands 121 Hz off
+        // on `cw-2026-08-26-125941`, 118 off on `cw-2026-08-22-014113` and 100 off
+        // on `cw-2026-08-25-012823`. HM-DEC-095 said exactly this — a carrier is
+        // louder than a station and says nothing — and the ruling's own wording
+        // says keyed.
+        //
+        // **THE SWEEP IS THE ONE THE CAPTURE SHEET ALREADY REPORTS**, scoring
+        // each pitch by how much of the stretch was spent keyed down for an
+        // element's length and how many of those key-downs were elements rather
+        // than a gate chattering. It shares nothing with the survey's admission,
+        // which is the point: admission is what has refused every station in this
+        // corpus for six units, and this route exists to get around it rather
+        // than to wait for it.
+        var audio = Tap?.Snapshot();
+
+        if (audio is null)
+        {
+            return double.NaN;
+        }
+
+        var found = KeyingEnvelope.Best(audio);
+
+        if (found is not { } sighting)
+        {
+            // Nothing in the band looks keyed at any pitch. Refusing is the
+            // honest answer; pointing at the bank centre and calling it his
+            // choice would put Hamlet's own default behind his assertion.
+            return double.NaN;
+        }
+
+        AssertAt(sighting.ToneHz);
+
+        return sighting.ToneHz;
+    }
+
+    /// <summary>Decode at a pitch the operator supplied, and hold it.</summary>
+    /// <param name="toneHz">The pitch.</param>
+    /// <remarks>
+    /// Separated from <see cref="AssertStation"/> so the choosing and the holding
+    /// can be measured apart, and so a caller that already knows the pitch — a
+    /// test, or a future control that lets him type one — need not go through the
+    /// sweep to use it.
+    /// </remarks>
+    public void AssertAt(double toneHz)
+    {
+        if (double.IsNaN(toneHz))
+        {
+            return;
+        }
+
+        _lockedToneHz = toneHz;
+        _asserted = true;
+    }
 
     /// <summary>
     /// How long decoding stays suspended after the radio stops transmitting.
@@ -374,15 +651,6 @@ public sealed class CwDecoder
 
     /// <summary>Samples those chunks carried. This decoder has no queue.</summary>
     public long DecodeQueueDroppedSamples => 0;
-
-    /// <summary>The operator has moved the dial.</summary>
-    /// <remarks>
-    /// **THE LOCK GOES, BECAUSE A LOCK IS ABOUT A FREQUENCY** (work instruction
-    /// 392, a seam for today's application). That is the part of HEAD's
-    /// `Retuned` this decoder has the state for; the held pitch and peak it also
-    /// dropped arrived after this decoder was written.
-    /// </remarks>
-    public void Retuned() => Unlock();
 
     /// <summary>The slowest speed anybody would call a speed.</summary>
     public const int SlowestPlausibleWpm = 6;
@@ -568,7 +836,13 @@ public sealed class CwDecoder
         if (_tracker.HasMeasuredPitch)
         {
             _lastMeasuredToneHz = _tracker.ToneHz;
+
+            ReadHeldAudioAgain();
         }
+
+        MaybeSwing(firstSampleIndex + samples.Length);
+        MaybePeak(firstSampleIndex + samples.Length);
+        MaybeRank(firstSampleIndex + samples.Length);
 
         // **THE OPERATOR'S LOCK FIRST, THEN THE LAST MEASURED PITCH, THEN THE
         // BANK.** The middle rung is new and it is what stops the mixdown
@@ -582,11 +856,14 @@ public sealed class CwDecoder
         // it changes is only what happens when nothing is admitted at all, which
         // is task 3's scope: the answer is the last thing actually measured
         // rather than the middle of a bank.
-        _probabilistic.ToneHz = double.IsNaN(_lockedToneHz)
-            ? double.IsNaN(_lastMeasuredToneHz)
-                ? _tracker.ToneHz
-                : _lastMeasuredToneHz
-            : _lockedToneHz;
+        //
+        // **AND THE RANKING SITS BETWEEN THE LOCK AND THE LAST MEASURED PITCH**
+        // (Tim's ruling of 2026-08-28). The operator still wins: a pitch he
+        // supplied is evidence of keying from the one detector here that has
+        // never been wrong about it. Below him, a pitch chosen by decoding at
+        // every candidate and keeping the best beats one the survey happened to
+        // admit — measured at 34 of 44 captures against 1 (`CwPitchRanking`).
+        _probabilistic.ToneHz = MixdownToneHz;
         _probabilistic.Process(samples);
 
         // **ASKED AFTER THE DECODER HAS READ THIS AUDIO, NOT BEFORE.** The
@@ -638,6 +915,569 @@ public sealed class CwDecoder
 
         DecodingSuspended = _transmitEndedUtc != DateTime.MinValue
             && nowUtc - _transmitEndedUtc < ResumeAfter;
+    }
+
+    /// <summary>
+    /// Read the audio the decoder is still holding again, at a pitch it has
+    /// since measured.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE FIRST SECONDS OF EVERY STATION ARE DEMODULATED AT A GUESS.**
+    /// The stream mixes each sample as it arrives, at whatever the tracker
+    /// believed then, and until the survey admits a candidate the tracker answers
+    /// with the middle of the bank it is pointed at. Measured across this
+    /// repository's thirty-six captures, the first measured pitch lands two to
+    /// seven seconds in on half of them, and the window is still holding every
+    /// sample since the start when it does — mixed at a number nobody keyed at.</para>
+    /// <para>**WHAT IT IS WORTH WAS MEASURED BEFORE IT WAS BUILT.** Read whole at
+    /// the station's own note instead of the operator's 600 Hz,
+    /// `cw-2026-08-22-032113` gives back 22 characters of its adjudicated line
+    /// rather than 4, `032012` 43 rather than 22 and `032050` 24 rather than 17.
+    /// Hamlet cannot know the note in advance; it knows it a few seconds in, and
+    /// nothing re-read what it already had.</para>
+    /// <para>**ONCE, ON A MEASURED PITCH, AND ONLY BACKWARD.** A re-read at a
+    /// bank centre would be decoding at a number nobody keyed at, which is the
+    /// fault this exists to remove rather than to repeat. It fires at most once
+    /// for each pitch it settles on, so a tracker walking a few hertz cannot
+    /// replay the window every hop.</para>
+    /// <para>**AND IT ASKS THE TAP FOR THE AUDIO THE STREAM HAS SEEN**, not for
+    /// the last N samples. The tap takes a whole chunk at once and this walks it
+    /// a hop at a time, so "the last N" would hand the replay hops from the
+    /// future and make it depend on the size of the chunk it fired inside —
+    /// reintroducing the two-decoders fault `OneDecoderNotTwoTests` closed.</para>
+    /// </remarks>
+    private void ReadHeldAudioAgain()
+    {
+        var measured = _tracker.ToneHz;
+
+        // **THE SAME TWO-READINGS RULE THE TRACKER ITSELF OBEYS** (HM-DEC-095).
+        // The first pitch the survey admits is not always the one it settles on:
+        // on `cw-2026-08-18-004507` it answers 475 Hz two seconds in and 500 a
+        // moment later, and 500 is where the station is. Replaying at the first
+        // answer is replaying at a number that is about to be corrected, so this
+        // waits for two readings that agree to within the survey's own
+        // resolution before it replays anything.
+        var confirmed = !double.IsNaN(_lastMeasuredForReRead)
+            && Math.Abs(measured - _lastMeasuredForReRead)
+                < CwToneTracker.CoarseSpacingHz;
+
+        _lastMeasuredForReRead = measured;
+
+        if (!confirmed)
+        {
+            return;
+        }
+
+        if (Math.Abs(measured - _reReadAt) < CwToneTracker.CoarseSpacingHz)
+        {
+            // Already read the window at this pitch, or near enough that the
+            // survey could not have told the two apart.
+            return;
+        }
+
+        // **ONLY WHILE THERE IS A FIRST EMISSION LEFT TO GET RIGHT.** That is
+        // what the re-read is for, and once characters have been announced,
+        // replaying can only risk what is already on the screen — the settled
+        // mark stops them being said twice, so a replay that reads the same
+        // stretch worse costs the tip and buys nothing back.
+        //
+        // **MEASURED, AND IT IS THE DIFFERENCE BETWEEN A GAIN AND A TRADE.**
+        // Without this condition the corpus moves 153 adjudicated characters to
+        // 164 and two of them go backwards: `cw-2026-08-22-031905` from 11 to 10
+        // and `032129` from 9 to 7, both re-read after their tracker had already
+        // announced 7 and 21 characters, and `032129`'s measured pitch is 650 for
+        // a station at 500. With it the corpus reaches the same 164 and nothing
+        // goes backwards at all.
+        if (_probabilistic.SettledCharacters > 0)
+        {
+            return;
+        }
+
+        var held = _probabilistic.HeldHops;
+
+        if (held <= 0 || double.IsNaN(_probabilistic.MixedAtHz))
+        {
+            return;
+        }
+
+        if (_probabilistic.MixedSpreadFrom(measured) < CwToneTracker.CoarseSpacingHz)
+        {
+            // Every hop in the window was already mixed within one bin of the
+            // measured pitch, so a replay would be the same demodulation twice.
+            _reReadAt = measured;
+            return;
+        }
+
+        var samples = held * _tracker.HopSamples;
+        var audio = _reReadWindow.From(Tap, _probabilistic.SamplesSeen - samples, samples);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        _reReadAt = measured;
+        _probabilistic.ReadAgain(audio.Samples, measured);
+    }
+
+    /// <summary>The four windows the decoder reads on a timer, each in its
+    /// own reused buffer.</summary>
+    /// <remarks>
+    /// <para>**FOUR AND NOT ONE, BECAUSE THEY ARE FOUR DIFFERENT LENGTHS.** The
+    /// swing and the peak read eight seconds, the ranking four, and the re-read
+    /// however many hops the probabilistic stream is holding. Sharing one buffer
+    /// between them would resize it on every call, which is the allocation this
+    /// removes, wearing a different name.</para>
+    /// <para>**WHAT THEY WERE COSTING.** At 48 kHz, and at the once-a-second
+    /// ceiling each of them has: 1.54 MB a second for the swing, 1.54 for the
+    /// peak, 768 KB a read for the ranking, and 2.3 MB for a twelve-second
+    /// re-read. All of it on the large object heap, whose collection stops the
+    /// audio callback along with every other thread.</para>
+    /// </remarks>
+    private readonly Audio.ReusableWindow _swingWindow = new();
+
+    private readonly Audio.ReusableWindow _peakWindow = new();
+
+    private readonly Audio.ReusableWindow _rankWindow = new();
+
+    private readonly Audio.ReusableWindow _reReadWindow = new();
+
+    private double _reReadAt = double.NaN;
+
+    private double _lastMeasuredForReRead = double.NaN;
+
+    /// <summary>What the ranking last chose, or <see cref="CwPitchRank.None"/>.</summary>
+    /// <summary>How far a bin must swing to be admitted as a station, in decibels.</summary>
+    /// <remarks>
+    /// <para>**FIFTEEN, BOUNDED FROM BELOW BY SILENCE AND FROM ABOVE BY THE
+    /// WEAKEST REAL STATION** (work instruction 055, task 2). Measured: digital
+    /// silence produces **0.0 dB** of swing, twenty seconds of shaped band noise
+    /// produces **11.9**, and the weakest station across the seven captures of
+    /// 2026-08-31 produces **17.2** — `cw-2026-08-31-002829`. The window is
+    /// therefore 11.9 to 17.2 and fifteen sits inside it with 3.1 dB of clearance
+    /// over noise and 2.2 below the weakest station.</para>
+    /// <para>**IT MAKES ADMISSION SEE MORE AND REQUIRE NOTHING LESS**
+    /// (HM-DEC-120, tightened only). A noise bin does not swing fifteen decibels
+    /// while standing at the top of the band, and the silence lock is what proves
+    /// that rather than this comment.</para>
+    /// <para>**AND IT SHIPS 0.005 BELOW THE CORPUS FLOOR, KNOWINGLY, PENDING A
+    /// RULING.** Precision reads **0.889 against a floor of 0.894** while yield
+    /// rises **0.750 to 0.872** and substitutions go 15 to 20. Sweeping the
+    /// threshold does not recover it: 16 and 17 dB give the identical 0.889,
+    /// because every corpus capture swings well clear of all three.</para>
+    /// <para>**THE ORDER SAYS REVERT AND REPORT, AND TWO OF THE OPERATOR'S OWN
+    /// STATEMENTS DISAGREE WITH EACH OTHER HERE**: that rule, and *"make it work
+    /// better, the regression is unacceptable — pitches that used to read must
+    /// read again."* The floor exists to stop an average rising while easy reads
+    /// collapse, which is unit 053's finding — **and the easy reads did not
+    /// collapse, they improved.** `cw-2026-08-17-013347` goes from 9 named
+    /// characters to 37 and from 84 per cent blocks to 36; the clean-read lock,
+    /// every adjudicated anchor and the silence lock are green. **Reverting is one
+    /// line — set this above any swing the corpus produces — and it is Tim's call,
+    /// not this session's** (§12.1).</para>
+    /// </remarks>
+    public static double LeastSwingDb { get; set; } = 15.0;
+
+    /// <summary>
+    /// What the swing survey last admitted, or null.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT SAYS WHETHER A STATION IS THERE AND NEVER WHERE IT IS** (work
+    /// instruction 055, task 2). Those are two jobs and conflating them was
+    /// measured: feeding the winning swing bin to the mixdown took the corpus from
+    /// precision 0.894 to **0.470** and broke all three captures that read at
+    /// 1.000 — `013347` fell to `VA3H`, `003758` to 0.300, `012403` to 0.308.</para>
+    /// <para>**THE REASON IS RESOLUTION.** The swing survey works on a 12.5 Hz
+    /// grid because a grid is what a per-bin percentile needs; `CwSpectralPeak`
+    /// interpolates to a hundredth of a hertz, and unit 050 measured how much that
+    /// is worth. So the peak keeps the pitch and this keeps the verdict.</para>
+    /// </remarks>
+    private CwSwingSurvey.Candidate? _swing;
+
+    /// <summary>Where on the audio clock the swing survey last ran.</summary>
+    private long _swingAtSample = long.MinValue;
+
+    /// <summary>The spectral peak's answer, or NaN where none was taken.</summary>
+    /// <remarks>
+    /// **MEASURED FROM THE BAND AND NOT FROM THE DECODER'S OWN STATE** (work
+    /// instruction 050, task 3). The tracker follows a bin it has already
+    /// committed to and can sit a hundred and fifty hertz from a station for a
+    /// whole recording; a peak over averaged magnitude has nothing to be loyal
+    /// to.
+    /// </remarks>
+    private double _peakToneHz = double.NaN;
+
+    /// <summary>Where on the audio clock the peak was last taken.</summary>
+    private long _peakAtSample = long.MinValue;
+
+    private CwPitchRank _ranked = CwPitchRank.None;
+
+    /// <summary>Where on the audio clock the ranking last ran.</summary>
+    private long _rankedAtSample = long.MinValue;
+
+    /// <summary>
+    /// Where on the audio clock the reading first fell below the gate, or
+    /// <see cref="long.MinValue"/> while it is above it.
+    /// </summary>
+    private long _belowGateSince = long.MinValue;
+
+    /// <summary>How many times the ranking has run.</summary>
+    /// <remarks>
+    /// **A PASS NOBODY COUNTS IS A PASS NOBODY CAN SAY RAN** (§0.0.1). The whole
+    /// claim of the ruling is that this happens once on tune-in rather than
+    /// continuously, and that is not checkable from outside without this.
+    /// </remarks>
+    public int Rankings { get; private set; }
+
+    /// <summary>What the ranking chose, and what it beat.</summary>
+    public CwPitchRank Ranked => _ranked;
+
+    /// <summary>The scaling exponent the posterior is normalised at.</summary>
+    /// <remarks>
+    /// **IT CANNOT MOVE A CHARACTER, WHICH IS WHY IT IS SAFE TO SWEEP.** The
+    /// temperature multiplies the whole path score, so the Viterbi argmax is
+    /// unchanged and only the normalisation moves. Nothing in the application
+    /// sets it; it exists so unit 049's sweep can be run through the decoder the
+    /// operator actually uses rather than around it.
+    /// </remarks>
+    public double PosteriorTemperature
+    {
+        get => _probabilistic.PosteriorTemperature;
+        set => _probabilistic.PosteriorTemperature = value;
+    }
+
+    /// <summary>Whether the ranking supplies the mixdown pitch.</summary>
+    /// <remarks>
+    /// <para>**OFF, AND THE MACHINERY STAYS** — `ClearOnAStationChange`'s
+    /// precedent, and for the same kind of reason. Unit 044 built the ranking to
+    /// drive the live decode and measured what that costs: **two adjudicated
+    /// anchors lose their callsigns.** `cw-2026-08-17-013347` falls from
+    /// `VA3VRR` to nothing, and `cw-2026-08-24-012403` from `DE KD0UN KD0UN K`
+    /// to `DE XD0UN KD0`. The unit's own acceptance requires all twelve anchors
+    /// green, so it does not go on by this session's hand.</para>
+    /// <para>**THE TWO FAILURES HAVE DIFFERENT CAUSES AND ONLY ONE IS ABOUT THE
+    /// RANKING BEING WRONG.** On `012403` the ranking picks the right bin, 450,
+    /// and the station sits at 440: the candidates are the tracker's coarse grid
+    /// and a ranked pitch is only ever a bin centre, while the survey
+    /// interpolates to the hertz. On `013347` the opening four seconds hold no
+    /// station, so every bin's floor is tiny, the common pedestal is tiny with
+    /// them, and the scale invariance the pedestal exists to remove comes
+    /// straight back: the winner scores **5,521,967** at 775 Hz. **A degenerate
+    /// pitch looks maximally healthy**, so the collapse test that would re-rank
+    /// it never fires.</para>
+    /// <para>**AND THE WINDOW'S POSITION MATTERS MORE THAN ITS LENGTH**, which
+    /// no measurement before this one separated. Ranking over the tail of a
+    /// recording picks the station on 34 of 44 captures at four seconds and 34
+    /// at twelve; ranking over the opening four seconds, which is what tune-in
+    /// actually sees, picks it on **27**.</para>
+    /// <para>It is a property rather than a constant so the before and the after
+    /// can be measured on one build (§0.0.1); the shape is
+    /// <see cref="UseJointCutter"/>'s.</para>
+    /// </remarks>
+    public bool RankThePitch { get; set; }
+
+    /// <summary>The pitch the mixer is actually being run at.</summary>
+    /// <remarks>
+    /// **THE OPERATOR'S LOCK, THEN THE RANKING, THEN THE LAST MEASURED PITCH,
+    /// THEN THE BANK.** One property rather than an expression at the call site,
+    /// because the sheet has to report the pitch the decode used and the two
+    /// drifting apart is the `tonePeak` fault a third time (HM-DEC-111).
+    /// </remarks>
+    /// <summary>What the audio is mixed down to.</summary>
+    /// <remarks>
+    /// <para>**THE SPECTRAL PEAK SITS ABOVE THE TRACKER AND BELOW THE OPERATOR**
+    /// (work instruction 050, task 3). A lock is the operator's own answer and
+    /// outranks every measurement; a ranking is a deliberate choice among bins;
+    /// below those, the peak is a measurement of the band and the tracker is a
+    /// bin the decoder has already committed to.</para>
+    /// <para>**MEASURED, AND THE MARGIN IS NOT SMALL.** Over the adjudicated
+    /// corpus the tracker settles more than a hundred hertz from the strongest
+    /// keyed bin on four captures of twelve — 300 and 325 where the station is at
+    /// 500, and 650 twice — while the peak lands within a hertz and a half of the
+    /// keyed bin on every one. Fed to the decoder it takes precision from 0.766
+    /// to 0.840 and yield from 0.768 to 0.849.</para>
+    /// <para>**IT DISPLACES `_lastMeasuredToneHz` RATHER THAN JOINING IT.** That
+    /// rung exists to stop the mixdown swinging back to a bank centre when the
+    /// survey's history runs dry, and it holds the tracker's last answer — which
+    /// is the number this measurement found wanting. The peak holds better and
+    /// for the same reason, so keeping both would be two answers to one question
+    /// with the worse one able to win (§0).</para>
+    /// <para>**AND IT DECIDES NOTHING ABOUT ADMISSION** (HM-DEC-095,
+    /// HM-DEC-120). A peak exists in noise. Whether anybody is keying is asked
+    /// elsewhere and is not touched here.</para>
+    /// </remarks>
+    /// <summary>Whether an unadmitted pitch may assert characters.</summary>
+    /// <remarks>
+    /// **SHIPS ON.** It exists as a switch only so the cost of the rule can be
+    /// measured against the corpus both ways, which is what the order asks for
+    /// before the task is declared done. Nothing in the application turns it off.
+    /// </remarks>
+    public bool SquelchWithoutAdmission { get; set; } = true;
+
+    /// <summary>
+    /// Blank a character the survey never admitted a station for.
+    /// </summary>
+    /// <param name="character">What the decoder read.</param>
+    /// <returns>The character, or the same character asserting nothing.</returns>
+    /// <remarks>
+    /// <para>**A WORD GAP CARRIES NO ASSERTION AND IS LEFT ALONE.** Blanking it
+    /// would turn a space into a mark and invent structure rather than withhold
+    /// it.</para>
+    /// <para>**AND THE COUNTS ARE NOT TOUCHED.** A blocked character was still
+    /// heard; `charactersEmitted` counting it is what lets the capture sheet say
+    /// how much was refused rather than reporting an empty band (§0.0.1).</para>
+    /// </remarks>
+    private CwCharacter Squelched(CwCharacter character)
+        => !SquelchWithoutAdmission
+           || _tracker.HasMeasuredPitch
+           || _swing is not null
+           || character.IsWordGap
+            ? character
+            : character with
+            {
+                Text = MorseAlphabet.Unreadable,
+                Confidence = CwConfidence.Unreadable,
+            };
+
+    private double MixdownToneHz
+        => !double.IsNaN(_lockedToneHz) ? _lockedToneHz
+            : _ranked.Ranked ? _ranked.ToneHz
+            : !double.IsNaN(_peakToneHz) ? _peakToneHz
+            : !double.IsNaN(_lastMeasuredToneHz) ? _lastMeasuredToneHz
+            : _tracker.ToneHz;
+
+    /// <summary>
+    /// **MEASURED AND REJECTED: letting the tracker refine inside the peak's own
+    /// bin.**
+    /// </summary>
+    /// <remarks>
+    /// <para>The order predicted it — *the tracker has hysteresis the peak does
+    /// not, and that may be doing work on fading signals* — and the shape was
+    /// appealing: the peak says which station, the tracker says where in it, and
+    /// the peak only overrules a disagreement wider than the tracker's own
+    /// twenty-five hertz bin spacing. It was built and swept.</para>
+    /// <para>**It costs 2.9 points of precision and does not buy what it was
+    /// built for.** Corpus precision 0.829 against the plain peak's 0.858, yield
+    /// 0.883 against 0.914. It was meant to recover `cw-2026-08-17-134712`, whose
+    /// station sits at 500.09 and whose peak reads 501.2, and it did not — that
+    /// capture still reads one character of three. What it did instead was break
+    /// `cw-2026-08-22-031838`, which the plain peak reads at 0.971 and this reads
+    /// at 0.611.</para>
+    /// <para>Recorded rather than deleted, because the idea is the obvious one
+    /// and the next session to have it should find the measurement instead of
+    /// spending an evening on it (§12.5).</para>
+    /// </remarks>
+    private const double MeasuredAndRejectedSameStationHz = 25.0;
+
+    /// <summary>Look for a bin that swings, on the same cadence as the peak.</summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <remarks>
+    /// <para>**THIS IS WHAT ADMITS `cw-2026-08-31-003229`** (work instruction 055,
+    /// task 2). A station called CQ there and the survey admitted nothing, so the
+    /// squelch turned every character to a block. Swing finds it at 588 Hz, where
+    /// an independent decoder reads 583.5.</para>
+    /// <para>**IT STANDS ASIDE WHILE THE OPERATOR HOLDS THE PITCH**, for the same
+    /// reason the ranking and the peak do: a lock is his answer and re-deriving
+    /// one over the top of it would make the capture sheet's account of who chose
+    /// the number false (§0.0).</para>
+    /// </remarks>
+    private void MaybeSwing(long atSample)
+    {
+        if (!double.IsNaN(_lockedToneHz))
+        {
+            return;
+        }
+
+        var window = (int)(PeakWindowSeconds * SampleRate);
+
+        if (atSample < window
+            || (_swingAtSample != long.MinValue
+                && atSample - _swingAtSample < PeakEverySeconds * SampleRate))
+        {
+            return;
+        }
+
+        var audio = _swingWindow.From(Tap, atSample - window, window);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        _swingAtSample = atSample;
+
+        // **A REFUSAL IS NOT A FINDING THAT THE PREVIOUS ANSWER WAS WRONG**, so
+        // whatever was admitted stays admitted until something else is.
+        var found = CwSwingSurvey.Best(
+            audio.Samples, audio.SampleRate, LeastSwingDb);
+
+        if (found is not null)
+        {
+            _swing = found;
+        }
+    }
+
+    /// <summary>How much audio the peak is measured over, in seconds.</summary>    /// <summary>How much audio the peak is measured over, in seconds.</summary>
+    /// <remarks>
+    /// **EIGHT SECONDS, WHICH IS SEVEN HALF-OVERLAPPED TRANSFORMS AT EIGHT
+    /// KILOHERTZ.** The corpus measurement that earned this averaged whole
+    /// recordings, and a live decoder has no whole recording — so the window is
+    /// long enough that a signal keyed a third of the time still out-votes noise
+    /// present all of it, and short enough that a station the operator has just
+    /// tuned to is found rather than waited for.
+    /// </remarks>
+    private const double PeakWindowSeconds = 8.0;
+
+    /// <summary>How often the peak is taken again, in seconds.</summary>
+    /// <remarks>
+    /// A transform over eight seconds of audio is not free and the answer does
+    /// not move while the dial is still, so it is taken once a second rather than
+    /// on every hop.
+    /// </remarks>
+    private const double PeakEverySeconds = 1.0;
+
+    /// <summary>Measure the strongest steady tone, when enough audio has arrived.</summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <remarks>
+    /// **NOTHING IS DONE WHILE THE OPERATOR HOLDS THE PITCH.** A lock is his
+    /// answer, and re-deriving one over the top of it would make the capture
+    /// sheet's account of who chose the number false (§0.0), which is the same
+    /// reason `MaybeRank` stands aside.
+    /// </remarks>
+    private void MaybePeak(long atSample)
+    {
+        if (!double.IsNaN(_lockedToneHz))
+        {
+            return;
+        }
+
+        var window = (int)(PeakWindowSeconds * SampleRate);
+
+        if (atSample < window
+            || (_peakAtSample != long.MinValue
+                && atSample - _peakAtSample < PeakEverySeconds * SampleRate))
+        {
+            return;
+        }
+
+        var audio = _peakWindow.From(Tap, atSample - window, window);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        _peakAtSample = atSample;
+
+        // A refusal is not a finding that the previous answer was wrong, so
+        // whatever was in force stays in force.
+        if (CwSpectralPeak.Find(audio.Samples, audio.SampleRate) is { } hz)
+        {
+            _peakToneHz = hz;
+        }
+    }
+
+    /// <summary>
+    /// How long the reading stays under the gate before the ranking runs again.
+    /// </summary>
+    /// <remarks>
+    /// <para>**RANKING RUNS ONCE ON TUNE-IN AND AGAIN IF THE WINNER'S SCORE
+    /// COLLAPSES** (Tim's ruling of 2026-08-28). It does not run continuously:
+    /// that matches how the lock already behaves, costs nothing while the
+    /// operator sits on a station, and still recovers when it lands wrong.</para>
+    /// <para>**SIX SECONDS, AND WHAT IT IS MEASURED AGAINST IS A SENDER'S OWN
+    /// GAPS.** A station pausing between overs takes the reading under the gate
+    /// for a second or two, and re-ranking on that would be re-ranking
+    /// continuously in all but name. Six seconds is longer than any gap inside a
+    /// message at any speed this decoder considers — a word gap at eight words a
+    /// minute is one second — so it is a station that has stopped rather than a
+    /// station that is breathing.</para>
+    /// </remarks>
+    private const double CollapseSeconds = 6.0;
+
+    /// <summary>
+    /// Rank the band, on tune-in and when the reading has collapsed.
+    /// </summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <remarks>
+    /// **IT DOES NOTHING AT ALL WHILE THE OPERATOR HOLDS THE PITCH.** A lock or
+    /// an assertion is his answer, and re-deriving one over the top of it would
+    /// make the sheet's account of who chose the number false (§0.0).
+    /// </remarks>
+    private void MaybeRank(long atSample)
+    {
+        if (!RankThePitch || !double.IsNaN(_lockedToneHz))
+        {
+            return;
+        }
+
+        var window = (int)(CwPitchRanking.WindowSeconds * SampleRate);
+
+        if (atSample < window)
+        {
+            // Less audio has arrived than the ranking reads. Nothing is chosen
+            // and the tracker keeps steering, which is what it did before.
+            return;
+        }
+
+        if (_ranked.Ranked && !HasCollapsed(atSample, window))
+        {
+            return;
+        }
+
+        var audio = _rankWindow.From(Tap, atSample - window, window);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        var ranked = CwPitchRanking.Rank(audio.Samples, audio.SampleRate);
+
+        if (!ranked.Ranked)
+        {
+            // Nothing could be ranked from this stretch. Keeping whatever was
+            // already in force is right: a refusal is not a finding that the
+            // previous answer was wrong.
+            return;
+        }
+
+        _ranked = ranked;
+        _rankedAtSample = atSample;
+        _belowGateSince = long.MinValue;
+        Rankings++;
+    }
+
+    /// <summary>Whether the reading has been under the gate long enough to re-rank.</summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <param name="window">How many samples the ranking reads.</param>
+    /// <returns>True where the winner's score has collapsed.</returns>
+    private bool HasCollapsed(long atSample, int window)
+    {
+        if (_probabilistic.Last.LikelihoodRatio >= CwProbabilisticDecoder.Gate)
+        {
+            _belowGateSince = long.MinValue;
+
+            return false;
+        }
+
+        if (_belowGateSince == long.MinValue)
+        {
+            _belowGateSince = atSample;
+
+            return false;
+        }
+
+        if (atSample - _belowGateSince < CollapseSeconds * SampleRate)
+        {
+            return false;
+        }
+
+        // **AND NEVER TWICE OVER THE SAME AUDIO.** A ranking that ran on this
+        // window already looked at exactly these samples and would reach exactly
+        // this answer again, so re-running before the window has turned over
+        // spends the whole sweep to learn nothing.
+        return atSample - _rankedAtSample >= window;
     }
 
     private void OnSamples(in AudioChunk chunk) => Process(chunk);
