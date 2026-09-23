@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: ACTIVE
-TASK: TASK 2 of 4
+TASK: TASK 3 of 4
 WORK_INSTRUCTION: 404 - the fourteen go back in as chains
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T12:04:31-04:00
-NOTE: Chain D: clean synthetics 0 of 2, both red on assertion, leading characters blanked; printer running for the five distances
+UPDATED: 2026-09-23T12:07:19-04:00
+NOTE: Task 3 at HEAD: adjudication 11 of 11; CwFixtureTests running, the last of the four types
 
 ---
 
