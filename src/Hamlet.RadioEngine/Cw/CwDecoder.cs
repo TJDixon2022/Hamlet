@@ -321,6 +321,10 @@ public sealed class CwDecoder
         _lastSnrDb = double.NaN;
 
         _tracker.Forget();
+
+        // **THE LOCK GOES TOO** (work instruction 392's seam, kept by 395 when
+        // this piece came back): a lock is about a frequency.
+        Unlock();
     }
 
     /// <summary>
@@ -416,15 +420,6 @@ public sealed class CwDecoder
 
     /// <summary>Samples those chunks carried. This decoder has no queue.</summary>
     public long DecodeQueueDroppedSamples => 0;
-
-    /// <summary>The operator has moved the dial.</summary>
-    /// <remarks>
-    /// **THE LOCK GOES, BECAUSE A LOCK IS ABOUT A FREQUENCY** (work instruction
-    /// 392, a seam for today's application). That is the part of HEAD's
-    /// `Retuned` this decoder has the state for; the held pitch and peak it also
-    /// dropped arrived after this decoder was written.
-    /// </remarks>
-    public void Retuned() => Unlock();
 
     /// <summary>The slowest speed anybody would call a speed.</summary>
     public const int SlowestPlausibleWpm = 6;
