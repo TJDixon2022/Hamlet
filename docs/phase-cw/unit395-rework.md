@@ -145,6 +145,8 @@ piece; for piece 1 that is section 3.1 and 3.1a.
 
 | 7 | 7fb89d5e | record which admission test refused which bin, and by how much | the entry state, pieces 1 to 6 out | every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, piece `1e72c135`, reverted in the next commit | applied clean and built clean; 37 of 37, 13 of 13; nothing moved - it adds a refusal record beside the survey's verdict and changes no admission. Out under R51. |
 
+| 8 | 1bf4372d | the separation bound must not move, and the reason is upstream | the entry state, pieces 1 to 7 out | as a pair with piece 7: every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, pair commit `433180c4`, reverted in the next commit | did not apply alone: its `Record` call and `Readings` guard are piece 7's, out. Tried once as a pair with piece 7 under decision 5 in one commit; built clean, 37 of 37, 13 of 13, nothing moved. Its only code change is to lift the separation arithmetic into `Spread`, same arithmetic, and to measure it on refused bins when an instrument is watching. Out under R51. |
+
 Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
 it.
 
