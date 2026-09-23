@@ -93,10 +93,12 @@ internal static class CwFixtures
         // (HM-OPEN-018).
 
         // Prosigns, written in the radio's own notation where "^" keys the
-        // characters after it as one symbol (Full Manual p. 19-12).
+        // characters after it as one symbol (Full Manual p. 19-12). The same
+        // quiet band as the two above, unit 400 (HM-OPEN-018, HM-DEC-127).
         new CwFixture(
             "prosigns-18wpm", "W1AW DE K2ABC ^BT R TU ^SK", 18,
-            new CwSignalRequest("W1AW DE K2ABC ^BT R TU ^SK", WordsPerMinute: 18),
+            new CwSignalRequest(
+                "W1AW DE K2ABC ^BT R TU ^SK", WordsPerMinute: 18, NoiseAmplitude: 0.02),
             Clean: true),
 
         // A signal down in the noise, which is most of what is on the air.

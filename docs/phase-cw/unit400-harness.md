@@ -262,3 +262,38 @@ holds; the fixtures are kept.**
 
 **The set.** #25, #26, #31 and #32 green: 31 green and 20 red-open become **35 green and 16
 red-open**.
+
+**The repair commit is `7d1ffde6`.** Its first `git add` named the deleted writer, which had never
+been tracked, so git refused the whole add and nothing was committed; the commit was made again
+without that path. `PHASE_OUTCOME.md`'s task 2 line was appended once.
+
+## 4. The prosigns fixture (task 3)
+
+Started at 04:21, minute 16 of the unit, inside decision 13's clock.
+
+**In memory first**, through a sibling printer `Cw/TheProsignsFixtureAtABandTests.cs` (one fact,
+asserting nothing, kept and committed as task 3's printer; `TheCleanSyntheticsFourWaysTests` was
+not edited), 1 of 1 in 5 s:
+
+| Band | Text | `<BT>` | `<SK>` | Confident mistakes | Share | High | wpm |
+|---|---|---|---|---|---|---|---|
+| disk | `■ ■■■ A ■■ ■ ■■■ ■■ ■ ■■■ ■■■■ ■■■ ■■■■■` | no | no | 0 | 1 of 16 | 1 of 29 | 8 |
+| 0.02 | `W1AW DE K2ABC <BT> R TU <SK>` | yes | yes | 0 | 16 of 16 | 16 of 16 | 18 |
+
+All three held at 0.02, so the file was regenerated the same way: the request line gained
+`NoiseAmplitude: 0.02` and a one-line comment naming unit 400, HM-OPEN-018 and HM-DEC-127; a
+temporary `Cw/Unit400WriteTheProsignsFixture.cs` wrote `prosigns-18wpm.wav` only, 1 of 1;
+`git status --short tests/fixtures/cw` listed exactly that file. The writer had never been tracked,
+so it was deleted with `rm -f` inside the script rather than `git rm`, which would have refused
+it, as task 2's commit found. Then the project was rebuilt.
+
+**Decision 8, with `TheProsignRecordingDecodesItsProsigns` in place of the exact-text case.**
+`CwFixtureTests` whole: **22 green, 1 red** in 5 s - `TheProsignRecordingDecodesItsProsigns` (#33),
+`EveryRecordingGivesBackTheShareItShould` on `prosigns-18wpm` (#30), `NothingTheDecoderWasSureOfIsWrong`
+on `prosigns-18wpm` and the drift guard on `prosigns-18wpm` all green; the one red is
+`NothingTheDecoderWasSureOfIsWrong` on `fading-18wpm`, red at task 0, task 1 and task 2. Captures
+37 of 37 in 92 s, every row identical to entry; adjudicated 13 of 13 in 30 s, identical to entry
+bar the total-time line; `TheCleanReadsStayCleanTests` 6 of 7 and `TheSurveyAlreadyUsesAShortWindowTests`
+2 of 2, identical by case to task 2. **Decision 8 holds; the fixture is kept.**
+
+**The set.** #30 and #33 green: **37 green and 14 red-open**.
