@@ -129,4 +129,18 @@ files silent. The change makes `CwCounterTrail` return no delta when a counter w
 inside the window, a sheet fact outside the decode. Nothing moved: **out**, reverted in the next
 commit.
 
+**Piece 37, `aeea24f2`**, *admit a station by how far its bin swings, not by its average*. The
+`Cw` patch was 306 lines: `CwSwingSurvey.cs` new, 148 lines; `CwDecoder.cs` 106 insertions, 1
+deletion. `--check` failed at `CwDecoder.cs:384`; `--3way` left three conflict blocks in
+`CwDecoder.cs` (lines 285, 670, 747 of the merged file), cleaned at once with
+`unit397-clean.sh CwSwingSurvey.cs`, `src` back to `5688a8a5`. What the hunks need: `MaybeSwing`
+is called beside `MaybePeak` (piece 29, `efcd5242`) and `MaybeRank` (piece 19, `0f2089f3`); it
+reads `PeakWindowSeconds` and `PeakEverySeconds` (piece 29); `_swing is not null` is added to
+`Squelched` (piece 30, `95a5e063`); the resets sit beside `_peakToneHz` and `_rankedAtSample`.
+`grep` of `CwDecoder.cs` at HEAD for all eight names: 0. Decision 16's sequence on a clean `Cw`,
+`unit397-deps37.sh`: target `--check` failed at `CwDecoder.cs:384` after 30 (itself refusing);
+after 29 (refusing); after 3; after 3 then 12 as committed; after 3, 12, 19 (19 refusing); after
+3, 12, 19, 29, 30 (19, 29, 30 refusing). Three out pieces at least, one of which, 19, is itself
+dependent: **out under decision 5**, listed and not applied, no piece commit, no run.
+
 ## 3. The exit round, task 2
