@@ -1,0 +1,52 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatDecodeScoringCostsTests.OneDecodeAtOnePitchCostsThis [2 s]
+  Standard Output Messages:
+ capture cw-2026-08-24-012403: 1440000 samples at 48000 Hz = 30.0 s
+ 
+ budget: CwProbabilisticStream.ReadEverySeconds = 0.50 s = 500 ms
+         CwToneTracker survey verdict every 100 hops of 5 ms = 500 ms
+ 
+   window |  envelope |    decode |     total | chars |  ratio
+   -------|-----------|-----------|-----------|-------|-------
+     3.0 s |   4.05 ms |  20.93 ms |  24.98 ms |     0 |   1.17
+     6.0 s |   7.91 ms |  44.62 ms |  52.53 ms |    11 |   1.77
+    12.0 s |  15.99 ms |  93.64 ms | 109.63 ms |    21 |   1.69
+ 
+ how many candidates fit in one 500 ms cadence:
+ 
+   window | full cost | fits | envelope already taken | fits
+   -------|-----------|------|------------------------|-----
+     3.0 s |  24.98 ms |   20 |              20.93 ms |   23
+     6.0 s |  52.53 ms |    9 |              44.62 ms |   11
+    12.0 s | 109.63 ms |    4 |              93.64 ms |    5
+ 
+ coarse bank: 300-900 Hz at 25 Hz = 25 bins (CwToneTracker.MinimumToneHz..MaximumToneHz, CoarseSpacingHz)
+ fine bank:   +/-15 Hz at 5 Hz    =  7 bins (FineReachHz, FineSpacingHz)
+
+
+[xUnit.net 00:00:03.83]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatDecodeScoringCostsTests.APitchWithNothingOnItIsTheCheapCase [1 s]
+  Standard Output Messages:
+   3.0 s window, twenty passes each
+ 
+   capture                  | pitch |  decode | chars | ratio
+   -------------------------|-------|---------|-------|------
+   cw-2026-08-24-012403     |   440 | 20.97 ms |     0 |  1.17
+   cw-2026-08-20-014854     |   500 | 16.97 ms |    23 |  2.33
+   cw-2026-08-20-014854     |   837 | 17.91 ms |     0 |  0.33
+ 
+   gate: 1.40 per hop (HM-DEC-120, re-expressed 2026-08-24)
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 4.0825 Seconds
+RC=0 WALL=5s

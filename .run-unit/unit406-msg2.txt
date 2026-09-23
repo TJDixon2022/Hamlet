@@ -1,0 +1,7 @@
+unit406 task 2 kept, H2: #6 green - CwToneTracker.cs 957, ReadSurvey, a held switch is dropped when the survey it goes on admits the keying back within 25 Hz of the bank the tracker listens through and not at the held pitch; a survey admitting nothing lets the hold go as before
+
+#6 AFastFistIsReadWithoutARunUp 25 wpm 0.75 to 0.82 against 0.79, green. #15 0.54, #43 5+37, #44 3+21, #45 1+3, #42 70, each as entry.
+Gate: captures 37 of 37, every row identical to entry; adjudicated 13 of 13; clean synthetics 2 of 2; acquisition 11 of 12; receiver fixtures 23 of 27 identical; CwFixtureTests 22 of 23 identical; adjudication 11, gate 8, displacement 6, CapturedSignal 13, speed silence 4, WhyTheGate 2, two-station 5, each identical; tracker readers identical, bandwidth reader 4 of 6 as entry, 48 against 50.
+Shape H1 first, a held switch only if the survey re-admits the held pitch: #6 0.89, #15 0.61, #43 4+32, #44 2+20, #45 1+3, but captures 35 of 37 - 003016 57 to 55 and 031838 57 to 37 red, 031905 42 to 37, 032113 55 to 48, 032129 66 to 44 - put back.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

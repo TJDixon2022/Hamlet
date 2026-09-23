@@ -1,0 +1,29 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwSurveyThresholdPinTests.TheSurveyStillFindsRealKeyingWhereThereIsSome [1 s]
+  Standard Output Messages:
+ tracked 625 Hz, keying seen: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwSurveyThresholdPinTests.FindingTheToneIsNotClaimingSomebodyIsSending [1 s]
+  Standard Output Messages:
+ tracked 500 Hz, keying claimed on 0 measurements
+
+
+[xUnit.net 00:00:06.95]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwSurveyThresholdPinTests.TheToneInTheInterferenceCaptureIsStillFound [3 s]
+  Standard Output Messages:
+ tone 500 Hz, snr 38.7 dB, hasTone True
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 7.1984 Seconds
+RC=0 WALL=8s

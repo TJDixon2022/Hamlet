@@ -1,0 +1,6 @@
+unit406 task 3 kept: #42 green on the radio's word - CwReceiverFixtureTests.cs 280, the test's event reports RadioIsTransmitting keyed from 1.00 to 13.00 s, the recipe's PreambleSeconds before the sidecar's messageStart, on the audio clock, under R12 and HM-DEC-147; CwDecoder.cs 513 and ObserveOwnTransmission, the suspended arm feeds the transmit guard each hop's level and nothing else
+
+#42 NothingIsEmittedDuringTheOperatorsOwnTransmission: during 70 to 0, own transmit measured 9.08 to 9.5 s against > 3; both assertions and the 13 s window unchanged. Without the guard line, own transmit read 0.00 s (task 1 printer).
+Gate: receiver fixtures 24 of 27, only #42 changed; captures 37 of 37 every row identical to entry; adjudicated 13 of 13; clean synthetics 2 of 2; CwEmissionGateTests 8 of 8 identical; HamletDoesNotDecodeYourOwnSendingTests 6 of 6.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

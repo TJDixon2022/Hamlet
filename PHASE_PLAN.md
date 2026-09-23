@@ -161,6 +161,35 @@ correctness number, not on this pile); closing by ruling as done-partial. Standi
 from the same ruling: a capture Tim transcribes himself is the next phase's step 0, and
 nothing in 3.6 or 4.7 is a substitute for it.
 
+**R56 - Tim, 2026-09-23, 16:00: the tone tracker may be attacked in this phase.** Unit 405
+traced one cause under four of 3.6's reds: `CwToneTracker.Switch` moves the mixdown 25 to 85
+Hz off a single sender and reports the wrong pitch as measured (700 for 640, 575 for 615).
+The same disagreement appears on the air in `cw-2026-09-23-173723`, where the decoder says 600
+Hz and the independent sweep says 575 in the same capture. HM-DEC-095 and HM-DEC-127 still
+govern that code and are not overruled; what R56 grants is leave to change the switch inside
+this phase, with the floors, the adjudicated anchors and the 17:37 key as the guard. Rejected:
+parking the four and giving the tracker its own phase - *"A"*, and the phase's sentence is that
+CW decodes, which is what the tracker prevents.
+
+**R57 - Tim, 2026-09-23, 16:00: a floor counts named characters, not placeholders.** *"I hate
+all the false positive garbage."* The floors count every character emitted, and a placeholder
+(`■`) is a character, so unit 405's two working changes were thrown away for lowering rows that
+were nothing but placeholders, and every later unit failed the same way. From now: **a floor is
+the count of named characters; a row that falls solely because placeholders were suppressed is
+not a floor lowered.** All 37 capture rows are re-measured once, in one commit, with the old and
+new number printed side by side, and the adjudicated anchors and the 17:37 key are the
+independent check that nothing real was lost in the re-measurement. Rejected: a second number
+beside the old one (two numbers per row and still a rule needed for which wins); leaving it (the
+gate work could never be kept).
+
+**R58 - Tim, 2026-09-23, 16:00: the gate first, then the tracker.** *"both baby"*, in that
+order: 3.7 is the emission gate, 3.8 is the tracker. 3.6's four remaining reds - #15, #43, #44,
+#45 - get one pass under R57 at the start of 3.7's first unit, since R57 makes 405's greens
+keepable, and whatever is still red is then parked in `docs/phase-cw/PARKED.md` with its
+numbers; 3.6 closes on that pass either way, and no unit attacks a 3.6 red after it. Unit 405's
+**G1** (an out-of-order gap reading is not separated) is picked back up in the same pass: it was
+measured at zero cost across every floor and type and died only to the old keep rule.
+
 ## §3 What is different from the phases before it
 
 This phase moves the decode path, which no phase since 08-31 has. Two consequences the
@@ -236,8 +265,11 @@ named commit is `7e209cb4` by R53.
 - [x] 3.3 No test that reads audio and asserts characters, elements, a tone or a speed is retired; each such red is green or is listed red-open with its number and the reason it stays. **Unit 394, task 2: nothing retired; all 21 reds of the set read audio and are listed red-open in `docs\phase-cw\unit394-reds.md` section 2, each with its number and what it asserts - characters 14, share 5, speed 2. Unit 398, task 2: 20 retired from the excluded files, none asserting characters, elements, a tone or a speed from audio; the 31 excluded facts that do are left excluded and listed red-open in `docs\phase-cw\unit398-excluded.md` section 2.**
 - [x] 3.4 The known-reds block of `docs\carry-forward-tests.txt` names no CW test, and `docs\unit239-failing-set.txt` carries a closing line naming this phase and the count that went each way. **Unit 401: lines 158 and 159 of the known-reds block replaced by one CW line naming no test and pointing at the set's closing line and `unit394-reds.md`; grep over the file at exit finds no CW test named as a known red; the closing line written - 51 names, 31 green at HEAD without repair, 12 repaired, 0 retired, 8 red-open by number (#6, #15, #24, #41, #42, #43, #44, #45); the step's goal sentence stays partial on the 8 red-open under R49's own clause, red with its number and the step partial, each a repair owed under HM-DEC-151; `CwFixtureTests.TheCleanRecordingsDecodeExactly` on the engine line, 178 of 178 in 374 s of 480.**
 - [x] 3.5 The three floor tests are green at the exit of every commit of the step, and the carry-forward list is green on both lines. **Unit 400: captures 37 of 37 and adjudicated 13 of 13 at the exit of every commit of the step since `ee0ea0dc`; the two clean synthetics red at every commit before `7d1ffde6` under R53, which named them step 3's repair, and green 2 of 2 at the exit of every commit from it; app 277 of 278 in each of two runs, each loss a different name to the dispatcher loop before an assertion and green in the other run, and engine 176 of 176 in 374 s at the unit's exit. The tick stands while every later commit of the step keeps all three green and both lines green; a later unit that finds one red un-ticks it and names the commit.**
-- [ ] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count.
+- [ ] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count. **Under R58 this criterion closes on the single pass at the start of 3.7's first unit: any of #15, #43, #44, #45 still red after it is parked with its numbers and no further unit attacks it.**
 
+- [ ] 3.7 The emission gate no longer prints what the decoder does not know: on `cw-2026-09-23-173723`, on the three adjudicated anchors and on all 37 capture fixtures, no character is printed whose own span is below the gate's stated bar, no named character is lost anywhere, the three adjudicated readings are unchanged character for character, and the scored region of the 17:37 key reads no worse than it does at entry; the bar and the before-and-after counts of named and placeholder characters are in the report for every case.
+- [ ] 3.8 The decoder and the independent sweep agree about the pitch: on every single-sender case among the 37 captures, the three anchors and the 17:37 capture, the pitch the decoder mixes at and the pitch the 400 to 1200 Hz sweep reports differ by no more than one 25 Hz bin, measured and tabled per case; and each of #15, #43 and #44 is green or carries its post-R56 measurement.
+- [ ] 3.9 All 37 capture rows are re-measured once under R57 in a single commit, with the old count, the new named-character count and the placeholder count printed per row; the adjudicated anchors and the 17:37 key are run at that commit and are unchanged or better, and the report states plainly that no real character was lost.
 **Depends on:** step 2. Independent of step 4: when one blocks the arbiter works the other.
 
 ## Step 4 - The August rework is judged on numbers
@@ -306,6 +338,15 @@ nowhere to route - work it or halt.
 - **A floor would have to be lowered to go green.** Never. Report the number, `partial`.
 - **Anything would change what keys or transmits, or a byte of the transmit files in
   §3.** `MOVE: stop`.
+- **Suppressing a placeholder is not lowering a floor (R57).** A row that falls only in its
+  total while its named-character count holds or rises is not a regression; a row whose named
+  count falls is, and the change goes back out.
+- **A change to `CwToneTracker` is licensed by R56** and judged by 3.8's per-case table, the
+  floors' named counts, the three anchors unchanged, and the 17:37 key's scored region. A
+  tracker change that improves the table and costs a single anchor character goes back out.
+- **The 17:37 key is inferred, not transcribed.** No report may call it what was sent. Every
+  number measured against it is stated as *against an inferred key* (§0.0, FACT-004), and the
+  unscored first third of that recording is never keyed.
 - **A package is needed.** `MOVE: stop`.
 - **The `UNIT:` line of every report carries no parentheses**, and no `&`, `|`, `<`, `>`
   or `^`. `validate-output.bat` rule 1 echoes that line inside a parenthesized block, so a
@@ -331,6 +372,12 @@ including hardening 5.1.
 
 - **2026-09-22.** Written from the interview: R47 to R52; six steps; the three floor tests
   named from the tree; the transmit files fenced in §3.
+- **2026-09-23, 16:00.** R56 the tracker is open; R57 a floor counts named characters; R58 the
+  gate first then the tracker, and 3.6 closes on one pass under R57. New criteria 3.7 the
+  emission gate, 3.8 the pitch agreement, 3.9 the re-measurement. Written after seven units
+  (401 to 407) tried thirty-four changes and kept none, two of them green but refused by the
+  old floor rule, and after `cw-2026-09-23-173723` read `CQ CQ CQ DE WB6RED WB6RED` with the
+  letters right and the spacing wrong.
 - **2026-09-23, morning.** R55: 3.6 (the eight reds by number, green or parked after three
   tries) and 4.7 (the fourteen chained pieces, each chain one commit, one verdict); §6's pair
   rule extended to chains under 4.7 and a three-tries rule for 3.6. Written after the loop

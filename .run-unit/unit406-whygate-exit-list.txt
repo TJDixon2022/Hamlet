@@ -1,0 +1,2 @@
+Passed Hamlet.RadioEngine.Tests.Cw.WhyTheGateDidNotFireTests.WhatEachRefusalWouldCost
+Passed Hamlet.RadioEngine.Tests.Cw.WhyTheGateDidNotFireTests.WhereTheCharactersCameFrom

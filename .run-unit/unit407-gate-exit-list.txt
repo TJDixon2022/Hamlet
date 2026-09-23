@@ -1,0 +1,8 @@
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 4)
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 5)
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 52)
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.ASpeedThisRadioCannotSendIsNeverShown(wpm: 64)
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.HalfAMinuteOfNoiseProducesNothing
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.TheBoundsAreTheRadiosOwn
+Passed Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.TheTapKnowsWhetherAnyAudioHasArrived

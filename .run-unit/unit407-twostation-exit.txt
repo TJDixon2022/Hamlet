@@ -1,0 +1,40 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.NoSingleClockIsFittedAcrossBothStations [972 ms]
+  Standard Output Messages:
+ final speed none wpm, reading 22 wpm
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.TheTrackerFollowsTheStationThatAnswers [923 ms]
+  Standard Output Messages:
+ tone early 625 Hz, late 735 Hz, 5 moves
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.NoSwitchIsTakenMidCharacter [910 ms]
+  Standard Output Messages:
+ 5 moves, 0 of them mid-character
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.TheChangeOfStationIsNoticedRatherThanAveraged [919 ms]
+  Standard Output Messages:
+ 1 speed-change reports, 0 clock losses, 5 tracker moves
+
+
+[xUnit.net 00:00:04.88]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.NothingIsInventedAtTheHandover [929 ms]
+  Standard Output Messages:
+ 84 characters, 16 not in either message
+ CTGQQ  T DCCTMZQQ E NDDEE E NNTMO■0■■■CC■AAALLELALL  T KKK   ■ ■  E■ S 5■■■■■E■DBEBWWR11N1XEXKYTYZZ T KK  
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 5.1326 Seconds
+RC=0 WALL=6s

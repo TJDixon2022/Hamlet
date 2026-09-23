@@ -1,0 +1,39 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.HamletDoesNotDecodeYourOwnSendingTests.NothingHeardWhileSendingIsReleasedAfterwards [2 s]
+  Standard Output Messages:
+ keyed for the first fifteen seconds: 43 characters, 0 of them stamped inside it
+ not keyed at all: 73 characters
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.HamletDoesNotDecodeYourOwnSendingTests.DecodingResumesWhenTheTransmitterDrops [1 s]
+  Standard Output Messages:
+ 60 characters after four seconds keyed
+ 'N RL D O T N E T <BT> ■ E AC H STATION HANDLING THIS MESSAGE PE'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.HamletDoesNotDecodeYourOwnSendingTests.NotKnowingIsNotTransmitting [6 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.HamletDoesNotDecodeYourOwnSendingTests.SuspensionIsImmediateAndResumptionWaits [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.HamletDoesNotDecodeYourOwnSendingTests.NothingIsDecodedWhileTheRadioIsTransmitting [25 ms]
+  Standard Output Messages:
+ 0 characters, 6000 chunks dropped
+
+
+[xUnit.net 00:00:06.07]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.HamletDoesNotDecodeYourOwnSendingTests.BreakInCyclingDoesNotCostTheStation [1 s]
+  Standard Output Messages:
+ 62 characters through the cycling
+ 'E J J A T E N E T <BT> ■E AC H STA TI ON HANDLING THIS MESSAGE PE'
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 6.3211 Seconds
+RC=0 WALL=7s

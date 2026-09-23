@@ -1,0 +1,4 @@
+Passed Hamlet.RadioEngine.Tests.Cw.TheGateHasItsOwnWindowNowTests.TheSurveyKeepsItsWindowWhateverTheGateTakes(gateHops: 10)
+Passed Hamlet.RadioEngine.Tests.Cw.TheGateHasItsOwnWindowNowTests.TheSurveyKeepsItsWindowWhateverTheGateTakes(gateHops: 4)
+Passed Hamlet.RadioEngine.Tests.Cw.TheGateHasItsOwnWindowNowTests.TheSurveyKeepsItsWindowWhateverTheGateTakes(gateHops: 6)
+Passed Hamlet.RadioEngine.Tests.Cw.TheGateHasItsOwnWindowNowTests.UnsetTheGateStillTakesTheSurveysWindow

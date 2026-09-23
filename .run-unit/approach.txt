@@ -1,1 +1,1 @@
-decode Tim's 12:55 UTC capture through the decoder at HEAD and at a902cdf8, the commit before unit 402's speed repair, and print both transcripts with their counts, changing no file under src
+hold a tracker move off the pitch being read while that bank is still on/off keying, traced first on #15 #43 #44 against the five captures H1 cost and the handovers; #45's easy-tier event pumps the air's trailing silence before Flush and reads the settled transcript under R12

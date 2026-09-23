@@ -1,0 +1,6 @@
+Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400)
+Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 500)
+Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 750)
+Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 875)
+Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead
+Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage

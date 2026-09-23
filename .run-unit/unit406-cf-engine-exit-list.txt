@@ -1,0 +1,178 @@
+Passed Hamlet.RadioEngine.Tests.Audio.RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-17-013347, Adjudicated = VA3VRR, Anchor = VA3VRR, Ruling = HM-DEC-145, Retired =  })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-17-134712, Adjudicated = N4L, Anchor = N4, Ruling = HM-DEC-144, Retired = the peak measures 501.2 Hz against a station at 500.09, and the callsign was only ever read because an unmeasured bank centre of 500.0 landed on it (Tim, 2026-08-30) })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-18-004507, Adjudicated = AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P, Anchor = N HANDLING THIS MESSAG, Ruling = HM-DEC-115, Retired =  })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-18-003758, Adjudicated = AA4MP/4 QNIK, Anchor = MP/4 QNIK, Ruling = HM-DEC-126, Retired =  })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031838, Adjudicated = 2, 2, AND 2 WITH A MEAN OF 2.9. PRE, Anchor = , AND, Ruling = Tim 2026-08-25, Retired =  })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031905, Adjudicated = DICTED 10.7 CENTIMETER FLUX IS 125, 125, Anchor = DICTED 10.7, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031948, Adjudicated = 110, 110, AND 110 WITH A MEAN OF 117, Anchor = 110, AND 110 WITH A MEAN OF 117, Ruling = Tim 2026-08-25, Retired =  })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032012, Adjudicated = N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI, Anchor = R OTHER WEBSITES MENTI, Ruling = Tim 2026-08-25, Retired =  })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032050, Adjudicated = THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE, Anchor = ULLETIN CAN BE FO, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032113, Adjudicated = ACKET, AND INTERNET VERSIONS, Anchor = INT, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032129, Adjudicated = 2026 PROPAGATION FORECAST BULLETIN ARLP034, Anchor = OPAGATION, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-24-012403, Adjudicated = DE KD0UN KD0UN K, Anchor = DE KD0UN KD0UN K, Ruling = work instruction 011, Retired =  })
+Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.TheShortfallIsPrintedRatherThanPapered
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-011552", characters: 30, elements: 89, unsure: 8)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012748", characters: 2, elements: 4, unsure: 0)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012823", characters: 41, elements: 62, unsure: 15)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012922", characters: 50, elements: 112, unsure: 5)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013010", characters: 54, elements: 131, unsure: 6)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013150", characters: 58, elements: 139, unsure: 7)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013303", characters: 54, elements: 146, unsure: 10)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013402", characters: 61, elements: 161, unsure: 5)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013520", characters: 60, elements: 153, unsure: 5)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013637", characters: 63, elements: 164, unsure: 3)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021410", characters: 47, elements: 99, unsure: 11)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021629", characters: 47, elements: 96, unsure: 20)
+Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021825", characters: 41, elements: 74, unsure: 16)
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.NoiseYieldsNoCandidate
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.TheSearchWritesItsEventWithNoTextOrCallsign
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.TheUnannouncedCarrierIsFoundAndRead
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-16-500-qso-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-32-1000-qso-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-8-250-cq-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "16/500")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "32/1000")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "8/250")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDriftTests.ADriftingCarrierIsHeld
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-16-500-qso-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 63 blocks")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-16-500-qso-snr-10db.wav", ceiling: 0.050000000000000003, wholeFile: "CER 0.0000, 63 blocks")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-32-1000-qso-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 51 blocks")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-8-250-cq-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 13 blocks")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.NoiseOpensNothing
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TheListenersEventsCarryNoTextOrCallsign
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TheUnannouncedFileIsOneChannelFoundBlind
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TwoStationsAreTwoChannelsEachWithItsOwnText
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "16/1000")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "16/500")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "32/1000")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "4/250")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "4/500")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "8/250")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "8/500")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-snr-10db.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-snr-16db.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-32-1000-qso-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-8-250-cq-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-8-250-qso-norsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-noise-only-30s.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-two-signals-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.TheWindowIsTheFactorTimesTheTimingTable
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.StrengthsAreOrderedAsTheFixtureWasMade
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheCleanFixtureYieldsExactlyOne
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheFourSignalFixtureYieldsFourCarriersAndNoOthers
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheNoiseOnlyFixtureYieldsNoCarriers
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheRuleAndItsNumbersLiveInOneNamedPlace
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheStrengthIsMeasuredAgainstTheStatedSnr
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheTwoSignalFixtureYieldsTwoCarriersAndNoOthers
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TwoCarriersAHundredHertzApartAreBothFound
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.ACarrierThatDriftsIsHeld
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AChannelAtOneThousandIgnoresAStationAtFifteenHundred
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AtMinusThreeDecibels
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AtTenDecibels
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AtThreeDecibels
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.EveryCaptureOffTheAirIsReadBack
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.EveryFixtureIsTheFileTheManifestSaysItIs
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheCleanFixtureDecodes
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheFirstCharacterLatencyIsReportedAndIsUnderTheStatedCeiling
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheSquelchProducesNothingFromNothing
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheSquelchRuleAndItsNumberLiveInOneNamedPlace
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheWeakSignalFixtureIsMeasuredAndNotGated
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.AddressedToTheOperatorComesFromTheCorpusOperatorField
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.AnExchangeWithNoReportStillEndsOn73
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.EveryLineYieldsTheSpeakerAddresseeKindAndTurnoverTheCorpusStates
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.NoLineTheCorpusMarksUncertainComesBackCertain
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.RstAndGridWhereTheCorpusStatesThem
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.TheCallsignRuleIsTheOneTheTreeAlreadyUses
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.TheParseHasNoMemberForNameOrQth
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.TheUnknownRatePerTranscriptIsNotLowerThanTheCorpusExpects
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31MessageSplitTests.OnTheGarbledTranscriptNothingIsMoreCertainThanTheLinesItHolds
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31MessageSplitTests.SevenTranscriptsComeBackInOrderEachParsingAsTheCorpusStates
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31MessageSplitTests.TextWithNoTurnoverYetYieldsNoMessage
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.EachMacroComesBackIdenticalThroughHamletsOwnDemodulator(sampleRate: 48000, offsetHz: 1000)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.EachMacroComesBackIdenticalThroughHamletsOwnDemodulator(sampleRate: 48000, offsetHz: 1500)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.EachMacroComesBackIdenticalThroughHamletsOwnDemodulator(sampleRate: 8000, offsetHz: 1000)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.NoCallsignIsWrittenIntoTheModulatorOrTheMacros
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheCqMacroAtTheReceivePathsRateIsUnderAHundredHertzWideThirtyDecibelsDown
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheFourMacrosAreTheRulingsTextsToTheSpace
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheIdleEitherSideIsLongerThanTheShortestThatStillReadsBack(sampleRate: 48000)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheIdleEitherSideIsLongerThanTheShortestThatStillReadsBack(sampleRate: 8000)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheLongestMacroIsUnderAHundredHertzWideThirtyDecibelsDown
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 0.100000001)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 0.25)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 0.5)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 1)
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheReportToACompoundCallsignFitsUnderTheRulingsCeiling
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheSymbolIsThirtyOnePointTwoFiveBaudAndTheEnvelopeDipsOnlyAtReversals
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheTableOfTheFourMacros
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.ACertainYourTurnOffersTheMacroTheExchangeCallsForNext
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.MessagesToTheOperatorBesideOffersMade
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.NothingIsOfferedUnlessItIsHisTurnAndAGuessOffersOnlyAReport
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.TheNotForMeTranscriptOffersNothingAndTheGarbledOneOffersOnlyAReport
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.AnIdlingEventAndATypingEventBracketTheGap
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.AnIdlingStationIsNominatedAtTheBalancePointOfItsTwoSidebands
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.BothHalvesAreReadAtOrUnderFiveHundredthsError
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheDemodulatorLetsGoInsideTheBoundTheListenerPromises
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheEightSecondIdleYieldsOneCarrierForTheWholeFile
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheFourSignalFixtureStillYieldsFourAndTheNoiseOnlyNone
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheKeepRuleAndItsNumbersLiveInOneNamedPlace
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.ACertainMessageTheOperatorSpokeThatHandsOverIsACertainHisTurn
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.ACertainMessageToTheOperatorThatHandsOverIsACertainYourTurn
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.AnUncertainMessageIsNeverACertainYourTurn
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.CharactersAfterATurnoverWithNoNewTurnoverYetAreHeIsStillSending
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "BTU")
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "K")
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "KN")
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "OVER")
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.MessagesToTheOperatorAndOnHowManyYourTurnIsCertain
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.TheStateChangesWithinOneCharacterOfTheFinalTurnoverWord
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.TheTranscriptNotForTheOperatorNeverYieldsYourTurn
+Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.UnknownBeforeAnyMessage
+Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.All256CodesRoundTrip
+Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.IdleBeforeAndAfterDecodesToTheTextAlone
+Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.NoCodeContainsTwoZerosAndEveryOneStartsAndEndsWithOne
+Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.TheFivePublishedSpotChecks
+Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.TheQsoTextEncodesAndDecodesBackIdentical
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.EachBurstReadsBackAtThreeCentersAcrossThePassband
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.EveryCodeWithASequenceMakesTheFilesTones
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 12000)
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 44100)
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 48000)
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 8000)
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheShippedBurstMatchesHamletsSequenceSymbolForSymbol(file: "olivia-8-250-cq-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheShippedBurstMatchesHamletsSequenceSymbolForSymbol(file: "psk31-cq-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.AFileWithNoBurstYieldsNone(file: "olivia-8-250-qso-norsid.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.AFileWithNoBurstYieldsNone(file: "olivia-noise-only-30s.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-16-500-qso-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-16-500-qso-snr-10db.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-16-500-qso-snr-16db.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-32-1000-qso-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-8-250-cq-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "psk31-cq-rsid.wav")
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheBurstSixteenDecibelsBelowTheNoiseIsDetected
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime
+Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheTwoSignalFixtureYieldsTwoDetections
+Passed Hamlet.RadioEngine.Tests.Transmit.TheFt8AndFt4SendsAreByteIdenticalTests.AnFt4SendIsTheSameBytesSamplesRunAndRecord
+Passed Hamlet.RadioEngine.Tests.Transmit.TheFt8AndFt4SendsAreByteIdenticalTests.AnFt8SendIsTheSameBytesSamplesRunAndRecord
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ABoundaryNeverRunsASendWithNoSlotAndNowNeverRunsASlottedOne
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ASendWithNoSlotHasNoSlotStartOffsetGridOrFt8Transmission
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ASendWithNoSlotLongerThanTheCapIsRefusedBeforeItArmsWithARecord
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ASendWithNoSlotUnderTheCapGoesOutAtOnceThroughTheOnePath
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ATextAtTheCapWithItsBurstFitsAndOneSampleMoreDoesNot(rate: 12000)
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ATextAtTheCapWithItsBurstFitsAndOneSampleMoreDoesNot(rate: 48000)
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.AnAnnouncementLongerThanTheBurstOrWithNoCodeIsLongerThanTheCap
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.PttOnHasExactlyOneUseSiteUnderSrc
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheLicenceGateHoldsForASendWithNoSlot(what: "outside a Technician's privileges", licenseClass: Technician, guardEnabled: True)
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheLicenceGateHoldsForASendWithNoSlot(what: "the class is unknown", licenseClass: Unknown, guardEnabled: True)
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheLicenceGateHoldsForASendWithNoSlot(what: "the guard is off, so the gate permits on the opera"···, licenseClass: Technician, guardEnabled: False)
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheOperatorsStopReachesASendWithNoSlotWhileItPlays
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheRecordSaysWhetherTheSendWasAnnounced
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheReportToACompoundCallsignFitsWithItsBurstOutsideTheCap
+Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.UnannouncedAudioIsMeasuredWholeAsBefore

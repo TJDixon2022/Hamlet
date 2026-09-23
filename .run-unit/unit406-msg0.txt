@@ -1,0 +1,3 @@
+unit406 task 0: record and entry round - version 1.13.93, PHASE_STATUS 406 step 3; lines are unit 405's exit under decision 7; captures 37 of 37 every row as 405 exit, adjudicated 13 of 13, synthetics 2 of 2; #6 0.75, #15 0.54, #42 70, #43 5+37, #44 3+21, #45 1+3; speed readers 13, 4, 2, 5 green; tracker readers green but WhatBandwidth 4 of 6 red at entry and TheGateHasItsOwnWindowNow past 590 s with its short methods 4 of 4; transmit files print nothing against 7e209cb4
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

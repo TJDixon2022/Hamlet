@@ -1,0 +1,2 @@
+Passed Hamlet.RadioEngine.Tests.Cw.TheSurveyAlreadyUsesAShortWindowTests.TheDefaultWindowIsThreeSeconds
+Passed Hamlet.RadioEngine.Tests.Cw.TheSurveyAlreadyUsesAShortWindowTests.ThirtySecondsOfHopsLeavesThreeSecondsOfHistory

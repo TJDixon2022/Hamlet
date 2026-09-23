@@ -1,0 +1,11 @@
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.AFadeInRealisticAudio
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.AFastFistInRealisticAudio
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 400)
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 500)
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 750)
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 875)
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASpeedChangeInRealisticAudio
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -10)
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -3)
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -6)
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ClearingTheScreenLeavesTheDecoderAloneOnRealisticAudio

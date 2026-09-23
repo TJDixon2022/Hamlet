@@ -1,0 +1,13 @@
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-013347")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-013622")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-17-134712")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead(name: "cw-2026-08-18-004507")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheCapturesAreGenuinelyDifferentRecordings
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-013347")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-013622")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-134712")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-18-004507")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-013347")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-013622")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-17-134712")
+Passed Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheToneIsFound(name: "cw-2026-08-18-004507")

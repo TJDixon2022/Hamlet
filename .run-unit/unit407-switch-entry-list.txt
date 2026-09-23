@@ -1,0 +1,2 @@
+Passed Hamlet.RadioEngine.Tests.Cw.CwTrackerSwitchTests.AHeldSwitchHappensOnceTheCharacterCloses
+Passed Hamlet.RadioEngine.Tests.Cw.CwTrackerSwitchTests.NoSwitchHappensPartWayThroughACharacter

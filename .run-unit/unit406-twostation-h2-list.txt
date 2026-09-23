@@ -1,0 +1,5 @@
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.NoSingleClockIsFittedAcrossBothStations
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.NoSwitchIsTakenMidCharacter
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.NothingIsInventedAtTheHandover
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.TheChangeOfStationIsNoticedRatherThanAveraged
+Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwTwoStationTests.TheTrackerFollowsTheStationThatAnswers

@@ -1,0 +1,30 @@
+
+============================================================
+ validate-output
+   file : C:\Source\HamLet\output.md
+============================================================
+
+ Rules applied, held by this script and NOT read from
+ CLAUDE_CODE.md at run time (CPS-DEC-066):
+   1  a UNIT: line above section 1, parseable
+   2  the four top-level sections, in order, exact names
+   3  no fifth top-level section
+   4  section 4 present even when empty
+   5  section 3 non-empty
+   -  ### and deeper are IGNORED: section 8's "no other
+      headings" is read as governing top-level sections
+   -  section names are joined with ~ for display: a | in an
+      echo is a PIPE, and echoing the list raw made cmd try to
+      run "2." as a command
+
+  ok      rule 1  UNIT: line present
+                  UNIT:       406 - complete at task 5 of 5, tasks 0 to 5, none dropped - 2026-09-23 14:54
+  ok      rule 2  four top-level sections, in order, exact names
+  ok      rule 3  no fifth top-level section
+  ok      rule 4  section 4 present
+  ok      rule 5  section 3 has 32 non-blank lines
+  ok      rule 6  ordering block present, A B C, and C names a count
+
+  VALID - all six rules passed.
+
+validate-output exit 0

@@ -1,0 +1,10 @@
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheAcquisitionReds(wordsPerMinute: 12, prefix: "VVV ")
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheAcquisitionReds(wordsPerMinute: 25, prefix: "")
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheCaptures
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheEasyTier(name: "coverage-easy")
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheEasyTier(name: "exchange-easy")
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheEasyTier(name: "tightfist-easy")
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheHandovers
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheTail(name: "coverage-easy")
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheTail(name: "exchange-easy")
+Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheTail(name: "tightfist-easy")

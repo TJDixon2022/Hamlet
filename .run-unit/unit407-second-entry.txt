@@ -1,0 +1,35 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheOperatorIsToldAboutASecondStationTests.TheSentenceNamesTheControlAndOffersToChangeNothing [2 ms]
+  Standard Output Messages:
+ There is somebody else keying about 180 hertz above the station you are reading, and they are coming in about 4 decibels down. Everything inside the filter arrives in the same envelope Hamlet measures, so narrowing FILTER will help, and once it is narrow the TWIN PBT controls will slide the passband off them.
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheOperatorIsToldAboutASecondStationTests.SomebodyBelowIsSaidToBeBelow [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheOperatorIsToldAboutASecondStationTests.ASecondStationInThePassbandIsFoundAndMeasured [767 ms]
+  Standard Output Messages:
+ +175 Hz at -0.2 dB (800 Hz)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheOperatorIsToldAboutASecondStationTests.AnEmptyBandIsNotReportedAsClear [4 s]
+  Standard Output Messages:
+ nothing found at any moment
+
+
+[xUnit.net 00:00:06.65]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheOperatorIsToldAboutASecondStationTests.AStationOnItsOwnProducesNoMentionAtAll [659 ms]
+  Standard Output Messages:
+ nothing found at any moment, which is right
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 6.9091 Seconds
+RC=0 WALL=7s

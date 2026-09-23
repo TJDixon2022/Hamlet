@@ -1,0 +1,5 @@
+Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.ACarrierNeverConvincesTheTrackerItIsAStation
+Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.ASurveyWithNoHistorySaysNothing
+Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.NoKeyingIsClaimedWhereNoneWasFound
+Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.TheStationAnsweringACallIsFoundByItsKeying
+Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.TheStrongSignalThatIsNotKeyingIsReportedAsInterference

@@ -1,0 +1,5 @@
+Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.LockingTakesTheMeasuredPeakAndSaysWhatItTook
+Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.TheMeasuredPeakLandsBetweenTheBins
+Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.UnlockingLetsTheTrackerSteerAgain
+Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.WhileLockedTheTrackerDoesNotSteerTheDecoder
+Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.WithNothingMeasuredNothingIsLocked

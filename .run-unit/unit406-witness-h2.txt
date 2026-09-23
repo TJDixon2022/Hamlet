@@ -1,0 +1,320 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-013637") [327 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013637: 550 Hz, element median 46 ms over 302 key-downs, score 0.229, duty 0.434
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-18-003126") [289 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003126: 675 Hz, element median 52 ms over 207 key-downs, score 0.311, duty 0.449
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-09-23-173723") [321 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-23-173723: 600 Hz, element median 71 ms over 322 key-downs, score 0.192, duty 0.480
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-20-014854") [297 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854: 575 Hz, element median 46 ms over 449 key-downs, score 0.059, duty 0.286
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-031905") [289 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031905: 500 Hz, element median 74 ms over 268 key-downs, score 0.262, duty 0.551
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-002734") [291 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002734: 600 Hz, element median 44 ms over 884 key-downs, score 0.020, duty 0.308
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-013520") [280 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013520: 550 Hz, element median 46 ms over 322 key-downs, score 0.191, duty 0.412
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-26-125941") [285 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-26-125941: 450 Hz, element median 30 ms over 1377 key-downs, score 0.012, duty 0.434
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-002424") [131 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002424: 750 Hz, element median 28 ms over 686 key-downs, score 0.008, duty 0.326
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-012922") [278 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012922: 500 Hz, element median 60 ms over 359 key-downs, score 0.115, duty 0.400
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-031948") [275 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031948: 500 Hz, element median 165 ms over 222 key-downs, score 0.308, duty 0.585
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-032113") [276 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032113: 500 Hz, element median 80 ms over 241 key-downs, score 0.270, duty 0.540
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-24-012403") [275 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-24-012403: 450 Hz, element median 63 ms over 510 key-downs, score 0.085, duty 0.435
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-20-014935") [275 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935: 600 Hz, element median 27 ms over 1318 key-downs, score 0.020, duty 0.391
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-28-004902") [275 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004902: 400 Hz, element median 46 ms over 137 key-downs, score 0.358, duty 0.389
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-28-005243") [279 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005243: 625 Hz, element median 57 ms over 167 key-downs, score 0.214, duty 0.307
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-014308") [279 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014308: 625 Hz, element median 38 ms over 884 key-downs, score 0.042, duty 0.376
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-18-003758") [275 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758: 500 Hz, element median 47 ms over 172 key-downs, score 0.170, duty 0.296
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-032050") [277 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032050: 500 Hz, element median 73 ms over 280 key-downs, score 0.211, duty 0.492
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-003229") [290 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003229: 575 Hz, element median 70 ms over 270 key-downs, score 0.080, duty 0.258
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-003419") [285 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003419: 625 Hz, element median 71 ms over 285 key-downs, score 0.101, duty 0.295
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-23-002016") [276 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-002016: 475 Hz, element median 55 ms over 847 key-downs, score 0.060, duty 0.485
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-28-005158") [276 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005158: 625 Hz, element median 64 ms over 81 key-downs, score 0.150, duty 0.188
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "cw-2026-08-18-004507") [278 ms]
+  Standard Output Messages:
+ cw-2026-08-18-004507: 500 Hz, element median 58 ms over 180 key-downs, score 0.244, duty 0.382
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "cw-2026-08-17-013622") [276 ms]
+  Standard Output Messages:
+ cw-2026-08-17-013622: 600 Hz, element median 33 ms over 1171 key-downs, score 0.022, duty 0.419
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-28-004844") [274 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004844: 450 Hz, element median 45 ms over 127 key-downs, score 0.389, duty 0.396
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-003408") [296 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003408: 600 Hz, element median 74 ms over 220 key-downs, score 0.140, duty 0.325
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-032129") [276 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032129: 500 Hz, element median 78 ms over 243 key-downs, score 0.270, duty 0.536
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-28-004915") [283 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-004915: 400 Hz, element median 67 ms over 136 key-downs, score 0.340, duty 0.376
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-18-003016") [298 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016: 675 Hz, element median 51 ms over 234 key-downs, score 0.291, duty 0.458
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-013150") [283 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013150: 525 Hz, element median 49 ms over 489 key-downs, score 0.110, duty 0.429
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-032012") [277 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032012: 500 Hz, element median 75 ms over 250 key-downs, score 0.251, duty 0.519
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-23-001831") [278 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001831: 525 Hz, element median 59 ms over 442 key-downs, score 0.106, duty 0.409
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-013303") [280 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013303: 500 Hz, element median 50 ms over 419 key-downs, score 0.134, duty 0.438
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-28-005051") [278 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005051: 450 Hz, element median 66 ms over 107 key-downs, score 0.073, duty 0.181
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "cw-2026-08-17-013347") [276 ms]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 600 Hz, element median 88 ms over 331 key-downs, score 0.048, duty 0.268
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-28-005218") [282 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-28-005218: 600 Hz, element median 54 ms over 195 key-downs, score 0.187, duty 0.301
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-014113") [277 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014113: 600 Hz, element median 57 ms over 875 key-downs, score 0.019, duty 0.305
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-013010") [276 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013010: 500 Hz, element median 52 ms over 438 key-downs, score 0.117, duty 0.422
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-021410") [278 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021410: 550 Hz, element median 78 ms over 356 key-downs, score 0.096, duty 0.395
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-012823") [281 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012823: 500 Hz, element median 63 ms over 601 key-downs, score 0.078, duty 0.429
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-021825") [277 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021825: 325 Hz, element median 31 ms over 1553 key-downs, score 0.023, duty 0.518
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-002759") [287 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002759: 600 Hz, element median 54 ms over 459 key-downs, score 0.068, duty 0.295
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-23-001520") [78 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001520: 525 Hz, element median 101 ms over 75 key-downs, score 0.486, duty 0.486
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "cw-2026-08-17-134712") [279 ms]
+  Standard Output Messages:
+ cw-2026-08-17-134712: 500 Hz, element median 55 ms over 176 key-downs, score 0.017, duty 0.127
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-013402") [280 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013402: 550 Hz, element median 46 ms over 334 key-downs, score 0.208, duty 0.447
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-003212") [279 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-003212: 600 Hz, element median 68 ms over 306 key-downs, score 0.059, duty 0.243
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-021629") [279 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021629: 500 Hz, element median 64 ms over 494 key-downs, score 0.036, duty 0.293
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-002829") [284 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002829: 600 Hz, element median 52 ms over 443 key-downs, score 0.141, duty 0.398
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-23-001952") [302 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001952: 475 Hz, element median 55 ms over 794 key-downs, score 0.054, duty 0.453
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-09-23-125515") [284 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-23-125515: 500 Hz, element median 23 ms over 1788 key-downs, score 0.006, duty 0.438
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-011552") [279 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-011552: 500 Hz, element median 70 ms over 476 key-downs, score 0.091, duty 0.427
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-25-012748") [278 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012748: 400 Hz, element median 63 ms over 475 key-downs, score 0.122, duty 0.472
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-22-031838") [276 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031838: 500 Hz, element median 152 ms over 264 key-downs, score 0.254, duty 0.553
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoReadingClaimsAKeyDownNobodyCouldSend(name: "unadjudicated/cw-2026-08-31-002443") [140 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-31-002443: 525 Hz, element median 52 ms over 505 key-downs, score 0.008, duty 0.287
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoWindowOfAnEmptyBandEverSaysKeying(name: "unadjudicated/cw-2026-08-22-014308") [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014308: 25 windows, 0 of them claiming keying
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoWindowOfAnEmptyBandEverSaysKeying(name: "unadjudicated/cw-2026-08-22-014113") [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014113: 25 windows, 0 of them claiming keying
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoWindowOfAnEmptyBandEverSaysKeying(name: "unadjudicated/cw-2026-08-20-014935") [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935: 25 windows, 0 of them claiming keying
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.NoWindowOfAnEmptyBandEverSaysKeying(name: "unadjudicated/cw-2026-08-20-014854") [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854: 25 windows, 0 of them claiming keying
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.ARecordingHoldingNothingStillReadsAsHoldingNothing(name: "unadjudicated/cw-2026-08-20-014935") [283 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935: score 0.020 against a bar of 0.10
+
+
+[xUnit.net 00:00:21.12]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.ARecordingHoldingNothingStillReadsAsHoldingNothing(name: "unadjudicated/cw-2026-08-20-014854") [279 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854: score 0.059 against a bar of 0.10
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheKeyingWitnessSaysNothingImpossibleTests.TheSweepLooksExactlyWhereTheDecoderCan [1 ms]
+
+Test Run Successful.
+Total tests: 62
+     Passed: 62
+ Total time: 21.3733 Seconds
+RC=0 WALL=22s

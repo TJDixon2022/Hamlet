@@ -1,3 +1,74 @@
 ﻿
-Nothing. No criterion of step 3 needs a ruling: 3.6 can always be met by the three-attempt
-verdict. The two findings that block nothing are `PARKED.md` 402 items 1 and 2.
+1. **#15, #43 and #44 have no route left inside what has been licensed.** Stands in the way of
+   3.6.
+   - **Ruling asked:** what is the next property to look for, or do these three wait for a
+     ruling on the floors or the count rule?
+   - **Reasoning:** three properties have now been tried at the hold:
+     - H1 asked whether the survey still admits the held pitch. It stopped good moves.
+     - H2 asked whether the survey admits the keying back at the bank. It is kept, and it does
+       not reach these three.
+     - This unit asked whether the bank is still keying. It does not separate.
+
+     The station is audible through the bank's own reach in both kinds of move, so a property
+     read at the old pitch cannot tell them apart. One further finding needs Tim's eye before
+     anyone builds on it. Under the noise-referenced rule, the H1 rows read *not keying* only
+     because a real receiver's passband keeps the key-ups well above the band beside it, which
+     the flat noise of the synthetic reds does not do. That is Â§12.5's warning about fixtures
+     built from the same misunderstanding. It is not a property to fit.
+   - **Rejected:** narrowing the property to spans, seconds or pitches until the H1 rows pass.
+     Section 10 forbids fitting it to rows. Also rejected: trying the narrower shape without a
+     first shape. Decision 2 allows it only after a first shape moved a red.
+2. **#45's trailing placeholder is the decoder reading the noise after a transmission, not an
+   artifact of the file's end.** Stands in the way of 3.6.
+   - **Ruling asked:** may a later unit attack how the settled pass reads the band noise after
+     the last character, knowing that six capture floors count trailing placeholders (unit 405's
+     B2)? Or is #45 to be judged against the floors' own count?
+   - **Reasoning:** the air never ends, but the noise after the last `K` continues on the air
+     too. Given 2 s more, the stream settles that noise into three more placeholders, so the
+     same thing would show on the tab after a real station stops. That puts #45's fault in the
+     settled pass, which is where B2 was, and B2 cost six capture rows because those floors
+     record placeholders as characters. Re-expressing a floor is Tim's.
+   - **Rejected:** the padding as a test event. It raises #45's count on its own settled
+     transcript from 1 to 4. Also rejected: B1 alone, which section 10 forbids.
+3. **#42's line, carried for Tim** (instruction section 3 item 1). Does not block this unit's
+   result.
+   - **Ruling asked:** does #42's green stand, with `ObserveOwnTransmission` in the suspended
+     arm of `CwDecoder.cs`?
+   - **Reasoning:** instruction 406's decision 2 body names an audio clock as one example of a
+     `CwDecoder.cs` change it allows. Its decision-block summary says *only if the trace needs
+     an audio clock*. The arbiter read the body, so the record stands at `099b3a2a`, green.
+   - **Rejected:** re-ruling it in this unit.
+4. **The count rule, carried for Tim** (instruction section 3 item 4). Does not block this unit's
+   result.
+   - **Ruling asked:** none new.
+   - **Reasoning:** a unit that attacks nothing breaks every sequence, and a unit that moves a
+     red restarts it. So #15, #43, #44 and #45 are at 0 of 3 after four 3.6 units, and 3.6
+     closes only by greens.
+   - **Rejected:** rewriting either count.
+5. **Mismatches against section 5 of the instruction**, reported and not repaired. Do not
+   block.
+   - H2's hold is `CwToneTracker.cs` 958 to 978, with `Switch(_heldSwitchHz)` at 974, not 957
+     to 966. Lines 212, 1077 to 1080 and 1091 are as stated.
+   - `PHASE_STATUS.md` read `CURRENT_STEP: 0` from the launcher. At HEAD its step lines still
+     name steps 0 and 2 `not started`, while the instruction says 1, 2 and 4 are done. This
+     unit set `CURRENT_STEP: 3` and left the step lines alone.
+   - The reload disagreement is not as stated. `CLAUDE.md` section 1 holds HM-DEC-165 of
+     2026-09-19 at line 361, which matches `RULES_AT`. `CPS-DEC-0167` does not appear in
+     `CLAUDE.md`.
+   - An untracked capture, `cw-2026-09-23-173723.wav`, is in the tree. It is not committed and
+     not this session's.
+6. **Two tracker readers still do not fully measure.** Does not block. Nothing is new here.
+   - `EveryWidthLeavesTheEmptyRecordingsSilent` is unmeasured under HM-DEC-155.
+   - `WhatBandwidth` is 4 of 6, identical at entry and exit, and outside the 51-name set.
+
+### Asks still outstanding
+
+Every ask from before this phase is parked in `docs\phase-cw\PARKED.md` under R54. The arbiter
+took unit 406's five items in instruction 407 section 3. The two still open are items 3 and 4
+above:
+
+- **#42's line.** First asked by unit 406 on 2026-09-23. It is waiting on Tim's reading of
+  instruction 406's decision 2, and the change sits at `CwDecoder.cs` `ObserveOwnTransmission`,
+  `099b3a2a`.
+- **The count rule.** First asked by unit 405 on 2026-09-23. It is waiting on Tim, and it sits
+  in the head of `docs\phase-cw\reds-3.6.md`.
