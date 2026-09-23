@@ -194,6 +194,12 @@ insertions; applied clean, piece commit `304ec791`. Build 0 errors in 6 s. Captu
 93 s wall**, 1.55 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 3 s.
 Printer: the seven SETTLED lines identical to section 1. Transmit files nothing. Out, reverted next.
 
+**Piece 21, `62262b94`, task 2.** Patch 42 lines, `CwDecoder.cs`, 31 insertions, all inside
+`Retuned()`. `--check` rc 1 at `CwDecoder.cs:382`; `--3way` conflicted, theirs being piece 3's
+`Retuned` body. After 1; 3; 12 as committed; 1 and 3; 3 and 12; 1, 3, 12: rc 1 every time
+(`unit396-deps21.sh`). `_reReadAt` and `_lastMeasuredForReRead` occur 0 times in HEAD's
+`CwDecoder.cs`. *Dependent, out*. `src` clean after.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
