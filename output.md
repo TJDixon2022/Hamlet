@@ -1,313 +1,262 @@
+```
 READ IN THIS ORDER.
 
 A. The phase goal - CW decodes again. Steps 0, 1 and 2 are ticked on every
    criterion; the outcome file holds 0 and 2 at not started, a layer
-   mismatch reported here; step 3 is partial at 3.1 and 3.3 with 21 reds
-   open and nothing retirable; step 4 is this unit's, partial at 4.1 at
-   entry with 9 of 45 pieces judged; step 5 is Tim's. After this unit
-   step 4 is partial with 4.1 and 4.3 met and 33 of 45 pieces judged.
-B. The criteria, one line each, met or not: 4.1 met by unit 395; 4.2 33
-   of 45 judged, 0 kept on a named number, not ticked, ticked only at 45;
-   4.3 33 out across units 395 and 396, the 20 applied each reverted in
-   the next commit and the 13 never applied, ticked 33 of 33; 4.4 no piece
-   kept, no floor moved, not ticked, ticked only at 45; 4.5 the last
-   report's, not ticked, ticked only at 45; 4.6 floors and both lines
-   green at exit, the synthetics red at both ends under R53, not ticked,
-   ticked only at 45.
-C. The report last. Section 4 raises 0 items and none is in the way of a
-   criterion in B; everything carried from before this phase and every
-   finding that blocks nothing is in docs/phase-cw/PARKED.md under R54,
-   not here - this unit added 396 items 1 to 3 there.
+   mismatch reported here, and the launcher named step 0 for this unit on
+   that reading; step 3 is partial at 3.1 and 3.3 with 21 reds open and
+   nothing retirable; step 4 was this unit's, partial at 4.1 and 4.3 at
+   entry with 33 of 45 pieces judged and none kept; step 5 is Tim's. After
+   this unit step 4 has every criterion ticked with 0 kept and 14 never
+   applied for want of a chain.
+B. The criteria, one line each, met or not: 4.1 met by unit 395; 4.2 45
+   of 45 judged, 27 applied in their own or a pair commit, 0 kept on a
+   named number, 14 listed dependent and never applied, 4 with nothing to
+   apply - ticked per decision 22 with all three counts and the 14 hashes;
+   4.3 45 out across units 395 to 397, each applied one reverted in the
+   next commit, re-confirmed at 45 of 45; 4.4 no piece kept and no floor
+   moved, the floor table byte-identical to the step's entry - ticked; 4.5
+   this report's section 3 leads with the 45-row table - ticked; 4.6
+   floors and both lines green at exit, the synthetics red at both ends
+   under R53 - ticked.
+C. The report last. Section 4 raises 0 items in the way of a criterion in
+   B; everything carried from before this phase and every finding that
+   blocks nothing is in docs/phase-cw/PARKED.md under R54, not here.
+```
 
-UNIT:       396 - complete at task 3 of 4, tasks 0 to 3, pieces 34 to 45 not started on the clock rule - 2026-09-23 01:34
-PHASE GOAL: get the CW decoder reading on the air again, from the restored 08-25 decoder, with every August rework piece let back in only on a measured number
-UNIT GOAL:  judge the rework pieces after piece 9 one commit at a time on the three floor tests and the printer, keep one only if a named number improves, revert the rest in the next commit, and tick 4.3 on that record
-ADVANCED:   yes - 24 more pieces judged, 9 to 33 of 45, and 4.3 met on 33 of 33 out pieces each reverted in the next commit or never applied
-NUMBER:     pieces judged 9 -> 33 of 45, kept 0, out 33; 021410 47 -> 47 characters, WEEKEND at distance 5 -> 5; 013637 ABOVE at 2 -> 2; captures type 92 s -> 92 s; engine line 372 s -> 374 s of 480
+```
+UNIT:       397 - complete at task 2 of 3, none dropped - 2026-09-23 02:18
+PHASE GOAL: Get the CW decoder reading real on-air audio again, by putting it back where it last worked and then deciding, on measured numbers, which of the August changes earn their way back in.
+UNIT GOAL:  Finish step 4 - put pieces 34 to 45 of the August rework back one at a time on the restored decoder, keep only one that moves a named number with the floors green, and tick the step's last four criteria at piece 45.
+ADVANCED:   yes - the last 12 pieces were judged, so all 45 are, and 4.2, 4.4, 4.5 and 4.6 are ticked; nothing was kept, and the decoder is unchanged.
+NUMBER:     pieces judged 33 -> 45 of 45, kept 0, out 45, never applied for want of a chain 14; 021410 47 -> 47 characters, WEEKEND at distance 5 -> 5; 013637 ABOVE at 2 -> 2; captures type 92 s -> 92 s; engine line 374 s -> 374 s of 480
 DRIFT:      0
+```
 
 ## 1. What Claude did
 
-**Complete at task 3 of 4. Tasks 0 to 3 were all done and none was dropped. Pieces 34 to 45 were
-not started because the clock rule fired, and those pieces are the named drop candidate.** Windows
-11, `C:\Source\HamLet`, Hamlet confirmed by the section 0 gate, branch `main`. The unit started
-00:37 and task 3 was committed at 01:34.
+**Complete, at task 2 of 3 - tasks 0, 1 and 2 all done, nothing dropped.** The clock rule never
+fired: piece 45 was judged at 02:04, minute 21 of the hour that began with the first status line
+at 01:43. Windows 11 machine, Hamlet confirmed at `C:\Source\HamLet` by the gate's four checks,
+branch `main`. Every commit pushed; the last push succeeded.
 
-**Task 0, the entry round.** Commit `a0fc4faf`. Version 1.13.82 to 1.13.83. `PHASE_STATUS.md`
-read `CURRENT_STEP: 0` and `WORK_INSTRUCTION: 395`, as section 5 predicted. It is now `CURRENT_STEP:
-4` and `396 - pieces 10 onward, on the same numbers`. `PHASE_OUTCOME.md` and `PHASE_STATUS.md`
-rode whole in task 0's commit, the layer's uncommitted edits included, as in units 393 to 395. I
-appended `## UNIT 396 - STEP 4` and added one line per task. I copied unit 395's scripts to
-`unit396-*`. **Decision 12 applied**: `git diff --stat 259eba0a HEAD -- src tests
-docs/carry-forward-tests.txt` printed nothing, so unit 395's exit runs stand as this unit's entry
-for the lines: app 277 of 278 twice, engine 176 of 176 in 372 s. The floors ran in full after one
-build. Captures were 37 of 37 in 93 s, every capture identical to unit 395's exit. Adjudicated was
-13 of 13 in 29 s, and the clean synthetics 0 of 2. The printer gave WEEKEND 5, THINKING 5, FLEX 1,
-ABOVE 2, BREEZE 2. The transmit files printed nothing against `7e209cb4`, and `src` printed nothing
-against `5688a8a5`.
+**Task 0, entry** (`5e6dd4e8`). Version 1.13.83 to 1.13.84. `PHASE_STATUS.md` read `CURRENT_STEP: 0`
+and `WORK_INSTRUCTION: 396 - pieces 10 onward, on the same numbers`; set to `CURRENT_STEP: 4` and
+`397 - pieces 34 to 45, the list to its end`. `PHASE_OUTCOME.md` and `PHASE_STATUS.md` went into task
+0's commit as whole files, as units 393 to 396's did. Unit 396's scripts copied to `unit397-*` with the
+unit number and task labels changed. **Decision 20 applied**: `git diff --stat e2b31a40 HEAD -- src
+tests docs/carry-forward-tests.txt` printed nothing, so unit 396's exit runs are the entry numbers
+for both lines. Floors run in full: 37 of 37, 13 of 13, synthetics 0 of 2, every capture row and the
+printer identical to unit 396's exit.
 
-**Task 1, piece 10.** Commit `94b5dff6`. `4786c7e7` did not apply. Decision 16's sequence found
-that it applies only after pieces 7 and 9 together, so it is *dependent, out*, with nothing applied.
+**Task 1, pieces 34 to 45**, one row each in `docs\phase-cw\unit395-rework.md` section 2 under
+`### Judged by unit 397`, one paragraph each in `docs\phase-cw\unit397-rework.md` section 2:
 
-**Task 2, pieces 11 to 33.** Every piece with its commit and its revert:
-
-| n | Hash | Piece commit | Revert commit | How judged |
+| n | Hash | Piece or pair commit | Revert or row commit | Outcome |
 |---|---|---|---|---|
-| 10 | 4786c7e7 | none | none | dependent on 7, 9 |
-| 11 | f2e1db7a | none, row `3b73c3b1` | none | dependent on 7, 9 |
-| 12 | f27174b5 | `ad5fa332` + seam `14155613` | `f5ef1ff8` | measured, nothing moved |
-| 13 | 386fdb5d | none, rows `ddb40581`, `56a90616` | none | dependent on 2, 5 and more |
-| 14 | 8ca6a633 | `952fb690` | `3a74cf45` | did not build |
-| 15 | 4c6e4321 | none, row `2ac93165` | none | dependent on 3, 12 |
-| 16 | 501e8e2d | none, row `ac25f1d0` | none | empty |
-| 17 | f9c11989 | `0bec4dd6` | `8d8a37f4` | measured, nothing moved |
-| 18 | b48d1158 | `5dd24810` | `306419f2` | did not build |
-| 19 | 0f2089f3 | none, row `d6854975` | none | dependent on 15, 18 and their chain |
-| 20 | ac1d56da | `304ec791` | `c9681461` | measured, nothing moved |
-| 21 | 62262b94 | none, row `53806d19` | none | dependent on 1, 3 at least |
-| 22 | 0f48c33e | `b381460b` | `60f4453a` | measured, nothing moved |
-| 23 | b8cad1f9 | pair with 22 `c89bdd44` | `35102716` | measured, nothing moved |
-| 24 | fc1ee77f | none, row `cf222086` | none | dependent on 2, 13 at least |
-| 25 | 71b4f044 | `e91ed185` | `8cae3b66` | measured, nothing moved |
-| 26 | 68a18d66 | none, row `7b2f677d` | none | dependent on 2, 25, 24 |
-| 27 | a91d8fe7 | none, row `d1c31c82` | none | dependent on 25, 26 and chain |
-| 28 | ade52536 | `d14c9970` | `c1a7dfc6` | measured, nothing moved |
-| 29 | efcd5242 | none, row `93f0f1bd` | none | dependent on 19, 3 and chains |
-| 30 | 95a5e063 | `9c70a121` | `9302155c` | measured, **moved ABOVE 2 to 3** |
-| 31 | b7147b1f | `ee3dcca8` | `e14f42e0` | measured, nothing moved |
-| 32 | c8685e4d | pair with 28 `832a3db3` | `38610a35` | measured, nothing moved |
-| 33 | 4935a4f8 | `8b709643` | `e9449d0a` | measured, nothing moved |
+| 34 | e6b1ece7 | `9627bc0b` | `4c932f96` | measured; 14 captures and 1 adjudicated anchor red; out |
+| 35 | dfb357ef | `2669b5f9`, pair with 28 | `49cd3ed9` | measured; nothing moved; out |
+| 36 | efc33267 | `c08f766d` | `356ab900` | measured; nothing moved; out |
+| 37 | aeea24f2 | none | `e19042ae` | dependent on 19, 29, 30; not applied |
+| 38 | a37cfcff | none | `6b4d4b16` | dependent on 13, 34 and more; not applied |
+| 39 | a09b36a7 | `2b9c5d10` | `a95fc8fb` | did not build, `CwElement`; out |
+| 40 | ee2cba8d | none | `a2f4618e` | dependent on 31, 33, 34; not applied |
+| 41 | 2828ab69 | `548d7007`, pair with 39 | `85b97b15` | did not build, `CwElement`; out |
+| 42 | 43efc525 | `ec9dec4a` | `6d484e97` | measured; captures identical, synthetics emptied; out |
+| 43 | 865e66d8 | none | `0f659396` | already in the tree as unit 392's seam; empty; out |
+| 44 | 9c2a7f99 | none | `f860651d` | dependent on 1, 19, 29, 37; not applied |
+| 45 | 1a84188e | `25bc3bcf` | `a902cdf8` | did not build, `_window`; out |
 
-Task 2 closed with `e2b31a40`. **Task 3, the exit round**, is commit `14add170`. Every commit was
-pushed to `origin main`, and every push returned rc 0.
+Task 1's record commit is `3af36501`.
 
-**Decisions applied.** Unit 395's decisions 1 to 11 were applied as written. The author's decisions:
+**Task 2, exit round** (`2164449d`): both carry-forward lines, the three floor types, the printer,
+the transmit and `src` checks, decision 14's log check. 4.2, 4.4, 4.5 and 4.6 ticked in the root
+`PHASE_PLAN.md`; 4.3's sentence updated to 45 of 45. `PARKED.md` got `397 item 1` to `397 item 4`.
 
-- **Decision 12 applied.** The diff was empty, so the lines were not run at entry.
-- **Decision 13 applied.** The exit round ran whole.
-- **Decision 14 applied.** I checked it on the log, `ee0ea0dc..HEAD`. 4.3 is ticked, 33 of 33.
-- **Decision 15.** Piece 45 was not reached, so 4.2, 4.4, 4.5 and 4.6 are not ticked. The next
-  piece is 34, `e6b1ece7`.
-- **Decision 16** was applied to every dependent row, with each chain tested on a clean `Cw` and
-  never committed.
-- **Decision 17** was applied to piece 16.
-- **Decision 18.** The rows are in `unit395-rework.md` section 2 under `### Judged by unit 396`.
-  This unit's numbers are in `docs\phase-cw\unit396-rework.md`.
-- **Decision 19.** The timeouts were as decision 11. Nothing was backgrounded, and no `dotnet test`
-  ran without a filter.
+**Decisions applied.** Unit 395's 1 to 11 and unit 396's 12 to 19 as the step's rules; this unit's 20
+(entry lines from unit 396's exit), 21 (exit round run in full), 22 (the ticks, each worded to its
+criterion), 24 (the app and Audio halves of 36, 42, 43, 44, 45 not taken), 25 (the docs), 26 (section
+3's table), 27 (timeouts, nothing backgrounded, minute 42). Decision 23 changed no row. **No
+self-ruling** authorized work outside the tasks.
 
-**How-to decisions I made, uncapped and reported in full:**
+**How-to decisions made during the tasks, each overrulable:**
 
-1. **Piece 12's `Retuned` conflict.** The conflict block was piece 3's `Retuned` body. Piece 12's
-   only change inside it was an `Unlock()` call, which unit 392's seam `Retuned() => Unlock()`
-   already makes. I resolved it to ours and kept the seam, as a hunk already in the tree under
-   decision 3.
-2. **Piece 12's seam.** The build error `CS8907 Parameter 'PitchWasAsserted' is unread` was unit
-   392's seam property `PitchWasAsserted => false`. I removed it in `14155613` so the piece's record
-   parameter supplies the value. This is decision 4's exception, the same shape as unit 395's piece 3.
-3. **Priors for decision 16.** Piece 12's raw patch does not apply after piece 3. So for pieces 15,
-   19 and 29 I used piece 12 *as committed*, `git diff 56a90616 14155613 -- Cw`, as the prior.
-4. **Piece 30's second hunk.** Its first hunk applied with full context. The second adds two members
-   whose only context was piece 19's out `_ranked` field. `-C2` and `-C1` refused it, and `-C0`
-   placed it after the class's closing brace, so I moved the brace below the two members and changed
-   nothing else. I took this as resolving a conflict inside `Cw` under decision 3 and not as a
-   dependency, because every name the piece uses exists at HEAD. **Overrulable.** If the arbiter
-   reads it as a dependency, piece 30's row becomes *dependent, out*, and it is out either way.
-5. **Piece 33 started at 01:18:51**, which is minute 41 of an hour begun at 00:37:24, inside decision
-   10's letter. Its revert landed after minute 42, and nothing was started after it.
-6. **I ran the printer at exit although nothing was kept.** Task 3 asks for it only if a piece was
-   kept. It costs 5 s and puts the exit distances on a measured run, not on inference.
-7. **The scripts read the task label from `.run-unit\unit396-task.txt`.** A leading `TL=...`
-   environment assignment was refused at the prompt. The status NOTE for piece 10 still said
-   *task 2* while the TASK field said 1 of 4.
+1. **Piece 35 went in as a pair with 28, with 35 merged under `--3way`.** `--check` cleared only
+   after 28 and 32. The only extra need was piece 32's context lines, not any name the piece uses.
+   Unit 396 merged piece 33 on piece 31's context the same way, so this is one pair, not a chain of
+   three.
+2. **Piece 42's `OnSamples` conflict was resolved to the piece's own lines.** About 580 lines of
+   out pieces' bodies came in as "theirs" context; they were not taken. Its `DecodeQueueDroppedChunks`
+   and `DecodeQueueDroppedSamples` were dropped as already in the tree, because unit 392's seam
+   declares both and decision 3 keeps the seam. 175 of its 181 lines went in.
+3. **Piece 43 is out as empty under decision 17.** Both of its code lines are unit 392's seam; what
+   remained was a doc comment and a blank line.
+4. **Piece 44 was listed dependent as a whole.** Its `CwKeyingMeter` half was not split off and
+   measured alone, because decision 5 judges the whole piece. Parked as 397 item 2.
+5. **Piece 45 was applied and built rather than listed dependent**, because it applied clean. The
+   build error names the dependency, piece 44's `_window`.
 
-**Script faults of my own, caught and corrected before anything was written from them.** First,
-the first dependency script printed `basename`'s exit code, not `git apply`'s. I fixed it and re-ran
-it for piece 11. Piece 10's table came from unit 395's `dep.sh`, which was right. Second, piece
-13's first dependency pass was contaminated by a file that `--3way` had added and left on disk. I
-discarded that pass, and `deps.sh` now cleans `Cw` before and after each chain. Third, commit
-`ddb40581` missed piece 13's row in `unit395-rework.md` because of an ambiguous edit. `56a90616`
-added it before piece 14 was committed.
+**Regressions: none.** Every capture, adjudicated reading, line and printer number at exit is what it
+was at entry.
 
-**Self-rulings: none.**
-
-**Regressions: none.** Nothing that was green at task 0 or at unit 395's exit is red at task 3.
-
-**Mismatches against section 5:**
-
-- `docs\phase-cw\PARKED.md` measured 62 lines at entry, not 63. It did have two headings and 31
-  items.
-- The root has three untracked layer files the instruction does not list: `SESSION.lock`,
-  `tools\arbiter\run-phase-opus.bat` and `tools\arbiter\validate-output.bat.bak-20260922`. I left
-  them as found.
-- Everything else held as stated:
-  - HEAD `259eba0a`, and props line 1254 read 1.13.82.
-  - `CLAUDE.md` line 360's top row is HM-DEC-167, `PROJECT_STATUS.md` writes HM-DEC-165, and the
-    reload reads CPS-DEC-0167.
-  - `PHASE_OUTCOME.md` holds steps 0 and 2 at not started, 1 done, and 3 and 4 partial, with the
-    paired entries.
-  - `cw-retired-tests.txt` is absent.
-  - The `src` and `Cw` diff stats were as given, and the eleven transmit files were silent.
-  - The printer, floor lines 107 and 108, the carry-forward list's 918 lines, and the 21 `<Compile
-    Remove>` items were as stated.
-  - The worktrees were the root and the three preflight trees.
-
-`git worktree list` at exit shows the same four.
+**Section 5 mismatches.** HEAD, `Directory.Build.props` line 1254, `PHASE_STATUS.md`, `PHASE_OUTCOME.md`,
+the five root files, `CLAUDE.md` line 360 (HM-DEC-167; the reload reads `CPS-DEC-0167`),
+`PARKED.md`, `unit395-rework.md`, both diffs, the printer, lines 107 and 108, the carry-forward file,
+the 21 `Compile Remove` items and the worktrees all matched the instruction. **One mismatch:**
+`PROJECT_STATUS.md` at HEAD reads unit 390, `STATE: COMPLETED`, `TASK: TASK 5 of 6`, not unit 396,
+`TASK 3 of 4`. **One slip of my own:** my first command ran `tools/status.sh` with no arguments. That
+blanked the working copy of `PROJECT_STATUS.md` before I had read it, so I can't say what the layer
+had written there. The next call, 17 seconds later, wrote a proper `EXECUTING` status. Both are
+parked as 397 item 4.
 
 ## 2. What the owner should expect
 
-Nothing changes on the CW tab. No piece was kept, so the decoder in the build is still exactly the
-08-25 decoder that unit 392 restored: `src` is byte-identical to `5688a8a5`. So far 33 of the 45
-August pieces have been judged and none stayed in:
+Nothing changes on the CW tab. All 45 pieces of the August rework have now been judged one at a
+time against the decoder that read on the air on 2026-08-25, and none of them stayed. 27 went back
+in and came straight out in the next commit. 14 were never run because each needed two or more
+other pieces that were themselves out, and the plan allows only one pair. 4 had nothing to apply.
+None of the 27 improved a named number. The twelve this unit took split like this:
+- Piece 34 turned 14 captures red.
+- Piece 42, the decode worker thread, emptied the two clean synthetics' text.
+- Three did not compile without the pieces they depend on.
+- The rest moved nothing.
 
-- 20 were put back and measured, or failed to build, and each was taken straight back out in the
-  next commit. This unit accounts for 13 of them.
-- 10 were never run, because each needs two or more other out pieces under it. The chains are the
-  tone-survey work, the pitch ranking, the joint cutter and the posterior.
-- 3 had nothing to apply.
-
-`021410` and `013637` are where they were: WEEKEND at 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2.
-Their settled text still ends `FLENT 66OAM` and still has `AB OV E`. Only one piece moved anything,
-and it moved it the wrong way. Piece 30 blanks every character decoded before the survey has
-admitted a pitch. With it, 013637's opening went to blocks and ABOVE drifted from 2 to 3, so it
-went out. 4.3 is now ticked on the record of every revert. The next unit starts at piece 34,
-`e6b1ece7`, with 12 left to judge.
-
-**What will look wrong but is not:**
-
-- Every revert commit is titled *moved nothing*, including piece 30's, which moved ABOVE away. The
-  title is decision 9's fixed form, and the commit body and the doc row say what it measured.
-- Pieces 14 and 18 are titled *moved nothing* too, but they never built.
-- The two clean synthetics are red, as they have been since step 1 (R53).
+`021410` is still 47 characters, WEEKEND at distance 5 in the settled text. `013637` still has `AB OV E`,
+ABOVE at distance 2. Every floor is green at its old number, both carry-forward lines are green, and
+the two clean synthetics are red as they have been since step 1 (R53). **What will look wrong but is
+not:** 45 revert commits titled *moved nothing*, some of them on pieces that moved numbers the wrong
+way or did not build. Decision 9 fixes that title, and each commit body and doc row gives the real
+reason. The next step on the plan is step 3's repairs under R49, now that step 4's verdict is in.
 
 ## 3. What you should see
 
-No visible change. This unit judged 24 more pieces against the floors and kept none, so the
-decoder you run is the one you ran before it.
+**Step 4, all 45 pieces.** E is the kept state before every piece: 021410 47 characters, WEEKEND 5,
+THINKING 5, FLEX 1; 013637 63 characters, ABOVE 2, BREEZE 2; synthetics 0 of 2 reading placeholders.
+*Identical* means all 37 captures identical in characters, elements, unsure and tone, the five
+distances identical, and synthetics 0 of 2.
 
-**The step's table so far, in 4.5's shape.** *Entry* is the kept state before every piece: 021410
-47 characters, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 characters, ABOVE 2, BREEZE 2; synthetics 0
-of 2. "Identical" means all 37 captures and the five distances are unchanged.
+| n | Number before | Number after | Kept or out | Hash | Captures wall |
+|---|---|---|---|---|---|
+| 1 | E; 004507 50, 003758 63, 031948 34, 012748 4 | 021410 and 013637 unchanged; 004507 49, 003758 58, 031948 31, 012748 2 | out | 2068f868 | 94 s |
+| 2 | E | identical | out | 6fc36a1e | 95 s |
+| 3 | E | identical | out | 3e84ac74 | 94 s |
+| 4 | E | not run, nothing to apply, already in the tree | out | 39a42c3f | 92 s, task 0's run |
+| 5 | E | identical | out | 9de394da | 94 s |
+| 6 | E | pair with 5, comment only, piece 5's run: identical | out | 3d4694e5 | 94 s, piece 5's run |
+| 7 | E | identical | out | 7fb89d5e | 94 s |
+| 8 | E | pair with 7: identical | out | 1bf4372d | 94 s |
+| 9 | E | pair with 7: identical | out | 44cf3fc8 | 94 s |
+| 10 | E | not run, dependent on 7 and 9 | out | 4786c7e7 | none |
+| 11 | E | not run, dependent on 7 and 9 | out | f2e1db7a | none |
+| 12 | E | identical | out | f27174b5 | 97 s |
+| 13 | E | not run, dependent on 2, 5 and more | out | 386fdb5d | none |
+| 14 | E | not run, did not build | out | 8ca6a633 | none |
+| 15 | E | not run, dependent on 3 and 12 | out | 4c6e4321 | none |
+| 16 | E | not run, empty | out | 501e8e2d | none |
+| 17 | E | identical | out | f9c11989 | 94 s |
+| 18 | E | not run, did not build | out | b48d1158 | none |
+| 19 | E | not run, dependent on 15, 18 and their chain | out | 0f2089f3 | none |
+| 20 | E | identical | out | ac1d56da | 93 s |
+| 21 | E | not run, dependent on 1 and 3 at least | out | 62262b94 | none |
+| 22 | E | identical | out | 0f48c33e | 94 s |
+| 23 | E | pair with 22: identical | out | b8cad1f9 | 98 s |
+| 24 | E | not run, dependent on 2 and 13 at least | out | fc1ee77f | none |
+| 25 | E | identical | out | 71b4f044 | 94 s |
+| 26 | E | not run, dependent on 2, 25 and 24 | out | 68a18d66 | none |
+| 27 | E | not run, dependent on 25, 26 and their chain | out | a91d8fe7 | none |
+| 28 | E | identical | out | ade52536 | 94 s |
+| 29 | E | not run, dependent on 19, 3 and their chains | out | efcd5242 | none |
+| 30 | E; 021410 11 unsure, 013637 3 unsure | characters identical; unsure up on 25 of 37; **ABOVE 2 to 3** | out | 95a5e063 | 93 s |
+| 31 | E | identical | out | b7147b1f | 94 s |
+| 32 | E | pair with 28: identical | out | c8685e4d | 93 s |
+| 33 | E | identical | out | 4935a4f8 | 93 s |
+| 34 | E | **captures 23 of 37, 14 red; adjudicated 12 of 13**; 021410 47 to 45, WEEKEND 5; ABOVE 2; 004507 50 to 53, 002016 75 to 77 | out | e6b1ece7 | 82 s |
+| 35 | E | pair with 28: identical | out | dfb357ef | 94 s |
+| 36 | E | identical | out | efc33267 | 94 s |
+| 37 | E | not run, dependent on 19, 29 and 30 | out | aeea24f2 | none |
+| 38 | E | not run, dependent on 13, 34 and more | out | a37cfcff | none |
+| 39 | E | not run, did not build, `CwElement` | out | a09b36a7 | none |
+| 40 | E | not run, dependent on 31, 33 and 34 | out | ee2cba8d | none |
+| 41 | E | pair with 39: not run, did not build, `CwElement` | out | 2828ab69 | none |
+| 42 | E | captures and distances identical; **synthetics 0 of 2, both empty** | out | 43efc525 | 94 s |
+| 43 | E | not run, already in the tree, empty | out | 865e66d8 | none |
+| 44 | E | not run, dependent on 1, 19, 29 and 37 | out | 9c2a7f99 | none |
+| 45 | E | not run, did not build, `_window` | out | 1a84188e | none |
 
-| n | Hash | Claim | Number before | Number after | Captures wall | Kept or out |
-|---|---|---|---|---|---|---|
-| 1 | 2068f868 | read the first seconds again | entry | named numbers identical; 004507 50 to 49, 003758 63 to 58, 031948 34 to 31, 012748 4 to 2 | 94 s | out |
-| 2 | 6fc36a1e | log how close the argument was | entry | identical | 95 s | out |
-| 3 | 3e84ac74 | let go of a pitch on a frequency the radio has left | entry | identical | 94 s | out |
-| 4 | 39a42c3f | the margin's share on the sheet | entry | nothing applied | none | out |
-| 5 | 9de394da | open two constants for a sweep | entry | identical | 94 s | out |
-| 6 | 3d4694e5 | the confirmation window stays at two | entry | comment only, judged with 5 | 94 s, piece 5's | out |
-| 7 | 7fb89d5e | record which admission test refused which bin | entry | identical | 94 s | out |
-| 8 | 1bf4372d | the separation bound must not move | entry | pair with 7: identical | 94 s | out |
-| 9 | 44cf3fc8 | both gate derivations, both off | entry | pair with 7: identical | 94 s | out |
-| 10 | 4786c7e7 | both gate derivations measured, neither ships | entry | not run, dependent on 7, 9 | none | out |
-| 11 | f2e1db7a | collect the raw run stream | entry | not run, dependent on 7, 9 | none | out |
-| 12 | f27174b5 | the operator may assert a station | entry | identical | 97 s | out |
-| 13 | 386fdb5d | cuts and characters together, behind a setting | entry | not run, dependent on 2, 5 and more | none | out |
-| 14 | 8ca6a633 | rank candidate pitches; not wired | entry | did not build, CS0122 | none | out |
-| 15 | 4c6e4321 | the strongest bin chooses the note | entry | not run, dependent on 3, 12 | none | out |
-| 16 | 501e8e2d | delete CwPitchRanking | entry | nothing to apply | none | out |
-| 17 | f9c11989 | fit the key-up state, ship nothing | entry | identical | 94 s | out |
-| 18 | b48d1158 | rank against one noise floor | entry | did not build, CS0122 | none | out |
-| 19 | 0f2089f3 | the ranking supplies the mixdown pitch, off | entry | not run, dependent on 15, 18 and chain | none | out |
-| 20 | ac1d56da | port the reference decoder | entry | identical | 93 s | out |
-| 21 | 62262b94 | start fresh when the dial moves | entry | not run, dependent on 1, 3 at least | none | out |
-| 22 | 0f48c33e | score a decode against what was sent | entry | identical | 94 s | out |
-| 23 | b8cad1f9 | test every confidence against correctness | entry | pair with 22: identical | 98 s | out |
-| 24 | fc1ee77f | index the lattice by hop and kind | entry | not run, dependent on 2, 13 at least | none | out |
-| 25 | 71b4f044 | a posterior over the lattice | entry | identical | 94 s | out |
-| 26 | 68a18d66 | carry the posterior to each character | entry | not run, dependent on 2, 25, 24 | none | out |
-| 27 | a91d8fe7 | a temperature on the path score | entry | not run, dependent on 25, 26 and chain | none | out |
-| 28 | ade52536 | the bench's run-merging bug is not in Hamlet | entry | identical; adjudicated 47 s | 94 s | out |
-| 29 | efcd5242 | find the pitch from the band | entry | not run, dependent on 19, 3 and chains | none | out |
-| 30 | 95a5e063 | assert nothing from an unjudged pitch | entry | characters and elements identical; unsure up on 25 of 37, 013637 3 to 31; 013637 text blocked to `■■LEAR`, **ABOVE 3**; 021410 identical | 93 s | out |
-| 31 | b7147b1f | the percentile threshold, refused | entry | identical | 94 s | out |
-| 32 | c8685e4d | the peak window buys nothing | entry | pair with 28: identical | 93 s | out |
-| 33 | 4935a4f8 | the peak-referenced threshold, refused | entry | identical | 93 s | out |
+**The captures at entry and at exit.** Entry is the numbers before piece 34; exit is the kept state
+on `3af36501`'s tree. The compare printed no difference in 37 rows.
 
-The full rows, with the reason for each one, are in `docs\phase-cw\unit395-rework.md` section 2.
-Each piece's dependency chains and SETTLED lines are in `docs\phase-cw\unit396-rework.md` section 2.
+| Capture | Characters | Elements | Unsure | Tone | Exit |
+|---|---|---|---|---|---|
+| cw-2026-08-17-013347 | 59 | 108 | 2 | 625 | same |
+| cw-2026-08-17-013622 | 55 | 84 | 4 | 600 | same |
+| cw-2026-08-17-134712 | 63 | 98 | 42 | 500 | same |
+| cw-2026-08-18-004507 | 50 | 118 | 1 | 500 | same |
+| unadjudicated/cw-2026-08-18-003016 | 57 | 149 | 3 | 670 | same |
+| unadjudicated/cw-2026-08-18-003126 | 54 | 144 | 6 | 665 | same |
+| unadjudicated/cw-2026-08-18-003758 | 63 | 121 | 19 | 500 | same |
+| unadjudicated/cw-2026-08-20-014854 | 0 | 0 | 0 | 600 | same |
+| unadjudicated/cw-2026-08-20-014935 | 0 | 0 | 0 | 825 | same |
+| unadjudicated/cw-2026-08-22-014113 | 0 | 0 | 0 | 600 | same |
+| unadjudicated/cw-2026-08-22-014308 | 0 | 0 | 0 | 575 | same |
+| unadjudicated/cw-2026-08-22-031838 | 57 | 126 | 15 | 525 | same |
+| unadjudicated/cw-2026-08-22-031905 | 42 | 118 | 6 | 300 | same |
+| unadjudicated/cw-2026-08-22-031948 | 34 | 114 | 3 | 500 | same |
+| unadjudicated/cw-2026-08-22-032012 | 44 | 120 | 1 | 500 | same |
+| unadjudicated/cw-2026-08-22-032050 | 53 | 123 | 9 | 325 | same |
+| unadjudicated/cw-2026-08-22-032113 | 55 | 118 | 8 | 650 | same |
+| unadjudicated/cw-2026-08-22-032129 | 66 | 119 | 1 | 650 | same |
+| unadjudicated/cw-2026-08-23-001520 | 5 | 45 | 4 | 600 | same |
+| unadjudicated/cw-2026-08-23-001831 | 55 | 124 | 11 | 525 | same |
+| unadjudicated/cw-2026-08-23-001952 | 75 | 142 | 19 | 525 | same |
+| unadjudicated/cw-2026-08-23-002016 | 75 | 136 | 31 | 525 | same |
+| unadjudicated/cw-2026-08-24-012403 | 22 | 65 | 1 | 440 | same |
+| unadjudicated/cw-2026-08-25-011552 | 30 | 89 | 8 | 500 | same |
+| unadjudicated/cw-2026-08-25-012748 | 4 | 16 | 2 | 395 | same |
+| unadjudicated/cw-2026-08-25-012823 | 41 | 62 | 15 | 450 | same |
+| unadjudicated/cw-2026-08-25-012922 | 50 | 112 | 5 | 475 | same |
+| unadjudicated/cw-2026-08-25-013010 | 54 | 131 | 6 | 475 | same |
+| unadjudicated/cw-2026-08-25-013150 | 58 | 139 | 7 | 495 | same |
+| unadjudicated/cw-2026-08-25-013303 | 54 | 146 | 10 | 500 | same |
+| unadjudicated/cw-2026-08-25-013402 | 61 | 161 | 5 | 525 | same |
+| unadjudicated/cw-2026-08-25-013520 | 60 | 153 | 5 | 540 | same |
+| unadjudicated/cw-2026-08-25-013637 | 63 | 164 | 3 | 550 | same |
+| unadjudicated/cw-2026-08-25-021410 | 47 | 99 | 11 | 550 | same |
+| unadjudicated/cw-2026-08-25-021629 | 47 | 96 | 20 | 500 | same |
+| unadjudicated/cw-2026-08-25-021825 | 41 | 74 | 16 | 400 | same |
+| unadjudicated/cw-2026-08-26-125941 | 0 | 0 | 0 | 400 | same |
 
-**The numbers before piece 10 at entry, and the kept state at exit, every capture.** The entry and
-exit columns are both measured, and the compare of the two outputs printed no difference in 37 rows.
-Each cell reads characters / elements / unsure / tone in Hz.
-
-| Capture | Entry, task 0 | Exit, task 3 |
-|---|---|---|
-| cw-2026-08-17-013347 | 59 / 108 / 2 / 625 | 59 / 108 / 2 / 625 |
-| cw-2026-08-17-013622 | 55 / 84 / 4 / 600 | 55 / 84 / 4 / 600 |
-| cw-2026-08-17-134712 | 63 / 98 / 42 / 500 | 63 / 98 / 42 / 500 |
-| cw-2026-08-18-004507 | 50 / 118 / 1 / 500 | 50 / 118 / 1 / 500 |
-| 08-18-003016 | 57 / 149 / 3 / 670 | 57 / 149 / 3 / 670 |
-| 08-18-003126 | 54 / 144 / 6 / 665 | 54 / 144 / 6 / 665 |
-| 08-18-003758 | 63 / 121 / 19 / 500 | 63 / 121 / 19 / 500 |
-| 08-20-014854 | 0 / 0 / 0 / 600 | 0 / 0 / 0 / 600 |
-| 08-20-014935 | 0 / 0 / 0 / 825 | 0 / 0 / 0 / 825 |
-| 08-22-014113 | 0 / 0 / 0 / 600 | 0 / 0 / 0 / 600 |
-| 08-22-014308 | 0 / 0 / 0 / 575 | 0 / 0 / 0 / 575 |
-| 08-22-031838 | 57 / 126 / 15 / 525 | 57 / 126 / 15 / 525 |
-| 08-22-031905 | 42 / 118 / 6 / 300 | 42 / 118 / 6 / 300 |
-| 08-22-031948 | 34 / 114 / 3 / 500 | 34 / 114 / 3 / 500 |
-| 08-22-032012 | 44 / 120 / 1 / 500 | 44 / 120 / 1 / 500 |
-| 08-22-032050 | 53 / 123 / 9 / 325 | 53 / 123 / 9 / 325 |
-| 08-22-032113 | 55 / 118 / 8 / 650 | 55 / 118 / 8 / 650 |
-| 08-22-032129 | 66 / 119 / 1 / 650 | 66 / 119 / 1 / 650 |
-| 08-23-001520 | 5 / 45 / 4 / 600 | 5 / 45 / 4 / 600 |
-| 08-23-001831 | 55 / 124 / 11 / 525 | 55 / 124 / 11 / 525 |
-| 08-23-001952 | 75 / 142 / 19 / 525 | 75 / 142 / 19 / 525 |
-| 08-23-002016 | 75 / 136 / 31 / 525 | 75 / 136 / 31 / 525 |
-| 08-24-012403 | 22 / 65 / 1 / 440 | 22 / 65 / 1 / 440 |
-| 08-25-011552 | 30 / 89 / 8 / 500 | 30 / 89 / 8 / 500 |
-| 08-25-012748 | 4 / 16 / 2 / 395 | 4 / 16 / 2 / 395 |
-| 08-25-012823 | 41 / 62 / 15 / 450 | 41 / 62 / 15 / 450 |
-| 08-25-012922 | 50 / 112 / 5 / 475 | 50 / 112 / 5 / 475 |
-| 08-25-013010 | 54 / 131 / 6 / 475 | 54 / 131 / 6 / 475 |
-| 08-25-013150 | 58 / 139 / 7 / 495 | 58 / 139 / 7 / 495 |
-| 08-25-013303 | 54 / 146 / 10 / 500 | 54 / 146 / 10 / 500 |
-| 08-25-013402 | 61 / 161 / 5 / 525 | 61 / 161 / 5 / 525 |
-| 08-25-013520 | 60 / 153 / 5 / 540 | 60 / 153 / 5 / 540 |
-| 08-25-013637 | 63 / 164 / 3 / 550 | 63 / 164 / 3 / 550 |
-| 08-25-021410 | 47 / 99 / 11 / 550 | 47 / 99 / 11 / 550 |
-| 08-25-021629 | 47 / 96 / 20 / 500 | 47 / 96 / 20 / 500 |
-| 08-25-021825 | 41 / 74 / 16 / 400 | 41 / 74 / 16 / 400 |
-| 08-26-125941 | 0 / 0 / 0 / 400 | 0 / 0 / 0 / 400 |
-
-All captures other than the first four are under `unadjudicated/cw-2026-`. 36 rows sit on their
-floor. `012748` is at 4 and 16 against a floor of 2 and 4.
-
-**The printer, at entry and at exit, identical both times:**
+**The printer**, identical at entry and at exit:
 
 | Capture | Settled text | Word | Distance |
 |---|---|---|---|
-| 021410 | `■ ■ ■ M ■ ■ ■ ■ T O MTT T  Y M TT ■ ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM` | WEEKEND | 5 |
-| | | THINKING | 5 |
-| | | FLEX | 1 |
-| 013637 | `TE MP NEVEN T REV■R G O T AB OV E ■7 5 F ES ■CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO` | ABOVE | 2 |
-| | | BREEZE | 2 |
+| 021410 | `■ ■ ■ M ■ ■ ■ ■ T O MTT T  Y M TT ■ ■ O AO IHI DT ■RIGHR IS ■ FLENT 66OAM` | WEEKEND / THINKING / FLEX | 5 / 5 / 1 |
+| 013637 | `TE MP NEVEN T REV■R G O T AB OV E ■7 5 F ES ■CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO` | ABOVE / BREEZE | 2 / 2 |
 
 **The runs.**
 
-- **Decision 12 at entry.** `git diff --stat 259eba0a HEAD -- src tests
-  docs/carry-forward-tests.txt` printed nothing. The entry numbers for the lines are therefore
-  unit 395's exit runs: app 277 of 278 twice, with 1 name lost to the dispatcher loop each run;
-  engine 176 of 176 in 372 s.
-- **App line at exit:** 278 of 278 in 155 s, nothing lost.
-- **Engine line at exit:** 176 of 176 in 374 s of 480.
-- **Captures type:** entry 37 of 37 in 93 s, exit 37 of 37 in 92 s. The piece runs took 93 to 98 s
-  and none came near decision 7's 240 s.
-- **Adjudicated type:** entry 13 of 13 in 29 s, exit 13 of 13 in 29 s. The piece runs took 28 to
-  30 s, except piece 28's at 47 s.
-- **Clean synthetics:** 0 of 2 at entry, after every measured piece, and at exit. They read `■ ■ ■
-  ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■` against `CQ DE W1AW K`, red under R53.
-- **Transmit files** against `7e209cb4`: nothing, at entry, after every piece, and at exit.
-- **`src`** against `5688a8a5` at exit: nothing, because no piece was kept.
+| Run | Entry | Exit |
+|---|---|---|
+| App carry-forward line | 278 of 278 in 155 s, unit 396's exit under decision 20 | 278 of 278 in 167 s |
+| Engine carry-forward line | 176 of 176 in 374 s of 480, unit 396's exit under decision 20 | 176 of 176 in 374 s of 480 |
+| Captures type | 37 of 37 in 95 s | 37 of 37 in 92 s |
+| Adjudicated type | 13 of 13 in 29 s | 13 of 13 in 29 s |
+| Clean synthetics | 0 of 2 in 3 s, placeholders | 0 of 2 in 4 s, the same placeholders |
+| Printer | 2 of 2 in 5 s | 2 of 2 in 6 s |
+
+Decision 20's diff, `git diff --stat e2b31a40 HEAD -- src tests docs/carry-forward-tests.txt`, output:
+*(empty)*. At exit the eleven transmit files printed nothing against `7e209cb4`, `src` printed nothing
+against `5688a8a5`, and the two floor test files printed nothing against `ee0ea0dc`. `git worktree
+list` shows the root and the three preflight trees.
 
 ## 4. What's blocking us
 
-Nothing blocks a criterion of step 4. The next unit starts at piece 34, `e6b1ece7`, on the same
-list and under the same rules. This unit's non-blocking findings are in `docs\phase-cw\PARKED.md`
-as 396 items 1 to 3, along with everything carried from before this phase, under R54:
+Nothing blocks a criterion of step 4; every one is ticked. The unit's findings that block nothing
+are `397 item 1` to `397 item 4` in `docs\phase-cw\PARKED.md` under R54:
+- item 1: the 14 unrun chains, the step's total.
+- item 2: piece 44's meter half.
+- item 3: what pieces 34 and 42 moved.
+- item 4: the `PROJECT_STATUS.md` mismatch and the status file I blanked.
 
-1. Ten pieces could not be run because each needs a chain longer than a pair.
-2. `CwPitchRanking` does not build on the restored tracker.
-3. Piece 30 is the only piece that moved a number, and it moved it away from the word.
+The layer mismatch persists and is reported, not repaired: `PHASE_OUTCOME.md` and `PHASE_STATUS.md`
+hold steps 0 and 2 at `not started` with every criterion of both `[x]` in the plan.
