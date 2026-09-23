@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 4 of 5
-WORK_INSTRUCTION: 401 - the pile is closed out on R49's letter
+WORK_INSTRUCTION: 402 - the eight reds, first attempt
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T05:28:03-04:00
-NOTE: Unit 401 complete: displacement type 0 to 6 of 6 on the settled transcript and a 0.005 band; known-reds block names no CW test; failing set closed 31/12/0/8; clean synthetics on the engine line 178 of 178 in 374 s; 3.4 ticked, step partial on 8 red-open under R49; floors and both lines green, no regression; nothing asked
+UPDATED: 2026-09-23T08:58:00-04:00
+NOTE: Unit 402 complete: #24 and #41 green by a decoder repair at 7e65aac4, a follow under half the passband no longer holds the speed blank; #42 to #45 moved and put back, attempt 1 of 3; #6 #15 not attacked, no cause at a line; set 45 green, 6 red-open; floors and both lines green, no regression; 3.6 not flipped, next unit should take 4.7; nothing asked
 
 ---
 
