@@ -200,7 +200,10 @@ public sealed class CwReceiverFixtureTests
         var decoder = new CwDecoder(audio.SampleRate, 600);
         var read = new List<CwCharacter>();
 
-        decoder.CharacterDecoded += read.Add;
+        // **THE SETTLED TRANSCRIPT, WHICH IS WHAT STAYS ON THE SCREEN** (work
+        // instruction 408, unit 405's B1). The leading edge is re-raised at every
+        // revision, so reading it counts each revision of a letter as a letter.
+        decoder.CharacterSettled += read.Add;
 
         using var source = new BufferedAudioSource(audio);
         decoder.Listen(source);

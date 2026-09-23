@@ -510,6 +510,18 @@ public sealed class CwProbabilisticStream
             var at = TimeSpan.FromSeconds(
                 absolute * CwProbabilisticDecoder.HopMilliseconds / 1000.0);
 
+            // **AT THE FLUSH, AN UNREADABLE CHARACTER STILL INSIDE THE DELAY IS
+            // NOT SETTLED** (work instruction 408, unit 405's B2). Nothing more is
+            // coming to confirm it, and what it holds is the tail of the file's own
+            // noise; settling it prints a placeholder the audio after it would
+            // never have supported (R57).
+            if (settleEverything
+                && character.Text == "#"
+                && character.EndHop >= _envelopeCount - _delayHops)
+            {
+                continue;
+            }
+
             if (character.EndHop < settleBefore)
             {
                 // **ALREADY SAID, AND IT DOES NOT MOVE AGAIN.** Only characters
