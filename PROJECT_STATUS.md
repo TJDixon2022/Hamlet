@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: ACTIVE
-TASK: TASK 3 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 404 - the fourteen go back in as chains
-BALL: claude
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T12:07:19-04:00
-NOTE: Task 3 at HEAD: adjudication 11 of 11; CwFixtureTests running, the last of the four types
+UPDATED: 2026-09-23T12:23:21-04:00
+NOTE: Unit 404 complete: the fourteen went in as 2 chains, S of 4 and D of 24; both out - S moved nothing, D moved ABOVE 2 to 1 but turned 3 captures and both synthetics red and cut 021410 to 40; src identical to entry; floors green at exit; 4.7 ticked
 
 ---
 

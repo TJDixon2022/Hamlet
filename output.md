@@ -1,180 +1,186 @@
 ```
-A. PHASE GOAL - CW decodes again: the engine's CW decoder reads on the air as it did on
-   2026-08-25, held there by three floor tests and, at the end, judged by Tim at the radio.
-B. THIS STEP - step 3, the inherited reds are gone. Exit criteria 3.1 to 3.5 ticked; 3.6
-   open: each of #6, #15, #24, #41, #42, #43, #44, #45 needs a verdict, green by a decoder
-   repair with no floor lowered and the three floors green at that commit, or parked after
-   three consecutive attacks with no movement. #24 and #41 went green at 7e65aac4.
-C. THIS REPORT ADDS - Tim's 12:55 UTC capture decoded through the decoder at HEAD and at
-   a902cdf8, the src state before 7e65aac4: the transcripts are byte-identical and every
-   count matches, and none of the 37 capture cases moves between the two builds. Bears on
-   B: on this evidence 7e65aac4, the repair behind #24 and #41, is not what changed the
-   reading of this capture, so the remaining 3.6 work is not resting on a decoder that
-   commit damaged. It does not advance A. The ruling on 7e65aac4 stays Tim's.
-```
-
-```
 READ IN THIS ORDER.
 
-A. The two transcripts, one above the other, with the table - section 3.
-B. Whether any of the 37 capture cases moved between the two builds - section 3: none did.
-C. The rest. Section 4 raises 4 items and none blocks a criterion.
+A. PHASE GOAL - CW decodes again. Steps 1 and 2 done; step 3 partial on 3.6,
+   six reds open; step 4 partial on 4.7 alone; step 5 is Tim's.
+B. THIS STEP - step 4, the August rework judged on numbers. 4.1 to 4.6 met;
+   4.7, the fourteen as chains, met by this unit: 2 chains judged, 14 of the
+   fourteen with a verdict, both chains out, ticked in PHASE_PLAN.md.
+C. THIS REPORT - the chain table leads section 3; section 4 raises 4 items
+   and none stands in the way of 4.7.
 ```
 
 ```
-UNIT:       403 - complete at task 4 of 4, none dropped - 2026-09-23 10:10
-PHASE GOAL: get the CW decoder reading on the air again, as it did on 2026-08-25, held by three floor tests
-UNIT GOAL:  read one recording, Tim's 12:55 UTC capture, through today's decoder and the one before 7e65aac4, and print both
-ADVANCED:   no - a blocker-clear by design
-NUMBER:     characters unsure on the capture: HEAD 45, a902cdf8 45
+UNIT:       404 - complete at task 4 of 4, tasks 0 to 4, none dropped - 2026-09-23 12:22
+PHASE GOAL: get the engine's CW decoder back to what it produced on 2026-08-25, held there by three floor tests, then let Tim judge it at the radio
+UNIT GOAL:  put the fourteen August rework pieces that could not go in alone back in with the pieces they stand on, one commit per chain, and keep or remove each chain on the floors and the named numbers
+ADVANCED:   yes - step 4 criterion 7, every one of the fourteen has a verdict and each chain has its row
+NUMBER:     chains judged 2, kept 0, out 2, of the fourteen 14 with a verdict
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4, tasks 0 to 4, none dropped.** Machine QUIVERFULL, project
-Hamlet, confirmed by the gate: SHACK_FACTS.md and CwProbabilisticDecoder.cs present, no
-CoreHMI.sln or MURC.sln, root C:\Source\HamLet. Branch main, each task pushed, and every
-push succeeded: a0077397, bab02a85, e69b49ca, c4db4090, then the task 4 commit.
+**Complete at task 4 of 4. All tasks, 0 to 4, were done and none was dropped.** Machine
+QUIVERFULL, project Hamlet, branch main. The gate held: SHACK_FACTS.md and
+CwProbabilisticDecoder.cs are present, there is no CoreHMI.sln or MURC.sln, and the root is
+C:\Source\HamLet. Section 5 matched the tree with no mismatch: HEAD was bc2484d5, 7e65aac4 was the
+newest src commit, all fourteen hashes are in unit395-rework.md, and the printer exists. The
+floors at entry were 37, 13 and 2. Every commit was pushed and every push succeeded: d8f07a93,
+95094c02, 3c742c4a, 675d846f, f9f22961, bfd97867, 264b97ce, d062d5e9, ad2b80da, then the task 4
+commit.
 
-**Task 0, the record.** Version 1.13.89 to 1.13.90. PHASE_STATUS.md read CURRENT_STEP 0
-and 402. It now reads CURRENT_STEP 3 and 403 - the same recording, two builds.
-PHASE_OUTCOME.md gains `## UNIT 403 - STEP 3` with the decision block. The capture wav
-was already tracked, committed by Tim's seed at 7fc2ccfc, so there was nothing untracked
-to commit. Entry round: captures 37 of 37 in 94 s, adjudicated 13 of 13 in 29 s, clean
-synthetics 2 of 2 in 2 s, engine line 178 of 178 in 377 s, app line 278 of 278 in 183 s.
-
-**Task 1, the capture at HEAD.** `TheCaptureOfTheTwentyThirdTests` sits beside the other
-printers under tests\Hamlet.RadioEngine.Tests\Cw. It reads the wav through
-`CwDecodeHarness` with a starting tone of 600 Hz, the same value the floor test uses. It
-asserts only that samples were read and that something was emitted, and asserts no
-text. Its output is in .run-unit\unit403-head.txt.
-
-**Task 2, the capture at a902cdf8.** The worktree was C:/Source/HamLet-wt403. The printer
-and the wav were copied in. The worktree does not have the wav because the file was
-committed after a902cdf8.
-
-**A decision made by the session: HEAD's CwDecodeHarness.cs was copied in beside the
-printer even though the old one would have compiled.** At a902cdf8 the harness differs
-from HEAD's by 11 lines. Using it would have measured the harness change as well as the
-decoder change, and HM-DEC-091 asks that both sides use the same harness. Nothing under
-src in the worktree was touched.
-
-**A second decision: the a902cdf8 run was done twice.** The first worktree build finished
-in 2 s and printed HEAD's numbers exactly. I would not report "identical" on a build that
-fast without proof, so I removed the worktree, re-created it and checked:
-
-- no bin folder existed before the build
-- the worktree's CwDecoder.cs differs from HEAD's
-- the built Hamlet.RadioEngine.dll hash is f3aa79e6 there and d9f29fa0 at HEAD
-- CwEmissionGateTests there is 7 of 8, with `NoSpeedIsNamedWithoutCharactersToNameItFrom` red. That is #24's test, red before 7e65aac4, as unit 402 recorded.
-
-The fast build was a warm compiler server, not a stale DLL. Both runs printed the same
-thing. The worktree was removed both times by a trap that runs on every exit, and
-`git worktree list` now shows:
-
-```
-C:/Source/HamLet                       c4db4090 [main]
-C:/Users/TimDi/preflight-trees/206bd90 263949d7 (detached HEAD)
-C:/Users/TimDi/preflight-trees/8e3ee27 07f0397a (detached HEAD)
-C:/Users/TimDi/preflight-trees/f595938 351784ae (detached HEAD)
-```
-
-There is no HamLet-wt403. The three preflight-trees were there before this unit, and I
-did not touch them.
-
-**Task 3, the fixtures.** The a902cdf8 side ran in the same worktree build as the task 2
-printer, twice, with identical rows. The HEAD side is the entry run. src did not change
-after it, and the exit run's 37 rows match it byte for byte.
-
-**Task 4, the exit round.**
-
-- Floors: captures 37 of 37 with every row identical to entry, adjudicated 13 of 13, synthetics 2 of 2.
+**Task 0, record and entry round.**
+- The version went from 1.13.90 to 1.13.91. PHASE_STATUS.md now reads 404 and CURRENT_STEP 4.
 - Engine line: 178 of 178 in 372 s.
-- App line: 276 of 278 on the first run, 277 of 278 on the re-run. All three losses were `InvalidProgramException: You've caused dispatcher loop` before any assertion, under a different name each time:
-  - `TheFavoritesAreUnderTheGreenZoneTests`, two of them
-  - `ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`
-- Under HM-DEC-155 the app line is 278, with the losses counted neither way.
-- **`git diff 6c287f0f HEAD -- src` prints nothing.** This unit changed no file under src.
+- App line: 277 of 278. One name was lost to the dispatcher loop before any assertion. The re-run
+  gave 278 of 278.
+- Captures: 37 of 37 in 92 s. Every row is identical to unit 395's section 3.1.
+- Adjudicated: 13 of 13. Clean synthetics: 2 of 2.
+- Printer: WEEKEND 5, THINKING 5, FLEX 1, ABOVE 2, BREEZE 2.
 
-**Status cadence.** PROJECT_STATUS.md was written through tools/status.sh with the real
-clock at the start, before every dotnet test, inside the worktree script before each
-step, and after every task. No run went past ten minutes without a write. The longest
-gap was the 377 s engine line.
+**Task 1, the trace.** No code was written. The pieces are the 45 Cw-only diffs. They were checked
+on a scratch repo that holds HEAD's Cw folder. For each of the fourteen, the search:
+1. tried the piece alone;
+2. tried it after its named dependencies;
+3. tried it after the whole prefix;
+4. then removed links newest first, keeping a removal only if nothing refused more.
+
+That produced an irreducible chain for each of the fourteen (docs\phase-cw\unit404-chains.md
+section 2). The grouping rules gave **two chains, not unit 395's three**:
+- S has 4 pieces.
+- D has 24 pieces, because every decoder-side chain runs through 3e84ac74 and f27174b5.
+
+**A decision the session made: two build links.** 0f2089f3 calls CwPitchRanking, which b48d1158
+creates. efcd5242 calls CwSpectralPeak, which ade52536 creates. The apply check cannot see a
+type. Without these two pieces, D could not compile by construction, and its verdict would have
+said nothing about the work. So both were added to D. Section 4 item 2 covers this.
+
+**Task 2, the chains, smallest first.**
+- **S** applied with no conflict and needed no adaptation. It built clean. Nothing moved, so it is
+  out.
+- **D** applied under --3way with no conflict. Three pieces had hunks not taken:
+  - the CwPitchChoice.cs hunks of 4c6e4321 and 0f2089f3, already in the tree (decision 3);
+  - the meter hunk of 9c2a7f99, which the build did not need (parked as 397 item 2).
+
+  **Adaptations, all in src\Hamlet.RadioEngine\Cw, all under decision 4.** In each case the
+  chain's member was kept and unit 392's seam copy removed. There were five build errors:
+  - CwCharacter.cs: WidestRecordedLlr and MarginLlr, CS0102;
+  - CwDecoder.cs: Retuned, CS0111;
+  - CwDecodeReport.cs: the PitchWasAsserted and PitchChoice properties, CS8907.
+
+  After that it built clean with warnings as errors. It was then measured and is out. The numbers
+  are in section 3.
+
+**Task 3.** No chain was kept, so this task measured HEAD again. All six reds read exactly as unit
+402 left them. This was not a 3.6 attempt.
+
+**Task 4, exit round.**
+- Engine line: 178 of 178.
+- App line: 277 of 278. The one name lost was a different one, again to the dispatcher loop before
+  any assertion. The re-run gave 278 of 278.
+- Floors: 37 of 37 with every row identical to entry, 13 of 13, 2 of 2.
+- The transmit files show no diff against 7e209cb4.
+- git diff bc2484d5 HEAD over src shows no diff, and over src\Hamlet.App it also shows none.
+- 4.7 is ticked. **No regression:** nothing green at entry is red at exit.
 
 ## 2. What the owner should expect
 
-Laid side by side, the two transcripts are the same string, character for character:
-mostly unsure-character placeholders, with a short run of letters in the middle. Every
-count matches, down to 61 characters, 45 unsure, 93 elements and 30 wpm. Both builds
-also produce the same numbers on all 37 recordings the floors hold. On this recording,
-read this way, the decoder before 7e65aac4 and the decoder at HEAD cannot be told apart.
-That does not say either transcript is what was sent, and nothing here can say whether
-the capture was read better last night. It does say that whatever Tim heard change is
-not in this commit's effect on this file.
+Tim, putting the August work back in whole did not earn any of it a place. The survey pieces
+changed nothing the floors or the printer measure. The decoder group moved one number, ABOVE on
+013637 from 2 to 1, but it cost a lot:
+- 021410 fell from 47 characters to 40;
+- three captures and both clean synthetics went below their floors;
+- decoding ran so much slower that the captures test got through 5 of its 37 cases in the time
+  the whole set took before.
 
-**What will look wrong but is not:**
-
-- **The harness figures are not the sidecar's.** The harness reads 61 emitted, 45 unsure, 93 elements, 615 Hz. The work instruction quotes the sidecar as 40, 27, 64 and 625 Hz. The live app decodes from the sound card mid-stream with its own pitch setting; the harness decodes the file from its first sample at 600 Hz. The speed agrees at 30 wpm. I could not check the sidecar itself, because it is not in the tree (section 4).
-- **The app line shows a red on each run.** Those are the dispatcher losses above, counted neither way, the same pattern unit 402 recorded.
+Both groups are back out. The tree's src is byte-identical to this morning's, and the decoder on
+the air is the one you had at the start of the unit. **What will look wrong but is not:**
+- The git log shows a 24-piece decoder commit landing and being reverted.
+- The working tree still carries loop files this unit did not write and did not commit:
+  .run-unit state files, SESSION.lock and a report copy.
 
 ## 3. What you should see
 
-**The two transcripts, one above the other, cw-2026-09-23-125515, settled transcript
-through CwDecodeHarness:**
+**The chain table.** Distances are on the settled text.
 
-```
-HEAD      [■ ■■ ■ ■■ ■ ■■■ ■■■ ■EE ■ E■E ■ ■ EEE■■■■ ■ ■ ■ ■ ■ ■■ ■T ES T IVDW <BT> ■ ■ ■■ ■ ■ ■■■ ■ ■ ■■ ■ ■]
-a902cdf8  [■ ■■ ■ ■■ ■ ■■■ ■■■ ■EE ■ E■E ■ ■ EEE■■■■ ■ ■ ■ ■ ■ ■■ ■T ES T IVDW <BT> ■ ■ ■■ ■ ■ ■■■ ■ ■ ■■ ■ ■]
-```
+| Chain | Pieces | Number before | Number after | Kept or out |
+|---|---|---|---|---|
+| S, the survey, carrying 4786c7e7 and f2e1db7a | 7fb89d5e, 44cf3fc8, 4786c7e7, f2e1db7a | 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; captures 37 of 37, adjudicated 13 of 13, synthetics 2 of 2 | every one of the 37 captures identical in characters, elements, unsure and tone; both texts and the five distances identical; 13 of 13; 2 of 2 | **out**, 3c742c4a reverted in 675d846f |
+| D, the decoder, carrying 386fdb5d, 4c6e4321, 0f2089f3, 62262b94, fc1ee77f, 68a18d66, a91d8fe7, efcd5242, aeea24f2, a37cfcff, ee2cba8d, 9c2a7f99 | 2068f868, 6fc36a1e, 3e84ac74, 9de394da, f27174b5, 386fdb5d, 4c6e4321, b48d1158, 0f2089f3, 62262b94, fc1ee77f, 71b4f044, 68a18d66, a91d8fe7, ade52536, efcd5242, 95a5e063, b7147b1f, 4935a4f8, e6b1ece7, aeea24f2, a37cfcff, ee2cba8d, 9c2a7f99 | the same | see the notes below the table | **out**, bfd97867 reverted in 264b97ce |
 
-`cmp` over the two printers' output lines reports them identical.
+**Chain D's numbers after**, against the entry numbers above:
+- **Captures: killed at the 300 s timeout with 5 of 37 cases done.** At entry all 37 took 92 s.
+  - 013520: 60 to 62 characters.
+  - 001520: elements 45 to 39, **red**.
+  - 013637: 63 to 62 characters, **red**.
+  - 031948: 34 to 31 characters. It is anchored, so the count is printed and not asserted.
+  - 012922: 50 to 44 characters, **red**.
+  - 32 cases were not reached.
+- **Adjudicated: killed at 180 s.** 4 of 13 green, none red, 9 not reached.
+- **Synthetics: 0 of 2.** The expected text is `CQ DE W1AW K`; they gave `■■ ■■ W1AW K` and
+  `■Q DE W1AW K`.
+- **Printer.**
+  - 021410: **47 to 40 characters**; WEEKEND 5, THINKING 5, FLEX 1.
+  - 013637: 62 characters, 13 unsure; **ABOVE 2 to 1** (nearest `AB OVE`); BREEZE 2.
 
-| | HEAD | a902cdf8 |
-|---|---|---|
-| characters emitted | 61 | 61 |
-| characters unsure | 45 | 45 |
-| elements seen | 93 | 93 |
-| elements resolved | 93 | 93 |
-| winning speed | 30 wpm | 30 wpm |
-| tone admitted | 615 Hz, measured | 615 Hz, measured |
+The per-chain detail and the build errors quoted in full are in docs\phase-cw\unit395-rework.md
+section 2, under *Chains under 4.7, judged by unit 404*. The trace is in
+docs\phase-cw\unit404-chains.md.
 
-Every figure is an indication (FACT-004). Neither transcript is claimed to be what was
-sent (§0.0).
+**Floors raised: none.** No chain was kept.
 
-**The 37 capture cases: none moved.** `TheCapturesThatDecodeKeepDecodingTests` passes 37
-of 37 in both builds. The sorted per-case rows, holding characters, elements, unsure and
-tone, `diff` to nothing. The files are .run-unit\unit403-rows-head.txt and
-unit403-rows-before.txt, and unit403-rows-diff.txt is empty. So 7e65aac4 moved nothing
-the floors can see and nothing they cannot see either.
+**Task 3: the six reds at HEAD, beside unit 402.**
 
-**Proof that the a902cdf8 build held the older decoder:** the DLL hashes differ, f3aa79e6
-against d9f29fa0, and CwEmissionGateTests is 7 of 8 there, with
-`NoSpeedIsNamedWithoutCharactersToNameItFrom` red. At HEAD it is 8 of 8.
+| Red | Test | Unit 402 before | Unit 404, HEAD |
+|---|---|---|---|
+| #6 | CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp, 25 wpm | 0.75 of the message, bar 0.79 | 0.75 |
+| #15 | CwAcquisitionWindowTests.TheSlowEndReadsTheMessage, 12 wpm 18 dB | 0.54 | 0.54 |
+| #42 | CwReceiverFixtureTests.NothingIsEmittedDuringTheOperatorsOwnTransmission | 70 | 70 |
+| #43 | TheEasyTierIsReadWhole coverage-easy, unreadable + not in message | 5 + 37 | 5 + 37 |
+| #44 | TheEasyTierIsReadWhole exchange-easy | 3 + 21 | 3 + 21 |
+| #45 | TheEasyTierIsReadWhole tightfist-easy | 1 + 3 | 1 + 3 |
 
-Files: .run-unit\unit403-head.txt, unit403-before.txt, unit403-before-run1.txt,
-unit403-before-gate.txt, unit403-before-steps.txt, unit403-before-steps-run1.txt, and
-the entry and exit runs, all committed.
+Totals by type:
+- CwAcquisitionWindowTests: 10 of 12.
+- CwReceiverFixtureTests: 23 of 27.
+- CwAdjudicationTests: 11 of 11.
+- CwFixtureTests: 22 of 23. The red case is fading-18wpm's confident-mistakes case, the one
+  already parked as 400 item 4.
 
 ## 4. What's blocking us
 
-Nothing blocks a criterion. Four items are raised for the record: three mismatches with
-the work instruction under its section 5, none repaired, and one observation.
+Nothing blocks 4.7 or any other criterion. Four items are recorded for the arbiter.
 
-1. **a902cdf8 is not the parent of 7e65aac4.** The parent is 7d109850, unit 402's
-   task 1 trace. `git diff a902cdf8 7d109850 -- src` prints nothing, so a902cdf8 is the
-   src state before 7e65aac4 and the comparison stands as ordered. Rejected: switching
-   to 7d109850. The instruction named a902cdf8, and the src is the same at both.
-2. **The sidecar cw-2026-09-23-125515.txt is not in the tree.** Only the wav is in
-   tests\fixtures\cw\captured\unadjudicated. The instruction's sidecar figures could not
-   be checked, and nothing about tonePeak or elementHz was seen, so there is nothing to
-   park.
-3. **The harness at a902cdf8 differs from HEAD's.** It compiled anyway. HEAD's was
-   copied in so both sides share one harness, for the reason in section 1. Rejected:
-   using the worktree's own harness, which would have mixed a harness change into the
-   decoder comparison.
-4. **The instruction says the capture was 22 minutes after 7e65aac4, and the repair
-   does not change this capture's reading.** If the reading was better last night, the
-   cause is outside 7e65aac4's effect on this file. It could be the signal, the radio or
-   the app path. This unit measures only the engine through the harness, so that is left
-   for Tim's ruling and not chased.
+1. **The merge rule judged twelve of the fourteen as one 24-piece verdict.**
+   - **Ruling asked: none needed for 4.7. It is recorded so the reader knows what the verdict
+     covers.**
+   - **Reasoning:** the instruction's rule merges chains that share any piece. 3e84ac74 and
+     f27174b5 sit in every decoder-side chain, so the lattice, the estimator and the hooks became
+     one chain.
+   - That chain carries two links that were already out on their own for measured harm:
+     - e6b1ece7, which alone turned 14 captures red in unit 397. Only a37cfcff and ee2cba8d stand
+       on it.
+     - 95a5e063, which alone raised unsure on 25 captures in unit 396. Only aeea24f2 and
+       9c2a7f99 stand on it.
+   - So D's result cannot say whether the lattice chain, fc1ee77f and 68a18d66 on 2, 3, 5, 12 and
+     13, would have held the floors on its own. Inside D it moved ABOVE by one.
+   - **Rejected:** splitting D myself. The rule is the author's, and the instruction marks it as
+     overrulable by the author, not by the session.
+2. **Two build links added by the session.**
+   - **Ruling asked: none. Recorded as a decision made for itself.** b48d1158 and ade52536 went
+     into D even though they are not in any minimal apply-check chain.
+   - **Reasoning:** 0f2089f3 and efcd5242 call the types those two pieces create. Without them
+     the chain fails to compile by construction, and its verdict would say nothing about the
+     work.
+   - **Rejected:** the literal chain. It turns a guaranteed compile error into an out that tells
+     nobody anything.
+3. **Chain D made the decode several times slower,** and the fixed per-type timeouts cut its
+   measurement short. The captures test ran 5 cases in 300 s, and the printer took 61 s against
+   5 s.
+   - **Ruling asked: none.** The verdict does not depend on the cases not reached, because three
+     reds on assertion already put the chain out.
+   - The slowdown was measured and not traced. A future unit that reapplies any part of D should
+     expect the engine line's 480 s to be at risk.
+4. **The dispatcher loop lost one app name at entry and one at exit,** a different name each
+   time, both before any assertion. Each re-run was 278 of 278. **Ruling asked: none.**
