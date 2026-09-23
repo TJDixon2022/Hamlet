@@ -227,6 +227,11 @@ lines identical to section 1. Transmit files nothing. Out, reverted next.
 After 25: all three. After 2, 25; 2, 5, 25; 2, 5, 17, 25: 1530 (`unit396-deps26.sh`). *Dependent,
 out*. `src` clean after.
 
+**Piece 27, `a91d8fe7`, task 2.** Patch 269 lines over four files, `Posterior.cs` among them.
+Kept state: three files fail and `Posterior.cs` does not exist. After 25; 2, 25; 2, 5, 25; 1, 2, 5,
+17, 25: `CwDecoder:994`, `CwProbabilisticDecoder:774`, `CwProbabilisticStream:672` fail every time,
+`Posterior.cs` no longer listed (`unit396-deps27.sh`). *Dependent, out*. `src` clean after.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
