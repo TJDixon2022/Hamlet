@@ -399,3 +399,17 @@ STATE_WHY: Criteria 3.1 to 3.5 are ticked, but 3.6 is still open with only #24 a
 ADVANCED: no
 ATTEMPT: 3.6 | unit 1 launched 2026-09-23T12:10:11.696Z | no | executed | attack the eight red-open tests of the failing set by number - trace each of #6 #15 #24 #41 #42 #43 #44 #45 to a cause at a file and line with a printer asserting nothing, then one change per cause in the decoder outside the transmit files or the easy tier's event under R12, each kept only on a red to green with the floors and every green held, attempt 1 of 3 written to docs/phase-cw/reds-3.6.md
 REASON: 3.6 | unit 1 launched 2026-09-23T12:10:11.696Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 403 - STEP 3
+
+STEP: 3
+APPROACH: decode Tim's 12:55 UTC capture through the decoder at HEAD and at a902cdf8, the commit before unit 402's speed repair, and print both transcripts with their counts, changing no file under src
+MOVE: work around
+WHY: PHASE_PLAN.md step 3 orders the remaining repairs one at a time under R49, and the operator reports the decoder reading worse on the air than before 7e65aac4, so whether that commit cost the decoder decides whether the remaining repairs are built on a decoder that reads
+STATE: partial
+DECIDED: the worktree path C:/Source/HamLet-wt403, the printer's name and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R49, R50, R51, R55, section 6; CLAUDE.md 0.0 and 0.2; HM-DEC-091; HM-DEC-155; HM-DEC-139; FACT-004
+ADVANCES: none - clears a blocker: criterion 3.6
+COST: one session, five tasks, 0 to 4, committed per task; task 3 is the drop candidate.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.89 to 1.13.90. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 402; set to 403 - the same recording, two builds and CURRENT_STEP 3. HEAD at entry 6c287f0f. Section 5 checked: the capture wav is on disk and already tracked, committed in 7fc2ccfc, so nothing untracked to commit; its sidecar cw-2026-09-23-125515.txt is not in the tree; 7e65aac4 is the newest commit touching src; a902cdf8 is not its parent, 7d109850 is, but git diff a902cdf8 7d109850 over src prints nothing, so a902cdf8 is the src state before 7e65aac4; git diff a902cdf8 7e65aac4 over src touches CwDecoder.cs only, 21 insertions and 2 deletions. Floors: captures 37 of 37 in 94 s, adjudicated 13 of 13 in 29 s, clean synthetics 2 of 2 in 2 s. ENGINE line 178 of 178 in 377 s; APP line 278 of 278 in 183 s.
