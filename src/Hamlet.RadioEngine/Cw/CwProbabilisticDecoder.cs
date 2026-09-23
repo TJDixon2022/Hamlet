@@ -65,6 +65,10 @@ public readonly record struct CwProbabilisticResult(
 /// <param name="Text">The letter, or a space for a word gap.</param>
 /// <param name="Pattern">The dits and dahs behind it, or "" for a word gap.</param>
 /// <param name="EndHop">Which hop of the window it ended at.</param>
+/// <param name="MarginLlr">
+/// How much better the winning reading was than the nearest alternative
+/// arriving at the same place. Recorded and read by nothing.
+/// </param>
 /// <param name="SpanHops">
 /// How many hops the character spans, from the start of its first mark to the
 /// end of its last, so the ratio can be read per hop.
@@ -98,8 +102,36 @@ public readonly record struct CwProbabilisticCharacter(
     string Pattern,
     int EndHop,
     double SpanLogLikelihoodRatio = 0,
-    int SpanHops = 0)
+    int SpanHops = 0,
+    double MarginLlr = double.NaN)
 {
+    /// <summary>
+    /// How much better the winning reading was than the nearest alternative
+    /// arriving at the same place.
+    /// </summary>
+    /// <remarks>
+    /// <para>**NOTHING READS THIS AND THAT IS DELIBERATE.** It is recorded so
+    /// that tomorrow's thresholds come from a real distribution rather than from
+    /// a guess, which is the mistake every constant in this file has had to be
+    /// walked back from at least once.</para>
+    /// <para>**WHY THE QUANTITY BESIDE IT IS NOT ENOUGH.**
+    /// <see cref="SpanLogLikelihoodRatio"/> scores a character against the key
+    /// never having gone down, and on audio that is never silent the null is
+    /// wrong: measured on the pile-up of 2026-08-26, characters carved out of
+    /// continuous tone scored eight thousand to twenty-nine thousand against
+    /// silence while the plausible tail scored forty-one to four hundred — the
+    /// soup outscoring the copy a hundred to one. Against a *second-best
+    /// reading* rather than against silence, a letter carved out of a continuous
+    /// tone has an alternative that fits about as well, and the margin collapses
+    /// toward nought.</para>
+    /// <para>This tree has its own reason to want it: unit 1.11.10 recorded that
+    /// the short-character bias needs a per-character expectation, and a margin
+    /// against the runner-up is one that does not care how many elements a
+    /// character has.</para>
+    /// <para><see cref="double.NaN"/> where the path had no alternative to
+    /// compare against, which is not the same as a margin of nought.</para>
+    /// </remarks>
+    public double MarginLlr { get; init; } = MarginLlr;
     /// <summary>
     /// The character's own evidence per hop, in the units
     /// <see cref="CwProbabilisticResult.LikelihoodRatio"/> is measured in.
@@ -1163,6 +1195,13 @@ public static class CwProbabilisticDecoder
         var kindAt = new int[count + 1];
         var wasDown = new bool[count + 1];
 
+        // **THE RUNNER-UP, KEPT SO A CHARACTER CAN SAY HOW CLOSE THE ARGUMENT
+        // WAS.** Nothing reads it yet; see
+        // <see cref="CwProbabilisticCharacter.MarginLlr"/> for why it is worth
+        // recording before anything is decided on it.
+        var second = new double[count + 1];
+
+        Array.Fill(second, double.NegativeInfinity);
         Array.Fill(best, double.NegativeInfinity);
         Array.Fill(fromHop, -1);
         best[0] = 0;
@@ -1207,10 +1246,15 @@ public static class CwProbabilisticDecoder
 
                     if (score > best[i])
                     {
+                        second[i] = best[i];
                         best[i] = score;
                         fromHop[i] = j;
                         kindAt[i] = k;
                         wasDown[i] = kind.IsKeyDown;
+                    }
+                    else if (score > second[i])
+                    {
+                        second[i] = score;
                     }
                 }
             }
@@ -1218,7 +1262,7 @@ public static class CwProbabilisticDecoder
 
         return (
             best[count],
-            Spell(count, fromHop, kindAt, downTo, upTo),
+            Spell(count, fromHop, kindAt, downTo, upTo, best, second),
             kindAt[count]);
     }
 
@@ -1261,6 +1305,8 @@ public static class CwProbabilisticDecoder
     /// <param name="kindAt">Which kind that segment was.</param>
     /// <param name="downTo">Cumulative key-down log-likelihood, hop by hop.</param>
     /// <param name="upTo">Cumulative key-up log-likelihood, hop by hop.</param>
+    /// <param name="best">The winning score at each hop.</param>
+    /// <param name="second">The runner-up score at each hop.</param>
     /// <returns>The text.</returns>
     /// <remarks>
     /// **EACH CHARACTER'S OWN SPAN IS SCORED AGAINST ALL-KEY-UP ON THE WAY
@@ -1270,8 +1316,16 @@ public static class CwProbabilisticDecoder
     /// penalty is left out.
     /// </remarks>
     private static IReadOnlyList<CwProbabilisticCharacter> Spell(
-        int count, int[] fromHop, int[] kindAt, double[] downTo, double[] upTo)
+        int count, int[] fromHop, int[] kindAt, double[] downTo, double[] upTo,
+        double[] best, double[] second)
     {
+        // How much better the winning path was than the nearest alternative
+        // arriving at the same hop; see `CwProbabilisticCharacter.MarginLlr`.
+        static double Margin(double[] best, double[] second, int at)
+            => double.IsNegativeInfinity(second[at]) || double.IsNegativeInfinity(best[at])
+                ? double.NaN
+                : best[at] - second[at];
+
         var path = new List<(int Kind, int StartHop, int EndHop)>();
         var at = count;
 
@@ -1327,7 +1381,8 @@ public static class CwProbabilisticDecoder
                 characters.Add(new CwProbabilisticCharacter(
                     MorseAlphabet.Lookup(spelled) ?? "#", spelled, startHop,
                     spanRatio,
-                    spanFrom < 0 ? 0 : startHop - spanFrom));
+                    spanFrom < 0 ? 0 : startHop - spanFrom,
+                    Margin(best, second, startHop)));
 
                 pattern.Clear();
                 spanRatio = 0;
@@ -1346,7 +1401,8 @@ public static class CwProbabilisticDecoder
 
             characters.Add(new CwProbabilisticCharacter(
                 MorseAlphabet.Lookup(spelled) ?? "#", spelled, count, spanRatio,
-                spanFrom < 0 ? 0 : count - spanFrom));
+                spanFrom < 0 ? 0 : count - spanFrom,
+                Margin(best, second, count)));
         }
 
         return characters;

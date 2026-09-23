@@ -131,6 +131,30 @@ public sealed record CwCharacter(
     public int SpanHops { get; init; }
 
     /// <summary>
+    /// How much better the winning reading was than the nearest alternative
+    /// arriving at the same place.
+    /// </summary>
+    /// <remarks>
+    /// **RECORDED AND READ BY NOTHING** (§0.0.1). See
+    /// <see cref="CwProbabilisticCharacter.MarginLlr"/> for what it is and why
+    /// the quantity beside it is not enough. It goes to the capture sidecar and
+    /// to the record, and to no display: a number a reader cannot calibrate is
+    /// worse on a screen than absent.
+    /// </remarks>
+    public double MarginLlr { get; init; } = double.NaN;
+
+    /// <summary>The widest either likelihood figure may be written as.</summary>
+    /// <remarks>
+    /// **A MILLION, BECAUSE THE RECORD HAS PRINTED QUADRILLIONS.** The
+    /// `6:27306879.3` family is a per-hop log-likelihood on a recording whose
+    /// noise estimate went to nothing, and a sheet carrying it is a sheet nobody
+    /// reads the rest of. Clamping is a statement about the *record's* range and
+    /// not about the measurement, so a clamped figure is written with a mark
+    /// saying it was clamped rather than silently.
+    /// </remarks>
+    public const double WidestRecordedLlr = 1_000_000;
+
+    /// <summary>
     /// The character's own evidence per hop, in the units the window ratio uses.
     /// </summary>
     /// <remarks>

@@ -561,6 +561,7 @@ public sealed class CwProbabilisticStream
             at)
         {
             SpanLogLikelihoodRatio = character.SpanLogLikelihoodRatio,
+            MarginLlr = character.MarginLlr,
             SpanHops = character.SpanHops,
         };
     }
