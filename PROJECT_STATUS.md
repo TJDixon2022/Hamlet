@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 398 - the excluded files, classified and retired under R49
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T02:46:31-04:00
-NOTE: task 3: re-include 6 of 7, whole, CwAccuracy prose only - running the type
+UPDATED: 2026-09-23T02:47:22-04:00
+NOTE: task 3: re-include 7 of 7, whole, CwAccuracy prose only - running the type
 
 ---
 

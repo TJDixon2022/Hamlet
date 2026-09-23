@@ -219,3 +219,30 @@ compiled test used anything in them.
 
 After the last retirement, `dotnet build Hamlet.sln -warnaserror`: exit 0, 0 errors, 15 s. The
 engine csproj carries 18 `<Compile Remove>` lines, down from 21.
+
+## 4. The re-includes
+
+In task 1's order, each by `.run-unit/unit398-re.sh`: its `<Compile Remove>` line out, `dotnet build
+Hamlet.sln -warnaserror` with `timeout 600`, then the type alone, `--no-build`, `--filter
+"FullyQualifiedName~<Type>"`, `timeout 600`, output under `.run-unit/unit398-re-<Type>.txt`.
+**All seven built; none was refused.** The clock rule did not fire: the last re-include ended at
+02:47, minute 16.
+
+| Commit | File | Build | Run | Facts |
+|---|---|---|---|---|
+| `ba998d84` | `Cw/ABlipDoesNotShiftEverythingAfterItTests.cs` - the set's #1 | exit 0, 8 s | 3 of 3 green, 3 s | clean, blipped and three-blip readings all `CQ DE W1AW K`; the dit-long control reads `CQ ME W1AW K` |
+| `fd2e7258` | `Audio/TheTapIsNotBehindTheDecoderTests.cs` | exit 0, 6 s | 1 of 1 green, 2 s | `TheTapIsFedOnceWhicheverWayTheAudioArrives` |
+| `447b939c` | `Cw/NothingActsOnTheAdmissionVerdictTests.cs` | exit 0, 6 s | 1 of 1 green, 2 s | `TheDecoderExposesTheVerdictAndTheEmitPathDoesNotConsultIt` |
+| `6657865e` | `Cw/WhatDecodeScoringCostsTests.cs` | exit 0, 6 s | 2 of 2 green, 6 s | `OneDecodeAtOnePitchCostsThis` read 21 characters at the 12 s window; `APitchWithNothingOnItIsTheCheapCase` |
+| `6b8e19a9` | `Audio/TheReadPathDoesNotAllocateTests.cs` | exit 0, 5 s | 3 of 3 green, 2 s | the two `ReusableWindow` facts and the arrival ratio |
+| `997029fd` | `Cw/TheCleanReadsStayCleanTests.cs` | exit 0, 5 s | **6 of 7 cases green, 1 red**, 20 s | `EachCleanCaptureStillContainsItsTruth` **red-open** on `cw-2026-08-18-003758`: looking for `AA4MP/4 QNIK`, reads `■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETMP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ...`; green on `012403` and `013347`. `EachCleanCaptureStillNamesAsManyCharacters` green, named 21 of floor 20, 44 of 42, 57 of 9. `EveryFloorWasMeasuredAndNotHopedFor` green |
+| this commit | `Cw/TheProbabilisticDecoderTests.cs` | exit 0, 5 s | 11 of 11 cases green, 9 s | all six facts |
+
+**By fact:** 19 re-included, 18 green, 1 red-open. **By case:** 28 run, 27 green, 1 red. The one red
+asserts characters on audio - a decode result - so it is red-open with its text under R49, never
+re-run, and none of the seven types is on either carry-forward line's filter. None of these types
+is in `docs\unit239-failing-set.txt` except #1.
+
+**The excluded files now:** 22 at entry; 3 deleted, 7 re-included; **12 remain excluded**, 11 in the
+engine csproj and the app's one - the 11 stays-whole engine files of section 2 and the app's file
+under decision 6.
