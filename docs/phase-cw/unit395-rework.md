@@ -125,7 +125,16 @@ taken (R50); a piece whose `Cw` half needs its `Audio` half fails to build and i
 
 ## 2. The pieces judged
 
-Written at task 2.
+One row per piece, in the list's order, judged per decisions 6 and 7 against the kept state's
+numbers. Distances are on the settled text (section 3.1a). *Before* is the kept state before the
+piece; for piece 1 that is section 3.1 and 3.1a.
+
+| n | Hash | Claim | Number before | Number after | Captures wall | Kept or out | Why |
+|---|---|---|---|---|---|---|---|
+| 1 | 2068f868 | read the first seconds again, at the note they were sent on | 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; 004507 50, 003758 63, 031948 34, 012748 4; synthetics 0 of 2 | 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; 004507 49, 003758 58, 031948 31, 012748 2; synthetics 0 of 2 | 94 s | **out**, piece `5cf8f9c8`, reverted in the next commit | applied clean and built; captures 37 of 37 and adjudicated 13 of 13 green; no named number moved and no capture rose, while four fell - 004507, 003758 and 031948 are anchored, so their counts are printed and not asserted, and 012748 fell from 4 to its floor of 2; the other 33 identical. Out under R51. |
+
+Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
+it.
 
 ## 3. The numbers
 
@@ -176,8 +185,9 @@ Characters, elements and unsure as the test prints them from `decoder.Report`; t
 | unadjudicated/cw-2026-08-25-021825 | 41 | 74 | 16 | 400 |
 | unadjudicated/cw-2026-08-26-125941 | 0 | 0 | 0 | 400 |
 
-Every row equals its floor in the table; the restored decoder stands exactly on the floors, not
-above them. `TheAdjudicatedReadingsKeepReadingTests` 13 of 13 green in 29 s wall;
+36 rows equal their floor in the table; `012748` stands at 4 characters and 16 elements against a
+floor of 2 and 4. The anchored cases, the ones `TheAdjudicatedReadingsKeepReadingTests` covers,
+print their count and do not assert it. `TheAdjudicatedReadingsKeepReadingTests` 13 of 13 green in 29 s wall;
 `CwFixtureTests.TheCleanRecordingsDecodeExactly` 0 of 2, `clean-12wpm` and `clean-18wpm` red as
 R53 expects, in 3 s. Outputs `.run-unit\unit395-floors-2.txt` and `-3.txt`.
 
