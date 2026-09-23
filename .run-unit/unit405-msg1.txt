@@ -1,0 +1,3 @@
+unit405 task 1: the trace - #15 and coverage-easy at CwUnitEstimator 96 via the 507 seed, a short mark cluster of noise marks, grid prefers 12 where 22.9 is imposed; exchange-easy at MeasureGaps 221-231, held gaps 15/1127/323; #45 at the flush, B1 and B2 together settle VVVTESTDETESTK uncommitted and put back; #6 at the unmeasured 600 Hz mix of a 640 Hz sender; #42 separable only by the generator's flat -82 dBFS residue, 46 of 013347's 59 floor characters inside own-send spans; printer asserts nothing, no src change
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

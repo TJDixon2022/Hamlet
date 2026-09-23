@@ -1,0 +1,257 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSixRedsTraceTests.GroupCGuardSpans(file: "capture:cw-2026-08-17-013347") [2 s]
+  Standard Output Messages:
+ C | cw-2026-08-17-013347 | 30.0 s at 48000 Hz | tracker hop 5.0 ms | readings 5993 | spans 25 | own transmit 15.68 s | transmissions 83 | suspended chunks 0 | decoding suspended False
+ C-span | cw-2026-08-17-013347 | from 0.110 s | length 0.770 s | muted 0.340 s in 4 runs | muted broadband min -82.6 median -75.5 max -61.1 dBFS | 0.5 s before: broadband median -18.8 dBFS, tone power median -40.0 dB, snr median 1.8 dB max 6.3 | tone 600
+ C-span | cw-2026-08-17-013347 | from 0.945 s | length 0.895 s | muted 0.425 s in 4 runs | muted broadband min -83.4 median -74.6 max -62.7 dBFS | 0.5 s before: broadband median -18.9 dBFS, tone power median -35.4 dB, snr median 6.8 dB max 10.6 | tone 600
+ C-span | cw-2026-08-17-013347 | from 2.145 s | length 0.780 s | muted 0.360 s in 4 runs | muted broadband min -83.5 median -74.1 max -60.4 dBFS | 0.5 s before: broadband median -17.7 dBFS, tone power median -35.6 dB, snr median 7.1 dB max 15.7 | tone 615
+ C-span | cw-2026-08-17-013347 | from 2.990 s | length 0.895 s | muted 0.465 s in 4 runs | muted broadband min -83.7 median -78.8 max -62.8 dBFS | 0.5 s before: broadband median -18.5 dBFS, tone power median -35.9 dB, snr median 7.7 dB max 13.0 | tone 615
+ C-span | cw-2026-08-17-013347 | from 4.215 s | length 0.515 s | muted 0.170 s in 3 runs | muted broadband min -82.1 median -73.8 max -61.6 dBFS | 0.5 s before: broadband median -18.0 dBFS, tone power median -38.1 dB, snr median 4.4 dB max 18.0 | tone 600
+ C-span | cw-2026-08-17-013347 | from 4.805 s | length 0.165 s | muted 0.020 s in 1 runs | muted broadband min -71.2 median -64.4 max -61.3 dBFS | 0.5 s before: broadband median -18.7 dBFS, tone power median -41.6 dB, snr median 2.6 dB max 7.8 | tone 600
+ C-span | cw-2026-08-17-013347 | from 5.275 s | length 0.660 s | muted 0.305 s in 3 runs | muted broadband min -83.0 median -76.5 max -61.0 dBFS | 0.5 s before: broadband median -18.3 dBFS, tone power median -39.6 dB, snr median 2.6 dB max 15.5 | tone 615
+ C-span | cw-2026-08-17-013347 | from 5.995 s | length 0.780 s | muted 0.355 s in 4 runs | muted broadband min -83.5 median -79.3 max -60.7 dBFS | 0.5 s before: broadband median -18.5 dBFS, tone power median -37.0 dB, snr median 8.0 dB max 12.2 | tone 600
+ C-span | cw-2026-08-17-013347 | from 6.840 s | length 0.900 s | muted 0.375 s in 5 runs | muted broadband min -83.2 median -80.9 max -60.2 dBFS | 0.5 s before: broadband median -19.1 dBFS, tone power median -37.4 dB, snr median 8.7 dB max 15.8 | tone 590
+ C-span | cw-2026-08-17-013347 | from 7.800 s | length 0.900 s | muted 0.495 s in 4 runs | muted broadband min -83.3 median -79.7 max -60.6 dBFS | 0.5 s before: broadband median -19.5 dBFS, tone power median -38.4 dB, snr median 3.9 dB max 15.3 | tone 585
+ C-span | cw-2026-08-17-013347 | from 8.765 s | length 0.295 s | muted 0.050 s in 2 runs | muted broadband min -81.5 median -79.0 max -61.7 dBFS | 0.5 s before: broadband median -19.8 dBFS, tone power median -38.7 dB, snr median 4.5 dB max 7.9 | tone 585
+ C-span | cw-2026-08-17-013347 | from 9.145 s | length 0.395 s | muted 0.045 s in 3 runs | muted broadband min -78.2 median -68.5 max -61.6 dBFS | 0.5 s before: broadband median -19.2 dBFS, tone power median -38.1 dB, snr median 6.8 dB max 32.3 | tone 610
+ C-span | cw-2026-08-17-013347 | from 9.860 s | length 0.645 s | muted 0.295 s in 3 runs | muted broadband min -82.6 median -74.6 max -61.5 dBFS | 0.5 s before: broadband median -17.9 dBFS, tone power median -34.4 dB, snr median 9.8 dB max 25.1 | tone 600
+ C-span | cw-2026-08-17-013347 | from 10.590 s | length 0.755 s | muted 0.310 s in 4 runs | muted broadband min -83.4 median -74.2 max -60.0 dBFS | 0.5 s before: broadband median -17.8 dBFS, tone power median -29.7 dB, snr median 20.2 dB max 27.9 | tone 595
+ C-span | cw-2026-08-17-013347 | from 11.420 s | length 0.890 s | muted 0.350 s in 5 runs | muted broadband min -81.7 median -74.4 max -61.4 dBFS | 0.5 s before: broadband median -18.6 dBFS, tone power median -41.2 dB, snr median 4.3 dB max 9.3 | tone 605
+ C-span | cw-2026-08-17-013347 | from 12.385 s | length 0.885 s | muted 0.440 s in 4 runs | muted broadband min -81.7 median -75.0 max -60.1 dBFS | 0.5 s before: broadband median -20.1 dBFS, tone power median -40.7 dB, snr median 2.9 dB max 7.8 | tone 615
+ C-span | cw-2026-08-17-013347 | from 13.335 s | length 0.300 s | muted 0.055 s in 2 runs | muted broadband min -77.1 median -69.6 max -62.6 dBFS | 0.5 s before: broadband median -16.7 dBFS, tone power median -26.4 dB, snr median 22.3 dB max 27.5 | tone 630
+ C-span | cw-2026-08-17-013347 | from 13.695 s | length 0.420 s | muted 0.085 s in 3 runs | muted broadband min -80.0 median -67.1 max -60.3 dBFS | 0.5 s before: broadband median -17.4 dBFS, tone power median -27.6 dB, snr median 21.4 dB max 27.5 | tone 640
+ C-span | cw-2026-08-17-013347 | from 14.430 s | length 0.885 s | muted 0.430 s in 4 runs | muted broadband min -82.4 median -71.8 max -60.8 dBFS | 0.5 s before: broadband median -17.8 dBFS, tone power median -34.5 dB, snr median 9.2 dB max 22.0 | tone 610
+ C-span | cw-2026-08-17-013347 | from 15.390 s | length 0.530 s | muted 0.205 s in 3 runs | muted broadband min -83.7 median -79.3 max -60.2 dBFS | 0.5 s before: broadband median -19.9 dBFS, tone power median -39.0 dB, snr median 8.7 dB max 26.5 | tone 640
+ C-span | cw-2026-08-17-013347 | from 15.985 s | length 0.415 s | muted 0.055 s in 3 runs | muted broadband min -80.3 median -72.1 max -60.5 dBFS | 0.5 s before: broadband median -16.2 dBFS, tone power median -25.5 dB, snr median 23.4 dB max 29.7 | tone 610
+ C-span | cw-2026-08-17-013347 | from 16.705 s | length 0.780 s | muted 0.335 s in 4 runs | muted broadband min -83.1 median -74.0 max -61.6 dBFS | 0.5 s before: broadband median -16.1 dBFS, tone power median -26.0 dB, snr median 21.2 dB max 27.8 | tone 620
+ C-span | cw-2026-08-17-013347 | from 17.555 s | length 0.410 s | muted 0.060 s in 3 runs | muted broadband min -75.5 median -65.6 max -61.0 dBFS | 0.5 s before: broadband median -16.9 dBFS, tone power median -30.7 dB, snr median 16.5 dB max 26.6 | tone 610
+ C-span | cw-2026-08-17-013347 | from 18.050 s | length 0.155 s | muted 0.010 s in 1 runs | muted broadband min -67.6 median -63.5 max -63.5 dBFS | 0.5 s before: broadband median -19.0 dBFS, tone power median -31.3 dB, snr median 14.9 dB max 23.9 | tone 610
+ C-span | cw-2026-08-17-013347 | from 18.275 s | length 0.655 s | muted 0.300 s in 3 runs | muted broadband min -83.0 median -78.1 max -61.0 dBFS | 0.5 s before: broadband median -18.4 dBFS, tone power median -29.4 dB, snr median 14.9 dB max 23.9 | tone 635
+ C | cw-2026-08-17-013347 | unblocked broadband median -17.4 dBFS, min -59.9 | muted readings 1267 | blocked readings 3135
+ C-char | cw-2026-08-17-013347 | 'E' . 0.295 to 0.320 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 0.655 to 0.680 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 0.790 to 0.915 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 1.375 to 1.515 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'H' .... 1.835 to 2.115 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 2.330 to 2.480 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'A' .- 2.690 to 2.960 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 3.180 to 3.205 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 3.415 to 3.560 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'H' .... 3.780 to 4.135 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 4.375 to 4.400 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 4.505 to 4.530 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 4.640 to 4.665 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'A' .- 4.855 to 5.100 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 5.465 to 5.490 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 5.870 to 5.955 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 6.180 to 6.205 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 6.310 to 6.335 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'H' .... 6.700 to 7.045 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 7.150 to 7.175 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 7.380 to 7.405 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 7.635 to 7.745 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 7.995 to 8.020 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 8.225 to 8.250 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 9.020 to 9.215 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 9.430 to 9.465 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 9.645 to 9.735 s | distance to nearest span 0.105 s
+ C-char | cw-2026-08-17-013347 | 'E' . 10.035 to 10.060 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'T' - 10.390 to 10.540 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 10.870 to 10.905 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 11.470 to 11.625 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 12.195 to 12.280 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 12.560 to 12.585 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 13.225 to 13.430 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 13.570 to 13.665 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 13.880 to 13.905 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 14.030 to 14.305 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'T' - 15.205 to 15.325 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 15.445 to 15.470 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 15.695 to 15.720 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'I' .. 15.865 to 16.075 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'T' - 16.395 to 16.655 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 17.010 to 17.040 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'H' .... 17.370 to 17.760 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'A' .- 17.940 to 18.240 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'E' . 18.575 to 18.600 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'W' .-- 18.885 to 19.670 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013347 | 'V' ...- 19.900 to 20.690 s | distance to nearest span 0.970 s
+ C-char | cw-2026-08-17-013347 | 'R' .-. 20.830 to 21.435 s | distance to nearest span 1.900 s
+ C-char | cw-2026-08-17-013347 | 'R' .-. 21.580 to 22.190 s | distance to nearest span 2.650 s
+ C-char | cw-2026-08-17-013347 | 'V' ...- 22.530 to 23.310 s | distance to nearest span 3.600 s
+ C-char | cw-2026-08-17-013347 | 'A' .- 23.495 to 23.925 s | distance to nearest span 4.565 s
+ C-char | cw-2026-08-17-013347 | '3' ...-- 24.095 to 25.230 s | distance to nearest span 5.165 s
+ C-char | cw-2026-08-17-013347 | 'V' ...- 25.395 to 26.175 s | distance to nearest span 6.465 s
+ C-char | cw-2026-08-17-013347 | 'R' .-. 26.310 to 26.925 s | distance to nearest span 7.380 s
+ C-char | cw-2026-08-17-013347 | 'R' .-. 27.075 to 27.690 s | distance to nearest span 8.145 s
+ C-char | cw-2026-08-17-013347 | 'T' - 27.600 to 27.695 s | distance to nearest span 8.670 s
+ C-char | cw-2026-08-17-013347 | '■' . 28.155 to 28.165 s | distance to nearest span 9.225 s
+ C-char | cw-2026-08-17-013347 | '■' . 28.850 to 28.880 s | distance to nearest span 9.920 s
+ C | cw-2026-08-17-013347 | settled ' E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT ■ ■ '
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSixRedsTraceTests.GroupCGuardSpans(file: "capture:cw-2026-08-17-013622") [2 s]
+  Standard Output Messages:
+ C | cw-2026-08-17-013622 | 30.0 s at 48000 Hz | tracker hop 5.0 ms | readings 5993 | spans 16 | own transmit 10.08 s | transmissions 53 | suspended chunks 0 | decoding suspended False
+ C-span | cw-2026-08-17-013622 | from 0.110 s | length 0.895 s | muted 0.480 s in 4 runs | muted broadband min -83.6 median -76.3 max -60.2 dBFS | 0.5 s before: broadband median -19.8 dBFS, tone power median -41.4 dB, snr median 1.5 dB max 14.5 | tone 585
+ C-span | cw-2026-08-17-013622 | from 1.310 s | length 0.535 s | muted 0.215 s in 3 runs | muted broadband min -83.4 median -81.1 max -60.3 dBFS | 0.5 s before: broadband median -18.3 dBFS, tone power median -36.9 dB, snr median 7.2 dB max 16.9 | tone 595
+ C-span | cw-2026-08-17-013622 | from 1.910 s | length 0.195 s | muted 0.050 s in 1 runs | muted broadband min -81.9 median -72.8 max -69.7 dBFS | 0.5 s before: broadband median -17.8 dBFS, tone power median -37.2 dB, snr median 5.3 dB max 13.1 | tone 615
+ C-span | cw-2026-08-17-013622 | from 2.395 s | length 0.655 s | muted 0.295 s in 3 runs | muted broadband min -83.1 median -72.5 max -60.4 dBFS | 0.5 s before: broadband median -18.5 dBFS, tone power median -36.7 dB, snr median 7.1 dB max 14.9 | tone 600
+ C-span | cw-2026-08-17-013622 | from 3.130 s | length 0.760 s | muted 0.325 s in 4 runs | muted broadband min -81.3 median -76.2 max -60.4 dBFS | 0.5 s before: broadband median -20.6 dBFS, tone power median -38.7 dB, snr median 6.3 dB max 8.3 | tone 585
+ C-span | cw-2026-08-17-013622 | from 3.955 s | length 0.900 s | muted 0.335 s in 5 runs | muted broadband min -81.1 median -76.0 max -62.1 dBFS | 0.5 s before: broadband median -18.9 dBFS, tone power median -36.4 dB, snr median 10.1 dB max 13.9 | tone 610
+ C-span | cw-2026-08-17-013622 | from 4.920 s | length 0.895 s | muted 0.480 s in 4 runs | muted broadband min -82.3 median -76.3 max -60.4 dBFS | 0.5 s before: broadband median -20.2 dBFS, tone power median -40.6 dB, snr median 3.8 dB max 13.2 | tone 615
+ C-span | cw-2026-08-17-013622 | from 5.895 s | length 0.300 s | muted 0.065 s in 2 runs | muted broadband min -76.6 median -63.8 max -60.2 dBFS | 0.5 s before: broadband median -20.2 dBFS, tone power median -43.7 dB, snr median 0.5 dB max 8.6 | tone 605
+ C-span | cw-2026-08-17-013622 | from 6.260 s | length 0.400 s | muted 0.035 s in 3 runs | muted broadband min -69.0 median -65.0 max -61.4 dBFS | 0.5 s before: broadband median -22.2 dBFS, tone power median -47.0 dB, snr median 1.2 dB max 8.6 | tone 615
+ C-span | cw-2026-08-17-013622 | from 6.985 s | length 0.655 s | muted 0.310 s in 3 runs | muted broadband min -80.2 median -71.2 max -60.6 dBFS | 0.5 s before: broadband median -17.6 dBFS, tone power median -32.9 dB, snr median 10.9 dB max 18.4 | tone 600
+ C-span | cw-2026-08-17-013622 | from 7.685 s | length 0.780 s | muted 0.350 s in 4 runs | muted broadband min -83.5 median -81.6 max -60.8 dBFS | 0.5 s before: broadband median -19.5 dBFS, tone power median -33.4 dB, snr median 12.1 dB max 14.3 | tone 605
+ C-span | cw-2026-08-17-013622 | from 8.540 s | length 0.885 s | muted 0.350 s in 5 runs | muted broadband min -83.4 median -76.8 max -60.5 dBFS | 0.5 s before: broadband median -19.5 dBFS, tone power median -49.9 dB, snr median -4.3 dB max 4.6 | tone 605
+ C-span | cw-2026-08-17-013622 | from 9.510 s | length 0.880 s | muted 0.445 s in 4 runs | muted broadband min -83.0 median -75.9 max -60.8 dBFS | 0.5 s before: broadband median -19.5 dBFS, tone power median -38.9 dB, snr median 5.1 dB max 9.8 | tone 590
+ C-span | cw-2026-08-17-013622 | from 10.475 s | length 0.275 s | muted 0.030 s in 2 runs | muted broadband min -70.0 median -63.3 max -60.3 dBFS | 0.5 s before: broadband median -18.1 dBFS, tone power median -33.2 dB, snr median 12.6 dB max 16.4 | tone 590
+ C-span | cw-2026-08-17-013622 | from 10.830 s | length 0.410 s | muted 0.080 s in 3 runs | muted broadband min -78.8 median -67.1 max -60.0 dBFS | 0.5 s before: broadband median -19.1 dBFS, tone power median -37.1 dB, snr median 7.1 dB max 16.4 | tone 600
+ C-span | cw-2026-08-17-013622 | from 11.540 s | length 0.655 s | muted 0.315 s in 3 runs | muted broadband min -81.6 median -76.1 max -61.5 dBFS | 0.5 s before: broadband median -18.0 dBFS, tone power median -31.2 dB, snr median 14.2 dB max 26.2 | tone 610
+ C | cw-2026-08-17-013622 | unblocked broadband median -18.0 dBFS, min -59.9 | muted readings 832 | blocked readings 2015
+ C-char | cw-2026-08-17-013622 | 'E' . 0.035 to 0.060 s | distance to nearest span 0.050 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 0.535 to 0.685 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | '5' ..... 0.945 to 1.280 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'S' ... 1.615 to 1.870 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'H' .... 2.085 to 2.360 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 2.575 to 2.600 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 2.940 to 3.065 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 3.300 to 3.440 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | '5' ..... 3.785 to 4.290 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 4.500 to 4.525 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 4.740 to 4.860 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 5.100 to 5.125 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 5.345 to 5.495 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 5.705 to 5.765 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 6.065 to 6.130 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 6.305 to 6.335 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 6.550 to 6.575 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'T' - 6.725 to 6.910 s | distance to nearest span 0.065 s
+ C-char | cw-2026-08-17-013622 | 'E' . 7.150 to 7.180 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'T' - 7.515 to 7.655 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 7.870 to 7.895 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 8.350 to 8.375 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'S' ... 8.595 to 8.855 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 9.070 to 9.095 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 9.915 to 9.945 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 10.380 to 10.545 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 10.655 to 10.725 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'U' ..- 11.120 to 11.505 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 11.840 to 11.865 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 12.095 to 12.140 s | distance to nearest span 0.000 s
+ C-char | cw-2026-08-17-013622 | 'E' . 12.310 to 12.335 s | distance to nearest span 0.115 s
+ C-char | cw-2026-08-17-013622 | 'T' - 12.495 to 12.670 s | distance to nearest span 0.300 s
+ C-char | cw-2026-08-17-013622 | 'S' ... 12.785 to 12.980 s | distance to nearest span 0.590 s
+ C-char | cw-2026-08-17-013622 | 'E' . 13.125 to 13.170 s | distance to nearest span 0.930 s
+ C-char | cw-2026-08-17-013622 | 'T' - 13.300 to 13.455 s | distance to nearest span 1.105 s
+ C-char | cw-2026-08-17-013622 | 'T' - 13.830 to 14.000 s | distance to nearest span 1.635 s
+ C-char | cw-2026-08-17-013622 | 'E' . 14.130 to 14.155 s | distance to nearest span 1.935 s
+ C-char | cw-2026-08-17-013622 | 'E' . 14.290 to 14.350 s | distance to nearest span 2.095 s
+ C-char | cw-2026-08-17-013622 | 'E' . 14.615 to 14.670 s | distance to nearest span 2.420 s
+ C-char | cw-2026-08-17-013622 | 'E' . 14.615 to 14.675 s | distance to nearest span 2.420 s
+ C-char | cw-2026-08-17-013622 | 'A' .- 15.575 to 15.835 s | distance to nearest span 3.380 s
+ C-char | cw-2026-08-17-013622 | 'E' . 16.250 to 16.310 s | distance to nearest span 4.055 s
+ C-char | cw-2026-08-17-013622 | '■' . 16.415 to 16.450 s | distance to nearest span 4.220 s
+ C-char | cw-2026-08-17-013622 | 'E' . 17.235 to 17.280 s | distance to nearest span 5.040 s
+ C-char | cw-2026-08-17-013622 | 'T' - 17.400 to 17.615 s | distance to nearest span 5.205 s
+ C-char | cw-2026-08-17-013622 | 'E' . 18.075 to 18.120 s | distance to nearest span 5.880 s
+ C-char | cw-2026-08-17-013622 | 'E' . 18.245 to 18.310 s | distance to nearest span 6.050 s
+ C-char | cw-2026-08-17-013622 | 'E' . 18.425 to 18.465 s | distance to nearest span 6.230 s
+ C-char | cw-2026-08-17-013622 | '■' . 18.580 to 18.630 s | distance to nearest span 6.385 s
+ C-char | cw-2026-08-17-013622 | '■' . 19.095 to 19.130 s | distance to nearest span 6.900 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 19.320 to 19.450 s | distance to nearest span 7.125 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 19.585 to 19.795 s | distance to nearest span 7.390 s
+ C-char | cw-2026-08-17-013622 | '■' . 20.450 to 20.475 s | distance to nearest span 8.255 s
+ C-char | cw-2026-08-17-013622 | 'I' .. 20.595 to 20.710 s | distance to nearest span 8.400 s
+ C-char | cw-2026-08-17-013622 | 'E' . 21.020 to 21.045 s | distance to nearest span 8.825 s
+ C | cw-2026-08-17-013622 | settled 'E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEEE A E■ ET EEE■ ■II ■I E'
+
+
+[xUnit.net 00:00:05.25]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSixRedsTraceTests.GroupCGuardSpans(file: "fixture:qsk-preamble") [575 ms]
+  Standard Output Messages:
+ C | qsk-preamble | 26.0 s at 8000 Hz | tracker hop 5.0 ms | readings 5189 | spans 13 | own transmit 9.08 s | transmissions 44 | suspended chunks 0 | decoding suspended False
+ C-span | qsk-preamble | from 1.040 s | length 0.790 s | muted 0.420 s in 4 runs | muted broadband min -82.6 median -82.2 max -81.7 dBFS | 0.5 s before: broadband median -33.8 dBFS, tone power median -51.3 dB, snr median 9.5 dB max 18.8 | tone 615
+ C-span | qsk-preamble | from 1.880 s | length 0.910 s | muted 0.540 s in 4 runs | muted broadband min -82.7 median -82.2 max -81.6 dBFS | 0.5 s before: broadband median -34.5 dBFS, tone power median -50.8 dB, snr median 11.1 dB max 14.8 | tone 600
+ C-span | qsk-preamble | from 3.080 s | length 0.790 s | muted 0.420 s in 4 runs | muted broadband min -82.6 median -82.1 max -81.6 dBFS | 0.5 s before: broadband median -34.3 dBFS, tone power median -52.0 dB, snr median 9.9 dB max 20.1 | tone 585
+ C-span | qsk-preamble | from 3.920 s | length 0.910 s | muted 0.545 s in 4 runs | muted broadband min -82.7 median -82.2 max -60.3 dBFS | 0.5 s before: broadband median -35.2 dBFS, tone power median -53.9 dB, snr median 5.6 dB max 13.7 | tone 585
+ C-span | qsk-preamble | from 5.120 s | length 0.550 s | muted 0.255 s in 3 runs | muted broadband min -82.7 median -82.2 max -81.7 dBFS | 0.5 s before: broadband median -34.5 dBFS, tone power median -52.2 dB, snr median 8.9 dB max 16.4 | tone 610
+ C-span | qsk-preamble | from 5.720 s | length 0.190 s | muted 0.045 s in 1 runs | muted broadband min -82.2 median -82.1 max -81.9 dBFS | 0.5 s before: broadband median -33.7 dBFS, tone power median -48.2 dB, snr median 10.9 dB max 15.4 | tone 585
+ C-span | qsk-preamble | from 6.200 s | length 0.430 s | muted 0.210 s in 2 runs | muted broadband min -82.5 median -82.1 max -81.9 dBFS | 0.5 s before: broadband median -34.4 dBFS, tone power median -50.7 dB, snr median 10.8 dB max 17.0 | tone 585
+ C-span | qsk-preamble | from 6.680 s | length 1.275 s | muted 0.830 s in 5 runs | muted broadband min -82.7 median -82.2 max -65.8 dBFS | 0.5 s before: broadband median -37.6 dBFS, tone power median -61.3 dB, snr median 4.5 dB max 13.5 | tone 610
+ C-span | qsk-preamble | from 8.000 s | length 0.790 s | muted 0.420 s in 4 runs | muted broadband min -82.8 median -82.2 max -81.8 dBFS | 0.5 s before: broadband median -36.7 dBFS, tone power median -61.4 dB, snr median 6.7 dB max 10.9 | tone 615
+ C-span | qsk-preamble | from 8.840 s | length 0.430 s | muted 0.210 s in 2 runs | muted broadband min -82.5 median -82.1 max -81.8 dBFS | 0.5 s before: broadband median -35.5 dBFS, tone power median -52.8 dB, snr median 8.1 dB max 9.5 | tone 615
+ C-span | qsk-preamble | from 9.320 s | length 0.670 s | muted 0.300 s in 4 runs | muted broadband min -82.7 median -82.1 max -81.7 dBFS | 0.5 s before: broadband median -37.0 dBFS, tone power median -60.2 dB, snr median 3.3 dB max 10.2 | tone 585
+ C-span | qsk-preamble | from 10.040 s | length 0.670 s | muted 0.300 s in 4 runs | muted broadband min -82.6 median -82.1 max -81.8 dBFS | 0.5 s before: broadband median -34.8 dBFS, tone power median -50.1 dB, snr median 12.8 dB max 16.4 | tone 595
+ C-span | qsk-preamble | from 11.000 s | length 0.670 s | muted 0.375 s in 3 runs | muted broadband min -82.5 median -82.2 max -81.8 dBFS | 0.5 s before: broadband median -34.1 dBFS, tone power median -54.1 dB, snr median 6.5 dB max 16.8 | tone 585
+ C | qsk-preamble | unblocked broadband median -33.0 dBFS, min -46.9 | muted readings 974 | blocked readings 1815
+ C-char | qsk-preamble | 'I' .. 0.025 to 0.185 s | distance to nearest span 0.855 s
+ C-char | qsk-preamble | '■' ......... 0.295 to 0.965 s | distance to nearest span 0.075 s
+ C-char | qsk-preamble | 'I' .. 1.215 to 1.370 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'R' .-. 1.580 to 1.855 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 2.060 to 2.090 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | '■' ...... 2.660 to 3.055 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 3.375 to 3.405 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'S' ... 3.620 to 3.895 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 4.105 to 4.135 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'I' .. 4.335 to 4.485 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | '■' ..-.. 4.705 to 5.080 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'S' ... 5.560 to 5.800 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'H' .... 5.915 to 6.165 s | distance to nearest span 0.005 s
+ C-char | qsk-preamble | 'S' ... 6.385 to 6.640 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 6.855 to 6.895 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 7.335 to 7.370 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 7.580 to 7.605 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'I' .. 7.825 to 7.925 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'I' .. 8.190 to 8.330 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 8.545 to 8.570 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'S' ... 8.680 to 8.925 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 9.185 to 9.270 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 9.380 to 9.410 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 9.730 to 9.755 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'H' .... 9.860 to 10.140 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | '■' ....... 10.335 to 10.980 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 11.175 to 11.210 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | 'E' . 11.540 to 11.565 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | '■' ...... 11.540 to 12.030 s | distance to nearest span 0.000 s
+ C-char | qsk-preamble | '■' . 12.775 to 12.800 s | distance to nearest span 1.105 s
+ C-char | qsk-preamble | 'T' - 13.015 to 13.285 s | distance to nearest span 1.345 s
+ C-char | qsk-preamble | 'E' . 13.450 to 13.540 s | distance to nearest span 1.780 s
+ C-char | qsk-preamble | 'S' ... 13.710 to 14.145 s | distance to nearest span 2.040 s
+ C-char | qsk-preamble | 'T' - 14.315 to 14.580 s | distance to nearest span 2.645 s
+ C-char | qsk-preamble | 'D' -.. 14.850 to 15.465 s | distance to nearest span 3.180 s
+ C-char | qsk-preamble | 'E' . 15.635 to 15.720 s | distance to nearest span 3.965 s
+ C-char | qsk-preamble | 'T' - 15.995 to 16.260 s | distance to nearest span 4.325 s
+ C-char | qsk-preamble | 'E' . 16.430 to 16.515 s | distance to nearest span 4.760 s
+ C-char | qsk-preamble | 'S' ... 16.680 to 17.120 s | distance to nearest span 5.010 s
+ C-char | qsk-preamble | 'T' - 17.285 to 17.555 s | distance to nearest span 5.615 s
+ C-char | qsk-preamble | 'K' -.- 17.825 to 18.620 s | distance to nearest span 6.155 s
+ C-char | qsk-preamble | 'T' - 18.890 to 19.160 s | distance to nearest span 7.220 s
+ C-char | qsk-preamble | 'E' . 19.325 to 19.415 s | distance to nearest span 7.655 s
+ C-char | qsk-preamble | 'S' ... 19.580 to 20.015 s | distance to nearest span 7.910 s
+ C-char | qsk-preamble | 'T' - 20.185 to 20.450 s | distance to nearest span 8.515 s
+ C-char | qsk-preamble | 'M' -- 20.725 to 20.990 s | distance to nearest span 9.055 s
+ C-char | qsk-preamble | 'D' -.. 20.725 to 21.335 s | distance to nearest span 9.055 s
+ C-char | qsk-preamble | 'E' . 21.505 to 21.595 s | distance to nearest span 9.835 s
+ C-char | qsk-preamble | 'T' - 21.865 to 22.130 s | distance to nearest span 10.195 s
+ C-char | qsk-preamble | 'E' . 22.300 to 22.390 s | distance to nearest span 10.630 s
+ C-char | qsk-preamble | 'S' ... 22.555 to 22.995 s | distance to nearest span 10.885 s
+ C-char | qsk-preamble | 'T' - 23.160 to 23.430 s | distance to nearest span 11.490 s
+ C-char | qsk-preamble | 'K' -.- 23.700 to 24.495 s | distance to nearest span 12.030 s
+ C-char | qsk-preamble | '■' . 25.825 to 25.980 s | distance to nearest span 14.155 s
+ C | qsk-preamble | settled 'I■IRE ■ ESEI■ SHSE EEIIESEE EH■E E■ ■ TESTDE TESTKTEST MDETESTK ■'
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 5.5242 Seconds
+RC=0 WALL=6s

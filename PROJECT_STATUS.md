@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 1 of 4
 WORK_INSTRUCTION: 405 - the second attack on the six reds
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T12:35:54-04:00
-NOTE: Task 0 entry round, 13 of 13: WhyTheGateDidNotFire 2 of 2; CwTwoStationTests running
+UPDATED: 2026-09-23T12:48:02-04:00
+NOTE: Task 1 trace: confirming the put-back binary, group B again
 
 ---
 
