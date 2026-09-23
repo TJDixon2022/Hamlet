@@ -21,7 +21,7 @@ already met, for context only:
 THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
   step 2 - CW cannot break silently again - a CW read guard on the engine carry-forward line beside FT8, FT4, PSK31 and Olivia, watched red against a broken decoder before it was trusted, and measured to fit the line's timeout.  [not started]
   step 3 - The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.  [partial]
-    - [ ] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count.
+    - [ ] 3.8 The decoder and the independent sweep agree about the pitch: on every single-sender case among the 37 captures, the three anchors and the 17:37 capture, the pitch the decoder mixes at and the pitch the 400 to 1200 Hz sweep reports differ by no more than one 25 Hz bin, measured and tabled per case; and each of #15, #43 and #44 is green or carries its post-R56 measurement.
   step 5 - Tim at the radio - CW on 40 m, text on the CW tab that reads as what was sent, and he says it read.  [not started]
     - [ ] 5.1 Tim, at the radio, on CW on 40 m, sees text on the CW tab that reads as what was sent, and says it read. No script can evaluate this.   *owner's verdict*
 
@@ -99,6 +99,7 @@ block; blocker means it cleared something and moved no criterion.
   3.6 | unit 3 launched 2026-09-23T16:28:11.318Z | no | executed | second attack on the six reds: easy tier on the settled event with the trailing flush settle combined, doubled-speed fit traced to the speed grid, guard spans told apart from real captures for 42, bare-start first character for 6
   3.6 | unit 4 launched 2026-09-23T17:34:49.754Z | no | executed | change the tone tracker's switch at CwToneTracker.cs 1092 and 1154 that moves the mix off a single sender, judged on #6 #15 #43 #44 #45; give #42's test the radio's transmit state through CwDecoder.RadioIsTransmitting from the recipe's span under R12 and HM-DEC-147
   3.6 | unit 5 launched 2026-09-23T19:02:37.455Z | no | executed | hold a tracker move off the pitch being read while that bank is still on/off keying, traced first on #15 #43 #44 against the five captures H1 cost and the handovers; #45's easy-tier event pumps the air's trailing silence before Flush and reads the settled transcript under R12
+  3.9 | unit 1 launched 2026-09-23T20:06:27.149Z | yes | executed | re-measure the 37 capture floors as named characters and placeholders under R57, take 3.6's single closing pass with B2, M2 and G1 rebuilt under the new rule, then raise the emission gate so characters the decoder scores in the single digits are not printed
   4.1 | unit 1 launched 2026-09-23T03:29:37.217Z | yes | executed | list every Cw commit after 7e209cb4 to 2026-09-03 from git log with files and message, then re-apply the rework pieces one commit at a time restricted to src/Hamlet.RadioEngine/Cw, floors after each, kept only if a named number moves and taken back out otherwise
   4.2 | unit 3 launched 2026-09-23T05:43:19.902Z | no | executed | re-apply the rework pieces 34 to 45 one commit at a time restricted to src/Hamlet.RadioEngine/Cw, floors and printer after each, kept only if a named number moves and reverted otherwise, then tick 4.2, 4.4, 4.5 and 4.6 at piece 45
   4.3 | unit 2 launched 2026-09-23T04:37:15.341Z | yes | executed | re-apply the rework pieces 10 to 45 one commit at a time restricted to src/Hamlet.RadioEngine/Cw, floors and printer after each, kept only if a named number moves and reverted otherwise, 4.3 ticked on the reverts
@@ -124,85 +125,62 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-1. **#15, #43 and #44 have no route left inside what has been licensed.** Stands in the way of
-   3.6.
-   - **Ruling asked:** what is the next property to look for, or do these three wait for a
-     ruling on the floors or the count rule?
-   - **Reasoning:** three properties have now been tried at the hold:
-     - H1 asked whether the survey still admits the held pitch. It stopped good moves.
-     - H2 asked whether the survey admits the keying back at the bank. It is kept, and it does
-       not reach these three.
-     - This unit asked whether the bank is still keying. It does not separate.
+Nothing blocks a criterion of step 3. Three findings go to `docs/phase-cw/PARKED.md` under R54:
+- **408 item 1**: the 17:37 sidecar is absent, and its session counts cannot be replayed from the
+  WAV.
+- **408 item 2**: `CwEmissionGate.cs` does not exist, and the bar's value was not raised.
+- **408 item 3**: two spaces now stand where a placeholder-only word stood.
 
-     The station is audible through the bank's own reach in both kinds of move, so a property
-     read at the old pitch cannot tell them apart. One further finding needs Tim's eye before
-     anyone builds on it. Under the noise-referenced rule, the H1 rows read *not keying* only
-     because a real receiver's passband keeps the key-ups well above the band beside it, which
-     the flat noise of the synthetic reds does not do. That is §12.5's warning about fixtures
-     built from the same misunderstanding. It is not a property to fit.
-   - **Rejected:** narrowing the property to spans, seconds or pitches until the H1 rows pass.
-     Section 10 forbids fitting it to rows. Also rejected: trying the narrower shape without a
-     first shape. Decision 2 allows it only after a first shape moved a red.
-2. **#45's trailing placeholder is the decoder reading the noise after a transmission, not an
-   artifact of the file's end.** Stands in the way of 3.6.
-   - **Ruling asked:** may a later unit attack how the settled pass reads the band noise after
-     the last character, knowing that six capture floors count trailing placeholders (unit 405's
-     B2)? Or is #45 to be judged against the floors' own count?
-   - **Reasoning:** the air never ends, but the noise after the last `K` continues on the air
-     too. Given 2 s more, the stream settles that noise into three more placeholders, so the
-     same thing would show on the tab after a real station stops. That puts #45's fault in the
-     settled pass, which is where B2 was, and B2 cost six capture rows because those floors
-     record placeholders as characters. Re-expressing a floor is Tim's.
-   - **Rejected:** the padding as a test event. It raises #45's count on its own settled
-     transcript from 1 to 4. Also rejected: B1 alone, which section 10 forbids.
-3. **#42's line, carried for Tim** (instruction section 3 item 1). Does not block this unit's
-   result.
-   - **Ruling asked:** does #42's green stand, with `ObserveOwnTransmission` in the suspended
-     arm of `CwDecoder.cs`?
-   - **Reasoning:** instruction 406's decision 2 body names an audio clock as one example of a
-     `CwDecoder.cs` change it allows. Its decision-block summary says *only if the trace needs
-     an audio clock*. The arbiter read the body, so the record stands at `099b3a2a`, green.
-   - **Rejected:** re-ruling it in this unit.
-4. **The count rule, carried for Tim** (instruction section 3 item 4). Does not block this unit's
-   result.
-   - **Ruling asked:** none new.
-   - **Reasoning:** a unit that attacks nothing breaks every sequence, and a unit that moves a
-     red restarts it. So #15, #43, #44 and #45 are at 0 of 3 after four 3.6 units, and 3.6
-     closes only by greens.
-   - **Rejected:** rewriting either count.
-5. **Mismatches against section 5 of the instruction**, reported and not repaired. Do not
-   block.
-   - H2's hold is `CwToneTracker.cs` 958 to 978, with `Switch(_heldSwitchHz)` at 974, not 957
-     to 966. Lines 212, 1077 to 1080 and 1091 are as stated.
-   - `PHASE_STATUS.md` read `CURRENT_STEP: 0` from the launcher. At HEAD its step lines still
-     name steps 0 and 2 `not started`, while the instruction says 1, 2 and 4 are done. This
-     unit set `CURRENT_STEP: 3` and left the step lines alone.
-   - The reload disagreement is not as stated. `CLAUDE.md` section 1 holds HM-DEC-165 of
-     2026-09-19 at line 361, which matches `RULES_AT`. `CPS-DEC-0167` does not appear in
-     `CLAUDE.md`.
-   - An untracked capture, `cw-2026-09-23-173723.wav`, is in the tree. It is not committed and
-     not this session's.
-6. **Two tracker readers still do not fully measure.** Does not block. Nothing is new here.
-   - `EveryWidthLeavesTheEmptyRecordingsSilent` is unmeasured under HM-DEC-155.
-   - `WhatBandwidth` is 4 of 6, identical at entry and exit, and outside the 51-name set.
-
-### Asks still outstanding
-
-Every ask from before this phase is parked in `docs\phase-cw\PARKED.md` under R54. The arbiter
-took unit 406's five items in instruction 407 section 3. The two still open are items 3 and 4
-above:
-
-- **#42's line.** First asked by unit 406 on 2026-09-23. It is waiting on Tim's reading of
-  instruction 406's decision 2, and the change sits at `CwDecoder.cs` `ObserveOwnTransmission`,
-  `099b3a2a`.
-- **The count rule.** First asked by unit 405 on 2026-09-23. It is waiting on Tim, and it sits
-  in the head of `docs\phase-cw\reds-3.6.md`.
-
-The transmit files print nothing against `7e209cb4`. Section 4 item 5 lists three mismatches
 ## 3. What you should see
 
-| red | cause as traced | change | before | after | moved | kept | sequence |
-|---|---|---|---|---|---|---|---|
-| #15 | holds to 700 Hz for a 640 Hz sender at 20.535 and 7.535 s, and to 600 Hz at 28.535 s, each while the 650 Hz bank is still keying; on seed 104729 the reading level is the image's own, the station never confirmed | none: the property does not separate (decision 1), and decision 3 goes only with it | 0.54 | 0.54 | no | - | 0 of 3, broken, not attacked |
-| #43 | holds off 615 Hz at 13.035, 22.035 and 39.535 s while the bank is still keying; padding takes the settled transcript from 4 + 7 to 8 + 7 | none (decisions 1 and 4) | 5 + 37 | 5 + 37 | no | - | 0 of 3, broken, not attacked |
-| #44 | hold off 615 Hz to 575 Hz at 11.535 s while the bank is still keying; so is the hold back at 20.035 s; padding takes the settled transcript from 0 + 7 to 4 + 7 | none (decisions 1, 4 and 5) | 3 + 21 | 3 + 21 | no | - | 0 of 3, broken, not attacked |
+**3.7 in one line:** bar 1.0 per hop. Placeholders on the 37 captures fall **289 to 28**. Named
+characters go **1,295 to 1,297**. The three anchors are unchanged on every named character. The
+17:37 scored region is 29 edits against an inferred key, before and after.
+
+| capture | old total | named, 3.9 | placeholders, 3.9 | named after gate | placeholders after gate |
+|---|---|---|---|---|---|
+| cw-2026-08-17-013347 | 59 | 57 | 2 | 57 | 0 |
+| cw-2026-08-17-013622 | 55 | 51 | 4 | 51 | 0 |
+| cw-2026-08-17-134712 | 63 | 21 | 42 | 21 | 1 |
+| cw-2026-08-18-003016 | 57 | 54 | 3 | 54 | 0 |
+| cw-2026-08-18-003126 | 54 | 48 | 6 | 48 | 1 |
+| cw-2026-08-18-003758 | 63 | 44 | 19 | 44 | 1 |
+| cw-2026-08-18-004507 | 50 | 49 | 1 | 49 | 0 |
+| cw-2026-08-20-014854 | 0 | 0 | 0 | 0 | 0 |
+| cw-2026-08-20-014935 | 0 | 0 | 0 | 0 | 0 |
+| cw-2026-08-22-014113 | 0 | 0 | 0 | 0 | 0 |
+| cw-2026-08-22-014308 | 0 | 0 | 0 | 0 | 0 |
+| cw-2026-08-22-031838 | 57 | 42 | 15 | 43 | 1 |
+| cw-2026-08-22-031905 | 42 | 36 | 6 | 36 | 1 |
+| cw-2026-08-22-031948 | 34 | 31 | 3 | 31 | 0 |
+| cw-2026-08-22-032012 | 44 | 43 | 1 | 43 | 0 |
+| cw-2026-08-22-032050 | 53 | 44 | 9 | 44 | 2 |
+| cw-2026-08-22-032113 | 55 | 47 | 8 | 47 | 2 |
+| cw-2026-08-22-032129 | 66 | 65 | 1 | 65 | 1 |
+| cw-2026-08-23-001520 | 5 | 1 | 4 | 1 | 1 |
+| cw-2026-08-23-001831 | 55 | 44 | 11 | 44 | 1 |
+| cw-2026-08-23-001952 | 75 | 56 | 19 | 57 | 2 |
+| cw-2026-08-23-002016 | 75 | 44 | 31 | 44 | 4 |
+| cw-2026-08-24-012403 | 22 | 21 | 1 | 21 | 0 |
+| cw-2026-08-25-011552 | 30 | 22 | 8 | 22 | 1 |
+| cw-2026-08-25-012748 | 2 | 2 | 2 | 2 | 2 |
+| cw-2026-08-25-012823 | 41 | 26 | 15 | 26 | 0 |
+| cw-2026-08-25-012922 | 50 | 45 | 5 | 45 | 0 |
+| cw-2026-08-25-013010 | 54 | 48 | 6 | 48 | 0 |
+| cw-2026-08-25-013150 | 58 | 51 | 7 | 51 | 2 |
+| cw-2026-08-25-013303 | 54 | 44 | 10 | 44 | 1 |
+| cw-2026-08-25-013402 | 61 | 56 | 5 | 56 | 1 |
+| cw-2026-08-25-013520 | 60 | 55 | 5 | 55 | 0 |
+| cw-2026-08-25-013637 | 63 | 60 | 3 | 60 | 1 |
+| cw-2026-08-25-021410 | 47 | 36 | 11 | 36 | 0 |
+| cw-2026-08-25-021629 | 47 | 27 | 20 | 27 | 2 |
+| cw-2026-08-25-021825 | 41 | 25 | 16 | 25 | 0 |
+| cw-2026-08-26-125941 | 0 | 0 | 0 | 0 | 0 |
+| **total** | **1,592** | **1,295** | **299** | **1,297** | **28** |
+
+`cw-2026-08-25-012748`'s old total, 2, is its floor. It emitted 4 at entry. The after-B2 column
+and the 17:37 row are in `docs/phase-cw/unit408-floors.md` section 4.
+
+**Step 3:** 3.1 to 3.7 and 3.9 ticked. 3.8, the tracker, is not started. That is R56's grant, and
+it belongs to the next unit.
+

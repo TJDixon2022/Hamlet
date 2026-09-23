@@ -1,0 +1,73 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -3) [1 s]
+  Standard Output Messages:
+ -3 dB: 0 characters: 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -6) [2 s]
+  Standard Output Messages:
+ -6 dB: 0 characters: 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.BelowTheFloorItStaysQuiet(snrDb: -10) [3 s]
+  Standard Output Messages:
+ -10 dB: 0 characters: 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.AFastFistInRealisticAudio [235 ms]
+  Standard Output Messages:
+ 25 wpm: found 625 Hz, 19 characters: Q D CTCQQ N DEDE N NG00KCACARLALL EL NTN■0E0CCAEALLLL T K K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 500) [782 ms]
+  Standard Output Messages:
+ sent at 500 Hz, found 500 Hz, 26 characters: NNZQQ E NCCTCMQQQ T DDEDE  T NENMO■00TKCCAAEARLLALL  T NENMO■00TK E T E CAAEAR T E E LA E T E IL N KK K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 750) [763 ms]
+  Standard Output Messages:
+ sent at 750 Hz, found 750 Hz, 26 characters: NNZQQ E NCCTCMQQQ T DDEDE  T NENMO■00TKCCAAEARLLALL  T NENMO■00TK E T E CAAEAR T E E LA E T E L N KK K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 875) [781 ms]
+  Standard Output Messages:
+ sent at 875 Hz, found 875 Hz, 29 characters: NNZQQ E NCCTCMQQQ T DDEDE  T NENMO■00TKCCAAEARLLALL  T NENMO■00TK E T E CAAEAR T E E LA E T E E L T  K E T K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio(toneHz: 400) [764 ms]
+  Standard Output Messages:
+ sent at 400 Hz, found 405 Hz, 27 characters: NNZQQ E NCCTCMQQQ T DDEDE  T NENMO■00TKCCAAEARLLALL  T NENMO■00TK E T E CAAEAR T E E LA E T E IL N KK K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.AFadeInRealisticAudio [710 ms]
+  Standard Output Messages:
+ faded: found 615 Hz, 26 characters: M MM  E TT E ETETT T TT  I IEIE  T NN  A LL  T NN  A A A E II E E E   E NR  T MM  TT E R E E I A  AE T TN NN
+
+
+[xUnit.net 00:00:12.45]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ClearingTheScreenLeavesTheDecoderAloneOnRealisticAudio [783 ms]
+  Standard Output Messages:
+ before: 12 wpm at 575 Hz
+ after : 12 wpm at 625 Hz
+ 45 characters before, 114 in all
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASpeedChangeInRealisticAudio [915 ms]
+  Standard Output Messages:
+ speeds named: 10, 11
+ no reading fell between the two stations
+ no reading exceeded either station
+
+
+
+Test Run Successful.
+Total tests: 11
+     Passed: 11
+ Total time: 12.6974 Seconds
+RC=0 WALL=13s

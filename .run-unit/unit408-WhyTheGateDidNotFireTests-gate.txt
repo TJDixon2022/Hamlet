@@ -1,0 +1,46 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhyTheGateDidNotFireTests.WhereTheCharactersCameFrom [16 s]
+  Standard Output Messages:
+   gate 1.40 per hop
+ 
+   capture                | chars | under gate | lowest ratio | final ratio | what
+   -----------------------|-------|------------|--------------|-------------|-----
+   cw-2026-08-28-004844   |   147 |          0 |        25.92 |       35.46 | GOOD - reads TUES AUG 25
+   cw-2026-08-28-004902   |   141 |          0 |        19.89 |       28.12 | GOOD
+   cw-2026-08-28-004915   |   150 |          0 |         5.48 |       20.61 | GOOD
+   cw-2026-08-28-005051   |   107 |          0 |         1.48 |        7.67 | PHANTOM - 252 characters, unkeyed YES
+   cw-2026-08-28-005158   |    55 |          0 |         1.49 |      -18.12 | PHANTOM - 69 characters at -68562.4
+   cw-2026-08-28-005218   |    92 |          0 |         6.17 |      121.88 | PHANTOM
+   cw-2026-08-28-005243   |   143 |          0 |         3.34 |        4.34 | PHANTOM
+ 
+   no character settled while the standing window was below the gate
+
+
+[xUnit.net 00:00:33.24]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhyTheGateDidNotFireTests.WhatEachRefusalWouldCost [16 s]
+  Standard Output Messages:
+   capture                | chars | no keying | clock withdrawn | either | what
+   -----------------------|-------|-----------|-----------------|--------|-----
+   cw-2026-08-28-004844   |    60 |         0 |              24 |     24 | GOOD - reads TUES AUG 25
+   cw-2026-08-28-004902   |    56 |         0 |              24 |     24 | GOOD
+   cw-2026-08-28-004915   |    61 |         5 |              23 |     23 | GOOD
+   cw-2026-08-28-005051   |    48 |        20 |              44 |     44 | PHANTOM - 252 characters, unkeyed YES
+   cw-2026-08-28-005158   |    59 |        58 |              56 |     59 | PHANTOM - 69 characters at -68562.4
+   cw-2026-08-28-005218   |    72 |         2 |              59 |     61 | PHANTOM
+   cw-2026-08-28-005243   |    69 |        69 |               0 |     69 | PHANTOM
+ 
+   a refusal is shippable only if it takes the phantoms and leaves the three good captures whole
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 33.4934 Seconds
+RC=0 WALL=34s

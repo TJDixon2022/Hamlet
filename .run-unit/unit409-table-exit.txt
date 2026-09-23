@@ -1,0 +1,136 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.51]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.68]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.69]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:06.66]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTwoPitchesTableTests.EveryCaseIsTabled [2 m 4 s]
+  Standard Output Messages:
+ row | case | anchor | named | decoder Hz | low | high | share apart | sweep 300-900 | sweep 400-1200 | second-best | keying | single-sender | difference Hz | agree
+ row | cw-2026-08-17-013347 | anchor | 57 | 600 | 600.0 | 625.0 | 0.00 | 600 | 600 | 0.58 | no | no | 0 | agree
+ row | cw-2026-08-17-134712 | anchor | 21 | 500 | 500.0 | 500.0 | 0.00 | 500 | 500 | 0.74 | no | no | 0 | agree
+ row | cw-2026-08-18-004507 |  | 49 | 500 | 475.0 | 525.0 | 0.00 | 500 | 500 | 0.30 | keying | yes | 0 | agree
+ row | unadjudicated/cw-2026-08-24-012403 |  | 21 | 440 | 435.0 | 450.0 | 0.00 | 450 | 450 | 0.29 | no | no | 10 | agree
+ row | unadjudicated/cw-2026-08-22-031838 |  | 43 | 525 | 500.0 | 525.0 | 0.00 | 500 | 500 | 0.62 | keying | no | 25 | agree
+ row | unadjudicated/cw-2026-08-22-031905 |  | 36 | 500 | 300.0 | 500.0 | 0.34 | 500 | 500 | 0.49 | keying | yes | 0 | agree
+ row | unadjudicated/cw-2026-08-22-031948 |  | 31 | 500 | 500.0 | 500.0 | 0.00 | 500 | 500 | 0.67 | keying | no | 0 | agree
+ row | unadjudicated/cw-2026-08-22-032012 |  | 43 | 500 | 500.0 | 500.0 | 0.00 | 500 | 500 | 0.71 | keying | no | 0 | agree
+ row | unadjudicated/cw-2026-08-22-032050 |  | 44 | 500 | 325.0 | 500.0 | 0.23 | 500 | 500 | 0.57 | keying | no | 0 | agree
+ row | unadjudicated/cw-2026-08-22-032113 |  | 47 | 500 | 500.0 | 650.0 | 0.33 | 500 | 500 | 0.69 | keying | no | 0 | agree
+ row | unadjudicated/cw-2026-08-22-032129 |  | 65 | 650 | 500.0 | 650.0 | 0.65 | 500 | 500 | 0.69 | keying | no | 150 | apart
+ row | cw-2026-08-17-013622 |  | 51 | 600 | 600.0 | 625.0 | 0.00 | 600 | 600 | 0.43 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-18-003016 |  | 54 | 670 | 650.0 | 675.0 | 0.00 | 675 | 675 | 0.32 | keying | yes | 5 | agree
+ row | unadjudicated/cw-2026-08-18-003126 |  | 48 | 670 | 650.0 | 680.0 | 0.00 | 675 | 675 | 0.32 | keying | yes | 5 | agree
+ row | unadjudicated/cw-2026-08-18-003758 | anchor | 44 | 500 | 485.0 | 500.0 | 0.00 | 500 | 500 | 0.30 | keying | yes | 0 | agree
+ row | unadjudicated/cw-2026-08-23-001520 |  | 1 | 600 | 600.0 | 600.0 | 1.00 | 525 | 1000 | 1.00 | keying | no | 75 | apart
+ row | unadjudicated/cw-2026-08-23-001831 |  | 44 | 525 | 500.0 | 530.0 | 0.00 | 525 | 525 | 0.39 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-23-001952 |  | 57 | 525 | 375.0 | 575.0 | 0.79 | 475 | 475 | 0.72 | no | no | 50 | apart
+ row | unadjudicated/cw-2026-08-23-002016 |  | 44 | 525 | 525.0 | 525.0 | 1.00 | 475 | 475 | 0.52 | no | no | 50 | apart
+ row | unadjudicated/cw-2026-08-25-011552 |  | 22 | 500 | 495.0 | 500.0 | 0.00 | 500 | 500 | 0.23 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-012748 |  | 2 | 400 | 400.0 | 400.0 | 0.00 | 400 | 400 | 0.12 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-012823 |  | 26 | 500 | 500.0 | 500.0 | 0.00 | 500 | 500 | 0.18 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-012922 |  | 45 | 500 | 475.0 | 500.0 | 0.00 | 500 | 500 | 0.75 | keying | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-013010 |  | 48 | 500 | 475.0 | 505.0 | 0.00 | 500 | 500 | 0.31 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-013150 |  | 51 | 500 | 495.0 | 525.0 | 0.09 | 525 | 525 | 0.41 | no | no | 25 | agree
+ row | unadjudicated/cw-2026-08-25-013303 |  | 44 | 500 | 495.0 | 505.0 | 0.00 | 500 | 500 | 0.32 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-013402 |  | 56 | 525 | 525.0 | 550.0 | 0.00 | 550 | 550 | 0.57 | keying | no | 25 | agree
+ row | unadjudicated/cw-2026-08-25-013520 |  | 55 | 550 | 525.0 | 550.0 | 0.00 | 550 | 550 | 0.58 | keying | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-013637 |  | 60 | 525 | 525.0 | 550.0 | 0.00 | 550 | 550 | 0.60 | keying | no | 25 | agree
+ row | unadjudicated/cw-2026-08-25-021410 |  | 36 | 535 | 535.0 | 550.0 | 0.00 | 550 | 550 | 0.53 | no | no | 15 | agree
+ row | unadjudicated/cw-2026-08-25-021629 |  | 27 | 500 | 500.0 | 500.0 | 0.00 | 500 | 500 | 0.68 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-25-021825 |  | 25 | 400 | 390.0 | 410.0 | 1.00 | 325 | 600 | 0.79 | no | no | 75 | apart
+ row | unadjudicated/cw-2026-08-26-125941 |  | 0 | 400 | 375.0 | 600.0 | 0.80 | 450 | 450 | 0.89 | no | no | 50 | apart
+ row | unadjudicated/cw-2026-08-20-014854 |  | 0 | 600 | 600.0 | 825.0 | 0.48 | 575 | 575 | 0.33 | no | no | 25 | agree
+ row | unadjudicated/cw-2026-08-20-014935 |  | 0 | 625 | 600.0 | 825.0 | 0.43 | 600 | 600 | 0.69 | no | no | 25 | agree
+ row | unadjudicated/cw-2026-08-22-014113 |  | 0 | 600 | 600.0 | 725.0 | 0.43 | 600 | 600 | 0.39 | no | no | 0 | agree
+ row | unadjudicated/cw-2026-08-22-014308 |  | 0 | 575 | 450.0 | 600.0 | 0.75 | 625 | 625 | 0.21 | no | no | 50 | apart
+ row | unadjudicated/cw-2026-09-23-173723 |  | 46 | 575 | 575.0 | 600.0 | 0.00 | 600 | 600 | 0.07 | no | no | 25 | agree
+ seg | cw-2026-08-17-013347 | first apart hop -1 | span 599-5899: 600@0-2605 625@2606-4305 615@4306-4505 600@4506-5705 625@5706-5999
+ seg | cw-2026-08-17-134712 | first apart hop -1 | span 3899-5899: 600@0-3805 500@3806-5999
+ seg | cw-2026-08-18-004507 | first apart hop -1 | span 599-5999: 600@0-405 475@406-605 525@606-1605 500@1606-3005 495@3006-3105 500@3106-4605 505@4606-4905 500@4906-5005 495@5006-5805 500@5806-5999
+ seg | unadjudicated/cw-2026-08-24-012403 | first apart hop -1 | span 5099-5999: 600@0-305 375@306-405 475@406-1005 500@1006-1105 475@1106-1205 500@1206-1505 425@1506-1605 450@1606-4105 435@4106-5305 440@5306-5405 450@5406-5505 440@5506-5705 435@5706-5805 440@5806-5999
+ seg | unadjudicated/cw-2026-08-22-031838 | first apart hop -1 | span 599-5099: 600@0-305 500@306-1705 525@1706-5999
+ seg | unadjudicated/cw-2026-08-22-031905 | first apart hop 2606 | span 999-5999: 600@0-305 500@306-2605 300@2606-3605 500@3606-5305 300@5306-5999
+ seg | unadjudicated/cw-2026-08-22-031948 | first apart hop -1 | span 699-5999: 600@0-405 500@406-5999
+ seg | unadjudicated/cw-2026-08-22-032012 | first apart hop -1 | span 599-5999: 600@0-305 500@306-5999
+ seg | unadjudicated/cw-2026-08-22-032050 | first apart hop 4806 | span 699-5999: 600@0-405 500@406-4805 325@4806-5999
+ seg | unadjudicated/cw-2026-08-22-032113 | first apart hop 4206 | span 599-5999: 600@0-305 500@306-4205 600@4206-5305 650@5306-5999
+ seg | unadjudicated/cw-2026-08-22-032129 | first apart hop 2706 | span 899-5999: 600@0-305 500@306-2705 650@2706-5999
+ seg | cw-2026-08-17-013622 | first apart hop -1 | span 599-4499: 600@0-2905 625@2906-4905 600@4906-5999
+ seg | unadjudicated/cw-2026-08-18-003016 | first apart hop -1 | span 599-5999: 600@0-305 675@306-605 670@606-1105 665@1106-1205 670@1206-2305 675@2306-3605 670@3606-3705 675@3706-3805 670@3806-4205 665@4206-4305 670@4306-4405 650@4406-5105 675@5106-5405 670@5406-5999
+ seg | unadjudicated/cw-2026-08-18-003126 | first apart hop -1 | span 699-5999: 600@0-405 675@406-1005 680@1006-1305 675@1306-1805 670@1806-2105 665@2106-2205 670@2206-4305 650@4306-4605 675@4606-4705 650@4706-4805 675@4806-5305 670@5306-5605 665@5606-5805 670@5806-5905 665@5906-5999
+ seg | unadjudicated/cw-2026-08-18-003758 | first apart hop -1 | span 799-5999: 600@0-305 500@306-605 485@606-705 495@706-805 500@806-1005 485@1006-1105 500@1106-1705 495@1706-1805 500@1806-5999
+ seg | unadjudicated/cw-2026-08-23-001520 | first apart hop 2699 | span 2699-2699: 600@0-5999
+ seg | unadjudicated/cw-2026-08-23-001831 | first apart hop -1 | span 599-5699: 600@0-305 525@306-405 325@406-505 525@506-3605 500@3606-3905 525@3906-4605 530@4606-5905 525@5906-5999
+ seg | unadjudicated/cw-2026-08-23-001952 | first apart hop 599 | span 599-5899: 600@0-305 575@306-705 375@706-905 425@906-1005 525@1006-3905 450@3906-4405 525@4406-4805 450@4806-5405 525@5406-5999
+ seg | unadjudicated/cw-2026-08-23-002016 | first apart hop 1099 | span 1099-5999: 600@0-305 450@306-1005 525@1006-5999
+ seg | unadjudicated/cw-2026-08-25-011552 | first apart hop -1 | span 599-5699: 600@0-305 500@306-5105 495@5106-5305 500@5306-5999
+ seg | unadjudicated/cw-2026-08-25-012748 | first apart hop -1 | span 999-999: 600@0-305 400@306-505 375@506-605 400@606-1005 410@1006-1105 415@1106-3605 400@3606-3905 375@3906-4605 400@4606-4905 415@4906-5005 395@5006-5999
+ seg | unadjudicated/cw-2026-08-25-012823 | first apart hop -1 | span 699-2799: 600@0-305 400@306-605 500@606-2905 450@2906-5999
+ seg | unadjudicated/cw-2026-08-25-012922 | first apart hop -1 | span 599-5999: 600@0-305 500@306-1805 475@1806-2205 500@2206-2905 475@2906-3505 500@3506-5305 490@5306-5805 475@5806-5999
+ seg | unadjudicated/cw-2026-08-25-013010 | first apart hop -1 | span 599-5899: 600@0-305 500@306-4705 495@4706-4805 500@4806-4905 505@4906-5005 500@5006-5205 495@5206-5805 475@5806-5999
+ seg | unadjudicated/cw-2026-08-25-013150 | first apart hop 4406 | span 599-5999: 600@0-305 525@306-1905 500@1906-4405 495@4406-4505 500@4506-5605 495@5606-5999
+ seg | unadjudicated/cw-2026-08-25-013303 | first apart hop -1 | span 799-5699: 600@0-405 500@406-1505 495@1506-1605 500@1606-1805 505@1806-1905 500@1906-3505 505@3506-3605 500@3606-4305 495@4306-4505 500@4506-5999
+ seg | unadjudicated/cw-2026-08-25-013402 | first apart hop -1 | span 699-5999: 600@0-405 525@406-1905 550@1906-2805 525@2806-3305 550@3306-3705 540@3706-4205 525@4206-4605 540@4606-4805 550@4806-5205 540@5206-5405 525@5406-5999
+ seg | unadjudicated/cw-2026-08-25-013520 | first apart hop -1 | span 899-5999: 600@0-305 525@306-405 550@406-505 525@506-1005 550@1006-2905 540@2906-3705 525@3706-5505 550@5506-5805 540@5806-5999
+ seg | unadjudicated/cw-2026-08-25-013637 | first apart hop -1 | span 699-5999: 600@0-305 525@306-4805 550@4806-5999
+ seg | unadjudicated/cw-2026-08-25-021410 | first apart hop -1 | span 1099-5999: 600@0-305 550@306-1705 545@1706-1805 535@1806-3805 550@3806-3905 540@3906-5305 535@5306-5905 550@5906-5999
+ seg | unadjudicated/cw-2026-08-25-021629 | first apart hop -1 | span 799-5599: 600@0-305 500@306-5999
+ seg | unadjudicated/cw-2026-08-25-021825 | first apart hop 4099 | span 4099-5899: 600@0-305 425@306-705 400@706-1005 550@1006-1405 475@1406-1505 550@1506-1605 450@1606-1805 475@1806-1905 525@1906-2005 425@2006-2105 400@2106-2305 500@2306-2505 400@2506-2705 500@2706-2905 375@2906-3105 400@3106-4205 395@4206-4505 390@4506-4705 395@4706-4805 410@4806-4905 400@4906-5999
+ seg | unadjudicated/cw-2026-08-26-125941 | first apart hop 0 | span 0-5999: 600@0-305 525@306-405 450@406-505 525@506-605 450@606-805 575@806-905 525@906-1005 500@1006-1105 475@1106-1505 425@1506-1705 400@1706-2705 500@2706-3005 525@3006-3105 425@3106-3205 400@3206-4105 425@4106-4205 550@4206-4305 400@4306-5505 375@5506-5705 425@5706-5805 400@5806-5999
+ seg | unadjudicated/cw-2026-08-20-014854 | first apart hop 306 | span 0-5999: 600@0-305 650@306-605 750@606-1005 825@1006-1105 650@1106-1205 800@1206-1805 725@1806-1905 650@1906-2205 625@2206-2405 600@2406-4405 625@4406-5105 600@5106-5305 625@5306-5405 600@5406-5999
+ seg | unadjudicated/cw-2026-08-20-014935 | first apart hop 3006 | span 0-5999: 600@0-305 625@306-3005 675@3006-3305 775@3306-3605 800@3606-3705 750@3706-3805 625@3806-3905 750@3906-4605 625@4606-4905 650@4906-5005 800@5006-5105 750@5106-5205 800@5206-5305 775@5306-5405 800@5406-5705 650@5706-5905 825@5906-5999
+ seg | unadjudicated/cw-2026-08-22-014113 | first apart hop 906 | span 0-5999: 600@0-905 725@906-3505 600@3506-5999
+ seg | unadjudicated/cw-2026-08-22-014308 | first apart hop 1506 | span 0-5999: 600@0-1505 575@1506-1805 475@1806-1905 450@1906-2105 475@2106-2205 450@2206-2405 575@2406-2905 475@2906-3005 575@3006-5999
+ seg | unadjudicated/cw-2026-09-23-173723 | first apart hop -1 | span 599-5999: 600@0-805 575@806-2305 585@2306-2705 575@2706-2805 585@2806-3005 575@3006-3105 585@3106-3605 575@3606-4305 585@4306-5005 600@5006-5999
+ keying-why | cw-2026-08-17-013347 | score 0.048 against 0.1 | element median 88 ms against 25 to 250 | swing 91.5 dB against 20
+ keying-why | cw-2026-08-17-134712 | score 0.017 against 0.1 | element median 55 ms against 25 to 250 | swing 22.1 dB against 20
+ keying-why | cw-2026-08-18-004507 | score 0.244 against 0.1 | element median 58 ms against 25 to 250 | swing 24.8 dB against 20
+ keying-why | unadjudicated/cw-2026-08-24-012403 | score 0.085 against 0.1 | element median 63 ms against 25 to 250 | swing 17.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-031838 | score 0.254 against 0.1 | element median 152 ms against 25 to 250 | swing 24.6 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-031905 | score 0.262 against 0.1 | element median 74 ms against 25 to 250 | swing 24.9 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-031948 | score 0.308 against 0.1 | element median 165 ms against 25 to 250 | swing 26.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-032012 | score 0.251 against 0.1 | element median 75 ms against 25 to 250 | swing 25.6 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-032050 | score 0.211 against 0.1 | element median 73 ms against 25 to 250 | swing 24.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-032113 | score 0.270 against 0.1 | element median 80 ms against 25 to 250 | swing 26.9 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-032129 | score 0.270 against 0.1 | element median 78 ms against 25 to 250 | swing 27.0 dB against 20
+ keying-why | cw-2026-08-17-013622 | score 0.022 against 0.1 | element median 33 ms against 25 to 250 | swing 84.4 dB against 20
+ keying-why | unadjudicated/cw-2026-08-18-003016 | score 0.291 against 0.1 | element median 51 ms against 25 to 250 | swing 21.8 dB against 20
+ keying-why | unadjudicated/cw-2026-08-18-003126 | score 0.311 against 0.1 | element median 52 ms against 25 to 250 | swing 24.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-18-003758 | score 0.170 against 0.1 | element median 47 ms against 25 to 250 | swing 28.7 dB against 20
+ keying-why | unadjudicated/cw-2026-08-23-001520 | score 0.486 against 0.1 | element median 101 ms against 25 to 250 | swing 218.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-23-001831 | score 0.106 against 0.1 | element median 59 ms against 25 to 250 | swing 19.3 dB against 20
+ keying-why | unadjudicated/cw-2026-08-23-001952 | score 0.054 against 0.1 | element median 55 ms against 25 to 250 | swing 20.3 dB against 20
+ keying-why | unadjudicated/cw-2026-08-23-002016 | score 0.060 against 0.1 | element median 55 ms against 25 to 250 | swing 18.4 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-011552 | score 0.091 against 0.1 | element median 70 ms against 25 to 250 | swing 17.9 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-012748 | score 0.122 against 0.1 | element median 63 ms against 25 to 250 | swing 16.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-012823 | score 0.078 against 0.1 | element median 63 ms against 25 to 250 | swing 16.9 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-012922 | score 0.115 against 0.1 | element median 60 ms against 25 to 250 | swing 23.7 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-013010 | score 0.117 against 0.1 | element median 52 ms against 25 to 250 | swing 18.0 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-013150 | score 0.110 against 0.1 | element median 49 ms against 25 to 250 | swing 18.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-013303 | score 0.134 against 0.1 | element median 50 ms against 25 to 250 | swing 18.5 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-013402 | score 0.208 against 0.1 | element median 46 ms against 25 to 250 | swing 20.3 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-013520 | score 0.191 against 0.1 | element median 46 ms against 25 to 250 | swing 21.3 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-013637 | score 0.229 against 0.1 | element median 46 ms against 25 to 250 | swing 22.5 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-021410 | score 0.096 against 0.1 | element median 78 ms against 25 to 250 | swing 18.7 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-021629 | score 0.036 against 0.1 | element median 64 ms against 25 to 250 | swing 18.2 dB against 20
+ keying-why | unadjudicated/cw-2026-08-25-021825 | score 0.023 against 0.1 | element median 31 ms against 25 to 250 | swing 12.6 dB against 20
+ keying-why | unadjudicated/cw-2026-08-26-125941 | score 0.012 against 0.1 | element median 30 ms against 25 to 250 | swing 14.3 dB against 20
+ keying-why | unadjudicated/cw-2026-08-20-014854 | score 0.059 against 0.1 | element median 46 ms against 25 to 250 | swing 17.7 dB against 20
+ keying-why | unadjudicated/cw-2026-08-20-014935 | score 0.020 against 0.1 | element median 27 ms against 25 to 250 | swing 14.1 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-014113 | score 0.019 against 0.1 | element median 57 ms against 25 to 250 | swing 16.7 dB against 20
+ keying-why | unadjudicated/cw-2026-08-22-014308 | score 0.042 against 0.1 | element median 38 ms against 25 to 250 | swing 15.7 dB against 20
+ keying-why | unadjudicated/cw-2026-09-23-173723 | score 0.192 against 0.1 | element median 71 ms against 25 to 250 | swing 17.0 dB against 20
+ sweeps-differ | unadjudicated/cw-2026-08-23-001520 | 300-900 525 | 400-1200 1000 | decoder 600 | on 400-1200 it would be 400 Hz, apart
+ sweeps-differ | unadjudicated/cw-2026-08-25-021825 | 300-900 325 | 400-1200 600 | decoder 400 | on 400-1200 it would be 200 Hz, apart
+ count | single-sender 5 of 38 | apart 0 | apart names 
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.1157 Minutes
+RC=0 WALL=128s

@@ -1,0 +1,28 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:05.86]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTwoPitchesTableTests.TheThreeParkedRedsArePitched [5 s]
+  Standard Output Messages:
+ parked | #15 seed 7919 | decoder 650 low 600.0 high 650.0 share apart 1.00 | sweep 300-900 725 | sweep 400-1200 725 | recipe 640 | second-best 0.98 | keying | difference 75 apart | named 20
+ parked-seg | #15 seed 7919 | span 799-5899: 600@0-305 650@306-5705 600@5706-6059
+ parked | #15 seed 104729 | decoder 650 low 650.0 high 700.0 share apart 0.69 | sweep 300-900 725 | sweep 400-1200 725 | recipe 640 | second-best 0.98 | keying | difference 75 apart | named 37
+ parked-seg | #15 seed 104729 | span 799-6059: 600@0-405 650@406-4105 700@4106-5405 685@5406-5705 700@5706-6059
+ parked | #15 seed 15485863 | decoder 700 low 650.0 high 700.0 share apart 0.24 | sweep 300-900 725 | sweep 400-1200 725 | recipe 640 | second-best 0.98 | keying | difference 25 agree | named 53
+ parked-seg | #15 seed 15485863 | span 799-6059: 600@0-305 650@306-1505 700@1506-5505 685@5506-6059
+ parked | #43 coverage-easy | decoder 625 low 575.0 high 625.0 share apart 1.00 | sweep 300-900 675 | sweep 400-1200 675 | recipe 615 drifting +/- 3 | second-best 1.00 | keying | difference 50 apart | named 32
+ parked-seg | #43 coverage-easy | span 599-7999: 600@0-305 625@306-2005 615@2006-2605 600@2606-4405 575@4406-5705 625@5706-7605 615@7606-7905 600@7906-8079
+ parked | #44 exchange-easy | decoder 625 low 575.0 high 625.0 share apart 1.00 | sweep 300-900 675 | sweep 400-1200 675 | recipe 615 drifting +/- 3 | second-best 0.99 | keying | difference 50 apart | named 29
+ parked-seg | #44 exchange-easy | span 599-6399: 600@0-305 625@306-2305 575@2306-3805 585@3806-4005 625@4006-6399
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 6.1162 Seconds
+RC=0 WALL=6s

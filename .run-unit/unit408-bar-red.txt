@@ -1,0 +1,97 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.54]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:05.23]     Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(name: "cw-2026-08-17-134712") [FAIL]
+[xUnit.net 00:00:05.23]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:05.23]       Collection: [CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.320955810890327, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 37, At = 00:00:18.5200000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -714.1650843731113, SpanHops = 2, SpanMarginForRecord = -357.08254218655566, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.722491948385825, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 34, At = 00:00:20.0850000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -706.2021589235555, SpanHops = 3, SpanMarginForRecord = -235.4007196411852, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.99988871666754, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:20.1300000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -167.29144097913377, SpanHops = 3, SpanMarginForRecord = -55.76381365971125, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.99988871666754, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:20.7200000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -193.92563773095026, SpanHops = 3, SpanMarginForRecord = -64.64187924365008, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.70048178658073, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 34, At = 00:00:20.6350000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -59.511836440566185, SpanHops = 3, SpanMarginForRecord = -19.83727881352206, MarginLlr = NaN, MarginShareForRecord = NaN }, ···]
+[xUnit.net 00:00:05.23]       Stack Trace:
+[xUnit.net 00:00:05.23]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSeventeenThirtySevenCaptureTests.cs(168,0): at Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(String name)
+[xUnit.net 00:00:05.23]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.23]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.23]       Output:
+[xUnit.net 00:00:05.23]         cw-2026-08-17-134712: ■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ E■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ I ■ E E E EE E ■ ■■I■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ ■EE■ E ■  
+[xUnit.net 00:00:05.23]           57 printed below the bar of 1 per hop
+  Failed Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(name: "cw-2026-08-17-134712") [3 s]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.320955810890327, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 37, At = 00:00:18.5200000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -714.1650843731113, SpanHops = 2, SpanMarginForRecord = -357.08254218655566, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.722491948385825, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 34, At = 00:00:20.0850000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -706.2021589235555, SpanHops = 3, SpanMarginForRecord = -235.4007196411852, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.99988871666754, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:20.1300000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -167.29144097913377, SpanHops = 3, SpanMarginForRecord = -55.76381365971125, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.99988871666754, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:20.7200000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -193.92563773095026, SpanHops = 3, SpanMarginForRecord = -64.64187924365008, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 9.70048178658073, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 34, At = 00:00:20.6350000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -59.511836440566185, SpanHops = 3, SpanMarginForRecord = -19.83727881352206, MarginLlr = NaN, MarginShareForRecord = NaN }, ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSeventeenThirtySevenCaptureTests.cs:line 168
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ cw-2026-08-17-134712: ■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ E■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ I ■ E E E EE E ■ ■■I■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ ■EE■ E ■  
+   57 printed below the bar of 1 per hop
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(name: "unadjudicated/cw-2026-09-23-173723") [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-23-173723:  T EABNIREDWBZ WB6RED CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I
+   0 printed below the bar of 1 per hop
+   scored region "CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I", 29 edits against an inferred key, 29 at entry
+
+
+[xUnit.net 00:00:08.83]     Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(name: "unadjudicated/cw-2026-08-18-003758") [FAIL]
+[xUnit.net 00:00:08.83]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:08.83]       Collection: [CwCharacter { Text = ■, Confidence = Unreadable, Score = 13.382949525715992, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 25, At = 00:00:05.3650000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -79.4763685183243, SpanHops = 4, SpanMarginForRecord = -19.869092129581077, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 13.585758441208974, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:05.2050000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -58.20735606844755, SpanHops = 3, SpanMarginForRecord = -19.40245202281585, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 13.585758441208974, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:05.7950000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -54.89525788130413, SpanHops = 3, SpanMarginForRecord = -18.298419293768045, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 12.898904932710707, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:05.7950000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -54.885719747100666, SpanHops = 3, SpanMarginForRecord = -18.295239915700222, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 15.494156998878964, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 24, At = 00:00:16.8800000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -128.55513868734124, SpanHops = 4, SpanMarginForRecord = -32.13878467183531, MarginLlr = NaN, MarginShareForRecord = NaN }, ···]
+[xUnit.net 00:00:08.83]       Stack Trace:
+[xUnit.net 00:00:08.83]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSeventeenThirtySevenCaptureTests.cs(168,0): at Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(String name)
+[xUnit.net 00:00:08.83]            at InvokeStub_TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(Object, Span`1)
+[xUnit.net 00:00:08.83]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:08.83]       Output:
+[xUnit.net 00:00:08.83]         unadjudicated/cw-2026-08-18-003758:  ■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETMP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ■ ■ ■E ■ ■ ■ ■ EAN E
+[xUnit.net 00:00:08.83]           47 printed below the bar of 1 per hop
+  Failed Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(name: "unadjudicated/cw-2026-08-18-003758") [1 s]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [CwCharacter { Text = ■, Confidence = Unreadable, Score = 13.382949525715992, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 25, At = 00:00:05.3650000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -79.4763685183243, SpanHops = 4, SpanMarginForRecord = -19.869092129581077, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 13.585758441208974, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:05.2050000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -58.20735606844755, SpanHops = 3, SpanMarginForRecord = -19.40245202281585, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 13.585758441208974, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:05.7950000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -54.89525788130413, SpanHops = 3, SpanMarginForRecord = -18.298419293768045, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 12.898904932710707, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 32, At = 00:00:05.7950000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -54.885719747100666, SpanHops = 3, SpanMarginForRecord = -18.295239915700222, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 15.494156998878964, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 24, At = 00:00:16.8800000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -128.55513868734124, SpanHops = 4, SpanMarginForRecord = -32.13878467183531, MarginLlr = NaN, MarginShareForRecord = NaN }, ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSeventeenThirtySevenCaptureTests.cs:line 168
+   at InvokeStub_TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758:  ■ ■ ■R L T U ■ ■ I AN EAND E A ET EEEETMP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ■ ■ ■E ■ ■ ■ ■ EAN E
+   47 printed below the bar of 1 per hop
+
+
+[xUnit.net 00:00:10.86]     Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(name: "cw-2026-08-17-013347") [FAIL]
+[xUnit.net 00:00:10.86]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:10.86]       Collection: [CwCharacter { Text = ■, Confidence = Unreadable, Score = 5048576.179024604, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 19, At = 00:00:28.6650000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -81.32176208496094, SpanHops = 5, SpanMarginForRecord = -16.26435241699219, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 1265.9002175019432, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 40, At = 00:00:28.6350000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -31.78435616567731, SpanHops = 2, SpanMarginForRecord = -15.892178082838655, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 1265.9002175019432, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 40, At = 00:00:29.1050000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -9.095385477412492, SpanHops = 2, SpanMarginForRecord = -4.547692738706246, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 1265.9002175019432, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 40, At = 00:00:28.1650000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -19.88915993599221, SpanHops = 2, SpanMarginForRecord = -9.944579967996106, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 4.001349820382205, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 16, At = 00:00:28.8800000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -43.82390118490002, SpanHops = 6, SpanMarginForRecord = -7.30398353081667, MarginLlr = NaN, MarginShareForRecord = NaN }]
+[xUnit.net 00:00:10.86]       Stack Trace:
+[xUnit.net 00:00:10.86]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSeventeenThirtySevenCaptureTests.cs(168,0): at Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(String name)
+[xUnit.net 00:00:10.86]            at InvokeStub_TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(Object, Span`1)
+[xUnit.net 00:00:10.86]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:10.86]       Output:
+[xUnit.net 00:00:10.86]         cw-2026-08-17-013347:  E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT ■ ■ 
+[xUnit.net 00:00:10.86]           5 printed below the bar of 1 per hop
+[xUnit.net 00:00:10.86]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(name: "cw-2026-08-17-013347") [2 s]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [CwCharacter { Text = ■, Confidence = Unreadable, Score = 5048576.179024604, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 19, At = 00:00:28.6650000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -81.32176208496094, SpanHops = 5, SpanMarginForRecord = -16.26435241699219, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 1265.9002175019432, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 40, At = 00:00:28.6350000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -31.78435616567731, SpanHops = 2, SpanMarginForRecord = -15.892178082838655, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 1265.9002175019432, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 40, At = 00:00:29.1050000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -9.095385477412492, SpanHops = 2, SpanMarginForRecord = -4.547692738706246, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 1265.9002175019432, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 40, At = 00:00:28.1650000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -19.88915993599221, SpanHops = 2, SpanMarginForRecord = -9.944579967996106, MarginLlr = NaN, MarginShareForRecord = NaN }, CwCharacter { Text = ■, Confidence = Unreadable, Score = 4.001349820382205, Pattern = ., SignalToNoiseDb = NaN, WordsPerMinute = 16, At = 00:00:28.8800000, Stage = Provisional, IsWordGap = False, IsUnreadable = True, IsUnstable = False, SpanLogLikelihoodRatio = -43.82390118490002, SpanHops = 6, SpanMarginForRecord = -7.30398353081667, MarginLlr = NaN, MarginShareForRecord = NaN }]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSeventeenThirtySevenCaptureTests.cs:line 168
+   at InvokeStub_TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ cw-2026-08-17-013347:  E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT ■ ■ 
+   5 printed below the bar of 1 per hop
+
+
+
+Test Run Failed.
+Total tests: 4
+     Passed: 1
+     Failed: 3
+ Total time: 11.1410 Seconds
+RC=1 WALL=14s

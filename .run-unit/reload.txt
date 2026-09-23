@@ -1,12 +1,12 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-23T15:46:54-04:00  root C:\Source\HamLet
+measured 2026-09-23T17:59:04-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0167.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0168.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
@@ -21,7 +21,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 79c211fc
+  HEAD   : 0f896484
   uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -31,7 +31,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0167
+  highest in CLAUDE.md section 1 : CPS-DEC-0168
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -39,7 +39,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  343 lines, 35589 bytes
+  390 lines, 43272 bytes
   PHASE: CW decodes again
   PHASE_SET: 2026-09-22
   DESCRIPTION: A restore phase. The CW decoder read on the air on 2026-08-25 and reads nothing now; the floors that recorded what it produced have been red since 2026-08-31 and nobody has run them since. The engine's CW code goes back to the last commit that read, adapted so today's app builds; the floors go green and stay green under a guard every unit runs; the inherited reds are repaired or retired with reasons; the August rework goes back in one piece at a time on numbers. Judged by three named tests and, at the end, by Tim at the radio.
@@ -203,6 +203,35 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   from the same ruling: a capture Tim transcribes himself is the next phase's step 0, and
   nothing in 3.6 or 4.7 is a substitute for it.
   
+  **R56 - Tim, 2026-09-23, 16:00: the tone tracker may be attacked in this phase.** Unit 405
+  traced one cause under four of 3.6's reds: `CwToneTracker.Switch` moves the mixdown 25 to 85
+  Hz off a single sender and reports the wrong pitch as measured (700 for 640, 575 for 615).
+  The same disagreement appears on the air in `cw-2026-09-23-173723`, where the decoder says 600
+  Hz and the independent sweep says 575 in the same capture. HM-DEC-095 and HM-DEC-127 still
+  govern that code and are not overruled; what R56 grants is leave to change the switch inside
+  this phase, with the floors, the adjudicated anchors and the 17:37 key as the guard. Rejected:
+  parking the four and giving the tracker its own phase - *"A"*, and the phase's sentence is that
+  CW decodes, which is what the tracker prevents.
+  
+  **R57 - Tim, 2026-09-23, 16:00: a floor counts named characters, not placeholders.** *"I hate
+  all the false positive garbage."* The floors count every character emitted, and a placeholder
+  (`â– `) is a character, so unit 405's two working changes were thrown away for lowering rows that
+  were nothing but placeholders, and every later unit failed the same way. From now: **a floor is
+  the count of named characters; a row that falls solely because placeholders were suppressed is
+  not a floor lowered.** All 37 capture rows are re-measured once, in one commit, with the old and
+  new number printed side by side, and the adjudicated anchors and the 17:37 key are the
+  independent check that nothing real was lost in the re-measurement. Rejected: a second number
+  beside the old one (two numbers per row and still a rule needed for which wins); leaving it (the
+  gate work could never be kept).
+  
+  **R58 - Tim, 2026-09-23, 16:00: the gate first, then the tracker.** *"both baby"*, in that
+  order: 3.7 is the emission gate, 3.8 is the tracker. 3.6's four remaining reds - #15, #43, #44,
+  #45 - get one pass under R57 at the start of 3.7's first unit, since R57 makes 405's greens
+  keepable, and whatever is still red is then parked in `docs/phase-cw/PARKED.md` with its
+  numbers; 3.6 closes on that pass either way, and no unit attacks a 3.6 red after it. Unit 405's
+  **G1** (an out-of-order gap reading is not separated) is picked back up in the same pass: it was
+  measured at zero cost across every floor and type and died only to the old keep rule.
+  
   ## Â§3 What is different from the phases before it
   
   This phase moves the decode path, which no phase since 08-31 has. Two consequences the
@@ -278,8 +307,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 3.3 No test that reads audio and asserts characters, elements, a tone or a speed is retired; each such red is green or is listed red-open with its number and the reason it stays. **Unit 394, task 2: nothing retired; all 21 reds of the set read audio and are listed red-open in `docs\phase-cw\unit394-reds.md` section 2, each with its number and what it asserts - characters 14, share 5, speed 2. Unit 398, task 2: 20 retired from the excluded files, none asserting characters, elements, a tone or a speed from audio; the 31 excluded facts that do are left excluded and listed red-open in `docs\phase-cw\unit398-excluded.md` section 2.**
   - [x] 3.4 The known-reds block of `docs\carry-forward-tests.txt` names no CW test, and `docs\unit239-failing-set.txt` carries a closing line naming this phase and the count that went each way. **Unit 401: lines 158 and 159 of the known-reds block replaced by one CW line naming no test and pointing at the set's closing line and `unit394-reds.md`; grep over the file at exit finds no CW test named as a known red; the closing line written - 51 names, 31 green at HEAD without repair, 12 repaired, 0 retired, 8 red-open by number (#6, #15, #24, #41, #42, #43, #44, #45); the step's goal sentence stays partial on the 8 red-open under R49's own clause, red with its number and the step partial, each a repair owed under HM-DEC-151; `CwFixtureTests.TheCleanRecordingsDecodeExactly` on the engine line, 178 of 178 in 374 s of 480.**
   - [x] 3.5 The three floor tests are green at the exit of every commit of the step, and the carry-forward list is green on both lines. **Unit 400: captures 37 of 37 and adjudicated 13 of 13 at the exit of every commit of the step since `ee0ea0dc`; the two clean synthetics red at every commit before `7d1ffde6` under R53, which named them step 3's repair, and green 2 of 2 at the exit of every commit from it; app 277 of 278 in each of two runs, each loss a different name to the dispatcher loop before an assertion and green in the other run, and engine 176 of 176 in 374 s at the unit's exit. The tick stands while every later commit of the step keeps all three green and both lines green; a later unit that finds one red un-ticks it and names the commit.**
-  - [ ] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count.
+  - [x] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count. **Under R58 this criterion closes on the single pass at the start of 3.7's first unit: any of #15, #43, #44, #45 still red after it is parked with its numbers and no further unit attacks it.** **Closed by unit 408's pass under R58: 5 green - #24 #41 by unit 402, #6 #42 by unit 406, #45 by unit 408's B2 with B1 at `0bcf04e6`, kept under R57 with no named count lower and the anchors identical; 3 parked in `PARKED.md` with their numbers and the units that attacked them - #15 0.54, #43 4 + 7, #44 0 + 7; G1 measured on B2 and out, M2 dropped as the named candidate with #6 already green; none retired; the set's closing line reads 31 green, 17 repaired, 0 retired, 3 parked.**
   
+  - [x] 3.7 The emission gate no longer prints what the decoder does not know: on `cw-2026-09-23-173723`, on the three adjudicated anchors and on all 37 capture fixtures, no character is printed whose own span is below the gate's stated bar, no named character is lost anywhere, the three adjudicated readings are unchanged character for character, and the scored region of the 17:37 key reads no worse than it does at entry; the bar and the before-and-after counts of named and placeholder characters are in the report for every case. **Unit 408, `aded8dcd`: the bar is `CwProbabilisticDecoder.CharacterMargin`, 1.0 log-likelihood per hop, its value unchanged because every higher value measured costs named characters; below it a character is now not printed. `NothingBelowTheBarIsPrinted` watched red on the three anchors' recordings and green after, 4 of 4; the exit sweep finds nothing printed below the bar on any of the 38 recordings; captures named 1,295 to 1,297 with no row lower, placeholders 289 to 28; the three anchors identical on named characters; 17:37 on the bench 46 named, 0 placeholders and 29 edits against an inferred key before and after; every case in `docs\phase-cw\unit408-floors.md` section 4.**
+  - [x] 3.8 The decoder and the independent sweep agree about the pitch: on every single-sender case among the 37 captures, the three anchors and the 17:37 capture, the pitch the decoder mixes at and the pitch the 400 to 1200 Hz sweep reports differ by no more than one 25 Hz bin, measured and tabled per case; and each of #15, #43 and #44 is green or carries its post-R56 measurement. **Unit 409: `TheTwoPitchesTableTests` tables 38 cases, with the decoder's most-held mix pitch, `CwDecoder.Stream.ToneHz`, over the named span beside `KeyingEnvelope.Best` at 300 to 900, the tree's range, and the same rule at 400 to 1200 printed beside it. Under the rule fixed before the table was read, 5 of 38 cases are single-sender: `004507`, `031905`, `003016`, `003126` and the anchor `003758`. 0 of the 5 are apart at entry or at exit, and both sweep columns give the same pitch on all 5. No tracker change was made, because none was licensed. #15 0.54 with the decoder at 650 to 700, the sweep 725 and the recipe 640; #43 2 + 7 and #44 0 + 7, with the decoder 625, the sweep 675 and the recipe 615; all three stay red and parked. Seven cases outside the rule are apart. On the three synthetics the sweep sits 60 to 85 Hz off the recipe's tone. Both facts are in `docs\phase-cw\unit409-pitch.md` and in unit 409's section 4.**
+  - [x] 3.9 All 37 capture rows are re-measured once under R57 in a single commit, with the old count, the new named-character count and the placeholder count printed per row; the adjudicated anchors and the 17:37 key are run at that commit and are unchanged or better, and the report states plainly that no real character was lost. **Unit 408, `f5bbbb8e`: the harness prints named, named elements, placeholders and the total emitted per row, named and named elements the floors; named 1,295 of 1,594, placeholders 299, on every row named equal to the old total less its placeholders, so no real character was lost; adjudicated 13 of 13 with every reading identical to entry; 17:37 run at that commit, 46 named and 0 placeholders on the bench, 29 edits against an inferred key; the 37-row table with old, named and placeholder counts in `docs\phase-cw\unit408-floors.md` section 2.**
   **Depends on:** step 2. Independent of step 4: when one blocks the arbiter works the other.
   
   ## Step 4 - The August rework is judged on numbers
@@ -348,6 +380,15 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - **A floor would have to be lowered to go green.** Never. Report the number, `partial`.
   - **Anything would change what keys or transmits, or a byte of the transmit files in
     Â§3.** `MOVE: stop`.
+  - **Suppressing a placeholder is not lowering a floor (R57).** A row that falls only in its
+    total while its named-character count holds or rises is not a regression; a row whose named
+    count falls is, and the change goes back out.
+  - **A change to `CwToneTracker` is licensed by R56** and judged by 3.8's per-case table, the
+    floors' named counts, the three anchors unchanged, and the 17:37 key's scored region. A
+    tracker change that improves the table and costs a single anchor character goes back out.
+  - **The 17:37 key is inferred, not transcribed.** No report may call it what was sent. Every
+    number measured against it is stated as *against an inferred key* (Â§0.0, FACT-004), and the
+    unscored first third of that recording is never keyed.
   - **A package is needed.** `MOVE: stop`.
   - **The `UNIT:` line of every report carries no parentheses**, and no `&`, `|`, `<`, `>`
     or `^`. `validate-output.bat` rule 1 echoes that line inside a parenthesized block, so a
@@ -373,6 +414,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   - **2026-09-22.** Written from the interview: R47 to R52; six steps; the three floor tests
     named from the tree; the transmit files fenced in Â§3.
+  - **2026-09-23, 16:00.** R56 the tracker is open; R57 a floor counts named characters; R58 the
+    gate first then the tracker, and 3.6 closes on one pass under R57. New criteria 3.7 the
+    emission gate, 3.8 the pitch agreement, 3.9 the re-measurement. Written after seven units
+    (401 to 407) tried thirty-four changes and kept none, two of them green but refused by the
+    old floor rule, and after `cw-2026-09-23-173723` read `CQ CQ CQ DE WB6RED WB6RED` with the
+    letters right and the spacing wrong.
   - **2026-09-23, morning.** R55: 3.6 (the eight reds by number, green or parked after three
     tries) and 4.7 (the fourteen chained pieces, each chain one commit, one verdict); Â§6's pair
     rule extended to chains under 4.7 and a three-tries rule for 3.6. Written after the loop
@@ -385,29 +432,29 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     `UNIT:` line rule after units 390 and 391 died in `validate-output.bat` rule 1.
 
   --- PHASE_STATUS.md ---
-  12 lines, 2206 bytes
+  12 lines, 2191 bytes
   PHASE: CW decodes again
   PHASE_SET: 2026-09-22
   DESCRIPTION: A restore phase. The CW decoder read on the air on 2026-08-25 and reads nothing now; the floors that recorded what it produced have been red since 2026-08-31 and nobody has run them since. The engine's CW code goes back to the last commit that read, adapted so today's app builds; the floors go green and stay green under a guard every unit runs; the inherited reds are repaired or retired with reasons; the August rework goes back in one piece at a time on numbers. Judged by three named tests and, at the end, by Tim at the radio.
   CURRENT_STEP: 0
-  WORK_INSTRUCTION: 407 - the station still keying, and #45's tail on the air's terms
-  HEARTBEAT: 2026-09-23 15:46:52
+  WORK_INSTRUCTION: 409 - the decoder and the sweep agree about the pitch
+  HEARTBEAT: 2026-09-23 17:59:02
   STEP: 0 | not started | The break is measured and named - the three floor tests run at HEAD case by case with their numbers, the newest commit on main where all three were green is named, and the first commit after it that turned one red is named.
   STEP: 1 | done | The decoder reads again - src\Hamlet.RadioEngine\Cw restored to the named commit and adapted only where today's app or tests would not build; the solution builds; the three floor tests green; the app's CW tests green; the carry-forward list green; nothing under src\Hamlet.App changed without a listed reason.
   STEP: 2 | not started | CW cannot break silently again - a CW read guard on the engine carry-forward line beside FT8, FT4, PSK31 and Olivia, watched red against a broken decoder before it was trusted, and measured to fit the line's timeout.
-  STEP: 3 | partial | The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.
+  STEP: 3 | done | The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.
   STEP: 4 | done | The August rework is judged on numbers - each piece of the 2026-08-28 to 08-31 rework re-applied in its own commit and kept only if the three floor tests stay green and a named number moves; a piece that moves nothing goes back out and the report says so.
   STEP: 5 | not started | Tim at the radio - CW on 40 m, text on the CW tab that reads as what was sent, and he says it read.
 
   --- PHASE_OUTCOME.md ---
-  586 lines, 152918 bytes
+  658 lines, 170623 bytes
   PHASE: CW decodes again
   PHASE_SET: 2026-09-22
   DESCRIPTION: A restore phase. The CW decoder read on the air on 2026-08-25 and reads nothing now; the floors that recorded what it produced have been red since 2026-08-31 and nobody has run them since. The engine's CW code goes back to the last commit that read, adapted so today's app builds; the floors go green and stay green under a guard every unit runs; the inherited reds are repaired or retired with reasons; the August rework goes back in one piece at a time on numbers. Judged by three named tests and, at the end, by Tim at the radio.
   STEP: 0 | not started | The break is measured and named - the three floor tests run at HEAD case by case with their numbers, the newest commit on main where all three were green is named, and the first commit after it that turned one red is named.
   STEP: 1 | done | The decoder reads again - src\Hamlet.RadioEngine\Cw restored to the named commit and adapted only where today's app or tests would not build; the solution builds; the three floor tests green; the app's CW tests green; the carry-forward list green; nothing under src\Hamlet.App changed without a listed reason.
   STEP: 2 | not started | CW cannot break silently again - a CW read guard on the engine carry-forward line beside FT8, FT4, PSK31 and Olivia, watched red against a broken decoder before it was trusted, and measured to fit the line's timeout.
-  STEP: 3 | partial | The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.
+  STEP: 3 | done | The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.
   STEP: 4 | done | The August rework is judged on numbers - each piece of the 2026-08-28 to 08-31 rework re-applied in its own commit and kept only if the three floor tests stay green and a named number moves; a piece that moves nothing goes back out and the report says so.
   STEP: 5 | not started | Tim at the radio - CW on 40 m, text on the CW tab that reads as what was sent, and he says it read.
   
@@ -987,9 +1034,81 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ADVANCED: no
   ATTEMPT: 3.6 | unit 5 launched 2026-09-23T19:02:37.455Z | no | executed | hold a tracker move off the pitch being read while that bank is still on/off keying, traced first on #15 #43 #44 against the five captures H1 cost and the handovers; #45's easy-tier event pumps the air's trailing silence before Flush and reads the settled transcript under R12
   REASON: 3.6 | unit 5 launched 2026-09-23T19:02:37.455Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 408 - STEP 3
+  
+  STEP: 3
+  APPROACH: re-measure the 37 capture floors as named characters and placeholders under R57, take 3.6's single closing pass with B2, M2 and G1 rebuilt under the new rule, then raise the emission gate so characters the decoder scores in the single digits are not printed
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 9 asks for all 37 capture rows re-measured once under R57 with the old count, the named count and the placeholder count printed per row
+  STATE: partial
+  DECIDED: the gate's bar, the separate-column form of the floor table and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R49, R55, R57, R58, section 6; HM-DEC-168; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0
+  ADVANCES: step 3 criterion 9
+  COST: one session, five tasks, 0 to 4, committed per task and per kept change; M2 and #6 the drop candidate of task 2, the 37-fixture sweep that of task 3.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.94 to 1.13.95. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 407; set to 408 - the floors stop counting junk, and the gate stops printing it, and CURRENT_STEP 3. HM-DEC-168 in DECISIONS.md and its row at the top of CLAUDE.md section 1. Section 5 against the tree: src\Hamlet.RadioEngine\Cw\CwEmissionGate.cs does not exist - the bar is CwProbabilisticDecoder.CharacterMargin, 1.0, a character's span log-likelihood ratio per hop, applied in CwProbabilisticDecoder.Marked, and CwEmissionGateTests is a test type; the 17:37 WAV and key.md are on disk and already tracked, committed in 65b4f9d0, and its .txt sidecar is not on disk; the floor table holds 37 rows counted from CwDecodeReport.CharactersEmitted, placeholders included; reds-3.6.md holds #15 #43 #44 #45 open; unit405-reds.md describes B2, M2 and G1 in prose and 405's diffs are not in the tree. Entry round, one type per invocation after one build: ENGINE 178 of 178 in 371 s; APP 276 of 278 in 157 s, both losses ThePsk31ConversationCardTests to the dispatcher loop before an assertion, then 278 of 278 in 160 s on the one re-run; captures 37 of 37 in 91 s, every row identical to unit 407's exit table; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 1 s.
+  TASK 1, THE RE-MEASUREMENT: the floor table and harness count settled named characters, the elements inside them, and placeholders, the first two floors and the third printed only; all 37 rows measured at c19ecf61 in one run, named 1,295 of 1,594 emitted, 299 placeholders, named equal to emitted less placeholders on every row, so no named character lost; captures 37 of 37 in 97 s on the new table; adjudicated 13 of 13, every reading identical to entry; the 17:37 bench replay reads 46 named and 0 placeholders, 29 edits from the inferred key over the scored region, not the sidecar's session counts of 85 and 26, and the sidecar is absent. Table in docs/phase-cw/unit408-floors.md.
+  TASK 2, 3.6's CLOSING PASS: B2 rebuilt with B1 from unit405-reds.md 2.4, the easy tier reading CharacterSettled and the flush not settling an unreadable character still inside the delay - #45 1 + 3 to 0 + 0 green, #43 4 + 7, #44 0 + 7; captures 37 of 37 with six rows fewer placeholders and no named count or named element lower, adjudicated 13 of 13 every named character identical, CwFixtureTests 22 of 23 and CwAcquisitionWindowTests 11 of 12 as entry, CwEmissionGateTests 8 of 8 - kept, 0bcf04e6. G1 on B2 - #44 0 + 3, second call whole, not green, captures identical to B2 - out, never committed. M2 dropped as the named candidate: #6 green since unit 406 and #15 unmoved by M1 and M2 in unit 405. #15 0.54, #43 4 + 7, #44 0 + 7 parked in PARKED.md; the set's closing line 31 green, 17 repaired, 0 retired, 3 parked; 3.6 ticked.
+  TASK 3, THE GATE: the bar is CharacterMargin, 1.0 log-likelihood per hop, value unchanged - the sweep over 38 recordings found all 261 margin placeholders below it and no named character, while every higher value on either scale costs named characters, 3 at 1.047 per hop and 9 at a span total of 5; below the bar a character is now not printed, CwProbabilisticDecoder.Judged. NothingBelowTheBarIsPrinted watched red on the three anchors' recordings, 57, 47 and 5 below the bar, green on 17:37, then 4 of 4. Captures 37 of 37, placeholders 289 to 28, named 1,295 to 1,297, no row lower; adjudicated 13 of 13, named characters identical to entry on the three anchors, 031838 one T more; 17:37 46 named and 0 placeholders before and after, 29 edits against an inferred key before and after; eleven neighbor types at their counts; AWeakCharacterIsMarkedRatherThanRemoved rewritten under R12.
+  TASK 4, THE EXIT ROUND: ENGINE 178 of 178 in 369 s; APP 276 of 278 in 161 s then 277 of 278 in 163 s, each loss a different name to the dispatcher loop before an assertion and green in the other run, 278 of 278 counting neither way; captures 37 of 37 every row identical to task 3's; adjudicated 13 of 13 every reading identical to task 3's; clean synthetics 2 of 2; CwReceiverFixtureTests 25 of 27, #45 green; CwAcquisitionWindowTests 11 of 12, #15 0.54; TheSeventeenThirtySevenCaptureTests 5 of 5; the exit sweep finds nothing printed below the bar on any of 38 recordings. Transmit files print nothing against 7e209cb4; src/Hamlet.App prints nothing from c19ecf61; src changed in CwProbabilisticDecoder.cs and CwProbabilisticStream.cs only. 3.6, 3.7 and 3.9 ticked; 3.8 not started.
+  FATE: executed, complete at task 4 of 4, tasks 0 to 4, M2 dropped as the named candidate; B2 kept with #45 green, G1 out, #15 #43 #44 parked; the floors count named characters; below the bar nothing prints, placeholders on the 37 captures 299 to 28 with no named character lost.
+  
+  ## UNIT 1 - STEP 3
+  
+  STEP: 3
+  APPROACH: re-measure the 37 capture floors as named characters and placeholders under R57, take 3.6's single closing pass with B2, M2 and G1 rebuilt under the new rule, then raise the emission gate so characters the decoder scores in the single digits are not printed
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing is blocked and parks three findings for the record without asking the owner to decide anything about keying, money or what the product promises.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 9 asks for all 37 capture rows re-measured once under R57 with the old count, the named count and the placeholder count printed per row
+  DECIDED: the gate's bar, the separate-column form of the floor table and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R49, R55, R57, R58, section 6; HM-DEC-168; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0
+  COST: 9.123549399999998
+  ACCOMPLISHED: the floors measure what Tim reads instead of what the decoder emits, 3.6 is closed either way, and the placeholders stop reaching the CW terminal
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 3.1 to 3.7 and 3.9 are met with measured support, but 3.8 on pitch agreement between the decoder and the sweep has not been started, so not every exit criterion of the step is met.
+  ADVANCED: yes
+  ATTEMPT: 3.9 | unit 1 launched 2026-09-23T20:06:27.149Z | yes | executed | re-measure the 37 capture floors as named characters and placeholders under R57, take 3.6's single closing pass with B2, M2 and G1 rebuilt under the new rule, then raise the emission gate so characters the decoder scores in the single digits are not printed
+  
+  ## UNIT 409 - STEP 3
+  
+  STEP: 3
+  APPROACH: table the decoder mix pitch against the independent KeyingEnvelope sweep per case over the 37 captures, the anchors and 17:37, then change CwToneTracker only where the table shows more than one 25 Hz bin apart, judged on the table, named counts, anchors and the 17:37 key; measure #15 #43 #44 after
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 8 is the only unmet criterion the loop can move; units 406 and 407 changed the tracker to flip 3.6's reds, and this unit makes a pitch table against an instrument independent of the decoder the judge
+  STATE: partial
+  DECIDED: author's, overrulable - the instrument is KeyingEnvelope, the tree's one sweep, judged over its HEAD range 300 to 900 with 400 to 1200 printed beside it and every disagreement named; the decoder's pitch is the most-held mix value over the named-character span; single-sender is not a two-station fixture, keying under CwKeyingThresholds, and second-best under 0.5 of the winner more than two bins away, fixed before the table is read; agree is 25 Hz or less; up to three tracker changes, the decoder never reading the sweep; #15 #43 #44 measured, never targeted; the stale step 0 and step 2 states reported, not edited; the per-type timeouts
+  LICENCE: PHASE_PLAN.md 3.8, R56, R57, R58, section 3, section 6 on the tracker, the 17:37 key and floors; HM-DEC-091, HM-DEC-095, HM-DEC-127, HM-DEC-155, HM-DEC-165, HM-DEC-168; CLAUDE.md 0.0 and 0.2; FACT-004
+  ADVANCES: step 3 criterion 8
+  COST: one session, five tasks, 0 to 4, committed per task and per kept change; the second and third tracker changes the drop candidates of task 2.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.95 to 1.13.96. PHASE_STATUS.md read CURRENT_STEP 0 and WORK_INSTRUCTION 408; set to 409 - the decoder and the sweep agree about the pitch, and CURRENT_STEP 3; its step lines and this file's still read step 0 and step 2 not started though every criterion of both is ticked in the plan - reported, not edited. Section 5 against the tree: KeyingEnvelope.Best and the public Measure are as stated, range CwToneTracker.MinimumToneHz to MaximumToneHz, 300 to 900 in 25 Hz steps; the app's 400 to 1200 label is at MainWindowViewModel.cs lines 11915 to 11916 and no longer matches the engine - reported, not repaired; LockedToneHz is at line 279 of CwDecoder.cs, not CwToneTracker.cs, and it is NaN unless the operator locks - the pitch the decoder mixes at is CwProbabilisticStream.ToneHz, set every hop in CwDecoder.Step from the lock, else the last measured tracker pitch, else the tracker's bank centre, and that is the property used; the three anchors' recordings are cw-2026-08-17-013347, cw-2026-08-17-134712 and unadjudicated/cw-2026-08-18-003758, all three among the 37 capture rows; the 17:37 WAV and key.md are present and its .txt sidecar is absent; recipe pitch #15 640 Hz, CwAcquisitionWindowTests.ToneHz, #43 coverage-easy and #44 exchange-easy 615 Hz drifting +/- 3 Hz, from their sidecars; CwTwoStationTests reads only the synthetic receiver two-station.wav, so no case of the table is a two-station fixture. git diff 0534ca93 HEAD over src, tests and the list prints nothing, HEAD is 0534ca93, so the two carry-forward lines are taken as unit 408's exit, engine 178 of 178 and app 278 of 278. Entry round, one type per invocation after one build: captures 37 of 37 in 93 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2; CwReceiverFixtureTests 25 of 27, #43 and #44 red; CwAcquisitionWindowTests 11 of 12, #15 red; TheSeventeenThirtySevenCaptureTests 5 of 5; tracker readers ThePitchCanBeHeldTests 5 of 5, CwSurveyThresholdPinTests 3 of 3, CwToneSurveyTests 5 of 5, CwTrackerSwitchTests 2 of 2, TheKeyingWitnessSaysNothingImpossibleTests 62 of 62, TheOperatorIsToldAboutASecondStationTests 5 of 5, TheSurveyAlreadyUsesAShortWindowTests 2 of 2, WhatDecodeScoringCostsTests 2 of 2, TheGateHasItsOwnWindowNowTests's two short methods 4 of 4; WhatBandwidthTheDecoderListensThroughTests 3 of 6 in 152 s, a mismatch against unit 407's 4 of 6 - HoldingTheWindowLongInTimeReadsMore on unadjudicated/cw-2026-08-18-003016 is red, 54 against 54, beside MostRealRecordingsSitInTheWidestWindow and the 004507 case, 47 against 49; the reader was not run in unit 408, is in neither the 51-name set nor a carry-forward line, and is reported, not repaired.
+  TASK 1, THE TABLE AT ENTRY: TheTwoPitchesTableTests, a printer, reads the 37 captures and 17:37 hop by hop, the decoder's most-held CwDecoder.Stream.ToneHz over the named span beside KeyingEnvelope.Best at 300 to 900 and the same rule at 400 to 1200; run twice at eff57237, rows identical, 129 s; 5 of 38 single-sender - 004507, 031905, 003016, 003126 and the anchor 003758 - and 0 of the 5 apart; the two sweeps differ on 001520, 525 against 1000, and 021825, 325 against 600, each apart on either column and neither single-sender; outside the rule 7 cases apart, 032129 by 150 Hz, 001520 and 021825 by 75, 001952, 002016, 125941 and 014308 by 50; 22 cases fail the keying verdict, 18 on the swing including 17:37 at 17.0 dB, and 11 are keying with a runner-up of 0.5 or more. docs/phase-cw/unit409-pitch.md section 2. No file under src changed.
+  TASK 2, THE TRACKER CHANGE: none - 0 single-sender cases apart, so as the instruction orders nothing traced, built, kept or reverted.
+  TASK 3, THE TABLE AT EXIT AND THE THREE PARKED REDS: the exit table's lines identical to entry, 5 of 38 single-sender, 0 apart; #15 0.54 of the message against 0.66, red, decoder 650, 650 and 700 over its three seeds, sweep 725, recipe 640; #43 2 unreadable + 7 strangers, red, decoder 625, sweep 675, recipe 615 drifting +/- 3; #44 0 + 7, red, decoder 625, sweep 675, recipe 615; the sweep sits 60 to 85 Hz off the recipe on all five synthetic readings with a runner-up of 0.98 to 1.00, said and not acted on; 3.8 ticked on the instruction's rule, both sweep columns giving the same pitch on all five single-sender cases.
+  TASK 4, THE EXIT ROUND: ENGINE 178 of 178 in 367 s; APP 276 of 278 in 162 s then 276 of 278 in 146 s on the one re-run, every loss to the dispatcher loop before an assertion - ThePsk31OfferTests and Unit376TheTopBandTests each green in the other run, TheWindowHoldsBelowItsMinimumTests lost in both and 1 of 1 green run alone by name - counted neither way; captures 37 of 37 with every printed row identical to entry; adjudicated 13 of 13 with every reading identical to entry; clean synthetics 2 of 2; CwReceiverFixtureTests 25 of 27; CwAcquisitionWindowTests 11 of 12; TheSeventeenThirtySevenCaptureTests 5 of 5; every tracker reader at its entry count, WhatBandwidthTheDecoderListensThroughTests 3 of 6 as entry. Transmit files print nothing against 7e209cb4; src/Hamlet.App prints nothing against 0534ca93; src prints nothing against 0534ca93.
+  FATE: executed, complete at task 4 of 4, tasks 0 to 4, none dropped; 5 of 38 cases single-sender, 0 apart at entry and exit; no tracker change; #15 #43 #44 measured and still red; 3.8 ticked, every criterion of step 3 now ticked.
+  
+  ## UNIT 2 - STEP 3
+  
+  STEP: 3
+  APPROACH: table the decoder mix pitch against the independent KeyingEnvelope sweep per case over the 37 captures, the anchors and 17:37, then change CwToneTracker only where the table shows more than one 25 Hz bin apart, judged on the table, named counts, anchors and the 17:37 key; measure #15 #43 #44 after
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The question asks whether a plan tick should stand on a test table's judge, which is about a test's shape and a number, and it does not touch keying or transmit, money, or what the product promises the operator.
+  MOVE: continue
+  WHY: 3.8 is the only unmet criterion the loop can move. Every criterion of step 0 is met although the prompt named it, so authoring there would advance nothing. The loop test found nothing like this approach, and it is not a loop: units 406 and 407 changed the tracker to flip 3.6's reds, while this unit makes a pitch table against an instrument independent of the decoder the judge, and bars H1, the still-keying property and 3.6 attacks.
+  DECIDED: author's, overrulable - the instrument is KeyingEnvelope, the tree's one sweep, judged over its HEAD range 300 to 900 with 400 to 1200 printed beside it and every disagreement named, the app's 400 to 1200 label reported as a stale mismatch; the decoder's pitch is the most-held mix value over the named-character span; single-sender is not a two-station fixture, keying under CwKeyingThresholds, and second-best under 0.5 of the winner more than two bins away, fixed before the table is read; agree is 25 Hz or less; up to three tracker changes, the decoder never reading the sweep; #15 #43 #44 measured, never targeted; the stale step 0 and step 2 states reported, not edited; the per-type timeouts
+  LICENCE: PHASE_PLAN.md 3.8, R56, R57, R58, section 3, section 6 on the tracker, the 17:37 key and floors; HM-DEC-091, HM-DEC-095, HM-DEC-127, HM-DEC-155, HM-DEC-165, HM-DEC-168; CLAUDE.md 0.0 and 0.2; FACT-004
+  COST: 4.7063060000000005
+  ACCOMPLISHED: the decoder listens at the pitch where an instrument that shares nothing with it hears the keying, on every saved single-station recording, with no letter lost - or the report says on which recordings it still does not
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: All nine exit criteria of step 3 are ticked, and the report backs 3.8 with a 38-case pitch table that shows 0 of 5 single-sender cases more than one 25 Hz bin apart, plus post-R56 measurements for #15, #43 and #44, so 3.8 is met under a rule fixed before the table was read, though that rule admits only 5 of 38 cases.
+  ADVANCED: yes
+  ATTEMPT: 3.8 | unit 2 launched 2026-09-23T21:15:55.536Z | yes | executed | table the decoder mix pitch against the independent KeyingEnvelope sweep per case over the 37 captures, the anchors and 17:37, then change CwToneTracker only where the table shows more than one 25 Hz bin apart, judged on the table, named counts, anchors and the 17:37 key; measure #15 #43 #44 after
 
   --- CLAUDE.md ---
-  1390 lines, 199306 bytes
+  1391 lines, 200054 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -1009,17 +1128,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 879 bytes
+  19 lines, 811 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: TASK 5 of 5
-  WORK_INSTRUCTION: 407 - the station still keying, and #45's tail on the air's terms
+  TASK: TASK 4 of 4
+  WORK_INSTRUCTION: 409 - the decoder and the sweep agree about the pitch
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-23T15:45:38-04:00
-  NOTE: Unit 407 complete, report pushed: still-keying property did not separate, broken by 032113 at 26.5 s and both handovers; 2 s of trailing silence took #45 from 1 to 4 settled placeholders; no change made, #15 0.54 #43 5+37 #44 3+21 #45 1+3; 3.6 at 4 of 8
+  UPDATED: 2026-09-23T17:57:46-04:00
+  NOTE: Unit 409 complete, pushed: 0 of 5 single-sender cases apart at entry and exit, no tracker change, 3.8 ticked; section 4 asks whether the tick stands on a sweep that sits 60 to 85 Hz off known tones
   
   ---
   

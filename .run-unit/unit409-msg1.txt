@@ -1,0 +1,3 @@
+unit409 task 1: the table at entry - TheTwoPitchesTableTests, a printer, reads the 37 captures and 17:37 hop by hop, the mix pitch CwDecoder.Stream.ToneHz most-held over the named span beside KeyingEnvelope.Best 300 to 900 and the same rule 400 to 1200; 5 of 38 single-sender under the fixed rule, 0 apart, so task 2 makes no change; the two sweeps differ on 001520 and 021825, apart on either; 7 cases outside the rule apart; nothing under src changed; docs/phase-cw/unit409-pitch.md section 2
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

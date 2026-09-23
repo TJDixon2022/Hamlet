@@ -1,0 +1,238 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.43]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.61]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.61]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEdgeTierCopiesOrRefusesButNeverGuesses(name: "coverage-edge") [904 ms]
+  Standard Output Messages:
+ coverage-edge: 0 emitted, 0 not in the message
+   
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEdgeTierCopiesOrRefusesButNeverGuesses(name: "prosigns-edge") [300 ms]
+  Standard Output Messages:
+ prosigns-edge: 0 emitted, 0 not in the message
+   
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEdgeTierCopiesOrRefusesButNeverGuesses(name: "exchange-edge") [586 ms]
+  Standard Output Messages:
+ exchange-edge: 0 emitted, 0 not in the message
+   
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "two-station-second") [195 ms]
+  Standard Output Messages:
+ two-station-second: tone 725 Hz, 14 characters
+   provisional: 1DCECAIALLLL T DEDE I WWW■1DXTXCYNYZZ N K K  ■
+   settled    : ■ 1CALL DE W■XYZ K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "exchange-edge") [589 ms]
+  Standard Output Messages:
+ exchange-edge: tone 600 Hz, 0 characters
+   provisional: 
+   settled    : 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "tightfist-working") [132 ms]
+  Standard Output Messages:
+ tightfist-working: tone 625 Hz, 6 characters
+   provisional: EEETT  N NN E EEETT   ■
+   settled    : D ET N ET
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "exchange-easy") [794 ms]
+  Standard Output Messages:
+ exchange-easy: tone 625 Hz, 21 characters
+   provisional: VVEVSVV  N KCECMZQQ E NCCTCMQQQ   ■ ■  T NENMO■00TKCCAAEARLLALL  T NENMO■00TKCCAAEARLLALL  T KK K
+   settled    : VVV CQ CQ I M ,CALL N0CALL K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "qsk-preamble") [565 ms]
+  Standard Output Messages:
+ qsk-preamble: tone 625 Hz, 53 characters
+   provisional: E IS ■ E■ ESSEIEIU■I■ SE SHEHSESE E EEIEIIIESESEEEE ES EHIH■■E E 5 ■<HH>■ AETEIESTSTTTDDEETETEIESTSTTTKKTKTETESSTSTTDTT T TETETESSTTTKK
+   settled    : I■IRE ■ ESEI■ SHSE EEIIESEE EH■E E■ ■ TESTDE TESTKTEST MDETESTK
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "prosigns-edge") [302 ms]
+  Standard Output Messages:
+ prosigns-edge: tone 615 Hz, 0 characters
+   provisional: 
+   settled    : 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "prosigns-easy") [389 ms]
+  Standard Output Messages:
+ prosigns-easy: tone 610 Hz, 9 characters
+   provisional: <BT>  N NTNMO900NKCECAAIRLELALL  A ■<AR><AR>  S V<SK><SK> <SK>
+   settled    : <BT> N0CALL <AR> <SK>
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "exchange-working") [687 ms]
+  Standard Output Messages:
+ exchange-working: tone 615 Hz, 24 characters
+   provisional: M MM  E TT E ETETT T TT  I IEIE  T NN  A LL  T NN  A A A E II E E E   E NR  T MM  T RR  EEEAA  A RR  T NN   ■
+   settled    : K M T ET T IE N L N A IE E  R M R EA RR NN
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "coverage-easy") [984 ms]
+  Standard Output Messages:
+ coverage-easy: tone 600 Hz, 36 characters
+   provisional: VVEVSVV  A W■11S■22E2H33E3S44E4H55NB6E6MZ77NO88T8MO99T9MO900   ■ ■ S KRY N TTTTM EQ UTOOA?  T DDE E NXITE/T TE ENMO■00TKCCAAEARLLALL
+   settled    : VVV 1234567890 ■ A■ Y TTM T■■ DE TEETEN0CALL
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "tightfist-edge") [99 ms]
+  Standard Output Messages:
+ tightfist-edge: tone 600 Hz, 0 characters
+   provisional: 
+   settled    : 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "two-station-first") [534 ms]
+  Standard Output Messages:
+ two-station-first: tone 625 Hz, 13 characters
+   provisional: CTGQQ  T DCCTMZQQ E NDDEE E NNTMO■0■■■CC■AAALLELALL  T KKK
+   settled    : CQ CQ  DE N0CALL K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "fast-edge") [211 ms]
+  Standard Output Messages:
+ fast-edge: tone 625 Hz, 0 characters
+   provisional: 
+   settled    : 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "farnsworth-light") [259 ms]
+  Standard Output Messages:
+ farnsworth-light: tone 625 Hz, 12 characters
+   provisional: GQQNDEDETNENM■00T■■CECAEARLELRLELNKK
+   settled    : CQDEN90CALLK
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "coverage-edge") [788 ms]
+  Standard Output Messages:
+ coverage-edge: tone 625 Hz, 0 characters
+   provisional: 
+   settled    : 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "fast-working") [260 ms]
+  Standard Output Messages:
+ fast-working: tone 620 Hz, 17 characters
+   provisional: D <AR> <AR> ■ ■ N D D ■ ■GO O A RARA  A L L ■ ■ R J O  UE UA A ■ ■ T D K ■ ■
+   settled    : FE <AR> ■ D ■O  RA L ■ ■ O UA E B
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "tightfist-easy") [191 ms]
+  Standard Output Messages:
+ tightfist-easy: tone 615 Hz, 14 characters
+   provisional: VEVHVVTETEIESTSTTTDDEEETETEISTSTTTKK K  ■
+   settled    : VVVTESTDETESTK
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "prosigns-working") [388 ms]
+  Standard Output Messages:
+ prosigns-working: tone 615 Hz, 12 characters
+   provisional: T T E UFR E TT E E IEIE  I NN  T DD  T NN   ■E  I ■ A A A
+   settled    : D T  R T■ IE N D D I A
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "coverage-working") [873 ms]
+  Standard Output Messages:
+ coverage-working: tone 625 Hz, 30 characters
+   provisional: T TII E AA A E MM M E UU  I SS  I II  I SS  M MM E A A A E ETETT E AA ■ E NN  E EII  I AM  A AR   I E ■ E EII T NN  E NN  T MM  T NR  E AA  A A A
+   settled    : M TI A M U S I S M A ET A N EI M RR II E■ N N M  N U A
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "farnsworth-heavy") [149 ms]
+  Standard Output Messages:
+ farnsworth-heavy: tone 600 Hz, 13 characters
+   provisional: Q Q D DE DE N NM■00DCECAEALLAL L K K K ■ ■
+   settled    : ■ CQ DE N0■CALL K
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio(name: "fast-easy") [226 ms]
+  Standard Output Messages:
+ fast-easy: tone 625 Hz, 20 characters
+   provisional: Q D CTCQQ N DEDE N NO00KCACARLALL EL NTN■0E0CCAEALLLL T K K  ■
+   settled    : ■CQ CQ DE N0CALL N0CALL K
+
+
+[xUnit.net 00:00:13.05]     Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "coverage-easy") [FAIL]
+[xUnit.net 00:00:13.05]       a signal fifteen decibels over the noise came back with 4 characters Hamlet could not read, 7 that are not in the message (Y, T, T, M, T, T, T), and reads 'VVV1234567890■A■YTTMT■■DETEETEN0CALL' against '1234567890QRZ?DE/N0CALL'
+[xUnit.net 00:00:13.05]       Stack Trace:
+[xUnit.net 00:00:13.05]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwReceiverFixtureTests.cs(242,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(String name)
+[xUnit.net 00:00:13.05]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:13.05]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:13.05]       Output:
+[xUnit.net 00:00:13.05]         coverage-easy: 36 characters, 4 unreadable, 7 not in the message
+[xUnit.net 00:00:13.05]           got    'VVV1234567890■A■YTTMT■■DETEETEN0CALL'
+[xUnit.net 00:00:13.05]           wanted '1234567890QRZ?DE/N0CALL'
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "coverage-easy") [991 ms]
+  Error Message:
+   a signal fifteen decibels over the noise came back with 4 characters Hamlet could not read, 7 that are not in the message (Y, T, T, M, T, T, T), and reads 'VVV1234567890■A■YTTMT■■DETEETEN0CALL' against '1234567890QRZ?DE/N0CALL'
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwReceiverFixtureTests.cs:line 242
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ coverage-easy: 36 characters, 4 unreadable, 7 not in the message
+   got    'VVV1234567890■A■YTTMT■■DETEETEN0CALL'
+   wanted '1234567890QRZ?DE/N0CALL'
+
+
+[xUnit.net 00:00:13.83]     Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "exchange-easy") [FAIL]
+[xUnit.net 00:00:13.83]       a signal fifteen decibels over the noise came back with 0 characters Hamlet could not read, 3 that are not in the message (I, M, ,), and reads 'VVVCQCQIM,CALLN0CALLK' against 'CQCQDEN0CALLN0CALLK'
+[xUnit.net 00:00:13.83]       Stack Trace:
+[xUnit.net 00:00:13.83]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwReceiverFixtureTests.cs(242,0): at Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(String name)
+[xUnit.net 00:00:13.83]            at InvokeStub_CwReceiverFixtureTests.TheEasyTierIsReadWhole(Object, Span`1)
+[xUnit.net 00:00:13.83]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:13.83]       Output:
+[xUnit.net 00:00:13.83]         exchange-easy: 21 characters, 0 unreadable, 3 not in the message
+[xUnit.net 00:00:13.83]           got    'VVVCQCQIM,CALLN0CALLK'
+[xUnit.net 00:00:13.83]           wanted 'CQCQDEN0CALLN0CALLK'
+[xUnit.net 00:00:14.28]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "exchange-easy") [782 ms]
+  Error Message:
+   a signal fifteen decibels over the noise came back with 0 characters Hamlet could not read, 3 that are not in the message (I, M, ,), and reads 'VVVCQCQIM,CALLN0CALLK' against 'CQCQDEN0CALLN0CALLK'
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Fixtures\CwReceiverFixtureTests.cs:line 242
+   at InvokeStub_CwReceiverFixtureTests.TheEasyTierIsReadWhole(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ exchange-easy: 21 characters, 0 unreadable, 3 not in the message
+   got    'VVVCQCQIM,CALLN0CALLK'
+   wanted 'CQCQDEN0CALLN0CALLK'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "tightfist-easy") [184 ms]
+  Standard Output Messages:
+ tightfist-easy: 14 characters, 0 unreadable, 0 not in the message
+   got    'VVVTESTDETESTK'
+   wanted 'TESTDETESTK'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.NothingIsEmittedDuringTheOperatorsOwnTransmission [265 ms]
+  Standard Output Messages:
+ 0 characters during the preamble, 48 in all
+ own transmit measured: 9.5 s
+
+
+
+Test Run Failed.
+Total tests: 27
+     Passed: 25
+     Failed: 2
+ Total time: 14.5552 Seconds
+RC=1 WALL=18s

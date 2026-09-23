@@ -1,0 +1,3 @@
+unit409 task 3: the table at exit and the three parked reds - the exit table identical to entry, 5 of 38 single-sender, 0 apart; #15 0.54 red, decoder 650 to 700, sweep 725, recipe 640; #43 2 plus 7 red and #44 0 plus 7 red, decoder 625, sweep 675, recipe 615; no change aimed at them; on the three synthetics the sweep sits 60 to 85 Hz off the recipe with a runner-up of 0.98 to 1.00, said and not acted on; 3.8 ticked on the instruction's rule; TheTwoPitchesTableTests.TheThreeParkedRedsArePitched, a printer
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

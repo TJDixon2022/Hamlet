@@ -237,3 +237,6 @@ the owner reads instead of watching.
 | 4 | 2026-09-23T14:56 | 2026-09-23T14:56 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |
 | 5 | 2026-09-23T15:02 | 2026-09-23T15:45 | complete | 6.751054999999997 | ran unattended, 145 turns, 15 denied call(s) worked around, report valid |
 | 5 | 2026-09-23T15:46 | 2026-09-23T15:46 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |
+| 1 | 2026-09-23T16:06 | 2026-09-23T17:11 | complete | 9.123549399999998 | ran unattended, 186 turns, 5 denied call(s) worked around, report valid |
+| 2 | 2026-09-23T17:15 | 2026-09-23T17:58 | complete | 4.7063060000000005 | ran unattended, 116 turns, 7 denied call(s) worked around, report valid |
+| phase | 2026-09-23T17:59 | 2026-09-23T17:59 | ending | 13.8298 | ENDED - nothing is left but the owner-s verdict. stop 1: the phase is waiting on the owner's verdict - criteria 5.1 |

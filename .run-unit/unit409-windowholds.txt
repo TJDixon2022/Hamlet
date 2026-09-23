@@ -1,0 +1,108 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.16]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.53]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing [1 s]
+  Standard Output Messages:
+ 1100 x 580 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 540 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 500 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 620 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 900 x 620 (drawn 900 x 620):
+     TopRow                16,119 868 x 186  whole True
+     DigitalModeStrip      29,373 842 x 33  whole True
+     DigitalTuneStrip      29,373 0 x 0  whole False
+     WorkspaceBoundary     16,360 868 x 186  whole True
+     DigitalPanes          29,486 842 x 72  whole True
+     DigitalSendReserved   290,334 594 x 23  whole True
+     StatusBar             16,558 868 x 46  whole True
+     the rig display       351,123 520 x 106  so TopRow can spare 80 px without clipping it
+     panel waterfall       29,486 225 x 72  whole True  viewport 24 extent 371
+     panel decoded         264,486 378 x 72  whole True  viewport 13 extent 36
+     panel For You         647,486 225 x 72  whole True  viewport 24 extent 371
+     the canvas viewport 160, extent 185, so it scrolls 25 px
+     waterfall at rest 29,486 225 x 72; canvas at its end 29,461 225 x 72
+     decoded   at rest 264,486 378 x 72; canvas at its end 264,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 647,486 225 x 72; canvas at its end 647,461 225 x 72
+     For You scrolled to 347, showing up to 371 of 371
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.7958 Seconds
+RC=0 WALL=2s
