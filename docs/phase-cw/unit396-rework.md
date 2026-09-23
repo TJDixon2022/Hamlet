@@ -239,6 +239,11 @@ slowest adjudicated run this unit, the others 28 to 30 s, for a piece that adds 
 calls; synthetics 0 of 2 in 4 s. Printer: the seven SETTLED lines identical to section 1. Transmit
 files nothing. Out, reverted next.
 
+**Piece 29, `efcd5242`, task 2.** Patch 176 lines, `CwDecoder.cs`, 126 insertions. `--check` rc 1
+at 363; `--3way` three blocks, the second being `MaybePeak(...)` beside `MaybeRank(...)`, piece
+19's call. After 3; 12 as committed; 19 (rc 1 itself); 3, 12; 1, 3, 12, 18: rc 1 at 363 every time
+(`unit396-deps29.sh`). *Dependent, out*. `src` clean after.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
