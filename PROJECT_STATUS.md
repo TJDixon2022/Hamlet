@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: TASK 5 of 5
-WORK_INSTRUCTION: 407 - the station still keying, and #45's tail on the air's terms
+TASK: TASK 4 of 4
+WORK_INSTRUCTION: 408 - the floors stop counting junk, and the gate stops printing it
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T15:45:38-04:00
-NOTE: Unit 407 complete, report pushed: still-keying property did not separate, broken by 032113 at 26.5 s and both handovers; 2 s of trailing silence took #45 from 1 to 4 settled placeholders; no change made, #15 0.54 #43 5+37 #44 3+21 #45 1+3; 3.6 at 4 of 8
+UPDATED: 2026-09-23T17:11:00-04:00
+NOTE: Unit 408 complete, pushed: floors count named characters, 3.6 closed with #45 green and #15 #43 #44 parked, below the 1.0 per-hop bar nothing prints, placeholders on 37 captures 299 to 28, no named character lost
 
 ---
 
