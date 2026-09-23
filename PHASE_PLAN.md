@@ -134,6 +134,23 @@ step 3's repairs under R49 and are not retired. Rejected: `07f0397a` (green on a
 but 32 of the 37 capture floors were never run against it and it has seven app-facing
 types missing).
 
+**R54 - Tim, 2026-09-22, night: the loop runs all night.** *"What I want is for CW to work and
+this unit to run all night."* Two consequences, both binding on the arbiter:
+
+1. **Unit 389's item 1 is answered: parked.** 9.2 stays as built. Its two shortfalls (one of
+   four controls greyed, the hold ending at hand-back rather than carrier drop) belong to the
+   hardening phase and are not touched in this one. Answered asks leave the carried list
+   (HM-DEC-139), so no unit carries it again and no arbiter stops on it again.
+2. **A ruling is wanted only when a criterion of the step being worked cannot be met without
+   it.** Every ask carried from before this phase, and every finding a unit raises that
+   touches keying, transmit, money or a product fact but blocks no criterion of this plan,
+   is parked, not stopped on: the unit writes it to `docs\phase-cw\PARKED.md` with its unit
+   number and one line, the arbiter reads that file as the answer "parked to a later phase,"
+   and section 4 of a report carries only what blocks a criterion of the step in hand. The
+   three stops in §6 stand for the work itself: a unit that would have to change what keys
+   or transmits, spend past the budget, or change a fact the product states, in order to
+   meet a criterion, stops. A unit that merely notices such a thing parks it.
+
 ## §3 What is different from the phases before it
 
 This phase moves the decode path, which no phase since 08-31 has. Two consequences the
@@ -251,6 +268,11 @@ nowhere to route - work it or halt.
 - **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
   fact the product states to the operator about a signal, a station or a send. A test's
   shape, a floor's number, a seam, a filter, a timeout: decide, mark author's, continue.
+- **A stop is for the work, not for a mention.** Under R54 the arbiter stops only when a
+  criterion of the step it is working cannot be met without a ruling on one of the three.
+  A carried ask, a section-4 finding, a remark in a report or a doc that touches one of the
+  three but blocks no criterion is parked in `docs\phase-cw\PARKED.md` and the loop goes
+  on. Unit 389's item 1 is the first entry there, answered "parked" by R54.
 - **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
 - **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or
   the headless dispatcher loop - counts neither way and is re-run once; a red on an
@@ -293,6 +315,9 @@ including hardening 5.1.
 
 - **2026-09-22.** Written from the interview: R47 to R52; six steps; the three floor tests
   named from the tree; the transmit files fenced in §3.
+- **2026-09-22, late.** R54: 9.2 parked; a ruling is wanted only when a criterion of the step in
+  hand needs it; carried asks and findings that touch the three stops but block nothing go to
+  `docs\phase-cw\PARKED.md`. Written after the loop halted at stop 3 on unit 389's carried ask.
 - **2026-09-22, night.** R53 from unit 391's report: step 1 restores to `7e209cb4`; 1.3
   reworded so the two clean synthetics are reported, not required, at step 1; §6 gains the
   `UNIT:` line rule after units 390 and 391 died in `validate-output.bat` rule 1.
