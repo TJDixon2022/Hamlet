@@ -216,4 +216,19 @@ after `unit397-clean.sh`, `public bool DigitalMode { get; set; }` is line 361 an
 seam, dropped under decision 3, as unit 395 did for piece 4. What is left is a doc comment and a
 blank line: **out under decision 17**, no piece commit, no run.
 
+**Piece 44, `9c2a7f99`**, *a reader on a timer stops allocating the audio it reads*. The `Cw`
+patch was 99 lines: `CwDecoder.cs` 30 changed lines in five hunks, four `Audio.ReusableWindow`
+fields and four `Tap.Window` calls replaced by `_xWindow.From(Tap, ...)`; `CwKeyingMeter.cs` 12,
+a `ReusableWindow` field and `tap.Tail` replaced by `_window.Tail(tap, ...)`. Not taken under R50
+and decision 24: `Audio\Ft8SlotWatch.cs`, `Audio\ReusableWindow.cs` (at HEAD already),
+`MainWindowViewModel.cs`, one test. `--check` failed at `CwDecoder.cs:1147`; `--3way` merged
+`CwKeyingMeter.cs` clean and conflicted in `CwDecoder.cs` (lines 643 to 1246 of the merged file).
+Cleaned; `unit397-check44.sh` at HEAD: `Tap.Window`, `ReadHeldAudioAgain`, `MaybeSwing`,
+`MaybePeak`, `MaybeRank`, `_reReadAt` - 0 lines in `CwDecoder.cs`. The four call sites are in the
+re-read (piece 1, `2068f868`), the swing survey (piece 37, `aeea24f2`), the peak (piece 29,
+`efcd5242`) and the ranking (piece 19, `0f2089f3`), all out. Four out pieces: **out under
+decision 5**, listed and not applied, no piece commit, no run. The `CwKeyingMeter` half merged
+clean on its own; a piece is its whole `Cw` diff under decision 3 and decision 5 lists a
+dependent piece whole, so it was not split off and measured - parked as `397 item 2`.
+
 ## 3. The exit round, task 2
