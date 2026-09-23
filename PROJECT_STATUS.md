@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: TASK 4 of 4
 WORK_INSTRUCTION: 403 - the same recording, two builds
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T10:09:51-04:00
-NOTE: Exit round green - floors 37, 13, 2 identical to entry, engine 178, app 278 counting 3 dispatcher losses neither way, src unchanged; committing then writing output.md
+UPDATED: 2026-09-23T10:10:56-04:00
+NOTE: Unit 403 complete: the 12:55 capture reads byte-identically at HEAD and a902cdf8, 61 characters 45 unsure 30 wpm both; 0 of 37 capture cases moved; src unchanged; worktree removed; ruling on 7e65aac4 is Tim's
 
 ---
 
