@@ -260,3 +260,29 @@ transcript goes from 1 + 0 to 4 + 0 under 2.0 s of digital zero. coverage-easy g
 to 8 + 7 and exchange-easy from 0 + 7 to 4 + 7 (section 2.4). `CwReceiverFixtureTests.cs` is not
 touched, nothing was built, and nothing was run for this task. #45 stays at 1 + 3 on its own
 test, *not attacked*. B1 alone is not made.
+
+### Task 3 - the tracker change
+
+**No change.** Decision 1 allows a tracker change only if the property separates, and it does
+not (section 2.2). The known-right moves that go while the bank is still keying are:
+
+- the two-station handover, cold, 625 to 725 Hz at 25.035 s;
+- #41's handover, the same move;
+- `032113` at 26.535 s, a hold from 600 to 650 Hz onto the station;
+- `003016` at 25.535 s, a hold from 650 to 675 Hz onto a station at 670 Hz.
+
+Under the survey's own mark rule, every known-right hold on the five H1 rows goes while still
+keying as well.
+
+`CwToneTracker.cs` is not touched. That covers the hold at 966 to 978, the cold move, and line
+1091. The drop candidates fall away without being reached. The narrower shape needs a first
+shape that moved a red, and G1 needs a tracker change under it (decision 5). Nothing was built
+and nothing was run for this task, so `git diff --stat HEAD -- src tests` prints nothing. #15
+stays at 0.54, #43 at 5 + 37 and #44 at 3 + 21, each *not attacked*.
+
+| change | file and line | reds' numbers | gate | kept |
+|---|---|---|---|---|
+| #45's event given 2.0 s of digital zero before `Flush`, read on `CharacterSettled` | `CwReceiverFixtureTests.cs` 175 to 215 | not made: task 1's printer shows #45's settled transcript going from 1 + 0 to 4 + 0 under the padding | not run | - |
+| hold a tracker move while the bank's centre is still keying | `CwToneTracker.cs` 966 | not made: the property does not separate, broken by `032113` at 26.535 s and the two handovers | not run | - |
+| line 1091 keeps the reading level of the station being read | `CwToneTracker.cs` 1091 | not made: it is judged only inside the tracker attack, and on #15 seed 104729 no station was ever confirmed, so there was no reading level to keep | not run | - |
+| G1 on top of the tracker change | `CwUnitEstimator.cs` after 237 | not made: no tracker change under it | not run | - |
