@@ -174,4 +174,15 @@ declared by piece 33, `4935a4f8`, and the new overload calls it. Decision 16's s
 and 34; at 694 after 31 and 33; cleared only after 31, 33, 34. Three out pieces: **out under
 decision 5**, listed and not applied, no piece commit, no run.
 
+**Piece 41, `2828ab69`**, *report work instruction 056 - the streams agree, the reading is lost
+after*. The `Cw` patch was 46 lines, `CwStreamSplit.cs`, 17 insertions and 3 deletions: the
+trusted resolution made a `const` and a parameter of `Divide`. It refused on the kept state, *No
+such file or directory* - the file is piece 39's, one out piece - so it was tried once as a pair
+with 39 under decision 5 (`unit397-pair41.sh`: 39 applied rc 0, 41 applied rc 0, the file 410
+lines). Pair commit `548d7007`. Build failed in 1 s, 3 errors, the first `CwStreamSplit.cs(223,23):
+error CS0246: The type or namespace name 'CwElement' could not be found`, at 294 and 295 the same
+- piece 39's error, since both pieces name piece 38's `CwElement` and piece 41 also
+`CwElementPitch.ResolutionHz`. Not the seam: **out under decision 4**, no floor run, reverted in
+the next commit. Transmit files silent.
+
 ## 3. The exit round, task 2
