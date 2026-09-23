@@ -232,6 +232,13 @@ Kept state: three files fail and `Posterior.cs` does not exist. After 25; 2, 25;
 17, 25: `CwDecoder:994`, `CwProbabilisticDecoder:774`, `CwProbabilisticStream:672` fail every time,
 `Posterior.cs` no longer listed (`unit396-deps27.sh`). *Dependent, out*. `src` clean after.
 
+**Piece 28, `ade52536`, task 2, measured.** Patch 249 lines, `CwSpectralPeak.cs` new, 243
+insertions; applied clean, piece commit `d14c9970`. Build 0 errors in 6 s. Captures **37 of 37 in
+94 s wall**, 1.55 min, no row differs; adjudicated 13 of 13 in **47 s**, 45.8 s test time, the
+slowest adjudicated run this unit, the others 28 to 30 s, for a piece that adds a class nothing
+calls; synthetics 0 of 2 in 4 s. Printer: the seven SETTLED lines identical to section 1. Transmit
+files nothing. Out, reverted next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
