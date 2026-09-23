@@ -141,6 +141,10 @@ piece; for piece 1 that is section 3.1 and 3.1a.
 
 | 5 | 9de394da | open the two constants a sweep has to vary | the entry state, pieces 1 to 4 out | every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, piece `fa26b78b`, reverted in the next commit | applied clean and built clean; 37 of 37, 13 of 13; nothing moved - it turns the integrator width and confirmation window into constructor parameters defaulting to the constants, and nothing passes them. Out under R51. |
 
+| 6 | 3d4694e5 | record that the confirmation window stays at two, and why | the entry state, pieces 1 to 5 out | as a pair with piece 5: piece 5's numbers, every capture identical to entry | 94 s, piece 5's run | **out**, dependent on `9de394da`, out; nothing applied, no piece commit | its one hunk is 20 lines of doc comment on `ConfirmWithinSurveys` and no code; it did not apply, and `--3way` conflicted, because its context is the paragraph piece 5 wrote. Under decision 5 it is judged as a pair with piece 5; the pair compiles to piece 5's code, which was measured and moved nothing, so the pair was not rebuilt. Out under R51. |
+
+| 7 | 7fb89d5e | record which admission test refused which bin, and by how much | the entry state, pieces 1 to 6 out | every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, piece `1e72c135`, reverted in the next commit | applied clean and built clean; 37 of 37, 13 of 13; nothing moved - it adds a refusal record beside the survey's verdict and changes no admission. Out under R51. |
+
 Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
 it.
 
