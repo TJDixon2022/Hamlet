@@ -135,6 +135,8 @@ piece; for piece 1 that is section 3.1 and 3.1a.
 
 | 2 | 6fc36a1e | log how close the argument was, beside how loud it was | the entry state, piece 1 out: 021410 47 ch, WEEKEND 5, THINKING 5, FLEX 1; 013637 63 ch, ABOVE 2, BREEZE 2; synthetics 0 of 2 | every one of the 37 captures identical in characters, elements, unsure and tone; the five distances identical; synthetics 0 of 2 | 95 s | **out**, pieces `99db35fc` and `0246f209`, both reverted in the next commit | applied clean without piece 1 but did not build: `CwCharacter.cs(179,25): error CS0102: The type 'CwCharacter' already contains a definition for 'WidestRecordedLlr'`, and the same for `MarginLlr` - its `CwCharacter` hunk is unit 392's seam, already in the tree, so it was dropped in `0246f209` under decision 3; then built clean, 37 of 37, 13 of 13, and nothing moved. Out under R51. |
 
+| 3 | 3e84ac74 | let go of a pitch measured on a frequency the radio has left | the entry state, pieces 1 and 2 out | every capture identical; the five distances identical; synthetics 0 of 2 | 94 s | **out**, pieces `8d454ab9` and `4b8a89a3`, both reverted in the next commit | applied clean but did not build: `CwDecoder.cs(427,17): error CS0111: Type 'CwDecoder' already defines a member called 'Retuned' with the same parameter types` - unit 392's one-line seam `Retuned() => Unlock()`; met under decision 4 in `4b8a89a3` by removing the seam line and adding its `Unlock()` call to the piece's `Retuned`, which moves nothing else; built clean, 37 of 37, 13 of 13, nothing moved. The piece acts only when the dial moves, which no floor case does. Out under R51. |
+
 Piece 1's commit carried only `Cw`; `AudioTap.cs` was not taken and the `Cw` half built without
 it.
 
