@@ -189,6 +189,11 @@ conflicted in the other two. Checked without it (288 lines, `unit396-deps19.sh`)
 and `CwDecoder:289` fail on the kept state and after 3; 12 as committed; 18; 3 and 12; 3, 12, 15;
 3, 12, 15, 18 (15 itself rc 1 on the chain). *Dependent, out*. `src` clean after.
 
+**Piece 20, `ac1d56da`, task 2, measured.** Patch 1129 lines, `CwReferenceDecoder.cs` new, 1123
+insertions; applied clean, piece commit `304ec791`. Build 0 errors in 6 s. Captures **37 of 37 in
+93 s wall**, 1.55 min, no row differs; adjudicated 13 of 13 in 29 s; synthetics 0 of 2 in 3 s.
+Printer: the seven SETTLED lines identical to section 1. Transmit files nothing. Out, reverted next.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
