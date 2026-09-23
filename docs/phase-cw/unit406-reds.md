@@ -44,3 +44,126 @@ APP 278 of 278 counting neither way (decision 7).
 are removed from compile in the test project, so they are not run.
 
 The eleven transmit files print nothing against `7e209cb4`.
+
+## 2. The trace
+
+Printer `tests\Hamlet.RadioEngine.Tests\Cw\TheTrackerSwitchTraceTests.cs`, run alone, 10 of 10
+in 102 s, output in `.run-unit\unit406-trace.txt`. It asserts nothing and is on no line. No
+file under `src` changed. `Switch` is private, so a call is recognized from outside: `Retunes`
+goes up and a pitch is reported afterwards. A retune with no pitch reported is the cold move at
+`CwToneTracker.cs` 1004, printed as *cold*. A move made through the hold is recognized by
+`_heldSwitchHz` going from a pitch to empty. Both survey banks are read by reflection one hop
+before each survey read. **The printer disturbs nothing it reads:** #6 prints 0.75 and #15
+0.54, as their test does, and every capture prints its floor's character count.
+
+### 2.1 Every call into `Switch`
+
+59 calls into `Switch` across the reds, the two-station fixture and the 37 floor captures,
+besides the cold moves. On the reds (sender 640 Hz for #6 and #15, 615 Hz for the easy tier):
+
+| case | time | caller | from, to | sender | way | survey read when it went |
+|---|---|---|---|---|---|---|
+| #6 seed 7919 | 4.535 s | 1092 | 650 to 625 | 640 | 25 Hz refinement | direct, confirm 650 then 625 |
+| #6 seed 7919 | 7.035 s | 959, hold | 625 to 650 | 640 | toward | admits nothing: **stale** |
+| #6 seed 7919 | 10.535 s | 959, hold | 650 to 550 | 640 | **away, 90 off** | best 625, the sender's bin: **stale** |
+| #6 seed 7919 | 12.535 s | 1092 | 550 to 650 | 640 | toward | direct, confirm |
+| #6 seed 15485863 | 10.535 s | 959, hold | 650 to 725 | 640 | **away, 85 off** | best 650, the sender's bin: **stale** |
+| #15 seed 7919 | 28.535 s | 959, hold | 650 to 600 | 640 | away, 40 off | re-admitted at 600 |
+| #15 seed 104729 | 20.535 s | 959, hold | 650 to 700 | 640 | **away, 60 off** | re-admitted at 700, lift 11.9, keyed -45.6 dB |
+| #15 seed 15485863 | 7.535 s | 959, hold | 650 to 700 | 640 | **away, 60 off** | admits nothing: **stale** |
+| exchange-easy | 11.535 s | 959, hold | 625 to 575 | 615 | **away, 40 off** | admits nothing: **stale** |
+| exchange-easy | 20.035 s | 959, hold | 575 to 625 | 615 | toward | re-admitted |
+| coverage-easy | 13.035 s | 959, hold | 625 to 600 | 615 | away, 15 off | admits nothing: **stale** |
+| coverage-easy | 22.035 s | 959, hold | 600 to 575 | 615 | **away, 40 off** | admits nothing: **stale** |
+| coverage-easy | 28.535 s | 959, hold | 575 to 625 | 615 | toward | admits nothing: stale |
+| coverage-easy | 39.535 s | 959, hold | 625 to 600 | 615 | away, 15 off | admits nothing: stale |
+| tightfist-easy | - | - | no switch | 615 | - | - |
+
+For each, the printer gives the time and caller, the pitch moved from and to, the sender's
+pitch from the fixture's request, the verdict's keyed and interference readings, the reading's
+power and noise, every coarse bin the survey admitted, the fine bank's own verdict at the old
+centre, the HM-DEC-127 floor reading, and which condition let it through (`move-*` rows).
+
+**Which condition let it through.** Of the ten moves away from a single sender, nine went
+through **the hold** at 959. One, #6 seed 7919 at 4.535 s, went through the confirm and the
+reach at 1092, and it is a 25 Hz refinement inside one coarse bin. None was stopped or allowed
+by the HM-DEC-127 floor. Where a reading level existed, the candidate sat between 0.4 and
+1.2 dB of it.
+
+### 2.2 The property
+
+**A held switch goes at 959 without asking the survey it is going on.** The hold is set at
+1087 when a candidate is confirmed twice while a character is part-read. It goes at the first
+later survey read with `MidCharacter` false, and that happens *before* the survey is analysed
+at 963. The comment at 1084 says *the candidate keeps being re-confirmed while it waits, so a
+switch deferred is not a switch abandoned.* Nothing re-confirms it. A candidate that
+disappears while the hold waits is switched to anyway.
+
+- **The wrong moves off a single sender:** 7 of the 9 that are not a 25 Hz refinement are
+  **stale holds**. At the survey read where the hold went, the survey admitted nothing, or
+  its best bin was the sender's own: 625 or 650 for a 640 Hz sender on #6. The other two are
+  #15 seeds 104729 and 7919, where the survey still admits the far bin when the hold goes. At
+  104729 that bin is 60 Hz off at -45.6 dB, about 23 dB below the sender, while the sender
+  sends the five dahs of `0` and its own bins show no two-length structure. That is a
+  different cause, and it is not what this property separates.
+- **The right moves:** no known-right switch is stale. The two-station fixture's real
+  handover, 625 to 725 at 25.035 s, is **not a switch at all**. It is a cold move at 1004,
+  because the 5 dB first station was never confirmed. Its only `Switch` call, at 34.535 s, is
+  re-admitted. On the captures, 15 held switches are re-admitted, each a step of 25 Hz or
+  less: `013347` 28.0 s, `004507`, `003016`, `003126`, `001831`, `013402`, `013520`, `021410` and
+  `021825`. **Ten held switches on captures are stale**, and whether each was right cannot be
+  known from the audio: `013347` 22.5 s; `031838` 8.5 s; `031905` 13.0, 18.0 and 26.5 s, which
+  flip 500, 300, 500, 300; `032113` 21.0 and 26.5 s; `032129` 13.5 s; `012823` 14.5 s;
+  `013402` 16.5 s; `013520` 18.5 s. Task 2's gate judges them.
+- **Named: a held switch the survey read at its execution no longer admits.** It separates
+  7 of the 9 wrong single-sender moves from every known-right one. It does not reach #15's
+  re-admitted image moves.
+
+**`021410` and `013637`.** `021410` has one switch, a re-admitted hold 550 to 550 at 29.5 s.
+`013637` has one direct switch, 525 to 550 at 24.0 s. A capture where the tracker moves
+correctly: `004507`, 525 to 500 at 8.0 s through a re-admitted hold, the final pitch 500.
+
+**Where the misses sit.** On #6 every miss after the first character starts at the stale hold,
+0.00 to 2.13 s after it. On #15 seeds 104729 and 15485863, four invented `T` come 0.4 to 1.4 s
+before the move, and everything after it is lost for the rest of the message. On the easy tier
+the misses follow the moves at 11.5 and 22.0 s, as unit 405 found.
+
+### 2.3 #6's first 1.14 s
+
+**Not a switch still to be made. It is the tracker's initial pitch.** `CwDecoder(…, 600)` hands
+600 Hz to `CwToneTracker`'s constructor, which centres the bank there (`CwToneTracker.cs` 382).
+The mix stays at 600 until the survey is ready, at half its 3 s history, and the cold move at
+1004 goes at 1.535 s to 650 on all three seeds. The first `Q`, ending at 1.71 s, is read `A` on
+all three seeds. No change to `Switch` reaches it.
+
+### 2.4 #42's plumbing
+
+**The span.** It comes from the recipe and the sidecar, never the audio. `CwFixtureCatalogue`
+gives `qsk-preamble` `PreambleSeconds: 12`. The generator's lead-in is 1.0 s, and the sidecar
+`qsk-preamble.txt` says `messageStart 13.00 s` and `preamble 12.0 s of own-transmit mutes, 44
+spans`. So the operator sends from 1.00 to 13.00 s, which is the window the test already uses.
+
+The fixture was pumped a chunk at a time, 960 samples or 120 ms. Before each chunk the decoder
+was told `RadioIsTransmitting(true)` for every chunk overlapping the span, and `false` after it:
+
+| clock handed over | suspended in span | resumes | `during` | total | settled | `OwnTransmitSeconds` |
+|---|---|---|---|---|---|---|
+| none, the test as it stands | 0 of 101 | - | **70** | 134 | 65 | 9.08 s |
+| audio time, epoch plus sample time | 101 of 101 | 13.68 s | **0** | 48 | 23 | **0.00 s** |
+| the wall clock, `DateTime.UtcNow` | 101 of 101 | never | 0 | 0 | 0 | 0.00 s |
+
+- **`DecodingSuspended` holds across the whole span when the clock is audio time.** No `src`
+  change is needed for the clock, because `nowUtc` is a parameter and the test's own event can
+  pass audio time. On the wall clock the pump outruns `ResumeAfter`, and decoding never
+  resumes.
+- **Line 501's skip leaves nothing that settles later inside the window.** The earliest
+  character raised is at 15.465 s and the earliest settled at 13.710 s. `during` is 0.
+- **But the first assertion would go red.** `OwnTransmitSeconds` is the guard's blocked hops
+  (`CwDecoder.cs` 253). The guard only sees audio through `_tracker.Process`, and line 501
+  skips the tracker, so it reads 0.00 s against `> 3`. **The change needs one line under
+  `src`, and not a clock.** Somewhere in the suspended arm, the guard alone must go on
+  observing the audio's broadband level. The survey must not, because 503 to 507 keeps it off
+  the sidetone.
+- **What the radio's word costs the message.** Suspension runs to 13.5 s under
+  `ResumeAfter`, so the settled text starts `STDETESTK`. The first `TE` of the message is not
+  read. The test asserts nothing about it.
