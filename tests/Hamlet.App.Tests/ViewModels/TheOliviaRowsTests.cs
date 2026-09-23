@@ -671,8 +671,26 @@ public sealed class TheOliviaRowsTests : IDisposable
     private static double Hz(DigitalDecodeRow row)
         => double.TryParse(row.Hz, NumberStyles.Float, CultureInfo.InvariantCulture, out var hz) ? hz : double.NaN;
 
+    // **READ BESIDE THE WRITER, NOT AGAINST IT.** The telemetry thread appends with its handle
+    // open for writing; File.ReadAllLines asks for FileShare.Read, which that handle cannot grant,
+    // so a read mid-append threw IOException on a busy machine (unit 392). ReadWrite admits it.
     private static List<string> Lines(string folder)
-        => Directory.GetFiles(folder, "*.jsonl").SelectMany(File.ReadAllLines).ToList();
+        => Directory.GetFiles(folder, "*.jsonl").SelectMany(ReadBesideTheWriter).ToList();
+
+    private static List<string> ReadBesideTheWriter(string path)
+    {
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using var reader = new StreamReader(stream);
+
+        var lines = new List<string>();
+
+        while (reader.ReadLine() is { } line)
+        {
+            lines.Add(line);
+        }
+
+        return lines;
+    }
 
     private static Written Parse(string line)
     {
