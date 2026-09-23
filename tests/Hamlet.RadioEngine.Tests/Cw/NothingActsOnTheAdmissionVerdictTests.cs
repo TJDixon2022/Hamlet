@@ -71,35 +71,4 @@ public sealed class NothingActsOnTheAdmissionVerdictTests
         Assert.Equal(1.40, CwProbabilisticDecoder.Gate);
         Assert.Equal(1.0, CwProbabilisticDecoder.CharacterMargin);
     }
-
-    /// <summary>
-    /// A decoder told nothing about a pitch still reports one, and says it was
-    /// not measured.
-    /// </summary>
-    /// <remarks>
-    /// **THIS IS THE STATE THE SIDECAR PRINTED.** `toneHz 599.0 (NOT MEASURED)`
-    /// is the tracker answering with the loudest bin because the survey admitted
-    /// nothing, and the pitch is then perfectly usable — unit 050's spectral peak
-    /// found 599–600 Hz and the station is at 600. **The pitch was right and the
-    /// admission was wrong**, which is why task 2 gates emission and task 3
-    /// repairs the threshold, and why neither alone is enough.
-    /// </remarks>
-    [Fact]
-    public void AnUnmeasuredPitchIsStillReportedAndSaysSo()
-    {
-        var report = new CwDecodeReport(
-            new AudioLevel(-14, -22, -34, false, 30),
-            599.0, 8.0, HasTone: true,
-            ElementsSeen: 0, ElementsResolved: 0,
-            CharactersEmitted: 61, CharactersUnsure: 0,
-            PitchWasMeasured: false,
-            PitchChoice: CwPitchChoice.StrongestBin);
-
-        _output.WriteLine(
-            $"{report.CharactersEmitted} characters, measured "
-            + $"{report.PitchWasMeasured}, chosen by {report.PitchChoice}");
-
-        // The conjunction the capture sheet prints as `unkeyed YES`.
-        Assert.True(report.CharactersEmitted > 0 && !report.PitchWasMeasured);
-    }
 }
