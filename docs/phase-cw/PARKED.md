@@ -1,0 +1,62 @@
+# Parked to a later phase
+
+Under **R54** (Tim, 2026-09-22 night), every ask carried from before this phase, and every finding
+a unit raises that touches keying, transmit, money or a product fact but blocks no criterion of
+this plan, is parked here and not carried in a report's section 4. The arbiter reads this file as
+the answer *parked to a later phase*. One line per item: the unit that raised it, its number in
+that unit's report, and its bold lead sentence. The full text is in that unit's `output.md` at
+its report commit. Created by unit 395, task 0, from unit 394's `output.md` section 4.
+
+## Carried from before this phase
+
+- **389 item 1** - 9.2 falls short in two places, and both are on the send path, so they were
+  left. *Parked by R54 itself.*
+- **389 items 3 to 7, and the older queue of units 369 to 388** - carried by reference in unit
+  389's and 390's reports, `output.md` at `cd18cc6c` lines 270 to 506. Parked whole.
+- **390 item 1** - 0.1 is ticked on this instruction's word, which overrules instruction 386
+  section 6 ruling 1.
+- **390 item 2** - 9.2 and 9.4 are ticked *as built*, and their words don't all match what was
+  built.
+- **390 item 3** - 10.3 is ticked with one case under the band's full height.
+- **390 item 4** - Tonight's ruling A and the 2026-09-07 read-only ruling are in no decision
+  record.
+- **390 item 5** - 10.6's ticked words now describe the drop-down this unit replaced.
+- **390 item 6** - `src\Hamlet.App\Controls\FavoritesDropDownControl.cs` should be deleted.
+- **390 item 7** - Section 5 mismatches of unit 390.
+- **390 item 8** - The favorites row scrolls sideways with the bar hidden, and wheel scrolling
+  is not verified.
+- **390 item 9** - The `RULES_AT` split: `tools/status.sh` writes `HM-DEC-165` as a literal.
+
+## Raised in this phase, blocking no criterion
+
+- **391 item 2** - Section 5 mismatches of unit 391.
+- **391 item 3** - The captures type takes 1995 s at HEAD, against 97 s at `7e209cb4`. *Step 4
+  measures this as a number per piece, decision 7 of unit 395.*
+- **391 item 4** - HM-DEC-155, bent and said so: a type over 600 s needs a different runner.
+- **391 item 5** - Three worktrees under `C:/Users/TimDi/preflight-trees/` were there before the
+  session.
+- **391 item 6** - `PHASE_PLAN.md` 0.1 to 0.4 are not ticked by the unit.
+- **392 item 2** - Section 5 mismatches of unit 392.
+- **392 item 3** - Three of unit 392's own decisions you may want to reverse: `pitch-rank` out of
+  the build, queue counters at nought, the element-pitch line *not measured*.
+- **392 item 4** - Task 5 dropped; four previously uncompilable tests now compile and are unrun.
+- **392 item 5** - The headless dispatcher loop cost 8 lost runs across four app-line
+  invocations.
+- **393 item 1** - Putting the CW guard on the engine line turned an Olivia test red, and the
+  type moved into `CpuMeasuredAlone`. *A self-ruling Tim may overrule; the type stays where unit
+  393 put it until he does.*
+- **393 item 2** - Section 5 mismatches of unit 393.
+- **393 item 3** - Two sibling helpers read the telemetry file the same way and are on neither
+  line.
+- **393 item 4** - Six of the guard's 26 cases can never go red.
+- **393 item 5** - The headless dispatcher loop lost 4 names across the two task 1 app runs.
+- **394 item 1** - Task 3 was dropped on its clock rule, so the two clean synthetics are
+  unmeasured four ways.
+- **394 item 2** - `ABlipDoesNotShiftEverythingAfterItTests` names `CwReferenceDecoder` only in
+  doc prose.
+- **394 item 3** - `OneDecoderNotTwoTests` does not fit in one 600 s call, and the harness caps at
+  600 s.
+- **394 item 4** - Section 5 mismatches of unit 394.
+- **394 item 5** - The failing set is not all of its types' reds: three
+  `CwFixtureTests.NothingTheDecoderWasSureOfIsWrong` cases outside it.
+- **394 item 6** - The headless dispatcher loop lost 4 names across the two exit app runs.
