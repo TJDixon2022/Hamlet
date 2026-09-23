@@ -141,4 +141,55 @@ kept or reverted.
 
 ## 3. The table at exit, and the three parked reds
 
-Written at task 3.
+**The table at exit, `aa824eaf`.** The printer's row, segment, sweep and count lines at exit match
+entry line for line (`diff` prints nothing). No file under `src` changed between entry and exit,
+so the section 2 table is the exit table too, with no row different:
+
+| | entry | exit |
+|---|---|---|
+| single-sender cases | 5 of 38 | 5 of 38 |
+| single-sender cases apart | 0 | 0 |
+| all cases apart | 7 | 7 |
+| the two sweeps disagree | `001520`, `021825` | `001520`, `021825` |
+
+**The three parked reds, run by name at exit.** These are the post-R56 measurements. No change
+was aimed at them, and none was made.
+
+| red | test | value | green | decoder, most-held | sweep 300-900 | sweep 400-1200 | recipe |
+|---|---|---|---|---|---|---|---|
+| #15 | `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(12, 18)` | 0.54 of the message, bar 0.66 | no | 650, 650, 700 over its three seeds | 725 on all three | 725 on all three | 640 |
+| #43 | `CwReceiverFixtureTests.TheEasyTierIsReadWhole(coverage-easy)` | 2 unreadable + 7 strangers, `VVV1234567890AYTTMT■■DETEETEN0CALL` | no | 625, from 575 to 625 | 675 | 675 | 615 drifting +/- 3 |
+| #44 | `CwReceiverFixtureTests.TheEasyTierIsReadWhole(exchange-easy)` | 0 unreadable + 7 strangers, `VVVCQCQIM,CALLNT0CETETEEETEEK` | no | 625, from 575 to 625 | 675 | 675 | 615 drifting +/- 3 |
+
+The pitches come from `TheTwoPitchesTableTests.TheThreeParkedRedsArePitched`. It feeds each case
+a hop at a time from its own test's starting pitch: `CwSignal.DefaultToneHz` for #15, and 600 for
+the fixtures. The tests themselves pump through a `BufferedAudioSource`, so the chunking differs.
+
+The mix segments over the named span:
+- **#15, seed 7919**: 650 throughout.
+- **#15, seed 104729**: 650, then 700 from hop 4106.
+- **#15, seed 15485863**: 650, then 700 from hop 1506.
+- **#43**: 625, 615, 600, 575, 625, 615, 600.
+- **#44**: 625, 575, 585, 625.
+
+#43 is 2 + 7 where `PARKED.md` records 4 + 7. That record is the number before unit 408's gate,
+which stopped printing two of its placeholders. It is not a change made here.
+
+**Where the sweep sits on the three reds, which is a finding about the judge.** On these three,
+the recipe gives the true pitch, and the sweep is further from it than the decoder:
+- The sweep says 725 for a 640 Hz sender, 85 Hz high, and 675 for a 615 Hz sender, 60 Hz high.
+- The decoder's most-held pitch is 10 to 60 Hz high on #15 and 10 Hz high on #43 and #44.
+- The runner-up more than two bins away scores 0.98 to 1.00 of the winner on all five cases.
+
+In words: on a clean, strong synthetic tone, the sweep's score is nearly flat across a hundred
+hertz or more, and the winner lands at the upper end of that plateau. **One 25 Hz bin of
+agreement with an instrument that can sit 60 to 85 Hz off a known tone measures less than it
+appears to.** Only the second-best clause of the single-sender rule stops these synthetics from
+counting. This is said here, and it changes nothing: the rule and the tolerance were fixed before
+the table was read.
+
+**3.8's verdict.** Every single-sender case agrees at exit, 5 of 5 and 0 apart, and each of #15,
+#43 and #44 carries its post-R56 measurement. By the instruction's rule, **3.8 is ticked.** The
+plan's own wording of 3.8 names the 400 to 1200 sweep. The instruction judges on 300 to 900. The
+two columns return the same pitch on all five single-sender cases, so the verdict is the same
+under either.

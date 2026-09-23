@@ -1,5 +1,6 @@
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Training;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -79,10 +80,18 @@ public sealed class TheTwoPitchesTableTests
     /// <param name="name">The recording, under the captures folder.</param>
     /// <returns>Its row.</returns>
     public static Row Measure(string name)
-    {
-        var audio = WavAudio.Read(
-            Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+        => Measure(
+            name,
+            WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav")),
+            600);
 
+    /// <summary>Measure both pitches on audio already in hand.</summary>
+    /// <param name="name">What to call the row.</param>
+    /// <param name="audio">The audio.</param>
+    /// <param name="startingToneHz">Where the decoder is told to start.</param>
+    /// <returns>Its row.</returns>
+    public static Row Measure(string name, MonoAudio audio, double startingToneHz)
+    {
         // **THE SWEEP FIRST, AND FROM THE AUDIO ALONE.** Nothing the decoder does
         // below can reach these numbers.
         var candidates = new List<(double Hz, KeyingProfile Profile)>();
@@ -123,7 +132,7 @@ public sealed class TheTwoPitchesTableTests
                      && best.Profile.SwingDb >= CwKeyingThresholds.ConfidentSwingDb;
 
         // **THEN THE DECODER, FED A HOP AT A TIME AS THE FLOORS FEED IT.**
-        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var decoder = new CwDecoder(audio.SampleRate, startingToneHz);
         var hop = decoder.Tracker.HopSamples;
         var mix = new List<double>();
         var namedHops = new List<int>();
@@ -246,5 +255,59 @@ public sealed class TheTwoPitchesTableTests
         _output.WriteLine(
             $"count | single-sender {single.Count} of {rows.Count} | apart {single.Count(r => !r.Agree)} "
             + $"| apart names {string.Join(", ", single.Where(r => !r.Agree).Select(r => r.Name))}");
+    }
+
+    /// <remarks>
+    /// <para>Prints the decoder's pitch, the sweep's and the recipe's for #15, #43
+    /// and #44, the three reds R58 parks; asserts nothing. They are measured and
+    /// not attacked (work instruction 409, task 3).</para>
+    /// <para>Each is fed a hop at a time from the starting pitch its own test
+    /// gives the decoder. The tests themselves pump through a
+    /// `BufferedAudioSource`, so the chunking differs and the pitch is the one
+    /// this reading holds.</para>
+    /// </remarks>
+    [Fact]
+    public void TheThreeParkedRedsArePitched()
+    {
+        var cases = new List<(string Name, MonoAudio Audio, double Start, string Recipe)>();
+
+        // #15: CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(12, 18), its
+        // three seeds, run-up, tone and amplitude exactly as that test builds them.
+        foreach (var seed in new[] { 7919, 104729, 15485863 })
+        {
+            cases.Add((
+                $"#15 seed {seed}",
+                CwSignal.Generate(new CwSignalRequest(
+                    "VVV CQ CQ DE N0CALL N0CALL K",
+                    WordsPerMinute: 12,
+                    ToneHz: 640,
+                    Amplitude: 0.5,
+                    NoiseAmplitude: CwSensitivity.NoiseFor(18.0),
+                    Seed: seed)),
+                CwSignal.DefaultToneHz,
+                "640"));
+        }
+
+        // #43 and #44: the easy tier's fixtures, read as the test reads them.
+        foreach (var (red, name) in new[] { ("#43", "coverage-easy"), ("#44", "exchange-easy") })
+        {
+            cases.Add((
+                $"{red} {name}",
+                WavAudio.Read(Path.Combine(Fixtures.CwFixtureCatalogue.Folder, name + ".wav")),
+                600,
+                "615 drifting +/- 3"));
+        }
+
+        foreach (var (name, audio, start, recipe) in cases)
+        {
+            var r = Measure(name, audio, start);
+
+            _output.WriteLine(
+                $"parked | {name} | decoder {r.DecoderHz:0} low {r.DecoderLowHz:0.0} high {r.DecoderHighHz:0.0} "
+                + $"share apart {r.ShareApart:0.00} | sweep 300-900 {r.Sweep900Hz:0} | sweep 400-1200 {r.Sweep1200Hz:0} "
+                + $"| recipe {recipe} | second-best {r.SecondBest:0.00} | {(r.Keying ? "keying" : "no")} "
+                + $"| difference {r.DifferenceHz:0} {(r.Agree ? "agree" : "apart")} | named {r.Named}");
+            _output.WriteLine($"parked-seg | {name} | {r.Segments}");
+        }
     }
 }
