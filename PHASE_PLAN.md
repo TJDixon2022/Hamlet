@@ -204,9 +204,9 @@ named commit is `7e209cb4` by R53.
 **Entry:** step 2 done, the three floor tests green at entry.
 
 **Exit:**
-- [ ] 3.1 Every name in `docs\unit239-failing-set.txt` and every CW name in the known-reds block of `docs\carry-forward-tests.txt` is run at HEAD by type, one type per invocation with its own timeout, and listed in the report as green, red-repaired, red-retired, or red-open with its number.
+- [x] 3.1 Every name in `docs\unit239-failing-set.txt` and every CW name in the known-reds block of `docs\carry-forward-tests.txt` is run at HEAD by type, one type per invocation with its own timeout, and listed in the report as green, red-repaired, red-retired, or red-open with its number. **Unit 394, tasks 1 and 2: all 51 classified in `docs\phase-cw\unit394-reds.md` - 30 green, 0 red-repaired, 0 red-retired, 21 red-open (20 red on an assertion, 1 excluded from compilation and read from source), the known-reds block's one CW name being line 41 of the set.**
 - [ ] 3.2 Every retirement meets R49: the report quotes the class or method the test names that does not exist under `src\Hamlet.RadioEngine\Cw` at HEAD, and `docs\cw-retired-tests.txt` carries the test's full name, the missing name, the unit, and the date.
-- [ ] 3.3 No test that reads audio and asserts characters, elements, a tone or a speed is retired; each such red is green or is listed red-open with its number and the reason it stays.
+- [x] 3.3 No test that reads audio and asserts characters, elements, a tone or a speed is retired; each such red is green or is listed red-open with its number and the reason it stays. **Unit 394, task 2: nothing retired; all 21 reds of the set read audio and are listed red-open in `docs\phase-cw\unit394-reds.md` section 2, each with its number and what it asserts - characters 14, share 5, speed 2.**
 - [ ] 3.4 The known-reds block of `docs\carry-forward-tests.txt` names no CW test, and `docs\unit239-failing-set.txt` carries a closing line naming this phase and the count that went each way.
 - [ ] 3.5 The three floor tests are green at the exit of every commit of the step, and the carry-forward list is green on both lines.
 
