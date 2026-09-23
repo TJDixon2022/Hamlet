@@ -193,3 +193,27 @@ less `ABlipDoesNotShiftEverythingAfterItTests.cs`), which is a mismatch reported
 decode result the console printed, and repairing a decode result is a later unit's under R49. The
 one test that cannot compile reads audio and asserts characters, so R49's second sentence forbids
 its retirement. `docs\cw-retired-tests.txt` was not created.
+
+## 5. Entry and exit
+
+Both lines of `docs\carry-forward-tests.txt` as its comment says, one build each, a status line
+before each; the three floor tests one invocation per type. Nothing under `src` changed between
+them (`git diff --stat 02c64ae2 HEAD -- src` prints nothing), so the two floor runs cover every
+commit of the unit (decision 8).
+
+| Run | Entry, task 0 | Exit, task 4 |
+|---|---|---|
+| App line | 278 of 278 in 170 s | 277 of 278 in 172 s, 1 lost to the dispatcher loop; re-run once, 275 of 278 in 169 s, 3 lost the same way; each lost name green in the other run, no red on an assertion |
+| Engine line, `timeout 480` | 176 of 176 in 375 s, 26 of them CW | 176 of 176 in 371 s |
+| `TheCapturesThatDecodeKeepDecodingTests`, `timeout 900` | 37 of 37 in 97 s | 37 of 37, 92 s test time |
+| `TheAdjudicatedReadingsKeepReadingTests`, `timeout 600` | 13 of 13, 30 s test time | 13 of 13, 30 s test time |
+| `CwFixtureTests.TheCleanRecordingsDecodeExactly`, `timeout 300` | 0 of 2 in 5 s, `■ ■ ■ ■ ■  ■ ■ ■ ■■` and `■ ■ ■  ■■■` | 0 of 2 in 7 s, the same two readings; R53 |
+| Eleven transmit files against `7e209cb4` | nothing | nothing |
+
+The dispatcher-loop names at exit: `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer`
+in the first run; `ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel`,
+`ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed` and
+`TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing` in
+the second; each threw *You've caused dispatcher loop* from `Dispatcher.ResetForUnitTests` before
+any assertion. **No regression:** nothing green at task 0 is red at task 4. 3.5 is not ticked; it
+is the step's exit.
