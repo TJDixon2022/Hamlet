@@ -274,11 +274,11 @@ public static class CwProbabilisticDecoder
     /// weakest thing anybody has confirmed, and it removes characters that even a
     /// generous reading cannot separate from silence. It is not a soup filter, and
     /// nothing here claims that what survives it was sent.</para>
-    /// <para>**AND IT MARKS RATHER THAN DELETES.** A character below the floor
-    /// renders as HM-DEC-048's placeholder, because something did sound there and
-    /// a shorter tidy word is a worse lie than a visible gap. What changes on a
-    /// quiet frequency is that the operator sees the decoder failing to read
-    /// rather than a page of confident `E`s.</para>
+    /// <para>**IT MARKED RATHER THAN DELETED, AND SINCE WORK INSTRUCTION 408 IT
+    /// DELETES** (R58, 3.7). A character below the floor used to render as
+    /// HM-DEC-048's placeholder; on every capture in the tree those placeholders
+    /// were the whole of what sat below it, so it is now not printed at all. See
+    /// `Judged`.</para>
     /// <para>**A HIGHER MARGIN WAS DERIVED, TRIED, AND MEASURED WRONG.** Read on
     /// whole files there is a clean gap: `cw-2026-08-18-004507` reads with its
     /// weakest character at 49.8 while `cw-2026-08-20-014854`, which holds no
@@ -778,10 +778,10 @@ public static class CwProbabilisticDecoder
         // well can still contain letters the path assembled out of the gaps, and
         // the window ratio cannot tell them apart because every character in a
         // window carries the same one. A character that cannot clear its own
-        // margin is marked rather than dropped: something was heard there and
-        // could not be resolved, which is exactly what the placeholder is for
-        // (§0.0, HM-DEC-048).
-        var judged = Marked(bestCharacters);
+        // margin is not printed at all (R58, 3.7, work instruction 408): silence
+        // explains its stretch of audio about as well as the letter does, and a
+        // failed decode is silence (§0.0).
+        var judged = Judged(bestCharacters);
 
         return new CwProbabilisticResult(
             ratio,
@@ -1223,36 +1223,43 @@ public static class CwProbabilisticDecoder
     }
 
     /// <summary>
-    /// Replace every character that cannot clear its own margin with the
-    /// unresolved placeholder.
+    /// Leave out every character that cannot clear its own margin.
     /// </summary>
     /// <param name="characters">What the path spelled.</param>
-    /// <returns>The same list, with the weak ones marked.</returns>
+    /// <returns>The same list, without the ones below the bar.</returns>
     /// <remarks>
-    /// <para>**MARKED, NOT DROPPED.** Dropping it would close the gap and hand
-    /// the reader a shorter word that looks like a clean decode; the whole point
-    /// of the third confidence state is that the operator can see Hamlet
-    /// struggling at a particular letter rather than being handed a tidied
-    /// result (HM-DEC-048).</para>
+    /// <para>**NOT PRINTED, WHERE IT USED TO BE MARKED** (R57, R58, 3.7; work
+    /// instruction 408, superseding HM-DEC-048 below this bar only). Marking was
+    /// meant to show the operator Hamlet struggling at a letter. Measured across
+    /// every capture in the tree at 408, **all 261 marked characters sat below
+    /// this bar and not one named character did**; what reached the screen was a
+    /// terminal of `■` around the text, which Tim called *"false positive
+    /// garbage."* A character the alphabet cannot name but whose marks stand
+    /// clear of the bar still prints as `■`: something did sound there.</para>
+    /// <para>**THE BAR IS NOT RAISED, AND THE SWEEP IS WHY.** Every higher value
+    /// measured costs named characters: 1.047 per hop costs 3, and a floor of
+    /// five on the span's own total costs 9 (`docs/phase-cw/unit408-floors.md`,
+    /// section 4). Nothing but the placeholders sits below one.</para>
     /// <para>A word gap carries no marks and has no evidence of its own to
     /// clear, so it is left alone. Its own span ratio is nought by construction
     /// and testing it would delete every space.</para>
     /// </remarks>
-    private static IReadOnlyList<CwProbabilisticCharacter> Marked(
+    private static IReadOnlyList<CwProbabilisticCharacter> Judged(
         IReadOnlyList<CwProbabilisticCharacter> characters)
     {
-        var marked = new List<CwProbabilisticCharacter>(characters.Count);
+        var judged = new List<CwProbabilisticCharacter>(characters.Count);
 
         foreach (var character in characters)
         {
             var isWordGap = character.Pattern.Length == 0;
 
-            marked.Add(isWordGap || character.SpanMargin >= CharacterMargin
-                ? character
-                : character with { Text = "#" });
+            if (isWordGap || character.SpanMargin >= CharacterMargin)
+            {
+                judged.Add(character);
+            }
         }
 
-        return marked;
+        return judged;
     }
 
     /// <summary>Walk the winning path back and turn it into letters.</summary>

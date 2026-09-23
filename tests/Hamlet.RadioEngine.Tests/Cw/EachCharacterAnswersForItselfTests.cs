@@ -189,12 +189,16 @@ public sealed class EachCharacterAnswersForItselfTests
     }
 
     /// <remarks>
-    /// **MARKED, NOT DROPPED.** Dropping a weak character would close the gap and
-    /// hand the reader a shorter word that looks like a clean decode. The count
-    /// of characters is unchanged by the judgement; only what they say changes.
+    /// <para>**NOT PRINTED, WHERE IT USED TO BE MARKED** (R58, 3.7; work
+    /// instruction 408 rewrote this fact under R12). It used to prove HM-DEC-048's
+    /// marking: the same count of characters with the weak ones turned into
+    /// placeholders. 3.7 rules that what the decoder cannot clear its own bar on
+    /// is not printed at all, so what is proved now is that every character the
+    /// judgement removes is one below the bar, and every one it keeps is at or
+    /// above it, word gaps untouched.</para>
     /// </remarks>
     [Fact]
-    public void AWeakCharacterIsMarkedRatherThanRemoved()
+    public void AWeakCharacterIsNotPrinted()
     {
         var audio = Read("cw-2026-08-17-013347");
 
@@ -203,16 +207,19 @@ public sealed class EachCharacterAnswersForItselfTests
         var ungated = CwProbabilisticDecoder.DecodeUngated(env, 600);
         var judged = CwProbabilisticDecoder.Decode(env, 600);
 
-        var marked = judged.Characters.Count(
-            c => string.Equals(c.Text, "#", StringComparison.Ordinal));
+        var weak = ungated.Characters.Count(c =>
+            c.Pattern.Length > 0 && c.SpanMargin < CwProbabilisticDecoder.CharacterMargin);
 
         _output.WriteLine(
             $"{ungated.Characters.Count} before, {judged.Characters.Count} after, "
-            + $"{marked} marked");
+            + $"{weak} below the bar");
         _output.WriteLine(string.Concat(judged.Characters.Select(c => c.Text)));
 
-        Assert.Equal(ungated.Characters.Count, judged.Characters.Count);
-        Assert.True(marked > 0, "nothing was marked on a recording full of soup.");
+        Assert.True(weak > 0, "nothing was below the bar on a recording full of soup.");
+        Assert.Equal(ungated.Characters.Count - weak, judged.Characters.Count);
+        Assert.All(
+            judged.Characters.Where(c => c.Pattern.Length > 0),
+            c => Assert.True(c.SpanMargin >= CwProbabilisticDecoder.CharacterMargin));
     }
 
     /// <remarks>

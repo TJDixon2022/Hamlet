@@ -103,3 +103,111 @@ The bench reads the first `CQ CQ CQ DE` whole and the callsign after it as a run
 Every settled character on the bench scores at or above 1.376 per hop, against the gate's 1.0, and
 at or above 30.8 in its own span's total log-likelihood ratio. So nothing on the bench's 17:37 is in
 the single digits on either scale. Per character in `.run-unit/unit408-s1737-t1.txt`.
+
+## 4. The gate (3.7)
+
+**What the gate is in the tree.** `CwEmissionGate.cs` does not exist. The bar is
+`CwProbabilisticDecoder.CharacterMargin`, **1.0**, a character's own span log-likelihood ratio
+(its marks' evidence against the key never having gone down) **per hop**. Before this unit, a
+character below it was printed as `■` (`Marked`); a pattern the alphabet does not know was printed
+as `■` whatever it scored.
+
+**The sweep** (`TheGateBarSweepTests`, a printer, `.run-unit/unit408-sweep.txt`), every settled
+character on the 37 captures and 17:37 at `c1640919`, after B2:
+
+| bar | named lost | anchor characters lost | margin placeholders under it | unknown-pattern placeholders under it |
+|---|---|---|---|---|
+| per hop 1.0 (the bar as it stands) | **0** | 0 | **261 of 261** | 0 of 28 |
+| per hop 1.047 | 3, over 2 recordings | 0 | 261 | 0 |
+| per hop 1.25 | 30, over 12 | 0 | 261 | 0 |
+| per hop 1.5 | 53, over 17 | 0 | 261 | 1 |
+| per hop 2.0 | 117, over 21 | 4 | 261 | 2 |
+| span total 5 | 9, over 5 | 0 | 214 | 0 |
+| span total 10 | 37, over 10 | 0 | 234 | 0 |
+| span total 20 | 67, over 14 | 0 | 246 | 0 |
+| span total 50 | 154, over 23 | 1 | 256 | 0 |
+
+**The bar is 1.0 log-likelihood per hop, its value unchanged; what changed is that below it
+nothing is printed.** Every higher value on either scale costs named characters - the weakest named
+characters in the tree are lone `E`s at span totals of 3.3 to 8.0, per hop 1.0 to 1.9, on unanchored
+captures - and the instruction forbids losing one. So a bar at *the single digits* of the span's
+total, as the 17:37 sidecar's numbers suggested, is too high: at 5 it costs 9 named characters, and
+it is lowered to the one value that costs none. Nothing but placeholders sits below 1.0 per hop.
+The 28 unknown-pattern placeholders stand at span totals of 90 to 29.8 million, well above any bar;
+the audio holds keying the alphabet cannot name, and they are still printed as `■`. The bar is the
+decoder's own scale, the same on every recording, and was not tuned per case.
+
+**The change**: `CwProbabilisticDecoder.Judged`, formerly `Marked`, leaves out a character whose
+span per hop is below the bar instead of replacing it with `#`. It is one line of logic in `src`.
+
+**Watched red first**: `TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted` over
+17:37 and the three anchors' recordings - at `c1640919`, red on `013347` (57 printed below the
+bar, counting leading-edge revisions), `134712` (47) and `003758` (5); green on 17:37, where the
+bench settles nothing below the bar. With the change: 4 of 4, and the 17:37 scored region reads 29
+edits against an inferred key, as at entry.
+
+**Per case, named and placeholders** - task 1's re-measurement, before the gate (after B2), after
+the gate:
+
+| case | named, t1 / before / after | placeholders, t1 / before / after |
+|---|---|---|
+| 17:37, `cw-2026-09-23-173723` (bench) | 46 / 46 / 46 | 0 / 0 / 0 |
+| cw-2026-08-17-013347 (VA3VRR) | 57 / 57 / 57 | 2 / 2 / 0 |
+| cw-2026-08-17-013622 | 51 / 51 / 51 | 4 / 4 / 0 |
+| cw-2026-08-17-134712 (N4L, retired) | 21 / 21 / 21 | 42 / 39 / 1 |
+| cw-2026-08-18-003016 | 54 / 54 / 54 | 3 / 3 / 0 |
+| cw-2026-08-18-003126 | 48 / 48 / 48 | 6 / 6 / 1 |
+| cw-2026-08-18-003758 (AA4MP/4 QNIK) | 44 / 44 / 44 | 19 / 19 / 1 |
+| cw-2026-08-18-004507 | 49 / 49 / 49 | 1 / 1 / 0 |
+| cw-2026-08-20-014854 | 0 / 0 / 0 | 0 / 0 / 0 |
+| cw-2026-08-20-014935 | 0 / 0 / 0 | 0 / 0 / 0 |
+| cw-2026-08-22-014113 | 0 / 0 / 0 | 0 / 0 / 0 |
+| cw-2026-08-22-014308 | 0 / 0 / 0 | 0 / 0 / 0 |
+| cw-2026-08-22-031838 | 42 / 42 / **43** | 15 / 15 / 1 |
+| cw-2026-08-22-031905 | 36 / 36 / 36 | 6 / 6 / 1 |
+| cw-2026-08-22-031948 | 31 / 31 / 31 | 3 / 3 / 0 |
+| cw-2026-08-22-032012 | 43 / 43 / 43 | 1 / 1 / 0 |
+| cw-2026-08-22-032050 | 44 / 44 / 44 | 9 / 9 / 2 |
+| cw-2026-08-22-032113 | 47 / 47 / 47 | 8 / 8 / 2 |
+| cw-2026-08-22-032129 | 65 / 65 / 65 | 1 / 1 / 1 |
+| cw-2026-08-23-001520 | 1 / 1 / 1 | 4 / 4 / 1 |
+| cw-2026-08-23-001831 | 44 / 44 / 44 | 11 / 11 / 1 |
+| cw-2026-08-23-001952 | 56 / 56 / **57** | 19 / 18 / 2 |
+| cw-2026-08-23-002016 | 44 / 44 / 44 | 31 / 30 / 4 |
+| cw-2026-08-24-012403 | 21 / 21 / 21 | 1 / 1 / 0 |
+| cw-2026-08-25-011552 | 22 / 22 / 22 | 8 / 6 / 1 |
+| cw-2026-08-25-012748 | 2 / 2 / 2 | 2 / 2 / 2 |
+| cw-2026-08-25-012823 | 26 / 26 / 26 | 15 / 15 / 0 |
+| cw-2026-08-25-012922 | 45 / 45 / 45 | 5 / 5 / 0 |
+| cw-2026-08-25-013010 | 48 / 48 / 48 | 6 / 4 / 0 |
+| cw-2026-08-25-013150 | 51 / 51 / 51 | 7 / 7 / 2 |
+| cw-2026-08-25-013303 | 44 / 44 / 44 | 10 / 9 / 1 |
+| cw-2026-08-25-013402 | 56 / 56 / 56 | 5 / 5 / 1 |
+| cw-2026-08-25-013520 | 55 / 55 / 55 | 5 / 5 / 0 |
+| cw-2026-08-25-013637 | 60 / 60 / 60 | 3 / 3 / 1 |
+| cw-2026-08-25-021410 | 36 / 36 / 36 | 11 / 11 / 0 |
+| cw-2026-08-25-021629 | 27 / 27 / 27 | 20 / 20 / 2 |
+| cw-2026-08-25-021825 | 25 / 25 / 25 | 16 / 16 / 0 |
+| cw-2026-08-26-125941 | 0 / 0 / 0 | 0 / 0 / 0 |
+| **37 captures** | **1,295 / 1,295 / 1,297** | **299 / 289 / 28** |
+
+**No named character is lost anywhere**: no row's named count or named elements is lower after the
+gate, and two rows rise by one. The floor table is left as task 1 set it; the two rises are not
+written in as floors - the author's, overrulable.
+
+**The anchors**: `TheAdjudicatedReadingsKeepReadingTests` 13 of 13. With placeholders and spaces
+stripped, the twelve printed readings are identical to entry on 11. That includes all three named
+anchors - `VA3VRR` on `013347`, `AA4MP/4 QNIK` on `003758`, and the retired `N4L` on `134712` -
+and `DE KD0UN KD0UN K`. `031838`, a W1AW line, gains one `T` (`E2TTTTTT` to `E2TTTTTTT`) and loses
+nothing (`.run-unit/unit408-adj-gate-named.txt`). The screen text changes where placeholders stood:
+`E DEQ 6Q E ■Q DE KD0UN KD0UN K` now reads `E DEQ 6Q E Q DE KD0UN KD0UN K`, and a word that was only
+a placeholder leaves two spaces.
+
+**The neighbors, one type per invocation**: `CwFixtureTests` 22 of 23 (clean synthetics 2 of 2,
+`fading-18wpm` red as parked), `CwReceiverFixtureTests` 25 of 27, `CwAcquisitionWindowTests` 11 of
+12, `CwEmissionGateTests` 8, `CapturedSignalTests` 13, `CwAdjudicationTests` 11,
+`CwDisplacementFloorTests` 6, `CwSpeedSilenceTests` 4, `WhyTheGateDidNotFireTests` 2,
+`CwTwoStationTests` 5, `EachCharacterAnswersForItselfTests` 6 - each at its count before the gate.
+`EachCharacterAnswersForItselfTests.AWeakCharacterIsMarkedRatherThanRemoved` asserted the marking
+3.7 replaces and was rewritten under R12 as `AWeakCharacterIsNotPrinted`. Measured in passing, not
+attacked (R58): #43 goes from 4 + 7 to 2 + 7 under the gate, still red and parked.
