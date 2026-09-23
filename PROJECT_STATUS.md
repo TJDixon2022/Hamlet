@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 5
-WORK_INSTRUCTION: 398 - the excluded files, classified and retired under R49
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 399 - the clean synthetics get a band
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T03:02:03-04:00
-NOTE: Unit 398 complete: 3.2 ticked on 20 tests retired under R49 from 7 files, 31 audio-asserting facts left excluded red-open, 7 files re-included with 18 of 19 facts green, the set's #1 green; floors and both lines green at exit, no regression
+UPDATED: 2026-09-23T03:18:19-04:00
+NOTE: task 0: entry floors 37, 13, 0 of 2 as expected; TheSurveyAlreadyUsesAShortWindowTests running
 
 ---
 
