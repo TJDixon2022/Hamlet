@@ -1,0 +1,12 @@
+# CW tests retired under R49, phase CW decodes again, PHASE_PLAN.md step 3 criterion 3.2.
+# R49, Tim 2026-09-22: a test may be retired only if it names a class or method that does not exist under src\Hamlet.RadioEngine\Cw at HEAD, and a test that reads audio and asserts characters, elements, a tone or a speed is never retired.
+# One line per retired test, a [Theory] counted once: <full test name> | missing: <class or member, private at HEAD if so> | unit | date.
+# The classification and the grep behind every line: docs\phase-cw\unit398-excluded.md section 2.
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.APerfectReadScoresOne | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.ABlockIsADeletionAndNotASubstitution | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.RefusingEverythingYieldsNothing | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.OnlyTheSpanWithTruthIsScored | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.InsertionsAndDeletionsAreCountedApart | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.NothingReadIsScoredAsEveryCharacterLost | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.SpacingIsNormalizedRatherThanScored | missing: CwAccuracy | unit 398 | 2026-09-23
+Hamlet.RadioEngine.Tests.Cw.TheScoreSaysWhatItIsMeasuringTests.TheScoreIsDeterministic | missing: CwAccuracy | unit 398 | 2026-09-23

@@ -56,7 +56,6 @@
     <Compile Remove="Cw\TheProbabilisticDecoderTests.cs" />
     <Compile Remove="Cw\TheQuietestBinNoLongerWinsTests.cs" />
     <Compile Remove="Cw\TheReferenceDecoderIsPortedFaithfullyTests.cs" />
-    <Compile Remove="Cw\TheScoreSaysWhatItIsMeasuringTests.cs" />
     <Compile Remove="Cw\WhatDecodeScoringCostsTests.cs" />
     <Compile Remove="Cw\WhereHamletAndTheReferenceDivergeTests.cs" />
   </ItemGroup>

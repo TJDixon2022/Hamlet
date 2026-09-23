@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 5
+TASK: TASK 2 of 5
 WORK_INSTRUCTION: 398 - the excluded files, classified and retired under R49
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T02:35:57-04:00
-NOTE: task 1: 16 of 22 excluded files read fact by fact, grep of the names under Cw next
+UPDATED: 2026-09-23T02:42:26-04:00
+NOTE: task 2: retired TheScoreSaysWhatItIsMeasuringTests, 8 tests, commit 1 of 7; ThePosteriorSurvivesItsOwnArithmeticTests next
 
 ---
 
