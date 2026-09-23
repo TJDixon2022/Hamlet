@@ -154,6 +154,11 @@ re-run (`unit396-deps13.sh`). The failing files by chain:
 
 Needs 2 and 5 and whatever the `CwDecoder` hunk stands on: *dependent, out*. `src` clean after.
 
+**Piece 14, `8ca6a633`, task 2.** Patch 191 lines, `CwPitchRanking.cs` new, 185 insertions, 59
+code lines. Applied clean; piece commit `952fb690`. Build rc 1 in 1 s, two errors, both CS0122 on
+`CwToneTracker.CoarseSpacingHz` (lines 174 and 180). Not the seam: out under decision 4, no floor
+run. Transmit files nothing against `7e209cb4`. Reverted in the next commit.
+
 (The first pass of the script printed `basename`'s exit code for each prior; corrected and re-run
 before this was written. The table for piece 10 came from unit 395's `dep.sh`, which was right.)
 
