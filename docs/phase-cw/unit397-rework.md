@@ -143,4 +143,16 @@ after 29 (refusing); after 3; after 3 then 12 as committed; after 3, 12, 19 (19 
 3, 12, 19, 29, 30 (19, 29, 30 refusing). Three out pieces at least, one of which, 19, is itself
 dependent: **out under decision 5**, listed and not applied, no piece commit, no run.
 
+**Piece 38, `a37cfcff`**, *lower the speed ceiling to thirty, and carry every element out*. The
+`Cw` patch was 549 lines, four files: `CwElementPitch.cs` new, 266 lines; `CwJointCutter.cs` 18
+changed lines; `CwProbabilisticDecoder.cs` 99; `CwUnitEstimator.cs` 34. On the kept state
+`CwJointCutter.cs` refused *No such file or directory* (piece 13 created it, `386fdb5d`, out and
+itself dependent on 2, 5 and more), `CwProbabilisticDecoder.cs:827` and `CwUnitEstimator.cs:638`
+failed, and `--3way` refused the whole patch on the missing file, leaving the tree untouched.
+Decision 16's sequence, `unit397-deps38.sh`: after 13 (refusing), 827 and 638 fail; after 34 alone,
+638 clears and 827 fails; after 2, 5, 13 (13 refusing), both fail; after 31, 33, 34, 827 fails;
+after 2, 5, 13, 31, 33, 34, 827 fails. Two out pieces at least, 13 and 34, and 13's chain: **out
+under decision 5**, listed and not applied, no piece commit, no run. `CwElementPitch` did not
+come back and the excluded tests that name it stay excluded.
+
 ## 3. The exit round, task 2
