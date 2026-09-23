@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: TASK 5 of 5
 WORK_INSTRUCTION: 407 - the station still keying, and #45's tail on the air's terms
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T15:43:12-04:00
-NOTE: Unit 407 task 5 - exit round, every gate type identical to entry; tracker readers running: scoring running
+UPDATED: 2026-09-23T15:45:38-04:00
+NOTE: Unit 407 complete, report pushed: still-keying property did not separate, broken by 032113 at 26.5 s and both handovers; 2 s of trailing silence took #45 from 1 to 4 settled placeholders; no change made, #15 0.54 #43 5+37 #44 3+21 #45 1+3; 3.6 at 4 of 8
 
 ---
 
