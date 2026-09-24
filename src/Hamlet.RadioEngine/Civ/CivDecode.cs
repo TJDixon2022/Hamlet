@@ -456,7 +456,34 @@ public static class CivDecode
             return RigValue.Unknown(field, $"{source} gave an unreadable reply");
         }
 
-        var percent = (int)Math.Round(level * 100.0 / 255);
+        var percent = PercentOfLevel(level);
         return RigValue.Known(field, percent, $"{percent}%", atUtc, source);
     }
+
+    /// <summary>A 0 to 255 level as the percent its read decodes to.</summary>
+    /// <param name="level">The level on the radio's own scale.</param>
+    /// <returns>The percent, rounded as the read rounds it.</returns>
+    public static int PercentOfLevel(int level) => (int)Math.Round(level * 100.0 / 255);
+
+    /// <summary>
+    /// A value on a write's scale, put on the scale the field's read comes back on.
+    /// </summary>
+    /// <param name="field">The field.</param>
+    /// <param name="value">The value as written.</param>
+    /// <returns>The same value as the read would report it.</returns>
+    /// <remarks>
+    /// **ONE SCALE, THE READ'S** (R65, HM-DEC-172, work instruction 419). The
+    /// levels that <see cref="DecodePercent"/> reads, the six in the switch above,
+    /// are written 0 to 255 and read back as a percent; comparing the two raw was
+    /// unit 411's 255 against 100, which wrote the RF gain to a radio already at full
+    /// on every CW tune-in and filed it unconfirmed. Every other field reads on the
+    /// scale it is written on and passes through unchanged.
+    /// </remarks>
+    public static int OnReadScale(RigField field, int value) => field switch
+    {
+        RigField.RfPower or RigField.RfGain or RigField.Squelch
+            or RigField.NoiseBlankerLevel or RigField.NoiseReductionLevel
+            or RigField.AccUsbAfLevel => PercentOfLevel(value),
+        _ => value,
+    };
 }

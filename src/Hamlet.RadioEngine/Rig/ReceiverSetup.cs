@@ -197,7 +197,14 @@ public static class ReceiverSetup
 
             var now = (int)reading;
 
-            if (now == wanted)
+            // **ONE SCALE, THE READ'S** (R65, HM-DEC-172, work instruction 419).
+            // The RF gain row asks for 255 and the read says 100 percent; compared
+            // raw they never met, so a radio already at full was written on every
+            // CW tune-in. The write still carries the row's own value; only the
+            // comparisons and the memory are on the scale the radio reports.
+            var wantedAsRead = CivDecode.OnReadScale(field, wanted);
+
+            if (now == wantedAsRead)
             {
                 results.Add(new ConditionResult(
                     condition, ConditionOutcome.AlreadyRight, before.Text, before.Text));
@@ -258,7 +265,7 @@ public static class ReceiverSetup
                 continue;
             }
 
-            if ((int)settled != wanted)
+            if ((int)settled != wantedAsRead)
             {
                 // The radio took the frame and did something else with it, which
                 // is a different fact from a refused write and is worth its own
@@ -269,7 +276,7 @@ public static class ReceiverSetup
                 continue;
             }
 
-            memory = memory.Remember(field, wanted);
+            memory = memory.Remember(field, wantedAsRead);
 
             results.Add(new ConditionResult(
                 condition, ConditionOutcome.Changed, before.Text, after.Text));

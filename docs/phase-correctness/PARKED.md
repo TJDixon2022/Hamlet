@@ -200,3 +200,18 @@ tune-in into an overloading band the byte sent is not the value asked for; the s
 task 1's table refuses it and the setup files it `NotConfirmed`. What an IC-7300 does with `11 14`
 has not been measured here (FACT-006). A fix changes a byte sent to the radio, which is outside
 what 7.5 licenses, so it is parked. Not blocking.
+
+## P15 - the receive advice compares percent reads against raw thresholds
+
+**Raised by unit 419, 2026-09-24.** `ReceiveAdvice.Gain` tests the RF gain read, a percent since
+`CivDecode.DecodePercent`, against `OpenGainAbove` = 240 on the raw scale, so a gain at 100 percent
+is never open enough and the row says *It is at about 39 percent*, computing 100/255. `UsbLevel`
+does the same with `LowUsbLevel` = 77 against a percent, so the radio's shipped 50 percent is
+called low. Unit 419 fixed the same shape in `ReceiverSetup` and `Ic7300Rig.SetSettingAsync` and
+added `CivDecode.OnReadScale` and `PercentOfLevel`; after its item 2 the advice leaves the RF gain
+alone after a CW tune-in, since the CW row owns it, but it still speaks this way anywhere else.
+**The fixtures that certify the advice carry the same misunderstanding** (CLAUDE.md 12.5):
+`RigWriteTests` builds states with `RfGain` 255 labelled `100%`, 107 labelled `42%` and
+`AccUsbAfLevel` 128 labelled `50%`, raw numbers the real read never produces. A fix is the
+threshold through `PercentOfLevel` and those fixtures rebuilt on the read's scale, which is
+another unit's diff. Not blocking.

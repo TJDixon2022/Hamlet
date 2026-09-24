@@ -1,0 +1,14 @@
+unit419 task 2 item 3: a value already right is not written - ReceiverSetup and Ic7300Rig.SetSettingAsync compare on the scale the read comes back on, so the RF gain at full is AlreadyRight and no byte is sent; fields written on a CW tune-in when the radio was already right 1 to 0 at 14.050 and at 7.030 (7.5, 6.8)
+
+Red, watched first, AValueAlreadyRightIsNotWrittenTests 5 of 5 failing:
+  TheRfGainAtFullIsNotWritten: Assert.Empty() Failure: Collection was not empty, Collection: [255] - radio at raw 255: wrote [255], filed NotConfirmed, was 100%, now 100%
+  TheRfGainBelowFullIsWrittenAndConfirmed: Expected: Changed, Actual: NotConfirmed - radio at raw 108: wrote [255], was 42%, now 100%
+  ACwTuneInOnARadioAlreadyRightWritesNothing(14050000), (7030000): Collection was not empty, Collection: [Tuple (RfGain, 255)] - fields written: 1
+  TheRigConfirmsALevelOnTheScaleItReads: Assert.True() Failure - outcome ReadBackDisagreed, read back 100%
+Green after: 5 of 5; fields written 0 at both frequencies; the write at 42 percent is sent once, 255, and filed Changed.
+
+The scale is the read's: CivDecode.OnReadScale puts a value on the scale its field is read on, percent for the six levels DecodePercent reads and unchanged for every other field; PercentOfLevel is the rounding DecodePercent already used. ReceiverSetup compares the reading, the settled read-back and the memory against it; the byte written is the row's own 255, unchanged. SetSettingAsync uses it only for RigWriteTier.Receive writes, so RF power, keyer speed and break-in are compared exactly as before and nothing that keys, transmits or sets power changes. Squelch, the other level the CW row names, reads 0 percent for 0 and was already right before and after.
+
+TheBannerSaysWhatTheRadioReadBackTests.AHeldReadBackIsStatedWithItsTime went red 2 of 5 on the fix, because it reached its held read-back through the scale fault; it now reaches a real disagreement through ScriptedRadio.LevelWritesLandAt, a radio that lands the gain at 250, from 42 and 78 percent, and asserts read it back as 98% at hh:mm:ss; criterion unchanged, 5 of 5. Parked P15: the advice's own gain and USB-level thresholds have the same shape and fixtures built on it, not fixed here.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

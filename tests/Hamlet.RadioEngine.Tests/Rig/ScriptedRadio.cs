@@ -94,6 +94,18 @@ internal sealed class ScriptedRadio : ISerialPort
     public List<(byte Sub, int Value)> LevelWrites { get; } = new();
 
     /// <summary>
+    /// Where a `14` write really lands, by sub-command, for a radio that took the
+    /// frame and did something else with it.
+    /// </summary>
+    /// <remarks>
+    /// **A REAL DISAGREEMENT, NOT A SCALE** (work instruction 419). Unit 411's banner
+    /// test reached a held read-back that disagreed through the 255-against-100
+    /// comparison, which task 2 item 3 repaired; this is the honest way to the same
+    /// state. <see cref="LevelWrites"/> still records what was sent.
+    /// </remarks>
+    public Dictionary<byte, int> LevelWritesLandAt { get; } = new();
+
+    /// <summary>
     /// The attenuator in decibels, `11`, or null where this radio does not speak it.
     /// </summary>
     /// <remarks>
@@ -325,7 +337,9 @@ internal sealed class ScriptedRadio : ISerialPort
             case 0x14 when data.Length >= 3 && Levels.ContainsKey(data[0]):
                 if (CivValues.Level(data[1], data[2]) is { } level)
                 {
-                    Levels[data[0]] = level;
+                    Levels[data[0]] = LevelWritesLandAt.TryGetValue(data[0], out var lands)
+                        ? lands
+                        : level;
                     LevelWrites.Add((data[0], level));
                     Reply(CivConstants.ResultOk, Array.Empty<byte>());
                 }

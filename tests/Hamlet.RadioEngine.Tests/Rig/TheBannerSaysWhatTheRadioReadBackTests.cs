@@ -23,6 +23,11 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 /// read-back of exactly what was asked for as not confirmed. **The comparison is
 /// not repaired here**: repairing it changes what is sent to the radio, and step 6
 /// changes only what the operator reads. It is raised in the unit's report.</para>
+/// <para>**UNIT 419 REPAIRED THE COMPARISON** (R65, HM-DEC-172, task 2 item 3), so a
+/// radio at full is now already right and nothing is written or admitted. The
+/// criterion below is unchanged; it reaches a held read-back that disagrees through
+/// a radio that takes the frame and lands the gain at 250, 98 percent, rather than
+/// through the scale fault, and starts from 42 and 78 percent.</para>
 /// </remarks>
 public sealed class TheBannerSaysWhatTheRadioReadBackTests
 {
@@ -41,10 +46,16 @@ public sealed class TheBannerSaysWhatTheRadioReadBackTests
             .Select(ReceiverConditions.ForBlock)
             .First(c => c.Any(r => r.Field == RigField.RfGain));
 
-    private static async Task<(ScriptedRadio Radio, Ic7300Rig Rig)> ConnectAsync(int rfGain)
+    private static async Task<(ScriptedRadio Radio, Ic7300Rig Rig)> ConnectAsync(
+        int rfGain, int? landsAt = null)
     {
         var radio = new ScriptedRadio { FrequencyHz = 14_030_000 };
         radio.Levels[RfGain] = rfGain;
+
+        if (landsAt is { } lands)
+        {
+            radio.LevelWritesLandAt[RfGain] = lands;
+        }
 
         var rig = new Ic7300Rig(radio);
         Assert.True(await rig.ConnectAsync());
@@ -98,11 +109,11 @@ public sealed class TheBannerSaysWhatTheRadioReadBackTests
     /// the value and when it was read, and does not say the radio did not confirm.
     /// </summary>
     [Theory]
-    [InlineData(255)]
     [InlineData(108)]
+    [InlineData(200)]
     public async Task AHeldReadBackIsStatedWithItsTime(int rawAtStart)
     {
-        var (_, rig) = await ConnectAsync(rawAtStart);
+        var (_, rig) = await ConnectAsync(rawAtStart, landsAt: 250);
         using var _ = rig;
 
         var (results, _) = await ReceiverSetup.ApplyAsync(
@@ -119,8 +130,8 @@ public sealed class TheBannerSaysWhatTheRadioReadBackTests
         {
             Assert.DoesNotContain("did not confirm", sentence, StringComparison.Ordinal);
             Assert.DoesNotContain("I do not know where it is", sentence, StringComparison.Ordinal);
-            Assert.Contains("read it back as 100%", sentence, StringComparison.Ordinal);
-            Assert.Matches(new Regex(@"read it back as 100% at \d\d:\d\d:\d\d"), sentence);
+            Assert.Contains("read it back as 98%", sentence, StringComparison.Ordinal);
+            Assert.Matches(new Regex(@"read it back as 98% at \d\d:\d\d:\d\d"), sentence);
         }
     }
 

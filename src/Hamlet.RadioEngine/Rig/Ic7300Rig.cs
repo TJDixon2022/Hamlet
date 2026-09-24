@@ -307,8 +307,17 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
             ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(values));
 
+            // **ON THE SCALE THE READ-BACK COMES BACK ON** (R65, HM-DEC-172, work
+            // instruction 419). A receive level is written 0 to 255 and read as a
+            // percent, so 255 read back as 100 was filed as disagreement. Only a
+            // receive-tier write moves: power, keying and break-in are compared
+            // exactly as before (§0.2).
+            var expected = write.Tier == RigWriteTier.Receive
+                ? CivDecode.OnReadScale(write.Field, value)
+                : value;
+
             var confirmed = values.Any(
-                v => v.Field == write.Field && v.IsKnown && (int?)v.Number == value);
+                v => v.Field == write.Field && v.IsKnown && (int?)v.Number == expected);
 
             // **WHAT IT DISAGREED WITH GOES BACK WITH IT** (work instruction 411).
             // Nothing more is sent; this is the reading just taken.
