@@ -106,3 +106,15 @@ total. Before any of them is used to judge a change, somebody runs the reference
 The catalogue's own record says the reference could not read textbook spacing at 18 wpm (a
 dit-to-dah ratio measured at 2.45, under its 2.5 floor), so it may refuse some of these.
 Comes back before any synthetic case is used as evidence for a change.
+
+## P9 - whether step 3 can close with the spacing only partly repaired
+
+**Raised by unit 416, 2026-09-24.** Two changes are kept: the narrowed relabel and the path's
+own word boundary where no character gap was measured. All keyed recordings 217 to 167 edits
+over 565 against inferred keys, 17:37 29 to 19 over 25. 3.1, 3.2, 3.3 and 3.5 are ticked; 3.4
+only applies after three units with nothing kept. So every criterion that can be ticked is,
+but 17:37 still reads `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I` against `CQ CQ CQ DE WB6RED WB6RED`:
+what is left there is letters, not spaces, and one real word gap after `DE` went with the
+inserted ones. At unit 416's exit the trace counts, on the ten and 17:37, 128 boundaries:
+joined 90, word kept 22, inserted 14, missing 2. Whether step 3 closes done, or another unit attacks the joined gaps or the
+letters, is the arbiter's call. Not blocking; the loop goes on.
