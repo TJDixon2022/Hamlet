@@ -1,0 +1,3 @@
+unit421 task 4: exit round (3.5) - Hamlet.sln builds with warnings as errors, non-incremental, 0 warnings; engine 178 of 178; app 275 of 278 with three lost to the dispatcher loop and green alone; captures 51 of 51 under the bar, adjudicated 13 of 13, keyed floors 13 of 13, clean 2 of 2; src/Hamlet.App nothing against entry, transmit files nothing against 7e209cb4; 3.7 ticked, 3.6 held; output.md
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

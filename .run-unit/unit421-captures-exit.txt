@@ -1,0 +1,281 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013010", named: 48, elements: 122, placeholders: 6) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013010: 48 named, 48 at or above the span bar against a floor of 48, 0 below it; 122 named elements, 122 above the bar against 122; 0 placeholders where 6 settled when the floor was set, 48 emitted in all, at 475 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013520", named: 55, elements: 147, placeholders: 5) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013520: 55 named, 55 at or above the span bar against a floor of 55, 0 below it; 147 named elements, 147 above the bar against 147; 0 placeholders where 5 settled when the floor was set, 55 emitted in all, at 540 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004405", named: 35, elements: 105, placeholders: 1) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004405: 35 named, 35 at or above the span bar against a floor of 35, 0 below it; 105 named elements, 105 above the bar against 105; 1 placeholders where 1 settled when the floor was set, 36 emitted in all, at 625 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012823", named: 23, elements: 37, placeholders: 15) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012823: 23 named, 23 at or above the span bar against a floor of 23, 0 below it; 37 named elements, 37 above the bar against 37; 0 placeholders where 15 settled when the floor was set, 23 emitted in all, at 450 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-003919", named: 25, elements: 52, placeholders: 0) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-003919: 25 named, 25 at or above the span bar against a floor of 25, 0 below it; 52 named elements, 52 above the bar against 52; 0 placeholders where 0 settled when the floor was set, 25 emitted in all, at 750 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001952", named: 46, elements: 103, placeholders: 19) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001952: 46 named, 46 at or above the span bar against a floor of 46, 0 below it; 103 named elements, 103 above the bar against 103; 2 placeholders where 19 settled when the floor was set, 48 emitted in all, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004347", named: 40, elements: 115, placeholders: 0) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004347: 40 named, 40 at or above the span bar against a floor of 40, 0 below it; 115 named elements, 115 above the bar against 115; 0 placeholders where 0 settled when the floor was set, 40 emitted in all, at 630 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021629", named: 27, elements: 65, placeholders: 20) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021629: 27 named, 27 at or above the span bar against a floor of 27, 0 below it; 65 named elements, 65 above the bar against 65; 2 placeholders where 20 settled when the floor was set, 29 emitted in all, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013637", named: 60, elements: 157, placeholders: 3) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013637: 60 named, 60 at or above the span bar against a floor of 60, 0 below it; 157 named elements, 157 above the bar against 157; 1 placeholders where 3 settled when the floor was set, 61 emitted in all, at 550 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003016", named: 54, elements: 146, placeholders: 3) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016: 54 named, 54 at or above the span bar against a floor of 54, 0 below it; 146 named elements, 146 above the bar against 146; 0 placeholders where 3 settled when the floor was set, 54 emitted in all, at 670 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-18-004507", named: 49, elements: 117, placeholders: 1) [2 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507: 49 named, 49 at or above the span bar against a floor of 49, 0 below it; 117 named elements, 117 above the bar against 117; 0 placeholders where 1 settled when the floor was set, 49 emitted in all, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-003901", named: 9, elements: 20, placeholders: 0) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-003901: 9 named, 9 at or above the span bar against a floor of 9, 0 below it; 20 named elements, 20 above the bar against 20; 0 placeholders where 0 settled when the floor was set, 9 emitted in all, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004234", named: 36, elements: 95, placeholders: 1) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004234: 36 named, 36 at or above the span bar against a floor of 36, 0 below it; 95 named elements, 95 above the bar against 95; 1 placeholders where 1 settled when the floor was set, 37 emitted in all, at 625 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-031905", named: 36, elements: 108, placeholders: 6) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031905: 36 named, 36 at or above the span bar against a floor of 36, 0 below it; 108 named elements, 108 above the bar against 108; 1 placeholders where 6 settled when the floor was set, 37 emitted in all, at 300 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-031948", named: 31, elements: 111, placeholders: 3) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031948: 31 named, 31 at or above the span bar against a floor of 31, 0 below it; 111 named elements, 111 above the bar against 111; 0 placeholders where 3 settled when the floor was set, 31 emitted in all, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-24-012403", named: 19, elements: 60, placeholders: 1) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-24-012403: 19 named, 19 at or above the span bar against a floor of 19, 0 below it; 60 named elements, 60 above the bar against 60; 0 placeholders where 1 settled when the floor was set, 19 emitted in all, at 440 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001831", named: 43, elements: 107, placeholders: 11) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001831: 43 named, 43 at or above the span bar against a floor of 43, 0 below it; 107 named elements, 107 above the bar against 107; 1 placeholders where 11 settled when the floor was set, 44 emitted in all, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032113", named: 47, elements: 102, placeholders: 8) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032113: 47 named, 47 at or above the span bar against a floor of 47, 0 below it; 102 named elements, 102 above the bar against 102; 2 placeholders where 8 settled when the floor was set, 49 emitted in all, at 650 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013303", named: 44, elements: 127, placeholders: 10) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013303: 44 named, 44 at or above the span bar against a floor of 44, 0 below it; 127 named elements, 127 above the bar against 127; 1 placeholders where 10 settled when the floor was set, 45 emitted in all, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021825", named: 19, elements: 43, placeholders: 16) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021825: 19 named, 19 at or above the span bar against a floor of 19, 0 below it; 43 named elements, 43 above the bar against 43; 0 placeholders where 16 settled when the floor was set, 19 emitted in all, at 400 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013150", named: 51, elements: 123, placeholders: 7) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013150: 51 named, 51 at or above the span bar against a floor of 51, 0 below it; 123 named elements, 123 above the bar against 123; 2 placeholders where 7 settled when the floor was set, 53 emitted in all, at 495 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004133", named: 28, elements: 85, placeholders: 2) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004133: 28 named, 28 at or above the span bar against a floor of 28, 0 below it; 85 named elements, 85 above the bar against 85; 2 placeholders where 2 settled when the floor was set, 30 emitted in all, at 625 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001520", named: 1, elements: 1, placeholders: 4) [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-001520: 1 named, 1 at or above the span bar against a floor of 1, 0 below it; 1 named elements, 1 above the bar against 1; 1 placeholders where 4 settled when the floor was set, 2 emitted in all, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004510", named: 34, elements: 100, placeholders: 0) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004510: 34 named, 34 at or above the span bar against a floor of 34, 0 below it; 100 named elements, 100 above the bar against 100; 0 placeholders where 0 settled when the floor was set, 34 emitted in all, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004535", named: 47, elements: 128, placeholders: 1) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004535: 47 named, 47 at or above the span bar against a floor of 47, 0 below it; 128 named elements, 128 above the bar against 128; 1 placeholders where 1 settled when the floor was set, 48 emitted in all, at 610 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004322", named: 39, elements: 112, placeholders: 0) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004322: 39 named, 39 at or above the span bar against a floor of 39, 0 below it; 112 named elements, 112 above the bar against 112; 0 placeholders where 0 settled when the floor was set, 39 emitted in all, at 630 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-014113", named: 0, elements: 0, placeholders: 0) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014113: 0 named, 0 at or above the span bar against a floor of 0, 0 below it; 0 named elements, 0 above the bar against 0; 0 placeholders where 0 settled when the floor was set, 0 emitted in all, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-014308", named: 0, elements: 0, placeholders: 0) [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014308: 0 named, 0 at or above the span bar against a floor of 0, 0 below it; 0 named elements, 0 above the bar against 0; 0 placeholders where 0 settled when the floor was set, 0 emitted in all, at 575 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-17-134712", named: 11, elements: 31, placeholders: 42) [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-134712: 11 named, 11 at or above the span bar against a floor of 11, 0 below it; 31 named elements, 31 above the bar against 31; 1 placeholders where 42 settled when the floor was set, 12 emitted in all, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-20-014854", named: 0, elements: 0, placeholders: 0) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854: 0 named, 0 at or above the span bar against a floor of 0, 0 below it; 0 named elements, 0 above the bar against 0; 0 placeholders where 0 settled when the floor was set, 0 emitted in all, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003758", named: 43, elements: 92, placeholders: 19) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758: 43 named, 43 at or above the span bar against a floor of 43, 0 below it; 92 named elements, 92 above the bar against 92; 1 placeholders where 19 settled when the floor was set, 44 emitted in all, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004108", named: 32, elements: 107, placeholders: 0) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004108: 32 named, 32 at or above the span bar against a floor of 32, 0 below it; 107 named elements, 107 above the bar against 107; 0 placeholders where 0 settled when the floor was set, 32 emitted in all, at 625 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004205", named: 34, elements: 96, placeholders: 2) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004205: 34 named, 34 at or above the span bar against a floor of 34, 0 below it; 96 named elements, 96 above the bar against 96; 2 placeholders where 2 settled when the floor was set, 36 emitted in all, at 630 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032012", named: 43, elements: 119, placeholders: 1) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032012: 43 named, 43 at or above the span bar against a floor of 43, 0 below it; 119 named elements, 119 above the bar against 119; 0 placeholders where 1 settled when the floor was set, 43 emitted in all, at 500 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013402", named: 56, elements: 150, placeholders: 5) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013402: 56 named, 56 at or above the span bar against a floor of 56, 0 below it; 150 named elements, 150 above the bar against 150; 1 placeholders where 5 settled when the floor was set, 57 emitted in all, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032050", named: 44, elements: 105, placeholders: 9) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032050: 44 named, 44 at or above the span bar against a floor of 44, 0 below it; 105 named elements, 105 above the bar against 105; 2 placeholders where 9 settled when the floor was set, 46 emitted in all, at 325 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004027", named: 39, elements: 118, placeholders: 1) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004027: 39 named, 39 at or above the span bar against a floor of 39, 0 below it; 118 named elements, 118 above the bar against 118; 1 placeholders where 1 settled when the floor was set, 40 emitted in all, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021410", named: 36, elements: 88, placeholders: 11) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021410: 36 named, 36 at or above the span bar against a floor of 36, 0 below it; 88 named elements, 88 above the bar against 88; 0 placeholders where 11 settled when the floor was set, 36 emitted in all, at 550 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004427", named: 42, elements: 111, placeholders: 1) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004427: 42 named, 42 at or above the span bar against a floor of 42, 0 below it; 111 named elements, 111 above the bar against 111; 1 placeholders where 1 settled when the floor was set, 43 emitted in all, at 625 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012748", named: 2, elements: 3, placeholders: 2) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012748: 2 named, 2 at or above the span bar against a floor of 2, 0 below it; 3 named elements, 3 above the bar against 3; 2 placeholders where 2 settled when the floor was set, 4 emitted in all, at 395 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-26-125941", named: 0, elements: 0, placeholders: 0) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-26-125941: 0 named, 0 at or above the span bar against a floor of 0, 0 below it; 0 named elements, 0 above the bar against 0; 0 placeholders where 0 settled when the floor was set, 0 emitted in all, at 400 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012922", named: 43, elements: 104, placeholders: 5) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012922: 43 named, 43 at or above the span bar against a floor of 43, 0 below it; 104 named elements, 104 above the bar against 104; 0 placeholders where 5 settled when the floor was set, 43 emitted in all, at 475 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-031838", named: 40, elements: 91, placeholders: 15) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031838: 40 named, 40 at or above the span bar against a floor of 40, 0 below it; 91 named elements, 91 above the bar against 91; 1 placeholders where 15 settled when the floor was set, 41 emitted in all, at 525 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-17-013622", named: 49, elements: 78, placeholders: 4) [2 s]
+  Standard Output Messages:
+ cw-2026-08-17-013622: 49 named, 49 at or above the span bar against a floor of 49, 0 below it; 78 named elements, 78 above the bar against 78; 0 placeholders where 4 settled when the floor was set, 49 emitted in all, at 600 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-002016", named: 34, elements: 74, placeholders: 31) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-23-002016: 34 named, 34 at or above the span bar against a floor of 34, 0 below it; 74 named elements, 74 above the bar against 74; 4 placeholders where 31 settled when the floor was set, 38 emitted in all, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-09-24-004550", named: 41, elements: 123, placeholders: 0) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-24-004550: 41 named, 41 at or above the span bar against a floor of 41, 0 below it; 123 named elements, 123 above the bar against 123; 0 placeholders where 0 settled when the floor was set, 41 emitted in all, at 625 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-011552", named: 22, elements: 74, placeholders: 8) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-011552: 22 named, 22 at or above the span bar against a floor of 22, 0 below it; 74 named elements, 74 above the bar against 74; 1 placeholders where 8 settled when the floor was set, 23 emitted in all, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-22-032129", named: 65, elements: 114, placeholders: 1) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032129: 65 named, 65 at or above the span bar against a floor of 65, 0 below it; 114 named elements, 114 above the bar against 114; 1 placeholders where 1 settled when the floor was set, 66 emitted in all, at 650 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-18-003126", named: 48, elements: 131, placeholders: 6) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003126: 48 named, 48 at or above the span bar against a floor of 48, 0 below it; 131 named elements, 131 above the bar against 131; 1 placeholders where 6 settled when the floor was set, 49 emitted in all, at 665 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "cw-2026-08-17-013347", named: 57, elements: 106, placeholders: 2) [2 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 57 named, 57 at or above the span bar against a floor of 57, 0 below it; 106 named elements, 106 above the bar against 106; 0 placeholders where 2 settled when the floor was set, 57 emitted in all, at 625 Hz
+   its count floor has retired: an adjudicated anchor covers this recording and guards it (Tim, 2026-08-25)
+
+
+[xUnit.net 00:02:01.15]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-20-014935", named: 0, elements: 0, placeholders: 0) [5 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935: 0 named, 0 at or above the span bar against a floor of 0, 0 below it; 0 named elements, 0 above the bar against 0; 0 placeholders where 0 settled when the floor was set, 0 emitted in all, at 825 Hz
+
+
+
+Test Run Successful.
+Total tests: 51
+     Passed: 51
+ Total time: 2.0235 Minutes
+RC=0 WALL=122s

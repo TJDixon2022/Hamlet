@@ -1,0 +1,573 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSpaceIsDecidedTests.WhatARelabelWouldChange [2 m 23 s]
+  Standard Output Messages:
+ boundary | 1.528 of the measured character centroid
+ row | recording | reads | held | with a centroid | emulation matches what settled | spaces added | spaces removed | letters moved, relabel before the settle loop | letters moved, relabel after it | space end mismatches
+ row | cw-2026-08-17-013347 | 56 | 0 | 3 | yes | 1 | 0 | 0 | 0 | 0
+ text | cw-2026-08-17-013347 | entry  ` E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT   `
+ text | cw-2026-08-17-013347 | after  ` E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E H A E WVRR VA3VRRT   `
+ text | cw-2026-08-17-013347 | real   ` E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT   `
+ centroid | cw-2026-08-17-013347 | in units | n 3, min 1.75, quartile 1.75, median 1.84, quartile 2.00, max 2.00
+ flip | cw-2026-08-17-013347 | added |   17.940 s | span 180 ms, 2.9 units | centroid 115 ms, 1.8 units | boundary 176 ms, 1.57 of centroid | textbook word from 286 ms
+ row | cw-2026-08-17-134712 | 56 | 0 | 14 | NO | 1 | 2 | 0 | 0 | 0
+ text | cw-2026-08-17-134712 | entry  `                     I        I■5   NT    N4 L ZT K      `
+ text | cw-2026-08-17-134712 | after  `                     I        I■5   NT    N 4LZT K      `
+ text | cw-2026-08-17-134712 | real   `                     I        I■5   NT    N4LZT K      `
+ centroid | cw-2026-08-17-134712 | in units | n 14, min 1.04, quartile 3.35, median 3.35, quartile 3.35, max 5.54
+ flip | cw-2026-08-17-134712 | removed |   22.485 s | span 155 ms, 4.8 units | centroid 180 ms, 5.5 units | boundary 275 ms, 0.86 of centroid | textbook word from 149 ms
+ flip | cw-2026-08-17-134712 | removed |   23.170 s | span 170 ms, 5.2 units | centroid 176 ms, 5.4 units | boundary 269 ms, 0.97 of centroid | textbook word from 149 ms
+ flip | cw-2026-08-17-134712 | added |   21.715 s | span 185 ms, 2.8 units | centroid 69 ms, 1.0 units | boundary 106 ms, 2.67 of centroid | textbook word from 306 ms
+ row | cw-2026-08-18-004507 | 56 | 24 | 45 | NO | 1 | 5 | 0 | 0 | 0
+ text | cw-2026-08-18-004507 | entry  `E5 I E A T AR O L D O T N E T <BT>  E AC H STA TI O N HANDLING THIS MESSAG E PE`
+ text | cw-2026-08-18-004507 | after  `E5 I E A T A R O L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE`
+ text | cw-2026-08-18-004507 | real   `E5 I E A T AR O L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE`
+ centroid | cw-2026-08-18-004507 | in units | n 45, min 0.95, quartile 4.24, median 4.48, quartile 4.57, max 4.73
+ flip | cw-2026-08-18-004507 | removed |   13.535 s | span 255 ms, 5.1 units | centroid 233 ms, 4.7 units | boundary 355 ms, 1.10 of centroid | textbook word from 229 ms
+ flip | cw-2026-08-18-004507 | removed |   15.755 s | span 235 ms, 4.7 units | centroid 229 ms, 4.6 units | boundary 351 ms, 1.02 of centroid | textbook word from 229 ms
+ flip | cw-2026-08-18-004507 | removed |   16.540 s | span 270 ms, 5.4 units | centroid 232 ms, 4.6 units | boundary 355 ms, 1.16 of centroid | textbook word from 229 ms
+ flip | cw-2026-08-18-004507 | removed |   17.325 s | span 230 ms, 4.6 units | centroid 232 ms, 4.6 units | boundary 355 ms, 0.99 of centroid | textbook word from 229 ms
+ flip | cw-2026-08-18-004507 | removed |   28.535 s | span 330 ms, 6.6 units | centroid 234 ms, 4.7 units | boundary 357 ms, 1.41 of centroid | held word from 325 ms
+ flip | cw-2026-08-18-004507 | added |    4.455 s | span 210 ms, 3.9 units | centroid 62 ms, 1.1 units | boundary 95 ms, 3.39 of centroid | textbook word from 250 ms
+ row | unadjudicated/cw-2026-08-24-012403 | 56 | 0 | 19 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-24-012403 | entry  ` DEQ 6Q  Q DE KD0UN KD0UN K `
+ text | unadjudicated/cw-2026-08-24-012403 | after  ` DEQ 6Q  Q DE KD0UN KD0UN K `
+ text | unadjudicated/cw-2026-08-24-012403 | real   ` DEQ 6Q  Q DE KD0UN KD0UN K `
+ centroid | unadjudicated/cw-2026-08-24-012403 | in units | n 19, min 1.93, quartile 2.46, median 2.96, quartile 3.15, max 3.78
+ row | unadjudicated/cw-2026-08-22-031838 | 56 | 0 | 0 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-031838 | entry  `  A 3, AT3 M, E2TT TTTTT , AND  ■T TTT TEAH A MEAN TOF 2 TT    `
+ text | unadjudicated/cw-2026-08-22-031838 | after  `  A 3, AT3 M, E2TT TTTTT , AND  ■T TTT TEAH A MEAN TOF 2 TT    `
+ text | unadjudicated/cw-2026-08-22-031838 | real   `  A 3, AT3 M, E2TT TTTTT , AND  ■T TTT TEAH A MEAN TOF 2 TT    `
+ row | unadjudicated/cw-2026-08-22-031905 | 56 | 0 | 6 | NO | 2 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-031905 | entry  ` ■ PREDICTED 10.7  IAIEI TA NI   WLUX IS 125,,  E T T`
+ text | unadjudicated/cw-2026-08-22-031905 | after  ` ■ PREDICTED 10.7  IAIEI TANI   WL U X IS 125,,  E T T`
+ text | unadjudicated/cw-2026-08-22-031905 | real   ` ■ PREDICTED 10.7  IAIEI TANI   WLUX IS 125,,  E T T`
+ centroid | unadjudicated/cw-2026-08-22-031905 | in units | n 6, min 2.49, quartile 2.50, median 2.53, quartile 3.73, max 3.95
+ flip | unadjudicated/cw-2026-08-22-031905 | removed |   16.480 s | span 220 ms, 5.2 units | centroid 159 ms, 3.7 units | boundary 242 ms, 1.39 of centroid | textbook word from 195 ms
+ flip | unadjudicated/cw-2026-08-22-031905 | added |   19.190 s | span 195 ms, 4.1 units | centroid 120 ms, 2.5 units | boundary 183 ms, 1.62 of centroid | textbook word from 218 ms
+ flip | unadjudicated/cw-2026-08-22-031905 | added |   19.805 s | span 195 ms, 4.1 units | centroid 120 ms, 2.5 units | boundary 183 ms, 1.62 of centroid | textbook word from 218 ms
+ row | unadjudicated/cw-2026-08-22-031948 | 56 | 2 | 14 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-031948 | entry  `    TM 150 110, AND 110 WITH A MEAN OF 117.W`
+ text | unadjudicated/cw-2026-08-22-031948 | after  `    TM 150 110, AND 110 WITH A MEAN OF 117.W`
+ text | unadjudicated/cw-2026-08-22-031948 | real   `    TM 150 110, AND 110 WITH A MEAN OF 117.W`
+ centroid | unadjudicated/cw-2026-08-22-031948 | in units | n 14, min 2.36, quartile 2.40, median 2.57, quartile 2.58, max 4.20
+ row | unadjudicated/cw-2026-08-22-032012 | 56 | 38 | 19 | NO | 1 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-032012 | entry  `  T F 117.1. LINKS TO A R T I C L E SO R OTHER WEBSITES MENTI`
+ text | unadjudicated/cw-2026-08-22-032012 | after  `  T F 1 17.1. LINKS TO A R T I C L E SO R OTHER WEBSITES MENTI`
+ text | unadjudicated/cw-2026-08-22-032012 | real   `  T F 117.1. LINKS TO ARTICLESOR OTHER WEBSITES MENTI`
+ centroid | unadjudicated/cw-2026-08-22-032012 | in units | n 19, min 2.05, quartile 2.44, median 2.53, quartile 2.62, max 2.80
+ flip | unadjudicated/cw-2026-08-22-032012 | added |    4.150 s | span 160 ms, 3.2 units | centroid 102 ms, 2.0 units | boundary 156 ms, 1.56 of centroid | textbook word from 229 ms
+ row | unadjudicated/cw-2026-08-22-032050 | 56 | 0 | 9 | NO | 0 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-032050 | entry  `    IULLETIN CAN BE FO TA ND IN TELEWRITTER, PA■ K E    ■ S S T S SI I`
+ text | unadjudicated/cw-2026-08-22-032050 | after  `    IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E    ■ S S T S SI I`
+ text | unadjudicated/cw-2026-08-22-032050 | real   `    IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E    ■ S S T S SI I`
+ centroid | unadjudicated/cw-2026-08-22-032050 | in units | n 9, min 2.44, quartile 2.54, median 2.58, quartile 2.65, max 3.76
+ flip | unadjudicated/cw-2026-08-22-032050 | removed |   11.120 s | span 195 ms, 4.9 units | centroid 151 ms, 3.8 units | boundary 230 ms, 1.30 of centroid | textbook word from 183 ms
+ row | unadjudicated/cw-2026-08-22-032113 | 56 | 0 | 5 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-032113 | entry  `   A KET■ A N O INT ERNE T ■ E ROIONS OF  200J6   I  NN I TT E E I  E SEE EIE E I`
+ text | unadjudicated/cw-2026-08-22-032113 | after  `   A KET■ A N O INT ERNE T ■ E ROIONS OF  200J6   I  NN I TT E E I  E SEE EIE E I`
+ text | unadjudicated/cw-2026-08-22-032113 | real   `   A KET■ A N O INT ERNE T ■ E ROIONS OF  200J6   I  NN I TT E E I  E SEE EIE E I`
+ centroid | unadjudicated/cw-2026-08-22-032113 | in units | n 5, min 2.61, quartile 2.98, median 3.97, quartile 5.07, max 5.07
+ row | unadjudicated/cw-2026-08-22-032129 | 56 | 0 | 3 | NO | 0 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-032129 | entry  ` ■ MTM TJ26 PGOPAGATION EE EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI`
+ text | unadjudicated/cw-2026-08-22-032129 | after  ` ■ MTMTJ26 PGOPAGATION EE EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI`
+ text | unadjudicated/cw-2026-08-22-032129 | real   ` ■ MTMTJ26 PGOPAGATION EE EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI`
+ centroid | unadjudicated/cw-2026-08-22-032129 | in units | n 3, min 4.25, quartile 4.25, median 4.25, quartile 4.60, max 4.60
+ flip | unadjudicated/cw-2026-08-22-032129 | removed |    4.110 s | span 200 ms, 5.3 units | centroid 172 ms, 4.6 units | boundary 263 ms, 1.16 of centroid | textbook word from 172 ms
+ row | cw-2026-08-17-013622 | 56 | 0 | 2 | yes | 0 | 0 | 0 | 0 | 0
+ text | cw-2026-08-17-013622 | entry  `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I `
+ text | cw-2026-08-17-013622 | after  `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I `
+ text | cw-2026-08-17-013622 | real   `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I `
+ centroid | cw-2026-08-17-013622 | in units | n 2, min 2.33, quartile 2.33, median 2.33, quartile 2.36, max 2.36
+ row | unadjudicated/cw-2026-08-18-003016 | 56 | 27 | 53 | yes | 3 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-18-003016 | entry  `   SADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN`
+ text | unadjudicated/cw-2026-08-18-003016 | after  `   SADA KP T15TT IT WAS JUNK <BT> STILAI HVE MY E TO 91B TT JETST VFB TUB LIN`
+ text | unadjudicated/cw-2026-08-18-003016 | real   `   SADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN`
+ centroid | unadjudicated/cw-2026-08-18-003016 | in units | n 53, min 2.47, quartile 2.86, median 2.94, quartile 3.04, max 5.20
+ flip | unadjudicated/cw-2026-08-18-003016 | added |   15.370 s | span 250 ms, 5.3 units | centroid 135 ms, 2.8 units | boundary 207 ms, 1.85 of centroid | held word from 309 ms
+ flip | unadjudicated/cw-2026-08-18-003016 | added |   16.670 s | span 245 ms, 5.2 units | centroid 139 ms, 2.9 units | boundary 213 ms, 1.76 of centroid | held word from 309 ms
+ flip | unadjudicated/cw-2026-08-18-003016 | added |   18.355 s | span 220 ms, 4.6 units | centroid 134 ms, 2.8 units | boundary 205 ms, 1.64 of centroid | held word from 309 ms
+ row | unadjudicated/cw-2026-08-18-003126 | 56 | 0 | 51 | NO | 2 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-18-003126 | entry  `   U <BT> I WATCH AT L EAST 2 MOVI ESA DAY WID X■ WHY NNOTT   , WESNRNS , E`
+ text | unadjudicated/cw-2026-08-18-003126 | after  `   U  <BT> I WATCH AT L EAST 2 MOVIES A DAY WID X■ WHY NNOTT   , WESNRNS , E`
+ text | unadjudicated/cw-2026-08-18-003126 | real   `   U <BT> I WATCH AT L EAST 2 MOVIESA DAY WID X■ WHY NNOTT   , WESNRNS , E`
+ centroid | unadjudicated/cw-2026-08-18-003126 | in units | n 51, min 1.27, quartile 2.57, median 2.82, quartile 3.38, max 4.02
+ flip | unadjudicated/cw-2026-08-18-003126 | removed |   13.505 s | span 220 ms, 4.6 units | centroid 161 ms, 3.4 units | boundary 245 ms, 1.37 of centroid | textbook word from 218 ms
+ flip | unadjudicated/cw-2026-08-18-003126 | added |    3.750 s | span 160 ms, 2.1 units | centroid 98 ms, 1.3 units | boundary 150 ms, 1.63 of centroid | textbook word from 344 ms
+ flip | unadjudicated/cw-2026-08-18-003126 | added |   14.160 s | span 200 ms, 4.2 units | centroid 126 ms, 2.6 units | boundary 192 ms, 1.59 of centroid | textbook word from 218 ms
+ row | unadjudicated/cw-2026-08-18-003758 | 56 | 0 | 37 | NO | 0 | 3 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-18-003758 | entry  `   ■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK    E AN EANQNIK         EAN E`
+ text | unadjudicated/cw-2026-08-18-003758 | after  `   ■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E`
+ text | unadjudicated/cw-2026-08-18-003758 | real   `   ■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E`
+ centroid | unadjudicated/cw-2026-08-18-003758 | in units | n 37, min 3.29, quartile 3.47, median 3.61, quartile 3.75, max 4.56
+ flip | unadjudicated/cw-2026-08-18-003758 | removed |   18.420 s | span 235 ms, 4.7 units | centroid 187 ms, 3.7 units | boundary 286 ms, 1.25 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-08-18-003758 | removed |   19.735 s | span 235 ms, 4.7 units | centroid 189 ms, 3.8 units | boundary 288 ms, 1.25 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-08-18-003758 | removed |   26.680 s | span 275 ms, 5.5 units | centroid 180 ms, 3.6 units | boundary 276 ms, 1.52 of centroid | textbook word from 229 ms
+ row | unadjudicated/cw-2026-08-23-001520 | 56 | 0 | 0 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-23-001520 | entry  `  T  ■  `
+ text | unadjudicated/cw-2026-08-23-001520 | after  `  T  ■  `
+ text | unadjudicated/cw-2026-08-23-001520 | real   `  T  ■  `
+ row | unadjudicated/cw-2026-08-23-001831 | 56 | 0 | 37 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-23-001831 | entry  `  AE E K     K N YT T TTA   ■ MA  <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV`
+ text | unadjudicated/cw-2026-08-23-001831 | after  `  AE E K     K N YT T TTA   ■ MA  <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV`
+ text | unadjudicated/cw-2026-08-23-001831 | real   `  AE E K     K N YT T TTA   ■ MA  <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV`
+ centroid | unadjudicated/cw-2026-08-23-001831 | in units | n 37, min 3.10, quartile 3.21, median 3.28, quartile 3.62, max 3.80
+ row | unadjudicated/cw-2026-08-23-001952 | 56 | 0 | 13 | NO | 0 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-23-001952 | entry  ` ETBEE 5  I A  E   ■FN 5IN WEFIT   EENE MCO M T A K8T    I  ■ E I II II EE   MN S    B0   `
+ text | unadjudicated/cw-2026-08-23-001952 | after  ` ETBEE 5  I A  E   ■FN 5IN WEFIT   EENE MCOM T A K8T    I  ■ E I II II EE   MN S    B0   `
+ text | unadjudicated/cw-2026-08-23-001952 | real   ` ETBEE 5  I A  E   ■FN 5IN WEFIT   EENE MCOM T A K8T    I  ■ E I II II EE   MN S    B0   `
+ centroid | unadjudicated/cw-2026-08-23-001952 | in units | n 13, min 0.86, quartile 2.53, median 3.19, quartile 3.49, max 3.79
+ flip | unadjudicated/cw-2026-08-23-001952 | removed |   12.925 s | span 145 ms, 4.8 units | centroid 105 ms, 3.5 units | boundary 160 ms, 1.39 of centroid | textbook word from 137 ms
+ row | unadjudicated/cw-2026-08-23-002016 | 56 | 0 | 29 | NO | 0 | 3 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-23-002016 | entry  `  H■ S   B■   I E E      O NA■T S IT E■      EE  I I   E      K TIE 0 NH VNN JEENG  `
+ text | unadjudicated/cw-2026-08-23-002016 | after  `  H■ S   B■   I E E      O NA■T SIT E■      EE  I I   E      K TIE0NH VNN JEENG  `
+ text | unadjudicated/cw-2026-08-23-002016 | real   `  H■ S   B■   I E E      O NA■T SIT E■      EE  I I   E      K TIE0NH VNN JEENG  `
+ centroid | unadjudicated/cw-2026-08-23-002016 | in units | n 29, min 2.40, quartile 2.98, median 3.14, quartile 3.44, max 5.28
+ flip | unadjudicated/cw-2026-08-23-002016 | removed |   14.700 s | span 145 ms, 4.8 units | centroid 108 ms, 3.6 units | boundary 166 ms, 1.34 of centroid | textbook word from 137 ms
+ flip | unadjudicated/cw-2026-08-23-002016 | removed |   23.690 s | span 140 ms, 4.7 units | centroid 158 ms, 5.3 units | boundary 242 ms, 0.88 of centroid | textbook word from 137 ms
+ flip | unadjudicated/cw-2026-08-23-002016 | removed |   24.635 s | span 150 ms, 4.6 units | centroid 100 ms, 3.1 units | boundary 153 ms, 1.50 of centroid | textbook word from 149 ms
+ row | unadjudicated/cw-2026-08-25-011552 | 56 | 0 | 31 | NO | 0 | 4 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-011552 | entry  ` T C R 4  X DE K ■G JA K1 Z JA  K1ZJA <AR>    `
+ text | unadjudicated/cw-2026-08-25-011552 | after  ` T C R 4  XDE K ■GJAK1Z JA  K1ZJA <AR>    `
+ text | unadjudicated/cw-2026-08-25-011552 | real   ` T C R 4  XDE K ■GJAK1Z JA  K1ZJA <AR>    `
+ centroid | unadjudicated/cw-2026-08-25-011552 | in units | n 31, min 3.10, quartile 3.65, median 3.82, quartile 3.94, max 4.21
+ flip | unadjudicated/cw-2026-08-25-011552 | removed |   12.650 s | span 255 ms, 5.4 units | centroid 188 ms, 4.0 units | boundary 287 ms, 1.36 of centroid | textbook word from 218 ms
+ flip | unadjudicated/cw-2026-08-25-011552 | removed |   16.755 s | span 260 ms, 5.5 units | centroid 188 ms, 4.0 units | boundary 287 ms, 1.38 of centroid | textbook word from 218 ms
+ flip | unadjudicated/cw-2026-08-25-011552 | removed |   18.035 s | span 260 ms, 5.5 units | centroid 188 ms, 4.0 units | boundary 287 ms, 1.38 of centroid | textbook word from 218 ms
+ flip | unadjudicated/cw-2026-08-25-011552 | removed |   19.725 s | span 240 ms, 5.1 units | centroid 192 ms, 4.1 units | boundary 294 ms, 1.25 of centroid | textbook word from 218 ms
+ row | unadjudicated/cw-2026-08-25-012748 | 56 | 32 | 40 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-012748 | entry  ` ■ AT ■`
+ text | unadjudicated/cw-2026-08-25-012748 | after  ` ■ AT ■`
+ text | unadjudicated/cw-2026-08-25-012748 | real   ` ■ AT ■`
+ centroid | unadjudicated/cw-2026-08-25-012748 | in units | n 40, min 1.08, quartile 2.71, median 2.85, quartile 3.26, max 4.12
+ row | unadjudicated/cw-2026-08-25-012823 | 56 | 0 | 1 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-012823 | entry  ` E S SE EE  TTN T K T M TE E O IN U T    E T`
+ text | unadjudicated/cw-2026-08-25-012823 | after  ` E S SE EE  TTN T K T M TE E O IN U T    E T`
+ text | unadjudicated/cw-2026-08-25-012823 | real   ` E S SE EE  TTN T K T M TE E O IN U T    E T`
+ centroid | unadjudicated/cw-2026-08-25-012823 | in units | n 1, min 2.50, quartile 2.50, median 2.50, quartile 2.50, max 2.50
+ row | unadjudicated/cw-2026-08-25-012922 | 56 | 0 | 23 | NO | 2 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-012922 | entry  ` I W TM TTM     E  TTTTT II  WA T T S WI Q J SAY73 ES T KS T K S73 D NDH`
+ text | unadjudicated/cw-2026-08-25-012922 | after  ` I W TM TTM     E  TTTTT II  WA T T S W I QJ SAY73 ES T KS T K S 73 D NDH`
+ text | unadjudicated/cw-2026-08-25-012922 | real   ` I W TM TTM     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH`
+ centroid | unadjudicated/cw-2026-08-25-012922 | in units | n 23, min 0.92, quartile 2.43, median 2.69, quartile 2.98, max 3.50
+ flip | unadjudicated/cw-2026-08-25-012922 | removed |   16.665 s | span 160 ms, 4.9 units | centroid 111 ms, 3.4 units | boundary 170 ms, 1.44 of centroid | textbook word from 149 ms
+ flip | unadjudicated/cw-2026-08-25-012922 | added |   15.610 s | span 195 ms, 4.1 units | centroid 115 ms, 2.4 units | boundary 176 ms, 1.69 of centroid | textbook word from 218 ms
+ flip | unadjudicated/cw-2026-08-25-012922 | added |   25.630 s | span 250 ms, 4.5 units | centroid 122 ms, 2.2 units | boundary 186 ms, 2.05 of centroid | textbook word from 252 ms
+ row | unadjudicated/cw-2026-08-25-013010 | 56 | 0 | 51 | NO | 0 | 3 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-013010 | entry  `  TLL ES NICE TO  OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73 ES G E   `
+ text | unadjudicated/cw-2026-08-25-013010 | after  `  TLL ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE   `
+ text | unadjudicated/cw-2026-08-25-013010 | real   `  TLL ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE   `
+ centroid | unadjudicated/cw-2026-08-25-013010 | in units | n 51, min 2.51, quartile 3.29, median 3.44, quartile 3.61, max 3.84
+ flip | unadjudicated/cw-2026-08-25-013010 | removed |    7.825 s | span 220 ms, 4.9 units | centroid 154 ms, 3.4 units | boundary 236 ms, 1.43 of centroid | textbook word from 206 ms
+ flip | unadjudicated/cw-2026-08-25-013010 | removed |   26.850 s | span 225 ms, 5.0 units | centroid 155 ms, 3.4 units | boundary 236 ms, 1.45 of centroid | textbook word from 206 ms
+ flip | unadjudicated/cw-2026-08-25-013010 | removed |   28.380 s | span 215 ms, 4.8 units | centroid 155 ms, 3.5 units | boundary 237 ms, 1.38 of centroid | textbook word from 206 ms
+ row | unadjudicated/cw-2026-08-25-013150 | 56 | 14 | 53 | NO | 0 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-013150 | entry  `   4 MO ■4 MW K   F  GE GE TE ES NICE TO HEAR Y OU AGN ■EEE <BT> BEEN SEVERAL MONT`
+ text | unadjudicated/cw-2026-08-25-013150 | after  `   4 MO ■4 MW K   F  GE GE TE ES NICE TO HEAR YOU AGN ■EEE <BT> BEEN SEVERAL MONT`
+ text | unadjudicated/cw-2026-08-25-013150 | real   `   4 MO ■4 MW K   F  GE GE TE ES NICE TO HEAR YOU AGN ■EEE <BT> BEEN SEVERAL MONT`
+ centroid | unadjudicated/cw-2026-08-25-013150 | in units | n 53, min 2.54, quartile 3.24, median 3.35, quartile 3.54, max 3.92
+ flip | unadjudicated/cw-2026-08-25-013150 | removed |   18.215 s | span 205 ms, 4.8 units | centroid 145 ms, 3.4 units | boundary 221 ms, 1.42 of centroid | textbook word from 195 ms
+ row | unadjudicated/cw-2026-08-25-013303 | 56 | 0 | 41 | NO | 2 | 5 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-013303 | entry  `    G ALL BOXE S F OR FO C EESSS     HPE Y OU IN J OY UR LONG WAI T 5 EE ■  `
+ text | unadjudicated/cw-2026-08-25-013303 | after  `    G ALL BOXE S F OR FOC EE SSS    HPE YOU INJOY UR LONG WAI T 5 E E ■  `
+ text | unadjudicated/cw-2026-08-25-013303 | real   `    G ALL BOXE S F OR FOC EESSS    HPE YOU INJOY UR LONG WAI T 5 EE ■  `
+ centroid | unadjudicated/cw-2026-08-25-013303 | in units | n 41, min 2.35, quartile 3.06, median 3.45, quartile 3.82, max 4.38
+ flip | unadjudicated/cw-2026-08-25-013303 | removed |   10.365 s | span 195 ms, 4.9 units | centroid 135 ms, 3.4 units | boundary 206 ms, 1.45 of centroid | textbook word from 183 ms
+ flip | unadjudicated/cw-2026-08-25-013303 | removed |   13.860 s | span 230 ms, 5.1 units | centroid 188 ms, 4.2 units | boundary 287 ms, 1.22 of centroid | textbook word from 206 ms
+ flip | unadjudicated/cw-2026-08-25-013303 | removed |   17.330 s | span 210 ms, 4.9 units | centroid 157 ms, 3.7 units | boundary 239 ms, 1.34 of centroid | textbook word from 195 ms
+ flip | unadjudicated/cw-2026-08-25-013303 | removed |   19.235 s | span 215 ms, 4.8 units | centroid 155 ms, 3.5 units | boundary 237 ms, 1.38 of centroid | textbook word from 206 ms
+ flip | unadjudicated/cw-2026-08-25-013303 | removed |   20.015 s | span 225 ms, 5.3 units | centroid 186 ms, 4.4 units | boundary 284 ms, 1.21 of centroid | textbook word from 195 ms
+ flip | unadjudicated/cw-2026-08-25-013303 | added |   11.680 s | span 180 ms, 4.2 units | centroid 117 ms, 2.8 units | boundary 179 ms, 1.53 of centroid | textbook word from 195 ms
+ flip | unadjudicated/cw-2026-08-25-013303 | added |   27.275 s | span 180 ms, 4.2 units | centroid 110 ms, 2.6 units | boundary 168 ms, 1.64 of centroid | textbook word from 195 ms
+ row | unadjudicated/cw-2026-08-25-013402 | 56 | 11 | 38 | yes | 2 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-013402 | entry  `    W■E IN Q SO WITH WB 4 ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE `
+ text | unadjudicated/cw-2026-08-25-013402 | after  `    W■ E IN Q SO WITH WB 4 ET ES S S CAME IN TO J OIN? NOT SUR E - BUT ANY WAY VY NICE `
+ text | unadjudicated/cw-2026-08-25-013402 | real   `    W■E IN Q SO WITH WB 4 ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE `
+ centroid | unadjudicated/cw-2026-08-25-013402 | in units | n 38, min 0.84, quartile 2.95, median 3.07, quartile 3.15, max 3.45
+ flip | unadjudicated/cw-2026-08-25-013402 | added |    3.195 s | span 160 ms, 1.9 units | centroid 74 ms, 0.9 units | boundary 112 ms, 2.18 of centroid | textbook word from 393 ms
+ flip | unadjudicated/cw-2026-08-25-013402 | added |   21.450 s | span 180 ms, 4.5 units | centroid 116 ms, 2.9 units | boundary 177 ms, 1.55 of centroid | textbook word from 183 ms
+ row | unadjudicated/cw-2026-08-25-013520 | 56 | 0 | 24 | NO | 0 | 2 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-013520 | entry  `    MONTHS OR S O I GUE S S BUT ALL GUD ES  CAN KE E G KI KE EP MY SELF O CC UPI ED A`
+ text | unadjudicated/cw-2026-08-25-013520 | after  `    MONTHS OR S O I GUESS BUT ALL GUD ES  CAN KE E G KI KE EP MY SELF O CC UPI ED A`
+ text | unadjudicated/cw-2026-08-25-013520 | real   `    MONTHS OR S O I GUESS BUT ALL GUD ES  CAN KE E G KI KE EP MY SELF O CC UPI ED A`
+ centroid | unadjudicated/cw-2026-08-25-013520 | in units | n 24, min 0.72, quartile 2.84, median 2.96, quartile 3.57, max 3.82
+ flip | unadjudicated/cw-2026-08-25-013520 | removed |    9.020 s | span 175 ms, 4.7 units | centroid 135 ms, 3.6 units | boundary 206 ms, 1.29 of centroid | textbook word from 172 ms
+ flip | unadjudicated/cw-2026-08-25-013520 | removed |    9.400 s | span 185 ms, 4.9 units | centroid 135 ms, 3.6 units | boundary 206 ms, 1.37 of centroid | textbook word from 172 ms
+ row | unadjudicated/cw-2026-08-25-013637 | 56 | 28 | 14 | NO | 1 | 2 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-013637 | entry  ` TE MP NEVEN T REV■R G O T AB OV E 7 5 F ES CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO`
+ text | unadjudicated/cw-2026-08-25-013637 | after  ` TE MP NEVEN T REV■ R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO`
+ text | unadjudicated/cw-2026-08-25-013637 | real   ` TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO`
+ centroid | unadjudicated/cw-2026-08-25-013637 | in units | n 14, min 1.72, quartile 2.93, median 3.01, quartile 3.30, max 3.65
+ flip | unadjudicated/cw-2026-08-25-013637 | removed |    8.980 s | span 135 ms, 4.3 units | centroid 103 ms, 3.3 units | boundary 157 ms, 1.31 of centroid | held word from 130 ms
+ flip | unadjudicated/cw-2026-08-25-013637 | removed |   11.405 s | span 175 ms, 4.4 units | centroid 121 ms, 3.0 units | boundary 184 ms, 1.45 of centroid | held word from 130 ms
+ flip | unadjudicated/cw-2026-08-25-013637 | added |    7.210 s | span 155 ms, 2.8 units | centroid 94 ms, 1.7 units | boundary 144 ms, 1.65 of centroid | textbook word from 250 ms
+ row | unadjudicated/cw-2026-08-25-021410 | 56 | 0 | 40 | NO | 0 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-021410 | entry  `    M     T O MTT T  Y M TT   O AO IHI DT RIGHR IS  FLENT 66OAM`
+ text | unadjudicated/cw-2026-08-25-021410 | after  `    M     T O MTT T  Y M TT  O AO IHI DT RIGHR IS  FLENT 66OAM`
+ text | unadjudicated/cw-2026-08-25-021410 | real   `    M     T O MTT T  Y M TT  O AO IHI DT RIGHR IS  FLENT 66OAM`
+ centroid | unadjudicated/cw-2026-08-25-021410 | in units | n 40, min 2.84, quartile 3.09, median 3.18, quartile 3.25, max 4.22
+ flip | unadjudicated/cw-2026-08-25-021410 | removed |   10.065 s | span 205 ms, 4.8 units | centroid 170 ms, 4.0 units | boundary 260 ms, 1.20 of centroid | textbook word from 195 ms
+ row | unadjudicated/cw-2026-08-25-021629 | 56 | 20 | 44 | NO | 0 | 2 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-021629 | entry  `    ET MTT  OET    O ATT   MT S T  5 5 99  5 5  ■■ IN M I  M`
+ text | unadjudicated/cw-2026-08-25-021629 | after  `    ET MTT  OET    O ATT  MT S T  5 5 99 5 5  ■■ IN M I  M`
+ text | unadjudicated/cw-2026-08-25-021629 | real   `    ET MTT  OET    O ATT  MT S T  5 5 99 5 5  ■■ IN M I  M`
+ centroid | unadjudicated/cw-2026-08-25-021629 | in units | n 44, min 2.73, quartile 3.82, median 4.05, quartile 4.62, max 5.79
+ flip | unadjudicated/cw-2026-08-25-021629 | removed |    8.310 s | span 175 ms, 5.8 units | centroid 116 ms, 3.9 units | boundary 177 ms, 1.51 of centroid | textbook word from 137 ms
+ flip | unadjudicated/cw-2026-08-25-021629 | removed |   15.905 s | span 300 ms, 5.2 units | centroid 214 ms, 3.7 units | boundary 327 ms, 1.40 of centroid | textbook word from 263 ms
+ row | unadjudicated/cw-2026-08-25-021825 | 56 | 1 | 13 | NO | 0 | 2 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-25-021825 | entry  `     I E   E I ETO U E NT  K OC 1 UE K K     `
+ text | unadjudicated/cw-2026-08-25-021825 | after  `     I E   E I ETO U E NT  K OC 1 UEK K    `
+ text | unadjudicated/cw-2026-08-25-021825 | real   `     I E   E I ETO U E NT  K OC 1 UEK K    `
+ centroid | unadjudicated/cw-2026-08-25-021825 | in units | n 13, min 4.08, quartile 4.20, median 4.27, quartile 4.29, max 4.40
+ flip | unadjudicated/cw-2026-08-25-021825 | removed |   23.395 s | span 350 ms, 5.0 units | centroid 290 ms, 4.1 units | boundary 442 ms, 1.21 of centroid | textbook word from 321 ms
+ flip | unadjudicated/cw-2026-08-25-021825 | removed |   28.735 s | span 385 ms, 5.7 units | centroid 283 ms, 4.2 units | boundary 433 ms, 1.36 of centroid | textbook word from 309 ms
+ row | unadjudicated/cw-2026-08-26-125941 | 56 | 0 | 12 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-26-125941 | entry  ``
+ text | unadjudicated/cw-2026-08-26-125941 | after  ``
+ text | unadjudicated/cw-2026-08-26-125941 | real   ``
+ centroid | unadjudicated/cw-2026-08-26-125941 | in units | n 12, min 1.96, quartile 2.45, median 2.69, quartile 2.88, max 3.20
+ row | unadjudicated/cw-2026-08-20-014854 | 56 | 20 | 13 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-20-014854 | entry  ``
+ text | unadjudicated/cw-2026-08-20-014854 | after  ``
+ text | unadjudicated/cw-2026-08-20-014854 | real   ``
+ centroid | unadjudicated/cw-2026-08-20-014854 | in units | n 13, min 2.40, quartile 2.83, median 2.98, quartile 3.04, max 3.07
+ row | unadjudicated/cw-2026-08-20-014935 | 56 | 0 | 16 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-20-014935 | entry  ``
+ text | unadjudicated/cw-2026-08-20-014935 | after  ``
+ text | unadjudicated/cw-2026-08-20-014935 | real   ``
+ centroid | unadjudicated/cw-2026-08-20-014935 | in units | n 16, min 1.55, quartile 2.23, median 2.42, quartile 2.46, max 2.51
+ row | unadjudicated/cw-2026-08-22-014113 | 56 | 0 | 15 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-014113 | entry  ``
+ text | unadjudicated/cw-2026-08-22-014113 | after  ``
+ text | unadjudicated/cw-2026-08-22-014113 | real   ``
+ centroid | unadjudicated/cw-2026-08-22-014113 | in units | n 15, min 0.78, quartile 2.53, median 2.58, quartile 2.58, max 3.10
+ row | unadjudicated/cw-2026-08-22-014308 | 56 | 0 | 8 | yes | 0 | 0 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-08-22-014308 | entry  ``
+ text | unadjudicated/cw-2026-08-22-014308 | after  ``
+ text | unadjudicated/cw-2026-08-22-014308 | real   ``
+ centroid | unadjudicated/cw-2026-08-22-014308 | in units | n 8, min 2.70, quartile 2.79, median 2.90, quartile 2.91, max 3.23
+ row | unadjudicated/cw-2026-09-24-003901 | 56 | 0 | 7 | NO | 0 | 2 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-003901 | entry  `        EII E T N HHK         `
+ text | unadjudicated/cw-2026-09-24-003901 | after  `        EII E T NHHK        `
+ text | unadjudicated/cw-2026-09-24-003901 | real   `        EII E T NHHK        `
+ centroid | unadjudicated/cw-2026-09-24-003901 | in units | n 7, min 3.44, quartile 3.70, median 3.70, quartile 3.86, max 3.96
+ flip | unadjudicated/cw-2026-09-24-003901 | removed |   22.740 s | span 180 ms, 4.8 units | centroid 149 ms, 4.0 units | boundary 227 ms, 1.21 of centroid | textbook word from 172 ms
+ flip | unadjudicated/cw-2026-09-24-003901 | removed |   27.455 s | span 255 ms, 5.1 units | centroid 185 ms, 3.7 units | boundary 283 ms, 1.38 of centroid | textbook word from 229 ms
+ row | unadjudicated/cw-2026-09-24-003919 | 56 | 37 | 46 | NO | 4 | 4 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-003919 | entry  `    EI TEE TNXNIK       EANQNID        EANQNIK     `
+ text | unadjudicated/cw-2026-09-24-003919 | after  `    EITEETNXNIK        EANQNID        EANQNIK     `
+ text | unadjudicated/cw-2026-09-24-003919 | real   `    EITEETNXNIK       EANQNID        EANQNIK     `
+ centroid | unadjudicated/cw-2026-09-24-003919 | in units | n 46, min 0.48, quartile 3.31, median 3.56, quartile 3.70, max 4.34
+ flip | unadjudicated/cw-2026-09-24-003919 | removed |    5.040 s | span 175 ms, 5.8 units | centroid 130 ms, 4.3 units | boundary 199 ms, 1.34 of centroid | textbook word from 137 ms
+ flip | unadjudicated/cw-2026-09-24-003919 | removed |    5.875 s | span 255 ms, 4.9 units | centroid 195 ms, 3.7 units | boundary 297 ms, 1.31 of centroid | textbook word from 241 ms
+ flip | unadjudicated/cw-2026-09-24-003919 | removed |   18.650 s | span 1375 ms, 27.5 units | centroid 172 ms, 3.4 units | boundary 263 ms, 7.99 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-003919 | removed |   18.675 s | span 1395 ms, 24.3 units | centroid 165 ms, 2.9 units | boundary 252 ms, 8.45 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-003919 | added |   13.130 s | span 400 ms, 8.0 units | centroid 190 ms, 3.8 units | boundary 291 ms, 2.10 of centroid | held word from 553 ms
+ flip | unadjudicated/cw-2026-09-24-003919 | added |   18.955 s | span 280 ms, 5.3 units | centroid 164 ms, 3.1 units | boundary 251 ms, 1.71 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-003919 | added |   22.120 s | span 260 ms, 4.5 units | centroid 157 ms, 2.7 units | boundary 239 ms, 1.66 of centroid | held word from 293 ms
+ flip | unadjudicated/cw-2026-09-24-003919 | added |   28.045 s | span 245 ms, 5.4 units | centroid 150 ms, 3.3 units | boundary 229 ms, 1.63 of centroid | held word from 293 ms
+ row | unadjudicated/cw-2026-09-24-004027 | 56 | 0 | 38 | NO | 0 | 5 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004027 | entry  `QNE K  E E  2 G ■ 2G KA2G J V QNK CAT WI 2TN H RK 5 I HRRH CE Q`
+ text | unadjudicated/cw-2026-09-24-004027 | after  `QNE K  E E  2 G ■ 2G KA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q`
+ text | unadjudicated/cw-2026-09-24-004027 | real   `QNE K  E E  2 G ■ 2G KA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q`
+ centroid | unadjudicated/cw-2026-09-24-004027 | in units | n 38, min 2.88, quartile 3.55, median 3.67, quartile 3.79, max 5.31
+ flip | unadjudicated/cw-2026-09-24-004027 | removed |   13.970 s | span 240 ms, 4.8 units | centroid 233 ms, 4.7 units | boundary 356 ms, 1.03 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004027 | removed |   14.875 s | span 260 ms, 5.2 units | centroid 247 ms, 4.9 units | boundary 378 ms, 1.05 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004027 | removed |   20.750 s | span 255 ms, 5.1 units | centroid 183 ms, 3.7 units | boundary 280 ms, 1.39 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004027 | removed |   23.055 s | span 240 ms, 4.8 units | centroid 165 ms, 3.3 units | boundary 252 ms, 1.46 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004027 | removed |   27.815 s | span 260 ms, 5.0 units | centroid 195 ms, 3.7 units | boundary 298 ms, 1.33 of centroid | textbook word from 241 ms
+ row | unadjudicated/cw-2026-09-24-004108 | 56 | 0 | 43 | NO | 1 | 8 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004108 | entry  ` HR NR 2 0 R H X G K E 8 W G K 2 6 S T M W O H SEP 1 9 R I C`
+ text | unadjudicated/cw-2026-09-24-004108 | after  ` H R NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC`
+ text | unadjudicated/cw-2026-09-24-004108 | real   ` HR NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC`
+ centroid | unadjudicated/cw-2026-09-24-004108 | in units | n 43, min 2.29, quartile 3.19, median 3.19, quartile 5.14, max 6.05
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   19.090 s | span 315 ms, 5.7 units | centroid 291 ms, 5.3 units | boundary 445 ms, 1.08 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   19.560 s | span 315 ms, 5.7 units | centroid 311 ms, 5.7 units | boundary 475 ms, 1.01 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   20.370 s | span 435 ms, 7.9 units | centroid 312 ms, 5.7 units | boundary 477 ms, 1.39 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   22.415 s | span 270 ms, 4.9 units | centroid 301 ms, 5.5 units | boundary 460 ms, 0.90 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   25.230 s | span 395 ms, 7.2 units | centroid 281 ms, 5.1 units | boundary 429 ms, 1.41 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   26.440 s | span 285 ms, 5.2 units | centroid 279 ms, 5.1 units | boundary 426 ms, 1.02 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   28.915 s | span 335 ms, 6.1 units | centroid 283 ms, 5.1 units | boundary 432 ms, 1.19 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | removed |   29.385 s | span 320 ms, 5.8 units | centroid 283 ms, 5.1 units | boundary 432 ms, 1.13 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004108 | added |    1.110 s | span 215 ms, 4.1 units | centroid 126 ms, 2.4 units | boundary 192 ms, 1.71 of centroid | textbook word from 241 ms
+ row | unadjudicated/cw-2026-09-24-004133 | 56 | 28 | 26 | NO | 3 | 5 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004133 | entry  `1 9 R I C H AR T E T E ■ E G EL K 0 D T AT 5 0 0 5 H ■ 8 `
+ text | unadjudicated/cw-2026-09-24-004133 | after  `1 9 R I C H AR T E TE ■E GEL K 0 D T AT 5 0 0 5 H ■ 8 `
+ text | unadjudicated/cw-2026-09-24-004133 | real   `1 9 R I C H ARTETE■E GEL K 0 D T AT 5 0 0 5 H ■ 8 `
+ centroid | unadjudicated/cw-2026-09-24-004133 | in units | n 26, min 2.27, quartile 5.21, median 5.46, quartile 5.65, max 6.12
+ flip | unadjudicated/cw-2026-09-24-004133 | removed |    8.145 s | span 135 ms, 2.5 units | centroid 278 ms, 5.1 units | boundary 425 ms, 0.49 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004133 | removed |    8.445 s | span 180 ms, 3.3 units | centroid 278 ms, 5.1 units | boundary 425 ms, 0.65 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004133 | removed |    9.480 s | span 230 ms, 4.2 units | centroid 279 ms, 5.1 units | boundary 426 ms, 0.82 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004133 | removed |   10.785 s | span 185 ms, 3.4 units | centroid 295 ms, 5.4 units | boundary 451 ms, 0.63 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004133 | removed |   12.250 s | span 435 ms, 7.9 units | centroid 311 ms, 5.7 units | boundary 475 ms, 1.40 of centroid | held word from 358 ms
+ flip | unadjudicated/cw-2026-09-24-004133 | added |    7.990 s | span 730 ms, 13.3 units | centroid 278 ms, 5.1 units | boundary 425 ms, 2.62 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004133 | added |    9.230 s | span 745 ms, 13.5 units | centroid 279 ms, 5.1 units | boundary 426 ms, 2.67 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004133 | added |   11.335 s | span 480 ms, 8.7 units | centroid 306 ms, 5.6 units | boundary 467 ms, 1.57 of centroid | held word from 325 ms
+ row | unadjudicated/cw-2026-09-24-004205 | 56 | 0 | 51 | NO | 0 | 11 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004205 | entry  ` ■ EM M A HA NE 6 8 1 3 5 ■ E MAIR F J U G E L AT Y A H O O D O E`
+ text | unadjudicated/cw-2026-09-24-004205 | after  ` ■ EM M AHA NE 6 8 135 ■ EMAIR F JU G EL AT YAH OO DOE`
+ text | unadjudicated/cw-2026-09-24-004205 | real   ` ■ EM M AHA NE 6 8 135 ■ EMAIR F JU G EL AT YAH OO DOE`
+ centroid | unadjudicated/cw-2026-09-24-004205 | in units | n 51, min 3.85, quartile 4.58, median 4.90, quartile 5.38, max 5.55
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |    4.070 s | span 325 ms, 5.9 units | centroid 284 ms, 5.2 units | boundary 433 ms, 1.15 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   10.580 s | span 310 ms, 5.6 units | centroid 305 ms, 5.6 units | boundary 467 ms, 1.02 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   11.615 s | span 335 ms, 6.1 units | centroid 297 ms, 5.4 units | boundary 454 ms, 1.13 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   14.475 s | span 330 ms, 6.0 units | centroid 284 ms, 5.2 units | boundary 435 ms, 1.16 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   19.115 s | span 365 ms, 6.6 units | centroid 275 ms, 5.0 units | boundary 420 ms, 1.33 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   21.175 s | span 295 ms, 5.4 units | centroid 265 ms, 4.8 units | boundary 404 ms, 1.11 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   24.750 s | span 325 ms, 5.9 units | centroid 267 ms, 4.8 units | boundary 407 ms, 1.22 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   25.355 s | span 340 ms, 6.2 units | centroid 260 ms, 4.7 units | boundary 397 ms, 1.31 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   27.040 s | span 290 ms, 5.3 units | centroid 296 ms, 5.4 units | boundary 452 ms, 0.98 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   29.045 s | span 365 ms, 6.6 units | centroid 296 ms, 5.4 units | boundary 452 ms, 1.23 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004205 | removed |   29.905 s | span 260 ms, 4.7 units | centroid 296 ms, 5.4 units | boundary 452 ms, 0.88 of centroid | textbook word from 252 ms
+ row | unadjudicated/cw-2026-09-24-004234 | 56 | 44 | 37 | NO | 0 | 2 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004234 | entry  `E  C O M <BT> T HANTT TK■ET FOR O N H YPP N AIR QSO WITH W`
+ text | unadjudicated/cw-2026-09-24-004234 | after  `E  C O M <BT> T HANTT TK■ET FOR ON HYPP N AIR QSO WITH W`
+ text | unadjudicated/cw-2026-09-24-004234 | real   `E  C O M <BT> T HANTT TK■ET FOR ON HYPP N AIR QSO WITH W`
+ centroid | unadjudicated/cw-2026-09-24-004234 | in units | n 37, min 4.23, quartile 4.60, median 5.02, quartile 5.18, max 5.82
+ flip | unadjudicated/cw-2026-09-24-004234 | removed |   15.715 s | span 380 ms, 6.9 units | centroid 264 ms, 4.8 units | boundary 404 ms, 1.44 of centroid | held word from 358 ms
+ flip | unadjudicated/cw-2026-09-24-004234 | removed |   17.765 s | span 425 ms, 7.7 units | centroid 295 ms, 5.4 units | boundary 450 ms, 1.44 of centroid | held word from 358 ms
+ row | unadjudicated/cw-2026-09-24-004322 | 56 | 4 | 50 | NO | 0 | 12 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004322 | entry  `  P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S WILA`
+ text | unadjudicated/cw-2026-09-24-004322 | after  `  P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA`
+ text | unadjudicated/cw-2026-09-24-004322 | real   `  P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA`
+ centroid | unadjudicated/cw-2026-09-24-004322 | in units | n 50, min 4.14, quartile 4.40, median 4.65, quartile 4.77, max 5.00
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |    7.620 s | span 305 ms, 5.5 units | centroid 268 ms, 4.9 units | boundary 410 ms, 1.14 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |    8.250 s | span 260 ms, 4.7 units | centroid 267 ms, 4.9 units | boundary 408 ms, 0.97 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |    9.185 s | span 265 ms, 4.8 units | centroid 262 ms, 4.8 units | boundary 400 ms, 1.01 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |    9.595 s | span 260 ms, 4.7 units | centroid 262 ms, 4.8 units | boundary 401 ms, 0.99 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   12.525 s | span 310 ms, 5.6 units | centroid 256 ms, 4.7 units | boundary 391 ms, 1.21 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   17.005 s | span 320 ms, 5.8 units | centroid 258 ms, 4.7 units | boundary 394 ms, 1.24 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   18.495 s | span 315 ms, 5.7 units | centroid 256 ms, 4.7 units | boundary 392 ms, 1.23 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   18.915 s | span 270 ms, 4.9 units | centroid 256 ms, 4.6 units | boundary 390 ms, 1.06 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   19.345 s | span 275 ms, 5.0 units | centroid 254 ms, 4.6 units | boundary 388 ms, 1.08 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   25.435 s | span 325 ms, 5.9 units | centroid 244 ms, 4.4 units | boundary 372 ms, 1.33 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   26.305 s | span 275 ms, 5.0 units | centroid 248 ms, 4.5 units | boundary 379 ms, 1.11 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004322 | removed |   27.110 s | span 320 ms, 5.8 units | centroid 251 ms, 4.6 units | boundary 383 ms, 1.28 of centroid | textbook word from 252 ms
+ row | unadjudicated/cw-2026-09-24-004347 | 56 | 44 | 46 | NO | 0 | 2 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004347 | entry  `O G S W ILL BE U PLOADED TO ARRL L OO TW <BT> ANTHONY LUS N`
+ text | unadjudicated/cw-2026-09-24-004347 | after  `O G S W ILL BE U PLOADED TO ARRL L OOTW <BT> ANTHONY LUSN`
+ text | unadjudicated/cw-2026-09-24-004347 | real   `O G S W ILL BE UPLOADED TO ARRL L OOTW <BT> ANTHONY LUSN`
+ centroid | unadjudicated/cw-2026-09-24-004347 | in units | n 46, min 3.98, quartile 4.41, median 4.62, quartile 4.95, max 5.21
+ flip | unadjudicated/cw-2026-09-24-004347 | removed |   19.675 s | span 390 ms, 7.1 units | centroid 277 ms, 5.0 units | boundary 424 ms, 1.41 of centroid | held word from 358 ms
+ flip | unadjudicated/cw-2026-09-24-004347 | removed |   29.720 s | span 375 ms, 6.8 units | centroid 281 ms, 5.1 units | boundary 430 ms, 1.33 of centroid | held word from 358 ms
+ row | unadjudicated/cw-2026-09-24-004405 | 56 | 0 | 46 | NO | 0 | 16 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004405 | entry  `  T W <BT> A N T H ONY L U S C RE K 8 Z T W 1 A W / 88 ■ O OR D IN A T`
+ text | unadjudicated/cw-2026-09-24-004405 | after  `  T W <BT> A N T HONY LUSCRE K 8 Z T W1AW/88 ■OORDINAT`
+ text | unadjudicated/cw-2026-09-24-004405 | real   `  T W <BT> A N T HONY LUSCRE K 8 Z T W1AW/88 ■OORDINAT`
+ centroid | unadjudicated/cw-2026-09-24-004405 | in units | n 46, min 1.91, quartile 4.75, median 4.97, quartile 5.24, max 5.94
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |    6.830 s | span 280 ms, 4.9 units | centroid 282 ms, 4.9 units | boundary 431 ms, 0.99 of centroid | textbook word from 263 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   10.345 s | span 285 ms, 5.2 units | centroid 272 ms, 5.0 units | boundary 416 ms, 1.05 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   10.990 s | span 275 ms, 5.0 units | centroid 280 ms, 5.1 units | boundary 427 ms, 0.98 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   11.630 s | span 370 ms, 6.7 units | centroid 280 ms, 5.1 units | boundary 427 ms, 1.32 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   12.510 s | span 285 ms, 5.2 units | centroid 261 ms, 4.7 units | boundary 399 ms, 1.09 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   18.850 s | span 315 ms, 5.7 units | centroid 239 ms, 4.4 units | boundary 366 ms, 1.32 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   20.045 s | span 265 ms, 4.8 units | centroid 288 ms, 5.2 units | boundary 440 ms, 0.92 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   20.560 s | span 260 ms, 4.7 units | centroid 288 ms, 5.2 units | boundary 439 ms, 0.90 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   21.395 s | span 350 ms, 6.4 units | centroid 293 ms, 5.3 units | boundary 448 ms, 1.19 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   22.445 s | span 345 ms, 6.3 units | centroid 253 ms, 4.6 units | boundary 386 ms, 1.36 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   25.060 s | span 380 ms, 6.9 units | centroid 298 ms, 5.4 units | boundary 456 ms, 1.27 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   25.920 s | span 265 ms, 4.8 units | centroid 300 ms, 5.4 units | boundary 458 ms, 0.88 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   27.450 s | span 320 ms, 5.8 units | centroid 301 ms, 5.5 units | boundary 459 ms, 1.06 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   28.135 s | span 310 ms, 5.6 units | centroid 283 ms, 5.1 units | boundary 433 ms, 1.09 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   29.050 s | span 255 ms, 4.6 units | centroid 288 ms, 5.2 units | boundary 439 ms, 0.89 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004405 | removed |   29.660 s | span 345 ms, 6.3 units | centroid 288 ms, 5.2 units | boundary 439 ms, 1.20 of centroid | textbook word from 252 ms
+ row | unadjudicated/cw-2026-09-24-004427 | 56 | 0 | 54 | NO | 0 | 11 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004427 | entry  `■ F O OR D IN A T OR <AR> N QSL T N6 TBRE  C E DEWI2 G K88NET TU EAT`
+ text | unadjudicated/cw-2026-09-24-004427 | after  `■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2 G K88NET TU EAT`
+ text | unadjudicated/cw-2026-09-24-004427 | real   `■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2 G K88NET TU EAT`
+ centroid | unadjudicated/cw-2026-09-24-004427 | in units | n 54, min 3.08, quartile 3.41, median 3.69, quartile 5.01, max 5.45
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |    2.860 s | span 380 ms, 6.6 units | centroid 294 ms, 5.1 units | boundary 450 ms, 1.29 of centroid | textbook word from 263 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |    3.720 s | span 265 ms, 4.8 units | centroid 278 ms, 5.1 units | boundary 425 ms, 0.95 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |    5.250 s | span 320 ms, 5.8 units | centroid 279 ms, 5.1 units | boundary 427 ms, 1.15 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |    5.935 s | span 310 ms, 5.6 units | centroid 274 ms, 5.0 units | boundary 419 ms, 1.13 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |    6.850 s | span 255 ms, 4.6 units | centroid 284 ms, 5.2 units | boundary 434 ms, 0.90 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |    7.460 s | span 345 ms, 6.3 units | centroid 284 ms, 5.2 units | boundary 434 ms, 1.21 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |    7.925 s | span 310 ms, 5.6 units | centroid 240 ms, 4.4 units | boundary 366 ms, 1.29 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |   10.620 s | span 285 ms, 5.2 units | centroid 275 ms, 5.0 units | boundary 421 ms, 1.04 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |   14.425 s | span 320 ms, 5.6 units | centroid 213 ms, 3.7 units | boundary 326 ms, 1.50 of centroid | textbook word from 263 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |   15.830 s | span 305 ms, 5.1 units | centroid 244 ms, 4.1 units | boundary 372 ms, 1.25 of centroid | textbook word from 275 ms
+ flip | unadjudicated/cw-2026-09-24-004427 | removed |   17.500 s | span 275 ms, 4.8 units | centroid 188 ms, 3.3 units | boundary 287 ms, 1.46 of centroid | textbook word from 263 ms
+ row | unadjudicated/cw-2026-09-24-004510 | 56 | 0 | 52 | NO | 0 | 7 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004510 | entry  `  1U RLTT   S S B YAK YAK  E  KA2  GJV T QNV AA3S B SE I`
+ text | unadjudicated/cw-2026-09-24-004510 | after  `  1U RLTT  S SB YAKYAK  E  KA2GJV TQNV AA3SB SE I`
+ text | unadjudicated/cw-2026-09-24-004510 | real   `  1U RLTT  S SB YAKYAK  E  KA2GJV TQNV AA3SB SE I`
+ centroid | unadjudicated/cw-2026-09-24-004510 | in units | n 52, min 3.71, quartile 4.30, median 4.68, quartile 5.07, max 5.54
+ flip | unadjudicated/cw-2026-09-24-004510 | removed |    7.235 s | span 305 ms, 6.1 units | centroid 263 ms, 5.3 units | boundary 402 ms, 1.16 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004510 | removed |    8.715 s | span 275 ms, 5.5 units | centroid 265 ms, 5.3 units | boundary 404 ms, 1.04 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004510 | removed |   12.105 s | span 305 ms, 6.1 units | centroid 245 ms, 4.9 units | boundary 374 ms, 1.25 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004510 | removed |   19.830 s | span 270 ms, 5.1 units | centroid 239 ms, 4.5 units | boundary 365 ms, 1.13 of centroid | textbook word from 241 ms
+ flip | unadjudicated/cw-2026-09-24-004510 | removed |   19.835 s | span 275 ms, 5.2 units | centroid 216 ms, 4.1 units | boundary 329 ms, 1.28 of centroid | textbook word from 241 ms
+ flip | unadjudicated/cw-2026-09-24-004510 | removed |   22.960 s | span 325 ms, 6.5 units | centroid 236 ms, 4.7 units | boundary 361 ms, 1.38 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004510 | removed |   27.390 s | span 255 ms, 5.1 units | centroid 199 ms, 4.0 units | boundary 304 ms, 1.28 of centroid | textbook word from 229 ms
+ row | unadjudicated/cw-2026-09-24-004535 | 56 | 20 | 37 | NO | 0 | 6 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004535 | entry  `AA3S B SE I F OK DN5 DN■ EEE DN5 EIN5 3RN 1 TH N B O TEI NANX K A 3HT`
+ text | unadjudicated/cw-2026-09-24-004535 | after  `AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN 1 TH N B O TEI NANX K A3HT`
+ text | unadjudicated/cw-2026-09-24-004535 | real   `AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN 1 TH N B O TEI NANX K A3HT`
+ centroid | unadjudicated/cw-2026-09-24-004535 | in units | n 37, min 2.92, quartile 3.82, median 4.22, quartile 4.76, max 5.08
+ flip | unadjudicated/cw-2026-09-24-004535 | removed |    2.270 s | span 255 ms, 5.1 units | centroid 193 ms, 3.9 units | boundary 295 ms, 1.32 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004535 | removed |    4.975 s | span 245 ms, 4.9 units | centroid 200 ms, 4.0 units | boundary 305 ms, 1.23 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004535 | removed |    5.690 s | span 270 ms, 5.4 units | centroid 202 ms, 4.0 units | boundary 308 ms, 1.34 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004535 | removed |   13.085 s | span 375 ms, 7.5 units | centroid 253 ms, 5.1 units | boundary 386 ms, 1.48 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004535 | removed |   15.010 s | span 365 ms, 7.3 units | centroid 244 ms, 4.9 units | boundary 373 ms, 1.50 of centroid | held word from 325 ms
+ flip | unadjudicated/cw-2026-09-24-004535 | removed |   28.440 s | span 245 ms, 4.7 units | centroid 162 ms, 3.1 units | boundary 248 ms, 1.51 of centroid | textbook word from 241 ms
+ row | unadjudicated/cw-2026-09-24-004550 | 56 | 0 | 48 | NO | 4 | 3 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-24-004550 | entry  `I N 5 3RN 1 TH N B O TEI NANX K A 3HB DE KA2 GJV HW ROBIN?    T `
+ text | unadjudicated/cw-2026-09-24-004550 | after  `I N 5 3RN 1 TH N B OTEI NANX K A3HB DE KA2 G JV HW RO B IN ?   T `
+ text | unadjudicated/cw-2026-09-24-004550 | real   `I N 5 3RN 1 TH N B OTEI NANX K A3HB DE KA2 GJV HW ROBIN?   T `
+ centroid | unadjudicated/cw-2026-09-24-004550 | in units | n 48, min 2.78, quartile 2.95, median 3.09, quartile 3.34, max 4.06
+ flip | unadjudicated/cw-2026-09-24-004550 | removed |    8.360 s | span 235 ms, 4.7 units | centroid 167 ms, 3.3 units | boundary 255 ms, 1.41 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004550 | removed |   13.310 s | span 245 ms, 4.9 units | centroid 176 ms, 3.5 units | boundary 269 ms, 1.39 of centroid | textbook word from 229 ms
+ flip | unadjudicated/cw-2026-09-24-004550 | removed |   29.335 s | span 270 ms, 4.9 units | centroid 192 ms, 3.5 units | boundary 293 ms, 1.41 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004550 | added |   19.365 s | span 245 ms, 4.5 units | centroid 157 ms, 2.9 units | boundary 240 ms, 1.56 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004550 | added |   23.845 s | span 240 ms, 4.4 units | centroid 153 ms, 2.8 units | boundary 233 ms, 1.57 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004550 | added |   24.580 s | span 250 ms, 4.5 units | centroid 153 ms, 2.8 units | boundary 233 ms, 1.64 of centroid | textbook word from 252 ms
+ flip | unadjudicated/cw-2026-09-24-004550 | added |   25.405 s | span 240 ms, 4.4 units | centroid 153 ms, 2.8 units | boundary 233 ms, 1.57 of centroid | textbook word from 252 ms
+ row | unadjudicated/cw-2026-09-23-173723 | 56 | 18 | 32 | NO | 1 | 1 | 0 | 0 | 0
+ text | unadjudicated/cw-2026-09-23-173723 | entry  ` T EABNIREDWBZ WB6RED CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I`
+ text | unadjudicated/cw-2026-09-23-173723 | after  ` T EABNIREDWBZ WB6 RED CQ CQ CQ DE WT E E T E  E ERE D E T T TB 7E E I`
+ text | unadjudicated/cw-2026-09-23-173723 | real   ` T EABNIREDWBZ WB6RED CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`
+ centroid | unadjudicated/cw-2026-09-23-173723 | in units | n 32, min 1.93, quartile 2.52, median 2.69, quartile 3.17, max 3.32
+ flip | unadjudicated/cw-2026-09-23-173723 | removed |   22.370 s | span 320 ms, 4.6 units | centroid 230 ms, 3.3 units | boundary 351 ms, 1.39 of centroid | held word from 303 ms
+ flip | unadjudicated/cw-2026-09-23-173723 | added |   11.335 s | span 260 ms, 3.7 units | centroid 153 ms, 2.2 units | boundary 234 ms, 1.70 of centroid | textbook word from 321 ms
+ summary | 52 recordings | emulation matches what settled on 17 | spaces added 31 | spaces removed 136 | letters moved with the relabel before the settle loop 0 | after it 0 | named at entry 1773
+
+
+[xUnit.net 00:02:47.25]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSpaceIsDecidedTests.TheSpansTheBoundaryIsChosenFrom [23 s]
+  Standard Output Messages:
+ aligned | unadjudicated/cw-2026-09-24-004108 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004133 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004205 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004234 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004322 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004347 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004405 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004427 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004510 | the list walked equals what really settled | yes
+ aligned | unadjudicated/cw-2026-09-24-004550 | the list walked equals what really settled | yes
+ every gap between two marks at the read it settled, the ten and 17:37, span over the measured character centroid, no key:
+ heap | 0.2 to 0.3 |    0 | path word   0 | 
+ heap | 0.3 to 0.4 |    3 | path word   0 | ###
+ heap | 0.4 to 0.5 |    6 | path word   2 | ######
+ heap | 0.5 to 0.6 |    5 | path word   0 | #####
+ heap | 0.6 to 0.7 |   10 | path word   2 | ##########
+ heap | 0.7 to 0.8 |   16 | path word   0 | ################
+ heap | 0.8 to 0.9 |   42 | path word   7 | ##########################################
+ heap | 0.9 to 1.0 |   31 | path word   8 | ###############################
+ heap | 1.0 to 1.1 |   31 | path word  14 | ###############################
+ heap | 1.1 to 1.2 |   32 | path word  16 | ################################
+ heap | 1.2 to 1.3 |   29 | path word  16 | #############################
+ heap | 1.3 to 1.4 |   18 | path word  13 | ##################
+ heap | 1.4 to 1.5 |   16 | path word   9 | ################
+ heap | 1.5 to 1.6 |   13 | path word   8 | #############
+ heap | 1.6 to 1.7 |    7 | path word   6 | #######
+ heap | 1.7 to 1.8 |    8 | path word   7 | ########
+ heap | 1.8 to 1.9 |    4 | path word   4 | ####
+ heap | 1.9 to 2.0 |    6 | path word   6 | ######
+ heap | 2.0 to 2.1 |    5 | path word   5 | #####
+ heap | 2.1 to 2.2 |    7 | path word   7 | #######
+ heap | 2.2 to 2.3 |   10 | path word  10 | ##########
+ heap | 2.3 to 2.4 |    8 | path word   8 | ########
+ heap | 2.4 to 2.5 |    0 | path word   0 | 
+ heap | 2.5 to 2.6 |    5 | path word   5 | #####
+ heap | 2.6 to 2.7 |    8 | path word   7 | ########
+ heap | 2.7 to 2.8 |   12 | path word  12 | ############
+ heap | 2.8 to 2.9 |   11 | path word  11 | ###########
+ heap | 2.9 to 3.0 |    3 | path word   3 | ###
+ heap | 3.0 to 3.1 |    4 | path word   4 | ####
+ heap | 3.1 to 3.2 |   10 | path word  10 | ##########
+ heap | 3.2 to 3.3 |    6 | path word   6 | ######
+ heap | 3.3 to 3.4 |    9 | path word   9 | #########
+ heap | 3.4 to 3.5 |    3 | path word   3 | ###
+ heap | 3.5 to 3.6 |    4 | path word   4 | ####
+ heap | 3.6 to 3.7 |    3 | path word   3 | ###
+ heap | 3.7 to 3.8 |    1 | path word   1 | #
+ heap | 3.8 to 3.9 |    7 | path word   7 | #######
+ heap | 3.9 to 4.0 |    1 | path word   1 | #
+ heap | 4.0 and over | 4
+ heap | no centroid measured | 177 of 575
+ summary | the ten | boundaries 101 | inserted 10 | missing 1 | word kept 18 | joined 72 | no gap found 0 | no centroid 24
+ spread | the ten | inserted | span over centroid | n 3, min 1.55, quartile 1.55, median 1.65, quartile 1.87, max 1.87
+ spread | the ten | inserted | span in units | n 3, min 4.73, quartile 4.73, median 7.82, quartile 9.27, max 9.27
+ spread | the ten | inserted | centroid in units | n 3, min 2.86, quartile 2.86, median 4.95, quartile 5.03, max 5.03
+ spread | the ten | joined | span over centroid | n 64, min 0.70, quartile 0.88, median 1.06, quartile 1.23, max 1.56
+ spread | the ten | joined | span in units | n 64, min 3.00, quartile 4.09, median 4.55, quartile 5.57, max 7.18
+ spread | the ten | joined | centroid in units | n 64, min 2.84, quartile 4.28, median 4.62, quartile 4.82, max 5.47
+ spread | the ten | word kept | span over centroid | n 10, min 2.00, quartile 2.21, median 2.70, quartile 2.99, max 3.23
+ spread | the ten | word kept | span in units | n 10, min 5.81, quartile 11.64, median 12.18, quartile 14.00, max 15.09
+ spread | the ten | word kept | centroid in units | n 10, min 2.90, quartile 4.33, median 4.40, quartile 4.72, max 5.52
+ spread | the ten | missing | span over centroid | none
+ spread | the ten | missing | span in units | none
+ spread | the ten | missing | centroid in units | none
+ blind | the ten | inserted | no centroid 7 | held 0 | span in units n 7, min 4.73, quartile 5.73, median 6.00, quartile 6.09, max 13.45 | span over the word-from boundary n 7, min 1.03, quartile 1.25, median 1.31, quartile 1.33, max 2.94
+ blind | the ten | joined | no centroid 8 | held 2 | span in units n 8, min 3.18, quartile 3.36, median 3.65, quartile 3.91, max 4.36 | span over the word-from boundary n 8, min 0.56, quartile 0.71, median 0.75, quartile 0.85, max 0.95
+ blind | the ten | word kept | no centroid 8 | held 0 | span in units n 8, min 5.00, quartile 7.00, median 8.36, quartile 9.48, max 15.36 | span over the word-from boundary n 8, min 1.09, quartile 1.53, median 1.83, quartile 2.07, max 3.35
+ at | the ten | 1.300 | inserted joined 0 of 3 | word kept lost 0 of 10 | joined split 10 of 64 | missing restored 0 of 0
+ at | the ten | 1.400 | inserted joined 0 of 3 | word kept lost 0 of 10 | joined split 6 of 64 | missing restored 0 of 0
+ at | the ten | 1.528 | inserted joined 0 of 3 | word kept lost 0 of 10 | joined split 1 of 64 | missing restored 0 of 0
+ at | the ten | 1.600 | inserted joined 1 of 3 | word kept lost 0 of 10 | joined split 0 of 64 | missing restored 0 of 0
+ at | the ten | 1.650 | inserted joined 1 of 3 | word kept lost 0 of 10 | joined split 0 of 64 | missing restored 0 of 0
+ at | the ten | 1.700 | inserted joined 2 of 3 | word kept lost 0 of 10 | joined split 0 of 64 | missing restored 0 of 0
+ at | the ten | 1.800 | inserted joined 2 of 3 | word kept lost 0 of 10 | joined split 0 of 64 | missing restored 0 of 0
+ at | the ten | 2.000 | inserted joined 3 of 3 | word kept lost 0 of 10 | joined split 0 of 64 | missing restored 0 of 0
+ summary | 17:37 | boundaries 27 | inserted 4 | missing 1 | word kept 4 | joined 18 | no gap found 1 | no centroid 18
+ spread | 17:37 | inserted | span over centroid | none
+ spread | 17:37 | inserted | span in units | none
+ spread | 17:37 | inserted | centroid in units | none
+ spread | 17:37 | joined | span over centroid | n 5, min 1.05, quartile 1.06, median 1.14, quartile 1.20, max 1.39
+ spread | 17:37 | joined | span in units | n 5, min 3.36, quartile 3.50, median 3.64, quartile 3.93, max 4.57
+ spread | 17:37 | joined | centroid in units | n 5, min 3.19, quartile 3.19, median 3.29, quartile 3.29, max 3.29
+ spread | 17:37 | word kept | span over centroid | n 3, min 1.66, quartile 1.66, median 1.94, quartile 2.30, max 2.30
+ spread | 17:37 | word kept | span in units | n 3, min 5.50, quartile 5.50, median 6.14, quartile 7.10, max 7.10
+ spread | 17:37 | word kept | centroid in units | n 3, min 3.08, quartile 3.08, median 3.17, quartile 3.32, max 3.32
+ spread | 17:37 | missing | span over centroid | none
+ spread | 17:37 | missing | span in units | none
+ spread | 17:37 | missing | centroid in units | none
+ blind | 17:37 | inserted | no centroid 4 | held 4 | span in units n 4, min 3.57, quartile 3.71, median 3.86, quartile 3.86, max 4.07 | span over the word-from boundary n 4, min 1.02, quartile 1.06, median 1.10, quartile 1.10, max 1.16
+ blind | 17:37 | joined | no centroid 12 | held 11 | span in units n 12, min 1.57, quartile 1.86, median 3.07, quartile 3.07, max 4.71 | span over the word-from boundary n 12, min 0.24, quartile 0.32, median 0.53, quartile 0.70, max 0.88
+ blind | 17:37 | word kept | no centroid 1 | held 1 | span in units n 1, min 4.83, quartile 4.83, median 4.83, quartile 4.83, max 4.83 | span over the word-from boundary n 1, min 1.38, quartile 1.38, median 1.38, quartile 1.38, max 1.38
+ at | 17:37 | 1.300 | inserted joined 0 of 0 | word kept lost 0 of 3 | joined split 1 of 5 | missing restored 0 of 0
+ at | 17:37 | 1.400 | inserted joined 0 of 0 | word kept lost 0 of 3 | joined split 0 of 5 | missing restored 0 of 0
+ at | 17:37 | 1.528 | inserted joined 0 of 0 | word kept lost 0 of 3 | joined split 0 of 5 | missing restored 0 of 0
+ at | 17:37 | 1.600 | inserted joined 0 of 0 | word kept lost 0 of 3 | joined split 0 of 5 | missing restored 0 of 0
+ at | 17:37 | 1.650 | inserted joined 0 of 0 | word kept lost 0 of 3 | joined split 0 of 5 | missing restored 0 of 0
+ at | 17:37 | 1.700 | inserted joined 0 of 0 | word kept lost 1 of 3 | joined split 0 of 5 | missing restored 0 of 0
+ at | 17:37 | 1.800 | inserted joined 0 of 0 | word kept lost 1 of 3 | joined split 0 of 5 | missing restored 0 of 0
+ at | 17:37 | 2.000 | inserted joined 0 of 0 | word kept lost 2 of 3 | joined split 0 of 5 | missing restored 0 of 0
+ summary | all | boundaries 128 | inserted 14 | missing 2 | word kept 22 | joined 90 | no gap found 1 | no centroid 42
+ spread | all | inserted | span over centroid | n 3, min 1.55, quartile 1.55, median 1.65, quartile 1.87, max 1.87
+ spread | all | inserted | span in units | n 3, min 4.73, quartile 4.73, median 7.82, quartile 9.27, max 9.27
+ spread | all | inserted | centroid in units | n 3, min 2.86, quartile 2.86, median 4.95, quartile 5.03, max 5.03
+ spread | all | joined | span over centroid | n 69, min 0.70, quartile 0.89, median 1.06, quartile 1.23, max 1.56
+ spread | all | joined | span in units | n 69, min 3.00, quartile 3.90, median 4.50, quartile 5.55, max 7.18
+ spread | all | joined | centroid in units | n 69, min 2.84, quartile 4.14, median 4.56, quartile 4.81, max 5.47
+ spread | all | word kept | span over centroid | n 13, min 1.66, quartile 2.21, median 2.66, quartile 2.75, max 3.23
+ spread | all | word kept | span in units | n 13, min 5.50, quartile 7.10, median 11.91, quartile 12.73, max 15.09
+ spread | all | word kept | centroid in units | n 13, min 2.90, quartile 3.32, median 4.37, quartile 4.68, max 5.52
+ spread | all | missing | span over centroid | none
+ spread | all | missing | span in units | none
+ spread | all | missing | centroid in units | none
+ blind | all | inserted | no centroid 11 | held 4 | span in units n 11, min 3.57, quartile 3.86, median 5.27, quartile 6.09, max 13.45 | span over the word-from boundary n 11, min 1.02, quartile 1.06, median 1.16, quartile 1.33, max 2.94
+ blind | all | joined | no centroid 20 | held 13 | span in units n 20, min 1.57, quartile 3.00, median 3.27, quartile 3.65, max 4.71 | span over the word-from boundary n 20, min 0.24, quartile 0.53, median 0.70, quartile 0.75, max 0.95
+ blind | all | word kept | no centroid 9 | held 1 | span in units n 9, min 4.83, quartile 5.91, median 7.36, quartile 9.48, max 15.36 | span over the word-from boundary n 9, min 1.09, quartile 1.38, median 1.61, quartile 2.07, max 3.35
+ at | all | 1.300 | inserted joined 0 of 3 | word kept lost 0 of 13 | joined split 11 of 69 | missing restored 0 of 0
+ at | all | 1.400 | inserted joined 0 of 3 | word kept lost 0 of 13 | joined split 6 of 69 | missing restored 0 of 0
+ at | all | 1.528 | inserted joined 0 of 3 | word kept lost 0 of 13 | joined split 1 of 69 | missing restored 0 of 0
+ at | all | 1.600 | inserted joined 1 of 3 | word kept lost 0 of 13 | joined split 0 of 69 | missing restored 0 of 0
+ at | all | 1.650 | inserted joined 1 of 3 | word kept lost 0 of 13 | joined split 0 of 69 | missing restored 0 of 0
+ at | all | 1.700 | inserted joined 2 of 3 | word kept lost 1 of 13 | joined split 0 of 69 | missing restored 0 of 0
+ at | all | 1.800 | inserted joined 2 of 3 | word kept lost 1 of 13 | joined split 0 of 69 | missing restored 0 of 0
+ at | all | 2.000 | inserted joined 3 of 3 | word kept lost 2 of 13 | joined split 0 of 69 | missing restored 0 of 0
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 2.7918 Minutes
+RC=0 WALL=168s
