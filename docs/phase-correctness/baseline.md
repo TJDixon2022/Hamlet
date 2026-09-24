@@ -220,3 +220,51 @@ captures on the bench 60 over 156. The two changes built and taken out:
 | none, entry and exit | 217 | 33 | 29 | 124 | 60 | 13 of 13 | identical | 51 of 51 | |
 | candidate 1, word gap seven thirds of the character gap without a word trough | 207 | 33 | 29 | 128 | 46 | 13 of 13 | identical | 41 of 51, five rows fewer named | no |
 | G1, an out-of-order held reading refused | 193 | 15 | 11 | 115 | 63 | 12 of 13, 17:37 46 to 38 | identical | 50 of 51, 004133 30 to 25 named | no |
+
+## Synthetic, exact keys - outside every total (1.1, 1.2, 1.4)
+
+**No synthetic case is ever the sole evidence for keeping a change** (PHASE_PLAN.md 1.4 and
+section 6, CLAUDE.md 12.5). **None of these rows is in any total above, including the 217
+that 3.2 judges** (PARKED.md P7): a change that improves only synthetics must not be able to
+satisfy 3.2's first test. What these cases cannot prove is written in
+[`synthetic-cq.md`](synthetic-cq.md).
+
+**Unit 414, the decoder as at entry HEAD `5f8d48b0`**, `src` unchanged in the unit. Nine CQ calls,
+`CQ CQ CQ DE N0CALL N0CALL K`, generated at 12, 18 and 25 wpm by 15, 5 and 0 dB in the
+passband, textbook spacing 1 : 3 : 1 : 3 : 7 from the dit, one fixed seed each. **Every key is
+exact by construction**: the generator knows what it sent. Each WAV, sidecar and `.key.md`
+with its full recipe is in `tests/fixtures/cw/synthetic-cq/`; `TheSyntheticCqRebuildsTests`
+holds each WAV byte for byte to its recipe and `TheSyntheticCqIsScoredTests` prints this
+table, asserting no edit count. The decode is `CwDecoder` fed hop by hop from 600 Hz, the
+floors' path. **The scored region is the whole decode against the whole key**
+(`CwScorer.Whole`), gaps at the two ends trimmed; `Within` is beside it for comparison.
+
+The levels are the fixture catalogue's three tiers - 15 comfortable, 5 where the recorded
+station sat, 0 the edge of HM-DEC-097 - each confirmed as rendered before the set was built
+(`WhatTheGeneratorMakesTests`: 14.99 dB at 12 wpm and -0.01 dB at 25 wpm, taken apart into
+tone and noise, every gap within 0.3 ms of its recipe and the 5 ms edges). None was chosen
+from a decode.
+
+| case | wpm | SNR in passband | edits | scored length | key | unsure per named | `Within` edits | decode |
+|---|---|---|---|---|---|---|---|---|
+| cq-12wpm-15db | 12 | 15 dB | 0 | 27 | exact | 0 per 21 | 0 | `CQ CQ CQ DE N0CALL N0CALL K` |
+| cq-12wpm-5db | 12 | 5 dB | 5 | 27 | exact | 0 per 23 | 1 | `CQ CQ CQ DE N0CALL N0CALL T E A` |
+| cq-12wpm-0db | 12 | 0 dB | 27 | 27 | exact | nothing named | 27 | empty |
+| cq-18wpm-15db | 18 | 15 dB | 13 | 27 | exact | 0 per 26 | 4 | `CQ CQ CQ DE N0CALL N0C E T E T E ELT K` |
+| cq-18wpm-5db | 18 | 5 dB | 1 | 27 | exact | 1 per 20 | 1 | `■Q CQ CQ DE N0CALL N0CALL K` |
+| cq-18wpm-0db | 18 | 0 dB | 27 | 27 | exact | nothing named | 27 | empty |
+| cq-25wpm-15db | 25 | 15 dB | 1 | 27 | exact | 0 per 22 | 0 | `CQ CQ CQ DE N0CALL N0CALL KK` |
+| cq-25wpm-5db | 25 | 5 dB | 1 | 27 | exact | 0 per 22 | 0 | `CQ CQ CQ DE N0CALL N0CALL KK` |
+| cq-25wpm-0db | 25 | 0 dB | 27 | 27 | exact | nothing named | 27 | empty |
+| **grid** | | | **102** | **243** | **exact** | **1 per 134** | | |
+
+**What it says, against exact keys.** At 15 and 5 dB four of the six cases read the call with
+at most one edit: 12 wpm at 15 dB with none; 18 wpm at 5 dB with its first `C` a placeholder;
+25 wpm at both levels with a second `K` printed after the call. 12 wpm at 5 dB reads the call
+to its last word and then reads `K` as `T` and adds `E A`, 5 edits. **18 wpm at 15 dB splits the
+second `N0CALL` into `N0C E T E T E ELT`, 13 edits, 6 of them spaces added** - the split step 3
+is attacking, on a strong steady signal at textbook spacing, while the same speed at 5 dB reads
+it whole. **At 0 dB the decoder prints nothing at any speed**, 27 edits over 27 each, 21
+characters missing and 6 spaces: it goes silent rather than wrong. So a clean CQ is lost
+somewhere between 5 and 0 dB in the passband; this set does not say where, and finding it by
+sweeping the decode would be choosing a level from the decode.

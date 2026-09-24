@@ -201,11 +201,19 @@ public static class SyntheticCq
         text.Append(string.Create(i, $"| Name | `{recipe.Name}` |\n"));
         text.Append(string.Create(i, $"| Text | `{recipe.Text}` |\n"));
         text.Append(string.Create(i, $"| speed | {recipe.WordsPerMinute:0} wpm, the dit 1200 / {recipe.WordsPerMinute:0} = {dit:0.###} ms |\n"));
-        text.Append(string.Create(i, $"| DitMilliseconds | {dit:0.###}, one unit |\n"));
-        text.Append(string.Create(i, $"| DahMilliseconds | {recipe.DahMilliseconds:0.###}, {recipe.DahMilliseconds / dit:0.##} units |\n"));
-        text.Append(string.Create(i, $"| ElementGapMilliseconds | {recipe.ElementGapMilliseconds:0.###}, {recipe.ElementGapMilliseconds / dit:0.##} unit |\n"));
-        text.Append(string.Create(i, $"| CharacterGapMilliseconds | {recipe.CharacterGapMilliseconds:0.###}, {recipe.CharacterGapMilliseconds / dit:0.##} units |\n"));
-        text.Append(string.Create(i, $"| WordGapMilliseconds | {recipe.WordGapMilliseconds:0.###}, {recipe.WordGapMilliseconds / dit:0.##} units |\n"));
+        string Units(double ms, string what)
+        {
+            var units = ms / dit;
+
+            return string.Create(i,
+                $"| {what} | {(units == 1 ? $"1200.0 / {recipe.WordsPerMinute:0}" : $"{units:0} x (1200.0 / {recipe.WordsPerMinute:0})")}, {ms:0.###} to three places, {units:0} unit{(units == 1 ? "" : "s")} |\n");
+        }
+
+        text.Append(Units(dit, "DitMilliseconds"));
+        text.Append(Units(recipe.DahMilliseconds, "DahMilliseconds"));
+        text.Append(Units(recipe.ElementGapMilliseconds, "ElementGapMilliseconds"));
+        text.Append(Units(recipe.CharacterGapMilliseconds, "CharacterGapMilliseconds"));
+        text.Append(Units(recipe.WordGapMilliseconds, "WordGapMilliseconds"));
         text.Append(string.Create(i, $"| SignalToNoiseDb | {recipe.SignalToNoiseDb:0.0}, tone RMS over noise RMS inside the 350-870 Hz passband |\n"));
         text.Append(string.Create(i, $"| ToneHz | {recipe.ToneHz:0} |\n"));
         text.Append(string.Create(i, $"| DriftHz | {recipe.DriftHz:0}, either side, over 10 s |\n"));

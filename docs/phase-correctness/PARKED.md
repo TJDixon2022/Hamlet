@@ -81,3 +81,28 @@ as written. It is the measurement a ruling would need if the owner wants the ele
 or edits with the unsure-per-named guard, to carry the cost check for a joining change.
 Under 3.4 this is unit one of three without a kept change. Comes back when the arbiter
 authors step 3's next unit.
+
+## P7 - whether the synthetic CQ calls ever join the total 3.2 judges
+
+**Raised by unit 414, 2026-09-24.** Unit 414 scored nine synthetic CQ calls against exact keys,
+102 edits over 243 characters, and tabled them in `baseline.md` under their own heading,
+**outside every total, including the 217 over 565 that 3.2 judges**. The reason is 1.4: no
+synthetic case is ever the sole evidence for keeping a change, and a synthetic row inside the
+total would let a change that improves only synthetics satisfy 3.2's first test. **Author's,
+overrulable: they stay out.** Whether they ever join it, or join a second total that 3.2 reads
+beside the first, is the owner's. Comes back when a ruling asks for it, or when a step 3 unit
+wants exact-key evidence beside the inferred.
+
+## P8 - the synthetic CQ calls carry no reference score
+
+**Raised by unit 414, 2026-09-24.** HM-DEC-101 and CLAUDE.md 12.5 say a reference
+implementation must score well on a generated fixture before it judges Hamlet. The gate that
+enforces it, `CwFixtureCommitTests.TheReferenceHasScoredThisFixture`, reads a committed
+`reference` line that `tools/score-fixtures/score-fixtures.py` writes by running `cwdecoder.py`,
+and it covers the catalogue's fixtures in `tests/fixtures/cw/receiver` only. **Python cannot
+run in a loop session**, so the nine cases in `tests/fixtures/cw/synthetic-cq` have no
+reference line. They judge nothing yet: no floor, no assertion on a score, outside every
+total. Before any of them is used to judge a change, somebody runs the reference over them.
+The catalogue's own record says the reference could not read textbook spacing at 18 wpm (a
+dit-to-dah ratio measured at 2.45, under its 2.5 floor), so it may refuse some of these.
+Comes back before any synthetic case is used as evidence for a change.
