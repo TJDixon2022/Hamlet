@@ -111,6 +111,30 @@ different criterion rather than halting**, and step 3's three-failure rule stand
 spacing cannot eat the night. Order of preference when nothing is blocked: **the spacing
 first**, then the screen.
 
+**R65 - Tim, 2026-09-24: the RF gain scale is licensed, and nothing carried ever halts the
+loop.** Two parts, and the second governs every unit of this phase.
+
+**One: the RF gain ask is answered.** `ReceiverSetup` and `Ic7300Rig.SetSettingAsync` may
+compare the RF gain on a single scale - the condition in percent, or the read-back in raw
+units - so that a gain already where it should be is recognized as such. **The change makes
+the app write less to the radio, not more**, and nothing about keying, transmitting or
+power is touched. Unit 411's item 1 is answered and leaves the carried list (HM-DEC-139).
+
+**Two: a carried ask never stops the loop.** A stop 3 is legitimate only when **a criterion
+of the step the unit is working cannot be met without a ruling on one of the three**.
+Everything else - a carried ask, a question a report raises in section 4, a finding a unit
+noticed on the way past, an item already in `PARKED.md` - is parked and the loop goes on,
+however squarely it touches keying, transmit, money or a product fact. **A unit does not
+carry an ask forward into its own report as blocking unless the criterion it was authored
+for is the one that cannot be met.** This was already R54's intent; R65 states it as a rule
+the arbiter applies to the stop itself.
+
+**Three: no unit halts for want of work.** When the criterion a unit was authored for
+cannot be advanced, the arbiter authors the next unit against a different open criterion
+(R64). Six are open and independent: 1.1 to 1.5 the synthetic keys, 3.1 to 3.5 the spacing,
+4.1 to 4.4 the pitch judge, 6.3 the reflow, 6.4 the hover text, 6.5 the dead button, 6.7
+tonePeak. **Preference when nothing is blocked: the spacing first, then the screen.**
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -221,6 +245,7 @@ says - never the whole suite.
 - [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
 - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
 - [ ] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
+- [ ] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
 - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
 - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
 - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
@@ -242,6 +267,13 @@ halt.
   fact the product states to the operator about a signal, a station or a send. A test's
   shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
 - **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
+  without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
+  finding noticed on the way past **never halts the loop**, whatever it touches. The
+  arbiter parks it and authors the next unit.
+- **When a unit cannot advance its criterion, the next unit is authored against a different
+  open criterion** (R64, R65). The loop halts only at stop 1, when nothing but the owner's
+  verdict is left.
 - **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
   touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
 - **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
@@ -280,6 +312,11 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
+  a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
+  only when the criterion being worked needs the ruling. Written after unit 412 completed
+  its work and the loop halted at stop 3 on an ask 412 had carried rather than on anything
+  blocking a criterion.
 - **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
   measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
   the keys by differencing, 2.5 the floors, 6.7 tonePeak.

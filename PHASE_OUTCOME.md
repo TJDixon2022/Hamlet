@@ -98,3 +98,20 @@ STATE_AFTER: partial
 STATE_WHY: Criteria 6.1 and 6.6 are met with quoted sentences and measured runs, 6.2 stays open on tonePeak, and 6.3, 6.4 and 6.5 have not been started.
 ADVANCED: yes
 ATTEMPT: 6.1 | unit 1 launched 2026-09-24T00:45:09.815Z | yes | executed | make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+
+## UNIT 1 - STEP 2
+
+STEP: 2
+APPROACH: bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
+HIT: section 4 wants a ruling: yes - Item 1 asks the owner to decide a change to what is written to the radio and to what the product records and reports as true about the RF gain setting, which falls inside the first and third stops, and the parked items do not change that.
+MOVE: continue
+WHY: PHASE_PLAN.md step 2 criterion 2.5 asks that the thirteen captures carry a named-character floor and an element floor each, measured once at HEAD, run with the other rows, with no existing row retired or lowered
+DECIDED: the form of the new floor rows, the conservatism of each inferred key, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R57, R61, R63, R64, section 3, section 6; HM-DEC-171; HM-DEC-168; HM-DEC-103; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0
+COST: 7.6107462
+ACCOMPLISHED: what Tim watched the decoder read tonight becomes the mark every later change has to hold, and the spacing work has ten real cases to be judged on instead of one
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: Criteria 2.1 to 2.5 each have measured support, with unsure per named carried in CwScore and baseline.md re-issued at 0 per 47, 13 of 13 named floors, the guard broken both by removing E and T at 21 against 33 edits and by the bar at 100 which kept 97 of 547 named while 17:37 improved from 29 to 25, the exit round green apart from one dispatcher loss that passed alone, and all fourteen captures banked with captures at 51 of 51 and the original 37 unchanged.
+ADVANCED: yes
+ATTEMPT: 2.5 | unit 1 launched 2026-09-24T01:35:11.319Z | yes | executed | bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts

@@ -1,14 +1,12 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-23T20:44:59-04:00  root C:\Source\HamLet
+measured 2026-09-23T21:35:01-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0169.
-  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
-  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0170.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -20,16 +18,14 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : bcebdfea
-  uncommitted at the root : 2
-      M PHASE_OUTCOME.md
-      M PHASE_STATUS.md
+  HEAD   : 0483369d
+  uncommitted at the root : 0
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0169
+  highest in CLAUDE.md section 1 : CPS-DEC-0170
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -37,7 +33,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  257 lines, 18757 bytes
+  290 lines, 22015 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -128,6 +124,29 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   anything runs, and step 0's ticks archived); the screen in its own phase after this one (the
   screen stays wrong for days and the CW work has nowhere to route).
   
+  **R63 - Tim, 2026-09-24: tonight's thirteen captures are the benchmark, and tonePeak is
+  measured over the recording it is printed beside.** He worked 7.052 MHz from 00:39 to
+  00:46 UTC and the decoder read a whole QSO: 625 characters, 11 unsure, real sentences, the
+  callsigns `KA2GJV` and `AA3SB` clean and repeated. *"This should be our minimum benchmark
+  and future iterations should run against that. I don't want to go backwards."* So: the
+  thirteen captures in `tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-*` are banked
+  as floors at what they produced tonight, and the locked-on run gets inferred keys. **The
+  older captures are not retired** - they are the only guard against a change that reads
+  tonight's signal better and August's worse, and a fixture retires by ruling anyway
+  (HM-DEC-103). On `tonePeak`, ruled (a): a figure measured over the recording the sidecar
+  is about, labeled as such. HM-DEC-091 protects the held peak other things were built on;
+  it does not require the per-capture sheet to print that particular figure. Rejected: not
+  printing it in the sidecar; leaving it with its contradicting caption.
+  
+  **R64 - Tim, 2026-09-24: the night runs itself, and the loop moves when it sticks.**
+  *"If it gets stuck one place, it can continue... This just stopping and saying I can't go
+  any further is getting old."* Five criteria below depend on nothing but the banking: the
+  keys, the spacing, the reflow, the hover text, the dead button. **When a unit cannot
+  advance the criterion it was authored for, the arbiter authors the next one against a
+  different criterion rather than halting**, and step 3's three-failure rule stands so the
+  spacing cannot eat the night. Order of preference when nothing is blocked: **the spacing
+  first**, then the screen.
+  
   ## Â§3 What is different from the phases before it
   
   This phase scores text for the first time, so two things bind every unit:
@@ -171,6 +190,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [ ] 1.3 `docs/phase-correctness/inferring-a-key.md` states the rule for inferring a key from a CQ call on the air: what may be inferred, what may not, and how the scored region is chosen, with `cw-2026-09-23-173723` worked as the example.
   - [ ] 1.4 The synthetic cases carry a written statement of what they do not prove (Â§12.5), and no synthetic case is ever the sole evidence for keeping a change.
   - [ ] 1.5 The three floor tests and both carry-forward lines are green at exit.
+  - [ ] 1.6 Every capture of the locked-on run - `cw-2026-09-24-004108` onward - carries an inferred key built by differencing consecutive sidecar transcripts, with its scored region named, ambiguous stretches left unscored, and each key file stating that it is inferred and how; each is scored by `CwScorer` and tabled beside the baseline (R61, R63).
   
   **Depends on:** step 0.
   
@@ -185,6 +205,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [ ] 2.2 A named floor per keyed recording states how many named characters must be read at all, set from the baseline, and a change that drops below it is a regression whatever its edit count.
   - [ ] 2.3 The guard is watched working: a deliberate change that suppresses most output is measured, shown to improve edits while breaking the floor of 2.2, and taken back out in the same unit.
   - [ ] 2.4 The three floor tests and both carry-forward lines are green at exit.
+  - [ ] 2.5 The thirteen captures `cw-2026-09-24-003901` through `-004550` are tracked in the tree and carry a named-character floor and an element floor each, measured once at HEAD and printed old beside new, and they are run by the capture floor test with the other rows; no existing row is retired or lowered (R63).
   
   **Depends on:** step 0. Independent of step 1: when one blocks the arbiter works the other.
   
@@ -233,12 +254,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
   
   **Exit:**
-  - [ ] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
+  - [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
   - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
+  - [ ] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
   - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
   - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
   - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
-  - [ ] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+  - [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
   
   **Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
   
@@ -274,6 +296,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
     no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
     expect*, and the loop halted at stop 7 with the unit's work complete.
+  - **A unit that cannot advance its own criterion does not halt the phase** (R64). It reports
+    what it measured, and the arbiter authors the next unit against a different criterion.
+    Preference when nothing is blocked: step 3 first, then step 6.
+  - **Tonight's thirteen floors are never lowered and the older rows are never retired** (R63).
   - **Anything would change what keys or transmits.** `MOVE: stop`.
   - **A package is needed.** `MOVE: stop`.
   - **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
@@ -290,6 +316,9 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
+    measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
+    the keys by differencing, 2.5 the floors, 6.7 tonePeak.
   - **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
     always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
     report was refused over one word.
@@ -297,22 +326,22 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  12 lines, 2162 bytes
+  12 lines, 2179 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
   CURRENT_STEP: 1
-  WORK_INSTRUCTION: 410 - the number exists
+  WORK_INSTRUCTION: 411 - the screen stops saying what is not so
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | not started | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | not started | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
   STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
-  STEP: 6 | not started | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
   --- PHASE_OUTCOME.md ---
-  46 lines, 8725 bytes
+  82 lines, 14588 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -322,7 +351,26 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
-  STEP: 6 | not started | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  
+  ## UNIT 411 - STEP 6
+  
+  STEP: 6
+  APPROACH: make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 criterion 6.1 asks that the banner state the value and when it was read whenever a read-back for RF gain is held, and that the did-not-confirm wording appear only when none is
+  STATE: not started
+  DECIDED: the banner's new wording, which of the three sidecar lines is repaired and which is reworded, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R62, section 3, section 6; HM-DEC-170; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+  ADVANCES: step 6 criterion 1
+  COST: one session, five tasks, 0 to 4, committed per task; drop from the back, task 3 whole and tonePeak within task 2 the named candidates.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.97 to 1.13.98. HM-DEC-170 in DECISIONS.md and CLAUDE.md section 1. PHASE_STATUS.md names unit 411 and CURRENT_STEP 6. HEAD at entry bcebdfea. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 385 s; APP 278 of 278 in 169 s, nothing lost to the dispatcher loop; captures 37 of 37 in 94 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 1 s.
+  TASK 1, THE RF GAIN BANNER (6.1): traced - the CW row wants RF gain 255 on the radio's scale and CivDecode reads it back as a percent, 100, so Ic7300Rig.SetSettingAsync never finds them equal, returns ReadBackDisagreed and drops the reading it just put on the radio-state dialog; ReceiverSetup files NotConfirmed with no read-back and the banner says it does not know. RigWriteResult now carries ReadBack, ReceiverSetup passes its text and time, and ReceiverSetupVoice says: I asked for the RF gain to be 100%, and the radio read it back as 100% at 21:04:07. With no read-back held the old sentence stands word for word. TheBannerSaysWhatTheRadioReadBackTests 2 red then 5 of 5 green; ScriptedRadio answers 14 levels only where a test puts one. The 255-against-100 comparison is not repaired: that changes what is sent; section 4.
+  TASK 2, THE SIDECAR'S LINES (6.2, partial): on saved audio through six-second windows as the live meter runs, 17:37 no keying at 575 Hz with 109 key-downs, 014113 no keying at 650 Hz with 211; the no-keying line now counts rises and names the failed test against the meter's bar - 17:37 on its swing alone, 16 dB where it needs 20. elementHz says each element's own pitch was not measured. Meter verdict untouched. TheSidecarDoesNotContradictItselfTests 3 red then 3 of 3 green. tonePeak dropped whole, the named candidate: HM-DEC-091 records it as not deleted and not changed; section 4.
+  TASK 3, THE SIDECAR RE-READ: the three lines composed in TonePeakRecordLine, KeyingRecordLine and ElementHzRecordLine, which the writer calls; TheSidecarIsReReadTests regenerates them from 17:37 and 014113 into .run-unit/unit411-sidecar-*.txt, 2 of 2. No capture in the tree edited.
+  TASK 4, THE EXIT ROUND (6.6): Hamlet.sln builds with warnings as errors; ENGINE 178 of 178 in 373 s; APP 277 of 278 in 162 s, ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed lost to the dispatcher loop before any assertion, re-run once alone 1 of 1, counted neither way; captures 37 of 37, adjudicated 13 of 13, synthetics 2 of 2; every type touched green, except HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed red once on an assertion, 65 characters more on the Digital tab than 1379 plus 400, green alone on re-run - the moving Digital-tab figure OPEN_ISSUES.md already records; not a carry-forward name. Transmit files print nothing against 7e209cb4; src/Hamlet.RadioEngine/Cw prints nothing against bcebdfea. 6.1 and 6.6 ticked; 6.2 open on tonePeak.
+  FATE: executed, complete at task 4 of 4, tasks 0 to 4, tonePeak dropped within task 2; sentences that contradicted the tree 4 to 1; nothing that keys, transmits or decides a character changed.
   
   ## UNIT 410 - STEP 0
   
@@ -359,9 +407,26 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: The report shows evidence for all four exit criteria, the scorer went 12 of 12 red then 12 of 12 green, the four named recordings are scored and tabled in docs/phase-correctness/baseline.md at 33 edits over 46 characters, the error kinds are counted for each recording, and the exit round matches entry with nothing under src changed.
   ADVANCED: yes
   ATTEMPT: 0.2 | unit 1 launched 2026-09-23T22:44:00.058Z | yes | executed | build a scorer that reports edits, scored length and the key's kind, score the 17:37 capture and the three adjudicated recordings at HEAD into a baseline table, and count what kind of error dominates
+  
+  ## UNIT 1 - STEP 6
+  
+  STEP: 6
+  APPROACH: make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+  HIT: section 4 wants a ruling: yes - The second question asks the owner to choose what tonePeak figure the per-capture sidecar states about what was heard, which is a promise to the operator, and step 6.2 cannot close until he decides.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 criterion 6.1 asks that the banner state the value and when it was read whenever a read-back for RF gain is held, and that the did-not-confirm wording appear only when none is
+  DECIDED: the banner's new wording, which of the three sidecar lines is repaired and which is reworded, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R62, section 3, section 6; HM-DEC-170; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+  COST: 6.900385599999997
+  ACCOMPLISHED: the two places Tim looks when he is deciding whether to trust the app stop saying what the tree shows is not so
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 6.1 and 6.6 are met with quoted sentences and measured runs, 6.2 stays open on tonePeak, and 6.3, 6.4 and 6.5 have not been started.
+  ADVANCED: yes
+  ATTEMPT: 6.1 | unit 1 launched 2026-09-24T00:45:09.815Z | yes | executed | make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
 
   --- CLAUDE.md ---
-  1392 lines, 200932 bytes
+  1393 lines, 201698 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -381,17 +446,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 775 bytes
+  19 lines, 781 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: TASK 4 of 4
-  WORK_INSTRUCTION: 410 - the number exists
+  WORK_INSTRUCTION: 411 - the screen stops saying what is not so
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-23T19:19:25-04:00
-  NOTE: Unit 410 complete: baseline 33 edits over 46 chars against inferred keys, 17:37 29 over 25; there 15 boundaries and 14 letters, so the bench letters are not all right; section 4 parks 2 items
+  UPDATED: 2026-09-23T21:27:02-04:00
+  NOTE: Unit 411 complete: the RF gain banner states the read-back it holds, keying and elementHz lines true, tonePeak dropped; 4 contradicting sentences to 1; section 4 raises 2 items
   
   ---
   
