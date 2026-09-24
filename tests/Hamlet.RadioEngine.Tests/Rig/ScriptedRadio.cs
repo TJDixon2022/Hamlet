@@ -93,6 +93,27 @@ internal sealed class ScriptedRadio : ISerialPort
     /// <summary>Every `14` write the radio has taken, in order.</summary>
     public List<(byte Sub, int Value)> LevelWrites { get; } = new();
 
+    /// <summary>
+    /// The attenuator in decibels, `11`, or null where this radio does not speak it.
+    /// </summary>
+    /// <remarks>
+    /// **NULL UNLESS A TEST PUTS ONE HERE** (work instruction 419 task 1), for the
+    /// same reason as <see cref="Levels"/>: a test written before this radio spoke
+    /// `11` still finds the attenuator unread. The wire carries the decibels as BCD,
+    /// `00` or `20` (§4, p. 19-3), and a write of anything else is refused, which is
+    /// this script's choice and not a measurement of the radio.
+    /// </remarks>
+    public int? AttenuatorDb { get; set; }
+
+    /// <summary>Every `11` write the radio has taken, in decibels, in order.</summary>
+    public List<int> AttenuatorWrites { get; } = new();
+
+    /// <summary>
+    /// The front end's overload flag, `15 07`, or null where this radio does not
+    /// speak it.
+    /// </summary>
+    public bool? Overloading { get; set; }
+
     /// <summary>Sub-commands the radio will not answer, for the unread case.</summary>
     public HashSet<byte> Deaf { get; } = new();
 
@@ -313,6 +334,29 @@ internal sealed class ScriptedRadio : ISerialPort
                     Reply(CivConstants.ResultNg, Array.Empty<byte>());
                 }
 
+                break;
+
+            // Read: 11 on its own. Write: 11 <decibels as BCD>.
+            case 0x11 when data.Length == 0 && AttenuatorDb is { } db:
+                Reply(0x11, new[] { Rest(db) });
+                break;
+
+            case 0x11 when data.Length >= 1 && AttenuatorDb is not null:
+                if (CivValues.Level(0x00, data[0]) is { } decibels and (0 or 20))
+                {
+                    AttenuatorDb = decibels;
+                    AttenuatorWrites.Add(decibels);
+                    Reply(CivConstants.ResultOk, Array.Empty<byte>());
+                }
+                else
+                {
+                    Reply(CivConstants.ResultNg, Array.Empty<byte>());
+                }
+
+                break;
+
+            case 0x15 when data.Length == 1 && data[0] == 0x07 && Overloading is { } over:
+                Reply(0x15, new[] { (byte)0x07, (byte)(over ? 1 : 0) });
                 break;
 
             case 0x1A when data.Length >= 1 && data[0] == 0x03:
