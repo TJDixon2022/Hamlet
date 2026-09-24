@@ -157,7 +157,7 @@ All of this is tabled in `baseline.md`, beside the baseline and outside its tota
   - The transmit files print nothing against `7e209cb4`.
   - `src/Hamlet.RadioEngine/Cw` prints nothing against `0483369d`, and neither does all of `src`, because neither 2.3 change was ever committed.
 
-Criteria 1.6 and 2.1 to 2.5 are ticked in `PHASE_PLAN.md`. `PHASE_STATUS.md` and `PHASE_OUTCOME.md` mark step 2 done and step 1 partial. **The push succeeded after each task commit** (`push rc 0` four times). The report commit's push is below.
+Criteria 1.6 and 2.1 to 2.5 are ticked in `PHASE_PLAN.md`. `PHASE_STATUS.md` and `PHASE_OUTCOME.md` mark step 2 done and step 1 partial. **The push succeeded after every commit:** `push rc 0` for the four task commits and for the report commit, `2fd41f76`.
 
 ## 2. What the owner should expect
 
