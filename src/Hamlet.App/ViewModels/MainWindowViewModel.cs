@@ -101,8 +101,21 @@ public partial class MainWindowViewModel : ObservableObject
     private long? _conditionsSetForBlockHz;
 
     /// <summary>What the last tune-in did to the receive side.</summary>
-    internal IReadOnlyList<ConditionResult> LastReceiverSetup { get; private set; }
-        = Array.Empty<ConditionResult>();
+    /// <remarks>
+    /// Setting it re-asks the overload sentence, which reads the fields it owns
+    /// (HM-DEC-174).
+    /// </remarks>
+    internal IReadOnlyList<ConditionResult> LastReceiverSetup
+    {
+        get => _lastReceiverSetup;
+        private set
+        {
+            _lastReceiverSetup = value;
+            OnPropertyChanged(nameof(OverflowAdvice));
+        }
+    }
+
+    private IReadOnlyList<ConditionResult> _lastReceiverSetup = Array.Empty<ConditionResult>();
     private readonly DispatcherTimer _spotRefreshTimer;
     private readonly DispatcherTimer _ageTimer;
     private readonly AppSettings _settings;
@@ -8927,7 +8940,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// while the condition holds, so nothing blinks or re-announces itself at him
     /// four times a second.</para>
     /// </remarks>
-    public string OverflowAdvice => OverflowAdviceFor(FrontEndIsOverloading, PreampIsOn);
+    public string OverflowAdvice => OverflowAdviceFor(
+        FrontEndIsOverloading,
+        PreampIsOn,
+        OwnedByTheMode.Contains(RigField.Preamp) && OwnedByTheMode.Contains(RigField.Attenuator));
+
+    /// <summary>The fields the last tune-in's mode states, so the setup decides them.</summary>
+    /// <remarks>
+    /// **ONE OWNER PER FIELD** (HM-DEC-174). The advice, the observations and the
+    /// overload sentence read this and leave those fields to the setup.
+    /// </remarks>
+    internal IReadOnlySet<RigField> OwnedByTheMode => ReceiverSetup.Owns(LastReceiverSetup);
 
     /// <summary>
     /// What else on the receive side is standing in the way, in one line.
@@ -9021,12 +9044,30 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The rule itself, so the test reads it rather than a copy (§0).</summary>
     /// <param name="overloading">Whether the radio says its front end is overloading.</param>
     /// <param name="preampIsOn">Whether the preamplifier is switched on.</param>
+    /// <param name="frontEndOwned">
+    /// Whether the last tune-in's mode states the preamp, so the setup decides it
+    /// (HM-DEC-174).
+    /// </param>
     /// <returns>What to say, or "" when there is nothing to say.</returns>
-    internal static string OverflowAdviceFor(bool overloading, bool preampIsOn)
+    internal static string OverflowAdviceFor(
+        bool overloading, bool preampIsOn, bool frontEndOwned = false)
     {
         if (!overloading)
         {
             return "";
+        }
+
+        // **ONE OWNER PER FIELD** (HM-DEC-174). Where the mode's tune-in sets the
+        // preamp, telling him to press P.AMP/ATT is a second voice on a knob the
+        // setup just decided, which is the complaint Tim heard at the radio. The
+        // overload is still said; the knob is left to the setup.
+        if (frontEndOwned)
+        {
+            return "The radio says its front end is overloading, which means the signal "
+                + "coming in is stronger than the receiver can handle and everything in "
+                + "the passband is being squashed together. Nothing will decode until that "
+                + "stops. The preamp and the attenuator are set by this mode when you tune "
+                + "in, so Hamlet is not asking you to change them here.";
         }
 
         return preampIsOn
@@ -9417,7 +9458,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         ReceiveHelp = new ReceiveHelpViewModel(
-            () => RigState, WriteSettingAsync, OnSettingChanged);
+            () => RigState, WriteSettingAsync, OnSettingChanged, () => OwnedByTheMode);
 
         _receiveHelpExpanded = settings.IsPanelExpanded(PanelKeys.ReceiveHelp);
 
@@ -10754,7 +10795,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             DataContext = new RigDiagnosticsViewModel(
                 _rigMonitor, RigState, (_rig as Ic7300Rig)?.Link,
-                _modeFollowNote),
+                _modeFollowNote, OwnedByTheMode),
         };
 
         AppEvents.RigDiagnosticsOpened(_telemetry, RigState.KnownCount);

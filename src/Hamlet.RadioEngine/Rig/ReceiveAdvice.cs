@@ -55,13 +55,25 @@ public static class ReceiveAdvice
     /// </summary>
     /// <param name="state">What Hamlet knows.</param>
     /// <returns>The list, in the order it reads, never null.</returns>
-    public static IReadOnlyList<ReceiveSuggestion> For(RigState state)
+    public static IReadOnlyList<ReceiveSuggestion> For(RigState state) => For(state, null);
+
+    /// <summary>
+    /// Everything Hamlet would change to hear a faint signal better, after a tune-in.
+    /// </summary>
+    /// <param name="state">What Hamlet knows.</param>
+    /// <param name="ownedByTheMode">
+    /// The fields the last tune-in's mode states a condition for
+    /// (<see cref="ReceiverSetup.Owns"/>), or null where none ran.
+    /// </param>
+    /// <returns>The list, in the order it reads, never null.</returns>
+    public static IReadOnlyList<ReceiveSuggestion> For(
+        RigState state, IReadOnlySet<RigField>? ownedByTheMode)
     {
         ArgumentNullException.ThrowIfNull(state);
 
         var inMorse = state.Mode is { } mode && CivValues.IsCw(mode);
 
-        return new[]
+        var all = new[]
         {
             AutoNotch(state, inMorse),
             NoiseReduction(state),
@@ -72,7 +84,36 @@ public static class ReceiveAdvice
             Gain(state),
             UsbLevel(state),
         };
+
+        // **ONE OWNER PER FIELD** (HM-DEC-174). A field the last tune-in's mode
+        // states is the setup's, so the row stays on the list and says so rather
+        // than proposing a change: the preamp was being asked for on at 7.030 a
+        // moment after the CW row left it off, and AGC fast on FT8 where the row
+        // states slow. With no tune-in behind it every row reads as before.
+        return ownedByTheMode is not { Count: > 0 } owned
+            ? all
+            : all.Select(a => owned.Contains(a.Write.Field) ? Owned(a.Write) : a).ToArray();
     }
+
+    /// <summary>A row for a field the mode's tune-in decides.</summary>
+    private static ReceiveSuggestion Owned(CivWrite write)
+        => Fine(
+            write,
+            $"The {Name(write.Field)} is covered by what this mode states when you tune "
+            + "in, so Hamlet is leaving it out of these suggestions.");
+
+    private static string Name(RigField field) => field switch
+    {
+        RigField.AutoNotch => "automatic notch",
+        RigField.NoiseReduction => "noise reduction",
+        RigField.NoiseBlanker => "noise blanker",
+        RigField.Agc => "gain control",
+        RigField.FilterBandwidth => "filter width",
+        RigField.Preamp => "preamp",
+        RigField.RfGain => "receive gain",
+        RigField.AccUsbAfLevel => "level the radio sends down the USB cable",
+        _ => field.ToString(),
+    };
 
     /// <summary>
     /// The auto notch, which is the one that prompted the whole ruling.

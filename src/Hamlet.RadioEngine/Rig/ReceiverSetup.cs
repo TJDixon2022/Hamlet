@@ -278,6 +278,28 @@ public static class ReceiverSetup
         return (results, memory);
     }
 
+    /// <summary>The fields the last tune-in's mode states a condition for.</summary>
+    /// <param name="results">What the last tune-in did, or empty where none ran.</param>
+    /// <returns>The fields this setup owns until the next tune-in.</returns>
+    /// <remarks>
+    /// <para>**ONE OWNER PER FIELD** (HM-DEC-174, work instruction 419). A field the
+    /// mode states a condition for is decided here, whether the row is written or
+    /// only spoken, and no other voice asks the operator to change it: the preamp
+    /// was being set by this class, asked for by the advice and objected to by the
+    /// observations, all at once.</para>
+    /// <para>A row with no field, the scope span, owns nothing, because there is
+    /// nothing to change.</para>
+    /// </remarks>
+    public static IReadOnlySet<RigField> Owns(IEnumerable<ConditionResult> results)
+    {
+        ArgumentNullException.ThrowIfNull(results);
+
+        return results
+            .Select(r => r.Condition.Field)
+            .OfType<RigField>()
+            .ToHashSet();
+    }
+
     /// <summary>What a conditional row wants right now, or null if it cannot say.</summary>
     /// <param name="rig">The radio.</param>
     /// <param name="condition">The row.</param>

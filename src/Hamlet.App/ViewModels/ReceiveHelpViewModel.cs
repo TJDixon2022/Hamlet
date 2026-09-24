@@ -55,19 +55,26 @@ public sealed partial class ReceiveHelpViewModel : ObservableObject
     private readonly Func<RigState> _state;
     private readonly Func<CivWrite, int, Task<RigWriteResult>> _write;
     private readonly Action<SettingChange>? _announced;
+    private readonly Func<IReadOnlySet<RigField>>? _owned;
 
     /// <summary>Creates the panel over the radio.</summary>
     /// <param name="state">How to read what the radio is doing now.</param>
     /// <param name="write">How to set one documented setting.</param>
     /// <param name="announced">Called for each change, so it can be recorded.</param>
+    /// <param name="owned">
+    /// The fields the last tune-in's mode states, which this panel leaves to the
+    /// setup (HM-DEC-174), or null for none.
+    /// </param>
     public ReceiveHelpViewModel(
         Func<RigState> state,
         Func<CivWrite, int, Task<RigWriteResult>> write,
-        Action<SettingChange>? announced = null)
+        Action<SettingChange>? announced = null,
+        Func<IReadOnlySet<RigField>>? owned = null)
     {
         _state = state ?? throw new ArgumentNullException(nameof(state));
         _write = write ?? throw new ArgumentNullException(nameof(write));
         _announced = announced;
+        _owned = owned;
 
         Refresh();
     }
@@ -112,7 +119,7 @@ public sealed partial class ReceiveHelpViewModel : ObservableObject
     /// </remarks>
     public void Refresh()
     {
-        var advice = ReceiveAdvice.For(_state());
+        var advice = ReceiveAdvice.For(_state(), _owned?.Invoke());
 
         Rows.Clear();
         foreach (var one in advice)

@@ -47,6 +47,7 @@ public sealed record RigDiagnosticRow(
 public partial class RigDiagnosticsViewModel : ObservableObject
 {
     private readonly RigStateMonitor? _monitor;
+    private readonly IReadOnlySet<RigField>? _ownedByTheMode;
 
     /// <summary>What the copy button last put on the clipboard, for the test.</summary>
     [ObservableProperty]
@@ -64,11 +65,16 @@ public partial class RigDiagnosticsViewModel : ObservableObject
     /// <param name="modeFollowNote">
     /// Why mode-follow last declined, or "" (work instruction 051, task 5).
     /// </param>
+    /// <param name="ownedByTheMode">
+    /// The fields the last tune-in's mode states, which the observations leave to
+    /// the setup (HM-DEC-174), or null for none.
+    /// </param>
     public RigDiagnosticsViewModel(
         RigStateMonitor? monitor, RigState state, CivLinkHealth? link = null,
-        string modeFollowNote = "")
+        string modeFollowNote = "", IReadOnlySet<RigField>? ownedByTheMode = null)
     {
         ModeFollowLine = modeFollowNote;
+        _ownedByTheMode = ownedByTheMode;
 
         _monitor = monitor;
         Rows = new ObservableCollection<RigDiagnosticRow>();
@@ -158,7 +164,7 @@ public partial class RigDiagnosticsViewModel : ObservableObject
 
         Observations.Clear();
 
-        foreach (var line in RigObservations.For(state))
+        foreach (var line in RigObservations.For(state, _ownedByTheMode))
         {
             Observations.Add(line);
         }

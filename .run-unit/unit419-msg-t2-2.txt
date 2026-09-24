@@ -1,0 +1,11 @@
+unit419 task 2 item 2: one owner per field - the setup owns every field the last tune-in's mode states; the advice, the observations and the panel's overload sentence are scoped to leave those fields alone, and none of them is deleted
+
+Red, watched first, OneVoicePerFieldTests 4 of 6 failing and TheOverloadSentenceLeavesTheModesFieldsTests 2 of 4 failing, seams added as no-ops:
+  TheAdviceLeavesTheModesFieldsAlone(7030000, CW), (14050000, CW), (14074000, FT8): Assert.DoesNotContain() Failure: Filter matched in collection - the advice proposed "Switch the preamp on" at 7.030 after the CW row left it off, "Open the receive gain all the way. It is at about 39 percent" on CW, and "Set the gain control to fast" on FT8 where the row states slow
+  TheObservationsDoNotObjectToWhatTheSetupOwns: Filter matched in collection ["The attenuator is at 20 dB and the preamp is on as"...]
+  OwnedItStatesTheOverloadAndAsksNothingOfTheKnob(True), (False): Sub-string found ..."l that stops. Press P.AMP/ATT on the fron"... and ..."he attenuator. Hold P.AMP/ATT for a momen"...
+Green after: 6 of 6 and 4 of 4; TheFrontEndIsOnThePanelTests 6 of 6, RigObservationTests 18 of 18.
+
+How each voice is scoped: ReceiverSetup.Owns(results) is the set of fields the last tune-in's conditions name, written or only spoken. ReceiveAdvice.For(state, owned) keeps every row and turns an owned field's row into a no-change row saying it is covered by what the mode states; RigObservations.For(state, owned) keeps every observation and skips AttenuatorAndPreampTogether only when both are owned; OverflowAdviceFor(overloading, preampIsOn, frontEndOwned) still says the front end is overloading and names no knob when the mode owns the preamp and the attenuator. The one-argument For overloads, and the old sentence with no tune-in behind it, are unchanged. MainWindowViewModel.OwnedByTheMode feeds the overload sentence, ReceiveHelpViewModel and RigDiagnosticsViewModel. ReceiveObstructions speaks only on the noise blanker, noise reduction and filter width, never proposes a write and never on a value the setup set, so it is left as HM-DEC-148 has it.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

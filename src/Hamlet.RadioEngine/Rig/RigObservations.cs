@@ -38,7 +38,17 @@ public static class RigObservations
     /// <summary>Every observation the current state supports.</summary>
     /// <param name="state">What Hamlet knows.</param>
     /// <returns>Observations, which may be empty.</returns>
-    public static IReadOnlyList<string> For(RigState state)
+    public static IReadOnlyList<string> For(RigState state) => For(state, null);
+
+    /// <summary>Every observation the current state supports, after a tune-in.</summary>
+    /// <param name="state">What Hamlet knows.</param>
+    /// <param name="ownedByTheMode">
+    /// The fields the last tune-in's mode states a condition for
+    /// (<see cref="ReceiverSetup.Owns"/>), or null where none ran.
+    /// </param>
+    /// <returns>Observations, which may be empty.</returns>
+    public static IReadOnlyList<string> For(
+        RigState state, IReadOnlySet<RigField>? ownedByTheMode)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -49,7 +59,19 @@ public static class RigObservations
         NoiseReductionSofteningTheEdges(state, said);
         AutoNotchHuntingASteadyTone(state, said);
         AllThreeAtOnce(state, said);
-        AttenuatorAndPreampTogether(state, said);
+
+        // **NOT AN OBJECTION TO WHAT THE SETUP JUST ESTABLISHED** (HM-DEC-174).
+        // The CW row sets the attenuator from the overload flag and the preamp from
+        // the band, so both on is a state the tune-in chose; objecting to it here
+        // is a second voice on the two knobs. With no tune-in owning them the
+        // observation speaks as before.
+        if (ownedByTheMode is null
+            || !ownedByTheMode.Contains(RigField.Attenuator)
+            || !ownedByTheMode.Contains(RigField.Preamp))
+        {
+            AttenuatorAndPreampTogether(state, said);
+        }
+
         SquelchHoldingTheAudioShut(state, said);
         AudioSentAsIf(state, said);
 
