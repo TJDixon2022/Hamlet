@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 415 - the space is decided after the letters
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 4
+WORK_INSTRUCTION: 416 - the relabel goes back in
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T02:29:55-04:00
-NOTE: Unit 415 complete: two space-only relabels moved no letter on any recording, all keyed 191 and 185 over 565 from 217, both out on 3.2 test 3 at 134712; 3.5 ticked; 1 ruling asked on test 3, not halting
+UPDATED: 2026-09-24T08:24:14-04:00
+NOTE: Running TheNumberCannotBeGamedTests alone, the named floors
 
 ---
 

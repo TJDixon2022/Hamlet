@@ -4,6 +4,33 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-173
+date: 2026-09-24
+refs: PHASE_PLAN.md R66 and criterion 3.2, unit 415 output.md section 4 item 1, HM-DEC-144, work instruction 416
+---
+
+**A reading that changes to exactly its own adjudicated text has not been damaged, and
+3.2's third test allows it.** Tim, 2026-09-24.
+
+**What was at stake.** Unit 415 built a space-only relabel that moved no letter, no element
+and no placeholder on any of the 51 capture rows, held all 13 named floors identical, and
+took every keyed recording from 217 edits to 185 over 565 characters and the ten bench
+recordings from 60 to 36 over 156. It was taken out on one clause: on `cw-2026-08-17-134712`
+the reading moved from `N4 ` to `N4L`, which is the text HM-DEC-144 adjudicated.
+
+**What is ruled.** The third test of 3.2 reads: the three adjudicated readings are unchanged
+character for character, or changed to exactly their own adjudicated text. Any other
+movement of an adjudicated reading still fails it, and a report invoking the clause prints
+the reading before and after so the owner can see which happened.
+
+**Why.** The test exists so that a change cannot buy total edits by damaging a reading
+somebody ruled on. A reading that becomes the ruled text has not been damaged.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 416's record
+of it. Rejected: leaving the test as written; narrowing the relabel until `134712` does not
+move, which would choose the boundary from a score rather than from a trace.
+
+---
 id: HM-DEC-172
 date: 2026-09-24
 refs: PHASE_PLAN.md R65, criterion 6.8, work instruction 413, HM-DEC-139, HM-DEC-056, unit 411 section 4 item 1

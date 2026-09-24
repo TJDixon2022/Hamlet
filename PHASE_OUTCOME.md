@@ -9,6 +9,19 @@ STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose 
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
+## UNIT 416 - STEP 3
+
+STEP: 3
+APPROACH: re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+MOVE: continue
+WHY: PHASE_PLAN.md step 3 criterion 3.2 asks that each change be kept when the total edit count over all keyed recordings falls, no named floor breaks, the adjudicated readings are unchanged or changed to exactly their own adjudicated text, and no capture row's named count falls
+STATE: partial
+DECIDED: whether the diff is cherry-picked or rebuilt from the trace, and the per-type timeouts, are the author's, overrulable
+LICENCE: PHASE_PLAN.md R63, R65, R66, section 3, section 6; HM-DEC-173; HM-DEC-144; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+ADVANCES: step 3 criterion 2
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.102 to 1.13.103. PHASE_STATUS.md names unit 416 and CURRENT_STEP 3. HEAD at entry 8f6fa1f1. Section 5 against the tree: b68be0dd exists and its take-out 040a4ae0 follows it as its child; git diff 040a4ae0 HEAD -- src prints nothing; unit415-trace.md describes the relabel, the centroid guard and the sqrt(7/3) boundary; PHASE_PLAN.md 3.2 carries R66's clause; no mismatch. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 274 of 278, four lost to the dispatcher loop and 11 of 11 with their two types alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; TheNumberCannotBeGamedTests 13 of 13; baseline 33 over 46, 17:37 29 over 25, outside 124 over 363, bench 60 over 156, all keyed 217 over 565, inferred keys; adjudicated regions VA3VRR, N4 space, EETMP/4 QNIK. These are the numbers to beat.
+
 ## UNIT 415 - STEP 3
 
 STEP: 3

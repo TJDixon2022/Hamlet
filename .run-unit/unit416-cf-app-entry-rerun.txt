@@ -1,0 +1,94 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning [1 s]
+  Standard Output Messages:
+ plain 900 x 620: class General; top row 178; card 16,119 48 x 178; rig 338,119 546 x 178; status bar 16,558 868 x 46; Stop 797,563 74 x 36; panels waterfall 29,486 225 x 72 | decoded 264,486 378 x 72 | For You 647,486 225 x 72
+ plain 1100 x 780: class General; top row 372; card 16,119 248 x 372; rig 538,119 546 x 372; status bar 16,718 1068 x 46; Stop 997,723 74 x 36; panels waterfall 29,600 325 x 93 | decoded 364,600 378 x 93 | For You 747,600 325 x 93
+ licensed 1400 x 1040: class General; top row 178; card 423,119 401 x 178; rig 838,119 546 x 178; status bar 16,978 1368 x 46; Stop 1297,983 74 x 36; panels waterfall 29,469 474 x 484 | decoded 513,469 378 x 484 | For You 896,469 475 x 484
+
+
+  Passed Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer [106 ms]
+  Standard Output Messages:
+ plain fixture: lookup a fixed answer under test, asked 1; class General; privilege headline [7.028 MHz · yours to use]
+
+
+  Passed Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests.BuildingAViewModelMakesNoHttpClient [11 ms]
+  Standard Output Messages:
+ after construction: POTA client made False, SOTA client made False
+ after one fetch: POTA client made True
+
+
+  Passed Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests.TheLicensedFixtureTakesTheFixedAnswerToo [107 ms]
+  Standard Output Messages:
+ licensed fixture: lookup FixedLicenseLookup; class General
+
+
+  Passed Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests.AViewModelATestBuildsHasTheNetworkDenied [4 ms]
+  Standard Output Messages:
+ two-argument view model's lookup: NetworkDeniedLookup; handed a denied lookup, it was asked 1 time(s); class stays Unknown
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "FT8") [24 ms]
+  Standard Output Messages:
+ FT8: FT8     filled True, chosen True, dial in its block False, hover [14.074 · FT8 - chosen, the dial is not there]
+ FT8: FT4     filled False, chosen False, dial in its block False, hover [14.080 · FT4]
+ FT8: PSK31   filled False, chosen False, dial in its block True, hover [14.070 · PSK31]
+ FT8: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ FT8: Olivia  filled False, chosen False, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "Olivia") [4 ms]
+  Standard Output Messages:
+ Olivia: FT8     filled False, chosen False, dial in its block False, hover [14.074 · FT8]
+ Olivia: FT4     filled False, chosen False, dial in its block False, hover [14.080 · FT4]
+ Olivia: PSK31   filled False, chosen False, dial in its block True, hover [14.070 · PSK31]
+ Olivia: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ Olivia: Olivia  filled True, chosen True, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "FT4") [3 ms]
+  Standard Output Messages:
+ FT4: FT8     filled False, chosen False, dial in its block False, hover [14.074 · FT8]
+ FT4: FT4     filled True, chosen True, dial in its block False, hover [14.080 · FT4 - chosen, the dial is not there]
+ FT4: PSK31   filled False, chosen False, dial in its block True, hover [14.070 · PSK31]
+ FT4: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ FT4: Olivia  filled False, chosen False, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "PSK31") [3 ms]
+  Standard Output Messages:
+ PSK31: FT8     filled False, chosen False, dial in its block False, hover [14.074 · FT8]
+ PSK31: FT4     filled False, chosen False, dial in its block False, hover [14.080 · FT4]
+ PSK31: PSK31   filled True, chosen True, dial in its block True, hover [14.070 · PSK31]
+ PSK31: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ PSK31: Olivia  filled False, chosen False, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+[xUnit.net 00:00:02.03]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.EveryChipIsAButtonThatSaysWhereItGoesAndTheLabelSaysTuneTo [151 ms]
+  Standard Output Messages:
+ the strip's label reads [tune to:]
+ FT8     cursor Hand, enabled True, filled on screen False, hover [14.074 · FT8]
+ FT4     cursor Hand, enabled True, filled on screen False, hover [14.080 · FT4]
+ PSK31   cursor Hand, enabled True, filled on screen False, hover [14.070 · PSK31]
+ WSPR    cursor Hand, enabled True, filled on screen False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ Olivia  cursor Hand, enabled True, filled on screen True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.TheSendLineNamesTheChosenModeAfterAFedSend [52 ms]
+  Standard Output Messages:
+ Olivia: [Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of Olivia.]
+ PSK31 : [Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 13.3 s of PSK31.]
+
+
+
+Test Run Successful.
+Total tests: 11
+     Passed: 11
+ Total time: 2.3286 Seconds
+RC=0 WALL=3s

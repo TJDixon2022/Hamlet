@@ -1299,8 +1299,14 @@
     then is each gap it read as a character gap or a word gap re-decided from the sender's own
     measured character gap, judged under 3.2 as written.
   -->
+  <!--
+    1.13.102 -> 1.13.103, WORK INSTRUCTION 416 TASK 0. A PATCH, STEP 3 OF THE CORRECTNESS PHASE,
+    THE RELABEL GOES BACK IN: unit 415's narrowed space-only relabel is re-applied unchanged and
+    judged under 3.2 as R66 amended it, where a reading may move onto its own adjudicated text
+    (HM-DEC-173). Nothing that keys or transmits changes.
+  -->
   <PropertyGroup>
-    <Version>1.13.102</Version>
+    <Version>1.13.103</Version>
   </PropertyGroup>
 
   <!--
