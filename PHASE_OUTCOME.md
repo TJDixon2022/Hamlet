@@ -9,6 +9,19 @@ STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose 
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
+## UNIT 418 - STEP 6
+
+STEP: 6
+APPROACH: audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 criterion 6.2 is held open only by the keying caption naming a 400 to 1200 Hz sweep the meter no longer runs (P10); its three named clauses already hold. Step 3's only open criterion, 3.4, cannot flip while unit 416's kept changes stand, so under R64 and R65 the loop stays on the screen.
+STATE: partial
+DECIDED: author's, overrulable - P10 answered: the caption reads its range and step from KeyingEnvelope's constants rather than a second literal; 6.2 chosen over 6.3, 6.4, 6.5 and 6.8 because it is measured and one sentence from met; the whole sheet audited rather than the one caption because 6.2's lead sentence covers every sentence; a false sentence outside 6.2's scope is parked as P12 rather than fixed; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R62, R64, R65, section 6; step 6 criterion 6.2; PARKED.md P10; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+ADVANCES: step 6 criterion 2
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.104 to 1.13.105. PHASE_STATUS.md names unit 418 and CURRENT_STEP 6. HEAD at entry 3211874b. P10's answer appended beneath it in PARKED.md, the arbiter's, overrulable. Section 5 against the tree: KeyingRecordLine at MainWindowViewModel.cs 12435 holds the 400 to 1200 caption as a literal and is the only place the keying line is composed, called once from CaptureNotes at 11921; KeyingEnvelope.LowestToneHz and HighestToneHz are CwToneTracker.MinimumToneHz and MaximumToneHz, 300 and 900 at CwToneTracker.cs 125 and 128, and ToneStepHz is 25, at KeyingEnvelope.cs 130 to 138; CwKeyingMeter sweeps through KeyingEnvelope.Best and nothing else, at CwKeyingMeter.cs 209; nothing in src or tests parses the sidecar's keying line, the only reader being TheSidecarIsReReadTests asserting it starts keying and five spaces; no mismatch. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 275 of 278, two lost to the dispatcher loop and 3 of 3 alone, and TheCardOffersLogAndAnXTests.LogIsNeverOnAReceipt failed once on two CQ cards and its type ran 5 of 5 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; TheSidecarDoesNotContradictItselfTests 3 of 3; TheSidecarIsReReadTests 2 of 2; TheTonePeakIsAboutThisRecordingTests 3 of 3; baseline 22 over 46, outside 110 over 363, the ten 35 over 156, all keyed 167 over 565, 17:37 19 over 25, inferred keys. These are the numbers to beat.
+
 ## UNIT 417 - STEP 6
 
 STEP: 6
@@ -274,3 +287,20 @@ STATE_AFTER: partial
 STATE_WHY: Criteria 3.1, 3.2, 3.3 and 3.5 are met with numbers shown, but 3.4 is still unticked, and the report leaves it to the arbiter whether step 3 closes or another unit takes on the 90 joined gaps.
 ADVANCED: yes
 ATTEMPT: 3.2 | unit 1 launched 2026-09-24T12:08:39.542Z | yes | executed | re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+
+## UNIT 2 - STEP 6
+
+STEP: 6
+APPROACH: measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, P10 is about the wording of a caption, and P11 is a parked question about how a measured number is calculated, so neither asks the owner to decide anything about keying, money, or a fact the product states to the operator.
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 criterion 6.7 asks that tonePeak in a per-capture sidecar be a figure measured over that recording and labeled as such, watched failing first against the held figure, with the cost at capture stated; step 3's only open criterion, 3.4, cannot flip after unit 416 kept two changes, so under R64 and R65 the loop moves to the screen.
+DECIDED: author's, overrulable - P9 answered: step 3 stays partial and is not marked done because 3.4 is unmet and cannot fire while the no-kept-change count is zero; 6.7 chosen over 6.3, 6.4 and 6.5 because R63 already rules it and 6.2 is open on tonePeak alone; the measurement method, whether the held figure stays on its own line, the 50 ms UI-thread bound and the per-type timeouts are the unit's to decide and report
+LICENCE: PHASE_PLAN.md R63, R64, R65, section 6; step 6 criteria 6.2 and 6.7; step 3 criterion 3.4; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+COST: 5.5109548
+ACCOMPLISHED: the strength figure on every capture's sheet is about that capture, so the next work order is not written from a number that rates an empty recording above a callsign
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 6.1, 6.6 and 6.7 are met, while 6.2, 6.8, 6.3, 6.4 and 6.5 are still open, and the report itself says 6.2 fails on the keying caption's sweep range.
+ADVANCED: yes
+ATTEMPT: 6.7 | unit 2 launched 2026-09-24T13:12:43.596Z | yes | executed | measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured

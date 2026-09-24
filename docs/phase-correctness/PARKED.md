@@ -138,6 +138,14 @@ repair the caption and did not tick 6.2. **Author's, overrulable:** the fix is t
 reading the range from `KeyingEnvelope`'s own constants, watched failing first, and it closes
 6.2 with it. Not blocking; the loop goes on.
 
+**Answered by work instruction 418, 2026-09-24 - the arbiter's, overrulable.** The caption takes
+its range and step from `KeyingEnvelope`'s own constants rather than from a second literal, so
+it cannot fall out of date again, and it is watched failing first on 17:37. The caption changes
+to match the meter; the meter does not change to match the caption (§6). No decision record is
+needed: this makes a sentence true under 6.2 and promises the operator nothing new. Unit 418
+also checks every other sentence on the sheet against the tree, because 6.2's lead sentence
+covers all of them.
+
 ## P11 - the noise beside the tone can be the receiver's stopband
 
 **Raised by unit 417, 2026-09-24.** Both the held figure and the new per-recording `tonePeak`

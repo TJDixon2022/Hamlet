@@ -1,0 +1,41 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.51]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.TheXTakesTheCardOffTheScreenAndRecordsIt [248 ms]
+  Standard Output Messages:
+ after the X: cards 0, rows 1, ledger still there
+ press : {"action":"card_dismissed","mode":"Digital","detail":"asked"}
+ left  : {"kind":"card","state":"removed","by":"dismissed","count":1,"subMode":"PSK31","atDropped":1}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.LogIsOnTheCardFromTheMomentThereIsSomebodyToLog [5 ms]
+  Standard Output Messages:
+ card W1ABC: ShowsLogLink True, label [Log this contact], complete True
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.LogIsNeverOnAReceipt [29 ms]
+  Standard Output Messages:
+ receipt CQ: ShowsLogLink False, ActionKind None
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.TheXTakesAReceiptOffTheScreenOnOnePress [14 ms]
+  Standard Output Messages:
+ after the X on a receipt: cards 0
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.TheLogEntryCarriesWhatPassedAndInventsNothing [6 ms]
+  Standard Output Messages:
+ call W1ABC, mode PSK/PSK31, band 20m, rstRx [599] rstTx [] grid []
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.8010 Seconds
+RC=0 WALL=1s

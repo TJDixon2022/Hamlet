@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 3 of 3
-WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 3
+WORK_INSTRUCTION: 418 - every sentence on the capture sheet is true of that capture
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T09:58:17-04:00
-NOTE: Unit 417 complete: tonePeak measured over each capture, 17:37 25.7 held to 26.8, 862 ms off the UI thread; 6.7 ticked, 6.2 held on the keying caption; 2 items parked, none blocking
+UPDATED: 2026-09-24T10:18:18-04:00
+NOTE: Running TheBenchmarkIsKeyedTests alone, the ten keyed captures
 
 ---
 
