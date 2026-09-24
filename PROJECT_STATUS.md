@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 4
+TASK: TASK 3 of 4
 WORK_INSTRUCTION: 413 - the words stop shattering
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T23:39:35-04:00
-NOTE: Candidate 1 committed alone: all keyed 217 to 207 but five capture rows lose named characters; taking it back out in the next commit
+UPDATED: 2026-09-23T23:45:14-04:00
+NOTE: Running WhereTheWordsBreakTests alone, the trace
 
 ---
 

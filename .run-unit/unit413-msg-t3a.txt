@@ -1,0 +1,3 @@
+unit413 task 3, G1 (3.2): MeasureGaps refuses a clipped reading with the character gap past the word gap, the stream keeping the last gaps it stood behind - all keyed 217 to 193, baseline 33 to 15, 17:37 29 to 11 reading CQ CQ CQ DEW B6 RE D W B 7E E I, outside 124 to 115, the ten on the bench 60 to 63; named floors 12 of 13, 17:37 46 to 38 named as its stray E and T join into letters; adjudicated readings identical; captures 50 of 51, 004133 named 30 to 25 with elements 87 to 88 - fails 3.2's second and fourth tests, out in the next commit
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
