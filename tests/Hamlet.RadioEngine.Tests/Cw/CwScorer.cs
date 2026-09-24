@@ -105,6 +105,9 @@ public sealed record CwScore(
     /// <summary>The guard beside the number: unsure characters per named character, or null with none named.</summary>
     public double? UnsurePerNamed => Named == 0 ? null : (double)Unsure / Named;
 
+    /// <summary>Where the scored region starts in the decode it was taken from, so a step can be traced to its character (work instruction 413).</summary>
+    public int Start { get; init; }
+
     /// <summary>The guard as a report writes it, both counts and the ratio.</summary>
     public string Guard
         => $"{Unsure} unsure per {Named} named"
@@ -369,6 +372,9 @@ public static class CwScorer
 
         return new CwScore(
             steps.Count(s => s.Edit != CwEdit.Same), m, kind, region.Text, key, steps,
-            region.Named, region.UnsureCount);
+            region.Named, region.UnsureCount)
+        {
+            Start = b,
+        };
     }
 }

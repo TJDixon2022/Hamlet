@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 1 of 4
 WORK_INSTRUCTION: 413 - the words stop shattering
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T23:23:58-04:00
-NOTE: Running TheNumberCannotBeGamedTests alone, the named floors
+UPDATED: 2026-09-23T23:31:19-04:00
+NOTE: Running WhereTheWordsBreakTests alone, the trace
 
 ---
 

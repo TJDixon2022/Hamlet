@@ -1,0 +1,141 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.38]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.60]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.60]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheWordsBreakTests.EveryInsertedSpaceIsTraced [20 s]
+  Standard Output Messages:
+ trace | capture | settled at | gap | thresholds in force | element before | notes | text around
+ inserted | unadjudicated/cw-2026-09-24-004108 |   16.025 s | gap   740 ms, 13.5 units, 2.94 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `K` -.- ends dah | decode `K_E_8_W_G_K_2_6_S_T_M_` key so far `DE_KA2`
+ inserted | unadjudicated/cw-2026-09-24-004108 |   17.185 s | gap   335 ms,  6.1 units, 1.33 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `2` ..--- ends dah | decode `E_8_W_G_K_2_6_S_T_M_W_` key so far `DE_KA2GJ`
+ inserted | unadjudicated/cw-2026-09-24-004133 |    5.130 s | gap   380 ms,  6.9 units, 1.51 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `C` -.-. ends dit | decode `1_9_R_I_C_H_AR_T_E_T` key so far `ICH`
+ inserted | unadjudicated/cw-2026-09-24-004133 |    5.820 s | gap   315 ms,  5.7 units, 1.25 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `H` .... ends dit | decode `1_9_R_I_C_H_AR_T_E_T_E` key so far `ICHA`
+ inserted | unadjudicated/cw-2026-09-24-004205 |   24.750 s | gap   325 ms,  5.9 units, 1.29 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `Y` -.-- ends dah | decode `_G_E_L_AT_Y_A_H_O_O_D_` key so far `AT_YA`
+ inserted | unadjudicated/cw-2026-09-24-004205 |   25.355 s | gap   340 ms,  6.2 units, 1.35 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `A` .- ends dah | decode `_E_L_AT_Y_A_H_O_O_D_O_` key so far `AT_YAH`
+ inserted | unadjudicated/cw-2026-09-24-004205 |   26.160 s | gap   430 ms,  7.8 units, 1.71 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `H` .... ends dit | decode `_L_AT_Y_A_H_O_O_D_O_E` key so far `AT_YAHO`
+ inserted | unadjudicated/cw-2026-09-24-004205 |   27.040 s | gap   290 ms,  5.3 units, 1.15 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `O` --- ends dah | decode `_AT_Y_A_H_O_O_D_O_E` key so far `AT_YAHOO`
+ inserted | unadjudicated/cw-2026-09-24-004234 |    5.960 s | gap   290 ms,  5.3 units, 1.15 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `T` - ends dah | decode `_O_M_<BT>_T_HANTT_TK■E` key so far `_COM_<BT>_TH`
+ inserted | unadjudicated/cw-2026-09-24-004322 |    2.965 s | gap   260 ms,  4.7 units, 1.03 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `O` --- ends dah | decode `__P_O_N_S_ORED_A` key so far `THE_ARRL`
+ inserted | unadjudicated/cw-2026-09-24-004322 |    4.150 s | gap   330 ms,  6.0 units, 1.31 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `S` ... ends dit | decode `__P_O_N_S_ORED_A_M_E` key so far `_ARRL_SPONSO`
+ inserted | unadjudicated/cw-2026-09-24-004322 |    7.620 s | gap   305 ms,  5.5 units, 1.21 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `A` .- ends dah | decode `_N_S_ORED_A_M_ER_I_CA_` key so far `SPONSORED_AM`
+ inserted | unadjudicated/cw-2026-09-24-004322 |    8.250 s | gap   260 ms,  4.7 units, 1.03 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `M` -- ends dah | decode `_S_ORED_A_M_ER_I_CA_2_` key so far `PONSORED_AME`
+ inserted | unadjudicated/cw-2026-09-24-004322 |    9.185 s | gap   265 ms,  4.8 units, 1.05 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `R` .-. ends dit | decode `ORED_A_M_ER_I_CA_2_5_9` key so far `NSORED_AMERI`
+ inserted | unadjudicated/cw-2026-09-24-004322 |    9.595 s | gap   260 ms,  4.7 units, 1.03 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `I` .. ends dit | decode `ED_A_M_ER_I_CA_2_5_9_O` key so far `SORED_AMERIC`
+ inserted | unadjudicated/cw-2026-09-24-004322 |   17.005 s | gap   320 ms,  5.8 units, 1.27 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `P` .--. ends dit | decode `CA_2_5_9_OP_ERA_T_I_ON` key so far `OPE`
+ inserted | unadjudicated/cw-2026-09-24-004322 |   18.495 s | gap   315 ms,  5.7 units, 1.25 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `A` .- ends dah | decode `_5_9_OP_ERA_T_I_ON_X_A` key so far `OPERAT`
+ inserted | unadjudicated/cw-2026-09-24-004322 |   18.915 s | gap   270 ms,  4.9 units, 1.07 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `T` - ends dah | decode `_9_OP_ERA_T_I_ON_X_ALL` key so far `OPERATI`
+ inserted | unadjudicated/cw-2026-09-24-004322 |   19.345 s | gap   275 ms,  5.0 units, 1.09 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `I` .. ends dit | decode `_OP_ERA_T_I_ON_X_ALL_L` key so far `OPERATIO`
+ inserted | unadjudicated/cw-2026-09-24-004322 |   25.435 s | gap   325 ms,  5.9 units, 1.29 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `L` .-.. ends dit | decode `_ON_X_ALL_L_O_G_S_WILA` key so far `ALL_LO`
+ inserted | unadjudicated/cw-2026-09-24-004322 |   26.305 s | gap   275 ms,  5.0 units, 1.09 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `O` --- ends dah | decode `N_X_ALL_L_O_G_S_WILA` key so far `ALL_LOG`
+ inserted | unadjudicated/cw-2026-09-24-004322 |   27.110 s | gap   320 ms,  5.8 units, 1.27 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `G` --. ends dit | decode `X_ALL_L_O_G_S_WILA` key so far `ALL_LOGS`
+ inserted | unadjudicated/cw-2026-09-24-004347 |    7.650 s | gap   210 ms,  3.7 units, 0.64 of word-from | unit 58 ms (20.9 wpm), held gaps element 15 character 373 word 291 character clipped, word from 329 ms | before `U` ..- ends dah | decode `_W_ILL_BE_U_PLOADED_TO` key so far `ILL_BE_UP`
+ inserted | unadjudicated/cw-2026-09-24-004347 |   18.700 s | gap   510 ms,  9.3 units, 1.43 of word-from | unit 55 ms (21.8 wpm), held gaps element 60 character 272 word 469 word clipped, word from 358 ms | before `L` .-.. ends dit | decode `D_TO_ARRL_L_OO_TW_<BT>` key so far `D_TO_ARRL_LO`
+ inserted | unadjudicated/cw-2026-09-24-004405 |   27.450 s | gap   320 ms,  5.8 units, 1.27 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `R` .-. ends dit | decode `/_88_■_O_OR_D_IN_A_T` key so far `OORD`
+ inserted | unadjudicated/cw-2026-09-24-004405 |   28.135 s | gap   310 ms,  5.6 units, 1.23 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `D` -.. ends dit | decode `88_■_O_OR_D_IN_A_T` key so far `OORDI`
+ inserted | unadjudicated/cw-2026-09-24-004427 |    7.925 s | gap   310 ms,  5.6 units, 1.23 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `T` - ends dah | decode `OR_D_IN_A_T_OR_<AR>_N_` key so far `ATO`
+ inserted | unadjudicated/cw-2026-09-24-004510 |   19.835 s | gap   275 ms,  5.2 units, 1.14 of word-from | unit 53 ms (22.9 wpm), textbook character 158 word 368, word from 241 ms | before `2` ..--- ends dah | 2 spaces, something left out between | decode `__EEE__KA2__GJV_T_QNV_` key so far `KA2G`
+ inserted | unadjudicated/cw-2026-09-24-004550 |   18.640 s | gap   260 ms,  4.7 units, 1.03 of word-from | unit 55 ms (21.8 wpm), textbook character 165 word 385, word from 252 ms | before `2` ..--- ends dah | decode `_3HB_DE_KA2_GJV_HW_ROB` key so far `DE_KA2G`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   22.370 s | gap   320 ms,  4.6 units, 1.06 of word-from | unit 70 ms (17.1 wpm), held gaps element 64 character 230 word 400, word from 303 ms | before `W` .-- ends dah | decode `_CQ_CQ_DE_W_T_E_E_T_E_` key so far `Q_CQ_CQ_DE_W`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   22.670 s | gap   130 ms,  1.9 units, 0.32 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `T` - ends dah | decode `Q_CQ_DE_W_T_E_E_T_E__E` key so far `Q_CQ_CQ_DE_W`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   22.930 s | gap   210 ms,  3.0 units, 0.52 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `E` . ends dit | decode `CQ_DE_W_T_E_E_T_E__E_E` key so far `Q_CQ_CQ_DE_W`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   23.255 s | gap   265 ms,  3.8 units, 0.66 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `E` . ends dit | decode `_DE_W_T_E_E_T_E__E_ERE` key so far `Q_CQ_CQ_DE_W`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   23.675 s | gap   215 ms,  3.1 units, 0.53 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `T` - ends dah | decode `E_W_T_E_E_T_E__E_ERE_D` key so far `Q_CQ_CQ_DE_W`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   23.960 s | gap   220 ms,  3.1 units, 0.48 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `E` . ends dit | 2 spaces, something left out between | decode `_T_E_E_T_E__E_ERE_D_E_` key so far `Q_CQ_CQ_DE_W`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   24.340 s | gap   320 ms,  4.6 units, 0.70 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `E` . ends dit | decode `_E_E_T_E__E_ERE_D_E_T_` key so far `CQ_CQ_DE_WB6`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   25.350 s | gap   250 ms,  3.6 units, 1.02 of word-from | unit 70 ms (17.1 wpm), held gaps element 63 character 135 word 445 word clipped, word from 245 ms | before `E` . ends dit | decode `_T_E__E_ERE_D_E_T_T_TB` key so far `CQ_DE_WB6RED`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   26.190 s | gap   350 ms,  4.8 units, 1.38 of word-from | unit 73 ms (16.6 wpm), held gaps element 63 character 141 word 455 character clipped word clipped, word from 254 ms | before `D` -.. ends dit | decode `_E__E_ERE_D_E_T_T_TB_7` key so far `CQ_DE_WB6RED`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   26.360 s | gap   110 ms,  1.6 units, 0.24 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `E` . ends dit | decode `__E_ERE_D_E_T_T_TB_7E_` key so far `CQ_DE_WB6RED`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   26.625 s | gap   110 ms,  1.6 units, 0.24 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `T` - ends dah | decode `E_ERE_D_E_T_T_TB_7E_E_` key so far `CQ_DE_WB6RED`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   28.060 s | gap   285 ms,  4.1 units, 1.16 of word-from | unit 70 ms (17.1 wpm), held gaps element 60 character 138 word 436 character clipped word clipped, word from 245 ms | before `B` -... ends dit | decode `_D_E_T_T_TB_7E_E_I` key so far `DE_WB6RED_WB`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   29.465 s | gap   270 ms,  3.9 units, 1.10 of word-from | unit 70 ms (17.1 wpm), held gaps element 60 character 138 word 436 character clipped word clipped, word from 245 ms | before `E` . ends dit | decode `E_T_T_TB_7E_E_I` key so far `WB6RED_WB6RE`
+ inserted | unadjudicated/cw-2026-09-23-173723 |   29.790 s | gap   260 ms,  3.7 units, 1.06 of word-from | unit 70 ms (17.1 wpm), held gaps element 60 character 138 word 436 character clipped word clipped, word from 245 ms | before `E` . ends dit | decode `T_T_TB_7E_E_I` key so far `B6RED_WB6RED`
+ missing | unadjudicated/cw-2026-09-24-004234 |    7.715 s | gap   235 ms,  4.3 units, 0.75 of word-from | unit 55 ms (21.8 wpm), held gaps element 17 character 295 word 331 character clipped, word from 313 ms | before `N` -. ends dit | decode `M_<BT>_T_HANTT_TK■ET_F` key so far `<BT>_THANK_Y`
+ the ten worst, furthest inside the character side of the boundary in force:
+ worst | unadjudicated/cw-2026-09-23-173723 |   26.360 s | gap   110 ms,  1.6 units, 0.24 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `E` . ends dit | decode `__E_ERE_D_E_T_T_TB_7E_` key so far `CQ_DE_WB6RED`
+ worst | unadjudicated/cw-2026-09-23-173723 |   26.625 s | gap   110 ms,  1.6 units, 0.24 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `T` - ends dah | decode `E_ERE_D_E_T_T_TB_7E_E_` key so far `CQ_DE_WB6RED`
+ worst | unadjudicated/cw-2026-09-23-173723 |   22.670 s | gap   130 ms,  1.9 units, 0.32 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `T` - ends dah | decode `Q_CQ_DE_W_T_E_E_T_E__E` key so far `Q_CQ_CQ_DE_W`
+ worst | unadjudicated/cw-2026-09-23-173723 |   23.960 s | gap   220 ms,  3.1 units, 0.48 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `E` . ends dit | 2 spaces, something left out between | decode `_T_E_E_T_E__E_ERE_D_E_` key so far `Q_CQ_CQ_DE_W`
+ worst | unadjudicated/cw-2026-09-23-173723 |   22.930 s | gap   210 ms,  3.0 units, 0.52 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `E` . ends dit | decode `CQ_DE_W_T_E_E_T_E__E_E` key so far `Q_CQ_CQ_DE_W`
+ worst | unadjudicated/cw-2026-09-23-173723 |   23.675 s | gap   215 ms,  3.1 units, 0.53 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `T` - ends dah | decode `E_W_T_E_E_T_E__E_ERE_D` key so far `Q_CQ_CQ_DE_W`
+ worst | unadjudicated/cw-2026-09-24-004347 |    7.650 s | gap   210 ms,  3.7 units, 0.64 of word-from | unit 58 ms (20.9 wpm), held gaps element 15 character 373 word 291 character clipped, word from 329 ms | before `U` ..- ends dah | decode `_W_ILL_BE_U_PLOADED_TO` key so far `ILL_BE_UP`
+ worst | unadjudicated/cw-2026-09-23-173723 |   23.255 s | gap   265 ms,  3.8 units, 0.66 of word-from | unit 70 ms (17.1 wpm), held gaps element 15 character 552 word 295 character clipped, word from 403 ms | before `E` . ends dit | decode `_DE_W_T_E_E_T_E__E_ERE` key so far `Q_CQ_CQ_DE_W`
+ worst | unadjudicated/cw-2026-09-23-173723 |   24.340 s | gap   320 ms,  4.6 units, 0.70 of word-from | unit 70 ms (17.1 wpm), held gaps element 10 character 828 word 250 character clipped word clipped, word from 455 ms | before `E` . ends dit | decode `_E_E_T_E__E_ERE_D_E_T_` key so far `CQ_CQ_DE_WB6`
+ worst | unadjudicated/cw-2026-09-23-173723 |   25.350 s | gap   250 ms,  3.6 units, 1.02 of word-from | unit 70 ms (17.1 wpm), held gaps element 63 character 135 word 445 word clipped, word from 245 ms | before `E` . ends dit | decode `_T_E__E_ERE_D_E_T_T_TB` key so far `CQ_DE_WB6RED`
+ summary the ten | boundaries 95 | inserted 29 | missing 1 | word kept 18 | joined 47
+ spread the ten | inserted | held 2 of 29 | double spaces 1 | space ends early 0 | after a dah 16
+ spread the ten | inserted | gap in units | n 29, min 3.65, quartile 5.00, median 5.64, quartile 5.91, max 13.45
+ spread the ten | inserted | gap over word-from | n 29, min 0.64, quartile 1.09, median 1.23, quartile 1.29, max 2.94
+ spread the ten | inserted | word-from in units | n 29, min 4.58, quartile 4.58, median 4.58, quartile 4.58, max 6.50
+ spread the ten | joined | held 12 of 47 | double spaces 0 | space ends early 0 | after a dah 25
+ spread the ten | joined | gap in units | n 47, min -10.55, quartile 3.64, median 4.09, quartile 4.45, max 6.45
+ spread the ten | joined | gap over word-from | n 47, min -1.62, quartile 0.76, median 0.83, quartile 0.95, max 0.99
+ spread the ten | joined | word-from in units | n 47, min 4.58, quartile 4.58, median 4.58, quartile 4.58, max 6.50
+ spread the ten | word kept | held 4 of 18 | double spaces 0 | space ends early 0 | after a dah 6
+ spread the ten | word kept | gap in units | n 18, min 5.00, quartile 7.36, median 11.64, quartile 12.73, max 15.36
+ spread the ten | word kept | gap over word-from | n 18, min 1.09, quartile 1.61, median 1.93, quartile 2.62, max 3.35
+ spread the ten | word kept | word-from in units | n 18, min 4.58, quartile 4.58, median 4.58, quartile 4.58, max 6.50
+ spread the ten | missing | held 1 of 1 | double spaces 0 | space ends early 0 | after a dah 0
+ spread the ten | missing | gap in units | n 1, min 4.27, quartile 4.27, median 4.27, quartile 4.27, max 4.27
+ spread the ten | missing | gap over word-from | n 1, min 0.75, quartile 0.75, median 0.75, quartile 0.75, max 0.75
+ spread the ten | missing | word-from in units | n 1, min 5.68, quartile 5.68, median 5.68, quartile 5.68, max 5.68
+ summary 17:37 | boundaries 27 | inserted 14 | missing 0 | word kept 5 | joined 8
+ spread 17:37 | inserted | held 14 of 14 | double spaces 1 | space ends early 0 | after a dah 4
+ spread 17:37 | inserted | gap in units | n 14, min 1.57, quartile 3.00, median 3.57, quartile 4.07, max 4.83
+ spread 17:37 | inserted | gap over word-from | n 14, min 0.24, quartile 0.48, median 0.66, quartile 1.06, max 1.38
+ spread 17:37 | inserted | word-from in units | n 14, min 3.50, quartile 3.50, median 5.76, quartile 6.50, max 6.50
+ spread 17:37 | joined | held 5 of 8 | double spaces 0 | space ends early 0 | after a dah 1
+ spread 17:37 | joined | gap in units | n 8, min -2.86, quartile 2.21, median 3.36, quartile 3.50, max 3.93
+ spread 17:37 | joined | gap over word-from | n 8, min -0.82, quartile 0.63, median 0.76, quartile 0.79, max 0.91
+ spread 17:37 | joined | word-from in units | n 8, min 3.50, quartile 3.50, median 4.33, quartile 4.58, max 4.58
+ spread 17:37 | word kept | held 2 of 5 | double spaces 0 | space ends early 0 | after a dah 4
+ spread 17:37 | word kept | gap in units | n 5, min 3.50, quartile 4.71, median 5.50, quartile 6.14, max 7.10
+ spread 17:37 | word kept | gap over word-from | n 5, min 0.62, quartile 0.73, median 1.20, quartile 1.34, max 1.55
+ spread 17:37 | word kept | word-from in units | n 5, min 4.58, quartile 4.58, median 4.58, quartile 5.67, max 6.50
+ spread 17:37 | missing | held 0 of 0 | double spaces 0 | space ends early 0 | after a dah 0
+ spread 17:37 | missing | gap in units | none
+ spread 17:37 | missing | gap over word-from | none
+ spread 17:37 | missing | word-from in units | none
+ summary all | boundaries 122 | inserted 43 | missing 1 | word kept 23 | joined 55
+ spread all | inserted | held 16 of 43 | double spaces 2 | space ends early 0 | after a dah 20
+ spread all | inserted | gap in units | n 43, min 1.57, quartile 3.86, median 5.00, quartile 5.82, max 13.45
+ spread all | inserted | gap over word-from | n 43, min 0.24, quartile 1.03, median 1.14, quartile 1.27, max 2.94
+ spread all | inserted | word-from in units | n 43, min 3.50, quartile 4.58, median 4.58, quartile 4.58, max 6.50
+ spread all | joined | held 17 of 55 | double spaces 0 | space ends early 0 | after a dah 26
+ spread all | joined | gap in units | n 55, min -10.55, quartile 3.50, median 3.91, quartile 4.45, max 6.45
+ spread all | joined | gap over word-from | n 55, min -1.62, quartile 0.75, median 0.81, quartile 0.93, max 0.99
+ spread all | joined | word-from in units | n 55, min 3.50, quartile 4.58, median 4.58, quartile 4.58, max 6.50
+ spread all | word kept | held 6 of 23 | double spaces 0 | space ends early 0 | after a dah 10
+ spread all | word kept | gap in units | n 23, min 3.50, quartile 6.14, median 8.73, quartile 12.18, max 15.36
+ spread all | word kept | gap over word-from | n 23, min 0.62, quartile 1.34, median 1.83, quartile 2.31, max 3.35
+ spread all | word kept | word-from in units | n 23, min 4.58, quartile 4.58, median 4.58, quartile 4.58, max 6.50
+ spread all | missing | held 1 of 1 | double spaces 0 | space ends early 0 | after a dah 0
+ spread all | missing | gap in units | n 1, min 4.27, quartile 4.27, median 4.27, quartile 4.27, max 4.27
+ spread all | missing | gap over word-from | n 1, min 0.75, quartile 0.75, median 0.75, quartile 0.75, max 0.75
+ spread all | missing | word-from in units | n 1, min 5.68, quartile 5.68, median 5.68, quartile 5.68, max 5.68
+
+
+[xUnit.net 00:00:42.28]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheWordsBreakTests.WhyTheSendersGapsAreNotHeld [20 s]
+  Standard Output Messages:
+ reads | capture | reads | held | separated | too few gaps | heaps too close | no trough | out of order | longest run | median centroids when refused, ms
+ reads | unadjudicated/cw-2026-09-24-004108 | 56 | 0 | 16 | 0 | 1 | 39 | 1 | 6 | in units 1.1 / 3.2 / 8.8
+ reads | unadjudicated/cw-2026-09-24-004133 | 56 | 28 | 23 | 0 | 2 | 31 | 11 | 13 | in units 1.1 / 5.4 / 13.0
+ reads | unadjudicated/cw-2026-09-24-004205 | 56 | 0 | 4 | 3 | 0 | 49 | 1 | 1 | in units 1.1 / 4.9 / 10.7
+ reads | unadjudicated/cw-2026-09-24-004234 | 56 | 44 | 52 | 1 | 0 | 3 | 0 | 29 | in units 1.1 / 5.0 / 14.6
+ reads | unadjudicated/cw-2026-09-24-004322 | 56 | 4 | 26 | 0 | 0 | 30 | 0 | 15 | in units 1.1 / 4.7 / 11.2
+ reads | unadjudicated/cw-2026-09-24-004347 | 56 | 44 | 51 | 0 | 0 | 5 | 8 | 45 | in units 1.0 / 4.8 / 11.0
+ reads | unadjudicated/cw-2026-09-24-004405 | 56 | 0 | 16 | 2 | 0 | 38 | 0 | 5 | in units 1.1 / 4.8 / 10.7
+ reads | unadjudicated/cw-2026-09-24-004427 | 56 | 0 | 13 | 1 | 0 | 42 | 0 | 10 | in units 1.0 / 3.5 / 6.3
+ reads | unadjudicated/cw-2026-09-24-004510 | 56 | 0 | 25 | 2 | 0 | 29 | 0 | 8 | in units 1.0 / 4.8 / 19.6
+ reads | unadjudicated/cw-2026-09-24-004550 | 56 | 0 | 14 | 0 | 4 | 38 | 0 | 6 | in units 1.0 / 3.1 / 5.9
+ reads | unadjudicated/cw-2026-09-23-173723 | 56 | 18 | 30 | 1 | 1 | 23 | 4 | 16 | in units 0.8 / 2.1 / 4.3
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 42.5483 Seconds
+RC=0 WALL=44s
