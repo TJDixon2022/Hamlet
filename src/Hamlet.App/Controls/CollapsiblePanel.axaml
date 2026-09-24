@@ -53,6 +53,7 @@
                         <Button Grid.Column="0" Name="PART_Header"
                                 Theme="{StaticResource HmPanelHeaderButton}"
                                 AutomationProperties.Name="{TemplateBinding Title}"
+                                ToolTip.Tip="Folds this panel away, or opens it again."
                                 Background="Transparent">
                             <Grid ColumnDefinitions="Auto,Auto,*">
                                 <TextBlock Grid.Column="0"

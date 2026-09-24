@@ -638,7 +638,7 @@
                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                         <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
                             Foreground="{StaticResource HmBlueBrush}"
-                            Text="hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune" />
+                            Text="{x:Static ctl:NeighborhoodMapControl.HowToUseIt}" />
 
                         <ctl:HintMarkControl x:Name="MapLegendMark"
                             Kind="Tip" HorizontalAlignment="Left"
@@ -679,7 +679,8 @@
                         ActivityDots="{Binding ActivityDots}"
                         PrivilegeSpans="{Binding PrivilegeSpans}"
                         TuneCommand="{Binding TuneToDotCommand}"
-                        SelectCommand="{Binding ShowNeighborhoodCommand}" />
+                        SelectCommand="{Binding ShowNeighborhoodCommand}"
+                        ToolTip.Tip="{x:Static ctl:NeighborhoodMapControl.HowToUseIt}" />
 
                     <!-- **THE KEY TO THE COLORS IS ON THE HEADER'S SECOND MARK**
                          (HM-DEC-032, R39, work instruction 376 task 2). It stood here as
@@ -953,7 +954,8 @@
                                         FontSize="11" Padding="9,3"
                                         Command="{Binding ToggleUpgradeLadderCommand}"
                                         IsVisible="{Binding PrivilegeStatus.UpgradePrompt,
-                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}" />
+                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                        ToolTip.Tip="Shows what the next license class would let you do on this band. Press again to hide it." />
 
                                 <!-- **THE CITATION LEFT THIS ROW IN 331 TASK 4** and is at
                                      the end of the license line, which is where the
@@ -1086,9 +1088,11 @@
                                        Foreground="{StaticResource HmTextMutedBrush}" />
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Button Content="Use the FCC value" FontSize="11" Padding="9,3"
-                                        Command="{Binding AcceptLookedUpClassCommand}" />
+                                        Command="{Binding AcceptLookedUpClassCommand}"
+                                        ToolTip.Tip="Sets your license class in Hamlet to the one the lookup found. Nothing on the radio changes." />
                                 <Button Content="Keep mine" FontSize="11" Padding="9,3"
-                                        Command="{Binding KeepMyLicenseClassCommand}" />
+                                        Command="{Binding KeepMyLicenseClassCommand}"
+                                        ToolTip.Tip="Keeps the license class you set, and Hamlet stops asking." />
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -1113,9 +1117,11 @@
                                        Foreground="{StaticResource HmTextMutedBrush}" />
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Button Content="Use the looked-up grid" FontSize="11" Padding="9,3"
-                                        Command="{Binding AcceptLookedUpGridCommand}" />
+                                        Command="{Binding AcceptLookedUpGridCommand}"
+                                        ToolTip.Tip="Sets your grid square in Hamlet to the one the lookup found. Nothing on the radio changes." />
                                 <Button Content="Keep mine" FontSize="11" Padding="9,3"
-                                        Command="{Binding KeepMyGridCommand}" />
+                                        Command="{Binding KeepMyGridCommand}"
+                                        ToolTip.Tip="Keeps the grid square you typed, and Hamlet stops asking." />
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -1921,7 +1927,8 @@
                         <Button Grid.Column="2" Content="No thanks"
                                 FontSize="11" Padding="8,3"
                                 IsVisible="{Binding HasReceiveOffer}"
-                                Command="{Binding DismissReceiveOfferCommand}" />
+                                Command="{Binding DismissReceiveOfferCommand}"
+                                ToolTip.Tip="Hides this offer for the rest of the session. Nothing on the radio changes." />
                     </Grid>
 
                     <ctl:HintMarkControl Kind="Boundary" HorizontalAlignment="Left"
@@ -2964,7 +2971,8 @@
                 <Button Classes="hm-send"
                         Content="Stop the scan"
                         IsVisible="{Binding Scan.IsScanning}"
-                        Command="{Binding Scan.StopCommand}" />
+                        Command="{Binding Scan.StopCommand}"
+                        ToolTip.Tip="Stops the scan now, so Hamlet stops moving the dial." />
 
                 <!-- THE STOP §0.2 REQUIRES, IN THE PINNED STRIP BESIDE THE
                      SCANNER'S AND FOR THE SAME REASON: this strip cannot be
@@ -2979,15 +2987,18 @@
                         Content="STOP TRANSMITTING"
                         FontWeight="Bold"
                         IsVisible="{Binding AutoCall.IsCalling}"
-                        Command="{Binding AutoCall.StopCommand}" />
+                        Command="{Binding AutoCall.StopCommand}"
+                        ToolTip.Tip="Stops the transmitter now. Escape does the same from anywhere in the window." />
 
                 <ComboBox ItemsSource="{Binding AvailablePorts}"
                           SelectedItem="{Binding SelectedPort}"
                           IsEnabled="{Binding !IsConnected}"
-                          MinWidth="220" VerticalAlignment="Center" />
+                          MinWidth="220" VerticalAlignment="Center"
+                          ToolTip.Tip="The port Hamlet talks to the radio on. Choose it before you connect; it cannot be changed while connected." />
                 <Button Classes="hm-connect"
                         Content="{Binding ConnectButtonText}"
-                        Command="{Binding ToggleConnectCommand}" />
+                        Command="{Binding ToggleConnectCommand}"
+                        ToolTip.Tip="{Binding ConnectButtonTip}" />
             </StackPanel>
         </Grid>
 
@@ -3220,7 +3231,8 @@
                 SMeterLevel="{Binding SMeterLevel}"
                 IsFavorite="{Binding IsFavorite}"
                 FavoriteLabel="{Binding FavoriteLabel}"
-                ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
+                ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}"
+                StarTip="Saves the frequency you are on as a favorite, and it appears in the row under the green zone. Press it again on a saved frequency to forget it." />
 
             <!-- **THE STAR SAVES HERE; THE LIST IS UNDER THE GREEN ZONE** (PHASE_PLAN.md
                  10.6, rev7; Tim, 2026-09-22, marked on his screen; work instruction 388
@@ -3318,7 +3330,8 @@
                                    Minimum="1" Maximum="100" Increment="1"
                                    FormatString="0.#"
                                    FontSize="11"
-                                   Value="{Binding TransmitDrivePercent, Mode=TwoWay}" />
+                                   Value="{Binding TransmitDrivePercent, Mode=TwoWay}"
+                                   ToolTip.Tip="How hard Hamlet drives the sound card when it transmits, as a percent of full scale. Kept for next time." />
                     <TextBlock Grid.Column="2"
                                Text="% of full scale"
                                FontSize="11"
@@ -3368,7 +3381,8 @@
                             VerticalAlignment="Center"
                             Content="{Binding Psk31PowerLine}"
                             Command="{Binding OpenPsk31PowerOfferCommand}"
-                            IsVisible="{Binding HasPsk31PowerOffer}" />
+                            IsVisible="{Binding HasPsk31PowerOffer}"
+                            ToolTip.Tip="Opens the RF power offer. Opening it changes nothing on the radio." />
 
                     <Popup x:Name="DigitalPsk31PowerPopup"
                            IsOpen="{Binding Psk31PowerOfferIsOpen, Mode=TwoWay}"
@@ -3399,11 +3413,13 @@
                                         <Button x:Name="DigitalPsk31PowerAccept"
                                                 Classes="hm-cardaction"
                                                 Content="{Binding Psk31PowerAccept}"
-                                                Command="{Binding AcceptPsk31PowerCommand}" />
+                                                Command="{Binding AcceptPsk31PowerCommand}"
+                                                ToolTip.Tip="Sets the radio's RF power to the level offered above." />
                                         <Button x:Name="DigitalPsk31PowerDecline"
                                                 Classes="hm-cardlink"
                                                 Content="I will set it myself"
-                                                Command="{Binding DeclinePsk31PowerCommand}" />
+                                                Command="{Binding DeclinePsk31PowerCommand}"
+                                                ToolTip.Tip="Closes the offer. Nothing is written to the radio." />
                                     </StackPanel>
 
                                     <TextBlock x:Name="DigitalPsk31AlcReference"
@@ -4094,27 +4110,33 @@
                                         Content="Send" FontSize="12"
                                         Padding="16,5" Margin="0,0,6,0"
                                         Command="{Binding Transmit.PressCommand}"
-                                        CommandParameter="{Binding Transmit.OwnWords}" />
+                                        CommandParameter="{Binding Transmit.OwnWords}"
+                                        ToolTip.Tip="Keys the radio and sends the line below on the air, in Morse. If Hamlet asks you to read it over first, a second press sends it." />
 
                                 <Button Grid.Column="2" Classes="hm-clear"
                                         Content="Clear" FontSize="12"
                                         Padding="12,5"
-                                        Command="{Binding ComposeClearCommand}" />
+                                        Command="{Binding ComposeClearCommand}"
+                                        ToolTip.Tip="Empties the line below. Sends nothing." />
                             </Grid>
 
                             <TextBox Text="{Binding Transmit.OwnWords.Message, Mode=TwoWay}"
                                      AcceptsReturn="False"
                                      Watermark="what you would send"
-                                     FontSize="13" />
+                                     FontSize="13"
+                                     ToolTip.Tip="What Send puts on the air. Type here, or let CQ, RST and 73 fill it. Nothing goes out until you press Send." />
 
                             <!-- The macros fill the line; they do not send. -->
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <Button Content="CQ" FontSize="12" Padding="12,5"
-                                        Command="{Binding ComposeCqCommand}" />
+                                        Command="{Binding ComposeCqCommand}"
+                                        ToolTip.Tip="Fills the line with a CQ call in your callsign. Sends nothing: Send puts it on the air." />
                                 <Button Content="RST" FontSize="12" Padding="12,5"
-                                        Command="{Binding ComposeRstCommand}" />
+                                        Command="{Binding ComposeRstCommand}"
+                                        ToolTip.Tip="Fills the line with a signal report, 599. Sends nothing: Send puts it on the air." />
                                 <Button Content="73" FontSize="12" Padding="12,5"
-                                        Command="{Binding ComposeSeventyThreeCommand}" />
+                                        Command="{Binding ComposeSeventyThreeCommand}"
+                                        ToolTip.Tip="Fills the line with a sign-off, 73. Sends nothing: Send puts it on the air." />
                             </StackPanel>
 
                             <!-- **WHY IT WILL NOT SEND, WHEN IT WILL NOT** — the

@@ -435,21 +435,45 @@ public sealed class WhatEveryControlSaysOnHoverTests
     };
 
     /// <summary>
-    /// Where a tip existed at entry, whether it is true of what the control does, read
-    /// against the body above. Keyed by label.
+    /// Whether each tip is true of what the control does, read against the body above.
+    /// Keyed by label. At entry (unit 421's tree) the save star read the digits' sentence,
+    /// FALSE of the star, and the band buttons were true and silent on the press; unit
+    /// 422 gave the star its own and put the press in front of each band's.
     /// </summary>
     internal static readonly IReadOnlyDictionary<string, string> IsItTrue = new Dictionary<string, string>
     {
-        ["\"Clear\" (ClearTerminalCommand)"] = "true",
-        ["\"I hear a station\""] = "true",
-        ["ReceiveHelpOfferButton"] = "true: it says the button cannot do anything, and it cannot (6.5's)",
-        ["GreenZoneBestBet"] = "true",
-        ["rig face, the frequency digits"] = "true of the digits",
-        ["save star"] = "FALSE of the star: the only hover text there is the face's, about tuning by the wheel, and the star saves the spot",
-        ["band"] = "true but silent on the press: it says what the band is like and what was heard, never that pressing tunes there",
-        ["saved spot"] = "true",
-        ["forget"] = "true",
-        ["mark"] = "true: a mark's sentence is what it is for",
+        ["\"Clear\" (ClearTerminalCommand)"] = "true, kept",
+        ["\"I hear a station\""] = "true, kept",
+        ["ReceiveHelpOfferButton"] = "true, kept: it says the button cannot do anything, and it cannot (6.5's)",
+        ["GreenZoneBestBet"] = "true, kept",
+        ["rig face, the frequency digits"] = "true of the digits, kept",
+        ["save star"] = "true of the star (unit 422); at entry it read the digits' sentence, FALSE of the star",
+        ["band"] = "true (unit 422 put the press first); at entry true and silent on the press",
+        ["saved spot"] = "true, kept",
+        ["forget"] = "true, kept",
+        ["mark"] = "true, kept: a mark's sentence is what it is for",
+        ["TransmitButton"] = "true (unit 422): says it keys the radio",
+        ["\"Clear\" (ComposeClearCommand)"] = "true (unit 422)",
+        ["\"CQ\""] = "true (unit 422): fills, sends nothing",
+        ["\"RST\""] = "true (unit 422): fills, sends nothing",
+        ["\"73\""] = "true (unit 422): fills, sends nothing",
+        ["send line"] = "true (unit 422)",
+        ["header of"] = "true (unit 422)",
+        ["\"No thanks\""] = "true (unit 422)",
+        ["\"Stop the scan\""] = "true (unit 422)",
+        ["\"STOP TRANSMITTING\""] = "true (unit 422); Escape is handled in MainWindow.axaml.cs",
+        ["port list"] = "true (unit 422)",
+        ["\"Connect\""] = "true (unit 422), follows the words",
+        ["\"Disconnect\""] = "true (unit 422), follows the words",
+        ["neighborhood strip"] = "true (unit 422): the mark's own sentence, from one constant",
+        ["Button with no words"] = "true (unit 422)",
+        ["\"Use the FCC value\""] = "true (unit 422)",
+        ["\"Keep mine\""] = "true (unit 422)",
+        ["\"Use the looked-up grid\""] = "true (unit 422)",
+        ["DigitalTransmitDriveBox"] = "true (unit 422)",
+        ["DigitalPsk31PowerLine"] = "true (unit 422)",
+        ["DigitalPsk31PowerAccept"] = "true (unit 422)",
+        ["DigitalPsk31PowerDecline"] = "true (unit 422)",
     };
 
     private readonly ITestOutputHelper _output;

@@ -160,8 +160,21 @@ public sealed class NeighborhoodMapControl : Control
     private readonly Cursor _handCursor = new(StandardCursorType.Hand);
     private readonly Cursor _dotCursor = new(StandardCursorType.Cross);
 
+    /// <summary>What the strip does, for its own hover and for the mark beside it.</summary>
+    /// <remarks>
+    /// **ONE SENTENCE IN ONE PLACE** (work instruction 422, step 6 criterion 6.4). The
+    /// card's `?` mark said this and the strip itself said nothing until a dot was under
+    /// the pointer; both now read it from here, so they cannot come to say it two ways.
+    /// </remarks>
+    public const string HowToUseIt =
+        "hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune";
+
     private DotLayout[] _layout = Array.Empty<DotLayout>();
     private DotLayout? _hovered;
+
+    // What the strip says with no dot under the pointer, put back when the pointer
+    // leaves a dot, so a dot's line never stands in for the strip's own.
+    private object? _restingTip;
     private bool _pointerDown;
     private bool _draggedBeyondClick;
     private Point _downPoint;
@@ -561,7 +574,7 @@ public sealed class NeighborhoodMapControl : Control
             || w <= 0 || h <= 0 || BandHighHz <= BandLowHz)
         {
             _layout = Array.Empty<DotLayout>();
-            _hovered = null;
+            LetGoOfTheDot();
             return;
         }
 
@@ -591,8 +604,18 @@ public sealed class NeighborhoodMapControl : Control
         _layout = built.ToArray();
 
         // The dot under the pointer may have moved or vanished.
-        _hovered = null;
+        LetGoOfTheDot();
         ToolTip.SetIsOpen(this, false);
+    }
+
+    private void LetGoOfTheDot()
+    {
+        if (_hovered is not null)
+        {
+            ToolTip.SetTip(this, _restingTip);
+        }
+
+        _hovered = null;
     }
 
     private DotLayout? DotAt(Point p)
@@ -623,15 +646,22 @@ public sealed class NeighborhoodMapControl : Control
             return;
         }
 
+        var wasResting = _hovered is null;
         _hovered = dot;
 
         if (dot is null)
         {
             ToolTip.SetIsOpen(this, false);
+            ToolTip.SetTip(this, _restingTip);
             Cursor = _handCursor;
         }
         else
         {
+            if (wasResting)
+            {
+                _restingTip = ToolTip.GetTip(this);
+            }
+
             ToolTip.SetIsOpen(this, false);
             ToolTip.SetTip(this, dot.Dot.TooltipText);
             ToolTip.SetIsOpen(this, true);

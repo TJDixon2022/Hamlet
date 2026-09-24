@@ -1,0 +1,7 @@
+unit422 task 3: the hover text (6.4) - every control EveryControlSaysWhatItDoesTests names carries a tip true of its command; the test goes green, 3 of 3
+
+Send says it keys the radio and sends the line; Clear, CQ, RST and 73 say they fill or clear the line and send nothing. The connect button's tip follows its words (ConnectButtonTip). The save star has its own hover, StarTip on RigDisplayControl, shown while the pointer is on the star; at entry the star read the digits' sentence, false of the star. Each band button's tip now opens with what the press does, the band's own text kept word for word after it. The neighborhood strip and its mark read one constant, NeighborhoodMapControl.HowToUseIt, the mark's words unchanged. Panel headers say they fold the panel. Send's element differs only by ToolTip.Tip; no command, binding, visibility or layout changed.
+
+Inventory before and after: CW tab 7 of 15 to 15 of 15; band row 18 of 34 to 33 of 34 not connected (the link-check mark holds no sentence until a radio answers and is not drawn), 19 of 34 to 34 of 34 connected. Touched types green but Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen, red on an element named TurnRingCountText that is nowhere in src, so red at entry too.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

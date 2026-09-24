@@ -748,7 +748,17 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _isConnected;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ConnectButtonTip))]
     private string _connectButtonText = "Connect";
+
+    /// <summary>What the connect button does, in whichever state its words are in.</summary>
+    /// <remarks>
+    /// **IT FOLLOWS THE BUTTON'S OWN WORDS** (work instruction 422, step 6 criterion
+    /// 6.4), so the hover can never describe the press the button is not offering.
+    /// </remarks>
+    public string ConnectButtonTip => ConnectButtonText == "Disconnect"
+        ? "Lets go of the radio. Hamlet stops reading it and stops tuning it."
+        : "Connects to the radio on the port chosen beside this, so Hamlet can read it and tune it.";
 
     [ObservableProperty]
     private string _selectedPort = TrainingRadio;
@@ -22258,9 +22268,12 @@ public partial class BandButtonViewModel : ObservableObject
     {
         get
         {
-            var text = Character.Length == 0
+            // **WHAT THE PRESS DOES COMES FIRST** (work instruction 422, step 6
+            // criterion 6.4). The rest was true and never said that pressing the card
+            // tunes, so it is kept word for word after this line.
+            var text = PressTip + TooltipParagraphBreak + (Character.Length == 0
                 ? Activity.Tooltip
-                : Character + TooltipParagraphBreak + Activity.Tooltip;
+                : Character + TooltipParagraphBreak + Activity.Tooltip);
 
             // **THE BADGE'S OWN REASON MOVED HERE WHEN THE BADGE STOPPED TAKING
             // CLICKS.** It used to carry this tooltip itself; it is now drawn
@@ -22275,6 +22288,17 @@ public partial class BandButtonViewModel : ObservableObject
                 : text;
         }
     }
+
+    /// <summary>What pressing the card does, read off `SelectBand`.</summary>
+    /// <remarks>
+    /// `SelectBand` selects the band and puts the dial on its CW watering hole; the
+    /// neighborhood strip is rebuilt for the band, and a connected radio is sent the new
+    /// frequency by the same path every tune takes.
+    /// </remarks>
+    public string PressTip
+        => "Tunes to " + (Band.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture)
+            + " MHz, where Morse gathers on " + Band.Name
+            + ", and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too.";
 
     /// <summary>Blank line between the character passage and the evidence.</summary>
     private const string TooltipParagraphBreak = "\n\n";

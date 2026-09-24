@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 4
+TASK: TASK 3 of 4
 WORK_INSTRUCTION: 422 - every control says what it does
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T15:39:54-04:00
-NOTE: Test written, expecting red - running EveryControlSaysWhatItDoesTests alone
+UPDATED: 2026-09-24T15:46:38-04:00
+NOTE: Tips green 3 of 3; re-running the inventory for the after counts - running the inventory fact alone
 
 ---
 

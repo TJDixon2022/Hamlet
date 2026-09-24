@@ -148,6 +148,16 @@ public sealed class RigDisplayControl : Control
     public static readonly StyledProperty<ICommand?> ToggleFavoriteCommandProperty =
         AvaloniaProperty.Register<RigDisplayControl, ICommand?>(nameof(ToggleFavoriteCommand));
 
+    /// <summary>What the star does, shown while the pointer is on the star.</summary>
+    /// <remarks>
+    /// **THE STAR HAS NO ELEMENT OF ITS OWN, SO IT BORROWS THE FACE'S HOVER WHILE THE
+    /// POINTER IS ON IT** (work instruction 422, step 6 criterion 6.4). Until then the
+    /// only hover text over the star was the face's, which says the wheel tunes a digit,
+    /// and the star does not tune.
+    /// </remarks>
+    public static readonly StyledProperty<string?> StarTipProperty =
+        AvaloniaProperty.Register<RigDisplayControl, string?>(nameof(StarTip));
+
     private readonly double _bigWidth;
     private readonly double _smallWidth;
     private readonly double _sepWidth;
@@ -162,6 +172,10 @@ public sealed class RigDisplayControl : Control
     /// is where it was actually put.
     /// </remarks>
     private Rect _starRect = default;
+
+    // The face's own hover text, held while the star's stands in for it.
+    private object? _faceTip;
+    private bool _onStar;
 
     static RigDisplayControl()
     {
@@ -251,6 +265,13 @@ public sealed class RigDisplayControl : Control
     {
         get => GetValue(ToggleFavoriteCommandProperty);
         set => SetValue(ToggleFavoriteCommandProperty, value);
+    }
+
+    /// <summary>What the star does, shown while the pointer is on the star.</summary>
+    public string? StarTip
+    {
+        get => GetValue(StarTipProperty);
+        set => SetValue(StarTipProperty, value);
     }
 
     /// <inheritdoc/>
@@ -477,10 +498,45 @@ public sealed class RigDisplayControl : Control
     {
         base.OnPointerMoved(e);
 
+        var onStar = _starRect.Contains(e.GetPosition(this));
+
         Cursor = new Cursor(
-            _starRect.Contains(e.GetPosition(this))
+            onStar
                 ? StandardCursorType.Hand
                 : StandardCursorType.SizeNorthSouth);
+
+        ShowTheStarsTip(onStar);
+    }
+
+    /// <inheritdoc/>
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        ShowTheStarsTip(false);
+    }
+
+    /// <summary>
+    /// The star's hover text while the pointer is on the star, and the face's own
+    /// everywhere else. Only what the hover says changes here.
+    /// </summary>
+    private void ShowTheStarsTip(bool onStar)
+    {
+        if (onStar == _onStar || StarTip is not { Length: > 0 } star)
+        {
+            return;
+        }
+
+        _onStar = onStar;
+
+        if (onStar)
+        {
+            _faceTip = ToolTip.GetTip(this);
+            ToolTip.SetTip(this, star);
+        }
+        else
+        {
+            ToolTip.SetTip(this, _faceTip);
+        }
     }
 
     /// <inheritdoc/>
