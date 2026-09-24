@@ -189,6 +189,8 @@ section 6 licenses 7.5 to write less and to carry a band rule, not to write in m
 it is the owner's: do the `CW DX` and `QRP` blocks count as entering CW mode? Not blocking under
 R65; 7.5 is met where the block states the CW row.
 
+*Answered by R70, 2026-09-24: the CW DX and QRP blocks are CW mode; work instruction 420.*
+
 ## P14 - the attenuator's 20 dB write goes out as a plain byte
 
 **Raised by unit 419, 2026-09-24.** `Ic7300Rig.BuildSettingData` sends a value as two BCD bytes
@@ -228,3 +230,23 @@ line, so no entry round ran it; it was red before this unit and is red after, fo
 reason. Its forbidden-write checks, the ones that matter, are not reached while the bound
 fails. Raising the bound or trimming the region's comments is a test-shape decision left for the
 next unit under 12.6. Not blocking.
+
+## P17 - 3.6 cannot remove a stray letter without lowering a floor
+
+**Raised by work instruction 420's arbiter, 2026-09-24, measured while authoring.** At unit
+419's exit 49 of the 51 capture rows read exactly their named floor and 2 read one above it
+(43 against 42, 57 against 56); the 13 keyed floors of 2.2 were set at what each recording
+read and no letter has moved since, because unit 416's two kept changes moved only spaces.
+3.6 asks that stray single-element characters be removed under 3.2's four tests, and test 2
+(no named floor broken) and test 4 (no capture row's named count falls) count those very
+strays as named characters. Unit 412 measured it: every E and T left out took 12 edits off and
+broke 13 of 13 floors. So 3.6 is reachable only by a change that turns a wrong single-element
+character into the right one without removing any, and no trace yet says such a change exists.
+
+Ruling proposed, the owner's: a named character the inferred key aligns as added, inside the
+scored region, may leave a floor, with every one printed per recording before and after, and
+no named character the key aligns as right or wrong may leave. Reasoning: the floor exists so
+the decoder cannot score well by going quiet (R59), and a character the key says was never sent
+is not reading. Rejected by the arbiter: ruling it here, because R63 and 2.2 say a floor is
+never lowered, and an arbiter's ruling may not overrule an earlier one. Not blocking: the loop
+works 7.7 and step 6 meanwhile (R64, R65).

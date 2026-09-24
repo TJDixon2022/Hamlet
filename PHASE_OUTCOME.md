@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 420 - STEP 7
+
+STEP: 7
+APPROACH: state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
+MOVE: work around
+WHY: Step 3's only reachable criterion, 3.6, collides with 2.2's floors and 3.2's fourth test: 49 of 51 capture rows sit exactly at their named floor, so removing any stray letter fails a test only the owner can relax (P17). R64 and R65 send the loop to the next open criterion, and R70 has just made 7.7 concrete and one unit wide.
+STATE: partial
+DECIDED: author's, overrulable - routing from step 3 to 7.7 on the floor measurement above, with 3.6 parked as P17 and a ruling proposed to the owner (self-ruling 1 of 2, citing PHASE_PLAN.md R64 and R65); the three CW-family blocks are one mode for the operator's-hand rule within a band; the choice of CW DX frequency and the per-type timeouts
+LICENCE: PHASE_PLAN.md R70, R67, R64, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+ADVANCES: step 7 criterion 7
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.106 to 1.13.107. PHASE_STATUS.md names unit 420 and CURRENT_STEP 7. HEAD at entry b378abeb. HM-DEC-175 in DECISIONS.md and its row at the top of CLAUDE.md section 1; P13 answered by R70 and P17 added in PARKED.md. CW-family blocks on the map 20 (CW 9, CW DX 4, QRP 7), of which 9 state conditions. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 277 of 278, one lost to the dispatcher loop, TheCarrierHoldsTheButtonsTests 8 of 8 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; every Rig type, 42 types, 316 of 316, one type per invocation, WhatEnteringAModeSetsTests 1 of 1 and ThePreampFollowsItsOwnTextTests 5 of 5 among them; TheBlockStatesWhatTheModeNeedsTests 5 of 5, EveryModeAnswersForEverySettingTests 6 of 6, WhichPathsPutNarrationOnTheBarTests 6 of 6.
+
 ## UNIT 419 - STEP 7
 
 STEP: 7
@@ -341,3 +354,21 @@ STATE_AFTER: partial
 STATE_WHY: Criterion 6.2 is now met and 6.6 still holds, but step 6 criteria 6.3, 6.4, 6.5 and 6.8 are still unticked, so the step is not done.
 ADVANCED: yes
 ATTEMPT: 6.2 | unit 3 launched 2026-09-24T14:02:00.835Z | yes | executed | audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+
+## UNIT 1 - STEP 7
+
+STEP: 7
+APPROACH: table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
+HIT: section 4 wants a ruling: yes - The outstanding asks P12 and the clipping measurement say they are waiting on the owner, and both would change what the sheet tells the operator as fact about when something was captured or broadcast and about what was heard, which falls under the third stop.
+MOVE: continue
+WHY: PHASE_PLAN.md step 7 criterion 7.5 asks that entering CW mode and entering data mode each set the receiver correctly and leave it set, with every condition written once when the radio is not already at it, the band rule carried by what is written, exactly one component deciding each field, and the operator's own change not overwritten
+DECIDED: how the band rule is carried, how each competing voice is scoped, which scale the comparison is made on, how long the operator's hand holds, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R67, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+COST: 11.241697999999996
+ACCOMPLISHED: tuning into CW or a data mode sets the radio the way the mode needs it, once, and it stays that way - including when Tim has set something himself
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: The report shows 7.6 met with measured results, 7.5 advanced but left open on P13 because the CW DX and QRP blocks state no conditions, and 7.1 to 7.4 were not touched because the decoder was not changed.
+ADVANCED: no
+ATTEMPT: 7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | no | executed | table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
+REASON: 7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | the unit ran to completion and the criterion did not flip from unmet to met

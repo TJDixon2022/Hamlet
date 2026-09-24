@@ -1,0 +1,79 @@
+80 m     cw     CW DX         3500000    3510000
+80 m     cw     CW            3510000    3560000
+80 m     cw     QRP           3560000    3570000
+80 m     digital RTTY          3570000    3573000
+80 m     digital FT8           3573000    3575000
+80 m     digital FT4           3575000    3578000
+80 m     digital JS8           3578000    3580000
+80 m     digital PSK31         3580000    3583000
+80 m     digital auto          3585000    3600000
+80 m     phone  SSB DX        3790000    3800000
+80 m     phone  SSTV          3845000    3848000
+80 m     phone  AM            3885000    3888000
+40 m     cw     CW DX         7000000    7025000
+40 m     cw     CW            7025000    7030000
+40 m     cw     QRP           7030000    7040000
+40 m     digital RTTY          7040000    7047000
+40 m     digital FT4           7047000    7050000
+40 m     cw     CW            7050000    7070000
+40 m     digital PSK31         7070000    7074000
+40 m     digital FT8           7074000    7077000
+40 m     digital JS8           7078000    7081000
+40 m     digital auto          7100000    7105000
+40 m     phone  SSB DX        7125000    7171000
+40 m     phone  SSTV          7171000    7174000
+40 m     phone  SSB           7174000    7290000
+40 m     phone  AM            7290000    7293000
+30 m     cw     CW           10100000   10106000
+30 m     cw     QRP          10106000   10116000
+30 m     cw     CW           10116000   10130000
+30 m     digital PSK31        10130000   10136000
+30 m     digital FT8          10136000   10138000
+30 m     digital RTTY         10138000   10140000
+30 m     digital auto         10140000   10150000
+20 m     cw     CW DX        14000000   14025000
+20 m     cw     CW           14025000   14060000
+20 m     cw     QRP          14060000   14070000
+20 m     digital PSK31        14070000   14074000
+20 m     digital FT8          14074000   14077000
+20 m     digital JS8          14078000   14080000
+20 m     digital FT4          14080000   14083000
+20 m     digital RTTY         14083000   14095000
+20 m     digital auto         14095000   14100000
+20 m     digital NCDXF        14100000   14100500
+20 m     digital auto         14100500   14112000
+20 m     phone  SSB DX       14150000   14225000
+20 m     phone  SSB          14225000   14286000
+20 m     phone  AM           14286000   14289000
+17 m     cw     CW           18068000   18096000
+17 m     cw     QRP          18096000   18100000
+17 m     digital FT8          18100000   18102000
+17 m     digital JS8          18104000   18105000
+17 m     digital auto         18105000   18110000
+17 m     digital NCDXF        18110000   18110500
+17 m     phone  SSB DX       18110500   18130000
+17 m     phone  SSB          18130000   18168000
+15 m     cw     CW DX        21000000   21025000
+15 m     cw     CW           21025000   21060000
+15 m     cw     QRP          21060000   21070000
+15 m     digital FT8          21074000   21076000
+15 m     digital JS8          21078000   21081000
+15 m     digital auto         21090000   21100000
+15 m     digital RTTY         21100000   21110000
+15 m     digital FT4          21140000   21143000
+15 m     digital NCDXF        21150000   21150500
+15 m     phone  SSB DX       21200000   21300000
+15 m     phone  SSB          21300000   21340000
+15 m     phone  SSTV         21340000   21343000
+10 m     cw     CW           28000000   28060000
+10 m     cw     QRP          28060000   28070000
+10 m     digital FT8          28074000   28077000
+10 m     digital JS8          28078000   28081000
+10 m     digital RTTY         28081000   28120000
+10 m     digital auto         28120000   28180000
+10 m     digital FT4          28180000   28183000
+10 m     digital NCDXF        28190000   28225000
+10 m     phone  SSB DX       28300000   28400000
+10 m     phone  SSB          28400000   28680000
+10 m     phone  SSTV         28680000   28683000
+10 m     phone  AM           29000000   29200000

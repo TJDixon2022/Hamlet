@@ -1,0 +1,5 @@
+unit420 task 0: the record - HM-DEC-175 entering Morse in any CW-family block is entering CW mode, in DECISIONS.md and at the top of CLAUDE.md section 1; PARKED.md P13 answered by R70 and P17 added verbatim; PHASE_OUTCOME.md UNIT 420 - STEP 7 from the decision block; PHASE_STATUS.md unit 420, CURRENT_STEP 7; version 1.13.106 to 1.13.107
+
+Entry round: Hamlet.sln builds with warnings as errors; engine carry-forward 178 of 178; app 277 of 278, one lost to the dispatcher loop, TheCarrierHoldsTheButtonsTests 8 of 8 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2; every Rig type, 42 types, 316 of 316, one type per invocation, WhatEnteringAModeSetsTests and ThePreampFollowsItsOwnTextTests among them. CW-family blocks stating receiver conditions at entry: 9 of 20.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

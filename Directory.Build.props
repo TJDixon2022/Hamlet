@@ -1312,8 +1312,14 @@
     owns each field, and the operator's own change stands (HM-DEC-174). Nothing that keys,
     transmits or sets power changes.
   -->
+  <!--
+    1.13.106 -> 1.13.107, WORK INSTRUCTION 420 TASK 0. A PATCH, STEP 7 OF THE CORRECTNESS PHASE,
+    CRITERION 7.7, EVERY MORSE BLOCK SETS THE RECEIVER THE WAY CW DOES: the CW DX and QRP blocks
+    state the CW row by sameAs lines in the conditions file (R70, HM-DEC-175). No condition's
+    value, text or confirmed flag changes, and nothing that keys, transmits or sets power changes.
+  -->
   <PropertyGroup>
-    <Version>1.13.106</Version>
+    <Version>1.13.107</Version>
   </PropertyGroup>
 
   <!--

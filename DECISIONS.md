@@ -4,6 +4,27 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-175
+date: 2026-09-24
+refs: PHASE_PLAN.md R70 and criterion 7.7, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Explore/ReceiverConditions.cs, HM-DEC-174, PARKED.md P13, work instruction 420
+---
+
+**Entering Morse in a CW DX or QRP block is entering CW mode, and sets the receiver exactly
+as a CW block does.** Tim, 2026-09-24.
+
+**What was wrong.** The conditions file is keyed by the block's short name and states CW, FT8
+and FT4. The map's Morse family has three short names - CW, CW DX and QRP - and the last two
+stated nothing, so tuning into them wrote nothing. 7.030 MHz, where the CW preamp rule says
+off, is the first hertz of the 40 m QRP block, so a radio left at preamp 1 there stayed at
+preamp 1 against the row's own text.
+
+**What is ruled.** The CW conditions apply to every block of the CW family. The conditions
+themselves are unchanged, and a condition marked unconfirmed is still not written.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 420's record
+of it. Rejected: leaving those blocks silent and closing 7.5 partial.
+
+---
 id: HM-DEC-174
 date: 2026-09-24
 refs: PHASE_PLAN.md R67 and criterion 7.5, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs, ReceiveAdvice.cs, RigObservations.cs, HM-DEC-056, HM-DEC-148, work instruction 419
