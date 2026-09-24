@@ -293,7 +293,6 @@ public sealed class CwProbabilisticStream
         _sampleInHop -= hops * _hopSamples;
         _hopsSeen += hops;
         _settledThrough += hops;
-        _spacesThrough += hops;
     }
 
     /// <summary>
@@ -496,16 +495,6 @@ public sealed class CwProbabilisticStream
 
         Last = result;
 
-        // **THIS SENDER'S CHARACTER GAP, FOR THE SPACES ONLY** (work instruction
-        // 415). Measured from the same window whether or not the word trough
-        // held; the path above never sees it.
-        var characterGap = measured.IsReady
-            ? CwUnitEstimator.MeasureCharacterGap(
-                window,
-                CwProbabilisticDecoder.HopMilliseconds,
-                measured.UnitMilliseconds)
-            : null;
-
         // Where the window starts on the audio clock, so a character's hop can be
         // turned into a moment somebody can point at (§0.0.1).
         var windowStartHop = _hopsSeen - _envelopeCount;
@@ -515,29 +504,11 @@ public sealed class CwProbabilisticStream
 
         var edge = new List<CwCharacter>();
 
-        foreach (var (character, space) in Spaced(result, characterGap))
+        foreach (var character in result.Characters)
         {
             var absolute = windowStartHop + character.EndHop;
             var at = TimeSpan.FromSeconds(
                 absolute * CwProbabilisticDecoder.HopMilliseconds / 1000.0);
-
-            // **A SPACE THE PATH DID NOT READ IS ANNOUNCED AGAINST ITS OWN MARK
-            // AND NEVER AGAINST THE LETTERS'.** Moving `_settledThrough` for it
-            // would change which of a later read's letters count as new.
-            if (space == Space.Added)
-            {
-                if (character.EndHop >= settleBefore)
-                {
-                    edge.Add(Character(character, result, at));
-                }
-                else if (absolute > _settledThrough && absolute > _spacesThrough)
-                {
-                    _spacesThrough = absolute;
-                    CharacterSettled?.Invoke(Character(character, result, at));
-                }
-
-                continue;
-            }
 
             // **AT THE FLUSH, AN UNREADABLE CHARACTER STILL INSIDE THE DELAY IS
             // NOT SETTLED** (work instruction 408, unit 405's B2). Nothing more is
@@ -561,117 +532,19 @@ public sealed class CwProbabilisticStream
                     continue;
                 }
 
-                // **THE MARK MOVES EXACTLY AS THE PATH'S OWN CHARACTERS MOVE IT**,
-                // a space the relabel took out included, so every letter settles
-                // where and when it did before the relabel existed.
                 _settledThrough = absolute;
                 _settledCount++;
-
-                if (space == Space.Removed)
-                {
-                    continue;
-                }
-
-                if (character.Pattern.Length == 0)
-                {
-                    if (absolute <= _spacesThrough)
-                    {
-                        continue;
-                    }
-
-                    _spacesThrough = absolute;
-                }
-
                 CharacterSettled?.Invoke(Character(character, result, at));
                 continue;
             }
 
-            if (space != Space.Removed)
-            {
-                edge.Add(Character(character, result, at));
-            }
+            edge.Add(Character(character, result, at));
         }
 
         LeadingEdgeChanged?.Invoke(edge);
     }
 
-    /// <summary>What the relabel did to one entry of a read.</summary>
-    private enum Space
-    {
-        /// <summary>The path's own character or space, announced as it was.</summary>
-        AsRead,
-
-        /// <summary>A space the path read that the sender's gap says is not one.</summary>
-        Removed,
-
-        /// <summary>A space the path did not read that the sender's gap says is one.</summary>
-        Added,
-    }
-
-    /// <summary>How far past the character gap a gap must run to be a word gap.</summary>
-    /// <remarks>
-    /// **THE GEOMETRIC MEAN OF THE CHARACTER GAP AND SEVEN THIRDS OF IT**, the
-    /// textbook ratio of the two carried onto what this sender actually does
-    /// (work instruction 415, author's, overrulable). Chosen from the heaps in
-    /// `docs/phase-correctness/unit415-trace.md` and not from a score: it sits on
-    /// the character heap's falling shoulder, and past it to twice the gap is a
-    /// low flat plateau with no emptier place to move to.
-    /// </remarks>
-    internal static readonly double WordGapShare = Math.Sqrt(7.0 / 3.0);
-
-    /// <summary>
-    /// The read's characters in order, each gap between two letters re-decided
-    /// from the sender's character gap where one was measured.
-    /// </summary>
-    /// <param name="result">What the read made of the window.</param>
-    /// <param name="characterGap">This sender's character gap, or null.</param>
-    /// <returns>Every character, with what the relabel did to it.</returns>
-    /// <remarks>
-    /// <para>**THE LETTERS ARE THE PATH'S, BY CONSTRUCTION.** Only a space is ever
-    /// removed or added, and a removed one still carries its hop so the caller can
-    /// keep its bookkeeping identical. Where no character gap was measured the
-    /// path's own label stands.</para>
-    /// <para>A space added ends where the gap ends, which is where the path's own
-    /// word-gap space would have ended.</para>
-    /// </remarks>
-    private static IEnumerable<(CwProbabilisticCharacter Character, Space Space)> Spaced(
-        CwProbabilisticResult result, double? characterGap)
-    {
-        if (characterGap is not { } gap || result.Characters.Count == 0)
-        {
-            return result.Characters.Select(c => (c, Space.AsRead));
-        }
-
-        var boundaryHops = gap * WordGapShare / CwProbabilisticDecoder.HopMilliseconds;
-        var byEnd = result.Gaps.ToDictionary(g => g.EndHop);
-        var spaced = new List<(CwProbabilisticCharacter Character, Space Space)>();
-
-        foreach (var character in result.Characters)
-        {
-            var removed = character.Pattern.Length == 0
-                && byEnd.TryGetValue(character.EndHop, out var read)
-                && read.IsWordGap
-                && read.SpanHops <= boundaryHops;
-
-            spaced.Add((character, removed ? Space.Removed : Space.AsRead));
-        }
-
-        foreach (var read in result.Gaps)
-        {
-            if (!read.IsWordGap && read.SpanHops > boundaryHops)
-            {
-                spaced.Add((new CwProbabilisticCharacter(" ", "", read.EndHop), Space.Added));
-            }
-        }
-
-        // Stable, so the path's own order stands wherever two share a hop.
-        return spaced.OrderBy(s => s.Character.EndHop).ToList();
-    }
-
     private long _settledThrough = -1;
-
-    /// <summary>The last space announced, so one gap is never announced twice.</summary>
-    private long _spacesThrough = -1;
 
     /// <summary>
     /// One character, in the shape every surface in this application already
