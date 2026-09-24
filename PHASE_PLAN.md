@@ -173,11 +173,11 @@ says - never the whole suite.
 **Entry:** step 0 done.
 
 **Exit:**
-- [ ] 1.1 The fixture generator produces CQ calls of the standard form at a named set of speeds and signal strengths, each with its exact key written beside it, and each is read back by the scorer at HEAD and tabled.
-- [ ] 1.2 The generated set spans at least three speeds and at least three signal strengths, and the report states the recipe for every case so another unit can rebuild them.
-- [ ] 1.3 `docs/phase-correctness/inferring-a-key.md` states the rule for inferring a key from a CQ call on the air: what may be inferred, what may not, and how the scored region is chosen, with `cw-2026-09-23-173723` worked as the example.
-- [ ] 1.4 The synthetic cases carry a written statement of what they do not prove (§12.5), and no synthetic case is ever the sole evidence for keeping a change.
-- [ ] 1.5 The three floor tests and both carry-forward lines are green at exit.
+- [x] 1.1 The fixture generator produces CQ calls of the standard form at a named set of speeds and signal strengths, each with its exact key written beside it, and each is read back by the scorer at HEAD and tabled.
+- [x] 1.2 The generated set spans at least three speeds and at least three signal strengths, and the report states the recipe for every case so another unit can rebuild them.
+- [x] 1.3 `docs/phase-correctness/inferring-a-key.md` states the rule for inferring a key from a CQ call on the air: what may be inferred, what may not, and how the scored region is chosen, with `cw-2026-09-23-173723` worked as the example.
+- [x] 1.4 The synthetic cases carry a written statement of what they do not prove (§12.5), and no synthetic case is ever the sole evidence for keeping a change.
+- [x] 1.5 The three floor tests and both carry-forward lines are green at exit.
 - [x] 1.6 Every capture of the locked-on run - `cw-2026-09-24-004108` onward - carries an inferred key built by differencing consecutive sidecar transcripts, with its scored region named, ambiguous stretches left unscored, and each key file stating that it is inferred and how; each is scored by `CwScorer` and tabled beside the baseline (R61, R63).
 
 **Depends on:** step 0.

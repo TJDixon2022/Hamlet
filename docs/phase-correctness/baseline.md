@@ -210,6 +210,7 @@ the re-run reads 33 edits over 46 and 13 of 13 floors held.
 | 410 | none, the baseline | 29 edits over 25 characters, inferred key | 33 edits over 46 characters, inferred keys |
 | 412 | none kept; the guard's two columns added, 0 unsure per 47 named | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
 | 413 | none kept; two built and taken out under 3.2 (`unit413-trace.md`, PARKED.md P6) | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
+| 414 | none; `src` untouched; twelve synthetic cases tabled below, outside this total | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
 
 **Unit 413, every keyed recording together**, against inferred keys, 217 edits over 565
 characters at entry and exit: the baseline 33 over 46, outside 124 over 363, the ten keyed
