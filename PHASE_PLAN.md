@@ -208,7 +208,7 @@ says - never the whole suite.
 - [ ] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
 - [ ] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
 - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
-- [ ] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+- [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
 **Depends on:** steps 0 and 2.
 

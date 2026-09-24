@@ -222,6 +222,21 @@ captures on the bench 60 over 156. The two changes built and taken out:
 | candidate 1, word gap seven thirds of the character gap without a word trough | 207 | 33 | 29 | 128 | 46 | 13 of 13 | identical | 41 of 51, five rows fewer named | no |
 | G1, an out-of-order held reading refused | 193 | 15 | 11 | 115 | 63 | 12 of 13, 17:37 46 to 38 | identical | 50 of 51, 004133 30 to 25 named | no |
 
+**Unit 415**, every key inferred, 217 over 565 at entry and exit. The path is left alone, and
+each gap it read between two letters is re-decided from the sender's own character gap
+(`unit415-trace.md`). No letter moved in either change: every named, element and placeholder
+count is identical on all 51 rows.
+
+| change | all keyed | baseline | 17:37 | outside | the ten, bench | named floors | adjudicated | capture rows | kept |
+|---|---|---|---|---|---|---|---|---|---|
+| none, entry and exit | 217 | 33 | 29 | 124 | 60 | 13 of 13 | identical | 51 of 51 | |
+| relabel, `4a0487b0`, spaces removed and added at `sqrt(7/3)` of the character gap | 191 | 32 | 28 | 122 | 37 | 13 of 13, identical | `134712` `N4 ` to ` 4L` | 51 of 51, identical | no |
+| narrowed, `b68be0dd`, spaces only removed | 185 | 31 | 28 | 118 | 36 | 13 of 13, identical | `134712` `N4 ` to `N4L`, the adjudicated text | 51 of 51, identical | no |
+
+| unit | change | 17:37 | baseline total |
+|---|---|---|---|
+| 415 | none kept; two built and taken out under 3.2's third test | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
+
 ## Synthetic, exact keys - outside every total (1.1, 1.2, 1.4)
 
 **No synthetic case is ever the sole evidence for keeping a change** (PHASE_PLAN.md 1.4 and

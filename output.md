@@ -1,283 +1,231 @@
-```
 READ IN THIS ORDER.
 
 A. The phase goal, Hamlet reads a CQ call correctly, and where each step
-   stands: 0 done, 1 done, 2 done, 3 partial with P6 parked, 4 not
-   started, 5 Tim's, 6 partial.
-B. Step 1: 1.1 the set keyed and scored, 1.2 three by three and the
-   recipes, 1.3 inferring-a-key.md, 1.4 what synthetics do not prove,
-   1.5 the exit round - each met or not, with the number.
-C. The synthetic table, weighed against A and B: what the decoder reads
-   exactly and where it breaks. Section 4 raises 2 items, none in the way
-   of a criterion in B.
-```
+   stands: 0 done, 1 done, 2 done, 3 partial, 4 not started, 5 Tim's,
+   6 partial.
+B. Step 3: 3.2 the relabel kept or out on each of its four tests, 3.3
+   17:37 before and after and the running total, 3.4 the count of units
+   without a kept change, 3.5 every commit's exit - each met or not,
+   with the number.
+   - 3.2 not met. Both changes passed tests 1, 2 and 4 and failed test 3
+     at `cw-2026-08-17-134712`, so both are out. The relabel: all keyed 191
+     edits over 565 characters against inferred keys, from 217. The
+     narrowed relabel: 185 over 565.
+   - 3.3 not met, nothing kept. 17:37 was 29 over 25 against an inferred
+     key, would have been 28 over 25 under either change, and stays 29. The
+     running total stays 217 over 565.
+   - 3.4 open. This is the second of three step 3 units without a kept
+     change.
+   - 3.5 met and ticked. All four commits' exits were green.
+C. Whether moving only the spaces left every letter where it was, weighed
+   against A and B: **it did.** No named, element or placeholder count
+   moved on any of the 51 capture rows under either change, and the named
+   floors are 13 of 13 with every count identical. So the mechanism is
+   sound: it removes the P6 wall, and it takes a quarter of the bench's
+   edits off with no letter cost. Section 4 raises 1 item, and it is in
+   the way of 3.2: the narrowed relabel failed only because
+   `134712` moved onto its adjudicated text, `N4L`.
 
-**A.** Step 1 went from partial to **done** in this unit. Unit 412 had met 1.6, and this unit
-met 1.1 to 1.5. The other steps are as they were: 0 and 2 done, 3 partial with P6 parked, 4
-not started, 5 Tim's, 6 partial. **The decoder is unchanged.** All keyed recordings score
-217 edits over 565 characters against inferred keys, at entry and at exit.
-
-**B.** All five criteria are met and ticked in `PHASE_PLAN.md`:
-- **1.1 met.** Twelve CQ calls, each with an exact key beside it, scored at HEAD and tabled
-  in `baseline.md`. The three-by-three grid scores **102 edits over 243 characters against
-  exact keys, 1 unsure per 134 named**.
-- **1.2 met.** 12, 18 and 25 wpm by 15, 5 and 0 dB. Every recipe is in its key file and in
-  the table below. `TheSyntheticCqRebuildsTests` holds every WAV byte for byte to its
-  recipe, 13 of 13.
-- **1.3 met.** `docs/phase-correctness/inferring-a-key.md` is written, with 17:37 worked in
-  six steps.
-- **1.4 met.** `docs/phase-correctness/synthetic-cq.md` is written and cited from all twelve
-  key files. The rule that no synthetic case is ever sole evidence is stated beside the
-  table in `baseline.md`.
-- **1.5 met.** Both carry-forward lines are green (178 of 178 and 278 of 278). The three
-  floor tests are green: captures 51 of 51 with every row identical to entry, adjudicated
-  13 of 13, and the clean synthetics 2 of 2.
-
-**C.** Against keys nobody had to guess:
-- **At 15 and 5 dB the decoder reads a textbook CQ** with at most one edit in four of the
-  six cases.
-- **At 0 dB it prints nothing at any speed.** It goes silent, not wrong.
-- **Two cases break at a strong signal.** At 18 wpm and 15 dB it splits `N0CALL` into
-  single elements (13 edits). With the character gap at five units, it reads every
-  character gap as a word gap (15 edits, 14 of them spaces). That second case is step 3's
-  fault, reproduced on an exact key.
-
-Section 4 raises 2 items. Both are parked, and neither is in the way of a criterion in B.
-
-```
-UNIT:       414 - complete at task 5 of 5, none dropped - 2026-09-24 00:50
-PHASE GOAL: Hamlet reads a CQ call off the air correctly, measured as edits against a key over a scored region with a guard against going quiet, and at the end Tim says it read
-UNIT GOAL:  Build CQ calls whose keys are exact because the generator made them, at three speeds by three signal strengths, score each at HEAD outside the 3.2 total, and write the rule for keying a call off the air and what the synthetics cannot prove
-ADVANCED:   yes - 1.1, 1.2, 1.3, 1.4 and 1.5 met and ticked, step 1 done
-NUMBER:     synthetic cases scored: 12, edits over characters against exact keys: 165 over 324 - the 3 by 3 grid 102 over 243, the five-unit row 63 over 81
-DRIFT:      0
-```
+UNIT:       415 - complete at task 4 of 4, none dropped - 2026-09-24 02:28
+PHASE GOAL: Hamlet prints what a station calling CQ actually sent, and the correctness number says so.
+UNIT GOAL:  Re-decide only whether each gap the decoder already read between letters is a space, so no letter can move, and keep it under 3.2 or take it out with the measurement.
+ADVANCED:   no - 3.2 not met, both changes out on its third test at 134712; 3.5 ticked on four green commit exits
+NUMBER:     all keyed 217 edits over 565 characters against inferred keys, from 217; 17:37 29 over 25, from 29 - unchanged, nothing kept; built and out at 191 and 185 over 565, 17:37 28 over 25
+DRIFT:      0 - 3.5 moved (was 0)
 
 ## 1. What Claude did
 
-**Complete at task 5 of 5, none dropped.**
-- **Where:** QUIVERFULL, branch `main`, project Hamlet. The gate confirmed it:
-  `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and `MURC.sln`
-  absent.
-- **Evidence:** nothing in this report is evidence about the radio.
-- **Commits:** entry HEAD `5f8d48b0`. Task commits `2952581c`, `9662d294`, `87a602ec`,
-  `3b37354b` and `f84b4683`, then the exit commit, each pushed with rc 0.
+**Complete at task 4 of 4. None dropped: task 3 applied, because task 2 failed only the
+third test.** On QUIVERFULL, `C:\Source\HamLet`, project Hamlet confirmed by the four gate
+checks, branch `main`, every commit pushed. Nothing kept. `src` prints nothing against entry
+`61d8b58f`.
 
-**The synthetic table.**
-- **Text:** every case sends `CQ CQ CQ DE N0CALL N0CALL K`. `N0CALL` is already in the
-  tree's fixtures and has a digit of five elements and an `L` of four.
-- **Key:** exact by construction.
-- **Scored region:** the whole decode against the whole key, ends trimmed.
-- **Decode:** `CwDecoder`, fed hop by hop from 600 Hz, the floors' path.
-- **Recipe:** in each case's key file in `tests/fixtures/cw/synthetic-cq/`. Tone 615 Hz
-  drifting 3 Hz, no QSB, no preamble.
-- **Spacing:** textbook 1 : 3 : 1 : 3 : 7 from the dit, 1200.0 / wpm ms, except the three
-  `char5` cases, whose character gap is 5 units.
+**3.2's four tests, for each change built. Every key is inferred and every total is over the
+bench readings.**
 
-| case | wpm | char gap | SNR in passband | seed | edits | scored length | key | unsure per named | `Within` | decode |
-|---|---|---|---|---|---|---|---|---|---|---|
-| cq-12wpm-15db | 12 | 3 | 15 dB | 20260924 | 0 | 27 | exact | 0 per 21 | 0 | `CQ CQ CQ DE N0CALL N0CALL K` |
-| cq-12wpm-5db | 12 | 3 | 5 dB | 20260925 | 5 | 27 | exact | 0 per 23 | 1 | `CQ CQ CQ DE N0CALL N0CALL T E A` |
-| cq-12wpm-0db | 12 | 3 | 0 dB | 20260926 | 27 | 27 | exact | nothing named | 27 | empty |
-| cq-18wpm-15db | 18 | 3 | 15 dB | 20260927 | 13 | 27 | exact | 0 per 26 | 4 | `CQ CQ CQ DE N0CALL N0C E T E T E ELT K` |
-| cq-18wpm-5db | 18 | 3 | 5 dB | 20260928 | 1 | 27 | exact | 1 per 20 | 1 | `■Q CQ CQ DE N0CALL N0CALL K` |
-| cq-18wpm-0db | 18 | 3 | 0 dB | 20260929 | 27 | 27 | exact | nothing named | 27 | empty |
-| cq-25wpm-15db | 25 | 3 | 15 dB | 20260930 | 1 | 27 | exact | 0 per 22 | 0 | `CQ CQ CQ DE N0CALL N0CALL KK` |
-| cq-25wpm-5db | 25 | 3 | 5 dB | 20260931 | 1 | 27 | exact | 0 per 22 | 0 | `CQ CQ CQ DE N0CALL N0CALL KK` |
-| cq-25wpm-0db | 25 | 3 | 0 dB | 20260932 | 27 | 27 | exact | nothing named | 27 | empty |
-| **grid** | | | | | **102** | **243** | **exact** | **1 per 134** | | |
-| cq-18wpm-15db-char5 | 18 | 5 | 15 dB | 20260933 | 15 | 27 | exact | 0 per 21 | 15 | `C Q C Q C Q D E N 0 C A E L N 0 C A L L K` |
-| cq-18wpm-5db-char5 | 18 | 5 | 5 dB | 20260934 | 21 | 27 | exact | 1 per 25 | 17 | `C Q C Q C Q TEE T ■KTDUUEUE N 0 C A L L K` |
-| cq-18wpm-0db-char5 | 18 | 5 | 0 dB | 20260935 | 27 | 27 | exact | nothing named | 27 | empty |
-| **five-unit row** | | | | | **63** | **81** | **exact** | **1 per 46** | | |
+The relabel, `4a0487b0`, taken out at `83e2dc7f`. It removes and adds spaces at `sqrt(7/3)`
+of the sender's character gap.
 
-**All twelve are outside every total**, including the 217 that 3.2 judges. They are tabled in
-`baseline.md` under *Synthetic, exact keys*, with 1.4's rule beside them.
+| 3.2 test | entry | after | |
+|---|---|---|---|
+| 1. total edits, all keyed recordings | 217 edits over 565 characters, inferred keys | **191 over 565**, inferred keys | pass |
+| - baseline | 33 over 46 | 32 over 46 | |
+| - 17:37 | 29 over 25 | 28 over 25 | |
+| - outside | 124 over 363 | 122 over 363 | |
+| - the ten, bench | 60 over 156 | 37 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, ` 4L`, `EETMP/4 QNIK` | **fail** |
+| 4. capture rows' named counts | 51 rows | identical | pass |
 
-**Task 0, the record.**
-- Version 1.13.100 to 1.13.101. `PHASE_STATUS.md` names 414 and step 1. `PHASE_OUTCOME.md`
-  has its `UNIT 414 - STEP 1` entry.
-- **Section 5 against the tree:**
-  - The recipe and `Generate` are as stated, and the sidecar names `wpm` and `snrDb`.
-  - `CwKeyKind` already has `Exact`. It is in the test project's `CwScorer.cs`, not in
-    `src`, so nothing was added to it.
-  - 17:37's region rule is in `baseline.md` and `CwScorer.FromFirst`. **Mismatch:** a
-    third copy, `TheSeventeenThirtySevenCaptureTests.ScoredRegion`, opens at the first
-    `CQ CQ` rather than the first `CQ`. Reported, not repaired.
-  - HM-DEC-101's gate still exists as
-    `CwFixtureCommitTests.TheReferenceHasScoredThisFixture`. It runs nothing at test time.
-    It checks for a committed `reference` line, which `tools/score-fixtures/score-fixtures.py`
-    writes by running `cwdecoder.py`, and it covers only the catalogue in
-    `tests/fixtures/cw/receiver`.
-  - `inferring-a-key.md` did not exist.
-- **Mismatch in the instruction's section 3:** it says all three of unit 413's asks are
-  parked in `PARKED.md`. Only P6 is there. "3.5 against 3.2's own-commit rule" and "which
-  total 3.2 judges" are not. Reported, not repaired or raised.
-- **Entry round**, one build, then `--no-build`:
+The narrowed relabel, `b68be0dd`, taken out at `040a4ae0`. It only removes spaces.
 
-| type | result | time |
-|---|---|---|
-| engine carry-forward | 178 of 178 | 378 s |
-| app carry-forward | 278 of 278, none lost to the dispatcher loop | 162 s |
-| captures | 51 of 51 | 121 s |
-| adjudicated | 13 of 13 | 29 s |
-| clean synthetics | 2 of 2 | 2 s |
-| `TheNumberCannotBeGamedTests` | 13 of 13 | 62 s |
-| `TheBaselineIsScoredTests` | 33 over 46, outside 124 over 363, inferred | |
-| `TheBenchmarkIsKeyedTests` | bench 60 over 156, live 41 over 156, inferred | |
+| 3.2 test | entry | after | |
+|---|---|---|---|
+| 1. total edits, all keyed recordings | 217 edits over 565 characters, inferred keys | **185 over 565**, inferred keys | pass |
+| - baseline | 33 over 46 | 31 over 46 | |
+| - 17:37 | 29 over 25 | 28 over 25 | |
+| - outside | 124 over 363 | 118 over 363 | |
+| - the ten, bench | 60 over 156 | 36 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, **`N4L`**, `EETMP/4 QNIK` | **fail as written** |
+| 4. capture rows' named counts | 51 rows | identical | pass |
 
-**Task 1, the trace.** `WhatTheGeneratorMakesTests` asserts nothing and ran in 6 s. It
-measures each corner two ways: directly, and taken apart into tone and noise. The noise is
-the same recipe rendered with the tone 400 dB down, so it has the same seed and length.
-- **cq-12wpm-15db:**
-  - SNR: 15.09 dB directly and 14.99 dB apart, against 15.0.
-  - Pitch: 618 Hz, against 615 drifting 3.
-  - Runs: 73 marks and 72 gaps, each against its own.
-  - Measured at half amplitude: dit 95.0, dah 295.0, gaps 105.0 / 305.0 / 705.0 ms.
-    That is the recipe's 100 / 300 / 100 / 300 / 700 exactly as the 5 ms raised-cosine
-    edges predict. Worst 0.3 ms.
-  - Decode: 0 edits over 27 against an exact key.
-- **cq-25wpm-0db:**
-  - Measured directly, the envelope finds 243 marks, the noise's as well as the tone's.
-  - Taken apart: SNR -0.01 dB against 0.0. 73 and 72 runs. Gaps 53.0 / 148.9 / 341.1 ms
-    against 48 / 144 / 336, worst 0.3 ms.
-  - Decode: empty, 27 edits over 27 against an exact key.
-- **No generator defect.** At 25 wpm the edges put the rendered gaps at 1.10, 3.10 and
-  7.11 dits of the recipe's.
+**The named-count row for all 51 captures: identical** under both changes, in named
+characters, named elements and placeholders (`.run-unit/unit415-captures-c1.norm` and
+`-c2.norm` against `-entry.norm`, no diff).
 
-**Task 2, the set (1.1, 1.2).**
-- **Files:** nine cases, each with a WAV, a sidecar and a `.key.md`. The key file states
-  that the key is exact by construction, the full recipe as expressions, the scored region,
-  and what the case does not prove.
-- **`TheSyntheticCqRebuildsTests`:** 10 of 10 in 1 s, first run given 600 s. It checks
-  that each WAV is byte-identical and each key file is what its recipe writes. It writes the
-  set only when `HAMLET_WRITE_SYNTHETIC_CQ=1`.
-- **`TheSyntheticCqIsScoredTests`:** one fact, 6 s on its first run, given 600 s. It
-  asserts no edit count, only that each row's error kinds add up to its edits.
+On `134712` the unguarded path reads `N4 L ZT`. The relabel takes out the space after `4`,
+and it adds one after `N` from a window whose centroid passed the guard. The narrowed relabel
+only takes out, so the region reads `N4L`, which is the text HM-DEC-144 adjudicated: 1 edit
+to 0. 3.2 asks for the adjudicated readings unchanged character for character, and this one
+changed. See section 4.
 
-**Task 3, the rule (1.3, 1.4).**
-- **`inferring-a-key.md`** covers:
-  - What may be inferred: the CQ form, a call read alike twice or more, and 1.6's
-    differencing, which it cites.
-  - What may not: unreadable audio, a call seen once, an unrepeated number, report or
-    name, and anything that "must have been".
-  - How the scored region is chosen: 17:37's rule, and scoring less rather than
-    guessing more.
-  - The worked example: 17:37 from its key file. The form is found. `WB6RED` is
-    established by `ETWB6RED` and `W B 6 RE D`. No `K` is keyed because none was read.
-    The soup is left unscored. It scores 29 edits over 25 against an inferred key, and
-    the region is neither cut back nor widened.
-- **`synthetic-cq.md`** covers what the set does not prove:
-  - textbook spacing, the decoder's own fallback at `CwUnitEstimator.cs` 216 in
-    `MeasureGaps`;
-  - generated noise;
-  - one tone and no second station;
-  - machine-perfect keying;
-  - a steady signal;
-  - one call;
-  - no reference score.
+**3.3, never evidence, beside it.** 17:37 over its scored region, against an inferred key:
+29 over 25 at entry, 28 over 25 under both changes, 29 at exit. The synthetics, exact keys
+(P8, 1.4): the grid was 102 over 243 at entry and 100 under both changes. The five-unit row
+was 63 over 81 and 64 under both.
 
-**Task 4, the five-unit row.** Three cases at 18 wpm with the character gap at five units,
-scored and tabled as above. The nine grid WAVs rewrote byte-identical. Rebuild type 13 of 13.
-**WAV size: 4,472,784 bytes for all twelve, under 10 MB.**
+**3.5.** Every commit's exit was green:
+- at `4a0487b0`: engine carry-forward 178 of 178; app 276 of 278 with 2 lost to the
+  dispatcher loop, 2 of 2 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2;
+- at `83e2dc7f`: engine 178; app 277 of 278 with 1 lost to the dispatcher loop and green
+  alone; captures 51, adjudicated 13, clean 2;
+- at `b68be0dd`: engine 178; app 278 of 278; captures 51, adjudicated 13, clean 2;
+- at `040a4ae0`, task 4's exit round, below.
 
-**Task 5, the exit round (1.5).** `Hamlet.sln` builds with warnings as errors.
+**Task 0.** Version 1.13.101 to 1.13.102. The `PHASE_OUTCOME.md` entry was written and
+`PHASE_STATUS.md` names 415. The entry round matched section 5 exactly: 217 over 565, the
+baseline 33 over 46, 17:37 29 over 25, outside 124 over 363, the ten 60 over 156, named
+floors 13 of 13, captures 51 of 51. Engine 178 of 178. App 275 of 278, with three lost to
+the dispatcher loop and 3 of 3 alone.
 
-| type | result | time |
-|---|---|---|
-| engine carry-forward | 178 of 178 | 376 s |
-| app carry-forward | 278 of 278, none lost to the dispatcher loop | 164 s |
-| captures | 51 of 51, every row identical to entry | 125 s |
-| adjudicated | 13 of 13, identical to entry | |
-| clean synthetics | 2 of 2 | |
-| `TheNumberCannotBeGamedTests` | 13 of 13, identical to entry | |
-| `TheBaselineIsScoredTests` | 33 over 46 and 124 over 363, identical to entry | |
-| `TheBenchmarkIsKeyedTests` | bench 60 over 156, identical to entry | |
-| `WhatTheGeneratorMakesTests` | 2 of 2 | |
-| `TheSyntheticCqRebuildsTests` | 13 of 13 | |
-| `TheSyntheticCqIsScoredTests` | 1 of 1, 102 over 243 and 63 over 81, as at task 4 | |
+**Section 5 against the tree.**
+- **No mismatch** in the stated lines. `Kinds` is at 493 to 500 and `want` at 1175 to 1177.
+  The path is kept in `fromHop`/`kindAt`. `MeasureGaps` is at 174 and the word trough at 216.
+- **Where kind 3 or kind 4 becomes text:** `Spell`, `CwProbabilisticDecoder.cs` 1321 to 1347.
+  Both close the letter identically, and kind 4 adds a `" "` that ends at the gap's end.
+- **Downstream readers:**
+  - `Judged` (the `CharacterMargin` gate, 1256) passes every space.
+  - `EndsInsideCharacter` (756) treats 3 and 4 alike.
+  - Speed choice compares path scores.
+  - `CwDecoder`'s counters skip word gaps.
+  - `CwReading`'s unsure flag is never set on a space.
+  - `CwTranscript.Settle` appends.
+  - No word or dictionary prior exists.
+- **The one reader that can reach a letter** is the stream's settle dedupe,
+  `CwProbabilisticStream.cs` 525 to 537, plus `Skip` at 295. A settled space pushes
+  `_settledThrough` to the gap's end, where a letter pushes it only to its key-up.
+- **One small mismatch:** section 5 expected the app line to lose one or two names at entry.
+  It lost three.
 
-- `git diff` over the eleven transmit files against `7e209cb4` prints nothing.
-- **`git diff 5f8d48b0 -- src` prints nothing.**
-- 1.1 to 1.5 are ticked, and step 1 is marked done in `PHASE_STATUS.md` and `PHASE_OUTCOME.md`.
+**Task 1, the trace.** `WhereTheSpaceIsDecidedTests` has two facts and asserts nothing. It
+replays the 51 capture rows and 17:37, and after every read it emulates the settle loop three
+ways from the stream's own window, speed and held gaps.
+- The emulation of the loop as it is equals what really settled on **52 of 52** recordings.
+- **Letters moved: 0 with the relabel placed before the dedupe, and 0 after it.** On this
+  corpus even the unsafe placement moves nothing. The build uses the safe one: bookkeeping
+  stays on the path's characters, and only a space's announcement moves.
+- Raw output is in `.run-unit/unit415-relabel-t1.txt` and `-t1b.txt`, and the write-up in
+  `docs/phase-correctness/unit415-trace.md`.
 
-**Decisions made for myself**, author's and overrulable. No `DECISIONS.md` entry was written.
-- **The levels.** I kept the catalogue's 15, 5 and 0 dB, each confirmed as rendered by
-  task 1's measurement. None was chosen from a decode.
-- **The measurement.** The weak corner was measured by taking the file apart into tone and
-  noise, because a direct envelope cannot find edges at 0 dB.
-- **The scored region.** Whole-decode scoring trims the gaps at the decode's two ends and
-  nothing else.
-- **The writer.** It is a fact gated on an environment variable, not a tool.
-- **P8.** I parked the missing reference score as P8 rather than calling it a mismatch
-  that blocks 1.1.
+**Decisions I made myself (author's latitude, overrulable):**
+1. **The centroid guard.** The first run found the element heap standing in for the
+   character centroid: 1.1 units on `013347`, and `VA3VRR` read `VA 3V RRT`. I required the
+   boundary between the element and character centroids to fall inside `MeasureGaps`' own
+   clip range, 1.3 to 2.6 units (`CwUnitEstimator.cs` 228 and 229). That adds no new number.
+   Reads with a centroid went from 1,903 to 1,449 of 2,912.
+2. **The boundary stays at `sqrt(7/3)`**, 1.528 of the centroid. It sits on the character
+   heap's falling shoulder. From 1.6 to 2.1 the heap is a low, flat plateau (7, 8, 4, 6, 5
+   per 0.1) with no single trough, so no boundary is plainly better. The keyed "at" rows
+   were printed beside the choice and were not used to make it.
+3. **The centroid is measured per window**, from the same window the stream reads. The path's
+   own label stands where none is measured.
+4. **Only gaps with a mark on both sides are relabeled.** The gap before the window's first
+   letter and after its last are cut by the window's edge.
+5. **3.5 ticked.** The instruction says to tick it if every commit's exit was green, and all
+   four of this unit's were. Unit 413 left it open with the reason "no change was kept". If
+   3.5 is meant to wait for a kept change, it should be unticked.
+
+**Task 4, the exit round at `040a4ae0`.**
+- Hamlet.sln builds with warnings as errors.
+- Engine carry-forward 178 of 178 and app 278 of 278.
+- Every one of these is identical to entry: captures 51 of 51, adjudicated 13 of 13, clean
+  synthetics 2 of 2, `TheNumberCannotBeGamedTests` 13 of 13, `TheBaselineIsScoredTests` at 33
+  over 46 and 124 over 363, and `TheBenchmarkIsKeyedTests` at 60 over 156.
+- `WhereTheSpaceIsDecidedTests` 2 of 2.
+- The transmit files print nothing against `7e209cb4`. All of `src` prints nothing against
+  `61d8b58f`.
+- `PHASE_PLAN.md`: 3.5 ticked; 3.2, 3.3 and 3.4 open.
+- `baseline.md`'s running total has unit 415's rows.
+
+**Commits, all pushed to `origin main`, every push rc 0:**
+- `26cd4ade` task 0;
+- `413ea25c` task 1;
+- `4a0487b0` the relabel;
+- `83e2dc7f` its take-out;
+- `3ddca565` task 2's record;
+- `b68be0dd` the narrowed relabel;
+- `040a4ae0` its take-out;
+- `b3767d24` task 3's record;
+- the exit commit carrying this report.
 
 ## 2. What the owner should expect
 
-**What changes for you.** For the first time, some of the decoder's scores rest on keys
-nobody had to guess. The computer built these CQ calls itself, so it knows every letter it
-sent. When a score says "exact", nobody inferred the letters from the decode or from what a
-CQ call usually says. That matters because every earlier number in this phase rests on keys
-worked out from the decode, and nobody here reads Morse to check them.
+**The decoder reads exactly as it did.** Both changes are out, and `src` is byte-identical to
+`61d8b58f`.
 
-**What the calls show.**
-- At 15 and 5 dB the decoder mostly reads a clean call.
-- At 0 dB it prints nothing at any speed. So it loses a clean CQ somewhere between 5 and
-  0 dB of signal over the noise in the receiver's passband.
-- When letters are spaced five dits apart instead of three, it breaks every word into
-  single letters, even on a strong signal. That is the same fault seen on the air.
+What is now known and was not before:
+- **A spacing repair does not have to cost a letter.** Unit 413's two candidates changed the
+  path, and the letters moved with the spaces (P6). This one leaves the path alone. It moved
+  no named character, no element and no placeholder on any recording in the tree.
+- **The narrowed version is the strongest measured spacing change so far.** All keyed
+  recordings go from 217 to 185 edits over 565 against inferred keys, and the ten on the
+  bench from 60 to 36 over 156. It went out on one reading only: it corrected `134712` to
+  its adjudicated `N4L`, and 3.2 as written requires that reading unchanged.
 
-**What these cases cannot tell you:** whether the decoder reads a real operator on a real
-band. The spacing, the noise, the single tone and the perfect keying are all the computer's.
-
-**What will look wrong but is not:**
-- `tests/fixtures/cw/synthetic-cq` adds 4.5 MB of WAVs.
-- The three 0 dB cases score 27 edits over 27 because the decode is empty. That is a
-  measurement, not a broken test.
-- None of the twelve has a reference score yet (P8).
-
-**Build and tests:** the build is green. Every test named above passes, none fails, and
-nothing was lost to the dispatcher loop. Everything was pushed to `main`.
+What will look wrong but is not:
+- 3.5 is ticked while 3.2 and 3.3 are open. 3.5 is about green exits, and every exit was
+  green.
+- The adjudicated floor type, `TheAdjudicatedReadingsKeepReadingTests`, stayed 13 of 13
+  under both changes, yet 3.2's third test failed. That type asserts what each adjudicated
+  reading must contain, and 3.2 asks for character-for-character identity. They are
+  different tests.
 
 ## 3. What you should see
 
-**No visible change.** The CW tab reads exactly as it did yesterday, because no decoder line
-changed.
+**The CW tab reads exactly as it did.** Nothing was kept.
 
-What this unit adds is a way to measure the decoder:
-- Twelve CQ calls with exact keys. The five-dit-spaced one reproduces, on a known key, the
-  word-breaking fault you have seen on the CW tab.
-- A written rule for keying a call heard on the air.
+This is what the narrowed relabel would have shown, from the capture at 00:43:22 on
+2026-09-24. It is not on the tab now:
 
-Both give the next spacing repair something to be measured against. It still cannot be kept
-on the synthetic cases alone.
+```
+now:          P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S
+narrowed:     P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS
+```
+
+And from 00:44:05: `W 1 A W / 88` would read `W1AW/88`. Every letter in both lines is the
+same letter at the same moment. Only the spaces between them differ.
 
 ## 4. What's blocking us
 
-**Nothing blocks this phase.** Both items below are parked in
-`docs/phase-correctness/PARKED.md` under R65, and neither is in the way of a criterion in step 1.
+**1. Does 3.2's third test forbid an adjudicated reading moving onto its own adjudicated
+text?** This bears on 3.2. It is the only thing between the narrowed relabel and a kept
+change, so it is raised here rather than parked. It does not halt the loop.
 
-1. **P7: whether the synthetic cases ever join the total 3.2 judges.**
-   - **Ruling, if wanted:** they stay outside every total. A synthetic case can support a
-     change but never carry it.
-   - **Reasoning:** 1.4 forbids a synthetic case from being the sole evidence. A synthetic
-     row inside the 217 would let a change that improves only synthetics pass 3.2's first
-     test.
-   - **Rejected:** adding them to the 217. That breaks 1.4. Also rejected: a second total
-     that 3.2 reads. That is a new rule for 3.2, and 3.2 is Tim's.
-2. **P8: the synthetic cases carry no reference score.**
-   - **Ruling, if wanted:** run `tools/score-fixtures` over `tests/fixtures/cw/synthetic-cq`
-     before any synthetic case is used as evidence for a change, with the gate extended to
-     that folder.
-   - **Reasoning:** HM-DEC-101 and CLAUDE.md 12.5 require a reference read before a
-     generated fixture judges Hamlet. The gate runs in Python, which cannot run in a loop
-     session. Today these cases judge nothing: no floor, no assertion on a score.
-   - **Rejected:** scoring them in C# as a stand-in reference. That is not the validated
-     chain.
-   - **Note:** the catalogue records that the reference could not read textbook spacing
-     at 18 wpm, a dit-to-dah ratio measured at 2.45 against its 2.5 floor. So it may refuse
-     some of these cases.
+- **Ruling wanted:** whether "the three adjudicated readings are unchanged character for
+  character" is met when a reading changes to exactly the text that was adjudicated. On
+  `cw-2026-08-17-134712` that is `N4 ` becoming `N4L`, HM-DEC-144's text, 1 edit to 0.
+- **Reasoning:** the third test exists so a change cannot buy total edits by damaging a
+  reading somebody ruled on. A reading that becomes the ruled text has not been damaged. But
+  the words say "unchanged", and this unit applied them as written. The baseline also notes
+  `134712` as "retired as an anchor" while 3.2 still counts it as one of the three.
+- **If yes:** the narrowed relabel, `b68be0dd`, passes all four tests on this unit's
+  measurements: 185 over 565, 13 of 13 identical, adjudicated unchanged or onto their text,
+  51 rows identical. A next unit could re-apply it as it stands.
+- **If no:** it stays out. The next step 3 unit is the third of three under 3.4, and then the
+  trace goes to `PARKED.md`.
+- **Rejected:** narrowing the relabel further so `134712` does not move. That would choose
+  the boundary or the guard from a score, which section 10 forbids. And no letter reason
+  exists to treat that recording differently.
 
-**Asks still outstanding:** none carried as blocking. The instruction's section 3 says unit
-413's three asks are all parked and not this unit's to raise. As section 1 reports, only P6
-is in `PARKED.md`.
+Nothing was written to `PARKED.md` this unit. P6, P7 and P8 were not touched.
