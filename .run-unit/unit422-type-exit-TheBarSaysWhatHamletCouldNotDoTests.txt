@@ -1,0 +1,45 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.16]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.39]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheBarSaysWhatHamletCouldNotDoTests.TheBarCarriesTheAdmissionsAndNoneOfTheAdvice [799 ms]
+  Standard Output Messages:
+ THE BAR RENDERS (184 characters):
+ I could not read the noise blanker, so I have not touched it. I could not read the noise reduction, so I have not touched it. I could not read the auto notch, so I have not touched it.
+ 
+ THE HOVER HOLDS (597 characters):
+ tip —  I could not read the noise blanker, so I have not touched it. I could not read the noise reduction, so I have not touched it. I could not read the auto notch, so I have not touched it. The AGC usually wants to be slow here, because dozens of stations transmit together here and the gain would ride up and down under the loudest of them, and that is not settled well enough for me to change it on your radio. Your scope span wants to be 3 kHz across, because a scope showing a couple of hundred kilohertz draws the whole block about seven pixels wide, and that is one I cannot set from here.
+
+
+  Passed Hamlet.App.Tests.Views.TheBarSaysWhatHamletCouldNotDoTests.EveryAdviceClauseIsOnTheHover [157 ms]
+  Standard Output Messages:
+ bar   : 184 characters
+ hover : 597 characters
+   hover carries "usually wants to be": True
+   hover carries "not settled well enough for me to change it on your radio": True
+   hover carries "scope span": True
+   hover carries "could not read": True
+
+
+  Passed Hamlet.App.Tests.Views.TheBarSaysWhatHamletCouldNotDoTests.TheTabIsMeasuredInTheReproducedState [165 ms]
+  Standard Output Messages:
+ 1589 characters in 63 blocks, Digital tab, connected and tuned to the FT8 block
+ 
+   247  Hamlet has not been able to check the clock against a time server yet, and everything on a card is counted from the slot boundaries, so there is nothing here it could say honestly. Messages are still arriving and are still on the list to the left.
+   219  this is the training radio rather than the receiver, so everything in the audio was made by Hamlet and nothing off the air can reach the table below. Real signals start arriving when the radio's own audio is the source.
+   184  I could not read the noise blanker, so I have not touched it. I could not read the noise reduction, so I have not touched it. I could not read the auto notch, so I have not touched it.
+   130  nothing decoded yet. Every message that comes out of a slot lands here exactly as it was sent, before Hamlet makes anything of it.
+   117  nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+    65  Your General license covers digital modes here · 97.305(c)(3)(ix)
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 1.6827 Seconds
+RC=0 WALL=2s

@@ -1,257 +1,263 @@
 READ IN THIS ORDER.
 
 A. Phase goal: Hamlet reads a CQ call correctly. Steps 0, 1, 2 done;
-   3 partial on 3.4 and 3.6, 3.7 now ticked; 4 and 5 not started; 6 partial on 6.3,
-   6.4, 6.5; 7 partial on 7.1 to 7.4 and 7.6.
-B. Step 3, criterion 3.7 clause by clause: the bar is the raw SpanLogLikelihoodRatio
-   at 13.0, justified from task 1's print alone. The table below gives old, above-bar
-   and below-bar counts for all 51 rows, with the 13 keyed floors beside them. At the
-   re-measure commit the adjudicated readings and keyed totals print identical to
-   entry, and no character above the bar was lost. Then 3.6: the trace, and task 3's
-   change kept, with all keyed edits 167 to 165 and added letters 17 before and 17
-   after. 3.6 is held rather than ticked. Then 3.5 green at exit, and 3.4's count
-   is 0 of 3 after a kept change.
-C. The rest. Section 4 raises 8 items. None of them is in the way of 3.7. The
-   first is the owner's call on whether 3.6 is met.
+   3 partial on 3.4 and 3.6, with 3.6 parked as P19 on the floors;
+   4 and 5 not started; 6 partial on 6.3 and 6.5, 6.4 now ticked; 7 partial on
+   7.1 to 7.4 and 7.6.
+B. Step 6, criterion 6.4 clause by clause. Every control on the CW tab and the
+   band row is named, 6.4's own list first. The test names each one; it was
+   watched failing (message quoted below) and is now green. Every tip is quoted
+   beside what its command does. Send's element is unchanged but for the tip.
+   Then 6.6 at exit: held, with two reds, both there at entry (P16 and the new
+   P20).
+C. The rest. Section 4 raises 8 items. None is in the way of 6.4. P19 is the
+   one the owner has to rule on before step 3 can move again.
 
 ```
-UNIT:       421 - complete at task 4 of 4, none dropped - 2026-09-24 15:09
-PHASE GOAL: Hamlet decodes an on-air CQ call into the text that was actually sent, measured as edits against a key
-UNIT GOAL:  make every floor count only letters the decoder was sure of, above a span bar taken from the stray letters' own trace, so stray E and T can be removed without a real letter losing its guard
-ADVANCED:   yes - 3.7 met and ticked, and a first stray-letter change kept at 167 to 165 edits
-NUMBER:     span bar raw SpanLogLikelihoodRatio = 13.0; rows with below-bar characters 18 of 51; all keyed 167 over 565 -> 165 over 565, inferred keys
+UNIT:       422 - complete at task 4 of 4, none dropped - 2026-09-24 16:04
+PHASE GOAL: Hamlet decodes an on-air CQ call into the text actually sent, and the screen around it never says what is not so
+UNIT GOAL:  every button Tim can reach on the CW tab and the band row tells him on hover what it does, Send saying plainly it keys the radio, with a test that names each control and fails when one is silent
+ADVANCED:   yes - 6.4 met and ticked: 49 controls named by EveryControlSaysWhatItDoesTests, red at d833bbaa, green at 21808260
+NUMBER:     controls with a tip, CW tab 7 of 15 -> 15 of 15; band row 18 of 34 -> 33 of 34 not connected (19 of 34 -> 34 of 34 connected)
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 4 of 4, none dropped.** Machine QUIVERFULL, project Hamlet (gate confirmed), branch `main`, entry `23457c4b`. Commits, all pushed: `bd0242a0` task 0, `19562a18` task 1 (the trace, alone), `df26a5d7` task 2 (the re-measure, alone), `a913f927` task 3 (the change, alone), `00668552` the verdict that kept it, plus the exit commit carrying this report. Every push returned 0.
+**Complete, at task 4 of 4, none dropped.** The drop candidate, proving the connect button in its second state, was not dropped: both states are proven. Machine QUIVERFULL, project Hamlet (gate confirmed), branch `main`, entry `bdd0070b`. Commits, all pushed with rc 0:
+- `956986b7` task 0
+- `ba39a306` task 1, the inventory, alone
+- `d833bbaa` task 2, the test, alone and red
+- `21808260` task 3, the tips, with the test green
+- the exit commit, which carries this report
 
-**Task 0, the record.** HM-DEC-176 is in `DECISIONS.md`, and its row is at the top of `CLAUDE.md` section 1. P17 is marked answered by R71, and P18 is added in the instruction's words. `PHASE_OUTCOME.md` has UNIT 421 - STEP 3, `PHASE_STATUS.md` names unit 421 with CURRENT_STEP 3 (it already read 3), and the version went 1.13.107 to 1.13.108.
+**Task 0, the record.**
+- P19 is in `docs/phase-correctness/PARKED.md`, in the arbiter's words.
+- `PHASE_OUTCOME.md` has UNIT 422 - STEP 6 from the decision block.
+- `PHASE_STATUS.md` names unit 422 with CURRENT_STEP 6.
+- The version went 1.13.108 to 1.13.109.
 
-The entry round:
+The entry round, one type per invocation:
 - Build: clean with warnings as errors.
 - Engine carry-forward: 178 of 178.
-- App carry-forward: 194 passed, then the host hung and was killed at 480 s. The 20 names that never reported were each run alone, one type per invocation, and all passed.
-- Captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
-- Baseline, benchmark and space printers: green.
+- App carry-forward: 277 of 278. The one lost to the dispatcher loop, `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed`, passed alone (the type, 2 of 2).
+- Floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, keyed floors 13 of 13.
+- `BindingHealthTests`: 1 of 1.
 
-**The numbers to beat, all against inferred keys:**
+**Verifying section 4 of the instruction against the tree.** Each claim, checked. I repaired nothing while checking.
+1. True. `TransmitButton` is at line 4092, bound to `Transmit.PressCommand`. Clear is bound to `ComposeClearCommand`. CQ, RST and 73 are at 4112 to 4117. None of them carried `ToolTip.Tip`.
+2. True. The comment above Send reads *THIS KEYS THE RADIO (HM-DEC-059)*, and the one above the macros reads *The macros fill the line; they do not send.*
+3. True. `Classes="hm-connect"` is at 2988, its content is bound to `ConnectButtonText`, and it had no tip.
+4. True, with one clarification. `BandRow` is at 3150 and `BandPills` at 3516. **The band buttons are built by the window itself**, in `BandPills`' own item template (`Button Classes="hm-band"`, line 3575), not by a control under `src/Hamlet.App/Controls`. They already carried a tip bound to `BandButtonViewModel.ActivityTooltip`.
+5. True, but the button it names is in neither place. The `?` button at 2707 reads *What is this mode, and why bother?*, and it sits in the `widget.guide` template, not on the CW tab or the band row. **The circled question marks in those two places are `HintMarkControl`s** of kind Tip, which draw a circled `?`. There are 2 on the CW tab and 3 on the band row, plus 2 `⊣` marks on the CW tab and a `⊣` and a `#` on the band row. Each takes its hover text from its own sentence, and all of them had one.
+6. True. The `☆` is named in text at 1050. **The star itself has no element**: `RigDisplayControl` (line 3212) draws it inside the LCD and runs `ToggleFavoriteCommand` when the star's rectangle is pressed. The face's only tip was *Roll the scroll wheel over any digit to tune that digit.*
+7. True. *Have a look* is at 1915 to 1920, with its tip from `MainWindowViewModel.ReceiveHelpUnreachable`.
+8. True. `AvaloniaFact` is used, and `BindingHealthTests` builds the main window.
 
-| set | edits over characters |
-|---|---|
-| all keyed | 167 over 565 |
-| baseline | 22 over 46 |
-| 17:37 | 19 over 25 |
-| outside | 110 over 363 |
-| the ten | 35 over 156 |
+**What "the CW tab" is.** It is `CwWorkspace`, the grid shown when `IsCwMode` is true: the send panel, and the CW terminal from `widget.terminal`. It holds 15 pressable controls:
+- Send (`TransmitButton`), Clear, CQ, RST, 73 and the send line (a text box)
+- the terminal panel's header, which is a toggle
+- the terminal's Clear, *I hear a station*, *Have a look* and *No thanks*
+- 2 circled `?` marks and 2 `⊣` marks
 
-**Section 5: checking the instruction against the tree.** I repaired none of these mismatches, only reported them.
-1. `CwCharacter` does carry the three span figures. `SpanLogLikelihoodRatio` defaults to NaN. `SpanMarginForRecord` is the ratio over the hops, and it is **0, not NaN, when the hop count is 0** (only word gaps have 0 hops).
-2. **R71's 153202 figures (4.9, 5.0, 14.0, 6.8) are the raw `SpanLogLikelihoodRatio`.** That is the only span figure the capture sidecar prints: its `spanLlr` line prints `Text:raw/MarginLlr/share` at one decimal (`MainWindowViewModel.SpanRatioLine`). **`cw-2026-09-24-153202` is not in the tree and is not one of the 51 rows.**
-3. The 51 rows and their three numbers match the instruction.
-4. The 13 keyed floors are in `TheNumberCannotBeGamedTests.NamedFloors`.
-5. `CharacterMargin = 1.0` is at line 323. **It gates on `CwProbabilisticCharacter.SpanMargin`, the per-hop span figure, the same number that becomes `SpanMarginForRecord`.** It does not gate on `Score`. `Score` is the window's likelihood ratio per hop, and a separate gate, `Gate = 1.40` at line 791, applies to it. Every settled letter has cleared both gates.
-6. At entry (unit 420's exit), 49 of the 51 rows sat exactly at their named floor. The other two were one above: `031838` at 43 against 42, and `001952` at 57 against 56.
+**What "the band row" is.** It is everything above the divider that is the same in every mode. That is three pieces:
+- the strip at the right end of the header: *Stop the scan*, *STOP TRANSMITTING*, the port list and Connect
+- `BandRow`: the neighborhood card, the sun map and the rig face
+- `BandPills`: the seven band buttons
 
-**Every place a floor is counted.** Two counters assert:
-- `TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid` (named and elements)
-- `TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll` (named)
+Together those hold 34 pressable controls:
+- the neighborhood card: its header toggle, 3 marks, the neighborhood strip, the best-bet button, the upgrade prompt, each saved spot's chip and ✕ (2 saved spots in the fixture), and the 4 license and grid answers
+- the rig face: the digits, the save star, the link-check `#` mark, the drive box and its `?`, the PSK31 power line, and its accept and decline buttons
 
-These read `Floors` only for its names and assert nothing: `TheGateBarSweepTests`, `TheStationStillKeyingTraceTests`, `TheTrackerSwitchTraceTests`, `TheTwoPitchesTableTests`, `TheReworkNumbersPrinterTests`, and `WhereTheSpaceIsDecidedTests` (which prints a "named at entry" figure). I left them unchanged.
+**Which of them are only on screen in some states**, read off the `IsVisible` and `IsEnabled` bindings:
+- **Needs the CW tab selected:** the whole CW tab (`IsCwMode`).
+- **Needs a receive offer standing:** *Have a look* and *No thanks* (`HasReceiveOffer`).
+- **Needs the decoder running:** *I hear a station* is always drawn but enabled only then (`IsDecoding`).
+- **Needs a scan running:** *Stop the scan* (`Scan.IsScanning`).
+- **Needs a call going out:** *STOP TRANSMITTING* (`AutoCall.IsCalling`).
+- **Needs no radio connected:** the port list is enabled only then (`!IsConnected`).
+- **Changes with the connection:** Connect reads Connect or Disconnect.
+- **Needs a license class below the top one:** the upgrade prompt, when the prompt has words.
+- **Needs a disagreement to settle:** *Use the FCC value* and *Keep mine* need a license mismatch; *Use the looked-up grid* and *Keep mine* need a grid mismatch.
+- **Needs at least one saved spot:** the chips and their ✕.
+- **Needs a best bet:** the best-bet button (`GreenZone.HasBestBet`).
+- **Needs a connected radio:** the link-check mark, which has no sentence and is not drawn until the radio answers (`HasLinkCheck`).
+- **Needs a PSK31 power offer standing:** the power line. Accept and decline are only inside its popup.
+- **Needs the panel open:** everything inside a collapsible panel.
 
-**NaN spans: 0 on every row, 0 of 1,836 named in all.** Only one place in the tree builds a `CwCharacter`, `CwProbabilisticStream.Character`, and it always sets the span.
+Only the upgrade prompt and the license answers depend on the license. The mode (CW or not) matters only for the CW tab itself.
 
-**Keyed and unkeyed rows:**
-- **22 of the 51 rows are keyed:** the 12 adjudicated readings and the ten keyed captures of the locked-on run. `004535` has a key file that names no stretch.
-- **29 rows are unkeyed. R71 and task 3 say 40,** which is a mismatch.
-- The three adjudicated recordings in the baseline are rows and keyed floors both. The ten are rows only.
-- 17:37 is not a row. It is a keyed floor and in the baseline only.
+**The transmit files.** The `7e209cb4` check covers eleven files under `src/Hamlet.RadioEngine/Cw`: `CwTransmitter`, `KeyerCwSender`, `TransmitChain`, `AutoCall`, `AutoCallAnswers`, `CwTransmitGuard`, `TransmissionWatch`, `TransmitReadiness`, `TransmitPrivileges`, `TransmitNotes` and `ICwSender`. **`MainWindow.axaml` is not among them.**
 
-**Task 1, the trace.** `WhatTheStrayLettersRestOnTests` asserts nothing and was committed alone. Its own alignment reproduces 167 over 565. Table 1 lists 42 added or wrong single-element characters, each with its three span figures and the two gates it cleared. Table 2 prints span distributions, quarter-decade heaps, per-recording edges and a ladder over all 1,836 named characters on the 51 rows and 17:37.
+**Task 1, the inventory.** `WhatEveryControlSaysOnHoverTests` asserts nothing. It builds the window headless on the CW tab, finds every pressable control by walking the built window, and prints one line per control: place, name, command, tip as the window resolves it, what the command does, and whether an existing tip is true. It does this twice, not connected and then connected to the training radio through `ToggleConnectCommand`, the way `TheBarSaysWhatHamletCouldNotDoTests` connects. The star's tip is read with the headless pointer on the star's own target.
 
-**Task 2, the re-measure (one commit, `df26a5d7`).** Both asserting counters now count characters at or above `TheCapturesThatDecodeKeepDecodingTests.SpanBar = 13.0`, and element floors count the elements inside those characters. Each row also prints the characters it has below the bar. 18 rows and 4 keyed floors were re-stated. The decoder was not touched in tasks 1 and 2.
+At entry:
+- CW tab: 7 of 15 with a tip.
+- Band row: 18 of 34 not connected, 19 of 34 connected.
+- **One tip was false: the save star's.** With the pointer on the star, the only hover text is the face's *Roll the scroll wheel over any digit to tune that digit.*, and the star does not tune.
+- The seven band buttons' tips were true and never said that pressing tunes.
 
-**Task 3, the change (`a913f927`), kept.** `CwProbabilisticDecoder.Judged` no longer emits a character of one element whose raw span is under `StrayElementSpan = 13.0`.
+**Task 2, the test.** `EveryControlSaysWhatItDoesTests` names all 49 controls one by one. The list is closed both ways: a named control that is missing fails, and so does a control present and not named. It has three cases:
+- not connected
+- connected, which also requires the connect tip to change with the words
+- the star, which requires its hover to be its own and not the digits'
 
-**Task 4, the exit round:**
-- `Hamlet.sln` builds non-incrementally with warnings as errors, 0 warnings.
+A mark that holds no sentence is exempt, because `HintMarkControl` measures to nothing then and cannot be hovered. This matters for exactly one: the link-check mark while not connected. The test was committed red. The failure is quoted in section 3.
+
+**Task 3, the tips.** Every tip says only what the command body does:
+- Send, the terminal's *No thanks*, the stops, the port list, the upgrade prompt, the four license and grid answers, the drive box and the three PSK31 power controls: an inline `ToolTip.Tip` beside the control, the form the file already uses.
+- The connect button: `ConnectButtonTip` on the view model, which follows `ConnectButtonText`.
+- The band buttons: `BandButtonViewModel.PressTip`, one sentence put in front of the existing text, which is kept word for word.
+- The neighborhood strip and the `?` mark beside it: one constant, `NeighborhoodMapControl.HowToUseIt`. The mark's words are unchanged.
+- The save star: `StarTip` on `RigDisplayControl`.
+- The panel headers: a tip in `CollapsiblePanel.axaml`.
+
+The test went green, 3 of 3. **Send's element before and after** (from `.run-unit/unit422-diff.sh`):
+
+```
+at bdd0070b                                          now
+<Button Grid.Column="1" x:Name="TransmitButton"      <Button Grid.Column="1" x:Name="TransmitButton"
+        Classes="hm-send"                                    Classes="hm-send"
+        Content="Send" FontSize="12"                         Content="Send" FontSize="12"
+        Padding="16,5" Margin="0,0,6,0"                      Padding="16,5" Margin="0,0,6,0"
+        Command="{Binding Transmit.PressCommand}"            Command="{Binding Transmit.PressCommand}"
+        CommandParameter="{Binding Transmit.OwnWords}" />    CommandParameter="{Binding Transmit.OwnWords}"
+                                                             ToolTip.Tip="Keys the radio and sends the line below on the air, in Morse. If Hamlet asks you to read it over first, a second press sends it." />
+```
+
+Across the whole source diff, every removed line is a closing `/>` that moved down one line to make room for the tip, or one of the lines of code replaced in the two controls below. No command, binding, visibility, enablement or layout changed.
+
+**Task 4, the exit round.**
+- Build: `Hamlet.sln` with warnings as errors, non-incremental, 0 warnings.
 - Engine carry-forward: 178 of 178.
-- App carry-forward: 275 of 278. Three tests were lost to the dispatcher loop ("You've caused dispatcher loop"): two in `ThePsk31ConversationCardTests`, one in `BindingHealthTests`. Alone, they passed 8 of 8 and 1 of 1.
-- Captures 51 of 51 under the bar, adjudicated 13 of 13, keyed floors 13 of 13, clean synthetics 2 of 2.
-- Green: `TheBaselineIsScoredTests`, `TheBenchmarkIsKeyedTests`, `WhereTheSpaceIsDecidedTests`, `WhatTheStrayLettersRestOnTests`.
-- Also green against the change: `EachCharacterAnswersForItselfTests` 6 of 6, `TheProbabilisticDecoderTests` 11 of 11, `NothingActsOnTheAdmissionVerdictTests`, `WhatAFlatMarginDoesToShortCharactersTests`, and `TheSeventeenThirtySevenCaptureTests` 5 of 5. `NoSenderIsSplitInTwoTests` and `EveryElementCarriesItsOwnPitchTests` are excluded from compilation by the test project, so nothing ran for them.
-- `src/Hamlet.App` shows nothing against entry. The transmit files show nothing against `7e209cb4`. `data` shows nothing.
-- I did not run `ModeFollowsTheMapAgainTests`. It is on no line of this unit's round, and I did not touch it (P16).
+- App carry-forward: 274 of 278. The four cases of `TheRecordNamesTheSubModePressedTests` were lost to the dispatcher loop and passed alone (the type, 12 of 12).
+- Floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, keyed floors 13 of 13.
+- Green: `BindingHealthTests`, `TheWindowHoldsBelowItsMinimumTests`, `Unit376TheTopBandTests`, and both of this unit's types.
+- I also ran 20 types that read tooltips or build the touched controls, one per invocation. All green except two reds:
+  - **`ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`**: red with the same message as at units 419 to 421 (P16), as the instruction expected.
+  - **`Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen`**: red because it looks for an element named `TurnRingCountText` on the Digital tab, and nothing under `src` has carried that name, at entry `bdd0070b` or now. I did not run this type at entry, so the entry state is inferred from the tree, not measured. It is not this unit's, and it is parked as P20.
+- The transmit files print nothing against `7e209cb4`, and `src/Hamlet.RadioEngine` prints nothing against entry.
+- 6.4 is ticked in `PHASE_PLAN.md`.
 
-**Decisions I made myself, in full:**
-- **The bar's figure and value.** It is the raw `SpanLogLikelihoodRatio` at 13.0. My reasons, from the print alone, are in section 3.
-- **3.2's third test is read on the scored regions.** The three adjudicated regions print character for character identical before and after (013347 `VA3VRR` 0 edits, 134712 3 characters 0 edits, 003758 3 edits over 12). What changed is the full settled texts of 134712 and 003758, which lose stray `E`s outside those regions. Both texts are printed in section 3.
-- **3.6 is held, not ticked,** even though every clause holds on the letter. Section 4 has the question.
-- **The placeholder column of `Floors` is left as it was set.** It is printed and asserted on nothing, and on no row did the count move.
+**Decisions I made myself, each overrulable:**
+1. **Where the band row ends.** I took it as everything above the divider that stays the same in every mode: the header strip that holds Connect, `BandRow` and `BandPills`. I left out:
+   - the menu bar
+   - the CW, Digital and Voice tab buttons (the tab strip is neither the CW tab's contents nor the row)
+   - the sun map, which takes no press
+   - the front-end and filter chips, which have hover text and take no press
+   - the transcript itself, which is selectable text
+2. **The band buttons' tips were true, and I still added to them.** The instruction says to leave a true tip alone, and also that a band button says it tunes. Their text never said a press tunes, so I put that one sentence in front and kept everything after it word for word. For example: *Tunes to 7.028 MHz, where Morse gathers on 40 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too.*
+3. **The neighborhood strip got hover text at rest.** Before, it showed a tip only with a dot under the pointer. It now reads the same sentence as its `?` mark, from one constant. `NeighborhoodMapControl` puts that sentence back when the pointer leaves a dot, so a dot's line no longer stays behind as the strip's tip. Pressing, dragging and the dots' own lines are unchanged.
+4. **The star borrows the face's hover while the pointer is on it.** `RigDisplayControl` swaps in `StarTip` on the star's rectangle and restores the face's own tip when the pointer moves off or leaves.
+5. **The panel-header tip is in the shared template**, so every collapsible panel in the application now says *Folds this panel away, or opens it again.*, not only the two counted here.
+6. **The PSK31 accept button, which sets RF power, got a tip.** I read section 10's "a tip is an attribute, not a path" as covering it. Its element changed only by the added attribute.
+7. **A circled mark holding no sentence is not failed**, because by its own design it is not drawn then.
+
+**Stray file.** Midway through task 4 I ran `tools/status.sh` from `.run-unit`, and it wrote a stray `.run-unit/PROJECT_STATUS.md` with an empty WORK_INSTRUCTION field. `rm` is refused here, so it is left untracked and uncommitted. The root `PROJECT_STATUS.md` was rewritten from the root straight after, and it is the real one.
 
 ## 2. What the owner should expect
 
-Every CW floor now counts only letters the decoder stood behind: named characters whose own span, the raw evidence over their marks, is 13 or more. On the 23 recordings with a key, the weakest letter the key calls right stands at 30.8, so no real letter lost its guard. Of the 1,790 named characters on the 51 capture rows, 63 were under the bar, and every one was a lone `E`. Each row's floor was re-stated at the count it read above the bar, with the decoder unchanged. The first change against the strays then took exactly those 63 `E`s off the screen and nothing else. On the recordings with no key, that is stray `E`s gone: 11 from `001952`, 10 each from `134712`'s tail after `N4L` and from `002016`, and fewer elsewhere. The correctness number moved 167 to 165 edits. **What will look wrong but is not:** four keyed floors and 18 capture floors went down (for example 134712 from 21 to 11). Only below-bar `E`s left them, and no row's above-bar count fell. **Also expect this:** not one of the 17 letters the keys call added inside a scored stretch was under the bar. So on the keyed recordings, the stray `E` and `T` you would score as extra are still on the screen. The ones that came off are `E`s outside what was keyed.
+Every button on the CW tab and the band row now tells you what it does when you rest the pointer on it. The CW tab's Send button says it keys the radio: *Keys the radio and sends the line below on the air, in Morse.* Clear, CQ, RST and 73 each say they fill or empty the line and send nothing. One tip was already there and false: over the save star in the frequency display, the only hover text was *Roll the scroll wheel over any digit to tune that digit.* The star now says *Saves the frequency you are on as a favorite, and it appears in the row under the green zone. Press it again on a saved frequency to forget it.* The band cards keep their paragraph about the band, which now starts with where pressing takes you. The connect button's hover changes with its words. Two things may look new without being wrong. Resting on the neighborhood strip away from a dot now shows how to use it. Every panel header now says it folds the panel.
 
 ## 3. What you should see
 
-**The bar: raw `SpanLogLikelihoodRatio` = 13.0.** No character any inferred key aligns as right sits below it.
+**The inventory, before (entry `bdd0070b`) and after, not connected.** "Kept" means the tip was there at entry and is unchanged. Where "before" is *none*, the tip is new.
 
-These are the reasons, taken from task 1's print alone:
-1. **The hard ceiling.** The lowest right character stands at raw 30.8, a lone `E` on 17:37 at 25.100 s. The bar must be under it.
-2. **The empty stretch.** On the raw figure, no key-aligned right character stands anywhere from the corpus minimum of 3.28 up to 30.8. The key-aligned characters in that stretch are:
+| Place | Control | Tip before | Tip after | What its command does |
+|---|---|---|---|---|
+| CW tab | Send | none | *Keys the radio and sends the line below on the air, in Morse. If Hamlet asks you to read it over first, a second press sends it.* | **keys the radio**: sends the line through `PressCommand`, the one transmit path; a line he changed is held for a second press |
+| CW tab | Clear (send line) | none | *Empties the line below. Sends nothing.* | empties the send line |
+| CW tab | CQ | none | *Fills the line with a CQ call in your callsign. Sends nothing: Send puts it on the air.* | fills the line with `CQ CQ DE <call> <call> K` |
+| CW tab | RST | none | *Fills the line with a signal report, 599. Sends nothing: Send puts it on the air.* | fills the line with `RST 599 599` |
+| CW tab | 73 | none | *Fills the line with a sign-off, 73. Sends nothing: Send puts it on the air.* | fills the line with `73 TU E E` |
+| CW tab | `?` mark by the macros | kept | *tip — CQ tells the band you are looking for a conversation…* | none, hover only |
+| CW tab | `?` mark in the terminal | kept | *tip — what the radio is hearing, as it arrives* | none, hover only |
+| CW tab | the send line | none | *What Send puts on the air. Type here, or let CQ, RST and 73 fill it. Nothing goes out until you press Send.* | the text Send sends |
+| CW tab | CW terminal header | none | *Folds this panel away, or opens it again.* | toggles `IsExpanded` |
+| CW tab | Clear (terminal) | kept | *Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out.* | clears the transcript only |
+| CW tab | `⊣` mark by *I hear a station* | kept | *what Hamlet can see — Press this whenever you can hear a station…* | none, hover only |
+| CW tab | I hear a station | kept | *Says you heard CW here, whether or not Hamlet read any of it…* | keeps 30 s of audio and adds a row to tonight's list |
+| CW tab | Have a look | kept, left to 6.5 | *The panel this opens is not on any screen at the moment, so this cannot do anything…* | cannot run; `CanExecute` is false (HM-OPEN-087) |
+| CW tab | No thanks | none | *Hides this offer for the rest of the session. Nothing on the radio changes.* | dismisses the offer for the session |
+| CW tab | `⊣` mark under the transcript | kept | *what Hamlet can see — a dimmed character is one Hamlet is not sure of…* | none, hover only |
+| band row | Connect / Disconnect | none | *Connects to the radio on the port chosen beside this, so Hamlet can read it and tune it.* / *Lets go of the radio. Hamlet stops reading it and stops tuning it.* | connects on the chosen port, or disconnects |
+| band row | save star | the face's *Roll the scroll wheel…*, **false of the star** | *Saves the frequency you are on as a favorite, and it appears in the row under the green zone. Press it again on a saved frequency to forget it.* | saves the dial's frequency, or forgets it if already saved |
+| band row | 80, 40, 30, 20, 17, 15, 10 m | kept, silent on the press | *Tunes to 3.530 / 7.028 / 10.103 / 14.030 / 18.080 / 21.030 / 28.030 MHz, where Morse gathers on <band>, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too.* then the entry text | `SelectBand`: selects the band and puts the dial on its CW spot; a connected radio is sent there |
+| band row | `?` mark, how to use the strip | kept | *tip — hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune* | none, hover only |
+| band row | `?` MapLegendMark | kept | *tip — the map's colors: Morse, Digital, Voice…* | none, hover only |
+| band row | `?` DigitalTransmitDriveTip | kept | *tip — This is a starting point, not a specification…* | none, hover only |
+| band row | Stop the scan | none | *Stops the scan now, so Hamlet stops moving the dial.* | stops the scan |
+| band row | STOP TRANSMITTING | none | *Stops the transmitter now. Escape does the same from anywhere in the window.* | stops the transmitter; Escape runs the same stop, in `MainWindow.axaml.cs` |
+| band row | port list | none | *The port Hamlet talks to the radio on. Choose it before you connect; it cannot be changed while connected.* | chooses `SelectedPort` |
+| band row | Neighborhood map header | none | *Folds this panel away, or opens it again.* | toggles `IsExpanded` |
+| band row | `⊣` GreenZoneRuleOfThumbMark | kept | *what Hamlet can see — 20 m and up want daylight along the path; 40 m and down want dark.* | none, hover only |
+| band row | neighborhood strip | none (only a dot's line, over a dot) | the `?` mark's own sentence, from one constant | a dot tunes there; the background opens a story; a drag tunes |
+| band row | best-bet button | kept | *The band with the most going on right now… Pressing it tunes there.* | selects the top-ranked band |
+| band row | upgrade prompt | none | *Shows what the next license class would let you do on this band. Press again to hide it.* | toggles the upgrade ladder |
+| band row | saved-spot chips, and their ✕ | kept | *<name>. Click to tune.* / *Forget this spot* | tune to it / forget it |
+| band row | Use the FCC value / Keep mine | none | *Sets your license class in Hamlet to the one the lookup found. Nothing on the radio changes.* / *Keeps the license class you set, and Hamlet stops asking.* | sets or keeps the class in settings |
+| band row | Use the looked-up grid / Keep mine | none | *Sets your grid square in Hamlet to the one the lookup found. Nothing on the radio changes.* / *Keeps the grid square you typed, and Hamlet stops asking.* | sets or keeps the grid in settings |
+| band row | the frequency digits | kept | *Roll the scroll wheel over any digit to tune that digit.* | the wheel tunes a digit |
+| band row | `#` LinkCheckMark | none; not drawn while not connected | *measurement — Hamlet is keeping up with your radio…*, once connected | none, hover only |
+| band row | drive box | none | *How hard Hamlet drives the sound card when it transmits, as a percent of full scale. Kept for next time.* | writes `TransmitDrivePeak` to settings |
+| band row | PSK31 power line | none | *Opens the RF power offer. Opening it changes nothing on the radio.* | opens the popup; writes nothing |
+| band row | PSK31 accept | none | *Sets the radio's RF power to the level offered above.* | writes RF power to the radio |
+| band row | PSK31 decline | none | *Closes the offer. Nothing is written to the radio.* | writes nothing |
 
-   | characters | label | raw span |
-   |---|---|---|
-   | three `E` on `031838` | wrong | 4.42, 5.02, 5.50 |
-   | one longer character | added | 21.04 |
-   | one `T` | wrong | 26.04 |
+Counts, from the fact's own print:
+- CW tab: 7 of 15 → 15 of 15.
+- Band row, not connected: 18 of 34 → 33 of 34. The remaining one is the link-check mark, which has no sentence and is not drawn.
+- Band row, connected: 19 of 34 → 34 of 34.
 
-   13.0 is the midpoint on a log scale between the top of that low `E` cluster and the lowest right character (square root of 5.50 × 30.8 = 13.02), rounded down.
-3. **Why raw and not per hop.**
-   - Across keyed recordings, the median right character spreads the same on both figures: 12.47 to 1 between the lowest and highest recording. So per hop is not more comparable across recordings on this corpus, although `CwCharacter`'s remarks say it is the only comparable form.
-   - Per hop, right single elements sit above right longer letters (medians 14.66 against 10.06), which lifts exactly the class the bar is for. Right characters also run down to 1.376, next to the emission gate itself, with no empty stretch under them.
-   - Raw puts right single elements below longer letters (297 against 817), and leaves the empty stretch described above.
-   - R71's own 153202 figures are raw.
-4. **The third figure fails.** Per hop over the recording's own median is wrecked by soup: on 013347 the `V` of `VA3VRR` is 5×10⁻⁸ of its recording's median.
+**The red message, at `d833bbaa`**, from `.run-unit/unit422-test64-red.txt`. The connected case listed the same 23.
 
-**The 51 rows at the re-measure commit, `df26a5d7`.** Every row's named, element and placeholder counts are identical to entry, so above-bar = named − below-bar exactly.
+```
+not connected: 23 control(s) say nothing on hover or are not where the list says:
+CW tab | TransmitButton | no tip | runs Transmit.PressCommand
+CW tab | "Clear" (ComposeClearCommand) | no tip | runs ComposeClearCommand
+CW tab | "CQ" | no tip | runs ComposeCqCommand
+CW tab | "RST" | no tip | runs ComposeRstCommand
+CW tab | "73" | no tip | runs ComposeSeventyThreeCommand
+CW tab | send line | no tip | runs Transmit.OwnWords.Message (the text)
+CW tab | header of CW terminal | no tip | runs IsExpanded (folds the panel)
+CW tab | "No thanks" | no tip | runs DismissReceiveOfferCommand
+band row | "Stop the scan" | no tip | runs Scan.StopCommand
+band row | "STOP TRANSMITTING" | no tip | runs AutoCall.StopCommand
+band row | port list | no tip | runs SelectedPort (the choice)
+band row | connect button | no tip | runs ToggleConnectCommand
+band row | header of Neighborhood map | no tip | runs IsExpanded (folds the panel)
+band row | neighborhood strip | no tip | runs TuneToDotCommand, ShowNeighborhoodCommand
+band row | Button with no words | no tip | runs ToggleUpgradeLadderCommand
+band row | "Use the FCC value" | no tip | runs AcceptLookedUpClassCommand
+band row | "Keep mine" (KeepMyLicenseClassCommand) | no tip | runs KeepMyLicenseClassCommand
+band row | "Use the looked-up grid" | no tip | runs AcceptLookedUpGridCommand
+band row | "Keep mine" (KeepMyGridCommand) | no tip | runs KeepMyGridCommand
+band row | DigitalTransmitDriveBox | no tip | runs TransmitDrivePercent (the value)
+band row | DigitalPsk31PowerLine | no tip | runs OpenPsk31PowerOfferCommand
+band row | DigitalPsk31PowerAccept | no tip | runs AcceptPsk31PowerCommand
+band row | DigitalPsk31PowerDecline | no tip | runs DeclinePsk31PowerCommand
 
-| # | row | old floor | named | above bar | below bar | elements, old floor → new | keyed floor, old → new |
-|---|---|---|---|---|---|---|---|
-| 1 | 013347 | 57 | 57 | 57 | 0 | 106 → 106 | 57 → 57 |
-| 2 | 134712 | 21 | 21 | **11** | **10** | 41 → 31 | 21 → **11** |
-| 3 | 004507 | 49 | 49 | 49 | 0 | 117 → 117 | 49 → 49 |
-| 4 | 012403 | 21 | 21 | **19** | **2** | 62 → 60 | 21 → **19** |
-| 5 | 031838 | 42 | 43 | **40** | **3** | 93 → 91 | 43 → **40** |
-| 6 | 031905 | 36 | 36 | 36 | 0 | 108 → 108 | 36 → 36 |
-| 7 | 031948 | 31 | 31 | 31 | 0 | 111 → 111 | 31 → 31 |
-| 8 | 032012 | 43 | 43 | 43 | 0 | 119 → 119 | 43 → 43 |
-| 9 | 032050 | 44 | 44 | 44 | 0 | 105 → 105 | 44 → 44 |
-| 10 | 032113 | 47 | 47 | 47 | 0 | 102 → 102 | 47 → 47 |
-| 11 | 032129 | 65 | 65 | 65 | 0 | 114 → 114 | 65 → 65 |
-| 12 | 013622 | 51 | 51 | **49** | **2** | 80 → 78 | |
-| 13 | 003016 | 54 | 54 | 54 | 0 | 146 → 146 | |
-| 14 | 003126 | 48 | 48 | 48 | 0 | 131 → 131 | |
-| 15 | 003758 | 44 | 44 | **43** | **1** | 93 → 92 | 44 → **43** |
-| 16 | 001520 | 1 | 1 | 1 | 0 | 1 → 1 | |
-| 17 | 001831 | 44 | 44 | **43** | **1** | 108 → 107 | |
-| 18 | 001952 | 56 | 57 | **46** | **11** | 113 → 103 | |
-| 19 | 002016 | 44 | 44 | **34** | **10** | 84 → 74 | |
-| 20 | 011552 | 22 | 22 | 22 | 0 | 74 → 74 | |
-| 21 | 012748 | 2 | 2 | 2 | 0 | 3 → 3 | |
-| 22 | 012823 | 26 | 26 | **23** | **3** | 40 → 37 | |
-| 23 | 012922 | 45 | 45 | **43** | **2** | 106 → 104 | |
-| 24 | 013010 | 48 | 48 | 48 | 0 | 122 → 122 | |
-| 25 | 013150 | 51 | 51 | 51 | 0 | 123 → 123 | |
-| 26 | 013303 | 44 | 44 | 44 | 0 | 127 → 127 | |
-| 27 | 013402 | 56 | 56 | 56 | 0 | 150 → 150 | |
-| 28 | 013520 | 55 | 55 | 55 | 0 | 147 → 147 | |
-| 29 | 013637 | 60 | 60 | 60 | 0 | 157 → 157 | |
-| 30 | 021410 | 36 | 36 | 36 | 0 | 88 → 88 | |
-| 31 | 021629 | 27 | 27 | 27 | 0 | 65 → 65 | |
-| 32 | 021825 | 25 | 25 | **19** | **6** | 49 → 43 | |
-| 33 | 125941 | 0 | 0 | 0 | 0 | 0 → 0 | |
-| 34 | 014854 | 0 | 0 | 0 | 0 | 0 → 0 | |
-| 35 | 014935 | 0 | 0 | 0 | 0 | 0 → 0 | |
-| 36 | 014113 | 0 | 0 | 0 | 0 | 0 → 0 | |
-| 37 | 014308 | 0 | 0 | 0 | 0 | 0 → 0 | |
-| 38 | 003901 | 9 | 9 | 9 | 0 | 20 → 20 | |
-| 39 | 003919 | 27 | 27 | **25** | **2** | 54 → 52 | |
-| 40 | 004027 | 40 | 40 | **39** | **1** | 119 → 118 | |
-| 41 | 004108, keyed | 32 | 32 | 32 | 0 | 107 → 107 | |
-| 42 | 004133, keyed | 30 | 30 | **28** | **2** | 87 → 85 | |
-| 43 | 004205, keyed | 34 | 34 | 34 | 0 | 96 → 96 | |
-| 44 | 004234, keyed | 37 | 37 | **36** | **1** | 96 → 95 | |
-| 45 | 004322, keyed | 39 | 39 | 39 | 0 | 112 → 112 | |
-| 46 | 004347, keyed | 40 | 40 | 40 | 0 | 115 → 115 | |
-| 47 | 004405, keyed | 36 | 36 | **35** | **1** | 106 → 105 | |
-| 48 | 004427, keyed | 43 | 43 | **42** | **1** | 112 → 111 | |
-| 49 | 004510, keyed | 38 | 38 | **34** | **4** | 104 → 100 | |
-| 50 | 004535 | 47 | 47 | 47 | 0 | 128 → 128 | |
-| 51 | 004550, keyed | 41 | 41 | 41 | 0 | 123 → 123 | |
-| | **17:37, not a row** | | 46 | 46 | 0 | | 46 → 46 |
+with the pointer on the save star the face says "Roll the scroll wheel over any digit to tune that digit.", which is the digits' sentence and says nothing about saving
+```
 
-Totals: 1,790 named, 1,727 above the bar, 63 below, every one of them a single-dot `E`, on 18 rows. The 12 adjudicated rows' count floors are still retired in favor of their anchors (Tim, 2026-08-25). Their element floors still assert.
+**The green run, at `21808260` and again in the exit round:** `EveryControlSaysWhatItDoesTests`, 3 of 3.
 
-**At the re-measure commit** the adjudicated readings, the baseline rows and the benchmark rows print character for character identical to entry, and `src/Hamlet.RadioEngine/Cw` shows nothing against `23457c4b`. All keyed is 167 over 565, baseline 22 over 46, 17:37 19 over 25, outside 110 over 363, and the ten 35 over 156, all against inferred keys. **No character above the bar was lost.** On every row, the above-bar count equals the entry named count less the characters below the bar, and the decoder read exactly what it read at entry.
-
-**3.6's trace, per keyed recording.** Named characters on each recording are split right / wrong (single-element) / added (single-element) / outside every scored stretch, at entry:
-
-| recording | named | right | wrong (single-element) | added (single-element) | outside |
-|---|---|---|---|---|---|
-| 17:37 | 46 | 13 | 7 (6) | 8 (6) | 18 |
-| 013347 | 57 | 6 | 0 | 0 | 51 |
-| 134712 | 21 | 3 | 0 | 0 | 18 |
-| 003758 | 44 | 8 | 3 (3) | 0 | 33 |
-| 012403 | 21 | 13 | 0 | 0 | 8 |
-| 004507 | 49 | 42 | 0 | 1 (0) | 6 |
-| 031838 | 43 | 8 | 14 (11) | 1 (1) | 20 |
-| 031905 | 36 | 20 | 8 (1) | 2 (0) | 6 |
-| 031948 | 31 | 26 | 1 (0) | 0 | 4 |
-| 032012 | 43 | 40 | 1 (1) | 2 (0) | 0 |
-| 032050 | 44 | 31 | 4 (1) | 2 (1) | 7 |
-| 032113 | 47 | 20 | 2 (0) | 0 | 25 |
-| 032129 | 65 | 15 | 13 (9) | 0 | 37 |
-| 004234 | 37 | 7 | 2 (2) | 0 | 28 |
-| 004108, 004133, 004205, 004322, 004347, 004405, 004427, 004510, 004550 | 32, 30, 34, 39, 40, 36, 43, 38, 41 | 2, 4, 8, 29, 23, 6, 9, 11, 8 | 2, 0, 0, 3, 0, 0, 0, 0, 0 | 0, 0, 0, 0, 1 (0), 0, 0, 0, 0 | 28, 26, 26, 7, 16, 30, 34, 27, 33 |
-| **all keyed** | **917** | **352** | **60 (34)** | **17 (8)** | **488** |
-
-Every stray was admitted by `CharacterMargin` on its per-hop span and by the window `Gate` on `Score`. The raw spans of the eight added single-element letters run from 33.4 to 159.2: the six on 17:37, the `T` on 031838 at 21.355 s, and the `T` on 032050 at 11.195 s. **All eight stand above the lowest right character on all three figures, so no bar that keeps every right letter can reach them.**
-
-**Task 3's change, `a913f927`, kept under 3.2's four tests:**
-1. **All keyed edits fall:** 167 to 165 over 565. `031838` goes 21 to 19 over 35, where `TEAHEEEA MEAN` becomes `TEAH A MEAN`. No recording rose. Baseline 22, the ten 35.
-2. **No above-bar keyed floor breaks:** 13 of 13.
-3. **The three adjudicated readings.** Their scored regions are identical. Here are the full texts, before and after:
-   ```
-   134712 before:           E           I  E E E EE E  I■5   NT    N4LZT K  EE E
-   134712 after:                       I        I■5   NT    N4LZT K
-   003758 before: ... EAN EANQNIK   E    EAN E
-   003758 after:  ... EAN EANQNIK        EAN E
-   013347:        unchanged
-   ```
-4. **No row's above-bar count falls:** 51 of 51 identical, and exactly the 63 below-bar `E`s were removed.
-
-**17:37:** 19 edits over 25 before and after, inferred key. **Added letters on the keyed recordings: 17 before, 17 after; single-element 8 before, 8 after.** Wrong letters went 60 to 56.
-
-**Removed on the unkeyed rows,** as `E`, raw span:
-
-| row | removed |
-|---|---|
-| 001952 | 11: 4.30, 9.80, 8.04, 11.21, 5.20, 8.90, 6.80, 9.06, 8.22, 4.96, 6.89 |
-| 002016 | 10: 9.60, 12.45, 11.13, 4.51, 3.28, 10.41, 12.08, 5.38, 8.24, 4.71 |
-| 021825 | 6: 5.54, 8.26, 4.03, 11.46, 12.71, 7.16 |
-| 012823 | 3: 6.30, 10.67, 10.92 |
-| 013622 | 2: 10.03, 7.99 |
-| 012922 | 2: 9.65, 6.89 |
-| 003919 | 2: 9.86, 8.78 |
-| 001831 | 1: 10.91 |
-| 004027 | 1: 6.42 |
-
-The keyed rows lost 25: 10 on 134712, 2 on 012403, 3 on 031838, 1 on 003758, 2 on 004133, 1 on 004234, 1 on 004405, 1 on 004427 and 4 on 004510. Of those, 22 sat outside every scored stretch, and the 3 on 031838 were inside one. Every figure is in `.run-unit/unit421-captures-t2.txt`.
-
-**3.5** is green at exit. **3.4's count** is 0 of 3, because this unit kept a change. The phase's running total is now **217 to 165 edits over 565 characters, against inferred keys** (`baseline.md`).
+```
+not connected: "Connects to the radio on the port chosen beside this, so Hamlet can read it and tune it."
+connected    : "Lets go of the radio. Hamlet stops reading it and stops tuning it."
+star  : "Saves the frequency you are on as a favorite, and it appears in the row under the green zone. Press it again on a saved frequency to forget it."
+digits: "Roll the scroll wheel over any digit to tune that digit."
+```
 
 ## 4. What's blocking us
 
-Nothing here halts the phase, and nothing is in the way of 3.7, which is met.
+Nothing here blocks 6.4, and nothing halts the phase (R65). The carried items are copied word for word from the work instruction (HM-DEC-139).
 
-1. **Is 3.6 met?** Proposed ruling: 3.6 stays open until a change takes an added letter off a scored stretch. **Reasoning:**
-   - Every clause is met on the letter: the trace, the change judged under 3.2, the total falling 167 to 165, and added letters reported.
-   - But the purpose was the stray letters the key calls extra, and those are 17 before and 17 after.
-   - The trace shows no bar that keeps every right letter can reach them, since all eight added single elements stand at raw 33 or higher, over the right `E` at 30.8. So a further change must tell a stray from a real letter by something other than span.
-
-   **Rejected:** ticking 3.6 on the two edits, which came from wrong letters rather than added ones. Not blocking.
-
-2. **R71 counts 40 unkeyed captures. The tree has 29 unkeyed rows**, with 22 of 51 keyed: 12 adjudicated and the ten. Proposed ruling: none needed. The count in R71 is prose and asserts nothing. Recorded so the next author does not plan on 40. Not blocking.
-
-3. **`CwCharacter.SpanMarginForRecord`'s remarks say it is the only span form comparable across recordings.** The trace finds the per-hop and raw figures spread alike across recordings on right characters (12.47 to 1). Per hop also flatters single elements. Proposed ruling: leave the remark until a unit touching `CwCharacter` rewrites it with the trace beside it (12.6). Not blocking.
-
-Carried per HM-DEC-139, as the instruction states them:
-
-4. **P12** stays parked: the `captured` and `broadcast` clock lines.
-5. **The `clipping` and `inputFloor` question** stays parked.
-6. **P14, P15 and P16** stay parked.
-7. **Unit 420's stale `unknowns` entry for `CW`** in `mode-receiver-conditions.json` is logged as P18 in task 0, in its own words, and not touched.
-8. **P17 is answered by R71.** It leaves the carried list.
+1. **P19**, logged in task 0 below: 3.6's added strays stand above the bar and every floor they sit under is at its count, so none can leave without the owner's ruling. *(Carried. "Task 0 below" refers to the work instruction; P19 is now in `PARKED.md`. The ruling is proposed there: a named character that the inferred key aligns as added, inside a scored stretch, may leave a floor, with every one printed per recording before and after. The owner's, because R63, 2.2 and R71 are his. Step 3 cannot move until it is ruled on.)*
+2. **P12** stays parked: the `captured` and `broadcast` clock lines.
+3. **The `clipping` and `inputFloor` question** stays parked.
+4. **P14, P15, P16 and P18** stay parked. *(P16 was red again at exit, with the message unchanged.)*
+5. **Unit 421's R71 count:** R71's prose says 40 unkeyed captures, and the tree has 29 unkeyed rows of 51. Recorded, not a ruling.
+6. **Unit 421's `SpanMarginForRecord` remark** stays until a unit touching `CwCharacter` rewrites it with the trace beside it (12.6).
+7. **New, P20, parked: a ceiling test looks for a countdown that is not in the tree.** `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen` looks for `TurnRingCountText` on the Digital tab, and no element under `src` carries that name, at entry or now. Proposed, the owner's: step 6 decides whether the slot countdown comes back to the Digital tab or the test retires with the readout. Reasoning: a test that names a readout Tim asked for should not be edited to pass, and the readout should not be rebuilt as a drive-by (§12.6). Rejected: repairing either side in this unit, which was hover text only. Not blocking.
+8. **New, author's and overrulable: what "the band row" covers.** This unit counted the header strip that holds Connect, `BandRow` and `BandPills`: 34 controls. It left out the menu bar and the CW, Digital and Voice tab buttons. Reasoning: those are the parts above the divider that stay the same in every mode, and 6.4's own list (the band buttons, connect, the star) spans exactly them. Rejected: counting the tab strip too, because it belongs to neither place, and a tab button's hover would be a sentence nobody asked for. If the owner reads the band row more widely or more narrowly, the lists in `EveryControlSaysWhatItDoesTests` are where that goes. Not blocking.

@@ -1,0 +1,40 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheTabsAndTheWorkspacesTests.ChangingTheModeDoesNotRecreateTheHeader [804 ms]
+  Standard Output Messages:
+ band card same: True, neighborhood same: True, radio same: True
+
+
+  Passed Hamlet.App.Tests.Views.TheTabsAndTheWorkspacesTests.ThereIsNoTrayNoPresetBarAndNoLayoutNamer [122 ms]
+  Standard Output Messages:
+ no tray, no preset bar, no layout namer
+
+
+  Passed Hamlet.App.Tests.Views.TheTabsAndTheWorkspacesTests.TheTabStripBeginsWhereTheOperatingAreaBegins [150 ms]
+  Standard Output Messages:
+ tabs x=16 y=346, boundary x=16 y=376
+
+
+[xUnit.net 00:00:01.67]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheTabsAndTheWorkspacesTests.EachTabChangesTheWorkspace [171 ms]
+  Standard Output Messages:
+ on Digital: CW showing False, Digital showing True
+ on Voice: CW showing False, Voice showing True
+
+
+  Passed Hamlet.App.Tests.Views.TheTabsAndTheWorkspacesTests.TheThreeModesAreCwDigitalAndVoice [147 ms]
+  Standard Output Messages:
+ CW, Digital, Voice
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 1.9314 Seconds
+RC=0 WALL=3s

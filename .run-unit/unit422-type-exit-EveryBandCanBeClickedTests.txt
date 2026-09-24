@@ -1,0 +1,102 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.16]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.45]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.EveryBandCanBeClickedTests.EveryBandCardAnswersAClickOnItsOwnCentre(width: 1400, what: "the width this test was first pinned to") [719 ms]
+  Standard Output Messages:
+ 7 band cards on the screen
+   DIAG 80 m: topleft=16, 83 bottomright=109, 113
+   80 m   at     63,  83 -> its own card
+   DIAG 40 m: topleft=117, 83 bottomright=210, 113
+   40 m   at    164,  83 -> its own card
+   DIAG 30 m: topleft=218, 83 bottomright=311, 113
+   30 m   at    265,  83 -> its own card
+   DIAG 20 m: topleft=319, 83 bottomright=412, 113
+   20 m   at    366,  83 -> its own card
+   DIAG 17 m: topleft=420, 83 bottomright=513, 113
+   17 m   at    467,  83 -> its own card
+   DIAG 15 m: topleft=521, 83 bottomright=614, 113
+   15 m   at    568,  83 -> its own card
+   DIAG 10 m: topleft=622, 83 bottomright=715, 113
+   10 m   at    669,  83 -> its own card
+
+
+  Passed Hamlet.App.Tests.Views.EveryBandCanBeClickedTests.EveryBandCardAnswersAClickOnItsOwnCentre(width: 1200, what: "the application's own default") [120 ms]
+  Standard Output Messages:
+ 7 band cards on the screen
+   DIAG 80 m: topleft=16, 83 bottomright=109, 113
+   80 m   at     63,  83 -> its own card
+   DIAG 40 m: topleft=117, 83 bottomright=210, 113
+   40 m   at    164,  83 -> its own card
+   DIAG 30 m: topleft=218, 83 bottomright=311, 113
+   30 m   at    265,  83 -> its own card
+   DIAG 20 m: topleft=319, 83 bottomright=412, 113
+   20 m   at    366,  83 -> its own card
+   DIAG 17 m: topleft=420, 83 bottomright=513, 113
+   17 m   at    467,  83 -> its own card
+   DIAG 15 m: topleft=521, 83 bottomright=614, 113
+   15 m   at    568,  83 -> its own card
+   DIAG 10 m: topleft=622, 83 bottomright=715, 113
+   10 m   at    669,  83 -> its own card
+
+
+  Passed Hamlet.App.Tests.Views.EveryBandCanBeClickedTests.EveryBandCardAnswersAClickOnItsOwnCentre(width: 1000, what: "narrower than the operator works at") [120 ms]
+  Standard Output Messages:
+ 7 band cards on the screen
+   DIAG 80 m: topleft=16, 83 bottomright=109, 113
+   80 m   at     63,  83 -> its own card
+   DIAG 40 m: topleft=117, 83 bottomright=210, 113
+   40 m   at    164,  83 -> its own card
+   DIAG 30 m: topleft=218, 83 bottomright=311, 113
+   30 m   at    265,  83 -> its own card
+   DIAG 20 m: topleft=319, 83 bottomright=412, 113
+   20 m   at    366,  83 -> its own card
+   DIAG 17 m: topleft=420, 83 bottomright=513, 113
+   17 m   at    467,  83 -> its own card
+   DIAG 15 m: topleft=521, 83 bottomright=614, 113
+   15 m   at    568,  83 -> its own card
+   DIAG 10 m: topleft=622, 83 bottomright=715, 113
+   10 m   at    669,  83 -> its own card
+
+
+  Passed Hamlet.App.Tests.Views.EveryBandCanBeClickedTests.EveryBandCardAnswersAClickOnItsOwnCentre(width: 820, what: "narrower still") [117 ms]
+  Standard Output Messages:
+ 7 band cards on the screen
+   DIAG 80 m: topleft=16, 83 bottomright=109, 113
+   80 m   at     63,  83 -> its own card
+   DIAG 40 m: topleft=117, 83 bottomright=210, 113
+   40 m   at    164,  83 -> its own card
+   DIAG 30 m: topleft=218, 83 bottomright=311, 113
+   30 m   at    265,  83 -> its own card
+   DIAG 20 m: topleft=319, 83 bottomright=412, 113
+   20 m   at    366,  83 -> its own card
+   DIAG 17 m: topleft=420, 83 bottomright=513, 113
+   17 m   at    467,  83 -> its own card
+   DIAG 15 m: topleft=521, 83 bottomright=614, 113
+   15 m   at    568,  83 -> its own card
+   DIAG 10 m: topleft=622, 83 bottomright=715, 113
+   10 m   at    669,  83 -> its own card
+
+
+  Passed Hamlet.App.Tests.Views.EveryBandCanBeClickedTests.TheBestBetBadgeTakesNoClicksAtAll [105 ms]
+  Standard Output Messages:
+ 7 best-bet badges on the screen
+   hit test visible: False
+   hit test visible: False
+   hit test visible: False
+   hit test visible: False
+   hit test visible: False
+   hit test visible: False
+   hit test visible: False
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 1.7356 Seconds
+RC=0 WALL=2s

@@ -1,0 +1,25 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.92]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheOfferButtonCannotBePressedTests.ItSaysWhyItCannotBePressed [2 ms]
+  Standard Output Messages:
+ The panel this opens is not on any screen at the moment, so this cannot do anything. Hamlet has still worked out what it would change, and the line beside this button says what it noticed.
+
+
+  Passed Hamlet.App.Tests.Views.TheOfferButtonCannotBePressedTests.TheButtonIsDrawnAsSomethingThatCannotBeUsed [631 ms]
+  Standard Output Messages:
+ enabled : False
+ why     : The panel this opens is not on any screen at the moment, so this cannot do anything. Hamlet has still worked out what it would change, and the line beside this button says what it noticed.
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 1.2245 Seconds
+RC=0 WALL=1s

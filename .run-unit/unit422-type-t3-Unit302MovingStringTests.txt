@@ -1,0 +1,77 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit302MovingStringTests.DiffASurfaceAgainstItselfSecondsApart [5 s]
+  Standard Output Messages:
+ === MainWindow — Digital tab ===
+ 
+ === MainWindow — Digital tab, working ===
+ 
+
+
+  Passed Hamlet.App.Tests.Views.Unit302MovingStringTests.WriteDownWhatTheDigitalTabSaysNow [174 ms]
+  Standard Output Messages:
+ run a at 2026-09-24 15:44:33
+ total  1378
+ blocks 96
+ written to C:\Users\TimDi\AppData\Local\Temp\hamlet-unit302-a.txt
+
+
+  Passed Hamlet.App.Tests.Views.Unit302MovingStringTests.DiffTheTwoRuns [< 1 ms]
+  Standard Output Messages:
+ only one transcript on disk, so there is nothing to diff yet.
+   a: present
+   b: missing
+
+
+[xUnit.net 00:00:45.64]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit302MovingStringTests.MeasureTheIdleTabRepeatedly [39 s]
+  Standard Output Messages:
+ run 00: 1379 chars, 92 blocks
+ run 01: 1379 chars, 92 blocks
+ run 02: 1379 chars, 92 blocks
+ run 03: 1379 chars, 92 blocks
+ run 04: 1379 chars, 92 blocks
+ run 05: 1379 chars, 92 blocks
+ run 06: 1379 chars, 92 blocks
+ run 07: 1379 chars, 92 blocks
+ run 08: 1379 chars, 92 blocks
+ run 09: 1379 chars, 92 blocks
+ run 10: 1379 chars, 92 blocks
+ run 11: 1379 chars, 92 blocks
+ run 12: 1379 chars, 92 blocks
+ run 13: 1379 chars, 92 blocks
+ run 14: 1379 chars, 92 blocks
+ run 15: 1379 chars, 92 blocks
+ run 16: 1379 chars, 92 blocks
+ run 17: 1379 chars, 92 blocks
+ run 18: 1379 chars, 92 blocks
+ run 19: 1379 chars, 92 blocks
+ run 20: 1379 chars, 92 blocks
+ run 21: 1379 chars, 92 blocks
+ run 22: 1379 chars, 92 blocks
+ run 23: 1379 chars, 92 blocks
+ run 24: 1379 chars, 92 blocks
+ run 25: 1379 chars, 92 blocks
+ run 26: 1379 chars, 92 blocks
+ run 27: 1379 chars, 92 blocks
+ run 28: 1379 chars, 92 blocks
+ run 29: 1379 chars, 92 blocks
+ run 30: 1379 chars, 92 blocks
+ run 31: 1379 chars, 92 blocks
+ run 32: 1379 chars, 92 blocks
+ run 33: 1379 chars, 92 blocks
+ 
+ spread: 1379 to 1379   (0 apart)
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 45.9857 Seconds
+RC=0 WALL=47s

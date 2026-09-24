@@ -1,0 +1,58 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.AnEmptyMarkIsNotDrawnAndHoldsNoTooltip [8 ms]
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.AFaultIsReadWithoutHovering [508 ms]
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.TheAdviceSettingsStoppedShowingIsStillThere [283 ms]
+  Standard Output Messages:
+ 31 marks on the Settings window:
+    458  tip —  Words a minute is how Morse speed is counted, and 13 is about the pace of the clubs that exist for people still finding their feet. Hamlet uses it to sort the list, so stations sending around there come up first and faster ones say how much faster they are. Nothing is hidden and nothing is being tested here. Hamlet has never heard you copy anything, so it will not tell you what you can manage. Move it up as the letters start arriving on their own.
+    376  what Hamlet can see —  Each network Hamlet asks about what is on the air. Every request identifies Hamlet, its version and your callsign, because these are volunteer-run services and they are owed knowing who is calling. A source that stops answering leaves its last spots on screen, ageing, and Hamlet says which network went quiet rather than pretending the band went quiet.
+    356  what Hamlet can see —  The scanner will not tune outside the stretches in this file, whatever else goes wrong, so it is worth a look before you first run one. Hamlet wrote it once from the Morse parts of its own band data and will never touch it again, and every stretch in it says where its numbers came from. Delete one and the scanner will not go there.
+    344  tip —  This is the note a CW signal turns into when your radio is tuned to it, and the IC-7300 puts it anywhere from 300 to 900 Hz. Set it to match the radio and the decoder starts in the right place. It hunts a little either side of this anyway, because nobody lands exactly on a signal and the sender has no idea where you are listening from.
+    339  what Hamlet can see —  The question is not how old a spot is, it is whether that person is probably still on that frequency. A park or summit activator hauled gear somewhere and stays put working callers, so their spot is good for a long while. A skimmer report only means somebody called CQ at that moment, which says much less about now.
+    333  tip —  Every part of a band has a mode the people there are using, and getting it wrong is why a beginner hears nothing. Hamlet changes the radio to match the block you are tuned into, and says in the line at the bottom of the window what it did and why. Change the mode yourself at any time and it stops until you next switch bands.
+    266  tip —  Your class decides what the band map shows as yours to use. Hamlet looks it up from your callsign when it can, and never overwrites a value you set yourself. If they disagree it shows you both and lets you choose. Listening is never restricted by any of this.
+    263  what Hamlet can see —  Pick the radio's own USB audio input, which is what carries FT8 out of the computer. Hamlet will not choose one for you: with none named it refuses to transmit rather than playing the tones into whatever this computer happens to default to.
+    256  tip —  Saves clicking Connect every time. If the radio is switched off, or Windows has moved it to a different COM port, Hamlet says so in the line at the bottom of the window and carries on with the training radio. It tries once and then leaves it to you.
+    240  what Hamlet can see —  Holds a transmission back when the frequency is outside your privileges. It never restricts tuning or receiving, because those are not regulated. There is no transmit path yet, so this takes effect when CW send lands.
+    230  tip —  That's a short code for where you are, a bit like a postal code for the planet. Hamlet works it out from your callsign and uses it to tell you how far away a station is, and when the sun rises and sets where you're sitting.
+    187  what Hamlet can see —  Who is at the key. Used for display in the app and, later, for your log (FG-004). Stored on this computer only. It is never written to telemetry and never uploaded.
+    182  tip —  Reverse Beacon Network. Automated receivers reporting every CW signal they decode. Filtered to your band and to receivers on your continent, or it would be thousands a minute.
+    179  what Hamlet can see —  Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written.
+    164  tip —  How often the spot feed reloads. The panel always shows how old its data is, whatever this is set to, and refreshing pauses while the window is out of sight.
+    152  tip —  Pick the input the radio's audio arrives on. With an IC-7300 that is its own USB codec, which Hamlet chooses for you when it recognizes the name.
+    151  tip —  Parks on the Air. Operators calling from parks, and the friendliest contacts on the band: they want to be found and they will slow down for you.
+    114  tip —  Built-in sample spots, labeled "sample" on every card. For seeing how the Explorer behaves with no network.
+    107  tip —  Summits on the Air. Operators calling from mountain tops, often on slow CW, often short of contacts.
+    105  what Hamlet can see —  An automated receiver heard somebody call. Weaker evidence they are still calling.
+     93  tip —  Band changes and where a tune came from: the map, the dial tape, the digits or a spot.
+     91  tip —  Daily files are kept until the folder passes this size, then the oldest are deleted.
+     87  tip —  Which neighborhoods and field-guide cards get opened, and which spots get tuned.
+     80  tip —  Connect attempts, timeouts and CI-V errors, with the port and radio type.
+     71  tip —  They stay put for the whole activation, often well over an hour.
+     71  tip —  That a decode ran and how confident it was. Never what was said.
+     67  tip —  Refresh spots by hand any time from Explore ▸ Refresh spots.
+     65  tip —  Contest stations sit on one frequency for the whole event.
+     60  tip —  Frame rates and render timings, for finding slowness.
+     58  tip —  App start and stop, version, and unexpected errors.
+     25  measurement —  -12.0 dBFS
+
+
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.EveryKindIsToldApartWithoutTheGlyph [1 ms]
+[xUnit.net 00:00:01.90]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.EverySentenceThatLeftTheMainWindowIsStillOneHoverAway [825 ms]
+  Standard Output Messages:
+ 169 tooltips across the three tabs
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 2.1694 Seconds
+RC=0 WALL=3s

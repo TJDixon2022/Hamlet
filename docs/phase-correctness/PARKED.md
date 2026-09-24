@@ -285,3 +285,13 @@ was never sent is not reading.
 - ticking 3.6 on unit 421's two edits, which came off wrong letters and not added ones
 
 Not blocking: the loop works 6.4 meanwhile (R64, R65).
+
+## P20 - a ceiling test looks for a countdown that is not in the tree
+
+**Raised by unit 422, 2026-09-24.** `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen`
+fails with *the slot countdown is no longer on the Digital tab*: it looks for an element named
+`TurnRingCountText`, and nothing under `src` carries that name, at entry `bdd0070b` or after
+unit 422. `HowMuchTheApplicationSaysTests` still lists the name with a budget of 3. Unit 422
+changed hover text only and did not run this type at entry, so it cannot say which unit took the
+name away. Whether the countdown should be back on the Digital tab, or the test retired with the
+readout, is a screen question for step 6 or the owner. Not this unit's (§12.6); not blocking.
