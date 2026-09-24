@@ -1,0 +1,5 @@
+unit422 task 1: the inventory (6.4) - WhatEveryControlSaysOnHoverTests, a fact that asserts nothing, builds the main window headless on the CW tab, not connected and then connected to the training radio through ToggleConnectCommand, and prints every pressable control on the CW tab and the band row with its command, its tip as the window resolves it, what the command does and whether an existing tip is true
+
+CW tab 7 of 15 with a tip; band row 18 of 34 not connected, 19 of 34 connected (the link-check mark gains its sentence). Send, Clear, CQ, RST, 73 and Connect carry no tip. The save star has no hover text of its own: with the pointer on it the face says "Roll the scroll wheel over any digit to tune that digit.", which is false of the star. The seven band buttons carry a tip that is true and never says the press tunes.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
