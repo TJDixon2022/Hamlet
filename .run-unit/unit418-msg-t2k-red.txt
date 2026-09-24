@@ -1,0 +1,7 @@
+unit418 task 2: TheKeyingCaptionNamesTheSweepItRanTests, committed red - on 17:37 the keying caption names the range and step KeyingEnvelope sweeps, the seconds it read and what it shares; test only
+
+Red, 2 of 2 failed:
+TheCaptionNamesTheRangeAndStepKeyingEnvelopeSweeps - Assert.Contains() Failure: Sub-string not found; String: "keying     no keying at 575 Hz: 109 rises"...; Not found: "sweep of 300 to 900 Hz in 25 Hz steps"
+TheCaptionSaysWhichSecondsAndWhatItShares - Assert.Contains() Failure: Sub-string not found; Not found: "the 6 seconds the meter last read before "...
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

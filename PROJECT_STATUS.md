@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 3
+TASK: TASK 2 of 3
 WORK_INSTRUCTION: 418 - every sentence on the capture sheet is true of that capture
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T10:26:28-04:00
-NOTE: Trace done over 3 sheets plus saved 004844 - 7 false sentences about the signal found so far, writing the table
+UPDATED: 2026-09-24T10:28:27-04:00
+NOTE: Watching TheKeyingCaptionNamesTheSweepItRanTests red on 17:37
 
 ---
 
