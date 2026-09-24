@@ -1,0 +1,24 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.TheKeyingCaptionNamesTheSweepItRanTests.TheCaptionSaysWhichSecondsAndWhatItShares [1 s]
+  Standard Output Messages:
+ keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+
+
+[xUnit.net 00:00:03.02]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.TheKeyingCaptionNamesTheSweepItRanTests.TheCaptionNamesTheRangeAndStepKeyingEnvelopeSweeps [1 s]
+  Standard Output Messages:
+ keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 3.3181 Seconds
+RC=0 WALL=4s

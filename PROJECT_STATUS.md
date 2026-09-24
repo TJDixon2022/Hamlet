@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 2 of 3
+STATE: COMPLETED
+TASK: TASK 3 of 3
 WORK_INSTRUCTION: 418 - every sentence on the capture sheet is true of that capture
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T10:35:37-04:00
-NOTE: Checking 6.2's tonePeak clause after the fixes
+UPDATED: 2026-09-24T10:54:26-04:00
+NOTE: Unit 418 complete: 30 sheet lines checked, false 12 to 2, about a signal 10 to 0, keying caption now 300 to 900; 6.2 ticked, 6.6 held; 2 items parked, none blocking
 
 ---
 

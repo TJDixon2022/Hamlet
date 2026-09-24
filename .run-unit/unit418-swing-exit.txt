@@ -1,0 +1,43 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSwingIsTheFigureThatHoldsTests.TheTranscriptCellSaysWhatItCovers [5 ms]
+  Standard Output Messages:
+ CQ DE N0CALL K  (the whole session, not this case)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSwingIsTheFigureThatHoldsTests.TheRosterColumnSaysWhatItMeasures [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSwingIsTheFigureThatHoldsTests.TheHeldTonePeakRatesSilenceAboveAReadableStation [10 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347.wav                      tonePeak  32.2 dB
+ unadjudicated/cw-2026-08-20-014854.wav        tonePeak  54.7 dB
+ unadjudicated/cw-2026-08-20-014935.wav        tonePeak  56.8 dB
+ 
+ the recording a callsign comes out of: 32.2 dB; two holding nothing: 54.7 and 56.8 dB
+
+
+[xUnit.net 00:00:13.35]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSwingIsTheFigureThatHoldsTests.TheSwingSeparatesAStationFromAnEmptyBand [2 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347.wav                      swing  91.5 dB
+ cw-2026-08-17-134712.wav                      swing  22.1 dB
+ cw-2026-08-18-004507.wav                      swing  24.8 dB
+ unadjudicated/cw-2026-08-18-003016.wav        swing  21.8 dB
+ unadjudicated/cw-2026-08-18-003126.wav        swing  24.1 dB
+ unadjudicated/cw-2026-08-18-003758.wav        swing  28.7 dB
+ unadjudicated/cw-2026-08-20-014854.wav        swing  17.7 dB
+ unadjudicated/cw-2026-08-20-014935.wav        swing  14.1 dB
+ 
+ stations 21.8 to 91.5 dB, empty 14.1 to 17.7 dB, threshold 20.0
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 13.5993 Seconds
+RC=0 WALL=14s
