@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 1 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 425 - the stray letters the key says were never sent
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T19:19:53-04:00
-NOTE: Task 1: running WhatSeparatesAStrayFromALetter alone over 52 recordings, every single-element letter and its figures
+UPDATED: 2026-09-24T19:43:30-04:00
+NOTE: Unit 425 complete and pushed: the trace found no measure separating the 8 added strays from right, wrong or unkeyed letters, so nothing was built; 165 edits and 17 added unchanged; output.md written
 
 ---
 

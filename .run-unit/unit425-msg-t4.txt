@@ -1,0 +1,6 @@
+unit425 task 4: exit round (3.5 held) - Hamlet.sln builds non-incremental with warnings as errors, 0 warnings; engine 178 of 178; app 276 of 278, the two lost to the dispatcher loop green alone; captures 51 of 51 in 124 s, adjudicated 13 of 13, keyed floors 13 of 13; WhatTheStrayLettersRestOnTests 2 of 2; five of the seven Cw types green, two compiled out as at unit 421; DecisionLogOrderTests red as at entry (P25); transmit files nothing against 7e209cb4, src and data nothing against entry; tasks 2 and 3 built and judged nothing, task 1 naming no separating measure; output.md
+
+Keyed edits 165 -> 165 over 565, added letters 17 -> 17, 3.6 clause two not met this unit,
+3.4's count of units with no kept change now 1.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
