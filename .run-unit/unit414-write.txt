@@ -2,11 +2,11 @@ Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Ha
 A total of 1 test files matched the specified pattern.
 C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
-[xUnit.net 00:00:01.49]   Discovering: Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:01.67]   Discovered:  Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:01.67]   Starting:    Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:01.85]   Finished:    Hamlet.RadioEngine.Tests
-  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.WriteTheSetWhenAsked [155 ms]
+[xUnit.net 00:00:01.54]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.94]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.WriteTheSetWhenAsked [202 ms]
   Standard Output Messages:
  written | cq-12wpm-15db | 502444 bytes
  written | cq-12wpm-5db | 502444 bytes
@@ -17,11 +17,14 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  written | cq-25wpm-15db | 261996 bytes
  written | cq-25wpm-5db | 261996 bytes
  written | cq-25wpm-0db | 261996 bytes
+ written | cq-18wpm-15db-char5 | 378178 bytes
+ written | cq-18wpm-5db-char5 | 378178 bytes
+ written | cq-18wpm-0db-char5 | 378178 bytes
 
 
 
 Test Run Successful.
 Total tests: 1
      Passed: 1
- Total time: 2.1265 Seconds
+ Total time: 2.2300 Seconds
 RC=0 WALL=3s

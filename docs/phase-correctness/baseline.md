@@ -268,3 +268,22 @@ it whole. **At 0 dB the decoder prints nothing at any speed**, 27 edits over 27 
 characters missing and 6 spaces: it goes silent rather than wrong. So a clean CQ is lost
 somewhere between 5 and 0 dB in the passband; this set does not say where, and finding it by
 sweeping the decode would be choosing a level from the decode.
+
+**The five-unit row (task 4).** The same call at 18 wpm and the same three levels, textbook
+in everything but **the character gap, five units** - the spacing unit 413 measured on the
+7.052 MHz sender - so step 3 has an exact key for its own fault. Seeds 20260933 to 20260935.
+Outside every total and never sole evidence, as above.
+
+| case | wpm | char gap | SNR in passband | edits | scored length | key | unsure per named | `Within` edits | decode |
+|---|---|---|---|---|---|---|---|---|---|
+| cq-18wpm-15db-char5 | 18 | 5 units | 15 dB | 15 | 27 | exact | 0 per 21 | 15 | `C Q C Q C Q D E N 0 C A E L N 0 C A L L K` |
+| cq-18wpm-5db-char5 | 18 | 5 units | 5 dB | 21 | 27 | exact | 1 per 25 | 17 | `C Q C Q C Q TEE T ■KTDUUEUE N 0 C A L L K` |
+| cq-18wpm-0db-char5 | 18 | 5 units | 0 dB | 27 | 27 | exact | nothing named | 27 | empty |
+| **wide row** | | | | **63** | **81** | **exact** | **1 per 46** | | |
+
+**What it says.** At 15 dB every letter is right and **every character gap is read as a word
+gap**: 15 edits, 14 of them spaces added and 1 letter added. That is 17:37's fault and the
+locked-on run's, reproduced on a key nobody had to guess. At 5 dB the first `DE N0CALL` is
+lost as well, 21 edits; at 0 dB nothing is printed. The textbook cases at the same speed read
+13 edits at 15 dB and 1 at 5 dB; the five-unit gap reads 15 and 21, and where the textbook
+case's 13 came from one split callsign, the five-unit case's 15 are spread over every word.

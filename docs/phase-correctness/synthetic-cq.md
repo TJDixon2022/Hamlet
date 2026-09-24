@@ -12,7 +12,8 @@ are tabled in `baseline.md` under their own heading, **outside every total, incl
 ## What they are
 
 Nine CQ calls, `CQ CQ CQ DE N0CALL N0CALL K`, at 12, 18 and 25 wpm by 15, 5 and 0 dB in the
-receiver's passband, one fixed seed each, built by `CwFixtureGenerator.Generate` from the
+receiver's passband, and three more at 18 wpm with a five-unit character gap, one fixed seed
+each, built by `CwFixtureGenerator.Generate` from the
 recipes in `SyntheticCq`. **Their keys are exact**: the generator knows what it sent, so
 nobody had to read Morse to write them, and a number scored against one is a measurement and
 not an indication. That is what they add. What they do not:
@@ -26,8 +27,9 @@ not an indication. That is what they add. What they do not:
   [`unit413-trace.md`](unit413-trace.md)). So these cases hand the decoder exactly the
   spacing it assumes when it cannot measure one, and **cannot see the fault step 3 is
   attacking**. A clean read here says nothing about a sender who spaces letters five dits
-  apart, as the 7.052 MHz sender did. The five-unit row, where it exists, is one sender's
-  measured spacing and nobody else's.
+  apart, as the 7.052 MHz sender did. The three five-unit cases (`*-char5`) key that
+  spacing, and it is one sender's measured spacing and nobody else's: their read says
+  nothing about a sender at four units, or at six, or who drifts between them.
 - **The noise is generated, not the band's.** Gaussian noise shaped by three bandpass
   sections to 350-870 Hz, steady from the first sample to the last. The band's noise has
   crashes, carriers, splatter and a floor that moves; none of it is here.

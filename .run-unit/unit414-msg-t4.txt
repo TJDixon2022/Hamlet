@@ -1,0 +1,3 @@
+unit414 task 4: the five-unit row - three synthetic CQ calls at 18 wpm by 15, 5 and 0 dB with the character gap at five units, exact keys; 15 dB reads every letter and every character gap as a word gap, 15 edits over 27, 14 spaces added; 5 dB 21 over 27; 0 dB nothing; the row 63 over 81 against exact keys, the grid unchanged at 102 over 243, the nine grid WAVs rewrote byte-identical; rebuild type 13 of 13; tabled outside every total; all twelve WAVs 4,472,784 bytes
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

@@ -105,6 +105,14 @@ public static class SyntheticCq
             }
         }
 
+        // **THE FIVE-UNIT ROW (task 4): THE CHARACTER GAP UNIT 413 MEASURED ON THE
+        // 7.052 MHz SENDER**, everything else textbook, so step 3 has an exact key
+        // for its own fault. Still never sole evidence.
+        foreach (var snr in Levels)
+        {
+            recipes.Add(Recipe(WideRowWpm, snr, seed++, characterGapUnits: 5));
+        }
+
         return recipes;
     }
 
@@ -228,7 +236,7 @@ public static class SyntheticCq
         text.Append("`docs/phase-correctness/synthetic-cq.md`: the spacing is ");
         text.Append(recipe.CharacterGapMilliseconds / dit == 3
             ? "textbook, the same spacing the decoder\nfalls back to at `CwUnitEstimator.cs` 216, so a clean read here says nothing about a sender\nwho spaces letters five dits apart;"
-            : "textbook but for a character gap of\nfive units, one sender's measured spacing and nobody else's;");
+            : "textbook but for a character gap of\nfive units, one sender's measured spacing and nobody else's, and the decoder's own fallback\nat `CwUnitEstimator.cs` 216 is still textbook;");
         text.Append(" the noise is generated, not the band's; one tone,\n");
         text.Append("no second station; the keying is machine-perfect. **No synthetic case is ever the sole\n");
         text.Append("evidence for keeping a change**, and this one is in no total that 3.2 judges.\n");
