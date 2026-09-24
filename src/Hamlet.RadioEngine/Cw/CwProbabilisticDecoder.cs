@@ -1320,7 +1320,8 @@ public static class CwProbabilisticDecoder
         {
             var isWordGap = character.Pattern.Length == 0;
 
-            if (isWordGap || character.SpanMargin >= CharacterMargin)
+            if (isWordGap
+                || (character.SpanMargin >= CharacterMargin && !IsStrayElement(character)))
             {
                 judged.Add(character);
             }
@@ -1328,6 +1329,25 @@ public static class CwProbabilisticDecoder
 
         return judged;
     }
+
+    /// <summary>
+    /// The raw span a character of one element must stand on to be printed, in
+    /// the units of <see cref="CwProbabilisticCharacter.SpanLogLikelihoodRatio"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE FLOORS' OWN SPAN BAR, AND CHOSEN BEFORE THIS WAS BUILT** (R71,
+    /// HM-DEC-176, work instruction 421). Over the 23 keyed recordings nothing any
+    /// inferred key aligns as right stands under 30.8, and every named character in
+    /// the tree under thirteen is a lone dot.</para>
+    /// <para>**ONE ELEMENT ONLY.** A lone dit or dah is what the path reads off a
+    /// fragment between two other letters, and its per-hop margin is flattered by
+    /// having no element gap to divide by, so <see cref="CharacterMargin"/> passes
+    /// it where the raw figure says there was almost nothing there.</para>
+    /// </remarks>
+    public const double StrayElementSpan = 13.0;
+
+    private static bool IsStrayElement(CwProbabilisticCharacter character)
+        => character.Pattern.Length == 1 && character.SpanLogLikelihoodRatio < StrayElementSpan;
 
     /// <summary>Walk the winning path back and turn it into letters.</summary>
     /// <param name="count">How many hops there were.</param>
