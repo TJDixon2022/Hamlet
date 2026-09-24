@@ -1,0 +1,14 @@
+unit425 task 1: what separates a stray from a letter (3.6's trace) - WhatTheStrayLettersRestOnTests.WhatSeparatesAStrayFromALetter, a fact that asserts nothing, prints every single-element named character on the 23 keyed recordings and the 29 unkeyed capture rows with the key's verdict, raw span, window Gate score, gaps before and after and key-down in units, alone or not, pitch against the sender's and energy against its neighbors'; no measure and no pair separates the 8 added from the right, wrong and unkeyed ones
+
+Read here: 165 edits over 565 against inferred keys, 23 keyed recordings, 52 recordings in all,
+29 with no key. Single-element named characters: added 8, right 62, wrong 31, keyed but
+unscored 145, unkeyed 252; none below the span bar of 13.
+
+Per measure, the number of added letters taken before any other single-element character is on
+the stray side: 0 of 8 on every one of the nine measures. Closest: the gap after, where 5 of the
+8 sit at 1.84 units or less and no right single-element letter does, but 7 wrong, 16 keyed
+unscored and 22 unkeyed ones sit there too. Best pair, raw span with energy: all 8 inside
+with 8 right, 10 wrong, 14 keyed unscored and 74 unkeyed. None of the 8 stands alone between
+word gaps; all 8 sit at 0.99 to 1.11 of their neighbors' energy.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
