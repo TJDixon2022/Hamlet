@@ -193,12 +193,12 @@ says - never the whole suite.
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [ ] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
+- [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
 - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
 - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
 - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
 - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
-- [ ] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
 
 **Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
 

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 3 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 411 - the screen stops saying what is not so
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T21:11:00-04:00
-NOTE: Task 3: regenerating the sidecar lines again after the trim
+UPDATED: 2026-09-23T21:27:02-04:00
+NOTE: Unit 411 complete: the RF gain banner states the read-back it holds, keying and elementHz lines true, tonePeak dropped; 4 contradicting sentences to 1; section 4 raises 2 items
 
 ---
 
