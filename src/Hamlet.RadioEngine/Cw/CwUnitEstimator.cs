@@ -246,6 +246,63 @@ public static class CwUnitEstimator
     }
 
     /// <summary>
+    /// The gap this sender leaves between characters, when the element and
+    /// character heaps can be told apart, whether or not a word heap can.
+    /// </summary>
+    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+    /// <param name="hopMilliseconds">How long one hop lasts.</param>
+    /// <param name="unitMilliseconds">The dit, used only to test the boundary.</param>
+    /// <param name="hysteresisDb">How deep the trigger is.</param>
+    /// <returns>The character centroid in milliseconds, or null.</returns>
+    /// <remarks>
+    /// <para>**THE WORD TROUGH IS WHAT FAILS, AND THIS DOES NOT ASK FOR IT**
+    /// (work instruction 415). Twelve seconds hold a handful of word gaps, so
+    /// <see cref="MeasureGaps"/> refuses most windows at its second trough and
+    /// the path reads the textbook three and seven units; this sender's own
+    /// character gap is near five. The character heap is found in those same
+    /// windows, and it is all the space decision needs.</para>
+    /// <para>**THE BOUNDARY UNDER IT HAS TO LAND WHERE MEASUREGAPS WOULD TAKE
+    /// IT UNMOVED**, 1.3 to 2.6 units. Measured on `cw-2026-08-17-013347`, the
+    /// three heaps otherwise put the element gaps in the middle one at 1.1
+    /// units and every character gap reads as a word gap. That range is the one
+    /// <see cref="MeasureGaps"/> already clips to, so nothing new is chosen.</para>
+    /// <para><see cref="MeasureGaps"/> is not changed and nothing it returns
+    /// moves.</para>
+    /// </remarks>
+    public static double? MeasureCharacterGap(
+        IReadOnlyList<double> envelope,
+        double hopMilliseconds,
+        double unitMilliseconds,
+        double hysteresisDb = HysteresisDb)
+    {
+        ArgumentNullException.ThrowIfNull(envelope);
+
+        if (unitMilliseconds <= 0)
+        {
+            return null;
+        }
+
+        var (_, gaps) = Elements(envelope, hopMilliseconds, hysteresisDb);
+
+        if (gaps.Count < 12)
+        {
+            return null;
+        }
+
+        var centroids = ThreeMeansOnLogs(gaps);
+
+        if (centroids[1] / centroids[0] < 1.5
+            || !IsTrough(gaps, centroids[0], centroids[1]))
+        {
+            return null;
+        }
+
+        var boundary = Math.Sqrt(centroids[0] * centroids[1]) / unitMilliseconds;
+
+        return boundary is >= 1.3 and <= 2.6 ? centroids[1] : null;
+    }
+
+    /// <summary>
     /// True when the geometric mean of two centroids is emptier than either of
     /// them.
     /// </summary>

@@ -56,9 +56,30 @@ public readonly record struct CwProbabilisticResult(
            && (WordsPerMinute <= CwProbabilisticDecoder.SlowestWpm + 1e-9
                || WordsPerMinute >= CwProbabilisticDecoder.FastestWpm - 1e-9);
 
+    /// <summary>
+    /// Every gap the winning path read between two marks of different
+    /// characters, as it read it, before any character was judged.
+    /// </summary>
+    /// <remarks>
+    /// **READ OFF THE PATH, NEVER FED BACK INTO IT** (work instruction 415). The
+    /// stream re-decides from these which gaps it announces as a space, after it
+    /// has settled the letters, so a letter cannot move on account of it.
+    /// </remarks>
+    public IReadOnlyList<CwPathGap> Gaps { get; init; } = Array.Empty<CwPathGap>();
+
     /// <summary>Nothing measured.</summary>
     public static CwProbabilisticResult None { get; }
         = new(0, 0, "", 0, Array.Empty<CwProbabilisticCharacter>());
+}
+
+/// <summary>One gap between characters on the winning path.</summary>
+/// <param name="StartHop">The hop the key went up at, where the letter before it ended.</param>
+/// <param name="EndHop">The hop the next letter's first mark began at.</param>
+/// <param name="IsWordGap">True when the path read it as the gap between words.</param>
+public readonly record struct CwPathGap(int StartHop, int EndHop, bool IsWordGap)
+{
+    /// <summary>How long the gap lasted, in hops.</summary>
+    public int SpanHops => EndHop - StartHop;
 }
 
 /// <summary>One character the decoder read, and where it ended.</summary>
@@ -761,7 +782,10 @@ public static class CwProbabilisticDecoder
         {
             return new CwProbabilisticResult(
                 ratio, bestWpm, string.Concat(bestCharacters.Select(c => c.Text)),
-                toneHz, bestCharacters, insideCharacter);
+                toneHz, bestCharacters, insideCharacter)
+            {
+                Gaps = GapsBetween(bestCharacters),
+            };
         }
 
         if (ratio < Gate)
@@ -789,7 +813,50 @@ public static class CwProbabilisticDecoder
             string.Concat(judged.Select(c => c.Text)),
             toneHz,
             judged,
-            insideCharacter);
+            insideCharacter)
+        {
+            Gaps = GapsBetween(bestCharacters),
+        };
+    }
+
+    /// <summary>Every gap the path read between two letters, and which kind it took.</summary>
+    /// <param name="spelled">What the path spelled, before any letter was judged.</param>
+    /// <returns>The gaps, in order.</returns>
+    /// <remarks>
+    /// <para>**TAKEN FROM WHAT <see cref="Spell"/> ALREADY RETURNS, SO THE PATH IS
+    /// NOT TOUCHED.** A letter's end hop is where the key went up, and its end
+    /// less its span is where its first mark began, so the gap between two
+    /// letters is exact. A word gap's space ends where the next letter starts.
+    /// Marks and key-up segments alternate, so nothing else sits between.</para>
+    /// <para>The gap before the first letter and after the last are left out: the
+    /// window's edge cuts them, and their length is not the sender's.</para>
+    /// </remarks>
+    private static IReadOnlyList<CwPathGap> GapsBetween(
+        IReadOnlyList<CwProbabilisticCharacter> spelled)
+    {
+        var gaps = new List<CwPathGap>();
+        int? previousEnd = null;
+        var word = false;
+
+        foreach (var character in spelled)
+        {
+            if (character.Pattern.Length == 0)
+            {
+                word = true;
+                continue;
+            }
+
+            if (previousEnd is { } start)
+            {
+                gaps.Add(new CwPathGap(
+                    start, character.EndHop - character.SpanHops, word));
+            }
+
+            previousEnd = character.EndHop;
+            word = false;
+        }
+
+        return gaps;
     }
 
     /// <summary>
