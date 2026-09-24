@@ -11770,8 +11770,23 @@ public partial class MainWindowViewModel : ObservableObject
             // nearly clipping while the sidecar said there was headroom.
             $"inputPeak  {AudioTap.PeakOf(audio):0.0} dBFS  (over the whole recording)",
             $"meterPeak  {report.Level.PeakDb:0.0} dBFS  (the moment it was kept)",
-            $"inputFloor {report.Level.FloorDb:0.0} dBFS",
-            $"clipping   {report.Clipping}",
+            // **A BARE NUMBER BESIDE A RECORDING CLAIMS TO BE ABOUT THE
+            // RECORDING, AND THESE TWO ARE NOT** (work instruction 418). Both come
+            // from the level meter at the press: the floor is its running estimate
+            // carried across everything heard, and the flag is its last fifth of a
+            // second. On `cw-2026-08-17-013347` the floor read -32.1 where that
+            // recording's own quietest fifth of a second is -75.4 and its median
+            // -19.0. They are said as what they are rather than recomputed.
+            $"inputFloor {report.Level.FloorDb:0.0} dBFS  (the level meter's running floor "
+                + "at the moment it was kept, carried across everything heard, falling "
+                + "quickly to a quiet stretch and rising slowly to a loud one; not a figure "
+                + "about this recording alone)",
+            string.Format(
+                CultureInfo.InvariantCulture,
+                "clipping   {0}  (over the {1:0.0} seconds the level meter last measured when "
+                + "it was kept, the stretch meterPeak is over; not the whole recording)",
+                report.Clipping,
+                AudioTap.LevelSeconds),
             // **TWO PITCHES ON ONE SHEET, AND THEY ARE NOT THE SAME
             // MEASUREMENT** (HM-DEC-091). This one and the `keying` line below
             // differ by up to 250 Hz on the same file, which reads as two
@@ -11822,7 +11837,7 @@ public partial class MainWindowViewModel : ObservableObject
             // **TASK 5 OF WORK INSTRUCTION 034.** The conjunction nothing on this
             // sheet could state: characters on screen from a pitch the survey
             // never admitted keying at.
-            $"unkeyed    {EmittedWithoutKeying(report)}",
+            $"unkeyed    {EmittedWithoutKeying(report, DecoderCountsCover())}",
 
             // **AND THE RUNNING TOTALS, WHICH NOW SAY WHAT THEY COVER.** They
             // were always cumulative from the moment listening started; what they
@@ -11831,9 +11846,9 @@ public partial class MainWindowViewModel : ObservableObject
             // band, and nothing beside it said the number was not about the
             // thirty seconds it sat next to.
             $"elements   {report.ElementsSeen} seen, {report.ElementsResolved} resolved"
-                + $"  ({CountsCover()})",
+                + $"  ({DecoderCountsCover()})",
             $"characters {report.CharactersEmitted} emitted, "
-                + $"{report.CharactersUnsure} unsure  ({CountsCover()})",
+                + $"{report.CharactersUnsure} unsure  ({DecoderCountsCover()})",
 
             // **THE SPEED THE DECODER WAS TRACKING**, which is the first thing
             // anybody asks of a recording Hamlet could not read. Unread stays
@@ -11968,7 +11983,7 @@ public partial class MainWindowViewModel : ObservableObject
             + $"{report.ElementsSeen - _lastCaptureElements} elements  "
             + (_hasPreviousCapture
                 ? "(since the previous capture)"
-                : $"({CountsCover()}; this is the first capture of the session)"));
+                : $"({DecoderCountsCover()}; this is the first capture of the session)"));
 
         lines.Add("");
 
@@ -12358,13 +12373,19 @@ public partial class MainWindowViewModel : ObservableObject
         // is not a competitor — nobody has judged it to be keying — and saying so
         // is the difference between "the frequency is clear" and "nothing here
         // passed the bar that would have made it a competitor" (§0.0).
+        // **IT WAS NEITHER THE LOUDEST THING NOR KEYED** (work instruction 418).
+        // `PresentFraction` is how much of the time the tone stood above the band
+        // at all, and the line called it keyed in the same breath as saying nothing
+        // judged it a station. And where the survey has admitted a station the
+        // field is the loudest thing that is *not* keying, while with nothing
+        // admitted it can be the loudest thing overall; the report does not say
+        // which, so the line says only that the survey names it.
         if (report.Interference is { } loudest)
         {
-            return "none admitted, and the survey is not silent: the loudest "
-                + $"thing in the band is at {loudest.ToneHz:0} Hz, "
-                + $"{loudest.LiftDb:+0.0;-0.0} dB over the band floor, keyed "
-                + $"{loudest.PresentFraction * 100:0}% of the time. Nothing has "
-                + "judged it to be a station";
+            return "none admitted, and the survey is not silent: it names a tone "
+                + $"at {loudest.ToneHz:0} Hz, {loudest.LiftDb:+0.0;-0.0} dB over the "
+                + $"band floor and above it {loudest.PresentFraction * 100:0}% of the "
+                + "time. Nothing has judged it to be a station";
         }
 
         return "none found, and the survey found nothing else either — which is "
@@ -12583,10 +12604,15 @@ public partial class MainWindowViewModel : ObservableObject
         // 2026-08-25's and never decodes the band at every candidate pitch, so the
         // ranked sentence of Tim's ruling of 2026-08-28 has nothing to report
         // until step 4 judges the ranking on numbers.
+        // **A BIN CENTRE, NOT AN INTERPOLATION** (work instruction 418). The survey
+        // admits keying at `_binHz[bin]` (CwToneSurvey.cs) and the tracker reports
+        // that number unchanged; 17:37 reads 600.000 and 013347 625.000, both on
+        // the five hertz grid.
         if (report.PitchWasMeasured)
         {
             return $"{report.ToneHz:0.0} Hz  (measured from the keying the "
-                + "survey admitted, interpolated between bins)";
+                + "survey admitted: the centre of the survey bin it was admitted in, "
+                + "not interpolated between bins)";
         }
 
         // **"THE MIDDLE OF THE BANK" STOPPED BEING TRUE ON 2026-08-27** and this
@@ -12620,18 +12646,30 @@ public partial class MainWindowViewModel : ObservableObject
     /// measured pitch are an ordinary decode. Characters from a pitch the survey
     /// never admitted keying at are the case worth catching, and until now the
     /// sheet recorded both halves and never the pair.</para>
+    /// <para>**THE COUNT IS THE EVENING'S AND THE PITCH IS THIS MOMENT'S** (work
+    /// instruction 418). `cw-2026-08-28-005051` said 252 characters reached the
+    /// screen from a pitch chosen by the loudest bin while the same sheet counted 29
+    /// in its own file: the count runs from when the decoder started and the pitch
+    /// state is only the one at the press. The line now says both halves as what
+    /// they are.</para>
     /// </remarks>
-    private static string EmittedWithoutKeying(CwDecodeReport report)
+    /// <param name="report">The decoder's reading at the moment of the press.</param>
+    /// <param name="covers">What the decoder's running counts cover, in words.</param>
+    /// <returns>The line.</returns>
+    private static string EmittedWithoutKeying(CwDecodeReport report, string covers)
     {
         if (report.CharactersEmitted == 0)
         {
             return "nothing emitted";
         }
 
+        var count = $"{report.CharactersEmitted} characters reached the screen {covers}, "
+            + "from whatever pitch was being followed at the time";
+
         if (report.PitchWasMeasured)
         {
-            return $"no  ({report.CharactersEmitted} characters, and the survey "
-                + "admitted keying at this pitch)";
+            return "no  (the pitch being followed now is one the survey admitted "
+                + $"keying at; {count})";
         }
 
         var how = report.PitchChoice switch
@@ -12643,9 +12681,8 @@ public partial class MainWindowViewModel : ObservableObject
             _ => "the middle of the bank, which nothing chose",
         };
 
-        return $"YES  ({report.CharactersEmitted} characters reached the screen "
-            + $"from a pitch chosen by {how}, with no keying admitted here. "
-            + "This is the sheet to send back)";
+        return $"YES  (the pitch being followed now was chosen by {how}, with no "
+            + $"keying admitted here; {count}. This is the sheet to send back)";
     }
 
     /// <summary>
@@ -12739,12 +12776,18 @@ public partial class MainWindowViewModel : ObservableObject
                       + "than Hamlet can look)"
                     : "";
 
+        // **A GATE OF 1.40 PRINTED AS 1, READ 871 MS AFTER THE PRESS** (work
+        // instruction 418). The gate was rounded to a whole number, so a ratio of
+        // 1.2 would have read as clearing it; both now carry two decimals. And the
+        // reading is taken here, when the sheet is composed, which since unit 417
+        // is after the press has waited for the tone measurement while the
+        // decoder reads its window again every half second.
         return string.Format(
             CultureInfo.InvariantCulture,
-            "{0:0} WPM won out of {1} to {2}, {3:0.0} better than silence per "
-            + "hop against a gate of {4:0}{5}  (this is the last {6:0} second "
-            + "window alone, at the moment of the press, and not the whole "
-            + "recording)",
+            "{0:0} WPM won out of {1} to {2}, {3:0.00} better than silence per "
+            + "hop against a gate of {4:0.00}{5}  (this is the last {6:0} second "
+            + "window alone, as it stood when this sheet was written just after the "
+            + "recording was saved, and not the whole recording)",
             reading.WordsPerMinute,
             CwProbabilisticDecoder.SlowestWpm,
             CwProbabilisticDecoder.FastestWpm,
@@ -12939,6 +12982,21 @@ public partial class MainWindowViewModel : ObservableObject
         return "since the decoder started listening, "
                + SpokenAge(DateTime.UtcNow - started);
     }
+
+    /// <summary>What the decoder's running counts cover, in words.</summary>
+    /// <returns>The interval, as a clause.</returns>
+    /// <remarks>
+    /// **A CLEAR MOVES THE TRANSCRIPT AND NOT THE COUNTS** (work instruction 418).
+    /// <see cref="ClearTerminal"/> resets the transcript and nothing else, so the
+    /// element and character counts run on from when the decoder started. They
+    /// used to take <see cref="CountsCover"/>, which is the transcript's, and
+    /// `cw-2026-08-28-004844` said 245 elements since a clear 39 seconds before the
+    /// press while the tap had heard 92.
+    /// </remarks>
+    private string DecoderCountsCover()
+        => _decoderStartedUtc is { } started
+            ? "since the decoder started listening, " + SpokenAge(DateTime.UtcNow - started)
+            : "since the decoder started listening";
 
     /// <summary>When the operator last cleared the transcript, if he has.</summary>
     private DateTime? _clearedUtc;

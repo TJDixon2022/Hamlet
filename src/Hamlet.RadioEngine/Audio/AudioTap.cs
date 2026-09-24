@@ -79,9 +79,10 @@ public sealed class AudioTap
     /// <remarks>
     /// A fifth of a second, which is a few Morse elements at any speed. Short
     /// enough to move when the signal does, long enough that a bar drawn from it
-    /// does not flicker.
+    /// does not flicker. Public so the capture sheet can say what its clipping
+    /// flag covers from this number rather than a copy of it (work instruction 418).
     /// </remarks>
-    private const double LevelSeconds = 0.2;
+    public const double LevelSeconds = 0.2;
 
     /// <summary>How fast the floor gives way to a quieter band.</summary>
     private const double FloorFallAlpha = 0.25;
