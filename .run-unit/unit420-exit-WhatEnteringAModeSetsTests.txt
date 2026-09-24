@@ -1,0 +1,141 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.36]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatEnteringAModeSetsTests.PrintTheTable [95 ms]
+  Standard Output Messages:
+ modes the conditions file speaks for: CW, CW DX, FT4, FT8, QRP
+   FT4 AGC: confirmed false, stated and not written (asks slow, confirm tim)
+   FT8 AGC: confirmed false, stated and not written (asks slow, confirm tim)
+ 
+ === CW at 14.050 MHz
+ the app's block here: CW main street (CW, 14025000-14059999), which states 9 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   manual notch    off [0]                                     off         none        AlreadyRight       off       setup                                   no
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   AGC             fast [1]                                    MID         1           Changed            FAST      setup+advice                            no
+   RF gain         100% [255]                                  100%        none        AlreadyRight       100%      setup+advice                            no
+   squelch         open [0]                                    0%          none        AlreadyRight       0%        setup+observations                      no
+   attenuator      off unless the front end is overloading...  off         none        AlreadyRight       off       setup+observations+panel                no
+   preamp          preamp 1 above 40 m, off at 40 m and be...  off         1           Changed            preamp 1  setup+advice+observations+panel         no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === CW at 7.030 MHz
+ the app's block here: QRP watering hole (QRP, 7030000-7039999), which states 9 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   manual notch    off [0]                                     off         none        AlreadyRight       off       setup                                   no
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   AGC             fast [1]                                    MID         1           Changed            FAST      setup+advice                            no
+   RF gain         100% [255]                                  100%        none        AlreadyRight       100%      setup+advice                            no
+   squelch         open [0]                                    0%          none        AlreadyRight       0%        setup+observations                      no
+   attenuator      off unless the front end is overloading...  off         none        AlreadyRight       off       setup+observations+panel                no
+   preamp          preamp 1 above 40 m, off at 40 m and be...  off         none        AlreadyRight       off       setup+advice+observations+panel         no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === CW at 14.050 MHz, the front end reading overloading
+ the app's block here: CW main street (CW, 14025000-14059999), which states 9 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   manual notch    off [0]                                     off         none        AlreadyRight       off       setup                                   no
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   AGC             fast [1]                                    MID         1           Changed            FAST      setup+advice                            no
+   RF gain         100% [255]                                  100%        none        AlreadyRight       100%      setup+advice                            no
+   squelch         open [0]                                    0%          none        AlreadyRight       0%        setup+observations                      no
+   attenuator      off unless the front end is overloading...  off         none        NotConfirmed       off       setup+observations+panel                no
+   preamp          preamp 1 above 40 m, off at 40 m and be...  off         1           Changed            preamp 1  setup+advice+observations+panel         no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now overloading, the mode owns the preamp and the attenuator, so it states the overload and names no knob
+ 
+ === FT8 at 14.074 MHz
+ the app's block here: FT8 city (FT8, 14074000-14076999), which states 5 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   AGC             slow [3, unconfirmed]                       MID         none        SpokenOnly         MID       setup+advice                            no
+   scope span      3 kHz across [-]                            -           none        SpokenOnly         -         setup                                   no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === FT4 at 14.080 MHz
+ the app's block here: FT4 sprint (FT4, 14080000-14082999), which states 5 conditions
+   control         asks                                        radio said  write sent  filed as           now       mentioned by                            asks him to change it after
+   noise blanker   off [0]                                     on          0           Changed            off       setup+advice+observations+obstructions  no
+   noise reduction off [0]                                     off         none        AlreadyRight       off       setup+advice+observations+obstructions  no
+   auto notch      off [0]                                     off         none        AlreadyRight       off       setup+advice+observations               no
+   AGC             slow [3, unconfirmed]                       MID         none        SpokenOnly         MID       setup+advice                            no
+   scope span      3 kHz across [-]                            -           none        SpokenOnly         -         setup                                   no
+   panel (MainWindowViewModel.OverflowAdviceFor): speaks on preamp and attenuator only while the overflow reads overloading; overflow now not overloading, so it says nothing
+ 
+ === already right, CW row at 14.050 MHz: fields written when the radio was already right: 0
+ 
+ === already right, CW row at 7.030 MHz: fields written when the radio was already right: 0
+ 
+ === the hand at 14.050 MHz, preamp off before the first tune-in
+   first tune-in filed the preamp Changed; memory holds preamp: 1
+   he sets it off by hand; second tune-in filed LeftToTheOperator, wrote preamp nothing, radio now preamp 0
+ 
+ === the hand at 14.050 MHz, preamp already 1 before the first tune-in
+   first tune-in filed the preamp AlreadyRight; memory holds preamp: 1
+   he sets it off by hand; second tune-in filed LeftToTheOperator, wrote preamp nothing, radio now preamp 0
+ 
+ === work instruction 420: entering Morse in each CW-family block, the radio at preamp 1, AGC mid, noise blanker on, RF gain at full
+ 
+ --- 7.030 MHz, 40 m
+   the app's block here: QRP watering hole (QRP, 7030000-7039999), which states 9 conditions
+   control         this block asks                             radio said  written   filed as           now       owner
+   auto notch      off [0]                                     off         none      AlreadyRight       off       setup
+   manual notch    off [0]                                     off         none      AlreadyRight       off       setup
+   noise blanker   off [0]                                     on          0         Changed            off       setup
+   noise reduction off [0]                                     off         none      AlreadyRight       off       setup
+   AGC             fast [1]                                    MID         1         Changed            FAST      setup
+   RF gain         100% [255]                                  100%        none      AlreadyRight       100%      setup
+   squelch         open [0]                                    0%          none      AlreadyRight       0%        setup
+   attenuator      off unless the front end is overloading...  off         none      AlreadyRight       off       setup
+   preamp          preamp 1 above 40 m, off at 40 m and be...  preamp 1    0         Changed            off       setup
+ 
+ --- 14.010 MHz, 20 m
+   the app's block here: CW fast lane (CW DX, 14000000-14024999), which states 9 conditions
+   control         this block asks                             radio said  written   filed as           now       owner
+   auto notch      off [0]                                     off         none      AlreadyRight       off       setup
+   manual notch    off [0]                                     off         none      AlreadyRight       off       setup
+   noise blanker   off [0]                                     on          0         Changed            off       setup
+   noise reduction off [0]                                     off         none      AlreadyRight       off       setup
+   AGC             fast [1]                                    MID         1         Changed            FAST      setup
+   RF gain         100% [255]                                  100%        none      AlreadyRight       100%      setup
+   squelch         open [0]                                    0%          none      AlreadyRight       0%        setup
+   attenuator      off unless the front end is overloading...  off         none      AlreadyRight       off       setup
+   preamp          preamp 1 above 40 m, off at 40 m and be...  preamp 1    none      AlreadyRight       preamp 1  setup
+ 
+ --- 14.050 MHz, 20 m
+   the app's block here: CW main street (CW, 14025000-14059999), which states 9 conditions
+   control         this block asks                             radio said  written   filed as           now       owner
+   auto notch      off [0]                                     off         none      AlreadyRight       off       setup
+   manual notch    off [0]                                     off         none      AlreadyRight       off       setup
+   noise blanker   off [0]                                     on          0         Changed            off       setup
+   noise reduction off [0]                                     off         none      AlreadyRight       off       setup
+   AGC             fast [1]                                    MID         1         Changed            FAST      setup
+   RF gain         100% [255]                                  100%        none      AlreadyRight       100%      setup
+   squelch         open [0]                                    0%          none      AlreadyRight       0%        setup
+   attenuator      off unless the front end is overloading...  off         none      AlreadyRight       off       setup
+   preamp          preamp 1 above 40 m, off at 40 m and be...  preamp 1    none      AlreadyRight       preamp 1  setup
+ 
+ === CW-family blocks that state receiver conditions: 20 of 20
+   CW DX  4 of 4
+   CW     9 of 9
+   QRP    7 of 7
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 0.6454 Seconds
+RC=0 WALL=1s

@@ -1,0 +1,59 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.30]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.TheAttenuatorAndThePreampAreRulesNotConstants [47 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.EveryStatedRowCarriesItsReason [3 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.EveryOwnedSettingCarriesItsCitation [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.MorseStatesWhatMorseNeeds [1 ms]
+  Standard Output Messages:
+ auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.WhatIsNotOwnedStaysOffTheList [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.EveryModeAnswersForEverySettingTests.TheCoverageTableIsReported [1 ms]
+  Standard Output Messages:
+   block            | stated | deferred | absent
+   -----------------|--------|----------|-------
+   CW DX            |      9 |        0 |      3
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+   CW               |      9 |        0 |      3
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+   QRP              |      9 |        0 |      3
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+   FT8              |      3 |        1 |      8
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+       absent: manual notch
+       absent: preamp
+       absent: attenuator
+       absent: RF gain
+       absent: squelch
+   FT4              |      3 |        1 |      8
+       absent: mode and data flag
+       absent: filter slot
+       absent: filter width
+       absent: manual notch
+       absent: preamp
+       absent: attenuator
+       absent: RF gain
+       absent: squelch
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 0.5735 Seconds
+RC=0 WALL=1s

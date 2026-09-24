@@ -1,0 +1,77 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.31]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.WhichPathsPutNarrationOnTheBarTests.EveryModesRowsAreCountedAndComposed [19 ms]
+  Standard Output Messages:
+ CW      9 rows    884 characters
+ CW DX   9 rows    884 characters
+ FT4     4 rows    448 characters
+ FT8     4 rows    448 characters
+ QRP     9 rows    884 characters
+ 
+ FT8 composes 448 characters
+
+
+  Passed Hamlet.App.Tests.Views.WhichPathsPutNarrationOnTheBarTests.EverythingTheDigitalTabDraws [661 ms]
+  Standard Output Messages:
+ 1274 characters in 72 blocks
+ 
+   235  nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.
+   151  Nothing addressed to you yet. Anything a station sends to your callsign lands here, and it stays out of the list on the left so it can never be buried.
+   117  nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+    76  Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)
+    45  no spots saved yet - press ☆ to keep this one
+    42  scroll wheel over a digit tunes that digit
+    38  clock is 1.11 s slow, checked just now
+    35  214130 UTC · 1 shown · newest first
+    28  Training radio (no hardware)
+    28  CW main street · 7.000–7.125
+    24  keep the last 30 seconds
+    23  Pick a port and connect
+    22  where the sun is · you
+    21  no level measured yet
+    20  The band's the thing
+    20  Morse · yours to use
+
+
+  Passed Hamlet.App.Tests.Views.WhichPathsPutNarrationOnTheBarTests.TheLinkCheckLineIsLongerThanAnythingUnit282Moved [3 ms]
+  Standard Output Messages:
+   102  radio announces       Your radio tells Hamlet the moment you touch the dial, so what you see here is where you actually are.
+ 
+   304  radio does not announceYour radio is not announcing its own changes, so Hamlet asks it where it is several times a second instead. That keeps the screen honest and it costs a little of the cable. Turning CI-V Transceive on at the radio would let it simply say so, which is quicker and quieter, and it is your setting to change.
+ 
+    94  nothing heard yet     Hamlet has not heard where the radio is yet, so the frequency is blank rather than guessed at.
+ 
+ longest branch: radio does not announce, 304
+
+
+  Passed Hamlet.App.Tests.Views.WhichPathsPutNarrationOnTheBarTests.AnFt8AdmissionStillSpeaksOnTheDigitalTab [63 ms]
+  Standard Output Messages:
+ the bar draws : I could not read the noise reduction, so I have not touched it.
+
+
+  Passed Hamlet.App.Tests.Views.WhichPathsPutNarrationOnTheBarTests.AnFt8TuneInPutsNothingOnTheDigitalTabsBar [81 ms]
+  Standard Output Messages:
+ the FT8 paragraph : 448 characters
+ the bar draws     : []
+ the mark holds    : 455 characters
+
+
+  Passed Hamlet.App.Tests.Views.WhichPathsPutNarrationOnTheBarTests.EveryTabDrawsTheOneStatusBar [209 ms]
+  Standard Output Messages:
+ CW      1 status bar(s), 0 of them inside a workspace
+ Digital 1 status bar(s), 0 of them inside a workspace
+ Voice   1 status bar(s), 0 of them inside a workspace
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 1.5996 Seconds
+RC=0 WALL=2s

@@ -1,0 +1,29 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 42, high: 0, low: 66) [5 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 255, high: 2, low: 85) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 128, high: 1, low: 40) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.ALevelIsWrittenAsBcd(level: 0, high: 0, low: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.NoReceiveSideWriteCanKeyTheTransmitter [3 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.WhatCouldNotBeReadIsSaidAndNotActedOn [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.AConfirmedWriteSaysWhatItWasAndWhatItIs [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.AnUndoWithNoPriorValueSaysSoRatherThanGuessing [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheWriteOnlySettingIsNotInTheTable [< 1 ms]
+[xUnit.net 00:00:00.29]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.AnUnconfirmedWriteSaysSo [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheAgcWriteCanSayOff [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.APartlyReadRadioStillListsEverything [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.WhatOthersHearIsItsOwnTier [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheListComesFromLiveState [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.TheAdviceNeverScoldsOrDiagnoses [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.EveryWriteCarriesARealPage [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigWriteTests.WhatIsAlreadyRightStaysVisibleAndSaysSo [< 1 ms]
+
+Test Run Successful.
+Total tests: 17
+     Passed: 17
+ Total time: 0.5615 Seconds
