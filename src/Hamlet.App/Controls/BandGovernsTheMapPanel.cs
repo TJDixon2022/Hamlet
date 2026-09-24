@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.VisualTree;
 
 namespace Hamlet.App.Controls;
 
@@ -57,11 +61,74 @@ public sealed class BandGovernsTheMapPanel : Panel
     /// </remarks>
     public const double CardFloor = 400;
 
+    /// <summary>
+    /// **A LINE OF THE CARD THAT IS DRAWN BUT DOES NOT DECIDE WHERE THE PANELS STAND** (work
+    /// instruction 423, step 6 criterion 6.3).
+    /// </summary>
+    /// <remarks>
+    /// <para>**SET ON THE PRIVILEGE PANEL'S OUTSIDE-PRIVILEGES LINES**: the reassurance, the upgrade
+    /// row and its ladder, which are drawn only where his license does not reach. Measured at unit 423
+    /// task 1, a General operator tuned from 14.050 to 14.010 MHz: those lines made the card 22 px
+    /// taller at 1400 x 1040, both fit questions below answered no, and the map left the band's left
+    /// edge - the card jumped 407 px left and the map 562 px right - and at 1920 x 1040 the layout
+    /// never settled. Tim saw it at the radio (R62).</para>
+    /// <para>**NOTHING IS HIDDEN.** A line marked here is still measured, arranged and drawn in the
+    /// card, which grows the row by its height as before, up to the top row's 300 px cap and scrolling
+    /// inside it (§0.5). What it no longer does is move the map: the fit questions ask about the card
+    /// as the operator's own tune cannot change it. Every line drawn inside his privileges still
+    /// counts, so every arrangement inside them is unchanged.</para>
+    /// </remarks>
+    public static readonly AttachedProperty<bool> OutsideTheFitProperty =
+        AvaloniaProperty.RegisterAttached<BandGovernsTheMapPanel, Control, bool>("OutsideTheFit");
+
+    /// <summary>
+    /// **THE ARRANGEMENT IS HELD ACROSS A CHANGE OF THIS VALUE** - the window binds the privilege
+    /// panel's tone (work instruction 423, step 6 criterion 6.3).
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHY A HOLD AS WELL AS <see cref="OutsideTheFitProperty"/>.** The verdict itself is
+    /// longer outside his privileges - *listen all you like, but don't transmit* against *yours to
+    /// use* - and it is a line drawn inside them too, so it cannot leave the fit without moving every
+    /// arrangement inside them. Measured at unit 423 task 3 with the three lines left out: at 1400 x
+    /// 1040 the verdict took a third line in the 170 px beside the best bet, the card stood 10 px over
+    /// the row, and the map still left the band's left edge for 327 x 178 beside the card.</para>
+    /// <para>**SO WHERE ONLY THIS VALUE HAS CHANGED, THE PANELS STAY WHERE THEY STOOD**: the same
+    /// available width, the same rig face and the same pills row as when the arrangement was decided,
+    /// and a different tone, is his tune across a privilege edge, and the map's height, its place and
+    /// the card's slot are the ones decided a moment before. The card's words wrap in that slot and
+    /// grow the row as they always have, up to the top row's 300 px cap. **Any other change decides
+    /// afresh**, exactly as before - a resize, the rig face, the pills, or the card's words under an
+    /// unchanged tone, such as a mode pressed - so every arrangement inside his privileges is the one
+    /// it was.</para>
+    /// </remarks>
+    public static readonly StyledProperty<object?> HeldAcrossProperty =
+        AvaloniaProperty.Register<BandGovernsTheMapPanel, object?>(nameof(HeldAcross));
+
     private double _mapHeight = MapFloor;
 
     private double _pillsReach;
 
     private bool _atTheLeftEdge;
+
+    private bool _decided;
+
+    private object? _decidedUnder;
+
+    private (double Width, double Row, double Rig, double Need, double Reach) _decidedFor;
+
+    /// <summary>The value the arrangement is held across; see <see cref="HeldAcrossProperty"/>.</summary>
+    /// <remarks>
+    /// **IT DOES NOT ASK FOR A MEASURE OF ITS OWN** (unit 423 task 3, measured). Registered as
+    /// affecting measure, this panel was measured before the card's changed lines were, the card
+    /// answered with its height from before the tune, and at 1400 x 1040 the map came back from
+    /// 14.010 MHz to 327 x 178 beside the card instead of 393 x 214 at the band's left edge. The
+    /// card's own lines ask for the measure when the words change, and by then they are measured.
+    /// </remarks>
+    public object? HeldAcross
+    {
+        get => GetValue(HeldAcrossProperty);
+        set => SetValue(HeldAcrossProperty, value);
+    }
 
     /// <summary>The height the map was last given, for a test and the report to read.</summary>
     public double MapHeight => _mapHeight;
@@ -88,6 +155,16 @@ public sealed class BandGovernsTheMapPanel : Panel
     /// </remarks>
     public Control? Pills { get; set; }
 
+    /// <summary>Reads <see cref="OutsideTheFitProperty"/>.</summary>
+    /// <param name="control">The line.</param>
+    /// <returns>True where the line does not decide where the panels stand.</returns>
+    public static bool GetOutsideTheFit(Control control) => control.GetValue(OutsideTheFitProperty);
+
+    /// <summary>Writes <see cref="OutsideTheFitProperty"/>.</summary>
+    /// <param name="control">The line.</param>
+    /// <param name="value">True where the line does not decide where the panels stand.</param>
+    public static void SetOutsideTheFit(Control control, bool value) => control.SetValue(OutsideTheFitProperty, value);
+
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
     {
@@ -105,9 +182,37 @@ public sealed class BandGovernsTheMapPanel : Panel
         var rowHeight = rig.DesiredSize.Height;
         var width = availableSize.Width;
 
+        // The privilege panel's outside-privileges lines, which the fit questions leave out.
+        var outside = card.GetVisualDescendants().OfType<Control>().Where(GetOutsideTheFit).ToList();
+
+        // **THE CARD AS IT IS NOW, NOT AS IT WAS LAST MEASURED** (unit 423 task 3, measured). The rig
+        // face's new digits can have this panel measured before the card's changed lines are, and a
+        // card measured again at the width it last had answers from its cache: tuned from 14.010 back
+        // to 14.050 MHz at 1400 x 1040 it answered with the outside-privileges height, the map left
+        // the band's left edge on a card that fitted, and nothing asked again. So every line waiting
+        // to be measured marks the way up to the card as waiting too.
+        foreach (var waiting in card.GetVisualDescendants().OfType<Layoutable>().Where(l => !l.IsMeasureValid).ToList())
+        {
+            for (var up = waiting.GetVisualParent(); up is Layoutable above && !ReferenceEquals(above, this); up = up.GetVisualParent())
+            {
+                above.InvalidateMeasure();
+            }
+        }
+
+        var room = Room(width, rig, rowHeight);
+
+        if (!double.IsInfinity(width) && _decided && !Equals(HeldAcross, _decidedUnder) && room == _decidedFor)
+        {
+            return Held(width, card, map, rig, rowHeight);
+        }
+
         if (!double.IsInfinity(width) && Pills is { } pills && AtTheLeftEdge(pills))
         {
-            return new Size(width, rowHeight);
+            Decided(room);
+
+            // A card taller than the row here stands over it by its outside-privileges lines alone,
+            // and the row grows by them rather than scrolling them away.
+            return new Size(width, card.DesiredSize.Height > rowHeight + 0.5 ? card.DesiredSize.Height : rowHeight);
         }
 
         PlacePills(0);
@@ -155,6 +260,7 @@ public sealed class BandGovernsTheMapPanel : Panel
         }
 
         _mapHeight = high;
+        Decided(room);
 
         // The last measure of each child is the one it is arranged at.
         map.Measure(new Size(double.PositiveInfinity, _mapHeight));
@@ -177,7 +283,7 @@ public sealed class BandGovernsTheMapPanel : Panel
 
             card.Measure(new Size(slot, double.PositiveInfinity));
 
-            return card.DesiredSize.Height <= rowHeight + 0.5;
+            return FitHeight(card, outside) <= rowHeight + 0.5;
         }
 
         // **THE MAP AT THE BAND'S LEFT EDGE, IF BOTH NEIGHBOURS STILL FIT** (work instruction 389
@@ -207,7 +313,7 @@ public sealed class BandGovernsTheMapPanel : Panel
 
             card.Measure(new Size(slot, double.PositiveInfinity));
 
-            if (card.DesiredSize.Height > rowHeight + 0.5)
+            if (FitHeight(card, outside) > rowHeight + 0.5)
             {
                 return false;
             }
@@ -219,6 +325,59 @@ public sealed class BandGovernsTheMapPanel : Panel
 
             return true;
         }
+    }
+
+    /// <summary>
+    /// What the arrangement is decided for: the width, the rig face and the pills row, each to a
+    /// tenth of a pixel. The card is not in it, because the card is what is being placed.
+    /// </summary>
+    private (double Width, double Row, double Rig, double Need, double Reach) Room(double width, Control rig, double rowHeight)
+    {
+        var need = 0.0;
+        var reach = 0.0;
+
+        if (Pills is { } pills)
+        {
+            pills.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            need = pills.DesiredSize.Width - pills.Margin.Left - pills.Margin.Right;
+            reach = pills.DesiredSize.Height - pills.Margin.Top;
+        }
+
+        return (Tenth(width), Tenth(rowHeight), Tenth(rig.DesiredSize.Width), Tenth(need), Tenth(reach));
+
+        static double Tenth(double value) => double.IsInfinity(value) ? value : Math.Round(value, 1);
+    }
+
+    /// <summary>Records that the arrangement was decided afresh, for what room and under what value.</summary>
+    private void Decided((double Width, double Row, double Rig, double Need, double Reach) room)
+    {
+        _decided = true;
+        _decidedUnder = HeldAcross;
+        _decidedFor = room;
+    }
+
+    /// <summary>
+    /// **THE ARRANGEMENT DECIDED A MOMENT BEFORE**, measured again as it stood: the map at the height
+    /// it was given, the card in the slot that leaves, the pills where they were.
+    /// </summary>
+    private Size Held(double width, Control card, Control map, Control rig, double rowHeight)
+    {
+        map.Measure(new Size(double.PositiveInfinity, _mapHeight));
+
+        if (_atTheLeftEdge)
+        {
+            card.Measure(new Size(Math.Max(0, width - map.DesiredSize.Width - rig.DesiredSize.Width), double.PositiveInfinity));
+            PlacePills(map.DesiredSize.Width);
+
+            return new Size(width, card.DesiredSize.Height > rowHeight + 0.5 ? card.DesiredSize.Height : rowHeight);
+        }
+
+        PlacePills(0);
+        card.Measure(new Size(CardWidth(width, map, rig), double.PositiveInfinity));
+
+        return new Size(
+            width,
+            Math.Max(rowHeight, Math.Max(card.DesiredSize.Height, map.DesiredSize.Height)));
     }
 
     /// <summary>Moves the pills row's left edge, and nothing else about it.</summary>
@@ -266,6 +425,29 @@ public sealed class BandGovernsTheMapPanel : Panel
         rig.Arrange(new Rect(cardWidth + mapWidth, 0, rigWidth, finalSize.Height));
 
         return finalSize;
+    }
+
+    /// <summary>
+    /// The card's height as the fit questions ask it: as measured, less each drawn line marked
+    /// <see cref="OutsideTheFitProperty"/> and the spacing its stack gives it.
+    /// </summary>
+    private static double FitHeight(Control card, IReadOnlyList<Control> outside)
+    {
+        var height = card.DesiredSize.Height;
+
+        foreach (var line in outside)
+        {
+            if (!line.IsEffectivelyVisible)
+            {
+                continue;
+            }
+
+            var spacing = line.GetVisualParent() is StackPanel stack ? stack.Spacing : 0;
+
+            height -= line.DesiredSize.Height + spacing;
+        }
+
+        return height;
     }
 
     private static double CardWidth(double width, Control map, Control rig)

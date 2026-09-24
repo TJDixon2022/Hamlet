@@ -72,6 +72,22 @@ public sealed class ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests
                 Column(misses, at, "the sun map", covered.Map, outside.Map);
                 Column(misses, at, "the radio panel", covered.Rig, outside.Rig);
 
+                // **AND BACK AGAIN, TO WHERE THEY STARTED** (added at unit 423 task 3): task 1's trace
+                // after the first change had the map come back from 14.010 to 327 x 178 beside the
+                // card at 1400 x 1040, where it had stood at 393 x 214 at the band's left edge.
+                said = TheTopRowTuned.TryTune(window, TheTopRowTuned.Covered);
+                var back = TheTopRowTuned.Read(window, panel);
+
+                if (said is not null)
+                {
+                    misses.Add($"{at}: tuned back to 14.050 MHz the layout did not settle - {said}");
+                }
+
+                _output.WriteLine($"{at}: and back to 14.050 MHz");
+                Column(misses, at, "the neighborhood panel", covered.Card, back.Card, "back at 14.050 MHz from 14.010");
+                Column(misses, at, "the sun map", covered.Map, back.Map, "back at 14.050 MHz from 14.010");
+                Column(misses, at, "the radio panel", covered.Rig, back.Rig, "back at 14.050 MHz from 14.010");
+
                 if (covered.Tone == outside.Tone)
                 {
                     misses.Add($"{at}: the privilege panel's tone is {covered.Tone} at both frequencies");
@@ -97,23 +113,26 @@ public sealed class ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests
     }
 
     private void Column(List<string> misses, string at, string name, PanelBounds covered, PanelBounds outside)
+        => Column(misses, at, name, covered, outside, "at 14.010 MHz");
+
+    private void Column(List<string> misses, string at, string name, PanelBounds covered, PanelBounds then, string thenAt)
     {
         _output.WriteLine(
-            $"  {name}: left {TheTopRowTuned.Px(covered.Left)} -> {TheTopRowTuned.Px(outside.Left)}, "
-            + $"width {TheTopRowTuned.Px(covered.Width)} -> {TheTopRowTuned.Px(outside.Width)}");
+            $"  {name}: left {TheTopRowTuned.Px(covered.Left)} -> {TheTopRowTuned.Px(then.Left)}, "
+            + $"width {TheTopRowTuned.Px(covered.Width)} -> {TheTopRowTuned.Px(then.Width)}");
 
-        if (Math.Abs(outside.Left - covered.Left) > 1)
+        if (Math.Abs(then.Left - covered.Left) > 1)
         {
             misses.Add(
                 $"{at}: {name}'s left edge is {TheTopRowTuned.Px(covered.Left)} at 14.050 MHz and "
-                + $"{TheTopRowTuned.Px(outside.Left)} at 14.010 MHz");
+                + $"{TheTopRowTuned.Px(then.Left)} {thenAt}");
         }
 
-        if (Math.Abs(outside.Width - covered.Width) > 1)
+        if (Math.Abs(then.Width - covered.Width) > 1)
         {
             misses.Add(
                 $"{at}: {name}'s width is {TheTopRowTuned.Px(covered.Width)} at 14.050 MHz and "
-                + $"{TheTopRowTuned.Px(outside.Width)} at 14.010 MHz");
+                + $"{TheTopRowTuned.Px(then.Width)} {thenAt}");
         }
     }
 

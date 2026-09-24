@@ -295,3 +295,19 @@ unit 422. `HowMuchTheApplicationSaysTests` still lists the name with a budget of
 changed hover text only and did not run this type at entry, so it cannot say which unit took the
 name away. Whether the countdown should be back on the Digital tab, or the test retired with the
 readout, is a screen question for step 6 or the owner. Not this unit's (§12.6); not blocking.
+
+## P21 - outside his privileges the top row still grows taller
+
+**Raised by unit 423, 2026-09-24.** Since unit 423 the card, the sun map and the rig face keep their
+left edges and widths when Tim tunes outside his privileges (6.3), both ways and at every size the
+top-row tests use. **The row's height still follows the card's words**, as it did before: outside
+his privileges the green block adds the reassurance sentence and the upgrade button, and the
+verdict is longer. Measured headless by `WhereThePanelsStandOutsideHisPrivilegesTests`, General,
+14.050 to 14.010 MHz on the CW tab: the card and the rig face are 2 px taller at 1920 x 1040, 22 at
+1536 x 824, 42 at 1280 x 720, 1366 x 728 and 1400 x 1040, and 90 at 1200 x 900. Where the row
+stands under the top row's 300 px cap, the working panels below it move down by that much. At 1100 x
+780, the size Hamlet opens at, the card is 345 px tall inside his privileges and 523 outside, both
+over the cap; what the capped row draws there was not measured by unit 423. Holding the height as well would mean
+the card scrolls its added lines out of sight inside the row, which §0.5 allows but which hides
+the sentence that removes the fear until he scrolls. Whether it should is the owner's call. Not
+blocking 6.3, which names columns.

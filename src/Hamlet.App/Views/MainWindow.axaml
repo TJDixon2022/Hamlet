@@ -936,7 +936,13 @@
 
                             <!-- The sentence that removes the fear. Shown
                                  whenever transmitting is restricted. -->
+                            <!-- **DRAWN, AND IT DOES NOT MOVE THE MAP** (work instruction 423,
+                                 6.3): this line, the upgrade row and the ladder appear only
+                                 outside his privileges, so `BandGovernsTheMapPanel` leaves them
+                                 out of the question of where the panels stand. Tuned outside his
+                                 privileges the panel's words and color change and nothing moves. -->
                             <TextBlock Text="{Binding PrivilegeStatus.Reassurance}"
+                                       ctl:BandGovernsTheMapPanel.OutsideTheFit="True"
                                        FontSize="11" TextWrapping="Wrap"
                                        Foreground="{StaticResource HmTextMutedBrush}"
                                        IsVisible="{Binding PrivilegeStatus.Reassurance,
@@ -948,6 +954,7 @@
                                  spacing, and on PSK31 at 1400 the block was 2 px past 0.262. Same
                                  condition as the button, so nothing that was drawn is hidden. -->
                             <StackPanel Orientation="Horizontal" Spacing="8"
+                                        ctl:BandGovernsTheMapPanel.OutsideTheFit="True"
                                         IsVisible="{Binding PrivilegeStatus.UpgradePrompt,
                                             Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
                                 <Button Content="{Binding PrivilegeStatus.UpgradePrompt}"
@@ -966,6 +973,7 @@
 
                             <!-- On click only, never permanent chrome. -->
                             <ItemsControl ItemsSource="{Binding UpgradeLadder}"
+                                          ctl:BandGovernsTheMapPanel.OutsideTheFit="True"
                                           IsVisible="{Binding UpgradeLadderVisible}"
                                           Margin="0,4,0,0">
                                 <ItemsControl.ItemTemplate>
@@ -3158,7 +3166,12 @@
                      width the map needs comes from the neighborhood side and never from the rig.
                      Where the card could not then fit its words in the row, the map gives width
                      back, never below the 246 x 134 it has been since unit 337. -->
+                <!-- **AND THE PRIVILEGE PANEL'S TONE DOES NOT MOVE IT** (work instruction 423,
+                     6.3; Tim at the radio, R62). Tuned across a privilege edge, the card, the map
+                     and the rig face stay where they stood and only the panel's words and color
+                     change: see `HeldAcross` and `OutsideTheFit` in `BandGovernsTheMapPanel`. -->
                 <ctl:BandGovernsTheMapPanel x:Name="BandRow"
+                                            HeldAcross="{Binding PrivilegeStatus.Tone}"
                                             Grid.Row="0" Grid.ColumnSpan="2">
                 <ScrollViewer x:Name="TopRowCardScroller"
                               Margin="0,0,14,0"
