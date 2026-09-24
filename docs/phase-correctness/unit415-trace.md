@@ -179,3 +179,35 @@ unchanged as `38158be6`; `src` is byte-identical to `b68be0dd`. Every key inferr
 after, exactly HM-DEC-144's adjudicated text, 1 edit to 0. `VA3VRR` and `EETMP/4 QNIK` did
 not move. The change is kept and 3.2 is ticked. Adjudicated 13 of 13 and clean 2 of 2 at the
 change.
+
+## Unit 416, task 3 - the next kind, and a second kept change
+
+**The trace, on the kept build** (`.run-unit/unit416-relabel-c4.txt`). The boundary split
+now walks what really settled; the ten align 10 of 10. Of 128 boundaries between two named
+characters on the ten and 17:37: joined 80, inserted 24, word kept 23, missing 1. **21 of the
+24 inserted spaces sit in windows with no measured character gap**, where the relabel leaves
+the path's label standing. All 13 on `173723` are under held structure, at a median of 0.66
+of the word boundary the path was given (quartiles 0.52 and 1.06); the ten's 8 sit at a median
+of 1.31 of it. The word gaps kept with no centroid, 9, sit from 0.73 (one, on 17:37) up, the
+ten's lowest at 1.09. **The path read a space on a gap shorter than its own word boundary.**
+
+**The change, `90840b1f`.** Where no character gap was measured, a space the path read is not
+announced when its gap runs under the path's own word boundary: the geometric mean of the
+character and word gaps it was given, held or three and seven units. That boundary is the
+decoder's, not chosen from any score. No space is added; the stream's bookkeeping is as before.
+
+| 3.2 test | kept relabel `38158be6` | with `90840b1f` | |
+|---|---|---|---|
+| 1. all keyed recordings, bench | 185 over 565 | **167 over 565** | pass |
+| - baseline | 31 over 46 | 22 over 46 | |
+| - 17:37 | 28 over 25 | 19 over 25 | |
+| - outside | 118 over 363 | 110 over 363 | |
+| - the ten, bench | 36 over 156 | 35 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical to entry | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4L`, `EETMP/4 QNIK` | `VA3VRR`, `N4L`, `EETMP/4 QNIK`, none moved | pass |
+| 4. all 51 capture rows | - | identical to entry in named, elements and placeholders | pass |
+
+17:37's region reads `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I` where it read
+`CQ CQ CQ DE WT E E T E  E ERE D E T T TB 7E E I`: the inserted spaces inside the callsign
+are gone, and the one word gap there below the boundary, after `DE`, went with them, as the
+trace's 0.73 said it would. Adjudicated 13 of 13 and clean 2 of 2 at the change. Kept.

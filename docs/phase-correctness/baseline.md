@@ -237,6 +237,13 @@ count is identical on all 51 rows.
 |---|---|---|---|
 | 415 | none kept; two built and taken out under 3.2's third test | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
 | 416 | **kept**: the narrowed relabel `b68be0dd` re-applied unchanged as `38158be6`, under R66 | **28 edits over 25 characters**, inferred key, 0 unsure per 28 named | **31 edits over 46 characters**, inferred keys, 0 unsure per 48 named |
+| 416 | **kept**: `90840b1f`, the path's own word boundary where no character gap was measured | **19 edits over 25 characters**, inferred key | **22 edits over 46 characters**, inferred keys, 0 unsure per 48 named |
+
+**Unit 416's second kept change, `90840b1f`** (`unit415-trace.md`, unit 416 task 3). All
+keyed recordings **185 to 167 over 565**: the baseline 31 to 22 over 46, 17:37 28 to 19, outside
+118 to 110 over 363, the ten 36 to 35 over 156. Named floors, all 51 capture rows and the three
+adjudicated readings identical to the kept relabel's. **The phase's running total: 217 to 167
+edits over 565 characters, against inferred keys.**
 
 **Unit 416, the phase's first kept change.** Every key inferred. All keyed recordings
 **217 to 185 edits over 565 characters**: the baseline 33 to 31 over 46, 17:37 29 to 28 over

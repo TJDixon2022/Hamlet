@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 416 - the relabel goes back in
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T08:41:00-04:00
-NOTE: Running WhereTheSpaceIsDecidedTests alone, the relabel trace over keyed recordings and 51 capture rows
+UPDATED: 2026-09-24T08:50:04-04:00
+NOTE: Running the two clean synthetics alone
 
 ---
 
