@@ -1,0 +1,3 @@
+unit413 task 3, G1 out: MeasureGaps restored to its entry text, src identical to 8a140c79; P6 parked - both candidates cut edits, 217 to 207 and 217 to 193 over all keyed recordings, and both lowered named counts, because joining a split letter's stray E and T back into the letter lowers the named-character count the floors were set on
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

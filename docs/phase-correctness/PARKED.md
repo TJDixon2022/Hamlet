@@ -56,3 +56,28 @@ the owner meant a different thirteen.
 and `docs/carry-forward-tests.txt` names neither; 2.4 asks only for the three floor tests and
 the two lines. Step 3's 3.2 names "no named floor from 2.2 is broken", so the unit that opens
 step 3 will run the first by name. Comes back if the owner wants it on the engine line.
+
+## P6 - a repair that joins split letters lowers the named count the floors protect
+
+**Raised by unit 413, 2026-09-24.** The fault step 3 attacks is the decoder splitting where it
+should join, and a split does not only add spaces: a gap inside a letter read as a gap
+between letters turns one letter into several single-element ones. `WB6RED` on 17:37 reads
+`W T E E T E  E ERE D`. Joining those back into letters **lowers the named-character count
+while the named-element count holds or rises**, and 3.2 and 2.2 both refuse any fall in a
+named count. Measured by unit 413 on two different changes, both out:
+
+- **Candidate 1**, the word gap at seven thirds of the character gap when the word heap
+  shows no trough: all keyed 217 to 207 edits over 565 against inferred keys, the ten on
+  the bench 60 to 46; named characters fell on five capture rows, 021629 27 to 25, 002016
+  44 to 41, 004027 40 to 39, 004133 30 to 28, 004510 38 to 37.
+- **G1**, an out-of-order held gap reading refused: all keyed 217 to 193, 17:37 29 to 11
+  edits reading `CQ CQ CQ DEW B6 RE D W B 7E E I`; 17:37's named floor 46 to 38 and 004133's
+  row 30 to 25 named, **its named elements 87 to 88**.
+
+The floors were set at readings that counted each stray `E` and `T` as a named character, so
+a repair that reads the letter the sender keyed can fail the floor that exists to stop the
+decoder going quiet. This is not an ask for the rule to change. 3.2 is Tim's and is applied
+as written. It is the measurement a ruling would need if the owner wants the element count,
+or edits with the unsure-per-named guard, to carry the cost check for a joining change.
+Under 3.4 this is unit one of three without a kept change. Comes back when the arbiter
+authors step 3's next unit.
