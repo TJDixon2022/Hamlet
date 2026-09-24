@@ -1,0 +1,15 @@
+unit418 task 2: TheRestOfTheSheetIsTrueTests, committed red - one fact for each of the nine other sheet sentences task 1 found false about a signal, on saved captures 013347, 17:37, 014113, 004844 and 005051, through CaptureNotes; test only
+
+Red, 10 of 10 failed:
+TheInputFloorSaysItIsTheMetersRunningFloor (013347) - String: "inputFloor -32.1 dBFS"; Not found: "the level meter's running floor at the mo"...
+TheClippingLineNamesTheStretchItCovers (013347) - String: "clipping   False"; Not found: "the level meter last measured when it was"...
+TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn (17:37) - String: "toneHz     600.0 Hz  (measured from the k"...; Not found: "the centre of the survey bin it was admit"...
+TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch (005051) - Sub-string found: "characters reached the screen from a pitc"... in "unkeyed    YES  (252 characters reached th"...
+TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear (004844) - String: "elements   119 seen, 119 resolved  (since"...; Not found: "since the decoder started listening"
+TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear (004844) - String: "characters 35 emitted, 0 unsure  (since t"...; Not found: "since the decoder started listening"
+TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear (004844) - String: "sinceLast  35 characters, 119 elements  ("...; Not found: "since the decoder started listening"
+TheCompetingLineDoesNotCallAnUnkeyedToneKeyed (014113) - Sub-string found: "keyed " in "...ver the band floor, keyed 29% of the time"
+TheReadingLinePrintsTheGateAsItIs (17:37) - String: "reading    17 WPM won out of 8 to 40, 1.5"...; Not found: "against a gate of 1.40"
+TheReadingLineSaysWhenItWasRead (17:37) - Sub-string found: "at the moment of the press"
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

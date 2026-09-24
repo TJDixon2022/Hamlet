@@ -173,12 +173,22 @@ public sealed class EverySentenceOnTheSheetTests
 
     /// <summary>The sheet exactly as the press composes it.</summary>
     internal static string Sheet(
-        CwDecoder decoder, KeyingReading keying, MonoAudio audio, CwDecodeReport report, string tonePeak)
+        CwDecoder decoder,
+        KeyingReading keying,
+        MonoAudio audio,
+        CwDecodeReport report,
+        string tonePeak,
+        DateTime? clearedUtc = null)
     {
         var model = new MainWindowViewModel(new AppSettings(), null);
 
         Field("_decoder").SetValue(model, decoder);
         Field("_keyingReading").SetValue(model, keying);
+
+        if (clearedUtc is { } cleared)
+        {
+            Field("_clearedUtc").SetValue(model, cleared);
+        }
 
         var writer = typeof(MainWindowViewModel).GetMethod(
             "CaptureNotes", BindingFlags.Instance | BindingFlags.NonPublic);

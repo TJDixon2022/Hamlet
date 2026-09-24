@@ -1,0 +1,1946 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.28]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.41]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.41]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:12.75]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch [FAIL]
+[xUnit.net 00:00:12.75]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:12.75]                                       ↓ (pos 21)
+[xUnit.net 00:00:12.75]       String: ···"nkeyed    YES  (252 characters reached th"···
+[xUnit.net 00:00:12.75]       Found:  "characters reached the screen from a pitc"···
+[xUnit.net 00:00:12.75]       Stack Trace:
+[xUnit.net 00:00:12.75]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(70,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch()
+[xUnit.net 00:00:12.75]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:12.75]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:12.75]       Output:
+[xUnit.net 00:00:12.75]         == cw-2026-08-28-005051
+[xUnit.net 00:00:12.75]         captured   2026-09-24 14:30:44 UTC
+[xUnit.net 00:00:12.75]         audioSeen  1440000 samples
+[xUnit.net 00:00:12.75]         fingerprint dffcd2baec03
+[xUnit.net 00:00:12.75]         seconds    30.0
+[xUnit.net 00:00:12.75]         sampleRate 48000
+[xUnit.net 00:00:12.75]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:12.75]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:12.75]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:12.75]         
+[xUnit.net 00:00:12.75]         inputPeak  -13.9 dBFS  (over the whole recording)
+[xUnit.net 00:00:12.75]         meterPeak  -18.0 dBFS  (the moment it was kept)
+[xUnit.net 00:00:12.75]         inputFloor -31.9 dBFS
+[xUnit.net 00:00:12.75]         clipping   False
+[xUnit.net 00:00:12.75]         toneHz     450.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+[xUnit.net 00:00:12.75]         tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
+[xUnit.net 00:00:12.75]         heldPeak   76.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:12.75]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:12.75]         unkeyed    YES  (252 characters reached the screen from a pitch chosen by the middle of the bank, which nothing chose, with no keying admitted here. This is the sheet to send back)
+[xUnit.net 00:00:12.75]         elements   51 seen, 51 resolved  (since the decoder started listening)
+[xUnit.net 00:00:12.75]         characters 252 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:12.75]         decoderWpm 17
+[xUnit.net 00:00:12.75]         text       nothing read
+[xUnit.net 00:00:12.75]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:12.75]         spanLlr    nothing read yet
+[xUnit.net 00:00:12.75]         competing  none admitted, and the survey is not silent: the loudest thing in the band is at 450 Hz, +65.5 dB over the band floor, keyed 37% of the time. Nothing has judged it to be a station
+[xUnit.net 00:00:12.75]         reading    17 WPM won out of 8 to 40, 7.7 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:12.75]         keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:12.75]         duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+[xUnit.net 00:00:12.75]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:12.75]         
+[xUnit.net 00:00:12.75]         sinceLast  252 characters, 51 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:12.75]         
+[xUnit.net 00:00:12.75]         Frequency            unknown
+[xUnit.net 00:00:12.75]         Mode                 unknown
+[xUnit.net 00:00:12.75]         DataMode             unknown
+[xUnit.net 00:00:12.75]         FilterSelection      unknown
+[xUnit.net 00:00:12.75]         FilterBandwidth      unknown
+[xUnit.net 00:00:12.75]         SMeter               unknown
+[xUnit.net 00:00:12.75]         TransmitStatus       unknown
+[xUnit.net 00:00:12.75]         Overflow             unknown
+[xUnit.net 00:00:12.75]         TwinPbtOuter         unknown
+[xUnit.net 00:00:12.75]         TwinPbtInner         unknown
+[xUnit.net 00:00:12.75]         Rit                  unknown
+[xUnit.net 00:00:12.75]         Swr                  unknown
+[xUnit.net 00:00:12.75]         PowerOut             unknown
+[xUnit.net 00:00:12.75]         RfPower              unknown
+[xUnit.net 00:00:12.75]         RfGain               unknown
+[xUnit.net 00:00:12.75]         Squelch              unknown
+[xUnit.net 00:00:12.75]         SquelchStatus        unknown
+[xUnit.net 00:00:12.75]         Agc                  unknown
+[xUnit.net 00:00:12.75]         Preamp               unknown
+[xUnit.net 00:00:12.75]         Attenuator           unknown
+[xUnit.net 00:00:12.75]         NoiseBlanker         unknown
+[xUnit.net 00:00:12.75]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:12.75]         NoiseReduction       unknown
+[xUnit.net 00:00:12.75]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:12.75]         AutoNotch            unknown
+[xUnit.net 00:00:12.75]         ManualNotch          unknown
+[xUnit.net 00:00:12.75]         BreakIn              unknown
+[xUnit.net 00:00:12.75]         KeyerSpeed           unknown
+[xUnit.net 00:00:12.75]         CwPitch              unknown
+[xUnit.net 00:00:12.75]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:12.75]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:12.75]         NotchPosition        unknown
+[xUnit.net 00:00:12.75]         FilterShape          unknown
+[xUnit.net 00:00:12.75]         AfLevel              unknown
+[xUnit.net 00:00:12.75]         RfSqlFunction        unknown
+[xUnit.net 00:00:12.75]         BreakInDelay         unknown
+[xUnit.net 00:00:12.75]         AntennaTuner         unknown
+[xUnit.net 00:00:12.75]         Alc                  unknown
+[xUnit.net 00:00:12.75]         AccUsbSquelch        unknown
+[xUnit.net 00:00:12.75]         Split                unknown
+[xUnit.net 00:00:12.75]         ScopeOn              unknown
+[xUnit.net 00:00:12.75]         ScopeOutput          unknown
+[xUnit.net 00:00:12.75]         CivUsbPort           unknown
+[xUnit.net 00:00:12.75]         CivTransceive        unknown
+[xUnit.net 00:00:12.75]         Vfo                  unknown
+[xUnit.net 00:00:12.75]         == cw-2026-09-23-173723
+[xUnit.net 00:00:12.75]         captured   2026-09-24 14:30:48 UTC
+[xUnit.net 00:00:12.75]         audioSeen  1440000 samples
+[xUnit.net 00:00:12.75]         fingerprint eb30420da2fa
+[xUnit.net 00:00:12.75]         seconds    30.0
+[xUnit.net 00:00:12.75]         sampleRate 48000
+[xUnit.net 00:00:12.75]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:12.75]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:12.75]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:12.75]         
+[xUnit.net 00:00:12.75]         inputPeak  -13.2 dBFS  (over the whole recording)
+[xUnit.net 00:00:12.75]         meterPeak  -13.6 dBFS  (the moment it was kept)
+[xUnit.net 00:00:12.75]         inputFloor -21.7 dBFS
+[xUnit.net 00:00:12.75]         clipping   False
+[xUnit.net 00:00:12.75]         toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:12.75]         tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:12.75]         heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:12.75]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:12.75]         unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:12.75]         elements   111 seen, 111 resolved  (since the decoder started listening)
+[xUnit.net 00:00:12.75]         characters 46 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:12.75]         decoderWpm 17
+[xUnit.net 00:00:12.75]         text       nothing read
+[xUnit.net 00:00:12.75]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:12.75]         spanLlr    nothing read yet
+[xUnit.net 00:00:12.75]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:12.75]         reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:12.75]         keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:12.75]         duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+[xUnit.net 00:00:12.75]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:12.75]         
+[xUnit.net 00:00:12.75]         sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:12.75]         
+[xUnit.net 00:00:12.75]         Frequency            unknown
+[xUnit.net 00:00:12.75]         Mode                 unknown
+[xUnit.net 00:00:12.75]         DataMode             unknown
+[xUnit.net 00:00:12.75]         FilterSelection      unknown
+[xUnit.net 00:00:12.75]         FilterBandwidth      unknown
+[xUnit.net 00:00:12.75]         SMeter               unknown
+[xUnit.net 00:00:12.75]         TransmitStatus       unknown
+[xUnit.net 00:00:12.75]         Overflow             unknown
+[xUnit.net 00:00:12.75]         TwinPbtOuter         unknown
+[xUnit.net 00:00:12.75]         TwinPbtInner         unknown
+[xUnit.net 00:00:12.75]         Rit                  unknown
+[xUnit.net 00:00:12.75]         Swr                  unknown
+[xUnit.net 00:00:12.75]         PowerOut             unknown
+[xUnit.net 00:00:12.75]         RfPower              unknown
+[xUnit.net 00:00:12.75]         RfGain               unknown
+[xUnit.net 00:00:12.75]         Squelch              unknown
+[xUnit.net 00:00:12.75]         SquelchStatus        unknown
+[xUnit.net 00:00:12.75]         Agc                  unknown
+[xUnit.net 00:00:12.75]         Preamp               unknown
+[xUnit.net 00:00:12.75]         Attenuator           unknown
+[xUnit.net 00:00:12.75]         NoiseBlanker         unknown
+[xUnit.net 00:00:12.75]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:12.75]         NoiseReduction       unknown
+[xUnit.net 00:00:12.75]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:12.75]         AutoNotch            unknown
+[xUnit.net 00:00:12.75]         ManualNotch          unknown
+[xUnit.net 00:00:12.75]         BreakIn              unknown
+[xUnit.net 00:00:12.75]         KeyerSpeed           unknown
+[xUnit.net 00:00:12.75]         CwPitch              unknown
+[xUnit.net 00:00:12.75]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:12.75]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:12.75]         NotchPosition        unknown
+[xUnit.net 00:00:12.75]         FilterShape          unknown
+[xUnit.net 00:00:12.75]         AfLevel              unknown
+[xUnit.net 00:00:12.75]         RfSqlFunction        unknown
+[xUnit.net 00:00:12.75]         BreakInDelay         unknown
+[xUnit.net 00:00:12.75]         AntennaTuner         unknown
+[xUnit.net 00:00:12.75]         Alc                  unknown
+[xUnit.net 00:00:12.75]         AccUsbSquelch        unknown
+[xUnit.net 00:00:12.75]         Split                unknown
+[xUnit.net 00:00:12.75]         ScopeOn              unknown
+[xUnit.net 00:00:12.75]         ScopeOutput          unknown
+[xUnit.net 00:00:12.75]         CivUsbPort           unknown
+[xUnit.net 00:00:12.75]         CivTransceive        unknown
+[xUnit.net 00:00:12.75]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch [10 s]
+  Error Message:
+   Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 21)
+String: ···"nkeyed    YES  (252 characters reached th"···
+Found:  "characters reached the screen from a pitc"···
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 70
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-08-28-005051
+ captured   2026-09-24 14:30:44 UTC
+ audioSeen  1440000 samples
+ fingerprint dffcd2baec03
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.9 dBFS  (over the whole recording)
+ meterPeak  -18.0 dBFS  (the moment it was kept)
+ inputFloor -31.9 dBFS
+ clipping   False
+ toneHz     450.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+ tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
+ heldPeak   76.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    YES  (252 characters reached the screen from a pitch chosen by the middle of the bank, which nothing chose, with no keying admitted here. This is the sheet to send back)
+ elements   51 seen, 51 resolved  (since the decoder started listening)
+ characters 252 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm 17
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none admitted, and the survey is not silent: the loudest thing in the band is at 450 Hz, +65.5 dB over the band floor, keyed 37% of the time. Nothing has judged it to be a station
+ reading    17 WPM won out of 8 to 40, 7.7 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  252 characters, 51 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+ == cw-2026-09-23-173723
+ captured   2026-09-24 14:30:48 UTC
+ audioSeen  1440000 samples
+ fingerprint eb30420da2fa
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.2 dBFS  (over the whole recording)
+ meterPeak  -13.6 dBFS  (the moment it was kept)
+ inputFloor -21.7 dBFS
+ clipping   False
+ toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+ heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+ elements   111 seen, 111 resolved  (since the decoder started listening)
+ characters 46 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm 17
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:17.42]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn [FAIL]
+[xUnit.net 00:00:17.42]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:17.42]       String:    "toneHz     600.0 Hz  (measured from the k"···
+[xUnit.net 00:00:17.42]       Not found: "the centre of the survey bin it was admit"···
+[xUnit.net 00:00:17.42]       Stack Trace:
+[xUnit.net 00:00:17.42]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(57,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn()
+[xUnit.net 00:00:17.42]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:17.42]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:17.42]       Output:
+[xUnit.net 00:00:17.42]         == cw-2026-09-23-173723
+[xUnit.net 00:00:17.42]         captured   2026-09-24 14:30:53 UTC
+[xUnit.net 00:00:17.42]         audioSeen  1440000 samples
+[xUnit.net 00:00:17.42]         fingerprint eb30420da2fa
+[xUnit.net 00:00:17.42]         seconds    30.0
+[xUnit.net 00:00:17.42]         sampleRate 48000
+[xUnit.net 00:00:17.42]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:17.42]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:17.42]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:17.42]         
+[xUnit.net 00:00:17.42]         inputPeak  -13.2 dBFS  (over the whole recording)
+[xUnit.net 00:00:17.42]         meterPeak  -13.6 dBFS  (the moment it was kept)
+[xUnit.net 00:00:17.42]         inputFloor -21.7 dBFS
+[xUnit.net 00:00:17.42]         clipping   False
+[xUnit.net 00:00:17.42]         toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:17.42]         tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:17.42]         heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:17.42]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:17.42]         unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:17.42]         elements   111 seen, 111 resolved  (since the decoder started listening)
+[xUnit.net 00:00:17.42]         characters 46 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:17.42]         decoderWpm 17
+[xUnit.net 00:00:17.42]         text       nothing read
+[xUnit.net 00:00:17.42]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:17.42]         spanLlr    nothing read yet
+[xUnit.net 00:00:17.42]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:17.42]         reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:17.42]         keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:17.42]         duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+[xUnit.net 00:00:17.42]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:17.42]         
+[xUnit.net 00:00:17.42]         sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:17.42]         
+[xUnit.net 00:00:17.42]         Frequency            unknown
+[xUnit.net 00:00:17.42]         Mode                 unknown
+[xUnit.net 00:00:17.42]         DataMode             unknown
+[xUnit.net 00:00:17.42]         FilterSelection      unknown
+[xUnit.net 00:00:17.42]         FilterBandwidth      unknown
+[xUnit.net 00:00:17.42]         SMeter               unknown
+[xUnit.net 00:00:17.42]         TransmitStatus       unknown
+[xUnit.net 00:00:17.42]         Overflow             unknown
+[xUnit.net 00:00:17.42]         TwinPbtOuter         unknown
+[xUnit.net 00:00:17.42]         TwinPbtInner         unknown
+[xUnit.net 00:00:17.42]         Rit                  unknown
+[xUnit.net 00:00:17.42]         Swr                  unknown
+[xUnit.net 00:00:17.42]         PowerOut             unknown
+[xUnit.net 00:00:17.42]         RfPower              unknown
+[xUnit.net 00:00:17.42]         RfGain               unknown
+[xUnit.net 00:00:17.42]         Squelch              unknown
+[xUnit.net 00:00:17.42]         SquelchStatus        unknown
+[xUnit.net 00:00:17.42]         Agc                  unknown
+[xUnit.net 00:00:17.42]         Preamp               unknown
+[xUnit.net 00:00:17.42]         Attenuator           unknown
+[xUnit.net 00:00:17.42]         NoiseBlanker         unknown
+[xUnit.net 00:00:17.42]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:17.42]         NoiseReduction       unknown
+[xUnit.net 00:00:17.42]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:17.42]         AutoNotch            unknown
+[xUnit.net 00:00:17.42]         ManualNotch          unknown
+[xUnit.net 00:00:17.42]         BreakIn              unknown
+[xUnit.net 00:00:17.42]         KeyerSpeed           unknown
+[xUnit.net 00:00:17.42]         CwPitch              unknown
+[xUnit.net 00:00:17.42]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:17.42]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:17.42]         NotchPosition        unknown
+[xUnit.net 00:00:17.42]         FilterShape          unknown
+[xUnit.net 00:00:17.42]         AfLevel              unknown
+[xUnit.net 00:00:17.42]         RfSqlFunction        unknown
+[xUnit.net 00:00:17.42]         BreakInDelay         unknown
+[xUnit.net 00:00:17.42]         AntennaTuner         unknown
+[xUnit.net 00:00:17.42]         Alc                  unknown
+[xUnit.net 00:00:17.42]         AccUsbSquelch        unknown
+[xUnit.net 00:00:17.42]         Split                unknown
+[xUnit.net 00:00:17.42]         ScopeOn              unknown
+[xUnit.net 00:00:17.42]         ScopeOutput          unknown
+[xUnit.net 00:00:17.42]         CivUsbPort           unknown
+[xUnit.net 00:00:17.42]         CivTransceive        unknown
+[xUnit.net 00:00:17.42]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn [4 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "toneHz     600.0 Hz  (measured from the k"···
+Not found: "the centre of the survey bin it was admit"···
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 57
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-09-23-173723
+ captured   2026-09-24 14:30:53 UTC
+ audioSeen  1440000 samples
+ fingerprint eb30420da2fa
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.2 dBFS  (over the whole recording)
+ meterPeak  -13.6 dBFS  (the moment it was kept)
+ inputFloor -21.7 dBFS
+ clipping   False
+ toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+ heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+ elements   111 seen, 111 resolved  (since the decoder started listening)
+ characters 46 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm 17
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:21.92]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLinePrintsTheGateAsItIs [FAIL]
+[xUnit.net 00:00:21.92]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:21.92]       String:    "reading    17 WPM won out of 8 to 40, 1.5"···
+[xUnit.net 00:00:21.92]       Not found: "against a gate of 1.40"
+[xUnit.net 00:00:21.92]       Stack Trace:
+[xUnit.net 00:00:21.92]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(128,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLinePrintsTheGateAsItIs()
+[xUnit.net 00:00:21.92]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:21.92]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:21.92]       Output:
+[xUnit.net 00:00:21.92]         == cw-2026-09-23-173723
+[xUnit.net 00:00:21.92]         captured   2026-09-24 14:30:57 UTC
+[xUnit.net 00:00:21.92]         audioSeen  1440000 samples
+[xUnit.net 00:00:21.92]         fingerprint eb30420da2fa
+[xUnit.net 00:00:21.92]         seconds    30.0
+[xUnit.net 00:00:21.92]         sampleRate 48000
+[xUnit.net 00:00:21.92]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:21.92]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:21.92]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:21.92]         
+[xUnit.net 00:00:21.92]         inputPeak  -13.2 dBFS  (over the whole recording)
+[xUnit.net 00:00:21.92]         meterPeak  -13.6 dBFS  (the moment it was kept)
+[xUnit.net 00:00:21.92]         inputFloor -21.7 dBFS
+[xUnit.net 00:00:21.92]         clipping   False
+[xUnit.net 00:00:21.92]         toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:21.92]         tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:21.92]         heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:21.92]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:21.92]         unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:21.92]         elements   111 seen, 111 resolved  (since the decoder started listening)
+[xUnit.net 00:00:21.92]         characters 46 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:21.92]         decoderWpm 17
+[xUnit.net 00:00:21.92]         text       nothing read
+[xUnit.net 00:00:21.92]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:21.92]         spanLlr    nothing read yet
+[xUnit.net 00:00:21.92]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:21.92]         reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:21.92]         keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:21.92]         duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+[xUnit.net 00:00:21.92]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:21.92]         
+[xUnit.net 00:00:21.92]         sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:21.92]         
+[xUnit.net 00:00:21.92]         Frequency            unknown
+[xUnit.net 00:00:21.92]         Mode                 unknown
+[xUnit.net 00:00:21.92]         DataMode             unknown
+[xUnit.net 00:00:21.92]         FilterSelection      unknown
+[xUnit.net 00:00:21.92]         FilterBandwidth      unknown
+[xUnit.net 00:00:21.92]         SMeter               unknown
+[xUnit.net 00:00:21.92]         TransmitStatus       unknown
+[xUnit.net 00:00:21.92]         Overflow             unknown
+[xUnit.net 00:00:21.92]         TwinPbtOuter         unknown
+[xUnit.net 00:00:21.92]         TwinPbtInner         unknown
+[xUnit.net 00:00:21.92]         Rit                  unknown
+[xUnit.net 00:00:21.92]         Swr                  unknown
+[xUnit.net 00:00:21.92]         PowerOut             unknown
+[xUnit.net 00:00:21.92]         RfPower              unknown
+[xUnit.net 00:00:21.92]         RfGain               unknown
+[xUnit.net 00:00:21.92]         Squelch              unknown
+[xUnit.net 00:00:21.92]         SquelchStatus        unknown
+[xUnit.net 00:00:21.92]         Agc                  unknown
+[xUnit.net 00:00:21.92]         Preamp               unknown
+[xUnit.net 00:00:21.92]         Attenuator           unknown
+[xUnit.net 00:00:21.92]         NoiseBlanker         unknown
+[xUnit.net 00:00:21.92]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:21.92]         NoiseReduction       unknown
+[xUnit.net 00:00:21.92]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:21.92]         AutoNotch            unknown
+[xUnit.net 00:00:21.92]         ManualNotch          unknown
+[xUnit.net 00:00:21.92]         BreakIn              unknown
+[xUnit.net 00:00:21.92]         KeyerSpeed           unknown
+[xUnit.net 00:00:21.92]         CwPitch              unknown
+[xUnit.net 00:00:21.92]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:21.92]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:21.92]         NotchPosition        unknown
+[xUnit.net 00:00:21.92]         FilterShape          unknown
+[xUnit.net 00:00:21.92]         AfLevel              unknown
+[xUnit.net 00:00:21.92]         RfSqlFunction        unknown
+[xUnit.net 00:00:21.92]         BreakInDelay         unknown
+[xUnit.net 00:00:21.92]         AntennaTuner         unknown
+[xUnit.net 00:00:21.92]         Alc                  unknown
+[xUnit.net 00:00:21.92]         AccUsbSquelch        unknown
+[xUnit.net 00:00:21.92]         Split                unknown
+[xUnit.net 00:00:21.92]         ScopeOn              unknown
+[xUnit.net 00:00:21.92]         ScopeOutput          unknown
+[xUnit.net 00:00:21.92]         CivUsbPort           unknown
+[xUnit.net 00:00:21.92]         CivTransceive        unknown
+[xUnit.net 00:00:21.92]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLinePrintsTheGateAsItIs [4 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "reading    17 WPM won out of 8 to 40, 1.5"···
+Not found: "against a gate of 1.40"
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLinePrintsTheGateAsItIs() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 128
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-09-23-173723
+ captured   2026-09-24 14:30:57 UTC
+ audioSeen  1440000 samples
+ fingerprint eb30420da2fa
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.2 dBFS  (over the whole recording)
+ meterPeak  -13.6 dBFS  (the moment it was kept)
+ inputFloor -21.7 dBFS
+ clipping   False
+ toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+ heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+ elements   111 seen, 111 resolved  (since the decoder started listening)
+ characters 46 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm 17
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:26.73]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheClippingLineNamesTheStretchItCovers [FAIL]
+[xUnit.net 00:00:26.73]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:26.73]       String:    "clipping   False"
+[xUnit.net 00:00:26.73]       Not found: "the level meter last measured when it was"···
+[xUnit.net 00:00:26.73]       Stack Trace:
+[xUnit.net 00:00:26.73]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(47,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheClippingLineNamesTheStretchItCovers()
+[xUnit.net 00:00:26.73]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:26.73]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:26.73]       Output:
+[xUnit.net 00:00:26.73]         == cw-2026-08-17-013347
+[xUnit.net 00:00:26.73]         captured   2026-09-24 14:31:02 UTC
+[xUnit.net 00:00:26.73]         audioSeen  1440000 samples
+[xUnit.net 00:00:26.73]         fingerprint 1c42404a68d7
+[xUnit.net 00:00:26.73]         seconds    30.0
+[xUnit.net 00:00:26.73]         sampleRate 48000
+[xUnit.net 00:00:26.73]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:26.73]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:26.73]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:26.73]         
+[xUnit.net 00:00:26.73]         inputPeak  -1.6 dBFS  (over the whole recording)
+[xUnit.net 00:00:26.73]         meterPeak  -9.9 dBFS  (the moment it was kept)
+[xUnit.net 00:00:26.73]         inputFloor -32.1 dBFS
+[xUnit.net 00:00:26.73]         clipping   False
+[xUnit.net 00:00:26.73]         toneHz     625.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:26.73]         tonePeak   33.4  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 625.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:26.73]         heldPeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:26.73]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:26.73]         unkeyed    no  (57 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:26.73]         elements   106 seen, 106 resolved  (since the decoder started listening)
+[xUnit.net 00:00:26.73]         characters 57 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:26.73]         decoderWpm 16
+[xUnit.net 00:00:26.73]         text       nothing read
+[xUnit.net 00:00:26.73]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:26.73]         spanLlr    nothing read yet
+[xUnit.net 00:00:26.73]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:26.73]         reading    16 WPM won out of 8 to 40, 4.0 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:26.73]         keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:26.73]         duty       26.6%  (of the 30.0 seconds in this file, the key was down at 625.0 Hz)
+[xUnit.net 00:00:26.73]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:26.73]         
+[xUnit.net 00:00:26.73]         sinceLast  57 characters, 106 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:26.74]         
+[xUnit.net 00:00:26.74]         Frequency            unknown
+[xUnit.net 00:00:26.74]         Mode                 unknown
+[xUnit.net 00:00:26.74]         DataMode             unknown
+[xUnit.net 00:00:26.74]         FilterSelection      unknown
+[xUnit.net 00:00:26.74]         FilterBandwidth      unknown
+[xUnit.net 00:00:26.74]         SMeter               unknown
+[xUnit.net 00:00:26.74]         TransmitStatus       unknown
+[xUnit.net 00:00:26.74]         Overflow             unknown
+[xUnit.net 00:00:26.74]         TwinPbtOuter         unknown
+[xUnit.net 00:00:26.74]         TwinPbtInner         unknown
+[xUnit.net 00:00:26.74]         Rit                  unknown
+[xUnit.net 00:00:26.74]         Swr                  unknown
+[xUnit.net 00:00:26.74]         PowerOut             unknown
+[xUnit.net 00:00:26.74]         RfPower              unknown
+[xUnit.net 00:00:26.74]         RfGain               unknown
+[xUnit.net 00:00:26.74]         Squelch              unknown
+[xUnit.net 00:00:26.74]         SquelchStatus        unknown
+[xUnit.net 00:00:26.74]         Agc                  unknown
+[xUnit.net 00:00:26.74]         Preamp               unknown
+[xUnit.net 00:00:26.74]         Attenuator           unknown
+[xUnit.net 00:00:26.74]         NoiseBlanker         unknown
+[xUnit.net 00:00:26.74]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:26.74]         NoiseReduction       unknown
+[xUnit.net 00:00:26.74]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:26.74]         AutoNotch            unknown
+[xUnit.net 00:00:26.74]         ManualNotch          unknown
+[xUnit.net 00:00:26.74]         BreakIn              unknown
+[xUnit.net 00:00:26.74]         KeyerSpeed           unknown
+[xUnit.net 00:00:26.74]         CwPitch              unknown
+[xUnit.net 00:00:26.74]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:26.74]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:26.74]         NotchPosition        unknown
+[xUnit.net 00:00:26.74]         FilterShape          unknown
+[xUnit.net 00:00:26.74]         AfLevel              unknown
+[xUnit.net 00:00:26.74]         RfSqlFunction        unknown
+[xUnit.net 00:00:26.74]         BreakInDelay         unknown
+[xUnit.net 00:00:26.74]         AntennaTuner         unknown
+[xUnit.net 00:00:26.74]         Alc                  unknown
+[xUnit.net 00:00:26.74]         AccUsbSquelch        unknown
+[xUnit.net 00:00:26.74]         Split                unknown
+[xUnit.net 00:00:26.74]         ScopeOn              unknown
+[xUnit.net 00:00:26.74]         ScopeOutput          unknown
+[xUnit.net 00:00:26.74]         CivUsbPort           unknown
+[xUnit.net 00:00:26.74]         CivTransceive        unknown
+[xUnit.net 00:00:26.74]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheClippingLineNamesTheStretchItCovers [4 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "clipping   False"
+Not found: "the level meter last measured when it was"···
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheClippingLineNamesTheStretchItCovers() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 47
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-08-17-013347
+ captured   2026-09-24 14:31:02 UTC
+ audioSeen  1440000 samples
+ fingerprint 1c42404a68d7
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -1.6 dBFS  (over the whole recording)
+ meterPeak  -9.9 dBFS  (the moment it was kept)
+ inputFloor -32.1 dBFS
+ clipping   False
+ toneHz     625.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   33.4  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 625.0 Hz stood above the noise beside it, in dB)
+ heldPeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (57 characters, and the survey admitted keying at this pitch)
+ elements   106 seen, 106 resolved  (since the decoder started listening)
+ characters 57 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm 16
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    16 WPM won out of 8 to 40, 4.0 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       26.6%  (of the 30.0 seconds in this file, the key was down at 625.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  57 characters, 106 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:31.61]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheInputFloorSaysItIsTheMetersRunningFloor [FAIL]
+[xUnit.net 00:00:31.61]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:31.61]       String:    "inputFloor -32.1 dBFS"
+[xUnit.net 00:00:31.61]       Not found: "the level meter's running floor at the mo"···
+[xUnit.net 00:00:31.61]       Stack Trace:
+[xUnit.net 00:00:31.61]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(37,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheInputFloorSaysItIsTheMetersRunningFloor()
+[xUnit.net 00:00:31.61]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:31.61]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:31.61]       Output:
+[xUnit.net 00:00:31.61]         == cw-2026-08-17-013347
+[xUnit.net 00:00:31.61]         captured   2026-09-24 14:31:07 UTC
+[xUnit.net 00:00:31.61]         audioSeen  1440000 samples
+[xUnit.net 00:00:31.61]         fingerprint 1c42404a68d7
+[xUnit.net 00:00:31.61]         seconds    30.0
+[xUnit.net 00:00:31.61]         sampleRate 48000
+[xUnit.net 00:00:31.61]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:31.61]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:31.61]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:31.61]         
+[xUnit.net 00:00:31.61]         inputPeak  -1.6 dBFS  (over the whole recording)
+[xUnit.net 00:00:31.61]         meterPeak  -9.9 dBFS  (the moment it was kept)
+[xUnit.net 00:00:31.61]         inputFloor -32.1 dBFS
+[xUnit.net 00:00:31.61]         clipping   False
+[xUnit.net 00:00:31.61]         toneHz     625.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:31.61]         tonePeak   33.4  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 625.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:31.61]         heldPeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:31.61]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:31.61]         unkeyed    no  (57 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:31.61]         elements   106 seen, 106 resolved  (since the decoder started listening)
+[xUnit.net 00:00:31.61]         characters 57 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:31.61]         decoderWpm 16
+[xUnit.net 00:00:31.61]         text       nothing read
+[xUnit.net 00:00:31.61]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:31.61]         spanLlr    nothing read yet
+[xUnit.net 00:00:31.61]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:31.61]         reading    16 WPM won out of 8 to 40, 4.0 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:31.61]         keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:31.61]         duty       26.6%  (of the 30.0 seconds in this file, the key was down at 625.0 Hz)
+[xUnit.net 00:00:31.61]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:31.61]         
+[xUnit.net 00:00:31.61]         sinceLast  57 characters, 106 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:31.61]         
+[xUnit.net 00:00:31.61]         Frequency            unknown
+[xUnit.net 00:00:31.61]         Mode                 unknown
+[xUnit.net 00:00:31.61]         DataMode             unknown
+[xUnit.net 00:00:31.61]         FilterSelection      unknown
+[xUnit.net 00:00:31.61]         FilterBandwidth      unknown
+[xUnit.net 00:00:31.61]         SMeter               unknown
+[xUnit.net 00:00:31.61]         TransmitStatus       unknown
+[xUnit.net 00:00:31.61]         Overflow             unknown
+[xUnit.net 00:00:31.61]         TwinPbtOuter         unknown
+[xUnit.net 00:00:31.61]         TwinPbtInner         unknown
+[xUnit.net 00:00:31.61]         Rit                  unknown
+[xUnit.net 00:00:31.61]         Swr                  unknown
+[xUnit.net 00:00:31.61]         PowerOut             unknown
+[xUnit.net 00:00:31.61]         RfPower              unknown
+[xUnit.net 00:00:31.61]         RfGain               unknown
+[xUnit.net 00:00:31.61]         Squelch              unknown
+[xUnit.net 00:00:31.61]         SquelchStatus        unknown
+[xUnit.net 00:00:31.61]         Agc                  unknown
+[xUnit.net 00:00:31.61]         Preamp               unknown
+[xUnit.net 00:00:31.61]         Attenuator           unknown
+[xUnit.net 00:00:31.61]         NoiseBlanker         unknown
+[xUnit.net 00:00:31.61]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:31.61]         NoiseReduction       unknown
+[xUnit.net 00:00:31.61]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:31.61]         AutoNotch            unknown
+[xUnit.net 00:00:31.61]         ManualNotch          unknown
+[xUnit.net 00:00:31.61]         BreakIn              unknown
+[xUnit.net 00:00:31.61]         KeyerSpeed           unknown
+[xUnit.net 00:00:31.61]         CwPitch              unknown
+[xUnit.net 00:00:31.61]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:31.61]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:31.61]         NotchPosition        unknown
+[xUnit.net 00:00:31.61]         FilterShape          unknown
+[xUnit.net 00:00:31.61]         AfLevel              unknown
+[xUnit.net 00:00:31.61]         RfSqlFunction        unknown
+[xUnit.net 00:00:31.61]         BreakInDelay         unknown
+[xUnit.net 00:00:31.61]         AntennaTuner         unknown
+[xUnit.net 00:00:31.61]         Alc                  unknown
+[xUnit.net 00:00:31.61]         AccUsbSquelch        unknown
+[xUnit.net 00:00:31.61]         Split                unknown
+[xUnit.net 00:00:31.61]         ScopeOn              unknown
+[xUnit.net 00:00:31.61]         ScopeOutput          unknown
+[xUnit.net 00:00:31.61]         CivUsbPort           unknown
+[xUnit.net 00:00:31.61]         CivTransceive        unknown
+[xUnit.net 00:00:31.61]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheInputFloorSaysItIsTheMetersRunningFloor [4 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "inputFloor -32.1 dBFS"
+Not found: "the level meter's running floor at the mo"···
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheInputFloorSaysItIsTheMetersRunningFloor() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 37
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-08-17-013347
+ captured   2026-09-24 14:31:07 UTC
+ audioSeen  1440000 samples
+ fingerprint 1c42404a68d7
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -1.6 dBFS  (over the whole recording)
+ meterPeak  -9.9 dBFS  (the moment it was kept)
+ inputFloor -32.1 dBFS
+ clipping   False
+ toneHz     625.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   33.4  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 625.0 Hz stood above the noise beside it, in dB)
+ heldPeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (57 characters, and the survey admitted keying at this pitch)
+ elements   106 seen, 106 resolved  (since the decoder started listening)
+ characters 57 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm 16
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    16 WPM won out of 8 to 40, 4.0 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       26.6%  (of the 30.0 seconds in this file, the key was down at 625.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  57 characters, 106 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:36.11]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear [FAIL]
+[xUnit.net 00:00:36.11]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:36.11]       String:    "characters 35 emitted, 0 unsure  (since t"···
+[xUnit.net 00:00:36.11]       Not found: "since the decoder started listening"
+[xUnit.net 00:00:36.11]       Stack Trace:
+[xUnit.net 00:00:36.11]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(93,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear()
+[xUnit.net 00:00:36.11]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:36.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:36.11]       Output:
+[xUnit.net 00:00:36.11]         == cw-2026-08-28-004844
+[xUnit.net 00:00:36.11]         captured   2026-09-24 14:31:11 UTC
+[xUnit.net 00:00:36.11]         audioSeen  1440000 samples
+[xUnit.net 00:00:36.11]         fingerprint f070682aca70
+[xUnit.net 00:00:36.11]         seconds    30.0
+[xUnit.net 00:00:36.11]         sampleRate 48000
+[xUnit.net 00:00:36.11]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:36.11]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:36.11]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:36.11]         
+[xUnit.net 00:00:36.11]         inputPeak  -13.7 dBFS  (over the whole recording)
+[xUnit.net 00:00:36.11]         meterPeak  -13.9 dBFS  (the moment it was kept)
+[xUnit.net 00:00:36.11]         inputFloor -29.2 dBFS
+[xUnit.net 00:00:36.11]         clipping   False
+[xUnit.net 00:00:36.11]         toneHz     430.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:36.11]         tonePeak   77.7  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 430.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:36.11]         heldPeak   72.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:36.11]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:36.11]         unkeyed    no  (35 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:36.11]         elements   119 seen, 119 resolved  (since the transcript was cleared at 14:30:32 UTC, less than a minute ago)
+[xUnit.net 00:00:36.11]         characters 35 emitted, 0 unsure  (since the transcript was cleared at 14:30:32 UTC, less than a minute ago)
+[xUnit.net 00:00:36.11]         decoderWpm 22
+[xUnit.net 00:00:36.11]         text       nothing read
+[xUnit.net 00:00:36.11]         textCovers everything read since the transcript was cleared at 14:30:32 UTC, less than a minute ago
+[xUnit.net 00:00:36.11]         spanLlr    nothing read yet
+[xUnit.net 00:00:36.11]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:36.11]         reading    22 WPM won out of 8 to 40, 35.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:36.11]         keying     keying at 450 Hz, 150 ms key down, 28 dB swing, 26 key-downs  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:36.11]         duty       39.3%  (of the 30.0 seconds in this file, the key was down at 430.0 Hz)
+[xUnit.net 00:00:36.11]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:36.11]         
+[xUnit.net 00:00:36.11]         sinceLast  35 characters, 119 elements  (since the transcript was cleared at 14:30:32 UTC, less than a minute ago; this is the first capture of the session)
+[xUnit.net 00:00:36.11]         
+[xUnit.net 00:00:36.11]         Frequency            unknown
+[xUnit.net 00:00:36.11]         Mode                 unknown
+[xUnit.net 00:00:36.11]         DataMode             unknown
+[xUnit.net 00:00:36.11]         FilterSelection      unknown
+[xUnit.net 00:00:36.11]         FilterBandwidth      unknown
+[xUnit.net 00:00:36.11]         SMeter               unknown
+[xUnit.net 00:00:36.11]         TransmitStatus       unknown
+[xUnit.net 00:00:36.11]         Overflow             unknown
+[xUnit.net 00:00:36.11]         TwinPbtOuter         unknown
+[xUnit.net 00:00:36.11]         TwinPbtInner         unknown
+[xUnit.net 00:00:36.11]         Rit                  unknown
+[xUnit.net 00:00:36.11]         Swr                  unknown
+[xUnit.net 00:00:36.11]         PowerOut             unknown
+[xUnit.net 00:00:36.11]         RfPower              unknown
+[xUnit.net 00:00:36.11]         RfGain               unknown
+[xUnit.net 00:00:36.11]         Squelch              unknown
+[xUnit.net 00:00:36.11]         SquelchStatus        unknown
+[xUnit.net 00:00:36.11]         Agc                  unknown
+[xUnit.net 00:00:36.11]         Preamp               unknown
+[xUnit.net 00:00:36.11]         Attenuator           unknown
+[xUnit.net 00:00:36.11]         NoiseBlanker         unknown
+[xUnit.net 00:00:36.11]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:36.11]         NoiseReduction       unknown
+[xUnit.net 00:00:36.11]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:36.11]         AutoNotch            unknown
+[xUnit.net 00:00:36.11]         ManualNotch          unknown
+[xUnit.net 00:00:36.11]         BreakIn              unknown
+[xUnit.net 00:00:36.11]         KeyerSpeed           unknown
+[xUnit.net 00:00:36.11]         CwPitch              unknown
+[xUnit.net 00:00:36.11]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:36.11]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:36.11]         NotchPosition        unknown
+[xUnit.net 00:00:36.11]         FilterShape          unknown
+[xUnit.net 00:00:36.11]         AfLevel              unknown
+[xUnit.net 00:00:36.11]         RfSqlFunction        unknown
+[xUnit.net 00:00:36.11]         BreakInDelay         unknown
+[xUnit.net 00:00:36.11]         AntennaTuner         unknown
+[xUnit.net 00:00:36.11]         Alc                  unknown
+[xUnit.net 00:00:36.11]         AccUsbSquelch        unknown
+[xUnit.net 00:00:36.11]         Split                unknown
+[xUnit.net 00:00:36.11]         ScopeOn              unknown
+[xUnit.net 00:00:36.11]         ScopeOutput          unknown
+[xUnit.net 00:00:36.11]         CivUsbPort           unknown
+[xUnit.net 00:00:36.11]         CivTransceive        unknown
+[xUnit.net 00:00:36.11]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear [4 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "characters 35 emitted, 0 unsure  (since t"···
+Not found: "since the decoder started listening"
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 93
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-08-28-004844
+ captured   2026-09-24 14:31:11 UTC
+ audioSeen  1440000 samples
+ fingerprint f070682aca70
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.7 dBFS  (over the whole recording)
+ meterPeak  -13.9 dBFS  (the moment it was kept)
+ inputFloor -29.2 dBFS
+ clipping   False
+ toneHz     430.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   77.7  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 430.0 Hz stood above the noise beside it, in dB)
+ heldPeak   72.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (35 characters, and the survey admitted keying at this pitch)
+ elements   119 seen, 119 resolved  (since the transcript was cleared at 14:30:32 UTC, less than a minute ago)
+ characters 35 emitted, 0 unsure  (since the transcript was cleared at 14:30:32 UTC, less than a minute ago)
+ decoderWpm 22
+ text       nothing read
+ textCovers everything read since the transcript was cleared at 14:30:32 UTC, less than a minute ago
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    22 WPM won out of 8 to 40, 35.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     keying at 450 Hz, 150 ms key down, 28 dB swing, 26 key-downs  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       39.3%  (of the 30.0 seconds in this file, the key was down at 430.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  35 characters, 119 elements  (since the transcript was cleared at 14:30:32 UTC, less than a minute ago; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:40.53]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear [FAIL]
+[xUnit.net 00:00:40.53]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:40.53]       String:    "sinceLast  35 characters, 119 elements  ("···
+[xUnit.net 00:00:40.53]       Not found: "since the decoder started listening"
+[xUnit.net 00:00:40.53]       Stack Trace:
+[xUnit.net 00:00:40.53]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(104,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear()
+[xUnit.net 00:00:40.53]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:40.53]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:40.53]       Output:
+[xUnit.net 00:00:40.53]         == cw-2026-08-28-004844
+[xUnit.net 00:00:40.53]         captured   2026-09-24 14:31:16 UTC
+[xUnit.net 00:00:40.53]         audioSeen  1440000 samples
+[xUnit.net 00:00:40.53]         fingerprint f070682aca70
+[xUnit.net 00:00:40.53]         seconds    30.0
+[xUnit.net 00:00:40.53]         sampleRate 48000
+[xUnit.net 00:00:40.53]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:40.53]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:40.53]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:40.53]         
+[xUnit.net 00:00:40.53]         inputPeak  -13.7 dBFS  (over the whole recording)
+[xUnit.net 00:00:40.53]         meterPeak  -13.9 dBFS  (the moment it was kept)
+[xUnit.net 00:00:40.53]         inputFloor -29.2 dBFS
+[xUnit.net 00:00:40.53]         clipping   False
+[xUnit.net 00:00:40.53]         toneHz     430.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:40.53]         tonePeak   77.7  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 430.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:40.53]         heldPeak   72.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:40.53]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:40.53]         unkeyed    no  (35 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:40.53]         elements   119 seen, 119 resolved  (since the transcript was cleared at 14:30:37 UTC, less than a minute ago)
+[xUnit.net 00:00:40.53]         characters 35 emitted, 0 unsure  (since the transcript was cleared at 14:30:37 UTC, less than a minute ago)
+[xUnit.net 00:00:40.53]         decoderWpm 22
+[xUnit.net 00:00:40.53]         text       nothing read
+[xUnit.net 00:00:40.53]         textCovers everything read since the transcript was cleared at 14:30:37 UTC, less than a minute ago
+[xUnit.net 00:00:40.53]         spanLlr    nothing read yet
+[xUnit.net 00:00:40.53]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:40.53]         reading    22 WPM won out of 8 to 40, 35.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:40.53]         keying     keying at 450 Hz, 150 ms key down, 28 dB swing, 26 key-downs  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:40.53]         duty       39.3%  (of the 30.0 seconds in this file, the key was down at 430.0 Hz)
+[xUnit.net 00:00:40.53]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:40.53]         
+[xUnit.net 00:00:40.53]         sinceLast  35 characters, 119 elements  (since the transcript was cleared at 14:30:37 UTC, less than a minute ago; this is the first capture of the session)
+[xUnit.net 00:00:40.53]         
+[xUnit.net 00:00:40.53]         Frequency            unknown
+[xUnit.net 00:00:40.53]         Mode                 unknown
+[xUnit.net 00:00:40.53]         DataMode             unknown
+[xUnit.net 00:00:40.53]         FilterSelection      unknown
+[xUnit.net 00:00:40.53]         FilterBandwidth      unknown
+[xUnit.net 00:00:40.53]         SMeter               unknown
+[xUnit.net 00:00:40.53]         TransmitStatus       unknown
+[xUnit.net 00:00:40.53]         Overflow             unknown
+[xUnit.net 00:00:40.53]         TwinPbtOuter         unknown
+[xUnit.net 00:00:40.53]         TwinPbtInner         unknown
+[xUnit.net 00:00:40.53]         Rit                  unknown
+[xUnit.net 00:00:40.53]         Swr                  unknown
+[xUnit.net 00:00:40.53]         PowerOut             unknown
+[xUnit.net 00:00:40.53]         RfPower              unknown
+[xUnit.net 00:00:40.53]         RfGain               unknown
+[xUnit.net 00:00:40.53]         Squelch              unknown
+[xUnit.net 00:00:40.53]         SquelchStatus        unknown
+[xUnit.net 00:00:40.53]         Agc                  unknown
+[xUnit.net 00:00:40.53]         Preamp               unknown
+[xUnit.net 00:00:40.53]         Attenuator           unknown
+[xUnit.net 00:00:40.53]         NoiseBlanker         unknown
+[xUnit.net 00:00:40.53]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:40.53]         NoiseReduction       unknown
+[xUnit.net 00:00:40.53]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:40.53]         AutoNotch            unknown
+[xUnit.net 00:00:40.53]         ManualNotch          unknown
+[xUnit.net 00:00:40.53]         BreakIn              unknown
+[xUnit.net 00:00:40.53]         KeyerSpeed           unknown
+[xUnit.net 00:00:40.53]         CwPitch              unknown
+[xUnit.net 00:00:40.53]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:40.53]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:40.53]         NotchPosition        unknown
+[xUnit.net 00:00:40.53]         FilterShape          unknown
+[xUnit.net 00:00:40.53]         AfLevel              unknown
+[xUnit.net 00:00:40.53]         RfSqlFunction        unknown
+[xUnit.net 00:00:40.53]         BreakInDelay         unknown
+[xUnit.net 00:00:40.53]         AntennaTuner         unknown
+[xUnit.net 00:00:40.53]         Alc                  unknown
+[xUnit.net 00:00:40.53]         AccUsbSquelch        unknown
+[xUnit.net 00:00:40.53]         Split                unknown
+[xUnit.net 00:00:40.53]         ScopeOn              unknown
+[xUnit.net 00:00:40.53]         ScopeOutput          unknown
+[xUnit.net 00:00:40.53]         CivUsbPort           unknown
+[xUnit.net 00:00:40.53]         CivTransceive        unknown
+[xUnit.net 00:00:40.53]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear [4 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "sinceLast  35 characters, 119 elements  ("···
+Not found: "since the decoder started listening"
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 104
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-08-28-004844
+ captured   2026-09-24 14:31:16 UTC
+ audioSeen  1440000 samples
+ fingerprint f070682aca70
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.7 dBFS  (over the whole recording)
+ meterPeak  -13.9 dBFS  (the moment it was kept)
+ inputFloor -29.2 dBFS
+ clipping   False
+ toneHz     430.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   77.7  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 430.0 Hz stood above the noise beside it, in dB)
+ heldPeak   72.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (35 characters, and the survey admitted keying at this pitch)
+ elements   119 seen, 119 resolved  (since the transcript was cleared at 14:30:37 UTC, less than a minute ago)
+ characters 35 emitted, 0 unsure  (since the transcript was cleared at 14:30:37 UTC, less than a minute ago)
+ decoderWpm 22
+ text       nothing read
+ textCovers everything read since the transcript was cleared at 14:30:37 UTC, less than a minute ago
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    22 WPM won out of 8 to 40, 35.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     keying at 450 Hz, 150 ms key down, 28 dB swing, 26 key-downs  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       39.3%  (of the 30.0 seconds in this file, the key was down at 430.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  35 characters, 119 elements  (since the transcript was cleared at 14:30:37 UTC, less than a minute ago; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:44.98]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear [FAIL]
+[xUnit.net 00:00:44.98]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:44.98]       String:    "elements   119 seen, 119 resolved  (since"···
+[xUnit.net 00:00:44.98]       Not found: "since the decoder started listening"
+[xUnit.net 00:00:44.98]       Stack Trace:
+[xUnit.net 00:00:44.98]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(83,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear()
+[xUnit.net 00:00:44.98]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:44.98]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:44.98]       Output:
+[xUnit.net 00:00:44.98]         == cw-2026-08-28-004844
+[xUnit.net 00:00:44.98]         captured   2026-09-24 14:31:20 UTC
+[xUnit.net 00:00:44.98]         audioSeen  1440000 samples
+[xUnit.net 00:00:44.98]         fingerprint f070682aca70
+[xUnit.net 00:00:44.98]         seconds    30.0
+[xUnit.net 00:00:44.98]         sampleRate 48000
+[xUnit.net 00:00:44.98]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:44.98]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:44.98]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:44.98]         
+[xUnit.net 00:00:44.98]         inputPeak  -13.7 dBFS  (over the whole recording)
+[xUnit.net 00:00:44.98]         meterPeak  -13.9 dBFS  (the moment it was kept)
+[xUnit.net 00:00:44.98]         inputFloor -29.2 dBFS
+[xUnit.net 00:00:44.98]         clipping   False
+[xUnit.net 00:00:44.98]         toneHz     430.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:44.98]         tonePeak   77.7  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 430.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:44.98]         heldPeak   72.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:44.98]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:44.98]         unkeyed    no  (35 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:44.98]         elements   119 seen, 119 resolved  (since the transcript was cleared at 14:30:41 UTC, less than a minute ago)
+[xUnit.net 00:00:44.98]         characters 35 emitted, 0 unsure  (since the transcript was cleared at 14:30:41 UTC, less than a minute ago)
+[xUnit.net 00:00:44.98]         decoderWpm 22
+[xUnit.net 00:00:44.98]         text       nothing read
+[xUnit.net 00:00:44.98]         textCovers everything read since the transcript was cleared at 14:30:41 UTC, less than a minute ago
+[xUnit.net 00:00:44.98]         spanLlr    nothing read yet
+[xUnit.net 00:00:44.98]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:44.98]         reading    22 WPM won out of 8 to 40, 35.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:44.98]         keying     keying at 450 Hz, 150 ms key down, 28 dB swing, 26 key-downs  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:44.98]         duty       39.3%  (of the 30.0 seconds in this file, the key was down at 430.0 Hz)
+[xUnit.net 00:00:44.98]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:44.98]         
+[xUnit.net 00:00:44.98]         sinceLast  35 characters, 119 elements  (since the transcript was cleared at 14:30:41 UTC, less than a minute ago; this is the first capture of the session)
+[xUnit.net 00:00:44.98]         
+[xUnit.net 00:00:44.98]         Frequency            unknown
+[xUnit.net 00:00:44.98]         Mode                 unknown
+[xUnit.net 00:00:44.98]         DataMode             unknown
+[xUnit.net 00:00:44.98]         FilterSelection      unknown
+[xUnit.net 00:00:44.98]         FilterBandwidth      unknown
+[xUnit.net 00:00:44.98]         SMeter               unknown
+[xUnit.net 00:00:44.98]         TransmitStatus       unknown
+[xUnit.net 00:00:44.98]         Overflow             unknown
+[xUnit.net 00:00:44.98]         TwinPbtOuter         unknown
+[xUnit.net 00:00:44.98]         TwinPbtInner         unknown
+[xUnit.net 00:00:44.98]         Rit                  unknown
+[xUnit.net 00:00:44.98]         Swr                  unknown
+[xUnit.net 00:00:44.98]         PowerOut             unknown
+[xUnit.net 00:00:44.98]         RfPower              unknown
+[xUnit.net 00:00:44.98]         RfGain               unknown
+[xUnit.net 00:00:44.98]         Squelch              unknown
+[xUnit.net 00:00:44.98]         SquelchStatus        unknown
+[xUnit.net 00:00:44.98]         Agc                  unknown
+[xUnit.net 00:00:44.98]         Preamp               unknown
+[xUnit.net 00:00:44.98]         Attenuator           unknown
+[xUnit.net 00:00:44.98]         NoiseBlanker         unknown
+[xUnit.net 00:00:44.98]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:44.98]         NoiseReduction       unknown
+[xUnit.net 00:00:44.98]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:44.98]         AutoNotch            unknown
+[xUnit.net 00:00:44.98]         ManualNotch          unknown
+[xUnit.net 00:00:44.98]         BreakIn              unknown
+[xUnit.net 00:00:44.98]         KeyerSpeed           unknown
+[xUnit.net 00:00:44.98]         CwPitch              unknown
+[xUnit.net 00:00:44.98]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:44.98]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:44.98]         NotchPosition        unknown
+[xUnit.net 00:00:44.98]         FilterShape          unknown
+[xUnit.net 00:00:44.98]         AfLevel              unknown
+[xUnit.net 00:00:44.98]         RfSqlFunction        unknown
+[xUnit.net 00:00:44.98]         BreakInDelay         unknown
+[xUnit.net 00:00:44.98]         AntennaTuner         unknown
+[xUnit.net 00:00:44.98]         Alc                  unknown
+[xUnit.net 00:00:44.98]         AccUsbSquelch        unknown
+[xUnit.net 00:00:44.98]         Split                unknown
+[xUnit.net 00:00:44.98]         ScopeOn              unknown
+[xUnit.net 00:00:44.98]         ScopeOutput          unknown
+[xUnit.net 00:00:44.98]         CivUsbPort           unknown
+[xUnit.net 00:00:44.98]         CivTransceive        unknown
+[xUnit.net 00:00:44.98]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear [4 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "elements   119 seen, 119 resolved  (since"···
+Not found: "since the decoder started listening"
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 83
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-08-28-004844
+ captured   2026-09-24 14:31:20 UTC
+ audioSeen  1440000 samples
+ fingerprint f070682aca70
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.7 dBFS  (over the whole recording)
+ meterPeak  -13.9 dBFS  (the moment it was kept)
+ inputFloor -29.2 dBFS
+ clipping   False
+ toneHz     430.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   77.7  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 430.0 Hz stood above the noise beside it, in dB)
+ heldPeak   72.4  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (35 characters, and the survey admitted keying at this pitch)
+ elements   119 seen, 119 resolved  (since the transcript was cleared at 14:30:41 UTC, less than a minute ago)
+ characters 35 emitted, 0 unsure  (since the transcript was cleared at 14:30:41 UTC, less than a minute ago)
+ decoderWpm 22
+ text       nothing read
+ textCovers everything read since the transcript was cleared at 14:30:41 UTC, less than a minute ago
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    22 WPM won out of 8 to 40, 35.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     keying at 450 Hz, 150 ms key down, 28 dB swing, 26 key-downs  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       39.3%  (of the 30.0 seconds in this file, the key was down at 430.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  35 characters, 119 elements  (since the transcript was cleared at 14:30:41 UTC, less than a minute ago; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:49.47]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCompetingLineDoesNotCallAnUnkeyedToneKeyed [FAIL]
+[xUnit.net 00:00:49.47]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:49.47]                                       ↓ (pos 130)
+[xUnit.net 00:00:49.47]       String: ···"ver the band floor, keyed 29% of the time"···
+[xUnit.net 00:00:49.47]       Found:  "keyed "
+[xUnit.net 00:00:49.47]       Stack Trace:
+[xUnit.net 00:00:49.47]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(117,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCompetingLineDoesNotCallAnUnkeyedToneKeyed()
+[xUnit.net 00:00:49.47]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:49.47]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:49.47]       Output:
+[xUnit.net 00:00:49.47]         == cw-2026-08-22-014113
+[xUnit.net 00:00:49.47]         captured   2026-09-24 14:31:25 UTC
+[xUnit.net 00:00:49.47]         audioSeen  1440000 samples
+[xUnit.net 00:00:49.47]         fingerprint 9756213d8035
+[xUnit.net 00:00:49.47]         seconds    30.0
+[xUnit.net 00:00:49.47]         sampleRate 48000
+[xUnit.net 00:00:49.47]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:49.47]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:49.47]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:49.47]         
+[xUnit.net 00:00:49.47]         inputPeak  -12.9 dBFS  (over the whole recording)
+[xUnit.net 00:00:49.47]         meterPeak  -13.3 dBFS  (the moment it was kept)
+[xUnit.net 00:00:49.47]         inputFloor -21.5 dBFS
+[xUnit.net 00:00:49.47]         clipping   False
+[xUnit.net 00:00:49.47]         toneHz     600.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+[xUnit.net 00:00:49.47]         tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
+[xUnit.net 00:00:49.47]         heldPeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:49.47]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:49.47]         unkeyed    nothing emitted
+[xUnit.net 00:00:49.47]         elements   0 seen, 0 resolved  (since the decoder started listening)
+[xUnit.net 00:00:49.47]         characters 0 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:49.47]         decoderWpm not proved (a tone but no resolved character; the decoder's own best hypothesis was 20 WPM)
+[xUnit.net 00:00:49.47]         text       nothing read
+[xUnit.net 00:00:49.47]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:49.47]         spanLlr    nothing read yet
+[xUnit.net 00:00:49.47]         competing  none admitted, and the survey is not silent: the loudest thing in the band is at 600 Hz, +10.0 dB over the band floor, keyed 29% of the time. Nothing has judged it to be a station
+[xUnit.net 00:00:49.47]         reading    20 WPM won out of 8 to 40, 0.8 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:49.47]         keying     no keying at 650 Hz: 211 rises above the threshold, median 48 ms, 14 dB swing; not called keying on a keying score of 0.06 where it needs 0.10 and a 14 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:49.47]         duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+[xUnit.net 00:00:49.47]         elementHz  each element's own pitch not measured  (read again for this line, the audio in this file gave no characters, which is too few elements to say anything about how they spread; the counts above are for the stretch they name)
+[xUnit.net 00:00:49.47]         
+[xUnit.net 00:00:49.47]         sinceLast  0 characters, 0 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:49.47]         
+[xUnit.net 00:00:49.47]         Frequency            unknown
+[xUnit.net 00:00:49.47]         Mode                 unknown
+[xUnit.net 00:00:49.47]         DataMode             unknown
+[xUnit.net 00:00:49.47]         FilterSelection      unknown
+[xUnit.net 00:00:49.47]         FilterBandwidth      unknown
+[xUnit.net 00:00:49.47]         SMeter               unknown
+[xUnit.net 00:00:49.47]         TransmitStatus       unknown
+[xUnit.net 00:00:49.47]         Overflow             unknown
+[xUnit.net 00:00:49.47]         TwinPbtOuter         unknown
+[xUnit.net 00:00:49.47]         TwinPbtInner         unknown
+[xUnit.net 00:00:49.47]         Rit                  unknown
+[xUnit.net 00:00:49.47]         Swr                  unknown
+[xUnit.net 00:00:49.47]         PowerOut             unknown
+[xUnit.net 00:00:49.47]         RfPower              unknown
+[xUnit.net 00:00:49.47]         RfGain               unknown
+[xUnit.net 00:00:49.47]         Squelch              unknown
+[xUnit.net 00:00:49.47]         SquelchStatus        unknown
+[xUnit.net 00:00:49.47]         Agc                  unknown
+[xUnit.net 00:00:49.47]         Preamp               unknown
+[xUnit.net 00:00:49.47]         Attenuator           unknown
+[xUnit.net 00:00:49.47]         NoiseBlanker         unknown
+[xUnit.net 00:00:49.47]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:49.47]         NoiseReduction       unknown
+[xUnit.net 00:00:49.47]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:49.47]         AutoNotch            unknown
+[xUnit.net 00:00:49.47]         ManualNotch          unknown
+[xUnit.net 00:00:49.47]         BreakIn              unknown
+[xUnit.net 00:00:49.47]         KeyerSpeed           unknown
+[xUnit.net 00:00:49.47]         CwPitch              unknown
+[xUnit.net 00:00:49.47]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:49.47]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:49.47]         NotchPosition        unknown
+[xUnit.net 00:00:49.47]         FilterShape          unknown
+[xUnit.net 00:00:49.47]         AfLevel              unknown
+[xUnit.net 00:00:49.47]         RfSqlFunction        unknown
+[xUnit.net 00:00:49.47]         BreakInDelay         unknown
+[xUnit.net 00:00:49.47]         AntennaTuner         unknown
+[xUnit.net 00:00:49.47]         Alc                  unknown
+[xUnit.net 00:00:49.47]         AccUsbSquelch        unknown
+[xUnit.net 00:00:49.47]         Split                unknown
+[xUnit.net 00:00:49.47]         ScopeOn              unknown
+[xUnit.net 00:00:49.47]         ScopeOutput          unknown
+[xUnit.net 00:00:49.47]         CivUsbPort           unknown
+[xUnit.net 00:00:49.47]         CivTransceive        unknown
+[xUnit.net 00:00:49.47]         Vfo                  unknown
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCompetingLineDoesNotCallAnUnkeyedToneKeyed [4 s]
+  Error Message:
+   Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 130)
+String: ···"ver the band floor, keyed 29% of the time"···
+Found:  "keyed "
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheCompetingLineDoesNotCallAnUnkeyedToneKeyed() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 117
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-08-22-014113
+ captured   2026-09-24 14:31:25 UTC
+ audioSeen  1440000 samples
+ fingerprint 9756213d8035
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -12.9 dBFS  (over the whole recording)
+ meterPeak  -13.3 dBFS  (the moment it was kept)
+ inputFloor -21.5 dBFS
+ clipping   False
+ toneHz     600.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+ tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
+ heldPeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    nothing emitted
+ elements   0 seen, 0 resolved  (since the decoder started listening)
+ characters 0 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm not proved (a tone but no resolved character; the decoder's own best hypothesis was 20 WPM)
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none admitted, and the survey is not silent: the loudest thing in the band is at 600 Hz, +10.0 dB over the band floor, keyed 29% of the time. Nothing has judged it to be a station
+ reading    20 WPM won out of 8 to 40, 0.8 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     no keying at 650 Hz: 211 rises above the threshold, median 48 ms, 14 dB swing; not called keying on a keying score of 0.06 where it needs 0.10 and a 14 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+ elementHz  each element's own pitch not measured  (read again for this line, the audio in this file gave no characters, which is too few elements to say anything about how they spread; the counts above are for the stretch they name)
+ 
+ sinceLast  0 characters, 0 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+[xUnit.net 00:00:54.21]     Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLineSaysWhenItWasRead [FAIL]
+[xUnit.net 00:00:54.21]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:54.21]                                       ↓ (pos 133)
+[xUnit.net 00:00:54.21]       String: ···"econd window alone, at the moment of the "···
+[xUnit.net 00:00:54.21]       Found:  "at the moment of the press"
+[xUnit.net 00:00:54.21]       Stack Trace:
+[xUnit.net 00:00:54.21]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs(140,0): at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLineSaysWhenItWasRead()
+[xUnit.net 00:00:54.21]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:54.21]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:54.21]       Output:
+[xUnit.net 00:00:54.21]         == cw-2026-09-23-173723
+[xUnit.net 00:00:54.21]         captured   2026-09-24 14:31:30 UTC
+[xUnit.net 00:00:54.21]         audioSeen  1440000 samples
+[xUnit.net 00:00:54.21]         fingerprint eb30420da2fa
+[xUnit.net 00:00:54.21]         seconds    30.0
+[xUnit.net 00:00:54.21]         sampleRate 48000
+[xUnit.net 00:00:54.21]         frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+[xUnit.net 00:00:54.21]         band       40 m  (from Hamlet's own frequency, the radio was not read)
+[xUnit.net 00:00:54.21]         broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+[xUnit.net 00:00:54.21]         
+[xUnit.net 00:00:54.21]         inputPeak  -13.2 dBFS  (over the whole recording)
+[xUnit.net 00:00:54.21]         meterPeak  -13.6 dBFS  (the moment it was kept)
+[xUnit.net 00:00:54.21]         inputFloor -21.7 dBFS
+[xUnit.net 00:00:54.21]         clipping   False
+[xUnit.net 00:00:54.21]         toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+[xUnit.net 00:00:54.21]         tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+[xUnit.net 00:00:54.21]         heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+[xUnit.net 00:00:54.21]         inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+[xUnit.net 00:00:54.21]         unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+[xUnit.net 00:00:54.21]         elements   111 seen, 111 resolved  (since the decoder started listening)
+[xUnit.net 00:00:54.21]         characters 46 emitted, 0 unsure  (since the decoder started listening)
+[xUnit.net 00:00:54.21]         decoderWpm 17
+[xUnit.net 00:00:54.21]         text       nothing read
+[xUnit.net 00:00:54.21]         textCovers everything read since the decoder started listening
+[xUnit.net 00:00:54.21]         spanLlr    nothing read yet
+[xUnit.net 00:00:54.21]         competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+[xUnit.net 00:00:54.21]         reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+[xUnit.net 00:00:54.21]         keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+[xUnit.net 00:00:54.21]         duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+[xUnit.net 00:00:54.21]         elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+[xUnit.net 00:00:54.21]         
+[xUnit.net 00:00:54.21]         sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+[xUnit.net 00:00:54.21]         
+[xUnit.net 00:00:54.21]         Frequency            unknown
+[xUnit.net 00:00:54.21]         Mode                 unknown
+[xUnit.net 00:00:54.21]         DataMode             unknown
+[xUnit.net 00:00:54.21]         FilterSelection      unknown
+[xUnit.net 00:00:54.21]         FilterBandwidth      unknown
+[xUnit.net 00:00:54.21]         SMeter               unknown
+[xUnit.net 00:00:54.21]         TransmitStatus       unknown
+[xUnit.net 00:00:54.21]         Overflow             unknown
+[xUnit.net 00:00:54.21]         TwinPbtOuter         unknown
+[xUnit.net 00:00:54.21]         TwinPbtInner         unknown
+[xUnit.net 00:00:54.21]         Rit                  unknown
+[xUnit.net 00:00:54.21]         Swr                  unknown
+[xUnit.net 00:00:54.21]         PowerOut             unknown
+[xUnit.net 00:00:54.21]         RfPower              unknown
+[xUnit.net 00:00:54.21]         RfGain               unknown
+[xUnit.net 00:00:54.21]         Squelch              unknown
+[xUnit.net 00:00:54.21]         SquelchStatus        unknown
+[xUnit.net 00:00:54.21]         Agc                  unknown
+[xUnit.net 00:00:54.21]         Preamp               unknown
+[xUnit.net 00:00:54.21]         Attenuator           unknown
+[xUnit.net 00:00:54.21]         NoiseBlanker         unknown
+[xUnit.net 00:00:54.21]         NoiseBlankerLevel    unknown
+[xUnit.net 00:00:54.21]         NoiseReduction       unknown
+[xUnit.net 00:00:54.21]         NoiseReductionLevel  unknown
+[xUnit.net 00:00:54.21]         AutoNotch            unknown
+[xUnit.net 00:00:54.21]         ManualNotch          unknown
+[xUnit.net 00:00:54.21]         BreakIn              unknown
+[xUnit.net 00:00:54.21]         KeyerSpeed           unknown
+[xUnit.net 00:00:54.21]         CwPitch              unknown
+[xUnit.net 00:00:54.21]         AccUsbOutputSelect   unknown
+[xUnit.net 00:00:54.21]         AccUsbAfLevel        unknown
+[xUnit.net 00:00:54.21]         NotchPosition        unknown
+[xUnit.net 00:00:54.21]         FilterShape          unknown
+[xUnit.net 00:00:54.21]         AfLevel              unknown
+[xUnit.net 00:00:54.21]         RfSqlFunction        unknown
+[xUnit.net 00:00:54.21]         BreakInDelay         unknown
+[xUnit.net 00:00:54.21]         AntennaTuner         unknown
+[xUnit.net 00:00:54.21]         Alc                  unknown
+[xUnit.net 00:00:54.21]         AccUsbSquelch        unknown
+[xUnit.net 00:00:54.21]         Split                unknown
+[xUnit.net 00:00:54.21]         ScopeOn              unknown
+[xUnit.net 00:00:54.21]         ScopeOutput          unknown
+[xUnit.net 00:00:54.21]         CivUsbPort           unknown
+[xUnit.net 00:00:54.21]         CivTransceive        unknown
+[xUnit.net 00:00:54.21]         Vfo                  unknown
+[xUnit.net 00:00:54.21]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLineSaysWhenItWasRead [4 s]
+  Error Message:
+   Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 133)
+String: ···"econd window alone, at the moment of the "···
+Found:  "at the moment of the press"
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheRestOfTheSheetIsTrueTests.TheReadingLineSaysWhenItWasRead() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheRestOfTheSheetIsTrueTests.cs:line 140
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ == cw-2026-09-23-173723
+ captured   2026-09-24 14:31:30 UTC
+ audioSeen  1440000 samples
+ fingerprint eb30420da2fa
+ seconds    30.0
+ sampleRate 48000
+ frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+ band       40 m  (from Hamlet's own frequency, the radio was not read)
+ broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+ 
+ inputPeak  -13.2 dBFS  (over the whole recording)
+ meterPeak  -13.6 dBFS  (the moment it was kept)
+ inputFloor -21.7 dBFS
+ clipping   False
+ toneHz     600.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+ tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+ heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+ inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+ unkeyed    no  (46 characters, and the survey admitted keying at this pitch)
+ elements   111 seen, 111 resolved  (since the decoder started listening)
+ characters 46 emitted, 0 unsure  (since the decoder started listening)
+ decoderWpm 17
+ text       nothing read
+ textCovers everything read since the decoder started listening
+ spanLlr    nothing read yet
+ competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+ reading    17 WPM won out of 8 to 40, 1.5 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+ keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+ duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+ elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+ 
+ sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+ 
+ Frequency            unknown
+ Mode                 unknown
+ DataMode             unknown
+ FilterSelection      unknown
+ FilterBandwidth      unknown
+ SMeter               unknown
+ TransmitStatus       unknown
+ Overflow             unknown
+ TwinPbtOuter         unknown
+ TwinPbtInner         unknown
+ Rit                  unknown
+ Swr                  unknown
+ PowerOut             unknown
+ RfPower              unknown
+ RfGain               unknown
+ Squelch              unknown
+ SquelchStatus        unknown
+ Agc                  unknown
+ Preamp               unknown
+ Attenuator           unknown
+ NoiseBlanker         unknown
+ NoiseBlankerLevel    unknown
+ NoiseReduction       unknown
+ NoiseReductionLevel  unknown
+ AutoNotch            unknown
+ ManualNotch          unknown
+ BreakIn              unknown
+ KeyerSpeed           unknown
+ CwPitch              unknown
+ AccUsbOutputSelect   unknown
+ AccUsbAfLevel        unknown
+ NotchPosition        unknown
+ FilterShape          unknown
+ AfLevel              unknown
+ RfSqlFunction        unknown
+ BreakInDelay         unknown
+ AntennaTuner         unknown
+ Alc                  unknown
+ AccUsbSquelch        unknown
+ Split                unknown
+ ScopeOn              unknown
+ ScopeOutput          unknown
+ CivUsbPort           unknown
+ CivTransceive        unknown
+ Vfo                  unknown
+
+
+
+Test Run Failed.
+Total tests: 10
+     Failed: 10
+ Total time: 54.5127 Seconds
+RC=1 WALL=55s

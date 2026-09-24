@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 418 - every sentence on the capture sheet is true of that capt
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T10:29:12-04:00
-NOTE: Running TheKeyingCaptionNamesTheSweepItRanTests after the fix
+UPDATED: 2026-09-24T10:30:35-04:00
+NOTE: Watching TheRestOfTheSheetIsTrueTests red, ten facts
 
 ---
 
