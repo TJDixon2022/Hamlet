@@ -1,0 +1,3 @@
+unit413 task 2, candidate 1 (3.2): MeasureGaps keeps the element and character trough as its evidence and, where the word heap shows no trough, puts the word gap at seven thirds of the measured character gap - bench on the ten 60 to 46 over 156, baseline 33 to 33, outside 124 to 128, all keyed 217 to 207, 17:37 29 to 29; named floors 13 of 13; the three adjudicated readings identical; captures 41 of 51, named characters fell on 021629 27 to 25, 002016 44 to 41, 004027 40 to 39, 004133 30 to 28, 004510 38 to 37 - fails 3.2's fourth test, out in the next commit
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

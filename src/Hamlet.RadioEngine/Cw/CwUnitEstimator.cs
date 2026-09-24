@@ -212,15 +212,26 @@ public static class CwUnitEstimator
         // standing there. So each boundary is checked for being emptier than the
         // two clusters it divides, which needs no threshold: it is a comparison
         // of this sender's own counts.
-        if (!IsTrough(gaps, centroids[0], centroids[1])
-            || !IsTrough(gaps, centroids[1], centroids[2]))
+        if (!IsTrough(gaps, centroids[0], centroids[1]))
         {
             return textbook;
         }
 
         var element = centroids[0];
         var character = centroids[1];
-        var word = centroids[2];
+
+        // **A WORD HEAP TOO SPARSE TO SHOW A TROUGH STILL HAS A CHARACTER HEAP
+        // BESIDE IT** (work instruction 413). Twelve seconds hold a handful of word
+        // gaps, so on a sender whose character gap is near five dits the heaps sit
+        // at one, five and eleven and the test above the character heap fails on
+        // count alone; the window then fell back to three and seven, and every
+        // five-dit gap inside a word became a space. Farnsworth spacing stretches
+        // the gap between characters and the gap between words alike, so where
+        // the word heap cannot be trusted the word gap is seven thirds of the
+        // character gap this sender was measured using.
+        var word = IsTrough(gaps, centroids[1], centroids[2])
+            ? centroids[2]
+            : character * 7.0 / 3.0;
 
         // The clip, applied to the boundary and carried back into the centroid
         // that sets it, so the boundary is the thing held inside the range.

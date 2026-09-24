@@ -1,0 +1,51 @@
+cw-2026-08-17-013347 named 57 -> 57 elements 106 -> 106
+cw-2026-08-17-013622 named 51 -> 51 elements 80 -> 80
+cw-2026-08-17-134712 named 21 -> 22 elements 41 -> 42  moved
+cw-2026-08-18-004507 named 49 -> 49 elements 117 -> 117
+unadjudicated/cw-2026-08-18-003016 named 54 -> 55 elements 146 -> 151  moved
+unadjudicated/cw-2026-08-18-003126 named 48 -> 48 elements 131 -> 130  moved
+unadjudicated/cw-2026-08-18-003758 named 44 -> 44 elements 93 -> 93
+unadjudicated/cw-2026-08-20-014854 named 0 -> 0 elements 0 -> 0
+unadjudicated/cw-2026-08-20-014935 named 0 -> 0 elements 0 -> 0
+unadjudicated/cw-2026-08-22-014113 named 0 -> 0 elements 0 -> 0
+unadjudicated/cw-2026-08-22-014308 named 0 -> 0 elements 0 -> 0
+unadjudicated/cw-2026-08-22-031838 named 43 -> 43 elements 94 -> 94
+unadjudicated/cw-2026-08-22-031905 named 36 -> 53 elements 108 -> 99  moved
+unadjudicated/cw-2026-08-22-031948 named 31 -> 31 elements 111 -> 111
+unadjudicated/cw-2026-08-22-032012 named 43 -> 43 elements 119 -> 119
+unadjudicated/cw-2026-08-22-032050 named 44 -> 44 elements 105 -> 105
+unadjudicated/cw-2026-08-22-032113 named 47 -> 47 elements 102 -> 102
+unadjudicated/cw-2026-08-22-032129 named 65 -> 65 elements 114 -> 114
+unadjudicated/cw-2026-08-23-001520 named 1 -> 1 elements 1 -> 1
+unadjudicated/cw-2026-08-23-001831 named 44 -> 44 elements 108 -> 108
+unadjudicated/cw-2026-08-23-001952 named 57 -> 57 elements 114 -> 114
+unadjudicated/cw-2026-08-23-002016 named 44 -> 41 elements 84 -> 82  moved
+unadjudicated/cw-2026-08-24-012403 named 21 -> 21 elements 62 -> 62
+unadjudicated/cw-2026-08-25-011552 named 22 -> 22 elements 74 -> 74
+unadjudicated/cw-2026-08-25-012748 named 2 -> 2 elements 3 -> 3
+unadjudicated/cw-2026-08-25-012823 named 26 -> 26 elements 40 -> 40
+unadjudicated/cw-2026-08-25-012922 named 45 -> 45 elements 106 -> 107  moved
+unadjudicated/cw-2026-08-25-013010 named 48 -> 49 elements 122 -> 122  moved
+unadjudicated/cw-2026-08-25-013150 named 51 -> 51 elements 123 -> 122  moved
+unadjudicated/cw-2026-08-25-013303 named 44 -> 45 elements 127 -> 128  moved
+unadjudicated/cw-2026-08-25-013402 named 56 -> 56 elements 150 -> 150
+unadjudicated/cw-2026-08-25-013520 named 55 -> 55 elements 147 -> 147
+unadjudicated/cw-2026-08-25-013637 named 60 -> 60 elements 157 -> 158  moved
+unadjudicated/cw-2026-08-25-021410 named 36 -> 36 elements 88 -> 87  moved
+unadjudicated/cw-2026-08-25-021629 named 27 -> 25 elements 65 -> 60  moved
+unadjudicated/cw-2026-08-25-021825 named 25 -> 27 elements 49 -> 53  moved
+unadjudicated/cw-2026-08-26-125941 named 0 -> 0 elements 0 -> 0
+unadjudicated/cw-2026-09-24-003901 named 9 -> 9 elements 20 -> 20
+unadjudicated/cw-2026-09-24-003919 named 27 -> 27 elements 54 -> 54
+unadjudicated/cw-2026-09-24-004027 named 40 -> 39 elements 119 -> 116  moved
+unadjudicated/cw-2026-09-24-004108 named 32 -> 32 elements 107 -> 107
+unadjudicated/cw-2026-09-24-004133 named 30 -> 28 elements 87 -> 91  moved
+unadjudicated/cw-2026-09-24-004205 named 34 -> 35 elements 96 -> 96  moved
+unadjudicated/cw-2026-09-24-004234 named 37 -> 37 elements 96 -> 96
+unadjudicated/cw-2026-09-24-004322 named 39 -> 39 elements 112 -> 112
+unadjudicated/cw-2026-09-24-004347 named 40 -> 40 elements 115 -> 115
+unadjudicated/cw-2026-09-24-004405 named 36 -> 36 elements 106 -> 102  moved
+unadjudicated/cw-2026-09-24-004427 named 43 -> 43 elements 112 -> 112
+unadjudicated/cw-2026-09-24-004510 named 38 -> 37 elements 104 -> 105  moved
+unadjudicated/cw-2026-09-24-004535 named 47 -> 47 elements 128 -> 128
+unadjudicated/cw-2026-09-24-004550 named 41 -> 41 elements 123 -> 123
