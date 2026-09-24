@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-172
+date: 2026-09-24
+refs: PHASE_PLAN.md R65, criterion 6.8, work instruction 413, HM-DEC-139, HM-DEC-056, unit 411 section 4 item 1
+---
+
+**The RF gain condition may be compared with its read-back on one scale, and no carried ask
+ever halts the loop.** Tim, 2026-09-24.
+
+**The scale.** The CW receive condition asks for RF gain 255 on the radio's scale; the radio
+reads it back as 100 percent. They never compare equal, so every CW tune-in writes the gain
+and files the result unconfirmed, and the memory never records it. `ReceiverSetup` and
+`Ic7300Rig.SetSettingAsync` may compare on a single scale so that a gain already at the
+wanted value is recognized. The change makes the app write less to the radio, not more.
+Nothing about keying, transmitting or power is touched.
+
+**The loop.** A stop 3 is legitimate only when a criterion of the step a unit is working
+cannot be met without a ruling on keying, transmit and safety, money, or a fact the product
+states. A carried ask, a question raised in a report's section 4, a parked item, or a
+finding noticed on the way past is parked and the loop goes on, however squarely it touches
+one of the three. A unit does not carry an ask forward as blocking unless the criterion it
+was authored for is the one that cannot be met.
+
+**Why.** Tim asked for a night of unattended work. Unit 412 completed its work and the loop
+halted on an ask 412 had carried rather than on anything blocking a criterion, which is the
+second time in a night that a pile item stopped the work.
+
+**Whose words are whose.** The rulings are Tim's; the wording is work instruction 413's
+record of them. Rejected: leaving the RF gain ask parked and unanswered.
+
+---
 id: HM-DEC-171
 date: 2026-09-24
 refs: PHASE_PLAN.md R63 R64, criteria 1.6 2.5 6.7, work instruction 412 task 0, HM-DEC-091, HM-DEC-103, HM-DEC-168

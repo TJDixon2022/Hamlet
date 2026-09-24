@@ -9,6 +9,19 @@ STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose 
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
+## UNIT 413 - STEP 3
+
+STEP: 3
+APPROACH: trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+MOVE: continue
+WHY: PHASE_PLAN.md step 3 criterion 3.1 asks that the dominant error kind named in 0.3 be traced to a named line or property in src/Hamlet.RadioEngine/Cw, printed by a fact that asserts nothing, before any change is built
+STATE: not started
+DECIDED: which candidate is built first, the form of the trace printer and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; HM-DEC-172; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0 and 0.2
+ADVANCES: step 3 criterion 1
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.99 to 1.13.100. HM-DEC-172 in DECISIONS.md and CLAUDE.md section 1. PHASE_STATUS.md names unit 413 and CURRENT_STEP 3. HEAD at entry 8a140c79. Section 5 against the tree: the capture floor table holds 51 rows and the ten keyed captures have key files, eleven with 004535 keyed with nothing to score; baseline.md holds the keyed table with unsure per named; CwScorer.Kinds counts spaces added and missing from the alignment; MeasureGaps is CwUnitEstimator.cs 174, called from CwProbabilisticStream.cs 453 with the unit from CwUnitEstimator.Measure; G1 survives only as prose, docs/phase-cw/unit405-reds.md 245 and the trace behind it at 80 to 85, no diff. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 394 s; APP 276 of 278 in 155 s, Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference and TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow lost to the dispatcher loop before any assertion, 2 of 2 alone; captures 51 of 51 in 123 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s. THE NUMBER TO BEAT, every key inferred: the baseline 33 edits over 46 characters, 17:37 29 over 25; outside the baseline 124 over 363; the ten keyed captures on the bench 60 over 156, live 41; all keyed recordings together 217 edits over 565 characters; named floors 13 of 13.
+
 ## UNIT 412 - STEP 2
 
 STEP: 2

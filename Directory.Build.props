@@ -1288,7 +1288,7 @@
     under src changes in this unit.
   -->
   <PropertyGroup>
-    <Version>1.13.99</Version>
+    <Version>1.13.100</Version>
   </PropertyGroup>
 
   <!--
