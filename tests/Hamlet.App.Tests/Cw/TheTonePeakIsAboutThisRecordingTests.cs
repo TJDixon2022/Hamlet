@@ -39,7 +39,7 @@ public sealed class TheTonePeakIsAboutThisRecordingTests
 
         Assert.True(report.HasTone && report.PitchWasMeasured, $"{stamp} no longer has a measured pitch");
 
-        var line = MainWindowViewModel.TonePeakRecordLine(report);
+        var line = MainWindowViewModel.TonePeakRecordLine(audio, report);
         var expected = ToneOverNoiseByHand.Peak(audio, report.ToneHz);
 
         _output.WriteLine(line);
@@ -61,11 +61,11 @@ public sealed class TheTonePeakIsAboutThisRecordingTests
     [Fact]
     public void WithNoMeasuredPitchTheLineSaysSoAndPrintsNoNumber()
     {
-        var (_, report) = Replay("cw-2026-08-20-014854");
+        var (audio, report) = Replay("cw-2026-08-20-014854");
 
         Assert.False(report.PitchWasMeasured, "014854 now has a measured pitch");
 
-        var line = MainWindowViewModel.TonePeakRecordLine(report);
+        var line = MainWindowViewModel.TonePeakRecordLine(audio, report);
 
         _output.WriteLine(line);
 

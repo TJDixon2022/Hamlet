@@ -1,0 +1,14 @@
+unit417 task 2: the line (6.7) - tonePeak is measured over the capture's own audio by RecordingToneOverNoise, labeled a figure about this recording, and says not measured in words where the decoder has no tone, never measured its pitch, or the file is too short; the held figure stays on its own heldPeak line under its own caption; CwDecodeReport.SnrDb and src/Hamlet.RadioEngine/Cw untouched
+
+TheTonePeakIsAboutThisRecordingTests 3 of 3 green, red at a9339312:
+173723 tonePeak 25.7 held -> 26.8 over this recording, measured independently 26.8
+013347 tonePeak 32.2 held -> 33.4 over this recording, measured independently 33.4
+014854 tonePeak 54.7 held -> not measured, no pitch was measured
+
+Cost at capture: the sheet's measurement takes 862, 862 and 860 ms on the longest capture in the tree, 30.0 s at 48 kHz, in the Debug test build; it runs on a pool thread through Task.Run, after the WAV is written, so the UI thread holds only the await.
+
+TheSidecarIsReReadTests: the call takes the audio, which the new signature forces; its header and output file name say unit 417 so unit 411's evidence is not overwritten. Regenerated .run-unit/unit417-sidecar-*.txt for 17:37 and 014113: only the tonePeak line differs from unit 411's; elements, keying and elementHz byte-identical.
+
+6.7 ticked. 6.2 not ticked: its three named clauses hold, but the keying caption names a 400 to 1200 Hz sweep and the meter sweeps 300 to 900; parked as P10. P11 parked: the noise beside the tone can be the receiver's stopband.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

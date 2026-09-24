@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T09:37:11-04:00
-NOTE: Task 2 - running TheTonePeakIsAboutThisRecordingTests against today's line, expecting red
+UPDATED: 2026-09-24T09:41:41-04:00
+NOTE: Task 2 - TheTonePeakIsAboutThisRecordingTests on the final build
 
 ---
 

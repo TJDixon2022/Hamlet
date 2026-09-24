@@ -85,7 +85,8 @@ public sealed class WhatTheTonePeakIsAboutTests
                 + $"| {report.PitchWasMeasured} "
                 + $"| {(measurable ? recording.ToString("0.0") : "not measured")} "
                 + $"| {regardless:0.0} | {keyed} of {windows} | {clock.ElapsedMilliseconds}");
-            _output.WriteLine("  today: " + MainWindowViewModel.TonePeakRecordLine(report));
+            _output.WriteLine("  now:  " + MainWindowViewModel.TonePeakRecordLine(audio, report));
+            _output.WriteLine("  held: " + MainWindowViewModel.HeldPeakRecordLine(report));
 
             if (!double.IsNaN(report.ToneHz) && report.ToneHz > 0)
             {
@@ -133,6 +134,20 @@ public sealed class WhatTheTonePeakIsAboutTests
         _output.WriteLine(
             $"longest capture in the tree {longest.Samples.Length / (double)longest.SampleRate:0.0} s "
             + $"at {longest.SampleRate} Hz: the by-hand measurement took {timing.ElapsedMilliseconds} ms");
+
+        // **THE COST AT THE MOMENT OF CAPTURE** (work instruction 417 task 2): the
+        // sheet's own measurement, which the press runs on a pool thread, three times
+        // so the first run's compilation shows as what it is.
+        for (var run = 1; run <= 3; run++)
+        {
+            var sheet = Stopwatch.StartNew();
+            var figure = RecordingToneOverNoise.Peak(longest, 600);
+            sheet.Stop();
+
+            _output.WriteLine(
+                $"the sheet's measurement on the longest capture, run {run}: "
+                + $"{sheet.Elapsed.TotalMilliseconds:0} ms ({figure:0.0} dB at 600 Hz)");
+        }
     }
 
     private static CwDecodeReport Replay(MonoAudio audio)

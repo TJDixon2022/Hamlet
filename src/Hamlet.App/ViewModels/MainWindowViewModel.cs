@@ -11670,9 +11670,15 @@ public partial class MainWindowViewModel : ObservableObject
             var wav = Path.Combine(folder, $"cw-{stamp}.wav");
 
             WavAudio.Write(wav, audio);
+
+            // **MEASURED OFF THE UI THREAD, AFTER THE RECORDING IS SAFE ON DISK**
+            // (work instruction 417): the whole file is read at every grid pitch,
+            // which costs far more than the 50 ms a press may hold the window for.
+            var tonePeak = await Task.Run(() => TonePeakRecordLine(audio, pressed));
+
             File.WriteAllText(
                 Path.Combine(folder, $"cw-{stamp}.txt"),
-                CaptureNotes(audio, seen, pressed));
+                CaptureNotes(audio, seen, pressed, tonePeak));
 
             _lastCaptureSamples = seen;
 
@@ -11710,8 +11716,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// What the decoder was reporting at the moment of the press, taken once so
     /// every figure on the sheet belongs to one instant (HM-DEC-091).
     /// </param>
+    /// <param name="tonePeak">
+    /// The `tonePeak` line, measured over <paramref name="audio"/> off the UI thread.
+    /// </param>
     private string CaptureNotes(
-        MonoAudio audio, long samplesSeen, CwDecodeReport report)
+        MonoAudio audio, long samplesSeen, CwDecodeReport report, string tonePeak)
     {
         var state = RigState;
 
@@ -11796,13 +11805,13 @@ public partial class MainWindowViewModel : ObservableObject
             // `cw-2026-08-17-013347` at 34.7, which is the one this decoder reads
             // a callsign out of. **A work order was written from that reading.**
             //
-            // The number is not deleted and not changed, because it measures
-            // something real and something else was built on it. It says what it
-            // measures instead, and the two figures on this sheet that do
-            // separate a station from an empty band sit beside it: the
-            // `inputPeak` and `inputFloor` pair the terminal shows, and the swing
-            // on the `keying` line.
-            TonePeakRecordLine(report),
+            // **SO `tonePeak` IS NOW MEASURED OVER THIS RECORDING** (R63, work
+            // instruction 417), off the UI thread before this sheet is composed,
+            // and the held number follows it on its own line under its own name.
+            // That number is not deleted and not changed, because it measures
+            // something real and something else was built on it.
+            tonePeak,
+            HeldPeakRecordLine(report),
 
             // **THE FIGURE FOR THIS RECORDING, WHICH IS WHAT EVERY NUMBER ON THIS
             // SHEET IS READ AS BEING** (HM-DEC-091). Derived, by taking the
@@ -12363,18 +12372,62 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>The sidecar's `tonePeak` line, label and caption included.</summary>
+    /// <param name="audio">The recording being written, and nothing else.</param>
     /// <param name="report">What the decoder had at the moment of the press.</param>
     /// <returns>The line exactly as the sheet writes it.</returns>
     /// <remarks>
-    /// **THE SHEET'S THREE SIGNAL LINES ARE COMPOSED HERE AND NOWHERE ELSE** (work
-    /// instruction 411 task 3), so a test regenerating them from a saved capture
-    /// goes through the writer's own code rather than a copy of it.
+    /// <para>**THE SHEET'S THREE SIGNAL LINES ARE COMPOSED HERE AND NOWHERE ELSE**
+    /// (work instruction 411 task 3), so a test regenerating them from a saved
+    /// capture goes through the writer's own code rather than a copy of it.</para>
+    /// <para>**A FIGURE ABOUT THIS RECORDING, AND IT SAYS SO** (R63, work
+    /// instruction 417). It printed the decoder's held peak under a caption saying
+    /// it was not about this recording, which was honest and useless: the one
+    /// number on the sheet about the signal's strength was about something else.
+    /// It is now measured over the audio in this file by
+    /// <see cref="RecordingToneOverNoise"/>, at the pitch the decoder was
+    /// following, and **not written at all where that pitch was never measured**
+    /// (§0.0), exactly as the `duty` line is not.</para>
+    /// <para>**IT MEASURES THE WHOLE FILE, SO IT RUNS OFF THE UI THREAD**: measured
+    /// at 862 ms on the longest capture in the tree, thirty seconds at 48 kHz, which
+    /// the press would otherwise spend with the window frozen.</para>
     /// </remarks>
-    internal static string TonePeakRecordLine(CwDecodeReport report)
-        => $"tonePeak   {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}"
+    internal static string TonePeakRecordLine(MonoAudio audio, CwDecodeReport report)
+    {
+        if (!report.HasTone || !report.PitchWasMeasured
+            || double.IsNaN(report.ToneHz) || report.ToneHz <= 0)
+        {
+            return "tonePeak   not measured  (no pitch was measured, so there is no "
+                   + "tone in this recording to say the strength of)";
+        }
+
+        var peak = RecordingToneOverNoise.Peak(audio, report.ToneHz);
+
+        if (double.IsNaN(peak))
+        {
+            return "tonePeak   not measured  (this recording holds too little audio "
+                   + "to measure the tone over)";
+        }
+
+        return $"tonePeak   {peak:0.0}  (a figure about this recording: over the "
+               + $"{audio.Duration.TotalSeconds:0.0} seconds in this file, the highest "
+               + $"the tone at {report.ToneHz:0.0} Hz stood above the noise beside it, "
+               + "in dB)";
+    }
+
+    /// <summary>The sidecar's `heldPeak` line, label and caption included.</summary>
+    /// <param name="report">What the decoder had at the moment of the press.</param>
+    /// <returns>The line exactly as the sheet writes it.</returns>
+    /// <remarks>
+    /// **THE HELD FIGURE STAYS ON THE SHEET, ON ITS OWN LINE AND UNDER ITS OWN
+    /// NAME** (HM-DEC-091, work instruction 417). It is the number the roster's
+    /// `tonePeakDb` column carries, so a reader holding both can still match them.
+    /// </remarks>
+    internal static string HeldPeakRecordLine(CwDecodeReport report)
+        => $"heldPeak   {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}"
            + "  (the highest the tracked tone ever stood above the noise "
-           + "beside it, held and decaying; not a figure about this "
-           + "recording)";
+           + "beside it, held and decaying across everything heard since "
+           + "listening started; not a figure about this recording, and the "
+           + "one the roster's tonePeakDb column carries)";
 
     /// <summary>The sidecar's `keying` line, label and caption included.</summary>
     /// <param name="reading">What the meter said.</param>

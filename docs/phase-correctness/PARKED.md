@@ -125,3 +125,30 @@ unit 416 kept two, so the count stands at zero and no unit can honestly flip it 
 closed step is closed for good. What is left on 17:37 is letters, not spaces, which is P6's
 wall and is logged there rather than chased. Under R64 and R65 the loop moves to the screen,
 step 6 criterion 6.7, and the spacing stays as unit 416 left it.
+
+## P10 - the `keying` line's caption names a sweep range the meter no longer uses
+
+**Raised by unit 417, 2026-09-24.** `KeyingRecordLine` captions every sidecar's `keying` line
+*an independent sweep of 400 to 1200 Hz in 25 Hz steps*, and `CwKeyingMeter` sweeps through
+`KeyingEnvelope.Best`, whose range is the tracker's 300 to 900 Hz (`KeyingEnvelope.cs` 130 and
+135). The line's three 6.2 clauses hold on the regenerated 17:37 and 014113 sheets, but 6.2's
+lead sentence, *every sentence ... is true of that capture*, does not while the caption names a
+range nobody swept. Unit 417 was told to leave `keying` as unit 411 left it, so it did not
+repair the caption and did not tick 6.2. **Author's, overrulable:** the fix is the caption
+reading the range from `KeyingEnvelope`'s own constants, watched failing first, and it closes
+6.2 with it. Not blocking; the loop goes on.
+
+## P11 - the noise beside the tone can be the receiver's stopband
+
+**Raised by unit 417, 2026-09-24.** Both the held figure and the new per-recording `tonePeak`
+take the noise beside the tone as the median of the 25 Hz grid from 300 to 900 Hz, leaving out
+125 Hz either side of the tone. Measured over the whole of `cw-2026-08-20-014854` and
+`-014935`, every grid pitch below 550 Hz sits 25 to 44 dB under the passband, so at a tone near
+the passband's edge the figure compares the tone with the filter's stopband: 50.2 and 52.7 dB
+there at a pitch nobody measured, on recordings holding keying at no pitch. **The sheet does
+not print the figure where the pitch was not measured**, which is where this was seen; on 17:37
+and 013347, both with the tone mid-passband, the neighbours sit inside it. The alternative
+measured beside it, the tone's own quietest fifth, gave 93.3 dB on 013347, whose tone bin falls
+to -51.8 dB between elements under a steady -22 dBFS broadband, so it is no better as it
+stands. Whether the noise should be taken inside the passband only is the owner's; it would
+touch the held figure too, which HM-DEC-091 protects. Not blocking.
