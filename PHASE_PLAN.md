@@ -7,6 +7,7 @@ STEP: 2 | The number cannot be gamed - unsure characters per named character car
 STEP: 3 | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
 STEP: 4 | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
 STEP: 5 | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
 ---
 
@@ -74,6 +75,18 @@ A key inferred from the fixed form of a CQ call is evidence, and it is labeled *
 every time a number is reported against it (§0.0, FACT-004). **A synthetic key is exact**,
 because the generator knows what it sent. **An inferred key is never written for audio
 nobody could read**: the unscored stretch of a recording stays unscored.
+
+**R62 - Tim, 2026-09-23, night: the screen work joins this phase as step 6.** Ruled A of
+three. He listed five things at the radio: the RF gain banner saying the radio did not
+confirm while the radio-state dialog showed it read back 24 seconds earlier; the window
+reflowing when he tunes outside his privileges; no hover text on any control; three
+sentences in the capture sidecar that contradict their own neighbors; and a dead button on
+the CW tab. **Step 6 depends on nothing**, so the arbiter always has a place to route when
+the CW work stalls, which is why it is here rather than in a phase of its own. Its sentence
+is CLAUDE.md §0.0 - never present a guess as a decode, and never state as known what is not
+known - which binds in any phase. Rejected: a new phase holding both (an interview before
+anything runs, and step 0's ticks archived); the screen in its own phase after this one (the
+screen stays wrong for days and the CW work has nowhere to route).
 
 ## §3 What is different from the phases before it
 
@@ -173,10 +186,27 @@ says - never the whole suite.
 
 **Depends on:** steps 3 and 4.
 
+## Step 6 - The screen stops saying what is not so
+
+**Delivers:** R62. What Tim reads while he is deciding whether to trust the app.
+
+**Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
+
+**Exit:**
+- [ ] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
+- [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
+- [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
+- [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
+- [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
+- [ ] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+
+**Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
+
 ## §5 Dependencies
 
-Step 0 depends on nothing and everything depends on it. Steps 1, 2 and 4 depend on step 0
-and on nothing else, so there are three places to route when one blocks. Step 3 waits on 0
+Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
+and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
+else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
 and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
 halt.
 
@@ -197,6 +227,13 @@ halt.
 - **A named floor from 2.2 is never lowered**, and a capture row's named count is never
   lowered. Placeholders are free (R57).
 - **The generator is never the sole evidence** for keeping a change (1.4, §12.5).
+- **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+  is met by making a sentence true, never by deleting the sentence and saying nothing, and
+  never by changing a radio setting to match a claim.
+- **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
+  should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
+  no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
+  expect*, and the loop halted at stop 7 with the unit's work complete.
 - **Anything would change what keys or transmits.** `MOVE: stop`.
 - **A package is needed.** `MOVE: stop`.
 - **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
@@ -213,5 +250,8 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
+  always has somewhere to route; §6 gains the exact four report headings after unit 410's
+  report was refused over one word.
 - **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
   from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.

@@ -1,21 +1,23 @@
 ﻿
-**1. Should 3.8's tick stand on a table whose judge admits 5 of 38 cases and misses a known tone
-by 60 to 85 Hz?**
-- **Recommended ruling:** let the tick stand. Record in the plan that 3.8 is met on five
-  single-sender recordings, and that the sweep's pitch resolution on a strong clean tone is
-  coarser than the one-bin tolerance.
-- **Reasoning:**
-  - The instruction fixed the rule and the tolerance before the table was read, and both
-    conditions for the tick hold.
-  - On all five admitted cases the decoder is within 5 Hz of the sweep.
-  - On the three synthetics with a known tone, the decoder is nearer the truth than the sweep:
-    10 to 60 Hz high, against 60 to 85.
-  - So nothing in the table argues for a tracker change.
-- **Rejected: leaving 3.8 open.** No tracker change this phase allows could make the judge
-  better, and changing the sweep is barred. An open 3.8 would be one no unit can close.
-- **Rejected: widening the rule after the fact to take in the 11 keying cases that have a strong
-  runner-up.** The instruction forbids changing the rule once the table is read. Of those 11, only
-  `032129` is apart.
-- **In the way of 3.8?** Not on the instruction's rule. It becomes blocking only if Tim decides
-  the tick is worth less than it reads. Then 3.8 goes back to open, and the next unit needs a
-  judge with finer pitch resolution, which the plan does not currently allow.
+Nothing blocks. Both items block no criterion and are parked in
+`docs/phase-correctness/PARKED.md` under R54, for overrule.
+
+**1. Should the nine other adjudicated recordings join the baseline total?**
+Ruling taken: the baseline is the four recordings the instruction names, and the nine are
+printed beside it (124 edits over 363 characters against inferred keys).
+Reasoning: 0.2 says "every recording in the tree that has a key", and the tree has twelve
+adjudicated texts, not three. Step 3's 3.2 judges each change on "the total edit count
+over all keyed recordings", so which recordings count decides what every repair is judged
+on. Adding rows after the baseline is set would move the yardstick.
+Rejected: silently scoring only three, which would hide nine keys the tree holds; and
+folding all thirteen into the total, which changes the instruction's baseline without a
+ruling.
+
+**2. Is step 3 still framed right?**
+Ruling taken: the plan is unchanged, and the finding goes to step 3's 3.1 trace.
+Reasoning: step 3 is written as "letters right, word boundaries wrong", but that is the
+sidecar's reading. At the bench, which is what the phase measures, 17:37's letters are not
+all right: 14 of 29 edits are letters, and 14 remain letters-only. What the counts show
+looks like gaps inside characters read as gaps between words, which is a spacing fault at
+the element level, so step 3 may well stand as written.
+Rejected: rewording the step here, which is Tim's plan and not this unit's.

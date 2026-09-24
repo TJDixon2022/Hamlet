@@ -1,1 +1,1 @@
-table the decoder mix pitch against the independent KeyingEnvelope sweep per case over the 37 captures, the anchors and 17:37, then change CwToneTracker only where the table shows more than one 25 Hz bin apart, judged on the table, named counts, anchors and the 17:37 key; measure #15 #43 #44 after
+build a scorer that reports edits, scored length and the key's kind, score the 17:37 capture and the three adjudicated recordings at HEAD into a baseline table, and count what kind of error dominates

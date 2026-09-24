@@ -74,9 +74,9 @@ FOLLOWS: report   the criterion was chosen because the last report
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 3 criterion 8  and gave this WHY:
+The instruction it produced named  step 0 criterion 2  and gave this WHY:
 
-3.8 is the only unmet criterion the loop can move. Every criterion of step 0 is met although the prompt named it, so authoring there would advance nothing. The loop test found nothing like this approach, and it is not a loop: units 406 and 407 changed the tracker to flip 3.6's reds, while this unit makes a pitch table against an instrument independent of the decoder the judge, and bars H1, the still-keying property and 3.6 attacks.
+PHASE_PLAN.md step 0 criterion 0.2 asks for every recording in the tree that has a key scored at HEAD and tabled with its three parts as the phase's baseline
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -85,29 +85,24 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 3 | The inherited reds are gone - every name in docs\unit239-failing-set.txt and the known-reds block is green, repaired, or retired under R49 with its reason in docs\cw-retired-tests.txt; the known-reds block of the carry-forward list names no CW test.
-## Step 3 - The inherited reds are gone
+﻿STEP: 0 | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
+## Step 0 - The number exists
 
-**Delivers:** R49's second half. The pile is emptied without a ruling per test.
+**Delivers:** R59's yardstick, and the baseline everything else is measured against.
 
-**Entry:** step 2 done, the three floor tests green at entry.
+**Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [x] 3.1 Every name in `docs\unit239-failing-set.txt` and every CW name in the known-reds block of `docs\carry-forward-tests.txt` is run at HEAD by type, one type per invocation with its own timeout, and listed in the report as green, red-repaired, red-retired, or red-open with its number. **Unit 394, tasks 1 and 2: all 51 classified in `docs\phase-cw\unit394-reds.md` - 30 green, 0 red-repaired, 0 red-retired, 21 red-open (20 red on an assertion, 1 excluded from compilation and read from source), the known-reds block's one CW name being line 41 of the set. #1 re-included by unit 398, green, 3 of 3 facts, so the set stands at 31 green and 20 red-open. #25, #26, #31 and #32 green by unit 400 on the harness reading the settled transcript and the regenerated clean fixtures under HM-DEC-127, the set at 35 green and 16 red-open; #30 and #33 green by unit 400 on the regenerated prosigns fixture, the set at 37 green and 14 red-open. #18 to #23 green by unit 401 on the settled transcript and a band of 0.005, the set at 43 green and 8 red-open. #24 and #41 green by unit 402 on a follow under half the passband no longer counting as a speed discontinuity, the set at 45 green and 6 red-open. #6 green by unit 406 on a held tracker switch no longer going when the survey it goes on finds the keying back where the tracker listens, and #42 green by unit 406 on its event giving the decoder the radio's report of the operator's own sending under HM-DEC-147, the set at 47 green and 4 red-open.**
-- [x] 3.2 Every retirement meets R49: the report quotes the class or method the test names that does not exist under `src\Hamlet.RadioEngine\Cw` at HEAD, and `docs\cw-retired-tests.txt` carries the test's full name, the missing name, the unit, and the date. **Unit 398, task 2: 20 tests retired from 7 of the 22 excluded files - 3 files deleted whole, 4 trimmed - each line in `docs\cw-retired-tests.txt` with its full name, the missing name as grep printed it under `Cw` at HEAD (one, `CwToneTracker.CoarseSpacingHz`, private at HEAD), unit 398 and 2026-09-23; `dotnet build Hamlet.sln -warnaserror` green after the last retirement; 31 facts left excluded and red-open because they assert characters, elements, a tone or a speed; the classification and the grep in `docs\phase-cw\unit398-excluded.md`.**
-- [x] 3.3 No test that reads audio and asserts characters, elements, a tone or a speed is retired; each such red is green or is listed red-open with its number and the reason it stays. **Unit 394, task 2: nothing retired; all 21 reds of the set read audio and are listed red-open in `docs\phase-cw\unit394-reds.md` section 2, each with its number and what it asserts - characters 14, share 5, speed 2. Unit 398, task 2: 20 retired from the excluded files, none asserting characters, elements, a tone or a speed from audio; the 31 excluded facts that do are left excluded and listed red-open in `docs\phase-cw\unit398-excluded.md` section 2.**
-- [x] 3.4 The known-reds block of `docs\carry-forward-tests.txt` names no CW test, and `docs\unit239-failing-set.txt` carries a closing line naming this phase and the count that went each way. **Unit 401: lines 158 and 159 of the known-reds block replaced by one CW line naming no test and pointing at the set's closing line and `unit394-reds.md`; grep over the file at exit finds no CW test named as a known red; the closing line written - 51 names, 31 green at HEAD without repair, 12 repaired, 0 retired, 8 red-open by number (#6, #15, #24, #41, #42, #43, #44, #45); the step's goal sentence stays partial on the 8 red-open under R49's own clause, red with its number and the step partial, each a repair owed under HM-DEC-151; `CwFixtureTests.TheCleanRecordingsDecodeExactly` on the engine line, 178 of 178 in 374 s of 480.**
-- [x] 3.5 The three floor tests are green at the exit of every commit of the step, and the carry-forward list is green on both lines. **Unit 400: captures 37 of 37 and adjudicated 13 of 13 at the exit of every commit of the step since `ee0ea0dc`; the two clean synthetics red at every commit before `7d1ffde6` under R53, which named them step 3's repair, and green 2 of 2 at the exit of every commit from it; app 277 of 278 in each of two runs, each loss a different name to the dispatcher loop before an assertion and green in the other run, and engine 176 of 176 in 374 s at the unit's exit. The tick stands while every later commit of the step keeps all three green and both lines green; a later unit that finds one red un-ticks it and names the commit.**
-- [x] 3.6 Each of the eight reds open at unit 401's closing line - #6, #15, #24, #41, #42, #43, #44 and #45 of `docs\unit239-failing-set.txt` - has a verdict: green by repair of the decoder with no floor lowered and the three floor tests green at that commit's exit, or, after three consecutive units have each attacked it and measured no movement, parked in `docs\phase-cw\PARKED.md` as owed with its number and the three measurements; none retired, and the closing line of the set updated with the final count. **Under R58 this criterion closes on the single pass at the start of 3.7's first unit: any of #15, #43, #44, #45 still red after it is parked with its numbers and no further unit attacks it.** **Closed by unit 408's pass under R58: 5 green - #24 #41 by unit 402, #6 #42 by unit 406, #45 by unit 408's B2 with B1 at `0bcf04e6`, kept under R57 with no named count lower and the anchors identical; 3 parked in `PARKED.md` with their numbers and the units that attacked them - #15 0.54, #43 4 + 7, #44 0 + 7; G1 measured on B2 and out, M2 dropped as the named candidate with #6 already green; none retired; the set's closing line reads 31 green, 17 repaired, 0 retired, 3 parked.**
+- [x] 0.1 A scorer in the test project measures edit distance between a decode and a key over a scored region the key file names, reports edits, scored length and whether the key is exact or inferred, and is watched failing first on a case whose answer is known by construction.
+- [x] 0.2 Every recording in the tree that has a key - `cw-2026-09-23-173723` and the three adjudicated anchors - is scored at HEAD and tabled with its three parts, and the table is the phase's baseline in `docs/phase-correctness/baseline.md`.
+- [x] 0.3 The report names, from the baseline, what kind of error dominates: characters wrong, characters missing, characters added, or word boundaries misplaced, counted per case rather than asserted.
+- [x] 0.4 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
 
-- [x] 3.7 The emission gate no longer prints what the decoder does not know: on `cw-2026-09-23-173723`, on the three adjudicated anchors and on all 37 capture fixtures, no character is printed whose own span is below the gate's stated bar, no named character is lost anywhere, the three adjudicated readings are unchanged character for character, and the scored region of the 17:37 key reads no worse than it does at entry; the bar and the before-and-after counts of named and placeholder characters are in the report for every case. **Unit 408, `aded8dcd`: the bar is `CwProbabilisticDecoder.CharacterMargin`, 1.0 log-likelihood per hop, its value unchanged because every higher value measured costs named characters; below it a character is now not printed. `NothingBelowTheBarIsPrinted` watched red on the three anchors' recordings and green after, 4 of 4; the exit sweep finds nothing printed below the bar on any of the 38 recordings; captures named 1,295 to 1,297 with no row lower, placeholders 289 to 28; the three anchors identical on named characters; 17:37 on the bench 46 named, 0 placeholders and 29 edits against an inferred key before and after; every case in `docs\phase-cw\unit408-floors.md` section 4.**
-- [x] 3.8 The decoder and the independent sweep agree about the pitch: on every single-sender case among the 37 captures, the three anchors and the 17:37 capture, the pitch the decoder mixes at and the pitch the 400 to 1200 Hz sweep reports differ by no more than one 25 Hz bin, measured and tabled per case; and each of #15, #43 and #44 is green or carries its post-R56 measurement. **Unit 409: `TheTwoPitchesTableTests` tables 38 cases, with the decoder's most-held mix pitch, `CwDecoder.Stream.ToneHz`, over the named span beside `KeyingEnvelope.Best` at 300 to 900, the tree's range, and the same rule at 400 to 1200 printed beside it. Under the rule fixed before the table was read, 5 of 38 cases are single-sender: `004507`, `031905`, `003016`, `003126` and the anchor `003758`. 0 of the 5 are apart at entry or at exit, and both sweep columns give the same pitch on all 5. No tracker change was made, because none was licensed. #15 0.54 with the decoder at 650 to 700, the sweep 725 and the recipe 640; #43 2 + 7 and #44 0 + 7, with the decoder 625, the sweep 675 and the recipe 615; all three stay red and parked. Seven cases outside the rule are apart. On the three synthetics the sweep sits 60 to 85 Hz off the recipe's tone. Both facts are in `docs\phase-cw\unit409-pitch.md` and in unit 409's section 4.**
-- [x] 3.9 All 37 capture rows are re-measured once under R57 in a single commit, with the old count, the new named-character count and the placeholder count printed per row; the adjudicated anchors and the 17:37 key are run at that commit and are unchanged or better, and the report states plainly that no real character was lost. **Unit 408, `f5bbbb8e`: the harness prints named, named elements, placeholders and the total emitted per row, named and named elements the floors; named 1,295 of 1,594, placeholders 299, on every row named equal to the old total less its placeholders, so no real character was lost; adjudicated 13 of 13 with every reading identical to entry; 17:37 run at that commit, 46 named and 0 placeholders on the bench, 29 edits against an inferred key; the 37-row table with old, named and placeholder counts in `docs\phase-cw\unit408-floors.md` section 2.**
-**Depends on:** step 2. Independent of step 4: when one blocks the arbiter works the other.
+**Depends on:** nothing.
 
 
 --- what the script saw ---
-criteria-count.bat saw step 3 criterion 8 flip from unmet to met in
+criteria-count.bat saw step 0 criterion 2 flip from unmet to met in
 PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
 Answer one more line after WHY:
 HONEST: yes   if the report shows that criterion honestly met
@@ -115,225 +110,214 @@ HONEST: no    if the marker was turned without the criterion being met
 
 --- the unit's report follows ---
 
-```
 READ IN THIS ORDER.
 
-A. The phase: CW decodes again. Steps 1, 2 and 4 are met on every criterion, and so is
-   step 0. Step 3 is now ticked on all nine criteria, 3.8 by this unit. Step 5 is Tim's
-   verdict at the radio. The phase now waits on Tim alone, subject to the one question
-   in section 4 about what 3.8's tick is worth.
-B. Step 3, criterion 3.8: 0 of 5 single-sender cases apart at entry and 0 of 5 at exit,
-   out of 38 cases tabled. No tracker change was made, because none was licensed.
-   #15 0.54, #43 2 + 7 and #44 0 + 7 are each measured, still red and still parked.
-   3.8 is ticked on the instruction's rule. The rule admits only 5 cases, and on the
-   three synthetics the sweep sits 60 to 85 Hz off the known tone.
-C. The per-case table is in section 3 and docs/phase-cw/unit409-pitch.md. Section 4
-   raises 1 item. It does not block 3.8 on the instruction's rule, but it asks whether
-   the tick should stand.
-```
+A. The baseline table, with every row's edits, scored length and key kind.
+B. Step 0's criteria: 0.1 the scorer, 0.2 the baseline, 0.3 the error kinds,
+   0.4 the exit round. Steps 1 to 5 not started.
+C. The rest. Section 4 raises 2 items.
+
+**A. The phase goal and the baseline.** *Hamlet reads a CQ call correctly.* The baseline,
+at HEAD, **all keys inferred**:
+
+| recording | edits | scored length | key |
+|---|---|---|---|
+| `cw-2026-09-23-173723` | 29 | 25 | inferred |
+| `cw-2026-08-17-013347` | 0 | 6 | inferred |
+| `cw-2026-08-17-134712` | 1 | 3 | inferred |
+| `cw-2026-08-18-003758` | 3 | 12 | inferred |
+| **total** | **33** | **46** | **inferred** |
+
+**B. Step 0 and its exit criteria.** 0.1 the scorer: met, 12 of 12 hand-counted cases red on
+a stub, then green. 0.2 the baseline: met, the table above in
+`docs/phase-correctness/baseline.md`. 0.3 the error kinds: met, counted per case below.
+0.4 the exit round: met, every floor row identical to entry. All four ticked in
+`PHASE_PLAN.md`. Steps 1 to 5 not started.
+
+**C. What this report adds.** Bearing on A: this is the first number in the project that
+says how far the text is from a key. Bearing on B and on step 3: **at the bench, the 17:37
+letters are not all right.** 15 of its 29 edits are word boundaries and 14 are letters, and
+14 edits are left even when spaces cost nothing. The plan's "every letter is right" is the
+sidecar's reading and not the bench's.
 
 ```
-UNIT:       409 - complete at task 4 of 4, none dropped - 2026-09-23 17:56
-PHASE GOAL: bring the engine's CW decoder back to what it read on the air on 2026-08-25, hold it there with three floor tests, clear or park the inherited reds, then have Tim judge it at the radio
-UNIT GOAL:  measure, on every saved recording, whether the decoder mixes at the pitch where an independent instrument hears the keying; change the tone tracker only where they are more than a bin apart; measure the three parked reds afterward
-ADVANCED:   yes - 3.8, the last loop-movable criterion of step 3, is ticked on a measured per-case table
-NUMBER:     single-sender cases more than one bin apart: 0 -> 0 of 5, from 38 cases tabled
-DRIFT:      0 consecutive units without advance  (was 0)
+UNIT:       410 - complete at task 4 of 4, none dropped - 2026-09-23 19:17
+PHASE GOAL: When Tim's radio hears a CQ call, the text Hamlet prints is the call that was sent, measured as edits from a key and not just counted as characters.
+UNIT GOAL:  Build an instrument that says how far a decode is from a key, point it at every recording that has one, and let the counts say what kind of error there is most of.
+ADVANCED:   yes - step 0 criteria 0.1 to 0.4 met with measured evidence; the phase has a baseline to judge every later change on
+NUMBER:     baseline edits, 17:37: 29 -> 29 over 25 characters, inferred key; baseline total 33 over 46 characters, inferred keys
+DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4, with tasks 0 to 4 all run and none dropped.** Task 2 made no change,
-because the entry table licensed none, as the instruction orders. The session ran on QUIVERFULL in
-`C:\Source\HamLet`, branch `main`, after the project gate confirmed Hamlet. Commits `eff57237`,
-`96136b70`, `aa824eaf`, `e3a0aac8` and `a9b96c47`, plus this report's commit, were all pushed.
+**Complete at task 4 of 4, tasks 0 to 4, none dropped.** Claude Code on QUIVERFULL, project
+Hamlet (gate: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and
+`MURC.sln` absent, root `C:\Source\HamLet`), branch `main`, HEAD at entry `7ba9690d`.
+Commits `9157c3c2`, `bd875351`, `df58aa6f`, `14ce9971`, and the report commit. Every push
+succeeded.
 
-**Mismatches against section 5 of the instruction.** Each is reported here and none was repaired:
-- **`LockedToneHz` is at line 279 of `CwDecoder.cs`, not `CwToneTracker.cs`.** It is NaN unless
-  the operator locks. The pitch the decoder actually mixes at is `CwProbabilisticStream.ToneHz`,
-  read as `CwDecoder.Stream.ToneHz`. `CwDecoder.Step` sets it on every hop from the lock, else the
-  last pitch the tracker measured, else the tracker's bank centre. **That is the property used.**
-- The app's "400 to 1200 Hz" label is at `MainWindowViewModel.cs` lines 11915 to 11916. The engine
-  sweeps 300 to 900. This is parked, not edited.
-- `PHASE_STATUS.md` and `PHASE_OUTCOME.md` still read step 0 and step 2 as `not started`, though
-  both are ticked in the plan. The step lines were not edited. `CURRENT_STEP` was set to 3.
-- **`WhatBandwidthTheDecoderListensThroughTests` is 3 of 6 at entry**, where unit 407 recorded
-  4 of 6. The new red is `HoldingTheWindowLongInTimeReadsMore(003016)`, which reads 54 against 54.
-  It asserts that holding the window reads more, and it reads the same. Unit 408 did not run this
-  reader. It is in neither the 51-name set nor a carry-forward line. It was 3 of 6 at exit too.
-- The rest held as stated:
-  - the three anchors' recordings are `013347`, `134712` and `003758`, all among the 37 rows
-  - the 17:37 WAV and key are present, and its `.txt` sidecar is absent
-  - the recipes: #15 at 640 Hz, #43 and #44 at 615 Hz drifting ±3
-  - `CwTwoStationTests` reads only the synthetic `receiver\two-station.wav`, so the single-sender
-    rule's first clause removes no case
+**Task 0, the record.** Version 1.13.96 to 1.13.97. `PROJECT_CARD.md` `PHASE: Hamlet reads a
+CQ call correctly`, `PHASE_SET: 2026-09-23`. HM-DEC-169 at the top of `DECISIONS.md` as given,
+and its row at the top of `CLAUDE.md` §1. `PHASE_STATUS.md` already named unit 410 and
+`CURRENT_STEP: 0`, so it was not edited. `PHASE_OUTCOME.md` has its `## UNIT 410 - STEP 0`
+entry. **Entry round** (one build, then `--no-build`, a status line before each run): engine
+carry-forward 178 of 178 in 376 s. App 277 of 278 in 158 s:
+`TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow` was
+lost to the dispatcher loop before any assertion, went 1 of 1 green when re-run once alone,
+and counts neither way. Captures 37 of 37 in 91 s, adjudicated 13 of 13 in 29 s, clean
+synthetics 2 of 2, `TheSeventeenThirtySevenCaptureTests` 5 of 5.
 
-**Task 0.**
-- Version 1.13.96. `PHASE_STATUS.md` names unit 409, and `PHASE_OUTCOME.md` has the unit 409 entry.
-- `git diff 0534ca93 HEAD` over src, tests and the list printed nothing, because HEAD was
-  `0534ca93`. **So the two carry-forward lines were taken as unit 408's exit**: engine 178 of 178,
-  app 278 of 278.
-- Entry round, one type per invocation after one build:
-  - captures 37 of 37, adjudicated 13 of 13, synthetics 2 of 2
-  - receiver 25 of 27, acquisition 11 of 12, 17:37 5 of 5
-  - every tracker reader at unit 407's count, except the bandwidth reader above
+**Task 1, the scorer (0.1).** `tests/Hamlet.RadioEngine.Tests/Cw/CwScorer.cs` is public and
+reachable by every Cw test type. It returns `CwScore`: edits, scored length, key kind
+(`Exact` or `Inferred`), the scored region, and the alignment the edits were counted from.
+- `Whole` scores a region the key file names.
+- `Within` handles a key that covers a fragment of a recording. It aligns the whole key to
+  the stretch of the decode that fits best and scores nothing on either side.
+- `FromFirst` applies the 17:37 key file's rule: from the first `CQ` to the last character
+  emitted, trimmed.
 
-**Task 1.** `TheTwoPitchesTableTests.EveryCaseIsTabled` is a printer that asserts nothing. It
-reads 38 cases the way the floors do, one hop at a time: the 37 capture rows, with the three
-anchors marked, and 17:37. It ran twice at entry, and the rows were identical. **5 of 38 cases are
-single-sender, and 0 of them are apart.**
+Edits are Levenshtein with spaces included and nothing collapsed.
+`TheScorerCountsWhatAHandCountsTests` holds 12 hand-counted cases (`KITTEN`/`SITTING` 3,
+`DEWB`/`DE WB` 1, `EEMP/4 QNIKK` inside `AA4MP/4 QNIK` 3, and so on). They went **12 of 12
+red** against a stub that threw, then **12 of 12 green**
+(`.run-unit/unit410-scorer-red.txt`, `-scorer-green.txt`).
 
-**Task 2.** No change. There was nothing apart to trace.
+**Task 2, the baseline (0.2).** `TheBaselineIsScoredTests.TheBaselineIsPrinted` decodes each
+WAV hop by hop at 600 Hz, the same path the floors use, and prints the table.
 
-**Task 3.**
-- The exit table matches entry line for line.
-- #15, #43 and #44 were run by name. All three are still red, and each is pitched by
-  `TheThreeParkedRedsArePitched`, a second printer.
-- **3.8 is ticked in `PHASE_PLAN.md`**, with the caveats written into the tick.
+**The phase's baseline is 33 edits over 46 characters, against inferred keys, over 4
+recordings.**
 
-**Task 4, the exit round.**
-- Engine line 178 of 178 in 367 s.
-- **App line 276 of 278, twice.** Every loss was the dispatcher loop, before any assertion.
-  - `Unit376TheTopBandTests` and `ThePsk31OfferTests` were each lost in one run and green in the
-    other.
-  - **`TheWindowHoldsBelowItsMinimumTests` was lost in both runs.** The rule's one re-run was
-    spent, so I ran that name alone once, outside the line, and it was 1 of 1 green. It counts
-    neither way. Its green comes from that solo run and not from the line.
-- Captures 37 of 37 and adjudicated 13 of 13, **every printed row and reading identical to entry**.
-- Synthetics 2 of 2. Receiver 25 of 27. Acquisition 11 of 12. 17:37 5 of 5.
-- Every tracker reader is at its entry count.
-- The transmit files print nothing against `7e209cb4`. `src/Hamlet.App` prints nothing, and **all
-  of `src` prints nothing**, against `0534ca93`. This unit changed no production code.
+| recording | edits | scored length | key | region of the decode |
+|---|---|---|---|---|
+| `cw-2026-09-23-173723` | 29 | 25 | inferred | `CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I` |
+| `cw-2026-08-17-013347` | 0 | 6 | inferred | `VA3VRR` |
+| `cw-2026-08-17-134712` | 1 | 3 | inferred | `N4 ` |
+| `cw-2026-08-18-003758` | 3 | 12 | inferred | `EETMP/4 QNIK` |
 
-**Decisions I made myself, each the author's and overrulable:**
-1. **The decoder's pitch is `Stream.ToneHz`**, since `LockedToneHz` is not what it mixes at. The
-   most-held value is rounded to a hertz and weighted by hops, over the span from the hop the first
-   named character settled to the hop the last one did.
-2. **Second-best is taken on the 300 to 900 sweep**, the judging column, over candidates more than
-   50 Hz from the winner.
-3. **The keying verdict is `CwKeyingMeter`'s four-part test asked once of the whole recording.**
-   The meter itself runs six-second windows and holds its verdict across quiet windows. Asked of a
-   whole 30 s file, the swing figure runs lower. That is why 17:37 and 17 other cases fail on
-   swing. I did not tune this, because the instruction says the rule is fixed.
-4. **After the first entry run, I added the sweep's four keying figures to the printer's output**
-   to explain the verdicts. The rows did not change, and the rule did not change.
-5. **The parked reds are fed hop by hop from their own test's starting pitch.** The tests pump
-   through `BufferedAudioSource`, so the chunking differs from theirs.
-6. **The one solo run of `TheWindowHoldsBelowItsMinimumTests`**, described above.
-7. **3.8 is ticked on the instruction's letter, and the doubt goes to section 4** rather than
-   being settled by me. Ticking it and leaving it open are both readings I could defend. The
-   instruction says what ticks it, and both conditions hold.
+Its one assertion is that the new scorer and the Levenshtein already in the 17:37 test
+agree on 17:37, and it holds. The nine other adjudicated recordings in the tree are scored
+by the same rule and kept outside the total: 124 edits over 363 characters against
+inferred keys (section 4, item 1).
 
-## 2. What the owner should expect
+**Task 3, what kind of error (0.3).** `CwScorer.Kinds` counts from the alignment: letters
+wrong, missing and added, and spaces added or missing. An edit that touches a space counts
+as a boundary and nothing else. `CwScorer.LettersOnly` rescores the pair with every space
+removed, which depends on no tie rule.
 
-Nothing about how the CW tab behaves has changed, because this unit changed no decoder code. What
-it adds is a measurement. The question was whether the decoder listens at the pitch where a
-separate instrument hears somebody keying. On the five saved recordings that clearly hold one
-sender, the answer is yes, within 5 Hz. That includes the anchor that carries `AA4MP/4 QNIK`. So
-the tone tracker was left alone.
+| recording | edits | wrong | missing | added | space added | space missing | letters-only |
+|---|---|---|---|---|---|---|---|
+| 17:37 | 29 | 4 | 0 | 10 | 15 | 0 | 14 |
+| 013347 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 134712 | 1 | 0 | 0 | 0 | 1 | 0 | 1 |
+| 003758 | 3 | 3 | 0 | 0 | 0 | 0 | 3 |
+| total | 33 | 7 | 0 | 10 | 16 | 0 | 18 |
 
-That does not mean the text is right. It also covers fewer recordings than it sounds. The
-instrument only calls 5 of the 38 recordings "one clear sender". On the other 33 it either does
-not hear keying strongly enough by its own bar, or it hears a second pitch almost as strong. And on
-the three synthetic test signals, where the true pitch is known, the instrument itself lands 60 to
-85 Hz high. The decoder is closer to the truth there than the instrument is. At 17:37, the bench
-decoder sits at 575 Hz and the instrument at 600. That counts as agreement.
+**What the counts say.** On 17:37, word boundaries are the largest single kind, 15 of 29
+edits, and every one of them is a space where none was sent. They are **not a majority**:
+the other 14 edits are letters, and 14 edits remain when spaces cost nothing. Where the key
+has `WB6RED`, the bench reads `W T E E T E  E ERE D`: single-element letters, each followed
+by a space. That looks like gaps inside characters being read as gaps between words. It is
+the shape of the fault, not a trace of it. The instruction expected 17:37 to be dominated
+by boundaries. It is only a plurality, and at the bench the letters are not all right.
 
-**What will look wrong but is not:**
-- 3.8 is ticked while #15, #43 and #44 are still red. The criterion asks for them to be measured,
-  and they were.
-- One app test was lost to the test host twice. It passes alone, and the app code is untouched.
+**Task 4, the exit round (0.4).** Build clean with warnings as errors. Engine 178 of 178 in
+370 s. App 277 of 278 in 160 s:
+`TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord` was lost to the
+dispatcher loop before any assertion, went 1 of 1 green when re-run once alone, and counts
+neither way. Captures 37 of 37, with every printed row identical to entry. Adjudicated 13
+of 13, with every reading identical to entry. Clean synthetics 2 of 2.
+`TheSeventeenThirtySevenCaptureTests` 5 of 5, its lines identical to entry. **`git diff
+7ba9690d HEAD -- src` prints nothing.** `src/Hamlet.App` prints nothing. The transmit files
+print nothing against `7e209cb4`. Nothing is red that was green at entry.
+
+**Section 5 checks against the tree.** Mismatches are reported here and nothing was
+repaired.
+- The 17:37 WAV and key are on disk and tracked, committed in `65b4f9d0`. **As stated.**
+- `TheSeventeenThirtySevenCaptureTests` is 5 of 5. It replays the WAV hop by hop through
+  `CwDecoder.Process` at 600 Hz, then calls `Flush`. **As stated.**
+- **Mismatch.** `TheAdjudicatedReadingsKeepReadingTests` does not hold 13 cases over three
+  recordings. It holds **12 theory rows over 12 recordings plus one fact**, which makes 13.
+  `134712`'s row is retired and asserts nothing. The key material is each row's
+  `Adjudicated` field. The asserted `Anchor` is a substring floor that the file itself
+  calls "never an answer key". The file gives rulings as provenance and never says exact
+  or transcribed, so those keys are marked inferred.
+- The floors count named characters with placeholders separate. **As stated.** Captures
+  run 37 of 37 in 91 to 92 s here, not 97 s.
+- `Judged` (line 1247 of `CwProbabilisticDecoder.cs`) keeps a character only at
+  `SpanMargin >= CharacterMargin`, which is 1.0 at line 302. **As stated.**
+- **Mismatch.** §4's `CQ CQ CQ DEW B 6 RE D W B` is the sidecar's reading. The bench reads
+  the text shown above. PHASE_PLAN.md's "46 named characters" counts the whole settled text
+  (`named 46`), not the scored region: the region is 48 decoded characters against a
+  25-character key.
+
+**Decisions made for itself, author's, overrulable.**
+1. *Scored length is the key's length over the region, spaces included.* The decode's
+   region length is printed beside it. Reason: the key is what is being read, and the
+   decode's length moves with every added character.
+2. *An adjudicated text is scored with `Within`.* Reason: none of these texts names a
+   region, and scoring the whole decode against a callsign would score audio nobody keyed
+   (R61).
+3. *The tie rule.* Among alignments with the fewest edits, the scorer takes the one with
+   the fewest letter edits. After that it prefers a character in place, then missing, then
+   added. The first rule written had only that second part. It split the hand case
+   `DEW B 6 RE D` against `DE WB6RED` into a letter wrong, a letter added and three spaces,
+   where a hand counts five spaces. It was replaced **before any recording was broken
+   down**, and the baseline's edits did not move. This rule leans toward counting
+   boundaries: `134712`'s missing `L` counts as a space added. That is why letters-only is
+   printed beside it.
+4. *The nine other adjudicated recordings are scored and kept out of the total* (section 4).
+5. The per-type timeouts were 300 s for each Cw type and 480 s for the carry-forward lines.
+
+## 2. What Tim should expect
+
+Nothing about the app has changed. No file under `src` was touched, and the radio, the
+screen and every decoder behave as they did this afternoon. This unit added a way of
+measuring. **The number says how far the decoder's text is from a key: 29 single-character
+edits separate what the bench reads on the 17:37 recording from the 25-character key, and
+across the four keyed recordings it is 33 edits over 46 characters.** The number does not
+say what was sent. The 17:37 key, `CQ CQ CQ DE WB6RED WB6RED`, is inferred from the shape of
+a CQ call and from the decode itself. Nobody transcribed it off the air, so every figure
+against it is an indication. The first third of that recording is never scored. What will
+look wrong but is not: the bench's text for 17:37 is worse than what the CW tab showed on
+the day. The bench replays the WAV through the test path, and every number in this phase
+is measured that way so that numbers can be compared.
 
 ## 3. What you should see
 
-**3.8: 0 of 5 single-sender cases apart, at entry and at exit.** The table is the same at both,
-because nothing under `src` changed. The two sweep columns are both shown, the verdict is judged on
-300 to 900, and only single-sender cases are judged.
+**The answer to what this unit was commissioned to ask:** the phase's baseline is **33 edits
+over 46 characters against inferred keys**. 17:37 is **29 edits over 25 characters against
+an inferred key**. On 17:37, word boundaries are the largest kind of error, 15 of the 29,
+but not a majority, and 14 edits are letters.
 
-| case | anchor | named | decoder Hz | low | high | share apart | sweep 300-900 | sweep 400-1200 | second-best | keying | single-sender | diff Hz | agree |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 013347 | anchor | 57 | 600 | 600 | 625 | 0.00 | 600 | 600 | 0.58 | no | no | 0 | agree |
-| 134712 | anchor | 21 | 500 | 500 | 500 | 0.00 | 500 | 500 | 0.74 | no | no | 0 | agree |
-| **004507** |  | 49 | 500 | 475 | 525 | 0.00 | 500 | 500 | 0.30 | keying | **yes** | 0 | agree |
-| 012403 |  | 21 | 440 | 435 | 450 | 0.00 | 450 | 450 | 0.29 | no | no | 10 | agree |
-| 031838 |  | 43 | 525 | 500 | 525 | 0.00 | 500 | 500 | 0.62 | keying | no | 25 | agree |
-| **031905** |  | 36 | 500 | 300 | 500 | 0.34 | 500 | 500 | 0.49 | keying | **yes** | 0 | agree |
-| 031948 |  | 31 | 500 | 500 | 500 | 0.00 | 500 | 500 | 0.67 | keying | no | 0 | agree |
-| 032012 |  | 43 | 500 | 500 | 500 | 0.00 | 500 | 500 | 0.71 | keying | no | 0 | agree |
-| 032050 |  | 44 | 500 | 325 | 500 | 0.23 | 500 | 500 | 0.57 | keying | no | 0 | agree |
-| 032113 |  | 47 | 500 | 500 | 650 | 0.33 | 500 | 500 | 0.69 | keying | no | 0 | agree |
-| 032129 |  | 65 | 650 | 500 | 650 | 0.65 | 500 | 500 | 0.69 | keying | no | 150 | apart |
-| 013622 |  | 51 | 600 | 600 | 625 | 0.00 | 600 | 600 | 0.43 | no | no | 0 | agree |
-| **003016** |  | 54 | 670 | 650 | 675 | 0.00 | 675 | 675 | 0.32 | keying | **yes** | 5 | agree |
-| **003126** |  | 48 | 670 | 650 | 680 | 0.00 | 675 | 675 | 0.32 | keying | **yes** | 5 | agree |
-| **003758** | anchor | 44 | 500 | 485 | 500 | 0.00 | 500 | 500 | 0.30 | keying | **yes** | 0 | agree |
-| 001520 |  | 1 | 600 | 600 | 600 | 1.00 | 525 | 1000 | 1.00 | keying | no | 75 | apart |
-| 001831 |  | 44 | 525 | 500 | 530 | 0.00 | 525 | 525 | 0.39 | no | no | 0 | agree |
-| 001952 |  | 57 | 525 | 375 | 575 | 0.79 | 475 | 475 | 0.72 | no | no | 50 | apart |
-| 002016 |  | 44 | 525 | 525 | 525 | 1.00 | 475 | 475 | 0.52 | no | no | 50 | apart |
-| 011552 |  | 22 | 500 | 495 | 500 | 0.00 | 500 | 500 | 0.23 | no | no | 0 | agree |
-| 012748 |  | 2 | 400 | 400 | 400 | 0.00 | 400 | 400 | 0.12 | no | no | 0 | agree |
-| 012823 |  | 26 | 500 | 500 | 500 | 0.00 | 500 | 500 | 0.18 | no | no | 0 | agree |
-| 012922 |  | 45 | 500 | 475 | 500 | 0.00 | 500 | 500 | 0.75 | keying | no | 0 | agree |
-| 013010 |  | 48 | 500 | 475 | 505 | 0.00 | 500 | 500 | 0.31 | no | no | 0 | agree |
-| 013150 |  | 51 | 500 | 495 | 525 | 0.09 | 525 | 525 | 0.41 | no | no | 25 | agree |
-| 013303 |  | 44 | 500 | 495 | 505 | 0.00 | 500 | 500 | 0.32 | no | no | 0 | agree |
-| 013402 |  | 56 | 525 | 525 | 550 | 0.00 | 550 | 550 | 0.57 | keying | no | 25 | agree |
-| 013520 |  | 55 | 550 | 525 | 550 | 0.00 | 550 | 550 | 0.58 | keying | no | 0 | agree |
-| 013637 |  | 60 | 525 | 525 | 550 | 0.00 | 550 | 550 | 0.60 | keying | no | 25 | agree |
-| 021410 |  | 36 | 535 | 535 | 550 | 0.00 | 550 | 550 | 0.53 | no | no | 15 | agree |
-| 021629 |  | 27 | 500 | 500 | 500 | 0.00 | 500 | 500 | 0.68 | no | no | 0 | agree |
-| 021825 |  | 25 | 400 | 390 | 410 | 1.00 | 325 | 600 | 0.79 | no | no | 75 | apart |
-| 125941 |  | 0 | 400 | 375 | 600 | 0.80 | 450 | 450 | 0.89 | no | no | 50 | apart |
-| 014854 |  | 0 | 600 | 600 | 825 | 0.48 | 575 | 575 | 0.33 | no | no | 25 | agree |
-| 014935 |  | 0 | 625 | 600 | 825 | 0.43 | 600 | 600 | 0.69 | no | no | 25 | agree |
-| 014113 |  | 0 | 600 | 600 | 725 | 0.43 | 600 | 600 | 0.39 | no | no | 0 | agree |
-| 014308 |  | 0 | 575 | 450 | 600 | 0.75 | 625 | 625 | 0.21 | no | no | 50 | apart |
-| 17:37 |  | 46 | 575 | 575 | 600 | 0.00 | 600 | 600 | 0.07 | no | no | 25 | agree |
+On the screen: nothing new, by design. In the tree: `docs/phase-correctness/baseline.md`
+has the tables and the 17:37 alignment written out. `TheBaselineIsScoredTests` reprints
+them on demand in about 40 s:
 
-Each case is named by its capture time, dates 2026-08-17 to 2026-09-23.
-
-**The sweeps disagree on two cases, and each is apart on either column:**
-- `001520`: 525 against 1000, with the decoder at 600
-- `021825`: 325 against 600, with the decoder at 400
-
-**Outside the rule, 7 cases are apart.** On `031905`, a single-sender case, the most-held pitch
-agrees, but the mix spends 0.34 of the named span at 300 Hz.
-
-**The tracker change row:** no change was made, 0 cases were apart before and after, and nothing
-was built, kept or reverted. The named counts, the anchors and 17:37, which stays 46 named, are
-identical to entry, because `src` is untouched.
-
-**The three parked reds, post-R56:**
-
-| red | value | green | decoder | sweep | recipe |
-|---|---|---|---|---|---|
-| #15 `TheSlowEndReadsTheMessage(12, 18)` | 0.54 against 0.66 | no | 650, 650, 700 over its three seeds | 725 | 640 |
-| #43 `TheEasyTierIsReadWhole(coverage-easy)` | 2 unreadable + 7 strangers | no | 625 | 675 | 615 ±3 |
-| #44 `TheEasyTierIsReadWhole(exchange-easy)` | 0 + 7 | no | 625 | 675 | 615 ±3 |
-
-#43 now reads 2 + 7 against `PARKED.md`'s 4 + 7. The difference is unit 408's gate removing two
-placeholders, not anything done in this unit.
+    timeout 300 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~.TheBaselineIsScoredTests."
 
 ## 4. What's blocking us
 
-**1. Should 3.8's tick stand on a table whose judge admits 5 of 38 cases and misses a known tone
-by 60 to 85 Hz?**
-- **Recommended ruling:** let the tick stand. Record in the plan that 3.8 is met on five
-  single-sender recordings, and that the sweep's pitch resolution on a strong clean tone is
-  coarser than the one-bin tolerance.
-- **Reasoning:**
-  - The instruction fixed the rule and the tolerance before the table was read, and both
-    conditions for the tick hold.
-  - On all five admitted cases the decoder is within 5 Hz of the sweep.
-  - On the three synthetics with a known tone, the decoder is nearer the truth than the sweep:
-    10 to 60 Hz high, against 60 to 85.
-  - So nothing in the table argues for a tracker change.
-- **Rejected: leaving 3.8 open.** No tracker change this phase allows could make the judge
-  better, and changing the sweep is barred. An open 3.8 would be one no unit can close.
-- **Rejected: widening the rule after the fact to take in the 11 keying cases that have a strong
-  runner-up.** The instruction forbids changing the rule once the table is read. Of those 11, only
-  `032129` is apart.
-- **In the way of 3.8?** Not on the instruction's rule. It becomes blocking only if Tim decides
-  the tick is worth less than it reads. Then 3.8 goes back to open, and the next unit needs a
-  judge with finer pitch resolution, which the plan does not currently allow.
+Nothing blocks. Both items block no criterion and are parked in
+`docs/phase-correctness/PARKED.md` under R54, for overrule.
+
+**1. Should the nine other adjudicated recordings join the baseline total?**
+Ruling taken: the baseline is the four recordings the instruction names, and the nine are
+printed beside it (124 edits over 363 characters against inferred keys).
+Reasoning: 0.2 says "every recording in the tree that has a key", and the tree has twelve
+adjudicated texts, not three. Step 3's 3.2 judges each change on "the total edit count
+over all keyed recordings", so which recordings count decides what every repair is judged
+on. Adding rows after the baseline is set would move the yardstick.
+Rejected: silently scoring only three, which would hide nine keys the tree holds; and
+folding all thirteen into the total, which changes the instruction's baseline without a
+ruling.
+
+**2. Is step 3 still framed right?**
+Ruling taken: the plan is unchanged, and the finding goes to step 3's 3.1 trace.
+Reasoning: step 3 is written as "letters right, word boundaries wrong", but that is the
+sidecar's reading. At the bench, which is what the phase measures, 17:37's letters are not
+all right: 14 of 29 edits are letters, and 14 remain letters-only. What the counts show
+looks like gaps inside characters read as gaps between words, which is a spacing fault at
+the element level, so step 3 may well stand as written.
+Rejected: rewording the step here, which is Tim's plan and not this unit's.
