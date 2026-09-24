@@ -35,7 +35,7 @@ DRIFT:      0
 
 **Complete at task 4 of 4, none dropped.** QUIVERFULL, Hamlet confirmed by the gate, branch
 `main`. Six commits, each pushed with rc 0: `af541f66`, `6d4545ea`, `27c75b77`,
-`99701fbe`, `687aab1a` and `b4ccab9e`. The report commit follows.
+`99701fbe`, `687aab1a` and `b4ccab9e`. The report went in at `68313acc`, pushed with rc 0.
 
 **Task 0, the record.** HM-DEC-172 is in `DECISIONS.md` with its row at the top of `CLAUDE.md`
 §1. The version goes from 1.13.99 to 1.13.100. `PHASE_STATUS.md` names unit 413 and
