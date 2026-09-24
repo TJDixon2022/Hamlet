@@ -1,0 +1,3 @@
+unit418 task 1: the trace - EverySentenceOnTheSheetTests regenerates the whole sheet through CaptureNotes for 17:37, 014113 and 013347 and prints every line beside what the code did; 30 lines checked, 12 false, 10 about a signal - inputFloor, clipping, toneHz, unkeyed, elements, characters, sinceLast, competing, reading, keying - and captured and broadcast a second late at composition, parked P12; table in .run-unit/unit418-table.md; test only, nothing in src
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

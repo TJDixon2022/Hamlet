@@ -160,3 +160,15 @@ measured beside it, the tone's own quietest fifth, gave 93.3 dB on 013347, whose
 to -51.8 dB between elements under a steady -22 dBFS broadband, so it is no better as it
 stands. Whether the noise should be taken inside the passband only is the owner's; it would
 touch the held figure too, which HM-DEC-091 protects. Not blocking.
+
+## P12 - two clock readings on the capture sheet run a second behind the press
+
+**Raised by unit 418, 2026-09-24.** Since unit 417 the press measures `tonePeak` over the whole
+file on a pool thread before the sheet is composed (`MainWindowViewModel.cs` 11677), and that
+takes 871 ms on 17:37 and 885 ms on 013347. Two lines read the clock when the sheet is composed
+rather than at the press: `captured` (11729), which can now be a second later than the file's
+own stamp taken at 11669, and `broadcast` (12981), which asks whether the radio volunteered
+anything in the thirty seconds ending then rather than when the recording ended. Neither states
+anything about a signal, so they are outside 6.2 and parked rather than fixed, per work
+instruction 418's drop rule. The fix would be one timestamp taken at the press and handed to
+both. Not blocking.
