@@ -154,7 +154,7 @@ says - never the whole suite.
 - [ ] 1.3 `docs/phase-correctness/inferring-a-key.md` states the rule for inferring a key from a CQ call on the air: what may be inferred, what may not, and how the scored region is chosen, with `cw-2026-09-23-173723` worked as the example.
 - [ ] 1.4 The synthetic cases carry a written statement of what they do not prove (§12.5), and no synthetic case is ever the sole evidence for keeping a change.
 - [ ] 1.5 The three floor tests and both carry-forward lines are green at exit.
-- [ ] 1.6 Every capture of the locked-on run - `cw-2026-09-24-004108` onward - carries an inferred key built by differencing consecutive sidecar transcripts, with its scored region named, ambiguous stretches left unscored, and each key file stating that it is inferred and how; each is scored by `CwScorer` and tabled beside the baseline (R61, R63).
+- [x] 1.6 Every capture of the locked-on run - `cw-2026-09-24-004108` onward - carries an inferred key built by differencing consecutive sidecar transcripts, with its scored region named, ambiguous stretches left unscored, and each key file stating that it is inferred and how; each is scored by `CwScorer` and tabled beside the baseline (R61, R63).
 
 **Depends on:** step 0.
 
@@ -165,11 +165,11 @@ says - never the whole suite.
 **Entry:** step 0 done.
 
 **Exit:**
-- [ ] 2.1 Every correctness number reported by the scorer carries unsure characters per named character for the same region, and the baseline table is re-issued with that column.
-- [ ] 2.2 A named floor per keyed recording states how many named characters must be read at all, set from the baseline, and a change that drops below it is a regression whatever its edit count.
-- [ ] 2.3 The guard is watched working: a deliberate change that suppresses most output is measured, shown to improve edits while breaking the floor of 2.2, and taken back out in the same unit.
-- [ ] 2.4 The three floor tests and both carry-forward lines are green at exit.
-- [ ] 2.5 The thirteen captures `cw-2026-09-24-003901` through `-004550` are tracked in the tree and carry a named-character floor and an element floor each, measured once at HEAD and printed old beside new, and they are run by the capture floor test with the other rows; no existing row is retired or lowered (R63).
+- [x] 2.1 Every correctness number reported by the scorer carries unsure characters per named character for the same region, and the baseline table is re-issued with that column.
+- [x] 2.2 A named floor per keyed recording states how many named characters must be read at all, set from the baseline, and a change that drops below it is a regression whatever its edit count.
+- [x] 2.3 The guard is watched working: a deliberate change that suppresses most output is measured, shown to improve edits while breaking the floor of 2.2, and taken back out in the same unit.
+- [x] 2.4 The three floor tests and both carry-forward lines are green at exit.
+- [x] 2.5 The thirteen captures `cw-2026-09-24-003901` through `-004550` are tracked in the tree and carry a named-character floor and an element floor each, measured once at HEAD and printed old beside new, and they are run by the capture floor test with the other rows; no existing row is retired or lowered (R63).
 
 **Depends on:** step 0. Independent of step 1: when one blocks the arbiter works the other.
 
