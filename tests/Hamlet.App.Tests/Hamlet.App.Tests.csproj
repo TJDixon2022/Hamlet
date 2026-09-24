@@ -41,6 +41,15 @@
     <Compile Include="..\Hamlet.RadioEngine.Tests\Psk31\Psk31Corpus.cs" Link="Shared\Psk31Corpus.cs" />
   </ItemGroup>
 
+  <!-- ONE SCRIPTED RADIO, NOT TWO (work instruction 424). What is said about the preamp
+       is said partly by the engine and partly by the main panel, so the trace that prints
+       every sentence drives the setup here, against the same radio and bench the engine's
+       Rig tests use. -->
+  <ItemGroup>
+    <Compile Include="..\Hamlet.RadioEngine.Tests\Rig\ScriptedRadio.cs" Link="Shared\ScriptedRadio.cs" />
+    <Compile Include="..\Hamlet.RadioEngine.Tests\Rig\ModeEntryBench.cs" Link="Shared\ModeEntryBench.cs" />
+  </ItemGroup>
+
   <!-- EXCLUDED FROM COMPILATION, NOT RETIRED (work instruction 392, CW phase step 1,
        decision 3). src\Hamlet.RadioEngine\Cw is 7e209cb4's (R53) and each file below
        names a type or member that commit does not have; the missing name each quotes

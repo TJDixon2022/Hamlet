@@ -1,0 +1,14 @@
+unit424 task 1: what is said about the preamp today (7.8) - WhatIsSaidAboutThePreampTests, a fact that asserts nothing, drives ReceiverSetup against ScriptedRadio with each block's own conditions at 1.810, 3.530, 7.030, 10.110, 14.050, 18.080, 21.050, 24.900, 28.050 and 50.100 MHz, quiet and overloading, and prints verbatim what the setup, the advice, the observations, the obstructions and the panel's chip and overload sentence say about the preamp, in the block and once he has moved on
+
+Before any change: 10 sentences contradict what Hamlet set right after the tune-in - the
+setup's own clause, "I set the preamp to preamp 1 above 40 m, off at 40 m and below because
+below 40 m the noise arrives with the signal and gain adds both.", at 10.110, 14.050, 18.080,
+21.050 and 28.050, quiet and overloading - and 22 more once he has moved into a block that
+does not state the preamp ("Switch the preamp on." where Hamlet left it off at 40 m and
+below; "Press P.AMP/ATT ... until the preamp reads off." where Hamlet set preamp 1 while
+overloading). 32 in all. 1.810, 24.900 and 50.100 have no block on the map, so the app
+writes nothing there; the CW row is driven directly and they are printed, not counted.
+
+ScriptedRadio.cs and ModeEntryBench.cs are linked into the app tests rather than copied.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
