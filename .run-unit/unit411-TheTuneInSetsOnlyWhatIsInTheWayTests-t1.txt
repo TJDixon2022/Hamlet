@@ -1,0 +1,55 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.08]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.WhatIsInTheWayIsChangedAndWhatIsAlreadyRightIsNot [66 ms]
+  Standard Output Messages:
+   noise blanker   Changed            was=on now=off
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      Changed            was=on now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AMorseBlockProducesNoWriteAtAll [3 ms]
+  Standard Output Messages:
+   the dial is in CW fast lane
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.ArrivingAgainWithNothingChangedSendsNothing [2 ms]
+  Standard Output Messages:
+   noise blanker   AlreadyRight       was=off now=off
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      AlreadyRight       was=off now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AControlTheRadioWillNotReportIsNotWritten [764 ms]
+  Standard Output Messages:
+   noise blanker   NotRead            was=- now=-
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      AlreadyRight       was=off now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AControlTheOperatorMovedHimselfIsLeftAlone [2 ms]
+  Standard Output Messages:
+   noise blanker   LeftToTheOperator  was=on now=on
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      LeftToTheOperator  was=on now=on
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 1.3496 Seconds
+RC=0 WALL=2s

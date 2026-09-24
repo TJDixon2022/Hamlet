@@ -52,6 +52,19 @@ public sealed record RigWriteResult(RigWriteOutcome Outcome, string Detail, stri
     /// <summary>True only when the radio said yes.</summary>
     public bool Worked => Outcome == RigWriteOutcome.Confirmed;
 
+    /// <summary>
+    /// What the radio read the setting back as, where a read-back was taken and
+    /// understood; null otherwise.
+    /// </summary>
+    /// <remarks>
+    /// **A READ-BACK THAT DISAGREED IS STILL A READING** (work instruction 411,
+    /// HM-DEC-170). The rig took it, put it on the radio-state dialog, and then
+    /// handed back only the word "disagreed", so the RF gain banner told the
+    /// operator it did not know a value the dialog beside it was showing. It is
+    /// carried here so the sentence can say what the radio said.
+    /// </remarks>
+    public RigValue? ReadBack { get; init; }
+
     /// <summary>The radio acknowledged it.</summary>
     /// <param name="source">The command sent.</param>
     /// <returns>The result.</returns>

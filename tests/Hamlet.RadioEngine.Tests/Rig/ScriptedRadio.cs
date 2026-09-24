@@ -80,6 +80,19 @@ internal sealed class ScriptedRadio : ISerialPort
     /// <summary>How many `16` reads the radio has answered.</summary>
     public int SwitchReads { get; private set; }
 
+    /// <summary>
+    /// The `14` levels, 0 to 255 on the radio's own scale, by sub-command.
+    /// </summary>
+    /// <remarks>
+    /// **EMPTY UNLESS A TEST PUTS ONE HERE** (work instruction 411 task 1), so a
+    /// test written before this radio spoke `14` still finds every level unread,
+    /// which is what it was written against. `02` is the RF gain.
+    /// </remarks>
+    public Dictionary<byte, int> Levels { get; } = new();
+
+    /// <summary>Every `14` write the radio has taken, in order.</summary>
+    public List<(byte Sub, int Value)> LevelWrites { get; } = new();
+
     /// <summary>Sub-commands the radio will not answer, for the unread case.</summary>
     public HashSet<byte> Deaf { get; } = new();
 
@@ -283,6 +296,25 @@ internal sealed class ScriptedRadio : ISerialPort
                 Reply(CivConstants.ResultOk, Array.Empty<byte>());
                 break;
 
+            // Read: 14 <sub>. Write: 14 <sub> <two BCD bytes>, 0000 to 0255.
+            case 0x14 when data.Length == 1 && Levels.ContainsKey(data[0]):
+                Reply(0x14, new[] { data[0], Hundreds(Levels[data[0]]), Rest(Levels[data[0]]) });
+                break;
+
+            case 0x14 when data.Length >= 3 && Levels.ContainsKey(data[0]):
+                if (CivValues.Level(data[1], data[2]) is { } level)
+                {
+                    Levels[data[0]] = level;
+                    LevelWrites.Add((data[0], level));
+                    Reply(CivConstants.ResultOk, Array.Empty<byte>());
+                }
+                else
+                {
+                    Reply(CivConstants.ResultNg, Array.Empty<byte>());
+                }
+
+                break;
+
             case 0x1A when data.Length >= 1 && data[0] == 0x03:
                 Reply(0x1A, new[] { (byte)0x03, WidthIndex() });
                 break;
@@ -326,6 +358,12 @@ internal sealed class ScriptedRadio : ISerialPort
                 break;
         }
     }
+
+    // A level as the radio writes it: 255 goes out as 02 55 (§4, p. 19-3).
+    private static byte Hundreds(int level) => (byte)(level / 100);
+
+    private static byte Rest(int level)
+        => (byte)((((level / 10) % 10) << 4) | (level % 10));
 
     private byte WidthIndex()
     {

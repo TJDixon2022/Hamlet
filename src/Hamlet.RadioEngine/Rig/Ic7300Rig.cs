@@ -310,9 +310,15 @@ public sealed class Ic7300Rig : IRig, IDisposable
             var confirmed = values.Any(
                 v => v.Field == write.Field && v.IsKnown && (int?)v.Number == value);
 
+            // **WHAT IT DISAGREED WITH GOES BACK WITH IT** (work instruction 411).
+            // Nothing more is sent; this is the reading just taken.
             return confirmed
                 ? RigWriteResult.Confirmed(write.Label)
-                : RigWriteResult.ReadBackDisagreed(write.Label);
+                : RigWriteResult.ReadBackDisagreed(write.Label) with
+                {
+                    ReadBack = values.FirstOrDefault(
+                        v => v.Field == write.Field && v.IsKnown),
+                };
         }
         catch (TimeoutException)
         {

@@ -47,11 +47,16 @@ public enum ConditionOutcome
 /// <param name="Outcome">What happened.</param>
 /// <param name="WasText">What the radio said before, or null where unread.</param>
 /// <param name="NowText">What it says after, or null where unread.</param>
+/// <param name="NowAtUtc">
+/// When <paramref name="NowText"/> was read, or null where it was not (work
+/// instruction 411: a read-back is stated with its time).
+/// </param>
 public sealed record ConditionResult(
     ReceiverCondition Condition,
     ConditionOutcome Outcome,
     string? WasText = null,
-    string? NowText = null);
+    string? NowText = null,
+    DateTime? NowAtUtc = null);
 
 /// <summary>What Hamlet last set, so it can tell its own hand from the operator's.</summary>
 /// <param name="LastSet">Field to the value Hamlet last confirmed setting it to.</param>
@@ -223,8 +228,12 @@ public static class ReceiverSetup
 
             if (!result.Worked)
             {
+                // **A READ-BACK THE RIG TOOK IS CARRIED, NOT DROPPED** (work
+                // instruction 411, HM-DEC-170). The outcome is unchanged; what
+                // changes is that the sentence can say what the radio said.
                 results.Add(new ConditionResult(
-                    condition, ConditionOutcome.NotConfirmed, before.Text));
+                    condition, ConditionOutcome.NotConfirmed, before.Text,
+                    result.ReadBack?.Text, result.ReadBack?.AtUtc));
                 continue;
             }
 
@@ -256,7 +265,7 @@ public static class ReceiverSetup
                 // line in the record.
                 results.Add(new ConditionResult(
                     condition, ConditionOutcome.NotConfirmed, before.Text,
-                    after.Text));
+                    after.Text, after.AtUtc));
                 continue;
             }
 

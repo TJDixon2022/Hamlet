@@ -1,0 +1,35 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.AutoNotchLeftOnIsCorrectedOnEnteringMorse [3 s]
+  Standard Output Messages:
+   auto notch       Changed            was=on now=off
+   manual notch     NotRead            was=- now=-
+   noise blanker    AlreadyRight       was=off now=off
+   noise reduction  AlreadyRight       was=off now=off
+   AGC              Changed            was=SLOW now=FAST
+   RF gain          NotRead            was=- now=-
+   squelch          NotRead            was=- now=-
+   attenuator       NotRead            was=- now=-
+   preamp           NotRead            was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.TenRoundTripsDoNotDrift [41 s]
+  Standard Output Messages:
+ after the first CW tune-in: notch=0 blanker=0 reduction=0 agc=1
+ after ten round trips:      notch=0 blanker=0 reduction=0 agc=1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.ASettingNoRowStatesIsLeftAlone [3 s]
+[xUnit.net 00:00:53.52]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.TheRoundTripLandsInTheSamePlaceTests.ComingBackToMorseRestoresWhatMorseNeeds [3 s]
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 53.7731 Seconds
+RC=0 WALL=54s

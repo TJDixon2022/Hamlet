@@ -1,0 +1,35 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.WhatHisOwnHandIsHoldingIsSaidToBeHis [40 ms]
+  Standard Output Messages:
+   Your noise blanker is on and I have left it there, because you moved it after I last set it.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.WhatCouldNotBeDoneIsSaidRatherThanLeftOut [< 1 ms]
+  Standard Output Messages:
+   I asked for the noise blanker to be off and the radio did not confirm it, so I do not know where it is now. I could not read the noise reduction, so I have not touched it. The AGC usually wants to be slow here, because dozens of stations transmit together here and the gain would ride up and down under the loudest of them, and that is not settled well enough for me to change it on your radio. Your scope span wants to be 3 kHz across, because a scope showing a couple of hundred kilohertz draws the whole block about seven pixels wide, and that is one I cannot set from here.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.OnlyWhatChangedIsMentionedAndTheReasonComesWithIt [< 1 ms]
+  Standard Output Messages:
+   I turned the noise blanker off because it chops up the steady tones this mode sends, and turned the auto notch off because it hunts steady carriers and everything in this block is one.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.NothingToSayIsARealAnswer [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.HamletSaysWhatItChangedTests.TheComposedSentenceKeepsTheVoiceRule [< 1 ms]
+  Standard Output Messages:
+   I turned the noise blanker off because it chops up the steady tones this mode sends, turned the noise reduction off because it is built for a human voice and it mangles the faint carriers a decoder is listening for, turned the auto notch off because it hunts steady carriers and everything in this block is one, set the AGC to slow because dozens of stations transmit together here and the gain would ride up and down under the loudest of them, and set the scope span to 3 kHz across because a scope showing a couple of hundred kilohertz draws the whole block about seven pixels wide. Your noise blanker is on and I have left it there, because you moved it after I last set it. Your noise reduction is on and I have left it there, because you moved it after I last set it. Your auto notch is on and I have left it there, because you moved it after I last set it. Your AGC is on and I have left it there, because you moved it after I last set it. Your scope span is on and I have left it there, because you moved it after I last set it. The noise blanker usually wants to be off here, because it chops up the steady tones this mode sends, and that is not settled well enough for me to change it on your radio. The noise reduction usually wants to be off here, because it is built for a human voice and it mangles the faint carriers a decoder is listening for, and that is not settled well enough for me to change it on your radio. The auto notch usually wants to be off here, because it hunts steady carriers and everything in this block is one, and that is not settled well enough for me to change it on your radio. The AGC usually wants to be slow here, because dozens of stations transmit together here and the gain would ride up and down under the loudest of them, and that is not settled well enough for me to change it on your radio. Your scope span wants to be 3 kHz across, because a scope showing a couple of hundred kilohertz draws the whole block about seven pixels wide, and that is one I cannot set from here.
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.5474 Seconds
+RC=0 WALL=1s

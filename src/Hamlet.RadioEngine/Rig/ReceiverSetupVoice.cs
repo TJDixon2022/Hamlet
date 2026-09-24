@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 
 namespace Hamlet.RadioEngine.Rig;
 
@@ -62,10 +63,7 @@ public static class ReceiverSetupVoice
         foreach (var result in results.Where(
                      r => r.Outcome == ConditionOutcome.NotConfirmed))
         {
-            said.Add(
-                $"I asked for the {result.Condition.Control} to be "
-                + $"{result.Condition.WantedText} and the radio did not confirm it, "
-                + "so I do not know where it is now.");
+            said.Add(NotConfirmed(result));
         }
 
         foreach (var result in results.Where(
@@ -132,10 +130,7 @@ public static class ReceiverSetupVoice
         foreach (var result in results.Where(
                      r => r.Outcome == ConditionOutcome.NotConfirmed))
         {
-            said.Add(
-                $"I asked for the {result.Condition.Control} to be "
-                + $"{result.Condition.WantedText} and the radio did not confirm it, "
-                + "so I do not know where it is now.");
+            said.Add(NotConfirmed(result));
         }
 
         foreach (var result in results.Where(
@@ -152,6 +147,36 @@ public static class ReceiverSetupVoice
         // An admission leaves him not knowing. `Say` still carries it, so every word
         // is one hover away.
         return string.Join(" ", said);
+    }
+
+    /// <summary>A write the radio did not confirm, and what it read back if anything.</summary>
+    /// <remarks>
+    /// <para>**NEVER STATE AS UNKNOWN WHAT IS KNOWN** (§0.0, HM-DEC-170). On
+    /// 2026-09-23 this said *the radio did not confirm it, so I do not know where
+    /// it is now* while the radio-state dialog showed RF gain 100% read back over
+    /// `CI-V 14 02` twenty-four seconds earlier. Where a read-back is held the
+    /// sentence says what it was and when, and leaves the reader to set it beside
+    /// what was asked for.</para>
+    /// <para>**THE CLOCK TIME AND NOT AN AGE**, because this sentence stays on the
+    /// bar after it is written and "a moment ago" would stop being true while he
+    /// was still reading it. Local time, which is the clock on his wall.</para>
+    /// <para>**AND WITH NO READ-BACK THE OLD SENTENCE STANDS WORD FOR WORD.** That
+    /// case is true.</para>
+    /// </remarks>
+    private static string NotConfirmed(ConditionResult result)
+    {
+        if (result is { NowText: { } now, NowAtUtc: { } at })
+        {
+            return $"I asked for the {result.Condition.Control} to be "
+                   + $"{result.Condition.WantedText}, and the radio read it back as "
+                   + $"{now} at "
+                   + at.ToLocalTime().ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+                   + ".";
+        }
+
+        return $"I asked for the {result.Condition.Control} to be "
+               + $"{result.Condition.WantedText} and the radio did not confirm it, "
+               + "so I do not know where it is now.";
     }
 
     private static string Did(ConditionResult result)

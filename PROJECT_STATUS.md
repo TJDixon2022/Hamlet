@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 1 of 4
 WORK_INSTRUCTION: 411 - the screen stops saying what is not so
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T21:01:39-04:00
-NOTE: Running the two clean synthetics alone
+UPDATED: 2026-09-23T21:05:26-04:00
+NOTE: Running WhichPathsPutNarrationOnTheBarTests alone, a neighbor of the banner change
 
 ---
 
