@@ -1,0 +1,3 @@
+unit411 task 2: the sidecar's keying and elementHz lines (6.2) - on saved audio run as the live meter runs it, 17:37 printed no keying at 575 Hz and 109 key-downs, 014113 no keying at 650 Hz and 211 key-downs; the no-keying line now counts rises and names the failed test against the meter's own bar, 17:37 on its swing alone, 16 dB where it needs 20; elementHz says each element's own pitch was not measured, not that nothing was; the meter's verdict untouched; TheSidecarDoesNotContradictItselfTests 3 red then 3 of 3 green, three sheet neighbors green; tonePeak dropped whole, the named candidate
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

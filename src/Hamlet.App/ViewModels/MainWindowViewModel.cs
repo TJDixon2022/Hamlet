@@ -12393,10 +12393,16 @@ public partial class MainWindowViewModel : ObservableObject
         ArgumentNullException.ThrowIfNull(audio);
         ArgumentNullException.ThrowIfNull(report);
 
+        // **EVERY BRANCH SAYS WHAT WAS NOT MEASURED, WHICH IS EACH ELEMENT'S OWN
+        // PITCH** (work instruction 411, HM-DEC-170). A bare `not measured` sat
+        // directly under `elements 169 seen, 169 resolved` on 17:37 and read as
+        // no element having been measured at all. The elements were measured, by
+        // their timing; their pitch one at a time was not.
         if (double.IsNaN(report.ToneHz) || report.ToneHz <= 0)
         {
-            return "not measured  (no pitch was measured, so there is nothing "
-                   + "for an element's own pitch to be measured against)";
+            return "each element's own pitch not measured  (no pitch was measured, "
+                   + "so there is nothing for an element's own pitch to be measured "
+                   + "against)";
         }
 
         var envelope = CwProbabilisticDecoder.Envelope(
@@ -12406,8 +12412,10 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (read.Text.Length == 0)
         {
-            return "nothing was read, so no element was measured, which is too "
-                   + "few to say anything about how they spread";
+            return "each element's own pitch not measured  (read again for this "
+                   + "line, the audio in this file gave no characters, which is too "
+                   + "few elements to say anything about how they spread; the "
+                   + "counts above are for the stretch they name, not this file)";
         }
 
         // **NO ELEMENT PITCHES IN THIS BUILD, AND THE LINE SAYS SO** (work
@@ -12416,8 +12424,10 @@ public partial class MainWindowViewModel : ObservableObject
         // the per-element measurement came with the August rework that step 4
         // judges on numbers. A spread printed without them would be a
         // measurement nobody made.
-        return "not measured  (the decoder in this build does not say where each "
-               + "element began and ended, so no element's own pitch was measured)";
+        return "each element's own pitch not measured  (the elements counted above "
+               + "were measured by their timing, but the decoder in this build does "
+               + "not say where each one began and ended, so none of them had its "
+               + "own pitch taken)";
     }
 
     /// <summary>
@@ -12690,6 +12700,11 @@ public partial class MainWindowViewModel : ObservableObject
             return word + " (held through a quiet stretch, so nothing was measured)";
         }
 
+        if (reading.Verdict == KeyingVerdict.NoKeying)
+        {
+            return NoKeyingLine(reading);
+        }
+
         var length = reading.ElementMedianMs > 0
             ? string.Format(
                 CultureInfo.InvariantCulture,
@@ -12705,6 +12720,73 @@ public partial class MainWindowViewModel : ObservableObject
             length,
             reading.SwingDb,
             reading.Runs);
+    }
+
+    /// <summary>A no-keying verdict, what was counted, and which test it failed.</summary>
+    /// <param name="reading">A reading whose verdict is no keying and is not held.</param>
+    /// <returns>The line.</returns>
+    /// <remarks>
+    /// <para>**NO KEYING AND NINETY-EIGHT KEY-DOWNS IN ONE BREATH** (work
+    /// instruction 411, HM-DEC-170). `cw-2026-09-23-173723.txt` said exactly that.
+    /// The meter counts every rise above its threshold and the line called each
+    /// one a key-down, which is a claim somebody keyed it, beside a verdict that
+    /// nobody did. Both numbers were true; the word joining them was not.</para>
+    /// <para>**THE VERDICT IS NOT TOUCHED AND THE NUMBERS ARE NOT DROPPED.** The
+    /// counts become rises, and the line names which of the meter's four tests
+    /// this window failed against the meter's own bar, so a reader can see that
+    /// 17:37 was refused on its swing alone - 16 dB against 20, measured over six
+    /// seconds, where unit 409 found the swing runs low.</para>
+    /// </remarks>
+    private static string NoKeyingLine(KeyingReading reading)
+    {
+        var failed = new List<string>();
+
+        if (reading.Score < CwKeyingThresholds.KeyingScore)
+        {
+            failed.Add(string.Format(
+                CultureInfo.InvariantCulture,
+                "a keying score of {0:0.00} where it needs {1:0.00}",
+                reading.Score,
+                CwKeyingThresholds.KeyingScore));
+        }
+
+        if (reading.ElementMedianMs < CwKeyingThresholds.SlowestChatterMs
+            || reading.ElementMedianMs > CwKeyingThresholds.LongestElementMs)
+        {
+            failed.Add(string.Format(
+                CultureInfo.InvariantCulture,
+                "a median rise of {0:0} ms where it needs {1:0} to {2:0}",
+                reading.ElementMedianMs,
+                CwKeyingThresholds.SlowestChatterMs,
+                CwKeyingThresholds.LongestElementMs));
+        }
+
+        if (reading.SwingDb < CwKeyingThresholds.ConfidentSwingDb)
+        {
+            failed.Add(string.Format(
+                CultureInfo.InvariantCulture,
+                "a {0:0} dB swing where it needs {1:0}",
+                reading.SwingDb,
+                CwKeyingThresholds.ConfidentSwingDb));
+        }
+
+        // **A NEWEST WINDOW THAT PASSES ALL FOUR IS POSSIBLE**: the verdict is
+        // held across fifteen quiet windows before it turns, and a window that
+        // passes resets it. Should one ever arrive here, it says so rather than
+        // inventing a reason.
+        var why = failed.Count > 0
+            ? string.Join(" and ", failed)
+            : "the earlier windows, since this one passes every test";
+
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "no keying at {0:0} Hz: {1} rises above the threshold, median {2:0} ms, "
+            + "{3:0} dB swing; not called keying on {4}",
+            reading.ToneHz,
+            reading.Runs,
+            reading.ElementMedianMs,
+            reading.SwingDb,
+            why);
     }
 
     /// <summary>

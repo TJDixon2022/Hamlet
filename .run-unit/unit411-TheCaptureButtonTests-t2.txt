@@ -1,0 +1,44 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.16]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.04]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.TheEventsCarryWhatWasAskedAndNothingPersonal [252 ms]
+  Standard Output Messages:
+ started : {"mode":"psk31","dialHz":7028000,"deviceSampleRate":48000,"seconds":120}
+ finished: {"mode":"psk31","seconds":1,"bytes":96044,"sha256":"6d7cb8624118699665ba587b3d76d45c8f7a00c034a9d45688a6360c8d676039","deviceSampleRate":48000,"earlyStop":true,"carriersHeld":0,"carriers":[]}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.ThePressBelongsToPsk31 [4 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.ThePanelSaysWhereTheFileWent [21 ms]
+  Standard Output Messages:
+ the panel says: Kept 0:01 of receive audio at 48000 Hz in C:\Users\TimDi\AppData\Local\Temp\hamlet-capture-a030076fb08a439590875e83c36b6556\captures\psk31-2026-09-24-010823.wav. Copy it into assets\fixtures\captured\ and commit it, and the next change to the demodulator gets proved against real air instead of against audio this program made itself.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.PressingUnderOliviaWritesTheWavAndTheEventsWithModeOlivia [356 ms]
+  Standard Output Messages:
+ wrote olivia-2026-09-24-010824.wav: 48000 Hz, 2.00 s
+ the panel says: Kept 0:02 of receive audio at 48000 Hz in C:\Users\TimDi\AppData\Local\Temp\hamlet-capture-d9cecfc67e6043739dfd1f2d76b6fd9e\captures\olivia-2026-09-24-010824.wav. Copy it into assets\fixtures\captured\ and commit it, and the next change to the demodulator gets proved against real air instead of against audio this program made itself.
+ started : {"mode":"olivia","dialHz":7028000,"deviceSampleRate":null,"seconds":120}
+ finished: {"mode":"olivia","seconds":2,"bytes":192044,"sha256":"e9e68b9838d06e6e2f01728f6e13b3d13e418d1a8e6ec38b28615976c44902d6","deviceSampleRate":48000,"earlyStop":true,"carriersHeld":0,"carriers":[]}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.APressKeepsTheDeviceStreamAndNotHamletsVersionOfIt [39 ms]
+  Standard Output Messages:
+ wrote psk31-2026-09-24-010824.wav: 48000 Hz, 96000 samples, 2.00 s, 192044 bytes
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.ItStopsAtTwoMinutesOnItsOwn [177 ms]
+  Standard Output Messages:
+ offered 180 s, kept 120.00 s; the press reads 'captured · 2:00'
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 1.3208 Seconds
+RC=0 WALL=2s

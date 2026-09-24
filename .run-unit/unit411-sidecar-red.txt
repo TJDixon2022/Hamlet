@@ -1,0 +1,96 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.34]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.47]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.48]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.83]     Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.TheElementPitchLineDoesNotDenyTheElementsAboveIt [FAIL]
+[xUnit.net 00:00:02.83]       a bare 'not measured' under a line that resolved elements reads as no element having been measured
+[xUnit.net 00:00:02.84]       Stack Trace:
+[xUnit.net 00:00:02.84]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheSidecarDoesNotContradictItselfTests.cs(92,0): at Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.TheElementPitchLineDoesNotDenyTheElementsAboveIt()
+[xUnit.net 00:00:02.84]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.84]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.84]       Output:
+[xUnit.net 00:00:02.84]         elements   169 seen, 169 resolved
+[xUnit.net 00:00:02.84]         elementHz  not measured  (the decoder in this build does not say where each element began and ended, so no element's own pitch was measured)
+  Failed Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.TheElementPitchLineDoesNotDenyTheElementsAboveIt [328 ms]
+  Error Message:
+   a bare 'not measured' under a line that resolved elements reads as no element having been measured
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.TheElementPitchLineDoesNotDenyTheElementsAboveIt() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheSidecarDoesNotContradictItselfTests.cs:line 92
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ elements   169 seen, 169 resolved
+ elementHz  not measured  (the decoder in this build does not say where each element began and ended, so no element's own pitch was measured)
+
+
+[xUnit.net 00:00:04.29]     Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(capture: "unadjudicated/cw-2026-09-23-173723.wav") [FAIL]
+[xUnit.net 00:00:04.29]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:04.29]                                                   ↓ (pos 54)
+[xUnit.net 00:00:04.29]       String: ···"1 ms key down, 16 dB swing, 109 key-downs"
+[xUnit.net 00:00:04.29]       Found:  "key-down"
+[xUnit.net 00:00:04.29]       Stack Trace:
+[xUnit.net 00:00:04.29]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheSidecarDoesNotContradictItselfTests.cs(59,0): at Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(String capture)
+[xUnit.net 00:00:04.29]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:04.29]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:04.29]       Output:
+[xUnit.net 00:00:04.29]         unadjudicated/cw-2026-09-23-173723.wav: verdict=NoKeying held=False tone=575 runs=109 elementMedian=71 swing=16.3 score=0.108
+[xUnit.net 00:00:04.29]         keying     no keying at 575 Hz, 71 ms key down, 16 dB swing, 109 key-downs
+  Failed Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(capture: "unadjudicated/cw-2026-09-23-173723.wav") [1 s]
+  Error Message:
+   Assert.DoesNotContain() Failure: Sub-string found
+                                            ↓ (pos 54)
+String: ···"1 ms key down, 16 dB swing, 109 key-downs"
+Found:  "key-down"
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(String capture) in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheSidecarDoesNotContradictItselfTests.cs:line 59
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ unadjudicated/cw-2026-09-23-173723.wav: verdict=NoKeying held=False tone=575 runs=109 elementMedian=71 swing=16.3 score=0.108
+ keying     no keying at 575 Hz, 71 ms key down, 16 dB swing, 109 key-downs
+
+
+[xUnit.net 00:00:05.69]     Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(capture: "unadjudicated/cw-2026-08-22-014113.wav") [FAIL]
+[xUnit.net 00:00:05.70]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:05.70]                                                   ↓ (pos 54)
+[xUnit.net 00:00:05.70]       String: ···"8 ms key down, 14 dB swing, 211 key-downs"
+[xUnit.net 00:00:05.70]       Found:  "key-down"
+[xUnit.net 00:00:05.70]       Stack Trace:
+[xUnit.net 00:00:05.70]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheSidecarDoesNotContradictItselfTests.cs(59,0): at Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(String capture)
+[xUnit.net 00:00:05.70]            at InvokeStub_TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(Object, Span`1)
+[xUnit.net 00:00:05.70]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.70]       Output:
+[xUnit.net 00:00:05.70]         unadjudicated/cw-2026-08-22-014113.wav: verdict=NoKeying held=False tone=650 runs=211 elementMedian=48 swing=13.9 score=0.062
+[xUnit.net 00:00:05.70]         keying     no keying at 650 Hz, 48 ms key down, 14 dB swing, 211 key-downs
+[xUnit.net 00:00:05.70]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(capture: "unadjudicated/cw-2026-08-22-014113.wav") [1 s]
+  Error Message:
+   Assert.DoesNotContain() Failure: Sub-string found
+                                            ↓ (pos 54)
+String: ···"8 ms key down, 14 dB swing, 211 key-downs"
+Found:  "key-down"
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(String capture) in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheSidecarDoesNotContradictItselfTests.cs:line 59
+   at InvokeStub_TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-014113.wav: verdict=NoKeying held=False tone=650 runs=211 elementMedian=48 swing=13.9 score=0.062
+ keying     no keying at 650 Hz, 48 ms key down, 14 dB swing, 211 key-downs
+
+
+
+Test Run Failed.
+Total tests: 3
+     Failed: 3
+ Total time: 6.0044 Seconds
+RC=1 WALL=14s
