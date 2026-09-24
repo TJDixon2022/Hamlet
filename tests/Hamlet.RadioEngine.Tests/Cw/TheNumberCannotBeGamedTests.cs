@@ -40,19 +40,25 @@ public sealed class TheNumberCannotBeGamedTests
     public TheNumberCannotBeGamedTests(ITestOutputHelper output)
         => _output = output;
 
-    /// <summary>Every keyed recording, with the named characters it read when the floor was set.</summary>
+    /// <summary>Every keyed recording, with the named characters at or above the span bar it read when the floor was set.</summary>
+    /// <remarks>
+    /// **RE-MEASURED 2026-09-24 UNDER THE SPAN BAR** (R71, HM-DEC-176, work
+    /// instruction 421 task 2), in the commit that re-measured the 51 capture rows
+    /// and at the same decoder. Four changed, each by exactly the characters it
+    /// settles below <see cref="TheCapturesThatDecodeKeepDecodingTests.SpanBar"/>.
+    /// </remarks>
     public static TheoryData<string, int> NamedFloors { get; } = new()
     {
         // The baseline's four (PHASE_PLAN.md 0.2).
         { TheSeventeenThirtySevenCaptureTests.Name, 46 },
         { "cw-2026-08-17-013347", 57 },
-        { "cw-2026-08-17-134712", 21 },
-        { "unadjudicated/cw-2026-08-18-003758", 44 },
+        { "cw-2026-08-17-134712", 11 },                   // 21 named, 10 below the bar
+        { "unadjudicated/cw-2026-08-18-003758", 43 },     // 44 named, 1 below the bar
 
         // The other adjudicated recordings, scored outside the baseline total.
-        { "unadjudicated/cw-2026-08-24-012403", 21 },
+        { "unadjudicated/cw-2026-08-24-012403", 19 },     // 21 named, 2 below the bar
         { "cw-2026-08-18-004507", 49 },
-        { "unadjudicated/cw-2026-08-22-031838", 43 },
+        { "unadjudicated/cw-2026-08-22-031838", 40 },     // 43 named, 3 below the bar
         { "unadjudicated/cw-2026-08-22-031905", 36 },
         { "unadjudicated/cw-2026-08-22-031948", 31 },
         { "unadjudicated/cw-2026-08-22-032012", 43 },
@@ -81,16 +87,19 @@ public sealed class TheNumberCannotBeGamedTests
     public void EachKeyedRecordingIsReadAtAll(string name, int floor)
     {
         // Counted as the capture floors count: one per settled character, so a
-        // prosign is one character here where the region's text spells it out.
-        var named = TheSeventeenThirtySevenCaptureTests.Settle(name)
-            .Count(c => !c.IsWordGap && !c.IsUnreadable);
+        // prosign is one character here where the region's text spells it out,
+        // and only at or above the span bar (R71, HM-DEC-176).
+        var settled = TheSeventeenThirtySevenCaptureTests.Settle(name);
+        var all = settled.Count(c => !c.IsWordGap && !c.IsUnreadable);
+        var named = settled.Count(TheCapturesThatDecodeKeepDecodingTests.Counts);
         var score = Score(name);
 
         _output.WriteLine(
-            $"named | {name} | {named} against a floor of {floor} | {score} | region `{score.Region}`");
+            $"named | {name} | {named} at or above the span bar against a floor of {floor} | "
+            + $"{all} named, {all - named} below the bar | {score} | region `{score.Region}`");
 
         Assert.True(
             named >= floor,
-            $"{name} fell from {floor} named characters to {named}, at {score}");
+            $"{name} fell from {floor} named characters at or above the span bar to {named}, at {score}");
     }
 }

@@ -58,25 +58,68 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         => _output = output;
 
     /// <summary>
+    /// The span a named character must stand on for a floor to count it, in the
+    /// raw units of <see cref="CwCharacter.SpanLogLikelihoodRatio"/> (R71,
+    /// HM-DEC-176).
+    /// </summary>
+    /// <remarks>
+    /// <para>**READ OFF THE TRACE OF THE STRAY LETTERS AND NOTHING ELSE** (work
+    /// instruction 421, task 1, `WhatTheStrayLettersRestOnTests`). Over the 23
+    /// keyed recordings the lowest character any inferred key aligns as right
+    /// stands at 30.8, a lone `E` on 17:37, and nothing the key calls right sits
+    /// under it; the lowest key-aligned characters are three `E`s on
+    /// `cw-2026-08-22-031838` the key calls wrong, at 4.42 to 5.50. Thirteen is
+    /// the midpoint of that empty stretch on a log scale, the square root of 5.50
+    /// times 30.8, rounded down to a whole number.</para>
+    /// <para>**THE RAW FIGURE AND NOT THE PER-HOP ONE, AND THE TRACE IS WHY.** On
+    /// the right characters the two spread across recordings alike, twelve and a
+    /// half to one between the lowest and highest recording's median. What
+    /// dividing by the span changes is which characters sit low: per hop, a
+    /// right single element stands above a right longer character, where every
+    /// stray the bar is for is a single element, and the right characters reach
+    /// down to the emission gate itself with no empty stretch under them. R71's
+    /// own figures from `cw-2026-09-24-153202` are the raw figure, which is the
+    /// one the capture sidecar prints.</para>
+    /// <para>**UNMEASURED IS NOT DOUBTFUL**: a character whose span is NaN is
+    /// counted (author's, overrulable). None settles today.</para>
+    /// </remarks>
+    public const double SpanBar = 13.0;
+
+    /// <summary>A named character a floor counts: at or above the span bar, or unmeasured.</summary>
+    /// <param name="c">What settled.</param>
+    /// <returns>True where a floor counts it.</returns>
+    internal static bool Counts(CwCharacter c)
+        => !c.IsWordGap
+           && !c.IsUnreadable
+           && (double.IsNaN(c.SpanLogLikelihoodRatio) || c.SpanLogLikelihoodRatio >= SpanBar);
+
+    /// <summary>
     /// Every recording in the tree, with the counts it produced on the day its
     /// floor was set.
     /// </summary>
     /// <remarks>
-    /// The three numbers are named characters settled, the elements inside
-    /// them, and placeholders settled. The first two are asserted as floors and
-    /// the third is printed; see this class's own remarks for why, and R57 for
-    /// why a placeholder is not a character a floor counts.
+    /// <para>The three numbers are named characters settled at or above
+    /// <see cref="SpanBar"/>, the elements inside them, and placeholders settled.
+    /// The first two are asserted as floors and the third is printed; see this
+    /// class's own remarks for why, and R57 for why a placeholder is not a
+    /// character a floor counts.</para>
+    /// <para>**RE-MEASURED 2026-09-24 UNDER THE SPAN BAR, ALL 51 AT ONCE** (R71,
+    /// HM-DEC-176, work instruction 421 task 2). Each floor is what the row read
+    /// at or above the bar at the decoder of unit 421's entry, `23457c4b`, which
+    /// the commit that re-stated them did not touch. Eighteen rows changed, each
+    /// by exactly the characters it settles below the bar; the other thirty-three
+    /// have none. The old named counts are in unit 421's report.</para>
     /// </remarks>
     public static TheoryData<string, int, int, int> Floors { get; } = new()
     {
         // Adjudicated or independently corroborated content.
         { "cw-2026-08-17-013347", 57, 106, 2 },
-        { "cw-2026-08-17-134712", 21, 41, 42 },
+        { "cw-2026-08-17-134712", 11, 31, 42 },      // 21 named, 10 below the bar: the trailing run of `E`s after `N4L`
         { "cw-2026-08-18-004507", 49, 117, 1 },
-        { "unadjudicated/cw-2026-08-24-012403", 21, 62, 1 },
+        { "unadjudicated/cw-2026-08-24-012403", 19, 60, 1 },   // 21 named, 2 below the bar
 
         // The seven W1AW propagation-bulletin captures of 2026-08-22.
-        { "unadjudicated/cw-2026-08-22-031838", 42, 93, 15 },
+        { "unadjudicated/cw-2026-08-22-031838", 40, 91, 15 },  // 43 named, 3 below the bar
         { "unadjudicated/cw-2026-08-22-031905", 36, 108, 6 },
         { "unadjudicated/cw-2026-08-22-031948", 31, 111, 3 },
         { "unadjudicated/cw-2026-08-22-032012", 43, 119, 1 },
@@ -85,14 +128,14 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         { "unadjudicated/cw-2026-08-22-032129", 65, 114, 1 },
 
         // Nothing adjudicated in any of these.
-        { "cw-2026-08-17-013622", 51, 80, 4 },
+        { "cw-2026-08-17-013622", 49, 78, 4 },         // 51 named, 2 below the bar
         { "unadjudicated/cw-2026-08-18-003016", 54, 146, 3 },
         { "unadjudicated/cw-2026-08-18-003126", 48, 131, 6 },
-        { "unadjudicated/cw-2026-08-18-003758", 44, 93, 19 },
+        { "unadjudicated/cw-2026-08-18-003758", 43, 92, 19 },    // 44 named, 1 below the bar
         { "unadjudicated/cw-2026-08-23-001520", 1, 1, 4 },
-        { "unadjudicated/cw-2026-08-23-001831", 44, 108, 11 },
-        { "unadjudicated/cw-2026-08-23-001952", 56, 113, 19 },
-        { "unadjudicated/cw-2026-08-23-002016", 44, 84, 31 },
+        { "unadjudicated/cw-2026-08-23-001831", 43, 107, 11 },   // 44 named, 1 below the bar
+        { "unadjudicated/cw-2026-08-23-001952", 46, 103, 19 },   // 57 named, 11 below the bar
+        { "unadjudicated/cw-2026-08-23-002016", 34, 74, 31 },    // 44 named, 10 below the bar
 
 
         // **THE EVENING OF 2026-08-25**, banked after four units of asking.
@@ -108,8 +151,8 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         // the decoder now produces, with the loss on the record. Why the replay
         // destroys this one recording is its own question and it is unanswered.
         { "unadjudicated/cw-2026-08-25-012748", 2, 3, 2 },   // **Bug A**, and the one capture the re-read hurts
-        { "unadjudicated/cw-2026-08-25-012823", 26, 40, 15 },   // **the negative control** — the tone lands 50 Hz off and the reading is soup
-        { "unadjudicated/cw-2026-08-25-012922", 45, 106, 5 },   // lock recovering
+        { "unadjudicated/cw-2026-08-25-012823", 23, 37, 15 },   // **the negative control** — the tone lands 50 Hz off and the reading is soup; 26 named, 3 below the bar
+        { "unadjudicated/cw-2026-08-25-012922", 43, 104, 5 },   // lock recovering; 45 named, 2 below the bar
         { "unadjudicated/cw-2026-08-25-013010", 48, 122, 6 },   // a whole contact; the gate must not damage it
         { "unadjudicated/cw-2026-08-25-013150", 51, 123, 7 },   // `CQ CQ CQ DE ND4K`
         { "unadjudicated/cw-2026-08-25-013303", 44, 127, 10 },   // **the beat-the-chain case**
@@ -118,7 +161,7 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         { "unadjudicated/cw-2026-08-25-013637", 60, 157, 3 },   // gap clusters merge at speed, the joint-cutter fixture
         { "unadjudicated/cw-2026-08-25-021410", 36, 88, 11 },   // a machine fist with separable gaps, still miscut
         { "unadjudicated/cw-2026-08-25-021629", 27, 65, 20 },   // 24 % duty: `559 559 IN MI MI` buried
-        { "unadjudicated/cw-2026-08-25-021825", 25, 49, 16 },   // 18 % duty: an eight-second call in thirty seconds
+        { "unadjudicated/cw-2026-08-25-021825", 19, 43, 16 },   // 18 % duty: an eight-second call in thirty seconds; 25 named, 6 below the bar
 
         // **THE MISS OF 2026-08-26.** The operator sat on 14.0275 MHz hearing
         // fast CW while the terminal said nothing decoded yet. Floored at its
@@ -143,17 +186,17 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         // what is asserted. The first two are the acquisition failure, `E ET E E`
         // before the lock, floored as they read and not attacked here.
         { "unadjudicated/cw-2026-09-24-003901", 9, 20, 0 },     // live 92 emitted, 0 unsure, 223 elements
-        { "unadjudicated/cw-2026-09-24-003919", 27, 54, 0 },    // live 110 emitted, 0 unsure, 253 elements
-        { "unadjudicated/cw-2026-09-24-004027", 40, 119, 1 },   // live 51 emitted, 1 unsure, 125 elements
+        { "unadjudicated/cw-2026-09-24-003919", 25, 52, 0 },    // live 110 emitted, 0 unsure, 253 elements; 27 named, 2 below the bar
+        { "unadjudicated/cw-2026-09-24-004027", 39, 118, 1 },   // live 51 emitted, 1 unsure, 125 elements; 40 named, 1 below the bar
         { "unadjudicated/cw-2026-09-24-004108", 32, 107, 0 },   // live 32 emitted, 0 unsure, 109 elements
-        { "unadjudicated/cw-2026-09-24-004133", 30, 87, 2 },    // live 31 emitted, 2 unsure, 106 elements
+        { "unadjudicated/cw-2026-09-24-004133", 28, 85, 2 },    // live 31 emitted, 2 unsure, 106 elements; 30 named, 2 below the bar
         { "unadjudicated/cw-2026-09-24-004205", 34, 96, 2 },    // live 36 emitted, 2 unsure, 107 elements
-        { "unadjudicated/cw-2026-09-24-004234", 37, 96, 1 },    // live 36 emitted, 0 unsure, 103 elements
+        { "unadjudicated/cw-2026-09-24-004234", 36, 95, 1 },    // live 36 emitted, 0 unsure, 103 elements; 37 named, 1 below the bar
         { "unadjudicated/cw-2026-09-24-004322", 39, 112, 0 },   // live 39 emitted, 0 unsure, 114 elements
         { "unadjudicated/cw-2026-09-24-004347", 40, 115, 0 },   // live 39 emitted, 0 unsure, 113 elements
-        { "unadjudicated/cw-2026-09-24-004405", 36, 106, 1 },   // live 40 emitted, 2 unsure, 117 elements
-        { "unadjudicated/cw-2026-09-24-004427", 43, 112, 1 },   // live 41 emitted, 1 unsure, 117 elements
-        { "unadjudicated/cw-2026-09-24-004510", 38, 104, 0 },   // live 34 emitted, 0 unsure, 98 elements
+        { "unadjudicated/cw-2026-09-24-004405", 35, 105, 1 },   // live 40 emitted, 2 unsure, 117 elements; 36 named, 1 below the bar
+        { "unadjudicated/cw-2026-09-24-004427", 42, 111, 1 },   // live 41 emitted, 1 unsure, 117 elements; 43 named, 1 below the bar
+        { "unadjudicated/cw-2026-09-24-004510", 34, 100, 0 },   // live 34 emitted, 0 unsure, 98 elements; 38 named, 4 below the bar
         { "unadjudicated/cw-2026-09-24-004535", 47, 128, 1 },   // live 53 emitted, 2 unsure, 127 elements
         { "unadjudicated/cw-2026-09-24-004550", 41, 123, 0 },   // live 49 emitted, 1 unsure, 126 elements
     };
@@ -198,8 +241,8 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
     /// as they did when this was written.
     /// </remarks>
     /// <param name="name">The recording.</param>
-    /// <param name="named">The named characters it settled when the floor was set.</param>
-    /// <param name="elements">The elements inside those named characters.</param>
+    /// <param name="named">The named characters at or above the span bar it settled when the floor was set.</param>
+    /// <param name="elements">The elements inside those characters.</param>
     /// <param name="placeholders">The placeholders it settled then, for the record.</param>
     [Theory]
     [MemberData(nameof(Floors))]
@@ -218,9 +261,16 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         // real away; so it is counted beside the floor and never inside it. The
         // elements are counted over the named characters for the same reason: a
         // suppressed placeholder takes its own elements with it.
+        //
+        // **AND WHAT A FLOOR COUNTS IS WHAT STANDS AT OR ABOVE THE SPAN BAR**
+        // (R71, HM-DEC-176). Every named character is still counted and printed;
+        // the ones below the bar are printed beside the floor and never inside it.
         var namedNow = 0;
         var elementsNow = 0;
+        var aboveNow = 0;
+        var aboveElementsNow = 0;
         var placeholdersNow = 0;
+        var below = new List<CwCharacter>();
 
         decoder.CharacterSettled += c =>
         {
@@ -237,6 +287,16 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
 
             namedNow++;
             elementsNow += Math.Max(1, c.Pattern.Length);
+
+            if (Counts(c))
+            {
+                aboveNow++;
+                aboveElementsNow += Math.Max(1, c.Pattern.Length);
+            }
+            else
+            {
+                below.Add(c);
+            }
         };
 
         for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
@@ -250,11 +310,19 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         var report = decoder.Report;
 
         _output.WriteLine(
-            $"{name}: {namedNow} named against a floor of {named}, "
-            + $"{elementsNow} named elements against {elements}, "
+            $"{name}: {namedNow} named, {aboveNow} at or above the span bar against a floor of {named}, "
+            + $"{namedNow - aboveNow} below it; {elementsNow} named elements, "
+            + $"{aboveElementsNow} above the bar against {elements}; "
             + $"{placeholdersNow} placeholders where {placeholders} settled when "
             + $"the floor was set, {report.CharactersEmitted} emitted in all, "
             + $"at {report.ToneHz:0} Hz");
+
+        foreach (var c in below)
+        {
+            _output.WriteLine(
+                $"  below the bar: `{c.Text}` {c.Pattern} at {c.At.TotalSeconds:0.000} s, "
+                + $"span {c.SpanLogLikelihoodRatio:0.00} over {c.SpanHops} hops");
+        }
 
         if (Anchored.Contains(name))
         {
@@ -267,12 +335,12 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         else
         {
             Assert.True(
-                namedNow >= named,
-                $"{name} fell from {named} named characters to {namedNow}");
+                aboveNow >= named,
+                $"{name} fell from {named} named characters at or above the span bar to {aboveNow}");
         }
 
         Assert.True(
-            elementsNow >= elements,
-            $"{name} fell from {elements} named elements to {elementsNow}");
+            aboveElementsNow >= elements,
+            $"{name} fell from {elements} named elements at or above the span bar to {aboveElementsNow}");
     }
 }
