@@ -1,0 +1,58 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.38]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.56]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.57]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.WhatTheGeneratorMakesTests.TheCornerIsMeasured(name: "cq-25wpm-0db") [1 s]
+  Standard Output Messages:
+ case | cq-25wpm-0db | 25 wpm | recipe dit 48 ms, snr 0.0 dB, tone 615 Hz, seed 20260932
+ direct pitch | measured 618 Hz | recipe 615 Hz drifting +/- 3
+ direct snr | measured 4.23 dB in the passband | recipe 0.0 dB | tone rms -33.19 dBFS, noise rms -37.42 dBFS
+ direct count | marks 243 of 73 | spaces 242 of 72
+ apart pitch | measured 618 Hz | recipe 615 Hz drifting +/- 3
+ apart snr | measured -0.01 dB in the passband | recipe 0.0 dB | tone rms -33.98 dBFS, noise rms -33.97 dBFS
+ apart count | marks 73 of 73 | spaces 72 of 72
+ aligned | every rendered run stands against the run the recipe keys there
+ mark dit | n 33 | median 43.0 ms, 0.90 units | range 42.8 to 43.3 ms | recipe 48.0 ms | the edges predict 43.0 ms | median off that +0.0 ms
+ mark dah | n 40 | median 139.0 ms, 2.90 units | range 138.8 to 139.3 ms | recipe 144.0 ms | the edges predict 139.0 ms | median off that +0.0 ms
+ gap element | n 52 | median 53.0 ms, 1.10 units | range 52.8 to 53.3 ms | recipe 48.0 ms | the edges predict 53.0 ms | median off that +0.0 ms
+ gap character | n 14 | median 148.9 ms, 3.10 units | range 148.8 to 149.1 ms | recipe 144.0 ms | the edges predict 149.0 ms | median off that -0.1 ms
+ gap word | n 6 | median 341.1 ms, 7.11 units | range 340.8 to 341.1 ms | recipe 336.0 ms | the edges predict 341.0 ms | median off that +0.1 ms
+ worst | a mark 0.3 ms, a gap 0.3 ms from what the recipe and the edges predict
+ whole | 27 edits over 27 characters against an exact key, 0 unsure per 0 named (nothing named)
+ within | 27 edits over 27 characters against an exact key, 0 unsure per 0 named (nothing named)
+ decode | ``
+ key | `CQ CQ CQ DE N0CALL N0CALL K`
+
+
+[xUnit.net 00:00:04.76]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.WhatTheGeneratorMakesTests.TheCornerIsMeasured(name: "cq-12wpm-15db") [2 s]
+  Standard Output Messages:
+ case | cq-12wpm-15db | 12 wpm | recipe dit 100 ms, snr 15.0 dB, tone 615 Hz, seed 20260924
+ direct pitch | measured 618 Hz | recipe 615 Hz drifting +/- 3
+ direct snr | measured 15.09 dB in the passband | recipe 15.0 dB | tone rms -18.96 dBFS, noise rms -34.05 dBFS
+ direct count | marks 73 of 73 | spaces 72 of 72
+ apart pitch | measured 618 Hz | recipe 615 Hz drifting +/- 3
+ apart snr | measured 14.99 dB in the passband | recipe 15.0 dB | tone rms -18.98 dBFS, noise rms -33.97 dBFS
+ apart count | marks 73 of 73 | spaces 72 of 72
+ aligned | every rendered run stands against the run the recipe keys there
+ mark dit | n 33 | median 95.0 ms, 0.95 units | range 94.9 to 95.3 ms | recipe 100.0 ms | the edges predict 95.0 ms | median off that +0.0 ms
+ mark dah | n 40 | median 295.0 ms, 2.95 units | range 294.8 to 295.3 ms | recipe 300.0 ms | the edges predict 295.0 ms | median off that +0.0 ms
+ gap element | n 52 | median 105.0 ms, 1.05 units | range 104.8 to 105.3 ms | recipe 100.0 ms | the edges predict 105.0 ms | median off that +0.0 ms
+ gap character | n 14 | median 305.0 ms, 3.05 units | range 304.8 to 305.1 ms | recipe 300.0 ms | the edges predict 305.0 ms | median off that +0.0 ms
+ gap word | n 6 | median 705.0 ms, 7.05 units | range 704.8 to 705.3 ms | recipe 700.0 ms | the edges predict 705.0 ms | median off that +0.0 ms
+ worst | a mark 0.3 ms, a gap 0.3 ms from what the recipe and the edges predict
+ whole | 0 edits over 27 characters against an exact key, 0 unsure per 21 named (0.000)
+ within | 0 edits over 27 characters against an exact key, 0 unsure per 21 named (0.000)
+ decode | ` CQ CQ CQ DE N0CALL N0CALL K `
+ key | `CQ CQ CQ DE N0CALL N0CALL K`
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 5.0370 Seconds
+RC=0 WALL=6s

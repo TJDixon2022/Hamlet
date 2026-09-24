@@ -1,0 +1,3 @@
+unit414 task 1: the trace - WhatTheGeneratorMakesTests prints the two corners measured from the audio, asserting nothing; cq-12wpm-15db renders 14.99 dB against 15.0 and every gap within 0.3 ms of the recipe and its 5 ms edges, decode 0 edits over 27 against an exact key; cq-25wpm-0db renders -0.01 dB against 0.0 taken apart into tone and noise, gaps within 0.3 ms, decode empty, 27 over 27 against an exact key; no generator defect; SyntheticCq holds the recipes, the floors' decode path and the measurement
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
