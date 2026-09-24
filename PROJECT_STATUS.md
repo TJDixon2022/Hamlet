@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 411 - the screen stops saying what is not so
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 4
+WORK_INSTRUCTION: 412 - tonight's thirteen become the mark
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T21:27:02-04:00
-NOTE: Unit 411 complete: the RF gain banner states the read-back it holds, keying and elementHz lines true, tonePeak dropped; 4 contradicting sentences to 1; section 4 raises 2 items
+UPDATED: 2026-09-23T21:48:31-04:00
+NOTE: Running the two clean synthetics alone
 
 ---
 

@@ -4,6 +4,35 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-171
+date: 2026-09-24
+refs: PHASE_PLAN.md R63 R64, criteria 1.6 2.5 6.7, work instruction 412 task 0, HM-DEC-091, HM-DEC-103, HM-DEC-168
+---
+
+**The thirteen captures of 2026-09-24 are the benchmark, the older captures stay, and the
+loop moves on rather than halting.** Tim, 2026-09-24.
+
+**What happened.** On 7.052 MHz between 00:39 and 00:46 UTC the decoder read a whole QSO -
+625 characters, 11 unsure, callsigns clean and repeated - where two days earlier it read
+nothing. Tim: *"This should be our minimum benchmark and future iterations should run
+against that. I don't want to go backwards."*
+
+**What is ruled.** The thirteen captures are banked with a named-character floor and an
+element floor apiece, measured once at what they produced tonight. The older captures are
+not retired: they are the guard against a change that reads one signal better and another
+worse, and a fixture retires only by ruling. The locked-on run also gets inferred keys,
+built by differencing consecutive transcripts, with ambiguous stretches left unscored.
+`tonePeak` in a per-capture sidecar becomes a figure measured over that recording.
+
+**And on the loop.** A unit that cannot advance the criterion it was authored for reports
+what it measured and hands on; the arbiter authors the next unit against a different
+criterion. Preference when nothing is blocked: the spacing first, then the screen.
+
+**Whose words are whose.** The rulings are Tim's; the wording is work instruction 412 task
+0's record of them. Rejected: retiring older captures; leaving tonePeak as it was; not
+printing it at all.
+
+---
 id: HM-DEC-170
 date: 2026-09-23
 refs: PHASE_PLAN.md R62 step 6, OPEN_ISSUES.md, work instruction 411 task 0, CLAUDE.md 0.0, HM-OPEN-087

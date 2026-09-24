@@ -1,0 +1,26 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.23]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer [806 ms]
+  Standard Output Messages:
+ plain fixture: lookup a fixed answer under test, asked 1; class General; privilege headline [7.028 MHz · yours to use]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ConversationCardTests.APsk31CardOffersNothingWhileItIsNotHisTurn [137 ms]
+  Standard Output Messages:
+ the card is [His turn] and offers []
+ drawn on the card: W1AW | United States · 360 miles | His turn | ✕ | You handed over to W1AW, and it is his turn. | Log this contact | Distance | 360 miles · east-northeast | Grid | FN31 | Achieves | Would open a new area
+ visible buttons: ✕ -> RelayCommand`1 | Log this contact -> AsyncRelayCommand`1 | Avalonia.Controls.Border -> RelayCommand | Would open a new area -> RelayCommand
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 1.5437 Seconds
+RC=0 WALL=2s

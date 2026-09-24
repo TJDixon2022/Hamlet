@@ -1280,8 +1280,15 @@
     capture sidecar's keying, elementHz and tonePeak lines stop contradicting their neighbors
     (HM-DEC-170). Nothing that keys or transmits and nothing that decides a character changes.
   -->
+  <!--
+    1.13.98 -> 1.13.99, WORK INSTRUCTION 412 TASK 0. A PATCH, STEP 2 OF THE CORRECTNESS PHASE, THE
+    NUMBER CANNOT BE GAMED: the captures of 2026-09-24 banked as named-character and element
+    floors, unsure-per-named beside every correctness number, a named floor per keyed recording,
+    and the locked-on run keyed by differencing consecutive transcripts (HM-DEC-171). No file
+    under src changes in this unit.
+  -->
   <PropertyGroup>
-    <Version>1.13.98</Version>
+    <Version>1.13.99</Version>
   </PropertyGroup>
 
   <!--

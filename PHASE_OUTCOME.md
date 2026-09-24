@@ -9,6 +9,19 @@ STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose 
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
+## UNIT 412 - STEP 2
+
+STEP: 2
+APPROACH: bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
+MOVE: continue
+WHY: PHASE_PLAN.md step 2 criterion 2.5 asks that the thirteen captures carry a named-character floor and an element floor each, measured once at HEAD, run with the other rows, with no existing row retired or lowered
+STATE: not started
+DECIDED: the form of the new floor rows, the conservatism of each inferred key, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R57, R61, R63, R64, section 3, section 6; HM-DEC-171; HM-DEC-168; HM-DEC-103; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0
+ADVANCES: step 2 criterion 5
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.98 to 1.13.99. HM-DEC-171 in DECISIONS.md and CLAUDE.md section 1. PHASE_STATUS.md names unit 412 and CURRENT_STEP 2. HEAD at entry 0483369d. The captures of 2026-09-24 and cases-2026-09-23.txt were already committed by the seed commit 0483369d, not untracked as the instruction says, and they are fourteen, 003901 through 004550, not thirteen; nothing was left to commit. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 370 s; APP 276 of 278 in 152 s, TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer and ThePsk31ConversationCardTests.APsk31CardOffersNothingWhileItIsNotHisTurn lost to the dispatcher loop before any assertion, 2 of 2 alone; captures 37 of 37 in 93 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s.
+
 ## UNIT 411 - STEP 6
 
 STEP: 6
