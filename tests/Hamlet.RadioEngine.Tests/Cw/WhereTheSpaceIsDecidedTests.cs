@@ -506,6 +506,30 @@ public sealed class WhereTheSpaceIsDecidedTests
         };
     }
 
+    /// <summary>
+    /// The old loop's list with each space kept only where the stream really
+    /// announced one, so its text is what really settled. Unit 416 kept a relabel
+    /// that only withholds spaces, so a letter is never added or dropped here.
+    /// </summary>
+    private static List<Emitted> AsSettled(Run run)
+    {
+        var settled = new List<Emitted>();
+        var j = 0;
+
+        foreach (var e in run.Entry)
+        {
+            if (e.Pattern.Length == 0 && !(j < run.Real.Count && run.Real[j].IsWordGap))
+            {
+                continue;
+            }
+
+            settled.Add(e);
+            j++;
+        }
+
+        return settled;
+    }
+
     private static IEnumerable<Boundary> Boundaries(string name, Run run, IReadOnlyList<Emitted> settled, CwScore score)
     {
         var owner = new List<int>();
@@ -586,11 +610,12 @@ public sealed class WhereTheSpaceIsDecidedTests
             var run = Replay(name, StartingShare);
             var reading = CwReading.Of(run.Real);
 
+            _output.WriteLine($"aligned | {name} | the list walked equals what really settled | {(TextOf(AsSettled(run)) == TextOf(run.Real.Select(c => new Emitted(c.Text, "", 0, 0, null))) ? "yes" : "NO")}");
             decided.AddRange(run.Decided.Values);
 
             foreach (var stretch in stretches)
             {
-                boundaries.AddRange(Boundaries(name, run, run.Entry, CwScorer.Within(reading, stretch.Key, CwKeyKind.Inferred)));
+                boundaries.AddRange(Boundaries(name, run, AsSettled(run), CwScorer.Within(reading, stretch.Key, CwKeyKind.Inferred)));
             }
         }
 
@@ -604,7 +629,7 @@ public sealed class WhereTheSpaceIsDecidedTests
             var score = CwScorer.Whole(region, TheSeventeenThirtySevenCaptureTests.InferredKey, CwKeyKind.Inferred);
 
             decided.AddRange(run.Decided.Values);
-            boundaries.AddRange(Boundaries(name, run, run.Entry, score with { Start = reading.Text.IndexOf("CQ", StringComparison.Ordinal) }));
+            boundaries.AddRange(Boundaries(name, run, AsSettled(run), score with { Start = reading.Text.IndexOf("CQ", StringComparison.Ordinal) }));
         }
 
         _output.WriteLine("every gap between two marks at the read it settled, the ten and 17:37, span over the measured character centroid, no key:");
@@ -643,6 +668,15 @@ public sealed class WhereTheSpaceIsDecidedTests
                 _output.WriteLine($"spread | {label} | {kind} | span over centroid | {Spread(of.Select(g => g.SpanMs / g.CentroidMs!.Value))}");
                 _output.WriteLine($"spread | {label} | {kind} | span in units | {Spread(of.Select(g => g.SpanMs / g.UnitMs))}");
                 _output.WriteLine($"spread | {label} | {kind} | centroid in units | {Spread(of.Select(g => g.CentroidMs!.Value / g.UnitMs))}");
+            }
+
+            foreach (var kind in new[] { "inserted", "joined", "word kept" })
+            {
+                var blind = set.Where(b => b.Kind == kind && b.Gap is { CentroidMs: null }).Select(b => b.Gap!).ToList();
+
+                _output.WriteLine(
+                    $"blind | {label} | {kind} | no centroid {blind.Count} | held {blind.Count(g => g.Held)} | "
+                    + $"span in units {Spread(blind.Select(g => g.SpanMs / g.UnitMs))} | span over the word-from boundary {Spread(blind.Select(g => g.SpanMs / g.WordFromMs))}");
             }
 
             foreach (var share in new[] { 1.30, 1.40, StartingShare, 1.60, 1.65, 1.70, 1.80, 2.00 })

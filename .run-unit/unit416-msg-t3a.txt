@@ -1,0 +1,3 @@
+unit416 task 3: the trace on the kept build - WhereTheSpaceIsDecidedTests walks what really settled rather than the old loop's list, the ten aligned 10 of 10, and prints the boundaries with no character centroid; of 128 boundaries on the ten and 17:37, inserted 24, joined 80, word kept 23, missing 1; 21 of the 24 inserted have no centroid, 13 of them on 17:37 all under held structure at a median 0.66 of the path's own word boundary, 8 on the ten at a median 1.31 of it; word kept with no centroid 9, the lowest 0.73 of the boundary on 17:37, the ten's lowest 1.09; test only, nothing in src
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
