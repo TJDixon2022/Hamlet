@@ -182,6 +182,18 @@ kept changes, what is left on 17:37 is 10 letters added and 4 wrong of 19 edits 
 any fragment comes out as a confident character and the emission gate passes it. It is the
 largest measured decode error left and it is criterion 3.6.
 
+**R70 - Tim, 2026-09-24: entering Morse in any CW-family block is entering CW mode.** Unit
+419 met every clause of 7.5 - rewrites of values already correct 1 to 0, contradicting voices
+6 to 0, the operator's hand standing, the preamp's band rule carried by the value written -
+and 7.5 stayed open on one hole: the `CW DX` and `QRP` blocks state no receiver conditions,
+so entering Morse there writes nothing at all. **7.030 MHz, the 40 m frequency where the
+preamp rule says off, is the first hertz of the QRP block**, so a radio left at preamp 1
+there stays at preamp 1 against the row's own text. All three blocks carry `family: cw`.
+**The CW conditions apply to every block of the CW family**, by `sameAs` lines in
+`data/bands/mode-receiver-conditions.json` or whatever the file's schema allows, and the
+conditions themselves are not changed. Rejected: leaving those blocks silent and closing 7.5
+partial, which leaves the reported fault live on 40 m.
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -314,6 +326,7 @@ through.
 - [ ] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
 - [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
 - [ ] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
+- [ ] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
 - [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
 
 **Depends on:** nothing. Independent of every other step.
@@ -384,6 +397,8 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as
+  criterion 7.7, so 7.5's last hole closes and 7.030 behaves.
 - **2026-09-24, after unit 418.** R67 entering a mode sets the receiver correctly and it
   stays set, as criterion 7.5; R68 step 7 for the speed ceiling and acquisition; R69 the
   stray single-element letters as criterion 3.6.
