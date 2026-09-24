@@ -1,0 +1,172 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.16]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheModeIsEnumeratedInTheDigitalFamily [172 ms]
+  Standard Output Messages:
+ the strip carries: FT8, FT4, PSK31, WSPR, Olivia
+ family        : Digital
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.SelectingItAsksTheRadioForTheCallingSpotFromTheCitedRow [45 ms]
+  Standard Output Messages:
+ bands with a calling row: 80 m, 40 m, 30 m, 20 m, 17 m, 15 m, 10 m
+   80 m  center 3583000, asked 3581500, mode Usb data True · Olivia on 80 m: the radio confirmed 3.581500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 3.583000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   40 m  center 7073000, asked 7071500, mode Usb data True · Olivia on 40 m: the radio confirmed 7.071500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 7.073000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   30 m  center 10143000, asked 10141500, mode Usb data True · Olivia on 30 m: the radio confirmed 10.141500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 10.143000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   20 m  center 14073000, asked 14071500, mode Usb data True · Olivia on 20 m: the radio confirmed 14.071500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 14.073000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   17 m  center 18103000, asked 18101500, mode Usb data True · Olivia on 17 m: the radio confirmed 18.101500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 18.103000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   15 m  center 21073000, asked 21071500, mode Usb data True · Olivia on 15 m: the radio confirmed 21.071500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 21.073000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   10 m  center 28123000, asked 28121500, mode Usb data True · Olivia on 10 m: the radio confirmed 28.121500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 28.123000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheRecordSaysOliviaAndNothingPersonalIsInIt [8 ms]
+  Standard Output Messages:
+ {"ts":"2026-09-24T18:12:55.298Z","sessionId":"d7b601bf","level":"info","appVersion":"seam","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-24T18:12:55.302Z","sessionId":"d7b601bf","level":"info","appVersion":"seam","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-24T18:12:55.303Z","sessionId":"d7b601bf","level":"warn","appVersion":"seam","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-24T18:12:55.303Z","sessionId":"d7b601bf","level":"info","appVersion":"seam","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-24T18:12:55.304Z","sessionId":"d7b601bf","level":"info","appVersion":"seam","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.UnderFt8TheSameAudioWritesNoRsidEvent [27 ms]
+  Standard Output Messages:
+ tab: FT8
+ lines written: 7
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.UnderOliviaABurstThroughTheTapWritesRsidHeardAndMovesNothing(deviceRate: 48000) [6 s]
+  Standard Output Messages:
+ at 48000 Hz: radio asked 1 time(s), mode 1, dial 14071500, frequency 14071500, tab Olivia, rows 1, cards 0
+ {"ts":"2026-09-24T18:12:55.335Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-24T18:12:55.336Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-24T18:12:55.337Z","sessionId":"5bcbcb05","level":"warn","appVersion":"rsid","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-24T18:12:55.337Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-24T18:12:55.337Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"tuning","event":"band_changed","data":{"band":"20 m"}}
+ {"ts":"2026-09-24T18:12:55.338Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+ {"ts":"2026-09-24T18:12:55.338Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"tuning","event":"tune_requested","data":{"hz":14071500,"source":"digital_mode_press"}}
+ {"ts":"2026-09-24T18:12:55.338Z","sessionId":"5bcbcb05","level":"warn","appVersion":"rsid","category":"tuning","event":"tune_written","data":{"outcome":"confirmed","reason":"write_failed","hz":14071500,"seconds":null}}
+ {"ts":"2026-09-24T18:12:55.338Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"tuning","event":"recent_dwell_short","data":{"hz":14030000,"shortBySeconds":19.9997626}}
+ {"ts":"2026-09-24T18:12:55.338Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"rig","event":"mode_followed","data":{"mode":"Usb","dataMode":true,"outcome":"NotSupported"}}
+ {"ts":"2026-09-24T18:12:55.372Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_listening_started","data":{"dialHz":14071500,"passbandLowHz":200,"passbandHighHz":3000,"sampleRate":8000,"deviceSampleRate":48000,"resampleRatio":6,"threshold":4,"replaySeconds":6.144,"mode":"olivia"}}
+ {"ts":"2026-09-24T18:12:55.395Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_audio_level","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-90,"clipping":false,"nearlySilent":true,"mode":"olivia"}}
+ {"ts":"2026-09-24T18:12:55.425Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_finished","data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured","detail":"the server answered in 89 ms","offsetSeconds":1.204,"roundTripMs":89.3}}
+ {"ts":"2026-09-24T18:12:55.425Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"clock_offset","from":"unknown","to":"known","why":"a time server answered, so slots can be cut and cards counted","mode":"Digital"}}
+ {"ts":"2026-09-24T18:12:55.929Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"explore","event":"spots_refreshed","data":{"trigger":"band_changed","spotCount":53,"newCount":0}}
+ {"ts":"2026-09-24T18:12:55.929Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"explore","event":"lead_card_built","data":{"hasSuggestion":true,"score":97}}
+ {"ts":"2026-09-24T18:12:55.946Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"decode","event":"rsid_heard","data":{"code":69,"mode":"OLIVIA","variant":"8/250","centerHz":1000.3,"quality":0.899,"tonesRight":15}}
+ {"ts":"2026-09-24T18:12:56.039Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_channel","data":{"mode":"olivia","variant":"8/250","state":"opened","id":1,"found":"rsid","centerHz":1000.32,"atSeconds":3.498,"readFromSeconds":1.858,"replaySeconds":6.144}}
+ {"ts":"2026-09-24T18:12:56.047Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_carrier_appeared","data":{"carrierId":1,"offsetHz":1000.3,"strengthDb":null,"quality":null,"passesAsCandidate":null,"found":"rsid","mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:12:56.047Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000.3,"open":false,"quality":0,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:12:56.048Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000.3,"reading":false,"afcHz":0,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:12:57.072Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":1.878,"snr":2.88,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:12:57.514Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":2.338,"snr":15.4,"accepted":true,"characters":3,"blocksDecoded":1,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:12:57.519Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000,"open":true,"quality":15.4,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:12:57.519Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000,"reading":true,"afcHz":-0.3,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:12:57.934Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":4.386,"snr":55.58,"accepted":true,"characters":3,"blocksDecoded":2,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:12:58.342Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":6.434,"snr":46.25,"accepted":true,"characters":3,"blocksDecoded":3,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:12:58.853Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":8.482,"snr":85.77,"accepted":true,"characters":3,"blocksDecoded":4,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:12:59.266Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":10.53,"snr":42.88,"accepted":true,"characters":3,"blocksDecoded":5,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:12:59.686Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":12.578,"snr":87.8,"accepted":true,"characters":3,"blocksDecoded":6,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:00.105Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":14.626,"snr":84.52,"accepted":true,"characters":3,"blocksDecoded":7,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:00.541Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":16.674,"snr":94.37,"accepted":true,"characters":3,"blocksDecoded":8,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:00.954Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":18.722,"snr":87.63,"accepted":true,"characters":3,"blocksDecoded":9,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:01.431Z","sessionId":"5bcbcb05","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":20.77,"snr":97.85,"accepted":true,"characters":3,"blocksDecoded":10,"blocksRejected":1,"threshold":4}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.UnderOliviaABurstThroughTheTapWritesRsidHeardAndMovesNothing(deviceRate: 8000) [5 s]
+  Standard Output Messages:
+ at 8000 Hz: radio asked 1 time(s), mode 1, dial 14071500, frequency 14071500, tab Olivia, rows 1, cards 0
+ {"ts":"2026-09-24T18:13:01.482Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-24T18:13:01.515Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-24T18:13:01.516Z","sessionId":"3da3bbdd","level":"warn","appVersion":"rsid","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-24T18:13:01.516Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-24T18:13:01.517Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"tuning","event":"band_changed","data":{"band":"20 m"}}
+ {"ts":"2026-09-24T18:13:01.518Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+ {"ts":"2026-09-24T18:13:01.518Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"tuning","event":"tune_requested","data":{"hz":14071500,"source":"digital_mode_press"}}
+ {"ts":"2026-09-24T18:13:01.518Z","sessionId":"3da3bbdd","level":"warn","appVersion":"rsid","category":"tuning","event":"tune_written","data":{"outcome":"confirmed","reason":"write_failed","hz":14071500,"seconds":null}}
+ {"ts":"2026-09-24T18:13:01.518Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"tuning","event":"recent_dwell_short","data":{"hz":14030000,"shortBySeconds":19.999491}}
+ {"ts":"2026-09-24T18:13:01.518Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"rig","event":"mode_followed","data":{"mode":"Usb","dataMode":true,"outcome":"NotSupported"}}
+ {"ts":"2026-09-24T18:13:01.535Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_listening_started","data":{"dialHz":14071500,"passbandLowHz":200,"passbandHighHz":3000,"sampleRate":8000,"deviceSampleRate":8000,"resampleRatio":1,"threshold":4,"replaySeconds":6.144,"mode":"olivia"}}
+ {"ts":"2026-09-24T18:13:01.550Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_audio_level","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-90,"clipping":false,"nearlySilent":true,"mode":"olivia"}}
+ {"ts":"2026-09-24T18:13:01.600Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_finished","data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured","detail":"the server answered in 117 ms","offsetSeconds":1.22,"roundTripMs":117.2}}
+ {"ts":"2026-09-24T18:13:01.600Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"clock_offset","from":"unknown","to":"known","why":"a time server answered, so slots can be cut and cards counted","mode":"Digital"}}
+ {"ts":"2026-09-24T18:13:01.668Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"explore","event":"spots_refreshed","data":{"trigger":"band_changed","spotCount":54,"newCount":0}}
+ {"ts":"2026-09-24T18:13:01.668Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"explore","event":"lead_card_built","data":{"hasSuggestion":true,"score":97}}
+ {"ts":"2026-09-24T18:13:02.148Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"decode","event":"rsid_heard","data":{"code":69,"mode":"OLIVIA","variant":"8/250","centerHz":1000.3,"quality":0.899,"tonesRight":15}}
+ {"ts":"2026-09-24T18:13:02.224Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_channel","data":{"mode":"olivia","variant":"8/250","state":"opened","id":1,"found":"rsid","centerHz":1000.32,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}}
+ {"ts":"2026-09-24T18:13:02.225Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_carrier_appeared","data":{"carrierId":1,"offsetHz":1000.3,"strengthDb":null,"quality":null,"passesAsCandidate":null,"found":"rsid","mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:13:02.225Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000.3,"open":false,"quality":0,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:13:02.225Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000.3,"reading":false,"afcHz":0,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:13:03.167Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":1.878,"snr":2.75,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:03.542Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":2.338,"snr":15.4,"accepted":true,"characters":3,"blocksDecoded":1,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:03.542Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000,"open":true,"quality":15.4,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:13:03.542Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000,"reading":true,"afcHz":-0.3,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-24T18:13:03.916Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":4.386,"snr":58.03,"accepted":true,"characters":3,"blocksDecoded":2,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:04.283Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":6.434,"snr":45.93,"accepted":true,"characters":3,"blocksDecoded":3,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:04.692Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":8.482,"snr":86.19,"accepted":true,"characters":3,"blocksDecoded":4,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:05.058Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":10.53,"snr":42.37,"accepted":true,"characters":3,"blocksDecoded":5,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:05.423Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":12.578,"snr":87.78,"accepted":true,"characters":3,"blocksDecoded":6,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:05.788Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":14.626,"snr":84.69,"accepted":true,"characters":3,"blocksDecoded":7,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:06.166Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":16.674,"snr":95.47,"accepted":true,"characters":3,"blocksDecoded":8,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:06.535Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":18.722,"snr":87.66,"accepted":true,"characters":3,"blocksDecoded":9,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-24T18:13:06.949Z","sessionId":"3da3bbdd","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":20.77,"snr":97.96,"accepted":true,"characters":3,"blocksDecoded":10,"blocksRejected":1,"threshold":4}}
+
+
+[xUnit.net 00:00:12.30]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.NoDecoderIsAttachedAndNothingIsComposedUntilAPress [176 ms]
+  Standard Output Messages:
+ slot looks    : 0
+ slots read    : 0
+ rows          : 0
+ send line     : "nothing sent yet"
+ {"ts":"2026-09-24T18:13:06.994Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-24T18:13:07.023Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-24T18:13:07.024Z","sessionId":"a46d30fe","level":"warn","appVersion":"keying","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-24T18:13:07.024Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-24T18:13:07.025Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"diagnostics","event":"state_changed","data":{"what":"clock_offset","from":"unknown","to":"known","why":"a time server answered, so slots can be cut and cards counted","mode":"Digital"}}
+ {"ts":"2026-09-24T18:13:07.025Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+ {"ts":"2026-09-24T18:13:07.096Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"psk31","event":"olivia_listening_started","data":{"dialHz":7028000,"passbandLowHz":200,"passbandHighHz":3000,"sampleRate":8000,"deviceSampleRate":12000,"resampleRatio":1.5,"threshold":4,"replaySeconds":6.144,"mode":"olivia"}}
+ {"ts":"2026-09-24T18:13:07.111Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"diagnostics","event":"clock_query_finished","data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured","detail":"the server answered in 117 ms","offsetSeconds":1.221,"roundTripMs":116.6}}
+ {"ts":"2026-09-24T18:13:07.164Z","sessionId":"a46d30fe","level":"info","appVersion":"keying","category":"psk31","event":"psk31_audio_level","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-90,"clipping":false,"nearlySilent":true,"mode":"olivia"}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.AnUnreadableTableMovesNothingAndThePanelSaysWhy [7 ms]
+  Standard Output Messages:
+ tune line : The dial has not moved. Hamlet could not read its Olivia calling table, data/bands/olivia-calling.json, because it is not readable JSON (line 1), so there is no Olivia spot to tune to and none is guessed.
+ strip line: Hamlet could not read its Olivia calling table, data/bands/olivia-calling.json, because it is not readable JSON (line 1), so there is no Olivia spot to tune to and none is guessed. the radio is on the Olivia calling frequency and Hamlet cannot read Olivia yet, so nothing will appear below. You can still hear it, and it sounds like a warble you could almost hum.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheMapPicksOutTheOliviaSpotWhenTheTabIsSelected [14 ms]
+  Standard Output Messages:
+ 20 m spot     : 14073000 on a map of 13970834 to 14379166
+   80 m  3583000
+   40 m  7073000
+   30 m  10143000
+   20 m  14073000
+   17 m  18103000
+   15 m  21073000
+   10 m  28123000
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.ThePanelNamesTheModeAndPromisesNoSlot [3 ms]
+  Standard Output Messages:
+ mode strip        : listening for Olivia across the whole passband. Every signal Hamlet is sure is Olivia gets a line of its own below, with where it sits, how strong it is and its text as it arrives, and a line from somebody calling anybody carries an Answer that replies on his own frequency.
+ decoded idle      : nothing decoded yet. Every station Hamlet is sure is sending Olivia gets a line here, filling in a few characters at a time as each block is read. A signal it is not sure of gets no line at all rather than a guess, so an empty panel can mean a quiet band or a signal too weak to read. Capture keeps two minutes of what the radio hears.
+ waterfall header  : 200–3000 Hz · Olivia, one continuous carrier a station
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheLogOffersOlivia [1 ms]
+  Standard Output Messages:
+ log entry     : Olivia -> MODE=OLIVIA
+
+
+
+Test Run Successful.
+Total tests: 11
+     Passed: 11
+ Total time: 12.5647 Seconds
+RC=0 WALL=13s

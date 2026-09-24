@@ -1,0 +1,88 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.43]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.OnlyTheLinesThatNeedHisCallsignAreDrawnGreyAndTheyCarryTheWord [167 ms]
+  Standard Output Messages:
+ GREY Answer him - needs your callsign in Settings
+ note Send my report - not offered: your name, location or grid square is not s...
+ GREY Confirm and 73 - needs your callsign in Settings
+ live Say again?
+ live Please repeat your report
+ live QRZ?
+ live 73 and out
+
+
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.WithSettingsFilledInNotOneLineIsDrawnGreyAndTheSendableOnesStillSend [18 ms]
+  Standard Output Messages:
+ live send lines across the fixture: 15
+
+
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.CaptureIsLiveOnEveryRowAndItIsThePanelsOwnCommand [3 ms]
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.EveryRowOpensAMenuAndCaptureAndTheCardLineAreOnAllOfThem [36 ms]
+  Standard Output Messages:
+ -- PSK31, six carriers - three naming a station, three not -------------------------------------
+   [CQ CQ CQ de W1AW W1AW pse K /]              station W1AW     | 9 items
+       Answer him
+       Send my report - not offered: his conversation card is not open yet.
+       Confirm and 73 - not offered: his conversation card is not open yet.
+       Say again?
+       Please repeat your report
+       QRZ?
+       73 and out
+       Capture 2 minutes
+       Make a card anyway
+   [KC3QIS de K3ABC  RST 599 599  BTU KC3QIS de K3ABC K /] station K3ABC    | 9 items
+       Answer him - not offered: the parser is not certain he is calling CQ on t...
+       Send my report
+       Confirm and 73 - not offered: it is not your turn on this contact, or the...
+       Say again?
+       Please repeat your report
+       QRZ?
+       73 and out
+       Capture 2 minutes
+       Make a card anyway
+   [K9XYZ de N2DEF  R R TNX 73 73 SK /]         station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [heard, not readable yet]                    station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [...-.- the band is long tonight and the qsb is deep /] station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [e5 ttt tu ee /]                             station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+ 
+ -- OLIVIA, four channels - two naming a station, two not -------------------------------------
+   [CQ CQ CQ de W1AW W1AW pse K /]              station W1AW     | 9 items
+       Answer him
+       Send my report - not offered: his conversation card is not open yet.
+       Confirm and 73 - not offered: his conversation card is not open yet.
+       Say again?
+       Please repeat your report
+       QRZ?
+       73 and out
+       Capture 2 minutes
+       Make a card anyway
+   [heard, not readable yet]                    station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [heard, not readable yet]                    station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+ 
+ ROWS OFFERING A MENU: 9 of 9 (unit 387 task 1 measured 3 of 9 before this unit)
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.7048 Seconds
+RC=0 WALL=1s

@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 421 - STEP 3
+
+STEP: 3
+APPROACH: trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+MOVE: continue
+WHY: R71 answers P17, which was the only thing stopping step 3. 3.7 is reachable in one unit because it re-measures the floors without touching the decoder, and 3.6's trace is the evidence R71 says the bar must come from, so the unit does the trace first, then the re-measure, and treats 3.6's change as the drop candidate.
+STATE: partial
+DECIDED: author's, overrulable - an unmeasured (NaN) span counts above the bar; the element floor and the 13 keyed floors of 2.2 are re-measured under the same bar in the same commit; the bar may not sit above any key-aligned right character; which span figure the bar is on is chosen from task 1's print; unit 420's stale CW unknowns entry is parked as P18 rather than chased; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R71, R69, R66, R63, R57, R64, R65, section 3, section 6; step 3 criteria 3.5, 3.6, 3.7; PARKED.md P17; HM-DEC-091; HM-DEC-155; HM-DEC-165; HM-DEC-168; CLAUDE.md 0.0, 0.2 and 12.5
+ADVANCES: step 3 criterion 7
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.107 to 1.13.108. PHASE_STATUS.md names unit 421 and CURRENT_STEP 3. HEAD at entry 23457c4b. HM-DEC-176 in DECISIONS.md and its row at the top of CLAUDE.md section 1; P17 answered by R71 and P18 added in PARKED.md. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 194 passed before the host hung and was killed at 480 s, the 20 names that never reported all green alone, one type per invocation; captures 51 of 51, 49 rows exactly at their named floor and 2 one above (031838 43 against 42, 001952 57 against 56); adjudicated 13 of 13; keyed named floors 13 of 13, each exactly at its floor; TheBaselineIsScoredTests 2 of 2, TheBenchmarkIsKeyedTests 1 of 1, WhereTheSpaceIsDecidedTests 2 of 2. The numbers to beat, inferred keys: all keyed 167 edits over 565; baseline 22 over 46; 17:37 19 over 25; outside 110 over 363; the ten on the bench 35 over 156.
+
 ## UNIT 420 - STEP 7
 
 STEP: 7
@@ -375,3 +388,20 @@ STATE_WHY: The report shows 7.6 met with measured results, 7.5 advanced but left
 ADVANCED: no
 ATTEMPT: 7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | no | executed | table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
 REASON: 7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 1 - STEP 7
+
+STEP: 7
+APPROACH: state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
+HIT: section 4 wants a ruling: yes - The carried asks P12 and the clipping measurement ask the owner to decide what the sheet states as fact about when a signal was captured or sent and what was heard, which is a promise under the third item, and they wait on his ruling.
+MOVE: work around
+WHY: Step 3's only reachable criterion, 3.6, collides with 2.2's floors and 3.2's fourth test: 49 of 51 capture rows sit exactly at their named floor, so removing any stray letter fails a test only the owner can relax (P17). R64 and R65 send the loop to the next open criterion, and R70 has just made 7.7 concrete and one unit wide.
+DECIDED: author's, overrulable - routing from step 3 to 7.7 on the floor measurement above, with 3.6 parked as P17 and a ruling proposed to the owner (self-ruling 1 of 2, citing PHASE_PLAN.md R64 and R65); the three CW-family blocks are one mode for the operator's-hand rule within a band; the choice of CW DX frequency and the per-type timeouts
+LICENCE: PHASE_PLAN.md R70, R67, R64, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+COST: 7.0850941999999995
+ACCOMPLISHED: tuning into Morse anywhere in the CW part of a band - including 7.030 and the DX windows - sets the radio the way CW needs it, with the preamp off on 40 m, and his own change still stands
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 7.5 and 7.7 are met and ticked with tables and counts shown, but 7.1 to 7.4 have not started and 7.6 is still unticked, so not every exit criterion of step 7 is met.
+ADVANCED: yes
+ATTEMPT: 7.7 | unit 1 launched 2026-09-24T16:16:07.028Z | yes | executed | state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band

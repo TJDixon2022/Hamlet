@@ -1,0 +1,125 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.07]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheRadioSheetQuotesTheScreenTests.TheSheetIsOnePageAndTheMeasurementIsReported [5 ms]
+  Standard Output Messages:
+ lines : 183  against a target of 120
+ bytes : 11585  against a target of 10240
+ quoted sentences : 27
+ of the bytes, 3576 are the quote lines, which the sheet's own convention forbids wrapping.
+ over the target, and the content is the criterion (ruling 2 item 2).
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRadioSheetQuotesTheScreenTests.NoLineOfTheSheetSendsHimToTheRadioExceptWhereHamletsOwnWordsDo [450 ms]
+  Standard Output Messages:
+ 183 lines scanned, ALL of them - 27 quote lines and 156 prose - against 11 tier-1 phrases and 11 tier-2 words.
+ 
+ TIER 1 IN THE SHEET'S OWN PROSE: 0  (the assertion)
+ 
+ TIER 1 INSIDE A QUOTE: 2
+   line 110  "move the dial"  declared.
+         Hamlet did not call: the band is too crowded here to call without landing on someone....
+         site : MainWindowViewModel.cs:16800-16804, the refusal whose token at :16798 is no_clear_spot
+         why  : Hamlet looked for a spot at least 150 Hz from everything it can hear and there was not one, and the band is the only thing that changes that.
+         proof: kind (a), produced by the shipped view model - no clear spot
+         beside: 2 prose lines, and they carry no tier-1 phrase of their own.
+   line 151  "at the radio"  declared.
+         Hamlet told the radio to stop and neither frame got out: <what the port said>. If it ...
+         site : MainWindowViewModel.cs:19587, StopLine, where an abort was fired and neither the CW stop nor the PTT-off frame reached the radio
+         why  : Hamlet told the radio to stop and nothing it sent got there, so the radio may still be transmitting and Hamlet has no way left to stop it.
+         proof: kind (a), produced by the shipped view model - the stop, neither frame out
+         beside: 4 prose lines, and they carry no tier-1 phrase of their own.
+ 
+ TIER 2 MENTIONS OF THE RIG'S HARDWARE: 9 in all - 2 in the sheet's own prose and 7 inside quotes. NONE OF THEM IS A RED.
+   line   1  prose  "radio"   # The radio sheet - PSK31 and Olivia, one page
+   line  23  quote  "radio"   > "No transmit device is chosen. Open Settings and pick the radio's sound card."
+   line  35  prose  "dial"   A chip is lit when the dial is inside that mode's block, and chosen when you have pre...
+   line  78  quote  "radio"   > "nothing decoded yet. Every station Hamlet is sure is sending Olivia gets a line he...
+   line  95  quote  "radio"   > "Hamlet composed the PSK31 call and sent nothing: no radio is connected and no tran...
+   line  99  quote  "radio"   > "No transmit device is chosen. Open Settings and pick the radio's sound card."
+   line 110  quote  "dial"   > "Hamlet did not call: the band is too crowded here to call without landing on someo...
+   line 143  quote  "radio"   > "Nothing is listening, so there is no audio to keep. Connect a radio or pick the tr...
+   line 151  quote  "radio"   > "Hamlet told the radio to stop and neither frame got out: <what the port said>. If ...
+ 
+ This page mentions the radio's own hardware 9 times and instructs the operator to touch it 0 times in its own voice.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRadioSheetQuotesTheScreenTests.EveryQuotedSentenceExistsInAnOperatorFacingString [252 ms]
+  Standard Output Messages:
+ (a) No transmit device is chosen. Open Settings and pick the radio's sound card.   <- no transmit device chosen, the send line
+ (b) on this frequency   <- found in src\Hamlet.App\ViewModels\DigitalIdleText.cs
+ (a) listening for PSK31 across the whole passband. Every signal Hamlet is sure is PSK31 g...   <- PSK31 chosen, the strip line
+ (a) nothing decoded yet. Every station Hamlet is sure is sending PSK31 gets a line here, ...   <- PSK31 chosen, the decoded panel
+ (a) nothing sent yet   <- nothing sent yet
+ (a) Right-click a decoded row to choose a message, or press CQ.   <- the send line's hover
+ (a) Sending "<your line>" now, at <n> Hz in the passband.   <- PSK31: at the press
+ (a) Sent "<your line>" - <n> s of PSK31.   <- PSK31: when it has gone
+ (a) nothing decoded yet. Every station Hamlet is sure is sending Olivia gets a line here,...   <- Olivia chosen, the decoded panel
+ (a) Sent "<your line>" - <n> s of Olivia.   <- Olivia: when it has gone
+ (a) There was nothing to send.   <- nothing to send
+ (a) Hamlet composed the PSK31 call and sent nothing: no radio is connected and no transmi...   <- no transmit path
+ (a) No transmit device is chosen. Open Settings and pick the radio's sound card.   <- no transmit device chosen, the send line
+ (a) Hamlet composed the PSK31 call and sent nothing: the transmit audio device named in S...   <- the device would not open, the send line
+ (a) the transmit audio device named in Settings could not be opened. Device: <the card's ...   <- the device would not open, the refusal
+ (a) Hamlet did not call: the band is too crowded here to call without landing on someone....   <- no clear spot
+ (a) Hamlet did not send the PSK31 call: this is <n> s of Psk31 audio, and this send may b...   <- longer than the cap
+ (a) Hamlet did not call in Olivia: a send has to begin with the burst naming its variant,...   <- Olivia cannot announce itself
+ (a) Hamlet did not send it: it has not proved to itself that it can read back Olivia <var...   <- the Olivia variant is not proved
+ (a) Hamlet did not send it: <what the composer said>.   <- the text holds what the mode cannot carry
+ (a) Hamlet cannot send <the mode> yet, so nothing went out. It can hear this mode before ...   <- the chosen mode cannot send at all
+ (b) Hamlet could not read its canned lines, so it is offering none: <which file, and what...   <- found in src\Hamlet.App\ViewModels\MainWindowViewModel.cs
+ (a) Nothing arrived while it was running, so no file was kept.   <- the capture press, nothing heard
+ (b) Could not write the capture: <what Windows said>   <- found in src\Hamlet.App\ViewModels\MainWindowViewModel.cs
+ (b) Nothing is listening, so there is no audio to keep. Connect a radio or pick the train...   <- found in src\Hamlet.App\ViewModels\MainWindowViewModel.cs
+ (b) No audio has arrived yet, so there is nothing to keep.   <- found in src\Hamlet.App\ViewModels\MainWindowViewModel.cs
+ (a) Hamlet told the radio to stop and neither frame got out: <what the port said>. If it ...   <- the stop, neither frame out
+ 
+ 27 quoted sentences: 22 checked against what the application itself produced, 5 found in the source.
+   kind (b): on this frequency
+   kind (b): Hamlet could not read its canned lines, so it is offering none: <which file, and what...
+   kind (b): Could not write the capture: <what Windows said>
+   kind (b): Nothing is listening, so there is no audio to keep. Connect a radio or pick the train...
+   kind (b): No audio has arrived yet, so there is nothing to keep.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRadioSheetQuotesTheScreenTests.EveryReachableRefusalOnTheSendPathIsQuoted [173 ms]
+  Standard Output Messages:
+ quoted     : nothing to send
+              There was nothing to send.
+ quoted     : no transmit path
+              Hamlet composed the PSK31 call and sent nothing: no radio is connected and no transmi...
+ quoted     : no clear spot
+              Hamlet did not call: the band is too crowded here to call without landing on someone....
+ quoted     : longer than the cap
+              Hamlet did not send the PSK31 call: this is 316.93 s of Psk31 audio, and this send ma...
+ quoted     : Olivia cannot announce itself
+              Hamlet did not call in Olivia: a send has to begin with the burst naming its variant,...
+ quoted     : the Olivia variant is not proved
+              Hamlet did not send it: it has not proved to itself that it can read back Olivia 8/25...
+ quoted     : the text holds what the mode cannot carry
+              Hamlet did not send it: the text holds U+2014, which Olivia cannot send as itself (Pa...
+ quoted     : the chosen mode cannot send at all
+              Hamlet cannot send WSPR yet, so nothing went out. It can hear this mode before it can...
+ quoted     : no transmit device chosen, the send line
+              No transmit device is chosen. Open Settings and pick the radio's sound card.
+ quoted     : no transmit device chosen, the refusal
+              No transmit device is chosen. Open Settings and pick the radio's sound card.
+ quoted     : the device would not open, the send line
+              Hamlet composed the PSK31 call and sent nothing: the transmit audio device named in S...
+ quoted     : the device would not open, the refusal
+              the transmit audio device named in Settings could not be opened. Device: USB Audio CO...
+ 
+ 12 of 12 reachable refusals are quoted on the sheet.
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 1.3703 Seconds
+RC=0 WALL=2s

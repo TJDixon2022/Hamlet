@@ -1,0 +1,45 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.42]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.NothingPersonalReachesAnyOfIt [50 ms]
+  Standard Output Messages:
+ transmit events scanned: 8
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.AMacroOverTheCapIsRefusedAndNothingStages [21 ms]
+  Standard Output Messages:
+ composed 379 characters, 103.8 s against a cap of 30
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.EachOfTheFourMacrosWritesWhatItComposed [17 ms]
+  Standard Output Messages:
+ cq      38 characters, 13.31 s, cap 30, within True
+ answer  23 characters, 9.70 s, cap 30, within True
+ report  96 characters, 26.66 s, cap 30, within True
+ confirm 62 characters, 18.11 s, cap 30, within True
+ idle either side: 1.536 s, RSID burst in front: 1.858 s
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.APsk31PressComposesPsk31AndWithNoRadioNothingKeys [124 ms]
+  Standard Output Messages:
+ send line: Hamlet composed the PSK31 call and sent nothing: no radio is connected and no transmit audio device is named in Settings.
+ composed: {"macro":"cq","characters":38,"seconds":13.31,"capSeconds":30,"withinCap":true,"offsetHz":1300,"announced":true,"rsidCode":1}
+ stage: {"stage":"composed","entered":true,"detail":"Psk31","slotted":false}
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.WithNoRadioTheRecordSaysTheRadioDidNotAnswer [2 ms]
+  Standard Output Messages:
+ {"answered":false,"transmitting":null,"transmittingAgeMs":null,"powerPercent":null,"powerAgeMs":null}
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.6933 Seconds
+RC=0 WALL=1s

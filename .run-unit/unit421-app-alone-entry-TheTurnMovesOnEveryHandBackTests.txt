@@ -1,0 +1,37 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.48]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.EveryHandBackMovesTheTurnAndTheGuessedOneSaysSo [230 ms]
+  Standard Output Messages:
+ his first hand-back : [Your turn] guess False, offered Report
+ after Hamlet answered: [His turn] guess False
+ his second hand-back: [Your turn?] guess True, offered None
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.AtTheSecondHandBackTheCardReadsYourTurnQuestion [10 ms]
+  Standard Output Messages:
+ the card reads: Your turn?
+ the sentence  : W1ABC seems to have handed over to you, but part of it did not read cleanly, so that is a guess. Waiting to be sure it is your turn before offering anything to send.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.AGuessedTurnOffersTheReportAndNeverTheConfirm [10 ms]
+  Standard Output Messages:
+ on the guess: turn [Your turn?], offered None, note []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.AnOliviaStationsHandBacksMoveTheTurnToo [38 ms]
+  Standard Output Messages:
+ olivia: first [Your turn] then [Your turn?] guess True
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.7649 Seconds
+RC=0 WALL=1s

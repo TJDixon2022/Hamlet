@@ -1,0 +1,39 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.16]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.45]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheWholeMessageTests.AClickOpensTheBoxAndTheXClosesIt [254 ms]
+  Standard Output Messages:
+ open after the click: True
+ open after the X    : False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheWholeMessageTests.AnEndedRowStillCarriesItAndStillOpens [3 ms]
+  Standard Output Messages:
+ ended row: ended  [F4DIA DE EI4GNB UR 599 599 K
+]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheWholeMessageTests.ARowWithNothingReadYetOffersNoBox [1 ms]
+  Standard Output Messages:
+ dimmed row: [heard, not readable yet], whole []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheWholeMessageTests.ARowCarriesItsWholeTextWithTheStationAndTheTime [1 ms]
+  Standard Output Messages:
+ cell  : KC3QIS de EI4GNB good evening Tim and thanks for the call, you are 589 here in Dublin with a little QSB, the rig is an IC-7300 into a wire up about thirty feet, and it has been a quiet evening on the band so far K
+KC3QIS de EI4GNB back to you Tim K
+
+ whole : 181249 |  | KC3QIS de EI4GNB good evening Tim and thanks for the call, you are 589 here in Dublin with a little QSB, the rig is an IC-7300 into a wire up about thirty feet, and it has been a quiet evening on the band so far K | KC3QIS de EI4GNB back to you Tim K
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.7196 Seconds
+RC=0 WALL=1s

@@ -1,0 +1,190 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMalformedFileIsSaidAndNothingIsOffered(body: "{ \"lines\": [ { \"macro\": \"answer\" } ] }", expected: "has no label") [239 ms]
+  Standard Output Messages:
+ [{ "lines": [ { "macro": "answer" } ] }]  ->  line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-1fa584122aae4d42bc2245d0de99f848\1ace63b38e43416b9ecc3a513d531106.json has no label.
+ the menu says: Hamlet could not read its canned lines, so it is offering none: line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-1fa584122aae4d42bc2245d0de99f848\1ace63b38e43416b9ecc3a513d531106.json has no label.
+ the menu says: Capture 2 minutes
+ the menu says: Make a card anyway
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMalformedFileIsSaidAndNothingIsOffered(body: "{ \"lines\": [ { \"label\": \"Answer him\", \"macr"···, expected: "one or the other") [4 ms]
+  Standard Output Messages:
+ [{ "lines": [ { "label": "Answer him", "macro": "answer", "text": "HI" } ] }]  ->  line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-a3cb70dbf027490ea61dbc03c1ef0ef3\caaccf275fdd4985ba0c0fffcff48960.json, "Answer him", carries both a macro and a line of text, and a row is one or the other.
+ the menu says: Hamlet could not read its canned lines, so it is offering none: line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-a3cb70dbf027490ea61dbc03c1ef0ef3\caaccf275fdd4985ba0c0fffcff48960.json, "Answer him", carries both a macro and a line of text, and a row is one or the other.
+ the menu says: Capture 2 minutes
+ the menu says: Make a card anyway
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMalformedFileIsSaidAndNothingIsOffered(body: "{ this is not json", expected: "could not read") [5 ms]
+  Standard Output Messages:
+ [{ this is not json]  ->  Hamlet could not read C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-a7f9b0e471024cbf8a9855b0b783d7c8\92920144a060480f8e1033b9d17db36d.json: 't' is an invalid start of a property name. Expected a '"'. LineNumber: 0 | BytePositionInLine: 2.
+ the menu says: Hamlet could not read its canned lines, so it is offering none: Hamlet could not read C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-a7f9b0e471024cbf8a9855b0b783d7c8\92920144a060480f8e1033b9d17db36d.json: 't' is an invalid start of a property name. Expected a '"'. LineNumber: 0 | BytePositionInLine: 2.
+ the menu says: Capture 2 minutes
+ the menu says: Make a card anyway
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMalformedFileIsSaidAndNothingIsOffered(body: "{ \"lines\": [ { \"label\": \"Answer him\" } ] }", expected: "carries neither") [3 ms]
+  Standard Output Messages:
+ [{ "lines": [ { "label": "Answer him" } ] }]  ->  line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-ed5e78f4d63d43fdaa4499e22e4ce197\e129f62bb21e41ea9f11553edfac9772.json, "Answer him", carries neither a macro nor a line of text.
+ the menu says: Hamlet could not read its canned lines, so it is offering none: line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-ed5e78f4d63d43fdaa4499e22e4ce197\e129f62bb21e41ea9f11553edfac9772.json, "Answer him", carries neither a macro nor a line of text.
+ the menu says: Capture 2 minutes
+ the menu says: Make a card anyway
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMalformedFileIsSaidAndNothingIsOffered(body: "{ \"note\": \"nothing here\" }", expected: "no \"lines\" array") [3 ms]
+  Standard Output Messages:
+ [{ "note": "nothing here" }]  ->  C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-57c7bb684a5a417f94846bdd51896e8b\90434c17f8804e708a3ad8edadfa11bc.json has no "lines" array in it.
+ the menu says: Hamlet could not read its canned lines, so it is offering none: C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-57c7bb684a5a417f94846bdd51896e8b\90434c17f8804e708a3ad8edadfa11bc.json has no "lines" array in it.
+ the menu says: Capture 2 minutes
+ the menu says: Make a card anyway
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMalformedFileIsSaidAndNothingIsOffered(body: "{ \"lines\": [ { \"label\": \"Answer him\", \"macr"···, expected: "Hamlet has three") [3 ms]
+  Standard Output Messages:
+ [{ "lines": [ { "label": "Answer him", "macro": "grovel" } ] }]  ->  line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-837bc0cdce6b42d0bc04f9307fef926b\319fa3fc448a47e38f4958066308104e.json, "Answer him", names the macro "grovel", and Hamlet has three: answer, report and confirm.
+ the menu says: Hamlet could not read its canned lines, so it is offering none: line 1 of C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-837bc0cdce6b42d0bc04f9307fef926b\319fa3fc448a47e38f4958066308104e.json, "Answer him", names the macro "grovel", and Hamlet has three: answer, report and confirm.
+ the menu says: Capture 2 minutes
+ the menu says: Make a card anyway
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMalformedFileIsSaidAndNothingIsOffered(body: "{ \"lines\": [] }", expected: "carries no lines at all") [2 ms]
+  Standard Output Messages:
+ [{ "lines": [] }]  ->  C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-8e398d32e0d8456f8b4e278ac9b9b6cf\b2a9a76846dc486181078c607361085c.json carries no lines at all.
+ the menu says: Hamlet could not read its canned lines, so it is offering none: C:\Users\TimDi\AppData\Local\Temp\hamlet-canned-8e398d32e0d8456f8b4e278ac9b9b6cf\b2a9a76846dc486181078c607361085c.json carries no lines at all.
+ the menu says: Capture 2 minutes
+ the menu says: Make a card anyway
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.TheShippedFileCarriesTheSevenInTheOrderTimRuledAndSaysWhatARowIs [7 ms]
+  Standard Output Messages:
+ read C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\data\psk31\canned.json
+ THE SEVEN LINES A RIGHT-CLICK OFFERS on any PSK31 or Olivia row that names a station.
+Ruled by Tim on 2026-09-21 (PHASE_PLAN.md R39, ruled C), written by work instruction 378.
+
+WHAT A ROW IS. Each entry in "lines" has a "label", which is what the menu item reads,
+and then EITHER a "macro" naming one of Hamlet's own three - answer, report, confirm -
+OR a "text" carrying the words to send. A row may not have both, and a row with neither
+is a row Hamlet cannot read.
+
+WHAT GOES ON THE AIR. A "text" line is framed before it is sent: both callsigns in front
+and the hand-back behind, exactly as a line you type on a card is framed -
+W1AW de KC3QIS  <your line>  BTU W1AW de KC3QIS K. You write the middle; Hamlet writes
+the rest. A "macro" line is the macro Hamlet already composes, unchanged.
+
+WHAT IS SENT IS HELD TO THE SAME LIMIT AS EVERYTHING ELSE: thirty seconds of audio on
+PSK31, and the same count of characters charged at the variant's own rate on Olivia. A
+line that will not fit is refused before anything is keyed, in a sentence saying so.
+PSK31 carries the Latin-1 set and nothing else, so a character outside it is dropped.
+
+YOUR OWN COPY. Put a copy of this file at %AppData%\Hamlet\canned.json and Hamlet reads
+that one instead of this one - the same folder settings.json and scan-segments.json live
+in. Hamlet never writes either file, never creates your copy and never repairs it. If
+your copy cannot be read, the menu says so and offers nothing rather than guessing.
+
+AMERICAN SPELLING throughout (PSK31 plan R19).
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.OneClickSendsTheLineFramedAnnouncedCappedAndRecordedWithNoText [36 ms]
+  Standard Output Messages:
+ clicked   : Say again?
+ which sends: "W1AW de KC3QIS  PSE RPT ALL AFTER YOUR CALL  BTU W1AW de KC3QIS K"
+ action   : {"action":"psk31_card_opened","mode":"Digital","detail":"PSK31"}
+ action   : {"action":"psk31_canned_pressed","mode":"Digital","detail":"PSK31"}
+ action   : {"action":"send_requested","mode":"Digital","detail":"65 characters"}
+ composed : {"macro":"canned","characters":65,"seconds":20.26,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+ pressed  : {"action":"psk31_canned_pressed","mode":"Digital","detail":"PSK31"}
+ the panel says: Sent "W1AW de KC3QIS  PSE RPT ALL AFTER YOUR CALL  BTU W1AW de KC3QIS K" - 20.3 s of PSK31.
+
+
+[xUnit.net 00:00:00.77]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.AMacroSentOffTheListIsByteForByteTheMacroSentOffTheCard [34 ms]
+  Standard Output Messages:
+ off the list : {"macro":"canned","characters":23,"seconds":9.7,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"answer"}
+ off the card : {"macro":"answer","characters":23,"seconds":9.7,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1}
+ samples      : 116371 and 116371
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.EveryOneOfTheSevenWritesMacroCannedAndKeepsItsOwnTokenBesideIt [224 ms]
+  Standard Output Messages:
+   Answer him                W1AW  SendCannedMacroPsk31Command -> AnswerPsk31Command
+         {"macro":"canned","characters":23,"seconds":9.7,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"answer"}
+   Send my report            W1AW  not offered on this row
+   Confirm and 73            W1AW  not offered on this row
+   Say again?                W1AW  SendCannedPsk31Command
+         {"macro":"canned","characters":65,"seconds":20.26,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   Please repeat your report W1AW  SendCannedPsk31Command
+         {"macro":"canned","characters":52,"seconds":16.61,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   QRZ?                      W1AW  SendCannedPsk31Command
+         {"macro":"canned","characters":55,"seconds":17.92,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   73 and out                W1AW  SendCannedPsk31Command
+         {"macro":"canned","characters":63,"seconds":19.75,"capSeconds":30,"withinCap":true,"offsetHz":1000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   Answer him                K3ABC  not offered on this row
+   Send my report            K3ABC  SendCannedMacroPsk31Command -> CardActionCommand
+         {"macro":"canned","characters":99,"seconds":27.3,"capSeconds":30,"withinCap":true,"offsetHz":1500,"announced":true,"rsidCode":1,"cannedMacro":"report"}
+   Confirm and 73            K3ABC  not offered on this row
+   Say again?                K3ABC  SendCannedPsk31Command
+         {"macro":"canned","characters":67,"seconds":20.83,"capSeconds":30,"withinCap":true,"offsetHz":1500,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   Please repeat your report K3ABC  SendCannedPsk31Command
+         {"macro":"canned","characters":54,"seconds":17.19,"capSeconds":30,"withinCap":true,"offsetHz":1500,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   QRZ?                      K3ABC  SendCannedPsk31Command
+         {"macro":"canned","characters":57,"seconds":18.5,"capSeconds":30,"withinCap":true,"offsetHz":1500,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   73 and out                K3ABC  SendCannedPsk31Command
+         {"macro":"canned","characters":65,"seconds":20.32,"capSeconds":30,"withinCap":true,"offsetHz":1500,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   Answer him                K4XYZ  not offered on this row
+   Send my report            K4XYZ  not offered on this row
+   Confirm and 73            K4XYZ  SendCannedMacroPsk31Command -> CardActionCommand
+         {"macro":"canned","characters":64,"seconds":19.07,"capSeconds":30,"withinCap":true,"offsetHz":2000,"announced":true,"rsidCode":1,"cannedMacro":"confirm"}
+   Say again?                K4XYZ  SendCannedPsk31Command
+         {"macro":"canned","characters":67,"seconds":21.22,"capSeconds":30,"withinCap":true,"offsetHz":2000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   Please repeat your report K4XYZ  SendCannedPsk31Command
+         {"macro":"canned","characters":54,"seconds":17.57,"capSeconds":30,"withinCap":true,"offsetHz":2000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   QRZ?                      K4XYZ  SendCannedPsk31Command
+         {"macro":"canned","characters":57,"seconds":18.88,"capSeconds":30,"withinCap":true,"offsetHz":2000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+   73 and out                K4XYZ  SendCannedPsk31Command
+         {"macro":"canned","characters":65,"seconds":20.71,"capSeconds":30,"withinCap":true,"offsetHz":2000,"announced":true,"rsidCode":1,"cannedMacro":"text"}
+ Answer him                macro: canned   cannedMacro: answer
+ Send my report            macro: canned   cannedMacro: report
+ Confirm and 73            macro: canned   cannedMacro: confirm
+ Say again?                macro: canned   cannedMacro: text
+ Please repeat your report macro: canned   cannedMacro: text
+ QRZ?                      macro: canned   cannedMacro: text
+ 73 and out                macro: canned   cannedMacro: text
+ a call to anyone writes: {"macro":"cq","characters":38,"seconds":13.31,"capSeconds":30,"withinCap":true,"offsetHz":1300,"announced":true,"rsidCode":1}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.HisOwnCopyWinsAndHamletWritesNeitherFile [1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.EveryShippedLineSurvivesTheVaricodeAndFitsThePsk31Cap [1 ms]
+  Standard Output Messages:
+ Answer him                23 characters, 0 dropped, 7.84 s against 30 s
+ Send my report            97 characters, 0 dropped, 24.86 s against 30 s
+ Confirm and 73            62 characters, 0 dropped, 16.26 s against 30 s
+ Say again?                65 characters, 0 dropped, 18.40 s against 30 s
+ Please repeat your report 52 characters, 0 dropped, 14.75 s against 30 s
+ QRZ?                      55 characters, 0 dropped, 16.06 s against 30 s
+ 73 and out                63 characters, 0 dropped, 17.89 s against 30 s
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCannedListIsOfferedTests.EveryRowThatNamesAStationOffersTheSevenOnBothModes [11 ms]
+  Standard Output Messages:
+ PSK31  W1AW      9 entries
+ PSK31  K3ABC     9 entries
+ PSK31  (no station)2 entries
+ PSK31: 2 rows name a station, 2 have a menu
+ Olivia  W1AW      9 entries
+ Olivia  K3ABC     9 entries
+ Olivia  (no station)2 entries
+ Olivia: 2 rows name a station, 2 have a menu
+
+
+
+Test Run Successful.
+Total tests: 14
+     Passed: 14
+ Total time: 1.0354 Seconds
+RC=0 WALL=2s

@@ -4,6 +4,29 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-176
+date: 2026-09-24
+refs: PHASE_PLAN.md R71 and criteria 3.6 and 3.7, PARKED.md P17, tests/Hamlet.RadioEngine.Tests/Cw/TheCapturesThatDecodeKeepDecodingTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheNumberCannotBeGamedTests.cs, src/Hamlet.RadioEngine/Cw/CwCharacter.cs, work instruction 421
+---
+
+**A floor counts only named characters whose span is at or above a stated bar.** Tim,
+2026-09-24.
+
+**What was wrong.** A floor counted every named character and only rose. A stray E read off
+one fragment is a named character, so every change that removed junk read as a floor lowered,
+and the stray-letter work could not pass its own guard (P17). A placeholder is the decoder
+admitting it does not know (R57). A stray letter is the decoder being confident and wrong, and
+only its span tells the two apart.
+
+**What is ruled.** The bar is named, and it is chosen from the trace of the stray characters,
+never from which changes it lets through. All 51 rows are re-measured once, in one commit,
+printing old, above-bar and below-bar counts. A row whose above-bar count falls is a
+regression. A row that falls only below the bar is not.
+
+**Whose words are whose.** The ruling is Tim's. The wording is work instruction 421's record
+of it. Rejected: exempting the floors from 3.6; leaving P17 and closing 3.6 unmet.
+
+---
 id: HM-DEC-175
 date: 2026-09-24
 refs: PHASE_PLAN.md R70 and criterion 7.7, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Explore/ReceiverConditions.cs, HM-DEC-174, PARKED.md P13, work instruction 420

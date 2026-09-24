@@ -1,0 +1,41 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.91]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31PanelHearsTests.TheLineSaysWhereItIsListening [143 ms]
+  Standard Output Messages:
+ line : listening for PSK31 across the whole passband. Every signal Hamlet is sure is PSK31 gets a line of its own below, with where it sits, how strong it is and its text as it arrives, and a line from somebody calling anybody carries an Answer that replies on his own frequency.
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31PanelHearsTests.TextArrivesAsCharactersDo [299 ms]
+  Standard Output Messages:
+ half way : 122 characters
+            CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Gri
+ at the end: 255 characters
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31PanelHearsTests.ThePanelAccumulatesTheQsoText [218 ms]
+  Standard Output Messages:
+ fixture: 532480 samples at 8000 Hz, 66.6 s
+ rows on the panel : 1
+ characters        : 255
+ text              : CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K / KC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK / 
+ CER               : 0.0000
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31PanelHearsTests.NothingOnThePanelCanBeAnswered [59 ms]
+  Standard Output Messages:
+ rows            : 1
+ rows with a menu: 0
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 1.2538 Seconds
+RC=0 WALL=2s

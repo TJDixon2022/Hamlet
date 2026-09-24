@@ -250,3 +250,13 @@ the decoder cannot score well by going quiet (R59), and a character the key says
 is not reading. Rejected by the arbiter: ruling it here, because R63 and 2.2 say a floor is
 never lowered, and an arbiter's ruling may not overrule an earlier one. Not blocking: the loop
 works 7.7 and step 6 meanwhile (R64, R65).
+
+*Answered by R71, 2026-09-24: a floor counts characters at or above a stated span bar;
+criterion 3.7; work instruction 421.*
+
+## P18 - the conditions file's CW unknowns entry is stale
+
+**Raised by unit 420, logged by work instruction 421.** The conditions file's `unknowns` entry
+for `CW` says nothing about CW has been measured, while the file states nine CW conditions for
+20 blocks. Raised by unit 420. `TheBlockStatesWhatTheModeNeedsTests.ABlockWithNothingToSayProducesNoClaim`
+asserts an unknown whose topic contains `CW`. Not this phase's step 3; not blocking.

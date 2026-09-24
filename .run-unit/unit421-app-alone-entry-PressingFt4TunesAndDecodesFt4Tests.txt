@@ -1,0 +1,70 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.TheGridFollowsTheChipHePressedAndNotTheDialItLandedOn [148 ms]
+  Standard Output Messages:
+   after FT4 : 7.50 s slots, 5.04 s transmission
+   after FT8 : 15.00 s slots, 12.64 s transmission
+   after PSK31: 15.00 s slots, 12.64 s transmission
+   after WSPR : 15.00 s slots, 12.64 s transmission
+
+
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.ABandWithNoFt4RowMovesNothingAndTheTabStillRunsFt4 [29 ms]
+  Standard Output Messages:
+   line : There is no FT4 on 30 m, so the dial has not moved. 80 m, 40 m, 20 m, 15 m and 10 m have one.
+   grid : 7.50 s slots, 5.04 s transmission
+
+
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.AnFt8PressLeavesEveryBoundaryAndSentenceWhereItWas [5 ms]
+  Standard Output Messages:
+   5 boundaries, first 12:00:00.0000000
+
+
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.AnFt8ReadIsWhatItWasBeforeThisUnit [715 ms]
+  Standard Output Messages:
+   FT8   : 15.00 s slots, 12.64 s transmission, 2 slot(s), Ft8Sharp.Deep, 0 message(s)
+   <none>: 15.00 s slots, 12.64 s transmission, 2 slot(s), Ft8Sharp.Deep, 0 message(s)
+
+
+[xUnit.net 00:00:02.34]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.WithTheComparisonOnAnFt4SlotRecordsNoComparisonRatherThanAnInventedOne [635 ms]
+  Standard Output Messages:
+   compareWithThePort : True
+   slots              : 4
+   comparisons        : 0
+   "CQ K1ABC FN42" snr 4.28 dB
+   "K1ABC W9XYZ EM12" snr 3.92 dB
+   "W9XYZ K1ABC -11" snr 3.73 dB
+   "K1ABC W9XYZ RR73" snr 4.35 dB
+
+
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4 [607 ms]
+  Standard Output Messages:
+   grid     : 7.50 s slots, 5.04 s transmission
+   slots    : 4
+   decoder  : Ft8Sharp
+   row      : 11:59:30.0   1000.0 Hz  score  35  snr   4.3  CQ K1ABC FN42
+   row      : 11:59:37.5   1250.0 Hz  score  38  snr   3.9  K1ABC W9XYZ EM12
+   row      : 11:59:45.0   1500.0 Hz  score  35  snr   3.7  W9XYZ K1ABC -11
+   row      : 11:59:52.5   1750.0 Hz  score  39  snr   4.4  K1ABC W9XYZ RR73
+   read 4 of 4, 0 missed, 0 wrong
+
+
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.TheSentencesFollowTheChosenModeAndNameNoTransmissionLength [5 ms]
+  Standard Output Messages:
+   FT4 idle : nothing on this frequency yet. Slots here run 7.5 seconds, so give it a slot or two before deciding the band is empty.
+   FT4 wfall: 200–3000 Hz · 7.5 s slots
+   FT8 idle : nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+   FT8 wfall: 200–3000 Hz · 15 s slots
+
+
+
+Test Run Successful.
+Total tests: 7
+     Passed: 7
+ Total time: 2.5956 Seconds
+RC=0 WALL=3s

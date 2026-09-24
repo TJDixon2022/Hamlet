@@ -1318,8 +1318,15 @@
     state the CW row by sameAs lines in the conditions file (R70, HM-DEC-175). No condition's
     value, text or confirmed flag changes, and nothing that keys, transmits or sets power changes.
   -->
+  <!--
+    1.13.107 -> 1.13.108, WORK INSTRUCTION 421 TASK 0. A PATCH, STEP 3 OF THE CORRECTNESS PHASE,
+    CRITERION 3.7, A FLOOR COUNTS WHAT THE DECODER WAS SURE OF: every capture floor and keyed floor
+    counts only named characters whose span is at or above a stated bar, chosen from the trace of
+    the stray single-element letters (R71, HM-DEC-176). Nothing that keys, transmits or sets power
+    changes.
+  -->
   <PropertyGroup>
-    <Version>1.13.107</Version>
+    <Version>1.13.108</Version>
   </PropertyGroup>
 
   <!--

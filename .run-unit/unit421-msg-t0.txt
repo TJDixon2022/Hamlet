@@ -1,0 +1,5 @@
+unit421 task 0: the record - HM-DEC-176 a floor counts characters above a stated span bar, in DECISIONS.md and at the top of CLAUDE.md section 1; PARKED.md P17 answered by R71 and P18 added; PHASE_OUTCOME.md UNIT 421 - STEP 3 from the decision block with the entry round; PHASE_STATUS.md unit 421; version 1.13.107 to 1.13.108
+
+Entry round at 23457c4b: engine carry-forward 178 of 178; app 194 before the host hung, the 20 unreported names green alone; captures 51 of 51 with 49 at floor; adjudicated 13 of 13; keyed floors 13 of 13; all keyed 167 edits over 565 against inferred keys.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
