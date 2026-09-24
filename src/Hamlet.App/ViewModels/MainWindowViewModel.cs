@@ -12432,10 +12432,29 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The sidecar's `keying` line, label and caption included.</summary>
     /// <param name="reading">What the meter said.</param>
     /// <returns>The line exactly as the sheet writes it.</returns>
+    /// <remarks>
+    /// <para>**THE CAPTION NAMED A SWEEP NOBODY RAN** (work instruction 418, P10).
+    /// It said 400 to 1200 Hz as a literal long after the sweep moved to the
+    /// tracker's own range, and `cw-2026-08-28-004844` printed `keying at 375 Hz`
+    /// under it. The range, the step and the window are now read from the
+    /// constants the meter runs on, so the sentence cannot fall behind again.</para>
+    /// <para>**AND IT SAYS WHAT IS SHARED.** The meter reads the decoder's own tap on
+    /// purpose and sweeps the tracker's range; what it does not share is the
+    /// decoder's code or its choice of pitch. The reading is the one the meter last
+    /// published, whose window ends a second or two before the press.</para>
+    /// </remarks>
     internal static string KeyingRecordLine(KeyingReading reading)
         => $"keying     {KeyingLine(reading)}"
-           + "  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over "
-           + "the last six seconds, sharing nothing with the decoder)";
+           + string.Format(
+               CultureInfo.InvariantCulture,
+               "  (an independent sweep of {0:0} to {1:0} Hz in {2:0} Hz steps over the "
+               + "{3:0} seconds the meter last read before the press, taking the same audio "
+               + "as the decoder and the tracker's own range, and none of the decoder's "
+               + "code or its choice of pitch)",
+               KeyingEnvelope.LowestToneHz,
+               KeyingEnvelope.HighestToneHz,
+               KeyingEnvelope.ToneStepHz,
+               CwKeyingThresholds.Window.TotalSeconds);
 
     /// <summary>The sidecar's `elementHz` line, label included.</summary>
     /// <param name="audio">The recording being written.</param>
