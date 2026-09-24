@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 4
+TASK: TASK 2 of 4
 WORK_INSTRUCTION: 412 - tonight's thirteen become the mark
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T21:49:54-04:00
-NOTE: Fourteen floors set; running the captures type whole, 51 rows, checking the original 37 match entry
+UPDATED: 2026-09-23T22:08:29-04:00
+NOTE: Task 2: building with warnings as errors before committing the guard, the named floors and baseline.md
 
 ---
 

@@ -124,4 +124,44 @@ public sealed class TheScorerCountsWhatAHandCountsTests
         Assert.Equal("CQ CQ DE X", CwScorer.FromFirst("E WB6RED CQ CQ DE X ", "CQ"));
         Assert.Equal("", CwScorer.FromFirst("E WB6RED", "CQ"));
     }
+
+    /// <remarks>
+    /// Proves 2.1's counting (work instruction 412, task 2): unsure per named is
+    /// counted over the scored region and nothing outside it. In `EE CQ DE■` the
+    /// key `CQ DE` fits `CQ DE` with no edit; of its four named characters the `Q`
+    /// and the `E` were settled unsure, and the two `E`s before it and the
+    /// placeholder after it are outside the region and count for nothing.
+    /// </remarks>
+    [Fact]
+    public void TheGuardIsCountedOverTheScoredRegionAlone()
+    {
+        //                                  E     E     _      C      Q     _      D      E     ■
+        var reading = new CwReading("EE CQ DE■", new[] { true, true, false, false, true, false, false, true, true });
+        var score = CwScorer.Within(reading, "CQ DE", CwKeyKind.Inferred);
+
+        Assert.Equal("CQ DE", score.Region);
+        Assert.Equal(0, score.Edits);
+        Assert.Equal(4, score.Named);
+        Assert.Equal(2, score.Unsure);
+        Assert.Equal(0.5, score.UnsurePerNamed);
+        Assert.Equal("CQ DE■", CwScorer.FromFirst(reading, "CQ").Text);
+        Assert.Equal(3, CwScorer.FromFirst(reading, "CQ").UnsureCount);
+    }
+
+    /// <remarks>
+    /// Proves 2.1 on a text with nothing behind it: a placeholder is unsure and
+    /// is not named, and a region with nothing named carries no ratio rather
+    /// than a zero that would read as perfectly sure.
+    /// </remarks>
+    [Fact]
+    public void AnUnnamedRegionCarriesNoRatio()
+    {
+        var some = CwScorer.Whole("CQ ■", "CQ E", CwKeyKind.Inferred);
+        var none = CwScorer.Whole("", "CQ", CwKeyKind.Inferred);
+
+        Assert.Equal((2, 1), (some.Named, some.Unsure));
+        Assert.Equal((0, 0), (none.Named, none.Unsure));
+        Assert.Null(none.UnsurePerNamed);
+        Assert.EndsWith("0 unsure per 0 named (nothing named)", none.ToString());
+    }
 }

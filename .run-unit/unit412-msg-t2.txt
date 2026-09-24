@@ -1,0 +1,3 @@
+unit412 task 2: the guard (2.1, 2.2, 2.3) - CwScore carries unsure per named over its own region from the decoder's own flags, placeholders and letters below high confidence; baseline.md re-issued with that column and a named floor per keyed recording, 33 edits over 46 against inferred keys, 0 unsure per 47 named; TheNumberCannotBeGamedTests floors 13 keyed recordings, 547 named, 13 of 13; the guard watched working: leaving out E and T took the baseline to 21 edits and broke 13 of 13 floors, 547 named to 350, and the emission bar at 100 suppressed most output, 547 to 97, 17:37 29 to 25 but the total to 42; both taken back out uncommitted, src prints nothing, re-run 33 and 13 of 13
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

@@ -1,4 +1,61 @@
+using System.Text;
+using Hamlet.RadioEngine.Cw;
+
 namespace Hamlet.RadioEngine.Tests.Cw;
+
+/// <summary>
+/// A decode with, for each character of its text, whether the decoder was unsure of
+/// it (work instruction 412, task 2; PHASE_PLAN.md 2.1).
+/// </summary>
+/// <remarks>
+/// **UNSURE IS WHAT THE DECODER'S OWN COUNTER CALLS UNSURE**: a placeholder, or a
+/// letter settled at less than high confidence (`CwDecoder`'s `CharactersUnsure`).
+/// A letter settled low prints as the letter, so a text alone cannot say which
+/// they were; <see cref="FromText"/> is for a text with nothing else behind it, a
+/// sidecar's, and sees only the placeholders.
+/// </remarks>
+/// <param name="Text">What was settled, spaces included.</param>
+/// <param name="Unsure">One flag per character of the text.</param>
+public sealed record CwReading(string Text, IReadOnlyList<bool> Unsure)
+{
+    /// <summary>The reading of what the decoder settled, character by character.</summary>
+    /// <param name="settled">The settled characters, word gaps included.</param>
+    /// <returns>The text and its flags.</returns>
+    public static CwReading Of(IEnumerable<CwCharacter> settled)
+    {
+        var text = new StringBuilder();
+        var unsure = new List<bool>();
+
+        foreach (var c in settled)
+        {
+            var flag = !c.IsWordGap && (c.IsUnreadable || c.Confidence != CwConfidence.High);
+
+            text.Append(c.Text);
+            unsure.AddRange(Enumerable.Repeat(flag, c.Text.Length));
+        }
+
+        return new CwReading(text.ToString(), unsure);
+    }
+
+    /// <summary>A text with nothing behind it: only its placeholders are known unsure.</summary>
+    /// <param name="text">The text.</param>
+    /// <returns>The reading.</returns>
+    public static CwReading FromText(string text)
+        => new(text, text.Select(ch => ch.ToString() == MorseAlphabet.Unreadable).ToList());
+
+    /// <summary>The characters from one index up to another.</summary>
+    /// <param name="from">The first index taken.</param>
+    /// <param name="to">The index after the last taken.</param>
+    /// <returns>The slice, flags kept with their characters.</returns>
+    public CwReading Slice(int from, int to)
+        => new(Text[from..to], Unsure.Skip(from).Take(to - from).ToList());
+
+    /// <summary>Characters with a name: neither a space nor a placeholder.</summary>
+    public int Named => Text.Count(ch => ch != ' ' && ch.ToString() != MorseAlphabet.Unreadable);
+
+    /// <summary>Characters the decoder was unsure of, placeholders included.</summary>
+    public int UnsureCount => Unsure.Count(u => u);
+}
 
 /// <summary>Whether a key is exact or inferred (PHASE_PLAN.md R61).</summary>
 public enum CwKeyKind
@@ -39,14 +96,24 @@ public readonly record struct CwStep(CwEdit Edit, char? Key, char? Decoded);
 /// <param name="Region">The stretch of the decode that was scored.</param>
 /// <param name="Key">The key it was scored against.</param>
 /// <param name="Steps">The alignment the edits were counted from, key order.</param>
+/// <param name="Named">Named characters in the region: neither a space nor a placeholder (2.1).</param>
+/// <param name="Unsure">Characters in the region the decoder was unsure of, placeholders included (2.1).</param>
 public sealed record CwScore(
     int Edits, int ScoredLength, CwKeyKind Kind, string Region, string Key,
-    IReadOnlyList<CwStep> Steps)
+    IReadOnlyList<CwStep> Steps, int Named, int Unsure)
 {
-    /// <summary>The three parts as a report writes them, never a bare percentage.</summary>
+    /// <summary>The guard beside the number: unsure characters per named character, or null with none named.</summary>
+    public double? UnsurePerNamed => Named == 0 ? null : (double)Unsure / Named;
+
+    /// <summary>The guard as a report writes it, both counts and the ratio.</summary>
+    public string Guard
+        => $"{Unsure} unsure per {Named} named"
+           + (UnsurePerNamed is { } r ? $" ({r:0.000})" : " (nothing named)");
+
+    /// <summary>The three parts as a report writes them, never a bare percentage, and the guard beside them.</summary>
     public override string ToString()
         => $"{Edits} edits over {ScoredLength} characters against an "
-           + (Kind == CwKeyKind.Exact ? "exact" : "inferred") + " key";
+           + (Kind == CwKeyKind.Exact ? "exact" : "inferred") + $" key, {Guard}";
 }
 
 /// <summary>
@@ -97,6 +164,14 @@ public static class CwScorer
     /// <param name="kind">Whether the key is exact or inferred.</param>
     /// <returns>The score in its three parts, with its alignment.</returns>
     public static CwScore Whole(string region, string key, CwKeyKind kind)
+        => Whole(CwReading.FromText(region), key, kind);
+
+    /// <summary>Scores a region already chosen, with the decoder's own unsure flags behind it.</summary>
+    /// <param name="region">The stretch of the decode the key file names.</param>
+    /// <param name="key">The key for that stretch.</param>
+    /// <param name="kind">Whether the key is exact or inferred.</param>
+    /// <returns>The score in its three parts, with its alignment and its guard.</returns>
+    public static CwScore Whole(CwReading region, string key, CwKeyKind kind)
         => Align(region, key, kind, freeEnds: false);
 
     /// <summary>Scores the key against the stretch of the decode that fits it best.</summary>
@@ -110,6 +185,14 @@ public static class CwScorer
     /// <param name="kind">Whether the key is exact or inferred.</param>
     /// <returns>The score in its three parts, with the stretch it chose.</returns>
     public static CwScore Within(string decode, string key, CwKeyKind kind)
+        => Within(CwReading.FromText(decode), key, kind);
+
+    /// <summary>Scores the key against the best-fitting stretch, with the decoder's own unsure flags behind it.</summary>
+    /// <param name="decode">Everything the decoder settled.</param>
+    /// <param name="key">The key for some stretch of it.</param>
+    /// <param name="kind">Whether the key is exact or inferred.</param>
+    /// <returns>The score in its three parts, with the stretch it chose and its guard.</returns>
+    public static CwScore Within(CwReading decode, string key, CwKeyKind kind)
         => Align(decode, key, kind, freeEnds: true);
 
     /// <summary>The region from the first occurrence of an opening to the last character emitted.</summary>
@@ -117,10 +200,29 @@ public static class CwScorer
     /// <param name="opening">What the region starts at, the first `CQ` for a CQ call.</param>
     /// <returns>The region with the gaps at its two ends trimmed, or "" where the opening was not read.</returns>
     public static string FromFirst(string decode, string opening)
-    {
-        var from = decode.IndexOf(opening, StringComparison.Ordinal);
+        => FromFirst(CwReading.FromText(decode), opening).Text;
 
-        return from < 0 ? "" : decode[from..].Trim();
+    /// <summary>The region from the first occurrence of an opening, flags kept.</summary>
+    /// <param name="decode">Everything the decoder settled.</param>
+    /// <param name="opening">What the region starts at.</param>
+    /// <returns>The region with the gaps at its two ends trimmed, or an empty reading.</returns>
+    public static CwReading FromFirst(CwReading decode, string opening)
+    {
+        var from = decode.Text.IndexOf(opening, StringComparison.Ordinal);
+
+        if (from < 0)
+        {
+            return decode.Slice(0, 0);
+        }
+
+        var to = decode.Text.Length;
+
+        while (to > from && char.IsWhiteSpace(decode.Text[to - 1]))
+        {
+            to--;
+        }
+
+        return decode.Slice(from, to);
     }
 
     /// <summary>Splits a score's edits by kind, from the alignment it was counted on.</summary>
@@ -179,8 +281,9 @@ public static class CwScorer
     public static int LettersOnly(CwScore score)
         => Whole(score.Region.Replace(" ", ""), score.Key.Replace(" ", ""), score.Kind).Edits;
 
-    private static CwScore Align(string decode, string key, CwKeyKind kind, bool freeEnds)
+    private static CwScore Align(CwReading reading, string key, CwKeyKind kind, bool freeEnds)
     {
+        var decode = reading.Text;
         var m = key.Length;
         var n = decode.Length;
         var cost = new int[m + 1, n + 1];
@@ -261,7 +364,11 @@ public static class CwScorer
 
         steps.Reverse();
 
+        // The guard is counted over the same region the edits were (2.1).
+        var region = reading.Slice(b, end);
+
         return new CwScore(
-            steps.Count(s => s.Edit != CwEdit.Same), m, kind, decode[b..end], key, steps);
+            steps.Count(s => s.Edit != CwEdit.Same), m, kind, region.Text, key, steps,
+            region.Named, region.UnsureCount);
     }
 }

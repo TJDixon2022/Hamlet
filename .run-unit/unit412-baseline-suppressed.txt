@@ -1,0 +1,53 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheBaselineIsScoredTests.TheErrorKindsArePrinted [9 s]
+  Standard Output Messages:
+ kinds | recording | edits | wrong | missing | added | space added | space missing | boundaries | letters-only edits
+ kinds | unadjudicated/cw-2026-09-23-173723 | 25 | 0 | 20 | 0 | 0 | 5 | 5 | 20
+ kinds | cw-2026-08-17-013347 | 5 | 2 | 1 | 0 | 2 | 0 | 2 | 5
+ kinds | cw-2026-08-17-134712 | 2 | 1 | 0 | 0 | 1 | 0 | 1 | 2
+ kinds | unadjudicated/cw-2026-08-18-003758 | 10 | 0 | 5 | 0 | 5 | 0 | 5 | 10
+ kinds total | 42 | 3 | 26 | 0 | 8 | 5 | 13 | 37
+ 17:37 alignment, key over decode, . same, x wrong, - missing, + added:
+   key    CQ_CQ_CQ_DE_WB6RED_WB6RED
+   decode                          
+   edit   -------------------------
+ cw-2026-08-17-013347: key `VA3VRR` region `EA E `
+ cw-2026-08-17-134712: key `N4L` region `NT `
+ unadjudicated/cw-2026-08-18-003758: key `AA4MP/4 QNIK` region `   Q   `
+
+
+[xUnit.net 00:00:39.00]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheBaselineIsScoredTests.TheBaselineIsPrinted [29 s]
+  Standard Output Messages:
+ row | recording | edits | scored length | key | region length | unsure per named | region | key text | note
+ row | unadjudicated/cw-2026-09-23-173723 | 25 | 25 | inferred | 0 | 0 unsure per 0 named (nothing named) | `` | `CQ CQ CQ DE WB6RED WB6RED` | key file's region, scored whole
+ row | cw-2026-08-17-013347 | 5 | 6 | inferred | 5 | 0 unsure per 3 named (0.000) | `EA E ` | `VA3VRR` | HM-DEC-145
+ row | cw-2026-08-17-134712 | 2 | 3 | inferred | 3 | 0 unsure per 2 named (0.000) | `NT ` | `N4L` | HM-DEC-144, retired as an anchor
+ row | unadjudicated/cw-2026-08-18-003758 | 10 | 12 | inferred | 7 | 0 unsure per 1 named (0.000) | `   Q   ` | `AA4MP/4 QNIK` | HM-DEC-126
+ total | 42 edits over 46 characters against inferred keys, 4 recordings
+ guard | total | 0 unsure per 6 named (0.000)
+ row | unadjudicated/cw-2026-08-24-012403 | 13 | 16 | inferred | 9 | 0 unsure per 0 named (nothing named) | `         ` | `DE KD0UN KD0UN K` | outside the baseline, work instruction 011
+ row | cw-2026-08-18-004507 | 47 | 57 | inferred | 28 | 0 unsure per 0 named (nothing named) | `                            ` | `AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P` | outside the baseline, HM-DEC-115
+ row | unadjudicated/cw-2026-08-22-031838 | 25 | 35 | inferred | 28 | 0 unsure per 1 named (0.000) | `  A                         ` | `2, 2, AND 2 WITH A MEAN OF 2.9. PRE` | outside the baseline, Tim 2026-08-25
+ row | unadjudicated/cw-2026-08-22-031905 | 32 | 39 | inferred | 23 | 0 unsure per 4 named (0.000) | `             W   ,,  E ` | `DICTED 10.7 CENTIMETER FLUX IS 125, 125` | outside the baseline, Tim 2026-08-25, retired as an anchor
+ row | unadjudicated/cw-2026-08-22-031948 | 27 | 36 | inferred | 14 | 0 unsure per 1 named (0.000) | `    T         ` | `110, 110, AND 110 WITH A MEAN OF 117` | outside the baseline, Tim 2026-08-25
+ row | unadjudicated/cw-2026-08-22-032012 | 42 | 51 | inferred | 19 | 0 unsure per 1 named (0.000) | `  T                ` | `N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI` | outside the baseline, Tim 2026-08-25
+ row | unadjudicated/cw-2026-08-22-032050 | 47 | 59 | inferred | 34 | 1 unsure per 8 named (0.125) | `               E    ■ S S T S SI I` | `THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE` | outside the baseline, Tim 2026-08-25, retired as an anchor
+ row | unadjudicated/cw-2026-08-22-032113 | 19 | 28 | inferred | 21 | 0 unsure per 9 named (0.000) | `    TT  E I  E E EIE ` | `ACKET, AND INTERNET VERSIONS` | outside the baseline, Tim 2026-08-25, retired as an anchor
+ row | unadjudicated/cw-2026-08-22-032129 | 35 | 42 | inferred | 29 | 0 unsure per 8 named (0.000) | `    N E E       EE  E E   E  ` | `2026 PROPAGATION FORECAST BULLETIN ARLP034` | outside the baseline, Tim 2026-08-25, retired as an anchor
+ outside | 287 edits over 363 characters against inferred keys, 9 recordings
+ guard | outside | 1 unsure per 32 named (0.031)
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 39.2508 Seconds
+RC=0 WALL=40s

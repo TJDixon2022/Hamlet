@@ -20,6 +20,10 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// and nothing either side is scored (<see cref="CwScorer.Within"/>).</para>
 /// <para>A printer. It asserts only that the new scorer and the Levenshtein
 /// already in <see cref="TheSeventeenThirtySevenCaptureTests"/> agree on 17:37.</para>
+/// <para>**EVERY ROW CARRIES UNSURE PER NAMED FOR ITS OWN REGION** (PHASE_PLAN.md
+/// 2.1, work instruction 412): the decode is read with the decoder's own unsure
+/// flags behind it (<see cref="CwReading"/>), so a letter settled below high
+/// confidence counts though it prints as the letter.</para>
 /// </remarks>
 public sealed class TheBaselineIsScoredTests
 {
@@ -41,32 +45,43 @@ public sealed class TheBaselineIsScoredTests
     /// <summary>The 17:37 capture scored over the region its key file names.</summary>
     /// <returns>The score.</returns>
     internal static CwScore SeventeenThirtySeven()
-    {
-        var text = string.Concat(
-            TheSeventeenThirtySevenCaptureTests.Settle(TheSeventeenThirtySevenCaptureTests.Name)
-                .Select(c => c.Text));
-
-        return CwScorer.Whole(
-            CwScorer.FromFirst(text, "CQ"),
+        => CwScorer.Whole(
+            CwScorer.FromFirst(Read(TheSeventeenThirtySevenCaptureTests.Name), "CQ"),
             TheSeventeenThirtySevenCaptureTests.InferredKey,
             CwKeyKind.Inferred);
-    }
 
     /// <summary>One adjudicated recording scored against its adjudicated text.</summary>
     /// <param name="reading">The reading.</param>
     /// <returns>The score.</returns>
     internal static CwScore Adjudicated(TheAdjudicatedReadingsKeepReadingTests.Reading reading)
-        => CwScorer.Within(
-            TheAdjudicatedReadingsKeepReadingTests.Settled(reading.Name),
-            reading.Adjudicated,
-            CwKeyKind.Inferred);
+        => CwScorer.Within(Read(reading.Name), reading.Adjudicated, CwKeyKind.Inferred);
+
+    /// <summary>
+    /// What the decoder settles from a recording, with its unsure flags: fed hop by
+    /// hop at 600 Hz, which is the anchors' <see cref="TheAdjudicatedReadingsKeepReadingTests.RadioPitchHz"/>
+    /// and the floors' starting pitch, so the text is the one both have always scored.
+    /// </summary>
+    /// <param name="name">The recording, under the captures folder.</param>
+    /// <returns>The reading.</returns>
+    internal static CwReading Read(string name)
+        => CwReading.Of(TheSeventeenThirtySevenCaptureTests.Settle(name));
 
     private void Row(string name, CwScore score, string note)
     {
         _output.WriteLine(
             $"row | {name} | {score.Edits} | {score.ScoredLength} | "
             + $"{(score.Kind == CwKeyKind.Exact ? "exact" : "inferred")} | "
-            + $"{score.Region.Length} | `{score.Region}` | `{score.Key}` | {note}");
+            + $"{score.Region.Length} | {score.Guard} | `{score.Region}` | `{score.Key}` | {note}");
+    }
+
+    private void Guard(string label, IReadOnlyCollection<CwScore> scores)
+    {
+        var unsure = scores.Sum(s => s.Unsure);
+        var named = scores.Sum(s => s.Named);
+
+        _output.WriteLine(
+            $"guard | {label} | {unsure} unsure per {named} named"
+            + (named == 0 ? " (nothing named)" : $" ({(double)unsure / named:0.000})"));
     }
 
     /// <remarks>
@@ -78,7 +93,7 @@ public sealed class TheBaselineIsScoredTests
     public void TheBaselineIsPrinted()
     {
         _output.WriteLine(
-            "row | recording | edits | scored length | key | region length | region | key text | note");
+            "row | recording | edits | scored length | key | region length | unsure per named | region | key text | note");
 
         var total = new List<CwScore>();
         var seventeen = SeventeenThirtySeven();
@@ -98,6 +113,7 @@ public sealed class TheBaselineIsScoredTests
         _output.WriteLine(
             $"total | {total.Sum(s => s.Edits)} edits over {total.Sum(s => s.ScoredLength)} "
             + "characters against inferred keys, 4 recordings");
+        Guard("total", total);
 
         var others = new List<CwScore>();
 
@@ -114,6 +130,7 @@ public sealed class TheBaselineIsScoredTests
         _output.WriteLine(
             $"outside | {others.Sum(s => s.Edits)} edits over {others.Sum(s => s.ScoredLength)} "
             + $"characters against inferred keys, {others.Count} recordings");
+        Guard("outside", others);
 
         Assert.Equal(
             TheSeventeenThirtySevenCaptureTests.Distance(

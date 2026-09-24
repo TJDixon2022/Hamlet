@@ -1,0 +1,261 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:06.51]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032129", floor: 65) [FAIL]
+[xUnit.net 00:00:06.51]       unadjudicated/cw-2026-08-22-032129 fell from 65 named characters to 30, at 26 edits over 42 characters against an inferred key, 0 unsure per 21 named (0.000)
+[xUnit.net 00:00:06.51]       Stack Trace:
+[xUnit.net 00:00:06.51]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:06.51]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:06.51]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.51]       Output:
+[xUnit.net 00:00:06.51]         named | unadjudicated/cw-2026-08-22-032129 | 30 against a floor of 65 | 26 edits over 42 characters against an inferred key, 0 unsure per 21 named (0.000) | region ` J26 PGOPAGAION   II I  I I  I H  I   `
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032129", floor: 65) [6 s]
+  Error Message:
+   unadjudicated/cw-2026-08-22-032129 fell from 65 named characters to 30, at 26 edits over 42 characters against an inferred key, 0 unsure per 21 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032129 | 30 against a floor of 65 | 26 edits over 42 characters against an inferred key, 0 unsure per 21 named (0.000) | region ` J26 PGOPAGAION   II I  I I  I H  I   `
+
+
+[xUnit.net 00:00:11.86]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-18-004507", floor: 49) [FAIL]
+[xUnit.net 00:00:11.86]       cw-2026-08-18-004507 fell from 49 named characters to 36, at 18 edits over 57 characters against an inferred key, 0 unsure per 37 named (0.000)
+[xUnit.net 00:00:11.86]       Stack Trace:
+[xUnit.net 00:00:11.86]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:11.86]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:11.86]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:11.86]       Output:
+[xUnit.net 00:00:11.86]         named | cw-2026-08-18-004507 | 36 against a floor of 49 | 18 edits over 57 characters against an inferred key, 0 unsure per 37 named (0.000) | region `A  AR O L D O  N   <BT>   AC H SA I O N HANDLING HIS MSSAG  P`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-18-004507", floor: 49) [5 s]
+  Error Message:
+   cw-2026-08-18-004507 fell from 49 named characters to 36, at 18 edits over 57 characters against an inferred key, 0 unsure per 37 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | cw-2026-08-18-004507 | 36 against a floor of 49 | 18 edits over 57 characters against an inferred key, 0 unsure per 37 named (0.000) | region `A  AR O L D O  N   <BT>   AC H SA I O N HANDLING HIS MSSAG  P`
+
+
+[xUnit.net 00:00:15.73]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032050", floor: 44) [FAIL]
+[xUnit.net 00:00:15.73]       unadjudicated/cw-2026-08-22-032050 fell from 44 named characters to 32, at 30 edits over 59 characters against an inferred key, 2 unsure per 28 named (0.071)
+[xUnit.net 00:00:15.73]       Stack Trace:
+[xUnit.net 00:00:15.73]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:15.73]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:15.73]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:15.73]       Output:
+[xUnit.net 00:00:15.73]         named | unadjudicated/cw-2026-08-22-032050 | 32 against a floor of 44 | 30 edits over 59 characters against an inferred key, 2 unsure per 28 named (0.071) | region `    IULLIN CAN B FO A ND IN LWRIR, PA■ K     ■ S S `
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032050", floor: 44) [3 s]
+  Error Message:
+   unadjudicated/cw-2026-08-22-032050 fell from 44 named characters to 32, at 30 edits over 59 characters against an inferred key, 2 unsure per 28 named (0.071)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032050 | 32 against a floor of 44 | 30 edits over 59 characters against an inferred key, 2 unsure per 28 named (0.071) | region `    IULLIN CAN B FO A ND IN LWRIR, PA■ K     ■ S S `
+
+
+[xUnit.net 00:00:19.46]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032113", floor: 47) [FAIL]
+[xUnit.net 00:00:19.46]       unadjudicated/cw-2026-08-22-032113 fell from 47 named characters to 31, at 15 edits over 28 characters against an inferred key, 2 unsure per 15 named (0.133)
+[xUnit.net 00:00:19.46]       Stack Trace:
+[xUnit.net 00:00:19.46]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:19.46]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:19.46]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:19.46]       Output:
+[xUnit.net 00:00:19.46]         named | unadjudicated/cw-2026-08-22-032113 | 31 against a floor of 47 | 15 edits over 28 characters against an inferred key, 2 unsure per 15 named (0.133) | region `A K■ A N O IN RN  ■  ROIONS`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032113", floor: 47) [3 s]
+  Error Message:
+   unadjudicated/cw-2026-08-22-032113 fell from 47 named characters to 31, at 15 edits over 28 characters against an inferred key, 2 unsure per 15 named (0.133)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032113 | 31 against a floor of 47 | 15 edits over 28 characters against an inferred key, 2 unsure per 15 named (0.133) | region `A K■ A N O IN RN  ■  ROIONS`
+
+
+[xUnit.net 00:00:23.07]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032012", floor: 43) [FAIL]
+[xUnit.net 00:00:23.07]       unadjudicated/cw-2026-08-22-032012 fell from 43 named characters to 32, at 21 edits over 51 characters against an inferred key, 0 unsure per 32 named (0.000)
+[xUnit.net 00:00:23.07]       Stack Trace:
+[xUnit.net 00:00:23.07]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:23.07]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:23.07]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:23.07]       Output:
+[xUnit.net 00:00:23.07]         named | unadjudicated/cw-2026-08-22-032012 | 32 against a floor of 43 | 21 edits over 51 characters against an inferred key, 0 unsure per 32 named (0.000) | region `   F 117.1. LINKS O A R  I C L  SO R OHR WBSIS MNI`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032012", floor: 43) [3 s]
+  Error Message:
+   unadjudicated/cw-2026-08-22-032012 fell from 43 named characters to 32, at 21 edits over 51 characters against an inferred key, 0 unsure per 32 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032012 | 32 against a floor of 43 | 21 edits over 51 characters against an inferred key, 0 unsure per 32 named (0.000) | region `   F 117.1. LINKS O A R  I C L  SO R OHR WBSIS MNI`
+
+
+[xUnit.net 00:00:29.71]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031838", floor: 43) [FAIL]
+[xUnit.net 00:00:29.72]       unadjudicated/cw-2026-08-22-031838 fell from 43 named characters to 22, at 13 edits over 35 characters against an inferred key, 1 unsure per 15 named (0.067)
+[xUnit.net 00:00:29.72]       Stack Trace:
+[xUnit.net 00:00:29.72]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:29.72]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:29.72]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:29.72]       Output:
+[xUnit.net 00:00:29.72]         named | unadjudicated/cw-2026-08-22-031838 | 22 against a floor of 43 | 13 edits over 35 characters against an inferred key, 1 unsure per 15 named (0.067) | region `2  , AND  ■  IAH A MAN OF 2     `
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031838", floor: 43) [6 s]
+  Error Message:
+   unadjudicated/cw-2026-08-22-031838 fell from 43 named characters to 22, at 13 edits over 35 characters against an inferred key, 1 unsure per 15 named (0.067)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-031838 | 22 against a floor of 43 | 13 edits over 35 characters against an inferred key, 1 unsure per 15 named (0.067) | region `2  , AND  ■  IAH A MAN OF 2     `
+
+
+[xUnit.net 00:00:33.38]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031905", floor: 36) [FAIL]
+[xUnit.net 00:00:33.38]       unadjudicated/cw-2026-08-22-031905 fell from 36 named characters to 28, at 18 edits over 39 characters against an inferred key, 0 unsure per 26 named (0.000)
+[xUnit.net 00:00:33.38]       Stack Trace:
+[xUnit.net 00:00:33.38]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:33.38]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:33.38]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:33.38]       Output:
+[xUnit.net 00:00:33.38]         named | unadjudicated/cw-2026-08-22-031905 | 28 against a floor of 36 | 18 edits over 39 characters against an inferred key, 0 unsure per 26 named (0.000) | region `DICD 10.7  IAII A NI   WLUX IS 125,,   `
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031905", floor: 36) [3 s]
+  Error Message:
+   unadjudicated/cw-2026-08-22-031905 fell from 36 named characters to 28, at 18 edits over 39 characters against an inferred key, 0 unsure per 26 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-031905 | 28 against a floor of 36 | 18 edits over 39 characters against an inferred key, 0 unsure per 26 named (0.000) | region `DICD 10.7  IAII A NI   WLUX IS 125,,   `
+
+
+[xUnit.net 00:00:37.35]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-013347", floor: 57) [FAIL]
+[xUnit.net 00:00:37.35]       cw-2026-08-17-013347 fell from 57 named characters to 27, at 0 edits over 6 characters against an inferred key, 0 unsure per 6 named (0.000)
+[xUnit.net 00:00:37.35]       Stack Trace:
+[xUnit.net 00:00:37.35]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:37.35]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:37.35]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:37.35]       Output:
+[xUnit.net 00:00:37.35]         named | cw-2026-08-17-013347 | 27 against a floor of 57 | 0 edits over 6 characters against an inferred key, 0 unsure per 6 named (0.000) | region `VA3VRR`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-013347", floor: 57) [3 s]
+  Error Message:
+   cw-2026-08-17-013347 fell from 57 named characters to 27, at 0 edits over 6 characters against an inferred key, 0 unsure per 6 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | cw-2026-08-17-013347 | 27 against a floor of 57 | 0 edits over 6 characters against an inferred key, 0 unsure per 6 named (0.000) | region `VA3VRR`
+
+
+[xUnit.net 00:00:40.79]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-18-003758", floor: 44) [FAIL]
+[xUnit.net 00:00:40.79]       unadjudicated/cw-2026-08-18-003758 fell from 44 named characters to 30, at 2 edits over 12 characters against an inferred key, 0 unsure per 9 named (0.000)
+[xUnit.net 00:00:40.79]       Stack Trace:
+[xUnit.net 00:00:40.79]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:40.79]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:40.79]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:40.79]       Output:
+[xUnit.net 00:00:40.79]         named | unadjudicated/cw-2026-08-18-003758 | 30 against a floor of 44 | 2 edits over 12 characters against an inferred key, 0 unsure per 9 named (0.000) | region `  4MP/4 QNIK`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-18-003758", floor: 44) [3 s]
+  Error Message:
+   unadjudicated/cw-2026-08-18-003758 fell from 44 named characters to 30, at 2 edits over 12 characters against an inferred key, 0 unsure per 9 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-18-003758 | 30 against a floor of 44 | 2 edits over 12 characters against an inferred key, 0 unsure per 9 named (0.000) | region `  4MP/4 QNIK`
+
+
+[xUnit.net 00:00:44.44]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-09-23-173723", floor: 46) [FAIL]
+[xUnit.net 00:00:44.44]       unadjudicated/cw-2026-09-23-173723 fell from 46 named characters to 27, at 18 edits over 25 characters against an inferred key, 0 unsure per 13 named (0.000)
+[xUnit.net 00:00:44.44]       Stack Trace:
+[xUnit.net 00:00:44.44]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:44.44]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:44.44]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:44.44]       Output:
+[xUnit.net 00:00:44.44]         named | unadjudicated/cw-2026-09-23-173723 | 27 against a floor of 46 | 18 edits over 25 characters against an inferred key, 0 unsure per 13 named (0.000) | region `CQ CQ CQ D  W        R D    B 7  I`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-09-23-173723", floor: 46) [3 s]
+  Error Message:
+   unadjudicated/cw-2026-09-23-173723 fell from 46 named characters to 27, at 18 edits over 25 characters against an inferred key, 0 unsure per 13 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-09-23-173723 | 27 against a floor of 46 | 18 edits over 25 characters against an inferred key, 0 unsure per 13 named (0.000) | region `CQ CQ CQ D  W        R D    B 7  I`
+
+
+[xUnit.net 00:00:48.12]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031948", floor: 31) [FAIL]
+[xUnit.net 00:00:48.12]       unadjudicated/cw-2026-08-22-031948 fell from 31 named characters to 28, at 4 edits over 36 characters against an inferred key, 0 unsure per 25 named (0.000)
+[xUnit.net 00:00:48.12]       Stack Trace:
+[xUnit.net 00:00:48.12]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:48.12]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:48.12]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:48.12]       Output:
+[xUnit.net 00:00:48.12]         named | unadjudicated/cw-2026-08-22-031948 | 28 against a floor of 31 | 4 edits over 36 characters against an inferred key, 0 unsure per 25 named (0.000) | region `150 110, AND 110 WIH A MAN OF 117`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031948", floor: 31) [3 s]
+  Error Message:
+   unadjudicated/cw-2026-08-22-031948 fell from 31 named characters to 28, at 4 edits over 36 characters against an inferred key, 0 unsure per 25 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-031948 | 28 against a floor of 31 | 4 edits over 36 characters against an inferred key, 0 unsure per 25 named (0.000) | region `150 110, AND 110 WIH A MAN OF 117`
+
+
+[xUnit.net 00:00:52.66]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-24-012403", floor: 21) [FAIL]
+[xUnit.net 00:00:52.66]       unadjudicated/cw-2026-08-24-012403 fell from 21 named characters to 17, at 1 edits over 16 characters against an inferred key, 0 unsure per 12 named (0.000)
+[xUnit.net 00:00:52.66]       Stack Trace:
+[xUnit.net 00:00:52.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:52.66]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:52.66]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:52.66]       Output:
+[xUnit.net 00:00:52.66]         named | unadjudicated/cw-2026-08-24-012403 | 17 against a floor of 21 | 1 edits over 16 characters against an inferred key, 0 unsure per 12 named (0.000) | region `D KD0UN KD0UN K`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-24-012403", floor: 21) [4 s]
+  Error Message:
+   unadjudicated/cw-2026-08-24-012403 fell from 21 named characters to 17, at 1 edits over 16 characters against an inferred key, 0 unsure per 12 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-24-012403 | 17 against a floor of 21 | 1 edits over 16 characters against an inferred key, 0 unsure per 12 named (0.000) | region `D KD0UN KD0UN K`
+
+
+[xUnit.net 00:00:59.59]     Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-134712", floor: 21) [FAIL]
+[xUnit.net 00:00:59.59]       cw-2026-08-17-134712 fell from 21 named characters to 10, at 1 edits over 3 characters against an inferred key, 0 unsure per 2 named (0.000)
+[xUnit.net 00:00:59.59]       Stack Trace:
+[xUnit.net 00:00:59.59]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs(92,0): at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor)
+[xUnit.net 00:00:59.59]            at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+[xUnit.net 00:00:59.59]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:59.59]       Output:
+[xUnit.net 00:00:59.59]         named | cw-2026-08-17-134712 | 10 against a floor of 21 | 1 edits over 3 characters against an inferred key, 0 unsure per 2 named (0.000) | region `N4 `
+[xUnit.net 00:00:59.59]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-134712", floor: 21) [6 s]
+  Error Message:
+   cw-2026-08-17-134712 fell from 21 named characters to 10, at 1 edits over 3 characters against an inferred key, 0 unsure per 2 named (0.000)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(String name, Int32 floor) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheNumberCannotBeGamedTests.cs:line 92
+   at InvokeStub_TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ named | cw-2026-08-17-134712 | 10 against a floor of 21 | 1 edits over 3 characters against an inferred key, 0 unsure per 2 named (0.000) | region `N4 `
+
+
+
+Test Run Failed.
+Total tests: 13
+     Failed: 13
+ Total time: 59.8466 Seconds
+RC=1 WALL=60s
