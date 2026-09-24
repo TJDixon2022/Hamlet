@@ -1,0 +1,24 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.49]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference [1 s]
+  Standard Output Messages:
+ 1920 on FT8: the band is 214 px with the pills from 243, 178 without from 190, and the panel row 484 from 450. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1920 on PSK31: the band is 214 px with the pills from 243, 178 without from 190, and the panel row 484 from 450. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1920 on Olivia: the band is 214 px with the pills from 243, 178 without from 190, and the panel row 484 from 450. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1400 on FT8: the band is 214 px with the pills from 269, 178 without from 216, and the panel row 484 from 424. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1400 on PSK31: the band is 214 px with the pills from 269, 178 without from 216, and the panel row 484 from 424. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1400 on Olivia: the band is 214 px with the pills from 269, 178 without from 216, and the panel row 484 from 424. CARD governs (card wants 178, rig wants 178, margin 0)
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.7660 Seconds
+RC=0 WALL=3s

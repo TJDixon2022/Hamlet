@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 4
+TASK: TASK 2 of 4
 WORK_INSTRUCTION: 415 - the space is decided after the letters
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T01:21:30-04:00
-NOTE: Running WhereTheSpaceIsDecidedTests alone, the relabel trace over keyed recordings and 51 capture rows
+UPDATED: 2026-09-24T01:54:12-04:00
+NOTE: Re-running the one app name lost to the dispatcher loop, alone
 
 ---
 

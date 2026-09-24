@@ -103,3 +103,32 @@ after `N` from a centroid of 1.0 unit by the decode's speed that passed the guar
 estimator's unit. The reading becomes `N 4LZT`. That region moves, so 3.2's third test is
 expected to fail there. The prediction is recorded before the build and was not tuned away.
 `013347`'s `VA3VRR` and `003758`'s `EETMP/4 QNIK` do not move under the guard.
+
+## Task 2 - the relabel, built and judged under 3.2
+
+Built as `4a0487b0`, the change alone: `CwUnitEstimator.MeasureCharacterGap`, `CwPathGap` and
+`CwProbabilisticResult.Gaps` read off `Spell`'s output, and the stream's settle loop announcing
+spaces after its dedupe. Taken out as `83e2dc7f`. Every key inferred.
+
+| 3.2 test | entry | with the relabel | |
+|---|---|---|---|
+| 1. all keyed recordings, bench | 217 edits over 565 | **191 over 565** | pass |
+| - baseline | 33 over 46 | 32 over 46 | |
+| - 17:37 | 29 over 25 | 28 over 25 | |
+| - outside | 124 over 363 | 122 over 363 | |
+| - the ten, bench | 60 over 156 | 37 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, ` 4L`, `EETMP/4 QNIK` | **fail**, `134712` |
+| 4. all 51 capture rows | - | identical in named, elements and placeholders | pass |
+
+**Task 1's claim held.** No named count, element count or placeholder count moved on any
+row. The letters are the path's letters. The one failure is a space, as the trace predicted:
+`134712`'s path reads `N4 L`, and the relabel takes the space out after `4` and puts one in
+after `N`.
+
+Beside it, never evidence (P8, 1.4), exact keys: the grid 102 to 100 over 243, the five-unit
+row 63 to 64 over 81.
+
+3.5 at both commits: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, engine
+carry-forward 178 of 178. App carry-forward 276 and 277 of 278, with the rest lost to the
+dispatcher loop and green alone.
