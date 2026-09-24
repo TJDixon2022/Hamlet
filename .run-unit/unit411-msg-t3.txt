@@ -1,0 +1,3 @@
+unit411 task 3: the sidecar is re-read (6.2) - the sheet's tonePeak, keying and elementHz lines are composed in three static functions the writer calls, text unchanged by the move; TheSidecarIsReReadTests regenerates them from 17:37 and 014113 with a fresh decoder and meter into .run-unit, 2 of 2; 17:37 keying now reads no keying at 575 Hz: 109 rises, median 71 ms, 16 dB swing, not called keying on a 16 dB swing where it needs 20; no capture in the tree edited; an overclaim trimmed from the elementHz no-characters caption
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

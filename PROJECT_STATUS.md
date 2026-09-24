@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 4
+TASK: TASK 3 of 4
 WORK_INSTRUCTION: 411 - the screen stops saying what is not so
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T21:08:22-04:00
-NOTE: Running TheCaptureButtonTests alone, a neighbor of the sidecar rewording
+UPDATED: 2026-09-23T21:11:00-04:00
+NOTE: Task 3: regenerating the sidecar lines again after the trim
 
 ---
 

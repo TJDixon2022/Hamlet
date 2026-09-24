@@ -11802,10 +11802,7 @@ public partial class MainWindowViewModel : ObservableObject
             // separate a station from an empty band sit beside it: the
             // `inputPeak` and `inputFloor` pair the terminal shows, and the swing
             // on the `keying` line.
-            $"tonePeak   {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}"
-                + "  (the highest the tracked tone ever stood above the noise "
-                + "beside it, held and decaying; not a figure about this "
-                + "recording)",
+            TonePeakRecordLine(report),
 
             // **THE FIGURE FOR THIS RECORDING, WHICH IS WHAT EVERY NUMBER ON THIS
             // SHEET IS READ AS BEING** (HM-DEC-091). Derived, by taking the
@@ -11912,9 +11909,7 @@ public partial class MainWindowViewModel : ObservableObject
             // output nobody sees (HM-DEC-091).
             $"reading    {FitLine()}",
 
-            $"keying     {KeyingLine(_keyingReading)}"
-                + "  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over "
-                + "the last six seconds, sharing nothing with the decoder)",
+            KeyingRecordLine(_keyingReading),
 
             // **THE ONE NUMBER THAT SORTED THE EVENING OF 2026-08-25 AND WAS
             // NOWHERE ON THIS SHEET.** Thirteen captures, one band, one input
@@ -11945,7 +11940,7 @@ public partial class MainWindowViewModel : ObservableObject
             // corpus divides the two-sender case from the clean ones). The line
             // says how far the elements spread and how far apart the two heaps
             // stand, and it says nothing at all about whether they are two people.
-            $"elementHz  {ElementPitchLine(audio, report)}",
+            ElementHzRecordLine(audio, report),
             "",
         };
 
@@ -12367,6 +12362,35 @@ public partial class MainWindowViewModel : ObservableObject
             + "not the same as the frequency being clear";
     }
 
+    /// <summary>The sidecar's `tonePeak` line, label and caption included.</summary>
+    /// <param name="report">What the decoder had at the moment of the press.</param>
+    /// <returns>The line exactly as the sheet writes it.</returns>
+    /// <remarks>
+    /// **THE SHEET'S THREE SIGNAL LINES ARE COMPOSED HERE AND NOWHERE ELSE** (work
+    /// instruction 411 task 3), so a test regenerating them from a saved capture
+    /// goes through the writer's own code rather than a copy of it.
+    /// </remarks>
+    internal static string TonePeakRecordLine(CwDecodeReport report)
+        => $"tonePeak   {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}"
+           + "  (the highest the tracked tone ever stood above the noise "
+           + "beside it, held and decaying; not a figure about this "
+           + "recording)";
+
+    /// <summary>The sidecar's `keying` line, label and caption included.</summary>
+    /// <param name="reading">What the meter said.</param>
+    /// <returns>The line exactly as the sheet writes it.</returns>
+    internal static string KeyingRecordLine(KeyingReading reading)
+        => $"keying     {KeyingLine(reading)}"
+           + "  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over "
+           + "the last six seconds, sharing nothing with the decoder)";
+
+    /// <summary>The sidecar's `elementHz` line, label included.</summary>
+    /// <param name="audio">The recording being written.</param>
+    /// <param name="report">What the decoder had at the moment of the press.</param>
+    /// <returns>The line exactly as the sheet writes it.</returns>
+    internal static string ElementHzRecordLine(MonoAudio audio, CwDecodeReport report)
+        => $"elementHz  {ElementPitchLine(audio, report)}";
+
     /// <summary>
     /// What pitch each element was sent at, spread and heaps, or why there is
     /// nothing to say.
@@ -12415,7 +12439,7 @@ public partial class MainWindowViewModel : ObservableObject
             return "each element's own pitch not measured  (read again for this "
                    + "line, the audio in this file gave no characters, which is too "
                    + "few elements to say anything about how they spread; the "
-                   + "counts above are for the stretch they name, not this file)";
+                   + "counts above are for the stretch they name)";
         }
 
         // **NO ELEMENT PITCHES IN THIS BUILD, AND THE LINE SAYS SO** (work
