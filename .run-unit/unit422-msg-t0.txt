@@ -1,0 +1,5 @@
+unit422 task 0: the record - PARKED.md P19, 3.6's added strays stand above the bar under floors at their count, with the owner's proposed ruling; PHASE_OUTCOME.md UNIT 422 - STEP 6 from the decision block with the entry round; PHASE_STATUS.md unit 422, CURRENT_STEP 6; version 1.13.108 to 1.13.109
+
+Entry round at bdd0070b: Hamlet.sln builds with warnings as errors; engine carry-forward 178 of 178; app 277 of 278 with one lost to the dispatcher loop and green alone; captures 51 of 51; adjudicated 13 of 13; clean 2 of 2; keyed floors 13 of 13; BindingHealthTests 1 of 1.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

@@ -1325,8 +1325,15 @@
     the stray single-element letters (R71, HM-DEC-176). Nothing that keys, transmits or sets power
     changes.
   -->
+  <!--
+    1.13.108 -> 1.13.109, WORK INSTRUCTION 422 TASK 0. A PATCH, STEP 6 OF THE CORRECTNESS PHASE,
+    CRITERION 6.4, EVERY CONTROL SAYS WHAT IT DOES: every pressable control on the CW tab and the
+    band row carries hover text that says what its command does, and a test names each one. Only
+    hover text changes; no command, binding, visibility or layout, and nothing that keys, transmits
+    or sets power.
+  -->
   <PropertyGroup>
-    <Version>1.13.108</Version>
+    <Version>1.13.109</Version>
   </PropertyGroup>
 
   <!--

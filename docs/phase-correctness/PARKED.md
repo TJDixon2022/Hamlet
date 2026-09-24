@@ -260,3 +260,28 @@ criterion 3.7; work instruction 421.*
 for `CW` says nothing about CW has been measured, while the file states nine CW conditions for
 20 blocks. Raised by unit 420. `TheBlockStatesWhatTheModeNeedsTests.ABlockWithNothingToSayProducesNoClaim`
 asserts an unknown whose topic contains `CW`. Not this phase's step 3; not blocking.
+
+## P19 - 3.6's added strays stand above the bar under floors at their count
+
+**Raised by unit 421, logged by work instruction 422's arbiter, 2026-09-24.** Unit
+421's trace put the eight added single-element letters on the keyed recordings at raw
+`SpanLogLikelihoodRatio` 33.4 to 159.2, above the lowest right letter at 30.8, so R71's
+bar of 13.0 reaches none of them. Each sits on a recording whose floor equals its
+above-bar count: 17:37 46 of 46 with six of them, `031838` 40 of 40, and `032050` 44 of
+44. Removing any one breaks 2.2's floor and 3.2's fourth test, whatever the edit count
+does. Joining a stray to a neighbor lowers the count the same way. So 3.6, read as unit
+421 read it (an added letter comes off a scored stretch), cannot be met by any change the
+floors allow.
+
+**Ruling proposed, the owner's:** a named character that the inferred key aligns as
+added, inside a scored stretch, may leave a floor. Every one is printed per recording
+before and after, and no character the key aligns as right or wrong may leave. The floor
+exists so the decoder cannot score well by going quiet (R59), and a letter the key says
+was never sent is not reading.
+
+**Rejected by the arbiter:**
+- ruling it itself, because R63, 2.2 and R71 are the owner's and an arbiter may not
+  overrule them
+- ticking 3.6 on unit 421's two edits, which came off wrong letters and not added ones
+
+Not blocking: the loop works 6.4 meanwhile (R64, R65).

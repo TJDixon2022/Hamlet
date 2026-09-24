@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 422 - STEP 6
+
+STEP: 6
+APPROACH: inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
+MOVE: work around
+WHY: 3.6 cannot advance by any change the floors allow: all eight added single-element strays stand above R71's bar on recordings whose floors equal their above-bar counts, so removing one breaks 2.2 and 3.2's fourth test, and relaxing that is the owner's (P19). R64 and R65 send the loop to the screen next, and 6.4 is the step 6 criterion no ruling holds.
+STATE: partial
+DECIDED: author's, overrulable - 3.6 is read as unit 421 read it, open until an added letter comes off a scored stretch, and parked as P19 with the proposed ruling that a key-aligned added character may leave a floor; routing from step 3 to 6.4 rather than 6.3 or 6.5 because 6.5 turns on HM-OPEN-087, Tim's, and 6.3 is the larger unit; an existing true tip is left alone and a false one made true; the connect button's second state is the drop candidate; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R62, R64, R65, R54, R63, R71, section 6; step 6 criteria 6.4 and 6.6; step 3 criterion 3.6 and 2.2; HM-DEC-059; HM-DEC-080; HM-DEC-087; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.6
+ADVANCES: step 6 criterion 4
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.108 to 1.13.109. PHASE_STATUS.md names unit 422 and CURRENT_STEP 6. HEAD at entry bdd0070b. P19 added to PARKED.md as the arbiter wrote it. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP carry-forward 277 of 278, the one lost to the dispatcher loop (ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed) green alone, ThePsk31OfferTests 2 of 2; captures 51 of 51 under the bar; adjudicated 13 of 13; clean 2 of 2; keyed floors (TheNumberCannotBeGamedTests) 13 of 13; BindingHealthTests 1 of 1.
+
 ## UNIT 421 - STEP 3
 
 STEP: 3
@@ -409,3 +422,20 @@ STATE_AFTER: partial
 STATE_WHY: Criteria 7.5 and 7.7 are met and ticked with tables and counts shown, but 7.1 to 7.4 have not started and 7.6 is still unticked, so not every exit criterion of step 7 is met.
 ADVANCED: yes
 ATTEMPT: 7.7 | unit 1 launched 2026-09-24T16:16:07.028Z | yes | executed | state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
+
+## UNIT 1 - STEP 3
+
+STEP: 3
+APPROACH: trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section raises only whether a plan item is met, a count in prose and a code remark, and it carries parked items forward without asking the owner to decide anything about keying, transmit, money or what the product promises the operator.
+MOVE: continue
+WHY: R71 answers P17, which was the only thing stopping step 3. 3.7 is reachable in one unit because it re-measures the floors without touching the decoder, and 3.6's trace is the evidence R71 says the bar must come from, so the unit does the trace first, then the re-measure, and treats 3.6's change as the drop candidate.
+DECIDED: author's, overrulable - an unmeasured (NaN) span counts above the bar; the element floor and the 13 keyed floors of 2.2 are re-measured under the same bar in the same commit; the bar may not sit above any key-aligned right character; which span figure the bar is on is chosen from task 1's print; unit 420's stale CW unknowns entry is parked as P18 rather than chased; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R71, R69, R66, R63, R57, R64, R65, section 3, section 6; step 3 criteria 3.5, 3.6, 3.7; PARKED.md P17; HM-DEC-091; HM-DEC-155; HM-DEC-165; HM-DEC-168; CLAUDE.md 0.0, 0.2 and 12.5
+COST: 8.566822999999998
+ACCOMPLISHED: every capture floor guards the letters the decoder was sure of, above a bar read off the stray letters' own trace, with no real letter left unguarded, so removing a stray E or T from the screen can finally be judged as the improvement it is
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criterion 3.7 is met with a per row table, a bar justified from the trace and identical keyed totals at the re-measure commit, but 3.6 and 3.4 remain unmet and the report itself holds 3.6 open because added letters stayed at 17 before and after.
+ADVANCED: yes
+ATTEMPT: 3.7 | unit 1 launched 2026-09-24T17:53:45.290Z | yes | executed | trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays

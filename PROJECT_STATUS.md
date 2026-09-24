@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 421 - a floor counts what the decoder was sure of
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 4
+WORK_INSTRUCTION: 422 - every control says what it does
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T15:10:45-04:00
-NOTE: Unit 421 complete: floors count above a raw span bar of 13, 3.7 ticked; lone E under the bar kept off, all keyed 167 to 165; 3.6 held for the owner, none blocking
+UPDATED: 2026-09-24T15:30:10-04:00
+NOTE: Entry round: floors green; running BindingHealthTests alone
 
 ---
 
