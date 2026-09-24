@@ -1,0 +1,3 @@
+unit415 task 1: the trace - WhereTheSpaceIsDecidedTests emulates the settle loop three ways on every read of 51 capture rows and 17:37, the emulation equal to what really settled on 52 of 52; kind 3 against kind 4 reaches a letter only through the stream's settle dedupe, and letters moved with the relabel before it 0, after it 0; the centroid found the element heap on 013347, guarded by MeasureGaps' own 1.3 to 2.6 unit clip; boundary sqrt(7/3) of the centroid kept, no plainly better trough; guarded, 136 spaces removed and 31 added; 134712's N4L region predicted to move; unit415-trace.md; nothing in src
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
