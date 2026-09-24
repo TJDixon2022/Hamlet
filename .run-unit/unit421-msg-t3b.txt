@@ -1,0 +1,5 @@
+unit421 task 3: a913f927 kept under 3.2's four tests - all keyed 167 to 165 edits over 565 against inferred keys, 13 of 13 keyed floors, the three adjudicated scored regions identical, all 51 rows' above-bar counts identical; baseline.md running total 217 to 165
+
+Removed: exactly the 63 below-bar single-dot E on the 51 rows, nothing else; 031838 21 to 19 over 35; 17:37 19 over 25 before and after; added letters on the keyed recordings 17 before and after. The unit's run outputs and scripts through task 3.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

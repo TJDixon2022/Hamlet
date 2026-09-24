@@ -1,0 +1,5 @@
+unit421 task 2: every floor counts named characters at or above a span bar of 13 on the raw SpanLogLikelihoodRatio, and all 51 capture rows and the 13 keyed floors re-measured at entry's decoder (R71, HM-DEC-176, 3.7)
+
+The bar is the log midpoint of the stretch task 1's trace leaves empty of key-aligned right characters, between the three wrong E at 4.42 to 5.50 on 031838 and the lowest right character, an E at 30.8 on 17:37. Unmeasured counts as above; none settles. 18 of 51 rows re-stated, 63 characters below the bar, every one a single-dot E; 33 rows have none. Keyed floors: 134712 21 to 11, 003758 44 to 43, 012403 21 to 19, 031838 43 to 40. src/Hamlet.RadioEngine/Cw prints nothing against 23457c4b; named, element and placeholder counts identical to entry on all 51 rows; the adjudicated readings, the baseline and the benchmark print identical to entry.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

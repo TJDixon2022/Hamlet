@@ -259,6 +259,29 @@ before:  P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S WILA
 now:     P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA
 ```
 
+**Unit 421, the floors under a span bar and the first change against the strays** (R71,
+HM-DEC-176). Every key inferred. Task 2 re-measured all 51 capture rows and the 13 keyed floors
+at the raw span bar of 13, `df26a5d7`, with the decoder untouched and every reading identical
+to entry. Task 3 kept `a913f927`: a character of one element whose raw span is under 13 is not
+emitted. It removes exactly the 63 characters that sat below the bar on the 51 rows, every one a
+single-dot `E`, and nothing else; every row's above-bar count and above-bar elements are
+unchanged.
+
+| change | all keyed | baseline | 17:37 | outside | the ten, bench | keyed floors | adjudicated | capture rows | added letters, keyed | kept |
+|---|---|---|---|---|---|---|---|---|---|---|
+| none, entry and the re-measure | 167 | 22 | 19 | 110 | 35 | 13 of 13 | identical | 51 of 51 | 17, 8 single-element | |
+| `a913f927`, a lone element under a raw span of 13 not emitted | 165 | 22 | 19 | 108 | 35 | 13 of 13, identical | scored regions identical; stray `E`s outside them gone | 51 of 51, above-bar identical | 17, 8 single-element | **yes** |
+
+| unit | change | 17:37 | baseline total |
+|---|---|---|---|
+| 421 | **kept**: `a913f927`, a lone element under the span bar not emitted | 19 edits over 25 characters, inferred key | 22 edits over 46 characters, inferred keys, 0 unsure per 48 named |
+
+**The phase's running total: 217 to 165 edits over 565 characters, against inferred keys.** The
+two edits are both on `cw-2026-08-22-031838`, 21 to 19 over 35, where three wrong `E`s between
+`TEAH` and `A MEAN` stood at raw spans of 4.42 to 5.50. No added letter inside any scored stretch
+stood under the bar, so the count of added letters on the keyed recordings is 17 before and
+after.
+
 ## Synthetic, exact keys - outside every total (1.1, 1.2, 1.4)
 
 **No synthetic case is ever the sole evidence for keeping a change** (PHASE_PLAN.md 1.4 and
