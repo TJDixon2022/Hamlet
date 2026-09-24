@@ -51,24 +51,12 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-**1. Does 3.2's third test forbid an adjudicated reading moving onto its own adjudicated
-text?** This bears on 3.2. It is the only thing between the narrowed relabel and a kept
-change, so it is raised here rather than parked. It does not halt the loop.
+Nothing blocks the phase. Two asks are parked and the loop goes on.
 
-- **Ruling wanted:** whether "the three adjudicated readings are unchanged character for
-  character" is met when a reading changes to exactly the text that was adjudicated. On
-  `cw-2026-08-17-134712` that is `N4 ` becoming `N4L`, HM-DEC-144's text, 1 edit to 0.
-- **Reasoning:** the third test exists so a change cannot buy total edits by damaging a
-  reading somebody ruled on. A reading that becomes the ruled text has not been damaged. But
-  the words say "unchanged", and this unit applied them as written. The baseline also notes
-  `134712` as "retired as an anchor" while 3.2 still counts it as one of the three.
-- **If yes:** the narrowed relabel, `b68be0dd`, passes all four tests on this unit's
-  measurements: 185 over 565, 13 of 13 identical, adjudicated unchanged or onto their text,
-  51 rows identical. A next unit could re-apply it as it stands.
-- **If no:** it stays out. The next step 3 unit is the third of three under 3.4, and then the
-  trace goes to `PARKED.md`.
-- **Rejected:** narrowing the relabel further so `134712` does not move. That would choose
-  the boundary or the guard from a score, which section 10 forbids. And no letter reason
-  exists to treat that recording differently.
-
-Nothing was written to `PARKED.md` this unit. P6, P7 and P8 were not touched.
+1. **P12, the two clock lines** (`captured`, `broadcast`). Since unit 417 they read the clock about a second after the press.
+   - Ruling proposed: take one timestamp at the press and hand it to both.
+   - Reasoning: it is the same fault that made the `reading` line false, and neither line is about a signal, so 6.2 does not need it.
+   - Rejected: fixing it here, because the instruction's drop rule parks sentences outside 6.2's scope.
+2. **Whether `clipping`, and possibly `inputFloor`, should be measured over the whole recording** rather than captioned as the level meter's figures at the press.
+   - Ruling proposed: measure clipping over the file, as HM-DEC-094 already did for `inputPeak`. A clip anywhere in 30 seconds is what a reader of the sheet wants, and today's caption is true but covers only 0.2 s.
+   - Rejected here: this unit's rule was that the sentence moves and the measurement does not, and a new figure on the sheet is a promise the owner should make.

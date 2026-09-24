@@ -1,12 +1,9 @@
-# Work instruction 418 - every sentence on the capture sheet is true of that capture
+# Work instruction 419 - entering a mode sets the radio, once, correctly
 
-**Step 6, criterion 6.2.** Unit 417 made `tonePeak` a figure about its own recording and
-ticked 6.7. It left 6.2 open for one reason, and it wrote that reason down: the `keying` line
-says it comes from *an independent sweep of 400 to 1200 Hz*, but the meter sweeps 300 to 900.
-6.2's opening words are *every sentence the capture sidecar states about a signal is true of
-that capture*, so one false caption keeps it open. This unit checks every sentence on the sheet
-against the tree, fixes the caption and any other sentence the check finds false, watching each
-fix fail first, and ticks 6.2. Three tasks after task 0; drop tasks from the back.
+**Seed under `--seed`.** Tim, at the radio: Hamlet puts the preamp to stage 1 or 2 in CW,
+complains it is not off, and turns it back on after he sets it off by hand. Entering a mode
+is supposed to set the receiver correctly and leave it set. **This unit makes that true.**
+Four tasks, drop from the back.
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -40,11 +37,9 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## 1. The rules that killed sessions
 
-**HM-DEC-155.** Do not run the whole suite. Run only this unit's test names and
-`docs\carry-forward-tests.txt`, the way that file's top comment says. **Never run a test in the
-background and poll it.** Run one type per invocation, each with its own `timeout`. The
-captures type has 51 rows; give it 600 s. Unit 417 ran four dispatcher-loop re-runs in one
-invocation; do not do that. Run one type per invocation.
+**HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run as
+its top comment says. **Never background and poll.** One type per invocation, each with its
+own `timeout`. The captures type is 51 rows; give it 600 s.
 
 **The report's four top-level headings are exactly these, character for character:**
 
@@ -57,31 +52,22 @@ invocation; do not do that. Run one type per invocation.
 
 **The `UNIT:` line carries no parentheses**, and no `&`, `|`, `<`, `>`, `^`.
 
-**Nothing in section 4 halts this phase** (R65). Park any question in
-`docs\phase-correctness\PARKED.md` and keep going. **Do not carry an ask forward as blocking**
-unless 6.2 itself cannot be met without it.
+**Nothing in section 4 halts this phase** (R65). A question is parked in
+`docs\phase-correctness\PARKED.md` and the loop goes on. **Do not carry an ask forward as
+blocking** unless 7.5 itself cannot be met without it.
 
 ## 2. The tool facts
 
-- Apostrophes in quoted heredocs break.
-- Doubled backslashes collapse.
-- `;` is refused, and so is `rm`.
-- Python cannot run here.
-- A multi-line commit needs `-m` more than once.
-- A bare `git worktree`, `git checkout` or `git show` is refused at the prompt.
-
-Put multi-step commands in `.run-unit\unit418-<name>.sh` and run them with `sh`. You can copy
-unit 417's scripts.
+Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
+refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
+`git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step commands
+go into `.run-unit\unit419-<name>.sh` and run with `sh`. Unit 418's scripts can be copied.
 
 ## 3. Asks still outstanding
 
-None carried.
-
-- **P10 is answered by this instruction** (see section 4). It stays in `PARKED.md` with the
-  answer appended beneath it: one paragraph, marked the arbiter's, overrulable.
-- **P11 stays parked.** Where the noise is taken for `tonePeak` is not this unit's work, and it
-  does not stop 6.2. The sheet prints no figure where the pitch was not measured, and the
-  stopband was seen only there.
+Carried per HM-DEC-139, verbatim in section 4. **Unit 411's RF gain ask and unit 418's two
+parked sheet lines are not this unit's**, except where the RF gain field falls out of 7.5's
+own table, which it does. Nothing else.
 
 ---
 
@@ -89,100 +75,125 @@ None carried.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  Every sentence the capture sidecar states about a signal is
-            checked against the code that produced it, and each one found
-            false - the keying caption's 400 to 1200 Hz first - is made
-            true, watched failing first on a saved capture, so 6.2 ticks.
-ADVANCES:   step 6 criterion 2
+UNIT GOAL:  Entering CW mode and entering data mode each set the receiver
+            correctly, once, and leave it set.
+ADVANCES:   step 7 criterion 5
 DRIFT:      0
 ```
 
-**Where the count stands:**
+**Tim, 2026-09-24:** *"We're supposed to automatically set the right radio settings when we
+enter CW mode and when we enter data mode, and we're not doing it. That's a violation of an
+absolute order."* He also reports the app complaining the preamp is not off while having just
+turned it on, and turning it back on after he set it off by hand.
 
-| Step | State | Criteria |
-|---|---|---|
-| 0, 1, 2 | done | all met |
-| 3 | partial | 3.1, 3.2, 3.3 and 3.5 met; 3.4 open |
-| 4 | not started | none met |
-| 5 | the owner's | 5.1, his verdict |
-| 6 | partial | 6.1, 6.6 and 6.7 met; 6.2, 6.3, 6.4, 6.5 and 6.8 open |
+**What the tree shows, checked by the web thread on 2026-09-24. Verify every line of it.**
 
-**Why not step 3.** Criterion 3.4 fires only after three units in a row keep no change. Unit 416
-kept two, so the count is zero, and no unit can honestly flip 3.4 now. Unit 417 already answered
-this as P9, and nothing since has changed it. **The spacing stays as unit 416 left it.** R64
-prefers the screen once the spacing has nothing open.
+1. **The band rule is not carried by the value written.**
+   `data\bands\mode-receiver-conditions.json`, mode CW, control `preamp`:
+   `"field": "preamp"`, `"wanted": 1`, `"wantedText": "preamp 1 above 40 m, off at 40 m and
+   below"`, `"confirmed": true`. **`wanted` is a single number; the text it sits beside
+   states a rule that depends on the band.** `ReceiverSetup.cs` around line 291 knows the
+   rule in a comment - *"the preamp follows the frequency. Off at 40 m and below"* - and
+   around line 167 mentions the front end overloading and the preamp at 40 m. So the rule
+   lives in prose in two places and in no value.
+2. **Three components decide the preamp.**
+   - `ReceiverSetup` writes it on a tune-in.
+   - `ReceiveAdvice.Preamp` (around line 318) reads the state and, when the preamp is off,
+     returns a suggestion whose words are *"Switch the preamp on..."*, and when it is on says
+     *"The preamp is already on."* **It never suggests off.**
+   - `RigObservations.AttenuatorAndPreampTogether` (around line 173) objects when the
+     attenuator is on and the preamp is on as well.
+   One sets it, one asks for it on, one objects to it being on. **That is the complaint Tim
+   hears.**
+3. **Nothing is ever recorded as already correct.** Unit 411 found
+   `Ic7300Rig.SetSettingAsync` comparing the CW condition's `rfGain` 255 against a read-back
+   decoded as percent 100, so the write is always filed `ReadBackDisagreed` and the memory
+   never records the value. HM-DEC-056's *your hand wins* cannot apply to a field that is
+   never recorded, which is why a later tune-in of the same mode stamps over his hand.
+4. **`ReceiveObstructions.cs` line 19 records HM-DEC-148**: that component states obstructions
+   and does not write them. **Read that decision before changing any writer**, and say in the
+   report what it governs.
 
-**Why 6.2 of the five open screen criteria.**
-- The work is already measured: unit 417 found the false sentence and named the constants that
-  make it true (P10).
-- 6.2's three named clauses already hold on the regenerated sheets: `tonePeak` since unit 417,
-  `elementHz` and `keying` since unit 411, each watched failing first.
-- So this unit closes a criterion rather than starting one.
-
-6.3, 6.4, 6.5 and 6.8 are for the units after this one.
-
-**What the tree says today** (`src\Hamlet.App\ViewModels\MainWindowViewModel.cs`):
-
-- **`KeyingRecordLine`** (near line 12435) writes this caption as a fixed string:
-  *(an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing
-  nothing with the decoder)*.
-- **The sweep's actual range** is in `KeyingEnvelope.cs` at lines 130 to 138:
-  `LowestToneHz = CwToneTracker.MinimumToneHz`, `HighestToneHz = CwToneTracker.MaximumToneHz`
-  and `ToneStepHz = 25`. The comment at lines 111 and 112 records that it *used to run 400 to
-  1200*. The caption was never updated when the range changed. That is the failure 6.2 exists
-  to catch.
-- **The rest of the caption is unchecked:** *over the last six seconds* and *sharing nothing
-  with the decoder*. So is every other line on the sheet. Task 1 checks them.
+**What this unit may and may not change (plan §6, R67).** It may make the app write **less** -
+a value the radio already holds is not rewritten - and it may make the value written carry a
+band rule the condition's own text already states. **It may not change what any condition asks
+for.** Nothing that keys, transmits or sets power is touched.
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-Check each item below. Report any mismatch, and repair nothing:
+Check every numbered claim in section 4 and report any mismatch; repair nothing. Then also:
 
-- `KeyingRecordLine` holds the 400 to 1200 caption as a literal. It is the only place the
-  `keying` line is composed.
-- `KeyingEnvelope.LowestToneHz`, `HighestToneHz` and `ToneStepHz` are as quoted, and they
-  resolve to 300, 900 and 25.
-- `CwKeyingMeter` sweeps through `KeyingEnvelope.Best` and nothing else.
-- `TheSidecarIsReReadTests` and `TheSidecarDoesNotContradictItselfTests` exist and are green at
-  HEAD.
-- Nothing in `src` or `tests` parses the sidecar's `keying` line. If something does, say so
-  before you change the caption.
-- The keyed totals at HEAD are 167 over 565, the ten 35 over 156, and 17:37 19 over 25, all
-  against inferred keys.
-
----
+- The full condition list for every mode in `mode-receiver-conditions.json`, and **which modes
+  the file speaks for**. Its own `_about` says nothing is stated for a mode it cannot speak
+  for, and that PSK31, RTTY and JS8 have no conditions. **So "data mode" in 7.5 means the
+  modes this file actually states conditions for** - FT8, FT4 and whatever else it lists.
+  Name them in the report.
+- Which conditions are `confirmed: false`. The file says an unconfirmed condition is stated to
+  the operator and **written to nobody's radio**. FT8's `agc` is one. That rule stands.
+- Where `ReceiverSetup` is called from, and **how often**: what triggers a tune-in, and
+  whether anything re-runs it while the operator sits in one mode on one frequency.
+- Whether `RigState` holds a value's age, so "the radio already holds it" can be judged
+  without a fresh read.
 
 ## 6. Rulings in force - do not re-argue
 
-`PHASE_PLAN.md` R59 to R66, §3 and §6 apply. These are the ones this unit leans on, in full:
+`PHASE_PLAN.md` R59 to R69, §3 and §6.
 
-**6.2, as the plan states it:** *Every sentence the capture sidecar states about a signal is true
-of that capture or says plainly that it is not measured: `tonePeak` is a figure about this
-recording or is not printed as one, `elementHz` does not report nothing measured while the line
-above it resolves elements, and the `keying` line does not say no keying at a pitch in the same
-breath as counting key-downs there; each is watched failing first on a saved capture that shows
-the contradiction.*
+**R67** entering CW mode and entering data mode each set the receiver correctly and it stays
+set; 7.5 is the criterion, and it ranks above the decode work in step 7.
+**HM-DEC-056** the operator's hand wins: a value he sets himself is not overwritten by a
+later tune-in of the same mode.
+**HM-DEC-148** as `ReceiveObstructions.cs` records it - read it and honor it.
+**The file's own rule**: a condition marked `confirmed: false` is stated and not written.
+**CLAUDE.md §0.0** never state as known what is not known, and never state as unknown what is
+known. **§0.2** nothing that keys, transmits or sets power is touched - not one byte.
+**§12.4** a setting changed on a guess is the prime directive broken with a byte.
+**HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006** - there is no radio on this machine,
+so every result here is an indication and the table is built against `ScriptedRadio` or the
+equivalent, never against a real rig.
 
-**§6: Step 6 changes what the operator reads, never what the radio does.** *A screen criterion
-is met by making a sentence true, never by deleting the sentence and saying nothing, and never
-by changing a radio setting to match a claim.* For this unit, that means **the caption changes
-to match the meter. The meter does not change to match the caption.**
+**Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's
+table dated 2026-09-24, headline **Entering a mode sets the receiver correctly and it stays
+set**, ref HM-DEC-174:**
 
-**R63** on `tonePeak` and **HM-DEC-091**: `CwDecodeReport.SnrDb` is not changed, and neither is
-the `heldPeak` line. **R65**: nothing carried halts the loop. **CLAUDE.md §0.0**: never state as
-known what is not known. **§0.2**: nothing that keys or transmits is touched. **HM-DEC-155**,
-**HM-DEC-165** and **FACT-004** also apply.
+```
+---
+id: HM-DEC-174
+date: 2026-09-24
+refs: PHASE_PLAN.md R67 and criterion 7.5, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs, ReceiveAdvice.cs, RigObservations.cs, HM-DEC-056, HM-DEC-148, work instruction 419
+---
 
-**P10's answer, author's, overrulable.** The caption takes its range and step from
-`KeyingEnvelope`'s own constants rather than from a second literal, so it cannot fall out of date
-again. No decision record is needed: this makes a sentence true under 6.2 and promises the
-operator nothing new.
+**Entering CW mode and entering data mode each set the receiver correctly, once, and leave it
+set.** Tim, 2026-09-24: *"We're supposed to automatically set the right radio settings when we
+enter CW mode and when we enter data mode, and we're not doing it."*
+
+**What was wrong.** The CW preamp condition states `wanted: 1` beside text reading *preamp 1
+above 40 m, off at 40 m and below*, so a band rule is written in prose and not in the value.
+Three components decide the preamp independently: the setup writes it, the advice asks the
+operator to switch it on whenever it reads off, and the observations object when it is on.
+And because a read-back decoded on a different scale is filed as disagreement, no value is
+ever recorded as already correct, so the operator's own change is stamped over by the next
+tune-in of the same mode.
+
+**What is ruled.** Every condition a mode states is written once when the radio is not already
+at it and not written when it is. A band rule stated in a condition's text is carried by what
+is written. Exactly one component decides each field, and no other component asks the operator
+to change a field the setup has just set. A value the operator sets himself is not overwritten
+by a later tune-in of the same mode. A condition marked unconfirmed is still stated and still
+not written.
+
+**What is not changed.** What any condition asks for. Anything that keys, transmits or sets
+power.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 419's record
+of it. Rejected: widening the earlier RF gain criterion instead of stating the requirement.
+```
 
 ## 7. Status cadence
 
-Follow the cadence in the header.
+As the header says.
 
 ---
 
@@ -190,149 +201,134 @@ Follow the cadence in the header.
 
 ### Task 0 - the record
 
-- `PHASE_OUTCOME.md` gets its `## UNIT 418 - STEP 6` entry, built from the decision block at the
-  foot of this file.
-- `PHASE_STATUS.md` names unit 418 and `CURRENT_STEP: 6`.
-- Patch-bump `Directory.Build.props` to 1.13.105.
-- Append P10's answer in `PARKED.md`.
-
-**Entry round.** Run both carry-forward lines, the three floor tests,
-`TheSidecarDoesNotContradictItselfTests`, `TheSidecarIsReReadTests` and
-`TheTonePeakIsAboutThisRecordingTests`. Record the results as the numbers to beat.
+`PHASE_OUTCOME.md` gets its `## UNIT 419 - STEP 7` entry from the decision block at the foot
+of this file. `PHASE_STATUS.md` names unit 419 and `CURRENT_STEP: 7`. Patch-bump
+`Directory.Build.props`. `DECISIONS.md` HM-DEC-174 and the `CLAUDE.md` row. **Entry round:**
+both carry-forward lines, the three floor tests, and every Rig type, recorded.
 
 **Drop candidate:** none.
 
-### Task 1 - the trace: every sentence on the sheet
+### Task 1 - the table, before anything changes (7.5's last clause)
 
-Write a fact in `tests\Hamlet.App.Tests\Cw` that asserts nothing. It regenerates the whole
-sidecar through the writer's own code for `cw-2026-09-23-173723`, `cw-2026-08-22-014113` and
-`cw-2026-08-17-013347`. For each line and each caption that states something about the signal
-or about how a figure was produced, it prints the line beside what the code that produced it
-actually does. That means the range, the step, the window length, the thread, and what is shared
-with the decoder.
+A fact that asserts nothing, driving the real `ReceiverSetup` against `ScriptedRadio`, that
+tunes into **CW at 14.050 MHz, CW at 7.030 MHz, and each data mode the file speaks for**, and
+prints per field: what the condition asks for, what the radio answered, whether a write was
+sent, what the result was filed as, and **which component or components mention that field**.
 
-In the report, table each sentence:
+**The two CW frequencies matter**: 14.050 is above 40 m and 7.030 is at 40 m, so the preamp
+rule's two halves both appear in the table.
 
-- the sentence
-- what the tree says, with file and line
-- whether it is **true**, **false**, or **says it is not measured**
+Then print, for each field, whether any other component would ask the operator to change it
+after the setup has set it - the advice, the obstructions, the observations.
 
-Include every line, not only `keying`. **Choose which sentences are false from the code, not
-from what reads well.**
+**This table is the evidence for the whole unit and goes in section 3.**
 
-**Drop candidate:** none. Task 2 is built from this table.
+**Drop candidate:** none.
 
-### Task 2 - the false sentences made true (6.2)
+### Task 2 - one owner per field, and the band rule in the value (7.5)
 
-**Write the test first and watch it fail on a saved capture.** Create
-`TheKeyingCaptionNamesTheSweepItRanTests`: on 17:37, the `keying` line's caption names the range
-and step `KeyingEnvelope` sweeps. **It is red today because the caption says 400 to 1200.**
-Quote the red, and commit the test red on its own before the fix.
+Watch a test fail first, then change. In order of what Tim reported:
 
-Then change `KeyingRecordLine` so the caption reads its figures from `KeyingEnvelope`'s
-constants. Also correct any other part of that caption the trace found false (*six seconds*,
-*sharing nothing with the decoder*).
+1. **The preamp's band rule is carried by what is written.** How - a second value in the
+   condition, a rule the condition names, or the setup deriving it from the frequency it was
+   given - is the author's, and the reason goes in DECIDED. **The condition's text is the
+   specification; the written value must match it at both frequencies in task 1's table.**
+2. **One owner per field.** The setup owns a field a mode states a condition for. No other
+   component asks the operator to change such a field after a tune-in of that mode -
+   `ReceiveAdvice.Preamp`'s *"Switch the preamp on"* must not fire for a mode whose conditions
+   state the preamp, and `RigObservations` must not object to a state the setup just
+   established. **Do not delete these voices**; scope them, and say how.
+3. **A value already correct is not written**, and the outcome says so rather than
+   `NotConfirmed`. This is unit 411's 255-against-100 comparison and any other field with the
+   same shape; the comparison is made on one scale. **No new byte is sent for a field already
+   right.**
+4. **The operator's hand wins** (HM-DEC-056): a value he changed himself is not overwritten by
+   a later tune-in of the same mode. State the rule you implemented and how long it holds.
 
-**Every other sentence task 1 found false gets the same treatment:** its own red test on a saved
-capture, committed red, then the fix. The fix may make the sentence say plainly that the figure
-is not measured, but **it may not delete a line or leave it saying nothing** (§6).
+**Every one of the four is watched failing first and quoted red in the report.** If the clock
+forces a cut, do them in this order and say where you stopped.
 
-You may edit `TheSidecarIsReReadTests` only where the wording forces it; say what changed.
-Regenerate `.run-unit\unit418-sidecar-*.txt` for 17:37 and 014113, and print the old and new
-lines side by side. **No capture sidecar in the tree is edited.**
+**Drop candidate:** item 4, last.
 
-**Tick 6.2 only if** every sentence in task 1's table is now true or says it is not measured,
-and the three named clauses still hold. Report each clause, and then the lead sentence, one
-line each.
+### Task 3 - the exit round (7.6)
 
-**Drop candidate:** a sentence the trace finds false outside the `keying` caption and outside
-6.2's scope (not about a signal). Park it as P12 with its measurement instead of fixing it.
-
-### Task 3 - the exit round (6.6 holds)
-
-- Hamlet.sln builds with warnings as errors.
-- Run both carry-forward lines, the three floor tests with captures at 51,
-  `TheSidecarDoesNotContradictItselfTests`, `TheSidecarIsReReadTests`,
-  `TheTonePeakIsAboutThisRecordingTests`, `CaseRosterSurvivesAnEveningTests`, the new tests, and
-  every type you touched.
-- The keyed totals are unchanged at 167 over 565.
-- `src\Hamlet.RadioEngine\Cw` prints nothing against entry.
-- The transmit files print nothing against `7e209cb4`.
+`Hamlet.sln` builds with warnings as errors. Both carry-forward lines, the three floor tests
+with captures at 51, every Rig type, `TheBannerSaysWhatTheRadioReadBackTests`, the sheet tests
+from 411, 417 and 418, and every type touched. **`src\Hamlet.RadioEngine\Cw` prints nothing
+against entry** - no decoder change in this unit - and the transmit files print nothing against
+`7e209cb4`. **Print the table from task 1 again, after the changes, beside the before version.**
 
 ---
 
 ## 9. Parked - do not touch, do not raise
 
-- **Step 3**, and P6, P7, P8 and P9. The spacing stays as unit 416 left it.
-- **Step 4, the pitch judge**, P11, and the roster's `tonePeakDb` column.
-- **6.3, 6.4, 6.5 and 6.8:** the reflow, the hover text, the dead button and the RF gain scale.
-  These are for the next units.
-- **The acquisition failure** in the first two minutes of the 7.052 session.
-- **Any key, scored region or floor.** These are fixed.
+- **7.1 to 7.4**, the speed ceiling and acquisition. The next units'.
+- **3.6 the stray letters**, step 4 the pitch judge, 6.3 the reflow, 6.4 hover text, 6.5 the
+  dead button.
+- **What any condition asks for.** Not this unit's, not any unit's without a ruling.
+- **Any mode the conditions file does not speak for.** PSK31, RTTY, JS8 state nothing and so
+  write nothing; that is correct behavior.
+- **Unit 418's two parked sheet lines**, `captured` and `broadcast`.
 
 ## 10. What not to do
 
-- **Do not change `KeyingEnvelope`, `CwKeyingMeter`, `CwDecodeReport.SnrDb` or anything in
-  `src\Hamlet.RadioEngine\Cw`.** The sentence moves; the measurement does not.
-- **Do not delete a sidecar line** or leave it saying nothing.
-- **Do not edit a sidecar already in the tree.**
-- **Do not touch anything that keys, transmits or writes to the radio.**
+- **Do not change what a condition asks for.** Only whether, when and how it is written.
+- **Do not write a condition marked `confirmed: false`.**
+- **Do not delete a voice to stop it complaining.** Scope it to the fields it should speak for.
+- **Do not touch anything that keys, transmits or sets power.** Not one byte.
+- **Do not change the decoder.** `src\Hamlet.RadioEngine\Cw` prints nothing at exit.
+- **Do not send a new read or a new write to prove a value is correct** if `RigState` already
+  holds it with an age; if it does not, say so before adding a read.
 - **Do not halt for a question.** Park it.
-- **Do not run an unfiltered `dotnet test`. Never run in the background and poll. Never compose
-  a timestamp.**
-- **Report mismatches and repair nothing. Use American spelling and UTF-8, and the four headings
-  exactly.**
+- **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
+- **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
 
 ## 11. Committing and pushing
 
-Commit after each task. Each failing test in task 2 is committed red on its own before its fix,
-with the red quoted in the commit message. Push at the end, and say whether the push succeeded.
+Commit per task, and each of task 2's four items in its own commit with its red quoted in the
+message. Push at the end and say whether it succeeded.
 
 ---
 
 ## 12. Reporting
 
-Write `output.md` at the root, with the four headings exactly as section 1 gives them.
+`output.md` at the root, the four headings exactly as section 1 gives them.
 
 ```
 READ IN THIS ORDER.
 
-A. Hamlet reads a CQ call correctly. Steps 0, 1, 2 done; 3 partial,
-   3.4 only open and not flippable this unit; 4 not started; 5 the
-   owner's; 6 partial.
-B. Step 6: 6.2 met or not - the lead sentence and each of its three
-   clauses, one line each, with the red quoted; 6.6 held.
-C. The rest. Section 4 raises <n> items; <none | which> in the way of
-   6.2.
+A. The field table for CW at 14.050, CW at 7.030, and each data mode:
+   before and after.
+B. Step 7's criterion 7.5, clause by clause - written once, band rule
+   carried, one owner per field, hand wins - and 7.6 the exit round.
+C. The rest. Section 4 raises <n> items, none blocking.
 ```
 
 ```
-UNIT:       418 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
+UNIT:       419 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   yes | no - <why, on the line>
-NUMBER:     sidecar sentences false <before> -> <after> of <total checked>
-DRIFT:      <0 if a criterion moved>
+NUMBER:     fields written on a CW tune-in when the radio was already right: <n> -> <n>
+DRIFT:      0
 ```
 
-**Section 3 leads with** the old and new `keying` lines for 17:37, one above the other. After
-them comes task 1's sentence table, with its before and after verdicts.
-
-**Section 2 tells the owner in one paragraph** that every sentence on a capture's sheet has now
-been checked against the code that writes it, and what changed.
+**Section 2 tells the owner in one paragraph** what happens now when he tunes into CW at
+14.050 and at 7.030, what the preamp does at each, what happens when he sets it off by hand,
+and that nothing about the decoder or what keys changed.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 6
-APPROACH: audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+STEP: 7
+APPROACH: table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
 MOVE: continue
-WHY: PHASE_PLAN.md step 6 criterion 6.2 is held open only by the keying caption naming a 400 to 1200 Hz sweep the meter no longer runs (P10); its three named clauses already hold. Step 3's only open criterion, 3.4, cannot flip while unit 416's kept changes stand, so under R64 and R65 the loop stays on the screen.
-STATE: partial
-DECIDED: author's, overrulable - P10 answered: the caption reads its range and step from KeyingEnvelope's constants rather than a second literal; 6.2 chosen over 6.3, 6.4, 6.5 and 6.8 because it is measured and one sentence from met; the whole sheet audited rather than the one caption because 6.2's lead sentence covers every sentence; a false sentence outside 6.2's scope is parked as P12 rather than fixed; per-type timeouts are the unit's
-LICENCE: PHASE_PLAN.md R62, R64, R65, section 6; step 6 criterion 6.2; PARKED.md P10; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
-ACCOMPLISHED: every sentence on a capture's sheet says what the code that wrote it actually did, so nobody works from a sweep range the meter stopped using
-ADVANCES: step 6 criterion 2
+WHY: PHASE_PLAN.md step 7 criterion 7.5 asks that entering CW mode and entering data mode each set the receiver correctly and leave it set, with every condition written once when the radio is not already at it, the band rule carried by what is written, exactly one component deciding each field, and the operator's own change not overwritten
+STATE: not started
+DECIDED: how the band rule is carried, how each competing voice is scoped, which scale the comparison is made on, how long the operator's hand holds, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R67, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+ACCOMPLISHED: tuning into CW or a data mode sets the radio the way the mode needs it, once, and it stays that way - including when Tim has set something himself
+ADVANCES: step 7 criterion 5
 END-ARBITER-DECISION
 ```

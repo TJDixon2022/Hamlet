@@ -308,3 +308,20 @@ STATE_AFTER: partial
 STATE_WHY: Criteria 6.1, 6.6 and 6.7 are met, while 6.2, 6.8, 6.3, 6.4 and 6.5 are still open, and the report itself says 6.2 fails on the keying caption's sweep range.
 ADVANCED: yes
 ATTEMPT: 6.7 | unit 2 launched 2026-09-24T13:12:43.596Z | yes | executed | measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+
+## UNIT 3 - STEP 6
+
+STEP: 6
+APPROACH: audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+HIT: section 4 wants a ruling: yes - The second ask wants the owner to decide whether the sheet should state a new clipping figure measured over the whole recording, which changes what the product tells the operator about what was heard and so falls under the third stop.
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 criterion 6.2 is held open only by the keying caption naming a 400 to 1200 Hz sweep the meter no longer runs (P10); its three named clauses already hold. Step 3's only open criterion, 3.4, cannot flip while unit 416's kept changes stand, so under R64 and R65 the loop stays on the screen.
+DECIDED: author's, overrulable - P10 answered: the caption reads its range and step from KeyingEnvelope's constants rather than a second literal; 6.2 chosen over 6.3, 6.4, 6.5 and 6.8 because it is measured and one sentence from met; the whole sheet audited rather than the one caption because 6.2's lead sentence covers every sentence; a false sentence outside 6.2's scope is parked as P12 rather than fixed; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R62, R64, R65, section 6; step 6 criterion 6.2; PARKED.md P10; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+COST: 9.047419199999998
+ACCOMPLISHED: every sentence on a capture's sheet says what the code that wrote it actually did, so nobody works from a sweep range the meter stopped using
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criterion 6.2 is now met and 6.6 still holds, but step 6 criteria 6.3, 6.4, 6.5 and 6.8 are still unticked, so the step is not done.
+ADVANCED: yes
+ATTEMPT: 6.2 | unit 3 launched 2026-09-24T14:02:00.835Z | yes | executed | audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first

@@ -1,1 +1,1 @@
-leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first

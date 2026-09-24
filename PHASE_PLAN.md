@@ -8,6 +8,7 @@ STEP: 3 | The spacing is repaired - the fault the baseline names, where letters 
 STEP: 4 | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
 STEP: 5 | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+STEP: 7 | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
 ---
 
@@ -151,6 +152,36 @@ owner can see which happened. Rejected: leaving the test as written and losing t
 narrowing the relabel until `134712` does not move, which would choose the boundary from a
 score rather than a trace.
 
+**R67 - Tim, 2026-09-24: entering a mode sets the radio correctly and it stays set.** *"We're
+supposed to automatically set the right radio settings when we enter CW mode and when we
+enter data mode, and we're not doing it."* He reports Hamlet putting the preamp to stage 1 or
+2 in CW, complaining that it is not off, and turning it back on after he sets it off by hand.
+The tree shows why: `data/bands/mode-receiver-conditions.json` states the CW preamp as
+`"wanted": 1`, a single value, with `wantedText` reading *preamp 1 above 40 m, off at 40 m
+and below* - a band rule that the written value does not carry, and that only a comment in
+`ReceiverSetup.cs` knows. **And three components decide the preamp independently**:
+`ReceiverSetup` writes it on tune-in, `ReceiveAdvice.Preamp` tells the operator to switch it
+on whenever it reads off, and `RigObservations.AttenuatorAndPreampTogether` objects when it
+is on. On top of that, unit 411 found `ReceiverSetup` filing every write unconfirmed for a
+scale mismatch, so nothing is ever recorded as already correct and the operator's hand never
+sticks (HM-DEC-056). **This is a requirement broken, not a preference.** It is criterion 7.5
+and it ranks above the decode work in this step.
+
+**R68 - Tim, 2026-09-24: the decoder's deafness gets its own step.** Two faults have been
+parked repeatedly because no criterion owned them. **The speed ceiling**: on
+`cw-2026-09-24-135641`, 14.0475 MHz at 09:56 Eastern - W1AW code practice, whose Fast Code
+sessions open at 35 WPM - the search reported *40 WPM won out of 8 to 40, 0.0 better than
+silence, at the top of the search: the sender may be faster than Hamlet can look*, while the
+independent sweep measured a 27 ms median key-down, about 44 WPM. Nothing was read in 44
+minutes. **Acquisition**: the first two minutes of the 7.052 session read `E ET E E` before
+the decoder locks, then it reads a whole QSO. Both are now step 7.
+
+**R69 - Tim, 2026-09-24: the stray letters get a criterion in step 3.** After unit 416's two
+kept changes, what is left on 17:37 is 10 letters added and 4 wrong of 19 edits - the stray
+`E`, `T` and `<BT>` between real words. A single dit reads as `E` and a single dah as `T`, so
+any fragment comes out as a confident character and the emission gate passes it. It is the
+largest measured decode error left and it is criterion 3.6.
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -224,6 +255,7 @@ says - never the whole suite.
 - [x] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
 - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
 - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
+- [ ] 3.6 The stray single-element characters are attacked: the trace names, per keyed recording, every added or wrong character whose decode rests on one element and what score admitted it, printed by a fact that asserts nothing; then each change is judged under 3.2's four tests, and the total edit count over all keyed recordings falls, with the count of added letters reported before and after (R69).
 - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
 **Depends on:** steps 0 and 2.
@@ -269,6 +301,23 @@ says - never the whole suite.
 
 **Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
 
+## Step 7 - The decoder hears what is there
+
+**Delivers:** R67 and R68. What the decoder cannot hear at all, and the receiver it listens
+through.
+
+**Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
+
+**Exit:**
+- [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
+- [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
+- [ ] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
+- [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+- [ ] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
+- [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+
+**Depends on:** nothing. Independent of every other step.
+
 ## §5 Dependencies
 
 Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
@@ -283,6 +332,10 @@ halt.
   fact the product states to the operator about a signal, a station or a send. A test's
   shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
 - **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **7.5 changes what is written to the radio, and that is its point** (R67). It may make the
+  app write *less* - a value already correct is not rewritten - and it may carry a band rule
+  the condition's own text already states. **It may not change what a condition asks for**,
+  and nothing that keys or transmits is touched.
 - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
   movement fails 3.2's third test, and a report invoking the clause prints the reading
   before and after.
@@ -331,6 +384,9 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-24, after unit 418.** R67 entering a mode sets the receiver correctly and it
+  stays set, as criterion 7.5; R68 step 7 for the speed ceiling and acquisition; R69 the
+  stray single-element letters as criterion 3.6.
 - **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
   own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
   moved - can be re-applied.

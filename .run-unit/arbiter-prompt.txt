@@ -10,13 +10,13 @@ PHASE GOAL: Hamlet reads a CQ call correctly
 THE STEP TO WORK: step 3 - The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.  [partial]
 
 ITS UNMET CRITERIA. THESE ARE THE WORK:
-  - [ ] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
-  - [ ] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
   - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
-  - [ ] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
 already met, for context only:
   - [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
+  - [x] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
+  - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
+  - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
 THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
   step 4 - The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.  [not started]
@@ -31,7 +31,6 @@ THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
     - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
     - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
     - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
-    - [ ] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
     - [ ] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
 
 ADVANCES MUST NAME ONE OF THE CRITERIA ABOVE. Everything below this block is
@@ -100,7 +99,10 @@ block; blocker means it cleared something and moved no criterion.
   1.1 | unit 2 launched 2026-09-24T04:07:07.356Z | yes | executed | generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
   2.5 | unit 1 launched 2026-09-24T01:35:11.319Z | yes | executed | bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
   3.1 | unit 1 launched 2026-09-24T03:07:13.064Z | yes | executed | trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+  3.2 | unit 1 launched 2026-09-24T12:08:39.542Z | yes | executed | re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+  3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | no | executed | leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
   6.1 | unit 1 launched 2026-09-24T00:45:09.815Z | yes | executed | make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+  6.7 | unit 2 launched 2026-09-24T13:12:43.596Z | yes | executed | measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
 
 If every route you can see at a criterion is recorded as no, say so in WHY
 and choose another criterion or another step. Do not restate a failed
@@ -122,47 +124,41 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-**Nothing blocks this phase.** Both items below are parked in
-`docs/phase-correctness/PARKED.md` under R65, and neither is in the way of a criterion in step 1.
+Nothing blocks the phase (R65). Both items are parked in `docs\phase-correctness\PARKED.md`.
 
-1. **P7: whether the synthetic cases ever join the total 3.2 judges.**
-   - **Ruling, if wanted:** they stay outside every total. A synthetic case can support a
-     change but never carry it.
-   - **Reasoning:** 1.4 forbids a synthetic case from being the sole evidence. A synthetic
-     row inside the 217 would let a change that improves only synthetics pass 3.2's first
-     test.
-   - **Rejected:** adding them to the 217. That breaks 1.4. Also rejected: a second total
-     that 3.2 reads. That is a new rule for 3.2, and 3.2 is Tim's.
-2. **P8: the synthetic cases carry no reference score.**
-   - **Ruling, if wanted:** run `tools/score-fixtures` over `tests/fixtures/cw/synthetic-cq`
-     before any synthetic case is used as evidence for a change, with the gate extended to
-     that folder.
-   - **Reasoning:** HM-DEC-101 and CLAUDE.md 12.5 require a reference read before a
-     generated fixture judges Hamlet. The gate runs in Python, which cannot run in a loop
-     session. Today these cases judge nothing: no floor, no assertion on a score.
-   - **Rejected:** scoring them in C# as a stand-in reference. That is not the validated
-     chain.
-   - **Note:** the catalogue records that the reference could not read textbook spacing
-     at 18 wpm, a dit-to-dah ratio measured at 2.45 against its 2.5 floor. So it may refuse
-     some of these cases.
+**P10 - the keying caption names a sweep range nobody swept.** Proposed ruling: the caption
+reads its range from `KeyingEnvelope`'s own constants (300 to 900 Hz), watched failing first,
+and 6.2 ticks with it. Reasoning: it is the one false sentence standing between 6.2 and met.
+Rejected: fixing it in this unit, because the instruction fixed `keying` as 411 left it.
+Rejected: ticking 6.2 anyway, because its lead sentence is not true.
 
-**Asks still outstanding:** none carried as blocking. The instruction's section 3 says unit
-413's three asks are all parked and not this unit's to raise. As section 1 reports, only P6
-is in `PARKED.md`.
+**P11 - "the noise beside the tone" can be the receiver's stopband.** Measured on 014854 and
+014935, where the grid below 550 Hz sits 25 to 44 dB under the passband. The sheet never prints
+the figure there, because the pitch was not measured. Whether noise should be taken inside the
+passband only is the owner's, because it would touch the held figure that HM-DEC-091 protects.
+Rejected for now: the tone's own quiet floor, which read 93.3 dB on 013347.
 
-  - 17:37's region rule is in `baseline.md` and `CwScorer.FromFirst`. **Mismatch:** a
-- **Mismatch in the instruction's section 3:** it says all three of unit 413's asks are
-- **P8.** I parked the missing reference score as P8 rather than calling it a mismatch
+**Section 5 against the tree - no mismatch in the five checks.** `TonePeakRecordLine`
 ## 3. What you should see
 
-**No visible change.** The CW tab reads exactly as it did yesterday, because no decoder line
-changed.
+17:37:
+```
+before: tonePeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+after:  tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+```
+014113:
+```
+before: tonePeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+after:  tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
+```
 
-What this unit adds is a way to measure the decoder:
-- Twelve CQ calls with exact keys. The five-dit-spaced one reproduces, on a known key, the
-  word-breaking fault you have seen on the CW tab.
-- A written rule for keying a call heard on the air.
+| capture | held figure | recording figure | holds keying |
+|---|---|---|---|
+| cw-2026-08-20-014854 | 54.7 | not measured | no - keying at no pitch; meter 0 of 25 windows |
+| cw-2026-08-20-014935 | 56.8 | not measured | no - keying at no pitch; meter 0 of 25 windows |
+| cw-2026-08-17-013347 | 32.2 | 33.4 | yes - adjudicated VA3VRR; meter 10 of 25 windows |
+| cw-2026-09-23-173723 | 25.7 | 26.8 | yes - a keyed CQ call per its key file; the meter calls 0 of 25 windows keying, a 16 dB swing under its 20 |
 
-Both give the next spacing repair something to be measured against. It still cannot be kept
-on the synthetic cases alone.
+Held figures are a fresh decoder replaying the file alone. Every sheet now carries a `heldPeak`
+line under `tonePeak`, holding the old number under its own caption.
 

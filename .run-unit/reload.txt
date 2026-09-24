@@ -1,16 +1,15 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-24T00:52:19-04:00  root C:\Source\HamLet
+measured 2026-09-24T09:58:59-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0172.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0173.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
-  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -22,18 +21,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 61d8b58f
-  uncommitted at the root : 4
+  HEAD   : 3211874b
+  uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
-      M WORK_INSTRUCTIONS.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0172
+  highest in CLAUDE.md section 1 : CPS-DEC-0173
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -41,7 +39,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  327 lines, 25017 bytes
+  349 lines, 26831 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -179,6 +177,22 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   4.1 to 4.4 the pitch judge, 6.3 the reflow, 6.4 the hover text, 6.5 the dead button, 6.7
   tonePeak. **Preference when nothing is blocked: the spacing first, then the screen.**
   
+  **R66 - Tim, 2026-09-24: a reading that moves onto its own adjudicated text has not been
+  damaged.** Unit 415 built a space-only relabel that moved no letter, no element and no
+  placeholder on any of the 51 capture rows, held all 13 named floors identical, and took all
+  keyed recordings from **217 edits to 185** over 565 characters and the ten bench recordings
+  from **60 to 36** over 156. It was taken out on 3.2's third test alone, because on
+  `cw-2026-08-17-134712` the reading changed from `N4 ` to `N4L` - which is exactly the text
+  HM-DEC-144 adjudicated, 1 edit to 0. **The third test exists so that a change cannot buy
+  total edits by damaging a reading somebody ruled on; a reading that becomes the ruled text
+  has not been damaged.** 3.2's third test is amended to read: *unchanged character for
+  character, or changed to exactly its own adjudicated text*. The amendment is stated before
+  the re-apply, not after it: **any other change to an adjudicated reading still fails the
+  test**, and a report that invokes this clause must print the reading before and after so the
+  owner can see which happened. Rejected: leaving the test as written and losing the change;
+  narrowing the relabel until `134712` does not move, which would choose the boundary from a
+  score rather than a trace.
+  
   ## Â§3 What is different from the phases before it
   
   This phase scores text for the first time, so two things bind every unit:
@@ -249,10 +263,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Exit:**
   - [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
-  - [ ] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
-  - [ ] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
+  - [x] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
+  - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
   - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
-  - [ ] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+  - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
   
   **Depends on:** steps 0 and 2.
   
@@ -288,7 +302,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Exit:**
   - [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
   - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
-  - [ ] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
+  - [x] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
   - [ ] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
   - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
   - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
@@ -311,6 +325,9 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     fact the product states to the operator about a signal, a station or a send. A test's
     shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
   - **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+  - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
+    movement fails 3.2's third test, and a report invoking the clause prints the reading
+    before and after.
   - **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
     without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
     finding noticed on the way past **never halts the loop**, whatever it touches. The
@@ -356,6 +373,9 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
+    own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
+    moved - can be re-applied.
   - **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
     a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
     only when the criterion being worked needs the ruling. Written after unit 412 completed
@@ -371,13 +391,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  13 lines, 2178 bytes
+  13 lines, 2200 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 414 - keys nobody has to guess
-  HEARTBEAT: 2026-09-24 00:52:17
+  WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
+  HEARTBEAT: 2026-09-24 09:58:57
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
@@ -387,7 +407,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
   --- PHASE_OUTCOME.md ---
-  188 lines, 40933 bytes
+  293 lines, 60915 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -398,6 +418,59 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  
+  ## UNIT 417 - STEP 6
+  
+  STEP: 6
+  APPROACH: measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 criterion 6.7 asks that tonePeak in a per-capture sidecar be a figure measured over that recording and labeled as such, watched failing first against the held figure, with the cost at capture stated; step 3's only open criterion, 3.4, cannot flip after unit 416 kept two changes, so under R64 and R65 the loop moves to the screen.
+  STATE: partial
+  DECIDED: author's, overrulable - P9 answered: step 3 stays partial and is not marked done because 3.4 is unmet and cannot fire while the no-kept-change count is zero; 6.7 chosen over 6.3, 6.4 and 6.5 because R63 already rules it and 6.2 is open on tonePeak alone; the measurement method, whether the held figure stays on its own line, the 50 ms UI-thread bound and the per-type timeouts are the unit's to decide and report
+  LICENCE: PHASE_PLAN.md R63, R64, R65, section 6; step 6 criteria 6.2 and 6.7; step 3 criterion 3.4; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  ADVANCES: step 6 criterion 7
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.103 to 1.13.104. PHASE_STATUS.md names unit 417 and CURRENT_STEP 6. HEAD at entry 12e2d442. P9's answer appended beneath it in PARKED.md, the arbiter's, overrulable. Section 5 against the tree: TonePeakRecordLine at MainWindowViewModel.cs 12373 is the only place the tonePeak line is composed, called once from CaptureNotes at 11805; TheSidecarIsReReadTests asserts the line starts tonePeak and three spaces; CwDecodeReport.SnrDb is built from CwDecoder._lastSnrDb, the held peak; the roster's tonePeakDb reads SnrDb from the report at MainWindowViewModel.cs 20601 and nothing in src or tests parses the sidecar line; CaptureNotes is handed the capture's MonoAudio; no mismatch. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 274 of 278, four lost to the dispatcher loop and 4 of 4 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; TheSidecarDoesNotContradictItselfTests 3 of 3; TheSidecarIsReReadTests 2 of 2, tonePeak 24.7 on 014113 and 25.7 on 17:37, both the held figure; baseline 22 over 46, outside 110 over 363, the ten 35 over 156, all keyed 167 over 565, 17:37 19 over 25, inferred keys. These are the numbers to beat.
+  TASK 1, THE TRACE: WhatTheTonePeakIsAboutTests prints, per capture, today's tonePeak line beside the held figure's own quantity measured over that WAV alone - 40 ms Hann every 5 ms, the tracked pitch against the median of the 25 Hz grid from 300 to 900 Hz outside 125 Hz of it, middle of five agreeing, the highest; no figure without a tone and a measured pitch. Held against recording: 014854 54.7, not measured; 014935 56.8, not measured; 013347 32.2, 33.4; 17:37 25.7, 26.8; 014113 24.7, not measured. By-hand cost 835 to 970 ms per 30 s file. The mean spectra show the grid below 550 Hz on 014854 and 014935 in the receiver's stopband (P11).
+  TASK 2, THE LINE (6.7): TheTonePeakIsAboutThisRecordingTests red 3 of 3 at a9339312 - the sheet prints 25.7 and this recording measures 26.8; the sheet prints 32.2 and this recording measures 33.4; 014854 printed 54.7 where it should say not measured. Green 3 of 3 at 70cc798a. tonePeak is measured by RecordingToneOverNoise in src/Hamlet.RadioEngine/Audio and labeled a figure about this recording; heldPeak keeps the held figure on its own line. Cost 862 ms on the longest capture, 30.0 s at 48 kHz, on a pool thread through Task.Run after the WAV is written. 17:37 tonePeak 25.7 held to 26.8 over this recording; 014113 24.7 held to not measured; keying and elementHz byte-identical to unit 411's. 6.7 ticked. 6.2 not ticked: the keying caption names a 400 to 1200 Hz sweep and the meter sweeps 300 to 900 (P10).
+  TASK 3, THE EXIT ROUND (6.6): Hamlet.sln builds with warnings as errors, non-incremental; ENGINE carry-forward 178 of 178; APP 277 of 278, one lost to the dispatcher loop and 1 of 1 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2; TheSidecarDoesNotContradictItselfTests 3 of 3; TheSidecarIsReReadTests 2 of 2; CaseRosterSurvivesAnEveningTests 6 of 6; TheTonePeakIsAboutThisRecordingTests 3 of 3; WhatTheTonePeakIsAboutTests 1 of 1; all keyed 167 over 565, the ten 35 over 156, 17:37 19 over 25, identical to entry; src/Hamlet.RadioEngine/Cw prints nothing against entry; the transmit files print nothing against 7e209cb4.
+  FATE: executed, complete at task 3 of 3, none dropped; tonePeak on every capture's sheet is now about that capture, 17:37 25.7 held to 26.8 over the recording, 862 ms off the UI thread; 6.7 ticked, 6.2 held back on the keying caption (P10), 6.6 held.
+  
+  ## UNIT 416 - STEP 3
+  
+  STEP: 3
+  APPROACH: re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 3.2 asks that each change be kept when the total edit count over all keyed recordings falls, no named floor breaks, the adjudicated readings are unchanged or changed to exactly their own adjudicated text, and no capture row's named count falls
+  STATE: partial
+  DECIDED: whether the diff is cherry-picked or rebuilt from the trace, and the per-type timeouts, are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R63, R65, R66, section 3, section 6; HM-DEC-173; HM-DEC-144; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+  ADVANCES: step 3 criterion 2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.102 to 1.13.103. PHASE_STATUS.md names unit 416 and CURRENT_STEP 3. HEAD at entry 8f6fa1f1. Section 5 against the tree: b68be0dd exists and its take-out 040a4ae0 follows it as its child; git diff 040a4ae0 HEAD -- src prints nothing; unit415-trace.md describes the relabel, the centroid guard and the sqrt(7/3) boundary; PHASE_PLAN.md 3.2 carries R66's clause; no mismatch. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 274 of 278, four lost to the dispatcher loop and 11 of 11 with their two types alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; TheNumberCannotBeGamedTests 13 of 13; baseline 33 over 46, 17:37 29 over 25, outside 124 over 363, bench 60 over 156, all keyed 217 over 565, inferred keys; adjudicated regions VA3VRR, N4 space, EETMP/4 QNIK. These are the numbers to beat.
+  TASK 1, THE RELABEL GOES BACK IN (3.2): git diff 3ddca565 b68be0dd applied cleanly, committed unchanged as 38158be6, src byte-identical to b68be0dd. Test 1 all keyed 185 over 565 from 217, baseline 31 over 46, 17:37 28 over 25, outside 118 over 363, the ten 36 over 156, pass; test 2 named floors 13 of 13 every count identical, pass; test 3 VA3VRR unchanged, 134712 N4 space to N4L, its own adjudicated text, under R66, EETMP/4 QNIK unchanged, pass; test 4 all 51 capture rows identical in named, elements and placeholders, pass. Kept; 3.2 ticked.
+  TASK 2, WHAT IT LOOKS LIKE (3.3): 004322 reads P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA where it read P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S WILA; 004405 reads W1AW/88 OORDINAT where it read W 1 A W / 88 O OR D IN A T. On all 52 recordings the settled text with spaces stripped is identical to entry's. baseline.md running total.
+  TASK 3, THE NEXT KIND (3.2): on the kept build 21 of the 24 inserted spaces left on the ten and 17:37 sat in windows with no measured character gap, 13 on 17:37 at a median 0.66 of the path's own word boundary. Built as 90840b1f: there, a path space under the path's own word boundary is not announced. Test 1 185 to 167 over 565, 17:37 28 to 19, pass; test 2 13 of 13 identical, pass; test 3 no reading moved, pass; test 4 51 rows identical, pass. Kept. 3.3 ticked. P9 parked.
+  TASK 4, THE EXIT ROUND (3.5): Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 277 of 278, one lost to the dispatcher loop and 4 of 4 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, TheNumberCannotBeGamedTests 13 of 13, TheBaselineIsScoredTests 2 of 2, TheBenchmarkIsKeyedTests 1 of 1, WhereTheSpaceIsDecidedTests 2 of 2; all keyed 167 over 565; the transmit files print nothing against 7e209cb4; src/Hamlet.App prints nothing against entry.
+  FATE: executed, complete at task 4 of 4, none dropped; two spacing changes kept that moved no letter on any recording, all keyed 217 to 167 over 565 against inferred keys, the ten 60 to 35 over 156, 17:37 29 to 19 over 25; 3.2 and 3.3 ticked.
+  
+  ## UNIT 415 - STEP 3
+  
+  STEP: 3
+  APPROACH: leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+  MOVE: work around
+  WHY: Unit 413's two candidates both changed the path, and the letters moved with the spaces (P6). A relabel after the path attacks the 27 of 29 inserted spaces the trace put on the textbook boundary, without touching the named counts that sank both.
+  STATE: partial
+  DECIDED: author's, overrulable - step 3 again under R64 and R65's preference; 3.4 counts consecutive step 3 units, so this is two of three; the starting boundary is the geometric mean of the measured character centroid and seven thirds of it, chosen from task 1's distributions; synthetics are printed and never evidence under P8; a spaces-only-removed narrowing is the drop candidate; per-type timeouts
+  LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; step 3 criteria 3.2 to 3.5; unit413-trace.md; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ADVANCES: step 3 criterion 2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.101 to 1.13.102. PHASE_STATUS.md names unit 415 and CURRENT_STEP 3. HEAD at entry 61d8b58f. Section 5 against the tree: Kinds at 493 to 500 holds five kinds, "|" at 3 and " " at 7; DecodeAt's want at 1175 to 1177 as stated; path in fromHop and kindAt; MeasureGaps at CwUnitEstimator.cs 174, the word trough at 216. Kind 3 and kind 4 become text in Spell, 1321 to 1347, where both close the letter identically and kind 4 adds a space ending at the gap's end; Judged at 1256 passes every space; EndsInsideCharacter at 756 treats them alike; no word or dictionary prior exists; the one downstream reader that can reach a letter is the stream's settle dedupe, CwProbabilisticStream.cs 525 to 537, and Skip at 295. Entry round: ENGINE carry-forward 178 of 178 in 380 s; APP 275 of 278, three lost to the dispatcher loop and 3 of 3 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; TheNumberCannotBeGamedTests 13 of 13; baseline 33 over 46, 17:37 29 over 25, outside 124 over 363, bench 60 over 156, all keyed 217 over 565, inferred keys; WhereTheWordsBreakTests 2 of 2; synthetic grid 102 over 243 and five-unit row 63 over 81 against exact keys.
+  TASK 1, THE TRACE: WhereTheSpaceIsDecidedTests, 2 of 2, asserting nothing, replays the 51 capture rows and 17:37 and emulates the settle loop three ways on every read; the emulation equals what really settled on 52 of 52; letters moved with the relabel before the settle loop 0, after it 0. The first run found the element heap standing in for the character centroid, 1.1 units on 013347, breaking VA3VRR; guarded by MeasureGaps' own 1.3 to 2.6 unit boundary range. Boundary sqrt(7/3) of the centroid kept, the heap past it a flat plateau. Guarded, 136 spaces removed and 31 added over 52 recordings. 134712's N4L region predicted to move. docs/phase-correctness/unit415-trace.md.
+  TASK 2, THE RELABEL (3.2): built as 4a0487b0 alone. Test 1 all keyed 191 over 565 from 217, pass; test 2 named floors 13 of 13, every count identical, pass; test 3 134712 N4 space to space 4L, fail; test 4 all 51 capture rows identical in named, elements and placeholders, pass. Out at 83e2dc7f, src equal to 61d8b58f. 3.5 green at both.
+  TASK 3, THE NARROWED RELABEL (3.2): spaces only removed, built as b68be0dd alone. Test 1 185 over 565, pass; test 2 13 of 13 identical, pass; test 3 134712 N4 space to N4L, the adjudicated text exactly, fail as written; test 4 51 rows identical, pass. Out at 040a4ae0. 3.5 green at both.
+  TASK 4, THE EXIT ROUND (3.5): Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 278 of 278; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, TheNumberCannotBeGamedTests 13 of 13, baseline 33 over 46 and 124 over 363, bench 60 over 156, every one identical to entry; WhereTheSpaceIsDecidedTests 2 of 2. The transmit files print nothing against 7e209cb4; all of src prints nothing against 61d8b58f. 3.5 ticked; 3.2, 3.3 and 3.4 open; two of three under 3.4.
+  FATE: executed, complete at task 4 of 4, none dropped; two spacing changes that moved no letter on any recording, all keyed 217 to 191 and 185 over 565 against inferred keys, both out on 3.2's third test at cw-2026-08-17-134712, the narrowed one because it made that reading equal the adjudicated N4L; nothing kept; the tree reads as at entry.
   
   ## UNIT 414 - STEP 1
   
@@ -576,9 +649,61 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: Every exit criterion of step 1 is met with evidence, 1.6 from unit 412, and 1.1 to 1.5 in this unit with twelve exact keyed cases scored at HEAD and tabled, three speeds by three levels with recipes held byte for byte by a rebuild test, both documents written and cited, and the floor and carry forward tests green at exit with counts identical to entry.
   ADVANCED: yes
   ATTEMPT: 1.1 | unit 2 launched 2026-09-24T04:07:07.356Z | yes | executed | generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
+  
+  ## UNIT 3 - STEP 3
+  
+  STEP: 3
+  APPROACH: leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The question asks how to read a test criterion in plan item 3.2, which is a matter of a test's shape and falls outside keying or transmit, money and operator promises, so the unit's own recommendation stands as author's and the work goes on.
+  MOVE: work around
+  WHY: Unit 413's two candidates both changed the path, and the letters moved with the spaces (P6). A relabel after the path attacks the 27 of 29 inserted spaces the trace put on the textbook boundary, without touching the named counts that sank both.
+  DECIDED: author's, overrulable - step 3 again under R64 and R65's preference; 3.4 counts consecutive step 3 units, so this is two of three; the starting boundary is the geometric mean of the measured character centroid and seven thirds of it, chosen from task 1's distributions; synthetics are printed and never evidence under P8; a spaces-only-removed narrowing is the drop candidate; per-type timeouts
+  LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; step 3 criteria 3.2 to 3.5; unit413-trace.md; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.6856382
+  ACCOMPLISHED: the words on the CW tab stop breaking apart between letters of the same word, with every letter Tim already sees left exactly where it was, or it is measured why moving only the spaces is not enough
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 3.1 and 3.5 are met, and the report shows the green exit counts for all four commits, but 3.2 and 3.3 are not met because both changes failed the third test at 134712 and nothing was kept, and 3.4 is still open at two of three units. The open question about whether a reading moving onto its adjudicated text counts as unchanged is about a test's shape, not keying, money or a promise to the operator, so the step is not blocked.
+  ADVANCED: no
+  ATTEMPT: 3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | no | executed | leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+  REASON: 3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 1 - STEP 3
+  
+  STEP: 3
+  APPROACH: re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open item is whether step 3 closes or another unit takes on the joined gaps, which is a plan and progress question outside keying, money and operator promises, and the section says nothing blocks and no asks are outstanding.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 3.2 asks that each change be kept when the total edit count over all keyed recordings falls, no named floor breaks, the adjudicated readings are unchanged or changed to exactly their own adjudicated text, and no capture row's named count falls
+  DECIDED: whether the diff is cherry-picked or rebuilt from the trace, and the per-type timeouts, are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R63, R65, R66, section 3, section 6; HM-DEC-173; HM-DEC-144; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+  COST: 4.271218800000001
+  ACCOMPLISHED: the words on the CW tab stop breaking apart mid-word, at no cost to a single letter, and the phase's first kept correctness gain is in the tree
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 3.1, 3.2, 3.3 and 3.5 are met with numbers shown, but 3.4 is still unticked, and the report leaves it to the arbiter whether step 3 closes or another unit takes on the 90 joined gaps.
+  ADVANCED: yes
+  ATTEMPT: 3.2 | unit 1 launched 2026-09-24T12:08:39.542Z | yes | executed | re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+  
+  ## UNIT 2 - STEP 6
+  
+  STEP: 6
+  APPROACH: measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, P10 is about the wording of a caption, and P11 is a parked question about how a measured number is calculated, so neither asks the owner to decide anything about keying, money, or a fact the product states to the operator.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 criterion 6.7 asks that tonePeak in a per-capture sidecar be a figure measured over that recording and labeled as such, watched failing first against the held figure, with the cost at capture stated; step 3's only open criterion, 3.4, cannot flip after unit 416 kept two changes, so under R64 and R65 the loop moves to the screen.
+  DECIDED: author's, overrulable - P9 answered: step 3 stays partial and is not marked done because 3.4 is unmet and cannot fire while the no-kept-change count is zero; 6.7 chosen over 6.3, 6.4 and 6.5 because R63 already rules it and 6.2 is open on tonePeak alone; the measurement method, whether the held figure stays on its own line, the 50 ms UI-thread bound and the per-type timeouts are the unit's to decide and report
+  LICENCE: PHASE_PLAN.md R63, R64, R65, section 6; step 6 criteria 6.2 and 6.7; step 3 criterion 3.4; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  COST: 5.5109548
+  ACCOMPLISHED: the strength figure on every capture's sheet is about that capture, so the next work order is not written from a number that rates an empty recording above a callsign
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 6.1, 6.6 and 6.7 are met, while 6.2, 6.8, 6.3, 6.4 and 6.5 are still open, and the report itself says 6.2 fails on the keying caption's sweep range.
+  ADVANCED: yes
+  ATTEMPT: 6.7 | unit 2 launched 2026-09-24T13:12:43.596Z | yes | executed | measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
 
   --- CLAUDE.md ---
-  1395 lines, 203832 bytes
+  1396 lines, 204678 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -598,17 +723,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 771 bytes
+  19 lines, 793 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: TASK 5 of 5
-  WORK_INSTRUCTION: 414 - keys nobody has to guess
+  TASK: TASK 3 of 3
+  WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-24T00:51:16-04:00
-  NOTE: Unit 414 complete: twelve synthetic CQ calls with exact keys, grid 102 over 243 and five-unit row 63 over 81; inferring-a-key.md written; step 1 done; 2 items parked, none blocking
+  UPDATED: 2026-09-24T09:58:17-04:00
+  NOTE: Unit 417 complete: tonePeak measured over each capture, 17:37 25.7 held to 26.8, 862 ms off the UI thread; 6.7 ticked, 6.2 held on the keying caption; 2 items parked, none blocking
   
   ---
   

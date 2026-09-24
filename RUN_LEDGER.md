@@ -252,3 +252,7 @@ the owner reads instead of watching.
 | 3 | 2026-09-24T00:54 | 2026-09-24T02:30 | complete | 8.6856382 | ran unattended, 174 turns, 19 denied call(s) worked around, report valid |
 | 3 | 2026-09-24T02:31 | 2026-09-24T02:31 | note | none - not a run | no advance - step 3 criterion 2 was unmet and is unmet |
 | phase | 2026-09-24T02:31 | 2026-09-24T02:31 | failure | 12.2054 | STOPPED, AND A STOP IS FAILURE - halted: the criterion was chosen from the last report rather than the plan - The instruction justified criterion 3.2 by what unit 413's report found, that its two candidates changed the path and the letters moved with the spaces, and by the trace's 27 of 29 inserted spaces, and it cited no line of the step or its criteria. |
+| 1 | 2026-09-24T08:08 | 2026-09-24T09:09 | complete | 4.271218800000001 | ran unattended, 140 turns, 5 denied call(s) worked around, report valid |
+| 2 | 2026-09-24T09:12 | 2026-09-24T09:58 | complete | 5.5109548 | ran unattended, 145 turns, 5 denied call(s) worked around, report valid |
+| 3 | 2026-09-24T10:02 | 2026-09-24T10:54 | complete | 9.047419199999998 | ran unattended, 199 turns, 10 denied call(s) worked around, report valid |
+| phase | 2026-09-24T10:55 | 2026-09-24T10:55 | ending | 9.7822 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
