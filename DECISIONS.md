@@ -4,6 +4,32 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-170
+date: 2026-09-23
+refs: PHASE_PLAN.md R62 step 6, OPEN_ISSUES.md, work instruction 411 task 0, CLAUDE.md 0.0, HM-OPEN-087
+---
+
+**The screen work joins the correctness phase as step 6, and it depends on nothing.**
+Tim, 2026-09-23.
+
+**What he found at the radio.** An RF gain banner stating the radio did not confirm a value
+the radio-state dialog showed read back 24 seconds earlier; the window reflowing when he
+tunes outside his privileges; no hover text on any control; three sentences in the capture
+sidecar that contradict their own neighbors; a dead button on the CW tab.
+
+**Why it is a step of this phase rather than a phase of its own.** It depends on nothing, so
+the arbiter has a place to route whenever the CW work stalls, and the loop keeps moving. Its
+sentence is CLAUDE.md 0.0, which binds in any phase: never state as known what is not known,
+and never state as unknown what is known.
+
+**What it is not.** It changes what the operator reads, never what the radio does. A
+criterion is met by making a sentence true, never by deleting the sentence.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 411 task 0's
+record of it. Rejected: a new phase holding both the CW and screen work; the screen in its
+own phase afterward.
+
+---
 id: HM-DEC-169
 date: 2026-09-23
 refs: PHASE_PLAN.md R59 R60 R61, docs/phase-cw-run/, docs/phase-correctness/, PROJECT_CARD.md, work instruction 410 task 0, PHASE_GOAL.md

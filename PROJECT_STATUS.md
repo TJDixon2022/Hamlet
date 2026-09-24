@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 410 - the number exists
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 4
+WORK_INSTRUCTION: 411 - the screen stops saying what is not so
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-23T19:19:25-04:00
-NOTE: Unit 410 complete: baseline 33 edits over 46 chars against inferred keys, 17:37 29 over 25; there 15 boundaries and 14 letters, so the bench letters are not all right; section 4 parks 2 items
+UPDATED: 2026-09-23T21:01:39-04:00
+NOTE: Running the two clean synthetics alone
 
 ---
 

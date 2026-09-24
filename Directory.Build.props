@@ -1274,8 +1274,14 @@
     key's kind, the 17:37 capture and the three adjudicated recordings scored at HEAD into a
     baseline, and the error kinds counted (HM-DEC-169). No file under src changes in this unit.
   -->
+  <!--
+    1.13.97 -> 1.13.98, WORK INSTRUCTION 411 TASK 0. A PATCH, STEP 6 OF THE CORRECTNESS PHASE, THE
+    SCREEN STOPS SAYING WHAT IS NOT SO: the RF gain banner states the read-back it holds, and the
+    capture sidecar's keying, elementHz and tonePeak lines stop contradicting their neighbors
+    (HM-DEC-170). Nothing that keys or transmits and nothing that decides a character changes.
+  -->
   <PropertyGroup>
-    <Version>1.13.97</Version>
+    <Version>1.13.98</Version>
   </PropertyGroup>
 
   <!--

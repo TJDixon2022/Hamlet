@@ -7,6 +7,21 @@ STEP: 2 | not started | The number cannot be gamed - unsure characters per named
 STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
 STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+STEP: 6 | not started | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+
+## UNIT 411 - STEP 6
+
+STEP: 6
+APPROACH: make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 criterion 6.1 asks that the banner state the value and when it was read whenever a read-back for RF gain is held, and that the did-not-confirm wording appear only when none is
+STATE: not started
+DECIDED: the banner's new wording, which of the three sidecar lines is repaired and which is reworded, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R62, section 3, section 6; HM-DEC-170; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+ADVANCES: step 6 criterion 1
+COST: one session, five tasks, 0 to 4, committed per task; drop from the back, task 3 whole and tonePeak within task 2 the named candidates.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.97 to 1.13.98. HM-DEC-170 in DECISIONS.md and CLAUDE.md section 1. PHASE_STATUS.md names unit 411 and CURRENT_STEP 6. HEAD at entry bcebdfea. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 385 s; APP 278 of 278 in 169 s, nothing lost to the dispatcher loop; captures 37 of 37 in 94 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 1 s.
 
 ## UNIT 410 - STEP 0
 
