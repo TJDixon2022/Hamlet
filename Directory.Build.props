@@ -1287,8 +1287,14 @@
     and the locked-on run keyed by differencing consecutive transcripts (HM-DEC-171). No file
     under src changes in this unit.
   -->
+  <!--
+    1.13.100 -> 1.13.101, WORK INSTRUCTION 414 TASK 0. A PATCH, STEP 1 OF THE CORRECTNESS PHASE,
+    KEYS NOBODY HAS TO GUESS: synthetic CQ calls at three speeds and three signal strengths with
+    exact keys by construction, each scored at HEAD outside the 3.2 total, and the rule for
+    inferring a key off the air written down. No file under src changes in this unit.
+  -->
   <PropertyGroup>
-    <Version>1.13.100</Version>
+    <Version>1.13.101</Version>
   </PropertyGroup>
 
   <!--

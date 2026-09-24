@@ -9,6 +9,19 @@ STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose 
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
+## UNIT 414 - STEP 1
+
+STEP: 1
+APPROACH: generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
+MOVE: work around
+WHY: Step 3's two candidates both fell on P6, so a third straight away would meet the same wall; step 1 is independent, all of 1.1 to 1.5 can be met tonight, and exact keys are what step 3's evidence lacks, with 1.4 keeping them from ever being the sole evidence.
+STATE: partial
+DECIDED: author's, overrulable - step 1 before a second step 3 unit despite R64's preference; textbook spacing for the grid; 12, 18 and 25 wpm with SNR levels chosen from the generator's own measurement; whole decode scored against whole key; synthetics tabled outside 3.2's total (P7); a five-unit character-gap row as the drop candidate; per-type timeouts
+LICENCE: PHASE_PLAN.md R61, R64, R65, section 3, section 6; step 1 criteria 1.1 to 1.5; CLAUDE.md 0.0, 0.2 and 12.5; HM-DEC-101; HM-DEC-155; HM-DEC-165; FACT-004
+ADVANCES: step 1 criterion 1
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.100 to 1.13.101. PHASE_STATUS.md names unit 414 and CURRENT_STEP 1. HEAD at entry 5f8d48b0. Section 5 against the tree: CwFixtureRecipe and CwFixtureGenerator.Generate are as the instruction says, default spacing 105 / 283 / 65 / 130 / 280 ms, and the sidecar names wpm and snrDb; CwKeyKind already has Exact, in the test project's CwScorer.cs and not in src, so task 2 adds nothing to it; 17:37's region rule is written in baseline.md and CwScorer.FromFirst, and a third copy, TheSeventeenThirtySevenCaptureTests.ScoredRegion, opens at the first CQ CQ rather than the first CQ; HM-DEC-101's gate still exists as CwFixtureCommitTests.TheReferenceHasScoredThisFixture, which runs nothing at test time - it asserts a committed reference line and scoredBytes stamp that tools/score-fixtures/score-fixtures.py writes by running cwdecoder.py, over CwFixtureCatalogue.All in tests/fixtures/cw/receiver only, and Python cannot run in this session; docs/phase-correctness/inferring-a-key.md does not exist. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 378 s; APP 278 of 278 in 162 s, none lost to the dispatcher loop; captures 51 of 51 in 121 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s; TheNumberCannotBeGamedTests 13 of 13 in 62 s; TheBaselineIsScoredTests 2 of 2 at 33 edits over 46 and outside 124 over 363, inferred keys; TheBenchmarkIsKeyedTests 1 of 1 at bench 60 over 156 and live 41 over 156, inferred keys.
+
 ## UNIT 413 - STEP 3
 
 STEP: 3
@@ -133,3 +146,20 @@ STATE_AFTER: done
 STATE_WHY: Criteria 2.1 to 2.5 each have measured support, with unsure per named carried in CwScore and baseline.md re-issued at 0 per 47, 13 of 13 named floors, the guard broken both by removing E and T at 21 against 33 edits and by the bar at 100 which kept 97 of 547 named while 17:37 improved from 29 to 25, the exit round green apart from one dispatcher loss that passed alone, and all fourteen captures banked with captures at 51 of 51 and the original 37 unchanged.
 ADVANCED: yes
 ATTEMPT: 2.5 | unit 1 launched 2026-09-24T01:35:11.319Z | yes | executed | bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
+
+## UNIT 1 - STEP 3
+
+STEP: 3
+APPROACH: trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - All three items are about test criteria, cost checks and which total to use, none of them touch transmit, money or what the product tells the operator, and the section says nothing blocks the phase.
+MOVE: continue
+WHY: PHASE_PLAN.md step 3 criterion 3.1 asks that the dominant error kind named in 0.3 be traced to a named line or property in src/Hamlet.RadioEngine/Cw, printed by a fact that asserts nothing, before any change is built
+DECIDED: which candidate is built first, the form of the trace printer and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; HM-DEC-172; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0 and 0.2
+COST: 5.972764200000002
+ACCOMPLISHED: the words Tim reads on the CW tab stop breaking apart mid-word, or the reason they cannot yet is measured on ten real recordings
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criterion 3.1 is met because the trace names CwUnitEstimator.cs 216 and WhereTheWordsBreakTests prints it without asserting anything, but 3.2, 3.3, 3.4 and 3.5 remain unmet since no change was kept and 17:37 has no before and after for a kept change.
+ADVANCED: yes
+ATTEMPT: 3.1 | unit 1 launched 2026-09-24T03:07:13.064Z | yes | executed | trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
