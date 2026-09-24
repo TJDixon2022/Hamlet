@@ -1,0 +1,5 @@
+unit422 task 2: the test, watched failing (6.4) - EveryControlSaysWhatItDoesTests names the 15 controls of the CW tab and the 34 of the band row one by one, finds them in the built window, fails on a missing or blank tip and on a control present and not named, in both connection states, and fails when the save star says only what the digits say
+
+RED, committed red on purpose: not connected 23 controls, connected 23 controls, no tip - TransmitButton, Clear, CQ, RST, 73, the send line, the CW terminal header, No thanks, Stop the scan, STOP TRANSMITTING, the port list, the connect button, the neighborhood header and strip, the upgrade prompt, the four license and grid answers, the drive box and the three PSK31 power controls. The star: with the pointer on it the face says "Roll the scroll wheel over any digit to tune that digit."
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
