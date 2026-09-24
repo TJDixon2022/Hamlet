@@ -1293,8 +1293,14 @@
     exact keys by construction, each scored at HEAD outside the 3.2 total, and the rule for
     inferring a key off the air written down. No file under src changes in this unit.
   -->
+  <!--
+    1.13.101 -> 1.13.102, WORK INSTRUCTION 415 TASK 0. A PATCH, STEP 3 OF THE CORRECTNESS PHASE,
+    THE SPACE IS DECIDED AFTER THE LETTERS: the decoder's path is left exactly as it is, and only
+    then is each gap it read as a character gap or a word gap re-decided from the sender's own
+    measured character gap, judged under 3.2 as written.
+  -->
   <PropertyGroup>
-    <Version>1.13.101</Version>
+    <Version>1.13.102</Version>
   </PropertyGroup>
 
   <!--

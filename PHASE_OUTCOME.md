@@ -9,6 +9,18 @@ STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose 
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
+## UNIT 415 - STEP 3
+
+STEP: 3
+APPROACH: leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+MOVE: work around
+WHY: Unit 413's two candidates both changed the path, and the letters moved with the spaces (P6). A relabel after the path attacks the 27 of 29 inserted spaces the trace put on the textbook boundary, without touching the named counts that sank both.
+STATE: partial
+DECIDED: author's, overrulable - step 3 again under R64 and R65's preference; 3.4 counts consecutive step 3 units, so this is two of three; the starting boundary is the geometric mean of the measured character centroid and seven thirds of it, chosen from task 1's distributions; synthetics are printed and never evidence under P8; a spaces-only-removed narrowing is the drop candidate; per-type timeouts
+LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; step 3 criteria 3.2 to 3.5; unit413-trace.md; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ADVANCES: step 3 criterion 2
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+
 ## UNIT 414 - STEP 1
 
 STEP: 1
@@ -169,3 +181,20 @@ STATE_AFTER: partial
 STATE_WHY: Criterion 3.1 is met because the trace names CwUnitEstimator.cs 216 and WhereTheWordsBreakTests prints it without asserting anything, but 3.2, 3.3, 3.4 and 3.5 remain unmet since no change was kept and 17:37 has no before and after for a kept change.
 ADVANCED: yes
 ATTEMPT: 3.1 | unit 1 launched 2026-09-24T03:07:13.064Z | yes | executed | trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+
+## UNIT 2 - STEP 1
+
+STEP: 1
+APPROACH: generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Both parked items are about test totals and reference scoring for synthetic fixtures, which do not touch transmit, money or what the product promises the operator, and the section says nothing is blocked.
+MOVE: work around
+WHY: Step 3's two candidates both fell on P6, so a third straight away would meet the same wall; step 1 is independent, all of 1.1 to 1.5 can be met tonight, and exact keys are what step 3's evidence lacks, with 1.4 keeping them from ever being the sole evidence.
+DECIDED: author's, overrulable - step 1 before a second step 3 unit despite R64's preference; textbook spacing for the grid; 12, 18 and 25 wpm with SNR levels chosen from the generator's own measurement; whole decode scored against whole key; synthetics tabled outside 3.2's total (P7); a five-unit character-gap row as the drop candidate; per-type timeouts
+LICENCE: PHASE_PLAN.md R61, R64, R65, section 3, section 6; step 1 criteria 1.1 to 1.5; CLAUDE.md 0.0, 0.2 and 12.5; HM-DEC-101; HM-DEC-155; HM-DEC-165; FACT-004
+COST: 6.232612200000001
+ACCOMPLISHED: the decoder is measured for the first time against CQ calls whose text is known for certain, at three speeds and three signal strengths, and the rule for keying a call off the air is written down so anyone can check it
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: Every exit criterion of step 1 is met with evidence, 1.6 from unit 412, and 1.1 to 1.5 in this unit with twelve exact keyed cases scored at HEAD and tabled, three speeds by three levels with recipes held byte for byte by a rebuild test, both documents written and cited, and the floor and carry forward tests green at exit with counts identical to entry.
+ADVANCED: yes
+ATTEMPT: 1.1 | unit 2 launched 2026-09-24T04:07:07.356Z | yes | executed | generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
