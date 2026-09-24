@@ -59,15 +59,22 @@ public sealed record ConditionResult(
     DateTime? NowAtUtc = null);
 
 /// <summary>What Hamlet last set, so it can tell its own hand from the operator's.</summary>
-/// <param name="LastSet">Field to the value Hamlet last confirmed setting it to.</param>
+/// <param name="LastSet">
+/// Field to the value a tune-in last left it at: confirmed after Hamlet's write, or
+/// read already there. On the scale the field is read on.
+/// </param>
 /// <remarks>
 /// <para>**THIS IS HM-DEC-056'S RULE FOR THE MODE, APPLIED TO THE REST OF THE
 /// RECEIVE SIDE.** Somebody who reaches over and switches the noise blanker on
 /// has said something, and an app that switches it off again the next time he
 /// changes frequency is arguing with him about his own radio.</para>
-/// <para>**AND IT IS A MEMORY OF WRITES, NOT OF READINGS.** A field Hamlet never
-/// set is not one it may claim to have had taken away from it: with no memory
-/// there is nothing to disagree with, and the first tune-in sets it.</para>
+/// <para>**IT REMEMBERS WHAT A TUNE-IN LEFT RIGHT, WRITTEN OR FOUND** (HM-DEC-174,
+/// work instruction 419). It used to be a memory of writes only, so a control the
+/// first tune-in found already right left nothing for the operator's change to
+/// disagree with, and the next tune-in wrote over his hand: Tim set the preamp off
+/// and Hamlet turned it back on. A field no tune-in has left right is still not one
+/// Hamlet may claim was taken from it, and the first tune-in sets it.</para>
+/// <para>**IT HOLDS UNTIL THE BAND CHANGES**, which calls <see cref="Rearmed"/>.</para>
 /// </remarks>
 public sealed record ReceiverSetupMemory(IReadOnlyDictionary<RigField, int> LastSet)
 {
@@ -75,7 +82,7 @@ public sealed record ReceiverSetupMemory(IReadOnlyDictionary<RigField, int> Last
     public static ReceiverSetupMemory Empty { get; } =
         new(new Dictionary<RigField, int>());
 
-    /// <summary>Remember a confirmed write.</summary>
+    /// <summary>Remember a value a tune-in left right.</summary>
     /// <param name="field">What was set.</param>
     /// <param name="value">What it was set to.</param>
     /// <returns>The memory carrying it.</returns>
@@ -206,6 +213,12 @@ public static class ReceiverSetup
 
             if (now == wantedAsRead)
             {
+                // **FOUND RIGHT IS REMEMBERED AS WELL AS SET RIGHT** (HM-DEC-174,
+                // work instruction 419). With only writes remembered, a preamp
+                // found at 1 left nothing for the operator's own change to disagree
+                // with, and the next tune-in wrote his off back to 1.
+                memory = memory.Remember(field, wantedAsRead);
+
                 results.Add(new ConditionResult(
                     condition, ConditionOutcome.AlreadyRight, before.Text, before.Text));
                 continue;

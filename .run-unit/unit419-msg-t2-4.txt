@@ -1,0 +1,12 @@
+unit419 task 2 item 4: the operator's hand wins - a tune-in remembers every field it leaves at the mode's value, written or found already right, so his own later change is left alone by the next tune-in of the same mode until the band changes (HM-DEC-056, HM-DEC-174)
+
+Red, watched first, TheOperatorsHandStandsTests 2 of 4 failing:
+  ThePreampHeSetOffStaysOff(startedAt: 1): Assert.Equal() Failure: Values differ, Expected: LeftToTheOperator, Actual: Changed - preamp 1 at first; off by hand; second tune-in Changed, radio now 1
+  TheGainHeBackedOffStaysBackedOff: Expected: LeftToTheOperator, Actual: Changed
+Green after: 4 of 4; ThePreampHeSetOffStaysOff(0), the case Hamlet had written, and ABandChangeReArmsIt were green before and after.
+
+The rule implemented: ReceiverSetupMemory held only confirmed writes, so a field the first tune-in found already right left nothing for the operator's change to disagree with and the next tune-in wrote it back; that is what Tim saw with the preamp. The AlreadyRight branch now remembers the value too, on the read's scale. A later tune-in that reads something else files LeftToTheOperator and sends nothing. It holds until the band changes, where MainWindowViewModel.OnSelectedBandChanged calls Rearmed, exactly as mode-follow re-arms; within a block the app does not re-run the tune-in at all, since EstablishReceiveConditionsAsync is keyed on the block's low edge.
+
+TheTuneInSetsOnlyWhatIsInTheWayTests.WhatIsInTheWayIsChangedAndWhatIsAlreadyRightIsNot asserted the memory held what Hamlet set and nothing it did not, 2 entries; it went red on the fix and now asserts 3, the noise reduction found right included and the spoken AGC not, per HM-DEC-174. TheRoundTripLandsInTheSamePlaceTests 4 of 4, CwToDataAndBackTests 5 of 5, HamletSaysWhatItChangedTests 5 of 5.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

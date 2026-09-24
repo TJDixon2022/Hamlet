@@ -110,10 +110,15 @@ public sealed class TheTuneInSetsOnlyWhatIsInTheWayTests
             ConditionOutcome.SpokenOnly,
             results.Single(r => r.Condition.Control == "scope span").Outcome);
 
-        // The memory carries what Hamlet set and nothing it did not.
-        Assert.Equal(2, memory.LastSet.Count);
+        // The memory carries what the tune-in left right, written or found, and
+        // nothing it only spoke (HM-DEC-174, work instruction 419: it held writes
+        // only, and a field found right was then written over the operator's own
+        // change on the next tune-in).
+        Assert.Equal(3, memory.LastSet.Count);
         Assert.Equal(0, memory.LastSet[RigField.NoiseBlanker]);
         Assert.Equal(0, memory.LastSet[RigField.AutoNotch]);
+        Assert.Equal(0, memory.LastSet[RigField.NoiseReduction]);
+        Assert.DoesNotContain(RigField.Agc, memory.LastSet.Keys);
     }
 
     /// <remarks>
