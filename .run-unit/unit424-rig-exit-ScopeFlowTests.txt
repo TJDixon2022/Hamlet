@@ -1,0 +1,23 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.SweepsThatArrivedOnceDoNotCountAsArrivingNow(secondsAgo: 2.8999999999999999, expected: Flowing) [4 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.SweepsThatArrivedOnceDoNotCountAsArrivingNow(secondsAgo: 600, expected: Stopped) [6 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.SweepsThatArrivedOnceDoNotCountAsArrivingNow(secondsAgo: 3.1000000000000001, expected: Stopped) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.SweepsThatArrivedOnceDoNotCountAsArrivingNow(secondsAgo: 0.5, expected: Flowing) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.AQuietBandAndACableThatNeverSpokeAreDifferentPictures [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.AStoppedPathSaysThePictureIsOld [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.EachBrokenStageIsNamedAsItself(received: 2740, parsed: 2740, sweeps: 0, expected: NoSweepCompletes) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.EachBrokenStageIsNamedAsItself(received: 2740, parsed: 0, sweeps: 0, expected: NothingRead) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.EachBrokenStageIsNamedAsItself(received: 0, parsed: 0, sweeps: 0, expected: NothingEverArrived) [< 1 ms]
+[xUnit.net 00:00:00.29]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.AWorkingScopePathSaysNothingAtAll [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ScopeFlowTests.NoStreamIsNotAStreamReportingNothing [< 1 ms]
+
+Test Run Successful.
+Total tests: 11
+     Passed: 11
+ Total time: 0.5590 Seconds

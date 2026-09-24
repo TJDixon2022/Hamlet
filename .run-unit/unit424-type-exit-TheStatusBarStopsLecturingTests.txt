@@ -1,0 +1,42 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.25]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheStatusBarStopsLecturingTests.AnAdmissionInsideTheParagraphStillSpeaks [744 ms]
+  Standard Output Messages:
+ the whole line : 1011 characters
+ of which spoken: 109 characters
+   I asked for the noise reduction to be off and the radio did not confirm it, so I do not know where it is now.
+
+
+  Passed Hamlet.App.Tests.Views.TheStatusBarStopsLecturingTests.TheParagraphIsOnTheMarkAndNotOnTheBar [111 ms]
+  Standard Output Messages:
+ the bar draws  : []  (0)
+ the mark holds : 1004 characters
+
+
+  Passed Hamlet.App.Tests.Views.TheStatusBarStopsLecturingTests.AFaultIsStillReadWithoutHovering [127 ms]
+  Standard Output Messages:
+ the bar draws: No answer on COM7. It is usually the cable, the baud rate or the port number.
+
+
+  Passed Hamlet.App.Tests.Views.TheStatusBarStopsLecturingTests.TheComposedParagraphIsMeasuredFromTheShippedRows [< 1 ms]
+  Standard Output Messages:
+ CW: 997 characters
+   I turned the auto notch off because it hunts steady tones and Morse is a steady tone, turned the manual notch off because the same trap, under your hand rather than automatic, turned the noise blanker off because it chops holes in keying instead of in the noise, turned the noise reduction off because it was built for speech and it mangles a keyed envelope, set the AGC to fast because slow gain rides over the gaps and hides the keying, set the RF gain to 100% because anything less throws away signal the decoder needs, set the squelch to open because a gate that shuts between elements is fatal to a decoder, set the attenuator to off unless the front end is overloading because twenty decibels thrown away on a signal that had none to spare, and set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+ 
+ FT8: 448 characters
+   I turned the noise blanker off because it chops up the steady tones this mode sends, turned the noise reduction off because it is built for a human voice and it mangles the faint carriers a decoder is listening for, turned the auto notch off because it hunts steady carriers and everything in this block is one, and set the AGC to slow because dozens of stations transmit together here and the gain would ride up and down under the loudest of them.
+ 
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 1.5383 Seconds
+RC=0 WALL=2s

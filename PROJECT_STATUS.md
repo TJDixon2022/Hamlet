@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 3 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 424 - the preamp is what the manual says, and nothing argues with it
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T18:33:36-04:00
-NOTE: Task 3: TheBannerSaysWhatTheRadioReadBackTests alone after the voice fixes
+UPDATED: 2026-09-24T18:55:17-04:00
+NOTE: Unit 424 complete and pushed: CW preamp from the IC-7300 manual, preamp 1 on HF, 2 at 50 MHz, off when overloading at tune-in; contradicting sentences 28 to 0; 7.8 left unticked for P22; output.md written
 
 ---
 

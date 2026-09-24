@@ -356,7 +356,7 @@ which unit 421's floor-bar ruling already holds, so it is recorded as HM-DEC-177
 ## P26 - a ceiling test's added paragraph comes back 64 characters longer at some times
 
 **Found by unit 424, 2026-09-24.** `HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed`
-failed twice, at about 18:52 and 18:54 Eastern, with *Expected 1779, Actual 1843* (1379 before,
-400 added), and passed at 18:57 on the task 2 tree and at 18:59 on the same source that had
-failed. Something on the Digital tab adds 64 characters between the two measurements at some
+failed twice, its output files written at 18:30:19 and 18:31:13 Eastern, with *Expected 1779,
+Actual 1843* (1379 before, 400 added), and passed at 18:31:47 on the task 2 tree and at 18:32:34
+on the same source that had failed (times are the output files' own, read from the disk). Something on the Digital tab adds 64 characters between the two measurements at some
 wall-clock times. Not traced by unit 424. Not blocking.

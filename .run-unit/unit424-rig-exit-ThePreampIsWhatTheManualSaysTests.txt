@@ -1,0 +1,29 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.WithTheOverloadUnreadNothingIsWritten [834 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 1) [6 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 2) [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 28050000, start: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 7030000, start: 1) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtOffIsWrittenToPreamp1 [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsPreamp2 [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 7030000, start: 2) [< 1 ms]
+[xUnit.net 00:00:01.11]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 21050000, start: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 28050000, start: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 1810000, start: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 18080000, start: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 3530000, start: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 2) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 10110000, start: 0) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionCitesTheManualPage [< 1 ms]
+
+Test Run Successful.
+Total tests: 17
+     Passed: 17
+ Total time: 1.3631 Seconds

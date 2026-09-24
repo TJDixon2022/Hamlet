@@ -1,0 +1,10 @@
+unit424 task 4: exit round (7.6 held) - Hamlet.sln builds non-incremental with warnings as errors, 0 warnings; engine 178 of 178; app 278 of 278; captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13; every Rig type, 45 types, 342 of 342; sheet tests from 411, 417 and 418 green; every touched type green; DecisionLogOrderTests red as at entry (HM-DEC-166 row missing, P25); src/Hamlet.RadioEngine/Cw nothing against entry, transmit files nothing against 7e209cb4; task 1's table printed again beside the before version; 7.8 not ticked; output.md
+
+7.8 is left for the arbiter: every clause is met for the preamp - the manual's values with
+page 4-3 cited, off on overload at the tune-in, sentences contradicting what Hamlet set
+28 -> 0, red watched at 7.030 and 14.050, the per-band table printed - but overload after a
+tune-in is not followed (P22) and fields other than the preamp and the attenuator were not
+re-surveyed once he has moved on. PARKED.md P26's run times corrected to the output files'
+own clock times.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
