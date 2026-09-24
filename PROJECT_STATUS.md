@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 416 - the relabel goes back in
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 3
+WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T09:09:22-04:00
-NOTE: Unit 416 complete: relabel kept under R66 and a second space change kept, all keyed 217 to 167 over 565, no letter moved; 3.2 and 3.3 ticked; 1 item parked as P9, none blocking
+UPDATED: 2026-09-24T09:28:46-04:00
+NOTE: Running TheBenchmarkIsKeyedTests alone, the ten keyed captures
 
 ---
 

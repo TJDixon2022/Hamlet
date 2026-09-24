@@ -1,9 +1,11 @@
-# Work instruction 416 - the relabel goes back in
+# Work instruction 417 - tonePeak is about the recording it sits beside
 
-**Seed under `--seed`.** Unit 415 built a space-only relabel that took every keyed recording
-from 217 edits to 185 and the ten bench recordings from 60 to 36, moving no letter, no
-element and no placeholder anywhere. It went out on one clause, which R66 has now amended.
-**This unit re-applies it and keeps it.** Four tasks, drop from the back.
+**Seed under `--seed`.** Step 3 has every criterion ticked that can be ticked: two spacing
+changes kept, all keyed recordings 217 edits to 167 over 565 against inferred keys, no letter
+moved. Its last criterion, 3.4, fires only after three units in a row keep nothing, and the
+last unit kept two. **So the loop moves to the screen, as R64 and R65 prefer when the spacing
+has nothing open to work.** This unit makes the capture sidecar's `tonePeak` a figure measured
+over that capture's own audio, labeled as such, as R63 ruled. Four tasks, drop from the back.
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -54,20 +56,20 @@ own `timeout`. The captures type is 51 rows; give it 600 s.
 
 **Nothing in section 4 halts this phase** (R65). A question is parked in
 `docs\phase-correctness\PARKED.md` and the loop goes on. **Do not carry an ask forward as
-blocking** unless the criterion this unit was authored for cannot be met without it.
+blocking** unless 6.7 itself cannot be met without it.
 
 ## 2. The tool facts
 
 Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
 refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
 `git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step commands
-go into `.run-unit\unit416-<name>.sh` and run with `sh`. Unit 415's scripts can be copied.
+go into `.run-unit\unit417-<name>.sh` and run with `sh`. Unit 416's scripts can be copied.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139, verbatim in section 4. **Unit 415's item 1 is answered by R66 and
-leaves the carried list.** Unit 415's fifth self-decision asked whether 3.5 should wait for a
-kept change; it should not, and 3.5 stays ticked.
+None carried. **Unit 416's P9 is answered by this instruction** - see section 4 - and stays in
+`PARKED.md` with the answer appended beneath it, one paragraph, marked the arbiter's,
+overrulable.
 
 ---
 
@@ -75,32 +77,44 @@ kept change; it should not, and 3.5 stays ticked.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  Re-apply unit 415's narrowed relabel b68be0dd under R66 and keep
-            it, with all four of 3.2's tests printed as numbers.
-ADVANCES:   step 3 criterion 2
+UNIT GOAL:  The capture sidecar's tonePeak line states a figure measured
+            over that capture's own audio and says so, watched failing
+            first against the held-and-decaying figure it prints today,
+            with what it costs at the moment of capture measured.
+ADVANCES:   step 6 criterion 7
 DRIFT:      0
 ```
 
-**What unit 415 measured**, and what this unit must reproduce before keeping anything:
+**The count today.** Steps 0, 1 and 2 done. Step 3 partial: 3.1, 3.2, 3.3, 3.5 met, 3.4 open.
+Step 4 not started. Step 5 the owner's. Step 6 partial: 6.1 and 6.6 met; 6.2, 6.3, 6.4, 6.5,
+6.7 and 6.8 open.
 
-| 3.2 test | entry | with `b68be0dd` |
-|---|---|---|
-| 1. total edits, all keyed | 217 over 565, inferred keys | **185 over 565** |
-| - the ten bench recordings | 60 over 156 | **36 over 156** |
-| - 17:37 | 29 over 25 | 28 over 25 |
-| 2. named floors | 13 of 13 | 13 of 13, every count identical |
-| 3. adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, **`N4L`**, `EETMP/4 QNIK` |
-| 4. capture rows' named counts | 51 rows | identical |
+**Why not step 3.** 3.4 reads *after three consecutive units with no kept change*. Unit 416
+kept two, so the count stands at zero and no unit can honestly flip 3.4 now; a step 3 unit
+that kept a third change would advance nothing the launcher counts, and one that kept nothing
+would be the first of three. **Author's, overrulable (P9's answer): step 3 stays partial and is
+not marked done**, because 3.4 is unmet and a closed step is closed for good. What is left on
+17:37 is letters, not spaces - `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I` - which is P6's wall, and
+it is logged there, not chased here.
 
-**R66, Tim, 2026-09-24:** test 3 is met when a reading is unchanged **or changed to exactly
-its own adjudicated text**. `N4L` is HM-DEC-144's text, 1 edit to 0. **Any other movement of
-an adjudicated reading still fails**, and the report prints any reading that moves, before
-and after.
+**Why 6.7 of the six screen criteria.** R63 has already ruled what the figure is - *measured
+over the recording the sidecar is about, labeled as such* - so the unit needs no ruling; unit
+411 dropped it only because that ruling did not yet exist. And 6.2 is open **on `tonePeak`
+alone** (unit 411's exit: `elementHz` and `keying` repaired, watched failing first), so the same
+work should close 6.2 as well. 6.3, 6.4 and 6.5 stay for the next units.
 
-**Why the change is safe, from 415's trace:** it re-decides only whether a gap the decoder
-already read between letters is announced as a space. The path is untouched, so no letter can
-move; 415 measured 0 letters moved on 52 of 52 recordings with the relabel placed either side
-of the settle dedupe, and built the safe placement.
+**What the tree says today**, `src\Hamlet.App\ViewModels\MainWindowViewModel.cs`:
+
+- `TonePeakRecordLine(CwDecodeReport report)`, near line 12373, prints `report.SnrDb` with the
+  caption *the highest the tracked tone ever stood above the noise beside it, held and
+  decaying; not a figure about this recording*. It is honest and useless: the one number on
+  the sheet about the signal's strength is about something else.
+- The comment above its call, near line 11790, records why: the held figure rates
+  `cw-2026-08-20-014854` at 41.7 and `-014935` at 38.4, neither holding keying at any pitch,
+  above `cw-2026-08-17-013347` at 34.7, the one the decoder reads a callsign from. **A work
+  order was written from that reading.**
+- The line below it, `inThis`, is already derived from the audio in the file
+  (`InThisRecording(audio, samplesSeen)`), so the writer has the recording's samples in hand.
 
 ---
 
@@ -108,58 +122,38 @@ of the settle dedupe, and built the safe placement.
 
 Check, report any mismatch, repair nothing:
 
-- Commit `b68be0dd` exists and its take-out `040a4ae0` follows it; `git diff 040a4ae0 HEAD --
-  src` prints nothing, so the tree is at the pre-change decoder.
-- `docs\phase-correctness\unit415-trace.md` describes the relabel, the centroid guard, and
-  the `sqrt(7/3)` boundary.
-- The keyed totals at HEAD are 217 over 565, the ten 60 over 156, 17:37 29 over 25.
-- `PHASE_PLAN.md`'s 3.2 carries R66's clause.
+- `TonePeakRecordLine` exists as quoted and is the only place the sidecar's `tonePeak` line is
+  composed; `TheSidecarIsReReadTests` asserts the line starts `tonePeak   `.
+- `CwDecodeReport.SnrDb` is the held-and-decaying figure, set from `CwDecoder._lastSnrDb`.
+- `CwCaseRoster`'s `tonePeakDb` column reads `SnrDb` from the report, **not** from the sidecar,
+  so nothing parses the sidecar line. If anything does, say so before changing the line.
+- The sidecar writer has the capture's audio in hand at the point it composes the line.
+- The keyed totals at HEAD are 167 over 565, the ten 35 over 156, 17:37 19 over 25.
 
-## 6. Rulings in force
-
-`PHASE_PLAN.md` R59 to R66, §3 and §6.
-
-**R66** an adjudicated reading may move onto its own adjudicated text and nowhere else.
-**3.2** is otherwise unchanged and is not negotiable: total edits over all keyed recordings
-must fall, no named floor breaks, no capture row's named count falls.
-**§10 of unit 415 still binds:** no key, scored region or floor is edited to make a number
-better; no boundary or guard is chosen from a score.
-**R65** nothing carried halts the loop. **§0.0** the keys are inferred and no decode is called
-what was sent. **§0.2** nothing that keys is touched. **HM-DEC-091**, **HM-DEC-155**,
-**HM-DEC-165**, **FACT-004**.
-
-**Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's
-table dated 2026-09-24, headline **A reading that moves onto its own adjudicated text has not
-been damaged**, ref HM-DEC-173:**
-
-```
----
-id: HM-DEC-173
-date: 2026-09-24
-refs: PHASE_PLAN.md R66 and criterion 3.2, unit 415 output.md section 4 item 1, HM-DEC-144, work instruction 416
 ---
 
-**A reading that changes to exactly its own adjudicated text has not been damaged, and
-3.2's third test allows it.** Tim, 2026-09-24.
+## 6. Rulings in force - do not re-argue
 
-**What was at stake.** Unit 415 built a space-only relabel that moved no letter, no element
-and no placeholder on any of the 51 capture rows, held all 13 named floors identical, and
-took every keyed recording from 217 edits to 185 over 565 characters and the ten bench
-recordings from 60 to 36 over 156. It was taken out on one clause: on `cw-2026-08-17-134712`
-the reading moved from `N4 ` to `N4L`, which is the text HM-DEC-144 adjudicated.
+`PHASE_PLAN.md` R59 to R66, §3 and §6. The ones this unit leans on, in full:
 
-**What is ruled.** The third test of 3.2 reads: the three adjudicated readings are unchanged
-character for character, or changed to exactly their own adjudicated text. Any other
-movement of an adjudicated reading still fails it, and a report invoking the clause prints
-the reading before and after so the owner can see which happened.
+**R63, Tim, 2026-09-24, on `tonePeak`:** *ruled (a): a figure measured over the recording the
+sidecar is about, labeled as such. HM-DEC-091 protects the held peak other things were built
+on; it does not require the per-capture sheet to print that particular figure. Rejected: not
+printing it in the sidecar; leaving it with its contradicting caption.*
 
-**Why.** The test exists so that a change cannot buy total edits by damaging a reading
-somebody ruled on. A reading that becomes the ruled text has not been damaged.
+**§6: Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+is met by making a sentence true, never by deleting the sentence and saying nothing, and never
+by changing a radio setting to match a claim.
 
-**Whose words are whose.** The ruling is Tim's; the wording is work instruction 416's record
-of it. Rejected: leaving the test as written; narrowing the relabel until `134712` does not
-move, which would choose the boundary from a score rather than from a trace.
-```
+**HM-DEC-091**: `CwDecodeReport.SnrDb`, the held peak, is not deleted and not changed. The
+roster's `tonePeakDb` column stays as it is.
+
+**R65** nothing carried halts the loop. **CLAUDE.md §0.0** never state as known what is not
+known: where the figure cannot be measured - no tone tracked, too little audio - the line says
+so in words and prints no number. **§0.2** nothing that keys or transmits is touched.
+**HM-DEC-155**, **HM-DEC-165**, **FACT-004**.
+
+No decision record is needed: R63 is already the owner's.
 
 ## 7. Status cadence
 
@@ -171,87 +165,92 @@ As the header says.
 
 ### Task 0 - the record
 
-`PHASE_OUTCOME.md` gets its `## UNIT 416 - STEP 3` entry from the decision block at the foot
-of this file. `PHASE_STATUS.md` names unit 416 and `CURRENT_STEP: 3`. Patch-bump
-`Directory.Build.props`. `DECISIONS.md` HM-DEC-173 and the `CLAUDE.md` row. **Entry round:**
-both carry-forward lines, the three floor tests, the keyed totals, the named floors, recorded
-as the numbers to beat.
+`PHASE_OUTCOME.md` gets its `## UNIT 417 - STEP 6` entry from the decision block at the foot
+of this file. `PHASE_STATUS.md` names unit 417 and `CURRENT_STEP: 6`. Patch-bump
+`Directory.Build.props`. P9's answer appended in `PARKED.md`. **Entry round:** both
+carry-forward lines, the three floor tests, `TheSidecarDoesNotContradictItselfTests` and
+`TheSidecarIsReReadTests`, recorded as the numbers to beat.
 
 **Drop candidate:** none.
 
-### Task 1 - the relabel goes back in (3.2, 3.3)
+### Task 1 - the trace
 
-Re-apply `b68be0dd` in its own commit - `git diff 3ddca565 b68be0dd` gives it, or rebuild it
-from `unit415-trace.md` if the diff will not apply cleanly, and say which. **Do not change
-it.** Not the boundary, not the guard, not the placement.
+A fact asserting nothing, in `tests\Hamlet.App.Tests\Cw`, that replays saved captures through
+the writer's own code and prints, per capture, the `tonePeak` line as the sheet writes it today
+beside a tone-over-noise figure measured over that WAV alone. At least these four:
+`cw-2026-08-20-014854`, `-014935`, `cw-2026-08-17-013347`, and `cw-2026-09-23-173723`.
 
-Then run all four of 3.2's tests and print every one as a number beside 415's figures above:
+**How the figure is measured is yours** and goes in DECIDED in your report - the tone's peak
+above the noise beside it, in dB, the same kind of quantity the held figure is, over this file's
+samples only, at the pitch the decoder tracked. State the window, the noise estimate and what
+happens with no tracked pitch. **Choose the method from what it is meant to measure, never from
+which ordering of the four it produces.** Print the ordering it gives; do not predict it here.
 
-1. total edits over all keyed recordings, and the three sub-rows;
-2. all 13 named floors, each count;
-3. the three adjudicated readings, quoted before and after, with R66 invoked explicitly for
-   any that moved;
-4. all 51 capture rows' named, element and placeholder counts, diffed against entry.
+Also print, per capture, the wall time the measurement costs on that file's length.
 
-**If every test passes, the change is kept and 3.2 is ticked.** If any fails, it goes out in
-the next commit and the report prints why - **and the failure must be a number, not a
-judgment.**
+**Drop candidate:** none - the build in task 2 is chosen from this.
 
-**Drop candidate:** none.
+### Task 2 - the line (6.7, 6.2)
 
-### Task 2 - what it looks like (3.3)
+Write the test first, and watch it fail against the current line:
+`TheTonePeakIsAboutThisRecordingTests` - on at least two saved captures, the sidecar's
+`tonePeak` number equals the figure measured independently over that capture's audio, and its
+caption says it is a figure over this recording. **It goes red today because the line prints
+the held figure**; quote the red.
 
-Print, from the kept build, the settled text of `cw-2026-09-24-004322` and `-004405` beside
-what they read before, as 415 did:
+Then change `TonePeakRecordLine` and its caller so the line carries the figure measured over
+the recording, labeled as such. Where it cannot be measured the line says so in words. The held
+figure may be dropped from the sheet or kept on its own line under its own honest caption -
+yours, and say which. `CwDecodeReport.SnrDb` does not change.
 
-```
-now:        P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S
-narrowed:   P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS
-```
+**The cost at the moment of capture** (6.7's last clause): measure the time the new figure adds
+to writing one capture at the longest capture length in the tree, say which thread it runs on,
+and state both in the report. If it runs on the UI thread and costs more than 50 ms, move it off
+and say so.
 
-Update `docs\phase-correctness\baseline.md` with the new running total. **This is what Tim
-reads in the morning, so it goes at the top of section 3.**
+Update `TheSidecarIsReReadTests` only where the line's wording forces it, and say what changed.
+Regenerate `.run-unit\unit417-sidecar-*.txt` for 17:37 and 014113 as 411 did, and print the old
+and new `tonePeak` lines side by side. **No capture sidecar in the tree is edited.**
 
-**Drop candidate:** the baseline update only; the printed lines stay.
+Tick 6.7. **Tick 6.2 only if** its three clauses now hold on the regenerated sheets - `tonePeak`
+about this recording, `elementHz` and `keying` as 411 left them - and say so line by line.
 
-### Task 3 - the next kind (3.2 again, if the clock allows)
+**Drop candidate:** the move off the UI thread, if the cost is under 50 ms it is not needed; if
+it is over and the clock is short, report the number and leave it.
 
-With the relabel kept, re-run 415's trace to see what the largest remaining kind is now, and
-build one change against it under the same four tests. **Trace first, then build.** If the
-clock is short, print the trace and say the build was dropped.
+### Task 3 - the exit round (6.6 holds)
 
-**Drop candidate:** whole task.
-
-### Task 4 - the exit round (3.5)
-
-Both carry-forward lines, the three floor tests with captures at 51, `TheNumberCannotBeGamedTests`,
-`TheBaselineIsScoredTests`, `TheBenchmarkIsKeyedTests`, and every type touched. The transmit
-files print nothing against `7e209cb4`.
+Hamlet.sln builds with warnings as errors. Both carry-forward lines, the three floor tests with
+captures at 51, `TheSidecarDoesNotContradictItselfTests`, `TheSidecarIsReReadTests`,
+`CaseRosterSurvivesAnEveningTests`, the new tests, and every type touched. The keyed totals
+unchanged at 167 over 565. `src\Hamlet.RadioEngine\Cw` prints nothing against entry; the
+transmit files print nothing against `7e209cb4`.
 
 ---
 
 ## 9. Parked - do not touch, do not raise
 
+- **Step 3** and P6, P7, P8, P9. The spacing stays as unit 416 left it.
+- **Step 4, the pitch judge**, and the roster's `tonePeakDb` column.
+- **6.3 the reflow, 6.4 hover text, 6.5 the dead button, 6.8 the RF gain scale.** The next units'.
 - **The acquisition failure** - the first two minutes of the 7.052 session.
-- **6.3 the reflow, 6.4 hover text, 6.5 the dead button, 6.7 tonePeak, 6.8 the RF gain
-  scale.** Step 6's, and the arbiter's to author next.
-- **Step 4, the pitch judge.**
-- **P6, P7, P8** in `PARKED.md`.
 - **Any key, scored region or floor.** Fixed.
 
 ## 10. What not to do
 
-- **Do not modify the relabel to improve a number.** It goes back in as it was built.
-- **Do not edit a key, a scored region or a floor.**
-- **Do not let an adjudicated reading move anywhere but onto its own adjudicated text.**
-- **Do not touch what keys or transmits.**
+- **Do not change `CwDecodeReport.SnrDb`, `CwDecoder` or anything in `src\Hamlet.RadioEngine\Cw`.**
+- **Do not delete the `tonePeak` line** or leave it saying nothing; R63 rejected both.
+- **Do not choose the measurement from the ordering it produces** on the four captures.
+- **Do not edit a sidecar already in the tree.**
+- **Do not touch what keys, transmits, or writes to the radio.**
 - **Do not halt for a question.** Park it.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
 - **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
 
 ## 11. Committing and pushing
 
-Commit per task. Push at the end and say whether it succeeded.
+Commit per task. The failing test in task 2 is committed red on its own before the change,
+with the red quoted in the message. Push at the end and say whether it succeeded.
 
 ---
 
@@ -262,36 +261,43 @@ Commit per task. Push at the end and say whether it succeeded.
 ```
 READ IN THIS ORDER.
 
-A. Whether the relabel was kept, and the total: 217 -> <n> over 565.
-B. Step 3's criteria: 3.2 kept or out with all four tests as numbers,
-   3.3 the running total, 3.4 the count, 3.5 the exits.
-C. The rest. Section 4 raises <n> items, none blocking.
+A. Hamlet reads a CQ call correctly. Steps 0, 1, 2 done; 3 partial,
+   3.4 only open and not flippable this unit; 4 not started; 5 the
+   owner's; 6 partial.
+B. Step 6: 6.7 met or not, with the red quoted and the cost at capture
+   in ms and its thread; 6.2 met or not, clause by clause; 6.6 held.
+C. The rest. Section 4 raises <n> items; <none | which> in the way of
+   6.7 or 6.2.
 ```
 
 ```
-UNIT:       416 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       417 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   yes | no - <why, on the line>
-NUMBER:     all keyed: 217 -> <n> over 565; the ten bench: 60 -> <n> over 156
+NUMBER:     tonePeak on 17:37 <held figure> -> <recording figure> dB; capture cost <n> ms
 DRIFT:      <0 if a criterion moved>
 ```
 
-**Section 2 tells the owner in one paragraph** that the words no longer break apart
-mid-word, with one line of real text before and after, and that no letter changed.
+**Section 3 leads with** the old and new `tonePeak` lines for 17:37 and 014113, one above the
+other, then the four-capture table from task 1: held figure, recording figure, whether the
+capture holds keying.
+
+**Section 2 tells the owner in one paragraph** that the strength figure on each capture's sheet
+is now about that capture, what it said for 17:37 before and after, and what it costs.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 3
-APPROACH: re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+STEP: 6
+APPROACH: measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
 MOVE: continue
-WHY: PHASE_PLAN.md step 3 criterion 3.2 asks that each change be kept when the total edit count over all keyed recordings falls, no named floor breaks, the adjudicated readings are unchanged or changed to exactly their own adjudicated text, and no capture row's named count falls
+WHY: PHASE_PLAN.md step 6 criterion 6.7 asks that tonePeak in a per-capture sidecar be a figure measured over that recording and labeled as such, watched failing first against the held figure, with the cost at capture stated; step 3's only open criterion, 3.4, cannot flip after unit 416 kept two changes, so under R64 and R65 the loop moves to the screen.
 STATE: partial
-DECIDED: whether the diff is cherry-picked or rebuilt from the trace, and the per-type timeouts, are the author's, overrulable
-LICENCE: PHASE_PLAN.md R63, R65, R66, section 3, section 6; HM-DEC-173; HM-DEC-144; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
-ACCOMPLISHED: the words on the CW tab stop breaking apart mid-word, at no cost to a single letter, and the phase's first kept correctness gain is in the tree
-ADVANCES: step 3 criterion 2
+DECIDED: author's, overrulable - P9 answered: step 3 stays partial and is not marked done because 3.4 is unmet and cannot fire while the no-kept-change count is zero; 6.7 chosen over 6.3, 6.4 and 6.5 because R63 already rules it and 6.2 is open on tonePeak alone; the measurement method, whether the held figure stays on its own line, the 50 ms UI-thread bound and the per-type timeouts are the unit's to decide and report
+LICENCE: PHASE_PLAN.md R63, R64, R65, section 6; step 6 criteria 6.2 and 6.7; step 3 criterion 3.4; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+ACCOMPLISHED: the strength figure on every capture's sheet is about that capture, so the next work order is not written from a number that rates an empty recording above a callsign
+ADVANCES: step 6 criterion 7
 END-ARBITER-DECISION
 ```

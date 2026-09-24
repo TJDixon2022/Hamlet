@@ -1,0 +1,126 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel [730 ms]
+  Standard Output Messages:
+ offer  : PSK31 sends a steady carrier, so it runs warmer than voice. Hamlet can set your radio's transmit power to 50% for you. Nothing else on the radio changes, and nothing is set unless you press this.
+ button : Set my power to 50%
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord [184 ms]
+  Standard Output Messages:
+ card: [he is still sending] visible True 190 px, brush #ff0f7b4d
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed [127 ms]
+  Standard Output Messages:
+ the card offers [Confirm]
+ drawn: W1AW | United States · 360 miles | Your turn | ✕ | W1AW handed over to you, and it is your turn. | Confirm, and sign off | Log this contact | Say something to him | Send | Distance | 360 miles · east-northeast | Grid | FN31 | His time | 08:32 by the sun | Achieves | Would open a new area
+ visible buttons: ✕ | Confirm, and sign off | Log this contact | Send | Avalonia.Controls.Border | Would open a new area
+
+
+[xUnit.net 00:00:02.15]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing [818 ms]
+  Standard Output Messages:
+ 1100 x 580 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 540 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 500 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 620 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 900 x 620 (drawn 900 x 620):
+     TopRow                16,119 868 x 186  whole True
+     DigitalModeStrip      29,373 842 x 33  whole True
+     DigitalTuneStrip      29,373 0 x 0  whole False
+     WorkspaceBoundary     16,360 868 x 186  whole True
+     DigitalPanes          29,486 842 x 72  whole True
+     DigitalSendReserved   290,334 594 x 23  whole True
+     StatusBar             16,558 868 x 46  whole True
+     the rig display       351,123 520 x 106  so TopRow can spare 80 px without clipping it
+     panel waterfall       29,486 225 x 72  whole True  viewport 24 extent 371
+     panel decoded         264,486 378 x 72  whole True  viewport 13 extent 36
+     panel For You         647,486 225 x 72  whole True  viewport 24 extent 371
+     the canvas viewport 160, extent 185, so it scrolls 25 px
+     waterfall at rest 29,486 225 x 72; canvas at its end 29,461 225 x 72
+     decoded   at rest 264,486 378 x 72; canvas at its end 264,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 647,486 225 x 72; canvas at its end 647,461 225 x 72
+     For You scrolled to 347, showing up to 371 of 371
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 2.4424 Seconds
+RC=0 WALL=3s

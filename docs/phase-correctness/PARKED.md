@@ -118,3 +118,10 @@ what is left there is letters, not spaces, and one real word gap after `DE` went
 inserted ones. At unit 416's exit the trace counts, on the ten and 17:37, 128 boundaries:
 joined 90, word kept 22, inserted 14, missing 2. Whether step 3 closes done, or another unit attacks the joined gaps or the
 letters, is the arbiter's call. Not blocking; the loop goes on.
+
+**Answered by work instruction 417, 2026-09-24 - the arbiter's, overrulable.** Step 3 stays
+partial and is not marked done: 3.4 reads *after three consecutive units with no kept change*,
+unit 416 kept two, so the count stands at zero and no unit can honestly flip it now, and a
+closed step is closed for good. What is left on 17:37 is letters, not spaces, which is P6's
+wall and is logged there rather than chased. Under R64 and R65 the loop moves to the screen,
+step 6 criterion 6.7, and the spacing stays as unit 416 left it.

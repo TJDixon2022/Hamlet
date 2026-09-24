@@ -9,6 +9,19 @@ STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose 
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
+## UNIT 417 - STEP 6
+
+STEP: 6
+APPROACH: measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 criterion 6.7 asks that tonePeak in a per-capture sidecar be a figure measured over that recording and labeled as such, watched failing first against the held figure, with the cost at capture stated; step 3's only open criterion, 3.4, cannot flip after unit 416 kept two changes, so under R64 and R65 the loop moves to the screen.
+STATE: partial
+DECIDED: author's, overrulable - P9 answered: step 3 stays partial and is not marked done because 3.4 is unmet and cannot fire while the no-kept-change count is zero; 6.7 chosen over 6.3, 6.4 and 6.5 because R63 already rules it and 6.2 is open on tonePeak alone; the measurement method, whether the held figure stays on its own line, the 50 ms UI-thread bound and the per-type timeouts are the unit's to decide and report
+LICENCE: PHASE_PLAN.md R63, R64, R65, section 6; step 6 criteria 6.2 and 6.7; step 3 criterion 3.4; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+ADVANCES: step 6 criterion 7
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.103 to 1.13.104. PHASE_STATUS.md names unit 417 and CURRENT_STEP 6. HEAD at entry 12e2d442. P9's answer appended beneath it in PARKED.md, the arbiter's, overrulable. Section 5 against the tree: TonePeakRecordLine at MainWindowViewModel.cs 12373 is the only place the tonePeak line is composed, called once from CaptureNotes at 11805; TheSidecarIsReReadTests asserts the line starts tonePeak and three spaces; CwDecodeReport.SnrDb is built from CwDecoder._lastSnrDb, the held peak; the roster's tonePeakDb reads SnrDb from the report at MainWindowViewModel.cs 20601 and nothing in src or tests parses the sidecar line; CaptureNotes is handed the capture's MonoAudio; no mismatch. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 274 of 278, four lost to the dispatcher loop and 4 of 4 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; TheSidecarDoesNotContradictItselfTests 3 of 3; TheSidecarIsReReadTests 2 of 2, tonePeak 24.7 on 014113 and 25.7 on 17:37, both the held figure; baseline 22 over 46, outside 110 over 363, the ten 35 over 156, all keyed 167 over 565, 17:37 19 over 25, inferred keys. These are the numbers to beat.
+
 ## UNIT 416 - STEP 3
 
 STEP: 3
@@ -240,3 +253,20 @@ STATE_WHY: Criteria 3.1 and 3.5 are met, and the report shows the green exit cou
 ADVANCED: no
 ATTEMPT: 3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | no | executed | leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
 REASON: 3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 1 - STEP 3
+
+STEP: 3
+APPROACH: re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open item is whether step 3 closes or another unit takes on the joined gaps, which is a plan and progress question outside keying, money and operator promises, and the section says nothing blocks and no asks are outstanding.
+MOVE: continue
+WHY: PHASE_PLAN.md step 3 criterion 3.2 asks that each change be kept when the total edit count over all keyed recordings falls, no named floor breaks, the adjudicated readings are unchanged or changed to exactly their own adjudicated text, and no capture row's named count falls
+DECIDED: whether the diff is cherry-picked or rebuilt from the trace, and the per-type timeouts, are the author's, overrulable
+LICENCE: PHASE_PLAN.md R63, R65, R66, section 3, section 6; HM-DEC-173; HM-DEC-144; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+COST: 4.271218800000001
+ACCOMPLISHED: the words on the CW tab stop breaking apart mid-word, at no cost to a single letter, and the phase's first kept correctness gain is in the tree
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 3.1, 3.2, 3.3 and 3.5 are met with numbers shown, but 3.4 is still unticked, and the report leaves it to the arbiter whether step 3 closes or another unit takes on the 90 joined gaps.
+ADVANCED: yes
+ATTEMPT: 3.2 | unit 1 launched 2026-09-24T12:08:39.542Z | yes | executed | re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
