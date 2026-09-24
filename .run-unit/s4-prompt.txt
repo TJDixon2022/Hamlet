@@ -51,12 +51,24 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-**1. Compare the RF gain on one scale, so an RF gain already at full is neither written nor reported as unconfirmed.** (Carried from unit 411, verbatim, per HM-DEC-139. It is not this unit's work: it changes what is sent to the radio.)
-- **Ruling wanted:** in a later unit, make `ReceiverSetup` and `Ic7300Rig.SetSettingAsync` compare the RF gain on one scale, either the condition in percent or the read-back in raw units.
-- **Reasoning:** today every CW tune-in writes 255 to `14 02`, even at 100%. Every one is filed `NotConfirmed`, so the memory never records it, and "your hand wins" (HM-DEC-056) can never apply to RF gain. With this unit, the banner's sentence is true but appears on every tune-in. After the fix it would appear only when something is actually off.
-- **Rejected, and why:** fixing it here. It changes what is sent to the radio, and step 6 changes only what the operator reads (R62, Â§6). The fix would also move the outcome to `AlreadyRight` or `Changed` and change what the hover narrates.
+**1. Does 3.2's third test forbid an adjudicated reading moving onto its own adjudicated
+text?** This bears on 3.2. It is the only thing between the narrowed relabel and a kept
+change, so it is raised here rather than parked. It does not halt the loop.
 
-Unit 411's item 2, tonePeak, is answered by R63 and leaves the list. Parked under R54 as blocking nothing in this unit, in `docs/phase-correctness/PARKED.md`:
-- **P3:** which keyed recordings step 3 is judged on, and whether on the live or the bench reading.
-- **P4:** the benchmark is fourteen captures, not thirteen.
-- **P5:** the two new guard tests are on no carry-forward line.
+- **Ruling wanted:** whether "the three adjudicated readings are unchanged character for
+  character" is met when a reading changes to exactly the text that was adjudicated. On
+  `cw-2026-08-17-134712` that is `N4 ` becoming `N4L`, HM-DEC-144's text, 1 edit to 0.
+- **Reasoning:** the third test exists so a change cannot buy total edits by damaging a
+  reading somebody ruled on. A reading that becomes the ruled text has not been damaged. But
+  the words say "unchanged", and this unit applied them as written. The baseline also notes
+  `134712` as "retired as an anchor" while 3.2 still counts it as one of the three.
+- **If yes:** the narrowed relabel, `b68be0dd`, passes all four tests on this unit's
+  measurements: 185 over 565, 13 of 13 identical, adjudicated unchanged or onto their text,
+  51 rows identical. A next unit could re-apply it as it stands.
+- **If no:** it stays out. The next step 3 unit is the third of three under 3.4, and then the
+  trace goes to `PARKED.md`.
+- **Rejected:** narrowing the relabel further so `134712` does not move. That would choose
+  the boundary or the guard from a score, which section 10 forbids. And no letter reason
+  exists to treat that recording differently.
+
+Nothing was written to `PARKED.md` this unit. P6, P7 and P8 were not touched.

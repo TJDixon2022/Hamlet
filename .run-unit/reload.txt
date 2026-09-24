@@ -1,12 +1,16 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-23T21:35:01-04:00  root C:\Source\HamLet
+measured 2026-09-24T00:52:19-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0170.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0172.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -18,14 +22,18 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 0483369d
-  uncommitted at the root : 0
+  HEAD   : 61d8b58f
+  uncommitted at the root : 4
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
+      M RUN_LEDGER.md
+      M WORK_INSTRUCTIONS.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0170
+  highest in CLAUDE.md section 1 : CPS-DEC-0172
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -33,7 +41,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  290 lines, 22015 bytes
+  327 lines, 25017 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -147,6 +155,30 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   spacing cannot eat the night. Order of preference when nothing is blocked: **the spacing
   first**, then the screen.
   
+  **R65 - Tim, 2026-09-24: the RF gain scale is licensed, and nothing carried ever halts the
+  loop.** Two parts, and the second governs every unit of this phase.
+  
+  **One: the RF gain ask is answered.** `ReceiverSetup` and `Ic7300Rig.SetSettingAsync` may
+  compare the RF gain on a single scale - the condition in percent, or the read-back in raw
+  units - so that a gain already where it should be is recognized as such. **The change makes
+  the app write less to the radio, not more**, and nothing about keying, transmitting or
+  power is touched. Unit 411's item 1 is answered and leaves the carried list (HM-DEC-139).
+  
+  **Two: a carried ask never stops the loop.** A stop 3 is legitimate only when **a criterion
+  of the step the unit is working cannot be met without a ruling on one of the three**.
+  Everything else - a carried ask, a question a report raises in section 4, a finding a unit
+  noticed on the way past, an item already in `PARKED.md` - is parked and the loop goes on,
+  however squarely it touches keying, transmit, money or a product fact. **A unit does not
+  carry an ask forward into its own report as blocking unless the criterion it was authored
+  for is the one that cannot be met.** This was already R54's intent; R65 states it as a rule
+  the arbiter applies to the stop itself.
+  
+  **Three: no unit halts for want of work.** When the criterion a unit was authored for
+  cannot be advanced, the arbiter authors the next unit against a different open criterion
+  (R64). Six are open and independent: 1.1 to 1.5 the synthetic keys, 3.1 to 3.5 the spacing,
+  4.1 to 4.4 the pitch judge, 6.3 the reflow, 6.4 the hover text, 6.5 the dead button, 6.7
+  tonePeak. **Preference when nothing is blocked: the spacing first, then the screen.**
+  
   ## Â§3 What is different from the phases before it
   
   This phase scores text for the first time, so two things bind every unit:
@@ -185,12 +217,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** step 0 done.
   
   **Exit:**
-  - [ ] 1.1 The fixture generator produces CQ calls of the standard form at a named set of speeds and signal strengths, each with its exact key written beside it, and each is read back by the scorer at HEAD and tabled.
-  - [ ] 1.2 The generated set spans at least three speeds and at least three signal strengths, and the report states the recipe for every case so another unit can rebuild them.
-  - [ ] 1.3 `docs/phase-correctness/inferring-a-key.md` states the rule for inferring a key from a CQ call on the air: what may be inferred, what may not, and how the scored region is chosen, with `cw-2026-09-23-173723` worked as the example.
-  - [ ] 1.4 The synthetic cases carry a written statement of what they do not prove (Â§12.5), and no synthetic case is ever the sole evidence for keeping a change.
-  - [ ] 1.5 The three floor tests and both carry-forward lines are green at exit.
-  - [ ] 1.6 Every capture of the locked-on run - `cw-2026-09-24-004108` onward - carries an inferred key built by differencing consecutive sidecar transcripts, with its scored region named, ambiguous stretches left unscored, and each key file stating that it is inferred and how; each is scored by `CwScorer` and tabled beside the baseline (R61, R63).
+  - [x] 1.1 The fixture generator produces CQ calls of the standard form at a named set of speeds and signal strengths, each with its exact key written beside it, and each is read back by the scorer at HEAD and tabled.
+  - [x] 1.2 The generated set spans at least three speeds and at least three signal strengths, and the report states the recipe for every case so another unit can rebuild them.
+  - [x] 1.3 `docs/phase-correctness/inferring-a-key.md` states the rule for inferring a key from a CQ call on the air: what may be inferred, what may not, and how the scored region is chosen, with `cw-2026-09-23-173723` worked as the example.
+  - [x] 1.4 The synthetic cases carry a written statement of what they do not prove (Â§12.5), and no synthetic case is ever the sole evidence for keeping a change.
+  - [x] 1.5 The three floor tests and both carry-forward lines are green at exit.
+  - [x] 1.6 Every capture of the locked-on run - `cw-2026-09-24-004108` onward - carries an inferred key built by differencing consecutive sidecar transcripts, with its scored region named, ambiguous stretches left unscored, and each key file stating that it is inferred and how; each is scored by `CwScorer` and tabled beside the baseline (R61, R63).
   
   **Depends on:** step 0.
   
@@ -201,11 +233,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** step 0 done.
   
   **Exit:**
-  - [ ] 2.1 Every correctness number reported by the scorer carries unsure characters per named character for the same region, and the baseline table is re-issued with that column.
-  - [ ] 2.2 A named floor per keyed recording states how many named characters must be read at all, set from the baseline, and a change that drops below it is a regression whatever its edit count.
-  - [ ] 2.3 The guard is watched working: a deliberate change that suppresses most output is measured, shown to improve edits while breaking the floor of 2.2, and taken back out in the same unit.
-  - [ ] 2.4 The three floor tests and both carry-forward lines are green at exit.
-  - [ ] 2.5 The thirteen captures `cw-2026-09-24-003901` through `-004550` are tracked in the tree and carry a named-character floor and an element floor each, measured once at HEAD and printed old beside new, and they are run by the capture floor test with the other rows; no existing row is retired or lowered (R63).
+  - [x] 2.1 Every correctness number reported by the scorer carries unsure characters per named character for the same region, and the baseline table is re-issued with that column.
+  - [x] 2.2 A named floor per keyed recording states how many named characters must be read at all, set from the baseline, and a change that drops below it is a regression whatever its edit count.
+  - [x] 2.3 The guard is watched working: a deliberate change that suppresses most output is measured, shown to improve edits while breaking the floor of 2.2, and taken back out in the same unit.
+  - [x] 2.4 The three floor tests and both carry-forward lines are green at exit.
+  - [x] 2.5 The thirteen captures `cw-2026-09-24-003901` through `-004550` are tracked in the tree and carry a named-character floor and an element floor each, measured once at HEAD and printed old beside new, and they are run by the capture floor test with the other rows; no existing row is retired or lowered (R63).
   
   **Depends on:** step 0. Independent of step 1: when one blocks the arbiter works the other.
   
@@ -216,7 +248,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** steps 0 and 2 done, the baseline and the guard in force.
   
   **Exit:**
-  - [ ] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
+  - [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
   - [ ] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
   - [ ] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
   - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
@@ -257,6 +289,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
   - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
   - [ ] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
+  - [ ] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
   - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
   - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
   - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
@@ -278,6 +311,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     fact the product states to the operator about a signal, a station or a send. A test's
     shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
   - **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+  - **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
+    without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
+    finding noticed on the way past **never halts the loop**, whatever it touches. The
+    arbiter parks it and authors the next unit.
+  - **When a unit cannot advance its criterion, the next unit is authored against a different
+    open criterion** (R64, R65). The loop halts only at stop 1, when nothing but the owner's
+    verdict is left.
   - **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
     touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
   - **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
@@ -316,6 +356,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
+    a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
+    only when the criterion being worked needs the ruling. Written after unit 412 completed
+    its work and the loop halted at stop 3 on an ask 412 had carried rather than on anything
+    blocking a criterion.
   - **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
     measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
     the keys by differencing, 2.5 the floors, 6.7 tonePeak.
@@ -326,32 +371,88 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  12 lines, 2179 bytes
+  13 lines, 2178 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
-  CURRENT_STEP: 1
-  WORK_INSTRUCTION: 411 - the screen stops saying what is not so
+  CURRENT_STEP: 3
+  WORK_INSTRUCTION: 414 - keys nobody has to guess
+  HEARTBEAT: 2026-09-24 00:52:17
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
-  STEP: 1 | not started | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
-  STEP: 2 | not started | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
-  STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
+  STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
+  STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
+  STEP: 3 | partial | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
   --- PHASE_OUTCOME.md ---
-  82 lines, 14588 bytes
+  188 lines, 40933 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
-  STEP: 1 | not started | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
-  STEP: 2 | not started | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
-  STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
+  STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
+  STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
+  STEP: 3 | partial | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  
+  ## UNIT 414 - STEP 1
+  
+  STEP: 1
+  APPROACH: generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
+  MOVE: work around
+  WHY: Step 3's two candidates both fell on P6, so a third straight away would meet the same wall; step 1 is independent, all of 1.1 to 1.5 can be met tonight, and exact keys are what step 3's evidence lacks, with 1.4 keeping them from ever being the sole evidence.
+  STATE: partial
+  DECIDED: author's, overrulable - step 1 before a second step 3 unit despite R64's preference; textbook spacing for the grid; 12, 18 and 25 wpm with SNR levels chosen from the generator's own measurement; whole decode scored against whole key; synthetics tabled outside 3.2's total (P7); a five-unit character-gap row as the drop candidate; per-type timeouts
+  LICENCE: PHASE_PLAN.md R61, R64, R65, section 3, section 6; step 1 criteria 1.1 to 1.5; CLAUDE.md 0.0, 0.2 and 12.5; HM-DEC-101; HM-DEC-155; HM-DEC-165; FACT-004
+  ADVANCES: step 1 criterion 1
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.100 to 1.13.101. PHASE_STATUS.md names unit 414 and CURRENT_STEP 1. HEAD at entry 5f8d48b0. Section 5 against the tree: CwFixtureRecipe and CwFixtureGenerator.Generate are as the instruction says, default spacing 105 / 283 / 65 / 130 / 280 ms, and the sidecar names wpm and snrDb; CwKeyKind already has Exact, in the test project's CwScorer.cs and not in src, so task 2 adds nothing to it; 17:37's region rule is written in baseline.md and CwScorer.FromFirst, and a third copy, TheSeventeenThirtySevenCaptureTests.ScoredRegion, opens at the first CQ CQ rather than the first CQ; HM-DEC-101's gate still exists as CwFixtureCommitTests.TheReferenceHasScoredThisFixture, which runs nothing at test time - it asserts a committed reference line and scoredBytes stamp that tools/score-fixtures/score-fixtures.py writes by running cwdecoder.py, over CwFixtureCatalogue.All in tests/fixtures/cw/receiver only, and Python cannot run in this session; docs/phase-correctness/inferring-a-key.md does not exist. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 378 s; APP 278 of 278 in 162 s, none lost to the dispatcher loop; captures 51 of 51 in 121 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s; TheNumberCannotBeGamedTests 13 of 13 in 62 s; TheBaselineIsScoredTests 2 of 2 at 33 edits over 46 and outside 124 over 363, inferred keys; TheBenchmarkIsKeyedTests 1 of 1 at bench 60 over 156 and live 41 over 156, inferred keys.
+  TASK 1, THE TRACE: WhatTheGeneratorMakesTests, one theory over the two corners, asserting nothing, 2 of 2 in 6 s; SyntheticCq holds the recipes, the floors' decode path and the measurement. Each corner measured directly and taken apart into tone and noise, the noise being the same recipe rendered with the tone 400 dB down, same seed and length. cq-12wpm-15db: 618 Hz by a one-hertz scan against 615 drifting 3; SNR 15.09 dB direct and 14.99 apart against 15.0; 73 marks and 72 gaps of 73 and 72, every run against its own; at half amplitude dit 95.0, dah 295.0, element gap 105.0, character 305.0, word 705.0 ms against 100 / 300 / 100 / 300 / 700, the 5 ms raised-cosine edges predicting exactly that, worst 0.3 ms. cq-25wpm-0db: direct the envelope finds 243 marks, the noise's with the tone's, and 4.23 dB; apart -0.01 dB against 0.0, 73 and 72 runs, dit 43.0, dah 139.0, gaps 53.0 / 148.9 / 341.1 ms against 48 / 144 / 48 / 144 / 336, worst 0.3 ms - so at 25 wpm the edges put the gaps at 1.10, 3.10 and 7.11 dits of the recipe's and the marks at 0.90 and 2.90. No generator defect. Decode at HEAD, CwDecoder hop by hop from 600 Hz: cq-12wpm-15db 0 edits over 27 characters against an exact key, 0 unsure per 21 named; cq-25wpm-0db 27 edits over 27 against an exact key, nothing named, the decode empty. The levels stay the catalogue's 15, 5 and 0 dB, confirmed as rendered; none chosen from a decode.
+  TASK 2, THE SET (1.1, 1.2): nine cases in tests/fixtures/cw/synthetic-cq, CQ CQ CQ DE N0CALL N0CALL K at 12, 18 and 25 wpm by 15, 5 and 0 dB, textbook spacing, seeds 20260924 to 20260932; each a WAV, a sidecar and a key.md stating exact by construction, the full recipe, the scored region and what it does not prove; WAVs 3,338,250 bytes. TheSyntheticCqRebuildsTests 10 of 10 in 1 s, nine byte-identical and key files as their recipes write them, the tenth writing only when HAMLET_WRITE_SYNTHETIC_CQ is 1. TheSyntheticCqIsScoredTests 1 of 1 in 6 s, first run given 600 s, asserting no edit count: 12 wpm 0 / 5 / 27 edits at 15 / 5 / 0 dB, 18 wpm 13 / 1 / 27, 25 wpm 1 / 1 / 27, each over 27 characters against an exact key; the grid 102 edits over 243 characters against exact keys, 1 unsure per 134 named. 18 wpm at 15 dB splits the second N0CALL into N0C E T E T E ELT; 0 dB prints nothing at any speed. Tabled in baseline.md under synthetic, exact keys, outside every total, 1.4's rule beside it; P7 and P8 parked.
+  TASK 3, THE RULE (1.3, 1.4): docs/phase-correctness/inferring-a-key.md - what may be inferred (the fixed form of a CQ call, a callsign read alike twice or more, text added between consecutive transcripts by 1.6's differencing, cited), what may not (anything nobody could read, a call seen once, a number, report or name not repeated, anything that "must have been"), the scored region by 17:37's rule with score less rather than guess more, and cw-2026-09-23-173723 worked in six steps from its own key file: form found, WB6RED established by ETWB6RED and W B 6 RE D, key CQ CQ CQ DE WB6RED WB6RED with no K keyed, the soup before the first CQ unscored, 29 edits over 25 against an inferred key, the region neither cut back nor widened. docs/phase-correctness/synthetic-cq.md - what the set does not prove: textbook spacing, the decoder's own fallback at CwUnitEstimator.cs 216 in MeasureGaps, so blind to step 3's fault; generated noise; one tone, no second station; machine-perfect keying; steady; one call; no reference score. Cited by all nine key files; 1.4's rule stated in baseline.md beside the table.
+  TASK 4, THE FIVE-UNIT ROW: three cases at 18 wpm by 15, 5 and 0 dB, textbook but for a character gap of five units, seeds 20260933 to 20260935, each with WAV, sidecar and exact key file citing synthetic-cq.md; the nine grid WAVs rewrote byte-identical. TheSyntheticCqRebuildsTests 13 of 13 in 1 s; TheSyntheticCqIsScoredTests 1 of 1 in 7 s. 15 dB 15 edits over 27 against an exact key, 14 of them spaces added, every character gap read as a word gap, 0 unsure per 21 named; 5 dB 21 over 27, 1 unsure per 25; 0 dB 27 over 27, nothing printed. The row 63 edits over 81 characters against exact keys; the grid unchanged at 102 over 243. Tabled in baseline.md beside the grid, outside every total. All twelve WAVs 4,472,784 bytes.
+  TASK 5, THE EXIT ROUND (1.5): Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178 in 376 s; APP 278 of 278 in 164 s, none lost to the dispatcher loop; captures 51 of 51 in 125 s, every row identical to entry; adjudicated 13 of 13, identical to entry; clean synthetics 2 of 2; TheNumberCannotBeGamedTests 13 of 13, identical to entry; TheBaselineIsScoredTests 2 of 2 at 33 over 46 and 124 over 363, identical to entry; TheBenchmarkIsKeyedTests 1 of 1 at bench 60 over 156, identical to entry; WhatTheGeneratorMakesTests 2 of 2; TheSyntheticCqRebuildsTests 13 of 13; TheSyntheticCqIsScoredTests 1 of 1, grid 102 over 243 and wide row 63 over 81 against exact keys, as at task 4. The transmit files print nothing against 7e209cb4; all of src prints nothing against 5f8d48b0. 1.1 to 1.5 ticked; step 1 done.
+  FATE: executed, complete at task 5 of 5, none dropped; twelve synthetic CQ calls with exact keys, 165 edits over 324 characters against exact keys outside every total; inferring-a-key.md and synthetic-cq.md written; all keyed recordings 217 over 565 against inferred keys at entry and exit; nothing that keys, transmits or decides a character changed.
+  
+  ## UNIT 413 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 3.1 asks that the dominant error kind named in 0.3 be traced to a named line or property in src/Hamlet.RadioEngine/Cw, printed by a fact that asserts nothing, before any change is built
+  STATE: not started
+  DECIDED: which candidate is built first, the form of the trace printer and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; HM-DEC-172; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0 and 0.2
+  ADVANCES: step 3 criterion 1
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.99 to 1.13.100. HM-DEC-172 in DECISIONS.md and CLAUDE.md section 1. PHASE_STATUS.md names unit 413 and CURRENT_STEP 3. HEAD at entry 8a140c79. Section 5 against the tree: the capture floor table holds 51 rows and the ten keyed captures have key files, eleven with 004535 keyed with nothing to score; baseline.md holds the keyed table with unsure per named; CwScorer.Kinds counts spaces added and missing from the alignment; MeasureGaps is CwUnitEstimator.cs 174, called from CwProbabilisticStream.cs 453 with the unit from CwUnitEstimator.Measure; G1 survives only as prose, docs/phase-cw/unit405-reds.md 245 and the trace behind it at 80 to 85, no diff. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 394 s; APP 276 of 278 in 155 s, Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference and TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow lost to the dispatcher loop before any assertion, 2 of 2 alone; captures 51 of 51 in 123 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s. THE NUMBER TO BEAT, every key inferred: the baseline 33 edits over 46 characters, 17:37 29 over 25; outside the baseline 124 over 363; the ten keyed captures on the bench 60 over 156, live 41; all keyed recordings together 217 edits over 565 characters; named floors 13 of 13.
+  TASK 1, THE TRACE (3.1): WhereTheWordsBreakTests, two facts asserting nothing, src untouched, the stream's held gaps read by reflection. 122 boundaries between named characters in the scored regions; inserted 29 on the ten and 14 on 17:37, missing 1. On the ten 27 of 29 inserted were read under the textbook wants, word from 4.58 units, 252 ms at 21.8 wpm, over gaps of 4.7 to 7.8 units, median 5.6; joined median 4.1, word gaps kept median 11.6. On 17:37 8 of 14 under held gaps out of order, G1's case. Named: CwUnitEstimator.cs 216, the trough between the character and word heaps - refused centroids 1.1 / 4.8 / 11 units, 304 of 320 refusals on the ten no-trough, 260 of them at the word boundary only - so the structure is not held and CwProbabilisticDecoder.DecodeAt 1175 to 1177 uses Kinds 3 and 7. docs/phase-correctness/unit413-trace.md; 3.1 ticked.
+  TASK 2, CANDIDATE 1 (3.2), OUT: MeasureGaps keeps the element and character trough and, where the word heap shows no trough, puts the word gap at seven thirds of the measured character gap; committed alone at 27c75b77. 1: all keyed 217 to 207 edits over 565, the ten on the bench 60 to 46 over 156, baseline 33 to 33, outside 124 to 128, 17:37 29 to 29; inserted spaces on the ten 29 to 16. 2: named floors 13 of 13. 3: the three adjudicated readings identical character for character. 4: captures 41 of 51, named characters fell on 021629 27 to 25, 002016 44 to 41, 004027 40 to 39, 004133 30 to 28, 004510 38 to 37, and named elements on five more. Fails the fourth test; taken back out in the next commit, src identical to 8a140c79.
+  TASK 3, G1 (3.2), OUT: MeasureGaps refuses a clipped reading that puts the character gap past the word gap, so the stream keeps the last gaps it stood behind; a different mechanism from candidate 1, not a narrowing of it. 1: all keyed 217 to 193 edits over 565, baseline 33 to 15, 17:37 29 to 11 reading CQ CQ CQ DEW B6 RE D W B 7E E I, outside 124 to 115 with 032012 13 to 4, the ten on the bench 60 to 63. 2: named floors 12 of 13, 17:37 46 to 38 named, the stray E and T gone. 3: the three adjudicated readings identical. 4: captures 50 of 51, 004133 named 30 to 25 with named elements 87 to 88. Fails the second and fourth tests; taken back out in the next commit, src identical to 8a140c79. Both candidates raise the same finding, parked as P6: joining split letters lowers the named-character count the floors protect.
+  TASK 4, THE EXIT ROUND (3.5): Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178 in 386 s; APP 276 of 278 in 178 s, TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed and TheFavoritesAreUnderTheGreenZoneTests.TheStarIsDrawnAndHittableAtAllNineSizesAndNoCaretIsAnywhereOnTheRigFace lost to the dispatcher loop before any assertion, 5 of 5 alone counting the theory's cases; captures 51 of 51 in 130 s, every row identical to entry; adjudicated 13 of 13; synthetics 2 of 2; TheNumberCannotBeGamedTests 13 of 13; TheScorerCountsWhatAHandCountsTests 20 of 20; TheBaselineIsScoredTests 2 of 2 at 33 over 46 and 124 over 363; TheBenchmarkIsKeyedTests 1 of 1 at 60 over 156; WhereTheWordsBreakTests 2 of 2, 43 inserted as at task 1. The transmit files print nothing against 7e209cb4; src prints nothing against 8a140c79. 3.1 ticked; 3.2, 3.3 and 3.5 open; step 3 partial, unit one of three under 3.4.
+  FATE: executed, complete at task 4 of 4, none dropped; the trace names CwUnitEstimator.cs 216; two changes built and taken out under 3.2; all keyed 217 edits over 565 against inferred keys at entry and exit; nothing that keys, transmits or decides a character changed at exit.
+  
+  ## UNIT 412 - STEP 2
+  
+  STEP: 2
+  APPROACH: bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 2 criterion 2.5 asks that the thirteen captures carry a named-character floor and an element floor each, measured once at HEAD, run with the other rows, with no existing row retired or lowered
+  STATE: not started
+  DECIDED: the form of the new floor rows, the conservatism of each inferred key, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R57, R61, R63, R64, section 3, section 6; HM-DEC-171; HM-DEC-168; HM-DEC-103; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0
+  ADVANCES: step 2 criterion 5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.98 to 1.13.99. HM-DEC-171 in DECISIONS.md and CLAUDE.md section 1. PHASE_STATUS.md names unit 412 and CURRENT_STEP 2. HEAD at entry 0483369d. The captures of 2026-09-24 and cases-2026-09-23.txt were already committed by the seed commit 0483369d, not untracked as the instruction says, and they are fourteen, 003901 through 004550, not thirteen; nothing was left to commit. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 370 s; APP 276 of 278 in 152 s, TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer and ThePsk31ConversationCardTests.APsk31CardOffersNothingWhileItIsNotHisTurn lost to the dispatcher loop before any assertion, 2 of 2 alone; captures 37 of 37 in 93 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s.
+  TASK 1, THE FLOORS (2.5): fourteen rows added to TheCapturesThatDecodeKeepDecodingTests.Floors, measured once through the harness at cffb8c2f, named, elements, placeholders: 003901 9 20 0; 003919 27 54 0; 004027 40 119 1; 004108 32 107 0; 004133 30 87 2; 004205 34 96 2; 004234 37 96 1; 004322 39 112 0; 004347 40 115 0; 004405 36 106 1; 004427 43 112 1; 004510 38 104 0; 004535 47 128 1; 004550 41 123 0. Captures type whole 51 of 51 in 122 s; the 37 original rows print identically to entry. The instruction says thirteen; the range it names holds fourteen and all fourteen are banked.
+  TASK 2, THE GUARD (2.1, 2.2, 2.3): CwReading carries the decoder's own unsure flag per character, a placeholder or a letter below high confidence, and CwScore carries Named and Unsure over its own region; TheScorerCountsWhatAHandCountsTests 20 of 20 with two new hand counts, one of them red once on the test's own wrong expectation and corrected. baseline.md re-issued with unsure per named and a named floor per keyed recording: baseline 33 edits over 46 characters against inferred keys, 0 unsure per 47 named; outside 124 over 363, 4 unsure per 269. TheNumberCannotBeGamedTests holds a named floor over the whole recording on all 13 keyed recordings, 547 named in all, 13 of 13. 2.3: leaving out every single-element character took the baseline from 33 edits to 21 over 46 and broke 13 of 13 named floors, 547 named to 350; raising the emission bar to 100 suppressed most output, 547 named to 97, and took 17:37 from 29 to 25 but the total to 42, 13 of 13 broken; bars of 10 and 5 gave 34. Both taken back out uncommitted; src/Hamlet.RadioEngine/Cw prints nothing against 02ce4602; re-run 33 edits and 13 of 13.
+  TASK 3, THE KEYS BY DIFFERENCING (1.6): the sidecar text is cumulative, each predecessor a prefix of the next, 13 of 13 pairs across the session. Eleven key files, 004108 to 004550, each stating it is inferred and built by differencing; 14 stretches over 10 captures, 004535 keyed with nothing to score; callsigns and numbers not read with confidence left out. TheBenchmarkIsKeyedTests reads them from the files, asserts each stretch is in what its capture added, 1 of 1. Live, 41 edits over 156 characters against inferred keys, 0 unsure per 138 named, 40 of the 41 spaces; bench, cold replay of each WAV, 60 edits over 156. Four captures follow their predecessor by more than 30 s and part of what they added predates their WAV. Tabled in baseline.md beside the baseline, outside its total.
+  TASK 4, THE EXIT ROUND (2.4): Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178 in 371 s; APP 277 of 278 in 156 s, TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow lost to the dispatcher loop before any assertion, 1 of 1 alone, counted neither way; captures 51 of 51 in 118 s, the 37 original rows print identically to entry; adjudicated 13 of 13; synthetics 2 of 2; this unit's types TheScorerCountsWhatAHandCountsTests 20 of 20, TheBaselineIsScoredTests 2 of 2 at 33 edits over 46, TheNumberCannotBeGamedTests 13 of 13, TheBenchmarkIsKeyedTests 1 of 1 at 41 and 60 over 156. The transmit files print nothing against 7e209cb4; src/Hamlet.RadioEngine/Cw and all of src print nothing against 0483369d, the 2.3 changes having never been committed. 1.6 and 2.1 to 2.5 ticked; step 2 done, step 1 partial.
+  FATE: executed, complete at task 4 of 4, none dropped; capture floor rows 37 to 51; keyed recordings 4 to 14, the baseline's 4 and 10 captures keyed by differencing; nothing that keys, transmits or decides a character changed.
   
   ## UNIT 411 - STEP 6
   
@@ -424,9 +525,60 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: Criteria 6.1 and 6.6 are met with quoted sentences and measured runs, 6.2 stays open on tonePeak, and 6.3, 6.4 and 6.5 have not been started.
   ADVANCED: yes
   ATTEMPT: 6.1 | unit 1 launched 2026-09-24T00:45:09.815Z | yes | executed | make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+  
+  ## UNIT 1 - STEP 2
+  
+  STEP: 2
+  APPROACH: bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
+  HIT: section 4 wants a ruling: yes - Item 1 asks the owner to decide a change to what is written to the radio and to what the product records and reports as true about the RF gain setting, which falls inside the first and third stops, and the parked items do not change that.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 2 criterion 2.5 asks that the thirteen captures carry a named-character floor and an element floor each, measured once at HEAD, run with the other rows, with no existing row retired or lowered
+  DECIDED: the form of the new floor rows, the conservatism of each inferred key, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R57, R61, R63, R64, section 3, section 6; HM-DEC-171; HM-DEC-168; HM-DEC-103; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0
+  COST: 7.6107462
+  ACCOMPLISHED: what Tim watched the decoder read tonight becomes the mark every later change has to hold, and the spacing work has ten real cases to be judged on instead of one
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: Criteria 2.1 to 2.5 each have measured support, with unsure per named carried in CwScore and baseline.md re-issued at 0 per 47, 13 of 13 named floors, the guard broken both by removing E and T at 21 against 33 edits and by the bar at 100 which kept 97 of 547 named while 17:37 improved from 29 to 25, the exit round green apart from one dispatcher loss that passed alone, and all fourteen captures banked with captures at 51 of 51 and the original 37 unchanged.
+  ADVANCED: yes
+  ATTEMPT: 2.5 | unit 1 launched 2026-09-24T01:35:11.319Z | yes | executed | bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
+  
+  ## UNIT 1 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - All three items are about test criteria, cost checks and which total to use, none of them touch transmit, money or what the product tells the operator, and the section says nothing blocks the phase.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 3.1 asks that the dominant error kind named in 0.3 be traced to a named line or property in src/Hamlet.RadioEngine/Cw, printed by a fact that asserts nothing, before any change is built
+  DECIDED: which candidate is built first, the form of the trace printer and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; HM-DEC-172; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0 and 0.2
+  COST: 5.972764200000002
+  ACCOMPLISHED: the words Tim reads on the CW tab stop breaking apart mid-word, or the reason they cannot yet is measured on ten real recordings
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criterion 3.1 is met because the trace names CwUnitEstimator.cs 216 and WhereTheWordsBreakTests prints it without asserting anything, but 3.2, 3.3, 3.4 and 3.5 remain unmet since no change was kept and 17:37 has no before and after for a kept change.
+  ADVANCED: yes
+  ATTEMPT: 3.1 | unit 1 launched 2026-09-24T03:07:13.064Z | yes | executed | trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+  
+  ## UNIT 2 - STEP 1
+  
+  STEP: 1
+  APPROACH: generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Both parked items are about test totals and reference scoring for synthetic fixtures, which do not touch transmit, money or what the product promises the operator, and the section says nothing is blocked.
+  MOVE: work around
+  WHY: Step 3's two candidates both fell on P6, so a third straight away would meet the same wall; step 1 is independent, all of 1.1 to 1.5 can be met tonight, and exact keys are what step 3's evidence lacks, with 1.4 keeping them from ever being the sole evidence.
+  DECIDED: author's, overrulable - step 1 before a second step 3 unit despite R64's preference; textbook spacing for the grid; 12, 18 and 25 wpm with SNR levels chosen from the generator's own measurement; whole decode scored against whole key; synthetics tabled outside 3.2's total (P7); a five-unit character-gap row as the drop candidate; per-type timeouts
+  LICENCE: PHASE_PLAN.md R61, R64, R65, section 3, section 6; step 1 criteria 1.1 to 1.5; CLAUDE.md 0.0, 0.2 and 12.5; HM-DEC-101; HM-DEC-155; HM-DEC-165; FACT-004
+  COST: 6.232612200000001
+  ACCOMPLISHED: the decoder is measured for the first time against CQ calls whose text is known for certain, at three speeds and three signal strengths, and the rule for keying a call off the air is written down so anyone can check it
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: Every exit criterion of step 1 is met with evidence, 1.6 from unit 412, and 1.1 to 1.5 in this unit with twelve exact keyed cases scored at HEAD and tabled, three speeds by three levels with recipes held byte for byte by a rebuild test, both documents written and cited, and the floor and carry forward tests green at exit with counts identical to entry.
+  ADVANCED: yes
+  ATTEMPT: 1.1 | unit 2 launched 2026-09-24T04:07:07.356Z | yes | executed | generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
 
   --- CLAUDE.md ---
-  1393 lines, 201698 bytes
+  1395 lines, 203832 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -446,17 +598,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 781 bytes
+  19 lines, 771 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: TASK 4 of 4
-  WORK_INSTRUCTION: 411 - the screen stops saying what is not so
+  TASK: TASK 5 of 5
+  WORK_INSTRUCTION: 414 - keys nobody has to guess
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-23T21:27:02-04:00
-  NOTE: Unit 411 complete: the RF gain banner states the read-back it holds, keying and elementHz lines true, tonePeak dropped; 4 contradicting sentences to 1; section 4 raises 2 items
+  UPDATED: 2026-09-24T00:51:16-04:00
+  NOTE: Unit 414 complete: twelve synthetic CQ calls with exact keys, grid 102 over 243 and five-unit row 63 over 81; inferring-a-key.md written; step 1 done; 2 items parked, none blocking
   
   ---
   

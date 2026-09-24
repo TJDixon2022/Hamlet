@@ -135,6 +135,22 @@ cannot be advanced, the arbiter authors the next unit against a different open c
 4.1 to 4.4 the pitch judge, 6.3 the reflow, 6.4 the hover text, 6.5 the dead button, 6.7
 tonePeak. **Preference when nothing is blocked: the spacing first, then the screen.**
 
+**R66 - Tim, 2026-09-24: a reading that moves onto its own adjudicated text has not been
+damaged.** Unit 415 built a space-only relabel that moved no letter, no element and no
+placeholder on any of the 51 capture rows, held all 13 named floors identical, and took all
+keyed recordings from **217 edits to 185** over 565 characters and the ten bench recordings
+from **60 to 36** over 156. It was taken out on 3.2's third test alone, because on
+`cw-2026-08-17-134712` the reading changed from `N4 ` to `N4L` - which is exactly the text
+HM-DEC-144 adjudicated, 1 edit to 0. **The third test exists so that a change cannot buy
+total edits by damaging a reading somebody ruled on; a reading that becomes the ruled text
+has not been damaged.** 3.2's third test is amended to read: *unchanged character for
+character, or changed to exactly its own adjudicated text*. The amendment is stated before
+the re-apply, not after it: **any other change to an adjudicated reading still fails the
+test**, and a report that invokes this clause must print the reading before and after so the
+owner can see which happened. Rejected: leaving the test as written and losing the change;
+narrowing the relabel until `134712` does not move, which would choose the boundary from a
+score rather than a trace.
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -205,7 +221,7 @@ says - never the whole suite.
 
 **Exit:**
 - [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
-- [ ] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
+- [ ] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
 - [ ] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
 - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
 - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
@@ -267,6 +283,9 @@ halt.
   fact the product states to the operator about a signal, a station or a send. A test's
   shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
 - **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
+  movement fails 3.2's third test, and a report invoking the clause prints the reading
+  before and after.
 - **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
   without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
   finding noticed on the way past **never halts the loop**, whatever it touches. The
@@ -312,6 +331,9 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
+  own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
+  moved - can be re-applied.
 - **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
   a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
   only when the criterion being worked needs the ruling. Written after unit 412 completed

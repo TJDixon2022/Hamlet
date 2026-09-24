@@ -1,9 +1,9 @@
-# Work instruction 413 - the words stop shattering
+# Work instruction 416 - the relabel goes back in
 
-**Seed under `--seed`.** Step 3. The decoder reads `R I C H ARD D J UE G E L` where
-`RICHARD DJUEGEL` was sent. Every letter is there and the gaps fall in the wrong places.
-This unit traces why and attacks it, judged on edits against ten keyed recordings.
-**Five tasks, drop from the back.**
+**Seed under `--seed`.** Unit 415 built a space-only relabel that took every keyed recording
+from 217 edits to 185 and the ten bench recordings from 60 to 36, moving no letter, no
+element and no placeholder anywhere. It went out on one clause, which R66 has now amended.
+**This unit re-applies it and keeps it.** Four tasks, drop from the back.
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -39,7 +39,7 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 **HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run as
 its top comment says. **Never background and poll.** One type per invocation, each with its
-own `timeout`. **The captures type is 51 rows now; give it 600 s.**
+own `timeout`. The captures type is 51 rows; give it 600 s.
 
 **The report's four top-level headings are exactly these, character for character:**
 
@@ -52,25 +52,22 @@ own `timeout`. **The captures type is 51 rows now; give it 600 s.**
 
 **The `UNIT:` line carries no parentheses**, and no `&`, `|`, `<`, `>`, `^`.
 
-**Nothing in section 4 halts this phase.** Under R65 a stop 3 is legitimate only when a
-criterion **this unit was authored for** cannot be met without a ruling. Every other
-question - carried, noticed, or raised on the way past - is written to
-`docs\phase-correctness\PARKED.md` and the report says so. **Do not carry an ask forward as
-blocking.** The loop must run through the night.
+**Nothing in section 4 halts this phase** (R65). A question is parked in
+`docs\phase-correctness\PARKED.md` and the loop goes on. **Do not carry an ask forward as
+blocking** unless the criterion this unit was authored for cannot be met without it.
 
 ## 2. The tool facts
 
 Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
 refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
 `git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step commands
-go into `.run-unit\unit413-<name>.sh` and run with `sh`. Unit 412's runner scripts can be
-copied under this unit's name.
+go into `.run-unit\unit416-<name>.sh` and run with `sh`. Unit 415's scripts can be copied.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139, verbatim in section 4. **Unit 412's item 1, the RF gain scale, is
-answered by R65 and is now criterion 6.8; it leaves the carried list.** Nothing else is this
-unit's to answer.
+Carried per HM-DEC-139, verbatim in section 4. **Unit 415's item 1 is answered by R66 and
+leaves the carried list.** Unit 415's fifth self-decision asked whether 3.5 should wait for a
+kept change; it should not, and 3.5 stays ticked.
 
 ---
 
@@ -78,31 +75,32 @@ unit's to answer.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  Find why the gaps fall in the wrong places and repair it,
-            judged on edits over every keyed recording.
-ADVANCES:   step 3 criterion 1
+UNIT GOAL:  Re-apply unit 415's narrowed relabel b68be0dd under R66 and keep
+            it, with all four of 3.2's tests printed as numbers.
+ADVANCES:   step 3 criterion 2
 DRIFT:      0
 ```
 
-**Tim, 2026-09-24:** *"I also want to work on this spacing. We're translating, but it's just
-hard for me to read when it's spaced this way."*
+**What unit 415 measured**, and what this unit must reproduce before keeping anything:
 
-**What the tree holds now**, after unit 412: **51 capture floor rows**, fourteen of them
-from the 7.052 MHz session; **ten keyed recordings** from that session with inferred keys;
-the guard, proved by dropping `E` and `T`, which took edits from 33 to 21 and broke 13 of 13
-named floors - exactly the cheat the guard exists to catch.
+| 3.2 test | entry | with `b68be0dd` |
+|---|---|---|
+| 1. total edits, all keyed | 217 over 565, inferred keys | **185 over 565** |
+| - the ten bench recordings | 60 over 156 | **36 over 156** |
+| - 17:37 | 29 over 25 | 28 over 25 |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical |
+| 3. adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, **`N4L`**, `EETMP/4 QNIK` |
+| 4. capture rows' named counts | 51 rows | identical |
 
-**The fault, from the sidecars:** `R I C H ARD D J UE G E L`, `OP ERA T I ON`,
-`S T M W O H`. Letters correct, word gaps inserted inside words. On 17:37 the scorer counted
-**15 spaces added and 0 missing**. The decoder is splitting where it should join.
+**R66, Tim, 2026-09-24:** test 3 is met when a reading is unchanged **or changed to exactly
+its own adjudicated text**. `N4L` is HM-DEC-144's text, 1 edit to 0. **Any other movement of
+an adjudicated reading still fails**, and the report prints any reading that moves, before
+and after.
 
-**The first candidate is already in the record.** Unit 405 of the restore phase traced red
-`#44` to held gaps of 15, 1127 and 323 ms putting the character gap past the word gap, and
-built **G1**: an out-of-order gap reading is not separated. **G1 cost nothing on any floor
-or type and was thrown out only because no test turned green with it.** Under this phase it
-is judged on edits instead. Its description is in the restore phase's material under
-`docs\phase-cw-run\` and in `docs\phase-cw\unit405-reds.md` if that survived; 405's diffs
-are not in the tree, so rebuild from the description as 405 rebuilt 402's.
+**Why the change is safe, from 415's trace:** it re-decides only whether a gap the decoder
+already read between letters is announced as a space. The path is untouched, so no letter can
+move; 415 measured 0 letters moved on 52 of 52 recordings with the relabel placed either side
+of the settle dedupe, and built the safe placement.
 
 ---
 
@@ -110,64 +108,57 @@ are not in the tree, so rebuild from the description as 405 rebuilt 402's.
 
 Check, report any mismatch, repair nothing:
 
-- The capture floor table holds 51 rows and the ten keyed recordings have key files.
-- `docs\phase-correctness\baseline.md` holds the keyed table with the unsure-per-named
-  column, and what the totals are.
-- `CwScorer.Kinds` counts spaces added and missing from the alignment.
-- Where the decoder decides a gap is a character gap or a word gap: `MeasureGaps`, and the
-  unit estimator that scales them.
-- Whether unit 405's G1 description survives anywhere in the tree. **If it does not, trace
-  the fault yourself in task 1 and build from your own trace** - do not skip the task.
+- Commit `b68be0dd` exists and its take-out `040a4ae0` follows it; `git diff 040a4ae0 HEAD --
+  src` prints nothing, so the tree is at the pre-change decoder.
+- `docs\phase-correctness\unit415-trace.md` describes the relabel, the centroid guard, and
+  the `sqrt(7/3)` boundary.
+- The keyed totals at HEAD are 217 over 565, the ten 60 over 156, 17:37 29 over 25.
+- `PHASE_PLAN.md`'s 3.2 carries R66's clause.
 
 ## 6. Rulings in force
 
-`PHASE_PLAN.md` R59 to R65, §3 and §6.
+`PHASE_PLAN.md` R59 to R66, §3 and §6.
 
-**3.2 is the keep rule** and it is not negotiable: a change is kept only if **the total edit
-count over all keyed recordings falls**, no named floor from 2.2 breaks, the three
-adjudicated readings are unchanged character for character, and no capture row's named count
-falls. Anything failing one of those goes back out in the next commit and the report says so.
-**3.4**: after three consecutive units with no kept change the step closes partial - this is
-unit one of three.
-**R65** nothing carried halts the loop. **R57** placeholders are free, named counts are not.
-**§0.0** no decode is called what was sent; the keys are inferred.
-**§0.2** nothing that keys or transmits is touched. **HM-DEC-091**, **HM-DEC-155**,
-**HM-DEC-165**, **FACT-004**, **FACT-006**.
+**R66** an adjudicated reading may move onto its own adjudicated text and nowhere else.
+**3.2** is otherwise unchanged and is not negotiable: total edits over all keyed recordings
+must fall, no named floor breaks, no capture row's named count falls.
+**§10 of unit 415 still binds:** no key, scored region or floor is edited to make a number
+better; no boundary or guard is chosen from a score.
+**R65** nothing carried halts the loop. **§0.0** the keys are inferred and no decode is called
+what was sent. **§0.2** nothing that keys is touched. **HM-DEC-091**, **HM-DEC-155**,
+**HM-DEC-165**, **FACT-004**.
 
 **Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's
-table dated 2026-09-24, headline **The RF gain scale is licensed, and nothing carried ever
-halts the loop**, ref HM-DEC-172:**
+table dated 2026-09-24, headline **A reading that moves onto its own adjudicated text has not
+been damaged**, ref HM-DEC-173:**
 
 ```
 ---
-id: HM-DEC-172
+id: HM-DEC-173
 date: 2026-09-24
-refs: PHASE_PLAN.md R65, criterion 6.8, work instruction 413, HM-DEC-139, HM-DEC-056, unit 411 section 4 item 1
+refs: PHASE_PLAN.md R66 and criterion 3.2, unit 415 output.md section 4 item 1, HM-DEC-144, work instruction 416
 ---
 
-**The RF gain condition may be compared with its read-back on one scale, and no carried ask
-ever halts the loop.** Tim, 2026-09-24.
+**A reading that changes to exactly its own adjudicated text has not been damaged, and
+3.2's third test allows it.** Tim, 2026-09-24.
 
-**The scale.** The CW receive condition asks for RF gain 255 on the radio's scale; the radio
-reads it back as 100 percent. They never compare equal, so every CW tune-in writes the gain
-and files the result unconfirmed, and the memory never records it. `ReceiverSetup` and
-`Ic7300Rig.SetSettingAsync` may compare on a single scale so that a gain already at the
-wanted value is recognized. The change makes the app write less to the radio, not more.
-Nothing about keying, transmitting or power is touched.
+**What was at stake.** Unit 415 built a space-only relabel that moved no letter, no element
+and no placeholder on any of the 51 capture rows, held all 13 named floors identical, and
+took every keyed recording from 217 edits to 185 over 565 characters and the ten bench
+recordings from 60 to 36 over 156. It was taken out on one clause: on `cw-2026-08-17-134712`
+the reading moved from `N4 ` to `N4L`, which is the text HM-DEC-144 adjudicated.
 
-**The loop.** A stop 3 is legitimate only when a criterion of the step a unit is working
-cannot be met without a ruling on keying, transmit and safety, money, or a fact the product
-states. A carried ask, a question raised in a report's section 4, a parked item, or a
-finding noticed on the way past is parked and the loop goes on, however squarely it touches
-one of the three. A unit does not carry an ask forward as blocking unless the criterion it
-was authored for is the one that cannot be met.
+**What is ruled.** The third test of 3.2 reads: the three adjudicated readings are unchanged
+character for character, or changed to exactly their own adjudicated text. Any other
+movement of an adjudicated reading still fails it, and a report invoking the clause prints
+the reading before and after so the owner can see which happened.
 
-**Why.** Tim asked for a night of unattended work. Unit 412 completed its work and the loop
-halted on an ask 412 had carried rather than on anything blocking a criterion, which is the
-second time in a night that a pile item stopped the work.
+**Why.** The test exists so that a change cannot buy total edits by damaging a reading
+somebody ruled on. A reading that becomes the ruled text has not been damaged.
 
-**Whose words are whose.** The rulings are Tim's; the wording is work instruction 413's
-record of them. Rejected: leaving the RF gain ask parked and unanswered.
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 416's record
+of it. Rejected: leaving the test as written; narrowing the relabel until `134712` does not
+move, which would choose the boundary from a score rather than from a trace.
 ```
 
 ## 7. Status cadence
@@ -180,81 +171,81 @@ As the header says.
 
 ### Task 0 - the record
 
-`PHASE_OUTCOME.md` gets its `## UNIT 413 - STEP 3` entry from the decision block at the foot
-of this file. `PHASE_STATUS.md` names unit 413 and `CURRENT_STEP: 3`. Patch-bump
-`Directory.Build.props`. `DECISIONS.md` HM-DEC-172 and the `CLAUDE.md` row. **Entry round:**
-both carry-forward lines, the floor tests, and **the keyed table's totals**, recorded as the
-number this unit must beat.
+`PHASE_OUTCOME.md` gets its `## UNIT 416 - STEP 3` entry from the decision block at the foot
+of this file. `PHASE_STATUS.md` names unit 416 and `CURRENT_STEP: 3`. Patch-bump
+`Directory.Build.props`. `DECISIONS.md` HM-DEC-173 and the `CLAUDE.md` row. **Entry round:**
+both carry-forward lines, the three floor tests, the keyed totals, the named floors, recorded
+as the numbers to beat.
 
 **Drop candidate:** none.
 
-### Task 1 - the trace (3.1)
+### Task 1 - the relabel goes back in (3.2, 3.3)
 
-A fact that asserts nothing, printing for every inserted space in the ten keyed recordings:
-the gap in milliseconds that caused the split, the unit the estimator was using at that
-moment, the character gap and word gap thresholds then in force, and the element that
-preceded it. **Print the ten worst offenders in full** - the gap, the thresholds, the text
-around it.
+Re-apply `b68be0dd` in its own commit - `git diff 3ddca565 b68be0dd` gives it, or rebuild it
+from `unit415-trace.md` if the diff will not apply cleanly, and say which. **Do not change
+it.** Not the boundary, not the guard, not the placement.
 
-**Name the line or property that decides it**, in `src\Hamlet.RadioEngine\Cw`. That name is
-what 3.1 asks for, and everything after depends on it.
+Then run all four of 3.2's tests and print every one as a number beside 415's figures above:
 
-**Drop candidate:** none.
+1. total edits over all keyed recordings, and the three sub-rows;
+2. all 13 named floors, each count;
+3. the three adjudicated readings, quoted before and after, with R66 invoked explicitly for
+   any that moved;
+4. all 51 capture rows' named, element and placeholder counts, diffed against entry.
 
-### Task 2 - G1, or what the trace names (3.2, 3.3)
-
-Build the first candidate in its own commit and judge it by 3.2's four tests, all four
-reported as numbers:
-
-1. total edits over all ten keyed recordings, before and after;
-2. every named floor from 2.2, before and after;
-3. the three adjudicated readings, character for character;
-4. every capture row's named count, all 51.
-
-**If the trace names something other than an out-of-order gap, build what the trace names
-instead** - G1 is a candidate, not an instruction.
-
-**Kept or out, the report says which and prints all four.** If it is out, it goes out in the
-next commit.
+**If every test passes, the change is kept and 3.2 is ticked.** If any fails, it goes out in
+the next commit and the report prints why - **and the failure must be a number, not a
+judgment.**
 
 **Drop candidate:** none.
 
-### Task 3 - a second candidate
+### Task 2 - what it looks like (3.3)
 
-If task 2's change was kept, build a second aimed at the largest remaining kind from the
-trace. If it was not kept, build a **different** change against the same trace - not a
-narrowing of the first, which would be fitting to the keys rather than tracing.
+Print, from the kept build, the settled text of `cw-2026-09-24-004322` and `-004405` beside
+what they read before, as 415 did:
 
-**Drop candidate:** whole task. Say it was dropped and what was measured.
+```
+now:        P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S
+narrowed:   P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS
+```
 
-### Task 4 - the exit round
+Update `docs\phase-correctness\baseline.md` with the new running total. **This is what Tim
+reads in the morning, so it goes at the top of section 3.**
 
-Both carry-forward lines, the three floor tests with captures at 51, the keyed table
-re-scored with its totals, and every type touched. `git diff` over the transmit files
-against `7e209cb4` prints nothing.
+**Drop candidate:** the baseline update only; the printed lines stay.
+
+### Task 3 - the next kind (3.2 again, if the clock allows)
+
+With the relabel kept, re-run 415's trace to see what the largest remaining kind is now, and
+build one change against it under the same four tests. **Trace first, then build.** If the
+clock is short, print the trace and say the build was dropped.
+
+**Drop candidate:** whole task.
+
+### Task 4 - the exit round (3.5)
+
+Both carry-forward lines, the three floor tests with captures at 51, `TheNumberCannotBeGamedTests`,
+`TheBaselineIsScoredTests`, `TheBenchmarkIsKeyedTests`, and every type touched. The transmit
+files print nothing against `7e209cb4`.
 
 ---
 
 ## 9. Parked - do not touch, do not raise
 
-- **The acquisition failure** - the first two minutes of the 7.052 session reading
-  `E ET E E`. Real, and a later criterion's. Park it; do not chase it here.
+- **The acquisition failure** - the first two minutes of the 7.052 session.
 - **6.3 the reflow, 6.4 hover text, 6.5 the dead button, 6.7 tonePeak, 6.8 the RF gain
   scale.** Step 6's, and the arbiter's to author next.
-- **Steps 1 and 4.** The synthetic keys and the pitch judge.
-- **The tone tracker.** Licensed by the restore phase's R56, but it is step 4's question
-  here and not this unit's.
-- **Any key file.** The keys are fixed; a change is judged against them, never the reverse.
+- **Step 4, the pitch judge.**
+- **P6, P7, P8** in `PARKED.md`.
+- **Any key, scored region or floor.** Fixed.
 
 ## 10. What not to do
 
-- **Do not edit a key, a scored region, or a floor to make a number better.** That is the
-  one thing that would make this phase worthless.
-- **Do not lower a named count anywhere.** Placeholders are free; named characters are not.
-- **Do not keep a change that fails any of 3.2's four tests**, however good its edits look.
-- **Do not narrow a failed change until it passes** - trace again instead.
+- **Do not modify the relabel to improve a number.** It goes back in as it was built.
+- **Do not edit a key, a scored region or a floor.**
+- **Do not let an adjudicated reading move anywhere but onto its own adjudicated text.**
 - **Do not touch what keys or transmits.**
-- **Do not halt for a question.** Park it (R65).
+- **Do not halt for a question.** Park it.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
 - **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
 
@@ -271,37 +262,36 @@ Commit per task. Push at the end and say whether it succeeded.
 ```
 READ IN THIS ORDER.
 
-A. Total edits over the ten keyed recordings, before and after, and whether
-   any change was kept.
-B. Step 3's criteria: 3.1 the trace, 3.2 the keep rule, 3.3 the running
-   total, 3.5 the exit round.
-C. The rest. Section 4 raises <n> items, none of them blocking.
+A. Whether the relabel was kept, and the total: 217 -> <n> over 565.
+B. Step 3's criteria: 3.2 kept or out with all four tests as numbers,
+   3.3 the running total, 3.4 the count, 3.5 the exits.
+C. The rest. Section 4 raises <n> items, none blocking.
 ```
 
 ```
-UNIT:       413 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       416 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   yes | no - <why, on the line>
-NUMBER:     total edits over the keyed recordings: <n> -> <n>
+NUMBER:     all keyed: 217 -> <n> over 565; the ten bench: 60 -> <n> over 156
 DRIFT:      <0 if a criterion moved>
 ```
 
-**Section 2 tells the owner in one paragraph** whether the words are less shattered than
-they were, in plain words, with one line of text before and after.
+**Section 2 tells the owner in one paragraph** that the words no longer break apart
+mid-word, with one line of real text before and after, and that no letter changed.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 3
-APPROACH: trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+APPROACH: re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
 MOVE: continue
-WHY: PHASE_PLAN.md step 3 criterion 3.1 asks that the dominant error kind named in 0.3 be traced to a named line or property in src/Hamlet.RadioEngine/Cw, printed by a fact that asserts nothing, before any change is built
-STATE: not started
-DECIDED: which candidate is built first, the form of the trace printer and the per-type timeouts are the author's, overrulable
-LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; HM-DEC-172; HM-DEC-091; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0 and 0.2
-ACCOMPLISHED: the words Tim reads on the CW tab stop breaking apart mid-word, or the reason they cannot yet is measured on ten real recordings
-ADVANCES: step 3 criterion 1
+WHY: PHASE_PLAN.md step 3 criterion 3.2 asks that each change be kept when the total edit count over all keyed recordings falls, no named floor breaks, the adjudicated readings are unchanged or changed to exactly their own adjudicated text, and no capture row's named count falls
+STATE: partial
+DECIDED: whether the diff is cherry-picked or rebuilt from the trace, and the per-type timeouts, are the author's, overrulable
+LICENCE: PHASE_PLAN.md R63, R65, R66, section 3, section 6; HM-DEC-173; HM-DEC-144; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+ACCOMPLISHED: the words on the CW tab stop breaking apart mid-word, at no cost to a single letter, and the phase's first kept correctness gain is in the tree
+ADVANCES: step 3 criterion 2
 END-ARBITER-DECISION
 ```

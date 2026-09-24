@@ -74,9 +74,9 @@ FOLLOWS: report   the criterion was chosen because the last report
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 2 criterion 5  and gave this WHY:
+The instruction it produced named  step 3 criterion 2  and gave this WHY:
 
-PHASE_PLAN.md step 2 criterion 2.5 asks that the thirteen captures carry a named-character floor and an element floor each, measured once at HEAD, run with the other rows, with no existing row retired or lowered
+Unit 413's two candidates both changed the path, and the letters moved with the spaces (P6). A relabel after the path attacks the 27 of 29 inserted spaces the trace put on the textbook boundary, without touching the named counts that sank both.
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -85,213 +85,253 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 2 | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
-## Step 2 - The number cannot be gamed
+﻿STEP: 3 | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
+## Step 3 - The spacing is repaired
 
-**Delivers:** R59's guard.
+**Delivers:** the first real improvement in what Tim reads.
 
-**Entry:** step 0 done.
+**Entry:** steps 0 and 2 done, the baseline and the guard in force.
 
 **Exit:**
-- [x] 2.1 Every correctness number reported by the scorer carries unsure characters per named character for the same region, and the baseline table is re-issued with that column.
-- [x] 2.2 A named floor per keyed recording states how many named characters must be read at all, set from the baseline, and a change that drops below it is a regression whatever its edit count.
-- [x] 2.3 The guard is watched working: a deliberate change that suppresses most output is measured, shown to improve edits while breaking the floor of 2.2, and taken back out in the same unit.
-- [x] 2.4 The three floor tests and both carry-forward lines are green at exit.
-- [x] 2.5 The thirteen captures `cw-2026-09-24-003901` through `-004550` are tracked in the tree and carry a named-character floor and an element floor each, measured once at HEAD and printed old beside new, and they are run by the capture floor test with the other rows; no existing row is retired or lowered (R63).
+- [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
+- [ ] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
+- [ ] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
+- [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
+- [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
-**Depends on:** step 0. Independent of step 1: when one blocks the arbiter works the other.
+**Depends on:** steps 0 and 2.
 
-
---- what the script saw ---
-criteria-count.bat saw step 2 criterion 5 flip from unmet to met in
-PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
-Answer one more line after WHY:
-HONEST: yes   if the report shows that criterion honestly met
-HONEST: no    if the marker was turned without the criterion being met
 
 --- the unit's report follows ---
 
 READ IN THIS ORDER.
 
-A. The fourteen rows with their floors, in section 1 under task 1, and the guard proved working: leaving out every `E` and `T` took the baseline from 33 edits to 21 over 46 characters against inferred keys, and broke 13 of 13 named floors.
-B. Step 2's criteria 2.1 to 2.5 are met and ticked, so step 2 is done. Step 1's 1.6 is met and ticked: 10 of 11 captures of the locked-on run keyed by differencing, 41 edits over 156 characters live.
-C. The rest. Section 4 raises 1 item, carried from unit 411. Three new asks that block nothing are parked as P3 to P5 in `docs/phase-correctness/PARKED.md`. P3 bears on step 3: which keyed recordings a spacing change is judged on.
+A. The phase goal, Hamlet reads a CQ call correctly, and where each step
+   stands: 0 done, 1 done, 2 done, 3 partial, 4 not started, 5 Tim's,
+   6 partial.
+B. Step 3: 3.2 the relabel kept or out on each of its four tests, 3.3
+   17:37 before and after and the running total, 3.4 the count of units
+   without a kept change, 3.5 every commit's exit - each met or not,
+   with the number.
+   - 3.2 not met. Both changes passed tests 1, 2 and 4 and failed test 3
+     at `cw-2026-08-17-134712`, so both are out. The relabel: all keyed 191
+     edits over 565 characters against inferred keys, from 217. The
+     narrowed relabel: 185 over 565.
+   - 3.3 not met, nothing kept. 17:37 was 29 over 25 against an inferred
+     key, would have been 28 over 25 under either change, and stays 29. The
+     running total stays 217 over 565.
+   - 3.4 open. This is the second of three step 3 units without a kept
+     change.
+   - 3.5 met and ticked. All four commits' exits were green.
+C. Whether moving only the spaces left every letter where it was, weighed
+   against A and B: **it did.** No named, element or placeholder count
+   moved on any of the 51 capture rows under either change, and the named
+   floors are 13 of 13 with every count identical. So the mechanism is
+   sound: it removes the P6 wall, and it takes a quarter of the bench's
+   edits off with no letter cost. Section 4 raises 1 item, and it is in
+   the way of 3.2: the narrowed relabel failed only because
+   `134712` moved onto its adjudicated text, `N4L`.
 
-UNIT:       412 - complete at task 4 of 4, none dropped - 2026-09-23 22:28
-PHASE GOAL: Hamlet reads a CQ call on the air correctly. This is measured as edits against a key over a scored region, with a guard so that going quiet cannot pass for reading well.
-UNIT GOAL:  Bank the whole-QSO captures of 2026-09-24 as floors no later change may read below, and give the correctness number its guard: unsure per named, and a named floor per keyed recording, proved by breaking it.
-ADVANCED:   yes - 2.5, the criterion this unit was aimed at, is met: fourteen rows banked, captures 51 of 51, the original 37 identical to entry
-NUMBER:     capture floor rows: 37 -> 51; keyed recordings: 4 -> 14
-DRIFT:      0
+UNIT:       415 - complete at task 4 of 4, none dropped - 2026-09-24 02:28
+PHASE GOAL: Hamlet prints what a station calling CQ actually sent, and the correctness number says so.
+UNIT GOAL:  Re-decide only whether each gap the decoder already read between letters is a space, so no letter can move, and keep it under 3.2 or take it out with the measurement.
+ADVANCED:   no - 3.2 not met, both changes out on its third test at 134712; 3.5 ticked on four green commit exits
+NUMBER:     all keyed 217 edits over 565 characters against inferred keys, from 217; 17:37 29 over 25, from 29 - unchanged, nothing kept; built and out at 191 and 185 over 565, 17:37 28 over 25
+DRIFT:      0 - 3.5 moved (was 0)
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4, none dropped.** Machine QUIVERFULL, project Hamlet, gate confirmed at `C:\Source\HamLet`, branch `main`, HEAD at entry `0483369d`. The commits are:
-- `cffb8c2f` task 0
-- `02ce4602` task 1
-- `3105d7c8` task 2
-- `3a469493` task 3
-- the report commit, which follows them
+**Complete at task 4 of 4. None dropped: task 3 applied, because task 2 failed only the
+third test.** On QUIVERFULL, `C:\Source\HamLet`, project Hamlet confirmed by the four gate
+checks, branch `main`, every commit pushed. Nothing kept. `src` prints nothing against entry
+`61d8b58f`.
 
-**Verifying the instruction against the tree (§5). Mismatches are reported here; none was repaired.**
-- **The captures were not untracked.** All the `.wav` and `.txt` files and `cases-2026-09-23.txt` were already committed, by the seed commit `0483369d` itself. Task 0 had nothing left to commit, so there is no captures commit.
-- **There are fourteen captures, not thirteen.** They are `003901`, `003919`, `004027`, `004108`, `004133`, `004205`, `004234`, `004322`, `004347`, `004405`, `004427`, `004510`, `004535` and `004550`. The last one carries the 625 characters and 11 unsure that R63 quotes. **I banked all fourteen, which is a decision I made myself.** The range the instruction names holds fourteen, and a guard over thirteen of them would leave one unguarded. As a result the locked-on run, from `004108` onward, is eleven captures, not ten. Parked as P4.
-- **The capture floor table** holds 37 rows. Named characters and elements are the floors, and placeholders are printed and not asserted (HM-DEC-168). A row is added to `Floors` in `TheCapturesThatDecodeKeepDecodingTests`. As stated.
-- **`CwScorer`** has `Whole`, `Within` and `FromFirst`, and reports edits, scored length and the key's kind. As stated.
-- **`baseline.md`** holds 33 edits over 46 characters over four recordings. As stated.
-- **The sidecar's `text` is cumulative.** In all 13 consecutive pairs, the earlier text is a prefix of the later one. So task 3 stood.
-- **Found, not caused by this unit:** `PHASE_STATUS.md` had an uncommitted `HEARTBEAT: 2026-09-23 21:35:11` line when the session started, written by something outside the session. It went into the task 0 commit along with my edits to that file.
+**3.2's four tests, for each change built. Every key is inferred and every total is over the
+bench readings.**
 
-**Task 0, the record.**
-- HM-DEC-171 is in `DECISIONS.md`, and its row is at the top of `CLAUDE.md` §1.
-- `PHASE_STATUS.md` names unit 412 with `CURRENT_STEP: 2`.
-- `PHASE_OUTCOME.md` has its `## UNIT 412 - STEP 2` entry.
-- The version went from 1.13.98 to 1.13.99.
+The relabel, `4a0487b0`, taken out at `83e2dc7f`. It removes and adds spaces at `sqrt(7/3)`
+of the sender's character gap.
 
-Entry round, run after one build, with `--no-build` and a status line before each run:
+| 3.2 test | entry | after | |
+|---|---|---|---|
+| 1. total edits, all keyed recordings | 217 edits over 565 characters, inferred keys | **191 over 565**, inferred keys | pass |
+| - baseline | 33 over 46 | 32 over 46 | |
+| - 17:37 | 29 over 25 | 28 over 25 | |
+| - outside | 124 over 363 | 122 over 363 | |
+| - the ten, bench | 60 over 156 | 37 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, ` 4L`, `EETMP/4 QNIK` | **fail** |
+| 4. capture rows' named counts | 51 rows | identical | pass |
 
-| Run | Result | Time |
-|---|---|---|
-| Engine carry-forward | 178 of 178 | 370 s |
-| App carry-forward | 276 of 278 | 152 s |
-| Captures | 37 of 37 | 93 s |
-| Adjudicated | 13 of 13 | 29 s |
-| Clean synthetics | 2 of 2 | 2 s |
+The narrowed relabel, `b68be0dd`, taken out at `040a4ae0`. It only removes spaces.
 
-Two app tests were lost to the dispatcher loop before any assertion: `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer` and `ThePsk31ConversationCardTests.APsk31CardOffersNothingWhileItIsNotHisTurn`. Re-run alone, they passed 2 of 2.
+| 3.2 test | entry | after | |
+|---|---|---|---|
+| 1. total edits, all keyed recordings | 217 edits over 565 characters, inferred keys | **185 over 565**, inferred keys | pass |
+| - baseline | 33 over 46 | 31 over 46 | |
+| - 17:37 | 29 over 25 | 28 over 25 | |
+| - outside | 124 over 363 | 118 over 363 | |
+| - the ten, bench | 60 over 156 | 36 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, **`N4L`**, `EETMP/4 QNIK` | **fail as written** |
+| 4. capture rows' named counts | 51 rows | identical | pass |
 
-**Task 1, the floors (2.5).** I added fourteen rows, each measured once through the floor harness at `cffb8c2f`. The harness replays each WAV from a cold start at 600 Hz. Beside each row, as a comment, is the sidecar's live `inThis` line: what the application read from the same 30 seconds that night, with its lock carried in from the capture before. The two differ, and the harness figure is the one asserted.
+**The named-count row for all 51 captures: identical** under both changes, in named
+characters, named elements and placeholders (`.run-unit/unit415-captures-c1.norm` and
+`-c2.norm` against `-entry.norm`, no diff).
 
-| File | Named | Elements | Placeholders | Live `inThis` |
-|---|---|---|---|---|
-| `cw-2026-09-24-003901` | 9 | 20 | 0 | 92 emitted, 0 unsure |
-| `cw-2026-09-24-003919` | 27 | 54 | 0 | 110 emitted, 0 unsure |
-| `cw-2026-09-24-004027` | 40 | 119 | 1 | 51 emitted, 1 unsure |
-| `cw-2026-09-24-004108` | 32 | 107 | 0 | 32 emitted, 0 unsure |
-| `cw-2026-09-24-004133` | 30 | 87 | 2 | 31 emitted, 2 unsure |
-| `cw-2026-09-24-004205` | 34 | 96 | 2 | 36 emitted, 2 unsure |
-| `cw-2026-09-24-004234` | 37 | 96 | 1 | 36 emitted, 0 unsure |
-| `cw-2026-09-24-004322` | 39 | 112 | 0 | 39 emitted, 0 unsure |
-| `cw-2026-09-24-004347` | 40 | 115 | 0 | 39 emitted, 0 unsure |
-| `cw-2026-09-24-004405` | 36 | 106 | 1 | 40 emitted, 2 unsure |
-| `cw-2026-09-24-004427` | 43 | 112 | 1 | 41 emitted, 1 unsure |
-| `cw-2026-09-24-004510` | 38 | 104 | 0 | 34 emitted, 0 unsure |
-| `cw-2026-09-24-004535` | 47 | 128 | 1 | 53 emitted, 2 unsure |
-| `cw-2026-09-24-004550` | 41 | 123 | 0 | 49 emitted, 1 unsure |
+On `134712` the unguarded path reads `N4 L ZT`. The relabel takes out the space after `4`,
+and it adds one after `N` from a window whose centroid passed the guard. The narrowed relabel
+only takes out, so the region reads `N4L`, which is the text HM-DEC-144 adjudicated: 1 edit
+to 0. 3.2 asks for the adjudicated readings unchanged character for character, and this one
+changed. See section 4.
 
-Then I ran the captures type whole: **51 of 51 in 122 s.** A script compares every printed row line with the entry run, and **the original 37 print identically to entry.** No existing row was retired, lowered or reworded.
+**3.3, never evidence, beside it.** 17:37 over its scored region, against an inferred key:
+29 over 25 at entry, 28 over 25 under both changes, 29 at exit. The synthetics, exact keys
+(P8, 1.4): the grid was 102 over 243 at entry and 100 under both changes. The five-unit row
+was 63 over 81 and 64 under both.
 
-Four printers also read `Floors`: `TheGateBarSweepTests`, `TheStationStillKeyingTraceTests`, `TheTrackerSwitchTraceTests` and `TheTwoPitchesTableTests`. They now read 51 rows. None of them asserts a row count, and none was run: they are not this unit's names (HM-DEC-155).
+**3.5.** Every commit's exit was green:
+- at `4a0487b0`: engine carry-forward 178 of 178; app 276 of 278 with 2 lost to the
+  dispatcher loop, 2 of 2 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2;
+- at `83e2dc7f`: engine 178; app 277 of 278 with 1 lost to the dispatcher loop and green
+  alone; captures 51, adjudicated 13, clean 2;
+- at `b68be0dd`: engine 178; app 278 of 278; captures 51, adjudicated 13, clean 2;
+- at `040a4ae0`, task 4's exit round, below.
 
-**Task 2, the guard (2.1, 2.2, 2.3).**
+**Task 0.** Version 1.13.101 to 1.13.102. The `PHASE_OUTCOME.md` entry was written and
+`PHASE_STATUS.md` names 415. The entry round matched section 5 exactly: 217 over 565, the
+baseline 33 over 46, 17:37 29 over 25, outside 124 over 363, the ten 60 over 156, named
+floors 13 of 13, captures 51 of 51. Engine 178 of 178. App 275 of 278, with three lost to
+the dispatcher loop and 3 of 3 alone.
 
-**2.1, unsure per named.** A new record, `CwReading`, carries each character's unsure flag in the same sense as `CwDecoder`'s own `CharactersUnsure`: a placeholder, or a letter settled below high confidence. `CwScore` gains `Named` and `Unsure`, counted over the same region the edits are. `ToString` now carries both, for example *"29 edits over 25 characters against an inferred key, 0 unsure per 28 named"*.
-- The string overloads still work, but on a bare text they can see only placeholders.
-- Two hand counts were added to `TheScorerCountsWhatAHandCountsTests`. One went red once, on my own test's wrong expectation: `FromFirst` trims only whitespace. I corrected the test, not the scorer. The type now passes 20 of 20.
-- `baseline.md` is re-issued with the column:
-  - Baseline: **33 edits over 46 characters against inferred keys, 0 unsure per 47 named.**
-  - Outside the baseline: 124 over 363, 4 unsure per 269 named.
-- Across all thirteen regions there are 4 unsure characters, and every one is a placeholder. Since unit 408's emission bar, the decoder prints almost nothing it is unsure of.
+**Section 5 against the tree.**
+- **No mismatch** in the stated lines. `Kinds` is at 493 to 500 and `want` at 1175 to 1177.
+  The path is kept in `fromHop`/`kindAt`. `MeasureGaps` is at 174 and the word trough at 216.
+- **Where kind 3 or kind 4 becomes text:** `Spell`, `CwProbabilisticDecoder.cs` 1321 to 1347.
+  Both close the letter identically, and kind 4 adds a `" "` that ends at the gap's end.
+- **Downstream readers:**
+  - `Judged` (the `CharacterMargin` gate, 1256) passes every space.
+  - `EndsInsideCharacter` (756) treats 3 and 4 alike.
+  - Speed choice compares path scores.
+  - `CwDecoder`'s counters skip word gaps.
+  - `CwReading`'s unsure flag is never set on a space.
+  - `CwTranscript.Settle` appends.
+  - No word or dictionary prior exists.
+- **The one reader that can reach a letter** is the stream's settle dedupe,
+  `CwProbabilisticStream.cs` 525 to 537, plus `Skip` at 295. A settled space pushes
+  `_settledThrough` to the gap's end, where a letter pushes it only to its key-up.
+- **One small mismatch:** section 5 expected the app line to lose one or two names at entry.
+  It lost three.
 
-**2.2, a named floor per keyed recording.** `TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll` covers 17:37 and all twelve adjudicated recordings, 547 named characters in all, 13 of 13.
+**Task 1, the trace.** `WhereTheSpaceIsDecidedTests` has two facts and asserts nothing. It
+replays the 51 capture rows and 17:37, and after every read it emulates the settle loop three
+ways from the stream's own window, speed and held gaps.
+- The emulation of the loop as it is equals what really settled on **52 of 52** recordings.
+- **Letters moved: 0 with the relabel placed before the dedupe, and 0 after it.** On this
+  corpus even the unsafe placement moves nothing. The build uses the safe one: bookkeeping
+  stays on the path's characters, and only a space's announcement moves.
+- Raw output is in `.run-unit/unit415-relabel-t1.txt` and `-t1b.txt`, and the write-up in
+  `docs/phase-correctness/unit415-trace.md`.
 
-**Decisions I made myself (all overrulable):**
-- **The floor counts named characters over the whole recording, not over the scored region.** The region is chosen by the alignment and shrinks with the decode, and "read at all" is about everything settled.
-- **The count is one per settled character**, as the capture floors count, so a prosign counts once there. The region's `Named` counts text characters, so there a prosign counts by its letters, the same way it counts in the scored length.
-- 17:37 is in no capture row, and the three adjudicated rows' count floors retired in favor of their anchors. So this is the first count floor those four have.
+**Decisions I made myself (author's latitude, overrulable):**
+1. **The centroid guard.** The first run found the element heap standing in for the
+   character centroid: 1.1 units on `013347`, and `VA3VRR` read `VA 3V RRT`. I required the
+   boundary between the element and character centroids to fall inside `MeasureGaps`' own
+   clip range, 1.3 to 2.6 units (`CwUnitEstimator.cs` 228 and 229). That adds no new number.
+   Reads with a centroid went from 1,903 to 1,449 of 2,912.
+2. **The boundary stays at `sqrt(7/3)`**, 1.528 of the centroid. It sits on the character
+   heap's falling shoulder. From 1.6 to 2.1 the heap is a low, flat plateau (7, 8, 4, 6, 5
+   per 0.1) with no single trough, so no boundary is plainly better. The keyed "at" rows
+   were printed beside the choice and were not used to make it.
+3. **The centroid is measured per window**, from the same window the stream reads. The path's
+   own label stands where none is measured.
+4. **Only gaps with a mark on both sides are relabeled.** The gap before the window's first
+   letter and after its last are cut by the window's edge.
+5. **3.5 ticked.** The instruction says to tick it if every commit's exit was green, and all
+   four of this unit's were. Unit 413 left it open with the reason "no change was kept". If
+   3.5 is meant to wait for a kept change, it should be unticked.
 
-**2.3, the guard watched working.** Each change went into `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`, was measured, and was taken out uncommitted.
+**Task 4, the exit round at `040a4ae0`.**
+- Hamlet.sln builds with warnings as errors.
+- Engine carry-forward 178 of 178 and app 278 of 278.
+- Every one of these is identical to entry: captures 51 of 51, adjudicated 13 of 13, clean
+  synthetics 2 of 2, `TheNumberCannotBeGamedTests` 13 of 13, `TheBaselineIsScoredTests` at 33
+  over 46 and 124 over 363, and `TheBenchmarkIsKeyedTests` at 60 over 156.
+- `WhereTheSpaceIsDecidedTests` 2 of 2.
+- The transmit files print nothing against `7e209cb4`. All of `src` prints nothing against
+  `61d8b58f`.
+- `PHASE_PLAN.md`: 3.5 ticked; 3.2, 3.3 and 3.4 open.
+- `baseline.md`'s running total has unit 415's rows.
 
-| Change | Named kept, of 547 | Baseline, over 46 | 17:37, over 25 | Floors broken |
-|---|---|---|---|---|
-| none, at HEAD | 547 | 33 edits | 29 edits | 0 of 13 |
-| **`&& character.Pattern.Length > 1` in `Judged`: no `E`, no `T`** | **350** | **21 edits** | 18 edits | **13 of 13** |
-| `CharacterMargin` 1.0 to 100 | 97 | 42 edits | 25 edits, nothing named | 13 of 13 |
-| `CharacterMargin` 1.0 to 10 | not summed | 34 edits | 25 edits | 13 of 13 |
-| `CharacterMargin` 1.0 to 5 | not summed | 34 edits | 25 edits | 13 of 13 |
-
-**Both numbers the instruction asks for: leaving out every `E` and `T` improves the baseline from 33 edits to 21 over 46 characters against inferred keys, and it breaks 13 of 13 named floors.** For example, 17:37 reads 27 named against a floor of 46, and 013347 reads 27 against 57.
-
-**A decision I made myself, overrulable:** my reading of 2.3.
-- The E/T change improves the total edits, but it suppresses about a third of the output (197 of 547 named), not most.
-- The bar at 100 suppresses most of the output (450 of 547), but it improves only the whole-scored 17:37, from 29 to 25. It breaks `VA3VRR`, so the total gets worse, 33 to 42.
-- Silence pays only on a key scored whole. I ticked 2.3 on the two measurements together.
-
-After taking both changes out, `src` prints nothing against `0483369d`, and the re-run reads 33 edits and 13 of 13.
-
-**Task 3, the keys by differencing (1.6).** I wrote eleven key files, `cw-2026-09-24-004108.key.md` through `-004550.key.md`. Each one:
-- states that it is inferred and how it was built;
-- quotes what its capture added to the transcript;
-- names its scored stretches, each with its key;
-- says what it leaves out and why.
-
-That is 14 stretches over 10 captures. `004535` is keyed with nothing to score: it is single-element soup. Left out as ambiguous:
-- every callsign and number not read with confidence, including `1 A W / 8`, `W 1A M T 8` and `2 5 9`;
-- `N UR ING`, which is probably `DURING` but was left out rather than guessed.
-
-**A decision I made myself:** the stretches and keys live in the key files in a fixed two-line form. `TheBenchmarkIsKeyedTests` reads them from there, so there is no second copy. It asserts two things: each predecessor's text is a prefix of the next capture's, and each stretch is a substring of what its capture added. It passes 1 of 1.
-
-| Capture | Stretch as read live | Key | Live edits | Scored length | Bench edits |
-|---|---|---|---|---|---|
-| `004108` | `DE KA2 G J V` | `DE KA2GJV` | 3 | 9 | 6 |
-| `004133` | `I C H ARD` | `ICHARD` | 3 | 6 | 4 |
-| `004205` | `AT Y A H O O D` | `AT YAHOO D` | 4 | 10 | 4 |
-| `004234` | `O T C O M <BT> T HANK Y OU` | `OT COM <BT> THANK YOU` | 5 | 21 | 9 |
-| `004322` | `T HE A RRL S P O N S ORED A M ER I CA` | `THE ARRL SPONSORED AMERICA` | 11 | 26 | 15 |
-| `004322` | `OP ERA T I ON` | `OPERATION` | 4 | 9 | 4 |
-| `004322` | `ALL LOGS W` | `ALL LOGS W` | 0 | 10 | 3 |
-| `004347` | `ILL BE UPLOADED TO ARRL L OO TW` | `ILL BE UPLOADED TO ARRL LOTW` | 3 | 28 | 4 |
-| `004405` | `O OR D IN` | `OORDIN` | 3 | 6 | 3 |
-| `004427` | `A T OR` | `ATOR` | 2 | 4 | 2 |
-| `004427` | `QSL T NX` | `QSL TNX` | 1 | 7 | 2 |
-| `004510` | `KA2GJV` | `KA2GJV` | 0 | 6 | 2 |
-| `004510` | `AA3S B` | `AA3SB` | 1 | 5 | 1 |
-| `004535` | none scored | | | | |
-| `004550` | `DE KA2 GJV` | `DE KA2GJV` | 1 | 9 | 1 |
-| **Total** | 14 stretches | **inferred** | **41** | **156** | **60** |
-
-**Live** is the sidecar's stretch, scored whole: 41 edits over 156 characters against inferred keys, 0 unsure per 138 named. By hand, 40 of those 41 edits are spaces. The other is the extra `O` in `L OO TW`.
-
-**Bench** is each WAV replayed cold, with the key aligned by `Within`: 60 edits over 156. Four captures follow the one before by more than 30 s: 004108 (41 s), 004205 (32 s), 004322 (48 s) and 004510 (43 s). Part of what they added was heard before their own WAV begins. That is why 004108's key aligns to unrelated text, ` G K 2 6 `.
-
-All of this is tabled in `baseline.md`, beside the baseline and outside its total (P3).
-
-**Task 4, the exit round (2.4).**
-- `Hamlet.sln` builds with warnings as errors.
-- Engine carry-forward: **178 of 178** in 371 s.
-- App carry-forward: **277 of 278** in 156 s. `TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow` was lost to the dispatcher loop before any assertion. Re-run once alone, it passed 1 of 1, so it is counted neither way.
-- Floors: captures **51 of 51** in 118 s, with the 37 original rows identical to entry; adjudicated **13 of 13**; synthetics **2 of 2**.
-- This unit's types:
-  - `TheScorerCountsWhatAHandCountsTests`: 20 of 20
-  - `TheBaselineIsScoredTests`: 2 of 2, at 33 edits over 46
-  - `TheNumberCannotBeGamedTests`: 13 of 13
-  - `TheBenchmarkIsKeyedTests`: 1 of 1, at 41 live and 60 bench over 156
-- **The diffs:**
-  - The transmit files print nothing against `7e209cb4`.
-  - `src/Hamlet.RadioEngine/Cw` prints nothing against `0483369d`, and neither does all of `src`, because neither 2.3 change was ever committed.
-
-Criteria 1.6 and 2.1 to 2.5 are ticked in `PHASE_PLAN.md`. `PHASE_STATUS.md` and `PHASE_OUTCOME.md` mark step 2 done and step 1 partial. **The push succeeded after every commit:** `push rc 0` for the four task commits and for the report commit, `2fd41f76`.
+**Commits, all pushed to `origin main`, every push rc 0:**
+- `26cd4ade` task 0;
+- `413ea25c` task 1;
+- `4a0487b0` the relabel;
+- `83e2dc7f` its take-out;
+- `3ddca565` task 2's record;
+- `b68be0dd` the narrowed relabel;
+- `040a4ae0` its take-out;
+- `b3767d24` task 3's record;
+- the exit commit carrying this report.
 
 ## 2. What the owner should expect
 
-What you watched the decoder read on 7.052 MHz tonight is now the mark. All fourteen recordings from 00:39 to 00:46 UTC are floors in the tree, each holding the named characters and elements it produced. The older recordings stay beside them, so no later change can read less of tonight or of August without turning a test red. The number that scores correctness now also has a guard, so it cannot be gamed by going quiet. I proved this with a change that dropped every `E` and `T`: it made the score twelve edits better and turned all thirteen guard tests red, and it was taken back out. Nothing about the decoder changed in this unit, and neither did anything the radio is sent. **What will look wrong but is not:** the new floors are lower than what the CW tab showed live, for example 9 named for `003901` where the sidecar says 92 emitted. The test replays each 30-second file from a cold start without the lock the live session carried in, and the floor is set at what that replay reads.
+**The decoder reads exactly as it did.** Both changes are out, and `src` is byte-identical to
+`61d8b58f`.
+
+What is now known and was not before:
+- **A spacing repair does not have to cost a letter.** Unit 413's two candidates changed the
+  path, and the letters moved with the spaces (P6). This one leaves the path alone. It moved
+  no named character, no element and no placeholder on any recording in the tree.
+- **The narrowed version is the strongest measured spacing change so far.** All keyed
+  recordings go from 217 to 185 edits over 565 against inferred keys, and the ten on the
+  bench from 60 to 36 over 156. It went out on one reading only: it corrected `134712` to
+  its adjudicated `N4L`, and 3.2 as written requires that reading unchanged.
+
+What will look wrong but is not:
+- 3.5 is ticked while 3.2 and 3.3 are open. 3.5 is about green exits, and every exit was
+  green.
+- The adjudicated floor type, `TheAdjudicatedReadingsKeepReadingTests`, stayed 13 of 13
+  under both changes, yet 3.2's third test failed. That type asserts what each adjudicated
+  reading must contain, and 3.2 asks for character-for-character identity. They are
+  different tests.
 
 ## 3. What you should see
 
-**No visible change: this unit only makes the tests catch a regression later.** The question it was commissioned to answer was whether tonight's read is protected. Yes:
-- 51 of 51 capture floors are green, with tonight's fourteen among them.
-- A deliberately quieter decoder that scored better, 21 edits against 33, was caught by 13 of 13 named floors.
+**The CW tab reads exactly as it did.** Nothing was kept.
 
-For the spacing work that comes next, the ten locked-on captures now have inferred keys. Live, they read 41 edits over 156 characters, and 40 of those edits are misplaced spaces: `T HE A RRL S P O N S ORED A M ER I CA` for `THE ARRL SPONSORED AMERICA`. The letters are right and the word boundaries are not, on a signal the decoder was locked to.
+This is what the narrowed relabel would have shown, from the capture at 00:43:22 on
+2026-09-24. It is not on the tab now:
+
+```
+now:          P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S
+narrowed:     P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS
+```
+
+And from 00:44:05: `W 1 A W / 88` would read `W1AW/88`. Every letter in both lines is the
+same letter at the same moment. Only the spaces between them differ.
 
 ## 4. What's blocking us
 
-**1. Compare the RF gain on one scale, so an RF gain already at full is neither written nor reported as unconfirmed.** (Carried from unit 411, verbatim, per HM-DEC-139. It is not this unit's work: it changes what is sent to the radio.)
-- **Ruling wanted:** in a later unit, make `ReceiverSetup` and `Ic7300Rig.SetSettingAsync` compare the RF gain on one scale, either the condition in percent or the read-back in raw units.
-- **Reasoning:** today every CW tune-in writes 255 to `14 02`, even at 100%. Every one is filed `NotConfirmed`, so the memory never records it, and "your hand wins" (HM-DEC-056) can never apply to RF gain. With this unit, the banner's sentence is true but appears on every tune-in. After the fix it would appear only when something is actually off.
-- **Rejected, and why:** fixing it here. It changes what is sent to the radio, and step 6 changes only what the operator reads (R62, §6). The fix would also move the outcome to `AlreadyRight` or `Changed` and change what the hover narrates.
+**1. Does 3.2's third test forbid an adjudicated reading moving onto its own adjudicated
+text?** This bears on 3.2. It is the only thing between the narrowed relabel and a kept
+change, so it is raised here rather than parked. It does not halt the loop.
 
-Unit 411's item 2, tonePeak, is answered by R63 and leaves the list. Parked under R54 as blocking nothing in this unit, in `docs/phase-correctness/PARKED.md`:
-- **P3:** which keyed recordings step 3 is judged on, and whether on the live or the bench reading.
-- **P4:** the benchmark is fourteen captures, not thirteen.
-- **P5:** the two new guard tests are on no carry-forward line.
+- **Ruling wanted:** whether "the three adjudicated readings are unchanged character for
+  character" is met when a reading changes to exactly the text that was adjudicated. On
+  `cw-2026-08-17-134712` that is `N4 ` becoming `N4L`, HM-DEC-144's text, 1 edit to 0.
+- **Reasoning:** the third test exists so a change cannot buy total edits by damaging a
+  reading somebody ruled on. A reading that becomes the ruled text has not been damaged. But
+  the words say "unchanged", and this unit applied them as written. The baseline also notes
+  `134712` as "retired as an anchor" while 3.2 still counts it as one of the three.
+- **If yes:** the narrowed relabel, `b68be0dd`, passes all four tests on this unit's
+  measurements: 185 over 565, 13 of 13 identical, adjudicated unchanged or onto their text,
+  51 rows identical. A next unit could re-apply it as it stands.
+- **If no:** it stays out. The next step 3 unit is the third of three under 3.4, and then the
+  trace goes to `PARKED.md`.
+- **Rejected:** narrowing the relabel further so `134712` does not move. That would choose
+  the boundary or the guard from a score, which section 10 forbids. And no letter reason
+  exists to treat that recording differently.
+
+Nothing was written to `PARKED.md` this unit. P6, P7 and P8 were not touched.

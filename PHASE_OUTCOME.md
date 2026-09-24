@@ -204,3 +204,21 @@ STATE_AFTER: done
 STATE_WHY: Every exit criterion of step 1 is met with evidence, 1.6 from unit 412, and 1.1 to 1.5 in this unit with twelve exact keyed cases scored at HEAD and tabled, three speeds by three levels with recipes held byte for byte by a rebuild test, both documents written and cited, and the floor and carry forward tests green at exit with counts identical to entry.
 ADVANCED: yes
 ATTEMPT: 1.1 | unit 2 launched 2026-09-24T04:07:07.356Z | yes | executed | generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
+
+## UNIT 3 - STEP 3
+
+STEP: 3
+APPROACH: leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The question asks how to read a test criterion in plan item 3.2, which is a matter of a test's shape and falls outside keying or transmit, money and operator promises, so the unit's own recommendation stands as author's and the work goes on.
+MOVE: work around
+WHY: Unit 413's two candidates both changed the path, and the letters moved with the spaces (P6). A relabel after the path attacks the 27 of 29 inserted spaces the trace put on the textbook boundary, without touching the named counts that sank both.
+DECIDED: author's, overrulable - step 3 again under R64 and R65's preference; 3.4 counts consecutive step 3 units, so this is two of three; the starting boundary is the geometric mean of the measured character centroid and seven thirds of it, chosen from task 1's distributions; synthetics are printed and never evidence under P8; a spaces-only-removed narrowing is the drop candidate; per-type timeouts
+LICENCE: PHASE_PLAN.md R57, R61, R63, R64, R65, section 3, section 6; step 3 criteria 3.2 to 3.5; unit413-trace.md; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+COST: 8.6856382
+ACCOMPLISHED: the words on the CW tab stop breaking apart between letters of the same word, with every letter Tim already sees left exactly where it was, or it is measured why moving only the spaces is not enough
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 3.1 and 3.5 are met, and the report shows the green exit counts for all four commits, but 3.2 and 3.3 are not met because both changes failed the third test at 134712 and nothing was kept, and 3.4 is still open at two of three units. The open question about whether a reading moving onto its adjudicated text counts as unchanged is about a test's shape, not keying, money or a promise to the operator, so the step is not blocked.
+ADVANCED: no
+ATTEMPT: 3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | no | executed | leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+REASON: 3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | the unit ran to completion and the criterion did not flip from unmet to met
