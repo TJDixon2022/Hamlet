@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 5
+TASK: TASK 3 of 5
 WORK_INSTRUCTION: 414 - keys nobody has to guess
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T00:30:43-04:00
-NOTE: Task 2: scoring the nine at HEAD against exact keys, first run, 600 s allowed
+UPDATED: 2026-09-24T00:32:03-04:00
+NOTE: Task 2 committed, grid 102 over 243 exact; task 3 starting: writing inferring-a-key.md with 17:37 worked, and synthetic-cq.md
 
 ---
 

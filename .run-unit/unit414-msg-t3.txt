@@ -1,0 +1,3 @@
+unit414 task 3: the rule (1.3, 1.4) - inferring-a-key.md states what may and may not be inferred from a CQ call on the air, how the scored region is chosen, and works cw-2026-09-23-173723 step by step from its own key file; synthetic-cq.md states what the synthetic set does not prove, textbook spacing being the decoder's own fallback at CwUnitEstimator.cs 216, generated noise, one tone, machine keying, no reference score; cited from every synthetic key file; 1.4's rule beside the table in baseline.md
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
