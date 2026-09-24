@@ -1,0 +1,51 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "Olivia") [271 ms]
+  Standard Output Messages:
+ Olivia: {"ts":"2026-09-24T03:58:45.020Z","sessionId":"f3814c59","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"Olivia"}}
+   swept 17 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "FT4") [14 ms]
+  Standard Output Messages:
+ FT4: {"ts":"2026-09-24T03:58:45.086Z","sessionId":"93f4c2b4","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"FT4"}}
+   swept 10 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "PSK31") [12 ms]
+  Standard Output Messages:
+ PSK31: {"ts":"2026-09-24T03:58:45.100Z","sessionId":"71b7a74d","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"PSK31"}}
+   swept 15 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "FT8") [9 ms]
+  Standard Output Messages:
+ FT8: {"ts":"2026-09-24T03:58:45.114Z","sessionId":"09c59836","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"FT8"}}
+   swept 10 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+[xUnit.net 00:00:03.10]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreUnderTheGreenZoneTests.TheStarIsDrawnAndHittableAtAllNineSizesAndNoCaretIsAnywhereOnTheRigFace [2 s]
+  Standard Output Messages:
+ 1920 x 1040    face 520 x 106 | star [62,2 67x26]
+ 900 x 620      face 520 x 106 | star [62,2 67x26]
+ 1100 x 780     face 520 x 106 | star [62,2 67x26]
+ 1280 x 720     face 520 x 106 | star [62,2 67x26]
+ 1366 x 728     face 520 x 106 | star [62,2 67x26]
+ 1536 x 824     face 520 x 106 | star [62,2 67x26]
+ 1400 x 1040    face 520 x 106 | star [62,2 67x26]
+ 1920 x 1017    face 520 x 106 | star [62,2 67x26]
+ 2560 x 1400    face 520 x 106 | star [62,2 67x26]
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 3.4053 Seconds
+RC=0 WALL=4s

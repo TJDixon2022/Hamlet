@@ -209,3 +209,14 @@ the re-run reads 33 edits over 46 and 13 of 13 floors held.
 |---|---|---|---|
 | 410 | none, the baseline | 29 edits over 25 characters, inferred key | 33 edits over 46 characters, inferred keys |
 | 412 | none kept; the guard's two columns added, 0 unsure per 47 named | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
+| 413 | none kept; two built and taken out under 3.2 (`unit413-trace.md`, PARKED.md P6) | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
+
+**Unit 413, every keyed recording together**, against inferred keys, 217 edits over 565
+characters at entry and exit: the baseline 33 over 46, outside 124 over 363, the ten keyed
+captures on the bench 60 over 156. The two changes built and taken out:
+
+| change | all keyed | baseline | 17:37 | outside | the ten, bench | named floors | adjudicated | capture rows | kept |
+|---|---|---|---|---|---|---|---|---|---|
+| none, entry and exit | 217 | 33 | 29 | 124 | 60 | 13 of 13 | identical | 51 of 51 | |
+| candidate 1, word gap seven thirds of the character gap without a word trough | 207 | 33 | 29 | 128 | 46 | 13 of 13 | identical | 41 of 51, five rows fewer named | no |
+| G1, an out-of-order held reading refused | 193 | 15 | 11 | 115 | 63 | 12 of 13, 17:37 46 to 38 | identical | 50 of 51, 004133 30 to 25 named | no |
