@@ -1,0 +1,54 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.TheNoiseReductionIsNamedWithTheButtonThatTurnsItOff [4 ms]
+  Standard Output Messages:
+ noise reduction: The noise reduction is on. It smooths the audio, and what it smooths away are the sharp starts and stops that tell a dit from a dah. NR on the front of the radio turns it off.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AReceivePathAlreadyRightSaysNothingAtAll [6 ms]
+  Standard Output Messages:
+ (nothing in the way)
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AFilterAlreadyNarrowIsNotMentionedEvenWithSomebodyElseInThere [< 1 ms]
+  Standard Output Messages:
+ (nothing in the way)
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AWideFilterWithSomebodyElseInItIsNamed [< 1 ms]
+  Standard Output Messages:
+ filter width: Somebody else is keying inside the passband and the filter is wide enough to let them in. Everything inside it arrives in the same audio the decoder measures. Turning FILTER down toward five hundred hertz will shut them out, and the TWIN PBT controls will slide what is left off them.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.AWideFilterWithNobodyElseInItIsNotInTheWay [< 1 ms]
+  Standard Output Messages:
+ (nothing in the way)
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.NothingHereCanWriteToTheRadio [3 ms]
+  Standard Output Messages:
+ Setting, Says
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.ASettingThatCouldNotBeReadSaysSoRatherThanNothing [< 1 ms]
+  Standard Output Messages:
+ noise blanker: Hamlet could not read the noise blanker, so it cannot say whether it is in the way.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.WhatIsInTheWayOnTheReceiveSideTests.TheNoiseBlankerIsNamedWithTheButtonThatTurnsItOff [< 1 ms]
+  Standard Output Messages:
+ noise blanker: The noise blanker is on. It works by cutting out the loudest short spikes, and the start of every Morse mark is a short spike, so it can take bites out of the very edges the decoder measures. NB on the front of the radio turns it off.
+
+
+
+Test Run Successful.
+Total tests: 8
+     Passed: 8
+ Total time: 0.5638 Seconds
+RC=0 WALL=1s

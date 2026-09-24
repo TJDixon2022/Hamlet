@@ -1,0 +1,27 @@
+unit424 task 3: one voice (7.8) - the setup says a conditional row as the value the radio read back, not as the rule; the receive advice does not propose the preamp on while the front end reads overloading, when the manual has it off; the overload sentence does not ask for an attenuator already in; OneVoiceOnThePreampTests green, 16 of 16; sentences contradicting what Hamlet set 28 -> 0
+
+Red first, OneVoiceOnThePreampTests before any voice changed, 15 of 15 failing:
+  At14050TheSetupSaysTheValueItSetAndNoOther - Assert.Empty() Failure: Collection was not
+  empty, Collection: ["off", "preamp 2"] - the setup wrote preamp 1 and said "I set the preamp
+  to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads
+  overloading ..."; NoSentenceContradictsWhatHamletSet at 14.050 overloading - "moved into a
+  block that states nothing: the advice proposes preamp 1 ..." and the same in an FT8 block.
+
+Voices, all found by task 1's trace: ReceiverSetupVoice (the setup's own clause) was wrong in
+the block; ReceiveAdvice.Preamp (Receive Help) and MainWindowViewModel.OverflowAdviceFor (the
+panel) were wrong once he had moved into a block that does not state the preamp while
+overloading. RigObservations and ReceiveObstructions said nothing contradicting, before or
+after. None is silenced: each now says what is true.
+
+The count's rule was narrowed in this task: a P.AMP/ATT sentence counts only when it asks him
+to move the preamp or the attenuator away from where the setup left it. Task 1's strict count
+was 32; under the narrowed rule the same committed output reads 28 (10 in the block, 18 once
+moved on - the four "Hold P.AMP/ATT ... bring it in" lines at 3.530 and 7.030 ask for the
+attenuator the row wanted and the radio refused, P14). After: 0 and 0.
+
+PARKED.md P22 to P26: the overload case read at the tune-in only; no 6 m block and an
+uncited 54 MHz edge; the attenuator's reason on a 20 dB write; the index's missing
+HM-DEC-166 row; a ceiling test that fails at some wall-clock times (failed twice, then passed
+twice on the same source).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

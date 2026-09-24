@@ -311,3 +311,52 @@ over the cap; what the capped row draws there was not measured by unit 423. Hold
 the card scrolls its added lines out of sight inside the row, which §0.5 allows but which hides
 the sentence that removes the fear until he scrolls. Whether it should is the owner's call. Not
 blocking 6.3, which names columns.
+
+## P22 - the preamp's overload case is read at the tune-in only
+
+**Raised by unit 424, 2026-09-24.** Since HM-DEC-177 the CW row turns the preamp off when the
+front end reads overloading (`IC-7300_ENG_FM_12b` page 4-3), and `ReceiverSetup` reads the
+`Overflow` flag (`CivReads.Overflow`, `15 07`, which the capture sheet prints as `Overflow`)
+**once, at the tune-in**, exactly as it reads it for the attenuator. A band that starts
+overloading after he has tuned in is not followed: the preamp stays where the tune-in left it,
+and inside a CW block the overload sentence says *the preamp and the attenuator are set by this
+mode when you tune in, so Hamlet is not asking you to change them here*, while the manual would
+have the preamp off. Following the flag live would write to the radio outside a tune-in, which
+R67 and HM-DEC-056 rule against (once per tune-in, his hand wins), so it wants a ruling rather
+than a unit's choice. Not blocking.
+
+## P23 - 6 m has no block on the map, and its top edge is not in the tree
+
+**Raised by unit 424, 2026-09-24.** The CW row states preamp 2 from 50.000 to 54.000 MHz
+(HM-DEC-177), and `ReceiverSetup` writes 2 when driven there directly, but `HfBands.Names` is 80
+to 10 m and `data/bands/us-neighborhoods.json` has no 6 m rows, so tuning to 50.100 in the app
+finds no block and writes nothing. 160 m and 12 m are the same (1.810 and 24.900 find no block).
+The 54 MHz top edge is 47 CFR 97.301's and no file in the tree carries it:
+`data/privileges/us-part97-privileges.json` has no 6 m row. Adding bands to the map is the scope
+decision `HfBands` names. Not blocking.
+
+## P24 - the attenuator's sentence gives the quiet band's reason when it writes 20 dB
+
+**Raised by unit 424, 2026-09-24.** Since unit 424 the setup says a conditional row as the value
+the radio read back rather than as the rule. For the attenuator that will read *I set the
+attenuator to 20 dB because twenty decibels thrown away on a signal that had none to spare*
+once a 20 dB write lands, which gives the off case's reason for the on case. It cannot be heard
+today, because the 20 dB write is refused (P14). The row's `says` is the attenuator's, which is
+another receive condition and not this unit's; its page in `IC-7300_ENG_FM_12b` was not checked,
+because the manual is not in the tree. Not blocking.
+
+## P25 - the decision log's index has no HM-DEC-166 row
+
+**Found by unit 424, 2026-09-24.** `DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes`
+is red at entry `e4085d43` and after: *Expected [105, 136], Actual [105, 136, 166]*.
+`DECISIONS.md` holds HM-DEC-166 and the `CLAUDE.md` §1 table has no row for it. Unit 424 did not
+repair it (report, repair nothing). Also found: work instruction 424 named its ruling HM-DEC-176,
+which unit 421's floor-bar ruling already holds, so it is recorded as HM-DEC-177. Not blocking.
+
+## P26 - a ceiling test's added paragraph comes back 64 characters longer at some times
+
+**Found by unit 424, 2026-09-24.** `HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed`
+failed twice, at about 18:52 and 18:54 Eastern, with *Expected 1779, Actual 1843* (1379 before,
+400 added), and passed at 18:57 on the task 2 tree and at 18:59 on the same source that had
+failed. Something on the Digital tab adds 64 characters between the two measurements at some
+wall-clock times. Not traced by unit 424. Not blocking.

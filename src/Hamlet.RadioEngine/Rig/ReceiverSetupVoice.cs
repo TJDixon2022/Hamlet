@@ -183,9 +183,18 @@ public static class ReceiverSetupVoice
     {
         var condition = result.Condition;
 
-        var verb = condition.WantedText.Equals("off", StringComparison.OrdinalIgnoreCase)
+        // **A RULE IS SAID AS THE VALUE IT CAME TO, NOT AS THE RULE** (HM-DEC-177,
+        // work instruction 424). A conditional row's text is the whole rule, and read
+        // out as the value it made the one sentence about what Hamlet did name values
+        // it did not set: *I set the preamp to preamp 1 above 40 m, off at 40 m and
+        // below*. The radio's own read-back is what was set, so that is what is said.
+        var value = condition.IsConditional && !string.IsNullOrWhiteSpace(result.NowText)
+            ? result.NowText
+            : condition.WantedText;
+
+        var verb = value.Equals("off", StringComparison.OrdinalIgnoreCase)
             ? $"turned the {condition.Control} off"
-            : $"set the {condition.Control} to {condition.WantedText}";
+            : $"set the {condition.Control} to {value}";
 
         // **NO COMMA BEFORE THE BECAUSE**, which is not a nicety. With one, the
         // clauses join as "off, because it chops up the tones and turned the auto

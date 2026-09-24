@@ -1,0 +1,66 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.11]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.WhatElseIsComposedAtRuntimeTests.EverySentenceLengthStringOnEveryCappedSurface [1 s]
+  Standard Output Messages:
+ 595 strings examined across 13 surfaces
+ 14 of them are 100 characters or more
+ 
+   257  AboutWindow
+        Hamlet exists to make amateur radio intuitive for people who have a license but not fifty years at the key. The bands are not a mystery to be earned. They are a place, and this app draws the map, names what you are hearing, and takes you there in one click.
+ 
+   248  FavoritesWindow
+        Nothing saved yet. Tune somewhere worth coming back to and press the star in the display, and Hamlet will remember the frequency and what lives there. Anywhere you have already been is below, and the star beside it does the same job after the fact.
+ 
+   235  MainWindow — Digital tab
+        nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.
+ 
+   235  MainWindow — Digital tab, working
+        nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.
+ 
+   227  SettingsWindow
+        Off until you have joined the SOTA Reflector's "API-consumers" group and had Hamlet approved. The SOTA API's terms require both, and one of them is about AI-written code. Hamlet will not connect on your behalf until you say so.
+ 
+   198  ContactLogWindow
+        Nothing here yet. Hamlet writes a line into this log every time you fill in the contact dialog after working somebody, and this window is where those lines come back. The file lives at contacts.adi.
+ 
+   183  SettingsWindow
+        Your callsign is sent to RBN as the login, and to POTA and SOTA in the User-Agent, because those services are owed knowing who is calling them. It is still never written to telemetry.
+ 
+   170  DecisionLogWindow
+        Nothing decided yet. When Hamlet works out whether it can send, or whether the scope is running, or why a decode was thrown away, it lands here with the reason beside it.
+ 
+   141  LogContactWindow
+        Hamlet heard 1 of these 11. The rest are empty because it did not hear them, and they will be left out of the file rather than written blank.
+ 
+   117  MainWindow — Digital tab
+        nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+ 
+   117  MainWindow — Digital tab, working
+        nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+ 
+   112  SettingsWindow
+        Not set yet. Hamlet fills this in from your callsign, and until it does it won't guess how far away anything is.
+ 
+   109  MainWindow — Voice tab
+        voice is not authorized on this frequency for any class. this part of the band is for other modes · 97.305(c)
+ 
+   101  LogContactWindow
+        Hamlet did not record the dial for this row, so the frequency and the band are left out of the entry.
+ 
+ 
+ mine rows 2, DigitalMineCount 2, HasDigitalMineDecodes True
+ drawn by: DigitalModeStripStatus  (TextBlock)
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.3887 Seconds
+RC=0 WALL=3s

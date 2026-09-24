@@ -1,0 +1,411 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.32]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.44]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.44]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.55]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.At14050TheSetupSaysTheValueItSetAndNoOther [FAIL]
+[xUnit.net 00:00:02.55]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.55]       Collection: ["off", "preamp 2"]
+[xUnit.net 00:00:02.55]       Stack Trace:
+[xUnit.net 00:00:02.55]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(73,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.At14050TheSetupSaysTheValueItSetAndNoOther()
+[xUnit.net 00:00:02.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.55]       Output:
+[xUnit.net 00:00:02.55]         I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.56]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 3530000, overloading: False) [FAIL]
+[xUnit.net 00:00:02.56]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.56]       Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+[xUnit.net 00:00:02.56]       Stack Trace:
+[xUnit.net 00:00:02.56]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.56]       Output:
+[xUnit.net 00:00:02.56]         3.530 MHz: preamp preamp 1, attenuator off
+[xUnit.net 00:00:02.56]           setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.56]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+[xUnit.net 00:00:02.56]           moved into a block that states nothing: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.56]           moved into an FT8 block: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.56]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 3530000, overloading: True) [FAIL]
+[xUnit.net 00:00:02.56]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.56]       Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+[xUnit.net 00:00:02.56]       Stack Trace:
+[xUnit.net 00:00:02.56]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.56]       Output:
+[xUnit.net 00:00:02.56]         3.530 MHz, overloading: preamp off, attenuator off
+[xUnit.net 00:00:02.56]           setup: 
+[xUnit.net 00:00:02.56]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+[xUnit.net 00:00:02.56]           moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.56]           moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.56]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 18080000, overloading: False) [FAIL]
+[xUnit.net 00:00:02.56]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.56]       Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+[xUnit.net 00:00:02.56]       Stack Trace:
+[xUnit.net 00:00:02.56]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.56]       Output:
+[xUnit.net 00:00:02.56]         18.080 MHz: preamp preamp 1, attenuator off
+[xUnit.net 00:00:02.56]           setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.56]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+[xUnit.net 00:00:02.56]           moved into a block that states nothing: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.56]           moved into an FT8 block: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.56]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 7030000, overloading: True) [FAIL]
+[xUnit.net 00:00:02.56]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.56]       Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+[xUnit.net 00:00:02.56]       Stack Trace:
+[xUnit.net 00:00:02.56]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.56]       Output:
+[xUnit.net 00:00:02.56]         7.030 MHz, overloading: preamp off, attenuator off
+[xUnit.net 00:00:02.56]           setup: 
+[xUnit.net 00:00:02.56]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+[xUnit.net 00:00:02.56]           moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.56]           moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.56]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 14050000, overloading: False) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         14.050 MHz: preamp preamp 1, attenuator off
+[xUnit.net 00:00:02.57]           setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 10110000, overloading: False) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         10.110 MHz: preamp preamp 1, attenuator off
+[xUnit.net 00:00:02.57]           setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 28050000, overloading: True) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         28.050 MHz, overloading: preamp off, attenuator off
+[xUnit.net 00:00:02.57]           setup: 
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.57]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 14050000, overloading: True) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         14.050 MHz, overloading: preamp off, attenuator off
+[xUnit.net 00:00:02.57]           setup: 
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.At14050TheSetupSaysTheValueItSetAndNoOther [74 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["off", "preamp 2"]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.At14050TheSetupSaysTheValueItSetAndNoOther() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 73
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 3530000, overloading: False) [8 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 3.530 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 3530000, overloading: True) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 3.530 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 18080000, overloading: False) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 18.080 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 7030000, overloading: True) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 7.030 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 14050000, overloading: False) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 14.050 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 10110000, overloading: False) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 10.110 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 28050000, overloading: True) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 28.050 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 14050000, overloading: True) [< 1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 14.050 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+[xUnit.net 00:00:02.57]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 7030000, overloading: False) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         7.030 MHz: preamp preamp 1, attenuator off
+[xUnit.net 00:00:02.57]           setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 21050000, overloading: False) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         21.050 MHz: preamp preamp 1, attenuator off
+[xUnit.net 00:00:02.57]           setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 21050000, overloading: True) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         21.050 MHz, overloading: preamp off, attenuator off
+[xUnit.net 00:00:02.57]           setup: 
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.57]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 28050000, overloading: False) [FAIL]
+[xUnit.net 00:00:02.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.57]       Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Output:
+[xUnit.net 00:00:02.57]         28.050 MHz: preamp preamp 1, attenuator off
+[xUnit.net 00:00:02.57]           setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+[xUnit.net 00:00:02.57]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+[xUnit.net 00:00:02.57]           moved into a block that states nothing: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.57]           moved into an FT8 block: advice "The preamp is already on."; panel ""
+[xUnit.net 00:00:02.58]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 10110000, overloading: True) [FAIL]
+[xUnit.net 00:00:02.58]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.58]       Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+[xUnit.net 00:00:02.58]       Stack Trace:
+[xUnit.net 00:00:02.58]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.58]       Output:
+[xUnit.net 00:00:02.58]         10.110 MHz, overloading: preamp off, attenuator off
+[xUnit.net 00:00:02.58]           setup: 
+[xUnit.net 00:00:02.58]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+[xUnit.net 00:00:02.58]           moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.58]           moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.58]     Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 18080000, overloading: True) [FAIL]
+[xUnit.net 00:00:02.58]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.58]       Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+[xUnit.net 00:00:02.58]       Stack Trace:
+[xUnit.net 00:00:02.58]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs(136,0): at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading)
+[xUnit.net 00:00:02.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.58]       Output:
+[xUnit.net 00:00:02.58]         18.080 MHz, overloading: preamp off, attenuator off
+[xUnit.net 00:00:02.58]           setup: 
+[xUnit.net 00:00:02.58]           in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+[xUnit.net 00:00:02.58]           moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.58]           moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+[xUnit.net 00:00:02.58]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 7030000, overloading: False) [< 1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 7.030 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 21050000, overloading: False) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 21.050 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 21050000, overloading: True) [< 1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 21.050 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 28050000, overloading: False) [< 1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["the setup names off, preamp 2 after leaving preamp"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 28.050 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 10110000, overloading: True) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 10.110 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Failed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 18080000, overloading: True) [< 1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["moved into a block that states nothing: the advice"···, "moved into a block that states nothing: the panel "···, "moved into an FT8 block: the advice proposes pream"···, "moved into an FT8 block: the panel asks for P.AMP/"···]
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(Int64 hz, Boolean overloading) in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\OneVoiceOnThePreampTests.cs:line 136
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 18.080 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "Switch the preamp on. It is more gain at the front end, which is what a faint signal needs."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+
+Test Run Failed.
+Total tests: 15
+     Failed: 15
+ Total time: 2.8919 Seconds
+RC=1 WALL=3s

@@ -1,0 +1,150 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.45]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.57]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.58]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.At14050TheSetupSaysTheValueItSetAndNoOther [81 ms]
+  Standard Output Messages:
+ I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 3530000, overloading: False) [6 ms]
+  Standard Output Messages:
+ 3.530 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 3530000, overloading: True) [1 ms]
+  Standard Output Messages:
+ 3.530 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 18080000, overloading: False) [< 1 ms]
+  Standard Output Messages:
+ 18.080 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 7030000, overloading: True) [1 ms]
+  Standard Output Messages:
+ 7.030 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 14050000, overloading: False) [1 ms]
+  Standard Output Messages:
+ 14.050 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 10110000, overloading: False) [< 1 ms]
+  Standard Output Messages:
+ 10.110 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 28050000, overloading: True) [1 ms]
+  Standard Output Messages:
+ 28.050 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 14050000, overloading: True) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+[xUnit.net 00:00:02.70]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 7030000, overloading: False) [< 1 ms]
+  Standard Output Messages:
+ 7.030 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 21050000, overloading: False) [< 1 ms]
+  Standard Output Messages:
+ 21.050 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 21050000, overloading: True) [< 1 ms]
+  Standard Output Messages:
+ 21.050 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 28050000, overloading: False) [< 1 ms]
+  Standard Output Messages:
+ 28.050 MHz: preamp preamp 1, attenuator off
+   setup: I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end.
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel ""
+   moved into a block that states nothing: advice "The preamp is already on."; panel ""
+   moved into an FT8 block: advice "The preamp is already on."; panel ""
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 10110000, overloading: True) [< 1 ms]
+  Standard Output Messages:
+ 10.110 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.NoSentenceContradictsWhatHamletSet(hz: 18080000, overloading: True) [< 1 ms]
+  Standard Output Messages:
+ 18.080 MHz, overloading: preamp off, attenuator off
+   setup: 
+   in the block: advice "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."; panel "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp and the attenuator are set by this mode when you tune in, so Hamlet is not asking you to change them here."
+   moved into a block that states nothing: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   moved into an FT8 block: advice "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."; panel "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+
+
+  Passed Hamlet.App.Tests.ViewModels.OneVoiceOnThePreampTests.TheOverloadSentenceDoesNotAskForAnAttenuatorAlreadyIn [< 1 ms]
+  Standard Output Messages:
+ The radio says its front end is overloading, with the preamp already off and the attenuator already in, which is as far as those two go. A strong band in daylight can do this on its own.
+
+
+
+Test Run Successful.
+Total tests: 16
+     Passed: 16
+ Total time: 2.9701 Seconds
+RC=0 WALL=3s

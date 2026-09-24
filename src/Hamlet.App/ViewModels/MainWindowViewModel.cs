@@ -8953,7 +8953,17 @@ public partial class MainWindowViewModel : ObservableObject
     public string OverflowAdvice => OverflowAdviceFor(
         FrontEndIsOverloading,
         PreampIsOn,
-        OwnedByTheMode.Contains(RigField.Preamp) && OwnedByTheMode.Contains(RigField.Attenuator));
+        OwnedByTheMode.Contains(RigField.Preamp) && OwnedByTheMode.Contains(RigField.Attenuator),
+        AttenuatorIsIn);
+
+    /// <summary>True while the attenuator reads in.</summary>
+    /// <remarks>
+    /// Read so the overload sentence does not ask for an attenuator already in (work
+    /// instruction 424).
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(OverflowAdvice))]
+    private bool _attenuatorIsIn;
 
     /// <summary>The fields the last tune-in's mode states, so the setup decides them.</summary>
     /// <remarks>
@@ -9058,9 +9068,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// Whether the last tune-in's mode states the preamp, so the setup decides it
     /// (HM-DEC-174).
     /// </param>
+    /// <param name="attenuatorIsIn">Whether the attenuator reads in.</param>
     /// <returns>What to say, or "" when there is nothing to say.</returns>
     internal static string OverflowAdviceFor(
-        bool overloading, bool preampIsOn, bool frontEndOwned = false)
+        bool overloading, bool preampIsOn, bool frontEndOwned = false, bool attenuatorIsIn = false)
     {
         if (!overloading)
         {
@@ -9080,12 +9091,24 @@ public partial class MainWindowViewModel : ObservableObject
                 + "in, so Hamlet is not asking you to change them here.";
         }
 
-        return preampIsOn
-            ? "The radio says its front end is overloading, which means the signal "
-              + "coming in is stronger than the receiver can handle and everything "
-              + "in the passband is being squashed together. Nothing will decode "
-              + "until that stops. Press P.AMP/ATT on the front of the radio until "
-              + "the preamp reads off."
+        if (preampIsOn)
+        {
+            return "The radio says its front end is overloading, which means the signal "
+                + "coming in is stronger than the receiver can handle and everything "
+                + "in the passband is being squashed together. Nothing will decode "
+                + "until that stops. Press P.AMP/ATT on the front of the radio until "
+                + "the preamp reads off.";
+        }
+
+        // **NOT FOR AN ATTENUATOR ALREADY IN** (work instruction 424). A tune-in that
+        // reads overloading turns the preamp off and brings the attenuator in, and once
+        // he had moved into a block that does not state them this still told him to
+        // hold P.AMP/ATT to bring the attenuator in: a change Hamlet had already made,
+        // asked of him as though it had not.
+        return attenuatorIsIn
+            ? "The radio says its front end is overloading, with the preamp already off "
+              + "and the attenuator already in, which is as far as those two go. A strong "
+              + "band in daylight can do this on its own."
             : "The radio says its front end is overloading, and the preamp is "
               + "already off, so the next thing to try is the attenuator. Hold "
               + "P.AMP/ATT for a moment to bring it in. A strong band in daylight "
@@ -10979,6 +11002,7 @@ public partial class MainWindowViewModel : ObservableObject
         // once it is already off: advice about a knob that is already in the
         // right position is noise.
         PreampIsOn = preamp is { IsKnown: true } && preamp.Number is 1 or 2;
+        AttenuatorIsIn = attenuator is { IsKnown: true, Number: > 0 };
 
         // **THE THREE THE RULING NAMED, AND ONLY WHEN THEY ARE IN THE WAY.** The
         // filter is mentioned on a measurement rather than on a width: a

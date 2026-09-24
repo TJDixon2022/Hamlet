@@ -92,8 +92,8 @@ public sealed class WhatIsSaidAboutThePreampTests
         _output.WriteLine(
             "  (a sentence counts when the setup's own clause names a preamp value other than the one it "
             + "left, when the advice proposes a preamp other than the one Hamlet set, when an observation "
-            + "objects to the preamp, or when the overload sentence names P.AMP/ATT for a preamp or "
-            + "attenuator Hamlet set)");
+            + "objects to the preamp, or when the overload sentence asks him to move P.AMP/ATT away "
+            + "from where the setup left it)");
     }
 
     private int _inBlock;
@@ -215,11 +215,11 @@ public sealed class WhatIsSaidAboutThePreampTests
         var sentence = MainWindowViewModel.OverflowAdviceFor(
             overloading, preampOn,
             owned.Contains(RigField.Preamp) && owned.Contains(RigField.Attenuator));
-        var knob = sentence.Contains("P.AMP/ATT", StringComparison.Ordinal);
+        var knob = UndoesTheSetup(sentence, state);
         contradicting += knob ? 1 : 0;
         said.Add(
             "panel overload sentence (OverflowAdviceFor): " + Quote(sentence)
-            + (knob ? " [ASKS HIM TO TURN P.AMP/ATT, WHICH HAMLET SET]" : ""));
+            + (knob ? " [ASKS HIM TO UNDO WHAT HAMLET LEFT AT P.AMP/ATT]" : ""));
 
         foreach (var line in said)
         {
@@ -228,6 +228,18 @@ public sealed class WhatIsSaidAboutThePreampTests
 
         return contradicting;
     }
+
+    // Whether the overload sentence asks him to move P.AMP/ATT away from where the setup
+    // left it: the preamp off when it reads on, or the attenuator in when it already is.
+    // A sentence asking for the attenuator the row wanted and the radio refused (the
+    // 0x14 write parked by unit 419) asks for the condition's own value and is not one.
+    // Task 1 counted every P.AMP/ATT sentence; this rule is task 3's, and the before
+    // figure under it is re-read from task 1's committed output in the report.
+    internal static bool UndoesTheSetup(string sentence, RigState state)
+        => (sentence.Contains("until the preamp reads off", StringComparison.Ordinal)
+            && state[RigField.Preamp] is { IsKnown: true, Number: 1 or 2 })
+           || (sentence.Contains("to bring it in", StringComparison.Ordinal)
+               && state[RigField.Attenuator] is { IsKnown: true, Number: > 0 });
 
     // Whether a sentence names a preamp value other than the one the radio holds, in
     // the radio's own words: off, preamp 1, preamp 2.

@@ -367,13 +367,29 @@ public static class ReceiveAdvice
                 "Hamlet could not read the preamp, so it is leaving it alone.");
         }
 
-        return value.Number is > 0
-            ? Fine(CivWrites.Preamp, "The preamp is already on.")
-            : new ReceiveSuggestion(
-                CivWrites.Preamp, 1,
-                "Switch the preamp on. It is more gain at the front end, which is "
-                + "what a faint signal needs.",
-                AlreadyRight: false, Unreadable: false);
+        if (value.Number is > 0)
+        {
+            return Fine(CivWrites.Preamp, "The preamp is already on.");
+        }
+
+        // **NOT WHILE THE FRONT END IS OVERLOADING** (HM-DEC-177, work instruction 424).
+        // The radio's manual turns the preamp off when strong signals are distorting
+        // it (IC-7300_ENG_FM_12b page 4-3), and the setup does exactly that on a tune-in
+        // that reads overloading. Proposing it back on then was this list telling him
+        // to undo what Hamlet had just done, and it was the wrong advice besides.
+        if (state[RigField.Overflow] is { IsKnown: true, Number: > 0 })
+        {
+            return Fine(
+                CivWrites.Preamp,
+                "The preamp is off, and the radio says its front end is overloading, "
+                + "which is when the radio's manual has it off.");
+        }
+
+        return new ReceiveSuggestion(
+            CivWrites.Preamp, 1,
+            "Switch the preamp on. It is more gain at the front end, which is "
+            + "what a faint signal needs.",
+            AlreadyRight: false, Unreadable: false);
     }
 
     /// <summary>

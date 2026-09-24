@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 4
+TASK: TASK 3 of 4
 WORK_INSTRUCTION: 424 - the preamp is what the manual says, and nothing argues with it
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T18:27:39-04:00
-NOTE: Touched types round t2: WhatIsSaidAboutThePreampTests, 6 of 6
+UPDATED: 2026-09-24T18:33:36-04:00
+NOTE: Task 3: TheBannerSaysWhatTheRadioReadBackTests alone after the voice fixes
 
 ---
 

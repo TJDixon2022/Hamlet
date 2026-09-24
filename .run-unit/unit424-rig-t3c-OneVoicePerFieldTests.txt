@@ -1,0 +1,53 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.32]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.WithNoTuneInTheObservationStillSpeaks [5 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheAdviceLeavesTheModesFieldsAlone(hz: 14074000, mode: "FT8") [67 ms]
+  Standard Output Messages:
+   AutoNotch        would change False The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseReduction   would change False The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseBlanker     would change False The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   Agc              would change False The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   FilterBandwidth  would change False This is not Morse, so Hamlet is leaving the filter alone.
+   Preamp           would change True  Switch the preamp on. It is more gain at the front end, which is what a faint signal needs.
+   RfGain           would change True  Open the receive gain all the way. It is at about 39 percent, and a gain control turned down is the one thing that quietly undoes everything else.
+   AccUsbAfLevel    would change False Hamlet could not read the level the radio sends down the USB cable, so it is leaving it alone.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheAdviceLeavesTheModesFieldsAlone(hz: 14050000, mode: "CW") [3 ms]
+  Standard Output Messages:
+   AutoNotch        would change False The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseReduction   would change False The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseBlanker     would change False The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   Agc              would change False The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   FilterBandwidth  would change False Hamlet could not read the filter width, so it is leaving it alone.
+   Preamp           would change False The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   RfGain           would change False The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   AccUsbAfLevel    would change False Hamlet could not read the level the radio sends down the USB cable, so it is leaving it alone.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheAdviceLeavesTheModesFieldsAlone(hz: 7030000, mode: "CW") [< 1 ms]
+  Standard Output Messages:
+   AutoNotch        would change False The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseReduction   would change False The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   NoiseBlanker     would change False The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   Agc              would change False The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   FilterBandwidth  would change False Hamlet could not read the filter width, so it is leaving it alone.
+   Preamp           would change False The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   RfGain           would change False The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions.
+   AccUsbAfLevel    would change False Hamlet could not read the level the radio sends down the USB cable, so it is leaving it alone.
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.WithNoTuneInTheAdviceStillSpeaks [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.OneVoicePerFieldTests.TheObservationsDoNotObjectToWhatTheSetupOwns [< 1 ms]
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 0.5906 Seconds
+RC=0 WALL=1s
