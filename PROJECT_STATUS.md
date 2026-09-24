@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 3
+TASK: TASK 2 of 3
 WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T09:34:56-04:00
-NOTE: Task 1 - neighbors sit in the filter stopband, own-floor hits silence on 013347; printing per-second level and tone-bin percentiles
+UPDATED: 2026-09-24T09:37:11-04:00
+NOTE: Task 2 - running TheTonePeakIsAboutThisRecordingTests against today's line, expecting red
 
 ---
 
