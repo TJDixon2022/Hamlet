@@ -1,1 +1,1 @@
-PHASE_PLAN.md step 6 criterion 6.2 is held open only by the keying caption naming a 400 to 1200 Hz sweep the meter no longer runs (P10); its three named clauses already hold. Step 3's only open criterion, 3.4, cannot flip while unit 416's kept changes stand, so under R64 and R65 the loop stays on the screen.
+Step 3 cannot advance until the owner rules on P19, and 3.4 cannot fire after unit 421's kept change, so R64 and R65 send the loop to the screen. 6.5 turns on HM-OPEN-087, which is Tim's, so 6.3 is the step 6 criterion no ruling holds.

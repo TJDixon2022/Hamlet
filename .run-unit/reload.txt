@@ -1,15 +1,16 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-24T09:58:59-04:00  root C:\Source\HamLet
+measured 2026-09-24T17:04:58-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0173.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0176.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,17 +22,18 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 3211874b
-  uncommitted at the root : 3
+  HEAD   : d06981da
+  uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
+      M WORK_INSTRUCTIONS.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0173
+  highest in CLAUDE.md section 1 : CPS-DEC-0176
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -39,7 +41,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  349 lines, 26831 bytes
+  443 lines, 36755 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -50,6 +52,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 4 | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  STEP: 7 | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
   
   ---
   
@@ -193,6 +196,65 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   narrowing the relabel until `134712` does not move, which would choose the boundary from a
   score rather than a trace.
   
+  **R67 - Tim, 2026-09-24: entering a mode sets the radio correctly and it stays set.** *"We're
+  supposed to automatically set the right radio settings when we enter CW mode and when we
+  enter data mode, and we're not doing it."* He reports Hamlet putting the preamp to stage 1 or
+  2 in CW, complaining that it is not off, and turning it back on after he sets it off by hand.
+  The tree shows why: `data/bands/mode-receiver-conditions.json` states the CW preamp as
+  `"wanted": 1`, a single value, with `wantedText` reading *preamp 1 above 40 m, off at 40 m
+  and below* - a band rule that the written value does not carry, and that only a comment in
+  `ReceiverSetup.cs` knows. **And three components decide the preamp independently**:
+  `ReceiverSetup` writes it on tune-in, `ReceiveAdvice.Preamp` tells the operator to switch it
+  on whenever it reads off, and `RigObservations.AttenuatorAndPreampTogether` objects when it
+  is on. On top of that, unit 411 found `ReceiverSetup` filing every write unconfirmed for a
+  scale mismatch, so nothing is ever recorded as already correct and the operator's hand never
+  sticks (HM-DEC-056). **This is a requirement broken, not a preference.** It is criterion 7.5
+  and it ranks above the decode work in this step.
+  
+  **R68 - Tim, 2026-09-24: the decoder's deafness gets its own step.** Two faults have been
+  parked repeatedly because no criterion owned them. **The speed ceiling**: on
+  `cw-2026-09-24-135641`, 14.0475 MHz at 09:56 Eastern - W1AW code practice, whose Fast Code
+  sessions open at 35 WPM - the search reported *40 WPM won out of 8 to 40, 0.0 better than
+  silence, at the top of the search: the sender may be faster than Hamlet can look*, while the
+  independent sweep measured a 27 ms median key-down, about 44 WPM. Nothing was read in 44
+  minutes. **Acquisition**: the first two minutes of the 7.052 session read `E ET E E` before
+  the decoder locks, then it reads a whole QSO. Both are now step 7.
+  
+  **R69 - Tim, 2026-09-24: the stray letters get a criterion in step 3.** After unit 416's two
+  kept changes, what is left on 17:37 is 10 letters added and 4 wrong of 19 edits - the stray
+  `E`, `T` and `<BT>` between real words. A single dit reads as `E` and a single dah as `T`, so
+  any fragment comes out as a confident character and the emission gate passes it. It is the
+  largest measured decode error left and it is criterion 3.6.
+  
+  **R70 - Tim, 2026-09-24: entering Morse in any CW-family block is entering CW mode.** Unit
+  419 met every clause of 7.5 - rewrites of values already correct 1 to 0, contradicting voices
+  6 to 0, the operator's hand standing, the preamp's band rule carried by the value written -
+  and 7.5 stayed open on one hole: the `CW DX` and `QRP` blocks state no receiver conditions,
+  so entering Morse there writes nothing at all. **7.030 MHz, the 40 m frequency where the
+  preamp rule says off, is the first hertz of the QRP block**, so a radio left at preamp 1
+  there stays at preamp 1 against the row's own text. All three blocks carry `family: cw`.
+  **The CW conditions apply to every block of the CW family**, by `sameAs` lines in
+  `data/bands/mode-receiver-conditions.json` or whatever the file's schema allows, and the
+  conditions themselves are not changed. Rejected: leaving those blocks silent and closing 7.5
+  partial, which leaves the reported fault live on 40 m.
+  
+  **R71 - Tim, 2026-09-24: a floor counts characters the decoder was confident about.** Unit
+  420 raised P17: a floor counts named characters and only rises, and a stray `E` is a named
+  character, so every change that removes junk reads as a floor lowered and 3.6 cannot pass its
+  own guard. This is the restore phase's R57 trap one level down. R57 freed the placeholders,
+  which are the decoder admitting it does not know; **a stray letter is the decoder being
+  confident and wrong**, and the two cannot be told apart by the character, only by its span.
+  On `cw-2026-09-24-153202` the real letters stand at 100 to 1200 and the four stray `E`s at
+  4.9, 5.0, 14.0 and 6.8. **So a floor counts only characters whose span is at or above a
+  stated bar**; all 51 rows are re-measured once, in one commit, with the bar named and the old
+  count, the above-bar count and the below-bar count printed per row; a row that falls solely
+  because below-bar characters were removed is not a floor lowered, and a row whose above-bar
+  count falls is a regression. **The bar is chosen from the trace, never from which changes it
+  would let through**, and the three adjudicated readings unchanged are the independent check
+  that nothing real was lost. Rejected: exempting the floors from 3.6 altogether, which would
+  leave the 40 unkeyed captures unguarded during exactly the work most likely to lose
+  characters; leaving P17 and closing 3.6 unmet.
+  
   ## Â§3 What is different from the phases before it
   
   This phase scores text for the first time, so two things bind every unit:
@@ -266,6 +328,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
   - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
   - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
+  - [ ] 3.6 The stray single-element characters are attacked: the trace names, per keyed recording, every added or wrong character whose decode rests on one element and what score admitted it, printed by a fact that asserts nothing; then each change is judged under 3.2's four tests, and the total edit count over all keyed recordings falls, with the count of added letters reported before and after (R69).
+  - [x] 3.7 All 51 capture rows are re-measured once under R71 in a single commit, with the span bar named and the old count, the above-bar count and the below-bar count printed per row; the bar's choice is justified from 3.6's trace and not from which changes it admits; the three adjudicated readings and the keyed totals are run at that commit and are unchanged or better, and the report states plainly that no character above the bar was lost.
   - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
   
   **Depends on:** steps 0 and 2.
@@ -301,15 +365,33 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Exit:**
   - [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
-  - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
+  - [x] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
   - [x] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
-  - [ ] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
-  - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
-  - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
+  - [x] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
+  - [x] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
+  - [x] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
   - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
   - [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
   
   **Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
+  
+  ## Step 7 - The decoder hears what is there
+  
+  **Delivers:** R67 and R68. What the decoder cannot hear at all, and the receiver it listens
+  through.
+  
+  **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
+  
+  **Exit:**
+  - [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
+  - [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
+  - [ ] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
+  - [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+  - [x] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
+  - [x] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
+  - [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+  
+  **Depends on:** nothing. Independent of every other step.
   
   ## Â§5 Dependencies
   
@@ -325,6 +407,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     fact the product states to the operator about a signal, a station or a send. A test's
     shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
   - **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+  - **7.5 changes what is written to the radio, and that is its point** (R67). It may make the
+    app write *less* - a value already correct is not rewritten - and it may carry a band rule
+    the condition's own text already states. **It may not change what a condition asks for**,
+    and nothing that keys or transmits is touched.
+  - **Removing a below-bar character is not lowering a floor** (R71), once 3.7 has set the bar.
+    A row whose above-bar count falls is a regression and the change goes back out. Until 3.7
+    is met, every named character counts as it does today.
   - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
     movement fails 3.2's third test, and a report invoking the clause prints the reading
     before and after.
@@ -373,6 +462,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-24, after unit 420.** R71: a floor counts characters at or above a stated span
+    bar, so the stray-letter work can proceed; criterion 3.7 re-measures the 51 rows once.
+  - **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as
+    criterion 7.7, so 7.5's last hole closes and 7.030 behaves.
+  - **2026-09-24, after unit 418.** R67 entering a mode sets the receiver correctly and it
+    stays set, as criterion 7.5; R68 step 7 for the speed ceiling and acquisition; R69 the
+    stray single-element letters as criterion 3.6.
   - **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
     own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
     moved - can be re-applied.
@@ -391,13 +487,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  13 lines, 2200 bytes
+  14 lines, 2435 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
-  HEARTBEAT: 2026-09-24 09:58:57
+  WORK_INSTRUCTION: 423 - the window holds still outside his privileges
+  HEARTBEAT: 2026-09-24 17:04:57
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
@@ -405,9 +501,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
   --- PHASE_OUTCOME.md ---
-  293 lines, 60915 bytes
+  496 lines, 104435 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -418,6 +515,106 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
+  
+  ## UNIT 423 - STEP 6
+  
+  STEP: 6
+  APPROACH: trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
+  MOVE: work around
+  WHY: Step 3 cannot advance until the owner rules on P19, and 3.4 cannot fire after unit 421's kept change, so R64 and R65 send the loop to the screen. 6.5 turns on HM-OPEN-087, which is Tim's, so 6.3 is the step 6 criterion no ruling holds.
+  STATE: partial
+  DECIDED: author's, overrulable - routing from step 3 to 6.3, not 6.5 or step 7, under R64's order; "outside his privileges" is measured as an amateur CW frequency his class does not cover on the same band as a covered one, with out-of-band and other classes printed in the trace only; "same columns" is left edge and width within one pixel; the test also asserts the words and color change so a frozen panel cannot pass; a green-at-first-run test does not tick 6.3; the smaller window size is the drop candidate; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R62, R64, R65, R54, section 6; step 6 criteria 6.3 and 6.6; HM-DEC-021; HM-DEC-092; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2, 0.5 and 12.6
+  ADVANCES: step 6 criterion 3
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.109 to 1.13.110. PHASE_STATUS.md names unit 423 and CURRENT_STEP 6. HEAD at entry 0456cad7. License class General (AppSettings.Operator.LicenseClass, TheTopRowTests.FixtureSettings); covered 14.050 MHz CW, General's 20 m row 14025000 to 14150000 (97.301(d)); not covered 14.010 MHz CW, on 20 m only in Extra's row 14000000 to 14350000 (97.301(b)). Entry round, one type per invocation: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP carry-forward 276 of 278, the two lost to the dispatcher loop (ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel, BindingHealthTests.TheMainWindowBindsWithoutOneComplaint) green alone, ThePowerIsOfferedTests 3 of 3 and BindingHealthTests 1 of 1; captures 51 of 51 under the bar; adjudicated 13 of 13; clean 2 of 2; keyed floors 13 of 13; EveryControlSaysWhatItDoesTests 3 of 3; top-row types at entry: TheBandRowIsWhereItWasRuledTests 8 of 8, TheTopRowTests 15 of 15, Unit376TheTopBandTests 5 of 5, TheSunMapStandsWhereItWasLeftTests 2 of 2, TheWindowHoldsBelowItsMinimumTests 3 of 3; OutOfBandTests 16 of 16; PrivilegeStatusLineTests 9 of 9; red as expected: ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten (P16) and Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen (P20).
+  TASK 1, THE TRACE (6.3): WhereThePanelsStandOutsideHisPrivilegesTests at 987858b6, asserting nothing, tunes by the rig face's own FrequencyHz write (SetCurrentValue, two-way to MainWindowViewModel.FrequencyHz) at 15 sizes on the CW and Digital tabs, every class, 14.360 out of band, and connected to the training radio. Before: at 1400 x 1040, 1400 x 900 and 1536 x 824 the map left the band's left edge (393 x 214 to 246 x 134), the card moved 407 px left and widened 147, the map moved 562 px right; at 1280 x 720 and 1366 x 728 the map gave 27 and 81 px to the card; at 1920 x 1040 and 1920 x 1017 the layout never settled (Infinite layout loop detected); at 1100 x 780 no left edge or width moved. The rig face never moved. What moved them: BandGovernsTheMapPanel's two fit questions, CardFits and AtTheLeftEdge, on the card's height, which the reassurance sentence, the upgrade row and the longer verdict raise.
+  TASK 2, THE TEST (6.3): ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests at fb11154c, committed red at 1280 x 720, 1400 x 1040 and 1920 x 1040, green at 1100 x 780.
+  TASK 3, THE COLUMNS HELD (6.3): 89394369, green at all four sizes, and with a return check added. OutsideTheFit on the three outside-privileges lines, HeldAcross bound to PrivilegeStatus.Tone, and a stale-measure guard. After: every left edge and width moves 0.0 px at all 15 sizes on both tabs, connected included, out and back, no layout loop. Heights still follow the card's words (P21, parked).
+  TASK 4, THE EXIT ROUND (6.6 held): Hamlet.sln builds non-incremental with warnings as errors, 0 warnings; ENGINE 178 of 178; APP 277 of 278, TheTestsStayOffTheNetworkTests lost to the dispatcher loop and 5 of 5 alone; captures 51 of 51; adjudicated 13 of 13; clean 2 of 2; keyed floors 13 of 13; BindingHealthTests, EveryControlSaysWhatItDoesTests, both of this unit's types, the five top-row types at their entry counts, OutOfBandTests, PrivilegeStatusLineTests and TheFavoritesAreChipsTests, TheWorkingPanelsTests, Unit388TraceTests, Unit389TraceTests green; P16 and P20 red as at entry. Transmit files nothing against 7e209cb4; src/Hamlet.RadioEngine nothing against entry. 6.3 ticked.
+  
+  ## UNIT 422 - STEP 6
+  
+  STEP: 6
+  APPROACH: inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
+  MOVE: work around
+  WHY: 3.6 cannot advance by any change the floors allow: all eight added single-element strays stand above R71's bar on recordings whose floors equal their above-bar counts, so removing one breaks 2.2 and 3.2's fourth test, and relaxing that is the owner's (P19). R64 and R65 send the loop to the screen next, and 6.4 is the step 6 criterion no ruling holds.
+  STATE: partial
+  DECIDED: author's, overrulable - 3.6 is read as unit 421 read it, open until an added letter comes off a scored stretch, and parked as P19 with the proposed ruling that a key-aligned added character may leave a floor; routing from step 3 to 6.4 rather than 6.3 or 6.5 because 6.5 turns on HM-OPEN-087, Tim's, and 6.3 is the larger unit; an existing true tip is left alone and a false one made true; the connect button's second state is the drop candidate; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R62, R64, R65, R54, R63, R71, section 6; step 6 criteria 6.4 and 6.6; step 3 criterion 3.6 and 2.2; HM-DEC-059; HM-DEC-080; HM-DEC-087; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.6
+  ADVANCES: step 6 criterion 4
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.108 to 1.13.109. PHASE_STATUS.md names unit 422 and CURRENT_STEP 6. HEAD at entry bdd0070b. P19 added to PARKED.md as the arbiter wrote it. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP carry-forward 277 of 278, the one lost to the dispatcher loop (ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed) green alone, ThePsk31OfferTests 2 of 2; captures 51 of 51 under the bar; adjudicated 13 of 13; clean 2 of 2; keyed floors (TheNumberCannotBeGamedTests) 13 of 13; BindingHealthTests 1 of 1.
+  TASK 1, THE INVENTORY (6.4): WhatEveryControlSaysOnHoverTests at ba39a306, asserting nothing, builds the window headless on the CW tab, not connected and then connected to the training radio through ToggleConnectCommand. CW tab is CwWorkspace, 15 controls; band row is the header strip holding the port and Connect, BandRow and BandPills, 34 controls. With a tip at entry: CW tab 7 of 15; band row 18 of 34 not connected, 19 of 34 connected. The save star's hover, read with the pointer on the star, was the face's "Roll the scroll wheel over any digit to tune that digit.", false of the star. The seven band tips were true and never said the press tunes.
+  TASK 2, THE TEST (6.4): EveryControlSaysWhatItDoesTests at d833bbaa names all 49 one by one, closed both ways, both connection states and the star; committed red, 23 controls without a tip in each state plus the star.
+  TASK 3, THE TIPS (6.4): 21808260, green 3 of 3. CW tab 15 of 15; band row 33 of 34 not connected (the link-check mark holds no sentence and is not drawn until a radio answers), 34 of 34 connected. Send's element differs only by ToolTip.Tip. Hover text only: no command, binding, visibility or layout changed.
+  TASK 4, THE EXIT ROUND (6.6 held): Hamlet.sln builds with warnings as errors, non-incremental, 0 warnings; ENGINE carry-forward 178 of 178; APP 274 of 278, the four cases of TheRecordNamesTheSubModePressedTests lost to the dispatcher loop and 12 of 12 alone; captures 51 of 51; adjudicated 13 of 13; clean 2 of 2; keyed floors 13 of 13; BindingHealthTests, TheWindowHoldsBelowItsMinimumTests, Unit376TheTopBandTests, both of this unit's types and 20 touched or tip-reading types green, but ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten (P16, as at entry) and Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen (not run at entry; the element it looks for, TurnRingCountText, is nowhere in src at entry bdd0070b or now, so it cannot have passed at entry). Transmit files nothing against 7e209cb4; src/Hamlet.RadioEngine nothing against entry. 6.4 ticked.
+  
+  ## UNIT 421 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+  MOVE: continue
+  WHY: R71 answers P17, which was the only thing stopping step 3. 3.7 is reachable in one unit because it re-measures the floors without touching the decoder, and 3.6's trace is the evidence R71 says the bar must come from, so the unit does the trace first, then the re-measure, and treats 3.6's change as the drop candidate.
+  STATE: partial
+  DECIDED: author's, overrulable - an unmeasured (NaN) span counts above the bar; the element floor and the 13 keyed floors of 2.2 are re-measured under the same bar in the same commit; the bar may not sit above any key-aligned right character; which span figure the bar is on is chosen from task 1's print; unit 420's stale CW unknowns entry is parked as P18 rather than chased; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R71, R69, R66, R63, R57, R64, R65, section 3, section 6; step 3 criteria 3.5, 3.6, 3.7; PARKED.md P17; HM-DEC-091; HM-DEC-155; HM-DEC-165; HM-DEC-168; CLAUDE.md 0.0, 0.2 and 12.5
+  ADVANCES: step 3 criterion 7
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.107 to 1.13.108. PHASE_STATUS.md names unit 421 and CURRENT_STEP 3. HEAD at entry 23457c4b. HM-DEC-176 in DECISIONS.md and its row at the top of CLAUDE.md section 1; P17 answered by R71 and P18 added in PARKED.md. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 194 passed before the host hung and was killed at 480 s, the 20 names that never reported all green alone, one type per invocation; captures 51 of 51, 49 rows exactly at their named floor and 2 one above (031838 43 against 42, 001952 57 against 56); adjudicated 13 of 13; keyed named floors 13 of 13, each exactly at its floor; TheBaselineIsScoredTests 2 of 2, TheBenchmarkIsKeyedTests 1 of 1, WhereTheSpaceIsDecidedTests 2 of 2. The numbers to beat, inferred keys: all keyed 167 edits over 565; baseline 22 over 46; 17:37 19 over 25; outside 110 over 363; the ten on the bench 35 over 156.
+  TASK 1, THE TRACE (3.6): WhatTheStrayLettersRestOnTests at 19562a18, asserting nothing, reproduces all keyed 167 over 565 from its own alignment. On the 23 keyed recordings 917 named: 352 right, 60 wrong (34 single-element), 17 added (8 single-element), 488 outside every scored stretch; 0 of 1836 named spans unmeasured on the 52 recordings. Every settled letter was admitted by the window Gate 1.40 on Score and CharacterMargin 1.0 on the per-hop span. Lowest right character: raw 30.8, an E on 17:37; per hop 1.376, a B on 17:37. All 8 added single-element letters stand above the lowest right character on every figure. R71's 153202 figures are the raw SpanLogLikelihoodRatio, the one the sidecar prints; 153202 is not in the tree and not a row.
+  TASK 2, THE BAR (3.7): raw SpanLogLikelihoodRatio at 13.0, the log midpoint of the stretch the trace leaves empty of right characters, between the three wrong E at 4.42 to 5.50 on 031838 and 30.8. One commit, df26a5d7: both asserting floor counters count at or above the bar; 18 of 51 rows re-stated, 63 characters below the bar, every one a single-dot E; keyed floors 134712 21 to 11, 003758 44 to 43, 012403 21 to 19, 031838 43 to 40. src/Hamlet.RadioEngine/Cw nothing against entry; named, element and placeholder counts identical to entry on all 51 rows; adjudicated, baseline and benchmark prints identical to entry.
+  TASK 3, THE CHANGE (3.6): a913f927, a character of one element under a raw span of 13 is not emitted. Kept under 3.2: all keyed 167 to 165 over 565, 031838 21 to 19; 17:37 19 over 25 before and after; 13 of 13 keyed floors; the three adjudicated scored regions identical; all 51 rows' above-bar counts identical and exactly the 63 below-bar E removed. Added letters on the keyed recordings 17 before and after, 8 single-element before and after. 3.6 held, not ticked: its clauses are met on the letter but no added letter came off.
+  TASK 4, THE EXIT ROUND (3.5): Hamlet.sln builds with warnings as errors, non-incremental, 0 warnings; ENGINE carry-forward 178 of 178; APP 275 of 278, three lost to the dispatcher loop, ThePsk31ConversationCardTests 8 of 8 and BindingHealthTests 1 of 1 alone; captures 51 of 51 under the bar, adjudicated 13 of 13, keyed floors 13 of 13, clean 2 of 2; TheBaselineIsScoredTests, TheBenchmarkIsKeyedTests, WhereTheSpaceIsDecidedTests and WhatTheStrayLettersRestOnTests green. src/Hamlet.App nothing against entry; the transmit files nothing against 7e209cb4. 3.7 ticked; 3.4's count 0 of 3 after a kept change.
+  
+  ## UNIT 420 - STEP 7
+  
+  STEP: 7
+  APPROACH: state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
+  MOVE: work around
+  WHY: Step 3's only reachable criterion, 3.6, collides with 2.2's floors and 3.2's fourth test: 49 of 51 capture rows sit exactly at their named floor, so removing any stray letter fails a test only the owner can relax (P17). R64 and R65 send the loop to the next open criterion, and R70 has just made 7.7 concrete and one unit wide.
+  STATE: partial
+  DECIDED: author's, overrulable - routing from step 3 to 7.7 on the floor measurement above, with 3.6 parked as P17 and a ruling proposed to the owner (self-ruling 1 of 2, citing PHASE_PLAN.md R64 and R65); the three CW-family blocks are one mode for the operator's-hand rule within a band; the choice of CW DX frequency and the per-type timeouts
+  LICENCE: PHASE_PLAN.md R70, R67, R64, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+  ADVANCES: step 7 criterion 7
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.106 to 1.13.107. PHASE_STATUS.md names unit 420 and CURRENT_STEP 7. HEAD at entry b378abeb. HM-DEC-175 in DECISIONS.md and its row at the top of CLAUDE.md section 1; P13 answered by R70 and P17 added in PARKED.md. CW-family blocks on the map 20 (CW 9, CW DX 4, QRP 7), of which 9 state conditions. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 277 of 278, one lost to the dispatcher loop, TheCarrierHoldsTheButtonsTests 8 of 8 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; every Rig type, 42 types, 316 of 316, one type per invocation, WhatEnteringAModeSetsTests 1 of 1 and ThePreampFollowsItsOwnTextTests 5 of 5 among them; TheBlockStatesWhatTheModeNeedsTests 5 of 5, EveryModeAnswersForEverySettingTests 6 of 6, WhichPathsPutNarrationOnTheBarTests 6 of 6.
+  TASK 1, THE TABLE: WhatEnteringAModeSetsTests.PrintTheTable drives 7.030 QRP, 14.010 CW DX and 14.050 CW exactly as the app does, from a radio at preamp 1, AGC mid, noise blanker on, RF gain at full; at 7.030 and 14.010 every field was no tune-in, nothing written, owner nobody, the preamp left at 1 at 7.030. CW-family blocks stating conditions 9 of 20. EveryMorseBlockSetsWhatCwSetsTests committed red at 54927894, 1 of 5 passing: At7030ThePreampEndsOff expected 0, actual 1. ModeEntryBench.AsLeft leaves the preamp off, not at 1 as the instruction describes unit 419's radio; AsLeftWithThePreampOn added.
+  TASK 2, THE TWO BLOCKS (7.7): CW DX sameAs CW and QRP sameAs CW in data/bands/mode-receiver-conditions.json, 10 lines added, none removed, the CW row unchanged. EveryMorseBlockSetsWhatCwSetsTests green 6 of 6 with AnUnconfirmedConditionIsStillNotWritten (the CW row marks none; FT8 AGC SpokenOnly, no byte). TheTuneInSetsOnlyWhatIsInTheWayTests.AMorseBlockProducesNoWriteAtAll went red for R70, rewritten and renamed ABlockThatStatesNothingProducesNoWriteAtAll; TheBlockStatesWhatTheModeNeedsTests.TheMorseBlocksStateWhatMorseNeeds now fails on a silent Morse block instead of skipping it. TheOperatorsHandCrossesTheMorseBlocksTests 3 of 3 at first run, not watched failing: the memory is keyed by field and re-armed only on a band change, so no rule change. At bba76811.
+  TASK 3, THE EXIT ROUND (7.6): Hamlet.sln builds with warnings as errors, non-incremental, 0 warnings; ENGINE carry-forward 178 of 178; APP 277 of 278, one lost to the dispatcher loop, TheWindowHoldsBelowItsMinimumTests 3 of 3 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2; every Rig type, 44 types, 325 of 325; TheBannerSaysWhatTheRadioReadBackTests green; touched types green except ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten, red on the same bound and line as at unit 419's exit, P16. src prints nothing against entry, the transmit files nothing against 7e209cb4. CW-family blocks stating conditions 20 of 20. 7.5 and 7.7 ticked; 7.6 held; step 7 stays partial on 7.1 to 7.4.
+  
+  ## UNIT 419 - STEP 7
+  
+  STEP: 7
+  APPROACH: table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 7 criterion 7.5 asks that entering CW mode and entering data mode each set the receiver correctly and leave it set, with every condition written once when the radio is not already at it, the band rule carried by what is written, exactly one component deciding each field, and the operator's own change not overwritten
+  STATE: partial
+  DECIDED: how the band rule is carried, how each competing voice is scoped, which scale the comparison is made on, how long the operator's hand holds, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R67, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+  ADVANCES: step 7 criterion 5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.105 to 1.13.106. PHASE_STATUS.md names unit 419 and CURRENT_STEP 7. HEAD at entry 4bd85b35. HM-DEC-174 in DECISIONS.md and its row at the top of CLAUDE.md section 1. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 273 of 278, five lost to the dispatcher loop, their four types 10 of 10 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; every Rig type, 37 types, 295 of 295, one type per invocation.
+  TASK 1, THE TABLE: WhatEnteringAModeSetsTests.PrintTheTable drives the real ReceiverSetup against ScriptedRadio, now speaking the preamp, manual notch, attenuator, overflow and squelch, for CW at 14.050, CW at 7.030, CW at 14.050 overloading, FT8 at 14.074 and FT4 at 14.080. The file speaks for CW, FT8 and FT4, FT4 by sameAs; FT8 and FT4 AGC is confirmed false and spoken only. Section 4's claim 1 does not hold: the preamp row names its rule, condition band, and ReceiverSetup.ResolveAsync writes 1 above 10 MHz and 0 at or below, so 14.050 wrote 1 and 7.030 wrote nothing to a preamp already off. At 7.030 the app's block is the QRP watering hole, which states nothing, so the app writes nothing there (P13). Before: RF gain written 255 on every CW tune-in and filed NotConfirmed; six voice lines asked him to change a field the setup had set, the advice asking for the preamp on at 7.030, the RF gain opened at 39 percent, AGC fast on FT8 and FT4; overloading, the panel asked for P.AMP/ATT until the preamp reads off right after the setup set 1, and the attenuator's 20 went out as 0x14 (P14); fields written on a CW tune-in when the radio was already right 1 at each frequency; a preamp found already at 1 and set off by hand was written back to 1. Table in .run-unit/unit419-table-before.txt.
+  TASK 2, THE FOUR ITEMS (7.5): item 1, ThePreampFollowsItsOwnTextTests 5 of 5 green at first run, not watched failing, premise false, no code change, at 2389b1d4. Item 2, OneVoicePerFieldTests red 4 of 6 and TheOverloadSentenceLeavesTheModesFieldsTests red 2 of 4, green 6 of 6 and 4 of 4 at 9340b79f: ReceiverSetup.Owns names the fields the tune-in's mode states, ReceiveAdvice.For and RigObservations.For take them and scope, OverflowAdviceFor states the overload and names no knob where the mode owns the preamp and attenuator; nothing deleted. Item 3, AValueAlreadyRightIsNotWrittenTests red 5 of 5, green 5 of 5 at 71e89027: CivDecode.OnReadScale puts the wanted value on the read's scale in ReceiverSetup and, for receive-tier writes only, in Ic7300Rig.SetSettingAsync; TheBannerSaysWhatTheRadioReadBackTests reaches its disagreement through a radio that lands the gain at 250 instead of the scale fault. Item 4, TheOperatorsHandStandsTests red 2 of 4, green 4 of 4 at d2f13ab0: the memory remembers a field found already right as well as one written, held until a band change re-arms it; TheTuneInSetsOnlyWhatIsInTheWayTests' memory count 2 to 3 per HM-DEC-174.
+  TASK 3, THE EXIT ROUND (7.6): Hamlet.sln builds with warnings as errors, non-incremental, 0 warnings; ENGINE carry-forward 178 of 178; APP 277 of 278, one lost to the dispatcher loop and 3 of 3 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2; every Rig type, 42 types, 316 of 316; TheBannerSaysWhatTheRadioReadBackTests 5 of 5; the sheet tests EverySentenceOnTheSheetTests 1, TheKeyingCaptionNamesTheSweepItRanTests 2, TheRestOfTheSheetIsTrueTests 10, TheSidecarDoesNotContradictItselfTests 3, TheSidecarIsReReadTests 2, TheTonePeakIsAboutThisRecordingTests 3, CaseRosterSurvivesAnEveningTests 6, all green; touched types green except ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten, red on a source-length bound over a region byte-identical to entry, parked P16. Table after: fields written when already right 0 at each frequency, voice lines asking for a change 6 to 0, the hand stands in both cases. src/Hamlet.RadioEngine/Cw prints nothing against entry; the transmit files print nothing against 7e209cb4.
+  FATE: executed, complete at task 3 of 3, none dropped; 6.8 ticked; 7.5 advanced on all four clauses where the block states the CW row and left open on P13, the CW DX and QRP blocks stating nothing; 7.6 held; P13 to P16 parked, none blocking.
+  
+  STEP: 6
+  APPROACH: audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 criterion 6.2 is held open only by the keying caption naming a 400 to 1200 Hz sweep the meter no longer runs (P10); its three named clauses already hold. Step 3's only open criterion, 3.4, cannot flip while unit 416's kept changes stand, so under R64 and R65 the loop stays on the screen.
+  STATE: partial
+  DECIDED: author's, overrulable - P10 answered: the caption reads its range and step from KeyingEnvelope's constants rather than a second literal; 6.2 chosen over 6.3, 6.4, 6.5 and 6.8 because it is measured and one sentence from met; the whole sheet audited rather than the one caption because 6.2's lead sentence covers every sentence; a false sentence outside 6.2's scope is parked as P12 rather than fixed; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R62, R64, R65, section 6; step 6 criterion 6.2; PARKED.md P10; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  ADVANCES: step 6 criterion 2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.104 to 1.13.105. PHASE_STATUS.md names unit 418 and CURRENT_STEP 6. HEAD at entry 3211874b. P10's answer appended beneath it in PARKED.md, the arbiter's, overrulable. Section 5 against the tree: KeyingRecordLine at MainWindowViewModel.cs 12435 holds the 400 to 1200 caption as a literal and is the only place the keying line is composed, called once from CaptureNotes at 11921; KeyingEnvelope.LowestToneHz and HighestToneHz are CwToneTracker.MinimumToneHz and MaximumToneHz, 300 and 900 at CwToneTracker.cs 125 and 128, and ToneStepHz is 25, at KeyingEnvelope.cs 130 to 138; CwKeyingMeter sweeps through KeyingEnvelope.Best and nothing else, at CwKeyingMeter.cs 209; nothing in src or tests parses the sidecar's keying line, the only reader being TheSidecarIsReReadTests asserting it starts keying and five spaces; no mismatch. Entry round: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP 275 of 278, two lost to the dispatcher loop and 3 of 3 alone, and TheCardOffersLogAndAnXTests.LogIsNeverOnAReceipt failed once on two CQ cards and its type ran 5 of 5 alone; captures 51 of 51; adjudicated 13 of 13; clean synthetics 2 of 2; TheSidecarDoesNotContradictItselfTests 3 of 3; TheSidecarIsReReadTests 2 of 2; TheTonePeakIsAboutThisRecordingTests 3 of 3; baseline 22 over 46, outside 110 over 363, the ten 35 over 156, all keyed 167 over 565, 17:37 19 over 25, inferred keys. These are the numbers to beat.
+  TASK 1, THE TRACE: EverySentenceOnTheSheetTests regenerates the whole sheet through CaptureNotes for 17:37, 014113 and 013347 and prints each line beside what the code did. 30 lines checked; 12 false, 10 of them about a signal: inputFloor bare where it is the level meter's running floor (013347 prints -32.1, its own quietest fifth -75.4); clipping bare where it is the last fifth of a second; toneHz says interpolated where it is a survey bin centre (600.000, 625.000); unkeyed credits the cumulative count to the current pitch (005051: 252 characters, 29 in the file); elements, characters and the first sinceLast say since a clear where the counts run from the decoder's start (004844); competing says keyed for a present fraction and loudest for the loudest unkeyed; reading prints a gate of 1.40 as 1 and says at the press where it is read 871 ms later; keying names 400 to 1200 where the meter sweeps 300 to 900, the last six seconds where they end up to two seconds before the press, and sharing nothing where it reads the decoder's own tap and range (004844 prints keying at 375 Hz under it). captured and broadcast read the clock at composition, a second late, not about a signal, parked P12. Table in .run-unit/unit418-table.md.
+  TASK 2, THE SENTENCES (6.2): TheKeyingCaptionNamesTheSweepItRanTests red 2 of 2 at 765d946b on 17:37 - Not found: "sweep of 300 to 900 Hz in 25 Hz steps"; green at 70e3bc16, KeyingRecordLine reading KeyingEnvelope's range and step and CwKeyingThresholds.Window. TheRestOfTheSheetIsTrueTests red 10 of 10 at 212b01d2 on 013347, 17:37, 014113, 004844 and 005051 - inputFloor -32.1 bare, clipping False bare, toneHz interpolated, unkeyed 252 characters from a pitch, elements, characters and sinceLast since the clear, competing keyed 29%, reading a gate of 1 and at the moment of the press; green 10 of 10 at 0e9a2e15. Sheets regenerated whole to .run-unit/unit418-sidecar-*.txt, old beside new in unit418-oldnew.txt. False sentences 12 of 30 to 2 of 30, and about a signal 10 to 0; the two left are captured and broadcast, a second late, parked P12. TheSidecarDoesNotContradictItselfTests 3 of 3 and TheTonePeakIsAboutThisRecordingTests 3 of 3 after the fixes. 6.2 ticked. TheSidecarIsReReadTests not edited.
+  TASK 3, THE EXIT ROUND (6.6): Hamlet.sln builds with warnings as errors, non-incremental, 0 warnings; ENGINE carry-forward 178 of 178; APP 275 of 278, three lost to the dispatcher loop and 4 of 4 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2; TheSidecarDoesNotContradictItselfTests 3 of 3; TheSidecarIsReReadTests 2 of 2; TheTonePeakIsAboutThisRecordingTests 3 of 3; CaseRosterSurvivesAnEveningTests 6 of 6; TheKeyingCaptionNamesTheSweepItRanTests 2 of 2; TheRestOfTheSheetIsTrueTests 10 of 10; EverySentenceOnTheSheetTests 1 of 1; ASheetSaysWhichInstrumentSpokeTests 3 of 3, CwCaseCountsSayWhatTheyCountTests 7 of 7, TheSwingIsTheFigureThatHoldsTests 4 of 4, AReplayedCaptureArrivesWholeTests 1 of 1; all keyed 167 over 565, the ten 35 over 156, 17:37 19 over 25, identical to entry; src/Hamlet.RadioEngine/Cw prints nothing against entry; the transmit files print nothing against 7e209cb4.
+  FATE: executed, complete at task 3 of 3, none dropped; every line on the CW capture sheet checked against the code that writes it, 30 lines, false 12 to 2 and about a signal 10 to 0, each watched failing first on a saved capture; 6.2 ticked, 6.6 held; captured and broadcast parked P12.
   
   ## UNIT 417 - STEP 6
   
@@ -701,9 +898,112 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: Criteria 6.1, 6.6 and 6.7 are met, while 6.2, 6.8, 6.3, 6.4 and 6.5 are still open, and the report itself says 6.2 fails on the keying caption's sweep range.
   ADVANCED: yes
   ATTEMPT: 6.7 | unit 2 launched 2026-09-24T13:12:43.596Z | yes | executed | measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+  
+  ## UNIT 3 - STEP 6
+  
+  STEP: 6
+  APPROACH: audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+  HIT: section 4 wants a ruling: yes - The second ask wants the owner to decide whether the sheet should state a new clipping figure measured over the whole recording, which changes what the product tells the operator about what was heard and so falls under the third stop.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 criterion 6.2 is held open only by the keying caption naming a 400 to 1200 Hz sweep the meter no longer runs (P10); its three named clauses already hold. Step 3's only open criterion, 3.4, cannot flip while unit 416's kept changes stand, so under R64 and R65 the loop stays on the screen.
+  DECIDED: author's, overrulable - P10 answered: the caption reads its range and step from KeyingEnvelope's constants rather than a second literal; 6.2 chosen over 6.3, 6.4, 6.5 and 6.8 because it is measured and one sentence from met; the whole sheet audited rather than the one caption because 6.2's lead sentence covers every sentence; a false sentence outside 6.2's scope is parked as P12 rather than fixed; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R62, R64, R65, section 6; step 6 criterion 6.2; PARKED.md P10; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  COST: 9.047419199999998
+  ACCOMPLISHED: every sentence on a capture's sheet says what the code that wrote it actually did, so nobody works from a sweep range the meter stopped using
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criterion 6.2 is now met and 6.6 still holds, but step 6 criteria 6.3, 6.4, 6.5 and 6.8 are still unticked, so the step is not done.
+  ADVANCED: yes
+  ATTEMPT: 6.2 | unit 3 launched 2026-09-24T14:02:00.835Z | yes | executed | audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+  
+  ## UNIT 1 - STEP 7
+  
+  STEP: 7
+  APPROACH: table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
+  HIT: section 4 wants a ruling: yes - The outstanding asks P12 and the clipping measurement say they are waiting on the owner, and both would change what the sheet tells the operator as fact about when something was captured or broadcast and about what was heard, which falls under the third stop.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 7 criterion 7.5 asks that entering CW mode and entering data mode each set the receiver correctly and leave it set, with every condition written once when the radio is not already at it, the band rule carried by what is written, exactly one component deciding each field, and the operator's own change not overwritten
+  DECIDED: how the band rule is carried, how each competing voice is scoped, which scale the comparison is made on, how long the operator's hand holds, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R67, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+  COST: 11.241697999999996
+  ACCOMPLISHED: tuning into CW or a data mode sets the radio the way the mode needs it, once, and it stays that way - including when Tim has set something himself
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: The report shows 7.6 met with measured results, 7.5 advanced but left open on P13 because the CW DX and QRP blocks state no conditions, and 7.1 to 7.4 were not touched because the decoder was not changed.
+  ADVANCED: no
+  ATTEMPT: 7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | no | executed | table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
+  REASON: 7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 1 - STEP 7
+  
+  STEP: 7
+  APPROACH: state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
+  HIT: section 4 wants a ruling: yes - The carried asks P12 and the clipping measurement ask the owner to decide what the sheet states as fact about when a signal was captured or sent and what was heard, which is a promise under the third item, and they wait on his ruling.
+  MOVE: work around
+  WHY: Step 3's only reachable criterion, 3.6, collides with 2.2's floors and 3.2's fourth test: 49 of 51 capture rows sit exactly at their named floor, so removing any stray letter fails a test only the owner can relax (P17). R64 and R65 send the loop to the next open criterion, and R70 has just made 7.7 concrete and one unit wide.
+  DECIDED: author's, overrulable - routing from step 3 to 7.7 on the floor measurement above, with 3.6 parked as P17 and a ruling proposed to the owner (self-ruling 1 of 2, citing PHASE_PLAN.md R64 and R65); the three CW-family blocks are one mode for the operator's-hand rule within a band; the choice of CW DX frequency and the per-type timeouts
+  LICENCE: PHASE_PLAN.md R70, R67, R64, R65, section 6; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155; FACT-006
+  COST: 7.0850941999999995
+  ACCOMPLISHED: tuning into Morse anywhere in the CW part of a band - including 7.030 and the DX windows - sets the radio the way CW needs it, with the preamp off on 40 m, and his own change still stands
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 7.5 and 7.7 are met and ticked with tables and counts shown, but 7.1 to 7.4 have not started and 7.6 is still unticked, so not every exit criterion of step 7 is met.
+  ADVANCED: yes
+  ATTEMPT: 7.7 | unit 1 launched 2026-09-24T16:16:07.028Z | yes | executed | state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
+  
+  ## UNIT 1 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section raises only whether a plan item is met, a count in prose and a code remark, and it carries parked items forward without asking the owner to decide anything about keying, transmit, money or what the product promises the operator.
+  MOVE: continue
+  WHY: R71 answers P17, which was the only thing stopping step 3. 3.7 is reachable in one unit because it re-measures the floors without touching the decoder, and 3.6's trace is the evidence R71 says the bar must come from, so the unit does the trace first, then the re-measure, and treats 3.6's change as the drop candidate.
+  DECIDED: author's, overrulable - an unmeasured (NaN) span counts above the bar; the element floor and the 13 keyed floors of 2.2 are re-measured under the same bar in the same commit; the bar may not sit above any key-aligned right character; which span figure the bar is on is chosen from task 1's print; unit 420's stale CW unknowns entry is parked as P18 rather than chased; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R71, R69, R66, R63, R57, R64, R65, section 3, section 6; step 3 criteria 3.5, 3.6, 3.7; PARKED.md P17; HM-DEC-091; HM-DEC-155; HM-DEC-165; HM-DEC-168; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.566822999999998
+  ACCOMPLISHED: every capture floor guards the letters the decoder was sure of, above a bar read off the stray letters' own trace, with no real letter left unguarded, so removing a stray E or T from the screen can finally be judged as the improvement it is
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criterion 3.7 is met with a per row table, a bar justified from the trace and identical keyed totals at the re-measure commit, but 3.6 and 3.4 remain unmet and the report itself holds 3.6 open because added letters stayed at 17 before and after.
+  ADVANCED: yes
+  ATTEMPT: 3.7 | unit 1 launched 2026-09-24T17:53:45.290Z | yes | executed | trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+  
+  ## UNIT 2 - STEP 6
+  
+  STEP: 6
+  APPROACH: inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The open questions are P19 on test floors for added strays, P20 on a missing countdown readout and the scope of the band row, and they are about test numbers, layout and scope, not keying, transmit, money or a promise to the operator, so none falls inside the three.
+  MOVE: work around
+  WHY: 3.6 cannot advance by any change the floors allow: all eight added single-element strays stand above R71's bar on recordings whose floors equal their above-bar counts, so removing one breaks 2.2 and 3.2's fourth test, and relaxing that is the owner's (P19). R64 and R65 send the loop to the screen next, and 6.4 is the step 6 criterion no ruling holds.
+  DECIDED: author's, overrulable - 3.6 is read as unit 421 read it, open until an added letter comes off a scored stretch, and parked as P19 with the proposed ruling that a key-aligned added character may leave a floor; routing from step 3 to 6.4 rather than 6.3 or 6.5 because 6.5 turns on HM-OPEN-087, Tim's, and 6.3 is the larger unit; an existing true tip is left alone and a false one made true; the connect button's second state is the drop candidate; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R62, R64, R65, R54, R63, R71, section 6; step 6 criteria 6.4 and 6.6; step 3 criterion 3.6 and 2.2; HM-DEC-059; HM-DEC-080; HM-DEC-087; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.6
+  COST: 9.6671856
+  ACCOMPLISHED: every button Tim can reach on the CW tab and the band row tells him on hover what it does, Send telling him plainly that it keys the radio, and a test names each one so a control added without hover text fails
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: 6.4 is met and ticked, but 6.3 and 6.5 are still unmet, so step 6 is not done.
+  ADVANCED: yes
+  ATTEMPT: 6.4 | unit 2 launched 2026-09-24T19:15:08.069Z | yes | executed | inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
+  
+  ## UNIT 3 - STEP 6
+  
+  STEP: 6
+  APPROACH: trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The outstanding asks cover test floors, a slot countdown's placement or a test retiring, the reading of a label and a panel's height, and none of these touches keying or transmit, money, or what the product states about what was logged, heard or sent.
+  MOVE: work around
+  WHY: Step 3 cannot advance until the owner rules on P19, and 3.4 cannot fire after unit 421's kept change, so R64 and R65 send the loop to the screen. 6.5 turns on HM-OPEN-087, which is Tim's, so 6.3 is the step 6 criterion no ruling holds.
+  DECIDED: author's, overrulable - routing from step 3 to 6.3, not 6.5 or step 7, under R64's order; 'outside his privileges' is measured as an amateur CW frequency his class does not cover on the same band as a covered one, with out-of-band and other classes printed in the trace only; 'same columns' is left edge and width within one pixel; the test also asserts the words and color change so a frozen panel cannot pass; a green-at-first-run test does not tick 6.3; the smaller window size is the drop candidate; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R62, R64, R65, R54, section 6; step 6 criteria 6.3 and 6.6; HM-DEC-021; HM-DEC-092; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2, 0.5 and 12.6
+  COST: 8.439169200000004
+  ACCOMPLISHED: when Tim tunes to a frequency his license does not cover, the map, the neighborhood panel and the radio panel stay where they were, and only the panel's words and color change, proved by a headless test at both frequencies
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criterion 6.3 is now met with the red message, the before and after table, the green run and the changed words and color quoted, but 6.5 on the Have a look button is still unmet, so not every exit criterion of step 6 is met.
+  ADVANCED: yes
+  ATTEMPT: 6.3 | unit 3 launched 2026-09-24T20:10:29.208Z | yes | executed | trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
 
   --- CLAUDE.md ---
-  1396 lines, 204678 bytes
+  1399 lines, 207267 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -723,17 +1023,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 793 bytes
+  19 lines, 821 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: TASK 3 of 3
-  WORK_INSTRUCTION: 417 - tonePeak is about the recording it sits beside
+  TASK: TASK 4 of 4
+  WORK_INSTRUCTION: 423 - the window holds still outside his privileges
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-24T09:58:17-04:00
-  NOTE: Unit 417 complete: tonePeak measured over each capture, 17:37 25.7 held to 26.8, 862 ms off the UI thread; 6.7 ticked, 6.2 held on the keying caption; 2 items parked, none blocking
+  UPDATED: 2026-09-24T17:03:30-04:00
+  NOTE: Unit 423 complete: 6.3 ticked - tuned outside his privileges the card, sun map and rig face keep their columns at every size, words and color still change; row height parked as P21; P16 and P20 red as at entry
   
   ---
   

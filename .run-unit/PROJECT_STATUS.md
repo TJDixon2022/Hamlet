@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 TASK: TASK 4 of 4
-WORK_INSTRUCTION: 423 - the window holds still outside his privileges
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+WORK_INSTRUCTION: 
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T17:09:45-04:00
-NOTE: Session 17:08 found unit 423 already complete and pushed at d06981da; its 6.3 test re-run green 1 of 1; nothing redone, no commit; output.md from the unit stands; next work instruction needed
+UPDATED: 2026-09-24T16:04:09-04:00
+NOTE: Exit round green but P16 and a parked Unit302 case; writing output.md
 
 ---
 

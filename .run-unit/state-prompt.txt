@@ -74,9 +74,9 @@ FOLLOWS: report   the criterion was chosen because the last report
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 6 criterion 2  and gave this WHY:
+The instruction it produced named  step 6 criterion 3  and gave this WHY:
 
-PHASE_PLAN.md step 6 criterion 6.2 is held open only by the keying caption naming a 400 to 1200 Hz sweep the meter no longer runs (P10); its three named clauses already hold. Step 3's only open criterion, 3.4, cannot flip while unit 416's kept changes stand, so under R64 and R65 the loop stays on the screen.
+Step 3 cannot advance until the owner rules on P19, and 3.4 cannot fire after unit 421's kept change, so R64 and R65 send the loop to the screen. 6.5 turns on HM-OPEN-087, which is Tim's, so 6.3 is the step 6 criterion no ruling holds.
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -96,95 +96,17 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 - [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
 - [x] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
 - [x] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
-- [ ] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
-- [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
-- [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
+- [x] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
+- [x] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
+- [x] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
 - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
 - [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
 
 **Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
 
-## Â§5 Dependencies
-
-Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
-and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
-else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
-and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
-halt.
-
-## Â§6 Branching
-
-- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
-  fact the product states to the operator about a signal, a station or a send. A test's
-  shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
-- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
-- **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
-  movement fails 3.2's third test, and a report invoking the clause prints the reading
-  before and after.
-- **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
-  without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
-  finding noticed on the way past **never halts the loop**, whatever it touches. The
-  arbiter parks it and authors the next unit.
-- **When a unit cannot advance its criterion, the next unit is authored against a different
-  open criterion** (R64, R65). The loop halts only at stop 1, when nothing but the owner's
-  verdict is left.
-- **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
-  touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
-- **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
-  headless dispatcher loop - counts neither way and is re-run once.
-- **A correctness number is never reported alone** (Â§3.1). A report that gives a percentage
-  without edits, scored length and the key's kind is incomplete and the arbiter says so.
-- **No key may be invented for audio nobody could read** (R61). If the scored region is
-  unclear, score less rather than guess more.
-- **A named floor from 2.2 is never lowered**, and a capture row's named count is never
-  lowered. Placeholders are free (R57).
-- **The generator is never the sole evidence** for keeping a change (1.4, Â§12.5).
-- **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
-  is met by making a sentence true, never by deleting the sentence and saying nothing, and
-  never by changing a radio setting to match a claim.
-- **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
-  should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
-  no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
-  expect*, and the loop halted at stop 7 with the unit's work complete.
-- **A unit that cannot advance its own criterion does not halt the phase** (R64). It reports
-  what it measured, and the arbiter authors the next unit against a different criterion.
-  Preference when nothing is blocked: step 3 first, then step 6.
-- **Tonight's thirteen floors are never lowered and the older rows are never retired** (R63).
-- **Anything would change what keys or transmits.** `MOVE: stop`.
-- **A package is needed.** `MOVE: stop`.
-- **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
-  alone with its own timeout.
-
-## Â§7 Carried
-
-The restore phase's 5.1, Tim's, at `docs/phase-cw-run/`; `#15`, `#43`, `#44` and `#42`,
-parked there with their measurements; `PHASE_GOAL.md`'s 80 percent, which this phase
-measures toward but does not promise; W1AW as an exact-key confirmation whenever a bulletin
-lands; the scanner; the screen findings in `OPEN_ISSUES.md` - the RF gain sentence, the
-window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wording;
-HM-OPEN-063 and HM-OPEN-070.
-
-## Â§8 Revision record
-
-- **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
-  own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
-  moved - can be re-applied.
-- **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
-  a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
-  only when the criterion being worked needs the ruling. Written after unit 412 completed
-  its work and the loop halted at stop 3 on an ask 412 had carried rather than on anything
-  blocking a criterion.
-- **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
-  measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
-  the keys by differencing, 2.5 the floors, 6.7 tonePeak.
-- **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
-  always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
-  report was refused over one word.
-- **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
-  from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
 --- what the script saw ---
-criteria-count.bat saw step 6 criterion 2 flip from unmet to met in
+criteria-count.bat saw step 6 criterion 3 flip from unmet to met in
 PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
 Answer one more line after WHY:
 HONEST: yes   if the report shows that criterion honestly met
@@ -194,173 +116,194 @@ HONEST: no    if the marker was turned without the criterion being met
 
 READ IN THIS ORDER.
 
-A. Hamlet reads a CQ call correctly. Steps 0, 1, 2 done; 3 partial,
-   3.4 only open and not flippable this unit; 4 not started; 5 the
-   owner's; 6 partial.
-B. Step 6: 6.2 met, and 6.6 held. The lead sentence and each of the three clauses, one line each, with the red quoted, are at the top of section 1.
-C. The rest. Section 4 raises 2 items; none in the way of 6.2.
+A. Phase goal: Hamlet reads a CQ call correctly. Steps 0, 1, 2 done;
+   3 partial on 3.4 and 3.6, with 3.6 parked as P19 on the floors;
+   4 and 5 not started; 6 partial on 6.5 alone now that 6.3 is met; 7 partial on
+   7.1 to 7.4 and 7.6.
+B. Step 6, criterion 6.3 clause by clause: General, 14.050 MHz covered and
+   14.010 MHz not, both from the privileges file's rows; the three panels'
+   left edges and widths at both, before and after; the lines that moved
+   them (BandGovernsTheMapPanel's two fit questions); the test watched red,
+   its message quoted, then green; the panel's words and color shown still
+   changing. Then 6.6 at exit, held.
+C. The rest. Section 4 raises 9 items, 8 carried and 1 new (P21, the row's
+   height). None of them is in the way of 6.3.
 
 ```
-UNIT:       418 - complete at task 3 of 3, none dropped - 2026-09-24 10:53
-PHASE GOAL: Hamlet decodes a real CQ call into the text that was sent, measured against keys, and the screen says nothing about the signal that is not so
-UNIT GOAL:  Every line on a CW capture sheet is checked against the code that writes it, and each one that is false about the signal is made true, watched failing first on a saved capture, the keying caption's 400 to 1200 Hz first
-ADVANCED:   yes - 6.2 ticked, with every false sentence red on a saved capture before its fix and its three named clauses still green
-NUMBER:     sidecar sentences false 12 -> 2 of 30 checked; about a signal 10 -> 0
+UNIT:       423 - complete at task 4 of 4, none dropped - 2026-09-24 17:01
+PHASE GOAL: Hamlet reads a Morse CQ call correctly, measured against a key, and the screen stops asserting what it does not know while the decoder work waits on the owner.
+UNIT GOAL:  Tuning to a frequency Tim's license does not cover no longer moves the map, the neighborhood card or the rig face; only the privilege panel's words and color change, and a headless test proves it at both frequencies.
+ADVANCED:   yes - 6.3 met and ticked: its test was committed red at fb11154c and is green at 89394369 at all four sizes, going out and coming back
+NUMBER:     panels that move outside his privileges at the default size, 0 of 3 -> 0 of 3 (nothing moved at 1100 x 780 even before); largest shift at any size 562 px -> 0 px (the sun map at 1400 x 1040)
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete, task 3 of 3, none dropped.** QUIVERFULL, Hamlet confirmed by the gate, `main`,
-entry HEAD 3211874b, exit 8c7d59ca plus this report's commit.
+**Complete, 4 of 4 tasks, none dropped.** Machine QUIVERFULL, project claimed Hamlet, confirmed by `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present and `CoreHMI.sln` and `MURC.sln` absent at `C:\Source\HamLet`. Branch `main`. Everything was measured on the development computer, headless, so **nothing in this report is evidence about the radio** (HM-DEC-093).
 
-**6.2, one line each:**
-- **Lead sentence - met.** 30 lines checked against the tree. The 10 that were false about a signal are now true, each red first on a saved capture. The 2 still false, `captured` and `broadcast`, are about the clock and the radio link, not a signal, and are parked as P12.
-- **`tonePeak` clause - holds.** On 17:37 it reads `26.8 (a figure about this recording ...)` and on 014113 `not measured`. TheTonePeakIsAboutThisRecordingTests is 3 of 3 after the fixes.
-- **`elementHz` clause - holds.** On 17:37 it reads `each element's own pitch not measured (the elements counted above were measured by their timing ...)`. TheSidecarDoesNotContradictItselfTests is 3 of 3.
-- **`keying` clause - holds.** It reads `no keying at 575 Hz: 109 rises above the threshold ...`, rises and not key-downs, as unit 411 left it.
-- **The red for the caption P10 named** (765d946b, 17:37): `Assert.Contains() Failure: Sub-string not found ... Not found: "sweep of 300 to 900 Hz in 25 Hz steps"`. It turned green at 70e3bc16.
+**Section 5 checks, reported and not repaired.**
+- Section 4's claims hold, with one exception. `TopRow` is at line 3143 with `*,Auto` and `MaxHeight="300"`. `BandRow` is at 3161. `TopRowCardScroller` holds `widget.map`. `GreenZoneMap` is there. `BandGovernsTheMapPanel.cs` was 273 lines at entry, with `MeasureOverride` at 92. The tone bindings are at 706 to 791, and Culture, Reassurance and UpgradePrompt at 931 to 957. `PrivilegeTone` is `Unknown`, `Yours`, `ListenOnly`, with amber for outside privileges. The five top-row types and the two licensing types all exist.
+  - **Mismatch:** `BandRow`'s third child is not `ctl:RigDisplayControl` itself. It is the amber `Border` at line 3211 that wraps it; the control is at 3223. The trace measures the `Border`, because that is what the panel places.
+- **Clause 4 was the smaller half of the cause.**
+  - Clause 4 (`CardFits`, the map giving width back) moved things at 1280 x 720 and 1366 x 728.
+  - The large jump was the left-edge question from work instruction 389 (`AtTheLeftEdge`).
+- **The license class** is `AppSettings.Operator.LicenseClass`, read by `MainWindowViewModel.UpdatePrivileges`. A test sets it in the settings it hands the view model, plus a `FixedLicenseLookup` giving the same answer for KC3QIS, so nothing reaches the network.
+- **The two frequencies** come from `data\privileges\us-part97-privileges.json`, both CW on 20 m. CW is allowed on any authorized frequency (97.305(a), the file's line 167).
+  - **Covered: 14.050 MHz**, in General's 20 m row `14025000 to 14150000`, line 132, 97.301(d).
+  - **Not covered: 14.010 MHz.** On 20 m only Extra's row `14000000 to 14350000` reaches it, line 97, 97.301(b). General's 20 m rows start at 14.025.
+- **How a headless test tunes: the rig face's own write.** The wheel over a digit calls `SetCurrentValue(RigDisplayControl.FrequencyHzProperty, ...)`. That property is two-way bound to `MainWindowViewModel.FrequencyHz`, and its change handler runs `UpdateModeLine` and then `UpdatePrivileges`. The tests write the same property the same way.
+  - Connected, the training radio goes through `ToggleConnectCommand`, as in unit 422. The radio answers on 40 m, so the trace presses the 20 m pill before tuning.
+- **Window sizes the existing top-row tests use:**
+  - 1920 x 1040, 1400 x 1040, 1100 x 780 (the opening size, `MainWindow.axaml:12`), 900 x 620, 1280 x 720, 1366 x 728, 1536 x 824, 1920 x 1017 and 2560 x 1400
+  - 1200 x 900 and 1400 x 900
+  - 1100 x 620, 580, 540 and 500
+- **The reload's two disagreements, repaired neither.**
+  - `PROJECT_STATUS.md`'s `RULES_AT` reads HM-DEC-165. `CLAUDE.md` §1's top row is **HM-DEC-176** (2026-09-24), not "CPS-DEC-0176" as the reload wrote it.
+  - The four root files were uncommitted at entry. `RUN_LEDGER.md` and `WORK_INSTRUCTIONS.md` are left uncommitted.
+  - `PHASE_OUTCOME.md` and `PHASE_STATUS.md` had to be committed for task 0, so ae6b0092 also carries the launcher's own additions to them: the appended `UNIT 2 - STEP 6` block and the `HEARTBEAT` line.
 
-**Section 5 against the tree - no mismatch.**
-- `KeyingRecordLine` held the 400 to 1200 caption as a literal (`MainWindowViewModel.cs` 12435) and was the only place the line was composed.
-- `KeyingEnvelope.LowestToneHz` and `HighestToneHz` are `CwToneTracker.MinimumToneHz` and `MaximumToneHz`, 300 and 900, and `ToneStepHz` is 25 (`KeyingEnvelope.cs` 130-138).
-- `CwKeyingMeter` sweeps only through `KeyingEnvelope.Best` (`CwKeyingMeter.cs` 209).
-- Both sidecar tests were green at HEAD.
-- Nothing parses the `keying` line; the only reader is TheSidecarIsReReadTests' `StartsWith`.
-- Keyed totals at HEAD: 167 over 565, the ten 35 over 156, 17:37 19 over 25.
+**Task 0, the record, ae6b0092.**
+- Version 1.13.109 to 1.13.110.
+- `PHASE_STATUS.md` names unit 423 and `CURRENT_STEP: 6`.
+- `PHASE_OUTCOME.md` has its `UNIT 423 - STEP 6` entry.
+- Entry round, one type per invocation:
+  - build with warnings as errors: green
+  - engine carry-forward 178 of 178
+  - app carry-forward 276 of 278, with two lost to the dispatcher loop and green alone (`ThePowerIsOfferedTests` 3 of 3, `BindingHealthTests` 1 of 1)
+  - floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, keyed 13 of 13
+  - `EveryControlSaysWhatItDoesTests` 3 of 3
+  - top-row types: `TheBandRowIsWhereItWasRuledTests` 8 of 8, `TheTopRowTests` 15 of 15, `Unit376TheTopBandTests` 5 of 5, `TheSunMapStandsWhereItWasLeftTests` 2 of 2, `TheWindowHoldsBelowItsMinimumTests` 3 of 3
+  - `OutOfBandTests` 16 of 16 and `PrivilegeStatusLineTests` 9 of 9
+  - red as expected: P16 and P20
 
-**Task 0.**
-- Version 1.13.105. PHASE_STATUS names 418 and step 6. PHASE_OUTCOME has its entry. P10's answer is appended in PARKED.md.
-- Entry round:
-  - Engine: 178 of 178.
-  - App: 275 of 278. Two were lost to Avalonia's dispatcher loop, and `TheFavoritesAreUnderTheGreenZoneTests` went 3 of 3 alone. `TheCardOffersLogAndAnXTests.LogIsNeverOnAReceipt` failed once with two CQ cards where it expects one; its type went 5 of 5 alone.
-  - Floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2.
-  - Sidecar tests: 3 of 3, 2 of 2 and 3 of 3.
+**Task 1, the trace, 987858b6.** `WhereThePanelsStandOutsideHisPrivilegesTests` asserts nothing.
+- It runs at all 15 sizes on the CW and the Digital tab. At each size a General operator is tuned 14.050, then 14.010, then back to 14.050.
+- It widens to every class at 1100 x 780, against 14.010 and against 14.360 (out of band), and to the connected state at 1100 x 780 and 1920 x 1040.
+- For each state it prints: the three panels' bounds, the tone, the green block's background, every sentence it draws with drawn and wanted width, and the panel's decision (map height, left edge or not, pills reach, the card's slot, width given back, the card's content height).
+- **The report was right, and the window moved at five sizes out of fifteen.** Section 3 has the figures.
+- **Two sizes did worse than move.** At 1920 x 1040 and 1920 x 1017, tuning to 14.010 threw Avalonia's *Infinite layout loop detected*.
+- **What moved them:** `BandGovernsTheMapPanel.MeasureOverride`'s two fit questions on the card's height, `CardFits` (`card.DesiredSize.Height <= rowHeight + 0.5`) and `AtTheLeftEdge` (`> rowHeight + 0.5`). Outside his privileges the green block adds *Receiving is never restricted. Any license may listen anywhere.* and the *What would Extra unlock?* button, and the verdict grows from *yours to use* to *listen all you like, but don't transmit*. The card gets 22 to 42 px taller, the fit fails, and the map is placed again.
+- **Other classes and out of band:**
+  - For Novice, Technician and Unknown, 14.050 and 14.010 have the same tone, so nothing changes between them.
+  - For Extra both are covered.
+  - 14.360 grows the card further at 1100 x 780. No left edge or width moved there for any class.
 
-**Task 1, the trace.**
-- `EverySentenceOnTheSheetTests` builds a view model, puts a decoder that heard only one file behind it, and calls the sheet writer `CaptureNotes` by reflection, exactly as the press does. It does this for 17:37, 014113 and 013347, then prints each line beside the constants and measurements behind it.
-- No radio is attached, so the rig lines take their unread branches. For those lines, and for branches a replay cannot reach, the verdict comes from the code and from saved sheets: `cw-2026-08-28-004844` was written 39 s after a transcript clear, and `-005051` holds `unkeyed YES`.
-- The table is in section 3.
+**Task 2, the test, fb11154c, committed red and alone.** `ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests` builds the window headless on the CW tab and tunes by the rig face's write. It runs at 1100 x 780 (the default), 1280 x 720 (the smallest size where task 1 saw the panels move), and also 1400 x 1040 (the largest jump) and 1920 x 1040 (the layout loop). It reads the left edge and width of the card, the map and the rig face off the laid-out window, and fails when:
+- any of the six figures moves more than a pixel, naming the panel and both figures
+- the layout does not settle
+- the tone, the green block's color or its words are the same at both frequencies
 
-**Task 2.** Every false sentence was committed red on its own, then fixed. The fix is always the sentence; no measurement changed.
-- **The keying caption.**
-  - TheKeyingCaptionNamesTheSweepItRanTests, 2 facts, red at 765d946b and green at 70e3bc16.
-  - The range, step and window now come from `KeyingEnvelope` and `CwKeyingThresholds` (P10's answer).
-  - "The last six seconds" is now "the 6 seconds the meter last read before the press".
-  - "Sharing nothing with the decoder" is now "taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch".
-- **The other nine.** TheRestOfTheSheetIsTrueTests has 10 facts, red 10 of 10 at 212b01d2 and green at 0e9a2e15. The reds:
-  - inputFloor: `String: "inputFloor -32.1 dBFS"; Not found: "the level meter's running floor at the mo"`
-  - clipping: `String: "clipping   False"; Not found: "the level meter last measured when it was"`
-  - toneHz: `String: "toneHz     600.0 Hz  (measured from the k"; Not found: "the centre of the survey bin it was admit"`
-  - unkeyed: `Sub-string found: "characters reached the screen from a pitc"` in `"unkeyed    YES  (252 characters reached th"`
-  - elements, characters and sinceLast after the clear: `Not found: "since the decoder started listening"`
-  - competing: `Sub-string found: "keyed "` in `"...ver the band floor, keyed 29% of the time"`
-  - reading: `Not found: "against a gate of 1.40"`, and `Sub-string found: "at the moment of the press"`
-- **The regenerated sheets.** They are written whole to `.run-unit/unit418-sidecar-cw-2026-09-23-173723.txt`, `-08-22-014113.txt` and `-08-17-013347.txt`, with old beside new in `.run-unit/unit418-oldnew.txt`. No capture in the tree was edited.
-- **6.2 ticked** in PHASE_PLAN.md.
+**Task 3, the columns held, 89394369.** Three changes to `BandGovernsTheMapPanel`, each measured:
+1. **`OutsideTheFit`**, an attached flag set in `MainWindow.axaml` on the reassurance sentence, the upgrade row and the ladder. These are the lines drawn only outside his privileges. They are still measured, arranged and drawn, but they are left out of the two fit questions. This alone ended the 1920 layout loop, but at 1280 and 1400 the longer verdict still moved the map.
+2. **`HeldAcross`**, bound to `PrivilegeStatus.Tone`. If the width, the rig face and the pills row are the same as when the arrangement was decided and only the tone differs, the panel keeps that arrangement. Any other change decides afresh, as before.
+3. **A stale-measure guard.** After the first two changes, the trace showed the map coming back from 14.010 to 327 x 178 beside the card at 1400 x 1040, where it had started at 393 x 214 at the left edge. A probe found the cause:
+   - The rig face's new digits get the row re-measured before the card's changed lines.
+   - The card, asked again at the width it had last had, answers from its cache with the outside-privileges height.
+   - The fallback then re-measures everything, so nothing ever asks again.
 
-**Task 3, the exit round (6.6 holds).**
-- Build: Hamlet.sln, non-incremental, warnings as errors, 0 warnings.
-- Engine: 178 of 178.
-- App: 275 of 278. Three were lost to the dispatcher loop, `BindingHealthTests` and two in `ThePowerIsOfferedTests`, and they went 1 of 1 and 3 of 3 alone.
-- Floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2.
-- Sidecar and roster tests: TheSidecarDoesNotContradictItselfTests 3/3, TheSidecarIsReReadTests 2/2, TheTonePeakIsAboutThisRecordingTests 3/3, CaseRosterSurvivesAnEveningTests 6/6.
-- New tests: TheKeyingCaptionNamesTheSweepItRanTests 2/2, TheRestOfTheSheetIsTrueTests 10/10, EverySentenceOnTheSheetTests 1/1.
-- Touched types: ASheetSaysWhichInstrumentSpokeTests 3/3, CwCaseCountsSayWhatTheyCountTests 7/7, TheSwingIsTheFigureThatHoldsTests 4/4, AReplayedCaptureArrivesWholeTests 1/1.
-- Keyed totals: all keyed 167 over 565, the ten 35 over 156, 17:37 19 over 25, identical to entry.
-- `git diff 3211874b -- src/Hamlet.RadioEngine/Cw` prints nothing, and the eleven transmit files print nothing against 7e209cb4.
-- The whole src diff is two files: `MainWindowViewModel.cs` and `AudioTap.cs`.
+   The fix: before the fit questions, any card line still waiting to be measured marks the path up to the card as waiting too. The first try, dropping `AffectsMeasure` from `HeldAcross`, was not enough on its own, and `HeldAcross` stays without it.
 
-**Decisions I made myself, in full:**
-1. **The audit went past the keying caption, because the instruction's lead sentence covers every line.** Ten sentences about a signal were false, not one, and all ten were fixed in this unit rather than held back. Nothing was dropped.
-2. **Captions rather than new measurements.**
-   - `clipping` and `inputFloor` now say they are the level meter's figures at the press. I did not recompute them over the recording.
-   - The `reading` line now says it was read when the sheet was written. I did not snapshot it at the press.
-   - Each of these is the smallest change that makes the sentence true under §6. The owner may prefer the other way; see section 4.
-3. **`competing` no longer says "the loudest thing in the band".** Where a station is admitted, the field is the loudest thing that is *not* keying (`CwToneTracker.cs` 1103, 1122, 1128). With nothing admitted it can fall back to the loudest thing overall (994, 1048, 1085). The report cannot tell those apart, so the line now says "the survey names a tone at ...".
-   - This superlative was corrected from the code alone. No saved sheet among those checked shows it false; the red for this fact is the "keyed 29%" wording on 014113.
-4. **Two reds are about wording rather than a visible wrong number.**
-   - No saved capture clips (the highest peak is -1.6 dBFS on 013347), so the clipping red on 013347 shows the line not naming its window. That window peaks at -9.9 dBFS while the recording peaks at -1.6.
-   - The `reading` line's timing cannot be reproduced in a replay, so its red is on the words "at the moment of the press". The 871 ms wait behind it was measured on 17:37.
-5. **Two tests borrow state from a saved sheet.**
-   - The 004844 facts set the transcript clear 39 s back, the gap that sheet records.
-   - The 005051 fact gives the report that sheet's own count of 252 characters. The replay itself leaves the pitch unmeasured, as the evening did.
-6. **`AudioTap.LevelSeconds` changed from private to public, with its value unchanged,** so the clipping caption reads 0.2 from the code rather than from a second literal. That is the same lesson as P10. `AudioTap` is in `Audio`, not `Cw`.
-7. **The `duty` line was judged true.** It says "the key was down", which is `KeyingProfile.Duty` as the engine defines it. The trace prints how much of that is element-length: 45.9 of 48.0 points on 17:37 and 23.1 of 26.6 on 013347.
-8. **TheSidecarIsReReadTests was not edited.** Its asserts are `StartsWith` and no wording forced a change.
-9. **Unit 417's evidence files are modified in the working tree and not committed.** TheSidecarIsReReadTests writes to fixed names, so the exit round overwrote `.run-unit/unit417-sidecar-*.txt` with today's lines. `git restore` needs approval I did not have. None of my commits stage those files, so unit 417's committed evidence is unchanged; the working copies can be discarded.
+**Decisions recorded for myself under §12.1, each overrulable, in full:**
+- *Holding across the tone.* Where only the privilege panel's tone has changed since the arrangement was decided, the card, the map and the rig face stay where they were decided. Why: the verdict line exists inside his privileges too, so leaving it out of the fit would change arrangements the existing tests pin. A hold keyed on the tone changes nothing inside his privileges.
+  - Rejected: holding across every change of the card's words, which would break `TheSunMapStandsWhereItWasLeftTests`' FT8 to PSK31 switch in one window.
+  - Rejected: fitting the card as if it were always outside privileges, which would move the map off the left edge at 1400 on FT8 inside his privileges.
+  - Known consequence: a window opened outside his privileges keeps that arrangement when he tunes inside, until a resize or a change inside the card under one tone.
+- *The ladder is marked `OutsideTheFit`* along with the reassurance and the upgrade row. It is drawn only outside his privileges and only when he presses the upgrade button.
+- *The test's sizes go beyond the two named.* 1400 x 1040 and 1920 x 1040 are added, because the largest jump and the layout loop are there.
+- *A return check was added to task 2's test in task 3*: back at 14.050 the panels must stand where they stood at 14.050. It was never committed red on its own. Its red is the trace's 1400 x 1040 figure above, before the stale-measure guard.
+- *P21 is parked* (section 4).
 
-**Push:** every commit pushed, rc 0.
+**Task 4, the exit round (6.6 held).**
+- `Hamlet.sln` builds non-incremental with warnings as errors: 0 warnings, 0 errors. The DLLs were rebuilt at 16:46.
+- Carry-forward: engine 178 of 178. App 277 of 278; `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer` was lost to the dispatcher loop, and the type is 5 of 5 alone.
+- Floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, keyed 13 of 13.
+- Green: `BindingHealthTests` 1, `EveryControlSaysWhatItDoesTests` 3, `WhatEveryControlSaysOnHoverTests` 1, the five top-row types at their entry counts (8, 15, 5, 2, 3), task 2's test 1 of 1, task 1's fact 1 of 1, `OutOfBandTests` 16, `PrivilegeStatusLineTests` 9.
+- Other types that read the band row, green: `TheFavoritesAreChipsTests` 4, `TheWorkingPanelsTests` 8, `Unit388TraceTests` 1, `Unit389TraceTests` 2.
+- Red as at entry: P16 and P20.
+- The transmit files print nothing against `7e209cb4`. `src/Hamlet.RadioEngine` and `data` print nothing against entry `0456cad7`. `src` differs only in `BandGovernsTheMapPanel.cs` and `MainWindow.axaml`.
+- **Nothing is red that was green at entry. 6.3 is ticked** in `PHASE_PLAN.md`.
+- Pushed: yes, each task's commit pushed to `origin main` with rc 0. Task 4's push result is in the delivery message.
 
 ## 2. What the owner should expect
 
-Every line on a CW capture's sheet has now been checked against the code that writes it: 30 lines, 12 of them false. The ten that were false about the signal now say what the code does:
-- The keying line names the 300 to 900 Hz sweep the meter really runs. It used to say 400 to 1200, while an evening sheet printed a keying pitch of 375 under it.
-- `toneHz` says it is a survey bin centre, not an interpolation.
-- The `reading` line prints the gate as 1.40 rather than 1, and says it was read when the sheet was written, not at the press.
-- The element and character counts no longer claim to start at a transcript clear, which never reset them.
-- `unkeyed` stops crediting an evening's characters to the current pitch.
-- `competing` stops calling a tone keyed after saying nothing judged it a station.
-- `inputFloor` and `clipping` say they are the level meter's figures at the moment of the press, not the recording's.
+Tuning outside your privileges no longer moves the map, the neighborhood panel or the radio panel: each keeps its left edge and its width, going out and coming back, at every window size the tests use. What still changes is the privilege panel's words and color: the verdict turns to *listen all you like, but don't transmit*, *Receiving is never restricted* and the *What would Extra unlock?* button appear, and the block goes from green to amber. What caused the jump: the row asked whether the neighborhood card still fit beside the map at full size, and outside your privileges those extra lines made the card too tall, so the map was moved or shrunk to make room.
 
-**What will look wrong but is not:** the sheet's lines are longer. `clipping False` now carries "over the 0.2 seconds the level meter last measured", which is honest and narrow; a clip earlier in the recording would not show there. Section 4 asks whether it should be measured over the whole file instead. Nothing the radio does, and no decode, changed.
+**What will look wrong but is not.**
+- **The top row still gets taller outside your privileges.** At 1400 x 1040 the extra lines make it 42 px taller and the working panels below move down by that much. That is P21, parked for your call. The columns hold; the height follows the words, as before.
+- **The two red tests are the known baseline.** `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten` is P16 and `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen` is P20. Both were red at entry.
+- **The figures are headless.** The test host draws text in a fixed-width stand-in font, so a pixel here is not a pixel on your screen. Every top-row test measures the same way.
 
 ## 3. What you should see
 
-The 17:37 keying line, old then new:
+**Task 1's table: the three panels at 14.050 (covered) and 14.010 (not covered), General, CW tab.** Left and width; top and height where they differ. "Before" is 987858b6's code, "after" is 89394369. At 14.050 the two are identical.
 
-```
-keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
-keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
-```
-
-Task 1's sentence table. Line numbers are `MainWindowViewModel.cs` at entry unless another file is named. The full wording of every row, before and after, is in `.run-unit/unit418-table.md`.
-
-| # | line | what the tree says | before | after |
+| Size | Panel | 14.050, before and after | 14.010, before | 14.010, after |
 |---|---|---|---|---|
-| 1 | captured | `UtcNow` at composition, after the tonePeak wait (11677, 871 ms on 17:37); the file stamp is taken earlier at 11669 | false by up to 1 s, not about a signal | parked P12 |
-| 2 | audioSeen | `tap.SamplesSeen` at the press (11643) | true | true |
-| 3 | fingerprint | SHA-256 of the samples (13005) | true | true |
-| 4 | seconds | duration written (11737) | true | true |
-| 5 | sampleRate | 11738 | true | true |
-| 6 | frequency | radio value with its age, or Hamlet's own, labeled (12018-12043) | true, about the radio | true |
-| 7 | band | derived from the same frequency (12059-12074) | true, about the radio | true |
-| 8 | broadcast | window `UtcNow - Duration` at composition (12981) | false by up to 1 s, about the link | parked P12 |
-| 9 | inputPeak | largest sample in the file (AudioTap.cs 765) | true | true |
-| 10 | meterPeak | level meter's last 0.2 s in the report taken at the press (11577) | true | true |
-| 11 | inputFloor | the meter's running floor, carried across everything heard (AudioTap.cs 86-90, 287-292), printed bare; 013347 prints -32.1 where its quietest fifth is -75.4 | **false** | true |
-| 12 | clipping | the meter's last 0.2 s only (AudioTap.cs 84, 253-302), printed bare | **false** | true |
-| 13 | toneHz | the admitted pitch is `_binHz[bin]` (CwToneSurvey.cs 792), reported unchanged (CwToneTracker.cs 1120, 1127, 1184); 600.000 and 625.000, on the 5 Hz grid; caption said interpolated | **false** | true |
-| 14 | tonePeak | unit 417 (12394-12415) | true or not measured | same |
-| 15 | heldPeak | 12425-12430 | true | true |
-| 16 | inThis | counters over exactly these samples (12876-12891) | true or not derived | same |
-| 17 | unkeyed | cumulative `CharactersEmitted` credited to the current pitch (12605-12630); 005051 says 252, inThis 29 | **false** | true |
-| 18 | elements | transcript's cover after a clear, but `ClearTerminal` (10726) resets only the transcript; 004844 | **false** after a clear | true |
-| 19 | characters | same as 18 | **false** after a clear | true |
-| 20 | decoderWpm | decoder's speed or its guard's reason (12641-12672) | true | true |
-| 21 | text | transcript (11867) | true | true |
-| 22 | textCovers | the transcript's own start (12901-12922) | true | true |
-| 23 | spanLlr | 12293-12327 | true or nothing read | same |
-| 24 | competing | `PresentFraction` is time above the band (CwToneSurvey.cs 41-43), printed as keyed; "loudest" is the loudest unkeyed where a station is admitted | **false** | true |
-| 25 | reading | gate 1.40 (CwProbabilisticDecoder.cs 235) printed `{4:0}` as 1; read at composition, 871 ms after the press, while the reading moves every 0.5 s (CwProbabilisticStream.cs 34) | **false** | true |
-| 26 | keying | literal 400 to 1200; KeyingEnvelope.cs 130-138 sweeps 300 to 900 in 25; CwKeyingMeter.cs 197-201 reads the decoder's own tap; the window ends up to about 2 s before the press | **false** | true |
-| 27 | duty | share of the file above the envelope's threshold at the measured pitch (12523-12535); 45.9 of 48.0 points element-length on 17:37 | true or not measured | same |
-| 28 | elementHz | unit 411 (12444-12508) | not measured, said so | same |
-| 29 | sinceLast | first-capture branch uses row 18's cover; 004844 | **false** after a clear | true |
-| 30 | rig block | each field with provenance (11981-11988) | true, about the radio | true |
+| 1100 x 780 (default) | card | 16.0, 248.0 (h 345) | 16.0, 248.0 (h 523) | 16.0, 248.0 (h 523) |
+| | map | 278.0, 246.0 | 278.0, 246.0 | 278.0, 246.0 |
+| | rig | 538.0, 546.0 | 538.0, 546.0 | 538.0, 546.0 |
+| 1280 x 720 | card | 16.0, 401.0 | 16.0, **428.0** | 16.0, 401.0 |
+| | map | 431.0, 273.0 x 149 | **458.0, 246.0** x 134 | 431.0, 273.0 x 149 |
+| | rig | 718.0, 546.0 | 718.0, 546.0 | 718.0, 546.0 |
+| 1366 x 728 | card | 16.0, 433.0 | 16.0, **514.0** | 16.0, 433.0 |
+| | map | 463.0, 327.0 x 178 | **544.0, 246.0** x 134 | 463.0, 327.0 x 178 |
+| | rig | 804.0, 546.0 | 804.0, 546.0 | 804.0, 546.0 |
+| 1400 x 1040 | card | 423.0, 401.0 | **16.0, 548.0** | 423.0, 401.0 |
+| | map | 16.0, 393.0 x 214 (left edge, top 83) | **578.0, 246.0** x 134 (top 119) | 16.0, 393.0 x 214 (left edge, top 83) |
+| | rig | 838.0, 546.0 | 838.0, 546.0 | 838.0, 546.0 |
+| 1536 x 824 | card | 423.0, 537.0 | **16.0, 684.0** | 423.0, 537.0 |
+| | map | 16.0, 393.0 x 214 (left edge) | **714.0, 246.0** x 134 | 16.0, 393.0 x 214 (left edge) |
+| | rig | 974.0, 546.0 | 974.0, 546.0 | 974.0, 546.0 |
+| 1920 x 1040 | all three | card 423.0, 921.0; map 16.0, 393.0; rig 1358.0, 546.0 | **Infinite layout loop detected** | same as 14.050, settled |
 
-Before: 12 of 30 false, 10 about a signal. After: 2 of 30, rows 1 and 8, neither about a signal, parked P12.
+- **All 15 sizes, both tabs, after:** every panel's left and width moved 0.0 px. This includes 1400 x 900 and 1920 x 1017, which moved or looped before, and connected at 1100 x 780 and 1920 x 1040.
+- **Back at 14.050 after 14.010:** the arrangement is the one it started from at every size.
+- **Heights after, card and rig face:** +2 px at 1920, +22 at 1536 x 824, +42 at 1280 x 720, 1366 x 728 and 1400 x 1040, +90 at 1200 x 900, and 345 to 523 at 1100 x 780 (P21).
+- **The words and color still change** at every size:
+  - tone `Yours` to `ListenOnly`
+  - block background `#ffe9f6ec` to `#fffdf1e0`
+  - verdict *Morse · yours to use* to *Morse · listen all you like, but don't transmit*
+  - license line *Your General license covers Morse here. Call away · 97.305(a)* to *General privileges do not reach this frequency; it needs Extra · 97.301(d)*
+  - two lines added: *Receiving is never restricted. Any license may listen anywhere.* and *What would Extra unlock?*
 
-No visible change on screen. The change is in the text file written beside each kept recording.
+**The red message, fb11154c:**
+
+```
+1280 x 720: the neighborhood panel's width is 401.0 at 14.050 MHz and 428.0 at 14.010 MHz
+1280 x 720: the sun map's left edge is 431.0 at 14.050 MHz and 458.0 at 14.010 MHz
+1280 x 720: the sun map's width is 273.0 at 14.050 MHz and 246.0 at 14.010 MHz
+1400 x 1040: the neighborhood panel's left edge is 423.0 at 14.050 MHz and 16.0 at 14.010 MHz
+1400 x 1040: the neighborhood panel's width is 401.0 at 14.050 MHz and 548.0 at 14.010 MHz
+1400 x 1040: the sun map's left edge is 16.0 at 14.050 MHz and 578.0 at 14.010 MHz
+1400 x 1040: the sun map's width is 393.0 at 14.050 MHz and 246.0 at 14.010 MHz
+1920 x 1040: tuned to 14.010 MHz the layout did not settle - InvalidOperationException: Infinite layout loop detected
+```
+
+**The green run:** at 89394369 and again at exit, `ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests` passes 1 of 1 at all four sizes, with the return check included.
 
 ## 4. What's blocking us
 
-Nothing blocks the phase. Two asks are parked and the loop goes on.
+Nothing here blocks 6.3, and nothing halts the phase (R65). The carried items are copied word for word from the work instruction (HM-DEC-139).
 
-1. **P12, the two clock lines** (`captured`, `broadcast`). Since unit 417 they read the clock about a second after the press.
-   - Ruling proposed: take one timestamp at the press and hand it to both.
-   - Reasoning: it is the same fault that made the `reading` line false, and neither line is about a signal, so 6.2 does not need it.
-   - Rejected: fixing it here, because the instruction's drop rule parks sentences outside 6.2's scope.
-2. **Whether `clipping`, and possibly `inputFloor`, should be measured over the whole recording** rather than captioned as the level meter's figures at the press.
-   - Ruling proposed: measure clipping over the file, as HM-DEC-094 already did for `inputPeak`. A clip anywhere in 30 seconds is what a reader of the sheet wants, and today's caption is true but covers only 0.2 s.
-   - Rejected here: this unit's rule was that the sentence moves and the measurement does not, and a new figure on the sheet is a promise the owner should make.
+1. **P19**: 3.6's added strays stand above the bar and every floor they sit under is at its count, so none can leave without the owner's ruling. The ruling is proposed in `PARKED.md`.
+2. **P12** stays parked: the `captured` and `broadcast` clock lines.
+3. **The `clipping` and `inputFloor` question** stays parked.
+4. **P14, P15, P16 and P18** stay parked. *(P16 was red again at exit, message unchanged.)*
+5. **P20** stays parked: `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen` looks for `TurnRingCountText`, and no element in `src` carries that name. *(Red again at exit.)*
+6. **Unit 421's R71 count:** R71's prose says 40 unkeyed captures, and the tree has 29 unkeyed rows of 51. Recorded, not a ruling.
+7. **Unit 421's `SpanMarginForRecord` remark** stays until a unit touching `CwCharacter` rewrites it with the trace beside it (12.6).
+8. **Unit 422's reading of "the band row"**: the header strip that holds Connect, plus `BandRow` and `BandPills`. It is author's and overrulable.
+9. **New, P21, parked: outside his privileges the top row still grows taller.**
+   - **Proposed, the owner's:** leave the height following the words, as now.
+   - **Reasoning:** holding the height too would make the card scroll *Receiving is never restricted* and the upgrade button out of sight inside the row. §0.5 allows that, but it hides the sentence that removes the fear until he scrolls.
+   - **Rejected:** capping the card at the row's height in this unit. 6.3 names columns, not heights, and the choice between a moving panel edge and a hidden sentence is his.
+   - **Measured:** the rise is 2 to 90 px at the tested sizes (42 at 1400 x 1040). Where the row is under the 300 px cap, the working panels below move down by that much.
+   - Not blocking.
+
+**Asks still outstanding**
+
+- P19, first raised by unit 421 on 2026-09-24. It waits on the owner's ruling on whether a key-aligned added character may leave a floor. The floors are in the engine's floor tests, and the proposal is in `docs\phase-correctness\PARKED.md` P19.
+- P20, first raised by unit 422 on 2026-09-24. It waits on whether the slot countdown returns to the Digital tab or the test retires. The test is `tests\Hamlet.App.Tests\Views\Unit302CeilingHoldsStillTests.cs`, and the entry is `PARKED.md` P20.
+- Unit 422's reading of "the band row", 2026-09-24. It waits on the owner's reading. The lists are in `tests\Hamlet.App.Tests\Views\EveryControlSaysWhatItDoesTests.cs`.
+- P21, new from unit 423, 2026-09-24. It waits on whether the top row's height should also hold outside his privileges. The change sits in `src\Hamlet.App\Controls\BandGovernsTheMapPanel.cs`, and the entry is `PARKED.md` P21.

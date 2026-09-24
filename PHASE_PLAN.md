@@ -211,6 +211,38 @@ that nothing real was lost. Rejected: exempting the floors from 3.6 altogether, 
 leave the 40 unkeyed captures unguarded during exactly the work most likely to lose
 characters; leaving P17 and closing 3.6 unmet.
 
+**R73 - Tim, 2026-09-24: a character the key says was never sent may leave a floor.** Unit
+421 measured that the eight added single-element characters all stand above the span bar, and
+unit 422 found every floor they sit under exactly at its count, so no change can remove them
+without a floor falling. The narrow answer: **a character the inferred key aligns as added,
+inside a scored stretch of a keyed recording, may leave a floor.** It applies nowhere else -
+the 29 unkeyed rows keep their floors as they are - the three adjudicated readings must be
+unchanged as the independent check, and **every character a change removes is listed by name
+in the report, with its recording**, so the owner can see what left.
+
+**R74 - Tim, 2026-09-24: Hamlet sets the radio; the operator is not rig control.** *"I want to
+use the radio like I use my car radio. I tune to the place I want and it just happens... You
+know the mode we're in. You know the range. Why do I have to control this? I don't know the
+radio."* And: *"If it's set where it should be, then Hamlet shouldn't be whining about it."*
+
+**Two things follow.** First, **the app may not hold two beliefs about one setting**: if a
+condition sets the preamp to 1 and any voice then tells the operator it should be off, one of
+them is false and the app is stating a falsehood either way (§0.0). **A voice never asks the
+operator to change a setting Hamlet itself established** - if the setting is wrong for the
+conditions, Hamlet changes it.
+
+**Second, the CW preamp condition is wrong, and the manual says so.** `IC-7300_ENG_FM_12b`,
+*Receiving and Transmitting*, page 4-3: P.AMP1 is the wide dynamic range preamp, P.AMP2 the
+high-gain one for the 50 MHz bands; *"when you use the preamp while receiving strong signals,
+the signal may be distorted. In such a case, turn OFF the preamp"*; and each band memorizes
+its own setting. Icom's published sensitivity figures are quoted **with Preamp 1 on for 1.8 to
+29.999 MHz and Preamp 2 on for 50 MHz**. The condition in the tree reads *preamp 1 above 40 m,
+off at 40 m and below*, which turns the preamp off across the low bands where Icom specifies
+it on, and says nothing about 6 m or about overload. **The rule, from the manual: preamp 1 on
+every HF band from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and the preamp off when the receiver
+is overloading** - which Hamlet already reads, since `Overflow` is on the capture sheet.
+Rejected: leaving the band rule as it stood; asking the owner which he wants.
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -346,6 +378,7 @@ through.
 - [x] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
 - [x] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
 - [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [ ] 7.8 The preamp is set from what the radio's manual states and nothing contradicts it (R74): the CW conditions carry preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz, with the manual's page cited in the condition's own text; the preamp is turned off when the receiver reports overloading rather than by band; no component asks the operator to change the preamp, or any other field a condition states, after Hamlet has set it - watched failing first at 7.030 MHz, where the old rule turned it off, and at 14.050, where a voice contradicted the setup; and the report prints, for one frequency on each HF band and at 50 MHz, what is asked for, what is written, and every sentence the app would say about the preamp there.
 
 **Depends on:** nothing. Independent of every other step.
 
@@ -370,6 +403,11 @@ halt.
 - **Removing a below-bar character is not lowering a floor** (R71), once 3.7 has set the bar.
   A row whose above-bar count falls is a regression and the change goes back out. Until 3.7
   is met, every named character counts as it does today.
+- **A character the key aligns as added may leave a floor** (R73), inside a scored stretch of
+  a keyed recording and nowhere else, with every removed character named in the report.
+- **No voice asks the operator to change a setting Hamlet set** (R74). A criterion is met by
+  making the setting right and the sentences agree with it, never by silencing a voice that
+  is telling the truth.
 - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
   movement fails 3.2's third test, and a report invoking the clause prints the reading
   before and after.
@@ -418,6 +456,9 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-24, after unit 423.** R73 a key-identified added character may leave a floor, so
+  3.6 can pass; R74 Hamlet sets the radio from the manual and nothing contradicts what it set,
+  as criterion 7.8.
 - **2026-09-24, after unit 420.** R71: a floor counts characters at or above a stated span
   bar, so the stray-letter work can proceed; criterion 3.7 re-measures the 51 rows once.
 - **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as

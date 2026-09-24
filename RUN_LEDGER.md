@@ -256,3 +256,13 @@ the owner reads instead of watching.
 | 2 | 2026-09-24T09:12 | 2026-09-24T09:58 | complete | 5.5109548 | ran unattended, 145 turns, 5 denied call(s) worked around, report valid |
 | 3 | 2026-09-24T10:02 | 2026-09-24T10:54 | complete | 9.047419199999998 | ran unattended, 199 turns, 10 denied call(s) worked around, report valid |
 | phase | 2026-09-24T10:55 | 2026-09-24T10:55 | ending | 9.7822 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
+| 1 | 2026-09-24T11:11 | 2026-09-24T12:08 | complete | 11.241697999999996 | ran unattended, 231 turns, 8 denied call(s) worked around, report valid |
+| 1 | 2026-09-24T12:08 | 2026-09-24T12:08 | note | none - not a run | no advance - step 7 criterion 5 was unmet and is unmet |
+| phase | 2026-09-24T12:08 | 2026-09-24T12:08 | ending | 0 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
+| 1 | 2026-09-24T12:16 | 2026-09-24T12:58 | complete | 7.0850941999999995 | ran unattended, 135 turns, 8 denied call(s) worked around, report valid |
+| phase | 2026-09-24T12:59 | 2026-09-24T12:59 | ending | 0 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
+| 1 | 2026-09-24T13:53 | 2026-09-24T15:10 | complete | 8.566822999999998 | ran unattended, 200 turns, 15 denied call(s) worked around, report valid |
+| 2 | 2026-09-24T15:15 | 2026-09-24T16:06 | complete | 9.6671856 | ran unattended, 222 turns, 14 denied call(s) worked around, report valid |
+| 3 | 2026-09-24T16:10 | 2026-09-24T17:03 | complete | 8.439169200000004 | ran unattended, 168 turns, 10 denied call(s) worked around, report valid |
+| 4 | 2026-09-24T17:08 | 2026-09-24T17:09 | complete | 0.3995104 | ran unattended, 8 turns, no denials, report valid |
+| phase | 2026-09-24T17:10 | 2026-09-24T17:10 | failure | 26.6732 | STOPPED, AND A STOP IS FAILURE - stop 11: no report was written by this unit - output.md at the root was written BEFORE this unit was launched - it is not this unit-s report - the file at the root says UNIT: 423 - complete at task 4 of 4, none dropped - 2026-09-24 17:01 |

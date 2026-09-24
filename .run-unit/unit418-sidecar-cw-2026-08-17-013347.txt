@@ -1,5 +1,5 @@
 # cw-2026-08-17-013347.wav, the whole sheet regenerated through CaptureNotes by work instruction 418; a fresh decoder and a fresh meter, this file only, no radio
-captured   2026-09-24 14:51:00 UTC
+captured   2026-09-24 16:02:48 UTC
 audioSeen  1440000 samples
 fingerprint 1c42404a68d7
 seconds    30.0

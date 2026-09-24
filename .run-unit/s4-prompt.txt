@@ -51,12 +51,26 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing blocks the phase. Two asks are parked and the loop goes on.
+Nothing here blocks 6.3, and nothing halts the phase (R65). The carried items are copied word for word from the work instruction (HM-DEC-139).
 
-1. **P12, the two clock lines** (`captured`, `broadcast`). Since unit 417 they read the clock about a second after the press.
-   - Ruling proposed: take one timestamp at the press and hand it to both.
-   - Reasoning: it is the same fault that made the `reading` line false, and neither line is about a signal, so 6.2 does not need it.
-   - Rejected: fixing it here, because the instruction's drop rule parks sentences outside 6.2's scope.
-2. **Whether `clipping`, and possibly `inputFloor`, should be measured over the whole recording** rather than captioned as the level meter's figures at the press.
-   - Ruling proposed: measure clipping over the file, as HM-DEC-094 already did for `inputPeak`. A clip anywhere in 30 seconds is what a reader of the sheet wants, and today's caption is true but covers only 0.2 s.
-   - Rejected here: this unit's rule was that the sentence moves and the measurement does not, and a new figure on the sheet is a promise the owner should make.
+1. **P19**: 3.6's added strays stand above the bar and every floor they sit under is at its count, so none can leave without the owner's ruling. The ruling is proposed in `PARKED.md`.
+2. **P12** stays parked: the `captured` and `broadcast` clock lines.
+3. **The `clipping` and `inputFloor` question** stays parked.
+4. **P14, P15, P16 and P18** stay parked. *(P16 was red again at exit, message unchanged.)*
+5. **P20** stays parked: `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen` looks for `TurnRingCountText`, and no element in `src` carries that name. *(Red again at exit.)*
+6. **Unit 421's R71 count:** R71's prose says 40 unkeyed captures, and the tree has 29 unkeyed rows of 51. Recorded, not a ruling.
+7. **Unit 421's `SpanMarginForRecord` remark** stays until a unit touching `CwCharacter` rewrites it with the trace beside it (12.6).
+8. **Unit 422's reading of "the band row"**: the header strip that holds Connect, plus `BandRow` and `BandPills`. It is author's and overrulable.
+9. **New, P21, parked: outside his privileges the top row still grows taller.**
+   - **Proposed, the owner's:** leave the height following the words, as now.
+   - **Reasoning:** holding the height too would make the card scroll *Receiving is never restricted* and the upgrade button out of sight inside the row. Â§0.5 allows that, but it hides the sentence that removes the fear until he scrolls.
+   - **Rejected:** capping the card at the row's height in this unit. 6.3 names columns, not heights, and the choice between a moving panel edge and a hidden sentence is his.
+   - **Measured:** the rise is 2 to 90 px at the tested sizes (42 at 1400 x 1040). Where the row is under the 300 px cap, the working panels below move down by that much.
+   - Not blocking.
+
+**Asks still outstanding**
+
+- P19, first raised by unit 421 on 2026-09-24. It waits on the owner's ruling on whether a key-aligned added character may leave a floor. The floors are in the engine's floor tests, and the proposal is in `docs\phase-correctness\PARKED.md` P19.
+- P20, first raised by unit 422 on 2026-09-24. It waits on whether the slot countdown returns to the Digital tab or the test retires. The test is `tests\Hamlet.App.Tests\Views\Unit302CeilingHoldsStillTests.cs`, and the entry is `PARKED.md` P20.
+- Unit 422's reading of "the band row", 2026-09-24. It waits on the owner's reading. The lists are in `tests\Hamlet.App.Tests\Views\EveryControlSaysWhatItDoesTests.cs`.
+- P21, new from unit 423, 2026-09-24. It waits on whether the top row's height should also hold outside his privileges. The change sits in `src\Hamlet.App\Controls\BandGovernsTheMapPanel.cs`, and the entry is `PARKED.md` P21.

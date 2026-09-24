@@ -477,3 +477,20 @@ STATE_AFTER: partial
 STATE_WHY: 6.4 is met and ticked, but 6.3 and 6.5 are still unmet, so step 6 is not done.
 ADVANCED: yes
 ATTEMPT: 6.4 | unit 2 launched 2026-09-24T19:15:08.069Z | yes | executed | inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
+
+## UNIT 3 - STEP 6
+
+STEP: 6
+APPROACH: trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The outstanding asks cover test floors, a slot countdown's placement or a test retiring, the reading of a label and a panel's height, and none of these touches keying or transmit, money, or what the product states about what was logged, heard or sent.
+MOVE: work around
+WHY: Step 3 cannot advance until the owner rules on P19, and 3.4 cannot fire after unit 421's kept change, so R64 and R65 send the loop to the screen. 6.5 turns on HM-OPEN-087, which is Tim's, so 6.3 is the step 6 criterion no ruling holds.
+DECIDED: author's, overrulable - routing from step 3 to 6.3, not 6.5 or step 7, under R64's order; 'outside his privileges' is measured as an amateur CW frequency his class does not cover on the same band as a covered one, with out-of-band and other classes printed in the trace only; 'same columns' is left edge and width within one pixel; the test also asserts the words and color change so a frozen panel cannot pass; a green-at-first-run test does not tick 6.3; the smaller window size is the drop candidate; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R62, R64, R65, R54, section 6; step 6 criteria 6.3 and 6.6; HM-DEC-021; HM-DEC-092; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2, 0.5 and 12.6
+COST: 8.439169200000004
+ACCOMPLISHED: when Tim tunes to a frequency his license does not cover, the map, the neighborhood panel and the radio panel stay where they were, and only the panel's words and color change, proved by a headless test at both frequencies
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criterion 6.3 is now met with the red message, the before and after table, the green run and the changed words and color quoted, but 6.5 on the Have a look button is still unmet, so not every exit criterion of step 6 is met.
+ADVANCED: yes
+ATTEMPT: 6.3 | unit 3 launched 2026-09-24T20:10:29.208Z | yes | executed | trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
