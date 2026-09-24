@@ -1,0 +1,3 @@
+unit412 task 3: the keys by differencing (1.6) - the sidecar text is cumulative, each predecessor a prefix of the next; eleven key files 004108 to 004550, inferred and built by differencing, 14 stretches over 10 captures, 004535 keyed with nothing to score, callsigns and numbers not read with confidence left out; TheBenchmarkIsKeyedTests reads the keys from the files and checks each stretch against what its capture added, 1 of 1; live 41 edits over 156 characters against inferred keys, 40 of them spaces, 0 unsure per 138 named; bench 60 over 156; tabled in baseline.md outside the baseline total; no capture or sidecar edited
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

@@ -82,6 +82,51 @@ leaves out what it cannot name rather than marking it, so the decoder today prin
 nothing it is unsure of; the ratio earns its keep when a change starts printing doubt, and the
 named floor is the half of the guard that bites on silence.
 
+## The locked-on run of 2026-09-24, keyed by differencing (1.6)
+
+Work instruction 412, task 3. **Every key inferred**, built by taking each capture's
+predecessor's `text` away from its own (the predecessor is a prefix every time, checked) and
+keying only the stretches of what was added that read with confidence. Each key file sits
+beside its capture as `cw-2026-09-24-<time>.key.md` and says how it was built and what it
+leaves out. Printed by `TheBenchmarkIsKeyedTests.EachKeyIsScoredLiveAndOnTheBench`, which
+reads the stretches and keys from those files; raw output in `.run-unit/unit412-keyed.txt`.
+**Kept out of the baseline total** until a ruling says whether they join it.
+
+- **Live** is the stretch as the application read it that night, from the sidecar, scored
+  whole: what Tim watched, and fixed.
+- **Bench** is the WAV replayed through the decoder at HEAD from a cold start, the key
+  aligned into its best-fitting stretch (`CwScorer.Within`): the number a later change moves.
+  **Where the gap to the previous capture is over 30 s** (004108 41 s, 004205 32 s, 004322
+  48 s, 004510 43 s) part of what was added was heard before the WAV begins, and a short
+  key can then align to unrelated text: 004108's `DE KA2GJV` aligns to ` G K 2 6 `.
+
+| capture | stretch as read live | key | live edits | scored length | live unsure per named | bench edits | bench region |
+|---|---|---|---|---|---|---|---|
+| `004108` | `DE KA2 G J V` | `DE KA2GJV` | 3 | 9 | 0 / 8 | 6 | ` G K 2 6 ` |
+| `004133` | `I C H ARD` | `ICHARD` | 3 | 6 | 0 / 6 | 4 | ` C H AR ` |
+| `004205` | `AT Y A H O O D` | `AT YAHOO D` | 4 | 10 | 0 / 8 | 4 | `AT Y A H O O D` |
+| `004234` | `O T C O M <BT> T HANK Y OU` | `OT COM <BT> THANK YOU` | 5 | 21 | 0 / 17 | 9 | `O M <BT> T HANTT ` |
+| `004322` | `T HE A RRL S P O N S ORED A M ER I CA` | `THE ARRL SPONSORED AMERICA` | 11 | 26 | 0 / 23 | 15 | `  P O N S ORED A M ER I CA` |
+| `004322` | `OP ERA T I ON` | `OPERATION` | 4 | 9 | 0 / 9 | 4 | `OP ERA T I ON` |
+| `004322` | `ALL LOGS W` | `ALL LOGS W` | 0 | 10 | 0 / 8 | 3 | `ALL L O G S W` |
+| `004347` | `ILL BE UPLOADED TO ARRL L OO TW` | `ILL BE UPLOADED TO ARRL LOTW` | 3 | 28 | 0 / 24 | 4 | `ILL BE U PLOADED TO ARRL L OO ` |
+| `004405` | `O OR D IN` | `OORDIN` | 3 | 6 | 0 / 6 | 3 | ` OR D IN` |
+| `004427` | `A T OR` | `ATOR` | 2 | 4 | 0 / 4 | 2 | ` T OR` |
+| `004427` | `QSL T NX` | `QSL TNX` | 1 | 7 | 0 / 6 | 2 | `QSL T ` |
+| `004510` | `KA2GJV` | `KA2GJV` | 0 | 6 | 0 / 6 | 2 | `KA2  GJV` |
+| `004510` | `AA3S B` | `AA3SB` | 1 | 5 | 0 / 5 | 1 | `AA3S ` |
+| `004535` | none scored | | | | | | |
+| `004550` | `DE KA2 GJV` | `DE KA2GJV` | 1 | 9 | 0 / 8 | 1 | `DE KA2 GJV` |
+| **total** | 14 stretches, 10 of 11 captures | **inferred** | **41** | **156** | **0 / 138** | **60** | |
+
+**What it says.** Live, 41 edits over 156 characters, and by hand 40 of them are spaces,
+the other the extra `O` in `L OO TW`:
+the letters of `THE ARRL SPONSORED AMERICA`, `OPERATION`, `UPLOADED TO ARRL` and both
+callsigns are right, and the boundaries fall inside words. That is 17:37's fault on a
+signal the decoder was locked to, now with ten captures to measure a spacing change on
+rather than one. The bench reads worse, 60 over 156, from a cold start and a 30-second
+window; it is the bench figure a change is judged on.
+
 ## What kind of error (0.3)
 
 Printed by `TheBaselineIsScoredTests.TheErrorKindsArePrinted`, raw output in
