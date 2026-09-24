@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 1 of 4
 WORK_INSTRUCTION: 416 - the relabel goes back in
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T08:24:14-04:00
-NOTE: Running TheNumberCannotBeGamedTests alone, the named floors
+UPDATED: 2026-09-24T08:31:45-04:00
+NOTE: Running the two clean synthetics alone
 
 ---
 

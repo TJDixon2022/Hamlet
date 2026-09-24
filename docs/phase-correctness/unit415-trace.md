@@ -158,3 +158,24 @@ question of whether "unchanged" was meant to forbid that is in the report's sect
 Beside it, never evidence, exact keys: the grid 100 over 243, the five-unit row 64 over 81.
 3.5 at both commits: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, engine 178 of 178,
 app 278 of 278 at the change. The take-out's round is task 4's exit round.
+
+## Unit 416 - the narrowed relabel goes back in, kept under R66
+
+`git diff 3ddca565 b68be0dd` applied cleanly to the tree at `c4353dbf` and was committed
+unchanged as `38158be6`; `src` is byte-identical to `b68be0dd`. Every key inferred.
+
+| 3.2 test | entry | unit 415 with `b68be0dd` | unit 416 at `38158be6` | |
+|---|---|---|---|---|
+| 1. all keyed recordings, bench | 217 over 565 | 185 over 565 | **185 over 565** | pass |
+| - baseline | 33 over 46 | 31 over 46 | 31 over 46 | |
+| - 17:37 | 29 over 25 | 28 over 25 | 28 over 25 | |
+| - outside | 124 over 363 | 118 over 363 | 118 over 363 | |
+| - the ten, bench | 60 over 156 | 36 over 156 | 36 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, identical | 13 of 13, every count identical | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, `N4L`, `EETMP/4 QNIK` | `VA3VRR`, `N4L`, `EETMP/4 QNIK` | pass under R66 |
+| 4. all 51 capture rows | - | identical | identical in named, elements and placeholders | pass |
+
+**R66 invoked for one reading.** `cw-2026-08-17-134712` read `N4 ` before and reads `N4L`
+after, exactly HM-DEC-144's adjudicated text, 1 edit to 0. `VA3VRR` and `EETMP/4 QNIK` did
+not move. The change is kept and 3.2 is ticked. Adjudicated 13 of 13 and clean 2 of 2 at the
+change.

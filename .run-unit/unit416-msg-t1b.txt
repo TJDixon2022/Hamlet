@@ -1,0 +1,3 @@
+unit416 task 1: the record - the relabel kept under 3.2 as R66 amended it; test 1 all keyed 185 over 565 from 217 pass, baseline 31 over 46, 17:37 28 over 25, outside 118 over 363, the ten bench 36 over 156 from 60, every figure equal to unit 415's; test 2 named floors 13 of 13 every count identical pass; test 3 VA3VRR unchanged, cw-2026-08-17-134712 N4 space to N4L which is its own adjudicated text under R66, EETMP/4 QNIK unchanged, pass; test 4 all 51 capture rows identical in named, elements and placeholders pass; adjudicated 13 of 13, clean 2 of 2 at the change; 3.2 ticked
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
