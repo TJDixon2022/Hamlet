@@ -172,3 +172,31 @@ anything in the thirty seconds ending then rather than when the recording ended.
 anything about a signal, so they are outside 6.2 and parked rather than fixed, per work
 instruction 418's drop rule. The fix would be one timestamp taken at the press and handed to
 both. Not blocking.
+
+## P13 - two of the three Morse blocks on each band state no receiver conditions
+
+**Raised by unit 419, 2026-09-24.** `ReceiverConditions.ForBlock` looks the block's short name
+up in `mode-receiver-conditions.json`, which states conditions for `CW`, `FT8` and `FT4`. The
+map's Morse family carries three short names: `CW` (9 blocks), `CW DX` (4, the bottom 25 kHz of
+80, 40, 20 and 15 m) and `QRP` (7). **The last two state nothing, so tuning into them writes
+nothing to the radio.** 7.030 MHz, one of work instruction 419's two CW frequencies, is the
+first hertz of the 40 m QRP watering hole (7.030000 to 7.039999 after `Separate`), and the
+field table at task 1 prints *the app writes nothing here*: a radio left at preamp 1 on 40 m
+stays at preamp 1, against the CW row's own text. The CW row driven directly at 7.030 writes
+the text's value. **Stating the CW row for `CW DX` and `QRP` would be two `sameAs` lines**, but
+it makes the app write to the radio in 11 blocks where it writes nothing today, and PHASE_PLAN.md
+section 6 licenses 7.5 to write less and to carry a band rule, not to write in more places. So
+it is the owner's: do the `CW DX` and `QRP` blocks count as entering CW mode? Not blocking under
+R65; 7.5 is met where the block states the CW row.
+
+## P14 - the attenuator's 20 dB write goes out as a plain byte
+
+**Raised by unit 419, 2026-09-24.** `Ic7300Rig.BuildSettingData` sends a value as two BCD bytes
+only where the write's range note contains `0000`; the attenuator's reads `00=off, 20=20 dB`, so
+20 goes out as the plain byte `0x14`. The read side decodes the same field as BCD
+(`CivDecode.DecodeAttenuator`, `CivValues.Level(0x00, payload[0])`), where `0x20` is 20 dB and
+`0x14` would be 14. The CW row asks for 20 dB whenever the front end reads overloading, so on a
+tune-in into an overloading band the byte sent is not the value asked for; the scripted radio in
+task 1's table refuses it and the setup files it `NotConfirmed`. What an IC-7300 does with `11 14`
+has not been measured here (FACT-006). A fix changes a byte sent to the radio, which is outside
+what 7.5 licenses, so it is parked. Not blocking.

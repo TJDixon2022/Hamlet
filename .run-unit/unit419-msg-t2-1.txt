@@ -1,0 +1,7 @@
+unit419 task 2 item 1: the preamp's band rule is carried by what is written - ThePreampFollowsItsOwnTextTests 5 of 5 green at first run, NOT watched failing: the premise was false
+
+No red to quote. The CW preamp row names its rule, "condition": "band", and ReceiverSetup.ResolveAsync reads the frequency and writes 1 above 10 MHz and 0 at or below, so the written value already matches the text at both frequencies: 14.050 from off and from preamp 2 writes 1; 7.030 from preamp 1 and 2 writes 0, from off writes nothing. The only direct reader of condition.Wanted in src is ReceiverSetup line 163, which the resolver overrides for a conditional row. How the rule is carried, a rule the condition names and the setup deriving it from the frequency, was already in the tree and is kept; no code change. These facts pin it.
+
+Parked, not fixed: P13, the CW DX and QRP blocks state no conditions, so the app writes nothing at 7.030, the QRP watering hole; P14, the attenuator's 20 dB goes out as byte 0x14 where the read decodes BCD 0x20. Both would change what is written in a way section 6 does not license.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
