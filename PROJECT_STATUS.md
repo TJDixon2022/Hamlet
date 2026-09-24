@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 4
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 415 - the space is decided after the letters
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T01:54:12-04:00
-NOTE: Re-running the one app name lost to the dispatcher loop, alone
+UPDATED: 2026-09-24T02:10:03-04:00
+NOTE: Narrowed relabel taken out on 3.2 test 3 as written, 134712 moved to N4L; src equal to entry; exit round next
 
 ---
 

@@ -1,0 +1,26 @@
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032129", floor: 65)
+ named | unadjudicated/cw-2026-08-22-032129 | 65 against a floor of 65 | 23 edits over 42 characters against an inferred key, 0 unsure per 28 named (0.000) | region `TJ26 PGOPAGATION EE EE EIIEE I E EE `
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-18-004507", floor: 49)
+ named | cw-2026-08-18-004507 | 49 against a floor of 49 | 10 edits over 57 characters against an inferred key, 0 unsure per 46 named (0.000) | region ` T AR O L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE P`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032050", floor: 44)
+ named | unadjudicated/cw-2026-08-22-032050 | 44 against a floor of 44 | 21 edits over 59 characters against an inferred key, 1 unsure per 37 named (0.027) | region `    IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032113", floor: 47)
+ named | unadjudicated/cw-2026-08-22-032113 | 47 against a floor of 47 | 11 edits over 28 characters against an inferred key, 2 unsure per 22 named (0.091) | region `A KET■ A N O INT ERNE T ■ E ROIONS`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032012", floor: 43)
+ named | unadjudicated/cw-2026-08-22-032012 | 43 against a floor of 43 | 13 edits over 51 characters against an inferred key, 0 unsure per 43 named (0.000) | region `T F 117.1. LINKS TO A R T I C L E SO R OTHER WEBSITES MENTI`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031838", floor: 43)
+ named | unadjudicated/cw-2026-08-22-031838 | 43 against a floor of 43 | 21 edits over 35 characters against an inferred key, 1 unsure per 23 named (0.043) | region `D  ■T TTT TEAHEEEA MEAN TOF 2 TT    `
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031905", floor: 36)
+ named | unadjudicated/cw-2026-08-22-031905 | 36 against a floor of 36 | 17 edits over 39 characters against an inferred key, 0 unsure per 30 named (0.000) | region `DICTED 10.7  IAIEI TANI   WLUX IS 125,,  `
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-013347", floor: 57)
+ named | cw-2026-08-17-013347 | 57 against a floor of 57 | 0 edits over 6 characters against an inferred key, 0 unsure per 6 named (0.000) | region `VA3VRR`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-18-003758", floor: 44)
+ named | unadjudicated/cw-2026-08-18-003758 | 44 against a floor of 44 | 3 edits over 12 characters against an inferred key, 0 unsure per 11 named (0.000) | region `EETMP/4 QNIK`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-09-23-173723", floor: 46)
+ named | unadjudicated/cw-2026-09-23-173723 | 46 against a floor of 46 | 28 edits over 25 characters against an inferred key, 0 unsure per 28 named (0.000) | region `CQ CQ CQ DE WT E E T E  E ERE D E T T TB 7E E I`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031948", floor: 31)
+ named | unadjudicated/cw-2026-08-22-031948 | 31 against a floor of 31 | 2 edits over 36 characters against an inferred key, 0 unsure per 27 named (0.000) | region `150 110, AND 110 WITH A MEAN OF 117`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-24-012403", floor: 21)
+ named | unadjudicated/cw-2026-08-24-012403 | 21 against a floor of 21 | 0 edits over 16 characters against an inferred key, 0 unsure per 13 named (0.000) | region `DE KD0UN KD0UN K`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-134712", floor: 21)
+ named | cw-2026-08-17-134712 | 21 against a floor of 21 | 0 edits over 3 characters against an inferred key, 0 unsure per 3 named (0.000) | region `N4L`

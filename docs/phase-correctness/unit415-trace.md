@@ -132,3 +132,29 @@ row 63 to 64 over 81.
 3.5 at both commits: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, engine
 carry-forward 178 of 178. App carry-forward 276 and 277 of 278, with the rest lost to the
 dispatcher loop and green alone.
+
+## Task 3 - the narrowed relabel, which only removes spaces
+
+It ran because task 2 failed only the third test. Built as `b68be0dd`: the same change, except
+that a space the path read is left unannounced when its gap runs under the boundary, and no
+space is ever added. Taken out as `040a4ae0`.
+
+| 3.2 test | entry | narrowed | |
+|---|---|---|---|
+| 1. all keyed recordings, bench | 217 over 565 | **185 over 565** | pass |
+| - baseline | 33 over 46 | 31 over 46 | |
+| - 17:37 | 29 over 25 | 28 over 25 | |
+| - outside | 124 over 363 | 118 over 363 | |
+| - the ten, bench | 60 over 156 | 36 over 156 | |
+| 2. named floors | 13 of 13 | 13 of 13, every count identical | pass |
+| 3. the three adjudicated readings | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, **`N4L`**, `EETMP/4 QNIK` | **fail as written** |
+| 4. all 51 capture rows | - | identical in named, elements and placeholders | pass |
+
+**`134712` now reads `N4L`, which is exactly what HM-DEC-144 adjudicated, 1 edit to 0.** 3.2's
+third test asks for the adjudicated readings to be unchanged character for character, so a
+reading that moves onto the adjudicated text fails it as written. The change is out, and the
+question of whether "unchanged" was meant to forbid that is in the report's section 4.
+
+Beside it, never evidence, exact keys: the grid 100 over 243, the five-unit row 64 over 81.
+3.5 at both commits: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, engine 178 of 178,
+app 278 of 278 at the change. The take-out's round is task 4's exit round.

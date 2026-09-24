@@ -1,0 +1,3 @@
+unit415 task 3: take-out of b68be0dd under 3.2 - test 1 passed, all keyed 185 edits over 565 characters against inferred keys from 217, 17:37 28 over 25 from 29; test 2 passed, named floors 13 of 13 every count identical; test 4 passed, all 51 capture rows identical in named, elements and placeholders; test 3 failed as written, cw-2026-08-17-134712's adjudicated region read N4 space and now reads N4L, the adjudicated text exactly, 1 edit to 0, changed; src prints nothing against 61d8b58f
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
