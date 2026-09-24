@@ -1,151 +1,188 @@
 READ IN THIS ORDER.
 
-A. Whether the relabel was kept, and the total: 217 -> 185 over 565 with the relabel
-   kept, and 217 -> 167 over 565 with task 3's second change also kept.
-B. Step 3's criteria: 3.2 kept, all four tests passed as numbers, ticked; 3.3 17:37
-   29 -> 28 -> 19 over 25 and the running total in baseline.md, ticked; 3.4 the count
-   resets, this unit kept two changes; 3.5 every commit's exit green, stays ticked.
-C. The rest. Section 4 raises 1 item, none blocking.
+A. Hamlet reads a CQ call correctly. Steps 0, 1, 2 done; 3 partial,
+   3.4 only open and not flippable this unit; 4 not started; 5 the
+   owner's; 6 partial.
+B. Step 6: 6.7 met - red quoted in section 1, cost at capture 862 ms
+   on a pool thread, not the UI thread; 6.2 not met - its three named
+   clauses hold, its lead sentence fails on the keying caption's sweep
+   range; 6.6 held.
+C. The rest. Section 4 raises 2 items; P10 is in the way of 6.2, none
+   in the way of 6.7.
 
 ```
-UNIT:       416 - complete at task 4 of 4, none dropped - 2026-09-24 09:08
-PHASE GOAL: Hamlet reads a CQ call off the air as it was sent, judged by an edit count against keys and finally by Tim at the radio
-UNIT GOAL:  Put unit 415's space-only relabel back in unchanged, keep it under R66 with all four of 3.2's tests printed as numbers, and attack the next error kind if time allows
-ADVANCED:   yes - 3.2 and 3.3 ticked, the phase's first two kept correctness gains, all keyed 217 to 167 over 565
-NUMBER:     all keyed: 217 -> 167 over 565; the ten bench: 60 -> 35 over 156
+UNIT:       417 - complete at task 3 of 3, none dropped - 2026-09-24 09:57
+PHASE GOAL: Hamlet decodes a real CQ call into the text that was sent, measured against keys, and the screen says nothing about the signal that is not so
+UNIT GOAL:  The strength figure on each capture's sheet is measured over that capture's own audio and says so, watched failing first against the held figure, with its cost at the press measured
+ADVANCED:   yes - 6.7 ticked with its red quoted and its cost stated; 6.2 not ticked, on P10
+NUMBER:     tonePeak on 17:37 25.7 held -> 26.8 dB over the recording; capture cost 862 ms, on a pool thread
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete, task 4 of 4, none dropped.** Claude Code on QUIVERFULL, the development computer.
-Project Hamlet claimed, confirmed by `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present
-and `CoreHMI.sln` and `MURC.sln` absent. Branch `main`. Nothing in this report is evidence
-about the radio. Every key is inferred (R61, §0.0).
+**Complete, task 3 of 3, none dropped.** QUIVERFULL, Hamlet confirmed by the gate, `main`,
+entry HEAD 12e2d442.
 
-**Section 5 checks: no mismatch.** `b68be0dd` exists, and `040a4ae0` is its child and its
-take-out. `git diff 040a4ae0 HEAD -- src` printed nothing. `unit415-trace.md` describes the
-relabel, the centroid guard and the `sqrt(7/3)` boundary. `PHASE_PLAN.md` 3.2 carries R66's
-clause. Entry reproduced 217 over 565, the ten 60 over 156, and 17:37 29 over 25.
+**Section 5 against the tree - no mismatch in the five checks.** `TonePeakRecordLine`
+(`MainWindowViewModel.cs` 12373 at entry) was the only place the line was composed, called
+once from `CaptureNotes`; `TheSidecarIsReReadTests` asserted `tonePeak   `; `SnrDb` is built
+from `CwDecoder._lastSnrDb`; the roster's `tonePeakDb` reads `SnrDb` from the report
+(`MainWindowViewModel.cs` 20601) and nothing parses the sidecar line; `CaptureNotes` has
+the audio. Keyed totals at HEAD 167 over 565, the ten 35 over 156, 17:37 19 over 25.
+**One figure did not match:** section 4 of the instruction quotes the held figure as 41.7 on
+014854, 38.4 on 014935 and 34.7 on 013347. A fresh decoder replaying each file today gives
+54.7, 56.8 and 32.2, and the saved sidecars carry `snrDb` 42.9 and 28.8 from the live
+evening. The ordering the instruction complains of still holds: both empty files sit above
+013347.
 
-**Task 0 (`c4353dbf`).** Version 1.13.102 to 1.13.103. `PHASE_STATUS.md` names unit 416 at
-step 3. The `PHASE_OUTCOME.md` entry comes from the decision block. HM-DEC-173 is in
-`DECISIONS.md`, and its row is at the top of `CLAUDE.md` §1. Entry round: engine
-carry-forward 178 of 178. App 274 of 278: four were lost to the known dispatcher loop, and
-their two types passed 11 of 11 alone. Captures 51 of 51, adjudicated 13 of 13, clean 2 of 2,
-named floors 13 of 13.
+**Task 0.** Version 1.13.104, PHASE_STATUS names 417 and step 6, PHASE_OUTCOME entry, P9's
+answer in PARKED.md. Entry round: engine 178/178; app 274/278, four lost to Avalonia's
+*"You've caused dispatcher loop"* and 4/4 alone; captures 51/51, adjudicated 13/13, clean
+2/2, TheSidecarDoesNotContradictItselfTests 3/3, TheSidecarIsReReadTests 2/2.
+I ran the four dispatcher-loop tests as four types in one invocation, not one type
+per invocation as HM-DEC-155 says. They passed; I'm reporting it so nobody finds it later.
 
-**Task 1: the relabel went back in, and it was kept (`38158be6`, record `04fba4d3`).**
-`git diff 3ddca565 b68be0dd` applied cleanly. It was committed unchanged, and `src` is
-byte-identical to `b68be0dd`. It was cherry-picked, not rebuilt.
+**Task 1, the trace.** `WhatTheTonePeakIsAboutTests` (asserts nothing) and
+`ToneOverNoiseByHand`, in `tests\Hamlet.App.Tests\Cw`.
 
-| 3.2 test | entry | unit 415 with `b68be0dd` | unit 416, `38158be6` | |
+**DECIDED, author's, overrulable - the method.** It is the held figure's own quantity over this
+file's samples only:
+- **Window:** a 40 ms Hann window, moved every 5 ms (the tracker's hop).
+- **Tone:** the Goertzel power at `report.ToneHz`, the pitch the decoder tracked.
+- **Noise:** the median Goertzel power of the 25 Hz grid from 300 to 900 Hz, leaving out every
+  grid pitch within 125 Hz of the tone (`CwCompetitor.SeparationHz`). The window is the same
+  one the tone is measured through.
+- **Figure:** a reading counts only as the middle of five in a row; the figure is the highest
+  such reading over the file. Nothing is held from before the file and nothing decays.
+- **No tracked pitch:** where the decoder has no tone, or never measured its pitch (the
+  `duty` line's gate), the line says so in words and prints no number. It does the same where
+  the file holds fewer than five windows.
+
+After seeing the first figures, I checked two alternatives before keeping this method. The
+reason was what it measures, not how it orders the four:
+- **Frequency neighbours:** each file's mean spectrum shows the grid below 550 Hz on 014854 and
+  014935 sitting 25 to 44 dB under the passband. The neighbours can be the receiver's stopband
+  (P11).
+- **The tone's own quietest fifth:** it gave 93.3 dB on 013347, whose tone bin falls to
+  -51.8 dB between elements under a steady -22 dBFS.
+
+The held figure's definition was kept because the alternative fails worse. The gate hides the
+stopband cases, which occur at unmeasured pitches.
+
+| capture | held (replayed) | recording figure | at the pitch regardless | keying windows of 25 |
 |---|---|---|---|---|
-| 1. all keyed | 217 over 565 | 185 over 565 | **185 over 565** | pass |
-| - baseline | 33 over 46 | 31 over 46 | 31 over 46 | |
-| - the ten, bench | 60 over 156 | 36 over 156 | **36 over 156** | |
-| - 17:37 | 29 over 25 | 28 over 25 | **28 over 25** | |
-| - outside | 124 over 363 | 118 over 363 | 118 over 363 | |
-| 2. named floors | 13 of 13 | 13 of 13, identical | 13 of 13, every count identical | pass |
-| 3. adjudicated | `VA3VRR`, `N4 `, `EETMP/4 QNIK` | `VA3VRR`, `N4L`, `EETMP/4 QNIK` | `VA3VRR`, `N4L`, `EETMP/4 QNIK` | pass under R66 |
-| 4. capture rows | 51 rows | identical | 51 of 51 identical in named, elements and placeholders | pass |
+| 014854 | 54.7 | not measured | 50.2 | 0 |
+| 014935 | 56.8 | not measured | 52.7 | 0 |
+| 013347 | 32.2 | 33.4 | 33.4 | 10 |
+| 17:37 | 25.7 | 26.8 | 26.8 | 0 |
+| 014113 | 24.7 | not measured | 30.9 | 0 |
 
-**R66 applies to one reading.** `cw-2026-08-17-134712` read `N4 ` before and reads `N4L`
-after. That is exactly HM-DEC-144's adjudicated text, 1 edit to 0. `VA3VRR` and
-`EETMP/4 QNIK` did not move. The 13 named floors: 013347 57, 134712 21, 004507 49, 003758 44,
-031838 43, 031905 36, 031948 31, 032012 43, 032050 44, 032113 47, 032129 65, 012403 21,
-173723 46. Every one is equal to its floor and identical to entry. Adjudicated 13 of 13 and
-clean 2 of 2 at the change. **3.2 ticked.**
+Ordering by held: 014935 > 014854 > 013347 > 17:37 > 014113. By the recording figure: 013347
+33.4 > 17:37 26.8; the other three not measured. The by-hand version cost 835 to 970 ms per
+30 s file.
 
-**Task 2 (`11a48b13`).** From the kept build, text in section 3. On all 52 recordings, the
-text that really settled with spaces stripped is identical to entry's. baseline.md carries
-the running total.
+**Task 2, the line.** `TheTonePeakIsAboutThisRecordingTests` was committed red at a9339312,
+3 of 3:
+> the sheet prints 25.7 and this recording measures 26.8
+> the sheet prints 32.2 and this recording measures 33.4
+> Assert.StartsWith() Failure: String "tonePeak   54.7  (the highest the tracked"... Expected start: "tonePeak   not measured"
 
-**Task 3: the next kind, traced and then built, and kept (trace `99342296`, change
-`90840b1f`, record `3c796321`).** On the kept build, of 128 boundaries on the ten and 17:37:
-joined 80, inserted 24, word kept 23, missing 1. **21 of the 24 remaining inserted spaces sat
-in windows where no character gap was measured**, so the relabel left the path's label alone
-there. All 13 on 17:37 were under held structure, at a median of 0.66 of the word boundary the
-path itself was given. The change: where no character gap was measured, a space the path read
-is not announced when its gap is shorter than the path's own word boundary. That boundary is
-the geometric mean of the character and word gaps the path was given, held or textbook. It
-adds no space, and the stream's bookkeeping is as before.
+Green 3 of 3 at 70cc798a:
+- The measurement is `RecordingToneOverNoise` in `src\Hamlet.RadioEngine\Audio`: engine,
+  per §0.1, and outside `Cw`.
+- `TonePeakRecordLine(audio, report)` composes the line.
+- **The held figure stays** on its own `heldPeak` line under its own caption, which names it
+  as the roster's `tonePeakDb`.
+- `SnrDb` is unchanged.
 
-| 3.2 test | kept relabel | with `90840b1f` | |
-|---|---|---|---|
-| 1. all keyed | 185 over 565 | **167 over 565** | pass |
-| - baseline | 31 over 46 | 22 over 46 | |
-| - the ten, bench | 36 over 156 | 35 over 156 | |
-| - 17:37 | 28 over 25 | **19 over 25** | |
-| - outside | 118 over 363 | 110 over 363 | |
-| 2. named floors | 13 of 13 | 13 of 13, every count identical to entry | pass |
-| 3. adjudicated | `VA3VRR`, `N4L`, `EETMP/4 QNIK` | the same, none moved | pass |
-| 4. capture rows | identical | 51 of 51 identical to entry | pass |
+**Cost at capture:** 862, 862 and 860 ms on the longest capture in the tree (30.0 s at 48 kHz,
+Debug test build). That is well over 50 ms, so it runs through `Task.Run` on a pool thread,
+after the WAV is on disk. The UI thread holds only the await's continuation. I did not time the
+UI thread itself.
 
-**Task 4, exit round (3.5).** `Hamlet.sln` builds with warnings as errors. Engine
-carry-forward 178 of 178. App 277 of 278: `TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing`
-was lost to the dispatcher loop, and it passed 4 of 4 alone. Captures 51 of 51, adjudicated
-13 of 13, clean 2 of 2, `TheNumberCannotBeGamedTests` 13 of 13, `TheBaselineIsScoredTests`
-2 of 2, `TheBenchmarkIsKeyedTests` 1 of 1, `WhereTheSpaceIsDecidedTests` 2 of 2. The transmit
-files print nothing against `7e209cb4`, and `src/Hamlet.App` prints nothing against entry.
-Only three files under `src/Hamlet.RadioEngine/Cw` changed.
+**Test edits between red and green,** forced by the new signature: the calls now pass
+`audio`. `TheSidecarIsReReadTests` got the same call change. It also got two changes the
+wording did not force: its header says 417 and it writes `unit417-sidecar-*.txt`. Without that
+it would have overwritten unit 411's evidence.
 
-**Decisions made for itself (author's, overrulable):**
-1. **Cherry-picked, not rebuilt.** The diff applied cleanly and was proven byte-identical.
-2. **`WhereTheSpaceIsDecidedTests` changed, test only.** It now prints the text that really
-   settled. Its boundary split now walks that text instead of the old loop's list, because
-   once the relabel was in, the two no longer lined up and the split would have been wrong.
-   It also prints the boundaries that had no centroid.
-3. **Task 3's change was built, not dropped.** The clock allowed it: the unit ran from 08:08 to
-   09:08.
-4. **3.3 ticked.** 17:37 is reported before and after both kept changes, and the running
-   total is in baseline.md. If 3.3 is meant to stay open as a standing duty, untick it.
+**6.7 ticked. 6.2 not ticked, clause by clause, on the regenerated sheets:**
+- **tonePeak:** about this recording or not printed as one - **holds**.
+- **elementHz:** does not report nothing measured while resolving elements; byte-identical
+  to 411's - **holds**.
+- **keying:** does not say no keying while counting key-downs; byte-identical to 411's -
+  **holds**.
+- **The lead sentence fails:** "every sentence ... is true of that capture". The keying caption
+  says *an independent sweep of 400 to 1200 Hz*, but `CwKeyingMeter` sweeps through
+  `KeyingEnvelope.Best`, which runs 300 to 900. The instruction said to leave `keying` as 411
+  left it, so I did not repair it (P10).
+
+**Task 3, the exit round.** Hamlet.sln builds with warnings as errors, non-incremental, 0
+warnings:
+- **Carry-forward:** engine 178/178. App 277/278; the one lost to the dispatcher loop was
+  `TheFavoritesAreUnderTheGreenZoneTests`, 1/1 alone.
+- **Floors:** captures 51/51, adjudicated 13/13, clean 2/2.
+- **Named types:** TheSidecarDoesNotContradictItselfTests 3/3, TheSidecarIsReReadTests 2/2,
+  CaseRosterSurvivesAnEveningTests 6/6, TheTonePeakIsAboutThisRecordingTests 3/3,
+  WhatTheTonePeakIsAboutTests 1/1.
+- **Keyed totals:** all keyed 167 over 565, the ten 35 over 156, 17:37 19 over 25. Identical
+  to entry.
+- **Source diffs:** `src\Hamlet.RadioEngine\Cw` prints nothing against entry. The transmit
+  files print nothing against 7e209cb4.
+
+Commits 4e4353f3, 2948ff53, a9339312, 70cc798a, and the exit commit carrying this file.
+Every push so far returned 0; the exit push is reported in the terminal.
 
 ## 2. What the owner should expect
 
-Words on the CW tab should stop breaking apart mid-word. `A M ER I CA` now reads `AMERICA`,
-and `W 1 A W / 88` reads `W1AW/88`. No letter changed on any recording. The letters are the
-same letters at the same moments, and only the spaces between them differ. Over every keyed
-recording, errors went from 217 to 167 in 565 characters.
+The strength figure on each capture's sheet is now about that capture. For 17:37 the sheet said
+25.7 under a caption admitting it was not about the recording. It now says 26.8, *a figure
+about this recording*, measured over the 30 seconds in the file at 600 Hz. On a recording where
+Hamlet never found the station's pitch, it says `not measured` in words instead of a number:
+014113 used to print 24.7, and the two empty recordings used to rate highest of all. Measuring
+takes 862 ms per capture, off the UI thread, after the WAV is saved, so the window does not
+freeze. The sheet appears under a second after the recording.
 
-What will look wrong but is not. 17:37 still reads poorly: what is left there is wrong
-letters, not spaces. One real word gap there, after `DE`, went with the inserted spaces
-(`DEWTEE...`). The change was still kept, because 3.2 judges the total. The app line lost one
-test to the known Avalonia dispatcher loop, and that test is green alone. The baseline's
-unsure-per-named goes from 0 / 47 to 0 / 48 only because `134712`'s region now holds three
-named letters, not two. Everything was pushed to `main`, and every push returned 0.
+**Will look wrong but is not:**
+- The roster's `tonePeakDb` column still carries the held figure. It now matches the sheet's
+  new `heldPeak` line, not its `tonePeak` line.
+- Sidecars already in the tree still say what they said.
 
 ## 3. What you should see
 
-Before and after, from the kept build, 00:43:22 on 7.052:
-
+17:37:
 ```
-before:  P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S WILA
-now:     P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA
+before: tonePeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+after:  tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
 ```
-
-And 00:44:05:
-
+014113:
 ```
-before:  A N T H ONY L U S C RE K 8 Z T W 1 A W / 88 ■ O OR D IN A T
-now:     A N T HONY LUSCRE K 8 Z T W1AW/88 ■OORDINAT
+before: tonePeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+after:  tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
 ```
 
-On the CW tab, words that came out as scattered letters now come out as words. Across every
-keyed recording, errors fall from 217 to 167 in 565 characters. The 17:37 CQ call goes from
-29 errors to 19 in its 25 characters.
+| capture | held figure | recording figure | holds keying |
+|---|---|---|---|
+| cw-2026-08-20-014854 | 54.7 | not measured | no - keying at no pitch; meter 0 of 25 windows |
+| cw-2026-08-20-014935 | 56.8 | not measured | no - keying at no pitch; meter 0 of 25 windows |
+| cw-2026-08-17-013347 | 32.2 | 33.4 | yes - adjudicated VA3VRR; meter 10 of 25 windows |
+| cw-2026-09-23-173723 | 25.7 | 26.8 | yes - a keyed CQ call per its key file; the meter calls 0 of 25 windows keying, a 16 dB swing under its 20 |
+
+Held figures are a fresh decoder replaying the file alone. Every sheet now carries a `heldPeak`
+line under `tonePeak`, holding the old number under its own caption.
 
 ## 4. What's blocking us
 
-Nothing blocks. One item, parked as P9 in `docs/phase-correctness/PARKED.md`, and the loop
-goes on:
+Nothing blocks the phase (R65). Both items are parked in `docs\phase-correctness\PARKED.md`.
 
-**1. Whether step 3 closes.** 3.1, 3.2, 3.3 and 3.5 are ticked. 3.4 only applies after three
-units with nothing kept. What is left on 17:37 is letters. At exit, the boundaries on the ten
-and 17:37 are 90 joined, 22 word kept, 14 inserted and 2 missing. The arbiter decides whether
-step 3 is marked done or another unit takes on the joined gaps.
+**P10 - the keying caption names a sweep range nobody swept.** Proposed ruling: the caption
+reads its range from `KeyingEnvelope`'s own constants (300 to 900 Hz), watched failing first,
+and 6.2 ticks with it. Reasoning: it is the one false sentence standing between 6.2 and met.
+Rejected: fixing it in this unit, because the instruction fixed `keying` as 411 left it.
+Rejected: ticking 6.2 anyway, because its lead sentence is not true.
 
-### Asks still outstanding
-
-None. Unit 415's one ask, whether 3.2's third test forbids a reading moving onto its own
-adjudicated text, was answered by R66 (HM-DEC-173) and is dropped.
+**P11 - "the noise beside the tone" can be the receiver's stopband.** Measured on 014854 and
+014935, where the grid below 550 Hz sits 25 to 44 dB under the passband. The sheet never prints
+the figure there, because the pitch was not measured. Whether noise should be taken inside the
+passband only is the owner's, because it would touch the held figure that HM-DEC-091 protects.
+Rejected for now: the tone's own quiet floor, which read 93.3 dB on 013347.

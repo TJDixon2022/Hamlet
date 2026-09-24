@@ -1,0 +1,9 @@
+#!/bin/sh
+# unit 417 - a full, non-incremental build of Hamlet.sln with warnings as errors, status first.
+cd /c/Source/HamLet || exit 1
+sh tools/status.sh EXECUTING "TASK 3 of 3" code none "Exit round - full non-incremental rebuild of Hamlet.sln with warnings as errors"
+START=$(date +%s)
+timeout 580 dotnet build Hamlet.sln -warnaserror --no-incremental -nologo -v q > .run-unit/unit417-build-exit-full.txt 2>&1
+RC=$?
+echo "RC=$RC WALL=$(( $(date +%s) - START ))s" | tee -a .run-unit/unit417-build-exit-full.txt
+grep -E "error [A-Z]+[0-9]+|Warning\(s\)|Error\(s\)" .run-unit/unit417-build-exit-full.txt | sort -u | head -20

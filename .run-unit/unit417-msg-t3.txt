@@ -1,0 +1,3 @@
+unit417 task 3: exit round (6.6) - Hamlet.sln builds with warnings as errors, non-incremental; engine 178 of 178, app 277 of 278 with one lost to the dispatcher loop and 1 of 1 alone, captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, TheSidecarDoesNotContradictItselfTests 3 of 3, TheSidecarIsReReadTests 2 of 2, CaseRosterSurvivesAnEveningTests 6 of 6, TheTonePeakIsAboutThisRecordingTests 3 of 3, WhatTheTonePeakIsAboutTests 1 of 1; all keyed 167 over 565, the ten 35 over 156, 17:37 19 over 25, identical to entry; src/Hamlet.RadioEngine/Cw prints nothing against entry, transmit files nothing against 7e209cb4; 6.7 ticked, 6.2 held on P10; output.md
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

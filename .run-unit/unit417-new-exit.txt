@@ -1,0 +1,31 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.TheTonePeakIsAboutThisRecordingTests.TheNumberIsMeasuredOverThisRecording(stamp: "cw-2026-08-17-013347") [3 s]
+  Standard Output Messages:
+ tonePeak   33.4  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 625.0 Hz stood above the noise beside it, in dB)
+ measured independently over this file at 625.0 Hz: 33.4
+
+
+  Passed Hamlet.App.Tests.Cw.TheTonePeakIsAboutThisRecordingTests.TheNumberIsMeasuredOverThisRecording(stamp: "cw-2026-09-23-173723") [3 s]
+  Standard Output Messages:
+ tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+ measured independently over this file at 600.0 Hz: 26.8
+
+
+[xUnit.net 00:00:11.45]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.TheTonePeakIsAboutThisRecordingTests.WithNoMeasuredPitchTheLineSaysSoAndPrintsNoNumber [3 s]
+  Standard Output Messages:
+ tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 11.7097 Seconds
+RC=0 WALL=12s
