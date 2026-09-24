@@ -4,6 +4,26 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-178
+date: 2026-09-24
+refs: PHASE_PLAN.md R73, R71, R69 and criterion 3.6, HM-DEC-176, docs/phase-correctness/PARKED.md P19, work instruction 425
+---
+
+**A character the inferred key aligns as added, inside a scored stretch of a keyed
+recording, may leave a floor.** Unit 421 measured the eight added single-element letters on
+the keyed recordings at raw spans of 33.4 to 159.2, above the span bar of 13, each under a
+floor that stands at its count, so no change could remove one without a floor falling.
+
+**What is ruled.** Such a character leaving is not a floor lowered. It applies nowhere else:
+the unkeyed rows keep their floors as they are, a character the key aligns as right or wrong
+may not leave, the three adjudicated readings must be unchanged or moved onto their own
+adjudicated text as the independent check, and every character a change removes is listed by
+name with its recording.
+
+**Whose words are whose.** The ruling is Tim's (R73); the wording is work instruction 425's
+record of it. Rejected: exempting the floors from 3.6 altogether; leaving 3.6 unmeetable.
+
+---
 id: HM-DEC-177
 date: 2026-09-24
 refs: PHASE_PLAN.md R74 and criterion 7.8, IC-7300_ENG_FM_12b page 4-3, data/bands/mode-receiver-conditions.json, HM-DEC-174, HM-DEC-056, HM-DEC-148, CLAUDE.md 0.0 and 12.4, work instruction 424

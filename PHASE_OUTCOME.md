@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 425 - STEP 3
+
+STEP: 3
+APPROACH: separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+MOVE: work around
+WHY: Unit 421's span route reached none of the eight added single-element strays, because all eight stand above the span bar and above the lowest right letter. R73 now lets a key-aligned added character leave a floor, so 3.6 is reachable by a different measure. The spacing comes first in R64's order, and the loop test found no prior entry for this approach.
+STATE: partial
+DECIDED: author's, overrulable - the measures task 1 prints; the rule that a change must touch no unkeyed above-bar character and no key-aligned right or wrong character; a limit of one narrower variant; and floors moved under R73 are lowered in the judging commit with each removed character named beside them.
+LICENCE: PHASE_PLAN.md R69, R71, R73, R66, section 6 and criterion 3.6; HM-DEC-176; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.2 and 12.5
+ADVANCES: step 3 criterion 6
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.111 to 1.13.112. PHASE_STATUS.md names unit 425 and CURRENT_STEP 3. HEAD at entry b12cbbe4. R73 recorded as HM-DEC-178; P19 marked answered. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 276 of 278, the two lost to the dispatcher loop (TheStopIsAlwaysOnScreenTests) green alone, 5 of 5; captures 51 of 51; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1; TheBaselineIsScoredTests 2 of 2; WhatTheStrayLettersRestOnTests 1 of 1, its eight added single-element letters identical to the work instruction's table, 165 edits over 565 against inferred keys, 17 added, 8 single-element, 56 wrong, 31 single-element; DecisionLogOrderTests red on the missing HM-DEC-166 row only (P25), as expected.
+
 ## UNIT 424 - STEP 7
 
 STEP: 7
@@ -507,3 +520,21 @@ STATE_AFTER: partial
 STATE_WHY: Criterion 6.3 is now met with the red message, the before and after table, the green run and the changed words and color quoted, but 6.5 on the Have a look button is still unmet, so not every exit criterion of step 6 is met.
 ADVANCED: yes
 ATTEMPT: 6.3 | unit 3 launched 2026-09-24T20:10:29.208Z | yes | executed | trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
+
+## UNIT 1 - STEP 7
+
+STEP: 7
+APPROACH: set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, and each of the five items is the unit's own recommendation on receive behaviour, wording, band scope, the decision log or a flaky test, so none asks the owner to decide anything about keying, transmit, radio safety, money or a promise.
+MOVE: continue
+WHY: PHASE_PLAN.md step 7 criterion 7.8 asks that the preamp be set from what the radio's manual states with the page cited, that the off case be keyed to the receiver overloading rather than to a band, and that no component ask the operator to change a field a condition states after Hamlet has set it
+DECIDED: how the frequency-dependent value is carried, which overload reading is used if any, how each voice is scoped, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R67, R74, section 6; HM-DEC-176; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155
+COST: 10.3315016
+ACCOMPLISHED: Tim tunes to a band and the preamp is what the radio's own manual says it should be, and nothing on screen argues with it
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Step 7 still has 7.1 to 7.4 open, and 7.8 is only partly met, since the preamp rows and page citation are in place and contradicting sentences fall from 28 to 0 with the full table printed, but the preamp is turned off for overloading only at the tune-in and not after it, and other condition fields were not re-surveyed once the operator moves on, which the report itself says leaves 7.8 unticked.
+ADVANCED: no
+ATTEMPT: 7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | no | executed | set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+REASON: 7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | the unit ran to completion and the criterion did not flip from unmet to met

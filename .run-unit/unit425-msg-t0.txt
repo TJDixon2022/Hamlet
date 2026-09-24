@@ -1,0 +1,12 @@
+unit425 task 0: the record - DECISIONS.md HM-DEC-178 and the CLAUDE.md row, a character the key says was never sent may leave a floor (R73); PARKED.md P19 answered; PHASE_OUTCOME.md UNIT 425 - STEP 3 from the decision block with the entry round; PHASE_STATUS.md unit 425, CURRENT_STEP 3; version 1.13.111 to 1.13.112
+
+Entry round, one type per invocation: Hamlet.sln builds with warnings as errors; engine
+carry-forward 178 of 178; app carry-forward 276 of 278, TheStopIsAlwaysOnScreenTests lost two
+to the dispatcher loop and 5 of 5 alone; captures 51 of 51; adjudicated 13 of 13; keyed floors
+13 of 13; TheBenchmarkIsKeyedTests 1 of 1; TheBaselineIsScoredTests 2 of 2;
+WhatTheStrayLettersRestOnTests 1 of 1, the eight added single-element letters identical to the
+work instruction's table, 165 edits over 565, 17 added and 8 single-element, 56 wrong and 31
+single-element. DecisionLogOrderTests red on the missing HM-DEC-166 row (P25), expected, not
+repaired.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

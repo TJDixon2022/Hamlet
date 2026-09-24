@@ -1,0 +1,500 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:07.67]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheStrayLettersRestOnTests.TheStraysAndTheSpansTheyStandOn [2 m 7 s]
+  Standard Output Messages:
+ gates | window Gate 1.40 on Score, the window's likelihood ratio per hop | CharacterMargin 1.00 on the character's own per-hop span margin, SpanMarginForRecord, which is SpanLogLikelihoodRatio over SpanHops | a word gap passes both unjudged
+ check | the alignments used here sum to 165 edits over 565 characters against inferred keys, 23 keyed recordings
+ 
+ TABLE 1 | every added or wrong single-element character on the keyed recordings
+ stray | recording | at | label | text | pattern | Score | SpanLogLikelihoodRatio | SpanHops | SpanMarginForRecord | admitted by
+ stray | unadjudicated/cw-2026-09-23-173723 | 21.170 s | added | `E` | . | 2.488 | 86.1864 | 14 | 6.156 | CharacterMargin on per-hop 6.156 >= 1.0, window Gate on Score 2.488 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 22.540 s | added | `T` | - | 1.801 | 156.018 | 34 | 4.589 | CharacterMargin on per-hop 4.589 >= 1.0, window Gate on Score 1.801 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 22.720 s | added | `E` | . | 1.801 | 34.6106 | 10 | 3.461 | CharacterMargin on per-hop 3.461 >= 1.0, window Gate on Score 1.801 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 23.460 s | wrong | `T` | - | 1.703 | 175.786 | 41 | 4.287 | CharacterMargin on per-hop 4.287 >= 1.0, window Gate on Score 1.703 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 23.740 s | wrong | `E` | . | 1.698 | 34.6966 | 13 | 2.669 | CharacterMargin on per-hop 2.669 >= 1.0, window Gate on Score 1.698 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 24.020 s | wrong | `E` | . | 1.687 | 39.8341 | 12 | 3.320 | CharacterMargin on per-hop 3.320 >= 1.0, window Gate on Score 1.687 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 24.395 s | wrong | `E` | . | 1.687 | 43.3575 | 11 | 3.942 | CharacterMargin on per-hop 3.942 >= 1.0, window Gate on Score 1.687 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 26.250 s | added | `E` | . | 1.568 | 33.3627 | 12 | 2.780 | CharacterMargin on per-hop 2.780 >= 1.0, window Gate on Score 1.568 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 26.515 s | added | `T` | - | 1.568 | 88.2162 | 31 | 2.846 | CharacterMargin on per-hop 2.846 >= 1.0, window Gate on Score 1.568 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 26.820 s | added | `T` | - | 1.568 | 138.069 | 39 | 3.540 | CharacterMargin on per-hop 3.540 >= 1.0, window Gate on Score 1.568 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 27.350 s | wrong | `T` | - | 1.488 | 101.225 | 40 | 2.531 | CharacterMargin on per-hop 2.531 >= 1.0, window Gate on Score 1.488 >= 1.40
+ stray | unadjudicated/cw-2026-09-23-173723 | 29.195 s | wrong | `E` | . | 1.481 | 39.3873 | 14 | 2.813 | CharacterMargin on per-hop 2.813 >= 1.0, window Gate on Score 1.481 >= 1.40
+ stray | unadjudicated/cw-2026-08-18-003758 | 10.640 s | wrong | `E` | . | 14.741 | 305.961 | 9 | 33.996 | CharacterMargin on per-hop 33.996 >= 1.0, window Gate on Score 14.741 >= 1.40
+ stray | unadjudicated/cw-2026-08-18-003758 | 10.740 s | wrong | `E` | . | 14.741 | 315.282 | 9 | 35.031 | CharacterMargin on per-hop 35.031 >= 1.0, window Gate on Score 14.741 >= 1.40
+ stray | unadjudicated/cw-2026-08-18-003758 | 10.940 s | wrong | `T` | - | 14.741 | 1202.75 | 29 | 41.474 | CharacterMargin on per-hop 41.474 >= 1.0, window Gate on Score 14.741 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 15.550 s | wrong | `T` | - | 2.322 | 115.324 | 30 | 3.844 | CharacterMargin on per-hop 3.844 >= 1.0, window Gate on Score 2.322 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 16.045 s | wrong | `T` | - | 2.022 | 59.232 | 14 | 4.231 | CharacterMargin on per-hop 4.231 >= 1.0, window Gate on Score 2.022 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 16.310 s | wrong | `T` | - | 2.022 | 118.767 | 40 | 2.969 | CharacterMargin on per-hop 2.969 >= 1.0, window Gate on Score 2.022 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 16.530 s | wrong | `T` | - | 2.003 | 109.613 | 31 | 3.536 | CharacterMargin on per-hop 3.536 >= 1.0, window Gate on Score 2.003 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 16.795 s | wrong | `T` | - | 2.003 | 60.1669 | 13 | 4.628 | CharacterMargin on per-hop 4.628 >= 1.0, window Gate on Score 2.003 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 16.895 s | wrong | `E` | . | 2.003 | 34.9197 | 7 | 4.989 | CharacterMargin on per-hop 4.989 >= 1.0, window Gate on Score 2.003 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 21.355 s | added | `T` | - | 2.131 | 159.208 | 39 | 4.082 | CharacterMargin on per-hop 4.082 >= 1.0, window Gate on Score 2.131 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 24.185 s | wrong | `T` | - | 1.927 | 26.0433 | 14 | 1.860 | CharacterMargin on per-hop 1.860 >= 1.0, window Gate on Score 1.927 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031838 | 24.410 s | wrong | `T` | - | 1.927 | 55.6686 | 31 | 1.796 | CharacterMargin on per-hop 1.796 >= 1.0, window Gate on Score 1.927 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-031905 | 16.000 s | wrong | `T` | - | 4.715 | 471.034 | 19 | 24.791 | CharacterMargin on per-hop 24.791 >= 1.0, window Gate on Score 4.715 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032012 | 1.765 s | wrong | `T` | - | 33.038 | 9534.58 | 33 | 288.927 | CharacterMargin on per-hop 288.927 >= 1.0, window Gate on Score 33.038 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032050 | 11.195 s | added | `T` | - | 6.876 | 74.1384 | 15 | 4.943 | CharacterMargin on per-hop 4.943 >= 1.0, window Gate on Score 6.876 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032050 | 17.745 s | wrong | `T` | - | 5.155 | 1439.06 | 41 | 35.099 | CharacterMargin on per-hop 35.099 >= 1.0, window Gate on Score 5.155 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 4.175 s | wrong | `T` | - | 6.798 | 36.909 | 13 | 2.839 | CharacterMargin on per-hop 2.839 >= 1.0, window Gate on Score 6.798 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 15.335 s | wrong | `E` | . | 27.114 | 1128.48 | 9 | 125.387 | CharacterMargin on per-hop 125.387 >= 1.0, window Gate on Score 27.114 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 16.365 s | wrong | `E` | . | 27.114 | 1219.16 | 10 | 121.916 | CharacterMargin on per-hop 121.916 >= 1.0, window Gate on Score 27.114 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 16.855 s | wrong | `E` | . | 27.114 | 32.4314 | 9 | 3.603 | CharacterMargin on per-hop 3.603 >= 1.0, window Gate on Score 27.114 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 17.400 s | wrong | `E` | . | 27.114 | 324.569 | 9 | 36.063 | CharacterMargin on per-hop 36.063 >= 1.0, window Gate on Score 27.114 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 18.865 s | wrong | `E` | . | 27.114 | 394.125 | 9 | 43.792 | CharacterMargin on per-hop 43.792 >= 1.0, window Gate on Score 27.114 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 20.660 s | wrong | `E` | . | 24.995 | 220.55 | 14 | 15.754 | CharacterMargin on per-hop 15.754 >= 1.0, window Gate on Score 24.995 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 21.945 s | wrong | `E` | . | 24.995 | 314.802 | 30 | 10.493 | CharacterMargin on per-hop 10.493 >= 1.0, window Gate on Score 24.995 >= 1.40
+ stray | unadjudicated/cw-2026-08-22-032129 | 22.345 s | wrong | `E` | . | 205.156 | 166.558 | 8 | 20.820 | CharacterMargin on per-hop 20.820 >= 1.0, window Gate on Score 205.156 >= 1.40
+ stray | unadjudicated/cw-2026-09-24-004234 | 7.715 s | wrong | `T` | - | 3.959 | 410.464 | 30 | 13.682 | CharacterMargin on per-hop 13.682 >= 1.0, window Gate on Score 3.959 >= 1.40
+ stray | unadjudicated/cw-2026-09-24-004234 | 8.045 s | wrong | `T` | - | 4.174 | 439.874 | 31 | 14.189 | CharacterMargin on per-hop 14.189 >= 1.0, window Gate on Score 4.174 >= 1.40
+ count | recording | set | named | right | wrong | wrong single-element | added | added single-element | unscored
+ count | unadjudicated/cw-2026-09-23-173723 | 17:37 | 46 | 13 | 7 | 6 | 8 | 6 | 18
+ count | cw-2026-08-17-013347 | baseline | 57 | 6 | 0 | 0 | 0 | 0 | 51
+ count | cw-2026-08-17-134712 | baseline | 11 | 3 | 0 | 0 | 0 | 0 | 8
+ count | unadjudicated/cw-2026-08-18-003758 | baseline | 43 | 8 | 3 | 3 | 0 | 0 | 32
+ count | unadjudicated/cw-2026-08-24-012403 | outside | 19 | 13 | 0 | 0 | 0 | 0 | 6
+ count | cw-2026-08-18-004507 | outside | 49 | 42 | 0 | 0 | 1 | 0 | 6
+ count | unadjudicated/cw-2026-08-22-031838 | outside | 40 | 9 | 10 | 8 | 1 | 1 | 20
+ count | unadjudicated/cw-2026-08-22-031905 | outside | 36 | 20 | 8 | 1 | 2 | 0 | 6
+ count | unadjudicated/cw-2026-08-22-031948 | outside | 31 | 26 | 1 | 0 | 0 | 0 | 4
+ count | unadjudicated/cw-2026-08-22-032012 | outside | 43 | 40 | 1 | 1 | 2 | 0 | 0
+ count | unadjudicated/cw-2026-08-22-032050 | outside | 44 | 31 | 4 | 1 | 2 | 1 | 7
+ count | unadjudicated/cw-2026-08-22-032113 | outside | 47 | 20 | 2 | 0 | 0 | 0 | 25
+ count | unadjudicated/cw-2026-08-22-032129 | outside | 65 | 15 | 13 | 9 | 0 | 0 | 37
+ count | unadjudicated/cw-2026-09-24-004108 | the ten | 32 | 2 | 2 | 0 | 0 | 0 | 28
+ count | unadjudicated/cw-2026-09-24-004133 | the ten | 28 | 4 | 0 | 0 | 0 | 0 | 24
+ count | unadjudicated/cw-2026-09-24-004205 | the ten | 34 | 8 | 0 | 0 | 0 | 0 | 26
+ count | unadjudicated/cw-2026-09-24-004234 | the ten | 36 | 7 | 2 | 2 | 0 | 0 | 27
+ count | unadjudicated/cw-2026-09-24-004322 | the ten | 39 | 29 | 3 | 0 | 0 | 0 | 7
+ count | unadjudicated/cw-2026-09-24-004347 | the ten | 40 | 23 | 0 | 0 | 1 | 0 | 16
+ count | unadjudicated/cw-2026-09-24-004405 | the ten | 35 | 6 | 0 | 0 | 0 | 0 | 29
+ count | unadjudicated/cw-2026-09-24-004427 | the ten | 42 | 9 | 0 | 0 | 0 | 0 | 33
+ count | unadjudicated/cw-2026-09-24-004510 | the ten | 34 | 11 | 0 | 0 | 0 | 0 | 23
+ count | unadjudicated/cw-2026-09-24-004550 | the ten | 41 | 8 | 0 | 0 | 0 | 0 | 33
+ count | all keyed | | 892 | 353 | 56 | 31 | 17 | 8 | 466
+ 
+ TABLE 2 | every named character on the 51 capture rows and 17:37
+ nan | cw-2026-08-17-013347 | 0 of 57 named with no measured span | hops of nought 0
+ nan | cw-2026-08-17-134712 | 0 of 11 named with no measured span | hops of nought 0
+ nan | cw-2026-08-18-004507 | 0 of 49 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-24-012403 | 0 of 19 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-031838 | 0 of 40 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-031905 | 0 of 36 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-031948 | 0 of 31 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-032012 | 0 of 43 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-032050 | 0 of 44 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-032113 | 0 of 47 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-032129 | 0 of 65 named with no measured span | hops of nought 0
+ nan | cw-2026-08-17-013622 | 0 of 49 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-18-003016 | 0 of 54 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-18-003126 | 0 of 48 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-18-003758 | 0 of 43 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-23-001520 | 0 of 1 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-23-001831 | 0 of 43 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-23-001952 | 0 of 46 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-23-002016 | 0 of 34 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-011552 | 0 of 22 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-012748 | 0 of 2 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-012823 | 0 of 23 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-012922 | 0 of 43 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-013010 | 0 of 48 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-013150 | 0 of 51 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-013303 | 0 of 44 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-013402 | 0 of 56 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-013520 | 0 of 55 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-013637 | 0 of 60 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-021410 | 0 of 36 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-021629 | 0 of 27 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-25-021825 | 0 of 19 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-26-125941 | 0 of 0 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-20-014854 | 0 of 0 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-20-014935 | 0 of 0 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-014113 | 0 of 0 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-08-22-014308 | 0 of 0 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-003901 | 0 of 9 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-003919 | 0 of 25 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004027 | 0 of 39 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004108 | 0 of 32 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004133 | 0 of 28 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004205 | 0 of 34 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004234 | 0 of 36 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004322 | 0 of 39 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004347 | 0 of 40 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004405 | 0 of 35 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004427 | 0 of 42 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004510 | 0 of 34 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004535 | 0 of 47 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-24-004550 | 0 of 41 named with no measured span | hops of nought 0
+ nan | unadjudicated/cw-2026-09-23-173723 | 0 of 46 named with no measured span | hops of nought 0
+ nan | all | 0 of 1773 named with no measured span
+ spread | raw SpanLogLikelihoodRatio | all named, 52 recordings | n 1773, min 13.16, tenth 70.23, quartile 193.9, median 454.8, quartile 959.6, ninetieth 1924, max 1.683E+10
+ spread | raw SpanLogLikelihoodRatio | unkeyed recordings | n 881, min 13.16, tenth 51.39, quartile 142, median 305.5, quartile 614, ninetieth 1171, max 3.966E+09
+ spread | raw SpanLogLikelihoodRatio | keyed, right | n 353, min 30.8, tenth 179.7, quartile 385.6, median 717.1, quartile 1208, ninetieth 1738, max 4.312E+04
+ spread | raw SpanLogLikelihoodRatio | keyed, right single-element | n 62, min 30.8, tenth 62.89, quartile 123, median 297.4, quartile 584.9, ninetieth 869.3, max 1639
+ spread | raw SpanLogLikelihoodRatio | keyed, right longer | n 291, min 69.69, tenth 267.5, quartile 463.5, median 817, quartile 1373, ninetieth 1980, max 4.312E+04
+ spread | raw SpanLogLikelihoodRatio | keyed, wrong | n 56, min 26.04, tenth 39.83, quartile 115.3, median 324.6, quartile 1013, ninetieth 1827, max 3.661E+04
+ spread | raw SpanLogLikelihoodRatio | keyed, wrong single-element | n 31, min 26.04, tenth 34.92, quartile 55.67, median 166.6, quartile 394.1, ninetieth 1203, max 9535
+ spread | raw SpanLogLikelihoodRatio | keyed, added single-element | n 8, min 33.36, tenth 34.61, quartile 74.14, median 88.22, quartile 138.1, ninetieth 156, max 159.2
+ spread | raw SpanLogLikelihoodRatio | keyed, added longer | n 9, min 21.04, tenth 182.1, quartile 293, median 338, quartile 484.4, ninetieth 729.7, max 1164
+ spread | raw SpanLogLikelihoodRatio | keyed, outside every stretch | n 466, min 13.36, tenth 106.2, quartile 295.4, median 714.4, quartile 1531, ninetieth 4.873E+04, max 1.683E+10
+ spread | per hop SpanMarginForRecord | all named, 52 recordings | n 1773, min 1.014, tenth 2.593, quartile 4.369, median 8.336, quartile 14.4, ninetieth 37.02, max 4.174E+08
+ spread | per hop SpanMarginForRecord | unkeyed recordings | n 881, min 1.014, tenth 2.353, quartile 3.884, median 6.333, quartile 11.01, ninetieth 17.83, max 1.56E+08
+ spread | per hop SpanMarginForRecord | keyed, right | n 353, min 1.376, tenth 3.084, quartile 6.168, median 10.57, quartile 15.62, ninetieth 22.92, max 653.4
+ spread | per hop SpanMarginForRecord | keyed, right single-element | n 62, min 2.37, tenth 4.679, quartile 10.41, median 14.66, quartile 24.57, ninetieth 33.71, max 116.5
+ spread | per hop SpanMarginForRecord | keyed, right longer | n 291, min 1.376, tenth 2.961, quartile 5.911, median 10.06, quartile 14.11, ninetieth 20.23, max 653.4
+ spread | per hop SpanMarginForRecord | keyed, wrong | n 56, min 1.038, tenth 2.813, quartile 3.942, median 10.49, quartile 26.74, ninetieth 83.55, max 288.9
+ spread | per hop SpanMarginForRecord | keyed, wrong single-element | n 31, min 1.796, tenth 2.669, quartile 3.536, median 4.989, quartile 34, ninetieth 43.79, max 288.9
+ spread | per hop SpanMarginForRecord | keyed, added single-element | n 8, min 2.78, tenth 2.846, quartile 3.461, median 4.082, quartile 4.589, ninetieth 4.943, max 6.156
+ spread | per hop SpanMarginForRecord | keyed, added longer | n 9, min 1.237, tenth 1.806, quartile 3.371, median 3.724, quartile 4.63, ninetieth 5.14, max 5.623
+ spread | per hop SpanMarginForRecord | keyed, outside every stretch | n 466, min 1.046, tenth 2.844, quartile 5.596, median 11.58, quartile 33.76, ninetieth 773.4, max 4.174E+08
+ spread | per hop over the recording's median | all named, 52 recordings | n 1773, min 5.309E-08, tenth 0.3948, quartile 0.6682, median 1, quartile 1.396, ninetieth 2.294, max 189.5
+ spread | per hop over the recording's median | unkeyed recordings | n 881, min 7.292E-08, tenth 0.4567, quartile 0.6931, median 1, quartile 1.368, ninetieth 1.955, max 13.67
+ spread | per hop over the recording's median | keyed, right | n 353, min 5.359E-08, tenth 0.4123, quartile 0.6662, median 0.9797, quartile 1.293, ninetieth 1.832, max 20.68
+ spread | per hop over the recording's median | keyed, right single-element | n 62, min 0.2769, tenth 0.7172, quartile 0.9344, median 1.169, quartile 1.622, ninetieth 2.531, max 11.1
+ spread | per hop over the recording's median | keyed, right longer | n 291, min 5.359E-08, tenth 0.4002, quartile 0.6216, median 0.9195, quartile 1.23, ninetieth 1.671, max 20.68
+ spread | per hop over the recording's median | keyed, wrong | n 56, min 0.07566, tenth 0.309, quartile 0.6588, median 1.036, quartile 1.337, ninetieth 3.858, max 24.28
+ spread | per hop over the recording's median | keyed, wrong single-element | n 31, min 0.08984, tenth 0.4399, quartile 0.7861, median 1.134, quartile 1.332, ninetieth 3.345, max 24.28
+ spread | per hop over the recording's median | keyed, added single-element | n 8, min 0.4711, tenth 0.8637, quartile 0.884, median 1.075, quartile 1.1, ninetieth 1.426, max 1.912
+ spread | per hop over the recording's median | keyed, added longer | n 9, min 0.1072, tenth 0.2905, quartile 0.2922, median 0.3582, quartile 0.4899, ninetieth 0.561, max 1.185
+ spread | per hop over the recording's median | keyed, outside every stretch | n 466, min 5.309E-08, tenth 0.3168, quartile 0.6324, median 1.014, quartile 1.637, ninetieth 4.823, max 189.5
+ heap | raw SpanLogLikelihoodRatio | from | to | unkeyed recordings | keyed, right | keyed, right single-element | keyed, right longer | keyed, wrong | keyed, wrong single-element | keyed, added single-element | keyed, added longer | keyed, outside every stretch
+ heap | raw SpanLogLikelihoodRatio | nought or below | | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 10 | 17.78 | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6
+ heap | raw SpanLogLikelihoodRatio | 17.78 | 31.62 | 34 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 5
+ heap | raw SpanLogLikelihoodRatio | 31.62 | 56.23 | 52 | 4 | 4 | 0 | 8 | 8 | 2 | 0 | 13
+ heap | raw SpanLogLikelihoodRatio | 56.23 | 100 | 55 | 10 | 8 | 2 | 3 | 2 | 3 | 0 | 21
+ heap | raw SpanLogLikelihoodRatio | 100 | 177.8 | 120 | 20 | 11 | 9 | 9 | 6 | 3 | 0 | 26
+ heap | raw SpanLogLikelihoodRatio | 177.8 | 316.2 | 180 | 33 | 7 | 26 | 7 | 4 | 0 | 2 | 54
+ heap | raw SpanLogLikelihoodRatio | 316.2 | 562.3 | 182 | 73 | 15 | 58 | 7 | 5 | 0 | 4 | 77
+ heap | raw SpanLogLikelihoodRatio | 562.3 | 1000 | 140 | 93 | 11 | 82 | 6 | 0 | 0 | 1 | 86
+ heap | raw SpanLogLikelihoodRatio | 1000 | 1778 | 57 | 85 | 5 | 80 | 9 | 4 | 0 | 1 | 76
+ heap | raw SpanLogLikelihoodRatio | 1778 | 3162 | 13 | 24 | 0 | 24 | 2 | 0 | 0 | 0 | 39
+ heap | raw SpanLogLikelihoodRatio | 3162 | 5623 | 3 | 5 | 0 | 5 | 1 | 0 | 0 | 0 | 6
+ heap | raw SpanLogLikelihoodRatio | 5623 | 1E+04 | 1 | 2 | 0 | 2 | 2 | 1 | 0 | 0 | 4
+ heap | raw SpanLogLikelihoodRatio | 1E+04 | 1.778E+04 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 4
+ heap | raw SpanLogLikelihoodRatio | 1.778E+04 | 3.162E+04 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | raw SpanLogLikelihoodRatio | 3.162E+04 | 5.623E+04 | 0 | 2 | 0 | 2 | 1 | 0 | 0 | 0 | 1
+ heap | raw SpanLogLikelihoodRatio | 5.623E+04 | 1E+05 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 1E+05 | 1.778E+05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 1.778E+05 | 3.162E+05 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 3.162E+05 | 5.623E+05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 5.623E+05 | 1E+06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | raw SpanLogLikelihoodRatio | 1E+06 | 1.778E+06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | raw SpanLogLikelihoodRatio | 1.778E+06 | 3.162E+06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 3.162E+06 | 5.623E+06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 5.623E+06 | 1E+07 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 1E+07 | 1.778E+07 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 1.778E+07 | 3.162E+07 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 3.162E+07 | 5.623E+07 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | raw SpanLogLikelihoodRatio | 5.623E+07 | 1E+08 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | raw SpanLogLikelihoodRatio | 1E+08 | 1.778E+08 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7
+ heap | raw SpanLogLikelihoodRatio | 1.778E+08 | 3.162E+08 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5
+ heap | raw SpanLogLikelihoodRatio | 3.162E+08 | 5.623E+08 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4
+ heap | raw SpanLogLikelihoodRatio | 5.623E+08 | 1E+09 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7
+ heap | raw SpanLogLikelihoodRatio | 1E+09 | 1.778E+09 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5
+ heap | raw SpanLogLikelihoodRatio | 1.778E+09 | 3.162E+09 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3
+ heap | raw SpanLogLikelihoodRatio | 3.162E+09 | 5.623E+09 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3
+ heap | raw SpanLogLikelihoodRatio | 5.623E+09 | 1E+10 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8
+ heap | raw SpanLogLikelihoodRatio | 1E+10 | 1.778E+10 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2
+ heap | per hop SpanMarginForRecord | from | to | unkeyed recordings | keyed, right | keyed, right single-element | keyed, right longer | keyed, wrong | keyed, wrong single-element | keyed, added single-element | keyed, added longer | keyed, outside every stretch
+ heap | per hop SpanMarginForRecord | nought or below | | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 1 | 1.778 | 46 | 3 | 0 | 3 | 1 | 0 | 0 | 1 | 16
+ heap | per hop SpanMarginForRecord | 1.778 | 3.162 | 100 | 34 | 2 | 32 | 8 | 7 | 2 | 1 | 39
+ heap | per hop SpanMarginForRecord | 3.162 | 5.623 | 246 | 40 | 5 | 35 | 15 | 9 | 5 | 7 | 62
+ heap | per hop SpanMarginForRecord | 5.623 | 10 | 245 | 82 | 8 | 74 | 4 | 0 | 1 | 0 | 90
+ heap | per hop SpanMarginForRecord | 10 | 17.78 | 155 | 126 | 21 | 105 | 10 | 4 | 0 | 0 | 91
+ heap | per hop SpanMarginForRecord | 17.78 | 31.62 | 41 | 50 | 19 | 31 | 4 | 2 | 0 | 0 | 48
+ heap | per hop SpanMarginForRecord | 31.62 | 56.23 | 10 | 11 | 5 | 6 | 8 | 6 | 0 | 0 | 18
+ heap | per hop SpanMarginForRecord | 56.23 | 100 | 3 | 2 | 1 | 1 | 1 | 0 | 0 | 0 | 17
+ heap | per hop SpanMarginForRecord | 100 | 177.8 | 3 | 4 | 1 | 3 | 4 | 2 | 0 | 0 | 19
+ heap | per hop SpanMarginForRecord | 177.8 | 316.2 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 8
+ heap | per hop SpanMarginForRecord | 316.2 | 562.3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8
+ heap | per hop SpanMarginForRecord | 562.3 | 1000 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 3
+ heap | per hop SpanMarginForRecord | 1000 | 1778 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 1778 | 3162 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 3162 | 5623 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 5623 | 1E+04 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | per hop SpanMarginForRecord | 1E+04 | 1.778E+04 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 1.778E+04 | 3.162E+04 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 3.162E+04 | 5.623E+04 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 5.623E+04 | 1E+05 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 1E+05 | 1.778E+05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | per hop SpanMarginForRecord | 1.778E+05 | 3.162E+05 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 3.162E+05 | 5.623E+05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 5.623E+05 | 1E+06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 1E+06 | 1.778E+06 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 1.778E+06 | 3.162E+06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 3.162E+06 | 5.623E+06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop SpanMarginForRecord | 5.623E+06 | 1E+07 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | per hop SpanMarginForRecord | 1E+07 | 1.778E+07 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4
+ heap | per hop SpanMarginForRecord | 1.778E+07 | 3.162E+07 | 11 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8
+ heap | per hop SpanMarginForRecord | 3.162E+07 | 5.623E+07 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9
+ heap | per hop SpanMarginForRecord | 5.623E+07 | 1E+08 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3
+ heap | per hop SpanMarginForRecord | 1E+08 | 1.778E+08 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7
+ heap | per hop SpanMarginForRecord | 1.778E+08 | 3.162E+08 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10
+ heap | per hop SpanMarginForRecord | 3.162E+08 | 5.623E+08 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3
+ heap | per hop over the recording's median | from | to | unkeyed recordings | keyed, right | keyed, right single-element | keyed, right longer | keyed, wrong | keyed, wrong single-element | keyed, added single-element | keyed, added longer | keyed, outside every stretch
+ heap | per hop over the recording's median | nought or below | | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 3.162E-08 | 5.623E-08 | 0 | 2 | 0 | 2 | 0 | 0 | 0 | 0 | 1
+ heap | per hop over the recording's median | 5.623E-08 | 1E-07 | 4 | 2 | 0 | 2 | 0 | 0 | 0 | 0 | 2
+ heap | per hop over the recording's median | 1E-07 | 1.778E-07 | 9 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 1.778E-07 | 3.162E-07 | 4 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1
+ heap | per hop over the recording's median | 3.162E-07 | 5.623E-07 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 5.623E-07 | 1E-06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 1E-06 | 1.778E-06 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 1.778E-06 | 3.162E-06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 3.162E-06 | 5.623E-06 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 5.623E-06 | 1E-05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 1E-05 | 1.778E-05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 1.778E-05 | 3.162E-05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 3.162E-05 | 5.623E-05 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 5.623E-05 | 0.0001 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.0001 | 0.0001778 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.0001778 | 0.0003162 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | per hop over the recording's median | 0.0003162 | 0.0005623 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.0005623 | 0.001 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.001 | 0.001778 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.001778 | 0.003162 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.003162 | 0.005623 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | per hop over the recording's median | 0.005623 | 0.01 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.01 | 0.01778 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.01778 | 0.03162 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.03162 | 0.05623 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 0.05623 | 0.1 | 1 | 0 | 0 | 0 | 2 | 1 | 0 | 0 | 2
+ heap | per hop over the recording's median | 0.1 | 0.1778 | 10 | 3 | 0 | 3 | 3 | 1 | 0 | 1 | 11
+ heap | per hop over the recording's median | 0.1778 | 0.3162 | 19 | 12 | 1 | 11 | 2 | 0 | 0 | 3 | 26
+ heap | per hop over the recording's median | 0.3162 | 0.5623 | 82 | 44 | 3 | 41 | 6 | 4 | 1 | 4 | 54
+ heap | per hop over the recording's median | 0.5623 | 1 | 301 | 119 | 15 | 104 | 13 | 7 | 2 | 0 | 119
+ heap | per hop over the recording's median | 1 | 1.778 | 335 | 130 | 29 | 101 | 18 | 13 | 4 | 1 | 142
+ heap | per hop over the recording's median | 1.778 | 3.162 | 76 | 27 | 11 | 16 | 3 | 1 | 1 | 0 | 42
+ heap | per hop over the recording's median | 3.162 | 5.623 | 16 | 6 | 2 | 4 | 5 | 3 | 0 | 0 | 24
+ heap | per hop over the recording's median | 5.623 | 10 | 12 | 2 | 0 | 2 | 1 | 0 | 0 | 0 | 21
+ heap | per hop over the recording's median | 10 | 17.78 | 8 | 2 | 1 | 1 | 2 | 0 | 0 | 0 | 4
+ heap | per hop over the recording's median | 17.78 | 31.62 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 8
+ heap | per hop over the recording's median | 31.62 | 56.23 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5
+ heap | per hop over the recording's median | 56.23 | 100 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0
+ heap | per hop over the recording's median | 100 | 177.8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ heap | per hop over the recording's median | 177.8 | 316.2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1
+ edge | raw SpanLogLikelihoodRatio | recording | lowest right | the character | highest added single-element | the character | lowest right single-element
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-23-173723 | 30.8 | `E` . at 25.100 s | 156 | `T` - at 22.540 s | 30.8 `E` . at 25.100 s
+ edge | raw SpanLogLikelihoodRatio | cw-2026-08-17-013347 | 233.8 | `A` .- at 23.925 s | none | none
+ edge | raw SpanLogLikelihoodRatio | cw-2026-08-17-134712 | 609.2 | `L` .-.. at 23.000 s | none | none
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-18-003758 | 588.9 | `I` .. at 15.420 s | none | none
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-24-012403 | 41.02 | `E` . at 20.680 s | none | 41.02 `E` . at 20.680 s
+ edge | raw SpanLogLikelihoodRatio | cw-2026-08-18-004507 | 105.9 | `E` . at 25.995 s | none | 105.9 `E` . at 25.995 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-22-031838 | 81.93 | `E` . at 19.755 s | 159.2 | `T` - at 21.355 s | 81.93 `E` . at 19.755 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-22-031905 | 55.02 | `E` . at 15.150 s | none | 55.02 `E` . at 15.150 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-22-031948 | 62.89 | `E` . at 21.535 s | none | 62.89 `E` . at 21.535 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-22-032012 | 59.17 | `E` . at 23.110 s | none | 59.17 `E` . at 23.110 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-22-032050 | 98.19 | `E` . at 9.105 s | 74.14 | `T` - at 11.195 s | 98.19 `E` . at 9.105 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-22-032113 | 190.5 | `T` - at 3.015 s | none | 190.5 `T` - at 3.015 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-08-22-032129 | 69.69 | `I` .. at 20.065 s | none | 436.9 `T` - at 11.600 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004108 | 1529 | `K` -.- at 15.285 s | none | none
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004133 | 499 | `H` .... at 5.505 s | none | none
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004205 | 366.8 | `T` - at 23.020 s | none | 366.8 `T` - at 23.020 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004234 | 375.1 | `N` -. at 7.330 s | none | 620.1 `T` - at 5.670 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004322 | 98.37 | `E` . at 8.300 s | none | 98.37 `E` . at 8.300 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004347 | 93.56 | `E` . at 11.435 s | none | 93.56 `E` . at 11.435 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004405 | 378.7 | `I` .. at 28.285 s | none | none
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004427 | 99.4 | `T` - at 14.105 s | none | 99.4 `T` - at 14.105 s
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004510 | 510.4 | `S` ... at 27.135 s | none | none
+ edge | raw SpanLogLikelihoodRatio | unadjudicated/cw-2026-09-24-004550 | 199.8 | `E` . at 16.150 s | none | 199.8 `E` . at 16.150 s
+ edge | raw SpanLogLikelihoodRatio | overall | lowest right 30.8 on unadjudicated/cw-2026-09-23-173723 `E` . at 25.100 s | highest added single-element 159.2 on unadjudicated/cw-2026-08-22-031838 `T` - at 21.355 s | right at or under that highest added 27 of 353 | added single-element at or over that lowest right 8 of 8
+ across | raw SpanLogLikelihoodRatio | the median right character per keyed recording | n 23, min 238.9, tenth 302.2, quartile 602.3, median 807.2, quartile 1041, ninetieth 1398, max 2979 | largest over smallest 12.47
+ edge | per hop SpanMarginForRecord | recording | lowest right | the character | highest added single-element | the character | lowest right single-element
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-23-173723 | 1.376 | `B` -... at 27.775 s | 6.156 | `E` . at 21.170 s | 2.37 `E` . at 25.100 s
+ edge | per hop SpanMarginForRecord | cw-2026-08-17-013347 | 1.951 | `V` ...- at 23.310 s | none | none
+ edge | per hop SpanMarginForRecord | cw-2026-08-17-134712 | 5.915 | `L` .-.. at 23.000 s | none | none
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-18-003758 | 20.31 | `I` .. at 15.420 s | none | none
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-24-012403 | 1.804 | `N` -. at 28.475 s | none | 3.729 `E` . at 20.680 s
+ edge | per hop SpanMarginForRecord | cw-2026-08-18-004507 | 4.584 | `R` .-. at 4.820 s | none | 10.59 `E` . at 25.995 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-22-031838 | 2.163 | `2` ..--- at 23.920 s | 4.082 | `T` - at 21.355 s | 5.852 `E` . at 19.755 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-22-031905 | 2.261 | `.` .-.-.- at 11.640 s | none | 11.96 `E` . at 7.005 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-22-031948 | 2.317 | `1` .---- at 16.020 s | none | 4.561 `T` - at 19.090 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-22-032012 | 2.865 | `1` .---- at 5.205 s | none | 9.862 `E` . at 23.110 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-22-032050 | 3.175 | `I` .. at 13.280 s | 4.943 | `T` - at 11.195 s | 4.679 `T` - at 14.315 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-22-032113 | 5.61 | `A` .- at 5.040 s | none | 6.803 `T` - at 3.015 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-08-22-032129 | 1.584 | `I` .. at 20.065 s | none | 10.92 `T` - at 11.600 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004108 | 15.77 | `K` -.- at 15.285 s | none | none
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004133 | 6.654 | `H` .... at 5.505 s | none | none
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004205 | 8.968 | `D` -.. at 28.680 s | none | 12.65 `T` - at 23.020 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004234 | 5.291 | `H` .... at 6.335 s | none | 20 `T` - at 5.670 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004322 | 2.761 | `A` .- at 22.630 s | none | 9.837 `E` . at 8.300 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004347 | 3.78 | `O` --- at 19.285 s | none | 5.972 `T` - at 19.820 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004405 | 10.93 | `O` --- at 25.655 s | none | none
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004427 | 1.994 | `S` ... at 12.780 s | none | 3.55 `T` - at 14.105 s
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004510 | 7.247 | `G` --. at 20.275 s | none | none
+ edge | per hop SpanMarginForRecord | unadjudicated/cw-2026-09-24-004550 | 8.905 | `G` --. at 19.120 s | none | 24.97 `E` . at 16.150 s
+ edge | per hop SpanMarginForRecord | overall | lowest right 1.376 on unadjudicated/cw-2026-09-23-173723 `B` -... at 27.775 s | highest added single-element 6.156 on unadjudicated/cw-2026-09-23-173723 `E` . at 21.170 s | right at or under that highest added 88 of 353 | added single-element at or over that lowest right 8 of 8
+ across | per hop SpanMarginForRecord | the median right character per keyed recording | n 23, min 2.719, tenth 3.008, quartile 9.217, median 11.94, quartile 13.32, ninetieth 18.89, max 33.91 | largest over smallest 12.47
+ edge | per hop over the recording's median | recording | lowest right | the character | highest added single-element | the character | lowest right single-element
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-23-173723 | 0.4273 | `B` -... at 27.775 s | 1.912 | `E` . at 21.170 s | 0.7361 `E` . at 25.100 s
+ edge | per hop over the recording's median | cw-2026-08-17-013347 | 5.359E-08 | `V` ...- at 23.310 s | none | none
+ edge | per hop over the recording's median | cw-2026-08-17-134712 | 0.5049 | `L` .-.. at 23.000 s | none | none
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-18-003758 | 0.775 | `I` .. at 15.420 s | none | none
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-24-012403 | 0.801 | `N` -. at 28.475 s | none | 1.655 `E` . at 20.680 s
+ edge | per hop over the recording's median | cw-2026-08-18-004507 | 0.3547 | `R` .-. at 4.820 s | none | 0.8192 `E` . at 25.995 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-22-031838 | 0.53 | `2` ..--- at 23.920 s | 1 | `T` - at 21.355 s | 1.434 `E` . at 19.755 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-22-031905 | 0.196 | `.` .-.-.- at 11.640 s | none | 1.036 `E` . at 7.005 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-22-031948 | 0.3666 | `1` .---- at 16.020 s | none | 0.7217 `T` - at 19.090 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-22-032012 | 0.2408 | `1` .---- at 5.205 s | none | 0.8287 `E` . at 23.110 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-22-032050 | 0.3026 | `I` .. at 13.280 s | 0.4711 | `T` - at 11.195 s | 0.446 `T` - at 14.315 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-22-032113 | 0.2283 | `A` .- at 5.040 s | none | 0.2769 `T` - at 3.015 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-08-22-032129 | 0.05012 | `I` .. at 20.065 s | none | 0.3456 `T` - at 11.600 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004108 | 1.362 | `K` -.- at 15.285 s | none | none
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004133 | 0.6892 | `H` .... at 5.505 s | none | none
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004205 | 0.7822 | `D` -.. at 28.680 s | none | 1.103 `T` - at 23.020 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004234 | 0.4844 | `H` .... at 6.335 s | none | 1.831 `T` - at 5.670 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004322 | 0.2013 | `A` .- at 22.630 s | none | 0.7172 `E` . at 8.300 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004347 | 0.2949 | `O` --- at 19.285 s | none | 0.4659 `T` - at 19.820 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004405 | 0.8206 | `O` --- at 25.655 s | none | none
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004427 | 0.3616 | `S` ... at 12.780 s | none | 0.6438 `T` - at 14.105 s
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004510 | 0.7635 | `G` --. at 20.275 s | none | none
+ edge | per hop over the recording's median | unadjudicated/cw-2026-09-24-004550 | 0.9159 | `G` --. at 19.120 s | none | 2.568 `E` . at 16.150 s
+ edge | per hop over the recording's median | overall | lowest right 5.359E-08 on cw-2026-08-17-013347 `V` ...- at 23.310 s | highest added single-element 1.912 on unadjudicated/cw-2026-09-23-173723 `E` . at 21.170 s | right at or under that highest added 323 of 353 | added single-element at or over that lowest right 8 of 8
+ across | per hop over the recording's median | the median right character per keyed recording | n 23, min 7.47E-08, tenth 0.8142, quartile 0.8906, median 1, quartile 1.103, ninetieth 1.495, max 1.943 | largest over smallest 2.601E+07
+ ladder | raw SpanLogLikelihoodRatio | bar 26.0433 | right below 0 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 44 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 30.8038 | right below 0 | added single-element below 0 of 8 | wrong single-element below 1 | all named below, 52 recordings 58 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 32.4314 | right below 1 | added single-element below 0 of 8 | wrong single-element below 1 | all named below, 52 recordings 63 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 33.3627 | right below 1 | added single-element below 0 of 8 | wrong single-element below 2 | all named below, 52 recordings 64 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 34.6106 | right below 1 | added single-element below 1 of 8 | wrong single-element below 2 | all named below, 52 recordings 69 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 34.6966 | right below 1 | added single-element below 2 of 8 | wrong single-element below 2 | all named below, 52 recordings 70 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 34.9197 | right below 1 | added single-element below 2 of 8 | wrong single-element below 3 | all named below, 52 recordings 71 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 36.0933 | right below 1 | added single-element below 2 of 8 | wrong single-element below 4 | all named below, 52 recordings 75 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 36.909 | right below 2 | added single-element below 2 of 8 | wrong single-element below 4 | all named below, 52 recordings 78 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 39.3873 | right below 2 | added single-element below 2 of 8 | wrong single-element below 5 | all named below, 52 recordings 82 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 39.8341 | right below 2 | added single-element below 2 of 8 | wrong single-element below 6 | all named below, 52 recordings 90 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 41.0163 | right below 2 | added single-element below 2 of 8 | wrong single-element below 7 | all named below, 52 recordings 98 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 43.3575 | right below 3 | added single-element below 2 of 8 | wrong single-element below 7 | all named below, 52 recordings 102 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 47.529 | right below 3 | added single-element below 2 of 8 | wrong single-element below 8 | all named below, 52 recordings 112 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 55.0226 | right below 4 | added single-element below 2 of 8 | wrong single-element below 8 | all named below, 52 recordings 133 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 55.6686 | right below 5 | added single-element below 2 of 8 | wrong single-element below 8 | all named below, 52 recordings 136 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 59.232 | right below 6 | added single-element below 2 of 8 | wrong single-element below 9 | all named below, 52 recordings 147 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 60.1669 | right below 6 | added single-element below 2 of 8 | wrong single-element below 10 | all named below, 52 recordings 152 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 74.1384 | right below 8 | added single-element below 2 of 8 | wrong single-element below 11 | all named below, 52 recordings 185 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 86.1864 | right below 9 | added single-element below 3 of 8 | wrong single-element below 11 | all named below, 52 recordings 200 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 88.2162 | right below 9 | added single-element below 4 of 8 | wrong single-element below 11 | all named below, 52 recordings 205 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 101.225 | right below 15 | added single-element below 5 of 8 | wrong single-element below 11 | all named below, 52 recordings 232 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 109.613 | right below 18 | added single-element below 5 of 8 | wrong single-element below 12 | all named below, 52 recordings 248 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 115.324 | right below 18 | added single-element below 5 of 8 | wrong single-element below 13 | all named below, 52 recordings 255 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 118.767 | right below 19 | added single-element below 5 of 8 | wrong single-element below 14 | all named below, 52 recordings 269 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 138.069 | right below 25 | added single-element below 5 of 8 | wrong single-element below 15 | all named below, 52 recordings 322 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 156.018 | right below 26 | added single-element below 6 of 8 | wrong single-element below 15 | all named below, 52 recordings 357 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 159.208 | right below 27 | added single-element below 7 of 8 | wrong single-element below 15 | all named below, 52 recordings 362 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 166.558 | right below 29 | added single-element below 8 of 8 | wrong single-element below 15 | all named below, 52 recordings 380 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 175.786 | right below 34 | added single-element below 8 of 8 | wrong single-element below 16 | all named below, 52 recordings 402 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 220.55 | right below 47 | added single-element below 8 of 8 | wrong single-element below 17 | all named below, 52 recordings 504 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 305.961 | right below 67 | added single-element below 8 of 8 | wrong single-element below 18 | all named below, 52 recordings 666 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 314.802 | right below 68 | added single-element below 8 of 8 | wrong single-element below 19 | all named below, 52 recordings 681 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 315.282 | right below 68 | added single-element below 8 of 8 | wrong single-element below 20 | all named below, 52 recordings 683 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 324.569 | right below 70 | added single-element below 8 of 8 | wrong single-element below 21 | all named below, 52 recordings 694 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 394.125 | right below 94 | added single-element below 8 of 8 | wrong single-element below 22 | all named below, 52 recordings 788 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 410.464 | right below 97 | added single-element below 8 of 8 | wrong single-element below 23 | all named below, 52 recordings 814 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 439.874 | right below 103 | added single-element below 8 of 8 | wrong single-element below 24 | all named below, 52 recordings 854 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 471.034 | right below 114 | added single-element below 8 of 8 | wrong single-element below 25 | all named below, 52 recordings 911 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 1128.48 | right below 255 | added single-element below 8 of 8 | wrong single-element below 26 | all named below, 52 recordings 1411 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 1202.75 | right below 263 | added single-element below 8 of 8 | wrong single-element below 27 | all named below, 52 recordings 1439 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 1219.16 | right below 266 | added single-element below 8 of 8 | wrong single-element below 28 | all named below, 52 recordings 1446 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 1439.06 | right below 288 | added single-element below 8 of 8 | wrong single-element below 29 | all named below, 52 recordings 1507 of 1773
+ ladder | raw SpanLogLikelihoodRatio | bar 9534.58 | right below 350 | added single-element below 8 of 8 | wrong single-element below 30 | all named below, 52 recordings 1683 of 1773
+ ladder | per hop SpanMarginForRecord | bar 1.37556 | right below 0 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 32 of 1773
+ ladder | per hop SpanMarginForRecord | bar 1.58386 | right below 1 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 49 of 1773
+ ladder | per hop SpanMarginForRecord | bar 1.70426 | right below 2 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 54 of 1773
+ ladder | per hop SpanMarginForRecord | bar 1.79576 | right below 3 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 71 of 1773
+ ladder | per hop SpanMarginForRecord | bar 1.80441 | right below 3 | added single-element below 0 of 8 | wrong single-element below 1 | all named below, 52 recordings 74 of 1773
+ ladder | per hop SpanMarginForRecord | bar 1.86024 | right below 4 | added single-element below 0 of 8 | wrong single-element below 1 | all named below, 52 recordings 82 of 1773
+ ladder | per hop SpanMarginForRecord | bar 1.92757 | right below 4 | added single-element below 0 of 8 | wrong single-element below 2 | all named below, 52 recordings 86 of 1773
+ ladder | per hop SpanMarginForRecord | bar 2.53062 | right below 22 | added single-element below 0 of 8 | wrong single-element below 2 | all named below, 52 recordings 169 of 1773
+ ladder | per hop SpanMarginForRecord | bar 2.66897 | right below 23 | added single-element below 0 of 8 | wrong single-element below 3 | all named below, 52 recordings 183 of 1773
+ ladder | per hop SpanMarginForRecord | bar 2.78022 | right below 25 | added single-element below 0 of 8 | wrong single-element below 4 | all named below, 52 recordings 193 of 1773
+ ladder | per hop SpanMarginForRecord | bar 2.81338 | right below 25 | added single-element below 1 of 8 | wrong single-element below 4 | all named below, 52 recordings 198 of 1773
+ ladder | per hop SpanMarginForRecord | bar 2.83915 | right below 26 | added single-element below 1 of 8 | wrong single-element below 5 | all named below, 52 recordings 202 of 1773
+ ladder | per hop SpanMarginForRecord | bar 2.84568 | right below 26 | added single-element below 1 of 8 | wrong single-element below 6 | all named below, 52 recordings 204 of 1773
+ ladder | per hop SpanMarginForRecord | bar 2.96918 | right below 31 | added single-element below 2 of 8 | wrong single-element below 6 | all named below, 52 recordings 223 of 1773
+ ladder | per hop SpanMarginForRecord | bar 3.31951 | right below 45 | added single-element below 2 of 8 | wrong single-element below 7 | all named below, 52 recordings 274 of 1773
+ ladder | per hop SpanMarginForRecord | bar 3.46106 | right below 45 | added single-element below 2 of 8 | wrong single-element below 8 | all named below, 52 recordings 292 of 1773
+ ladder | per hop SpanMarginForRecord | bar 3.5359 | right below 46 | added single-element below 3 of 8 | wrong single-element below 8 | all named below, 52 recordings 304 of 1773
+ ladder | per hop SpanMarginForRecord | bar 3.54022 | right below 46 | added single-element below 3 of 8 | wrong single-element below 9 | all named below, 52 recordings 305 of 1773
+ ladder | per hop SpanMarginForRecord | bar 3.60349 | right below 48 | added single-element below 4 of 8 | wrong single-element below 9 | all named below, 52 recordings 320 of 1773
+ ladder | per hop SpanMarginForRecord | bar 3.84414 | right below 52 | added single-element below 4 of 8 | wrong single-element below 10 | all named below, 52 recordings 361 of 1773
+ ladder | per hop SpanMarginForRecord | bar 3.94159 | right below 52 | added single-element below 4 of 8 | wrong single-element below 11 | all named below, 52 recordings 372 of 1773
+ ladder | per hop SpanMarginForRecord | bar 4.08227 | right below 53 | added single-element below 4 of 8 | wrong single-element below 12 | all named below, 52 recordings 396 of 1773
+ ladder | per hop SpanMarginForRecord | bar 4.23085 | right below 57 | added single-element below 5 of 8 | wrong single-element below 12 | all named below, 52 recordings 423 of 1773
+ ladder | per hop SpanMarginForRecord | bar 4.28745 | right below 58 | added single-element below 5 of 8 | wrong single-element below 13 | all named below, 52 recordings 429 of 1773
+ ladder | per hop SpanMarginForRecord | bar 4.58878 | right below 63 | added single-element below 5 of 8 | wrong single-element below 14 | all named below, 52 recordings 486 of 1773
+ ladder | per hop SpanMarginForRecord | bar 4.62823 | right below 64 | added single-element below 6 of 8 | wrong single-element below 14 | all named below, 52 recordings 490 of 1773
+ ladder | per hop SpanMarginForRecord | bar 4.94256 | right below 68 | added single-element below 6 of 8 | wrong single-element below 15 | all named below, 52 recordings 527 of 1773
+ ladder | per hop SpanMarginForRecord | bar 4.98853 | right below 68 | added single-element below 7 of 8 | wrong single-element below 15 | all named below, 52 recordings 535 of 1773
+ ladder | per hop SpanMarginForRecord | bar 6.15617 | right below 88 | added single-element below 7 of 8 | wrong single-element below 16 | all named below, 52 recordings 683 of 1773
+ ladder | per hop SpanMarginForRecord | bar 10.4934 | right below 175 | added single-element below 8 of 8 | wrong single-element below 16 | all named below, 52 recordings 1084 of 1773
+ ladder | per hop SpanMarginForRecord | bar 13.6821 | right below 233 | added single-element below 8 of 8 | wrong single-element below 17 | all named below, 52 recordings 1285 of 1773
+ ladder | per hop SpanMarginForRecord | bar 14.1895 | right below 249 | added single-element below 8 of 8 | wrong single-element below 18 | all named below, 52 recordings 1321 of 1773
+ ladder | per hop SpanMarginForRecord | bar 15.7535 | right below 267 | added single-element below 8 of 8 | wrong single-element below 19 | all named below, 52 recordings 1381 of 1773
+ ladder | per hop SpanMarginForRecord | bar 20.8197 | right below 309 | added single-element below 8 of 8 | wrong single-element below 20 | all named below, 52 recordings 1491 of 1773
+ ladder | per hop SpanMarginForRecord | bar 24.7912 | right below 325 | added single-element below 8 of 8 | wrong single-element below 21 | all named below, 52 recordings 1537 of 1773
+ ladder | per hop SpanMarginForRecord | bar 33.9957 | right below 337 | added single-element below 8 of 8 | wrong single-element below 22 | all named below, 52 recordings 1582 of 1773
+ ladder | per hop SpanMarginForRecord | bar 35.0313 | right below 338 | added single-element below 8 of 8 | wrong single-element below 23 | all named below, 52 recordings 1587 of 1773
+ ladder | per hop SpanMarginForRecord | bar 35.099 | right below 338 | added single-element below 8 of 8 | wrong single-element below 24 | all named below, 52 recordings 1588 of 1773
+ ladder | per hop SpanMarginForRecord | bar 36.0632 | right below 340 | added single-element below 8 of 8 | wrong single-element below 25 | all named below, 52 recordings 1593 of 1773
+ ladder | per hop SpanMarginForRecord | bar 41.474 | right below 343 | added single-element below 8 of 8 | wrong single-element below 26 | all named below, 52 recordings 1605 of 1773
+ ladder | per hop SpanMarginForRecord | bar 43.7917 | right below 345 | added single-element below 8 of 8 | wrong single-element below 27 | all named below, 52 recordings 1609 of 1773
+ ladder | per hop SpanMarginForRecord | bar 121.916 | right below 350 | added single-element below 8 of 8 | wrong single-element below 28 | all named below, 52 recordings 1655 of 1773
+ ladder | per hop SpanMarginForRecord | bar 125.387 | right below 350 | added single-element below 8 of 8 | wrong single-element below 29 | all named below, 52 recordings 1657 of 1773
+ ladder | per hop SpanMarginForRecord | bar 288.927 | right below 352 | added single-element below 8 of 8 | wrong single-element below 30 | all named below, 52 recordings 1680 of 1773
+ ladder | per hop over the recording's median | bar 5.35942E-08 | right below 0 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 1 of 1773
+ ladder | per hop over the recording's median | bar 5.39468E-08 | right below 1 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 2 of 1773
+ ladder | per hop over the recording's median | bar 6.52782E-08 | right below 2 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 3 of 1773
+ ladder | per hop over the recording's median | bar 7.47016E-08 | right below 3 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 6 of 1773
+ ladder | per hop over the recording's median | bar 1.25571E-07 | right below 4 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 16 of 1773
+ ladder | per hop over the recording's median | bar 0.0898429 | right below 7 | added single-element below 0 of 8 | wrong single-element below 0 | all named below, 52 recordings 36 of 1773
+ ladder | per hop over the recording's median | bar 0.11403 | right below 8 | added single-element below 0 of 8 | wrong single-element below 1 | all named below, 52 recordings 46 of 1773
+ ladder | per hop over the recording's median | bar 0.332057 | right below 22 | added single-element below 0 of 8 | wrong single-element below 2 | all named below, 52 recordings 139 of 1773
+ ladder | per hop over the recording's median | bar 0.439893 | right below 38 | added single-element below 0 of 8 | wrong single-element below 3 | all named below, 52 recordings 211 of 1773
+ ladder | per hop over the recording's median | bar 0.455687 | right below 41 | added single-element below 0 of 8 | wrong single-element below 4 | all named below, 52 recordings 218 of 1773
+ ladder | per hop over the recording's median | bar 0.471062 | right below 44 | added single-element below 0 of 8 | wrong single-element below 5 | all named below, 52 recordings 233 of 1773
+ ladder | per hop over the recording's median | bar 0.49851 | right below 50 | added single-element below 1 of 8 | wrong single-element below 5 | all named below, 52 recordings 261 of 1773
+ ladder | per hop over the recording's median | bar 0.658825 | right below 85 | added single-element below 1 of 8 | wrong single-element below 6 | all named below, 52 recordings 428 of 1773
+ ladder | per hop over the recording's median | bar 0.727335 | right below 104 | added single-element below 1 of 8 | wrong single-element below 7 | all named below, 52 recordings 518 of 1773
+ ladder | per hop over the recording's median | bar 0.786146 | right below 121 | added single-element below 1 of 8 | wrong single-element below 8 | all named below, 52 recordings 585 of 1773
+ ladder | per hop over the recording's median | bar 0.829124 | right below 135 | added single-element below 1 of 8 | wrong single-element below 9 | all named below, 52 recordings 654 of 1773
+ ladder | per hop over the recording's median | bar 0.863685 | right below 144 | added single-element below 1 of 8 | wrong single-element below 10 | all named below, 52 recordings 701 of 1773
+ ladder | per hop over the recording's median | bar 0.866161 | right below 145 | added single-element below 2 of 8 | wrong single-element below 10 | all named below, 52 recordings 705 of 1773
+ ladder | per hop over the recording's median | bar 0.873984 | right below 147 | added single-element below 2 of 8 | wrong single-element below 11 | all named below, 52 recordings 713 of 1773
+ ladder | per hop over the recording's median | bar 0.88402 | right below 151 | added single-element below 2 of 8 | wrong single-element below 12 | all named below, 52 recordings 728 of 1773
+ ladder | per hop over the recording's median | bar 0.941667 | right below 167 | added single-element below 3 of 8 | wrong single-element below 12 | all named below, 52 recordings 805 of 1773
+ ladder | per hop over the recording's median | bar 1 | right below 185 | added single-element below 3 of 8 | wrong single-element below 13 | all named below, 52 recordings 874 of 1773
+ ladder | per hop over the recording's median | bar 1.03122 | right below 202 | added single-element below 4 of 8 | wrong single-element below 13 | all named below, 52 recordings 966 of 1773
+ ladder | per hop over the recording's median | bar 1.0364 | right below 205 | added single-element below 4 of 8 | wrong single-element below 14 | all named below, 52 recordings 981 of 1773
+ ladder | per hop over the recording's median | bar 1.07519 | right below 216 | added single-element below 4 of 8 | wrong single-element below 15 | all named below, 52 recordings 1028 of 1773
+ ladder | per hop over the recording's median | bar 1.09978 | right below 224 | added single-element below 5 of 8 | wrong single-element below 15 | all named below, 52 recordings 1059 of 1773
+ ladder | per hop over the recording's median | bar 1.13374 | right below 230 | added single-element below 6 of 8 | wrong single-element below 15 | all named below, 52 recordings 1093 of 1773
+ ladder | per hop over the recording's median | bar 1.14119 | right below 234 | added single-element below 6 of 8 | wrong single-element below 16 | all named below, 52 recordings 1101 of 1773
+ ladder | per hop over the recording's median | bar 1.222 | right below 250 | added single-element below 6 of 8 | wrong single-element below 17 | all named below, 52 recordings 1180 of 1773
+ ladder | per hop over the recording's median | bar 1.22447 | right below 250 | added single-element below 6 of 8 | wrong single-element below 18 | all named below, 52 recordings 1184 of 1773
+ ladder | per hop over the recording's median | bar 1.25259 | right below 254 | added single-element below 6 of 8 | wrong single-element below 19 | all named below, 52 recordings 1217 of 1773
+ ladder | per hop over the recording's median | bar 1.29731 | right below 267 | added single-element below 6 of 8 | wrong single-element below 20 | all named below, 52 recordings 1258 of 1773
+ ladder | per hop over the recording's median | bar 1.29904 | right below 267 | added single-element below 6 of 8 | wrong single-element below 21 | all named below, 52 recordings 1259 of 1773
+ ladder | per hop over the recording's median | bar 1.33191 | right below 270 | added single-element below 6 of 8 | wrong single-element below 22 | all named below, 52 recordings 1282 of 1773
+ ladder | per hop over the recording's median | bar 1.33683 | right below 270 | added single-element below 6 of 8 | wrong single-element below 23 | all named below, 52 recordings 1287 of 1773
+ ladder | per hop over the recording's median | bar 1.38576 | right below 275 | added single-element below 6 of 8 | wrong single-element below 24 | all named below, 52 recordings 1322 of 1773
+ ladder | per hop over the recording's median | bar 1.42552 | right below 279 | added single-element below 6 of 8 | wrong single-element below 25 | all named below, 52 recordings 1350 of 1773
+ ladder | per hop over the recording's median | bar 1.58269 | right below 302 | added single-element below 7 of 8 | wrong single-element below 25 | all named below, 52 recordings 1426 of 1773
+ ladder | per hop over the recording's median | bar 1.91243 | right below 323 | added single-element below 7 of 8 | wrong single-element below 26 | all named below, 52 recordings 1534 of 1773
+ ladder | per hop over the recording's median | bar 2.14852 | right below 330 | added single-element below 8 of 8 | wrong single-element below 26 | all named below, 52 recordings 1579 of 1773
+ ladder | per hop over the recording's median | bar 3.34519 | right below 343 | added single-element below 8 of 8 | wrong single-element below 27 | all named below, 52 recordings 1660 of 1773
+ ladder | per hop over the recording's median | bar 3.85796 | right below 344 | added single-element below 8 of 8 | wrong single-element below 28 | all named below, 52 recordings 1672 of 1773
+ ladder | per hop over the recording's median | bar 3.96778 | right below 345 | added single-element below 8 of 8 | wrong single-element below 29 | all named below, 52 recordings 1676 of 1773
+ ladder | per hop over the recording's median | bar 24.2799 | right below 353 | added single-element below 8 of 8 | wrong single-element below 30 | all named below, 52 recordings 1762 of 1773
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.1324 Minutes
+RC=0 WALL=129s

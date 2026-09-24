@@ -286,6 +286,8 @@ was never sent is not reading.
 
 Not blocking: the loop works 6.4 meanwhile (R64, R65).
 
+*Answered by R73, HM-DEC-178, work instruction 425.*
+
 ## P20 - a ceiling test looks for a countdown that is not in the tree
 
 **Raised by unit 422, 2026-09-24.** `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen`
