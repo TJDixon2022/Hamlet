@@ -133,6 +133,29 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         { "unadjudicated/cw-2026-08-20-014935", 0, 0, 0 },
         { "unadjudicated/cw-2026-08-22-014113", 0, 0, 0 },
         { "unadjudicated/cw-2026-08-22-014308", 0, 0, 0 },
+
+        // **THE BENCHMARK OF 2026-09-24** (R63, HM-DEC-171). One session on
+        // 7.052 MHz, 00:39 to 00:46 UTC, in which the decoder read a whole QSO.
+        // Measured once through this harness at `cffb8c2f` by work instruction
+        // 412. The comment is the sidecar's `inThis`, what the application read
+        // live from the same 30 seconds with its lock carried in from the capture
+        // before; the harness starts cold, so the two differ and the harness is
+        // what is asserted. The first two are the acquisition failure, `E ET E E`
+        // before the lock, floored as they read and not attacked here.
+        { "unadjudicated/cw-2026-09-24-003901", 9, 20, 0 },     // live 92 emitted, 0 unsure, 223 elements
+        { "unadjudicated/cw-2026-09-24-003919", 27, 54, 0 },    // live 110 emitted, 0 unsure, 253 elements
+        { "unadjudicated/cw-2026-09-24-004027", 40, 119, 1 },   // live 51 emitted, 1 unsure, 125 elements
+        { "unadjudicated/cw-2026-09-24-004108", 32, 107, 0 },   // live 32 emitted, 0 unsure, 109 elements
+        { "unadjudicated/cw-2026-09-24-004133", 30, 87, 2 },    // live 31 emitted, 2 unsure, 106 elements
+        { "unadjudicated/cw-2026-09-24-004205", 34, 96, 2 },    // live 36 emitted, 2 unsure, 107 elements
+        { "unadjudicated/cw-2026-09-24-004234", 37, 96, 1 },    // live 36 emitted, 0 unsure, 103 elements
+        { "unadjudicated/cw-2026-09-24-004322", 39, 112, 0 },   // live 39 emitted, 0 unsure, 114 elements
+        { "unadjudicated/cw-2026-09-24-004347", 40, 115, 0 },   // live 39 emitted, 0 unsure, 113 elements
+        { "unadjudicated/cw-2026-09-24-004405", 36, 106, 1 },   // live 40 emitted, 2 unsure, 117 elements
+        { "unadjudicated/cw-2026-09-24-004427", 43, 112, 1 },   // live 41 emitted, 1 unsure, 117 elements
+        { "unadjudicated/cw-2026-09-24-004510", 38, 104, 0 },   // live 34 emitted, 0 unsure, 98 elements
+        { "unadjudicated/cw-2026-09-24-004535", 47, 128, 1 },   // live 53 emitted, 2 unsure, 127 elements
+        { "unadjudicated/cw-2026-09-24-004550", 41, 123, 0 },   // live 49 emitted, 1 unsure, 126 elements
     };
 
     /// <summary>
