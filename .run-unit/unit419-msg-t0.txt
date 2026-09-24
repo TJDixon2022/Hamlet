@@ -1,0 +1,5 @@
+unit419 task 0: the record - HM-DEC-174 entering a mode sets the receiver correctly and it stays set, in DECISIONS.md and at the top of CLAUDE.md section 1; PHASE_OUTCOME.md UNIT 419 - STEP 7 from the decision block; PHASE_STATUS.md unit 419, CURRENT_STEP 7; version 1.13.105 to 1.13.106
+
+Entry round: Hamlet.sln builds with warnings as errors; engine carry-forward 178 of 178; app 273 of 278, five lost to the dispatcher loop, their four types 10 of 10 alone; captures 51 of 51, adjudicated 13 of 13, clean 2 of 2; every Rig type, 37 types, 295 of 295, one type per invocation.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

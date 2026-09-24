@@ -4,6 +4,37 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-174
+date: 2026-09-24
+refs: PHASE_PLAN.md R67 and criterion 7.5, data/bands/mode-receiver-conditions.json, src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs, ReceiveAdvice.cs, RigObservations.cs, HM-DEC-056, HM-DEC-148, work instruction 419
+---
+
+**Entering CW mode and entering data mode each set the receiver correctly, once, and leave it
+set.** Tim, 2026-09-24: *"We're supposed to automatically set the right radio settings when we
+enter CW mode and when we enter data mode, and we're not doing it."*
+
+**What was wrong.** The CW preamp condition states `wanted: 1` beside text reading *preamp 1
+above 40 m, off at 40 m and below*, so a band rule is written in prose and not in the value.
+Three components decide the preamp independently: the setup writes it, the advice asks the
+operator to switch it on whenever it reads off, and the observations object when it is on.
+And because a read-back decoded on a different scale is filed as disagreement, no value is
+ever recorded as already correct, so the operator's own change is stamped over by the next
+tune-in of the same mode.
+
+**What is ruled.** Every condition a mode states is written once when the radio is not already
+at it and not written when it is. A band rule stated in a condition's text is carried by what
+is written. Exactly one component decides each field, and no other component asks the operator
+to change a field the setup has just set. A value the operator sets himself is not overwritten
+by a later tune-in of the same mode. A condition marked unconfirmed is still stated and still
+not written.
+
+**What is not changed.** What any condition asks for. Anything that keys, transmits or sets
+power.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 419's record
+of it. Rejected: widening the earlier RF gain criterion instead of stating the requirement.
+
+---
 id: HM-DEC-173
 date: 2026-09-24
 refs: PHASE_PLAN.md R66 and criterion 3.2, unit 415 output.md section 4 item 1, HM-DEC-144, work instruction 416

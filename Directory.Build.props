@@ -1305,8 +1305,15 @@
     judged under 3.2 as R66 amended it, where a reading may move onto its own adjudicated text
     (HM-DEC-173). Nothing that keys or transmits changes.
   -->
+  <!--
+    1.13.105 -> 1.13.106, WORK INSTRUCTION 419 TASK 0. A PATCH, STEP 7 OF THE CORRECTNESS PHASE,
+    ENTERING A MODE SETS THE RECEIVER ONCE AND IT STAYS SET: a value the radio already holds is
+    not rewritten, the band rule a condition states is carried by what is written, one component
+    owns each field, and the operator's own change stands (HM-DEC-174). Nothing that keys,
+    transmits or sets power changes.
+  -->
   <PropertyGroup>
-    <Version>1.13.105</Version>
+    <Version>1.13.106</Version>
   </PropertyGroup>
 
   <!--
