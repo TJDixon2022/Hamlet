@@ -34,3 +34,21 @@ Task 1 - every line on the CW capture sheet, checked against the code that write
 | 30 | rig block | `Field value` or `unknown` | 11981-11988: every field with its provenance | true - about the radio |
 
 Before: 12 of 30 false, 10 of them about a signal (11, 12, 13, 17, 18, 19, 24, 25, 26, 29) and 2 not (1, 8, parked P12).
+
+After task 2, the rows that were false:
+
+| # | line | after | test, red then green |
+|---|---|---|---|
+| 11 | inputFloor | true: `(the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)` | TheInputFloorSaysItIsTheMetersRunningFloor, 013347 |
+| 12 | clipping | true: `(over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)`, the 0.2 read from AudioTap.LevelSeconds | TheClippingLineNamesTheStretchItCovers, 013347 |
+| 13 | toneHz | true: `(measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)` | TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn, 17:37 |
+| 17 | unkeyed | true: `no (the pitch being followed now is one the survey admitted keying at; 46 characters reached the screen since the decoder started listening, from whatever pitch was being followed at the time)`, and the YES branch the same way | TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch, 005051 and 17:37 |
+| 18 | elements | true: the cover is always since the decoder started | TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear, 004844 |
+| 19 | characters | true, same | TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear, 004844 |
+| 24 | competing | true: `it names a tone at 600 Hz, +10.0 dB over the band floor and above it 29% of the time` | TheCompetingLineDoesNotCallAnUnkeyedToneKeyed, 014113 |
+| 25 | reading | true: `1.48 better than silence per hop against a gate of 1.40 (... as it stood when this sheet was written just after the recording was saved ...)` | TheReadingLinePrintsTheGateAsItIs and TheReadingLineSaysWhenItWasRead, 17:37 |
+| 26 | keying | true: `(an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)`, every figure read from KeyingEnvelope and CwKeyingThresholds | TheKeyingCaptionNamesTheSweepItRanTests, 17:37, 2 facts |
+| 29 | sinceLast | true, same cover as row 18 | TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear, 004844 |
+| 1, 8 | captured, broadcast | unchanged, false by up to a second, not about a signal | parked P12 |
+
+After: 2 of 30 false, 0 about a signal.

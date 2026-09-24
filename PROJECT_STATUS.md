@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 418 - every sentence on the capture sheet is true of that capt
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T10:33:05-04:00
-NOTE: Running TheRestOfTheSheetIsTrueTests after the nine fixes
+UPDATED: 2026-09-24T10:35:37-04:00
+NOTE: Checking 6.2's tonePeak clause after the fixes
 
 ---
 

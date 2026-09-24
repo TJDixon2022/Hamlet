@@ -1,0 +1,40 @@
+captured   2026-09-24 14:35:04 UTC
+audioSeen  1440000 samples
+fingerprint 1c42404a68d7
+seconds    30.0
+sampleRate 48000
+frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+band       40 m  (from Hamlet's own frequency, the radio was not read)
+broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+
+inputPeak  -1.6 dBFS  (over the whole recording)
+meterPeak  -9.9 dBFS  (the moment it was kept)
+inputFloor -32.1 dBFS  (the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)
+clipping   False  (over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)
+toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+tonePeak   33.4  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 625.0 Hz stood above the noise beside it, in dB)
+heldPeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+unkeyed    no  (the pitch being followed now is one the survey admitted keying at; 57 characters reached the screen since the decoder started listening, from whatever pitch was being followed at the time)
+elements   106 seen, 106 resolved  (since the decoder started listening)
+characters 57 emitted, 0 unsure  (since the decoder started listening)
+decoderWpm 16
+text       nothing read
+textCovers everything read since the decoder started listening
+spanLlr    nothing read yet
+competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+reading    16 WPM won out of 8 to 40, 4.00 better than silence per hop against a gate of 1.40  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+duty       26.6%  (of the 30.0 seconds in this file, the key was down at 625.0 Hz)
+elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+
+sinceLast  57 characters, 106 elements  (since the decoder started listening; this is the first capture of the session)
+
+Frequency            unknown
+Mode                 unknown
+DataMode             unknown
+FilterSelection      unknown
+FilterBandwidth      unknown
+SMeter               unknown
+TransmitStatus       unknown
+Overflow             unknown

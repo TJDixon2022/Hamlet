@@ -1,0 +1,3 @@
+unit418 task 2: 6.2 ticked - every sentence on the sheet about a signal is now true or says it is not measured, false 12 of 30 to 2 of 30 and about a signal 10 to 0, the two left captured and broadcast parked P12; tonePeak, elementHz and keying clauses hold, TheSidecarDoesNotContradictItselfTests 3 of 3, TheTonePeakIsAboutThisRecordingTests 3 of 3; the trace writes the whole regenerated sheets to .run-unit/unit418-sidecar-*.txt, old beside new in unit418-oldnew.txt; table after column filled
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

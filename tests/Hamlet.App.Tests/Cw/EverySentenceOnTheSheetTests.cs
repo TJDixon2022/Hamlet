@@ -94,6 +94,14 @@ public sealed class EverySentenceOnTheSheetTests
 
             var sheet = Sheet(decoder, meter.Reading, audio, report, tonePeak);
 
+            // **NO CAPTURE IN THE TREE IS EDITED.** The regenerated sheet goes beside
+            // the unit's other evidence.
+            File.WriteAllText(
+                Path.Combine(root, ".run-unit", $"unit418-sidecar-{stamp}.txt"),
+                $"# {stamp}.wav, the whole sheet regenerated through CaptureNotes by work "
+                + "instruction 418; a fresh decoder and a fresh meter, this file only, no radio"
+                + Environment.NewLine + sheet + Environment.NewLine);
+
             _output.WriteLine("");
             _output.WriteLine($"== {stamp}, the sheet as the writer composes it today");
 
