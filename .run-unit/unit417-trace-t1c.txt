@@ -1,0 +1,59 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.37]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.50]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.50]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:32.31]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.WhatTheTonePeakIsAboutTests.TheHeldFigureIsPrintedBesideTheRecordingsOwn [29 s]
+  Standard Output Messages:
+ stamp | seconds | saved sidecar tonePeak | replayed held | toneHz | hasTone | pitchMeasured | recording figure | at the pitch regardless | keying windows | measure ms
+ cw-2026-08-20-014854 | 30.0 | no line | 54.7 | 600.0 | True | False | not measured | 50.2 | 0 of 25 | 881
+   today: tonePeak   54.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+   over its own quietest fifth at 600.0 Hz: 18.6 dB
+   tone bin percentiles dB: 5th 12.7, 20th 20.1, 50th 26.1, 95th 37.5
+   broadband dBFS per second: -21 -21 -21 -21 -21 -20 -21 -21 -21 -21 -21 -20 -21 -20 -20 -20 -20 -20 -21 -20 -20 -21 -21 -20 -21 -20 -20 -21 -20 -20
+   mean spectrum, dB under the loudest: 300:-44 325:-42 350:-41 375:-39 400:-37 425:-36 450:-35 475:-32 500:-30 525:-28 550:-25 575:-10 600:0 625:-0 650:-4 675:-5 700:-5 725:-5 750:-5 775:-5 800:-4 825:-5 850:-8 875:-18 900:-28
+ cw-2026-08-20-014935 | 30.0 | no line | 56.8 | 825.0 | True | False | not measured | 52.7 | 0 of 25 | 940
+   today: tonePeak   56.8  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+   over its own quietest fifth at 825.0 Hz: 14.6 dB
+   tone bin percentiles dB: 5th 12.9, 20th 19.7, 50th 25.0, 95th 31.6
+   broadband dBFS per second: -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -20 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21 -21
+   mean spectrum, dB under the loudest: 300:-42 325:-40 350:-39 375:-37 400:-35 425:-34 450:-32 475:-30 500:-29 525:-26 550:-18 575:-7 600:-1 625:0 650:-1 675:-1 700:-1 725:-2 750:-1 775:-1 800:-1 825:-1 850:-5 875:-14 900:-25
+ cw-2026-08-17-013347 | 30.0 | no line | 32.2 | 625.0 | True | True | 33.4 | 33.4 | 10 of 25 | 889
+   today: tonePeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+   over its own quietest fifth at 625.0 Hz: 93.3 dB
+   tone bin percentiles dB: 5th -59.8, 20th -51.8, 50th 23.3, 95th 40.8
+   broadband dBFS per second: -23 -22 -23 -22 -21 -22 -24 -23 -23 -20 -22 -22 -23 -21 -21 -21 -20 -21 -21 -17 -16 -16 -17 -16 -16 -16 -16 -16 -18 -18
+   mean spectrum, dB under the loudest: 300:-28 325:-20 350:-13 375:-11 400:-10 425:-10 450:-10 475:-11 500:-10 525:-10 550:-10 575:-8 600:-0 625:0 650:-8 675:-10 700:-10 725:-11 750:-11 775:-10 800:-10 825:-11 850:-13 875:-20 900:-29
+ cw-2026-09-23-173723 | 30.0 | no sidecar | 25.7 | 600.0 | True | True | 26.8 | 26.8 | 0 of 25 | 868
+   today: tonePeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+   over its own quietest fifth at 600.0 Hz: 16.8 dB
+   tone bin percentiles dB: 5th 12.8, 20th 19.5, 50th 28.2, 95th 35.3
+   broadband dBFS per second: -21 -21 -21 -21 -21 -21 -21 -21 -21 -20 -21 -21 -21 -21 -21 -21 -20 -21 -20 -20 -21 -20 -21 -21 -21 -21 -21 -21 -21 -21
+   mean spectrum, dB under the loudest: 300:-32 325:-21 350:-13 375:-11 400:-10 425:-8 450:-8 475:-9 500:-10 525:-10 550:-8 575:0 600:-1 625:-9 650:-11 675:-10 700:-11 725:-11 750:-10 775:-10 800:-11 825:-11 850:-12 875:-19 900:-32
+ cw-2026-08-22-014113 | 30.0 | 24.7 | 24.7 | 600.0 | True | False | not measured | 30.9 | 0 of 25 | 835
+   today: tonePeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+   over its own quietest fifth at 600.0 Hz: 20.4 dB
+   tone bin percentiles dB: 5th 11.5, 20th 17.9, 50th 23.7, 95th 36.2
+   broadband dBFS per second: -22 -21 -21 -21 -21 -21 -21 -21 -21 -22 -21 -21 -21 -21 -21 -21 -21 -20 -21 -20 -21 -21 -21 -21 -20 -21 -21 -20 -21 -21
+   mean spectrum, dB under the loudest: 300:-9 325:-7 350:-7 375:-7 400:-7 425:-7 450:-7 475:-7 500:-7 525:-7 550:-7 575:-5 600:0 625:-2 650:-5 675:-5 700:-5 725:-3 750:-5 775:-7 800:-9 825:-16 850:-27 875:-30 900:-32
+ ordered by the held figure: 2026-08-20-014935 56.8 > 2026-08-20-014854 54.7 > 2026-08-17-013347 32.2 > 2026-09-23-173723 25.7 > 2026-08-22-014113 24.7
+ ordered by the recording figure: 2026-08-17-013347 33.4 > 2026-09-23-173723 26.8 > 2026-08-20-014854 not measured > 2026-08-20-014935 not measured > 2026-08-22-014113 not measured
+ longest capture in the tree 30.0 s at 48000 Hz: the by-hand measurement took 839 ms
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 32.5860 Seconds
+RC=0 WALL=39s

@@ -1,0 +1,39 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.App -> C:\Source\HamLet\src\Hamlet.App\bin\Debug\net8.0\Hamlet.App.dll
+  Hamlet.App.Tests -> C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.27]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.43]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.43]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:31.18]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.WhatTheTonePeakIsAboutTests.TheHeldFigureIsPrintedBesideTheRecordingsOwn [28 s]
+  Standard Output Messages:
+ stamp | seconds | saved sidecar tonePeak | replayed held | toneHz | hasTone | pitchMeasured | recording figure | at the pitch regardless | keying windows | measure ms
+ cw-2026-08-20-014854 | 30.0 | no line | 54.7 | 600.0 | True | False | not measured | 50.2 | 0 of 25 | 846
+   today: tonePeak   54.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+ cw-2026-08-20-014935 | 30.0 | no line | 56.8 | 825.0 | True | False | not measured | 52.7 | 0 of 25 | 883
+   today: tonePeak   56.8  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+ cw-2026-08-17-013347 | 30.0 | no line | 32.2 | 625.0 | True | True | 33.4 | 33.4 | 10 of 25 | 850
+   today: tonePeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+ cw-2026-09-23-173723 | 30.0 | no sidecar | 25.7 | 600.0 | True | True | 26.8 | 26.8 | 0 of 25 | 888
+   today: tonePeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+ cw-2026-08-22-014113 | 30.0 | 24.7 | 24.7 | 600.0 | True | False | not measured | 30.9 | 0 of 25 | 879
+   today: tonePeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+ ordered by the held figure: 2026-08-20-014935 56.8 > 2026-08-20-014854 54.7 > 2026-08-17-013347 32.2 > 2026-09-23-173723 25.7 > 2026-08-22-014113 24.7
+ ordered by the recording figure: 2026-08-17-013347 33.4 > 2026-09-23-173723 26.8 > 2026-08-20-014854 not measured > 2026-08-20-014935 not measured > 2026-08-22-014113 not measured
+ longest capture in the tree 30.0 s at 48000 Hz: the by-hand measurement took 908 ms
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 31.5010 Seconds
+RC=0 WALL=41s

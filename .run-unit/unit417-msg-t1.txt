@@ -1,0 +1,17 @@
+unit417 task 1: the trace - WhatTheTonePeakIsAboutTests replays five captures through a fresh decoder and prints the tonePeak line as TonePeakRecordLine writes it today beside ToneOverNoiseByHand over that WAV alone; test only, nothing in src
+
+Method, author's, overrulable: the held figure's own quantity over this file only - a 40 ms Hann window every 5 ms, Goertzel power at the pitch the decoder tracked against the median of the 25 Hz grid from 300 to 900 Hz leaving out every pitch within 125 Hz of the tone, the middle of five readings in a row, the highest over the file; no figure where the decoder has no tone or never measured its pitch, or where the file holds fewer than five windows.
+
+held figure replayed, recording figure, at the pitch regardless, keying windows of 25:
+014854 54.7, not measured (pitch not measured), 50.2, 0
+014935 56.8, not measured (pitch not measured), 52.7, 0
+013347 32.2, 33.4, 33.4, 10
+173723 25.7, 26.8, 26.8, 0
+014113 24.7, not measured (pitch not measured), 30.9, 0
+ordered by held: 014935 > 014854 > 013347 > 173723 > 014113
+ordered by recording: 013347 33.4 > 173723 26.8, the other three not measured
+by-hand cost 835 to 970 ms per 30 s file at 48 kHz, 908 ms on the longest in the tree
+
+Also printed: each file's mean spectrum shows the grid neighbours below 550 Hz on 014854 and 014935 sitting 25 to 44 dB under the passband, the receiver's filter stopband; the tone bin's own quietest fifth gives 18.6, 14.6, 93.3, 16.8 and 20.4, the 93.3 on 013347 from a 20th percentile of -51.8 dB at 625 Hz under steady -22 dBFS broadband.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
