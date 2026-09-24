@@ -1,0 +1,5 @@
+unit421 task 1: the trace - WhatTheStrayLettersRestOnTests, a fact that asserts nothing, prints every added or wrong single-element character on the 23 keyed recordings with its three span figures and the gates that admitted it, and every named character's span on the 51 rows and 17:37 by label (3.6, 3.7)
+
+The alignment reproduces all keyed 167 edits over 565 against inferred keys. 917 named on the keyed recordings: 352 right, 60 wrong (34 single-element), 17 added (8 single-element), 488 outside every stretch. 0 of 1836 named spans unmeasured. Lowest right: raw 30.8, per hop 1.376, both on 17:37. Every one of the 8 added single-element letters sits above the lowest right character on every figure.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
