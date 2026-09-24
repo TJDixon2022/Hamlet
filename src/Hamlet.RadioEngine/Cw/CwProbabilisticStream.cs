@@ -505,6 +505,14 @@ public sealed class CwProbabilisticStream
                 measured.UnitMilliseconds)
             : null;
 
+        // **THE PATH'S OWN WORD BOUNDARY, FOR WHEN NO CHARACTER GAP WAS MEASURED**
+        // (work instruction 416): midway on a log scale between the character and
+        // word gaps the path was given, held or textbook.
+        var unitMs = result.WordsPerMinute > 0 ? 1200.0 / result.WordsPerMinute : 0;
+        var wordFrom = _structureHeld
+            ? Math.Sqrt(_heldGaps.CharacterMilliseconds * _heldGaps.WordMilliseconds)
+            : Math.Sqrt(3 * 7) * unitMs;
+
         // Where the window starts on the audio clock, so a character's hop can be
         // turned into a moment somebody can point at (§0.0.1).
         var windowStartHop = _hopsSeen - _envelopeCount;
@@ -514,7 +522,7 @@ public sealed class CwProbabilisticStream
 
         var edge = new List<CwCharacter>();
 
-        foreach (var (character, removed) in Spaced(result, characterGap))
+        foreach (var (character, removed) in Spaced(result, characterGap, wordFrom))
         {
             var absolute = windowStartHop + character.EndHop;
             var at = TimeSpan.FromSeconds(
@@ -582,6 +590,7 @@ public sealed class CwProbabilisticStream
     /// </summary>
     /// <param name="result">What the read made of the window.</param>
     /// <param name="characterGap">This sender's character gap, or null.</param>
+    /// <param name="wordFrom">The path's own word boundary in milliseconds, used only when no character gap was measured.</param>
     /// <returns>Every character, and whether its space is taken out.</returns>
     /// <remarks>
     /// <para>**IT ONLY EVER TAKES A SPACE OUT** (work instruction 415, task 3).
@@ -589,25 +598,35 @@ public sealed class CwProbabilisticStream
     /// added one inside the adjudicated `N4L`. This one cannot add a space, and it
     /// is aimed at the spaces the textbook boundary inserts inside a word.</para>
     /// <para>**THE LETTERS ARE THE PATH'S, BY CONSTRUCTION.** A removed space still
-    /// carries its hop so the caller keeps its bookkeeping identical. Where no
-    /// character gap was measured the path's own label stands.</para>
+    /// carries its hop so the caller keeps its bookkeeping identical.</para>
+    /// <para>**WHERE NO CHARACTER GAP WAS MEASURED, THE PATH'S OWN WORD BOUNDARY
+    /// DECIDES** (work instruction 416, task 3). Unit 416's trace found 21 of the
+    /// 24 inserted spaces left on the keyed recordings in windows with no
+    /// character gap, and all 13 on `cw-2026-09-23-173723` under held structure
+    /// at a median of 0.66 of the boundary the path was given: the path read a
+    /// space on a gap shorter than its own word boundary. Such a space is taken
+    /// out; one at or past the boundary stands.</para>
     /// </remarks>
     private static IEnumerable<(CwProbabilisticCharacter Character, bool Removed)> Spaced(
-        CwProbabilisticResult result, double? characterGap)
+        CwProbabilisticResult result, double? characterGap, double wordFrom)
     {
-        if (characterGap is not { } gap || result.Characters.Count == 0)
+        if (result.Characters.Count == 0 || (characterGap is null && !(wordFrom > 0)))
         {
             return result.Characters.Select(c => (c, false));
         }
 
-        var boundaryHops = gap * WordGapShare / CwProbabilisticDecoder.HopMilliseconds;
+        var boundaryHops = characterGap is { } gap
+            ? gap * WordGapShare / CwProbabilisticDecoder.HopMilliseconds
+            : wordFrom / CwProbabilisticDecoder.HopMilliseconds;
         var byEnd = result.Gaps.ToDictionary(g => g.EndHop);
 
         return result.Characters
             .Select(c => (c, c.Pattern.Length == 0
                 && byEnd.TryGetValue(c.EndHop, out var read)
                 && read.IsWordGap
-                && read.SpanHops <= boundaryHops))
+                && (characterGap is not null
+                    ? read.SpanHops <= boundaryHops
+                    : read.SpanHops < boundaryHops)))
             .ToList();
     }
 
