@@ -1,0 +1,25 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.33]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.ABandChangeStillReArmsIt [73 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.HisPreampStandsFromTheCwBlockIntoTheQrpBlock(fromHz: 14050000, toHz: 14060000, byHand: 0) [6 ms]
+  Standard Output Messages:
+ CW main street at 14.050: preamp AlreadyRight, now preamp 1; he sets it to 0; QRP watering hole at 14.060: preamp LeftToTheOperator, radio now 0, writes 
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheOperatorsHandCrossesTheMorseBlocksTests.HisPreampStandsFromTheCwBlockIntoTheQrpBlock(fromHz: 7025000, toHz: 7030000, byHand: 0) [1 ms]
+  Standard Output Messages:
+ CW main street at 7.025: preamp AlreadyRight, now preamp 1; he sets it to 0; QRP watering hole at 7.030: preamp LeftToTheOperator, radio now 0, writes 
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 0.5998 Seconds
+RC=0 WALL=1s

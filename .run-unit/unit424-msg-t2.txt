@@ -1,0 +1,27 @@
+unit424 task 2: the condition, from the manual (7.8) - the CW preamp row carries preamp 1 from 1.8 to 29.999 MHz and preamp 2 at 50 MHz as stretches in the data file, off while the front end reads overloading, with IC-7300_ENG_FM_12b page 4-3 cited in wantedText, in each stretch's source and in because; ReceiverSetup's band rule reads the overload flag first and the row's stretches, not a 10 MHz literal; ThePreampIsWhatTheManualSaysTests green, 17 of 17
+
+Red first, ThePreampIsWhatTheManualSaysTests before the row changed, 10 of 17 failing:
+  At7030ARadioAtOffIsWrittenToPreamp1 - Assert.Equal() Failure: Collections differ,
+  Expected: [1], nothing written (the old row left a radio at off at 7.030)
+  OnEveryHfBandItIsPreamp1 at 1.810, 3.530 and 7.030 from 2; At50MhzItIsPreamp2;
+  OverloadingItIsOff at 14.050 from 1 and 2 and at 28.050; WithTheOverloadUnreadNothingIsWritten;
+  TheConditionCitesTheManualPage.
+
+The mechanism is unit 419's: the row stays "condition": "band", resolved in
+ReceiverSetup.ResolveAsync against the frequency the radio reports; what changed is that
+the stretches and the overload value are the row's (bands, whenOverloading) and an unread
+overload flag writes nothing. The 54 MHz top of the 6 m stretch is 47 CFR 97.301's and is
+not carried by any file in the tree; no 6 m block is on the map, so nothing tunes in there.
+
+Three Rig facts pinned the superseded "off at 40 m": EveryMorseBlockSetsWhatCwSetsTests
+.At7030ThePreampEndsOff (now At7030ThePreampEndsAtTheRowsValue, reading the row),
+ThePreampFollowsItsOwnTextTests.At7030ThePreampIsWrittenOffOrLeftOff (now ...WrittenTo1OrLeftAt1),
+and TheOperatorsHandCrossesTheMorseBlocksTests on 40 m (his hand now off against the row's 1).
+ModeEntryBench.AlreadyRightForCw reads the row. Rig round after: 45 types, all green once
+the three were moved (339 of 342 before the move, the three named above).
+
+Trace after: in the block, 7 sentences - the setup's own clause now recites the whole rule
+("I set the preamp to preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while
+...") - and 28 once he has moved on, all while overloading, left for task 3.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

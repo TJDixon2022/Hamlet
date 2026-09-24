@@ -1,0 +1,100 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.48]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.69]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.70]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.WithTheOverloadUnreadNothingIsWritten [833 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 0 before, overflow unread: wrote [], filed NotRead, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 1) [8 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 1 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 2) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 2 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 28050000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 28.050 MHz (CW), preamp 1 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 7030000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 1 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtOffIsWrittenToPreamp1 [1 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsPreamp2 [< 1 ms]
+  Standard Output Messages:
+ 50.100 MHz (no block, CW row), preamp 0 before, overflow not overloading: wrote [2], filed Changed, radio now preamp 2
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 7030000, start: 2) [< 1 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 2 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+[xUnit.net 00:00:02.59]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 21050000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 21.050 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 28050000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 28.050 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 1810000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 1.810 MHz (no block, CW row), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 18080000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 18.080 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 3530000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 3.530 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 2) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 2 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 10110000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 10.110 MHz (QRP), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionCitesTheManualPage [< 1 ms]
+  Standard Output Messages:
+ preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3)
+ The radio's manual, IC-7300_ENG_FM_12b, Receiving and Transmitting, page 4-3, says which preamp belongs where. P.AMP1 is the wide dynamic range preamplifier and it is most effective for the HF low bands; P.AMP2 is the high-gain preamplifier and it is most effective for the 50 MHz bands; and when the preamp is used while receiving strong signals the signal may be distorted, and in that case the preamp is turned off. Icom's own published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz and with Preamp 2 on at 50 MHz. So Hamlet puts preamp 1 on every HF band, preamp 2 on 6 m, and the preamp off when the radio says its front end is overloading, which is the strong-signal case the manual names. The radio remembers the setting for each band on its own.
+
+
+
+Test Run Successful.
+Total tests: 17
+     Passed: 17
+ Total time: 2.8864 Seconds
+RC=0 WALL=3s

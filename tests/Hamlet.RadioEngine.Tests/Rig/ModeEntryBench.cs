@@ -103,16 +103,18 @@ internal static class ModeEntryBench
     /// <param name="hz">Where the dial is.</param>
     /// <returns>The radio.</returns>
     /// <remarks>
-    /// The preamp's value is the condition's own text read at the frequency:
-    /// preamp 1 above 40 m, off at 40 m and below.
+    /// The preamp's value is the condition's own, read from the row's stretches at the
+    /// frequency (HM-DEC-177): preamp 1 on every HF band, preamp 2 at 50 MHz, with the
+    /// front end quiet.
     /// </remarks>
     public static ScriptedRadio AlreadyRightForCw(long hz)
     {
         var radio = AsLeft(hz, data: false);
+        var preamp = ReceiverConditions.ForMode("CW").Single(c => c.Field == RigField.Preamp);
 
         radio.Switches[Agc] = 1;
         radio.Switches[NoiseBlanker] = 0;
-        radio.Switches[Preamp] = (byte)(hz > 10_000_000 ? 1 : 0);
+        radio.Switches[Preamp] = (byte)preamp.Bands.First(b => b.Contains(hz)).Wanted;
 
         return radio;
     }

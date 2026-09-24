@@ -10,8 +10,9 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 /// carried by what is written.
 /// </summary>
 /// <remarks>
-/// <para>**THE CONDITION'S TEXT IS THE SPECIFICATION**: *preamp 1 above 40 m, off
-/// at 40 m and below*. The row names the rule, `"condition": "band"`, and
+/// <para>**THE CONDITION'S TEXT IS THE SPECIFICATION**: since HM-DEC-177, *preamp 1
+/// from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads
+/// overloading*. The row names the rule, `"condition": "band"`, and
 /// <see cref="ReceiverSetup"/> resolves it against the frequency the radio reports,
 /// so the value written is the text's at both of task 1's frequencies.</para>
 /// <para>**THIS WAS NOT WATCHED FAILING.** The instruction's premise, that the
@@ -43,16 +44,22 @@ public sealed class ThePreampFollowsItsOwnTextTests
     }
 
     /// <summary>
-    /// At 40 m the preamp is written off where it was on, and nothing is sent where
-    /// it was already off.
+    /// At 40 m the preamp is written to 1 where it was off or at 2, and nothing is sent
+    /// where it was already at 1.
     /// </summary>
     /// <param name="start">Where the preamp was.</param>
     /// <param name="expected">What is written, empty for nothing.</param>
+    /// <remarks>
+    /// **THE TEXT CHANGED UNDER HM-DEC-177** (work instruction 424). Until then the row
+    /// read *preamp 1 above 40 m, off at 40 m and below* and this fact pinned off at
+    /// 7.030; the row now carries the radio's manual, preamp 1 from 1.8 to 29.999 MHz,
+    /// and the fact pins that instead, so it still holds the setup to the row's own text.
+    /// </remarks>
     [Theory]
-    [InlineData(1, new[] { 0 })]
-    [InlineData(2, new[] { 0 })]
-    [InlineData(0, new int[0])]
-    public async Task At7030ThePreampIsWrittenOffOrLeftOff(byte start, int[] expected)
+    [InlineData(0, new[] { 1 })]
+    [InlineData(2, new[] { 1 })]
+    [InlineData(1, new int[0])]
+    public async Task At7030ThePreampIsWrittenTo1OrLeftAt1(byte start, int[] expected)
     {
         var written = await TuneInAsync(7_030_000, start);
 

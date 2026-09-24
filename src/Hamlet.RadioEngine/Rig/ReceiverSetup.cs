@@ -171,8 +171,9 @@ public static class ReceiverSetup
 
             // **A RULE IS RESOLVED AGAINST A READING, OR IT IS NOT WRITTEN**
             // (Tim's ruling of 2026-08-29). The attenuator is off unless the
-            // front end reads overloading and the preamp is off at 40 m and
-            // below; both were wrong in opposite directions on one evening while
+            // front end reads overloading and the preamp follows the frequency
+            // and the overload flag (HM-DEC-177); both were wrong in opposite
+            // directions on one evening while
             // Hamlet held the reading that decides them. Where the reading is
             // unknown the row is spoken and no byte goes out, because a rule
             // applied without its input is a constant wearing a rule's clothes.
@@ -330,12 +331,12 @@ public static class ReceiverSetup
     /// unless the radio says it is overloading, in which case 20 dB. On
     /// 2026-08-29 it sat at 20 dB while a station faded S4 to S1 to nothing, and
     /// later sat off while the front end read overloading at S9 plus 10.</para>
-    /// <para>**`band`: the preamp follows the frequency.** Off at 40 m and below,
-    /// where the noise arriving at the antenna is already louder than anything
-    /// the receiver adds and gain raises both together for nothing; on above,
-    /// where the band goes quiet enough that the receiver is the limit. The
-    /// boundary is 10 MHz, which is the top of 30 m and the bottom of the range
-    /// where that changes.</para>
+    /// <para>**`band`: the preamp follows the frequency, and the overload flag
+    /// before it** (HM-DEC-177, work instruction 424). The stretches and their
+    /// values are the row's, from the radio's manual (`IC-7300_ENG_FM_12b` page
+    /// 4-3): preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off while the
+    /// front end reads overloading. This replaced a 10 MHz literal that turned the
+    /// preamp off across the low bands where Icom specifies it on.</para>
     /// <para>**NULL IS AN ANSWER AND IT MEANS NOTHING IS WRITTEN** (§0.0).</para>
     /// </remarks>
     private static async Task<int?> ResolveAsync(
@@ -362,6 +363,28 @@ public static class ReceiverSetup
 
             case "band":
             {
+                // **OVERLOAD FIRST, WHERE THE ROW SAYS IT DECIDES** (HM-DEC-177). The
+                // manual turns the preamp off with strong signals whatever the band,
+                // so the flag is read before the dial, and a flag the radio will not
+                // give means the rule has no input and nothing is written.
+                if (condition.WhenOverloading is { } whenOverloading)
+                {
+                    var overflow = (await rig
+                        .ReadAsync(RigField.Overflow, RigState.Empty, cancellationToken)
+                        .ConfigureAwait(false))
+                        .FirstOrDefault(v => v.Field == RigField.Overflow);
+
+                    if (overflow is not { IsKnown: true })
+                    {
+                        return null;
+                    }
+
+                    if (overflow.Number is > 0)
+                    {
+                        return whenOverloading;
+                    }
+                }
+
                 var reading = (await rig
                     .ReadAsync(RigField.Frequency, RigState.Empty, cancellationToken)
                     .ConfigureAwait(false))
@@ -372,7 +395,9 @@ public static class ReceiverSetup
                     return null;
                 }
 
-                return hz > 10_000_000 ? 1 : 0;
+                // A frequency in none of the row's stretches is one the row does not
+                // speak for, which is not a licence to write its headline value.
+                return condition.Bands.FirstOrDefault(b => b.Contains((long)hz))?.Wanted;
             }
 
             default:

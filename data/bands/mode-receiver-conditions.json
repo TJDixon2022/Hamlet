@@ -114,13 +114,28 @@
         },
         {
           "control": "preamp",
-          "says": "below 40 m the noise arrives with the signal and gain adds both",
+          "says": "that is what the radio's own manual gives for this band and this front end",
           "field": "preamp",
           "wanted": 1,
-          "wantedText": "preamp 1 above 40 m, off at 40 m and below",
+          "wantedText": "preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3)",
           "confirmed": true,
           "condition": "band",
-          "because": "The preamplifier lifts everything the antenna delivers, signal and band noise alike, so it only helps where the receiver is quieter than the band. On the low bands the atmospheric noise arriving at the antenna is already louder than anything the receiver adds, and the preamp raises both together for nothing. Above 40 m the band goes quiet enough that the receiver becomes the limit and the preamp is worth having."
+          "bands": [
+            {
+              "fromHz": 1800000,
+              "toHz": 29999999,
+              "wanted": 1,
+              "source": "IC-7300_ENG_FM_12b page 4-3: P.AMP1, the wide dynamic range preamplifier, is most effective for the HF low bands; Icom's published receive sensitivity is quoted with Preamp 1 on for 1.8 to 29.999 MHz (HM-DEC-177)"
+            },
+            {
+              "fromHz": 50000000,
+              "toHz": 54000000,
+              "wanted": 2,
+              "source": "IC-7300_ENG_FM_12b page 4-3: P.AMP2, the high-gain preamplifier, is most effective for the 50 MHz bands; Icom's published receive sensitivity is quoted with Preamp 2 on at 50 MHz (HM-DEC-177). The 54 MHz top edge is the US 6 m band's, 47 CFR 97.301, and no file in this tree carries it yet: data/privileges has no 6 m row, and no 6 m block is on the map, so nothing tunes in here today (work instruction 424)"
+            }
+          ],
+          "whenOverloading": 0,
+          "because": "The radio's manual, IC-7300_ENG_FM_12b, Receiving and Transmitting, page 4-3, says which preamp belongs where. P.AMP1 is the wide dynamic range preamplifier and it is most effective for the HF low bands; P.AMP2 is the high-gain preamplifier and it is most effective for the 50 MHz bands; and when the preamp is used while receiving strong signals the signal may be distorted, and in that case the preamp is turned off. Icom's own published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz and with Preamp 2 on at 50 MHz. So Hamlet puts preamp 1 on every HF band, preamp 2 on 6 m, and the preamp off when the radio says its front end is overloading, which is the strong-signal case the manual names. The radio remembers the setting for each band on its own."
         }
       ]
     },

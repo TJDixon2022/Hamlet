@@ -76,20 +76,30 @@ public sealed class EveryMorseBlockSetsWhatCwSetsTests
     }
 
     /// <summary>
-    /// **AT 7.030 THE PREAMP ENDS AT OFF**, which is what the CW row's own text says
-    /// at 40 m and below.
+    /// **AT 7.030 THE PREAMP ENDS WHERE THE CW ROW'S OWN TEXT PUTS IT**, which since
+    /// HM-DEC-177 is preamp 1: the radio's manual, page 4-3, from 1.8 to 29.999 MHz.
     /// </summary>
+    /// <remarks>
+    /// Work instruction 420 pinned off here, the old row's *off at 40 m and below*.
+    /// Work instruction 424 replaced the row from the manual, and the fact now pins the
+    /// row's value at 7.030 rather than a number typed here, so it still fails if the
+    /// QRP block stops stating the CW row.
+    /// </remarks>
     [Fact]
-    public async Task At7030ThePreampEndsOff()
+    public async Task At7030ThePreampEndsAtTheRowsValue()
     {
         var block = ModeEntryBench.BlockAt(7_030_000)!;
         var (results, radio) = await TuneInAsync(7_030_000, block);
+        var row = ReceiverConditions.ForMode("CW").Single(c => c.Field == RigField.Preamp);
 
         _output.WriteLine(
             $"{block.Name} ({block.ShortName}) states {results.Count} conditions; "
             + $"preamp now {radio.Switches[ModeEntryBench.Preamp]}");
 
-        Assert.Equal(0, radio.Switches[ModeEntryBench.Preamp]);
+        Assert.Contains(results, r => r.Condition.Field == RigField.Preamp);
+        Assert.Equal(
+            row.Bands.First(b => b.Contains(7_030_000)).Wanted,
+            radio.Switches[ModeEntryBench.Preamp]);
     }
 
     /// <summary>

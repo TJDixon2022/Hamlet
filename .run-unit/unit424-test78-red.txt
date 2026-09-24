@@ -1,0 +1,268 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.35]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.53]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.53]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.64]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.WithTheOverloadUnreadNothingIsWritten [FAIL]
+[xUnit.net 00:00:01.64]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.64]       Collection: [1]
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(107,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.WithTheOverloadUnreadNothingIsWritten()
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Output:
+[xUnit.net 00:00:01.64]         14.050 MHz (CW), preamp 0 before, overflow unread: wrote [1], filed Changed, radio now preamp 1
+[xUnit.net 00:00:01.64]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 1) [FAIL]
+[xUnit.net 00:00:01.64]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.64]       Expected: 0
+[xUnit.net 00:00:01.64]       Actual:   1
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(95,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(Int64 hz, Byte start)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Output:
+[xUnit.net 00:00:01.64]         14.050 MHz (CW), preamp 1 before, overflow overloading: wrote [], filed AlreadyRight, radio now preamp 1
+[xUnit.net 00:00:01.64]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 2) [FAIL]
+[xUnit.net 00:00:01.64]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.64]       Expected: 0
+[xUnit.net 00:00:01.64]       Actual:   1
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(95,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(Int64 hz, Byte start)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Output:
+[xUnit.net 00:00:01.64]         14.050 MHz (CW), preamp 2 before, overflow overloading: wrote [1], filed Changed, radio now preamp 1
+[xUnit.net 00:00:01.65]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 28050000, start: 1) [FAIL]
+[xUnit.net 00:00:01.65]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.65]       Expected: 0
+[xUnit.net 00:00:01.65]       Actual:   1
+[xUnit.net 00:00:01.65]       Stack Trace:
+[xUnit.net 00:00:01.65]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(95,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(Int64 hz, Byte start)
+[xUnit.net 00:00:01.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.65]       Output:
+[xUnit.net 00:00:01.65]         28.050 MHz (CW), preamp 1 before, overflow overloading: wrote [], filed AlreadyRight, radio now preamp 1
+[xUnit.net 00:00:01.65]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtOffIsWrittenToPreamp1 [FAIL]
+[xUnit.net 00:00:01.65]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.65]                  ↓ (pos 0)
+[xUnit.net 00:00:01.65]       Expected: [1]
+[xUnit.net 00:00:01.65]       Actual:   []
+[xUnit.net 00:00:01.65]       Stack Trace:
+[xUnit.net 00:00:01.65]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(43,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtOffIsWrittenToPreamp1()
+[xUnit.net 00:00:01.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.65]       Output:
+[xUnit.net 00:00:01.65]         7.030 MHz (QRP), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+[xUnit.net 00:00:01.66]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsPreamp2 [FAIL]
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.66]                  ↓ (pos 0)
+[xUnit.net 00:00:01.66]       Expected: [2]
+[xUnit.net 00:00:01.66]       Actual:   [1]
+[xUnit.net 00:00:01.66]                  ↑ (pos 0)
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(76,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsPreamp2()
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Output:
+[xUnit.net 00:00:01.66]         50.100 MHz (no block, CW row), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+[xUnit.net 00:00:01.66]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 7030000, start: 2) [FAIL]
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.66]       Expected: 1
+[xUnit.net 00:00:01.66]       Actual:   0
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(67,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(Int64 hz, Byte start)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Output:
+[xUnit.net 00:00:01.66]         7.030 MHz (QRP), preamp 2 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.WithTheOverloadUnreadNothingIsWritten [66 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [1]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.WithTheOverloadUnreadNothingIsWritten() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 107
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 0 before, overflow unread: wrote [1], filed Changed, radio now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 1) [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(Int64 hz, Byte start) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 95
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 1 before, overflow overloading: wrote [], filed AlreadyRight, radio now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 14050000, start: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(Int64 hz, Byte start) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 95
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 2 before, overflow overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 28050000, start: 1) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(Int64 hz, Byte start) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 95
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 28.050 MHz (CW), preamp 1 before, overflow overloading: wrote [], filed AlreadyRight, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OverloadingItIsOff(hz: 7030000, start: 1) [< 1 ms]
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 1 before, overflow overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtOffIsWrittenToPreamp1 [6 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [1]
+Actual:   []
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At7030ARadioAtOffIsWrittenToPreamp1() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 43
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsPreamp2 [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [2]
+Actual:   [1]
+           ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.At50MhzItIsPreamp2() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 76
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 50.100 MHz (no block, CW row), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 7030000, start: 2) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(Int64 hz, Byte start) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 67
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 7.030 MHz (QRP), preamp 2 before, overflow not overloading: wrote [0], filed Changed, radio now preamp 0
+
+
+[xUnit.net 00:00:01.66]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 1810000, start: 0) [FAIL]
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.66]       Expected: 1
+[xUnit.net 00:00:01.66]       Actual:   0
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(67,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(Int64 hz, Byte start)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Output:
+[xUnit.net 00:00:01.66]         1.810 MHz (no block, CW row), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+[xUnit.net 00:00:01.66]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 3530000, start: 0) [FAIL]
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.66]       Expected: 1
+[xUnit.net 00:00:01.66]       Actual:   0
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(67,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(Int64 hz, Byte start)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Output:
+[xUnit.net 00:00:01.66]         3.530 MHz (CW), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+[xUnit.net 00:00:01.67]     Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionCitesTheManualPage [FAIL]
+[xUnit.net 00:00:01.67]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.67]       String:    "preamp 1 above 40 m, off at 40 m and belo"···
+[xUnit.net 00:00:01.67]       Not found: "IC-7300"
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs(120,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionCitesTheManualPage()
+[xUnit.net 00:00:01.67]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.67]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.67]       Output:
+[xUnit.net 00:00:01.67]         preamp 1 above 40 m, off at 40 m and below
+[xUnit.net 00:00:01.67]         The preamplifier lifts everything the antenna delivers, signal and band noise alike, so it only helps where the receiver is quieter than the band. On the low bands the atmospheric noise arriving at the antenna is already louder than anything the receiver adds, and the preamp raises both together for nothing. Above 40 m the band goes quiet enough that the receiver becomes the limit and the preamp is worth having.
+[xUnit.net 00:00:01.67]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 21050000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 21.050 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 28050000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 28.050 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 1810000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(Int64 hz, Byte start) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 67
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 1.810 MHz (no block, CW row), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 18080000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 18.080 MHz (CW), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 3530000, start: 0) [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(Int64 hz, Byte start) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 67
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 3.530 MHz (CW), preamp 0 before, overflow not overloading: wrote [], filed AlreadyRight, radio now preamp 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 14050000, start: 2) [< 1 ms]
+  Standard Output Messages:
+ 14.050 MHz (CW), preamp 2 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.OnEveryHfBandItIsPreamp1(hz: 10110000, start: 0) [< 1 ms]
+  Standard Output Messages:
+ 10.110 MHz (QRP), preamp 0 before, overflow not overloading: wrote [1], filed Changed, radio now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionCitesTheManualPage [2 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "preamp 1 above 40 m, off at 40 m and belo"···
+Not found: "IC-7300"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampIsWhatTheManualSaysTests.TheConditionCitesTheManualPage() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampIsWhatTheManualSaysTests.cs:line 120
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ preamp 1 above 40 m, off at 40 m and below
+ The preamplifier lifts everything the antenna delivers, signal and band noise alike, so it only helps where the receiver is quieter than the band. On the low bands the atmospheric noise arriving at the antenna is already louder than anything the receiver adds, and the preamp raises both together for nothing. Above 40 m the band goes quiet enough that the receiver becomes the limit and the preamp is worth having.
+
+
+
+Test Run Failed.
+Total tests: 17
+     Passed: 7
+     Failed: 10
+ Total time: 1.9414 Seconds
+RC=1 WALL=2s

@@ -57,7 +57,8 @@ public sealed record ReceiverCondition(
     /// <remarks>
     /// <para>**TWO OF CW'S SETTINGS ARE RULES RATHER THAN VALUES** (Tim's ruling
     /// of 2026-08-29). The attenuator is off unless the front end reads
-    /// overloading, and the preamp is off at 40 m and below. Writing either as a
+    /// overloading, and the preamp follows the frequency and the overload flag
+    /// (HM-DEC-177, which replaced *off at 40 m and below*). Writing either as a
     /// constant is wrong half the time, and on 2026-08-29 it was wrong in both
     /// directions on one evening: 20 dB on while a station faded to nothing, and
     /// off while the front end read overloading at S9 plus 10. **Hamlet read the
@@ -68,6 +69,30 @@ public sealed record ReceiverCondition(
     /// clothes (§0.0).</para>
     /// </remarks>
     public string Condition { get; init; } = Condition;
+
+    /// <summary>
+    /// For a `band` row, the value each stretch of the dial wants, from the file;
+    /// empty for any other row.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE RANGES ARE THE DATA'S, NOT THE RESOLVER'S** (HM-DEC-177, work
+    /// instruction 424). The preamp's rule was a 10 MHz literal in
+    /// <see cref="ReceiverSetup"/> that only a comment tied to the row's text, and it
+    /// was wrong against the radio's manual. Carried here, the value and the page it
+    /// comes from sit in one row and a frequency outside every range is not written.</para>
+    /// </remarks>
+    public IReadOnlyList<ConditionBand> Bands { get; init; } = Array.Empty<ConditionBand>();
+
+    /// <summary>
+    /// For a `band` row, what it wants while the front end reads overloading, or null
+    /// where the overload flag does not decide it.
+    /// </summary>
+    /// <remarks>
+    /// **THE MANUAL'S OFF CASE IS OVERLOAD, NOT A BAND** (`IC-7300_ENG_FM_12b` page
+    /// 4-3: with strong signals the preamp is turned off). Where this is set, the
+    /// flag is read first and an unread flag writes nothing.
+    /// </remarks>
+    public int? WhenOverloading { get; init; }
 
     /// <summary>True where this row's value depends on a live reading.</summary>
     public bool IsConditional => Condition.Length > 0;
@@ -80,6 +105,19 @@ public sealed record ReceiverCondition(
     /// a byte (§0.0, §12.4).
     /// </remarks>
     public bool CanBeWritten => Field is not null && Wanted is not null && Confirmed;
+}
+
+/// <summary>One stretch of the dial and the value a `band` row wants there.</summary>
+/// <param name="FromHz">The lowest frequency, inclusive.</param>
+/// <param name="ToHz">The highest frequency, inclusive.</param>
+/// <param name="Wanted">The value wanted there.</param>
+/// <param name="Source">Where the value and the edges come from.</param>
+public sealed record ConditionBand(long FromHz, long ToHz, int Wanted, string Source)
+{
+    /// <summary>Whether a frequency lies in this stretch.</summary>
+    /// <param name="hz">The frequency.</param>
+    /// <returns>True where it does.</returns>
+    public bool Contains(long hz) => hz >= FromHz && hz <= ToHz;
 }
 
 /// <summary>
@@ -257,7 +295,13 @@ public static class ReceiverConditions
             dto.Because ?? "",
             dto.Confirmed,
             dto.Confirm ?? "",
-            dto.Condition ?? "");
+            dto.Condition ?? "")
+        {
+            Bands = (dto.Bands ?? Array.Empty<BandDto>())
+                .Select(b => new ConditionBand(b.FromHz, b.ToHz, b.Wanted, b.Source ?? ""))
+                .ToList(),
+            WhenOverloading = dto.WhenOverloading,
+        };
 
     private static RigField? ParseField(string? name)
         => Enum.TryParse<RigField>(name, ignoreCase: true, out var field)
@@ -321,6 +365,23 @@ public static class ReceiverConditions
 
         /// <summary>What the row's value depends on, where it is a rule.</summary>
         public string? Condition { get; set; }
+
+        /// <summary>A `band` row's stretches of the dial.</summary>
+        public BandDto[]? Bands { get; set; }
+
+        /// <summary>A `band` row's value while the front end reads overloading.</summary>
+        public int? WhenOverloading { get; set; }
+    }
+
+    private sealed class BandDto
+    {
+        public long FromHz { get; set; }
+
+        public long ToHz { get; set; }
+
+        public int Wanted { get; set; }
+
+        public string? Source { get; set; }
     }
 
     private sealed class UnknownDto

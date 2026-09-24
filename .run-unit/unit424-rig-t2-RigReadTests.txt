@@ -1,0 +1,43 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: SquelchStatus, command: 21, subCommand: 5, value: 1, expected: "open") [53 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: ManualNotch, command: 22, subCommand: 72, value: 0, expected: "off") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: TransmitStatus, command: 28, subCommand: 0, value: 0, expected: "receiving") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: Attenuator, command: 17, subCommand: 255, value: 32, expected: "20 dB") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: NoiseReduction, command: 22, subCommand: 64, value: 0, expected: "off") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: Split, command: 15, subCommand: 255, value: 1, expected: "on") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: AutoNotch, command: 22, subCommand: 65, value: 1, expected: "on") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: BreakIn, command: 22, subCommand: 71, value: 2, expected: "full") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: NoiseBlanker, command: 22, subCommand: 34, value: 1, expected: "on") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.EachSettingParsesToTheManualsOwnWords(field: Preamp, command: 22, subCommand: 2, value: 2, expected: "preamp 2") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 2, low: 65, expected: "S9+60") [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 0, low: 0, expected: "S0") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 1, low: 32, expected: "S9") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheSMeterParsesAgainstTheManualsAnchors(high: 0, low: 103, expected: "S5") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AReadThatTimesOutMarksTheValueUnknownWithoutThrowing [764 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheFilterWidthIsRefusedWhenTheModeIsUnknown [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 1, filterByte: 2, mode: "USB", filter: "FIL2") [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 0, filterByte: 1, mode: "LSB", filter: "FIL1") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 5, filterByte: 1, mode: "FM", filter: "FIL1") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.ReadingTheModeAlsoAnswersTheFilter(modeByte: 3, filterByte: 3, mode: "CW", filter: "FIL3") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AModeChangeOnTheRadioArrivesWithoutBeingAskedFor [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheFilterWidthComesBackInHertz [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: CwPitch, subCommand: 9, high: 0, low: 0, expected: 300) [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: CwPitch, subCommand: 9, high: 2, low: 85, expected: 900) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: KeyerSpeed, subCommand: 12, high: 2, low: 85, expected: 48) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: KeyerSpeed, subCommand: 12, high: 0, low: 0, expected: 6) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheLevelScalesLandOnTheManualsFigures(field: CwPitch, subCommand: 9, high: 1, low: 40, expected: 600) [< 1 ms]
+[xUnit.net 00:00:01.10]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.TheTrainingRadioReportsUnsupportedRatherThanInventingValues [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AnUndocumentedFieldSendsNothingAndSaysSo [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AnUndocumentedReplyProducesUnknownRatherThanAGuess [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigReadTests.AReplyToADifferentSubCommandDoesNotAnswerThisRequest [< 1 ms]
+
+Test Run Successful.
+Total tests: 31
+     Passed: 31
+ Total time: 1.3469 Seconds
