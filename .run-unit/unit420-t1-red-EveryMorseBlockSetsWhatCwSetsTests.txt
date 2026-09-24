@@ -1,0 +1,131 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.33]     Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.At7030ThePreampEndsOff [FAIL]
+[xUnit.net 00:00:00.33]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:00.33]       Expected: 0
+[xUnit.net 00:00:00.33]       Actual:   1
+[xUnit.net 00:00:00.33]       Stack Trace:
+[xUnit.net 00:00:00.33]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs(92,0): at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.At7030ThePreampEndsOff()
+[xUnit.net 00:00:00.33]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:00.33]       Output:
+[xUnit.net 00:00:00.33]         QRP watering hole (QRP) states 0 conditions; preamp now 1
+[xUnit.net 00:00:00.35]     Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 7030000) [FAIL]
+[xUnit.net 00:00:00.35]       QRP at 7.030 MHz states no auto notch, so entering Morse there leaves it wherever it was
+[xUnit.net 00:00:00.35]       Stack Trace:
+[xUnit.net 00:00:00.35]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs(67,0): at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(Int64 hz)
+[xUnit.net 00:00:00.35]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:00.35]       Output:
+[xUnit.net 00:00:00.35]         7.030 MHz is QRP watering hole (QRP); beside CW main street (CW) at the same dial
+[xUnit.net 00:00:00.35]           auto notch       here no tune-in         now -          | CW block AlreadyRight       now off
+[xUnit.net 00:00:00.35]     Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14010000) [FAIL]
+[xUnit.net 00:00:00.35]       CW DX at 14.010 MHz states no auto notch, so entering Morse there leaves it wherever it was
+[xUnit.net 00:00:00.35]       Stack Trace:
+[xUnit.net 00:00:00.35]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs(67,0): at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(Int64 hz)
+[xUnit.net 00:00:00.35]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:00.35]       Output:
+[xUnit.net 00:00:00.35]         14.010 MHz is CW fast lane (CW DX); beside CW main street (CW) at the same dial
+[xUnit.net 00:00:00.35]           auto notch       here no tune-in         now -          | CW block AlreadyRight       now off
+[xUnit.net 00:00:00.37]     Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EveryMorseBlockStatesTheCwRow [FAIL]
+[xUnit.net 00:00:00.37]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:00.37]       Collection: [Tuple (CwBand { Name = 80 m, LowHz = 3500000, HighHz = 4000000, CwLowHz = 3500000, CwHighHz = 3600000, JumpHz = 3530000 }, Neighborhood { Name = CW fast lane, ShortName = CW DX, LowHz = 3500000, HighHz = 3509999, Vibe = Rush hour, Blurb = The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement., JumpHz = 3505000, Family = Cw, Cite = arrl-conop, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 80 m, LowHz = 3500000, HighHz = 4000000, CwLowHz = 3500000, CwHighHz = 3600000, JumpHz = 3530000 }, Neighborhood { Name = QRP watering hole, ShortName = QRP, LowHz = 3560000, HighHz = 3569999, Vibe = Tiny stations, long distances, Blurb = The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards., JumpHz = 3560000, Family = Cw, Cite = qrp-arci, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 40 m, LowHz = 7000000, HighHz = 7300000, CwLowHz = 7000000, CwHighHz = 7125000, JumpHz = 7028000 }, Neighborhood { Name = CW fast lane, ShortName = CW DX, LowHz = 7000000, HighHz = 7024999, Vibe = Rush hour, Blurb = The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement., JumpHz = 7005000, Family = Cw, Cite = cfr-97.305, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 40 m, LowHz = 7000000, HighHz = 7300000, CwLowHz = 7000000, CwHighHz = 7125000, JumpHz = 7028000 }, Neighborhood { Name = QRP watering hole, ShortName = QRP, LowHz = 7030000, HighHz = 7039999, Vibe = Tiny stations, long distances, Blurb = The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards., JumpHz = 7030000, Family = Cw, Cite = qrp-arci, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 30 m, LowHz = 10100000, HighHz = 10150000, CwLowHz = 10100000, CwHighHz = 10150000, JumpHz = 10103000 }, Neighborhood { Name = QRP watering hole, ShortName = QRP, LowHz = 10106000, HighHz = 10115999, Vibe = Tiny stations, long distances, Blurb = The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards., JumpHz = 10106000, Family = Cw, Cite = qrp-arci, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), ···]
+[xUnit.net 00:00:00.37]       Stack Trace:
+[xUnit.net 00:00:00.37]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs(120,0): at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EveryMorseBlockStatesTheCwRow()
+[xUnit.net 00:00:00.37]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.37]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.37]       Output:
+[xUnit.net 00:00:00.37]           80 m  CW fast lane (CW DX) does not state the CW row
+[xUnit.net 00:00:00.37]           80 m  QRP watering hole (QRP) does not state the CW row
+[xUnit.net 00:00:00.37]           40 m  CW fast lane (CW DX) does not state the CW row
+[xUnit.net 00:00:00.37]           40 m  QRP watering hole (QRP) does not state the CW row
+[xUnit.net 00:00:00.37]           30 m  QRP watering hole (QRP) does not state the CW row
+[xUnit.net 00:00:00.37]           20 m  CW fast lane (CW DX) does not state the CW row
+[xUnit.net 00:00:00.37]           20 m  QRP watering hole (QRP) does not state the CW row
+[xUnit.net 00:00:00.37]           17 m  QRP watering hole (QRP) does not state the CW row
+[xUnit.net 00:00:00.37]           15 m  CW fast lane (CW DX) does not state the CW row
+[xUnit.net 00:00:00.37]           15 m  QRP watering hole (QRP) does not state the CW row
+[xUnit.net 00:00:00.37]           10 m  QRP watering hole (QRP) does not state the CW row
+[xUnit.net 00:00:00.37]         CW-family blocks stating the CW row: 9 of 20
+[xUnit.net 00:00:00.37]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.At7030ThePreampEndsOff [64 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.At7030ThePreampEndsOff() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs:line 92
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ QRP watering hole (QRP) states 0 conditions; preamp now 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 7030000) [14 ms]
+  Error Message:
+   QRP at 7.030 MHz states no auto notch, so entering Morse there leaves it wherever it was
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(Int64 hz) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs:line 67
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 7.030 MHz is QRP watering hole (QRP); beside CW main street (CW) at the same dial
+   auto notch       here no tune-in         now -          | CW block AlreadyRight       now off
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14010000) [1 ms]
+  Error Message:
+   CW DX at 14.010 MHz states no auto notch, so entering Morse there leaves it wherever it was
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(Int64 hz) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs:line 67
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ 14.010 MHz is CW fast lane (CW DX); beside CW main street (CW) at the same dial
+   auto notch       here no tune-in         now -          | CW block AlreadyRight       now off
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14050000) [7 ms]
+  Standard Output Messages:
+ 14.050 MHz is CW main street (CW); beside CW main street (CW) at the same dial
+   auto notch       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   manual notch     here AlreadyRight       now off        | CW block AlreadyRight       now off
+   noise blanker    here Changed            now off        | CW block Changed            now off
+   noise reduction  here AlreadyRight       now off        | CW block AlreadyRight       now off
+   AGC              here Changed            now FAST       | CW block Changed            now FAST
+   RF gain          here AlreadyRight       now 100%       | CW block AlreadyRight       now 100%
+   squelch          here AlreadyRight       now 0%         | CW block AlreadyRight       now 0%
+   attenuator       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   preamp           here AlreadyRight       now preamp 1   | CW block AlreadyRight       now preamp 1
+
+
+  Failed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EveryMorseBlockStatesTheCwRow [7 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [Tuple (CwBand { Name = 80 m, LowHz = 3500000, HighHz = 4000000, CwLowHz = 3500000, CwHighHz = 3600000, JumpHz = 3530000 }, Neighborhood { Name = CW fast lane, ShortName = CW DX, LowHz = 3500000, HighHz = 3509999, Vibe = Rush hour, Blurb = The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement., JumpHz = 3505000, Family = Cw, Cite = arrl-conop, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 80 m, LowHz = 3500000, HighHz = 4000000, CwLowHz = 3500000, CwHighHz = 3600000, JumpHz = 3530000 }, Neighborhood { Name = QRP watering hole, ShortName = QRP, LowHz = 3560000, HighHz = 3569999, Vibe = Tiny stations, long distances, Blurb = The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards., JumpHz = 3560000, Family = Cw, Cite = qrp-arci, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 40 m, LowHz = 7000000, HighHz = 7300000, CwLowHz = 7000000, CwHighHz = 7125000, JumpHz = 7028000 }, Neighborhood { Name = CW fast lane, ShortName = CW DX, LowHz = 7000000, HighHz = 7024999, Vibe = Rush hour, Blurb = The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement., JumpHz = 7005000, Family = Cw, Cite = cfr-97.305, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 40 m, LowHz = 7000000, HighHz = 7300000, CwLowHz = 7000000, CwHighHz = 7125000, JumpHz = 7028000 }, Neighborhood { Name = QRP watering hole, ShortName = QRP, LowHz = 7030000, HighHz = 7039999, Vibe = Tiny stations, long distances, Blurb = The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards., JumpHz = 7030000, Family = Cw, Cite = qrp-arci, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), Tuple (CwBand { Name = 30 m, LowHz = 10100000, HighHz = 10150000, CwLowHz = 10100000, CwHighHz = 10150000, JumpHz = 10103000 }, Neighborhood { Name = QRP watering hole, ShortName = QRP, LowHz = 10106000, HighHz = 10115999, Vibe = Tiny stations, long distances, Blurb = The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards., JumpHz = 10106000, Family = Cw, Cite = qrp-arci, Caution = , SignalsAreAudioOffsets = False, PassbandHz =  }), ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EveryMorseBlockStatesTheCwRow() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\EveryMorseBlockSetsWhatCwSetsTests.cs:line 120
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+   80 m  CW fast lane (CW DX) does not state the CW row
+   80 m  QRP watering hole (QRP) does not state the CW row
+   40 m  CW fast lane (CW DX) does not state the CW row
+   40 m  QRP watering hole (QRP) does not state the CW row
+   30 m  QRP watering hole (QRP) does not state the CW row
+   20 m  CW fast lane (CW DX) does not state the CW row
+   20 m  QRP watering hole (QRP) does not state the CW row
+   17 m  QRP watering hole (QRP) does not state the CW row
+   15 m  CW fast lane (CW DX) does not state the CW row
+   15 m  QRP watering hole (QRP) does not state the CW row
+   10 m  QRP watering hole (QRP) does not state the CW row
+ CW-family blocks stating the CW row: 9 of 20
+
+
+
+Test Run Failed.
+Total tests: 5
+     Passed: 1
+     Failed: 4
+ Total time: 0.6592 Seconds
+RC=1 WALL=1s

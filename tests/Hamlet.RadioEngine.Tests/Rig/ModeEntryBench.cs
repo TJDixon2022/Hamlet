@@ -81,6 +81,23 @@ internal static class ModeEntryBench
     }
 
     /// <summary>
+    /// A radio as work instruction 420 has it left: preamp 1, AGC on mid, the noise
+    /// blanker on, RF gain at full.
+    /// </summary>
+    /// <param name="hz">Where the dial is.</param>
+    /// <returns>The radio, in CW.</returns>
+    /// <remarks>
+    /// **THE PREAMP IS ON, WHICH <see cref="AsLeft"/> IS NOT.** At 7.030 the CW row's
+    /// text says off, so a radio left at preamp 1 shows whether the block writes it.
+    /// </remarks>
+    public static ScriptedRadio AsLeftWithThePreampOn(long hz)
+    {
+        var radio = AsLeft(hz, data: false);
+        radio.Switches[Preamp] = 1;
+        return radio;
+    }
+
+    /// <summary>
     /// A radio already at every value the CW row asks for at this frequency.
     /// </summary>
     /// <param name="hz">Where the dial is.</param>

@@ -1,0 +1,14 @@
+unit420 task 1: the table in all three CW-family blocks, and EveryMorseBlockSetsWhatCwSetsTests committed red (7.7)
+
+WhatEnteringAModeSetsTests.PrintTheTable now drives, exactly as the app does, 7.030 QRP (40 m), 14.010 CW DX and 14.050 CW (20 m) from a radio at preamp 1, AGC mid, noise blanker on, RF gain at full, printing per field what the block asks, what the radio said, what was written, what it was filed as, what it reads after and who owns it; then the count of CW-family blocks that state conditions: 9 of 20 (CW 9 of 9, CW DX 0 of 4, QRP 0 of 7). At 7.030 and 14.010 every field is no tune-in, nothing written, owner nobody, and the preamp stays at preamp 1 at 7.030 against the CW row's own text.
+
+The red, quoted from .run-unit/unit420-t1-red-EveryMorseBlockSetsWhatCwSetsTests.txt, 1 of 5 passed:
+  At7030ThePreampEndsOff: Assert.Equal() Failure: Values differ, Expected: 0, Actual: 1
+  EnteringMorseHereSetsWhatTheCwBlockSets(hz: 7030000): QRP at 7.030 MHz states no auto notch, so entering Morse there leaves it wherever it was
+  EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14010000): CW DX at 14.010 MHz states no auto notch, so entering Morse there leaves it wherever it was
+  EveryMorseBlockStatesTheCwRow: Assert.Empty() Failure: Collection was not empty; CW-family blocks stating the CW row: 9 of 20
+  EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14050000): passed
+
+Tests only; nothing under src or data changed. ModeEntryBench gains AsLeftWithThePreampOn, because its AsLeft leaves the preamp off, not at 1 as work instruction 420 describes unit 419's radio.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

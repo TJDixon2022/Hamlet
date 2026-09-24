@@ -1,3 +1,4 @@
+using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Rig;
@@ -20,6 +21,10 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 /// has set it. Printed before task 2 changes anything and again after.</para>
 /// <para>**14.050 IS ABOVE 40 M AND 7.030 IS AT IT**, so both halves of the
 /// preamp's band rule appear.</para>
+/// <para>**WORK INSTRUCTION 420 ADDS THE THREE BLOCKS OF THE CW FAMILY** (R70,
+/// criterion 7.7): `QRP` at 7.030, `CW DX` at 14.010 and `CW` at 14.050, each driven
+/// exactly as the app drives it, with the radio at preamp 1, and the count of Morse
+/// blocks that state conditions at all.</para>
 /// <para>**NO RADIO IS ON THIS MACHINE** (FACT-006): every line is an indication
 /// against a scripted radio.</para>
 /// </remarks>
@@ -90,6 +95,107 @@ public sealed class WhatEnteringAModeSetsTests
 
         await TheHandAsync(14_050_000, preampAlreadyOn: false);
         await TheHandAsync(14_050_000, preampAlreadyOn: true);
+
+        await TheThreeBlocksAsync();
+    }
+
+    /// <summary>
+    /// Work instruction 420's three frequencies, one in each block of the CW family:
+    /// `QRP` at 7.030 on 40 m, `CW DX` at 14.010 and `CW` at 14.050 on 20 m.
+    /// </summary>
+    /// <remarks>
+    /// 14.010 is the author's choice inside the bottom 25 kHz of 20 m, which is the
+    /// `CW DX` block there (14.000 to 14.025).
+    /// </remarks>
+    internal static readonly (string Title, long Hz)[] ThreeBlocks =
+    {
+        ("7.030 MHz, 40 m", 7_030_000),
+        ("14.010 MHz, 20 m", 14_010_000),
+        ("14.050 MHz, 20 m", 14_050_000),
+    };
+
+    // **WHAT THE APP DOES, AND NOTHING DRIVEN DIRECTLY** (work instruction 420 task 1).
+    // Each case hands the setup exactly what EstablishReceiveConditionsAsync hands it,
+    // the block's own conditions, against a radio at preamp 1, AGC mid, the noise
+    // blanker on and RF gain at full. A block that states nothing gets no tune-in,
+    // and every field of the CW row is still printed so the silence is visible.
+    private async Task TheThreeBlocksAsync()
+    {
+        _output.WriteLine("");
+        _output.WriteLine(
+            "=== work instruction 420: entering Morse in each CW-family block, the radio at "
+            + "preamp 1, AGC mid, noise blanker on, RF gain at full");
+
+        foreach (var (title, hz) in ThreeBlocks)
+        {
+            await BlockCaseAsync(title, hz);
+        }
+
+        PrintTheFamily();
+    }
+
+    private async Task BlockCaseAsync(string title, long hz)
+    {
+        var block = ModeEntryBench.BlockAt(hz);
+        var conditions = ReceiverConditions.ForBlock(block);
+
+        var radio = ModeEntryBench.AsLeftWithThePreampOn(hz);
+        using var rig = await ModeEntryBench.ConnectAsync(radio);
+
+        var before = await ModeEntryBench.ReadAllAsync(rig);
+        var (results, _) = await ReceiverSetup.ApplyAsync(
+            rig, conditions, ReceiverSetupMemory.Empty);
+        var writes = ModeEntryBench.Writes(radio);
+        var after = await ModeEntryBench.ReadAllAsync(rig);
+        var owned = ReceiverSetup.Owns(results);
+
+        _output.WriteLine("");
+        _output.WriteLine($"--- {title}");
+        _output.WriteLine(
+            $"  the app's block here: {block?.Name ?? "none"} ({block?.ShortName ?? "-"}, "
+            + $"{block?.LowHz}-{block?.HighHz}), which states {conditions.Count} conditions");
+        _output.WriteLine(
+            $"  {"control",-16}{"this block asks",-44}{"radio said",-12}{"written",-10}"
+            + $"{"filed as",-19}{"now",-10}owner");
+
+        foreach (var c in ReceiverConditions.ForMode("CW"))
+        {
+            var field = c.Field!.Value;
+            var r = results.FirstOrDefault(x => x.Condition.Field == field);
+            var sent = string.Join(
+                ",", writes.Where(w => w.Field == field).Select(w => w.Value.ToString()));
+
+            _output.WriteLine(
+                $"  {c.Control,-16}"
+                + $"{(r is null ? "nothing, the block states no conditions" : Clip($"{r.Condition.WantedText} [{r.Condition.Wanted}{(r.Condition.IsConditional ? ", " + r.Condition.Condition : "")}]", 42)),-44}"
+                + $"{before[field].Text,-12}"
+                + $"{(sent.Length > 0 ? sent : "none"),-10}"
+                + $"{(r is null ? "no tune-in" : r.Outcome.ToString()),-19}"
+                + $"{after[field].Text,-10}"
+                + (owned.Contains(field) ? "setup" : "nobody"));
+        }
+    }
+
+    // The count 7.7 wants before and after: every CW-family block on the map, and how
+    // many of them state receiver conditions, by short name.
+    private void PrintTheFamily()
+    {
+        var family = HfBands.Bands
+            .SelectMany(b => NeighborhoodPlan.ForBand(b))
+            .Where(n => n.Family == ModeFamily.Cw)
+            .ToList();
+
+        _output.WriteLine("");
+        _output.WriteLine(
+            "=== CW-family blocks that state receiver conditions: "
+            + $"{family.Count(n => ReceiverConditions.ForBlock(n).Count > 0)} of {family.Count}");
+
+        foreach (var name in family.Select(n => n.ShortName).Distinct())
+        {
+            var these = family.Where(n => n.ShortName == name).ToList();
+            _output.WriteLine(
+                $"  {name,-6} {these.Count(n => ReceiverConditions.ForBlock(n).Count > 0)} of {these.Count}");
+        }
     }
 
     // What the app would hand the setup is the block's conditions; where the
