@@ -463,6 +463,7 @@ public sealed class WhereTheSpaceIsDecidedTests
                 + $"{adds.Count} | {removes.Count} | {naive} | {after} | {run.SpaceEndMismatches}");
             _output.WriteLine($"text | {name} | entry  `{TextOf(run.Entry)}`");
             _output.WriteLine($"text | {name} | after  `{TextOf(run.After)}`");
+            _output.WriteLine($"text | {name} | real   `{string.Concat(run.Real.Select(c => c.Text == "#" ? MorseAlphabet.Unreadable : c.Text))}`");
 
             if (naive > 0)
             {

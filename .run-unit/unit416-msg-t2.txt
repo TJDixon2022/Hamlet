@@ -1,0 +1,3 @@
+unit416 task 2: what it looks like (3.3) - WhereTheSpaceIsDecidedTests prints the text the stream really settled beside its emulations, one print line, test only; on the kept build 004322 reads P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA where it read P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S WILA, and 004405 reads W1AW/88 OORDINAT where it read W 1 A W / 88 O OR D IN A T; on all 52 recordings the real text with spaces stripped equals the old loop's, no letter moved; 17:37 29 to 28 over 25; baseline.md running total 217 to 185 over 565
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

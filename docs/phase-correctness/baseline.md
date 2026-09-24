@@ -236,6 +236,21 @@ count is identical on all 51 rows.
 | unit | change | 17:37 | baseline total |
 |---|---|---|---|
 | 415 | none kept; two built and taken out under 3.2's third test | 29 edits over 25 characters, inferred key, 0 unsure per 28 named | 33 edits over 46 characters, inferred keys, 0 unsure per 47 named |
+| 416 | **kept**: the narrowed relabel `b68be0dd` re-applied unchanged as `38158be6`, under R66 | **28 edits over 25 characters**, inferred key, 0 unsure per 28 named | **31 edits over 46 characters**, inferred keys, 0 unsure per 48 named |
+
+**Unit 416, the phase's first kept change.** Every key inferred. All keyed recordings
+**217 to 185 edits over 565 characters**: the baseline 33 to 31 over 46, 17:37 29 to 28 over
+25, outside 124 to 118 over 363, the ten keyed captures on the bench 60 to 36 over 156. Named
+floors 13 of 13 with every count identical; all 51 capture rows identical in named, element
+and placeholder counts. `134712` reads `N4L`, its own adjudicated text (R66, HM-DEC-173), where
+it read `N4 `; the baseline's unsure-per-named goes from 0 / 47 to 0 / 48 because that region
+now holds three named characters rather than two. Every letter is the same letter at the same
+moment on all 52 recordings; only spaces differ. From the kept build, 00:43:22:
+
+```
+before:  P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL L O G S WILA
+now:     P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA
+```
 
 ## Synthetic, exact keys - outside every total (1.1, 1.2, 1.4)
 
