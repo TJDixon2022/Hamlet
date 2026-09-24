@@ -1,23 +1,14 @@
 ﻿
-Nothing blocks. Both items block no criterion and are parked in
-`docs/phase-correctness/PARKED.md` under R54, for overrule.
+**1. Compare the RF gain on one scale, so an RF gain already at full is neither written nor reported as unconfirmed.**
+- **Ruling wanted:** in a later unit, make `ReceiverSetup` and `Ic7300Rig.SetSettingAsync` compare the RF gain on one scale, either the condition in percent or the read-back in raw units.
+- **Reasoning:** today every CW tune-in writes 255 to `14 02`, even at 100%. Every one is filed `NotConfirmed`, so the memory never records it, and "your hand wins" (HM-DEC-056) can never apply to RF gain. With this unit, the banner's sentence is true but appears on every tune-in. After the fix it would appear only when something is actually off.
+- **Rejected, and why:** fixing it here. It changes what is sent to the radio, and step 6 changes only what the operator reads (R62, Â§6). The fix would also move the outcome to `AlreadyRight` or `Changed` and change what the hover narrates.
 
-**1. Should the nine other adjudicated recordings join the baseline total?**
-Ruling taken: the baseline is the four recordings the instruction names, and the nine are
-printed beside it (124 edits over 363 characters against inferred keys).
-Reasoning: 0.2 says "every recording in the tree that has a key", and the tree has twelve
-adjudicated texts, not three. Step 3's 3.2 judges each change on "the total edit count
-over all keyed recordings", so which recordings count decides what every repair is judged
-on. Adding rows after the baseline is set would move the yardstick.
-Rejected: silently scoring only three, which would hide nine keys the tree holds; and
-folding all thirteen into the total, which changes the instruction's baseline without a
-ruling.
-
-**2. Is step 3 still framed right?**
-Ruling taken: the plan is unchanged, and the finding goes to step 3's 3.1 trace.
-Reasoning: step 3 is written as "letters right, word boundaries wrong", but that is the
-sidecar's reading. At the bench, which is what the phase measures, 17:37's letters are not
-all right: 14 of 29 edits are letters, and 14 remain letters-only. What the counts show
-looks like gaps inside characters read as gaps between words, which is a spacing fault at
-the element level, so step 3 may well stand as written.
-Rejected: rewording the step here, which is Tim's plan and not this unit's.
+**2. What tonePeak should be in a per-capture sidecar. 6.2 cannot close without this.**
+- **Ruling wanted:** choose one of three.
+  - (a) Print a figure measured over this recording only, and label it that way. A fresh decoder over 17:37 gave 25.7 where the live sheet said 25.8, so the number is close, but it is not the same measurement.
+  - (b) Stop printing it in the per-capture sidecar. Keep it on the roster's `tonePeakDb` column and on screen.
+  - (c) Keep it as it is. Its caption already says it is not about this recording.
+- **Recommendation:** (a), because it keeps a figure and makes it true.
+- **Reasoning:** the writer's own comment records HM-DEC-091: *"The number is not deleted and not changed, because it measures something real and something else was built on it."* Both options the instruction offered, a per-recording figure or not printing it, change or remove that number. So this is a choice between the instruction and a recorded ruling, and it is Tim's to make, not the author's.
+- **Rejected, and why:** picking one silently. Either choice would override HM-DEC-091 without a ruling. The cost of running a decoder at the press has also not been measured.

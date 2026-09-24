@@ -1,15 +1,70 @@
-﻿STEP: 0 | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
-## Step 0 - The number exists
+﻿STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+## Step 6 - The screen stops saying what is not so
 
-**Delivers:** R59's yardstick, and the baseline everything else is measured against.
+**Delivers:** R62. What Tim reads while he is deciding whether to trust the app.
 
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [x] 0.1 A scorer in the test project measures edit distance between a decode and a key over a scored region the key file names, reports edits, scored length and whether the key is exact or inferred, and is watched failing first on a case whose answer is known by construction.
-- [x] 0.2 Every recording in the tree that has a key - `cw-2026-09-23-173723` and the three adjudicated anchors - is scored at HEAD and tabled with its three parts, and the table is the phase's baseline in `docs/phase-correctness/baseline.md`.
-- [x] 0.3 The report names, from the baseline, what kind of error dominates: characters wrong, characters missing, characters added, or word boundaries misplaced, counted per case rather than asserted.
-- [x] 0.4 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
+- [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
+- [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
+- [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
+- [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
+- [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
 
-**Depends on:** nothing.
+**Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
 
+## Â§5 Dependencies
+
+Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
+and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
+else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
+and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
+halt.
+
+## Â§6 Branching
+
+- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
+  fact the product states to the operator about a signal, a station or a send. A test's
+  shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
+- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
+  touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
+- **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
+  headless dispatcher loop - counts neither way and is re-run once.
+- **A correctness number is never reported alone** (Â§3.1). A report that gives a percentage
+  without edits, scored length and the key's kind is incomplete and the arbiter says so.
+- **No key may be invented for audio nobody could read** (R61). If the scored region is
+  unclear, score less rather than guess more.
+- **A named floor from 2.2 is never lowered**, and a capture row's named count is never
+  lowered. Placeholders are free (R57).
+- **The generator is never the sole evidence** for keeping a change (1.4, Â§12.5).
+- **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+  is met by making a sentence true, never by deleting the sentence and saying nothing, and
+  never by changing a radio setting to match a claim.
+- **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
+  should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
+  no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
+  expect*, and the loop halted at stop 7 with the unit's work complete.
+- **Anything would change what keys or transmits.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
+  alone with its own timeout.
+
+## Â§7 Carried
+
+The restore phase's 5.1, Tim's, at `docs/phase-cw-run/`; `#15`, `#43`, `#44` and `#42`,
+parked there with their measurements; `PHASE_GOAL.md`'s 80 percent, which this phase
+measures toward but does not promise; W1AW as an exact-key confirmation whenever a bulletin
+lands; the scanner; the screen findings in `OPEN_ISSUES.md` - the RF gain sentence, the
+window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wording;
+HM-OPEN-063 and HM-OPEN-070.
+
+## Â§8 Revision record
+
+- **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
+  always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
+  report was refused over one word.
+- **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
+  from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.

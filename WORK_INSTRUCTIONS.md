@@ -1,8 +1,8 @@
-# Work instruction 411 - the screen stops saying what is not so
+# Work instruction 412 - tonight's thirteen become the mark
 
-**Seed under `--seed`.** The first unit of step 6. It makes the RF gain banner state what
-the radio actually reported, and it makes the capture sidecar's three contradictory
-sentences either true or honestly silent. **Five tasks, drop from the back.**
+**Seed under `--seed`.** Tim worked 7.052 MHz from 00:39 to 00:46 UTC and the decoder read
+a whole QSO: 625 characters, 11 unsure. This unit banks those thirteen captures as floors,
+sets the guard from them, and closes step 2. **Five tasks, drop from the back.**
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -36,13 +36,9 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## 1. The rules that killed sessions
 
-**HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run
-as its top comment says. **Never background and poll.** One type per invocation, each with
-its own `timeout`.
-
-**The app line loses a different name to the headless dispatcher loop most runs.** A loss
-before any assertion is re-run once and counted neither way. This unit works in the app
-project, so expect it.
+**HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run as
+its top comment says. **Never background and poll.** One type per invocation, each with its
+own `timeout`.
 
 **The report's four top-level headings are exactly these, character for character:**
 
@@ -53,27 +49,28 @@ project, so expect it.
 ## 4. What's blocking us
 ```
 
-**No other wording and no fifth top-level heading.** Unit 410 wrote *What Tim should
-expect*, `validate-output.bat` rule 2 refused the report, and the loop halted at stop 7
-with the unit's work complete and unjudged. Section 2 is still written for Tim; its
-**heading** says *the owner*.
+No other wording, no fifth top-level heading. Unit 410 was refused at stop 7 for writing
+*What Tim should expect*.
 
 **The `UNIT:` line carries no parentheses**, and no `&`, `|`, `<`, `>`, `^`.
 
+**Thirteen more 30-second recordings join the capture floors.** The captures type runs 92 s
+for 37 rows; expect around 125 s for 50 and give it 600.
+
 ## 2. The tool facts
 
-Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm`
-is refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
-`git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step
-commands go into `.run-unit\unit411-<name>.sh` and run with `sh`. Unit 410's runner
-scripts can be copied under this unit's name, as 410 copied 409's.
+Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
+refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
+`git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step commands
+go into `.run-unit\unit412-<name>.sh` and run with `sh`. Unit 411's runner scripts can be
+copied under this unit's name.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139, verbatim in section 4. Unit 410 parked two items about which
-recordings count toward the baseline and whether step 3 is framed right; **both are step
-0's and step 3's, not this unit's**, and they stay parked. Under R54 anything that blocks
-no criterion here goes to `docs\phase-correctness\PARKED.md`.
+Carried per HM-DEC-139, verbatim in section 4. **Unit 411's item 2 is answered by R63 and
+leaves the carried list. Its item 1, the RF gain scale, is not this unit's** - it changes
+what is sent to the radio and is Tim's, carried. Under R54 anything blocking no criterion
+here goes to `docs\phase-correctness\PARKED.md`.
 
 ---
 
@@ -81,30 +78,25 @@ no criterion here goes to `docs\phase-correctness\PARKED.md`.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  The RF gain banner and the capture sidecar stop stating as
-            unknown or as measured what the tree shows is otherwise.
-ADVANCES:   step 6 criterion 1
-DRIFT:      0 - the first unit of the step
+UNIT GOAL:  Tonight's thirteen captures are floors in the tree, and the
+            guard that keeps every later change from going backwards.
+ADVANCES:   step 2 criterion 5
+DRIFT:      0
 ```
 
-**Tim, at the radio, 2026-09-23.** He photographed a banner reading *"I asked for the RF
-gain to be 100% and the radio did not confirm it, so I do not know where it is now."* In
-the radio-state dialog in the same session, **RF gain 100%, read back over `CI-V 14 02`,
-24 seconds earlier.** The confirmation path and the read-back path are not talking, and
-the product is telling the operator it does not know a fact it holds. That is §0.0 in
-reverse, and it is the sentence he trusts the app by.
+**Tim, 2026-09-24:** *"This should be our minimum benchmark and future iterations should
+run against that. I don't want to go backwards."*
 
-**Three more of the same kind**, from `cw-2026-09-23-173723.txt`:
+**What the thirteen hold.** 7.052 MHz, one session, transcripts cumulative across the run.
+`cw-2026-09-24-003901` and `-003919` are the acquisition failure: 92 and 110 characters of
+`E ET E E` before the decoder locks. From `-004027` onward it reads a QSO end to end -
+callsigns, an email address, an ARRL operation, a sign-off - with the words shattered:
+`R I C H ARD`, `OP ERA T I ON`, `S T M W O H`. **That shattering is step 3's target and is
+not attacked here.**
 
-- `tonePeak 25.8` followed by *"not a figure about this recording"* - a number printed in a
-  per-capture sidecar that is not about the capture.
-- `elementHz not measured  (the decoder in this build does not say where each element began
-  and ended...)` printed directly under `elements 169 seen, 169 resolved`.
-- `keying no keying at 575 Hz, 69 ms key down, 16 dB swing, 98 key-downs` - no keying, and
-  98 key-downs, in one sentence. The August analysis flagged this one and it still stands.
-
-**This unit does not change what the radio does or what the decoder decides.** It changes
-what the app says about them, and only where the tree shows the saying is wrong.
+**Why the floors matter more than the keys tonight.** Six changes this week read one
+recording better and another worse (HM-DEC-091). Without these thirteen banked, a spacing
+change has nothing to prove it did not cost Tim the read he watched tonight.
 
 ---
 
@@ -112,65 +104,70 @@ what the app says about them, and only where the tree shows the saying is wrong.
 
 Check, report any mismatch, repair nothing:
 
-- The banner's text, and the file it lives in. Search `did not confirm` across `src`.
-- Where the RF gain read-back is held, and whether the banner's code can reach it: the
-  radio-state dialog prints `RfGain 100%` with `CI-V 14 02` and an age, so something holds
-  it.
-- The sidecar writer, and the three lines named above, with their current wording.
-- Whether `tonePeak` is a held-and-decaying figure across captures rather than a per-capture
-  measurement, and where it is computed.
-- Whether the keying verdict comes from `CwKeyingMeter`'s four-part test, and which of the
-  four parts fails on 17:37 - unit 409 recorded that the swing figure runs low when the
-  meter is asked of a whole 30 s file.
-- `PHASE_STATUS.md` reads step 0 done and `CURRENT_STEP 1`; the plan now carries step 6.
+- Thirteen `.wav` and thirteen `.txt` named `cw-2026-09-24-003901` through `-004550` are in
+  `tests\fixtures\cw\captured\unadjudicated\`, untracked, plus `cases-2026-09-23.txt`.
+  **Unit 411 saw them and did not commit them; they are this unit's to commit.**
+- The capture floor table holds 37 rows with named characters and elements as floors and
+  placeholders printed (HM-DEC-168), and how a row is added to it.
+- `CwScorer` is in `tests\Hamlet.RadioEngine.Tests\Cw` with `Whole`, `Within` and
+  `FromFirst`, and reports edits, scored length and the key's kind.
+- `docs\phase-correctness\baseline.md` holds 33 edits over 46 characters over four
+  recordings.
+- Whether the sidecar's `text` field is cumulative across a session, so differencing
+  consecutive files gives what was decoded between them. **If it is not, say so and task 3
+  drops.**
 
 ## 6. Rulings in force
 
-`PHASE_PLAN.md` R59 to R62, §3 and §6, read before task 1.
+`PHASE_PLAN.md` R59 to R64, §3 and §6.
 
-**R62** step 6 joins this phase and depends on nothing.
-**§6** a screen criterion is met by **making a sentence true, never by deleting the sentence
-and saying nothing**, and never by changing a radio setting to match a claim.
-**CLAUDE.md §0.0** never state as known what is not known, and never state as unknown what
-is known. **§0.2** nothing that keys or transmits is touched - the RF gain banner is read
-and written, the transmit path is not. **§0.6** color is never the sole carrier.
-**HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006**.
+**R63** tonight's thirteen are the benchmark; **the older captures are not retired**; a
+fixture retires only by ruling (HM-DEC-103). **R64** a unit that cannot advance its own
+criterion reports and hands on; the arbiter authors the next against a different criterion
+rather than halting.
+**R57 / HM-DEC-168** a floor counts named characters, placeholders are free.
+**§3.1** a correctness number is always edits, scored length, and the key's kind.
+**§0.0** no decode is called what was sent. **§0.2** nothing that keys is touched.
+**HM-DEC-091**, **HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006**.
 
 **Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's
-table dated 2026-09-23, headline **The screen work joins the correctness phase as step 6**,
-ref HM-DEC-170:**
+table dated 2026-09-24, headline **Tonight's thirteen captures are the benchmark, and the
+loop moves rather than halting**, ref HM-DEC-171:**
 
 ```
 ---
-id: HM-DEC-170
-date: 2026-09-23
-refs: PHASE_PLAN.md R62 step 6, OPEN_ISSUES.md, work instruction 411 task 0, CLAUDE.md 0.0, HM-OPEN-087
+id: HM-DEC-171
+date: 2026-09-24
+refs: PHASE_PLAN.md R63 R64, criteria 1.6 2.5 6.7, work instruction 412 task 0, HM-DEC-091, HM-DEC-103, HM-DEC-168
 ---
 
-**The screen work joins the correctness phase as step 6, and it depends on nothing.**
-Tim, 2026-09-23.
+**The thirteen captures of 2026-09-24 are the benchmark, the older captures stay, and the
+loop moves on rather than halting.** Tim, 2026-09-24.
 
-**What he found at the radio.** An RF gain banner stating the radio did not confirm a value
-the radio-state dialog showed read back 24 seconds earlier; the window reflowing when he
-tunes outside his privileges; no hover text on any control; three sentences in the capture
-sidecar that contradict their own neighbors; a dead button on the CW tab.
+**What happened.** On 7.052 MHz between 00:39 and 00:46 UTC the decoder read a whole QSO -
+625 characters, 11 unsure, callsigns clean and repeated - where two days earlier it read
+nothing. Tim: *"This should be our minimum benchmark and future iterations should run
+against that. I don't want to go backwards."*
 
-**Why it is a step of this phase rather than a phase of its own.** It depends on nothing, so
-the arbiter has a place to route whenever the CW work stalls, and the loop keeps moving. Its
-sentence is CLAUDE.md 0.0, which binds in any phase: never state as known what is not known,
-and never state as unknown what is known.
+**What is ruled.** The thirteen captures are banked with a named-character floor and an
+element floor apiece, measured once at what they produced tonight. The older captures are
+not retired: they are the guard against a change that reads one signal better and another
+worse, and a fixture retires only by ruling. The locked-on run also gets inferred keys,
+built by differencing consecutive transcripts, with ambiguous stretches left unscored.
+`tonePeak` in a per-capture sidecar becomes a figure measured over that recording.
 
-**What it is not.** It changes what the operator reads, never what the radio does. A
-criterion is met by making a sentence true, never by deleting the sentence.
+**And on the loop.** A unit that cannot advance the criterion it was authored for reports
+what it measured and hands on; the arbiter authors the next unit against a different
+criterion. Preference when nothing is blocked: the spacing first, then the screen.
 
-**Whose words are whose.** The ruling is Tim's; the wording is work instruction 411 task 0's
-record of it. Rejected: a new phase holding both the CW and screen work; the screen in its
-own phase afterward.
+**Whose words are whose.** The rulings are Tim's; the wording is work instruction 412 task
+0's record of them. Rejected: retiring older captures; leaving tonePeak as it was; not
+printing it at all.
 ```
 
 ## 7. Status cadence
 
-As the header says. `NOTE` says what is moving inside the task.
+As the header says.
 
 ---
 
@@ -178,83 +175,77 @@ As the header says. `NOTE` says what is moving inside the task.
 
 ### Task 0 - the record
 
-`PHASE_OUTCOME.md` gets its `## UNIT 411 - STEP 6` entry in the existing shape from the
-decision block at the foot of this file. `PHASE_STATUS.md` names unit 411 and
-`CURRENT_STEP: 6`. Patch-bump `Directory.Build.props`. `DECISIONS.md` HM-DEC-170 and the
-`CLAUDE.md` row. **Entry round:** both carry-forward lines and the three floor tests, every
-number recorded.
+`PHASE_OUTCOME.md` gets its `## UNIT 412 - STEP 2` entry from the decision block at the foot
+of this file. `PHASE_STATUS.md` names unit 412 and `CURRENT_STEP: 2`. Patch-bump
+`Directory.Build.props`. `DECISIONS.md` HM-DEC-171 and the `CLAUDE.md` row. **Commit the
+thirteen captures, their sidecars and `cases-2026-09-23.txt`** in their own commit.
+**Entry round:** both carry-forward lines and the three floor tests, every number recorded.
 
 **Drop candidate:** none.
 
-### Task 1 - the RF gain banner (6.1)
+### Task 1 - the thirteen become floors (2.5)
 
-Trace first: print, from a test that asserts nothing, what the banner's code can see about
-RF gain at the moment it writes that sentence, and what the read-back holds. **Then watch a
-test fail**: with a read-back held for RF gain, the banner must state the value and when it
-was read, and must not say the radio did not confirm.
+Add the thirteen rows to the capture floor table, measured once at HEAD: named characters,
+elements, placeholders, for the 30 seconds in each file - the sidecar's `inThis` line, not
+its cumulative `characters` line. **The report prints all thirteen rows: file, named,
+elements, placeholders.** Run the captures type whole afterward: **50 rows, and the
+original 37 identical to entry.** No existing row is retired, lowered, or reworded.
 
-The sentence's wording is the author's and goes in the report. It states the value, and how
-long ago it was read, in the same voice as the rest of the app. **When no read-back is held
-the old sentence stands unchanged** - that case is true and is not this unit's to touch.
+**Drop candidate:** none.
 
-**Drop candidate:** none. This is the sentence he photographed.
+### Task 2 - the guard (2.1, 2.2, 2.3)
 
-### Task 2 - the sidecar's three sentences (6.2)
+- **2.1** `CwScorer` carries unsure characters per named character for the scored region,
+  and `baseline.md` is re-issued with that column.
+- **2.2** A named floor per keyed recording says how many named characters must be read at
+  all, set from what each reads today.
+- **2.3** Watch the guard work: make a change that suppresses most output, measure that it
+  improves edits while breaking a floor from 2.2, and take it back out in the same unit.
+  **Report both numbers.** That is the whole point of the criterion - a decoder must not be
+  able to score well by going quiet.
 
-Each gets a test watched failing on a saved capture that shows the contradiction, then a
-change:
+**Drop candidate:** none. Step 3 cannot start until step 2 is done.
 
-- **`tonePeak`.** Either print a figure that is about this recording, or do not print it in a
-  per-capture sidecar. The author chooses and says why.
-- **`elementHz`.** It may not say nothing was measured while the line above resolves
-  elements. Either report what the elements say, or word it so both sentences are true of
-  the same run.
-- **`keying`.** It may not say no keying at a pitch and then count key-downs at that pitch.
-  Unit 409 found the swing figure runs low when the meter is asked of a whole file rather
-  than its own six-second window; if that is the cause, the honest sentence names what it
-  measured over what span. **Do not change the meter's verdict to make the sentence agree** -
-  that is changing the instrument to fit the words.
+### Task 3 - the keys by differencing (1.6)
 
-**Drop candidate:** `tonePeak`, last of the three. `keying` first, it is the oldest and the
-loudest.
+For each capture from `-004108` onward, subtract the previous file's `text` from this one's
+to get what was decoded in those 30 seconds, then write a key file beside it: the scored
+region, the key, and a statement that it is inferred and how it was built.
 
-### Task 3 - the sidecar is re-read (6.2)
+**Be conservative.** Where a word is shattered but unmistakable in context (`R I C H ARD`),
+the key carries the word. **Where the differencing is ambiguous, or a callsign or number
+cannot be read with confidence, leave that stretch out of the scored region** (R61: score
+less rather than guess more). Score each with `CwScorer` and table them beside the baseline.
 
-Regenerate a sidecar from a saved capture through the same writer, and print all three lines
-in the report, before and after, so the change is visible as text rather than as a diff.
-**No capture in the tree is edited**; a sidecar generated for this test goes under
-`.run-unit\`.
-
-**Drop candidate:** whole task, if the clock is short.
+**Drop candidate:** whole task. If the clock is short, say how many were keyed and stop.
 
 ### Task 4 - the exit round
 
-Both carry-forward lines, the three floor tests, and every type touched. `git diff` over the
-transmit files named in the restore phase's §3 against `7e209cb4` prints nothing. Nothing
-under `src\Hamlet.RadioEngine\Cw` that decides a character is changed, and the report says
-so with the diff.
+Both carry-forward lines and the floor tests, captures now 50. `git diff` over
+`src\Hamlet.RadioEngine\Cw` between entry and exit prints nothing except what 2.3 put back;
+the transmit files print nothing against `7e209cb4`.
 
 ---
 
 ## 9. Parked - do not touch, do not raise
 
-- **6.3 the window reflow, 6.4 hover text, 6.5 the dead button.** Later units of this step.
-- **Steps 1, 2, 3 and 4.** The CW work; the arbiter routes there on its own.
-- **The decoder.** Nothing in `Cw` that decides a character changes in this unit.
-- **The keying meter's verdict rule.** Word the sentence; do not retune the meter.
-- **Unit 410's two parked items.** Step 0's and step 3's.
+- **The spacing.** Step 3's, and the next unit's under R64's preference. **Unit 405's G1** -
+  an out-of-order gap reading is not separated - is its first candidate, described in
+  `docs\phase-cw-run\` material; do not build it here.
+- **6.3 the reflow, 6.4 hover text, 6.5 the dead button, 6.7 tonePeak.** Step 6's.
+- **The RF gain scale, 255 against 100.** It changes what is sent to the radio. Tim's.
+- **The acquisition failure** in `-003901` and `-003919`. Recorded as floors, not attacked.
+- **Retiring any older capture.** Never here.
 
 ## 10. What not to do
 
-- **Do not delete a sentence to meet a criterion.** Make it true, or make it honestly say it
-  does not know.
-- **Do not change a radio setting** to make a claim about the radio true.
-- **Do not touch what keys or transmits.**
-- **Do not change the decoder's verdicts** to make a sidecar line agree with its neighbor.
-- **Do not edit a saved capture or its sidecar in the tree.**
+- **Do not retire, lower or reword an existing floor row.**
+- **Do not attack the spacing.** This unit banks and guards.
+- **Do not invent a key.** Ambiguous stretches stay out of the scored region.
+- **Do not edit a capture or a sidecar in the tree.**
+- **Do not leave 2.3's suppression change in the tree.**
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Report mismatches; repair nothing. American spelling. UTF-8.**
-- **The four report headings are exactly as section 1 gives them.**
+- **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
 
 ## 11. Committing and pushing
 
@@ -264,41 +255,41 @@ Commit per task. Push at the end and say whether it succeeded.
 
 ## 12. Reporting
 
-`output.md` at the root. **The four headings exactly as section 1 gives them.**
+`output.md` at the root, the four headings exactly as section 1 gives them.
 
 ```
 READ IN THIS ORDER.
 
-A. The banner's old sentence and its new one, quoted.
-B. Step 6's criteria: 6.1 the banner, 6.2 the sidecar's three sentences,
-   6.6 the exit round. 6.3, 6.4 and 6.5 not started.
+A. The thirteen rows with their floors, and the guard proved working.
+B. Step 2's criteria 2.1 to 2.5, and step 1's 1.6 if task 3 ran.
 C. The rest. Section 4 raises <n> items.
 ```
 
 ```
-UNIT:       411 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       412 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   yes | no - <why, on the line>
-NUMBER:     sentences that contradicted the tree: 4 -> <n>
-DRIFT:      <0 if a criterion moved>
+NUMBER:     capture floor rows: 37 -> <n>; keyed recordings: 4 -> <n>
+DRIFT:      0
 ```
 
-**Section 2 tells the owner in one paragraph** what he will now read where he read the RF
-gain banner, and what has not changed: the radio, the decoder, the text on the CW tab.
+**Section 2 tells the owner in one paragraph** that what he watched tonight is now the mark,
+that no later change can read less than it without turning a test red, and that nothing
+about the decoder changed in this unit.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 6
-APPROACH: make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+STEP: 2
+APPROACH: bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
 MOVE: continue
-WHY: PHASE_PLAN.md step 6 criterion 6.1 asks that the banner state the value and when it was read whenever a read-back for RF gain is held, and that the did-not-confirm wording appear only when none is
+WHY: PHASE_PLAN.md step 2 criterion 2.5 asks that the thirteen captures carry a named-character floor and an element floor each, measured once at HEAD, run with the other rows, with no existing row retired or lowered
 STATE: not started
-DECIDED: the banner's new wording, which of the three sidecar lines is repaired and which is reworded, and the per-type timeouts are the author's, overrulable
-LICENCE: PHASE_PLAN.md R62, section 3, section 6; HM-DEC-170; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
-ACCOMPLISHED: the two places Tim looks when he is deciding whether to trust the app stop saying what the tree shows is not so
-ADVANCES: step 6 criterion 1
+DECIDED: the form of the new floor rows, the conservatism of each inferred key, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R57, R61, R63, R64, section 3, section 6; HM-DEC-171; HM-DEC-168; HM-DEC-103; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0
+ACCOMPLISHED: what Tim watched the decoder read tonight becomes the mark every later change has to hold, and the spacing work has ten real cases to be judged on instead of one
+ADVANCES: step 2 criterion 5
 END-ARBITER-DECISION
 ```

@@ -7,7 +7,7 @@ STEP: 2 | not started | The number cannot be gamed - unsure characters per named
 STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
 STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
 STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
-STEP: 6 | not started | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
 ## UNIT 411 - STEP 6
 
@@ -63,3 +63,20 @@ STATE_AFTER: done
 STATE_WHY: The report shows evidence for all four exit criteria, the scorer went 12 of 12 red then 12 of 12 green, the four named recordings are scored and tabled in docs/phase-correctness/baseline.md at 33 edits over 46 characters, the error kinds are counted for each recording, and the exit round matches entry with nothing under src changed.
 ADVANCED: yes
 ATTEMPT: 0.2 | unit 1 launched 2026-09-23T22:44:00.058Z | yes | executed | build a scorer that reports edits, scored length and the key's kind, score the 17:37 capture and the three adjudicated recordings at HEAD into a baseline table, and count what kind of error dominates
+
+## UNIT 1 - STEP 6
+
+STEP: 6
+APPROACH: make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+HIT: section 4 wants a ruling: yes - The second question asks the owner to choose what tonePeak figure the per-capture sidecar states about what was heard, which is a promise to the operator, and step 6.2 cannot close until he decides.
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 criterion 6.1 asks that the banner state the value and when it was read whenever a read-back for RF gain is held, and that the did-not-confirm wording appear only when none is
+DECIDED: the banner's new wording, which of the three sidecar lines is repaired and which is reworded, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R62, section 3, section 6; HM-DEC-170; CLAUDE.md 0.0, 0.2 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+COST: 6.900385599999997
+ACCOMPLISHED: the two places Tim looks when he is deciding whether to trust the app stop saying what the tree shows is not so
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 6.1 and 6.6 are met with quoted sentences and measured runs, 6.2 stays open on tonePeak, and 6.3, 6.4 and 6.5 have not been started.
+ADVANCED: yes
+ATTEMPT: 6.1 | unit 1 launched 2026-09-24T00:45:09.815Z | yes | executed | make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first

@@ -243,3 +243,5 @@ the owner reads instead of watching.
 | phase | 2026-09-23T18:42 | 2026-09-23T18:42 | ending | 0 | ENDED - nothing is left but the owner-s verdict. stop 1: the phase is waiting on the owner's verdict - criteria 5.1 |
 | 1 | 2026-09-23T18:44 | 2026-09-23T19:19 | failed | 3.9468494000000005 | run-unit exit 4: 5 denied call(s), is_error=False, terminal=completed |
 | phase | 2026-09-23T19:21 | 2026-09-23T19:21 | failure | 0 | STOPPED, AND A STOP IS FAILURE - stop 7: validate-output refused the report (after 5 denied calls) |
+| 1 | 2026-09-23T20:45 | 2026-09-23T21:27 | complete | 6.900385599999997 | ran unattended, 166 turns, 15 denied call(s) worked around, report valid |
+| phase | 2026-09-23T21:28 | 2026-09-23T21:28 | ending | 0 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |

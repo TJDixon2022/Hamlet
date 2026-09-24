@@ -1,0 +1,77 @@
+captured   2026-09-24 00:41:33 UTC
+audioSeen  12624960 samples
+fingerprint a2a21a8db523
+seconds    30.0
+sampleRate 48000
+frequency  7052000 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 1 of 14189 frames since the link came up were the radio announcing something
+
+inputPeak  -13.2 dBFS  (over the whole recording)
+meterPeak  -13.3 dBFS  (the moment it was kept)
+inputFloor -21.8 dBFS
+clipping   False
+toneHz     625.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   44.8  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     31 characters emitted, 2 unsure, 106 elements seen, 106 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    no  (280 characters, and the survey admitted keying at this pitch)
+elements   696 seen, 696 resolved  (since the transcript was cleared at 00:38:54 UTC, about 3 minutes ago)
+characters 280 emitted, 5 unsure  (since the transcript was cleared at 00:38:54 UTC, about 3 minutes ago)
+decoderWpm 22
+text       E ET E E   E  E E  E  E E  E    E A TE E T N QNIK     EE      EESIH S E E TEIE E RIEEE    EAN■IK  E  E   GJV GJV           EE E E   TESE E E I E E EEE EE ■IE E  E  EEEIE IEE   TET   E  E E EIE    E   E    E ET N MQNE K   E E     ■ 2G KA2GJ V QNK CAT WI 2TN H RK 5 I HRH CE QENV U GE ANN DE KA2 G J V HR NR 2 0 R H X G K E 8 W G K 2 6 S T M W O H SEP 1 9 R I C H ARD D J UE G E L ■ 0 D G AT 5 0 0 5 H ■ 8
+textCovers everything read since the transcript was cleared at 00:38:54 UTC, about 3 minutes ago
+spanLlr    134 of the last 240 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:38:54 UTC, about 3 minutes ago)
+           E:13.3/unmeasured/unmeasured E:29.5/unmeasured/unmeasured E:11.0/unmeasured/unmeasured I:72.2/unmeasured/unmeasured E:33.8/unmeasured/unmeasured I:53.6/unmeasured/unmeasured E:15.1/unmeasured/unmeasured E:39.2/unmeasured/unmeasured T:605.6/unmeasured/unmeasured E:125.8/unmeasured/unmeasured T:382.9/unmeasured/unmeasured E:6.3/unmeasured/unmeasured E:16.9/unmeasured/unmeasured E:5.0/unmeasured/unmeasured E:7.3/unmeasured/unmeasured I:15.3/unmeasured/unmeasured E:8.9/unmeasured/unmeasured E:6.9/unmeasured/unmeasured E:4.1/unmeasured/unmeasured E:79.6/unmeasured/unmeasured E:54.8/unmeasured/unmeasured T:226.7/unmeasured/unmeasured N:202.7/unmeasured/unmeasured M:536.1/unmeasured/unmeasured Q:967.1/unmeasured/unmeasured N:463.9/unmeasured/unmeasured E:104.4/unmeasured/unmeasured K:564.2/unmeasured/unmeasured E:10.1/unmeasured/unmeasured E:18.2/unmeasured/unmeasured ■:507.2/unmeasured/unmeasured 2:1054.9/unmeasured/unmeasured G:327.6/unmeasured/unmeasured K:1652.5/unmeasured/unmeasured A:894.0/unmeasured/unmeasured 2:2036.2/unmeasured/unmeasured G:1128.0/unmeasured/unmeasured J:1537.9/unmeasured/unmeasured V:781.4/unmeasured/unmeasured Q:1149.7/unmeasured/unmeasured N:509.1/unmeasured/unmeasured K:805.1/unmeasured/unmeasured C:1094.2/unmeasured/unmeasured A:625.7/unmeasured/unmeasured T:326.3/unmeasured/unmeasured W:741.5/unmeasured/unmeasured I:166.0/unmeasured/unmeasured 2:668.7/unmeasured/unmeasured T:85.3/unmeasured/unmeasured N:134.4/unmeasured/unmeasured H:282.5/unmeasured/unmeasured R:516.0/unmeasured/unmeasured K:656.6/unmeasured/unmeasured 5:85.1/unmeasured/unmeasured I:105.8/unmeasured/unmeasured H:180.5/unmeasured/unmeasured R:244.3/unmeasured/unmeasured H:103.0/unmeasured/unmeasured C:453.9/unmeasured/unmeasured E:43.8/unmeasured/unmeasured Q:888.2/unmeasured/unmeasured E:29.7/unmeasured/unmeasured N:142.0/unmeasured/unmeasured V:419.5/unmeasured/unmeasured U:324.0/unmeasured/unmeasured G:436.1/unmeasured/unmeasured E:53.9/unmeasured/unmeasured A:292.1/unmeasured/unmeasured N:281.3/unmeasured/unmeasured N:238.4/unmeasured/unmeasured D:619.8/unmeasured/unmeasured E:41.5/unmeasured/unmeasured K:1115.5/unmeasured/unmeasured A:591.6/unmeasured/unmeasured 2:2004.6/unmeasured/unmeasured G:1359.6/unmeasured/unmeasured J:2438.0/unmeasured/unmeasured V:1541.6/unmeasured/unmeasured H:928.6/unmeasured/unmeasured R:1203.3/unmeasured/unmeasured N:832.7/unmeasured/unmeasured R:657.3/unmeasured/unmeasured 2:884.5/unmeasured/unmeasured 0:1421.4/unmeasured/unmeasured R:851.9/unmeasured/unmeasured H:751.9/unmeasured/unmeasured X:1576.5/unmeasured/unmeasured G:1234.0/unmeasured/unmeasured K:1048.6/unmeasured/unmeasured E:90.1/unmeasured/unmeasured 8:1728.9/unmeasured/unmeasured W:1287.8/unmeasured/unmeasured G:1438.2/unmeasured/unmeasured K:1589.1/unmeasured/unmeasured 2:2638.9/unmeasured/unmeasured 6:1657.1/unmeasured/unmeasured S:362.1/unmeasured/unmeasured T:377.5/unmeasured/unmeasured M:360.3/unmeasured/unmeasured W:471.6/unmeasured/unmeasured O:1695.9/unmeasured/unmeasured H:790.9/unmeasured/unmeasured S:717.7/unmeasured/unmeasured E:256.7/unmeasured/unmeasured P:2111.7/unmeasured/unmeasured 1:2544.0/unmeasured/unmeasured 9:2185.1/unmeasured/unmeasured R:587.5/unmeasured/unmeasured I:162.8/unmeasured/unmeasured C:1342.7/unmeasured/unmeasured H:97.5/unmeasured/unmeasured A:293.2/unmeasured/unmeasured R:661.7/unmeasured/unmeasured D:420.3/unmeasured/unmeasured D:1273.9/unmeasured/unmeasured J:550.1/unmeasured/unmeasured U:166.5/unmeasured/unmeasured E:7.8/unmeasured/unmeasured G:257.4/unmeasured/unmeasured E:139.1/unmeasured/unmeasured L:1057.9/unmeasured/unmeasured ■:1450.8/unmeasured/unmeasured 0:3103.2/unmeasured/unmeasured D:75.3/unmeasured/unmeasured G:351.9/unmeasured/unmeasured A:121.9/unmeasured/unmeasured T:138.5/unmeasured/unmeasured 5:297.6/unmeasured/unmeasured 0:806.5/unmeasured/unmeasured 0:2893.0/unmeasured/unmeasured 5:909.1/unmeasured/unmeasured H:266.4/unmeasured/unmeasured ■:1839.7/unmeasured/unmeasured 8:1882.6/unmeasured/unmeasured
+competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+reading    22 WPM won out of 8 to 40, 4.9 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+keying     keying at 625 Hz, 45 ms key down, 24 dB swing, 34 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       35.5%  (of the 30.0 seconds in this file, the key was down at 625.0 Hz)
+elementHz  not measured  (the decoder in this build does not say where each element began and ended, so no element's own pitch was measured)
+
+sinceLast  25 characters, 85 elements  (since the previous capture)
+
+Frequency            7.052000 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S9+10
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              0%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

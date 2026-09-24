@@ -88,6 +88,29 @@ known - which binds in any phase. Rejected: a new phase holding both (an intervi
 anything runs, and step 0's ticks archived); the screen in its own phase after this one (the
 screen stays wrong for days and the CW work has nowhere to route).
 
+**R63 - Tim, 2026-09-24: tonight's thirteen captures are the benchmark, and tonePeak is
+measured over the recording it is printed beside.** He worked 7.052 MHz from 00:39 to
+00:46 UTC and the decoder read a whole QSO: 625 characters, 11 unsure, real sentences, the
+callsigns `KA2GJV` and `AA3SB` clean and repeated. *"This should be our minimum benchmark
+and future iterations should run against that. I don't want to go backwards."* So: the
+thirteen captures in `tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-*` are banked
+as floors at what they produced tonight, and the locked-on run gets inferred keys. **The
+older captures are not retired** - they are the only guard against a change that reads
+tonight's signal better and August's worse, and a fixture retires by ruling anyway
+(HM-DEC-103). On `tonePeak`, ruled (a): a figure measured over the recording the sidecar
+is about, labeled as such. HM-DEC-091 protects the held peak other things were built on;
+it does not require the per-capture sheet to print that particular figure. Rejected: not
+printing it in the sidecar; leaving it with its contradicting caption.
+
+**R64 - Tim, 2026-09-24: the night runs itself, and the loop moves when it sticks.**
+*"If it gets stuck one place, it can continue... This just stopping and saying I can't go
+any further is getting old."* Five criteria below depend on nothing but the banking: the
+keys, the spacing, the reflow, the hover text, the dead button. **When a unit cannot
+advance the criterion it was authored for, the arbiter authors the next one against a
+different criterion rather than halting**, and step 3's three-failure rule stands so the
+spacing cannot eat the night. Order of preference when nothing is blocked: **the spacing
+first**, then the screen.
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -131,6 +154,7 @@ says - never the whole suite.
 - [ ] 1.3 `docs/phase-correctness/inferring-a-key.md` states the rule for inferring a key from a CQ call on the air: what may be inferred, what may not, and how the scored region is chosen, with `cw-2026-09-23-173723` worked as the example.
 - [ ] 1.4 The synthetic cases carry a written statement of what they do not prove (§12.5), and no synthetic case is ever the sole evidence for keeping a change.
 - [ ] 1.5 The three floor tests and both carry-forward lines are green at exit.
+- [ ] 1.6 Every capture of the locked-on run - `cw-2026-09-24-004108` onward - carries an inferred key built by differencing consecutive sidecar transcripts, with its scored region named, ambiguous stretches left unscored, and each key file stating that it is inferred and how; each is scored by `CwScorer` and tabled beside the baseline (R61, R63).
 
 **Depends on:** step 0.
 
@@ -145,6 +169,7 @@ says - never the whole suite.
 - [ ] 2.2 A named floor per keyed recording states how many named characters must be read at all, set from the baseline, and a change that drops below it is a regression whatever its edit count.
 - [ ] 2.3 The guard is watched working: a deliberate change that suppresses most output is measured, shown to improve edits while breaking the floor of 2.2, and taken back out in the same unit.
 - [ ] 2.4 The three floor tests and both carry-forward lines are green at exit.
+- [ ] 2.5 The thirteen captures `cw-2026-09-24-003901` through `-004550` are tracked in the tree and carry a named-character floor and an element floor each, measured once at HEAD and printed old beside new, and they are run by the capture floor test with the other rows; no existing row is retired or lowered (R63).
 
 **Depends on:** step 0. Independent of step 1: when one blocks the arbiter works the other.
 
@@ -195,6 +220,7 @@ says - never the whole suite.
 **Exit:**
 - [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
 - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
+- [ ] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
 - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
 - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
 - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
@@ -234,6 +260,10 @@ halt.
   should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
   no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
   expect*, and the loop halted at stop 7 with the unit's work complete.
+- **A unit that cannot advance its own criterion does not halt the phase** (R64). It reports
+  what it measured, and the arbiter authors the next unit against a different criterion.
+  Preference when nothing is blocked: step 3 first, then step 6.
+- **Tonight's thirteen floors are never lowered and the older rows are never retired** (R63).
 - **Anything would change what keys or transmits.** `MOVE: stop`.
 - **A package is needed.** `MOVE: stop`.
 - **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
@@ -250,6 +280,9 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
+  measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
+  the keys by differencing, 2.5 the floors, 6.7 tonePeak.
 - **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
   always has somewhere to route; §6 gains the exact four report headings after unit 410's
   report was refused over one word.

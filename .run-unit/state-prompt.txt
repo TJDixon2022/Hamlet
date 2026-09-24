@@ -74,9 +74,9 @@ FOLLOWS: report   the criterion was chosen because the last report
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 0 criterion 2  and gave this WHY:
+The instruction it produced named  step 6 criterion 1  and gave this WHY:
 
-PHASE_PLAN.md step 0 criterion 0.2 asks for every recording in the tree that has a key scored at HEAD and tabled with its three parts as the phase's baseline
+PHASE_PLAN.md step 6 criterion 6.1 asks that the banner state the value and when it was read whenever a read-back for RF gain is held, and that the did-not-confirm wording appear only when none is
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -85,24 +85,79 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 0 | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
-## Step 0 - The number exists
+﻿STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+## Step 6 - The screen stops saying what is not so
 
-**Delivers:** R59's yardstick, and the baseline everything else is measured against.
+**Delivers:** R62. What Tim reads while he is deciding whether to trust the app.
 
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [x] 0.1 A scorer in the test project measures edit distance between a decode and a key over a scored region the key file names, reports edits, scored length and whether the key is exact or inferred, and is watched failing first on a case whose answer is known by construction.
-- [x] 0.2 Every recording in the tree that has a key - `cw-2026-09-23-173723` and the three adjudicated anchors - is scored at HEAD and tabled with its three parts, and the table is the phase's baseline in `docs/phase-correctness/baseline.md`.
-- [x] 0.3 The report names, from the baseline, what kind of error dominates: characters wrong, characters missing, characters added, or word boundaries misplaced, counted per case rather than asserted.
-- [x] 0.4 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
+- [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
+- [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
+- [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
+- [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
+- [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
 
-**Depends on:** nothing.
+**Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
 
+## Â§5 Dependencies
+
+Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
+and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
+else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
+and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
+halt.
+
+## Â§6 Branching
+
+- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
+  fact the product states to the operator about a signal, a station or a send. A test's
+  shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
+- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
+  touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
+- **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
+  headless dispatcher loop - counts neither way and is re-run once.
+- **A correctness number is never reported alone** (Â§3.1). A report that gives a percentage
+  without edits, scored length and the key's kind is incomplete and the arbiter says so.
+- **No key may be invented for audio nobody could read** (R61). If the scored region is
+  unclear, score less rather than guess more.
+- **A named floor from 2.2 is never lowered**, and a capture row's named count is never
+  lowered. Placeholders are free (R57).
+- **The generator is never the sole evidence** for keeping a change (1.4, Â§12.5).
+- **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+  is met by making a sentence true, never by deleting the sentence and saying nothing, and
+  never by changing a radio setting to match a claim.
+- **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
+  should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
+  no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
+  expect*, and the loop halted at stop 7 with the unit's work complete.
+- **Anything would change what keys or transmits.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
+  alone with its own timeout.
+
+## Â§7 Carried
+
+The restore phase's 5.1, Tim's, at `docs/phase-cw-run/`; `#15`, `#43`, `#44` and `#42`,
+parked there with their measurements; `PHASE_GOAL.md`'s 80 percent, which this phase
+measures toward but does not promise; W1AW as an exact-key confirmation whenever a bulletin
+lands; the scanner; the screen findings in `OPEN_ISSUES.md` - the RF gain sentence, the
+window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wording;
+HM-OPEN-063 and HM-OPEN-070.
+
+## Â§8 Revision record
+
+- **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
+  always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
+  report was refused over one word.
+- **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
+  from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
 --- what the script saw ---
-criteria-count.bat saw step 0 criterion 2 flip from unmet to met in
+criteria-count.bat saw step 6 criterion 1 flip from unmet to met in
 PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
 Answer one more line after WHY:
 HONEST: yes   if the report shows that criterion honestly met
@@ -112,212 +167,132 @@ HONEST: no    if the marker was turned without the criterion being met
 
 READ IN THIS ORDER.
 
-A. The baseline table, with every row's edits, scored length and key kind.
-B. Step 0's criteria: 0.1 the scorer, 0.2 the baseline, 0.3 the error kinds,
-   0.4 the exit round. Steps 1 to 5 not started.
-C. The rest. Section 4 raises 2 items.
+A. The banner's old sentence and its new one, quoted. Old, as Tim photographed it: "I asked for the RF gain to be 100% and the radio did not confirm it, so I do not know where it is now." New, when a read-back is held: "I asked for the RF gain to be 100%, and the radio read it back as 100% at 21:04:07." When no read-back is held, the old sentence stands word for word.
+B. Step 6's criteria: 6.1 the banner - met and ticked. 6.2 the sidecar's three sentences - keying and elementHz met, tonePeak dropped as the named candidate, so 6.2 stays open. 6.6 the exit round - met and ticked. 6.3, 6.4 and 6.5 not started.
+C. The rest. Section 4 raises 2 items. Both bear on B: the first is why the new banner sentence will appear on every CW tune-in, and the second is what 6.2 needs before it can close.
 
-**A. The phase goal and the baseline.** *Hamlet reads a CQ call correctly.* The baseline,
-at HEAD, **all keys inferred**:
-
-| recording | edits | scored length | key |
-|---|---|---|---|
-| `cw-2026-09-23-173723` | 29 | 25 | inferred |
-| `cw-2026-08-17-013347` | 0 | 6 | inferred |
-| `cw-2026-08-17-134712` | 1 | 3 | inferred |
-| `cw-2026-08-18-003758` | 3 | 12 | inferred |
-| **total** | **33** | **46** | **inferred** |
-
-**B. Step 0 and its exit criteria.** 0.1 the scorer: met, 12 of 12 hand-counted cases red on
-a stub, then green. 0.2 the baseline: met, the table above in
-`docs/phase-correctness/baseline.md`. 0.3 the error kinds: met, counted per case below.
-0.4 the exit round: met, every floor row identical to entry. All four ticked in
-`PHASE_PLAN.md`. Steps 1 to 5 not started.
-
-**C. What this report adds.** Bearing on A: this is the first number in the project that
-says how far the text is from a key. Bearing on B and on step 3: **at the bench, the 17:37
-letters are not all right.** 15 of its 29 edits are word boundaries and 14 are letters, and
-14 edits are left even when spaces cost nothing. The plan's "every letter is right" is the
-sidecar's reading and not the bench's.
-
-```
-UNIT:       410 - complete at task 4 of 4, none dropped - 2026-09-23 19:17
-PHASE GOAL: When Tim's radio hears a CQ call, the text Hamlet prints is the call that was sent, measured as edits from a key and not just counted as characters.
-UNIT GOAL:  Build an instrument that says how far a decode is from a key, point it at every recording that has one, and let the counts say what kind of error there is most of.
-ADVANCED:   yes - step 0 criteria 0.1 to 0.4 met with measured evidence; the phase has a baseline to judge every later change on
-NUMBER:     baseline edits, 17:37: 29 -> 29 over 25 characters, inferred key; baseline total 33 over 46 characters, inferred keys
+UNIT:       411 - complete at task 4 of 4, tonePeak dropped within task 2 - 2026-09-23 21:25
+PHASE GOAL: Hamlet reads a CQ call on the air correctly, measured as edits against a key over a scored region, with step 6 making what the screen states about the radio and the signal true while the CW work goes on
+UNIT GOAL:  The RF gain banner states the read-back Hamlet holds, and the sidecar's keying, elementHz and tonePeak lines stop contradicting the lines beside them
+ADVANCED:   yes - 6.1, the criterion this unit was aimed at, is met: watched red on a held read-back, then green, both sentences quoted above
+NUMBER:     sentences that contradicted the tree: 4 -> 1, tonePeak remains
 DRIFT:      0
-```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4, tasks 0 to 4, none dropped.** Claude Code on QUIVERFULL, project
-Hamlet (gate: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and
-`MURC.sln` absent, root `C:\Source\HamLet`), branch `main`, HEAD at entry `7ba9690d`.
-Commits `9157c3c2`, `bd875351`, `df58aa6f`, `14ce9971`, and the report commit. Every push
-succeeded.
+**Complete at task 4 of 4.** Tasks 0 to 4 were all done. **tonePeak was dropped whole within task 2.** It was the named drop candidate, and it was dropped for a reason besides the clock (section 4, item 2). Task 3, also a named candidate, was **not** dropped. Machine QUIVERFULL, project Hamlet, gate confirmed at `C:\Source\HamLet`, branch `main`. HEAD at entry was `bcebdfea`. The four task commits are `ed3c7a17`, `c62bf57a`, `ae36cc30` and `642ccdfa`. The report commit follows them.
 
-**Task 0, the record.** Version 1.13.96 to 1.13.97. `PROJECT_CARD.md` `PHASE: Hamlet reads a
-CQ call correctly`, `PHASE_SET: 2026-09-23`. HM-DEC-169 at the top of `DECISIONS.md` as given,
-and its row at the top of `CLAUDE.md` §1. `PHASE_STATUS.md` already named unit 410 and
-`CURRENT_STEP: 0`, so it was not edited. `PHASE_OUTCOME.md` has its `## UNIT 410 - STEP 0`
-entry. **Entry round** (one build, then `--no-build`, a status line before each run): engine
-carry-forward 178 of 178 in 376 s. App 277 of 278 in 158 s:
-`TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow` was
-lost to the dispatcher loop before any assertion, went 1 of 1 green when re-run once alone,
-and counts neither way. Captures 37 of 37 in 91 s, adjudicated 13 of 13 in 29 s, clean
-synthetics 2 of 2, `TheSeventeenThirtySevenCaptureTests` 5 of 5.
+**Verifying the instruction against the tree (§5). Mismatches are reported here and none was repaired.**
+- **The banner is not in the app.** Its sentence is composed in `src/Hamlet.RadioEngine/Rig/ReceiverSetupVoice.cs`, in both `Say` and `Admissions`. The app reaches it through `MainWindowViewModel.EstablishReceiveConditionsAsync`, which calls `Narrate(Say, Admissions)`.
+- **The read-back is held in `Ic7300Rig.SetSettingAsync`, and the banner's code could not reach it.** After the write, the rig reads `14 02` and raises `ValuesReported`, which is what the radio-state dialog shows. It then compares the reading with the value written and returns only `ReadBackDisagreed`, so the reading is dropped.
+- **Why they disagree:** the CW row in `data/bands/mode-receiver-conditions.json` wants `rfGain` at **255**, on the radio's scale. `CivDecode.DecodePercent` reads the gain back as a percent, **100**. The two values never compare equal. So every CW tune-in writes RF gain, and every one is filed as not confirmed, including when the radio was already at 100%.
+- **`cw-2026-09-23-173723.txt` is not in the tree.** Only the `.wav` and `.key.md` are. The contradictions were reproduced on the saved `.wav` instead.
+- **tonePeak** is `report.SnrDb`: a held peak that decays across captures (HM-DEC-090 and HM-DEC-091, per the writer's own comment). I did not trace it further than that.
+- **The keying verdict does come from `CwKeyingMeter`'s four-part test:** score, element median at least 25 ms, element median at most 250 ms, and swing. On 17:37, windowed the way the live meter runs, **only the swing fails: 16.3 dB against 20.** The score was 0.108 against 0.10, and the median was 71 ms.
+- `PHASE_STATUS.md` read step 0 done and `CURRENT_STEP 1`, and the plan carries step 6, as stated. The step-6 lines in `PHASE_STATUS.md`, `PHASE_OUTCOME.md` and `PHASE_PLAN.md` were uncommitted when the session started. They were committed with task 0.
+- **A standards note (CLAUDE_CODE.md §0).** Plan §6 names "a fact the product states to the operator about a signal" as one of the three stops. This unit changes exactly such sentences, under R62 and HM-DEC-170, which commission it. I read the stop as governing un-commissioned changes, and I continued.
 
-**Task 1, the scorer (0.1).** `tests/Hamlet.RadioEngine.Tests/Cw/CwScorer.cs` is public and
-reachable by every Cw test type. It returns `CwScore`: edits, scored length, key kind
-(`Exact` or `Inferred`), the scored region, and the alignment the edits were counted from.
-- `Whole` scores a region the key file names.
-- `Within` handles a key that covers a fragment of a recording. It aligns the whole key to
-  the stretch of the decode that fits best and scores nothing on either side.
-- `FromFirst` applies the 17:37 key file's rule: from the first `CQ` to the last character
-  emitted, trimmed.
+**Task 0, the record.** HM-DEC-170 is in `DECISIONS.md` and at the top of `CLAUDE.md` §1. `PHASE_STATUS.md` names unit 411 with `CURRENT_STEP: 6`. `PHASE_OUTCOME.md` has its `## UNIT 411 - STEP 6` entry. The version went from 1.13.97 to 1.13.98. Entry round:
 
-Edits are Levenshtein with spaces included and nothing collapsed.
-`TheScorerCountsWhatAHandCountsTests` holds 12 hand-counted cases (`KITTEN`/`SITTING` 3,
-`DEWB`/`DE WB` 1, `EEMP/4 QNIKK` inside `AA4MP/4 QNIK` 3, and so on). They went **12 of 12
-red** against a stub that threw, then **12 of 12 green**
-(`.run-unit/unit410-scorer-red.txt`, `-scorer-green.txt`).
+| Run | Result | Time |
+|---|---|---|
+| Engine carry-forward | 178 of 178 | 385 s |
+| App carry-forward | 278 of 278 | 169 s |
+| Captures | 37 of 37 | 94 s |
+| Adjudicated | 13 of 13 | 29 s |
+| Clean synthetics | 2 of 2 | 1 s |
 
-**Task 2, the baseline (0.2).** `TheBaselineIsScoredTests.TheBaselineIsPrinted` decodes each
-WAV hop by hop at 600 Hz, the same path the floors use, and prints the table.
+**Task 1, the banner (6.1).** First the trace, a theory that asserts nothing. It printed that the condition wants 255, shown as 100%, and that the read before the write was 42% or 100%, from `CI-V 14 02`. One write of 255 was sent, and the read-back afterwards was `100%` from `CI-V 14 02`. The result was `NotConfirmed` with `now=-`, and the banner said it did not know.
 
-**The phase's baseline is 33 edits over 46 characters, against inferred keys, over 4
-recordings.**
+The changes:
+- `RigWriteResult` gained a `ReadBack` property.
+- `Ic7300Rig` attaches the reading it just took to `ReadBackDisagreed`. **No extra byte is sent.**
+- `ReceiverSetup` passes the reading's text and time into `ConditionResult`, which gains `NowAtUtc`.
+- `ReceiverSetupVoice` states the value and its time. With no read-back held, the old sentence is unchanged.
 
-| recording | edits | scored length | key | region of the decode |
-|---|---|---|---|---|
-| `cw-2026-09-23-173723` | 29 | 25 | inferred | `CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I` |
-| `cw-2026-08-17-013347` | 0 | 6 | inferred | `VA3VRR` |
-| `cw-2026-08-17-134712` | 1 | 3 | inferred | `N4 ` |
-| `cw-2026-08-18-003758` | 3 | 12 | inferred | `EETMP/4 QNIK` |
+`TheBannerSaysWhatTheRadioReadBackTests` failed 2 of 5 before the change and passed 5 of 5 after. It drives the real `Ic7300Rig` against `ScriptedRadio`, which now answers `14` levels only where a test puts one, so no older test sees a difference. Seven neighboring types are green.
 
-Its one assertion is that the new scorer and the Levenshtein already in the 17:37 test
-agree on 17:37, and it holds. The nine other adjudicated recordings in the tree are scored
-by the same rule and kept outside the total: 124 edits over 363 characters against
-inferred keys (section 4, item 1).
+**Decision made for myself:** the sentence gives the **clock time, not an age**. The banner stays on the bar after it is written, and "a moment ago" would stop being true while he read it. It uses local time, in the same form as the app's other `HH:mm:ss` times.
 
-**Task 3, what kind of error (0.3).** `CwScorer.Kinds` counts from the alignment: letters
-wrong, missing and added, and spaces added or missing. An edit that touches a space counts
-as a boundary and nothing else. `CwScorer.LettersOnly` rescores the pair with every space
-removed, which depends on no tie rule.
+**Task 2, the sidecar (6.2, partial).** `TheSidecarDoesNotContradictItselfTests` runs saved audio through six-second windows, one a second, the way the live meter runs. It failed 3 of 3 before the change and passed 3 of 3 after. Before the change:
+- 17:37: `no keying at 575 Hz, 71 ms key down, 16 dB swing, 109 key-downs`
+- 014113: `no keying at 650 Hz, 48 ms key down, 14 dB swing, 211 key-downs`
 
-| recording | edits | wrong | missing | added | space added | space missing | letters-only |
-|---|---|---|---|---|---|---|---|
-| 17:37 | 29 | 4 | 0 | 10 | 15 | 0 | 14 |
-| 013347 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 134712 | 1 | 0 | 0 | 0 | 1 | 0 | 1 |
-| 003758 | 3 | 3 | 0 | 0 | 0 | 0 | 3 |
-| total | 33 | 7 | 0 | 10 | 16 | 0 | 18 |
+**The keying decision:** the meter's verdict is untouched, and every number stays. On a no-keying verdict, the counts are called rises above the threshold rather than key-downs, and the line names which of the meter's tests failed against the meter's own bar. The keying and held wordings are unchanged.
 
-**What the counts say.** On 17:37, word boundaries are the largest single kind, 15 of 29
-edits, and every one of them is a space where none was sent. They are **not a majority**:
-the other 14 edits are letters, and 14 edits remain when spaces cost nothing. Where the key
-has `WB6RED`, the bench reads `W T E E T E  E ERE D`: single-element letters, each followed
-by a space. That looks like gaps inside characters being read as gaps between words. It is
-the shape of the fault, not a trace of it. The instruction expected 17:37 to be dominated
-by boundaries. It is only a plurality, and at the bench the letters are not all right.
+**The elementHz decision:** all three branches now say "each element's own pitch not measured", because the elements themselves were measured, by their timing. Three sheet neighbors are green, including `TheCaptureButtonTests`.
 
-**Task 4, the exit round (0.4).** Build clean with warnings as errors. Engine 178 of 178 in
-370 s. App 277 of 278 in 160 s:
-`TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord` was lost to the
-dispatcher loop before any assertion, went 1 of 1 green when re-run once alone, and counts
-neither way. Captures 37 of 37, with every printed row identical to entry. Adjudicated 13
-of 13, with every reading identical to entry. Clean synthetics 2 of 2.
-`TheSeventeenThirtySevenCaptureTests` 5 of 5, its lines identical to entry. **`git diff
-7ba9690d HEAD -- src` prints nothing.** `src/Hamlet.App` prints nothing. The transmit files
-print nothing against `7e209cb4`. Nothing is red that was green at entry.
+**tonePeak was dropped whole** (section 4, item 2).
 
-**Section 5 checks against the tree.** Mismatches are reported here and nothing was
-repaired.
-- The 17:37 WAV and key are on disk and tracked, committed in `65b4f9d0`. **As stated.**
-- `TheSeventeenThirtySevenCaptureTests` is 5 of 5. It replays the WAV hop by hop through
-  `CwDecoder.Process` at 600 Hz, then calls `Flush`. **As stated.**
-- **Mismatch.** `TheAdjudicatedReadingsKeepReadingTests` does not hold 13 cases over three
-  recordings. It holds **12 theory rows over 12 recordings plus one fact**, which makes 13.
-  `134712`'s row is retired and asserts nothing. The key material is each row's
-  `Adjudicated` field. The asserted `Anchor` is a substring floor that the file itself
-  calls "never an answer key". The file gives rulings as provenance and never says exact
-  or transcribed, so those keys are marked inferred.
-- The floors count named characters with placeholders separate. **As stated.** Captures
-  run 37 of 37 in 91 to 92 s here, not 97 s.
-- `Judged` (line 1247 of `CwProbabilisticDecoder.cs`) keeps a character only at
-  `SpanMargin >= CharacterMargin`, which is 1.0 at line 302. **As stated.**
-- **Mismatch.** §4's `CQ CQ CQ DEW B 6 RE D W B` is the sidecar's reading. The bench reads
-  the text shown above. PHASE_PLAN.md's "46 named characters" counts the whole settled text
-  (`named 46`), not the scored region: the region is 48 decoded characters against a
-  25-character key.
+**Task 3, the re-read.** The sheet's three lines are now composed in `TonePeakRecordLine`, `KeyingRecordLine` and `ElementHzRecordLine`. The writer calls these, and the move did not change the text. `TheSidecarIsReReadTests` (2 of 2) runs a fresh decoder and a fresh meter over the saved `.wav` and writes the lines to `.run-unit/unit411-sidecar-cw-2026-09-23-173723.txt` and `...-014113.txt`. **The rest of the sheet is not regenerated.** It is composed inside the view model from a live session. No capture in the tree was edited. While checking the regenerated text I found an overclaim in my own new caption ("not this file") and removed it.
 
-**Decisions made for itself, author's, overrulable.**
-1. *Scored length is the key's length over the region, spaces included.* The decode's
-   region length is printed beside it. Reason: the key is what is being read, and the
-   decode's length moves with every added character.
-2. *An adjudicated text is scored with `Within`.* Reason: none of these texts names a
-   region, and scoring the whole decode against a callsign would score audio nobody keyed
-   (R61).
-3. *The tie rule.* Among alignments with the fewest edits, the scorer takes the one with
-   the fewest letter edits. After that it prefers a character in place, then missing, then
-   added. The first rule written had only that second part. It split the hand case
-   `DEW B 6 RE D` against `DE WB6RED` into a letter wrong, a letter added and three spaces,
-   where a hand counts five spaces. It was replaced **before any recording was broken
-   down**, and the baseline's edits did not move. This rule leans toward counting
-   boundaries: `134712`'s missing `L` counts as a space added. That is why letters-only is
-   printed beside it.
-4. *The nine other adjudicated recordings are scored and kept out of the total* (section 4).
-5. The per-type timeouts were 300 s for each Cw type and 480 s for the carry-forward lines.
+**Task 4, the exit round (6.6).**
+- `Hamlet.sln` builds with warnings as errors.
+- Engine carry-forward: **178 of 178** in 373 s.
+- App carry-forward: **277 of 278** in 162 s. `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed` was lost to the dispatcher loop before any assertion. Re-run once alone, it passed 1 of 1, so it is counted neither way.
+- Floors: captures 37 of 37 in 92 s, adjudicated 13 of 13 in 29 s, synthetics 2 of 2.
+- Every type touched is green, with one exception. **`HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed` went red once, on an assertion.** It expected 1779 and got 1844: 65 more characters on the Digital tab than 1379 plus 400. Re-run alone, it was green at 1779. It was also green at task 1 at 1779. `OPEN_ISSUES.md` already records that the Digital tab's figure "moves between runs of the same code". Nothing this unit changed composes Digital-tab text, and the test is not a carry-forward name. It is reported here rather than counted green.
 
-## 2. What Tim should expect
+**The diffs.** The transmit files against `7e209cb4` print nothing. `src/Hamlet.RadioEngine/Cw` against `bcebdfea` prints nothing, so **nothing that decides a character changed.** `src` changed in five files: `MainWindowViewModel.cs`, `Ic7300Rig.cs`, `ReceiverSetup.cs`, `ReceiverSetupVoice.cs` and `RigWriteResult.cs`.
 
-Nothing about the app has changed. No file under `src` was touched, and the radio, the
-screen and every decoder behave as they did this afternoon. This unit added a way of
-measuring. **The number says how far the decoder's text is from a key: 29 single-character
-edits separate what the bench reads on the 17:37 recording from the 25-character key, and
-across the four keyed recordings it is 33 edits over 46 characters.** The number does not
-say what was sent. The 17:37 key, `CQ CQ CQ DE WB6RED WB6RED`, is inferred from the shape of
-a CQ call and from the decode itself. Nobody transcribed it off the air, so every figure
-against it is an indication. The first third of that recording is never scored. What will
-look wrong but is not: the bench's text for 17:37 is worse than what the CW tab showed on
-the day. The bench replays the WAV through the test path, and every number in this phase
-is measured that way so that numbers can be compared.
+`Ic7300Rig.cs` is not one of the named transmit files, but it holds the keying path. Its change is confined to the `return` of `SetSettingAsync` and sends nothing new:
+
+```
+-                : RigWriteResult.ReadBackDisagreed(write.Label);
++                : RigWriteResult.ReadBackDisagreed(write.Label) with
++                {
++                    ReadBack = values.FirstOrDefault(
++                        v => v.Field == write.Field && v.IsKnown),
++                };
+```
+
+**Also seen, not touched:** 15 new captures `cw-2026-09-24-003901` to `004550`, plus `cases-2026-09-23.txt`, appeared untracked in `tests/fixtures/cw/captured/unadjudicated/`. They were written between 20:39 and 20:45 local, before any test in this session ran, so they are the running app's. I did not commit or edit them.
+
+## 2. What the owner should expect
+
+Where the RF gain banner used to say it did not know, you will now read: *"I asked for the RF gain to be 100%, and the radio read it back as 100% at 21:04:07."* That is the reading the radio-state dialog shows, with the clock time it was taken. If the radio does not answer the read-back at all, you still get the old sentence, because then it is true.
+
+**What will look wrong but is not:** this sentence will appear on **every CW tune-in**, even when the gain was already at 100%. The cause is the 255-against-100 comparison. Fixing that changes what is sent to your radio, so it is section 4's question and not this unit's.
+
+The capture sidecar's `keying` line no longer says "no keying" and "98 key-downs" together. It now reads, for example, *"no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20"*. `elementHz` says it was each element's own pitch that was not measured.
+
+**What has not changed:** the radio and every byte sent to it, the decoder and every character it reads, the keying meter's verdict, and the text on the CW tab. `tonePeak` still prints as before.
 
 ## 3. What you should see
 
-**The answer to what this unit was commissioned to ask:** the phase's baseline is **33 edits
-over 46 characters against inferred keys**. 17:37 is **29 edits over 25 characters against
-an inferred key**. On 17:37, word boundaries are the largest kind of error, 15 of the 29,
-but not a majority, and 14 edits are letters.
+**The banner now tells you the RF gain the radio reported, and when.** At 100% it reads *"I asked for the RF gain to be 100%, and the radio read it back as 100% at <time>"*, the same figure the radio-state dialog shows, instead of saying Hamlet does not know. Criterion 6.1 was watched red on that exact case and is now green.
 
-On the screen: nothing new, by design. In the tree: `docs/phase-correctness/baseline.md`
-has the tables and the 17:37 alignment written out. `TheBaselineIsScoredTests` reprints
-them on demand in about 40 s:
+On the next capture you keep, the sidecar's lines will read like this, regenerated from your 17:37 recording:
 
-    timeout 300 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~.TheBaselineIsScoredTests."
+Before, from your sidecar and from the unchanged code on the same audio:
+```
+tonePeak   25.8  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+keying     no keying at 575 Hz, 69 ms key down, 16 dB swing, 98 key-downs  (an independent sweep ...)
+elementHz  not measured  (the decoder in this build does not say where each element began and ended, so no element's own pitch was measured)
+```
+
+After, regenerated by task 3 with a fresh decoder and meter over the 17:37 file only:
+```
+tonePeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+elements   111 seen, 111 resolved  (this file only, a fresh decoder)
+keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+```
+
+The keying line now shows **why** 17:37 was called no keying: its swing alone, 16 dB against a bar of 20. That is the figure unit 409 found runs low. `tonePeak` is unchanged, and it is the one sentence of the four still open.
 
 ## 4. What's blocking us
 
-Nothing blocks. Both items block no criterion and are parked in
-`docs/phase-correctness/PARKED.md` under R54, for overrule.
+**1. Compare the RF gain on one scale, so an RF gain already at full is neither written nor reported as unconfirmed.**
+- **Ruling wanted:** in a later unit, make `ReceiverSetup` and `Ic7300Rig.SetSettingAsync` compare the RF gain on one scale, either the condition in percent or the read-back in raw units.
+- **Reasoning:** today every CW tune-in writes 255 to `14 02`, even at 100%. Every one is filed `NotConfirmed`, so the memory never records it, and "your hand wins" (HM-DEC-056) can never apply to RF gain. With this unit, the banner's sentence is true but appears on every tune-in. After the fix it would appear only when something is actually off.
+- **Rejected, and why:** fixing it here. It changes what is sent to the radio, and step 6 changes only what the operator reads (R62, §6). The fix would also move the outcome to `AlreadyRight` or `Changed` and change what the hover narrates.
 
-**1. Should the nine other adjudicated recordings join the baseline total?**
-Ruling taken: the baseline is the four recordings the instruction names, and the nine are
-printed beside it (124 edits over 363 characters against inferred keys).
-Reasoning: 0.2 says "every recording in the tree that has a key", and the tree has twelve
-adjudicated texts, not three. Step 3's 3.2 judges each change on "the total edit count
-over all keyed recordings", so which recordings count decides what every repair is judged
-on. Adding rows after the baseline is set would move the yardstick.
-Rejected: silently scoring only three, which would hide nine keys the tree holds; and
-folding all thirteen into the total, which changes the instruction's baseline without a
-ruling.
-
-**2. Is step 3 still framed right?**
-Ruling taken: the plan is unchanged, and the finding goes to step 3's 3.1 trace.
-Reasoning: step 3 is written as "letters right, word boundaries wrong", but that is the
-sidecar's reading. At the bench, which is what the phase measures, 17:37's letters are not
-all right: 14 of 29 edits are letters, and 14 remain letters-only. What the counts show
-looks like gaps inside characters read as gaps between words, which is a spacing fault at
-the element level, so step 3 may well stand as written.
-Rejected: rewording the step here, which is Tim's plan and not this unit's.
+**2. What tonePeak should be in a per-capture sidecar. 6.2 cannot close without this.**
+- **Ruling wanted:** choose one of three.
+  - (a) Print a figure measured over this recording only, and label it that way. A fresh decoder over 17:37 gave 25.7 where the live sheet said 25.8, so the number is close, but it is not the same measurement.
+  - (b) Stop printing it in the per-capture sidecar. Keep it on the roster's `tonePeakDb` column and on screen.
+  - (c) Keep it as it is. Its caption already says it is not about this recording.
+- **Recommendation:** (a), because it keeps a figure and makes it true.
+- **Reasoning:** the writer's own comment records HM-DEC-091: *"The number is not deleted and not changed, because it measures something real and something else was built on it."* Both options the instruction offered, a per-recording figure or not printing it, change or remove that number. So this is a choice between the instruction and a recorded ruling, and it is Tim's to make, not the author's.
+- **Rejected, and why:** picking one silently. Either choice would override HM-DEC-091 without a ruling. The cost of running a decoder at the press has also not been measured.

@@ -1,12 +1,14 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-23T18:43:49-04:00  root C:\Source\HamLet
+measured 2026-09-23T20:44:59-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0168.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0169.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -18,14 +20,16 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 7ba9690d
-  uncommitted at the root : 0
+  HEAD   : bcebdfea
+  uncommitted at the root : 2
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0168
+  highest in CLAUDE.md section 1 : CPS-DEC-0169
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -33,7 +37,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  217 lines, 14584 bytes
+  257 lines, 18757 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -43,6 +47,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 3 | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
   STEP: 4 | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+  STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
   
   ---
   
@@ -111,6 +116,18 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   because the generator knows what it sent. **An inferred key is never written for audio
   nobody could read**: the unscored stretch of a recording stays unscored.
   
+  **R62 - Tim, 2026-09-23, night: the screen work joins this phase as step 6.** Ruled A of
+  three. He listed five things at the radio: the RF gain banner saying the radio did not
+  confirm while the radio-state dialog showed it read back 24 seconds earlier; the window
+  reflowing when he tunes outside his privileges; no hover text on any control; three
+  sentences in the capture sidecar that contradict their own neighbors; and a dead button on
+  the CW tab. **Step 6 depends on nothing**, so the arbiter always has a place to route when
+  the CW work stalls, which is why it is here rather than in a phase of its own. Its sentence
+  is CLAUDE.md Â§0.0 - never present a guess as a decode, and never state as known what is not
+  known - which binds in any phase. Rejected: a new phase holding both (an interview before
+  anything runs, and step 0's ticks archived); the screen in its own phase after this one (the
+  screen stays wrong for days and the CW work has nowhere to route).
+  
   ## Â§3 What is different from the phases before it
   
   This phase scores text for the first time, so two things bind every unit:
@@ -135,10 +152,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
   
   **Exit:**
-  - [ ] 0.1 A scorer in the test project measures edit distance between a decode and a key over a scored region the key file names, reports edits, scored length and whether the key is exact or inferred, and is watched failing first on a case whose answer is known by construction.
-  - [ ] 0.2 Every recording in the tree that has a key - `cw-2026-09-23-173723` and the three adjudicated anchors - is scored at HEAD and tabled with its three parts, and the table is the phase's baseline in `docs/phase-correctness/baseline.md`.
-  - [ ] 0.3 The report names, from the baseline, what kind of error dominates: characters wrong, characters missing, characters added, or word boundaries misplaced, counted per case rather than asserted.
-  - [ ] 0.4 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+  - [x] 0.1 A scorer in the test project measures edit distance between a decode and a key over a scored region the key file names, reports edits, scored length and whether the key is exact or inferred, and is watched failing first on a case whose answer is known by construction.
+  - [x] 0.2 Every recording in the tree that has a key - `cw-2026-09-23-173723` and the three adjudicated anchors - is scored at HEAD and tabled with its three parts, and the table is the phase's baseline in `docs/phase-correctness/baseline.md`.
+  - [x] 0.3 The report names, from the baseline, what kind of error dominates: characters wrong, characters missing, characters added, or word boundaries misplaced, counted per case rather than asserted.
+  - [x] 0.4 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
   
   **Depends on:** nothing.
   
@@ -209,10 +226,27 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Depends on:** steps 3 and 4.
   
+  ## Step 6 - The screen stops saying what is not so
+  
+  **Delivers:** R62. What Tim reads while he is deciding whether to trust the app.
+  
+  **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
+  
+  **Exit:**
+  - [ ] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
+  - [ ] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
+  - [ ] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
+  - [ ] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
+  - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
+  - [ ] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+  
+  **Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
+  
   ## Â§5 Dependencies
   
-  Step 0 depends on nothing and everything depends on it. Steps 1, 2 and 4 depend on step 0
-  and on nothing else, so there are three places to route when one blocks. Step 3 waits on 0
+  Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
+  and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
+  else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
   and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
   halt.
   
@@ -233,6 +267,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - **A named floor from 2.2 is never lowered**, and a capture row's named count is never
     lowered. Placeholders are free (R57).
   - **The generator is never the sole evidence** for keeping a change (1.4, Â§12.5).
+  - **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+    is met by making a sentence true, never by deleting the sentence and saying nothing, and
+    never by changing a radio setting to match a claim.
+  - **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
+    should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
+    no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
+    expect*, and the loop halted at stop 7 with the unit's work complete.
   - **Anything would change what keys or transmits.** `MOVE: stop`.
   - **A package is needed.** `MOVE: stop`.
   - **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
@@ -249,37 +290,78 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
+    always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
+    report was refused over one word.
   - **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  11 lines, 1913 bytes
+  12 lines, 2162 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
-  CURRENT_STEP: 0
+  CURRENT_STEP: 1
   WORK_INSTRUCTION: 410 - the number exists
-  STEP: 0 | not started | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
+  STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | not started | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | not started | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
   STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+  STEP: 6 | not started | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 
   --- PHASE_OUTCOME.md ---
-  9 lines, 1855 bytes
+  46 lines, 8725 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
-  STEP: 0 | not started | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
+  STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | not started | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | not started | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
   STEP: 3 | not started | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+  STEP: 6 | not started | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
+  
+  ## UNIT 410 - STEP 0
+  
+  STEP: 0
+  APPROACH: build a scorer that reports edits, scored length and the key's kind, score the 17:37 capture and the three adjudicated recordings at HEAD into a baseline table, and count what kind of error dominates
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 0 criterion 0.2 asks for every recording in the tree that has a key scored at HEAD and tabled with its three parts as the phase's baseline
+  STATE: not started
+  DECIDED: the scorer's placement in the test project, the alignment it uses for the error breakdown and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R59, R60, R61, section 3, section 6; HM-DEC-169; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0 and 12.5; FACT-004
+  ADVANCES: step 0 criterion 2
+  COST: one session, five tasks, 0 to 4, committed per task; drop from the back, task 3's anchor breakdown the named candidate.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.96 to 1.13.97. PROJECT_CARD.md PHASE to Hamlet reads a CQ call correctly and PHASE_SET to 2026-09-23 under HM-DEC-169, recorded in DECISIONS.md and CLAUDE.md section 1. PHASE_STATUS.md already named unit 410 and CURRENT_STEP 0. HEAD at entry 7ba9690d. No file under src changed. Entry round, one build then --no-build, a status line before each: ENGINE carry-forward 178 of 178 in 376 s; APP 277 of 278 in 158 s, TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow lost to the dispatcher loop before any assertion, re-run once alone 1 of 1 green, counted neither way; captures 37 of 37 in 91 s; adjudicated 13 of 13 in 29 s; clean synthetics 2 of 2 in 2 s; TheSeventeenThirtySevenCaptureTests 5 of 5 in 12 s, the bench's scored region CQ CQ CQ DE W T E E T E  E ERE D E T T TB 7E E I, 29 edits against an inferred key.
+  TASK 1, THE SCORER (0.1): CwScorer in tests/Hamlet.RadioEngine.Tests/Cw gives edits, scored length and the key's kind with the alignment they were counted from; Whole for a region the key file names, Within for a fragment key aligned to the stretch that fits it best, FromFirst for the 17:37 rule; spaces are characters; ties go to a character in place, then missing, then added. TheScorerCountsWhatAHandCountsTests, 12 hand-counted cases, 12 of 12 red against a stub that threw, then 12 of 12 green. Hamlet.sln builds with warnings as errors.
+  TASK 2, THE BASELINE (0.2): 33 edits over 46 characters against inferred keys, 4 recordings - 17:37 29 over 25, 013347 0 over 6, 134712 1 over 3, 003758 3 over 12. The nine other adjudicated recordings in the tree scored by the same rule and kept out of the total, 124 edits over 363 characters against inferred keys. TheBaselineIsScoredTests, 1 of 1, 35 s; its one assertion, that the scorer and the 17:37 test's own Levenshtein agree, holds. docs/phase-correctness/baseline.md.
+  TASK 3, WHAT KIND OF ERROR (0.3): CwScorer.Kinds counts wrong, missing, added, space added and space missing from the alignment; CwScorer.LettersOnly scores the pair with every space out. The first tie rule split the hand case DEW B 6 RE D against DE WB6RED into a letter wrong, a letter added and three spaces; replaced before any recording was broken down by fewest letter edits at equal edit count; 18 of 18 hand cases green. Baseline edits and totals identical under the new rule. 17:37: 29 edits = 15 spaces added, 4 letters wrong, 10 letters added, 0 missing; 14 edits letters-only - boundaries the largest single kind, not a majority, and the letters not all right at the bench. The three anchors: 013347 0, 134712 1 space added, 003758 3 wrong. Baseline over four: 16 boundaries, 7 wrong, 10 added, 0 missing, 18 letters-only. TheBaselineIsScoredTests 2 of 2 in 41 s.
+  TASK 4, THE EXIT ROUND (0.4): Hamlet.sln builds with warnings as errors; ENGINE 178 of 178 in 370 s; APP 277 of 278 in 160 s, TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord lost to the dispatcher loop before any assertion, re-run once alone 1 of 1 green, counted neither way; captures 37 of 37 in 92 s, every printed row identical to entry; adjudicated 13 of 13 in 29 s, every reading identical to entry; clean synthetics 2 of 2; TheSeventeenThirtySevenCaptureTests 5 of 5, its lines identical to entry, 29 edits against an inferred key. src prints nothing against 7ba9690d; src/Hamlet.App prints nothing; the transmit files print nothing against 7e209cb4. 0.1 to 0.4 ticked.
+  FATE: executed, complete at task 4 of 4, tasks 0 to 4, none dropped; baseline 33 edits over 46 characters against inferred keys, 17:37 29 over 25; on 17:37 boundaries 15 of 29 edits, letters 14, 14 letters-only; no file under src changed.
+  
+  ## UNIT 1 - STEP 0
+  
+  STEP: 0
+  APPROACH: build a scorer that reports edits, scored length and the key's kind, score the 17:37 capture and the three adjudicated recordings at HEAD into a baseline table, and count what kind of error dominates
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Both items are about which recordings count toward the baseline and how a plan step is framed, the unit has already made its own call on each and parked them for overrule, and neither touches transmit, money or what the product promises the operator.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 0 criterion 0.2 asks for every recording in the tree that has a key scored at HEAD and tabled with its three parts as the phase's baseline
+  DECIDED: the scorer's placement in the test project, the alignment it uses for the error breakdown and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R59, R60, R61, section 3, section 6; HM-DEC-169; HM-DEC-155; HM-DEC-139; CLAUDE.md 0.0 and 12.5; FACT-004
+  COST: 3.9468494000000005
+  ACCOMPLISHED: the project can say for the first time how far its CW text is from what was sent, and every later change can be judged on that number
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: The report shows evidence for all four exit criteria, the scorer went 12 of 12 red then 12 of 12 green, the four named recordings are scored and tabled in docs/phase-correctness/baseline.md at 33 edits over 46 characters, the error kinds are counted for each recording, and the exit round matches entry with nothing under src changed.
+  ADVANCED: yes
+  ATTEMPT: 0.2 | unit 1 launched 2026-09-23T22:44:00.058Z | yes | executed | build a scorer that reports edits, scored length and the key's kind, score the 17:37 capture and the three adjudicated recordings at HEAD into a baseline table, and count what kind of error dominates
 
   --- CLAUDE.md ---
-  1391 lines, 200054 bytes
+  1392 lines, 200932 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -288,28 +370,28 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   (not inlined - it is the standard and it is long)
 
   --- PROJECT_CARD.md ---
-  29 lines, 1349 bytes
+  29 lines, 1365 bytes
   PROJECT: Hamlet
   TRUNK: main
-  PHASE: CW decodes again
-  PHASE_SET: 2026-09-22
+  PHASE: Hamlet reads a CQ call correctly
+  PHASE_SET: 2026-09-23
   TEST_CMD: dotnet test
   NOTE: BASELINE_RED above is THE CARD S CLAIM about the suite.
   This command does not run the suite - it has to be cheap enough
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 811 bytes
+  19 lines, 775 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: TASK 4 of 4
-  WORK_INSTRUCTION: 409 - the decoder and the sweep agree about the pitch
+  WORK_INSTRUCTION: 410 - the number exists
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-23T17:57:46-04:00
-  NOTE: Unit 409 complete, pushed: 0 of 5 single-sender cases apart at entry and exit, no tracker change, 3.8 ticked; section 4 asks whether the tick stands on a sweep that sits 60 to 85 Hz off known tones
+  UPDATED: 2026-09-23T19:19:25-04:00
+  NOTE: Unit 410 complete: baseline 33 edits over 46 chars against inferred keys, 17:37 29 over 25; there 15 boundaries and 14 letters, so the bench letters are not all right; section 4 parks 2 items
   
   ---
   

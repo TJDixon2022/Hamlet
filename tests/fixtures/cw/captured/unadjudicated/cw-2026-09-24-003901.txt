@@ -1,0 +1,77 @@
+captured   2026-09-24 00:39:01 UTC
+audioSeen  5479200 samples
+fingerprint 25150a5f32f8
+seconds    30.0
+sampleRate 48000
+frequency  7052000 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered a change of its own while this recording was being made, and the setting reads on
+
+inputPeak  -13.2 dBFS  (over the whole recording)
+meterPeak  -13.4 dBFS  (the moment it was kept)
+inputFloor -21.8 dBFS
+clipping   False
+toneHz     595.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   41.9  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     92 characters emitted, 0 unsure, 223 elements seen, 223 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    no  (92 characters, and the survey admitted keying at this pitch)
+elements   223 seen, 223 resolved  (since the transcript was cleared at 00:38:54 UTC, less than a minute ago)
+characters 92 emitted, 0 unsure  (since the transcript was cleared at 00:38:54 UTC, less than a minute ago)
+decoderWpm 24
+text       E ET E E   E  E E  E  E E  E    E A TE E T N QNIK     EE
+textCovers everything read since the transcript was cleared at 00:38:54 UTC, less than a minute ago
+spanLlr    25 of the last 63 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:38:54 UTC, less than a minute ago)
+           E:4.1/unmeasured/unmeasured E:6.7/unmeasured/unmeasured T:12.2/unmeasured/unmeasured E:7.5/unmeasured/unmeasured E:5.7/unmeasured/unmeasured E:9.0/unmeasured/unmeasured E:9.6/unmeasured/unmeasured E:9.3/unmeasured/unmeasured E:4.3/unmeasured/unmeasured E:8.2/unmeasured/unmeasured E:11.5/unmeasured/unmeasured E:12.8/unmeasured/unmeasured E:224.8/unmeasured/unmeasured A:639.4/unmeasured/unmeasured T:768.0/unmeasured/unmeasured E:173.0/unmeasured/unmeasured E:177.6/unmeasured/unmeasured T:620.9/unmeasured/unmeasured N:475.4/unmeasured/unmeasured Q:1678.6/unmeasured/unmeasured N:711.5/unmeasured/unmeasured I:271.5/unmeasured/unmeasured K:1390.5/unmeasured/unmeasured E:6.4/unmeasured/unmeasured E:5.2/unmeasured/unmeasured
+competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+reading    24 WPM won out of 8 to 40, 3.0 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       38.6%  (of the 30.0 seconds in this file, the key was down at 595.0 Hz)
+elementHz  nothing was read, so no element was measured, which is too few to say anything about how they spread
+
+sinceLast  92 characters, 223 elements  (since the transcript was cleared at 00:38:54 UTC, less than a minute ago; this is the first capture of the session)
+
+Frequency            7.052000 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S3
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              0%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
