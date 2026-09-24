@@ -234,27 +234,34 @@ public sealed class TheTuneInSetsOnlyWhatIsInTheWayTests
     }
 
     /// <remarks>
-    /// **A BLOCK THAT STATES NOTHING PRODUCES NO WRITE**, which is the other half
-    /// of task 2's rule and the one that keeps this from becoming a set of
-    /// settings applied everywhere. The dial sits in a Morse block and the radio
-    /// is not touched.
+    /// <para>**A BLOCK THAT STATES NOTHING PRODUCES NO WRITE**, which is the other
+    /// half of task 2's rule and the one that keeps this from becoming a set of
+    /// settings applied everywhere. The dial sits in a block that states nothing and
+    /// the radio is not touched.</para>
+    /// <para>**REWRITTEN TO R70 BY WORK INSTRUCTION 420, AND RENAMED.** This was
+    /// `AMorseBlockProducesNoWriteAtAll` and drove the first Morse block on 20 m,
+    /// the `CW DX` fast lane, which stated nothing. R70 (HM-DEC-175) makes every
+    /// block of the CW family state the CW row, so no Morse block is silent any
+    /// more and the old name pinned the behavior the ruling calls wrong. What it
+    /// guarded still holds and is kept: it now drives the first 20 m block that
+    /// states nothing at all.</para>
     /// </remarks>
     [Fact]
-    public async Task AMorseBlockProducesNoWriteAtAll()
+    public async Task ABlockThatStatesNothingProducesNoWriteAtAll()
     {
         var (radio, rig) = await ConnectAsync();
         using var _ = rig;
 
         radio.OperatorTurnsASwitch(NoiseBlanker, 1);
 
-        var morse = NeighborhoodPlan
+        var silent = NeighborhoodPlan
             .ForBand(HfBands.Bands.First(b => b.Name == "20 m"))
-            .First(n => n.Family == ModeFamily.Cw);
+            .First(n => ReceiverConditions.ForBlock(n).Count == 0);
 
-        _output.WriteLine($"  the dial is in {morse.Name}");
+        _output.WriteLine($"  the dial is in {silent.Name} ({silent.ShortName}, {silent.Family})");
 
         var (results, memory) = await ReceiverSetup.ApplyAsync(
-            rig, ReceiverConditions.ForBlock(morse), ReceiverSetupMemory.Empty);
+            rig, ReceiverConditions.ForBlock(silent), ReceiverSetupMemory.Empty);
 
         Assert.Empty(results);
         Assert.Empty(radio.SwitchWrites);

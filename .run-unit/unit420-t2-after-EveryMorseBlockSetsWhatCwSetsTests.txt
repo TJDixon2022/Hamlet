@@ -1,0 +1,74 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.33]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.52]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.52]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.63]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.At7030ThePreampEndsOff [68 ms]
+  Standard Output Messages:
+ QRP watering hole (QRP) states 9 conditions; preamp now 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 7030000) [9 ms]
+  Standard Output Messages:
+ 7.030 MHz is QRP watering hole (QRP); beside CW main street (CW) at the same dial
+   auto notch       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   manual notch     here AlreadyRight       now off        | CW block AlreadyRight       now off
+   noise blanker    here Changed            now off        | CW block Changed            now off
+   noise reduction  here AlreadyRight       now off        | CW block AlreadyRight       now off
+   AGC              here Changed            now FAST       | CW block Changed            now FAST
+   RF gain          here AlreadyRight       now 100%       | CW block AlreadyRight       now 100%
+   squelch          here AlreadyRight       now 0%         | CW block AlreadyRight       now 0%
+   attenuator       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   preamp           here Changed            now off        | CW block Changed            now off
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14010000) [1 ms]
+  Standard Output Messages:
+ 14.010 MHz is CW fast lane (CW DX); beside CW main street (CW) at the same dial
+   auto notch       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   manual notch     here AlreadyRight       now off        | CW block AlreadyRight       now off
+   noise blanker    here Changed            now off        | CW block Changed            now off
+   noise reduction  here AlreadyRight       now off        | CW block AlreadyRight       now off
+   AGC              here Changed            now FAST       | CW block Changed            now FAST
+   RF gain          here AlreadyRight       now 100%       | CW block AlreadyRight       now 100%
+   squelch          here AlreadyRight       now 0%         | CW block AlreadyRight       now 0%
+   attenuator       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   preamp           here AlreadyRight       now preamp 1   | CW block AlreadyRight       now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EnteringMorseHereSetsWhatTheCwBlockSets(hz: 14050000) [1 ms]
+  Standard Output Messages:
+ 14.050 MHz is CW main street (CW); beside CW main street (CW) at the same dial
+   auto notch       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   manual notch     here AlreadyRight       now off        | CW block AlreadyRight       now off
+   noise blanker    here Changed            now off        | CW block Changed            now off
+   noise reduction  here AlreadyRight       now off        | CW block AlreadyRight       now off
+   AGC              here Changed            now FAST       | CW block Changed            now FAST
+   RF gain          here AlreadyRight       now 100%       | CW block AlreadyRight       now 100%
+   squelch          here AlreadyRight       now 0%         | CW block AlreadyRight       now 0%
+   attenuator       here AlreadyRight       now off        | CW block AlreadyRight       now off
+   preamp           here AlreadyRight       now preamp 1   | CW block AlreadyRight       now preamp 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.AnUnconfirmedConditionIsStillNotWritten [6 ms]
+  Standard Output Messages:
+ 7.030 QRP    states 9, unconfirmed 0: ; fields written NoiseBlanker,Agc,Preamp
+ 14.010 CW DX  states 9, unconfirmed 0: ; fields written NoiseBlanker,Agc
+ 14.050 CW     states 9, unconfirmed 0: ; fields written NoiseBlanker,Agc
+ 14.074 FT8    states 5, unconfirmed 1: AGC SpokenOnly; fields written NoiseBlanker
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.EveryMorseBlockSetsWhatCwSetsTests.EveryMorseBlockStatesTheCwRow [3 ms]
+  Standard Output Messages:
+ CW-family blocks stating the CW row: 20 of 20
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 1.9051 Seconds
+RC=0 WALL=3s

@@ -164,13 +164,14 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
 
             var conditions = ReceiverConditions.ForBlock(hood);
 
-            if (conditions.Count == 0)
-            {
-                // Not every Morse block is named `CW`; `CW DX` and `QRP` are
-                // Morse and the lookup is by short name. That is unit 042's
-                // shape and no unit since has changed it (§12.6).
-                continue;
-            }
+            // **EVERY MORSE BLOCK SPEAKS NOW** (R70, HM-DEC-175, work instruction
+            // 420). Not every Morse block is named `CW`, and the lookup is by short
+            // name, so until then `CW DX` and `QRP` were skipped here because they
+            // stated nothing. They state the CW row by `sameAs` lines in the
+            // conditions file, so a silent one is a failure rather than a skip.
+            Assert.True(
+                conditions.Count > 0,
+                $"{band.Name} {hood.Name} ({hood.ShortName}) is Morse and states nothing");
 
             spoke++;
 

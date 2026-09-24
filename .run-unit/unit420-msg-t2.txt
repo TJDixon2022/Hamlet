@@ -1,0 +1,11 @@
+unit420 task 2: the CW DX and QRP blocks state the CW row by sameAs lines (R70, HM-DEC-175, 7.7)
+
+data/bands/mode-receiver-conditions.json gains two modes entries, CW DX sameAs CW and QRP sameAs CW, the shape FT4 sameAs FT8 already uses and ReceiverConditions.Parse already resolves. No condition's value, text or confirmed flag changed: the file's diff is 10 added lines at line 174 and nothing removed, so the CW row prints nothing.
+
+EveryMorseBlockSetsWhatCwSetsTests red 4 of 5 at 54927894, green 6 of 6 here with AnUnconfirmedConditionIsStillNotWritten added: the CW row marks none of its nine unconfirmed, and FT8's AGC at 14.074 is filed SpokenOnly with no AGC byte. The table after: CW-family blocks stating conditions 9 of 20 to 20 of 20; at 7.030 QRP the preamp is written 0 and ends off; at 14.010 CW DX every field ends as at 14.050 CW.
+
+R70 turned one older test red for a ruled reason, named before it was changed (R12, HM-DEC-165): TheTuneInSetsOnlyWhatIsInTheWayTests.AMorseBlockProducesNoWriteAtAll drove the 20 m CW DX fast lane and asserted no write; red with Assert.Empty() Failure on its results. Rewritten to R70 and renamed ABlockThatStatesNothingProducesNoWriteAtAll, driving the first 20 m block that states nothing; not deleted. TheBlockStatesWhatTheModeNeedsTests.TheMorseBlocksStateWhatMorseNeeds skipped CW DX and QRP as silent; now a silent Morse block fails it, citing R70.
+
+The operator's hand across blocks: TheOperatorsHandCrossesTheMorseBlocksTests, 3 of 3 green at first run and not watched failing. ReceiverSetupMemory is keyed by field alone and the view model re-arms it only on a band change, so no rule change was needed; before R70 the QRP block wrote nothing, so the hand stood by default. 7.025 CW then 7.030 QRP with the preamp set 1 by hand, and 14.050 CW then 14.060 QRP with it set off by hand: LeftToTheOperator, nothing written.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

@@ -120,6 +120,57 @@ public sealed class EveryMorseBlockSetsWhatCwSetsTests
         Assert.Empty(silent);
     }
 
+    /// <summary>
+    /// **A CONDITION MARKED UNCONFIRMED IS STILL NOT WRITTEN** (the conditions file's
+    /// own rule, CLAUDE.md 12.4), in all three blocks and in the FT8 block that proves
+    /// the rule.
+    /// </summary>
+    /// <remarks>
+    /// The CW row marks none of its nine unconfirmed, so in the three Morse blocks the
+    /// rule has nothing to act on and the count printed is zero. FT8's AGC is the one
+    /// the file marks `confirmed: false`, so the FT8 block at 14.074 is driven beside
+    /// them: its AGC is filed spoken-only and no AGC byte goes out.
+    /// </remarks>
+    [Fact]
+    public async Task AnUnconfirmedConditionIsStillNotWritten()
+    {
+        foreach (var hz in new[] { 7_030_000L, 14_010_000L, 14_050_000L, 14_074_000L })
+        {
+            var block = ModeEntryBench.BlockAt(hz)!;
+            var radio = ModeEntryBench.AsLeftWithThePreampOn(hz);
+            radio.Switches[ModeEntryBench.Agc] = 2;
+            using var rig = await ModeEntryBench.ConnectAsync(radio);
+
+            var (results, _) = await ReceiverSetup.ApplyAsync(
+                rig, ReceiverConditions.ForBlock(block), ReceiverSetupMemory.Empty);
+
+            var unconfirmed = results.Where(r => !r.Condition.Confirmed).ToList();
+            var writes = ModeEntryBench.Writes(radio);
+
+            _output.WriteLine(
+                $"{hz / 1e6:0.000} {block.ShortName,-6} states {results.Count}, unconfirmed "
+                + $"{unconfirmed.Count}: "
+                + string.Join(", ", unconfirmed.Select(r => $"{r.Condition.Control} {r.Outcome}"))
+                + $"; fields written {string.Join(",", writes.Select(w => w.Field).Distinct())}");
+
+            foreach (var r in unconfirmed)
+            {
+                Assert.Equal(ConditionOutcome.SpokenOnly, r.Outcome);
+                Assert.DoesNotContain(writes, w => w.Field == r.Condition.Field);
+            }
+
+            if (block.ShortName == "FT8")
+            {
+                Assert.Contains(unconfirmed, r => r.Condition.Field == RigField.Agc);
+                Assert.Equal(2, radio.Switches[ModeEntryBench.Agc]);
+            }
+            else
+            {
+                Assert.Empty(unconfirmed);
+            }
+        }
+    }
+
     private static async Task<(IReadOnlyList<ConditionResult> Results, ScriptedRadio Radio)>
         TuneInAsync(long hz, Neighborhood block)
     {

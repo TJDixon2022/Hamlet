@@ -171,6 +171,16 @@
       "mode": "FT4",
       "sameAs": "FT8",
       "because": "FT4 sends the same shape of signal as FT8 in a shorter slot, so what the receiver has to leave alone is the same."
+    },
+    {
+      "mode": "CW DX",
+      "sameAs": "CW",
+      "because": "The fast lane at the bottom of the band is Morse like the rest of the CW end, only quicker, so entering it is entering CW mode and the receiver wants what CW wants (R70, HM-DEC-175)."
+    },
+    {
+      "mode": "QRP",
+      "sameAs": "CW",
+      "because": "The QRP watering hole is Morse sent at low power, and a weak keyed signal needs the receiver set for Morse at least as much as a strong one, so entering it is entering CW mode (R70, HM-DEC-175)."
     }
   ],
   "unknowns": [

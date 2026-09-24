@@ -1,0 +1,70 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.WhatIsInTheWayIsChangedAndWhatIsAlreadyRightIsNot [75 ms]
+  Standard Output Messages:
+   noise blanker   Changed            was=on now=off
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      Changed            was=on now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+[xUnit.net 00:00:04.17]     Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AMorseBlockProducesNoWriteAtAll [FAIL]
+[xUnit.net 00:00:04.17]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:04.17]       Collection: [ConditionResult { Condition = ReceiverCondition { Control = auto notch, Field = AutoNotch, Wanted = 0, WantedText = off, Says = it hunts steady tones and Morse is a steady tone, Because = The automatic notch listens for a carrier sitting in the passband and removes it, which is exactly the right thing to do to a heterodyne and exactly the wrong thing to do here. A keyed Morse signal is a steady carrier that stops and starts, so the notch finds it, decides it is interference, and eats the thing we are trying to read., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = AlreadyRight, WasText = off, NowText = off, NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = manual notch, Field = ManualNotch, Wanted = 0, WantedText = off, Says = the same trap, under your hand rather than automatic, Because = The manual notch does what the automatic one does, at a frequency you choose rather than one the radio picks. Left on from an earlier session it sits wherever it was last put, which may be straight on top of the station you have just tuned to., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = NotRead, WasText = , NowText = , NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = noise blanker, Field = NoiseBlanker, Wanted = 0, WantedText = off, Says = it chops holes in keying instead of in the noise, Because = The noise blanker listens for the sharp crack of an ignition or an electric fence and mutes the receiver for a fraction of a millisecond each time. A Morse dit at twenty words a minute is about sixty milliseconds of steady tone, and its leading edge looks enough like a crack that the blanker takes bites out of the elements it is supposed to be protecting., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = Changed, WasText = on, NowText = off, NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = noise reduction, Field = NoiseReduction, Wanted = 0, WantedText = off, Says = it was built for speech and it mangles a keyed envelope, Because = Noise reduction is built around what human speech looks like, and it reshapes anything that does not. What it does to Morse is smear the edges of the elements, which is the one property the decoder measures to tell a dit from a dah., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = AlreadyRight, WasText = off, NowText = off, NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = AGC, Field = Agc, Wanted = 1, WantedText = fast, Says = slow gain rides over the gaps and hides the keying, Because = Automatic gain control follows the signal up and down, and Morse is a signal that stops several times a second. Fast is the standard setting for CW because it tracks the keying itself rather than pumping across it; on slow the receiver holds its gain through the gaps and the contrast the decoder needs between key-down and key-up is reduced., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = Changed, WasText = SLOW, NowText = FAST, NowAtUtc =  }, ···]
+[xUnit.net 00:00:04.17]       Stack Trace:
+[xUnit.net 00:00:04.17]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\TheTuneInSetsOnlyWhatIsInTheWayTests.cs(259,0): at Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AMorseBlockProducesNoWriteAtAll()
+[xUnit.net 00:00:04.17]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.17]       Output:
+[xUnit.net 00:00:04.17]           the dial is in CW fast lane
+  Failed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AMorseBlockProducesNoWriteAtAll [3 s]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: [ConditionResult { Condition = ReceiverCondition { Control = auto notch, Field = AutoNotch, Wanted = 0, WantedText = off, Says = it hunts steady tones and Morse is a steady tone, Because = The automatic notch listens for a carrier sitting in the passband and removes it, which is exactly the right thing to do to a heterodyne and exactly the wrong thing to do here. A keyed Morse signal is a steady carrier that stops and starts, so the notch finds it, decides it is interference, and eats the thing we are trying to read., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = AlreadyRight, WasText = off, NowText = off, NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = manual notch, Field = ManualNotch, Wanted = 0, WantedText = off, Says = the same trap, under your hand rather than automatic, Because = The manual notch does what the automatic one does, at a frequency you choose rather than one the radio picks. Left on from an earlier session it sits wherever it was last put, which may be straight on top of the station you have just tuned to., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = NotRead, WasText = , NowText = , NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = noise blanker, Field = NoiseBlanker, Wanted = 0, WantedText = off, Says = it chops holes in keying instead of in the noise, Because = The noise blanker listens for the sharp crack of an ignition or an electric fence and mutes the receiver for a fraction of a millisecond each time. A Morse dit at twenty words a minute is about sixty milliseconds of steady tone, and its leading edge looks enough like a crack that the blanker takes bites out of the elements it is supposed to be protecting., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = Changed, WasText = on, NowText = off, NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = noise reduction, Field = NoiseReduction, Wanted = 0, WantedText = off, Says = it was built for speech and it mangles a keyed envelope, Because = Noise reduction is built around what human speech looks like, and it reshapes anything that does not. What it does to Morse is smear the edges of the elements, which is the one property the decoder measures to tell a dit from a dah., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = AlreadyRight, WasText = off, NowText = off, NowAtUtc =  }, ConditionResult { Condition = ReceiverCondition { Control = AGC, Field = Agc, Wanted = 1, WantedText = fast, Says = slow gain rides over the gaps and hides the keying, Because = Automatic gain control follows the signal up and down, and Morse is a signal that stops several times a second. Fast is the standard setting for CW because it tracks the keying itself rather than pumping across it; on slow the receiver holds its gain through the gaps and the contrast the decoder needs between key-down and key-up is reduced., Confirmed = True, Confirm = , Condition = , IsConditional = False, CanBeWritten = True }, Outcome = Changed, WasText = SLOW, NowText = FAST, NowAtUtc =  }, ···]
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AMorseBlockProducesNoWriteAtAll() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\TheTuneInSetsOnlyWhatIsInTheWayTests.cs:line 259
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+   the dial is in CW fast lane
+
+
+[xUnit.net 00:00:04.95]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.ArrivingAgainWithNothingChangedSendsNothing [3 ms]
+  Standard Output Messages:
+   noise blanker   AlreadyRight       was=off now=off
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      AlreadyRight       was=off now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AControlTheRadioWillNotReportIsNotWritten [767 ms]
+  Standard Output Messages:
+   noise blanker   NotRead            was=- now=-
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      AlreadyRight       was=off now=off
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.TheTuneInSetsOnlyWhatIsInTheWayTests.AControlTheOperatorMovedHimselfIsLeftAlone [2 ms]
+  Standard Output Messages:
+   noise blanker   LeftToTheOperator  was=on now=on
+   noise reduction AlreadyRight       was=off now=off
+   auto notch      LeftToTheOperator  was=on now=on
+   AGC             SpokenOnly         was=- now=-
+   scope span      SpokenOnly         was=- now=-
+
+
+
+Test Run Failed.
+Total tests: 5
+     Passed: 4
+     Failed: 1
+ Total time: 5.2117 Seconds
+RC=1 WALL=5s
