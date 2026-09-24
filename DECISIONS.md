@@ -4,6 +4,42 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-177
+date: 2026-09-24
+refs: PHASE_PLAN.md R74 and criterion 7.8, IC-7300_ENG_FM_12b page 4-3, data/bands/mode-receiver-conditions.json, HM-DEC-174, HM-DEC-056, HM-DEC-148, CLAUDE.md 0.0 and 12.4, work instruction 424
+---
+
+**The preamp is set from what the radio's manual states, and no component asks the operator
+to change what Hamlet set.** Tim, 2026-09-24: *"You know the mode we're in. You know the
+range. Why do I have to control this? I don't know the radio."*
+
+**What the manual states.** Page 4-3: P.AMP1 is the wide dynamic range preamplifier, most
+effective for the HF low bands; P.AMP2 is the high-gain preamplifier, most effective for the
+50 MHz bands; when the preamp is used while receiving strong signals the signal may be
+distorted, and in that case the preamp is turned off; each band memorizes its own setting.
+Icom's published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz and
+with Preamp 2 on at 50 MHz.
+
+**What was wrong.** The CW condition read *preamp 1 above 40 m, off at 40 m and below*, which
+turns the preamp off across the low bands where Icom specifies it on, says nothing about 6 m,
+and keys the off case to the band rather than to overload. And more than one component spoke
+about the field, so the app set the preamp and then told the operator it should be otherwise.
+
+**What is ruled.** Preamp 1 for 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and the preamp off
+when the receiver reports overloading. The condition cites the manual page it comes from. No
+component asks the operator to change a field a condition states, after Hamlet has set it; if
+a voice is right that a setting is wrong, the setting changes rather than the operator.
+
+**Whose words are whose.** The ruling is Tim's and the values are Icom's; the wording is work
+instruction 424's record of them. Rejected: leaving the band rule as it stood; asking the
+owner which he wants.
+
+**Numbered HM-DEC-177, not HM-DEC-176.** Work instruction 424 names this ruling HM-DEC-176,
+and that id was already taken by unit 421's floor-bar ruling below. Two rulings under one id
+would make every later reference ambiguous, so this one takes the next free number and the
+mismatch is reported in unit 424's `output.md`.
+
+---
 id: HM-DEC-176
 date: 2026-09-24
 refs: PHASE_PLAN.md R71 and criteria 3.6 and 3.7, PARKED.md P17, tests/Hamlet.RadioEngine.Tests/Cw/TheCapturesThatDecodeKeepDecodingTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/TheNumberCannotBeGamedTests.cs, src/Hamlet.RadioEngine/Cw/CwCharacter.cs, work instruction 421

@@ -1,0 +1,14 @@
+unit424 task 0: the record - DECISIONS.md HM-DEC-177 and the CLAUDE.md row, the preamp set from the manual; PHASE_OUTCOME.md UNIT 424 - STEP 7 from the decision block with the entry round; PHASE_STATUS.md unit 424, CURRENT_STEP 7; version 1.13.110 to 1.13.111
+
+The work instruction names the ruling HM-DEC-176. DECISIONS.md already holds HM-DEC-176 for
+unit 421's floor-bar ruling, and DecisionLogOrderTests refuses a repeated id, so the ruling is
+HM-DEC-177 and the mismatch is reported.
+
+Entry round, one type per invocation: Hamlet.sln builds with warnings as errors; engine
+carry-forward 178 of 178; app carry-forward 277 of 278, ThePsk31OfferTests lost to the
+dispatcher loop and 2 of 2 alone; captures 51 of 51; adjudicated 13 of 13; keyed floors 13 of
+13; every Rig type, 44 types, 325 of 325. DecisionLogOrderTests
+EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes red at entry and after: the CLAUDE.md table
+has no HM-DEC-166 row (expected gaps 105, 136; actual 105, 136, 166) - reported, not repaired.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

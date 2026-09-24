@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 424 - STEP 7
+
+STEP: 7
+APPROACH: set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+MOVE: continue
+WHY: PHASE_PLAN.md step 7 criterion 7.8 asks that the preamp be set from what the radio's manual states with the page cited, that the off case be keyed to the receiver overloading rather than to a band, and that no component ask the operator to change a field a condition states after Hamlet has set it
+STATE: partial
+DECIDED: how the frequency-dependent value is carried, which overload reading is used if any, how each voice is scoped, and the per-type timeouts are the author's, overrulable
+LICENCE: PHASE_PLAN.md R67, R74, section 6; HM-DEC-176; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155
+ADVANCES: step 7 criterion 8
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.110 to 1.13.111. PHASE_STATUS.md names unit 424 and CURRENT_STEP 7. HEAD at entry e4085d43. The ruling is recorded as HM-DEC-177: the work instruction names it HM-DEC-176, which DECISIONS.md already holds for unit 421's floor-bar ruling, so the LICENCE line above keeps the instruction's words and the record takes the next free id. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 277 of 278, the one lost to the dispatcher loop (ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed) green alone, ThePsk31OfferTests 2 of 2; captures 51 of 51 under the bar; adjudicated 13 of 13; keyed floors 13 of 13; every Rig type, 44 types, 325 of 325.
+
 ## UNIT 423 - STEP 6
 
 STEP: 6
