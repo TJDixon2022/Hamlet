@@ -194,6 +194,23 @@ there stays at preamp 1 against the row's own text. All three blocks carry `fami
 conditions themselves are not changed. Rejected: leaving those blocks silent and closing 7.5
 partial, which leaves the reported fault live on 40 m.
 
+**R71 - Tim, 2026-09-24: a floor counts characters the decoder was confident about.** Unit
+420 raised P17: a floor counts named characters and only rises, and a stray `E` is a named
+character, so every change that removes junk reads as a floor lowered and 3.6 cannot pass its
+own guard. This is the restore phase's R57 trap one level down. R57 freed the placeholders,
+which are the decoder admitting it does not know; **a stray letter is the decoder being
+confident and wrong**, and the two cannot be told apart by the character, only by its span.
+On `cw-2026-09-24-153202` the real letters stand at 100 to 1200 and the four stray `E`s at
+4.9, 5.0, 14.0 and 6.8. **So a floor counts only characters whose span is at or above a
+stated bar**; all 51 rows are re-measured once, in one commit, with the bar named and the old
+count, the above-bar count and the below-bar count printed per row; a row that falls solely
+because below-bar characters were removed is not a floor lowered, and a row whose above-bar
+count falls is a regression. **The bar is chosen from the trace, never from which changes it
+would let through**, and the three adjudicated readings unchanged are the independent check
+that nothing real was lost. Rejected: exempting the floors from 3.6 altogether, which would
+leave the 40 unkeyed captures unguarded during exactly the work most likely to lose
+characters; leaving P17 and closing 3.6 unmet.
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -268,6 +285,7 @@ says - never the whole suite.
 - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
 - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
 - [ ] 3.6 The stray single-element characters are attacked: the trace names, per keyed recording, every added or wrong character whose decode rests on one element and what score admitted it, printed by a fact that asserts nothing; then each change is judged under 3.2's four tests, and the total edit count over all keyed recordings falls, with the count of added letters reported before and after (R69).
+- [ ] 3.7 All 51 capture rows are re-measured once under R71 in a single commit, with the span bar named and the old count, the above-bar count and the below-bar count printed per row; the bar's choice is justified from 3.6's trace and not from which changes it admits; the three adjudicated readings and the keyed totals are run at that commit and are unchanged or better, and the report states plainly that no character above the bar was lost.
 - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
 
 **Depends on:** steps 0 and 2.
@@ -349,6 +367,9 @@ halt.
   app write *less* - a value already correct is not rewritten - and it may carry a band rule
   the condition's own text already states. **It may not change what a condition asks for**,
   and nothing that keys or transmits is touched.
+- **Removing a below-bar character is not lowering a floor** (R71), once 3.7 has set the bar.
+  A row whose above-bar count falls is a regression and the change goes back out. Until 3.7
+  is met, every named character counts as it does today.
 - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
   movement fails 3.2's third test, and a report invoking the clause prints the reading
   before and after.
@@ -397,6 +418,8 @@ HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
 
+- **2026-09-24, after unit 420.** R71: a floor counts characters at or above a stated span
+  bar, so the stray-letter work can proceed; criterion 3.7 re-measures the 51 rows once.
 - **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as
   criterion 7.7, so 7.5's last hole closes and 7.030 behaves.
 - **2026-09-24, after unit 418.** R67 entering a mode sets the receiver correctly and it
