@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 423 - STEP 6
+
+STEP: 6
+APPROACH: trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
+MOVE: work around
+WHY: Step 3 cannot advance until the owner rules on P19, and 3.4 cannot fire after unit 421's kept change, so R64 and R65 send the loop to the screen. 6.5 turns on HM-OPEN-087, which is Tim's, so 6.3 is the step 6 criterion no ruling holds.
+STATE: partial
+DECIDED: author's, overrulable - routing from step 3 to 6.3, not 6.5 or step 7, under R64's order; "outside his privileges" is measured as an amateur CW frequency his class does not cover on the same band as a covered one, with out-of-band and other classes printed in the trace only; "same columns" is left edge and width within one pixel; the test also asserts the words and color change so a frozen panel cannot pass; a green-at-first-run test does not tick 6.3; the smaller window size is the drop candidate; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R62, R64, R65, R54, section 6; step 6 criteria 6.3 and 6.6; HM-DEC-021; HM-DEC-092; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2, 0.5 and 12.6
+ADVANCES: step 6 criterion 3
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.109 to 1.13.110. PHASE_STATUS.md names unit 423 and CURRENT_STEP 6. HEAD at entry 0456cad7. License class General (AppSettings.Operator.LicenseClass, TheTopRowTests.FixtureSettings); covered 14.050 MHz CW, General's 20 m row 14025000 to 14150000 (97.301(d)); not covered 14.010 MHz CW, on 20 m only in Extra's row 14000000 to 14350000 (97.301(b)). Entry round, one type per invocation: Hamlet.sln builds with warnings as errors; ENGINE carry-forward 178 of 178; APP carry-forward 276 of 278, the two lost to the dispatcher loop (ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel, BindingHealthTests.TheMainWindowBindsWithoutOneComplaint) green alone, ThePowerIsOfferedTests 3 of 3 and BindingHealthTests 1 of 1; captures 51 of 51 under the bar; adjudicated 13 of 13; clean 2 of 2; keyed floors 13 of 13; EveryControlSaysWhatItDoesTests 3 of 3; top-row types at entry: TheBandRowIsWhereItWasRuledTests 8 of 8, TheTopRowTests 15 of 15, Unit376TheTopBandTests 5 of 5, TheSunMapStandsWhereItWasLeftTests 2 of 2, TheWindowHoldsBelowItsMinimumTests 3 of 3; OutOfBandTests 16 of 16; PrivilegeStatusLineTests 9 of 9; red as expected: ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten (P16) and Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen (P20).
+
 ## UNIT 422 - STEP 6
 
 STEP: 6
@@ -443,3 +456,20 @@ STATE_AFTER: partial
 STATE_WHY: Criterion 3.7 is met with a per row table, a bar justified from the trace and identical keyed totals at the re-measure commit, but 3.6 and 3.4 remain unmet and the report itself holds 3.6 open because added letters stayed at 17 before and after.
 ADVANCED: yes
 ATTEMPT: 3.7 | unit 1 launched 2026-09-24T17:53:45.290Z | yes | executed | trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+
+## UNIT 2 - STEP 6
+
+STEP: 6
+APPROACH: inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The open questions are P19 on test floors for added strays, P20 on a missing countdown readout and the scope of the band row, and they are about test numbers, layout and scope, not keying, transmit, money or a promise to the operator, so none falls inside the three.
+MOVE: work around
+WHY: 3.6 cannot advance by any change the floors allow: all eight added single-element strays stand above R71's bar on recordings whose floors equal their above-bar counts, so removing one breaks 2.2 and 3.2's fourth test, and relaxing that is the owner's (P19). R64 and R65 send the loop to the screen next, and 6.4 is the step 6 criterion no ruling holds.
+DECIDED: author's, overrulable - 3.6 is read as unit 421 read it, open until an added letter comes off a scored stretch, and parked as P19 with the proposed ruling that a key-aligned added character may leave a floor; routing from step 3 to 6.4 rather than 6.3 or 6.5 because 6.5 turns on HM-OPEN-087, Tim's, and 6.3 is the larger unit; an existing true tip is left alone and a false one made true; the connect button's second state is the drop candidate; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R62, R64, R65, R54, R63, R71, section 6; step 6 criteria 6.4 and 6.6; step 3 criterion 3.6 and 2.2; HM-DEC-059; HM-DEC-080; HM-DEC-087; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.6
+COST: 9.6671856
+ACCOMPLISHED: every button Tim can reach on the CW tab and the band row tells him on hover what it does, Send telling him plainly that it keys the radio, and a test names each one so a control added without hover text fails
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: 6.4 is met and ticked, but 6.3 and 6.5 are still unmet, so step 6 is not done.
+ADVANCED: yes
+ATTEMPT: 6.4 | unit 2 launched 2026-09-24T19:15:08.069Z | yes | executed | inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
