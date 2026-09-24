@@ -1,0 +1,1569 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:08.94]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.WhereThePanelsStandOutsideHisPrivilegesTests.TraceThePanelsAtBothFrequencies [8 s]
+  Standard Output Messages:
+ ==== CW 1100 x 780, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1920 x 1040, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 610.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 921.0, height 180.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 180.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 180.0 in a viewport of 180.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 470.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 650.0 x 18.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 869.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 610.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1400 x 1040, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 170.0 x 36.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 401.0, height 220.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 190.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 193.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 349.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 170.0 x 36.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 900 x 620, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 48.0, height 178.0
+      map  left 78.0, top 119.0, width 246.0, height 134.0
+      rig  left 338.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 62.0, map gave back 80.8, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 0.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 0.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 0.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 0.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 48.0, height 178.0
+      map  left 78.0, top 119.0, width 246.0, height 134.0
+      rig  left 338.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 62.0, map gave back 80.8, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 0.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 0.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 0.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 0.0 x 9.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 0.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 48.0, height 178.0
+      map  left 78.0, top 119.0, width 246.0, height 134.0
+      rig  left 338.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 62.0, map gave back 80.8, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 0.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 0.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 0.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 0.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+ ==== CW 1280 x 720, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 401.0, height 178.0
+      map  left 431.0, top 119.0, width 273.0, height 149.0
+      rig  left 718.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 149.0, at the left edge False, pills reach 0.0, card slot offered 415.0, map gave back 53.1, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 170.0 x 36.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 401.0, height 220.0
+      map  left 431.0, top 119.0, width 273.0, height 149.0
+      rig  left 718.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 149.0, at the left edge False, pills reach 0.0, card slot offered 415.0, map gave back 53.1, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 190.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 193.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 349.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 401.0, height 178.0
+      map  left 431.0, top 119.0, width 273.0, height 149.0
+      rig  left 718.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 149.0, at the left edge False, pills reach 0.0, card slot offered 415.0, map gave back 53.1, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 170.0 x 36.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1366 x 728, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 433.0, height 178.0
+      map  left 463.0, top 119.0, width 327.0, height 178.0
+      rig  left 804.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 178.0, at the left edge False, pills reach 0.0, card slot offered 447.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 210.0 x 27.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 433.0, height 220.0
+      map  left 463.0, top 119.0, width 327.0, height 178.0
+      rig  left 804.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 178.0, at the left edge False, pills reach 0.0, card slot offered 447.0, map gave back 0.0, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 200.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 220.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 381.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 433.0, height 178.0
+      map  left 463.0, top 119.0, width 327.0, height 178.0
+      rig  left 804.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 178.0, at the left edge False, pills reach 0.0, card slot offered 447.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 210.0 x 27.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1536 x 824, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 537.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 974.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 551.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 280.0 x 27.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 537.0, height 200.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 974.0, top 119.0, width 546.0, height 200.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 551.0, map gave back 0.0, card content 200.0 in a viewport of 200.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 290.0 x 21.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 329.0 x 27.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 485.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 537.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 974.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 551.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 280.0 x 27.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1920 x 1017, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 610.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 921.0, height 180.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 180.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 180.0 in a viewport of 180.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 470.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 650.0 x 18.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 869.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 610.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 2560 x 1400, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 1561.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1998.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 1575.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 610.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 1561.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1998.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 1575.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 470.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 740.0 x 9.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 1509.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 1561.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1998.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 1575.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 610.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+ ==== CW 1200 x 900, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 348.0, height 187.0
+      map  left 378.0, top 119.0, width 246.0, height 134.0
+      rig  left 638.0, top 119.0, width 546.0, height 187.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 362.0, map gave back 80.8, card content 187.0 in a viewport of 187.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 140.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 140.0 x 44.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 348.0, height 277.0
+      map  left 378.0, top 119.0, width 246.0, height 134.0
+      rig  left 638.0, top 119.0, width 546.0, height 277.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 362.0, map gave back 80.8, card content 277.0 in a viewport of 277.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 140.0 x 52.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 140.0 x 53.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 296.0 x 27.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 348.0, height 187.0
+      map  left 378.0, top 119.0, width 246.0, height 134.0
+      rig  left 638.0, top 119.0, width 546.0, height 187.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 362.0, map gave back 80.8, card content 187.0 in a viewport of 187.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 140.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 140.0 x 44.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1400 x 900, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 170.0 x 36.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 401.0, height 220.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 190.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 193.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 349.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 170.0 x 36.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1100 x 620, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1100 x 580, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1100 x 540, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== CW 1100 x 500, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1100 x 780, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1920 x 1040, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 690.0 x 18.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 921.0, height 180.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 180.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 180.0 in a viewport of 180.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 470.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 650.0 x 18.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 869.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 690.0 x 18.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1400 x 1040, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 193.0 x 44.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 401.0, height 220.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 190.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 193.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 349.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 193.0 x 44.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 900 x 620, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 48.0, height 178.0
+      map  left 78.0, top 119.0, width 246.0, height 134.0
+      rig  left 338.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 62.0, map gave back 80.8, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 0.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 0.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 0.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 0.0 x 9.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 48.0, height 178.0
+      map  left 78.0, top 119.0, width 246.0, height 134.0
+      rig  left 338.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 62.0, map gave back 80.8, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 0.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 0.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 0.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 0.0 x 9.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 0.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 48.0, height 178.0
+      map  left 78.0, top 119.0, width 246.0, height 134.0
+      rig  left 338.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 62.0, map gave back 80.8, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 0.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 0.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 0.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 0.0 x 9.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+ ==== Digital 1280 x 720, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 401.0, height 178.0
+      map  left 431.0, top 119.0, width 273.0, height 149.0
+      rig  left 718.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 149.0, at the left edge False, pills reach 0.0, card slot offered 415.0, map gave back 53.1, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 193.0 x 44.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 401.0, height 220.0
+      map  left 431.0, top 119.0, width 273.0, height 149.0
+      rig  left 718.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 149.0, at the left edge False, pills reach 0.0, card slot offered 415.0, map gave back 53.1, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 190.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 193.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 349.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 401.0, height 178.0
+      map  left 431.0, top 119.0, width 273.0, height 149.0
+      rig  left 718.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 149.0, at the left edge False, pills reach 0.0, card slot offered 415.0, map gave back 53.1, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 193.0 x 44.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1366 x 728, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 433.0, height 178.0
+      map  left 463.0, top 119.0, width 327.0, height 178.0
+      rig  left 804.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 178.0, at the left edge False, pills reach 0.0, card slot offered 447.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 210.0 x 36.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 433.0, height 220.0
+      map  left 463.0, top 119.0, width 327.0, height 178.0
+      rig  left 804.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 178.0, at the left edge False, pills reach 0.0, card slot offered 447.0, map gave back 0.0, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 200.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 220.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 381.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 433.0, height 178.0
+      map  left 463.0, top 119.0, width 327.0, height 178.0
+      rig  left 804.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 178.0, at the left edge False, pills reach 0.0, card slot offered 447.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 210.0 x 36.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1536 x 824, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 537.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 974.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 551.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 320.0 x 27.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 537.0, height 200.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 974.0, top 119.0, width 546.0, height 200.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 551.0, map gave back 0.0, card content 200.0 in a viewport of 200.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 290.0 x 21.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 329.0 x 27.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 485.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 537.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 974.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 551.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 320.0 x 27.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1920 x 1017, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 690.0 x 18.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 921.0, height 180.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 180.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 180.0 in a viewport of 180.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 470.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 650.0 x 18.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 869.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 921.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1358.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 935.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 690.0 x 18.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 2560 x 1400, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 1561.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1998.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 1575.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 760.0 x 9.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 1561.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1998.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 1575.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 470.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 740.0 x 9.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 1509.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 1561.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 1998.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 1575.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 760.0 x 9.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 110.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 110.0 x 11.0, wants 110.0 on one line
+ ==== Digital 1200 x 900, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 348.0, height 205.0
+      map  left 378.0, top 119.0, width 246.0, height 134.0
+      rig  left 638.0, top 119.0, width 546.0, height 205.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 362.0, map gave back 80.8, card content 205.0 in a viewport of 205.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 140.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 140.0 x 62.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 348.0, height 277.0
+      map  left 378.0, top 119.0, width 246.0, height 134.0
+      rig  left 638.0, top 119.0, width 546.0, height 277.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 362.0, map gave back 80.8, card content 277.0 in a viewport of 277.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 140.0 x 52.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 140.0 x 53.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 296.0 x 27.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 348.0, height 205.0
+      map  left 378.0, top 119.0, width 246.0, height 134.0
+      rig  left 638.0, top 119.0, width 546.0, height 205.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 362.0, map gave back 80.8, card content 205.0 in a viewport of 205.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 140.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 140.0 x 62.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1400 x 900, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 193.0 x 44.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 423.0, top 119.0, width 401.0, height 220.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 220.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 220.0 in a viewport of 220.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 190.0 x 32.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 193.0 x 36.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 349.0 x 18.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 423.0, top 119.0, width 401.0, height 178.0
+      map  left 16.0, top 83.0, width 393.0, height 214.0
+      rig  left 838.0, top 119.0, width 546.0, height 178.0
+      row: rig height 178.0, map height set 214.0, at the left edge True, pills reach 36.0, card slot offered 415.0, map gave back 0.0, card content 178.0 in a viewport of 178.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 170.0 x 21.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 193.0 x 44.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1100 x 620, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1100 x 580, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1100 x 540, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== Digital 1100 x 500, General
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 372.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 372.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 372.0 in a viewport of 372.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers digital modes here. Call away · 97.305(c)(3)(ix)" drawn 40.0 x 177.0, wants 760.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+ ==== THE DIFFERENCE, 14.050 TO 14.010, GENERAL, NOT CONNECTED
+ CW 1100 x 780: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+ CW 1920 x 1040: card left 0.0 width 0.0 top 0.0 height 2.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 2.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 180.0, tone Yours -> ListenOnly
+ CW 1400 x 1040: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ CW 900 x 620: card left 0.0 width 0.0 top 0.0 height 0.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 0.0; map height 134.0 -> 134.0, left edge False -> False, card content 178.0 -> 178.0, tone Yours -> ListenOnly
+ CW 1280 x 720: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 149.0 -> 149.0, left edge False -> False, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ CW 1366 x 728: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 178.0 -> 178.0, left edge False -> False, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ CW 1536 x 824: card left 0.0 width 0.0 top 0.0 height 22.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 22.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 200.0, tone Yours -> ListenOnly
+ CW 1920 x 1017: card left 0.0 width 0.0 top 0.0 height 2.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 2.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 180.0, tone Yours -> ListenOnly
+ CW 2560 x 1400: card left 0.0 width 0.0 top 0.0 height 0.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 0.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 178.0, tone Yours -> ListenOnly
+ CW 1200 x 900: card left 0.0 width 0.0 top 0.0 height 90.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 90.0; map height 134.0 -> 134.0, left edge False -> False, card content 187.0 -> 277.0, tone Yours -> ListenOnly
+ CW 1400 x 900: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ CW 1100 x 620: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+ CW 1100 x 580: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+ CW 1100 x 540: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+ CW 1100 x 500: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+ Digital 1100 x 780: card left 0.0 width 0.0 top 0.0 height 151.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 151.0; map height 134.0 -> 134.0, left edge False -> False, card content 372.0 -> 523.0, tone Yours -> ListenOnly
+ Digital 1920 x 1040: card left 0.0 width 0.0 top 0.0 height 2.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 2.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 180.0, tone Yours -> ListenOnly
+ Digital 1400 x 1040: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ Digital 900 x 620: card left 0.0 width 0.0 top 0.0 height 0.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 0.0; map height 134.0 -> 134.0, left edge False -> False, card content 178.0 -> 178.0, tone Yours -> ListenOnly
+ Digital 1280 x 720: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 149.0 -> 149.0, left edge False -> False, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ Digital 1366 x 728: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 178.0 -> 178.0, left edge False -> False, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ Digital 1536 x 824: card left 0.0 width 0.0 top 0.0 height 22.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 22.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 200.0, tone Yours -> ListenOnly
+ Digital 1920 x 1017: card left 0.0 width 0.0 top 0.0 height 2.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 2.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 180.0, tone Yours -> ListenOnly
+ Digital 2560 x 1400: card left 0.0 width 0.0 top 0.0 height 0.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 0.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 178.0, tone Yours -> ListenOnly
+ Digital 1200 x 900: card left 0.0 width 0.0 top 0.0 height 72.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 72.0; map height 134.0 -> 134.0, left edge False -> False, card content 205.0 -> 277.0, tone Yours -> ListenOnly
+ Digital 1400 x 900: card left 0.0 width 0.0 top 0.0 height 42.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 42.0; map height 214.0 -> 214.0, left edge True -> True, card content 178.0 -> 220.0, tone Yours -> ListenOnly
+ Digital 1100 x 620: card left 0.0 width 0.0 top 0.0 height 151.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 151.0; map height 134.0 -> 134.0, left edge False -> False, card content 372.0 -> 523.0, tone Yours -> ListenOnly
+ Digital 1100 x 580: card left 0.0 width 0.0 top 0.0 height 151.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 151.0; map height 134.0 -> 134.0, left edge False -> False, card content 372.0 -> 523.0, tone Yours -> ListenOnly
+ Digital 1100 x 540: card left 0.0 width 0.0 top 0.0 height 151.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 151.0; map height 134.0 -> 134.0, left edge False -> False, card content 372.0 -> 523.0, tone Yours -> ListenOnly
+ Digital 1100 x 500: card left 0.0 width 0.0 top 0.0 height 151.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 151.0; map height 134.0 -> 134.0, left edge False -> False, card content 372.0 -> 523.0, tone Yours -> ListenOnly
+ 
+ ==== WIDER, AT 1100 x 780: EVERY CLASS, 14.050 AGAINST 14.010 AND AGAINST 14.360 (OUT OF BAND)
+ -- class Novice (the model reads Novice); tones ListenOnly, ListenOnly, ListenOnly
+    14.050 -> 14.010: card left 0.0 width 0.0 top 0.0 height -9.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height -9.0; map height 134.0 -> 134.0, left edge False -> False, card content 532.0 -> 523.0, tone ListenOnly -> ListenOnly
+    14.050 -> 14.360: card left 0.0 width 0.0 top 0.0 height 161.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 161.0; map height 134.0 -> 134.0, left edge False -> False, card content 532.0 -> 693.0, tone ListenOnly -> ListenOnly
+   -- Novice at 14.360 (dial reads 14360000): dial 14360000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 693.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 693.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 693.0 in a viewport of 693.0
+        GreenZoneFrequency "14.360 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "not an amateur band" drawn 40.0 x 73.0, wants 190.0 on one line
+        GreenZoneLicenseLine "You are past the top of 20 m, and this is not amateur spectrum at all. Other services live up and down the dial from every ham band, and no amateur license permits transmitting on any of them · 97.301" drawn 40.0 x 458.0, wants 2000.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Listening here is fine, the same as anywhere. Nothing about this restricts what you can receive." drawn 196.0 x 53.0, wants 960.0 on one line
+ -- class Technician (the model reads Technician); tones ListenOnly, ListenOnly, ListenOnly
+    14.050 -> 14.010: card left 0.0 width 0.0 top 0.0 height -9.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height -9.0; map height 134.0 -> 134.0, left edge False -> False, card content 541.0 -> 532.0, tone ListenOnly -> ListenOnly
+    14.050 -> 14.360: card left 0.0 width 0.0 top 0.0 height 152.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 152.0; map height 134.0 -> 134.0, left edge False -> False, card content 541.0 -> 693.0, tone ListenOnly -> ListenOnly
+   -- Technician at 14.360 (dial reads 14360000): dial 14360000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 693.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 693.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 693.0 in a viewport of 693.0
+        GreenZoneFrequency "14.360 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "not an amateur band" drawn 40.0 x 73.0, wants 190.0 on one line
+        GreenZoneLicenseLine "You are past the top of 20 m, and this is not amateur spectrum at all. Other services live up and down the dial from every ham band, and no amateur license permits transmitting on any of them · 97.301" drawn 40.0 x 458.0, wants 2000.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Listening here is fine, the same as anywhere. Nothing about this restricts what you can receive." drawn 196.0 x 53.0, wants 960.0 on one line
+ -- class General (the model reads General); tones Yours, ListenOnly, ListenOnly
+    14.050 -> 14.010: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+    14.050 -> 14.360: card left 0.0 width 0.0 top 0.0 height 348.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 348.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 693.0, tone Yours -> ListenOnly
+   -- General at 14.360 (dial reads 14360000): dial 14360000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 693.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 693.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 693.0 in a viewport of 693.0
+        GreenZoneFrequency "14.360 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "not an amateur band" drawn 40.0 x 73.0, wants 190.0 on one line
+        GreenZoneLicenseLine "You are past the top of 20 m, and this is not amateur spectrum at all. Other services live up and down the dial from every ham band, and no amateur license permits transmitting on any of them · 97.301" drawn 40.0 x 458.0, wants 2000.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Listening here is fine, the same as anywhere. Nothing about this restricts what you can receive." drawn 196.0 x 53.0, wants 960.0 on one line
+ -- class Advanced (the model reads Advanced); tones Yours, ListenOnly, ListenOnly
+    14.050 -> 14.010: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+    14.050 -> 14.360: card left 0.0 width 0.0 top 0.0 height 348.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 348.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 693.0, tone Yours -> ListenOnly
+   -- Advanced at 14.360 (dial reads 14360000): dial 14360000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 693.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 693.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 693.0 in a viewport of 693.0
+        GreenZoneFrequency "14.360 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "not an amateur band" drawn 40.0 x 73.0, wants 190.0 on one line
+        GreenZoneLicenseLine "You are past the top of 20 m, and this is not amateur spectrum at all. Other services live up and down the dial from every ham band, and no amateur license permits transmitting on any of them · 97.301" drawn 40.0 x 458.0, wants 2000.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Listening here is fine, the same as anywhere. Nothing about this restricts what you can receive." drawn 196.0 x 53.0, wants 960.0 on one line
+ -- class Extra (the model reads Extra); tones Yours, Yours, ListenOnly
+    14.050 -> 14.010: card left 0.0 width 0.0 top 0.0 height 0.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 0.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 345.0, tone Yours -> Yours
+    14.050 -> 14.360: card left 0.0 width 0.0 top 0.0 height 348.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 348.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 693.0, tone Yours -> ListenOnly
+   -- Extra at 14.360 (dial reads 14360000): dial 14360000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 693.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 693.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 693.0 in a viewport of 693.0
+        GreenZoneFrequency "14.360 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "not an amateur band" drawn 40.0 x 73.0, wants 190.0 on one line
+        GreenZoneLicenseLine "You are past the top of 20 m, and this is not amateur spectrum at all. Other services live up and down the dial from every ham band, and no amateur license permits transmitting on any of them · 97.301" drawn 40.0 x 458.0, wants 2000.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Listening here is fine, the same as anywhere. Nothing about this restricts what you can receive." drawn 196.0 x 53.0, wants 960.0 on one line
+ -- class Unknown (the model reads Unknown); tones Unknown, Unknown, ListenOnly
+    14.050 -> 14.010: card left 0.0 width 0.0 top 0.0 height 0.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 0.0; map height 134.0 -> 134.0, left edge False -> False, card content 332.0 -> 332.0, tone Unknown -> Unknown
+    14.050 -> 14.360: card left 0.0 width 0.0 top 0.0 height 361.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 361.0; map height 134.0 -> 134.0, left edge False -> False, card content 332.0 -> 693.0, tone Unknown -> ListenOnly
+   -- Unknown at 14.360 (dial reads 14360000): dial 14360000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 693.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 693.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 693.0 in a viewport of 693.0
+        GreenZoneFrequency "14.360 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "not an amateur band" drawn 40.0 x 73.0, wants 190.0 on one line
+        GreenZoneLicenseLine "You are past the top of 20 m, and this is not amateur spectrum at all. Other services live up and down the dial from every ham band, and no amateur license permits transmitting on any of them · 97.301" drawn 40.0 x 458.0, wants 2000.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Listening here is fine, the same as anywhere. Nothing about this restricts what you can receive." drawn 196.0 x 53.0, wants 960.0 on one line
+ ==== CONNECTED at 1100 x 780 to Training radio (no hardware): IsConnected True, dial 7030000, band 40 m
+    after pressing 20 m: dial 14030000, band 20 m
+   -- connected, covered: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 194.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 110.1, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- connected, not covered: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 194.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 110.1, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+ connected 1100 x 780: card left 0.0 width 0.0 top 0.0 height 178.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 178.0; map height 134.0 -> 134.0, left edge False -> False, card content 345.0 -> 523.0, tone Yours -> ListenOnly
+ ==== CONNECTED at 1920 x 1040 to Training radio (no hardware): IsConnected True, dial 7030000, band 40 m
+    after pressing 20 m: dial 14030000, band 20 m
+   -- connected, covered: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 452.0, top 119.0, width 892.0, height 194.0
+      map  left 16.0, top 83.0, width 422.0, height 230.0
+      rig  left 1358.0, top 119.0, width 546.0, height 194.0
+      row: rig height 194.0, map height set 230.0, at the left edge True, pills reach 36.0, card slot offered 906.0, map gave back 0.0, card content 194.0 in a viewport of 194.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 200.0 x 11.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 610.0 x 9.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- connected, not covered: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 452.0, top 119.0, width 892.0, height 194.0
+      map  left 16.0, top 83.0, width 422.0, height 230.0
+      rig  left 1358.0, top 119.0, width 546.0, height 194.0
+      row: rig height 194.0, map height set 230.0, at the left edge True, pills reach 36.0, card slot offered 906.0, map gave back 0.0, card content 194.0 in a viewport of 194.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 100.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 470.0 x 11.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 650.0 x 18.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "40 m" drawn 40.0 x 9.0, wants 40.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 840.0 x 9.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+ connected 1920 x 1040: card left 0.0 width 0.0 top 0.0 height 0.0; map left 0.0 width 0.0 top 0.0 height 0.0; rig left 0.0 width 0.0 top 0.0 height 0.0; map height 230.0 -> 230.0, left edge True -> True, card content 194.0 -> 194.0, tone Yours -> ListenOnly
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 9.2347 Seconds
+RC=0 WALL=9s

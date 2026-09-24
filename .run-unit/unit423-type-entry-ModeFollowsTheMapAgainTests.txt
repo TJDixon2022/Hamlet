@@ -1,0 +1,77 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.21]     Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten [FAIL]
+[xUnit.net 00:00:00.21]       the follow path sweep has lost its bound and is measuring the wrong thing
+[xUnit.net 00:00:00.21]       Stack Trace:
+[xUnit.net 00:00:00.21]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\ModeFollowsTheMapAgainTests.cs(178,0): at Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten()
+[xUnit.net 00:00:00.21]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.21]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.21]       Output:
+[xUnit.net 00:00:00.21]         137 lines of the follow path
+  Failed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten [13 ms]
+  Error Message:
+   the follow path sweep has lost its bound and is measuring the wrong thing
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\ModeFollowsTheMapAgainTests.cs:line 178
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ 137 lines of the follow path
+
+
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.AModeTheOperatorSetIsNotOverwritten [1 ms]
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.EveryFrontEndReadingCarriesItsOwnName(preamp: 2, attenuator: 20, expected: "preamp 2 · att 20 dB") [< 1 ms]
+  Standard Output Messages:
+ 'preamp 2 · att 20 dB'
+
+
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.EveryFrontEndReadingCarriesItsOwnName(preamp: 0, attenuator: 0, expected: "preamp off · att off") [< 1 ms]
+  Standard Output Messages:
+ 'preamp off · att off'
+
+
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.EveryFrontEndReadingCarriesItsOwnName(preamp: null, attenuator: null, expected: "preamp unknown · att unknown") [< 1 ms]
+  Standard Output Messages:
+ 'preamp unknown · att unknown'
+
+
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.EveryFrontEndReadingCarriesItsOwnName(preamp: 1, attenuator: 0, expected: "preamp 1 · att off") [< 1 ms]
+  Standard Output Messages:
+ 'preamp 1 · att off'
+
+
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.ASettingNeverReadSaysUnknown [< 1 ms]
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.BothTuningPathsReachModeFollow [3 ms]
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.TuningIntoThePhonePortionWritesTheMode [5 ms]
+  Standard Output Messages:
+ write True, Usb, 'Switched to USB, which is how voice is worked up here.'
+
+
+[xUnit.net 00:00:00.23]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.NothingTakesHimOutOfMorseWhileHeIsWorkingMorse [< 1 ms]
+  Standard Output Messages:
+ write False
+
+
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.ASnapBackDoesNotWriteAgain [< 1 ms]
+  Standard Output Messages:
+ first True, second False
+
+
+  Passed Hamlet.App.Tests.ViewModels.ModeFollowsTheMapAgainTests.TheFrontEndIsOnTheTerminalPanel [2 ms]
+  Standard Output Messages:
+ 372 lines of the terminal panel
+
+
+
+Test Run Failed.
+Total tests: 12
+     Passed: 11
+     Failed: 1
+ Total time: 0.4865 Seconds
+RC=1 WALL=1s

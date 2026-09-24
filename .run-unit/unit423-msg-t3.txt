@@ -1,0 +1,21 @@
+unit423 task 3: the columns held (6.3) - tuned outside his privileges, the card, the sun map and the rig face keep their left edges and widths at every size the top-row tests use, going out and coming back; the privilege panel's words and color still change; ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests green
+
+BandGovernsTheMapPanel, three changes, each measured:
+- OutsideTheFit, set in MainWindow.axaml on the reassurance sentence,
+  the upgrade row and the ladder: drawn as before, left out of the two
+  fit questions. This alone ended the 1920 layout loop.
+- HeldAcross, bound to PrivilegeStatus.Tone: with the same width, rig
+  face and pills row, a change of tone keeps the arrangement decided a
+  moment before. Needed because the verdict itself is longer outside
+  his privileges and counts inside them too; any other change decides
+  afresh, so every arrangement inside his privileges is unchanged.
+- Lines waiting to be measured mark the way up to the card as waiting,
+  so the fit questions read the card as it is now: without it the map
+  came back from 14.010 to 327 x 178 beside the card at 1400 x 1040.
+
+The test gains a return check (back to 14.050 must stand where 14.050
+stood), added here after the trace caught that miss.
+PARKED.md P21: the row's height still follows the card's words.
+Top-row types at their entry counts: 8, 15, 5, 2, 3.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

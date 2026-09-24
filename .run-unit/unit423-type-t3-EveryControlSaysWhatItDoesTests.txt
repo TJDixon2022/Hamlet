@@ -1,0 +1,129 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.28]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.EveryControlSaysWhatItDoesTests.NotConnectedEveryNamedControlSaysWhatItDoes [700 ms]
+  Standard Output Messages:
+ not connected | CW tab | TransmitButton | "Keys the radio and sends the line below on the air, in Morse. If Hamlet asks you to read it over first, a second press sends it."
+ not connected | CW tab | "Clear" (ComposeClearCommand) | "Empties the line below. Sends nothing."
+ not connected | CW tab | "CQ" | "Fills the line with a CQ call in your callsign. Sends nothing: Send puts it on the air."
+ not connected | CW tab | "RST" | "Fills the line with a signal report, 599. Sends nothing: Send puts it on the air."
+ not connected | CW tab | "73" | "Fills the line with a sign-off, 73. Sends nothing: Send puts it on the air."
+ not connected | CW tab | mark ? "CQ tells the band you are looking for a …" | "tip —  CQ tells the band you are looking for a conversation and puts your callsign on it. RST is the signal report, which is your honest word on how well you are hearing the other station. 73 is how a contact ends, and it means best wishes. Clear empties the line and sends nothing. Send puts what is on the line on the air."
+ not connected | CW tab | send line | "What Send puts on the air. Type here, or let CQ, RST and 73 fill it. Nothing goes out until you press Send."
+ not connected | CW tab | header of CW terminal | "Folds this panel away, or opens it again."
+ not connected | CW tab | "Clear" (ClearTerminalCommand) | "Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out."
+ not connected | CW tab | mark ? "what the radio is hearing, as it arrives" | "tip —  what the radio is hearing, as it arrives"
+ not connected | CW tab | mark ⊣ "Press this whenever you can hear a stati…" | "what Hamlet can see —  Press this whenever you can hear a station, whether or not anything appeared here. It keeps the last half minute and puts the station on tonight's list, and the list is the only place the ones Hamlet missed are counted at all."
+ not connected | CW tab | "I hear a station" | "Says you heard CW here, whether or not Hamlet read any of it. It keeps the last half minute of audio and adds a row to tonight's list, and you mark afterwards which ones it actually read."
+ not connected | CW tab | ReceiveHelpOfferButton | "The panel this opens is not on any screen at the moment, so this cannot do anything. Hamlet has still worked out what it would change, and the line beside this button says what it noticed."
+ not connected | CW tab | "No thanks" | "Hides this offer for the rest of the session. Nothing on the radio changes."
+ not connected | CW tab | mark ⊣ "a dimmed character is one Hamlet is not …" | "what Hamlet can see —  a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it."
+ not connected | band row | "Stop the scan" | "Stops the scan now, so Hamlet stops moving the dial."
+ not connected | band row | "STOP TRANSMITTING" | "Stops the transmitter now. Escape does the same from anywhere in the window."
+ not connected | band row | port list | "The port Hamlet talks to the radio on. Choose it before you connect; it cannot be changed while connected."
+ not connected | band row | connect button | "Connects to the radio on the port chosen beside this, so Hamlet can read it and tune it."
+ not connected | band row | header of Neighborhood map | "Folds this panel away, or opens it again."
+ not connected | band row | mark ? "hover a dot to see who it is · click a d…" | "tip —  hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune"
+ not connected | band row | mark ? MapLegendMark | "tip —  the map's colors: Morse, Digital, Voice, Open / mixed, Not a ham band. Hatched is listen only - you may hear it and may not transmit there. A dot is a station heard just now."
+ not connected | band row | mark ⊣ GreenZoneRuleOfThumbMark | "what Hamlet can see —  20 m and up want daylight along the path; 40 m and down want dark."
+ not connected | band row | neighborhood strip | "hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune"
+ not connected | band row | GreenZoneBestBet | "The band with the most going on right now, from the same ranking the badge in the band strip wears. Pressing it tunes there."
+ not connected | band row | Button with no words | "Shows what the next license class would let you do on this band. Press again to hide it."
+ not connected | band row | saved spot 7030000 | "the QRP spot. Click to tune."
+ not connected | band row | forget 7030000 | "Forget this spot"
+ not connected | band row | saved spot 14050000 | "slow CW on Sunday. Click to tune."
+ not connected | band row | forget 14050000 | "Forget this spot"
+ not connected | band row | "Use the FCC value" | "Sets your license class in Hamlet to the one the lookup found. Nothing on the radio changes."
+ not connected | band row | "Keep mine" (KeepMyLicenseClassCommand) | "Keeps the license class you set, and Hamlet stops asking."
+ not connected | band row | "Use the looked-up grid" | "Sets your grid square in Hamlet to the one the lookup found. Nothing on the radio changes."
+ not connected | band row | "Keep mine" (KeepMyGridCommand) | "Keeps the grid square you typed, and Hamlet stops asking."
+ not connected | band row | rig face, the frequency digits | "Roll the scroll wheel over any digit to tune that digit."
+ not connected | band row | save star | "Saves the frequency you are on as a favorite, and it appears in the row under the green zone. Press it again on a saved frequency to forget it."
+ not connected | band row | mark # LinkCheckMark | none
+   (a mark holding no sentence in this state is not drawn and cannot be hovered)
+ not connected | band row | DigitalTransmitDriveBox | "How hard Hamlet drives the sound card when it transmits, as a percent of full scale. Kept for next time."
+ not connected | band row | mark ? DigitalTransmitDriveTip | "tip —  This is a starting point, not a specification. Set it against your own radio's ALC meter: turn it up until the ALC just begins to move and then back off. Full scale is a wide, distorted signal over other people's band, which is why Hamlet starts at 25 %."
+ not connected | band row | DigitalPsk31PowerLine | "Opens the RF power offer. Opening it changes nothing on the radio."
+ not connected | band row | DigitalPsk31PowerAccept | "Sets the radio's RF power to the level offered above."
+ not connected | band row | DigitalPsk31PowerDecline | "Closes the offer. Nothing is written to the radio."
+ not connected | band row | band 80 m | "Tunes to 3.530 MHz, where Morse gathers on 80 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / Right now the sun's up, and that's bad news for 80 m. Daylight thickens a layer of the atmosphere that soaks up low frequencies before they get anywhere. Come back after dark and this band turns into something else entirely. It's at its best in the colder half of the year, when the nights are longer and the storm static of summer has died back. /  / 80 m · no data. No enabled source is reporting on this band right now."
+ not connected | band row | band 40 m | "Tunes to 7.028 MHz, where Morse gathers on 40 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / With the sun up, 40 m pulls in close. That same daylight layer absorbs part of what you send, so what survives tends to come back down within a few hundred miles. That's its own kind of useful. This is when you'll find the regional nets and the people a couple of states over. It's a little quieter in the colder months, when there's less storm static about. /  / 40 m · no data. No enabled source is reporting on this band right now."
+ not connected | band row | band 30 m | "Tunes to 10.103 MHz, where Morse gathers on 30 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 30 m sits in a narrow slot where voice isn't allowed at all, so it never gets crowded and never gets loud. Daylight costs it something, but less than it costs the bands below, which leaves it one of the steadier places to sit in the afternoon. It changes less with the seasons than its neighbors do, which is part of why people who like it tend to keep going back. /  / 30 m · no data. No enabled source is reporting on this band right now."
+ not connected | band row | band 20 m | "Tunes to 14.030 MHz, where Morse gathers on 20 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 20 m lives on sunlight. It needs the sun overhead to bounce a signal around the world, and right now it's got it. If you're going to talk to someone on the far side of an ocean today, the odds are it happens here. It's the steadiest of the long-distance bands and works in some form for most of the year, which is why it's where a great many people make their first contact overseas. /  / 20 m · no data. No enabled source is reporting on this band right now."
+ not connected | band row | band 17 m | "Tunes to 18.080 MHz, where Morse gathers on 17 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 17 m is 20 m's quieter neighbor, a narrow band with no contests allowed on it, so the crowding never quite arrives. It leans on the sun the same way 20 m does, and the sun is up. Like the rest of the high bands it does better in the years when the sun is busy, and it's usually worth a listen when 20 m gets crowded. /  / 17 m · no data. No enabled source is reporting on this band right now."
+ not connected | band row | band 15 m | "Tunes to 21.030 MHz, where Morse gathers on 15 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 15 m wants a strong sun rather than merely a present one, and it rewards the years when the sun is busy. Daylight is the first thing it needs, and that much it has right now. It follows the sun's eleven-year cycle closely, so what it does this year and what it did five years ago can be very different things. /  / 15 m · no data. No enabled source is reporting on this band right now."
+ not connected | band row | band 10 m | "Tunes to 28.030 MHz, where Morse gathers on 10 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / The sun's up, which is the first condition 10 m asks for. It's the highest band Hamlet knows, and the one that leans hardest on the sun being active. This one's the lottery ticket. It follows an eleven-year cycle in the sun's activity, so it can sit quiet for years and then, one afternoon, hand somebody the other side of the world on five watts and a piece of wire. Always worth thirty seconds of listening. /  / 10 m · no data. No enabled source is reporting on this band right now."
+
+
+  Passed Hamlet.App.Tests.Views.EveryControlSaysWhatItDoesTests.ConnectedEveryNamedControlSaysWhatItDoes [221 ms]
+  Standard Output Messages:
+ not connected: "Connects to the radio on the port chosen beside this, so Hamlet can read it and tune it."
+ connected    : "Lets go of the radio. Hamlet stops reading it and stops tuning it."
+ connected | CW tab | TransmitButton | "Keys the radio and sends the line below on the air, in Morse. If Hamlet asks you to read it over first, a second press sends it."
+ connected | CW tab | "Clear" (ComposeClearCommand) | "Empties the line below. Sends nothing."
+ connected | CW tab | "CQ" | "Fills the line with a CQ call in your callsign. Sends nothing: Send puts it on the air."
+ connected | CW tab | "RST" | "Fills the line with a signal report, 599. Sends nothing: Send puts it on the air."
+ connected | CW tab | "73" | "Fills the line with a sign-off, 73. Sends nothing: Send puts it on the air."
+ connected | CW tab | mark ? "CQ tells the band you are looking for a …" | "tip —  CQ tells the band you are looking for a conversation and puts your callsign on it. RST is the signal report, which is your honest word on how well you are hearing the other station. 73 is how a contact ends, and it means best wishes. Clear empties the line and sends nothing. Send puts what is on the line on the air."
+ connected | CW tab | send line | "What Send puts on the air. Type here, or let CQ, RST and 73 fill it. Nothing goes out until you press Send."
+ connected | CW tab | header of CW terminal | "Folds this panel away, or opens it again."
+ connected | CW tab | "Clear" (ClearTerminalCommand) | "Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out."
+ connected | CW tab | mark ? "what the radio is hearing, as it arrives" | "tip —  what the radio is hearing, as it arrives"
+ connected | CW tab | mark ⊣ "Press this whenever you can hear a stati…" | "what Hamlet can see —  Press this whenever you can hear a station, whether or not anything appeared here. It keeps the last half minute and puts the station on tonight's list, and the list is the only place the ones Hamlet missed are counted at all."
+ connected | CW tab | "I hear a station" | "Says you heard CW here, whether or not Hamlet read any of it. It keeps the last half minute of audio and adds a row to tonight's list, and you mark afterwards which ones it actually read."
+ connected | CW tab | ReceiveHelpOfferButton | "The panel this opens is not on any screen at the moment, so this cannot do anything. Hamlet has still worked out what it would change, and the line beside this button says what it noticed."
+ connected | CW tab | "No thanks" | "Hides this offer for the rest of the session. Nothing on the radio changes."
+ connected | CW tab | mark ⊣ "a dimmed character is one Hamlet is not …" | "what Hamlet can see —  a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it."
+ connected | band row | "Stop the scan" | "Stops the scan now, so Hamlet stops moving the dial."
+ connected | band row | "STOP TRANSMITTING" | "Stops the transmitter now. Escape does the same from anywhere in the window."
+ connected | band row | port list | "The port Hamlet talks to the radio on. Choose it before you connect; it cannot be changed while connected."
+ connected | band row | connect button | "Lets go of the radio. Hamlet stops reading it and stops tuning it."
+ connected | band row | header of Neighborhood map | "Folds this panel away, or opens it again."
+ connected | band row | mark ? "hover a dot to see who it is · click a d…" | "tip —  hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune"
+ connected | band row | mark ? MapLegendMark | "tip —  the map's colors: Morse, Digital, Voice, Open / mixed, Not a ham band. Hatched is listen only - you may hear it and may not transmit there. A dot is a station heard just now."
+ connected | band row | mark ⊣ GreenZoneRuleOfThumbMark | "what Hamlet can see —  20 m and up want daylight along the path; 40 m and down want dark."
+ connected | band row | neighborhood strip | "hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune"
+ connected | band row | GreenZoneBestBet | "The band with the most going on right now, from the same ranking the badge in the band strip wears. Pressing it tunes there."
+ connected | band row | Button with no words | "Shows what the next license class would let you do on this band. Press again to hide it."
+ connected | band row | saved spot 7030000 | "the QRP spot. Click to tune."
+ connected | band row | forget 7030000 | "Forget this spot"
+ connected | band row | saved spot 14050000 | "slow CW on Sunday. Click to tune."
+ connected | band row | forget 14050000 | "Forget this spot"
+ connected | band row | "Use the FCC value" | "Sets your license class in Hamlet to the one the lookup found. Nothing on the radio changes."
+ connected | band row | "Keep mine" (KeepMyLicenseClassCommand) | "Keeps the license class you set, and Hamlet stops asking."
+ connected | band row | "Use the looked-up grid" | "Sets your grid square in Hamlet to the one the lookup found. Nothing on the radio changes."
+ connected | band row | "Keep mine" (KeepMyGridCommand) | "Keeps the grid square you typed, and Hamlet stops asking."
+ connected | band row | rig face, the frequency digits | "Roll the scroll wheel over any digit to tune that digit."
+ connected | band row | save star | "Saves the frequency you are on as a favorite, and it appears in the row under the green zone. Press it again on a saved frequency to forget it."
+ connected | band row | mark # LinkCheckMark | "measurement —  Hamlet is keeping up with your radio, asking it where it is several times a second."
+ connected | band row | DigitalTransmitDriveBox | "How hard Hamlet drives the sound card when it transmits, as a percent of full scale. Kept for next time."
+ connected | band row | mark ? DigitalTransmitDriveTip | "tip —  This is a starting point, not a specification. Set it against your own radio's ALC meter: turn it up until the ALC just begins to move and then back off. Full scale is a wide, distorted signal over other people's band, which is why Hamlet starts at 25 %."
+ connected | band row | DigitalPsk31PowerLine | "Opens the RF power offer. Opening it changes nothing on the radio."
+ connected | band row | DigitalPsk31PowerAccept | "Sets the radio's RF power to the level offered above."
+ connected | band row | DigitalPsk31PowerDecline | "Closes the offer. Nothing is written to the radio."
+ connected | band row | band 80 m | "Tunes to 3.530 MHz, where Morse gathers on 80 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / Right now the sun's up, and that's bad news for 80 m. Daylight thickens a layer of the atmosphere that soaks up low frequencies before they get anywhere. Come back after dark and this band turns into something else entirely. It's at its best in the colder half of the year, when the nights are longer and the storm static of summer has died back. /  / 80 m · no data. No enabled source is reporting on this band right now."
+ connected | band row | band 40 m | "Tunes to 7.028 MHz, where Morse gathers on 40 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / With the sun up, 40 m pulls in close. That same daylight layer absorbs part of what you send, so what survives tends to come back down within a few hundred miles. That's its own kind of useful. This is when you'll find the regional nets and the people a couple of states over. It's a little quieter in the colder months, when there's less storm static about. /  / 40 m · no data. No enabled source is reporting on this band right now."
+ connected | band row | band 30 m | "Tunes to 10.103 MHz, where Morse gathers on 30 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 30 m sits in a narrow slot where voice isn't allowed at all, so it never gets crowded and never gets loud. Daylight costs it something, but less than it costs the bands below, which leaves it one of the steadier places to sit in the afternoon. It changes less with the seasons than its neighbors do, which is part of why people who like it tend to keep going back. /  / 30 m · no data. No enabled source is reporting on this band right now."
+ connected | band row | band 20 m | "Tunes to 14.030 MHz, where Morse gathers on 20 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 20 m lives on sunlight. It needs the sun overhead to bounce a signal around the world, and right now it's got it. If you're going to talk to someone on the far side of an ocean today, the odds are it happens here. It's the steadiest of the long-distance bands and works in some form for most of the year, which is why it's where a great many people make their first contact overseas. /  / 20 m · no data. No enabled source is reporting on this band right now."
+ connected | band row | band 17 m | "Tunes to 18.080 MHz, where Morse gathers on 17 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 17 m is 20 m's quieter neighbor, a narrow band with no contests allowed on it, so the crowding never quite arrives. It leans on the sun the same way 20 m does, and the sun is up. Like the rest of the high bands it does better in the years when the sun is busy, and it's usually worth a listen when 20 m gets crowded. /  / 17 m · no data. No enabled source is reporting on this band right now."
+ connected | band row | band 15 m | "Tunes to 21.030 MHz, where Morse gathers on 15 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / 15 m wants a strong sun rather than merely a present one, and it rewards the years when the sun is busy. Daylight is the first thing it needs, and that much it has right now. It follows the sun's eleven-year cycle closely, so what it does this year and what it did five years ago can be very different things. /  / 15 m · no data. No enabled source is reporting on this band right now."
+ connected | band row | band 10 m | "Tunes to 28.030 MHz, where Morse gathers on 10 m, and the neighborhood strip redraws for the band. With a radio connected, the radio goes there too. /  / The sun's up, which is the first condition 10 m asks for. It's the highest band Hamlet knows, and the one that leans hardest on the sun being active. This one's the lottery ticket. It follows an eleven-year cycle in the sun's activity, so it can sit quiet for years and then, one afternoon, hand somebody the other side of the world on five watts and a piece of wire. Always worth thirty seconds of listening. /  / 10 m · no data. No enabled source is reporting on this band right now."
+
+
+  Passed Hamlet.App.Tests.Views.EveryControlSaysWhatItDoesTests.TheStarSaysItSavesAndNotHowToTune [76 ms]
+  Standard Output Messages:
+ star  : "Saves the frequency you are on as a favorite, and it appears in the row under the green zone. Press it again on a saved frequency to forget it."
+ digits: "Roll the scroll wheel over any digit to tune that digit."
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 1.5845 Seconds
+RC=0 WALL=2s

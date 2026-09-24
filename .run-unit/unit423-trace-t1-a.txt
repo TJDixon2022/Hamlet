@@ -1,0 +1,167 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.35]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.50]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.51]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:04.78]     Hamlet.App.Tests.Views.WhereThePanelsStandOutsideHisPrivilegesTests.TraceThePanelsAtBothFrequencies [FAIL]
+[xUnit.net 00:00:04.78]       System.AggregateException : One or more errors occurred. (Infinite layout loop detected) (Infinite layout loop detected)
+[xUnit.net 00:00:04.78]       ---- System.InvalidOperationException : Infinite layout loop detected
+[xUnit.net 00:00:04.78]       ---- System.InvalidOperationException : Infinite layout loop detected
+[xUnit.net 00:00:04.78]       Stack Trace:
+[xUnit.net 00:00:04.78]         
+[xUnit.net 00:00:04.78]         ----- Inner Stack Trace #1 (System.InvalidOperationException) -----
+[xUnit.net 00:00:04.78]            at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+[xUnit.net 00:00:04.78]            at Avalonia.Media.MediaContext.RenderCore()
+[xUnit.net 00:00:04.78]            at Avalonia.Media.MediaContext.Render()
+[xUnit.net 00:00:04.78]            at Avalonia.Threading.DispatcherOperation.InvokeCore()
+[xUnit.net 00:00:04.78]            at Avalonia.Threading.DispatcherOperation.Execute()
+[xUnit.net 00:00:04.78]            at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+[xUnit.net 00:00:04.78]            at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority, CancellationToken cancellationToken)
+[xUnit.net 00:00:04.78]            at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority)
+[xUnit.net 00:00:04.78]         C:\Source\HamLet\tests\Hamlet.App.Tests\Views\WhereThePanelsStandOutsideHisPrivilegesTests.cs(112,0): at Hamlet.App.Tests.Views.TheTopRowTuned.Settle(Window window)
+[xUnit.net 00:00:04.79]         C:\Source\HamLet\tests\Hamlet.App.Tests\Views\WhereThePanelsStandOutsideHisPrivilegesTests.cs(125,0): at Hamlet.App.Tests.Views.TheTopRowTuned.Tune(Window window, Int64 hz)
+[xUnit.net 00:00:04.79]         C:\Source\HamLet\tests\Hamlet.App.Tests\Views\WhereThePanelsStandOutsideHisPrivilegesTests.cs(251,0): at Hamlet.App.Tests.Views.WhereThePanelsStandOutsideHisPrivilegesTests.TraceThePanelsAtBothFrequencies()
+[xUnit.net 00:00:04.79]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.79]         ----- Inner Stack Trace #2 (System.InvalidOperationException) -----
+[xUnit.net 00:00:04.79]            at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+[xUnit.net 00:00:04.79]            at Avalonia.Media.MediaContext.RenderCore()
+[xUnit.net 00:00:04.79]            at Avalonia.Media.MediaContext.Render()
+[xUnit.net 00:00:04.79]            at Avalonia.Threading.DispatcherOperation.InvokeCore()
+[xUnit.net 00:00:04.79]            at Avalonia.Threading.DispatcherOperation.Execute()
+[xUnit.net 00:00:04.79]            at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+[xUnit.net 00:00:04.79]            at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority, CancellationToken cancellationToken)
+[xUnit.net 00:00:04.79]            at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority)
+[xUnit.net 00:00:04.79]            at Avalonia.Headless.XUnit.AvaloniaTestCaseRunner.<>c.<RunTest>b__3_0()
+[xUnit.net 00:00:04.79]       Output:
+[xUnit.net 00:00:04.79]         ==== 1100 x 780, General, CW tab
+[xUnit.net 00:00:04.79]           -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+[xUnit.net 00:00:04.79]              card left 16.0, top 119.0, width 248.0, height 345.0
+[xUnit.net 00:00:04.79]              map  left 278.0, top 119.0, width 246.0, height 134.0
+[xUnit.net 00:00:04.79]              rig  left 538.0, top 119.0, width 546.0, height 345.0
+[xUnit.net 00:00:04.79]              row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+[xUnit.net 00:00:04.79]                GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+[xUnit.net 00:00:04.79]                (unnamed) "20 m ✓" drawn 60.0 x 9.0, wants 60.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+[xUnit.net 00:00:04.79]           -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+[xUnit.net 00:00:04.79]              card left 16.0, top 119.0, width 248.0, height 523.0
+[xUnit.net 00:00:04.79]              map  left 278.0, top 119.0, width 246.0, height 134.0
+[xUnit.net 00:00:04.79]              rig  left 538.0, top 119.0, width 546.0, height 523.0
+[xUnit.net 00:00:04.79]              row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+[xUnit.net 00:00:04.79]                GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+[xUnit.net 00:00:04.79]                (unnamed) "20 m ✓" drawn 60.0 x 9.0, wants 60.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+[xUnit.net 00:00:04.79]                (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+[xUnit.net 00:00:04.79]                (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+[xUnit.net 00:00:04.79]           -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+[xUnit.net 00:00:04.79]              card left 16.0, top 119.0, width 248.0, height 345.0
+[xUnit.net 00:00:04.79]              map  left 278.0, top 119.0, width 246.0, height 134.0
+[xUnit.net 00:00:04.79]              rig  left 538.0, top 119.0, width 546.0, height 345.0
+[xUnit.net 00:00:04.79]              row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+[xUnit.net 00:00:04.79]                GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+[xUnit.net 00:00:04.79]                (unnamed) "20 m ✓" drawn 60.0 x 9.0, wants 60.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+[xUnit.net 00:00:04.79]                GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+[xUnit.net 00:00:04.79]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.Views.WhereThePanelsStandOutsideHisPrivilegesTests.TraceThePanelsAtBothFrequencies [1 s]
+  Error Message:
+   System.AggregateException : One or more errors occurred. (Infinite layout loop detected) (Infinite layout loop detected)
+---- System.InvalidOperationException : Infinite layout loop detected
+---- System.InvalidOperationException : Infinite layout loop detected
+  Stack Trace:
+  
+----- Inner Stack Trace #1 (System.InvalidOperationException) -----
+   at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+   at Avalonia.Media.MediaContext.RenderCore()
+   at Avalonia.Media.MediaContext.Render()
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority, CancellationToken cancellationToken)
+   at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority)
+   at Hamlet.App.Tests.Views.TheTopRowTuned.Settle(Window window) in C:\Source\HamLet\tests\Hamlet.App.Tests\Views\WhereThePanelsStandOutsideHisPrivilegesTests.cs:line 112
+   at Hamlet.App.Tests.Views.TheTopRowTuned.Tune(Window window, Int64 hz) in C:\Source\HamLet\tests\Hamlet.App.Tests\Views\WhereThePanelsStandOutsideHisPrivilegesTests.cs:line 125
+   at Hamlet.App.Tests.Views.WhereThePanelsStandOutsideHisPrivilegesTests.TraceThePanelsAtBothFrequencies() in C:\Source\HamLet\tests\Hamlet.App.Tests\Views\WhereThePanelsStandOutsideHisPrivilegesTests.cs:line 251
+--- End of stack trace from previous location ---
+----- Inner Stack Trace #2 (System.InvalidOperationException) -----
+   at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+   at Avalonia.Media.MediaContext.RenderCore()
+   at Avalonia.Media.MediaContext.Render()
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority, CancellationToken cancellationToken)
+   at Avalonia.Threading.Dispatcher.RunJobs(Nullable`1 priority)
+   at Avalonia.Headless.XUnit.AvaloniaTestCaseRunner.<>c.<RunTest>b__3_0()
+  Standard Output Messages:
+ ==== 1100 x 780, General, CW tab
+   -- covered 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "20 m ✓" drawn 60.0 x 9.0, wants 60.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+   -- not covered 14.010: dial 14010000, tone ListenOnly, block background #fffdf1e0
+      card left 16.0, top 119.0, width 248.0, height 523.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 523.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 523.0 in a viewport of 523.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.010 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · listen all you like, but don't transmit" drawn 40.0 x 157.0, wants 470.0 on one line
+        GreenZoneLicenseLine "General privileges do not reach this frequency; it needs Extra · 97.301(d)" drawn 40.0 x 185.0, wants 740.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "20 m ✓" drawn 60.0 x 9.0, wants 60.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+        (unnamed) "Receiving is never restricted. Any license may listen anywhere." drawn 196.0 x 36.0, wants 630.0 on one line
+        (unnamed) "What would Extra unlock?" drawn 240.0 x 9.0, wants 240.0 on one line
+   -- back to 14.050: dial 14050000, tone Yours, block background #ffe9f6ec
+      card left 16.0, top 119.0, width 248.0, height 345.0
+      map  left 278.0, top 119.0, width 246.0, height 134.0
+      rig  left 538.0, top 119.0, width 546.0, height 345.0
+      row: rig height 178.0, map height set 134.0, at the left edge False, pills reach 0.0, card slot offered 262.0, map gave back 80.8, card content 345.0 in a viewport of 345.0
+        GreenZoneBand "20 m" drawn 40.0 x 16.0, wants 40.0 on one line
+        GreenZoneFrequency "14.050 MHz" drawn 40.0 x 11.0, wants 100.0 on one line
+        GreenZoneModeLine "Morse · yours to use" drawn 30.0 x 73.0, wants 200.0 on one line
+        GreenZoneLicenseLine "Your General license covers Morse here. Call away · 97.305(a)" drawn 40.0 x 150.0, wants 610.0 on one line
+        GreenZoneBestBetPrefix "best bet now: " drawn 140.0 x 9.0, wants 140.0 on one line
+        (unnamed) "20 m ✓" drawn 60.0 x 9.0, wants 60.0 on one line
+        GreenZoneHeardLabel "heard just now" drawn 140.0 x 9.0, wants 140.0 on one line
+        GreenZoneHeard "0 stations" drawn 140.0 x 12.0, wants 100.0 on one line
+        GreenZoneHeardWindow "last minute" drawn 140.0 x 8.0, wants 110.0 on one line
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 5.1410 Seconds
+RC=1 WALL=6s

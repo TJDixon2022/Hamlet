@@ -1,0 +1,13 @@
+unit423 task 0: the record - PHASE_OUTCOME.md UNIT 423 - STEP 6 from the decision block with the entry round; PHASE_STATUS.md unit 423, CURRENT_STEP 6; version 1.13.109 to 1.13.110
+
+Entry round, one type per invocation: Hamlet.sln builds with warnings as
+errors; engine carry-forward 178 of 178; app 276 of 278 with two lost to
+the dispatcher loop and green alone; captures 51 of 51, adjudicated 13 of
+13, clean 2 of 2, keyed floors 13 of 13; BindingHealthTests 1 of 1,
+EveryControlSaysWhatItDoesTests 3 of 3; top-row types 8, 15, 5, 2 and 3
+of their counts; P16 and P20 red as expected.
+
+PHASE_OUTCOME.md also carries the launcher's own appended UNIT 2 - STEP 6
+block, which was uncommitted in the working copy at entry.
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

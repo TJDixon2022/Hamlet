@@ -1,0 +1,13 @@
+unit423 task 2: the test, watched failing (6.3) - ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests tunes a General operator on the CW tab 14.050 -> 14.010 MHz by the rig face's write at 1100 x 780, 1280 x 720, 1400 x 1040 and 1920 x 1040, fails when a panel's left edge or width moves more than a pixel, when the layout does not settle, and when the privilege panel's tone, color or words do not change
+
+Red at this commit:
+1280 x 720: the neighborhood panel's width is 401.0 at 14.050 MHz and 428.0 at 14.010 MHz
+1280 x 720: the sun map's left edge is 431.0 at 14.050 MHz and 458.0 at 14.010 MHz
+1280 x 720: the sun map's width is 273.0 at 14.050 MHz and 246.0 at 14.010 MHz
+1400 x 1040: the neighborhood panel's left edge is 423.0 at 14.050 MHz and 16.0 at 14.010 MHz
+1400 x 1040: the neighborhood panel's width is 401.0 at 14.050 MHz and 548.0 at 14.010 MHz
+1400 x 1040: the sun map's left edge is 16.0 at 14.050 MHz and 578.0 at 14.010 MHz
+1400 x 1040: the sun map's width is 393.0 at 14.050 MHz and 246.0 at 14.010 MHz
+1920 x 1040: tuned to 14.010 MHz the layout did not settle - InvalidOperationException: Infinite layout loop detected
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>

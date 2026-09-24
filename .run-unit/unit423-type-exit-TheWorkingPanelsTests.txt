@@ -1,0 +1,485 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList [1 s]
+  Standard Output Messages:
+ 1920.0, empty list, Decoded text open: rows 0, decoded open True; Stop visible True at 74.0 x 36.0 at 1817.0,983.0, collapsible ancestors []
+   DigitalFilterEverything visible True at 122.0 x 15.0 at 520.0,384.0
+   DigitalFilterCq visible True at 40.0 x 13.0 at 648.0,385.0
+ 1920.0, rows, Decoded text collapsed: rows 3, decoded open False; Stop visible True at 74.0 x 36.0 at 1817.0,983.0, collapsible ancestors []
+   DigitalFilterEverything visible True at 122.0 x 15.0 at 520.0,382.0
+   DigitalFilterCq visible True at 40.0 x 13.0 at 648.0,383.0
+ 1400.0, empty list, Decoded text open: rows 0, decoded open True; Stop visible True at 74.0 x 36.0 at 1297.0,983.0, collapsible ancestors []
+   DigitalFilterEverything visible True at 122.0 x 15.0 at 520.0,403.0
+   DigitalFilterCq visible True at 40.0 x 13.0 at 648.0,404.0
+ 1400.0, rows, Decoded text collapsed: rows 3, decoded open False; Stop visible True at 74.0 x 36.0 at 1297.0,983.0, collapsible ancestors []
+   DigitalFilterEverything visible True at 122.0 x 15.0 at 520.0,382.0
+   DigitalFilterCq visible True at 40.0 x 13.0 at 648.0,383.0
+
+
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.NoCallsignIsClipped [97 ms]
+  Standard Output Messages:
+   message cell 200.0 px holds [VP2MAA/P KC3QIS R-09], which needs 200.0
+   message cell 200.0 px holds [CQ DX K9XP JN88], which needs 150.0
+
+
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.TheDecodedListIsAsWideAsItsLongestLineNeeds [227 ms]
+  Standard Output Messages:
+ WINDOW 1400.0: the tab's panes are 1342.0 px
+   waterfall   474.0 px = 0.353 of the panes
+   decoded     378.0 px = 0.282 of the panes
+   For You     475.0 px = 0.354 of the panes
+   the longest FT8 line [VP2MAA/P KC3QIS R-09] measures 200.0 px; with the fixed columns and chrome the list needs 383.0 px and its column is 383.0
+ 
+ WINDOW 1920.0: the tab's panes are 1862.0 px
+   waterfall   735.0 px = 0.395 of the panes
+   decoded     378.0 px = 0.203 of the panes
+   For You     734.0 px = 0.394 of the panes
+   the longest FT8 line [VP2MAA/P KC3QIS R-09] measures 200.0 px; with the fixed columns and chrome the list needs 383.0 px and its column is 383.0
+ 
+
+
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.Unit338TraceTheRowsAboveThePanels [782 ms]
+  Standard Output Messages:
+ === plain 1400, first window of the method (1400.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 401.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 838.0,119.0
+   working card 1368.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 474.0 x 484.0 at 29.0,469.0 = 0.522
+   panel decoded   378.0 x 484.0 at 513.0,469.0 = 0.522
+   panel For You   475.0 x 484.0 at 896.0,469.0 = 0.522
+     DigitalModeStrip        1342.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   1342.0 x 43.0 at 29.0,416.0 margin 0,0,0,10
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1094.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      409.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [7.028 MHz · yours to use]; send license line []
+     GreenZoneBlock          371.0 x 95.0 at 438.0,182.0
+     GreenZoneLeft           193.0 x 81.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 81.0 at 658.0,189.0
+     GreenZoneModeLine       170.0 x 21.0 at 449.0,205.0
+     GreenZoneLicenseLine    193.0 x 44.0 at 449.0,226.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 658.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [40 m]
+       block text 90.0 x 11.0 at 499.0,191.0 [7.028 MHz]
+       block text 170.0 x 21.0 at 449.0,205.0 [Morse · yours to use]
+       block text 193.0 x 44.0 at 449.0,226.0 [Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)]
+       block text 140.0 x 9.0 at 658.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 658.0,204.0 [0 stations]
+       block text 140.0 x 8.0 at 658.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === licensed 1920.0, readiness as bound (1920.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 921.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 1358.0,119.0
+   working card 1888.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 734.0 x 484.0 at 29.0,469.0 = 0.522
+   panel decoded   378.0 x 484.0 at 773.0,469.0 = 0.522
+   panel For You   735.0 x 484.0 at 1156.0,469.0 = 0.522
+     DigitalModeStrip        1862.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   1862.0 x 43.0 at 29.0,416.0 margin 0,0,0,10
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1614.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      168.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [14.074 MHz · yours to use]; send license line []
+     GreenZoneBlock          891.0 x 49.0 at 438.0,182.0
+     GreenZoneLeft           713.0 x 25.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 35.0 at 1178.0,189.0
+     GreenZoneModeLine       280.0 x 11.0 at 609.0,191.0
+     GreenZoneLicenseLine    650.0 x 9.0 at 449.0,205.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 1178.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [20 m]
+       block text 100.0 x 11.0 at 499.0,191.0 [14.074 MHz]
+       block text 280.0 x 11.0 at 609.0,191.0 [Digital · FT8 · yours to use]
+       block text 650.0 x 9.0 at 449.0,205.0 [Your General license covers digital modes here · 97.305(c)(3)(ix)]
+       block text 140.0 x 9.0 at 1178.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 1178.0,204.0 [6 stations]
+       block text 140.0 x 8.0 at 1178.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === licensed 1920.0, readiness toggled to HIDDEN (1920.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 921.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 1358.0,119.0
+   working card 1888.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 734.0 x 537.0 at 29.0,416.0 = 0.579
+   panel decoded   378.0 x 537.0 at 773.0,416.0 = 0.579
+   panel For You   735.0 x 537.0 at 1156.0,416.0 = 0.579
+     DigitalModeStrip        1862.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   not shown (margin 0,0,0,10)
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1614.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      168.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [14.074 MHz · yours to use]; send license line []
+     GreenZoneBlock          891.0 x 49.0 at 438.0,182.0
+     GreenZoneLeft           713.0 x 25.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 35.0 at 1178.0,189.0
+     GreenZoneModeLine       280.0 x 11.0 at 609.0,191.0
+     GreenZoneLicenseLine    650.0 x 9.0 at 449.0,205.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 1178.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [20 m]
+       block text 100.0 x 11.0 at 499.0,191.0 [14.074 MHz]
+       block text 280.0 x 11.0 at 609.0,191.0 [Digital · FT8 · yours to use]
+       block text 650.0 x 9.0 at 449.0,205.0 [Your General license covers digital modes here · 97.305(c)(3)(ix)]
+       block text 140.0 x 9.0 at 1178.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 1178.0,204.0 [6 stations]
+       block text 140.0 x 8.0 at 1178.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === plain 1920.0, readiness as bound (1920.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 921.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 1358.0,119.0
+   working card 1888.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 735.0 x 484.0 at 29.0,469.0 = 0.522
+   panel decoded   378.0 x 484.0 at 774.0,469.0 = 0.522
+   panel For You   734.0 x 484.0 at 1157.0,469.0 = 0.522
+     DigitalModeStrip        1862.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   1862.0 x 43.0 at 29.0,416.0 margin 0,0,0,10
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1614.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      409.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [7.028 MHz · yours to use]; send license line []
+     GreenZoneBlock          891.0 x 49.0 at 438.0,182.0
+     GreenZoneLeft           713.0 x 34.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 35.0 at 1178.0,189.0
+     GreenZoneModeLine       200.0 x 11.0 at 599.0,191.0
+     GreenZoneLicenseLine    690.0 x 18.0 at 449.0,205.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 1178.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [40 m]
+       block text 90.0 x 11.0 at 499.0,191.0 [7.028 MHz]
+       block text 200.0 x 11.0 at 599.0,191.0 [Morse · yours to use]
+       block text 690.0 x 18.0 at 449.0,205.0 [Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)]
+       block text 140.0 x 9.0 at 1178.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 1178.0,204.0 [0 stations]
+       block text 140.0 x 8.0 at 1178.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === plain 1920.0, readiness toggled to HIDDEN (1920.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 921.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 1358.0,119.0
+   working card 1888.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 735.0 x 537.0 at 29.0,416.0 = 0.579
+   panel decoded   378.0 x 537.0 at 774.0,416.0 = 0.579
+   panel For You   734.0 x 537.0 at 1157.0,416.0 = 0.579
+     DigitalModeStrip        1862.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   not shown (margin 0,0,0,10)
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1614.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      409.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [7.028 MHz · yours to use]; send license line []
+     GreenZoneBlock          891.0 x 49.0 at 438.0,182.0
+     GreenZoneLeft           713.0 x 34.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 35.0 at 1178.0,189.0
+     GreenZoneModeLine       200.0 x 11.0 at 599.0,191.0
+     GreenZoneLicenseLine    690.0 x 18.0 at 449.0,205.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 1178.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [40 m]
+       block text 90.0 x 11.0 at 499.0,191.0 [7.028 MHz]
+       block text 200.0 x 11.0 at 599.0,191.0 [Morse · yours to use]
+       block text 690.0 x 18.0 at 449.0,205.0 [Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)]
+       block text 140.0 x 9.0 at 1178.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 1178.0,204.0 [0 stations]
+       block text 140.0 x 8.0 at 1178.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === licensed 1400.0, readiness as bound (1400.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 401.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 838.0,119.0
+   working card 1368.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 474.0 x 484.0 at 29.0,469.0 = 0.522
+   panel decoded   378.0 x 484.0 at 513.0,469.0 = 0.522
+   panel For You   475.0 x 484.0 at 896.0,469.0 = 0.522
+     DigitalModeStrip        1342.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   1342.0 x 43.0 at 29.0,416.0 margin 0,0,0,10
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1094.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      168.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [14.074 MHz · yours to use]; send license line []
+     GreenZoneBlock          371.0 x 87.0 at 438.0,182.0
+     GreenZoneLeft           193.0 x 73.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 73.0 at 658.0,189.0
+     GreenZoneModeLine       160.0 x 21.0 at 449.0,205.0
+     GreenZoneLicenseLine    190.0 x 36.0 at 449.0,226.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 658.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [20 m]
+       block text 100.0 x 11.0 at 499.0,191.0 [14.074 MHz]
+       block text 160.0 x 21.0 at 449.0,205.0 [Digital · FT8 · yours to use]
+       block text 190.0 x 36.0 at 449.0,226.0 [Your General license covers digital modes here · 97.305(c)(3)(ix)]
+       block text 140.0 x 9.0 at 658.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 658.0,204.0 [6 stations]
+       block text 140.0 x 8.0 at 658.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === licensed 1400.0, readiness toggled to HIDDEN (1400.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 401.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 838.0,119.0
+   working card 1368.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 474.0 x 537.0 at 29.0,416.0 = 0.579
+   panel decoded   378.0 x 537.0 at 513.0,416.0 = 0.579
+   panel For You   475.0 x 537.0 at 896.0,416.0 = 0.579
+     DigitalModeStrip        1342.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   not shown (margin 0,0,0,10)
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1094.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      168.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [14.074 MHz · yours to use]; send license line []
+     GreenZoneBlock          371.0 x 87.0 at 438.0,182.0
+     GreenZoneLeft           193.0 x 73.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 73.0 at 658.0,189.0
+     GreenZoneModeLine       160.0 x 21.0 at 449.0,205.0
+     GreenZoneLicenseLine    190.0 x 36.0 at 449.0,226.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 658.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [20 m]
+       block text 100.0 x 11.0 at 499.0,191.0 [14.074 MHz]
+       block text 160.0 x 21.0 at 449.0,205.0 [Digital · FT8 · yours to use]
+       block text 190.0 x 36.0 at 449.0,226.0 [Your General license covers digital modes here · 97.305(c)(3)(ix)]
+       block text 140.0 x 9.0 at 658.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 658.0,204.0 [6 stations]
+       block text 140.0 x 8.0 at 658.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === plain 1400.0, readiness as bound (1400.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 401.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 838.0,119.0
+   working card 1368.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 474.0 x 484.0 at 29.0,469.0 = 0.522
+   panel decoded   378.0 x 484.0 at 513.0,469.0 = 0.522
+   panel For You   475.0 x 484.0 at 896.0,469.0 = 0.522
+     DigitalModeStrip        1342.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   1342.0 x 43.0 at 29.0,416.0 margin 0,0,0,10
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1094.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      409.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [7.028 MHz · yours to use]; send license line []
+     GreenZoneBlock          371.0 x 95.0 at 438.0,182.0
+     GreenZoneLeft           193.0 x 81.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 81.0 at 658.0,189.0
+     GreenZoneModeLine       170.0 x 21.0 at 449.0,205.0
+     GreenZoneLicenseLine    193.0 x 44.0 at 449.0,226.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 658.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [40 m]
+       block text 90.0 x 11.0 at 499.0,191.0 [7.028 MHz]
+       block text 170.0 x 21.0 at 449.0,205.0 [Morse · yours to use]
+       block text 193.0 x 44.0 at 449.0,226.0 [Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)]
+       block text 140.0 x 9.0 at 658.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 658.0,204.0 [0 stations]
+       block text 140.0 x 8.0 at 658.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === plain 1400.0, readiness toggled to HIDDEN (1400.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 401.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 838.0,119.0
+   working card 1368.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 474.0 x 537.0 at 29.0,416.0 = 0.579
+   panel decoded   378.0 x 537.0 at 513.0,416.0 = 0.579
+   panel For You   475.0 x 537.0 at 896.0,416.0 = 0.579
+     DigitalModeStrip        1342.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   not shown (margin 0,0,0,10)
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1094.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      409.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [7.028 MHz · yours to use]; send license line []
+     GreenZoneBlock          371.0 x 95.0 at 438.0,182.0
+     GreenZoneLeft           193.0 x 81.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 81.0 at 658.0,189.0
+     GreenZoneModeLine       170.0 x 21.0 at 449.0,205.0
+     GreenZoneLicenseLine    193.0 x 44.0 at 449.0,226.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 658.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [40 m]
+       block text 90.0 x 11.0 at 499.0,191.0 [7.028 MHz]
+       block text 170.0 x 21.0 at 449.0,205.0 [Morse · yours to use]
+       block text 193.0 x 44.0 at 449.0,226.0 [Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)]
+       block text 140.0 x 9.0 at 658.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 658.0,204.0 [0 stations]
+       block text 140.0 x 8.0 at 658.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+ === plain 1400, again after the licensed windows (1400.0 x 1040.0)
+   band pills end at y 113.0; 927.0 below
+   top row 178.0 = 0.192; card 401.0 x 178.0 at 423.0,119.0; rig panel 546.0 x 178.0 at 838.0,119.0
+   working card 1368.0 x 606.0 at 16.0,360.0
+   mode tabs 250.0 x 30.0 at 16.0,330.0
+   panel waterfall 474.0 x 484.0 at 29.0,469.0 = 0.522
+   panel decoded   378.0 x 484.0 at 513.0,469.0 = 0.522
+   panel For You   475.0 x 484.0 at 896.0,469.0 = 0.522
+     DigitalModeStrip        1342.0 x 33.0 at 29.0,373.0 margin 0,0,0,10
+     DigitalReadinessStrip   1342.0 x 43.0 at 29.0,416.0 margin 0,0,0,10
+     DigitalTuneStrip        not shown (margin 0,0,0,10)
+     DigitalSendReserved     1094.0 x 22.0 at 290.0,334.0 margin 24,0,0,0
+     DigitalHeaderStrip      409.0 x 15.0 at 520.0,382.0 margin 24,0,0,0
+       send area -                         20.0 x 12.0 at 307.0,339.0 [CQ]
+       send area DigitalSendReservedLine   160.0 x 9.0 at 358.0,340.0 [nothing sent yet]
+       send area DigitalTransmitLevelText  210.0 x 9.0 at 532.0,340.0 [no level measured yet]
+       send area DigitalContactStandsText  140.0 x 9.0 at 776.0,340.0 [no contact yet]
+     readiness line [nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.]; tune line []
+     license class General; privilege headline [7.028 MHz · yours to use]; send license line []
+     GreenZoneBlock          371.0 x 95.0 at 438.0,182.0
+     GreenZoneLeft           193.0 x 81.0 at 449.0,189.0
+     GreenZoneRight          140.0 x 81.0 at 658.0,189.0
+     GreenZoneModeLine       170.0 x 21.0 at 449.0,205.0
+     GreenZoneLicenseLine    193.0 x 44.0 at 449.0,226.0
+     GreenZoneRuleOfThumb    absent
+     GreenZoneSparkline      not shown
+     GreenZoneHeard          140.0 x 12.0 at 658.0,204.0
+     GreenZoneStrayedLine    not shown
+       block text 40.0 x 16.0 at 449.0,189.0 [40 m]
+       block text 90.0 x 11.0 at 499.0,191.0 [7.028 MHz]
+       block text 170.0 x 21.0 at 449.0,205.0 [Morse · yours to use]
+       block text 193.0 x 44.0 at 449.0,226.0 [Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)]
+       block text 140.0 x 9.0 at 658.0,195.0 [heard just now]
+       block text 140.0 x 12.0 at 658.0,204.0 [0 stations]
+       block text 140.0 x 8.0 at 658.0,216.0 [last minute]
+     best bet: pills []; green zone [] here=False; button not shown
+ 
+
+
+[xUnit.net 00:00:04.14]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.TheThreePanelsShareOneTopAndOneBottom [692 ms]
+  Standard Output Messages:
+ WINDOW 1400.0, FT8
+   waterfall 474.0 x 484.0 at 29.0,469.0
+   decoded   378.0 x 484.0 at 513.0,469.0
+   For You   475.0 x 484.0 at 896.0,469.0
+   working card floor at y 953.0
+ 
+ WINDOW 1920.0, FT8
+   waterfall 735.0 x 484.0 at 29.0,469.0
+   decoded   378.0 x 484.0 at 774.0,469.0
+   For You   734.0 x 484.0 at 1157.0,469.0
+   working card floor at y 953.0
+ 
+ WINDOW 1400.0, PSK31
+   waterfall 475.0 x 484.0 at 29.0,469.0
+   decoded   378.0 x 484.0 at 514.0,469.0
+   For You   475.0 x 484.0 at 897.0,469.0
+   working card floor at y 953.0
+ 
+ WINDOW 1920.0, PSK31
+   waterfall 735.0 x 484.0 at 29.0,469.0
+   decoded   378.0 x 484.0 at 774.0,469.0
+   For You   734.0 x 484.0 at 1157.0,469.0
+   working card floor at y 953.0
+ 
+
+
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.TheThreePanelsTakeAtLeastHalfTheHeightBelowTheBandPills [463 ms]
+  Standard Output Messages:
+ plain 1920.0: pills end at y 113.0, 927.0 below; the panels 537.0 px = 0.579 with the readiness strip hidden, 484.0 px = 0.522 with it showing
+ plain 1400.0: pills end at y 113.0, 927.0 below; the panels 537.0 px = 0.579 with the readiness strip hidden, 484.0 px = 0.522 with it showing
+ licensed 1920.0: pills end at y 113.0, 927.0 below; the panels 537.0 px = 0.579 with the readiness strip hidden, 484.0 px = 0.522 with it showing
+
+
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.AtNineteenTwentyTheCardsFactsSitBesideTheMap [347 ms]
+  Standard Output Messages:
+ FT8: card inside 678.0 px; map 220.0 x 120.0 at 1.0,1.0; facts 338.0 x 102.0 at 232.0,0.0 -> BESIDE
+ PSK31: card inside 678.0 px; map 220.0 x 120.0 at 1.0,1.0; facts 338.0 x 102.0 at 232.0,0.0 -> BESIDE
+
+
+  Passed Hamlet.App.Tests.Views.TheWorkingPanelsTests.AtFourteenHundredTheSameShapeHolds [147 ms]
+  Standard Output Messages:
+ WINDOW 1400 x 1040.0
+   band pills end at y 113.0; 927.0 px below them
+   top row      178.0 px = 0.192 (the mockup: 186 of 710 = 0.262)
+   working card 606.0 px = 0.654
+   the panels   484.0 px = 0.522
+     DigitalModeStrip        33.0 px tall
+     DigitalReadinessStrip   43.0 px tall
+     DigitalTuneStrip        not shown
+     DigitalSendReserved     22.0 px tall
+     DigitalHeaderStrip      15.0 px tall
+   message cell 200.0 px holds [VP2MAA/P KC3QIS R-09], which needs 200.0
+   message cell 200.0 px holds [CQ DX K9XP JN88], which needs 150.0
+   card inside 419.0 px; map 220.0 x 120.0 at 1.0,1.0; facts 338.0 x 102.0 at 0.0,126.0 -> UNDER
+   the rule: 419.0 inside against 220.0 + 10 + 338.0 = 568.0 -> UNDER
+
+
+
+Test Run Successful.
+Total tests: 8
+     Passed: 8
+ Total time: 4.4381 Seconds
+RC=0 WALL=5s

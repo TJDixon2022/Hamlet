@@ -1,0 +1,131 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit389TraceTests.Unit389TraceTheLeftEdgeAfterAndWhereItSwitches [5 s]
+  Standard Output Messages:
+ AFTER 1920 x 1040 on FT8: left edge True, reach 36
+   map 16,83 393 x 214 (1.8364); band with pills 214 y 83 to 297, without 178; map top - band top 0, band bottom - map bottom 0
+   pills 423,83 1481 x 30, 7 in 1 row(s), rightmost ends x 1098, order 423 545 653 755 849 939 1027
+   card 423,119 921 x 178, rig 1358,119 546 x 178, caption 1109,235 220 x 9 [where the sun is · you]
+ AFTER 1920 x 1040 on PSK31: left edge True, reach 36
+   map 16,83 393 x 214 (1.8364); band with pills 214 y 83 to 297, without 178; map top - band top 0, band bottom - map bottom 0
+   pills 423,83 1481 x 30, 7 in 1 row(s), rightmost ends x 1098, order 423 545 653 755 849 939 1027
+   card 423,119 921 x 178, rig 1358,119 546 x 178, caption 1109,247 220 x 9 [where the sun is · you]
+ AFTER 1920 x 1040 on Olivia: left edge True, reach 36
+   map 16,83 393 x 214 (1.8364); band with pills 214 y 83 to 297, without 178; map top - band top 0, band bottom - map bottom 0
+   pills 423,83 1481 x 30, 7 in 1 row(s), rightmost ends x 1098, order 423 545 653 755 849 939 1027
+   card 423,119 921 x 178, rig 1358,119 546 x 178, caption 1109,235 220 x 9 [where the sun is · you]
+ AFTER 1400 x 1040 on FT8: left edge True, reach 36
+   map 16,83 393 x 214 (1.8364); band with pills 214 y 83 to 297, without 178; map top - band top 0, band bottom - map bottom 0
+   pills 423,83 961 x 30, 7 in 1 row(s), rightmost ends x 1098, order 423 545 653 755 849 939 1027
+   card 423,119 401 x 178, rig 838,119 546 x 178, caption 589,273 220 x 9 [where the sun is · you]
+     tall text 21 [GreenZoneModeLine] [Digital · FT8 · yours to use]
+     tall text 36 [GreenZoneLicenseLine] [Your General license covers digital modes here · 97.305(c)(3)(ix)]
+ AFTER 1400 x 1040 on PSK31: left edge False, reach 0
+   map 497,119 327 x 178 (1.8371); band with pills 214 y 83 to 297, without 178; map top - band top 36, band bottom - map bottom 0
+   pills 16,83 1368 x 30, 7 in 1 row(s), rightmost ends x 691, order 16 138 246 348 442 532 620
+   card 16,119 467 x 178, rig 838,119 546 x 178, caption 248,276 220 x 9 [where the sun is · you]
+     tall text 21 [GreenZoneModeLine] [Digital · PSK31 · yours to use]
+     tall text 27 [GreenZoneLicenseLine] [Your General license covers digital modes here · 97.305(c)(3)(ix)]
+ AFTER 1400 x 1040 on Olivia: left edge True, reach 36
+   map 16,83 393 x 214 (1.8364); band with pills 214 y 83 to 297, without 178; map top - band top 0, band bottom - map bottom 0
+   pills 423,83 961 x 30, 7 in 1 row(s), rightmost ends x 1098, order 423 545 653 755 849 939 1027
+   card 423,119 401 x 178, rig 838,119 546 x 178, caption 589,273 220 x 9 [where the sun is · you]
+     tall text 21 [GreenZoneModeLine] [Digital · Olivia · yours to use]
+     tall text 36 [GreenZoneLicenseLine] [Your General license covers digital modes here · 97.305(c)(3)(ix)]
+ AFTER 1100 x 780 on FT8: left edge False, reach 0
+   map 278,119 246 x 134 (1.8358); band with pills 402 y 83 to 485, without 366; map top - band top 36, band bottom - map bottom 232
+   pills 16,83 1068 x 30, 7 in 1 row(s), rightmost ends x 691, order 16 138 246 348 442 532 620
+   card 16,119 248 x 366, rig 538,119 546 x 366, caption 43,471 220 x 9 [where the sun is · you]
+ AFTER 1100 x 780 on PSK31: left edge False, reach 0
+   map 278,119 246 x 134 (1.8358); band with pills 443 y 83 to 526, without 407; map top - band top 36, band bottom - map bottom 273
+   pills 16,83 1068 x 30, 7 in 1 row(s), rightmost ends x 691, order 16 138 246 348 442 532 620
+   card 16,119 248 x 407, rig 538,119 546 x 407, caption 43,512 220 x 9 [where the sun is · you]
+ AFTER 1100 x 780 on Olivia: left edge False, reach 0
+   map 278,119 246 x 134 (1.8358); band with pills 413 y 83 to 496, without 377; map top - band top 36, band bottom - map bottom 243
+   pills 16,83 1068 x 30, 7 in 1 row(s), rightmost ends x 691, order 16 138 246 348 442 532 620
+   card 16,119 248 x 377, rig 538,119 546 x 377, caption 43,482 220 x 9 [where the sun is · you]
+ SWITCH on FT8: stage A at 1398 px wide, the left edge from 1399 (window 1040 tall)
+ SWITCH on PSK31: stage A at 1450 px wide, the left edge from 1451 (window 1040 tall)
+ SWITCH on Olivia: stage A at 1398 px wide, the left edge from 1399 (window 1040 tall)
+ PSK31 AT 14.070 AT 1400: left edge True, map 16,83 393 x 214, band 214, strayed line drawn False
+
+
+[xUnit.net 00:00:06.24]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit389TraceTests.Unit389TraceTheLeftEdgeBudgetBeforeOnePixelMoves [622 ms]
+  Standard Output Messages:
+ WINDOW 1920 x 1040 on FT8
+   band with pills 214, without 178; pills row 423,83 1481 x 30, margin 407,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1888 x 178, map 16,83 393 x 214 aspect 1.8364, map gap 14, card 423,119 921 x 178, rig 1358,119 546 x 178
+   LEFT EDGE: a map 214 tall is 393 wide; the pills would have 1074 of the 675 they need (one row); the card slot beside it 921 against CardFloor 400
+   BREAK-EVEN: a pills row of 1082, a window of 1521 (window minus pills row here 439)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1920 x 1040 on PSK31
+   band with pills 214, without 178; pills row 423,83 1481 x 30, margin 407,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1888 x 178, map 16,83 393 x 214 aspect 1.8364, map gap 14, card 423,119 921 x 178, rig 1358,119 546 x 178
+   LEFT EDGE: a map 214 tall is 393 wide; the pills would have 1074 of the 675 they need (one row); the card slot beside it 921 against CardFloor 400
+   BREAK-EVEN: a pills row of 1082, a window of 1521 (window minus pills row here 439)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1920 x 1040 on Olivia
+   band with pills 214, without 178; pills row 423,83 1481 x 30, margin 407,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1888 x 178, map 16,83 393 x 214 aspect 1.8364, map gap 14, card 423,119 921 x 178, rig 1358,119 546 x 178
+   LEFT EDGE: a map 214 tall is 393 wide; the pills would have 1074 of the 675 they need (one row); the card slot beside it 921 against CardFloor 400
+   BREAK-EVEN: a pills row of 1082, a window of 1521 (window minus pills row here 439)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1400 x 1040 on FT8
+   band with pills 214, without 178; pills row 423,83 961 x 30, margin 407,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1368 x 178, map 16,83 393 x 214 aspect 1.8364, map gap 14, card 423,119 401 x 178, rig 838,119 546 x 178
+   LEFT EDGE: a map 214 tall is 393 wide; the pills would have 554 of the 675 they need (SHORT by 121); the card slot beside it 401 against CardFloor 400
+   BREAK-EVEN: a pills row of 1082, a window of 1521 (window minus pills row here 439)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1400 x 1040 on PSK31
+   band with pills 214, without 178; pills row 16,83 1368 x 30, margin 0,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1368 x 178, map 497,119 327 x 178 aspect 1.8371, map gap 14, card 16,119 467 x 178, rig 838,119 546 x 178
+   LEFT EDGE: a map 214 tall is 393.1 wide; the pills would have 960.9 of the 675 they need (one row); the card slot beside it 400.9 against CardFloor 400
+   BREAK-EVEN: a pills row of 1082.1, a window of 1114.1 (window minus pills row here 32)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1400 x 1040 on Olivia
+   band with pills 214, without 178; pills row 423,83 961 x 30, margin 407,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1368 x 178, map 16,83 393 x 214 aspect 1.8364, map gap 14, card 423,119 401 x 178, rig 838,119 546 x 178
+   LEFT EDGE: a map 214 tall is 393 wide; the pills would have 554 of the 675 they need (SHORT by 121); the card slot beside it 401 against CardFloor 400
+   BREAK-EVEN: a pills row of 1082, a window of 1521 (window minus pills row here 439)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1100 x 780 on FT8
+   band with pills 402, without 366; pills row 16,83 1068 x 30, margin 0,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1068 x 366, map 278,119 246 x 134 aspect 1.8358, map gap 14, card 16,119 248 x 366, rig 538,119 546 x 366
+   LEFT EDGE: a map 402 tall is 738 wide; the pills would have 316 of the 675 they need (SHORT by 359); the card slot beside it -244 against CardFloor 400
+   BREAK-EVEN: a pills row of 1427, a window of 1459 (window minus pills row here 32)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1100 x 780 on PSK31
+   band with pills 443, without 407; pills row 16,83 1068 x 30, margin 0,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1068 x 407, map 278,119 246 x 134 aspect 1.8358, map gap 14, card 16,119 248 x 407, rig 538,119 546 x 407
+   LEFT EDGE: a map 443 tall is 813.3 wide; the pills would have 240.7 of the 675 they need (SHORT by 434.3); the card slot beside it -319.3 against CardFloor 400
+   BREAK-EVEN: a pills row of 1502.3, a window of 1534.3 (window minus pills row here 32)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+ WINDOW 1100 x 780 on Olivia
+   band with pills 413, without 377; pills row 16,83 1068 x 30, margin 0,10,0,6, 7 pills in 1 row(s) needing 675
+   BandRow 16,119 1068 x 377, map 278,119 246 x 134 aspect 1.8358, map gap 14, card 16,119 248 x 377, rig 538,119 546 x 377
+   LEFT EDGE: a map 413 tall is 758.2 wide; the pills would have 295.8 of the 675 they need (SHORT by 379.2); the card slot beside it -264.2 against CardFloor 400
+   BREAK-EVEN: a pills row of 1447.2, a window of 1479.2 (window minus pills row here 32)
+   clips: TopRow False, BandRow False, ancestors clipping MainWindow
+ 
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 6.5367 Seconds
+RC=0 WALL=7s

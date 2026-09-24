@@ -1,0 +1,30 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheBeyondEdgeRegionIsItsOwnThingAndNotTheOpenNeutral [7 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.ItSaysWhichEdgeWasCrossed [31 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.NoLicenseClassMakesItAllRight(cls: General) [1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.NoLicenseClassMakesItAllRight(cls: Technician) [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.NoLicenseClassMakesItAllRight(cls: Extra) [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.NoLicenseClassMakesItAllRight(cls: Unknown) [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheFactIsAStatementAndNeverAGate [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheCardExplainsInAmberAndNeverInvites [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheEdgeIsWhereTheRegulationPutsIt(hz: 14350000, amateur: True) [< 1 ms]
+[xUnit.net 00:00:00.25]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheEdgeIsWhereTheRegulationPutsIt(hz: 14350001, amateur: False) [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheEdgeIsWhereTheRegulationPutsIt(hz: 14000000, amateur: True) [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheEdgeIsWhereTheRegulationPutsIt(hz: 14360000, amateur: False) [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheEdgeIsWhereTheRegulationPutsIt(hz: 13999999, amateur: False) [< 1 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheRegionSaysWhatItIsInWordsAsWellAsColor [3 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.EverySurfaceReadsTheSameFact [2 ms]
+  Passed Hamlet.App.Tests.Licensing.OutOfBandTests.TheMapDrawsBeyondBothEdges [1 ms]
+
+Test Run Successful.
+Total tests: 16
+     Passed: 16
+ Total time: 0.5007 Seconds
+RC=0 WALL=1s
