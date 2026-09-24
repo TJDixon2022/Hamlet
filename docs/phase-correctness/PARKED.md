@@ -215,3 +215,16 @@ alone after a CW tune-in, since the CW row owns it, but it still speaks this way
 `AccUsbAfLevel` 128 labelled `50%`, raw numbers the real read never produces. A fix is the
 threshold through `PercentOfLevel` and those fixtures rebuilt on the read's scale, which is
 another unit's diff. Not blocking.
+
+## P16 - a source-sweep test's bound is already exceeded at entry
+
+**Raised by unit 419, 2026-09-24.** `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten`
+requires the text of `MainWindowViewModel.FollowTheMapAsync`, up to
+`EstablishReceiveConditionsAsync`, to be under 6,000 characters, so the sweep cannot pass by
+reading the rest of the file. It fails on that bound: the region is 137 lines, about 6,115 bytes,
+the same at `4bd85b35` (this unit's entry), at `cb526e01` (unit 418's exit) and at unit 419's
+exit, and none of unit 419's hunks in the file fall inside it. The type is on no carry-forward
+line, so no entry round ran it; it was red before this unit and is red after, for the same
+reason. Its forbidden-write checks, the ones that matter, are not reached while the bound
+fails. Raising the bound or trimming the region's comments is a test-shape decision left for the
+next unit under 12.6. Not blocking.

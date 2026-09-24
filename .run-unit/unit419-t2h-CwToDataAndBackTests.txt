@@ -1,0 +1,53 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.32]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.CwToDataAndBackTests.TenRoundTripsDoNotDrift [60 ms]
+  Standard Output Messages:
+   trip  1: Usb data=True FIL1 3000 Hz, 1 writes so far
+   trip  2: Usb data=True FIL1 3000 Hz, 2 writes so far
+   trip  3: Usb data=True FIL1 3000 Hz, 3 writes so far
+   trip  4: Usb data=True FIL1 3000 Hz, 4 writes so far
+   trip  5: Usb data=True FIL1 3000 Hz, 5 writes so far
+   trip  6: Usb data=True FIL1 3000 Hz, 6 writes so far
+   trip  7: Usb data=True FIL1 3000 Hz, 7 writes so far
+   trip  8: Usb data=True FIL1 3000 Hz, 8 writes so far
+   trip  9: Usb data=True FIL1 3000 Hz, 9 writes so far
+   trip 10: Usb data=True FIL1 3000 Hz, 10 writes so far
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.CwToDataAndBackTests.AReadingOlderThanTheWriteIsTheSnapBackAndOneNewerIsHisHand [< 1 ms]
+  Standard Output Messages:
+   read 4 s before the write: write=False
+   read 4 s after  the write: write=True
+   no reading time at all:    write=False
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.CwToDataAndBackTests.ArrivingOnTheDigitalBlockLeavesTheRadioAbleToHearIt [1 ms]
+  Standard Output Messages:
+   before: Cw data=False FIL2 500 Hz
+   after:  Usb data=True FIL1 3000 Hz
+   ledger: 3 kHz via CI-V 1A 03
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.CwToDataAndBackTests.TheRadioLeavingTheModeHamletSetIsWrittenAgain [2 ms]
+  Standard Output Messages:
+   he turns the knob: Cw FIL2 500 Hz, ledger says Cw
+   presses Digital:   Usb data=True FIL1 3000 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Rig.CwToDataAndBackTests.AnUnreadFlagDoesNotStartTheWriteLoopAgain [7 ms]
+  Standard Output Messages:
+   twenty arrivals later: 1 write(s), radio Usb data=True
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.5928 Seconds
+RC=0 WALL=2s

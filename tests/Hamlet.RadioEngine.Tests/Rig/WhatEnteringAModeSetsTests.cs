@@ -137,9 +137,12 @@ public sealed class WhatEnteringAModeSetsTests
         IReadOnlyList<(RigField Field, int Value)> writes,
         RigState after)
     {
+        // As the app reads them since task 2 item 2: with the fields the tune-in's
+        // mode states, which the voices leave to the setup (HM-DEC-174).
+        var owned = ReceiverSetup.Owns(results);
         var inMorse = after.Mode is { } m && CivValues.IsCw(m);
-        var advice = ReceiveAdvice.For(after);
-        var observations = RigObservations.For(after);
+        var advice = ReceiveAdvice.For(after, owned);
+        var observations = RigObservations.For(after, owned);
         var obstructions = ReceiveObstructions.For(after, inMorse, competitorInside: false);
 
         _output.WriteLine(
@@ -199,6 +202,8 @@ public sealed class WhatEnteringAModeSetsTests
             + $"only while the overflow reads overloading; overflow now {after[RigField.Overflow].Text}, "
             + (!overloading
                 ? "so it says nothing"
+                : owned.Contains(RigField.Preamp) && owned.Contains(RigField.Attenuator)
+                    ? "the mode owns the preamp and the attenuator, so it states the overload and names no knob"
                 : preampOn
                     ? "preamp on, so it asks him to press P.AMP/ATT until the preamp reads off"
                     : "preamp off, so it asks him to hold P.AMP/ATT for the attenuator"));

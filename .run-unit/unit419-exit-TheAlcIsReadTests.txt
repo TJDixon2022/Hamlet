@@ -1,0 +1,51 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.16]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.70]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.TheReplyDecodesOnTheManualsScale(high: 0, low: 96, expected: 60) [10 ms]
+  Standard Output Messages:
+ 00 60 -> 60  "60 of 120 on the radio's own ALC scale"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.TheReplyDecodesOnTheManualsScale(high: 1, low: 32, expected: 120) [1 ms]
+  Standard Output Messages:
+ 01 20 -> 120  "120 of 120 on the radio's own ALC scale"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.TheReplyDecodesOnTheManualsScale(high: 0, low: 0, expected: 0) [< 1 ms]
+  Standard Output Messages:
+ 00 00 -> 0  "no level control action at all"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.ThePollAsksForTheAlcOnlyWhileSomethingIsSending [295 ms]
+  Standard Output Messages:
+ at rest, after 8364 reads: 0 ALC read(s)
+ while sending: 7 ALC read(s); after: 0 more
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.AReplyThatIsNotBcdIsNotAReadingOfZero [< 1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.TheZoneIsNotInventedAndTheSentenceSaysWhatWasReadRatherThanJudgingIt [187 ms]
+  Standard Output Messages:
+ sentence: Your radio's level control read 96 of 120 during this send. Hamlet has no reference to compare that with yet and is not judging it, and it takes one from your next FT8 or FT4 send. Nothing for you to do.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.TheCommandIsTheOneInTheManualsTable [3 ms]
+  Standard Output Messages:
+ command : CI-V 15 13  page 19-3  00 00=minimum to 01 20=maximum
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcIsReadTests.WithNoRadioTheReadingIsAbsentAndTheRecordSaysSo [4 ms]
+  Standard Output Messages:
+ {"ts":"2026-09-24T16:04:19.828Z","sessionId":"63c3eadf","level":"info","appVersion":"324","category":"psk31","event":"psk31_send_alc","data":{"measured":false,"alc":null,"scaleTop":120,"ageMs":null,"judged":false,"zone":null,"pastTheZone":false,"reference":null,"margin":15,"referenceMode":null}}
+
+
+
+Test Run Successful.
+Total tests: 8
+     Passed: 8
+ Total time: 0.9780 Seconds
+RC=0 WALL=1s

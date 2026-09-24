@@ -1,0 +1,72 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanRefusesToStartWhileTheRadioIsTransmitting [40 ms]
+  Standard Output Messages:
+ the radio was transmitting, and a scan never moves the dial while anything is going out
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanThatNeverFinishedPutsTheDialBackOnTheNextConnect [3 ms]
+  Standard Output Messages:
+ restored to 7040000
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.TheStopControlEndsItAndPutsTheDialBack [2 ms]
+  Standard Output Messages:
+ you stopped the scan, and the dial is back where you left it
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanWithEveryStretchSwitchedOffSaysSoAndGoesNowhere [1 ms]
+  Standard Output Messages:
+ there is nowhere for the scan to go: every segment in your scan file is switched off
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanStopsWhenTheLinkGoesSilent [1 ms]
+  Standard Output Messages:
+ the radio stopped answering, and the scan stops the moment it does, because silence is a stop
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.TouchingTheDialEndsTheScanAndLeavesItWhereHePutIt [1 ms]
+  Standard Output Messages:
+ you turned the dial, so the scan got out of the way and left it where you put it
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanThatFoundNobodyPutsTheDialBack [1 ms]
+  Standard Output Messages:
+ the scan listened at 3 places and found nobody, so the dial is back where you left it
+ tuned to: 7010000, 7020000, 7030000, 7040000
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.ARestoreTheRadioRefusedKeepsTheNote [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanThatFoundSomebodyStaysThere [6 ms]
+  Standard Output Messages:
+ the scan stopped at 7.010 MHz because somebody is calling CQ here, and Hamlet is sure of that
+
+
+[xUnit.net 00:00:00.32]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanRefusesBeforeTheRadioHasAnsweredAnything [< 1 ms]
+  Standard Output Messages:
+ Hamlet has not heard back from the radio about enough of its state yet, and a scan that starts before then is working from guesses rather than from the radio
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanNeverKeysTheTransmitter [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.AScanStopsWhenWhatHamletKnowsHasGoneStale [1 ms]
+  Standard Output Messages:
+ what Hamlet knows about the radio went stale, so it stopped moving a dial it could no longer see
+
+
+  Passed Hamlet.RadioEngine.Tests.Scan.BandScannerSafetyTests.NothingOutsideTheOperatorsOwnFileIsEverVisited [5 ms]
+  Standard Output Messages:
+ tuned to: 7020000, 7040000
+
+
+
+Test Run Successful.
+Total tests: 13
+     Passed: 13
+ Total time: 0.5704 Seconds
+RC=0 WALL=1s

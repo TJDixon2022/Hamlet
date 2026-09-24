@@ -1,0 +1,80 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.30]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.ABlockWithNothingToSayProducesNoClaim [42 ms]
+  Standard Output Messages:
+   80 m  CW fast lane states nothing
+   80 m  QRP watering hole states nothing
+   40 m  CW fast lane states nothing
+   40 m  QRP watering hole states nothing
+   30 m  QRP watering hole states nothing
+   20 m  CW fast lane states nothing
+   20 m  QRP watering hole states nothing
+   17 m  QRP watering hole states nothing
+   15 m  CW fast lane states nothing
+   15 m  QRP watering hole states nothing
+   10 m  QRP watering hole states nothing
+ 
+   84 blocks state nothing at all
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.EveryWritableConditionHasACitedCommandAndTheRestAreSpokenOnly [4 ms]
+  Standard Output Messages:
+   noise blanker   wanted=off          writable=True  cited=p. 19-3
+   noise reduction wanted=off          writable=True  cited=p. 19-3
+   auto notch      wanted=off          writable=True  cited=p. 19-3
+   AGC             wanted=slow         writable=False cited=p. 19-3
+   scope span      wanted=2 kHz across writable=False cited=no command
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.TheDigitalBlocksStateWhatTheirModeNeeds [7 ms]
+  Standard Output Messages:
+   band  | block        | width | conditions
+   ------|--------------|-------|-----------
+   80 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   80 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   40 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   40 m  | FT8 city     |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   30 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   20 m  | FT8 city     |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   20 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   17 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   15 m  | FT8 city     |  1999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=2 kHz across
+   15 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   10 m  | FT8 city     |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+   10 m  | FT4 sprint   |  2999 | noise blanker=off, noise reduction=off, auto notch=off, AGC=slow, scope span=3 kHz across
+ 
+   21 blocks state conditions
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.TheMorseBlocksStateWhatMorseNeeds [< 1 ms]
+  Standard Output Messages:
+   80 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   40 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   40 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   30 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   30 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   20 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   17 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   15 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+   10 m  | CW main street | auto notch=off, manual notch=off, noise blanker=off, noise reduction=off, AGC=fast, RF gain=100%, squelch=open, attenuator=off unless the front end is overloading, preamp=preamp 1 above 40 m, off at 40 m and below
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheBlockStatesWhatTheModeNeedsTests.EveryModeStatingConditionsIsAModeSomeBlockIsWorkedIn [1 ms]
+  Standard Output Messages:
+   CW is worked somewhere: True
+   FT8 is worked somewhere: True
+   FT4 is worked somewhere: True
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.5647 Seconds
+RC=0 WALL=1s

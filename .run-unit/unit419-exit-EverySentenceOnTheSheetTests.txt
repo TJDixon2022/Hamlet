@@ -1,0 +1,336 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:13.64]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.EverySentenceOnTheSheetTests.EachLineIsPrintedBesideWhatTheCodeDid [13 s]
+  Standard Output Messages:
+ == what the code says, the same for every sheet
+ keying sweep: KeyingEnvelope.LowestToneHz 300, HighestToneHz 900, ToneStepHz 25; CwToneTracker.MinimumToneHz 300, MaximumToneHz 900
+ keying window: CwKeyingThresholds.Window 6 s; the meter looks every 00:00:01 and turns to no keying after 15 quiet windows
+ level meter: one level every 0.2 s; floor falls at 0.25 and rises at 0.01 a level
+ survey bins: coarse 25 Hz, fine 5 Hz
+ reading: the window is 12 s, read again every 0.5 s
+ 
+ == cw-2026-09-23-173723, the sheet as the writer composes it today
+   | captured   2026-09-24 16:02:39 UTC
+   | audioSeen  1440000 samples
+   | fingerprint eb30420da2fa
+   | seconds    30.0
+   | sampleRate 48000
+   | frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+   | band       40 m  (from Hamlet's own frequency, the radio was not read)
+   | broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+   | 
+   | inputPeak  -13.2 dBFS  (over the whole recording)
+   | meterPeak  -13.6 dBFS  (the moment it was kept)
+   | inputFloor -21.7 dBFS  (the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)
+   | clipping   False  (over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)
+   | toneHz     600.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   | tonePeak   26.8  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 600.0 Hz stood above the noise beside it, in dB)
+   | heldPeak   25.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+   | inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+   | unkeyed    no  (the pitch being followed now is one the survey admitted keying at; 46 characters reached the screen since the decoder started listening, from whatever pitch was being followed at the time)
+   | elements   111 seen, 111 resolved  (since the decoder started listening)
+   | characters 46 emitted, 0 unsure  (since the decoder started listening)
+   | decoderWpm 17
+   | text       nothing read
+   | textCovers everything read since the decoder started listening
+   | spanLlr    nothing read yet
+   | competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+   | reading    17 WPM won out of 8 to 40, 1.48 better than silence per hop against a gate of 1.40  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   | keying     no keying at 575 Hz: 109 rises above the threshold, median 71 ms, 16 dB swing; not called keying on a 16 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+   | duty       48.0%  (of the 30.0 seconds in this file, the key was down at 600.0 Hz)
+   | elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+   | 
+   | sinceLast  46 characters, 111 elements  (since the decoder started listening; this is the first capture of the session)
+   | 
+   | Frequency            unknown
+   | Mode                 unknown
+   | DataMode             unknown
+   | FilterSelection      unknown
+   | FilterBandwidth      unknown
+   | SMeter               unknown
+   | TransmitStatus       unknown
+   | Overflow             unknown
+   | TwinPbtOuter         unknown
+   | TwinPbtInner         unknown
+   | Rit                  unknown
+   | Swr                  unknown
+   | PowerOut             unknown
+   | RfPower              unknown
+   | RfGain               unknown
+   | Squelch              unknown
+   | SquelchStatus        unknown
+   | Agc                  unknown
+   | Preamp               unknown
+   | Attenuator           unknown
+   | NoiseBlanker         unknown
+   | NoiseBlankerLevel    unknown
+   | NoiseReduction       unknown
+   | NoiseReductionLevel  unknown
+   | AutoNotch            unknown
+   | ManualNotch          unknown
+   | BreakIn              unknown
+   | KeyerSpeed           unknown
+   | CwPitch              unknown
+   | AccUsbOutputSelect   unknown
+   | AccUsbAfLevel        unknown
+   | NotchPosition        unknown
+   | FilterShape          unknown
+   | AfLevel              unknown
+   | RfSqlFunction        unknown
+   | BreakInDelay         unknown
+   | AntennaTuner         unknown
+   | Alc                  unknown
+   | AccUsbSquelch        unknown
+   | Split                unknown
+   | ScopeOn              unknown
+   | ScopeOutput          unknown
+   | CivUsbPort           unknown
+   | CivTransceive        unknown
+   | Vfo                  unknown
+ == cw-2026-09-23-173723, beside the code
+ clipping: the sheet's figure is the tap's last 0.2 s level window, clipped False; over the whole recording the peak is -13.2 dBFS and 0 samples sit at or past 0.999
+ meterPeak: -13.6 dBFS over that last window; inputPeak over the whole recording -13.2
+ inputFloor: the tap's running floor at the end -21.7 dBFS; the recording's own quietest 0.2 s block -22.5 dBFS, median block -20.8, first block -22.5
+ toneHz: 600.000, measured True, hasTone True; remainder on the 5 Hz fine grid 0.000
+ tonePeak: measured over this file in 901 ms, which is how long the press now waits before the sheet is composed
+ competing: HasKeying True, competitor none, interference none
+ duty: 48.0% of the file above the envelope's threshold at 600.0 Hz; element-length runs 45.9%, runs shorter than an element 2.1%, 322 runs
+ keying: the meter's last reading NoKeying at 575 Hz, held False, over the 6 s window ending at the file's last whole second; the meter reads the decoder's own tap (CwKeyingMeter.Update(AudioTap)) and sweeps the tracker's own range
+ reading: 17.1 WPM, ratio 1.5; decoderWpm 17
+ 
+ == cw-2026-08-22-014113, the sheet as the writer composes it today
+   | captured   2026-09-24 16:02:44 UTC
+   | audioSeen  1440000 samples
+   | fingerprint 9756213d8035
+   | seconds    30.0
+   | sampleRate 48000
+   | frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+   | band       40 m  (from Hamlet's own frequency, the radio was not read)
+   | broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+   | 
+   | inputPeak  -12.9 dBFS  (over the whole recording)
+   | meterPeak  -13.3 dBFS  (the moment it was kept)
+   | inputFloor -21.5 dBFS  (the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)
+   | clipping   False  (over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)
+   | toneHz     600.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+   | tonePeak   not measured  (no pitch was measured, so there is no tone in this recording to say the strength of)
+   | heldPeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+   | inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+   | unkeyed    nothing emitted
+   | elements   0 seen, 0 resolved  (since the decoder started listening)
+   | characters 0 emitted, 0 unsure  (since the decoder started listening)
+   | decoderWpm not proved (a tone but no resolved character; the decoder's own best hypothesis was 20 WPM)
+   | text       nothing read
+   | textCovers everything read since the decoder started listening
+   | spanLlr    nothing read yet
+   | competing  none admitted, and the survey is not silent: it names a tone at 600 Hz, +10.0 dB over the band floor and above it 29% of the time. Nothing has judged it to be a station
+   | reading    20 WPM won out of 8 to 40, 0.75 better than silence per hop against a gate of 1.40  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   | keying     no keying at 650 Hz: 211 rises above the threshold, median 48 ms, 14 dB swing; not called keying on a keying score of 0.06 where it needs 0.10 and a 14 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+   | duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+   | elementHz  each element's own pitch not measured  (read again for this line, the audio in this file gave no characters, which is too few elements to say anything about how they spread; the counts above are for the stretch they name)
+   | 
+   | sinceLast  0 characters, 0 elements  (since the decoder started listening; this is the first capture of the session)
+   | 
+   | Frequency            unknown
+   | Mode                 unknown
+   | DataMode             unknown
+   | FilterSelection      unknown
+   | FilterBandwidth      unknown
+   | SMeter               unknown
+   | TransmitStatus       unknown
+   | Overflow             unknown
+   | TwinPbtOuter         unknown
+   | TwinPbtInner         unknown
+   | Rit                  unknown
+   | Swr                  unknown
+   | PowerOut             unknown
+   | RfPower              unknown
+   | RfGain               unknown
+   | Squelch              unknown
+   | SquelchStatus        unknown
+   | Agc                  unknown
+   | Preamp               unknown
+   | Attenuator           unknown
+   | NoiseBlanker         unknown
+   | NoiseBlankerLevel    unknown
+   | NoiseReduction       unknown
+   | NoiseReductionLevel  unknown
+   | AutoNotch            unknown
+   | ManualNotch          unknown
+   | BreakIn              unknown
+   | KeyerSpeed           unknown
+   | CwPitch              unknown
+   | AccUsbOutputSelect   unknown
+   | AccUsbAfLevel        unknown
+   | NotchPosition        unknown
+   | FilterShape          unknown
+   | AfLevel              unknown
+   | RfSqlFunction        unknown
+   | BreakInDelay         unknown
+   | AntennaTuner         unknown
+   | Alc                  unknown
+   | AccUsbSquelch        unknown
+   | Split                unknown
+   | ScopeOn              unknown
+   | ScopeOutput          unknown
+   | CivUsbPort           unknown
+   | CivTransceive        unknown
+   | Vfo                  unknown
+ == cw-2026-08-22-014113, beside the code
+ clipping: the sheet's figure is the tap's last 0.2 s level window, clipped False; over the whole recording the peak is -12.9 dBFS and 0 samples sit at or past 0.999
+ meterPeak: -13.3 dBFS over that last window; inputPeak over the whole recording -12.9
+ inputFloor: the tap's running floor at the end -21.5 dBFS; the recording's own quietest 0.2 s block -22.2 dBFS, median block -21.1, first block -21.4
+ toneHz: 600.000, measured False, hasTone True; remainder on the 5 Hz fine grid 0.000
+ tonePeak: measured over this file in 0 ms, which is how long the press now waits before the sheet is composed
+ competing: HasKeying False, competitor none, interference 600 Hz lift 10.0 present 0.29
+ keying: the meter's last reading NoKeying at 650 Hz, held False, over the 6 s window ending at the file's last whole second; the meter reads the decoder's own tap (CwKeyingMeter.Update(AudioTap)) and sweeps the tracker's own range
+ reading: 20.0 WPM, ratio 0.8; decoderWpm none
+ == cw-2026-08-22-014113, the saved sheet's signal lines, as the evening wrote them
+   : captured   2026-08-22 01:41:13 UTC
+   : audioSeen  2598240 samples
+   : fingerprint bee28875d3ad
+   : seconds    30.0
+   : sampleRate 48000
+   : frequency  7035000 Hz  (read from the radio a moment ago)
+   : band       40 m  (from the frequency the radio reported)
+   : broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 0 of 5734 frames since the link came up were the radio announcing something
+   : 
+   : inputPeak  -12.9 dBFS  (over the whole recording)
+   : meterPeak  -13.4 dBFS  (the moment it was kept)
+   : inputFloor -21.5 dBFS
+   : clipping   False
+   : toneHz     600  (the pitch the decoder was following at the moment of the press, refined from where it started)
+   : tonePeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+   : inThis     0 characters emitted, 0 unsure, 0 elements seen, 0 resolved  (in the 30.0 seconds of audio in this file)
+   : elements   20 seen, 20 resolved  (since the decoder started listening, less than a minute ago)
+   : characters 13 emitted, 0 unsure  (since the decoder started listening, less than a minute ago)
+   : decoderWpm withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 24 WPM)
+   : text       nothing read
+   : textCovers everything read since the decoder started listening, less than a minute ago
+   : reading    24 WPM won out of 8 to 32, 7.5 better than silence per hop against a gate of 15
+   : keying     no keying at 625 Hz, 5 ms key down, 16 dB swing, 142 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+   : 
+   : sinceLast  13 characters, 20 elements  (since the decoder started listening, less than a minute ago; this is the first capture of the session)
+   : 
+ 
+ == cw-2026-08-17-013347, the sheet as the writer composes it today
+   | captured   2026-09-24 16:02:48 UTC
+   | audioSeen  1440000 samples
+   | fingerprint 1c42404a68d7
+   | seconds    30.0
+   | sampleRate 48000
+   | frequency  7028000 Hz  (Hamlet's own, the radio was not read)
+   | band       40 m  (from Hamlet's own frequency, the radio was not read)
+   | broadcast  the setting reads unknown, and no frame has arrived on the link to check it against
+   | 
+   | inputPeak  -1.6 dBFS  (over the whole recording)
+   | meterPeak  -9.9 dBFS  (the moment it was kept)
+   | inputFloor -32.1 dBFS  (the level meter's running floor at the moment it was kept, carried across everything heard, falling quickly to a quiet stretch and rising slowly to a loud one; not a figure about this recording alone)
+   | clipping   False  (over the 0.2 seconds the level meter last measured when it was kept, the stretch meterPeak is over; not the whole recording)
+   | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   | tonePeak   33.4  (a figure about this recording: over the 30.0 seconds in this file, the highest the tone at 625.0 Hz stood above the noise beside it, in dB)
+   | heldPeak   32.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying across everything heard since listening started; not a figure about this recording, and the one the roster's tonePeakDb column carries)
+   | inThis     not derived (the decoder's own history does not reach back over these 30.0 seconds)
+   | unkeyed    no  (the pitch being followed now is one the survey admitted keying at; 57 characters reached the screen since the decoder started listening, from whatever pitch was being followed at the time)
+   | elements   106 seen, 106 resolved  (since the decoder started listening)
+   | characters 57 emitted, 0 unsure  (since the decoder started listening)
+   | decoderWpm 16
+   | text       nothing read
+   | textCovers everything read since the decoder started listening
+   | spanLlr    nothing read yet
+   | competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+   | reading    16 WPM won out of 8 to 40, 4.00 better than silence per hop against a gate of 1.40  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   | keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
+   | duty       26.6%  (of the 30.0 seconds in this file, the key was down at 625.0 Hz)
+   | elementHz  each element's own pitch not measured  (the elements counted above were measured by their timing, but the decoder in this build does not say where each one began and ended, so none of them had its own pitch taken)
+   | 
+   | sinceLast  57 characters, 106 elements  (since the decoder started listening; this is the first capture of the session)
+   | 
+   | Frequency            unknown
+   | Mode                 unknown
+   | DataMode             unknown
+   | FilterSelection      unknown
+   | FilterBandwidth      unknown
+   | SMeter               unknown
+   | TransmitStatus       unknown
+   | Overflow             unknown
+   | TwinPbtOuter         unknown
+   | TwinPbtInner         unknown
+   | Rit                  unknown
+   | Swr                  unknown
+   | PowerOut             unknown
+   | RfPower              unknown
+   | RfGain               unknown
+   | Squelch              unknown
+   | SquelchStatus        unknown
+   | Agc                  unknown
+   | Preamp               unknown
+   | Attenuator           unknown
+   | NoiseBlanker         unknown
+   | NoiseBlankerLevel    unknown
+   | NoiseReduction       unknown
+   | NoiseReductionLevel  unknown
+   | AutoNotch            unknown
+   | ManualNotch          unknown
+   | BreakIn              unknown
+   | KeyerSpeed           unknown
+   | CwPitch              unknown
+   | AccUsbOutputSelect   unknown
+   | AccUsbAfLevel        unknown
+   | NotchPosition        unknown
+   | FilterShape          unknown
+   | AfLevel              unknown
+   | RfSqlFunction        unknown
+   | BreakInDelay         unknown
+   | AntennaTuner         unknown
+   | Alc                  unknown
+   | AccUsbSquelch        unknown
+   | Split                unknown
+   | ScopeOn              unknown
+   | ScopeOutput          unknown
+   | CivUsbPort           unknown
+   | CivTransceive        unknown
+   | Vfo                  unknown
+ == cw-2026-08-17-013347, beside the code
+ clipping: the sheet's figure is the tap's last 0.2 s level window, clipped False; over the whole recording the peak is -1.6 dBFS and 0 samples sit at or past 0.999
+ meterPeak: -9.9 dBFS over that last window; inputPeak over the whole recording -1.6
+ inputFloor: the tap's running floor at the end -32.1 dBFS; the recording's own quietest 0.2 s block -75.4 dBFS, median block -19.0, first block -22.8
+ toneHz: 625.000, measured True, hasTone True; remainder on the 5 Hz fine grid 0.000
+ tonePeak: measured over this file in 868 ms, which is how long the press now waits before the sheet is composed
+ competing: HasKeying False, competitor none, interference none
+ duty: 26.6% of the file above the envelope's threshold at 625.0 Hz; element-length runs 23.1%, runs shorter than an element 3.5%, 330 runs
+ keying: the meter's last reading Keying at 625 Hz, held True, over the 6 s window ending at the file's last whole second; the meter reads the decoder's own tap (CwKeyingMeter.Update(AudioTap)) and sweeps the tracker's own range
+ reading: 16.0 WPM, ratio 4.0; decoderWpm 16
+ == cw-2026-08-17-013347, the saved sheet's signal lines, as the evening wrote them
+   : captured   2026-08-17 01:33:47 UTC
+   : audioSeen  19130400 samples
+   : fingerprint 6c24bba8f351
+   : seconds    30.0
+   : sampleRate 48000
+   : frequency  7030000 Hz
+   : band       40 m
+   : 
+   : inputPeak  -10.0 dBFS
+   : inputFloor -23.9 dBFS
+   : clipping   False
+   : toneHz     600
+   : snrDb      28.8
+   : elements   1211 seen, 11 resolved
+   : characters 1 emitted, 1 unsure
+   : 
+   : sinceLast  1 characters, 1211 elements
+   : 
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 13.9178 Seconds
+RC=0 WALL=15s

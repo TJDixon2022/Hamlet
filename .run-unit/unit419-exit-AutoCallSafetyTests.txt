@@ -1,0 +1,116 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.NoTestInThisSuiteCanReachARealTransmitter [16 ms]
+  Standard Output Messages:
+ rig keying attempts: 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.SomebodyAnsweringStopsTheCycle [11 ms]
+  Standard Output Messages:
+ Answered: Hamlet stopped calling because it heard your own callsign come back, W1AW.
+   1 rounds, 1 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.AnUnansweredDeadManReadStopsTheCycle [6 ms]
+  Standard Output Messages:
+ DeadManSilent: The radio stopped answering between rounds. Silence is a stop.
+   0 rounds, 0 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.BreakInOffAtArmSendsNothingAndSaysSo [1 ms]
+  Standard Output Messages:
+ BreakInOff: Break-in went off, so a keyer message would no longer reach the air, and Hamlet has stopped rather than send into a radio that is still receiving.
+   0 rounds, 0 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.AStaleReadingStopsTheCycle [1 ms]
+  Standard Output Messages:
+ RigStateStale: What Hamlet knows about the radio went out of date, and it will not key a transmitter on a stale reading.
+   0 rounds, 0 keyed, 0 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.TheOperatorStoppingItEndsTheCycleAndKeysTheStop [1 ms]
+  Standard Output Messages:
+ OperatorStopped: You stopped it.
+   1 rounds, 1 keyed, 2 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.ItRefusesToRunWhileTheScannerHasTheDial [1 ms]
+  Standard Output Messages:
+ ScannerRunning: The scanner is running. It moves the dial and this transmits on it, so they never run together.
+   0 rounds, 0 keyed, 0 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.TheDialMovedStopsTheCycle [1 ms]
+  Standard Output Messages:
+ DialTouched: The dial moved, and this cycle never moves it, so that was you.
+   1 rounds, 1 keyed, 2 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.ThePttPressedWhileListeningStopsTheCycle [< 1 ms]
+  Standard Output Messages:
+ PttPressed: The transmitter came on while Hamlet was listening, so it has got out of your way.
+   1 rounds, 1 keyed, 1 aborts
+
+
+[xUnit.net 00:00:00.30]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.ASendTheRadioDidNotTakeStopsTheCycle [< 1 ms]
+  Standard Output Messages:
+ LinkFailed: The link to the radio failed, so Hamlet stopped and sent the keyer's own stop code on the way out.
+   0 rounds, 0 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.EveryExitKeysTheStopCode [< 1 ms]
+  Standard Output Messages:
+ RoundLimit: Hamlet called 3 times and nobody answered, so it has stopped rather than keep calling into a band it cannot hear.
+   3 rounds, 3 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.ATransmitterStillOnAfterTheMessageStopsTheCycle [< 1 ms]
+  Standard Output Messages:
+ TransmitStuck: The radio was still transmitting when it should have finished, so Hamlet stopped and told it to stop as well.
+   1 rounds, 1 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.BreakInGoingOffMidCycleStopsAtTheNextRound [< 1 ms]
+  Standard Output Messages:
+ BreakInOff: Break-in went off, so a keyer message would no longer reach the air, and Hamlet has stopped rather than send into a radio that is still receiving.
+   1 rounds, 1 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.TheLinkFailingMidCycleStopsTheCycleAndKeysTheStop [1 ms]
+  Standard Output Messages:
+ DeadManSilent: The radio stopped answering between rounds. Silence is a stop.
+   1 rounds, 1 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.NobodyAnswersSoItStopsAtTheRoundLimit [2 ms]
+  Standard Output Messages:
+ RoundLimit: Hamlet called 3 times and nobody answered, so it has stopped rather than keep calling into a band it cannot hear.
+   3 rounds, 3 keyed, 1 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.ItRefusesToStartBeforeTheRadioHasSaidWhatItIsSetTo [< 1 ms]
+  Standard Output Messages:
+ RigStateNotPopulated: The radio has not finished saying what it is set to, and Hamlet does not arm a transmitter against forty unknowns.
+   0 rounds, 0 keyed, 0 aborts
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests.EveryTransmissionIsLoggedWithWhereAndWhatAndWhen [7 ms]
+  Standard Output Messages:
+ round 1: CQ CQ DE W1AW W1AW K at 7.030 MHz, 12:00:00
+ round 2: CQ CQ DE W1AW W1AW K at 7.030 MHz, 12:00:00
+ round 3: CQ CQ DE W1AW W1AW K at 7.030 MHz, 12:00:00
+
+
+
+Test Run Successful.
+Total tests: 17
+     Passed: 17
+ Total time: 0.5651 Seconds
+RC=0 WALL=1s
