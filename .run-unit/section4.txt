@@ -1,28 +1,41 @@
 ﻿
 1. **`TheUnitIsMeasuredNotSearchedTests.TheFiveToEightDecibelPlateauHolds` is still red at HEAD,
-   exactly as at entry.** It is outside the carry-forward.
+   exactly as at entry,** after the build, and at exit: 1 dB 165 marks against 117. It is outside
+   the carry-forward.
    - It was red at this unit's entry, so it does not count against HM-DEC-165.
    - **Proposed ruling:** park it as a standing red for whichever unit opens the hysteresis.
-   - **Reasoning:** Â§9 parks the hysteresis, and Â§12.5 says repair nothing.
+   - **Reasoning:** Â§9 parks `HysteresisDb`, and Â§12.5 says repair nothing.
    - **Rejected:** repairing it here.
    - Not blocking 7.4.
 2. **The launcher-overlap ruling is still the owner's and still carried:** the launcher should end
    a redirected session before it launches the next.
-   - There was no collision this time. Nothing was live at 09:58, and task 0's check held.
-   - One claude.exe process, 26364, was running beside this session the whole time. It started
-     no test and committed nothing. I did not identify it or touch it.
+   - There was no collision. Nothing was live at 11:26, and task 0's check held.
+   - Interactive claude.exe 26364, started 2026-09-24, ran beside this session throughout. It
+     started no test and committed nothing. I did not touch it.
    - Not blocking 7.4.
-3. **What is in the opening's way, as measured.**
-   - Every route downstream of the pitch has now been tried against 7.4 and failed 3.2's tests:
-     four follow rules (R75), the speed carry, the dit-against-dah rule, and now the window
-     re-mix.
-   - This unit found that the window's pitch is not the remaining cause. The estimator's unit
-     is still about half the sender's at the right pitch, over a window that is wholly at that
-     pitch.
-   - **Proposed ruling:** the next 7.4 unit, if one is seeded, looks at why `CwUnitEstimator`
-     reads about 30 ms at 625 Hz on this sender. Otherwise 7.4 waits for 4.7.
-   - **Reasoning:** unit 436's rule attacked that halving and cost recordings. This unit shows
-     the halving survives a clean window, so it lies in the audio or the trigger, not the mix.
-   - **Rejected:** keeping the re-mix for the recordings it helps, because HM-DEC-091 forbids
-     reading one recording at another's cost.
-   - The author's or the owner's to rule, not this unit's. Not blocking 7.4 as a criterion.
+3. **The build's opening came with a different tracker path, so it cannot be credited to the cut
+   alone.**
+   - Under the build the tracker held 600 Hz to 34.0 s and moved to 625 at 34.5 s. It never made
+     the move to 525 at 30.53 s that R75 and R76 hold.
+   - The offline replay held the entry's pitch, and there the local cut did not lengthen the
+     unit.
+   - So the opening reading at 24 WPM needed the cut and the tracker's changed path together, and
+     this unit cannot separate them without touching the tracker, which R76 forbids.
+   - **Proposed ruling:** record that 7.4's opening reads as it does cold once the tracker does not
+     move to 525. Hold the next 7.4 attempt for 4.7 unless a route is found that does not act
+     through the tracker.
+   - **Reasoning:** every route downstream of the pitch has now been built against 7.4, and each
+     cost other recordings (HM-DEC-091): four follow rules (R75), the speed carry, the
+     dit-against-dah rule, the window re-mix, and now the local cut. This one moved the opening
+     furthest, and apparently by way of the tracker.
+   - **Rejected:** keeping the cut for the opening, because it costs 16 capture rows, 5 floors and
+     `VA3VRR`.
+   - This is the author's or the owner's to rule, not this unit's. It is not blocking 7.4 as a
+     criterion.
+
+Two corrections to the pushed commit messages. P48 and this report carry the correct figures.
+- Task 1's message says the local cut "stands higher than the whole window's". It stands higher
+  only in the blocks before the splice. At the sender it stands lower, as section 3 shows.
+- The same message gives the entry unit from 34.5 to 44.5 s as 25 to 45 ms and the local one as
+  20 to 40. Those were short-mark medians read from the wrong column. The units were 17.5 to 35 ms
+  at entry and 17.5 to 40 ms under the local cut.
