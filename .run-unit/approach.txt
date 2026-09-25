@@ -1,1 +1,0 @@
-build a pitch instrument finer than 25 Hz that shares no code with the tone tracker or the survey, prove it against tones known by construction with its error in hertz per case, and turn it on the three places the tracker is known to have been wrong

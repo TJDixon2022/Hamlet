@@ -1,1 +1,0 @@
-PHASE_PLAN.md step 4 criterion 4.1 asks for a pitch instrument whose resolution is finer than 25 Hz, shown on the synthetic cases whose tone is known by construction to land within one of its own bins of the truth, with its error tabled per case and its cost per hop measured
