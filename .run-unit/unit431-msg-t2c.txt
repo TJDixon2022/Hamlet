@@ -1,0 +1,3 @@
+unit431 task 2: G1 taken back out - revert of 856d226e, which failed 3.2's second test on 17:37 (keyed floor 46 to 38) and its fourth on 004133 (28 to 25 above the bar), with R73 read for a join excusing neither; the narrower variant is not built, because the attempt failed on two rows and two tests, not one; nothing kept, so this is 3.4's third step 3 unit with no kept change
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

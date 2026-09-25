@@ -1,3 +1,0 @@
-unit431 task 2: G1 re-applied (3.6) - CwUnitEstimator.MeasureGaps returns textbook when the clipped character gap stands at or past the word gap, 687aab1a's check at the same place, after word is computed and before the return; MeasureGaps itself is unchanged since 687aab1a~1, so nothing needed adapting but the comment
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
