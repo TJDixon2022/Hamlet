@@ -69,6 +69,17 @@ public static class CwUnitEstimator
     /// <summary>The shortest run, in hops, that is taken as an element at all.</summary>
     private const int ShortestRunHops = 2;
 
+    /// <summary>
+    /// How far above the short mark centroid the long one may stand before the
+    /// short heap is taken for broken marks rather than dits.
+    /// </summary>
+    /// <remarks>
+    /// Halfway between a textbook dah, three dits, and a dah measured against
+    /// half a dit, six. Fixed before the trace that tested it and not tuned
+    /// after it (work instruction 436).
+    /// </remarks>
+    public const double BrokenDitRatio = 4.5;
+
     /// <summary>Measure the sender's timing from an envelope.</summary>
     /// <param name="envelope">Envelope magnitudes, one every hop.</param>
     /// <param name="hopMilliseconds">How long one hop lasts.</param>
@@ -99,6 +110,22 @@ public static class CwUnitEstimator
         if (shortMark <= 0 || shortGap <= 0)
         {
             return CwUnitReading.None;
+        }
+
+        // **THE SHORT HEAP IS CHECKED AGAINST THE DAHS BESIDE IT.** A sender's
+        // dah is three of his dits. When the envelope breaks marks into pieces
+        // the short heap fills with the pieces, and the median of it is half a
+        // dit: in the opening of `cw-2026-09-24-003919` the unit fell from 50 ms
+        // to 27.5 ms while the dahs stayed at 150 ms (work instruction 436,
+        // PHASE_PLAN.md 7.3 and 7.4). Past BrokenDitRatio the short heap is not
+        // this sender's dits, and the dah over three is the unit.
+        var (ditCentroid, dahCentroid) = TwoMeansOnLogs(marks);
+
+        if (dahCentroid > BrokenDitRatio * ditCentroid)
+        {
+            var dit = LongClusterMedian(marks, ditCentroid, dahCentroid) / 3;
+
+            return new CwUnitReading(dit, dit, shortGap, marks.Count);
         }
 
         return new CwUnitReading(
@@ -544,6 +571,18 @@ public static class CwUnitEstimator
         var members = values.Where(v => v <= boundary).OrderBy(v => v).ToArray();
 
         return members.Length == 0 ? low : members[members.Length / 2];
+    }
+
+    /// <summary>
+    /// The middle of the long cluster, a median of its members as
+    /// <see cref="ShortClusterMedian"/> takes the short one's.
+    /// </summary>
+    private static double LongClusterMedian(IReadOnlyList<double> values, double low, double high)
+    {
+        var boundary = Math.Sqrt(low * high);
+        var members = values.Where(v => v > boundary).OrderBy(v => v).ToArray();
+
+        return members.Length == 0 ? high : members[members.Length / 2];
     }
 
     /// <summary>

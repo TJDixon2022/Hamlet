@@ -1,0 +1,3 @@
+unit436 task 2: the build (7.4) - CwUnitEstimator.Measure checks its dit against its dah: when the long mark centroid stands more than BrokenDitRatio 4.5 times the short one, the unit is the long cluster's median over 3, reported as DitMarkMilliseconds; otherwise the reading is exactly what it was. Not yet judged
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
