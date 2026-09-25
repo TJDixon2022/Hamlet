@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 3 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 429 - what the decoder was doing while it read E ET E E
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T00:26:33-04:00
-NOTE: Running WhatTheDecoderHeldAtEachCharacter alone, three rows
+UPDATED: 2026-09-25T00:52:01-04:00
+NOTE: Unit 429 complete and pushed: the opening's litter is the mixdown pitch leaving the sender for 525 Hz, then the speed falling to the grid at 38 wpm; the cold bench does not reproduce it, the spliced stream does; 7.3 ticked; 165 over 565 and 17 added unchanged; output.md written
 
 ---
 

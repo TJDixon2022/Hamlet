@@ -1,0 +1,101 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "Olivia") [243 ms]
+  Standard Output Messages:
+ Olivia: {"ts":"2026-09-25T04:38:01.366Z","sessionId":"821272a3","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"Olivia"}}
+   swept 17 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "FT4") [15 ms]
+  Standard Output Messages:
+ FT4: {"ts":"2026-09-25T04:38:01.428Z","sessionId":"78a6a551","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"FT4"}}
+   swept 10 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "PSK31") [10 ms]
+  Standard Output Messages:
+ PSK31: {"ts":"2026-09-25T04:38:01.442Z","sessionId":"b5710eed","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"PSK31"}}
+   swept 15 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed(label: "FT8") [8 ms]
+  Standard Output Messages:
+ FT8: {"ts":"2026-09-25T04:38:01.453Z","sessionId":"0e8ae195","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"FT8"}}
+   swept 10 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheDecoderLineNamesWhichDecoderStartedAndNotWhatWasPressed [8 ms]
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheSendPathNamesTheModeTheSendWasMadeIn(label: "Olivia", composedAs: "Olivia") [23 ms]
+  Standard Output Messages:
+   Olivia  stage=composed  detail=Olivia
+   Olivia  stage=armed  detail=now
+   swept 15 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.TheSendPathNamesTheModeTheSendWasMadeIn(label: "PSK31", composedAs: "Psk31") [12 ms]
+  Standard Output Messages:
+   PSK31   stage=composed  detail=Psk31
+   PSK31   stage=armed  detail=now
+   swept 15 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.NoOperatorActionNamesTheMappedFamilyUnderAModeThatIsNotFt8(label: "PSK31") [42 ms]
+  Standard Output Messages:
+   PSK31   cq_pressed              detail=PSK31
+   PSK31   send_requested          detail=38 characters
+   PSK31   psk31_answer_pressed    detail=PSK31
+   PSK31   send_requested          detail=23 characters
+   PSK31   psk31_card_opened       detail=PSK31
+   PSK31   psk31_typed_pressed     detail=PSK31
+   PSK31   send_requested          detail=54 characters
+   swept 39 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.NoOperatorActionNamesTheMappedFamilyUnderAModeThatIsNotFt8(label: "FT8") [8 ms]
+  Standard Output Messages:
+   FT8     cq_pressed              detail=FT8
+   FT8     send_requested          detail=14 characters
+   FT8     psk31_answer_pressed    detail=FT8
+   FT8     send_requested          detail=23 characters
+   swept 14 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+[xUnit.net 00:00:00.72]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.NoOperatorActionNamesTheMappedFamilyUnderAModeThatIsNotFt8(label: "FT4") [7 ms]
+  Standard Output Messages:
+   FT4     cq_pressed              detail=FT4
+   FT4     send_requested          detail=14 characters
+   FT4     psk31_answer_pressed    detail=FT4
+   FT4     send_requested          detail=23 characters
+   swept 14 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.NoOperatorActionNamesTheMappedFamilyUnderAModeThatIsNotFt8(label: "Olivia") [45 ms]
+  Standard Output Messages:
+   Olivia  cq_pressed              detail=Olivia
+   Olivia  send_requested          detail=38 characters
+   Olivia  psk31_answer_pressed    detail=Olivia
+   Olivia  send_requested          detail=23 characters
+   Olivia  psk31_card_opened       detail=Olivia
+   Olivia  psk31_typed_pressed     detail=Olivia
+   Olivia  send_requested          detail=54 characters
+   swept 39 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+  Passed Hamlet.App.Tests.Telemetry.TheRecordNamesTheSubModePressedTests.WithNothingChosenThePressSaysUnknown [8 ms]
+  Standard Output Messages:
+ nothing chosen: {"ts":"2026-09-25T04:38:01.622Z","sessionId":"61b6c639","level":"info","appVersion":"1.13.61","category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"unknown"}}
+   swept 9 lines for KC3QIS, W1AW, tnx fer the call, FN00DJ and found none
+
+
+
+Test Run Successful.
+Total tests: 12
+     Passed: 12
+ Total time: 0.9764 Seconds
+RC=0 WALL=1s
