@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
-WORK_INSTRUCTION: 428 - a letter is junk when its neighbors are ten times surer
+TASK: TASK 1 of 4
+WORK_INSTRUCTION: 429 - what the decoder was doing while it read E ET E E
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T00:08:17-04:00
-NOTE: Entry round: WhatTheStrayLettersRestOnTests alone, the added letters
+UPDATED: 2026-09-25T00:17:45-04:00
+NOTE: Running WhatTheOpeningHeardTests.TheOpeningOnTheBenchAndLive alone: 14 cold decodes and one spliced stream
 
 ---
 

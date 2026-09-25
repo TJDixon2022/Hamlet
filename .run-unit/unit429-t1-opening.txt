@@ -1,0 +1,113 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.49]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.68]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.69]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:54.96]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.TheOpeningOnTheBenchAndLive [53 s]
+  Standard Output Messages:
+ CLOCK | every recording of the session, from its sidecar
+ clock | recording | captured | audioSeen samples | s since previous on audioSeen | s since previous on captured | overlap on audioSeen s | toneHz | decoderWpm
+ clock | cw-2026-09-24-003901 | 2026-09-24 00:39:01 UTC | 5479200 | NaN | NaN | NaN | 595.0 | 24
+ clock | cw-2026-09-24-003919 | 2026-09-24 00:39:19 UTC | 6256800 | 16.20 | 18 | 13.80 | 625.0 | withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 34 WPM)
+ clock | cw-2026-09-24-004027 | 2026-09-24 00:40:27 UTC | 9454080 | 66.61 | 68 | -36.61 | 600.0 | 22
+ clock | cw-2026-09-24-004108 | 2026-09-24 00:41:08 UTC | 11413920 | 40.83 | 41 | -10.83 | 625.0 | 22
+ clock | cw-2026-09-24-004133 | 2026-09-24 00:41:33 UTC | 12624960 | 25.23 | 25 | 4.77 | 625.0 | 22
+ clock | cw-2026-09-24-004205 | 2026-09-24 00:42:05 UTC | 14141760 | 31.60 | 32 | -1.60 | 625.0 | 22
+ clock | cw-2026-09-24-004234 | 2026-09-24 00:42:34 UTC | 15548160 | 29.30 | 29 | 0.70 | 625.0 | 22
+ clock | cw-2026-09-24-004322 | 2026-09-24 00:43:22 UTC | 17823360 | 47.40 | 48 | -17.40 | 630.0 | 22
+ clock | cw-2026-09-24-004347 | 2026-09-24 00:43:47 UTC | 19032480 | 25.19 | 25 | 4.81 | 630.0 | 22
+ clock | cw-2026-09-24-004405 | 2026-09-24 00:44:05 UTC | 19900800 | 18.09 | 18 | 11.91 | 630.0 | 22
+ clock | cw-2026-09-24-004427 | 2026-09-24 00:44:27 UTC | 20966400 | 22.20 | 22 | 7.80 | 625.0 | 21
+ clock | cw-2026-09-24-004510 | 2026-09-24 00:45:10 UTC | 23021760 | 42.82 | 43 | -12.82 | 600.0 | 24
+ clock | cw-2026-09-24-004535 | 2026-09-24 00:45:35 UTC | 24227520 | 25.12 | 25 | 4.88 | 600.0 | 24
+ clock | cw-2026-09-24-004550 | 2026-09-24 00:45:50 UTC | 24953760 | 15.13 | 15 | 14.87 | 625.0 | 22
+ 
+ COLD | each recording decoded alone from a cold start, as the captures type does
+ cold | cw-2026-09-24-003901 | bench | EII E T NHHK
+ cold | cw-2026-09-24-003901 | sidecar added since the capture before | E ET E E   E  E E  E  E E  E    E A TE E T N QNIK     EE
+ cold | cw-2026-09-24-003901 | sidecar text, whole | E ET E E   E  E E  E  E E  E    E A TE E T N QNIK     EE
+ cold | cw-2026-09-24-003901 | bench, each character | E@20.6 I@21.1 I@21.5 E@21.8 T@22.2 N@22.6 H@23.3 H@24.0 K@24.7
+ cold | cw-2026-09-24-003919 | bench | EITEETNXNIK       EANQNID        EANQNIK
+ cold | cw-2026-09-24-003919 | sidecar added since the capture before | EESIH S E E TEIE E RIEEE
+ cold | cw-2026-09-24-003919 | sidecar text, whole | E ET E E   E  E E  E  E E  E    E A TE E T N QNIK     EE      EESIH S E E TEIE E RIEEE
+ cold | cw-2026-09-24-003919 | bench, each character | E@4.4 I@4.9 T@5.2 E@5.3 E@5.6 T@6.0 N@6.4 X@7.1 N@7.5 I@7.8 K@8.5 E@14.4 A@14.9 N@15.3 Q@16.1 N@16.5 I@16.8 D@17.3 E@23.6 A@24.0 N@24.5 Q@25.3 N@25.6 I@25.9 K@26.5
+ cold | cw-2026-09-24-004027 | bench | QNE K  E E  2 G ■ 2G KA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q
+ cold | cw-2026-09-24-004027 | sidecar added since the capture before | EAN■IK  E  E   GJV GJV           EE E E   TESE E E I E E EEE EE ■IE E  E  EEEIE IEE   TET   E  E E EIE    E   E    E ET N MQNE K   E E     ■ 2G KA2GJ V QNK CAT WI 2TN H RK 5 I HRH CE
+ cold | cw-2026-09-24-004108 | bench | HR NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC
+ cold | cw-2026-09-24-004108 | sidecar added since the capture before | QENV U GE ANN DE KA2 G J V HR NR 2 0 R H X G K E 8 W G K 2 6 S T M W O H SEP 1 9 R
+ cold | cw-2026-09-24-004108 | sidecar text, whole | E ET E E   E  E E  E  E E  E    E A TE E T N QNIK     EE      EESIH S E E TEIE E RIEEE    EAN■IK  E  E   GJV GJV           EE E E   TESE E E I E E EEE EE ■IE E  E  EEEIE IEE   TET   E  E E EIE    E   E    E ET N MQNE K   E E     ■ 2G KA2GJ V QNK CAT WI 2TN H RK 5 I HRH CE QENV U GE ANN DE KA2 G J V HR NR 2 0 R H X G K E 8 W G K 2 6 S T M W O H SEP 1 9 R
+ cold | cw-2026-09-24-004108 | bench, each character | H@0.9 R@1.5 N@2.2 R@2.7 2@4.1 0@5.6 R@6.3 H@7.3 X@8.3 G@9.2 K@10.4 E@11.0 8@12.4 W@13.4 G@14.3 K@15.3 2@16.9 6@17.8 S@18.8 T@19.2 M@19.9 W@20.8 O@22.1 H@22.8 S@23.8 E@24.1 P@24.8 1@26.2 9@27.4 R@28.6 I@29.1 C@30.0
+ cold | cw-2026-09-24-004133 | bench | 1 9 R I C H ARTETE■E GEL K 0 D T AT 5 0 0 5 H ■ 8
+ cold | cw-2026-09-24-004133 | sidecar added since the capture before | I C H ARD D J UE G E L ■ 0 D G AT 5 0 0 5 H ■ 8
+ cold | cw-2026-09-24-004205 | bench | ■ EM M AHA NE 6 8 135 ■ EMAIR F JU G EL AT YAH OO DOE
+ cold | cw-2026-09-24-004205 | sidecar added since the capture before | 1 S T ■ EM M A HA NE 6 8 1 3 5 ■ E  MIRR F J U G E L AT Y A H O O D
+ cold | cw-2026-09-24-004234 | bench | E  C O M <BT> T HANTT TK■ET FOR ON HYPP N AIR QSO WITH W
+ cold | cw-2026-09-24-004234 | sidecar added since the capture before | O T C O M <BT> T HANK Y OU F ORR  O N H YP EN  UIR QSO WWIT
+ cold | cw-2026-09-24-004322 | bench | P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA
+ cold | cw-2026-09-24-004322 | sidecar added since the capture before | H W 1A M T 8 OH IOO N UR ING T HE A RRL S P O N S ORED A M ER I CA 2 5 9 OP ERA T I ON X ALL LOGS W
+ cold | cw-2026-09-24-004347 | bench | O G S W ILL BE UPLOADED TO ARRL L OOTW <BT> ANTHONY LUSN
+ cold | cw-2026-09-24-004347 | sidecar added since the capture before | ILL BE UPLOADED TO ARRL L OO TW <BT> ANTHONNY LU
+ cold | cw-2026-09-24-004405 | bench | T W <BT> A N T HONY LUSCRE K 8 Z T W1AW/88 ■OORDINAT
+ cold | cw-2026-09-24-004405 | sidecar added since the capture before | S CR ET T■ EK ETN<SK> 1 A W / 8  ■ O OR D IN
+ cold | cw-2026-09-24-004427 | bench | ■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2 G K88NET TU EAT
+ cold | cw-2026-09-24-004427 | sidecar added since the capture before | A T OR <AR> N  QSL T NX RE E C E DEWI2 G K88NET TH
+ cold | cw-2026-09-24-004510 | bench | 1U RLTT  S SB YAKYAK  E  KA2GJV TQNV AA3SB SE I
+ cold | cw-2026-09-24-004510 | sidecar added since the capture before | EAN EANQQNIKE E X   1U FLT   1U ERDT    REE S B YAKYAKK  E  KA2GJV TQNV AA3S B S
+ cold | cw-2026-09-24-004535 | bench | AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN 1 TH N B O TEI NANX K A3HT
+ cold | cw-2026-09-24-004535 | sidecar added since the capture before | E I F OK D N5 DN■ E E ET E D E E EE E TE E ES K ■ N 1 TH N B O TEI NANX K A E
+ cold | cw-2026-09-24-004550 | bench | I N 5 3RN 1 TH N B OTEI NANX K A3HB DE KA2 GJV HW ROBIN?   T
+ cold | cw-2026-09-24-004550 | sidecar added since the capture before | MHB DE KA2 GJV HW ROBIN?
+ 
+ STREAM | the session spliced into one stream and decoded once, from a cold start at its head
+ join | cw-2026-09-24-003901 | stream 0.00 to 30.00 s | first
+ join | cw-2026-09-24-003919 | stream 30.00 to 46.20 s | overlap found at 16.200 s into the one before, audioSeen said 16.200 s; 13.800 s dropped, 662400 of 662400 samples identical
+ join | cw-2026-09-24-004027 | stream 46.20 to 76.20 s | no overlap on audioSeen: 36.61 s never kept before it, a jump
+ join | cw-2026-09-24-004108 | stream 76.20 to 106.20 s | no overlap on audioSeen: 10.83 s never kept before it, a jump
+ join | cw-2026-09-24-004133 | stream 106.20 to 131.43 s | overlap found at 25.230 s into the one before, audioSeen said 25.230 s; 4.770 s dropped, 228960 of 228960 samples identical
+ join | cw-2026-09-24-004205 | stream 131.43 to 161.43 s | no overlap on audioSeen: 1.60 s never kept before it, a jump
+ join | cw-2026-09-24-004234 | stream 161.43 to 190.73 s | overlap found at 29.300 s into the one before, audioSeen said 29.300 s; 0.700 s dropped, 33600 of 33600 samples identical
+ join | cw-2026-09-24-004322 | stream 190.73 to 220.73 s | no overlap on audioSeen: 17.40 s never kept before it, a jump
+ join | cw-2026-09-24-004347 | stream 220.73 to 245.92 s | overlap found at 25.190 s into the one before, audioSeen said 25.190 s; 4.810 s dropped, 230880 of 230880 samples identical
+ join | cw-2026-09-24-004405 | stream 245.92 to 264.01 s | overlap found at 18.090 s into the one before, audioSeen said 18.090 s; 11.910 s dropped, 571680 of 571680 samples identical
+ join | cw-2026-09-24-004427 | stream 264.01 to 286.21 s | overlap found at 22.200 s into the one before, audioSeen said 22.200 s; 7.800 s dropped, 374400 of 374400 samples identical
+ join | cw-2026-09-24-004510 | stream 286.21 to 316.21 s | no overlap on audioSeen: 12.82 s never kept before it, a jump
+ join | cw-2026-09-24-004535 | stream 316.21 to 341.33 s | overlap found at 25.120 s into the one before, audioSeen said 25.120 s; 4.880 s dropped, 234240 of 234240 samples identical
+ join | cw-2026-09-24-004550 | stream 341.33 to 356.46 s | overlap found at 15.130 s into the one before, audioSeen said 15.130 s; 14.870 s dropped, 713760 of 713760 samples identical
+ stream | cw-2026-09-24-003901 | 0.00 to 30.00 s | EII E T NHHK
+ stream | cw-2026-09-24-003919 | 30.00 to 46.20 s | UIEH EE E E T I  NIEEE E         E ET N ■IK
+ stream | cw-2026-09-24-004027 | 46.20 to 76.20 s | QNE K  E E  2 G ■ ■G KA2GJV QNK CAT WWI2TN HRK 5 I HRHCE Q
+ stream | cw-2026-09-24-004108 | 76.20 to 106.20 s | HR NA 2 0 R H X G K E 8 W GK 2 6 STM W OH SEP19 E C
+ stream | cw-2026-09-24-004133 | 106.20 to 131.43 s | HARD D 2UGEL  K 0 D G AT 5 0 0 5 H ■ 8
+ stream | cw-2026-09-24-004205 | 131.43 to 161.43 s | ■ ■ EM MAHA NE 6 8135 ■ EMIRR R J U G E L AT Y A H OO DO
+ stream | cw-2026-09-24-004234 | 161.43 to 190.73 s | T COM<BT> THANK YOU FOR ON HTKPHEN UIR QSO WITH W
+ stream | cw-2026-09-24-004322 | 190.73 to 220.73 s | SP ONSORED AMERICEU 25 9 TTTPERATION X ALL LOGS WIL
+ stream | cw-2026-09-24-004347 | 220.73 to 245.92 s | L BE UPLOADED TO AETRRUE L OTW <BT> ANTHONY LUS
+ stream | cw-2026-09-24-004405 | 245.92 to 264.01 s | CRE K 8 Z T <SK>■T■TDD88 ■OOR DINAT
+ stream | cw-2026-09-24-004427 | 264.01 to 286.21 s | OR <AR>N KSL TNXBRE C E DEWI2 G K88NET TH EAT
+ stream | cw-2026-09-24-004510 | 286.21 to 316.21 s | 1U RLTT  I  SB YAKYAKK     KA2GJV T QNV AA3SB SE I
+ stream | cw-2026-09-24-004535 | 316.21 to 341.33 s | FOK DN5 DN■ EEETEDEEEEETEEESK■D 1 TIE N TI OTEI TMTNX K AA MH
+ stream | cw-2026-09-24-004550 | 341.33 to 356.46 s | B DE KA2 GJV HW ROBIN?
+ stream30 | 0 to 30 s | EII E T NHHK
+ stream30 | 30 to 60 s | UIEH EE E E T I  NIEEE E         E ET N ■IK     QNE K  E E  2 G ■ ■G KA2G
+ stream30 | 60 to 90 s | JV QNK CAT WWI2TN HRK 5 I HRHCE Q  HR NA 2 0 R H X G K E 8 W
+ stream30 | 90 to 120 s | GK 2 6 STM W OH SEP19 E CHARD D 2UGEL  K 0 D G
+ stream30 | 120 to 150 s | AT 5 0 0 5 H ■ 8 ■ ■ EM MAHA NE 6 8135 ■ EMIRR R
+ stream30 | 150 to 180 s | J U G E L AT Y A H OO DOT COM<BT> THANK YOU FOR ON HTK
+ stream30 | 180 to 210 s | PHEN UIR QSO WITH W SP ONSORED AMERICEU 25 9 TTTPERATI
+ stream30 | 210 to 240 s | ON X ALL LOGS WILL BE UPLOADED TO AETRRUE L OTW <BT> ANT
+ stream30 | 240 to 270 s | HONY LUSCRE K 8 Z T <SK>■T■TDD88 ■OOR DINATOR <AR>N KSL
+ stream30 | 270 to 300 s | TNXBRE C E DEWI2 G K88NET TH EAT  1U RLTT  I  SB YAKYA
+ stream30 | 300 to 330 s | KK     KA2GJV T QNV AA3SB SE IFOK DN5 DN■ EEETEDEEEEETEEESK■
+ stream30 | 330 to 360 s | D 1 TIE N TI OTEI TMTNX K AA MHB DE KA2 GJV HW ROBIN?
+ stream | whole | EII E T NHHK         UIEH EE E E T I  NIEEE E         E ET N ■IK     QNE K  E E  2 G ■ ■G KA2GJV QNK CAT WWI2TN HRK 5 I HRHCE Q  HR NA 2 0 R H X G K E 8 W GK 2 6 STM W OH SEP19 E CHARD D 2UGEL  K 0 D G AT 5 0 0 5 H ■ 8 ■ ■ EM MAHA NE 6 8135 ■ EMIRR R J U G E L AT Y A H OO DOT COM<BT> THANK YOU FOR ON HTKPHEN UIR QSO WITH W SP ONSORED AMERICEU 25 9 TTTPERATION X ALL LOGS WILL BE UPLOADED TO AETRRUE L OTW <BT> ANTHONY LUSCRE K 8 Z T <SK>■T■TDD88 ■OOR DINATOR <AR>N KSL TNXBRE C E DEWI2 G K88NET TH EAT  1U RLTT  I  SB YAKYAKK     KA2GJV T QNV AA3SB SE IFOK DN5 DN■ EEETEDEEEEETEEESK■D 1 TIE N TI OTEI TMTNX K AA MHB DE KA2 GJV HW ROBIN?
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 55.2673 Seconds
+RC=0 WALL=56s

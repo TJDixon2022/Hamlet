@@ -1,0 +1,7 @@
+unit429 task 1: the opening on the bench and live (7.3) - WhatTheOpeningHeardTests.TheOpeningOnTheBenchAndLive, a fact that asserts nothing: each of the 14 session recordings decoded cold beside its sidecar text, and the session spliced into one stream on the sidecars' audioSeen clock with every overlap found sample for sample
+
+Cold, the bench does not reproduce the opening: 003901 reads nothing for 20 s and then EII E T NHHK, where live read E ET E E ... QNIK; 003919 cold reads the repeated call as EITEETNXNIK EANQNID EANQNIK. 004108 cold reads HR NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC, as live did.
+
+Spliced, the stream does: over 003919's new 16.2 s, carried warm from 003901, it reads UIEH EE E E T I NIEEE E ... E ET N IK, beside live's EESIH S E E TEIE E RIEEE, on the very audio the cold decode reads as EANQNIK. Every join matched every sample at the offset audioSeen predicts; 003901 and 003919 overlap 13.80 s on that clock, 12 s on the captured stamps. Six joins are jumps over audio never kept, 36.6 s the longest. The continuous stream is not dropped; task 2 traces it.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
