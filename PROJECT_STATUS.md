@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 439 - the marks are joined across gaps no sender makes
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T12:58:59-04:00
-NOTE: Record written, version 1.13.125, no live chain found; committing the launcher files and starting the entry build
+UPDATED: 2026-09-25T13:27:33-04:00
+NOTE: Entry round done, identical to unit 438 exit; committing task 0, then reading WhereTheTriggerCuts for the trace
 
 ---
 
