@@ -1,0 +1,3 @@
+unit437 task 2: the build (7.4) - CwProbabilisticStream keeps the raw audio behind its window, 12 s and the integrator's length, and when ToneHz stands RemixFromHz 25 or more from the pitch the held window was last mixed at, re-mixes the mixed arms and every envelope hop at the new pitch with the same taper and integrator before the next hop; when and where the mix moves, the hop count, refill guard, read cadence, settled mark, speed choice, estimator, tracker, survey and CwDecoder untouched. Not yet judged
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
