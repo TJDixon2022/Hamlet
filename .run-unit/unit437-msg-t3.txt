@@ -1,0 +1,3 @@
+unit437 task 3: exit round - build 0 errors; engine 178 of 178; app 274 of 278, all four the dispatcher-loop loss and both types green alone; captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13; 165 over 565, 17 added, 8 single; WhatTheOpeningHeardTests 22 of 22; every figure identical to entry; transmit files nothing against 7e209cb4, tracker, survey, decoder and estimator nothing against entry, all of src and data nothing; TheUnitIsMeasuredNotSearchedTests 4 of 5, the plateau red standing at entry and parked in section 4; 7.4 not ticked; output.md
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
