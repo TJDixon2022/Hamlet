@@ -1,18 +1,21 @@
 #!/bin/sh
-# unit 430 - the exit round against the entry: rows, keyed totals, the adjudicated readings, the source diff.
+# unit 430 - the exit round against the entry: rows, keyed totals, adjudicated, strays, the opening, the source.
 cd /c/Source/HamLet || exit 1
 R=.run-unit/unit430
+F="Total time|RC=|WALL|elapsed|\[[0-9.]+ m?s\]|Duration|\[xUnit.net|\[[0-9]+ m [0-9]+ s\]|\[[0-9]+ m\]"
 echo "== rows, entry against exit"
 sh $R-cmprows.sh entry exit | grep -E "^count|ABOVE|CHECK"
-echo "== keyed and baseline totals at exit"
-grep -hE "total bench|total live|^\s*total \||^\s*outside \|" $R-keyed-exit.txt $R-baseline-exit.txt
-echo "== keyed and baseline, entry against exit, timing lines left out"
-grep -hvE "Total time|RC=|WALL|elapsed|\[[0-9.]+ m?s\]|Duration" $R-keyed-entry.txt $R-baseline-entry.txt > $R-cmp-keyed-a.tmp
-grep -hvE "Total time|RC=|WALL|elapsed|\[[0-9.]+ m?s\]|Duration" $R-keyed-exit.txt $R-baseline-exit.txt > $R-cmp-keyed-b.tmp
-diff $R-cmp-keyed-a.tmp $R-cmp-keyed-b.tmp | head -20
-echo "== adjudicated, entry against exit, timing lines left out"
-grep -hvE "Total time|RC=|WALL|elapsed|\[[0-9.]+ m?s\]|Duration" $R-adjudicated-entry.txt > $R-cmp-adj-a.tmp
-grep -hvE "Total time|RC=|WALL|elapsed|\[[0-9.]+ m?s\]|Duration" $R-adjudicated-exit.txt > $R-cmp-adj-b.tmp
-diff $R-cmp-adj-a.tmp $R-cmp-adj-b.tmp | head -20
+echo "== keyed and added at exit"
+grep -h "check | read here" $R-strays-exit.txt
+sh $R-added.sh exit
+for T in keyed baseline adjudicated strays captures named
+do
+  grep -hvE "$F" $R-$T-entry.txt > $R-cmp-a.tmp
+  grep -hvE "$F" $R-$T-exit.txt > $R-cmp-b.tmp
+  echo "== $T, entry against exit, timing lines left out: $(diff $R-cmp-a.tmp $R-cmp-b.tmp | wc -l) diff lines"
+  diff $R-cmp-a.tmp $R-cmp-b.tmp | head -6
+done
+echo "== the opening at exit"
+LC_ALL=C.UTF-8 sh $R-opening.sh unit430-type-exit-WhatTheOpeningHeardTests.txt
 echo "== source"
 sh $R-srcdiff.sh

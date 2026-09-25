@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 2 of 3
+STATE: COMPLETED
+TASK: TASK 3 of 3
 WORK_INSTRUCTION: 430 - the mix that walked off the sender
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T02:08:43-04:00
-NOTE: Pitch types round t2v: CwDisplacementFloorTests alone, 13 of 13
+UPDATED: 2026-09-25T02:37:48-04:00
+NOTE: Unit 430 complete and pushed: the mix left the sender because the survey admitted a weak 525 twice in his pause and the tracker switched; a mixdown wait cured the opening and cut keyed edits to 149, but cost 032113 three characters, so it and its variant were reverted; 7.4 not ticked; output.md written
 
 ---
 

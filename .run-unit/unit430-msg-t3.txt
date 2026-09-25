@@ -1,0 +1,5 @@
+unit430 task 3: exit round, 7.4 not ticked - Hamlet.sln non-incremental with warnings as errors, 0 warnings; engine 178 of 178; app 275 of 278, the three dispatcher-loop losses TheFavoritesAreChipsTests 4 of 4 alone; captures 51 of 51, every row as at entry; adjudicated 13 of 13; keyed floors 13 of 13; 165 over 565; 17 added, 8 single; WhatTheOpeningHeardTests 9 of 9; the pitch types as at entry, AHeldPitchDoesNotOutliveItsEvidenceTests 1 of 4 there too; src and data nothing against 003f2c98, transmit files nothing against 7e209cb4; output.md
+
+Both 7.4 attempts, the change and its narrower variant, cured the opening on the spliced stream (EANQNID EAN, placeholder, IK where it read UIEH EE E E T I NIEEE E) and lowered the keyed total to 149 and 153, and both failed 3.2's second and fourth tests on cw-2026-08-22-032113, 47 to 44 named, and were taken back out. 7.4's first unit of three with no kept change.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
