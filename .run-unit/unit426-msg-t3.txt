@@ -1,0 +1,41 @@
+unit426 task 3: the preamp follows the flag, and the voices agree (7.8) - ReceiverSetup.FollowOverloadAsync writes preamp off once after 4 live readings of overloading (about 1 s at the measured 252.9 ms cadence) and the band's value back once after 20 of quiet (about 5 s), and leaves it off until the next tune-in if the overload returns within 20 readings of it going back on; never while transmitting or with the transmit flag unread, only while the block states the preamp, never over his hand; MainWindowViewModel.ApplyRigState hands it each fresh reading; ReceiveAdvice.Gain compares on the read's scale; the owned overload sentence says where the preamp is and why; task 2's tests green, 7 of 7
+
+The hold and the cadence: MeasureTheLivePollCadence times the live pass, 7 fields then the
+plan's 250 ms, at 252.9 ms median (249.9 to 265.8) against the scripted radio, with 14 ms of
+wire a pass on the IC-7300 by PollBudgetTests' 2 ms a read. OverloadHoldReadings 4, about 1 s;
+ClearHoldReadings 20, about 5 s, which is also the relapse window. The drop candidate, the
+band's value written back on clear, is built and not dropped.
+
+One decider: the follow is in ReceiverSetup, which owns the preamp; it replaces the preamp's
+result in the tune-in's list, so the setup's clause, the advice and the overload sentence
+read what the radio holds. It reads before writing and after, remembers what it wrote, and
+narrates each write; a hand found at write time is said in the setup's words and stops the
+follow. The app counts each Overflow reading once, waits out a tune-in or another follow on
+the bus, drops a result a newer tune-in has overtaken, and re-reads the preamp at once
+rather than at the 30 s sweep.
+
+Task 1's trace again, before (task 1, 5200a490) and after:
+- preamp writes after the tune-in on a live overload at each of the six frequencies: 0 -> 1
+  off, then 1 back to the band's value on clear; at point 4, after his hand: 0 -> 0.
+- sentences asking him to change a field Hamlet set and still owns, all nine fields, every
+  point: 0 -> 0.
+- asking him to change a field Hamlet left and no longer owns, once he has moved on: 60 ->
+  12. RF gain 48 -> 0 (the false 39 percent is now read as 100 percent, already open);
+  preamp 12 -> 0 (the preamp is off, so P.AMP/ATT is no longer asked for it); attenuator
+  0 -> 12 (with the preamp now off, the overload sentence outside an owned block names the
+  attenuator as the next thing to try - true, on a field no tune-in owns there, and the
+  attenuator's write and sentence are P14 and P24's, so it is reported and left).
+
+Other changes: RigWriteTests' four RF gain readings move onto the read's scale their own texts
+state (107 "42%" -> 42, 255 "100%" -> 100), since the real decode is the percent; the tests'
+assertions are unchanged. ThePreampFollowsTheOverloadTests gains the hold, the relapse, a
+block that does not state the preamp, and an unread transmit flag, 7 of 7.
+
+Every Rig type, 47 types, 351 of 351. OneVoiceOnThePreampTests 16/16,
+WhatIsSaidAboutThePreampTests 1/1, TheOverloadSentenceLeavesTheModesFieldsTests 4/4,
+TheOverloadSentenceSaysWhereThePreampIsTests 2/2, TheFrontEndIsOnThePanelTests 6/6,
+HowMuchTheApplicationSaysTests 5/5, BindingHealthTests 1/1,
+WhichPathsPutNarrationOnTheBarTests 6/6, TheStatusBarStopsLecturingTests 4/4,
+WhatElseIsComposedAtRuntimeTests 1/1, RigDiagnosticsTests 10/10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

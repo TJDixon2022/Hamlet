@@ -112,6 +112,44 @@ public sealed record ReceiverSetupMemory(IReadOnlyDictionary<RigField, int> Last
 }
 
 /// <summary>
+/// Where the preamp's overload follow stands between one tune-in and the next (HM-DEC-179).
+/// </summary>
+/// <param name="Overloading">The last `Overflow` reading counted, or null where none is.</param>
+/// <param name="Readings">How many readings in a row have said that.</param>
+/// <param name="OffForOverload">Hamlet turned the preamp off for an overload and has not put it back.</param>
+/// <param name="SinceRestored">
+/// Readings since Hamlet put the band's value back, or null where it has not.
+/// </param>
+/// <param name="Stopped">
+/// Nothing more is followed until the next tune-in: his hand moved it, a write went
+/// unconfirmed, or the overload came back once the preamp was back on.
+/// </param>
+/// <remarks>
+/// **IT STARTS AFRESH AT EVERY TUNE-IN**, as the memory's claim on a field does at every
+/// band change: somebody who took the preamp over on one block did not mean it forever.
+/// </remarks>
+public sealed record PreampFollow(
+    bool? Overloading, int Readings, bool OffForOverload, int? SinceRestored, bool Stopped)
+{
+    /// <summary>A follow nothing has happened to yet.</summary>
+    public static PreampFollow Fresh { get; } = new(null, 0, false, null, false);
+}
+
+/// <summary>What one live reading did to the preamp's follow.</summary>
+/// <param name="Follow">Where the follow stands now.</param>
+/// <param name="Memory">What Hamlet last set, with any follow write remembered.</param>
+/// <param name="Results">
+/// The tune-in's results with the preamp's replaced by what the follow found, or the same
+/// list where nothing changed.
+/// </param>
+/// <param name="Said">What to narrate, or "" where nothing happened worth saying.</param>
+public sealed record PreampFollowStep(
+    PreampFollow Follow,
+    ReceiverSetupMemory Memory,
+    IReadOnlyList<ConditionResult> Results,
+    string Said);
+
+/// <summary>
 /// Sets what would otherwise stop the operator hearing the block he has just
 /// tuned into, and nothing else.
 /// </summary>
@@ -124,6 +162,10 @@ public sealed record ReceiverSetupMemory(IReadOnlyDictionary<RigField, int> Last
 /// fighting the knob. Arriving somewhere new is an explicit act and
 /// re-establishing what is needed to hear the block is part of arriving; doing
 /// it again two seconds later is an app that will not let go.</para>
+/// <para>**WITH ONE EXCEPTION, THE PREAMP ON AN OVERLOAD** (HM-DEC-179,
+/// <see cref="FollowOverloadAsync"/>): the radio's manual turns the preamp off while
+/// strong signals overload the front end, and a band can start doing that after he
+/// has tuned in. Nothing else is followed, and his hand still wins.</para>
 /// <para>**AND IT CHANGES ONLY WHAT WOULD GET IN THE WAY.** A control already
 /// correct is not written and is not narrated. Setting the whole family every
 /// time would override deliberate, skilled choices the operator made for reasons
@@ -319,6 +361,253 @@ public static class ReceiverSetup
             .Select(r => r.Condition.Field)
             .OfType<RigField>()
             .ToHashSet();
+    }
+
+    /// <summary>
+    /// Consecutive live readings of overloading before the preamp goes off.
+    /// </summary>
+    /// <remarks>
+    /// **FROM THE MEASURED CADENCE** (work instruction 426): the live pass brings a fresh
+    /// `Overflow` reading every 252.9 ms median against the scripted radio, plus about
+    /// 14 ms of wire a pass on the IC-7300 at 19200 baud, so four readings is about one
+    /// second. Long enough that a single loud burst does not flip a switch on the radio,
+    /// short enough that he is not left listening to a squashed passband.
+    /// </remarks>
+    public const int OverloadHoldReadings = 4;
+
+    /// <summary>
+    /// Consecutive live readings of no overload before the band's value goes back.
+    /// </summary>
+    /// <remarks>
+    /// Twenty readings, about five seconds at the same cadence: slower back than off,
+    /// because an overload that comes and goes costs him the passband each time it
+    /// returns. It is also the relapse window: if the overload comes back and holds
+    /// within this many readings of the preamp going back on, the preamp goes off and
+    /// stays off until the next tune-in.
+    /// </remarks>
+    public const int ClearHoldReadings = 20;
+
+    /// <summary>
+    /// Follow the front end's overload flag with the preamp, between tune-ins (HM-DEC-179).
+    /// </summary>
+    /// <param name="rig">The radio.</param>
+    /// <param name="polled">What the live poll read, fresh: one call per `Overflow` reading.</param>
+    /// <param name="lastSetup">What the last tune-in did, as the app holds it.</param>
+    /// <param name="memory">What Hamlet last set.</param>
+    /// <param name="follow">Where the follow stands.</param>
+    /// <param name="cancellationToken">Cancellation.</param>
+    /// <returns>Where it stands now, and anything to narrate.</returns>
+    /// <remarks>
+    /// <para>**THE ONE WRITE HM-DEC-179 LICENSES OUTSIDE A TUNE-IN, AND ITS FIVE
+    /// LIMITS.** The preamp field only; triggered only by the polled `Overflow` flag;
+    /// only while the last tune-in's block states the preamp with an overload rule;
+    /// never while the radio is transmitting, or while it will not say whether it is;
+    /// and never after his hand has moved the preamp since Hamlet last set it, which
+    /// stops the follow until the next tune-in.</para>
+    /// <para>**OFF ON AN OVERLOAD THAT HOLDS, BACK ON ONE THAT HAS CLEARED**, each once:
+    /// <see cref="OverloadHoldReadings"/> readings of overloading write off, and
+    /// <see cref="ClearHoldReadings"/> of quiet write the band's own value back. An
+    /// overload that returns within <see cref="ClearHoldReadings"/> of the preamp going
+    /// back on puts it off until the next tune-in, because a preamp that brings the
+    /// overload back is the preamp the manual says to leave off.</para>
+    /// <para>**READ BEFORE WRITE, READ BACK AFTER** (HM-DEC-084), exactly as at the
+    /// tune-in, and a value already right is not rewritten.</para>
+    /// </remarks>
+    public static async Task<PreampFollowStep> FollowOverloadAsync(
+        IRig rig,
+        RigState polled,
+        IReadOnlyList<ConditionResult> lastSetup,
+        ReceiverSetupMemory memory,
+        PreampFollow follow,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(rig);
+        ArgumentNullException.ThrowIfNull(polled);
+        ArgumentNullException.ThrowIfNull(lastSetup);
+        ArgumentNullException.ThrowIfNull(memory);
+        ArgumentNullException.ThrowIfNull(follow);
+
+        var unchanged = new PreampFollowStep(follow, memory, lastSetup, "");
+
+        if (follow.Stopped)
+        {
+            return unchanged;
+        }
+
+        var index = -1;
+        for (var i = 0; i < lastSetup.Count; i++)
+        {
+            if (lastSetup[i].Condition is { Field: RigField.Preamp, WhenOverloading: not null })
+            {
+                index = i;
+                break;
+            }
+        }
+
+        // **ONLY WHILE THE BLOCK OWNS IT.** A block that does not state the preamp, or
+        // states it without an overload rule, is not one Hamlet follows in.
+        if (index < 0)
+        {
+            return unchanged;
+        }
+
+        var tuneIn = lastSetup[index];
+        var condition = tuneIn.Condition;
+
+        // **ONLY WHAT THE TUNE-IN LEFT RIGHT.** A preamp the tune-in found in his hand,
+        // could not read or could not confirm is not one Hamlet has a value for to follow.
+        // A follow write replaces this result with its own, and one that finds his hand
+        // or goes unconfirmed stops the follow, so this reads the tune-in's word only.
+        if (tuneIn.Outcome is not (ConditionOutcome.AlreadyRight or ConditionOutcome.Changed))
+        {
+            return unchanged with { Follow = follow with { Stopped = true } };
+        }
+
+        // **NEVER WHILE TRANSMITTING**, and a transmit flag nobody has read is not a
+        // licence either. The hold starts again once it is receiving.
+        if (polled[RigField.TransmitStatus] is not { IsKnown: true, Number: 0 })
+        {
+            return unchanged with { Follow = follow with { Overloading = null, Readings = 0 } };
+        }
+
+        if (polled[RigField.Overflow] is not { IsKnown: true, Number: { } flag })
+        {
+            return unchanged with { Follow = follow with { Overloading = null, Readings = 0 } };
+        }
+
+        var overloading = flag > 0;
+        var next = follow with
+        {
+            Overloading = overloading,
+            Readings = follow.Overloading == overloading ? follow.Readings + 1 : 1,
+            SinceRestored = follow.SinceRestored + (follow.SinceRestored is null ? 0 : 1),
+        };
+
+        if (overloading && !next.OffForOverload && next.Readings >= OverloadHoldReadings)
+        {
+            var relapse = next.SinceRestored is { } since && since <= ClearHoldReadings;
+
+            return await WriteFollowAsync(
+                rig, lastSetup, index, memory, next,
+                next with { OffForOverload = true, SinceRestored = null, Stopped = relapse },
+                condition.WhenOverloading!.Value,
+                relapse
+                    ? "I turned the preamp off again because the radio's front end started overloading "
+                      + "again once it was back on, and the radio's manual has the preamp off with strong "
+                      + "signals. I am leaving it off until you next tune in."
+                    : "I turned the preamp off because the radio says its front end is overloading, and "
+                      + "the radio's manual has the preamp off with strong signals.",
+                cancellationToken).ConfigureAwait(false);
+        }
+
+        if (!overloading && next.OffForOverload && next.Readings >= ClearHoldReadings)
+        {
+            // The band's own value, from the row's stretches at the dial the poll read.
+            // A dial the poll did not read, or one in no stretch, is not a licence to guess.
+            if (polled[RigField.Frequency] is not { IsKnown: true, Number: { } hz }
+                || condition.Bands.FirstOrDefault(b => b.Contains((long)hz)) is not { } stretch)
+            {
+                return unchanged with { Follow = next };
+            }
+
+            return await WriteFollowAsync(
+                rig, lastSetup, index, memory, next,
+                next with { OffForOverload = false, SinceRestored = 0 },
+                stretch.Wanted,
+                $"I set the preamp back to preamp {stretch.Wanted} because the radio's front end has "
+                + "stopped overloading, and that is what the radio's manual gives for this band.",
+                cancellationToken).ConfigureAwait(false);
+        }
+
+        return unchanged with { Follow = next };
+    }
+
+    // One follow write: read, his hand first, a value already right left alone, write,
+    // read back. The preamp's result in the tune-in's list is replaced so every voice
+    // that reads the list reads what the radio holds now.
+    private static async Task<PreampFollowStep> WriteFollowAsync(
+        IRig rig,
+        IReadOnlyList<ConditionResult> lastSetup,
+        int index,
+        ReceiverSetupMemory memory,
+        PreampFollow notWritten,
+        PreampFollow next,
+        int wanted,
+        string said,
+        CancellationToken cancellationToken)
+    {
+        var condition = lastSetup[index].Condition;
+
+        IReadOnlyList<ConditionResult> With(ConditionResult result)
+        {
+            var list = lastSetup.ToList();
+            list[index] = result;
+            return list;
+        }
+
+        var before = (await rig
+            .ReadAsync(RigField.Preamp, RigState.Empty, cancellationToken)
+            .ConfigureAwait(false))
+            .FirstOrDefault(v => v.Field == RigField.Preamp);
+
+        if (before is not { IsKnown: true, Number: { } reading })
+        {
+            // Not knowing is not a licence to write; the follow tries again on the next
+            // reading that calls for it.
+            return new PreampFollowStep(notWritten, memory, lastSetup, "");
+        }
+
+        var now = (int)reading;
+
+        // **HIS HAND WINS** (HM-DEC-056, HM-DEC-179): moved since Hamlet last set it, so it
+        // is his until the next tune-in, and he is told so in the setup's own words.
+        if (memory.MovedByHandSince(RigField.Preamp, now))
+        {
+            var his = new ConditionResult(
+                condition, ConditionOutcome.LeftToTheOperator, before.Text, before.Text);
+
+            return new PreampFollowStep(
+                notWritten with { Stopped = true }, memory, With(his),
+                ReceiverSetupVoice.Say(new[] { his }));
+        }
+
+        if (now == wanted)
+        {
+            return new PreampFollowStep(
+                next, memory.Remember(RigField.Preamp, now),
+                With(new ConditionResult(condition, ConditionOutcome.AlreadyRight, before.Text, before.Text, before.AtUtc)),
+                "");
+        }
+
+        var write = CivWrites.All.First(w => w.Field == RigField.Preamp);
+        var result = await rig
+            .SetSettingAsync(write, wanted, cancellationToken)
+            .ConfigureAwait(false);
+
+        var after = result.Worked
+            ? (await rig
+                .ReadAsync(RigField.Preamp, RigState.Empty, cancellationToken)
+                .ConfigureAwait(false))
+                .FirstOrDefault(v => v.Field == RigField.Preamp)
+            : result.ReadBack;
+
+        if (!result.Worked || after is not { IsKnown: true, Number: { } settled } || (int)settled != wanted)
+        {
+            // One write, not a retry loop: what the radio holds is said as unconfirmed,
+            // and the follow stops until the next tune-in.
+            var unconfirmed = new ConditionResult(
+                condition, ConditionOutcome.NotConfirmed, before.Text,
+                after?.IsKnown == true ? after.Text : null, after?.IsKnown == true ? after.AtUtc : null);
+
+            return new PreampFollowStep(
+                next with { Stopped = true }, memory, With(unconfirmed),
+                ReceiverSetupVoice.Say(new[] { unconfirmed }));
+        }
+
+        return new PreampFollowStep(
+            next, memory.Remember(RigField.Preamp, wanted),
+            With(new ConditionResult(condition, ConditionOutcome.Changed, before.Text, after.Text, after.AtUtc)),
+            said);
     }
 
     /// <summary>What a conditional row wants right now, or null if it cannot say.</summary>

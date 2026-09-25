@@ -89,6 +89,18 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What Hamlet last set on the receive side (work instruction 042).</summary>
     private ReceiverSetupMemory _receiverMemory = ReceiverSetupMemory.Empty;
 
+    /// <summary>Where the preamp's overload follow stands since the last tune-in (HM-DEC-179).</summary>
+    private PreampFollow _preampFollow = PreampFollow.Fresh;
+
+    /// <summary>The `Overflow` reading last handed to the follow, so each is counted once.</summary>
+    private DateTime? _overflowFollowedAtUtc;
+
+    /// <summary>True while a follow write is on the bus, so two never overlap.</summary>
+    private bool _followingTheOverload;
+
+    /// <summary>True while a tune-in's setup is on the bus, which the follow waits out.</summary>
+    private bool _receiverSetupRunning;
+
     /// <summary>
     /// The block whose conditions have been established, by its lower edge.
     /// </summary>
@@ -9082,13 +9094,25 @@ public partial class MainWindowViewModel : ObservableObject
         // preamp, telling him to press P.AMP/ATT is a second voice on a knob the
         // setup just decided, which is the complaint Tim heard at the radio. The
         // overload is still said; the knob is left to the setup.
+        //
+        // **AND IT SAYS WHERE THE PREAMP IS AND WHY** (HM-DEC-179, work instruction 426).
+        // Since the preamp follows the overload after the tune-in, "set by this mode when
+        // you tune in" was no longer the whole account of it: it said so while the preamp
+        // read on through an overload the row turns it off for. The attenuator is still
+        // set at the tune-in only.
         if (frontEndOwned)
         {
             return "The radio says its front end is overloading, which means the signal "
                 + "coming in is stronger than the receiver can handle and everything in "
                 + "the passband is being squashed together. Nothing will decode until that "
-                + "stops. The preamp and the attenuator are set by this mode when you tune "
-                + "in, so Hamlet is not asking you to change them here.";
+                + "stops. "
+                + (preampIsOn
+                    ? "The preamp is on, and Hamlet turns it off itself once the overload "
+                      + "holds, unless you have set the preamp yourself since Hamlet last did. "
+                    : "The preamp is off, which is where the radio's manual has it while the "
+                      + "front end is overloading. ")
+                + "This mode sets the attenuator when you tune in, so Hamlet is not asking "
+                + "you to change either of them here.";
         }
 
         if (preampIsOn)
@@ -10985,6 +11009,11 @@ public partial class MainWindowViewModel : ObservableObject
         var attenuator = state[RigField.Attenuator];
 
         FrontEndIsOverloading = overflow is { IsKnown: true, Number: 1 };
+
+        // **AND NOW SOMETHING ACTS ON IT** (HM-DEC-179, work instruction 426). This line
+        // was the only reader of the live flag, and a band that started overloading after
+        // the tune-in left the preamp on against the radio's manual (P22).
+        FollowTheOverload(state);
 
         // **THE RADIO'S OWN WORD FOR BOTH OF THESE IS "off"**, so the chip read
         // `off · off` and said that two things were off without saying which two.
@@ -13994,11 +14023,17 @@ public partial class MainWindowViewModel : ObservableObject
         // block is marked as done either way so a settled dial is quiet.
         _conditionsSetForBlockHz = here.LowHz;
 
+        // **THE OVERLOAD FOLLOW STARTS AFRESH AT EVERY TUNE-IN** (HM-DEC-179), so a
+        // preamp he took over on one block is followed again on the next.
+        _preampFollow = PreampFollow.Fresh;
+
         if (conditions.Count == 0)
         {
             LastReceiverSetup = Array.Empty<ConditionResult>();
             return;
         }
+
+        _receiverSetupRunning = true;
 
         try
         {
@@ -14008,6 +14043,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             _receiverMemory = memory;
             LastReceiverSetup = results;
+            _preampFollow = PreampFollow.Fresh;
 
             // **HE IS TOLD WHAT CHANGED AND WHY** (work instruction 042 task 4),
             // **AND SINCE 2026-09-08 HE IS TOLD ON HOVER** (work instruction 282
@@ -14036,6 +14072,82 @@ public partial class MainWindowViewModel : ObservableObject
         catch (Exception ex)
         {
             StatusText = $"Hamlet could not set the receiver up: {ex.Message}";
+        }
+        finally
+        {
+            _receiverSetupRunning = false;
+        }
+    }
+
+    /// <summary>
+    /// Hand a fresh `Overflow` reading to the preamp's overload follow (HM-DEC-179).
+    /// </summary>
+    /// <param name="state">What the live poll read.</param>
+    /// <remarks>
+    /// <para>**THE ONE WRITE OUTSIDE A TUNE-IN, DECIDED IN THE ONE PLACE THAT OWNS THE
+    /// PREAMP.** Every limit is <see cref="ReceiverSetup.FollowOverloadAsync"/>'s: the
+    /// preamp only, on the flag only, while the block owns it, never while transmitting,
+    /// and never over his hand. This only makes sure it is asked once per reading, never
+    /// while a tune-in or another follow write is on the bus, and that a tune-in that
+    /// finished meanwhile is not overwritten by what the follow started from.</para>
+    /// <para>Never-throw discipline (§8): a follow that could not run is a sentence.</para>
+    /// </remarks>
+    private async void FollowTheOverload(RigState state)
+    {
+        if (_rig is not { } rig
+            || _followingTheOverload
+            || _receiverSetupRunning
+            || _settingModeOurselves
+            || state[RigField.Overflow].AtUtc is not { } at
+            || at == _overflowFollowedAtUtc)
+        {
+            return;
+        }
+
+        _overflowFollowedAtUtc = at;
+        _followingTheOverload = true;
+
+        var setup = LastReceiverSetup;
+
+        try
+        {
+            var step = await ReceiverSetup
+                .FollowOverloadAsync(rig, state, setup, _receiverMemory, _preampFollow)
+                .ConfigureAwait(true);
+
+            if (!ReferenceEquals(setup, LastReceiverSetup))
+            {
+                return;
+            }
+
+            _preampFollow = step.Follow;
+            _receiverMemory = step.Memory;
+
+            if (!ReferenceEquals(step.Results, setup))
+            {
+                LastReceiverSetup = step.Results;
+            }
+
+            if (step.Said.Length > 0)
+            {
+                // What it did goes behind the mark with the tune-in's narration, and the
+                // preamp is read again at once rather than at the next half-minute sweep,
+                // so the chip and the overload sentence read what the radio now holds.
+                Narrate(step.Said, ReceiverSetupVoice.Admissions(step.Results.Where(r => r.Condition.Field == RigField.Preamp).ToList()));
+
+                if (_rigMonitor is not null)
+                {
+                    await _rigMonitor.RefreshAsync(RigField.Preamp).ConfigureAwait(true);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Hamlet could not follow the overload with the preamp: {ex.Message}";
+        }
+        finally
+        {
+            _followingTheOverload = false;
         }
     }
 

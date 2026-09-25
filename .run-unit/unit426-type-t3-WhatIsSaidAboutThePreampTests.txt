@@ -1,0 +1,535 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.29]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.WhatIsSaidAboutThePreampTests.PrintWhatIsSaid [96 ms]
+  Standard Output Messages:
+ THE CW PREAMP CONDITION
+   wanted     1
+   wantedText preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3)
+   confirmed  True
+   condition  band
+   says       that is what the radio's own manual gives for this band and this front end
+   because    The radio's manual, IC-7300_ENG_FM_12b, Receiving and Transmitting, page 4-3, says which preamp belongs where. P.AMP1 is the wide dynamic range preamplifier and it is most effective for the HF low bands; P.AMP2 is the high-gain preamplifier and it is most effective for the 50 MHz bands; and when the preamp is used while receiving strong signals the signal may be distorted, and in that case the preamp is turned off. Icom's own published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz and with Preamp 2 on at 50 MHz. So Hamlet puts preamp 1 on every HF band, preamp 2 on 6 m, and the preamp off when the radio says its front end is overloading, which is the strong-signal case the manual names. The radio remembers the setting for each band on its own.
+ 
+ ######## A QUIET FRONT END
+ 
+ === 1.810 MHz, 160 m
+   block: none on the map - THE APP WRITES NOTHING HERE; the CW row is driven directly below
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 3.530 MHz, 80 m
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 7.030 MHz, 40 m
+   block: QRP watering hole (QRP), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 10.110 MHz, 30 m
+   block: QRP watering hole (QRP), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 14.050 MHz, 20 m
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 18.080 MHz, 17 m
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 21.050 MHz, 15 m
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 24.900 MHz, 12 m
+   block: none on the map - THE APP WRITES NOTHING HERE; the CW row is driven directly below
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 28.050 MHz, 10 m
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 1; filed Changed; now preamp 1; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 1 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ === 50.100 MHz, 6 m
+   block: none on the map - THE APP WRITES NOTHING HERE; the CW row is driven directly below
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written 2; filed Changed; now preamp 2; overflow not overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): "I set the preamp to preamp 2 because that is what the radio's own manual gives for this band and this front end."
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 2 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 2 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is already on."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "preamp 2 · att off"
+     panel overload sentence (OverflowAdviceFor): (says nothing)
+ 
+ ######## THE FRONT END READING OVERLOADING AT THE TUNE-IN
+ 
+ === 1.810 MHz, 160 m, overloading
+   block: none on the map - THE APP WRITES NOTHING HERE; the CW row is driven directly below
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 3.530 MHz, 80 m, overloading
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 7.030 MHz, 40 m, overloading
+   block: QRP watering hole (QRP), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 10.110 MHz, 30 m, overloading
+   block: QRP watering hole (QRP), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 14.050 MHz, 20 m, overloading
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 18.080 MHz, 17 m, overloading
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 21.050 MHz, 15 m, overloading
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 24.900 MHz, 12 m, overloading
+   block: none on the map - THE APP WRITES NOTHING HERE; the CW row is driven directly below
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 28.050 MHz, 10 m, overloading
+   block: CW main street (CW), states 9 conditions
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ === 50.100 MHz, 6 m, overloading
+   block: none on the map - THE APP WRITES NOTHING HERE; the CW row is driven directly below
+   asks: preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3) [wanted 1, condition band]
+   radio said off; written nothing; filed AlreadyRight; now off; overflow overloading
+   WHAT IS SAID ABOUT THE PREAMP, AS THE APP ASKS IT AFTER THIS TUNE-IN
+     setup (ReceiverSetupVoice.Say, the preamp's clause): (says nothing)
+     setup admissions (on the bar): (says nothing)
+     advice (ReceiveAdvice, Receive Help): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+   ...AND ONCE HE HAS MOVED INTO A BLOCK THAT STATES NOTHING (no field owned)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+   ...AND ONCE HE HAS MOVED INTO AN FT8 BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+     advice (ReceiveAdvice, Receive Help): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+     observations (RigObservations, diagnostics): nothing about the preamp
+     obstructions (ReceiveObstructions, the advisory line): nothing about the preamp
+     panel chip (FrontEndTextFor): "overloading · preamp off"
+     panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own."
+ 
+ SENTENCES CONTRADICTING WHAT HAMLET SET, where the app tunes in (a block on the map), quiet and overloading together:
+   as the app asks right after the tune-in: 0
+   once he has moved into a block that does not state the preamp: 0
+   total: 0
+   (a sentence counts when the setup's own clause names a preamp value other than the one it left, when the advice proposes a preamp other than the one Hamlet set, when an observation objects to the preamp, or when the overload sentence asks him to move P.AMP/ATT away from where the setup left it)
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 0.5702 Seconds
+RC=0 WALL=1s

@@ -1,0 +1,26 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOverloadSentenceLeavesTheModesFieldsTests.NotOwnedTheButtonIsStillNamed(preampIsOn: True) [1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOverloadSentenceLeavesTheModesFieldsTests.NotOwnedTheButtonIsStillNamed(preampIsOn: False) [< 1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOverloadSentenceLeavesTheModesFieldsTests.OwnedItStatesTheOverloadAndAsksNothingOfTheKnob(preampIsOn: True) [< 1 ms]
+  Standard Output Messages:
+ The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is on, and Hamlet turns it off itself once the overload holds, unless you have set the preamp yourself since Hamlet last did. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOverloadSentenceLeavesTheModesFieldsTests.OwnedItStatesTheOverloadAndAsksNothingOfTheKnob(preampIsOn: False) [< 1 ms]
+  Standard Output Messages:
+ The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here.
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.4722 Seconds
+RC=0 WALL=1s

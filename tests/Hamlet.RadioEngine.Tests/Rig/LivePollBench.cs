@@ -9,9 +9,10 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 /// way the live poll reads it and each reading handed to what the app does with a poll.
 /// </summary>
 /// <remarks>
-/// <para>**WHAT THE APP DOES WITH A POLL IS <see cref="OnPollAsync"/>, AND AT HEAD IT IS
-/// NOTHING THAT WRITES.** `MainWindowViewModel.ApplyRigState` reads `Overflow` into
-/// `FrontEndIsOverloading` (MainWindowViewModel.cs:10983-10987) and nothing acts on it.</para>
+/// <para>**WHAT THE APP DOES WITH A POLL IS <see cref="OnPollAsync"/>.** Until work
+/// instruction 426 task 3 it was nothing that writes: `MainWindowViewModel.ApplyRigState`
+/// read `Overflow` into `FrontEndIsOverloading` and nothing acted on it. It now hands the
+/// reading to the preamp's overload follow, as the app does.</para>
 /// <para>**EVERY RESULT HERE IS AN INDICATION, NOT A MEASUREMENT OF THE RADIO** (FACT-006).</para>
 /// </remarks>
 internal static class LivePollBench
@@ -33,6 +34,9 @@ internal static class LivePollBench
 
         /// <summary>What Hamlet last set.</summary>
         public ReceiverSetupMemory Memory { get; set; } = ReceiverSetupMemory.Empty;
+
+        /// <summary>Where the preamp's overload follow stands, fresh at the tune-in.</summary>
+        public PreampFollow Follow { get; set; } = PreampFollow.Fresh;
 
         /// <summary>Everything narrated after the tune-in.</summary>
         public List<string> Narrated { get; } = new();
@@ -60,15 +64,26 @@ internal static class LivePollBench
         return run;
     }
 
-    /// <summary>What the app does with one poll.</summary>
+    /// <summary>
+    /// What the app does with one poll: `MainWindowViewModel.FollowTheOverload` hands each
+    /// fresh reading to <see cref="ReceiverSetup.FollowOverloadAsync"/> (HM-DEC-179).
+    /// </summary>
     /// <param name="run">The run.</param>
     /// <param name="polled">What the poll read.</param>
     /// <returns>When it is done.</returns>
-    public static Task OnPollAsync(Run run, RigState polled)
+    public static async Task OnPollAsync(Run run, RigState polled)
     {
-        _ = run;
-        _ = polled;
-        return Task.CompletedTask;
+        var step = await ReceiverSetup.FollowOverloadAsync(
+            run.Rig, polled, run.Results, run.Memory, run.Follow);
+
+        run.Follow = step.Follow;
+        run.Memory = step.Memory;
+        run.Results = step.Results;
+
+        if (step.Said.Length > 0)
+        {
+            run.Narrated.Add(step.Said);
+        }
     }
 
     /// <summary>One live poll: the radio read, then handed to <see cref="OnPollAsync"/>.</summary>
@@ -78,6 +93,7 @@ internal static class LivePollBench
     {
         var state = await ModeEntryBench.ReadAllAsync(run.Rig);
         state = state.With(await run.Rig.ReadAsync(RigField.TransmitStatus, state));
+        state = state.With(await run.Rig.ReadAsync(RigField.Frequency, state));
         await OnPollAsync(run, state);
         return state;
     }

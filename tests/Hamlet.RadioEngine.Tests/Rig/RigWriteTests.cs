@@ -206,7 +206,7 @@ public sealed class RigWriteTests
             RigValue.Known(RigField.Agc, 3, "slow", Now, "CI-V 16 12"),
             RigValue.Known(RigField.FilterBandwidth, 40, "3.6 kHz", Now, "CI-V 1A 03"),
             RigValue.Known(RigField.Preamp, 0, "off", Now, "CI-V 16 02"),
-            RigValue.Known(RigField.RfGain, 107, "42%", Now, "CI-V 14 02"),
+            RigValue.Known(RigField.RfGain, 42, "42%", Now, "CI-V 14 02"),
             RigValue.Known(RigField.AccUsbAfLevel, 20, "8%", Now, "CI-V 1A 05 0060"),
         });
 
@@ -243,7 +243,7 @@ public sealed class RigWriteTests
             RigValue.Known(RigField.Agc, 1, "fast", Now, "CI-V 16 12"),
             RigValue.Known(RigField.FilterBandwidth, 9, "500 Hz", Now, "CI-V 1A 03"),
             RigValue.Known(RigField.Preamp, 1, "P.AMP1", Now, "CI-V 16 02"),
-            RigValue.Known(RigField.RfGain, 255, "100%", Now, "CI-V 14 02"),
+            RigValue.Known(RigField.RfGain, 100, "100%", Now, "CI-V 14 02"),
             RigValue.Known(RigField.AccUsbAfLevel, 128, "50%", Now, "CI-V 1A 05 0060"),
         });
 
@@ -286,7 +286,7 @@ public sealed class RigWriteTests
         var partial = RigState.Empty.With(new[]
         {
             RigValue.Known(RigField.AutoNotch, 1, "on", Now, "CI-V 16 41"),
-            RigValue.Known(RigField.RfGain, 255, "100%", Now, "CI-V 14 02"),
+            RigValue.Known(RigField.RfGain, 100, "100%", Now, "CI-V 14 02"),
         });
 
         var advice = ReceiveAdvice.For(partial);
@@ -317,7 +317,7 @@ public sealed class RigWriteTests
                          RigValue.Known(RigField.AutoNotch, 1, "on", Now, "x"),
                          RigValue.Known(RigField.NoiseBlanker, 1, "on", Now, "x"),
                          RigValue.Known(RigField.Preamp, 0, "off", Now, "x"),
-                         RigValue.Known(RigField.RfGain, 107, "42%", Now, "x"),
+                         RigValue.Known(RigField.RfGain, 42, "42%", Now, "x"),
                      }),
                  })
         {

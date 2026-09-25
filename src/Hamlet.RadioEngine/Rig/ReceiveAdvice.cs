@@ -465,7 +465,12 @@ public static class ReceiveAdvice
                 + "alone.");
         }
 
-        if (value.Number is { } level && level >= OpenGainAbove)
+        // **ONE SCALE, THE READ'S** (R65, HM-DEC-172, work instruction 426). The gain is
+        // read as a percent and the bar is on the 0 to 255 write scale, so compared raw a
+        // gain at 100 percent read as about 39 and was asked to open all the way, once no
+        // tune-in owned it. The bar goes onto the read's scale; the write still asks for 255.
+        if (value.Number is { } level
+            && level >= CivDecode.OnReadScale(RigField.RfGain, OpenGainAbove))
         {
             return Fine(
                 CivWrites.RfGain,
@@ -474,7 +479,7 @@ public static class ReceiveAdvice
         }
 
         var percent = value.Number is { } n
-            ? (int)Math.Round(n / 255.0 * 100)
+            ? (int)Math.Round(n)
             : 0;
 
         return new ReceiveSuggestion(

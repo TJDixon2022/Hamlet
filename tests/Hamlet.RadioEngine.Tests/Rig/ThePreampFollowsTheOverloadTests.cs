@@ -94,4 +94,98 @@ public sealed class ThePreampFollowsTheOverloadTests
 
         Assert.Equal(new[] { 0 }, LivePollBench.PreampWrites(run.Radio));
     }
+
+    /// <summary>
+    /// **THE HOLD** (task 3): a burst shorter than <see cref="Hamlet.RadioEngine.Rig.ReceiverSetup.OverloadHoldReadings"/>
+    /// readings writes nothing, and one that reaches it writes once.
+    /// </summary>
+    [Fact]
+    public async Task AShortBurstWritesNothingAndOneThatHoldsWritesOnce()
+    {
+        var run = await LivePollBench.TuneInQuietAsync(7_030_000);
+        using var rig = run.Rig;
+        var hold = Hamlet.RadioEngine.Rig.ReceiverSetup.OverloadHoldReadings;
+
+        ModeEntryBench.ClearWrites(run.Radio);
+        run.Radio.Overloading = true;
+        await LivePollBench.PollAsync(run, hold - 1);
+        run.Radio.Overloading = false;
+        await LivePollBench.PollAsync(run, 2);
+
+        Assert.Empty(ModeEntryBench.Writes(run.Radio));
+
+        run.Radio.Overloading = true;
+        await LivePollBench.PollAsync(run, hold);
+
+        Assert.Equal(new[] { 0 }, LivePollBench.PreampWrites(run.Radio));
+    }
+
+    /// <summary>
+    /// **BACK ON ONCE, AND OFF FOR GOOD IF IT BRINGS THE OVERLOAD BACK** (task 3): the band's
+    /// value is written back after the overload has cleared and stayed clear; an overload that
+    /// returns within the clear hold puts it off, and nothing more is written until the next
+    /// tune-in.
+    /// </summary>
+    [Fact]
+    public async Task AnOverloadThatComesBackOnceThePreampIsOnAgainLeavesItOff()
+    {
+        var run = await LivePollBench.TuneInQuietAsync(7_030_000);
+        using var rig = run.Rig;
+        var clear = Hamlet.RadioEngine.Rig.ReceiverSetup.ClearHoldReadings;
+
+        ModeEntryBench.ClearWrites(run.Radio);
+        run.Radio.Overloading = true;
+        await LivePollBench.PollAsync(run, Held);
+        run.Radio.Overloading = false;
+        await LivePollBench.PollAsync(run, clear);
+
+        Assert.Equal(new[] { 0, 1 }, LivePollBench.PreampWrites(run.Radio));
+
+        run.Radio.Overloading = true;
+        await LivePollBench.PollAsync(run, Held);
+        run.Radio.Overloading = false;
+        await LivePollBench.PollAsync(run, clear * 2);
+        run.Radio.Overloading = true;
+        await LivePollBench.PollAsync(run, Held);
+
+        Assert.Equal(new[] { 0, 1, 0 }, LivePollBench.PreampWrites(run.Radio));
+        Assert.Equal(0, run.Radio.Switches[ModeEntryBench.Preamp]);
+    }
+
+    /// <summary>
+    /// **ONLY WHILE THE BLOCK OWNS IT** (HM-DEC-179): tuned into FT8's block, which does not
+    /// state the preamp, an overload writes nothing.
+    /// </summary>
+    [Fact]
+    public async Task ABlockThatDoesNotStateThePreampIsNotFollowed()
+    {
+        var run = await LivePollBench.TuneInQuietAsync(14_074_000);
+        using var rig = run.Rig;
+
+        Assert.DoesNotContain(run.Conditions, c => c.Field == Hamlet.RadioEngine.Rig.RigField.Preamp);
+
+        ModeEntryBench.ClearWrites(run.Radio);
+        run.Radio.Overloading = true;
+        await LivePollBench.PollAsync(run, Held);
+
+        Assert.Empty(ModeEntryBench.Writes(run.Radio));
+    }
+
+    /// <summary>
+    /// **A TRANSMIT FLAG NOBODY HAS READ IS NOT A LICENCE**: with the radio silent on `1C 00`,
+    /// an overload writes nothing.
+    /// </summary>
+    [Fact]
+    public async Task AnUnreadTransmitFlagWritesNothing()
+    {
+        var run = await LivePollBench.TuneInQuietAsync(7_030_000);
+        using var rig = run.Rig;
+
+        ModeEntryBench.ClearWrites(run.Radio);
+        run.Radio.Transmitting = null;
+        run.Radio.Overloading = true;
+        await LivePollBench.PollAsync(run, Held);
+
+        Assert.Empty(ModeEntryBench.Writes(run.Radio));
+    }
 }

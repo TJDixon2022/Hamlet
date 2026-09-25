@@ -1,0 +1,26 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.EveryFieldHasALabelInOrdinaryWords [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.TheFourStatesEachSaySomethingDifferent [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.KnownToBeTransmittingIsFalseWhenNothingHasBeenRead [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.AgesAreSpokenRatherThanCounted(seconds: 8, expected: "8 seconds ago") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.AgesAreSpokenRatherThanCounted(seconds: 0.5, expected: "a moment ago") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.AgesAreSpokenRatherThanCounted(seconds: 4000, expected: "over an hour ago") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.AgesAreSpokenRatherThanCounted(seconds: 75, expected: "about a minute ago") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.AgesAreSpokenRatherThanCounted(seconds: 600, expected: "about 10 minutes ago") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.EveryTypedAccessorOnTheStateCanSayItDoesNotKnow [2 ms]
+[xUnit.net 00:00:00.27]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.NothingButARealReadingEverCarriesANumber [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.ASettingStaysCurrentFarLongerThanAMeter [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.AStaleReadingKeepsItsNumberAndGainsItsAge [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.SomethingNeverReadHasNoAge [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.RigUnknownStateTests.TheSameReadingGoesStaleAsItAges [< 1 ms]
+
+Test Run Successful.
+Total tests: 14
+     Passed: 14
+ Total time: 0.5176 Seconds
