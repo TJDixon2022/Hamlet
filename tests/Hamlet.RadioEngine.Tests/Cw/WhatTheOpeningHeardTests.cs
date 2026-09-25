@@ -1173,6 +1173,264 @@ public sealed class WhatTheOpeningHeardTests
         }
     }
 
+    /// <summary>
+    /// 7.4, work instruction 433 task 1: when the mix would follow a move if it asked
+    /// whether the sender keys harder at the new pitch than at the mix, replayed over
+    /// the tracker's own record beside the entry.
+    /// </summary>
+    /// <param name="run">`stream` for the spliced session, or one recording decoded cold.</param>
+    /// <param name="from">Where the stretch starts on the run's clock, in seconds.</param>
+    /// <param name="to">Where it ends.</param>
+    /// <remarks>
+    /// <para>**A PRINTER. IT ASSERTS NOTHING, AND IT WRITES NOTHING.** The decoder is
+    /// driven a hop at a time as <see cref="WhenEachRuleFollows"/> drives it, and the
+    /// same record is kept. Two rules are run over it: the entry's, and section 6's.
+    /// Under section 6's, a move of more than 25 Hz from the mix is followed only when
+    /// the keying contrast of <see cref="CwProbabilisticDecoder.Envelope(IReadOnlyList{float}, int, double)"/>
+    /// over the last 3.0 s, the 90th percentile of its per-hop magnitudes over the
+    /// 10th in dB, is greater at the target than at the mix. It is compared again on
+    /// every survey read while the move is pending, and a move of more than 25 Hz from
+    /// the pending pitch starts a new comparison. Under 3.0 s heard, it follows as at
+    /// entry.</para>
+    /// <para>**A REPLAY, NOT A DECODE**, with <see cref="WhenEachRuleFollows"/>'s
+    /// caveat: the tracker record is the entry decoder's.</para>
+    /// </remarks>
+    [Theory]
+    [InlineData("stream", 28.0, 38.0)]
+    [InlineData("cw-2026-08-22-032113", 0.0, 1000.0)] // whole
+    [InlineData("cw-2026-08-22-031905", 0.0, 1000.0)] // whole
+    public void WhereTheSenderKeysHarder(string run, double from, double to)
+    {
+        const double same = 25;
+        float[] samples;
+        int rate;
+
+        if (run == "stream")
+        {
+            (samples, rate, _) = Splice(Session);
+        }
+        else
+        {
+            var audio = WavAudio.Read(Path.Combine(Folder, run + ".wav"));
+            samples = audio.Samples;
+            rate = audio.SampleRate;
+        }
+
+        var decoder = new CwDecoder(rate, 600);
+        var hop = decoder.Tracker.HopSamples;
+        var survey = (CwToneSurvey)SurveyField.GetValue(decoder.Tracker)!;
+        var hops = new List<TrackerHop>();
+        var best = new Dictionary<double, int>();
+
+        for (var at = 0L; at + hop <= samples.Length && at / (double)rate <= to; at += hop)
+        {
+            decoder.Process(new AudioChunk(at, rate, samples.AsSpan((int)at, hop)));
+
+            var t = decoder.Tracker;
+            var seconds = (at + hop) / (double)rate;
+            var read = (int)HopsSinceSurveyField.GetValue(t)! == 0;
+
+            hops.Add(new TrackerHop(seconds, read, t.HasMeasuredPitch, t.ToneHz, t.Verdict, decoder.Stream.ToneHz));
+
+            // The survey's best, as WhyTheMixMoved marks it: CwToneSurvey.Analyze
+            // over the history the tracker has just read (P47).
+            if (read && seconds >= from && survey.Analyze().Keyed is { } keyed)
+            {
+                best[keyed.ToneHz] = best.GetValueOrDefault(keyed.ToneHz) + 1;
+            }
+        }
+
+        double Contrast(double seconds, double toneHz)
+        {
+            var length = (int)Math.Round(KeysHarderRule.Seconds * rate);
+            var end = (int)Math.Min(samples.Length, Math.Round(seconds * rate));
+
+            if (end < length)
+            {
+                return double.NaN;
+            }
+
+            var envelope = CwProbabilisticDecoder.Envelope(new ArraySegment<float>(samples, end - length, length), rate, toneHz);
+            var sorted = envelope.OrderBy(v => v).ToArray();
+
+            double At(double q) => sorted[(int)Math.Round(q * (sorted.Length - 1))];
+
+            var low = At(0.10);
+
+            return low > 0 ? 20 * Math.Log10(At(0.90) / low) : double.NaN;
+        }
+
+        var entry = new EntryRule();
+        var harder = new KeysHarderRule(Contrast);
+        var entryMix = new double[hops.Count];
+        var harderMix = new double[hops.Count];
+
+        for (var i = 0; i < hops.Count; i++)
+        {
+            entryMix[i] = entry.Step(hops[i]);
+            harderMix[i] = harder.Step(hops[i]);
+        }
+
+        var entryAgrees = hops.Count(h => h.Measured && Math.Abs(h.StreamHz - h.TrackerHz) > 0.001);
+        var sender = string.Join(", ", best.OrderByDescending(b => b.Value).ThenBy(b => b.Key).Take(4)
+            .Select(b => string.Create(Invariant, $"{b.Key:0.0} Hz on {b.Value} reads")));
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"contrast check | run {run}, {from:0.0} to {to:0.0} s, {hops.Count} hops of {hop} samples, {hops.Count(h => h.Read)} survey reads; Envelope at {CwProbabilisticDecoder.IntegratorBandwidthHz:0} Hz over the last {KeysHarderRule.Seconds:0.0} s, 90th over 10th percentile in dB; measured hops where the entry decoder's mix differs from the entry rule's: {entryAgrees}"));
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"contrast sender | {run} | the survey's best as WhyTheMixMoved marks it, most reads first: {(sender.Length == 0 ? "none" : sender)}"));
+        _output.WriteLine("contrast move | s | mix -> target Hz | tracker before | beside the rule, deciding nothing: the contrast in dB at the survey's best pitches");
+        _output.WriteLine("contrast read | s | target Hz | target dB | mix Hz | mix dB | greater | note");
+        _output.WriteLine("contrast follows | s of the move | target Hz | entry | this rule");
+
+        for (var m = 0; m < harder.Moves.Count; m++)
+        {
+            var (i, mixHz, target) = harder.Moves[m];
+
+            if (hops[i].Seconds < from || hops[i].Seconds > to)
+            {
+                continue;
+            }
+
+            var aside = string.Join(", ", best.Keys.OrderBy(k => k)
+                .Select(k => string.Create(Invariant, $"{k:0.0} Hz {Contrast(hops[i].Seconds, k):0.00}")));
+
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"contrast move | {hops[i].Seconds:0.00} | {mixHz:0.0} -> {target:0.0} | {(i > 0 ? hops[i - 1].TrackerHz : double.NaN):0.0} | {aside}"));
+
+            foreach (var c in harder.Compared.Where(c => c.Move == m))
+            {
+                var greater = double.IsNaN(c.TargetDb) || double.IsNaN(c.MixDb)
+                    ? "cannot compute; follow as at entry"
+                    : c.TargetDb > c.MixDb ? "target" : "mix";
+
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"contrast read | {c.Seconds:0.00} | {c.TargetHz:0.0} | {c.TargetDb:0.00} | {c.MixHz:0.0} | {c.MixDb:0.00} | {greater} | {(Math.Abs(c.Seconds - hops[i].Seconds) < 1e-9 ? "at the move" : "a survey read while pending")}"));
+            }
+
+            // Until the rule's next move or the tracker's, whichever comes first.
+            var end = m + 1 < harder.Moves.Count ? harder.Moves[m + 1].Hop : hops.Count;
+
+            for (var j = i + 1; j < end; j++)
+            {
+                if (hops[j].Measured && hops[j - 1].Measured && Math.Abs(hops[j].TrackerHz - hops[j - 1].TrackerHz) > same)
+                {
+                    end = j;
+                    break;
+                }
+            }
+
+            string Follows(double[] mix)
+            {
+                for (var j = i; j < end; j++)
+                {
+                    if (!double.IsNaN(mix[j]) && Math.Abs(mix[j] - target) <= same)
+                    {
+                        return hops[j].Seconds.ToString("0.00", Invariant);
+                    }
+                }
+
+                return end < hops.Count
+                    ? string.Create(Invariant, $"not before the tracker's next move at {hops[end].Seconds:0.00}")
+                    : "never";
+            }
+
+            _output.WriteLine(string.Create(Invariant, $"contrast follows | {hops[i].Seconds:0.00} | {target:0.0} | {Follows(entryMix)} | {Follows(harderMix)}"));
+        }
+
+        // Where this rule's mix and the entry's differ at all, stretch by stretch.
+        _output.WriteLine("contrast differs | from s | to s | entry's mix | this rule's mix");
+
+        for (var i = 0; i < hops.Count; i++)
+        {
+            if (Differ(entryMix[i], harderMix[i]) && (i == 0 || !Differ(entryMix[i - 1], harderMix[i - 1])))
+            {
+                var j = i;
+
+                while (j + 1 < hops.Count && Differ(entryMix[j + 1], harderMix[j + 1]))
+                {
+                    j++;
+                }
+
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"contrast differs | {hops[i].Seconds:0.00} | {hops[j].Seconds:0.00} | {entryMix[i]:0.0} | {harderMix[i]:0.0}"));
+            }
+        }
+
+        static bool Differ(double a, double b) => !(double.IsNaN(a) && double.IsNaN(b)) && !(Math.Abs(a - b) <= 0.001);
+    }
+
+    /// <summary>
+    /// Work instruction 433's rule: a move further than 25 Hz from the mix is followed
+    /// only when the envelope keys harder at the target than at the mix, compared at
+    /// the move and on every survey read while it is pending.
+    /// </summary>
+    private sealed class KeysHarderRule : ReleaseRule
+    {
+        /// <summary>The survey's own history length, `CwToneSurvey`'s default.</summary>
+        public const double Seconds = 3.0;
+
+        private readonly Func<double, double, double> _contrast;
+        private double _pending = double.NaN;
+        private int _hop = -1;
+
+        public KeysHarderRule(Func<double, double, double> contrast)
+            => _contrast = contrast;
+
+        /// <summary>Each move the rule saw: its hop, the mix then, and the target.</summary>
+        public List<(int Hop, double MixHz, double TargetHz)> Moves { get; } = new();
+
+        /// <summary>Each comparison, by the index of its move in <see cref="Moves"/>.</summary>
+        public List<(int Move, double Seconds, double TargetHz, double TargetDb, double MixHz, double MixDb)> Compared { get; } = new();
+
+        public override double Step(TrackerHop hop)
+        {
+            _hop++;
+
+            if (hop.Measured)
+            {
+                var heard = hop.TrackerHz;
+
+                if (double.IsNaN(Last) || Math.Abs(heard - Last) <= Same)
+                {
+                    Last = heard;
+                    _pending = double.NaN;
+                }
+                else if (double.IsNaN(_pending) || Math.Abs(heard - _pending) > Same)
+                {
+                    _pending = heard;
+                    Moves.Add((_hop, Last, heard));
+                    Compare(hop, heard);
+                }
+                else if (hop.Read)
+                {
+                    Compare(hop, heard);
+                }
+            }
+
+            return Last;
+        }
+
+        private void Compare(TrackerHop hop, double heard)
+        {
+            var target = _contrast(hop.Seconds, heard);
+            var mix = _contrast(hop.Seconds, Last);
+
+            Compared.Add((Moves.Count - 1, hop.Seconds, heard, target, Last, mix));
+
+            if (double.IsNaN(target) || double.IsNaN(mix) || target > mix)
+            {
+                Last = heard;
+                _pending = double.NaN;
+            }
+        }
+    }
+
     private static IReadOnlyList<Heard> InStretch(Traced traced, double from, double to)
         => traced.Settled
             .Where(h => h.Character.At.TotalSeconds >= from && h.Character.At.TotalSeconds < to)

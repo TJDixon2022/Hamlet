@@ -1,0 +1,10 @@
+unit433 task 1: the replay (7.4) - WhatTheOpeningHeardTests.WhereTheSenderKeysHarder, a printer that asserts nothing and writes nothing; the gate answers yes on 032113's 650 Hz move and no on the opening's 525 Hz move, so nothing is built in task 2
+
+The tracker's own record, hop by hop, with the entry rule and section 6's rule run over it: a move of more than 25 Hz from the mix is followed only when Envelope at 45 Hz over the last 3.0 s, 90th over 10th percentile in dB, is greater at the target than at the mix, compared at the move and on every survey read while pending. The entry rule reproduces the entry decoder's mix on every measured hop of all three runs (0 differences).
+
+1. Follows 032113's 650 Hz move by 27.04 s - yes. contrast read | 26.54 | 650.0 | 28.75 | 600.0 | 24.49 | target | at the move; contrast follows | 26.54 | 650.0 | 26.54 | 26.54.
+2. Holds the opening's 600 to 525 Hz move until 36.04 s - no. contrast read | 30.54 | 525.0 | 15.02 | 600.0 | 12.69 | target | at the move; contrast follows | 30.54 | 525.0 | 30.54 | 30.54. Beside it, deciding nothing: 625.0 Hz, the sender, 13.67 dB, and 850.0 Hz 14.39 dB. The 3.0 s window ending at 30.54 on the stream begins at 27.54, inside 003901's tail, before the splice at 30.0.
+
+031905, printed and not gated: 13.04's move 500 to 300 followed at once (300 at 26.50 dB against 500 at 23.05); 18.04's move back to 500 held until 25.04; 26.54's move 500 to 300 held until 29.04 (300 at 30.22 against 500 at 30.36 at the move).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

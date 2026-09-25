@@ -1,0 +1,83 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.42]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.65]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.66]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhereTheSenderKeysHarder(run: "stream", from: 28, to: 38) [6 s]
+  Standard Output Messages:
+ contrast check | run stream, 28.0 to 38.0 s, 7601 hops of 240 samples, 82 survey reads; Envelope at 45 Hz over the last 3.0 s, 90th over 10th percentile in dB; measured hops where the entry decoder's mix differs from the entry rule's: 0
+ contrast sender | stream | the survey's best as WhyTheMixMoved marks it, most reads first: 525.0 Hz on 2 reads, 625.0 Hz on 2 reads, 600.0 Hz on 1 reads, 850.0 Hz on 1 reads
+ contrast move | s | mix -> target Hz | tracker before | beside the rule, deciding nothing: the contrast in dB at the survey's best pitches
+ contrast read | s | target Hz | target dB | mix Hz | mix dB | greater | note
+ contrast follows | s of the move | target Hz | entry | this rule
+ contrast move | 30.54 | 600.0 -> 525.0 | 600.0 | 525.0 Hz 15.02, 600.0 Hz 12.69, 625.0 Hz 13.67, 850.0 Hz 14.39
+ contrast read | 30.54 | 525.0 | 15.02 | 600.0 | 12.69 | target | at the move
+ contrast follows | 30.54 | 525.0 | 30.54 | 30.54
+ contrast move | 36.04 | 525.0 -> 625.0 | 525.0 | 525.0 Hz 16.31, 600.0 Hz 15.04, 625.0 Hz 17.50, 850.0 Hz 19.92
+ contrast read | 36.04 | 625.0 | 17.50 | 525.0 | 16.31 | target | at the move
+ contrast follows | 36.04 | 625.0 | 36.04 | 36.04
+ contrast differs | from s | to s | entry's mix | this rule's mix
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhereTheSenderKeysHarder(run: "cw-2026-08-22-031905", from: 0, to: 1000) [2 s]
+  Standard Output Messages:
+ contrast check | run cw-2026-08-22-031905, 0.0 to 1000.0 s, 6000 hops of 240 samples, 66 survey reads; Envelope at 45 Hz over the last 3.0 s, 90th over 10th percentile in dB; measured hops where the entry decoder's mix differs from the entry rule's: 0
+ contrast sender | cw-2026-08-22-031905 | the survey's best as WhyTheMixMoved marks it, most reads first: 500.0 Hz on 6 reads, 300.0 Hz on 3 reads, 325.0 Hz on 1 reads, 600.0 Hz on 1 reads
+ contrast move | s | mix -> target Hz | tracker before | beside the rule, deciding nothing: the contrast in dB at the survey's best pitches
+ contrast read | s | target Hz | target dB | mix Hz | mix dB | greater | note
+ contrast follows | s of the move | target Hz | entry | this rule
+ contrast move | 13.04 | 500.0 -> 300.0 | 500.0 | 300.0 Hz 26.50, 325.0 Hz 28.34, 500.0 Hz 23.05, 600.0 Hz 24.24
+ contrast read | 13.04 | 300.0 | 26.50 | 500.0 | 23.05 | target | at the move
+ contrast follows | 13.04 | 300.0 | 13.04 | 13.04
+ contrast move | 18.04 | 300.0 -> 500.0 | 300.0 | 300.0 Hz 26.78, 325.0 Hz 26.02, 500.0 Hz 24.05, 600.0 Hz 23.30
+ contrast read | 18.04 | 500.0 | 24.05 | 300.0 | 26.78 | mix | at the move
+ contrast read | 18.54 | 500.0 | 25.41 | 300.0 | 27.61 | mix | a survey read while pending
+ contrast read | 19.04 | 500.0 | 25.36 | 300.0 | 28.44 | mix | a survey read while pending
+ contrast read | 19.54 | 500.0 | 25.34 | 300.0 | 28.67 | mix | a survey read while pending
+ contrast read | 20.04 | 500.0 | 25.55 | 300.0 | 29.56 | mix | a survey read while pending
+ contrast read | 20.54 | 500.0 | 25.81 | 300.0 | 28.42 | mix | a survey read while pending
+ contrast read | 21.04 | 500.0 | 26.12 | 300.0 | 29.73 | mix | a survey read while pending
+ contrast read | 21.54 | 500.0 | 26.35 | 300.0 | 30.02 | mix | a survey read while pending
+ contrast read | 22.04 | 500.0 | 26.72 | 300.0 | 31.43 | mix | a survey read while pending
+ contrast read | 22.54 | 500.0 | 26.71 | 300.0 | 32.27 | mix | a survey read while pending
+ contrast read | 23.04 | 500.0 | 28.08 | 300.0 | 32.01 | mix | a survey read while pending
+ contrast read | 23.54 | 500.0 | 28.60 | 300.0 | 31.85 | mix | a survey read while pending
+ contrast read | 24.04 | 500.0 | 28.02 | 300.0 | 33.55 | mix | a survey read while pending
+ contrast read | 24.54 | 500.0 | 27.53 | 300.0 | 33.55 | mix | a survey read while pending
+ contrast read | 25.04 | 500.0 | 30.11 | 300.0 | 28.49 | target | a survey read while pending
+ contrast follows | 18.04 | 500.0 | 18.04 | 25.04
+ contrast move | 26.54 | 500.0 -> 300.0 | 500.0 | 300.0 Hz 30.22, 325.0 Hz 32.06, 500.0 Hz 30.36, 600.0 Hz 24.05
+ contrast read | 26.54 | 300.0 | 30.22 | 500.0 | 30.36 | mix | at the move
+ contrast read | 27.04 | 300.0 | 30.32 | 500.0 | 31.84 | mix | a survey read while pending
+ contrast read | 27.54 | 300.0 | 29.75 | 500.0 | 31.59 | mix | a survey read while pending
+ contrast read | 28.04 | 300.0 | 29.84 | 500.0 | 31.34 | mix | a survey read while pending
+ contrast read | 28.54 | 300.0 | 30.13 | 500.0 | 31.35 | mix | a survey read while pending
+ contrast read | 29.04 | 300.0 | 33.29 | 500.0 | 30.78 | target | a survey read while pending
+ contrast follows | 26.54 | 300.0 | 26.54 | 29.04
+ contrast differs | from s | to s | entry's mix | this rule's mix
+ contrast differs | 18.04 | 25.03 | 500.0 | 300.0
+ contrast differs | 26.54 | 29.03 | 300.0 | 500.0
+
+
+[xUnit.net 00:00:11.84]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhereTheSenderKeysHarder(run: "cw-2026-08-22-032113", from: 0, to: 1000) [1 s]
+  Standard Output Messages:
+ contrast check | run cw-2026-08-22-032113, 0.0 to 1000.0 s, 6000 hops of 240 samples, 66 survey reads; Envelope at 45 Hz over the last 3.0 s, 90th over 10th percentile in dB; measured hops where the entry decoder's mix differs from the entry rule's: 0
+ contrast sender | cw-2026-08-22-032113 | the survey's best as WhyTheMixMoved marks it, most reads first: 600.0 Hz on 4 reads, 500.0 Hz on 2 reads, 650.0 Hz on 2 reads, 300.0 Hz on 1 reads
+ contrast move | s | mix -> target Hz | tracker before | beside the rule, deciding nothing: the contrast in dB at the survey's best pitches
+ contrast read | s | target Hz | target dB | mix Hz | mix dB | greater | note
+ contrast follows | s of the move | target Hz | entry | this rule
+ contrast move | 26.54 | 600.0 -> 650.0 | 600.0 | 300.0 Hz 31.21, 325.0 Hz 32.06, 500.0 Hz 28.73, 575.0 Hz 18.31, 600.0 Hz 24.49, 650.0 Hz 28.75, 750.0 Hz 36.97
+ contrast read | 26.54 | 650.0 | 28.75 | 600.0 | 24.49 | target | at the move
+ contrast follows | 26.54 | 650.0 | 26.54 | 26.54
+ contrast differs | from s | to s | entry's mix | this rule's mix
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 12.1540 Seconds
+RC=0 WALL=13s
