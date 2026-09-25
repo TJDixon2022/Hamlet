@@ -1,0 +1,35 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.72]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.OnlyTheTwoReportsAreEditableAndFt8KeepsItsOwnField [9 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.WithNoHeardReportItStartsBlankAndIsYoursWhenTyped [178 ms]
+  Standard Output Messages:
+ before: [] Hamlet did not hear this - type it if you have it
+ after : [559] yours - typed by you
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.AHeard599IsShownAndMarkedAndTyping579ReplacesItAndLogsIt [15 ms]
+  Standard Output Messages:
+ before: [599] heard by Hamlet (heard)
+ after : [579] yours - typed by you (yours)
+ {"ts":"2026-09-25T19:32:24.371Z","sessionId":"5f311563","level":"info","appVersion":"390","category":"psk31","event":"psk31_contact_logged","data":{"rstSent":"599","rstReceived":"579","rstSentSource":"heard","rstReceivedSource":"yours","mode":"PSK","submode":"PSK31","gridCarried":false}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.OnTheWindowTheTwoReportsAreBoxesWithTheirMarks [253 ms]
+  Standard Output Messages:
+ box [599] read-only False, enabled True
+ box [] read-only False, enabled True
+ marks: heard by Hamlet | Hamlet did not hear this - type it if you have it
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 1.0049 Seconds
+RC=0 WALL=1s

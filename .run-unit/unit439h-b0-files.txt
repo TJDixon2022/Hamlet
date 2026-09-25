@@ -1,0 +1,17 @@
+tests/Hamlet.RadioEngine.Tests/Cw/ABlipDoesNotShiftEverythingAfterItTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AHeldPitchDoesNotOutliveItsEvidenceTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AMoveStartsTheDecoderFreshTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ARatioFarFromThreeIsAContaminatedFitTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ARecordingWithKeyingInItIsReadTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AStationIsABinThatSwingsTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AutoCallAnswerTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/AutoCallSafetyTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CallsignResolverTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CapturedSignalTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ContactScriptTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/ContactTrackerTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwAcquisitionWindowTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwCaseCountsSayWhatTheyCountTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwCounterTrailTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwDiagnosisTests.cs
+tests/Hamlet.RadioEngine.Tests/Cw/CwDisplacementFloorTests.cs

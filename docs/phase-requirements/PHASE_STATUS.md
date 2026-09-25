@@ -2,7 +2,7 @@ PHASE: Hamlet meets the CW requirements
 PHASE_SET: 2026-09-25
 DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
 CURRENT_STEP: 0
-WORK_INSTRUCTION: 439 - every CW test is traced to a requirement
+WORK_INSTRUCTION: 439 - trace the tests, then build the metrics (run by hand, outside the loop)
 STEP: 0 | not started | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
 STEP: 1 | not started | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
 STEP: 2 | not started | The record is honest - section A, the nine requirements about what the decoder claims and refuses to claim.

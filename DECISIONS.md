@@ -4,6 +4,44 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-183
+date: 2026-09-25
+refs: CW_REQUIREMENTS.md, CW_SPEC.md, docs/phase-requirements/PHASE_PLAN.md R77 R78 R79, docs/phase-correctness-run/, PROJECT_CARD.md, work instruction 439, HM-DEC-181
+---
+
+**`CW_REQUIREMENTS.md` and `CW_SPEC.md` are the specification for CW, and every CW test names
+the requirement it proves.** Tim, 2026-09-25.
+
+**What is archived.** *Hamlet reads a CQ call correctly*, set 2026-09-23, closes with its
+spacing repair kept (all keyed 217 edits to 167 over 565), its emission gate kept (placeholders
+299 to 28 with no named character lost), the receiver conditions set from the radio's manual,
+the screen sentences made true, and 5.1 - Tim's verdict - open and still his. Its 3.6, 6.5,
+7.1, 7.2, 7.4, 7.6 and 7.8 are unmet and each reappears in the new phase as a requirement id.
+
+**Why the shape changes.** On 2026-09-25 six units built changes that read the 7.052 opening
+correctly and every one was rejected because capture rows' character counts fell. Character
+counts are not a requirement anywhere in `CW_REQUIREMENTS.md`. What is required is MET-INVENTED
+at zero, MET-CER-SURE below 1 per cent, coverage at or above 90 per cent and MET-WBE at or
+below 5 per cent. The keep rule was measuring the wrong thing.
+
+**What is set.** *Hamlet meets the CW requirements*: trace every CW test to a requirement,
+build the metrics the requirements are written in, then meet them group by group - honesty,
+confidence, pitch, speed, text, and the generated conditions - and Tim at the radio. A change
+is kept on a requirement's metric; the capture floors stay as V-11's overfitting guard and stop
+being the keep rule. Every unit reads the two documents first, and where they differ from a
+plan the documents win.
+
+**Already answered.** Section R's first row, the knowledge rule HM-REQ-004, was ruled on
+2026-09-24 as R72 of the correctness phase's plan - no word, dictionary or callsign prior, in
+any form - and HM-DEC-181 records that R72 stands. Work instruction 439 cited it as HM-DEC-175;
+HM-DEC-175 in this file is the CW-block receiver ruling, so the reference is corrected here
+rather than copied, and the correction is reported in that unit's output.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 439's record of
+it. Rejected: finishing the correctness phase's remaining criteria first, because they are
+written against counts the requirements have superseded.
+
+---
 id: HM-DEC-181
 date: 2026-09-25
 refs: PHASE_PLAN.md R69 R71 R72 R73 and criterion 3.6, unit 421 output.md, the 2026-09-25 7.052 captures, work instruction 428
