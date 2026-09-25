@@ -1,13 +1,14 @@
-PHASE: Hamlet reads a CQ call correctly
-PHASE_SET: 2026-09-23
-DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
-CURRENT_STEP: 3
-WORK_INSTRUCTION: 439 - the marks are joined across gaps no sender makes
-STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
-STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
-STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
-STEP: 3 | partial | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor. Closed partial under 3.4 by unit 431, P43; 3.6 unmet.
-STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
-STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
-STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
-STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set. 7.4 closed partial by unit 433, P48, after three units with no kept change (430, 432, 433); not ticked.
+PHASE: Hamlet meets the CW requirements
+PHASE_SET: 2026-09-25
+DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
+CURRENT_STEP: 0
+WORK_INSTRUCTION: 439 - every CW test is traced to a requirement
+STEP: 0 | not started | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
+STEP: 1 | not started | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
+STEP: 2 | not started | The record is honest - section A, the nine requirements about what the decoder claims and refuses to claim.
+STEP: 3 | not started | Confidence means something - section B, the three classes and their rates, including the dim class the decoder does not have today.
+STEP: 4 | not started | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
+STEP: 5 | not started | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
+STEP: 6 | not started | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
+STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
+STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.

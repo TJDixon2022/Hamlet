@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 439 - the marks are joined across gaps no sender makes
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T13:33:48-04:00
-NOTE: Build: CwUnitEstimator.Measure joins key-up dips of 15 ms or less between two marks; building with warnings as errors
+UPDATED: 2026-09-25T13:34:16-04:00
+NOTE: Running WhatTheStrayLettersRestOnTests alone, 165 over 565 and the added letters
 
 ---
 
