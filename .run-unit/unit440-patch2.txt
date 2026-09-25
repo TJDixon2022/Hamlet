@@ -1,0 +1,7 @@
+    private static string Reading(Wrong w)
+        => w.Held
+            ? string.Create(CultureInfo.InvariantCulture,
+                $"held element {w.HeldGaps.ElementMilliseconds:0} ms, character {w.HeldGaps.CharacterMilliseconds:0} ms, word {w.HeldGaps.WordMilliseconds:0} ms, element-to-character crossover {Math.Sqrt(w.HeldGaps.ElementMilliseconds * w.HeldGaps.CharacterMilliseconds):0} ms")
+            : string.Create(CultureInfo.InvariantCulture,
+                $"textbook 1, 3, 7 units, element-to-character crossover {Math.Sqrt(3) * w.UnitMs:0} ms");
+

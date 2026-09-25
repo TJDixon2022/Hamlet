@@ -236,6 +236,21 @@ public static class CwUnitEstimator
 
         word = wordBoundary * wordBoundary / character;
 
+        // **A CLIPPED READING THAT PUTS THE CHARACTER GAP PAST THE WORD GAP IS NOT
+        // SEPARATED** (unit 405's G1, built by work instructions 413 and 431 and
+        // re-applied by 440 under R78). The clip carries a short element centroid
+        // back into the character gap as boundary squared over element, and the
+        // kinds then cost backwards: every gap nearer the word want than the
+        // character want becomes a space, and a letter breaks where its own element
+        // gap sat. Unit 440 traced 3 of the 27 split sure-wrong letters on the keyed
+        // recordings to exactly this reading. Refused, the stream keeps the last gaps
+        // it stood behind. It was taken out twice on character counts, which R78 no
+        // longer judges by.
+        if (character >= word)
+        {
+            return textbook;
+        }
+
         return new CwGapLengths(
             element,
             character,

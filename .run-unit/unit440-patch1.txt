@@ -1,0 +1,44 @@
+    /// <summary>A decode with the per-hop pitch and envelope and, for each settled character, the gap reading in force when it settled.</summary>
+    /// <param name="Settled">What settled.</param>
+    /// <param name="Tone">The mix pitch after each hop.</param>
+    /// <param name="Envelope">The envelope magnitude of each hop.</param>
+    /// <param name="Reading">Per settled character: whether the stream held this sender's own gaps, and the gaps it held.</param>
+    internal sealed record Decoded(
+        IReadOnlyList<CwCharacter> Settled, double[] Tone, double[] Envelope,
+        IReadOnlyList<(bool Held, CwUnitEstimator.CwGapLengths Gaps)> Reading);
+
+    /// <summary>Settles a recording exactly as the floors do, reading the stream's state as each character settles and changing nothing.</summary>
+    /// <param name="name">The recording, under the captures folder.</param>
+    /// <returns>The decode.</returns>
+    internal static Decoded Decode(string name)
+    {
+        var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+        var heldField = typeof(CwProbabilisticStream).GetField("_structureHeld", flags)!;
+        var gapsField = typeof(CwProbabilisticStream).GetField("_heldGaps", flags)!;
+        var audio = Hamlet.RadioEngine.Audio.WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var settled = new List<CwCharacter>();
+        var reading = new List<(bool, CwUnitEstimator.CwGapLengths)>();
+        var tone = new List<double>();
+        var envelope = new List<double>();
+
+        decoder.CharacterSettled += c =>
+        {
+            settled.Add(c);
+            reading.Add(((bool)heldField.GetValue(decoder.Stream)!, (CwUnitEstimator.CwGapLengths)gapsField.GetValue(decoder.Stream)!));
+        };
+
+        var hop = decoder.Tracker.HopSamples;
+
+        for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+        {
+            decoder.Process(new Hamlet.RadioEngine.Audio.AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            tone.Add(decoder.Stream.ToneHz);
+            envelope.Add(decoder.Stream.NewestEnvelope);
+        }
+
+        decoder.Flush();
+
+        return new Decoded(settled, tone.ToArray(), envelope.ToArray(), reading);
+    }
+

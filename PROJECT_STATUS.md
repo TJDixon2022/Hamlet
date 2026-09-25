@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 2 of 4
 WORK_INSTRUCTION: 440 - the decoder stops being sure and wrong (run by hand, outside the loop)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T18:33:16-04:00
-NOTE: Entry round: the requirement metrics over every keyed recording
+UPDATED: 2026-09-25T18:47:51-04:00
+NOTE: Running TheBaselineIsScoredTests alone, the baseline and outside totals
 
 ---
 
