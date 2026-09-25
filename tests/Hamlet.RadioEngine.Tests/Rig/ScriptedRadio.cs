@@ -126,6 +126,26 @@ internal sealed class ScriptedRadio : ISerialPort
     /// </summary>
     public bool? Overloading { get; set; }
 
+    /// <summary>
+    /// Whether the radio is keying, `1C 00`, or null where this radio does not speak it.
+    /// </summary>
+    /// <remarks>
+    /// **NULL UNLESS A TEST PUTS ONE HERE** (work instruction 426), so a test written
+    /// before this radio spoke `1C 00` still finds the transmit flag unread. Nothing here
+    /// keys anything: it is the answer to a read, set by the test.
+    /// </remarks>
+    public bool? Transmitting { get; set; }
+
+    /// <summary>
+    /// Whether the radio answers the receive meters the live poll asks for: the S-meter
+    /// `15 02`, the squelch status `15 05`, power out `15 11` and SWR `15 12`.
+    /// </summary>
+    /// <remarks>
+    /// Off unless a test turns it on (work instruction 426), so a test written before
+    /// still finds them unread. On, they read as nothing: S0, open, no power, SWR 1.0.
+    /// </remarks>
+    public bool AnswersMeters { get; set; }
+
     /// <summary>Sub-commands the radio will not answer, for the unread case.</summary>
     public HashSet<byte> Deaf { get; } = new();
 
@@ -371,6 +391,18 @@ internal sealed class ScriptedRadio : ISerialPort
 
             case 0x15 when data.Length == 1 && data[0] == 0x07 && Overloading is { } over:
                 Reply(0x15, new[] { (byte)0x07, (byte)(over ? 1 : 0) });
+                break;
+
+            case 0x15 when AnswersMeters && data.Length == 1 && data[0] == 0x05:
+                Reply(0x15, new[] { (byte)0x05, (byte)0x01 });
+                break;
+
+            case 0x15 when AnswersMeters && data.Length == 1 && data[0] is 0x02 or 0x11 or 0x12:
+                Reply(0x15, new[] { data[0], (byte)0x00, (byte)0x00 });
+                break;
+
+            case 0x1C when data.Length == 1 && data[0] == 0x00 && Transmitting is { } keyed:
+                Reply(0x1C, new[] { (byte)0x00, (byte)(keyed ? 1 : 0) });
                 break;
 
             case 0x1A when data.Length >= 1 && data[0] == 0x03:

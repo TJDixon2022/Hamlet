@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 1 of 4
 WORK_INSTRUCTION: 426 - the preamp follows the overload after the tune-in
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T20:07:03-04:00
-NOTE: Touched types round entry: DecisionLogOrderTests, 4 of 4
+UPDATED: 2026-09-24T20:14:50-04:00
+NOTE: Touched types round t1-b: WhatHappensWhenTheBandOverloadsTests, 1 of 1
 
 ---
 

@@ -1,0 +1,29 @@
+unit426 task 1: what happens when the band overloads after the tune-in (7.8's trace) - WhatHappensWhenTheBandOverloadsTests.PrintWhatHappens, a fact that asserts nothing, at 3.530, 7.030, 14.050, 21.050, 28.050 and 50.100 MHz: quiet tune-in, Overflow rising 12 polls, clearing 40, his hand then overload again; no write reaches the radio after the tune-in at any frequency; sentences asking him to change a field Hamlet set and still owns 0 at every point, and 60 asking him to change a field Hamlet left and no longer owns once he has moved on: RF gain 48 (a false 39 percent), preamp 12
+
+What the trace prints at each point: the preamp asked for, every write, the preamp read
+back, and every sentence the setup's voice, Receive Help (ReceiveAdvice), RigObservations,
+ReceiveObstructions, the front-end chip and the overload sentence say about the nine
+fields: in the block, moved into a block that states nothing, and moved into FT8's block.
+
+The line that would have to act on the live flag: MainWindowViewModel.ApplyRigState, at
+MainWindowViewModel.cs:10983-10987, reads RigField.Overflow into FrontEndIsOverloading on
+every poll and nothing acts on it; the write belongs in ReceiverSetup, the one component
+that owns the preamp.
+
+The sentences found:
+- ReceiveAdvice.Gain (ReceiveAdvice.cs:456-486), once he has moved on: "Open the receive
+  gain all the way. It is at about 39 percent" with the gain at 100 percent. The read is a
+  percent and the rule compares it to 240 on the 0-255 write scale, so the sentence is
+  false as well as asking him to change a field the CW row set. 12 per point.
+- OverflowAdviceFor (MainWindowViewModel.cs:9094-9101), moved on, overloading with the
+  preamp Hamlet left on: "Press P.AMP/ATT on the front of the radio until the preamp reads
+  off." True, and on a field no tune-in owns there. 12, at point 2.
+- In the block the overload sentence (9085-9091) says Hamlet is not asking him to change
+  the preamp or the attenuator while the preamp reads on and the row asks for off.
+
+MeasureTheLivePollCadence: the live pass, 7 fields read in order then the plan's interval,
+20 passes against the scripted radio: a fresh Overflow reading every 252.9 ms median (249.9
+min, 265.8 max), with 14 ms of wire a pass on the IC-7300 by PollBudgetTests' figure.
+ScriptedRadio answers the transmit flag and, when asked, the live meters.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
