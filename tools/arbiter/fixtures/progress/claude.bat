@@ -41,14 +41,47 @@ rem  space in the System32 path to need one.
 set "FIND=%SystemRoot%\System32\find.exe"
 set "ARGS=%CD%\.stand-in-args.txt"
 >"%ARGS%" echo %*
-findstr /c:"Read ARBITER" "%ARGS%" >nul
-if not errorlevel 1 goto :arbiter
 findstr /c:"PROJECT:" "%ARGS%" >nul
 if not errorlevel 1 goto :unit
+rem  084: THE ARBITER'S PROMPT ARRIVES ON STDIN, as the judges' always have, so
+rem  stdin is captured ONCE here for every call that is not the unit's and each
+rem  branch reads the file. It used to arrive as a -p argument and was known by
+rem  "Read ARBITER" on the first line, which the directive then displaced
+rem  (measured 11:15, three smokes fell through to the judge branch); and a
+rem  prompt of 8055 bytes was then refused by cmd.exe as too long before this
+rem  file ran at all (measured 13:0x, park-fresh's second pass). The launcher
+rem  now pipes the prompt, and no argument limit applies. Both markers are
+rem  tested so a prompt of either shape is still the arbiter's.
+set "STDIN=%CD%\.stand-in-stdin.txt"
+findstr "^" > "%STDIN%"
+rem  THE WHOLE FIRST SENTENCE, with its full stop, and not the two words: the
+rem  state judge's prompt says PRIME DIRECTIVE too since 084 task 5, and the
+rem  two-word test sent every judge call down the arbiter branch - measured
+rem  13:40, park-fresh and drift-report both failing on the judge's answer
+rem  reading "fixture arbiter - wrote nothing". Only the arbiter's prompt
+rem  carries the sentence on one line.
+findstr /c:"THE PHASE GOAL IS THE PRIME DIRECTIVE. The last report is an indicator that tunes" "%STDIN%" >nul
+if not errorlevel 1 goto :arbiter
+findstr /c:"Read ARBITER" "%STDIN%" >nul
+if not errorlevel 1 goto :arbiter
 goto :judge
 
 :arbiter
 >>"%CD%\calls.txt" echo ARBITER
+rem  087: A .arbfailat FILE LISTS THE ARBITER CALLS THAT FAIL - one call number
+rem  per line. A listed call writes no JSON at all and exits 1, which is what
+rem  a claude that died or was killed looks like to the launcher's parse; the
+rem  next call answers as it always has. So an arm can make the first attempt
+rem  fail and the retry succeed, or both fail, by listing 1 or 1 and 2.
+if not exist "%CD%\.arbfailat" goto :arbfaildone
+set "ARBN="
+for /f %%N in ('%FIND% /c "ARBITER" ^< "%CD%\calls.txt"') do set "ARBN=%%N"
+set "ARBFAIL="
+for /f "usebackq delims=" %%L in ("%CD%\.arbfailat") do if "%%L"=="%ARBN%" set "ARBFAIL=1"
+if not defined ARBFAIL goto :arbfaildone
+echo FIXTURE: the arbiter call %ARBN% fails - no JSON, exit 1
+exit /b 1
+:arbfaildone
 rem  068: A REAL ARBITER AUTHORS A NEW INSTRUCTION EVERY ITERATION, and its
 rem  APPROACH is not the one it wrote last time. The stand-in wrote nothing at
 rem  all, which was harmless until 068 made a repeated approach a refusal -
@@ -84,6 +117,19 @@ for /f "usebackq delims=" %%F in ("%CD%\.exhaust") do set "EXCRIT=%%F"
 powershell -NoProfile -Command "$p='%CD%\WORK_INSTRUCTIONS.md'; $t=[IO.File]::ReadAllText($p, [Text.Encoding]::UTF8); $t=[regex]::Replace($t, '(?m)^MOVE: .*$', 'MOVE: exhausted'); $c='%EXCRIT%'.Trim(); if($c -match '^([0-9]+)\.([0-9]+)$'){ $t=[regex]::Replace($t, '(?m)^ADVANCES: .*$', ('ADVANCES: step ' + $Matches[1] + ' criterion ' + $Matches[2])) }; [IO.File]::WriteAllText($p, $t, (New-Object Text.UTF8Encoding($false)))"
 echo FIXTURE: the arbiter declared MOVE: exhausted
 :exhaustdone
+rem  083: A .advances FILE NAMES THE CRITERION EACH ARBITER CALL AUTHORS.
+rem  Line n of the file is the ADVANCES value for arbiter call n; a missing or
+rem  blank line leaves the instruction as it stands. The parking arms need the
+rem  stand-in to move to another criterion once one is parked, as a real arbiter
+rem  reading the plan block would - without this the stand-in names the parked
+rem  criterion again every call, is refused and redirected, and the arm proves
+rem  only the refusal. .vary still varies the APPROACH beside it.
+if not exist "%CD%\.advances" goto :advdone
+set "ARBN="
+for /f %%N in ('%FIND% /c "ARBITER" ^< "%CD%\calls.txt"') do set "ARBN=%%N"
+if not defined ARBN goto :advdone
+powershell -NoProfile -Command "$n=[int]'%ARBN%'; $ls=@(Get-Content -LiteralPath '%CD%\.advances'); $i=$n - 1; if(($i -lt 0) -or ($i -ge $ls.Count)){ exit }; $a=([string]$ls[$i]).Trim(); if($a -eq ''){ exit }; $p='%CD%\WORK_INSTRUCTIONS.md'; $t=[IO.File]::ReadAllText($p, [Text.Encoding]::UTF8); $t=[regex]::Replace($t, '(?m)^ADVANCES: .*$', ('ADVANCES: ' + $a)); [IO.File]::WriteAllText($p, $t, (New-Object Text.UTF8Encoding($false))); 'FIXTURE: the arbiter named ' + $a + ' on call ' + $n"
+:advdone
 if not exist "%CD%\.leftover" goto :arbitersay
 set "ARBN="
 for /f %%N in ('%FIND% /c "ARBITER" ^< "%CD%\calls.txt"') do set "ARBN=%%N"
@@ -178,14 +224,81 @@ rem  correctly read it as older than the launch, and a VALID report was
 rem  refused. The check was right and the stand-in was modelling a session
 rem  badly. The bytes are untouched - the kept arm compares SHA256.
 powershell -NoProfile -Command "(Get-Item -LiteralPath '%CD%\output.md').LastWriteTimeUtc = [datetime]::UtcNow"
+rem  087: A .deny FILE MAKES THE UNIT REPORT A DENIAL IT COULD NOT WORK AROUND.
+rem  The report is still written, so the record can judge it, and the result
+rem  JSON carries one permission_denial with terminal_reason max_turns - not
+rem  completed - which is what run-unit.bat turns into exit 4 and the launcher
+rem  into the denial route.
+if not exist "%CD%\.deny" goto :unitsay
+echo FIXTURE: the unit was denied a call and did not complete
+echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"max_turns","num_turns":3,"permission_denials":[{"tool_name":"Bash","tool_input":{"command":"node tools/tests/run.js"}}],"result":"fixture unit - denied node and could not finish"}
+exit /b 0
+:unitsay
 echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"completed","num_turns":1,"permission_denials":[],"result":"fixture unit - ran the instruction in the tree"}
 exit /b 0
 
 :judge
 if exist "%CD%\.realjudge" goto :realjudge
-findstr "^" >nul
+rem  083: STDIN IS KEPT, NOT DRAINED, so the stand-in can tell the section-4
+rem  judge's prompt - "Below is section 4 of a work unit's report" - from the
+rem  state judge's. Until 083 both got the state answer, which the section-4
+rem  parse reads as no VERDICT line at all and the loop halts as unknown; no arm
+rem  reached that because every stand-in report had an empty section 4.
+rem
+rem  THE SECTION-4 JUDGE IS DRIVEN BY TWO FILES. .s4 holds the answer for a
+rem  HIT: "ruling keying", "ruling money", "ruling promise", or the one word
+rem  "unknown" for an answer nothing can parse. .s4at lists which section-4
+rem  calls, by number, get that answer - every other call answers none. No
+rem  .s4at means every call. No .s4 means every call answers none, which is
+rem  what a real judge says of a section 4 with nothing inside the three.
+rem  084: stdin was captured above; the judge's copy is that file.
+copy /y "%STDIN%" "%CD%\.judge-in.txt" >nul
+findstr /c:"section 4 of a work unit" "%CD%\.judge-in.txt" >nul
+if not errorlevel 1 goto :judge4
 >>"%CD%\calls.txt" echo JUDGE
+rem  084: A .follows FILE DRIVES THE DRIFT ANSWER. Line n is the answer for the
+rem  nth state-judge call - report or plan - and a missing or blank line answers
+rem  nothing, as before. The drift-twice arm needs the stand-in to say report
+rem  twice running on one criterion; the real judge proves the reading itself in
+rem  drift-report and drift-plan.
+set "FOLLOWS="
+if not exist "%CD%\.follows" goto :judgesay
+set "JN="
+rem  Counted as whole lines, not with find /c, which would count JUDGE4 too.
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$n=@(Get-Content -LiteralPath '%CD%\calls.txt' | Where-Object { $_ -eq 'JUDGE' }).Count; 'JN=' + $n; $ls=@(Get-Content -LiteralPath '%CD%\.follows'); $i=$n - 1; if(($i -lt 0) -or ($i -ge $ls.Count)){ exit }; $a=([string]$ls[$i]).Trim().ToLower(); if(($a -eq 'report') -or ($a -eq 'plan')){ 'FOLLOWS=' + $a }"`) do set "%%A=%%B"
+:judgesay
+if "%FOLLOWS%"=="report" echo FIXTURE: the state judge answers FOLLOWS: report on state-judge call %JN%
+if "%FOLLOWS%"=="report" echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"completed","num_turns":1,"permission_denials":[],"result":"STATE: in progress\nWHY: fixture judge - the progress fixture proves the count, not the step.\nHONEST: yes\nFOLLOWS: report\nFOLLOWED: the fixture judge says the criterion was chosen because the last report raised it"}
+if "%FOLLOWS%"=="report" exit /b 0
+if "%FOLLOWS%"=="plan" echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"completed","num_turns":1,"permission_denials":[],"result":"STATE: in progress\nWHY: fixture judge - the progress fixture proves the count, not the step.\nHONEST: yes\nFOLLOWS: plan"}
+if "%FOLLOWS%"=="plan" exit /b 0
 echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"completed","num_turns":1,"permission_denials":[],"result":"STATE: in progress\nWHY: fixture judge - the progress fixture proves the count, not the step.\nHONEST: yes"}
+exit /b 0
+
+:judge4
+>>"%CD%\calls.txt" echo JUDGE4
+if not exist "%CD%\.s4" goto :s4none
+set "S4N="
+for /f %%N in ('%FIND% /c "JUDGE4" ^< "%CD%\calls.txt"') do set "S4N=%%N"
+set "S4HIT=1"
+if not exist "%CD%\.s4at" goto :s4decide
+set "S4HIT="
+for /f "usebackq delims=" %%L in ("%CD%\.s4at") do if "%%L"=="%S4N%" set "S4HIT=1"
+:s4decide
+if not defined S4HIT goto :s4none
+set "S4VERDICT="
+set "S4KIND="
+for /f "usebackq tokens=1,2" %%A in ("%CD%\.s4") do set "S4VERDICT=%%A" & set "S4KIND=%%B"
+if /i "%S4VERDICT%"=="unknown" goto :s4unknown
+echo FIXTURE: the section-4 judge answers ruling, %S4KIND%, on section-4 call %S4N%
+echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"completed","num_turns":1,"permission_denials":[],"result":"VERDICT: ruling\nWHICH: %S4KIND%\nWHY: fixture judge - section 4 asks the owner to decide something inside the three, %S4KIND%."}
+exit /b 0
+:s4unknown
+echo FIXTURE: the section-4 judge answers in a shape nothing can read, on section-4 call %S4N%
+echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"completed","num_turns":1,"permission_denials":[],"result":"the fixture judge answered with no VERDICT line at all"}
+exit /b 0
+:s4none
+echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"completed","num_turns":1,"permission_denials":[],"result":"VERDICT: none\nWHY: fixture judge - section 4 asks nothing inside the three."}
 exit /b 0
 
 rem  065: THE REAL JUDGE, for the reversal and nine arms. A .realjudge file in
@@ -196,5 +309,7 @@ rem  a stand-in was written to say. Restricted and read-only, as the launcher
 rem  asks for it.
 :realjudge
 >>"%CD%\calls.txt" echo JUDGE
-"%USERPROFILE%\.local\bin\claude.exe" %*
+rem  084: stdin was captured into a file before this branch was reached, so the
+rem  prompt is piped on to the real claude from that file - the same bytes.
+type "%STDIN%" | "%USERPROFILE%\.local\bin\claude.exe" %*
 exit /b %ERRORLEVEL%

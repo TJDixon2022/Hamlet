@@ -256,6 +256,239 @@ rem  and after a full run carries three routines' work and the splice cannot be
 rem  isolated in it. They also cost seconds rather than seventy apiece.
 rem
 rem  Extended  2026-09-20 for: work instructions 074 task 4
+
+rem  083's ARMS - THE LOOP'S DEFAULT IS CONTINUE, AND IT RECENTERS ON THE PHASE.
+rem  The owner, 2026-09-23: find a way forward, default to action, a question is
+rem  parked and not a reason to quit; recenter on the phase goals, not the
+rem  output. Built as: a step's state is its checkboxes (task 1), the arbiter is
+rem  aimed at the first step with real open work (task 2), a section-4 hit on
+rem  one of the three PARKS the question and routes past it (task 3), and the
+rem  night ends only when every remaining criterion is parked or the owner's
+rem  (task 4).
+rem
+rem  THE STAND-IN LEARNED TWO THINGS for these: .advances names the criterion
+rem  each arbiter call authors, and .s4 with .s4at drive the section-4 judge's
+rem  answer per call - see claude.bat. The section-4 hit is therefore the
+rem  STAND-IN'S verdict, not a real judge's: what these arms prove is the
+rem  ROUTING after a hit, and the stops fixture already proves the real judge
+rem  reads a keying question as a hit.
+rem
+rem    park-one       a section-4 hit on 2.3 with 2.2 and 2.4 still open
+rem                   MUST park 2.3 to PARKED.md naming keying, mark it, author
+rem                   the next unit against 2.2, run it, and CONTINUE to the
+rem                   backstop - two units, no halt on the question
+rem    park-twice     the same, twice in a row on 2.3 then 2.2
+rem                   MUST park both, skip both, and run a third unit at 2.4
+rem    park-last      a hit on 2.2 when it is the ONLY open non-owner criterion,
+rem                   beside two owner's-verdict lines and a named sheet
+rem                   MUST end at exit 0, the ledger verdict ending and naming
+rem                   the parked count, the sheet written with the parked
+rem                   question ABOVE the criteria, and money named
+rem    park-only      a hit on the only open criterion of a plan with no
+rem                   owner's line and no REVIEW_SHEET
+rem                   MUST end at exit 0 and put PARKED.md's path on the
+rem                   console and in the ledger line, since there is no sheet
+rem    park-unknown   the section-4 judge answers in a shape nothing can read
+rem                   MUST still halt at stop 3 as unknown, a failure, and
+rem                   write no PARKED.md - :s4unknown is untouched
+rem    park-arbstop   the arbiter itself raises one of the three, MOVE: stop
+rem                   MUST still halt at stop 4 and write no PARKED.md -
+rem                   :arbstop is untouched
+rem    park-fresh     park-one's root run again by a NEW loop
+rem                   MUST clear the mark, say so, and let the new run author
+rem                   2.3 again - a park is one pass, never a permanent block.
+rem                   nice-to-pass
+rem    state-header-done
+rem                   the header says step 2 in progress; the plan has both of
+rem                   its boxes ticked and step 3 open
+rem                   MUST treat step 2 as done, aim at step 3, bring the
+rem                   header up to done, and run the unit at 3.1
+rem    state-header-notstarted
+rem                   the header says step 2 not started; the plan has 2.1
+rem                   ticked
+rem                   MUST treat step 2 as partial, offer 2.2 and 2.3, run the
+rem                   unit at 2.3 and record ADVANCED yes
+rem    target-not-zero
+rem                   steps 0 to 4, step 0 fully ticked but not started in the
+rem                   header, work open in 3 and 4 - HamLet's case
+rem                   MUST aim the prompt at step 3, never at step 0
+rem
+rem  Extended  2026-09-23 for: work instructions 083 task 5
+
+rem  084's ARMS - THE PHASE GOAL IS THE PRIME DIRECTIVE. The owner, 2026-09-23:
+rem  output.md is a helper, an indicator, a slight modification element, and
+rem  drift - reading the indicator as the directive - is the failure. Built as:
+rem  the directive first in every arbiter prompt and the report relabelled an
+rem  indicator (task 3), a WHY that rests on the last report refused and
+rem  redirected (task 4), the drift judge a redirect and a second drift a park
+rem  (task 5).
+rem
+rem    prime-first    the prompt, built: the directive is its FIRST content,
+rem                   before the phase goal, and every block's share is printed
+rem    prime-label    the same prompt: the report block carries the indicator
+rem                   label, sits last, and its share is printed
+rem    prime-big      a report five times the prompt's size: the directive and
+rem                   the criteria still lead, nothing displaced, share capped
+rem    why-mixed      a WHY that quotes 2.3 and gives the last report as its
+rem                   reason: REFUSED by task 4's detector, redirected, the loop
+rem                   authors again and continues - no halt
+rem    why-split      a WHY with a plan sentence of its own beside a report
+rem                   sentence: task 4 lets it through and SAYS SO, the unit
+rem                   runs, and the stand-in judge's report answer redirects -
+rem                   caught by task 5, not task 4
+rem    drift-report   the REAL judge reads a WHY that admits the report chose
+rem                   the target: FOLLOWS report, and the loop REDIRECTS - it
+rem                   does not halt - with redirect.txt written
+rem    drift-plan     the REAL judge reads a plan-driven WHY on the one work
+rem                   criterion beside two owner's lines: FOLLOWS plan, the unit
+rem                   flips it, and the night ends at EXIT 0
+rem    drift-twice    the stand-in judge says report twice running on 2.3:
+rem                   parked with which=drift, 2.2 authored, night continues
+rem    stop-over-why  MOVE: stop beside a WHY that cites only the report: the
+rem                   STOP WINS and halts at stop 4, nothing is redirected
+rem
+rem  THREE ARMS ARE REVERSED, with the old expectation quoted at each:
+rem    whyreport      069 asserted a HALT with the ledger line "cites no line
+rem                   of the plan". 084: the refusal fires and REDIRECTS.
+rem    whyboth        069 asserted it RUNS - "this check is not the guard for
+rem                   that, 6.5 is". 084 adds the guard: REFUSED, redirected.
+rem    followsreport  069 asserted the real judge answers FOLLOWS report and the
+rem                   loop HALTS quoting it. 084's detector refuses that WHY
+rem                   before the unit runs, so the judge is never reached.
+rem  AND TWO OF 083's ARMS ARE CORRECTED, not reversed: state-header-done and
+rem  state-header-notstarted read the target from arbiter-prompt.txt, a file a
+rem  --seed run never writes, and failed both passes of unit 084's task 1 while
+rem  the launcher did what they demand. They now read the console's own
+rem  "target step N" line. The old assertion is quoted at :verdict083b.
+rem
+rem  Extended  2026-09-24 for: work instructions 084 task 6
+
+rem  085's ARMS - TWO ENDINGS. The owner, 2026-09-23: money is no longer a
+rem  thing a night stops for, and a night ends for two things only - a decision
+rem  the arbiter must not make in his place, and drift so severe the arbiter
+rem  cannot resolve the work back to a phase goal. Built as: --budget prints
+rem  and ledgers and halts nothing, with no default (task 2); :drifthalt, the
+rem  drift ending, reached from :ownerhalt when every parked criterion was
+rem  parked for drift (task 3).
+rem
+rem    budget-none    --budget omitted: the banner says no ceiling, the spend
+rem                   is still printed after the unit, the loop reaches its
+rem                   backstop, and nothing says stop 2
+rem    drift-all      plan-park-only, one authorable criterion, the stand-in
+rem                   judge says report twice on it: parked for drift, and the
+rem                   next iteration ENDS at exit 0 - THE ARBITER COULD NOT
+rem                   RESOLVE THE WORK BACK TO THE PHASE GOAL - the ledger
+rem                   verdict ending and its prose naming drift and 2.2
+rem
+rem  ONE ARM IS REVERSED, with the old expectation quoted at :verdict070:
+rem    redirect-budget  070 asserted "--budget still halts during a redirect,
+rem                   exactly as before" on the ledger line stop 2. 085: the
+rem                   run goes PAST a --budget of 0, says so on the console,
+rem                   carries the figure in the ledger's cost column, and
+rem                   reaches its backstop.
+rem  AND drift-twice IS THE PROOF THE DRIFT ENDING DOES NOT FIRE while a
+rem  criterion the arbiter has not drifted on remains: 2.3 is parked for
+rem  drift and 2.2 is authored and run, unchanged from 084.
+rem
+rem  Extended  2026-09-24 for: work instructions 085 task 5
+
+rem  086's ARMS - THE ARBITER'S OWN PAPERWORK NEVER ENDS A NIGHT. The owner,
+rem  2026-09-23: a malformed field is not a decision he reserved and not
+rem  drift; the arbiter can fix it by authoring again. Built as: the four
+rem  authoring refusals hand back through 084's :redirectnext and park on a
+rem  second hit at a criterion (task 2); blocker-twice parks the criterion the
+rem  blockers named or redirects (task 3); a report the validator refused is
+rem  recorded unjudged with fate not recorded and the loop continues (task 4).
+rem
+rem    hb-noadv        a decision block with NO ADVANCES line: handed back,
+rem                    the stand-in cannot repair it, handed back again,
+rem                    nothing launched, the loop reaches its backstop
+rem    hb-twice        the owner's 2.3 named by the shipped WI and again by
+rem                    the arbiter's first call: the second hand-back PARKS
+rem                    2.3 with which=refusal, the next call names 2.2 and
+rem                    a unit runs
+rem    hb-blocker-park two blocker-clears naming criterion 2.3: 2.3 is PARKED
+rem                    with which=blocker, the arbiter is redirected, a third
+rem                    unit runs, no halt
+rem    hb-unshaped     the unit writes a report with no section 4: run-unit
+rem                    exits 5, the entry lands with FATE: not recorded and
+rem                    ADVANCED: not recorded, no judge is called, the ledger
+rem                    carries a report-refused note, and the loop continues
+rem    stop-over-hb    a keying MOVE: stop with no ADVANCES field: THE STOP
+rem                    WINS at stop 4 - the dispatch now sits above the
+rem                    missing-field refusal - and nothing is handed back
+rem
+rem  FOUR ARMS ARE REVERSED, with the old expectation quoted at :verdict:
+rem    bad             064 asserted a HALT, refused because ADVANCES named no
+rem                    criterion. 086: handed back, the arbiter authors 2.2,
+rem                    a unit runs, the backstop.
+rem    owner-advances  065 asserted a HALT, refused because ADVANCES named an
+rem                    owner criterion. 086: handed back, 2.2 authored, a unit
+rem                    runs, the backstop.
+rem    closed          064 asserted a HALT, refused because step 2 is done
+rem                    and closed. 086: handed back twice - the arbiter aimed
+rem                    at the closed step again - nothing launched, the
+rem                    backstop.
+rem    blocker-twice   064 asserted a HALT by the blocker rule. 086: the two
+rem                    blocker-clears named only a unit, nothing to park, the
+rem                    arbiter is redirected, a third unit runs, the backstop.
+rem  NOT BUILT, reported: two no-advance units at one criterion still
+rem  REDIRECT to that criterion by a different approach, as 070 built under
+rem  the owner's ruling of 2026-09-14 - stop 10 is dead code and never ended
+rem  a night, and turning the redirect into a park would act against that
+rem  ruling; raised in the report for the owner.
+rem
+rem  Extended  2026-09-24 for: work instructions 086 task 5
+
+rem  087's ARMS - A HICCUP IS RETRIED, NOT FATAL. The owner, 2026-09-23:
+rem  failure has to be the last option, and a first attempt failing is the
+rem  first. Built as: the section-4 judge and the arbiter call retry once then
+rem  park (task 2); the launch retries once then parks or, for a live lock,
+rem  skips the iteration; a unit that ran and wrote no report is recorded
+rem  unjudged and never re-run; the reload retries once then skips; --seed
+rem  with no instruction is a door check (task 3); a denial parks the
+rem  criterion and widens no scope (task 4).
+rem
+rem    s4-retry        the section-4 judge unreadable on call 1, readable on
+rem                    the retry: continues, both attempts on the console and
+rem                    a ledger note, nothing parked
+rem    arb-retry       the arbiter call fails once, the retry succeeds: a unit
+rem                    runs, a ledger note, the backstop
+rem    arb-twice       the arbiter call fails twice: the first authorable
+rem                    criterion is parked with which=arbiter, the next
+rem                    iteration's call succeeds, a unit runs
+rem    arb-stop-retry  the retried arbiter returns a keying MOVE: stop: THE
+rem                    STOP WINS at stop 4
+rem    launch-twice    no repository, every launch exits 7: retried once, then
+rem                    the criterion is parked with which=launch, nothing
+rem                    appended, the backstop
+rem    deny-park       the unit is denied and does not complete: the criterion
+rem                    is parked with which=denial, no allowed.txt written,
+rem                    the loop continues - no stop 6
+rem    fail-noseed     --seed with the shipped instruction deleted: refused at
+rem                    the door at exit 2 with a ledger line, nothing called
+rem
+rem  THREE ARMS ARE REVERSED, with the old expectation quoted at each:
+rem    park-unknown    083 asserted an unreadable judge still HALTS at stop 3.
+rem                    087: retried once, then the criterion PARKS with
+rem                    which=unread, the loop continues.
+rem    noreport        067 asserted stop 11 with NOTHING appended. 087: not
+rem                    retried, the entry lands with FATE not recorded, a
+rem                    ledger note, the loop continues.
+rem    leftover        067 asserted stop 11 naming UNIT: 358. 087: the leftover
+rem                    is still NOT JUDGED and NOT appended, the root file's
+rem                    UNIT: line is still named, and iteration 2 - a launch
+rem                    that started nothing twice, the lock - is skipped rather
+rem                    than ending the night.
+rem  NOT STAGED, said plainly: a launch that fails once and succeeds on the
+rem  retry; a reload that leaves nothing, once or twice. A launch cannot be
+rem  made transient from outside run-unit.bat, and the retry's success path
+rem  is the ordinary success path. A reload that leaves nothing cannot be
+rem  staged at all: the first cut put a DIRECTORY where reload.txt goes, and
+rem  the launcher's `if exist` accepted the directory as the file - reload.bat
+rem  never fails on a good root, so the arm was dropped rather than kept red.
+rem
+rem  Extended  2026-09-24 for: work instructions 087 task 5
 rem ============================================================
 
 set "HERE=%~dp0"
@@ -301,6 +534,19 @@ set "SLOW="
 set "CARD="
 set "CARDRO="
 set "RECONLY="
+rem  083: the section-4 judge's answer, which calls get it, and the criteria
+rem  the stand-in arbiter names per call. Empty for every arm but the parking
+rem  ones, so no other arm's root gains a file.
+set "S4="
+set "S4AT="
+set "ADVF="
+rem  084: the stand-in state judge's FOLLOWS answer per call.
+set "FOLLOWS="
+rem  087: the hiccups - see the root setup below.
+set "ARBFAILAT="
+set "DENY="
+set "NOGIT="
+set "NOWI="
 if /i "%ARM%"=="advance"        set "WI=WI-criterion.md"
 if /i "%ARM%"=="advance"        set "FLIP=2.3"
 if /i "%ARM%"=="noadvance"      set "WI=WI-criterion.md"
@@ -308,6 +554,17 @@ if /i "%ARM%"=="twice"          set "WI=WI-criterion.md"
 if /i "%ARM%"=="twice"          set "MAXI=3"
 if /i "%ARM%"=="closed"         set "WI=WI-criterion.md"
 if /i "%ARM%"=="closed"         set "CLOSED=1"
+rem  083 task 1: THE INPUT MOVES, THE EXPECTATION DOES NOT. Until 083 this arm
+rem  seeded a HEADER saying step 2 was done while the plan left 2.2 and 2.3
+rem  unticked, and the refusal fired off the header. The owner's ruling of
+rem  2026-09-23 is that a step's state is its checkboxes and a header cannot
+rem  override them - so that seed now reads step 2 as PARTIAL, the unit ran,
+rem  and the arm went red on the first run after the change, as predicted. It
+rem  now takes plan-closed.md, in which step 2's three criteria are all ticked
+rem  and step 1's is open - step 1 must stay open, or stop 1 fires first, which
+rem  is what PHASE_OUTCOME-closed.md's own note records. The refusal, its
+rem  ledger line and the verdict below are unchanged word for word.
+if /i "%ARM%"=="closed"         set "PLAN=plan-closed.md"
 if /i "%ARM%"=="bad"            set "WI=WI-bad.md"
 if /i "%ARM%"=="blocker"        set "WI=WI-blocker.md"
 if /i "%ARM%"=="blocker-twice"  set "WI=WI-blocker.md"
@@ -821,6 +1078,182 @@ if /i "%ARM%"=="redirect-minutes" set "SEEDF="
 if /i "%ARM%"=="redirect-minutes" set "FLIP=2.3"
 if /i "%ARM%"=="redirect-minutes" set "MINUTESARG=--minutes 1"
 if /i "%ARM%"=="redirect-minutes" set "SLOW=90"
+
+rem  083'S ARMS. The parking arms take NO --seed so the arbiter authors from
+rem  iteration 1 and .advances can move it between criteria; the state arms
+rem  keep --seed because what they prove is the derivation, not the authoring.
+if /i "%ARM%"=="park-one"        set "WI=WI-criterion.md"
+if /i "%ARM%"=="park-one"        set "PLAN=plan-park.md"
+if /i "%ARM%"=="park-one"        set "SEEDF="
+if /i "%ARM%"=="park-one"        set "VARY=1"
+if /i "%ARM%"=="park-one"        set "REPORT=output-panelq.md"
+if /i "%ARM%"=="park-one"        set "S4=ruling keying"
+if /i "%ARM%"=="park-one"        set "S4AT=1"
+if /i "%ARM%"=="park-one"        set "ADVF=adv-park-one.txt"
+if /i "%ARM%"=="park-one"        set "MAXI=2"
+if /i "%ARM%"=="park-twice"      set "WI=WI-criterion.md"
+if /i "%ARM%"=="park-twice"      set "PLAN=plan-park.md"
+if /i "%ARM%"=="park-twice"      set "SEEDF="
+if /i "%ARM%"=="park-twice"      set "VARY=1"
+if /i "%ARM%"=="park-twice"      set "REPORT=output-panelq.md"
+if /i "%ARM%"=="park-twice"      set "S4=ruling keying"
+if /i "%ARM%"=="park-twice"      set "S4AT=1 2"
+if /i "%ARM%"=="park-twice"      set "ADVF=adv-park-twice.txt"
+if /i "%ARM%"=="park-twice"      set "MAXI=3"
+if /i "%ARM%"=="park-last"       set "WI=WI-criterion2.md"
+if /i "%ARM%"=="park-last"       set "PLAN=plan-one-work.md"
+if /i "%ARM%"=="park-last"       set "SEEDF="
+if /i "%ARM%"=="park-last"       set "REPORT=output-panelq.md"
+if /i "%ARM%"=="park-last"       set "S4=ruling money"
+if /i "%ARM%"=="park-last"       set "MAXI=2"
+if /i "%ARM%"=="park-only"       set "WI=WI-criterion2.md"
+if /i "%ARM%"=="park-only"       set "PLAN=plan-park-only.md"
+if /i "%ARM%"=="park-only"       set "SEEDF="
+if /i "%ARM%"=="park-only"       set "REPORT=output-panelq.md"
+if /i "%ARM%"=="park-only"       set "S4=ruling promise"
+if /i "%ARM%"=="park-only"       set "MAXI=2"
+if /i "%ARM%"=="park-unknown"    set "WI=WI-criterion.md"
+if /i "%ARM%"=="park-unknown"    set "REPORT=output-panelq.md"
+if /i "%ARM%"=="park-unknown"    set "S4=unknown"
+if /i "%ARM%"=="park-unknown"    set "MAXI=2"
+if /i "%ARM%"=="park-arbstop"    set "WI=WI-stop.md"
+if /i "%ARM%"=="park-arbstop"    set "SEEDOUT=PHASE_OUTCOME-ex-empty.md"
+if /i "%ARM%"=="park-arbstop"    set "MAXI=2"
+if /i "%ARM%"=="park-fresh"      set "WI=WI-criterion.md"
+if /i "%ARM%"=="park-fresh"      set "PLAN=plan-park.md"
+if /i "%ARM%"=="park-fresh"      set "SEEDF="
+if /i "%ARM%"=="park-fresh"      set "VARY=1"
+if /i "%ARM%"=="park-fresh"      set "REPORT=output-panelq.md"
+if /i "%ARM%"=="park-fresh"      set "S4=ruling keying"
+if /i "%ARM%"=="park-fresh"      set "S4AT=1"
+if /i "%ARM%"=="park-fresh"      set "ADVF=adv-park-fresh.txt"
+if /i "%ARM%"=="park-fresh"      set "MAXI=2"
+if /i "%ARM%"=="state-header-done"       set "WI=WI-step3.md"
+if /i "%ARM%"=="state-header-done"       set "PLAN=plan-steps3.md"
+if /i "%ARM%"=="state-header-done"       set "SEEDOUT=PHASE_OUTCOME-hdr-stale.md"
+if /i "%ARM%"=="state-header-done"       set "FLIP=3.1"
+if /i "%ARM%"=="state-header-done"       set "MAXI=1"
+if /i "%ARM%"=="state-header-notstarted" set "WI=WI-criterion.md"
+if /i "%ARM%"=="state-header-notstarted" set "SEEDOUT=PHASE_OUTCOME-hdr-notstarted.md"
+if /i "%ARM%"=="state-header-notstarted" set "FLIP=2.3"
+if /i "%ARM%"=="state-header-notstarted" set "MAXI=1"
+if /i "%ARM%"=="target-not-zero" set "WI=WI-step3.md"
+if /i "%ARM%"=="target-not-zero" set "PLAN=plan-steps04.md"
+if /i "%ARM%"=="target-not-zero" set "SEEDOUT=PHASE_OUTCOME-hdr-zero.md"
+if /i "%ARM%"=="target-not-zero" set "PROMPTONLY=1"
+
+rem  084'S ARMS. The prompt arms compose and stop; the real-judge arms take no
+rem  --seed so the arbiter's prompt is built and the judge reads a real WHY.
+if /i "%ARM%"=="prime-first"    set "WI=WI-criterion.md"
+if /i "%ARM%"=="prime-first"    set "SEEDOUT=PHASE_OUTCOME-plan.md"
+if /i "%ARM%"=="prime-first"    set "PROMPTONLY=1"
+if /i "%ARM%"=="prime-first"    set "SEEDREPORT=..\watchdog\fixture-output.md"
+if /i "%ARM%"=="prime-label"    set "WI=WI-criterion.md"
+if /i "%ARM%"=="prime-label"    set "SEEDOUT=PHASE_OUTCOME-plan.md"
+if /i "%ARM%"=="prime-label"    set "PROMPTONLY=1"
+if /i "%ARM%"=="prime-label"    set "SEEDREPORT=..\watchdog\fixture-output.md"
+if /i "%ARM%"=="prime-big"      set "WI=WI-criterion.md"
+if /i "%ARM%"=="prime-big"      set "SEEDOUT=PHASE_OUTCOME-plan.md"
+if /i "%ARM%"=="prime-big"      set "PROMPTONLY=1"
+if /i "%ARM%"=="prime-big"      set "SEEDREPORT=..\watchdog\fixture-output.md"
+if /i "%ARM%"=="prime-big"      set "BIGREPORT=5"
+if /i "%ARM%"=="why-mixed"      set "WI=WI-whymixed.md"
+if /i "%ARM%"=="why-split"      set "WI=WI-whymixed-split.md"
+if /i "%ARM%"=="why-split"      set "FOLLOWS=report"
+if /i "%ARM%"=="drift-report"   set "WI=WI-whydrift.md"
+if /i "%ARM%"=="drift-report"   set "REPORT=output-panelq.md"
+if /i "%ARM%"=="drift-report"   set "REALJUDGE=1"
+if /i "%ARM%"=="drift-report"   set "SEEDF="
+if /i "%ARM%"=="drift-plan"     set "WI=WI-whyplan2.md"
+if /i "%ARM%"=="drift-plan"     set "PLAN=plan-one-work.md"
+if /i "%ARM%"=="drift-plan"     set "FLIP=2.2"
+if /i "%ARM%"=="drift-plan"     set "REPORT=output-panelq.md"
+if /i "%ARM%"=="drift-plan"     set "REALJUDGE=1"
+if /i "%ARM%"=="drift-plan"     set "SEEDF="
+if /i "%ARM%"=="drift-plan"     set "MAXI=2"
+if /i "%ARM%"=="drift-twice"    set "WI=WI-criterion.md"
+if /i "%ARM%"=="drift-twice"    set "PLAN=plan-park.md"
+if /i "%ARM%"=="drift-twice"    set "FOLLOWS=report report"
+if /i "%ARM%"=="drift-twice"    set "VARY=1"
+if /i "%ARM%"=="drift-twice"    set "ADVF=adv-drift.txt"
+if /i "%ARM%"=="drift-twice"    set "SEEDF="
+if /i "%ARM%"=="drift-twice"    set "MAXI=3"
+if /i "%ARM%"=="stop-over-why"  set "WI=WI-stopwhy.md"
+if /i "%ARM%"=="stop-over-why"  set "SEEDOUT=PHASE_OUTCOME-ex-empty.md"
+if /i "%ARM%"=="stop-over-why"  set "MAXI=2"
+rem  085: budget-none is advance's shape with no --budget at all - BUDGETARG
+rem  stays empty, which is the default every other arm already runs with, so
+rem  what it asserts is the banner and the spend line the default now prints.
+if /i "%ARM%"=="budget-none"    set "WI=WI-criterion.md"
+if /i "%ARM%"=="budget-none"    set "FLIP=2.3"
+rem  085: drift-all is drift-twice on a plan with ONE authorable criterion, so
+rem  the second report answer parks the only route and the next iteration has
+rem  nothing left but a criterion drifted on.
+if /i "%ARM%"=="drift-all"      set "WI=WI-criterion2.md"
+if /i "%ARM%"=="drift-all"      set "PLAN=plan-park-only.md"
+if /i "%ARM%"=="drift-all"      set "FOLLOWS=report report"
+if /i "%ARM%"=="drift-all"      set "VARY=1"
+if /i "%ARM%"=="drift-all"      set "SEEDF="
+if /i "%ARM%"=="drift-all"      set "MAXI=3"
+rem  086: THE FOUR REVERSED ARMS gain a second iteration so the hand-back can
+rem  be seen authoring again - bad, owner-advances and closed take .advances
+rem  naming 2.2 for the arbiter's one call; blocker-twice keeps its three.
+if /i "%ARM%"=="bad"            set "MAXI=2"
+if /i "%ARM%"=="bad"            set "ADVF=adv-hb.txt"
+if /i "%ARM%"=="owner-advances" set "MAXI=2"
+if /i "%ARM%"=="owner-advances" set "ADVF=adv-hb.txt"
+if /i "%ARM%"=="closed"         set "MAXI=2"
+if /i "%ARM%"=="closed"         set "ADVF=adv-hb.txt"
+rem  086's own arms. hb-noadv ships a decision block with no ADVANCES line at
+rem  all, which the stand-in's .advances rewrite cannot repair, so it is handed
+rem  back twice. hb-twice names the owner's 2.3 twice - the shipped WI, then
+rem  the arbiter's first call - and 2.2 on its second. hb-blocker-park is
+rem  blocker-twice with the blocker naming a criterion, so there is one to
+rem  park. hb-unshaped's unit writes a report with no section 4. stop-over-hb
+rem  is a keying stop with no ADVANCES field.
+if /i "%ARM%"=="hb-noadv"       set "WI=WI-noadv.md"
+if /i "%ARM%"=="hb-noadv"       set "MAXI=2"
+if /i "%ARM%"=="hb-twice"       set "WI=WI-criterion.md"
+if /i "%ARM%"=="hb-twice"       set "PLAN=plan-one-work.md"
+if /i "%ARM%"=="hb-twice"       set "ADVF=adv-hb-twice.txt"
+if /i "%ARM%"=="hb-twice"       set "MAXI=3"
+if /i "%ARM%"=="hb-blocker-park" set "WI=WI-blocker-crit.md"
+if /i "%ARM%"=="hb-blocker-park" set "MAXI=3"
+if /i "%ARM%"=="hb-unshaped"    set "WI=WI-criterion.md"
+if /i "%ARM%"=="hb-unshaped"    set "REPORT=output-unshaped.md"
+if /i "%ARM%"=="stop-over-hb"   set "WI=WI-stop-noadv.md"
+if /i "%ARM%"=="stop-over-hb"   set "MAXI=2"
+rem  087's own arms. s4-retry: the section-4 judge answers unreadably on its
+rem  first call and readably on the retry. arb-retry and arb-twice: the
+rem  arbiter's first call fails, and its second succeeds or fails too; no seed,
+rem  so the arbiter is called on iteration 1. arb-stop-retry: the retried
+rem  arbiter returns a keying MOVE: stop, which must still halt. launch-twice:
+rem  no repository, so every launch exits 7. reload-twice: a directory where
+rem  reload.txt goes, so every reload leaves nothing. deny-park: the unit is
+rem  denied and does not complete. fail-noseed: --seed with the shipped
+rem  instruction deleted, refused at the door.
+if /i "%ARM%"=="s4-retry"       set "WI=WI-criterion.md"
+if /i "%ARM%"=="s4-retry"       set "REPORT=output-panelq.md"
+if /i "%ARM%"=="s4-retry"       set "S4=unknown"
+if /i "%ARM%"=="s4-retry"       set "S4AT=1"
+if /i "%ARM%"=="arb-retry"      set "WI=WI-criterion.md"
+if /i "%ARM%"=="arb-retry"      set "ARBFAILAT=1"
+if /i "%ARM%"=="arb-retry"      set "SEEDF="
+if /i "%ARM%"=="arb-retry"      set "FLIP=2.3"
+if /i "%ARM%"=="arb-twice"      set "WI=WI-criterion.md"
+if /i "%ARM%"=="arb-twice"      set "ARBFAILAT=1 2"
+if /i "%ARM%"=="arb-twice"      set "SEEDF="
+if /i "%ARM%"=="arb-twice"      set "MAXI=2"
+if /i "%ARM%"=="arb-stop-retry" set "WI=WI-stop.md"
+if /i "%ARM%"=="arb-stop-retry" set "ARBFAILAT=1"
+if /i "%ARM%"=="arb-stop-retry" set "SEEDF="
+if /i "%ARM%"=="arb-stop-retry" set "MAXI=2"
+if /i "%ARM%"=="launch-twice"   set "WI=WI-criterion.md"
+if /i "%ARM%"=="launch-twice"   set "NOGIT=1"
+if /i "%ARM%"=="deny-park"      set "WI=WI-criterion.md"
+if /i "%ARM%"=="deny-park"      set "DENY=1"
+if /i "%ARM%"=="fail-noseed"    set "WI=WI-criterion.md"
+if /i "%ARM%"=="fail-noseed"    set "NOWI=1"
 if /i "%ARM%"=="transport" goto :transport
 if /i "%ARM%"=="dupplan" goto :dupplan
 if /i "%ARM%"=="attempt-transport" goto :attempttransport
@@ -850,6 +1283,20 @@ rem  a criterion when the arm claims one other than the instruction-s, and the
 rem  word none when it claims none at all - which is what the blocker form
 rem  does, and what :exhaustnocrit is for.
 if defined EXHAUST >"%FROOT%\.exhaust" echo %EXHAUST%
+rem  083: the section-4 judge's answer, which section-4 calls get it, and the
+rem  criterion the stand-in arbiter names on each call.
+if defined S4 >"%FROOT%\.s4" echo %S4%
+if defined S4AT for %%N in (%S4AT%) do >>"%FROOT%\.s4at" echo %%N
+if defined ADVF copy /y "%HERE%%ADVF%" "%FROOT%\.advances" >nul
+if defined FOLLOWS for %%N in (%FOLLOWS%) do >>"%FROOT%\.follows" echo %%N
+rem  087: the hiccups. ARBFAILAT lists the arbiter calls that fail; DENY makes
+rem  the unit report a denial it could not work around; NOGIT removes the
+rem  repository so run-unit exits 7 on every launch; NOWI deletes the shipped
+rem  instruction so a --seed has nothing to run.
+if defined ARBFAILAT for %%N in (%ARBFAILAT%) do >>"%FROOT%\.arbfailat" echo %%N
+if defined DENY >"%FROOT%\.deny" echo the unit is denied a call and does not complete
+if defined NOGIT rd /s /q "%FROOT%\.git"
+if defined NOWI del /q "%FROOT%\WORK_INSTRUCTIONS.md" 2>nul
 if defined NOPLAN del /q "%FROOT%\PHASE_PLAN.md" 2>nul
 rem  072: a report at the root BEFORE the loop runs, so an arm can prove that
 rem  an ENDING leaves it exactly where the panel looks for it. Ruling 7 and
@@ -972,6 +1419,9 @@ if /i "%ARM%"=="attempt-restart" goto :restart
 rem  072: end-twice takes the same second pass - two whole loops over one root,
 rem  proving the sheet is written by the first and left alone by the second.
 if /i "%ARM%"=="end-twice" goto :secondpass
+rem  083: park-fresh is a NEW loop over park-one's root. The new process must
+rem  clear the mark at its door and be free to author the parked criterion.
+if /i "%ARM%"=="park-fresh" goto :secondpass
 if /i not "%ARM%"=="owner-again" goto :verdict
 :secondpass
 for /f "usebackq tokens=1,2" %%A in (`powershell -NoProfile -Command "$s='%FROOT%\review\sheet.md'; if(Test-Path -LiteralPath $s){ (Get-FileHash -LiteralPath $s -Algorithm SHA256).Hash + ' ' + (Get-Item -LiteralPath $s).LastWriteTimeUtc.Ticks } else { 'absent absent' }"`) do set "SH1=%%A" & set "MT1=%%B"
@@ -1082,7 +1532,40 @@ if /i "%ARM%"=="redirect-owner"   goto :verdict070
 if /i "%ARM%"=="redirect-stop11"  goto :verdict070
 if /i "%ARM%"=="redirect-blocker" goto :verdict070
 if /i "%ARM%"=="redirect-minutes" goto :verdict070
-powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r + '\calls.txt')){ $c=@(Get-Content -LiteralPath ($r + '\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $adv=@(); $o=$r + '\PHASE_OUTCOME.md'; $alines=@(); if(Test-Path -LiteralPath $o){ $adv=@(Select-String -Path $o -Pattern '^ADVANCED: ' | ForEach-Object { $_.Line.Substring(10) }); $alines=@(Select-String -Path $o -Pattern '^ATTEMPT: ' | ForEach-Object { $_.Line }) }; $a1=@(); if(Test-Path -LiteralPath ($r + '\attempts-1.txt')){ $a1=@(Get-Content -LiteralPath ($r + '\attempts-1.txt') | Where-Object { $_ -ne '' }) }; $a2=@(); if(Test-Path -LiteralPath ($r + '\attempts-2.txt')){ $a2=@(Get-Content -LiteralPath ($r + '\attempts-2.txt') | Where-Object { $_ -ne '' }) }; $a1=@($a1 | ForEach-Object { $_ -replace ' launched \S+','' }); $a2=@($a2 | ForEach-Object { $_ -replace ' launched \S+','' }); $led=''; $all=''; $l=$r + '\RUN_LEDGER.md'; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $plan=[IO.File]::ReadAllText($r + '\PHASE_PLAN.md'); $flipped=$plan.Contains('- [x] 2.3 '); $sp=$r + '\review\sheet.md'; $sheet=Test-Path -LiteralPath $sp; $st=''; if($sheet){ $st=[IO.File]::ReadAllText($sp) }; $nl=[string][char]10; $ap='move criterion 2.3 - the fixture is killed at ten quiet looks'; $v1='read the watchdog log rather than polling any process tree'; $v2='compare each process creation time against the launch stamp on disk'; $bp='clear what stops criterion 2.3 being counted, moving no criterion'; 'run-phase exit : %RRC%'; if('%RRC2%' -ne ''){ 'second pass    : exit %RRC2%' }; if(('%ARM%' -eq 'owner-again') -or ('%ARM%' -eq 'end-twice')){ 'sheet, pass 1  : %SH1% %MT1%'; 'sheet, pass 2  : %SH2% %MT2%' }; 'calls          : ' + ($c -join ', '); 'units run      : ' + $units; 'ADVANCED lines : ' + ($adv -join ', '); 'plan 2.3 met   : ' + $flipped; 'review sheet   : ' + $sheet; 'halt line      : ' + $led; $back=$led.Contains('backstop'); $owait=$led.Contains('stop 1: the phase is waiting on the owner'); switch($arm){ 'advance' { $ok=($units -eq 1) -and ($adv -join ',') -eq 'yes' -and $back -and $flipped; $must='one unit, ADVANCED yes, the loop continued to its backstop' } 'noadvance' { $ok=($units -eq 1) -and ($adv -join ',') -eq 'no' -and $back -and (-not $flipped); $must='one unit, ADVANCED no, the loop continued to its backstop' } 'twice' { $ok=($units -eq 3) -and ($adv -join ',') -eq 'no,no,no' -and $back -and $all.Contains('redirected - no-advance at one criterion'); $must='THREE units, all no, NO HALT - the loop redirected after the second and ran a third, reaching its backstop, and the ledger carries the redirect note' } 'closed' { $ok=($units -eq 0) -and $led.Contains('refused: step 2 is done and closed'); $must='no unit ran, refused because step 2 is done and closed' } 'bad' { $ok=($units -eq 0) -and $led.Contains('refused: ADVANCES named no step and criterion'); $must='no unit ran, refused because ADVANCES named no criterion' } 'blocker' { $ok=($units -eq 1) -and ($adv -join ',') -eq 'blocker' -and $back; $must='one unit, ADVANCED blocker, the loop continued to its backstop' } 'blocker-twice' { $ok=($units -eq 2) -and ($adv -join ',') -eq 'blocker,blocker' -and $led.Contains('halted: two consecutive blocker-clearing units - units 1 and 2') -and (-not $led.Contains('stop 10')) -and (-not $all.Contains('redirected')); $must='two units, both blocker, STILL HALTED by the blocker rule - not stop 10, and not redirected either: a blocker-clear names no criterion to be sent back to' } 'owner-sheet' { $ok=('%RRC%' -eq '0') -and ($c.Count -eq 0) -and $owait -and $led.Contains('2.2, 2.3') -and $sheet -and $st.Contains('2.2 the operator agrees the card reads correctly') -and $st.Contains('2.3 the owner says the phase passed'); $must='exit 0, no call at all, stop 1 waiting on the owner naming 2.2 and 2.3, and the sheet written with both' } 'owner-again' { $ok=('%RRC%' -eq '0') -and ('%RRC2%' -eq '0') -and ($c.Count -eq 0) -and $owait -and ('%SH1%' -ne 'absent') -and ('%SH1%' -eq '%SH2%') -and ('%MT1%' -eq '%MT2%'); $must='both passes exit 0 at stop 1, no call at all, the sheet the same content and the same write time after the second pass' } 'owner-nosheet' { $ok=('%RRC%' -eq '0') -and ($c.Count -eq 0) -and $owait -and (-not (Test-Path -LiteralPath ($r + '\review'))); $must='exit 0, no call at all, stop 1 waiting on the owner, and no sheet' } 'one-work' { $ok=(($c -join ',') -eq 'ARBITER,UNIT,JUDGE') -and $back -and (-not $owait) -and (-not (Test-Path -LiteralPath ($r + '\review'))); $must='no halt: the arbiter authored, the unit ran, the loop reached its backstop, and no sheet' } 'owner-advances' { $ok=($units -eq 0) -and $led.Contains('which is the owner'); $must='no unit ran, refused because ADVANCES named an owner criterion' } 'reversal' { $ok=($units -eq 1) -and $led.Contains('a unit report claims a ruling that reverses an earlier arbiter ruling') -and $led.Contains('46'); $must='one unit, halted by the reversal rule, the reversed ruling 46 quoted' } 'nine' { $ok=($units -eq 1) -and $back -and (-not $led.Contains('reverses')); $must='one unit, nothing refused and no reversal halt, the loop reached its backstop' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+if /i "%ARM%"=="park-one"        goto :verdict083
+if /i "%ARM%"=="park-twice"      goto :verdict083
+if /i "%ARM%"=="park-last"       goto :verdict083
+if /i "%ARM%"=="park-only"       goto :verdict083
+if /i "%ARM%"=="park-unknown"    goto :verdict083
+if /i "%ARM%"=="park-arbstop"    goto :verdict083
+if /i "%ARM%"=="park-fresh"      goto :verdict083
+if /i "%ARM%"=="state-header-done"       goto :verdict083b
+if /i "%ARM%"=="state-header-notstarted" goto :verdict083b
+if /i "%ARM%"=="target-not-zero" goto :verdict083b
+if /i "%ARM%"=="prime-first"    goto :verdict084
+if /i "%ARM%"=="prime-label"    goto :verdict084
+if /i "%ARM%"=="prime-big"      goto :verdict084
+if /i "%ARM%"=="why-mixed"      goto :verdict084
+if /i "%ARM%"=="why-split"      goto :verdict084
+if /i "%ARM%"=="drift-report"   goto :verdict084
+if /i "%ARM%"=="drift-plan"     goto :verdict084
+if /i "%ARM%"=="drift-twice"    goto :verdict084
+if /i "%ARM%"=="stop-over-why"  goto :verdict084
+if /i "%ARM%"=="budget-none"    goto :verdict085
+if /i "%ARM%"=="drift-all"      goto :verdict085
+if /i "%ARM%"=="hb-noadv"       goto :verdict086
+if /i "%ARM%"=="hb-twice"       goto :verdict086
+if /i "%ARM%"=="hb-blocker-park" goto :verdict086
+if /i "%ARM%"=="hb-unshaped"    goto :verdict086
+if /i "%ARM%"=="stop-over-hb"   goto :verdict086
+if /i "%ARM%"=="s4-retry"       goto :verdict087
+if /i "%ARM%"=="arb-retry"      goto :verdict087
+if /i "%ARM%"=="arb-twice"      goto :verdict087
+if /i "%ARM%"=="arb-stop-retry" goto :verdict087
+if /i "%ARM%"=="launch-twice"   goto :verdict087
+if /i "%ARM%"=="deny-park"      goto :verdict087
+if /i "%ARM%"=="fail-noseed"    goto :verdict087
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r + '\calls.txt')){ $c=@(Get-Content -LiteralPath ($r + '\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $adv=@(); $o=$r + '\PHASE_OUTCOME.md'; $alines=@(); if(Test-Path -LiteralPath $o){ $adv=@(Select-String -Path $o -Pattern '^ADVANCED: ' | ForEach-Object { $_.Line.Substring(10) }); $alines=@(Select-String -Path $o -Pattern '^ATTEMPT: ' | ForEach-Object { $_.Line }) }; $a1=@(); if(Test-Path -LiteralPath ($r + '\attempts-1.txt')){ $a1=@(Get-Content -LiteralPath ($r + '\attempts-1.txt') | Where-Object { $_ -ne '' }) }; $a2=@(); if(Test-Path -LiteralPath ($r + '\attempts-2.txt')){ $a2=@(Get-Content -LiteralPath ($r + '\attempts-2.txt') | Where-Object { $_ -ne '' }) }; $a1=@($a1 | ForEach-Object { $_ -replace ' launched \S+','' }); $a2=@($a2 | ForEach-Object { $_ -replace ' launched \S+','' }); $led=''; $all=''; $l=$r + '\RUN_LEDGER.md'; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $plan=[IO.File]::ReadAllText($r + '\PHASE_PLAN.md'); $flipped=$plan.Contains('- [x] 2.3 '); $sp=$r + '\review\sheet.md'; $sheet=Test-Path -LiteralPath $sp; $st=''; if($sheet){ $st=[IO.File]::ReadAllText($sp) }; $nl=[string][char]10; $ap='move criterion 2.3 - the fixture is killed at ten quiet looks'; $v1='read the watchdog log rather than polling any process tree'; $v2='compare each process creation time against the launch stamp on disk'; $bp='clear what stops criterion 2.3 being counted, moving no criterion'; 'run-phase exit : %RRC%'; if('%RRC2%' -ne ''){ 'second pass    : exit %RRC2%' }; if(('%ARM%' -eq 'owner-again') -or ('%ARM%' -eq 'end-twice')){ 'sheet, pass 1  : %SH1% %MT1%'; 'sheet, pass 2  : %SH2% %MT2%' }; 'calls          : ' + ($c -join ', '); 'units run      : ' + $units; 'ADVANCED lines : ' + ($adv -join ', '); 'plan 2.3 met   : ' + $flipped; 'review sheet   : ' + $sheet; 'halt line      : ' + $led; $back=$led.Contains('backstop'); $owait=$led.Contains('stop 1: the phase is waiting on the owner'); switch($arm){ 'advance' { $ok=($units -eq 1) -and ($adv -join ',') -eq 'yes' -and $back -and $flipped; $must='one unit, ADVANCED yes, the loop continued to its backstop' } 'noadvance' { $ok=($units -eq 1) -and ($adv -join ',') -eq 'no' -and $back -and (-not $flipped); $must='one unit, ADVANCED no, the loop continued to its backstop' } 'twice' { $ok=($units -eq 3) -and ($adv -join ',') -eq 'no,no,no' -and $back -and $all.Contains('redirected - no-advance at one criterion'); $must='THREE units, all no, NO HALT - the loop redirected after the second and ran a third, reaching its backstop, and the ledger carries the redirect note' } 'closed' { $ok=($units -eq 0) -and $back -and $all.Contains('redirected - step 2 is done and closed') -and (-not $led.Contains('refused')); $must='REVERSED BY 086 - 064 asserted: no unit ran, refused because step 2 is done and closed, on the halt line. Now: handed back - the ledger carries redirected - step 2 is done and closed, the arbiter aimed at the closed step again and was handed back again, nothing launched, and the loop reached its backstop' } 'bad' { $ok=($units -eq 1) -and $back -and $all.Contains('redirected - ADVANCES malformed') -and (-not $led.Contains('refused')); $must='REVERSED BY 086 - 064 asserted: no unit ran, refused because ADVANCES named no criterion. Now: handed back with the malformed field quoted, the arbiter authored again naming 2.2, one unit ran, and the loop reached its backstop' } 'blocker' { $ok=($units -eq 1) -and ($adv -join ',') -eq 'blocker' -and $back; $must='one unit, ADVANCED blocker, the loop continued to its backstop' } 'blocker-twice' { $ok=($units -eq 3) -and (($adv -join ',') -eq 'blocker,blocker,blocker') -and $back -and $all.Contains('redirected - two consecutive blocker-clears') -and (-not $all.Contains('halted: two consecutive')) -and (-not $led.Contains('stop 10')); $must='REVERSED BY 086 - 064 asserted: two units, both blocker, STILL HALTED by the blocker rule, not redirected either because a blocker-clear names no criterion to be sent back to. Now: the two blocker-clears named only a unit, so there is nothing to park, the arbiter is redirected to the plan, a third unit runs, and the loop reaches its backstop - no halt' } 'owner-sheet' { $ok=('%RRC%' -eq '0') -and ($c.Count -eq 0) -and $owait -and $led.Contains('2.2, 2.3') -and $sheet -and $st.Contains('2.2 the operator agrees the card reads correctly') -and $st.Contains('2.3 the owner says the phase passed'); $must='exit 0, no call at all, stop 1 waiting on the owner naming 2.2 and 2.3, and the sheet written with both' } 'owner-again' { $ok=('%RRC%' -eq '0') -and ('%RRC2%' -eq '0') -and ($c.Count -eq 0) -and $owait -and ('%SH1%' -ne 'absent') -and ('%SH1%' -eq '%SH2%') -and ('%MT1%' -eq '%MT2%'); $must='both passes exit 0 at stop 1, no call at all, the sheet the same content and the same write time after the second pass' } 'owner-nosheet' { $ok=('%RRC%' -eq '0') -and ($c.Count -eq 0) -and $owait -and (-not (Test-Path -LiteralPath ($r + '\review'))); $must='exit 0, no call at all, stop 1 waiting on the owner, and no sheet' } 'one-work' { $ok=(($c -join ',') -eq 'ARBITER,UNIT,JUDGE') -and $back -and (-not $owait) -and (-not (Test-Path -LiteralPath ($r + '\review'))); $must='no halt: the arbiter authored, the unit ran, the loop reached its backstop, and no sheet' } 'owner-advances' { $ok=($units -eq 1) -and $back -and $all.Contains('redirected - ADVANCES names the owner') -and (-not $led.Contains('refused')); $must='REVERSED BY 086 - 065 asserted: no unit ran, refused because ADVANCES named an owner criterion. Now: handed back naming the owner-s line, the arbiter authored again at 2.2, one unit ran, and the loop reached its backstop' } 'reversal' { $ok=($units -eq 1) -and $led.Contains('a unit report claims a ruling that reverses an earlier arbiter ruling') -and $led.Contains('46'); $must='one unit, halted by the reversal rule, the reversed ruling 46 quoted' } 'nine' { $ok=($units -eq 1) -and $back -and (-not $led.Contains('reverses')); $must='one unit, nothing refused and no reversal halt, the loop reached its backstop' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
 set "RC=%ERRORLEVEL%"
 goto :end
 
@@ -1169,7 +1652,7 @@ set "RC=%ERRORLEVEL%"
 goto :end
 
 :verdict072
-powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $l=$r+'\RUN_LEDGER.md'; $led=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $sp=$r+'\review\sheet.md'; $sheet=Test-Path -LiteralPath $sp; $st=''; if($sheet){ $st=[IO.File]::ReadAllText($sp) }; $o=$r+'\PHASE_OUTCOME.md'; $ents=0; if(Test-Path -LiteralPath $o){ $ents=@(Select-String -Path $o -Pattern '^## UNIT ').Count }; $ro=Test-Path -LiteralPath ($r+'\output.md'); $col=@($led -split '\|'); $verdict=''; $answer=''; if($col.Count -ge 7){ $verdict=$col[4].Trim(); $answer=$col[6].Trim() }; 'run-phase exit : %RRC%'; 'ledger verdict : ' + $verdict; 'ledger says    : ' + $(if($answer.Length -gt 96){ $answer.Substring(0,96) } else { $answer }); 'review sheet   : ' + $sheet; 'record entries : ' + $ents; 'root output.md : ' + $ro; switch($arm){ 'end-exhausted' { $ok=($verdict -eq 'ending') -and $answer.StartsWith('ENDED - the criterion is exhausted on the record') -and $sheet -and $st.Contains('3 attempt(s)') -and $st.Contains('read the watchdog log rather than polling any process tree') -and $st.Contains('the unit ran to completion and the criterion did not flip') -and $con.Contains('attempts   : criterion 2.3 has 3 attempt(s) on the record') -and $ro; $must='the ledger VERDICT COLUMN says ending and the prose says which kind; the sheet carries all three attempts with their approaches and reasons; the console counted them BEFORE the arbiter authored; and the root output.md is still there. 5.1, 5.3, 5.4' } 'end-three' { $ok=($verdict -eq 'ending') -and $answer.StartsWith('ENDED - the arbiter raised one of the three for the owner') -and $answer.Contains('stop 4') -and (-not $answer.Contains('FAILURE')); $must='ONE OF THE THREE STOPS IS AN ENDING, NOT A FAILURE - ruling 2 says so in terms - and the ledger names it stop 4 while recording it as an ending' } 'end-owner' { $ok=($verdict -eq 'ending') -and $answer.StartsWith('ENDED - nothing is left but the owner-s verdict') -and $sheet -and $st.Contains('YOURS TO JUDGE'); $must='the owner-s verdict is an ending, the ledger says so, and the sheet is written once and marks his lines' } 'end-twice' { $ok=($verdict -eq 'ending') -and $sheet -and ('%SH1%' -ne 'absent') -and ('%SH1%' -eq '%SH2%') -and ('%MT1%' -eq '%MT2%'); $must='the same phase ended twice and THE SHEET WAS NOT WRITTEN TWICE - same content, same write time, decided from the disk' } 'fail-stop11' { $ok=($verdict -eq 'failure') -and $answer.StartsWith('STOPPED, AND A STOP IS FAILURE') -and $answer.Contains('stop 11') -and ($ents -eq 0); $must='STOP 11 is recorded as FAILURE in that word, the ledger names it, and NOTHING was appended to the record. 5.2' } 'fail-maxiter' { $ok=($verdict -eq 'failure') -and $answer.StartsWith('STOPPED, AND A STOP IS FAILURE') -and $answer.Contains('backstop'); $must='--max-iterations is recorded as FAILURE - a cap is not an ending, which is the owner-s ruling of 2026-09-14' } 'fail-noplan' { $ok=($verdict -eq 'failure') -and $answer.Contains('no PHASE_PLAN.md') -and $answer.Contains('refused before the loop started'); $must='a halt that wrote NO LEDGER LINE AT ALL before this unit now writes one, and it is recorded as a failure' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $l=$r+'\RUN_LEDGER.md'; $led=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $sp=$r+'\review\sheet.md'; $sheet=Test-Path -LiteralPath $sp; $st=''; if($sheet){ $st=[IO.File]::ReadAllText($sp) }; $o=$r+'\PHASE_OUTCOME.md'; $ents=0; if(Test-Path -LiteralPath $o){ $ents=@(Select-String -Path $o -Pattern '^## UNIT ').Count }; $ro=Test-Path -LiteralPath ($r+'\output.md'); $col=@($led -split '\|'); $verdict=''; $answer=''; if($col.Count -ge 7){ $verdict=$col[4].Trim(); $answer=$col[6].Trim() }; 'run-phase exit : %RRC%'; 'ledger verdict : ' + $verdict; 'ledger says    : ' + $(if($answer.Length -gt 96){ $answer.Substring(0,96) } else { $answer }); 'review sheet   : ' + $sheet; 'record entries : ' + $ents; 'root output.md : ' + $ro; switch($arm){ 'end-exhausted' { $ok=($verdict -eq 'ending') -and $answer.StartsWith('ENDED - the criterion is exhausted on the record') -and $sheet -and $st.Contains('3 attempt(s)') -and $st.Contains('read the watchdog log rather than polling any process tree') -and $st.Contains('the unit ran to completion and the criterion did not flip') -and $con.Contains('attempts   : criterion 2.3 has 3 attempt(s) on the record') -and $ro; $must='the ledger VERDICT COLUMN says ending and the prose says which kind; the sheet carries all three attempts with their approaches and reasons; the console counted them BEFORE the arbiter authored; and the root output.md is still there. 5.1, 5.3, 5.4' } 'end-three' { $ok=($verdict -eq 'ending') -and $answer.StartsWith('ENDED - the arbiter raised one of the two for the owner') -and $answer.Contains('stop 4') -and (-not $answer.Contains('FAILURE')); $must='CORRECTED BY 086 - 072 asserted the ledger prose ENDED - the arbiter raised one of the three for the owner, and 085 changed the word to two without finding this StartsWith; it FAILED unit 086-s gate on the word alone, the loop having done the right thing. Now: an owner-s-decision stop raised by the arbiter IS AN ENDING, NOT A FAILURE - ruling 2 says so in terms - the ledger names it stop 4 and its prose reads one of the two' } 'end-owner' { $ok=($verdict -eq 'ending') -and $answer.StartsWith('ENDED - nothing is left but the owner-s verdict') -and $sheet -and $st.Contains('YOURS TO JUDGE'); $must='the owner-s verdict is an ending, the ledger says so, and the sheet is written once and marks his lines' } 'end-twice' { $ok=($verdict -eq 'ending') -and $sheet -and ('%SH1%' -ne 'absent') -and ('%SH1%' -eq '%SH2%') -and ('%MT1%' -eq '%MT2%'); $must='the same phase ended twice and THE SHEET WAS NOT WRITTEN TWICE - same content, same write time, decided from the disk' } 'fail-stop11' { $ok=($verdict -eq 'failure') -and $answer.StartsWith('STOPPED, AND A STOP IS FAILURE') -and $answer.Contains('backstop') -and (-not $answer.Contains('stop 11')) -and ($ents -eq 2); $must='REVERSED BY 087 - 072 asserted: STOP 11 is recorded as FAILURE in that word, the ledger names it, and NOTHING was appended. Now: a unit that wrote no report is recorded unjudged with fate not recorded on both iterations, no stop 11 fires, and the night ends at the backstop - which is still a failure in that word, because the backstop is a brake and not an ending. The old must read: STOP 11 is recorded as FAILURE in that word, the ledger names it, and NOTHING was appended to the record. 5.2' } 'fail-maxiter' { $ok=($verdict -eq 'failure') -and $answer.StartsWith('STOPPED, AND A STOP IS FAILURE') -and $answer.Contains('backstop'); $must='--max-iterations is recorded as FAILURE - a cap is not an ending, which is the owner-s ruling of 2026-09-14' } 'fail-noplan' { $ok=($verdict -eq 'failure') -and $answer.Contains('no PHASE_PLAN.md') -and $answer.Contains('refused before the loop started'); $must='a halt that wrote NO LEDGER LINE AT ALL before this unit now writes one, and it is recorded as a failure' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
 set "RC=%ERRORLEVEL%"
 goto :end
 
@@ -1181,14 +1664,66 @@ goto :end
 :verdict070
 rem  070-s arms, judged by their own call - the fifth. The 064 line is 7408
 rem  characters and cmd refuses one past 8191.
-powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $o=$r+'\PHASE_OUTCOME.md'; $ents=0; if(Test-Path -LiteralPath $o){ $ents=@(Select-String -Path $o -Pattern '^## UNIT ').Count }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $pf=$r+'\.run-unit\arbiter-prompt.txt'; $pr=''; if(Test-Path -LiteralPath $pf){ $pr=[IO.File]::ReadAllText($pf) }; $nred=@([regex]::Matches($all, 'redirected - ')).Count; $back=$led.Contains('backstop'); $sheet=Test-Path -LiteralPath ($r+'\review\sheet.md'); $wl=''; $wf=$r+'\.run-unit\watched.log'; if(Test-Path -LiteralPath $wf){ $wl=[IO.File]::ReadAllText($wf) }; $ceil=($wl.Contains('killed at the owner''s --minutes ceiling') -or $con.Contains('killed at the owner''s --minutes ceiling')); $ledceil=$all.Contains('killed at the owner''s --minutes ceiling'); $pstop='none named'; if($led -match 'stop [0-9]+'){ $pstop=$Matches[0] }; 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'record entries : ' + $ents; 'redirect notes : ' + $nred; 'prompt says so : ' + $pr.Contains('YOU HAVE BEEN REDIRECTED'); 'halt line      : ' + $led; if($arm -eq 'redirect-minutes'){ $lk=@([regex]::Matches($con, '(?m)^\s*\[look [0-9]+\].*$') | ForEach-Object { $_.Value.Trim() }); 'watchdog looks : ' + $(if($lk.Count){ $lk -join '  |  ' } else { 'NONE - the tree was gone before the first look, so AGEMIN was never computed and the ceiling was never tested' }); 'ceiling fired  : ' + $ceil; 'ledger ceiling : ' + $ledceil; 'phase stop     : ' + $pstop + '  <- NOT stop 5: see the note at this arm in the header' }; switch($arm){ 'redirect-same' { $ok=($units -eq 1) -and $back -and ($nred -ge 1) -and $all.Contains('no-advance at one criterion') -and $pr.Contains('YOU HAVE BEEN REDIRECTED') -and $pr.Contains('2.3'); $must='no halt: the loop redirected after two no-advances at 2.3, told the arbiter so in its prompt, and ran a third unit' } 'redirect-fresh' { $ok=($units -eq 1) -and $back -and (-not $con.Contains('ALREADY RECORDED AS FAILED')); $must='the redirected instruction named an approach the record does not show failing, so it RAN' } 'redirect-wander' { $ok=($units -eq 1) -and $back -and ($nred -ge 1) -and $all.Contains('no-advance at two different criteria'); $must='two no-advances at DIFFERENT criteria redirect too, pinned to one of the two, and the ledger names which rule fired' } 'redirect-repeat' { $ok=($units -eq 0) -and $back -and ($nred -ge 2) -and $con.Contains('NOTHING WAS SPENT, WHICH IS WHY THIS CARRIES ON'); $must='an instruction naming a recorded failed approach is refused AND REDIRECTED AGAIN rather than halting, launching nothing' } 'redirect-refused' { $ok=($units -eq 1) -and $back -and ($nred -ge 1) -and $all.Contains('approach already recorded as failed') -and $con.Contains('spent on a redirect'); $must='a refused approach on a first attempt redirects, the loop carries on, and the console says which iterations were spent on a redirect' } 'redirect-budget' { $ok=($nred -ge 1) -and $led.Contains('stop 2: budget exhausted'); $must='--budget still halts during a redirect, exactly as before' } 'redirect-maxiter' { $ok=($units -eq 0) -and $back -and ($nred -ge 2); $must='--max-iterations still halts a loop that is doing nothing but redirect' } 'redirect-owner' { $ok=('%RRC%' -eq '0') -and ($nred -eq 0) -and $led.Contains('stop 1: the phase is waiting on the owner') -and $sheet; $must='the owner-s-verdict halt is checked BEFORE the redirect, so it halts, writes its sheet once, and nothing is redirected' } 'redirect-blocker' { $ok=($units -eq 1) -and $back -and ($nred -eq 1) -and (-not $con.Contains('NAMED A CRITERION IT WAS NOT SENT TO')); $must='a blocker-clear SATISFIES a redirect - it is the layer-s own way through, and it is already bounded by the two-in-a-row halt' } 'redirect-stop11' { $ok=($units -eq 1) -and ($ents -eq 2) -and $led.Contains('stop 11'); $must='STOP 11 still halts on a redirected iteration, and nothing is appended - the record keeps the two seeded entries' } 'redirect-minutes' { $ok=$ceil -and $ledceil -and ($nred -ge 1) -and ('%RRC%' -ne '0'); $must='--minutes still halts A REDIRECTED LOOP - the watchdog kills the tree at the owner-s wall-clock ceiling, the ledger carries that kill in those words, a redirect was in force, and the run did not reach a clean ending. IT DOES NOT ASSERT stop 5: see phase stop above and the note at this arm in the header' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $o=$r+'\PHASE_OUTCOME.md'; $ents=0; if(Test-Path -LiteralPath $o){ $ents=@(Select-String -Path $o -Pattern '^## UNIT ').Count }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $pf=$r+'\.run-unit\arbiter-prompt.txt'; $pr=''; if(Test-Path -LiteralPath $pf){ $pr=[IO.File]::ReadAllText($pf) }; $nred=@([regex]::Matches($all, 'redirected - ')).Count; $back=$led.Contains('backstop'); $sheet=Test-Path -LiteralPath ($r+'\review\sheet.md'); $wl=''; $wf=$r+'\.run-unit\watched.log'; if(Test-Path -LiteralPath $wf){ $wl=[IO.File]::ReadAllText($wf) }; $ceil=($wl.Contains('killed at the owner''s --minutes ceiling') -or $con.Contains('killed at the owner''s --minutes ceiling')); $ledceil=$all.Contains('killed at the owner''s --minutes ceiling'); $pstop='none named'; if($led -match 'stop [0-9]+'){ $pstop=$Matches[0] }; 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'record entries : ' + $ents; 'redirect notes : ' + $nred; 'prompt says so : ' + $pr.Contains('YOU HAVE BEEN REDIRECTED'); 'halt line      : ' + $led; if($arm -eq 'redirect-minutes'){ $lk=@([regex]::Matches($con, '(?m)^\s*\[look [0-9]+\].*$') | ForEach-Object { $_.Value.Trim() }); 'watchdog looks : ' + $(if($lk.Count){ $lk -join '  |  ' } else { 'NONE - the tree was gone before the first look, so AGEMIN was never computed and the ceiling was never tested' }); 'ceiling fired  : ' + $ceil; 'ledger ceiling : ' + $ledceil; 'phase stop     : ' + $pstop + '  <- NOT stop 5: see the note at this arm in the header' }; switch($arm){ 'redirect-same' { $ok=($units -eq 1) -and $back -and ($nred -ge 1) -and $all.Contains('no-advance at one criterion') -and $pr.Contains('YOU HAVE BEEN REDIRECTED') -and $pr.Contains('2.3'); $must='no halt: the loop redirected after two no-advances at 2.3, told the arbiter so in its prompt, and ran a third unit' } 'redirect-fresh' { $ok=($units -eq 1) -and $back -and (-not $con.Contains('ALREADY RECORDED AS FAILED')); $must='the redirected instruction named an approach the record does not show failing, so it RAN' } 'redirect-wander' { $ok=($units -eq 1) -and $back -and ($nred -ge 1) -and $all.Contains('no-advance at two different criteria'); $must='two no-advances at DIFFERENT criteria redirect too, pinned to one of the two, and the ledger names which rule fired' } 'redirect-repeat' { $ok=($units -eq 0) -and $back -and ($nred -ge 2) -and $con.Contains('NOTHING WAS SPENT, WHICH IS WHY THIS CARRIES ON'); $must='an instruction naming a recorded failed approach is refused AND REDIRECTED AGAIN rather than halting, launching nothing' } 'redirect-refused' { $ok=($units -eq 1) -and $back -and ($nred -ge 1) -and $all.Contains('approach already recorded as failed') -and $con.Contains('spent on a redirect'); $must='a refused approach on a first attempt redirects, the loop carries on, and the console says which iterations were spent on a redirect' } 'redirect-budget' { $ledcost=($led -match '\|\s*[0-9]+\.[0-9]{4}\s*\|'); $ok=($nred -ge 1) -and ($units -ge 1) -and $back -and (-not $all.Contains('stop 2')) -and $con.Contains('PAST THE --budget FIGURE OF 0') -and $con.Contains('PRINTED AND NOT A STOP') -and $ledcost; $must='REVERSED BY 085 - 070 asserted: --budget still halts during a redirect, exactly as before, on the ledger line stop 2. Now: --budget 0 is passed, the run goes PAST the figure and does not halt - the console says PAST THE --budget FIGURE, PRINTED AND NOT A STOP, the ledger carries the spend in its cost column, a unit runs and the loop reaches its backstop' } 'redirect-maxiter' { $ok=($units -eq 0) -and $back -and ($nred -ge 2); $must='--max-iterations still halts a loop that is doing nothing but redirect' } 'redirect-owner' { $ok=('%RRC%' -eq '0') -and ($nred -eq 0) -and $led.Contains('stop 1: the phase is waiting on the owner') -and $sheet; $must='the owner-s-verdict halt is checked BEFORE the redirect, so it halts, writes its sheet once, and nothing is redirected' } 'redirect-blocker' { $ok=($units -eq 1) -and $back -and ($nred -eq 1) -and (-not $con.Contains('NAMED A CRITERION IT WAS NOT SENT TO')); $must='a blocker-clear SATISFIES a redirect - it is the layer-s own way through, and it is already bounded by the two-in-a-row halt' } 'redirect-stop11' { $ok=($units -eq 2) -and ($ents -eq 4) -and ($nred -ge 1) -and $all.Contains('no report written by unit') -and (-not $all.Contains('stop 11')) -and $back; $must='REVERSED BY 087 - 070 asserted: STOP 11 still halts on a redirected iteration and nothing is appended, the record keeping the two seeded entries. Now: a unit that ran and wrote no report is NOT retried and NOT judged, its entry lands with fate not recorded, the redirected iteration authors again, a second such unit runs and lands the same way, the ledger carries the no-report notes, no stop 11, and the loop reaches its backstop' } 'redirect-minutes' { $ok=$ceil -and $ledceil -and ($nred -ge 1) -and ('%RRC%' -ne '0'); $must='--minutes still halts A REDIRECTED LOOP - the watchdog kills the tree at the owner-s wall-clock ceiling, the ledger carries that kill in those words, a redirect was in force, and the run did not reach a clean ending. IT DOES NOT ASSERT stop 5: see phase stop above and the note at this arm in the header' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+set "RC=%ERRORLEVEL%"
+goto :end
+
+rem ============================================================
+rem  087'S ARMS, JUDGED BY A CALL OF THEIR OWN. They read the console, the
+rem  ledger whole, calls.txt, PARKED.md and the record's FATE lines.
+:verdict087
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $arbs=@($c | Where-Object { $_ -eq 'ARBITER' }).Count; $j4=@($c | Where-Object { $_ -eq 'JUDGE4' }).Count; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $o=$r+'\PHASE_OUTCOME.md'; $ents=0; $fates=@(); if(Test-Path -LiteralPath $o){ $ents=@(Select-String -Path $o -Pattern '^## UNIT ').Count; $fates=@(Select-String -Path $o -Pattern '^FATE: ' | ForEach-Object { $_.Line.Substring(6).Trim() }) }; $pkl=@(); if(Test-Path -LiteralPath ($r+'\PARKED.md')){ $pkl=@(Get-Content -LiteralPath ($r+'\PARKED.md') | Where-Object { $_ -like 'PARKED:*' }) }; $back=$led.Contains('backstop'); $allowed=Test-Path -LiteralPath ($r+'\.run-unit\allowed.txt'); 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units / arbiter calls / section-4 calls : ' + $units + ' / ' + $arbs + ' / ' + $j4; 'record entries : ' + $ents + '   FATE lines: ' + ($fates -join ', '); 'PARKED.md      : ' + $(if($pkl.Count){ $pkl -join '  //  ' } else { 'none' }); 'allowed.txt    : ' + $allowed; 'halt line      : ' + $led; switch($arm){ 's4-retry' { $ok=($units -eq 1) -and ($j4 -eq 2) -and $con.Contains('RETRYING ONCE, same prompt, same section') -and $con.Contains('the second was used') -and $all.Contains('section-4 judge retried') -and ($pkl.Count -eq 0) -and $back -and (-not $all.Contains('stop 3')); $must='the section-4 judge is unreadable on its first call and read on the retry: both attempts on the console, a ledger note, nothing parked, no stop 3, the loop reaches its backstop' } 'arb-retry' { $ok=($arbs -eq 2) -and ($units -eq 1) -and $con.Contains('RETRYING ONCE, same prompt, same inputs') -and $all.Contains('arbiter retried') -and ($pkl.Count -eq 0) -and $back -and (-not $all.Contains('arbiter session failed')); $must='the arbiter call fails once and the retry is read: a unit runs, the ledger says the arbiter was retried, nothing parked, the loop reaches its backstop' } 'arb-twice' { $ok=($arbs -eq 3) -and ($units -eq 1) -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.2 |') -and $pkl[0].Contains('| arbiter |') -and $con.Contains('FAILED TWICE RUNNING') -and $back -and (-not $all.Contains('arbiter session failed - exit')); $must='the arbiter call fails twice: the first authorable criterion 2.2 is parked with which=arbiter, the next iteration authors and a unit runs, the loop reaches its backstop - no halt' } 'arb-stop-retry' { $ok=($arbs -eq 2) -and ($units -eq 0) -and $con.Contains('STOP 4: THE ARBITER DECLARED A DECISION THE OWNER') -and $led.Contains('stop 4') -and ($pkl.Count -eq 0); $must='the retried arbiter returns a keying MOVE: stop: THE STOP WINS and halts at stop 4, nothing parked' } 'launch-twice' { $ok=($units -eq 0) -and ($ents -eq 0) -and $con.Contains('RETRYING THE LAUNCH ONCE') -and $con.Contains('NOTHING WAS LAUNCHED ON TWO ATTEMPTS') -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.3 |') -and $pkl[0].Contains('| launch |') -and (-not $all.Contains('stop 11')) -and $back; $must='every launch exits 7: retried once, then criterion 2.3 is parked with which=launch, nothing is appended, no stop 11, the loop reaches its backstop' } 'deny-park' { $ok=($units -eq 1) -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.3 |') -and $pkl[0].Contains('| denial |') -and $pkl[0].Contains('the scope was not widened') -and (-not $con.Contains('STOP 6: PERMISSION DENIALS')) -and (-not $all.Contains('stop 6:')) -and $back; $must='the unit is denied a call and does not complete: criterion 2.3 is parked with which=denial and the park line says the scope was not widened, no stop 6 anywhere, the loop reaches its backstop - allowed.txt is run-unit.bat-s own copy of the tools list and is written on every run, so its presence is not the test' } 'fail-noseed' { $ok=('%RRC%' -eq '2') -and ($c.Count -eq 0) -and $led.Contains('refused before the loop started: --seed was given and there is no WORK_INSTRUCTIONS.md') -and (-not $con.Contains('iteration 1')); $must='--seed with no instruction file is refused AT THE DOOR at exit 2 with a ledger line, before any iteration and before any call' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+set "RC=%ERRORLEVEL%"
+goto :end
+
+rem ============================================================
+rem  086'S ARMS, JUDGED BY A CALL OF THEIR OWN. They read the console, the
+rem  ledger whole, PARKED.md and the record's FATE and ADVANCED lines.
+:verdict086
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $judges=@($c | Where-Object { $_ -eq 'JUDGE' }).Count; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $o=$r+'\PHASE_OUTCOME.md'; $fates=@(); $advs=@(); if(Test-Path -LiteralPath $o){ $fates=@(Select-String -Path $o -Pattern '^FATE: ' | ForEach-Object { $_.Line.Substring(6).Trim() }); $advs=@(Select-String -Path $o -Pattern '^ADVANCED: ' | ForEach-Object { $_.Line.Substring(10).Trim() }) }; $pkl=@(); if(Test-Path -LiteralPath ($r+'\PARKED.md')){ $pkl=@(Get-Content -LiteralPath ($r+'\PARKED.md') | Where-Object { $_ -like 'PARKED:*' }) }; $nred=@([regex]::Matches($all, 'redirected - ')).Count; $hb=@([regex]::Matches($con, 'THE LOOP HANDS THIS BACK RATHER THAN HALTING')).Count; $back=$led.Contains('backstop'); 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units + '   judges: ' + $judges; 'handed back    : ' + $hb + ' time(s)   redirect notes: ' + $nred; 'FATE lines     : ' + ($fates -join ', '); 'ADVANCED lines : ' + ($advs -join ', '); 'PARKED.md      : ' + $(if($pkl.Count){ $pkl -join '  //  ' } else { 'none' }); 'halt line      : ' + $led; switch($arm){ 'hb-noadv' { $ok=($units -eq 0) -and ($hb -ge 2) -and ($nred -ge 2) -and $all.Contains('redirected - decision block names no step and no criterion') -and $back -and (-not $led.Contains('refused')); $must='a decision block with no ADVANCES line is handed back, the arbiter authors again and is handed back again, nothing is launched, and the loop reaches its backstop - never a halt' } 'hb-twice' { $ok=($units -eq 1) -and ($hb -ge 1) -and $con.Contains('handed back 2 time(s) this pass on 2.3') -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.3 |') -and $pkl[0].Contains('| refusal |') -and $con.Contains('REFUSED TWICE THIS PASS ON CRITERION 2.3') -and $back; $must='the owner-s 2.3 named twice this pass is PARKED with which=refusal on the second hand-back, the arbiter names 2.2 next, one unit runs, and the loop reaches its backstop' } 'hb-blocker-park' { $ok=($units -eq 3) -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.3 |') -and $pkl[0].Contains('| blocker |') -and $all.Contains('redirected - two consecutive blocker-clears') -and (-not $all.Contains('halted: two consecutive')) -and $back; $must='two blocker-clears naming criterion 2.3 park it with which=blocker, the arbiter is redirected, a third unit runs, and the loop reaches its backstop - no halt' } 'hb-unshaped' { $ok=($units -eq 1) -and ($judges -eq 0) -and (($fates -join ',') -eq 'not recorded') -and (($advs -join ',') -eq 'not recorded') -and $all.Contains('report refused - validate-output.bat refused') -and (-not $all.Contains('stop 7')) -and $con.Contains('IT IS NOT JUDGED') -and $back; $must='a report with no section 4 is refused by the validator: the entry lands with FATE not recorded and ADVANCED not recorded, no judge is called, the ledger carries the report-refused note, no stop 7, and the loop reaches its backstop' } 'stop-over-hb' { $ok=($units -eq 0) -and ($hb -eq 0) -and ($nred -eq 0) -and $con.Contains('STOP 4: THE ARBITER DECLARED A DECISION THE OWNER') -and $led.Contains('stop 4'); $must='a keying MOVE: stop with no ADVANCES field: THE STOP WINS and halts at stop 4 - nothing is handed back, nothing is redirected' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+set "RC=%ERRORLEVEL%"
+goto :end
+
+rem ============================================================
+rem  085'S ARMS, JUDGED BY A CALL OF THEIR OWN. budget-none reads the banner,
+rem  the spend line and the ledger; drift-all reads the console's ending, the
+rem  ledger verdict and prose, and PARKED.md.
+:verdict085
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $col=@($led -split '\|'); $verdict=''; if($col.Count -ge 7){ $verdict=$col[4].Trim() }; $ledcost=($led -match '\|\s*[0-9]+\.[0-9]{4}\s*\|'); $pkl=@(); if(Test-Path -LiteralPath ($r+'\PARKED.md')){ $pkl=@(Get-Content -LiteralPath ($r+'\PARKED.md') | Where-Object { $_ -like 'PARKED:*' }) }; $drift=@([regex]::Matches($con, 'DRIFTED TO THE OUTPUT: THE CRITERION WAS CHOSEN FROM THE LAST REPORT')).Count; $ended=$con.Contains('ENDED: THE ARBITER COULD NOT RESOLVE THE WORK BACK TO THE PHASE GOAL'); $oldend=$con.Contains('ENDED: EVERY REMAINING CRITERION IS THE OWNER'); $back=$led.Contains('backstop'); $sheet=Test-Path -LiteralPath ($r+'\review\sheet.md'); 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'banner         : ' + $(if($con -match '(?m)^\s*budget\s*:.*$'){ $Matches[0].Trim() } else { 'no budget line' }); 'spend lines    : ' + @([regex]::Matches($con, '(?m)^\s*spent so far:.*$') | ForEach-Object { $_.Value.Trim() }).Count + ' printed'; 'stop 2 anywhere: ' + ($all.Contains('stop 2') -or $con.Contains('STOP 2')); 'drift caught   : ' + $drift + ' time(s)'; 'drift ending   : ' + $ended + '   old parked ending: ' + $oldend; 'PARKED.md      : ' + $(if($pkl.Count){ $pkl -join '  //  ' } else { 'none' }); 'review sheet   : ' + $sheet; 'ledger verdict : ' + $verdict; 'ledger cost col: ' + $ledcost; 'halt line      : ' + $led; switch($arm){ 'budget-none' { $ok=($units -eq 1) -and $back -and $con.Contains('budget    : no ceiling') -and $con.Contains('no --budget ceiling, and none would halt') -and (-not $all.Contains('stop 2')) -and (-not $con.Contains('STOP 2')) -and $ledcost; $must='--budget omitted entirely: the banner says no ceiling, the spend is still printed after the unit, the ledger carries the figure, and nothing anywhere says stop 2 - the loop reaches its backstop' } 'drift-all' { $ok=('%RRC%' -eq '0') -and ($units -eq 2) -and ($drift -eq 2) -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.2 |') -and $pkl[0].Contains('| drift |') -and $ended -and (-not $oldend) -and ($verdict -eq 'ending') -and $led.Contains('drift') -and $led.Contains('2.2') -and (-not $back); $must='the only authorable criterion is drifted on twice and parked for drift, and the next iteration ENDS at exit 0 naming what could not be resolved - the drift ending, not the parked-or-owner ending, the ledger verdict ending and its prose naming drift and 2.2, no backstop reached' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+set "RC=%ERRORLEVEL%"
+goto :end
+
+rem ============================================================
+rem  084'S ARMS, JUDGED BY A CALL OF THEIR OWN - the same reason every split
+rem  before it gives. The prompt arms read the composed prompt and the
+rem  console's share lines; the WHY and drift arms read the console, the
+rem  ledger whole, redirect.txt and PARKED.md.
+:verdict084
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $judges=@($c | Where-Object { $_ -eq 'JUDGE' }).Count; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $col=@($led -split '\|'); $verdict=''; if($col.Count -ge 7){ $verdict=$col[4].Trim() }; $pf=$r+'\.run-unit\arbiter-prompt.txt'; $pr=''; if(Test-Path -LiteralPath $pf){ $pr=[IO.File]::ReadAllText($pf) }; $first=''; foreach($ln in ($pr -split '\r?\n')){ if($ln.Trim() -ne ''){ $first=$ln; break } }; $id=$pr.IndexOf('THE PHASE GOAL IS THE PRIME DIRECTIVE'); $ig=$pr.IndexOf('PHASE GOAL:'); $ic=$pr.IndexOf('ITS UNMET CRITERIA'); $ia=$pr.IndexOf('WHAT HAS ALREADY BEEN TRIED'); $ir=$pr.IndexOf('THE PREVIOUS UNIT-S REPORT - AN INDICATOR'); $share=$null; if($con -match 'of which the previous report is ([0-9]+) - ([0-9.]+) pct'){ $share=[double]$Matches[2] }; $shares=$con.Contains('prompt shares:'); $rd=''; if(Test-Path -LiteralPath ($r+'\.run-unit\redirect.txt')){ $rd=[IO.File]::ReadAllText($r+'\.run-unit\redirect.txt') }; $pkl=@(); if(Test-Path -LiteralPath ($r+'\PARKED.md')){ $pkl=@(Get-Content -LiteralPath ($r+'\PARKED.md') | Where-Object { $_ -like 'PARKED:*' }) }; $o=$r+'\PHASE_OUTCOME.md'; $at=@(); if(Test-Path -LiteralPath $o){ $at=@(Select-String -Path $o -Pattern '^ATTEMPT: *([0-9]+\.[0-9]+)' | ForEach-Object { $_.Matches[0].Groups[1].Value }) }; $drv=$con.Contains('REFUSED: THIS INSTRUCTION-S WHY RESTS ON THE LAST REPORT'); $drift=@([regex]::Matches($con, 'DRIFTED TO THE OUTPUT: THE CRITERION WAS CHOSEN FROM THE LAST REPORT')).Count; $let=$con.Contains('so it is let through; the judge decides'); $halted=$con.Contains('HALTED: THE CRITERION WAS CHOSEN FROM THE LAST REPORT'); $back=$led.Contains('backstop'); 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'prompt first   : ' + $first; 'directive/goal/criteria/record/report at : ' + $id + ' / ' + $ig + ' / ' + $ic + ' / ' + $ia + ' / ' + $ir; 'report share   : ' + $(if($null -ne $share){ [string]$share + ' pct' } else { 'not printed' }) + ', block shares printed: ' + $shares; 'WHY refused    : ' + $drv + '   let through, judge decides: ' + $let; 'drift caught   : ' + $drift + ' time(s)   old halt seen: ' + $halted; 'redirect.txt   : ' + $(if($rd){ ($rd -split '\r?\n')[0] } else { 'absent' }); 'PARKED.md      : ' + $(if($pkl.Count){ $pkl -join '  //  ' } else { 'none' }); 'attempts at    : ' + ($at -join ', '); 'ledger verdict : ' + $verdict; 'halt line      : ' + $led; switch($arm){ 'prime-first' { $ok=$first.StartsWith('THE PHASE GOAL IS THE PRIME DIRECTIVE') -and ($id -eq 0) -and ($ig -gt $id) -and $shares; $must='the directive sentence is the FIRST content of the prompt, before the phase goal, and every block share is printed on the console' } 'prime-label' { $ok=($ir -gt 0) -and $pr.Contains('NEVER A SOURCE OF TARGETS') -and $pr.Contains('IT NEVER CHOOSES THE CRITERION') -and ($ir -gt $ic) -and (($ia -lt 0) -or ($ir -gt $ia)) -and ($null -ne $share) -and $con.Contains('the report, an indicator'); $must='the report block carries the indicator label, sits after the criteria and the attempt record - last - and its share is printed, on its own line and in the block shares' } 'prime-big' { $ok=$first.StartsWith('THE PHASE GOAL IS THE PRIME DIRECTIVE') -and ($ig -gt $id) -and ($ic -gt $ig) -and ($ir -gt $ic) -and ($null -ne $share) -and ($share -le 34.0) -and $con.Contains('OVER the'); $must='a report five times the prompt still leaves the directive first, the goal and criteria before it, is cut to its share, and the console says it was over budget' } 'why-mixed' { $ok=($units -eq 0) -and $drv -and $all.Contains('redirected - WHY rests on the last report') -and $back -and (-not $led.Contains('refused')); $must='a WHY that quotes 2.3 and gives the last report as its reason is REFUSED by the detector, REDIRECTED, and the loop continues to its backstop - no halt' } 'why-split' { $ok=($units -eq 1) -and (-not $drv) -and $let -and ($drift -eq 1) -and $all.Contains('redirected - drifted to the output') -and $back; $must='a WHY with a plan sentence of its own is LET THROUGH by the detector, which says so, the unit runs, and the judge-s report answer REDIRECTS - caught by task 5, not task 4, and the night continues' } 'drift-report' { $ok=($units -eq 1) -and ($judges -ge 1) -and ($drift -eq 1) -and (-not $halted) -and $all.Contains('redirected - drifted to the output') -and $rd.Contains('RULE: drifted to the output') -and $back; $must='the REAL judge answers FOLLOWS: report on a WHY that admits the report chose the target, and the loop REDIRECTS with redirect.txt written - it does not halt' } 'drift-plan' { $ok=('%RRC%' -eq '0') -and ($units -eq 1) -and ($judges -ge 1) -and ($drift -eq 0) -and ($verdict -eq 'ending'); $must='the REAL judge answers FOLLOWS: plan on a plan-driven WHY, the unit flips the one work criterion, and the night ends at EXIT 0 as an ending' } 'drift-twice' { $ok=($units -eq 3) -and ($drift -eq 2) -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.3 |') -and $pkl[0].Contains('| drift |') -and (($at -join ',') -eq '2.3,2.3,2.2') -and $back; $must='report twice running on 2.3 PARKS it with drift named, 2.2 is authored and run, and the night continues to its backstop' } 'stop-over-why' { $ok=($units -eq 0) -and $con.Contains('STOP 4: THE ARBITER DECLARED A DECISION THE OWNER') -and $led.Contains('stop 4') -and (-not $all.Contains('redirected')) -and (-not $drv); $must='one of the three stops raised beside a WHY that cites only the report: THE STOP WINS and halts at stop 4, nothing is refused or redirected' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
 set "RC=%ERRORLEVEL%"
 goto :end
 
 :verdict069
 rem  069-s arms, judged by their own call - the fourth. The 064 line is 7267
 rem  characters and cmd refuses one past 8191.
-powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $l=$r+'\RUN_LEDGER.md'; $led=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $pf=$r+'\.run-unit\arbiter-prompt.txt'; $pr=''; if(Test-Path -LiteralPath $pf){ $pr=[IO.File]::ReadAllText($pf) }; $ig=$pr.IndexOf('PHASE GOAL:'); $ic=$pr.IndexOf('ITS UNMET CRITERIA'); $ia=$pr.IndexOf('WHAT HAS ALREADY BEEN TRIED'); $ir=$pr.IndexOf('THE PREVIOUS UNIT-S REPORT'); $order=($ig -ge 0) -and ($ic -gt $ig) -and ($ir -gt $ic) -and (($ia -lt 0) -or ($ir -gt $ia)); $share=$null; $kept=$null; if($con -match 'of which the previous report is ([0-9]+) - ([0-9.]+) pct'){ $kept=[int]$Matches[1]; $share=[double]$Matches[2] }; $tot=0; if($pr -ne ''){ $tot=(Get-Item -LiteralPath $pf).Length }; $real=$null; if(($tot -gt 0) -and ($null -ne $kept)){ $real=[Math]::Round(100.0 * $kept / $tot, 1) }; $back=$led.Contains('backstop'); $ref=$con.Contains('REFUSED: THIS INSTRUCTION-S WHY CITES NO LINE OF THE PLAN'); $halt=$con.Contains('HALTED: THE CRITERION WAS CHOSEN FROM THE LAST REPORT, NOT FROM THE PLAN'); 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'prompt bytes   : ' + $tot; 'goal/crit/rec/report at : ' + $ig + ' / ' + $ic + ' / ' + $ia + ' / ' + $ir; 'order plan-first: ' + $order; 'printed share  : ' + $(if($null -ne $share){ [string]$share + ' pct of ' + $tot + ' bytes, kept ' + $kept } else { 'not printed' }); 'measured share : ' + $(if($null -ne $real){ [string]$real + ' pct' } else { 'not measurable' }); 'why refused    : ' + $ref; 'follows halt   : ' + $halt; 'halt line      : ' + $led; switch($arm){ 'promptorder' { $ok=$order -and ($null -ne $share) -and $pr.Contains('EVIDENCE, NOT A LIST OF WORK'); $must='the phase goal and the step criteria come before the attempt record and the report, and the report is last under a heading calling it evidence' } 'promptbig' { $ok=$order -and ($null -ne $share) -and ($share -le 34.0) -and $con.Contains('OVER the'); $must='a report five times the size still leaves the goal and criteria leading, is cut to its share, and the console says it was over budget' } 'sharecheck' { $ok=($null -ne $share) -and ($null -ne $real) -and ([Math]::Abs($share - $real) -le 0.2); $must='the share the console printed agrees with the share measured off the prompt file, within 0.2 of a percentage point' } 'whyplan' { $ok=($units -eq 1) -and (-not $ref) -and $back; $must='a WHY citing criterion 2.3 and the plan-s wording runs normally' } 'whyreport' { $ok=($units -eq 0) -and $ref -and $led.Contains('cites no line of the plan'); $must='a WHY citing only the previous report is refused before the unit runs, and the message names what it cited instead' } 'whyboth' { $ok=($units -eq 1) -and (-not $ref) -and $back; $must='a WHY that names a criterion and then reasons from the report RUNS - this check is not the guard for that, 6.5 is' } 'followsreport' { $ok=($units -eq 1) -and $halt -and $led.Contains('chosen from the last report'); $must='the real judge answers FOLLOWS: report, the loop halts, and the judge-s own sentence is quoted' } 'followsplan' { $ok=($units -eq 1) -and (-not $halt) -and $back; $must='the real judge answers FOLLOWS: plan and the loop continues to its backstop' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+rem  084 task 6: THREE OF THESE ARMS ARE REVERSED, and the old expectations are
+rem  quoted here, word for word, where a reader will find them:
+rem    whyreport     $ok=($units -eq 0) -and $ref -and $led.Contains('cites no line of the plan')
+rem                  must: a WHY citing only the previous report is refused before
+rem                  the unit runs, and the message names what it cited instead
+rem    whyboth       $ok=($units -eq 1) -and (-not $ref) -and $back
+rem                  must: a WHY that names a criterion and then reasons from the
+rem                  report RUNS - this check is not the guard for that, 6.5 is
+rem    followsreport $ok=($units -eq 1) -and $halt -and $led.Contains('chosen from the last report')
+rem                  must: the real judge answers FOLLOWS: report, the loop halts,
+rem                  and the judge-s own sentence is quoted
+rem  What changed: the cites-no-plan refusal REDIRECTS rather than halting, so
+rem  whyreport reads the whole ledger for the redirect note and expects the
+rem  backstop; task 4's detector refuses whyboth's and followsreport's WHYs
+rem  before the unit runs, so neither runs a unit and followsreport never
+rem  reaches the judge - the real judge's report answer is proved by the new
+rem  drift-report arm instead.
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $l=$r+'\RUN_LEDGER.md'; $led=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $pf=$r+'\.run-unit\arbiter-prompt.txt'; $pr=''; if(Test-Path -LiteralPath $pf){ $pr=[IO.File]::ReadAllText($pf) }; $ig=$pr.IndexOf('PHASE GOAL:'); $ic=$pr.IndexOf('ITS UNMET CRITERIA'); $ia=$pr.IndexOf('WHAT HAS ALREADY BEEN TRIED'); $ir=$pr.IndexOf('THE PREVIOUS UNIT-S REPORT'); $order=($ig -ge 0) -and ($ic -gt $ig) -and ($ir -gt $ic) -and (($ia -lt 0) -or ($ir -gt $ia)); $share=$null; $kept=$null; if($con -match 'of which the previous report is ([0-9]+) - ([0-9.]+) pct'){ $kept=[int]$Matches[1]; $share=[double]$Matches[2] }; $tot=0; if($pr -ne ''){ $tot=(Get-Item -LiteralPath $pf).Length }; $real=$null; if(($tot -gt 0) -and ($null -ne $kept)){ $real=[Math]::Round(100.0 * $kept / $tot, 1) }; $back=$led.Contains('backstop'); $ref=$con.Contains('REFUSED: THIS INSTRUCTION-S WHY CITES NO LINE OF THE PLAN'); $halt=$con.Contains('HALTED: THE CRITERION WAS CHOSEN FROM THE LAST REPORT, NOT FROM THE PLAN'); $all=''; if(Test-Path -LiteralPath $l){ $all=[IO.File]::ReadAllText($l) }; $drv=$con.Contains('REFUSED: THIS INSTRUCTION-S WHY RESTS ON THE LAST REPORT'); 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'prompt bytes   : ' + $tot; 'goal/crit/rec/report at : ' + $ig + ' / ' + $ic + ' / ' + $ia + ' / ' + $ir; 'order plan-first: ' + $order; 'printed share  : ' + $(if($null -ne $share){ [string]$share + ' pct of ' + $tot + ' bytes, kept ' + $kept } else { 'not printed' }); 'measured share : ' + $(if($null -ne $real){ [string]$real + ' pct' } else { 'not measurable' }); 'why refused    : ' + $ref; 'follows halt   : ' + $halt; 'halt line      : ' + $led; switch($arm){ 'promptorder' { $ok=$order -and ($null -ne $share) -and $pr.Contains('EVIDENCE, NOT A LIST OF WORK'); $must='the phase goal and the step criteria come before the attempt record and the report, and the report is last under a heading calling it evidence' } 'promptbig' { $ok=$order -and ($null -ne $share) -and ($share -le 34.0) -and $con.Contains('OVER the'); $must='a report five times the size still leaves the goal and criteria leading, is cut to its share, and the console says it was over budget' } 'sharecheck' { $ok=($null -ne $share) -and ($null -ne $real) -and ([Math]::Abs($share - $real) -le 0.2); $must='the share the console printed agrees with the share measured off the prompt file, within 0.2 of a percentage point' } 'whyplan' { $ok=($units -eq 1) -and (-not $ref) -and $back; $must='a WHY citing criterion 2.3 and the plan-s wording runs normally' } 'whyreport' { $ok=($units -eq 0) -and $ref -and $all.Contains('redirected - WHY cites no line of the plan') -and $back; $must='a WHY citing only the previous report is refused before the unit runs, the message names what it cited instead, and THE LOOP REDIRECTS AND CONTINUES to its backstop - REVERSED BY 084, it halted' } 'whyboth' { $ok=($units -eq 0) -and $drv -and $all.Contains('redirected - WHY rests on the last report') -and $back; $must='a WHY that names a criterion and then gives the report as its reason is REFUSED by 084-s detector and redirected - REVERSED BY 084, it ran' } 'followsreport' { $ok=($units -eq 0) -and $drv -and (-not $halt) -and $back; $must='a WHY that takes the nearest criterion to what the last report asked is REFUSED before the unit runs and the judge is never reached - REVERSED BY 084, which proves the real judge-s report answer in drift-report instead' } 'followsplan' { $ok=($units -eq 1) -and (-not $halt) -and $back; $must='the real judge answers FOLLOWS: plan and the loop continues to its backstop' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
 set "RC=%ERRORLEVEL%"
 goto :end
 
@@ -1249,7 +1784,38 @@ set "RC=%ERRORLEVEL%"
 goto :end
 
 :verdict067
-powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $o=$r+'\PHASE_OUTCOME.md'; $ents=0; if(Test-Path -LiteralPath $o){ $ents=@(Select-String -Path $o -Pattern '^## UNIT ').Count }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $lk=Test-Path -LiteralPath ($r+'\SESSION.lock'); $ro=Test-Path -LiteralPath ($r+'\output.md'); $rd=$r+'\.run-unit\reports'; $reps=@(); if(Test-Path -LiteralPath $rd){ $reps=@(Get-ChildItem -LiteralPath $rd | Sort-Object Name | ForEach-Object { $_.Name }) }; $src=(Get-FileHash -LiteralPath ('%HERE%..\watchdog\fixture-output.md') -Algorithm SHA256).Hash; $h1='absent'; $h2='absent'; if(Test-Path -LiteralPath ($rd+'\unit-1-output.md')){ $h1=(Get-FileHash -LiteralPath ($rd+'\unit-1-output.md') -Algorithm SHA256).Hash }; if(Test-Path -LiteralPath ($rd+'\unit-1-output-2.md')){ $h2=(Get-FileHash -LiteralPath ($rd+'\unit-1-output-2.md') -Algorithm SHA256).Hash }; $back=$led.Contains('backstop'); 'run-phase exit : %RRC%'; if('%URC%' -ne ''){ 'run-unit direct: exit %URC%' }; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'record entries : ' + $ents; 'SESSION.lock   : ' + $(if($lk){ 'still at the root' } else { 'gone' }); 'root output.md : ' + $(if($ro){ 'still at the root' } else { 'gone' }); 'reports kept   : ' + $(if($reps.Count){ $reps -join ', ' } else { 'none' }); 'halt line      : ' + $led; switch($arm){ 'leftover' { $ok=($units -eq 1) -and ($ents -eq 1) -and $led.Contains('stop 11') -and $led.Contains('nothing was launched') -and $led.Contains('UNIT: 358') -and $con.Contains('STOP 11: NOTHING WAS LAUNCHED'); $must='one unit ran and ONE entry is in the record - none for iteration 2 - and the halt names stop 11 and the file it found, UNIT: 358' } 'lockleak' { $ok=($units -eq 2) -and ($ents -eq 2) -and $back -and (-not $lk); $must='two units ran and two entries were recorded, so iteration 1 released on its clean exit, and no SESSION.lock is left behind' } 'lock-dead' { $ok=($units -eq 1) -and ($ents -eq 1) -and $back -and $all.Contains('an orphaned session lock was cleared') -and $all.Contains('999999') -and (-not $lk); $must='the orphaned lock was cleared, the unit ran, the ledger says an orphaned lock naming pid 999999 was cleared, and nothing is left behind' } 'lock-live' { $ok=('%RRC%' -eq '3') -and ($c.Count -eq 0) -and ('%URC%' -eq '1') -and $con.Contains('FOUND RUNNING') -and $con.Contains('holder pid : 4'); $must='run-phase refused at its door with nothing called, and run-unit.bat refused at exit 1 naming pid 4 as FOUND RUNNING' } 'noreport' { $ok=($units -eq 1) -and ($ents -eq 0) -and $led.Contains('stop 11') -and $led.Contains('no report was written by this unit') -and $con.Contains('STOP 11: NO REPORT WAS WRITTEN'); $must='the unit ran and wrote nothing, NOTHING was appended to the record, and the halt is stop 11 saying no report was written by this unit' } 'kept' { $ok=($units -eq 1) -and ($reps.Count -eq 1) -and ($reps[0] -ceq 'unit-1-output.md') -and ($h1 -eq $src) -and $ro; $must='the judged report is at .run-unit\reports\unit-1-output.md, SHA256-identical to what the unit wrote, and the root output.md SURVIVES - the owner-s ruling of 2026-09-19' } 'kept-twice' { $ok=($units -eq 1) -and ($reps.Count -eq 2) -and ($h1 -ne $src) -and ($h1 -ne 'absent') -and ($h2 -eq $src) -and $ro -and $con.Contains('unit-1-output-2.md'); $must='neither file is lost - the earlier unit-1-output.md untouched, the new report beside it as unit-1-output-2.md, the console says where it went, and the root output.md SURVIVES' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $o=$r+'\PHASE_OUTCOME.md'; $ents=0; if(Test-Path -LiteralPath $o){ $ents=@(Select-String -Path $o -Pattern '^## UNIT ').Count }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $lk=Test-Path -LiteralPath ($r+'\SESSION.lock'); $ro=Test-Path -LiteralPath ($r+'\output.md'); $rd=$r+'\.run-unit\reports'; $reps=@(); if(Test-Path -LiteralPath $rd){ $reps=@(Get-ChildItem -LiteralPath $rd | Sort-Object Name | ForEach-Object { $_.Name }) }; $src=(Get-FileHash -LiteralPath ('%HERE%..\watchdog\fixture-output.md') -Algorithm SHA256).Hash; $h1='absent'; $h2='absent'; if(Test-Path -LiteralPath ($rd+'\unit-1-output.md')){ $h1=(Get-FileHash -LiteralPath ($rd+'\unit-1-output.md') -Algorithm SHA256).Hash }; if(Test-Path -LiteralPath ($rd+'\unit-1-output-2.md')){ $h2=(Get-FileHash -LiteralPath ($rd+'\unit-1-output-2.md') -Algorithm SHA256).Hash }; $back=$led.Contains('backstop'); 'run-phase exit : %RRC%'; if('%URC%' -ne ''){ 'run-unit direct: exit %URC%' }; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'record entries : ' + $ents; 'SESSION.lock   : ' + $(if($lk){ 'still at the root' } else { 'gone' }); 'root output.md : ' + $(if($ro){ 'still at the root' } else { 'gone' }); 'reports kept   : ' + $(if($reps.Count){ $reps -join ', ' } else { 'none' }); 'halt line      : ' + $led; switch($arm){ 'leftover' { $ok=($units -eq 1) -and ($ents -eq 1) -and $con.Contains('THAT FILE SAYS  UNIT: 358') -and $con.Contains('NOTHING WAS LAUNCHED ON TWO ATTEMPTS') -and $all.Contains('launch skipped') -and (-not $all.Contains('stop 11')) -and $led.Contains('backstop'); $must='REVERSED BY 087 - 067 asserted stop 11 naming UNIT: 358. Now: one unit ran and ONE entry is in the record - none for iteration 2, whose launch started nothing twice - the leftover file is still NOT JUDGED and its UNIT: 358 line is still named on the console, the iteration is skipped with a ledger note, and the loop reaches its backstop - 067 intact, the night not ended' } 'lockleak' { $ok=($units -eq 2) -and ($ents -eq 2) -and $back -and (-not $lk); $must='two units ran and two entries were recorded, so iteration 1 released on its clean exit, and no SESSION.lock is left behind' } 'lock-dead' { $ok=($units -eq 1) -and ($ents -eq 1) -and $back -and $all.Contains('an orphaned session lock was cleared') -and $all.Contains('999999') -and (-not $lk); $must='the orphaned lock was cleared, the unit ran, the ledger says an orphaned lock naming pid 999999 was cleared, and nothing is left behind' } 'lock-live' { $ok=('%RRC%' -eq '3') -and ($c.Count -eq 0) -and ('%URC%' -eq '1') -and $con.Contains('FOUND RUNNING') -and $con.Contains('holder pid : 4'); $must='run-phase refused at its door with nothing called, and run-unit.bat refused at exit 1 naming pid 4 as FOUND RUNNING' } 'noreport' { $ok=($units -eq 1) -and ($ents -eq 1) -and $all.Contains('no report written by unit 1') -and $con.Contains('NOT RETRIED') -and $con.Contains('NO REPORT OF THIS UNIT') -and (-not $all.Contains('stop 11')) -and $led.Contains('backstop'); $must='REVERSED BY 087 - 067 asserted: the unit ran and wrote nothing, NOTHING was appended, and the halt is stop 11. Now: the unit ran and is NOT retried, one entry lands with its fate not recorded and nothing judged, the ledger carries the no-report note, no stop 11, and the loop reaches its backstop' } 'kept' { $ok=($units -eq 1) -and ($reps.Count -eq 1) -and ($reps[0] -ceq 'unit-1-output.md') -and ($h1 -eq $src) -and $ro; $must='the judged report is at .run-unit\reports\unit-1-output.md, SHA256-identical to what the unit wrote, and the root output.md SURVIVES - the owner-s ruling of 2026-09-19' } 'kept-twice' { $ok=($units -eq 1) -and ($reps.Count -eq 2) -and ($h1 -ne $src) -and ($h1 -ne 'absent') -and ($h2 -eq $src) -and $ro -and $con.Contains('unit-1-output-2.md'); $must='neither file is lost - the earlier unit-1-output.md untouched, the new report beside it as unit-1-output-2.md, the console says where it went, and the root output.md SURVIVES' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+set "RC=%ERRORLEVEL%"
+goto :end
+
+rem ============================================================
+rem  083'S ARMS, JUDGED BY TWO CALLS OF THEIR OWN - the parking arms and the
+rem  state arms - for the reason every split before them gives: cmd refuses a
+rem  command line past 8191 characters.
+rem
+rem  EVERY PARKING ARM READS PARKED.md, THE MARK FILE AND THE LEDGER, not only
+rem  the console, because the question is what the owner reads at breakfast and
+rem  the mark is what the next iteration decides on. The two state arms read the
+rem  RECORD HEADER back after the run, because bringing it up to the checkboxes
+rem  is half of what task 1 claims.
+:verdict083
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $l=$r+'\RUN_LEDGER.md'; $led=''; $all=''; if(Test-Path -LiteralPath $l){ $led=[string](Get-Content -LiteralPath $l -Tail 1); $all=[IO.File]::ReadAllText($l) }; $col=@($led -split '\|'); $verdict=''; $answer=''; if($col.Count -ge 7){ $verdict=$col[4].Trim(); $answer=$col[6].Trim() }; $pkf=$r+'\PARKED.md'; $pkd=''; $pkl=@(); if(Test-Path -LiteralPath $pkf){ $pkd=[IO.File]::ReadAllText($pkf); $pkl=@(Get-Content -LiteralPath $pkf | Where-Object { $_ -like 'PARKED:*' }) }; $mk=@(); if(Test-Path -LiteralPath ($r+'\.run-unit\parked.txt')){ $mk=@(Get-Content -LiteralPath ($r+'\.run-unit\parked.txt')) }; $o=$r+'\PHASE_OUTCOME.md'; $at=@(); if(Test-Path -LiteralPath $o){ $at=@(Select-String -Path $o -Pattern '^ATTEMPT: *([0-9]+\.[0-9]+)' | ForEach-Object { $_.Matches[0].Groups[1].Value }) }; $pf=$r+'\.run-unit\arbiter-prompt.txt'; $pr=''; if(Test-Path -LiteralPath $pf){ $pr=[IO.File]::ReadAllText($pf) }; $sp=$r+'\review\sheet.md'; $sheet=Test-Path -LiteralPath $sp; $st=''; if($sheet){ $st=[IO.File]::ReadAllText($sp) }; $parks=@([regex]::Matches($con, 'PARKED, NOT HALTED')).Count; $back=$led.Contains('backstop'); $ip=$st.IndexOf('PARKED'); $is=$st.IndexOf('## Step 1'); 'run-phase exit : %RRC%'; if('%RRC2%' -ne ''){ 'second pass    : exit %RRC2%' }; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'parks on console: ' + $parks; 'PARKED.md lines: ' + $(if($pkl.Count){ $pkl -join '  //  ' } else { 'none - file ' + $(if(Test-Path -LiteralPath $pkf){ 'present but empty' } else { 'absent' }) }); 'marks this pass: ' + $(if($mk.Count){ $mk -join ' ' } else { 'none' }); 'attempts at    : ' + $(if($at.Count){ $at -join ', ' } else { 'none' }); 'ledger verdict : ' + $verdict; 'ledger says    : ' + $(if($answer.Length -gt 120){ $answer.Substring(0,120) + '...' } else { $answer }); 'review sheet   : ' + $sheet + $(if($sheet){ ' - parked block at ' + $ip + ', first step at ' + $is } else { '' }); switch($arm){ 'park-one' { $ok=($units -eq 2) -and ($parks -eq 1) -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.3 |') -and $pkl[0].Contains('| keying |') -and ($mk -contains '2.3') -and $pr.Contains('PARKED THIS PASS') -and $pr.Contains('2.3 the fixture is killed at ten quiet looks   (parked)') -and $pr.Contains('- [ ] 2.2 the slow fixture survives') -and (($at -join ',') -eq '2.3,2.2') -and $all.Contains('parked - criterion 2.3') -and $back; $must='the hit on 2.3 is PARKED to PARKED.md naming keying, 2.3 is marked, the next prompt lists 2.3 as parked and 2.2 as the work, the second unit runs at 2.2, the ledger carries the park, and the loop CONTINUES to its backstop - no halt on the question' } 'park-twice' { $ok=($units -eq 3) -and ($parks -eq 2) -and ($pkl.Count -eq 2) -and $pkl[0].StartsWith('PARKED: 2.3 |') -and $pkl[1].StartsWith('PARKED: 2.2 |') -and ($mk -contains '2.3') -and ($mk -contains '2.2') -and (($at -join ',') -eq '2.3,2.2,2.4') -and $back; $must='two hits in a row on 2.3 then 2.2 are BOTH parked and BOTH skipped, and a third unit runs at 2.4 - work continues on the rest' } 'park-last' { $ok=('%RRC%' -eq '0') -and ($units -eq 1) -and ($verdict -eq 'ending') -and $answer.Contains('every remaining criterion is the owner-s or parked') -and $answer.Contains('1 parked') -and ($pkl.Count -eq 1) -and $pkl[0].StartsWith('PARKED: 2.2 |') -and $pkl[0].Contains('| money |') -and $sheet -and ($ip -ge 0) -and ($is -gt $ip) -and $st.Contains('2.2') -and $st.Contains('money'); $must='the hit on the ONLY open non-owner criterion ends the night at EXIT 0: the ledger verdict is ending and names 1 parked, and the sheet carries the parked question ABOVE the criteria, naming money' } 'park-only' { $ok=('%RRC%' -eq '0') -and ($units -eq 1) -and ($verdict -eq 'ending') -and $answer.Contains('every remaining criterion is the owner-s or parked') -and $answer.Contains('PARKED.md') -and $con.Contains('PARKED.md') -and (-not $sheet) -and ($pkl.Count -eq 1) -and $pkl[0].Contains('| promise |'); $must='with no owner-s line and no REVIEW_SHEET, the night ends at exit 0 as an ending and PARKED.md-s path is on the console and in the ledger line so the question cannot be lost' } 'park-unknown' { $ok=($units -eq 1) -and (-not $answer.Contains('stop 3')) -and (Test-Path -LiteralPath $pkf) -and ([IO.File]::ReadAllText($pkf).Contains('| unread |')) -and $answer.Contains('backstop'); $must='REVERSED BY 087 - 083 asserted: an UNREADABLE section-4 judge still HALTS at stop 3 as unknown, a failure, nothing parked. Now: retried once, unreadable again, the criterion PARKS with which=unread, no stop 3, and the loop reaches its backstop' } 'park-arbstop' { $ok=($units -eq 0) -and $con.Contains('STOP 4: THE ARBITER DECLARED A DECISION THE OWNER') -and $led.Contains('stop 4') -and (-not (Test-Path -LiteralPath $pkf)) -and ($parks -eq 0); $must='the arbiter raising one of the three itself still HALTS at stop 4 and nothing is parked - :arbstop is untouched' } 'park-fresh' { $n23=@($at | Where-Object { $_ -eq '2.3' }).Count; $ok=($units -ge 3) -and ($parks -eq 1) -and $con.Contains('parked marks from an earlier pass cleared: 1') -and ($n23 -ge 2) -and ($mk -notcontains '2.3'); $must='a NEW loop over the same root clears the mark at its door, says so, and authors the parked criterion 2.3 again - the park was one pass, never a permanent block' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
+set "RC=%ERRORLEVEL%"
+goto :end
+
+rem  084 task 6: THE TARGET IS READ FROM THE CONSOLE, NOT FROM THE PROMPT FILE.
+rem  The two state arms run with --seed, so the arbiter is never called on
+rem  iteration 1 and arbiter-prompt.txt is never written; both failed BOTH
+rem  passes of 084's task 1 - "prompt target : step not written" - while the
+rem  console showed the launcher doing exactly what the must line demands. The
+rem  old source, word for word:
+rem      $tgt='not written'; if($pr -match '(?m)^THE STEP TO WORK: step ([0-9]+)'){ $tgt=$Matches[1] }
+rem  and state-header-notstarted also asserted $pr.Contains('[partial by its
+rem  checkboxes'). Both now read :stepfromcrit's own console line, "target step
+rem  N", and the derivation's position string. target-not-zero is PROMPTONLY,
+rem  writes the prompt, and keeps reading it.
+:verdict083b
+powershell -NoProfile -Command "$r='%FROOT%'; $arm='%ARM%'; $c=@(); if(Test-Path -LiteralPath ($r+'\calls.txt')){ $c=@(Get-Content -LiteralPath ($r+'\calls.txt')) }; $units=@($c | Where-Object { $_ -eq 'UNIT' }).Count; $con=''; if(Test-Path -LiteralPath ($r+'\console.txt')){ $con=[IO.File]::ReadAllText($r+'\console.txt') }; $o=$r+'\PHASE_OUTCOME.md'; $hdr=@(); $adv=@(); if(Test-Path -LiteralPath $o){ $hdr=@(Select-String -Path $o -Pattern '^STEP: [0-9]+ \|' | ForEach-Object { $_.Line }); $adv=@(Select-String -Path $o -Pattern '^ADVANCED: ' | ForEach-Object { $_.Line.Substring(10) }) }; $pf=$r+'\.run-unit\arbiter-prompt.txt'; $pr=''; if(Test-Path -LiteralPath $pf){ $pr=[IO.File]::ReadAllText($pf) }; $tgt='not written'; if($pr -match '(?m)^THE STEP TO WORK: step ([0-9]+)'){ $tgt=$Matches[1] }; $ctgt='not printed'; if($con -match 'target step ([0-9]+|none)'){ $ctgt=$Matches[1] }; 'run-phase exit : %RRC%'; 'calls          : ' + $(if($c.Count){ $c -join ', ' } else { 'none' }); 'units run      : ' + $units; 'ADVANCED lines : ' + ($adv -join ', '); 'prompt target  : step ' + $tgt; 'console target : step ' + $ctgt; 'header after   : ' + ($hdr -join '  //  '); switch($arm){ 'state-header-done' { $ok=($units -eq 1) -and ($ctgt -eq '3') -and $con.Contains('record header: step 2 in progress -> done') -and (($hdr | Where-Object { $_ -like 'STEP: 2 | done |*' }).Count -eq 1) -and $con.Contains('position: 1=done,2=done,3=not started') -and (($adv -join ',') -eq 'yes'); $must='a step done by its checkboxes but in progress in the header is treated as DONE - not chosen as the target, and the header is brought up to done; the unit runs at 3.1 and advances' } 'state-header-notstarted' { $ok=($units -eq 1) -and ($ctgt -eq '2') -and $con.Contains('2=partial') -and $con.Contains('record header: step 2 not started -> partial') -and (($hdr | Where-Object { $_ -like 'STEP: 2 | partial |*' }).Count -eq 1) -and (($adv -join ',') -eq 'yes'); $must='a step not started in the header but partly ticked is treated as PARTIAL, its unmet criteria are authorable, the unit runs at 2.3 and advances, and the header reads partial' } 'target-not-zero' { $ok=($tgt -eq '3') -and (-not $pr.Contains('THE STEP TO WORK: step 0')) -and $con.Contains('target step 3') -and $con.Contains('0=done'); $must='HamLet-s case: steps 3 and 4 have open work and step 0 is fully ticked though the header says not started - the prompt aims at step 3, NEVER at step 0' } }; 'must           : ' + $must; ''; 'verdict        : ' + $(if($ok){ 'PASS' } else { 'FAIL' }); if($ok){ exit 0 } else { exit 1 }"
 set "RC=%ERRORLEVEL%"
 goto :end
 
@@ -1321,6 +1887,13 @@ echo   run-fixture.bat ^<exhaust-three ^| exhaust-empty ^| exhaust-two ^| exhaus
 echo   run-fixture.bat ^<exhaust-stop ^| exhaust-stop-money ^| exhaust-stop-promise ^| exhaust-owner^>
 echo   run-fixture.bat ^<end-exhausted ^| end-three ^| end-owner ^| end-twice^>
 echo   run-fixture.bat ^<fail-stop11 ^| fail-maxiter ^| fail-noplan^>
+echo   run-fixture.bat ^<park-one ^| park-twice ^| park-last ^| park-only ^| park-unknown ^| park-arbstop ^| park-fresh^>
+echo   run-fixture.bat ^<state-header-done ^| state-header-notstarted ^| target-not-zero^>
+echo   run-fixture.bat ^<prime-first ^| prime-label ^| prime-big ^| why-mixed ^| why-split^>
+echo   run-fixture.bat ^<drift-report ^| drift-plan ^| drift-twice ^| stop-over-why^>
+echo   run-fixture.bat ^<budget-none ^| drift-all^>
+echo   run-fixture.bat ^<hb-noadv ^| hb-twice ^| hb-blocker-park ^| hb-unshaped ^| stop-over-hb^>
+echo   run-fixture.bat ^<s4-retry ^| arb-retry ^| arb-twice ^| arb-stop-retry ^| launch-twice ^| deny-park ^| fail-noseed^>
 echo.
 set "RC=2"
 

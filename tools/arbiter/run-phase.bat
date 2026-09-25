@@ -42,14 +42,33 @@ rem  NAMES WHICH, on screen and in the ledger.
 rem
 rem     1  the phase plan is satisfied - every step done or
 rem        declared unachievable
-rem     2  the budget is exhausted
+rem     2  REMOVED BY 085. It read `the budget is exhausted`. The owner,
+rem        2026-09-23: money is no longer a thing a night stops for.
+rem        --budget is parsed, accumulated and printed, halts nothing,
+rem        and has no default. The number stays because it is useful;
+rem        a number that ends a night is the same stop in a quieter coat.
 rem     3  output.md section 4 asks the owner to decide one of the
-rem        THREE THINGS THE PHASE STOPS FOR, as the section 4 judge
-rem        reads it: keying, transmit or the radio's safety; money
-rem        past the budget; what the product promises the operator.
-rem        A question outside the three is no ruling wanted (061).
+rem        TWO THINGS THE PHASE STOPS FOR, as the section 4 judge
+rem        reads it: keying, transmit or the radio's safety; what the
+rem        product promises the operator. Money past the budget was the
+rem        third until 085. A question outside the two is no ruling
+rem        wanted (061).
+rem        SINCE 083 IT DOES NOT END THE NIGHT BY ITSELF. The question
+rem        is PARKED to PARKED.md at the root, the criterion it arose
+rem        under is closed for the rest of the pass, and the loop
+rem        authors against the plan's other work. The night ends only
+rem        when every remaining criterion is parked or the owner's -
+rem        stop 1, extended again - and the parked questions then go
+rem        to the top of the review sheet. The owner's ruling of
+rem        2026-09-23: a question is parked, not a reason to quit.
+rem        :s4unknown - the judge could not be read - still halts.
+rem        AND SINCE 085 THE DRIFT ENDING, :drifthalt: where every
+rem        criterion the loop may author was drifted on twice and parked
+rem        for it, and none for a question, the arbiter could not resolve
+rem        the work back to the phase goal - the owner's second ending of
+rem        2026-09-23. Exit 0, recorded as an ending, the sheet written.
 rem     4  THE ARBITER DECLARES A DECISION THE OWNER'S - one of the
-rem        same three, ARBITER.md section 6
+rem        same two, ARBITER.md section 6
 rem     5  the watchdog fired - the run's process tree accrued no CPU
 rem        time for ten minutes, or the owner's --minutes ceiling was
 rem        reached. The watchdog has no clock of its own (061).
@@ -66,7 +85,8 @@ rem
 rem  CONDITIONS 3 AND 4 ARE WHAT KEEP THE OWNER THE ARCHITECT. The
 rem  rest is plumbing. Those two are printed loud.
 rem
-rem  AND SINCE 061 THEY FIRE FOR THREE THINGS ONLY. The owner, 2026-09-12:
+rem  AND SINCE 061 THEY FIRE FOR THREE THINGS ONLY - TWO SINCE 085, money
+rem  having left the list on the owner's ruling of 2026-09-23. The owner, 2026-09-12:
 rem  "How do we make the arbiter tougher? It just gives up so easily."
 rem  Twice in one evening on HamLet this loop halted at STOP 3 on a
 rem  question the report had already answered with a recommendation - a
@@ -110,7 +130,13 @@ rem  overrulable - at least three distinct failed approaches, each with a
 rem  reason it is closed. Named here rather than buried in the test so a
 rem  reader can find the number that decides when a night may end.
 set "EXBAR=3"
-set "BUDGET=25.00"
+rem  085: NO --budget DEFAULT EITHER. The owner, 2026-09-23: money is no longer
+rem  a thing a night stops for, and a default that ends a night IS the stop
+rem  whatever it is called. --budget is still parsed, accumulated and PRINTED
+rem  - the figure on the console and in the ledger's cost column is what a
+rem  night cost, and that is useful - and it halts nothing. Until 085 this
+rem  read 25.00 and fed stop 2, which is gone.
+set "BUDGET="
 rem  NO --minutes DEFAULT, AND THAT IS THE RULE RATHER THAN AN OMISSION.
 rem  Until 061 this read 12 and meant twelve minutes without a status
 rem  write - the watchdog's own threshold, passed down on every run. The
@@ -158,6 +184,21 @@ if not exist "%ROOT%\PHASE_PLAN.md" (
   call :ledgerstop
   goto :end
 )
+rem  087: --seed WITH NO WORK_INSTRUCTIONS.md IS A DOOR CHECK, MOVED HERE. Until
+rem  087 it sat inside iteration 1's seed branch, after the lock and the reload,
+rem  and halted at exit 1 as `--seed was given and there is no
+rem  WORK_INSTRUCTIONS.md to run`. It is not a hiccup - the file the owner said
+rem  to run is not there - so it belongs with the other refusals before a night
+rem  starts, at exit 2 with a ledger line, before anything is touched.
+if "%SEED%"=="1" if not exist "%ROOT%\WORK_INSTRUCTIONS.md" (
+  echo ERROR: --seed was given and there is no WORK_INSTRUCTIONS.md at %ROOT%
+  echo A seed runs the instruction that shipped, and none shipped. Refusing to
+  echo start - this is a door check, not a hiccup.
+  set "RC=2"
+  set "STOPWHY=refused before the loop started: --seed was given and there is no WORK_INSTRUCTIONS.md to run"
+  call :ledgerstop
+  goto :end
+)
 
 set "WORK=%ROOT%\.run-unit"
 if not exist "%WORK%" mkdir "%WORK%"
@@ -179,7 +220,8 @@ echo.
 echo ============================================================
 echo  run-phase
 echo    root      : %ROOT%
-echo    budget    : %BUDGET% USD
+if defined BUDGET echo    budget    : %BUDGET% USD - a figure the spend is printed against, NOT a stop - 085
+if not defined BUDGET echo    budget    : no ceiling - the spend is printed and ledgered, and nothing halts on it - 085
 echo    backstop  : %MAXITER% iterations ^(NOT a stop condition^)
 if defined MINUTES echo    ceiling   : %MINUTES% min per run - the owner's --minutes
 if not defined MINUTES echo    ceiling   : no clock on a run - no --minutes was given
@@ -278,6 +320,14 @@ rem  exit code, no stop number, no twenty-fourth halt. A stale card is a stop,
 rem  and under the owner's ruling of 2026-09-14 a stop is failure.
 call :reconcilecard
 
+rem  083 task 3: A PARKED QUESTION IS PARKED FOR ONE PASS. The marks that make
+rem  a criterion not authorable live in .run-unit\parked.txt, and they are
+rem  cleared here, before the first iteration, so a new night re-reads the plan
+rem  fresh and may author the criterion again. PARKED.md at the root - the
+rem  durable, append-only log of the questions themselves - is never cleared.
+rem  Nothing about a parked question is ever written to the plan or the record.
+call :parkedclear
+
 rem ============================================================
 rem  THE LOOP
 rem ============================================================
@@ -296,8 +346,8 @@ if %ITER% GTR %MAXITER% (
   echo when a stop condition fails to fire - AND, since unit 070, it is also
   echo the ordinary end of a loop that kept redirecting. Read the line above:
   echo if iterations were spent on redirects, this is the brake doing its job
-  echo and the owner-s ruling that the bound is --budget, --minutes and
-  echo --max-iterations. If none were, a stop condition is broken and THAT is
+  echo and the owner-s ruling that the bound is --minutes and --max-iterations,
+  echo his own ceilings on a session. If none were, a stop condition is broken and THAT is
   echo the finding.
   set "STOPWHY=backstop: %MAXITER% iterations, no stop condition fired"
   goto :stopped
@@ -315,11 +365,56 @@ rem --- 2. the reload -------------------------------------------
 echo.
 echo   [2] reload - measuring the picture
 call "%HERE%reload.bat" "%ROOT%" --out "%WORK%\reload.txt" >nul
-if not exist "%WORK%\reload.txt" (
-  set "STOPWHY=the reload produced nothing - the arbiter would be authoring blind"
-  goto :stopped
-)
+if exist "%WORK%\reload.txt" goto :reloadok
+rem  087: THE RELOAD IS RETRIED ONCE, THEN THE ITERATION IS SKIPPED. Until 087
+rem  a missing reload.txt set STOPWHY to `the reload produced nothing - the
+rem  arbiter would be authoring blind` and went to :stopped. The reload is a
+rem  read of the tree with no side effect, so it is run once more; where it
+rem  still leaves nothing, nothing has been authored and there is no criterion
+rem  to park, so the iteration is skipped with a ledger note and the next one
+rem  reads the tree again - bounded by the backstop. One retry, no count.
+echo   THE RELOAD PRODUCED NOTHING. RETRYING ONCE - 087.
+call "%HERE%reload.bat" "%ROOT%" --out "%WORK%\reload.txt" >nul
+if not exist "%WORK%\reload.txt" goto :reloadtwice
+echo   the first reload produced nothing and the second was used - the ledger says so
+call :ledgernote "reload retried - the first reload produced nothing and the second was used; the night went on"
+goto :reloadok
+:reloadtwice
+echo   THE RELOAD PRODUCED NOTHING TWICE RUNNING. The arbiter would be authoring
+echo   blind, so this iteration is skipped and the next reads the tree again.
+echo   Until 087 this ended the night.
+call :ledgernote "reload skipped - the reload produced nothing on two attempts in iteration %ITER%; nothing authored, nothing launched, the night went on"
+goto :iterate
+:reloadok
 call :heartbeat
+
+rem --- 2a. A STEP'S STATE IS ITS CHECKBOXES, DERIVED HERE AT RELOAD. -------
+rem  083 task 1, the owner's ruling of 2026-09-23: derive the state from the
+rem  criteria at reload; the state judge's line adds only the reason.
+rem
+rem  WHAT WAS WRONG, measured on HamLet 2026-09-22 to -24: the card named step 0
+rem  for seven consecutive units while units worked steps 3 and 4, printing
+rem  0=not started for a step whose every criterion was ticked. The state came
+rem  from PHASE_OUTCOME.md's header, which is whatever the state judge LAST
+rem  WROTE for the ONE step a unit was authored into - so a step nobody was
+rem  authored into never moved, however many of its boxes were ticked, and
+rem  everything downstream - stop 1, the owner's-verdict halt, the done-step
+rem  refusal, the arbiter's target and the card - read that stale line.
+rem
+rem  :stepfromcrit reads PHASE_PLAN.md with criteria-count.bat's own regex and
+rem  writes .run-unit\step-states.txt: every step's state, where it came from,
+rem  its counts, and the first step with a real unmet non-owner criterion. Every
+rem  reader of a step state in this file now takes it from there - :position,
+rem  :ownerwait, :stepstate, :promptplan, :phasesteps and :record - and nothing
+rem  reads the header for a state any more. :syncheader then brings the record's
+rem  own header up to the same reading, in place, so the file the owner renders
+rem  says what the plan says.
+call :stepfromcrit
+call :syncheader
+rem  AND THE CARD, AT RELOAD AS WELL AS AFTER A UNIT. The card is what the panel
+rem  reads, and a night whose first unit takes an hour left it stale for that
+rem  hour. It writes only where a state differs.
+call :phasesteps
 
 rem --- is the plan already satisfied? condition 1 ---------------
 call :position
@@ -400,6 +495,17 @@ rem  THAT CRITERION, and a blocker-clear names no criterion. There is nothing
 rem  to send it back to. 064-s bound stands.
 if "%LA_KIND%"=="blocker" goto :blockertwice
 if not "%LA_KIND%"=="no" goto :noredirect
+rem  083 task 3: A REDIRECT IS NEVER PINNED TO A PARKED CRITERION. A unit
+rem  whose section 4 parked its criterion records ADVANCED: no - the box did
+rem  not flip - so two such units in a row would send the arbiter BACK to the
+rem  parked criterion, where naming it is refused and the refusal redirects to
+rem  the authorable ones, which the pin then refuses in turn: a loop that
+rem  bounces between two refusals until the backstop. Found by reading the
+rem  new refusal back against 070's redirect before running anything. So the
+rem  no-advance criteria are read against the parked marks first, and where
+rem  none survives no redirect is pinned and the arbiter chooses from the plan.
+call :unparkla
+if "%LA_NONE%"=="yes" goto :noredirect
 if "%LA_SAME%"=="yes" goto :redirectsame
 goto :redirectwander
 :noredirect
@@ -424,10 +530,9 @@ rem  the same decision block whichever way it was reached.
 if "%ITER%"=="1" if "%SEED%"=="1" (
   echo.
   echo   [3] arbiter - SKIPPED, this iteration runs the seed instruction
-  if not exist "%ROOT%\WORK_INSTRUCTIONS.md" (
-    set "STOPWHY=--seed was given and there is no WORK_INSTRUCTIONS.md to run"
-    goto :stopped
-  )
+  rem  087: the missing-file check that stood here moved to the door at
+  rem  :parsed, where a seed with nothing to run is refused before the lock,
+  rem  the reload or a ledger-less halt - see the door checks.
   call :heartbeat
   call :readdecision
   set "ARBRC=0"
@@ -440,10 +545,46 @@ call :heartbeat
 call :arbiter
 call :heartbeat
 :seeded
-if not "%ARBRC%"=="0" (
-  set "STOPWHY=the arbiter session failed - exit %ARBRC%"
-  goto :stopped
-)
+if "%ARBRC%"=="0" goto :arbok
+rem  087: THE ARBITER CALL IS RETRIED ONCE, THEN ROUTED. Until 087 a failed
+rem  arbiter session - its JSON missing, unparseable or is_error - set STOPWHY
+rem  to `the arbiter session failed - exit N` and went to :stopped. The owner,
+rem  2026-09-23: failure has to be the last option, and a first attempt failing
+rem  is the first. The call is a read of a prompt file with no side effect, so
+rem  it is repeated once with the same prompt and the same inputs; a second
+rem  failure parks the criterion the prompt aimed at - the first authorable one
+rem  - and the loop takes the plan's other work at the next iteration. One
+rem  retry, no count, no backoff. Flat: ARBTRIED is one iteration's memory and
+rem  is cleared on every way out.
+if "%ARBTRIED%"=="1" goto :arbtwice
+set "ARBTRIED=1"
+echo.
+echo   THE ARBITER SESSION FAILED - exit %ARBRC%. RETRYING ONCE, same prompt, same inputs - 087.
+call :heartbeat
+call :arbiter
+call :heartbeat
+if "%ARBRC%"=="0" echo   the first arbiter attempt failed and the second was used - the record says so in the ledger
+if "%ARBRC%"=="0" call :ledgernote "arbiter retried - the first arbiter call failed and the second was read; the night went on"
+goto :seeded
+:arbtwice
+set "ARBTRIED="
+echo.
+echo   THE ARBITER SESSION FAILED TWICE RUNNING - exit %ARBRC% on the retry. Until 087
+echo   this ended the night. The criterion the prompt aimed at is PARKED and the loop
+echo   takes the plan's other work - the owner's ruling of 2026-09-23. The prompt it
+echo   was given is in .run-unit\arbiter-prompt.txt, its answer in arbiter.json.
+set "HK_CRIT="
+for /f "tokens=1" %%A in ("%SF_AUTHORABLE%") do set "HK_CRIT=%%A"
+if not defined HK_CRIT echo   no authorable criterion to park - the next iteration re-reads the plan
+if not defined HK_CRIT goto :iterate
+set "AT_CRIT=%HK_CRIT%"
+set "ATTEMPTID="
+set "PK_WHICH=arbiter"
+set "PK_WORDS=the arbiter session failed twice running, exit %ARBRC% - its prompt is in .run-unit\arbiter-prompt.txt; nothing was authored and nothing was launched"
+call :park
+goto :iterate
+:arbok
+set "ARBTRIED="
 
 rem  conditions 4 and 9 and the satisfied-plan case all arrive as
 rem  MOVE: stop in the decision block. The arbiter is the only thing
@@ -473,8 +614,14 @@ rem  the proposal is formed FROM; this makes it visible when the
 rem  ordering was ignored. Neither alone is enough, and this half is
 rem  the mechanical one: it catches the ABSENT case. A field filled in
 rem  plausibly rather than truly is not something a script can see.
-if not defined A_ADV goto :noadvances
+rem  086: THE STOP IS DISPATCHED BEFORE THE PAPERWORK IS CHECKED. Until 086
+rem  the missing-ADVANCES refusal sat above this line, so a MOVE: stop written
+rem  without an ADVANCES field was refused as paperwork before it could halt
+rem  as a stop; now that the refusal hands back instead of halting, that
+rem  ordering would have handed a keying stop back to the arbiter. The stop
+rem  wins, by ordering, as 081 put :arbstop above the exhaustion test.
 if /i "%A_MOVE%"=="stop" goto :arbstop
+if not defined A_ADV goto :noadvances
 
 rem  ADVANCES NAMES A CRITERION OR IS THE BLOCKER FORM. 064 task 2. The
 rem  owner's ruling of 2026-09-14: a unit may claim only criterion k of
@@ -515,7 +662,7 @@ rem
 rem  MOVE: exhausted is the arbiter saying the routes to this criterion have
 rem  run out. Before this unit there was NO WAY TO SAY IT - the only
 rem  arbiter-driven ending was MOVE: stop, which is STOP 4 and is reserved for
-rem  the three things the phase stops for, and 070's redirect block tells the
+rem  the things the phase stops for - two since 085 - and 070's redirect block tells the
 rem  arbiter in terms that running out of routes is not something it may
 rem  assert. So this unit builds the declaration AND the test that it is true.
 rem
@@ -663,6 +810,43 @@ for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$
 if "%WY_SEEN%"=="yes" echo       why        : cites ids %WY_IDS%, steps %WY_STEPS%, and shares %WY_HITS% words with its closest plan line - three are needed
 if "%WY_CITES%"=="no" goto :whynoplan
 
+rem  084 task 4. A WHY THAT CITES THE PLAN BUT RESTS ON THE LAST REPORT IS
+rem  REFUSED - and redirected, never halted. This is the gap 069 named in its
+rem  own report: the floor above asks only whether the plan is CITED, and a WHY
+rem  that quotes a criterion id and then gives the last report as the reason
+rem  for choosing it passes the floor. The owner, 2026-09-23: the phase goal is
+rem  the prime directive and the report is an indicator; drift is reading the
+rem  indicator as the directive, and the moment the report selects the target
+rem  the loop is chasing the artifact.
+rem
+rem  HOW IT IS DETECTED, in one sentence for the owner: the WHY is read one
+rem  sentence at a time, and it is refused only where some sentence names the
+rem  report as a reason - a report-referring phrase beside a reason marker -
+rem  AND no sentence cites the plan on its own. Author's, overrulable.
+rem    report-referring: output.md, the last/previous report, section 4,
+rem                      the report says/raised/asked, the last unit raised
+rem    reason marker:    so this unit, because, therefore, advances, takes,
+rem                      in order to
+rem    plan citation:    a criterion id, step N, PHASE_PLAN, the plan
+rem
+rem  IT ERRS TOWARD LETTING A WHY THROUGH, which is the instruction and ruling
+rem  2. WHAT IT MISSES, measured on the fixture instructions before it was
+rem  built: a WHY that gives the plan one sentence of its own and admits in the
+rem  next that the report chose the target passes here and only the judge
+rem  catches it; a WHY that reasons from the report without naming it passes
+rem  both. WHAT IT CATCHES WRONGLY: one sentence carrying the plan's requirement
+rem  and the report's evidence together is refused, at the cost of one
+rem  iteration and a redirect. AGAINST THE EIGHT REAL WHY LINES ON THIS
+rem  REPOSITORY'S RECORD IT REFUSES NONE, and against the fixtures it refuses
+rem  whyboth, whymixed and followsreport and lets whyplan, whymixed-split,
+rem  whydrift and followsplan through. It reads what was cited and what the
+rem  reasoning rests on; it never judges intent.
+rem
+rem  WHERE THE WHY COULD NOT BE READ nothing is refused - unknown is not drift.
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$wf='%WORK%\why.txt'; if(-not (Test-Path -LiteralPath $wf)){ exit }; $w=[IO.File]::ReadAllText($wf, [Text.Encoding]::UTF8); $rx='(?i)\b(output\.md|the (last|previous|prior) (unit.?s |night.?s )?report|section 4|the report (raised|says|said|reports|found|named|asked)|the last unit (raised|reported|found|said))'; $causal='(?i)\b(so this unit|so it|therefore|hence|which is why|because|advances|takes|in order to)\b'; $plan='(?i)([0-9]+\.[0-9]+|\bstep [0-9]+|PHASE_PLAN|the plan\b)'; $sents=@($w -split '(?<=[.;])\s+'); $hit=''; $ph=''; $planonly=$false; foreach($s in $sents){ $hasRep=($s -match $rx); $p1=''; if($hasRep){ $p1=$Matches[1] }; $hasPlan=($s -match $plan); if($hasRep -and ($s -match $causal) -and ($hit -eq '')){ $hit=$s; $ph=$p1 }; if($hasPlan -and -not $hasRep){ $planonly=$true } }; 'WD_SEEN=yes'; if(($hit -ne '') -and (-not $planonly)){ 'WD_DRIVEN=yes' } else { 'WD_DRIVEN=no' }; 'WD_PLANALONE=' + $(if($planonly){ 'yes' } else { 'no' }); if($ph){ 'WD_PHRASE=' + $ph }; if($hit){ 'WD_SENT=' + ((($hit -replace '[&|<>^%%]','') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
+if "%WD_SEEN%"=="yes" if "%WD_DRIVEN%"=="no" if defined WD_PHRASE echo       why        : names the report - %WD_PHRASE% - but a sentence cites the plan on its own, so it is let through; the judge decides
+if "%WD_DRIVEN%"=="yes" goto :whydriven
+
 rem  THE COUNT BEFORE THE UNIT RUNS, by criteria-count.bat - a script.
 call :critcount "%ADV_STEP%" "%ADV_CRIT%"
 set "CB_MET=%CC_MET%"
@@ -674,6 +858,14 @@ rem  not a unit, not the judge, not this launcher - turns it to - [x]. So an
 rem  ADVANCES naming one is refused here, before the unit runs, where a bad
 rem  ADVANCES is refused, with its own message.
 if "%CB_CRIT%"=="owner" goto :ownercrit
+rem  083 task 3: A CRITERION PARKED THIS PASS CANNOT BE AUTHORED. A section-4
+rem  question on it is waiting on the owner in PARKED.md, and a unit sent at it
+rem  again would either work around the question - which is the one thing the
+rem  three stops forbid - or write the same question again. Refused before the
+rem  unit runs, where every other bad ADVANCES is refused, and REDIRECTED to
+rem  the criteria that are authorable rather than halted.
+call :isparked "%ADV_STEP%.%ADV_CRIT%"
+if "%PK_HIT%"=="yes" goto :parkedcrit
 echo       advances   : step %ADV_STEP% criterion %ADV_CRIT% - before the unit it is %CB_CRIT%, step %ADV_STEP% has %CB_MET% of %CB_TOTAL% met
 :advchecked
 if /i "%A_MOVE%"=="unachievable" echo       the arbiter declared step %A_STEP% unachievable
@@ -739,6 +931,7 @@ rem
 rem  NOTHING IS APPENDED ON EITHER PATH. Not an entry, not a placeholder,
 rem  not a `not recorded` row. An entry for a unit that did not run is the
 rem  fault, and a quieter spelling of it is still it.
+:launchcheck
 set "LAUNCHED=yes"
 if "%RUNRC%"=="2" set "LAUNCHED=no"
 if "%RUNRC%"=="7" set "LAUNCHED=no"
@@ -746,9 +939,31 @@ if not "%RUNRC%"=="1" goto :launchknown
 call :killcount
 if "%KILLED%"=="0" set "LAUNCHED=no"
 :launchknown
+if "%LAUNCHED%"=="yes" goto :launched
+rem  087: THE LAUNCH IS RETRIED ONCE, THEN ROUTED. Nothing was launched - the
+rem  lock held, a bad root, claude not on PATH - so nothing ran and nothing
+rem  has a side effect to repeat: the stamp is rewritten and run-unit-watched
+rem  is called once more with the same arguments. run-unit.bat itself clears a
+rem  lock whose owner is gone (067) and refuses a live one, so a lock held for
+rem  a moment is what this retry is for. A second failure goes to :nothingran,
+rem  which since 087 parks or skips rather than halting. One retry, no count.
+if "%LAUNCHTRIED%"=="1" goto :nothingran
+set "LAUNCHTRIED=1"
+echo.
+echo   NOTHING WAS LAUNCHED - run-unit-watched exit %RUNRC%. RETRYING THE LAUNCH ONCE, same instruction - 087.
+call :heartbeat
+call :stamp
+call "%HERE%run-unit-watched.bat" %ITER% "%ROOT%" %MINARG%
+set "RUNRC=%ERRORLEVEL%"
+echo       run-unit-watched exit %RUNRC% on the retry
+call :heartbeat
+goto :launchcheck
+:launched
+if "%LAUNCHTRIED%"=="1" echo   the first launch attempt started nothing and the second ran - the ledger says so
+if "%LAUNCHTRIED%"=="1" call :ledgernote "launch retried - the first launch started nothing and the second ran; the night went on"
+set "LAUNCHTRIED="
 call :ownreport
 echo       report     : %OWNWHY%
-if "%LAUNCHED%"=="no" goto :nothingran
 if not "%OWNREPORT%"=="yes" goto :noreport
 
 rem --- 4a to 5, ONE SUBROUTINE ------------------------------------
@@ -773,6 +988,62 @@ rem  continues - that is the ruling - but it now says so and the
 rem  entry carries it.
 set "RUNFATE=executed"
 if "%RUNRC%"=="3" set "RUNFATE=never ran"
+
+rem  086: A REPORT THE VALIDATOR REFUSED IS RECORDED, NOT JUDGED, AND NOT A
+rem  STOP. Until 086 STOP 7 fired on run-unit exit 5 and at :denunshaped -
+rem  and both fired AFTER this routine had already put the unshaped report in
+rem  front of the state judge and the section-4 judge and appended what they
+rem  said. The owner, 2026-09-23: a report the harness could not read is
+rem  bookkeeping about a unit that already did its work. So the refusal is
+rem  found HERE, before any judge: run-unit's exit 5 says it outright, and on
+rem  the denial path (exit 4, which run-unit returns before it validates) the
+rem  validator is asked now. An unshaped report gets fate not recorded, no
+rem  judge, ADVANCED not recorded, section 4 not read, the reason in HIT, and
+rem  the entry still lands so the record says what happened. The criterion is
+rem  not ticked BY THE RECORD; the plan's own box is whatever the unit wrote,
+rem  and the next reload reads the plan - said on the console where it is so.
+set "UNJUDGED="
+if "%RUNRC%"=="5" set "UNJUDGED=1"
+rem  087: a unit that ran and wrote no report of its own takes the same
+rem  unjudged entry - fate not recorded, no judge - with its own reason.
+if "%NOREPORTRUN%"=="1" set "UNJUDGED=1"
+if "%NOREPORTRUN%"=="1" goto :recvalidated
+if not "%RUNRC%"=="4" goto :recvalidated
+call "%HERE%validate-output.bat" "%ROOT%\output.md" >nul
+if errorlevel 1 set "UNJUDGED=1"
+:recvalidated
+if not defined UNJUDGED goto :recjudge
+echo.
+if "%NOREPORTRUN%"=="1" echo   NO REPORT OF THIS UNIT'S TO JUDGE - THE ENTRY IS NOT JUDGED. 087.
+if not "%NOREPORTRUN%"=="1" echo   THE REPORT WAS REFUSED BY validate-output.bat - IT IS NOT JUDGED. 086.
+echo   The unit ran and the harness has no report of its to read: the fate
+echo   is recorded as not recorded, no judge is asked, ADVANCED is not recorded,
+echo   and the criterion does not tick by this record.
+set "RUNFATE=not recorded"
+call :critafter
+if "%FLIPPED%"=="1" echo   the plan's box for the named criterion IS ticked in PHASE_PLAN.md - the unit wrote it, this record does not vouch for it, and the next reload reads the plan
+set "J_STATE=not recorded"
+set "J_WHY=the report was refused by validate-output.bat and was not judged"
+set "J_HONEST=not asked"
+set "J_REVERSES=no"
+set "J_REVERSED="
+set "J_FOLLOWS="
+set "J_FOLLOWED="
+set "ADVANCED_OUT=not recorded"
+set "ADVNOTE=the report was refused by validate-output.bat - its claims were not judged, and the record does not tick the criterion"
+if "%NOREPORTRUN%"=="1" set "ADVNOTE=no report was written by this unit - nothing was judged, and the record does not tick the criterion"
+echo       advanced   : %ADVANCED_OUT% - %ADVNOTE%
+call :attemptid
+set "S4WANTS=no"
+set "S4EMPTY=1"
+set "S4WHICH=not stated"
+set "S4WHY=the report was refused by validate-output.bat - section 4 was not judged"
+if not "%NOREPORTRUN%"=="1" set "A_HIT=%A_HIT% - REPORT REFUSED by validate-output.bat: not judged, fate not recorded, the loop continued"
+if "%NOREPORTRUN%"=="1" set "A_HIT=%A_HIT% - NO REPORT WRITTEN BY THIS UNIT: %OWNWHY% - not retried, not judged, fate not recorded, the loop continued"
+if "%NOREPORTRUN%"=="1" if defined OWNFOUND set "A_HIT=%A_HIT% - the file at the root says UNIT: %OWNFOUND% and was not judged"
+if "%NOREPORTRUN%"=="1" set "S4WHY=no report of this unit's - section 4 was not judged"
+goto :recrejoin
+:recjudge
 
 rem --- 4a2. did the named criterion flip? THE SCRIPT COUNTS. -------
 rem  064 task 3. Counted again now the unit has reported, against the count
@@ -805,6 +1076,7 @@ rem  A FAILING CHECK DOES NOT HALT THE PHASE. The ruling is explicit.
 rem  The loop is not stopped by a bad timestamp: STATUSRC is recorded
 rem  and named, and the night's work goes on. This is the same shape
 rem  as RUNFATE - a fact handed to the record rather than a stop.
+:recrejoin
 echo.
 echo   [4d] status-check - the file the unit just wrote
 call "%HERE%status-check.bat" "%ROOT%"
@@ -896,7 +1168,27 @@ set "OA_COST=%RUNCOST%"
 set "OA_ACCOMPLISHED=%A_DID%"
 set "OA_FILE=%ROOT%\PHASE_OUTCOME.md"
 set "OA_FATE=%RUNFATE%"
+rem  083 task 1: THE STATE RECORDED IS THE CHECKBOXES', COUNTED AGAIN NOW THE
+rem  UNIT HAS REPORTED, AND THE JUDGE'S LINE IS THE REASON BESIDE IT. The owner's
+rem  ruling of 2026-09-23. Where the two disagree the checkboxes win, the console
+rem  says so, and STATE_WHY opens by naming both so the disagreement is in the
+rem  record rather than only on a screen nobody kept. A step with no criterion
+rem  lines has nothing to count, and there the judge's word stands as it did.
+call :stepfromcrit
+call :derivedstate "%A_STEP%"
+set "OA_STATE=%DS_STATE%"
 set "OA_STATEWHY=%J_WHY%"
+if "%DS_SOURCE%"=="checkboxes" if not "%DS_STATE%"=="%J_STATE%" set "OA_STATEWHY=the checkboxes say %DS_STATE% and the judge said %J_STATE% - the checkboxes win. The judge-s reason: %J_WHY%"
+if "%DS_SOURCE%"=="checkboxes" if not "%DS_STATE%"=="%J_STATE%" echo       state      : step %A_STEP% is %DS_STATE% BY ITS CHECKBOXES - the judge said %J_STATE%, and the checkboxes win
+if "%DS_SOURCE%"=="checkboxes" if "%DS_STATE%"=="%J_STATE%" echo       state      : step %A_STEP% is %DS_STATE% by its checkboxes, and the judge agrees
+if not "%DS_SOURCE%"=="checkboxes" set "OA_STATE=%J_STATE%"
+if not "%DS_SOURCE%"=="checkboxes" echo       state      : step %A_STEP% has no criterion lines in the plan - nothing to derive from, so the judge-s %J_STATE% stands
+rem  086: an unjudged report has no judge's word to stand, so a step with no
+rem  criterion lines keeps the state the record carried for it, and the reason
+rem  says the report was not judged. outcome-append refuses a state outside its
+rem  five, and `not recorded` is not one of them.
+if defined UNJUDGED if not "%DS_SOURCE%"=="checkboxes" set "OA_STATE=%DS_STATE%"
+if defined UNJUDGED set "OA_STATEWHY=the report was refused by validate-output.bat and was not judged - the state is the plan-s own reading, or the header-s where the step has no criterion lines"
 set "OA_ADVANCED=%ADVANCED_OUT%"
 rem  066 task 3: the criterion this unit was run against, from :attemptid -
 rem  empty, and so undefined, where there is none - and the approach
@@ -997,20 +1289,38 @@ rem  is actually running, not as the plan proposed it. Step states come from the
 rem  same header, criteria and titles from PHASE_PLAN.md, and a step the header
 rem  does not mention is treated as not started rather than skipped.
 rem
-rem  THE TARGET STEP IS THE LOWEST-NUMBERED STEP THAT IS NOT done, and its unmet
-rem  criteria are listed first and labelled THE WORK. The other open steps follow
-rem  with their unmet criteria only. Author's, overrulable: the arbiter may
-rem  legitimately author against another open step, and a block that showed only
-rem  one would push it toward a criterion the plan may not put first.
+rem  THE TARGET STEP - 083 task 2, REVERSING WHAT STOOD HERE. Until tonight the
+rem  target was open[0]: the lowest-numbered step whose state in the record's
+rem  header was not done. That is how HamLet's arbiter was aimed at step 0 for
+rem  seven units - the header said not started, every box was ticked, and the
+rem  block above the criteria read "THE STEP TO WORK: step 0 ... none - every
+rem  criterion of this step is met". The target is now THE FIRST STEP WHOSE
+rem  STATE BY ITS CHECKBOXES IS NOT done AND WHICH HAS AT LEAST ONE UNMET
+rem  CRITERION THAT IS NEITHER THE OWNER'S VERDICT NOR PARKED THIS PASS -
+rem  :stepfromcrit's TARGET. A step done by its boxes is skipped whatever the
+rem  header says; a step whose only unmet lines are the owner's is not a target,
+rem  because it cannot be authored and aiming there is how stop 1 used to
+rem  misfire; a parked criterion is shown, marked, and never offered. Where no
+rem  step has an authorable criterion the block says so - and does not stop:
+rem  task 4 owns that decision, at the top of the next iteration.
+rem
+rem  The unmet criteria of the target are listed first and labelled THE WORK.
+rem  The other open steps follow with their unmet criteria, each parked or
+rem  owner's line tagged. Author's, overrulable: the arbiter may legitimately
+rem  author against another open step, and a block that showed only one would
+rem  push it toward a criterion the plan may not put first. The ORDER of the
+rem  prompt - goal, criteria, rules, record, report last - is 069's and is not
+rem  touched: this changes what the block says, not where it sits.
 rem
 rem  WRITTEN IN POWERSHELL, NOT BY echo. Criterion text is prose and carries
-rem  backticks, pipes and parentheses; echo would execute half of it.
+rem  backticks, pipes and parentheses; echo would execute half of it. The
+rem  criterion regex is criteria-count.bat's, as :stepfromcrit's is.
 :promptredirect
 powershell -NoProfile -Command "$f='%WORK%\redirect.txt'; $p='%ARBPROMPT%'; if(-not (Test-Path -LiteralPath $f)){ exit }; $r=@{}; foreach($ln in (Get-Content -LiteralPath $f)){ if($ln -match '^([A-Z]+):\s*(.*)$'){ $r[$Matches[1]]=$Matches[2] } }; $out=@('', '============================================================', ' YOU HAVE BEEN REDIRECTED. READ THIS BEFORE YOU CHOOSE.', '============================================================', '', 'The loop did NOT halt. It sent you back, because:', ''); $out += '  ' + [string]$r['DETAIL']; $out += @('', 'YOUR NEXT INSTRUCTION MUST NAME ONE OF THESE CRITERIA:'); $out += '  ' + [string]$r['CRITERIA']; $out += @('', 'and must name an APPROACH THE RECORD DOES NOT ALREADY SHOW FAILING at it.', 'The attempts are listed further down this prompt. An instruction that names', 'another criterion, or repeats an approach recorded as failing, is refused', 'and you are redirected again - it costs an iteration and buys nothing.', '', 'THIS IS NOT A COMPLAINT TO ANSWER. It is the plan telling you that the route', 'you took did not move the criterion. Find another route TO THE SAME', 'CRITERION. Do not go looking in the last report for something else to do.', ''); $out += '(redirect ' + [string]$r['COUNT'] + ' of this run - there is no limit on these, and'; $out += @('running out of routes is not something you may assert. If every approach you', 'can see is recorded as failing, say so in WHY and name the one you judge', 'least exhausted.)', ''); [IO.File]::AppendAllText($p, ($out -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false)))"
 goto :eof
 
 :promptplan
-powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $pl='%ROOT%\PHASE_PLAN.md'; $p='%ARBPROMPT%'; $goal=''; $states=@{}; $titles=@{}; if(Test-Path -LiteralPath $o){ $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($o)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; foreach($ln in [regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13)){ if($ln -match '^PHASE:\s*(.+?)\s*$'){ if($goal -eq ''){ $goal=$Matches[1] } }; if($ln -match '^STEP:\s*([0-9]+)\s*\|\s*([^|]+?)\s*\|\s*(.*)$'){ $states[[int]$Matches[1]]=$Matches[2]; $titles[[int]$Matches[1]]=$Matches[3] } } }; $crit=@{}; $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($pl)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; foreach($ln in [regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13)){ if($ln -match '^- \[( |x)\] ([0-9]+)\.([0-9]+) (.+?)\s*$'){ $n=[int]$Matches[2]; if(-not $crit.ContainsKey($n)){ $crit[$n]=@() }; $crit[$n] += @{ met=($Matches[1] -eq 'x'); k=[int]$Matches[3]; t=$Matches[4] } }; if($ln -match '^STEP:\s*([0-9]+)\s*\|\s*(.+?)\s*$'){ $n=[int]$Matches[1]; if(-not $titles.ContainsKey($n)){ $titles[$n]=$Matches[2] }; if(-not $states.ContainsKey($n)){ $states[$n]='not started' } } }; $open=@($states.Keys | Where-Object { $states[$_] -ne 'done' } | Sort-Object); $target=$null; if($open.Count -gt 0){ $target=$open[0] }; $out=@('============================================================', ' THE PHASE, AND THE STEP YOU ARE AUTHORING AGAINST', '============================================================', ''); if($goal -ne ''){ $out += 'PHASE GOAL: ' + $goal } else { $out += 'PHASE GOAL: not recorded - PHASE_OUTCOME.md carries no PHASE: line' }; $out += ''; if($null -eq $target){ $out += 'EVERY STEP IS done. There is nothing to author against.' } else { $out += 'THE STEP TO WORK: step ' + $target + ' - ' + $titles[$target] + '  [' + $states[$target] + ']'; $out += ''; $cs=@(); if($crit.ContainsKey($target)){ $cs=$crit[$target] }; $un=@($cs | Where-Object { -not $_.met } | Sort-Object { $_.k }); $me=@($cs | Where-Object { $_.met } | Sort-Object { $_.k }); $out += 'ITS UNMET CRITERIA. THESE ARE THE WORK:'; if($un.Count -eq 0){ $out += '  none - every criterion of this step is met' } else { foreach($c in $un){ $out += '  - [ ] ' + $target + '.' + $c.k + ' ' + $c.t } }; if($me.Count -gt 0){ $out += ''; $out += 'already met, for context only:'; foreach($c in $me){ $out += '  - [x] ' + $target + '.' + $c.k + ' ' + $c.t } }; $rest=@($open | Where-Object { $_ -ne $target }); if($rest.Count -gt 0){ $out += ''; $out += 'THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:'; foreach($n in $rest){ $out += '  step ' + $n + ' - ' + $titles[$n] + '  [' + $states[$n] + ']'; $cs2=@(); if($crit.ContainsKey($n)){ $cs2=@($crit[$n] | Where-Object { -not $_.met } | Sort-Object { $_.k }) }; foreach($c in $cs2){ $out += '    - [ ] ' + $n + '.' + $c.k + ' ' + $c.t } } } }; $out += @('', 'ADVANCES MUST NAME ONE OF THE CRITERIA ABOVE. Everything below this block is', 'context for CHOOSING among them - what has been tried, and what the last unit', 'reported. None of it is a list of work to do.', ''); [IO.File]::AppendAllText($p, ($out -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false)))"
+powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $pl='%ROOT%\PHASE_PLAN.md'; $sf='%WORK%\step-states.txt'; $p='%ARBPROMPT%'; $goal=''; if(Test-Path -LiteralPath $o){ $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($o)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; foreach($ln in [regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13)){ if($ln -match '^PHASE:\s*(.+?)\s*$'){ if($goal -eq ''){ $goal=$Matches[1] } } } }; $kv=@{}; if(Test-Path -LiteralPath $sf){ foreach($ln in (Get-Content -LiteralPath $sf)){ if($ln -match '^([A-Z_0-9.]+)=(.*)$'){ $kv[$Matches[1]]=$Matches[2] } } }; $steps=@(([string]$kv['STEPS'] -split ' ') | Where-Object { $_ -ne '' }); $auth=@(([string]$kv['AUTHORABLE'] -split ' ') | Where-Object { $_ -ne '' }); $own=@(([string]$kv['OWNERIDS'] -split ' ') | Where-Object { $_ -ne '' }); $pk=@(([string]$kv['PARKEDIDS'] -split ' ') | Where-Object { $_ -ne '' }); $target=[string]$kv['TARGET']; if($target -eq ''){ $target='none' }; $crit=@{}; $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($pl)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; foreach($ln in [regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13)){ if($ln -match '^\s*-\s\[( |x|X)\]\s+([0-9]+)\.([0-9]+)(\s|$)'){ $n=[int]$Matches[2]; $k=[int]$Matches[3]; $id=($n.ToString() + '.' + $k.ToString()); $t=(($ln -replace '^\s*-\s\[( |x|X)\]\s+[0-9]+\.[0-9]+\s*','') -replace '(?i)\s*\*owner.s verdict\*\s*$','').Trim(); if(-not $crit.ContainsKey($n)){ $crit[$n]=@() }; $crit[$n]+=@{ id=$id; k=$k; met=($Matches[1] -ne ' '); t=$t } } }; function Kind($id){ if($pk -contains $id){ return 'parked' }; if($own -contains $id){ return 'owner' }; if($auth -contains $id){ return 'work' }; return 'other' }; $out=@('============================================================', ' THE PHASE, AND THE STEP YOU ARE AUTHORING AGAINST', '============================================================', ''); if($goal -ne ''){ $out += 'PHASE GOAL: ' + $goal } else { $out += 'PHASE GOAL: not recorded - PHASE_OUTCOME.md carries no PHASE: line' }; $out += ''; $open=@($steps | Where-Object { [string]$kv['STATE_' + $_] -ne 'done' }); if($steps.Count -eq 0){ $out += 'THE PLAN NAMES NO STEPS. There is nothing to author against.' } elseif($open.Count -eq 0){ $out += 'EVERY STEP IS done BY ITS CHECKBOXES. There is nothing to author against.' } elseif($target -eq 'none'){ $out += 'NO STEP HAS A CRITERION YOU MAY AUTHOR. Every unmet criterion is either the'; $out += 'owner-s verdict or parked this pass.'; if([int]$kv['NOCRIT'] -gt 0){ $out += 'And step(s) ' + [string]$kv['NOCRITSTEPS'] + ' carry no criterion lines in the plan at all, so nothing can be'; $out += 'named there - say so in WHY rather than inventing a criterion.' } } else { $n=[int]$target; $out += 'THE STEP TO WORK: step ' + $target + ' - ' + [string]$kv['TITLE_' + $target] + '  [' + [string]$kv['STATE_' + $target] + ' by its checkboxes, ' + [string]$kv['MET_' + $target] + ' of ' + [string]$kv['TOTAL_' + $target] + ' met]'; $out += ''; $cs=@(); if($crit.ContainsKey($n)){ $cs=@($crit[$n] | Sort-Object { $_.k }) }; $w=@($cs | Where-Object { (-not $_.met) -and ((Kind $_.id) -eq 'work') }); $pd=@($cs | Where-Object { (-not $_.met) -and ((Kind $_.id) -eq 'parked') }); $ow=@($cs | Where-Object { (-not $_.met) -and ((Kind $_.id) -eq 'owner') }); $me=@($cs | Where-Object { $_.met }); $out += 'ITS UNMET CRITERIA. THESE ARE THE WORK:'; foreach($c in $w){ $out += '  - [ ] ' + $c.id + ' ' + $c.t }; if($pd.Count -gt 0){ $out += ''; $out += 'PARKED THIS PASS - a section-4 question on each is waiting on the owner in'; $out += 'PARKED.md. NOT AUTHORABLE: naming one is refused and you are redirected.'; foreach($c in $pd){ $out += '  - [ ] ' + $c.id + ' ' + $c.t + '   (parked)' } }; if($ow.Count -gt 0){ $out += ''; $out += 'THE OWNER-S VERDICT - never name one in ADVANCES:'; foreach($c in $ow){ $out += '  - [ ] ' + $c.id + ' ' + $c.t + '   *owner-s verdict*' } }; if($me.Count -gt 0){ $out += ''; $out += 'already met, for context only:'; foreach($c in $me){ $out += '  - [x] ' + $c.id + ' ' + $c.t } }; $rest=@($open | Where-Object { $_ -ne $target }); if($rest.Count -gt 0){ $out += ''; $out += 'THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:'; foreach($s in $rest){ $sn=[int]$s; $out += '  step ' + $s + ' - ' + [string]$kv['TITLE_' + $s] + '  [' + [string]$kv['STATE_' + $s] + ']'; $cs2=@(); if($crit.ContainsKey($sn)){ $cs2=@($crit[$sn] | Where-Object { -not $_.met } | Sort-Object { $_.k }) }; if($cs2.Count -eq 0){ $out += '    (no criterion lines in the plan - nothing can be named here)' }; foreach($c in $cs2){ $kd=Kind $c.id; $tag=''; if($kd -eq 'parked'){ $tag='   (parked this pass - not authorable)' } elseif($kd -eq 'owner'){ $tag='   *owner-s verdict* - never name it' }; $out += '    - [ ] ' + $c.id + ' ' + $c.t + $tag } } } }; $out += @('', 'ADVANCES MUST NAME ONE OF THE WORK CRITERIA ABOVE - never a parked one, never', 'the owner-s. Everything below this block is context for CHOOSING among them -', 'what has been tried, and what the last unit reported. None of it is a list of', 'work to do.', ''); [IO.File]::AppendAllText($p, ($out -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false)))"
 goto :eof
 
 rem ============================================================
@@ -1042,7 +1352,7 @@ set "PR_TOTAL=0"
 set "PR_SHARE=0.0"
 set "PR_BASE=0"
 set "PR_BUDGET=0"
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$p='%ARBPROMPT%'; $r='%ROOT%\output.md'; $base=(Get-Item -LiteralPath $p).Length; $budget=[int][Math]::Floor($base / 2); 'PR_BASE=' + $base; 'PR_BUDGET=' + $budget; if(-not (Test-Path -LiteralPath $r)){ [IO.File]::AppendAllText($p, 'THERE IS NO PREVIOUS REPORT AT THIS ROOT. Author from the criteria above.' + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false))); 'PR_BYTES=0'; 'PR_HOW=absent'; 'PR_SHARE=0.0'; 'PR_KEPT=0'; 'PR_TOTAL=' + (Get-Item -LiteralPath $p).Length; exit }; $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($r)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; $lines=[regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13); $whole=($raw.Length -le $budget); $body=$raw; $how='whole'; $left=0; if(-not $whole){ $s4=@(); $ms=@(); $s3=@(); $cur=0; foreach($ln in $lines){ if($ln -match '^## 4\.'){ $cur=4; $s4 += $ln; continue }; if($ln -match '^## 3\.'){ $cur=3; $s3 += $ln; continue }; if($ln -match '^## [0-9]'){ $cur=0; continue }; if($cur -eq 4){ $s4 += $ln } elseif($cur -eq 3){ $s3 += $ln } elseif($ln -match '(?i)mismatch'){ $ms += $ln } }; $pick=@(); $used=0; foreach($grp in @($s4, $ms, $s3)){ foreach($ln in $grp){ if(($used + $ln.Length + 2) -gt $budget){ break }; $pick += $ln; $used += $ln.Length + 2 } }; $body=($pick -join ([char]13 + [string][char]10)); $left=$raw.Length - $body.Length; $how='selected' }; $head=@('', '============================================================', ' THE PREVIOUS UNIT-S REPORT - EVIDENCE, NOT A LIST OF WORK', '============================================================', '', 'Read this as EVIDENCE ABOUT A CRITERION: what was measured, what was found, what', 'a check missed. It is NOT the next thing to work on, and a question it raises is', 'not a task. THE WORK IS THE UNMET CRITERIA AT THE TOP OF THIS PROMPT. If nothing', 'here bears on one of them, author from them anyway.', ''); if($how -eq 'selected'){ $head += @('THIS REPORT WAS TOO LONG FOR ITS SHARE OF THE PROMPT AND WAS SELECTED FROM.', 'Kept, in this order: section 4, then any line naming a mismatch, then section 3.', 'The whole file is at the repository root if you need the rest.', '') }; [IO.File]::AppendAllText($p, (($head -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10 + $body + [char]13 + [string][char]10), (New-Object Text.UTF8Encoding($false))); $tot=(Get-Item -LiteralPath $p).Length; 'PR_BYTES=' + $raw.Length; 'PR_KEPT=' + $body.Length; 'PR_LEFT=' + $left; 'PR_HOW=' + $how; 'PR_TOTAL=' + $tot; 'PR_SHARE=' + [Math]::Round(100.0 * $body.Length / $tot, 1)"`) do set "%%A=%%B"
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$p='%ARBPROMPT%'; $r='%ROOT%\output.md'; $base=(Get-Item -LiteralPath $p).Length; $budget=[int][Math]::Floor($base / 2); 'PR_BASE=' + $base; 'PR_BUDGET=' + $budget; if(-not (Test-Path -LiteralPath $r)){ [IO.File]::AppendAllText($p, 'THERE IS NO PREVIOUS REPORT AT THIS ROOT. Author from the criteria above.' + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false))); 'PR_BYTES=0'; 'PR_HOW=absent'; 'PR_SHARE=0.0'; 'PR_KEPT=0'; 'PR_TOTAL=' + (Get-Item -LiteralPath $p).Length; exit }; $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($r)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; $lines=[regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13); $whole=($raw.Length -le $budget); $body=$raw; $how='whole'; $left=0; if(-not $whole){ $s4=@(); $ms=@(); $s3=@(); $cur=0; foreach($ln in $lines){ if($ln -match '^## 4\.'){ $cur=4; $s4 += $ln; continue }; if($ln -match '^## 3\.'){ $cur=3; $s3 += $ln; continue }; if($ln -match '^## [0-9]'){ $cur=0; continue }; if($cur -eq 4){ $s4 += $ln } elseif($cur -eq 3){ $s3 += $ln } elseif($ln -match '(?i)mismatch'){ $ms += $ln } }; $pick=@(); $used=0; foreach($grp in @($s4, $ms, $s3)){ foreach($ln in $grp){ if(($used + $ln.Length + 2) -gt $budget){ break }; $pick += $ln; $used += $ln.Length + 2 } }; $body=($pick -join ([char]13 + [string][char]10)); $left=$raw.Length - $body.Length; $how='selected' }; $head=@('', '============================================================', ' THE PREVIOUS UNIT-S REPORT - AN INDICATOR: EVIDENCE, NOT A LIST OF WORK, AND', ' NEVER A SOURCE OF TARGETS', '============================================================', 'AN INDICATOR TUNES HOW YOU APPROACH THE CRITERION YOU HAVE ALREADY CHOSEN FROM THE', 'PLAN ABOVE. IT NEVER CHOOSES THE CRITERION - the owner-s ruling of 2026-09-23: the', 'phase goal is the prime directive, and this is a helper. A WHY that gives this', 'report as its reason for choosing a criterion is refused before the unit runs.', '', 'Read this as EVIDENCE ABOUT A CRITERION: what was measured, what was found, what', 'a check missed. It is NOT the next thing to work on, and a question it raises is', 'not a task. THE WORK IS THE UNMET CRITERIA AT THE TOP OF THIS PROMPT. If nothing', 'here bears on one of them, author from them anyway.', ''); if($how -eq 'selected'){ $head += @('THIS REPORT WAS TOO LONG FOR ITS SHARE OF THE PROMPT AND WAS SELECTED FROM.', 'Kept, in this order: section 4, then any line naming a mismatch, then section 3.', 'The whole file is at the repository root if you need the rest.', '') }; [IO.File]::AppendAllText($p, (($head -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10 + $body + [char]13 + [string][char]10), (New-Object Text.UTF8Encoding($false))); $tot=(Get-Item -LiteralPath $p).Length; 'PR_BYTES=' + $raw.Length; 'PR_KEPT=' + $body.Length; 'PR_LEFT=' + $left; 'PR_HOW=' + $how; 'PR_TOTAL=' + $tot; 'PR_SHARE=' + [Math]::Round(100.0 * $body.Length / $tot, 1)"`) do set "%%A=%%B"
 echo       prompt     : %PR_TOTAL% bytes, of which the previous report is %PR_KEPT% - %PR_SHARE% pct
 if "%PR_HOW%"=="absent" echo       report     : none at this root
 if "%PR_HOW%"=="whole"  echo       report     : %PR_BYTES% bytes, included whole, budget was %PR_BUDGET%
@@ -1061,6 +1371,16 @@ rem  READ-ONLY. It moves nothing and deletes nothing: task 3 moves a report
 rem  that was judged, and a report this refuses was never this unit's to
 rem  move. The UNIT: line is stripped of the characters cmd acts on before
 rem  it enters a variable, as every other model-written string here is.
+rem  THE UNIT: SCAN RUNS ON BOTH BRANCHES. It used to sit after the
+rem  written-after exit, so a report that WAS this unit-s left OWNFOUND
+rem  empty and the console said "that file carries no UNIT: line to name
+rem  it by" about a file whose UNIT: line was right there. HamLet named
+rem  it on 2026-09-22. The scan now runs before either exit.
+rem
+rem  "(" AND ")" ARE STRIPPED with the other metacharacters. OWNFOUND is
+rem  a report-written string and it lands in STOPWHY, which is echoed and
+rem  set inside blocks; a bracket there is the same parse-time fault that
+rem  cost HamLet units 390 and 391 through validate-output.bat rule 1.
 :ownreport
 set "OWNREPORT=no"
 set "OWNWHY=the check did not run"
@@ -1073,7 +1393,7 @@ rem  different things to say and the first run of this fixture said the
 rem  second when it meant the first.
 set "OWNTHERE=no"
 if exist "%ROOT%\output.md" set "OWNTHERE=yes"
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$s='%WORK%\launch.stamp'; $o='%ROOT%\output.md'; if(-not (Test-Path -LiteralPath $o)){ 'OWNREPORT=no'; 'OWNWHY=there is no output.md at the root at all'; exit }; if(-not (Test-Path -LiteralPath $s)){ 'OWNREPORT=no'; 'OWNWHY=no launch stamp was written, so no report can be shown to be this unit-s'; exit }; $st=(Get-Item -LiteralPath $s).LastWriteTimeUtc; $ot=(Get-Item -LiteralPath $o).LastWriteTimeUtc; 'OWNSTAMP=' + $st.ToString('HH:mm:ss.fff'); 'OWNWRITE=' + $ot.ToString('HH:mm:ss.fff'); if($ot -gt $st){ 'OWNREPORT=yes'; 'OWNWHY=output.md was written after this unit was launched'; exit }; 'OWNREPORT=no'; 'OWNWHY=output.md at the root was written BEFORE this unit was launched - it is not this unit-s report'; $u=''; foreach($ln in (Get-Content -LiteralPath $o)){ if($ln -match '^UNIT:\s*(.+?)\s*$'){ $u=$Matches[1]; break } }; if($u){ 'OWNFOUND=' + (((($u -replace '[&|<>^%%]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$s='%WORK%\launch.stamp'; $o='%ROOT%\output.md'; if(-not (Test-Path -LiteralPath $o)){ 'OWNREPORT=no'; 'OWNWHY=there is no output.md at the root at all'; exit }; if(-not (Test-Path -LiteralPath $s)){ 'OWNREPORT=no'; 'OWNWHY=no launch stamp was written, so no report can be shown to be this unit-s'; exit }; $st=(Get-Item -LiteralPath $s).LastWriteTimeUtc; $ot=(Get-Item -LiteralPath $o).LastWriteTimeUtc; 'OWNSTAMP=' + $st.ToString('HH:mm:ss.fff'); 'OWNWRITE=' + $ot.ToString('HH:mm:ss.fff'); $u=''; foreach($ln in (Get-Content -LiteralPath $o)){ if($ln -match '^UNIT:\s*(.+?)\s*$'){ $u=$Matches[1]; break } }; if($u){ 'OWNFOUND=' + (((($u -replace '[&|<>^%%()]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }; if($ot -gt $st){ 'OWNREPORT=yes'; 'OWNWHY=output.md was written after this unit was launched'; exit }; 'OWNREPORT=no'; 'OWNWHY=output.md at the root was written BEFORE this unit was launched - it is not this unit-s report'"`) do set "%%A=%%B"
 goto :eof
 
 rem ============================================================
@@ -1201,7 +1521,14 @@ rem --- 5c. did the criterion follow from the plan? 069 criterion 6.5 ------
 rem  The owner's ruling of 2026-09-19: the plan leads and the report follows.
 rem  A yes halts AFTER the record is written, so the entry survives - the same
 rem  order the reversal halt uses. unread is never report.
-if /i "%J_FOLLOWS%"=="report" goto :planonly
+rem  084 task 5: A DRIFT ANSWER NO LONGER HALTS HERE. It is noted, and decided
+rem  at the END of this iteration - after the run's own stop conditions, the
+rem  section-4 judge's park and the budget have all been read - so a unit that
+rem  drifted still has its cost counted and its section 4 parked. :planonly is
+rem  then a redirect, and a second drift on one criterion parks it.
+set "DRIFTED=0"
+if /i "%J_FOLLOWS%"=="report" set "DRIFTED=1"
+if "%DRIFTED%"=="1" echo       drift      : the judge answered FOLLOWS: report - decided at the end of this iteration, after the budget
 
 rem --- 6. the stop conditions the run produced -----------------
 rem  EXIT 1 IS AMBIGUOUS AND HAS TO BE DISAMBIGUATED BY EVIDENCE.
@@ -1219,12 +1546,18 @@ rem  recorded why.
 if "%RUNRC%"=="1" goto :ambiguous1
 if "%RUNRC%"=="3" goto :runnever
 if "%RUNRC%"=="4" goto :judgedenials
-if "%RUNRC%"=="5" (
-  echo.
-  echo   STOP 7: THE REPORT WAS REFUSED by validate-output.bat.
-  set "STOPWHY=stop 7: validate-output refused the report"
-  goto :stopped
-)
+rem  086: EXIT 5 IS RECORDED AND THE LOOP CONTINUES. Until 086 this block set
+rem  STOPWHY to `stop 7: validate-output refused the report` and went to
+rem  :stopped, after :record had already judged the unshaped report. The
+rem  record now marks it unjudged at 4a and this site only writes the ledger
+rem  note and carries on - the owner's ruling of 2026-09-23.
+if "%RUNRC%"=="5" goto :unshaped
+rem  086: THIS BLOCK IS UNREACHABLE AND MISNAMED, reported rather than
+rem  repaired. run-unit.bat's exit 7 is `the root is not a git repository -
+rem  nothing launched, no lock taken`, not the section 4.1 gate, and LAUNCHED
+rem  is set no for it above, so it goes to :nothingran and stop 11 before this
+rem  line is reached. There is no 4.1-gate exit in run-unit.bat at all. Left
+rem  as it stood so a reader looking for STOP 8 finds it and finds this note.
 if "%RUNRC%"=="7" (
   echo.
   echo   STOP 8: THE GATE REFUSED. The root is not what the instruction
@@ -1241,19 +1574,49 @@ rem  judge the thing, do not count the artifact. The verdict was
 rem  taken at 4a, before the record, and is already in
 rem  PHASE_OUTCOME.md whichever way it went.
 rem  Flat, not a parenthesised block: %S4WHY% is a model's prose.
+:s4check
 if "%S4WANTS%"=="yes" goto :s4stop
-if "%S4WANTS%"=="unknown" goto :s4unknown
+if not "%S4WANTS%"=="unknown" goto :s4known
+rem  087: THE SECTION-4 JUDGE IS RETRIED ONCE, THEN ROUTED. Until 087 an
+rem  unreadable judge went to :s4unknown and halted at stop 3. The call is a
+rem  read of the report's section 4 with no side effect, so it is asked again
+rem  with the same prompt; a second unreadable answer parks the criterion the
+rem  unit ran against, as :s4stop parks a question, and the loop goes on. A
+rem  judge that reads and returns a HIT is not a failure and still parks and
+rem  surfaces as 083 built it. One retry, no count. S4TRIED is one iteration's
+rem  memory, cleared on the way out.
+if "%S4TRIED%"=="1" goto :s4unknown
+set "S4TRIED=1"
+echo.
+echo   THE SECTION 4 JUDGE COULD NOT BE READ: %S4WHY%
+echo   RETRYING ONCE, same prompt, same section - 087.
+call :judges4
+if not "%S4WANTS%"=="unknown" echo   the first section-4 judge attempt could not be read and the second was used - the ledger says so
+if not "%S4WANTS%"=="unknown" call :ledgernote "section-4 judge retried - the first answer could not be read and the second was; the night went on"
+goto :s4check
+:s4known
+rem  083: :s4stop parks and comes back here. The budget is still checked and the
+rem  loop still turns; nothing about a parked question skips the brake.
+rem  087: every way past the check lands here, so the one-iteration retry
+rem  memory is cleared here and nowhere else.
+:afterpark
+set "S4TRIED="
 
-rem --- condition 2: the budget ---------------------------------
+rem --- the spend, PRINTED AND NOT A STOP - 085 ------------------------
+rem  Until 085 this was condition 2: OVER=1 set STOPWHY to `stop 2: budget
+rem  exhausted - spent X of Y` and went to :stopped. The owner, 2026-09-23:
+rem  money is no longer a thing a night stops for. The figure is still
+rem  accumulated by :budget and printed here, on the halt block and in the
+rem  ledger's cost column, because a number that says what a night cost is
+rem  useful; a number that ends a night is the same stop in a quieter coat.
+rem  Flat, never a block, and nothing here branches to :stopped.
 call :budget
-if "%OVER%"=="1" (
-  echo.
-  echo   STOP 2: THE BUDGET IS EXHAUSTED. Spent %SPENT% of %BUDGET%.
-  set "STOPWHY=stop 2: budget exhausted - spent %SPENT% of %BUDGET%"
-  goto :stopped
-)
-echo       spent so far: %SPENT% of %BUDGET%
+if not defined BUDGET echo       spent so far: %SPENT% USD - no --budget ceiling, and none would halt
+if defined BUDGET if "%OVER%"=="0" echo       spent so far: %SPENT% of the --budget figure %BUDGET%
+if defined BUDGET if "%OVER%"=="1" echo       spent so far: %SPENT% - PAST THE --budget FIGURE OF %BUDGET%, PRINTED AND NOT A STOP. The owner's ruling of 2026-09-23: money is no longer a thing a night stops for. The night goes on.
 
+rem  084 task 5: the drift decision, last in the iteration. See 5c above.
+if "%DRIFTED%"=="1" goto :planonly
 goto :iterate
 
 rem ============================================================
@@ -1274,6 +1637,39 @@ echo   Nothing in the tree changed. This ENDS THE UNIT and is
 echo   recorded as a fact; it does not halt the phase.
 echo   Whatever claude said is in .run-unit\last-run.json.
 goto :afterrunrc
+
+rem  086: THE VALIDATOR REFUSED THE REPORT - RECORDED, NOT A STOP. Reached on
+rem  run-unit exit 5, after :record has already marked the entry unjudged with
+rem  fate not recorded; :denunshaped reaches :ledgerunshaped the same way on
+rem  the denial path. One note row in the ledger so the morning can see it
+rem  without the console, then the ordinary rest of the iteration.
+:unshaped
+echo.
+echo   THE REPORT WAS REFUSED BY validate-output.bat. Until 086 this was STOP 7.
+echo   The unit did its work and the harness could not read its report: the fate
+echo   is recorded as not recorded, nothing in it was judged, the record does not
+echo   tick the criterion, and THE LOOP CONTINUES - the owner's ruling of
+echo   2026-09-23: the arbiter's own paperwork never ends a night.
+call :ledgerunshaped
+goto :afterrunrc
+
+:ledgerunshaped
+set "NOWSTAMP="
+for /f "usebackq delims=" %%D in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyy-MM-ddTHH:mm')"`) do set "NOWSTAMP=%%D"
+call "%HERE%ledger.bat" "%ITER%" "%NOWSTAMP%" "%NOWSTAMP%" "note" "report refused - validate-output.bat refused unit %ITER%'s report; it was not judged, its fate is recorded as not recorded, the record does not tick its criterion, and the loop continued" "none - not a run" "%ROOT%" >nul
+echo       ledger     : report refused noted - not judged, fate not recorded, the loop continues
+goto :eof
+
+rem  087: ONE NOTE ROW WITH THE CALLER'S OWN SENTENCE - a retry that worked, a
+rem  hiccup routed past. The shape :ledgeradv and :ledgerunshaped already use;
+rem  the text arrives as one quoted argument and carries no percent sign or
+rem  angle bracket, which is the caller's to keep true.
+:ledgernote
+set "NOWSTAMP="
+for /f "usebackq delims=" %%D in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyy-MM-ddTHH:mm')"`) do set "NOWSTAMP=%%D"
+call "%HERE%ledger.bat" "%ITER%" "%NOWSTAMP%" "%NOWSTAMP%" "note" "%~1" "none - not a run" "%ROOT%" >nul
+echo       ledger     : noted - %~1
+goto :eof
 
 rem ============================================================
 rem  PROGRESS COUNTED IN CRITERIA. 064 tasks 2 to 4, the owner's ruling
@@ -1303,6 +1699,11 @@ set "WY_STEPS="
 set "WY_HITS="
 set "WY_WORDS="
 set "WY_BEST="
+set "WD_SEEN="
+set "WD_DRIVEN="
+set "WD_PLANALONE="
+set "WD_PHRASE="
+set "WD_SENT="
 set "RQ_ON="
 set "RQ_WANT="
 set "RQ_RULE="
@@ -1316,12 +1717,124 @@ set "ADV_WHAT="
 for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$f='%ROOT%\WORK_INSTRUCTIONS.md'; if(-not (Test-Path -LiteralPath $f)){ exit }; $v=''; foreach($ln in (Get-Content -LiteralPath $f)){ if($ln -match '^ADVANCES:\s*(.+?)\s*$'){ $v=$Matches[1] } }; $d='[-' + [char]0x2014 + [char]0x2013 + ']+'; if($v -match '(?i)^step\s+([0-9]+)\s*,?\s*criterion\s+([0-9]+)(\D|$)'){ 'ADV_KIND=criterion'; 'ADV_STEP=' + [int]$Matches[1]; 'ADV_CRIT=' + [int]$Matches[2]; exit }; if($v -match ('(?i)^none\s*' + $d + '\s*(this unit\s+)?clears\s+(a|the)\s+blocker\b(.*)$')){ $w=$Matches[3]; if(($w -match '(?i)\bunit\s+[0-9]+') -or ($w -match '(?i)\bcriterion\s+[0-9]+') -or ($w -match '\b[0-9]+\.[0-9]+\b')){ 'ADV_KIND=blocker'; 'ADV_WHAT=' + ((($w -replace '[&|<>^%%]','') -replace [char]34,'') -replace '\s+',' ').Trim([char[]]' :.,-') } }"`) do set "%%A=%%B"
 goto :eof
 
-rem  A step's state, from PHASE_OUTCOME.md's header - the file :position
-rem  and stop 1 read. none where there is no outcome file or no such step.
+rem  A step's state. UNTIL 083 it was read from PHASE_OUTCOME.md's header; it
+rem  is now the derivation :stepfromcrit made this iteration, so a done step is
+rem  one whose every criterion is ticked, and a header that says otherwise does
+rem  not close it. none where there is no such step or nothing was derived.
 :stepstate
 set "SS_STEP=%~1"
-set "SS_STATE=none"
-for /f "usebackq delims=" %%S in (`powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $o)){ 'none'; exit }; $n='%~1'; $s='none'; foreach($ln in (Get-Content -LiteralPath $o)){ if($ln -cmatch ('^STEP: *' + [regex]::Escape($n) + ' *\| *([a-z ]+?) *\|')){ $s=$Matches[1]; break } }; $s"`) do set "SS_STATE=%%S"
+call :derivedstate "%~1"
+set "SS_STATE=%DS_STATE%"
+goto :eof
+
+rem ============================================================
+rem  083 task 1. A STEP'S STATE IS ITS CHECKBOXES.
+rem
+rem  The owner's ruling of 2026-09-23: derive the state from the criteria at
+rem  reload; let the state judge's line add only the reason. So the judge no
+rem  longer sets whether a step is done - the checkboxes do - and the judge's
+rem  prose rides alongside as the explanation. Where they disagree the
+rem  checkboxes win and the disagreement is reported.
+rem
+rem  THE READING IS criteria-count.bat's, NOT A SECOND ONE. CPS-DEC-070 makes
+rem  that script the authority on what ticked means, so the criterion regex,
+rem  the owner's-verdict marker and the UTF-8 read are copied from it word for
+rem  word:
+rem      ^\s*-\s\[( |x|X)\]\s+([0-9]+)\.([0-9]+)(\s|$)     a criterion line
+rem      (?i)\*owner.s verdict\*\s*$                       the owner's marker
+rem  and a criterion counts for the step its number names wherever it sits.
+rem  Measured before this was written: the target pick in :promptplan used
+rem      ^- \[( |x)\] ([0-9]+)\.([0-9]+) (.+?)\s*$
+rem  which refuses an upper-case X and any leading whitespace that the counter
+rem  accepts, and :phasesteps read no criterion line at all - only the header's
+rem  STEP: lines. Both now read this file.
+rem
+rem  THE STATES, from the counts alone:
+rem      every criterion ticked        done
+rem      some ticked, some not         partial
+rem      none ticked                   not started
+rem  A STEP WITH NO CRITERION LINES AT ALL - the case that has bitten this layer
+rem  before; the fate fixture's plan and every plan written before 064 are that
+rem  shape - HAS NOTHING TO DERIVE FROM. Author's, overrulable: it takes the
+rem  state PHASE_OUTCOME.md's header carries for it, or not started where the
+rem  header has none, and SOURCE_n says header or none so every reader can tell
+rem  a derived state from a carried one. Rejected: done, which is section 0.0's
+rem  failure - nothing read, rendered as finished. Rejected: not started
+rem  regardless of the header, which would reopen a step the judge closed
+rem  when there is no count to overrule the judge with. Such a step is never a
+rem  target, because it has no criterion to name, and :ownerwait already treats
+rem  it as unknown rather than finished.
+rem
+rem  WHAT IS WRITTEN, to .run-unit\step-states.txt, KEY=value, read back into
+rem  SF_ variables. The summary keys:
+rem      STEPS         every step number the plan's STEP: lines name
+rem      OPEN          steps not done - 1 where the plan names no steps at all
+rem      POSITION      1=done,2=partial,...  the string :position prints
+rem      NOCRIT        open steps with no criterion lines; NOCRITSTEPS names them
+rem      WORK          unmet criteria that are neither the owner's nor parked
+rem      OWNERN        unmet owner's-verdict criteria; OWNERIDS names them
+rem      PARKEDN       unmet criteria parked this pass; PARKEDIDS names them
+rem      TARGET        the FIRST step with a WORK criterion, or none - task 2
+rem      AUTHORABLE    every WORK criterion by id, in plan order
+rem  and per step n: STATE_n, SOURCE_n, MET_n, TOTAL_n, WORK_n, OWNER_n,
+rem  PARKED_n, AUTH_n and TITLE_n.
+rem
+rem  PARKED is read from .run-unit\parked.txt - 083 task 3 - which is absent
+rem  until a section-4 question is parked, and is cleared before every run.
+rem
+rem  READ AS UTF-8 and the BOM trimmed, as criteria-count.bat does, so a curly
+rem  apostrophe in the marker is one character. The header fallback reads the
+rem  first STEP: line per number in PHASE_OUTCOME.md, exactly as :ownerwait
+rem  read it until tonight.
+:stepfromcrit
+set "SFENV=%WORK%\step-states.txt"
+if exist "%SFENV%" del /q "%SFENV%" 2>nul
+set "SF_STEPS="
+set "SF_OPEN="
+set "SF_POSITION="
+set "SF_NOCRIT="
+set "SF_NOCRITSTEPS="
+set "SF_WORK="
+set "SF_OWNERN="
+set "SF_PARKEDN="
+set "SF_TARGET="
+set "SF_AUTHORABLE="
+set "SF_OWNERIDS="
+set "SF_PARKEDIDS="
+powershell -NoProfile -Command "$p='%ROOT%\PHASE_PLAN.md'; $o='%ROOT%\PHASE_OUTCOME.md'; $pkf='%WORK%\parked.txt'; $envf='%SFENV%'; if(-not (Test-Path -LiteralPath $p)){ '      step states: PHASE_PLAN.md could not be read - nothing derived, every step reads open'; exit }; $plan=@(Get-Content -LiteralPath $p -Encoding UTF8); $hdr=@{}; if(Test-Path -LiteralPath $o){ foreach($ln in (Get-Content -LiteralPath $o -Encoding UTF8)){ $t=([string]$ln).TrimStart([char]0xFEFF); if($t -cmatch '^STEP: *([0-9]+) *\| *([a-z ]+?) *\|'){ $k=[int]$Matches[1]; if(-not $hdr.ContainsKey($k)){ $hdr[$k]=$Matches[2].Trim() } } } }; $parked=@(); if(Test-Path -LiteralPath $pkf){ foreach($ln in (Get-Content -LiteralPath $pkf)){ $t=([string]$ln).Trim(); if($t -match '^[0-9]+\.[0-9]+$'){ $parked+=$t } } }; $steps=@(); $titles=@{}; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -cmatch '^STEP: *([0-9]+) *\| *(.*)$'){ $n=[int]$Matches[1]; if($steps -notcontains $n){ $steps+=$n; $titles[$n]=$Matches[2].Trim() } } }; $crit=@{}; $stray=0; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -match '^\s*-\s\[( |x|X)\]\s+([0-9]+)\.([0-9]+)(\s|$)'){ $mk=$Matches[1]; $sn=[int]$Matches[2]; $cn=[int]$Matches[3]; $id=($sn.ToString() + '.' + $cn.ToString()); $own=($ln -match '(?i)\*owner.s verdict\*\s*$'); $txt=(($ln -replace '^\s*-\s\[( |x|X)\]\s+[0-9]+\.[0-9]+\s*','') -replace '(?i)\s*\*owner.s verdict\*\s*$','').Trim(); if($steps -notcontains $sn){ $stray++; continue }; if(-not $crit.ContainsKey($sn)){ $crit[$sn]=@() }; $crit[$sn]+=@{ id=$id; k=$cn; met=($mk -ne ' '); own=$own; parked=($parked -contains $id); t=$txt } } }; $out=@(); $pos=@(); $open=0; $nocrit=0; $work=0; $ownn=0; $pkn=0; $target=''; $auth=@(); $ownids=@(); $pkids=@(); $nocs=@(); foreach($n in ($steps | Sort-Object)){ $cs=@(); if($crit.ContainsKey($n)){ $cs=$crit[$n] }; $tot=$cs.Count; $met=@($cs | Where-Object { $_.met }).Count; $w=@($cs | Where-Object { (-not $_.met) -and (-not $_.own) -and (-not $_.parked) }); $ow=@($cs | Where-Object { (-not $_.met) -and $_.own }); $pk=@($cs | Where-Object { (-not $_.met) -and (-not $_.own) -and $_.parked }); $src='checkboxes'; if($tot -eq 0){ if($hdr.ContainsKey($n)){ $st=$hdr[$n]; $src='header' } else { $st='not started'; $src='none' } } elseif($met -eq $tot){ $st='done' } elseif($met -eq 0){ $st='not started' } else { $st='partial' }; $pos+=($n.ToString() + '=' + $st); if($st -ne 'done'){ $open++; if($tot -eq 0){ $nocrit++; $nocs+=$n.ToString() }; $work+=$w.Count; $ownn+=$ow.Count; $pkn+=$pk.Count; foreach($c in $w){ $auth+=$c.id }; foreach($c in $ow){ $ownids+=$c.id }; foreach($c in $pk){ $pkids+=$c.id }; if(($target -eq '') -and ($w.Count -gt 0)){ $target=$n.ToString() } }; $out+=('STATE_' + $n + '=' + $st); $out+=('SOURCE_' + $n + '=' + $src); $out+=('MET_' + $n + '=' + $met); $out+=('TOTAL_' + $n + '=' + $tot); $out+=('WORK_' + $n + '=' + $w.Count); $out+=('OWNER_' + $n + '=' + $ow.Count); $out+=('PARKED_' + $n + '=' + $pk.Count); $out+=('AUTH_' + $n + '=' + (@($w | ForEach-Object { $_.id }) -join ' ')); $out+=('TITLE_' + $n + '=' + $titles[$n]) }; if($steps.Count -eq 0){ $open=1; $pos=@('the plan names no steps') }; if($target -eq ''){ $target='none' }; $head=@(('STEPS=' + (@($steps | Sort-Object) -join ' ')), ('OPEN=' + $open), ('POSITION=' + ($pos -join ',')), ('NOCRIT=' + $nocrit), ('NOCRITSTEPS=' + ($nocs -join ' ')), ('WORK=' + $work), ('OWNERN=' + $ownn), ('PARKEDN=' + $pkn), ('TARGET=' + $target), ('AUTHORABLE=' + ($auth -join ' ')), ('OWNERIDS=' + ($ownids -join ' ')), ('PARKEDIDS=' + ($pkids -join ' '))); [IO.File]::WriteAllText($envf, (($head + $out) -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false))); '      by checkboxes: ' + ($pos -join ', ') + ' - target step ' + $target + '; authorable: ' + $(if($auth.Count){ $auth -join ' ' } else { 'none' }) + '; owner-s: ' + $(if($ownids.Count){ $ownids -join ' ' } else { 'none' }) + '; parked this pass: ' + $(if($pkids.Count){ $pkids -join ' ' } else { 'none' }); if($nocs.Count -gt 0){ '      step(s) ' + ($nocs -join ' ') + ' carry NO criterion lines in the plan - their state is the header-s or not started, NOT derived, and they can never be a target' }; if($stray -gt 0){ '      FINDING: ' + $stray + ' criterion line(s) name a step the plan-s STEP: list does not carry - counted by nobody' }"
+if not exist "%SFENV%" goto :eof
+for /f "usebackq tokens=1,* delims==" %%A in ("%SFENV%") do set "SF_%%A=%%B"
+goto :eof
+
+rem  One step's derived state and its source, out of the SF_ variables.
+rem  DS_STATE none where nothing was derived for that step.
+:derivedstate
+set "DS_STATE="
+set "DS_SOURCE="
+call set "DS_STATE=%%SF_STATE_%~1%%"
+call set "DS_SOURCE=%%SF_SOURCE_%~1%%"
+if not defined DS_STATE set "DS_STATE=none"
+if not defined DS_SOURCE set "DS_SOURCE=none"
+goto :eof
+
+rem ============================================================
+rem  083 task 1. THE RECORD'S HEADER IS BROUGHT UP TO THE CHECKBOXES, IN PLACE.
+rem
+rem  PHASE_OUTCOME.md says of itself that the header is UPDATED IN PLACE - a
+rem  step state is a running position - and that a state there is always
+rem  derivable. Until tonight it was derived from one judge's word about one
+rem  step; now it is derived from the plan, and this keeps the file honest
+rem  between units so outcome-render.bat and a reader see what the plan says.
+rem
+rem  ONLY THE STATE FIELD OF A STEP: LINE IN THE HEADER REGION MOVES - the text
+rem  before the first --- rule - and only for a step whose state was DERIVED
+rem  from checkboxes. A step with no criterion lines is left exactly as the
+rem  judge left it. Nothing under ## UNIT is read or written: the entries are
+rem  append-only and this never reaches them. The BOM is detected and written
+rem  back as found, and the file's own line endings are untouched because the
+rem  replacement is a substring splice and never a split-and-join.
+:syncheader
+powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $sf='%WORK%\step-states.txt'; if(-not (Test-Path -LiteralPath $o)){ exit }; if(-not (Test-Path -LiteralPath $sf)){ exit }; $kv=@{}; foreach($ln in (Get-Content -LiteralPath $sf)){ if($ln -match '^([A-Z_0-9.]+)=(.*)$'){ $kv[$Matches[1]]=$Matches[2] } }; $steps=@(([string]$kv['STEPS'] -split ' ') | Where-Object { $_ -ne '' }); if($steps.Count -eq 0){ exit }; $bytes=[IO.File]::ReadAllBytes($o); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $text=[Text.Encoding]::UTF8.GetString($bytes); if(($text.Length -gt 0) -and ($text[0] -eq [char]0xFEFF)){ $text=$text.Substring(1) }; $cut=$text.Length; $m=[regex]::Match($text, '(?m)^-{3,}\s*$'); if($m.Success){ $cut=$m.Index }; $head=$text.Substring(0,$cut); $tail=$text.Substring($cut); $changed=@(); foreach($n in $steps){ if([string]$kv['SOURCE_' + $n] -ne 'checkboxes'){ continue }; $want=[string]$kv['STATE_' + $n]; $rx=New-Object regex ('(?m)^(STEP: *' + $n + ' *\| *)([a-z ]+?)( *\|)'); $x=$rx.Match($head); if(-not $x.Success){ continue }; $have=$x.Groups[2].Value.Trim(); if($have -eq $want){ continue }; $head=$head.Substring(0, $x.Index) + $x.Groups[1].Value + $want + $x.Groups[3].Value + $head.Substring($x.Index + $x.Length); $changed+=('step ' + $n + ' ' + $have + ' -> ' + $want) }; if($changed.Count -eq 0){ '      record header: every step state already matches its checkboxes'; exit }; [IO.File]::WriteAllText($o, $head + $tail, (New-Object Text.UTF8Encoding($bom))); foreach($c in $changed){ '      record header: ' + $c + ' - the header carried a stale state, the checkboxes win' }"
 goto :eof
 
 rem  The count, from criteria-count.bat - a script, never a judgment.
@@ -1416,7 +1929,7 @@ rem  no criterion - reports none, and none never equals none.
 set "LA_CRIT1=none"
 set "LA_CRIT2=none"
 set "LA_SAME=no"
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $o)){ exit }; $e=@(); $cur=$null; foreach($ln in (Get-Content -LiteralPath $o)){ if($ln -match '^## UNIT (\S+) - STEP (\S+)'){ if($cur){ $e+=$cur }; $cur=@{ u=$Matches[1]; s=$Matches[2]; f=''; a=''; c='' } } elseif($cur){ if($ln -match '^FATE:\s*(.+?)\s*$'){ $cur.f=$Matches[1] }; if($ln -match '^ADVANCED:\s*(.+?)\s*$'){ $cur.a=$Matches[1] }; if($ln -match '^ATTEMPT: *([0-9]+\.[0-9]+) *\|'){ $cur.c=$Matches[1] } } }; if($cur){ $e+=$cur }; if($e.Count -lt 2){ exit }; $p=$e[$e.Count-2]; $q=$e[$e.Count-1]; $steps=$p.s; if($q.s -ne $p.s){ $steps=$p.s + ' and ' + $q.s }; if(($p.a -eq 'no') -and ($q.a -eq 'no') -and ($p.f -eq 'executed') -and ($q.f -eq 'executed')){ 'LA_KIND=no'; 'LA_UNITS=' + $p.u + ' and ' + $q.u; 'LA_STEP=' + $steps; 'LA_CRIT1=' + $(if($p.c -ne ''){ $p.c } else { 'none' }); 'LA_CRIT2=' + $(if($q.c -ne ''){ $q.c } else { 'none' }); 'LA_SAME=' + $(if(($p.c -ne '') -and ($p.c -eq $q.c)){ 'yes' } else { 'no' }) } elseif(($p.a -eq 'blocker') -and ($q.a -eq 'blocker')){ 'LA_KIND=blocker'; 'LA_UNITS=' + $p.u + ' and ' + $q.u; 'LA_STEP=' + $steps }"`) do set "%%A=%%B"
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $o)){ exit }; $e=@(); $cur=$null; foreach($ln in (Get-Content -LiteralPath $o)){ if($ln -match '^## UNIT (\S+) - STEP (\S+)'){ if($cur){ $e+=$cur }; $cur=@{ u=$Matches[1]; s=$Matches[2]; f=''; a=''; c='' } } elseif($cur){ if($ln -match '^FATE:\s*(.+?)\s*$'){ $cur.f=$Matches[1] }; if($ln -match '^ADVANCED:\s*(.+?)\s*$'){ $cur.a=$Matches[1] }; if($ln -match '^ATTEMPT: *([0-9]+\.[0-9]+) *\|'){ $cur.c=$Matches[1] } } }; if($cur){ $e+=$cur }; if($e.Count -lt 2){ exit }; $p=$e[$e.Count-2]; $q=$e[$e.Count-1]; $steps=$p.s; if($q.s -ne $p.s){ $steps=$p.s + ' and ' + $q.s }; if(($p.a -eq 'no') -and ($q.a -eq 'no') -and ($p.f -eq 'executed') -and ($q.f -eq 'executed')){ 'LA_KIND=no'; 'LA_UNITS=' + $p.u + ' and ' + $q.u; 'LA_STEP=' + $steps; 'LA_CRIT1=' + $(if($p.c -ne ''){ $p.c } else { 'none' }); 'LA_CRIT2=' + $(if($q.c -ne ''){ $q.c } else { 'none' }); 'LA_SAME=' + $(if(($p.c -ne '') -and ($p.c -eq $q.c)){ 'yes' } else { 'no' }) } elseif(($p.a -eq 'blocker') -and ($q.a -eq 'blocker')){ 'LA_KIND=blocker'; 'LA_UNITS=' + $p.u + ' and ' + $q.u; 'LA_STEP=' + $steps; 'LA_CRIT1=' + $(if($p.c -ne ''){ $p.c } else { 'none' }); 'LA_CRIT2=' + $(if($q.c -ne ''){ $q.c } else { 'none' }) }"`) do set "%%A=%%B"
 goto :eof
 
 rem  IS THE OWNER'S VERDICT ALL THAT IS LEFT? Read from PHASE_PLAN.md and
@@ -1433,20 +1946,107 @@ rem  makes - for the reason stop 10's counter left memory in 064.
 rem
 rem  THE CRITERIA ARE PRINTED BY POWERSHELL, NOT ECHOED BY cmd, because they
 rem  are plan prose and & | < > ^ are live on a bare echo line.
+rem  083 task 1: THE STATES COME FROM :stepfromcrit, NOT FROM THE HEADER, so a
+rem  step done by its checkboxes is skipped whatever the header says, and a step
+rem  the header calls done but whose boxes are open is counted as open work.
+rem  083 task 4: AND A CRITERION PARKED THIS PASS COUNTS WITH THE OWNER'S. The
+rem  halt fires where no open step carries a criterion the loop may author -
+rem  every unmet criterion is either the owner's verdict or parked - and at least
+rem  one such criterion exists. Nothing else about the condition moved: a step
+rem  with no criteria in the form is still unknown, never finished, and one work
+rem  criterion anywhere runs the loop.
 :ownerwait
 set "OW_HALT=0"
 set "OW_IDS="
+set "OW_PARKED=0"
+set "OW_PARKEDIDS="
+rem  085: the parked set split two ways - parked for a section-4 QUESTION, and
+rem  parked for DRIFT, which is a criterion the judge said report on twice this
+rem  pass. Read from .run-unit\drift.txt, the same file :driftcount writes, so
+rem  the split is the park rule itself and not a second reading of it.
+set "OW_DRIFTN=0"
+set "OW_DRIFTIDS="
+set "OW_QPARKEDN=0"
+set "OW_QPARKEDIDS="
 set "OW_SHEET=none"
 set "OW_SHEETPATH="
 set "OWENV=%WORK%\owner-wait.txt"
 if exist "%OWENV%" del /q "%OWENV%"
-powershell -NoProfile -Command "$p='%ROOT%\PHASE_PLAN.md'; $o='%ROOT%\PHASE_OUTCOME.md'; $envf='%OWENV%'; if(-not (Test-Path -LiteralPath $p)){ exit }; $plan=@(Get-Content -LiteralPath $p -Encoding UTF8); $state=@{}; if(Test-Path -LiteralPath $o){ foreach($ln in (Get-Content -LiteralPath $o -Encoding UTF8)){ if($ln -cmatch '^STEP: *([0-9]+) *\| *([a-z ]+?) *\|'){ if(-not $state.ContainsKey([int]$Matches[1])){ $state[[int]$Matches[1]]=$Matches[2] } } } }; $steps=@(); $sheet=''; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -cmatch '^STEP: *([0-9]+) *\|'){ $steps+=[int]$Matches[1] }; if($ln -cmatch '^REVIEW_SHEET:\s*(.+?)\s*$'){ $sheet=$Matches[1] } }; $work=0; $owners=@(); $nocrit=0; $open=0; foreach($s in $steps){ $st='none'; if($state.ContainsKey($s)){ $st=$state[$s] }; if($st -eq 'done'){ continue }; $open++; $n=0; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -match '^\s*-\s\[( |x|X)\]\s+([0-9]+)\.([0-9]+)\s+(.*)$'){ $mk=$Matches[1]; $sn=[int]$Matches[2]; $cid=$Matches[2] + '.' + $Matches[3]; $txt=$Matches[4]; if($sn -ne $s){ continue }; $n++; if($mk -ne ' '){ continue }; if($txt -match '(?i)\*owner.s verdict\*\s*$'){ $owners+=($cid + ' ' + ($txt -replace '(?i)\s*\*owner.s verdict\*\s*$','')) } else { $work++ } } }; if($n -eq 0){ $nocrit++ } }; $halt=($open -gt 0) -and ($work -eq 0) -and ($nocrit -eq 0) -and ($owners.Count -gt 0); $out=@(); if(-not $halt){ $out+='HALT=0'; Set-Content -LiteralPath $envf -Value $out -Encoding ascii; exit }; $out+='HALT=1'; $out+=('IDS=' + (($owners | ForEach-Object { $_.Split(' ')[0] }) -join ', ')); '      waiting on the owner:'; foreach($w in $owners){ '        ' + $w }; if($sheet -eq ''){ $out+='SHEET=none' } else { $sp=Join-Path '%ROOT%' $sheet; $out+=('SHEETPATH=' + $sheet); if(Test-Path -LiteralPath $sp){ $out+='SHEET=exists' } else { $out+='SHEET=absent' } }; Set-Content -LiteralPath $envf -Value $out -Encoding ascii"
+powershell -NoProfile -Command "$p='%ROOT%\PHASE_PLAN.md'; $sf='%WORK%\step-states.txt'; $envf='%OWENV%'; if(-not (Test-Path -LiteralPath $p)){ exit }; if(-not (Test-Path -LiteralPath $sf)){ exit }; $kv=@{}; foreach($ln in (Get-Content -LiteralPath $sf)){ if($ln -match '^([A-Z_0-9.]+)=(.*)$'){ $kv[$Matches[1]]=$Matches[2] } }; $open=[int]$kv['OPEN']; $work=[int]$kv['WORK']; $nocrit=[int]$kv['NOCRIT']; $ownn=[int]$kv['OWNERN']; $pkn=[int]$kv['PARKEDN']; $ownids=@(([string]$kv['OWNERIDS'] -split ' ') | Where-Object { $_ -ne '' }); $pkids=@(([string]$kv['PARKEDIDS'] -split ' ') | Where-Object { $_ -ne '' }); $sheet=''; $txt=@{}; foreach($raw in (Get-Content -LiteralPath $p -Encoding UTF8)){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -cmatch '^REVIEW_SHEET:\s*(.+?)\s*$'){ $sheet=$Matches[1] }; if($ln -match '^\s*-\s\[( |x|X)\]\s+([0-9]+\.[0-9]+)\s+(.*)$'){ $txt[$Matches[2]]=($Matches[3] -replace '(?i)\s*\*owner.s verdict\*\s*$','').Trim() } }; $halt=($open -gt 0) -and ($work -eq 0) -and ($nocrit -eq 0) -and (($ownn + $pkn) -gt 0); $out=@(); if(-not $halt){ $out+='HALT=0'; Set-Content -LiteralPath $envf -Value $out -Encoding ascii; exit }; $out+='HALT=1'; $out+=('IDS=' + ($ownids -join ', ')); $out+=('PARKED=' + $pkn); $out+=('PARKEDIDS=' + ($pkids -join ', ')); $df='%WORK%\drift.txt'; $dc=@{}; if(Test-Path -LiteralPath $df){ foreach($ln in (Get-Content -LiteralPath $df)){ $k=([string]$ln).Trim(); if($k -ne ''){ if($dc.ContainsKey($k)){ $dc[$k]++ } else { $dc[$k]=1 } } } }; $dpk=@($pkids | Where-Object { $dc.ContainsKey($_) -and ($dc[$_] -ge 2) }); $qpk=@($pkids | Where-Object { -not ($dpk -contains $_) }); $out+=('DRIFTN=' + $dpk.Count); $out+=('DRIFTIDS=' + ($dpk -join ', ')); $out+=('QPARKEDN=' + $qpk.Count); $out+=('QPARKEDIDS=' + ($qpk -join ', ')); if($ownids.Count -gt 0){ '      waiting on the owner:'; foreach($i in $ownids){ '        ' + $i + ' ' + $txt[$i] } }; if($qpk.Count -gt 0){ '      parked this pass - a section-4 question on each is waiting on the owner in PARKED.md:'; foreach($i in $qpk){ '        ' + $i + ' ' + $txt[$i] } }; if($dpk.Count -gt 0){ '      parked this pass for DRIFT - the judge said report twice on each, and PARKED.md quotes it:'; foreach($i in $dpk){ '        ' + $i + ' ' + $txt[$i] } }; if($sheet -eq ''){ $out+='SHEET=none' } else { $sp=Join-Path '%ROOT%' $sheet; $out+=('SHEETPATH=' + $sheet); if(Test-Path -LiteralPath $sp){ $out+='SHEET=exists' } else { $out+='SHEET=absent' } }; Set-Content -LiteralPath $envf -Value $out -Encoding ascii"
 if not exist "%OWENV%" goto :eof
 for /f "usebackq tokens=1,* delims==" %%A in ("%OWENV%") do set "OW_%%A=%%B"
 goto :eof
 
+rem  083 task 4: THE NEW ENDING. Where a question was parked this pass and every
+rem  remaining unmet criterion is either parked or the owner's, the night ends
+rem  HERE, at exit 0, as an ending and not a failure: the loop pushed past the
+rem  question to the plan's real work and stops only now that the real work is
+rem  gone. It is stop 1 extended a second time, not a new stop number, for the
+rem  reason 065 gave - stop 1 is the phase having nothing left the loop can do.
+rem  The parked questions go to the TOP of the review sheet, above the criteria,
+rem  by :reviewsheet; where the plan names no sheet, PARKED.md's path goes to the
+rem  console and into the ledger line so the question cannot be lost.
+rem  Flat, never a parenthesised block: OW_PARKEDIDS and OW_IDS are lists.
 :ownerhalt
 echo.
+if "%OW_PARKED%"=="0" goto :ownerhaltplain
+rem  085: THE DRIFT ENDING. Where every parked criterion was parked for drift
+rem  and none for a question, the arbiter could not resolve the work back to
+rem  the phase goal on any route it tried, and that is the owner's second
+rem  ending of 2026-09-23. A question-park beside a drift-park is NOT it: a
+rem  question is a criterion the arbiter has not drifted on, and the ending
+rem  below - every remaining criterion parked or the owner's - fires instead
+rem  and names both kinds. The owner's-verdict lines never count against it:
+rem  they are never the arbiter's to resolve. Author's, overrulable.
+if "%OW_QPARKEDN%"=="0" if not "%OW_DRIFTN%"=="0" goto :drifthalt
+echo   ================================================================
+echo   ENDED: EVERY REMAINING CRITERION IS THE OWNER'S OR PARKED.
+echo   ================================================================
+echo   %OW_PARKED% question(s) were parked this pass, on: %OW_PARKEDIDS%
+if not "%OW_DRIFTN%"=="0" echo   of which %OW_DRIFTN% were parked for DRIFT rather than for a question: %OW_DRIFTIDS%
+if defined OW_IDS echo   and the owner's verdict is wanted on: %OW_IDS%
+echo   Nothing in the loop can move any of them. THIS IS AN ENDING, NOT A STOP -
+echo   the owner's ruling of 2026-09-23: the loop pushed past the question to the
+echo   plan's real work and stops only now that the real work is gone. No arbiter
+echo   was called, and no unit was run.
+if "%OW_SHEET%"=="exists" echo   Review sheet already on disk, not written again: %OW_SHEETPATH%
+if "%OW_SHEET%"=="absent" echo   The review sheet is written now, the parked question(s) at its top: %OW_SHEETPATH%
+if "%OW_SHEET%"=="none" echo   THE PLAN NAMES NO REVIEW SHEET. THE PARKED QUESTIONS ARE IN: %ROOT%\PARKED.md
+set "STOPWHY=stop 1: ended - every remaining criterion is the owner's or parked - %OW_PARKED% parked: %OW_PARKEDIDS%"
+if defined OW_IDS set "STOPWHY=%STOPWHY%; the owner's: %OW_IDS%"
+if "%OW_SHEET%"=="none" set "STOPWHY=%STOPWHY% - the plan names no review sheet, so the questions are in PARKED.md at the root"
+set "RC=0"
+goto :stopped
+
+rem  085: THE SECOND ENDING - drift so severe the arbiter cannot resolve the
+rem  work back to a phase goal. Reached only from :ownerhalt, so by the time
+rem  it runs nothing is authorable, every parked criterion was parked for
+rem  drift, and at least one was. It exits 0, is recorded as an ending, and
+rem  writes the review sheet as any ending does, PARKED.md's drift lines at
+rem  its top. Flat, never a parenthesised block: the id lists are prose.
+:drifthalt
+echo   ================================================================
+echo   ENDED: THE ARBITER COULD NOT RESOLVE THE WORK BACK TO THE PHASE GOAL.
+echo   ================================================================
+echo   Every criterion the loop may author was drifted on twice and parked for it:
+echo     %OW_DRIFTIDS%
+if defined OW_IDS echo   The owner's verdict is wanted on: %OW_IDS% - never the arbiter's to work.
+echo   On every route it tried, the judge said the criterion was chosen from the
+echo   last report and not from the plan. THIS IS AN ENDING, NOT A STOP - the
+echo   owner's ruling of 2026-09-23: a night ends for a decision the arbiter must
+echo   not make in his place, or for drift so severe the arbiter cannot resolve
+echo   the work back to a phase goal. This is the second. No arbiter was called,
+echo   and no unit was run. What could not be resolved is in PARKED.md, each line
+echo   saying drift and quoting the judge.
+if "%OW_SHEET%"=="exists" echo   Review sheet already on disk, not written again: %OW_SHEETPATH%
+if "%OW_SHEET%"=="absent" echo   The review sheet is written now, the drifted criteria at its top: %OW_SHEETPATH%
+if "%OW_SHEET%"=="none" echo   THE PLAN NAMES NO REVIEW SHEET. THE JUDGE'S WORDS ARE IN: %ROOT%\PARKED.md
+set "STOPWHY=stop 1: ended - drift - the arbiter could not resolve the work back to the phase goal - %OW_DRIFTN% criteria drifted on and parked: %OW_DRIFTIDS%"
+if defined OW_IDS set "STOPWHY=%STOPWHY%; the owner's: %OW_IDS%"
+if "%OW_SHEET%"=="none" set "STOPWHY=%STOPWHY% - the plan names no review sheet, so the judge's words are in PARKED.md at the root"
+set "RC=0"
+goto :stopped
+:ownerhaltplain
 echo   STOP 1: THE PHASE IS WAITING ON THE OWNER'S VERDICT.
 echo   Every unmet criterion of every step not done is marked *owner's verdict*, and
 echo   nothing in the loop can give one. No arbiter was called, and no unit was run.
@@ -1462,16 +2062,101 @@ rem  instruction's own WHY, and said the criterion was chosen from the report
 rem  rather than from the plan. Its sentence is quoted rather than summarised,
 rem  because the owner has to be able to disagree with the judge and not only
 rem  with the launcher.
+rem  084 task 5: THE SINGLE BIGGEST BEHAVIOUR CHANGE IN THE UNIT - until 084
+rem  this HALTED. The owner, 2026-09-23: drift is the failure, and stopping is
+rem  failure too, so a drift caught is a redirect: the arbiter is told the
+rem  judge's sentence and authors again against the plan. A criterion drifted
+rem  on twice running is PARKED as a question is - the mark, the PARKED.md line
+rem  with which=drift, the ledger note - and the loop moves to the plan's other
+rem  work. The count lives in .run-unit\drift.txt and is cleared with the
+rem  parked marks before every run. Reached from the END of the iteration, so
+rem  the budget was read first and a section-4 park on this unit, if any, has
+rem  already happened - and then this does not park the same criterion twice.
 :planonly
 echo.
-echo   HALTED: THE CRITERION WAS CHOSEN FROM THE LAST REPORT, NOT FROM THE PLAN.
-echo   The state judge read the step, this unit-s report and the instruction-s own
-echo   WHY, and answered FOLLOWS: report. It said:
+echo   DRIFTED TO THE OUTPUT: THE CRITERION WAS CHOSEN FROM THE LAST REPORT, NOT FROM THE PLAN.
+echo   The state judge read the phase goal, the step, this unit-s report and the
+echo   instruction-s own WHY, and answered FOLLOWS: report. It said:
 powershell -NoProfile -Command "'     ' + $env:J_FOLLOWED"
-echo   The report is evidence about a criterion, never the next thing to work on.
-echo   The owner-s ruling of 2026-09-19. The unit-s entry is recorded above.
-set "STOPWHY=halted: the criterion was chosen from the last report rather than the plan - %J_FOLLOWED%"
-goto :stopped
+echo   THE PHASE GOAL IS THE PRIME DIRECTIVE. The last report is an indicator that
+echo   tunes the approach and never the target - the owner-s ruling of 2026-09-23.
+echo   The unit-s entry is recorded above.
+call :driftcount
+if %DRIFTN% GEQ 2 goto :driftpark
+echo   THE LOOP REDIRECTS RATHER THAN HALTING - until unit 084 this ended the night.
+echo   Author again, from the plan. A second drift on criterion %AT_CRIT% parks it.
+set "RD_RULE=drifted to the output"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=the state judge answered FOLLOWS: report on criterion %AT_CRIT% - %J_FOLLOWED% - the phase goal is the prime directive and the report is an indicator that never chooses the target"
+goto :redirectnext
+
+:driftpark
+echo   DRIFTED TWICE RUNNING ON CRITERION %AT_CRIT%. It is PARKED as a question is, and
+echo   the loop moves to the plan-s other work - the owner-s ruling of 2026-09-23.
+call :isparked "%AT_CRIT%"
+if "%PK_HIT%"=="yes" echo   criterion %AT_CRIT% is already parked this pass - not parked twice
+if "%PK_HIT%"=="yes" goto :iterate
+set "PK_WHICH=drift"
+set "PK_WORDS=drifted to the output twice running - the judge said: %J_FOLLOWED%"
+call :park
+goto :iterate
+
+rem  How many times this pass the judge has said report on this criterion,
+rem  counting this one. One id per line in .run-unit\drift.txt.
+:driftcount
+set "DRIFTN=0"
+if not defined AT_CRIT goto :eof
+>>"%WORK%\drift.txt" echo %AT_CRIT%
+for /f "usebackq delims=" %%L in ("%WORK%\drift.txt") do if "%%L"=="%AT_CRIT%" set /a DRIFTN+=1
+echo   drifts on criterion %AT_CRIT% this pass: %DRIFTN%
+goto :eof
+
+rem ============================================================
+rem  086: A REFUSAL THE ARBITER CAUSED IS HANDED BACK, NEVER A HALT. The
+rem  owner, 2026-09-23: a malformed field is not a decision he reserved and
+rem  it is not drift; the arbiter can fix it by authoring again. This is
+rem  084's hand-back - RD_RULE, RD_CRITERIA, RD_DETAIL and :redirectnext -
+rem  reached from the four authoring refusals, with the twice-count 084 gave
+rem  drift: one line per hand-back in .run-unit\drift.txt, prefixed `refused`
+rem  so :driftcount and :ownerwait, which match a bare id, never count it;
+rem  cleared with the marks before every run. On the second hand-back this
+rem  pass at a CRITERION the criterion is parked as a question is, with
+rem  which=refusal, and the loop takes other open work; a refusal keyed on a
+rem  rule or a step has nothing to park, hands back again, and is bounded
+rem  by the backstop - said on the console. Never a new file, never a
+rem  second routine, never a halt. Author's, overrulable.
+:refused
+set "HB_N=0"
+>>"%WORK%\drift.txt" echo refused %HB_KEY%
+for /f "usebackq delims=" %%L in ("%WORK%\drift.txt") do if "%%L"=="refused %HB_KEY%" set /a HB_N+=1
+echo   handed back %HB_N% time(s) this pass on %HB_KEY%
+if %HB_N% LSS 2 goto :refusedonce
+if not defined HB_CRIT goto :refusedagain
+call :isparked "%HB_CRIT%"
+if "%PK_HIT%"=="yes" goto :refusedonce
+echo   REFUSED TWICE THIS PASS ON CRITERION %HB_CRIT%. It is PARKED as a question is,
+echo   and the loop takes the plan's other open work - the owner's ruling of 2026-09-23.
+set "AT_CRIT=%HB_CRIT%"
+set "ATTEMPTID="
+set "PK_WHICH=refusal"
+set "PK_WORDS=%RD_RULE% twice running - %RD_DETAIL%"
+call :park
+call :stepfromcrit
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+rem  a caller that holds a pin - :wrongcriterion - keeps it rather than
+rem  widening the redirect to the authorable set.
+if defined HB_KEEP set "RD_CRITERIA=%HB_KEEP%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "HB_KEEP="
+goto :redirectnext
+:refusedonce
+set "HB_KEEP="
+goto :redirectnext
+:refusedagain
+echo   the same refusal again with no criterion to park - handed back again; the bound is the backstop.
+set "HB_KEEP="
+goto :redirectnext
 
 rem ============================================================
 :reversal
@@ -1490,8 +2175,20 @@ echo   REFUSED: ADVANCES NAMES AN OWNER'S-VERDICT CRITERION.
 echo   Step %ADV_STEP% criterion %ADV_CRIT% is marked *owner's verdict* in PHASE_PLAN.md. A unit
 echo   cannot flip a criterion only the owner can judge, and nothing in the loop turns
 echo   one to - [x]. The owner's ruling of 2026-09-14. Nothing was launched.
-set "STOPWHY=refused: ADVANCES names step %ADV_STEP% criterion %ADV_CRIT%, which is the owner's verdict"
-goto :stopped
+rem  086: HANDED BACK, NOT HALTED. Until 086 this set STOPWHY to `refused:
+rem  ADVANCES names step N criterion k, which is the owner's verdict` and went
+rem  to :stopped. Naming his line is the arbiter's own paperwork - the owner's
+rem  ruling of 2026-09-23. The key is the criterion: named twice this pass it
+rem  is parked, which for an owner's line changes nothing it could author and
+rem  bounds the repeat.
+echo   THE LOOP HANDS THIS BACK RATHER THAN HALTING: author against a criterion that is yours.
+set "RD_RULE=ADVANCES names the owner's verdict"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=ADVANCES named step %ADV_STEP% criterion %ADV_CRIT%, which is marked *owner's verdict* in PHASE_PLAN.md and which nothing in the loop can flip"
+set "HB_KEY=%ADV_STEP%.%ADV_CRIT%"
+set "HB_CRIT=%ADV_STEP%.%ADV_CRIT%"
+goto :refused
 
 rem ============================================================
 rem  068 tasks 4 and 5. NAMED, NOT NUMBERED: it is a refusal before the unit
@@ -1519,8 +2216,41 @@ echo   A WHY names a criterion id, a step, or enough of one plan line to show
 echo   the reasoning started there. Reasoning only from the last report is what
 echo   this refuses: the report is evidence about a criterion, never the next
 echo   thing to work on. Author the WHY from the criterion you are advancing.
-set "STOPWHY=refused: the instruction-s WHY cites no line of the plan - closest shared %WY_HITS% words, three are needed"
-goto :stopped
+rem  084 task 4: REDIRECTED, NOT HALTED. Until 084 this was a halt, and the
+rem  whyreport arm asserted its ledger line - reversed there with the old
+rem  expectation quoted. A refused WHY must never be a new way to quit.
+echo   THE LOOP REDIRECTS RATHER THAN HALTING: author again, from the plan.
+set "RD_RULE=WHY cites no line of the plan"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=the instruction-s WHY cited no line of the plan - closest shared %WY_HITS% words, three are needed; the report is an indicator, never a target"
+goto :redirectnext
+
+rem ============================================================
+rem  084 task 4. The WHY cites the plan, and its reason for choosing the
+rem  criterion is the last report. The report is an indicator that tunes the
+rem  approach and never the target - the owner's ruling of 2026-09-23. Named,
+rem  not numbered; redirected, never halted; what it cited is printed and put
+rem  in the redirect so the next author sees the sentence rather than guessing.
+:whydriven
+echo.
+echo   REFUSED: THIS INSTRUCTION-S WHY RESTS ON THE LAST REPORT.
+echo   NOTHING WAS LAUNCHED.
+echo.
+echo   it cites the plan     : ids %WY_IDS%, steps %WY_STEPS%
+echo   and gives as its reason: %WD_PHRASE%
+echo   in the sentence       : %WD_SENT%
+echo.
+echo   THE PHASE GOAL IS THE PRIME DIRECTIVE. The last report is an indicator that
+echo   tunes your approach and never your target - the owner's ruling of 2026-09-23.
+echo   A criterion is chosen because the plan holds it open, not because the last
+echo   report raised it. THE LOOP REDIRECTS RATHER THAN HALTING: author again, and
+echo   give the plan as the reason.
+set "RD_RULE=WHY rests on the last report"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=the instruction-s WHY cited the plan but gave the last report as its reason for choosing the criterion, in the words %WD_PHRASE%; the report is an indicator that tunes the approach and never the target"
+goto :redirectnext
 
 rem ============================================================
 rem  070 task 2. The redirected instruction named a criterion it was not sent
@@ -1538,7 +2268,19 @@ echo   spent on the refusal, and the loop carries on.
 set "RD_RULE=%RQ_RULE%"
 set "RD_CRITERIA=%RQ_WANT%"
 set "RD_DETAIL=%RQ_DETAIL%; the instruction then named %RQ_MINE%, which it was not sent to"
-goto :redirectnext
+rem  086: COUNTED AS A HAND-BACK AT THE CRITERION IT NAMED. Found by the
+rem  hb-twice arm's first run: the owner's 2.3 named a second time was caught
+rem  HERE, by 070's requirement check, before :ownercrit could count it, so the
+rem  second refusal never parked and the loop bounced between two redirects to
+rem  the backstop. The criterion it was not sent to is the key; named twice
+rem  this pass it is parked, and the pin to RQ_WANT is kept rather than widened
+rem  to the authorable set, because the pin is what the no-advance redirect is
+rem  for. Where what it named is not a criterion id there is nothing to park.
+set "HB_KEY=%RQ_MINE%"
+set "HB_CRIT="
+set "HB_KEEP=%RQ_WANT%"
+echo %RQ_MINE%| findstr /r /c:"^[0-9][0-9]*\.[0-9][0-9]*$" >nul && set "HB_CRIT=%RQ_MINE%"
+goto :refused
 
 rem ============================================================
 rem  070 task 3. 068-S REFUSAL REDIRECTS RATHER THAN HALTING, and the reason
@@ -1580,23 +2322,48 @@ echo   REFUSED: ADVANCES names no criterion and is not the blocker form.
 echo   It must read  step N criterion k  - a line of PHASE_PLAN.md in the form
 echo   - [ ] N.k  - or  none - clears a blocker:  naming a unit number or a
 echo   criterion it unblocks. The owner's ruling of 2026-09-14. Nothing was launched.
-set "STOPWHY=refused: ADVANCES named no step and criterion, and no unit or criterion it unblocks"
-goto :stopped
+call :echosafe "%A_ADV%"
+echo   it wrote : %ES%
+rem  086: HANDED BACK, NOT HALTED. Until 086 this set STOPWHY to `refused:
+rem  ADVANCES named no step and criterion, and no unit or criterion it
+rem  unblocks` and went to :stopped. A field in the wrong shape is the
+rem  arbiter's own paperwork - the owner's ruling of 2026-09-23.
+echo   THE LOOP HANDS THIS BACK RATHER THAN HALTING: write ADVANCES in the form and author again.
+set "RD_RULE=ADVANCES malformed"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=ADVANCES read %ES% - it must read step N criterion k, a line of PHASE_PLAN.md in the form - [ ] N.k, or none - clears a blocker: naming a unit number or a criterion"
+set "HB_KEY=rule badadvances"
+set "HB_CRIT="
+goto :refused
 
 :stepclosed
 echo.
 echo   REFUSED: STEP %SS_STEP% IS DONE, AND A DONE STEP IS CLOSED.
-echo   The instruction was authored into step %SS_STEP%, whose state in PHASE_OUTCOME.md
-echo   is %SS_STATE%. Only the owner reopens a step, by a ruling in the plan - no arbiter
+echo   The instruction was authored into step %SS_STEP%, whose every criterion in
+echo   PHASE_PLAN.md is ticked - its state is %SS_STATE% by its checkboxes, 083. Only the
+echo   owner reopens a step, by unticking a line or a ruling in the plan - no arbiter
 echo   ruling can. Nothing was launched; the unit's prompt was not spent.
-set "STOPWHY=refused: step %SS_STEP% is done and closed - only the owner reopens a step"
-goto :stopped
+rem  086: HANDED BACK, NOT HALTED. Until 086 this set STOPWHY to `refused: step
+rem  N is done and closed - only the owner reopens a step` and went to :stopped.
+rem  Aiming at a done step is the arbiter's own paperwork - the owner's ruling
+rem  of 2026-09-23. The key is the step, not a criterion: a done step has no
+rem  criterion to park, so a second hit hands back again, bounded by the
+rem  backstop, and the console says so.
+echo   THE LOOP HANDS THIS BACK RATHER THAN HALTING: author against a step with open work.
+set "RD_RULE=step %SS_STEP% is done and closed"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=the instruction was authored into step %SS_STEP%, whose every criterion in PHASE_PLAN.md is ticked - only the owner reopens a step"
+set "HB_KEY=step %SS_STEP%"
+set "HB_CRIT="
+goto :refused
 
 rem ============================================================
 rem  070 task 2. THE TWO NO-ADVANCE REDIRECTS. Both author again; neither
 rem  halts; neither is capped - ruling 2 rejects an attempt ceiling and a cap
-rem  is that ceiling under another name. The bound is --budget, --minutes,
-rem  --max-iterations and step 4 when it exists.
+rem  is that ceiling under another name. The bound is --minutes,
+rem  --max-iterations and step 4 when it exists (--budget too, until 085).
 rem
 rem  SAME CRITERION: the next instruction must name THAT criterion again with
 rem  an approach the record does not show failing at it. That is ruling 2
@@ -1763,14 +2530,20 @@ goto :eof
 
 :doredirect
 set "RD_COUNT=1"
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$f='%WORK%\redirect.txt'; $n=1; if(Test-Path -LiteralPath $f){ foreach($ln in (Get-Content -LiteralPath $f)){ if($ln -match '^COUNT:\s*([0-9]+)'){ $n=[int]$Matches[1] + 1 } } }; $o=@('RULE: %RD_RULE%', 'CRITERIA: %RD_CRITERIA%', 'DETAIL: %RD_DETAIL%', ('COUNT: ' + $n)); [IO.File]::WriteAllText($f, ($o -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false))); 'RD_COUNT=' + $n"`) do set "%%A=%%B"
+rem  084: THE THREE VALUES GO BY ENVIRONMENT, NOT INSIDE SINGLE QUOTES. Until
+rem  084 they were embedded as '%RD_DETAIL%', and the first real judge sentence
+rem  with an apostrophe in it - "the last unit's report" - ended the string,
+rem  PowerShell refused the line, and redirect.txt was not written while the
+rem  console said REDIRECTED. Measured on 2026-09-24 11:22. The same hazard 061
+rem  removed from outcome-append's call line, one routine over.
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$f='%WORK%\redirect.txt'; $n=1; if(Test-Path -LiteralPath $f){ foreach($ln in (Get-Content -LiteralPath $f)){ if($ln -match '^COUNT:\s*([0-9]+)'){ $n=[int]$Matches[1] + 1 } } }; $o=@(('RULE: ' + [string]$env:RD_RULE), ('CRITERIA: ' + [string]$env:RD_CRITERIA), ('DETAIL: ' + [string]$env:RD_DETAIL), ('COUNT: ' + $n)); [IO.File]::WriteAllText($f, ($o -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false))); 'RD_COUNT=' + $n"`) do set "%%A=%%B"
 echo.
 echo   REDIRECTED, NOT HALTED: %RD_RULE%.
 echo     %RD_DETAIL%
 echo     the next instruction must name one of: %RD_CRITERIA%
 echo     with an approach the record does not show failing at it.
 echo     redirect %RD_COUNT% in this run. THIS IS NOT A CAP - the bound is
-echo     --budget, --minutes and --max-iterations.
+echo     --minutes and --max-iterations, the owner-s own ceilings on a session - 085.
 call :ledgerredirect "%RD_RULE%"
 goto :eof
 
@@ -1810,13 +2583,13 @@ goto :eof
 
 :redirectsame
 set "RD_RULE=no-advance at one criterion"
-set "RD_CRITERIA=%LA_CRIT1%"
+set "RD_CRITERIA=%LA_KEEP%"
 set "RD_DETAIL=units %LA_UNITS% both ran against criterion %LA_CRIT1% and neither moved it"
 goto :redirectnow
 
 :redirectwander
 set "RD_RULE=no-advance at two different criteria"
-set "RD_CRITERIA=%LA_CRIT1% %LA_CRIT2%"
+set "RD_CRITERIA=%LA_KEEP%"
 set "RD_DETAIL=units %LA_UNITS% ran against criteria %LA_CRIT1% and %LA_CRIT2% and moved neither"
 goto :redirectnow
 
@@ -1832,13 +2605,141 @@ echo   them in PHASE_PLAN.md. Two in a row is stop 10 - the owner's ruling of 20
 set "STOPWHY=stop 10: no progress - units %LA_UNITS% moved no criterion of step %LA_STEP%"
 goto :stopped
 
+rem  086: PARKED OR HANDED BACK, NEVER HALTED. Until 086 this set STOPWHY to
+rem  `halted: two consecutive blocker-clearing units - units N and M moved no
+rem  criterion` and went to :stopped - 070 kept it as the bound on the blocker
+rem  form because a blocker-clear names no criterion to be sent back to. The
+rem  owner, 2026-09-23: two units that moved nothing are the arbiter's own
+rem  paperwork, not a decision he reserved. Where the blocker-clears named a
+rem  criterion as what they unblock - the ATTEMPT line carries it - that
+rem  criterion is PARKED as a question is, with which=blocker, and the loop
+rem  takes other open work; where they named only a unit there is nothing to
+rem  park, and the arbiter is redirected to the authorable set. The bound on
+rem  the form is now the park and the backstop. Author's, overrulable.
 :blockertwice
 echo.
-echo   HALTED: TWO CONSECUTIVE BLOCKER-CLEARING UNITS. Units %LA_UNITS% each
-echo   cleared a blocker and moved no criterion of step %LA_STEP%. The blocker form is
-echo   permitted, and bounded: twice in a row halts. This is not stop 10.
-set "STOPWHY=halted: two consecutive blocker-clearing units - units %LA_UNITS% moved no criterion"
-goto :stopped
+echo   TWO CONSECUTIVE BLOCKER-CLEARING UNITS. Units %LA_UNITS% each cleared a
+echo   blocker and moved no criterion of step %LA_STEP%. Until 086 this halted.
+if "%LA_CRIT1%"=="none" goto :blockernocrit
+call :isparked "%LA_CRIT1%"
+if "%PK_HIT%"=="yes" goto :blockernocrit
+echo   They named criterion %LA_CRIT1% as what they unblock. It is PARKED as a question
+echo   is, and the loop takes the plan's other open work - the owner's ruling of 2026-09-23.
+set "AT_CRIT=%LA_CRIT1%"
+set "ATTEMPTID="
+set "PK_WHICH=blocker"
+set "PK_WORDS=two consecutive blocker-clearing units %LA_UNITS% named this criterion as unblocked and moved no criterion of step %LA_STEP%"
+call :park
+call :stepfromcrit
+:blockernocrit
+set "RD_RULE=two consecutive blocker-clears"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=units %LA_UNITS% each cleared a blocker and moved no criterion of step %LA_STEP% - author against a criterion of the plan, not a third blocker-clear"
+goto :redirectnow
+
+rem ============================================================
+rem  083 task 3. THE PARKING ROUTINES.
+rem
+rem  THE MARK. .run-unit\parked.txt, one criterion id per line, is what makes
+rem  a criterion not authorable this pass. It is the loop's own working state
+rem  under .run-unit\, never the plan and never the record - author's,
+rem  overrulable - and it is cleared at :lockfree before the first iteration,
+rem  so it cannot survive into a later run as a permanent block. Rejected: a
+rem  mark in PHASE_PLAN.md, which is the owner's file and would turn a parked
+rem  question into an edit he never made. Rejected: re-reading PARKED.md for
+rem  the marks, because that file is append-only and forever, and a question
+rem  parked last week would then block its criterion on every night after.
+rem
+rem  THE LOG. PARKED.md at the root, created on the first park with a header,
+rem  then one line per question, in the ATTEMPT line's shape so a reader who
+rem  knows one knows the other, the judge's words LAST so a pipe inside them
+rem  moves no field:
+rem
+rem      PARKED: <N.k> | unit <u> launched <id> | <date> | <which> | <words>
+rem
+rem  The date is read from the clock in its own call, never composed. Where the
+rem  unit ran against no criterion - a blocker-clear naming only a unit - the
+rem  question is logged against none and nothing is marked, and the console
+rem  says so.
+rem ============================================================
+:parkedclear
+rem  084: the drift count is one pass too, cleared with the marks.
+if exist "%WORK%\drift.txt" del /q "%WORK%\drift.txt" 2>nul
+if not exist "%WORK%\parked.txt" goto :eof
+set "PKN=0"
+for /f "usebackq delims=" %%L in ("%WORK%\parked.txt") do set /a PKN+=1
+del /q "%WORK%\parked.txt" 2>nul
+echo       parked marks from an earlier pass cleared: %PKN% - a question is parked for one pass, and this run re-reads the plan fresh. The questions themselves stay in PARKED.md.
+goto :eof
+
+rem  Is this criterion id parked this pass? PK_HIT yes or no.
+:isparked
+set "PK_HIT=no"
+if not exist "%WORK%\parked.txt" goto :eof
+for /f "usebackq delims=" %%L in ("%WORK%\parked.txt") do if "%%L"=="%~1" set "PK_HIT=yes"
+goto :eof
+
+rem  The no-advance criteria with the parked ones removed. LA_KEEP is what a
+rem  redirect may be pinned to; LA_NONE yes means nothing survived.
+:unparkla
+set "LA_NONE=no"
+set "LA_KEEP="
+call :isparked "%LA_CRIT1%"
+if "%PK_HIT%"=="no" set "LA_KEEP=%LA_CRIT1%"
+if "%LA_SAME%"=="yes" goto :unparkdone
+call :isparked "%LA_CRIT2%"
+if "%PK_HIT%"=="no" if defined LA_KEEP set "LA_KEEP=%LA_KEEP% %LA_CRIT2%"
+if "%PK_HIT%"=="no" if not defined LA_KEEP set "LA_KEEP=%LA_CRIT2%"
+:unparkdone
+if not defined LA_KEEP set "LA_NONE=yes"
+if "%LA_NONE%"=="yes" echo       redirect   : the no-advance criteria %LA_CRIT1% %LA_CRIT2% are parked this pass - no redirect is pinned to a parked criterion, and the arbiter chooses from the plan
+goto :eof
+
+rem  The park itself: the log line, the mark, the ledger note.
+:park
+set "PK_CRIT=%AT_CRIT%"
+if not defined PK_CRIT set "PK_CRIT=none"
+set "PK_WHO=unit %ITER%"
+if defined ATTEMPTID if not "%ATTEMPTID%"=="unknown" set "PK_WHO=unit %ITER% launched %ATTEMPTID%"
+set "PK_NOW="
+for /f "usebackq delims=" %%D in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyy-MM-dd HH:mm')"`) do set "PK_NOW=%%D"
+if not defined PK_NOW set "PK_NOW=clock not read"
+powershell -NoProfile -Command "$f='%ROOT%\PARKED.md'; $line='PARKED: ' + [string]$env:PK_CRIT + ' | ' + [string]$env:PK_WHO + ' | ' + [string]$env:PK_NOW + ' | ' + [string]$env:PK_WHICH + ' | ' + [string]$env:PK_WORDS; $head=@('# PARKED.md', '', 'Questions the loop parked rather than quit on. Written by run-phase.bat, never by', 'a session, and append-only. Each line carries the criterion the question arose', 'under, the unit, the date, which of the two stops it touches - keying or promise,', 'or drift, or money before 085 - and the judge-s own words, last, so a pipe inside them moves', 'no field.', '', 'A question here is parked for the PASS that wrote it: the criterion is not', 'authored again that night. A new run re-reads the plan fresh and may author it', 'again - the owner-s ruling of 2026-09-23. To answer one, rule in PHASE_PLAN.md or', 'CLAUDE.md as usual; nothing reads this file back as a decision.', '', '---', ''); $nl=[string][char]13 + [string][char]10; $enc=New-Object Text.UTF8Encoding($false); if(-not (Test-Path -LiteralPath $f)){ [IO.File]::WriteAllText($f, ($head -join $nl) + $nl, $enc) }; [IO.File]::AppendAllText($f, $line + $nl, $enc); '      parked to PARKED.md: ' + $line"
+if "%PK_CRIT%"=="none" goto :parknocrit
+>>"%WORK%\parked.txt" echo %PK_CRIT%
+echo       criterion %PK_CRIT% is NOT AUTHORABLE for the rest of this pass - marked in .run-unit\parked.txt, cleared at the next run
+goto :parkledger
+:parknocrit
+echo       this unit ran against no criterion, so nothing is marked - the question is on record and the loop goes on
+:parkledger
+call :ledgerpark
+goto :eof
+
+rem  ONE LEDGER NOTE PER PARK, the shape :ledgerredirect uses, so the morning
+rem  reader sees the question and the criterion without the console.
+:ledgerpark
+set "NOWSTAMP="
+for /f "usebackq delims=" %%D in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyy-MM-ddTHH:mm')"`) do set "NOWSTAMP=%%D"
+call "%HERE%ledger.bat" "%ITER%" "%NOWSTAMP%" "%NOWSTAMP%" "note" "parked - criterion %PK_CRIT%: %PK_WHICH% - %PK_WORDS%. It is in PARKED.md, that criterion is not authorable this pass, and the loop carries on to the plan-s other work" "none - not a run" "%ROOT%" >nul
+echo       ledger     : parked noted - criterion %PK_CRIT%, %PK_WHICH%
+goto :eof
+
+rem  ADVANCES names a criterion parked this pass. Redirected to the authorable
+rem  ones, never halted. Where none is authorable the redirect names none and
+rem  the next iteration's top-of-loop test ends the night properly.
+:parkedcrit
+echo.
+echo   REFUSED: ADVANCES NAMES A CRITERION PARKED THIS PASS.
+echo   Step %ADV_STEP% criterion %ADV_CRIT% carries a section-4 question waiting on the owner
+echo   in PARKED.md. A unit sent at it again would work around one of the two
+echo   stops or ask the same question twice. NOTHING WAS LAUNCHED, and the loop
+echo   REDIRECTS rather than halting: author against a criterion that is open.
+set "RD_RULE=criterion parked this pass"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=step %ADV_STEP% criterion %ADV_CRIT% is parked this pass - a section-4 question on it is waiting on the owner in PARKED.md - and cannot be authored until a new run"
+goto :redirectnext
 
 rem ============================================================
 rem  AN INSTRUCTION THAT NAMES NEITHER A STEP NOR A CRITERION DOES
@@ -1849,39 +2750,88 @@ echo   REFUSED: the arbiter's decision block has no ADVANCES field.
 echo   It must name the step and the exit criterion this unit moves,
 echo   or say "none - this unit clears a blocker" and what it clears.
 echo   Nothing was launched.
-set "STOPWHY=refused: the decision block named no step and no criterion"
-goto :stopped
+rem  086: HANDED BACK, NOT HALTED. Until 086 this set STOPWHY to `refused: the
+rem  decision block named no step and no criterion` and went to :stopped. A
+rem  field the arbiter left out is the arbiter's own paperwork, not a decision
+rem  the owner reserved and not drift - the owner's ruling of 2026-09-23.
+echo   THE LOOP HANDS THIS BACK RATHER THAN HALTING: write the ADVANCES field and author again.
+set "RD_RULE=decision block names no step and no criterion"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=the decision block carried no ADVANCES field at all - it must read step N criterion k, or none - clears a blocker: naming a unit or a criterion"
+set "HB_KEY=rule noadvances"
+set "HB_CRIT="
+goto :refused
 
 rem ============================================================
 rem  STOP 3, AS THE OWNER REDEFINED IT ON 2026-08-29.
 rem  Flat, because %S4WHY% is a model's prose - see :arbstop.
+rem  083 task 3: STOP 3 IS A ROUTER, NOT A TERMINATOR. The owner's ruling of
+rem  2026-09-23: find a way forward, default to action - a question is a thing
+rem  to park, not a reason to quit. On HamLet, 2026-09-22 to -24, this label
+rem  ended a night on an RF-gain question carried in a COMPLETED unit's section
+rem  4, with 21 criteria open and at least 15 of them untouched by that
+rem  question. The question was real and is still the owner's; what was wrong
+rem  was ending the night over it while the plan held work it did not touch.
+rem
+rem  WHAT HAPPENS INSTEAD: the question goes to PARKED.md with the criterion,
+rem  the unit, the date, which of the three it touches and the judge's words;
+rem  that criterion is marked not authorable for the rest of this pass; and the
+rem  loop CONTINUES to the budget check and the next iteration, where the
+rem  arbiter is aimed at the plan's other work. The three stops are not routed
+rem  around: the parked criterion is never worked, the question is surfaced at
+rem  the top of the review sheet, and when it is genuinely all that remains the
+rem  night ends at stop 1 and waits for the owner - task 4.
+rem
+rem  :s4unknown beside this still halts: an unread judge is not a no and not a
+rem  parkable question. :arbstop still halts: that is the arbiter declaring a
+rem  decision the owner's in the authoring seat, a different site.
+rem  Flat, because %S4WHY% is a model's prose - see :arbstop.
 :s4stop
 echo.
 echo   ****************************************************
-echo   STOP 3: THE ARBITER JUDGES THAT A RULING IS WANTED.
+echo   PARKED, NOT HALTED: SECTION 4 WANTS A RULING ON ONE OF THE TWO.
 echo   ****************************************************
-echo   why : %S4WHY%
+echo   why   : %S4WHY%
+echo   which : %S4WHICH%
 echo.
-echo   It asks about one of the three things the phase stops for -
-echo   keying, transmit or the radio's safety; money past the budget;
-echo   what the product promises the operator. Those are the owner's,
-echo   and this is one of the two conditions that keep him the architect.
-echo   A question about anything else would not have stopped here: 061.
-set "STOPWHY=stop 3: a ruling is wanted on one of the three - judged, not counted"
-goto :stopped
+echo   It asks about one of the two things the phase stops for - keying,
+echo   transmit or the radio's safety; what the product promises the operator.
+echo   Money left that list on 2026-09-23. Those two are the owner's, and the question is written
+echo   to PARKED.md for him. THE NIGHT DOES NOT END HERE - the owner's ruling of
+echo   2026-09-23: a question is parked, not a reason to quit. The criterion it
+echo   arose under is not authorable for the rest of this pass, and the loop goes
+echo   on to the plan's other work. It ends only when every remaining criterion is
+echo   parked or his - and then the parked question is the first thing he sees.
+set "PK_WHICH=%S4WHICH%"
+set "PK_WORDS=%S4WHY%"
+call :park
+goto :afterpark
 
 rem  A JUDGE THAT COULD NOT BE READ IS NOT A NO. 0.0: absent,
 rem  unparseable or refused renders as unknown, never as healthy.
 rem  Halting names what happened; carrying on would be the loop
 rem  deciding a question it could not read was not a question.
+rem  087: PARKED, NOT HALTED. Until 087 this set STOPWHY to `stop 3: the
+rem  section 4 judge could not be read - halted rather than assume` and went
+rem  to :stopped. It is reached only after the retry at :s4check has also come
+rem  back unreadable. Section 4 has text in it and nothing established whether
+rem  it wants a ruling, so the loop still does not assume it does not: the
+rem  criterion the unit ran against is parked with which=unread, the judge's
+rem  two non-answers quoted, and the plan's other work goes on. The owner's
+rem  ruling of 2026-09-23 - failure is the last option, not the first.
 :s4unknown
 echo.
-echo   STOP 3: THE SECTION 4 JUDGE COULD NOT BE READ.
+echo   THE SECTION 4 JUDGE COULD NOT BE READ TWICE RUNNING.
 echo   %S4WHY%
-echo   Section 4 has text in it and nothing established whether it
-echo   wants a ruling, so this halts rather than assume it does not.
-set "STOPWHY=stop 3: the section 4 judge could not be read - halted rather than assume"
-goto :stopped
+echo   Section 4 has text in it and nothing established whether it wants a
+echo   ruling. Until 087 this halted at stop 3. The criterion this unit ran
+echo   against is PARKED rather than assumed clear, and the loop takes the
+echo   plan's other work - the owner's ruling of 2026-09-23.
+set "PK_WHICH=unread"
+set "PK_WORDS=the section-4 judge could not be read on two attempts - %S4WHY% - so whether section 4 wants a ruling is not established and the criterion is parked rather than assumed clear"
+call :park
+goto :afterpark
 
 rem ============================================================
 rem  THE STATE JUDGE. The owner's ruling of 2026-08-29.
@@ -1989,7 +2939,7 @@ goto :eof
 >>"%JSPROMPT%" echo   in progress   work is under way and more is needed
 >>"%JSPROMPT%" echo   partial       some of the exit criteria are met and not all
 >>"%JSPROMPT%" echo   blocked       it cannot proceed without an outside change, or
->>"%JSPROMPT%" echo                 without the owner's decision on one of the three
+>>"%JSPROMPT%" echo                 without the owner's decision on one of the two
 >>"%JSPROMPT%" echo                 things the phase stops for, and more effort will
 >>"%JSPROMPT%" echo                 not help
 >>"%JSPROMPT%" echo   done          every exit criterion the step states is met
@@ -2004,12 +2954,13 @@ goto :eof
 >>"%JSPROMPT%" echo measures in support. If it claims the step is done and shows
 >>"%JSPROMPT%" echo nothing, say partial and say that in your reason.
 >>"%JSPROMPT%" echo.
->>"%JSPROMPT%" echo THE PHASE STOPS FOR THREE THINGS ONLY: anything that touches keying,
->>"%JSPROMPT%" echo transmit or the radio's safety; money past the budget; a decision that
->>"%JSPROMPT%" echo changes what the product promises the operator - what a card asserts,
->>"%JSPROMPT%" echo what a click does, what is logged as true. A question about anything
->>"%JSPROMPT%" echo else - layout, wording, a number, a test's shape, a plan line a later
->>"%JSPROMPT%" echo ruling contradicts - does not make a step blocked. The unit was to take
+>>"%JSPROMPT%" echo THE PHASE STOPS FOR TWO THINGS ONLY: anything that touches keying,
+>>"%JSPROMPT%" echo transmit or the radio's safety; a decision that changes what the
+>>"%JSPROMPT%" echo product promises the operator - what a card asserts,
+>>"%JSPROMPT%" echo what a click does, what is logged as true. Money is not one of them
+>>"%JSPROMPT%" echo since the owner's ruling of 2026-09-23. A question about anything
+>>"%JSPROMPT%" echo else - layout, wording, a number, a spend, a test's shape, a plan line
+>>"%JSPROMPT%" echo a later ruling contradicts - does not make a step blocked. The unit was to take
 >>"%JSPROMPT%" echo its own recommendation on it, and a step waiting on such a question is
 >>"%JSPROMPT%" echo in progress or partial by its criteria, not blocked.
 >>"%JSPROMPT%" echo.
@@ -2025,6 +2976,13 @@ goto :eof
 >>"%JSPROMPT%" echo PHASE_PLAN.md before and after the unit - not by you, and not by the report.
 >>"%JSPROMPT%" echo You judge the step's state, and, only where you are told a criterion
 >>"%JSPROMPT%" echo flipped, whether it was honestly met.
+>>"%JSPROMPT%" echo.
+>>"%JSPROMPT%" echo AND YOUR STATE IS ADVISORY - the owner's ruling of 2026-09-23. The step's
+>>"%JSPROMPT%" echo state is DERIVED FROM ITS CHECKBOXES by the launcher: every criterion ticked
+>>"%JSPROMPT%" echo is done, some ticked is partial, none ticked is not started. Your STATE is
+>>"%JSPROMPT%" echo compared with that count and, where the two differ, the count is recorded
+>>"%JSPROMPT%" echo and the difference is named. What is recorded from you is WHY - the reason
+>>"%JSPROMPT%" echo beside the state. Say what the report shows and does not show.
 >>"%JSPROMPT%" echo.
 >>"%JSPROMPT%" echo SELF-RULINGS ARE BOUNDED - the owner's ruling of 2026-09-14. A unit may make
 >>"%JSPROMPT%" echo at most two self-rulings that authorize work outside its instruction's
@@ -2054,15 +3012,25 @@ rem
 rem  ASKED ONLY WHERE A CRITERION WAS CHOSEN. A blocker-clear names none, so
 rem  there is nothing to have followed from and the question is not put.
 if not "%ADV_KIND%"=="criterion" goto :jsnofollows
->>"%JSPROMPT%" echo A SECOND QUESTION, ALSO IN ONE WORD. The instruction that produced this
->>"%JSPROMPT%" echo report chose one criterion to advance. Does that choice FOLLOW FROM THE
->>"%JSPROMPT%" echo PLAN - the step and criteria above - or ONLY FROM THE PREVIOUS REPORT,
->>"%JSPROMPT%" echo which is to say from what the last unit raised rather than from what the
->>"%JSPROMPT%" echo phase is for? Do not judge whether the choice was wise, and do not judge
->>"%JSPROMPT%" echo the author. Judge only what the instruction CITES for it. Answer:
->>"%JSPROMPT%" echo FOLLOWS: plan     the criterion and its reasoning come from the plan
->>"%JSPROMPT%" echo FOLLOWS: report   the criterion was chosen because the last report
->>"%JSPROMPT%" echo                   raised it, and the plan is cited for form only
+rem  084 task 5: THE QUESTION IS ABOUT DRIFT, IN THE OWNER'S TERMS, AND IT NAMES
+rem  THE PHASE GOAL - read from PHASE_OUTCOME.md's PHASE: line and written by
+rem  PowerShell, because a goal is prose and echo would execute half of it. The
+rem  judge compares the instruction against the directive itself, not against
+rem  the plan in the abstract. The answer tokens are 069's, so the parse and
+rem  the fixtures that read them are unchanged.
+>>"%JSPROMPT%" echo A SECOND QUESTION, ALSO IN ONE WORD. THE PHASE GOAL IS THE PRIME DIRECTIVE
+>>"%JSPROMPT%" echo and the last report is an indicator that tunes the approach and never the
+>>"%JSPROMPT%" echo target - the owner's ruling of 2026-09-23. The phase goal is:
+powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $p='%JSPROMPT%'; $g='not recorded - PHASE_OUTCOME.md carries no PHASE: line'; if(Test-Path -LiteralPath $o){ foreach($ln in (Get-Content -LiteralPath $o -Encoding UTF8)){ $t=([string]$ln).TrimStart([char]0xFEFF); if($t -match '^PHASE:\s*(.+?)\s*$'){ $g=$Matches[1]; break } } }; [IO.File]::AppendAllText($p, '    ' + $g + [char]13 + [string][char]10, (New-Object Text.UTF8Encoding($false)))"
+>>"%JSPROMPT%" echo Did the instruction that produced this report SERVE THAT GOAL - the criterion
+>>"%JSPROMPT%" echo chosen because the plan holds it open on the way to the goal - or did it DRIFT
+>>"%JSPROMPT%" echo TO THE OUTPUT: the criterion chosen because the last report raised it, with the
+>>"%JSPROMPT%" echo plan cited for form only? Do not judge whether the choice was wise, and do not
+>>"%JSPROMPT%" echo judge the author. Judge only what the instruction CITES for it. Answer:
+>>"%JSPROMPT%" echo FOLLOWS: plan     it served the phase goal - the criterion and its reasoning
+>>"%JSPROMPT%" echo                   come from the plan
+>>"%JSPROMPT%" echo FOLLOWS: report   it drifted to the output - the criterion was chosen because
+>>"%JSPROMPT%" echo                   the last report raised it, and the plan is cited for form only
 >>"%JSPROMPT%" echo and where it is report, one more line saying what it cited instead:
 >>"%JSPROMPT%" echo FOLLOWED: one sentence, plain text
 >>"%JSPROMPT%" echo.
@@ -2108,6 +3076,12 @@ rem  here without asking anybody.
 :judges4
 call :section4
 set "S4WANTS=no"
+rem  083: WHICH of the stops the judge says it touches - keying or promise
+rem  since 085, money until then - so PARKED.md and the review sheet can say.
+rem  not stated where the judge did not say, never guessed from its prose.
+rem  The parser still ACCEPTS the word money, because a judge's answer is
+rem  recorded as given and never corrected; the prompt no longer offers it.
+set "S4WHICH=not stated"
 set "S4WHY=section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer"
 if "%S4EMPTY%"=="1" goto :s4done
 set "S4WANTS=unknown"
@@ -2139,7 +3113,7 @@ rem  the payload that the shell reads as structure.
 rem  [char]10 is the newline, [char]96 the backtick, [char]34 the
 rem  double quote. The strip exists because %S4WHY% is echoed and
 rem  put in STOPWHY, where & | < > ^ are live.
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%S4JSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ exit }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ exit }; $r=[string]$j.result; $v=''; $w=''; foreach($ln in ($r -split [char]10)){ $s=$ln.Trim(); if($s -match '^VERDICT:\s*(\S+)'){ $v=$Matches[1] }; if($s -match '^WHY:\s*(.+)$'){ $w=$Matches[1] } }; if($v -match '^(?i)ruling'){ 'S4WANTS=yes' } elseif($v -match '^(?i)none'){ 'S4WANTS=no' }; if($w){ 'S4WHY=' + (((($w -replace '[&|<>^%%]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%S4JSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ exit }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ exit }; $r=[string]$j.result; $v=''; $w=''; $wh=''; foreach($ln in ($r -split [char]10)){ $s=$ln.Trim(); if($s -match '^VERDICT:\s*(\S+)'){ $v=$Matches[1] }; if($s -match '(?i)^WHICH:\s*(keying|money|promise)'){ $wh=$Matches[1].ToLower() }; if($s -match '^WHY:\s*(.+)$'){ $w=$Matches[1] } }; if($v -match '^(?i)ruling'){ 'S4WANTS=yes' } elseif($v -match '^(?i)none'){ 'S4WANTS=no' }; if($wh){ 'S4WHICH=' + $wh }; if($w){ 'S4WHY=' + (((($w -replace '[&|<>^%%]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
 :s4done
 echo       section 4 : wants a ruling = %S4WANTS%
 echo                   %S4WHY%
@@ -2148,7 +3122,7 @@ rem  A QUESTION OUTSIDE THE THREE IS MARKED IN THE RECORD, NOT DROPPED. 061
 rem  task 5: the author's recommendation stands, marked author's,
 rem  overrulable, and the loop goes on - so the entry says so, and the
 rem  owner reading PHASE_OUTCOME.md can find what was decided without him.
-if "%S4WANTS%"=="no" if "%S4EMPTY%"=="0" set "A_HIT=section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - %S4WHY%"
+if "%S4WANTS%"=="no" if "%S4EMPTY%"=="0" set "A_HIT=section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - %S4WHY%"
 goto :eof
 
 rem ============================================================
@@ -2191,17 +3165,21 @@ goto :eof
 >>"%S4PROMPT%" echo any question that needs a ruling from the owner - and that an
 >>"%S4PROMPT%" echo empty section 4 is a real answer meaning nothing is blocked.
 >>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo THE OWNER IS STOPPED FOR EXACTLY THREE THINGS - his ruling of
->>"%S4PROMPT%" echo 2026-09-12:
+>>"%S4PROMPT%" echo THE OWNER IS STOPPED FOR EXACTLY TWO THINGS - his ruling of
+>>"%S4PROMPT%" echo 2026-09-12, narrowed by his ruling of 2026-09-23:
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo   1  anything that touches keying, transmit, or the radio's safety -
 >>"%S4PROMPT%" echo      in a project that is not a radio, what the project can make
 >>"%S4PROMPT%" echo      happen outside the machine it runs on
->>"%S4PROMPT%" echo   2  money past the budget
->>"%S4PROMPT%" echo   3  a decision that changes what the product promises the operator -
+>>"%S4PROMPT%" echo   2  a decision that changes what the product promises the operator -
 >>"%S4PROMPT%" echo      what a card asserts, what a click does, what is logged as true
 >>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo WHAT THE THIRD MEANS - the owner's ruling of 2026-09-13, which defines it
+>>"%S4PROMPT%" echo MONEY IS NOT ONE OF THEM. Until 2026-09-23 the list had a third item,
+>>"%S4PROMPT%" echo money past the budget; the owner's plan now supplies the capacity, and
+>>"%S4PROMPT%" echo a question about spend, cost or budget is the unit's own to decide and
+>>"%S4PROMPT%" echo is NOT a ruling request.
+>>"%S4PROMPT%" echo.
+>>"%S4PROMPT%" echo WHAT THE SECOND MEANS - the owner's ruling of 2026-09-13, which defines it
 >>"%S4PROMPT%" echo and does not widen it: A promise is a fact the product states to the
 >>"%S4PROMPT%" echo operator about the radio, a contact, or a send - what was logged, what was
 >>"%S4PROMPT%" echo heard, what went out. THE WORDING OF A HINT, A LABEL, A TARGET, A CARD'S
@@ -2220,14 +3198,18 @@ goto :eof
 >>"%S4PROMPT%" echo recommendation the unit has already acted on.
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo A RULING IS WANTED only where the text asks the owner to decide
->>"%S4PROMPT%" echo something INSIDE ONE OF THE THREE, or says work is stopped until he
->>"%S4PROMPT%" echo decides something inside one of the three. Where one question is
->>"%S4PROMPT%" echo inside the three and others are outside, a ruling is wanted.
+>>"%S4PROMPT%" echo something INSIDE ONE OF THE TWO, or says work is stopped until he
+>>"%S4PROMPT%" echo decides something inside one of the two. Where one question is
+>>"%S4PROMPT%" echo inside the two and others are outside, a ruling is wanted.
 >>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo Answer with exactly two lines and nothing else:
+>>"%S4PROMPT%" echo Answer with these lines and nothing else. Where a ruling is wanted, three:
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo VERDICT: ruling
+>>"%S4PROMPT%" echo WHICH: keying     or   WHICH: promise
 >>"%S4PROMPT%" echo WHY: one sentence, plain text, no punctuation beyond commas and full stops
+>>"%S4PROMPT%" echo.
+>>"%S4PROMPT%" echo WHICH names the one of the two it touches - keying for the first, promise
+>>"%S4PROMPT%" echo for the second. Where no ruling is wanted, two:
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo or
 >>"%S4PROMPT%" echo.
@@ -2251,9 +3233,12 @@ call :echosafe "%A_WHY%"
 echo   why : %ES%
 echo.
 echo   It stopped rather than resolving. Since 061 it may do so only for
-echo   one of the three things the phase stops for - keying, transmit or
-echo   the radio's safety; money past the budget; what the product promises
-echo   the operator. This is one of the two conditions that keep the owner
+echo   one of the things the phase stops for - two since 085: keying, transmit
+echo   or the radio's safety; what the product promises the operator. Money
+echo   left the list on 2026-09-23, and an arbiter stopping over it has stopped
+echo   for something that is its own to decide - the launcher does not judge
+echo   the category, so this halts as any MOVE: stop does, and that is named in
+echo   unit 085's report. This is one of the two conditions that keep the owner
 echo   the architect.
 set "STOPWHY=stop 4: the arbiter declared a decision the owner's"
 goto :stopped
@@ -2335,20 +3320,40 @@ goto :afterrunrc
 
 :denunshaped
 echo.
-echo   STOP 7: THE REPORT WAS REFUSED by validate-output.bat.
-echo   The unit was also denied %NDEN% call^(s^), but the report is the
-echo   reason this stops - run-unit.bat returns 4 before it validates,
-echo   so nothing else would have looked.
-set "STOPWHY=stop 7: validate-output refused the report (after %NDEN% denied calls)"
-goto :stopped
+echo   THE REPORT WAS REFUSED by validate-output.bat, and the unit was also
+echo   denied %NDEN% call^(s^). Until 086 this was STOP 7 - run-unit.bat returns
+echo   4 before it validates, so nothing else would have looked. The record
+echo   already marked it unjudged at 4a; RECORDED, NOT A STOP - 086.
+call :ledgerunshaped
+goto :afterrunrc
 
+rem  087: PARKED, NOT HALTED. Until 087 this set STOPWHY to `stop 6: denied N
+rem  and could not complete` and went to :stopped. A denial the unit could not
+rem  work around means a tool or path it needed was refused - the unit ran, so
+rem  nothing is retried; the criterion it ran against is PARKED with
+rem  which=denial and the denied calls' file named, and the loop takes other
+rem  open work. THE SCOPE IS NOT WIDENED: .run-unit\allowed.txt is the owner's
+rem  (CPS-DEC-086), and what was refused is in .run-unit\denials.txt and the
+rem  park line so he can widen it deliberately. The record already carries the
+rem  entry, judged as it was.
 :denfatal
 echo.
-echo   STOP 6: PERMISSION DENIALS, AND THE UNIT COULD NOT COMPLETE.
+echo   PERMISSION DENIALS, AND THE UNIT COULD NOT COMPLETE. Until 087 this was STOP 6.
 echo   %NDEN% denied call^(s^), is_error %JISERR%, terminal %JTERM%.
-echo   See .run-unit\denials.txt for what was refused.
-set "STOPWHY=stop 6: denied %NDEN% and could not complete - is_error %JISERR%, terminal %JTERM%"
-goto :stopped
+echo   What was refused is in .run-unit\denials.txt. THE SCOPE IS NOT WIDENED - that
+echo   file is the owner's - and the criterion this unit ran against is PARKED so the
+echo   arbiter is aimed elsewhere. The loop continues - the owner's ruling of 2026-09-23.
+if not defined AT_CRIT goto :dennocrit
+call :isparked "%AT_CRIT%"
+if "%PK_HIT%"=="yes" goto :dennocrit
+set "ATTEMPTID="
+set "PK_WHICH=denial"
+set "PK_WORDS=the unit was denied %NDEN% call(s) and could not complete - is_error %JISERR%, terminal %JTERM% - what was refused is in .run-unit\denials.txt; the scope was not widened, and widening it is the owner's"
+call :park
+goto :afterrunrc
+:dennocrit
+call :ledgernote "denial routed - unit %ITER% was denied %NDEN% call(s) and could not complete; no criterion to park, the scope not widened, the night went on"
+goto :afterrunrc
 
 rem ============================================================
 :ambiguous1
@@ -2384,33 +3389,76 @@ rem
 rem  NOTHING IS APPENDED ON EITHER PATH, AND THE CONSOLE SAYS SO, because a
 rem  reader who sees a halt and no entry must be able to tell that from a
 rem  halt whose entry failed to write.
+rem  087: PARKED OR SKIPPED, NOT HALTED. Until 087 this was STOP 11's first
+rem  half: STOPWHY `stop 11: nothing was launched - run exit N`, goto :stopped.
+rem  It is reached only after the launch retry at 4pre also started nothing.
+rem  Nothing is appended either way - an entry for a unit that did not run is
+rem  still the fault 067 named. What happens next depends on WHY nothing ran:
+rem  the session lock held by a live owner twice is not the criterion's fault,
+rem  so the iteration is skipped and the next one asks again; a bad root or a
+rem  missing claude twice parks the criterion the instruction named, so the
+rem  arbiter is aimed elsewhere, and the loop goes on. The owner's ruling of
+rem  2026-09-23: failure is the last option, not the first.
 :nothingran
+set "LAUNCHTRIED="
 echo.
-echo   STOP 11: NOTHING WAS LAUNCHED, SO THERE IS NO UNIT TO JUDGE.
-echo   run-unit-watched exit %RUNRC% - run-unit.bat records that as having
-echo   launched nothing. An exit 1 with no kill in watched.log is the
-echo   session lock, held by something else in this tree.
+echo   NOTHING WAS LAUNCHED ON TWO ATTEMPTS - run-unit-watched exit %RUNRC% both times.
+echo   An exit 1 with no kill in watched.log is the session lock, held by something
+echo   else in this tree; 2 is usage, a bad root or claude not on PATH; 7 is a root
+echo   that is not a git repository. Until 087 this was STOP 11 and ended the night.
+call :ownreport
 call :saywhatitfound
-echo   NOTHING WAS APPENDED TO THE RECORD. An entry for a unit that did not
-echo   run is the fault this check exists to prevent, and a quieter spelling
-echo   of it is still it.
-set "STOPWHY=stop 11: nothing was launched - run exit %RUNRC%, and %OWNWHY%"
-rem  WHAT IT FOUND GOES IN THE REASON, not only on the console. The ledger
-rem  is what the owner reads instead of watching, and the one fact that
-rem  tells him whose report was lying at that root is the UNIT: line.
-if defined OWNFOUND set "STOPWHY=%STOPWHY% - the file at the root says UNIT: %OWNFOUND%"
-goto :stopped
+echo   NOTHING WAS APPENDED TO THE RECORD - an entry for a unit that did not run is
+echo   the fault 067 named, and a quieter spelling of it is still it.
+if not "%RUNRC%"=="1" goto :nothingranpark
+echo   THE LOCK IS HELD BY A LIVE OWNER. This iteration is skipped - it is not the
+echo   criterion's fault - and the next asks for the lock again.
+call :ledgernote "launch skipped - the session lock was held by a live owner on two attempts in iteration %ITER%; nothing launched, nothing appended, the night went on"
+goto :iterate
+:nothingranpark
+rem  AT_CRIT is :attemptid's and is set inside :record, after a unit; nothing
+rem  ran here, so the criterion is read from the instruction the launcher
+rem  parsed before the launch - ADV_STEP and ADV_CRIT, where ADVANCES named
+rem  one. Found by the launch-twice arm's first run, which parked nothing.
+set "AT_CRIT="
+if "%ADV_KIND%"=="criterion" set "AT_CRIT=%ADV_STEP%.%ADV_CRIT%"
+if not defined AT_CRIT goto :nothingrannocrit
+call :isparked "%AT_CRIT%"
+if "%PK_HIT%"=="yes" goto :nothingrannocrit
+echo   Criterion %AT_CRIT% is PARKED so the arbiter is aimed elsewhere, and the loop
+echo   takes the plan's other work - the owner's ruling of 2026-09-23.
+set "ATTEMPTID="
+set "PK_WHICH=launch"
+set "PK_WORDS=the launch started nothing on two attempts - run-unit-watched exit %RUNRC% - %OWNWHY%; nothing ran and nothing was appended"
+call :park
+goto :iterate
+:nothingrannocrit
+call :ledgernote "launch skipped - run-unit-watched exit %RUNRC% on two attempts in iteration %ITER%; nothing launched, nothing appended, no criterion to park, the night went on"
+goto :iterate
 
+rem  087: RECORDED, NOT RETRIED, NOT HALTED. Until 087 this was STOP 11's
+rem  second half. THE UNIT RAN - re-running it would repeat its side effects -
+rem  so nothing is retried: its fate is recorded as 086 records a rejected
+rem  report, not recorded, no judge asked, and the loop continues. 067's stamp
+rem  is exactly as it was: whatever file is at the root is NOT this unit's and
+rem  is NOT judged, and its UNIT: line is named in the entry and the ledger so
+rem  the owner can see whose it was. :keepreport is not reached, so the other
+rem  unit's report is not archived under this unit's number either.
 :noreport
 echo.
-echo   STOP 11: NO REPORT WAS WRITTEN BY THIS UNIT.
-echo   The run launched and exited %RUNRC%, and nothing at the root can be
-echo   shown to be its report.
+echo   NO REPORT WAS WRITTEN BY THIS UNIT. The run launched and exited %RUNRC%, and
+echo   nothing at the root can be shown to be its report. Until 087 this was STOP 11.
 call :saywhatitfound
-echo   NOTHING WAS APPENDED TO THE RECORD. The state judge was not called.
-set "STOPWHY=stop 11: no report was written by this unit - %OWNWHY%"
-if defined OWNFOUND set "STOPWHY=%STOPWHY% - the file at the root says UNIT: %OWNFOUND%"
-goto :stopped
+echo   NOT RETRIED - the unit ran, and a unit that ran is not run again. Its fate is
+echo   recorded as not recorded, nothing is judged, and THE FILE AT THE ROOT IS NOT
+echo   JUDGED - 067's stamp stands. The loop continues.
+set "NOREPORTRUN=1"
+call :record
+set "NOREPORTRUN="
+set "NOREPNOTE=no report written by unit %ITER% - the run exited %RUNRC% and %OWNWHY%; not retried, not judged, fate not recorded, the night went on"
+if defined OWNFOUND set "NOREPNOTE=%NOREPNOTE% - the file at the root says UNIT: %OWNFOUND% and was not judged"
+call :ledgernote "%NOREPNOTE%"
+goto :afterrunrc
 
 rem  WHAT IT FOUND INSTEAD, NAMED RATHER THAN DESCRIBED. The other file's
 rem  own UNIT: line is the one thing that tells the owner whose report has
@@ -2429,7 +3477,8 @@ echo ============================================================
 echo  THE LOOP HALTED
 echo    after     : %ITER% iteration^(s^) - %LAUNCHEDN% launched a unit, %REDIRECTED% spent on a redirect
 echo    because   : %STOPWHY%
-echo    spent     : %SPENT% of %BUDGET%
+if not defined BUDGET echo    spent     : %SPENT% USD - no --budget ceiling was given, and none would halt
+if defined BUDGET echo    spent     : %SPENT% USD against a --budget figure of %BUDGET% - printed, not a stop
 echo ============================================================
 rem  EVERY STOP 1 EXITS 0. 065 extended stop 1 to the phase waiting only on the
 rem  owner's verdict, so the test is the reason's prefix, not one exact sentence.
@@ -2473,9 +3522,19 @@ rem  and `blocked` are open; `done` is not. An unachievable step is
 rem  recorded as done by the arbiter with its reasoning, per the
 rem  three moves.
 :position
-set "OPENSTEPS=0"
-set "POSITION="
-for /f "usebackq delims=" %%P in (`powershell -NoProfile -Command "$f='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $f)){ 'none'; exit }; $ok='not started','in progress','partial','blocked','done'; $s=@(Select-String -Path $f -Pattern '^STEP: ' | ForEach-Object { $_.Line } | Where-Object { $p=$_.Substring(6).Split('|'); $p.Count -ge 2 -and $ok -contains $p[1].Trim() }); if($s.Count -eq 0){ 'none'; exit }; ($s | ForEach-Object { $p=$_.Substring(6).Split('|'); $p[0].Trim() + '=' + $p[1].Trim() }) -join ','"`) do set "POSITION=%%P"
+rem  083 task 1: READ FROM THE DERIVATION, NOT FROM THE HEADER. :stepfromcrit
+rem  has already counted every step's checkboxes this iteration; the position
+rem  string and the open count are its. Where it could not read the plan the
+rem  count stays open - never satisfied on nothing read, section 0.0.
+set "OPENSTEPS=%SF_OPEN%"
+set "POSITION=%SF_POSITION%"
+if not defined OPENSTEPS set "OPENSTEPS=1"
+if not defined POSITION set "POSITION=not derived - the plan could not be read"
+goto :eof
+rem  WHAT STOOD HERE UNTIL 083, kept as the record of a slip 045 found: the two
+rem  lines below read PHASE_OUTCOME.md's header, and the note about @() is why
+rem  they were once wrong in a different way.
+rem for /f "usebackq delims=" %%P in (`powershell -NoProfile -Command "$f='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $f)){ 'none'; exit }; $ok='not started','in progress','partial','blocked','done'; $s=@(Select-String -Path $f -Pattern '^STEP: ' | ForEach-Object { $_.Line } | Where-Object { $p=$_.Substring(6).Split('|'); $p.Count -ge 2 -and $ok -contains $p[1].Trim() }); if($s.Count -eq 0){ 'none'; exit }; ($s | ForEach-Object { $p=$_.Substring(6).Split('|'); $p[0].Trim() + '=' + $p[1].Trim() }) -join ','"`) do set "POSITION=%%P"
 rem  @(pipeline | Measure-Object).Count COUNTS THE WRAPPER, NOT THE
 rem  MATCHES. Measure-Object emits ONE object; @() wraps that one
 rem  object; .Count on it is 1 - and 1 when nothing matched at all.
@@ -2490,7 +3549,7 @@ rem  opposite of the truth while stopping.
 rem  @(pipeline).Count is the correct form and this file already used
 rem  it at lines 324, 359 and 452 - which is what makes the old line
 rem  a slip rather than a misunderstanding.
-for /f "usebackq delims=" %%N in (`powershell -NoProfile -Command "$f='%ROOT%\PHASE_PLAN.md'; $planned=@(Select-String -Path $f -Pattern '^STEP: [0-9]+ \|' -CaseSensitive).Count; $o='%ROOT%\PHASE_OUTCOME.md'; $done=0; if(Test-Path -LiteralPath $o){ $done=@(Select-String -Path $o -Pattern '^STEP: [0-9]+ \| *done *\|' -CaseSensitive).Count }; if($planned -eq 0){ 1 } else { [Math]::Max(0, $planned - $done) }"`) do set "OPENSTEPS=%%N"
+rem for /f "usebackq delims=" %%N in (`powershell -NoProfile -Command "$f='%ROOT%\PHASE_PLAN.md'; $planned=@(Select-String -Path $f -Pattern '^STEP: [0-9]+ \|' -CaseSensitive).Count; $o='%ROOT%\PHASE_OUTCOME.md'; $done=0; if(Test-Path -LiteralPath $o){ $done=@(Select-String -Path $o -Pattern '^STEP: [0-9]+ \| *done *\|' -CaseSensitive).Count }; if($planned -eq 0){ 1 } else { [Math]::Max(0, $planned - $done) }"`) do set "OPENSTEPS=%%N"
 goto :eof
 
 rem ============================================================
@@ -2627,8 +3686,18 @@ rem  activity walk to see.
 rem
 rem  BYTES OUTSIDE THE LINES IT OWNS DO NOT MOVE: read as bytes, BOM
 rem  and newline detected and reproduced, as :heartbeat.
+rem  083 task 1: THE SOURCE IS THE DERIVATION, NOT THE RECORD'S HEADER. This is
+rem  the root the instruction named - "nothing derives a step's state from its
+rem  own criteria" - and it is where HamLet's card said step 0 was not started
+rem  for seven units while every box in it was ticked. The states now come from
+rem  .run-unit\step-states.txt, which :stepfromcrit wrote from PHASE_PLAN.md
+rem  this iteration; the step SET it compares against the card's is the plan's,
+rem  and a card naming a different set is still a FINDING that writes nothing.
+rem  Everything below the source - the byte handling, the terminator, the
+rem  CURRENT_STEP rule, never appending below the rule - is as 054 and 059 left
+rem  it. It runs at reload as well as after a successful append.
 :phasesteps
-powershell -NoProfile -Command "$p='%ROOT%\PHASE_STATUS.md'; $o='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $p)){ '      no PHASE_STATUS.md - no step states written'; exit }; if(-not (Test-Path -LiteralPath $o)){ '      no PHASE_OUTCOME.md - nothing to copy from'; exit }; $ok='not started','in progress','partial','blocked','done'; $bar=[char]124; $src=@{}; $sord=@(); foreach($ln in (Get-Content -LiteralPath $o)){ if($ln -cmatch '^STEP: [0-9]+ \|'){ $q=$ln.Substring(6).Split($bar); if($q.Count -ge 2){ $st=$q[1].Trim(); if($ok -contains $st){ $n=[int]$q[0].Trim(); if(-not $src.ContainsKey($n)){ $src[$n]=$st; $sord+=$n } } } } }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $CRc=[string][char]13; $LFc=[string][char]10; $nl=$LFc; if($raw.Contains($CRc+$LFc)){ $nl=$CRc+$LFc } elseif($raw.Contains($CRc)){ $nl=$CRc }; $lines=@([regex]::Split($raw, $CRc+$LFc+'|'+$LFc+'|'+$CRc)); if($nl -ne $LFc){ '      normalized: ' + $p + ' is ' + $(if($nl -eq $CRc){'cr'}else{'crlf'}) + $(if($bom){'+bom'}else{''}) + ' - read as line breaks, and written back in its own shape' }; $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $dst=@{}; $dord=@(); $idx=@{}; $first=-1; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^STEP: [0-9]+ \|'){ if($first -lt 0){ $first=$i }; $q=$lines[$i].Substring(6).Split($bar); if($q.Count -ge 2 -and ($ok -contains $q[1].Trim())){ $n=[int]$q[0].Trim(); if(-not $dst.ContainsKey($n)){ $dst[$n]=$q[1].Trim(); $dord+=$n; $idx[$n]=$i } } } }; $a=(@($sord | Sort-Object) -join ','); $b=(@($dord | Sort-Object) -join ','); if($a -ne $b){ '      FINDING: the two headers do not name the same steps. PHASE_OUTCOME.md has [' + $a + '] and PHASE_STATUS.md has [' + $b + ']. NOTHING WAS WRITTEN - one of them is wrong and this cannot know which.'; exit }; if($sord.Count -eq 0){ '      no step lines in the outcome header - nothing written'; exit }; $changed=0; foreach($n in $dord){ if($src[$n] -ne $dst[$n]){ $i=$idx[$n]; $q=$lines[$i].Substring(6).Split($bar); $q[1]=' ' + $src[$n] + ' '; $lines[$i]='STEP: ' + ($q -join $bar); $changed++ } }; $sorted=@($sord | Sort-Object); $open=@($sorted | Where-Object { $src[$_] -ne 'done' }); if($open.Count -gt 0){ $cs=$open[0] } else { $cs=$sorted[$sorted.Count-1] }; $want='CURRENT_STEP: ' + $cs; $ci=-1; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^CURRENT_STEP:'){ $ci=$i; break } }; if($ci -ge 0){ if($lines[$ci] -cne $want){ $lines[$ci]=$want; $changed++ } } elseif($first -ge 0){ $pre=@(); if($first -gt 0){ $pre=@($lines[0..($first-1)]) }; $lines=$pre + @($want) + @($lines[$first..($lines.Count-1)]); $changed++ } else { '      REFUSED: no CURRENT_STEP: and no ^STEP: line in the header - never appended below the rule'; exit }; if($changed -eq 0){ '      step states already match the record - nothing written'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      card caught up: ' + $changed + ' line(s) from the outcome header, CURRENT_STEP ' + $cs"
+powershell -NoProfile -Command "$p='%ROOT%\PHASE_STATUS.md'; $sf='%WORK%\step-states.txt'; if(-not (Test-Path -LiteralPath $p)){ '      no PHASE_STATUS.md - no step states written'; exit }; if(-not (Test-Path -LiteralPath $sf)){ '      no step states were derived - nothing to copy to the card'; exit }; $ok='not started','in progress','partial','blocked','done'; $bar=[char]124; $kv=@{}; foreach($ln in (Get-Content -LiteralPath $sf)){ if($ln -match '^([A-Z_0-9.]+)=(.*)$'){ $kv[$Matches[1]]=$Matches[2] } }; $src=@{}; $sord=@(); foreach($s in (([string]$kv['STEPS'] -split ' ') | Where-Object { $_ -ne '' })){ $st=[string]$kv['STATE_' + $s]; if($ok -contains $st){ $n=[int]$s; if(-not $src.ContainsKey($n)){ $src[$n]=$st; $sord+=$n } } }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $CRc=[string][char]13; $LFc=[string][char]10; $nl=$LFc; if($raw.Contains($CRc+$LFc)){ $nl=$CRc+$LFc } elseif($raw.Contains($CRc)){ $nl=$CRc }; $lines=@([regex]::Split($raw, $CRc+$LFc+'|'+$LFc+'|'+$CRc)); if($nl -ne $LFc){ '      normalized: ' + $p + ' is ' + $(if($nl -eq $CRc){'cr'}else{'crlf'}) + $(if($bom){'+bom'}else{''}) + ' - read as line breaks, and written back in its own shape' }; $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $dst=@{}; $dord=@(); $idx=@{}; $first=-1; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^STEP: [0-9]+ \|'){ if($first -lt 0){ $first=$i }; $q=$lines[$i].Substring(6).Split($bar); if($q.Count -ge 2 -and ($ok -contains $q[1].Trim())){ $n=[int]$q[0].Trim(); if(-not $dst.ContainsKey($n)){ $dst[$n]=$q[1].Trim(); $dord+=$n; $idx[$n]=$i } } } }; $a=(@($sord | Sort-Object) -join ','); $b=(@($dord | Sort-Object) -join ','); if($a -ne $b){ '      FINDING: the two headers do not name the same steps. PHASE_PLAN.md has [' + $a + '] and PHASE_STATUS.md has [' + $b + ']. NOTHING WAS WRITTEN - one of them is wrong and this cannot know which.'; exit }; if($sord.Count -eq 0){ '      no step lines in the plan - nothing written'; exit }; $changed=0; foreach($n in $dord){ if($src[$n] -ne $dst[$n]){ $i=$idx[$n]; $q=$lines[$i].Substring(6).Split($bar); $q[1]=' ' + $src[$n] + ' '; $lines[$i]='STEP: ' + ($q -join $bar); $changed++ } }; $sorted=@($sord | Sort-Object); $open=@($sorted | Where-Object { $src[$_] -ne 'done' }); if($open.Count -gt 0){ $cs=$open[0] } else { $cs=$sorted[$sorted.Count-1] }; $want='CURRENT_STEP: ' + $cs; $ci=-1; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^CURRENT_STEP:'){ $ci=$i; break } }; if($ci -ge 0){ if($lines[$ci] -cne $want){ $lines[$ci]=$want; $changed++ } } elseif($first -ge 0){ $pre=@(); if($first -gt 0){ $pre=@($lines[0..($first-1)]) }; $lines=$pre + @($want) + @($lines[$first..($lines.Count-1)]); $changed++ } else { '      REFUSED: no CURRENT_STEP: and no ^STEP: line in the header - never appended below the rule'; exit }; if($changed -eq 0){ '      step states already match the checkboxes - nothing written'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      card caught up: ' + $changed + ' line(s) from the checkboxes, CURRENT_STEP ' + $cs"
 goto :eof
 
 rem ============================================================
@@ -2650,7 +3719,17 @@ if not exist "%ROOT%\ARBITER.md" (
 set "ARBPROMPT=%WORK%\arbiter-prompt.txt"
 set "ARBJSON=%WORK%\arbiter.json"
 call :writearbprompt
-powershell -NoProfile -Command "$allow = Get-Content -LiteralPath '%ARBTOOLS%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' }; $p = Get-Content -LiteralPath '%ARBPROMPT%' -Raw; $a = @('-p', $p, '--output-format', 'json', '--restricted', '--tools', 'Read,Write,Bash'); foreach($r in $allow){ $a += '--allowedTools'; $a += $r.Trim() }; Push-Location '%ROOT%'; & claude @a 2>&1 | Set-Content -LiteralPath '%ARBJSON%' -Encoding utf8; Pop-Location"
+rem  084: THE PROMPT GOES DOWN STDIN, NOT INTO AN ARGUMENT - as the two judges'
+rem  prompts have since 045. Until 084 it was passed as -p <text>. Measured on
+rem  2026-09-24 13:0x, the park-fresh arm's second pass: the prompt reached 8055
+rem  bytes once the directive and the indicator label were in it, and the
+rem  stand-in - a .bat, so cmd.exe - refused the line as too long before a byte
+rem  of it ran, which the loop read as the arbiter session failing. The real
+rem  claude.exe takes the same prompt as an argument without complaint, so the
+rem  loop was never wrong on a real night; but a prompt that grows with the
+rem  attempt record will cross any argument limit eventually, and stdin has
+rem  none. The arguments are the flags alone.
+powershell -NoProfile -Command "$allow = Get-Content -LiteralPath '%ARBTOOLS%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' }; $a = @('-p', '--output-format', 'json', '--restricted', '--tools', 'Read,Write,Bash'); foreach($r in $allow){ $a += '--allowedTools'; $a += $r.Trim() }; Push-Location '%ROOT%'; $ErrorActionPreference='Continue'; Get-Content -LiteralPath '%ARBPROMPT%' -Raw | & claude @a 2>&1 | Set-Content -LiteralPath '%ARBJSON%' -Encoding utf8; Pop-Location"
 if not exist "%ARBJSON%" goto :eof
 for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%ARBJSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ throw }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ 'ARBRC=1'; exit }; if($j.is_error){ 'ARBRC=1' } else { 'ARBRC=0' }; $d=@($j.permission_denials); 'ARBDENIED=' + $d.Count"`) do set "%%A=%%B"
 if not "%ARBDENIED%"=="0" echo       NOTE: the arbiter was denied %ARBDENIED% call^(s^) - its scope held
@@ -2675,7 +3754,13 @@ rem  written first, the rules next, the attempt record after them, and the
 rem  previous report LAST and BOUNDED. Putting the report in the prompt at all
 rem  is stricter than naming it, not looser: a bounded, labelled block replaces
 rem  an unbounded read.
->"%ARBPROMPT%" echo Read ARBITER.md at this repository root and act as it says.
+rem  084 task 3: THE PRIME DIRECTIVE IS THE FIRST CONTENT OF THE PROMPT, before
+rem  the phase goal block, before the Read ARBITER.md line, before anything.
+rem  The owner, 2026-09-23: phase goals are the prime directive; output.md is a
+rem  helper, an indicator, a slight modification element - that is all. 069
+rem  ordered the two; this names which is which, in the prompt itself.
+call :promptdirective
+>>"%ARBPROMPT%" echo Read ARBITER.md at this repository root and act as it says.
 >>"%ARBPROMPT%" echo.
 >>"%ARBPROMPT%" echo You are the arbiter. Author the next WORK_INSTRUCTIONS.md.
 call :promptplan
@@ -2716,18 +3801,21 @@ rem  what to do first instead.
 >>"%ARBPROMPT%" echo   PHASE_PLAN.md          - open it if you need a step's full text. The
 >>"%ARBPROMPT%" echo                            criteria above are quoted from it verbatim.
 >>"%ARBPROMPT%" echo.
->>"%ARBPROMPT%" echo   output.md              - the last report. A bounded extract is at the
->>"%ARBPROMPT%" echo                            BOTTOM of this prompt. Open the whole file only
->>"%ARBPROMPT%" echo                            to check something the extract raised about a
->>"%ARBPROMPT%" echo                            criterion - never as your starting point, and
->>"%ARBPROMPT%" echo                            never to find work in it.
+>>"%ARBPROMPT%" echo   output.md              - the last report, AN INDICATOR. A bounded extract is
+>>"%ARBPROMPT%" echo                            at the BOTTOM of this prompt. Open the whole file
+>>"%ARBPROMPT%" echo                            only to check something the extract raised about
+>>"%ARBPROMPT%" echo                            the criterion you have ALREADY chosen from the plan
+>>"%ARBPROMPT%" echo                            - never as your starting point, never to find work
+>>"%ARBPROMPT%" echo                            in it, and never to choose a target.
 >>"%ARBPROMPT%" echo.
 >>"%ARBPROMPT%" echo Run the loop test before you propose an approach.
 >>"%ARBPROMPT%" echo.
->>"%ARBPROMPT%" echo You stop the phase - MOVE: stop - for exactly three things, ARBITER.md
+>>"%ARBPROMPT%" echo You stop the phase - MOVE: stop - for exactly two things, ARBITER.md
 >>"%ARBPROMPT%" echo section 6: anything that touches keying, transmit or the radio's
->>"%ARBPROMPT%" echo safety; money past the budget; a decision that changes what the
->>"%ARBPROMPT%" echo product promises the operator. On everything else - including a
+>>"%ARBPROMPT%" echo safety; a decision that changes what the product promises the
+>>"%ARBPROMPT%" echo operator. Money is NOT one of them - the owner's ruling of 2026-09-23:
+>>"%ARBPROMPT%" echo his plan supplies the capacity, and a spend is yours to decide and
+>>"%ARBPROMPT%" echo report, never to stop for. On everything else - including a
 >>"%ARBPROMPT%" echo question the last report left in its section 4 - take your own
 >>"%ARBPROMPT%" echo recommendation, put it in DECIDED marked author's, overrulable, and
 >>"%ARBPROMPT%" echo author the unit on it.
@@ -2737,9 +3825,11 @@ rem  what to do first instead.
 >>"%ARBPROMPT%" echo in the form  - [ ] N.k  - or  none - clears a blocker:  naming the unit number
 >>"%ARBPROMPT%" echo or criterion it unblocks. The launcher counts that criterion before and after
 >>"%ARBPROMPT%" echo the unit; if it did not flip, the unit did not advance, and two such units in a
->>"%ARBPROMPT%" echo row are stop 10. A STEP WHOSE STATE IN PHASE_OUTCOME.md IS done IS CLOSED: do
->>"%ARBPROMPT%" echo not author into it. The launcher refuses it before the unit runs, and only the
->>"%ARBPROMPT%" echo owner reopens a step, by a ruling in the plan.
+>>"%ARBPROMPT%" echo row are redirected. A STEP WHOSE EVERY CRITERION IS TICKED IS done AND IS
+>>"%ARBPROMPT%" echo CLOSED, whatever any header says - the owner's ruling of 2026-09-23, a step's
+>>"%ARBPROMPT%" echo state is its checkboxes. Do not author into it. The launcher refuses it before
+>>"%ARBPROMPT%" echo the unit runs, and only the owner reopens a step, by unticking a line or a
+>>"%ARBPROMPT%" echo ruling in the plan.
 >>"%ARBPROMPT%" echo.
 >>"%ARBPROMPT%" echo THE OWNER'S VERDICT IS MARKED AND ENDS THE RUN - ARBITER.md section 7. A
 >>"%ARBPROMPT%" echo criterion ending *owner's verdict* is the owner's alone: never name one in
@@ -2778,6 +3868,28 @@ powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $p='%ARBPROMPT%'; 
 
 rem  AND THE PREVIOUS REPORT, LAST AND BOUNDED. 069 criteria 6.2 and 6.3.
 call :promptreport
+rem  084 task 3: AND EVERY BLOCK'S SHARE, PRINTED. The report's share alone was
+rem  printed since 069, body only; the owner asked to see the whole prompt in
+rem  order with each block's share beside it, and a measurement on the last real
+rem  prompt at this root found the report BLOCK at 37.0 per cent while its body
+rem  read a third - the label and the rule around it are bytes too.
+call :promptshares
+goto :eof
+
+rem  084 task 3. THE DIRECTIVE, FIRST. Two clauses, the owner's; the wording is
+rem  the arbiter's, author's and overrulable, and it is reported verbatim.
+rem  Written with > so it is the first byte of the file, whatever else changes.
+:promptdirective
+>"%ARBPROMPT%" echo THE PHASE GOAL IS THE PRIME DIRECTIVE. The last report is an indicator that tunes
+>>"%ARBPROMPT%" echo your approach and never your target.
+>>"%ARBPROMPT%" echo.
+goto :eof
+
+rem  084 task 3. EACH BLOCK'S SHARE OF THE FINISHED PROMPT, in the order the
+rem  blocks sit. A block absent from this prompt - no redirect, no attempt
+rem  record, no report - is left out rather than printed at zero.
+:promptshares
+powershell -NoProfile -Command "$p='%ARBPROMPT%'; if(-not (Test-Path -LiteralPath $p)){ exit }; $t=[IO.File]::ReadAllText($p); $n=$t.Length; if($n -eq 0){ exit }; $marks=@(@('the directive', 'THE PHASE GOAL IS THE PRIME DIRECTIVE'), @('the plan block', 'THE PHASE, AND THE STEP YOU ARE AUTHORING AGAINST'), @('the redirect', 'YOU HAVE BEEN REDIRECTED'), @('the file list and rules', 'THE PLAN, THE ATTEMPT RECORD AND THE LAST REPORT ARE ALL IN THIS PROMPT'), @('the attempt record', 'WHAT HAS ALREADY BEEN TRIED, BY CRITERION'), @('the report, an indicator', 'THE PREVIOUS UNIT-S REPORT')); $cuts=@(); foreach($m in $marks){ $i=$t.IndexOf($m[1]); if($i -lt 0){ continue }; $j=$t.LastIndexOf([char]10, $i); if($j -lt 0){ $j=0 }; $k=$t.LastIndexOf([char]10, [Math]::Max(0,$j-1)); if(($k -ge 0) -and ($t.Substring($k+1, $j-$k-1) -match '^=+\s*$')){ $j=$k }; $cuts+=@{ name=$m[0]; at=[Math]::Max(0,$j) } }; $cuts=@($cuts | Sort-Object { $_.at }); $out=@(); for($x=0; $x -lt $cuts.Count; $x++){ $a=$cuts[$x].at; $b=$n; if($x+1 -lt $cuts.Count){ $b=$cuts[$x+1].at }; $out+=($cuts[$x].name + ' ' + [Math]::Round(100.0*($b-$a)/$n,1) + ' pct') }; '      prompt shares: ' + ($out -join ', ') + ' - of ' + $n + ' bytes, in this order'"
 goto :eof
 
 :readdecision
@@ -2867,9 +3979,16 @@ rem  this file and once in run-unit.bat.
 for /f "usebackq delims=" %%C in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%WORK%\last-run.json' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ throw }; $j=$raw.Substring($k) | ConvertFrom-Json; if($j.total_cost_usd){ $j.total_cost_usd } else { 'unknown' } }catch{ 'unknown' }"`) do set "RUNCOST=%%C"
 goto :eof
 
+rem  085: OVER is still computed where a --budget figure was given, so the
+rem  console can say the figure was passed - and NOTHING READS IT TO HALT.
+rem  With no figure there is nothing to be over, and OVER stays 0. The
+rem  accumulation into SPENT is unchanged: it is the number the halt block
+rem  prints and the ledger's cost column carries.
 :budget
 set "OVER=0"
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$s=0.0; try{ $s=[double]'%SPENT%' }catch{}; $c=0.0; try{ $c=[double]'%RUNCOST%' }catch{}; $t=$s+$c; 'SPENT=' + ('{0:N4}' -f $t); if($t -ge [double]'%BUDGET%'){ 'OVER=1' } else { 'OVER=0' }"`) do set "%%A=%%B"
+set "BUDGETCMP=%BUDGET%"
+if not defined BUDGET set "BUDGETCMP=none"
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$s=0.0; try{ $s=[double]'%SPENT%' }catch{}; $c=0.0; try{ $c=[double]'%RUNCOST%' }catch{}; $t=$s+$c; 'SPENT=' + ('{0:N4}' -f $t); $b='%BUDGETCMP%'; $bd=0.0; $has=$false; try{ $bd=[double]$b; $has=$true }catch{}; if($has -and ($t -ge $bd)){ 'OVER=1' } else { 'OVER=0' }"`) do set "%%A=%%B"
 goto :eof
 
 rem ============================================================
@@ -2980,8 +4099,14 @@ rem  reason the route is closed where 071 recorded one. A criterion nothing
 rem  was tried against says so in those words rather than being left blank,
 rem  because a blank reads as an oversight and this is the one document where
 rem  a silence would be read as the loop not having bothered.
+rem  083 task 4: THE PARKED QUESTIONS GO AT THE TOP, above the criteria, under a
+rem  heading that says they are waiting on the owner and which of the three each
+rem  touches - a parked keying question must be the first thing he sees, not
+rem  buried under thirty-two criteria. Read from PARKED.md, every line, newest
+rem  last; the date on each says when. Where the plan names no sheet and
+rem  PARKED.md exists, its path is printed so the question cannot be lost.
 :reviewsheet
-powershell -NoProfile -Command "$p='%ROOT%\PHASE_PLAN.md'; $o='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $p)){ exit }; $plan=@(Get-Content -LiteralPath $p -Encoding UTF8); $sheet=''; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -cmatch '^REVIEW_SHEET:\s*(.+?)\s*$'){ $sheet=$Matches[1] } }; if($sheet -eq ''){ '      the plan asks for no review sheet'; exit }; $sp=Join-Path '%ROOT%' $sheet; if(Test-Path -LiteralPath $sp){ '      review sheet already on disk, not written again: ' + $sheet; exit }; $at=@{}; $cur=$null; if(Test-Path -LiteralPath $o){ $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($o)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; foreach($ln in [regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13)){ if($ln -match '^ATTEMPT: *([0-9]+\.[0-9]+) *\| *(.*)$'){ $k=$Matches[1]; $f=$Matches[2] -split '\|', 4; if($f.Count -lt 4){ continue }; if(-not $at.ContainsKey($k)){ $at[$k]=@() }; $at[$k] += @{ who=$f[0].Trim(); verdict=$f[1].Trim(); fate=$f[2].Trim(); approach=$f[3].Trim(); reason='' }; $cur=$k; continue }; if($ln -match '^REASON: *([0-9]+\.[0-9]+) *\| *[^|]*\| *(.*)$'){ $k=$Matches[1]; if($at.ContainsKey($k) -and ($at[$k].Count -gt 0)){ $at[$k][$at[$k].Count-1].reason=$Matches[2].Trim() } } } }; $c=@(); $c+='# Review sheet'; $c+=''; $c+=('Written by run-phase.bat at ' + (Get-Date).ToString('yyyy-MM-dd HH:mm') + '. The run ENDED - ' + '%LEDKIND%' + '.'); $c+=''; $c+='**This is here to answer one question: did the arbiter try before it stopped?**'; $c+='Every criterion of the phase is below, with its state and every approach'; $c+='recorded against it. Nothing here is a summary - the approaches are the ones'; $c+='the launcher wrote as each unit ran.'; $c+=''; $c+='Where a line is yours to judge it is marked, and turning it to - [x] in'; $c+='PHASE_PLAN.md is yours alone. Nothing in the loop does that.'; $c+=''; $c+='---'; $c+=''; $met=0; $unmet=0; $own=0; $tried=0; $step=0; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -cmatch '^STEP: *([0-9]+) *\| *(.*)$'){ $c+=('## Step ' + $Matches[1] + ' - ' + $Matches[2]); $c+=''; continue }; if($ln -match '^\s*-\s\[( |x|X)\]\s+([0-9]+\.[0-9]+)\s+(.*)$'){ $mk=$Matches[1]; $cid=$Matches[2]; $txt=$Matches[3]; $isown=($txt -match '(?i)\*owner.s verdict\*\s*$'); $txt=($txt -replace '(?i)\s*\*owner.s verdict\*\s*$',''); $state='NOT MET'; if($mk -ne ' '){ $state='met'; $met++ } elseif($isown){ $state='YOURS TO JUDGE'; $own++ } else { $unmet++ }; $c+=('- ' + $cid + ' ' + $txt + '  -- ' + $state); $a=@(); if($at.ContainsKey($cid)){ $a=$at[$cid] }; if($a.Count -eq 0){ $c+='    nothing was attempted against this criterion' } else { $tried++; $c+=('    ' + $a.Count + ' attempt(s):'); $i=0; foreach($x in $a){ $i++; $c+=('    ' + $i + '. ' + $x.who + ' - ' + $x.verdict + ', ' + $x.fate); $c+=('       approach : ' + $x.approach); if($x.reason -ne ''){ $c+=('       closed   : ' + $x.reason) } else { $c+='       closed   : no reason recorded against this attempt' } } }; $c+='' } }; $c+='---'; $c+=''; $c+=('**' + $met + ' met, ' + $unmet + ' not met, ' + $own + ' yours to judge. ' + $tried + ' criteria were attempted at all.**'); $dir=Split-Path -Parent $sp; if($dir -and -not (Test-Path -LiteralPath $dir)){ New-Item -ItemType Directory -Force -Path $dir | Out-Null }; [IO.File]::WriteAllText($sp, (($c -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10), (New-Object Text.UTF8Encoding($false))); '      review sheet written: ' + $sheet"
+powershell -NoProfile -Command "$p='%ROOT%\PHASE_PLAN.md'; $o='%ROOT%\PHASE_OUTCOME.md'; $pkf='%ROOT%\PARKED.md'; if(-not (Test-Path -LiteralPath $p)){ exit }; $plan=@(Get-Content -LiteralPath $p -Encoding UTF8); $sheet=''; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -cmatch '^REVIEW_SHEET:\s*(.+?)\s*$'){ $sheet=$Matches[1] } }; if($sheet -eq ''){ if(Test-Path -LiteralPath $pkf){ '      the plan asks for no review sheet - THE PARKED QUESTIONS ARE IN ' + $pkf } else { '      the plan asks for no review sheet' }; exit }; $sp=Join-Path '%ROOT%' $sheet; if(Test-Path -LiteralPath $sp){ '      review sheet already on disk, not written again: ' + $sheet; exit }; $pk=@(); if(Test-Path -LiteralPath $pkf){ foreach($ln in (Get-Content -LiteralPath $pkf -Encoding UTF8)){ if($ln -match '^PARKED: *([^|]*)\| *([^|]*)\| *([^|]*)\| *([^|]*)\| *(.*)$'){ $pk+=@{ crit=$Matches[1].Trim(); who=$Matches[2].Trim(); when=$Matches[3].Trim(); which=$Matches[4].Trim(); words=$Matches[5].Trim() } } } }; $at=@{}; $cur=$null; if(Test-Path -LiteralPath $o){ $raw=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($o)); if(($raw.Length -gt 0) -and ($raw[0] -eq [char]0xFEFF)){ $raw=$raw.Substring(1) }; foreach($ln in [regex]::Split($raw, [char]13+[string][char]10+'|'+[string][char]10+'|'+[string][char]13)){ if($ln -match '^ATTEMPT: *([0-9]+\.[0-9]+) *\| *(.*)$'){ $k=$Matches[1]; $f=$Matches[2] -split '\|', 4; if($f.Count -lt 4){ continue }; if(-not $at.ContainsKey($k)){ $at[$k]=@() }; $at[$k] += @{ who=$f[0].Trim(); verdict=$f[1].Trim(); fate=$f[2].Trim(); approach=$f[3].Trim(); reason='' }; $cur=$k; continue }; if($ln -match '^REASON: *([0-9]+\.[0-9]+) *\| *[^|]*\| *(.*)$'){ $k=$Matches[1]; if($at.ContainsKey($k) -and ($at[$k].Count -gt 0)){ $at[$k][$at[$k].Count-1].reason=$Matches[2].Trim() } } } }; $c=@(); $c+='# Review sheet'; $c+=''; $c+=('Written by run-phase.bat at ' + (Get-Date).ToString('yyyy-MM-dd HH:mm') + '. The run ENDED - ' + '%LEDKIND%' + '.'); $c+=''; $c+='**This is here to answer one question: did the arbiter try before it stopped?**'; $c+='Every criterion of the phase is below, with its state and every approach'; $c+='recorded against it. Nothing here is a summary - the approaches are the ones'; $c+='the launcher wrote as each unit ran.'; $c+=''; $c+='Where a line is yours to judge it is marked, and turning it to - [x] in'; $c+='PHASE_PLAN.md is yours alone. Nothing in the loop does that.'; $c+=''; $c+='---'; $c+=''; if($pk.Count -gt 0){ $c+='## WAITING ON YOU - PARKED: A QUESTION ON ONE OF THE TWO STOPS, OR A CRITERION DRIFTED ON TWICE'; $c+=''; $c+='The loop did not end on these. Each was parked - the criterion it arose under'; $c+='closed for that pass, the work carried on elsewhere - and the night ended only'; $c+='when nothing else was left. Each names which of the two stops it touches - keying'; $c+='or promise, or money before 085 - or says drift: the arbiter chose that criterion from the last'; $c+='report twice running, and it wants your eye. Newest last. Rule on them in PHASE_PLAN.md or CLAUDE.md;'; $c+='nothing reads PARKED.md back as a decision.'; $c+=''; foreach($q in $pk){ $c+=('- **' + $q.crit + '** - ' + $q.which + ' - parked ' + $q.when + ' by ' + $q.who); $c+=('    ' + $q.words) }; $c+=''; $c+='---'; $c+='' }; $met=0; $unmet=0; $own=0; $tried=0; $step=0; foreach($raw in $plan){ $ln=([string]$raw).TrimStart([char]0xFEFF); if($ln -cmatch '^STEP: *([0-9]+) *\| *(.*)$'){ $c+=('## Step ' + $Matches[1] + ' - ' + $Matches[2]); $c+=''; continue }; if($ln -match '^\s*-\s\[( |x|X)\]\s+([0-9]+\.[0-9]+)\s+(.*)$'){ $mk=$Matches[1]; $cid=$Matches[2]; $txt=$Matches[3]; $isown=($txt -match '(?i)\*owner.s verdict\*\s*$'); $txt=($txt -replace '(?i)\s*\*owner.s verdict\*\s*$',''); $state='NOT MET'; if($mk -ne ' '){ $state='met'; $met++ } elseif($isown){ $state='YOURS TO JUDGE'; $own++ } else { $unmet++ }; $c+=('- ' + $cid + ' ' + $txt + '  -- ' + $state); $a=@(); if($at.ContainsKey($cid)){ $a=$at[$cid] }; if($a.Count -eq 0){ $c+='    nothing was attempted against this criterion' } else { $tried++; $c+=('    ' + $a.Count + ' attempt(s):'); $i=0; foreach($x in $a){ $i++; $c+=('    ' + $i + '. ' + $x.who + ' - ' + $x.verdict + ', ' + $x.fate); $c+=('       approach : ' + $x.approach); if($x.reason -ne ''){ $c+=('       closed   : ' + $x.reason) } else { $c+='       closed   : no reason recorded against this attempt' } } }; $c+='' } }; $c+='---'; $c+=''; $c+=('**' + $met + ' met, ' + $unmet + ' not met, ' + $own + ' yours to judge. ' + $tried + ' criteria were attempted at all.**'); $dir=Split-Path -Parent $sp; if($dir -and -not (Test-Path -LiteralPath $dir)){ New-Item -ItemType Directory -Force -Path $dir | Out-Null }; [IO.File]::WriteAllText($sp, (($c -join ([char]13 + [string][char]10)) + [char]13 + [string][char]10), (New-Object Text.UTF8Encoding($false))); '      review sheet written: ' + $sheet"
 goto :eof
 
 rem ============================================================
@@ -3135,14 +4260,22 @@ set "LEDVERDICT=failure"
 if "%STOPWHY:~0,8%"=="ending: " set "LEDKIND=the criterion is exhausted on the record"
 if "%STOPWHY:~0,33%"=="stop 1: the phase plan is satisfi" set "LEDKIND=the phase plan is satisfied, every criterion met"
 if "%STOPWHY:~0,38%"=="stop 1: the phase is waiting on the ow" set "LEDKIND=nothing is left but the owner-s verdict"
+rem  083 task 4: the sixth ending - every remaining criterion parked or the
+rem  owner's. ~0,15 is the length of the prefix, counted rather than assumed,
+rem  because the stop 3 test below was once one character short.
+if "%STOPWHY:~0,15%"=="stop 1: ended -" set "LEDKIND=every remaining criterion is the owner-s or parked"
+rem  085: the drift ending shares the prefix above and is told apart by the
+rem  next word, so the general test runs first and this one overrides it.
+rem  ~0,21 is the length of `stop 1: ended - drift`, counted.
+if "%STOPWHY:~0,21%"=="stop 1: ended - drift" set "LEDKIND=the arbiter could not resolve the work back to the phase goal - every open criterion drifted on and parked"
 rem  ~0,41 AND NOT ~0,40: the first cut was one character short, so the test
 rem  literal carried a trailing space the substring did not, it never matched,
 rem  and a night that ended because a ruling was wanted on one of the three was
 rem  recorded as a FAILURE. Found by driving this routine with all thirty real
 rem  reasons rather than by reading it - which is the reading-back the
 rem  instruction asks for, and it found an ENDING dressed as a stop.
-if "%STOPWHY:~0,41%"=="stop 3: a ruling is wanted on one of the " set "LEDKIND=a ruling is wanted on one of the three"
-if "%STOPWHY:~0,7%"=="stop 4:" set "LEDKIND=the arbiter raised one of the three for the owner"
+if "%STOPWHY:~0,41%"=="stop 3: a ruling is wanted on one of the " set "LEDKIND=a ruling is wanted on one of the two"
+if "%STOPWHY:~0,7%"=="stop 4:" set "LEDKIND=the arbiter raised one of the two for the owner"
 rem  ONE PLACE BUILDS THE PROSE, after the tests, so %STOPWHY% is expanded on a
 rem  plain line and never inside a block.
 if defined LEDKIND set "LEDVERDICT=ending"
@@ -3237,6 +4370,11 @@ goto :end
 :fxpromptonly
 set "ARBPROMPT=%WORK%\arbiter-prompt.txt"
 if exist "%ARBPROMPT%" del /q "%ARBPROMPT%"
+rem  083: the prompt's target comes from the derivation, so the derivation runs
+rem  first here exactly as it does at the loop's reload. Nothing is synced or
+rem  written to the record or the card by this fixture.
+call :stepfromcrit
+echo   FIXTURE promptonly: target step %SF_TARGET% by the checkboxes - position %SF_POSITION%
 call :writearbprompt
 echo.
 echo   FIXTURE promptonly: the prompt is at %ARBPROMPT%
@@ -3273,10 +4411,12 @@ echo   THE WATCHDOG HAS NO CLOCK OF ITS OWN. A run is killed only after ten
 echo   minutes in which its whole process tree accrued no CPU time. A run
 echo   that is working is left alone however long it takes.
 echo.
-echo   THE ONLY CEILINGS ARE --minutes AND --budget, both the owner's:
+echo   THE ONLY CEILING IS --minutes, the owner's own, set per run:
 echo   --minutes N      a wall-clock ceiling on each run. NO DEFAULT - without
 echo                    it, no run is ever killed on time.
-echo   --budget USD     the phase's spend. Defaults to 25.00.
+echo   --budget USD     a figure to print the phase's spend against. NO DEFAULT,
+echo                    AND NOT A STOP - since 085 nothing halts on money. The
+echo                    spend is printed and ledgered with or without it.
 echo.
 echo   --max-iterations defaults to 10. IT IS A BACKSTOP, NOT A STOP
 echo                    CONDITION - it saves the night when one of the
