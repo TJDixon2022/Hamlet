@@ -1,0 +1,101 @@
+rem  arbiter-tools.txt - the arbiter's permission scope
+rem
+rem  IT WRITES WORK_INSTRUCTIONS.md AND NOTHING ELSE. This is the
+rem  safety argument that replaces the old two-agent one, and 042
+rem  measured why it is a data file and not a paragraph: prose is
+rem  not a guard and --allowedTools is.
+rem
+rem  Read is unscoped - the arbiter must read the plan, the outcome,
+rem  the reload and the last report.
+rem  Write is scoped to ONE FILE.
+rem  There is no Edit and no unscoped Bash: an arbiter that can edit
+rem  can edit tools\, and an arbiter with a shell can commit.
+rem
+rem  ---------------------------------------------------------------
+rem  THE WRITE RULE IS SPELLED Edit(...) AND NOT Write(...).
+rem  MEASURED 2026-08-29, claude 2.1.251, six headless probes,
+rem  $0.33. Recorded in full in GROK_BUILD.md 7.
+rem
+rem  Until 044 this line read Write(WORK_INSTRUCTIONS.md). It never
+rem  matched anything. 043's arbiter was refused its write, authored
+rem  nothing, and the loop could not chain a second unit.
+rem
+rem  What was measured, and it is not what it looks like:
+rem
+rem    Write(<path>) NEVER MATCHES, in any spelling. Bare relative,
+rem    ./relative, **/globstar, native absolute and //absolute were
+rem    all refused, in two sessions - one flag per rule and one flag
+rem    for all rules - so the flag is not the cause either.
+rem
+rem    Write UNSCOPED is honoured in the same session shape. So the
+rem    tool is grantable and THE SPECIFIER is what fails.
+rem
+rem    Edit(<path>) is the rule family that governs the Write TOOL.
+rem    Edit(G.md) allowed a Write-tool write in the same session in
+rem    which Write(F.md) was refused.
+rem
+rem    A bare relative name is enough. No glob, no absolute path.
+rem
+rem  THIS DOES NOT GIVE THE ARBITER THE Edit TOOL. Edit is a
+rem  permission family covering the file-modifying tools; the tool
+rem  itself is absent because run-phase.bat passes
+rem  --tools Read,Write,Bash and Edit is not in that list.
+rem  ARBITER.md 5's "no Edit" is unchanged.
+rem
+rem  THE SCOPE STILL BINDS, and this was proved rather than assumed:
+rem  granted this one rule and nothing else, a probe wrote
+rem  WORK_INSTRUCTIONS.md and was REFUSED output.md in the same
+rem  directory. A rule that permits everything and a rule that
+rem  permits the right thing look identical from the allowed side,
+rem  so the negative control is the measurement.
+rem
+rem  BEFORE WIDENING THIS FILE, read GROK_BUILD.md 7 and run a probe.
+rem  The owner's ruling of 2026-08-29: a permission rule is fixed by
+rem  establishing what the layer matches and writing that form, not
+rem  by trying wider spellings until a denial stops. An unmatchable
+rem  rule is accepted in SILENCE - it never warns, and the denial it
+rem  produces is indistinguishable from a rule that matched and said
+rem  no.
+rem  ---------------------------------------------------------------
+rem
+rem  THE Bash RULE'S SEPARATOR IS PART OF THE MATCH.
+rem  MEASURED 2026-08-29, same run.
+rem
+rem  This line read tools\grok\outcome-read.bat until 044. A Bash
+rem  rule is a literal prefix match over the command string, and
+rem  granted ONLY the backslash spelling, a probe invoking
+rem  tools/grok/outcome-read.bat was REFUSED. It is not a near miss,
+rem  it is a different string. Under Git Bash a backslash is an
+rem  escape, so the forward-slash form is the one that gets typed
+rem  and therefore the one to grant.
+rem
+rem  A COMPOUND COMMAND IS STILL REFUSED WHOLE. 043's record shows
+rem  cd "..." && tools/grok/outcome-read.bat ... refused under a rule
+rem  permitting the second half. That refusal is correct and is not
+rem  to be widened away.
+rem
+rem  THE ./ SPELLING IS GRANTED TOO, AND THAT IS NOT WIDENING-UNTIL-
+rem  IT-STOPS. MEASURED 2026-08-29 from the chain's own first run.
+rem
+rem  The probe that established Edit(...) also "measured" the Bash
+rem  rule - against a command the probe DICTATED. Left to itself the
+rem  arbiter typed ./tools/grok/outcome-read.bat, with the ./ that a
+rem  shell needs for a relative executable, and was refused by a
+rem  hair. THE PROBE MEASURED THE RULE AGAINST THE WRONG LEFT-HAND
+rem  SIDE - a real trap, and the reason this comment exists.
+rem
+rem  Granted: the same script, in the same directory, with the ./
+rem  that makes it runnable. NOT granted, and refused seven times in
+rem  that run without being added here: every compound
+rem  cd "..." && ... form, cmd.exe /c "...", and the absolute path.
+rem  Those are different commands, not different spellings, and
+rem  CLAUDE.md 5's rule against repairing things on the way past
+rem  applies to guards as much as to code.
+rem
+rem  Amended 2026-08-29 for: work instructions 044 tasks 2, 3 and 5.
+rem  Generated 2026-08-29 for: work instructions 043 task 2
+
+Read
+Edit(WORK_INSTRUCTIONS.md)
+Bash(tools/arbiter/outcome-read.bat:*)
+Bash(./tools/arbiter/outcome-read.bat:*)

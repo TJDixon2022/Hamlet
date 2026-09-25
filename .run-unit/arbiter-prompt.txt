@@ -10,13 +10,13 @@ PHASE GOAL: Hamlet reads a CQ call correctly
 THE STEP TO WORK: step 3 - The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.  [partial]
 
 ITS UNMET CRITERIA. THESE ARE THE WORK:
-  - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
   - [ ] 3.6 The stray single-element characters are attacked: the trace names, per keyed recording, every added or wrong character whose decode rests on one element and what score admitted it, printed by a fact that asserts nothing; then each change is judged under 3.2's four tests, and the total edit count over all keyed recordings falls, with the count of added letters reported before and after (R69).
 
 already met, for context only:
   - [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
   - [x] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
   - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
+  - [x] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
   - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
   - [x] 3.7 All 51 capture rows are re-measured once under R71 in a single commit, with the span bar named and the old count, the above-bar count and the below-bar count printed per row; the bar's choice is justified from 3.6's trace and not from which changes it admits; the three adjudicated readings and the keyed totals are run at that commit and are unchanged or better, and the report states plainly that no character above the bar was lost.
 
@@ -33,7 +33,6 @@ THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
   step 7 - The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.  [partial]
     - [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
     - [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
-    - [ ] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
     - [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
     - [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
     - [ ] 7.8 The preamp is set from what the radio's manual states and nothing contradicts it (R74): the CW conditions carry preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz, with the manual's page cited in the condition's own text; the preamp is turned off when the receiver reports overloading rather than by band; no component asks the operator to change the preamp, or any other field a condition states, after Hamlet has set it - watched failing first at 7.030 MHz, where the old rule turned it off, and at 14.050, where a voice contradicted the setup; and the report prints, for one frequency on each HF band and at 50 MHz, what is asked for, what is written, and every sentence the app would say about the preamp there.
@@ -49,10 +48,10 @@ reported. None of it is a list of work to do.
 
 The loop did NOT halt. It sent you back, because:
 
-  units 2 and 3 ran against criteria 3.6 and 7.8 and moved neither
+  units 4 and 5 ran against criteria 3.6 and 7.4 and moved neither
 
 YOUR NEXT INSTRUCTION MUST NAME ONE OF THESE CRITERIA:
-  3.6 7.8
+  3.6 7.4
 
 and must name an APPROACH THE RECORD DOES NOT ALREADY SHOW FAILING at it.
 The attempts are listed further down this prompt. An instruction that names
@@ -132,13 +131,19 @@ block; blocker means it cleared something and moved no criterion.
   3.1 | unit 1 launched 2026-09-24T03:07:13.064Z | yes | executed | trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
   3.2 | unit 1 launched 2026-09-24T12:08:39.542Z | yes | executed | re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
   3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | no | executed | leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+  3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | no | executed | trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
   3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | no | executed | separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+  3.6 | unit 4 launched 2026-09-25T06:43:19.918Z | no | executed | re-apply G1 - MeasureGaps refusing a held gap reading whose character gap stands past its word gap, so split letters join - and judge it under 3.2's four tests as R71's span bar and R73's key-aligned added exemption now read them, after tracing which of the 8 single-element added letters a split made
   3.7 | unit 1 launched 2026-09-24T17:53:45.290Z | yes | executed | trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+  5.1 | unit 1 launched 2026-09-25T01:41:45.314Z | blocker | executed | build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
   6.1 | unit 1 launched 2026-09-24T00:45:09.815Z | yes | executed | make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
   6.2 | unit 3 launched 2026-09-24T14:02:00.835Z | yes | executed | audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
   6.3 | unit 3 launched 2026-09-24T20:10:29.208Z | yes | executed | trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
   6.4 | unit 2 launched 2026-09-24T19:15:08.069Z | yes | executed | inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
   6.7 | unit 2 launched 2026-09-24T13:12:43.596Z | yes | executed | measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+  7.3 | unit 2 launched 2026-09-25T03:52:47.073Z | yes | executed | trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+  7.4 | unit 3 launched 2026-09-25T04:55:53.495Z | no | executed | trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+  7.4 | unit 5 launched 2026-09-25T07:45:38.665Z | no | executed | release a pending mixdown pitch move once any survey read since the mix was last set confirmed keying within 25 Hz of it (P39), checked first by replaying 032113's two held moves and the opening's 525 Hz move against four release rules, then built once and judged under 3.2's four tests
   7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | no | executed | table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
   7.7 | unit 1 launched 2026-09-24T16:16:07.028Z | yes | executed | state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
   7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | no | executed | set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
@@ -164,115 +169,58 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-1. **Once he has moved on, the overload sentence asks for the attenuator the CW tune-in left
-   off. This bears on ticking 7.8. Parked as P27.**
-   - **What happens:** with the preamp now off on an overload, the sentence outside an owned
-     block reads *"the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring
-     it in"*. It appears 12 times in the trace, and it is true. Before this unit the same view
-     asked him to turn the preamp off instead.
-   - **Proposed ruling, the owner's:** 7.8's third clause covers the fields the tuned block owns.
-     Once he is in a block that does not state a field, a true voice about it may speak.
-   - **Reasoning:** HM-DEC-179 lets the preamp follow only while the block owns it, and forbids
-     following the attenuator at all. The attenuator's 20 dB write is P14. The only way to
-     remove the sentence without a ruling would be to silence a true voice, which R74 forbids.
-   - **Rejected:**
-     - following the attenuator live, which HM-DEC-179 forbids;
-     - rewording the sentence to stop naming the attenuator, which would be silencing it.
-2. **A band that starts overloading after he has moved into a block that does not state the
-   preamp is not followed.** This is HM-DEC-179's third limit, as ruled.
-   - **What happens:** the unowned overload sentence then asks him to press P.AMP/ATT until the
-     preamp reads off. That is true and it stands.
-   - **Proposed:** leave it as ruled unless Tim widens the licence.
-   - Not blocking.
-3. **Receive Help's USB level has the RF gain's scale mismatch. Parked as P28.**
-   - **What happens:** `ReceiveAdvice.UsbLevel` compares a percent to 77 on the 0-255 scale, so
-     50 percent, where the radio ships, would be asked to turn up.
-   - It is not one of the nine fields, and it was not changed.
-   - **Proposed:** a step 6 unit repairs it as this unit repaired the RF gain.
-   - Not blocking.
+Nothing blocks the phase (R65). Two items, most useful first.
 
-**Carried per HM-DEC-139, verbatim. None of these is this unit's to answer:**
+**1. Whether the replay gate's third clause is judged against the entry, not against `5b6b704c`.**
+- **Proposed ruling:** the owner or author decides whether P39 may be built and judged under 3.2's four tests as a new 7.4 unit, with the third clause read as "no difference from the entry except the opening". Without that ruling, the P39 route at 7.4 is closed.
+- **Reasoning:**
+  - On the follow times the replay prints, P39 matches the entry on 032113 and 031905. It differs only on the opening, where it holds the 525 Hz move.
+  - The gate stopped P39 because `5b6b704c` held 031905's moves to 300 Hz, and P39 does not. Those holds are what gave 031905 seven elements under unit 430's change.
+  - The measured shapes make it plain that no release rule based on confirmation alone can tell the two cases apart. 031905's move at 13.04 was confirmed two reads before it, at 12.04. That is the same shape as 032113's 650 Hz move, confirmed at 25.54 and made at 26.54.
+  - So "follow 032113" and "keep 031905's gain" cannot both hold under a rule of this kind.
+  - A caveat: the replay runs on the entry decoder's tracker, and no other capture row was replayed. The four tests would decide.
+- **Rejected:**
+  - Building P39 in this unit, because section 6 made the gate binding and no self-ruling authorizes work outside the tasks.
+  - A variant that also holds 300 Hz moves, because section 6 forbids a second variant, and a rule keyed to 031905's pitch would be tuned to one recording.
 
-4. **P23 - 6 m has no block on the map, and its top edge is not in the tree.** "The CW row states
-   preamp 2 from 50.000 to 54.000 MHz (HM-DEC-177), and `ReceiverSetup` writes 2 when driven there
-   directly, but `HfBands.Names` is 80 to 10 m and `data/bands/us-neighborhoods.json` has no 6 m
-   rows, so tuning to 50.100 in the app finds no block and writes nothing. 160 m and 12 m are the
-   same (1.810 and 24.900 find no block). The 54 MHz top edge is 47 CFR 97.301's and no file in
-   the tree carries it: `data/privileges/us-part97-privileges.json` has no 6 m row. Adding bands
-   to the map is the scope decision `HfBands` names. Not blocking."
-5. **P24 - the attenuator's sentence gives the quiet band's reason when it writes 20 dB.** "Since
-   unit 424 the setup says a conditional row as the value the radio read back rather than as the
-   rule. For the attenuator that will read *I set the attenuator to 20 dB because twenty decibels
-   thrown away on a signal that had none to spare* once a 20 dB write lands, which gives the off
-   case's reason for the on case. It cannot be heard today, because the 20 dB write is refused
-   (P14). The row's `says` is the attenuator's, which is another receive condition and not this
-   unit's; its page in `IC-7300_ENG_FM_12b` was not checked, because the manual is not in the
-   tree. Not blocking."
-6. **P25 - the decision log's index has no HM-DEC-166 row.**
-   "`DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes` is red at entry
-   `e4085d43` and after: *Expected [105, 136], Actual [105, 136, 166]*. `DECISIONS.md` holds
-   HM-DEC-166 and the `CLAUDE.md` §1 table has no row for it. Unit 424 did not repair it (report,
-   repair nothing)." Still red at unit 426's entry and exit, and not repaired.
-7. **P26 - a ceiling test's added paragraph comes back 64 characters longer at some times.**
-   "`HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed` failed twice ...
-   with *Expected 1779, Actual 1843* ... Something on the Digital tab adds 64 characters between
-   the two measurements at some wall-clock times. Not traced by unit 424. Not blocking." It was
-   5 of 5 in both of unit 426's rounds.
-8. **Step 3's join question, from unit 425.** "3.6 clause two may need a join, and a join moves
-   the unkeyed floors ... A ruling would be needed on whether that counts as a floor lowered on
-   an unkeyed row." It is step 3's.
-9. **P19** was answered by HM-DEC-178 at unit 425. It is step 3's and is listed only so the
-   carry is complete.
+**2. `WhyTheMixMoved` prints `CwToneSurvey.Analyze`'s verdict, not `Tracker.Verdict`.** For the record.
+- **Proposed ruling:** none. The two differ where the tracker refuses a candidate the survey admits, and the printer's rule column names each refusal. The new printer reads `Tracker.Verdict` directly.
+- **Reasoning:** section 5 describes the printer as reading the tracker's `Verdict`. It recomputes that verdict from the same history.
+- **Rejected:** repairing it, because section 5 says to repair nothing.
 
 ## 3. What you should see
 
-**1. Task 2's red messages, quoted, at `507b14da`.**
-- `ThePreampFollowsTheOverloadTests`, 0 of 3:
-  - `AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce`: *Assert.Equal() Failure:
-    Collections differ. Expected: int[] [0]. Actual: List<int> []*
-  - `AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing`: the same, on its first
-    assertion. There was no off write for his hand to follow.
-  - `NothingIsWrittenWhileTheRadioTransmits`: the same, on its second half. The rise during
-    transmit wrote nothing at HEAD too, so the test also asks for the one write once receiving.
-- `TheReceiveGainIsReadOnItsOwnScaleTests`, 0 of 2:
-  - `AGainAtFullIsAlreadyOpenOnceHeHasMovedOn`: *Open the receive gain all the way. It is at
-    about 39 percent, and a gain control turned down is the one thing that quietly undoes
-    everything else.*
-  - `AGainTurnedDownIsSaidAsThePercentTheRadioReads`: *Assert.Contains() Failure: Sub-string not
-    found ... Not found: "about 50 percent"*
-- `TheOverloadSentenceSaysWhereThePreampIsTests`, 0 of 2:
-  - `WithThePreampOffItSaysItIsOffAsTheManualHasIt`: *Not found: "The preamp is off"*
-  - `WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis`: *Not found: "turns it off"*
+No visible change. This unit measured a rule before building it, and the measurement stopped it.
 
-All 7 are green at exit. Task 3 added 4 more: the hold, the relapse, FT8's block, and an unread
-transmit flag.
+**The gate's three answers**, with the print lines from `.run-unit/unit432-replay-t1.txt`:
 
-**2. The live-overload script at 7.030 and 14.050, before and after.** Both frequencies trace
-identically. 7.030 is the QRP block and 14.050 is CW main street; both state all nine conditions.
-- **Point 1, quiet tune-in, both runs:** written noise blanker 0, AGC 1, preamp 1; read back
-  preamp 1. The setup says *"I set the preamp to preamp 1 because that is what the radio's own
-  manual gives for this band and this front end."*
-- **Point 2, overloading for 12 polls:**
-  - *Before:* written nothing; read back preamp 1. The chip reads *overloading · preamp 1*. The
-    overload sentence says *"... The preamp and the attenuator are set by this mode when you tune
-    in, so Hamlet is not asking you to change them here."*
-  - *After:* written preamp 0; read back off. Narrated: *"I turned the preamp off because the
-    radio says its front end is overloading, and the radio's manual has the preamp off with
-    strong signals."* The chip reads *overloading · preamp off*. The overload sentence says
-    *"... The preamp is off, which is where the radio's manual has it while the front end is
-    overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to
-    change either of them here."* Receive Help: *"The preamp is covered by what this mode states
-    when you tune in, so Hamlet is leaving it out of these suggestions."*
-- **Point 3, clear for 40 polls:**
-  - *Before:* written nothing; read back preamp 1.
-  - *After:* written preamp 1; read back preamp 1. Narrated: *"I set the preamp back to preamp 1
-    because the radio's front end has stopped overloading, and that is what the radio's manual
-    gives for this band."*
-- **Point 4, he sets preamp 2, then overload for 12 and clear for 40:**
-  - *Before and after:* written nothing; read back preamp 2 throughout.
-  - *After:* narrated *"Your preamp is preamp 2 and I have left it there, because you moved it
-    after I last set it."*
-- **Moved on, at point 2:**
-  - *Before:* Receive Help says the receive gain is at *"about 39 percent"*. The overload
-    sentence says *"Press P.AMP/ATT on the front of the radio until the preamp reads off."*
-  - *After:* Receive Help says *"The receive gain is already open all the way"* and *"The preamp
+1. **Does P39 follow 032113's 650 Hz and 500 Hz moves when the tracker made them? Yes.**
+   - **650 Hz:** `replay follows | 26.54 | 26.54 | never | never | 26.54`. The columns are the entry, `5b6b704c`, `ec76051e` and P39. The move was released by `replay read | 25.54 | 650.0 | yes`, a read after the mix was set at 21.04.
+   - **500 Hz:** the entry tracker never makes this move. It is still held when the 30 s file ends: `survey | 29.54 | nothing admitted; the tracker stays`, held move 500.0. The tracker made the move only under unit 430's decoders, at 29.54, after `survey | 29.04 | 500.0 confirmed outside the bank's reach of 650.0; held`. P39 counts that read, and `ec76051e` followed the move there at 29.54. P39 looks back over every read `ec76051e` does, and more.
+   - **This half of the answer is argued from unit 430's trace, not replayed**, because the move is not on the entry record.
+2. **Does P39 hold the opening's 525 Hz move? Yes.**
+   - The move: `replay move | 30.54 | 600.0 -> 525.0 | yes`. The move was a `Switch` on its own confirming read.
+   - P39 holds it: `replay follows | 30.54 | 30.54 | not before the next move at 36.04 | not before the next move at 36.04 | not before the next move at 36.04`.
+   - All four rules then follow 625 at 36.04.
+3. **Does P39 make no other difference from `5b6b704c`? No.**
+   - On `031905`: `replay differs | 13.04 | 18.03 | 500.0 | 300.0` and `replay differs | 26.54 | 30.00 | 500.0 | 300.0`.
+   - P39 follows the tracker to 300 Hz, on reads that confirmed 300.0 at 12.04 and 26.04, where `5b6b704c` held 500.
+   - Under `5b6b704c`, `031905` went from 108 to 115 elements with 36 named. P39 gives that up.
+   - On the stream, P39 does not differ from `5b6b704c`. On 032113 it differs only by the intended 650 follow.
+
+**The four tests.** None was run on a change, because none was built:
+
+| Test | Before | After | Result | Kept |
+|---|---|---|---|---|
+| 1. All keyed edits do not rise | 165 over 565 | 165 over 565, no change built | not judged | nothing built |
+| 2. No named floor broken | 13 of 13 | 13 of 13 | not judged | nothing built |
+| 3. Adjudicated unchanged | 13 of 13 | 13 of 13 | not judged | nothing built |
+| 4. No capture row's above-bar count falls | 51 of 51 | 51 of 51 | not judged | nothing built |
+
+**The opening, beside the cold group `EANQNID`:**
+- Before and after, on the spliced stream from 30 to 46.2 s: 22 named, `UIEH EE E E T I NIEEE E E ET N ■IK`.
+- 003919 cold reads `EITEETNXNIK EANQNID EANQNIK`.
+- Nothing changed.
+
+**032113:** 47 above the bar before and after. The mix follows the 650 Hz move at 26.54 s, the same moment the tracker made it, as at entry. At entry the tracker does not make the 500 Hz move before the file ends.
+

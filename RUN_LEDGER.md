@@ -290,3 +290,6 @@ the owner reads instead of watching.
 | 5 | 2026-09-25T03:45 | 2026-09-25T04:43 | complete | 3.3431708000000016 | ran unattended, 81 turns, 5 denied call(s) worked around, report valid |
 | 5 | 2026-09-25T04:45 | 2026-09-25T04:45 | note | none - not a run | no advance - step 7 criterion 4 was unmet and is unmet |
 | 6 | 2026-09-25T04:45 | 2026-09-25T04:45 | note | none - not a run | redirected - no-advance at two different criteria: units 4 and 5 ran against criteria 3.6 and 7.4 and moved neither. The next instruction must name one of 3.6 7.4 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |
+| 6 | 2026-09-25T04:49 | 2026-09-25T05:46 | failed | 3.1772416 | run-unit exit 4: 5 denied call(s), is_error=False, terminal=completed |
+| 6 | 2026-09-25T05:47 | 2026-09-25T05:47 | note | none - not a run | no advance - step 7 criterion 4 was unmet and is unmet |
+| phase | 2026-09-25T05:47 | 2026-09-25T05:47 | failure | 25.3019 | STOPPED, AND A STOP IS FAILURE - halted: the criterion was chosen from the last report rather than the plan - The instruction chose 7.4 because unit 432 measured that the survey confirmation rules could not tell right moves from wrong ones, which left one question untried, and because 3.6 was more exhausted, and it cited no step 7 criterion or plan preference as the reason. |

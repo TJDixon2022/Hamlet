@@ -51,26 +51,24 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing here blocks the phase (R65). Six items for the owner, most useful first:
+Nothing blocks the phase (R65). There are two items, most useful first.
 
-1. **P34 - a PSK31 CQ with a grid in it is read as no station.** `CQ CQ CQ de VE3YX VE3YX FN03
-   pse K` gives a row with no station, no entity and no kind. The same CQ without the grid
-   reads fine. *Proposed:* a later unit takes it to the engine's parser, because it is the phase
-   goal in the keyboard modes. *Rejected:* opening the parser in this unit, because the
-   instruction kept it closed.
-2. **P32 - item 13 is not built.** A station's first over still arriving opens no card.
-   *Proposed:* treat it as a unit of its own that parses a growing row. *Rejected:* building it
-   here, because the instruction says findings only.
-3. **P33 - item 8's sentence promises a send that does not happen**, and the hold also lets go
-   on carrier drop. *Proposed:* the owner rules on the sentence's words (the send path, Â§0.2)
-   and on whether carrier drop should release the hold. *Rejected:* changing either here,
-   because both are parked.
-4. **P31 - item 1: should *make a card anyway* make a card for a row with no callsign?** Today
-   it is a note, on Â§0.0 grounds. *Proposed:* the owner says which he meant. *Rejected:*
-   guessing.
-5. **P30 - the grid table covers four places and cites no boundary file.** *Proposed:* the
-   owner rules on whether to cite a source and widen it. *Rejected:* widening it from memory.
-6. **P29 - Unit297CardSentenceTests has two reds that predate this unit.** *Proposed:* a later
-   unit retires or restores the two expectations. *Rejected:* touching them here, under Â§12.6.
+**1. What would reopen 7.4.**
+- **Proposed ruling:** the owner decides whether a later unit may question the tracker's choice of 525 Hz at 30.54 s on the spliced stream. Without that decision, 7.4 stays closed partial under P48.
+- **Reasoning:**
+  - Four follow rules have now been measured against one line, 617 to 621.
+  - Three of them asked whether the survey confirmed the new pitch. Unit 432 showed that confirmation looks the same for right moves and wrong ones.
+  - The fourth compared the two pitches directly. At 30.54 s the decoder's own envelope ranks 525 (15.02 dB) above 850 (14.39), above the sender's 625 (13.67), and above the mix at 600 (12.69).
+  - So the evidence the mixdown could weigh points the same way as the tracker's wrong move. Deciding when to follow cannot undo a choice that the evidence supports.
+  - The tracker's choice belongs to the tracker under HM-DEC-095 and HM-DEC-127, and this unit did not touch it.
+- **Rejected:**
+  - A margin, another percentile, or another window. Section 6 forbids a variant, and no plain margin can invert a ranking where the target wins.
+  - Combining this rule with `5b6b704c`, `ec76051e` or P39, which section 10 forbids.
 
-Carried: P27, the attenuator sentence, is still the owner's, and 7.8 stays unticked.
+**2. The window at 30.54 s starts before the splice.** For the record.
+- **Proposed ruling:** none.
+- **Reasoning:**
+  - The 3.0 s ending at 30.54 on the spliced stream runs from 27.54 s. It starts inside `003901`'s tail, before `003919` begins at 30.0 s.
+  - Both the rule and the survey's own 3.0 s history see that joined audio, and the live session's decoder saw its own continuous audio.
+  - Whether the contrast would rank the pitches differently on unspliced audio was not measured.
+- **Rejected:** measuring it in this unit, because no task asked for it and no self-ruling authorizes work outside the tasks.

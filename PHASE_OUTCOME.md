@@ -783,3 +783,21 @@ STATE_WHY: Criteria 7.3, 7.5 and 7.7 are met, but 7.1, 7.2, 7.4, 7.6 and 7.8 are
 ADVANCED: no
 ATTEMPT: 7.4 | unit 5 launched 2026-09-25T07:45:38.665Z | no | executed | release a pending mixdown pitch move once any survey read since the mix was last set confirmed keying within 25 Hz of it (P39), checked first by replaying 032113's two held moves and the opening's 525 Hz move against four release rules, then built once and judged under 3.2's four tests
 REASON: 7.4 | unit 5 launched 2026-09-25T07:45:38.665Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 6 - STEP 7
+
+STEP: 7
+APPROACH: hold a pending mixdown move unless the keying contrast measured at the new pitch over the decoder's last hops beats the contrast at the current mix pitch, head to head - Envelope at 45 Hz over the survey's 3 s, 90th over 10th percentile, replay-gated against the entry on the opening's 525 Hz move and 032113's 650 Hz move, then built once and judged under 3.2's four tests
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Section 4 says nothing blocks the phase, item 1 only asks whether a later unit may reexamine the tracker's pitch choice, which is a plan and mechanism question that touches no keying, transmit, money or operator promise, and item 2 is for the record only.
+MOVE: work around
+WHY: At 7.4 all three rules tried (5b6b704c, ec76051e, P39) asked only whether the survey confirmed keying at the new pitch, and unit 432 measured that this cannot tell 031905's or 032113's right moves from the opening's wrong one; comparing the two pitches on the decoder's own envelope is the one question not yet asked. 3.6's four routes are all recorded as failing and its way back (P44) is the owner's, so 7.4 is the less exhausted of the two.
+DECIDED: author's, overrulable - routing to 7.4 over 3.6; the rule (25 Hz same-station distance kept, 3.0 s window from the survey's history, contrast as 90th over 10th percentile of Envelope at IntegratorBandwidthHz, plain greater-than, follow as at entry until 3.0 s is heard), fixed before the replay; the gate compares against the entry, not 5b6b704c, on the opening's 525 Hz hold and 032113's 650 Hz follow by 27.04 s, with 031905 left to the four tests (unit 432's item 1 parked as P46, not ruled); one attempt and no variant; test 1 reads does not rise as unit 430's arbiter decided; 7.4 ticks only on a kept change, and if nothing is kept this is its third unit, so P48 is written and 7.4 recorded closed partial, not ticked; unit 432's items parked as P46 and P47. No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; PARKED.md P39, P42 and P43; unit 432's replay (f0845a92); unit 430's arbiter decision on test 1; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+COST: 3.1772416
+ACCOMPLISHED: the first minute of a CW session reads the sender's letters instead of a run of E and T, because the decoder follows its pitch tracker only to a pitch where the sender actually keys harder, and no recording loses a letter it read before - or 7.4 closes partial with three rules measured and the trace on record
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 7.3, 7.5 and 7.7 are ticked, and 7.4 closed partial without a tick after its third unit in a row with no kept change, with the trace parked as P48, while 7.1, 7.2, 7.6 and 7.8 are still open and none waits on a keying, budget or promise stop.
+ADVANCED: no
+ATTEMPT: 7.4 | unit 6 launched 2026-09-25T08:48:58.634Z | no | executed | hold a pending mixdown move unless the keying contrast measured at the new pitch over the decoder's last hops beats the contrast at the current mix pitch, head to head - Envelope at 45 Hz over the survey's 3 s, 90th over 10th percentile, replay-gated against the entry on the opening's 525 Hz move and 032113's 650 Hz move, then built once and judged under 3.2's four tests
+REASON: 7.4 | unit 6 launched 2026-09-25T08:48:58.634Z | the unit ran to completion and the criterion did not flip from unmet to met

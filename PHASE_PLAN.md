@@ -243,6 +243,25 @@ every HF band from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and the preamp off whe
 is overloading** - which Hamlet already reads, since `Overflow` is on the capture sheet.
 Rejected: leaving the band rule as it stood; asking the owner which he wants.
 
+**R75 - Tim, 2026-09-25: the tone tracker is open.** Six units - 428 to 433 - measured four
+different rules about when the mixdown may follow a pitch move, and kept none. Unit 433 then
+measured the thing that closes the question: on the 7.052 opening at 30.54 s, **the decoder's
+own envelope ranks the wrong pitch highest** - 525 Hz at 15.02 dB, above 850 Hz at 14.39,
+above the sender's actual 625 Hz at 13.67, above the mix at 600 Hz at 12.69. The evidence a
+follow rule could weigh points the same way as the tracker's mistake, so **no rule about when
+to follow can undo a choice the evidence supports**. The fault is the tracker's choice of
+pitch. **`CwToneTracker` is open to change in this phase**, and HM-DEC-095 and HM-DEC-127 are
+amended to that extent and no further: their reasoning stands, and a unit that changes the
+tracker states which of their clauses it is working against and why. Rejected: leaving 3.6 and
+7.4 closed partial and moving on, which leaves the litter and the opening junk permanent.
+
+**R76 - Tim, 2026-09-25: the instrument is built and proved before the tracker is touched.**
+The restore phase's 3.8 was ticked on a judge that admitted 5 of 38 cases and missed a known
+tone by 60 to 85 Hz, which is why the tracker question has been unanswerable for a week. **4.1
+is built and proved against tones known by construction first; no unit may change
+`CwToneTracker` until 4.1 is met.** When it is met, **3.6 and 7.4 reopen** - both were closed
+partial only because the tracker was out of reach, and both traced to it.
+
 ## §3 What is different from the phases before it
 
 This phase scores text for the first time, so two things bind every unit:
@@ -329,7 +348,10 @@ says - never the whole suite.
 **Entry:** step 0 done.
 
 **Exit:**
-- [ ] 4.1 A pitch instrument whose resolution is finer than 25 Hz is built and shown, on the synthetic cases whose tone is known by construction, to land within one of its own bins of the truth - the restore phase's sweep missed those by 60 to 85 Hz.
+- [ ] 4.1 A pitch instrument whose resolution is finer than 25 Hz is built and shown, on the synthetic cases whose tone is known by construction, to land within one of its own bins of the truth - the restore phase's sweep missed those by 60 to 85 Hz - with its error against the known tone tabled per case, the count of cases it admits at all stated, and its cost per hop measured; it shares no line of code with `CwToneTracker` (R76).
+- [ ] 4.5 The instrument is turned on the moment the tracker gets wrong: at 30.54 s of the 7.052 opening, and on `cw-2026-09-24-135641` and `cw-2026-09-24-152135` where the decoder mixed 75 Hz off a tone the survey named, it reports what pitch was there, and the report states for each whether it would have named the sender's pitch over the one the tracker took.
+- [ ] 4.6 Once 4.1 and 4.5 are met, a change to `CwToneTracker` is built under R75 and judged by 3.2's four tests with the instrument's table beside them; the report names which clause of HM-DEC-095 or HM-DEC-127 it works against and why; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+- [ ] 4.7 With a tracker change kept, criteria 3.6 and 7.4 are re-measured and reported - added letters over the keyed recordings, and the opening's named characters from 30 to 46.2 s - and their boxes are re-opened or ticked on what the numbers say (R76).
 - [ ] 4.2 The 38-case pitch table is re-run with it, and the report states how many cases it admits as single-sender and how many are more than one of its bins apart.
 - [ ] 4.3 Every case the new table calls apart is either repaired in `CwToneTracker` under the keep rule of 3.2, or listed with its measurement and parked; the report says which and why.
 - [ ] 4.4 The three floor tests and both carry-forward lines are green at exit.
@@ -408,6 +430,9 @@ halt.
 - **No voice asks the operator to change a setting Hamlet set** (R74). A criterion is met by
   making the setting right and the sentences agree with it, never by silencing a voice that
   is telling the truth.
+- **`CwToneTracker` is open (R75), but not before 4.1 and 4.5 are met (R76).** A unit that
+  changes it names the clause of HM-DEC-095 or HM-DEC-127 it works against, and is judged by
+  3.2's four tests with the instrument's table beside them.
 - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
   movement fails 3.2's third test, and a report invoking the clause prints the reading
   before and after.
@@ -455,6 +480,10 @@ window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wordi
 HM-OPEN-063 and HM-OPEN-070.
 
 ## §8 Revision record
+
+- **2026-09-25.** R75 the tone tracker is open, on unit 433's measurement that the envelope
+  ranks the wrong pitch above the sender's; R76 the instrument is built and proved first, and
+  3.6 and 7.4 reopen when a tracker change is kept. New criteria 4.5, 4.6, 4.7.
 
 - **2026-09-24, after unit 423.** R73 a key-identified added character may leave a floor, so
   3.6 can pass; R74 Hamlet sets the radio from the manual and nothing contradicts what it set,

@@ -1,12 +1,15 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-24T21:41:35-04:00  root C:\Source\HamLet
+measured 2026-09-25T04:45:12-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0179.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0181.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -18,14 +21,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 79ac7034
-  uncommitted at the root : 0
+  HEAD   : f1e751ea
+  uncommitted at the root : 3
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
+      M RUN_LEDGER.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0179
+  highest in CLAUDE.md section 1 : CPS-DEC-0181
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -351,7 +357,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
   - [x] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
   - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
-  - [ ] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
+  - [x] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
   - [ ] 3.6 The stray single-element characters are attacked: the trace names, per keyed recording, every added or wrong character whose decode rests on one element and what score admitted it, printed by a fact that asserts nothing; then each change is judged under 3.2's four tests, and the total edit count over all keyed recordings falls, with the count of added letters reported before and after (R69).
   - [x] 3.7 All 51 capture rows are re-measured once under R71 in a single commit, with the span bar named and the old count, the above-bar count and the below-bar count printed per row; the bar's choice is justified from 3.6's trace and not from which changes it admits; the three adjudicated readings and the keyed totals are run at that commit and are unchanged or better, and the report states plainly that no character above the bar was lost.
   - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
@@ -409,7 +415,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Exit:**
   - [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
   - [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
-  - [ ] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
+  - [x] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
   - [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
   - [x] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
   - [x] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
@@ -520,23 +526,24 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  13 lines, 2408 bytes
+  14 lines, 2518 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 426 - the preamp follows the overload after the tune-in
+  WORK_INSTRUCTION: 432 - the mixdown follows a move once any read since it was set has confirmed it
+  HEARTBEAT: 2026-09-25 04:45:10
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
-  STEP: 3 | partial | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.
+  STEP: 3 | partial | The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor. Closed partial under 3.4 by unit 431, P43; 3.6 unmet.
   STEP: 4 | not started | The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
   STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
   --- PHASE_OUTCOME.md ---
-  589 lines, 118216 bytes
+  771 lines, 153982 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -549,7 +556,83 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
   STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
   
-  ## UNIT 426 - STEP 7
+  ## UNIT 432 - STEP 7
+  
+  STEP: 7
+  APPROACH: release a pending mixdown pitch move once any survey read since the mix was last set confirmed keying within 25 Hz of it (P39), checked first by replaying 032113's two held moves and the opening's 525 Hz move against four release rules, then built once and judged under 3.2's four tests
+  MOVE: work around
+  WHY: Every recorded 3.6 route has failed, and G1's way back (P44) is the owner's. At 7.4, unit 430's two release rules both cured the opening and failed on 032113 alone, traced to a hold spanning two reads. This rule looks back over every read since the mix was set, and it is gated on a replay of the recorded reads, not on a score.
+  STATE: partial
+  DECIDED: author's, overrulable - routing to 7.4 over 3.6; the release rule with unit 430's 25 Hz kept; the replay gate (follows 032113's 650 and 500 Hz moves, holds the opening's 525 Hz move, no other difference from 5b6b704c) or nothing is built; one attempt and no variant; test 1 reads does not rise, as unit 430's arbiter decided; 7.4 ticks only on a kept change, and its three-unit count counts 7.4 units only; the opening reported as text beside EANQNID with its count; unit 431's items parked as P44 and P45. No self-ruling authorizes work outside the tasks.
+  LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; PARKED.md P39 and P42; unit 430's arbiter decision on test 1; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ADVANCES: step 7 criterion 4
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.118 to 1.13.119. PHASE_STATUS.md names unit 432 and CURRENT_STEP 7; the launcher had left CURRENT_STEP 3 there. HEAD at entry cec344ad. PHASE_OUTCOME.md, PHASE_STATUS.md, RUN_LEDGER.md and WORK_INSTRUCTIONS.md were modified and uncommitted at entry by the launcher (the UNIT 4 - STEP 3 block, the heartbeat, three ledger rows, this instruction) and are committed with this record as they stood. Unit 431's section 4 items 1 and 2 parked verbatim in docs/phase-correctness/PARKED.md as P44 and P45; P39 marked taken up by unit 432. Section 5 against the tree: CwDecoder.cs takes _lastMeasuredToneHz from _tracker.ToneHz at 600 to 603 and writes _probabilistic.ToneHz at 617 to 621, as stated; the four commits 5b6b704c, a7e6e2f2, ec76051e and fa64edc5 exist as unit 430 describes them; 5b6b704c's pending move sat inside the if (_tracker.HasMeasuredPitch) block at 600 to 603, with three fields and SameStationHz after _lastMeasuredToneHz at line 77, and it re-applies cleanly to HEAD (git apply --check); CwDecoder.cs at HEAD is identical to a7e6e2f2. WhyTheMixMoved is in tests/Hamlet.RadioEngine.Tests/Cw/WhatTheOpeningHeardTests.cs; per survey read it prints the verdict recomputed by CwToneSurvey.Analyze over the history the tracker just read, not the property Tracker.Verdict itself - noted, not repaired. 032113's captures row is named 47, elements 102, placeholders 8, and its keyed floor is 47. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 372 s; APP carry-forward 276 of 278 in 162 s, the two losses TheRecordNamesTheSubModePressedTests (Olivia) and TheWindowHoldsBelowItsMinimumTests on You've caused dispatcher loop, the two types 12 of 12 and 3 of 3 alone (P45); captures 51 of 51 in 119 s, 032113 47 named, 47 at or above the bar, 102 elements; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, 35 over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; 17:37 19 edits over 25, CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I; WhatTheStrayLettersRestOnTests 3 of 3: 892 named on 23 keyed recordings, 353 right, 56 wrong, 17 added (8 single-element); WhatTheOpeningHeardTests 9 of 9 in 162 s; the opening: 003901 cold 9 named EII E T NHHK, 003919 cold 25 named EITEETNXNIK EANQNID EANQNIK, the spliced stream 0 to 30 s 9 named EII E T NHHK and 30 to 46.2 s 22 named UIEH EE E E T I NIEEE E E ET N (placeholder) IK. Unit 430's 13 pitch types: AHeldPitchDoesNotOutliveItsEvidenceTests 1 of 4 (P40), EveryElementCarriesItsOwnPitchTests and ThePeakFindsThePitchTheTrackerMissedTests 0 run (P41), the other ten all green: ContactTracker 14, CwSurveyThresholdPin 3, CwToneSurvey 5, CwTrackerSwitch 2, ThePitchCanBeHeld 5, TheSurveyAlreadyUsesAShortWindow 2, TheTrackerSwitchTrace 10, TheTwoPitchesTable 2, CwAdjudication 11, CwDisplacementFloor 6. Keyed, baseline, adjudicated, captures and strays output identical to unit 431's exit but for timing lines. THE NUMBERS TO HOLD: 165 over 565, 17:37 19 over 25, 17 added with 8 single-element, captures 51 of 51 with 032113 at 47, adjudicated 13 of 13, keyed floors 13 of 13, stream 30 to 46.2 s 22 named.
+  
+  ## UNIT 431 - STEP 3
+  
+  STEP: 3
+  APPROACH: re-apply G1 - MeasureGaps refusing a held gap reading whose character gap stands past its word gap, so split letters join - and judge it under 3.2's four tests as R71's span bar and R73's key-aligned added exemption now read them, after tracing which of the 8 single-element added letters a split made
+  MOVE: work around
+  WHY: Units 421, 425 and 428 found no figure that separates strays from right letters, so a sixth would be a loop. Unit 413 traced 17:37's strays to split letters and G1 cut edits 217 to 193, going out only on floors of two keyed recordings, and R71 and R73 have since changed exactly those tests. If G1 still fails, this is step 3's third unit with no kept change, and 3.4 closes the step partial.
+  STATE: partial
+  DECIDED: author's, overrulable - R73 read for a join: a keyed row's above-bar count may fall only inside scored stretches, by no more than the fall in key-aligned added characters there, and with no key-aligned right character lost; unkeyed rows may not fall at all. Keyed floors moved under R73 are lowered in the judging commit, with each character named. 3.6 ticks only if a kept change removes at least one of the 8 single-element added letters. One narrower variant is allowed. If nothing is kept, this is 3.4's third unit (425, 428, 431), and task 3 parks P43 and ticks 3.4. Unit 430's four items are parked as P39 to P42. Per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+  LICENCE: PHASE_PLAN.md R69, R71, R73, R66, R64, R65, section 6 and criteria 3.2, 3.3, 3.4 and 3.6; PARKED.md P6, P19 and P36; unit 416's re-apply under R66 as precedent; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ADVANCES: step 3 criterion 6
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.117 to 1.13.118. PHASE_STATUS.md names unit 431; the launcher had already written CURRENT_STEP 3 there, and it stands. HEAD at entry 242168fc. PHASE_OUTCOME.md, PHASE_STATUS.md, RUN_LEDGER.md and WORK_INSTRUCTIONS.md were modified and uncommitted at entry by the launcher (the UNIT 3 - STEP 7 block, the heartbeat and CURRENT_STEP, two ledger rows, this instruction) and are committed with this record as they stood. Unit 430's section 4 items 1 to 4 parked verbatim in docs/phase-correctness/PARKED.md as P39 to P42. Section 5 against the tree: 687aab1a's check sat after word = wordBoundary * wordBoundary / character and before the return; MeasureGaps is unchanged between 687aab1a~1 and HEAD - the 57 added lines are a new method after it, MeasureCharacterGap (unit 415) - so the check goes back at the same place, CwUnitEstimator.cs between lines 237 and 239, and the reading it refuses is computed exactly as it was. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 371 s; APP carry-forward 275 of 278 in 164 s, the three losses TheRecordNamesTheSubModePressedTests (Olivia, FT4) and TheChipSaysTheChosenModeTests (FT8) on You've caused dispatcher loop, the two types 12 of 12 and 6 of 6 alone; captures 51 of 51 in 118 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; 17:37 19 edits over its 25-character scored region, reading CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I; WhatTheStrayLettersRestOnTests 2 of 2: 892 named on the 23 keyed recordings, 353 right, 56 wrong, 17 added (8 single-element). Keyed, baseline, adjudicated, captures and strays output identical to unit 430's exit but for timing lines. THE NUMBERS TO HOLD: 165 over 565, 17:37 19 over 25, 17 added with 8 single-element, captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
+  
+  ## UNIT 430 - STEP 7
+  
+  STEP: 7
+  APPROACH: trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+  MOVE: continue
+  WHY: Unit 429 ticked 7.3 and named CwDecoder.cs 617 to 621, where the mix left the sender a second before the speed collapsed. 7.4 is the change against that line, untried and with its instrument already in the tree, while 3.6 has five span and feature routes measured with none separating and a sixth would be a loop.
+  STATE: partial
+  DECIDED: author's, overrulable - unit 429's items 1 and 2 taken as decisions, not rulings: the mixdown pitch changes first, and the opening is reported cold and on the spliced stream 0 to 46.2 s; for 7.4, 3.2's first test reads does not rise, since no key scores the opening; 7.4 ticks only on a kept change; 3.4's count is not moved by a step 7 unit; items 3 and 4 parked as P37 and P38; one narrower variant allowed; per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+  LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ADVANCES: step 7 criterion 4
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.116 to 1.13.117. PHASE_STATUS.md names unit 430 and CURRENT_STEP 7; the launcher had written CURRENT_STEP 3 there. HEAD at entry 003f2c98. PHASE_OUTCOME.md, PHASE_STATUS.md and RUN_LEDGER.md were modified and uncommitted at entry by the launcher (the UNIT 2 - STEP 7 block, the heartbeat, the ledger row) and are committed with this record as they stood. Unit 429's section 4 items 3 and 4 parked in docs/phase-correctness/PARKED.md as P37 and P38 with 429's proposed rulings. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 375 s; APP carry-forward 277 of 278 in 165 s, the one loss TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing on You've caused dispatcher loop, the type 4 of 4 alone; captures 51 of 51 in 120 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; WhatTheStrayLettersRestOnTests 2 of 2: 892 named on the 23 keyed recordings, 353 right, 56 wrong, 17 added (8 single-element); WhatTheOpeningHeardTests 4 of 4 in 141 s. Keyed, baseline, adjudicated, captures and strays output identical to unit 429's but for timing lines. THE OPENING'S NAMED CHARACTERS AT ENTRY, a named character being any settled character but a space or the placeholder: 003901 cold, whole 30 s file, 9 named, EII E T NHHK; 003919 cold, whole 30 s file, 25 named, EITEETNXNIK EANQNID EANQNIK; the spliced stream 0 to 46.2 s, 31 named and 1 placeholder, EII E T NHHK then UIEH EE E E T I NIEEE E E ET N (placeholder) IK; the live sidecars beside them, 003901 whole 25 named, E ET E E E E E E E E E E A TE E T N QNIK EE, and 003919's addition 18 named, EESIH S E E TEIE E RIEEE. THE NUMBERS TO HOLD: 165 over 565, 17 added, captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
+  
+  ## UNIT 429 - STEP 7
+  
+  STEP: 7
+  APPROACH: trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+  MOVE: work around
+  WHY: Criterion 3.6 has five span and feature routes measured with none separating added from right single elements, and unit 428 did not advance, so a sixth would be a loop and a second non-advance in a row; 7.3 is an untried, dependency-free trace on recordings in the tree, and its litter is the same stray E and T 3.6 chases, seen against a locked stretch from the same sender.
+  STATE: partial
+  DECIDED: author's, overrulable - routing from 3.6 to 7.3 rather than 6.5 (HM-OPEN-087) or 7.8 (P27, the owner's); 3.4 is left for the next step 3 unit, since two consecutive step 3 units have kept nothing and the criterion asks three; unit 428's items 1 and 2 parked as P35 and P36; which locked recording is compared, how the overlaps are spliced, and the per-type timeouts are the unit's, reported
+  LICENCE: PHASE_PLAN.md R68, R64, R65, R72, section 6 and criterion 7.3; ARBITER.md section 4; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ADVANCES: step 7 criterion 3
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.115 to 1.13.116. PHASE_STATUS.md names unit 429 and CURRENT_STEP 7. HEAD at entry f94886a1. Unit 428's section 4 items 1 and 2 parked in docs/phase-correctness/PARKED.md as P35 and P36 with 428's proposed rulings; item 3 was for the record and is not parked. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 369 s; APP carry-forward 277 of 278 in 164 s, the one loss TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing on You've caused dispatcher loop in 1 ms, the type 3 of 3 alone; captures 51 of 51 in 119 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; WhatTheStrayLettersRestOnTests 2 of 2: 892 named on the 23 keyed recordings, 353 right, 56 wrong, 17 added (8 single-element). Keyed, baseline and adjudicated output identical to unit 428's exit but for timing lines. THE NUMBERS TO HOLD: 165 over 565, 17 added, captures 51 of 51.
+  
+  ## UNIT 428 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 3.6 asks that the stray single-element characters be traced and attacked with the count of added letters reported before and after, and unit 421 measured that no fixed bar separates them
+  STATE: partial
+  DECIDED: the window, the ratio, and the per-type timeouts are the author's, overrulable, and are chosen from the traced distributions rather than from which changes they admit
+  LICENCE: PHASE_PLAN.md R66, R69, R71, R72, R73, section 3, section 6; HM-DEC-181; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+  ADVANCES: step 3 criterion 6
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.114 to 1.13.115. PHASE_STATUS.md names unit 428 and CURRENT_STEP 3. HEAD at entry 9db61107. HM-DEC-181 recorded with its CLAUDE.md row. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 373 s; APP carry-forward 278 of 278 in 154 s; captures 51 of 51 in 119 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46 with 17:37 at 19 over 25, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; WhatTheStrayLettersRestOnTests.TheStraysAndTheSpansTheyStandOn 1 of 1: 892 named on the 23 keyed recordings, 353 right, 56 wrong (31 single-element), 17 added (8 single-element), 466 outside every stretch. THE NUMBERS TO BEAT: 165 over 565, 17 added. THE INSTRUCTION AGAINST THE TREE: no capture dated 2026-09-25 is in tests/fixtures/cw/captured/unadjudicated or anywhere under the repository or the user profile - the newest are the 2026-09-24 00:39 to 00:45 UTC thirteen - so task 1 runs on the keyed recordings alone. The sheet's spanLlr first figure, the floors' SpanBar of 13.0 and the decoder's StrayElementSpan of 13.0 are one number, CwProbabilisticCharacter.SpanLogLikelihoodRatio, computed in CwProbabilisticDecoder.Spell, carried to CwCharacter by CwProbabilisticStream and printed by MainWindowViewModel.SpanRatioLine. CwProbabilisticDecoder.Judged admits a named character on two tests, not one: SpanMargin at or above CharacterMargin 1.0, and, for a single element, raw span at or above StrayElementSpan 13.0 (unit 421); a word gap passes unjudged. The unsure the sheet counts is the placeholder, CwConfidence.Unreadable, which a floor does not count. R71 and R73 read as the instruction states them.
+  
+  ## UNIT 427 - STEP 6
+  
+  STEP: 6
+  APPROACH: build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 asks that every sentence the app states about the radio or a signal be true or say it does not know, and a card that gives an entity from a prefix while holding a grid that contradicts it states a falsehood; the sweep clears the way to criterion 5.1, the owner's verdict
+  STATE: partial
+  DECIDED: the card's exact wording, the form of the sweep, which differences count as one-line repairs, and the per-type timeouts are the author's, overrulable
+  LICENCE: HM-DEC-180; PHASE_PLAN.md R65, R74, section 6; CLAUDE.md 0.0, 0.2, 0.5 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+  ADVANCES: none - clears a blocker: criterion 5.1
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.113 to 1.13.114. PHASE_STATUS.md names unit 427 and CURRENT_STEP 6. HEAD at entry 79ac7034. HM-DEC-180 recorded with its CLAUDE.md row. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 277 of 278, the one lost to the dispatcher loop (TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow) green alone, 1 of 1; captures 51 of 51 in 122 s; adjudicated 13 of 13; keyed floors 13 of 13. THE INSTRUCTION AGAINST THE TREE: a card's entity is decided from the prefix in Ft8ContactCard.WhereHeIs and CountryOf (DxccPrefixes.EntityOf, then EntityQualifier.DescribeFromGrid and EntitySpoken.Short); the PSK31 and Olivia row hover names it in DigitalDecodeRow's hover, line 2. A grid is read from a received message by Ft8MessageSplit.IsGrid into Ft8CardFacts.Grid for the card and into DigitalDecodeRow.HisGrid for a text row. Nothing compares the two: EntityQualifier's remarks rule the opposite, THE COUNTRY NEVER COMES FROM THE GRID - where the two disagree the callsign wins, and Ft8ContactCard.WhereHeIs says NOTHING BELOW THE COUNTRY IS EVER INFERRED, not from the grid; HM-DEC-180 now overrules the first, and no grid-to-place table exists in the tree. The code says entity in the engine (DxccPrefixes, EntityQualifier, EntitySpoken, NudgeSet) and country on the card (Ft8ContactCard._country, CountryOf) and in NudgeKind.Visible's text. The new-entity quill is the nudge mark, NudgeSet.WouldOpen, keyed on the callsign alone through DxccPrefixes.EntityOf, asked by MainWindowViewModel.MarkIfItOpensSomething for a row and Nudged for a card. data/psk31/canned.json exists with seven lines. Favorites under the green zone and the chip filled by chosen mode are checked by task 2 on the screen rather than here.
   
   STEP: 7
   APPROACH: follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
@@ -1126,9 +1209,115 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ADVANCED: no
   ATTEMPT: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | no | executed | follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
   REASON: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 1 - STEP 6
+  
+  STEP: 6
+  APPROACH: build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+  HIT: section 4 wants a ruling: yes - Item 3 asks the owner to rule on a sentence that promises a send that does not happen and on whether carrier drop should release the hold, which is a promise about a send and touches transmit.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 6 asks that every sentence the app states about the radio or a signal be true or say it does not know, and a card that gives an entity from a prefix while holding a grid that contradicts it states a falsehood; the sweep clears the way to criterion 5.1, the owner's verdict
+  DECIDED: the card's exact wording, the form of the sweep, which differences count as one-line repairs, and the per-type timeouts are the author's, overrulable
+  LICENCE: HM-DEC-180; PHASE_PLAN.md R65, R74, section 6; CLAUDE.md 0.0, 0.2, 0.5 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+  COST: 10.528144399999999
+  ACCOMPLISHED: a station's card says where he actually is, and the owner has a written answer on all fourteen of the things he asked for this week
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Every exit criterion is met except 6.5, and the report says the Have a look button is still open under HM-OPEN-087 with no work on it and no owner decision it is waiting for.
+  ADVANCED: blocker
+  ATTEMPT: 5.1 | unit 1 launched 2026-09-25T01:41:45.314Z | blocker | executed | build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+  
+  ## UNIT 1 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - All three items are about test fixtures, which figure to trace and a record note on admission tests, and none touches keying, transmit, money or what the product states to the operator.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 3 criterion 3.6 asks that the stray single-element characters be traced and attacked with the count of added letters reported before and after, and unit 421 measured that no fixed bar separates them
+  DECIDED: the window, the ratio, and the per-type timeouts are the author's, overrulable, and are chosen from the traced distributions rather than from which changes they admit
+  LICENCE: PHASE_PLAN.md R66, R69, R71, R72, R73, section 3, section 6; HM-DEC-181; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+  COST: 3.707350199999999
+  ACCOMPLISHED: the litter between real words stops reaching the transcript as confident text, or the project knows on measured distributions that relative span cannot find it either
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 3.1, 3.2, 3.3, 3.5 and 3.7 are ticked, and the report quotes the exit round in support of 3.5, but 3.6 is not met because nothing was built and added letters stayed at 17 before and after, and 3.4 is not met, while the missing traffic net recordings are not one of the three things the phase stops for.
+  ADVANCED: no
+  ATTEMPT: 3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | no | executed | trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
+  REASON: 3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 2 - STEP 7
+  
+  STEP: 7
+  APPROACH: trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, and its four parked items are about the decoder's mixdown pitch, which bench to judge on, a parked second cause and the wording of diagnostic counters, so none touches keying or transmit, money or what the product promises the operator.
+  MOVE: work around
+  WHY: Criterion 3.6 has five span and feature routes measured with none separating added from right single elements, and unit 428 did not advance, so a sixth would be a loop and a second non-advance in a row; 7.3 is an untried, dependency-free trace on recordings in the tree, and its litter is the same stray E and T 3.6 chases, seen against a locked stretch from the same sender.
+  DECIDED: author's, overrulable - routing from 3.6 to 7.3 rather than 6.5 (HM-OPEN-087) or 7.8 (P27, the owner's); 3.4 is left for the next step 3 unit, since two consecutive step 3 units have kept nothing and the criterion asks three; unit 428's items 1 and 2 parked as P35 and P36; which locked recording is compared, how the overlaps are spliced, and the per-type timeouts are the unit's, reported
+  LICENCE: PHASE_PLAN.md R68, R64, R65, R72, section 6 and criterion 7.3; ARBITER.md section 4; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 6.472469199999999
+  ACCOMPLISHED: the project knows, from the decoder's own figures, why the first minutes on 7.052 read E ET E E before the QSO came through clean, and which line a repair has to change
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: 7.3 is met, but 7.1, 7.2, 7.4, 7.6 and 7.8 are still open, so step 7 is not done.
+  ADVANCED: yes
+  ATTEMPT: 7.3 | unit 2 launched 2026-09-25T03:52:47.073Z | yes | executed | trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+  
+  ## UNIT 3 - STEP 7
+  
+  STEP: 7
+  APPROACH: trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, and its four parked items cover decoder mixdown work, a red test to raise as an issue, and notes on test naming and figures, none of which asks the owner to decide anything about transmit, money, or a promise to the operator.
+  MOVE: continue
+  WHY: Unit 429 ticked 7.3 and named CwDecoder.cs 617 to 621, where the mix left the sender a second before the speed collapsed. 7.4 is the change against that line, untried and with its instrument already in the tree, while 3.6 has five span and feature routes measured with none separating and a sixth would be a loop.
+  DECIDED: author's, overrulable - unit 429's items 1 and 2 taken as decisions, not rulings: the mixdown pitch changes first, and the opening is reported cold and on the spliced stream 0 to 46.2 s; for 7.4, 3.2's first test reads does not rise, since no key scores the opening; 7.4 ticks only on a kept change; 3.4's count is not moved by a step 7 unit; items 3 and 4 parked as P37 and P38; one narrower variant allowed; per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+  LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 7.2853632000000035
+  ACCOMPLISHED: the decoder stays on the sender it is reading when a session opens, so the first minutes on 7.052 read the group that was sent rather than E ET E E, with nothing already read lost - or, if the change fails, the measured reason it failed
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 7.3, 7.5 and 7.7 are met, but 7.1, 7.2, 7.4, 7.6 and 7.8 are still open, and 7.4 is not met because both mixdown changes failed 3.2's second and fourth tests on cw-2026-08-22-032113 and were reverted, which is only the first of the three units with no kept change needed before 7.4 closes partial.
+  ADVANCED: no
+  ATTEMPT: 7.4 | unit 3 launched 2026-09-25T04:55:53.495Z | no | executed | trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+  REASON: 7.4 | unit 3 launched 2026-09-25T04:55:53.495Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 4 - STEP 3
+  
+  STEP: 3
+  APPROACH: re-apply G1 - MeasureGaps refusing a held gap reading whose character gap stands past its word gap, so split letters join - and judge it under 3.2's four tests as R71's span bar and R73's key-aligned added exemption now read them, after tracing which of the 8 single-element added letters a split made
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Item 1 asks the owner to either write an answer key for a test recording or change how a join is scored, which is a question about test shape and scoring rather than keying, transmit, money or an operator promise, and item 2 is marked for the record with no ruling proposed.
+  MOVE: work around
+  WHY: Units 421, 425 and 428 found no figure that separates strays from right letters, so a sixth would be a loop. Unit 413 traced 17:37's strays to split letters and G1 cut edits 217 to 193, going out only on floors of two keyed recordings, and R71 and R73 have since changed exactly those tests. If G1 still fails, this is step 3's third unit with no kept change, and 3.4 closes the step partial.
+  DECIDED: author's, overrulable - R73 read for a join: a keyed row's above-bar count may fall only inside scored stretches, by no more than the fall in key-aligned added characters there, and with no key-aligned right character lost; unkeyed rows may not fall at all. Keyed floors moved under R73 are lowered in the judging commit, with each character named. 3.6 ticks only if a kept change removes at least one of the 8 single-element added letters. One narrower variant is allowed. If nothing is kept, this is 3.4's third unit (425, 428, 431), and task 3 parks P43 and ticks 3.4. Unit 430's four items are parked as P39 to P42. Per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+  LICENCE: PHASE_PLAN.md R69, R71, R73, R66, R64, R65, section 6 and criteria 3.2, 3.3, 3.4 and 3.6; PARKED.md P6, P19 and P36; unit 416's re-apply under R66 as precedent; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 4.493368799999999
+  ACCOMPLISHED: the stray E and T that are pieces of a split letter join back into the letter the sender keyed, so 17:37 reads WB6 where it read W T E E T E, with no real letter lost - or step 3 closes partial with its measurements on record, so the loop stops spending on it
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: The step is closed partial under 3.4 with 3.1, 3.2, 3.3, 3.5 and 3.7 met, but 3.6 is unmet because G1 failed test 2 on 17:37 with its keyed floor falling from 46 to 38 and test 4 on 004133 with 28 falling to 25, was reverted, and left keyed edits at 165 and added letters at 17.
+  ADVANCED: no
+  ATTEMPT: 3.6 | unit 4 launched 2026-09-25T06:43:19.918Z | no | executed | re-apply G1 - MeasureGaps refusing a held gap reading whose character gap stands past its word gap, so split letters join - and judge it under 3.2's four tests as R71's span bar and R73's key-aligned added exemption now read them, after tracing which of the 8 single-element added letters a split made
+  REASON: 3.6 | unit 4 launched 2026-09-25T06:43:19.918Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 5 - STEP 7
+  
+  STEP: 7
+  APPROACH: release a pending mixdown pitch move once any survey read since the mix was last set confirmed keying within 25 Hz of it (P39), checked first by replaying 032113's two held moves and the opening's 525 Hz move against four release rules, then built once and judged under 3.2's four tests
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The first item asks how to read the replay gate and whether P39 may be judged as a new unit, which is a question about a test and a plan mechanism and not about keying, money or an operator promise, and the second item is only for the record.
+  MOVE: work around
+  WHY: Every recorded 3.6 route has failed, and G1's way back (P44) is the owner's. At 7.4, unit 430's two release rules both cured the opening and failed on 032113 alone, traced to a hold spanning two reads. This rule looks back over every read since the mix was set, and it is gated on a replay of the recorded reads, not on a score.
+  DECIDED: author's, overrulable - routing to 7.4 over 3.6; the release rule with unit 430's 25 Hz kept; the replay gate (follows 032113's 650 and 500 Hz moves, holds the opening's 525 Hz move, no other difference from 5b6b704c) or nothing is built; one attempt and no variant; test 1 reads does not rise, as unit 430's arbiter decided; 7.4 ticks only on a kept change, and its three-unit count counts 7.4 units only; the opening reported as text beside EANQNID with its count; unit 431's items parked as P44 and P45. No self-ruling authorizes work outside the tasks.
+  LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; PARKED.md P39 and P42; unit 430's arbiter decision on test 1; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 3.3431708000000016
+  ACCOMPLISHED: the first minute of a CW session reads the sender's letters instead of a run of E and T, because the decoder no longer follows its pitch tracker off the sender, and no recording loses a letter it read before - or the replay or the four tests show why this release rule does not do it, with the numbers on record
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 7.3, 7.5 and 7.7 are met, but 7.1, 7.2, 7.4, 7.6 and 7.8 are still open, and this unit changed nothing because the replay gate failed on 031905, so 7.4 stays open with its second unit in a row keeping no change.
+  ADVANCED: no
+  ATTEMPT: 7.4 | unit 5 launched 2026-09-25T07:45:38.665Z | no | executed | release a pending mixdown pitch move once any survey read since the mix was last set confirmed keying within 25 Hz of it (P39), checked first by replaying 032113's two held moves and the opening's 525 Hz move against four release rules, then built once and judged under 3.2's four tests
+  REASON: 7.4 | unit 5 launched 2026-09-25T07:45:38.665Z | the unit ran to completion and the criterion did not flip from unmet to met
 
   --- CLAUDE.md ---
-  1402 lines, 209936 bytes
+  1404 lines, 211415 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -1148,17 +1337,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 884 bytes
+  19 lines, 892 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: TASK 4 of 4
-  WORK_INSTRUCTION: 426 - the preamp follows the overload after the tune-in
+  TASK: TASK 3 of 3
+  WORK_INSTRUCTION: 432 - the mixdown follows a move once any read since it was set has confirmed it
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-24T21:06:57-04:00
-  NOTE: Unit 426 complete and pushed: the preamp now goes off on an overload after the tune-in and back when it clears, his hand wins; asks to change a field Hamlet set 60 to 12, 0 where the block owns it; 7.8 left unticked for the attenuator sentence (P27); output.md written
+  UPDATED: 2026-09-25T04:43:38-04:00
+  NOTE: Unit 432 complete and pushed: P39's replay followed 032113's 650 Hz move and held the opening's 525 Hz move but differed from 5b6b704c on 031905's 300 Hz moves, so nothing was built; 165 over 565 and 032113 at 47 unchanged; 7.4 open; output.md written
   
   ---
   

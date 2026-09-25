@@ -62,6 +62,21 @@ REVERSES: yes   or   REVERSES: no
 and where it is yes, one more line quoting that ruling from the report:
 REVERSED: the ruling as the report states it
 
+A SECOND QUESTION, ALSO IN ONE WORD. The instruction that produced this
+report chose one criterion to advance. Does that choice FOLLOW FROM THE
+PLAN - the step and criteria above - or ONLY FROM THE PREVIOUS REPORT,
+which is to say from what the last unit raised rather than from what the
+phase is for? Do not judge whether the choice was wise, and do not judge
+the author. Judge only what the instruction CITES for it. Answer:
+FOLLOWS: plan     the criterion and its reasoning come from the plan
+FOLLOWS: report   the criterion was chosen because the last report
+                  raised it, and the plan is cited for form only
+and where it is report, one more line saying what it cited instead:
+FOLLOWED: one sentence, plain text
+
+The instruction it produced named  step 7 criterion 4  and gave this WHY:
+
+At 7.4 all three rules tried (5b6b704c, ec76051e, P39) asked only whether the survey confirmed keying at the new pitch, and unit 432 measured that this cannot tell 031905's or 032113's right moves from the opening's wrong one; comparing the two pitches on the decoder's own envelope is the one question not yet asked. 3.6's four routes are all recorded as failing and its way back (P44) is the owner's, so 7.4 is the less exhausted of the two.
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -70,198 +85,281 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
-## Step 6 - The screen stops saying what is not so
+﻿STEP: 7 | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
+## Step 7 - The decoder hears what is there
 
-**Delivers:** R62. What Tim reads while he is deciding whether to trust the app.
+**Delivers:** R67 and R68. What the decoder cannot hear at all, and the receiver it listens
+through.
 
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
-- [x] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
-- [x] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
-- [x] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
-- [x] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
-- [x] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
-- [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
-- [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
+- [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
+- [x] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
+- [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+- [x] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
+- [x] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
+- [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [ ] 7.8 The preamp is set from what the radio's manual states and nothing contradicts it (R74): the CW conditions carry preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz, with the manual's page cited in the condition's own text; the preamp is turned off when the receiver reports overloading rather than by band; no component asks the operator to change the preamp, or any other field a condition states, after Hamlet has set it - watched failing first at 7.030 MHz, where the old rule turned it off, and at 14.050, where a voice contradicted the setup; and the report prints, for one frequency on each HF band and at 50 MHz, what is asked for, what is written, and every sentence the app would say about the preamp there.
 
-**Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
+**Depends on:** nothing. Independent of every other step.
 
+## Â§5 Dependencies
+
+Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
+and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
+else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
+and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
+halt.
+
+## Â§6 Branching
+
+- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
+  fact the product states to the operator about a signal, a station or a send. A test's
+  shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
+- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **7.5 changes what is written to the radio, and that is its point** (R67). It may make the
+  app write *less* - a value already correct is not rewritten - and it may carry a band rule
+  the condition's own text already states. **It may not change what a condition asks for**,
+  and nothing that keys or transmits is touched.
+- **Removing a below-bar character is not lowering a floor** (R71), once 3.7 has set the bar.
+  A row whose above-bar count falls is a regression and the change goes back out. Until 3.7
+  is met, every named character counts as it does today.
+- **A character the key aligns as added may leave a floor** (R73), inside a scored stretch of
+  a keyed recording and nowhere else, with every removed character named in the report.
+- **No voice asks the operator to change a setting Hamlet set** (R74). A criterion is met by
+  making the setting right and the sentences agree with it, never by silencing a voice that
+  is telling the truth.
+- **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
+  movement fails 3.2's third test, and a report invoking the clause prints the reading
+  before and after.
+- **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
+  without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
+  finding noticed on the way past **never halts the loop**, whatever it touches. The
+  arbiter parks it and authors the next unit.
+- **When a unit cannot advance its criterion, the next unit is authored against a different
+  open criterion** (R64, R65). The loop halts only at stop 1, when nothing but the owner's
+  verdict is left.
+- **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
+  touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
+- **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
+  headless dispatcher loop - counts neither way and is re-run once.
+- **A correctness number is never reported alone** (Â§3.1). A report that gives a percentage
+  without edits, scored length and the key's kind is incomplete and the arbiter says so.
+- **No key may be invented for audio nobody could read** (R61). If the scored region is
+  unclear, score less rather than guess more.
+- **A named floor from 2.2 is never lowered**, and a capture row's named count is never
+  lowered. Placeholders are free (R57).
+- **The generator is never the sole evidence** for keeping a change (1.4, Â§12.5).
+- **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+  is met by making a sentence true, never by deleting the sentence and saying nothing, and
+  never by changing a radio setting to match a claim.
+- **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
+  should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
+  no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
+  expect*, and the loop halted at stop 7 with the unit's work complete.
+- **A unit that cannot advance its own criterion does not halt the phase** (R64). It reports
+  what it measured, and the arbiter authors the next unit against a different criterion.
+  Preference when nothing is blocked: step 3 first, then step 6.
+- **Tonight's thirteen floors are never lowered and the older rows are never retired** (R63).
+- **Anything would change what keys or transmits.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
+  alone with its own timeout.
+
+## Â§7 Carried
+
+The restore phase's 5.1, Tim's, at `docs/phase-cw-run/`; `#15`, `#43`, `#44` and `#42`,
+parked there with their measurements; `PHASE_GOAL.md`'s 80 percent, which this phase
+measures toward but does not promise; W1AW as an exact-key confirmation whenever a bulletin
+lands; the scanner; the screen findings in `OPEN_ISSUES.md` - the RF gain sentence, the
+window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wording;
+HM-OPEN-063 and HM-OPEN-070.
+
+## Â§8 Revision record
+
+- **2026-09-24, after unit 423.** R73 a key-identified added character may leave a floor, so
+  3.6 can pass; R74 Hamlet sets the radio from the manual and nothing contradicts what it set,
+  as criterion 7.8.
+- **2026-09-24, after unit 420.** R71: a floor counts characters at or above a stated span
+  bar, so the stray-letter work can proceed; criterion 3.7 re-measures the 51 rows once.
+- **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as
+  criterion 7.7, so 7.5's last hole closes and 7.030 behaves.
+- **2026-09-24, after unit 418.** R67 entering a mode sets the receiver correctly and it
+  stays set, as criterion 7.5; R68 step 7 for the speed ceiling and acquisition; R69 the
+  stray single-element letters as criterion 3.6.
+- **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
+  own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
+  moved - can be re-applied.
+- **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
+  a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
+  only when the criterion being worked needs the ruling. Written after unit 412 completed
+  its work and the loop halted at stop 3 on an ask 412 had carried rather than on anything
+  blocking a criterion.
+- **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
+  measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
+  the keys by differencing, 2.5 the floors, 6.7 tonePeak.
+- **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
+  always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
+  report was refused over one word.
+- **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
+  from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
 --- the unit's report follows ---
 
-A. THE PHASE GOAL. Hamlet reads a CQ call correctly - judged by a correctness number and, at
-   the end, by Tim at the radio (criterion 5.1).
-B. THIS STEP AND ITS EXIT CRITERIA. Step 6, the screen stops saying what is not so: 6.1 to 6.4,
-   6.7 and 6.8 ticked, 6.6 the floors and carry-forward lines green at exit, 6.5 the Have a
-   look button still open under HM-OPEN-087. This unit clears a blocker to 5.1 rather than
-   ticking a step 6 criterion; 6.6 holds at its exit.
-C. WHAT THIS REPORT ADDS. Item 14 built; a written answer on all fourteen of the owner's UI
-   items; one word repaired. It bears on B through 6.6, which still holds, and through item 14,
-   which is step 6's rule applied to the card. One finding bears on A: a PSK31 CQ that carries
-   a grid is read as no station at all (P34).
-
 READ IN THIS ORDER.
 
-A. Item 14 built, with the card's wording quoted.
-B. The fourteen, one line each: built-and-right, built-but-different with
-   the difference quoted, or unverifiable.
-C. The rest. Section 4 raises 6 items, none blocking.
+A. Hamlet reads a CQ call correctly. Steps 0 to 2 done; 3 partial and
+   closed under 3.4 with 3.6 open; 4 not started; 5 the owner's; 6 partial
+   with 6.5 open; 7 partial with 7.1, 7.2, 7.4, 7.6 and 7.8 open.
+B. Step 7, criterion 7.4: the mix follows a move of more than 25 Hz only
+   when the decoder's envelope keys harder at the target than at the mix.
+   The replay answered yes on 032113's 650 Hz move and no on the opening's
+   525 Hz move. Nothing was built, so nothing was kept or taken back out.
+   032113 stays at 47 above the bar with 102 elements, and 031905 at 36
+   with 108. The opening is unchanged beside EANQNID. 7.4 is closed
+   partial with P48 and is not ticked.
+C. This report adds one finding that bears on B. At 30.54 s the decoder's
+   own envelope keys harder at 525 Hz than at the sender's 625 Hz, so the
+   envelope agrees with the tracker's wrong move. Section 4 raises 2
+   items. Neither stands in the way of 7.4 as it now stands, closed
+   partial. Nothing halts the phase.
 
-UNIT:       427 - complete at task 4 of 4, none dropped - 2026-09-24 22:31
-PHASE GOAL: Hamlet reads a CQ call correctly, and Tim at the radio agrees it read
-UNIT GOAL:  a card says where a station is when his grid says otherwise than his prefix, and the owner gets a checked answer on every one of his fourteen UI items
-ADVANCED:   no - a blocker-clear by design; no decoder path was touched
-NUMBER:     of the owner's fourteen: 11 built-and-right, 3 different, 0 unverifiable
-DRIFT:      0
+```
+UNIT:       433 - complete at task 3 of 3, none dropped - 2026-09-25 05:45
+PHASE GOAL: Hamlet reads a CW CQ call as the text that was sent, measured against keys, and Tim confirms it at the radio
+UNIT GOAL:  stop the mixdown following the tracker off the sender in the 7.052 opening by comparing keying at the two pitches on the decoder's own envelope, without costing 032113 or any other row, gated on a replay and kept only under 3.2's four tests
+ADVANCED:   no - the replay gate answered no on the opening's 525 Hz move, so no rule was built, and 7.4 closes partial without a tick
+NUMBER:     keyed 165 -> 165 over 565, inferred keys; 032113 above-bar 47 -> 47; opening stream 30 to 46.2 s 22 -> 22 named, UIEH EE E E T I NIEEE E E ET N ■IK -> unchanged
+DRIFT:      1
+```
 
 ## 1. What Claude did
 
-**Complete, at task 4 of 4, none dropped.** Machine QUIVERFULL, project Hamlet, confirmed by
-the gate (SHACK_FACTS.md and the Cw decoder present, no CoreHMI.sln or MURC.sln), branch main.
-Six commits, all pushed with push rc 0: 44f93134, 32b0c155, fada9f7f, 8f0f4117, ddeb5c95
-and the exit commit that carries this file.
+**Complete, at task 3 of 3, with none dropped.** Task 2 built nothing because section 6's gate said to build nothing if either replay answer was no. That is the gate's instruction, not a drop. The session ran on QUIVERFULL, in the Hamlet project on main, and the project gate passed. Entry HEAD was `f1e751ea`.
 
-**Task 0, the record.** HM-DEC-180 goes in DECISIONS.md, newest first, as the instruction wrote it.
-The CLAUDE.md §1 row is dated 2026-09-24 under the headline *A station's grid beats his prefix's
-entity*. PHASE_OUTCOME.md has `UNIT 427 - STEP 6` from the decision block. PHASE_STATUS.md
-names unit 427, with CURRENT_STEP at 6. The version goes from 1.13.113 to 1.13.114. The
-entry round:
+**Task 0, the record (`f5271938`).**
+- Bumped the version from 1.13.119 to 1.13.120.
+- `PHASE_STATUS.md` now names unit 433 and CURRENT_STEP 7. The launcher had left CURRENT_STEP at 3 and WORK_INSTRUCTION at 432.
+- Added `## UNIT 433 - STEP 7` to `PHASE_OUTCOME.md` from the decision block, with an ENTRY line.
+- Parked unit 432's section 4 items 1 and 2 verbatim as P46 and P47, each with its note from section 3.
+- Committed the launcher's four root files as they stood.
 
-- Build: 0 errors.
-- Engine carry-forward: 178 of 178.
-- App carry-forward: 277 of 278. The one loss was to the dispatcher loop, and that name passed
-  alone.
-- Captures 51 of 51. Adjudicated 13 of 13. Keyed floors 13 of 13.
+**Section 5 against the tree: every check holds.**
+- `CwDecoder.cs` lines 600 to 603 and 617 to 621 are as stated, and the file is identical to `a7e6e2f2`.
+- `Envelope(samples, sampleRate, toneHz)` is public and static and passes `IntegratorBandwidthHz` (45.0). The overload that takes a bandwidth is beside it.
+- `CwToneSurvey` defaults to `seconds = 3.0`.
+- Both printers are present, and `WhenEachRuleFollows` came in at `f0845a92`.
+- The 032113 row is 47 and 102, and its keyed floor is 47.
+- The version was 1.13.119.
 
-**The instruction against the tree (section 5).** It matches, with two notes:
-- A card's entity came only from the prefix, through `DxccPrefixes.EntityOf` in
-  `Ft8ContactCard.WhereHeIs` and `CountryOf`, and in line 2 of the text row's hover.
-- The grid reaches the card as `Ft8CardFacts.Grid` and the text row as `DigitalDecodeRow.HisGrid`.
-- Nothing compared the two. `EntityQualifier`'s own remarks ruled the opposite (*where the two
-  disagree the callsign wins*), and HM-DEC-180 now overrules that. **No grid-to-place table
-  existed anywhere in the tree.**
-- The engine says *entity*. The card said *country*, in `_country` and `CountryOf`.
-- The new-entity quill is `NudgeSet.WouldOpen`, and it keyed on the callsign alone.
-- `data/psk31/canned.json` has seven lines.
-- No item turned out to have no seam. Every one of the thirteen was driven.
+**Entry round and exit round, one type per invocation.** Apart from timing, every output at exit is identical to entry. At entry, every output was also identical to unit 432's exit.
 
-**Task 1, the grid wins.** I watched it fail first: `TheGridBeatsThePrefixTests` was red 1 of 4
-(commit 32b0c155). Then I built it:
-- `data/callsigns/grid-places.json` holds twelve boxes covering California, the lower 48,
-  Alaska and Hawaii, each with a reason.
-- `GridPlaces.Of` places a four-character square only where the whole square lies inside one
-  box. `GridPlaces.Contradiction` compares that place with the prefix.
-- Four places ask it: the card (its face line, its header, the globe caption and a hover row),
-  line 2 of the text row's hover, and `NudgeSet.WouldOpen` and `Explain`, which now take the
-  grid he sent.
-- The PSK31 row's `HisGrid` is now set before the quill is asked.
+| Check | Entry | Exit |
+|---|---|---|
+| Build, warnings as errors | 0 errors | 0 errors |
+| Engine carry-forward | 178 of 178, 371 s | 178 of 178, 370 s |
+| App carry-forward | 278 of 278, no dispatcher-loop loss | 278 of 278, no dispatcher-loop loss |
+| Captures | 51 of 51, 120 s | 51 of 51, 119 s, every row the same |
+| Adjudicated | 13 of 13 | 13 of 13 |
+| Keyed floors | 13 of 13 | 13 of 13 |
+| All keyed | 165 over 565 | 165 over 565 |
+| 17:37 | 19 over 25 | 19 over 25 |
+| Added letters | 17, 8 of them single-element | 17, 8 of them single-element |
+| `WhatTheOpeningHeardTests` | 12 of 12, 170 s | 15 of 15, 181 s |
+| Pitch types, 600 s each | P40 1 of 4; P41's two run 0; the other ten green | not run: task 2 built nothing |
 
-After: 4 of 4. `ThePsk31ReadsTheConversationTests` failed on its hash pin of `NudgeSet.cs`. I
-re-pinned it under HM-DEC-180, with a comment, as unit 327 did. That was a decision of my own.
+Against the tree at exit:
+- The eleven transmit files are unchanged from `7e209cb4`.
+- `src` and `data` are unchanged from `f1e751ea`.
 
-**Task 2, the sweep.** `TheFourteenOnScreenTests` has twelve facts that assert nothing. Each
-item is driven through the view model or a realized headless window, and what is there is
-printed. Before counting item 13 as different, I checked that no unit 390 commit built it
-(406d1efe to 74fd016a).
+**Task 1, the replay (`1b5d75ae`).** I added `WhatTheOpeningHeardTests.WhereTheSenderKeysHarder`. It asserts nothing and writes nothing, and it drives the decoder a hop at a time, as `WhenEachRuleFollows` does. It keeps the same tracker record and runs two rules over it:
+- the entry rule;
+- section 6's rule, exactly as fixed there.
 
-**Task 3, one word.** I made one repair: item 11's empty favorites line, watched red first (3
-of 4). Items 1, 8 and 13 were larger than a word, so I parked them as P31 to P33.
+The entry rule reproduces the entry decoder's mix on every measured hop of all three runs, with 0 differences. The output is in `.run-unit/unit433-replay-t1.txt`.
 
-**Task 4, the exit round.**
-- `Hamlet.sln` builds non-incremental with warnings as errors: 0 warnings, 0 errors.
-- App carry-forward: 277 of 278. The one loss was to the dispatcher loop
-  (`TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing`), and it passed alone, 1 of 1.
-- Engine carry-forward: 178 of 178.
-- Captures 51 of 51 in 119 s. Adjudicated 13 of 13. Keyed floors 13 of 13.
-- Every touched type, 27 in the app and 2 in the engine: all green except the two that were red
-  at entry.
-  - `Unit297CardSentenceTests` is 9 of 11. The same two failed with this unit's work stashed.
-    Parked as P29.
-  - `DecisionLogOrderTests` is red on the HM-DEC-166 gap only (P25). Its ordering half passes
-    with the new row.
-- `src/Hamlet.RadioEngine/Cw` shows nothing against entry. The transmit files show nothing
-  against 7e209cb4.
+**Decisions I made for myself, reproduced in full.** Each was fixed before the first run unless I say otherwise:
+- **Percentiles.** I took them by nearest rank, `sorted[round(q × (n − 1))]`, as the file's own `Spread` does.
+- **dB.** I used 20·log10 of the ratio, because the envelope is a magnitude. The comparison is plain greater-than, so the factor cannot change which pitch wins.
+- **The window.** "The last 3.0 s" is the 3.0 s of audio ending at the hop just processed.
+- **When a figure is missing.** A figure counts as not computable when under 3.0 s has been heard, or when the 10th percentile is 0. In both cases the rule follows as at entry. The second case did not arise.
+- **What counts as a new move.** A move is new when the tracker moves more than 25 Hz from the pending pitch. While a move is pending, each comparison uses the tracker's current pitch.
+- **Added after the first run.** I added one column to the move line: the contrast at each pitch the survey marked best in the stretch. It does not feed the rule, and it did not change either gate answer. I added it so a reader can see where the sender's 625 Hz stands, which is what section 8 asks the sender's pitch to show.
 
-**Nothing that was green at entry is red at exit.**
+**Task 2 built nothing** because the gate's second answer was no. `src` is unchanged.
 
-**Decisions I made for myself, all overrulable:**
-- **The card's wording.** Quoted in section 2.
-- **Drawing the box table myself.** The instruction needed to know where a grid square is, and
-  nothing in the tree could say. I drew the boxes from border coordinates I know, not from a
-  cited boundary file, and marked that in the file and as P30.
-- **Saying the United States entity as *the lower 48*** in the card's sentence.
-- **Re-pinning the NudgeSet.cs hash.**
-- **The sweep's form:** one fact per item, catching exceptions so each prints.
+**Task 3.** I ran the exit round and checked the tree, with the results above. I wrote P48 in `PARKED.md` and recorded 7.4 as closed partial on step 7's line in `PHASE_STATUS.md`. 7.4 is not ticked. Tasks 0 and 1 were pushed with git's return code 0. This file goes out in task 3's commit, and that push was checked after this was written.
 
 ## 2. What the owner should expect
 
-**A station whose grid puts him somewhere other than his callsign's entity now says so on his
-card.** For WL7E from CM98, the card reads:
+**Nothing changes in the app.** The decoder is byte for byte what it was at entry. The 7.052 opening still reads `UIEH EE E E T I NIEEE E` on the spliced stream.
 
-- Face: *WL7E, an Alaska callsign, operating from CM98 in California. His grid decides the
-  entity: the lower 48, not Alaska.*
-- Header: *California · 2,200 miles*
-- The `i` adds: *DXCC counts Alaska as an entity apart from the lower 48. A callsign says where
-  it was issued; a grid he sends says where he is.*
+**7.4 is closed partial, not met.** This was its third unit in a row with no kept change (430, 432 and 433). Step 7's line in `PHASE_STATUS.md` now says so, and P48 holds the trace. The criterion is still unmet.
 
-His row carries no quill and neither does his card. An Alaska call from an Alaska grid, or one
-that sent no grid, still earns the Alaska quill. On a PSK31 or Olivia row, line 2 of the hover
-reads *an Alaska callsign, operating from CM98 in California*.
+**One addition that looks like work but decides nothing.** `WhatTheOpeningHeardTests` now has 15 members. The new printer adds about 13 s to that type.
 
-**What will look wrong but is not:**
-- **Most contradictions are not caught yet.** The table knows only California, the lower 48,
-  Alaska and Hawaii. A Canadian call from a US grid, or a US call from Puerto Rico, still reads
-  as its prefix, exactly as before.
-- **Border squares are never placed.** A square that straddles a border is left alone on
-  purpose, so a station just across a line keeps his prefix's entity.
-- **The empty favorites line** now reads *no spots saved yet - press the star to keep this one*.
+**The app line lost nothing to the dispatcher loop, at entry or at exit.** That is luck, not a fix (P45).
 
 ## 3. What you should see
 
-The owner's fourteen, as they are on screen tonight:
+No visible change. This unit measured a rule before building it, and the measurement stopped it.
 
-| # | Item | Verdict | What is there |
-|---|---|---|---|
-| 1 | Right-click canned list | **different** | The menu opens on every row. Lines needing his callsign are disabled with *needs your callsign in Settings*. On a row with a callsign, *make a card anyway* makes a card. **On a row with none it reads *Make a card anyway - Hamlet read no callsign on this row, so a card would have nobody on it...*, has no command, and a press makes no card.** P31. |
-| 2 | Row hover | right | Station, entity, grid and miles where sent, offset and strength, *Heard since*, *This one is addressed to you.*, the kind and certainty, and what a click and a right-click do. Never the text. |
-| 3 | The top gives back height | right | The band is 214 px with the pills and 178 without, at 1600 and at 1300. The pills are 30 px. Drive and power sit in the rig column. |
-| 4 | Sun map | right | 393 x 214 at x 16 at 1600: the band's height, aspect 1.84. At 1300 it drops back into the card at 294 x 160. |
-| 5 | Keyboard modes earn as FT8 | right | PSK31 and Olivia equal FT8 on all seven kinds and add their own first (*first_psk31*, *first_olivia*). The quill *Canada · new country* is on both rows. The per-contact records are held by the green log-path test, not re-driven here. |
-| 6 | Chip and send line name the chosen mode | right | Under Olivia the Olivia chip is filled and PSK31 is not. The line reads *Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of Olivia.* |
-| 7 | Dismiss X, recorded | right | ✕ is on the card. After a press, `card_dismissed` is recorded once and the card's removal is recorded as dismissed. |
-| 8 | His live carrier | **different** | *sending* on the row, *he is still sending* on the card, the action held, and a typed send refused. **The hold releases on K or BTU, and also on carrier drop. The refusal says *It goes out the moment his carrier drops*, but nothing goes out until he presses again.** Releasing on K or BTU is by design. P33. |
-| 9 | Log on every card, RST his | right | Log is there half an exchange in. RST_SENT and RST_RCVD are editable, marked *heard by Hamlet* and *yours - typed by you*. Every other field is read-only. |
-| 10 | Every hand-back moves the turn | right | A certain hand-back gives *Your turn*. A guessed one gives *Your turn?*. |
-| 11 | Favorites chips | right after task 3 | Chips under the green block in the mode's ink, one click tunes, ✕ on hover, and the star fills on a saved spot. The empty line read *press ☆*; it now reads *no spots saved yet - press the star to keep this one*. |
-| 12 | Blind carrier | right | A blind Olivia row reads *heard, not readable yet*. So does a PSK31 carrier with no sure characters. |
-| 13 | His card while he talks | **different** | *KC3QIS de VE3YX GM OM ...* mid-over opens **no card** on PSK31 or Olivia, and the right-click names nobody. P32. |
-| 14 | The grid wins | built | Section 2. |
+**The gate's two answers.** Each print line reads: time, target Hz, target dB, mix Hz, mix dB, which is greater.
+
+1. **Does the rule follow 032113's 650 Hz move by 27.04 s? Yes.**
+   - `contrast read | 26.54 | 650.0 | 28.75 | 600.0 | 24.49 | target | at the move`
+   - `contrast follows | 26.54 | 650.0 | 26.54 | 26.54` (the entry, then this rule)
+   - The contrast is 28.75 dB at 650 against 24.49 dB at 600.
+2. **Does the rule hold the opening's 600 to 525 Hz move until 36.04 s? No.**
+   - `contrast read | 30.54 | 525.0 | 15.02 | 600.0 | 12.69 | target | at the move`
+   - `contrast follows | 30.54 | 525.0 | 30.54 | 30.54`
+   - The contrast is 15.02 dB at 525 against 12.69 dB at 600, so the rule follows at 30.54, as the entry does.
+   - Beside it, deciding nothing: 625.0 Hz, the sender, 13.67 dB, and 850.0 Hz 14.39 dB.
+   - The envelope keys harder at the wrong pitch than at the sender's own pitch. No margin on this comparison would have held the move.
+
+**The four tests.** None was run on a change, because none was built:
+
+| Test | Before | After | Result | Kept |
+|---|---|---|---|---|
+| 1. All keyed edits do not rise | 165 over 565 | 165 over 565, no change built | not judged | nothing built |
+| 2. No named floor broken | 13 of 13 | 13 of 13 | not judged | nothing built |
+| 3. Adjudicated unchanged | 13 of 13 | 13 of 13 | not judged | nothing built |
+| 4. No capture row's above-bar count falls | 51 of 51 | 51 of 51 | not judged | nothing built |
+
+**The opening, beside the cold group `EANQNID`:**
+- Before and after, on the spliced stream from 30 to 46.2 s: 22 named, `UIEH EE E E T I NIEEE E E ET N ■IK`.
+- 003919 cold reads `EITEETNXNIK EANQNID EANQNIK`, 25 named.
+- Nothing changed.
+
+**032113 and 031905.**
+- **032113:** 47 above the bar with 102 elements, before and after. At entry the mix follows the 650 Hz move at 26.54 s, and it would under this rule too.
+- **031905:** 36 above the bar with 108 elements, before and after. It was printed but not gated. Follow times under the entry and under this rule:
+  - 13.04 s, the move from 500 to 300 Hz: 13.04 and 13.04. The contrast was 26.50 dB at 300 against 23.05 at 500.
+  - 18.04 s, the move back to 500 Hz: 18.04 and 25.04.
+  - 26.54 s, the move from 500 to 300 Hz: 26.54 and 29.04. At the move the contrast was 30.22 dB at 300 against 30.36 at 500.
 
 ## 4. What's blocking us
 
-Nothing here blocks the phase (R65). Six items for the owner, most useful first:
+Nothing blocks the phase (R65). There are two items, most useful first.
 
-1. **P34 - a PSK31 CQ with a grid in it is read as no station.** `CQ CQ CQ de VE3YX VE3YX FN03
-   pse K` gives a row with no station, no entity and no kind. The same CQ without the grid
-   reads fine. *Proposed:* a later unit takes it to the engine's parser, because it is the phase
-   goal in the keyboard modes. *Rejected:* opening the parser in this unit, because the
-   instruction kept it closed.
-2. **P32 - item 13 is not built.** A station's first over still arriving opens no card.
-   *Proposed:* treat it as a unit of its own that parses a growing row. *Rejected:* building it
-   here, because the instruction says findings only.
-3. **P33 - item 8's sentence promises a send that does not happen**, and the hold also lets go
-   on carrier drop. *Proposed:* the owner rules on the sentence's words (the send path, §0.2)
-   and on whether carrier drop should release the hold. *Rejected:* changing either here,
-   because both are parked.
-4. **P31 - item 1: should *make a card anyway* make a card for a row with no callsign?** Today
-   it is a note, on §0.0 grounds. *Proposed:* the owner says which he meant. *Rejected:*
-   guessing.
-5. **P30 - the grid table covers four places and cites no boundary file.** *Proposed:* the
-   owner rules on whether to cite a source and widen it. *Rejected:* widening it from memory.
-6. **P29 - Unit297CardSentenceTests has two reds that predate this unit.** *Proposed:* a later
-   unit retires or restores the two expectations. *Rejected:* touching them here, under §12.6.
+**1. What would reopen 7.4.**
+- **Proposed ruling:** the owner decides whether a later unit may question the tracker's choice of 525 Hz at 30.54 s on the spliced stream. Without that decision, 7.4 stays closed partial under P48.
+- **Reasoning:**
+  - Four follow rules have now been measured against one line, 617 to 621.
+  - Three of them asked whether the survey confirmed the new pitch. Unit 432 showed that confirmation looks the same for right moves and wrong ones.
+  - The fourth compared the two pitches directly. At 30.54 s the decoder's own envelope ranks 525 (15.02 dB) above 850 (14.39), above the sender's 625 (13.67), and above the mix at 600 (12.69).
+  - So the evidence the mixdown could weigh points the same way as the tracker's wrong move. Deciding when to follow cannot undo a choice that the evidence supports.
+  - The tracker's choice belongs to the tracker under HM-DEC-095 and HM-DEC-127, and this unit did not touch it.
+- **Rejected:**
+  - A margin, another percentile, or another window. Section 6 forbids a variant, and no plain margin can invert a ranking where the target wins.
+  - Combining this rule with `5b6b704c`, `ec76051e` or P39, which section 10 forbids.
 
-Carried: P27, the attenuator sentence, is still the owner's, and 7.8 stays unticked.
+**2. The window at 30.54 s starts before the splice.** For the record.
+- **Proposed ruling:** none.
+- **Reasoning:**
+  - The 3.0 s ending at 30.54 on the spliced stream runs from 27.54 s. It starts inside `003901`'s tail, before `003919` begins at 30.0 s.
+  - Both the rule and the survey's own 3.0 s history see that joined audio, and the live session's decoder saw its own continuous audio.
+  - Whether the contrast would rank the pitches differently on unspliced audio was not measured.
+- **Rejected:** measuring it in this unit, because no task asked for it and no self-ruling authorizes work outside the tasks.
