@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
 TASK: TASK 0 of 3
-WORK_INSTRUCTION: 435 - the speed holds when the unit estimate halves
+WORK_INSTRUCTION: 436 - the estimator checks its dit against its dah
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T08:10:34-04:00
-NOTE: Entry round: engine carry-forward line running, one invocation, about six minutes
+UPDATED: 2026-09-25T08:59:46-04:00
+NOTE: Running WhatTheOpeningHeardTests alone, the opening before and after
 
 ---
 

@@ -1,0 +1,8 @@
+unit436 task 0: the record - waited for unit 435's other session to end (about 14 minutes, nothing signalled, nothing committed by it); 1.13.122, PHASE_STATUS names unit 436 and CURRENT_STEP 7, UNIT 436 - STEP 7 in PHASE_OUTCOME.md; the launcher's five root files committed as they stood; entry round green and every number P48's
+
+Entry round on a fresh build: 0 errors; engine 178 of 178; app 276 of 278, both
+failures the dispatcher-loop loss and green alone; captures 51 of 51, adjudicated 13 of 13,
+keyed floors 13 of 13; 165 over 565, 17:37 19 over 25, 17 added, 8 single;
+WhatTheOpeningHeardTests 15 of 15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
