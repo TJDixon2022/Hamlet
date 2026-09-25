@@ -1,0 +1,9 @@
+unit432 task 1: the replay (7.4) - WhatTheOpeningHeardTests.WhenEachRuleFollows, a printer that asserts nothing and writes nothing; the gate answers yes, yes, no, so nothing is built in task 2
+
+The tracker's own record, hop by hop, with four release rules run over it: entry, 5b6b704c, ec76051e and P39 (any read since the mix's pitch last changed, other than the read that made the move, confirming keying within 25 Hz). The entry rule reproduces the entry decoder's mix on every measured hop of all three runs (0 differences).
+
+1. Follows 032113's moves - yes. 650 Hz: replay follows | 26.54 | 26.54 | never | never | 26.54, on the read at 25.54 confirming 650.0 since the mix was set at 21.04. 500 Hz: the entry tracker never makes it - held at 29.54 as the 30 s file ends; on unit 430's change record it was made at 29.54 after the read at 29.04 confirmed 500.0, a read P39 counts, and ec76051e, whose look-back P39 contains, followed it there.
+2. Holds the opening's 525 Hz move - yes. replay move | 30.54 | 600.0 -> 525.0 | yes (a Switch on its confirming read); replay follows | 30.54 | 30.54 | not before the next move at 36.04 for 5b6b704c, ec76051e and P39; all four follow 625 at 36.04.
+3. No other difference from 5b6b704c - no. 031905: replay differs | 13.04 | 18.03 | 500.0 | 300.0 and replay differs | 26.54 | 30.00 | 500.0 | 300.0 - P39 follows the tracker to 300 Hz on reads at 12.04 and 26.04 that confirmed 300.0, where 5b6b704c held 500, the hold under which 031905 gained. On the stream no difference; on 032113 only the intended 650 follow.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

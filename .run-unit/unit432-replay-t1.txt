@@ -1,0 +1,142 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.51]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.71]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.71]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhenEachRuleFollows(run: "cw-2026-08-22-032113", from: 0, to: 1000) [1 s]
+  Standard Output Messages:
+ replay check | run cw-2026-08-22-032113, 0.0 to 1000.0 s, 6000 hops of 240 samples, 66 survey reads; reads whose verdict equals the read before's, which a rule telling reads by verdict would miss: 8; measured hops where the entry decoder's mix differs from the entry rule's: 0
+ replay move | s | tracker from -> to | a Switch on the read that confirmed it | P39's mix last set at s
+ replay read | s | the survey's Verdict: keyed Hz or none | confirmed keying within 25 Hz of the target | note
+ replay follows | s of the move | entry | 5b6b704c | ec76051e | P39
+ replay move | 26.54 | 600.0 -> 650.0 | no | 21.04
+ replay read | 21.04 | none | no | -
+ replay read | 21.54 | none | no | -
+ replay read | 22.04 | none | no | -
+ replay read | 22.54 | none | no | -
+ replay read | 23.04 | none | no | -
+ replay read | 23.54 | none | no | -
+ replay read | 24.04 | none | no | -
+ replay read | 24.54 | none | no | -
+ replay read | 25.04 | none | no | -
+ replay read | 25.54 | 650.0 | yes | -
+ replay read | 26.04 | none | no | -
+ replay read | 26.54 | none | no | the read that made the move
+ replay follows | 26.54 | 26.54 | never | never | 26.54
+ replay differs | from s | to s | 5b6b704c's mix | P39's mix
+ replay differs | 26.54 | 30.00 | 600.0 | 650.0
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhenEachRuleFollows(run: "stream", from: 28, to: 38) [5 s]
+  Standard Output Messages:
+ replay check | run stream, 28.0 to 38.0 s, 7601 hops of 240 samples, 82 survey reads; reads whose verdict equals the read before's, which a rule telling reads by verdict would miss: 57; measured hops where the entry decoder's mix differs from the entry rule's: 0
+ replay move | s | tracker from -> to | a Switch on the read that confirmed it | P39's mix last set at s
+ replay read | s | the survey's Verdict: keyed Hz or none | confirmed keying within 25 Hz of the target | note
+ replay follows | s of the move | entry | 5b6b704c | ec76051e | P39
+ replay move | 30.54 | 600.0 -> 525.0 | yes | 26.04
+ replay read | 26.04 | 600.0 | no | -
+ replay read | 26.54 | none | no | -
+ replay read | 27.04 | none | no | -
+ replay read | 27.54 | none | no | -
+ replay read | 28.04 | none | no | -
+ replay read | 28.54 | none | no | -
+ replay read | 29.04 | none | no | -
+ replay read | 29.54 | none | no | -
+ replay read | 30.04 | none | no | -
+ replay read | 30.54 | 525.0 | yes | the read that made the move
+ replay follows | 30.54 | 30.54 | not before the next move at 36.04 | not before the next move at 36.04 | not before the next move at 36.04
+ replay move | 36.04 | 525.0 -> 625.0 | no | 26.04
+ replay read | 26.04 | 600.0 | yes | -
+ replay read | 26.54 | none | no | -
+ replay read | 27.04 | none | no | -
+ replay read | 27.54 | none | no | -
+ replay read | 28.04 | none | no | -
+ replay read | 28.54 | none | no | -
+ replay read | 29.04 | none | no | -
+ replay read | 29.54 | none | no | -
+ replay read | 30.04 | none | no | -
+ replay read | 30.54 | 525.0 | no | -
+ replay read | 31.04 | none | no | -
+ replay read | 31.54 | none | no | -
+ replay read | 32.04 | none | no | -
+ replay read | 32.54 | none | no | -
+ replay read | 33.04 | none | no | -
+ replay read | 33.54 | none | no | -
+ replay read | 34.04 | 625.0 | yes | -
+ replay read | 34.54 | none | no | -
+ replay read | 35.04 | none | no | -
+ replay read | 35.54 | none | no | -
+ replay read | 36.04 | none | no | the read that made the move
+ replay follows | 36.04 | 36.04 | 36.04 | 36.04 | 36.04
+ replay differs | from s | to s | 5b6b704c's mix | P39's mix
+
+
+[xUnit.net 00:00:11.26]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhenEachRuleFollows(run: "cw-2026-08-22-031905", from: 0, to: 1000) [1 s]
+  Standard Output Messages:
+ replay check | run cw-2026-08-22-031905, 0.0 to 1000.0 s, 6000 hops of 240 samples, 66 survey reads; reads whose verdict equals the read before's, which a rule telling reads by verdict would miss: 8; measured hops where the entry decoder's mix differs from the entry rule's: 0
+ replay move | s | tracker from -> to | a Switch on the read that confirmed it | P39's mix last set at s
+ replay read | s | the survey's Verdict: keyed Hz or none | confirmed keying within 25 Hz of the target | note
+ replay follows | s of the move | entry | 5b6b704c | ec76051e | P39
+ replay move | 13.04 | 500.0 -> 300.0 | no | 6.54
+ replay read | 6.54 | 500.0 | no | -
+ replay read | 7.04 | 500.0 | no | -
+ replay read | 7.54 | none | no | -
+ replay read | 8.04 | none | no | -
+ replay read | 8.54 | none | no | -
+ replay read | 9.04 | none | no | -
+ replay read | 9.54 | none | no | -
+ replay read | 10.04 | none | no | -
+ replay read | 10.54 | none | no | -
+ replay read | 11.04 | none | no | -
+ replay read | 11.54 | none | no | -
+ replay read | 12.04 | 300.0 | yes | -
+ replay read | 12.54 | none | no | -
+ replay read | 13.04 | none | no | the read that made the move
+ replay follows | 13.04 | 13.04 | not before the next move at 18.04 | not before the next move at 18.04 | 13.04
+ replay move | 18.04 | 300.0 -> 500.0 | no | 13.04
+ replay read | 13.04 | none | no | -
+ replay read | 13.54 | none | no | -
+ replay read | 14.04 | none | no | -
+ replay read | 14.54 | none | no | -
+ replay read | 15.04 | none | no | -
+ replay read | 15.54 | none | no | -
+ replay read | 16.04 | none | no | -
+ replay read | 16.54 | none | no | -
+ replay read | 17.04 | none | no | -
+ replay read | 17.54 | 500.0 | yes | -
+ replay read | 18.04 | none | no | the read that made the move
+ replay follows | 18.04 | 18.04 | 18.04 | 18.04 | 18.04
+ replay move | 26.54 | 500.0 -> 300.0 | no | 18.04
+ replay read | 18.04 | none | no | -
+ replay read | 18.54 | none | no | -
+ replay read | 19.04 | none | no | -
+ replay read | 19.54 | none | no | -
+ replay read | 20.04 | none | no | -
+ replay read | 20.54 | none | no | -
+ replay read | 21.04 | none | no | -
+ replay read | 21.54 | none | no | -
+ replay read | 22.04 | none | no | -
+ replay read | 22.54 | none | no | -
+ replay read | 23.04 | none | no | -
+ replay read | 23.54 | none | no | -
+ replay read | 24.04 | none | no | -
+ replay read | 24.54 | none | no | -
+ replay read | 25.04 | none | no | -
+ replay read | 25.54 | none | no | -
+ replay read | 26.04 | 300.0 | yes | -
+ replay read | 26.54 | none | no | the read that made the move
+ replay follows | 26.54 | 26.54 | never | 26.54 | 26.54
+ replay differs | from s | to s | 5b6b704c's mix | P39's mix
+ replay differs | 13.04 | 18.03 | 500.0 | 300.0
+ replay differs | 26.54 | 30.00 | 500.0 | 300.0
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 11.5304 Seconds
+RC=0 WALL=13s

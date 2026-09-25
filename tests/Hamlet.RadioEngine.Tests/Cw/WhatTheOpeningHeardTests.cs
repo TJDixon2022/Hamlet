@@ -820,6 +820,359 @@ public sealed class WhatTheOpeningHeardTests
         }
     }
 
+    /// <summary>
+    /// 7.4, work instruction 432 task 1: when each of four release rules would have
+    /// moved the mix, replayed over the tracker's own record.
+    /// </summary>
+    /// <param name="run">`stream` for the spliced session, or one recording decoded cold.</param>
+    /// <param name="from">Where the stretch starts on the run's clock, in seconds.</param>
+    /// <param name="to">Where it ends.</param>
+    /// <remarks>
+    /// <para>**A PRINTER. IT ASSERTS NOTHING, AND IT WRITES NOTHING.** The decoder is
+    /// driven a hop at a time as <see cref="WhyTheMixMoved"/> drives it, and after
+    /// every hop the tracker's pitch, whether it is measured, its `Verdict` and
+    /// whether that hop read the survey are kept. The four rules are then run over
+    /// that one record: the entry's (follow at once), `5b6b704c`'s (wait for a later
+    /// read confirming keying there), `ec76051e`'s (follow at once if the read just
+    /// before confirmed it) and P39's (follow at once if any read since the mix's
+    /// pitch last changed confirmed keying within 25 Hz of the new pitch, and not
+    /// counting the read that made the move). Each rule tells a new read from the
+    /// last by its verdict, as `5b6b704c` did.</para>
+    /// <para>**A REPLAY, NOT A DECODE.** The tracker record is the entry decoder's;
+    /// under another rule the mix, and so the decoder's `InsideCharacter` and the
+    /// tracker's hold, could differ after the first difference.</para>
+    /// </remarks>
+    [Theory]
+    [InlineData("stream", 28.0, 38.0)]
+    [InlineData("cw-2026-08-22-032113", 0.0, 1000.0)] // whole
+    [InlineData("cw-2026-08-22-031905", 0.0, 1000.0)] // whole: it gained under 5b6b704c
+    public void WhenEachRuleFollows(string run, double from, double to)
+    {
+        const double same = 25;
+        float[] samples;
+        int rate;
+
+        if (run == "stream")
+        {
+            (samples, rate, _) = Splice(Session);
+        }
+        else
+        {
+            var audio = WavAudio.Read(Path.Combine(Folder, run + ".wav"));
+            samples = audio.Samples;
+            rate = audio.SampleRate;
+        }
+
+        var decoder = new CwDecoder(rate, 600);
+        var hop = decoder.Tracker.HopSamples;
+        var hops = new List<TrackerHop>();
+
+        for (var at = 0L; at + hop <= samples.Length && at / (double)rate <= to; at += hop)
+        {
+            decoder.Process(new AudioChunk(at, rate, samples.AsSpan((int)at, hop)));
+
+            var t = decoder.Tracker;
+
+            hops.Add(new TrackerHop(
+                (at + hop) / (double)rate,
+                (int)HopsSinceSurveyField.GetValue(t)! == 0,
+                t.HasMeasuredPitch,
+                t.ToneHz,
+                t.Verdict,
+                decoder.Stream.ToneHz));
+        }
+
+        var rules = new ReleaseRule[] { new EntryRule(), new LaterReadRule(), new ReadBeforeRule(), new AnyReadSinceSetRule() };
+        var mixes = rules.Select(_ => new double[hops.Count]).ToArray();
+        var setAt = new double[hops.Count];
+
+        for (var i = 0; i < hops.Count; i++)
+        {
+            setAt[i] = ((AnyReadSinceSetRule)rules[3]).SetAt;
+
+            for (var r = 0; r < rules.Length; r++)
+            {
+                mixes[r][i] = rules[r].Step(hops[i]);
+            }
+        }
+
+        var reads = hops.Count(h => h.Read);
+        var blind = hops.Where(h => h.Read).Zip(hops.Where(h => h.Read).Skip(1), (a, b) => a.Verdict.Equals(b.Verdict)).Count(x => x);
+        var entryAgrees = hops.Count(h => h.Measured && Math.Abs(h.StreamHz - h.TrackerHz) > 0.001);
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"replay check | run {run}, {from:0.0} to {to:0.0} s, {hops.Count} hops of {hop} samples, {reads} survey reads; reads whose verdict equals the read before's, which a rule telling reads by verdict would miss: {blind}; measured hops where the entry decoder's mix differs from the entry rule's: {entryAgrees}"));
+        _output.WriteLine("replay move | s | tracker from -> to | a Switch on the read that confirmed it | P39's mix last set at s");
+        _output.WriteLine("replay read | s | the survey's Verdict: keyed Hz or none | confirmed keying within 25 Hz of the target | note");
+        _output.WriteLine("replay follows | s of the move | entry | 5b6b704c | ec76051e | P39");
+
+        var moves = new List<int>();
+
+        for (var i = 1; i < hops.Count; i++)
+        {
+            if (hops[i].Measured && hops[i - 1].Measured && Math.Abs(hops[i].TrackerHz - hops[i - 1].TrackerHz) > same)
+            {
+                moves.Add(i);
+            }
+        }
+
+        for (var m = 0; m < moves.Count; m++)
+        {
+            var i = moves[m];
+            var move = hops[i];
+            var target = move.TrackerHz;
+
+            if (move.Seconds < from || move.Seconds > to)
+            {
+                continue;
+            }
+
+            var confirmsOwn = move.Read && move.Verdict.Keyed is { } own && Math.Abs(own.ToneHz - target) <= same;
+
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"replay move | {move.Seconds:0.00} | {hops[i - 1].TrackerHz:0.0} -> {target:0.0} | {(confirmsOwn ? "yes" : "no")} | {setAt[i]:0.00}"));
+
+            for (var j = 0; j <= i; j++)
+            {
+                if (!hops[j].Read || hops[j].Seconds < setAt[i])
+                {
+                    continue;
+                }
+
+                var keyed = hops[j].Verdict.Keyed;
+                var confirms = keyed is { } k && Math.Abs(k.ToneHz - target) <= same;
+
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"replay read | {hops[j].Seconds:0.00} | {(keyed is { } kk ? kk.ToneHz.ToString("0.0", Invariant) : "none")} | {(confirms ? "yes" : "no")} | {(j == i ? "the read that made the move" : "-")}"));
+            }
+
+            var end = m + 1 < moves.Count ? moves[m + 1] : hops.Count;
+            var follows = mixes.Select(mix =>
+            {
+                for (var j = i; j < end; j++)
+                {
+                    if (!double.IsNaN(mix[j]) && Math.Abs(mix[j] - target) <= same)
+                    {
+                        return hops[j].Seconds.ToString("0.00", Invariant);
+                    }
+                }
+
+                return end < hops.Count
+                    ? string.Create(Invariant, $"not before the next move at {hops[end].Seconds:0.00}")
+                    : "never";
+            });
+
+            _output.WriteLine(string.Create(Invariant, $"replay follows | {move.Seconds:0.00} | {string.Join(" | ", follows)}"));
+        }
+
+        // Where P39's mix and 5b6b704c's differ at all, stretch by stretch.
+        _output.WriteLine("replay differs | from s | to s | 5b6b704c's mix | P39's mix");
+
+        for (var i = 0; i < hops.Count; i++)
+        {
+            if (Differ(mixes[1][i], mixes[3][i]) && (i == 0 || !Differ(mixes[1][i - 1], mixes[3][i - 1])))
+            {
+                var j = i;
+
+                while (j + 1 < hops.Count && Differ(mixes[1][j + 1], mixes[3][j + 1]))
+                {
+                    j++;
+                }
+
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"replay differs | {hops[i].Seconds:0.00} | {hops[j].Seconds:0.00} | {mixes[1][i]:0.0} | {mixes[3][i]:0.0}"));
+            }
+        }
+
+        static bool Differ(double a, double b) => !(double.IsNaN(a) && double.IsNaN(b)) && !(Math.Abs(a - b) <= 0.001);
+    }
+
+    /// <summary>What the tracker held after one hop, read and never written.</summary>
+    private sealed record TrackerHop(double Seconds, bool Read, bool Measured, double TrackerHz, ToneVerdict Verdict, double StreamHz);
+
+    /// <summary>One way of deciding when the mixdown follows the tracker; answers the mix's measured pitch, or NaN.</summary>
+    private abstract class ReleaseRule
+    {
+        protected const double Same = 25;
+
+        protected double Last = double.NaN;
+
+        public abstract double Step(TrackerHop hop);
+    }
+
+    /// <summary>The entry: follow every measured pitch at once.</summary>
+    private sealed class EntryRule : ReleaseRule
+    {
+        public override double Step(TrackerHop hop)
+        {
+            if (hop.Measured)
+            {
+                Last = hop.TrackerHz;
+            }
+
+            return Last;
+        }
+    }
+
+    /// <summary>`5b6b704c`: a move further than 25 Hz waits for a later read confirming keying there.</summary>
+    private sealed class LaterReadRule : ReleaseRule
+    {
+        private double _pending = double.NaN;
+        private ToneVerdict _atMove;
+
+        public override double Step(TrackerHop hop)
+        {
+            if (hop.Measured)
+            {
+                var heard = hop.TrackerHz;
+
+                if (double.IsNaN(Last) || Math.Abs(heard - Last) <= Same)
+                {
+                    Last = heard;
+                    _pending = double.NaN;
+                }
+                else if (double.IsNaN(_pending) || Math.Abs(heard - _pending) > Same)
+                {
+                    _pending = heard;
+                    _atMove = hop.Verdict;
+                }
+                else if (hop.Verdict != _atMove
+                         && hop.Verdict.Keyed is { } again
+                         && Math.Abs(again.ToneHz - heard) <= Same)
+                {
+                    Last = heard;
+                    _pending = double.NaN;
+                }
+            }
+
+            return Last;
+        }
+    }
+
+    /// <summary>`ec76051e`: as `5b6b704c`, but a move the read just before confirmed is followed at once.</summary>
+    private sealed class ReadBeforeRule : ReleaseRule
+    {
+        private double _pending = double.NaN;
+        private ToneVerdict _atMove;
+        private ToneVerdict _now;
+        private ToneVerdict _before;
+
+        public override double Step(TrackerHop hop)
+        {
+            if (!hop.Verdict.Equals(_now))
+            {
+                _before = _now;
+                _now = hop.Verdict;
+            }
+
+            if (hop.Measured)
+            {
+                var heard = hop.TrackerHz;
+
+                if (double.IsNaN(Last) || Math.Abs(heard - Last) <= Same)
+                {
+                    Last = heard;
+                    _pending = double.NaN;
+                }
+                else if (double.IsNaN(_pending) || Math.Abs(heard - _pending) > Same)
+                {
+                    if (_before.Keyed is { } earlier && Math.Abs(earlier.ToneHz - heard) <= Same)
+                    {
+                        Last = heard;
+                        _pending = double.NaN;
+                    }
+                    else
+                    {
+                        _pending = heard;
+                        _atMove = _now;
+                    }
+                }
+                else if (!_now.Equals(_atMove)
+                         && _now.Keyed is { } again
+                         && Math.Abs(again.ToneHz - heard) <= Same)
+                {
+                    Last = heard;
+                    _pending = double.NaN;
+                }
+            }
+
+            return Last;
+        }
+    }
+
+    /// <summary>
+    /// P39: a move further than 25 Hz is followed at once if any read since the mix's
+    /// pitch last changed, other than the read that made the move, confirmed keying
+    /// within 25 Hz of it; otherwise it waits for a later read that does.
+    /// </summary>
+    private sealed class AnyReadSinceSetRule : ReleaseRule
+    {
+        private readonly List<double> _confirmed = new();
+        private double _pending = double.NaN;
+        private ToneVerdict _seen;
+        private double _now;
+
+        /// <summary>When the mix's pitch last changed, in seconds.</summary>
+        public double SetAt { get; private set; }
+
+        public override double Step(TrackerHop hop)
+        {
+            _now = hop.Seconds;
+
+            var read = !hop.Verdict.Equals(_seen);
+
+            _seen = hop.Verdict;
+
+            if (hop.Measured)
+            {
+                var heard = hop.TrackerHz;
+
+                if (double.IsNaN(Last) || Math.Abs(heard - Last) <= Same)
+                {
+                    Set(heard);
+                }
+                else if (double.IsNaN(_pending) || Math.Abs(heard - _pending) > Same)
+                {
+                    if (_confirmed.Any(c => Math.Abs(c - heard) <= Same))
+                    {
+                        Set(heard);
+                    }
+                    else
+                    {
+                        _pending = heard;
+                    }
+                }
+                else if (read && hop.Verdict.Keyed is { } again && Math.Abs(again.ToneHz - heard) <= Same)
+                {
+                    Set(heard);
+                }
+            }
+
+            if (read && hop.Verdict.Keyed is { } found)
+            {
+                _confirmed.Add(found.ToneHz);
+            }
+
+            return Last;
+        }
+
+        private void Set(double heard)
+        {
+            if (!(Math.Abs(heard - Last) <= 0.001))
+            {
+                _confirmed.Clear();
+                SetAt = _now;
+            }
+
+            Last = heard;
+            _pending = double.NaN;
+        }
+    }
+
     private static IReadOnlyList<Heard> InStretch(Traced traced, double from, double to)
         => traced.Settled
             .Where(h => h.Character.At.TotalSeconds >= from && h.Character.At.TotalSeconds < to)

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 3
+TASK: TASK 1 of 3
 WORK_INSTRUCTION: 432 - the mixdown follows a move once any read since it was set has confirmed it
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T04:16:07-04:00
-NOTE: Committing the record: entry round identical to unit 431's exit, 165 over 565 held, P44 and P45 parked
+UPDATED: 2026-09-25T04:19:12-04:00
+NOTE: Replay: running WhenEachRuleFollows alone over the stream 28 to 38 s, 032113 and 031905
 
 ---
 
