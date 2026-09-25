@@ -1,0 +1,22 @@
+unit441 task 1: G1 kept - MET-CER-SURE 0.1573 to 0.1337 (2.2, 2.3)
+
+cce7985d's change to CwUnitEstimator.MeasureGaps re-applied unchanged
+(the picked src diff is byte-identical to cce7985d's): textbook gaps
+when the clipped character gap stands at or past the word gap.
+
+Judged under R78 with R82's coverage:
+- MET-CER-SURE real 67 of 426 to 56 of 419 (0.1573 to 0.1337);
+  synthetic 24 of 180 to 14 of 173 (0.1333 to 0.0809).
+- MET-INVENTED 67 to 56 over 473.
+- MET-COVERAGE real 0.7590 to 0.7674 (359 to 363 right); synthetic
+  0.6190 to 0.6310.
+- Adjudicated 13 of 13. V-11: 35 recordings, none worse.
+- Reported, not rejected: captures 50 of 51 (004133 28 to 25 named),
+  named floors 12 of 13 (17:37 46 to 38 named, its scored edits 19 to
+  10). Unit 440 saw both.
+- Engine carry-forward 178 of 178.
+
+17:37: CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I
+    -> CQ CQ CQ DEWB6 RE D W B 7E E I
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

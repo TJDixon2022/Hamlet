@@ -6,7 +6,31 @@ so no row is yet a requirement's own condition (unit 439's finding 1). Synthetic
 exact keys, never sole evidence. Measured by `TheRequirementsAreMeasuredTests`. MET-CER-SURE's
 denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 11.
 
-## Standing figure - HEAD, no change kept
+**From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
+440 are as the spec wrote it then.
+
+## Unit 441 - G1 kept (`cce7985d` re-applied unchanged)
+
+| part of R78, R82's coverage | before | under G1 | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 67 of 426, 0.1573 | 56 of 419, 0.1337 | falls |
+| MET-CER-SURE, synthetic, exact | 24 of 180, 0.1333 | 14 of 173, 0.0809 | falls |
+| MET-INVENTED, real, inferred | 67 over 473, 0.1416 | 56 over 473, 0.1184 | falls |
+| MET-COVERAGE, real, inferred | 359 over 473, 0.7590 | 363 over 473, 0.7674 | rises |
+| MET-COVERAGE, synthetic, exact | 156 over 252, 0.6190 | 159 over 252, 0.6310 | rises |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings | - | none worse; 17:37 wrong-or-added 14 to 3, right 14 to 17 | holds |
+| capture rows | 51 of 51 | 50 of 51; `004133` 28 to 25 named | reported |
+| named floors | 13 of 13 | 12 of 13; 17:37 46 to 38 named | reported |
+| MET-WBE, real (not in R78's list) | 57 over 113 | 58 over 113 | rises by one |
+
+Per condition, real, sender not stated (20 recordings): MET-CER-SURE 0.1813 to 0.1541, coverage
+0.7268 to 0.7366. Synthetic TX-ITU 15 dB: 0.1159 to 0.0156, coverage 0.9683 to 1.0000; 5 dB:
+0.0615 to 0.0159, coverage 0.9683 to 0.9841. No condition gets worse.
+
+17:37 before `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`, under G1 `CQ CQ CQ DEWB6 RE D W B 7E E I`.
+
+## Standing figure before unit 441 - no change kept
 
 | metric | set | count | share | key |
 |---|---|---|---|---|
