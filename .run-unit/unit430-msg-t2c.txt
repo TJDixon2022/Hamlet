@@ -1,0 +1,5 @@
+unit430 task 2: the narrower variant (7.4) - CwDecoder.Step: the mixdown waits only on a move made by the very read that confirmed it; a move a read before it had already confirmed is followed at once
+
+The first change waited on every measured move of more than one coarse bin, and cost cw-2026-08-22-032113 three named characters: its two moves were both held until a character ended (CwToneTracker.cs:1097 to 1104), each confirmed on the read before the move, and the file ended before a third read came. This variant keeps the first change's wait for a Switch made on the read that confirmed it (CwToneTracker.cs:1107, the 525 Hz move on the stream) and follows at once when the verdict before the move's read already carried confirmed keying within 25 Hz of the new pitch. The tracker's choice, the survey's scoring, the speed search, the gap structure, the gates, CharacterMargin and StrayElementSpan are untouched; HM-DEC-095 and HM-DEC-127 stand. Judged under 3.2's four tests in the next commit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

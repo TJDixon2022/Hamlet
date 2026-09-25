@@ -1,0 +1,83 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.45]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.65]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.65]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:03.76]     Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh [FAIL]
+[xUnit.net 00:00:03.76]       Assert.NotEqual() Failure: Values are equal
+[xUnit.net 00:00:03.76]       Expected: Not 16
+[xUnit.net 00:00:03.76]       Actual:       16
+[xUnit.net 00:00:03.76]       Stack Trace:
+[xUnit.net 00:00:03.77]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AHeldPitchDoesNotOutliveItsEvidenceTests.cs(199,0): at Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh()
+[xUnit.net 00:00:03.77]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.77]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.77]       Output:
+[xUnit.net 00:00:03.77]         16.0 WPM before the QSY, 16.0 after
+  Failed Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh [2 s]
+  Error Message:
+   Assert.NotEqual() Failure: Values are equal
+Expected: Not 16
+Actual:       16
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AHeldPitchDoesNotOutliveItsEvidenceTests.cs:line 199
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ 16.0 WPM before the QSY, 16.0 after
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.AStationIsEntitledToPause [2 s]
+  Standard Output Messages:
+ after four seconds of silence: measured=True, toneHz=625.0
+
+
+[xUnit.net 00:00:08.67]     Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesTheHeldPeakToo [FAIL]
+[xUnit.net 00:00:08.67]       the decoder still reports a peak of 32.2 dB measured on a frequency the radio has left
+[xUnit.net 00:00:08.67]       Stack Trace:
+[xUnit.net 00:00:08.67]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AHeldPitchDoesNotOutliveItsEvidenceTests.cs(132,0): at Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesTheHeldPeakToo()
+[xUnit.net 00:00:08.67]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:08.67]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:08.67]       Output:
+[xUnit.net 00:00:08.67]         tonePeak 32.2 before the QSY, 32.2 after
+  Failed Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesTheHeldPeakToo [1 s]
+  Error Message:
+   the decoder still reports a peak of 32.2 dB measured on a frequency the radio has left
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesTheHeldPeakToo() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AHeldPitchDoesNotOutliveItsEvidenceTests.cs:line 132
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ tonePeak 32.2 before the QSY, 32.2 after
+
+
+[xUnit.net 00:00:10.60]     Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesThePitchMeasuredBeforeIt [FAIL]
+[xUnit.net 00:00:10.60]       the decoder still calls 625.0 Hz a measurement after the radio moved away from where it measured it
+[xUnit.net 00:00:10.60]       Stack Trace:
+[xUnit.net 00:00:10.60]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AHeldPitchDoesNotOutliveItsEvidenceTests.cs(102,0): at Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesThePitchMeasuredBeforeIt()
+[xUnit.net 00:00:10.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:10.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:10.60]       Output:
+[xUnit.net 00:00:10.60]         before the QSY: measured=True, toneHz=625.0
+[xUnit.net 00:00:10.60]         after the QSY:  measured=True, toneHz=625.0
+[xUnit.net 00:00:10.61]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesThePitchMeasuredBeforeIt [1 s]
+  Error Message:
+   the decoder still calls 625.0 Hz a measurement after the radio moved away from where it measured it
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesThePitchMeasuredBeforeIt() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\AHeldPitchDoesNotOutliveItsEvidenceTests.cs:line 102
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ before the QSY: measured=True, toneHz=625.0
+ after the QSY:  measured=True, toneHz=625.0
+
+
+
+Test Run Failed.
+Total tests: 4
+     Passed: 1
+     Failed: 3
+ Total time: 10.9161 Seconds
+RC=1 WALL=11s
