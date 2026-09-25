@@ -810,7 +810,9 @@ public sealed class WhatTheStrayLettersRestOnTests
     /// otherwise - and, for a held reading, its character and word gaps and whether
     /// the character gap stands at or past the word gap, the reading unit 413's G1
     /// refuses. Then, per keyed recording, every run of characters read under such
-    /// a reading with three characters either side, so the split can be seen. The
+    /// a reading with three characters either side, so the split can be seen, and
+    /// every named character with its time and label, so a change's readings can be
+    /// set side by side. The
     /// stream's state is read by reflection at the moment each character settles;
     /// nothing is changed. **Asserts nothing.**
     /// </remarks>
@@ -854,6 +856,17 @@ public sealed class WhatTheStrayLettersRestOnTests
 
             var settled = read.Select(r => r.Character).ToList();
             var labels = Labels(settled, k.Score(CwReading.Of(settled)));
+
+            // Every named character, so a reading before and after a change can be set side by side.
+            for (var i = 0; i < read.Count; i++)
+            {
+                if (IsNamed(settled[i]))
+                {
+                    _output.WriteLine(
+                        $"named | {k.Name} | {settled[i].At.TotalSeconds:0.000} s | `{settled[i].Text}` | {settled[i].Pattern} | "
+                        + $"{labels[i].ToString().ToLowerInvariant()} | raw span {settled[i].SpanLogLikelihoodRatio:0.0}");
+                }
+            }
 
             for (var i = 0; i < read.Count; i++)
             {
