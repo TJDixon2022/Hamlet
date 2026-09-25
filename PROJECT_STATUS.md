@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 4
+TASK: TASK 2 of 4
 WORK_INSTRUCTION: 428 - a letter is junk when its neighbors are ten times surer
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T23:18:45-04:00
-NOTE: Task 1: running the relative-span trace alone over 52 recordings, about 2 minutes
+UPDATED: 2026-09-24T23:21:28-04:00
+NOTE: Task 2: running the wide-window trace alone over 52 recordings, about 2 minutes
 
 ---
 

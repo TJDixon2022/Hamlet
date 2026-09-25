@@ -285,4 +285,26 @@ public sealed class WhatTheNeighborsSayTests
     [Fact]
     public void EachLetterAgainstTheLettersAroundIt()
         => Trace(Side);
+
+    /// <summary>
+    /// How many named characters each side make the second window, task 2's.
+    /// </summary>
+    /// <remarks>
+    /// Eight each side, sixteen in all (author's, overrulable). Task 1's trace put
+    /// three of 17:37's added letters within a second of each other, at 26.250,
+    /// 26.515 and 26.820 s, with more litter beside them, so a window of three each
+    /// side was half filled with the thing it was meant to stand against. Eight is
+    /// longer than any run of added or wrong letters on the keyed recordings, so
+    /// the median is the passage's letters and not the run's.
+    /// </remarks>
+    internal const int WideSide = 8;
+
+    /// <remarks>
+    /// Proves task 2 of work instruction 428: task 1's trace again, every table,
+    /// with <see cref="WideSide"/> named characters each side in place of
+    /// <see cref="Side"/>. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void EachLetterAgainstAWiderWindow()
+        => Trace(WideSide);
 }

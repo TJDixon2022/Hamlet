@@ -1,0 +1,10 @@
+unit428 task 2: the second trace, nothing built (3.6) - WhatTheNeighborsSayTests.EachLetterAgainstAWiderWindow, task 1's trace with eight named characters each side, so a run of litter cannot make up its own window; the added and the right still overlap, so task 1's finding stands and no change is built or judged
+
+Added, all 17: min 0.034, quartile 0.293, median 0.668, quartile 0.949, max 3.535.
+Right, all 353: min 0.063, quartile 0.611, median 1.040, quartile 1.763, max 56.449.
+Added single-element, 8: min 0.185, quartile 0.262, median 0.688, quartile 0.844, max 2.034.
+Right single-element, 62: min 0.063, quartile 0.224, median 0.377, quartile 0.862, max 2.113.
+
+Taken before any right one: all named 1 of 17 - the I at 14.155 s on cw-2026-08-22-031905, ratio 0.034, with 9 keyed-unscored and 4 unkeyed characters under the same bar; single-element 0 of 8, a bar at the lowest added one, 0.185, taking 8 of 62 right and 48 of 252 unkeyed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
