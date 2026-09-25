@@ -1,9 +1,9 @@
-# Work instruction 427 - the grid wins, and the fourteen are checked on screen
+# Work instruction 428 - a letter is junk when its neighbors are ten times surer
 
-**Seed under `--seed`.** Thirteen of the owner's fourteen UI items are marked built by units
-376 to 390. One, the grid-against-prefix rule, has never been written. **This unit builds
-that one and then drives all fourteen to see what is actually on screen**, because ticked and
-right have come apart twice this week. Five tasks, drop from the back.
+**Seed under `--seed`.** The owner banked a nine-minute traffic net on 7.052 that read 664
+characters with 20 unsure, and its span figures separate the litter from the text cleanly -
+**but only against the text beside it, not against any fixed number.** That is what this unit
+builds. Four tasks, drop from the back.
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -39,10 +39,7 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 **HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run as
 its top comment says. **Never background and poll.** One type per invocation, each with its
-own `timeout`. The captures type is 51 rows; give it 600 s.
-
-**This unit works in the app project.** The headless dispatcher loop loses a name most runs;
-a loss before any assertion is re-run once and counts neither way.
+own `timeout`. The captures type is 51 rows and ran 119 s in unit 427; give it 600 s.
 
 **The report's four top-level headings are exactly these, character for character:**
 
@@ -64,13 +61,12 @@ a loss before any assertion is re-run once and counts neither way.
 Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
 refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
 `git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step commands
-go into `.run-unit\unit427-<name>.sh` and run with `sh`.
+go into `.run-unit\unit428-<name>.sh` and run with `sh`. Unit 427's scripts can be copied.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139, verbatim in section 4. **P27, the attenuator sentence outside an owned
-block, is the owner's and is not this unit's** - 7.8 stays unticked until he rules. Nothing
-else is this unit's to answer.
+Carried per HM-DEC-139, verbatim in section 4. **None of unit 427's six is this unit's**, and
+P27 stays the owner's. This unit answers nothing but its own criterion.
 
 ---
 
@@ -78,54 +74,38 @@ else is this unit's to answer.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  A station's grid beats his prefix's entity on the card, and all
-            fourteen of the owner's UI items are checked against the screen.
-ADVANCES:   none - clears a blocker: criterion 5.1
+UNIT GOAL:  Stop printing a letter whose own confidence is a small fraction
+            of the confidence of the letters around it.
+ADVANCES:   step 3 criterion 6
 DRIFT:      0
 ```
 
-**The owner's list, 2026-09-21 to 09-23, in his words, with what the record says of each.**
-Items 1 to 13 are marked built by units 376 to 390; unit 390's own report records *7.5 earned,
-9.3 under ruling A, 9.2/9.4/9.5/7.2/4.3/0.1/10.3 ticked with numbers, favorites as chips*.
-**Item 14 has never been written.**
+**What the owner reads today**, from the 7.052 traffic net, 2026-09-25, nine minutes, 664
+characters, 20 unsure. Real text is in there: `YOUR MESSAGE NUMBER 9 211`, `LOCAL TRAFFIC NET
+<AR>`, `KA2GJV`, `N0SM`, `W5KU`, `K0WRZ`, `800 HARRISON ST`, `ANTHONY LUSCRE`, `W1AW/8 OHIO
+COORDINATOR`. Between them: `EETTTEETTTTTTTTETTETETKTETEE`.
 
-1. A PSK31/Olivia row right-clicks into a canned list - seven framed lines from
-   `data/psk31/canned.json`, one click sends. Menu opens on **every** row, callsign read or
-   not; lines needing a callsign disabled with a word; Capture and *make a card anyway*
-   always present, and *make a card anyway* makes a **card**, not a note. Units 378, 387, 390.
-2. The row hover says what the row knows - station, country, grid and distance if sent, offset
-   and strength, when he started and stopped, whether he spoke to you, the parser's kind and
-   certainty, what a click and a right-click do - **never the text again**. Unit 378.
-3. The top gives back height - one band, pills half height, strip thinner, green zone one
-   line, rig display shorter with drive and power beside the frequency. Unit 376, 214 px.
-4. The sun map grows to the band's height, aspect kept, width from the neighborhood strip; the
-   band does not grow. Unit 389, 393 x 214 at the band's left edge; drops back below 1400 wide
-   or when the strayed-frequency line shows.
-5. PSK31 and Olivia count for achievements exactly as FT8 does - Modes badge, Hall of Fame
-   first, every per-contact record, the quill. Unit 379.
-6. The mode chip's fill and the send-status line name **the mode chosen, never the family** -
-   under Olivia the Olivia chip is filled and PSK31 is not; a 29-second Olivia CQ reads
-   *29 s of Olivia*. Unit 390 task 3.
-7. Every card has a dismiss X, and the press is recorded. Unit 385.
-8. A station's live carrier is visible - his row and card colored, the word *sending* - and the
-   send buttons are held with *he is still sending* until his hand-back. Unit 385; **the hold
-   releases on K or BTU, not on carrier drop, by design**.
-9. Log is on every conversation card from the start; RST fields editable, heard values marked
-   *heard* and typed ones *yours*, the rest of the dialog read-only. Unit 385, unit 390 task 5.
-10. Every hand-back moves the turn, certain or guessed - *Your turn?* for a guess. Unit 385.
-11. Favorites: the star saves dial and mode with a name; the spots live **under the green
-    zone** as a row of **chips**, each in its mode's color, one click tunes, x on hover
-    forgets, the star fills on a saved spot; empty reads *no spots saved yet - press the star
-    to keep this one*. Unit 390.
-12. A blind-found Olivia or PSK31 carrier shows text only from blocks the decoder reports
-    confident; otherwise *heard, not readable yet*. Unit 387.
-13. The man talking to you gets a card **while he is talking** - the parser reads a row's text
-    as it grows; *KC3QIS de VE3YX* opens his card mid-over marked *he is sending to you*,
-    buttons held until his hand-back; the right-click names him. Any keyboard mode. Unit 390.
-14. **Not built.** When a station's grid contradicts his prefix's entity, **the grid wins**;
-    the card says both - *WL7E, an Alaska callsign, operating from CM98 in California* - and
-    **no new-entity quill for him**. The word is **entity**, with a note that DXCC counts
-    Alaska apart from the lower 48.
+**The measurement that matters.** `OPERETTEETTTTED`, where `OPERATION` was sent, carries these
+spans in the sheet's own `spanLlr` line:
+
+```
+O:629.8  P:518.0  E:74.5  R:368.4  E:48.7  T:256.6  T:255.8
+E:33.8   E:16.3   T:174.3 T:189.4  T:198.0 T:185.0  E:22.7  D:373.3
+```
+
+And in `ALL LOGS WILL BE UPLOADED`, real letters run 300 to 1358 while the two intruded `E`s
+sit at 64.1 and 67.2. **The litter is an order of magnitude below its neighbors.**
+
+**Why unit 421's conclusion does not settle this.** 421 measured eight added characters and
+found them at raw 33 and above, over a right `E` at 30.8, and concluded span cannot separate
+them. **On this recording they separate cleanly at roughly 100** - but 100 is meaningless as a
+fixed number, because a weak passage's real letters sit near 40. **The separation is relative,
+not absolute.** 421 was right about an absolute bar and its sample was eight characters; this
+is hundreds.
+
+**The idea to test, and it may still be wrong.** A character whose span is a small fraction of
+the median span of the characters around it is a fragment, whatever its own score. **Whether
+it separates on this corpus is this unit's question, not its assumption.**
 
 ---
 
@@ -133,54 +113,67 @@ Items 1 to 13 are marked built by units 376 to 390; unit 390's own report record
 
 Check, report any mismatch, repair nothing:
 
-- Where a card's entity is decided from a callsign prefix, and where a grid is read from a
-  received message.
-- Whether anything already compares the two, and what an entity is called in the code today -
-  *country*, *entity*, *DXCC* or otherwise.
-- Where the new-entity quill is awarded, and what it keys on.
-- `data/psk31/canned.json` exists with seven lines; the favorites chips live under the green
-  zone; the mode chip is filled by chosen mode.
-- **If any of items 1 to 13 cannot be driven by a test at all** - no seam, no view model
-  property - say which, and task 2 reports them as unverifiable rather than as failures.
+- Whether the 2026-09-25 captures from 7.052 are in `tests\fixtures\cw\captured\unadjudicated`.
+  **The owner banked them.** If they are not there, say so - task 1 then runs on the keyed
+  recordings alone and the report says which.
+- The span the sheet prints (`spanLlr`) and the one the floors and R71's bar of 13.0 use: are
+  they the same number, and where is it computed?
+- `CwProbabilisticDecoder.Judged` and `CharacterMargin` 1.0, the gate that admits a character
+  today.
+- The keyed totals at HEAD, all keyed over 565, the ten, 17:37.
+- R71's bar of 13.0, and R73's clause: a character the inferred key aligns as **added**, inside
+  a scored stretch of a keyed recording, may leave a floor.
 
 ## 6. Rulings in force - do not re-argue
 
 `PHASE_PLAN.md` R59 to R74, §3 and §6.
 
-**The owner's ruling on item 14**, 2026-09-23: the grid wins; the card states both; no
-new-entity quill; the word is *entity*, with a note that DXCC counts Alaska apart from the
-lower 48.
-**§0.0** never state as known what is not known - a card that gives an entity from a prefix
-while a grid says otherwise is stating a falsehood.
-**§0.2** nothing that keys or transmits is touched. **§0.6** color is never the sole carrier -
-item 8's *sending* is a word as well as a color, and item 11's chips carry their mode in text.
-**§0.5** family color is text only.
-**HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006**.
+**R73** a character the key aligns as added, inside a scored stretch of a keyed recording, may
+leave a floor. **It applies nowhere else** - the unkeyed rows keep their floors - the three
+adjudicated readings must be unchanged as the independent check, and **every character a
+change removes is listed by name in the report, with its recording**.
+**R71** the floors count at or above raw span 13.0; a row whose above-bar count falls is a
+regression.
+**R72** a stray letter is told by where it sits, not by how sure it is - **and no word,
+dictionary or callsign prior may be added, in any form**. The relative-span rule this unit
+builds is not a prior: it compares a character with its neighbors' confidence, and knows no
+words.
+**3.2's four tests** are the keep rule, with R66's clause on adjudicated readings.
+**§0.0** no decode is called what was sent; **no word is completed or invented**.
+**§0.2** nothing that keys or transmits is touched.
+**HM-DEC-091**, **HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006**.
 
 **Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's table
-dated 2026-09-24, headline **A station's grid beats his prefix's entity**, ref HM-DEC-180:**
+dated 2026-09-25, headline **A letter is judged against the confidence of the letters around
+it**, ref HM-DEC-181:**
 
 ```
 ---
-id: HM-DEC-180
-date: 2026-09-24
-refs: work instruction 427, CLAUDE.md 0.0, the owner's UI list 2026-09-21 to 09-23 item 14
+id: HM-DEC-181
+date: 2026-09-25
+refs: PHASE_PLAN.md R69 R71 R72 R73 and criterion 3.6, unit 421 output.md, the 2026-09-25 7.052 captures, work instruction 428
 ---
 
-**When a station's grid contradicts the entity his callsign prefix implies, the grid wins.**
-Tim, 2026-09-23.
+**A single-element character is judged against the confidence of the characters around it,
+not against a fixed bar.** Tim, 2026-09-25.
 
-**What is ruled.** The card states both - for example *WL7E, an Alaska callsign, operating
-from CM98 in California* - and the station earns no new-entity quill on the strength of the
-prefix. The word used is **entity**, and the card notes that DXCC counts Alaska apart from the
-lower 48.
+**What was measured.** Unit 421 found eight added single-element characters at raw span 33 and
+above, over a right `E` at 30.8, and concluded no fixed bar could separate them. On the
+nine-minute traffic net captured from 7.052 on 2026-09-25, the same litter sits an order of
+magnitude below its neighbors: in `OPERETTEETTTTED` the real letters run 174 to 630 and the
+intruded ones 16 to 75; in `ALL LOGS WILL BE UPLOADED` the real letters run 300 to 1358 and
+the two intruded `E`s sit at 64 and 67. A fixed bar fails because a weak passage's real
+letters sit near 40; a relative one may not.
 
-**Why.** A prefix says where a callsign was issued, not where the operator is. A grid he sent
-says where he is. Stating the prefix's entity as his location while holding a grid that says
-otherwise is CLAUDE.md 0.0 broken: the app would be stating as known something it holds
-evidence against.
+**What is ruled.** Criterion 3.6 is attacked by relative span: a character whose own span is a
+small fraction of the median span of the characters around it is a fragment, whatever its own
+score. The window and the fraction are measured, not assumed, and are chosen from the traced
+distributions rather than from which changes they admit.
 
-**Whose words are whose.** The ruling is Tim's; the wording is work instruction 427's record
+**What is not changed.** R72 stands: no word, dictionary or callsign prior, in any form. A
+comparison with neighbors' confidence is not a prior - it knows no words.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 428's record
 of it.
 ```
 
@@ -194,104 +187,93 @@ As the header says.
 
 ### Task 0 - the record
 
-`PHASE_OUTCOME.md` gets its `## UNIT 427 - STEP 6` entry from the decision block at the foot of
-this file. `PHASE_STATUS.md` names unit 427. Patch-bump `Directory.Build.props`.
-`DECISIONS.md` HM-DEC-180 and the `CLAUDE.md` row. **Entry round:** both carry-forward lines
-and the three floor tests, recorded.
+`PHASE_OUTCOME.md` gets its `## UNIT 428 - STEP 3` entry from the decision block at the foot of
+this file. `PHASE_STATUS.md` names unit 428 and `CURRENT_STEP: 3`. Patch-bump
+`Directory.Build.props`. `DECISIONS.md` HM-DEC-181 and the `CLAUDE.md` row. **Entry round:**
+both carry-forward lines, the three floor tests, the keyed totals, the named floors, and the
+added-letter count, recorded as the numbers to beat.
 
 **Drop candidate:** none.
 
-### Task 1 - the grid wins (item 14)
+### Task 1 - does it separate (3.6's trace)
 
-Watch a test fail first: a station whose prefix implies one entity and whose received grid
-falls in another - `WL7E` from `CM98` is the owner's own example - and assert that the card
-states both, in his form, and that no new-entity quill is awarded for that station.
+A fact that asserts nothing. Over the keyed recordings **and the 2026-09-25 captures if they
+are in the tree**, for every emitted character, print its span and **the median span of the
+characters within a window around it** - the window is yours, say what it is and why. Then:
 
-Then build it. **The card's exact wording is the author's** and goes in the report, but it
-must name the callsign's entity, say *operating from*, and give the grid and where it is, and
-it must use the word **entity**. The DXCC note about Alaska goes wherever the card explains
-itself.
+- the ratio of the character's span to that median;
+- for characters the key aligns as **added**, the distribution of that ratio;
+- for characters the key aligns as **right**, the same distribution;
+- the same two for single-element characters alone (`E` and `T`), which is where the litter is.
 
-**Where the grid is absent or unparseable, nothing changes** - the prefix's entity stands, and
-the card says what it always said.
+**Print both distributions.** The question is whether a ratio exists that takes most of the
+added and almost none of the right. **If they overlap, say so plainly and build nothing** -
+that finding is worth more than a discarded change, and task 2 becomes a second trace on a
+different window.
+
+**Name the ratio you would use and why**, from the distributions and from nothing else.
 
 **Drop candidate:** none.
 
-### Task 2 - the fourteen on screen
+### Task 2 - the change (3.6, 3.2)
 
-A fact that asserts nothing, in the app test project, driving each of items 1 to 13 and
-printing **what is actually there**: for each item, the property, the text and the numbers.
-Specifically:
+If task 1 found a separation, demote a character whose ratio falls below it. **Demote, not
+delete**: the character becomes what the decoder shows when it is not sure, so the litter stops
+reaching the transcript as confident text. Build it in its own commit and judge under 3.2's
+four tests, every one a number:
 
-- **1**: open the menu on a row with a callsign and on one without; print every entry, which
-  are disabled, the disabled word, and whether *make a card anyway* produces a card or a note.
-- **2**: print the hover text of a row, whole, and say whether the text of the transmission
-  appears in it.
-- **3, 4**: print the band's height, the pills' height, the sun map's width and height, and its
-  left edge against the band's, at 1600 wide and at 1300 wide.
-- **5**: print whether a PSK31 contact and an Olivia contact each reach the Modes badge, the
-  Hall of Fame, the per-contact records and the quill.
-- **6**: under Olivia, print which chip is filled and what the send-status line says for a
-  29-second CQ.
-- **7**: print whether a card has a dismiss X and whether the press is recorded.
-- **8**: print the row and card state while a carrier is live, the word shown, and what the
-  send buttons say; **say plainly that the hold releases on K or BTU rather than carrier drop**.
-- **9**: print which Log fields are editable, and how heard and typed values are marked.
-- **10**: print what the turn does on a certain hand-back and on a guessed one.
-- **11**: print whether the spots are chips, where they sit, their colors, what the star does
-  on a saved spot, and the empty text verbatim.
-- **12**: print what a blind-found carrier shows before the decoder is confident.
-- **13**: print whether a card opens mid-over for *KC3QIS de VE3YX*, what it is marked, and
-  what the buttons say.
+1. total edits over all keyed recordings, before and after, **with added letters counted
+   separately** - that is the number 3.6 exists for;
+2. all 13 named floors, above-bar counts;
+3. the three adjudicated readings, quoted, R66's clause invoked if any moves;
+4. all 51 capture rows' above-bar counts, **and every character removed listed by name with
+   its recording** (R73).
 
-**Each is reported as built-and-right, built-but-different, or unverifiable, with the
-difference quoted.** Repair nothing here - a difference is a finding for a later unit.
+**Kept only if added letters fall and the total does not rise.** A change that lowers the total
+by removing wrong letters while leaving added letters where they were is not what 3.6 asks for:
+report it, take it out, say so.
 
-**Drop candidate:** items 3, 4 and 5 last, if the clock runs short.
+**Drop candidate:** none.
 
-### Task 3 - repair what is one line wrong
+### Task 3 - a second pass
 
-**Only** items task 2 found built-but-different where the difference is a word, a color or a
-number the owner's list states plainly - the empty favorites text, the disabled word, *29 s of
-Olivia*, a chip that should be filled. Each watched failing first, each in its own commit.
+If task 2 kept a change, re-trace and build once more under the same rule. If it kept nothing,
+trace the second window and report.
 
-**Anything larger than that is a finding**, written to `docs\phase-correctness\PARKED.md` with
-what was expected and what is there. **Do not rebuild a feature in this unit.**
+**Drop candidate:** whole task, with what was measured stated.
 
-**Drop candidate:** whole task. Say what was left.
+### Task 4 - the exit round (3.5)
 
-### Task 4 - the exit round
-
-`Hamlet.sln` builds with warnings as errors. Both carry-forward lines, the three floor tests
-with captures at 51, and every type touched. `src\Hamlet.RadioEngine\Cw` prints nothing against
-entry; the transmit files print nothing against `7e209cb4`.
+Both carry-forward lines, the three floor tests with captures at 51, the keyed totals, the
+named floors, and every type touched. The transmit files print nothing against `7e209cb4`.
 
 ---
 
 ## 9. Parked - do not touch, do not raise
 
-- **P27, the attenuator sentence.** The owner's; 7.8 waits on him.
-- **3.6 the stray letters, step 4 the pitch judge, 7.1 to 7.4 the speed ceiling and
-  acquisition, 6.5 the dead button.** The arbiter routes there next; not this unit's.
-- **The hold releasing on K or BTU rather than carrier drop.** By design; report it, do not
-  change it.
-- **Any feature rebuild.** Findings only.
+- **Every one of unit 427's six findings**, P29 to P34, and P27.
+- **Step 4 the pitch judge; 7.1 to 7.4 the speed ceiling and acquisition; 6.5 the dead button.**
+- **The spacing.** Kept as units 415 and 416 left it.
+- **Any key, scored region or floor.** Fixed.
+- **The acquisition junk at the start of a session.** Real, and 7.3's.
 
 ## 10. What not to do
 
-- **Do not rebuild anything in items 1 to 13.** Report the difference.
-- **Do not award a new-entity quill on a prefix** the grid contradicts.
-- **Do not use the word *country* where the ruling says *entity*.**
-- **Do not change what keys or transmits, or the decoder.**
+- **Do not add a word, dictionary or callsign prior, or complete or invent any text** (R72).
+- **Do not raise R71's bar of 13.0.** That is the floors' bar and 3.7 is met.
+- **Do not build a change the trace does not support.**
+- **Do not lower an above-bar count on any unkeyed row**, and remove a character from a keyed
+  row only under R73, listing it by name.
+- **Do not tick 3.6 unless added letters fell.**
+- **Do not touch what keys or transmits.**
 - **Do not halt for a question.** Park it.
 - **Write `output.md` before the session ends.**
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Report mismatches; repair nothing beyond task 3's one-line cases. American spelling.
-  UTF-8. The four headings exactly.**
+- **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
 
 ## 11. Committing and pushing
 
-Commit per task. Push at the end and say whether it succeeded.
+Commit per task, each change with its red quoted. Push at the end and say whether it succeeded.
 
 ---
 
@@ -302,35 +284,37 @@ Commit per task. Push at the end and say whether it succeeded.
 ```
 READ IN THIS ORDER.
 
-A. Item 14 built, with the card's wording quoted.
-B. The fourteen, one line each: built-and-right, built-but-different with
-   the difference quoted, or unverifiable.
+A. Added letters over the keyed recordings, before and after, and whether
+   the ratio separates the added from the right.
+B. Step 3's criterion 3.6, and 3.5 at exit.
 C. The rest. Section 4 raises <n> items, none blocking.
 ```
 
 ```
-UNIT:       427 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       428 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
-ADVANCED:   no - a blocker-clear by design
-NUMBER:     of the owner's fourteen: <n> built-and-right, <n> different, <n> unverifiable
-DRIFT:      0
+ADVANCED:   yes | no - <why, on the line>
+NUMBER:     added letters over all keyed recordings: <n> -> <n>; all keyed <n> -> <n> over 565
+DRIFT:      <0 if a criterion moved>
 ```
 
-**Section 3 leads with the fourteen-line table.** That is what the owner asked for.
+**Section 3 leads with the two distributions**, added against right, so the owner can see
+whether they separate at all. **Then one line of the 7.052 traffic net before and after**, if
+those captures are in the tree - that is what he reads.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 6
-APPROACH: build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+STEP: 3
+APPROACH: trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
 MOVE: continue
-WHY: PHASE_PLAN.md step 6 asks that every sentence the app states about the radio or a signal be true or say it does not know, and a card that gives an entity from a prefix while holding a grid that contradicts it states a falsehood; the sweep clears the way to criterion 5.1, the owner's verdict
+WHY: PHASE_PLAN.md step 3 criterion 3.6 asks that the stray single-element characters be traced and attacked with the count of added letters reported before and after, and unit 421 measured that no fixed bar separates them
 STATE: partial
-DECIDED: the card's exact wording, the form of the sweep, which differences count as one-line repairs, and the per-type timeouts are the author's, overrulable
-LICENCE: HM-DEC-180; PHASE_PLAN.md R65, R74, section 6; CLAUDE.md 0.0, 0.2, 0.5 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
-ACCOMPLISHED: a station's card says where he actually is, and the owner has a written answer on all fourteen of the things he asked for this week
-ADVANCES: none - clears a blocker: criterion 5.1
+DECIDED: the window, the ratio, and the per-type timeouts are the author's, overrulable, and are chosen from the traced distributions rather than from which changes they admit
+LICENCE: PHASE_PLAN.md R66, R69, R71, R72, R73, section 3, section 6; HM-DEC-181; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+ACCOMPLISHED: the litter between real words stops reaching the transcript as confident text, or the project knows on measured distributions that relative span cannot find it either
+ADVANCES: step 3 criterion 6
 END-ARBITER-DECISION
 ```

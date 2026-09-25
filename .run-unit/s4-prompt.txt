@@ -51,62 +51,26 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-1. **Once he has moved on, the overload sentence asks for the attenuator the CW tune-in left
-   off. This bears on ticking 7.8. Parked as P27.**
-   - **What happens:** with the preamp now off on an overload, the sentence outside an owned
-     block reads *"the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring
-     it in"*. It appears 12 times in the trace, and it is true. Before this unit the same view
-     asked him to turn the preamp off instead.
-   - **Proposed ruling, the owner's:** 7.8's third clause covers the fields the tuned block owns.
-     Once he is in a block that does not state a field, a true voice about it may speak.
-   - **Reasoning:** HM-DEC-179 lets the preamp follow only while the block owns it, and forbids
-     following the attenuator at all. The attenuator's 20 dB write is P14. The only way to
-     remove the sentence without a ruling would be to silence a true voice, which R74 forbids.
-   - **Rejected:**
-     - following the attenuator live, which HM-DEC-179 forbids;
-     - rewording the sentence to stop naming the attenuator, which would be silencing it.
-2. **A band that starts overloading after he has moved into a block that does not state the
-   preamp is not followed.** This is HM-DEC-179's third limit, as ruled.
-   - **What happens:** the unowned overload sentence then asks him to press P.AMP/ATT until the
-     preamp reads off. That is true and it stands.
-   - **Proposed:** leave it as ruled unless Tim widens the licence.
-   - Not blocking.
-3. **Receive Help's USB level has the RF gain's scale mismatch. Parked as P28.**
-   - **What happens:** `ReceiveAdvice.UsbLevel` compares a percent to 77 on the 0-255 scale, so
-     50 percent, where the radio ships, would be asked to turn up.
-   - It is not one of the nine fields, and it was not changed.
-   - **Proposed:** a step 6 unit repairs it as this unit repaired the RF gain.
-   - Not blocking.
+Nothing here blocks the phase (R65). Six items for the owner, most useful first:
 
-**Carried per HM-DEC-139, verbatim. None of these is this unit's to answer:**
+1. **P34 - a PSK31 CQ with a grid in it is read as no station.** `CQ CQ CQ de VE3YX VE3YX FN03
+   pse K` gives a row with no station, no entity and no kind. The same CQ without the grid
+   reads fine. *Proposed:* a later unit takes it to the engine's parser, because it is the phase
+   goal in the keyboard modes. *Rejected:* opening the parser in this unit, because the
+   instruction kept it closed.
+2. **P32 - item 13 is not built.** A station's first over still arriving opens no card.
+   *Proposed:* treat it as a unit of its own that parses a growing row. *Rejected:* building it
+   here, because the instruction says findings only.
+3. **P33 - item 8's sentence promises a send that does not happen**, and the hold also lets go
+   on carrier drop. *Proposed:* the owner rules on the sentence's words (the send path, Â§0.2)
+   and on whether carrier drop should release the hold. *Rejected:* changing either here,
+   because both are parked.
+4. **P31 - item 1: should *make a card anyway* make a card for a row with no callsign?** Today
+   it is a note, on Â§0.0 grounds. *Proposed:* the owner says which he meant. *Rejected:*
+   guessing.
+5. **P30 - the grid table covers four places and cites no boundary file.** *Proposed:* the
+   owner rules on whether to cite a source and widen it. *Rejected:* widening it from memory.
+6. **P29 - Unit297CardSentenceTests has two reds that predate this unit.** *Proposed:* a later
+   unit retires or restores the two expectations. *Rejected:* touching them here, under Â§12.6.
 
-4. **P23 - 6 m has no block on the map, and its top edge is not in the tree.** "The CW row states
-   preamp 2 from 50.000 to 54.000 MHz (HM-DEC-177), and `ReceiverSetup` writes 2 when driven there
-   directly, but `HfBands.Names` is 80 to 10 m and `data/bands/us-neighborhoods.json` has no 6 m
-   rows, so tuning to 50.100 in the app finds no block and writes nothing. 160 m and 12 m are the
-   same (1.810 and 24.900 find no block). The 54 MHz top edge is 47 CFR 97.301's and no file in
-   the tree carries it: `data/privileges/us-part97-privileges.json` has no 6 m row. Adding bands
-   to the map is the scope decision `HfBands` names. Not blocking."
-5. **P24 - the attenuator's sentence gives the quiet band's reason when it writes 20 dB.** "Since
-   unit 424 the setup says a conditional row as the value the radio read back rather than as the
-   rule. For the attenuator that will read *I set the attenuator to 20 dB because twenty decibels
-   thrown away on a signal that had none to spare* once a 20 dB write lands, which gives the off
-   case's reason for the on case. It cannot be heard today, because the 20 dB write is refused
-   (P14). The row's `says` is the attenuator's, which is another receive condition and not this
-   unit's; its page in `IC-7300_ENG_FM_12b` was not checked, because the manual is not in the
-   tree. Not blocking."
-6. **P25 - the decision log's index has no HM-DEC-166 row.**
-   "`DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes` is red at entry
-   `e4085d43` and after: *Expected [105, 136], Actual [105, 136, 166]*. `DECISIONS.md` holds
-   HM-DEC-166 and the `CLAUDE.md` Â§1 table has no row for it. Unit 424 did not repair it (report,
-   repair nothing)." Still red at unit 426's entry and exit, and not repaired.
-7. **P26 - a ceiling test's added paragraph comes back 64 characters longer at some times.**
-   "`HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed` failed twice ...
-   with *Expected 1779, Actual 1843* ... Something on the Digital tab adds 64 characters between
-   the two measurements at some wall-clock times. Not traced by unit 424. Not blocking." It was
-   5 of 5 in both of unit 426's rounds.
-8. **Step 3's join question, from unit 425.** "3.6 clause two may need a join, and a join moves
-   the unkeyed floors ... A ruling would be needed on whether that counts as a floor lowered on
-   an unkeyed row." It is step 3's.
-9. **P19** was answered by HM-DEC-178 at unit 425. It is step 3's and is listed only so the
-   carry is complete.
+Carried: P27, the attenuator sentence, is still the owner's, and 7.8 stays unticked.

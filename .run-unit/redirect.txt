@@ -1,4 +1,0 @@
-RULE: no-advance at two different criteria
-CRITERIA: 3.6 7.8
-DETAIL: units 2 and 3 ran against criteria 3.6 and 7.8 and moved neither
-COUNT: 1

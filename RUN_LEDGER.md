@@ -275,3 +275,7 @@ the owner reads instead of watching.
 | 3 | 2026-09-24T21:08 | 2026-09-24T21:08 | note | none - not a run | no advance - step 7 criterion 8 was unmet and is unmet |
 | 4 | 2026-09-24T21:08 | 2026-09-24T21:08 | note | none - not a run | redirected - no-advance at two different criteria: units 2 and 3 ran against criteria 3.6 and 7.8 and moved neither. The next instruction must name one of 3.6 7.8 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |
 | phase | 2026-09-24T21:08 | 2026-09-24T21:08 | failure | 25.2366 | STOPPED, AND A STOP IS FAILURE - the arbiter session failed - exit 1 |
+| 1 | 2026-09-24T21:41 | 2026-09-24T21:41 | note | none - not a run | redirected - no-advance at two different criteria: units 2 and 3 ran against criteria 3.6 and 7.8 and moved neither. The next instruction must name one of 3.6 7.8 with an approach the record does not show failing at it. Redirect 2 of this run, which is not a cap. |
+| 1 | 2026-09-24T21:41 | 2026-09-24T22:33 | complete | 10.528144399999999 | ran unattended, 214 turns, 10 denied call(s) worked around, report valid |
+| 1 | 2026-09-24T22:34 | 2026-09-24T22:34 | note | none - not a run | blocker-clear - cleared a blocker: criterion 5.1 |
+| phase | 2026-09-24T22:34 | 2026-09-24T22:34 | ending | 0 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |

@@ -598,3 +598,20 @@ STATE_WHY: Criteria 7.5 and 7.7 are met, but 7.1 to 7.4 have no work toward them
 ADVANCED: no
 ATTEMPT: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | no | executed | follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
 REASON: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 1 - STEP 6
+
+STEP: 6
+APPROACH: build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+HIT: section 4 wants a ruling: yes - Item 3 asks the owner to rule on a sentence that promises a send that does not happen and on whether carrier drop should release the hold, which is a promise about a send and touches transmit.
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 asks that every sentence the app states about the radio or a signal be true or say it does not know, and a card that gives an entity from a prefix while holding a grid that contradicts it states a falsehood; the sweep clears the way to criterion 5.1, the owner's verdict
+DECIDED: the card's exact wording, the form of the sweep, which differences count as one-line repairs, and the per-type timeouts are the author's, overrulable
+LICENCE: HM-DEC-180; PHASE_PLAN.md R65, R74, section 6; CLAUDE.md 0.0, 0.2, 0.5 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+COST: 10.528144399999999
+ACCOMPLISHED: a station's card says where he actually is, and the owner has a written answer on all fourteen of the things he asked for this week
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Every exit criterion is met except 6.5, and the report says the Have a look button is still open under HM-OPEN-087 with no work on it and no owner decision it is waiting for.
+ADVANCED: blocker
+ATTEMPT: 5.1 | unit 1 launched 2026-09-25T01:41:45.314Z | blocker | executed | build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
