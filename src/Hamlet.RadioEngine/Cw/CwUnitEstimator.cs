@@ -40,8 +40,12 @@ public readonly record struct CwUnitReading(
 /// times a dit rather than three units longer than one, and a mean taken on raw
 /// milliseconds is pulled by whichever end is longer.
 /// </para>
-/// <para>**THE ONE NUMBER HERE NOT MEASURED FROM THE AUDIO IS THE HYSTERESIS
-/// DEPTH.** Everything else is a percentile or a centroid of what arrived.
+/// <para>**TWO NUMBERS HERE ARE NOT MEASURED FROM THE AUDIO: THE HYSTERESIS
+/// DEPTH, AND THE 3.0 SECONDS <see cref="Measure"/> TAKES EACH CUT OVER**
+/// (work instruction 438). The second was not here before; it is the tone
+/// survey's span and the stream's refill, and it was not tuned. The half second
+/// each cut holds for is the stream's read cadence. Everything else is a
+/// percentile or a centroid of what arrived.
 /// </para>
 /// </remarks>
 public static class CwUnitEstimator
@@ -59,15 +63,27 @@ public static class CwUnitEstimator
     /// </para>
     /// <para>**SIX DECIBELS, AND THE OPTIMUM IS BROAD.** A minimum run length,
     /// the usual repair, is a millisecond constant that has to be retuned for
-    /// every speed. This is not. **It is the one constant in the estimator not
-    /// derived from the audio**, and the plateau around it is measured rather
-    /// than asserted.
+    /// every speed. This is not. **It is one of the two constants in the
+    /// estimator not derived from the audio**, beside <see cref="CutSpanSeconds"/>,
+    /// and the plateau around it is measured rather than asserted.
     /// </para>
     /// </remarks>
     public const double HysteresisDb = 6.0;
 
     /// <summary>The shortest run, in hops, that is taken as an element at all.</summary>
     private const int ShortestRunHops = 2;
+
+    /// <summary>How much envelope each of <see cref="Measure"/>'s cuts is taken over, in seconds.</summary>
+    /// <remarks>
+    /// **THE TONE SURVEY'S SPAN AND THE STREAM'S REFILL, NOT A TUNED NUMBER**
+    /// (work instruction 438, author's, overrulable). At twenty-two words a
+    /// minute it holds about ten characters, enough keying for Otsu to find two
+    /// classes in, and short enough that a sender's level is one level across it.
+    /// </remarks>
+    public const double CutSpanSeconds = 3.0;
+
+    /// <summary>How long each of <see cref="Measure"/>'s cuts holds for, in seconds: the stream's read cadence.</summary>
+    private const double CutBlockSeconds = 0.5;
 
     /// <summary>Measure the sender's timing from an envelope.</summary>
     /// <param name="envelope">Envelope magnitudes, one every hop.</param>
@@ -86,7 +102,21 @@ public static class CwUnitEstimator
             return CwUnitReading.None;
         }
 
-        var (marks, gaps) = Elements(envelope, hopMilliseconds, hysteresisDb);
+        // **THE CUT IS TAKEN WHERE THE MARKS ARE, NOT ONCE OVER TWELVE SECONDS**
+        // (work instruction 438). Unit 436 found the opening of
+        // `cw-2026-09-24-003919` measuring its short mark heap at 19 to 34 ms and
+        // its short gap heap at 10 to 15 ms against a sender sending 55 ms dits,
+        // and unit 437 found the unit still halved on a window wholly at the
+        // sender's pitch. One Otsu level over the whole window is set by
+        // everything in it: a splice, the tail of the recording before, a sender
+        // whose level moves. Where that level stands near the top of the sender's
+        // own marks, every shallow dip inside a mark falls under the off level and
+        // the mark becomes two short marks and a short gap. So each half second is
+        // cut at Otsu's level over the 3 s around it, and the hysteresis state
+        // carries across. Only this measurement moves; MeasureGaps and
+        // MeasureCharacterGap still cut once over the window.
+        var db = Decibels(envelope);
+        var (marks, gaps) = Runs(db, LocalCuts(db, hopMilliseconds, hysteresisDb), hysteresisDb, hopMilliseconds);
 
         if (marks.Count < 8 || gaps.Count < 8)
         {
@@ -395,6 +425,17 @@ public static class CwUnitEstimator
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
+        var db = Decibels(envelope);
+        var cuts = new double[db.Length];
+
+        Array.Fill(cuts, Otsu(db));
+
+        return Runs(db, cuts, hysteresisDb, hopMilliseconds);
+    }
+
+    /// <summary>The envelope in decibels.</summary>
+    private static double[] Decibels(IReadOnlyList<double> envelope)
+    {
         var db = new double[envelope.Count];
 
         for (var i = 0; i < envelope.Count; i++)
@@ -402,7 +443,36 @@ public static class CwUnitEstimator
             db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
         }
 
-        return Runs(db, Otsu(db), hysteresisDb, hopMilliseconds);
+        return db;
+    }
+
+    /// <summary>The cut for every hop: Otsu's level over the span around its block.</summary>
+    /// <remarks>
+    /// Each half second takes Otsu over the <see cref="CutSpanSeconds"/> of hops
+    /// centred on it, slid inward at the window's ends so the span stays whole.
+    /// **A SPAN WHOSE TWO CLASSES STAND LESS THAN TWICE THE HYSTERESIS DEPTH
+    /// APART HOLDS NO KEYING**, since no mark in it could cross both levels, and
+    /// that block takes the whole window's cut exactly as before.
+    /// </remarks>
+    private static double[] LocalCuts(double[] db, double hopMilliseconds, double hysteresisDb)
+    {
+        var blockHops = Math.Max(1, (int)Math.Round(CutBlockSeconds * 1000.0 / hopMilliseconds));
+        var spanHops = Math.Max(1, (int)Math.Round(CutSpanSeconds * 1000.0 / hopMilliseconds));
+        var whole = Otsu(db);
+        var cuts = new double[db.Length];
+
+        for (var start = 0; start < db.Length; start += blockHops)
+        {
+            var end = Math.Min(db.Length, start + blockHops);
+            var from = db.Length <= spanHops
+                ? 0
+                : Math.Clamp(((start + end) / 2) - (spanHops / 2), 0, db.Length - spanHops);
+            var (cut, below, above) = OtsuSplit(db[from..Math.Min(db.Length, from + spanHops)]);
+
+            Array.Fill(cuts, above - below < 2 * hysteresisDb ? whole : cut, start, end - start);
+        }
+
+        return cuts;
     }
 
     /// <summary>
@@ -415,6 +485,11 @@ public static class CwUnitEstimator
     /// what lets the trigger depth be the only constant here.
     /// </remarks>
     private static double Otsu(double[] db)
+        => OtsuSplit(db).Cut;
+
+    /// <summary>Otsu's level, and the mean of each class it splits the envelope into, in decibels.</summary>
+    /// <remarks>Each mean is the centre of the bin the class's mean bin falls in, from the same histogram.</remarks>
+    private static (double Cut, double MeanBelow, double MeanAbove) OtsuSplit(double[] db)
     {
         var low = double.MaxValue;
         var high = double.MinValue;
@@ -427,7 +502,7 @@ public static class CwUnitEstimator
 
         if (high - low < 1e-6)
         {
-            return low;
+            return (low, low, low);
         }
 
         const int bins = 256;
@@ -453,6 +528,8 @@ public static class CwUnitEstimator
         var weightBelow = 0.0;
         var best = -1.0;
         var bestBin = 0;
+        var bestBelow = 0.0;
+        var bestAbove = 0.0;
 
         for (var b = 0; b < bins; b++)
         {
@@ -481,26 +558,29 @@ public static class CwUnitEstimator
             {
                 best = between;
                 bestBin = b;
+                bestBelow = meanBelow;
+                bestAbove = meanAbove;
             }
         }
 
-        return low + ((bestBin + 0.5) * width);
+        return (
+            low + ((bestBin + 0.5) * width),
+            low + ((bestBelow + 0.5) * width),
+            low + ((bestAbove + 0.5) * width));
     }
 
-    /// <summary>Mark and gap lengths from a two-level trigger.</summary>
+    /// <summary>Mark and gap lengths from a two-level trigger, each hop at its own cut.</summary>
     private static (List<double> Marks, List<double> Gaps) Runs(
-        double[] db, double cut, double hysteresisDb, double hopMilliseconds)
+        double[] db, double[] cuts, double hysteresisDb, double hopMilliseconds)
     {
-        var on = cut + hysteresisDb;
-        var off = cut - hysteresisDb;
         var marks = new List<double>();
         var gaps = new List<double>();
-        var keyDown = db[0] > on;
+        var keyDown = db[0] > cuts[0] + hysteresisDb;
         var runStart = 0;
 
         for (var i = 1; i < db.Length; i++)
         {
-            var changed = keyDown ? db[i] < off : db[i] > on;
+            var changed = keyDown ? db[i] < cuts[i] - hysteresisDb : db[i] > cuts[i] + hysteresisDb;
 
             if (!changed)
             {
