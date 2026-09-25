@@ -5,7 +5,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
 [xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
 [xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
 [xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:00.24]   Finished:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Finished:    Hamlet.RadioEngine.Tests
 No test matches the given testcase filter `FullyQualifiedName~.ThePeakFindsThePitchTheTrackerMissedTests.` in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
 
 RC=0 WALL=1s

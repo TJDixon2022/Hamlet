@@ -5,7 +5,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
 [xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
 [xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
 [xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
-  Passed Hamlet.RadioEngine.Tests.Cw.ContactTrackerTests.AReportWordMovesItToTheExchange(word: "RST") [15 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.ContactTrackerTests.AReportWordMovesItToTheExchange(word: "RST") [14 ms]
   Passed Hamlet.RadioEngine.Tests.Cw.ContactTrackerTests.AReportWordMovesItToTheExchange(word: "5NN") [< 1 ms]
   Passed Hamlet.RadioEngine.Tests.Cw.ContactTrackerTests.AReportWordMovesItToTheExchange(word: "UR") [< 1 ms]
   Passed Hamlet.RadioEngine.Tests.Cw.ContactTrackerTests.SomebodyAnsweringAnotherStationLeavesHamletLost [< 1 ms]
@@ -24,5 +24,5 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
 Test Run Successful.
 Total tests: 14
      Passed: 14
- Total time: 0.5400 Seconds
+ Total time: 0.5357 Seconds
 RC=0 WALL=1s

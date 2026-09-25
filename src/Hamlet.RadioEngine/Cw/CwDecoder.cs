@@ -76,26 +76,6 @@ public sealed class CwDecoder
     /// </remarks>
     private double _lastMeasuredToneHz = double.NaN;
 
-    /// <summary>
-    /// A measured pitch the tracker has moved to and the mixdown has not yet
-    /// followed, or NaN.
-    /// </summary>
-    private double _pendingToneHz = double.NaN;
-
-    /// <summary>The survey's verdict on the read that made the pending move.</summary>
-    private ToneVerdict _verdictAtMove;
-
-    /// <summary>The survey's latest verdict, and the one before it.</summary>
-    private ToneVerdict _verdictNow;
-    private ToneVerdict _verdictBefore;
-
-    /// <summary>
-    /// How far a measured pitch may move and still be the station the mixdown is
-    /// reading: one coarse bin, the distance the tracker's own `Switch` calls
-    /// refining rather than a station change.
-    /// </summary>
-    internal const double SameStationHz = 25;
-
     private int _charactersEmitted;
     private int _charactersUnsure;
     private int _elementsResolved;
@@ -617,65 +597,9 @@ public sealed class CwDecoder
         // its station sits at 500.09, so the callsign was only ever read because
         // an unmeasured number happened to land on it. Honesty and that callsign
         // are in tension and the ruling is Tim's (§0.0, HM-DEC-009).
-        //
-        // **AND A MOVE THE SURVEY HAS NOT CONFIRMED ON AN EARLIER READ IS FOLLOWED
-        // ON ITS NEXT WORD, NOT ON THE MOVE ITSELF** (work instruction 430,
-        // criterion 7.4). The tracker's choice stands exactly as its rules made it
-        // (HM-DEC-095, HM-DEC-127, both untouched); what waits is the mixdown.
-        // Measured on the 7.052 session spliced into one stream: in the sender's
-        // pause the survey admitted 525 Hz alone on two reads, lift 2.5 dB and
-        // fifteen words a minute, the tracker switched to it on the second, and the
-        // mixdown followed in the same hop and stayed 100 Hz off the sender for
-        // five and a half seconds while he sent. The survey never admitted 525
-        // again.
-        //
-        // So the first measured pitch is taken at once, and so is a move within
-        // one coarse bin. A move further than that is taken at once when a read
-        // before the move had already confirmed keying there - the tracker held
-        // it until a character ended, and the read that confirmed it is behind
-        // it. A move made on the very read that confirmed it waits until a later
-        // read confirms keying there again, and until then the mixdown stays on
-        // the pitch it was reading. Every read writes a verdict, and a keyed one
-        // only once the tracker has confirmed the keying twice, so a later read
-        // is told from the one that made the move by its verdict.
-        if (!_tracker.Verdict.Equals(_verdictNow))
-        {
-            _verdictBefore = _verdictNow;
-            _verdictNow = _tracker.Verdict;
-        }
-
         if (_tracker.HasMeasuredPitch)
         {
-            var heard = _tracker.ToneHz;
-
-            if (double.IsNaN(_lastMeasuredToneHz)
-                || Math.Abs(heard - _lastMeasuredToneHz) <= SameStationHz)
-            {
-                _lastMeasuredToneHz = heard;
-                _pendingToneHz = double.NaN;
-            }
-            else if (double.IsNaN(_pendingToneHz)
-                     || Math.Abs(heard - _pendingToneHz) > SameStationHz)
-            {
-                if (_verdictBefore.Keyed is { } earlier
-                    && Math.Abs(earlier.ToneHz - heard) <= SameStationHz)
-                {
-                    _lastMeasuredToneHz = heard;
-                    _pendingToneHz = double.NaN;
-                }
-                else
-                {
-                    _pendingToneHz = heard;
-                    _verdictAtMove = _verdictNow;
-                }
-            }
-            else if (!_verdictNow.Equals(_verdictAtMove)
-                     && _verdictNow.Keyed is { } again
-                     && Math.Abs(again.ToneHz - heard) <= SameStationHz)
-            {
-                _lastMeasuredToneHz = heard;
-                _pendingToneHz = double.NaN;
-            }
+            _lastMeasuredToneHz = _tracker.ToneHz;
         }
 
         // **THE OPERATOR'S LOCK FIRST, THEN THE LAST MEASURED PITCH, THEN THE

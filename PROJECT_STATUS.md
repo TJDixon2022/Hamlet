@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 430 - the mix that walked off the sender
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T01:43:39-04:00
-NOTE: Pitch types round t2: CwDisplacementFloorTests alone, 13 of 13
+UPDATED: 2026-09-25T02:08:43-04:00
+NOTE: Pitch types round t2v: CwDisplacementFloorTests alone, 13 of 13
 
 ---
 

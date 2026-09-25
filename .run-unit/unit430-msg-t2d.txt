@@ -1,0 +1,7 @@
+unit430 task 2: the narrower variant taken back out - revert of ec76051e, which failed 3.2's second and fourth tests on the same recording, cw-2026-08-22-032113, 47 named at or above the span bar to 44 and elements 102 to 100; no third attempt
+
+The four tests, before -> after the variant: 1. keyed total 165 -> 153 edits over 565, pass (right 353 -> 360, wrong 56 -> 52, added 17 -> 14, 8 -> 8 single-element); 2. keyed floors 13 of 13 -> 12 of 13, FAIL, 032113; 3. adjudicated 13 of 13 -> 13 of 13, pass; 4. captures 51 of 51 -> 50 of 51, FAIL, 032113 named 47 -> 44 and above-bar elements 102 -> 100, outside its scored stretch; 004234 named 36 -> 37. The opening on the stream 30 to 46.2 s read EANQNID EAN (placeholder) IK, 12 named, as under the first change; cold unchanged. The pitch types were as at entry: AHeldPitchDoesNotOutliveItsEvidenceTests 1 of 4 at entry and under both changes, the other eleven compiled types green, two not compiled.
+
+Why the variant did not do what it was built to: it followed a held move at once only when the verdict of the read immediately before the move carried the keying. On 032113 the move to 500 Hz at 29.54 s was followed, but the hold before the move to 650 Hz spanned two reads, confirmed at 25.54 s, still held at 26.04 s with nothing admitted, made at 26.54 s, so the read before the move carried no keyed verdict and the mix stayed at 600 from 26.54 to 29.54 s. That is the measured reason; it is left for a later unit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

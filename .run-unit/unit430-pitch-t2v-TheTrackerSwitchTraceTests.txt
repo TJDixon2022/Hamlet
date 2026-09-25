@@ -3,9 +3,9 @@ A total of 1 test files matched the specified pattern.
 C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
 [xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
-[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheCaptures [2 m]
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheCaptures [1 m 59 s]
   Standard Output Messages:
  mix | cw-2026-08-17-013347 | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender NaN
  mix | cw-2026-08-17-013347 | 13.040 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured False | sender NaN
@@ -44,7 +44,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  cap | cw-2026-08-17-134712 | characters 12 | final tone 500.0 | cold moves 1 | switches 0: 
  mix | cw-2026-08-18-004507 | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender NaN
  mix | cw-2026-08-18-004507 | 2.040 s | stream mixes at 475.0 Hz | bank centre 475.0 | measured True | sender NaN
- mix | cw-2026-08-18-004507 | 3.040 s | stream mixes at 525.0 Hz | bank centre 525.0 | measured True | sender NaN
+ mix | cw-2026-08-18-004507 | 7.040 s | stream mixes at 525.0 Hz | bank centre 525.0 | measured True | sender NaN
  mix | cw-2026-08-18-004507 | 8.040 s | stream mixes at 500.0 Hz | bank centre 500.0 | measured True | sender NaN
  mix | cw-2026-08-18-004507 | 15.040 s | stream mixes at 495.0 Hz | bank centre 500.0 | measured True | sender NaN
  mix | cw-2026-08-18-004507 | 15.540 s | stream mixes at 500.0 Hz | bank centre 500.0 | measured True | sender NaN
@@ -106,10 +106,8 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  move-hold | unadjudicated/cw-2026-08-22-031838 | 8.535 s | Switch via 959 (the hold) | survey admits nothing at execution, held 525 -> STALE
  mix | unadjudicated/cw-2026-08-22-031905 | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender NaN
  mix | unadjudicated/cw-2026-08-22-031905 | 1.540 s | stream mixes at 500.0 Hz | bank centre 500.0 | measured False | sender NaN
- mix | unadjudicated/cw-2026-08-22-031905 | 13.040 s | stream mixes at 300.0 Hz | bank centre 300.0 | measured True | sender NaN
- mix | unadjudicated/cw-2026-08-22-031905 | 18.040 s | stream mixes at 500.0 Hz | bank centre 500.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-08-22-031905 | 26.540 s | stream mixes at 300.0 Hz | bank centre 300.0 | measured True | sender NaN
- cap | unadjudicated/cw-2026-08-22-031905 | characters 37 | final tone 300.0 | cold moves 1 | switches 3: 13.0s 500->300 hold-STALE fineOld - near-louder -1, 18.0s 300->500 hold-STALE fineOld - near-louder -1, 26.5s 500->300 hold-STALE fineOld - near-louder -1
+ cap | unadjudicated/cw-2026-08-22-031905 | characters 37 | final tone 300.0 | cold moves 1 | switches 3: 13.0s 500->300 hold-STALE fineOld - near-louder -1, 17.5s 300->500 direct fineOld - near-louder 0, 26.5s 500->300 hold-STALE fineOld - near-louder -1
  move | unadjudicated/cw-2026-08-22-031905 | 1.535 s | cold 1004 | 600.0 to 500.0 Hz, moved 100.0 | sender 300 | from off sender 300.0, to off sender 200.0 | TOWARD | through cold start, nothing confirmed
  move-why | unadjudicated/cw-2026-08-22-031905 | 1.535 s | n/a | reach 100.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before NaN
  move-keyed | unadjudicated/cw-2026-08-22-031905 | 1.535 s | verdict keyed none | interference 500 lift 44.1 | reading power -49.2 noise -55.9 dB
@@ -122,12 +120,13 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  move-coarse | unadjudicated/cw-2026-08-22-031905 | 13.035 s | admitted one hop before: none
  move-fine | unadjudicated/cw-2026-08-22-031905 | 13.035 s | fine bank at 500.0 one hop before: none
  move-hold | unadjudicated/cw-2026-08-22-031905 | 13.035 s | Switch via 959 (the hold) | survey admits nothing at execution, held 300 -> STALE
- move | unadjudicated/cw-2026-08-22-031905 | 18.035 s | Switch via 959 (the hold) | 300.0 to 500.0 Hz, moved 200.0 | sender 300 | from off sender 0.0, to off sender 200.0 | AWAY | through the hold
- move-why | unadjudicated/cw-2026-08-22-031905 | 18.035 s | n/a | reach 200.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before 500.0
- move-keyed | unadjudicated/cw-2026-08-22-031905 | 18.035 s | verdict keyed none | interference none | reading power -63.8 noise -72.3 dB
- move-coarse | unadjudicated/cw-2026-08-22-031905 | 18.035 s | admitted one hop before: none
- move-fine | unadjudicated/cw-2026-08-22-031905 | 18.035 s | fine bank at 300.0 one hop before: none
- move-hold | unadjudicated/cw-2026-08-22-031905 | 18.035 s | Switch via 959 (the hold) | survey admits nothing at execution, held 500 -> STALE
+ move | unadjudicated/cw-2026-08-22-031905 | 17.535 s | Switch via 1092 | 300.0 to 500.0 Hz, moved 200.0 | sender 300 | from off sender 0.0, to off sender 200.0 | AWAY | through the confirm, then the reach
+ move-why | unadjudicated/cw-2026-08-22-031905 | 17.535 s | previous survey 500.0, this 500.0, apart 0.0 (within 25) | reach 200.0 > 15 | reading -49.4 dB, candidate keyed -27.9 dB, +21.5 (floor -25) | mid-character before False | held before NaN
+ move-keyed | unadjudicated/cw-2026-08-22-031905 | 17.535 s | verdict keyed 500.0 Hz lift 49.1 keyed -27.9 sep 4.4 marks 11 dit 68 dah 198 (17.6 wpm) | interference none | reading power -40.5 noise -88.4 dB
+ move-coarse | unadjudicated/cw-2026-08-22-031905 | 17.535 s | admitted one hop before: 500: lift 49.2 keyed -27.9 sep 4.4 m11 17.6wpm
+ move-fine | unadjudicated/cw-2026-08-22-031905 | 17.535 s | fine bank at 300.0 one hop before: none
+ move-hold | unadjudicated/cw-2026-08-22-031905 | 17.535 s | Switch via 1092 | not a held move
+ move-props | unadjudicated/cw-2026-08-22-031905 | 17.535 s | fine bank still keyed at the old centre: False | admitted within 50 Hz of the chosen bin: 0, louder key-down: 0  | chosen wpm 17.6 vs fine-at-old n/a
  move | unadjudicated/cw-2026-08-22-031905 | 26.535 s | Switch via 959 (the hold) | 500.0 to 300.0 Hz, moved 200.0 | sender 300 | from off sender 200.0, to off sender 0.0 | TOWARD | through the hold
  move-why | unadjudicated/cw-2026-08-22-031905 | 26.535 s | n/a | reach 200.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before 300.0
  move-keyed | unadjudicated/cw-2026-08-22-031905 | 26.535 s | verdict keyed none | interference 500 lift 56.6 | reading power -37.4 noise -64.2 dB
@@ -160,26 +159,32 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  mix | unadjudicated/cw-2026-08-22-032113 | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender NaN
  mix | unadjudicated/cw-2026-08-22-032113 | 1.540 s | stream mixes at 500.0 Hz | bank centre 500.0 | measured False | sender NaN
  mix | unadjudicated/cw-2026-08-22-032113 | 21.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured True | sender NaN
- mix | unadjudicated/cw-2026-08-22-032113 | 26.540 s | stream mixes at 650.0 Hz | bank centre 650.0 | measured True | sender NaN
- cap | unadjudicated/cw-2026-08-22-032113 | characters 49 | final tone 650.0 | cold moves 1 | switches 2: 21.0s 500->600 hold-STALE fineOld - near-louder -1, 26.5s 600->650 hold-STALE fineOld - near-louder -1
- move | unadjudicated/cw-2026-08-22-032113 | 1.535 s | cold 1004 | 600.0 to 500.0 Hz, moved 100.0 | sender 650 | from off sender 50.0, to off sender 150.0 | AWAY | through cold start, nothing confirmed
+ mix | unadjudicated/cw-2026-08-22-032113 | 29.540 s | stream mixes at 500.0 Hz | bank centre 500.0 | measured True | sender NaN
+ cap | unadjudicated/cw-2026-08-22-032113 | characters 46 | final tone 500.0 | cold moves 1 | switches 3: 21.0s 500->600 hold-STALE fineOld - near-louder -1, 26.5s 600->650 hold-STALE fineOld - near-louder -1, 29.5s 650->500 hold-STALE fineOld - near-louder -1
+ move | unadjudicated/cw-2026-08-22-032113 | 1.535 s | cold 1004 | 600.0 to 500.0 Hz, moved 100.0 | sender 500 | from off sender 100.0, to off sender 0.0 | TOWARD | through cold start, nothing confirmed
  move-why | unadjudicated/cw-2026-08-22-032113 | 1.535 s | n/a | reach 100.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before NaN
  move-keyed | unadjudicated/cw-2026-08-22-032113 | 1.535 s | verdict keyed none | interference 500 lift 50.4 | reading power -58.1 noise -75.5 dB
  move-coarse | unadjudicated/cw-2026-08-22-032113 | 1.535 s | admitted one hop before: none
  move-fine | unadjudicated/cw-2026-08-22-032113 | 1.535 s | fine bank at 600.0 one hop before: none
  move-hold | unadjudicated/cw-2026-08-22-032113 | 1.535 s | cold 1004 | not a held move
- move | unadjudicated/cw-2026-08-22-032113 | 21.035 s | Switch via 959 (the hold) | 500.0 to 600.0 Hz, moved 100.0 | sender 650 | from off sender 150.0, to off sender 50.0 | TOWARD | through the hold
+ move | unadjudicated/cw-2026-08-22-032113 | 21.035 s | Switch via 959 (the hold) | 500.0 to 600.0 Hz, moved 100.0 | sender 500 | from off sender 0.0, to off sender 100.0 | AWAY | through the hold
  move-why | unadjudicated/cw-2026-08-22-032113 | 21.035 s | n/a | reach 100.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before 600.0
  move-keyed | unadjudicated/cw-2026-08-22-032113 | 21.035 s | verdict keyed none | interference none | reading power -41.3 noise -75.8 dB
  move-coarse | unadjudicated/cw-2026-08-22-032113 | 21.035 s | admitted one hop before: none
  move-fine | unadjudicated/cw-2026-08-22-032113 | 21.035 s | fine bank at 500.0 one hop before: none
  move-hold | unadjudicated/cw-2026-08-22-032113 | 21.035 s | Switch via 959 (the hold) | survey admits nothing at execution, held 600 -> STALE
- move | unadjudicated/cw-2026-08-22-032113 | 26.535 s | Switch via 959 (the hold) | 600.0 to 650.0 Hz, moved 50.0 | sender 650 | from off sender 50.0, to off sender 0.0 | TOWARD | through the hold
+ move | unadjudicated/cw-2026-08-22-032113 | 26.535 s | Switch via 959 (the hold) | 600.0 to 650.0 Hz, moved 50.0 | sender 500 | from off sender 100.0, to off sender 150.0 | AWAY | through the hold
  move-why | unadjudicated/cw-2026-08-22-032113 | 26.535 s | n/a | reach 50.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before 650.0
  move-keyed | unadjudicated/cw-2026-08-22-032113 | 26.535 s | verdict keyed none | interference 500 lift 58.7 | reading power -46.2 noise -94.8 dB
  move-coarse | unadjudicated/cw-2026-08-22-032113 | 26.535 s | admitted one hop before: none
  move-fine | unadjudicated/cw-2026-08-22-032113 | 26.535 s | fine bank at 600.0 one hop before: none
  move-hold | unadjudicated/cw-2026-08-22-032113 | 26.535 s | Switch via 959 (the hold) | survey admits nothing at execution, held 650 -> STALE
+ move | unadjudicated/cw-2026-08-22-032113 | 29.535 s | Switch via 959 (the hold) | 650.0 to 500.0 Hz, moved 150.0 | sender 500 | from off sender 150.0, to off sender 0.0 | TOWARD | through the hold
+ move-why | unadjudicated/cw-2026-08-22-032113 | 29.535 s | n/a | reach 150.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before 500.0
+ move-keyed | unadjudicated/cw-2026-08-22-032113 | 29.535 s | verdict keyed none | interference none | reading power -82.2 noise -70.7 dB
+ move-coarse | unadjudicated/cw-2026-08-22-032113 | 29.535 s | admitted one hop before: none
+ move-fine | unadjudicated/cw-2026-08-22-032113 | 29.535 s | fine bank at 650.0 one hop before: none
+ move-hold | unadjudicated/cw-2026-08-22-032113 | 29.535 s | Switch via 959 (the hold) | survey admits nothing at execution, held 500 -> STALE
  mix | unadjudicated/cw-2026-08-22-032129 | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender NaN
  mix | unadjudicated/cw-2026-08-22-032129 | 1.540 s | stream mixes at 500.0 Hz | bank centre 500.0 | measured False | sender NaN
  mix | unadjudicated/cw-2026-08-22-032129 | 13.540 s | stream mixes at 650.0 Hz | bank centre 650.0 | measured True | sender NaN
@@ -1007,11 +1012,11 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  mix | unadjudicated/cw-2026-09-24-004234 | 11.540 s | stream mixes at 650.0 Hz | bank centre 650.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004234 | 12.540 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004234 | 19.040 s | stream mixes at 630.0 Hz | bank centre 625.0 | measured True | sender NaN
- mix | unadjudicated/cw-2026-09-24-004234 | 19.540 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured True | sender NaN
+ mix | unadjudicated/cw-2026-09-24-004234 | 21.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004234 | 21.540 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004234 | 25.040 s | stream mixes at 630.0 Hz | bank centre 625.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004234 | 26.040 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured True | sender NaN
- cap | unadjudicated/cw-2026-09-24-004234 | characters 37 | final tone 625.0 | cold moves 1 | switches 4: 11.5s 625->650 hold-READMITTED fineOld 625 near-louder 0, 12.5s 650->625 hold-READMITTED fineOld - near-louder 0, 19.5s 625->600 direct fineOld 620 near-louder 0, 21.5s 600->625 hold-READMITTED fineOld - near-louder 0
+ cap | unadjudicated/cw-2026-09-24-004234 | characters 38 | final tone 625.0 | cold moves 1 | switches 4: 11.5s 625->650 hold-READMITTED fineOld 625 near-louder 0, 12.5s 650->625 hold-READMITTED fineOld - near-louder 0, 19.5s 625->600 direct fineOld 620 near-louder 0, 21.5s 600->625 hold-READMITTED fineOld - near-louder 0
  move | unadjudicated/cw-2026-09-24-004234 | 1.535 s | cold 1004 | 600.0 to 625.0 Hz, moved 25.0 | sender 625 | from off sender 25.0, to off sender 0.0 | TOWARD | through cold start, nothing confirmed
  move-why | unadjudicated/cw-2026-09-24-004234 | 1.535 s | n/a | reach 25.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before NaN
  move-keyed | unadjudicated/cw-2026-09-24-004234 | 1.535 s | verdict keyed none | interference 625 lift 20.2 | reading power -27.1 noise -64.9 dB
@@ -1099,7 +1104,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  mix | unadjudicated/cw-2026-09-24-004405 | 8.540 s | stream mixes at 630.0 Hz | bank centre 625.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004405 | 9.040 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004405 | 11.040 s | stream mixes at 630.0 Hz | bank centre 625.0 | measured True | sender NaN
- mix | unadjudicated/cw-2026-09-24-004405 | 11.540 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured True | sender NaN
+ mix | unadjudicated/cw-2026-09-24-004405 | 12.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004405 | 12.540 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004405 | 15.040 s | stream mixes at 630.0 Hz | bank centre 625.0 | measured True | sender NaN
  mix | unadjudicated/cw-2026-09-24-004405 | 15.540 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured True | sender NaN
@@ -1258,21 +1263,21 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  move-props | unadjudicated/cw-2026-09-24-004550 | 15.535 s | fine bank still keyed at the old centre: True | admitted within 50 Hz of the chosen bin: 0, louder key-down: 0  | chosen wpm 22.3 vs fine-at-old 22.0
 
 
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheRadiosWordOnThePreamble(clock: "wall") [30 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheRadiosWordOnThePreamble(clock: "wall") [65 ms]
   Standard Output Messages:
  42 | clock wall | span 1.00 to 13.00 s from the recipe (PreambleSeconds 12.0) and the sidecar (messageStart 13.00) | chunks in span 101, suspended 101 | first chunk decoded after the span NaN s
  42 | clock wall | during 0 | total 0 | settled 0 | own transmit 9.53 s (assert > 3) | suspended chunks 209 | guard transmissions 44
  42 | clock wall | earliest decoded At NaN s | earliest settled At NaN s | settled ''
 
 
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheRadiosWordOnThePreamble(clock: "audio") [255 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheRadiosWordOnThePreamble(clock: "audio") [256 ms]
   Standard Output Messages:
  42 | clock audio | span 1.00 to 13.00 s from the recipe (PreambleSeconds 12.0) and the sidecar (messageStart 13.00) | chunks in span 101, suspended 101 | first chunk decoded after the span 13.68 s
  42 | clock audio | during 0 | total 48 | settled 22 | own transmit 9.53 s (assert > 3) | suspended chunks 106 | guard transmissions 44
  42 | clock audio | earliest decoded At 15.465 s | earliest settled At 13.710 s | settled ' STDETESTKTESTDETESTK '
 
 
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheRadiosWordOnThePreamble(clock: "none") [562 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheRadiosWordOnThePreamble(clock: "none") [594 ms]
   Standard Output Messages:
  42 | clock none | span 1.00 to 13.00 s from the recipe (PreambleSeconds 12.0) and the sidecar (messageStart 13.00) | chunks in span 101, suspended 0 | first chunk decoded after the span 13.08 s
  42 | clock none | during 70 | total 134 | settled 63 | own transmit 9.08 s (assert > 3) | suspended chunks 0 | guard transmissions 44
@@ -1289,7 +1294,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  42-during | clock none | ' ' At 3.375 s
 
 
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheAcquisitionReds(wordsPerMinute: 25, prefix: "") [631 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheAcquisitionReds(wordsPerMinute: 25, prefix: "") [626 ms]
   Standard Output Messages:
  mix | 25wpm bare seed 7919 | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender 640
  mix | 25wpm bare seed 7919 | 1.540 s | stream mixes at 650.0 Hz | bank centre 650.0 | measured False | sender 640
@@ -1338,7 +1343,6 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  mix | 25wpm bare seed 15485863 | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender 640
  mix | 25wpm bare seed 15485863 | 1.540 s | stream mixes at 650.0 Hz | bank centre 650.0 | measured False | sender 640
  mix | 25wpm bare seed 15485863 | 3.540 s | stream mixes at 640.0 Hz | bank centre 650.0 | measured True | sender 640
- mix | 25wpm bare seed 15485863 | 10.540 s | stream mixes at 725.0 Hz | bank centre 725.0 | measured True | sender 640
  move | 25wpm bare seed 15485863 | 1.535 s | cold 1004 | 600.0 to 650.0 Hz, moved 50.0 | sender 640 | from off sender 40.0, to off sender 10.0 | TOWARD | through cold start, nothing confirmed
  move-why | 25wpm bare seed 15485863 | 1.535 s | n/a | reach 50.0 > 15 | reading level unknown, HM-DEC-127 floor not asked | mid-character before False | held before NaN
  move-keyed | 25wpm bare seed 15485863 | 1.535 s | verdict keyed none | interference 650 lift 35.7 | reading power -35.8 noise -53.6 dB
@@ -1352,14 +1356,9 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  move-fine | 25wpm bare seed 15485863 | 10.535 s | fine bank at 650.0 one hop before: 640.0 Hz lift NaN keyed -20.9 sep 7.1 marks 16 dit 63 dah 159 (19.1 wpm)
  move-hold | 25wpm bare seed 15485863 | 10.535 s | Switch via 959 (the hold) | survey best at execution 650, held 725, apart 75 -> STALE
  miss | 25wpm bare seed 15485863 | 'A' Wrong expected 'Q' ends 1.710 s | last switch before it none
- miss | 25wpm bare seed 15485863 | 'E' Invented expected '' ends 10.540 s | last switch before it 10.535 s to 725.0 Hz, 0.00 s earlier
- miss | 25wpm bare seed 15485863 | 'E' Wrong expected 'L' ends 11.895 s | last switch before it 10.535 s to 725.0 Hz, 1.36 s earlier
- miss | 25wpm bare seed 15485863 | 'E' Invented expected '' ends 12.235 s | last switch before it 10.535 s to 725.0 Hz, 1.70 s earlier
- miss | 25wpm bare seed 15485863 | 'H' Invented expected '' ends 12.525 s | last switch before it 10.535 s to 725.0 Hz, 1.99 s earlier
- miss | 25wpm bare seed 15485863 | 'E' Invented expected '' ends 12.660 s | last switch before it 10.535 s to 725.0 Hz, 2.13 s earlier
- read | 25wpm bare seed 15485863 | settled '  A CQ DE N0CALL N0CE  E EHE ' | kinds [A/Q]CQDEN0CALLN0C(+E)[E/L](+E)(+H)(+E)
- sum | 25wpm bare seed 15485863 | share 0.68 | switches 1 | cold moves 1 | final tone 725.0 | measured True
- sum | 25wpm bare | mean share 0.82
+ read | 25wpm bare seed 15485863 | settled '  A CQ DE N0CALL N0CALL K ' | kinds [A/Q]CQDEN0CALLN0CALLK
+ sum | 25wpm bare seed 15485863 | share 0.89 | switches 1 | cold moves 1 | final tone 725.0 | measured True
+ sum | 25wpm bare | mean share 0.89
 
 
   Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheAcquisitionReds(wordsPerMinute: 12, prefix: "VVV ") [2 s]
@@ -1499,7 +1498,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  sum | 12wpm run-up | mean share 0.54
 
 
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheTwoStationHandover [952 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheTwoStationHandover [991 ms]
   Standard Output Messages:
  mix | two-station | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender 615
  mix | two-station | 1.540 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured False | sender 615
@@ -1546,8 +1545,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  sum | two-station | switches 1 | final tone 725.0
 
 
-[xUnit.net 00:02:06.88]   Finished:    Hamlet.RadioEngine.Tests
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheEasyTier(name: "exchange-easy") [816 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheEasyTier(name: "exchange-easy") [832 ms]
   Standard Output Messages:
  mix | exchange-easy | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender 615
  mix | exchange-easy | 1.540 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured False | sender 615
@@ -1591,7 +1589,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  sum | exchange-easy | sender 615 | switches 2 | final tone 625.0
 
 
-  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheEasyTier(name: "tightfist-easy") [198 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheEasyTier(name: "tightfist-easy") [195 ms]
   Standard Output Messages:
  mix | tightfist-easy | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender 615
  mix | tightfist-easy | 1.540 s | stream mixes at 625.0 Hz | bank centre 625.0 | measured False | sender 615
@@ -1607,6 +1605,7 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
  sum | tightfist-easy | sender 615 | switches 0 | final tone 615.0
 
 
+[xUnit.net 00:02:06.09]   Finished:    Hamlet.RadioEngine.Tests
   Passed Hamlet.RadioEngine.Tests.Cw.TheTrackerSwitchTraceTests.TheEasyTier(name: "coverage-easy") [1 s]
   Standard Output Messages:
  mix | coverage-easy | 0.040 s | stream mixes at 600.0 Hz | bank centre 600.0 | measured False | sender 615
@@ -1668,5 +1667,5 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
 Test Run Successful.
 Total tests: 10
      Passed: 10
- Total time: 2.1187 Minutes
-RC=0 WALL=128s
+ Total time: 2.1057 Minutes
+RC=0 WALL=127s

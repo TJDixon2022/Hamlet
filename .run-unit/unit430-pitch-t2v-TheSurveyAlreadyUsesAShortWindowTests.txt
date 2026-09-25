@@ -5,12 +5,20 @@ C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEng
 [xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
 [xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
 [xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
-  Passed Hamlet.RadioEngine.Tests.Cw.CwTrackerSwitchTests.AHeldSwitchHappensOnceTheCharacterCloses [755 ms]
-[xUnit.net 00:00:01.56]   Finished:    Hamlet.RadioEngine.Tests
-  Passed Hamlet.RadioEngine.Tests.Cw.CwTrackerSwitchTests.NoSwitchHappensPartWayThroughACharacter [555 ms]
+[xUnit.net 00:00:00.25]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSurveyAlreadyUsesAShortWindowTests.ThirtySecondsOfHopsLeavesThreeSecondsOfHistory [3 ms]
+  Standard Output Messages:
+ 30 s of hops leaves 3.00 s of survey history
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheSurveyAlreadyUsesAShortWindowTests.TheDefaultWindowIsThreeSeconds [1 ms]
+  Standard Output Messages:
+ both surveys are built with two arguments, so the window is the constructor default of 3.0 seconds
+
+
 
 Test Run Successful.
 Total tests: 2
      Passed: 2
- Total time: 1.8127 Seconds
-RC=0 WALL=2s
+ Total time: 0.5197 Seconds
+RC=0 WALL=1s

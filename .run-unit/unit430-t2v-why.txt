@@ -1,0 +1,571 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhyTheMixMoved(run: "cw-2026-09-24-003919", from: 11.800000000000001, to: 21.800000000000001) [1 s]
+  Standard Output Messages:
+ check | run cw-2026-09-24-003919, 11.8 to 21.8 s; a survey read every 100 hops of 240 samples; FineReachHz 15, ConfirmWithinHz 25, FilterRejectionDb 25
+ survey | s | rule | bank centre before -> after | reported before -> after | measured | _lastMeasuredToneHz | mix written at CwDecoder.cs:617 | mid-character before | held move before | survey before admitted | reading dB before | held wpm | retunes | station changes
+ admitted | s | Hz | dit ms | dah ms | ratio | separation | lift dB | marks | keyed dB | wpm | the survey's best
+ survey | 12.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 12.04 | none
+ survey | 12.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 12.54 | none
+ survey | 13.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 13.04 | none
+ survey | 13.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 13.54 | none
+ survey | 14.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 14 | 0 | 0
+ admitted | 14.04 | none
+ survey | 14.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 14 | 0 | 0
+ admitted | 14.54 | none
+ survey | 15.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 15.04 | none
+ survey | 15.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | yes | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 15.54 | none
+ strongest | 15.54 | 600.0 Hz, lift 12.3 dB, present 0.35; interference 600.0 Hz, lift 12.3 dB
+ survey | 16.04 | 600.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | yes | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 16.04 | 600.0 | 58.0 | 153.3 | 2.64 | 5.82 | 23.1 | 8 | -26.8 | 20.7 | best
+ strongest | 16.04 | 600.0 Hz, lift 23.1 dB, present 0.30; interference none
+ survey | 16.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | yes | NaN | 600.0 | NaN | 24 | 0 | 0
+ admitted | 16.54 | none
+ strongest | 16.54 | 600.0 Hz, lift 25.4 dB, present 0.38; interference 600.0 Hz, lift 25.4 dB
+ survey | 17.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | yes | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 17.04 | none
+ strongest | 17.04 | 600.0 Hz, lift 27.9 dB, present 0.46; interference 600.0 Hz, lift 27.9 dB
+ survey | 17.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 17.54 | none
+ strongest | 17.54 | 600.0 Hz, lift 28.5 dB, present 0.50; interference 600.0 Hz, lift 28.5 dB
+ survey | 18.04 | 775.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 18.04 | 350.0 | 41.3 | 145.0 | 3.52 | 4.45 | 3.8 | 12 | -47.6 | 29.1 | -
+ admitted | 18.04 | 775.0 | 46.3 | 163.3 | 3.53 | 4.17 | 6.3 | 11 | -45.1 | 25.9 | best
+ strongest | 18.04 | 600.0 Hz, lift 25.9 dB, present 0.42; interference 600.0 Hz, lift 25.9 dB
+ survey | 18.54 | 350.0 admitted once, the survey before admitted 775.0; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | 775.0 | NaN | 24 | 0 | 0
+ admitted | 18.54 | 350.0 | 36.7 | 110.0 | 3.00 | 5.88 | 2.9 | 9 | -46.1 | 32.7 | best
+ strongest | 18.54 | 600.0 Hz, lift 22.1 dB, present 0.33; interference 600.0 Hz, lift 22.1 dB
+ survey | 19.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | 350.0 | NaN | 24 | 0 | 0
+ admitted | 19.04 | none
+ strongest | 19.04 | 600.0 Hz, lift 19.1 dB, present 0.21; interference 600.0 Hz, lift 19.1 dB
+ survey | 19.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 19.54 | none
+ survey | 20.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 23 | 0 | 0
+ admitted | 20.04 | none
+ survey | 20.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 20.54 | none
+ survey | 21.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 24 | 0 | 0
+ admitted | 21.04 | none
+ survey | 21.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 21 | 0 | 0
+ admitted | 21.54 | none
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhyTheMixMoved(run: "cw-2026-09-24-004108", from: 13.800000000000001, to: 30) [1 s]
+  Standard Output Messages:
+ check | run cw-2026-09-24-004108, 13.8 to 30.0 s; a survey read every 100 hops of 240 samples; FineReachHz 15, ConfirmWithinHz 25, FilterRejectionDb 25
+ survey | s | rule | bank centre before -> after | reported before -> after | measured | _lastMeasuredToneHz | mix written at CwDecoder.cs:617 | mid-character before | held move before | survey before admitted | reading dB before | held wpm | retunes | station changes
+ admitted | s | Hz | dit ms | dah ms | ratio | separation | lift dB | marks | keyed dB | wpm | the survey's best
+ survey | 14.04 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -28.6 | 22 | 1 | 0
+ admitted | 14.04 | 625.0 | 53.3 | 164.0 | 3.08 | 11.51 | 21.4 | 8 | -27.8 | 22.5 | best
+ strongest | 14.04 | 625.0 Hz, lift 21.4 dB, present 0.38; interference none
+ survey | 14.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -28.6 | 22 | 1 | 0
+ admitted | 14.54 | 600.0 | 50.0 | 168.3 | 3.37 | 4.26 | 17.6 | 16 | -34.4 | 24.0 | -
+ admitted | 14.54 | 625.0 | 46.0 | 163.3 | 3.55 | 6.42 | 24.2 | 11 | -27.8 | 26.1 | best
+ strongest | 14.54 | 625.0 Hz, lift 24.2 dB, present 0.46; interference none
+ survey | 15.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -27.8 | 22 | 1 | 0
+ admitted | 15.04 | 625.0 | 52.5 | 166.0 | 3.16 | 12.30 | 23.9 | 9 | -27.5 | 22.9 | best
+ strongest | 15.04 | 625.0 Hz, lift 23.9 dB, present 0.40; interference none
+ survey | 15.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -27.5 | 22 | 1 | 0
+ admitted | 15.54 | none
+ strongest | 15.54 | 625.0 Hz, lift 23.7 dB, present 0.39; interference 625.0 Hz, lift 23.7 dB
+ survey | 16.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | NaN | -27.5 | 22 | 1 | 0
+ admitted | 16.04 | none
+ strongest | 16.04 | 625.0 Hz, lift 22.9 dB, present 0.37; interference 625.0 Hz, lift 22.9 dB
+ survey | 16.54 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -27.5 | 22 | 1 | 0
+ admitted | 16.54 | 625.0 | 50.0 | 166.0 | 3.32 | 5.69 | 23.0 | 10 | -28.8 | 24.0 | best
+ admitted | 16.54 | 650.0 | 50.9 | 170.0 | 3.34 | 7.35 | 17.1 | 16 | -34.7 | 23.6 | -
+ strongest | 16.54 | 625.0 Hz, lift 23.0 dB, present 0.38; interference none
+ survey | 17.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -27.5 | 22 | 1 | 0
+ admitted | 17.04 | 625.0 | 56.7 | 161.7 | 2.85 | 12.44 | 25.2 | 9 | -28.6 | 21.2 | best
+ admitted | 17.04 | 650.0 | 55.0 | 171.7 | 3.12 | 5.36 | 19.0 | 16 | -34.8 | 21.8 | -
+ strongest | 17.04 | 625.0 Hz, lift 25.2 dB, present 0.40; interference none
+ survey | 17.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.6 | 22 | 1 | 0
+ admitted | 17.54 | 625.0 | 44.0 | 165.0 | 3.75 | 5.69 | 25.3 | 11 | -28.8 | 27.3 | best
+ strongest | 17.54 | 625.0 Hz, lift 25.3 dB, present 0.42; interference none
+ survey | 18.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -28.8 | 22 | 1 | 0
+ admitted | 18.04 | 625.0 | 50.0 | 164.0 | 3.28 | 6.34 | 25.0 | 12 | -29.0 | 24.0 | best
+ strongest | 18.04 | 625.0 Hz, lift 25.0 dB, present 0.41; interference none
+ survey | 18.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -29.0 | 22 | 1 | 0
+ admitted | 18.54 | 625.0 | 54.3 | 160.0 | 2.95 | 21.36 | 21.9 | 11 | -29.2 | 22.1 | best
+ strongest | 18.54 | 625.0 Hz, lift 21.9 dB, present 0.34; interference none
+ survey | 19.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 630.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 630.0 | yes | 630.0 | 630.0 | no | NaN | 625.0 | -29.2 | 22 | 1 | 0
+ admitted | 19.04 | 625.0 | 52.2 | 160.0 | 3.06 | 25.92 | 23.5 | 13 | -28.5 | 23.0 | best
+ strongest | 19.04 | 625.0 Hz, lift 23.5 dB, present 0.37; interference none
+ mix moved | 19.04 | 625.0 -> 630.0 | on a survey read yes | tracker 630.0, measured yes, _lastMeasuredToneHz 630.0
+ survey | 19.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 630.0 -> 630.0 | yes | 630.0 | 630.0 | no | NaN | 625.0 | -28.5 | 22 | 1 | 0
+ admitted | 19.54 | none
+ strongest | 19.54 | 625.0 Hz, lift 20.6 dB, present 0.32; interference 625.0 Hz, lift 20.6 dB
+ survey | 20.04 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 630.0 -> 630.0 | yes | 630.0 | 630.0 | yes | NaN | NaN | -28.5 | 22 | 1 | 0
+ admitted | 20.04 | 625.0 | 47.5 | 167.5 | 3.53 | 6.25 | 19.2 | 12 | -29.7 | 25.3 | best
+ strongest | 20.04 | 625.0 Hz, lift 19.2 dB, present 0.35; interference none
+ survey | 20.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 630.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.5 | 22 | 1 | 0
+ admitted | 20.54 | 625.0 | 53.3 | 170.0 | 3.19 | 4.23 | 16.5 | 12 | -30.5 | 22.5 | best
+ strongest | 20.54 | 625.0 Hz, lift 16.5 dB, present 0.33; interference none
+ mix moved | 20.54 | 630.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 21.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -30.5 | 22 | 1 | 0
+ admitted | 21.04 | 625.0 | 46.7 | 166.0 | 3.56 | 5.21 | 17.3 | 11 | -29.9 | 25.7 | best
+ strongest | 21.04 | 625.0 Hz, lift 17.3 dB, present 0.37; interference none
+ survey | 21.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -29.9 | 22 | 1 | 0
+ admitted | 21.54 | none
+ strongest | 21.54 | 625.0 Hz, lift 17.3 dB, present 0.36; interference 625.0 Hz, lift 17.3 dB
+ survey | 22.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -29.9 | 22 | 1 | 0
+ admitted | 22.04 | none
+ strongest | 22.04 | 625.0 Hz, lift 20.0 dB, present 0.41; interference 625.0 Hz, lift 20.0 dB
+ survey | 22.54 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -29.9 | 22 | 1 | 0
+ admitted | 22.54 | 625.0 | 45.0 | 164.3 | 3.65 | 4.71 | 20.4 | 11 | -29.0 | 26.7 | best
+ strongest | 22.54 | 625.0 Hz, lift 20.4 dB, present 0.45; interference none
+ survey | 23.04 | 650.0 confirmed outside the bank's reach of 625.0; Switch (CwToneTracker.cs:1107), the survey's choice by keying (HM-DEC-095) | 625.0 -> 650.0 | 625.0 -> 650.0 | yes | 650.0 | 650.0 | no | NaN | 625.0 | -29.9 | 22 | 2 | 0
+ admitted | 23.04 | 650.0 | 45.8 | 166.0 | 3.62 | 5.14 | 14.0 | 17 | -35.2 | 26.2 | best
+ strongest | 23.04 | 625.0 Hz, lift 20.5 dB, present 0.36; interference none
+ mix moved | 23.04 | 625.0 -> 650.0 | on a survey read yes | tracker 650.0, measured yes, _lastMeasuredToneHz 650.0
+ survey | 23.54 | 625.0 confirmed outside the bank's reach of 650.0; Switch (CwToneTracker.cs:1107), the survey's choice by keying (HM-DEC-095) | 650.0 -> 625.0 | 650.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 650.0 | -35.2 | 22 | 3 | 0
+ admitted | 23.54 | 625.0 | 50.0 | 156.0 | 3.12 | 7.81 | 21.4 | 9 | -28.3 | 24.0 | best
+ strongest | 23.54 | 625.0 Hz, lift 21.4 dB, present 0.33; interference none
+ mix moved | 23.54 | 650.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 24.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -28.3 | 22 | 3 | 0
+ admitted | 24.04 | 625.0 | 51.4 | 163.3 | 3.18 | 13.62 | 22.0 | 10 | -28.5 | 23.3 | best
+ strongest | 24.04 | 625.0 Hz, lift 22.0 dB, present 0.29; interference none
+ survey | 24.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.5 | 22 | 3 | 0
+ admitted | 24.54 | 625.0 | 57.5 | 165.0 | 2.87 | 5.98 | 24.6 | 12 | -28.3 | 20.9 | best
+ admitted | 24.54 | 650.0 | 47.5 | 167.5 | 3.53 | 7.52 | 18.9 | 16 | -34.0 | 25.3 | -
+ strongest | 24.54 | 625.0 Hz, lift 24.6 dB, present 0.39; interference none
+ survey | 25.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -28.3 | 22 | 3 | 0
+ admitted | 25.04 | none
+ strongest | 25.04 | 625.0 Hz, lift 21.3 dB, present 0.38; interference 625.0 Hz, lift 21.3 dB
+ survey | 25.54 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -28.3 | 22 | 3 | 0
+ admitted | 25.54 | 625.0 | 49.2 | 170.0 | 3.46 | 5.98 | 21.8 | 15 | -30.7 | 24.4 | best
+ strongest | 25.54 | 625.0 Hz, lift 21.8 dB, present 0.39; interference none
+ survey | 26.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.3 | 22 | 3 | 0
+ admitted | 26.04 | 600.0 | 50.6 | 170.0 | 3.36 | 5.67 | 19.2 | 21 | -35.0 | 23.7 | -
+ admitted | 26.04 | 625.0 | 58.6 | 170.0 | 2.90 | 7.65 | 25.6 | 12 | -28.6 | 20.5 | best
+ strongest | 26.04 | 625.0 Hz, lift 25.6 dB, present 0.44; interference none
+ survey | 26.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.6 | 22 | 3 | 0
+ admitted | 26.54 | 600.0 | 49.1 | 165.7 | 3.38 | 4.12 | 21.9 | 18 | -34.5 | 24.4 | -
+ admitted | 26.54 | 625.0 | 54.0 | 162.9 | 3.02 | 5.81 | 28.4 | 12 | -28.0 | 22.2 | best
+ strongest | 26.54 | 625.0 Hz, lift 28.4 dB, present 0.49; interference none
+ survey | 27.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.0 | 22 | 3 | 0
+ admitted | 27.04 | 600.0 | 46.3 | 171.3 | 3.70 | 6.07 | 24.5 | 16 | -34.1 | 25.9 | -
+ admitted | 27.04 | 625.0 | 56.7 | 166.3 | 2.93 | 11.47 | 31.0 | 11 | -27.6 | 21.2 | best
+ strongest | 27.04 | 625.0 Hz, lift 31.0 dB, present 0.56; interference none
+ survey | 27.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -27.6 | 22 | 3 | 0
+ admitted | 27.54 | 625.0 | 53.3 | 163.8 | 3.07 | 11.56 | 30.8 | 11 | -27.4 | 22.5 | best
+ strongest | 27.54 | 625.0 Hz, lift 30.8 dB, present 0.54; interference none
+ survey | 28.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -27.4 | 22 | 3 | 0
+ admitted | 28.04 | 625.0 | 43.3 | 164.3 | 3.79 | 5.51 | 28.3 | 10 | -27.3 | 27.7 | best
+ strongest | 28.04 | 625.0 Hz, lift 28.3 dB, present 0.48; interference none
+ survey | 28.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -27.3 | 22 | 3 | 0
+ admitted | 28.54 | 625.0 | 43.3 | 164.3 | 3.79 | 5.51 | 26.2 | 10 | -27.4 | 27.7 | best
+ strongest | 28.54 | 625.0 Hz, lift 26.2 dB, present 0.48; interference none
+ survey | 29.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -27.4 | 22 | 3 | 0
+ admitted | 29.04 | 625.0 | 46.0 | 156.0 | 3.39 | 5.10 | 22.2 | 10 | -27.9 | 26.1 | best
+ strongest | 29.04 | 625.0 Hz, lift 22.2 dB, present 0.39; interference none
+ survey | 29.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -27.9 | 22 | 3 | 0
+ admitted | 29.54 | none
+ strongest | 29.54 | 625.0 Hz, lift 21.0 dB, present 0.38; interference 625.0 Hz, lift 21.0 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhyTheMixMoved(run: "stream", from: 28, to: 38) [4 s]
+  Standard Output Messages:
+ check | run stream, 28.0 to 38.0 s; a survey read every 100 hops of 240 samples; FineReachHz 15, ConfirmWithinHz 25, FilterRejectionDb 25
+ survey | s | rule | bank centre before -> after | reported before -> after | measured | _lastMeasuredToneHz | mix written at CwDecoder.cs:617 | mid-character before | held move before | survey before admitted | reading dB before | held wpm | retunes | station changes
+ admitted | s | Hz | dit ms | dah ms | ratio | separation | lift dB | marks | keyed dB | wpm | the survey's best
+ survey | 28.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -29.0 | 14 | 0 | 0
+ admitted | 28.04 | none
+ survey | 28.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -29.0 | 24 | 0 | 0
+ admitted | 28.54 | none
+ survey | 29.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -29.0 | 24 | 0 | 0
+ admitted | 29.04 | none
+ survey | 29.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -29.0 | 24 | 0 | 0
+ admitted | 29.54 | none
+ survey | 30.04 | 525.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -29.0 | 14 | 0 | 0
+ admitted | 30.04 | 525.0 | 78.0 | 280.0 | 3.59 | 4.57 | 2.4 | 18 | -41.0 | 15.4 | best
+ survey | 30.54 | 525.0 confirmed outside the bank's reach of 600.0; Switch (CwToneTracker.cs:1107), the survey's choice by keying (HM-DEC-095) | 600.0 -> 525.0 | 600.0 -> 525.0 | yes | 600.0 | 600.0 | no | NaN | 525.0 | -29.0 | 14 | 1 | 1
+ admitted | 30.54 | 525.0 | 84.0 | 280.0 | 3.33 | 4.60 | 2.5 | 18 | -40.9 | 14.3 | best
+ survey | 31.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 525.0 -> 525.0 | 525.0 -> 525.0 | yes | 600.0 | 600.0 | yes | NaN | 525.0 | -40.9 | 24 | 1 | 1
+ admitted | 31.04 | none
+ survey | 31.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 525.0 -> 525.0 | 525.0 -> 525.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -40.9 | 24 | 1 | 1
+ admitted | 31.54 | none
+ strongest | 31.54 | 600.0 Hz, lift 10.3 dB, present 0.39; interference 600.0 Hz, lift 10.3 dB
+ survey | 32.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 525.0 -> 525.0 | 525.0 -> 525.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -40.9 | 24 | 1 | 1
+ admitted | 32.04 | none
+ strongest | 32.04 | 600.0 Hz, lift 21.3 dB, present 0.26; interference 600.0 Hz, lift 21.3 dB
+ survey | 32.54 | 600.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 525.0 -> 525.0 | 525.0 -> 525.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -40.9 | 24 | 1 | 1
+ admitted | 32.54 | 600.0 | 56.0 | 154.0 | 2.75 | 7.60 | 24.5 | 10 | -26.8 | 21.4 | best
+ admitted | 32.54 | 625.0 | 45.0 | 160.0 | 3.56 | 6.55 | 17.1 | 17 | -34.3 | 26.7 | -
+ strongest | 32.54 | 600.0 Hz, lift 24.5 dB, present 0.35; interference none
+ survey | 33.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 525.0 -> 525.0 | 525.0 -> 525.0 | yes | 600.0 | 600.0 | yes | NaN | 600.0 | -40.9 | 24 | 1 | 1
+ admitted | 33.04 | none
+ strongest | 33.04 | 600.0 Hz, lift 26.2 dB, present 0.41; interference 600.0 Hz, lift 26.2 dB
+ survey | 33.54 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 525.0 -> 525.0 | 525.0 -> 525.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -40.9 | 24 | 1 | 1
+ admitted | 33.54 | 625.0 | 60.0 | 160.0 | 2.67 | 4.69 | 22.2 | 17 | -33.7 | 20.0 | best
+ strongest | 33.54 | 600.0 Hz, lift 28.8 dB, present 0.51; interference none
+ survey | 34.04 | 625.0 confirmed outside the bank's reach of 525.0; Switch (CwToneTracker.cs:1107), the survey's choice by keying (HM-DEC-095) | 525.0 -> 625.0 | 525.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -40.9 | 24 | 2 | 2
+ admitted | 34.04 | 625.0 | 59.2 | 160.0 | 2.70 | 4.90 | 19.5 | 17 | -33.9 | 20.3 | best
+ strongest | 34.04 | 600.0 Hz, lift 26.2 dB, present 0.44; interference none
+ mix moved | 34.04 | 600.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 34.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -33.9 | 24 | 2 | 2
+ admitted | 34.54 | none
+ strongest | 34.54 | 600.0 Hz, lift 23.1 dB, present 0.35; interference 600.0 Hz, lift 23.1 dB
+ survey | 35.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | NaN | -33.9 | 24 | 2 | 2
+ admitted | 35.04 | none
+ strongest | 35.04 | 600.0 Hz, lift 20.3 dB, present 0.25; interference 600.0 Hz, lift 20.3 dB
+ survey | 35.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | NaN | -33.9 | 24 | 2 | 2
+ admitted | 35.54 | none
+ strongest | 35.54 | 600.0 Hz, lift 10.4 dB, present 0.34; interference 600.0 Hz, lift 10.4 dB
+ survey | 36.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | NaN | -33.9 | 23 | 2 | 2
+ admitted | 36.04 | none
+ survey | 36.54 | 850.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | NaN | -33.9 | 24 | 2 | 2
+ admitted | 36.54 | 850.0 | 45.7 | 165.0 | 3.61 | 4.46 | -20.1 | 25 | -63.1 | 26.3 | best
+ survey | 37.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 850.0 | -33.9 | 28 | 2 | 2
+ admitted | 37.04 | none
+ survey | 37.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -33.9 | 28 | 2 | 2
+ admitted | 37.54 | none
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhyTheMixMoved(run: "cw-2026-08-22-032113", from: 0, to: 60) [1 s]
+  Standard Output Messages:
+ check | run cw-2026-08-22-032113, 0.0 to 60.0 s; a survey read every 100 hops of 240 samples; FineReachHz 15, ConfirmWithinHz 25, FilterRejectionDb 25
+ survey | s | rule | bank centre before -> after | reported before -> after | measured | _lastMeasuredToneHz | mix written at CwDecoder.cs:617 | mid-character before | held move before | survey before admitted | reading dB before | held wpm | retunes | station changes
+ admitted | s | Hz | dit ms | dah ms | ratio | separation | lift dB | marks | keyed dB | wpm | the survey's best
+ survey | 0.01 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.01 | none
+ mix moved | 0.01 | NaN -> 600.0 | on a survey read yes | tracker 600.0, measured no, _lastMeasuredToneHz NaN
+ survey | 0.01 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.01 | none
+ survey | 0.02 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.02 | none
+ survey | 0.02 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.02 | none
+ survey | 0.03 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.03 | none
+ survey | 0.03 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.03 | none
+ survey | 0.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.04 | none
+ survey | 0.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 0.54 | none
+ survey | 1.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | NaN -> NaN | no | NaN | 600.0 | no | NaN | NaN | NaN | 0 | 0 | 0
+ admitted | 1.04 | none
+ survey | 1.54 | nothing admitted; from cold the bank pointed at the loudest thing, 500.0 (CwToneTracker.cs:1014-1025) | 600.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | NaN | NaN | 0 | 1 | 0
+ admitted | 1.54 | none
+ strongest | 1.54 | 500.0 Hz, lift 50.4 dB, present 0.69; interference 500.0 Hz, lift 50.4 dB
+ mix moved | 1.54 | 600.0 -> 500.0 | on a survey read yes | tracker 500.0, measured no, _lastMeasuredToneHz NaN
+ survey | 2.04 | 600.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | NaN | NaN | 0 | 1 | 0
+ admitted | 2.04 | 600.0 | 60.0 | 186.7 | 3.11 | 6.89 | 12.8 | 8 | -47.2 | 20.0 | best
+ strongest | 2.04 | 500.0 Hz, lift 50.5 dB, present 0.65; interference none
+ survey | 2.54 | 325.0 admitted once, the survey before admitted 600.0; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | 600.0 | NaN | 0 | 1 | 0
+ admitted | 2.54 | 325.0 | 48.0 | 136.7 | 2.85 | 5.41 | 32.4 | 8 | -45.5 | 25.0 | best
+ admitted | 2.54 | 600.0 | 61.4 | 186.7 | 3.04 | 6.06 | 12.6 | 10 | -47.5 | 19.5 | -
+ strongest | 2.54 | 500.0 Hz, lift 51.7 dB, present 0.62; interference 500.0 Hz, lift 51.7 dB
+ survey | 3.04 | 600.0 admitted once, the survey before admitted 325.0; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | 325.0 | NaN | 30 | 1 | 0
+ admitted | 3.04 | 600.0 | 61.4 | 196.0 | 3.19 | 5.42 | 13.2 | 12 | -46.6 | 19.5 | best
+ strongest | 3.04 | 500.0 Hz, lift 51.1 dB, present 0.60; interference none
+ survey | 3.54 | 300.0 admitted once, the survey before admitted 600.0; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | 600.0 | NaN | 28 | 1 | 0
+ admitted | 3.54 | 300.0 | 45.0 | 155.0 | 3.44 | 4.92 | 26.9 | 8 | -48.0 | 26.7 | best
+ admitted | 3.54 | 600.0 | 60.0 | 200.0 | 3.33 | 5.52 | 13.9 | 11 | -46.2 | 20.0 | -
+ strongest | 3.54 | 500.0 Hz, lift 51.6 dB, present 0.60; interference 500.0 Hz, lift 51.6 dB
+ survey | 4.04 | 600.0 admitted once, the survey before admitted 300.0; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | 300.0 | NaN | 18 | 1 | 0
+ admitted | 4.04 | 600.0 | 63.3 | 206.7 | 3.26 | 5.93 | 14.6 | 12 | -46.9 | 18.9 | best
+ strongest | 4.04 | 500.0 Hz, lift 53.0 dB, present 0.63; interference none
+ survey | 4.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | 600.0 | NaN | 23 | 1 | 0
+ admitted | 4.54 | none
+ strongest | 4.54 | 500.0 Hz, lift 53.8 dB, present 0.61; interference 500.0 Hz, lift 53.8 dB
+ survey | 5.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 24 | 1 | 0
+ admitted | 5.04 | none
+ strongest | 5.04 | 500.0 Hz, lift 53.6 dB, present 0.61; interference 500.0 Hz, lift 53.6 dB
+ survey | 5.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 24 | 1 | 0
+ admitted | 5.54 | none
+ strongest | 5.54 | 500.0 Hz, lift 53.9 dB, present 0.62; interference 500.0 Hz, lift 53.9 dB
+ survey | 6.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 10 | 1 | 0
+ admitted | 6.04 | none
+ strongest | 6.04 | 500.0 Hz, lift 55.2 dB, present 0.64; interference 500.0 Hz, lift 55.2 dB
+ survey | 6.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 6.54 | none
+ strongest | 6.54 | 500.0 Hz, lift 54.0 dB, present 0.58; interference 500.0 Hz, lift 54.0 dB
+ survey | 7.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 7.04 | none
+ strongest | 7.04 | 500.0 Hz, lift 53.8 dB, present 0.58; interference 500.0 Hz, lift 53.8 dB
+ survey | 7.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 30 | 1 | 0
+ admitted | 7.54 | none
+ strongest | 7.54 | 500.0 Hz, lift 55.0 dB, present 0.59; interference 500.0 Hz, lift 55.0 dB
+ survey | 8.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 24 | 1 | 0
+ admitted | 8.04 | none
+ strongest | 8.04 | 500.0 Hz, lift 54.2 dB, present 0.63; interference 500.0 Hz, lift 54.2 dB
+ survey | 8.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | NaN | NaN | 24 | 1 | 0
+ admitted | 8.54 | none
+ strongest | 8.54 | 500.0 Hz, lift 54.4 dB, present 0.62; interference 500.0 Hz, lift 54.4 dB
+ survey | 9.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 9.04 | none
+ strongest | 9.04 | 500.0 Hz, lift 55.1 dB, present 0.58; interference 500.0 Hz, lift 55.1 dB
+ survey | 9.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 9.54 | none
+ strongest | 9.54 | 500.0 Hz, lift 57.3 dB, present 0.62; interference 500.0 Hz, lift 57.3 dB
+ survey | 10.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 10.04 | none
+ strongest | 10.04 | 500.0 Hz, lift 54.3 dB, present 0.57; interference 500.0 Hz, lift 54.3 dB
+ survey | 10.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 10.54 | none
+ strongest | 10.54 | 500.0 Hz, lift 55.0 dB, present 0.57; interference 500.0 Hz, lift 55.0 dB
+ survey | 11.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 11.04 | none
+ strongest | 11.04 | 500.0 Hz, lift 55.0 dB, present 0.52; interference 500.0 Hz, lift 55.0 dB
+ survey | 11.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 11.54 | none
+ strongest | 11.54 | 500.0 Hz, lift 55.8 dB, present 0.54; interference 500.0 Hz, lift 55.8 dB
+ survey | 12.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 12.04 | none
+ strongest | 12.04 | 500.0 Hz, lift 56.0 dB, present 0.52; interference 500.0 Hz, lift 56.0 dB
+ survey | 12.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 28 | 1 | 0
+ admitted | 12.54 | none
+ strongest | 12.54 | 500.0 Hz, lift 55.5 dB, present 0.51; interference 500.0 Hz, lift 55.5 dB
+ survey | 13.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 30 | 1 | 0
+ admitted | 13.04 | none
+ strongest | 13.04 | 500.0 Hz, lift 58.1 dB, present 0.59; interference 500.0 Hz, lift 58.1 dB
+ survey | 13.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 13.54 | none
+ strongest | 13.54 | 500.0 Hz, lift 56.7 dB, present 0.60; interference 500.0 Hz, lift 56.7 dB
+ survey | 14.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 14.04 | none
+ strongest | 14.04 | 500.0 Hz, lift 57.2 dB, present 0.59; interference 500.0 Hz, lift 57.2 dB
+ survey | 14.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 14.54 | none
+ strongest | 14.54 | 500.0 Hz, lift 53.0 dB, present 0.54; interference 500.0 Hz, lift 53.0 dB
+ survey | 15.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 15.04 | none
+ strongest | 15.04 | 500.0 Hz, lift 53.8 dB, present 0.60; interference 500.0 Hz, lift 53.8 dB
+ survey | 15.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 15.54 | none
+ strongest | 15.54 | 500.0 Hz, lift 54.0 dB, present 0.56; interference 500.0 Hz, lift 54.0 dB
+ survey | 16.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | no | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 16.04 | none
+ strongest | 16.04 | 500.0 Hz, lift 53.0 dB, present 0.52; interference 500.0 Hz, lift 53.0 dB
+ survey | 16.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 16.54 | none
+ strongest | 16.54 | 500.0 Hz, lift 52.3 dB, present 0.50; interference 500.0 Hz, lift 52.3 dB
+ survey | 17.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 17.04 | none
+ strongest | 17.04 | 500.0 Hz, lift 52.2 dB, present 0.57; interference 500.0 Hz, lift 52.2 dB
+ survey | 17.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 17.54 | none
+ strongest | 17.54 | 500.0 Hz, lift 54.3 dB, present 0.62; interference 500.0 Hz, lift 54.3 dB
+ survey | 18.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 18.04 | none
+ strongest | 18.04 | 500.0 Hz, lift 54.4 dB, present 0.62; interference 500.0 Hz, lift 54.4 dB
+ survey | 18.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 18.54 | none
+ strongest | 18.54 | 500.0 Hz, lift 54.6 dB, present 0.67; interference 500.0 Hz, lift 54.6 dB
+ survey | 19.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 19.04 | none
+ strongest | 19.04 | 500.0 Hz, lift 54.6 dB, present 0.70; interference 500.0 Hz, lift 54.6 dB
+ survey | 19.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 19.54 | none
+ strongest | 19.54 | 500.0 Hz, lift 56.7 dB, present 0.75; interference 500.0 Hz, lift 56.7 dB
+ survey | 20.04 | 575.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | NaN | NaN | 18 | 1 | 0
+ admitted | 20.04 | 300.0 | 56.0 | 153.3 | 2.74 | 4.95 | 29.8 | 8 | -49.1 | 21.4 | -
+ admitted | 20.04 | 375.0 | 59.1 | 180.0 | 3.05 | 4.16 | 35.0 | 14 | -49.0 | 20.3 | -
+ admitted | 20.04 | 575.0 | 77.8 | 226.7 | 2.91 | 4.03 | 37.1 | 12 | -46.9 | 15.4 | best
+ admitted | 20.04 | 600.0 | 87.5 | 226.7 | 2.59 | 5.98 | 15.4 | 11 | -49.3 | 13.7 | -
+ strongest | 20.04 | 500.0 Hz, lift 57.1 dB, present 0.69; interference none
+ survey | 20.54 | 600.0 confirmed outside the bank's reach of 500.0; held until the character ends (CwToneTracker.cs:1097-1104) | 500.0 -> 500.0 | NaN -> NaN | no | NaN | 500.0 | yes | NaN | 575.0 | NaN | 18 | 1 | 0
+ admitted | 20.54 | 600.0 | 88.0 | 220.0 | 2.50 | 4.38 | 14.4 | 13 | -49.9 | 13.6 | best
+ strongest | 20.54 | 500.0 Hz, lift 55.9 dB, present 0.68; interference none
+ survey | 21.04 | the held move to 600.0 made (CwToneTracker.cs:966-975, Switch); then nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 500.0 -> 600.0 | NaN -> 600.0 | yes | 600.0 | 600.0 | no | 600.0 | 600.0 | -49.9 | 18 | 2 | 1
+ admitted | 21.04 | none
+ strongest | 21.04 | 500.0 Hz, lift 53.5 dB, present 0.56; interference 500.0 Hz, lift 53.5 dB
+ mix moved | 21.04 | 500.0 -> 600.0 | on a survey read yes | tracker 600.0, measured yes, _lastMeasuredToneHz 600.0
+ survey | 21.54 | 750.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -49.9 | 18 | 2 | 1
+ admitted | 21.54 | 750.0 | 36.4 | 123.3 | 3.39 | 4.09 | -18.8 | 14 | -72.6 | 33.0 | best
+ strongest | 21.54 | 500.0 Hz, lift 53.7 dB, present 0.54; interference 500.0 Hz, lift 53.7 dB
+ survey | 22.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | 750.0 | -49.9 | 20 | 2 | 1
+ admitted | 22.04 | none
+ strongest | 22.04 | 500.0 Hz, lift 53.3 dB, present 0.59; interference 500.0 Hz, lift 53.3 dB
+ survey | 22.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -49.9 | 20 | 2 | 1
+ admitted | 22.54 | none
+ strongest | 22.54 | 500.0 Hz, lift 52.5 dB, present 0.57; interference 500.0 Hz, lift 52.5 dB
+ survey | 23.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -49.9 | 20 | 2 | 1
+ admitted | 23.04 | none
+ strongest | 23.04 | 500.0 Hz, lift 53.7 dB, present 0.64; interference 500.0 Hz, lift 53.7 dB
+ survey | 23.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -49.9 | 8 | 2 | 1
+ admitted | 23.54 | none
+ strongest | 23.54 | 500.0 Hz, lift 54.2 dB, present 0.66; interference 500.0 Hz, lift 54.2 dB
+ survey | 24.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -49.9 | 24 | 2 | 1
+ admitted | 24.04 | none
+ strongest | 24.04 | 500.0 Hz, lift 58.9 dB, present 0.74; interference 500.0 Hz, lift 58.9 dB
+ survey | 24.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -49.9 | 32 | 2 | 1
+ admitted | 24.54 | none
+ strongest | 24.54 | 500.0 Hz, lift 59.3 dB, present 0.68; interference 500.0 Hz, lift 59.3 dB
+ survey | 25.04 | 650.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -49.9 | 23 | 2 | 1
+ admitted | 25.04 | 650.0 | 38.2 | 126.7 | 3.32 | 4.90 | -1.2 | 14 | -62.9 | 31.4 | best
+ strongest | 25.04 | 500.0 Hz, lift 58.8 dB, present 0.66; interference 500.0 Hz, lift 58.8 dB
+ survey | 25.54 | 650.0 confirmed outside the bank's reach of 600.0; held until the character ends (CwToneTracker.cs:1097-1104) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | NaN | 650.0 | -49.9 | 25 | 2 | 1
+ admitted | 25.54 | 650.0 | 42.5 | 127.5 | 3.00 | 6.07 | -1.6 | 12 | -63.5 | 28.2 | best
+ admitted | 25.54 | 725.0 | 38.9 | 135.0 | 3.47 | 6.00 | -10.3 | 13 | -71.4 | 30.9 | -
+ strongest | 25.54 | 500.0 Hz, lift 59.2 dB, present 0.66; interference 500.0 Hz, lift 59.2 dB
+ survey | 26.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | 650.0 | 650.0 | -63.5 | 27 | 2 | 1
+ admitted | 26.04 | none
+ strongest | 26.04 | 500.0 Hz, lift 58.9 dB, present 0.64; interference 500.0 Hz, lift 58.9 dB
+ survey | 26.54 | the held move to 650.0 made (CwToneTracker.cs:966-975, Switch); then nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 650.0 | 600.0 -> 650.0 | yes | 600.0 | 600.0 | no | 650.0 | NaN | -63.5 | 28 | 3 | 2
+ admitted | 26.54 | none
+ strongest | 26.54 | 500.0 Hz, lift 58.7 dB, present 0.63; interference 500.0 Hz, lift 58.7 dB
+ survey | 27.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 650.0 -> 650.0 | 650.0 -> 650.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -63.5 | 21 | 3 | 2
+ admitted | 27.04 | none
+ strongest | 27.04 | 500.0 Hz, lift 56.6 dB, present 0.62; interference 500.0 Hz, lift 56.6 dB
+ survey | 27.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 650.0 -> 650.0 | 650.0 -> 650.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -63.5 | 27 | 3 | 2
+ admitted | 27.54 | none
+ strongest | 27.54 | 500.0 Hz, lift 56.9 dB, present 0.65; interference 500.0 Hz, lift 56.9 dB
+ survey | 28.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 650.0 -> 650.0 | 650.0 -> 650.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -63.5 | 28 | 3 | 2
+ admitted | 28.04 | none
+ strongest | 28.04 | 500.0 Hz, lift 57.7 dB, present 0.63; interference 500.0 Hz, lift 57.7 dB
+ survey | 28.54 | 500.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 650.0 -> 650.0 | 650.0 -> 650.0 | yes | 600.0 | 600.0 | yes | NaN | NaN | -63.5 | 25 | 3 | 2
+ admitted | 28.54 | 500.0 | 65.0 | 215.0 | 3.31 | 5.86 | 56.9 | 10 | -27.2 | 18.5 | best
+ strongest | 28.54 | 500.0 Hz, lift 56.9 dB, present 0.58; interference none
+ survey | 29.04 | 500.0 confirmed outside the bank's reach of 650.0; held until the character ends (CwToneTracker.cs:1097-1104) | 650.0 -> 650.0 | 650.0 -> 650.0 | yes | 600.0 | 600.0 | yes | NaN | 500.0 | -63.5 | 23 | 3 | 2
+ admitted | 29.04 | 500.0 | 68.3 | 207.5 | 3.04 | 4.34 | 56.5 | 10 | -26.9 | 17.6 | best
+ strongest | 29.04 | 500.0 Hz, lift 56.5 dB, present 0.57; interference none
+ survey | 29.54 | the held move to 500.0 made (CwToneTracker.cs:966-975, Switch); then nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 650.0 -> 500.0 | 650.0 -> 500.0 | yes | 500.0 | 500.0 | no | 500.0 | 500.0 | -26.9 | 24 | 4 | 3
+ admitted | 29.54 | none
+ strongest | 29.54 | 500.0 Hz, lift 57.1 dB, present 0.62; interference 500.0 Hz, lift 57.1 dB
+ mix moved | 29.54 | 600.0 -> 500.0 | on a survey read yes | tracker 500.0, measured yes, _lastMeasuredToneHz 500.0
+
+
+[xUnit.net 00:00:19.14]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhyTheMixMoved(run: "stream", from: 90, to: 106.2) [8 s]
+  Standard Output Messages:
+ check | run stream, 90.0 to 106.2 s; a survey read every 100 hops of 240 samples; FineReachHz 15, ConfirmWithinHz 25, FilterRejectionDb 25
+ survey | s | rule | bank centre before -> after | reported before -> after | measured | _lastMeasuredToneHz | mix written at CwDecoder.cs:617 | mid-character before | held move before | survey before admitted | reading dB before | held wpm | retunes | station changes
+ admitted | s | Hz | dit ms | dah ms | ratio | separation | lift dB | marks | keyed dB | wpm | the survey's best
+ survey | 90.04 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 650.0 -> 650.0 | 650.0 -> 650.0 | yes | 650.0 | 650.0 | no | NaN | NaN | -35.0 | 22 | 10 | 3
+ admitted | 90.04 | 625.0 | 46.0 | 164.0 | 3.57 | 6.39 | 20.2 | 10 | -28.4 | 26.1 | best
+ strongest | 90.04 | 625.0 Hz, lift 20.2 dB, present 0.35; interference none
+ survey | 90.54 | 625.0 confirmed outside the bank's reach of 650.0; held until the character ends (CwToneTracker.cs:1097-1104) | 650.0 -> 650.0 | 650.0 -> 650.0 | yes | 650.0 | 650.0 | yes | NaN | 625.0 | -35.0 | 22 | 10 | 3
+ admitted | 90.54 | 625.0 | 44.0 | 162.9 | 3.70 | 6.57 | 23.7 | 12 | -27.8 | 27.3 | best
+ strongest | 90.54 | 625.0 Hz, lift 23.7 dB, present 0.45; interference none
+ survey | 91.04 | the held move to 625.0 made (CwToneTracker.cs:966-975, Switch); then 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 650.0 -> 625.0 | 650.0 -> 625.0 | yes | 625.0 | 625.0 | no | 625.0 | 625.0 | -27.8 | 22 | 11 | 3
+ admitted | 91.04 | 625.0 | 46.0 | 163.3 | 3.55 | 6.42 | 23.7 | 11 | -27.7 | 26.1 | best
+ strongest | 91.04 | 625.0 Hz, lift 23.7 dB, present 0.40; interference none
+ mix moved | 91.04 | 650.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 91.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -27.7 | 22 | 11 | 3
+ admitted | 91.54 | 625.0 | 46.0 | 165.0 | 3.59 | 6.41 | 24.5 | 11 | -27.6 | 26.1 | best
+ strongest | 91.54 | 625.0 Hz, lift 24.5 dB, present 0.41; interference none
+ survey | 92.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -27.6 | 22 | 11 | 3
+ admitted | 92.04 | 625.0 | 53.3 | 165.0 | 3.09 | 11.50 | 24.3 | 9 | -27.6 | 22.5 | best
+ strongest | 92.04 | 625.0 Hz, lift 24.3 dB, present 0.38; interference none
+ survey | 92.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -27.6 | 22 | 11 | 3
+ admitted | 92.54 | 625.0 | 48.0 | 160.0 | 3.33 | 5.33 | 22.0 | 10 | -28.9 | 25.0 | best
+ admitted | 92.54 | 650.0 | 46.4 | 168.0 | 3.62 | 6.42 | 16.0 | 16 | -34.9 | 25.9 | -
+ strongest | 92.54 | 625.0 Hz, lift 22.0 dB, present 0.35; interference none
+ survey | 93.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 635.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 635.0 | yes | 635.0 | 635.0 | yes | NaN | 625.0 | -28.9 | 22 | 11 | 3
+ admitted | 93.04 | 600.0 | 53.3 | 166.7 | 3.13 | 5.11 | 20.5 | 18 | -34.5 | 22.5 | -
+ admitted | 93.04 | 625.0 | 55.0 | 161.7 | 2.94 | 12.22 | 26.7 | 10 | -28.3 | 21.8 | best
+ admitted | 93.04 | 650.0 | 50.0 | 170.0 | 3.40 | 8.94 | 20.8 | 16 | -34.2 | 24.0 | -
+ strongest | 93.04 | 625.0 Hz, lift 26.7 dB, present 0.44; interference none
+ mix moved | 93.04 | 625.0 -> 635.0 | on a survey read yes | tracker 635.0, measured yes, _lastMeasuredToneHz 635.0
+ survey | 93.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 635.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.3 | 22 | 11 | 3
+ admitted | 93.54 | 625.0 | 56.7 | 162.0 | 2.86 | 12.09 | 23.6 | 8 | -28.8 | 21.2 | best
+ strongest | 93.54 | 625.0 Hz, lift 23.6 dB, present 0.38; interference none
+ mix moved | 93.54 | 635.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 94.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.8 | 22 | 11 | 3
+ admitted | 94.04 | 625.0 | 50.0 | 158.0 | 3.16 | 4.01 | 26.8 | 13 | -28.9 | 24.0 | best
+ strongest | 94.04 | 625.0 Hz, lift 26.8 dB, present 0.45; interference none
+ survey | 94.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -28.9 | 22 | 11 | 3
+ admitted | 94.54 | 625.0 | 50.0 | 163.3 | 3.27 | 6.36 | 21.5 | 10 | -29.3 | 24.0 | best
+ strongest | 94.54 | 625.0 Hz, lift 21.5 dB, present 0.34; interference none
+ survey | 95.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -29.3 | 22 | 11 | 3
+ admitted | 95.04 | 625.0 | 53.3 | 163.3 | 3.06 | 11.67 | 23.1 | 12 | -29.1 | 22.5 | best
+ strongest | 95.04 | 625.0 Hz, lift 23.1 dB, present 0.38; interference none
+ survey | 95.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 630.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 630.0 | yes | 630.0 | 630.0 | yes | NaN | 625.0 | -29.1 | 22 | 11 | 3
+ admitted | 95.54 | 625.0 | 55.0 | 163.3 | 2.97 | 7.36 | 22.4 | 11 | -28.7 | 21.8 | best
+ strongest | 95.54 | 625.0 Hz, lift 22.4 dB, present 0.36; interference none
+ mix moved | 95.54 | 625.0 -> 630.0 | on a survey read yes | tracker 630.0, measured yes, _lastMeasuredToneHz 630.0
+ survey | 96.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 630.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 630.0 -> 630.0 | yes | 630.0 | 630.0 | yes | NaN | 625.0 | -28.7 | 22 | 11 | 3
+ admitted | 96.04 | 625.0 | 51.4 | 170.0 | 3.31 | 10.17 | 18.8 | 10 | -29.7 | 23.3 | best
+ strongest | 96.04 | 625.0 Hz, lift 18.8 dB, present 0.31; interference none
+ survey | 96.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 630.0 -> 630.0 | yes | 630.0 | 630.0 | no | NaN | 625.0 | -29.7 | 22 | 11 | 3
+ admitted | 96.54 | none
+ strongest | 96.54 | 625.0 Hz, lift 17.4 dB, present 0.35; interference 625.0 Hz, lift 17.4 dB
+ survey | 97.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 630.0 -> 630.0 | yes | 630.0 | 630.0 | yes | NaN | NaN | -29.7 | 22 | 11 | 3
+ admitted | 97.04 | none
+ strongest | 97.04 | 625.0 Hz, lift 16.9 dB, present 0.36; interference 625.0 Hz, lift 16.9 dB
+ survey | 97.54 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 630.0 -> 630.0 | yes | 630.0 | 630.0 | no | NaN | NaN | -29.7 | 22 | 11 | 3
+ admitted | 97.54 | 625.0 | 46.7 | 167.5 | 3.59 | 5.21 | 17.6 | 10 | -29.9 | 25.7 | best
+ strongest | 97.54 | 625.0 Hz, lift 17.6 dB, present 0.37; interference none
+ survey | 98.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 630.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -29.7 | 22 | 11 | 3
+ admitted | 98.04 | 625.0 | 43.3 | 162.0 | 3.74 | 4.83 | 18.5 | 8 | -29.1 | 27.7 | best
+ strongest | 98.04 | 625.0 Hz, lift 18.5 dB, present 0.37; interference none
+ mix moved | 98.04 | 630.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 98.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -29.1 | 22 | 11 | 3
+ admitted | 98.54 | none
+ strongest | 98.54 | 625.0 Hz, lift 20.0 dB, present 0.42; interference 625.0 Hz, lift 20.0 dB
+ survey | 99.04 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -29.1 | 22 | 11 | 3
+ admitted | 99.04 | 625.0 | 48.6 | 162.0 | 3.34 | 5.56 | 20.7 | 12 | -29.1 | 24.7 | best
+ strongest | 99.04 | 625.0 Hz, lift 20.7 dB, present 0.42; interference none
+ survey | 99.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 630.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 630.0 | yes | 630.0 | 630.0 | no | NaN | 625.0 | -29.1 | 22 | 11 | 3
+ admitted | 99.54 | 625.0 | 48.0 | 162.0 | 3.38 | 14.25 | 21.0 | 10 | -28.4 | 25.0 | best
+ admitted | 99.54 | 650.0 | 47.0 | 166.0 | 3.53 | 5.09 | 14.3 | 15 | -35.1 | 25.5 | -
+ strongest | 99.54 | 625.0 Hz, lift 21.0 dB, present 0.35; interference none
+ mix moved | 99.54 | 625.0 -> 630.0 | on a survey read yes | tracker 630.0, measured yes, _lastMeasuredToneHz 630.0
+ survey | 100.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 630.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 630.0 -> 630.0 | yes | 630.0 | 630.0 | yes | NaN | 625.0 | -28.4 | 22 | 11 | 3
+ admitted | 100.04 | 625.0 | 56.3 | 166.7 | 2.96 | 4.86 | 20.9 | 11 | -29.7 | 21.3 | best
+ strongest | 100.04 | 625.0 Hz, lift 20.9 dB, present 0.32; interference none
+ survey | 100.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 630.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -29.7 | 22 | 11 | 3
+ admitted | 100.54 | 625.0 | 61.1 | 166.7 | 2.73 | 6.72 | 22.2 | 12 | -29.2 | 19.6 | best
+ admitted | 100.54 | 650.0 | 47.1 | 166.7 | 3.54 | 6.27 | 17.0 | 17 | -34.4 | 25.5 | -
+ strongest | 100.54 | 625.0 Hz, lift 22.2 dB, present 0.35; interference none
+ mix moved | 100.54 | 630.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 101.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -29.2 | 22 | 11 | 3
+ admitted | 101.04 | 625.0 | 61.1 | 162.5 | 2.66 | 4.23 | 23.0 | 13 | -29.8 | 19.6 | best
+ admitted | 101.04 | 650.0 | 49.2 | 162.5 | 3.30 | 4.41 | 18.8 | 17 | -34.1 | 24.4 | -
+ strongest | 101.04 | 625.0 Hz, lift 23.0 dB, present 0.40; interference none
+ survey | 101.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -29.8 | 22 | 11 | 3
+ admitted | 101.54 | none
+ strongest | 101.54 | 625.0 Hz, lift 20.1 dB, present 0.37; interference 625.0 Hz, lift 20.1 dB
+ survey | 102.04 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | NaN | -29.8 | 22 | 11 | 3
+ admitted | 102.04 | 625.0 | 58.6 | 165.0 | 2.82 | 5.74 | 24.2 | 11 | -28.4 | 20.5 | best
+ strongest | 102.04 | 625.0 Hz, lift 24.2 dB, present 0.38; interference none
+ survey | 102.54 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -29.8 | 22 | 11 | 3
+ admitted | 102.54 | 625.0 | 61.4 | 170.0 | 2.77 | 8.72 | 27.3 | 12 | -28.4 | 19.5 | best
+ strongest | 102.54 | 625.0 Hz, lift 27.3 dB, present 0.48; interference none
+ survey | 103.04 | 625.0 confirmed inside the bank's reach of 625.0; the fine survey's reading reported, 625.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.4 | 22 | 11 | 3
+ admitted | 103.04 | 600.0 | 50.0 | 171.4 | 3.43 | 4.28 | 22.6 | 17 | -34.4 | 24.0 | -
+ admitted | 103.04 | 625.0 | 55.0 | 164.3 | 2.99 | 10.98 | 29.5 | 11 | -27.5 | 21.8 | best
+ strongest | 103.04 | 625.0 Hz, lift 29.5 dB, present 0.51; interference none
+ survey | 103.54 | 600.0 confirmed outside the bank's reach of 625.0; held until the character ends (CwToneTracker.cs:1097-1104) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -27.5 | 22 | 11 | 3
+ admitted | 103.54 | 600.0 | 52.0 | 173.3 | 3.33 | 4.81 | 25.3 | 14 | -33.8 | 23.1 | best
+ strongest | 103.54 | 625.0 Hz, lift 31.7 dB, present 0.59; interference none
+ survey | 104.04 | the held move to 600.0 made (CwToneTracker.cs:966-975, Switch); then 600.0 confirmed inside the bank's reach of 600.0; the fine survey's reading reported, 600.0 (CwToneTracker.cs:1114-1128) | 625.0 -> 600.0 | 625.0 -> 600.0 | yes | 600.0 | 600.0 | no | 600.0 | 600.0 | -33.8 | 22 | 12 | 3
+ admitted | 104.04 | 600.0 | 45.0 | 170.0 | 3.78 | 6.51 | 22.2 | 13 | -33.5 | 26.7 | best
+ admitted | 104.04 | 650.0 | 44.4 | 167.1 | 3.76 | 5.52 | 21.8 | 16 | -34.0 | 27.0 | -
+ strongest | 104.04 | 625.0 Hz, lift 28.5 dB, present 0.47; interference none
+ mix moved | 104.04 | 625.0 -> 600.0 | on a survey read yes | tracker 600.0, measured yes, _lastMeasuredToneHz 600.0
+ survey | 104.54 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | yes | NaN | 600.0 | -33.5 | 22 | 12 | 3
+ admitted | 104.54 | none
+ strongest | 104.54 | 625.0 Hz, lift 27.5 dB, present 0.49; interference 625.0 Hz, lift 27.5 dB
+ survey | 105.04 | 625.0 admitted once, the survey before admitted NaN; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice) | 600.0 -> 600.0 | 600.0 -> 600.0 | yes | 600.0 | 600.0 | no | NaN | NaN | -33.5 | 22 | 12 | 3
+ admitted | 105.04 | 625.0 | 45.0 | 161.7 | 3.59 | 6.23 | 24.2 | 10 | -27.5 | 26.7 | best
+ strongest | 105.04 | 625.0 Hz, lift 24.2 dB, present 0.42; interference none
+ survey | 105.54 | 625.0 confirmed outside the bank's reach of 600.0; Switch (CwToneTracker.cs:1107), the survey's choice by keying (HM-DEC-095) | 600.0 -> 625.0 | 600.0 -> 625.0 | yes | 625.0 | 625.0 | no | NaN | 625.0 | -33.5 | 22 | 13 | 3
+ admitted | 105.54 | 625.0 | 46.7 | 160.0 | 3.43 | 9.09 | 20.8 | 11 | -28.2 | 25.7 | best
+ strongest | 105.54 | 625.0 Hz, lift 20.8 dB, present 0.36; interference none
+ mix moved | 105.54 | 600.0 -> 625.0 | on a survey read yes | tracker 625.0, measured yes, _lastMeasuredToneHz 625.0
+ survey | 106.04 | nothing admitted; the tracker stays (CwToneTracker.cs:988-1027) | 625.0 -> 625.0 | 625.0 -> 625.0 | yes | 625.0 | 625.0 | yes | NaN | 625.0 | -28.2 | 22 | 13 | 3
+ admitted | 106.04 | none
+ strongest | 106.04 | 625.0 Hz, lift 20.7 dB, present 0.36; interference 625.0 Hz, lift 20.7 dB
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 19.3992 Seconds
+RC=0 WALL=20s
