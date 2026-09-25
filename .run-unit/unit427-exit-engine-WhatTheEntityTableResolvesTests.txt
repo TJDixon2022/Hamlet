@@ -1,0 +1,45 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.27]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Explore.WhatTheEntityTableResolvesTests.TheTableIsMeasuredAgainstRealOffAirCallsigns [20 ms]
+  Standard Output Messages:
+ === Karlis Goba off-air recordings ===
+ callsigns seen : 1982  (distinct 432)
+ resolved       : 1583  (79.9%)
+ declined       : 399
+ ten commonest declines, by leading characters:
+    RV6    36   e.g. RV6K, RV6AFG, RV6ARS
+    R8     33   e.g. R8AU, R8JA
+    4U1    30   e.g. 4U1A
+    R4     30   e.g. R4OF, R4HM, R4WZ
+    R7     22   e.g. R7IW, R7CA, R7EL
+    MM0    21   e.g. MM0IMC
+    7Z1    20   e.g. 7Z1AL
+    2E0    19   e.g. 2E0PKK, 2E0VDS, 2E0LDW
+    R3     18   e.g. R3BV, R3FO, R3KCW
+    RA3    16   e.g. RA3QUE, RA3TPE
+ 
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.WhatTheEntityTableResolvesTests.TheTreesOwnFixtureIsCountedApart [1 ms]
+  Standard Output Messages:
+ === the tree's own synthesised fixture ===
+ callsigns seen : 4  (distinct 2)
+ resolved       : 4  (100.0%)
+ declined       : 0
+ ten commonest declines, by leading characters:
+    none - every callsign resolved
+ 
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 0.5418 Seconds
+RC=0 WALL=1s

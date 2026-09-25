@@ -1,0 +1,49 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.53]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheQuillMarksAnOliviaRowAsItMarksAPsk31Row [222 ms]
+  Standard Output Messages:
+ variant []: nudge Visible [Costa Rica · new country], lift 1
+ variant [8/250]: nudge Visible [Costa Rica · new country], lift 1
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheHoverShowsTheWholeMessageOnBoth [5 ms]
+  Standard Output Messages:
+ variant []: has whole message True: "TI2ABC  \u00B7  023100\n\nCQ CQ CQ de TI2ABC TI2ABC K\nW9ZZZ de TI2ABC GM OM TNX FER CALL UR RST 599 599 NAME JUAN QTH SAN JOSE HW? W9ZZZ de TI2ABC K"
+ variant [8/250]: has whole message True: "TI2ABC  \u00B7  023100\n\nCQ CQ CQ de TI2ABC TI2ABC K\nW9ZZZ de TI2ABC GM OM TNX FER CALL UR RST 599 599 NAME JUAN QTH SAN JOSE HW? W9ZZZ de TI2ABC K"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheCorpusThroughOliviaRowsGetsTheSameVerdictsAsThroughPsk31Rows [81 ms]
+  Standard Output Messages:
+ corpus.json sha256 964b9729bec883bff9d54fd63afa9bddb21874e9e86ec34439644aec658e26ba, 8 transcripts, 32 lines, operator KC3QIS
+ transcripts 8; row readings compared 32; parser verdicts compared 31; differences 0
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.EntityOfResolvesTheStationAndRefusesCqOnBoth [4 ms]
+  Standard Output Messages:
+ variant []: sender TI2ABC -> Costa Rica; addressee CQ -> (refused); hover [Who sent it. TI2ABC is a callsign from Costa Rica.] [Who this is addressed to. CQ means anyone.]
+ variant [8/250]: sender TI2ABC -> Costa Rica; addressee CQ -> (refused); hover [Who sent it. TI2ABC is a callsign from Costa Rica.] [Who this is addressed to. CQ means anyone.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheCqFilterPutsEachOliviaRowWhereItPutsThePsk31Row [9 ms]
+  Standard Output Messages:
+ PSK31 : addressee [CQ] shown; addressee [W9ZZZ] shown; addressee [KC3QIS] his side; addressee [] shown
+ Olivia: addressee [CQ] shown; addressee [W9ZZZ] shown; addressee [KC3QIS] his side; addressee [] shown
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.WorkedFadeDimsAnOliviaRowAsItDimsAPsk31Row [4 ms]
+  Standard Output Messages:
+ PSK31 opacity 0.55 [You logged a contact with TI2ABC on 09/07/26]; Olivia opacity 0.55 [You logged a contact with TI2ABC on 09/07/26]
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 0.8034 Seconds
+RC=0 WALL=1s

@@ -1,0 +1,6 @@
+unit427 task 4: exit round - Hamlet.sln builds non-incremental with warnings as errors, 0 warnings; engine 178 of 178; app 277 of 278, the one dispatcher-loop loss green alone; captures 51 of 51 in 119 s, adjudicated 13 of 13, keyed floors 13 of 13; every touched type green but Unit297CardSentenceTests (P29) and DecisionLogOrderTests (P25), both red at entry; src/Hamlet.RadioEngine/Cw nothing against entry, transmit files nothing against 7e209cb4; output.md
+
+Of the owner's fourteen: 11 built-and-right (item 14 built here, item 11's words repaired in
+task 3), 3 built-but-different (items 1, 8 and 13, parked as P31 to P33), 0 unverifiable.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

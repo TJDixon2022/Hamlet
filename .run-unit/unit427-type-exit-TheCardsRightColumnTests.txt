@@ -1,0 +1,117 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCardsRightColumnTests.FiveRowsAndEveryOneOfThemTheSameHeight [674 ms]
+  Standard Output Messages:
+ 0 0  [Distance]                  17.0 px tall, 80.0 px wide
+ 0 1  [4,400 miles · northeast]   17.0 px tall, 230.0 px wide
+ 1 0  [Grid]                      17.0 px tall, 40.0 px wide
+ 1 1  [JN88]                      17.0 px tall, 40.0 px wide
+ 2 0  [His time]                  17.0 px tall, 80.0 px wide
+ 2 1  [03:19 by the sun]          17.0 px tall, 160.0 px wide
+ 3 0  [Last heard]                17.0 px tall, 100.0 px wide
+ 3 1  [JN88 · 45 seconds ago]     17.0 px tall, 210.0 px wide
+ 4 0  [Messages]                  17.0 px tall, 80.0 px wide
+ 4 1  StackPanel                  17.0 px tall, 230.0 px wide
+ 5 0  [Achieves]                  17.0 px tall, 80.0 px wide
+ 5 1  (New country)               17.0 px tall, 118.0 px wide
+ 
+ rows drawn: 6
+   row 0 : 17.0 px
+   row 1 : 17.0 px
+   row 2 : 17.0 px
+   row 3 : 17.0 px
+   row 4 : 17.0 px
+   row 5 : 17.0 px
+ 
+ a card with no last-heard: Distance, Grid, His time, Messages, Achieves
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardsRightColumnTests.AnAbsentFactIsAnAbsentRowAndNeverADash [100 ms]
+  Standard Output Messages:
+ grid     : [] shown False
+ time     : [] shown False
+ distance : [] shown False
+ labels drawn: Distance, Grid, His time, Last heard, Messages
+
+
+[xUnit.net 00:00:01.69]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCardsRightColumnTests.TheTableSitsBesideTheMapWhereThereIsRoomAndIsNeverSqueezed [539 ms]
+  Standard Output Messages:
+ window 1400: card inside 419.0; map 419.0 -> x 0.0 to 222.0; table x 0.0 to 338.0 at y 126.0; the table needs 338.0; on its own line
+ window 1920: card inside 678.0; map 678.0 -> x 0.0 to 222.0; table x 232.0 to 570.0 at y 0.0; the table needs 338.0; BESIDE
+ window 2560: card inside 998.0; map 998.0 -> x 0.0 to 222.0; table x 232.0 to 570.0 at y 0.0; the table needs 338.0; BESIDE
+ window: 1400.0
+ cards : 445.0
+ beside: 419.0
+ map   : 222.0 px, wants 232.0
+ table : 338.0 px, wants 338.0
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardsRightColumnTests.TheSixFactsRenderFromAFullCard [< 1 ms]
+  Standard Output Messages:
+   Distance   4,400 miles · northeast
+       Grid   JN88
+   His time   12:10 by the sun
+ Last heard   73 · 10 seconds ago
+   Messages   1
+   Achieves   New country
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardsRightColumnTests.NothingIsClippedAndOneShowLinkIsOnTheWholeCard [81 ms]
+  Standard Output Messages:
+ [Distance] wants 80.0 px, has 80.0 px
+ [4,400 miles · northeast] wants 230.0 px, has 230.0 px
+ [Grid] wants 40.0 px, has 40.0 px
+ [JN88] wants 40.0 px, has 40.0 px
+ [His time] wants 80.0 px, has 80.0 px
+ [03:19 by the sun] wants 160.0 px, has 160.0 px
+ [Last heard] wants 100.0 px, has 100.0 px
+ [JN88 · 45 seconds ago] wants 210.0 px, has 210.0 px
+ [Messages] wants 80.0 px, has 80.0 px
+ [2] wants 10.0 px, has 10.0 px
+ [·] wants 10.0 px, has 10.0 px
+ [show them] wants 90.0 px, has 90.0 px
+ [Achieves] wants 80.0 px, has 80.0 px
+ [New country] wants 110.0 px, has 110.0 px
+    unconstrained [Distance] 80.0 px
+    unconstrained [4,400 miles · northeast] 230.0 px
+    unconstrained [Grid] 40.0 px
+    unconstrained [JN88] 40.0 px
+    unconstrained [His time] 80.0 px
+    unconstrained [03:19 by the sun] 160.0 px
+    unconstrained [Last heard] 100.0 px
+    unconstrained [JN88 · 45 seconds ago] 210.0 px
+    unconstrained [Messages] 80.0 px
+    unconstrained [2] 10.0 px
+    unconstrained [·] 10.0 px
+    unconstrained [show them] 90.0 px
+    unconstrained [Achieves] 80.0 px
+    unconstrained [New country] 110.0 px
+ the widest row wants 338.0 px of the card's 338.0, at the headless shaper's 10.0 px per character
+ 
+ show links on the card: show them
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardsRightColumnTests.NoCaptionIsBoundUnderTheMapOnTheCardsFace [18 ms]
+  Standard Output Messages:
+ Globe.Caption is bound 1 time(s) in MainWindow.axaml
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardsRightColumnTests.ADoorsLineNamesNothingAndThePopupOpensFromIt [< 1 ms]
+  Standard Output Messages:
+ line  : Would open a new area
+ reason: A first contact in a new area · working him opens a set of cards you have not seen yet
+ earns : A QSO first. The card comes with it.
+
+
+
+Test Run Successful.
+Total tests: 7
+     Passed: 7
+ Total time: 1.9468 Seconds
+RC=0 WALL=3s

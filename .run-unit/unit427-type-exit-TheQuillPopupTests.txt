@@ -1,0 +1,70 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.00]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.AStationWhoEarnsNothingHasNoPreview [2 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.TheFactLineIsTheCardsOwnColumn [24 ms]
+  Standard Output Messages:
+ distance : 4,400 miles · northeast
+ his time : 12:10 by the sun
+ fact     : 4,400 miles · northeast · his time 12:10 by the sun
+ 
+ no grid  : []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.ConfirmedAppearsNowhere [< 1 ms]
+  Standard Output Messages:
+ [Norway a new country Your 4th country in Europe · 59 to go  A QSO first. The card comes with it.]
+ [a new area  The first contact in a new area opens every country in it.  A QSO first. The card comes with it.]
+ [A QSO first. The card comes with it.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.NudgeOpenedFiresWithTheKindOnly [5 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.ACountersFaceNamesTheEntityAndTeachesTheSet [1 ms]
+  Standard Output Messages:
+ face      : Norway  /  a new country
+ quill     : Counter
+ teaching  : Your 4th country in Europe · 59 to go
+ fact      : 4,000 miles · northeast · his time 09:21 by the sun
+ closing   : A QSO first. The card comes with it.
+ 
+ the table puts 63 entities on Europe, so the remainder is 59
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.ADoorsFaceNamesNothingAndNeitherDoesItsTeaching [6 ms]
+  Standard Output Messages:
+ face      : a new area
+ quill     : Door
+ teaching  : The first contact in a new area opens every country in it.
+ fact      : 600 miles · south
+ closing   : A QSO first. The card comes with it.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.ThePopupOnTheScreenContainsACardFace [691 ms]
+  Standard Output Messages:
+   | K9XP
+   | ✕
+   | Norway
+   | a new country
+   | Your 4th country in Europe · 59 to go
+   | 4,400 miles · northeast · his time 03:19 by the sun
+   | A QSO first. The card comes with it.
+ 
+ the quill on the face: Counter, 18.0 x 18.0 px, ink #ff3b6d11
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillPopupTests.TheTeachingDropsTheRemainderRatherThanGuessingIt [< 1 ms]
+  Standard Output Messages:
+ Your 4th country in Atlantis
+
+
+
+Test Run Successful.
+Total tests: 8
+     Passed: 8
+ Total time: 1.2795 Seconds
+RC=0 WALL=2s

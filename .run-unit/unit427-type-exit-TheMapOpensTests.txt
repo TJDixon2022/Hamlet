@@ -1,0 +1,73 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.52]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.ATokyoPathShowsTheWholeWorld [195 ms]
+  Standard Output Messages:
+ runs         : 2
+ frame        : left 0, top 0, 698 by 381
+ the arc peaks at y 69.9, the stations sit at y 133.1 and 144.7
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.AReceiptHasNoMapAndNothingToClick [51 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.TheZoomFloorHoldsForAShortContact [3 ms]
+  Standard Output Messages:
+ frame        : left 95.4, top 85.3, 174.5 by 95.3
+ miles        : 248
+ floor        : 174.5 by 95.3
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.ADateLinePathShowsTheWholeWorld [< 1 ms]
+  Standard Output Messages:
+ candidate RE78: 2 run(s)
+ runs         : 2
+ frame        : left 0, top 0, 698 by 381
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.AStationThePictureCannotPlaceHasNothingToOpen [2 ms]
+  Standard Output Messages:
+ row shown    : True
+ opens        : False
+ path runs    : 0
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.TheFrameHoldsEverySampledPointAndBothMarkers [14 ms]
+  Standard Output Messages:
+ JA1ABC PM95  left 0, top 0, 698 by 381
+           closest approach to an edge: 1.5 px
+ UA3ABC KO85  left 165.3, top 55.3, 243.3 by 95.3
+           closest approach to an edge: 13.0 px
+ G0ABC  IO91  left 164.3, top 68.8, 174.5 by 95.3
+           closest approach to an edge: 14.0 px
+ PY2ABC GG66  left 121.5, top 124, 174.5 by 169.6
+           closest approach to an edge: 9.1 px
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.TheOpenedMapIsZoomedAndBothMarkersAreOnIt [20 ms]
+  Standard Output Messages:
+ frame        : left 164.3, top 68.8, 174.5 by 95.3
+ the whole file puts them 154 px apart at this size, the opened map 298
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.ThePathAndNotTheEndpointsChoosesTheFrame [3 ms]
+  Standard Output Messages:
+ frame        : left 165.3, top 55.3, 243.3 by 95.3
+ the arc peaks at y 72.8
+ the stations sit at y 133.1 and 97.3
+    55.0N is at y 98.5
+    60.0N is at y 86.6
+    66.8N is at y 70.5
+    70.0N is at y 62.9
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMapOpensTests.ClickingOpensTheMapAndTheXClosesIt [2 ms]
+
+Test Run Successful.
+Total tests: 9
+     Passed: 9
+ Total time: 0.8502 Seconds
+RC=0 WALL=2s

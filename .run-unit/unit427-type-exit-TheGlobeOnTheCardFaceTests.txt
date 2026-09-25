@@ -1,0 +1,42 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.13]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheGlobeOnTheCardFaceTests.TheHintKeepsItsRowsAndLosesTheMap [673 ms]
+  Standard Output Messages:
+  63  He hears you -9 dB · You hear him -12 dB · Decoder floor -21 dB
+  36  Grid EN52 · 500 miles west-northwest
+  66  1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot
+  37  02:11:00 to 02:12:00 UTC · 1 slot ago
+  17  He last sent RR73
+
+
+  Passed Hamlet.App.Tests.Views.TheGlobeOnTheCardFaceTests.EachMarkerCarriesItsOwnWords [74 ms]
+  Standard Output Messages:
+ operator: You, in grid FN00DJ.
+ station : K9XP, in grid EN52. 500 miles west-northwest of you.
+
+
+  Passed Hamlet.App.Tests.Views.TheGlobeOnTheCardFaceTests.AStationWithNoPlaceHasNoMarkerAndNoWords [< 1 ms]
+  Standard Output Messages:
+ caption: KC4AAA is in Antarctica, grid RB32. That is 9,300 miles from you. This map reaches almost everywhere, and he is in one of the two places it does not - so there is nowhere on it to draw him.
+ station words: []
+ no grid: Hamlet does not know where K9XP is. He has not put a grid square on the air, and a callsign only names a country, which is not a point on a map.
+
+
+  Passed Hamlet.App.Tests.Views.TheGlobeOnTheCardFaceTests.TheMapIsOnTheCardFaceAndNotInsideATooltip [100 ms]
+  Standard Output Messages:
+ cards on the panel : 1
+ maps in the window : 2
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 1.4062 Seconds
+RC=0 WALL=2s

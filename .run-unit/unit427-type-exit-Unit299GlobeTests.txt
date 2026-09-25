@@ -1,0 +1,43 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.09]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.22]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.25]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.Unit299GlobeTests.TheFrameIsTheWholePicture [6 ms]
+  Standard Output Messages:
+ IO63 -> left 0, top 0, 698 by 381
+ FN20 -> left 0, top 0, 698 by 381
+ BP51 -> left 0, top 0, 698 by 381
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit299GlobeTests.WithNoGridInSettingsTheOperatorIsNotPlaced [< 1 ms]
+  Standard Output Messages:
+ caption: EI4GNB is in Ireland, grid IO63. Hamlet needs your own grid square in Settings before it can put you on the map beside him.
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit299GlobeTests.BothDotsArePlacedByTheMapOwnProjection [< 1 ms]
+  Standard Output Messages:
+ operator FN00DJ -> 178.3, 133.07
+ station  IO63   -> 313.61, 102.01
+ frame: left 0, top 0, 698 by 381
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit299GlobeTests.AStationWithNoGridGetsNoDot [< 1 ms]
+  Standard Output Messages:
+ caption: Hamlet does not know where K9XP is. He has not put a grid square on the air, and a callsign only names a country, which is not a point on a map.
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit299GlobeTests.TheCaptionNamesThePlaceTheGridAndTheDistance [< 1 ms]
+  Standard Output Messages:
+ EI4GNB is in Ireland, grid IO63. That is 3,400 miles from you.
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 0.5625 Seconds
+RC=0 WALL=1s

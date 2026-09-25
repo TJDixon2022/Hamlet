@@ -1,0 +1,70 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.14]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit299HeaderProbeTests.TheGlobeIsOnTheCard [743 ms]
+  Standard Output Messages:
+ globe controls realized: 2   (they live inside a tooltip and are built when it opens)
+ hint marks: 1
+ card buttons: 7  [hm-cardx:✕, hm-cardaction:Send it again, hm-cardlink:Log this contact, hm-cardaction:, hm-cardaction:Send, hm-cardlink:show them, hm-cardlink:Would open a new area]
+ 
+ the plot the tooltip would draw:
+   left 0, top 0, 698 by 381
+   K9XP is in United States, grid EN52. That is 540 miles from you.
+
+
+  Passed Hamlet.App.Tests.Views.Unit299HeaderProbeTests.TheViewModelSideIsProbed [4 ms]
+  Standard Output Messages:
+ row: sent=True  sender=KC3QIS  hz=  dt=  heardOnHz=0  msg=K9XP KC3QIS FN00
+ row: sent=False  sender=K9XP  hz=1240  dt=0.2  heardOnHz=14074000  msg=KC3QIS K9XP EN52
+ 
+ card place: United States · 540 miles
+ card facts grid: EN52
+ card detail: Grid EN52 · 540 miles west-northwest · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 02:11:00 to 02:11:15 UTC · 3 slots ago · He last sent EN52
+
+
+  Passed Hamlet.App.Tests.Views.Unit299HeaderProbeTests.TheBandParagraphIsProbed [< 1 ms]
+  Standard Output Messages:
+ WITH a technical record:
+   He hears you -9 dB · You hear him -12 dB · Decoder floor -21 dB · Grid EN52 · 540 miles west-northwest · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 02:11:00 to 02:11:15 UTC · 3 slots ago · He last sent EN52
+ 
+ WITHOUT one:
+   He hears you -9 dB · You hear him -12 dB · Grid EN52 · 540 miles west-northwest · 02:11:00 to 02:11:15 UTC · 3 slots ago · He last sent EN52
+
+
+  Passed Hamlet.App.Tests.Views.Unit299HeaderProbeTests.TheCardsInfoMarkIsProbed [129 ms]
+  Standard Output Messages:
+ grid in settings before the window: "FN00"
+ hint marks realized inside the card: 1
+   kind=Detail  bounds=229, 0, 14, 14  text length=172  tip length=196
+   tip: the detail behind this
+ •  Grid EN52 · 540 miles west-northwest
+•  1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot
+•  02:11:00 to 02:11:15 UTC · 3 slots ago
+•  He last sent EN52
+ 
+ operator grid on a row after the window came up: "FN00"
+ rows on the mine side: 1
+   row sent=True sender=KC3QIS hz= heardOnHz=0
+ cards: 1
+ grid in settings after the window: "FN00"
+ card place: United States · 540 miles
+ card facts grid: EN52
+ card detail length: 166
+ 
+ Detail mark text: •  Grid EN52 · 540 miles west-northwest
+•  1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot
+•  02:11:00 to 02:11:15 UTC · 3 slots ago
+•  He last sent EN52
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 1.4263 Seconds
+RC=0 WALL=2s

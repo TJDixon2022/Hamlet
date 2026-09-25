@@ -1,0 +1,47 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheNudgeHoverTests.EveryCandidateDoorSentenceObeysTheRules [2 ms]
+  Standard Output Messages:
+  53  new area · would open something you have not seen yet
+  44  new area · somewhere you have not worked yet
+  43  new area · this one opens a part of the map
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheNudgeHoverTests.AnUnmarkedRowSaysNothing [< 1 ms]
+  Standard Output Messages:
+ []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheNudgeHoverTests.NothingSaysConfirmedAndNothingShames [< 1 ms]
+  Standard Output Messages:
+ [Costa Rica · new country]
+ [new area · would open something you have not seen yet]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheNudgeHoverTests.ADoorNamesNoArea [< 1 ms]
+  Standard Output Messages:
+  53  new area · would open something you have not seen yet
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheNudgeHoverTests.AVisibleCardIsNamed [< 1 ms]
+  Standard Output Messages:
+  24  Costa Rica · new country
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheNudgeHoverTests.AnEntityHandedToADoorIsStillNotNamed [< 1 ms]
+  Standard Output Messages:
+ new area · would open something you have not seen yet
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 0.4743 Seconds
+RC=0 WALL=1s
