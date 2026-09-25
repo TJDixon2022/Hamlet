@@ -1,0 +1,48 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.98]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.10]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.11]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.14]     Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis [FAIL]
+[xUnit.net 00:00:02.14]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:02.14]       String:    "The radio says its front end is overloadi"···
+[xUnit.net 00:00:02.14]       Not found: "turns it off"
+[xUnit.net 00:00:02.14]       Stack Trace:
+[xUnit.net 00:00:02.14]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOverloadSentenceSaysWhereThePreampIsTests.cs(51,0): at Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis()
+[xUnit.net 00:00:02.14]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.14]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.15]     Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOffItSaysItIsOffAsTheManualHasIt [FAIL]
+[xUnit.net 00:00:02.15]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:02.15]       String:    "The radio says its front end is overloadi"···
+[xUnit.net 00:00:02.15]       Not found: "The preamp is off"
+[xUnit.net 00:00:02.15]       Stack Trace:
+[xUnit.net 00:00:02.15]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOverloadSentenceSaysWhereThePreampIsTests.cs(34,0): at Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOffItSaysItIsOffAsTheManualHasIt()
+[xUnit.net 00:00:02.15]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.15]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.15]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis [10 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "The radio says its front end is overloadi"···
+Not found: "turns it off"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOverloadSentenceSaysWhereThePreampIsTests.cs:line 51
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOffItSaysItIsOffAsTheManualHasIt [< 1 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "The radio says its front end is overloadi"···
+Not found: "The preamp is off"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOffItSaysItIsOffAsTheManualHasIt() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheOverloadSentenceSaysWhereThePreampIsTests.cs:line 34
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 2
+     Failed: 2
+ Total time: 2.4326 Seconds
+RC=1 WALL=3s

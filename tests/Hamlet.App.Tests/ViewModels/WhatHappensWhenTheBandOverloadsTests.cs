@@ -6,6 +6,7 @@ using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Tests.Rig;
 using Xunit;
 using Xunit.Abstractions;
+using Run = Hamlet.RadioEngine.Tests.Rig.LivePollBench.Run;
 
 namespace Hamlet.App.Tests.ViewModels;
 
@@ -18,7 +19,7 @@ namespace Hamlet.App.Tests.ViewModels;
 /// <para>**A FACT THAT ASSERTS NOTHING.** It drives the real <see cref="ReceiverSetup"/>
 /// against <see cref="ScriptedRadio"/> as `EstablishReceiveConditionsAsync` does, then
 /// polls the radio the way the live poll does and hands each reading to whatever the app
-/// does with a poll (<see cref="OnPollAsync"/>). Four points per frequency: a quiet
+/// does with a poll (`LivePollBench.OnPollAsync`). Four points per frequency: a quiet
 /// tune-in, `Overflow` rising for several polls, `Overflow` clearing, and his hand setting
 /// the preamp himself followed by the overload coming back.</para>
 /// <para>**AT EACH POINT** it prints what the preamp is asked for, every write that went
@@ -64,9 +65,6 @@ public sealed class WhatHappensWhenTheBandOverloadsTests
         "4 his hand, then overload again",
     };
 
-    /// <summary>How far the simulated clock moves per poll: the live interval.</summary>
-    internal static readonly TimeSpan PollStep = RigPollPlan.LiveInterval;
-
     private readonly Dictionary<(string Point, RigField Field), int> _owned = new();
     private readonly Dictionary<(string Point, RigField Field), int> _notOwned = new();
 
@@ -78,7 +76,7 @@ public sealed class WhatHappensWhenTheBandOverloadsTests
         _output.WriteLine("THE CW PREAMP CONDITION");
         _output.WriteLine($"  wantedText {row.WantedText}");
         _output.WriteLine($"  condition  {row.Condition}, whenOverloading {row.WhenOverloading}");
-        _output.WriteLine($"  poll step  {PollStep.TotalMilliseconds} ms of simulated clock per poll");
+        _output.WriteLine("  one poll is one live pass, a fresh Overflow reading every 252.9 ms median (MeasureTheLivePollCadence)");
 
         foreach (var (band, hz) in Frequencies)
         {
@@ -163,50 +161,12 @@ public sealed class WhatHappensWhenTheBandOverloadsTests
         _output.WriteLine($"  all nine fields: {total}");
     }
 
-    /// <summary>What the app does with one poll, and the run it belongs to.</summary>
-    internal sealed class Run
-    {
-        public required Ic7300Rig Rig { get; init; }
-
-        public required ScriptedRadio Radio { get; init; }
-
-        public required IReadOnlyList<ReceiverCondition> Conditions { get; init; }
-
-        public IReadOnlyList<ConditionResult> Results { get; set; } = Array.Empty<ConditionResult>();
-
-        public ReceiverSetupMemory Memory { get; set; } = ReceiverSetupMemory.Empty;
-
-        public DateTime Clock { get; set; } = new(2026, 9, 24, 12, 0, 0, DateTimeKind.Utc);
-
-        public List<string> Narrated { get; } = new();
-    }
-
-    /// <summary>
-    /// **WHAT THE APP DOES WITH A POLL, AND AT HEAD IT IS NOTHING THAT WRITES.**
-    /// `MainWindowViewModel.ApplyRigState` reads `Overflow` into `FrontEndIsOverloading`
-    /// (MainWindowViewModel.cs:10983-10987) and nothing acts on it.
-    /// </summary>
-    internal static Task OnPollAsync(Run run, RigState polled)
-    {
-        _ = run;
-        _ = polled;
-        return Task.CompletedTask;
-    }
-
-    private static async Task<RigState> PollAsync(Run run)
-    {
-        var state = await ModeEntryBench.ReadAllAsync(run.Rig);
-        state = state.With(await run.Rig.ReadAsync(RigField.TransmitStatus, state));
-        await OnPollAsync(run, state);
-        run.Clock += PollStep;
-        return state;
-    }
+    private static Task<RigState> PollAsync(Run run) => LivePollBench.PollAsync(run);
 
     private async Task CaseAsync(string band, long hz)
     {
         var block = ModeEntryBench.BlockAt(hz);
         var fromBlock = ReceiverConditions.ForBlock(block);
-        var conditions = fromBlock.Count > 0 ? fromBlock : ReceiverConditions.ForMode("CW");
 
         _output.WriteLine("");
         _output.WriteLine($"=================== {hz / 1e6:0.000} MHz, {band}");
@@ -216,15 +176,10 @@ public sealed class WhatHappensWhenTheBandOverloadsTests
                 : $"  block: {(block is null ? "none on the map (P23)" : $"{block.Name}, states nothing")}"
                   + " - THE APP WRITES NOTHING HERE; the CW row is driven directly below");
 
-        var radio = ModeEntryBench.AsLeft(hz, data: false);
-        radio.Transmitting = false;
-        using var rig = await ModeEntryBench.ConnectAsync(radio);
-        var run = new Run { Rig = rig, Radio = radio, Conditions = conditions };
-
         // 1. A quiet tune-in.
-        var (results, memory) = await ReceiverSetup.ApplyAsync(rig, conditions, ReceiverSetupMemory.Empty);
-        run.Results = results;
-        run.Memory = memory;
+        var run = await LivePollBench.TuneInQuietAsync(hz);
+        var radio = run.Radio;
+        using var rig = run.Rig;
         var state = await PollAsync(run);
         Point(run, Points[0], state, "tune-in with the front end quiet, then one poll");
 
@@ -236,7 +191,7 @@ public sealed class WhatHappensWhenTheBandOverloadsTests
             state = await PollAsync(run);
         }
 
-        Point(run, Points[1], state, "Overflow reads overloading for 12 polls (3 s of poll clock)");
+        Point(run, Points[1], state, "Overflow reads overloading for 12 polls (about 3 s of live poll)");
 
         // 3. Overflow clearing and staying clear.
         ModeEntryBench.ClearWrites(radio);
@@ -246,7 +201,7 @@ public sealed class WhatHappensWhenTheBandOverloadsTests
             state = await PollAsync(run);
         }
 
-        Point(run, Points[2], state, "Overflow reads not overloading for 40 polls (10 s of poll clock)");
+        Point(run, Points[2], state, "Overflow reads not overloading for 40 polls (about 10 s of live poll)");
 
         // 4. His hand sets the preamp himself, then the overload comes back and goes.
         ModeEntryBench.ClearWrites(radio);

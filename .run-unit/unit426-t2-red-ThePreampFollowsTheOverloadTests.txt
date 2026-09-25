@@ -1,0 +1,65 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.35]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.54]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.55]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.66]     Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.NothingIsWrittenWhileTheRadioTransmits [FAIL]
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.66]                            ↓ (pos 0)
+[xUnit.net 00:00:01.66]       Expected: int[]     [0]
+[xUnit.net 00:00:01.66]       Actual:   List<int> []
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampFollowsTheOverloadTests.cs(95,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.NothingIsWrittenWhileTheRadioTransmits()
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]     Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing [FAIL]
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.66]                            ↓ (pos 0)
+[xUnit.net 00:00:01.66]       Expected: int[]     [0]
+[xUnit.net 00:00:01.66]       Actual:   List<int> []
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampFollowsTheOverloadTests.cs(59,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing()
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]     Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce [FAIL]
+[xUnit.net 00:00:01.66]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.66]                            ↓ (pos 0)
+[xUnit.net 00:00:01.66]       Expected: int[]     [0]
+[xUnit.net 00:00:01.66]       Actual:   List<int> []
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampFollowsTheOverloadTests.cs(39,0): at Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce()
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.NothingIsWrittenWhileTheRadioTransmits [83 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                     ↓ (pos 0)
+Expected: int[]     [0]
+Actual:   List<int> []
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.NothingIsWrittenWhileTheRadioTransmits() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampFollowsTheOverloadTests.cs:line 95
+--- End of stack trace from previous location ---
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                     ↓ (pos 0)
+Expected: int[]     [0]
+Actual:   List<int> []
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampFollowsTheOverloadTests.cs:line 59
+--- End of stack trace from previous location ---
+  Failed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                     ↓ (pos 0)
+Expected: int[]     [0]
+Actual:   List<int> []
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\ThePreampFollowsTheOverloadTests.cs:line 39
+--- End of stack trace from previous location ---
+
+Test Run Failed.
+Total tests: 3
+     Failed: 3
+ Total time: 1.9535 Seconds
+RC=1 WALL=3s

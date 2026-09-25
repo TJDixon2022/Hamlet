@@ -48,6 +48,9 @@
   <ItemGroup>
     <Compile Include="..\Hamlet.RadioEngine.Tests\Rig\ScriptedRadio.cs" Link="Shared\ScriptedRadio.cs" />
     <Compile Include="..\Hamlet.RadioEngine.Tests\Rig\ModeEntryBench.cs" Link="Shared\ModeEntryBench.cs" />
+    <!-- The tune-in and the live poll after it (work instruction 426), so the trace and the
+         engine's follow tests hand each poll to the same thing the app does with one. -->
+    <Compile Include="..\Hamlet.RadioEngine.Tests\Rig\LivePollBench.cs" Link="Shared\LivePollBench.cs" />
   </ItemGroup>
 
   <!-- EXCLUDED FROM COMPILATION, NOT RETIRED (work instruction 392, CW phase step 1,

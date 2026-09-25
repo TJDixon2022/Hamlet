@@ -1,0 +1,20 @@
+unit426 task 2: watched failing first (7.8) - ThePreampFollowsTheOverloadTests red 0 of 3 (one write of off at 7.030 on an overload that holds, none after his hand at 14.050, none while transmitting); TheReceiveGainIsReadOnItsOwnScaleTests red 0 of 2 (RF gain, the field task 1 found contradicted once he has moved on); TheOverloadSentenceSaysWhereThePreampIsTests red 0 of 2 (the preamp's sentence in the block)
+
+Red messages, quoted:
+- AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce, and the first assertion of
+  AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing and of the second half of
+  NothingIsWrittenWhileTheRadioTransmits: "Assert.Equal() Failure: Collections differ
+  Expected: int[] [0] Actual: List<int> []" - no write of preamp off after the tune-in.
+- AGainAtFullIsAlreadyOpenOnceHeHasMovedOn: "Open the receive gain all the way. It is at
+  about 39 percent, and a gain control turned down is the one thing that quietly undoes
+  everything else." - with the gain read back at 100 percent.
+- AGainTurnedDownIsSaidAsThePercentTheRadioReads: "Assert.Contains() Failure: Sub-string not
+  found ... Not found: about 50 percent".
+- WithThePreampOffItSaysItIsOffAsTheManualHasIt: "Not found: The preamp is off".
+- WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis: "Not found: turns it off".
+
+LivePollBench, shared by the trace and the engine tests and linked into the app tests, is
+the tune-in and the live poll after it; its OnPollAsync is what the app does with a poll,
+which at HEAD writes nothing. The trace now drives it and is green, 2 of 2.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

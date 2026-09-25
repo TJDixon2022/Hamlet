@@ -1,0 +1,40 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.25]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.33]     Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainTurnedDownIsSaidAsThePercentTheRadioReads [FAIL]
+[xUnit.net 00:00:00.33]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:00.33]       String:    "Open the receive gain all the way. It is "···
+[xUnit.net 00:00:00.33]       Not found: "about 50 percent"
+[xUnit.net 00:00:00.33]       Stack Trace:
+[xUnit.net 00:00:00.33]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\TheReceiveGainIsReadOnItsOwnScaleTests.cs(56,0): at Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainTurnedDownIsSaidAsThePercentTheRadioReads()
+[xUnit.net 00:00:00.33]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:00.35]     Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainAtFullIsAlreadyOpenOnceHeHasMovedOn [FAIL]
+[xUnit.net 00:00:00.35]       Open the receive gain all the way. It is at about 39 percent, and a gain control turned down is the one thing that quietly undoes everything else.
+[xUnit.net 00:00:00.35]       Stack Trace:
+[xUnit.net 00:00:00.35]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\TheReceiveGainIsReadOnItsOwnScaleTests.cs(38,0): at Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainAtFullIsAlreadyOpenOnceHeHasMovedOn()
+[xUnit.net 00:00:00.35]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:00.35]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainTurnedDownIsSaidAsThePercentTheRadioReads [50 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "Open the receive gain all the way. It is "···
+Not found: "about 50 percent"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainTurnedDownIsSaidAsThePercentTheRadioReads() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\TheReceiveGainIsReadOnItsOwnScaleTests.cs:line 56
+--- End of stack trace from previous location ---
+  Failed Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainAtFullIsAlreadyOpenOnceHeHasMovedOn [23 ms]
+  Error Message:
+   Open the receive gain all the way. It is at about 39 percent, and a gain control turned down is the one thing that quietly undoes everything else.
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Rig.TheReceiveGainIsReadOnItsOwnScaleTests.AGainAtFullIsAlreadyOpenOnceHeHasMovedOn() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Rig\TheReceiveGainIsReadOnItsOwnScaleTests.cs:line 38
+--- End of stack trace from previous location ---
+
+Test Run Failed.
+Total tests: 2
+     Failed: 2
+ Total time: 0.6373 Seconds
+RC=1 WALL=2s
