@@ -1,0 +1,3 @@
+unit437 task 2: take-out (7.4) - the window re-mix of 80bf1f07 comes back out: test 1 passes at 163 over 565, but test 2 fails on 3 floors (031838, 004507, 003758, each by 1), the adjudicated floor loses 031838's , AND while the three adjudicated readings hold, and test 4 falls on 14 of 51 rows, 11 failing the captures test; the variant not built because two tests failed; the stream from 30 to 46.2 s went 22 named to 19 named I ANTTETNEETET E ET N (placeholder) I K; src identical to entry; P48 gains the measurement; 7.4 not ticked
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -778,3 +778,47 @@ nothing (its session stopped at task 0).
   the short gap heap both fill with pieces, and a dah-based unit undoes it where it fires. But in
   this opening it is the pitch that still breaks the text. Elsewhere the same rule costs
   recordings that read today.
+
+**Unit 437 (work instruction 437), measured and not kept.** 7.4 stays unticked. When the mix stood
+25 Hz or more from the pitch the held window was last mixed at, `CwProbabilisticStream` re-mixed
+the raw audio behind its window: the mixed arms and every envelope hop, at the new pitch, with
+the same taper and integrator. When and where the mix moves, the refill guard, the speed choice,
+the estimator and the tracker were untouched. The change and its 25 Hz were fixed before the
+trace. Built at `80bf1f07` and taken back out in the next commit.
+- **The trace** (`WhatTheOpeningHeardTests.WhenTheWindowIsRemixed`). Two shadow streams were fed
+  the decoder's own pitch hop for hop. The unchanged one read identically to the decoder. On the
+  stream the re-mix fires at 30.53 s (600 to 525 Hz), 36.03 s (525 to 625), 44.53 s (625 to 575)
+  and 48.53 s (575 to 600). It settles differently on 13 of the 33 reads from 30 to 46.2 s. The
+  stream text went from 22 named to 13 named, `E A N Q N IK E ET N ■I K`. A re-mix of a full
+  2400-hop window costs a median 21.2 ms here, against a 5 ms hop. Moves of 25 Hz or more occur
+  on 48 of the 52 capture and keyed recordings (`WhereTheMixMovesFar`).
+- **3.2's four tests.**
+  1. Passes: 165 to 163 edits over 565. 17:37 went from 19 to 18 over 25. Added letters went
+     from 17 to 12, and single-element ones from 8 to 6.
+  2. Fails on 3 of 13 floors: `031838` 40 to 39, `004507` 49 to 48, `003758` 43 to 42. R73 was
+     not examined, because test 4 fails either way.
+  3. The three adjudicated readings are identical: VA3VRR 6 of 6, MP/4 QNIK 9 of 12, DE KD0UN
+     KD0UN K 16 of 16. The adjudicated floor fails 1 of 13 because `031838` no longer contains
+     `, AND`.
+  4. Fails: above-bar counts fall on 14 of 51 rows, and 11 of those fail the captures test.
+     - Characters: `012823` 23 to 12, `021629` 27 to 20, `021825` 19 to 12, `001831` 43 to 41,
+       `021410` 36 to 34, `012748` 2 to 0, `012922` 43 to 39, `013622` 49 to 48, `011552` 22 to
+       20, `004507` 49 to 48, `003758` 43 to 42, `031838` 40 to 39.
+     - Elements: `134712` 31 to 30, `004427` 111 to 107, `012823` 37 to 25, `021825` 43 to 36,
+       `011552` 74 to 69, `012748` 3 to 0.
+     - 21 rows gain. `031905` goes 36 to 68, `032050` 44 to 69, `032113` 47 to 67 and `032129`
+       65 to 98 characters.
+  - Two tests failed, and one of them on many rows, so the narrower variant was not built.
+- **The opening under the change.** Built, the tracker moved onto 625 Hz at 34.03 s instead of
+  36.03 s, because the interlock now reads the re-mixed window. The stream from 30 to 46.2 s went
+  from 22 named, `UIEH EE E E T I NIEEE E E ET N ■IK`, to 19 named, `I ANTTETNEETET E ET N ■I K`.
+  `003901` cold stayed at 9 named, `EII E T NHHK`. `003919` cold stayed at 25 named, with its last
+  word changing from `EANQNIK` to `EANQNIS`.
+- **Unit 436's question, answered: no.** With the whole window at the sender's 625 Hz from 34.5 s,
+  the reads from 36.5 to 41.5 s still took a unit of 27.5 to 37.5 ms. They decoded at 30 to 40
+  WPM, and the grid decided 36.5 to 38.0 s. For a sender near 22 WPM, a 55 ms unit, they settled
+  nothing until `E ET N ■I` at 42 to 43.5 s.
+- **What this settles.** Stale audio in the window is not what holds the opening at the wrong
+  speed. Re-mixing moves a lot of text on the recordings where the tracker moves, most of it up
+  but on 14 rows down. The remaining fault in the opening is the estimator's unit at the right
+  pitch, and the tracker's wrong move at 30.53 s, which R76 holds.

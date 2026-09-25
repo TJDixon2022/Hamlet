@@ -86,29 +86,6 @@ public sealed class CwProbabilisticStream
     /// without either of them saying so.</para>
     public const double RefillSeconds = 3.0;
 
-    /// <summary>
-    /// How far the mix has to stand from the pitch the held window was last
-    /// mixed at before the whole window is mixed again at the new one, in hertz.
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE WINDOW HELD TWELVE SECONDS MIXED AT A PITCH THE STREAM HAD
-    /// ALREADY LEFT** (work instruction 437). Unit 436 measured the opening of
-    /// `cw-2026-09-24-003919` from 36.5 s: the mix already stood at the sender's
-    /// 625 Hz and the speed was already right, yet every read to about 48 s
-    /// decoded a window that still reached back into audio mixed at 525 Hz, 100 Hz
-    /// off him, because each sample was mixed once, at the pitch in force when it
-    /// arrived, and never again.</para>
-    /// <para>**THIS IS NOT THE WINDOW CLEAR THAT WAS RULED OFF.** A clear throws
-    /// the window away and reads nothing until it refills. This keeps every hop,
-    /// the audio clock, the settled mark and the refill guard exactly as they are
-    /// and only makes the hops agree with the pitch the stream now mixes at, as
-    /// though the mix had stood there through the whole window. When and where
-    /// the mix moves is still the tracker's (R75, R76).</para>
-    /// <para>**TWENTY-FIVE, THE PLAN'S OWN TOLERANCE** (4.1, R76): a smaller move
-    /// is the same station and mixes on as it always did.</para>
-    /// </remarks>
-    public const double RemixFromHz = 25.0;
-
     private readonly int _sampleRate;
     private readonly int _hopSamples;
     private readonly int _windowSamples;
@@ -121,17 +98,6 @@ public sealed class CwProbabilisticStream
     private readonly double[] _envelope;
     private readonly double[] _taper;
     private readonly double _taperWeight;
-
-    /// <summary>The raw audio behind the window: twelve seconds and the integrator's length.</summary>
-    private readonly float[] _raw;
-    private readonly float[] _remixI;
-    private readonly float[] _remixQ;
-    private int _rawWrite;
-    private long _rawSeen;
-    private bool _rawFromStart = true;
-
-    /// <summary>The pitch the held window was last mixed at, NaN before any audio.</summary>
-    private double _mixedAtHz = double.NaN;
 
     private int _mixWrite;
     private int _mixFilled;
@@ -188,10 +154,6 @@ public sealed class CwProbabilisticStream
         _mixedI = new float[_windowSamples];
         _mixedQ = new float[_windowSamples];
         _envelope = new double[_windowHops];
-
-        _raw = new float[(_windowHops * _hopSamples) + _windowSamples];
-        _remixI = new float[_raw.Length];
-        _remixQ = new float[_raw.Length];
 
         // **A GUARD SET ONLY IN A METHOD NOTHING CALLS IS A GUARD THAT DOES NOT
         // EXIST.** This was assigned in `Restart()` alone, and `Restart()` is
@@ -276,24 +238,10 @@ public sealed class CwProbabilisticStream
     /// <param name="samples">The samples.</param>
     public void Process(ReadOnlySpan<float> samples)
     {
-        if (double.IsNaN(_mixedAtHz))
-        {
-            _mixedAtHz = ToneHz;
-        }
-        else if (Math.Abs(ToneHz - _mixedAtHz) >= RemixFromHz)
-        {
-            Remix();
-            _mixedAtHz = ToneHz;
-        }
-
         var step = 2 * Math.PI * ToneHz / _sampleRate;
 
         foreach (var sample in samples)
         {
-            _raw[_rawWrite] = sample;
-            _rawWrite = (_rawWrite + 1) % _raw.Length;
-            _rawSeen++;
-
             // Quadrature mixdown, then a boxcar over the arms, which is what a
             // filter of this bandwidth amounts to. The phase is carried rather
             // than recomputed from the sample index so it stays exact over hours.
@@ -345,73 +293,6 @@ public sealed class CwProbabilisticStream
         _sampleInHop -= hops * _hopSamples;
         _hopsSeen += hops;
         _settledThrough += hops;
-
-        // The raw audio no longer runs on from the hops before the gap, so a
-        // re-mix recomputes only what arrives after it.
-        _rawSeen = 0;
-        _rawFromStart = false;
-    }
-
-    /// <summary>
-    /// Mix the held window again at <see cref="ToneHz"/>: the mixed arms and every
-    /// envelope hop, from the raw audio behind them (see <see cref="RemixFromHz"/>).
-    /// </summary>
-    /// <remarks>
-    /// **THE SAME TAPER AND THE SAME INTEGRATOR, HOP FOR HOP.** The arms are mixed
-    /// with the phase running back from the stream's own, so the next sample mixed
-    /// continues them without a step; a hop whose audio is not held any more (after
-    /// a <see cref="Skip"/>) keeps what it had.
-    /// </remarks>
-    private void Remix()
-    {
-        var step = 2 * Math.PI * ToneHz / _sampleRate;
-        var held = (int)Math.Min(_rawSeen, _raw.Length);
-
-        // _remixI[back - 1] is the sample `back` before now, the newest first.
-        for (var back = 1; back <= held; back++)
-        {
-            var sample = _raw[((_rawWrite - back) % _raw.Length + _raw.Length) % _raw.Length];
-            var at = _phase - (back * step);
-
-            _remixI[back - 1] = (float)(sample * Math.Cos(at));
-            _remixQ[back - 1] = (float)(sample * -Math.Sin(at));
-        }
-
-        for (var back = 1; back <= Math.Min(_mixFilled, held); back++)
-        {
-            var ring = ((_mixWrite - back) % _windowSamples + _windowSamples) % _windowSamples;
-
-            _mixedI[ring] = _remixI[back - 1];
-            _mixedQ[ring] = _remixQ[back - 1];
-        }
-
-        for (var j = 0; j < _envelopeCount; j++)
-        {
-            // How many samples have arrived since this hop's last one.
-            var after = _sampleInHop + ((long)(_envelopeCount - 1 - j) * _hopSamples);
-            var filled = _rawFromStart ? (int)Math.Min(_windowSamples, _rawSeen - after) : _windowSamples;
-
-            if (filled <= 0 || after + filled > held)
-            {
-                continue;
-            }
-
-            var from = _windowSamples - filled;
-            double i = 0;
-            double q = 0;
-
-            // Oldest first, as PushEnvelope sums it.
-            for (var n = 0; n < filled; n++)
-            {
-                var back = (int)(after + filled - n);
-                var w = _taper[from + n];
-
-                i += _remixI[back - 1] * w;
-                q += _remixQ[back - 1] * w;
-            }
-
-            _envelope[j] = Math.Sqrt((i * i) + (q * q)) / _taperWeight;
-        }
     }
 
     /// <summary>
