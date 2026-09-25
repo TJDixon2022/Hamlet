@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: ACTIVE
-TASK: TASK 1 of 3
+TASK: TASK 2 of 3
 WORK_INSTRUCTION: 438 - the unit's trigger is cut where the marks are
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T11:55:43-04:00
-NOTE: Entry round held every number unit 437 left; committing task 0 and starting the offline replay of the local cut
+UPDATED: 2026-09-25T12:00:08-04:00
+NOTE: Trace done: the stop does not hold (20 of 21 local units under 40 ms, one at 40.0; 3 reads settle differently), though the local cut chops more, not less; committing and building the change
 
 ---
 
