@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 3
+TASK: TASK 2 of 3
 WORK_INSTRUCTION: 439 - the marks are joined across gaps no sender makes
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T13:33:17-04:00
-NOTE: Trace done: stop does not hold (14 of 21 reads under 40 ms, 5 of 33 settle differently); committing before the build
+UPDATED: 2026-09-25T13:33:48-04:00
+NOTE: Build: CwUnitEstimator.Measure joins key-up dips of 15 ms or less between two marks; building with warnings as errors
 
 ---
 
