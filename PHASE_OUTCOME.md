@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 426 - STEP 7
+
+STEP: 7
+APPROACH: follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
+MOVE: work around
+WHY: Unit 424 met 7.8 at the tune-in only and surveyed the preamp alone; the overflow flag is already polled live, so the missing clause is an act on a reading the tree has, not a new instrument. 3.6 was the other redirect choice, but its remaining route (a join) moves unkeyed floors that R73 keeps as they are, so 7.8 is the less exhausted of the two.
+STATE: partial
+DECIDED: author's, overrulable - self-ruling 1 of 2 citing PHASE_PLAN.md R74 and criterion 7.8: the preamp alone may be written outside a tune-in, on the Overflow flag only, while the block owns it, never while transmitting, and never after his hand has moved it, recorded as HM-DEC-179 with P22 taken up; the hysteresis is chosen from the measured poll cadence; writing the band value back on clear is the drop candidate; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R74, R67, R65, section 6 and criterion 7.8; HM-DEC-177; HM-DEC-174; HM-DEC-056; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2; FACT-006
+ADVANCES: step 7 criterion 8
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.112 to 1.13.113. PHASE_STATUS.md names unit 426 and CURRENT_STEP 7. HEAD at entry 972510e6. The reading recorded as HM-DEC-179; P22 marked taken up. No ruling in DECISIONS.md or PHASE_PLAN.md forbids, in its own words, every write outside a tune-in. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 275 of 278, the three lost to the dispatcher loop (ThePowerIsOfferedTests twice, TheRecordNamesTheSubModePressedTests Olivia) green alone, 3 of 3 and 12 of 12; captures 51 of 51; adjudicated 13 of 13; keyed floors 13 of 13; every Rig type, 45 types, 342 of 342; OneVoiceOnThePreampTests 16 of 16; WhatIsSaidAboutThePreampTests 1 of 1; TheOverloadSentenceLeavesTheModesFieldsTests 4 of 4; DecisionLogOrderTests red on the missing HM-DEC-166 row only (P25), as expected.
+
 ## UNIT 425 - STEP 3
 
 STEP: 3
@@ -538,3 +551,21 @@ STATE_WHY: Step 7 still has 7.1 to 7.4 open, and 7.8 is only partly met, since t
 ADVANCED: no
 ATTEMPT: 7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | no | executed | set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
 REASON: 7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 2 - STEP 3
+
+STEP: 3
+APPROACH: separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only question is whether merging split elements counts as lowering a floor on an unkeyed row, which is about how a test threshold is counted and not about keying, money, or a fact the product states to the operator, and the other two items say they are not blocking.
+MOVE: work around
+WHY: Unit 421's span route reached none of the eight added single-element strays, because all eight stand above the span bar and above the lowest right letter. R73 now lets a key-aligned added character leave a floor, so 3.6 is reachable by a different measure. The spacing comes first in R64's order, and the loop test found no prior entry for this approach.
+DECIDED: author's, overrulable - the measures task 1 prints; the rule that a change must touch no unkeyed above-bar character and no key-aligned right or wrong character; a limit of one narrower variant; and floors moved under R73 are lowered in the judging commit with each removed character named beside them.
+LICENCE: PHASE_PLAN.md R69, R71, R73, R66, section 6 and criterion 3.6; HM-DEC-176; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.2 and 12.5
+COST: 4.1728277999999985
+ACCOMPLISHED: the stray E and T letters that were never sent stop printing between the words of a CQ call, and no real letter is lost
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 3.1, 3.2, 3.3, 3.5 and 3.7 are met, and 3.6's trace clause is delivered with its printed table, but no change was built, so total edits stayed at 165 and added letters at 17, which leaves 3.6 unmet, and 3.4 is also unmet because the count of units with no kept change is only 1, while the open question about joins and unkeyed floors is about a number, not one of the three things the phase stops for.
+ADVANCED: no
+ATTEMPT: 3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | no | executed | separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+REASON: 3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | the unit ran to completion and the criterion did not flip from unmet to met

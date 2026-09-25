@@ -327,6 +327,11 @@ have the preamp off. Following the flag live would write to the radio outside a 
 R67 and HM-DEC-056 rule against (once per tune-in, his hand wins), so it wants a ruling rather
 than a unit's choice. Not blocking.
 
+**Taken up by HM-DEC-179, work instruction 426, 2026-09-24.** The arbiter's reading of R74 and
+criterion 7.8, overrulable by Tim: the preamp alone may be written outside a tune-in, on the
+`Overflow` flag only, while the block owns it, never while transmitting, and never after his
+hand has moved it.
+
 ## P23 - 6 m has no block on the map, and its top edge is not in the tree
 
 **Raised by unit 424, 2026-09-24.** The CW row states preamp 2 from 50.000 to 54.000 MHz

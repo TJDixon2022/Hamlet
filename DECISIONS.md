@@ -4,6 +4,38 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-179
+date: 2026-09-24
+refs: PHASE_PLAN.md R74, R67 and criterion 7.8, HM-DEC-177, HM-DEC-174, HM-DEC-056, docs/phase-correctness/PARKED.md P22, src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs, src/Hamlet.RadioEngine/Rig/RigPollPlan.cs, work instruction 426
+---
+
+**The preamp follows the overload after the tune-in.** Criterion 7.8 says the preamp *"is
+turned off when the receiver reports overloading rather than by band"*, and R74 says that if a
+setting is wrong for the conditions, Hamlet changes it. Since HM-DEC-177 the setup reads the
+`Overflow` flag once, at the tune-in, and a band that starts overloading afterward leaves the
+preamp where the tune-in put it (P22).
+
+**What is ruled.** Exactly one kind of write is licensed outside a tune-in:
+
+- the preamp field only;
+- triggered only by the polled `Overflow` flag changing;
+- only while the tuned block's condition still owns the preamp;
+- never while the radio is transmitting;
+- never after his hand has moved the preamp since Hamlet's last write to it; in that case
+  Hamlet stops following until the next tune-in.
+
+Every other field a condition states is still written at the tune-in only, a value already
+right is still not rewritten, one component still decides each field, and his own hand still
+wins (HM-DEC-056, HM-DEC-174).
+
+**Whose words are whose.** This is the arbiter's reading of R74 and criterion 7.8, recorded by
+work instruction 426 as self-ruling 1 of 2, and Tim may overrule it. No ruling in this file or
+in `PHASE_PLAN.md` forbids, in its own words, every write outside a tune-in; P22 read *"once per
+tune-in"* that way, and this reading takes 7.8 and R74 as licensing the one write above.
+Rejected: following every condition field live; leaving 7.8's second clause met only at the
+tune-in.
+
+---
 id: HM-DEC-178
 date: 2026-09-24
 refs: PHASE_PLAN.md R73, R71, R69 and criterion 3.6, HM-DEC-176, docs/phase-correctness/PARKED.md P19, work instruction 425

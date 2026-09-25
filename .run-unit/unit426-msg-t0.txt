@@ -1,0 +1,21 @@
+unit426 task 0: the record - DECISIONS.md HM-DEC-179 and the CLAUDE.md row, the preamp follows the overload after the tune-in; PARKED.md P22 taken up; PHASE_OUTCOME.md UNIT 426 - STEP 7 from the decision block with the entry round; PHASE_STATUS.md unit 426, CURRENT_STEP 7; version 1.13.112 to 1.13.113
+
+The instruction checked against the tree: RigField.Overflow is RigPollRate.Live at
+RigPollPlan.cs:145, with LiveInterval 250 ms at :64; the preamp itself is not named in the plan
+and falls to the default, RigPollRate.Session, 30 s (:177). ReceiverSetup reads Overflow only in
+ResolveAsync, at ReceiverSetup.cs:349-352 for the attenuator and 372-375 for the preamp, both
+at the tune-in. Other readers in src: ReceiveAdvice.cs:380, MainWindowViewModel.cs:10983
+(ApplyRigState, FrontEndIsOverloading), DigitalCaptureSheet.cs:202 and 664, CivDecode.cs:83,
+CivReads.cs:202, RigReadout.cs:138. The CW preamp row carries 1800000 to 29999999 at 1 and
+50000000 to 54000000 at 2, whenOverloading 0, citing IC-7300_ENG_FM_12b page 4-3. The hand is
+ReceiverSetupMemory.MovedByHandSince, ReceiverSetup.cs:101. Transmitting is
+RigState.IsTransmitting, RigState.cs:186, read from TransmitStatus polled live.
+
+Entry round, one type per invocation: build 0 errors; engine carry-forward 178 of 178; app
+carry-forward 275 of 278, the three lost to the dispatcher loop green alone; captures 51 of 51;
+adjudicated 13 of 13; keyed floors 13 of 13; every Rig type, 45 types, 342 of 342;
+OneVoiceOnThePreampTests 16 of 16; WhatIsSaidAboutThePreampTests 1 of 1;
+TheOverloadSentenceLeavesTheModesFieldsTests 4 of 4; DecisionLogOrderTests red on the missing
+HM-DEC-166 row (P25), as expected.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,35 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.23]     Hamlet.App.Tests.DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes [FAIL]
+[xUnit.net 00:00:00.23]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:00.23]       Expected: int[]     [105, 136]
+[xUnit.net 00:00:00.23]       Actual:   List<int> [105, 136, 166]
+[xUnit.net 00:00:00.23]                                      ↑ (pos 2)
+[xUnit.net 00:00:00.23]       Stack Trace:
+[xUnit.net 00:00:00.23]         C:\Source\HamLet\tests\Hamlet.App.Tests\DecisionLogOrderTests.cs(174,0): at Hamlet.App.Tests.DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes()
+[xUnit.net 00:00:00.23]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.23]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.23]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes [28 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+Expected: int[]     [105, 136]
+Actual:   List<int> [105, 136, 166]
+                               ↑ (pos 2)
+  Stack Trace:
+     at Hamlet.App.Tests.DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes() in C:\Source\HamLet\tests\Hamlet.App.Tests\DecisionLogOrderTests.cs:line 174
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Hamlet.App.Tests.DecisionLogOrderTests.TheDecisionLogIsNewestFirst [1 ms]
+
+Test Run Failed.
+Total tests: 2
+     Passed: 1
+     Failed: 1
+ Total time: 0.5027 Seconds
+RC=1 WALL=1s

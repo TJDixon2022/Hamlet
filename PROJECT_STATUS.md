@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 425 - the stray letters the key says were never sent
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 4
+WORK_INSTRUCTION: 426 - the preamp follows the overload after the tune-in
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T19:43:30-04:00
-NOTE: Unit 425 complete and pushed: the trace found no measure separating the 8 added strays from right, wrong or unkeyed letters, so nothing was built; 165 edits and 17 added unchanged; output.md written
+UPDATED: 2026-09-24T20:07:03-04:00
+NOTE: Touched types round entry: DecisionLogOrderTests, 4 of 4
 
 ---
 
