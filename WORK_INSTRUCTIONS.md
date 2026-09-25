@@ -1,26 +1,27 @@
-# Work instruction 432 - the mixdown follows a move once any read since it was set has confirmed it
+# Work instruction 433 - the mixdown follows a move only where the sender keys harder than at the mix
 
 **Seed under `--seed`.** The 7.052 session opens with `UIEH EE E E T I NIEEE E` on the
-spliced stream, and then reads a whole QSO. Unit 429 traced this to `CwDecoder.cs` 617 to 621.
+spliced stream, and then it reads a whole QSO. Unit 429 traced this to `CwDecoder.cs` 617 to 621.
 There, the mixdown followed the tracker from 600 to 525 Hz while the sender stood at 625, and
-the speed then collapsed. Unit 430 built one change against that line and one narrower
-variant:
-- **The change** (`5b6b704c`) holds a move of more than 25 Hz as pending until a later survey
-  read confirms keying at the new pitch.
-- **The variant** (`ec76051e`) follows a move at once if the read just before it confirmed it.
+the speed collapsed after that. Three release rules have been tried against that line:
+- **`5b6b704c`** (unit 430) held a move of more than 25 Hz until a later survey read confirmed it.
+- **`ec76051e`** (unit 430) followed at once if the read just before the move confirmed it.
+- **P39** (unit 432) followed once any read since the mix was set had confirmed it.
 
-**Both cured the opening.** The stream read `EANQNID EAN■IK`, the group the cold decode reads.
-Both lowered the keyed total, from 165 to 149 and to 153. **Both went out on one recording
-only**: `cw-2026-08-22-032113` fell from 47 to 44 named, outside its scored stretch. Unit 430
-measured why the variant still cost it. The tracker's 650 Hz move was confirmed at 25.54 s,
-the next read at 26.04 s admitted nothing, and the move was made at 26.54 s. A look-back of one
-read missed the confirmation, and the mix stayed at 600 from 26.54 to 29.54 s.
+The first two cured the opening and went out on `cw-2026-08-22-032113`. P39 was never built.
+Its replay gate failed on `031905`. Unit 432 measured why no rule of that kind can work: **a
+move confirmed by the survey looks the same whether it is right or wrong.** 031905's move at
+13.04 s and 032113's 650 Hz move have the same shape. Every one of the three rules asks one
+question: did the survey see keying at the new pitch? The opening's 525 Hz move passes that
+question too, because it was a `Switch` on its own confirming read.
 
-This unit tests a third release rule, P39. **A pending move is released as soon as any survey
-read since the mix's pitch was last set has confirmed keying there.** Before building it, the
-unit replays the reads to check that the rule follows both of `032113`'s moves and still holds
-the opening's wrong one. It is built only if the replay says so, and kept only under 3.2's four
-tests. Four tasks, drop from the back.
+**This unit asks a different question.** It compares the two pitches directly. The mix follows
+a move of more than 25 Hz only when the decoder's own envelope keys harder at the new pitch
+than at the pitch it is mixing at now. The comparison uses the same filter and the same three
+seconds of audio for both pitches. The survey still says where keying is, and the tracker still
+chooses. This rule only asks whether the new pitch reads better than the current one. It is
+replayed before it is built, and it is kept only under 3.2's four tests. Four tasks; drop from
+the back.
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -55,15 +56,16 @@ If all four hold, say "Hamlet confirmed" and continue.
 ## 1. The rules that killed sessions
 
 **HM-DEC-155.** Never run the whole suite. Run only this unit's named types and
-`docs\carry-forward-tests.txt`, as its top comment says. **Never background and poll.** Run one
+`docs\carry-forward-tests.txt`, following its top comment. **Never background and poll.** Run one
 type per invocation, each with its own `timeout`:
-- the engine carry-forward line ran 371 s at unit 431's entry; give it 600 s;
-- the captures type is 51 rows and ran 118 s; give it 600 s;
-- `WhatTheOpeningHeardTests` ran 162 s at unit 430's exit; give it 600 s;
-- give `WhatTheStrayLettersRestOnTests` 600 s.
+- the engine carry-forward line ran 372 s at unit 432's entry; give it 600 s;
+- give the captures type (51 rows) 600 s;
+- `WhatTheOpeningHeardTests` has 12 members now; give it 600 s.
+  If it runs past 450 s, run its members one at a time;
+- give each of unit 430's pitch types 600 s.
 
-A run lost before any assertion counts neither way and is re-run once, alone. That means the
-test host crash inside `Cw` (HM-OPEN-063) or the headless dispatcher loop.
+A run lost before any assertion counts neither way and is re-run once, alone. That covers the
+test host crash inside `Cw` (HM-OPEN-063) and the headless dispatcher loop (P45).
 
 **The report's four top-level headings are exactly these, character for character:**
 
@@ -88,21 +90,23 @@ These are known limits of the shell here:
 - A multi-line commit needs `-m` more than once.
 - A bare `git worktree`, `git checkout` or `git show` is refused at the prompt.
 
-Put multi-step commands in `.run-unit\unit432-<name>.sh` and run them with `sh`. You can copy
-the scripts from units 430 and 431. **To take a change back out, commit a revert**
+Put multi-step commands in `.run-unit\unit433-<name>.sh` and run them with `sh`. Units 430 and 432
+have scripts you can copy. **To take a change back out, commit a revert**
 (`git revert --no-edit <sha>` in a script). Never reset or rewrite history.
 
 ## 3. Asks still outstanding
 
 These are carried under HM-DEC-139. **None of them belongs to this unit.** P27 stays the
-owner's. P29 to P38 and P40 to P43 stay parked. This unit takes up **P39**, and only that one.
+owner's. P29 to P45 stay parked. This unit takes up none of them.
 
-Task 0 parks unit 431's two section 4 items verbatim, with their proposed rulings:
-- **P44:** whether a join may be judged by the letters it leaves.
-- **P45:** the app carry-forward line loses one to three types to the dispatcher loop. This is
-  for the record.
+Task 0 parks unit 432's two section 4 items verbatim, with their proposed rulings:
+- **P46:** whether the replay gate's third clause is judged against the entry or against
+  `5b6b704c`. This instruction's gate compares against the entry, as an author's decision
+  (section 6). It does not rule on P39's route, which stays closed.
+- **P47:** `WhyTheMixMoved` prints `CwToneSurvey.Analyze`'s verdict and not `Tracker.Verdict`.
+  This is for the record.
 
-This unit answers nothing except its own criterion.
+This unit answers nothing beyond its own criterion.
 
 ---
 
@@ -110,43 +114,41 @@ This unit answers nothing except its own criterion.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  Stop the mixdown walking off the sender in a session's opening,
-            without costing 032113 the letters unit 430's two attempts cost it,
-            kept only under 3.2's four tests.
+UNIT GOAL:  Stop the mixdown walking off the sender in a session's opening
+            by comparing the two pitches on the decoder's own envelope,
+            without costing 032113 or any other row, kept only under 3.2's
+            four tests.
 ADVANCES:   step 7 criterion 4
 DRIFT:      0
 ```
 
 **The count today:**
 - Steps 0, 1 and 2 are done.
-- Step 3 is partial and closed under 3.4 by unit 431 (P43), with 3.6 open.
+- Step 3 is partial and was closed under 3.4 by unit 431 (P43), with 3.6 open.
 - Step 4 is not started.
 - Step 5 is the owner's verdict.
 - Step 6 is partial, with 6.5 open.
 - Step 7 is partial, with 7.1, 7.2, 7.4, 7.6 and 7.8 open.
 
-**Units 430 and 431 did not advance.** The loop has sent this instruction back to 7.4 or 3.6.
-It must use an approach the record does not show failing.
+**Units 431 and 432 did not advance.** The loop has sent this instruction back to 3.6 or 7.4,
+and it must use an approach the record does not show failing.
 
-**Why 7.4 and not 3.6.** Every route recorded at 3.6 has failed:
-- a span bar (unit 421);
-- features other than span (unit 425);
-- span over neighbors (unit 428);
-- G1's join (unit 431).
+**Why 7.4 and not 3.6.** Four routes at 3.6 have failed: a span bar (421), features other than
+span (425), span over neighbors (428), and G1's join (431). The one way back that is on record,
+P44, is the owner's. At 7.4, three rules have been tried, and all three asked the survey the
+same question. Unit 432 measured why that question cannot tell a right move from a wrong one.
+A different question has not been asked.
 
-G1's only way back is P44, which is the owner's to rule. An arbiter's reading of R73 cannot be
-loosened by another arbiter. At 7.4, by contrast, both of unit 430's attempts passed tests 1
-and 3, cured the opening, and failed on the same three characters of one recording. The cause
-of that failure was measured: a hold that spanned two reads.
+**Why this is not a loop.** Units 430 and 432 varied *when* a survey confirmation releases a
+held move. This rule does not read survey confirmations at all. It holds or follows on a
+head-to-head measurement: the keying contrast of `CwProbabilisticDecoder.Envelope` at the target
+pitch against the same figure at the current mix pitch. At the opening the sender is at 625,
+which is 25 Hz from the mix at 600 and 100 Hz from the target at 525. That is the case this
+measurement can see and a confirmation cannot. The loop test found no entry for this approach.
 
-**Why this is not a loop.** Unit 430's rules were:
-- "wait for a later read";
-- "follow at once if the read just before confirmed".
-
-The second rule's failure was traced to its look-back of one read. P39's rule looks back over
-every read since the mix's pitch was set. That is a different release condition, aimed at the
-measured failure. Task 1 checks it against the recorded reads before anything is built, so it
-cannot be a guess tuned by score. The loop test found no entry for this approach.
+**If this unit keeps nothing, it is 7.4's third unit in a row with no kept change** (430, 432,
+433). In that case task 3 writes the trace to `PARKED.md`, and 7.4 closes partial as the
+criterion itself says.
 
 ---
 
@@ -154,65 +156,58 @@ cannot be a guess tuned by score. The loop test found no entry for this approach
 
 Check each of these. Report any mismatch and repair nothing:
 
-- `CwDecoder.cs` takes `_lastMeasuredToneHz` from `_tracker.ToneHz` at lines 600 to 603. It
-  writes `_probabilistic.ToneHz` at 617 to 621.
-- The following four commits exist and are as unit 430 describes them:
-  - `5b6b704c`, the change;
-  - `a7e6e2f2`, its revert;
-  - `ec76051e`, the variant;
-  - `fa64edc5`, its revert.
-
-  Say where the first change's pending-move logic sat, and whether it re-applies cleanly.
-- `WhatTheOpeningHeardTests.WhyTheMixMoved` is in `tests\Hamlet.RadioEngine.Tests\Cw`, and
-  prints the tracker's `Verdict` per survey read.
-- `cw-2026-08-22-032113` has a row in the captures type, with named 47 at or above the bar and
-  elements 102. It also has a keyed floor of 47.
+- `CwDecoder.cs` sets `_lastMeasuredToneHz` from `_tracker.ToneHz` at lines 600 to 603, and
+  writes `_probabilistic.ToneHz` at 617 to 621. The file is identical to `a7e6e2f2`.
+- `CwProbabilisticDecoder.Envelope(samples, sampleRate, toneHz)` is public and static, and it
+  uses `IntegratorBandwidthHz` (45 Hz). The overload that takes a bandwidth exists beside it.
+- `CwToneSurvey` keeps 3.0 s of history by default (`seconds = 3.0`).
+- `WhatTheOpeningHeardTests.WhyTheMixMoved` and `WhenEachRuleFollows` are in
+  `tests\Hamlet.RadioEngine.Tests\Cw`. The second of them came in at `f0845a92`.
+- `cw-2026-08-22-032113` has a row in the captures type with 47 named at or above the bar and
+  102 elements, and it has a keyed floor of 47.
 - The numbers at HEAD are:
   - all keyed: **165 edits over 565**, against inferred keys;
-  - 17 added letters, of which 8 are single-element;
+  - 17:37: 19 over 25;
+  - 17 added letters, 8 of them single-element;
   - captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
-- The opening at HEAD, on the spliced stream from 0 to 46.2 s, reads `EII E T NHHK` then
-  `UIEH EE E E T I NIEEE E E ET N ■IK`.
-- `Directory.Build.props` is at 1.13.118.
-- The launcher writes the following at the root, and the reload shows them as modified:
-  - `PHASE_OUTCOME.md`;
-  - `PHASE_STATUS.md`;
-  - `RUN_LEDGER.md`;
-  - `WORK_INSTRUCTIONS.md`.
-
-  It also writes `.run-unit` files. Task 0 commits the root files with its record as they
-  stand, and says so.
+- The opening at HEAD, on the spliced stream from 30 to 46.2 s, reads
+  `UIEH EE E E T I NIEEE E E ET N ■IK`, with 22 named. `003919` cold reads
+  `EITEETNXNIK EANQNID EANQNIK`.
+- `Directory.Build.props` is at 1.13.119.
+- The launcher writes `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and
+  `WORK_INSTRUCTIONS.md` at the root, and the reload shows them as modified. It also writes
+  `.run-unit` files. Task 0 commits the root files with its record as they stand, and says so.
 
 **Expected failures.** Report each of these and repair none of them:
-- the dispatcher-loop losses on the app carry-forward line, each re-run alone (P45);
+- dispatcher-loop losses on the app carry-forward line, each re-run alone (P45);
 - `AHeldPitchDoesNotOutliveItsEvidenceTests` at 1 of 4 (P40);
-- `EveryElementCarriesItsOwnPitchTests` and `ThePeakFindsThePitchTheTrackerMissedTests`, which
-  run 0 tests because they are `Compile Remove`d (P41).
+- `EveryElementCarriesItsOwnPitchTests` and `ThePeakFindsThePitchTheTrackerMissedTests` run 0
+  tests, because they are `Compile Remove`d (P41).
 
 ## 6. Rulings in force - do not re-argue
 
 `PHASE_PLAN.md` R59 to R74, with §3 and §6.
 
-**3.2's four tests are the keep rule, as unit 430 applied them to 7.4:**
-1. The total edit count over all keyed recordings **does not rise** above 165 over 565,
-   against inferred keys. No key scores the opening, so 7.4 cannot be required to lower the
-   total. This is unit 430's arbiter decision, and it stands.
+**3.2's four tests are the keep rule, as units 430 and 432 applied them to 7.4:**
+1. The total edit count over all keyed recordings **does not rise** above 165 over 565, against
+   inferred keys. No key scores the opening. This is unit 430's arbiter decision, and it
+   stands.
 2. No named floor from 2.2 is broken.
-3. The three adjudicated readings are unchanged character for character, or changed to
-   exactly their own adjudicated text (R66). Print any reading that moves, before and after.
-4. No capture row's above-bar named count falls (R71, raw span 13.0), except as R73 allows.
-   Under unit 431's arbiter reading, R73 does not reach a fall outside a scored stretch, or
-   any fall on an unkeyed row.
+3. The three adjudicated readings are unchanged character for character, or changed to exactly
+   their own adjudicated text (R66). Print any reading that moves, before and after.
+4. No capture row's above-bar named count falls (R71, raw span 13.0), except as R73 allows. R73
+   does not reach a fall outside a scored stretch, and it does not reach any fall on an
+   unkeyed row.
 
 **Other rulings:**
-- **R68:** the acquisition failure is step 7.
+- **R68:** the acquisition failure belongs to step 7.
 - **R73:** only a key-aligned added character inside a scored stretch may leave a floor.
-- **R66**, **R71**, and **R72**: no word, dictionary or callsign prior.
+- **R66, R71, R72:** no word, dictionary or callsign prior.
 - **R61:** no key is invented, and no scored region is changed.
-- **HM-DEC-095** and **HM-DEC-127:** the tracker's choice of candidate is the tracker's. This
-  unit changes only when the mixdown follows it.
+- **HM-DEC-095 and HM-DEC-127:** the tracker's choice of candidate belongs to the tracker. This
+  unit changes only whether the mixdown follows it.
 - **HM-DEC-091:** a change that reads one recording and costs another is not a fix.
-- **§0.0:** no decode is called what was sent.
+- **§0.0:** no decode is presented as what was sent.
 - **§0.2:** nothing that keys or transmits is touched.
 - **§12.5:** no synthetic case is the sole evidence for keeping a change.
 - Also in force: **HM-DEC-155**, **HM-DEC-165**, **FACT-004** and **FACT-006**.
@@ -220,25 +215,36 @@ Check each of these. Report any mismatch and repair nothing:
 **The author's decisions, overrulable, recorded as decisions and not as rulings:**
 
 - **Routing to 7.4 over 3.6.** Section 4 gives the reason.
-- **The rule.** A move of up to 25 Hz is followed at once, as in `5b6b704c`. A move further
-  than that is followed at once if any survey read since the mix's own pitch was last set
-  carried confirmed keying within 25 Hz of the new pitch. Otherwise it is held pending until
-  a read does. The 25 Hz is unit 430's same-station distance, kept unchanged. P39's clause
-  about a `Switch` made on the very read that confirmed it still waits for a later read, and
-  task 1 says whether it matters on the four stretches.
-- **The replay gate.** The rule is built only if task 1 shows that it does three things:
-  - follows `032113`'s 650 Hz and 500 Hz moves when the tracker made them;
-  - holds the opening's 600 to 525 Hz move;
-  - makes no other difference from `5b6b704c` on the stretches task 1 prints.
+- **The rule, fixed before the replay and not changed after it:**
+  - A move of up to 25 Hz from the current mix pitch is followed at once, as at entry. The
+    25 Hz is unit 430's same-station distance, unchanged.
+  - For a move of more than 25 Hz, take the audio of the last 3.0 s: the survey's own history
+    length, so this adds no new constant.
+  - Compute `CwProbabilisticDecoder.Envelope` at the target pitch and at the current mix pitch,
+    at `IntegratorBandwidthHz`.
+  - Each pitch's **keying contrast** is the 90th percentile of its per-hop magnitudes over the
+    10th percentile, in dB.
+  - Follow the move when the target's contrast is greater than the mix's. Otherwise hold the
+    mix where it is. Re-compare on every survey read while the move is pending. Follow the
+    moment the target wins, or when the tracker moves again, which starts a new comparison.
+  - Plain greater-than, with no margin.
+  - Where either figure cannot be computed because less than 3.0 s has been heard, follow as
+    at entry.
+- **The replay gate compares against the entry, not against `5b6b704c`.** The rule is built
+  only if task 1 shows both of these:
+  - it follows `032113`'s 650 Hz move within one survey read of the entry's 26.54 s, so by
+    27.04 s;
+  - it holds the opening's 600 to 525 Hz move until the tracker's next move, at 36.04 s.
 
-  If it fails any of the three, build nothing, and report it.
-- **One attempt, and no narrower variant.**
-- **7.4 ticks only on a kept change.** 7.4's own three-unit count counts 7.4 units only, and a
-  step 3 unit in between does not reset it. If this unit keeps nothing, it is the second
-  (430 and 432).
-- **P42's figure.** The opening is reported as its text beside the cold group `EANQNID`,
-  together with the named count. The count alone is not the figure, because removing litter
-  lowers it.
+  `031905` is printed and not gated: the four tests decide it. `032113`'s 500 Hz move is not on
+  the entry record, so it is not gated either. If either gate answer is no, build nothing and
+  report which one failed.
+- **One attempt, and no variant.** No other percentiles, windows or margins.
+- **7.4 ticks only on a kept change.** If nothing is kept, this is 7.4's third unit in a row
+  with no kept change. Task 3 then writes the trace to `PARKED.md` as P48, and step 7's line in
+  `PHASE_STATUS.md` records 7.4 as closed partial. **7.4 is not ticked.**
+- **P42's figure.** Report the opening as its text beside the cold group `EANQNID`, together
+  with its named count.
 - **No self-ruling authorizes work outside these tasks.**
 
 ## 7. Status cadence
@@ -251,67 +257,69 @@ As the header says.
 
 ### Task 0 - the record
 
-- Add `## UNIT 432 - STEP 7` to `PHASE_OUTCOME.md`, from the decision block at the foot of
-  this file.
-- `PHASE_STATUS.md` names unit 432 and `CURRENT_STEP: 7`.
-- Patch-bump `Directory.Build.props` from 1.13.118 to 1.13.119.
-- Park unit 431's section 4 items 1 and 2 verbatim in `docs\phase-correctness\PARKED.md` as P44
-  and P45. Mark P39 as taken up by unit 432.
+- Add `## UNIT 433 - STEP 7` to `PHASE_OUTCOME.md`, from the decision block at the foot of this
+  file.
+- `PHASE_STATUS.md` names unit 433 and `CURRENT_STEP: 7`.
+- Patch-bump `Directory.Build.props` from 1.13.119 to 1.13.120.
+- Park unit 432's section 4 items 1 and 2 verbatim in `docs\phase-correctness\PARKED.md` as
+  P46 and P47, each with the note from section 3.
 
 **Entry round.** Run each of these, one type per invocation:
 - both carry-forward lines;
-- the three floor tests, with captures at 51;
+- the three floor tests, with captures at 51 and the captures type's wall time;
 - the keyed totals, per recording and all together;
-- the added letters, split into single-element and not;
-- `WhatTheOpeningHeardTests`, which gives the opening's text and named count, cold and on the
-  spliced stream;
-- unit 430's pitch types, as its report tables them.
+- the added letters, single-element and not;
+- `WhatTheOpeningHeardTests`, for the opening's text and named count, cold and on the spliced
+  stream;
+- unit 430's pitch types.
 
-Record these as the numbers to hold.
+These are the numbers to hold.
 
 **Drop candidate:** none.
 
 ### Task 1 - the replay (7.4)
 
 Build nothing in the decoder in this task. Add one member to `WhatTheOpeningHeardTests` that
-**asserts nothing**. It runs on these stretches:
+**asserts nothing and writes nothing**, and drive the decoder a hop at a time, as
+`WhenEachRuleFollows` does. Run it on these stretches:
 - the spliced stream from 28 to 38 s;
 - `032113`, whole;
-- `031905`, whole, because it gained under unit 430's change.
+- `031905`, whole.
 
-For every tracker move of more than 25 Hz on those stretches, it prints:
-- the time of the move and its pitch from and to;
-- every survey read since the mix's pitch was last set, each with its time, its `Verdict`,
-  and whether it carried confirmed keying within 25 Hz of the target;
-- whether the move was a `Switch` made on the read that confirmed it;
-- the time at which each of four rules would move the mix: entry, `5b6b704c`, `ec76051e`,
-  and this unit's rule.
+For every tracker move of more than 25 Hz from the mix, print:
+- the time of the move, and its pitch from and to;
+- at the move and at every survey read while it is pending: the time, the contrast at the
+  target, the contrast at the mix, and which one is greater;
+- the time at which the mix follows under the entry and under this rule.
 
-It reads the tracker the way `WhyTheMixMoved` does, and writes nothing.
+Also print, once per stretch, the sender's pitch as `WhyTheMixMoved` reports it, so a reader
+can see which pitch the envelope comparison favored.
 
-**State the gate's three answers** from section 6 as yes or no, each with the line of the
-print that shows it. If any answer is no, build nothing in task 2. Say which answer was no,
-and go to task 3.
+**Give the gate's two answers** from section 6 as yes or no, each with the print line that
+shows it. Say what the rule does on `031905`'s moves at 13.04 and 26.54 s. If either answer is
+no, build nothing in task 2, and go to task 3.
 
-**Drop candidate:** `031905`.
+**Drop candidate:** `031905`'s print. It is not dropped if task 2 is built.
 
 ### Task 2 - the rule, judged (7.4)
 
-Build section 6's rule in `CwDecoder.Step` **in its own commit**, on the shape of `5b6b704c`.
-Do not touch any of these:
+Build section 6's rule in `CwDecoder.Step` **in its own commit**. Do not touch any of these:
 - the tracker and its survey scoring;
 - the speed search;
 - the gap estimator;
 - the gates;
-- `CharacterMargin`, `StrayElementSpan` or the span bar.
+- `CharacterMargin`, `StrayElementSpan` or the span bar;
+- `Envelope` itself.
+
+Keep the 3.0 s of audio the rule needs in `CwDecoder`. It is used only while a move is pending.
 
 Then run each of these, one type per invocation:
 - the keyed totals, per recording, with 17:37's edits over its scored region;
 - the added letters, single-element and not;
 - the keyed floors;
 - adjudicated;
-- captures: all 51 rows, each with its old, above-bar and below-bar counts and its elements;
-  **`032113` is read first**;
+- captures, all 51 rows, each with its old, above-bar and below-bar counts, its elements, and
+  the type's wall time. **Read `032113` and `031905` first**;
 - `WhatTheOpeningHeardTests`;
 - unit 430's pitch types.
 
@@ -323,13 +331,13 @@ time, and say whether it sits inside a scored stretch.
 failed.
 
 **If it is kept:**
-- report the opening's named characters in the opening 60 seconds of `003901` and `003919`,
-  before and after, in two forms: cold per file, and on the spliced stream, beside
-  `EANQNID`;
+- report the named characters in the opening 60 seconds of `003901` and `003919`, before and
+  after, cold per file and on the spliced stream, beside `EANQNID`;
+- report the captures type's wall time before and after;
 - tick 7.4 in `PHASE_PLAN.md`.
 
-**Drop candidate:** the pitch types' after-round. The captures, floors and adjudicated tests
-are not dropped.
+**Drop candidate:** the after-round of the pitch types. The captures, floors and adjudicated
+tests are not dropped.
 
 ### Task 3 - the exit round
 
@@ -339,11 +347,20 @@ Run each of these:
 - the keyed totals and the added letters;
 - `WhatTheOpeningHeardTests`.
 
-Then check two things against the tree:
+Check two things against the tree:
 - none of the eleven transmit files differs from `7e209cb4`;
 - `data` is unchanged from entry.
 
 If nothing was kept, `src` is also unchanged from entry.
+
+**If nothing was kept**, write P48 in `PARKED.md`: 7.4 closes partial after three units with no
+kept change (430, 432, 433). It gives:
+- each unit's rule, and the test or gate answer that stopped it;
+- the opening's text at entry beside `EANQNID`;
+- `032113` at 47 above the bar;
+- the numbers left standing.
+
+Then record 7.4 as closed partial on step 7's line in `PHASE_STATUS.md`. Do not tick it.
 
 **Drop candidate:** none.
 
@@ -351,23 +368,24 @@ If nothing was kept, `src` is also unchanged from entry.
 
 ## 9. Parked - do not touch, do not raise
 
-- **3.6 and G1.** P43 and P44 hold them. If the rule moves any single-element added letter,
-  report it as a finding and do not claim it for 3.6.
+- **3.6, G1 and P44.** P43 and P44 hold them. If the rule moves any single-element added
+  letter, report it as a finding and do not claim it for 3.6.
+- **P39's release rule.** It is not rebuilt, and P46 does not reopen it.
 - **`AHeldPitchDoesNotOutliveItsEvidenceTests` and `Retuned()`** (P40). Report the count and
   nothing more.
-- **The held gaps on `004535`** (P37).
-- **The sidecar's counters** (P38).
+- **The held gaps on `004535`** (P37), and **the sidecar's counters** (P38).
 - **7.1, 7.2 and 7.8. Step 4. 6.5.**
 - **The 2026-09-25 traffic net** (P35).
-- **P27, P29 to P38, P40 to P45.**
+- **P27, P29 to P47.**
 - **Any key, scored region, floor or span bar.** 7.4 moves no floor.
 
 ## 10. What not to do
 
-- **Do not move the tracker's choice.** HM-DEC-095 governs it, and unit 430 traced the move
-  to it.
-- **Do not re-build `5b6b704c` or `ec76051e` as they were.** Both are recorded as failing.
-- **Do not build a second variant**, whatever task 2 shows.
+- **Do not move the tracker's choice.** HM-DEC-095 governs it.
+- **Do not rebuild `5b6b704c`, `ec76051e` or P39, and do not combine any of them with this
+  rule.** All three are recorded as failing.
+- **Do not change the percentiles, the window or the comparison after seeing the replay or the
+  four tests.** No variant.
 - **Do not excuse `032113`'s fall, or any fall outside a scored stretch.**
 - **Do not keep a change on the opening's figures alone.** The four tests decide.
 - **Do not add a word, dictionary or callsign prior** (R72).
@@ -381,7 +399,7 @@ If nothing was kept, `src` is also unchanged from entry.
 
 ## 11. Committing and pushing
 
-Commit after each task. The change and any revert each go in their own commit. Push at the end
+Commit after each task. The change and any revert each go in their own commit. Push at the end,
 and say whether the push succeeded.
 
 ---
@@ -396,17 +414,18 @@ READ IN THIS ORDER.
 A. Hamlet reads a CQ call correctly. Steps 0 to 2 done; 3 partial and
    closed under 3.4 with 3.6 open; 4 not started; 5 the owner's; 6 partial
    with 6.5 open; 7 partial with 7.1, 7.2, 7.4, 7.6 and 7.8 open.
-B. Step 7, criterion 7.4: the mixdown follows a move once any survey read
-   since it was set has confirmed it (P39); the replay's three answers;
-   built or not; kept or taken back out, and which test decided it;
-   032113 before and after; the opening's text before and after beside
-   EANQNID; 7.4 ticked or not.
+B. Step 7, criterion 7.4: the mix follows a move of more than 25 Hz only
+   when the decoder's envelope keys harder at the target than at the mix;
+   the replay's two answers; built or not; kept or taken back out, and
+   which test decided it; 032113 and 031905 before and after; the
+   opening's text before and after beside EANQNID; 7.4 ticked, or closed
+   partial with P48.
 C. The rest, weighed against A and B. Section 4 raises <n> items; say
    whether any stands in the way of 7.4.
 ```
 
 ```
-UNIT:       432 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
+UNIT:       433 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   yes | no - <why, on the line>
@@ -414,24 +433,25 @@ NUMBER:     keyed 165 -> <n> over 565, inferred keys; 032113 above-bar 47 -> <n>
 DRIFT:      <0 if a criterion moved, else 1>
 ```
 
-**Section 3 leads with task 1's three gate answers**, each with the print line that shows it.
-**Then give the four tests as a table**: each test, the number before, the number after, pass
-or fail, and whether the change was kept. **Then give the opening's text before and after,
-beside `EANQNID`**. **Then give `032113`'s above-bar count and the time the mix followed each
-of its two moves.**
+**Section 3 leads with the replay:** the two gate answers, each with its print line, and the
+contrast at both pitches at the opening's 525 Hz move and at `032113`'s 650 Hz move. **Then the
+four tests as a table**: each test, the number before, the number after, pass or fail, and
+whether the change was kept. **Then the opening's text before and after, beside `EANQNID`.**
+**Then `032113` and `031905`**: each one's above-bar count and elements, and the time the mix
+followed each move.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 7
-APPROACH: release a pending mixdown pitch move once any survey read since the mix was last set confirmed keying within 25 Hz of it (P39), checked first by replaying 032113's two held moves and the opening's 525 Hz move against four release rules, then built once and judged under 3.2's four tests
+APPROACH: hold a pending mixdown move unless the keying contrast measured at the new pitch over the decoder's last hops beats the contrast at the current mix pitch, head to head - Envelope at 45 Hz over the survey's 3 s, 90th over 10th percentile, replay-gated against the entry on the opening's 525 Hz move and 032113's 650 Hz move, then built once and judged under 3.2's four tests
 MOVE: work around
-WHY: Every recorded 3.6 route has failed, and G1's way back (P44) is the owner's. At 7.4, unit 430's two release rules both cured the opening and failed on 032113 alone, traced to a hold spanning two reads. This rule looks back over every read since the mix was set, and it is gated on a replay of the recorded reads, not on a score.
+WHY: At 7.4 all three rules tried (5b6b704c, ec76051e, P39) asked only whether the survey confirmed keying at the new pitch, and unit 432 measured that this cannot tell 031905's or 032113's right moves from the opening's wrong one; comparing the two pitches on the decoder's own envelope is the one question not yet asked. 3.6's four routes are all recorded as failing and its way back (P44) is the owner's, so 7.4 is the less exhausted of the two.
 STATE: partial
-DECIDED: author's, overrulable - routing to 7.4 over 3.6; the release rule with unit 430's 25 Hz kept; the replay gate (follows 032113's 650 and 500 Hz moves, holds the opening's 525 Hz move, no other difference from 5b6b704c) or nothing is built; one attempt and no variant; test 1 reads does not rise, as unit 430's arbiter decided; 7.4 ticks only on a kept change, and its three-unit count counts 7.4 units only; the opening reported as text beside EANQNID with its count; unit 431's items parked as P44 and P45. No self-ruling authorizes work outside the tasks.
-LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; PARKED.md P39 and P42; unit 430's arbiter decision on test 1; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
-ACCOMPLISHED: the first minute of a CW session reads the sender's letters instead of a run of E and T, because the decoder no longer follows its pitch tracker off the sender, and no recording loses a letter it read before - or the replay or the four tests show why this release rule does not do it, with the numbers on record
+DECIDED: author's, overrulable - routing to 7.4 over 3.6; the rule (25 Hz same-station distance kept, 3.0 s window from the survey's history, contrast as 90th over 10th percentile of Envelope at IntegratorBandwidthHz, plain greater-than, follow as at entry until 3.0 s is heard), fixed before the replay; the gate compares against the entry, not 5b6b704c, on the opening's 525 Hz hold and 032113's 650 Hz follow by 27.04 s, with 031905 left to the four tests (unit 432's item 1 parked as P46, not ruled); one attempt and no variant; test 1 reads does not rise as unit 430's arbiter decided; 7.4 ticks only on a kept change, and if nothing is kept this is its third unit, so P48 is written and 7.4 recorded closed partial, not ticked; unit 432's items parked as P46 and P47. No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; PARKED.md P39, P42 and P43; unit 432's replay (f0845a92); unit 430's arbiter decision on test 1; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ACCOMPLISHED: the first minute of a CW session reads the sender's letters instead of a run of E and T, because the decoder follows its pitch tracker only to a pitch where the sender actually keys harder, and no recording loses a letter it read before - or 7.4 closes partial with three rules measured and the trace on record
 ADVANCES: step 7 criterion 4
 END-ARBITER-DECISION
 ```

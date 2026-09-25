@@ -287,3 +287,6 @@ the owner reads instead of watching.
 | 4 | 2026-09-25T02:43 | 2026-09-25T03:41 | complete | 4.493368799999999 | ran unattended, 125 turns, 13 denied call(s) worked around, report valid |
 | 4 | 2026-09-25T03:41 | 2026-09-25T03:41 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |
 | 5 | 2026-09-25T03:42 | 2026-09-25T03:42 | note | none - not a run | redirected - no-advance at two different criteria: units 3 and 4 ran against criteria 7.4 and 3.6 and moved neither. The next instruction must name one of 7.4 3.6 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |
+| 5 | 2026-09-25T03:45 | 2026-09-25T04:43 | complete | 3.3431708000000016 | ran unattended, 81 turns, 5 denied call(s) worked around, report valid |
+| 5 | 2026-09-25T04:45 | 2026-09-25T04:45 | note | none - not a run | no advance - step 7 criterion 4 was unmet and is unmet |
+| 6 | 2026-09-25T04:45 | 2026-09-25T04:45 | note | none - not a run | redirected - no-advance at two different criteria: units 4 and 5 ran against criteria 3.6 and 7.4 and moved neither. The next instruction must name one of 3.6 7.4 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |

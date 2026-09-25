@@ -641,3 +641,38 @@ Not blocking. The owner's.
 - **Rejected:** nothing.
 
 Not blocking. For the record.
+
+## P46 - whether the replay gate's third clause is judged against the entry
+
+**Raised by unit 432, 2026-09-25, section 4 item 1; parked by unit 433 task 0.** Verbatim:
+
+**1. Whether the replay gate's third clause is judged against the entry, not against `5b6b704c`.**
+- **Proposed ruling:** the owner or author decides whether P39 may be built and judged under 3.2's four tests as a new 7.4 unit, with the third clause read as "no difference from the entry except the opening". Without that ruling, the P39 route at 7.4 is closed.
+- **Reasoning:**
+  - On the follow times the replay prints, P39 matches the entry on 032113 and 031905. It differs only on the opening, where it holds the 525 Hz move.
+  - The gate stopped P39 because `5b6b704c` held 031905's moves to 300 Hz, and P39 does not. Those holds are what gave 031905 seven elements under unit 430's change.
+  - The measured shapes make it plain that no release rule based on confirmation alone can tell the two cases apart. 031905's move at 13.04 was confirmed two reads before it, at 12.04. That is the same shape as 032113's 650 Hz move, confirmed at 25.54 and made at 26.54.
+  - So "follow 032113" and "keep 031905's gain" cannot both hold under a rule of this kind.
+  - A caveat: the replay runs on the entry decoder's tracker, and no other capture row was replayed. The four tests would decide.
+- **Rejected:**
+  - Building P39 in this unit, because section 6 made the gate binding and no self-ruling authorizes work outside the tasks.
+  - A variant that also holds 300 Hz moves, because section 6 forbids a second variant, and a rule keyed to 031905's pitch would be tuned to one recording.
+
+**Note from work instruction 433, section 3:** whether the replay gate's third clause is judged
+against the entry or against `5b6b704c`. Work instruction 433's gate compares against the entry,
+as an author's decision (its section 6). It does not rule on P39's route, which stays closed.
+
+Not blocking.
+
+## P47 - WhyTheMixMoved prints the survey's verdict, not the tracker's
+
+**Raised by unit 432, 2026-09-25, section 4 item 2; parked by unit 433 task 0.** Verbatim:
+
+**2. `WhyTheMixMoved` prints `CwToneSurvey.Analyze`'s verdict, not `Tracker.Verdict`.** For the record.
+- **Proposed ruling:** none. The two differ where the tracker refuses a candidate the survey admits, and the printer's rule column names each refusal. The new printer reads `Tracker.Verdict` directly.
+- **Reasoning:** section 5 describes the printer as reading the tracker's `Verdict`. It recomputes that verdict from the same history.
+- **Rejected:** repairing it, because section 5 says to repair nothing.
+
+**Note from work instruction 433, section 3:** for the record.
+
+Not blocking. For the record.

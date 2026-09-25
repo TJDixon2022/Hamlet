@@ -1,0 +1,7 @@
+unit433 task 0: the record - 1.13.120, PHASE_STATUS names unit 433 and CURRENT_STEP 7, UNIT 433 - STEP 7 in PHASE_OUTCOME.md, unit 432's items parked verbatim as P46 and P47 with section 3's notes; the launcher's four root files committed as they stood
+
+Section 5 holds against the tree: CwDecoder.cs 600 to 603 and 617 to 621 as stated and identical to a7e6e2f2; Envelope public static at IntegratorBandwidthHz 45.0 with the bandwidth overload beside it; CwToneSurvey seconds = 3.0; WhyTheMixMoved and WhenEachRuleFollows present, the second from f0845a92; 032113 47, 102, 8 with keyed floor 47; version was 1.13.119.
+
+Entry round, one type per invocation: build 0 errors; engine carry-forward 178 of 178 in 371 s; app 278 of 278, no dispatcher-loop loss; captures 51 of 51, 032113 47 at or above the bar, 102 elements; adjudicated 13 of 13; keyed floors 13 of 13; all keyed 165 over 565; 17:37 19 over 25; 17 added, 8 single; WhatTheOpeningHeardTests 12 of 12; stream 30 to 46.2 s 22 named; pitch types as unit 432 tabled them, P40 1 of 4, P41 0 run. Every output identical to unit 432's exit but for timing.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

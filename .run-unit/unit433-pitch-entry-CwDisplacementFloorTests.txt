@@ -1,0 +1,44 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 875) [372 ms]
+  Standard Output Messages:
+ 875 Hz from 600, noise 0.005: 1 moves, 'T TEEV VVV VVV CQ DE W1AW K'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 750) [376 ms]
+  Standard Output Messages:
+ 750 Hz from 600, noise 0.005: 2 moves, '■E■E I  5 E ■   VVV CQ DE W1AW K'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 500) [267 ms]
+  Standard Output Messages:
+ 500 Hz from 600, noise 0.005: 1 moves, 'T TEET ETET ETET ETET EETT EET■■ CQ DE W1AW K'
+
+
+[xUnit.net 00:00:02.20]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400) [300 ms]
+  Standard Output Messages:
+ 400 Hz from 600, noise 0.005: 1 moves, 'T TEEV VVV VVV CQ DE W1AW K'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage [328 ms]
+  Standard Output Messages:
+ 400 Hz from 600, noise 0.005: 1 moves, 'T TEEV VVV VVV CQ DE W1AW K'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead [303 ms]
+  Standard Output Messages:
+ 400 Hz from 600, noise 0.06: 1 moves, 'TV VVV VVV CQ DE W1AW K'
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 2.4587 Seconds
+RC=0 WALL=3s
