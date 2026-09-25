@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 1 of 3
+STATE: COMPLETED
+TASK: TASK 3 of 3
 WORK_INSTRUCTION: 432 - the mixdown follows a move once any read since it was set has confirmed it
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T04:19:12-04:00
-NOTE: Replay: running WhenEachRuleFollows alone over the stream 28 to 38 s, 032113 and 031905
+UPDATED: 2026-09-25T04:43:38-04:00
+NOTE: Unit 432 complete and pushed: P39's replay followed 032113's 650 Hz move and held the opening's 525 Hz move but differed from 5b6b704c on 031905's 300 Hz moves, so nothing was built; 165 over 565 and 032113 at 47 unchanged; 7.4 open; output.md written
 
 ---
 
