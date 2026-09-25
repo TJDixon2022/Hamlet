@@ -267,8 +267,8 @@ public sealed class TheRequirementsAreMeasuredTests
 
     /// <remarks>
     /// Proves 1.2 and 1.3: MET-CER-SURE (of the characters emitted sure, those
-    /// wrong or added), MET-COVERAGE (sure characters emitted over characters
-    /// sent) and MET-WBE (word boundaries inserted or deleted over words sent,
+    /// wrong or added), MET-COVERAGE (sure and right characters over characters
+    /// sent, R82) and MET-WBE (word boundaries inserted or deleted over words sent,
     /// scored apart from characters, HM-REQ-082), each over every keyed recording
     /// per recording and per condition with the key's kind. The classes are the
     /// decoder's own - sure and placeholder, and a count of named characters below
@@ -281,7 +281,7 @@ public sealed class TheRequirementsAreMeasuredTests
     public void TheOtherThreeOverEveryKeyedRecording()
     {
         _output.WriteLine("MET-CER-SURE = sure characters wrong or added / sure characters emitted (CW_SPEC.md 11); HM-REQ-010 requires below 0.01");
-        _output.WriteLine("MET-COVERAGE = sure characters emitted / characters sent (CW_SPEC.md 11); HM-REQ-012 requires at least 0.90 at the floor");
+        _output.WriteLine("MET-COVERAGE = sure and right characters / characters sent (R82, work instruction 441); HM-REQ-012 requires at least 0.90 at the floor");
         _output.WriteLine("MET-WBE = word gaps inserted or deleted / words sent (CW_SPEC.md 11); HM-REQ-080 requires 0 at 15 dB, HM-REQ-081 at most 0.05 at the floor");
         _output.WriteLine(
             "row | recording | set | key | sure emitted | sure wrong | sure added | MET-CER-SURE | sent | sure right | MET-COVERAGE | "
@@ -303,7 +303,7 @@ public sealed class TheRequirementsAreMeasuredTests
 
             _output.WriteLine(
                 $"row | {m.Name} | {m.Set} | {CwMetrics.KindWord(m.Kind)} | {e.SureEmitted} | {e.SureWrong} | {e.SureAdded} | {Share(e.Errors, e.SureEmitted)} | "
-                + $"{c.Sent} | {c.SureRight} | {Share(c.SureEmitted, c.Sent)} | "
+                + $"{c.Sent} | {c.SureRight} | {Share(c.SureRight, c.Sent)} | "
                 + $"{decoded.Count(s => s.Class == CwSymbolClass.Placeholder)} | {decoded.Count(s => s.Class == CwSymbolClass.NotSure)} | "
                 + $"{w.WordsSent} | {w.Inserted} | {w.Deleted} | {Share(w.Errors, w.WordsSent)} | "
                 + $"{kinds.Sum(k => k.SpaceAdded)} | {kinds.Sum(k => k.SpaceMissing)}");
@@ -323,7 +323,7 @@ public sealed class TheRequirementsAreMeasuredTests
 
                 _output.WriteLine(
                     $"condition | {set} | {group.Key} | {string.Join(" and ", group.Select(m => CwMetrics.KindWord(m.Kind)).Distinct())} | "
-                    + $"{e.SureEmitted} | {e.Errors} | {Share(e.Errors, e.SureEmitted)} | {c.Sent} | {Share(c.SureEmitted, c.Sent)} | "
+                    + $"{e.SureEmitted} | {e.Errors} | {Share(e.Errors, e.SureEmitted)} | {c.Sent} | {Share(c.SureRight, c.Sent)} | "
                     + $"{w.WordsSent} | {w.Errors} | {Share(w.Errors, w.WordsSent)} | {group.Count(m => m.NotComputable is null)} of {group.Count()}");
             }
 
@@ -335,7 +335,8 @@ public sealed class TheRequirementsAreMeasuredTests
 
             _output.WriteLine(
                 $"total | {set} | MET-CER-SURE {te.Errors} wrong or added of {te.SureEmitted} sure ({te.SureWrong} substituted, {te.SureAdded} added), {Share(te.Errors, te.SureEmitted)} | "
-                + $"MET-COVERAGE {tc.SureEmitted} sure over {tc.Sent} sent ({tc.SureRight} right), {Share(tc.SureEmitted, tc.Sent)} | "
+                + $"MET-COVERAGE {tc.SureRight} sure and right over {tc.Sent} sent, {Share(tc.SureRight, tc.Sent)} "
+                + $"({tc.SureEmitted} sure emitted, {Share(tc.SureEmitted, tc.Sent)} as the spec wrote it before R82) | "
                 + $"MET-WBE {tw.Errors} ({tw.Inserted} inserted, {tw.Deleted} deleted) over {tw.WordsSent} words, {Share(tw.Errors, tw.WordsSent)} | {kind}");
         }
 

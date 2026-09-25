@@ -183,12 +183,13 @@ public sealed class TheMetricsCountWhatAHandCountsTests
     }
 
     /// <remarks>
-    /// Proves HM-REQ-012's metric: four sure characters over five sent is 0.8; a
-    /// sure extra letter counts toward coverage as the spec writes it, so six over
-    /// five is 1.2, with the five right carried beside it.
+    /// Proves HM-REQ-012's metric under R82 (work instruction 441): coverage is sure
+    /// and right characters over characters sent. Four sure and right over five sent
+    /// is 0.8; a sure extra letter is not coverage, so `CQ DEE K` is five right over
+    /// five, 1.0, with the six sure emitted carried beside it.
     /// </remarks>
     [Fact]
-    public void CoverageIsSureCharactersOverCharactersSent()
+    public void CoverageIsSureAndRightCharactersOverCharactersSent()
     {
         var blocked = CwMetrics.Coverage(Align("CQ DE K", S("C"), S("Q"), Gap, S("D"), Block, Gap, S("K")));
         var extra = CwMetrics.Coverage(Align("CQ DE K", S("C"), S("Q"), Gap, S("D"), S("E"), S("E"), Gap, S("K")));
@@ -196,7 +197,24 @@ public sealed class TheMetricsCountWhatAHandCountsTests
         Assert.Equal((4, 4, 5), (blocked.SureEmitted, blocked.SureRight, blocked.Sent));
         Assert.Equal(0.8, blocked.Share);
         Assert.Equal((6, 5, 5), (extra.SureEmitted, extra.SureRight, extra.Sent));
-        Assert.Equal(1.2, extra.Share);
+        Assert.Equal(1.0, extra.Share);
+    }
+
+    /// <remarks>
+    /// Proves R82's reason for being: `CQ DE K` sent, `CQ DI K` decoded all sure. As
+    /// the spec wrote it the wrong `I` counted, five sure over five sent, 1.0, so
+    /// taking the wrong letter out lowered coverage. Sure and right is four over
+    /// five, 0.8, and printing the `I` as not sure would leave it at 0.8.
+    /// </remarks>
+    [Fact]
+    public void ASureWrongLetterIsNotCoverage()
+    {
+        var wrong = CwMetrics.Coverage(Align("CQ DE K", S("C"), S("Q"), Gap, S("D"), S("I"), Gap, S("K")));
+        var dimmed = CwMetrics.Coverage(Align("CQ DE K", S("C"), S("Q"), Gap, S("D"), new CwSymbol("I", CwSymbolClass.NotSure), Gap, S("K")));
+
+        Assert.Equal((5, 4, 5), (wrong.SureEmitted, wrong.SureRight, wrong.Sent));
+        Assert.Equal(0.8, wrong.Share);
+        Assert.Equal(wrong.Share, dimmed.Share);
     }
 
     /// <remarks>

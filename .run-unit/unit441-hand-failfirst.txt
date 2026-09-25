@@ -1,0 +1,61 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.52]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.72]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.73]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.BoundariesAreScoredApartFromLetters [22 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.TheDecodersOwnCharactersCarryTheirClasses [5 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.TheSureErrorRateIsOverWhatWasEmittedSure [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsInvented [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.APlaceholderIsNeverInvented [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.APlaceholderIsOutsideTheSureErrorRate [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AWholeCallCountsItsLitterAndNotItsBlocks [1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AProsignIsOneCharacterAndItsLettersAreTwo [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.DimmingEverythingLeavesNoCoverage [< 1 ms]
+[xUnit.net 00:00:01.79]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.CoverageIsSureAndRightCharactersOverCharactersSent [FAIL]
+[xUnit.net 00:00:01.79]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.79]       Expected: 1
+[xUnit.net 00:00:01.79]       Actual:   1.2
+[xUnit.net 00:00:01.79]       Stack Trace:
+[xUnit.net 00:00:01.79]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(200,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.CoverageIsSureAndRightCharactersOverCharactersSent()
+[xUnit.net 00:00:01.79]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.79]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.80]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsNotCoverage [FAIL]
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: 0.80000000000000004
+[xUnit.net 00:00:01.80]       Actual:   1
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(216,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsNotCoverage()
+[xUnit.net 00:00:01.80]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.80]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ABoundaryMissingOrAddedIsOneOverTheWordsSent [< 1 ms]
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.CoverageIsSureAndRightCharactersOverCharactersSent [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   1.2
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.CoverageIsSureAndRightCharactersOverCharactersSent() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 200
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AMissingSpaceInventsNothing [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureLetterNobodySentIsInvented [< 1 ms]
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsNotCoverage [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0.80000000000000004
+Actual:   1
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsNotCoverage() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 216
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 14
+     Passed: 12
+     Failed: 2
+ Total time: 2.0751 Seconds
+RC=1 WALL=3s

@@ -108,19 +108,19 @@ public sealed record CwSureErrors(int SureWrong, int SureAdded, int SureEmitted,
            + CwMetrics.KindWord(Kind) + " key" + CwMetrics.ShareText(Rate);
 }
 
-/// <summary>MET-COVERAGE in its parts (`CW_SPEC.md` 11): sure characters emitted over characters sent.</summary>
+/// <summary>MET-COVERAGE in its parts, under R82 (work instruction 441): sure and right characters over characters sent.</summary>
 /// <param name="SureEmitted">Sure characters emitted, right or not.</param>
 /// <param name="SureRight">Of those, the ones the key has in place.</param>
 /// <param name="Sent">Characters sent.</param>
 /// <param name="Kind">The key's kind.</param>
 public sealed record CwCoverage(int SureEmitted, int SureRight, int Sent, CwKeyKind Kind)
 {
-    /// <summary>The spec's share, or null where nothing was sent. It can exceed one when sure characters are added.</summary>
-    public double? Share => Sent == 0 ? null : (double)SureEmitted / Sent;
+    /// <summary>The share, or null where nothing was sent. A wrong or added sure letter is not coverage, so it cannot exceed one.</summary>
+    public double? Share => Sent == 0 ? null : (double)SureRight / Sent;
 
     /// <summary>The number with its parts.</summary>
     public override string ToString()
-        => $"{SureEmitted} sure over {Sent} sent ({SureRight} of them right), "
+        => $"{SureRight} sure and right over {Sent} sent ({SureEmitted} sure emitted), "
            + CwMetrics.KindWord(Kind) + " key" + CwMetrics.ShareText(Share);
 }
 
@@ -167,9 +167,11 @@ public sealed record CwBoundaryErrors(int Inserted, int Deleted, int WordsSent, 
 /// and are still each counted where they are computed.</para>
 /// <para>**A PLACEHOLDER OR A NOT-SURE CHARACTER IS NEVER WRONG** (`CW_SPEC.md`
 /// 5.3). It still takes its place in the alignment, because it is where it is.</para>
-/// <para>**MET-COVERAGE IS THE SPEC'S RATIO AS WRITTEN**, sure characters emitted
-/// over characters sent, and it exceeds one when sure characters are added. Its
-/// record carries the sure-and-right count beside it so a reader sees both.</para>
+/// <para>**MET-COVERAGE IS SURE AND RIGHT OVER SENT** (R82, the owner, 2026-09-25,
+/// work instruction 441). The spec's ratio as written, sure emitted over sent,
+/// counted a wrong sure letter as coverage, so removing one lowered it. Dimming
+/// everything still takes it to nought. The record keeps the sure emitted count
+/// beside it so a reader sees both.</para>
 /// </remarks>
 public static class CwMetrics
 {
@@ -370,7 +372,7 @@ public static class CwMetrics
         return new CwSureErrors(wrong, added, emitted, a.Kind);
     }
 
-    /// <summary>MET-COVERAGE: sure characters emitted over characters sent.</summary>
+    /// <summary>MET-COVERAGE under R82: sure and right characters over characters sent.</summary>
     /// <param name="a">The alignment.</param>
     /// <returns>The share in its parts.</returns>
     public static CwCoverage Coverage(CwMetricAlignment a)

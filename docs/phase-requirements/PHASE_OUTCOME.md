@@ -39,3 +39,18 @@ ADVANCES: step 2 criterion 1
 RUN: by hand, outside the loop, as unit 439 was. SESSION.lock taken at the start and released at the end; nothing written to RUN_LEDGER.md; nothing under tools\arbiter\ touched.
 TICKS: steps 0 and 1 ticked from unit 439's report without re-measuring, as R80 licenses. 0.1 - 621 CW test methods traced in docs/phase-requirements/traceability.md. 0.2 - 5 of 68 requirements traced to a proving test, 63 with none, 43 with a test that measures something else. 0.3 - the 51 failing-set names, the known-reds block and the 20 retired names placed. 0.4 - nothing under src changed, floors and carry-forward green at 439's exit. 1.1 to 1.4 - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE built in CwMetrics, each watched failing first, measured over 23 keyed recordings per condition. 1.5 - floors and carry-forward green, src unchanged. The owner's revision of PHASE_PLAN.md (R80, R81, steps 2 to 8) is committed with this entry and copied to the root copy.
 ENTRY: Version 1.13.126 to 1.13.127. PHASE_STATUS.md names unit 440 and CURRENT_STEP 2. HEAD at entry 1fb0bad6. Entry round, one type per invocation, the numbers to beat: build 0 errors; ENGINE carry-forward 178 of 178 in 379 s; APP carry-forward 278 of 278 in 166 s; captures 51 of 51 in 121 s; adjudicated 13 of 13; named 13 of 13. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 67 wrong or added of 426 sure (54 substituted, 13 added), 0.1573; MET-INVENTED 67 over 473 sent, 0.1416; MET-COVERAGE 426 sure over 473 sent, 359 right, 0.9006. Synthetic CQ set, exact keys: MET-CER-SURE 24 of 180, 0.1333; MET-COVERAGE 180 over 252, 0.7143.
+
+## UNIT 441 - STEP 2
+
+STEP: 2
+APPROACH: change MET-COVERAGE to sure-and-right over sent under R82, cherry-pick G1 unchanged and keep it under R78, then trace the speed each of the 54 was read at against the speed the envelope's marks imply and build one change that takes the path's speed from the marks where they disagree
+MOVE: continue
+WHY: PHASE_PLAN.md step 2 criterion 2.2 asks that each change be kept under R78 when MET-CER-SURE falls and nothing else in the keep rule gets worse, and criterion 2.3 that MET-CER-SURE be reported before and after every kept change
+STATE: partial
+DECIDED: the ratio the speed change uses is taken from the trace and stated; the per-type timeouts are the author's
+LICENCE: PHASE_PLAN.md R78, R80, R81, R82, R83, section 6; V-11; V-13; R72; HM-DEC-155; CLAUDE.md 0.2
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 2 criterion 2
+RUN: launched by tools\arbiter\run-phase.bat, iteration 1; SESSION.lock is the runner's and was not taken or released by the session.
+ENTRY: Version 1.13.127 to 1.13.128. PHASE_STATUS.md names unit 441. HEAD at entry f14b2453. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 376 s; APP carry-forward 275 of 278 in 161 s, the three failures the dispatcher-loop loss (TheStopIsAlwaysOnScreenTests twice, Unit376TheTopBandTests once), each type green alone, 5 of 5 and 5 of 5; captures 51 of 51 in 125 s; adjudicated 13 of 13; named 13 of 13. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 67 of 426 sure (54 substituted, 13 added), 0.1573; MET-INVENTED 67 over 473, 0.1416. Synthetic, exact keys: MET-CER-SURE 24 of 180, 0.1333.
+R82: MET-COVERAGE is sure and right over sent. Watched failing first on CQ DI K against CQ DE K (1.0 as written, 0.8 under R82). Decoder untouched, so only the definition moved it: real 426 over 473, 0.9006, to 359 over 473, 0.7590; synthetic 180 over 252, 0.7143, to 156 over 252, 0.6190.

@@ -1,0 +1,17 @@
+unit441 task 0: MET-COVERAGE is sure and right over sent (R82)
+
+Outcome entry for unit 441 in both copies, PHASE_STATUS.md names 441,
+version 1.13.127 to 1.13.128.
+
+CwCoverage.Share is now SureRight over Sent. Watched failing first:
+CQ DI K against CQ DE K was 1.0 as the spec wrote it, 0.8 now; CQ DEE K
+was 1.2, now 1.0. The decoder is untouched, so the move is the
+definition's alone: real 0.9006 to 0.7590 (359 over 473), synthetic
+0.7143 to 0.6190 (156 over 252).
+
+Entry round: build 0 errors; engine 178 of 178; app 275 of 278, the
+three dispatcher-loop losses green alone; captures 51 of 51,
+adjudicated 13 of 13, named 13 of 13; MET-CER-SURE 67 of 426, 0.1573;
+MET-INVENTED 67 over 473.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

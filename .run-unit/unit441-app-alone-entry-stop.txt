@@ -1,0 +1,119 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow [3 s]
+  Standard Output Messages:
+ FT8 1920 x 1040 licensed: window 0,0 1920 x 1040; status bar 16,978 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 900 x 620 licensed: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1100 x 780 licensed: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1280 x 720 licensed: window 0,0 1280 x 720; status bar 16,658 1248 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1177,663 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1366 x 728 licensed: window 0,0 1366 x 728; status bar 16,666 1334 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1263,671 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1536 x 824 licensed: window 0,0 1536 x 824; status bar 16,762 1504 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1433,767 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1400 x 1040 licensed: window 0,0 1400 x 1040; status bar 16,978 1368 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1297,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1920 x 1017 licensed: window 0,0 1920 x 1017; status bar 16,955 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,960 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 2560 x 1400 licensed: window 0,0 2560 x 1400; status bar 16,1338 2528 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 2457,1343 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1920 x 1040 licensed: window 0,0 1920 x 1040; status bar 16,978 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 900 x 620 licensed: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1100 x 780 licensed: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1280 x 720 licensed: window 0,0 1280 x 720; status bar 16,658 1248 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1177,663 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1366 x 728 licensed: window 0,0 1366 x 728; status bar 16,666 1334 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1263,671 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1536 x 824 licensed: window 0,0 1536 x 824; status bar 16,762 1504 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1433,767 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1400 x 1040 licensed: window 0,0 1400 x 1040; status bar 16,978 1368 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1297,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1920 x 1017 licensed: window 0,0 1920 x 1017; status bar 16,955 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,960 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 2560 x 1400 licensed: window 0,0 2560 x 1400; status bar 16,1338 2528 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 2457,1343 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Digital tab 900 x 620 plain: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Digital tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ CW tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Voice tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+
+
+[xUnit.net 00:00:04.75]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.AtEachOfTheNineSizesTheSendAreaIsWholeOnTheWindow [844 ms]
+  Standard Output Messages:
+ 1920 x 1040  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1920 x 1040  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1920 x 1040  DigitalStopButton         1817,983 74 x 36  visible True  whole True
+ 1920 x 1040  DigitalTransmitDriveNote  1371,281 100 x 9  visible True  whole True
+    1920 x 1040  TopRow                    16,119 1888 x 186
+ 900 x 620  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 900 x 620  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 900 x 620  DigitalStopButton         797,563 74 x 36  visible True  whole True
+ 900 x 620  DigitalTransmitDriveNote  351,281 100 x 9  visible True  whole True
+    900 x 620  TopRow                    16,119 868 x 186
+ 1100 x 780  DigitalSendCqButton       290,448 54 x 22  visible True  whole True
+ 1100 x 780  DigitalModeChipStrip      132,495 364 x 17  visible True  whole True
+ 1100 x 780  DigitalStopButton         997,723 74 x 36  visible True  whole True
+ 1100 x 780  DigitalTransmitDriveNote  551,281 100 x 9  visible True  whole True
+    1100 x 780  TopRow                    16,119 1068 x 300
+ 1280 x 720  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1280 x 720  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1280 x 720  DigitalStopButton         1177,663 74 x 36  visible True  whole True
+ 1280 x 720  DigitalTransmitDriveNote  731,281 100 x 9  visible True  whole True
+    1280 x 720  TopRow                    16,119 1248 x 186
+ 1366 x 728  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1366 x 728  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1366 x 728  DigitalStopButton         1263,671 74 x 36  visible True  whole True
+ 1366 x 728  DigitalTransmitDriveNote  817,281 100 x 9  visible True  whole True
+    1366 x 728  TopRow                    16,119 1334 x 186
+ 1536 x 824  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1536 x 824  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1536 x 824  DigitalStopButton         1433,767 74 x 36  visible True  whole True
+ 1536 x 824  DigitalTransmitDriveNote  987,281 100 x 9  visible True  whole True
+    1536 x 824  TopRow                    16,119 1504 x 186
+ 1400 x 1040  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1400 x 1040  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1400 x 1040  DigitalStopButton         1297,983 74 x 36  visible True  whole True
+ 1400 x 1040  DigitalTransmitDriveNote  851,281 100 x 9  visible True  whole True
+    1400 x 1040  TopRow                    16,119 1368 x 186
+ 1920 x 1017  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1920 x 1017  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1920 x 1017  DigitalStopButton         1817,960 74 x 36  visible True  whole True
+ 1920 x 1017  DigitalTransmitDriveNote  1371,281 100 x 9  visible True  whole True
+    1920 x 1017  TopRow                    16,119 1888 x 186
+ 2560 x 1400  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 2560 x 1400  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 2560 x 1400  DigitalStopButton         2457,1343 74 x 36  visible True  whole True
+ 2560 x 1400  DigitalTransmitDriveNote  2011,281 100 x 9  visible True  whole True
+    2560 x 1400  TopRow                    16,119 2528 x 186
+ 
+ the send area is 22 tall at 1920 x 1040
+ the send area is 23 tall at 900 x 620
+ the send area is 22 tall at 1100 x 780
+ the send area is 22 tall at 1280 x 720
+ the send area is 22 tall at 1366 x 728
+ the send area is 22 tall at 1536 x 824
+ the send area is 22 tall at 1400 x 1040
+ the send area is 22 tall at 1920 x 1017
+ the send area is 22 tall at 2560 x 1400
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.ArmedAtTheOpeningSizeAClickOnTheBarUnarmsItAsBefore [151 ms]
+  Standard Output Messages:
+ armed: [Stop transmitting] live True at 865,723 206 x 36
+ after the click: Stopped: "W1ABC KC3QIS -10" was taken off before its slot and will not go out, and the radio was told to stop transmitting.
+ wire: FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns [192 ms]
+  Standard Output Messages:
+ keyed: [Stop transmitting] enabled True at 865,723 206 x 36; wire FE FE 94 E0 1C 00 01 FD
+ wire the instant the press returns: FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD
+ wire settled: FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD
+ sound stopped by the token True, 454 samples played
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable [76 ms]
+  Standard Output Messages:
+ 1100 x 780, nothing armed: [Stop] live False, enabled True, can execute True, centre 1034, 741, hit ContentPresenter
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 5.0362 Seconds
+RC=0 WALL=6s
