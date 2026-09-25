@@ -1,0 +1,378 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit376TheTopBandTests.TheNineSizesHoldAndThePanelsAreNeverShorterThanTheyWere [1 s]
+  Standard Output Messages:
+ 1920 x 1040: the panel row is 484 where it was 450, the band 214 with the pills
+ 900 x 620: the panel row is 72 where it was 71, the band 214 with the pills
+ 1100 x 780: the panel row is 93 where it was 71, the band 402 with the pills
+ 1280 x 720: the panel row is 164 where it was 88, the band 214 with the pills
+ 1366 x 728: the panel row is 172 where it was 88, the band 214 with the pills
+ 1536 x 824: the panel row is 268 where it was 228, the band 214 with the pills
+ 1400 x 1040: the panel row is 484 where it was 424, the band 214 with the pills
+ 1920 x 1017: the panel row is 461 where it was 427, the band 214 with the pills
+ 2560 x 1400: the panel row is 861 where it was 827, the band 214 with the pills
+
+
+  Passed Hamlet.App.Tests.Views.Unit376TheTopBandTests.TheSunMapIsTheSizeItWasAndStillCarriesHisGrid [1 s]
+  Standard Output Messages:
+ 1920 x 1040 on FT8: the sun map is 393 x 214 at grid FN00, y 83 to 297, in a band of 214 with the pills and 178 without (y 119 to 297), its caption at [1109,235 220x9]
+ 1920 x 1040 on PSK31: the sun map is 393 x 214 at grid FN00, y 83 to 297, in a band of 214 with the pills and 178 without (y 119 to 297), its caption at [1109,247 220x9]
+ 1920 x 1040 on Olivia: the sun map is 393 x 214 at grid FN00, y 83 to 297, in a band of 214 with the pills and 178 without (y 119 to 297), its caption at [1109,235 220x9]
+ 1400 x 1040 on FT8: the sun map is 393 x 214 at grid FN00, y 83 to 297, in a band of 214 with the pills and 178 without (y 119 to 297), its caption at [589,273 220x9]
+ 1400 x 1040 on PSK31: the sun map is 327 x 178 at grid FN00, y 119 to 297, in a band of 214 with the pills and 178 without (y 119 to 297), its caption at [248,276 220x9]
+ 1400 x 1040 on PSK31 at 14070000 Hz: the sun map is 393 x 214 at grid FN00, y 83 to 297, in a band of 214 with the pills and 178 without (y 119 to 297), its caption at [589,273 220x9]
+ 1400 x 1040 on Olivia: the sun map is 393 x 214 at grid FN00, y 83 to 297, in a band of 214 with the pills and 178 without (y 119 to 297), its caption at [589,273 220x9]
+ 1100 x 780 on FT8: the sun map is 246 x 134 at grid FN00, y 119 to 253, in a band of 402 with the pills and 366 without (y 119 to 485), its caption at [43,471 220x9]
+ 1100 x 780 on PSK31: the sun map is 246 x 134 at grid FN00, y 119 to 253, in a band of 443 with the pills and 407 without (y 119 to 526), its caption at [43,512 220x9]
+ 1100 x 780 on Olivia: the sun map is 246 x 134 at grid FN00, y 119 to 253, in a band of 413 with the pills and 377 without (y 119 to 496), its caption at [43,482 220x9]
+
+
+  Passed Hamlet.App.Tests.Views.Unit376TheTopBandTests.NothingLeftTheWindowAndTheTwoLinesThatMovedStillSayWhatTheySaid [656 ms]
+[xUnit.net 00:00:05.85]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.Unit376TheTopBandTests.Unit376TraceWhatTheBandIsMadeOfBeforeOnePixelMoves [1 s]
+  Standard Output Messages:
+ THE BAND ROW IS THE UNNAMED ItemsControl AT MainWindow.axaml 3274:
+   Grid.Row=0 of the strip grid at 2896, ItemsSource={Binding Bands}, VerticalAlignment=Top,
+   ClipToBounds=False, Margin=0,14,0,10, items are Button Classes=hm-band with the badge over them.
+ 
+ WINDOW 1920 x 1040  MODE FT8
+   BAND WITH PILLS   : y 83 to 297 = 214 px, against 180 - 34 px over
+   BAND WITHOUT PILLS: y 119 to 297 = 178 px, against 180 - 2 px under
+   GOVERNING COLUMN  : CARD governs (card wants 178, rig wants 178, margin 0)
+   TopRow (capped 300): 16,119 1888 x 186 | card scroller viewport 178, extent 178
+   band row (pills)  : 423,83 1481 x 30
+   neighborhood card : 423,119 921 x 178
+     strip                     : 438,146 891 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 438,182 891 x 49
+       GreenZoneBand           : 449,189 40 x 16
+       GreenZoneFrequency      : 499,191 100 x 11
+       GreenZoneModeLine       : 609,191 280 x 11
+       GreenZoneLicenseLine    : 449,205 650 x 9
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 1318,189 0 x 0
+       GreenZoneBestBet        : 1318,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 1178,195 140 x 29
+       GreenZoneSparkline      : 1193,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 1178,204 140 x 12
+       GreenZoneHeardWindow    : 1178,216 140 x 8
+       GreenZoneStrayedLine    : 449,189 0 x 0 - NOT DRAWN
+     GreenZoneMap              : 16,83 393 x 214
+       GreenZoneGrayLine       : 16,83 393 x 214
+       GreenZoneClockCaption   : 1109,235 220 x 9
+   rig face Border   : 1358,119 546 x 178, wants 178
+     RigDisplayControl         : 1371,123 520 x 106
+   RigDriveAndPower  : 1371,244 520 x 49
+     DigitalTransmitDriveBox   : 1521,244 120 x 32
+     DigitalTransmitDriveNote  : 1371,281 100 x 9
+     DigitalTransmitDriveTip   : 1477,279 14 x 14
+     DigitalPsk31PowerLine     : 1371,279 0 x 0 - NOT DRAWN
+   PANEL ROW         : 484 px (waterfall 484, decoded 484, For You 484)
+ 
+ WINDOW 1920 x 1040  MODE PSK31
+   BAND WITH PILLS   : y 83 to 297 = 214 px, against 180 - 34 px over
+   BAND WITHOUT PILLS: y 119 to 297 = 178 px, against 180 - 2 px under
+   GOVERNING COLUMN  : CARD governs (card wants 178, rig wants 178, margin 0)
+   TopRow (capped 300): 16,119 1888 x 186 | card scroller viewport 178, extent 178
+   band row (pills)  : 423,83 1481 x 30
+   neighborhood card : 423,119 921 x 178
+     strip                     : 438,146 891 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 438,182 891 x 61
+       GreenZoneBand           : 449,189 40 x 16
+       GreenZoneFrequency      : 499,191 100 x 11
+       GreenZoneModeLine       : 609,191 300 x 11
+       GreenZoneLicenseLine    : 449,205 650 x 9
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 1318,189 0 x 0
+       GreenZoneBestBet        : 1318,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 1178,195 140 x 29
+       GreenZoneSparkline      : 1193,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 1178,204 140 x 12
+       GreenZoneHeardWindow    : 1178,216 140 x 8
+       GreenZoneStrayedLine    : 449,227 869 x 9
+     GreenZoneMap              : 16,83 393 x 214
+       GreenZoneGrayLine       : 16,83 393 x 214
+       GreenZoneClockCaption   : 1109,247 220 x 9
+   rig face Border   : 1358,119 546 x 178, wants 178
+     RigDisplayControl         : 1371,123 520 x 106
+   RigDriveAndPower  : 1371,244 520 x 49
+     DigitalTransmitDriveBox   : 1521,244 120 x 32
+     DigitalTransmitDriveNote  : 1371,281 100 x 9
+     DigitalTransmitDriveTip   : 1477,279 14 x 14
+     DigitalPsk31PowerLine     : 1507,279 218 x 13
+   PANEL ROW         : 484 px (waterfall 484, decoded 484, For You 484)
+ 
+ WINDOW 1920 x 1040  MODE Olivia
+   BAND WITH PILLS   : y 83 to 297 = 214 px, against 180 - 34 px over
+   BAND WITHOUT PILLS: y 119 to 297 = 178 px, against 180 - 2 px under
+   GOVERNING COLUMN  : CARD governs (card wants 178, rig wants 178, margin 0)
+   TopRow (capped 300): 16,119 1888 x 186 | card scroller viewport 178, extent 178
+   band row (pills)  : 423,83 1481 x 30
+   neighborhood card : 423,119 921 x 178
+     strip                     : 438,146 891 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 438,182 891 x 49
+       GreenZoneBand           : 449,189 40 x 16
+       GreenZoneFrequency      : 499,191 100 x 11
+       GreenZoneModeLine       : 609,191 310 x 11
+       GreenZoneLicenseLine    : 449,205 650 x 9
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 1318,189 0 x 0
+       GreenZoneBestBet        : 1318,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 1178,195 140 x 29
+       GreenZoneSparkline      : 1193,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 1178,204 140 x 12
+       GreenZoneHeardWindow    : 1178,216 140 x 8
+       GreenZoneStrayedLine    : 449,189 0 x 0 - NOT DRAWN
+     GreenZoneMap              : 16,83 393 x 214
+       GreenZoneGrayLine       : 16,83 393 x 214
+       GreenZoneClockCaption   : 1109,235 220 x 9
+   rig face Border   : 1358,119 546 x 178, wants 178
+     RigDisplayControl         : 1371,123 520 x 106
+   RigDriveAndPower  : 1371,244 520 x 49
+     DigitalTransmitDriveBox   : 1521,244 120 x 32
+     DigitalTransmitDriveNote  : 1371,281 100 x 9
+     DigitalTransmitDriveTip   : 1477,279 14 x 14
+     DigitalPsk31PowerLine     : 1507,279 218 x 13
+   PANEL ROW         : 484 px (waterfall 484, decoded 484, For You 484)
+ 
+ WINDOW 1400 x 1040  MODE FT8
+   BAND WITH PILLS   : y 83 to 297 = 214 px, against 180 - 34 px over
+   BAND WITHOUT PILLS: y 119 to 297 = 178 px, against 180 - 2 px under
+   GOVERNING COLUMN  : CARD governs (card wants 178, rig wants 178, margin 0)
+   TopRow (capped 300): 16,119 1368 x 186 | card scroller viewport 178, extent 178
+   band row (pills)  : 423,83 961 x 30
+   neighborhood card : 423,119 401 x 178
+     strip                     : 438,146 371 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 438,182 371 x 87
+       GreenZoneBand           : 449,189 40 x 16
+       GreenZoneFrequency      : 499,191 100 x 11
+       GreenZoneModeLine       : 449,205 160 x 21
+       GreenZoneLicenseLine    : 449,226 190 x 36
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 798,189 0 x 0
+       GreenZoneBestBet        : 798,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 658,195 140 x 29
+       GreenZoneSparkline      : 673,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 658,204 140 x 12
+       GreenZoneHeardWindow    : 658,216 140 x 8
+       GreenZoneStrayedLine    : 449,189 0 x 0 - NOT DRAWN
+     GreenZoneMap              : 16,83 393 x 214
+       GreenZoneGrayLine       : 16,83 393 x 214
+       GreenZoneClockCaption   : 589,273 220 x 9
+   rig face Border   : 838,119 546 x 178, wants 178
+     RigDisplayControl         : 851,123 520 x 106
+   RigDriveAndPower  : 851,244 520 x 49
+     DigitalTransmitDriveBox   : 1001,244 120 x 32
+     DigitalTransmitDriveNote  : 851,281 100 x 9
+     DigitalTransmitDriveTip   : 957,279 14 x 14
+     DigitalPsk31PowerLine     : 851,279 0 x 0 - NOT DRAWN
+   PANEL ROW         : 484 px (waterfall 484, decoded 484, For You 484)
+ 
+ WINDOW 1400 x 1040  MODE PSK31
+   BAND WITH PILLS   : y 83 to 297 = 214 px, against 180 - 34 px over
+   BAND WITHOUT PILLS: y 119 to 297 = 178 px, against 180 - 2 px under
+   GOVERNING COLUMN  : CARD governs (card wants 178, rig wants 178, margin 0)
+   TopRow (capped 300): 16,119 1368 x 186 | card scroller viewport 178, extent 178
+   band row (pills)  : 16,83 1368 x 30
+   neighborhood card : 16,119 467 x 178
+     strip                     : 31,146 437 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 31,182 437 x 90
+       GreenZoneBand           : 42,189 40 x 16
+       GreenZoneFrequency      : 92,191 100 x 11
+       GreenZoneModeLine       : 42,205 240 x 21
+       GreenZoneLicenseLine    : 42,226 259 x 27
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 457,189 0 x 0
+       GreenZoneBestBet        : 457,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 317,195 140 x 29
+       GreenZoneSparkline      : 332,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 317,204 140 x 12
+       GreenZoneHeardWindow    : 317,216 140 x 8
+       GreenZoneStrayedLine    : 42,256 415 x 9
+     GreenZoneMap              : 497,119 327 x 178
+       GreenZoneGrayLine       : 497,119 327 x 178
+       GreenZoneClockCaption   : 248,276 220 x 9
+   rig face Border   : 838,119 546 x 178, wants 178
+     RigDisplayControl         : 851,123 520 x 106
+   RigDriveAndPower  : 851,244 520 x 49
+     DigitalTransmitDriveBox   : 1001,244 120 x 32
+     DigitalTransmitDriveNote  : 851,281 100 x 9
+     DigitalTransmitDriveTip   : 957,279 14 x 14
+     DigitalPsk31PowerLine     : 987,279 218 x 13
+   PANEL ROW         : 484 px (waterfall 484, decoded 484, For You 484)
+ 
+ WINDOW 1400 x 1040  MODE Olivia
+   BAND WITH PILLS   : y 83 to 297 = 214 px, against 180 - 34 px over
+   BAND WITHOUT PILLS: y 119 to 297 = 178 px, against 180 - 2 px under
+   GOVERNING COLUMN  : CARD governs (card wants 178, rig wants 178, margin 0)
+   TopRow (capped 300): 16,119 1368 x 186 | card scroller viewport 178, extent 178
+   band row (pills)  : 423,83 961 x 30
+   neighborhood card : 423,119 401 x 178
+     strip                     : 438,146 371 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 438,182 371 x 87
+       GreenZoneBand           : 449,189 40 x 16
+       GreenZoneFrequency      : 499,191 100 x 11
+       GreenZoneModeLine       : 449,205 190 x 21
+       GreenZoneLicenseLine    : 449,226 190 x 36
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 798,189 0 x 0
+       GreenZoneBestBet        : 798,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 658,195 140 x 29
+       GreenZoneSparkline      : 673,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 658,204 140 x 12
+       GreenZoneHeardWindow    : 658,216 140 x 8
+       GreenZoneStrayedLine    : 449,189 0 x 0 - NOT DRAWN
+     GreenZoneMap              : 16,83 393 x 214
+       GreenZoneGrayLine       : 16,83 393 x 214
+       GreenZoneClockCaption   : 589,273 220 x 9
+   rig face Border   : 838,119 546 x 178, wants 178
+     RigDisplayControl         : 851,123 520 x 106
+   RigDriveAndPower  : 851,244 520 x 49
+     DigitalTransmitDriveBox   : 1001,244 120 x 32
+     DigitalTransmitDriveNote  : 851,281 100 x 9
+     DigitalTransmitDriveTip   : 957,279 14 x 14
+     DigitalPsk31PowerLine     : 987,279 218 x 13
+   PANEL ROW         : 484 px (waterfall 484, decoded 484, For You 484)
+ 
+ WINDOW 1100 x 780  MODE FT8
+   BAND WITH PILLS   : y 83 to 485 = 402 px, against 180 - 222 px over
+   BAND WITHOUT PILLS: y 119 to 485 = 366 px, against 180 - 186 px over
+   GOVERNING COLUMN  : CARD governs (card wants 366, rig wants 178, margin 188)
+   TopRow (capped 300): 16,119 1068 x 300 | card scroller viewport 366, extent 366
+   band row (pills)  : 16,83 1068 x 30
+   neighborhood card : 16,119 248 x 366
+     strip                     : 31,146 218 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 31,182 218 x 285
+       GreenZoneBand           : 42,189 40 x 16
+       GreenZoneFrequency      : 42,205 40 x 11
+       GreenZoneModeLine       : 42,216 40 x 94
+       GreenZoneLicenseLine    : 42,310 40 x 150
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 238,189 0 x 0
+       GreenZoneBestBet        : 238,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 98,195 140 x 29
+       GreenZoneSparkline      : 113,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 98,204 140 x 12
+       GreenZoneHeardWindow    : 98,216 140 x 8
+       GreenZoneStrayedLine    : 42,189 0 x 0 - NOT DRAWN
+     GreenZoneMap              : 278,119 246 x 134
+       GreenZoneGrayLine       : 278,119 246 x 134
+       GreenZoneClockCaption   : 43,471 220 x 9
+   rig face Border   : 538,119 546 x 366, wants 178
+     RigDisplayControl         : 551,123 520 x 106
+   RigDriveAndPower  : 551,244 520 x 49
+     DigitalTransmitDriveBox   : 701,244 120 x 32
+     DigitalTransmitDriveNote  : 551,281 100 x 9
+     DigitalTransmitDriveTip   : 657,279 14 x 14
+     DigitalPsk31PowerLine     : 551,279 0 x 0 - NOT DRAWN
+   PANEL ROW         : 93 px (waterfall 93, decoded 93, For You 93)
+ 
+ WINDOW 1100 x 780  MODE PSK31
+   BAND WITH PILLS   : y 83 to 526 = 443 px, against 180 - 263 px over
+   BAND WITHOUT PILLS: y 119 to 526 = 407 px, against 180 - 227 px over
+   GOVERNING COLUMN  : CARD governs (card wants 407, rig wants 178, margin 229)
+   TopRow (capped 300): 16,119 1068 x 300 | card scroller viewport 407, extent 407
+   band row (pills)  : 16,83 1068 x 30
+   neighborhood card : 16,119 248 x 407
+     strip                     : 31,146 218 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 31,182 218 x 326
+       GreenZoneBand           : 42,189 40 x 16
+       GreenZoneFrequency      : 42,205 40 x 11
+       GreenZoneModeLine       : 42,216 40 x 105
+       GreenZoneLicenseLine    : 42,321 40 x 150
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 238,189 0 x 0
+       GreenZoneBestBet        : 238,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 98,195 140 x 29
+       GreenZoneSparkline      : 113,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 98,204 140 x 12
+       GreenZoneHeardWindow    : 98,216 140 x 8
+       GreenZoneStrayedLine    : 42,474 196 x 27
+     GreenZoneMap              : 278,119 246 x 134
+       GreenZoneGrayLine       : 278,119 246 x 134
+       GreenZoneClockCaption   : 43,512 220 x 9
+   rig face Border   : 538,119 546 x 407, wants 178
+     RigDisplayControl         : 551,123 520 x 106
+   RigDriveAndPower  : 551,244 520 x 49
+     DigitalTransmitDriveBox   : 701,244 120 x 32
+     DigitalTransmitDriveNote  : 551,281 100 x 9
+     DigitalTransmitDriveTip   : 657,279 14 x 14
+     DigitalPsk31PowerLine     : 687,279 218 x 13
+   PANEL ROW         : 93 px (waterfall 93, decoded 93, For You 93)
+ 
+ WINDOW 1100 x 780  MODE Olivia
+   BAND WITH PILLS   : y 83 to 496 = 413 px, against 180 - 233 px over
+   BAND WITHOUT PILLS: y 119 to 496 = 377 px, against 180 - 197 px over
+   GOVERNING COLUMN  : CARD governs (card wants 377, rig wants 178, margin 199)
+   TopRow (capped 300): 16,119 1068 x 300 | card scroller viewport 377, extent 377
+   band row (pills)  : 16,83 1068 x 30
+   neighborhood card : 16,119 248 x 377
+     strip                     : 31,146 218 x 32
+     legend                    : absent from the visual tree
+     GreenZoneBlock            : 31,182 218 x 296
+       GreenZoneBand           : 42,189 40 x 16
+       GreenZoneFrequency      : 42,205 40 x 11
+       GreenZoneModeLine       : 42,216 40 x 105
+       GreenZoneLicenseLine    : 42,321 40 x 150
+       GreenZoneRuleOfThumb    : absent from the visual tree
+       GreenZoneBestBetRow     : 238,189 0 x 0
+       GreenZoneBestBet        : 238,198 40 x 9 - NOT DRAWN
+       GreenZoneHeardGrid      : 98,195 140 x 29
+       GreenZoneSparkline      : 113,204 110 x 26 - NOT DRAWN
+       GreenZoneHeard          : 98,204 140 x 12
+       GreenZoneHeardWindow    : 98,216 140 x 8
+       GreenZoneStrayedLine    : 42,189 0 x 0 - NOT DRAWN
+     GreenZoneMap              : 278,119 246 x 134
+       GreenZoneGrayLine       : 278,119 246 x 134
+       GreenZoneClockCaption   : 43,482 220 x 9
+   rig face Border   : 538,119 546 x 377, wants 178
+     RigDisplayControl         : 551,123 520 x 106
+   RigDriveAndPower  : 551,244 520 x 49
+     DigitalTransmitDriveBox   : 701,244 120 x 32
+     DigitalTransmitDriveNote  : 551,281 100 x 9
+     DigitalTransmitDriveTip   : 657,279 14 x 14
+     DigitalPsk31PowerLine     : 687,279 218 x 13
+   PANEL ROW         : 93 px (waterfall 93, decoded 93, For You 93)
+ 
+ THE PANEL ROW AND THE BAND AT UNIT 354'S NINE SIZES, on the pinned-facts window, FT8
+   (unit 374 recorded the panel row as 452, 73, 73, 90, 90, 230, 426, 429, 829)
+   1920 x 1040  panel row     484 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+   900 x 620    panel row      72 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+   1100 x 780   panel row      93 | band with pills     402 | without     366 | TopRow drawn     300 | CARD governs (card wants 366, rig wants 178, margin 188)
+   1280 x 720   panel row     164 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+   1366 x 728   panel row     172 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+   1536 x 824   panel row     268 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+   1400 x 1040  panel row     484 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+   1920 x 1017  panel row     461 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+   2560 x 1400  panel row     861 | band with pills     214 | without     178 | TopRow drawn     186 | CARD governs (card wants 178, rig wants 178, margin 0)
+ 
+
+
+  Passed Hamlet.App.Tests.Views.Unit376TheTopBandTests.TheTopBandIsOneShortRowAndThePanelsAreTallerByTheDifference [636 ms]
+  Standard Output Messages:
+ 1920 on FT8: the band is 214 px with the pills from 243, 178 without from 190, and the panel row 484 from 450. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1920 on PSK31: the band is 214 px with the pills from 243, 178 without from 190, and the panel row 484 from 450. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1920 on Olivia: the band is 214 px with the pills from 243, 178 without from 190, and the panel row 484 from 450. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1400 on FT8: the band is 214 px with the pills from 269, 178 without from 216, and the panel row 484 from 424. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1400 on PSK31: the band is 214 px with the pills from 269, 178 without from 216, and the panel row 484 from 424. CARD governs (card wants 178, rig wants 178, margin 0)
+ 1400 on Olivia: the band is 214 px with the pills from 269, 178 without from 216, and the panel row 484 from 424. CARD governs (card wants 178, rig wants 178, margin 0)
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 6.1389 Seconds
+RC=0 WALL=7s

@@ -32,7 +32,7 @@ namespace Hamlet.App.Tests.Views;
 public sealed class TheFavoritesAreChipsTests
 {
     /// <summary>The empty row's sentence.</summary>
-    public const string EmptySentence = "no spots saved yet - press ☆ to keep this one";
+    public const string EmptySentence = "no spots saved yet - press the star to keep this one";
 
     private readonly ITestOutputHelper _output;
 

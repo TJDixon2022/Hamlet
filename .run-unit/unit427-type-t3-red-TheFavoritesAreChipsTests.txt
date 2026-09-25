@@ -1,0 +1,63 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.30]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.43]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.43]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing [939 ms]
+  Standard Output Messages:
+ 1920: the band is 214 px with the pills, three chips saved
+ 1400: the band is 214 px with the pills, three chips saved
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.AClickTunesTheStarFillsAndTheCrossForgetsAndThatPersists [272 ms]
+  Standard Output Messages:
+ after one click on the CW chip the dial reads 14,050,000 Hz, star filled True
+ hovering the net's chip at [816,247 281x13]: pointer over it True, the cross's opacity 1
+ after the cross on the net: the FT8 watering hole | slow CW on Sunday; settings hold 2
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeSavedSpotsAreThreeChipsWithTheirWordsAndTheirFamilysInk [100 ms]
+  Standard Output Messages:
+ chip 0: [14.074 USB-D] [the FT8 watering hole] ink #ff2b2360 at [438,235 301x13]
+ chip 1: [14.050 CW] [slow CW on Sunday] ink #ff5e3800 at [743,235 271x13]
+ chip 2: [14.250 USB] [the Tuesday net] ink #ff0b3b5c at [1018,235 281x13]
+ the row's window on the chips [438,235 659x13] in the card [423,119 921x178]
+
+
+[xUnit.net 00:00:03.99]     Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.EmptyTheRowSaysHowToKeepASpot [FAIL]
+[xUnit.net 00:00:03.99]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:03.99]                                         ↓ (pos 27)
+[xUnit.net 00:00:03.99]       Expected: ···"s saved yet - press the star to keep this"···
+[xUnit.net 00:00:03.99]       Actual:   ···"pots saved yet - press ☆ to keep this one"
+[xUnit.net 00:00:03.99]                                            ↑ (pos 27)
+[xUnit.net 00:00:03.99]       Stack Trace:
+[xUnit.net 00:00:03.99]         C:\Source\HamLet\tests\Hamlet.App.Tests\Views\TheFavoritesAreChipsTests.cs(200,0): at Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.EmptyTheRowSaysHowToKeepASpot()
+[xUnit.net 00:00:03.99]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.99]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.99]       Output:
+[xUnit.net 00:00:03.99]         empty row reads [no spots saved yet - press ☆ to keep this one], visible True
+[xUnit.net 00:00:03.99]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.EmptyTheRowSaysHowToKeepASpot [81 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 27)
+Expected: ···"s saved yet - press the star to keep this"···
+Actual:   ···"pots saved yet - press ☆ to keep this one"
+                                     ↑ (pos 27)
+  Stack Trace:
+     at Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.EmptyTheRowSaysHowToKeepASpot() in C:\Source\HamLet\tests\Hamlet.App.Tests\Views\TheFavoritesAreChipsTests.cs:line 200
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ empty row reads [no spots saved yet - press ☆ to keep this one], visible True
+
+
+
+Test Run Failed.
+Total tests: 4
+     Passed: 3
+     Failed: 1
+ Total time: 4.3394 Seconds
+RC=1 WALL=5s

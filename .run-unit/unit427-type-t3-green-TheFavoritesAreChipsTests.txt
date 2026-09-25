@@ -1,0 +1,40 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.14]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:01.26]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:01.26]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.62]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing [800 ms]
+  Standard Output Messages:
+ 1920: the band is 214 px with the pills, three chips saved
+ 1400: the band is 214 px with the pills, three chips saved
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.AClickTunesTheStarFillsAndTheCrossForgetsAndThatPersists [259 ms]
+  Standard Output Messages:
+ after one click on the CW chip the dial reads 14,050,000 Hz, star filled True
+ hovering the net's chip at [816,247 281x13]: pointer over it True, the cross's opacity 1
+ after the cross on the net: the FT8 watering hole | slow CW on Sunday; settings hold 2
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeSavedSpotsAreThreeChipsWithTheirWordsAndTheirFamilysInk [82 ms]
+  Standard Output Messages:
+ chip 0: [14.074 USB-D] [the FT8 watering hole] ink #ff2b2360 at [438,235 301x13]
+ chip 1: [14.050 CW] [slow CW on Sunday] ink #ff5e3800 at [743,235 271x13]
+ chip 2: [14.250 USB] [the Tuesday net] ink #ff0b3b5c at [1018,235 281x13]
+ the row's window on the chips [438,235 659x13] in the card [423,119 921x178]
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.EmptyTheRowSaysHowToKeepASpot [119 ms]
+  Standard Output Messages:
+ empty row reads [no spots saved yet - press the star to keep this one], visible True
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 2.9154 Seconds
+RC=0 WALL=4s

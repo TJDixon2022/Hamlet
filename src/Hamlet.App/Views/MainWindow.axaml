@@ -1057,7 +1057,7 @@
                                 </ItemsControl>
 
                                 <TextBlock x:Name="GreenZoneFavoritesEmpty"
-                                           Text="no spots saved yet - press ☆ to keep this one"
+                                           Text="no spots saved yet - press the star to keep this one"
                                            IsVisible="{Binding !HasFavorites}"
                                            FontSize="11" FontStyle="Italic"
                                            VerticalAlignment="Center"

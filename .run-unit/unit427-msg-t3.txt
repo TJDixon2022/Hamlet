@@ -1,0 +1,8 @@
+unit427 task 3: item 11's empty words are the owner's - the favorites row with nothing saved reads no spots saved yet - press the star to keep this one, where it read press ☆; watched red first, TheFavoritesAreChipsTests 3 of 4 on EmptyTheRowSaysHowToKeepASpot, now 4 of 4
+
+The one difference task 2 found that is a word the owner's list states plainly. The other three
+(items 1, 8 and 13) are larger than a word and are P31 to P33; nothing rebuilt. After:
+TheFavoritesAreUnderTheGreenZoneTests 3 of 3, Unit376TheTopBandTests 5 of 5 (the nine sizes
+hold), BindingHealthTests 1 of 1, TheFourteenOnScreenTests 12 of 12 printing the new words.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
