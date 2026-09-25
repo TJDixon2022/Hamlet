@@ -756,8 +756,10 @@ nothing (its session stopped at task 0).
   3. Passes. The adjudicated output is identical: VA3VRR 6 of 6, MP/4 QNIK 9 of 12, DE KD0UN
      KD0UN K 16 of 16.
   4. Fails on 14 of 51 rows.
-     - Above-bar characters fall on 7: `001831` 43 to 38, `021825` 19 to 15, `031838` 40 to 36,
-       `013622` 49 to 47, `012823` 23 to 22, `021629` 27 to 26, `031905` 36 to 35.
+     - Above-bar characters fall on 7 failing rows: `001831` 43 to 38, `021825` 19 to 15,
+       `031838` 40 to 36, `013622` 49 to 47, `012823` 23 to 22, `021629` 27 to 26, `031905` 36
+       to 35. They also fall on 2 anchored rows, whose count floor is retired: `003758` 43 to 40
+       and `031948` 31 to 30.
      - Above-bar elements fall on 9: `013347` 106 to 104, `004507` 117 to 116, `003016` 146 to
        145, `001952` 103 to 102, `031838` 91 to 90, `031905` 108 to 106, `032050` 105 to 100,
        `032113` 102 to 100, `021410` 88 to 87.
