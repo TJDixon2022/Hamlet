@@ -6,7 +6,7 @@ WORK_INSTRUCTION: 437 - the window is re-mixed when the mixdown moves
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T11:20:38-04:00
+UPDATED: 2026-09-25T11:20:48-04:00
 NOTE: Unit 437 complete and pushed: re-mixing the window at the sender's pitch moved the opening 22 to 19 named but cost 3 keyed floors and 14 capture rows, so it came back out; the estimator still reads half the sender's dot at the right pitch; 7.4 not ticked; output.md written
 
 ---
