@@ -158,6 +158,8 @@ What will look wrong but is not:
 - Version 1.13.127 carries no code change.
 - App carry-forward reads 274 of 278 on the dispatcher-loop loss.
 
+**Push:** succeeded, `1fb0bad6..ad198291 main -> main`, and this line's own commit after it.
+
 ## 3. What you should see
 
 **The 54 sure-but-wrong characters, grouped.** Real keyed recordings, 12 recordings, all keys
