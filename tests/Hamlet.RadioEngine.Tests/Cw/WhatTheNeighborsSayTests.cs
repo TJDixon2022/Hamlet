@@ -50,14 +50,12 @@ public sealed class WhatTheNeighborsSayTests
     /// <param name="IsKeyed">Whether the recording has an inferred key.</param>
     /// <param name="Label">What the key made of it.</param>
     /// <param name="Character">What settled.</param>
-    /// <param name="Neighbors">The median raw span of the named characters in its window.</param>
-    internal sealed record Placed(string Name, bool IsKeyed, Label Label, CwCharacter Character, double Neighbors)
+    /// <param name="Neighbors">The median figure of the named characters in its window.</param>
+    /// <param name="Span">Its own figure: the raw span, or the raw span per mark.</param>
+    internal sealed record Placed(string Name, bool IsKeyed, Label Label, CwCharacter Character, double Neighbors, double Span)
     {
         /// <summary>One element, a dit or a dah.</summary>
         public bool Single => Character.Pattern.Length == 1;
-
-        /// <summary>Its own raw span.</summary>
-        public double Span => Character.SpanLogLikelihoodRatio;
 
         /// <summary>Its span over its neighbors' median.</summary>
         public double Ratio => Neighbors > 0 ? Span / Neighbors : double.NaN;
@@ -72,11 +70,21 @@ public sealed class WhatTheNeighborsSayTests
         };
     }
 
-    /// <summary>The median raw span of up to <paramref name="side"/> named characters either side of each named one.</summary>
+    /// <summary>The figure a character is traced on: its raw span, or that over its marks.</summary>
+    /// <param name="c">What settled.</param>
+    /// <param name="perMark">Divide by the dits and dahs in its pattern.</param>
+    /// <returns>The figure.</returns>
+    internal static double Figure(CwCharacter c, bool perMark)
+        => perMark
+            ? c.SpanLogLikelihoodRatio / Math.Max(1, c.Pattern.Count(e => e is '.' or '-'))
+            : c.SpanLogLikelihoodRatio;
+
+    /// <summary>The median figure of up to <paramref name="side"/> named characters either side of each named one.</summary>
     /// <param name="settled">What settled, word gaps included.</param>
     /// <param name="side">How many named characters each side.</param>
+    /// <param name="perMark">Trace the raw span per mark rather than the raw span.</param>
     /// <returns>One median per settled character; NaN for a word gap or a placeholder.</returns>
-    internal static double[] NeighborMedians(IReadOnlyList<CwCharacter> settled, int side)
+    internal static double[] NeighborMedians(IReadOnlyList<CwCharacter> settled, int side, bool perMark = false)
     {
         var named = Enumerable.Range(0, settled.Count)
             .Where(i => IsNamed(settled[i]) && !double.IsNaN(settled[i].SpanLogLikelihoodRatio))
@@ -87,7 +95,7 @@ public sealed class WhatTheNeighborsSayTests
         {
             medians[named[n]] = Median(
                 named.Take(n).TakeLast(side).Concat(named.Skip(n + 1).Take(side))
-                    .Select(j => settled[j].SpanLogLikelihoodRatio));
+                    .Select(j => Figure(settled[j], perMark)));
         }
 
         return medians;
@@ -127,8 +135,9 @@ public sealed class WhatTheNeighborsSayTests
     /// <param name="side">How many named characters each side.</param>
     /// <param name="edits">The keyed edits the labels were taken from.</param>
     /// <param name="length">The keyed scored length.</param>
+    /// <param name="perMark">Trace the raw span per mark rather than the raw span.</param>
     /// <returns>Every named character with a measured span.</returns>
-    internal static List<Placed> PlaceAll(int side, out int edits, out int length)
+    internal static List<Placed> PlaceAll(int side, out int edits, out int length, bool perMark = false)
     {
         var names = TheCapturesThatDecodeKeepDecodingTests.Floors.Select(row => (string)row[0])
             .Append(TheSeventeenThirtySevenCaptureTests.Name)
@@ -145,7 +154,7 @@ public sealed class WhatTheNeighborsSayTests
             var keyed = KeyedRecordings.SingleOrDefault(k => k.Name == name);
             var scores = keyed is null ? Array.Empty<CwScore>() : keyed.Score(CwReading.Of(settled));
             var labels = Labels(settled, scores);
-            var medians = NeighborMedians(settled, side);
+            var medians = NeighborMedians(settled, side, perMark);
 
             edits += scores.Sum(s => s.Edits);
             length += scores.Sum(s => s.ScoredLength);
@@ -154,7 +163,8 @@ public sealed class WhatTheNeighborsSayTests
             {
                 if (IsNamed(settled[i]) && !double.IsNaN(settled[i].SpanLogLikelihoodRatio))
                 {
-                    placed.Add(new Placed(name, keyed is not null, labels[i], settled[i], medians[i]));
+                    placed.Add(new Placed(
+                        name, keyed is not null, labels[i], settled[i], medians[i], Figure(settled[i], perMark)));
                 }
             }
         }
@@ -164,13 +174,15 @@ public sealed class WhatTheNeighborsSayTests
 
     /// <summary>Prints the character table, both distributions, the heaps and the ladder for one window.</summary>
     /// <param name="side">How many named characters each side.</param>
-    internal void Trace(int side)
+    /// <param name="perMark">Trace the raw span per mark rather than the raw span.</param>
+    internal void Trace(int side, bool perMark = false)
     {
-        var placed = PlaceAll(side, out var edits, out var length);
+        var placed = PlaceAll(side, out var edits, out var length, perMark);
 
         _output.WriteLine(
             $"check | {edits} edits over {length} characters against inferred keys, {KeyedRecordings.Count} keyed recordings | "
             + $"window {side} named characters each side, the character itself left out | "
+            + $"figure {(perMark ? "raw span per mark" : "raw span")} | "
             + $"named with a measured span: {placed.Count}, on keyed recordings {placed.Count(p => p.IsKeyed)}");
 
         // ---- EVERY CHARACTER ON THE KEYED RECORDINGS ----
@@ -307,4 +319,18 @@ public sealed class WhatTheNeighborsSayTests
     [Fact]
     public void EachLetterAgainstAWiderWindow()
         => Trace(WideSide);
+
+    /// <remarks>
+    /// Proves task 3 of work instruction 428: task 2's trace on the raw span per
+    /// mark, the raw span over the dits and dahs in the character's pattern, for
+    /// the character and for its neighbors alike. **Why a second figure** (author's,
+    /// overrulable): the raw span sums over a character's marks, so a lone right `E`
+    /// carries a quarter of what a right `H` beside it carries on the same signal,
+    /// and tasks 1 and 2 found the right single elements sitting lower against their
+    /// neighbors than the added ones. Per mark, a right `E` and a right `H` on one
+    /// signal stand level. Asserts nothing.
+    /// </remarks>
+    [Fact]
+    public void EachMarkAgainstTheMarksAroundIt()
+        => Trace(WideSide, perMark: true);
 }

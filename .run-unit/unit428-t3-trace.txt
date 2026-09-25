@@ -1,0 +1,1128 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.67]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.88]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.89]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:01.03]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheNeighborsSayTests.EachMarkAgainstTheMarksAroundIt [1 m 59 s]
+  Standard Output Messages:
+ check | 165 edits over 565 characters against inferred keys, 23 keyed recordings | window 8 named characters each side, the character itself left out | figure raw span per mark | named with a measured span: 1773, on keyed recordings 892
+ 
+ CHARACTERS | every named character on the keyed recordings, in order
+ char | recording | at | heap | text | pattern | span | neighbors' median | ratio
+ char | cw-2026-08-17-013347 | 0.320 s | keyed, unscored | `E` | . | 161147685.3 | 204286882.1 | 0.789
+ char | cw-2026-08-17-013347 | 0.680 s | keyed, unscored | `E` | . | 90739492.2 | 250047298.6 | 0.363
+ char | cw-2026-08-17-013347 | 0.915 s | keyed, unscored | `I` | .. | 454974213.1 | 159837075.4 | 2.846
+ char | cw-2026-08-17-013347 | 1.515 s | keyed, unscored | `I` | .. | 92642725.0 | 250047298.6 | 0.371
+ char | cw-2026-08-17-013347 | 2.115 s | keyed, unscored | `H` | .... | 655429768.8 | 159837075.4 | 4.101
+ char | cw-2026-08-17-013347 | 2.480 s | keyed, unscored | `I` | .. | 158526465.6 | 250047298.6 | 0.634
+ char | cw-2026-08-17-013347 | 2.960 s | keyed, unscored | `A` | .- | 644259360.2 | 205597491.9 | 3.134
+ char | cw-2026-08-17-013347 | 3.205 s | keyed, unscored | `E` | . | 123193784.9 | 263977579.7 | 0.467
+ char | cw-2026-08-17-013347 | 3.560 s | keyed, unscored | `I` | .. | 250047298.6 | 280990964.1 | 0.890
+ char | cw-2026-08-17-013347 | 4.135 s | keyed, unscored | `H` | .... | 336517567.8 | 257012439.1 | 1.309
+ char | cw-2026-08-17-013347 | 4.400 s | keyed, unscored | `E` | . | 122441794.2 | 280990964.1 | 0.436
+ char | cw-2026-08-17-013347 | 4.530 s | keyed, unscored | `E` | . | 263977579.7 | 256552119.4 | 1.029
+ char | cw-2026-08-17-013347 | 4.665 s | keyed, unscored | `E` | . | 148218350.7 | 280990964.1 | 0.527
+ char | cw-2026-08-17-013347 | 5.100 s | keyed, unscored | `A` | .- | 428748796.7 | 263517259.9 | 1.627
+ char | cw-2026-08-17-013347 | 5.490 s | keyed, unscored | `E` | . | 298004348.6 | 263517259.9 | 1.131
+ char | cw-2026-08-17-013347 | 5.955 s | keyed, unscored | `E` | . | 756520782.0 | 256552119.4 | 2.949
+ char | cw-2026-08-17-013347 | 6.205 s | keyed, unscored | `E` | . | 349192745.0 | 263517259.9 | 1.325
+ char | cw-2026-08-17-013347 | 6.335 s | keyed, unscored | `E` | . | 157836692.1 | 304723495.7 | 0.518
+ char | cw-2026-08-17-013347 | 7.045 s | keyed, unscored | `H` | .... | 198904746.0 | 304723495.7 | 0.653
+ char | cw-2026-08-17-013347 | 7.175 s | keyed, unscored | `E` | . | 263056940.1 | 330317693.9 | 0.796
+ char | cw-2026-08-17-013347 | 7.405 s | keyed, unscored | `E` | . | 359650325.8 | 330317693.9 | 1.089
+ char | cw-2026-08-17-013347 | 7.745 s | keyed, unscored | `I` | .. | 311442642.8 | 394199561.3 | 0.790
+ char | cw-2026-08-17-013347 | 8.020 s | keyed, unscored | `E` | . | 173493905.3 | 558085553.9 | 0.311
+ char | cw-2026-08-17-013347 | 8.250 s | keyed, unscored | `E` | . | 167249959.9 | 896128767.2 | 0.187
+ char | cw-2026-08-17-013347 | 9.215 s | keyed, unscored | `I` | .. | 3114028574.5 | 697693539.1 | 4.463
+ char | cw-2026-08-17-013347 | 9.465 s | keyed, unscored | `E` | . | 2177910218.9 | 1311036466.0 | 1.661
+ char | cw-2026-08-17-013347 | 9.735 s | keyed, unscored | `E` | . | 3922853688.0 | 1643099254.1 | 2.387
+ char | cw-2026-08-17-013347 | 10.060 s | keyed, unscored | `E` | . | 1035736752.4 | 1852814524.8 | 0.559
+ char | cw-2026-08-17-013347 | 10.540 s | keyed, unscored | `T` | - | 8256410311.8 | 1852814524.8 | 4.456
+ char | cw-2026-08-17-013347 | 10.905 s | keyed, unscored | `E` | . | 2005766720.9 | 2645969396.7 | 0.758
+ char | cw-2026-08-17-013347 | 11.625 s | keyed, unscored | `I` | .. | 1699862328.7 | 2645969396.7 | 0.642
+ char | cw-2026-08-17-013347 | 12.280 s | keyed, unscored | `E` | . | 7096334011.7 | 2091838469.9 | 3.392
+ char | cw-2026-08-17-013347 | 12.585 s | keyed, unscored | `E` | . | 1586336179.6 | 3319175129.3 | 0.478
+ char | cw-2026-08-17-013347 | 13.430 s | keyed, unscored | `I` | .. | 3598642106.2 | 2851115951.6 | 1.262
+ char | cw-2026-08-17-013347 | 13.665 s | keyed, unscored | `E` | . | 5291317135.0 | 2765044202.6 | 1.914
+ char | cw-2026-08-17-013347 | 13.905 s | keyed, unscored | `E` | . | 817578459.3 | 2813538540.4 | 0.291
+ char | cw-2026-08-17-013347 | 14.305 s | keyed, unscored | `I` | .. | 3524321684.2 | 2850698751.4 | 1.236
+ char | cw-2026-08-17-013347 | 15.325 s | keyed, unscored | `T` | - | 6651227390.5 | 2054261058.7 | 3.238
+ char | cw-2026-08-17-013347 | 15.470 s | keyed, unscored | `E` | . | 913882078.2 | 2813538540.4 | 0.325
+ char | cw-2026-08-17-013347 | 15.720 s | keyed, unscored | `E` | . | 256609635.5 | 2813538540.4 | 0.091
+ char | cw-2026-08-17-013347 | 16.075 s | keyed, unscored | `I` | .. | 5237975626.8 | 1671441963.4 | 3.134
+ char | cw-2026-08-17-013347 | 16.655 s | keyed, unscored | `T` | - | 16828086307.6 | 1335214912.7 | 12.603
+ char | cw-2026-08-17-013347 | 17.040 s | keyed, unscored | `E` | . | 1756547747.2 | 865730268.8 | 2.029
+ char | cw-2026-08-17-013347 | 17.760 s | keyed, unscored | `H` | .... | 2102755396.6 | 537094047.4 | 3.915
+ char | cw-2026-08-17-013347 | 18.240 s | keyed, unscored | `A` | .- | 4302596454.3 | 128673299.0 | 33.438
+ char | cw-2026-08-17-013347 | 18.600 s | keyed, unscored | `E` | . | 736962.5 | 128526821.6 | 0.006
+ char | cw-2026-08-17-013347 | 19.670 s | keyed, unscored | `W` | .-- | 444007.7 | 368574.9 | 1.205
+ char | cw-2026-08-17-013347 | 20.690 s | keyed, unscored | `V` | ...- | 106.7 | 222142.2 | 0.000
+ char | cw-2026-08-17-013347 | 21.435 s | keyed, unscored | `R` | .-. | 77.9 | 240.5 | 0.324
+ char | cw-2026-08-17-013347 | 22.190 s | keyed, unscored | `R` | .-. | 144.2 | 204.3 | 0.706
+ char | cw-2026-08-17-013347 | 23.310 s | right | `V` | ...- | 76.1 | 195.9 | 0.388
+ char | cw-2026-08-17-013347 | 23.925 s | right | `A` | .- | 116.9 | 187.4 | 0.624
+ char | cw-2026-08-17-013347 | 25.230 s | right | `3` | ...-- | 89.1 | 165.8 | 0.538
+ char | cw-2026-08-17-013347 | 26.175 s | right | `V` | ...- | 92.7 | 144.2 | 0.643
+ char | cw-2026-08-17-013347 | 26.925 s | right | `R` | .-. | 187.4 | 111.8 | 1.676
+ char | cw-2026-08-17-013347 | 27.690 s | right | `R` | .-. | 276.6 | 106.7 | 2.592
+ char | cw-2026-08-17-013347 | 27.695 s | keyed, unscored | `T` | - | 204.3 | 104.8 | 1.950
+ char | cw-2026-08-17-134712 | 14.570 s | keyed, unscored | `I` | .. | 19.9 | 311.6 | 0.064
+ char | cw-2026-08-17-134712 | 17.335 s | keyed, unscored | `I` | .. | 10.8 | 336.8 | 0.032
+ char | cw-2026-08-17-134712 | 18.010 s | keyed, unscored | `5` | ..... | 32.5 | 479.8 | 0.068
+ char | cw-2026-08-17-134712 | 19.295 s | keyed, unscored | `N` | -. | 6562.1 | 311.6 | 21.057
+ char | cw-2026-08-17-134712 | 19.540 s | keyed, unscored | `T` | - | 11559.3 | 311.6 | 37.093
+ char | cw-2026-08-17-134712 | 21.530 s | right | `N` | -. | 622.9 | 311.6 | 1.999
+ char | cw-2026-08-17-134712 | 22.330 s | right | `4` | ....- | 286.5 | 479.8 | 0.597
+ char | cw-2026-08-17-134712 | 23.000 s | right | `L` | .-.. | 152.3 | 479.8 | 0.317
+ char | cw-2026-08-17-134712 | 23.745 s | keyed, unscored | `Z` | --.. | 336.8 | 454.7 | 0.741
+ char | cw-2026-08-17-134712 | 23.990 s | keyed, unscored | `T` | - | 655.4 | 336.8 | 1.946
+ char | cw-2026-08-17-134712 | 25.485 s | keyed, unscored | `K` | -.- | 662.0 | 479.8 | 1.380
+ char | cw-2026-08-18-004507 | 0.045 s | keyed, unscored | `E` | . | 186.3 | 302.8 | 0.615
+ char | cw-2026-08-18-004507 | 0.410 s | keyed, unscored | `5` | ..... | 293.3 | 186.3 | 1.574
+ char | cw-2026-08-18-004507 | 1.300 s | keyed, unscored | `I` | .. | 1067.2 | 174.9 | 6.102
+ char | cw-2026-08-18-004507 | 2.140 s | keyed, unscored | `E` | . | 312.3 | 186.3 | 1.676
+ char | cw-2026-08-18-004507 | 2.805 s | keyed, unscored | `A` | .- | 995.1 | 193.5 | 5.142
+ char | cw-2026-08-18-004507 | 3.230 s | right | `T` | - | 500.6 | 200.8 | 2.493
+ char | cw-2026-08-18-004507 | 4.245 s | right | `A` | .- | 163.5 | 302.8 | 0.540
+ char | cw-2026-08-18-004507 | 4.820 s | right | `R` | .-. | 111.6 | 312.3 | 0.357
+ char | cw-2026-08-18-004507 | 5.420 s | added | `O` | --- | 112.7 | 340.0 | 0.331
+ char | cw-2026-08-18-004507 | 6.085 s | right | `L` | .-.. | 142.4 | 340.0 | 0.419
+ char | cw-2026-08-18-004507 | 6.940 s | right | `D` | -.. | 157.5 | 388.1 | 0.406
+ char | cw-2026-08-18-004507 | 7.750 s | right | `O` | --- | 200.8 | 365.6 | 0.549
+ char | cw-2026-08-18-004507 | 8.160 s | right | `T` | - | 599.1 | 282.1 | 2.123
+ char | cw-2026-08-18-004507 | 8.955 s | right | `N` | -. | 603.9 | 199.4 | 3.029
+ char | cw-2026-08-18-004507 | 9.265 s | right | `E` | . | 367.8 | 199.4 | 1.845
+ char | cw-2026-08-18-004507 | 9.720 s | right | `T` | - | 860.4 | 277.9 | 3.096
+ char | cw-2026-08-18-004507 | 10.900 s | right | `<BT>` | -...- | 608.5 | 359.3 | 1.694
+ char | cw-2026-08-18-004507 | 11.965 s | right | `E` | . | 179.7 | 365.6 | 0.491
+ char | cw-2026-08-18-004507 | 12.515 s | right | `A` | .- | 408.5 | 365.6 | 1.117
+ char | cw-2026-08-18-004507 | 13.280 s | right | `C` | -.-. | 363.5 | 398.1 | 0.913
+ char | cw-2026-08-18-004507 | 13.890 s | right | `H` | .... | 179.3 | 398.1 | 0.450
+ char | cw-2026-08-18-004507 | 14.700 s | right | `S` | ... | 198.0 | 398.1 | 0.497
+ char | cw-2026-08-18-004507 | 15.075 s | right | `T` | - | 584.9 | 377.8 | 1.548
+ char | cw-2026-08-18-004507 | 15.520 s | right | `A` | .- | 355.1 | 390.5 | 0.909
+ char | cw-2026-08-18-004507 | 15.905 s | right | `T` | - | 387.8 | 359.3 | 1.079
+ char | cw-2026-08-18-004507 | 16.270 s | right | `I` | .. | 137.3 | 359.3 | 0.382
+ char | cw-2026-08-18-004507 | 17.095 s | right | `O` | --- | 577.0 | 355.5 | 1.623
+ char | cw-2026-08-18-004507 | 17.580 s | right | `N` | -. | 419.1 | 355.5 | 1.179
+ char | cw-2026-08-18-004507 | 18.675 s | right | `H` | .... | 200.1 | 371.9 | 0.538
+ char | cw-2026-08-18-004507 | 19.160 s | right | `A` | .- | 448.8 | 355.5 | 1.262
+ char | cw-2026-08-18-004507 | 19.640 s | right | `N` | -. | 393.2 | 355.5 | 1.106
+ char | cw-2026-08-18-004507 | 20.240 s | right | `D` | -.. | 256.8 | 355.5 | 0.722
+ char | cw-2026-08-18-004507 | 20.955 s | right | `L` | .-.. | 203.0 | 371.9 | 0.546
+ char | cw-2026-08-18-004507 | 21.365 s | right | `I` | .. | 97.9 | 306.4 | 0.319
+ char | cw-2026-08-18-004507 | 21.855 s | right | `N` | -. | 356.0 | 229.9 | 1.548
+ char | cw-2026-08-18-004507 | 22.495 s | right | `G` | --. | 493.9 | 201.6 | 2.450
+ char | cw-2026-08-18-004507 | 23.295 s | right | `T` | - | 596.0 | 201.6 | 2.956
+ char | cw-2026-08-18-004507 | 23.915 s | right | `H` | .... | 185.4 | 267.2 | 0.694
+ char | cw-2026-08-18-004507 | 24.295 s | right | `I` | .. | 183.3 | 229.9 | 0.797
+ char | cw-2026-08-18-004507 | 24.745 s | right | `S` | ... | 184.8 | 229.9 | 0.804
+ char | cw-2026-08-18-004507 | 25.715 s | right | `M` | -- | 430.1 | 185.1 | 2.323
+ char | cw-2026-08-18-004507 | 25.995 s | right | `E` | . | 105.9 | 185.4 | 0.571
+ char | cw-2026-08-18-004507 | 26.540 s | right | `S` | ... | 112.7 | 231.5 | 0.487
+ char | cw-2026-08-18-004507 | 27.025 s | right | `S` | ... | 122.7 | 185.4 | 0.662
+ char | cw-2026-08-18-004507 | 27.510 s | right | `A` | .- | 277.6 | 184.1 | 1.508
+ char | cw-2026-08-18-004507 | 28.205 s | right | `G` | --. | 360.9 | 183.3 | 1.969
+ char | cw-2026-08-18-004507 | 28.585 s | right | `E` | . | 123.0 | 184.1 | 0.669
+ char | cw-2026-08-18-004507 | 29.765 s | right | `P` | .--. | 424.6 | 123.0 | 3.451
+ char | cw-2026-08-18-004507 | 30.000 s | keyed, unscored | `E` | . | 14.5 | 200.3 | 0.072
+ char | unadjudicated/cw-2026-08-24-012403 | 14.410 s | keyed, unscored | `D` | -.. | 44.9 | 61.8 | 0.726
+ char | unadjudicated/cw-2026-08-24-012403 | 14.660 s | keyed, unscored | `E` | . | 13.7 | 66.1 | 0.207
+ char | unadjudicated/cw-2026-08-24-012403 | 15.605 s | keyed, unscored | `Q` | --.- | 66.1 | 67.5 | 0.979
+ char | unadjudicated/cw-2026-08-24-012403 | 16.665 s | keyed, unscored | `6` | -.... | 28.6 | 77.4 | 0.370
+ char | unadjudicated/cw-2026-08-24-012403 | 17.610 s | keyed, unscored | `Q` | --.- | 108.8 | 71.7 | 1.517
+ char | unadjudicated/cw-2026-08-24-012403 | 19.615 s | keyed, unscored | `Q` | --.- | 108.5 | 77.4 | 1.403
+ char | unadjudicated/cw-2026-08-24-012403 | 20.445 s | right | `D` | -.. | 57.6 | 80.7 | 0.714
+ char | unadjudicated/cw-2026-08-24-012403 | 20.680 s | right | `E` | . | 41.0 | 81.8 | 0.501
+ char | unadjudicated/cw-2026-08-24-012403 | 21.620 s | right | `K` | -.- | 77.4 | 80.7 | 0.958
+ char | unadjudicated/cw-2026-08-24-012403 | 22.215 s | right | `D` | -.. | 83.5 | 78.5 | 1.064
+ char | unadjudicated/cw-2026-08-24-012403 | 23.515 s | right | `0` | ----- | 95.9 | 80.7 | 1.188
+ char | unadjudicated/cw-2026-08-24-012403 | 24.105 s | right | `U` | ..- | 79.6 | 83.5 | 0.954
+ char | unadjudicated/cw-2026-08-24-012403 | 24.580 s | right | `N` | -. | 95.8 | 82.7 | 1.159
+ char | unadjudicated/cw-2026-08-24-012403 | 25.525 s | right | `K` | -.- | 148.5 | 81.8 | 1.815
+ char | unadjudicated/cw-2026-08-24-012403 | 26.110 s | right | `D` | -.. | 81.8 | 81.6 | 1.003
+ char | unadjudicated/cw-2026-08-24-012403 | 27.410 s | right | `0` | ----- | 100.9 | 81.8 | 1.233
+ char | unadjudicated/cw-2026-08-24-012403 | 28.005 s | right | `U` | ..- | 52.7 | 89.6 | 0.588
+ char | unadjudicated/cw-2026-08-24-012403 | 28.475 s | right | `N` | -. | 51.4 | 95.7 | 0.538
+ char | unadjudicated/cw-2026-08-24-012403 | 29.420 s | right | `K` | -.- | 95.7 | 88.8 | 1.077
+ char | unadjudicated/cw-2026-08-22-031838 | 1.860 s | keyed, unscored | `A` | .- | 24363.6 | 188.8 | 129.040
+ char | unadjudicated/cw-2026-08-22-031838 | 3.080 s | keyed, unscored | `3` | ...-- | 1093.3 | 172.5 | 6.340
+ char | unadjudicated/cw-2026-08-22-031838 | 4.440 s | keyed, unscored | `,` | --..-- | 205.2 | 163.8 | 1.253
+ char | unadjudicated/cw-2026-08-22-031838 | 5.045 s | keyed, unscored | `A` | .- | 76.5 | 172.5 | 0.444
+ char | unadjudicated/cw-2026-08-22-031838 | 5.180 s | keyed, unscored | `T` | - | 114.0 | 163.8 | 0.696
+ char | unadjudicated/cw-2026-08-22-031838 | 5.650 s | keyed, unscored | `3` | ...-- | 172.5 | 114.0 | 1.513
+ char | unadjudicated/cw-2026-08-22-031838 | 6.270 s | keyed, unscored | `M` | -- | 303.6 | 95.3 | 3.187
+ char | unadjudicated/cw-2026-08-22-031838 | 6.980 s | keyed, unscored | `,` | --..-- | 207.4 | 76.5 | 2.709
+ char | unadjudicated/cw-2026-08-22-031838 | 7.450 s | keyed, unscored | `E` | . | 13.4 | 95.3 | 0.140
+ char | unadjudicated/cw-2026-08-22-031838 | 8.345 s | keyed, unscored | `2` | ..--- | 155.1 | 74.1 | 2.093
+ char | unadjudicated/cw-2026-08-22-031838 | 8.675 s | keyed, unscored | `T` | - | 66.4 | 84.2 | 0.788
+ char | unadjudicated/cw-2026-08-22-031838 | 9.685 s | keyed, unscored | `T` | - | 51.9 | 84.2 | 0.617
+ char | unadjudicated/cw-2026-08-22-031838 | 10.175 s | keyed, unscored | `T` | - | 33.9 | 100.4 | 0.338
+ char | unadjudicated/cw-2026-08-22-031838 | 10.310 s | keyed, unscored | `T` | - | 35.3 | 100.4 | 0.352
+ char | unadjudicated/cw-2026-08-22-031838 | 10.535 s | keyed, unscored | `T` | - | 55.9 | 81.7 | 0.684
+ char | unadjudicated/cw-2026-08-22-031838 | 10.800 s | keyed, unscored | `T` | - | 70.0 | 81.7 | 0.856
+ char | unadjudicated/cw-2026-08-22-031838 | 11.030 s | keyed, unscored | `T` | - | 71.6 | 80.9 | 0.886
+ char | unadjudicated/cw-2026-08-22-031838 | 12.415 s | keyed, unscored | `,` | --..-- | 91.8 | 70.8 | 1.297
+ char | unadjudicated/cw-2026-08-22-031838 | 13.140 s | keyed, unscored | `A` | .- | 147.7 | 68.2 | 2.167
+ char | unadjudicated/cw-2026-08-22-031838 | 13.620 s | keyed, unscored | `N` | -. | 120.5 | 70.8 | 1.703
+ char | unadjudicated/cw-2026-08-22-031838 | 14.225 s | wrong | `D` | -.. | 108.9 | 81.7 | 1.333
+ char | unadjudicated/cw-2026-08-22-031838 | 15.550 s | wrong | `T` | - | 115.3 | 94.5 | 1.220
+ char | unadjudicated/cw-2026-08-22-031838 | 16.045 s | wrong | `T` | - | 59.2 | 109.3 | 0.542
+ char | unadjudicated/cw-2026-08-22-031838 | 16.310 s | wrong | `T` | - | 118.8 | 103.1 | 1.152
+ char | unadjudicated/cw-2026-08-22-031838 | 16.530 s | wrong | `T` | - | 109.6 | 110.3 | 0.994
+ char | unadjudicated/cw-2026-08-22-031838 | 16.795 s | wrong | `T` | - | 60.2 | 110.6 | 0.544
+ char | unadjudicated/cw-2026-08-22-031838 | 16.895 s | wrong | `E` | . | 34.9 | 113.5 | 0.308
+ char | unadjudicated/cw-2026-08-22-031838 | 17.290 s | wrong | `A` | .- | 115.7 | 110.6 | 1.046
+ char | unadjudicated/cw-2026-08-22-031838 | 17.905 s | right | `H` | .... | 97.2 | 110.6 | 0.879
+ char | unadjudicated/cw-2026-08-22-031838 | 18.640 s | right | `A` | .- | 150.6 | 107.8 | 1.397
+ char | unadjudicated/cw-2026-08-22-031838 | 19.490 s | right | `M` | -- | 229.8 | 101.6 | 2.262
+ char | unadjudicated/cw-2026-08-22-031838 | 19.755 s | right | `E` | . | 81.9 | 107.8 | 0.760
+ char | unadjudicated/cw-2026-08-22-031838 | 20.250 s | right | `A` | .- | 111.6 | 97.2 | 1.148
+ char | unadjudicated/cw-2026-08-22-031838 | 20.745 s | right | `N` | -. | 105.9 | 89.6 | 1.183
+ char | unadjudicated/cw-2026-08-22-031838 | 21.355 s | added | `T` | - | 159.2 | 97.2 | 1.638
+ char | unadjudicated/cw-2026-08-22-031838 | 21.845 s | right | `O` | --- | 129.1 | 101.6 | 1.271
+ char | unadjudicated/cw-2026-08-22-031838 | 22.560 s | right | `F` | ..-. | 66.9 | 105.9 | 0.631
+ char | unadjudicated/cw-2026-08-22-031838 | 23.920 s | right | `2` | ..--- | 80.0 | 108.8 | 0.736
+ char | unadjudicated/cw-2026-08-22-031838 | 24.185 s | wrong | `T` | - | 26.0 | 105.9 | 0.246
+ char | unadjudicated/cw-2026-08-22-031838 | 24.410 s | wrong | `T` | - | 55.7 | 93.9 | 0.593
+ char | unadjudicated/cw-2026-08-22-031905 | 3.715 s | keyed, unscored | `P` | .--. | 144.9 | 234.6 | 0.618
+ char | unadjudicated/cw-2026-08-22-031905 | 4.345 s | keyed, unscored | `R` | .-. | 218.3 | 251.0 | 0.870
+ char | unadjudicated/cw-2026-08-22-031905 | 4.550 s | keyed, unscored | `E` | . | 164.2 | 234.6 | 0.700
+ char | unadjudicated/cw-2026-08-22-031905 | 5.175 s | right | `D` | -.. | 251.0 | 167.4 | 1.499
+ char | unadjudicated/cw-2026-08-22-031905 | 5.535 s | right | `I` | .. | 120.4 | 234.6 | 0.513
+ char | unadjudicated/cw-2026-08-22-031905 | 6.395 s | right | `C` | -.-. | 422.8 | 167.4 | 2.526
+ char | unadjudicated/cw-2026-08-22-031905 | 6.780 s | right | `T` | - | 731.4 | 165.8 | 4.411
+ char | unadjudicated/cw-2026-08-22-031905 | 7.005 s | right | `E` | . | 167.4 | 164.2 | 1.019
+ char | unadjudicated/cw-2026-08-22-031905 | 7.635 s | right | `D` | -.. | 264.9 | 154.6 | 1.714
+ char | unadjudicated/cw-2026-08-22-031905 | 9.115 s | right | `1` | .---- | 260.4 | 142.3 | 1.830
+ char | unadjudicated/cw-2026-08-22-031905 | 10.420 s | right | `0` | ----- | 102.4 | 165.8 | 0.617
+ char | unadjudicated/cw-2026-08-22-031905 | 11.640 s | right | `.` | .-.-.- | 77.3 | 209.2 | 0.369
+ char | unadjudicated/cw-2026-08-22-031905 | 12.615 s | right | `7` | --... | 322.5 | 143.9 | 2.241
+ char | unadjudicated/cw-2026-08-22-031905 | 14.155 s | added | `I` | .. | 10.5 | 262.7 | 0.040
+ char | unadjudicated/cw-2026-08-22-031905 | 14.635 s | added | `A` | .- | 91.0 | 262.7 | 0.347
+ char | unadjudicated/cw-2026-08-22-031905 | 14.980 s | wrong | `I` | .. | 78.4 | 262.7 | 0.298
+ char | unadjudicated/cw-2026-08-22-031905 | 15.150 s | right | `E` | . | 55.0 | 293.7 | 0.187
+ char | unadjudicated/cw-2026-08-22-031905 | 15.410 s | wrong | `I` | .. | 60.6 | 351.6 | 0.172
+ char | unadjudicated/cw-2026-08-22-031905 | 16.000 s | wrong | `T` | - | 471.0 | 271.5 | 1.735
+ char | unadjudicated/cw-2026-08-22-031905 | 16.260 s | wrong | `A` | .- | 401.1 | 271.5 | 1.478
+ char | unadjudicated/cw-2026-08-22-031905 | 16.615 s | wrong | `N` | -. | 499.8 | 351.6 | 1.421
+ char | unadjudicated/cw-2026-08-22-031905 | 16.880 s | wrong | `I` | .. | 413.3 | 357.4 | 1.156
+ char | unadjudicated/cw-2026-08-22-031905 | 18.285 s | wrong | `W` | .-- | 2742.3 | 357.4 | 7.672
+ char | unadjudicated/cw-2026-08-22-031905 | 18.995 s | right | `L` | .-.. | 1508.1 | 384.8 | 3.919
+ char | unadjudicated/cw-2026-08-22-031905 | 19.610 s | right | `U` | ..- | 388.9 | 407.2 | 0.955
+ char | unadjudicated/cw-2026-08-22-031905 | 20.465 s | right | `X` | -..- | 380.8 | 414.4 | 0.919
+ char | unadjudicated/cw-2026-08-22-031905 | 21.090 s | right | `I` | .. | 220.4 | 443.3 | 0.497
+ char | unadjudicated/cw-2026-08-22-031905 | 21.585 s | right | `S` | ... | 172.7 | 457.7 | 0.377
+ char | unadjudicated/cw-2026-08-22-031905 | 23.055 s | right | `1` | .---- | 415.5 | 499.8 | 0.831
+ char | unadjudicated/cw-2026-08-22-031905 | 24.155 s | right | `2` | ..--- | 334.1 | 961.8 | 0.347
+ char | unadjudicated/cw-2026-08-22-031905 | 24.875 s | right | `5` | ..... | 161.4 | 1508.1 | 0.107
+ char | unadjudicated/cw-2026-08-22-031905 | 26.250 s | right | `,` | --..-- | 6298.9 | 402.2 | 15.661
+ char | unadjudicated/cw-2026-08-22-031905 | 26.255 s | wrong | `,` | --..-- | 6101.5 | 388.9 | 15.691
+ char | unadjudicated/cw-2026-08-22-031905 | 27.885 s | keyed, unscored | `E` | . | 2137.2 | 398.2 | 5.368
+ char | unadjudicated/cw-2026-08-22-031905 | 29.010 s | keyed, unscored | `T` | - | 9029.6 | 415.5 | 21.730
+ char | unadjudicated/cw-2026-08-22-031905 | 29.770 s | keyed, unscored | `T` | - | 10673.4 | 1276.4 | 8.362
+ char | unadjudicated/cw-2026-08-22-031948 | 2.175 s | keyed, unscored | `T` | - | 19817.7 | 295.8 | 66.993
+ char | unadjudicated/cw-2026-08-22-031948 | 2.680 s | keyed, unscored | `M` | -- | 3916.1 | 378.1 | 10.356
+ char | unadjudicated/cw-2026-08-22-031948 | 3.945 s | right | `1` | .---- | 866.0 | 394.2 | 2.197
+ char | unadjudicated/cw-2026-08-22-031948 | 4.690 s | wrong | `5` | ..... | 122.1 | 421.9 | 0.289
+ char | unadjudicated/cw-2026-08-22-031948 | 6.040 s | right | `0` | ----- | 421.9 | 426.2 | 0.990
+ char | unadjudicated/cw-2026-08-22-031948 | 7.515 s | right | `1` | .---- | 203.6 | 421.9 | 0.483
+ char | unadjudicated/cw-2026-08-22-031948 | 8.770 s | right | `1` | .---- | 149.5 | 416.1 | 0.359
+ char | unadjudicated/cw-2026-08-22-031948 | 10.120 s | right | `0` | ----- | 213.5 | 410.2 | 0.520
+ char | unadjudicated/cw-2026-08-22-031948 | 11.470 s | right | `,` | --..-- | 378.1 | 311.9 | 1.212
+ char | unadjudicated/cw-2026-08-22-031948 | 12.225 s | right | `A` | .- | 410.2 | 208.5 | 1.967
+ char | unadjudicated/cw-2026-08-22-031948 | 12.700 s | right | `N` | -. | 446.7 | 178.7 | 2.500
+ char | unadjudicated/cw-2026-08-22-031948 | 13.330 s | right | `D` | -.. | 442.1 | 157.5 | 2.807
+ char | unadjudicated/cw-2026-08-22-031948 | 14.805 s | right | `1` | .---- | 454.0 | 182.4 | 2.489
+ char | unadjudicated/cw-2026-08-22-031948 | 16.020 s | right | `1` | .---- | 97.8 | 182.4 | 0.536
+ char | unadjudicated/cw-2026-08-22-031948 | 17.410 s | right | `0` | ----- | 144.3 | 187.3 | 0.770
+ char | unadjudicated/cw-2026-08-22-031948 | 18.395 s | right | `W` | .-- | 153.8 | 235.4 | 0.653
+ char | unadjudicated/cw-2026-08-22-031948 | 18.755 s | right | `I` | .. | 67.8 | 275.8 | 0.246
+ char | unadjudicated/cw-2026-08-22-031948 | 19.090 s | right | `T` | - | 127.7 | 219.0 | 0.583
+ char | unadjudicated/cw-2026-08-22-031948 | 19.715 s | right | `H` | .... | 54.6 | 219.0 | 0.249
+ char | unadjudicated/cw-2026-08-22-031948 | 20.475 s | right | `A` | .- | 161.2 | 167.3 | 0.963
+ char | unadjudicated/cw-2026-08-22-031948 | 21.310 s | right | `M` | -- | 304.8 | 157.5 | 1.935
+ char | unadjudicated/cw-2026-08-22-031948 | 21.535 s | right | `E` | . | 62.9 | 168.8 | 0.373
+ char | unadjudicated/cw-2026-08-22-031948 | 22.020 s | right | `A` | .- | 257.3 | 168.8 | 1.524
+ char | unadjudicated/cw-2026-08-22-031948 | 22.505 s | right | `N` | -. | 294.3 | 176.5 | 1.668
+ char | unadjudicated/cw-2026-08-22-031948 | 23.625 s | right | `O` | --- | 392.5 | 178.4 | 2.201
+ char | unadjudicated/cw-2026-08-22-031948 | 24.385 s | right | `F` | ..-. | 180.8 | 180.2 | 1.003
+ char | unadjudicated/cw-2026-08-22-031948 | 25.850 s | right | `1` | .---- | 266.7 | 180.5 | 1.477
+ char | unadjudicated/cw-2026-08-22-031948 | 27.065 s | right | `1` | .---- | 125.0 | 181.5 | 0.689
+ char | unadjudicated/cw-2026-08-22-031948 | 28.055 s | right | `7` | --... | 180.2 | 219.4 | 0.821
+ char | unadjudicated/cw-2026-08-22-031948 | 29.285 s | keyed, unscored | `.` | .-.-.- | 176.5 | 181.5 | 0.973
+ char | unadjudicated/cw-2026-08-22-031948 | 30.000 s | keyed, unscored | `W` | .-- | 181.5 | 219.0 | 0.829
+ char | unadjudicated/cw-2026-08-22-032012 | 1.765 s | wrong | `T` | - | 9534.6 | 200.4 | 47.584
+ char | unadjudicated/cw-2026-08-22-032012 | 2.525 s | right | `F` | ..-. | 1914.7 | 194.0 | 9.869
+ char | unadjudicated/cw-2026-08-22-032012 | 3.990 s | right | `1` | .---- | 253.5 | 200.4 | 1.265
+ char | unadjudicated/cw-2026-08-22-032012 | 5.205 s | right | `1` | .---- | 120.9 | 253.5 | 0.477
+ char | unadjudicated/cw-2026-08-22-032012 | 6.195 s | right | `7` | --... | 186.8 | 230.1 | 0.812
+ char | unadjudicated/cw-2026-08-22-032012 | 7.425 s | added | `.` | .-.-.- | 194.0 | 253.5 | 0.765
+ char | unadjudicated/cw-2026-08-22-032012 | 8.640 s | added | `1` | .---- | 145.9 | 260.2 | 0.561
+ char | unadjudicated/cw-2026-08-22-032012 | 9.885 s | right | `.` | .-.-.- | 206.7 | 266.9 | 0.775
+ char | unadjudicated/cw-2026-08-22-032012 | 11.125 s | right | `L` | .-.. | 266.9 | 303.4 | 0.880
+ char | unadjudicated/cw-2026-08-22-032012 | 11.500 s | right | `I` | .. | 187.2 | 310.2 | 0.604
+ char | unadjudicated/cw-2026-08-22-032012 | 11.995 s | right | `N` | -. | 403.9 | 230.1 | 1.755
+ char | unadjudicated/cw-2026-08-22-032012 | 12.715 s | right | `K` | -.- | 372.5 | 236.8 | 1.573
+ char | unadjudicated/cw-2026-08-22-032012 | 13.195 s | right | `S` | ... | 135.2 | 362.9 | 0.373
+ char | unadjudicated/cw-2026-08-22-032012 | 13.825 s | right | `T` | - | 491.3 | 310.2 | 1.584
+ char | unadjudicated/cw-2026-08-22-032012 | 14.655 s | right | `O` | --- | 539.6 | 310.2 | 1.740
+ char | unadjudicated/cw-2026-08-22-032012 | 15.415 s | right | `A` | .- | 418.0 | 362.9 | 1.152
+ char | unadjudicated/cw-2026-08-22-032012 | 16.035 s | right | `R` | .-. | 353.4 | 377.5 | 0.936
+ char | unadjudicated/cw-2026-08-22-032012 | 16.385 s | right | `T` | - | 717.1 | 377.5 | 1.900
+ char | unadjudicated/cw-2026-08-22-032012 | 16.720 s | right | `I` | .. | 196.9 | 410.9 | 0.479
+ char | unadjudicated/cw-2026-08-22-032012 | 17.585 s | right | `C` | -.-. | 424.4 | 377.5 | 1.124
+ char | unadjudicated/cw-2026-08-22-032012 | 18.335 s | right | `L` | .-.. | 382.5 | 385.7 | 0.992
+ char | unadjudicated/cw-2026-08-22-032012 | 18.600 s | right | `E` | . | 205.5 | 421.2 | 0.488
+ char | unadjudicated/cw-2026-08-22-032012 | 19.095 s | right | `S` | ... | 234.0 | 421.2 | 0.556
+ char | unadjudicated/cw-2026-08-22-032012 | 20.175 s | right | `O` | --- | 521.4 | 368.0 | 1.417
+ char | unadjudicated/cw-2026-08-22-032012 | 20.800 s | right | `R` | .-. | 204.2 | 368.0 | 0.555
+ char | unadjudicated/cw-2026-08-22-032012 | 21.910 s | right | `O` | --- | 466.6 | 269.6 | 1.731
+ char | unadjudicated/cw-2026-08-22-032012 | 22.270 s | right | `T` | - | 869.3 | 269.6 | 3.224
+ char | unadjudicated/cw-2026-08-22-032012 | 22.900 s | right | `H` | .... | 248.7 | 352.1 | 0.706
+ char | unadjudicated/cw-2026-08-22-032012 | 23.110 s | right | `E` | . | 59.2 | 306.2 | 0.193
+ char | unadjudicated/cw-2026-08-22-032012 | 23.720 s | right | `R` | .-. | 478.6 | 241.3 | 1.983
+ char | unadjudicated/cw-2026-08-22-032012 | 24.710 s | right | `W` | .-- | 463.2 | 269.6 | 1.718
+ char | unadjudicated/cw-2026-08-22-032012 | 24.975 s | right | `E` | . | 208.7 | 306.2 | 0.682
+ char | unadjudicated/cw-2026-08-22-032012 | 25.695 s | right | `B` | -... | 290.5 | 258.7 | 1.123
+ char | unadjudicated/cw-2026-08-22-032012 | 26.185 s | right | `S` | ... | 234.0 | 306.2 | 0.764
+ char | unadjudicated/cw-2026-08-22-032012 | 26.590 s | right | `I` | .. | 321.8 | 258.7 | 1.244
+ char | unadjudicated/cw-2026-08-22-032012 | 26.950 s | right | `T` | - | 1199.8 | 248.7 | 4.825
+ char | unadjudicated/cw-2026-08-22-032012 | 27.175 s | right | `E` | . | 99.4 | 279.7 | 0.355
+ char | unadjudicated/cw-2026-08-22-032012 | 27.670 s | right | `S` | ... | 189.3 | 290.5 | 0.651
+ char | unadjudicated/cw-2026-08-22-032012 | 28.540 s | right | `M` | -- | 915.4 | 251.4 | 3.641
+ char | unadjudicated/cw-2026-08-22-032012 | 28.765 s | right | `E` | . | 176.5 | 268.8 | 0.657
+ char | unadjudicated/cw-2026-08-22-032012 | 29.240 s | right | `N` | -. | 268.8 | 262.3 | 1.025
+ char | unadjudicated/cw-2026-08-22-032012 | 29.625 s | right | `T` | - | 489.7 | 234.0 | 2.092
+ char | unadjudicated/cw-2026-08-22-032012 | 30.000 s | right | `I` | .. | 167.5 | 295.3 | 0.567
+ char | unadjudicated/cw-2026-08-22-032050 | 2.295 s | wrong | `I` | .. | 1754.6 | 418.5 | 4.192
+ char | unadjudicated/cw-2026-08-22-032050 | 2.880 s | right | `U` | ..- | 1264.4 | 376.3 | 3.360
+ char | unadjudicated/cw-2026-08-22-032050 | 3.640 s | right | `L` | .-.. | 479.7 | 351.0 | 1.367
+ char | unadjudicated/cw-2026-08-22-032050 | 4.350 s | right | `L` | .-.. | 376.3 | 325.7 | 1.155
+ char | unadjudicated/cw-2026-08-22-032050 | 4.615 s | right | `E` | . | 323.3 | 351.0 | 0.921
+ char | unadjudicated/cw-2026-08-22-032050 | 4.955 s | right | `T` | - | 909.2 | 323.3 | 2.813
+ char | unadjudicated/cw-2026-08-22-032050 | 5.305 s | right | `I` | .. | 177.3 | 324.5 | 0.546
+ char | unadjudicated/cw-2026-08-22-032050 | 5.800 s | right | `N` | -. | 460.8 | 218.7 | 2.107
+ char | unadjudicated/cw-2026-08-22-032050 | 6.900 s | right | `C` | -.-. | 325.7 | 216.8 | 1.502
+ char | unadjudicated/cw-2026-08-22-032050 | 7.390 s | right | `A` | .- | 215.0 | 198.0 | 1.086
+ char | unadjudicated/cw-2026-08-22-032050 | 7.875 s | right | `N` | -. | 218.7 | 167.6 | 1.305
+ char | unadjudicated/cw-2026-08-22-032050 | 8.840 s | right | `B` | -... | 152.9 | 167.6 | 0.912
+ char | unadjudicated/cw-2026-08-22-032050 | 9.105 s | right | `E` | . | 98.2 | 155.3 | 0.632
+ char | unadjudicated/cw-2026-08-22-032050 | 10.095 s | right | `F` | ..-. | 120.8 | 149.7 | 0.807
+ char | unadjudicated/cw-2026-08-22-032050 | 10.925 s | right | `O` | --- | 157.8 | 128.6 | 1.227
+ char | unadjudicated/cw-2026-08-22-032050 | 11.195 s | added | `T` | - | 74.1 | 138.7 | 0.534
+ char | unadjudicated/cw-2026-08-22-032050 | 11.545 s | added | `A` | .- | 146.5 | 128.6 | 1.139
+ char | unadjudicated/cw-2026-08-22-032050 | 12.025 s | right | `N` | -. | 118.9 | 138.4 | 0.860
+ char | unadjudicated/cw-2026-08-22-032050 | 12.655 s | right | `D` | -.. | 123.6 | 138.4 | 0.893
+ char | unadjudicated/cw-2026-08-22-032050 | 13.280 s | right | `I` | .. | 63.5 | 137.8 | 0.461
+ char | unadjudicated/cw-2026-08-22-032050 | 13.765 s | right | `N` | -. | 130.9 | 135.5 | 0.966
+ char | unadjudicated/cw-2026-08-22-032050 | 14.315 s | right | `T` | - | 126.3 | 145.2 | 0.870
+ char | unadjudicated/cw-2026-08-22-032050 | 14.585 s | right | `E` | . | 106.2 | 146.1 | 0.726
+ char | unadjudicated/cw-2026-08-22-032050 | 15.295 s | right | `L` | .-.. | 154.2 | 145.2 | 1.062
+ char | unadjudicated/cw-2026-08-22-032050 | 15.555 s | right | `E` | . | 145.8 | 150.3 | 0.970
+ char | unadjudicated/cw-2026-08-22-032050 | 16.375 s | wrong | `W` | .-- | 388.8 | 150.0 | 2.593
+ char | unadjudicated/cw-2026-08-22-032050 | 17.005 s | right | `R` | .-. | 346.4 | 165.2 | 2.098
+ char | unadjudicated/cw-2026-08-22-032050 | 17.345 s | right | `I` | .. | 144.6 | 252.6 | 0.572
+ char | unadjudicated/cw-2026-08-22-032050 | 17.745 s | wrong | `T` | - | 1439.1 | 252.6 | 5.697
+ char | unadjudicated/cw-2026-08-22-032050 | 18.215 s | right | `T` | - | 1639.3 | 317.6 | 5.161
+ char | unadjudicated/cw-2026-08-22-032050 | 18.435 s | right | `E` | . | 538.2 | 342.2 | 1.573
+ char | unadjudicated/cw-2026-08-22-032050 | 19.050 s | right | `R` | .-. | 297.3 | 463.5 | 0.641
+ char | unadjudicated/cw-2026-08-22-032050 | 20.345 s | right | `,` | --..-- | 338.0 | 631.9 | 0.535
+ char | unadjudicated/cw-2026-08-22-032050 | 21.735 s | right | `P` | .--. | 207.9 | 945.3 | 0.220
+ char | unadjudicated/cw-2026-08-22-032050 | 22.225 s | right | `A` | .- | 176.1 | 1081.8 | 0.163
+ char | unadjudicated/cw-2026-08-22-032050 | 23.800 s | wrong | `K` | -.- | 725.6 | 1302.0 | 0.557
+ char | unadjudicated/cw-2026-08-22-032050 | 24.045 s | right | `E` | . | 1164.9 | 1439.1 | 0.810
+ char | unadjudicated/cw-2026-08-22-032050 | 27.090 s | keyed, unscored | `S` | ... | 1476.6 | 1081.8 | 1.365
+ char | unadjudicated/cw-2026-08-22-032050 | 27.930 s | keyed, unscored | `S` | ... | 5044.5 | 998.6 | 5.052
+ char | unadjudicated/cw-2026-08-22-032050 | 28.295 s | keyed, unscored | `T` | - | 4278.9 | 1081.8 | 3.955
+ char | unadjudicated/cw-2026-08-22-032050 | 28.760 s | keyed, unscored | `S` | ... | 2633.2 | 1164.9 | 2.260
+ char | unadjudicated/cw-2026-08-22-032050 | 29.135 s | keyed, unscored | `S` | ... | 2891.3 | 1320.8 | 2.189
+ char | unadjudicated/cw-2026-08-22-032050 | 29.345 s | keyed, unscored | `I` | .. | 998.6 | 1540.5 | 0.648
+ char | unadjudicated/cw-2026-08-22-032050 | 30.000 s | keyed, unscored | `I` | .. | 1540.5 | 2054.9 | 0.750
+ char | unadjudicated/cw-2026-08-22-032113 | 1.690 s | right | `A` | .- | 2174.2 | 329.0 | 6.608
+ char | unadjudicated/cw-2026-08-22-032113 | 2.410 s | right | `K` | -.- | 3493.2 | 344.0 | 10.155
+ char | unadjudicated/cw-2026-08-22-032113 | 2.675 s | right | `E` | . | 344.0 | 352.1 | 0.977
+ char | unadjudicated/cw-2026-08-22-032113 | 3.015 s | right | `T` | - | 190.5 | 390.2 | 0.488
+ char | unadjudicated/cw-2026-08-22-032113 | 5.040 s | right | `A` | .- | 154.3 | 423.9 | 0.364
+ char | unadjudicated/cw-2026-08-22-032113 | 5.515 s | right | `N` | -. | 314.0 | 428.6 | 0.733
+ char | unadjudicated/cw-2026-08-22-032113 | 6.135 s | wrong | `O` | --- | 390.2 | 443.1 | 0.881
+ char | unadjudicated/cw-2026-08-22-032113 | 6.740 s | right | `I` | .. | 227.5 | 428.6 | 0.531
+ char | unadjudicated/cw-2026-08-22-032113 | 7.215 s | right | `N` | -. | 524.6 | 409.4 | 1.281
+ char | unadjudicated/cw-2026-08-22-032113 | 7.555 s | right | `T` | - | 773.3 | 376.2 | 2.055
+ char | unadjudicated/cw-2026-08-22-032113 | 7.820 s | right | `E` | . | 297.4 | 376.2 | 0.791
+ char | unadjudicated/cw-2026-08-22-032113 | 8.375 s | right | `R` | .-. | 457.6 | 376.2 | 1.216
+ char | unadjudicated/cw-2026-08-22-032113 | 8.900 s | right | `N` | -. | 743.7 | 409.4 | 1.817
+ char | unadjudicated/cw-2026-08-22-032113 | 9.105 s | right | `E` | . | 428.6 | 423.9 | 1.011
+ char | unadjudicated/cw-2026-08-22-032113 | 9.455 s | right | `T` | - | 1044.9 | 443.1 | 2.358
+ char | unadjudicated/cw-2026-08-22-032113 | 10.670 s | right | `E` | . | 362.3 | 462.6 | 0.783
+ char | unadjudicated/cw-2026-08-22-032113 | 11.285 s | right | `R` | .-. | 673.2 | 443.1 | 1.519
+ char | unadjudicated/cw-2026-08-22-032113 | 11.760 s | wrong | `O` | --- | 337.7 | 443.1 | 0.762
+ char | unadjudicated/cw-2026-08-22-032113 | 12.100 s | right | `I` | .. | 192.8 | 395.4 | 0.488
+ char | unadjudicated/cw-2026-08-22-032113 | 12.955 s | right | `O` | --- | 843.9 | 350.0 | 2.411
+ char | unadjudicated/cw-2026-08-22-032113 | 13.445 s | right | `N` | -. | 467.6 | 346.0 | 1.351
+ char | unadjudicated/cw-2026-08-22-032113 | 13.940 s | right | `S` | ... | 130.7 | 358.3 | 0.365
+ char | unadjudicated/cw-2026-08-22-032113 | 15.060 s | keyed, unscored | `O` | --- | 495.4 | 346.0 | 1.432
+ char | unadjudicated/cw-2026-08-22-032113 | 15.820 s | keyed, unscored | `F` | ..-. | 223.9 | 358.3 | 0.625
+ char | unadjudicated/cw-2026-08-22-032113 | 17.155 s | keyed, unscored | `2` | ..--- | 206.4 | 364.2 | 0.567
+ char | unadjudicated/cw-2026-08-22-032113 | 18.480 s | keyed, unscored | `0` | ----- | 118.0 | 364.2 | 0.324
+ char | unadjudicated/cw-2026-08-22-032113 | 18.485 s | keyed, unscored | `0` | ----- | 117.2 | 420.8 | 0.279
+ char | unadjudicated/cw-2026-08-22-032113 | 19.560 s | keyed, unscored | `J` | .--- | 235.3 | 434.6 | 0.541
+ char | unadjudicated/cw-2026-08-22-032113 | 20.425 s | keyed, unscored | `6` | -.... | 354.3 | 434.6 | 0.815
+ char | unadjudicated/cw-2026-08-22-032113 | 22.510 s | keyed, unscored | `I` | .. | 640.6 | 387.8 | 1.652
+ char | unadjudicated/cw-2026-08-22-032113 | 23.405 s | keyed, unscored | `N` | -. | 1092.6 | 443.0 | 2.466
+ char | unadjudicated/cw-2026-08-22-032113 | 23.410 s | keyed, unscored | `N` | -. | 990.8 | 443.0 | 2.236
+ char | unadjudicated/cw-2026-08-22-032113 | 24.270 s | keyed, unscored | `I` | .. | 374.1 | 768.6 | 0.487
+ char | unadjudicated/cw-2026-08-22-032113 | 24.750 s | keyed, unscored | `T` | - | 2942.4 | 562.6 | 5.230
+ char | unadjudicated/cw-2026-08-22-032113 | 24.755 s | keyed, unscored | `T` | - | 2522.6 | 562.6 | 4.484
+ char | unadjudicated/cw-2026-08-22-032113 | 25.435 s | keyed, unscored | `E` | . | 401.6 | 773.0 | 0.519
+ char | unadjudicated/cw-2026-08-22-032113 | 25.945 s | keyed, unscored | `E` | . | 1080.3 | 773.0 | 1.398
+ char | unadjudicated/cw-2026-08-22-032113 | 26.355 s | keyed, unscored | `I` | .. | 2208.2 | 943.7 | 2.340
+ char | unadjudicated/cw-2026-08-22-032113 | 27.895 s | keyed, unscored | `E` | . | 484.5 | 1035.6 | 0.468
+ char | unadjudicated/cw-2026-08-22-032113 | 28.300 s | keyed, unscored | `S` | ... | 896.5 | 990.8 | 0.905
+ char | unadjudicated/cw-2026-08-22-032113 | 28.425 s | keyed, unscored | `E` | . | 1943.8 | 797.6 | 2.437
+ char | unadjudicated/cw-2026-08-22-032113 | 28.505 s | keyed, unscored | `E` | . | 57.8 | 1080.3 | 0.053
+ char | unadjudicated/cw-2026-08-22-032113 | 28.770 s | keyed, unscored | `E` | . | 231.3 | 988.4 | 0.234
+ char | unadjudicated/cw-2026-08-22-032113 | 28.925 s | keyed, unscored | `I` | .. | 649.6 | 896.5 | 0.725
+ char | unadjudicated/cw-2026-08-22-032113 | 29.000 s | keyed, unscored | `E` | . | 1943.8 | 797.6 | 2.437
+ char | unadjudicated/cw-2026-08-22-032113 | 29.435 s | keyed, unscored | `E` | . | 1950.1 | 698.7 | 2.791
+ char | unadjudicated/cw-2026-08-22-032113 | 29.945 s | keyed, unscored | `I` | .. | 698.7 | 773.0 | 0.904
+ char | unadjudicated/cw-2026-08-22-032129 | 3.200 s | keyed, unscored | `M` | -- | 144.2 | 135.3 | 1.066
+ char | unadjudicated/cw-2026-08-22-032129 | 3.415 s | keyed, unscored | `T` | - | 91.6 | 144.2 | 0.635
+ char | unadjudicated/cw-2026-08-22-032129 | 3.910 s | keyed, unscored | `M` | -- | 96.5 | 166.8 | 0.578
+ char | unadjudicated/cw-2026-08-22-032129 | 4.175 s | wrong | `T` | - | 36.9 | 189.3 | 0.195
+ char | unadjudicated/cw-2026-08-22-032129 | 4.990 s | wrong | `J` | .--- | 232.8 | 166.8 | 1.396
+ char | unadjudicated/cw-2026-08-22-032129 | 4.995 s | right | `2` | ..--- | 189.3 | 232.8 | 0.813
+ char | unadjudicated/cw-2026-08-22-032129 | 5.850 s | right | `6` | -.... | 141.9 | 234.2 | 0.606
+ char | unadjudicated/cw-2026-08-22-032129 | 7.180 s | right | `P` | .--. | 235.6 | 189.3 | 1.244
+ char | unadjudicated/cw-2026-08-22-032129 | 7.810 s | wrong | `G` | --. | 128.8 | 234.2 | 0.550
+ char | unadjudicated/cw-2026-08-22-032129 | 8.645 s | right | `O` | --- | 357.8 | 234.2 | 1.528
+ char | unadjudicated/cw-2026-08-22-032129 | 9.495 s | right | `P` | .--. | 296.6 | 296.7 | 1.000
+ char | unadjudicated/cw-2026-08-22-032129 | 9.990 s | right | `A` | .- | 440.8 | 327.2 | 1.347
+ char | unadjudicated/cw-2026-08-22-032129 | 10.750 s | right | `G` | --. | 486.5 | 390.8 | 1.245
+ char | unadjudicated/cw-2026-08-22-032129 | 11.245 s | right | `A` | .- | 423.7 | 397.3 | 1.066
+ char | unadjudicated/cw-2026-08-22-032129 | 11.600 s | right | `T` | - | 436.9 | 390.8 | 1.118
+ char | unadjudicated/cw-2026-08-22-032129 | 11.940 s | right | `I` | .. | 45.5 | 430.3 | 0.106
+ char | unadjudicated/cw-2026-08-22-032129 | 12.835 s | right | `O` | --- | 489.9 | 390.8 | 1.254
+ char | unadjudicated/cw-2026-08-22-032129 | 13.315 s | right | `N` | -. | 21561.4 | 408.9 | 52.728
+ char | unadjudicated/cw-2026-08-22-032129 | 14.870 s | right | `E` | . | 680.4 | 430.3 | 1.581
+ char | unadjudicated/cw-2026-08-22-032129 | 15.335 s | wrong | `E` | . | 1128.5 | 430.3 | 2.623
+ char | unadjudicated/cw-2026-08-22-032129 | 16.365 s | wrong | `E` | . | 1219.2 | 408.9 | 2.981
+ char | unadjudicated/cw-2026-08-22-032129 | 16.855 s | wrong | `E` | . | 32.4 | 408.9 | 0.079
+ char | unadjudicated/cw-2026-08-22-032129 | 17.400 s | wrong | `E` | . | 324.6 | 354.5 | 0.916
+ char | unadjudicated/cw-2026-08-22-032129 | 17.930 s | wrong | `I` | .. | 126.1 | 359.3 | 0.351
+ char | unadjudicated/cw-2026-08-22-032129 | 18.470 s | wrong | `I` | .. | 156.2 | 359.3 | 0.435
+ char | unadjudicated/cw-2026-08-22-032129 | 18.865 s | wrong | `E` | . | 394.1 | 267.7 | 1.472
+ char | unadjudicated/cw-2026-08-22-032129 | 19.330 s | right | `E` | . | 525.3 | 193.6 | 2.714
+ char | unadjudicated/cw-2026-08-22-032129 | 20.065 s | right | `I` | .. | 34.8 | 267.7 | 0.130
+ char | unadjudicated/cw-2026-08-22-032129 | 20.660 s | wrong | `E` | . | 220.5 | 191.1 | 1.154
+ char | unadjudicated/cw-2026-08-22-032129 | 21.945 s | wrong | `E` | . | 314.8 | 161.4 | 1.950
+ char | unadjudicated/cw-2026-08-22-032129 | 22.345 s | wrong | `E` | . | 166.6 | 218.1 | 0.764
+ char | unadjudicated/cw-2026-08-22-032129 | 23.035 s | keyed, unscored | `I` | .. | 468.7 | 191.1 | 2.453
+ char | unadjudicated/cw-2026-08-22-032129 | 23.380 s | keyed, unscored | `E` | . | 68.3 | 235.3 | 0.290
+ char | unadjudicated/cw-2026-08-22-032129 | 23.390 s | keyed, unscored | `E` | . | 72.8 | 258.5 | 0.281
+ char | unadjudicated/cw-2026-08-22-032129 | 23.500 s | keyed, unscored | `E` | . | 151.1 | 235.3 | 0.642
+ char | unadjudicated/cw-2026-08-22-032129 | 23.655 s | keyed, unscored | `E` | . | 533.6 | 218.1 | 2.447
+ char | unadjudicated/cw-2026-08-22-032129 | 23.880 s | keyed, unscored | `I` | .. | 215.6 | 248.8 | 0.867
+ char | unadjudicated/cw-2026-08-22-032129 | 24.140 s | keyed, unscored | `H` | .... | 113.2 | 258.5 | 0.438
+ char | unadjudicated/cw-2026-08-22-032129 | 24.280 s | keyed, unscored | `E` | . | 427.9 | 231.6 | 1.848
+ char | unadjudicated/cw-2026-08-22-032129 | 24.490 s | keyed, unscored | `E` | . | 468.6 | 248.8 | 1.884
+ char | unadjudicated/cw-2026-08-22-032129 | 24.620 s | keyed, unscored | `E` | . | 250.0 | 257.3 | 0.971
+ char | unadjudicated/cw-2026-08-22-032129 | 24.845 s | keyed, unscored | `I` | .. | 267.1 | 248.8 | 1.074
+ char | unadjudicated/cw-2026-08-22-032129 | 25.240 s | keyed, unscored | `E` | . | 26.6 | 300.7 | 0.088
+ char | unadjudicated/cw-2026-08-22-032129 | 25.475 s | keyed, unscored | `E` | . | 334.3 | 347.5 | 0.962
+ char | unadjudicated/cw-2026-08-22-032129 | 25.740 s | keyed, unscored | `S` | ... | 247.6 | 381.1 | 0.650
+ char | unadjudicated/cw-2026-08-22-032129 | 25.970 s | keyed, unscored | `E` | . | 610.1 | 300.7 | 2.029
+ char | unadjudicated/cw-2026-08-22-032129 | 26.235 s | keyed, unscored | `E` | . | 208.6 | 381.1 | 0.547
+ char | unadjudicated/cw-2026-08-22-032129 | 26.460 s | keyed, unscored | `E` | . | 499.6 | 300.7 | 1.661
+ char | unadjudicated/cw-2026-08-22-032129 | 26.730 s | keyed, unscored | `E` | . | 665.5 | 258.5 | 2.574
+ char | unadjudicated/cw-2026-08-22-032129 | 27.075 s | keyed, unscored | `I` | .. | 162.5 | 356.4 | 0.456
+ char | unadjudicated/cw-2026-08-22-032129 | 27.210 s | keyed, unscored | `E` | . | 672.6 | 356.4 | 1.887
+ char | unadjudicated/cw-2026-08-22-032129 | 27.345 s | keyed, unscored | `E` | . | 902.6 | 356.4 | 2.533
+ char | unadjudicated/cw-2026-08-22-032129 | 27.430 s | keyed, unscored | `E` | . | 496.9 | 394.9 | 1.258
+ char | unadjudicated/cw-2026-08-22-032129 | 27.695 s | keyed, unscored | `E` | . | 217.5 | 414.5 | 0.525
+ char | unadjudicated/cw-2026-08-22-032129 | 28.025 s | keyed, unscored | `I` | .. | 47.1 | 394.9 | 0.119
+ char | unadjudicated/cw-2026-08-22-032129 | 28.405 s | keyed, unscored | `S` | ... | 378.4 | 414.5 | 0.913
+ char | unadjudicated/cw-2026-08-22-032129 | 28.535 s | keyed, unscored | `E` | . | 231.7 | 394.9 | 0.587
+ char | unadjudicated/cw-2026-08-22-032129 | 28.900 s | keyed, unscored | `I` | .. | 417.7 | 231.7 | 1.803
+ char | unadjudicated/cw-2026-08-22-032129 | 28.985 s | keyed, unscored | `E` | . | 411.4 | 305.0 | 1.349
+ char | unadjudicated/cw-2026-08-22-032129 | 29.205 s | keyed, unscored | `I` | .. | 221.2 | 378.4 | 0.585
+ char | unadjudicated/cw-2026-08-22-032129 | 29.365 s | keyed, unscored | `E` | . | 1199.1 | 226.5 | 5.295
+ char | unadjudicated/cw-2026-08-22-032129 | 29.525 s | keyed, unscored | `E` | . | 17.3 | 231.7 | 0.075
+ char | unadjudicated/cw-2026-08-22-032129 | 29.705 s | keyed, unscored | `E` | . | 153.4 | 305.0 | 0.503
+ char | unadjudicated/cw-2026-08-22-032129 | 29.835 s | keyed, unscored | `E` | . | 1075.9 | 231.7 | 4.644
+ char | unadjudicated/cw-2026-08-22-032129 | 30.000 s | keyed, unscored | `I` | .. | 202.8 | 321.5 | 0.631
+ char | unadjudicated/cw-2026-08-18-003758 | 2.920 s | keyed, unscored | `R` | .-. | 1174.7 | 471.4 | 2.492
+ char | unadjudicated/cw-2026-08-18-003758 | 3.610 s | keyed, unscored | `L` | .-.. | 482.9 | 524.6 | 0.920
+ char | unadjudicated/cw-2026-08-18-003758 | 4.080 s | keyed, unscored | `T` | - | 891.6 | 503.8 | 1.770
+ char | unadjudicated/cw-2026-08-18-003758 | 4.615 s | keyed, unscored | `U` | ..- | 406.1 | 524.6 | 0.774
+ char | unadjudicated/cw-2026-08-18-003758 | 6.185 s | keyed, unscored | `I` | .. | 63.4 | 537.0 | 0.118
+ char | unadjudicated/cw-2026-08-18-003758 | 6.640 s | keyed, unscored | `A` | .- | 549.3 | 524.6 | 1.047
+ char | unadjudicated/cw-2026-08-18-003758 | 7.035 s | keyed, unscored | `N` | -. | 459.9 | 577.3 | 0.797
+ char | unadjudicated/cw-2026-08-18-003758 | 7.455 s | keyed, unscored | `E` | . | 201.8 | 549.3 | 0.367
+ char | unadjudicated/cw-2026-08-18-003758 | 7.910 s | keyed, unscored | `A` | .- | 524.6 | 516.1 | 1.017
+ char | unadjudicated/cw-2026-08-18-003758 | 8.335 s | keyed, unscored | `N` | -. | 763.0 | 471.4 | 1.619
+ char | unadjudicated/cw-2026-08-18-003758 | 8.905 s | keyed, unscored | `D` | -.. | 642.7 | 433.0 | 1.484
+ char | unadjudicated/cw-2026-08-18-003758 | 9.165 s | keyed, unscored | `E` | . | 365.8 | 492.3 | 0.743
+ char | unadjudicated/cw-2026-08-18-003758 | 9.825 s | keyed, unscored | `A` | .- | 1148.8 | 492.3 | 2.333
+ char | unadjudicated/cw-2026-08-18-003758 | 10.045 s | keyed, unscored | `E` | . | 605.3 | 537.0 | 1.127
+ char | unadjudicated/cw-2026-08-18-003758 | 10.250 s | keyed, unscored | `T` | - | 2161.7 | 565.0 | 3.826
+ char | unadjudicated/cw-2026-08-18-003758 | 10.435 s | keyed, unscored | `E` | . | 302.7 | 624.0 | 0.485
+ char | unadjudicated/cw-2026-08-18-003758 | 10.540 s | keyed, unscored | `E` | . | 311.9 | 693.7 | 0.450
+ char | unadjudicated/cw-2026-08-18-003758 | 10.640 s | wrong | `E` | . | 306.0 | 753.9 | 0.406
+ char | unadjudicated/cw-2026-08-18-003758 | 10.740 s | wrong | `E` | . | 315.3 | 693.7 | 0.454
+ char | unadjudicated/cw-2026-08-18-003758 | 10.940 s | wrong | `T` | - | 1202.7 | 666.3 | 1.805
+ char | unadjudicated/cw-2026-08-18-003758 | 11.475 s | right | `M` | -- | 1515.2 | 736.0 | 2.059
+ char | unadjudicated/cw-2026-08-18-003758 | 12.190 s | right | `P` | .--. | 744.8 | 666.3 | 1.118
+ char | unadjudicated/cw-2026-08-18-003758 | 13.055 s | right | `/` | -..-. | 874.9 | 619.3 | 1.413
+ char | unadjudicated/cw-2026-08-18-003758 | 13.755 s | right | `4` | ....- | 494.9 | 680.3 | 0.728
+ char | unadjudicated/cw-2026-08-18-003758 | 14.725 s | right | `Q` | --.- | 1286.6 | 572.2 | 2.248
+ char | unadjudicated/cw-2026-08-18-003758 | 15.110 s | right | `N` | -. | 877.0 | 637.6 | 1.375
+ char | unadjudicated/cw-2026-08-18-003758 | 15.420 s | right | `I` | .. | 294.5 | 685.4 | 0.430
+ char | unadjudicated/cw-2026-08-18-003758 | 16.090 s | right | `K` | -.- | 727.3 | 694.1 | 1.048
+ char | unadjudicated/cw-2026-08-18-003758 | 16.095 s | keyed, unscored | `K` | -.- | 745.5 | 661.7 | 1.127
+ char | unadjudicated/cw-2026-08-18-003758 | 19.500 s | keyed, unscored | `E` | . | 228.6 | 661.7 | 0.346
+ char | unadjudicated/cw-2026-08-18-003758 | 19.980 s | keyed, unscored | `A` | .- | 511.2 | 661.7 | 0.773
+ char | unadjudicated/cw-2026-08-18-003758 | 20.375 s | keyed, unscored | `N` | -. | 633.2 | 642.8 | 0.985
+ char | unadjudicated/cw-2026-08-18-003758 | 20.800 s | keyed, unscored | `E` | . | 317.2 | 642.8 | 0.493
+ char | unadjudicated/cw-2026-08-18-003758 | 21.265 s | keyed, unscored | `A` | .- | 642.0 | 572.2 | 1.122
+ char | unadjudicated/cw-2026-08-18-003758 | 21.640 s | keyed, unscored | `N` | -. | 643.5 | 467.9 | 1.375
+ char | unadjudicated/cw-2026-08-18-003758 | 22.485 s | keyed, unscored | `Q` | --.- | 875.5 | 511.2 | 1.713
+ char | unadjudicated/cw-2026-08-18-003758 | 22.865 s | keyed, unscored | `N` | -. | 680.0 | 467.9 | 1.453
+ char | unadjudicated/cw-2026-08-18-003758 | 23.170 s | keyed, unscored | `I` | .. | 222.1 | 511.2 | 0.434
+ char | unadjudicated/cw-2026-08-18-003758 | 23.825 s | keyed, unscored | `K` | -.- | 691.6 | 467.9 | 1.478
+ char | unadjudicated/cw-2026-08-18-003758 | 28.590 s | keyed, unscored | `E` | . | 176.0 | 633.2 | 0.278
+ char | unadjudicated/cw-2026-08-18-003758 | 29.010 s | keyed, unscored | `A` | .- | 226.7 | 533.3 | 0.425
+ char | unadjudicated/cw-2026-08-18-003758 | 29.445 s | keyed, unscored | `N` | -. | 424.5 | 642.0 | 0.661
+ char | unadjudicated/cw-2026-08-18-003758 | 29.850 s | keyed, unscored | `E` | . | 188.5 | 534.0 | 0.353
+ char | unadjudicated/cw-2026-09-24-004108 | 0.895 s | keyed, unscored | `H` | .... | 45.3 | 257.4 | 0.176
+ char | unadjudicated/cw-2026-09-24-004108 | 1.480 s | keyed, unscored | `R` | .-. | 90.4 | 289.5 | 0.312
+ char | unadjudicated/cw-2026-09-24-004108 | 2.170 s | keyed, unscored | `N` | -. | 508.4 | 257.4 | 1.975
+ char | unadjudicated/cw-2026-09-24-004108 | 2.705 s | keyed, unscored | `R` | .-. | 225.4 | 289.5 | 0.779
+ char | unadjudicated/cw-2026-09-24-004108 | 4.140 s | keyed, unscored | `2` | ..--- | 175.7 | 299.1 | 0.587
+ char | unadjudicated/cw-2026-09-24-004108 | 5.590 s | keyed, unscored | `0` | ----- | 308.7 | 289.5 | 1.066
+ char | unadjudicated/cw-2026-09-24-004108 | 6.325 s | keyed, unscored | `R` | .-. | 289.5 | 312.0 | 0.928
+ char | unadjudicated/cw-2026-09-24-004108 | 7.330 s | keyed, unscored | `H` | .... | 187.2 | 315.4 | 0.594
+ char | unadjudicated/cw-2026-09-24-004108 | 8.335 s | keyed, unscored | `X` | -..- | 405.5 | 312.0 | 1.300
+ char | unadjudicated/cw-2026-09-24-004108 | 9.200 s | keyed, unscored | `G` | --. | 435.0 | 315.5 | 1.379
+ char | unadjudicated/cw-2026-09-24-004108 | 10.435 s | keyed, unscored | `K` | -.- | 347.5 | 315.5 | 1.102
+ char | unadjudicated/cw-2026-09-24-004108 | 10.995 s | keyed, unscored | `E` | . | 85.6 | 331.6 | 0.258
+ char | unadjudicated/cw-2026-09-24-004108 | 12.385 s | keyed, unscored | `8` | ---.. | 315.4 | 331.6 | 0.951
+ char | unadjudicated/cw-2026-09-24-004108 | 13.395 s | keyed, unscored | `W` | .-- | 406.3 | 315.5 | 1.288
+ char | unadjudicated/cw-2026-09-24-004108 | 14.340 s | wrong | `G` | --. | 400.6 | 331.6 | 1.208
+ char | unadjudicated/cw-2026-09-24-004108 | 15.285 s | right | `K` | -.- | 509.8 | 331.6 | 1.538
+ char | unadjudicated/cw-2026-09-24-004108 | 16.850 s | right | `2` | ..--- | 571.1 | 331.6 | 1.722
+ char | unadjudicated/cw-2026-09-24-004108 | 17.775 s | wrong | `6` | -.... | 315.6 | 331.5 | 0.952
+ char | unadjudicated/cw-2026-09-24-004108 | 18.775 s | keyed, unscored | `S` | ... | 126.9 | 331.6 | 0.383
+ char | unadjudicated/cw-2026-09-24-004108 | 19.245 s | keyed, unscored | `T` | - | 367.7 | 315.5 | 1.165
+ char | unadjudicated/cw-2026-09-24-004108 | 19.935 s | keyed, unscored | `M` | -- | 164.6 | 384.1 | 0.428
+ char | unadjudicated/cw-2026-09-24-004108 | 20.845 s | keyed, unscored | `W` | .-- | 164.6 | 384.1 | 0.428
+ char | unadjudicated/cw-2026-09-24-004108 | 22.145 s | keyed, unscored | `O` | --- | 589.0 | 292.8 | 2.011
+ char | unadjudicated/cw-2026-09-24-004108 | 22.790 s | keyed, unscored | `H` | .... | 175.4 | 307.3 | 0.571
+ char | unadjudicated/cw-2026-09-24-004108 | 23.780 s | keyed, unscored | `S` | ... | 210.1 | 299.0 | 0.703
+ char | unadjudicated/cw-2026-09-24-004108 | 24.050 s | keyed, unscored | `E` | . | 270.0 | 254.5 | 1.061
+ char | unadjudicated/cw-2026-09-24-004108 | 24.835 s | keyed, unscored | `P` | .--. | 491.8 | 210.1 | 2.341
+ char | unadjudicated/cw-2026-09-24-004108 | 26.155 s | keyed, unscored | `1` | .---- | 492.7 | 240.0 | 2.053
+ char | unadjudicated/cw-2026-09-24-004108 | 27.365 s | keyed, unscored | `9` | ----. | 439.7 | 210.1 | 2.093
+ char | unadjudicated/cw-2026-09-24-004108 | 28.580 s | keyed, unscored | `R` | .-. | 196.3 | 284.5 | 0.690
+ char | unadjudicated/cw-2026-09-24-004108 | 29.065 s | keyed, unscored | `I` | .. | 81.4 | 299.0 | 0.272
+ char | unadjudicated/cw-2026-09-24-004108 | 30.000 s | keyed, unscored | `C` | -.-. | 299.0 | 240.0 | 1.246
+ char | unadjudicated/cw-2026-09-24-004133 | 0.920 s | keyed, unscored | `1` | .---- | 82.1 | 300.6 | 0.273
+ char | unadjudicated/cw-2026-09-24-004133 | 2.135 s | keyed, unscored | `9` | ----. | 291.5 | 240.9 | 1.210
+ char | unadjudicated/cw-2026-09-24-004133 | 3.350 s | keyed, unscored | `R` | .-. | 189.3 | 266.2 | 0.711
+ char | unadjudicated/cw-2026-09-24-004133 | 3.835 s | keyed, unscored | `I` | .. | 83.9 | 240.9 | 0.348
+ char | unadjudicated/cw-2026-09-24-004133 | 4.750 s | right | `C` | -.-. | 309.7 | 203.3 | 1.523
+ char | unadjudicated/cw-2026-09-24-004133 | 5.505 s | right | `H` | .... | 124.8 | 240.9 | 0.518
+ char | unadjudicated/cw-2026-09-24-004133 | 6.085 s | right | `A` | .- | 486.0 | 203.3 | 2.390
+ char | unadjudicated/cw-2026-09-24-004133 | 6.645 s | right | `R` | .-. | 451.6 | 217.4 | 2.078
+ char | unadjudicated/cw-2026-09-24-004133 | 7.040 s | keyed, unscored | `T` | - | 988.8 | 229.1 | 4.316
+ char | unadjudicated/cw-2026-09-24-004133 | 7.260 s | keyed, unscored | `E` | . | 240.9 | 300.6 | 0.801
+ char | unadjudicated/cw-2026-09-24-004133 | 8.265 s | keyed, unscored | `T` | - | 217.4 | 275.3 | 0.790
+ char | unadjudicated/cw-2026-09-24-004133 | 8.485 s | keyed, unscored | `E` | . | 83.4 | 275.3 | 0.303
+ char | unadjudicated/cw-2026-09-24-004133 | 10.855 s | keyed, unscored | `E` | . | 14.6 | 275.3 | 0.053
+ char | unadjudicated/cw-2026-09-24-004133 | 11.815 s | keyed, unscored | `G` | --. | 431.4 | 227.8 | 1.894
+ char | unadjudicated/cw-2026-09-24-004133 | 12.290 s | keyed, unscored | `E` | . | 171.1 | 239.5 | 0.714
+ char | unadjudicated/cw-2026-09-24-004133 | 13.105 s | keyed, unscored | `L` | .-.. | 311.2 | 225.0 | 1.383
+ char | unadjudicated/cw-2026-09-24-004133 | 14.510 s | keyed, unscored | `K` | -.- | 504.7 | 219.9 | 2.295
+ char | unadjudicated/cw-2026-09-24-004133 | 16.125 s | keyed, unscored | `0` | ----- | 592.5 | 215.1 | 2.755
+ char | unadjudicated/cw-2026-09-24-004133 | 16.995 s | keyed, unscored | `D` | -.. | 238.1 | 191.9 | 1.241
+ char | unadjudicated/cw-2026-09-24-004133 | 17.710 s | keyed, unscored | `T` | - | 52.0 | 217.6 | 0.239
+ char | unadjudicated/cw-2026-09-24-004133 | 19.195 s | keyed, unscored | `A` | .- | 59.6 | 222.4 | 0.268
+ char | unadjudicated/cw-2026-09-24-004133 | 19.520 s | keyed, unscored | `T` | - | 132.8 | 227.5 | 0.584
+ char | unadjudicated/cw-2026-09-24-004133 | 20.805 s | keyed, unscored | `5` | ..... | 60.6 | 222.4 | 0.272
+ char | unadjudicated/cw-2026-09-24-004133 | 22.335 s | keyed, unscored | `0` | ----- | 232.6 | 217.6 | 1.069
+ char | unadjudicated/cw-2026-09-24-004133 | 23.825 s | keyed, unscored | `0` | ----- | 222.4 | 212.8 | 1.045
+ char | unadjudicated/cw-2026-09-24-004133 | 24.695 s | keyed, unscored | `5` | ..... | 212.8 | 177.6 | 1.198
+ char | unadjudicated/cw-2026-09-24-004133 | 25.900 s | keyed, unscored | `H` | .... | 62.2 | 212.8 | 0.292
+ char | unadjudicated/cw-2026-09-24-004133 | 28.905 s | keyed, unscored | `8` | ---.. | 381.3 | 97.5 | 3.910
+ char | unadjudicated/cw-2026-09-24-004205 | 1.870 s | keyed, unscored | `E` | . | 89.0 | 368.9 | 0.241
+ char | unadjudicated/cw-2026-09-24-004205 | 2.365 s | keyed, unscored | `M` | -- | 356.2 | 257.2 | 1.385
+ char | unadjudicated/cw-2026-09-24-004205 | 3.150 s | keyed, unscored | `M` | -- | 424.2 | 258.7 | 1.640
+ char | unadjudicated/cw-2026-09-24-004205 | 3.745 s | keyed, unscored | `A` | .- | 381.6 | 260.1 | 1.467
+ char | unadjudicated/cw-2026-09-24-004205 | 4.445 s | keyed, unscored | `H` | .... | 147.4 | 291.0 | 0.507
+ char | unadjudicated/cw-2026-09-24-004205 | 4.950 s | keyed, unscored | `A` | .- | 413.3 | 257.2 | 1.607
+ char | unadjudicated/cw-2026-09-24-004205 | 6.040 s | keyed, unscored | `N` | -. | 481.8 | 258.7 | 1.863
+ char | unadjudicated/cw-2026-09-24-004205 | 6.290 s | keyed, unscored | `E` | . | 169.5 | 260.1 | 0.651
+ char | unadjudicated/cw-2026-09-24-004205 | 7.720 s | keyed, unscored | `6` | -.... | 257.2 | 248.7 | 1.034
+ char | unadjudicated/cw-2026-09-24-004205 | 9.010 s | keyed, unscored | `8` | ---.. | 237.3 | 258.7 | 0.917
+ char | unadjudicated/cw-2026-09-24-004205 | 10.270 s | keyed, unscored | `1` | .---- | 260.1 | 212.2 | 1.226
+ char | unadjudicated/cw-2026-09-24-004205 | 11.280 s | keyed, unscored | `3` | ...-- | 321.9 | 212.2 | 1.517
+ char | unadjudicated/cw-2026-09-24-004205 | 12.105 s | keyed, unscored | `5` | ..... | 187.1 | 247.3 | 0.757
+ char | unadjudicated/cw-2026-09-24-004205 | 14.145 s | keyed, unscored | `E` | . | 75.7 | 258.7 | 0.292
+ char | unadjudicated/cw-2026-09-24-004205 | 14.850 s | keyed, unscored | `M` | -- | 335.1 | 212.2 | 1.579
+ char | unadjudicated/cw-2026-09-24-004205 | 15.325 s | keyed, unscored | `A` | .- | 122.4 | 247.3 | 0.495
+ char | unadjudicated/cw-2026-09-24-004205 | 15.705 s | keyed, unscored | `I` | .. | 53.1 | 258.7 | 0.205
+ char | unadjudicated/cw-2026-09-24-004205 | 16.270 s | keyed, unscored | `R` | .-. | 111.6 | 280.2 | 0.398
+ char | unadjudicated/cw-2026-09-24-004205 | 17.530 s | keyed, unscored | `F` | ..-. | 125.4 | 308.8 | 0.406
+ char | unadjudicated/cw-2026-09-24-004205 | 18.750 s | keyed, unscored | `J` | .--- | 410.5 | 308.8 | 1.329
+ char | unadjudicated/cw-2026-09-24-004205 | 19.490 s | keyed, unscored | `U` | ..- | 321.5 | 253.8 | 1.267
+ char | unadjudicated/cw-2026-09-24-004205 | 20.410 s | keyed, unscored | `G` | --. | 455.4 | 308.8 | 1.475
+ char | unadjudicated/cw-2026-09-24-004205 | 20.880 s | keyed, unscored | `E` | . | 177.3 | 328.3 | 0.540
+ char | unadjudicated/cw-2026-09-24-004205 | 21.660 s | keyed, unscored | `L` | .-.. | 300.3 | 319.4 | 0.940
+ char | unadjudicated/cw-2026-09-24-004205 | 22.645 s | right | `A` | .- | 317.3 | 338.1 | 0.939
+ char | unadjudicated/cw-2026-09-24-004205 | 23.020 s | right | `T` | - | 366.8 | 319.4 | 1.148
+ char | unadjudicated/cw-2026-09-24-004205 | 24.425 s | right | `Y` | -.-- | 354.7 | 321.5 | 1.103
+ char | unadjudicated/cw-2026-09-24-004205 | 25.015 s | right | `A` | .- | 520.4 | 338.1 | 1.539
+ char | unadjudicated/cw-2026-09-24-004205 | 25.730 s | right | `H` | .... | 207.3 | 354.7 | 0.584
+ char | unadjudicated/cw-2026-09-24-004205 | 26.750 s | right | `O` | --- | 964.2 | 336.0 | 2.870
+ char | unadjudicated/cw-2026-09-24-004205 | 27.640 s | right | `O` | --- | 549.5 | 317.3 | 1.731
+ char | unadjudicated/cw-2026-09-24-004205 | 28.680 s | right | `D` | -.. | 221.2 | 360.8 | 0.613
+ char | unadjudicated/cw-2026-09-24-004205 | 29.645 s | keyed, unscored | `O` | --- | 382.3 | 354.7 | 1.078
+ char | unadjudicated/cw-2026-09-24-004205 | 30.000 s | keyed, unscored | `E` | . | 260.3 | 374.6 | 0.695
+ char | unadjudicated/cw-2026-09-24-004234 | 0.115 s | keyed, unscored | `E` | . | 31.3 | 265.8 | 0.118
+ char | unadjudicated/cw-2026-09-24-004234 | 1.995 s | keyed, unscored | `C` | -.-. | 259.2 | 272.4 | 0.952
+ char | unadjudicated/cw-2026-09-24-004234 | 2.910 s | right | `O` | --- | 549.4 | 265.8 | 2.067
+ char | unadjudicated/cw-2026-09-24-004234 | 3.565 s | right | `M` | -- | 466.6 | 272.4 | 1.713
+ char | unadjudicated/cw-2026-09-24-004234 | 4.670 s | right | `<BT>` | -...- | 272.4 | 355.6 | 0.766
+ char | unadjudicated/cw-2026-09-24-004234 | 5.670 s | right | `T` | - | 620.1 | 272.4 | 2.276
+ char | unadjudicated/cw-2026-09-24-004234 | 6.335 s | right | `H` | .... | 99.2 | 355.6 | 0.279
+ char | unadjudicated/cw-2026-09-24-004234 | 6.835 s | right | `A` | .- | 248.6 | 300.7 | 0.827
+ char | unadjudicated/cw-2026-09-24-004234 | 7.330 s | right | `N` | -. | 187.6 | 355.6 | 0.528
+ char | unadjudicated/cw-2026-09-24-004234 | 7.715 s | wrong | `T` | - | 410.5 | 286.5 | 1.433
+ char | unadjudicated/cw-2026-09-24-004234 | 8.045 s | wrong | `T` | - | 439.9 | 316.5 | 1.390
+ char | unadjudicated/cw-2026-09-24-004234 | 8.895 s | keyed, unscored | `T` | - | 486.9 | 286.5 | 1.699
+ char | unadjudicated/cw-2026-09-24-004234 | 9.450 s | keyed, unscored | `K` | -.- | 300.7 | 260.5 | 1.154
+ char | unadjudicated/cw-2026-09-24-004234 | 10.590 s | keyed, unscored | `E` | . | 122.1 | 316.5 | 0.386
+ char | unadjudicated/cw-2026-09-24-004234 | 10.925 s | keyed, unscored | `T` | - | 517.6 | 274.6 | 1.885
+ char | unadjudicated/cw-2026-09-24-004234 | 12.190 s | keyed, unscored | `F` | ..-. | 59.5 | 320.9 | 0.185
+ char | unadjudicated/cw-2026-09-24-004234 | 13.140 s | keyed, unscored | `O` | --- | 447.7 | 307.3 | 1.457
+ char | unadjudicated/cw-2026-09-24-004234 | 13.720 s | keyed, unscored | `R` | .-. | 128.5 | 330.0 | 0.389
+ char | unadjudicated/cw-2026-09-24-004234 | 15.335 s | keyed, unscored | `O` | --- | 332.4 | 307.3 | 1.082
+ char | unadjudicated/cw-2026-09-24-004234 | 15.975 s | keyed, unscored | `N` | -. | 230.9 | 307.3 | 0.751
+ char | unadjudicated/cw-2026-09-24-004234 | 17.340 s | keyed, unscored | `H` | .... | 169.0 | 307.3 | 0.550
+ char | unadjudicated/cw-2026-09-24-004234 | 18.470 s | keyed, unscored | `Y` | -.-- | 594.7 | 259.4 | 2.292
+ char | unadjudicated/cw-2026-09-24-004234 | 19.360 s | keyed, unscored | `P` | .--. | 314.0 | 307.8 | 1.020
+ char | unadjudicated/cw-2026-09-24-004234 | 19.365 s | keyed, unscored | `P` | .--. | 327.7 | 286.5 | 1.144
+ char | unadjudicated/cw-2026-09-24-004234 | 21.055 s | keyed, unscored | `N` | -. | 80.7 | 300.9 | 0.268
+ char | unadjudicated/cw-2026-09-24-004234 | 22.260 s | keyed, unscored | `A` | .- | 337.7 | 286.5 | 1.178
+ char | unadjudicated/cw-2026-09-24-004234 | 22.690 s | keyed, unscored | `I` | .. | 150.7 | 300.9 | 0.501
+ char | unadjudicated/cw-2026-09-24-004234 | 23.245 s | keyed, unscored | `R` | .-. | 287.9 | 299.6 | 0.961
+ char | unadjudicated/cw-2026-09-24-004234 | 24.770 s | keyed, unscored | `Q` | --.- | 492.1 | 287.9 | 1.709
+ char | unadjudicated/cw-2026-09-24-004234 | 25.280 s | keyed, unscored | `S` | ... | 96.5 | 320.9 | 0.301
+ char | unadjudicated/cw-2026-09-24-004234 | 26.120 s | keyed, unscored | `O` | --- | 560.9 | 287.9 | 1.948
+ char | unadjudicated/cw-2026-09-24-004234 | 27.350 s | keyed, unscored | `W` | .-- | 285.2 | 307.8 | 0.927
+ char | unadjudicated/cw-2026-09-24-004234 | 27.760 s | keyed, unscored | `I` | .. | 141.2 | 287.9 | 0.490
+ char | unadjudicated/cw-2026-09-24-004234 | 28.140 s | keyed, unscored | `T` | - | 762.1 | 286.5 | 2.660
+ char | unadjudicated/cw-2026-09-24-004234 | 28.740 s | keyed, unscored | `H` | .... | 151.4 | 287.9 | 0.526
+ char | unadjudicated/cw-2026-09-24-004234 | 30.000 s | keyed, unscored | `W` | .-- | 685.9 | 286.5 | 2.394
+ char | unadjudicated/cw-2026-09-24-004322 | 1.730 s | wrong | `P` | .--. | 30.4 | 350.2 | 0.087
+ char | unadjudicated/cw-2026-09-24-004322 | 2.705 s | wrong | `O` | --- | 609.1 | 345.3 | 1.764
+ char | unadjudicated/cw-2026-09-24-004322 | 3.225 s | wrong | `N` | -. | 460.6 | 312.7 | 1.473
+ char | unadjudicated/cw-2026-09-24-004322 | 3.820 s | right | `S` | ... | 190.1 | 345.3 | 0.551
+ char | unadjudicated/cw-2026-09-24-004322 | 4.750 s | right | `O` | --- | 849.3 | 267.4 | 3.177
+ char | unadjudicated/cw-2026-09-24-004322 | 5.330 s | right | `R` | .-. | 355.1 | 280.2 | 1.267
+ char | unadjudicated/cw-2026-09-24-004322 | 5.615 s | right | `E` | . | 163.3 | 350.2 | 0.466
+ char | unadjudicated/cw-2026-09-24-004322 | 6.235 s | right | `D` | -.. | 345.3 | 355.1 | 0.972
+ char | unadjudicated/cw-2026-09-24-004322 | 7.315 s | right | `A` | .- | 280.2 | 350.2 | 0.800
+ char | unadjudicated/cw-2026-09-24-004322 | 7.990 s | right | `M` | -- | 366.2 | 324.3 | 1.129
+ char | unadjudicated/cw-2026-09-24-004322 | 8.300 s | right | `E` | . | 98.4 | 344.9 | 0.285
+ char | unadjudicated/cw-2026-09-24-004322 | 8.920 s | right | `R` | .-. | 254.5 | 323.9 | 0.786
+ char | unadjudicated/cw-2026-09-24-004322 | 9.335 s | right | `I` | .. | 127.9 | 323.9 | 0.395
+ char | unadjudicated/cw-2026-09-24-004322 | 10.190 s | right | `C` | -.-. | 408.0 | 291.7 | 1.399
+ char | unadjudicated/cw-2026-09-24-004322 | 10.680 s | right | `A` | .- | 431.9 | 291.7 | 1.481
+ char | unadjudicated/cw-2026-09-24-004322 | 12.215 s | keyed, unscored | `2` | ..--- | 459.4 | 323.9 | 1.418
+ char | unadjudicated/cw-2026-09-24-004322 | 13.005 s | keyed, unscored | `5` | ..... | 103.6 | 323.9 | 0.320
+ char | unadjudicated/cw-2026-09-24-004322 | 14.400 s | keyed, unscored | `9` | ----. | 303.2 | 355.4 | 0.853
+ char | unadjudicated/cw-2026-09-24-004322 | 15.865 s | right | `O` | --- | 344.6 | 355.6 | 0.969
+ char | unadjudicated/cw-2026-09-24-004322 | 16.685 s | right | `P` | .--. | 276.0 | 376.3 | 0.733
+ char | unadjudicated/cw-2026-09-24-004322 | 17.050 s | right | `E` | . | 200.2 | 376.3 | 0.532
+ char | unadjudicated/cw-2026-09-24-004322 | 17.670 s | right | `R` | .-. | 503.6 | 323.9 | 1.555
+ char | unadjudicated/cw-2026-09-24-004322 | 18.180 s | right | `A` | .- | 607.3 | 289.6 | 2.097
+ char | unadjudicated/cw-2026-09-24-004322 | 18.645 s | right | `T` | - | 1041.3 | 289.6 | 3.596
+ char | unadjudicated/cw-2026-09-24-004322 | 19.070 s | right | `I` | .. | 218.7 | 323.9 | 0.675
+ char | unadjudicated/cw-2026-09-24-004322 | 19.945 s | right | `O` | --- | 944.4 | 323.9 | 2.916
+ char | unadjudicated/cw-2026-09-24-004322 | 20.430 s | right | `N` | -. | 529.3 | 310.3 | 1.706
+ char | unadjudicated/cw-2026-09-24-004322 | 21.700 s | keyed, unscored | `X` | -..- | 249.1 | 429.1 | 0.581
+ char | unadjudicated/cw-2026-09-24-004322 | 22.630 s | right | `A` | .- | 69.0 | 429.1 | 0.161
+ char | unadjudicated/cw-2026-09-24-004322 | 23.315 s | right | `L` | .-.. | 193.0 | 429.1 | 0.450
+ char | unadjudicated/cw-2026-09-24-004322 | 23.970 s | right | `L` | .-.. | 213.5 | 301.9 | 0.707
+ char | unadjudicated/cw-2026-09-24-004322 | 25.110 s | right | `L` | .-.. | 354.6 | 218.7 | 1.621
+ char | unadjudicated/cw-2026-09-24-004322 | 26.030 s | right | `O` | --- | 815.0 | 216.1 | 3.771
+ char | unadjudicated/cw-2026-09-24-004322 | 26.790 s | right | `G` | --. | 636.4 | 213.5 | 2.982
+ char | unadjudicated/cw-2026-09-24-004322 | 27.380 s | right | `S` | ... | 163.9 | 231.3 | 0.709
+ char | unadjudicated/cw-2026-09-24-004322 | 28.505 s | right | `W` | .-- | 529.2 | 193.0 | 2.742
+ char | unadjudicated/cw-2026-09-24-004322 | 28.915 s | keyed, unscored | `I` | .. | 111.6 | 203.2 | 0.549
+ char | unadjudicated/cw-2026-09-24-004322 | 29.600 s | keyed, unscored | `L` | .-.. | 164.9 | 213.5 | 0.773
+ char | unadjudicated/cw-2026-09-24-004322 | 30.000 s | keyed, unscored | `A` | .- | 142.7 | 284.0 | 0.502
+ char | unadjudicated/cw-2026-09-24-004347 | 0.840 s | keyed, unscored | `O` | --- | 174.8 | 175.9 | 0.994
+ char | unadjudicated/cw-2026-09-24-004347 | 1.600 s | keyed, unscored | `G` | --. | 176.9 | 175.0 | 1.011
+ char | unadjudicated/cw-2026-09-24-004347 | 2.190 s | keyed, unscored | `S` | ... | 174.9 | 186.9 | 0.936
+ char | unadjudicated/cw-2026-09-24-004347 | 3.315 s | keyed, unscored | `W` | .-- | 551.6 | 176.9 | 3.119
+ char | unadjudicated/cw-2026-09-24-004347 | 3.725 s | right | `I` | .. | 124.9 | 201.7 | 0.619
+ char | unadjudicated/cw-2026-09-24-004347 | 4.410 s | right | `L` | .-.. | 196.9 | 206.5 | 0.953
+ char | unadjudicated/cw-2026-09-24-004347 | 5.075 s | right | `L` | .-.. | 175.0 | 201.7 | 0.868
+ char | unadjudicated/cw-2026-09-24-004347 | 6.250 s | right | `B` | -... | 206.5 | 196.8 | 1.050
+ char | unadjudicated/cw-2026-09-24-004347 | 6.525 s | right | `E` | . | 162.6 | 196.8 | 0.826
+ char | unadjudicated/cw-2026-09-24-004347 | 7.440 s | right | `U` | ..- | 383.8 | 196.8 | 1.950
+ char | unadjudicated/cw-2026-09-24-004347 | 8.240 s | right | `P` | .--. | 495.0 | 201.7 | 2.455
+ char | unadjudicated/cw-2026-09-24-004347 | 9.025 s | right | `L` | .-.. | 336.4 | 284.5 | 1.182
+ char | unadjudicated/cw-2026-09-24-004347 | 9.975 s | right | `O` | --- | 512.7 | 271.5 | 1.889
+ char | unadjudicated/cw-2026-09-24-004347 | 10.425 s | right | `A` | .- | 362.5 | 360.1 | 1.007
+ char | unadjudicated/cw-2026-09-24-004347 | 11.085 s | right | `D` | -.. | 196.8 | 408.0 | 0.482
+ char | unadjudicated/cw-2026-09-24-004347 | 11.435 s | right | `E` | . | 93.6 | 408.0 | 0.229
+ char | unadjudicated/cw-2026-09-24-004347 | 12.100 s | right | `D` | -.. | 178.5 | 408.0 | 0.437
+ char | unadjudicated/cw-2026-09-24-004347 | 13.020 s | right | `T` | - | 432.2 | 373.1 | 1.158
+ char | unadjudicated/cw-2026-09-24-004347 | 13.860 s | right | `O` | --- | 553.4 | 349.5 | 1.584
+ char | unadjudicated/cw-2026-09-24-004347 | 14.820 s | right | `A` | .- | 530.0 | 293.3 | 1.807
+ char | unadjudicated/cw-2026-09-24-004347 | 15.555 s | right | `R` | .-. | 467.6 | 306.4 | 1.526
+ char | unadjudicated/cw-2026-09-24-004347 | 16.175 s | right | `R` | .-. | 641.2 | 306.4 | 2.093
+ char | unadjudicated/cw-2026-09-24-004347 | 16.870 s | right | `L` | .-.. | 434.5 | 313.8 | 1.385
+ char | unadjudicated/cw-2026-09-24-004347 | 18.190 s | right | `L` | .-.. | 219.5 | 433.4 | 0.507
+ char | unadjudicated/cw-2026-09-24-004347 | 19.280 s | added | `O` | --- | 144.0 | 433.4 | 0.332
+ char | unadjudicated/cw-2026-09-24-004347 | 19.285 s | right | `O` | --- | 147.4 | 451.0 | 0.327
+ char | unadjudicated/cw-2026-09-24-004347 | 19.820 s | right | `T` | - | 173.2 | 451.0 | 0.384
+ char | unadjudicated/cw-2026-09-24-004347 | 20.655 s | right | `W` | .-- | 250.2 | 405.9 | 0.616
+ char | unadjudicated/cw-2026-09-24-004347 | 21.955 s | keyed, unscored | `<BT>` | -...- | 377.4 | 275.6 | 1.369
+ char | unadjudicated/cw-2026-09-24-004347 | 22.990 s | keyed, unscored | `A` | .- | 547.1 | 275.6 | 1.985
+ char | unadjudicated/cw-2026-09-24-004347 | 23.510 s | keyed, unscored | `N` | -. | 541.1 | 247.7 | 2.185
+ char | unadjudicated/cw-2026-09-24-004347 | 23.960 s | keyed, unscored | `T` | - | 998.1 | 247.7 | 4.030
+ char | unadjudicated/cw-2026-09-24-004347 | 24.640 s | keyed, unscored | `H` | .... | 211.6 | 301.0 | 0.703
+ char | unadjudicated/cw-2026-09-24-004347 | 25.515 s | keyed, unscored | `O` | --- | 804.8 | 275.6 | 2.920
+ char | unadjudicated/cw-2026-09-24-004347 | 26.000 s | keyed, unscored | `N` | -. | 301.0 | 337.4 | 0.892
+ char | unadjudicated/cw-2026-09-24-004347 | 26.925 s | keyed, unscored | `Y` | -.-- | 245.1 | 357.4 | 0.686
+ char | unadjudicated/cw-2026-09-24-004347 | 28.150 s | keyed, unscored | `L` | .-.. | 222.6 | 377.4 | 0.590
+ char | unadjudicated/cw-2026-09-24-004347 | 28.805 s | keyed, unscored | `U` | ..- | 337.4 | 387.6 | 0.871
+ char | unadjudicated/cw-2026-09-24-004347 | 29.345 s | keyed, unscored | `S` | ... | 155.8 | 337.4 | 0.462
+ char | unadjudicated/cw-2026-09-24-004347 | 30.000 s | keyed, unscored | `N` | -. | 474.1 | 273.0 | 1.737
+ char | unadjudicated/cw-2026-09-24-004405 | 1.735 s | keyed, unscored | `T` | - | 216.8 | 443.9 | 0.488
+ char | unadjudicated/cw-2026-09-24-004405 | 2.565 s | keyed, unscored | `W` | .-- | 269.5 | 399.9 | 0.674
+ char | unadjudicated/cw-2026-09-24-004405 | 3.865 s | keyed, unscored | `<BT>` | -...- | 399.9 | 312.0 | 1.282
+ char | unadjudicated/cw-2026-09-24-004405 | 4.900 s | keyed, unscored | `A` | .- | 560.8 | 332.9 | 1.684
+ char | unadjudicated/cw-2026-09-24-004405 | 5.420 s | keyed, unscored | `N` | -. | 488.0 | 301.2 | 1.620
+ char | unadjudicated/cw-2026-09-24-004405 | 5.870 s | keyed, unscored | `T` | - | 1060.8 | 269.5 | 3.937
+ char | unadjudicated/cw-2026-09-24-004405 | 6.550 s | keyed, unscored | `H` | .... | 204.3 | 343.7 | 0.594
+ char | unadjudicated/cw-2026-09-24-004405 | 7.425 s | keyed, unscored | `O` | --- | 765.4 | 269.5 | 2.840
+ char | unadjudicated/cw-2026-09-24-004405 | 7.915 s | keyed, unscored | `N` | -. | 354.5 | 301.2 | 1.177
+ char | unadjudicated/cw-2026-09-24-004405 | 8.835 s | keyed, unscored | `Y` | -.-- | 239.4 | 343.7 | 0.697
+ char | unadjudicated/cw-2026-09-24-004405 | 10.060 s | keyed, unscored | `L` | .-.. | 218.3 | 343.7 | 0.635
+ char | unadjudicated/cw-2026-09-24-004405 | 10.715 s | keyed, unscored | `U` | ..- | 332.9 | 333.5 | 0.998
+ char | unadjudicated/cw-2026-09-24-004405 | 11.260 s | keyed, unscored | `S` | ... | 162.7 | 332.6 | 0.489
+ char | unadjudicated/cw-2026-09-24-004405 | 12.225 s | keyed, unscored | `C` | -.-. | 127.7 | 332.6 | 0.384
+ char | unadjudicated/cw-2026-09-24-004405 | 12.885 s | keyed, unscored | `R` | .-. | 432.7 | 292.7 | 1.478
+ char | unadjudicated/cw-2026-09-24-004405 | 13.140 s | keyed, unscored | `E` | . | 196.8 | 332.6 | 0.592
+ char | unadjudicated/cw-2026-09-24-004405 | 14.285 s | keyed, unscored | `K` | -.- | 444.6 | 313.8 | 1.417
+ char | unadjudicated/cw-2026-09-24-004405 | 15.535 s | keyed, unscored | `8` | ---.. | 312.4 | 316.7 | 0.987
+ char | unadjudicated/cw-2026-09-24-004405 | 16.660 s | keyed, unscored | `Z` | --.. | 272.9 | 316.7 | 0.862
+ char | unadjudicated/cw-2026-09-24-004405 | 17.205 s | keyed, unscored | `T` | - | 429.2 | 316.7 | 1.355
+ char | unadjudicated/cw-2026-09-24-004405 | 18.535 s | keyed, unscored | `W` | .-- | 332.2 | 316.7 | 1.049
+ char | unadjudicated/cw-2026-09-24-004405 | 19.780 s | keyed, unscored | `1` | .---- | 508.3 | 325.2 | 1.563
+ char | unadjudicated/cw-2026-09-24-004405 | 20.300 s | keyed, unscored | `A` | .- | 57.9 | 357.7 | 0.162
+ char | unadjudicated/cw-2026-09-24-004405 | 21.045 s | keyed, unscored | `W` | .-- | 510.4 | 325.2 | 1.569
+ char | unadjudicated/cw-2026-09-24-004405 | 22.100 s | keyed, unscored | `/` | -..-. | 315.2 | 357.7 | 0.881
+ char | unadjudicated/cw-2026-09-24-004405 | 23.260 s | keyed, unscored | `8` | ---.. | 318.2 | 357.7 | 0.889
+ char | unadjudicated/cw-2026-09-24-004405 | 23.265 s | keyed, unscored | `8` | ---.. | 315.2 | 405.9 | 0.777
+ char | unadjudicated/cw-2026-09-24-004405 | 25.655 s | right | `O` | --- | 437.1 | 382.6 | 1.142
+ char | unadjudicated/cw-2026-09-24-004405 | 26.515 s | right | `O` | --- | 520.2 | 357.7 | 1.454
+ char | unadjudicated/cw-2026-09-24-004405 | 27.130 s | right | `R` | .-. | 332.9 | 431.4 | 0.772
+ char | unadjudicated/cw-2026-09-24-004405 | 27.825 s | right | `D` | -.. | 382.6 | 382.2 | 1.001
+ char | unadjudicated/cw-2026-09-24-004405 | 28.285 s | right | `I` | .. | 189.4 | 431.4 | 0.439
+ char | unadjudicated/cw-2026-09-24-004405 | 28.795 s | right | `N` | -. | 432.7 | 357.7 | 1.210
+ char | unadjudicated/cw-2026-09-24-004405 | 29.315 s | keyed, unscored | `A` | .- | 431.4 | 382.6 | 1.128
+ char | unadjudicated/cw-2026-09-24-004405 | 29.815 s | keyed, unscored | `T` | - | 704.4 | 407.0 | 1.731
+ char | unadjudicated/cw-2026-09-24-004427 | 2.480 s | keyed, unscored | `F` | ..-. | 111.9 | 362.7 | 0.308
+ char | unadjudicated/cw-2026-09-24-004427 | 3.455 s | keyed, unscored | `O` | --- | 378.9 | 346.5 | 1.094
+ char | unadjudicated/cw-2026-09-24-004427 | 4.315 s | keyed, unscored | `O` | --- | 494.6 | 338.0 | 1.463
+ char | unadjudicated/cw-2026-09-24-004427 | 4.930 s | keyed, unscored | `R` | .-. | 329.5 | 346.5 | 0.951
+ char | unadjudicated/cw-2026-09-24-004427 | 5.625 s | keyed, unscored | `D` | -.. | 320.3 | 338.0 | 0.948
+ char | unadjudicated/cw-2026-09-24-004427 | 6.085 s | keyed, unscored | `I` | .. | 153.5 | 329.5 | 0.466
+ char | unadjudicated/cw-2026-09-24-004427 | 6.595 s | keyed, unscored | `N` | -. | 456.2 | 282.5 | 1.615
+ char | unadjudicated/cw-2026-09-24-004427 | 7.115 s | right | `A` | .- | 346.5 | 244.6 | 1.416
+ char | unadjudicated/cw-2026-09-24-004427 | 7.615 s | right | `T` | - | 454.5 | 219.0 | 2.075
+ char | unadjudicated/cw-2026-09-24-004427 | 8.510 s | right | `O` | --- | 401.6 | 219.0 | 1.834
+ char | unadjudicated/cw-2026-09-24-004427 | 9.090 s | right | `R` | .-. | 146.7 | 219.0 | 0.670
+ char | unadjudicated/cw-2026-09-24-004427 | 10.335 s | keyed, unscored | `<AR>` | .-.-. | 193.3 | 150.1 | 1.288
+ char | unadjudicated/cw-2026-09-24-004427 | 10.885 s | keyed, unscored | `N` | -. | 244.6 | 137.3 | 1.781
+ char | unadjudicated/cw-2026-09-24-004427 | 12.295 s | right | `Q` | --.- | 110.3 | 137.3 | 0.803
+ char | unadjudicated/cw-2026-09-24-004427 | 12.780 s | right | `S` | ... | 38.6 | 123.7 | 0.312
+ char | unadjudicated/cw-2026-09-24-004427 | 13.485 s | right | `L` | .-.. | 53.1 | 123.7 | 0.429
+ char | unadjudicated/cw-2026-09-24-004427 | 14.105 s | right | `T` | - | 99.4 | 114.9 | 0.865
+ char | unadjudicated/cw-2026-09-24-004427 | 14.710 s | right | `N` | -. | 128.0 | 104.8 | 1.221
+ char | unadjudicated/cw-2026-09-24-004427 | 15.525 s | keyed, unscored | `6` | -.... | 61.1 | 104.8 | 0.583
+ char | unadjudicated/cw-2026-09-24-004427 | 15.995 s | keyed, unscored | `T` | - | 73.0 | 104.8 | 0.696
+ char | unadjudicated/cw-2026-09-24-004427 | 16.345 s | keyed, unscored | `B` | -... | 28.1 | 86.2 | 0.326
+ char | unadjudicated/cw-2026-09-24-004427 | 16.990 s | keyed, unscored | `R` | .-. | 119.5 | 67.0 | 1.783
+ char | unadjudicated/cw-2026-09-24-004427 | 17.225 s | keyed, unscored | `E` | . | 35.1 | 69.8 | 0.502
+ char | unadjudicated/cw-2026-09-24-004427 | 18.505 s | keyed, unscored | `C` | -.-. | 214.9 | 69.8 | 3.079
+ char | unadjudicated/cw-2026-09-24-004427 | 18.855 s | keyed, unscored | `E` | . | 46.5 | 86.2 | 0.540
+ char | unadjudicated/cw-2026-09-24-004427 | 19.725 s | keyed, unscored | `D` | -.. | 178.0 | 72.0 | 2.473
+ char | unadjudicated/cw-2026-09-24-004427 | 20.020 s | keyed, unscored | `E` | . | 40.5 | 93.0 | 0.436
+ char | unadjudicated/cw-2026-09-24-004427 | 20.770 s | keyed, unscored | `W` | .-- | 162.3 | 88.8 | 1.827
+ char | unadjudicated/cw-2026-09-24-004427 | 21.115 s | keyed, unscored | `I` | .. | 23.9 | 116.3 | 0.206
+ char | unadjudicated/cw-2026-09-24-004427 | 22.185 s | keyed, unscored | `2` | ..--- | 113.1 | 120.5 | 0.939
+ char | unadjudicated/cw-2026-09-24-004427 | 23.015 s | keyed, unscored | `G` | --. | 66.6 | 117.2 | 0.568
+ char | unadjudicated/cw-2026-09-24-004427 | 23.970 s | keyed, unscored | `K` | -.- | 121.4 | 108.9 | 1.115
+ char | unadjudicated/cw-2026-09-24-004427 | 25.005 s | keyed, unscored | `8` | ---.. | 71.0 | 108.9 | 0.652
+ char | unadjudicated/cw-2026-09-24-004427 | 26.055 s | keyed, unscored | `8` | ---.. | 191.2 | 108.9 | 1.755
+ char | unadjudicated/cw-2026-09-24-004427 | 26.550 s | keyed, unscored | `N` | -. | 236.2 | 104.7 | 2.255
+ char | unadjudicated/cw-2026-09-24-004427 | 26.770 s | keyed, unscored | `E` | . | 104.7 | 117.2 | 0.893
+ char | unadjudicated/cw-2026-09-24-004427 | 27.110 s | keyed, unscored | `T` | - | 454.8 | 104.7 | 4.342
+ char | unadjudicated/cw-2026-09-24-004427 | 28.035 s | keyed, unscored | `T` | - | 217.6 | 108.9 | 1.998
+ char | unadjudicated/cw-2026-09-24-004427 | 28.565 s | keyed, unscored | `U` | ..- | 87.6 | 121.4 | 0.721
+ char | unadjudicated/cw-2026-09-24-004427 | 29.180 s | keyed, unscored | `E` | . | 61.6 | 156.3 | 0.394
+ char | unadjudicated/cw-2026-09-24-004427 | 29.655 s | keyed, unscored | `A` | .- | 98.6 | 191.2 | 0.516
+ char | unadjudicated/cw-2026-09-24-004427 | 30.000 s | keyed, unscored | `T` | - | 209.5 | 148.0 | 1.416
+ char | unadjudicated/cw-2026-09-24-004510 | 2.100 s | keyed, unscored | `1` | .---- | 380.4 | 190.0 | 2.002
+ char | unadjudicated/cw-2026-09-24-004510 | 2.660 s | keyed, unscored | `U` | ..- | 218.5 | 209.7 | 1.042
+ char | unadjudicated/cw-2026-09-24-004510 | 3.935 s | keyed, unscored | `R` | .-. | 146.9 | 217.5 | 0.675
+ char | unadjudicated/cw-2026-09-24-004510 | 4.575 s | keyed, unscored | `L` | .-.. | 124.1 | 218.5 | 0.568
+ char | unadjudicated/cw-2026-09-24-004510 | 4.930 s | keyed, unscored | `T` | - | 216.5 | 214.5 | 1.009
+ char | unadjudicated/cw-2026-09-24-004510 | 4.935 s | keyed, unscored | `T` | - | 209.7 | 216.5 | 0.969
+ char | unadjudicated/cw-2026-09-24-004510 | 7.485 s | keyed, unscored | `S` | ... | 29.9 | 213.5 | 0.140
+ char | unadjudicated/cw-2026-09-24-004510 | 8.440 s | keyed, unscored | `S` | ... | 170.4 | 210.5 | 0.809
+ char | unadjudicated/cw-2026-09-24-004510 | 9.160 s | keyed, unscored | `B` | -... | 285.6 | 210.1 | 1.359
+ char | unadjudicated/cw-2026-09-24-004510 | 10.575 s | keyed, unscored | `Y` | -.-- | 447.1 | 210.1 | 2.128
+ char | unadjudicated/cw-2026-09-24-004510 | 11.020 s | keyed, unscored | `A` | .- | 315.1 | 210.1 | 1.500
+ char | unadjudicated/cw-2026-09-24-004510 | 11.800 s | keyed, unscored | `K` | -.- | 371.2 | 211.5 | 1.755
+ char | unadjudicated/cw-2026-09-24-004510 | 12.750 s | keyed, unscored | `Y` | -.-- | 210.5 | 244.7 | 0.860
+ char | unadjudicated/cw-2026-09-24-004510 | 13.225 s | keyed, unscored | `A` | .- | 161.9 | 242.7 | 0.667
+ char | unadjudicated/cw-2026-09-24-004510 | 13.835 s | keyed, unscored | `K` | -.- | 109.4 | 242.7 | 0.451
+ char | unadjudicated/cw-2026-09-24-004510 | 16.110 s | keyed, unscored | `E` | . | 15.6 | 242.7 | 0.064
+ char | unadjudicated/cw-2026-09-24-004510 | 18.145 s | right | `K` | -.- | 451.0 | 219.2 | 2.058
+ char | unadjudicated/cw-2026-09-24-004510 | 18.620 s | right | `A` | .- | 323.3 | 211.5 | 1.528
+ char | unadjudicated/cw-2026-09-24-004510 | 19.560 s | right | `2` | ..--- | 297.5 | 211.5 | 1.407
+ char | unadjudicated/cw-2026-09-24-004510 | 20.275 s | right | `G` | --. | 212.6 | 218.1 | 0.975
+ char | unadjudicated/cw-2026-09-24-004510 | 21.145 s | right | `J` | .--- | 272.9 | 211.5 | 1.290
+ char | unadjudicated/cw-2026-09-24-004510 | 21.825 s | right | `V` | ...- | 176.3 | 219.2 | 0.804
+ char | unadjudicated/cw-2026-09-24-004510 | 22.635 s | keyed, unscored | `T` | - | 53.4 | 249.3 | 0.214
+ char | unadjudicated/cw-2026-09-24-004510 | 23.595 s | keyed, unscored | `Q` | --.- | 171.5 | 249.3 | 0.688
+ char | unadjudicated/cw-2026-09-24-004510 | 24.005 s | keyed, unscored | `N` | -. | 225.8 | 242.7 | 0.930
+ char | unadjudicated/cw-2026-09-24-004510 | 24.610 s | keyed, unscored | `V` | ...- | 137.8 | 219.2 | 0.629
+ char | unadjudicated/cw-2026-09-24-004510 | 25.440 s | right | `A` | .- | 448.2 | 184.7 | 2.426
+ char | unadjudicated/cw-2026-09-24-004510 | 25.885 s | right | `A` | .- | 362.9 | 184.6 | 1.966
+ char | unadjudicated/cw-2026-09-24-004510 | 26.705 s | right | `3` | ...-- | 311.1 | 184.5 | 1.686
+ char | unadjudicated/cw-2026-09-24-004510 | 27.135 s | right | `S` | ... | 170.1 | 184.6 | 0.922
+ char | unadjudicated/cw-2026-09-24-004510 | 27.840 s | right | `B` | -... | 274.9 | 184.5 | 1.490
+ char | unadjudicated/cw-2026-09-24-004510 | 28.780 s | keyed, unscored | `S` | ... | 155.0 | 205.3 | 0.755
+ char | unadjudicated/cw-2026-09-24-004510 | 28.975 s | keyed, unscored | `E` | . | 184.7 | 225.8 | 0.818
+ char | unadjudicated/cw-2026-09-24-004510 | 29.850 s | keyed, unscored | `I` | .. | 184.5 | 229.8 | 0.803
+ char | unadjudicated/cw-2026-09-24-004550 | 0.225 s | keyed, unscored | `I` | .. | 26.5 | 177.6 | 0.149
+ char | unadjudicated/cw-2026-09-24-004550 | 0.745 s | keyed, unscored | `N` | -. | 48.9 | 182.2 | 0.268
+ char | unadjudicated/cw-2026-09-24-004550 | 1.455 s | keyed, unscored | `5` | ..... | 45.8 | 198.0 | 0.232
+ char | unadjudicated/cw-2026-09-24-004550 | 2.715 s | keyed, unscored | `3` | ...-- | 173.0 | 213.9 | 0.809
+ char | unadjudicated/cw-2026-09-24-004550 | 3.250 s | keyed, unscored | `R` | .-. | 182.2 | 217.0 | 0.839
+ char | unadjudicated/cw-2026-09-24-004550 | 3.680 s | keyed, unscored | `N` | -. | 220.1 | 182.2 | 1.208
+ char | unadjudicated/cw-2026-09-24-004550 | 4.850 s | keyed, unscored | `1` | .---- | 410.8 | 177.6 | 2.314
+ char | unadjudicated/cw-2026-09-24-004550 | 5.470 s | keyed, unscored | `T` | - | 534.4 | 173.0 | 3.089
+ char | unadjudicated/cw-2026-09-24-004550 | 5.995 s | keyed, unscored | `H` | .... | 171.5 | 177.6 | 0.966
+ char | unadjudicated/cw-2026-09-24-004550 | 6.515 s | keyed, unscored | `N` | -. | 469.3 | 172.2 | 2.725
+ char | unadjudicated/cw-2026-09-24-004550 | 7.310 s | keyed, unscored | `B` | -... | 213.9 | 172.2 | 1.242
+ char | unadjudicated/cw-2026-09-24-004550 | 8.125 s | keyed, unscored | `O` | --- | 305.9 | 177.6 | 1.723
+ char | unadjudicated/cw-2026-09-24-004550 | 8.500 s | keyed, unscored | `T` | - | 247.7 | 176.8 | 1.401
+ char | unadjudicated/cw-2026-09-24-004550 | 8.715 s | keyed, unscored | `E` | . | 24.4 | 217.0 | 0.113
+ char | unadjudicated/cw-2026-09-24-004550 | 9.015 s | keyed, unscored | `I` | .. | 43.6 | 192.7 | 0.226
+ char | unadjudicated/cw-2026-09-24-004550 | 9.620 s | keyed, unscored | `N` | -. | 115.4 | 192.7 | 0.599
+ char | unadjudicated/cw-2026-09-24-004550 | 9.980 s | keyed, unscored | `A` | .- | 37.1 | 192.7 | 0.193
+ char | unadjudicated/cw-2026-09-24-004550 | 10.410 s | keyed, unscored | `N` | -. | 140.0 | 206.8 | 0.677
+ char | unadjudicated/cw-2026-09-24-004550 | 11.155 s | keyed, unscored | `X` | -..- | 112.2 | 206.8 | 0.542
+ char | unadjudicated/cw-2026-09-24-004550 | 11.895 s | keyed, unscored | `K` | -.- | 292.1 | 169.9 | 1.719
+ char | unadjudicated/cw-2026-09-24-004550 | 13.065 s | keyed, unscored | `A` | .- | 27.5 | 217.7 | 0.126
+ char | unadjudicated/cw-2026-09-24-004550 | 14.025 s | keyed, unscored | `3` | ...-- | 292.1 | 169.9 | 1.719
+ char | unadjudicated/cw-2026-09-24-004550 | 14.620 s | keyed, unscored | `H` | .... | 119.1 | 260.3 | 0.458
+ char | unadjudicated/cw-2026-09-24-004550 | 15.230 s | keyed, unscored | `B` | -... | 235.5 | 252.5 | 0.933
+ char | unadjudicated/cw-2026-09-24-004550 | 15.925 s | right | `D` | -.. | 466.0 | 227.8 | 2.046
+ char | unadjudicated/cw-2026-09-24-004550 | 16.150 s | right | `E` | . | 199.8 | 288.5 | 0.692
+ char | unadjudicated/cw-2026-09-24-004550 | 16.935 s | right | `K` | -.- | 688.9 | 288.5 | 2.388
+ char | unadjudicated/cw-2026-09-24-004550 | 17.365 s | right | `A` | .- | 547.0 | 292.1 | 1.873
+ char | unadjudicated/cw-2026-09-24-004550 | 18.380 s | right | `2` | ..--- | 466.6 | 299.1 | 1.560
+ char | unadjudicated/cw-2026-09-24-004550 | 19.120 s | right | `G` | --. | 285.0 | 333.2 | 0.855
+ char | unadjudicated/cw-2026-09-24-004550 | 20.070 s | right | `J` | .--- | 360.3 | 355.2 | 1.014
+ char | unadjudicated/cw-2026-09-24-004550 | 20.795 s | right | `V` | ...- | 220.0 | 425.6 | 0.517
+ char | unadjudicated/cw-2026-09-24-004550 | 21.475 s | keyed, unscored | `H` | .... | 83.9 | 425.6 | 0.197
+ char | unadjudicated/cw-2026-09-24-004550 | 22.125 s | keyed, unscored | `W` | .-- | 446.9 | 360.3 | 1.240
+ char | unadjudicated/cw-2026-09-24-004550 | 22.780 s | keyed, unscored | `R` | .-. | 306.1 | 425.6 | 0.719
+ char | unadjudicated/cw-2026-09-24-004550 | 23.605 s | keyed, unscored | `O` | --- | 882.4 | 360.3 | 2.449
+ char | unadjudicated/cw-2026-09-24-004550 | 24.330 s | keyed, unscored | `B` | -... | 404.4 | 333.2 | 1.214
+ char | unadjudicated/cw-2026-09-24-004550 | 24.735 s | keyed, unscored | `I` | .. | 155.1 | 360.3 | 0.431
+ char | unadjudicated/cw-2026-09-24-004550 | 25.165 s | keyed, unscored | `N` | -. | 548.6 | 333.2 | 1.646
+ char | unadjudicated/cw-2026-09-24-004550 | 26.225 s | keyed, unscored | `?` | ..--.. | 448.2 | 306.1 | 1.464
+ char | unadjudicated/cw-2026-09-24-004550 | 29.455 s | keyed, unscored | `T` | - | 29.2 | 425.6 | 0.069
+ char | unadjudicated/cw-2026-09-23-173723 | 0.875 s | keyed, unscored | `T` | - | 168.1 | 68.8 | 2.443
+ char | unadjudicated/cw-2026-09-23-173723 | 1.640 s | keyed, unscored | `E` | . | 56.5 | 80.8 | 0.699
+ char | unadjudicated/cw-2026-09-23-173723 | 2.345 s | keyed, unscored | `A` | .- | 221.7 | 75.5 | 2.935
+ char | unadjudicated/cw-2026-09-23-173723 | 3.120 s | keyed, unscored | `B` | -... | 52.5 | 92.8 | 0.566
+ char | unadjudicated/cw-2026-09-23-173723 | 3.605 s | keyed, unscored | `N` | -. | 67.4 | 103.9 | 0.648
+ char | unadjudicated/cw-2026-09-23-173723 | 3.955 s | keyed, unscored | `I` | .. | 33.8 | 102.9 | 0.329
+ char | unadjudicated/cw-2026-09-23-173723 | 4.615 s | keyed, unscored | `R` | .-. | 92.8 | 99.2 | 0.936
+ char | unadjudicated/cw-2026-09-23-173723 | 4.830 s | keyed, unscored | `E` | . | 70.2 | 102.9 | 0.682
+ char | unadjudicated/cw-2026-09-23-173723 | 5.475 s | keyed, unscored | `D` | -.. | 80.8 | 108.9 | 0.742
+ char | unadjudicated/cw-2026-09-23-173723 | 6.300 s | keyed, unscored | `W` | .-- | 167.7 | 99.2 | 1.691
+ char | unadjudicated/cw-2026-09-23-173723 | 7.195 s | keyed, unscored | `B` | -... | 115.0 | 111.1 | 1.035
+ char | unadjudicated/cw-2026-09-23-173723 | 8.180 s | keyed, unscored | `Z` | --.. | 129.1 | 108.9 | 1.185
+ char | unadjudicated/cw-2026-09-23-173723 | 9.210 s | keyed, unscored | `W` | .-- | 142.5 | 117.2 | 1.216
+ char | unadjudicated/cw-2026-09-23-173723 | 10.045 s | keyed, unscored | `B` | -... | 102.9 | 123.3 | 0.835
+ char | unadjudicated/cw-2026-09-23-173723 | 11.075 s | keyed, unscored | `6` | -.... | 95.4 | 123.3 | 0.774
+ char | unadjudicated/cw-2026-09-23-173723 | 11.820 s | keyed, unscored | `R` | .-. | 139.3 | 123.3 | 1.130
+ char | unadjudicated/cw-2026-09-23-173723 | 12.085 s | keyed, unscored | `E` | . | 119.3 | 126.9 | 0.940
+ char | unadjudicated/cw-2026-09-23-173723 | 12.795 s | keyed, unscored | `D` | -.. | 164.9 | 123.3 | 1.338
+ char | unadjudicated/cw-2026-09-23-173723 | 13.995 s | right | `C` | -.-. | 121.9 | 126.9 | 0.960
+ char | unadjudicated/cw-2026-09-23-173723 | 15.150 s | right | `Q` | --.- | 145.5 | 126.9 | 1.146
+ char | unadjudicated/cw-2026-09-23-173723 | 16.355 s | right | `C` | -.-. | 124.7 | 128.3 | 0.972
+ char | unadjudicated/cw-2026-09-23-173723 | 17.500 s | right | `Q` | --.- | 214.1 | 120.6 | 1.775
+ char | unadjudicated/cw-2026-09-23-173723 | 18.785 s | right | `C` | -.-. | 88.6 | 129.7 | 0.683
+ char | unadjudicated/cw-2026-09-23-173723 | 19.950 s | right | `Q` | --.- | 134.7 | 123.3 | 1.092
+ char | unadjudicated/cw-2026-09-23-173723 | 20.825 s | right | `D` | -.. | 100.7 | 123.3 | 0.817
+ char | unadjudicated/cw-2026-09-23-173723 | 21.170 s | added | `E` | . | 86.2 | 123.3 | 0.699
+ char | unadjudicated/cw-2026-09-23-173723 | 22.050 s | added | `W` | .-- | 161.5 | 94.7 | 1.705
+ char | unadjudicated/cw-2026-09-23-173723 | 22.540 s | added | `T` | - | 156.0 | 87.4 | 1.785
+ char | unadjudicated/cw-2026-09-23-173723 | 22.720 s | added | `E` | . | 34.6 | 87.4 | 0.396
+ char | unadjudicated/cw-2026-09-23-173723 | 22.990 s | right | `E` | . | 36.1 | 75.4 | 0.478
+ char | unadjudicated/cw-2026-09-23-173723 | 23.460 s | wrong | `T` | - | 175.8 | 60.2 | 2.921
+ char | unadjudicated/cw-2026-09-23-173723 | 23.740 s | wrong | `E` | . | 34.7 | 75.4 | 0.460
+ char | unadjudicated/cw-2026-09-23-173723 | 24.020 s | wrong | `E` | . | 39.8 | 75.4 | 0.528
+ char | unadjudicated/cw-2026-09-23-173723 | 24.395 s | wrong | `E` | . | 43.4 | 60.2 | 0.720
+ char | unadjudicated/cw-2026-09-23-173723 | 24.820 s | right | `R` | .-. | 64.7 | 49.5 | 1.307
+ char | unadjudicated/cw-2026-09-23-173723 | 25.100 s | right | `E` | . | 30.8 | 49.5 | 0.622
+ char | unadjudicated/cw-2026-09-23-173723 | 25.840 s | right | `D` | -.. | 55.7 | 43.2 | 1.290
+ char | unadjudicated/cw-2026-09-23-173723 | 26.250 s | added | `E` | . | 33.4 | 47.0 | 0.710
+ char | unadjudicated/cw-2026-09-23-173723 | 26.515 s | added | `T` | - | 88.2 | 46.5 | 1.898
+ char | unadjudicated/cw-2026-09-23-173723 | 26.820 s | added | `T` | - | 138.1 | 44.9 | 3.073
+ char | unadjudicated/cw-2026-09-23-173723 | 27.350 s | wrong | `T` | - | 101.2 | 46.5 | 2.177
+ char | unadjudicated/cw-2026-09-23-173723 | 27.775 s | right | `B` | -... | 43.0 | 51.6 | 0.833
+ char | unadjudicated/cw-2026-09-23-173723 | 28.970 s | added | `7` | --... | 65.7 | 47.5 | 1.383
+ char | unadjudicated/cw-2026-09-23-173723 | 29.195 s | wrong | `E` | . | 39.4 | 51.6 | 0.763
+ char | unadjudicated/cw-2026-09-23-173723 | 29.530 s | right | `E` | . | 47.5 | 55.7 | 0.854
+ char | unadjudicated/cw-2026-09-23-173723 | 30.000 s | wrong | `I` | .. | 46.5 | 56.6 | 0.821
+ 
+ DISTRIBUTIONS | the ratio, span over the neighbors' median, by heap
+ spread | all named | added | n 17, min 0.040, tenth 0.332, quartile 0.396, median 0.710, quartile 1.638, ninetieth 1.785, max 3.073
+ spread | all named | right | n 353, min 0.106, tenth 0.437, quartile 0.624, median 1.011, quartile 1.623, ninetieth 2.390, max 52.728
+ spread | all named | wrong | n 56, min 0.079, tenth 0.298, quartile 0.542, median 1.046, quartile 1.478, ninetieth 2.981, max 47.584
+ spread | all named | keyed, unscored | n 466, min 0.000, tenth 0.290, quartile 0.542, median 0.936, quartile 1.640, ninetieth 2.574, max 129.040
+ spread | all named | unkeyed | n 880, min 0.005, tenth 0.382, quartile 0.627, median 1.021, quartile 1.534, ninetieth 2.374, max 34.298
+ spread | single-element, E and T | added | n 8, min 0.396, tenth 0.534, quartile 0.699, median 1.638, quartile 1.785, ninetieth 1.898, max 3.073
+ spread | single-element, E and T | right | n 62, min 0.187, tenth 0.384, quartile 0.583, median 0.870, quartile 2.055, ninetieth 2.956, max 5.161
+ spread | single-element, E and T | wrong | n 31, min 0.079, tenth 0.308, quartile 0.542, median 0.994, quartile 1.735, ninetieth 2.921, max 47.584
+ spread | single-element, E and T | keyed, unscored | n 145, min 0.006, tenth 0.214, quartile 0.436, median 0.788, quartile 1.887, ninetieth 3.955, max 66.993
+ spread | single-element, E and T | unkeyed | n 251, min 0.005, tenth 0.304, quartile 0.466, median 0.765, quartile 1.520, ninetieth 2.602, max 20.756
+ spread | longer | added | n 9, min 0.040, tenth 0.331, quartile 0.332, median 0.561, quartile 1.139, ninetieth 1.383, max 1.705
+ spread | longer | right | n 291, min 0.106, tenth 0.439, quartile 0.631, median 1.050, quartile 1.584, ninetieth 2.248, max 52.728
+ spread | longer | wrong | n 25, min 0.087, tenth 0.289, quartile 0.550, median 1.046, quartile 1.473, ninetieth 4.192, max 15.691
+ spread | longer | keyed, unscored | n 321, min 0.000, tenth 0.326, quartile 0.599, median 0.973, quartile 1.517, ninetieth 2.333, max 129.040
+ spread | longer | unkeyed | n 629, min 0.049, tenth 0.460, quartile 0.706, median 1.079, quartile 1.541, ninetieth 2.250, max 34.298
+ heap | all named | from | to | added | right | wrong | keyed, unscored | unkeyed
+ heap | all named | 0.000 | 0.001 | 0 | 0 | 0 | 1 | 0
+ heap | all named | 0.001 | 0.001 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.001 | 0.001 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.001 | 0.001 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.001 | 0.002 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.002 | 0.002 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.002 | 0.003 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.003 | 0.004 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.004 | 0.006 | 0 | 0 | 0 | 0 | 1
+ heap | all named | 0.006 | 0.007 | 0 | 0 | 0 | 1 | 0
+ heap | all named | 0.007 | 0.010 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.010 | 0.013 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.013 | 0.018 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.018 | 0.024 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.024 | 0.032 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 0.032 | 0.042 | 1 | 0 | 0 | 1 | 2
+ heap | all named | 0.042 | 0.056 | 0 | 0 | 0 | 2 | 1
+ heap | all named | 0.056 | 0.075 | 0 | 0 | 0 | 6 | 1
+ heap | all named | 0.075 | 0.100 | 0 | 0 | 2 | 2 | 1
+ heap | all named | 0.100 | 0.133 | 0 | 3 | 0 | 5 | 1
+ heap | all named | 0.133 | 0.178 | 0 | 2 | 1 | 5 | 9
+ heap | all named | 0.178 | 0.237 | 0 | 4 | 1 | 11 | 18
+ heap | all named | 0.237 | 0.316 | 0 | 5 | 4 | 21 | 19
+ heap | all named | 0.316 | 0.422 | 4 | 19 | 2 | 22 | 50
+ heap | all named | 0.422 | 0.562 | 2 | 41 | 8 | 44 | 77
+ heap | all named | 0.562 | 0.750 | 2 | 41 | 2 | 63 | 114
+ heap | all named | 0.750 | 1.000 | 1 | 57 | 8 | 67 | 135
+ heap | all named | 1.000 | 1.334 | 1 | 56 | 7 | 58 | 164
+ heap | all named | 1.334 | 1.778 | 3 | 51 | 9 | 60 | 126
+ heap | all named | 1.778 | 2.371 | 2 | 37 | 3 | 37 | 72
+ heap | all named | 2.371 | 3.162 | 1 | 21 | 4 | 28 | 51
+ heap | all named | 3.162 | 4.217 | 0 | 8 | 1 | 10 | 13
+ heap | all named | 4.217 | 5.623 | 0 | 3 | 0 | 11 | 5
+ heap | all named | 5.623 | 7.499 | 0 | 1 | 1 | 2 | 7
+ heap | all named | 7.499 | 10.000 | 0 | 1 | 1 | 1 | 5
+ heap | all named | 10.000 | 13.335 | 0 | 1 | 0 | 2 | 1
+ heap | all named | 13.335 | 17.783 | 0 | 1 | 1 | 0 | 3
+ heap | all named | 17.783 | 23.714 | 0 | 0 | 0 | 2 | 3
+ heap | all named | 23.714 | 31.623 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 31.623 | 42.170 | 0 | 0 | 0 | 2 | 1
+ heap | all named | 42.170 | 56.234 | 0 | 1 | 1 | 0 | 0
+ heap | all named | 56.234 | 74.989 | 0 | 0 | 0 | 1 | 0
+ heap | all named | 74.989 | 100.000 | 0 | 0 | 0 | 0 | 0
+ heap | all named | 100.000 | 133.352 | 0 | 0 | 0 | 1 | 0
+ heap | single-element, E and T | from | to | added | right | wrong | keyed, unscored | unkeyed
+ heap | single-element, E and T | 0.004 | 0.006 | 0 | 0 | 0 | 0 | 1
+ heap | single-element, E and T | 0.006 | 0.007 | 0 | 0 | 0 | 1 | 0
+ heap | single-element, E and T | 0.007 | 0.010 | 0 | 0 | 0 | 0 | 0
+ heap | single-element, E and T | 0.010 | 0.013 | 0 | 0 | 0 | 0 | 0
+ heap | single-element, E and T | 0.013 | 0.018 | 0 | 0 | 0 | 0 | 0
+ heap | single-element, E and T | 0.018 | 0.024 | 0 | 0 | 0 | 0 | 0
+ heap | single-element, E and T | 0.024 | 0.032 | 0 | 0 | 0 | 0 | 0
+ heap | single-element, E and T | 0.032 | 0.042 | 0 | 0 | 0 | 0 | 2
+ heap | single-element, E and T | 0.042 | 0.056 | 0 | 0 | 0 | 2 | 0
+ heap | single-element, E and T | 0.056 | 0.075 | 0 | 0 | 0 | 4 | 1
+ heap | single-element, E and T | 0.075 | 0.100 | 0 | 0 | 1 | 2 | 0
+ heap | single-element, E and T | 0.100 | 0.133 | 0 | 0 | 0 | 2 | 1
+ heap | single-element, E and T | 0.133 | 0.178 | 0 | 0 | 0 | 1 | 3
+ heap | single-element, E and T | 0.178 | 0.237 | 0 | 3 | 1 | 4 | 10
+ heap | single-element, E and T | 0.237 | 0.316 | 0 | 1 | 2 | 10 | 10
+ heap | single-element, E and T | 0.316 | 0.422 | 1 | 3 | 1 | 9 | 25
+ heap | single-element, E and T | 0.422 | 0.562 | 1 | 7 | 5 | 19 | 31
+ heap | single-element, E and T | 0.562 | 0.750 | 2 | 9 | 2 | 17 | 39
+ heap | single-element, E and T | 0.750 | 1.000 | 0 | 11 | 4 | 14 | 34
+ heap | single-element, E and T | 1.000 | 1.334 | 0 | 6 | 3 | 9 | 21
+ heap | single-element, E and T | 1.334 | 1.778 | 1 | 4 | 4 | 11 | 20
+ heap | single-element, E and T | 1.778 | 2.371 | 2 | 8 | 3 | 10 | 22
+ heap | single-element, E and T | 2.371 | 3.162 | 1 | 5 | 3 | 11 | 17
+ heap | single-element, E and T | 3.162 | 4.217 | 0 | 2 | 0 | 6 | 4
+ heap | single-element, E and T | 4.217 | 5.623 | 0 | 3 | 0 | 8 | 1
+ heap | single-element, E and T | 5.623 | 7.499 | 0 | 0 | 1 | 0 | 4
+ heap | single-element, E and T | 7.499 | 10.000 | 0 | 0 | 0 | 1 | 2
+ heap | single-element, E and T | 10.000 | 13.335 | 0 | 0 | 0 | 1 | 1
+ heap | single-element, E and T | 13.335 | 17.783 | 0 | 0 | 0 | 0 | 1
+ heap | single-element, E and T | 17.783 | 23.714 | 0 | 0 | 0 | 1 | 1
+ heap | single-element, E and T | 23.714 | 31.623 | 0 | 0 | 0 | 0 | 0
+ heap | single-element, E and T | 31.623 | 42.170 | 0 | 0 | 0 | 1 | 0
+ heap | single-element, E and T | 42.170 | 56.234 | 0 | 0 | 1 | 0 | 0
+ heap | single-element, E and T | 56.234 | 74.989 | 0 | 0 | 0 | 1 | 0
+ heap | longer | from | to | added | right | wrong | keyed, unscored | unkeyed
+ heap | longer | 0.000 | 0.001 | 0 | 0 | 0 | 1 | 0
+ heap | longer | 0.001 | 0.001 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.001 | 0.001 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.001 | 0.001 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.001 | 0.002 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.002 | 0.002 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.002 | 0.003 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.003 | 0.004 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.004 | 0.006 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.006 | 0.007 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.007 | 0.010 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.010 | 0.013 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.013 | 0.018 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.018 | 0.024 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.024 | 0.032 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 0.032 | 0.042 | 1 | 0 | 0 | 1 | 0
+ heap | longer | 0.042 | 0.056 | 0 | 0 | 0 | 0 | 1
+ heap | longer | 0.056 | 0.075 | 0 | 0 | 0 | 2 | 0
+ heap | longer | 0.075 | 0.100 | 0 | 0 | 1 | 0 | 1
+ heap | longer | 0.100 | 0.133 | 0 | 3 | 0 | 3 | 0
+ heap | longer | 0.133 | 0.178 | 0 | 2 | 1 | 4 | 6
+ heap | longer | 0.178 | 0.237 | 0 | 1 | 0 | 7 | 8
+ heap | longer | 0.237 | 0.316 | 0 | 4 | 2 | 11 | 9
+ heap | longer | 0.316 | 0.422 | 3 | 16 | 1 | 13 | 25
+ heap | longer | 0.422 | 0.562 | 1 | 34 | 3 | 25 | 46
+ heap | longer | 0.562 | 0.750 | 0 | 32 | 0 | 46 | 75
+ heap | longer | 0.750 | 1.000 | 1 | 46 | 4 | 53 | 101
+ heap | longer | 1.000 | 1.334 | 1 | 50 | 4 | 49 | 143
+ heap | longer | 1.334 | 1.778 | 2 | 47 | 5 | 49 | 106
+ heap | longer | 1.778 | 2.371 | 0 | 29 | 0 | 27 | 50
+ heap | longer | 2.371 | 3.162 | 0 | 16 | 1 | 17 | 34
+ heap | longer | 3.162 | 4.217 | 0 | 6 | 1 | 4 | 9
+ heap | longer | 4.217 | 5.623 | 0 | 0 | 0 | 3 | 4
+ heap | longer | 5.623 | 7.499 | 0 | 1 | 0 | 2 | 3
+ heap | longer | 7.499 | 10.000 | 0 | 1 | 1 | 0 | 3
+ heap | longer | 10.000 | 13.335 | 0 | 1 | 0 | 1 | 0
+ heap | longer | 13.335 | 17.783 | 0 | 1 | 1 | 0 | 2
+ heap | longer | 17.783 | 23.714 | 0 | 0 | 0 | 1 | 2
+ heap | longer | 23.714 | 31.623 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 31.623 | 42.170 | 0 | 0 | 0 | 1 | 1
+ heap | longer | 42.170 | 56.234 | 0 | 1 | 0 | 0 | 0
+ heap | longer | 56.234 | 74.989 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 74.989 | 100.000 | 0 | 0 | 0 | 0 | 0
+ heap | longer | 100.000 | 133.352 | 0 | 0 | 0 | 1 | 0
+ 
+ LADDER | a bar at each added character's ratio: what falls at or under it, by heap
+ ladder | all named | bar 0.040 at unadjudicated/cw-2026-08-22-031905 14.155 s `I` span 10.5 over 262.7 | added 1 of 17 | right 0 of 353 | wrong 0 of 56 | keyed, unscored 3 of 466 | unkeyed 2 of 881
+ ladder | all named | bar 0.331 at cw-2026-08-18-004507 5.420 s `O` span 112.7 over 340.0 | added 2 of 17 | right 17 of 353 | wrong 8 of 56 | keyed, unscored 61 of 466 | unkeyed 60 of 881
+ ladder | all named | bar 0.332 at unadjudicated/cw-2026-09-24-004347 19.280 s `O` span 144.0 over 433.4 | added 3 of 17 | right 17 of 353 | wrong 8 of 56 | keyed, unscored 61 of 466 | unkeyed 60 of 881
+ ladder | all named | bar 0.347 at unadjudicated/cw-2026-08-22-031905 14.635 s `A` span 91.0 over 262.7 | added 4 of 17 | right 17 of 353 | wrong 8 of 56 | keyed, unscored 63 of 466 | unkeyed 63 of 881
+ ladder | all named | bar 0.396 at unadjudicated/cw-2026-09-23-173723 22.720 s `E` span 34.6 over 87.4 | added 5 of 17 | right 31 of 353 | wrong 9 of 56 | keyed, unscored 75 of 466 | unkeyed 96 of 881
+ ladder | all named | bar 0.534 at unadjudicated/cw-2026-08-22-032050 11.195 s `T` span 74.1 over 138.7 | added 6 of 17 | right 62 of 353 | wrong 14 of 56 | keyed, unscored 113 of 466 | unkeyed 167 of 881
+ ladder | all named | bar 0.561 at unadjudicated/cw-2026-08-22-032012 8.640 s `1` span 145.9 over 260.2 | added 7 of 17 | right 74 of 353 | wrong 18 of 56 | keyed, unscored 121 of 466 | unkeyed 179 of 881
+ ladder | all named | bar 0.699 at unadjudicated/cw-2026-09-23-173723 21.170 s `E` span 86.2 over 123.3 | added 8 of 17 | right 105 of 353 | wrong 19 of 56 | keyed, unscored 170 of 466 | unkeyed 274 of 881
+ ladder | all named | bar 0.710 at unadjudicated/cw-2026-09-23-173723 26.250 s `E` span 33.4 over 47.0 | added 9 of 17 | right 108 of 353 | wrong 19 of 56 | keyed, unscored 174 of 466 | unkeyed 278 of 881
+ ladder | all named | bar 0.765 at unadjudicated/cw-2026-08-22-032012 7.425 s `.` span 194.0 over 253.5 | added 10 of 17 | right 117 of 353 | wrong 23 of 56 | keyed, unscored 188 of 466 | unkeyed 299 of 881
+ ladder | all named | bar 1.139 at unadjudicated/cw-2026-08-22-032050 11.545 s `A` span 146.5 over 128.6 | added 11 of 17 | right 197 of 353 | wrong 29 of 56 | keyed, unscored 279 of 466 | unkeyed 505 of 881
+ ladder | all named | bar 1.383 at unadjudicated/cw-2026-09-23-173723 28.970 s `7` span 65.7 over 47.5 | added 12 of 17 | right 232 of 353 | wrong 35 of 56 | keyed, unscored 319 of 466 | unkeyed 608 of 881
+ ladder | all named | bar 1.638 at unadjudicated/cw-2026-08-22-031838 21.355 s `T` span 159.2 over 97.2 | added 13 of 17 | right 265 of 353 | wrong 42 of 56 | keyed, unscored 349 of 466 | unkeyed 688 of 881
+ ladder | all named | bar 1.705 at unadjudicated/cw-2026-09-23-173723 22.050 s `W` span 161.5 over 94.7 | added 14 of 17 | right 269 of 353 | wrong 42 of 56 | keyed, unscored 359 of 466 | unkeyed 703 of 881
+ ladder | all named | bar 1.785 at unadjudicated/cw-2026-09-23-173723 22.540 s `T` span 156.0 over 87.4 | added 15 of 17 | right 279 of 353 | wrong 44 of 56 | keyed, unscored 371 of 466 | unkeyed 720 of 881
+ ladder | all named | bar 1.898 at unadjudicated/cw-2026-09-23-173723 26.515 s `T` span 88.2 over 46.5 | added 16 of 17 | right 287 of 353 | wrong 45 of 56 | keyed, unscored 379 of 466 | unkeyed 745 of 881
+ ladder | all named | bar 3.073 at unadjudicated/cw-2026-09-23-173723 26.820 s `T` span 138.1 over 44.9 | added 17 of 17 | right 336 of 353 | wrong 51 of 56 | keyed, unscored 429 of 466 | unkeyed 838 of 881
+ ladder | single-element, E and T | bar 0.396 at unadjudicated/cw-2026-09-23-173723 22.720 s `E` span 34.6 over 87.4 | added 1 of 8 | right 7 of 62 | wrong 4 of 31 | keyed, unscored 35 of 145 | unkeyed 50 of 252
+ ladder | single-element, E and T | bar 0.534 at unadjudicated/cw-2026-08-22-032050 11.195 s `T` span 74.1 over 138.7 | added 2 of 8 | right 14 of 62 | wrong 8 of 31 | keyed, unscored 50 of 145 | unkeyed 81 of 252
+ ladder | single-element, E and T | bar 0.699 at unadjudicated/cw-2026-09-23-173723 21.170 s `E` span 86.2 over 123.3 | added 3 of 8 | right 22 of 62 | wrong 11 of 31 | keyed, unscored 68 of 145 | unkeyed 119 of 252
+ ladder | single-element, E and T | bar 0.710 at unadjudicated/cw-2026-09-23-173723 26.250 s `E` span 33.4 over 47.0 | added 4 of 8 | right 22 of 62 | wrong 11 of 31 | keyed, unscored 69 of 145 | unkeyed 119 of 252
+ ladder | single-element, E and T | bar 1.638 at unadjudicated/cw-2026-08-22-031838 21.355 s `T` span 159.2 over 97.2 | added 5 of 8 | right 44 of 62 | wrong 22 of 31 | keyed, unscored 99 of 145 | unkeyed 192 of 252
+ ladder | single-element, E and T | bar 1.785 at unadjudicated/cw-2026-09-23-173723 22.540 s `T` span 156.0 over 87.4 | added 6 of 8 | right 44 of 62 | wrong 23 of 31 | keyed, unscored 105 of 145 | unkeyed 198 of 252
+ ladder | single-element, E and T | bar 1.898 at unadjudicated/cw-2026-09-23-173723 26.515 s `T` span 88.2 over 46.5 | added 7 of 8 | right 45 of 62 | wrong 24 of 31 | keyed, unscored 109 of 145 | unkeyed 205 of 252
+ ladder | single-element, E and T | bar 3.073 at unadjudicated/cw-2026-09-23-173723 26.820 s `T` span 138.1 over 44.9 | added 8 of 8 | right 56 of 62 | wrong 29 of 31 | keyed, unscored 125 of 145 | unkeyed 236 of 252
+ 
+ LOWEST | the twenty lowest ratios the key calls right, and the twenty lowest anywhere on an unkeyed row
+ lowest | right | unadjudicated/cw-2026-08-22-032129 | 11.940 s | `I` | .. | span 45.5 | neighbors 430.3 | ratio 0.106
+ lowest | right | unadjudicated/cw-2026-08-22-031905 | 24.875 s | `5` | ..... | span 161.4 | neighbors 1508.1 | ratio 0.107
+ lowest | right | unadjudicated/cw-2026-08-22-032129 | 20.065 s | `I` | .. | span 34.8 | neighbors 267.7 | ratio 0.130
+ lowest | right | unadjudicated/cw-2026-09-24-004322 | 22.630 s | `A` | .- | span 69.0 | neighbors 429.1 | ratio 0.161
+ lowest | right | unadjudicated/cw-2026-08-22-032050 | 22.225 s | `A` | .- | span 176.1 | neighbors 1081.8 | ratio 0.163
+ lowest | right | unadjudicated/cw-2026-08-22-031905 | 15.150 s | `E` | . | span 55.0 | neighbors 293.7 | ratio 0.187
+ lowest | right | unadjudicated/cw-2026-08-22-032012 | 23.110 s | `E` | . | span 59.2 | neighbors 306.2 | ratio 0.193
+ lowest | right | unadjudicated/cw-2026-08-22-032050 | 21.735 s | `P` | .--. | span 207.9 | neighbors 945.3 | ratio 0.220
+ lowest | right | unadjudicated/cw-2026-09-24-004347 | 11.435 s | `E` | . | span 93.6 | neighbors 408.0 | ratio 0.229
+ lowest | right | unadjudicated/cw-2026-08-22-031948 | 18.755 s | `I` | .. | span 67.8 | neighbors 275.8 | ratio 0.246
+ lowest | right | unadjudicated/cw-2026-08-22-031948 | 19.715 s | `H` | .... | span 54.6 | neighbors 219.0 | ratio 0.249
+ lowest | right | unadjudicated/cw-2026-09-24-004234 | 6.335 s | `H` | .... | span 99.2 | neighbors 355.6 | ratio 0.279
+ lowest | right | unadjudicated/cw-2026-09-24-004322 | 8.300 s | `E` | . | span 98.4 | neighbors 344.9 | ratio 0.285
+ lowest | right | unadjudicated/cw-2026-09-24-004427 | 12.780 s | `S` | ... | span 38.6 | neighbors 123.7 | ratio 0.312
+ lowest | right | cw-2026-08-17-134712 | 23.000 s | `L` | .-.. | span 152.3 | neighbors 479.8 | ratio 0.317
+ lowest | right | cw-2026-08-18-004507 | 21.365 s | `I` | .. | span 97.9 | neighbors 306.4 | ratio 0.319
+ lowest | right | unadjudicated/cw-2026-09-24-004347 | 19.285 s | `O` | --- | span 147.4 | neighbors 451.0 | ratio 0.327
+ lowest | right | unadjudicated/cw-2026-08-22-031905 | 24.155 s | `2` | ..--- | span 334.1 | neighbors 961.8 | ratio 0.347
+ lowest | right | unadjudicated/cw-2026-08-22-032012 | 27.175 s | `E` | . | span 99.4 | neighbors 279.7 | ratio 0.355
+ lowest | right | cw-2026-08-18-004507 | 4.820 s | `R` | .-. | span 111.6 | neighbors 312.3 | ratio 0.357
+ lowest | unkeyed | unadjudicated/cw-2026-08-23-001520 | 4.210 s | `T` | - | span 27365942.3 | neighbors NaN | ratio NaN
+ lowest | unkeyed | cw-2026-08-17-013622 | 11.865 s | `E` | . | span 283689.2 | neighbors 54817258.9 | ratio 0.005
+ lowest | unkeyed | unadjudicated/cw-2026-09-24-004027 | 3.720 s | `E` | . | span 13.7 | neighbors 389.5 | ratio 0.035
+ lowest | unkeyed | unadjudicated/cw-2026-09-24-004027 | 5.100 s | `E` | . | span 15.6 | neighbors 371.8 | ratio 0.042
+ lowest | unkeyed | cw-2026-08-17-013622 | 12.980 s | `S` | ... | span 22.2 | neighbors 448.9 | ratio 0.049
+ lowest | unkeyed | unadjudicated/cw-2026-08-23-001952 | 3.905 s | `E` | . | span 24.7 | neighbors 390.4 | ratio 0.063
+ lowest | unkeyed | cw-2026-08-17-013622 | 3.440 s | `I` | .. | span 19395478.5 | neighbors 232320470.5 | ratio 0.083
+ lowest | unkeyed | unadjudicated/cw-2026-08-23-001952 | 0.790 s | `E` | . | span 53.7 | neighbors 434.8 | ratio 0.124
+ lowest | unkeyed | unadjudicated/cw-2026-08-23-001952 | 18.190 s | `I` | .. | span 14.2 | neighbors 102.8 | ratio 0.138
+ lowest | unkeyed | unadjudicated/cw-2026-09-24-004535 | 15.355 s | `I` | .. | span 20.1 | neighbors 133.6 | ratio 0.150
+ lowest | unkeyed | cw-2026-08-17-013622 | 12.670 s | `T` | - | span 801.9 | neighbors 5224.3 | ratio 0.153
+ lowest | unkeyed | unadjudicated/cw-2026-08-23-001952 | 2.470 s | `I` | .. | span 66.8 | neighbors 431.1 | ratio 0.155
+ lowest | unkeyed | unadjudicated/cw-2026-08-25-021825 | 13.855 s | `E` | . | span 14.0 | neighbors 87.7 | ratio 0.160
+ lowest | unkeyed | unadjudicated/cw-2026-08-25-013402 | 17.255 s | `I` | .. | span 19.7 | neighbors 117.0 | ratio 0.168
+ lowest | unkeyed | unadjudicated/cw-2026-08-18-003126 | 30.000 s | `E` | . | span 54.1 | neighbors 316.3 | ratio 0.171
+ lowest | unkeyed | unadjudicated/cw-2026-08-23-001831 | 5.170 s | `N` | -. | span 19.7 | neighbors 112.0 | ratio 0.176
+ lowest | unkeyed | unadjudicated/cw-2026-08-18-003016 | 15.120 s | `I` | .. | span 36.4 | neighbors 205.8 | ratio 0.177
+ lowest | unkeyed | unadjudicated/cw-2026-08-23-002016 | 19.330 s | `I` | .. | span 10.4 | neighbors 57.1 | ratio 0.182
+ lowest | unkeyed | unadjudicated/cw-2026-09-24-004535 | 15.065 s | `E` | . | span 32.1 | neighbors 171.8 | ratio 0.187
+ lowest | unkeyed | cw-2026-08-17-013622 | 7.895 s | `E` | . | span 115614264.3 | neighbors 582697061.0 | ratio 0.198
+ 
+ verdict | all named | added 17 | taken before any right one falls at or under the bar: 1 | taken before any other character of any heap does: 0 | lowest right 0.106, highest added 3.073
+ verdict | single-element, E and T | added 8 | taken before any right one falls at or under the bar: 0 | taken before any other character of any heap does: 0 | lowest right 0.187, highest added 3.073
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.0218 Minutes
+RC=0 WALL=121s

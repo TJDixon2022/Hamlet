@@ -1,0 +1,10 @@
+unit428 task 3: a third trace, nothing built (3.6) - WhatTheNeighborsSayTests.EachMarkAgainstTheMarksAroundIt, task 2's eight-each-side window on the raw span per mark, so a lone right E is not low against an H beside it merely for having one mark; the added and the right overlap further, the added single elements now above the right ones
+
+Added, all 17: min 0.040, quartile 0.396, median 0.710, quartile 1.638, max 3.073.
+Right, all 353: min 0.106, quartile 0.624, median 1.011, quartile 1.623, max 52.728.
+Added single-element, 8: min 0.396, quartile 0.699, median 1.638, quartile 1.785, max 3.073.
+Right single-element, 62: min 0.187, quartile 0.583, median 0.870, quartile 2.055, max 5.161.
+
+Taken before any right one: all named 1 of 17, the same I on cw-2026-08-22-031905; single-element 0 of 8, a bar at the lowest added one, 0.396, taking 7 of 62 right and 50 of 252 unkeyed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
