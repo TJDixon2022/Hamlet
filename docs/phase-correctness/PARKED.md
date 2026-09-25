@@ -407,3 +407,44 @@ not read from a cited boundary file, it covers only those four places, and a con
 anywhere else (a Canadian call from a US grid, a US call from Puerto Rico) is not caught: the
 prefix stands there as before. Whether to cite a boundary source and widen the table is the
 owner's. Not blocking.
+
+## P31 - item 1: on a row with no callsign, *make a card anyway* is a note and makes no card
+
+**Found by unit 427, 2026-09-24** (`TheFourteenOnScreenTests.Item01TheMenu`). Expected, the
+owner's list item 1: *Capture and make a card anyway always present, and make a card anyway
+makes a card, not a note.* There: on a row with a callsign it is a command and one press makes a
+card (0 -> 1); on a row with none (`e5 ttt tu ee`) it reads *Make a card anyway - Hamlet read no
+callsign on this row, so a card would have nobody on it. Capture the audio and the card follows
+when a call comes through.*, carries no command, and a press makes no card (1 -> 1).
+`RowMenuAlwaysFor` says this is deliberate under the 2026-09-06 rule and §0.0. A card for nobody
+is a feature and a ruling, not a word. Not blocking.
+
+## P32 - item 13: a station's first over, still arriving, opens no card
+
+**Found by unit 427, 2026-09-24** (`Item13HisCardWhileHeTalks`). Expected, item 13: *KC3QIS de
+VE3YX* opens his card mid-over marked *he is sending to you*, buttons held until his hand-back;
+the right-click names him; any keyboard mode. There, on PSK31 and Olivia alike, with the text
+`KC3QIS de VE3YX GM OM TNX FER THE CALL NAME HERE IS` and no hand-back yet: no card opens, the
+row names no station, and the right-click offers only Capture and the no-callsign note. A station
+whose earlier over completed does get *he is still sending* on his card while a new over arrives
+(item 8), which is what exists. Unit 390's commits (406d1efe to 74fd016a) show no task that built
+the parse of a growing row. A feature, not a word. Not blocking.
+
+## P33 - item 8: the hold also lets go on carrier drop, and its sentence promises a send that does not happen
+
+**Found by unit 427, 2026-09-24** (`Item08TheLiveCarrier`). The owner's list says the hold
+releases on K or BTU, not on carrier drop, by design. There: it releases on K or BTU **and** on
+carrier drop (`HisCarrierIsLive` answers false for an ended row, and
+`TheCarrierHoldsTheButtonsTests.WhenHisCarrierDropsTheSamePressGoesOut` asserts it). The refusal
+reads *Hamlet did not send that: he is still sending. ... It goes out the moment his carrier
+drops.* - but nothing goes out when his carrier drops; the operator presses again. That sentence
+is on the send path (§0.2) and the release is parked by the instruction; both are the owner's.
+Not blocking.
+
+## P34 - a PSK31 CQ that carries a grid is read as no station at all
+
+**Found by unit 427, 2026-09-24** (`Item02TheRowHover`). `CQ CQ CQ de VE3YX VE3YX FN03 pse K`
+gives a row whose hover has no station, no entity and no kind - only the offset, the strength
+and the time - where `CQ CQ CQ de W1AW W1AW pse K` gives all of them, and an over carrying
+`QTH FN10` gives the grid and the distance. The parser is the engine's and was not opened. It
+bears on the phase goal - Hamlet reads a CQ call correctly - for the keyboard modes. Not blocking.

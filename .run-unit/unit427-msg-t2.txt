@@ -1,0 +1,34 @@
+unit427 task 2: the fourteen on screen - TheFourteenOnScreenTests, twelve facts that assert nothing, drive items 1 to 13 and print what is there: 9 built-and-right (2, 3, 4, 5, 6, 7, 9, 10, 12), 4 built-but-different (1, 8, 11, 13), 0 unverifiable; P31 to P34
+
+1  different: on a row with no callsign, make a card anyway is a note and a press makes no card
+   (1 -> 1); on a row with one it makes a card; the disabled word is needs your callsign in
+   Settings. P31.
+2  right: the hover says station, entity, grid and distance where sent, offset and strength,
+   heard since, addressed to you, the parser's kind and certainty, click and right-click, and
+   never the text. A CQ carrying a grid parses to no station at all: P34.
+3  right: the band 214 px with the pills, 178 without, at 1600 and 1300; pills 30 px; drive and
+   power in the rig column.
+4  right: the sun map 393 x 214 at x 16 at 1600, the band's height, aspect 1.84; at 1300 back in
+   the card at 294 x 160.
+5  right: PSK31 and Olivia equal FT8 on all seven kinds and add their own first; the quill is on
+   both rows; per-contact records by reference to the green log-path test.
+6  right: under Olivia the Olivia chip is filled and PSK31 is not; the send line reads Sent "CQ
+   CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of Olivia.
+7  right: the X on the card, card_dismissed recorded once.
+8  different: sending on the row, he is still sending on the card, the action held; the hold
+   releases on K or BTU and also on carrier drop, and its sentence says It goes out the moment
+   his carrier drops though nothing goes out without a second press. P33.
+9  right: Log on the card half an exchange in; RST_SENT and RST_RCVD editable, heard by Hamlet
+   and yours - typed by you; every other field read-only.
+10 right: certain hand-back Your turn, guessed Your turn?.
+11 different: chips under the green block in the family's ink, one click tunes, the star fills
+   on a saved spot; empty reads no spots saved yet - press ☆ to keep this one, where the list
+   says press the star. Task 3's one-line case.
+12 right: blind Olivia rows read heard, not readable yet; a PSK31 carrier with no sure
+   characters reads the same.
+13 different: KC3QIS de VE3YX mid-over opens no card on PSK31 or Olivia and the right-click names
+   nobody. P32.
+
+Nothing repaired in this task. Nothing keyed: the two sends go over FakePort and FakeSink.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
