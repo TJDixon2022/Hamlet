@@ -4,6 +4,34 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-181
+date: 2026-09-25
+refs: PHASE_PLAN.md R69 R71 R72 R73 and criterion 3.6, unit 421 output.md, the 2026-09-25 7.052 captures, work instruction 428
+---
+
+**A single-element character is judged against the confidence of the characters around it,
+not against a fixed bar.** Tim, 2026-09-25.
+
+**What was measured.** Unit 421 found eight added single-element characters at raw span 33 and
+above, over a right `E` at 30.8, and concluded no fixed bar could separate them. On the
+nine-minute traffic net captured from 7.052 on 2026-09-25, the same litter sits an order of
+magnitude below its neighbors: in `OPERETTEETTTTED` the real letters run 174 to 630 and the
+intruded ones 16 to 75; in `ALL LOGS WILL BE UPLOADED` the real letters run 300 to 1358 and
+the two intruded `E`s sit at 64 and 67. A fixed bar fails because a weak passage's real
+letters sit near 40; a relative one may not.
+
+**What is ruled.** Criterion 3.6 is attacked by relative span: a character whose own span is a
+small fraction of the median span of the characters around it is a fragment, whatever its own
+score. The window and the fraction are measured, not assumed, and are chosen from the traced
+distributions rather than from which changes they admit.
+
+**What is not changed.** R72 stands: no word, dictionary or callsign prior, in any form. A
+comparison with neighbors' confidence is not a prior - it knows no words.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 428's record
+of it.
+
+---
 id: HM-DEC-180
 date: 2026-09-24
 refs: work instruction 427, CLAUDE.md 0.0, the owner's UI list 2026-09-21 to 09-23 item 14

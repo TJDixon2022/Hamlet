@@ -1,0 +1,7 @@
+unit428 task 0: the record - DECISIONS.md HM-DEC-181 and the CLAUDE.md row, a letter is judged against the confidence of the letters around it; PHASE_OUTCOME.md UNIT 428 - STEP 3 from the decision block with the entry round; PHASE_STATUS.md unit 428, CURRENT_STEP 3; version 1.13.114 to 1.13.115
+
+Entry round, one type per invocation: build 0 errors; engine carry-forward 178 of 178; app carry-forward 278 of 278; captures 51 of 51; adjudicated 13 of 13; keyed floors 13 of 13; all keyed 165 edits over 565, the ten 35 over 156, 17:37 19 over 25; 17 added letters on the keyed recordings, 8 single-element - the numbers to beat.
+
+The 2026-09-25 7.052 captures are not in the tree; task 1 runs on the keyed recordings alone.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

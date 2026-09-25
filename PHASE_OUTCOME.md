@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 428 - STEP 3
+
+STEP: 3
+APPROACH: trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
+MOVE: continue
+WHY: PHASE_PLAN.md step 3 criterion 3.6 asks that the stray single-element characters be traced and attacked with the count of added letters reported before and after, and unit 421 measured that no fixed bar separates them
+STATE: partial
+DECIDED: the window, the ratio, and the per-type timeouts are the author's, overrulable, and are chosen from the traced distributions rather than from which changes they admit
+LICENCE: PHASE_PLAN.md R66, R69, R71, R72, R73, section 3, section 6; HM-DEC-181; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+ADVANCES: step 3 criterion 6
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.114 to 1.13.115. PHASE_STATUS.md names unit 428 and CURRENT_STEP 3. HEAD at entry 9db61107. HM-DEC-181 recorded with its CLAUDE.md row. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 373 s; APP carry-forward 278 of 278 in 154 s; captures 51 of 51 in 119 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46 with 17:37 at 19 over 25, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; WhatTheStrayLettersRestOnTests.TheStraysAndTheSpansTheyStandOn 1 of 1: 892 named on the 23 keyed recordings, 353 right, 56 wrong (31 single-element), 17 added (8 single-element), 466 outside every stretch. THE NUMBERS TO BEAT: 165 over 565, 17 added. THE INSTRUCTION AGAINST THE TREE: no capture dated 2026-09-25 is in tests/fixtures/cw/captured/unadjudicated or anywhere under the repository or the user profile - the newest are the 2026-09-24 00:39 to 00:45 UTC thirteen - so task 1 runs on the keyed recordings alone. The sheet's spanLlr first figure, the floors' SpanBar of 13.0 and the decoder's StrayElementSpan of 13.0 are one number, CwProbabilisticCharacter.SpanLogLikelihoodRatio, computed in CwProbabilisticDecoder.Spell, carried to CwCharacter by CwProbabilisticStream and printed by MainWindowViewModel.SpanRatioLine. CwProbabilisticDecoder.Judged admits a named character on two tests, not one: SpanMargin at or above CharacterMargin 1.0, and, for a single element, raw span at or above StrayElementSpan 13.0 (unit 421); a word gap passes unjudged. The unsure the sheet counts is the placeholder, CwConfidence.Unreadable, which a floor does not count. R71 and R73 read as the instruction states them.
+
 ## UNIT 427 - STEP 6
 
 STEP: 6
