@@ -1436,3 +1436,309 @@ K3ABC de KC3QIS R 599 name Tim Trafford PA BTU K3ABC de KC3QIS K
    detected OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1000.37 Hz, error 0.37 Hz, quality 0.580, tones right 14, first tone at 0.463 s
 
 
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-32-1000-qso-rsid.wav") [8 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav: 8000 Hz, 106.80 s, passband 200-3000 Hz, wall 8.766 s, process cpu 17.188 s, cpu/audio 0.161
+   expected OLIVIA_32_1000 (71) at 1000 Hz
+   detected OLIVIA_32_1000 (71) mode OLIVIA variant "32/1000" at 1000.32 Hz, error 0.32 Hz, quality 0.900, tones right 15, first tone at 0.464 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "4/250") [14 s]
+  Standard Output Messages:
+ 4/250 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 21.794 s of audio, blocks 19 decoded, 0 rejected; decode cpu 1.188 s
+ 4/250 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 14.626 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.781 s
+ 4/250 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 51.490 s of audio, blocks 48 decoded, 0 rejected; decode cpu 2.797 s
+ 4/250 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 34.082 s of audio, blocks 31 decoded, 0 rejected; decode cpu 1.875 s
+ 4/250 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 58.658 s of audio, blocks 55 decoded, 0 rejected; decode cpu 3.266 s
+ 4/250 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 21.794 s of audio, blocks 19 decoded, 0 rejected; decode cpu 1.219 s
+ 4/250 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 14.626 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.750 s
+ 4/250 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 51.490 s of audio, blocks 48 decoded, 0 rejected; decode cpu 3.047 s
+ 4/250 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 34.082 s of audio, blocks 31 decoded, 0 rejected; decode cpu 1.969 s
+ 4/250 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 58.658 s of audio, blocks 55 decoded, 0 rejected; decode cpu 3.328 s
+ 4/250: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime [5 s]
+  Standard Output Messages:
+ psk31-four-signals.wav: 8000 Hz, 38.59 s of audio, wall 3.070 s (0.080 of real time), cpu/audio 0.159, bursts heard 0
+ olivia-two-signals-rsid.wav: 8000 Hz, 28.98 s of audio, wall 2.352 s (0.081 of real time), cpu/audio 0.159, bursts heard 2; OLIVIA_16_500 at 1999.66 Hz; OLIVIA_8_250 at 1000.29 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "16/1000") [9 s]
+  Standard Output Messages:
+ 16/1000 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 12.578 s of audio, blocks 10 decoded, 0 rejected; decode cpu 0.703 s
+ 16/1000 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 8.482 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.422 s
+ 16/1000 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 26.914 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.703 s
+ 16/1000 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 18.722 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.141 s
+ 16/1000 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 31.010 s of audio, blocks 28 decoded, 0 rejected; decode cpu 2.016 s
+ 16/1000 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 12.578 s of audio, blocks 10 decoded, 0 rejected; decode cpu 0.703 s
+ 16/1000 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 8.482 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.453 s
+ 16/1000 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 26.914 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.688 s
+ 16/1000 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 18.722 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.141 s
+ 16/1000 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 31.010 s of audio, blocks 28 decoded, 0 rejected; decode cpu 1.922 s
+ 16/1000: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheBurstSixteenDecibelsBelowTheNoiseIsDetected [10 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-16db.wav: 8000 Hz, 131.38 s, passband 200-3000 Hz, wall 10.521 s, process cpu 20.938 s, cpu/audio 0.159
+   expected OLIVIA_16_500 (70) at 1000 Hz
+   detected OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1000.77 Hz, error 0.77 Hz, quality 0.296, tones right 12, first tone at 0.469 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.AFileWithNoBurstYieldsNone(file: "olivia-noise-only-30s.wav") [2 s]
+  Standard Output Messages:
+ olivia-noise-only-30s.wav: 8000 Hz, 30.00 s, passband 200-3000 Hz, wall 2.539 s, process cpu 5.031 s, cpu/audio 0.168
+   detected none
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "8/500") [11 s]
+  Standard Output Messages:
+ 8/500 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 15.650 s of audio, blocks 13 decoded, 0 rejected; decode cpu 0.875 s
+ 8/500 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 10.530 s of audio, blocks 8 decoded, 0 rejected; decode cpu 0.516 s
+ 8/500 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 35.106 s of audio, blocks 32 decoded, 0 rejected; decode cpu 2.063 s
+ 8/500 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 23.842 s of audio, blocks 21 decoded, 0 rejected; decode cpu 1.359 s
+ 8/500 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 40.226 s of audio, blocks 37 decoded, 0 rejected; decode cpu 2.391 s
+ 8/500 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 15.650 s of audio, blocks 13 decoded, 0 rejected; decode cpu 0.844 s
+ 8/500 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 10.530 s of audio, blocks 8 decoded, 0 rejected; decode cpu 0.625 s
+ 8/500 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 35.106 s of audio, blocks 32 decoded, 0 rejected; decode cpu 2.016 s
+ 8/500 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 23.842 s of audio, blocks 21 decoded, 0 rejected; decode cpu 1.344 s
+ 8/500 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 40.226 s of audio, blocks 37 decoded, 0 rejected; decode cpu 2.375 s
+ 8/500: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "4/500") [9 s]
+  Standard Output Messages:
+ 4/500 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 12.058 s of audio, blocks 19 decoded, 0 rejected; decode cpu 0.594 s
+ 4/500 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 8.474 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.375 s
+ 4/500 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 26.906 s of audio, blocks 48 decoded, 0 rejected; decode cpu 1.531 s
+ 4/500 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 18.202 s of audio, blocks 31 decoded, 0 rejected; decode cpu 0.969 s
+ 4/500 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 30.490 s of audio, blocks 55 decoded, 0 rejected; decode cpu 1.766 s
+ 4/500 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 12.058 s of audio, blocks 19 decoded, 0 rejected; decode cpu 0.594 s
+ 4/500 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 8.474 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.391 s
+ 4/500 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 26.906 s of audio, blocks 48 decoded, 0 rejected; decode cpu 1.500 s
+ 4/500 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 18.202 s of audio, blocks 31 decoded, 0 rejected; decode cpu 0.984 s
+ 4/500 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 30.490 s of audio, blocks 55 decoded, 0 rejected; decode cpu 1.734 s
+ 4/500: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.AFileWithNoBurstYieldsNone(file: "olivia-8-250-qso-norsid.wav") [14 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav: 8000 Hz, 172.06 s, passband 200-3000 Hz, wall 14.171 s, process cpu 28.063 s, cpu/audio 0.163
+   detected none
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "16/500") [16 s]
+  Standard Output Messages:
+ 16/500 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 22.834 s of audio, blocks 10 decoded, 0 rejected; decode cpu 1.500 s
+ 16/500 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 14.642 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.906 s
+ 16/500 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 51.506 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.766 s
+ 16/500 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 35.122 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.125 s
+ 16/500 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 59.698 s of audio, blocks 28 decoded, 0 rejected; decode cpu 2.047 s
+ 16/500 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 22.834 s of audio, blocks 10 decoded, 0 rejected; decode cpu 0.734 s
+ 16/500 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 14.642 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.438 s
+ 16/500 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 51.506 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.625 s
+ 16/500 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 35.122 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.094 s
+ 16/500 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 59.698 s of audio, blocks 28 decoded, 0 rejected; decode cpu 1.875 s
+ 16/500: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise [21 s]
+  Standard Output Messages:
+ seed 363 (asserted): SNR set -14.00 dB in 2500 Hz, measured back -13.82 dB; RSID OLIVIA_8_250 at 1000.16 Hz, 14 tones right; CER 0.0000 (ceiling 0.10); characters 251 of 251; blocks decoded 84, rejected 0; sync snr 9.87; cpu 5.203 s (2.5's ceiling 20 s)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.TheUnannouncedCarrierIsFoundAndRead [5 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav: candidates 1; audio consumed 4.096 s; search cpu 0.750 s; passband floor -55.7 dB, loudest bin 90.21 dB over it
+    named 8/250 at 1000.00 Hz (measured middle of the tones 1000.49 Hz), confidence 75.72, after 4.096 s of audio; spacing 31.250 Hz over 8 tones; occupied 865.23-1134.77 Hz = 269.53 Hz
+       weighed 8/250    sync snr 75.72, blocks decoded 2, rejected 0, highest block 87.32
+       weighed 16/500   sync snr 0.00, blocks decoded 0, rejected 2, highest block 2.60
+       weighed 4/250    sync snr 0.00, blocks decoded 0, rejected 4, highest block 3.98
+       weighed 32/1000  sync snr 0.00, blocks decoded 0, rejected 2, highest block 2.89
+ decode after the search: 8/250 at 1000.00 Hz, CER 0.0000 (ceiling 0.05), characters 251 of 251, blocks decoded 84, rejected 0, sync snr 89.69, first block 0.016 s; decode cpu 5.188 s (2.5's ceiling 20 s)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.NoiseYieldsNoCandidate [235 ms]
+  Standard Output Messages:
+ olivia-noise-only-30s.wav: candidates 0; audio consumed 30.000 s; search cpu 0.234 s; passband floor 2.8 dB, loudest bin 0.89 dB over it
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.TheSearchWritesItsEventWithNoTextOrCallsign [741 ms]
+  Standard Output Messages:
+ Psk31 olivia_search {"mode":"olivia","variant":"8/250","found":1,"audioSeconds":4.096,"passbandLowHz":200,"passbandHighHz":3000,"floorDb":-55.71,"peakOverFloorDb":90.21,"gateSigmas":8,"threshold":4,"centerHz":1000,"confidence":75.72,"measuredCenterHz":1000.49,"toneSpacingHz":31.25,"tonesCounted":8,"occupiedLowHz":865.23,"occupiedHighHz":1134.77,"weighed":["8/250","16/500","4/250","32/1000"],"weighedSnr":[75.72,0,0,0],"weighedBlocks":[2,0,0,0]}
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "32/1000") [1 s]
+  Standard Output Messages:
+ noise as 32/1000: characters 0, blocks decoded 0, rejected 14, highest block snr 3.15 (threshold 4), cpu 1.063 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "8/250") [909 ms]
+  Standard Output Messages:
+ noise as 8/250: characters 0, blocks decoded 0, rejected 14, highest block snr 3.45 (threshold 4), cpu 0.906 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "16/500") [954 ms]
+  Standard Output Messages:
+ noise as 16/500: characters 0, blocks decoded 0, rejected 14, highest block snr 3.27 (threshold 4), cpu 0.938 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav: detector OLIVIA_16_500 variant 16/500 at 1000.37 Hz (cpu 10.203 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.05); characters 251 of 251; blocks decoded 63, rejected 0; offset -0.37 Hz, symbol phase 5, block phase 14, mean block snr 17.68; first block 2.341 s, last 129.317 s; demodulator cpu 4.172 s
+ block snr: lowest 13.81, tenth 15.21, median 17.24, highest 21.62 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-32-1000-qso-rsid.wav") [12 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav: detector OLIVIA_32_1000 variant 32/1000 at 1000.32 Hz (cpu 8.391 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.01); characters 251 of 251; blocks decoded 51, rejected 0; offset -0.32 Hz, symbol phase 4, block phase 14, mean block snr 91.02; first block 2.338 s, last 104.738 s; demodulator cpu 3.953 s
+ block snr: lowest 86.03, tenth 88.02, median 90.89, highest 96.54 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-16-500-qso-rsid.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-rsid.wav: detector OLIVIA_16_500 variant 16/500 at 1000.32 Hz (cpu 10.250 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.01); characters 251 of 251; blocks decoded 63, rejected 0; offset -0.32 Hz, symbol phase 4, block phase 14, mean block snr 83.60; first block 2.338 s, last 129.314 s; demodulator cpu 4.078 s
+ block snr: lowest 76.95, tenth 80.37, median 83.53, highest 90.07 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-8-250-cq-rsid.wav") [3 s]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav: detector OLIVIA_8_250 variant 8/250 at 1000.32 Hz (cpu 2.203 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.01); characters 38 of 38; blocks decoded 13, rejected 0; offset -0.32 Hz, symbol phase 4, block phase 14, mean block snr 90.11; first block 2.338 s, last 26.914 s; demodulator cpu 0.813 s
+ block snr: lowest 85.52, tenth 86.02, median 88.36, highest 98.47 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign [14 s]
+  Standard Output Messages:
+ Psk31 olivia_sync {"mode":"olivia","variant":"16/500","state":"found","centerHz":1000.32,"frequencyOffsetHz":-0.32,"symbolPhase":4,"blockPhase":14,"snr":80.97,"threshold":4,"atSeconds":2.338}
+ Psk31 olivia_run {"mode":"olivia","variant":"16/500","centerHz":1000.32,"sampleRate":8000,"samplesPerSymbol":256,"windowSamples":512,"hopSamples":32,"transformSize":2048,"frequencyOffsetHz":-0.32,"symbolPhase":4,"blockPhase":14,"blocksDecoded":63,"blocksRejected":0,"charactersOut":251,"meanSnr":83.6,"threshold":4}
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-16db.wav: detector OLIVIA_16_500 variant 16/500 at 1000.77 Hz (cpu 10.172 s); 8000 Hz, 256 samples/symbol; CER 0.9044 (ceiling none, measured and reported); characters 24 of 251; blocks decoded 6, rejected 57; offset 3.14 Hz, symbol phase 3, block phase 14, mean block snr 4.54; first block 12.578 s, last 104.738 s; demodulator cpu 4.297 s
+ block snr: lowest 2.48, tenth 2.78, median 3.18, highest 4.87 (threshold 4)
+ decoded : "C3QIS deQIS fforKC3QQTH "
+ manifest: "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\nKC3QIS de W1AW W1AW K\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\n"
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDriftTests.ADriftingCarrierIsHeld [15 s]
+  Standard Output Messages:
+ drifted 16/500 at 20 Hz a minute: detector 16/500 at 1000.76 Hz, burst at 0.465 s; CER 0.0000 (ceiling 0.05), characters 251 of 251, blocks decoded 63, rejected 0, sync snr 81.27; cpu 4.125 s
+ offset tracked (s: Hz, against the ramp's center less the detector's): 2.9: -0.76 (0.21), 19.3: 7.06 (5.67), 35.7: 10.96 (11.13), 52.0: 14.87 (16.59), 68.4: 22.68 (22.05), 84.8: 26.59 (27.52), 101.2: 34.40 (32.98), 117.6: 38.31 (38.44), 131.4: 42.21 (43.04)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.NoiseOpensNothing [2 s]
+  Standard Output Messages:
+ olivia-noise-only-30s.wav (manifest  at -): 30.00 s in 2000-sample pieces; channels at the end 0, most at once 0; cpu 2.406 s, 0.080 of real time; longest single Add 0.023 s wall; unit 362 whole-file: no candidate, no character
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TwoStationsAreTwoChannelsEachWithItsOwnText [4 s]
+  Standard Output Messages:
+ olivia-two-signals-rsid.wav (manifest 8/250 + 16/500 at -): 28.98 s in 2000-sample pieces; channels at the end 2, most at once 2; cpu 4.094 s, 0.141 of real time; longest single Add 0.110 s wall
+    opened 2: 8/250 at 1000.29 Hz by rsid, opened at 3.500 s
+    opened 1: 16/500 at 1999.66 Hz by rsid, opened at 3.500 s
+    channel 2: 8/250 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 13, rejected 1; characters 38; CER against half 0 0.0000, half 1 0.4737
+    channel 1: 16/500 at 2003.91 Hz, found rsid, opened 3.500 s; blocks decoded 10, rejected 4; characters 38; CER against half 0 0.4737, half 1 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-16-500-qso-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 63 blocks") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-rsid.wav (manifest 16/500 at 1000): 131.38 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 14.516 s, 0.110 of real time; longest single Add 0.063 s wall; unit 362 whole-file: CER 0.0000, 63 blocks
+    opened 1: 16/500 at 1000.32 Hz by rsid, opened at 3.500 s
+    channel 1: 16/500 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 63, rejected 1; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-8-250-cq-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 13 blocks") [3 s]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav (manifest 8/250 at 1000): 28.98 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 3.109 s, 0.107 of real time; longest single Add 0.062 s wall; unit 362 whole-file: CER 0.0000, 13 blocks
+    opened 1: 8/250 at 1000.32 Hz by rsid, opened at 3.500 s
+    channel 1: 8/250 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 13, rejected 1; characters 38; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-32-1000-qso-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 51 blocks") [12 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav (manifest 32/1000 at 1000): 106.80 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 12.328 s, 0.115 of real time; longest single Add 0.080 s wall; unit 362 whole-file: CER 0.0000, 51 blocks
+    opened 1: 32/1000 at 1000.32 Hz by rsid, opened at 3.500 s
+    channel 1: 32/1000 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 51, rejected 1; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-16-500-qso-snr-10db.wav", ceiling: 0.050000000000000003, wholeFile: "CER 0.0000, 63 blocks") [15 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav (manifest 16/500 at 1000): 131.38 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 14.750 s, 0.112 of real time; longest single Add 0.070 s wall; unit 362 whole-file: CER 0.0000, 63 blocks
+    opened 1: 16/500 at 1000.37 Hz by rsid, opened at 3.500 s
+    channel 1: 16/500 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 63, rejected 1; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TheListenersEventsCarryNoTextOrCallsign [4 s]
+  Standard Output Messages:
+ olivia-two-signals-rsid.wav (manifest 8/250 + 16/500 at -): 28.98 s in 2000-sample pieces; channels at the end 2, most at once 2; cpu 3.969 s, 0.137 of real time; longest single Add 0.109 s wall
+    opened 2: 8/250 at 1000.29 Hz by rsid, opened at 3.500 s
+    opened 1: 16/500 at 1999.66 Hz by rsid, opened at 3.500 s
+    channel 2: 8/250 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 13, rejected 1; characters 38; CER against half 0 0.0000, half 1 0.4737
+    channel 1: 16/500 at 2003.91 Hz, found rsid, opened 3.500 s; blocks decoded 10, rejected 4; characters 38; CER against half 0 0.4737, half 1 0.0000
+ Psk31 olivia_channel {"mode":"olivia","variant":"16/500","state":"opened","id":1,"found":"rsid","centerHz":1999.66,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}
+ Psk31 olivia_channel {"mode":"olivia","variant":"8/250","state":"opened","id":2,"found":"rsid","centerHz":1000.29,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}
+ Psk31 olivia_block {"mode":"olivia","variant":"16/500","id":1,"found":"rsid","centerHz":2000,"atSeconds":1.902,"snr":2.26,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}
+ Psk31 olivia_block {"mode":"olivia","variant":"8/250","id":2,"found":"rsid","centerHz":1000,"atSeconds":1.878,"snr":3.32,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}
+ Psk31 olivia_block {"mode":"olivia","variant":"16/500","id":1,"found":"rsid","centerHz":2000,"atSeconds":2.338,"snr":73.86,"accepted":true,"characters":4,"blocksDecoded":1,"blocksRejected":1,"threshold":4}
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TheUnannouncedFileIsOneChannelFoundBlind [21 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav (manifest 8/250 at 1000): 172.06 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 20.969 s, 0.122 of real time; longest single Add 0.952 s wall; unit 362 whole-file: blind search then Decode, CER 0.0000, 84 blocks
+    opened 1: 8/250 at 1000.00 Hz by blind, opened at 10.250 s
+    channel 1: 8/250 at 1000.00 Hz, found blind, opened 10.250 s; blocks decoded 84, rejected 0; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-snr-16db.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-16db.wav: 1 16/500 by rsid, window 28.672 s, blocks 9, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-8-250-qso-norsid.wav") [22 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav: 1 8/250 by blind, window 38.230 s, blocks 81, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-rsid.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-rsid.wav: 1 16/500 by rsid, window 28.672 s, blocks 60, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-32-1000-qso-rsid.wav") [12 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav: 1 32/1000 by rsid, window 22.938 s, blocks 48, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-noise-only-30s.wav") [2 s]
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-8-250-cq-rsid.wav") [3 s]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav: 1 8/250 by rsid, window 38.230 s, blocks 10, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-snr-10db.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav: 1 16/500 by rsid, window 28.672 s, blocks 60, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-two-signals-rsid.wav") [3 s]
+  Standard Output Messages:
+ olivia-two-signals-rsid.wav: 2 8/250 by rsid, window 38.230 s, blocks 10, retired False
+ olivia-two-signals-rsid.wav: 1 16/500 by rsid, window 28.672 s, blocks 10, retired False
+
+
+[xUnit.net 00:06:22.52]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.TheWindowIsTheFactorTimesTheTimingTable [3 ms]
+  Standard Output Messages:
+ 8/250   : 0.68267 s a character x 56 = 38.230 s
+ 16/500  : 0.512 s a character x 56 = 28.672 s
+ 32/1000 : 0.4096 s a character x 56 = 22.938 s
+
+
+
+Test Run Successful.
+Total tests: 178
+     Passed: 178
+ Total time: 6.3811 Minutes
+RC=0 WALL=384s

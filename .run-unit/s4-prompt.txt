@@ -5,17 +5,21 @@ Below is section 4 of a work unit's report. Its heading is
 any question that needs a ruling from the owner - and that an
 empty section 4 is a real answer meaning nothing is blocked.
 
-THE OWNER IS STOPPED FOR EXACTLY THREE THINGS - his ruling of
-2026-09-12:
+THE OWNER IS STOPPED FOR EXACTLY TWO THINGS - his ruling of
+2026-09-12, narrowed by his ruling of 2026-09-23:
 
   1  anything that touches keying, transmit, or the radio's safety -
      in a project that is not a radio, what the project can make
      happen outside the machine it runs on
-  2  money past the budget
-  3  a decision that changes what the product promises the operator -
+  2  a decision that changes what the product promises the operator -
      what a card asserts, what a click does, what is logged as true
 
-WHAT THE THIRD MEANS - the owner's ruling of 2026-09-13, which defines it
+MONEY IS NOT ONE OF THEM. Until 2026-09-23 the list had a third item,
+money past the budget; the owner's plan now supplies the capacity, and
+a question about spend, cost or budget is the unit's own to decide and
+is NOT a ruling request.
+
+WHAT THE SECOND MEANS - the owner's ruling of 2026-09-13, which defines it
 and does not widen it: A promise is a fact the product states to the
 operator about the radio, a contact, or a send - what was logged, what was
 heard, what went out. THE WORDING OF A HINT, A LABEL, A TARGET, A CARD'S
@@ -34,14 +38,18 @@ a note, an observation, a thing reported for the record, or a
 recommendation the unit has already acted on.
 
 A RULING IS WANTED only where the text asks the owner to decide
-something INSIDE ONE OF THE THREE, or says work is stopped until he
-decides something inside one of the three. Where one question is
-inside the three and others are outside, a ruling is wanted.
+something INSIDE ONE OF THE TWO, or says work is stopped until he
+decides something inside one of the two. Where one question is
+inside the two and others are outside, a ruling is wanted.
 
-Answer with exactly two lines and nothing else:
+Answer with these lines and nothing else. Where a ruling is wanted, three:
 
 VERDICT: ruling
+WHICH: keying     or   WHICH: promise
 WHY: one sentence, plain text, no punctuation beyond commas and full stops
+
+WHICH names the one of the two it touches - keying for the first, promise
+for the second. Where no ruling is wanted, two:
 
 or
 
@@ -51,24 +59,30 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing blocks the phase (R65). There are two items, most useful first.
-
-**1. What would reopen 7.4.**
-- **Proposed ruling:** the owner decides whether a later unit may question the tracker's choice of 525 Hz at 30.54 s on the spliced stream. Without that decision, 7.4 stays closed partial under P48.
-- **Reasoning:**
-  - Four follow rules have now been measured against one line, 617 to 621.
-  - Three of them asked whether the survey confirmed the new pitch. Unit 432 showed that confirmation looks the same for right moves and wrong ones.
-  - The fourth compared the two pitches directly. At 30.54 s the decoder's own envelope ranks 525 (15.02 dB) above 850 (14.39), above the sender's 625 (13.67), and above the mix at 600 (12.69).
-  - So the evidence the mixdown could weigh points the same way as the tracker's wrong move. Deciding when to follow cannot undo a choice that the evidence supports.
-  - The tracker's choice belongs to the tracker under HM-DEC-095 and HM-DEC-127, and this unit did not touch it.
-- **Rejected:**
-  - A margin, another percentile, or another window. Section 6 forbids a variant, and no plain margin can invert a ranking where the target wins.
-  - Combining this rule with `5b6b704c`, `ec76051e` or P39, which section 10 forbids.
-
-**2. The window at 30.54 s starts before the splice.** For the record.
-- **Proposed ruling:** none.
-- **Reasoning:**
-  - The 3.0 s ending at 30.54 on the spliced stream runs from 27.54 s. It starts inside `003901`'s tail, before `003919` begins at 30.0 s.
-  - Both the rule and the survey's own 3.0 s history see that joined audio, and the live session's decoder saw its own continuous audio.
-  - Whether the contrast would rank the pitches differently on unspliced audio was not measured.
-- **Rejected:** measuring it in this unit, because no task asked for it and no self-ruling authorizes work outside the tasks.
+1. **`TheUnitIsMeasuredNotSearchedTests.TheFiveToEightDecibelPlateauHolds` is still red at HEAD,
+   exactly as at entry.** It is outside the carry-forward.
+   - It was red at this unit's entry, so it does not count against HM-DEC-165.
+   - **Proposed ruling:** park it as a standing red for whichever unit opens the hysteresis.
+   - **Reasoning:** Â§9 parks the hysteresis, and Â§12.5 says repair nothing.
+   - **Rejected:** repairing it here.
+   - Not blocking 7.4.
+2. **The launcher-overlap ruling is still the owner's and still carried:** the launcher should end
+   a redirected session before it launches the next.
+   - There was no collision this time. Nothing was live at 09:58, and task 0's check held.
+   - One claude.exe process, 26364, was running beside this session the whole time. It started
+     no test and committed nothing. I did not identify it or touch it.
+   - Not blocking 7.4.
+3. **What is in the opening's way, as measured.**
+   - Every route downstream of the pitch has now been tried against 7.4 and failed 3.2's tests:
+     four follow rules (R75), the speed carry, the dit-against-dah rule, and now the window
+     re-mix.
+   - This unit found that the window's pitch is not the remaining cause. The estimator's unit
+     is still about half the sender's at the right pitch, over a window that is wholly at that
+     pitch.
+   - **Proposed ruling:** the next 7.4 unit, if one is seeded, looks at why `CwUnitEstimator`
+     reads about 30 ms at 625 Hz on this sender. Otherwise 7.4 waits for 4.7.
+   - **Reasoning:** unit 436's rule attacked that halving and cost recordings. This unit shows
+     the halving survives a clean window, so it lies in the audio or the trigger, not the mix.
+   - **Rejected:** keeping the re-mix for the recordings it helps, because HM-DEC-091 forbids
+     reading one recording at another's cost.
+   - The author's or the owner's to rule, not this unit's. Not blocking 7.4 as a criterion.

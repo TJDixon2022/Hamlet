@@ -44,6 +44,9 @@ halt.
 - **No voice asks the operator to change a setting Hamlet set** (R74). A criterion is met by
   making the setting right and the sentences agree with it, never by silencing a voice that
   is telling the truth.
+- **`CwToneTracker` is open (R75), but not before 4.1 and 4.5 are met (R76).** A unit that
+  changes it names the clause of HM-DEC-095 or HM-DEC-127 it works against, and is judged by
+  3.2's four tests with the instrument's table beside them.
 - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
   movement fails 3.2's third test, and a report invoking the clause prints the reading
   before and after.
@@ -91,6 +94,10 @@ window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wordi
 HM-OPEN-063 and HM-OPEN-070.
 
 ## Â§8 Revision record
+
+- **2026-09-25.** R75 the tone tracker is open, on unit 433's measurement that the envelope
+  ranks the wrong pitch above the sender's; R76 the instrument is built and proved first, and
+  3.6 and 7.4 reopen when a tracker change is kept. New criteria 4.5, 4.6, 4.7.
 
 - **2026-09-24, after unit 423.** R73 a key-identified added character may leave a floor, so
   3.6 can pass; R74 Hamlet sets the radio from the manual and nothing contradicts what it set,
