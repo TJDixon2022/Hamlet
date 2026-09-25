@@ -1,0 +1,14 @@
+unit440 task 0: the record, and steps 0 and 1 ticked
+
+UNIT 440 - STEP 2 in PHASE_OUTCOME.md, PHASE_STATUS.md at unit 440 and
+CURRENT_STEP 2, version 1.13.126 to 1.13.127. Steps 0 and 1 ticked from
+unit 439's report without re-measuring (R80). The owner's revision of
+PHASE_PLAN.md (R80, R81, steps 2 to 8 rewritten) and work instruction 440
+committed as they stood; the root copy of the plan synced to it.
+
+Entry round: build 0 errors; engine carry-forward 178 of 178; app 278 of
+278; captures 51 of 51, adjudicated 13 of 13, named 13 of 13; real keyed,
+inferred keys: MET-CER-SURE 67 of 426 sure (54 substituted, 13 added),
+MET-INVENTED 67 over 473, MET-COVERAGE 426 over 473 (359 right).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

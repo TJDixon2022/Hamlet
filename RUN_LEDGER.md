@@ -323,3 +323,4 @@ the owner reads instead of watching.
 | phase | 2026-09-25T13:38 | 2026-09-25T13:38 | ending | 0 | ENDED - the arbiter raised one of the two for the owner. stop 4: the arbiter declared a decision the owner's |
 | phase | 2026-09-25T13:39 | 2026-09-25T13:39 | ending | 0 | RESOLVED by the owner - the stop 4 of 2026-09-25T13:33 is answered. The requirements phase runs. The correctness phase is archived at docs/phase-correctness-run/ with 5.1 open, install-phase.bat installed the new plan at the root at 13:34, and the live correctness-phase unit was killed by the owner. No phase decision is open. |
 | phase | 2026-09-25T13:39 | 2026-09-25T13:39 | ending | 0 | ENDED - the arbiter raised one of the two for the owner. stop 4: the arbiter declared a decision the owner's |
+| 5 | 2026-09-25T12:57 | 2026-09-25T14:37 | complete | 5.607917400000002 | ran unattended, 131 turns, 14 denied call(s) worked around, report valid |

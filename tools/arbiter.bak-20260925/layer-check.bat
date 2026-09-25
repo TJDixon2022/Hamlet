@@ -60,8 +60,8 @@ rem  THIS IS THE FAILURE MODE OF THIS SCRIPT: it goes stale and
 rem  reports green on a project that is behind. It cannot detect
 rem  that on its own - see the limit printed below.
 rem ============================================================
-set "LIST_UPDATED=2026-09-19"
-set "LIST_UNIT=060"
+set "LIST_UPDATED=2026-09-24"
+set "LIST_UNIT=087"
 
 set "RC=0"
 set /a NPRESENT=0
@@ -157,6 +157,10 @@ call :cap "an ending is demonstrated" "tools\arbiter\run-phase.bat" "^:exhaustte
 call :cap "every halt names ending or stop" "tools\arbiter\run-phase.bat" "^:verdictof" "PHASE_UPLIFT.md 26"
 call :cap "the header is reconciled" "tools\arbiter\run-phase.bat" "^:reconcile" "PHASE_UPLIFT.md 27"
 call :cap "the card is reconciled too" "tools\arbiter\run-phase.bat" "^:reconcilecard" "PHASE_UPLIFT.md 28"
+call :cap "a question parks and the loop routes past it" "tools\arbiter\run-phase.bat" "^:park$" "PHASE_UPLIFT.md 29"
+call :cap "the prompt leads with the prime directive" "tools\arbiter\run-phase.bat" "^:promptdirective" "PHASE_UPLIFT.md 30"
+call :cap "a refusal is handed back, never a halt" "tools\arbiter\run-phase.bat" "^:refused$" "PHASE_UPLIFT.md 31"
+call :cap "a hiccup is retried once, then routed" "tools\arbiter\run-phase.bat" "^:launchcheck$" "PHASE_UPLIFT.md 32"
 call :cap "reload present"           "tools\arbiter\reload.bat"      "*"                      "PHASE_UPLIFT.md 3"
 call :cap "CRLF pinned for .bat"     ".gitattributes"                "eol=crlf"               "PHASE_UPLIFT.md 13" req
 call :cap "panel per-field degrade"  "app\PROJECT_ANNUNCIATOR.html"  "function deriveStatus"  "PHASE_UPLIFT.md 14"

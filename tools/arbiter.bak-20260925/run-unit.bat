@@ -306,7 +306,8 @@ echo.
 rem --- the lock, before anything is launched ---------------------
 rem  A LOCK WHOSE OWNING PROCESS IS GONE IS NOT A LOCK. 067 task 4.
 rem  The arbiter's, author's, overrulable, under the owner's ruling of
-rem  2026-09-12 that the arbiter stops for three things only.
+rem  2026-09-12 that the arbiter stops for three things only - two since
+rem  his ruling of 2026-09-23, unit 085.
 rem
 rem  WHY THIS EXISTS. HamLet, 2026-09-14: iteration 1 left the session
 rem  lock behind, iteration 2 could not take it, nothing ran, and the

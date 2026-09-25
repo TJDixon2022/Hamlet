@@ -1,0 +1,17 @@
+unit439 task 4: exit round and the baseline re-issued with the metrics
+
+docs/phase-requirements/metrics-baseline.md: the four metrics' definitions
+quoted from CW_SPEC.md 11, how they are read, the conditions the corpus
+can and cannot stand for, totals, per condition and per recording, the
+relation of MET-WBE to CwScorer.Kinds, and how other types reach them.
+
+Exit round, every figure as at entry: build 0 errors; engine
+carry-forward 178 of 178; app 275 of 278, the dispatcher-loop loss
+(TheCarrierHoldsTheButtonsTests, TheFavoritesAreUnderTheGreenZoneTests),
+each type green alone; captures 51 of 51, adjudicated 13 of 13, named
+13 of 13; 165 over 565, 17 added, 8 single; 17:37 19 over 25.
+DecisionLogOrderTests gaps 105, 136, 166, 182. git diff over src and data
+from 7734ecbe prints nothing; the transmit files print nothing against
+7e209cb4.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

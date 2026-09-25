@@ -1,0 +1,10 @@
+unit440: closing - output.md, status COMPLETED
+
+Run by hand, outside the loop. Tasks 0, 1, 2 and 4 complete; task 3
+dropped with what was measured (every other group read on textbook
+spacing at a speed or pitch steps 4 and 5 own). 54 sure-wrong traced,
+split 27; G1 cut MET-CER-SURE 67 of 426 to 56 of 419 and was not kept
+because MET-COVERAGE as the spec writes it fell. Exit round as entry;
+src identical to entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

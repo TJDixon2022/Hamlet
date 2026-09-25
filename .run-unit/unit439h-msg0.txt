@@ -1,0 +1,23 @@
+unit439 task 0: the record - requirements phase opens by hand
+
+Work instruction 439 runs by hand, outside the arbiter loop, because
+run-phase.bat halts on a stale MOVE: stop. HM-DEC-183 recorded: the CW
+requirements are the specification and tests trace to them. Version
+1.13.125 to 1.13.126; PROJECT_CARD.md PHASE Hamlet meets the CW
+requirements, PHASE_SET 2026-09-25; PHASE_OUTCOME.md gains UNIT 439 -
+STEP 0 in both copies.
+
+HM-DEC-183's knowledge-rule clause cites R72 and HM-DEC-181, not the
+HM-DEC-175 the instruction named, which is the CW-block receiver ruling.
+
+Entry round: build 0 errors; engine carry-forward 178 of 178; app 275 of
+278, the three dispatcher-loop losses green alone; captures 51 of 51,
+adjudicated 13 of 13, named 13 of 13; 165 edits over 565 against
+inferred keys, 17 added (8 single-element), 56 wrong (31 single);
+17:37 19 over 25.
+
+DecisionLogOrderTests was already red at HEAD (gap at HM-DEC-166); the
+183 row adds HM-DEC-182, ordered by work instruction 434 and never
+recorded, to its gap list. Reported, not repaired.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

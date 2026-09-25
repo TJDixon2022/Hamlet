@@ -1,0 +1,10 @@
+unit439 task 1: every CW test and what it proves (0.1)
+
+docs/phase-requirements/traceability.md lists all 621 CW test methods in
+125 files, each with the requirement it proves, none or unclear, and what
+it asserts: 8 prove a requirement, 612 none, 1 unclear, 140 on a
+requirement's subject but measuring something else, 53 in files excluded
+from compilation. Classified from source against .run-unit/unit439h-rubric.md;
+every proving row re-read against its asserts. No src or test file changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

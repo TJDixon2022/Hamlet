@@ -1,0 +1,9 @@
+unit439: closing - output.md, status COMPLETED
+
+Run by hand, outside the loop. Tasks 0 to 4 complete, none dropped.
+MET-INVENTED over the keyed recordings 67 against HM-REQ-011's zero (13
+sure added, 54 sure wrong, over 473 sent, inferred keys); requirements
+with a test 5 of 68, none 63, a test measuring something else 43.
+Section 4 raises six items.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

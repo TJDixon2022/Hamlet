@@ -1,0 +1,14 @@
+unit440 task 2: G1 re-applied against the split group (2.2), not yet judged
+
+Task 1's trace, WhereTheSureWrongLettersComeFromTests (a printer; asserts
+only that it traced the metric's 54): split 27, none of these 9, one
+element of the wrong kind 8, merged 5, several elements differ 4, one
+element lost 1; 46 of 54 read on textbook spacing, 8 under held gaps, 3
+of the splits under a held reading whose character gap stands past its
+word gap.
+
+The change is unit 431's G1 as built in 856d226e, unchanged:
+CwUnitEstimator.MeasureGaps returns textbook when the clipped character
+gap stands at or past the word gap. No threshold.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

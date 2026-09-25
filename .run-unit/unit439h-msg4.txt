@@ -1,0 +1,16 @@
+unit439 task 4: MET-CER-SURE, MET-COVERAGE and MET-WBE (1.2, 1.3, 1.4)
+
+The other three metrics as CW_SPEC.md 11 defines them, over the decoder's
+own classes (sure and placeholder; a named-below-high count, nought today;
+no dim class invented). Watched failing first: 6 new hand-counted tests red
+against stubs that counted nothing, then 13 of 13 green.
+
+Real keyed recordings, inferred keys: MET-CER-SURE 67 wrong or added of
+426 sure, 0.1573; MET-COVERAGE 426 sure over 473 sent (359 right), 0.9006;
+MET-WBE 57 (42 inserted, 15 deleted) over 113 words, 0.5044. Synthetic CQ
+set, exact keys: 24 of 180, 0.1333; 180 over 252, 0.7143; 49 over 84,
+0.5833. Printed per recording and per condition by
+TheRequirementsAreMeasuredTests, with CwScorer.Kinds' boundary edits beside
+MET-WBE. No src file changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

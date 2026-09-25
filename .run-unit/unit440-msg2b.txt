@@ -1,0 +1,14 @@
+unit440 task 2: G1 taken out - MET-COVERAGE falls as the spec writes it
+
+Under G1, real keyed, inferred keys: MET-CER-SURE 67 of 426 to 56 of 419
+(0.1573 to 0.1337); MET-INVENTED 67 to 56; MET-COVERAGE 426 to 419 over
+473 (0.9006 to 0.8858) while sure-and-right rose 359 to 363. Synthetic,
+exact: 24 of 180 to 14 of 173; coverage 0.7143 to 0.6865, right 156 to
+159. Adjudicated 13 of 13 held, 032012 onto its own text. Captures 50 of
+51, 004133 28 to 25 named, all outside its scored stretches; no
+recording's metrics got worse, so V-11 holds. R78 requires coverage not
+to fall, and it did, by the seven sure characters the key calls wrong or
+added: unit 439's finding 4. Not kept; src back to entry.
+docs/phase-requirements/metrics.md carries the running figure.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

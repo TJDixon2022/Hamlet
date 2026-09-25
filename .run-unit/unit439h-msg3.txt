@@ -1,0 +1,20 @@
+unit439 task 3: MET-INVENTED (1.1)
+
+CwMetrics (tests) computes MET-INVENTED as CW_SPEC.md 11 defines it: sure
+insertions plus sure substitutions over characters sent, one symbol per
+character and prosign, spaces aside so no letter error trades against a
+boundary (HM-REQ-082), on CwScorer's own Levenshtein. Watched failing
+first: TheMetricsCountWhatAHandCountsTests 6 of 7 red against a stub that
+counted nothing, 7 of 7 green against the count.
+
+TheRequirementsAreMeasuredTests, a printer, measures it over every keyed
+recording on the baseline's own stretches, per condition, key kind beside
+each number. Real keyed recordings: 67 invented (13 sure added, 54 sure
+wrong) over 473 sent, inferred keys, 23 of 23 measured, against
+HM-REQ-011's zero. The old count of 17 added named characters (8
+single-element) reproduces over the same stretches; it counted added
+letters only, and 031905, 032050 and 004507 move an added letter to
+wrong once spaces are aside. Synthetic CQ set: 24 over 252, exact keys.
+No src file changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

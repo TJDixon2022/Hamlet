@@ -1,0 +1,12 @@
+unit439 task 2: every requirement and what proves it (0.2, 0.3)
+
+traceability.md extends section T to all 68 requirement ids: 5 have a
+proving test, 63 none (60 must-tier), 43 have a test that measures
+something other than what they state (38 with no proving test), 25 have no
+test on their subject at all. The none rows are grouped by section. The 51
+names of docs/unit239-failing-set.txt, the seven known-reds entries (no CW
+test named) and the 20 names of docs/cw-retired-tests.txt are placed; no
+retired test proved a must-tier requirement. Nothing retired, repaired or
+restored.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

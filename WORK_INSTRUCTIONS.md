@@ -1,8 +1,15 @@
-# Work instruction 440 - the decoder stops being sure and wrong
+# Work instruction 441 - keep the fix, then fix the speed it was hiding
 
-**Runs either way.** If `tools\arbiter\run-phase.bat` will launch, seed it with `--seed`. If it
-still halts on the stale stop 4, run it by hand in Claude Code exactly as unit 439 was run -
-section 1 says what changes. **Four tasks, drop from the back.**
+**Seed under `--seed`, or by hand as unit 440 was run.** Unit 440 built the first change in a
+week that makes the CW text better on the requirements' own numbers, and one metric definition
+kept it out. **This unit keeps it, and then goes after the cause underneath it.** Four tasks.
+
+**The owner's standing order for this unit, 2026-09-25:** *"No bookkeeping, no record keeping,
+no stopping because some mundane point that doesn't matter, some number you made up that we
+didn't quite achieve, some silly reason not to progress. Write something that materially
+advances CW in the most significant way we can handle."* **Every task below is judged against
+that sentence.** A task that changes no character the operator reads is a task this unit does
+not have.
 
 ---
 
@@ -22,259 +29,185 @@ Check the repository root:
   MUST NOT EXIST:  MURC.sln
   root             C:\Source\HamLet
 
-If all six are not as stated, you are in the wrong repository or the
-specification is missing.
-REFUSE. Do not read the rest of this file, do not summarise it, do not
-adapt it to whatever project you are actually in, and change nothing.
-Reply with only: the path you are in, which checks failed, and
-"wrong project - nothing done."
+If all six are not as stated, refuse: reply with only the path you are in,
+which checks failed, and "wrong project - nothing done."
 
 If all six hold, say "Hamlet confirmed" and continue.
 ```
 
 ---
 
-## 1. If this runs by hand
+## 1. Rules, short
 
-No arbiter, no judge. Take `SESSION.lock` at the start through `tools\arbiter\lock.bat take`
-and release it at the end. **Write nothing to `RUN_LEDGER.md` and touch nothing under
-`tools\arbiter\`.** Tick criteria only as section 6 licenses. Write `output.md` at the root in
-the four headings, and say in section 1 that the unit ran by hand.
-
-## 2. The rules that killed sessions
-
-**HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run as
-its top comment says. **Never background and poll.** One type per invocation, each with its own
-`timeout`. Captures is 51 rows at about 125 s; give it 600 s. **`WhatTheOpeningHeardTests` no
-longer fits 600 s - give it 900 s or run its printers separately** (unit 439's finding 3).
+**HM-DEC-155.** No suite. Named types only, one per invocation, each with its own `timeout`.
+Captures 600 s. `WhatTheOpeningHeardTests` 900 s. **Never background and poll.**
 
 Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
-refused; Python cannot run here; `-m` more than once for a multi-line commit. Multi-step
-commands go into `.run-unit\unit440-<name>.sh` and run with `sh`.
+refused; Python cannot run here; `-m` more than once for a multi-line commit. Scripts go in
+`.run-unit\unit441-<name>.sh`, run with `sh`.
 
-**The four report headings are exactly these, character for character:**
+**By hand:** take `SESSION.lock` through `tools\arbiter\lock.bat take`, release it at the end,
+write nothing to `RUN_LEDGER.md`, touch nothing under `tools\arbiter\`.
 
-```
-## 1. What Claude did
-## 2. What the owner should expect
-## 3. What you should see
-## 4. What's blocking us
-```
+**The four report headings, exactly:** `## 1. What Claude did`, `## 2. What the owner should
+expect`, `## 3. What you should see`, `## 4. What's blocking us`. `UNIT:` line without brackets.
+`ADVANCES: step 2 criterion 2`. WHY cites the plan.
 
-**The `UNIT:` line carries no parentheses**, and no `&`, `|`, `<`, `>`, `^`.
-**`ADVANCES` reads exactly `step 2 criterion 1`.** **WHY cites a line of the plan.**
+**Nothing halts this unit.** A question goes in one line in section 4 and the work goes on.
 
 ---
 
-## 3. Why this unit exists
+## 2. Why this unit exists
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  The decoder stops printing the wrong letter and believing it.
-ADVANCES:   step 2 criterion 1
+UNIT GOAL:  The decoder prints fewer wrong letters, on the air, tonight.
+ADVANCES:   step 2 criterion 2
 ```
 
-**Read `CW_REQUIREMENTS.md` and `CW_SPEC.md` first.** They are the specification. Where they
-and this instruction differ, **the documents win** and the difference goes in the report.
+**Read `CW_REQUIREMENTS.md` and `CW_SPEC.md` first. They win over this instruction.**
 
-**What unit 439 measured, by hand, on 2026-09-25.** MET-INVENTED is **67** against
-HM-REQ-011's zero, over 473 characters sent, inferred keys, 23 of 23 recordings. And it is
-**not** what the tree had been counting:
+**Two rulings from the owner, 2026-09-25, recorded here and nowhere else in this unit:**
 
-- **13 sure characters added** - the stray `E`, `T` and `<BT>` litter. Step 3's.
-- **54 sure characters wrong** - **this unit's**. The decoder emitted a character as sure, and
-  the key says a different character was sent.
+**R82 - MET-COVERAGE counts sure-and-right characters over characters sent.** Unit 440 found
+the metric as written counts a wrong sure letter as coverage, so removing wrong letters lowered
+it and kept the fix out. A metric that rewards wrong letters is not what HM-REQ-012 means. The
+guard still catches dimming everything: coverage cannot rise by withholding.
 
-The tree's old figure was 17 added letters. **The 54 wrong-when-sure are the larger half and
-had never been counted at all.** They are what makes `W1AW/8 OHIO` read `W1 TW /8 W H I O`:
-not junk between words, but the wrong letter in the middle of a right one, printed with
-confidence.
+**R83 - a unit of this phase changes what the operator reads, or it is not authored.** The
+owner's sentence at the top of this file. No task for the record, no task for a test that
+proves nothing the unit is changing, no halt on a figure that is not a requirement.
 
-**Why this is first.** R81. It is the biggest measured pile of errors in the tree, it is
-measurable today with the metrics unit 439 built, and it changes what the operator reads.
+**What unit 440 measured.** 54 sure-but-wrong characters. **27 are one letter broken in two**:
+the decoder reads a character gap in the middle of an `L`, `W` or `A` and prints the first
+piece as `E` or `T`. **46 of the 54 were read on textbook spacing at a speed the envelope
+contradicts** - `003758` read at 40 WPM with 60 ms dits, `031838` with dahs of 4.7 to 6.2 read
+units, `032129` read at 8 to 12 WPM with marks of 0.2 to 0.8 units. **The decoder is timing the
+sender at the wrong speed, so its clock says a letter has ended when it has not.**
 
----
+**And the root under that:** `CwProbabilisticStream` emits any pattern that spells a letter as
+*sure*. There is no confidence beyond "it is in the alphabet." A wrong pattern that happens to
+be a letter prints with full confidence.
 
-## 4. Verify this instruction against the tree
-
-Check, report any mismatch, repair nothing:
-
-- **Unit 439's `output.md`** at the root, and where it put the metrics and `traceability.md`.
-  **Take the 54 from its measurement**, not from a fresh count, unless the count differs - in
-  which case say so and use the fresh one.
-- **`CW_SPEC.md`'s definition of MET-CER-SURE**, quoted into the report, and the denominator
-  unit 439 took (the sure characters emitted, not characters sent) - **and unit 439's finding 4,
-  that the spec reads two ways here.** Use unit 439's reading and say so.
-- The four metrics exist and are reachable by the CW test types; name the type that calls each.
-- The keyed recordings, their key kinds and counts.
-- `CwProbabilisticDecoder.Judged`, `CharacterMargin`, and how a character becomes **sure**
-  rather than a placeholder.
-
-## 5. Rulings in force - do not re-argue
-
-`docs\phase-requirements\PHASE_PLAN.md` R77 to R81 and §6.
-
-**R78 is the keep rule**: a change is kept when **MET-CER-SURE falls, MET-INVENTED does not
-rise, MET-COVERAGE does not fall**, the three adjudicated readings are unchanged or move onto
-their own adjudicated text, and **V-11 holds** - no capture is reddened to green a newer one.
-**The capture floors are V-11's overfitting guard only. A capture row's character count falling
-is reported, not rejected**, when no requirement's metric got worse.
-**R80** the record and the tests come last. **This unit writes no traceability, no test
-inventory and no decision-log repair.** It records no ruling: none is given here.
-**R72 / HM-DEC-175** no word, dictionary or callsign prior, in any form.
-**R61 / V-13** an inferred key is labelled inferred everywhere, and **disagreement with it is
-not by itself proof the decoder is wrong** - so where a wrong character sits against an
-inferred key, say so, and where the key itself is doubtful, **report it and do not count it**.
-**§3.1** a number is always its metric, its condition, its count and the key's kind. Never a
-bare percentage.
-**§0.0** never state as known what is not known. **§0.2** nothing that keys or transmits is
-touched. **HM-DEC-091**, **HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006**.
+**G1**, built and measured by unit 440: refuse a gap reading where the character gap stands
+past the word gap. MET-CER-SURE 67 to 56, MET-INVENTED 67 to 56, adjudicated readings hold,
+V-11 holds, no recording loses a right character. 17:37 goes from
+`CQ CQ CQ DEWTEETEEERE D ETTTB` to `CQ CQ CQ DEWB6 RE D W B`. **It is in the tree's history at
+`cce7985d`, taken out at `5aa9c167`.**
 
 ---
 
-## 6. The tasks
+## 3. Verify against the tree, briefly
 
-### Task 0 - the record, and the two ticks
+- `cce7985d` is G1 and `5aa9c167` its take-out; `git diff 5aa9c167 HEAD -- src` is empty.
+- `CwMetrics` holds the four; which type computes MET-COVERAGE and where its denominator is.
+- Unit 440's `WhereTheSureWrongLettersComeFromTests` and its grouping.
+- Where the path is given its speed: the grid, the held reading, and what chooses between them.
+- The numbers at HEAD: MET-CER-SURE 67 of 426, MET-INVENTED 67 over 473, coverage 426 over 473
+  with 359 right.
 
-Short. `PHASE_OUTCOME.md` gets `## UNIT 440 - STEP 2` from the decision block at the foot of
-this file. `PHASE_STATUS.md` names unit 440 and `CURRENT_STEP: 2`. Patch-bump
-`Directory.Build.props`.
+## 4. Rulings in force
 
-**Tick steps 0 and 1 in `PHASE_PLAN.md` from unit 439's report** - 0.1 to 0.4 and 1.1 to 1.5 -
-**without re-measuring**, as R80 licenses. Name the report's figures beside each tick in the
-outcome entry: 5 of 68 traced, 63 none, 43 mismeasuring, and the four metrics built.
-
-**Entry round:** both carry-forward lines, the three floor tests, MET-CER-SURE, MET-INVENTED
-and MET-COVERAGE, recorded as the numbers to beat.
-
-**Drop candidate:** none.
-
-### Task 1 - the 54, traced (2.1)
-
-A fact that asserts nothing. For **every sure-but-wrong character**, print:
-
-- the recording and the time within it;
-- what the key says was sent, and what the decoder emitted;
-- its span, and the spans of the characters either side;
-- the speed and the pitch in force at that hop;
-- **the marks and gaps the character rested on**, in milliseconds and in units.
-
-**Then group them by what they have in common** and print the groups with their counts. The
-grouping is the author's - by what was sent, by what came out, by the element pattern, by
-whether the character sat beside a space the decoder inserted, by pitch error at that hop -
-and the reason goes in the report.
-
-**This grouping is the whole point of the task.** 54 individual mistakes are not actionable; a
-group of 30 that share one cause is.
-
-**If a wrong character's key is itself doubtful** (V-13), say so and leave it out of the groups,
-counting it separately.
-
-**Drop candidate:** none.
-
-### Task 2 - the change (2.2, 2.3)
-
-Build against **the largest group task 1 found**, in its own commit, and judge under R78's
-keep rule with every part a number:
-
-1. MET-CER-SURE before and after, per condition, key kind beside each;
-2. MET-INVENTED before and after;
-3. MET-COVERAGE before and after;
-4. the three adjudicated readings, quoted;
-5. all 51 capture rows - **report what falls, do not reject on it**, and state plainly whether
-   V-11 is broken: was an earlier capture reddened to green a newer one.
-
-**Kept only if MET-CER-SURE falls and nothing else in that list gets worse.**
-
-**Do not build against a group the trace does not support**, and **do not tune a threshold
-after reading the trace to make a group pass** - that is fitting, and it is how thirty-four
-changes were thrown away this week.
-
-Write the running figure to `docs\phase-requirements\metrics.md`.
-
-**Drop candidate:** none.
-
-### Task 3 - a second group
-
-If task 2 kept a change, re-trace and build against the next largest group under the same rule.
-If it kept nothing, build against a **different** group - not a narrowing of the first.
-
-**Drop candidate:** whole task, with what was measured stated.
-
-### Task 4 - the exit round (2.5)
-
-Both carry-forward lines, the three floor tests with captures at 51, the three metrics, and
-every type touched. The transmit files print nothing against `7e209cb4`.
+`PHASE_PLAN.md` R77 to R83 and §6. **R78** is the keep rule, now with R82's coverage: a change
+is kept when MET-CER-SURE falls, MET-INVENTED does not rise, **sure-and-right coverage does not
+fall**, the adjudicated readings hold or move onto their own text, and V-11 holds. **A capture
+row's character count falling is reported, not rejected.** **R72** no word or callsign prior.
+**V-13** an inferred key is not proof by itself. **§0.2** nothing that keys or transmits.
+**HM-DEC-155, HM-DEC-165, FACT-004.**
 
 ---
 
-## 7. Parked - do not touch, do not raise
+## 5. The tasks
 
-- **The 13 added characters.** Step 3's, next.
-- **The pitch and the tracker** (step 4), **the speed** (step 5), **the boundaries** (step 6),
-  **the generator** (step 7).
-- **The decision log's gaps, HM-DEC-182, the version scheme, the 43 mismeasuring tests, the 63
-  untested requirements.** All step 8's, last (R80).
-- **The launcher's stop 4.** The other thread's; do not touch `tools\arbiter\`.
-- **MET-COVERAGE reading above 1.0** on one synthetic (unit 439's finding 4). Report it if it
-  appears; do not redefine the metric here.
+### Task 0 - the change to the metric, and the entry numbers
 
-## 8. What not to do
+`PHASE_OUTCOME.md` gets `## UNIT 441 - STEP 2` from the block at the foot. `PHASE_STATUS.md`
+names 441. Patch-bump. **That is all the record this unit writes.**
 
-- **Do not spend a task on the record or on tests** (R80).
-- **Do not reject a change because a capture row's character count fell.** R78: report it.
-- **Do not tune after the trace.** Build what the trace names.
-- **Do not treat disagreement with an inferred key as proof the decoder is wrong** (V-13).
-- **Do not add a word, dictionary or callsign prior** (R72).
-- **Do not touch what keys or transmits.**
-- **Do not halt for a question.** Park it.
-- **Write `output.md` before the session ends.**
+**Then R82:** change `CwMetrics`' coverage to sure-and-right over sent, watched failing first on
+a case known by construction where a wrong sure letter used to count. Print the real and
+synthetic coverage before and after the definition change - the decoder is untouched, so the
+number moves only because the definition did.
+
+Entry round: both carry-forward lines, the floor tests, the four metrics.
+
+### Task 1 - G1 goes in and stays (2.2, 2.3)
+
+Cherry-pick `cce7985d`. **Change nothing in it.** Judge under R78 with R82's coverage, every
+part a number, and keep it. Print 17:37 before and after. Write the figure to `metrics.md`.
+
+**If some test in R78 fails that unit 440 did not see, print the number and keep going to task
+2 anyway with G1 out** - do not stop, and do not narrow G1.
+
+### Task 2 - the speed the path is given (2.2 again, and the cause under the 27)
+
+**This is the unit's real work.** 46 of 54 wrong letters were read at a speed the envelope
+contradicts. Trace it with a fact that asserts nothing: for each of the 54 with G1 in, print
+the speed the path was given, where it came from (grid, held reading, estimator), and **the
+speed the envelope's own marks imply** - dit and dah lengths over the character's span, one
+unit either side, in milliseconds. Print the two speeds side by side and the ratio.
+
+Then build **one change** against what that trace shows: the path takes its speed from the
+envelope's marks where the grid's speed and the marks disagree by more than a ratio the trace
+justifies. **Build what the trace names; do not tune after reading it.** Judge under R78 with
+R82, every part a number, and keep it if it passes.
+
+**Then print, before and after, the three recordings the trace named as worst:** `003758`,
+`031838`, `032129`. One line of text each. **That is what the owner reads.**
+
+### Task 3 - the exit round
+
+Both carry-forward lines, the floor tests, the four metrics, and every type touched. Transmit
+files print nothing against `7e209cb4`. **Report what changed in `src`**, file by file, and
+that it was pushed.
+
+---
+
+## 6. Do not
+
+- Do not spend a task on the record, a trace table for its own sake, or a test that proves
+  nothing this unit changes.
+- Do not reject a change because a capture row's character count fell. Report it.
+- Do not halt on a question. One line in section 4, and go on.
+- Do not narrow G1 or tune a threshold after reading a trace.
+- Do not add a word or callsign prior. Do not touch what keys or transmits.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
 
-## 9. Committing and pushing
+## 7. Report
 
-Commit per task. Push at the end and say whether it succeeded.
-
----
-
-## 10. Reporting
-
-`output.md` at the root, the four headings exactly as section 2 gives them.
+`output.md` at the root, four headings exactly.
 
 ```
 READ IN THIS ORDER.
 
-A. MET-CER-SURE before and after, and whether a change was kept.
-B. The 54, grouped by cause, with each group's count.
-C. The rest. Section 4 raises <n> items, none blocking.
+A. Three lines of real CW text before and after, and the metric numbers.
+B. Step 2: G1 kept or not, the speed change kept or not, each with R78's
+   numbers.
+C. The rest, in as few lines as it takes.
 ```
 
 ```
-UNIT:       440 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       441 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
-NUMBER:     sure-but-wrong characters: 54 -> <n>; MET-CER-SURE <n> -> <n>
+NUMBER:     sure-but-wrong: 54 -> <n>; MET-CER-SURE <n> -> <n>; changes kept <n> of 2
 ```
 
-**Section 3 leads with the groups.** Then one line of real text before and after, from a
-recording a group touched - that is what the owner reads.
-
-**Section 2 tells the owner in one paragraph** whether the decoder still prints wrong letters
-with confidence, and on what evidence.
+**Section 2, one paragraph:** does the decoder print fewer wrong letters than it did this
+morning, by how many, on what evidence.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 2
-APPROACH: trace every sure-but-wrong character with its recording, key, span, speed, pitch and the marks it rested on, group the 54 by cause, then build against the largest group and keep it only if MET-CER-SURE falls with nothing else worse
+APPROACH: change MET-COVERAGE to sure-and-right over sent under R82, cherry-pick G1 unchanged and keep it under R78, then trace the speed each of the 54 was read at against the speed the envelope's marks imply and build one change that takes the path's speed from the marks where they disagree
 MOVE: continue
-WHY: PHASE_PLAN.md step 2 criterion 2.1 asks that the 54 sure-but-wrong characters be traced by a fact that asserts nothing, each with its recording, what was sent, what was emitted, its span, the speed and pitch in force and the marks it rested on, grouped by what they have in common
-STATE: not started
-DECIDED: how the 54 are grouped, which group is attacked first, and the per-type timeouts are the author's, overrulable
-LICENCE: PHASE_PLAN.md R77, R78, R80, R81, section 6; V-11; V-13; R72; HM-DEC-155; CLAUDE.md 0.0 and 0.2; FACT-004
-ACCOMPLISHED: the largest measured pile of errors in the tree - the decoder printing the wrong letter and believing it - is traced to causes and attacked on the requirement's own metric
-ADVANCES: step 2 criterion 1
+WHY: PHASE_PLAN.md step 2 criterion 2.2 asks that each change be kept under R78 when MET-CER-SURE falls and nothing else in the keep rule gets worse, and criterion 2.3 that MET-CER-SURE be reported before and after every kept change
+STATE: partial
+DECIDED: the ratio the speed change uses is taken from the trace and stated; the per-type timeouts are the author's
+LICENCE: PHASE_PLAN.md R78, R80, R81, R82, R83, section 6; V-11; V-13; R72; HM-DEC-155; CLAUDE.md 0.2
+ACCOMPLISHED: the first kept reduction in confidently-wrong letters, and an attack on the speed error that produces half of them
+ADVANCES: step 2 criterion 2
 END-ARBITER-DECISION
 ```

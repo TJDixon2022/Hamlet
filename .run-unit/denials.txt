@@ -1,8 +1,14 @@
-﻿   Bash  {"command":"ls SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs; ls CoreHMI.sln MURC.sln 2\u003e\u00261; pwd -W; cat tools/status.sh | head -60; ls .run-unit | head -80","description":"Check project gate and status tool"}
-   Bash  {"command":"tasklist 2\u003e\u00261 | grep -Ei \"dotnet|testhost|claude|bash|sh.exe\"","description":"List Windows test/claude processes"}
-   Bash  {"command":"powershell -NoProfile -Command \"Get-CimInstance Win32_Process | Where-Object { $_.Name -match \u0027dotnet|testhost|claude|bash|^sh\u0027 } | Select-Object ProcessId,ParentProcessId,Name,CreationDate,CommandLine | Format-List\" ...(truncated)
-   Bash  {"command":"grep -vE \"^\\s*(at |Build|Test run|VSTest|Starting|A total|Results|Determining|Microsoft)\" unit438-plateau-entry.txt | grep -vE \"^\\s*$\" | cut -c1-240 | head -70","description":"Print every plateau fact\u0027s figures"}
-   Bash  {"command":"grep -vE \"^\\s*(at |Build|Test run|VSTest|Starting|A total|Results|Determining|Microsoft)|^\\s*.?$\" unit438-plateau-entry.txt | cut -c1-240 | head -70","description":"Print every plateau fact\u0027s figures"}
-   Bash  {"command":"grep -hoE \"^ *[^ ]*cw-20[^ ]* .{0,20}(named|floor).{0,120}\" unit438-named-entry.txt | sort -u | head -30","description":"Show all 13 floor lines at entry"}
-   Bash  {"command":"git diff --stat 755373d2 HEAD -- src data \u0026\u0026 echo \"lines: $(git diff 755373d2 HEAD -- src data | wc -l)\" \u0026\u0026 sh .run-unit/unit438-build.sh exit \"TASK 3 of 3\" \"Exit round: building Hamlet.sln with the esti ...(truncated)
-   Bash  {"command":"ls tools/arbiter/ \u0026\u0026 cmd //c \"tools\\\\arbiter\\\\validate-output.bat\" 2\u003e\u00261 | tail -20","description":"Run the output validator"}
+﻿   Bash  {"command":"ls SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CoreHMI.sln MURC.sln 2\u003e\u00261; pwd -W; cat PROJECT_STATUS.md; cat tools/status.sh; wc -l CLAUDE.md CLAUDE_CODE.md"}
+   Bash  {"command":"grep -n \"^## \" CLAUDE_CODE.md | head -40; ps -W 2\u003e/dev/null | grep -iE \"unit43|dotnet|testhost|claude|sh.exe|bash\" | head -40"}
+   Bash  {"command":"ps -W"}
+   Bash  {"command":"tasklist //FI \"IMAGENAME eq dotnet.exe\"; tasklist //FI \"IMAGENAME eq testhost.exe\"; tasklist //FI \"IMAGENAME eq claude.exe\"; tasklist //FI \"IMAGENAME eq sh.exe\"; tasklist //FI \"IMAGENAME eq bash.exe\""}
+   Bash  {"command":"tasklist"}
+   Bash  {"command":"for f in ps run round cf build commit; do sed \u0027s/unit438/unit439/g; s/unit 438/unit 439/g\u0027 .run-unit/unit438-$f.sh \u003e .run-unit/unit439-$f.sh; done \u0026\u0026 sh .run-unit/unit439-ps.sh"}
+   Bash  {"command":"sed -i \u0027s/^CURRENT_STEP: 3$/CURRENT_STEP: 7/; s/^WORK_INSTRUCTION: 438 - .*/WORK_INSTRUCTION: 439 - the marks are joined across gaps no sender makes/\u0027 PHASE_STATUS.md \u0026\u0026 sed -i \u0027s#\u003cVersion\u003e1.13 ...(truncated)
+   Bash  {"command":"grep -n \"return new Bridged(joined, dips, from);\\|IReadOnlyList\u003cint\u003e Dips,\\|bridged.Dips,\\|dips bridged | 1 hop\\|{r.Dips.Count} | {r.Dips.Count(d =\u003e d == 1)}\\|3 hops {inside.Sum\" tests/Hamlet.RadioEngine.Te ...(truncated)
+   Bash  {"command":"cd /c/Source/HamLet/.run-unit \u0026\u0026 grep -A6 \"Failed Hamlet\" unit439-adjudicated-bridge.txt | cut -c1-300 | head -20; grep -n \"three adjudicated\\|adjudicated readings\" ../PHASE_PLAN.md | head -5"}
+   Bash  {"command":"awk \u0027/^ opening \\| text \\| UIEH/{f=1} f\u0026\u0026/^ opening \\| [0-9]/{print} /^ opening \\| text \\| QNE/{exit}\u0027 unit439-opening-entry.txt | cut -d\u0027|\u0027 -f2,4,8,10,11,14,15 "}
+   Bash  {"command":"grep -E \"^ bridge opening \\| (3[4-9]|4[0-4])\\.[05] \" unit439-trace.txt | cut -d\u0027|\u0027 -f2,3,4,9,10,11,13,15,16,17,19,22 | tee unit439-perread-trace.txt"}
+   Bash  {"command":"grep -hE \"^ named \\| (cw-2026-08-17-013347|unadjudicated/cw-2026-08-18-003758|unadjudicated/cw-2026-08-24-012403|unadjudicated/cw-2026-08-22-032012|unadjudicated/cw-2026-08-22-031838) \" unit439-named-entry.txt unit439-named-b ...(truncated)
+   Bash  {"command":"cd /c/Source/HamLet/.run-unit \u0026\u0026 sed \u0027s/755373d2/9db74ab2/g\u0027 unit439-exitdiff.sh \u003e unit439-exitdiff2.sh \u0026\u0026 sh unit439-exitdiff2.sh \u0026\u0026 sh unit439-exitcmp.sh"}
+   Bash  {"command":"cd /c/Source/HamLet/.run-unit \u0026\u0026 grep -E \"^ piece \\| (36\\.0|42\\.0) \" unit439-trace.txt; grep -E \"^ reach \\| \" unit439-trace.txt | sort -t\u0027|\u0027 -k7 -n -r | head -12"}
