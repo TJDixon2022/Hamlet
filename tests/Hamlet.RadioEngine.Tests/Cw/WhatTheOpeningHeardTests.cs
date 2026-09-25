@@ -1654,6 +1654,414 @@ public sealed class WhatTheOpeningHeardTests
         _output.WriteLine($"fires | touched | {touched.Count} of {names.Count} | {string.Join(", ", touched)}");
     }
 
+    private static readonly FieldInfo MixedIField = Private("_mixedI");
+    private static readonly FieldInfo MixedQField = Private("_mixedQ");
+    private static readonly FieldInfo MixWriteField = Private("_mixWrite");
+    private static readonly FieldInfo MixFilledField = Private("_mixFilled");
+    private static readonly FieldInfo PhaseField = Private("_phase");
+    private static readonly FieldInfo EnvelopeCountField = Private("_envelopeCount");
+    private static readonly FieldInfo TaperField = Private("_taper");
+    private static readonly FieldInfo TaperWeightField = Private("_taperWeight");
+    private static readonly FieldInfo WindowSamplesField = Private("_windowSamples");
+    private static readonly FieldInfo HopSamplesField = Private("_hopSamples");
+
+    /// <summary>Work instruction 437's move: a mix this far from the pitch the held window was last mixed at re-mixes it.</summary>
+    private const double RemixFromHz = 25;
+
+    /// <summary>
+    /// Re-mix a stream's held window at a new pitch, the way work instruction 437
+    /// would build it: the mixed arms and every envelope hop recomputed from the
+    /// raw audio behind them, with the stream's own taper and integrator.
+    /// </summary>
+    /// <param name="stream">A shadow stream this test owns; the decoder's own is never touched.</param>
+    /// <param name="samples">The raw audio the stream has been fed.</param>
+    /// <param name="end">How many samples it has been fed.</param>
+    /// <param name="toneHz">The new pitch.</param>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <remarks>
+    /// The arms are mixed with the phase running backwards from the stream's own,
+    /// so the next sample it mixes continues them without a step.
+    /// </remarks>
+    private static void Remix(CwProbabilisticStream stream, float[] samples, long end, double toneHz, int sampleRate)
+    {
+        var width = (int)WindowSamplesField.GetValue(stream)!;
+        var hopSamples = (int)HopSamplesField.GetValue(stream)!;
+        var mixedI = (float[])MixedIField.GetValue(stream)!;
+        var mixedQ = (float[])MixedQField.GetValue(stream)!;
+        var mixWrite = (int)MixWriteField.GetValue(stream)!;
+        var mixFilled = (int)MixFilledField.GetValue(stream)!;
+        var phase = (double)PhaseField.GetValue(stream)!;
+        var envelope = (double[])EnvelopeField.GetValue(stream)!;
+        var count = (int)EnvelopeCountField.GetValue(stream)!;
+        var hopsSeen = (long)HopsSeenField.GetValue(stream)!;
+        var taper = (double[])TaperField.GetValue(stream)!;
+        var weight = (double)TaperWeightField.GetValue(stream)!;
+        var step = 2 * Math.PI * toneHz / sampleRate;
+
+        var firstHop = hopsSeen - count;
+        var from = Math.Max(0, Math.Min(((firstHop + 1) * hopSamples) - width, end - mixFilled));
+        var armI = new float[end - from];
+        var armQ = new float[end - from];
+
+        for (var k = 0; k < armI.Length; k++)
+        {
+            var back = end - (from + k);
+            var at = phase - (back * step);
+
+            armI[k] = (float)(samples[from + k] * Math.Cos(at));
+            armQ[k] = (float)(samples[from + k] * -Math.Sin(at));
+        }
+
+        for (var j = 0; j < count; j++)
+        {
+            var hopEnd = (firstHop + j + 1) * hopSamples;
+            var filled = (int)Math.Min(width, hopEnd);
+            var start = hopEnd - filled - from;
+            var taperFrom = width - filled;
+            double i = 0;
+            double q = 0;
+
+            for (var m = 0; m < filled; m++)
+            {
+                i += armI[start + m] * taper[taperFrom + m];
+                q += armQ[start + m] * taper[taperFrom + m];
+            }
+
+            envelope[j] = Math.Sqrt((i * i) + (q * q)) / weight;
+        }
+
+        for (var back = 1; back <= mixFilled; back++)
+        {
+            var ring = ((mixWrite - back) % width + width) % width;
+
+            mixedI[ring] = armI[end - back - from];
+            mixedQ[ring] = armQ[end - back - from];
+        }
+    }
+
+    /// <summary>One read of the opening, at entry and with the held window re-mixed.</summary>
+    /// <param name="Seconds">Seconds on the audio clock.</param>
+    /// <param name="MixHz">The pitch the stream mixed at.</param>
+    /// <param name="FiredFromHz">The pitch the held window was re-mixed from since the read before, or NaN.</param>
+    /// <param name="OffPitchSeconds">How much of the entry's window was mixed 25 Hz or more off the current pitch.</param>
+    /// <param name="Entry">The entry's read.</param>
+    /// <param name="Remixed">The same read with the window re-mixed.</param>
+    internal sealed record RemixRead(
+        double Seconds, double MixHz, double FiredFromHz, double OffPitchSeconds, ShadowRead Entry, ShadowRead Remixed);
+
+    /// <summary>What one shadow stream's read measured and settled.</summary>
+    /// <param name="UnitMs">The estimator's unit on the window, nought when not ready.</param>
+    /// <param name="Wpm">The speed the read decoded at.</param>
+    /// <param name="FromEstimator">Whether the estimator set the speed rather than the grid.</param>
+    /// <param name="Settled">The characters the read settled.</param>
+    internal sealed record ShadowRead(double UnitMs, double Wpm, bool FromEstimator, string Settled)
+    {
+        /// <summary>Where the speed came from.</summary>
+        public string SpeedFrom => FromEstimator ? "estimator" : "grid";
+    }
+
+    /// <summary>A replay: the decoder as it runs, and two shadow streams fed its pitch hop for hop.</summary>
+    /// <param name="Reads">Every read, both ways.</param>
+    /// <param name="Entry">Every character the unchanged shadow settled.</param>
+    /// <param name="Remixed">Every character the re-mixing shadow settled.</param>
+    /// <param name="Decoder">Every character the decoder itself settled, to check the unchanged shadow against.</param>
+    /// <param name="Fires">Every re-mix: seconds, from Hz, to Hz.</param>
+    /// <param name="Shadow">The re-mixing shadow, left as the run ended.</param>
+    /// <param name="End">How many samples were fed.</param>
+    internal sealed record Replayed(
+        IReadOnlyList<RemixRead> Reads,
+        IReadOnlyList<CwCharacter> Entry,
+        IReadOnlyList<CwCharacter> Remixed,
+        IReadOnlyList<CwCharacter> Decoder,
+        IReadOnlyList<(double Seconds, double FromHz, double ToHz)> Fires,
+        CwProbabilisticStream Shadow,
+        long End);
+
+    /// <summary>
+    /// Drive the decoder a hop at a time and feed two shadow streams the same
+    /// audio at the pitch the decoder mixed each hop at; the second has its held
+    /// window re-mixed whenever that pitch stands 25 Hz or more from the one it
+    /// was last mixed at.
+    /// </summary>
+    /// <remarks>
+    /// **THE PITCH IS THE DECODER'S, SO THE TRACKER NEVER SEES THE RE-MIX.** The
+    /// interlock hands the tracker the decoder's own reads, and in this replay
+    /// those are the entry's; a built change could move the tracker differently
+    /// through it, which only the build shows.
+    /// </remarks>
+    private static Replayed Replay(float[] samples, int sampleRate, double toSeconds = double.PositiveInfinity)
+    {
+        var decoder = new CwDecoder(sampleRate, 600);
+        var hop = decoder.Tracker.HopSamples;
+        var entry = new CwProbabilisticStream(sampleRate);
+        var remixed = new CwProbabilisticStream(sampleRate);
+        var entrySettled = new List<CwCharacter>();
+        var remixSettled = new List<CwCharacter>();
+        var decoderSettled = new List<CwCharacter>();
+        var entryRead = new List<CwCharacter>();
+        var remixRead = new List<CwCharacter>();
+        var mix = new List<double>();
+        var fires = new List<(double, double, double)>();
+        var reads = new List<RemixRead>();
+        var lastMixedAt = double.NaN;
+        var firedFrom = double.NaN;
+        var at = 0L;
+
+        entry.CharacterSettled += c => { entrySettled.Add(c); entryRead.Add(c); };
+        remixed.CharacterSettled += c => { remixSettled.Add(c); remixRead.Add(c); };
+        decoder.CharacterSettled += decoderSettled.Add;
+
+        ShadowRead Measured(CwProbabilisticStream stream, List<CwCharacter> settled)
+        {
+            var window = ((double[])EnvelopeField.GetValue(stream)!).Take(stream.EnvelopeHops).ToArray();
+            var measured = CwUnitEstimator.Measure(window, CwProbabilisticDecoder.HopMilliseconds);
+            var read = new ShadowRead(
+                measured.UnitMilliseconds,
+                stream.Last.WordsPerMinute,
+                measured.IsReady
+                    && measured.WordsPerMinute >= CwProbabilisticDecoder.SlowestWpm
+                    && measured.WordsPerMinute <= CwProbabilisticDecoder.FastestWpm,
+                string.Concat(settled.Select(c => c.Text)));
+
+            settled.Clear();
+
+            return read;
+        }
+
+        for (; at + hop <= samples.Length && at / (double)sampleRate <= toSeconds; at += hop)
+        {
+            var chunk = samples.AsSpan((int)at, hop);
+
+            decoder.Process(new AudioChunk(at, sampleRate, chunk));
+
+            var tone = decoder.Stream.ToneHz;
+
+            mix.Add(tone);
+            entry.ToneHz = tone;
+            remixed.ToneHz = tone;
+
+            if (double.IsNaN(lastMixedAt))
+            {
+                lastMixedAt = tone;
+            }
+            else if (Math.Abs(tone - lastMixedAt) >= RemixFromHz)
+            {
+                Remix(remixed, samples, at, tone, sampleRate);
+                fires.Add((at / (double)sampleRate, lastMixedAt, tone));
+                firedFrom = double.IsNaN(firedFrom) ? lastMixedAt : firedFrom;
+                lastMixedAt = tone;
+            }
+
+            entry.Process(chunk);
+            remixed.Process(chunk);
+
+            if (remixed.HopsSinceAnswer != 0
+                || remixed.EnvelopeHops * CwProbabilisticDecoder.HopMilliseconds < CwProbabilisticStream.RefillSeconds * 1000.0)
+            {
+                continue;
+            }
+
+            var hopsSeen = (long)HopsSeenField.GetValue(remixed)!;
+            var held = remixed.EnvelopeHops;
+            var off = Enumerable.Range((int)(hopsSeen - held), held)
+                .Count(h => h < mix.Count && Math.Abs(mix[h] - tone) >= RemixFromHz);
+
+            reads.Add(new RemixRead(
+                hopsSeen * CwProbabilisticDecoder.HopMilliseconds / 1000.0,
+                tone,
+                firedFrom,
+                off * CwProbabilisticDecoder.HopMilliseconds / 1000.0,
+                Measured(entry, entryRead),
+                Measured(remixed, remixRead)));
+            firedFrom = double.NaN;
+        }
+
+        if (double.IsPositiveInfinity(toSeconds))
+        {
+            decoder.Flush();
+            entry.Flush();
+            remixed.Flush();
+        }
+
+        return new Replayed(reads, entrySettled, remixSettled, decoderSettled, fires, remixed, at);
+    }
+
+    /// <summary>Settled text between two moments, word gaps as spaces.</summary>
+    private static string TextOf(IEnumerable<CwCharacter> settled, double from, double to)
+        => string.Concat(settled
+            .Where(c => c.At.TotalSeconds >= from && c.At.TotalSeconds < to)
+            .Select(c => c.Text)).Trim();
+
+    /// <summary>How many characters between two moments were named: not a word gap, not unreadable.</summary>
+    private static int NamedIn(IEnumerable<CwCharacter> settled, double from, double to)
+        => settled.Count(c => c.At.TotalSeconds >= from && c.At.TotalSeconds < to
+            && !c.IsWordGap && c.Text != MorseAlphabet.Unreadable);
+
+    /// <summary>
+    /// 7.4, work instruction 437 task 1: every read of the opening, at entry and
+    /// with the held window re-mixed at the new pitch whenever the mix moves 25 Hz
+    /// or more.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A PRINTER. IT ASSERTS NOTHING AND WRITES NOTHING.** The change is
+    /// the instruction's, fixed before this ran. Two streams this test owns are
+    /// fed the decoder's audio at the pitch the decoder mixed each hop at; the
+    /// first is left alone and must read exactly as the decoder does, the second
+    /// has its window re-mixed. Nothing under `src` changes.</para>
+    /// <para>The stream runs to 50 s so every character before 46.2 s has passed
+    /// the decision delay; the recordings cold run whole and are flushed.</para>
+    /// </remarks>
+    /// <param name="run">`stream` for the spliced session, or a recording cold.</param>
+    [Theory]
+    [InlineData("stream")]
+    [InlineData("cw-2026-09-24-003901")]
+    [InlineData("cw-2026-09-24-003919")]
+    public void WhenTheWindowIsRemixed(string run)
+    {
+        float[] samples;
+        int rate;
+        double from;
+        double to;
+        double through;
+
+        if (run == "stream")
+        {
+            (samples, rate, _) = Splice(Session);
+            (from, to, through) = (27.0, 46.2, 50.0);
+        }
+        else
+        {
+            var audio = WavAudio.Read(Path.Combine(Folder, run + ".wav"));
+            samples = audio.Samples;
+            rate = audio.SampleRate;
+            (from, to, through) = (0.0, 60.0, double.PositiveInfinity);
+        }
+
+        var replay = Replay(samples, rate, through);
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"remix check | run {run}; {replay.Reads.Count} reads; a re-mix fires when the mix stands {RemixFromHz:0} Hz or more from the pitch the held window was last mixed at; {replay.Fires.Count} fired"));
+        _output.WriteLine($"remix check | the unchanged shadow against the decoder, whole run | {(TextOf(replay.Entry, 0, 1e9) == TextOf(replay.Decoder, 0, 1e9) ? "identical" : "DIFFERENT")}");
+
+        foreach (var (seconds, fromHz, toHz) in replay.Fires)
+        {
+            _output.WriteLine(string.Create(Invariant, $"remix fired | {seconds:0.000} s | {fromHz:0.0} to {toHz:0.0} Hz"));
+        }
+
+        var stretches = run == "stream"
+            ? new[] { ("opening", 30.0, 46.2), ("before", 27.0, 30.0) }
+            : new[] { ("cold", from, to) };
+
+        foreach (var (label, a, b) in stretches)
+        {
+            _output.WriteLine(string.Create(Invariant, $"remix text | {label} {a:0.0} to {b:0.0} s | entry | {NamedIn(replay.Entry, a, b)} named | {TextOf(replay.Entry, a, b)}"));
+            _output.WriteLine(string.Create(Invariant, $"remix text | {label} {a:0.0} to {b:0.0} s | remixed | {NamedIn(replay.Remixed, a, b)} named | {TextOf(replay.Remixed, a, b)}"));
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine("remix read | s | mix Hz | fired | off-pitch s at entry | entry unit ms | entry wpm | entry from | remix unit ms | remix wpm | remix from | entry settles | remix settles | same");
+
+        var inside = replay.Reads.Where(r => r.Seconds >= from && r.Seconds < to + 1.0).ToList();
+
+        foreach (var r in inside)
+        {
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"remix read | {r.Seconds:0.0} | {r.MixHz:0.0} | {(double.IsNaN(r.FiredFromHz) ? "-" : $"from {r.FiredFromHz:0.0}")} | {r.OffPitchSeconds:0.00} | {r.Entry.UnitMs:0.0} | {r.Entry.Wpm:0.0} | {r.Entry.SpeedFrom} | {r.Remixed.UnitMs:0.0} | {r.Remixed.Wpm:0.0} | {r.Remixed.SpeedFrom} | `{r.Entry.Settled}` | `{r.Remixed.Settled}` | {(r.Entry.Settled == r.Remixed.Settled ? "same" : "DIFFERS")}"));
+        }
+
+        var judged = replay.Reads.Where(r => r.Seconds >= (run == "stream" ? 30.0 : from) && r.Seconds < to).ToList();
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"remix stop | {run} | reads {judged.Count} | reads that settle differently {judged.Count(r => r.Entry.Settled != r.Remixed.Settled)} | reads whose speed differs {judged.Count(r => Math.Abs(r.Entry.Wpm - r.Remixed.Wpm) > 0.05)}"));
+
+        if (run != "stream")
+        {
+            return;
+        }
+
+        // **THE COST OF ONE RE-MIX OF A FULL WINDOW, ON THIS MACHINE.** The shadow
+        // is re-mixed at the pitch it already stands at, so each pass rewrites the
+        // same values; the first pass is left out as the warm-up.
+        var timings = new List<double>();
+        var clock = new System.Diagnostics.Stopwatch();
+
+        for (var pass = 0; pass < 21; pass++)
+        {
+            clock.Restart();
+            Remix(replay.Shadow, samples, replay.End, replay.Shadow.ToneHz, rate);
+            clock.Stop();
+
+            if (pass > 0)
+            {
+                timings.Add(clock.Elapsed.TotalMilliseconds);
+            }
+        }
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"remix cost | one full window, {replay.Shadow.EnvelopeHops} hops | ms over 20 passes | {Spread(timings)} | the stream's hop budget is {CwProbabilisticDecoder.HopMilliseconds:0.0} ms"));
+    }
+
+    /// <summary>
+    /// 7.4, work instruction 437 task 1: over every capture row and every keyed
+    /// recording, how many mix moves of 25 Hz or more occur.
+    /// </summary>
+    /// <remarks>
+    /// **A FORECAST FOR THE FOUR TESTS, NOT A GATE, AND IT ASSERTS NOTHING.** Each
+    /// recording is driven cold from 600 Hz, as the captures type drives it, and a
+    /// move is counted exactly where the re-mix would fire.
+    /// </remarks>
+    [Fact]
+    public void WhereTheMixMovesFar()
+    {
+        var names = TheCapturesThatDecodeKeepDecodingTests.Floors
+            .Select(row => (string)row[0])
+            .Concat(WhatTheStrayLettersRestOnTests.KeyedRecordings.Select(k => k.Name))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        var touched = new List<string>();
+
+        _output.WriteLine($"moves | recording | moves of {RemixFromHz:0} Hz or more | at s, from Hz to Hz | {names.Count} recordings");
+
+        foreach (var name in names)
+        {
+            var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var hop = decoder.Tracker.HopSamples;
+            var lastMixedAt = double.NaN;
+            var moves = new List<string>();
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+
+                var tone = decoder.Stream.ToneHz;
+
+                if (double.IsNaN(lastMixedAt))
+                {
+                    lastMixedAt = tone;
+                }
+                else if (Math.Abs(tone - lastMixedAt) >= RemixFromHz)
+                {
+                    moves.Add(string.Create(Invariant, $"{at / (double)audio.SampleRate:0.00} {lastMixedAt:0} to {tone:0}"));
+                    lastMixedAt = tone;
+                }
+            }
+
+            if (moves.Count > 0)
+            {
+                touched.Add(string.Create(Invariant, $"{name} {moves.Count}"));
+            }
+
+            _output.WriteLine($"moves | {name} | {moves.Count} | {string.Join(", ", moves)}");
+        }
+
+        _output.WriteLine($"moves | touched | {touched.Count} of {names.Count} | {string.Join(", ", touched)}");
+    }
+
     private static IReadOnlyList<Heard> InStretch(Traced traced, double from, double to)
         => traced.Settled
             .Where(h => h.Character.At.TotalSeconds >= from && h.Character.At.TotalSeconds < to)

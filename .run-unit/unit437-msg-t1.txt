@@ -1,0 +1,10 @@
+unit437 task 1: the trace (7.4) - WhatTheOpeningHeardTests.WhenTheWindowIsRemixed and WhereTheMixMovesFar, printers that assert nothing and write nothing; two shadow streams fed the decoder's own pitch hop for hop, the unchanged one identical to the decoder on all three runs; the re-mix fires 4 times on the stream (30.53 s 600 to 525, 36.03 s 525 to 625, 44.53 s 625 to 575, 48.53 s 575 to 600) and settles differently on 13 of the 33 reads from 30 to 46.2 s, so the stop does not hold and task 2 builds
+
+The opening under the replay: stream 30 to 46.2 s, 22 named UIEH EE E E T I NIEEE E E ET N (placeholder) IK
+at entry, 13 named E A N Q N IK E ET N (placeholder) I K re-mixed; 003901 cold 9 named, unchanged,
+no re-mix fires; 003919 cold 25 named, EANQNIK becomes EANQNIS, one re-mix at 27.03 s 600 to 750.
+One re-mix of a full 2400-hop window costs a median 21.2 ms on this machine against the 5 ms hop.
+Moves of 25 Hz or more occur on 48 of the 52 capture and keyed recordings, a forecast, not a gate.
+Nothing in src changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

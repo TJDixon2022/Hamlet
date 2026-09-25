@@ -1,0 +1,206 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.50]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.70]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.70]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhenTheWindowIsRemixed(run: "cw-2026-09-24-003901") [8 s]
+  Standard Output Messages:
+ remix check | run cw-2026-09-24-003901; 55 reads; a re-mix fires when the mix stands 25 Hz or more from the pitch the held window was last mixed at; 0 fired
+ remix check | the unchanged shadow against the decoder, whole run | identical
+ remix text | cold 0.0 to 60.0 s | entry | 9 named | EII E T NHHK
+ remix text | cold 0.0 to 60.0 s | remixed | 9 named | EII E T NHHK
+ 
+ remix read | s | mix Hz | fired | off-pitch s at entry | entry unit ms | entry wpm | entry from | remix unit ms | remix wpm | remix from | entry settles | remix settles | same
+ remix read | 3.0 | 600.0 | - | 0.00 | 25.0 | 40.0 | grid | 25.0 | 40.0 | grid | `` | `` | same
+ remix read | 3.5 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 4.0 | 600.0 | - | 0.00 | 22.5 | 40.0 | grid | 22.5 | 40.0 | grid | `` | `` | same
+ remix read | 4.5 | 600.0 | - | 0.00 | 20.0 | 40.0 | grid | 20.0 | 40.0 | grid | `` | `` | same
+ remix read | 5.0 | 600.0 | - | 0.00 | 22.5 | 40.0 | grid | 22.5 | 40.0 | grid | `` | `` | same
+ remix read | 5.5 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 6.0 | 600.0 | - | 0.00 | 25.0 | 40.0 | grid | 25.0 | 40.0 | grid | `` | `` | same
+ remix read | 6.5 | 600.0 | - | 0.00 | 25.0 | 38.0 | grid | 25.0 | 38.0 | grid | `` | `` | same
+ remix read | 7.0 | 600.0 | - | 0.00 | 25.0 | 38.0 | grid | 25.0 | 38.0 | grid | `` | `` | same
+ remix read | 7.5 | 600.0 | - | 0.00 | 25.0 | 38.0 | grid | 25.0 | 38.0 | grid | `` | `` | same
+ remix read | 8.0 | 600.0 | - | 0.00 | 25.0 | 38.0 | grid | 25.0 | 38.0 | grid | `` | `` | same
+ remix read | 8.5 | 600.0 | - | 0.00 | 22.5 | 38.0 | grid | 22.5 | 38.0 | grid | `` | `` | same
+ remix read | 9.0 | 600.0 | - | 0.00 | 25.0 | 38.0 | grid | 25.0 | 38.0 | grid | `` | `` | same
+ remix read | 9.5 | 600.0 | - | 0.00 | 22.5 | 38.0 | grid | 22.5 | 38.0 | grid | `` | `` | same
+ remix read | 10.0 | 600.0 | - | 0.00 | 22.5 | 40.0 | grid | 22.5 | 40.0 | grid | `` | `` | same
+ remix read | 10.5 | 600.0 | - | 0.00 | 22.5 | 40.0 | grid | 22.5 | 40.0 | grid | `` | `` | same
+ remix read | 11.0 | 600.0 | - | 0.00 | 20.0 | 40.0 | grid | 20.0 | 40.0 | grid | `` | `` | same
+ remix read | 11.5 | 600.0 | - | 0.00 | 22.5 | 38.0 | grid | 22.5 | 38.0 | grid | `` | `` | same
+ remix read | 12.0 | 600.0 | - | 0.00 | 22.5 | 40.0 | grid | 22.5 | 40.0 | grid | `` | `` | same
+ remix read | 12.5 | 600.0 | - | 0.00 | 22.5 | 38.0 | grid | 22.5 | 38.0 | grid | `` | `` | same
+ remix read | 13.0 | 600.0 | - | 0.00 | 22.5 | 40.0 | grid | 22.5 | 40.0 | grid | `` | `` | same
+ remix read | 13.5 | 600.0 | - | 0.00 | 25.0 | 38.0 | grid | 25.0 | 38.0 | grid | `` | `` | same
+ remix read | 14.0 | 600.0 | - | 0.00 | 22.5 | 38.0 | grid | 22.5 | 38.0 | grid | `` | `` | same
+ remix read | 14.5 | 600.0 | - | 0.00 | 25.0 | 38.0 | grid | 25.0 | 38.0 | grid | `` | `` | same
+ remix read | 15.0 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 15.5 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 16.0 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 16.5 | 600.0 | - | 0.00 | 30.0 | 40.0 | estimator | 30.0 | 40.0 | estimator | `` | `` | same
+ remix read | 17.0 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 17.5 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 18.0 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 18.5 | 600.0 | - | 0.00 | 27.5 | 40.0 | grid | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 19.0 | 600.0 | - | 0.00 | 25.0 | 40.0 | grid | 25.0 | 40.0 | grid | `` | `` | same
+ remix read | 19.5 | 600.0 | - | 0.00 | 25.0 | 40.0 | grid | 25.0 | 40.0 | grid | `` | `` | same
+ remix read | 20.0 | 600.0 | - | 0.00 | 25.0 | 40.0 | grid | 25.0 | 40.0 | grid | `` | `` | same
+ remix read | 20.5 | 600.0 | - | 0.00 | 25.0 | 40.0 | grid | 25.0 | 40.0 | grid | `` | `` | same
+ remix read | 21.0 | 600.0 | - | 0.00 | 25.0 | 40.0 | grid | 25.0 | 40.0 | grid | `` | `` | same
+ remix read | 21.5 | 600.0 | - | 0.00 | 20.0 | 28.0 | grid | 20.0 | 28.0 | grid | `` | `` | same
+ remix read | 22.0 | 600.0 | - | 0.00 | 22.5 | 40.0 | grid | 22.5 | 40.0 | grid | `` | `` | same
+ remix read | 22.5 | 600.0 | - | 0.00 | 22.5 | 14.0 | grid | 22.5 | 14.0 | grid | `        EII` | `        EII` | same
+ remix read | 23.0 | 600.0 | - | 0.00 | 30.0 | 40.0 | estimator | 30.0 | 40.0 | estimator | ` E` | ` E` | same
+ remix read | 23.5 | 600.0 | - | 0.00 | 30.0 | 40.0 | estimator | 30.0 | 40.0 | estimator | ` T ` | ` T ` | same
+ remix read | 24.0 | 600.0 | - | 0.00 | 37.5 | 32.0 | estimator | 37.5 | 32.0 | estimator | `N` | `N` | same
+ remix read | 24.5 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | `H` | `H` | same
+ remix read | 25.0 | 600.0 | - | 0.00 | 87.5 | 13.7 | estimator | 87.5 | 13.7 | estimator | `` | `` | same
+ remix read | 25.5 | 600.0 | - | 0.00 | 87.5 | 13.7 | estimator | 87.5 | 13.7 | estimator | `H` | `H` | same
+ remix read | 26.0 | 600.0 | - | 0.00 | 52.5 | 22.9 | estimator | 52.5 | 22.9 | estimator | `K` | `K` | same
+ remix read | 26.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 27.0 | 600.0 | - | 0.00 | 47.5 | 25.3 | estimator | 47.5 | 25.3 | estimator | `` | `` | same
+ remix read | 27.5 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | ` ` | ` ` | same
+ remix read | 28.0 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | ` ` | ` ` | same
+ remix read | 28.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 29.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 29.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 30.0 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | `  ` | `  ` | same
+ remix stop | cw-2026-09-24-003901 | reads 55 | reads that settle differently 0 | reads whose speed differs 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhenTheWindowIsRemixed(run: "cw-2026-09-24-003919") [3 s]
+  Standard Output Messages:
+ remix check | run cw-2026-09-24-003919; 55 reads; a re-mix fires when the mix stands 25 Hz or more from the pitch the held window was last mixed at; 1 fired
+ remix check | the unchanged shadow against the decoder, whole run | identical
+ remix fired | 27.030 s | 600.0 to 750.0 Hz
+ remix text | cold 0.0 to 60.0 s | entry | 25 named | EITEETNXNIK       EANQNID        EANQNIK
+ remix text | cold 0.0 to 60.0 s | remixed | 25 named | EITEETNXNIK       EANQNID        EANQNIS
+ 
+ remix read | s | mix Hz | fired | off-pitch s at entry | entry unit ms | entry wpm | entry from | remix unit ms | remix wpm | remix from | entry settles | remix settles | same
+ remix read | 3.0 | 600.0 | - | 0.00 | 15.0 | 38.0 | grid | 15.0 | 38.0 | grid | `` | `` | same
+ remix read | 3.5 | 600.0 | - | 0.00 | 15.0 | 30.0 | grid | 15.0 | 30.0 | grid | `` | `` | same
+ remix read | 4.0 | 600.0 | - | 0.00 | 15.0 | 36.0 | grid | 15.0 | 36.0 | grid | `` | `` | same
+ remix read | 4.5 | 600.0 | - | 0.00 | 15.0 | 38.0 | grid | 15.0 | 38.0 | grid | `` | `` | same
+ remix read | 5.0 | 600.0 | - | 0.00 | 17.5 | 14.0 | grid | 17.5 | 14.0 | grid | `` | `` | same
+ remix read | 5.5 | 600.0 | - | 0.00 | 22.5 | 14.0 | grid | 22.5 | 14.0 | grid | `    E` | `    E` | same
+ remix read | 6.0 | 600.0 | - | 0.00 | 27.5 | 14.0 | grid | 27.5 | 14.0 | grid | `I` | `I` | same
+ remix read | 6.5 | 600.0 | - | 0.00 | 30.0 | 40.0 | estimator | 30.0 | 40.0 | estimator | `TE` | `TE` | same
+ remix read | 7.0 | 600.0 | - | 0.00 | 110.0 | 10.9 | estimator | 110.0 | 10.9 | estimator | `E` | `E` | same
+ remix read | 7.5 | 600.0 | - | 0.00 | 52.5 | 22.9 | estimator | 52.5 | 22.9 | estimator | `TN` | `TN` | same
+ remix read | 8.0 | 600.0 | - | 0.00 | 52.5 | 22.9 | estimator | 52.5 | 22.9 | estimator | `` | `` | same
+ remix read | 8.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `X` | `X` | same
+ remix read | 9.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `NI` | `NI` | same
+ remix read | 9.5 | 600.0 | - | 0.00 | 52.5 | 22.9 | estimator | 52.5 | 22.9 | estimator | `K` | `K` | same
+ remix read | 10.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 10.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 11.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 11.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 12.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 12.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 13.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 13.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 14.0 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | ` ` | ` ` | same
+ remix read | 14.5 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | ` ` | ` ` | same
+ remix read | 15.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 15.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` E` | ` E` | same
+ remix read | 16.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `A` | `A` | same
+ remix read | 16.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `N` | `N` | same
+ remix read | 17.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 17.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `QN` | `QN` | same
+ remix read | 18.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `I` | `I` | same
+ remix read | 18.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `D` | `D` | same
+ remix read | 19.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 19.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 20.0 | 600.0 | - | 0.00 | 52.5 | 22.9 | estimator | 52.5 | 22.9 | estimator | ` ` | ` ` | same
+ remix read | 20.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 21.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 21.5 | 600.0 | - | 0.00 | 57.5 | 20.9 | estimator | 57.5 | 20.9 | estimator | `` | `` | same
+ remix read | 22.0 | 600.0 | - | 0.00 | 57.5 | 20.9 | estimator | 57.5 | 20.9 | estimator | `  ` | `  ` | same
+ remix read | 22.5 | 600.0 | - | 0.00 | 55.0 | 21.8 | estimator | 55.0 | 21.8 | estimator | `  ` | `  ` | same
+ remix read | 23.0 | 600.0 | - | 0.00 | 52.5 | 22.9 | estimator | 52.5 | 22.9 | estimator | `` | `` | same
+ remix read | 23.5 | 600.0 | - | 0.00 | 57.5 | 20.9 | estimator | 57.5 | 20.9 | estimator | `` | `` | same
+ remix read | 24.0 | 600.0 | - | 0.00 | 57.5 | 20.9 | estimator | 57.5 | 20.9 | estimator | ` ` | ` ` | same
+ remix read | 24.5 | 600.0 | - | 0.00 | 52.5 | 22.9 | estimator | 52.5 | 22.9 | estimator | `` | `` | same
+ remix read | 25.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` E` | ` E` | same
+ remix read | 25.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `AN` | `AN` | same
+ remix read | 26.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 26.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `Q` | `Q` | same
+ remix read | 27.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `NI` | `NI` | same
+ remix read | 27.5 | 750.0 | from 600.0 | 11.53 | 50.0 | 24.0 | estimator | 25.0 | 40.0 | grid | `` | `S` | DIFFERS
+ remix read | 28.0 | 750.0 | - | 11.03 | 50.0 | 24.0 | estimator | 27.5 | 40.0 | grid | `K` | `` | DIFFERS
+ remix read | 28.5 | 750.0 | - | 10.53 | 50.0 | 24.0 | estimator | 27.5 | 40.0 | grid | `` | `` | same
+ remix read | 29.0 | 750.0 | - | 10.03 | 42.5 | 28.2 | estimator | 27.5 | 40.0 | grid | ` ` | `` | DIFFERS
+ remix read | 29.5 | 750.0 | - | 9.53 | 45.0 | 26.7 | estimator | 30.0 | 40.0 | estimator | ` ` | `` | DIFFERS
+ remix read | 30.0 | 750.0 | - | 9.03 | 42.5 | 28.2 | estimator | 30.0 | 40.0 | estimator | `  ` | `` | DIFFERS
+ remix stop | cw-2026-09-24-003919 | reads 55 | reads that settle differently 5 | reads whose speed differs 6
+
+
+[xUnit.net 00:00:29.15]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhenTheWindowIsRemixed(run: "stream") [15 s]
+  Standard Output Messages:
+ remix check | run stream; 95 reads; a re-mix fires when the mix stands 25 Hz or more from the pitch the held window was last mixed at; 4 fired
+ remix check | the unchanged shadow against the decoder, whole run | identical
+ remix fired | 30.530 s | 600.0 to 525.0 Hz
+ remix fired | 36.030 s | 525.0 to 625.0 Hz
+ remix fired | 44.530 s | 625.0 to 575.0 Hz
+ remix fired | 48.530 s | 575.0 to 600.0 Hz
+ remix text | opening 30.0 to 46.2 s | entry | 22 named | UIEH EE E E T I  NIEEE E         E ET N ■IK
+ remix text | opening 30.0 to 46.2 s | remixed | 13 named | E A N Q N IK            E ET N ■I K
+ remix text | before 27.0 to 30.0 s | entry | 0 named | 
+ remix text | before 27.0 to 30.0 s | remixed | 0 named | 
+ 
+ remix read | s | mix Hz | fired | off-pitch s at entry | entry unit ms | entry wpm | entry from | remix unit ms | remix wpm | remix from | entry settles | remix settles | same
+ remix read | 27.0 | 600.0 | - | 0.00 | 47.5 | 25.3 | estimator | 47.5 | 25.3 | estimator | `` | `` | same
+ remix read | 27.5 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | ` ` | ` ` | same
+ remix read | 28.0 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | ` ` | ` ` | same
+ remix read | 28.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 29.0 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | `` | `` | same
+ remix read | 29.5 | 600.0 | - | 0.00 | 50.0 | 24.0 | estimator | 50.0 | 24.0 | estimator | ` ` | ` ` | same
+ remix read | 30.0 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | `  ` | `  ` | same
+ remix read | 30.5 | 600.0 | - | 0.00 | 85.0 | 14.1 | estimator | 85.0 | 14.1 | estimator | ` ` | ` ` | same
+ remix read | 31.0 | 525.0 | from 600.0 | 11.53 | 67.5 | 17.8 | estimator | 20.0 | 40.0 | grid | ` ` | `` | DIFFERS
+ remix read | 31.5 | 525.0 | - | 11.03 | 40.0 | 30.0 | estimator | 17.5 | 40.0 | grid | `` | `` | same
+ remix read | 32.0 | 525.0 | - | 10.53 | 30.0 | 40.0 | estimator | 20.0 | 40.0 | grid | ` UIEH` | `` | DIFFERS
+ remix read | 32.5 | 525.0 | - | 10.03 | 27.5 | 38.0 | grid | 20.0 | 38.0 | grid | ` EE` | `` | DIFFERS
+ remix read | 33.0 | 525.0 | - | 9.53 | 25.0 | 38.0 | grid | 20.0 | 38.0 | grid | ` E` | `` | DIFFERS
+ remix read | 33.5 | 525.0 | - | 9.03 | 27.5 | 38.0 | grid | 17.5 | 38.0 | grid | ` E T` | `` | DIFFERS
+ remix read | 34.0 | 525.0 | - | 8.53 | 22.5 | 38.0 | grid | 20.0 | 30.0 | grid | ` I` | `` | DIFFERS
+ remix read | 34.5 | 525.0 | - | 8.03 | 25.0 | 38.0 | grid | 17.5 | 38.0 | grid | ` ` | `` | DIFFERS
+ remix read | 35.0 | 525.0 | - | 7.53 | 27.5 | 38.0 | grid | 20.0 | 38.0 | grid | ` NI` | `` | DIFFERS
+ remix read | 35.5 | 525.0 | - | 7.03 | 27.5 | 38.0 | grid | 17.5 | 30.0 | grid | `EEE` | `` | DIFFERS
+ remix read | 36.0 | 525.0 | - | 6.53 | 17.5 | 30.0 | grid | 20.0 | 38.0 | grid | `` | `` | same
+ remix read | 36.5 | 625.0 | from 525.0 | 11.53 | 17.5 | 38.0 | grid | 27.5 | 30.0 | grid | `` | `` | same
+ remix read | 37.0 | 625.0 | - | 11.03 | 17.5 | 38.0 | grid | 27.5 | 30.0 | grid | `` | `` | same
+ remix read | 37.5 | 625.0 | - | 10.53 | 17.5 | 38.0 | grid | 27.5 | 30.0 | grid | `` | `` | same
+ remix read | 38.0 | 625.0 | - | 10.03 | 20.0 | 36.0 | grid | 27.5 | 30.0 | grid | `` | `` | same
+ remix read | 38.5 | 625.0 | - | 9.53 | 20.0 | 38.0 | grid | 30.0 | 40.0 | estimator | `` | `` | same
+ remix read | 39.0 | 625.0 | - | 9.03 | 20.0 | 38.0 | grid | 30.0 | 40.0 | estimator | `` | `` | same
+ remix read | 39.5 | 625.0 | - | 8.53 | 20.0 | 38.0 | grid | 30.0 | 40.0 | estimator | `` | `` | same
+ remix read | 40.0 | 625.0 | - | 8.03 | 25.0 | 38.0 | grid | 32.5 | 36.9 | estimator | `` | `` | same
+ remix read | 40.5 | 625.0 | - | 7.53 | 22.5 | 36.0 | grid | 30.0 | 40.0 | estimator | `` | `` | same
+ remix read | 41.0 | 625.0 | - | 7.03 | 25.0 | 38.0 | grid | 37.5 | 32.0 | estimator | `` | `` | same
+ remix read | 41.5 | 625.0 | - | 6.53 | 27.5 | 38.0 | grid | 32.5 | 36.9 | estimator | ` E         E ET ` | `` | DIFFERS
+ remix read | 42.0 | 625.0 | - | 6.03 | 30.0 | 40.0 | estimator | 32.5 | 36.9 | estimator | `N ` | ` E A N Q N IK            E ET N ` | DIFFERS
+ remix read | 42.5 | 625.0 | - | 5.53 | 32.5 | 36.9 | estimator | 45.0 | 26.7 | estimator | `` | `` | same
+ remix read | 43.0 | 625.0 | - | 5.03 | 32.5 | 36.9 | estimator | 45.0 | 26.7 | estimator | `` | `■` | DIFFERS
+ remix read | 43.5 | 625.0 | - | 4.53 | 30.0 | 40.0 | estimator | 45.0 | 26.7 | estimator | `` | `I` | DIFFERS
+ remix read | 44.0 | 625.0 | - | 4.03 | 35.0 | 34.3 | estimator | 37.5 | 32.0 | estimator | `` | `` | same
+ remix read | 44.5 | 625.0 | - | 3.53 | 32.5 | 36.9 | estimator | 37.5 | 32.0 | estimator | `` | `` | same
+ remix read | 45.0 | 575.0 | from 625.0 | 11.53 | 37.5 | 32.0 | estimator | 35.0 | 34.3 | estimator | `` | `` | same
+ remix read | 45.5 | 575.0 | - | 11.03 | 45.0 | 26.7 | estimator | 37.5 | 32.0 | estimator | `` | `` | same
+ remix read | 46.0 | 575.0 | - | 10.53 | 42.5 | 28.2 | estimator | 35.0 | 34.3 | estimator | `` | `` | same
+ remix read | 46.5 | 575.0 | - | 10.03 | 47.5 | 25.3 | estimator | 35.0 | 34.3 | estimator | `` | `` | same
+ remix read | 47.0 | 575.0 | - | 9.53 | 47.5 | 25.3 | estimator | 32.5 | 36.9 | estimator | `` | `` | same
+ remix stop | stream | reads 33 | reads that settle differently 13 | reads whose speed differs 25
+ remix cost | one full window, 2400 hops | ms over 20 passes | 20 | 21 | 21.244 | 21.278 | 21.432 | 24.578 | the stream's hop budget is 5.0 ms
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 29.4939 Seconds
+RC=0 WALL=30s

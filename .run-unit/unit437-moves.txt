@@ -1,0 +1,72 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:00.14]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhereTheMixMovesFar [1 m 59 s]
+  Standard Output Messages:
+ moves | recording | moves of 25 Hz or more | at s, from Hz to Hz | 52 recordings
+ moves | cw-2026-08-17-013347 | 3 | 13.03 600 to 625, 22.53 625 to 600, 28.53 600 to 625
+ moves | cw-2026-08-17-134712 | 1 | 19.03 600 to 500
+ moves | cw-2026-08-18-004507 | 3 | 2.03 600 to 475, 3.03 475 to 525, 8.03 525 to 500
+ moves | unadjudicated/cw-2026-08-24-012403 | 7 | 1.53 600 to 375, 2.03 375 to 475, 5.03 475 to 500, 5.53 500 to 475, 6.03 475 to 500, 7.53 500 to 425, 8.03 425 to 450
+ moves | unadjudicated/cw-2026-08-22-031838 | 2 | 1.53 600 to 500, 8.53 500 to 525
+ moves | unadjudicated/cw-2026-08-22-031905 | 4 | 1.53 600 to 500, 13.03 500 to 300, 18.03 300 to 500, 26.53 500 to 300
+ moves | unadjudicated/cw-2026-08-22-031948 | 1 | 2.03 600 to 500
+ moves | unadjudicated/cw-2026-08-22-032012 | 1 | 1.53 600 to 500
+ moves | unadjudicated/cw-2026-08-22-032050 | 2 | 2.03 600 to 500, 24.03 500 to 325
+ moves | unadjudicated/cw-2026-08-22-032113 | 3 | 1.53 600 to 500, 21.03 500 to 600, 26.53 600 to 650
+ moves | unadjudicated/cw-2026-08-22-032129 | 2 | 1.53 600 to 500, 13.53 500 to 650
+ moves | cw-2026-08-17-013622 | 2 | 14.53 600 to 625, 24.53 625 to 600
+ moves | unadjudicated/cw-2026-08-18-003016 | 3 | 1.53 600 to 675, 22.03 675 to 650, 25.53 650 to 675
+ moves | unadjudicated/cw-2026-08-18-003126 | 5 | 2.03 600 to 675, 21.53 675 to 650, 23.03 650 to 675, 23.53 675 to 650, 24.03 650 to 675
+ moves | unadjudicated/cw-2026-08-18-003758 | 1 | 1.53 600 to 500
+ moves | unadjudicated/cw-2026-08-23-001520 | 0 | 
+ moves | unadjudicated/cw-2026-08-23-001831 | 5 | 1.53 600 to 525, 2.03 525 to 325, 2.53 325 to 525, 18.03 525 to 500, 19.53 500 to 525
+ moves | unadjudicated/cw-2026-08-23-001952 | 8 | 1.53 600 to 575, 3.53 575 to 375, 4.53 375 to 425, 5.03 425 to 525, 19.53 525 to 450, 22.03 450 to 525, 24.03 525 to 450, 27.03 450 to 525
+ moves | unadjudicated/cw-2026-08-23-002016 | 2 | 1.53 600 to 450, 5.03 450 to 525
+ moves | unadjudicated/cw-2026-08-25-011552 | 1 | 1.53 600 to 500
+ moves | unadjudicated/cw-2026-08-25-012748 | 5 | 1.53 600 to 400, 2.53 400 to 375, 3.03 375 to 400, 19.53 400 to 375, 23.03 375 to 400
+ moves | unadjudicated/cw-2026-08-25-012823 | 3 | 1.53 600 to 400, 3.03 400 to 500, 14.53 500 to 450
+ moves | unadjudicated/cw-2026-08-25-012922 | 6 | 1.53 600 to 500, 9.03 500 to 475, 11.03 475 to 500, 14.53 500 to 475, 17.53 475 to 500, 29.03 500 to 475
+ moves | unadjudicated/cw-2026-08-25-013010 | 2 | 1.53 600 to 500, 29.03 500 to 475
+ moves | unadjudicated/cw-2026-08-25-013150 | 2 | 1.53 600 to 525, 9.53 525 to 500
+ moves | unadjudicated/cw-2026-08-25-013303 | 1 | 2.03 600 to 500
+ moves | unadjudicated/cw-2026-08-25-013402 | 7 | 2.03 600 to 525, 9.53 525 to 550, 14.03 550 to 525, 16.53 525 to 550, 21.03 550 to 525, 24.03 525 to 550, 27.03 550 to 525
+ moves | unadjudicated/cw-2026-08-25-013520 | 6 | 1.53 600 to 525, 2.03 525 to 550, 2.53 550 to 525, 5.03 525 to 550, 18.53 550 to 525, 27.53 525 to 550
+ moves | unadjudicated/cw-2026-08-25-013637 | 2 | 1.53 600 to 525, 24.03 525 to 550
+ moves | unadjudicated/cw-2026-08-25-021410 | 1 | 1.53 600 to 550
+ moves | unadjudicated/cw-2026-08-25-021629 | 1 | 1.53 600 to 500
+ moves | unadjudicated/cw-2026-08-25-021825 | 15 | 1.53 600 to 425, 3.53 425 to 400, 5.03 400 to 550, 7.03 550 to 475, 7.53 475 to 550, 8.03 550 to 450, 9.03 450 to 475, 9.53 475 to 525, 10.03 525 to 425, 10.53 425 to 400, 11.53 400 to 500, 12.53 500 to 400, 13.53 400 to 500, 14.53 500 to 375, 15.53 375 to 400
+ moves | unadjudicated/cw-2026-08-26-125941 | 20 | 1.53 600 to 525, 2.03 525 to 450, 2.53 450 to 525, 3.03 525 to 450, 4.03 450 to 575, 4.53 575 to 525, 5.03 525 to 500, 5.53 500 to 475, 7.53 475 to 425, 8.53 425 to 400, 13.53 400 to 500, 15.03 500 to 525, 15.53 525 to 425, 16.03 425 to 400, 20.53 400 to 425, 21.03 425 to 550, 21.53 550 to 400, 27.53 400 to 375, 28.53 375 to 425, 29.03 425 to 400
+ moves | unadjudicated/cw-2026-08-20-014854 | 13 | 1.53 600 to 650, 3.03 650 to 750, 5.03 750 to 825, 5.53 825 to 650, 6.03 650 to 800, 9.03 800 to 725, 9.53 725 to 650, 11.03 650 to 625, 12.03 625 to 600, 22.03 600 to 625, 25.53 625 to 600, 26.53 600 to 625, 27.03 625 to 600
+ moves | unadjudicated/cw-2026-08-20-014935 | 16 | 1.53 600 to 625, 15.03 625 to 675, 16.53 675 to 775, 18.03 775 to 800, 18.53 800 to 750, 19.03 750 to 625, 19.53 625 to 750, 23.03 750 to 625, 24.53 625 to 650, 25.03 650 to 800, 25.53 800 to 750, 26.03 750 to 800, 26.53 800 to 775, 27.03 775 to 800, 28.53 800 to 650, 29.53 650 to 825
+ moves | unadjudicated/cw-2026-08-22-014113 | 2 | 4.53 600 to 725, 17.53 725 to 600
+ moves | unadjudicated/cw-2026-08-22-014308 | 8 | 7.53 600 to 575, 9.03 575 to 475, 9.53 475 to 450, 10.53 450 to 475, 11.03 475 to 450, 12.03 450 to 575, 14.53 575 to 475, 15.03 475 to 575
+ moves | unadjudicated/cw-2026-09-24-003901 | 0 | 
+ moves | unadjudicated/cw-2026-09-24-003919 | 1 | 27.03 600 to 750
+ moves | unadjudicated/cw-2026-09-24-004027 | 0 | 
+ moves | unadjudicated/cw-2026-09-24-004108 | 3 | 1.53 600 to 625, 23.03 625 to 650, 23.53 650 to 625
+ moves | unadjudicated/cw-2026-09-24-004133 | 7 | 1.53 600 to 625, 7.53 625 to 650, 9.03 650 to 625, 10.53 625 to 600, 11.03 600 to 625, 17.53 625 to 650, 24.03 650 to 625
+ moves | unadjudicated/cw-2026-09-24-004205 | 1 | 1.53 600 to 625
+ moves | unadjudicated/cw-2026-09-24-004234 | 5 | 1.53 600 to 625, 11.53 625 to 650, 12.53 650 to 625, 19.53 625 to 600, 21.53 600 to 625
+ moves | unadjudicated/cw-2026-09-24-004322 | 1 | 2.03 600 to 625
+ moves | unadjudicated/cw-2026-09-24-004347 | 1 | 1.53 600 to 625
+ moves | unadjudicated/cw-2026-09-24-004405 | 7 | 1.53 600 to 625, 11.53 625 to 600, 12.53 600 to 625, 20.03 625 to 600, 20.53 600 to 625, 23.53 625 to 600, 24.03 600 to 625
+ moves | unadjudicated/cw-2026-09-24-004427 | 3 | 1.53 600 to 625, 16.53 625 to 600, 27.53 600 to 625
+ moves | unadjudicated/cw-2026-09-24-004510 | 0 | 
+ moves | unadjudicated/cw-2026-09-24-004535 | 2 | 17.03 600 to 575, 22.03 575 to 600
+ moves | unadjudicated/cw-2026-09-24-004550 | 1 | 15.53 600 to 625
+ moves | unadjudicated/cw-2026-09-23-173723 | 2 | 4.03 600 to 575, 25.03 575 to 600
+ moves | touched | 48 of 52 | cw-2026-08-17-013347 3, cw-2026-08-17-134712 1, cw-2026-08-18-004507 3, unadjudicated/cw-2026-08-24-012403 7, unadjudicated/cw-2026-08-22-031838 2, unadjudicated/cw-2026-08-22-031905 4, unadjudicated/cw-2026-08-22-031948 1, unadjudicated/cw-2026-08-22-032012 1, unadjudicated/cw-2026-08-22-032050 2, unadjudicated/cw-2026-08-22-032113 3, unadjudicated/cw-2026-08-22-032129 2, cw-2026-08-17-013622 2, unadjudicated/cw-2026-08-18-003016 3, unadjudicated/cw-2026-08-18-003126 5, unadjudicated/cw-2026-08-18-003758 1, unadjudicated/cw-2026-08-23-001831 5, unadjudicated/cw-2026-08-23-001952 8, unadjudicated/cw-2026-08-23-002016 2, unadjudicated/cw-2026-08-25-011552 1, unadjudicated/cw-2026-08-25-012748 5, unadjudicated/cw-2026-08-25-012823 3, unadjudicated/cw-2026-08-25-012922 6, unadjudicated/cw-2026-08-25-013010 2, unadjudicated/cw-2026-08-25-013150 2, unadjudicated/cw-2026-08-25-013303 1, unadjudicated/cw-2026-08-25-013402 7, unadjudicated/cw-2026-08-25-013520 6, unadjudicated/cw-2026-08-25-013637 2, unadjudicated/cw-2026-08-25-021410 1, unadjudicated/cw-2026-08-25-021629 1, unadjudicated/cw-2026-08-25-021825 15, unadjudicated/cw-2026-08-26-125941 20, unadjudicated/cw-2026-08-20-014854 13, unadjudicated/cw-2026-08-20-014935 16, unadjudicated/cw-2026-08-22-014113 2, unadjudicated/cw-2026-08-22-014308 8, unadjudicated/cw-2026-09-24-003919 1, unadjudicated/cw-2026-09-24-004108 3, unadjudicated/cw-2026-09-24-004133 7, unadjudicated/cw-2026-09-24-004205 1, unadjudicated/cw-2026-09-24-004234 5, unadjudicated/cw-2026-09-24-004322 1, unadjudicated/cw-2026-09-24-004347 1, unadjudicated/cw-2026-09-24-004405 7, unadjudicated/cw-2026-09-24-004427 3, unadjudicated/cw-2026-09-24-004535 2, unadjudicated/cw-2026-09-24-004550 1, unadjudicated/cw-2026-09-23-173723 2
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.0070 Minutes
+RC=0 WALL=121s
