@@ -822,3 +822,54 @@ trace. Built at `80bf1f07` and taken back out in the next commit.
   speed. Re-mixing moves a lot of text on the recordings where the tracker moves, most of it up
   but on 14 rows down. The remaining fault in the opening is the estimator's unit at the right
   pitch, and the tracker's wrong move at 30.53 s, which R76 holds.
+
+**Unit 438 (work instruction 438), measured and not kept.** 7.4 stays unticked. In
+`CwUnitEstimator.Measure` only, each 0.5 s block of the window was cut at Otsu's level over the
+3.0 s of hops centred on it, slid inward at the ends. A span whose two classes stood under twice
+`HysteresisDb` apart fell back to the whole window's cut. The hysteresis state carried across
+blocks. `HysteresisDb`, the shortest run, the clustering, `Elements`, `MeasureGaps` and
+`MeasureCharacterGap` were untouched. The change, the 3.0 s and the 0.5 s were fixed before the
+trace. Built at `63ce84bf` and taken back out in the next commit.
+- **The trace** (`WhatTheOpeningHeardTests.WhereTheTriggerCuts`). Each read of the decoder's own
+  stream was cut both ways and followed through the stream's speed choice, starting from the
+  stream's state before that read. The entry column reproduced the stream on every read: 0 units
+  and 0 settlings differed. On the opening the local cut stood higher than the whole window's cut,
+  and 8 to 18 of 24 blocks fell back. It made more marks, not fewer: 86 against 79 at 34.5 s. From
+  34.5 to 44.5 s the entry's unit was 25 to 45 ms and the local cut's 20 to 40 ms, so it stayed
+  under 40 ms on 20 of 21 reads, and the other read was exactly 40.0 ms. It settled differently on
+  3 of 33 reads from 30 to 46.2 s. The stop did not hold on its letter, so the change was built.
+  There were 464 marks under 40 ms at entry on those reads, and the local cut joined 48 of them to
+  a neighbor. The locked stretch was identical both ways, at 55 ms on all 33 reads. One local-cut
+  `Measure` over 2400 hops costs a median 0.25 ms here, against 0.045 ms at entry and a 500 ms read
+  cadence.
+- **3.2's four tests.**
+  1. Passes: 165 to 163 edits over 565. 17:37 went from 19 to 18 over 25. Added letters went
+     from 17 to 14, and single-element ones from 8 to 6.
+  2. Fails on 5 of 13 floors: `013347` 57 to 54, `134712` 11 to 10, `003758` 43 to 38, `031838` 40
+     to 36 and `032129` 65 to 63. R73 was not examined, because tests 3 and 4 fail either way.
+  3. Fails. `013347` read `HA E WVRR VA3VRRT` and now reads `HA EWVRR VA3■R`, losing `VA3VRR`.
+     `003758` moved onto its own adjudicated text, from `EEEETMP/4 QNIKK` to `AA4MP/4 QNIKK`.
+     `012403` is identical. The adjudicated floor fails 2 of 13: `013347`, and `031838`, which no
+     longer contains `, AND`.
+  4. Fails: the captures test fails 16 of 51 rows. Above-bar characters fall on 16 rows: `013347`
+     57 to 54, `134712` 11 to 10, `003758` 43 to 38, `031838` 40 to 36, `032129` 65 to 63, `001831`
+     43 to 39, `001952` 46 to 42, `002016` 34 to 33, `012823` 23 to 18, `012922` 43 to 42, `013303`
+     44 to 41, `013520` 55 to 53, `013637` 60 to 59, `021629` 27 to 26, `021825` 19 to 15 and
+     `003919` 25 to 24. Elements alone fall on `003126` 131 to 130 and `021410` 88 to 84. 9 rows gain.
+  - Three tests failed, so the narrower 6.0 s variant was not built.
+  - `ItRecoversASpeedItWasNeverTold` stayed green. Only 25 WPM at noise 0.08 moved, from 25.3 to
+    24.0. The plateau red was unchanged at 165, 130, 118, 117 and 116 marks.
+- **The opening under the change.** Built, the tracker did not move the mix to 525 Hz at 30.53 s.
+  It stood at 600 Hz to 34.0 s and at 625 Hz from 34.5 s, because the interlock now reads different
+  reads. The per-read replay could not show that. The stream from 30 to 46.2 s went from 22 named,
+  `UIEH EE E E T I NIEEE E E ET N ■IK`, to 12 named, `EANQNID EAN■IK`. That is the same text
+  `003919` cold gives for that audio. `003901` cold went from 9 named, `EII E T NHHK`, to 10,
+  `EII E T NXNIK`. `003919` cold went from 25 named, `EITEETNXNIK EANQNID EANQNIK`, to 24,
+  `E ANETNXNIK EANQNID EANQNIK`.
+- **Unit 437's question, answered: yes, in the opening.** From 31.5 to 44.5 s, every read took the
+  estimator's speed. Its unit was 45 to 67.5 ms, at 17.8 to 26.7 WPM, against the sender's 55 ms,
+  and 50 ms on 17 of those 27 reads. At entry those reads took 17.5 to 40 ms, and the grid decided
+  32.5 to 41.5 s at 30 to 38 WPM.
+- **What this settles.** A cut taken where the marks are removes the halving on the opening, and the
+  opening reads what the same audio reads cold. Across the corpus the same cut costs 16 capture
+  rows, 5 floors and `VA3VRR`, so as built it is not a fix (HM-DEC-091).
