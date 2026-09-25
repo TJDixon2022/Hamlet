@@ -54,14 +54,27 @@ public sealed class WhereTheSureWrongLettersComeFromTests
     /// <param name="InsertedSpace">Whether the decoder put a word boundary beside it where the key has none.</param>
     /// <param name="Held">Whether the stream held this sender's own gaps when it settled.</param>
     /// <param name="HeldGaps">The gaps it held, meaningful only when held.</param>
+    /// <param name="Estimator">What the estimator read from the window it settled in.</param>
+    /// <param name="WindowMarksUnit">The unit that window's marks alone imply, or NaN.</param>
     internal sealed record Wrong(
         string Name, CwCharacter Character, string Sent, string SentPattern, string Group,
         double SpanBefore, double SpanAfter, double ToneHz, double PitchHz,
         IReadOnlyList<double> Marks, IReadOnlyList<double> Gaps, bool InsertedSpace,
-        bool Held, CwUnitEstimator.CwGapLengths HeldGaps)
+        bool Held, CwUnitEstimator.CwGapLengths HeldGaps,
+        CwUnitReading Estimator, double WindowMarksUnit)
     {
         /// <summary>One unit at the read's speed, in milliseconds.</summary>
         public double UnitMs => Character.WordsPerMinute > 0 ? 1200.0 / Character.WordsPerMinute : double.NaN;
+
+        /// <summary>Where the path's speed came from: the estimator when it read one inside the grid's range, the grid otherwise.</summary>
+        public string Source => Estimator.IsReady
+            && Estimator.WordsPerMinute >= CwProbabilisticDecoder.SlowestWpm
+            && Estimator.WordsPerMinute <= CwProbabilisticDecoder.FastestWpm
+                ? "estimator"
+                : "grid";
+
+        /// <summary>The unit this character's own marks imply, or NaN.</summary>
+        public double LocalMarksUnit => MarksUnit(Marks, Character.Pattern);
     }
 
     private static readonly IReadOnlyDictionary<string, string> PatternOf = MorseAlphabet.All
@@ -117,9 +130,60 @@ public sealed class WhereTheSureWrongLettersComeFromTests
     /// <param name="Tone">The mix pitch after each hop.</param>
     /// <param name="Envelope">The envelope magnitude of each hop.</param>
     /// <param name="Reading">Per settled character: whether the stream held this sender's own gaps, and the gaps it held.</param>
+    /// <param name="Speed">Per settled character: what the estimator read from the window it settled in, and the unit that window's marks alone imply.</param>
     internal sealed record Decoded(
         IReadOnlyList<CwCharacter> Settled, double[] Tone, double[] Envelope,
-        IReadOnlyList<(bool Held, CwUnitEstimator.CwGapLengths Gaps)> Reading);
+        IReadOnlyList<(bool Held, CwUnitEstimator.CwGapLengths Gaps)> Reading,
+        IReadOnlyList<(CwUnitReading Estimator, double WindowMarksUnit)> Speed);
+
+    /// <summary>
+    /// The unit a list of marks implies on its own, dits and dahs taken apart on
+    /// the logarithm (work instruction 441, task 2).
+    /// </summary>
+    /// <param name="marks">Mark lengths in milliseconds.</param>
+    /// <param name="pattern">The pattern the path read over them, used only when every mark is one kind.</param>
+    /// <returns>The unit in milliseconds, or NaN where the marks cannot say.</returns>
+    /// <remarks>
+    /// Where the longest mark is at least twice the shortest, both kinds are
+    /// there: split at the geometric mean, and the unit is the geometric mean of
+    /// the dits' median and a third of the dahs' median. Where they are all one
+    /// kind the marks cannot say which, and the path's own pattern is asked only
+    /// if it is all one kind too. The envelope's marks read long by the cut's
+    /// skirt, so this unit is long by that much.
+    /// </remarks>
+    internal static double MarksUnit(IReadOnlyList<double> marks, string? pattern)
+    {
+        if (marks.Count == 0)
+        {
+            return double.NaN;
+        }
+
+        double MedianOf(IEnumerable<double> v)
+        {
+            var s = v.OrderBy(x => x).ToArray();
+
+            return s[s.Length / 2];
+        }
+
+        var min = marks.Min();
+        var max = marks.Max();
+
+        if (max >= 2 * min)
+        {
+            var boundary = Math.Sqrt(min * max);
+            var dit = MedianOf(marks.Where(m => m <= boundary));
+            var dah = MedianOf(marks.Where(m => m > boundary));
+
+            return Math.Sqrt(dit * dah / 3);
+        }
+
+        return pattern switch
+        {
+            { Length: > 0 } p when p.All(e => e == '.') => MedianOf(marks),
+            { Length: > 0 } p when p.All(e => e == '-') => MedianOf(marks) / 3,
+            _ => double.NaN,
+        };
+    }
 
     /// <summary>Settles a recording exactly as the floors do, reading the stream's state as each character settles and changing nothing.</summary>
     /// <param name="name">The recording, under the captures folder.</param>
@@ -129,10 +193,13 @@ public sealed class WhereTheSureWrongLettersComeFromTests
         var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
         var heldField = typeof(CwProbabilisticStream).GetField("_structureHeld", flags)!;
         var gapsField = typeof(CwProbabilisticStream).GetField("_heldGaps", flags)!;
+        var windowField = typeof(CwProbabilisticStream).GetField("_envelope", flags)!;
+        var countField = typeof(CwProbabilisticStream).GetField("_envelopeCount", flags)!;
         var audio = Hamlet.RadioEngine.Audio.WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
         var decoder = new CwDecoder(audio.SampleRate, 600);
         var settled = new List<CwCharacter>();
         var reading = new List<(bool, CwUnitEstimator.CwGapLengths)>();
+        var speed = new List<(CwUnitReading, double)>();
         var tone = new List<double>();
         var envelope = new List<double>();
 
@@ -140,6 +207,12 @@ public sealed class WhereTheSureWrongLettersComeFromTests
         {
             settled.Add(c);
             reading.Add(((bool)heldField.GetValue(decoder.Stream)!, (CwUnitEstimator.CwGapLengths)gapsField.GetValue(decoder.Stream)!));
+
+            // The window this character settled from, exactly as the stream read it.
+            var window = ((double[])windowField.GetValue(decoder.Stream)!).Take((int)countField.GetValue(decoder.Stream)!).ToList();
+            var hopMs = CwProbabilisticDecoder.HopMilliseconds;
+
+            speed.Add((CwUnitEstimator.Measure(window, hopMs), MarksUnit(CwUnitEstimator.Elements(window, hopMs).Marks, null)));
         };
 
         var hop = decoder.Tracker.HopSamples;
@@ -153,15 +226,23 @@ public sealed class WhereTheSureWrongLettersComeFromTests
 
         decoder.Flush();
 
-        return new Decoded(settled, tone.ToArray(), envelope.ToArray(), reading);
+        return new Decoded(settled, tone.ToArray(), envelope.ToArray(), reading, speed);
     }
 
     /// <summary>Every sure-wrong character on the real keyed recordings.</summary>
     /// <returns>The characters, recording by recording.</returns>
-    internal static IReadOnlyList<Wrong> Trace()
+    internal static IReadOnlyList<Wrong> Trace() => Trace(out _);
+
+    /// <summary>Every sure-wrong character on the real keyed recordings, and every sure-right one beside them.</summary>
+    /// <param name="rights">The sure characters the key has in place, traced the same way, group `right`.</param>
+    /// <returns>The wrong characters, recording by recording.</returns>
+    internal static IReadOnlyList<Wrong> Trace(out IReadOnlyList<Wrong> rights)
     {
         var hopMs = CwProbabilisticDecoder.HopMilliseconds;
         var wrongs = new List<Wrong>();
+        var right = new List<Wrong>();
+
+        rights = right;
 
         foreach (var keyed in WhatTheStrayLettersRestOnTests.KeyedRecordings)
         {
@@ -209,12 +290,12 @@ public sealed class WhereTheSureWrongLettersComeFromTests
 
                     var c = characters[d++];
 
-                    if (step.Decoded.Value.Class != CwSymbolClass.Sure || step.Key is null
-                        || string.Equals(step.Key, step.Decoded.Value.Text, StringComparison.Ordinal))
+                    if (step.Decoded.Value.Class != CwSymbolClass.Sure || step.Key is null)
                     {
                         continue;
                     }
 
+                    var isRight = string.Equals(step.Key, step.Decoded.Value.Text, StringComparison.Ordinal);
                     var at = settled.ToList().IndexOf(c);
                     var before = settled.Take(at).LastOrDefault(WhatTheStrayLettersRestOnTests.IsNamed);
                     var after = settled.Skip(at + 1).FirstOrDefault(WhatTheStrayLettersRestOnTests.IsNamed);
@@ -232,15 +313,89 @@ public sealed class WhereTheSureWrongLettersComeFromTests
                         : (Array.Empty<double>(), Array.Empty<double>());
                     var sentPattern = PatternOf.TryGetValue(step.Key, out var p) ? p : "?";
 
-                    wrongs.Add(new Wrong(
-                        keyed.Name, c, step.Key, sentPattern, Relate(sentPattern, c.Pattern),
+                    (isRight ? right : wrongs).Add(new Wrong(
+                        keyed.Name, c, step.Key, sentPattern, isRight ? "right" : Relate(sentPattern, c.Pattern),
                         before?.SpanLogLikelihoodRatio ?? double.NaN, after?.SpanLogLikelihoodRatio ?? double.NaN,
-                        ToneOver(c), pitch, marks, gaps, inserted, heard.Reading[at].Held, heard.Reading[at].Gaps));
+                        ToneOver(c), pitch, marks, gaps, inserted, heard.Reading[at].Held, heard.Reading[at].Gaps,
+                        heard.Speed[at].Estimator, heard.Speed[at].WindowMarksUnit));
                 }
             }
         }
 
         return wrongs;
+    }
+
+    private static string Wpm(double unitMs)
+        => double.IsNaN(unitMs) ? "-" : string.Create(CultureInfo.InvariantCulture, $"{1200.0 / unitMs:0.0}");
+
+    private static string Bin(double ratio)
+        => double.IsNaN(ratio) ? "marks cannot say"
+            : ratio < 1 / 1.5 ? "under 0.67"
+            : ratio < 1 / 1.25 ? "0.67 to 0.80"
+            : ratio <= 1.25 ? "0.80 to 1.25"
+            : ratio <= 1.5 ? "1.25 to 1.50"
+            : ratio <= 2 ? "1.50 to 2.00"
+            : "over 2.00";
+
+    /// <remarks>
+    /// Proves nothing about the decoder; prints the fact task 2 of work
+    /// instruction 441 asks for. For each sure-wrong character: the speed the path
+    /// was given and where it came from, the unit the character's own marks imply
+    /// (its span, one unit either side) and the unit the whole window's marks
+    /// imply, each as words a minute and as a ratio over the unit the path was
+    /// timed with, above one where the path's clock ran fast. Then the same
+    /// ratios over the sure-right characters, bin by bin, so a ratio can be chosen
+    /// that separates them. Asserts only that it traced the metric's own count.
+    /// </remarks>
+    [Fact]
+    public void EachSureWrongLetterAgainstTheSpeedItsMarksImply()
+    {
+        var wrongs = Trace(out var rights);
+
+        _output.WriteLine(
+            "speed | recording | at s | sent | emitted | group | given wpm | source | gaps | estimator dit mark ms | estimator element gap ms | "
+            + "envelope marks ms | marks wpm, this character | ratio | marks wpm, the window | ratio");
+
+        foreach (var w in wrongs)
+        {
+            var c = w.Character;
+
+            _output.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"speed | {w.Name} | {c.At.TotalSeconds:0.000} | `{w.Sent}` | `{c.Text}` | {w.Group} | {c.WordsPerMinute} | {w.Source} | "
+                + $"{(w.Held ? "held" : "textbook")} | {w.Estimator.DitMarkMilliseconds:0} | {w.Estimator.ElementGapMilliseconds:0} | "
+                + $"{string.Join(" ", w.Marks.Select(m => m.ToString("0", CultureInfo.InvariantCulture)))} | "
+                + $"{Wpm(w.LocalMarksUnit)} | {w.LocalMarksUnit / w.UnitMs:0.00} | {Wpm(w.WindowMarksUnit)} | {w.WindowMarksUnit / w.UnitMs:0.00}"));
+        }
+
+        foreach (var (label, pick) in new (string, Func<Wrong, double>)[]
+        {
+            ("this character's marks", w => w.LocalMarksUnit / w.UnitMs),
+            ("the window's marks", w => w.WindowMarksUnit / w.UnitMs),
+        })
+        {
+            _output.WriteLine($"bin | ratio from {label} | sure wrong | sure right | wrong from the grid | wrong from the estimator");
+
+            foreach (var bin in new[] { "under 0.67", "0.67 to 0.80", "0.80 to 1.25", "1.25 to 1.50", "1.50 to 2.00", "over 2.00", "marks cannot say" })
+            {
+                var inWrong = wrongs.Where(w => Bin(pick(w)) == bin).ToList();
+
+                _output.WriteLine(
+                    $"bin | {bin} | {inWrong.Count} | {rights.Count(w => Bin(pick(w)) == bin)} | "
+                    + $"{inWrong.Count(w => w.Source == "grid")} | {inWrong.Count(w => w.Source == "estimator")}");
+            }
+        }
+
+        _output.WriteLine(
+            $"total | {wrongs.Count} sure wrong, {rights.Count} sure right | "
+            + $"sources of the wrong: {wrongs.Count(w => w.Source == "grid")} grid, {wrongs.Count(w => w.Source == "estimator")} estimator, "
+            + $"{wrongs.Count(w => w.Held)} under held gaps");
+
+        var metric = TheRequirementsAreMeasuredTests.Real
+            .Where(m => m.NotComputable is null)
+            .SelectMany(m => m.Stretches)
+            .Sum(a => CwMetrics.Invented(a).SureWrong);
+
+        Assert.Equal(metric, wrongs.Count);
     }
 
     private static string Reading(Wrong w)

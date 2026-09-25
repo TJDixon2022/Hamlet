@@ -1,0 +1,17 @@
+unit441 task 2: the speed trace - given speed against the marks' own
+
+WhereTheSureWrongLettersComeFromTests.EachSureWrongLetterAgainstTheSpeedItsMarksImply,
+a printer. For each of the 51 sure-wrong letters with G1 in: the speed
+the path was given and its source (estimator 42, grid 9; 5 under held
+gaps), the unit the letter's own marks imply and the unit the window's
+marks imply, each as a ratio over the path's unit. The same ratios over
+the 363 sure-right letters.
+
+Window marks against the path's unit (above 1: the path's clock ran fast):
+  over 1.25        8 wrong,   2 right
+  0.80 to 1.25    28 wrong, 263 right
+  under 0.80      15 wrong,  98 right
+Above 1.25 is the only place wrong outnumbers right. The fast side does
+not separate, and its window marks carry 10 to 30 ms noise fragments.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

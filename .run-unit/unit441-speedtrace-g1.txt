@@ -1,0 +1,87 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.62]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.81]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.81]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:39.47]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureWrongLettersComeFromTests.EachSureWrongLetterAgainstTheSpeedItsMarksImply [1 m 37 s]
+  Standard Output Messages:
+ speed | recording | at s | sent | emitted | group | given wpm | source | gaps | estimator dit mark ms | estimator element gap ms | envelope marks ms | marks wpm, this character | ratio | marks wpm, the window | ratio
+ speed | unadjudicated/cw-2026-09-23-173723 | 28.970 | `6` | `7` | one element of the wrong kind | 17 | estimator | held | 75 | 65 | 500 70 70 75 | 11.1 | 1.53 | 16.2 | 1.05
+ speed | unadjudicated/cw-2026-09-23-173723 | 29.195 | `R` | `E` | split: a part of the sent letter | 17 | estimator | held | 75 | 65 | 75 | 16.0 | 1.06 | 16.2 | 1.05
+ speed | unadjudicated/cw-2026-09-23-173723 | 30.000 | `D` | `I` | split: a part of the sent letter | 17 | estimator | held | 75 | 65 | 85 | 14.1 | 1.20 | 16.2 | 1.05
+ speed | unadjudicated/cw-2026-08-18-003758 | 10.640 | `A` | `E` | split: a part of the sent letter | 40 | estimator | textbook | 20 | 40 | 60 | 20.0 | 2.00 | 45.4 | 0.88
+ speed | unadjudicated/cw-2026-08-18-003758 | 10.740 | `A` | `E` | split: a part of the sent letter | 40 | estimator | textbook | 20 | 40 | 60 | 20.0 | 2.00 | 45.4 | 0.88
+ speed | unadjudicated/cw-2026-08-18-003758 | 10.940 | `4` | `T` | split: a part of the sent letter | 40 | estimator | textbook | 20 | 40 | 160 | 22.5 | 1.78 | 45.4 | 0.88
+ speed | cw-2026-08-18-004507 | 5.420 | `R` | `O` | same length, several elements differ | 40 | estimator | textbook | 40 | 20 | 105 170 70 | 15.6 | 2.57 | 31.0 | 1.29
+ speed | unadjudicated/cw-2026-08-22-031838 | 14.225 | `2` | `D` | none of these | 19 | estimator | textbook | 75 | 50 | 200 75 85 | 15.9 | 1.19 | 32.4 | 0.59
+ speed | unadjudicated/cw-2026-08-22-031838 | 15.550 | `A` | `T` | split: a part of the sent letter | 34 | estimator | textbook | 55 | 15 | 165 | 21.8 | 1.56 | 27.4 | 1.24
+ speed | unadjudicated/cw-2026-08-22-031838 | 16.045 | `N` | `T` | split: a part of the sent letter | 34 | estimator | textbook | 55 | 15 |  | - | NaN | 26.9 | 1.26
+ speed | unadjudicated/cw-2026-08-22-031838 | 16.310 | `D` | `T` | split: a part of the sent letter | 34 | estimator | textbook | 55 | 15 | 220 | 16.4 | 2.08 | 26.9 | 1.26
+ speed | unadjudicated/cw-2026-08-22-031838 | 16.530 | `2` | `T` | split: a part of the sent letter | 40 | estimator | textbook | 35 | 25 | 170 | 21.2 | 1.89 | 27.4 | 1.46
+ speed | unadjudicated/cw-2026-08-22-031838 | 16.795 | `W` | `T` | split: a part of the sent letter | 40 | estimator | textbook | 35 | 25 | 115 | 31.3 | 1.28 | 27.4 | 1.46
+ speed | unadjudicated/cw-2026-08-22-031838 | 16.895 | `I` | `E` | split: a part of the sent letter | 40 | estimator | textbook | 35 | 25 | 55 | 21.8 | 1.83 | 27.4 | 1.46
+ speed | unadjudicated/cw-2026-08-22-031838 | 17.290 | `T` | `A` | merged: the sent letter and part of a neighbor | 28 | estimator | textbook | 60 | 25 | 335 | - | NaN | 30.0 | 0.93
+ speed | unadjudicated/cw-2026-08-22-031838 | 24.185 | `R` | `T` | none of these | 34 | estimator | textbook | 45 | 25 | 120 | 30.0 | 1.13 | 34.6 | 0.98
+ speed | unadjudicated/cw-2026-08-22-031838 | 24.410 | `E` | `T` | one element of the wrong kind | 34 | estimator | textbook | 45 | 25 | 170 | 21.2 | 1.61 | 34.6 | 0.98
+ speed | unadjudicated/cw-2026-08-22-031905 | 14.155 | `C` | `I` | none of these | 18 | estimator | textbook | 80 | 50 |  | - | NaN | 22.2 | 0.81
+ speed | unadjudicated/cw-2026-08-22-031905 | 14.635 | `E` | `A` | merged: the sent letter and part of a neighbor | 18 | estimator | textbook | 80 | 50 | 65 175 | 19.5 | 0.92 | 24.8 | 0.72
+ speed | unadjudicated/cw-2026-08-22-031905 | 14.980 | `N` | `I` | one element of the wrong kind | 18 | estimator | textbook | 80 | 50 | 40 85 | 35.6 | 0.50 | 24.8 | 0.72
+ speed | unadjudicated/cw-2026-08-22-031905 | 15.150 | `T` | `E` | one element of the wrong kind | 22 | estimator | textbook | 60 | 50 | 25 | 48.0 | 0.46 | 24.8 | 0.89
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.000 | `E` | `T` | one element of the wrong kind | 28 | estimator | textbook | 35 | 50 | 125 | 28.8 | 0.97 | 24.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.260 | `T` | `A` | merged: the sent letter and part of a neighbor | 28 | estimator | textbook | 35 | 50 | 170 | - | NaN | 24.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.615 | `E` | `N` | merged: the sent letter and part of a neighbor | 30 | estimator | textbook | 30 | 50 | 150 | - | NaN | 26.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.880 | `R` | `I` | one element lost inside the letter | 30 | estimator | textbook | 30 | 50 | 30 60 | 49.0 | 0.61 | 26.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 18.285 | `F` | `W` | none of these | 34 | estimator | textbook | 20 | 50 | 120 90 | - | NaN | 36.2 | 0.94
+ speed | unadjudicated/cw-2026-08-22-031905 | 26.255 | `5` | `,` | none of these | 24 | estimator | textbook | 85 | 15 | 260 165 85 85 180 220 | 15.2 | 1.58 | 16.1 | 1.49
+ speed | unadjudicated/cw-2026-08-22-031948 | 4.690 | `1` | `5` | same length, several elements differ | 18 | estimator | textbook | 85 | 45 | 85 85 80 85 80 | 14.1 | 1.28 | 15.4 | 1.17
+ speed | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | split: a part of the sent letter | 23 | estimator | textbook | 65 | 40 | 180 | 20.0 | 1.15 | 28.3 | 0.81
+ speed | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | split: a part of the sent letter | 34 | estimator | textbook | 20 | 50 | 50 210 | 20.3 | 1.68 | 50.4 | 0.67
+ speed | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | split: a part of the sent letter | 18 | estimator | textbook | 75 | 55 | 40 215 290 | 19.3 | 0.93 | 17.4 | 1.03
+ speed | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | split: a part of the sent letter | 18 | estimator | textbook | 80 | 55 | 210 | 17.1 | 1.05 | 23.6 | 0.76
+ speed | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | same length, several elements differ | 30 | estimator | textbook | 65 | 15 | 10 230 85 85 | 71.3 | 0.42 | 27.3 | 1.10
+ speed | unadjudicated/cw-2026-08-22-032113 | 11.760 | `S` | `O` | same length, several elements differ | 30 | estimator | textbook | 30 | 50 | 80 80 85 | 45.0 | 0.67 | 16.9 | 1.78
+ speed | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | split: a part of the sent letter | 32 | estimator | textbook | 30 | 45 | 20 85 | 50.4 | 0.63 | 26.2 | 1.22
+ speed | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | none of these | 18 | estimator | textbook | 85 | 50 | 85 280 215 155 | 15.4 | 1.17 | 28.3 | 0.64
+ speed | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | one element of the wrong kind | 28 | estimator | textbook | 65 | 20 | 90 210 80 | 15.1 | 1.85 | 23.1 | 1.21
+ speed | unadjudicated/cw-2026-08-22-032129 | 15.335 | `L` | `E` | split: a part of the sent letter | 12 | grid | textbook | 10 | 40 | 140 30 | 32.1 | 0.37 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 16.365 | `L` | `E` | split: a part of the sent letter | 12 | grid | textbook | 10 | 40 | 80 | 15.0 | 0.80 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 17.400 | `T` | `E` | one element of the wrong kind | 12 | grid | textbook | 10 | 40 | 50 10 25 | 93.0 | 0.13 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 18.470 | `A` | `I` | one element of the wrong kind | 12 | grid | textbook | 10 | 40 | 125 40 | 29.4 | 0.41 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 18.865 | `R` | `E` | split: a part of the sent letter | 12 | grid | textbook | 10 | 40 | 30 25 | 40.0 | 0.30 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 19.330 | `L` | `E` | split: a part of the sent letter | 8 | grid | textbook | 15 | 40 | 60 25 | 53.7 | 0.15 | 35.8 | 0.22
+ speed | unadjudicated/cw-2026-08-22-032129 | 20.065 | `P` | `I` | none of these | 12 | grid | textbook | 15 | 35 | 85 30 | 41.2 | 0.29 | 34.6 | 0.35
+ speed | unadjudicated/cw-2026-08-22-032129 | 20.660 | `0` | `E` | none of these | 8 | grid | textbook | 15 | 415 | 15 45 30 30 | 98.0 | 0.08 | 13.5 | 0.59
+ speed | unadjudicated/cw-2026-08-22-032129 | 21.945 | `3` | `E` | split: a part of the sent letter | 8 | grid | textbook | 15 | 415 | 30 95 20 | 38.9 | 0.21 | 13.5 | 0.59
+ speed | unadjudicated/cw-2026-08-22-032129 | 22.345 | `4` | `E` | split: a part of the sent letter | 13 | estimator | textbook | 15 | 170 | 45 75 | 16.0 | 0.81 | 11.8 | 1.10
+ speed | unadjudicated/cw-2026-09-24-004108 | 14.340 | `E` | `G` | merged: the sent letter and part of a neighbor | 22 | estimator | textbook | 50 | 60 | 165 165 55 | 21.8 | 1.01 | 23.2 | 0.95
+ speed | unadjudicated/cw-2026-09-24-004108 | 17.775 | `V` | `6` | none of these | 22 | estimator | textbook | 50 | 60 | 165 50 55 55 50 | 21.8 | 1.01 | 23.2 | 0.95
+ speed | unadjudicated/cw-2026-09-24-004234 | 7.715 | `O` | `T` | split: a part of the sent letter | 22 | estimator | held | 50 | 60 | 160 | 22.5 | 0.98 | 23.2 | 0.95
+ speed | unadjudicated/cw-2026-09-24-004234 | 8.045 | `U` | `T` | split: a part of the sent letter | 22 | estimator | held | 50 | 60 | 170 | 21.2 | 1.04 | 23.2 | 0.95
+ bin | ratio from this character's marks | sure wrong | sure right | wrong from the grid | wrong from the estimator
+ bin | under 0.67 | 13 | 19 | 8 | 5
+ bin | 0.67 to 0.80 | 1 | 7 | 0 | 1
+ bin | 0.80 to 1.25 | 16 | 251 | 1 | 15
+ bin | 1.25 to 1.50 | 2 | 38 | 0 | 2
+ bin | 1.50 to 2.00 | 11 | 18 | 0 | 11
+ bin | over 2.00 | 2 | 14 | 0 | 2
+ bin | marks cannot say | 6 | 16 | 0 | 6
+ bin | ratio from the window's marks | sure wrong | sure right | wrong from the grid | wrong from the estimator
+ bin | under 0.67 | 11 | 55 | 9 | 2
+ bin | 0.67 to 0.80 | 4 | 43 | 0 | 4
+ bin | 0.80 to 1.25 | 28 | 263 | 0 | 28
+ bin | 1.25 to 1.50 | 7 | 1 | 0 | 7
+ bin | 1.50 to 2.00 | 1 | 1 | 0 | 1
+ bin | over 2.00 | 0 | 0 | 0 | 0
+ bin | marks cannot say | 0 | 0 | 0 | 0
+ total | 51 sure wrong, 363 sure right | sources of the wrong: 9 grid, 42 estimator, 5 under held gaps
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.6629 Minutes
+RC=0 WALL=101s

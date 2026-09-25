@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 441 - keep the fix, then fix the speed it was hiding
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T19:50:20-04:00
-NOTE: G1 kept on R78 with R82 coverage; committing, next the speed trace over the 51 left
+UPDATED: 2026-09-25T19:55:48-04:00
+NOTE: Trace says window marks over 1.25 of the path's unit: 8 wrong to 2 right; committing it, then building that one change
 
 ---
 
