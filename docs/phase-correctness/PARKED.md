@@ -676,3 +676,62 @@ Not blocking.
 **Note from work instruction 433, section 3:** for the record.
 
 Not blocking. For the record.
+
+## P48 - 7.4 closes partial
+
+**Written by unit 433, 2026-09-25, task 3.** Three consecutive 7.4 units kept no change (430, 432,
+433), so the trace is written here and 7.4 is recorded as closed partial on step 7's line in
+`PHASE_STATUS.md`. It is not ticked. The fault stands: on the spliced 7.052 stream the mixdown
+follows the tracker from 600 to 525 Hz at 30.54 s while the sender stands at 625, and the opening
+reads a run of E and T.
+
+**The three units.**
+- **Unit 430, `5b6b704c`.** A move of more than 25 Hz waits for a later survey read confirming
+  keying there. Built and taken back out. It failed 3.2's second and fourth tests on one recording:
+  `cw-2026-08-22-032113` 47 at or above the span bar to 44 against its keyed floor of 47, outside
+  its scored stretch, so R73 does not reach it. Test 1 passed, 165 to 149 over 565. The opening
+  read `EANQNID EAN■IK`, 12 named.
+- **Unit 430, `ec76051e`, the narrower variant.** As `5b6b704c`, but a move the read just before
+  confirmed is followed at once. Built and taken back out, failing the same two tests on the same
+  row: 032113 47 to 44, elements 102 to 100. Test 1 passed, 165 to 153. The hold before 032113's
+  650 Hz move spanned two reads, so the read just before carried no keyed verdict.
+- **Unit 432, P39.** A move is followed once any read since the mix was last set confirmed keying
+  within 25 Hz of it. Never built: its replay gate answered yes, yes, no. The third clause, no other
+  difference from `5b6b704c`, failed on `031905`, where P39 follows the tracker to 300 Hz at 13.04
+  and 26.54 s and `5b6b704c` held 500 (P46).
+- **Unit 433, the head-to-head contrast.** A move of more than 25 Hz is followed only when
+  `CwProbabilisticDecoder.Envelope` at 45 Hz over the last 3.0 s keys harder at the target than at
+  the mix, 90th over 10th percentile of the per-hop magnitudes in dB. Never built: its replay gate
+  answered yes on 032113 and no on the opening.
+  - 032113: `contrast read | 26.54 | 650.0 | 28.75 | 600.0 | 24.49 | target | at the move`, followed
+    at 26.54 as at entry.
+  - The opening: `contrast read | 30.54 | 525.0 | 15.02 | 600.0 | 12.69 | target | at the move`,
+    followed at 30.54 as at entry. Beside it, deciding nothing: the sender's 625.0 Hz at 13.67 dB
+    and 850.0 Hz at 14.39 dB. Over the 3.0 s ending at 30.54, the envelope keys harder at 525 than
+    at the sender's own pitch. That window starts at 27.54 s, inside `003901`'s tail, before the
+    splice at 30.0 s.
+  - `031905`, printed and not gated: 13.04's move to 300 followed at once, the move back to 500 at
+    18.04 held until 25.04, and 26.54's move to 300 held until 29.04.
+
+**What the four rules measured together.** A survey confirmation cannot tell the opening's wrong
+move from 032113's and 031905's right ones (unit 432). On the opening's audio, the decoder's own
+envelope ranks the wrong pitch above the sender too (unit 433). Neither question, asked of the
+mix's follow alone, separates the cases on record.
+
+**The opening at entry, beside the cold group.** On the spliced stream from 30 to 46.2 s it reads
+`UIEH EE E E T I NIEEE E E ET N ■IK`, 22 named. `003919` cold reads
+`EITEETNXNIK EANQNID EANQNIK`, 25 named.
+
+**032113 at exit:** 47 named, 47 at or above the span bar against a floor of 47, 102 elements.
+
+**The numbers 7.4 leaves standing.**
+- 165 edits over 565 characters on all keyed recordings, against inferred keys.
+- 17:37: 19 edits over its 25-character scored region.
+- 17 added letters on the keyed recordings, 8 of them single-element.
+- Captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
+
+**What would reopen it.** A question about the tracker's choice at 30.54 s, which HM-DEC-095 and
+HM-DEC-127 leave with the tracker and so with the owner, or a keyed opening. Neither is this unit's
+to make.
+
+Not blocking.
