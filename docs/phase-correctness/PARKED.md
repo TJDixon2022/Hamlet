@@ -878,3 +878,54 @@ trace. Built at `63ce84bf` and taken back out in the next commit.
   not lift the unit: 17.5 to 40 ms from 34.5 to 44.5 s. So the gain cannot be credited to the cut
   alone, apart from the tracker's move, which R76 holds. Across the corpus the same cut costs 16
   capture rows, 5 floors and `VA3VRR`, so as built it is not a fix (HM-DEC-091).
+
+**Unit 439 (work instruction 439), measured and not kept.** 7.4 stays unticked. In
+`CwUnitEstimator.Measure` only, a key-up run of at most `1200 / FastestWpm / 2` ms (15 ms, 3
+hops) with a kept mark on each side was joined, mark, dip and mark, into one mark of their summed
+length. Key-up runs at the envelope's ends and key-down runs under `ShortestRunHops` were handled
+as at entry; `Runs`, `Elements`, `Otsu`, `HysteresisDb`, the clustering, `MeasureGaps` and
+`MeasureCharacterGap` were untouched. A key-down run under `ShortestRunHops` beside a dip was taken
+as no mark, so no side a dip could be joined to (the session's reading of "handled exactly as at
+entry"); the trace counted 0 dips left for that reason. Built at `3dd447eb` and taken back out in
+the next commit.
+- **The trace** (`WhatTheOpeningHeardTests.WhereTheDipsAreBridged`). The entry column reproduced
+  the stream on every read: 0 units and 0 settlings differed. From 27 to 46.2 s the bridge joined
+  625 dips on 30 of 39 reads (58 of 1 hop, 389 of 2, 178 of 3), and the unit moved on 26 reads:
+  entry 17.5 to 85 ms, median 30; bridged 25 to 85 ms, median 40. From 34.5 to 44.5 s the entry's
+  unit was 17.5 to 35 ms and the bridged unit 25 to 50 ms, under 40 ms on 14 of 21 reads. It
+  settled differently on 5 of 33 reads from 30 to 46.2 s, so the stop did not hold and the change
+  was built. Of 464 marks under 40 ms at entry on those reads, the bridge joined 220. At 525 Hz
+  (34.5 to 35.5 s) the bridged unit reached 45 to 50 ms. At 625 Hz from 36.0 to 41.0 s it stayed
+  at 25 to 32.5 ms: the gaps between the pieces there are longer than 15 ms. The locked stretch
+  bridged no dip at all, 55 ms on all 33 reads both ways. Over the 52 recordings the bridge joined
+  a dip on 1441 of 2860 reads and moved the unit on 848. One bridged `Measure`, replayed in the
+  test, cost 0.049 ms against 0.042 ms at entry and a 500 ms read cadence.
+- **3.2's four tests.**
+  1. Passes: 165 to 151 edits over 565. 17:37 stayed at 19 over 25. Added letters went from 17
+     to 16, and single-element ones from 8 to 6.
+  2. Fails on 5 of 13 floors: `134712` 11 to 8, `031838` 40 to 24, `032129` 65 to 60, `003758` 43
+     to 39 and `032113` 47 to 45. R73 was not examined; `031838` alone loses 16.
+  3. The three readings hold: `013347` `VA3VRR` and `012403` `DE KD0UN KD0UN K` are unchanged, and
+     `003758` moves from `EETMP/4 QNIK` onto exactly its adjudicated `AA4MP/4 QNIK`. But the
+     adjudicated floor, green at entry, fails 1 of 13: `032012` reads `AF 117.1. LINKS TO
+     ARTICLESOR OTHER WEBSITE S MENTI` and loses its anchor `R OTHER WEBSITES MENTI`.
+  4. Fails: the captures test fails 14 of 51 rows, and 15 rows fall on characters or elements:
+     `134712` 11 to 8, `003758` 43 to 39, `031838` 40 to 24, `032113` 47 to 45, `032129` 65 to 60,
+     `001952` 46 to 44, `012823` 23 to 19, `012922` 43 to 36, `013520` 55 to 54, `013637` 60 to 59,
+     `021410` 36 to 35, `021629` 27 to 23 and `003919` 25 to 24; elements alone on `031905` 108 to
+     103 and `032050` 105 to 104. 6 rows gain.
+  - Two tests failed, so the 10 ms variant was not built.
+  - `ItRecoversASpeedItWasNeverTold` stayed green with every figure as at entry. The plateau red
+    was unchanged at 165, 130, 118, 117 and 116 marks.
+- **The opening under the change.** The tracker took the same path as at entry: 525 Hz from
+  30.8 s, 625 Hz by 39.8 s, 575 Hz at 46.8 s. The stream from 30 to 46.2 s went from 22 named,
+  `UIEH EE E E T I NIEEE E E ET N ■IK`, to 13 named, `■ EE E E T I ■E E ET N ■IK`. The
+  estimator set the speed on every character from 30.8 s, at 23 to 40 WPM, against 22 WPM from the
+  sender. `003901` cold went from 9 named, `EII E T NHHK`, to 10, `I A TE E T NHHK`. `003919` cold
+  went from 25 named, `EITEETNXNIK EANQNID EANQNIK`, to 24, `E ANETNXNIK EANQNID EANQNIK`.
+- **What this settles.** Short dips do split the sender's marks in the opening, and joining them
+  lifts the short gap heap from 10 to 15 ms to 30 to 45 ms. But once the mix stands at 625 Hz the
+  short mark heap stays at 20 to 45 ms. Those marks are not split by dips of 15 ms or less. The
+  unit reaches the sender's 55 ms on no read from 34.5 to 44.5 s. The opening's text moved, but to
+  fewer named characters. Across the corpus the same rule costs 5 floors, the `032012` anchor and
+  15 capture rows, so it is not a fix (HM-DEC-091).

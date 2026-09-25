@@ -41,9 +41,7 @@ public readonly record struct CwUnitReading(
 /// milliseconds is pulled by whichever end is longer.
 /// </para>
 /// <para>**THE ONE NUMBER HERE NOT MEASURED FROM THE AUDIO IS THE HYSTERESIS
-/// DEPTH.** Everything else is a percentile or a centroid of what arrived, except
-/// <c>BridgeMilliseconds</c>, which is not measured either: it is read off the
-/// search's top speed, not tuned, and does not move with the sender's.
+/// DEPTH.** Everything else is a percentile or a centroid of what arrived.
 /// </para>
 /// </remarks>
 public static class CwUnitEstimator
@@ -71,28 +69,6 @@ public static class CwUnitEstimator
     /// <summary>The shortest run, in hops, that is taken as an element at all.</summary>
     private const int ShortestRunHops = 2;
 
-    /// <summary>
-    /// The longest key-up run <see cref="Measure"/> joins into the marks either
-    /// side of it, in milliseconds: half the dit at the search's top speed.
-    /// </summary>
-    /// <remarks>
-    /// <para>**A DIP SHORTER THAN ANY SENDER'S GAP IS INSIDE A MARK, NOT BETWEEN
-    /// TWO** (work instruction 439). On the 2026-09-24 session's opening the short
-    /// mark heap sat at 19 to 34 milliseconds and the short gap heap at 10 to 15,
-    /// against the sender's 55 (unit 436): the trigger was cutting the sender's
-    /// marks into pieces. `Runs` dropped a key-up run under `ShortestRunHops`
-    /// from the lists but still flipped on it, so the mark either side of it was
-    /// recorded as two.</para>
-    /// <para>**NO SENDER THE SEARCH COVERS KEYS A GAP THIS SHORT.** At
-    /// <see cref="CwProbabilisticDecoder.FastestWpm"/> the dit, and so the
-    /// shortest real gap, is 1200 / 40 = 30 milliseconds; half of it is 15. This
-    /// is not the minimum run length the hysteresis remark rules out: that is a
-    /// constant that has to move with the sender's speed. **This one is tied to
-    /// the search's top speed and does not move with the sender's**; raising
-    /// <see cref="CwProbabilisticDecoder.FastestWpm"/> shrinks it.</para>
-    /// </remarks>
-    private const double BridgeMilliseconds = 1200.0 / CwProbabilisticDecoder.FastestWpm / 2;
-
     /// <summary>Measure the sender's timing from an envelope.</summary>
     /// <param name="envelope">Envelope magnitudes, one every hop.</param>
     /// <param name="hopMilliseconds">How long one hop lasts.</param>
@@ -110,14 +86,7 @@ public static class CwUnitEstimator
             return CwUnitReading.None;
         }
 
-        var db = new double[envelope.Count];
-
-        for (var i = 0; i < envelope.Count; i++)
-        {
-            db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
-        }
-
-        var (marks, gaps) = BridgedRuns(db, Otsu(db), hysteresisDb, hopMilliseconds);
+        var (marks, gaps) = Elements(envelope, hopMilliseconds, hysteresisDb);
 
         if (marks.Count < 8 || gaps.Count < 8)
         {
@@ -547,70 +516,6 @@ public static class CwUnitEstimator
 
             keyDown = !keyDown;
             runStart = i;
-        }
-
-        return (marks, gaps);
-    }
-
-    /// <summary>
-    /// Mark and gap lengths from the same two-level trigger as `Runs`, with a
-    /// key-up run of at most <see cref="BridgeMilliseconds"/> between two marks
-    /// joined into one mark.
-    /// </summary>
-    /// <remarks>
-    /// **ONLY A DIP WITH A MARK ON EACH SIDE IS JOINED**, and a mark is a key-down
-    /// run `Runs` would keep. The joined mark's length is the two marks and the dip
-    /// together. A key-up run at either end of the envelope, and a key-down run
-    /// under `ShortestRunHops`, are handled exactly as `Runs` handles them.
-    /// </remarks>
-    private static (List<double> Marks, List<double> Gaps) BridgedRuns(
-        double[] db, double cut, double hysteresisDb, double hopMilliseconds)
-    {
-        var on = cut + hysteresisDb;
-        var off = cut - hysteresisDb;
-        var runs = new List<(int Hops, bool KeyDown)>();
-        var keyDown = db[0] > on;
-        var runStart = 0;
-
-        for (var i = 1; i < db.Length; i++)
-        {
-            var changed = keyDown ? db[i] < off : db[i] > on;
-
-            if (!changed)
-            {
-                continue;
-            }
-
-            runs.Add((i - runStart, keyDown));
-            keyDown = !keyDown;
-            runStart = i;
-        }
-
-        var bridgeHops = (int)Math.Floor((BridgeMilliseconds / hopMilliseconds) + 1e-9);
-        var marks = new List<double>();
-        var gaps = new List<double>();
-
-        for (var k = 0; k < runs.Count; k++)
-        {
-            var (hops, isMark) = runs[k];
-
-            if (hops < ShortestRunHops)
-            {
-                continue;
-            }
-
-            if (isMark)
-            {
-                while (k + 2 < runs.Count
-                    && runs[k + 1].Hops <= bridgeHops
-                    && runs[k + 2].Hops >= ShortestRunHops)
-                {
-                    hops += runs[k + 1].Hops + runs[k + 2].Hops;
-                    k += 2;
-                }
-            }
-
-            (isMark ? marks : gaps).Add(hops * hopMilliseconds);
         }
 
         return (marks, gaps);
