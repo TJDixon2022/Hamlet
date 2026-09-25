@@ -1,0 +1,9 @@
+4:STEP: 0 | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
+5:STEP: 1 | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
+6:STEP: 2 | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
+7:STEP: 3 | The junk between words goes - MET-INVENTED driven toward HM-REQ-011's zero, from the 13 added characters unit 439 measured.
+8:STEP: 4 | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
+9:STEP: 5 | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
+10:STEP: 6 | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
+11:STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
+12:STEP: 8 | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
