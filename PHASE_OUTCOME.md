@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 430 - STEP 7
+
+STEP: 7
+APPROACH: trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+MOVE: continue
+WHY: Unit 429 ticked 7.3 and named CwDecoder.cs 617 to 621, where the mix left the sender a second before the speed collapsed. 7.4 is the change against that line, untried and with its instrument already in the tree, while 3.6 has five span and feature routes measured with none separating and a sixth would be a loop.
+STATE: partial
+DECIDED: author's, overrulable - unit 429's items 1 and 2 taken as decisions, not rulings: the mixdown pitch changes first, and the opening is reported cold and on the spliced stream 0 to 46.2 s; for 7.4, 3.2's first test reads does not rise, since no key scores the opening; 7.4 ticks only on a kept change; 3.4's count is not moved by a step 7 unit; items 3 and 4 parked as P37 and P38; one narrower variant allowed; per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ADVANCES: step 7 criterion 4
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.116 to 1.13.117. PHASE_STATUS.md names unit 430 and CURRENT_STEP 7; the launcher had written CURRENT_STEP 3 there. HEAD at entry 003f2c98. PHASE_OUTCOME.md, PHASE_STATUS.md and RUN_LEDGER.md were modified and uncommitted at entry by the launcher (the UNIT 2 - STEP 7 block, the heartbeat, the ledger row) and are committed with this record as they stood. Unit 429's section 4 items 3 and 4 parked in docs/phase-correctness/PARKED.md as P37 and P38 with 429's proposed rulings. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 375 s; APP carry-forward 277 of 278 in 165 s, the one loss TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing on You've caused dispatcher loop, the type 4 of 4 alone; captures 51 of 51 in 120 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; WhatTheStrayLettersRestOnTests 2 of 2: 892 named on the 23 keyed recordings, 353 right, 56 wrong, 17 added (8 single-element); WhatTheOpeningHeardTests 4 of 4 in 141 s. Keyed, baseline, adjudicated, captures and strays output identical to unit 429's but for timing lines. THE OPENING'S NAMED CHARACTERS AT ENTRY, a named character being any settled character but a space or the placeholder: 003901 cold, whole 30 s file, 9 named, EII E T NHHK; 003919 cold, whole 30 s file, 25 named, EITEETNXNIK EANQNID EANQNIK; the spliced stream 0 to 46.2 s, 31 named and 1 placeholder, EII E T NHHK then UIEH EE E E T I NIEEE E E ET N (placeholder) IK; the live sidecars beside them, 003901 whole 25 named, E ET E E E E E E E E E E A TE E T N QNIK EE, and 003919's addition 18 named, EESIH S E E TEIE E RIEEE. THE NUMBERS TO HOLD: 165 over 565, 17 added, captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
+
 ## UNIT 429 - STEP 7
 
 STEP: 7
@@ -659,3 +672,20 @@ STATE_WHY: Criteria 3.1, 3.2, 3.3, 3.5 and 3.7 are ticked, and the report quotes
 ADVANCED: no
 ATTEMPT: 3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | no | executed | trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
 REASON: 3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 2 - STEP 7
+
+STEP: 7
+APPROACH: trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, and its four parked items are about the decoder's mixdown pitch, which bench to judge on, a parked second cause and the wording of diagnostic counters, so none touches keying or transmit, money or what the product promises the operator.
+MOVE: work around
+WHY: Criterion 3.6 has five span and feature routes measured with none separating added from right single elements, and unit 428 did not advance, so a sixth would be a loop and a second non-advance in a row; 7.3 is an untried, dependency-free trace on recordings in the tree, and its litter is the same stray E and T 3.6 chases, seen against a locked stretch from the same sender.
+DECIDED: author's, overrulable - routing from 3.6 to 7.3 rather than 6.5 (HM-OPEN-087) or 7.8 (P27, the owner's); 3.4 is left for the next step 3 unit, since two consecutive step 3 units have kept nothing and the criterion asks three; unit 428's items 1 and 2 parked as P35 and P36; which locked recording is compared, how the overlaps are spliced, and the per-type timeouts are the unit's, reported
+LICENCE: PHASE_PLAN.md R68, R64, R65, R72, section 6 and criterion 7.3; ARBITER.md section 4; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+COST: 6.472469199999999
+ACCOMPLISHED: the project knows, from the decoder's own figures, why the first minutes on 7.052 read E ET E E before the QSO came through clean, and which line a repair has to change
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: 7.3 is met, but 7.1, 7.2, 7.4, 7.6 and 7.8 are still open, so step 7 is not done.
+ADVANCED: yes
+ATTEMPT: 7.3 | unit 2 launched 2026-09-25T03:52:47.073Z | yes | executed | trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing

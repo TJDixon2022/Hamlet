@@ -281,3 +281,4 @@ the owner reads instead of watching.
 | phase | 2026-09-24T22:34 | 2026-09-24T22:34 | ending | 0 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
 | 1 | 2026-09-24T22:58 | 2026-09-24T23:48 | complete | 3.707350199999999 | ran unattended, 98 turns, 8 denied call(s) worked around, report valid |
 | 1 | 2026-09-24T23:49 | 2026-09-24T23:49 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |
+| 2 | 2026-09-24T23:52 | 2026-09-25T00:52 | complete | 6.472469199999999 | ran unattended, 138 turns, 13 denied call(s) worked around, report valid |

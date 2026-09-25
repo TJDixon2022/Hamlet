@@ -464,3 +464,25 @@ Not blocking.
 **2. Whether 3.6 is reachable on the span at all.** Proposed ruling: with raw span, per-hop span (units 421 and 425), span over neighbors, and span per mark over neighbors all traced and none separating the 8 added single elements from the 62 right ones, the next 3.6 unit traces something other than a span figure, or 3.6 waits for item 1's recording. Reasoning: four figures measured on one corpus all overlap. Rejected: lowering a floor to admit a relative bar, which R71 and R73 forbid outside key-aligned added letters.
 
 Not blocking.
+
+## P37 - the held-gap litter on 004535
+
+**Raised by unit 429, 2026-09-25, section 4 item 3; parked by unit 430 task 0.** Verbatim:
+
+**3. The held-gap litter on 004535.**
+- **Proposed ruling:** parked as a second, separate cause. It is a trace for a later step 3 or step 7 unit, not 7.4's.
+- **Reasoning:** held gaps of 12/345/306 ms, with a word gap under the character gap, arrive with the run of `E`, and the cold decode of the same audio holds 48/238/443. One reading.
+- **Rejected:** folding it into 7.4, which would put two changes against one criterion.
+
+Not blocking.
+
+## P38 - the sidecar's counters
+
+**Raised by unit 429, 2026-09-25, section 4 item 4; parked by unit 430 task 0.** Verbatim:
+
+**4. The sidecar's counters.** For the record.
+- **Proposed ruling:** a later unit checks what `inThis`, `characters` and `elements` count and words them to match.
+- **Reasoning:** 003901 says 92 characters and 223 elements "since the transcript was cleared", beside a text of 27 named characters. The figures fit a count since the decoder started, 114 s earlier.
+- **Rejected:** repairing it here; section 10 forbids it and it touches nothing 7.3 or 7.4 depends on.
+
+Not blocking.

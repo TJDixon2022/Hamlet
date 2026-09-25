@@ -1,0 +1,7 @@
+unit430 task 0: the record - PHASE_OUTCOME.md UNIT 430 - STEP 7 from the decision block with the entry round; PHASE_STATUS.md unit 430, CURRENT_STEP 7; PARKED.md P37 and P38, unit 429's section 4 items 3 and 4 verbatim with their proposed rulings; version 1.13.116 to 1.13.117
+
+The launcher's uncommitted writes to PHASE_OUTCOME.md, PHASE_STATUS.md and RUN_LEDGER.md are committed here as they stood, beside this record.
+
+Entry round, one type per invocation: build 0 errors; engine carry-forward 178 of 178 in 375 s; app carry-forward 277 of 278, the one loss TheFavoritesAreChipsTests on the dispatcher loop, 4 of 4 alone; captures 51 of 51 in 120 s; adjudicated 13 of 13; keyed floors 13 of 13; all keyed 165 edits over 565; 17 added letters, 8 single-element; WhatTheOpeningHeardTests 4 of 4 in 141 s. The opening's named characters: 003901 cold 9, 003919 cold 25, the spliced stream 0 to 46.2 s 31 - the numbers to hold.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
