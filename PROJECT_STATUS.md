@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 3
-WORK_INSTRUCTION: 429 - what the decoder was doing while it read E ET E E
+TASK: TASK 1 of 3
+WORK_INSTRUCTION: 430 - the mix that walked off the sender
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T01:16:25-04:00
-NOTE: Entry round: floors and totals run; now WhatTheOpeningHeardTests, the opening's text
+UPDATED: 2026-09-25T01:22:33-04:00
+NOTE: Task 1: running WhyTheMixMoved alone, the survey reads from stream 28 to 38 s, the locked stretch warm and cold
 
 ---
 

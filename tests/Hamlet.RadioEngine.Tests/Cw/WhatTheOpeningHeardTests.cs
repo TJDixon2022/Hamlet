@@ -590,6 +590,235 @@ public sealed class WhatTheOpeningHeardTests
         }
     }
 
+    private static readonly FieldInfo FineHzField = TrackerField("_fineHz");
+    private static readonly FieldInfo ReportedField = TrackerField("_reportedHz");
+    private static readonly FieldInfo HeldSwitchField = TrackerField("_heldSwitchHz");
+    private static readonly FieldInfo LastKeyedField = TrackerField("_lastKeyedHz");
+    private static readonly FieldInfo PreviousKeyedField = TrackerField("_previousKeyedHz");
+    private static readonly FieldInfo ReadingDbField = TrackerField("_readingDb");
+    private static readonly FieldInfo HopsSinceSurveyField = TrackerField("_hopsSinceSurvey");
+    private static readonly FieldInfo SurveyField = TrackerField("_survey");
+
+    private static readonly FieldInfo LastMeasuredField =
+        typeof(CwDecoder).GetField("_lastMeasuredToneHz", BindingFlags.NonPublic | BindingFlags.Instance)
+        ?? throw new InvalidOperationException("CwDecoder has no field _lastMeasuredToneHz");
+
+    private static FieldInfo TrackerField(string name)
+        => typeof(CwToneTracker).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)
+           ?? throw new InvalidOperationException($"CwToneTracker has no field {name}");
+
+    private static double TrackerConstant(string name)
+        => Convert.ToDouble(
+            (typeof(CwToneTracker).GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
+             ?? throw new InvalidOperationException($"CwToneTracker has no constant {name}")).GetValue(null),
+            Invariant);
+
+    /// <summary>The tracker's and the decoder's pitch state at one instant, read and never written.</summary>
+    private sealed record PitchState(
+        double CenterHz,
+        double ReportedHz,
+        double HeldSwitchHz,
+        double LastKeyedHz,
+        double PreviousKeyedHz,
+        double ReadingDb,
+        bool MidCharacter,
+        bool Measured,
+        double LastMeasuredHz,
+        double MixHz,
+        int Retunes,
+        int StationChanges);
+
+    private static PitchState PitchOf(CwDecoder decoder)
+    {
+        var t = decoder.Tracker;
+        var fine = (double[])FineHzField.GetValue(t)!;
+
+        return new PitchState(
+            fine[fine.Length / 2],
+            (double)ReportedField.GetValue(t)!,
+            (double)HeldSwitchField.GetValue(t)!,
+            (double)LastKeyedField.GetValue(t)!,
+            (double)PreviousKeyedField.GetValue(t)!,
+            (double)ReadingDbField.GetValue(t)!,
+            t.MidCharacter,
+            t.HasMeasuredPitch,
+            (double)LastMeasuredField.GetValue(decoder)!,
+            decoder.Stream.ToneHz,
+            t.Retunes,
+            t.StationChanges);
+    }
+
+    /// <summary>
+    /// Which branch of `CwToneTracker.ReadSurvey` acted on one survey, named from
+    /// the state before it and the coarse verdict it read, in the order the
+    /// method tests them.
+    /// </summary>
+    private static string RuleOf(PitchState before, PitchState after, KeyingCandidate? keyed)
+    {
+        var reach = TrackerConstant("FineReachHz");
+        var confirm = TrackerConstant("ConfirmWithinHz");
+        var rejection = TrackerConstant("FilterRejectionDb");
+        var center = before.CenterHz;
+        var said = new List<string>();
+
+        if (!double.IsNaN(before.HeldSwitchHz) && !before.MidCharacter)
+        {
+            var backHere = keyed is { } k
+                && Math.Abs(k.ToneHz - center) <= confirm
+                && Math.Abs(k.ToneHz - before.HeldSwitchHz) > confirm;
+
+            said.Add(backHere
+                ? string.Create(Invariant, $"the held move to {before.HeldSwitchHz:0.0} dropped, keying back where it listens (CwToneTracker.cs:966-977)")
+                : string.Create(Invariant, $"the held move to {before.HeldSwitchHz:0.0} made (CwToneTracker.cs:966-975, Switch)"));
+
+            if (!backHere)
+            {
+                center = before.HeldSwitchHz;
+            }
+        }
+
+        if (keyed is not { } found)
+        {
+            said.Add(after.CenterHz != center && double.IsNaN(before.LastKeyedHz)
+                ? string.Create(Invariant, $"nothing admitted; from cold the bank pointed at the loudest thing, {after.CenterHz:0.0} (CwToneTracker.cs:1014-1025)")
+                : "nothing admitted; the tracker stays (CwToneTracker.cs:988-1027)");
+        }
+        else if (double.IsNaN(before.PreviousKeyedHz) || Math.Abs(before.PreviousKeyedHz - found.ToneHz) > confirm)
+        {
+            said.Add(string.Create(Invariant, $"{found.ToneHz:0.0} admitted once, the survey before admitted {before.PreviousKeyedHz:0.0}; not confirmed, no move (CwToneTracker.cs:1044-1050, HM-DEC-095's twice)"));
+        }
+        else if (!double.IsNaN(before.ReadingDb)
+                 && !double.IsNaN(found.KeyedDb)
+                 && found.KeyedDb < before.ReadingDb - rejection
+                 && Math.Abs(found.ToneHz - center) > reach)
+        {
+            said.Add(string.Create(Invariant, $"{found.ToneHz:0.0} confirmed but {before.ReadingDb - found.KeyedDb:0.0} dB below the station read; refused (CwToneTracker.cs:1077-1088, HM-DEC-127)"));
+        }
+        else if (Math.Abs(found.ToneHz - center) > reach)
+        {
+            said.Add(before.MidCharacter
+                ? string.Create(Invariant, $"{found.ToneHz:0.0} confirmed outside the bank's reach of {center:0.0}; held until the character ends (CwToneTracker.cs:1097-1104)")
+                : string.Create(Invariant, $"{found.ToneHz:0.0} confirmed outside the bank's reach of {center:0.0}; Switch (CwToneTracker.cs:1107), the survey's choice by keying (HM-DEC-095)"));
+        }
+        else
+        {
+            said.Add(string.Create(Invariant, $"{found.ToneHz:0.0} confirmed inside the bank's reach of {center:0.0}; the fine survey's reading reported, {after.ReportedHz:0.0} (CwToneTracker.cs:1114-1128)"));
+        }
+
+        return string.Join("; then ", said);
+    }
+
+    /// <summary>
+    /// 7.4, work instruction 430 task 1: why the mix moved. For every survey the
+    /// tracker read inside a stretch, what it admitted bin by bin, which rule acted
+    /// on it, and what the decoder then mixed at.
+    /// </summary>
+    /// <param name="run">`stream` for the spliced session, or one recording decoded cold.</param>
+    /// <param name="from">Where the stretch starts on the run's clock, in seconds.</param>
+    /// <param name="to">Where it ends.</param>
+    /// <remarks>
+    /// <para>**A PRINTER. IT ASSERTS NOTHING, AND IT WRITES NOTHING.** Seven private
+    /// fields of <see cref="CwToneTracker"/> and one of <see cref="CwDecoder"/> are
+    /// read by reflection before and after every hop. The survey's own verdict is
+    /// asked again after the read with `CwToneSurvey.Analyze`, over the history the
+    /// tracker has just read and before anything more is observed, so it is the
+    /// answer the tracker acted on; like <see cref="CwToneTracker.CoarseCandidates"/>
+    /// it recomputes the band beside each bin and decides nothing.</para>
+    /// <para>**THE RULE IS NAMED FROM THE STATE, IN THE ORDER `ReadSurvey` TESTS IT**,
+    /// and each line carries the file and line it names.</para>
+    /// </remarks>
+    [Theory]
+    [InlineData("stream", 28.0, 38.0)]
+    [InlineData("stream", 90.0, 106.2)] // the locked stretch: 004108 13.8 to 30.0 s, warm
+    [InlineData("cw-2026-09-24-004108", 13.8, 30.0)] // the same stretch cold
+    [InlineData("cw-2026-09-24-003919", 11.8, 21.8)] // beyond the instruction's list: the opening's own audio cold, stream 28 to 38 s less 16.2
+    public void WhyTheMixMoved(string run, double from, double to)
+    {
+        float[] samples;
+        int rate;
+
+        if (run == "stream")
+        {
+            (samples, rate, _) = Splice(Session);
+        }
+        else
+        {
+            var audio = WavAudio.Read(Path.Combine(Folder, run + ".wav"));
+            samples = audio.Samples;
+            rate = audio.SampleRate;
+        }
+
+        var decoder = new CwDecoder(rate, 600);
+        var hop = decoder.Tracker.HopSamples;
+        var surveyEvery = (int)TrackerConstant("SurveyEveryHops");
+        var survey = (CwToneSurvey)SurveyField.GetValue(decoder.Tracker)!;
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"check | run {run}, {from:0.0} to {to:0.0} s; a survey read every {surveyEvery} hops of {hop} samples; FineReachHz {TrackerConstant("FineReachHz"):0}, ConfirmWithinHz {TrackerConstant("ConfirmWithinHz"):0}, FilterRejectionDb {TrackerConstant("FilterRejectionDb"):0}"));
+        _output.WriteLine("survey | s | rule | bank centre before -> after | reported before -> after | measured | _lastMeasuredToneHz | mix written at CwDecoder.cs:617 | mid-character before | held move before | survey before admitted | reading dB before | held wpm | retunes | station changes");
+        _output.WriteLine("admitted | s | Hz | dit ms | dah ms | ratio | separation | lift dB | marks | keyed dB | wpm | the survey's best");
+
+        var lastMix = double.NaN;
+
+        for (var at = 0L; at + hop <= samples.Length && at / (double)rate <= to; at += hop)
+        {
+            var seconds = (at + hop) / (double)rate;
+            var before = PitchOf(decoder);
+
+            decoder.Process(new AudioChunk(at, rate, samples.AsSpan((int)at, hop)));
+
+            var after = PitchOf(decoder);
+            var read = (int)HopsSinceSurveyField.GetValue(decoder.Tracker)! == 0;
+
+            if (seconds < from)
+            {
+                lastMix = after.MixHz;
+                continue;
+            }
+
+            if (read)
+            {
+                var verdict = survey.Analyze();
+                var admitted = decoder.Tracker.CoarseCandidates();
+
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"survey | {seconds:0.00} | {RuleOf(before, after, verdict.Keyed)} | {before.CenterHz:0.0} -> {after.CenterHz:0.0} | {before.ReportedHz:0.0} -> {after.ReportedHz:0.0} | {(after.Measured ? "yes" : "no")} | {after.LastMeasuredHz:0.0} | {after.MixHz:0.0} | {(before.MidCharacter ? "yes" : "no")} | {before.HeldSwitchHz:0.0} | {before.PreviousKeyedHz:0.0} | {before.ReadingDb:0.0} | {decoder.Reading.WordsPerMinute:0} | {after.Retunes} | {after.StationChanges}"));
+
+                foreach (var c in admitted)
+                {
+                    var best = verdict.Keyed is { } k && k.ToneHz == c.ToneHz;
+
+                    _output.WriteLine(string.Create(
+                        Invariant,
+                        $"admitted | {seconds:0.00} | {c.ToneHz:0.0} | {c.DitMilliseconds:0.0} | {c.DahMilliseconds:0.0} | {c.Ratio:0.00} | {c.Separation:0.00} | {c.LiftDb:0.0} | {c.Marks} | {c.KeyedDb:0.0} | {c.WordsPerMinute:0.0} | {(best ? "best" : "-")}"));
+                }
+
+                if (admitted.Count == 0)
+                {
+                    _output.WriteLine(string.Create(Invariant, $"admitted | {seconds:0.00} | none"));
+                }
+
+                if (verdict.Strongest is { } loud)
+                {
+                    _output.WriteLine(string.Create(
+                        Invariant,
+                        $"strongest | {seconds:0.00} | {loud.ToneHz:0.0} Hz, lift {loud.LiftDb:0.0} dB, present {loud.PresentFraction:0.00}; interference {(verdict.Interference is { } i ? string.Create(Invariant, $"{i.ToneHz:0.0} Hz, lift {i.LiftDb:0.0} dB") : "none")}"));
+                }
+            }
+
+            if (after.MixHz != lastMix)
+            {
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"mix moved | {seconds:0.00} | {lastMix:0.0} -> {after.MixHz:0.0} | on a survey read {(read ? "yes" : "no")} | tracker {decoder.Tracker.ToneHz:0.0}, measured {(after.Measured ? "yes" : "no")}, _lastMeasuredToneHz {after.LastMeasuredHz:0.0}"));
+            }
+
+            lastMix = after.MixHz;
+        }
+    }
+
     private static IReadOnlyList<Heard> InStretch(Traced traced, double from, double to)
         => traced.Settled
             .Where(h => h.Character.At.TotalSeconds >= from && h.Character.At.TotalSeconds < to)
