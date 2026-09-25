@@ -2618,6 +2618,367 @@ public sealed class WhatTheOpeningHeardTests
             $"cut stop | 34.5 to 44.5 s: {middle.Count} reads, local unit under 40 ms on {middle.Count(r => r.Local.UnitMs < 40)}, so it stays below 40 on every read: {(staysLow ? "yes" : "no")} | 30 to 46.2 s: {opening.Count} reads, {opening.Count(r => r.EntrySettles != r.LocalSettles)} settle differently, so the same on every read: {(sameText ? "yes" : "no")} | the stop {(staysLow || sameText ? "HOLDS, build nothing" : "does not hold, task 2 builds")}"));
     }
 
+    /// <summary>
+    /// Work instruction 439's bridge: half the dit at the search's top speed,
+    /// 15 ms at 40 WPM, in hops.
+    /// </summary>
+    private static readonly int BridgeHops =
+        (int)Math.Floor((1200.0 / CwProbabilisticDecoder.FastestWpm / 2 / CwProbabilisticDecoder.HopMilliseconds) + 1e-9);
+
+    /// <summary>What the bridge made of a window's runs.</summary>
+    /// <param name="Runs">The runs after joining, each joined mark one run from its first hop.</param>
+    /// <param name="Dips">The hop length of every key-up run the bridge joined across.</param>
+    /// <param name="JoinedFrom">For each run in <paramref name="Runs"/> by its first hop, the entry runs it was made of.</param>
+    /// <param name="Blocked">Dips short enough to bridge that were left, because a key-down run beside them was under `ShortestRunHops` and so no mark.</param>
+    internal sealed record Bridged(IReadOnlyList<Run> Runs, IReadOnlyList<int> Dips, IReadOnlyDictionary<int, int> JoinedFrom, int Blocked);
+
+    /// <summary>
+    /// The runs work instruction 439 fixes: a key-up run of at most
+    /// <see cref="BridgeHops"/> with a mark on each side is no gap, and the mark
+    /// before it, the dip and the mark after it become one mark whose length is
+    /// their sum. Everything else is as the trigger left it.
+    /// </summary>
+    /// <remarks>
+    /// **A MARK IS A KEY-DOWN RUN THE ENTRY KEEPS**, `ShortestRunHops` or more: a
+    /// shorter key-down run is handled exactly as at entry, dropped and splitting,
+    /// and is not a side a dip can be joined to.
+    /// </remarks>
+    private static Bridged Bridge(IReadOnlyList<Run> runs, int bridgeHops)
+    {
+        var joined = new List<Run>();
+        var dips = new List<int>();
+        var from = new Dictionary<int, int>();
+        var blocked = 0;
+
+        for (var k = 1; k + 1 < runs.Count; k++)
+        {
+            if (!runs[k].Mark && runs[k].Hops <= bridgeHops && runs[k - 1].Mark && runs[k + 1].Mark
+                && (runs[k - 1].Hops < ShortestRun || runs[k + 1].Hops < ShortestRun))
+            {
+                blocked++;
+            }
+        }
+
+        for (var k = 0; k < runs.Count; k++)
+        {
+            var run = runs[k];
+
+            if (!run.Mark || !run.Kept)
+            {
+                joined.Add(run);
+                continue;
+            }
+
+            var hops = run.Hops;
+            var parts = 1;
+
+            while (k + 2 < runs.Count && !runs[k + 1].Mark && runs[k + 1].Hops <= bridgeHops && runs[k + 2].Mark && runs[k + 2].Kept)
+            {
+                dips.Add(runs[k + 1].Hops);
+                hops += runs[k + 1].Hops + runs[k + 2].Hops;
+                parts += 2;
+                k += 2;
+            }
+
+            joined.Add(new Run(run.Start, hops, true));
+            from[run.Start] = parts;
+        }
+
+        return new Bridged(joined, dips, from, blocked);
+    }
+
+    /// <summary>One read, measured as at entry and with the bridge.</summary>
+    /// <param name="Seconds">Seconds on the audio clock.</param>
+    /// <param name="MixHz">The pitch the stream mixed at.</param>
+    /// <param name="Entry">The entry's runs, measured.</param>
+    /// <param name="Bridge">The bridged runs, measured.</param>
+    /// <param name="Dips">The hop length of every dip bridged.</param>
+    /// <param name="Blocked">Dips short enough to bridge, left because a side was a key-down run under `ShortestRunHops`.</param>
+    /// <param name="EntrySettles">What the stream itself settled on this read.</param>
+    /// <param name="EntryReplayed">What the replay says the entry settles, to check the replay against the stream.</param>
+    /// <param name="BridgeSettles">What the read would settle with the bridge's unit.</param>
+    /// <param name="EntryRuns">Every run the trigger made, kept only where the pieces are printed.</param>
+    /// <param name="BridgeRuns">The same runs after joining.</param>
+    /// <param name="WindowStart">The window's first hop on the audio clock.</param>
+    /// <param name="MeasureAgrees">Whether the entry's replayed unit equals `CwUnitEstimator.Measure`'s.</param>
+    internal sealed record BridgeRead(
+        double Seconds,
+        double MixHz,
+        Cut Entry,
+        Cut Bridge,
+        IReadOnlyList<int> Dips,
+        int Blocked,
+        string EntrySettles,
+        string EntryReplayed,
+        string BridgeSettles,
+        IReadOnlyList<Run> EntryRuns,
+        IReadOnlyList<Run> BridgeRuns,
+        long WindowStart,
+        bool MeasureAgrees);
+
+    /// <summary>
+    /// Drive the decoder a hop at a time and, on every read, measure its own
+    /// window as at entry and with the bridge, and follow each unit through the
+    /// stream's speed choice from the stream's state before that read.
+    /// </summary>
+    /// <param name="settle">False to skip the decode, where only the units are wanted.</param>
+    private static IReadOnlyList<BridgeRead> BridgeReplay(
+        float[] samples, int sampleRate, double toSeconds, Func<double, bool> keepRuns, bool settle = true)
+    {
+        var decoder = new CwDecoder(sampleRate, 600);
+        var stream = decoder.Stream;
+        var hop = decoder.Tracker.HopSamples;
+        var reads = new List<BridgeRead>();
+        var settled = new System.Text.StringBuilder();
+
+        stream.CharacterSettled += c => settled.Append(c.Text);
+
+        for (var at = 0L; at + hop <= samples.Length && at / (double)sampleRate <= toSeconds; at += hop)
+        {
+            var before = new StreamBefore(
+                (long)SettledThroughField.GetValue(stream)!,
+                (int)TroughRunField.GetValue(stream)!,
+                (int)TroughMissesField.GetValue(stream)!,
+                (bool)StructureField.GetValue(stream)!,
+                (CwUnitEstimator.CwGapLengths)HeldGapsField.GetValue(stream)!);
+
+            decoder.Process(new AudioChunk(at, sampleRate, samples.AsSpan((int)at, hop)));
+
+            if (stream.HopsSinceAnswer != 0
+                || stream.EnvelopeHops * CwProbabilisticDecoder.HopMilliseconds < CwProbabilisticStream.RefillSeconds * 1000.0)
+            {
+                continue;
+            }
+
+            var hopsSeen = (long)HopsSeenField.GetValue(stream)!;
+            var seconds = hopsSeen * CwProbabilisticDecoder.HopMilliseconds / 1000.0;
+            var window = ((double[])EnvelopeField.GetValue(stream)!).Take(stream.EnvelopeHops).ToArray();
+            var db = Decibels(window);
+            var cut = (double)OtsuMethod.Invoke(null, new object[] { db })!;
+            var entryRuns = RunsAt(db, Enumerable.Repeat(cut, db.Length).ToArray());
+            var bridged = Bridge(entryRuns, BridgeHops);
+            var entry = Measured(entryRuns);
+            var bridge = Measured(bridged.Runs);
+            var actual = CwUnitEstimator.Measure(window, CwProbabilisticDecoder.HopMilliseconds);
+            var entryHeld = (bool)StructureField.GetValue(stream)!;
+            var entryGaps = (CwUnitEstimator.CwGapLengths)HeldGapsField.GetValue(stream)!;
+
+            reads.Add(new BridgeRead(
+                seconds,
+                stream.ToneHz,
+                entry,
+                bridge,
+                bridged.Dips,
+                bridged.Blocked,
+                settled.ToString(),
+                settle ? WouldSettle(stream, window, before, entry, entry.Speed, entryHeld, entryGaps) : "",
+                settle ? WouldSettle(stream, window, before, bridge, entry.Speed, entryHeld, entryGaps) : "",
+                keepRuns(seconds) ? entryRuns : Array.Empty<Run>(),
+                keepRuns(seconds) ? bridged.Runs : Array.Empty<Run>(),
+                hopsSeen - window.Length,
+                Math.Abs(actual.UnitMilliseconds - entry.UnitMs) < 1e-9 && actual.Marks == (entry.UnitMs > 0 ? entry.Marks : actual.Marks)));
+            settled.Clear();
+        }
+
+        return reads;
+    }
+
+    /// <summary>
+    /// 7.4, work instruction 439 task 1: every read of the opening, of the locked
+    /// stretch and of the two recordings cold, measured as at entry and with a
+    /// key-up run no longer than half the dit at the search's top speed joined
+    /// into the marks either side of it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A PRINTER. IT ASSERTS NOTHING AND WRITES NOTHING.** The bridge is
+    /// the instruction's, fixed before this ran; nothing under `src` changes. The
+    /// entry column is checked against the stream twice: the replayed unit
+    /// against `CwUnitEstimator.Measure`, and the replayed settling against what
+    /// the stream settled.</para>
+    /// <para>The locked stretch is the stream's 90.0 to 106.2 s, `004108` 13.8 to
+    /// 30.0 s, read warm as 7.3 read it. The reach over all 52 recordings runs on
+    /// the stream row only.</para>
+    /// </remarks>
+    /// <param name="run">`stream` for the spliced session, or a recording cold.</param>
+    [Theory]
+    [InlineData("stream")]
+    [InlineData("cw-2026-09-24-003901")]
+    [InlineData("cw-2026-09-24-003919")]
+    public void WhereTheDipsAreBridged(string run)
+    {
+        float[] samples;
+        int rate;
+
+        if (run == "stream")
+        {
+            (samples, rate, _) = Splice(Session);
+        }
+        else
+        {
+            var audio = WavAudio.Read(Path.Combine(Folder, run + ".wav"));
+            samples = audio.Samples;
+            rate = audio.SampleRate;
+        }
+
+        var stretches = run == "stream"
+            ? new[] { ("opening", 27.0, 46.2), ("locked, 004108 13.8 to 30.0 s", 90.0, 106.2) }
+            : new[] { ("cold", 0.0, 60.0) };
+        var reads = BridgeReplay(samples, rate, stretches.Max(s => s.Item3), s => run == "stream" && s >= 34.5 && s <= 44.5);
+        var hopMs = CwProbabilisticDecoder.HopMilliseconds;
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"bridge check | run {run}; {reads.Count} reads; bridge 1200 / FastestWpm {CwProbabilisticDecoder.FastestWpm:0} / 2 = {1200.0 / CwProbabilisticDecoder.FastestWpm / 2:0.0} ms, {BridgeHops} hops of {hopMs:0.0} ms; ShortestRunHops {ShortestRun}; hysteresis {CwUnitEstimator.HysteresisDb:0.0} dB either side"));
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"bridge check | the entry's replayed unit against CwUnitEstimator.Measure: {reads.Count(r => !r.MeasureAgrees)} reads differ | the entry's replayed settling against the stream's: {reads.Count(r => r.EntryReplayed != r.EntrySettles)} reads differ"));
+
+        foreach (var (label, from, to) in stretches)
+        {
+            var inside = reads.Where(r => r.Seconds >= from && r.Seconds < to).ToList();
+
+            _output.WriteLine("");
+            _output.WriteLine(string.Create(Invariant, $"BRIDGE {label.ToUpperInvariant()} | {run} {from:0.0} to {to:0.0} s | {inside.Count} reads"));
+            _output.WriteLine($"bridge {label} | s | mix Hz | dips bridged | 1 hop | 2 hops | 3 hops | entry marks | entry short mark ms | entry short gap ms | entry unit ms | entry wpm | entry from | bridge marks | bridge short mark ms | bridge short gap ms | bridge unit ms | bridge wpm | bridge from | entry settles | bridge settles | same");
+
+            foreach (var r in inside)
+            {
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"bridge {label} | {r.Seconds:0.0} | {r.MixHz:0.0} | {r.Dips.Count} | {r.Dips.Count(d => d == 1)} | {r.Dips.Count(d => d == 2)} | {r.Dips.Count(d => d == 3)} | {r.Entry.Marks} | {r.Entry.ShortMarkMs:0.0} | {r.Entry.ShortGapMs:0.0} | {r.Entry.UnitMs:0.0} | {r.Entry.Wpm:0.0} | {(r.Entry.Speed is null ? "grid" : "estimator")} | {r.Bridge.Marks} | {r.Bridge.ShortMarkMs:0.0} | {r.Bridge.ShortGapMs:0.0} | {r.Bridge.UnitMs:0.0} | {r.Bridge.Wpm:0.0} | {(r.Bridge.Speed is null ? "grid" : "estimator")} | `{r.EntrySettles}` | `{r.BridgeSettles}` | {(r.EntrySettles == r.BridgeSettles ? "same" : "DIFFERS")}"));
+            }
+
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"bridge {label} summary | reads {inside.Count} | entry unit {Spread(inside.Select(r => r.Entry.UnitMs))} | bridge unit {Spread(inside.Select(r => r.Bridge.UnitMs))} | reads with a dip bridged {inside.Count(r => r.Dips.Count > 0)}, dips {inside.Sum(r => r.Dips.Count)} (1 hop {inside.Sum(r => r.Dips.Count(d => d == 1))}, 2 hops {inside.Sum(r => r.Dips.Count(d => d == 2))}, 3 hops {inside.Sum(r => r.Dips.Count(d => d == 3))}), left beside a key-down run under ShortestRunHops {inside.Sum(r => r.Blocked)} | bridge speed from the estimator {inside.Count(r => r.Bridge.Speed is not null)}, entry {inside.Count(r => r.Entry.Speed is not null)} | reads whose unit moves {inside.Count(r => Math.Abs(r.Entry.UnitMs - r.Bridge.UnitMs) > 1e-9)} | reads that settle differently {inside.Count(r => r.EntrySettles != r.BridgeSettles)}"));
+        }
+
+        if (run != "stream")
+        {
+            return;
+        }
+
+        // **THE PIECES.** Every mark under 40 ms the entry's trigger kept on the
+        // reads from 34.5 to 44.5 s, the key-up either side of it, and what the
+        // bridge made of it.
+        _output.WriteLine("");
+        _output.WriteLine("piece | read s | at s | length ms | gap before ms | gap after ms | joined | becomes ms | of runs");
+
+        var pieces = 0;
+        var joined = 0;
+
+        foreach (var r in reads.Where(r => r.Seconds >= 34.5 && r.Seconds <= 44.5))
+        {
+            var runs = r.EntryRuns;
+
+            for (var k = 0; k < runs.Count; k++)
+            {
+                var m = runs[k];
+
+                if (!m.Mark || !m.Kept || m.Hops * hopMs >= 40)
+                {
+                    continue;
+                }
+
+                var into = r.BridgeRuns.First(b => b.Mark && b.Start <= m.Start && b.End >= m.End);
+                var parts = Bridge(runs, BridgeHops).JoinedFrom[into.Start];
+                var gapBefore = k > 0 && !runs[k - 1].Mark ? runs[k - 1].Hops * hopMs : double.NaN;
+                var gapAfter = k + 1 < runs.Count && !runs[k + 1].Mark ? runs[k + 1].Hops * hopMs : double.NaN;
+                var isJoined = parts > 1;
+
+                pieces++;
+                joined += isJoined ? 1 : 0;
+
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"piece | {r.Seconds:0.0} | {(r.WindowStart + m.Start) * hopMs / 1000.0:0.000} | {m.Hops * hopMs:0} | {gapBefore:0} | {gapAfter:0} | {(isJoined ? "joined" : "not joined")} | {into.Hops * hopMs:0} | {parts}"));
+            }
+        }
+
+        _output.WriteLine(string.Create(Invariant, $"piece summary | {pieces} marks under 40 ms at entry over the reads 34.5 to 44.5 s | {joined} joined by the bridge"));
+
+        // **THE REACH.** Every capture and keyed recording once at entry: the reads
+        // on which the bridge joins a dip, and the reads on which it moves the unit.
+        // Nothing is decoded but the entry itself.
+        var names = TheCapturesThatDecodeKeepDecodingTests.Floors.Select(row => (string)row[0])
+            .Append(TheSeventeenThirtySevenCaptureTests.Name).Distinct().ToList();
+        var allReads = 0;
+        var allJoined = 0;
+        var allMoved = 0;
+
+        _output.WriteLine("");
+        _output.WriteLine("reach | recording | reads | reads with a dip bridged | dips | reads whose unit moves | reads whose speed source moves | entry unit median ms | bridge unit median ms");
+
+        foreach (var name in names)
+        {
+            var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+            var each = BridgeReplay(audio.Samples, audio.SampleRate, double.PositiveInfinity, _ => false, settle: false);
+            var withDip = each.Count(r => r.Dips.Count > 0);
+            var moved = each.Count(r => Math.Abs(r.Entry.UnitMs - r.Bridge.UnitMs) > 1e-9);
+
+            allReads += each.Count;
+            allJoined += withDip;
+            allMoved += moved;
+
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"reach | {name} | {each.Count} | {withDip} | {each.Sum(r => r.Dips.Count)} | {moved} | {each.Count(r => (r.Entry.Speed is null) != (r.Bridge.Speed is null))} | {Median(each.Select(r => r.Entry.UnitMs).Where(u => u > 0)):0.0} | {Median(each.Select(r => r.Bridge.UnitMs).Where(u => u > 0)):0.0}"));
+        }
+
+        _output.WriteLine(string.Create(Invariant, $"reach summary | {names.Count} recordings | {allReads} reads | {allJoined} with a dip bridged | {allMoved} whose unit moves"));
+
+        // **THE COST OF ONE BRIDGED MEASURE OVER A FULL WINDOW, ON THIS MACHINE**,
+        // beside the entry's, the first pass of each left out as the warm-up.
+        var full = CutFullWindow(samples, rate);
+        var entryTimes = new List<double>();
+        var bridgeTimes = new List<double>();
+        var clock = new System.Diagnostics.Stopwatch();
+
+        for (var pass = 0; pass < 21; pass++)
+        {
+            clock.Restart();
+            CwUnitEstimator.Measure(full, CwProbabilisticDecoder.HopMilliseconds);
+            clock.Stop();
+
+            if (pass > 0)
+            {
+                entryTimes.Add(clock.Elapsed.TotalMilliseconds);
+            }
+
+            clock.Restart();
+            var db = Decibels(full);
+            var cut = (double)OtsuMethod.Invoke(null, new object[] { db })!;
+            Measured(Bridge(RunsAt(db, Enumerable.Repeat(cut, db.Length).ToArray()), BridgeHops).Runs);
+            clock.Stop();
+
+            if (pass > 0)
+            {
+                bridgeTimes.Add(clock.Elapsed.TotalMilliseconds);
+            }
+        }
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"bridge cost | one full window, {full.Length} hops | entry ms over 20 passes | {Spread(entryTimes)} | bridge ms over 20 passes, replayed in the test | {Spread(bridgeTimes)} | the stream reads every {CwProbabilisticStream.ReadEverySeconds * 1000:0} ms"));
+
+        // **THE LOCKED STRETCH, SAID ONCE**: whether the bridge joined any dip there.
+        var locked = reads.Where(r => r.Seconds >= 90.0 && r.Seconds < 106.2).ToList();
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"bridge locked | 90.0 to 106.2 s: {locked.Count} reads, {locked.Count(r => r.Dips.Count > 0)} with a dip bridged, {locked.Sum(r => r.Dips.Count)} dips; unit entry {Spread(locked.Select(r => r.Entry.UnitMs))} | bridge {Spread(locked.Select(r => r.Bridge.UnitMs))}"));
+
+        // **THE ONE STOP, AS THE INSTRUCTION STATES IT.**
+        var middle = reads.Where(r => r.Seconds >= 34.5 && r.Seconds <= 44.5).ToList();
+        var opening = reads.Where(r => r.Seconds >= 30.0 && r.Seconds < 46.2).ToList();
+        var staysLow = middle.All(r => r.Bridge.UnitMs < 40);
+        var sameText = opening.All(r => r.EntrySettles == r.BridgeSettles);
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"bridge stop | 34.5 to 44.5 s: {middle.Count} reads, bridged unit under 40 ms on {middle.Count(r => r.Bridge.UnitMs < 40)}, so it stays below 40 on every read: {(staysLow ? "yes" : "no")} | 30 to 46.2 s: {opening.Count} reads, {opening.Count(r => r.EntrySettles != r.BridgeSettles)} settle differently, so the same on every read: {(sameText ? "yes" : "no")} | the stop {(staysLow || sameText ? "HOLDS, build nothing" : "does not hold, task 2 builds")}"));
+    }
+
     /// <summary>The stream's window the first time it holds a full 12 s, for timing.</summary>
     private static double[] CutFullWindow(float[] samples, int sampleRate)
     {

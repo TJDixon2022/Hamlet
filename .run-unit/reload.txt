@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-25T12:52:55-04:00  root C:\Source\HamLet
+measured 2026-09-25T13:27:54-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -7,8 +7,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0181.
-  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      PROJECT_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
@@ -21,10 +21,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 9db74ab2
+  HEAD   : d925a633
   uncommitted at the root : 3
-      M PHASE_OUTCOME.md
       M PHASE_STATUS.md
+      M PROJECT_STATUS.md
       M RUN_LEDGER.md
 
 ==============================================================
@@ -555,13 +555,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  14 lines, 2593 bytes
+  14 lines, 2596 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 438 - the unit's trigger is cut where the marks are
-  HEARTBEAT: 2026-09-25 12:52:52
+  WORK_INSTRUCTION: 439 - the marks are joined across gaps no sender makes
+  HEARTBEAT: 2026-09-25 13:27:51
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
@@ -572,7 +572,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set. 7.4 closed partial by unit 433, P48, after three units with no kept change (430, 432, 433); not ticked.
 
   --- PHASE_OUTCOME.md ---
-  916 lines, 191846 bytes
+  929 lines, 195892 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -584,6 +584,19 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
   STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
+  
+  ## UNIT 439 - STEP 7
+  
+  STEP: 7
+  APPROACH: bridge key-up dips too short to be keying in the unit estimator's run rule - in CwUnitEstimator.Measure only, a key-up run of at most half the dit at FastestWpm (15 ms, 3 hops, at 40 WPM) with a mark on each side is joined into one mark instead of splitting it, including the 1- and 2-hop dips Runs now drops but still splits on; cut level, hysteresis depth, clustering, MeasureGaps, stream, mixdown and tracker untouched; replayed offline on the opening first, then built once and judged under 3.2's four tests
+  MOVE: work around
+  WHY: PHASE_PLAN.md 7.4 needs a change against what 7.3 named, and the redirect requires 7.4. Unit 436 measured the opening's halved unit as marks in 19 to 34 ms pieces with 10 to 15 ms gaps, and the tree shows Runs drops a dip under 2 hops yet still splits the mark on it; the recorded routes moved the pitch, the speed carry, the clustering, the window's history and the cut level, and none changed what a gap too short for any searchable speed does to a mark. The loop test finds it in no entry; it is the least exhausted route that does not act through the tracker.
+  STATE: partial
+  DECIDED: author's, overrulable - the change and its bound, half the dit at CwProbabilisticDecoder.FastestWpm written as an expression so 7.1 moves it; its scope (Measure only, CwUnitEstimator.cs only, key-up runs between two marks only, Elements unchanged for MeasureGaps and MeasureCharacterGap). All fixed before the trace. The one stop is an offline replay in which the bridged unit stays below 40 ms on every read from 34.5 to 44.5 s, or settles the same characters as the entry on every read from 30 to 46.2 s. One narrower variant, a 10 ms bridge, built only on a single-row or single-test failure. ItRecoversASpeedItWasNeverTold going red takes the change out under HM-DEC-165. The plateau red is recorded at entry, after the build and at exit, and not repaired. The unit waits up to 120 minutes for any live earlier session and never kills it. Unit 438's section 4 item 3, holding 7.4 for 4.7, is not adopted because the redirect requires 7.4 and this route does not act through the tracker; logged, not ruled. Carried, not ruled: the launcher-overlap ruling, which is the owner's. Standing, not re-ruled: test 1 reads does not rise (unit 430's arbiter), and 7.4 ticks only on a kept change that moves the opening's text (unit 436's arbiter). No self-ruling authorizes work outside the tasks.
+  LICENCE: PHASE_PLAN.md criteria 7.3 and 7.4, R64, R65, R66, R71, R73, R75, R76 and section 6; PARKED.md P42 and P48 with unit 436's short-heap measurement, unit 437's halving on a clean window and unit 438's replay at the entry's pitch; unit 429's trace (003f2c98); ARBITER.md sections 4 and 6; HM-DEC-091; HM-DEC-120; HM-DEC-139; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ADVANCES: step 7 criterion 4
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.124 to 1.13.125. PHASE_STATUS.md names unit 439 and CURRENT_STEP 7; the launcher had left CURRENT_STEP 3 and WORK_INSTRUCTION 438 there. HEAD at entry 9db74ab2, unit 438's exit, plus the launcher's uncommitted root and .run-unit files; nothing else came in. At 12:58 no dotnet or testhost process and no unit435- to unit438- script was running, so nothing was waited for; one interactive claude.exe (PID 26364, started 2026-09-24 13:51) was live, ran no test and committed nothing, and is noted, not a chain. 7.4 is unticked, so this unit builds. Section 5 against the tree: Measure at CwUnitEstimator.cs 77 to 106 calls Elements once; Elements at 391 to 406 calls Runs(db, Otsu(db), ...); Runs at 491 to 526 records a run only at ShortestRunHops or more and flips keyDown either way; MeasureGaps (174) and MeasureCharacterGap (272) also call Elements; HysteresisDb 6.0, ShortestRunHops 2; CwProbabilisticDecoder.FastestWpm 40 at line 480, HopMilliseconds 5.0; CwProbabilisticStream.cs 428 is the only call to CwUnitEstimator.Measure in src. No mismatch.
   
   ## UNIT 438 - STEP 7
   
@@ -1511,17 +1524,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 882 bytes
+  19 lines, 677 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: COMPLETED
-  TASK: TASK 3 of 3
-  WORK_INSTRUCTION: 438 - the unit's trigger is cut where the marks are
-  BALL: tim
-  NEXT_PASTE: output.md -> Claude Web
+  STATE: EXECUTING
+  TASK: TASK 1 of 3
+  WORK_INSTRUCTION: 439 - the marks are joined across gaps no sender makes
+  BALL: code
+  NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-25T12:51:27-04:00
-  NOTE: Unit 438 complete and pushed: the local trigger cut read the opening at 24 WPM, 12 named EANQNID EAN(placeholder)IK, but cost 5 floors, VA3VRR and 16 capture rows, so it came back out; the gain came with the tracker never moving to 525; 7.4 not ticked; output.md written
+  UPDATED: 2026-09-25T13:27:40-04:00
+  NOTE: Trace: reading unit 438's WhereTheTriggerCuts replay to build the bridge printer
   
   ---
   
