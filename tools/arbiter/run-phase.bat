@@ -1672,6 +1672,45 @@ echo       ledger     : noted - %~1
 goto :eof
 
 rem ============================================================
+rem  088: HAS THE OWNER ANSWERED THIS STOP? PARKED.md is read for lines of the
+rem  form RESOLVED: <date> | <phrase from the stop's own why line> | <decision>.
+rem  The phrase is matched INSIDE the arbiter's WHY - .run-unit\why.txt, the
+rem  line as written - case-insensitive with whitespace collapsed, at least
+rem  three words long so a stray word cannot clear a stop. The first matching
+rem  row wins, and position never matters. The values come back stripped of
+rem  the characters cmd reads as structure, because his words go on to the
+rem  console and the ledger.
+:stopanswered
+set "AS_HIT=no"
+set "AS_DATE="
+set "AS_PHRASE="
+set "AS_DECISION="
+if not exist "%ROOT%\PARKED.md" goto :eof
+if not exist "%WORK%\why.txt" goto :eof
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$pf='%ROOT%\PARKED.md'; $wf='%WORK%\why.txt'; function N($s){ (([string]$s).ToLowerInvariant() -replace '\s+',' ').Trim() }; function S($s){ ([string]$s) -replace '[&|<>^%%]','' }; $why=N([IO.File]::ReadAllText($wf)); foreach($ln in (Get-Content -LiteralPath $pf -Encoding UTF8)){ $t=([string]$ln).TrimStart([char]0xFEFF); if($t -notmatch '^RESOLVED:\s*(.*)$'){ continue }; $parts=@($Matches[1] -split '\|'); if($parts.Count -lt 3){ continue }; $date=$parts[0].Trim(); $phrase=N($parts[1]); $dec=(($parts[2..($parts.Count-1)] -join '|')).Trim(); if(($phrase -split ' ').Count -lt 3){ continue }; if($why.Contains($phrase)){ 'AS_HIT=yes'; 'AS_DATE=' + (S $date); 'AS_PHRASE=' + (S $phrase); 'AS_DECISION=' + (S $dec); break } }"`) do set "%%A=%%B"
+goto :eof
+
+rem  088: IS THE STOP'S PREMISE STILL TRUE? Two shapes are read from the WHY,
+rem  and only those two: `unit N is executing` (or running, or was), tested
+rem  against the session lock at this root NOW - free or stale means nothing
+rem  is executing here, a live holder means something is, undetermined means
+rem  the check cannot tell; and `phase "name"` in quotes, tested against
+rem  PHASE_PLAN.md's first heading and PHASE_OUTCOME.md's PHASE: line. PR_TEST
+rem  is none where neither shape appears, unknown where a shape appears and
+rem  the evidence could not be read, true where every tested claim holds, and
+rem  false only where every tested claim is false - a true claim beside a
+rem  false one halts, erring toward the halt.
+:stoppremise
+set "PR_TEST=none"
+set "PR_CLAIM="
+set "PR_TRUTH="
+if not exist "%WORK%\why.txt" goto :eof
+call "%HERE%lock.bat" status "%ROOT%" >nul
+set "PR_LOCK=%ERRORLEVEL%"
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$wf='%WORK%\why.txt'; $lock='%PR_LOCK%'; $pl='%ROOT%\PHASE_PLAN.md'; $o='%ROOT%\PHASE_OUTCOME.md'; function N($s){ (([string]$s).ToLowerInvariant() -replace '\s+',' ').Trim() }; function S($s){ ([string]$s) -replace '[&|<>^%%]','' }; $why=[IO.File]::ReadAllText($wf); $claims=@(); $truths=@(); $verdicts=@(); $m=[regex]::Match($why, '(?i)\bunit\s+(\d+)\s+(?:is|was)\s+(?:executing|running)\b'); if($m.Success){ $claims += ('unit ' + $m.Groups[1].Value + ' is executing'); if($lock -eq '0'){ $truths += 'the session lock at this root is free - nothing is executing here'; $verdicts += 'false' } elseif($lock -eq '5'){ $truths += 'the session lock at this root is stale, its holder gone - nothing is executing here'; $verdicts += 'false' } elseif($lock -eq '1'){ $truths += 'the session lock at this root is held by a live process - something is executing here'; $verdicts += 'true' } else { $truths += 'the session lock could not be read either way'; $verdicts += 'unknown' } }; $p=[regex]::Match($why, '(?i)\bphase\s*[\x22“‘\x27]([^\x22”’\x27]+)[\x22”’\x27]'); if($p.Success){ $name=N($p.Groups[1].Value); $claims += ('the plan names phase ' + $p.Groups[1].Value.Trim()); $hay=@(); if(Test-Path -LiteralPath $pl){ $first=(Get-Content -LiteralPath $pl -Encoding UTF8 | Where-Object { ([string]$_).Trim() -ne '' } | Select-Object -First 1); $hay += N($first) }; if(Test-Path -LiteralPath $o){ foreach($ln in (Get-Content -LiteralPath $o -Encoding UTF8)){ $t=([string]$ln).TrimStart([char]0xFEFF); if($t -match '^PHASE:\s*(.+?)\s*$'){ $hay += N($Matches[1]); break } } }; if($hay.Count -eq 0){ $truths += 'neither the plan nor the record could be read'; $verdicts += 'unknown' } elseif(@($hay | Where-Object { $_.Contains($name) }).Count -gt 0){ $truths += ('the plan at the root names that phase - ' + ($hay -join ' / ')); $verdicts += 'true' } else { $truths += ('the plan at the root names no such phase - it reads: ' + ($hay -join ' / ')); $verdicts += 'false' } }; if($claims.Count -eq 0){ 'PR_TEST=none'; exit }; $t='true'; if(@($verdicts | Where-Object { $_ -eq 'unknown' }).Count -gt 0){ $t='unknown' } elseif(@($verdicts | Where-Object { $_ -eq 'true' }).Count -gt 0){ $t='true' } else { $t='false' }; 'PR_TEST=' + $t; 'PR_CLAIM=' + (S ($claims -join '; ')); 'PR_TRUTH=' + (S ($truths -join '; '))"`) do set "%%A=%%B"
+goto :eof
+
+rem ============================================================
 rem  PROGRESS COUNTED IN CRITERIA. 064 tasks 2 to 4, the owner's ruling
 rem  of 2026-09-14. Every routine below reads a FILE - the instruction,
 rem  the plan, the outcome - and none holds state across iterations.
@@ -2139,7 +2178,10 @@ echo   REFUSED TWICE THIS PASS ON CRITERION %HB_CRIT%. It is PARKED as a questio
 echo   and the loop takes the plan's other open work - the owner's ruling of 2026-09-23.
 set "AT_CRIT=%HB_CRIT%"
 set "ATTEMPTID="
-set "PK_WHICH=refusal"
+rem  088: a caller may name what kind of park this is - :stopstale says
+rem  premise - and refusal is the default every other caller keeps.
+if not defined HB_WHICH set "HB_WHICH=refusal"
+set "PK_WHICH=%HB_WHICH%"
 set "PK_WORDS=%RD_RULE% twice running - %RD_DETAIL%"
 call :park
 call :stepfromcrit
@@ -2149,13 +2191,16 @@ rem  widening the redirect to the authorable set.
 if defined HB_KEEP set "RD_CRITERIA=%HB_KEEP%"
 if not defined RD_CRITERIA set "RD_CRITERIA=none"
 set "HB_KEEP="
+set "HB_WHICH="
 goto :redirectnext
 :refusedonce
 set "HB_KEEP="
+set "HB_WHICH="
 goto :redirectnext
 :refusedagain
 echo   the same refusal again with no criterion to park - handed back again; the bound is the backstop.
 set "HB_KEEP="
+set "HB_WHICH="
 goto :redirectnext
 
 rem ============================================================
@@ -3231,6 +3276,36 @@ echo   STOP 4: THE ARBITER DECLARED A DECISION THE OWNER'S.
 echo   ****************************************************
 call :echosafe "%A_WHY%"
 echo   why : %ES%
+echo   raised - and before it halts, PARKED.md is read for an answer and the
+echo   premise is tested against this pass - 088.
+rem  088: THE OWNER CAN ANSWER. HamLet, 2026-09-25: a stop 4 correctly raised
+rem  at 13:33 was replayed word for word on four further launches after the
+rem  owner had resolved both its conditions, because this routine read nothing
+rem  from disk. A resolution he writes by hand in PARKED.md - RESOLVED: date |
+rem  a phrase copied from the stop's own why line | his decision - is read here
+rem  before anything halts, matched on the question and never on a row's
+rem  position; a stop whose question has a resolution is recorded as answered,
+rem  the resolution printed, and the arbiter is sent back to author on his
+rem  answer. Append-only, never expires, no command writes it.
+call :stopanswered
+if "%AS_HIT%"=="yes" goto :stopanswer
+rem  088: A FALSE PREMISE IS HANDED BACK, NOT HALTED. The stop's stated claim
+rem  is re-tested against what this pass already read: a unit it says is
+rem  executing, against the session lock now; a phase it names in quotes,
+rem  against the plan's title and the record's PHASE: line. Only those two
+rem  shapes are tested; a claim about keying, safety or a promise has no
+rem  premise on disk and halts untested, and where the check cannot tell it
+rem  halts - a stop wrongly handed back is the one failure worse than a stop
+rem  wrongly repeated. A false premise is stale reasoning, not the owner's
+rem  decision: handed back as 086 hands back a malformed field, twice at a
+rem  criterion parks it.
+call :stoppremise
+if "%PR_TEST%"=="false" goto :stopstale
+echo.
+if "%PR_TEST%"=="true" echo   its premise was tested against this pass and HOLDS: %PR_TRUTH%
+if "%PR_TEST%"=="none" echo   its claim has no premise on disk to test - keying, safety, a promise, or a shape this check does not read - so it halts untested, as it must.
+if "%PR_TEST%"=="unknown" echo   its premise could not be told either way - %PR_TRUTH% - so it halts, erring toward the halt.
+echo   No resolution row in PARKED.md answers it.
 echo.
 echo   It stopped rather than resolving. Since 061 it may do so only for
 echo   one of the things the phase stops for - two since 085: keying, transmit
@@ -3242,6 +3317,51 @@ echo   unit 085's report. This is one of the two conditions that keep the owner
 echo   the architect.
 set "STOPWHY=stop 4: the arbiter declared a decision the owner's"
 goto :stopped
+
+rem  088: the stop is answered. Recorded in the ledger, printed, and the
+rem  arbiter is redirected to author on the owner's answer - a plain redirect,
+rem  bounded by the backstop, because a real arbiter given the answer authors
+rem  work and the stand-in re-raising the same file is the fixture's shape.
+:stopanswer
+echo.
+echo   ****************************************************
+echo   ANSWERED: THE OWNER RESOLVED THIS STOP IN PARKED.md ON %AS_DATE%.
+echo   ****************************************************
+echo   the stop it answers : %AS_PHRASE%
+echo   his decision        : %AS_DECISION%
+echo   The stop is NOT re-raised - his ruling of 2026-09-25 that a raised decision
+echo   must be answerable. The arbiter is sent back to author on his answer.
+call :ledgernote "stop answered - the owner's resolution of %AS_DATE% in PARKED.md answers the stop on: %AS_PHRASE% - his decision: %AS_DECISION% - not re-raised, the arbiter authors again on it"
+set "RD_RULE=stop 4 answered by the owner"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=the owner resolved this stop in PARKED.md on %AS_DATE% - his decision: %AS_DECISION% - author on his answer, not on the question"
+goto :redirectnext
+
+rem  088: the stop's premise is false on this pass's evidence. Handed back
+rem  through :refused, keyed on the criterion ADVANCES names where it names
+rem  one, so twice at a criterion parks it with which=premise.
+:stopstale
+echo.
+echo   ****************************************************
+echo   HANDED BACK: THE STOP STANDS ON A PREMISE THAT IS NO LONGER TRUE.
+echo   ****************************************************
+echo   it claimed : %PR_CLAIM%
+echo   now        : %PR_TRUTH%
+echo   A stop on a stale premise is not the owner's decision - it is stale
+echo   reasoning. The arbiter is told what it claimed and what is true, and
+echo   authors again. Twice on one criterion parks it.
+call :advparse
+set "HB_KEY=rule stop-premise"
+set "HB_CRIT="
+if "%ADV_KIND%"=="criterion" set "HB_KEY=%ADV_STEP%.%ADV_CRIT%"
+if "%ADV_KIND%"=="criterion" set "HB_CRIT=%ADV_STEP%.%ADV_CRIT%"
+set "HB_WHICH=premise"
+set "RD_RULE=stop 4 premise is stale"
+set "RD_CRITERIA=%SF_AUTHORABLE%"
+if not defined RD_CRITERIA set "RD_CRITERIA=none"
+set "RD_DETAIL=the stop claimed %PR_CLAIM% - now %PR_TRUTH% - a stop on a stale premise is not the owner's decision, author again from what is true"
+goto :refused
 
 rem ============================================================
 rem  STOP 6, AS THE OWNER REDEFINED IT ON 2026-08-29.
