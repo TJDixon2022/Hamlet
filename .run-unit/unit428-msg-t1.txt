@@ -1,0 +1,12 @@
+unit428 task 1: does it separate (3.6's trace) - WhatTheNeighborsSayTests.EachLetterAgainstTheLettersAroundIt, a fact that asserts nothing, prints every named character on the 23 keyed recordings with its raw span, the median raw span of the three named characters each side and the ratio, and the ratio's distributions by heap; the added and the right overlap and nothing is built
+
+Window: three named characters each side, the character itself left out, word gaps and placeholders skipped (author's, overrulable). The 2026-09-25 captures are not in the tree; keyed recordings only, 165 edits over 565, as at entry.
+
+Added, all 17: min 0.065, quartile 0.286, median 0.729, quartile 1.163, max 4.000.
+Right, all 353: min 0.050, quartile 0.629, median 1.003, quartile 1.642, max 47.678.
+Added single-element, 8: min 0.223, quartile 0.279, median 0.649, quartile 0.737, max 1.191.
+Right single-element, 62: min 0.050, quartile 0.219, median 0.369, quartile 0.697, max 1.860.
+
+A bar at the lowest added single-element ratio, 0.223, takes 1 of 8 added and 17 of 62 right single elements, 72 of 252 unkeyed; taken before any right one: 0 of 8. The added single elements sit higher against their neighbors than the right ones. No ratio is named; task 2 traces a second window.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
