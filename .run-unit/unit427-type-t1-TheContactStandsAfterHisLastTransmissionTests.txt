@@ -1,0 +1,70 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheContactStandsAfterHisLastTransmissionTests.TheLineIsInTheSendAreaAndTheStopButtonIsStillUsable [777 ms]
+  Standard Output Messages:
+ nothing has been sent, and the line reads:
+   no contact yet
+ DigitalStopButton at : 1297, 1343  size 74, 36
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheContactStandsAfterHisLastTransmissionTests.ALaterDecodeLeavesTheLineWhereItWasAndTheNewRowCarriesTheState [23 s]
+  Standard Output Messages:
+ heard  02:06:30  "CQ W1ABC EM12"  contact: ""
+ click  02:06:45  "W1ABC KC3QIS FN00"  -> Ran / sent=True
+ waited 23517 ms for slot 02:07:00; the clock is in 02:07:00
+ heard  02:07:00  "KC3QIS W1ABC R-09"  contact: "your move, 0 slots"
+ click  02:07:15  "W1ABC KC3QIS RRR"  -> Ran / sent=True
+ heard  02:07:30  "KC3QIS W1ABC 73"  contact: "complete, 0 slots"
+ MEASURED, development machine, FACT-004:
+ the line, before the later decode:
+   Where the contact with W1ABC stands: complete, 0 slots, read at the 02:07:15 UTC slot. That is what passed between you, counted in slots; it is not advice about what to send next, and nothing is closed or withheld by it.
+ the line, after it:
+   Where the contact with W1ABC stands: complete, 0 slots, read at the 02:07:15 UTC slot. That is what passed between you, counted in slots; it is not advice about what to send next, and nothing is closed or withheld by it.
+ the row the later decode placed:
+   02:07:30  "KC3QIS W1ABC 73"  contact: "complete, 0 slots"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheContactStandsAfterHisLastTransmissionTests.AfterHisOwnLastMessageTheLineNamesTheStationAndReadsComplete [30 s]
+  Standard Output Messages:
+ heard  02:07:00  "CQ W1ABC EM12"  contact: ""
+ click  02:07:15  "W1ABC KC3QIS FN00"  -> Ran / sent=True
+ waited 29863 ms for slot 02:07:30; the clock is in 02:07:30
+ heard  02:07:30  "KC3QIS W1ABC R-09"  contact: "your move, 0 slots"
+ click  02:07:45  "W1ABC KC3QIS RRR"  -> Ran / sent=True
+ MEASURED, development machine, FACT-004:
+ the ledger, read at 02:07:45 - his own send slot:
+   IsComplete : True
+   Read().Text: "complete, 0 slots"
+ the line under the waterfall reads:
+   Where the contact with W1ABC stands: complete, 0 slots, read at the 02:07:45 UTC slot. That is what passed between you, counted in slots; it is not advice about what to send next, and nothing is closed or withheld by it.
+ the contact cells across his last send:
+   "KC3QIS W1ABC R-09"  before: "your move, 0 slots"  after: "your move, 0 slots"
+   "CQ W1ABC EM12"  before: ""  after: ""
+ a second boundary with nothing armed:
+   outcome     : NothingArmed
+   sink calls  : 2 -> 2
+   port frames : 4 -> 4
+   the line    : Where the contact with W1ABC stands: complete, 0 slots, read at the 02:07:45 UTC slot. That is what passed between you, counted in slots; it is not advice about what to send next, and nothing is closed or withheld by it.
+
+
+[xUnit.net 00:00:55.00]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheContactStandsAfterHisLastTransmissionTests.ACallToAnyoneBooksNobodyAndTheLineNamesNoStation [212 ms]
+  Standard Output Messages:
+ heard  02:07:30  "CQ W1ABC EM12"  contact: ""
+ MEASURED, development machine, FACT-004:
+ what went out : "CQ KC3QIS FN00"
+ the line reads:
+   That was a call to anyone, so it is addressed to no station and there is no one contact to report on yet. This line says where a contact stands after a message sent to a station.
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 55.2842 Seconds
+RC=0 WALL=56s

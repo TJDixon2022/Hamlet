@@ -1,0 +1,59 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.49]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheMarkIsSeenAndClickedTests.TheMarkIsAHairlineVaneAboutTwelvePixelsTallAndNotAFilledDisc [42 ms]
+  Standard Output Messages:
+ PlatformGeometry  6.0 x 12.0   fill (none)   pen 1.5
+ 327: a disc 18 px filled solid -> 328: a vane 12.0 px tall and 6.0 px wide at 1.5 px of pen, not filled
+ Door filled round thing: 4.0 px across
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMarkIsSeenAndClickedTests.AWorkedStationHasNoMark [148 ms]
+  Standard Output Messages:
+ TI2AIM  Visible  Counter
+ PY2ABC  Door     Door
+ W4JNC   None     Tray
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMarkIsSeenAndClickedTests.ClickingOpensThePopupAndTheXClosesIt [2 ms]
+  Standard Output Messages:
+ after the press: open True
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMarkIsSeenAndClickedTests.TheRecordSaysWhichKindWasOpenedAndNothingElse [13 ms]
+  Standard Output Messages:
+ {"ts":"2026-09-25T02:06:09.284Z","sessionId":"3b99be1f","level":"info","appVersion":"327","category":"explore","event":"nudge_opened","data":{"kind":"counter"}}
+ {"ts":"2026-09-25T02:06:09.284Z","sessionId":"3b99be1f","level":"info","appVersion":"327","category":"explore","event":"nudge_opened","data":{"kind":"door"}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMarkIsSeenAndClickedTests.ThePopupNamesTheEntityForACounterAndNamesNothingForADoor [2 ms]
+  Standard Output Messages:
+ TI2AIM hover : Costa Rica · new country
+ TI2AIM reason: Costa Rica · a new country · you have worked 1 in North America
+ TI2AIM earns : A QSO first. The card comes with it.
+ PY2ABC hover : new area · would open something you have not seen yet
+ PY2ABC reason: A first contact in a new area · working him opens a set of cards you have not seen yet
+ PY2ABC earns : A QSO first. The card comes with it.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheMarkIsSeenAndClickedTests.ACounterIsGreenAndStillAndADoorIsOrangeAndRingedAndTurning [1 ms]
+  Standard Output Messages:
+ counter: #FF3B6D11, ring False, turning False
+ door   : #FFC25E00, ring True, turning True
+ door hue 29.1 deg, saturation 1.00, value 0.76
+ PlatformGeometry  16.0 x 16.0   fill (none)   pen 1.5
+ PlatformGeometry  4.0 x 4.0   fill #FFC25E00   pen (none)
+ PlatformGeometry  6.0 x 12.0   fill (none)   pen 1.5
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 0.7660 Seconds
+RC=0 WALL=1s

@@ -747,11 +747,9 @@ public sealed partial record DigitalDecodeRow(
 
             // 2. Which entity issued his callsign. **A FACT ABOUT THE LICENSE AND NEVER A
             //    LOCATION** (HM-DEC-038), which is why the grid below is its own line.
-            if (DxccPrefixes.EntityOf(Sender) is { Length: > 0 } entity)
-            {
-                said.Add(entity);
-            }
-
+            //    **AND WHERE HIS GRID CONTRADICTS IT, BOTH** (HM-DEC-180): the grid wins, so
+            //    the line says where the callsign was issued and where he is operating from.
+            //
             // 3. His grid and how far away he is - **IF HE SENT ONE**, and from a message the
             //    parser is sure of (§R1). A grid read off a guess is not his grid.
             //    **THE CONVERSATION'S GRID OUTRANKS THE LATEST MESSAGE'S**, because he sends it
@@ -760,6 +758,19 @@ public sealed partial record DigitalDecodeRow(
             var his = HisGrid.Length > 0
                 ? HisGrid
                 : Reading is { IsCertain: true, Grid: { Length: > 0 } sent } ? sent : "";
+
+            if (GridPlaces.Contradiction(Sender, his) is { } against)
+            {
+                var issued = EntitySpoken.Short(against.CallEntity);
+
+                said.Add(("AEIO".Contains(issued[0], StringComparison.OrdinalIgnoreCase) ? "an " : "a ")
+                    + issued + " callsign, operating from "
+                    + against.Where.Grid + " in " + against.Where.Place);
+            }
+            else if (DxccPrefixes.EntityOf(Sender) is { Length: > 0 } entity)
+            {
+                said.Add(entity);
+            }
 
             if (his is { Length: > 0 } grid)
             {

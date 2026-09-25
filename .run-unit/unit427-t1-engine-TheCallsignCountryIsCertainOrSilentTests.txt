@@ -1,0 +1,145 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.37]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.55]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.55]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.AtSeaOrInTheAirResolvesToNothing(call: "IK2YCW/AM") [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.AtSeaOrInTheAirResolvesToNothing(call: "MM/W1ABC") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.AtSeaOrInTheAirResolvesToNothing(call: "W1ABC/MM") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.NoInputEverProducesAHedgedString [15 ms]
+  Standard Output Messages:
+ [W1ABC] -> United States of America
+ [YV7AXM] -> Venezuela
+ [W4/YV7AXM] -> United States of America
+ [IS0/IK2YCW] -> Sardinia
+ [3D2AB] -> (nothing)
+ [VK9XYZ] -> (nothing)
+ [ZZ9ZZZ] -> Brazil
+ [QQQ] -> (nothing)
+ [1] -> (nothing)
+ [//] -> (nothing)
+ [K] -> United States of America
+ [N0BAD] -> United States of America
+ [G0ABC] -> United Kingdom
+ [JA1XYZ] -> Japan
+ [VU2ABC] -> India
+ [9M2AAA] -> West Malaysia
+ [T30AB] -> West Kiribati
+ [CU3AA] -> (nothing)
+ [OX3XR] -> (nothing)
+ [E51AAA] -> (nothing)
+ [] -> (nothing)
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "KP4AAA", entity: "Puerto Rico") [< 1 ms]
+  Standard Output Messages:
+ KP4AAA -> Puerto Rico
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "W1ABC", entity: "United States of America") [< 1 ms]
+  Standard Output Messages:
+ W1ABC -> United States of America
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "EA9AAA", entity: "Ceuta & Melilla") [< 1 ms]
+  Standard Output Messages:
+ EA9AAA -> Ceuta & Melilla
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "KL7ABC", entity: "Alaska") [< 1 ms]
+  Standard Output Messages:
+ KL7ABC -> Alaska
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "KH6ABC", entity: "Hawaii") [< 1 ms]
+  Standard Output Messages:
+ KH6ABC -> Hawaii
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "AL7XYZ", entity: "Alaska") [< 1 ms]
+  Standard Output Messages:
+ AL7XYZ -> Alaska
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "EA8XYZ", entity: "Canary Is.") [< 1 ms]
+  Standard Output Messages:
+ EA8XYZ -> Canary Is.
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "EA4AAA", entity: "Spain") [< 1 ms]
+  Standard Output Messages:
+ EA4AAA -> Spain
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheLongestMatchWins(call: "EA6ABC", entity: "Balearic Is.") [< 1 ms]
+  Standard Output Messages:
+ EA6ABC -> Balearic Is.
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheHomeCallOnItsOwnStillReadsAsItsOwnEntity(call: "YV7AXM", entity: "Venezuela") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheHomeCallOnItsOwnStillReadsAsItsOwnEntity(call: "IK2YCW", entity: "Italy") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.ACompoundCallIsWhereTheyAreAndNotWhereTheyAreFrom(call: "IS0/IK2YCW", entity: "Sardinia") [< 1 ms]
+  Standard Output Messages:
+ IS0/IK2YCW -> Sardinia
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.ACompoundCallIsWhereTheyAreAndNotWhereTheyAreFrom(call: "W4/YV7AXM", entity: "United States of America") [< 1 ms]
+  Standard Output Messages:
+ W4/YV7AXM -> United States of America
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.ASuffixDoesNotMoveThem(call: "W1ABC/QRP", entity: "United States of America") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.ASuffixDoesNotMoveThem(call: "IK2YCW/M", entity: "Italy") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.ASuffixDoesNotMoveThem(call: "W1ABC/P", entity: "United States of America") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.TheTableNamesItsSource [< 1 ms]
+  Standard Output Messages:
+ ARRL DXCC List, current entities, January 2026, retrieved 2026-09-06
+ 605 certain prefixes, 14 shared and therefore silent
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.APrefixTwoEntitiesShareResolvesToNothing(call: "CE0ABC") [< 1 ms]
+  Standard Output Messages:
+ CE0ABC -> (nothing)
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.APrefixTwoEntitiesShareResolvesToNothing(call: "JD1BCD") [< 1 ms]
+  Standard Output Messages:
+ JD1BCD -> (nothing)
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.APrefixTwoEntitiesShareResolvesToNothing(call: "HK0AAA") [< 1 ms]
+  Standard Output Messages:
+ HK0AAA -> (nothing)
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.APrefixTwoEntitiesShareResolvesToNothing(call: "3D2AB") [< 1 ms]
+  Standard Output Messages:
+ 3D2AB -> (nothing)
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.APrefixTwoEntitiesShareResolvesToNothing(call: "VK9XYZ") [< 1 ms]
+  Standard Output Messages:
+ VK9XYZ -> (nothing)
+
+
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.APrefixTwoEntitiesShareResolvesToNothing(call: "E5ABC") [< 1 ms]
+  Standard Output Messages:
+ E5ABC -> (nothing)
+
+
+[xUnit.net 00:00:01.60]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Explore.TheCallsignCountryIsCertainOrSilentTests.SardiniaIsNotItaly [< 1 ms]
+
+Test Run Successful.
+Total tests: 28
+     Passed: 28
+ Total time: 1.8705 Seconds
+RC=0 WALL=5s

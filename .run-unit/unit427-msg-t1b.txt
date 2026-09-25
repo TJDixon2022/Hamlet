@@ -1,0 +1,18 @@
+unit427 task 1b: the grid wins (item 14, HM-DEC-180) - WL7E from CM98: the card's face reads WL7E, an Alaska callsign, operating from CM98 in California. His grid decides the entity: the lower 48, not Alaska.; the header reads California and the distance; the hover adds DXCC counts Alaska as an entity apart from the lower 48; no new-entity quill on his row or his card; no grid, an unreadable grid or one the table does not place changes nothing; TheGridBeatsThePrefixTests 4 of 4
+
+GridPlaces.Contradiction is asked by Ft8ContactCard (EntityLine, Place, the globe caption and a
+hover row), by DigitalDecodeRow's hover line 2 for PSK31 and Olivia rows, and by
+NudgeSet.WouldOpen and Explain, which take the grid he sent: the conversation's, an FT8
+payload that is a grid, or a certain text-mode reading's. The PSK31 row's HisGrid is now set
+before the mark is asked. The card face gains CardEntityLineText above the sentence, absent
+where there is no contradiction.
+
+Touched types, one per invocation: 22 app types green but two (TheCqListNudgeTests 15,
+TheQuillPopupTests 8, TheRowHoverSaysWhatItKnowsTests 10, TheMarkIsSeenAndClickedTests 6,
+BindingHealthTests 1 and the rest); ThePsk31ReadsTheConversationTests red on its NudgeSet.cs
+hash pin and re-pinned under HM-DEC-180, 8 of 8; Unit297CardSentenceTests 9 of 11, the same two
+red on the committed tree with the work stashed, parked as P29; engine
+TheCallsignCountryIsCertainOrSilentTests and WhatTheEntityTableResolvesTests 28 of 28 and 2 of
+2. P30 parks the table's coverage: four places, drawn from border coordinates, no boundary file.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

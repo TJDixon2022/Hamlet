@@ -1,0 +1,145 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.24]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.37]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.37]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.61]     Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheDetailKeepsWhatTheFaceGaveUp [FAIL]
+[xUnit.net 00:00:02.61]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:02.61]       String:    "You hear him -12 dB · Decoder floor -21 d"···
+[xUnit.net 00:00:02.61]       Not found: "bearing"
+[xUnit.net 00:00:02.61]       Stack Trace:
+[xUnit.net 00:00:02.61]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\Unit297CardSentenceTests.cs(237,0): at Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheDetailKeepsWhatTheFaceGaveUp()
+[xUnit.net 00:00:02.61]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.61]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.61]       Output:
+[xUnit.net 00:00:02.61]         K9XP   United States · 320 miles   [Finished]
+[xUnit.net 00:00:02.61]           You and K9XP got through to each other and you both confirmed it. He said goodbye.
+[xUnit.net 00:00:02.61]           02:11:45 UTC · 15 seconds ago
+[xUnit.net 00:00:02.61]           [Log this contact]   show the 4 messages
+[xUnit.net 00:00:02.61]         
+[xUnit.net 00:00:02.61]         You hear him -12 dB · Decoder floor -21 dB · Grid FN31 · 320 miles east-northeast · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 02:11:00 to 02:11:45 UTC · 1 slot ago · He last sent RR73
+[xUnit.net 00:00:02.61]     Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.NoGridMeansNoDistance [FAIL]
+[xUnit.net 00:00:02.61]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:02.61]       String:    "He hears you -9 dB · Decoder floor -21 dB"···
+[xUnit.net 00:00:02.61]       Not found: "has not put a grid square on the air"
+[xUnit.net 00:00:02.61]       Stack Trace:
+[xUnit.net 00:00:02.61]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\Unit297CardSentenceTests.cs(271,0): at Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.NoGridMeansNoDistance()
+[xUnit.net 00:00:02.61]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.61]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.61]       Output:
+[xUnit.net 00:00:02.61]         K9XP   United States   [Your turn]
+[xUnit.net 00:00:02.61]           K9XP came back to you, and it is your turn to answer him.
+[xUnit.net 00:00:02.61]           02:11:15 UTC · 45 seconds ago
+[xUnit.net 00:00:02.61]           [Confirm, and tell him how he is coming through]  (ring)   show the 2 messages
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.ABareCallToAnyoneIsNotACard [192 ms]
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheFinishedSentenceNeverInventsAGoodbye [15 ms]
+  Standard Output Messages:
+ K9XP   United States · 320 miles   [Finished]
+   You and K9XP got through to each other and you both confirmed it.
+   02:11:45 UTC · 15 seconds ago
+   [Log this contact]   show the 4 messages
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheTimeLineDropsTheRelativeHalfWithNoClock [3 ms]
+  Standard Output Messages:
+ K9XP   United States   [Your turn]
+   K9XP came back to you, and it is your turn to answer him.
+   02:11:15 UTC · 45 seconds ago
+   [Confirm, and tell him how he is coming through]  (ring)   show the 2 messages
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.GoneQuietSaysNothingAboutWhy [1 ms]
+  Standard Output Messages:
+ K9XP   United States   [Gone quiet]
+   Nothing more has been heard from K9XP. He may have moved on.
+   02:11:15 UTC · a minute ago
+   [Send it again]  (ring)   show the 2 messages
+
+
+  Failed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheDetailKeepsWhatTheFaceGaveUp [3 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "You hear him -12 dB · Decoder floor -21 d"···
+Not found: "bearing"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheDetailKeepsWhatTheFaceGaveUp() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\Unit297CardSentenceTests.cs:line 237
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ K9XP   United States · 320 miles   [Finished]
+   You and K9XP got through to each other and you both confirmed it. He said goodbye.
+   02:11:45 UTC · 15 seconds ago
+   [Log this contact]   show the 4 messages
+ 
+ You hear him -12 dB · Decoder floor -21 dB · Grid FN31 · 320 miles east-northeast · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 02:11:00 to 02:11:45 UTC · 1 slot ago · He last sent RR73
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.YourTurnSaysHeCameBackAndNothingMore [3 ms]
+  Standard Output Messages:
+ K9XP   United States   [Your turn]
+   K9XP came back to you, and it is your turn to answer him.
+   02:11:15 UTC · 45 seconds ago
+   [Confirm, and tell him how he is coming through]  (ring)   show the 2 messages
+
+
+  Failed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.NoGridMeansNoDistance [1 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "He hears you -9 dB · Decoder floor -21 dB"···
+Not found: "has not put a grid square on the air"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.NoGridMeansNoDistance() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\Unit297CardSentenceTests.cs:line 271
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ K9XP   United States   [Your turn]
+   K9XP came back to you, and it is your turn to answer him.
+   02:11:15 UTC · 45 seconds ago
+   [Confirm, and tell him how he is coming through]  (ring)   show the 2 messages
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheYourTurnHoverTeaches [1 ms]
+  Standard Output Messages:
+ K9XP   United States   [Your turn]
+   K9XP came back to you, and it is your turn to answer him.
+   02:11:15 UTC · 45 seconds ago
+   [Confirm, and tell him how he is coming through]  (ring)   show the 2 messages
+ 
+ He hears you -9 dB · Decoder floor -21 dB · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 02:11:00 to 02:11:15 UTC · 3 slots ago · He last sent -09
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.WaitingOnHimSaysTheOperatorAnsweredAndIsWaiting [1 ms]
+  Standard Output Messages:
+ K9XP   United States   [Waiting on him]
+   You answered K9XP and he has not come back yet.
+   02:11:30 UTC · 15 seconds ago
+   [Send it again]  (ring)   show the 3 messages
+
+
+[xUnit.net 00:00:02.63]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.TheFinishedSentenceSaysGoodbyeWhereHeSaidOne [1 ms]
+  Standard Output Messages:
+ K9XP   United States · 320 miles   [Finished]
+   You and K9XP got through to each other and you both confirmed it. He said goodbye.
+   02:11:45 UTC · 15 seconds ago
+   [Log this contact]   show the 4 messages
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit297CardSentenceTests.NothingOnAnyFaceIsNerdy [7 ms]
+  Standard Output Messages:
+ K9XP | United States | Your turn | K9XP came back to you, and it is your turn to answer him. | 02:11:15 UTC · 45 seconds ago | Confirm, and tell him how he is coming through | show the 2 messages
+ K9XP | United States | Waiting on him | You answered K9XP and he has not come back yet. | 02:11:30 UTC · 15 seconds ago | Send it again | show the 3 messages
+ K9XP | United States · 320 miles | Finished | You and K9XP got through to each other and you both confirmed it. | 02:11:45 UTC · 15 seconds ago | Log this contact | show the 4 messages
+ K9XP | United States · 320 miles | Finished | You and K9XP got through to each other and you both confirmed it. He said goodbye. | 02:11:45 UTC · 15 seconds ago | Log this contact | show the 4 messages
+ K9XP | United States | Gone quiet | Nothing more has been heard from K9XP. He may have moved on. | 02:11:15 UTC · a minute ago | Send it again | show the 2 messages
+
+
+
+Test Run Failed.
+Total tests: 11
+     Passed: 9
+     Failed: 2
+ Total time: 2.8912 Seconds
+RC=1 WALL=3s

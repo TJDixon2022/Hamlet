@@ -1,0 +1,127 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.42]     Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.TheCodeTheseRowsReuseIsUnchanged [FAIL]
+[xUnit.net 00:00:00.42]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:00.42]                  ↓ (pos 0)
+[xUnit.net 00:00:00.42]       Expected: "d814cfc22fbb4acb1f56533283df0d735bf61838e"···
+[xUnit.net 00:00:00.42]       Actual:   "e7f0026f00b6afcac02818ba9ba4d951ac6924131"···
+[xUnit.net 00:00:00.42]                  ↑ (pos 0)
+[xUnit.net 00:00:00.42]       Stack Trace:
+[xUnit.net 00:00:00.42]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\ThePsk31ReadsTheConversationTests.cs(392,0): at Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.TheCodeTheseRowsReuseIsUnchanged()
+[xUnit.net 00:00:00.42]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.42]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.42]       Output:
+[xUnit.net 00:00:00.42]         src/Hamlet.RadioEngine/Explore/DxccPrefixes.cs f5ebf765a62defe87c0e25bc88c4a005ac3614d02dd8b51bb9a5d6a432351ef2 unchanged
+[xUnit.net 00:00:00.42]         src/Hamlet.RadioEngine/Contacts/NudgeSet.cs e7f0026f00b6afcac02818ba9ba4d951ac692413105683264fb1622ecd206080 CHANGED from d814cfc22fbb4acb1f56533283df0d735bf61838eeac64e199290f8c6f1f9728
+[xUnit.net 00:00:00.49]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.ACostaRicanStationCallingCqGetsTheSameEntityFadeAndQuillAsOnFt8 [181 ms]
+  Standard Output Messages:
+ FT8  : sender TI2ABC, entity Costa Rica, hover [Who sent it. TI2ABC is a callsign from Costa Rica.], nudge Visible [Costa Rica · new country], lift 1, opacity 1
+ PSK31: sender TI2ABC, entity Costa Rica, hover [Who sent it. TI2ABC is a callsign from Costa Rica.], nudge Visible [Costa Rica · new country], lift 1, opacity 1
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.AnUncertainParseSaysSoAsAMemberAndAWord [32 ms]
+  Standard Output Messages:
+ 05-garbled after line 3: IsGuess True, word [guess], caption [020620 · guess]
+ 05-garbled after line 4: IsGuess True, word [guess], caption [020620 · guess]
+ 05-garbled line 3: sender K3ABC, IsGuess True, word [guess], caption [020620 · guess]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.TheCqToggleHoldsNoPsk31RowBack [9 ms]
+  Standard Output Messages:
+ after line 1, the CQ filter holds: W1AW (CQ) at 500, G4XYZ (CQ) at 750, VE3XN (CQ) at 1000, F4DIA (CQ) at 1250, K3ABC (CQ) at 1500, JA1XYZ (CQ DX) at 1750, N4ZEK (CQ) at 2000, KD8WYT/P (CQ) at 2250
+ after line 2, the CQ filter holds: KC3QIS (W1AW) at 500, KC3QIS (G4XYZ) at 750, KC3QIS (VE3XN) at 1000, EI4GNB (F4DIA) at 1250, KC3QIS (K3ABC) at 1500, JA1XYZ (CQ DX) at 1750, KC3QIS (N4ZEK) at 2000, KC3QIS (KD8WYT/P) at 2250
+ after line 3, the CQ filter holds: F4DIA (EI4GNB) at 1250, JA1XYZ (CQ DX) at 1750
+ after line 4, the CQ filter holds: KC3QIS (W1AW) at 500, KC3QIS (G4XYZ) at 750, KC3QIS (VE3XN) at 1000, EI4GNB (F4DIA) at 1250, JA1XYZ (CQ DX) at 1750, KC3QIS (N4ZEK) at 2000
+ after line 5, the CQ filter holds: KC3QIS (VE3XN) at 1000, EI4GNB (F4DIA) at 1250, KC3QIS (K3ABC) at 1500, JA1XYZ (CQ DX) at 1750, KC3QIS (N4ZEK) at 2000
+   answer in         7 row-steps
+   cq in             12 row-steps
+   end for him       3 row-steps
+   end in            4 row-steps
+   report for him    8 row-steps
+   report in         6 row-steps
+
+
+  Failed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.TheCodeTheseRowsReuseIsUnchanged [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "d814cfc22fbb4acb1f56533283df0d735bf61838e"···
+Actual:   "e7f0026f00b6afcac02818ba9ba4d951ac6924131"···
+           ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.TheCodeTheseRowsReuseIsUnchanged() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\ThePsk31ReadsTheConversationTests.cs:line 392
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ src/Hamlet.RadioEngine/Explore/DxccPrefixes.cs f5ebf765a62defe87c0e25bc88c4a005ac3614d02dd8b51bb9a5d6a432351ef2 unchanged
+ src/Hamlet.RadioEngine/Contacts/NudgeSet.cs e7f0026f00b6afcac02818ba9ba4d951ac692413105683264fb1622ecd206080 CHANGED from d814cfc22fbb4acb1f56533283df0d735bf61838eeac64e199290f8c6f1f9728
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.ARowWithNoSpeakerHasNoSenderNoAddresseeNoCountryAndIsNotACq [3 ms]
+  Standard Output Messages:
+ [yes copy all fine here, nice signal into PA tonight]: sender [], addressee [], hover [Who sent it.], word []
+ [CQ CQ CQ de K3A~C K3A~C pse K]: sender [], addressee [], hover [Who sent it.], word []
+ parsed with no speaker: sender [], addressee [], word [unknown]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.ARowAddressedToTheOperatorIsOnHisSideAndNotInTheLeftList [16 ms]
+  Standard Output Messages:
+ 01-textbook after line 1: W1AW > CQ, left list
+ 01-textbook after line 2: KC3QIS > W1AW, left list
+ 01-textbook after line 3: W1AW > KC3QIS, his side
+ 01-textbook after line 4: KC3QIS > W1AW, left list
+ 01-textbook after line 5: W1AW > KC3QIS, his side
+ 02-chatty after line 1: G4XYZ > CQ, left list
+ 02-chatty after line 2: KC3QIS > G4XYZ, left list
+ 02-chatty after line 3: G4XYZ > KC3QIS, his side
+ 02-chatty after line 4: KC3QIS > G4XYZ, left list
+ 02-chatty after line 5: G4XYZ > KC3QIS, his side
+ 03-no-report after line 1: VE3XN > CQ, left list
+ 03-no-report after line 2: KC3QIS > VE3XN, left list
+ 03-no-report after line 3: VE3XN > KC3QIS, his side
+ 03-no-report after line 4: KC3QIS > VE3XN, left list
+ 04-not-for-me after line 1: F4DIA > CQ, left list
+ 04-not-for-me after line 2: EI4GNB > F4DIA, left list
+ 04-not-for-me after line 3: F4DIA > EI4GNB, left list
+ 04-not-for-me after line 4: EI4GNB > F4DIA, left list
+ 05-garbled after line 1: K3ABC > CQ, left list
+ 05-garbled after line 2: KC3QIS > K3ABC, left list
+ 05-garbled after line 3: K3ABC > KC3QIS, his side
+ 05-garbled after line 4: K3ABC > KC3QIS, his side
+ 05-garbled after line 5: KC3QIS > K3ABC, left list
+ 06-cq-dx after line 1: JA1XYZ > CQ DX, left list
+ 06-cq-dx after line 2: JA1XYZ > CQ DX, left list
+ 07-odd-ending after line 1: N4ZEK > CQ, left list
+ 07-odd-ending after line 2: KC3QIS > N4ZEK, left list
+ 07-odd-ending after line 3: N4ZEK > KC3QIS, his side
+ 07-odd-ending after line 4: KC3QIS > N4ZEK, left list
+ 08-lowercase-and-slashes after line 1: KD8WYT/P > CQ, left list
+ 08-lowercase-and-slashes after line 2: KC3QIS > KD8WYT/P, left list
+ 08-lowercase-and-slashes after line 3: KD8WYT/P > KC3QIS, his side
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.NoFt8MessageIsOnAPsk31RowAndWhatItOffersIsTheCannedSeven [43 ms]
+  Standard Output Messages:
+ an FT8 row from W1AW has a menu: True
+ PSK31 rows right-clicked: 39, cards on the panel: 9, send line [nothing sent yet]
+ rows naming a station: 27, of those with a menu: 27, of those NOT a certain CQ and offered anyway: 15
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.WorkedFadeDimsAPsk31RowToTheSameOpacity [7 ms]
+  Standard Output Messages:
+ FT8 opacity 0.55 [You logged a contact with TI2ABC on 09/07/26], PSK31 opacity 0.55 [You logged a contact with TI2ABC on 09/07/26]
+
+
+
+Test Run Failed.
+Total tests: 8
+     Passed: 7
+     Failed: 1
+ Total time: 0.7673 Seconds
+RC=1 WALL=1s

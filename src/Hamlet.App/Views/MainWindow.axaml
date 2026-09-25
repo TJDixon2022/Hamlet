@@ -5943,12 +5943,26 @@
                                                                  knowledge. Every clause of
                                                                  it traces to a fact in the
                                                                  ledger. -->
-                                                            <TextBlock Grid.Row="1"
-                                                                       Text="{Binding Sentence}"
-                                                                       TextWrapping="Wrap"
-                                                                       Margin="0,6,0,0"
-                                                                       FontSize="12"
-                                                                       LineSpacing="1.3" />
+                                                            <StackPanel Grid.Row="1">
+                                                                <!-- **THE GRID WINS AND THE CARD SAYS
+                                                                     BOTH** (HM-DEC-180): WL7E, an Alaska
+                                                                     callsign, operating from CM98 in
+                                                                     California. Absent where the grid and
+                                                                     the prefix agree or the grid cannot
+                                                                     settle it. -->
+                                                                <TextBlock x:Name="CardEntityLineText"
+                                                                           Text="{Binding EntityLine}"
+                                                                           IsVisible="{Binding HasEntityLine}"
+                                                                           TextWrapping="Wrap"
+                                                                           Margin="0,6,0,0"
+                                                                           FontSize="11"
+                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                <TextBlock Text="{Binding Sentence}"
+                                                                           TextWrapping="Wrap"
+                                                                           Margin="0,6,0,0"
+                                                                           FontSize="12"
+                                                                           LineSpacing="1.3" />
+                                                            </StackPanel>
 
                                                             <!-- **THE TIME BOTH WAYS**
                                                                  (Tim's ruling,

@@ -1,0 +1,39 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.09]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.25]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.Unit302CardNameTests.AClientThatThrowsLeavesTheCardExactlyAsItWas [23 ms]
+  Standard Output Messages:
+ with no network: W7PP · United States · 1,900 miles
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit302CardNameTests.AUsCardSaysWhoHeIsAndTheRestAreUntouched [1 ms]
+  Standard Output Messages:
+ US station     : W7PP · Richard, Sun City AZ · 1,900 miles
+ everybody else : VP2MAA · Montserrat · 1,900 miles
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit302CardNameTests.TheResolveRateOverTheTreesOwnCallsigns [1 ms]
+  Standard Output Messages:
+ callsigns asked about : 10
+ a state               : 1   W7PP
+ country only          : 9   W3YNI, W1ABC, KC3QIS, K4XYZ, VP2MAA, IK4LZH, EI4GNB, VA3VRR, N4L
+ 
+ THE FAKE RESOLVES ONE US CALLSIGN, so this measures the shape of the answer and not the service's coverage: everything the service declines gets a country and nothing below it.
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit302CardNameTests.ACardDrawnBeforeTheAnswerArrivesIsUnchanged [< 1 ms]
+  Standard Output Messages:
+ nothing asked yet: W7PP · United States · 1,900 miles
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.5267 Seconds
+RC=0 WALL=1s

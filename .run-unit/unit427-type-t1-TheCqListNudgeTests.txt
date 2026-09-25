@@ -1,0 +1,198 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.NothingInAMarkedRowReachesASendPath [183 ms]
+  Standard Output Messages:
+ marked: XE1ABC, Visible
+ send line: nothing sent yet
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.NothingInThePathRanksOrCompares [100 ms]
+  Standard Output Messages:
+ private void MarkIfItOpensSomething(DigitalDecodeRow row)
+     {
+         var who = row.Sender;
+ 
+         if (who.Length == 0)
+         {
+             return;
+         }
+ 
+         // **HIS GRID, WHERE HE SENT ONE** (HM-DEC-180): a grid that places him in another
+         // entity than his prefix's opens nothing. The conversation's grid first, then an FT8
+         // payload that is a grid, then a certain text-mode reading's.
+         var grid = row.HisGrid.Length > 0 ? row.HisGrid
+             : Ft8MessageSplit.IsGrid(row.Payload) ? row.Payload
+             : row.Reading is { IsCertain: true, Grid: { Length: > 0 } sent } ? sent
+             : null;
+ 
+         var reason = Nudges().Explain(who, grid);
+ 
+         if (reason.Kind == NudgeKind.None)
+         {
+             return;
+         }
+ 
+         Apply(row, reason);
+     }
+ 
+     /// <summary>Tell a card what the mark says about its station, and hand it back.</summary>
+     /// <param name="card">The card being put on the panel.</param>
+     /// <returns>The same card.</returns>
+     /// <remarks>
+     /// <para>**THE CARD'S REASON AND THE ROW'S MARK COME FROM ONE `NudgeSet`** (work
+     /// instruction 327 task 4). It is the cached one unit 278's shape builds once a session,
+     /// so a card asking costs nothing and cannot give a different answer from the disc on
+     /// the list beside it.</para>
+     /// <para>**AND NOT FOR THE CALL-TO-ANYBODY CARD.** `CQ` is not a callsign and belongs to
+     /// nobody; the set declines it the way it declines any prefix the table cannot resolve,
+     /// so no guard is needed here and none is written.</para>
+     /// </remarks>
+     private Ft8ContactCard Nudged(Ft8ContactCard card)
+     {
+         card.UseNudge(Nudges().Explain(card.Callsign, card.GridValue));
+         card.NudgeOpened = kind => AppEvents.NudgeOpened(_telemetry, kind);
+ 
+         return card;
+     }
+ 
+     /// <summary>Put a decision onto a row.</summary>
+     /// <remarks>
+     /// <para>**ONE CALL ANSWERS THE MARK AND THE PRESS** (work instruction 327 task 3).
+     /// The hover's line and the popup's come from the same `NudgeReason`, so the disc
+     /// and the words behind it cannot come to disagree about one station.</para>
+     /// <para>**AND THE PRESS IS WRITTEN DOWN WITH ITS KIND AND NOTHING ELSE**
+     /// (HM-DEC-018, §2.1). The row is handed something to call; it is not handed the
+     /// record, a category or a session.</para>
+     /// </remarks>
+     
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.ADoorIsMarkedAndItsAreaIsNotNamed [< 1 ms]
+  Standard Output Messages:
+ PY2ABC -> Door, entity []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.AnUnearnedCountryIsACandidateAndAWorkedOneIsNot [< 1 ms]
+  Standard Output Messages:
+ VE3ABC  None     (unnamed)       Canada, already worked
+ W1ABC   None     (unnamed)       the United States, already worked
+ XE1ABC  Visible  Mexico          Mexico, unworked, on a continent he has
+ PY2ABC  Door     (unnamed)       Brazil, on a continent he has never worked
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.WithNorthAmericaWorkedOnlyTheUnworkedLightUp [4 ms]
+  Standard Output Messages:
+ TI2AIM  Visible  opacity 1.00  [Costa Rica · new country]
+ J38DX   Visible  opacity 1.00  [Grenada · new country]
+ RD6OB   None     opacity 1.00  []
+ VE3XN   None     opacity 1.00  []
+ KJ3LLY  None     opacity 1.00  []
+ W4JNC   None     opacity 1.00  []
+ KD5USA  None     opacity 1.00  []
+ KF9UG   None     opacity 1.00  []
+ KS1WK   None     opacity 1.00  []
+ N4ZEK   None     opacity 1.00  []
+ KD8WYT  None     opacity 1.00  []
+ K1ABC   None     opacity 1.00  []
+ W9ZZZ   None     opacity 1.00  []
+ VE7AA   None     opacity 1.00  []
+ 
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.TheHighlightIsOnTheListTheCqFilterShows [1 ms]
+  Standard Output Messages:
+ TI2AIM  Visible  [Costa Rica · new country]
+ W4JNC   None  []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.NoUnmarkedRowIsDimmedOrAnnotated [2 ms]
+  Standard Output Messages:
+ unmarked row opacity : 1
+ unmarked row nudge   : None
+ unmarked row tip     : []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.TheTwoFormsDifferInShapeAndNotOnlyInColor [7 ms]
+  Standard Output Messages:
+ door ring=True  counter ring=False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.FourteenQualifyingRowsCarryFourteenMarks [3 ms]
+  Standard Output Messages:
+ TI2AIM  Visible  opacity 1.00  [Costa Rica · new country]
+ J38DX   Visible  opacity 1.00  [Grenada · new country]
+ XE1ABC  Visible  opacity 1.00  [Mexico · new country]
+ PY2ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ ZS6ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ JA1ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ EA3QQ   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ G0XYZ   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ LU1ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ 9M2ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ HK3ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ CE3ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ 5B4ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ OH2ABC  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ 
+ qualifying 14, marked 14
+ doors 11, counters 3
+
+
+[xUnit.net 00:00:00.60]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.ACounterRowCarriesTheStillGreenQuill [1 ms]
+  Standard Output Messages:
+ counter : ring=False  ink=#FF3B6D11  orbiting=False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.TheLogIsReadOnceAcrossFourteenDecodesInFourSlots [2 ms]
+  Standard Output Messages:
+ 56 decodes, and the nudge set was built 1 time(s)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.NoAreaIsNamedOnADoorRow [1 ms]
+  Standard Output Messages:
+ door row tip : [new area · would open something you have not seen yet]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.HisOwnFourteenRowsWithAnEmptyLog [1 ms]
+  Standard Output Messages:
+ TI2AIM  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ J38DX   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ RD6OB   None     opacity 1.00  []
+ VE3XN   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ KJ3LLY  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ W4JNC   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ KD5USA  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ KF9UG   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ KS1WK   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ N4ZEK   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ KD8WYT  Door     opacity 1.00  [new area · would open something you have not seen yet]
+ K1ABC   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ W9ZZZ   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ VE7AA   Door     opacity 1.00  [new area · would open something you have not seen yet]
+ 
+ highlighted: 13 of 14
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.AWorkedStationCarriesNeitherQuill [1 ms]
+  Standard Output Messages:
+ worked : nudge=None  nudged=False  tip=[]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqListNudgeTests.ADoorRowCarriesTheRingAndTheOrangeAndSpins [1 ms]
+  Standard Output Messages:
+ door : ring=True  ink=#FFC25E00  orbiting=True
+ door, wound past the tray's settle : True
+
+
+
+Test Run Successful.
+Total tests: 15
+     Passed: 15
+ Total time: 0.8563 Seconds
+RC=0 WALL=1s

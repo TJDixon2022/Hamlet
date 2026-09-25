@@ -75,7 +75,7 @@ public sealed class TheGridBeatsThePrefixTests
 
         Heard(model, "CQ WL7E CM98", 14_074_000);
         Heard(model, "CQ KL7AB BP51", 14_074_100);
-        Heard(model, "CQ AL7CD", 14_074_200);
+        Heard(model, "W1AW AL7CD -12", 14_074_200);
 
         foreach (var row in model.DigitalDecodes)
         {

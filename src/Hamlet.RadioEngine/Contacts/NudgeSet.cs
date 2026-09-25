@@ -127,9 +127,20 @@ public sealed class NudgeSet
     /// <para>**THE ENTITY IS RETURNED ONLY FOR A VISIBLE CARD.** For a door it is
     /// deliberately left empty, so that nothing downstream can name an area he has
     /// never opened even by accident.</para>
+    /// <para>**NOTHING ON A PREFIX HIS GRID CONTRADICTS** (HM-DEC-180, Tim 2026-09-23). A
+    /// station whose grid places him in another entity than his callsign's earns no
+    /// new-entity quill: the prefix says where the callsign was issued, and the grid says
+    /// he is not there. Without a grid, or with one `GridPlaces` cannot place, nothing
+    /// changes.</para>
     /// </remarks>
-    public (NudgeKind Kind, string Entity) WouldOpen(string? callsign)
+    /// <param name="grid">The grid he sent, or null.</param>
+    public (NudgeKind Kind, string Entity) WouldOpen(string? callsign, string? grid = null)
     {
+        if (GridPlaces.Contradiction(callsign, grid) is not null)
+        {
+            return (NudgeKind.None, "");
+        }
+
         var entity = DxccPrefixes.EntityOf(callsign);
 
         if (string.IsNullOrWhiteSpace(entity))
@@ -169,9 +180,10 @@ public sealed class NudgeSet
     /// worked, neither name leaves this method and the count is nought - which is also the
     /// true count, and is not why it is nought.</para>
     /// </remarks>
-    public NudgeReason Explain(string? callsign)
+    /// <param name="grid">The grid he sent, or null.</param>
+    public NudgeReason Explain(string? callsign, string? grid = null)
     {
-        var (kind, entity) = WouldOpen(callsign);
+        var (kind, entity) = WouldOpen(callsign, grid);
 
         if (kind != NudgeKind.Visible)
         {

@@ -4853,19 +4853,22 @@ public partial class MainWindowViewModel : ObservableObject
             // has no slot and must not book the FT8 ledger - so what working the sender would
             // open, and whether the log already holds him, are asked here instead. Neither
             // method changes; each reads `Sender`, which the row now supplies from its reading.
-            MarkIfItOpensSomething(row);
-
-            _workedBefore ??= ReadWorkedBefore();
-
-            row.WorkedBefore = WorkedBeforeNote(row.Sender);
-
+            //
             // **AND HIS GRID FROM THE WHOLE CONVERSATION, NOT FROM HIS LATEST MESSAGE**
             // (criterion 7.3, R39). He sends it once and then goes on talking, so a hover that
             // read only `Reading.Grid` would lose his grid - and the distance with it - the
             // moment he said anything else, while his card still showed both. **It is the card's
             // own selection**: the latest grid from a message he CERTAINLY sent (§R1), never one
-            // read off a guess and never the operator's own out of his own report.
+            // read off a guess and never the operator's own out of his own report. **It is set
+            // before the mark is asked**, because a grid that contradicts his prefix opens
+            // nothing (HM-DEC-180).
             row.HisGrid = HisGridOn(channel.Id, row.Sender);
+
+            MarkIfItOpensSomething(row);
+
+            _workedBefore ??= ReadWorkedBefore();
+
+            row.WorkedBefore = WorkedBeforeNote(row.Sender);
 
             // **THE ROW IS NAMED TO ITS CHANNEL BEFORE IT REACHES THE COLLECTION** (R36, step 3,
             // the text-row builder of work instruction 380 section 6 ruling 2 item 1). Putting
@@ -15902,7 +15905,15 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var reason = Nudges().Explain(who);
+        // **HIS GRID, WHERE HE SENT ONE** (HM-DEC-180): a grid that places him in another
+        // entity than his prefix's opens nothing. The conversation's grid first, then an FT8
+        // payload that is a grid, then a certain text-mode reading's.
+        var grid = row.HisGrid.Length > 0 ? row.HisGrid
+            : Ft8MessageSplit.IsGrid(row.Payload) ? row.Payload
+            : row.Reading is { IsCertain: true, Grid: { Length: > 0 } sent } ? sent
+            : null;
+
+        var reason = Nudges().Explain(who, grid);
 
         if (reason.Kind == NudgeKind.None)
         {
@@ -15926,7 +15937,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private Ft8ContactCard Nudged(Ft8ContactCard card)
     {
-        card.UseNudge(Nudges().Explain(card.Callsign));
+        card.UseNudge(Nudges().Explain(card.Callsign, card.GridValue));
         card.NudgeOpened = kind => AppEvents.NudgeOpened(_telemetry, kind);
 
         return card;

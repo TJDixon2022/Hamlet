@@ -369,7 +369,11 @@ public sealed class ThePsk31ReadsTheConversationTests
             // door still names nothing**, which assertion 5 of
             // `TheMarkIsSeenAndClickedTests` checks by behaviour against every
             // continent in the cited table rather than by this hash.
-            ("src/Hamlet.RadioEngine/Contacts/NudgeSet.cs", "d814cfc22fbb4acb1f56533283df0d735bf61838eeac64e199290f8c6f1f9728"),
+            //
+            // **MOVED AGAIN BY UNIT 427 TASK 1, UNDER HM-DEC-180.** `WouldOpen` and `Explain`
+            // take the grid he sent, and a grid that contradicts his prefix opens nothing
+            // (Tim, 2026-09-23). Asserted by behaviour in `TheGridBeatsThePrefixTests`.
+            ("src/Hamlet.RadioEngine/Contacts/NudgeSet.cs", "e7f0026f00b6afcac02818ba9ba4d951ac692413105683264fb1622ecd206080"),
             ("src/Hamlet.App/ViewModels/NudgeWords.cs", "98d85db8cf9691895b8f1922ff55547dfb0a8cd65025af8839c1090e1942828e"),
 
             // **AND `AchievementMarkControl.cs` IS NO LONGER PINNED AT ALL** (§R14,

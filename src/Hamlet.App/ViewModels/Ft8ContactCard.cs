@@ -573,6 +573,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
         _facts = facts;
         _nowUtc = nowUtc;
+        _contradiction = GridPlaces.Contradiction(facts.Callsign, facts.Grid);
         _place = WhereHeIs(facts, operatorGrid, who);
         _country = CountryOf(facts);
         _operatorGrid = operatorGrid;
@@ -617,7 +618,16 @@ public sealed partial class Ft8ContactCard : ObservableObject
     public bool HasPlace => _place.Length > 0;
 
     /// <summary>His callsign's entity and where his grid says he is, where the two disagree.</summary>
-    public string EntityLine => "";
+    /// <remarks>
+    /// <para>**THE GRID WINS AND THE CARD SAYS BOTH** (HM-DEC-180, Tim 2026-09-23): *WL7E, an
+    /// Alaska callsign, operating from CM98 in California*. Empty where there is no
+    /// contradiction - no grid, a grid `GridPlaces` cannot place, or one that agrees.</para>
+    /// <para>**THE UNITED STATES ENTITY IS SAID AS *THE LOWER 48*** in the second sentence,
+    /// because the whole point is that DXCC counts Alaska and Hawaii apart from it.</para>
+    /// </remarks>
+    public string EntityLine => EntityLineOf(Callsign, _contradiction);
+
+    private GridOverPrefix? _contradiction;
 
     /// <summary>True where the grid contradicts the prefix.</summary>
     public bool HasEntityLine => EntityLine.Length > 0;
@@ -1027,7 +1037,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
             foreach (var group in new[]
             {
-                Reports(), WhereOnEarth(), WhereOnTheBand(), Slots(),
+                Reports(), WhereOnEarth(), WhichEntity(), WhereOnTheBand(), Slots(),
             })
             {
                 if (group.Length > 0)
@@ -1669,6 +1679,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
         _facts = facts;
         _nowUtc = nowUtc;
+        _contradiction = GridPlaces.Contradiction(facts.Callsign, facts.Grid);
         _place = WhereHeIs(facts, operatorGrid, who);
         _country = CountryOf(facts);
         _operatorGrid = operatorGrid;
@@ -1774,12 +1785,79 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     private static string CountryOf(Ft8CardFacts facts)
     {
+        if (GridPlaces.Contradiction(facts.Callsign, facts.Grid) is { } against)
+        {
+            return OnTheFace(against.Where.Place);
+        }
+
         var entity = DxccPrefixes.EntityOf(facts.Callsign);
 
         return entity is null
             ? ""
             : EntitySpoken.Short(EntityQualifier.DescribeFromGrid(entity, facts.Grid));
     }
+
+    /// <summary>`WL7E, an Alaska callsign, operating from CM98 in California. ...`, or "".</summary>
+    private static string EntityLineOf(string callsign, GridOverPrefix? against)
+    {
+        if (against is null)
+        {
+            return "";
+        }
+
+        var issued = EntitySpoken.Short(against.CallEntity);
+        var article = "AEIO".Contains(issued[0], StringComparison.OrdinalIgnoreCase) ? "an" : "a";
+
+        return $"{callsign}, {article} {issued} callsign, operating from {against.Where.Grid} "
+            + $"in {against.Where.Place}. His grid decides the entity: "
+            + $"{InASentence(against.Where.Entity)}, not {InASentence(against.CallEntity)}.";
+    }
+
+    /// <summary>The DXCC note the card explains itself with, or "".</summary>
+    /// <remarks>
+    /// **THE OWNER'S NOTE** (HM-DEC-180): DXCC counts Alaska apart from the lower 48. The
+    /// same holds for Hawaii, and the sentence names whichever side is not the lower 48.
+    /// </remarks>
+    private static string DxccNoteOf(GridOverPrefix? against)
+    {
+        if (against is null)
+        {
+            return "";
+        }
+
+        var one = InASentence(against.CallEntity);
+        var other = InASentence(against.Where.Entity);
+
+        if (other == LowerFortyEight)
+        {
+            (one, other) = (other, one);
+        }
+
+        return one == LowerFortyEight
+            ? $"DXCC counts {other} as an entity apart from the lower 48."
+            : $"DXCC counts {one} and {other} as separate entities.";
+    }
+
+    private const string LowerFortyEight = "the lower 48";
+
+    /// <summary>The hover's entity row: the face's sentence and the DXCC note, or "".</summary>
+    private string WhichEntity()
+        => _contradiction is null
+            ? ""
+            : EntityLine + " " + DxccNoteOf(_contradiction)
+              + " A callsign says where it was issued; a grid he sends says where he is.";
+
+    /// <summary>An entity as the second sentence says it: the United States as the lower 48.</summary>
+    private static string InASentence(string entity)
+        => string.Equals(entity, "United States of America", StringComparison.Ordinal)
+            ? LowerFortyEight
+            : EntitySpoken.Of(entity);
+
+    /// <summary>A place on the card's header: `California`, `Lower 48`.</summary>
+    private static string OnTheFace(string place)
+        => place.StartsWith("the ", StringComparison.Ordinal)
+            ? char.ToUpperInvariant(place[4]) + place[5..]
+            : place;
 
     private static string WhereHeIs(
         Ft8CardFacts facts, string? operatorGrid, StationName? who)
@@ -1790,7 +1868,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
         // (Tim, 2026-09-09: `the United States` where the card wants a place). It
         // shortens and never narrows: nothing here names a place below the country,
         // because the callsign gives none and a grid square straddles state lines.
-        var country = entity is null
+        //
+        // **EXCEPT WHERE HIS GRID CONTRADICTS HIS PREFIX** (HM-DEC-180): the grid wins and
+        // the face names where the grid is. `GridPlaces` places a square only where the
+        // whole square lies in one box, so a square that straddles a line is never named.
+        var country = GridPlaces.Contradiction(facts.Callsign, facts.Grid) is { } against
+            ? OnTheFace(against.Where.Place)
+            : entity is null
             ? ""
             : EntitySpoken.Short(EntityQualifier.DescribeFromGrid(entity, facts.Grid));
 

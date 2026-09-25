@@ -1,0 +1,60 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.62]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row [218 ms]
+  Standard Output Messages:
+ IK4LZH -> Mode ""
+ G4XYZ -> Mode "PSK31"
+ W1AW -> Mode "Olivia"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillAndThePageMeanTheSameTests.TheQuillOnAKeyboardRowIsTheSameQuillWithTheSameWordsAsOnAnFt8Row [22 ms]
+  Standard Output Messages:
+ FT8   Door | new area · would open something you have not seen yet
+       reason: A first contact in a new area · working him opens a set of cards you have not seen yet
+       earns : A QSO first. The card comes with it.
+ PSK31 Door | new area · would open something you have not seen yet
+ Olivia Door | new area · would open something you have not seen yet
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillAndThePageMeanTheSameTests.ThePageMovesWhenAnOliviaContactIsLogged [128 ms]
+  Standard Output Messages:
+ Olivia before: "Total 0 pts · Rank 1 · 25 to Rank 2"
+ Olivia after : "Total 46 pts · Rank 2 · 54 to Rank 3"
+   hall_of_fame  0 -> 25
+   continents    0 -> 5
+   countries     0 -> 5
+   states        0 -> 0
+   grids         0 -> 1
+   total_miles   0 -> 0
+   bands         0 -> 5
+   modes         0 -> 5
+ Olivia kinds that moved: hall_of_fame, continents, countries, grids, bands, modes
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillAndThePageMeanTheSameTests.ThePageMovesWhenAPsk31ContactIsLogged [32 ms]
+  Standard Output Messages:
+ PSK31 before: "Total 0 pts · Rank 1 · 25 to Rank 2"
+ PSK31 after : "Total 46 pts · Rank 2 · 54 to Rank 3"
+   hall_of_fame  0 -> 25
+   continents    0 -> 5
+   countries     0 -> 5
+   states        0 -> 0
+   grids         0 -> 1
+   total_miles   0 -> 0
+   bands         0 -> 5
+   modes         0 -> 5
+ PSK31 kinds that moved: hall_of_fame, continents, countries, grids, bands, modes
+
+
+
+Test Run Successful.
+Total tests: 4
+     Passed: 4
+ Total time: 0.9038 Seconds
+RC=0 WALL=2s

@@ -387,3 +387,23 @@ which `CivDecode.DecodePercent` gives as a percent, to `LowUsbLevel = 77` on the
 scale, the same mismatch unit 426 repaired for the RF gain (R65, HM-DEC-172). A level at 50
 percent, where the radio ships, would read as low and be asked to turn up. It is not one of the
 nine fields the CW row states and was not changed. Not blocking.
+
+## P29 - Unit297CardSentenceTests has two reds that predate unit 427
+
+**Found by unit 427, 2026-09-24.** `TheDetailKeepsWhatTheFaceGaveUp` expects *bearing* in the
+card's hover and `NoGridMeansNoDistance` expects *has not put a grid square on the air*; neither
+string is in the card any longer (the second left the source in b12b6425, 2026-09-10; the
+bearing left under Tim's no-bearing ruling). Both are red on the committed tree with unit 427's
+work stashed, so they are not this unit's. The type is on no carry-forward line. Whether the two
+expectations are retired or the words come back is a later unit's. Not blocking.
+
+## P30 - the grid-to-place table is drawn from border coordinates, not from a boundary file
+
+**Found by unit 427, 2026-09-24.** HM-DEC-180 needs to know which entity a grid square is in, and
+nothing in the tree could say. `data/callsigns/grid-places.json` holds twelve boxes - California,
+the lower 48, Alaska, Hawaii - drawn by the unit's author from known border coordinates, each
+with its reason, and a square is placed only where the whole square lies inside one box. It is
+not read from a cited boundary file, it covers only those four places, and a contradiction
+anywhere else (a Canadian call from a US grid, a US call from Puerto Rico) is not caught: the
+prefix stands there as before. Whether to cite a boundary source and widen the table is the
+owner's. Not blocking.

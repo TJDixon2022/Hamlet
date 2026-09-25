@@ -1,0 +1,133 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.AnOliviaCqSaysItWasOliviaAndNotPsk31 [237 ms]
+  Standard Output Messages:
+ Olivia: [Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of Olivia.]
+ PSK31 : [Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 13.3 s of PSK31.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.HisGridStaysOnTheHoverAfterHeHasGoneOnTalking [32 ms]
+  Standard Output Messages:
+ ---- after he signed off ----
+ W1AW
+United States of America
+Grid FN31 · 360 miles east-northeast
+1000 Hz · +10 dB
+Heard since 02:06:27 UTC
+This one is addressed to you.
+He signed off, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
+ -----------------------------
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.TheChosenChipIsTheModeHePressedAndTheOnlyOne(mode: "Olivia") [5 ms]
+  Standard Output Messages:
+ Olivia: FT8     chosen False, lit False, plain True
+ Olivia: FT4     chosen False, lit False, plain True
+ Olivia: PSK31   chosen False, lit True, plain False
+ Olivia: WSPR    chosen False, lit False, plain True
+ Olivia: Olivia  chosen True, lit True, plain False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.TheChosenChipIsTheModeHePressedAndTheOnlyOne(mode: "FT8") [2 ms]
+  Standard Output Messages:
+ FT8: FT8     chosen True, lit False, plain False
+ FT8: FT4     chosen False, lit False, plain True
+ FT8: PSK31   chosen False, lit True, plain False
+ FT8: WSPR    chosen False, lit False, plain True
+ FT8: Olivia  chosen False, lit True, plain False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.TheChosenChipIsTheModeHePressedAndTheOnlyOne(mode: "PSK31") [3 ms]
+  Standard Output Messages:
+ PSK31: FT8     chosen False, lit False, plain True
+ PSK31: FT4     chosen False, lit False, plain True
+ PSK31: PSK31   chosen True, lit True, plain False
+ PSK31: WSPR    chosen False, lit False, plain True
+ PSK31: Olivia  chosen False, lit True, plain False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.TheChosenChipIsTheModeHePressedAndTheOnlyOne(mode: "FT4") [3 ms]
+  Standard Output Messages:
+ FT4: FT8     chosen False, lit False, plain True
+ FT4: FT4     chosen True, lit False, plain False
+ FT4: PSK31   chosen False, lit True, plain False
+ FT4: WSPR    chosen False, lit False, plain True
+ FT4: Olivia  chosen False, lit True, plain False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText [3 ms]
+  Standard Output Messages:
+ ---- the hover ----
+ W1AW
+United States of America
+Grid FN31 · 360 miles east-northeast
+1000 Hz · +10 dB
+Heard since 02:06:27 UTC
+This one is addressed to you.
+He sent a signal report, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
+ -------------------
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.AnOliviaRowReadsTheSameHoverAsAPsk31Row [10 ms]
+  Standard Output Messages:
+ ---- PSK31 ----
+ W1AW
+United States of America
+Grid FN31 · 360 miles east-northeast
+1000 Hz · +10 dB
+Heard since 02:06:27 UTC
+This one is addressed to you.
+He sent a signal report, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
+ ---- Olivia ----
+ W1AW
+United States of America
+Grid FN31 · 360 miles east-northeast
+1000 Hz · Olivia 16/500
+Heard since 02:06:27 UTC
+This one is addressed to you.
+He sent a signal report, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.WhenHisCarrierWentIsSaidOnceItHasGone [4 ms]
+  Standard Output Messages:
+ ---- the hover after it ended ----
+ W1AW
+United States of America
+Grid FN31 · 360 miles east-northeast
+1000 Hz · +10 dB
+Heard since 02:06:27 UTC
+His carrier went at 02:06:27 UTC
+This one is addressed to you.
+He sent a signal report, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
+ ----------------------------------
+
+
+[xUnit.net 00:00:00.51]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.AFactHamletDoesNotHaveIsAbsentRatherThanUnknown [3 ms]
+  Standard Output Messages:
+ ---- the hover ----
+ W1AW
+United States of America
+1400 Hz
+Heard since 02:06:27 UTC
+He is calling CQ, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
+ -------------------
+
+
+
+Test Run Successful.
+Total tests: 10
+     Passed: 10
+ Total time: 0.7662 Seconds
+RC=0 WALL=1s
