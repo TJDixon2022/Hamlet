@@ -265,6 +265,109 @@ public sealed class TheRequirementsAreMeasuredTests
         Assert.All(Real.Concat(Synthetic), m => Assert.True(m.NotComputable is not null || m.Stretches.Count > 0));
     }
 
+    /// <remarks>
+    /// Proves 1.2 and 1.3: MET-CER-SURE (of the characters emitted sure, those
+    /// wrong or added), MET-COVERAGE (sure characters emitted over characters
+    /// sent) and MET-WBE (word boundaries inserted or deleted over words sent,
+    /// scored apart from characters, HM-REQ-082), each over every keyed recording
+    /// per recording and per condition with the key's kind. The classes are the
+    /// decoder's own - sure and placeholder, and a count of named characters below
+    /// high confidence that is nought today - and no dim class is invented. Beside
+    /// MET-WBE, `CwScorer.Kinds`' boundary edits on the same stretches, the
+    /// breakdown it relates to. Asserts only that every recording was measured or
+    /// said why not.
+    /// </remarks>
+    [Fact]
+    public void TheOtherThreeOverEveryKeyedRecording()
+    {
+        _output.WriteLine("MET-CER-SURE = sure characters wrong or added / sure characters emitted (CW_SPEC.md 11); HM-REQ-010 requires below 0.01");
+        _output.WriteLine("MET-COVERAGE = sure characters emitted / characters sent (CW_SPEC.md 11); HM-REQ-012 requires at least 0.90 at the floor");
+        _output.WriteLine("MET-WBE = word gaps inserted or deleted / words sent (CW_SPEC.md 11); HM-REQ-080 requires 0 at 15 dB, HM-REQ-081 at most 0.05 at the floor");
+        _output.WriteLine(
+            "row | recording | set | key | sure emitted | sure wrong | sure added | MET-CER-SURE | sent | sure right | MET-COVERAGE | "
+            + "placeholders | named below high | words sent | inserted | deleted | MET-WBE | Kinds space added | Kinds space missing");
+
+        foreach (var m in Real.Concat(Synthetic))
+        {
+            if (m.NotComputable is { } why)
+            {
+                _output.WriteLine($"row | {m.Name} | {m.Set} | {CwMetrics.KindWord(m.Kind)} | no number: {why}");
+                continue;
+            }
+
+            var e = Sum(m.Stretches.Select(CwMetrics.SureErrors));
+            var c = Sum(m.Stretches.Select(CwMetrics.Coverage));
+            var w = Sum(m.Stretches.Select(CwMetrics.WordBoundaries));
+            var kinds = m.Scores.Select(CwScorer.Kinds).ToList();
+            var decoded = m.Stretches.SelectMany(a => a.Steps).Where(s => s.Decoded is not null).Select(s => s.Decoded!.Value).ToList();
+
+            _output.WriteLine(
+                $"row | {m.Name} | {m.Set} | {CwMetrics.KindWord(m.Kind)} | {e.SureEmitted} | {e.SureWrong} | {e.SureAdded} | {Share(e.Errors, e.SureEmitted)} | "
+                + $"{c.Sent} | {c.SureRight} | {Share(c.SureEmitted, c.Sent)} | "
+                + $"{decoded.Count(s => s.Class == CwSymbolClass.Placeholder)} | {decoded.Count(s => s.Class == CwSymbolClass.NotSure)} | "
+                + $"{w.WordsSent} | {w.Inserted} | {w.Deleted} | {Share(w.Errors, w.WordsSent)} | "
+                + $"{kinds.Sum(k => k.SpaceAdded)} | {kinds.Sum(k => k.SpaceMissing)}");
+        }
+
+        foreach (var (set, measured) in new[] { ("real", Real), ("synthetic", Synthetic) })
+        {
+            _output.WriteLine(
+                $"condition | {set} | condition | key | sure emitted | sure wrong or added | MET-CER-SURE | sent | MET-COVERAGE | words sent | boundaries wrong | MET-WBE | recordings measured");
+
+            foreach (var group in measured.GroupBy(m => m.Condition).OrderBy(g => g.Key, StringComparer.Ordinal))
+            {
+                var stretches = group.Where(m => m.NotComputable is null).SelectMany(m => m.Stretches).ToList();
+                var e = Sum(stretches.Select(CwMetrics.SureErrors));
+                var c = Sum(stretches.Select(CwMetrics.Coverage));
+                var w = Sum(stretches.Select(CwMetrics.WordBoundaries));
+
+                _output.WriteLine(
+                    $"condition | {set} | {group.Key} | {string.Join(" and ", group.Select(m => CwMetrics.KindWord(m.Kind)).Distinct())} | "
+                    + $"{e.SureEmitted} | {e.Errors} | {Share(e.Errors, e.SureEmitted)} | {c.Sent} | {Share(c.SureEmitted, c.Sent)} | "
+                    + $"{w.WordsSent} | {w.Errors} | {Share(w.Errors, w.WordsSent)} | {group.Count(m => m.NotComputable is null)} of {group.Count()}");
+            }
+
+            var all = measured.Where(m => m.NotComputable is null).SelectMany(m => m.Stretches).ToList();
+            var te = Sum(all.Select(CwMetrics.SureErrors));
+            var tc = Sum(all.Select(CwMetrics.Coverage));
+            var tw = Sum(all.Select(CwMetrics.WordBoundaries));
+            var kind = set == "real" ? "inferred keys" : "exact keys";
+
+            _output.WriteLine(
+                $"total | {set} | MET-CER-SURE {te.Errors} wrong or added of {te.SureEmitted} sure ({te.SureWrong} substituted, {te.SureAdded} added), {Share(te.Errors, te.SureEmitted)} | "
+                + $"MET-COVERAGE {tc.SureEmitted} sure over {tc.Sent} sent ({tc.SureRight} right), {Share(tc.SureEmitted, tc.Sent)} | "
+                + $"MET-WBE {tw.Errors} ({tw.Inserted} inserted, {tw.Deleted} deleted) over {tw.WordsSent} words, {Share(tw.Errors, tw.WordsSent)} | {kind}");
+        }
+
+        Assert.Equal(WhatTheStrayLettersRestOnTests.KeyedRecordings.Count, Real.Count);
+        Assert.Equal(SyntheticCq.All.Count, Synthetic.Count);
+        Assert.All(Real.Concat(Synthetic), m => Assert.True(m.NotComputable is not null || m.Stretches.Count > 0));
+    }
+
+    private static CwSureErrors Sum(IEnumerable<CwSureErrors> parts)
+    {
+        var list = parts.ToList();
+
+        return new CwSureErrors(list.Sum(p => p.SureWrong), list.Sum(p => p.SureAdded), list.Sum(p => p.SureEmitted),
+            list.Count == 0 ? CwKeyKind.Inferred : list[0].Kind);
+    }
+
+    private static CwCoverage Sum(IEnumerable<CwCoverage> parts)
+    {
+        var list = parts.ToList();
+
+        return new CwCoverage(list.Sum(p => p.SureEmitted), list.Sum(p => p.SureRight), list.Sum(p => p.Sent),
+            list.Count == 0 ? CwKeyKind.Inferred : list[0].Kind);
+    }
+
+    private static CwBoundaryErrors Sum(IEnumerable<CwBoundaryErrors> parts)
+    {
+        var list = parts.ToList();
+
+        return new CwBoundaryErrors(list.Sum(p => p.Inserted), list.Sum(p => p.Deleted), list.Sum(p => p.WordsSent),
+            list.Count == 0 ? CwKeyKind.Inferred : list[0].Kind);
+    }
+
     private void Table(string set, IReadOnlyList<Measured> measured, Func<Measured, string> condition)
     {
         _output.WriteLine($"condition | {set} | condition | key | invented | sure added | sure wrong | sent | share | recordings measured | recordings with no number");
