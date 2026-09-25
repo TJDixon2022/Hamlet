@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 3 of 3
-WORK_INSTRUCTION: 436 - the estimator checks its dit against its dah
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 3
+WORK_INSTRUCTION: 437 - the window is re-mixed when the mixdown moves
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T09:53:50-04:00
-NOTE: Unit 436 complete and pushed: the dah-over-3 rule read the opening at 18 to 22 WPM but cost 4 keyed floors and 14 capture rows, so it came back out; the pitch still breaks the opening; 7.4 not ticked; output.md written
+UPDATED: 2026-09-25T10:24:49-04:00
+NOTE: Running TheUnitIsMeasuredNotSearchedTests alone, the plateau red recorded only
 
 ---
 

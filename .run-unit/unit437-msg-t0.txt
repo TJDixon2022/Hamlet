@@ -1,0 +1,11 @@
+unit437 task 0: the record - no earlier session live at 09:58 (no dotnet, testhost, unit435- or unit436- process; unit 436's exit committed 09:53:50), nothing waited for; 1.13.123, PHASE_STATUS names unit 437 and CURRENT_STEP 7, UNIT 437 - STEP 7 in PHASE_OUTCOME.md; the launcher's root files committed as they stood; section 5 against the tree, no mismatch; entry round green and every number unit 436's exit
+
+Entry round, one type per invocation: build 0 errors with warnings as errors; engine carry-forward
+178 of 178 in 381 s; app carry-forward 278 of 278 in 155 s; captures 51 of 51 in 121 s;
+adjudicated 13 of 13 in 29 s; keyed floors 13 of 13 in 61 s; keyed totals 1 of 1, 165 over 565;
+WhatTheStrayLettersRestOnTests 3 of 3 in 291 s, 17 added, 8 single; WhatTheOpeningHeardTests
+18 of 18 in 312 s, stream 30 to 46.2 s 22 named, 003901 cold 9 named, 003919 cold 25 named.
+Every output identical to unit 436's exit but for timings.
+TheUnitIsMeasuredNotSearchedTests 4 of 5, TheFiveToEightDecibelPlateauHolds red at entry, recorded only.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 437 - STEP 7
+
+STEP: 7
+APPROACH: re-mix the stream's held window at the new pitch when the mixdown moves - CwProbabilisticStream keeps 12 s of raw audio and, on a move of 25 Hz or more, recomputes the mixed arms and every envelope hop in the window at the new pitch; when and where the mix moves, the refill guard, speed choice, estimator and tracker untouched; replayed offline on the opening first, then built once and judged under 3.2's four tests
+MOVE: work around
+WHY: PHASE_PLAN.md 7.4 needs a change against what 7.3 named. Every recorded route acted on when the mix moves or on how speed is measured; unit 436 measured that from 36.5 s the mix and speed are already right, yet each read's 12 s window still decodes audio mixed 100 Hz off the sender, because the stream mixes each sample once and never again. This re-mixes that window, and it touches neither the tracker's choice (R76) nor any follow rule (R75).
+STATE: partial
+DECIDED: author's, overrulable - the change, its 25 Hz threshold taken from the plan's own tolerance, and its scope (CwProbabilisticStream.cs only, window re-mixed but never emptied or shortened) fixed before the trace; the one stop is an offline replay in which the re-mixed window settles the same characters as the entry on every read from 30 to 46.2 s; one narrower variant, re-mixing only on a move that has stood for two reads, only on a single-row or single-test failure; the plateau red TheFiveToEightDecibelPlateauHolds is recorded at entry and exit and not repaired; the unit waits up to 120 minutes for any live earlier session and never kills it. The report's proposal to hold 7.4 until 4.7 was not taken, because the redirect requires 7.4 and this route is untried. Carried, not ruled: the launcher-overlap ruling, which is the owner's. Standing, not re-ruled: test 1 reads does not rise (unit 430's arbiter), and 7.4 ticks only on a kept change that moves the opening's text (unit 436's arbiter). No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md criteria 7.3 and 7.4, R64, R65, R66, R71, R73, R75, R76 and section 6; PARKED.md P48 with unit 436's measurement of the window reaching back into 525 Hz; unit 429's trace (003f2c98); ARBITER.md sections 4 and 6; HM-DEC-091; HM-DEC-120; HM-DEC-139; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ADVANCES: step 7 criterion 4
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.122 to 1.13.123. PHASE_STATUS.md names unit 437 and CURRENT_STEP 7; the launcher had left CURRENT_STEP 3 and WORK_INSTRUCTION 436 there. HEAD at entry 3980e2a8, unit 436's exit, plus the launcher's uncommitted root and .run-unit files. At 09:58 no dotnet or testhost process and no unit435- or unit436- script was running; unit 436 committed its exit at 09:53:50, so nothing was waited for. 7.4 is unticked, so this unit builds. Section 5 against the tree: Process at CwProbabilisticStream.cs 239 to 270, PushEnvelope at 350 to 407; _mixedI and _mixedQ are _windowSamples long, the integrator's length; _envelope is _windowHops long, 2400 hops of HopMilliseconds 5.0; no raw sample is kept; CwDecoder.cs 617 to 621 is the only assignment to the stream's ToneHz in src. No mismatch.
+
 ## UNIT 436 - STEP 7
 
 STEP: 7
@@ -833,3 +846,21 @@ STATE_WHY: This session stopped at task 0 because another session was already ru
 ADVANCED: no
 ATTEMPT: 7.4 | unit 1 launched 2026-09-25T12:11:53.762Z | no | executed | carry the held speed when the unit estimate halves - at CwProbabilisticStream.cs 431 to 435 a single read whose estimator speed is unusable or departs by more than 1.5 times from the carried speed uses the speed carried within 3.0 s instead of the grid, a departure on two consecutive reads is taken; traced per read on the opening, then built once and judged under 3.2's four tests, mixdown and tracker untouched
 REASON: 7.4 | unit 1 launched 2026-09-25T12:11:53.762Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 2 - STEP 7
+
+STEP: 7
+APPROACH: unit estimator checks its dit cluster against its dah cluster - in CwUnitEstimator.Measure, when the long mark centroid stands more than 4.5 times the short one, the short heap is broken marks and the unit is taken as the long cluster's median over 3; traced per read on the opening, then built once and judged under 3.2's four tests, stream speed choice, grid, mixdown and tracker untouched
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The three questions are about a failing test, how the launcher schedules sessions, and whether to keep seeding 7.4, and none of them touches keying, transmit, the radio's safety, or anything the product promises the operator, so the unit's own recommendations stand.
+MOVE: work around
+WHY: PHASE_PLAN.md 7.4 asks for a change against what 7.3 names. 7.3 named the speed falling to a 27.5 ms unit for a 55 ms sender, and that figure comes from CwUnitEstimator.Measure, which takes the short mark heap as the dit without checking it against the dahs. Every recorded 7.4 route acted downstream of that measurement: four mixdown follow rules, which R75 closes, and the stream's speed carry. This one corrects the measurement where it is made.
+DECIDED: author's, overrulable - the rule and its two numbers, 4.5 and 3, fixed before the trace; the one stop is a ratio test that fires on no read in the stream 30 to 46.2 s or yields no usable speed there; one narrower variant, returning not ready instead of rebuilding from the dah, only on a single-row or single-test failure; test 1 reads does not rise, as unit 430's arbiter decided; a change the opening's text does not move is not kept; 7.4 ticks only on a kept change, superseding P48's closure, otherwise P48 gains the measurement; the unit waits up to 120 minutes for unit 435's still-running first session to end and never kills it, builds on the HEAD it finds, and builds nothing if that session already ticked 7.4; unit 435's second session's launcher question is carried to the owner, not ruled. No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md criteria 7.3 and 7.4, R64, R65, R66, R71, R73, R75, R76 and section 6; PARKED.md P42 and P48; unit 429's trace (003f2c98); unit 430's arbiter decision on test 1; ARBITER.md sections 4 and 6; HM-DEC-091; HM-DEC-139; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+COST: 5.7396482
+ACCOMPLISHED: the first minute on a new frequency is read at the sender's real speed, because the decoder no longer takes pieces of broken marks for his dits, or the project knows the halving is not in the estimator's clustering
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 7.3, 7.5 and 7.7 are ticked and 7.4 is not, because the estimator rule was judged under 3.2's four tests with the opening reported before and after but failed tests 2 and 4 on 4 floors and 14 capture rows and was taken back out, and 7.1, 7.2, 7.6 and 7.8 are still open.
+ADVANCED: no
+ATTEMPT: 7.4 | unit 2 launched 2026-09-25T12:23:34.777Z | no | executed | unit estimator checks its dit cluster against its dah cluster - in CwUnitEstimator.Measure, when the long mark centroid stands more than 4.5 times the short one, the short heap is broken marks and the unit is taken as the long cluster's median over 3; traced per read on the opening, then built once and judged under 3.2's four tests, stream speed choice, grid, mixdown and tracker untouched
+REASON: 7.4 | unit 2 launched 2026-09-25T12:23:34.777Z | the unit ran to completion and the criterion did not flip from unmet to met

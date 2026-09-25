@@ -304,3 +304,6 @@ the owner reads instead of watching.
 | 1 | 2026-09-25T08:20 | 2026-09-25T08:20 | note | none - not a run | no advance - step 7 criterion 4 was unmet and is unmet |
 | 2 | 2026-09-25T08:20 | 2026-09-25T08:20 | note | none - not a run | redirected - no-advance at one criterion: units 6 and 1 both ran against criterion 7.4 and neither moved it. The next instruction must name one of 7.4 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |
 | 2 | 2026-09-25T08:07 | 2026-09-25T08:37 | complete | 2.645685600000001 | ran unattended, 72 turns, 13 denied call(s) worked around, report valid |
+| 2 | 2026-09-25T08:23 | 2026-09-25T09:54 | complete | 5.7396482 | ran unattended, 151 turns, 10 denied call(s) worked around, report valid |
+| 2 | 2026-09-25T09:54 | 2026-09-25T09:54 | note | none - not a run | no advance - step 7 criterion 4 was unmet and is unmet |
+| 3 | 2026-09-25T09:54 | 2026-09-25T09:54 | note | none - not a run | redirected - no-advance at one criterion: units 1 and 2 both ran against criterion 7.4 and neither moved it. The next instruction must name one of 7.4 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |
