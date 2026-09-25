@@ -1,3 +1,4 @@
+using System.Reflection;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Xunit;
@@ -783,5 +784,132 @@ public sealed class WhatTheStrayLettersRestOnTests
             _output.WriteLine(
                 $"verdict | {measure} | added taken before any other single-element character is on the stray side: {clean} of {added.Count}");
         }
+    }
+
+    /// <summary>One settled character and the gap reading the stream read it under.</summary>
+    /// <param name="Character">What settled.</param>
+    /// <param name="Verdict">held, separated or textbook.</param>
+    /// <param name="Gaps">The held gaps, meaningful only when held.</param>
+    private sealed record UnderReading(CwCharacter Character, string Verdict, CwUnitEstimator.CwGapLengths Gaps)
+    {
+        /// <summary>A held reading whose character gap stands at or past its word gap: the one G1 refuses.</summary>
+        public bool OutOfOrder => Verdict == "held" && Gaps.CharacterMilliseconds >= Gaps.WordMilliseconds;
+
+        public string Reading => Verdict == "held"
+            ? $"held | character {Gaps.CharacterMilliseconds:0} ms, word {Gaps.WordMilliseconds:0} ms | "
+              + (OutOfOrder ? "character at or past word" : "in order")
+            : $"{Verdict} | - | -";
+    }
+
+    /// <remarks>
+    /// Proves task 1 of work instruction 431: every added letter on the keyed
+    /// recordings, with its settle time and element count and the
+    /// <c>CwUnitEstimator.MeasureGaps</c> verdict in force when the stream read it -
+    /// held when the stream stood behind the sender's own gaps, separated when the
+    /// latest read found them but the stream did not yet hold them, textbook
+    /// otherwise - and, for a held reading, its character and word gaps and whether
+    /// the character gap stands at or past the word gap, the reading unit 413's G1
+    /// refuses. Then, per keyed recording, every run of characters read under such
+    /// a reading with three characters either side, so the split can be seen. The
+    /// stream's state is read by reflection at the moment each character settles;
+    /// nothing is changed. **Asserts nothing.**
+    /// </remarks>
+    [Fact]
+    public void WhichStraysASplitMade()
+    {
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        var heldField = typeof(CwProbabilisticStream).GetField("_structureHeld", flags)!;
+        var gapsField = typeof(CwProbabilisticStream).GetField("_heldGaps", flags)!;
+        var runField = typeof(CwProbabilisticStream).GetField("_troughRun", flags)!;
+        var added = new List<(string Name, UnderReading Read)>();
+
+        _output.WriteLine(
+            "added | recording | settled at | text | elements | pattern | verdict | held gaps | order");
+
+        foreach (var k in KeyedRecordings)
+        {
+            var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, k.Name + ".wav"));
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var stream = decoder.Stream;
+            var read = new List<UnderReading>();
+
+            decoder.CharacterSettled += c =>
+            {
+                var held = (bool)heldField.GetValue(stream)!;
+
+                read.Add(new UnderReading(
+                    c,
+                    held ? "held" : (int)runField.GetValue(stream)! > 0 ? "separated" : "textbook",
+                    (CwUnitEstimator.CwGapLengths)gapsField.GetValue(stream)!));
+            };
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var settled = read.Select(r => r.Character).ToList();
+            var labels = Labels(settled, k.Score(CwReading.Of(settled)));
+
+            for (var i = 0; i < read.Count; i++)
+            {
+                if (!IsNamed(settled[i]) || labels[i] != Label.Added)
+                {
+                    continue;
+                }
+
+                var c = settled[i];
+
+                added.Add((k.Name, read[i]));
+                _output.WriteLine(
+                    $"added | {k.Name} | {c.At.TotalSeconds:0.000} s | `{c.Text}` | {c.Pattern.Length} | {c.Pattern} | {read[i].Reading}");
+            }
+
+            // The runs read under an out-of-order held reading, with what stands either side.
+            string Text(int from, int to)
+                => string.Concat(Enumerable.Range(from, to - from).Select(j => settled[j].IsWordGap ? "_" : settled[j].Text));
+
+            var outOfOrder = read.Count(r => r.OutOfOrder && IsNamed(r.Character));
+
+            _output.WriteLine(
+                $"runs | {k.Name} | {k.Set} | named {settled.Count(IsNamed)} | named under a held reading {read.Count(r => r.Verdict == "held" && IsNamed(r.Character))} | "
+                + $"named under an out-of-order held reading {outOfOrder} | whole reading `{Text(0, settled.Count)}`");
+
+            for (var i = 0; i < read.Count; i++)
+            {
+                if (!read[i].OutOfOrder || (i > 0 && read[i - 1].OutOfOrder))
+                {
+                    continue;
+                }
+
+                var end = i;
+
+                while (end < read.Count && read[end].OutOfOrder)
+                {
+                    end++;
+                }
+
+                var inRun = Enumerable.Range(i, end - i).Where(j => IsNamed(settled[j])).ToList();
+
+                _output.WriteLine(
+                    $"run | {k.Name} | {settled[i].At.TotalSeconds:0.000} to {settled[end - 1].At.TotalSeconds:0.000} s | "
+                    + $"{read[i].Reading} | before `{Text(Math.Max(0, i - 3), i)}` run `{Text(i, end)}` after `{Text(end, Math.Min(read.Count, end + 3))}` | "
+                    + $"labels {string.Join(" ", inRun.Select(j => $"{settled[j].Text}:{labels[j].ToString().ToLowerInvariant()}"))}");
+            }
+        }
+
+        var single = added.Where(a => a.Read.Character.Pattern.Length == 1).ToList();
+
+        _output.WriteLine(
+            $"count | added {added.Count}, single-element {single.Count} | "
+            + $"added under an out-of-order held reading {added.Count(a => a.Read.OutOfOrder)} | "
+            + $"single-element added under an out-of-order held reading {single.Count(a => a.Read.OutOfOrder)} of {single.Count} | "
+            + "verdicts of the single-element: "
+            + string.Join(", ", single.GroupBy(a => a.Read.OutOfOrder ? "held, out of order" : a.Read.Verdict == "held" ? "held, in order" : a.Read.Verdict)
+                .Select(g => $"{g.Key} {g.Count()}")));
     }
 }

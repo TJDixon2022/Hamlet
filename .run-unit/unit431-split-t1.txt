@@ -1,0 +1,64 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.48]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.68]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.69]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:49.87]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheStrayLettersRestOnTests.WhichStraysASplitMade [48 s]
+  Standard Output Messages:
+ added | recording | settled at | text | elements | pattern | verdict | held gaps | order
+ added | unadjudicated/cw-2026-09-23-173723 | 21.170 s | `E` | 1 | . | held | character 230 ms, word 399 ms | in order
+ added | unadjudicated/cw-2026-09-23-173723 | 22.050 s | `W` | 3 | .-- | held | character 230 ms, word 400 ms | in order
+ added | unadjudicated/cw-2026-09-23-173723 | 22.540 s | `T` | 1 | - | held | character 552 ms, word 295 ms | character at or past word
+ added | unadjudicated/cw-2026-09-23-173723 | 22.720 s | `E` | 1 | . | held | character 552 ms, word 295 ms | character at or past word
+ added | unadjudicated/cw-2026-09-23-173723 | 26.250 s | `E` | 1 | . | held | character 828 ms, word 250 ms | character at or past word
+ added | unadjudicated/cw-2026-09-23-173723 | 26.515 s | `T` | 1 | - | held | character 828 ms, word 250 ms | character at or past word
+ added | unadjudicated/cw-2026-09-23-173723 | 26.820 s | `T` | 1 | - | held | character 828 ms, word 250 ms | character at or past word
+ added | unadjudicated/cw-2026-09-23-173723 | 28.970 s | `7` | 5 | --... | held | character 138 ms, word 436 ms | in order
+ runs | unadjudicated/cw-2026-09-23-173723 | 17:37 | named 46 | named under a held reading 22 | named under an out-of-order held reading 11 | whole reading `_T_EABNIREDWBZ_WB6RED_CQ_CQ_CQ_DEWTEETEEERE_D_ETTTB_7E_E_I`
+ run | unadjudicated/cw-2026-09-23-173723 | 22.540 to 24.395 s | held | character 552 ms, word 295 ms | character at or past word | before `DEW` run `TEETEEE` after `RE_` | labels T:added E:added E:right T:wrong E:wrong E:wrong E:wrong
+ run | unadjudicated/cw-2026-09-23-173723 | 26.250 to 27.350 s | held | character 828 ms, word 250 ms | character at or past word | before `_D_` run `ETTT` after `B_7` | labels E:added T:added T:added T:wrong
+ runs | cw-2026-08-17-013347 | baseline | named 57 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `_E_EI_I_HIAEIHEEEA_E_EEE_HEEIEE_IEE_E_T_E_I_E_E_IEEI_TEEI_T_E_HA_E_WVRR_VA3VRRT___`
+ runs | cw-2026-08-17-134712 | baseline | named 11 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `_____________________I________I■5___NT____N4LZT_K______`
+ runs | unadjudicated/cw-2026-08-18-003758 | baseline | named 43 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `___■R_L_T_U___I_AN_EAND_E_A_ET_EEEETMP/4_QNIKK___EAN_EANQNIK________EAN_E`
+ runs | unadjudicated/cw-2026-08-24-012403 | outside | named 19 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `_DEQ_6Q__Q_DE_KD0UN_KD0UN_K_`
+ added | cw-2026-08-18-004507 | 5.420 s | `O` | 3 | --- | textbook | - | -
+ runs | cw-2026-08-18-004507 | outside | named 49 | named under a held reading 22 | named under an out-of-order held reading 0 | whole reading `E5_I_E_A_T_AR_O_L_D_O_T_N_E_T_<BT>__E_ACH_STATION_HANDLING_THIS_MESSAGE_PE`
+ added | unadjudicated/cw-2026-08-22-031838 | 21.355 s | `T` | 1 | - | textbook | - | -
+ runs | unadjudicated/cw-2026-08-22-031838 | outside | named 40 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `__A_3,_AT3_M,_E2TT_TTTTT_,_AND__■T_TTT_TEAH_A_MEAN_TOF_2_TT____`
+ added | unadjudicated/cw-2026-08-22-031905 | 14.155 s | `I` | 2 | .. | textbook | - | -
+ added | unadjudicated/cw-2026-08-22-031905 | 14.635 s | `A` | 2 | .- | separated | - | -
+ runs | unadjudicated/cw-2026-08-22-031905 | outside | named 36 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `_■_PREDICTED_10.7__IAIEI_TANI___WLUX_IS_125,,__E_T_T`
+ runs | unadjudicated/cw-2026-08-22-031948 | outside | named 31 | named under a held reading 2 | named under an out-of-order held reading 0 | whole reading `____TM_150_110,_AND_110_WITH_A_MEAN_OF_117.W`
+ added | unadjudicated/cw-2026-08-22-032012 | 7.425 s | `.` | 6 | .-.-.- | separated | - | -
+ added | unadjudicated/cw-2026-08-22-032012 | 8.640 s | `1` | 5 | .---- | held | character 164 ms, word 1086 ms | in order
+ runs | unadjudicated/cw-2026-08-22-032012 | outside | named 43 | named under a held reading 30 | named under an out-of-order held reading 9 | whole reading `__T_F_117.1._LINKS_TO_ARTICLESOR_OTHER_WEBSITES_MENTI`
+ run | unadjudicated/cw-2026-08-22-032012 | 16.035 to 20.800 s | held | character 249 ms, word 214 ms | character at or past word | before `O_A` run `RTICLESOR` after `_OT` | labels R:right T:right I:right C:right L:right E:right S:right O:right R:right
+ added | unadjudicated/cw-2026-08-22-032050 | 11.195 s | `T` | 1 | - | textbook | - | -
+ added | unadjudicated/cw-2026-08-22-032050 | 11.545 s | `A` | 2 | .- | textbook | - | -
+ runs | unadjudicated/cw-2026-08-22-032050 | outside | named 44 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `____IULLETIN_CAN_BE_FOTA_ND_IN_TELEWRITTER,_PA■_K_E____■_S_S_T_S_SI_I`
+ runs | unadjudicated/cw-2026-08-22-032113 | outside | named 47 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `___A_KET■_A_N_O_INT_ERNE_T_■_E_ROIONS_OF__200J6___I__NN_I_TT_E_E_I__E_SEE_EIE_E_I`
+ runs | unadjudicated/cw-2026-08-22-032129 | outside | named 65 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `_■_MTMTJ26_PGOPAGATION_EE_EE_EIIEE_I_E_EE_IEEEE_I_HE_EE_I_E_E_S_E_E_E_E_IEEE_E_I_SE_IE_I_E_E_EEI`
+ runs | unadjudicated/cw-2026-09-24-004108 | the ten | named 32 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `_HR_NR_2_0_R_H_X_G_K_E_8_W_G_K_2_6_STMW_OH_SEP19_RIC`
+ runs | unadjudicated/cw-2026-09-24-004133 | the ten | named 28 | named under a held reading 15 | named under an out-of-order held reading 5 | whole reading `1_9_R_I_C_H_ARTETE■E_GEL_K_0_D_T_AT_5_0_0_5_H_■_8_`
+ run | unadjudicated/cw-2026-09-24-004133 | 7.040 to 10.855 s | held | character 341 ms, word 331 ms | character at or past word | before `_AR` run `TETE■E` after `_GE` | labels T:unscored E:unscored T:unscored E:unscored E:unscored
+ runs | unadjudicated/cw-2026-09-24-004205 | the ten | named 34 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `_■_EM_M_AHA_NE_6_8_135_■_EMAIR_F_JU_G_EL_AT_YAH_OO_DOE`
+ runs | unadjudicated/cw-2026-09-24-004234 | the ten | named 36 | named under a held reading 27 | named under an out-of-order held reading 0 | whole reading `E__C_O_M_<BT>_T_HANTT_TK■ET_FOR_ON_HYPP_N_AIR_QSO_WITH_W`
+ runs | unadjudicated/cw-2026-09-24-004322 | the ten | named 39 | named under a held reading 4 | named under an out-of-order held reading 0 | whole reading `__P_O_N_S_ORED_AMERICA_25_9_OPERATION_X_ALL_LOGS_WILA`
+ added | unadjudicated/cw-2026-09-24-004347 | 19.280 s | `O` | 3 | --- | held | character 277 ms, word 461 ms | in order
+ runs | unadjudicated/cw-2026-09-24-004347 | the ten | named 40 | named under a held reading 30 | named under an out-of-order held reading 0 | whole reading `O_G_S_W_ILL_BE_UPLOADED_TO_ARRL_L_OOTW_<BT>_ANTHONY_LUSN`
+ runs | unadjudicated/cw-2026-09-24-004405 | the ten | named 35 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `__T_W_<BT>_A_N_T_HONY_LUSCRE_K_8_Z_T_W1AW/88_■OORDINAT`
+ runs | unadjudicated/cw-2026-09-24-004427 | the ten | named 42 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `■_FOORDINATOR_<AR>N_QSL_TN6TBRE_C_E_DEWI2_G_K88NET_TU_EAT`
+ runs | unadjudicated/cw-2026-09-24-004510 | the ten | named 34 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `__1U_RLTT__S_SB_YAKYAK__E__KA2GJV_TQNV_AA3SB_SE_I`
+ runs | unadjudicated/cw-2026-09-24-004550 | the ten | named 41 | named under a held reading 0 | named under an out-of-order held reading 0 | whole reading `I_N_5_3RN_1_TH_N_B_OTEI_NANX_K_A3HB_DE_KA2_GJV_HW_ROBIN?___T_`
+ count | added 17, single-element 8 | added under an out-of-order held reading 5 | single-element added under an out-of-order held reading 5 of 8 | verdicts of the single-element: held, in order 1, held, out of order 5, textbook 2
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 50.2154 Seconds
+RC=0 WALL=51s

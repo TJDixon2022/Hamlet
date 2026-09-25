@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
-WORK_INSTRUCTION: 430 - the mix that walked off the sender
+TASK: TASK 1 of 4
+WORK_INSTRUCTION: 431 - the split letters joined back, judged under the rules that now allow it
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T02:59:00-04:00
-NOTE: Entry round: WhatTheStrayLettersRestOnTests alone, the added single-element letters
+UPDATED: 2026-09-25T03:05:49-04:00
+NOTE: Task 1: running WhichStraysASplitMade alone - the gap reading each of the 17 added letters was read under
 
 ---
 
