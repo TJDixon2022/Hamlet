@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 4
+TASK: TASK 2 of 4
 WORK_INSTRUCTION: 439 - trace the tests, then build the metrics (run by hand, outside the loop)
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T15:44:41-04:00
-NOTE: Unit 439 by hand, task 0: record written (HM-DEC-183, version 1.13.126, card and outcome); committing
+UPDATED: 2026-09-25T15:49:19-04:00
+NOTE: Unit 439 by hand, task 2: section T extended to all 68 requirements and the red and retired names placed
 
 ---
 

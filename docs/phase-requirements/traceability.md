@@ -53,6 +53,225 @@ instruction 392). Their methods never run; they are traced from source and each 
 | `unclear` | 1 |
 | `none` or `unclear` but on a requirement's subject (measures something else) | 140 |
 | in files not compiled | 53 |
+| requirements | 68 |
+| requirements with at least one proving test | 5 |
+| requirements with none | 63, 60 of them must-tier |
+| requirements with a test that measures something other than what it states | 43, 38 of them with no proving test |
+| requirements with no test on their subject at all | 25 |
+
+## 1. Every requirement and what proves it (section T extended, criterion 0.2)
+
+`CW_REQUIREMENTS.md` section T lists fifteen rows from test names in HM-OPEN-016 and HM-DEC-104.
+This extends it to every requirement id. **Proved by** names the tests that assert what the
+requirement states; **measures something else** names the tests on its subject that do not, and
+their reasons are in section 3's rows.
+
+| requirement | tier | proved by | measures something else | status |
+|---|---|---|---|---|
+| HM-REQ-001 | must | none | - | none - no test on its subject |
+| HM-REQ-002 | must | none | - | none - no test on its subject |
+| HM-REQ-003 | must | none | - | none - no test on its subject |
+| HM-REQ-004 | must (pending ruling) | none | - | none - no test on its subject |
+| HM-REQ-005 | must | `CwEmissionGateTests.HalfAMinuteOfNoiseProducesNothing` | `CwLowDutyTests.AnEmptyBandStillReadsAsEmpty`, `CwToneSurveyTests.NoKeyingIsClaimedWhereNoneWasFound`, `DoesAStrongSignalClearEightyPercentTests.AndAudioHoldingNoStationStillEmitsNothing`, `EachCharacterAnswersForItselfTests.AudioHoldingNoStationStillEmitsNothing`, `EveryCharacterCarriesItsOwnEvidenceTests.AudioHoldingNoStationCarriesNoSpanRatios`, `NothingIsReadFromAudioWithNoKeyingTests.NeitherPressProducesMoreThanItDid`, `SentTextNeverEntersTheReceivedStreamTests.ADecodedCharacterCarriesThePatternItWasReadFrom`, `TheEmitDecisionTable.Write`, `TheFirstSecondsAreReadAgainTests.AnEmptyBandIsNeverReadAgain`, `TheGateHasItsOwnWindowNowTests.EveryWidthLeavesTheEmptyRecordingsSilent`, `TheNoiseScaleTable.Write`, `TheProbabilisticDecoderTests.ARecordingWithNoStationInItSaysNothing`, `TheProbabilisticDecoderTests.NothingIsSettledFromAnEmptyBandLive`, `TheSilencePropertyIsLockedTests.ACaptureHoldingNoStationEmitsNoLetters`, `TheSilencePropertyIsLockedTests.AnAllZeroBufferEmitsNothing`, `WhatBandwidthTheDecoderListensThroughTests.HoldingItLongStillSaysNothingAboutAnEmptyBand`, `WhereAcquisitionPointsTests.ARecordingHoldingNothingEmitsNothing` | proved |
+| HM-REQ-006 | must | none | `TheSilencePropertyIsLockedTests.ACaptureHoldingNoStationEmitsNoLetters` | none - only tests that measure something else |
+| HM-REQ-007 | must | none | `CaseRosterSurvivesAnEveningTests.AnEmptyTranscriptSaysSoRatherThanLeavingItBlank`, `CwDiagnosisTests.AToneThatWillNotResolveReadsDifferentlyFromAnEmptyBand`, `ScanStopClassifierTests.SilenceIsNotTheSameAnswerAsAnUnreadableSignal`, `TheSwingIsTheFigureThatHoldsTests.TheTranscriptCellSaysWhatItCovers` | none - only tests that measure something else |
+| HM-REQ-008 | must | none | - | none - no test on its subject |
+| HM-REQ-009 | must | none | `CwDiagnosisTests.NothingItSaysIsAClaimAboutAnybody`, `CwInterferenceNotesTests.TheCopySaysWhatWasMeasuredAndNoMore`, `TheOperatorIsToldAboutASecondStationTests.TheSentenceNamesTheControlAndOffersToChangeNothing`, `TheSheetSaysWhatEachElementWasSentAtTests.TheLineNeverSaysTwoOperators` | none - only tests that measure something else |
+| HM-REQ-010 | must | none | `TheSeventeenThirtySevenCaptureTests.NothingBelowTheBarIsPrinted` | none - only tests that measure something else |
+| HM-REQ-011 | must | `CwFixtureTests.TheProsignRecordingDecodesItsProsigns`, `CwFixtureTests.NothingTheDecoderWasSureOfIsWrong` | `CapturedSignalTests.NothingIsInventedFromWhatCannotBeRead`, `CwReceiverFixtureTests.TheEdgeTierCopiesOrRefusesButNeverGuesses`, `CwSensitivityTests.ItGoesQuietRatherThanInventingLettersInTheNoise` | proved |
+| HM-REQ-012 | must | none | `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage`, `CwFixtureTests.EveryRecordingGivesBackTheShareItShould` | none - only tests that measure something else |
+| HM-REQ-013 | must | none | `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`, `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp`, `CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot`, `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage`, `CwFixtureTests.TheCleanRecordingsDecodeExactly`, `CwReceiverFixtureTests.TheEasyTierIsReadWhole`, `EachCharacterAnswersForItselfTests.ACleanSignalStillReadsWholeWithNothingMarked` | none - only tests that measure something else |
+| HM-REQ-014 | must | none | - | none - no test on its subject |
+| HM-REQ-015 | must | none | `ScannerEndToEndTests.ADwellReachesTheDecoderAndTheVerdictCarriesItsConfidence` | none - only tests that measure something else |
+| HM-REQ-020 | must | none | `CwSensitivityTests.TheDecoderReadsAsFarDownAsItDidBefore` | none - only tests that measure something else |
+| HM-REQ-021 | must | none | - | none - no test on its subject |
+| HM-REQ-022 | must | none | `CwAdjudicationTests.BelowTheFloorItStaysQuiet`, `CwSensitivityTests.ItGoesQuietRatherThanInventingLettersInTheNoise` | none - only tests that measure something else |
+| HM-REQ-023 | must | none | - | none - no test on its subject |
+| HM-REQ-030 | must | none | `CwAdjudicationTests.AFastFistInRealisticAudio`, `CwEmissionGateTests.TheBoundsAreTheRadiosOwn` | none - only tests that measure something else |
+| HM-REQ-031 | must | `CwFixtureTests.TheCleanRecordingsDecodeExactly` | `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom`, `CwSpeedSilenceTests.NoSpeedFasterThanEitherStationIsNamed`, `CwSpeedSilenceTests.OneStationsSpeedIsStillNamed`, `TheUnitIsMeasuredNotSearchedTests.ItRecoversASpeedItWasNeverTold` | proved |
+| HM-REQ-032 | must (threshold TBD) | none | `CwAdjudicationTests.ASpeedChangeInRealisticAudio`, `CwTwoStationTests.NoSingleClockIsFittedAcrossBothStations`, `CwTwoStationTests.TheChangeOfStationIsNoticedRatherThanAveraged` | none - only tests that measure something else |
+| HM-REQ-033 | must | none | `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp`, `TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold` | none - only tests that measure something else |
+| HM-REQ-034 | must | none | `AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh`, `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom`, `CwSpeedSilenceTests.NoSpeedBetweenTwoStationsIsEverNamed`, `CwSpeedSilenceTests.TheReacquiringStateIsReadable`, `TheUnitIsMeasuredNotSearchedTests.ItSaysNothingWhenThereIsNothingToMeasure` | none - only tests that measure something else |
+| HM-REQ-035 | must | none | `CwAdjudicationTests.ClearingTheScreenLeavesTheDecoderAloneOnRealisticAudio` | none - only tests that measure something else |
+| HM-REQ-036 | must | none | `CwRefiningRetuneTests.TheSurveySettlingBetweenTwoBinsIsNotAStationChange`, `WhenTheWindowIsEmptiedTests.ASmallerMoveDoesNot` | none - only tests that measure something else |
+| HM-REQ-040 | must | none | - | none - no test on its subject |
+| HM-REQ-041 | must | none | - | none - no test on its subject |
+| HM-REQ-042 | should | none | - | none - no test on its subject |
+| HM-REQ-043 | must | none | - | none - no test on its subject |
+| HM-REQ-044 | must | none | `CwAdjudicationTests.AFadeInRealisticAudio` | none - only tests that measure something else |
+| HM-REQ-050 | must | none | `CwReceiverFixtureTests.TheEasyTierIsReadWhole`, `TheCleanReadsStayCleanTests.EachCleanCaptureStillContainsItsTruth` | none - only tests that measure something else |
+| HM-REQ-051 | must | none | - | none - no test on its subject |
+| HM-REQ-052 | should | none | - | none - no test on its subject |
+| HM-REQ-053 | later | none | - | none - no test on its subject |
+| HM-REQ-054 | must | none | - | none - no test on its subject |
+| HM-REQ-060 | must | none | `ThePeakAgainstASecondSignalTests.WhereThePeakSwitchesFromOneStationToTheOther` | none - only tests that measure something else |
+| HM-REQ-061 | must | none | - | none - no test on its subject |
+| HM-REQ-062 | must | none | `CwSurveyThresholdPinTests.FindingTheToneIsNotClaimingSomebodyIsSending`, `CwToneSurveyTests.ACarrierNeverConvincesTheTrackerItIsAStation`, `ScannerEndToEndTests.TheSurveyPrefersSomebodySendingToTheLoudestThingOnTheBand` | none - only tests that measure something else |
+| HM-REQ-063 | must | none | - | none - no test on its subject |
+| HM-REQ-064 | must | none | `CwTrackerSwitchTests.NoSwitchHappensPartWayThroughACharacter`, `CwTwoStationTests.NothingIsInventedAtTheHandover` | none - only tests that measure something else |
+| HM-REQ-065 | must (threshold TBD) | none | `CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage` | none - only tests that measure something else |
+| HM-REQ-066 | must | `TheOperatorIsToldAboutASecondStationTests.ASecondStationInThePassbandIsFoundAndMeasured` | `TheOperatorIsToldAboutASecondStationTests.AStationOnItsOwnProducesNoMentionAtAll`, `TheOperatorIsToldAboutASecondStationTests.AnEmptyBandIsNotReportedAsClear`, `TheRestOfTheSheetIsTrueTests.TheCompetingLineDoesNotCallAnUnkeyedToneKeyed` | proved |
+| HM-REQ-070 | must | none | - | none - no test on its subject |
+| HM-REQ-071 | must | none | `CwFixtureTests.TheProsignRecordingDecodesItsProsigns` | none - only tests that measure something else |
+| HM-REQ-072 | must | none | - | none - no test on its subject |
+| HM-REQ-073 | must | none | - | none - no test on its subject |
+| HM-REQ-080 | must | none | `CwReceiverFixtureTests.TheEasyTierIsReadWhole`, `WhereTheWordsBreakTests.EveryInsertedSpaceIsTraced` | none - only tests that measure something else |
+| HM-REQ-081 | must | none | - | none - no test on its subject |
+| HM-REQ-082 | must | none | `TheBaselineIsScoredTests.TheErrorKindsArePrinted`, `TheScorerCountsWhatAHandCountsTests.EachKindIsCountedWhereAHandCountsIt`, `TheSyntheticCqIsScoredTests.EachCaseIsScoredAgainstItsExactKey` | none - only tests that measure something else |
+| HM-REQ-083 | must | none | - | none - no test on its subject |
+| HM-REQ-084 | must | none | `TheReworkNumbersPrinterTests.TheNumbersOf013637`, `TheReworkNumbersPrinterTests.TheNumbersOf021410` | none - only tests that measure something else |
+| HM-REQ-090 | must | none | `CapturedSignalTests.TheToneIsFound`, `CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio`, `CwDisplacementFloorTests.AStationElsewhereIsStillFound`, `CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead`, `CwLowDutyTests.TheToneIsFoundWhereItActuallyIs`, `CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio`, `CwSurveyThresholdPinTests.TheSurveyStillFindsRealKeyingWhereThereIsSome` | none - only tests that measure something else |
+| HM-REQ-091 | must | none | `ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis`, `AStationIsABinThatSwingsTests.TheNoisePickNoLongerWins`, `AStationIsABinThatSwingsTests.TheRefusedCqIsFoundNearFiveEightyThree`, `CwToneSurveyTests.TheStationAnsweringACallIsFoundByItsKeying`, `ThePitchControlsAreOffThePanelTests.TheEngineStillCarriesTheCapability`, `TheQuietestBinNoLongerWinsTests.TheStationWinsTheBand` | none - only tests that measure something else |
+| HM-REQ-092 | must (threshold TBD) | none | `CapturedSignalTests.TheToneIsFound`, `CwLowDutyTests.TheToneIsFoundWhereItActuallyIs`, `CwReceiverFixtureTests.TheToneIsFoundInRealisticAudio`, `CwTwoStationTests.TheTrackerFollowsTheStationThatAnswers`, `EveryElementCarriesItsOwnPitchTests.ADahResolvesToAboutFiveHertz`, `ThePeakFindsThePitchTheTrackerMissedTests.AGeneratedToneIsFoundToWithinAHertz`, `ThePeakFindsThePitchTheTrackerMissedTests.ThePeakAgreesWithTheKeyedBin`, `ThePitchCanBeHeldTests.TheMeasuredPeakLandsBetweenTheBins`, `TheTwoPitchesTableTests.EveryCaseIsTabled`, `WhereAcquisitionPointsTests.WhereTheTrackerEndsUpOnTheFour` | none - only tests that measure something else |
+| HM-REQ-093 | must | none | `AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesThePitchMeasuredBeforeIt`, `TheSheetSaysWhatEachElementWasSentAtTests.AnUnmeasuredPitchSaysSoRatherThanPrintingNumbers` | none - only tests that measure something else |
+| HM-REQ-094 | must | `HamletDoesNotDecodeYourOwnSendingTests.NothingIsDecodedWhileTheRadioIsTransmitting`, `HamletDoesNotDecodeYourOwnSendingTests.BreakInCyclingDoesNotCostTheStation`, `HamletDoesNotDecodeYourOwnSendingTests.NothingHeardWhileSendingIsReleasedAfterwards` | `CwReceiverFixtureTests.NothingIsEmittedDuringTheOperatorsOwnTransmission`, `CwToneSurveyTests.TheStationAnsweringACallIsFoundByItsKeying`, `CwTransmitGuardTests.AMutedReceiverIsRecognized`, `CwTransmitGuardTests.TheGuardHoldsPastTheMomentTheAudioReturns`, `HamletDoesNotDecodeYourOwnSendingTests.DecodingResumesWhenTheTransmitterDrops`, `HamletDoesNotDecodeYourOwnSendingTests.NotKnowingIsNotTransmitting`, `HamletDoesNotDecodeYourOwnSendingTests.SuspensionIsImmediateAndResumptionWaits`, `SentTextNeverEntersTheReceivedStreamTests.OnlyTheDecoderCanWriteToTheTranscript`, `SentTextNeverEntersTheReceivedStreamTests.TheSendPathHandsTextToTheRadioAndNowhereElse` | proved |
+| HM-REQ-100 | must | none | - | none - no test on its subject |
+| HM-REQ-101 | must | none | `TheProbabilisticDecoderTests.ItKeepsUpWithLiveAudio` | none - only tests that measure something else |
+| HM-REQ-102 | must | none | `TheRefillGuardActuallyRunsTests.AStreamFedLessThanARefillReadsNothingAtAll` | none - only tests that measure something else |
+| HM-REQ-103 | must | none | `CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot`, `TheFirstSecondsAreReadAgainTests.TheCallsignTheReReadRecovers` | none - only tests that measure something else |
+| HM-REQ-110 | must | none | `CwLowDutyTests.AStationKeyedForAMomentReadsAsAStrongStation` | none - only tests that measure something else |
+| HM-REQ-111 | must | none | - | none - no test on its subject |
+| HM-REQ-112 | must | none | `AHeldPitchDoesNotOutliveItsEvidenceTests.MovingTheDialReleasesTheHeldPeakToo`, `TheRestOfTheSheetIsTrueTests.TheClippingLineNamesTheStretchItCovers`, `TheRestOfTheSheetIsTrueTests.TheInputFloorSaysItIsTheMetersRunningFloor`, `TheRestOfTheSheetIsTrueTests.TheMeasuredPitchSaysItIsTheBinItWasAdmittedIn`, `TheRestOfTheSheetIsTrueTests.TheReadingLineSaysWhenItWasRead`, `TheSwingIsTheFigureThatHoldsTests.TheRosterColumnSaysWhatItMeasures` | none - only tests that measure something else |
+| HM-REQ-113 | must | none | `TheRestOfTheSheetIsTrueTests.TheReadingLinePrintsTheGateAsItIs` | none - only tests that measure something else |
+| HM-REQ-114 | must | none | `CwCaseCountsSayWhatTheyCountTests.CountsAboutTheRecordingAreStatedPlainly`, `CwCounterTrailTests.ARecordingWithNothingInItReportsNothing`, `CwCounterTrailTests.AWindowCountsOnlyWhatHappenedInsideIt`, `CwCounterTrailTests.AWindowTheHistoryCannotCoverIsNotGivenANumber`, `CwCounterTrailTests.TheStartOfListeningIsAMeasurementLikeAnyOther`, `RecordDisciplineTests.ADecodeWindowCannotCarryDecodedText`, `RecordDisciplineTests.TheDecoderAggregationDoesNotAllocatePerCharacter`, `TheRestOfTheSheetIsTrueTests.TheCharactersCountSaysItRunsFromTheDecodersStartAfterAClear`, `TheRestOfTheSheetIsTrueTests.TheElementsCountSaysItRunsFromTheDecodersStartAfterAClear`, `TheRestOfTheSheetIsTrueTests.TheFirstSinceLastSaysItRunsFromTheDecodersStartAfterAClear`, `TheSheetDoesNotLieAboutArithmeticTests.AWindowSpanningAResetIsNotDerived`, `TheSheetDoesNotLieAboutArithmeticTests.AnyCounterGoingBackwardsRefusesTheWindow` | none - only tests that measure something else |
+| HM-REQ-115 | must | none | `CwCaseCountsSayWhatTheyCountTests.ARowThatDoesNotSayIsTakenToBeTheWholeEvening`, `CwCaseCountsSayWhatTheyCountTests.CountsAboutTheEveningSayThatOnTheRow`, `CwCaseCountsSayWhatTheyCountTests.CountsWithNoRecordingBehindThemSaySo`, `TheRestOfTheSheetIsTrueTests.TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch`, `TheSidecarDoesNotContradictItselfTests.ANoKeyingLineDoesNotCountKeyDowns`, `TheSidecarDoesNotContradictItselfTests.TheElementPitchLineDoesNotDenyTheElementsAboveIt` | none - only tests that measure something else |
+| HM-REQ-116 | must | none | `CapturedSignalTests.TheSignalReadsAsStrongAsItIs`, `CwLowDutyTests.AStationKeyedForAMomentReadsAsAStrongStation`, `CwSurveyThresholdPinTests.TheToneInTheInterferenceCaptureIsStillFound`, `TheSwingIsTheFigureThatHoldsTests.TheHeldTonePeakRatesSilenceAboveAReadableStation`, `TheTonePeakIsAboutThisRecordingTests.TheNumberIsMeasuredOverThisRecording`, `TheTonePeakIsAboutThisRecordingTests.WithNoMeasuredPitchTheLineSaysSoAndPrintsNoNumber` | none - only tests that measure something else |
+
+### The `none` rows by section - where the next steps are emptiest
+
+| section | requirements | with no proving test | of which no test on the subject at all | ids with no proving test |
+|---|---|---|---|---|
+| A. Honesty of the record | 9 | 8 | 5 | 001 002 003 004 006 007 008 009 |
+| B. Confidence | 6 | 5 | 1 | 010 012 013 014 015 |
+| C. Refusal and sensitivity | 4 | 4 | 2 | 020 021 022 023 |
+| D. Speed | 7 | 6 | 0 | 030 032 033 034 035 036 |
+| E. Channel and fading | 5 | 5 | 4 | 040 041 042 043 044 |
+| F. Sender profiles | 5 | 5 | 4 | 050 051 052 053 054 |
+| G. Interference | 7 | 6 | 2 | 060 061 062 063 064 065 |
+| H. Character set | 4 | 4 | 3 | 070 071 072 073 |
+| I. Word boundaries | 5 | 5 | 2 | 080 081 082 083 084 |
+| J. Pitch | 5 | 4 | 0 | 090 091 092 093 |
+| K. Acquisition time and latency | 4 | 4 | 1 | 100 101 102 103 |
+| L. Signal measurements reported | 7 | 7 | 1 | 110 111 112 113 114 115 116 |
+
+### Where this table and section T of `CW_REQUIREMENTS.md` differ
+
+Section T is the requirements document's own and is not edited here; where the two differ, the
+difference is a finding for the owner rather than a correction.
+
+- **064**: T says `NothingIsInventedAtTheHandover` exists. It does, and it allows up to half of what
+  is emitted to be characters never sent, where 064 allows none: it measures something else.
+- **044, 090, 032, 083, 036, 020, 022, 013**: T records a test as existing for each. None of those
+  tests asserts the requirement's own threshold or range, so each is `measures something else` here
+  (044's threshold is unset, 090 stops at 400 to 875 Hz, 032's N is unruled, 020 and 022 are not in
+  the 2500 Hz reference, 013's easy tier strips the spaces). T itself says most of this in its
+  status column.
+- **011**: T says none. Two tests prove it on synthetic fixtures (`CwFixtureTests.NothingTheDecoderWasSureOfIsWrong`,
+  `TheProsignRecordingDecodesItsProsigns`): no sure character wrong or invented against the exact
+  text. On the keyed recordings it is measured, not proved, by task 3.
+- **094, 066, 005, 031**: T does not list them; a test proves each.
+
+## 2. The red, known-red and retired names (criterion 0.3)
+
+Placed, not repaired, retired or restored (HM-DEC-103). A `[Theory]` case is placed by its method.
+
+### `docs/unit239-failing-set.txt` - 51 names
+
+The file holds 51 test names and a closing line. That line records the CW phase closing them out on 2026-09-23: 31 green at HEAD without repair, 17 repaired, 0 retired and 3 parked (#15, #43 and #44). Each name is placed by the classification of its method in section 3.
+
+| # | name | requirement it is evidence for | measures something else |
+|---|---|---|---|
+| 1 | `ABlipDoesNotShiftEverythingAfterItTests.ASubMinimumBlipInAGapChangesNothingAfterIt` | none | - |
+| 2 | `ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis(startHz: 500)` | none | HM-REQ-091 (start pitch 600/550/500 converges to 500 on one capture; no carrier case, truth from an instrument not a key) |
+| 3 | `ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis(startHz: 550)` | none | HM-REQ-091 (start pitch 600/550/500 converges to 500 on one capture; no carrier case, truth from an instrument not a key) |
+| 4 | `ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis(startHz: 600)` | none | HM-REQ-091 (start pitch 600/550/500 converges to 500 on one capture; no carrier case, truth from an instrument not a key) |
+| 5 | `CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-134712")` | none | HM-REQ-116 (floor of 15 dB on captures, not within 1 dB of a known synthetic level) |
+| 6 | `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 25, floor: 0.79000000000000004)` | none | HM-REQ-033 (share of correct characters at least 0.78-0.79 at 25-35 WPM, not speed acquired); HM-REQ-013 (18 dB share-floor ratchet, not every character sure and correct) |
+| 7 | `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 28, floor: 0.79000000000000004)` | none | HM-REQ-033 (share of correct characters at least 0.78-0.79 at 25-35 WPM, not speed acquired); HM-REQ-013 (18 dB share-floor ratchet, not every character sure and correct) |
+| 8 | `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 30, floor: 0.79000000000000004)` | none | HM-REQ-033 (share of correct characters at least 0.78-0.79 at 25-35 WPM, not speed acquired); HM-REQ-013 (18 dB share-floor ratchet, not every character sure and correct) |
+| 9 | `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 35, floor: 0.78000000000000003)` | none | HM-REQ-033 (share of correct characters at least 0.78-0.79 at 25-35 WPM, not speed acquired); HM-REQ-013 (18 dB share-floor ratchet, not every character sure and correct) |
+| 10 | `CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 25)` | none | HM-REQ-013 (share at least 0.80 at 18 dB, not whole-sure pass/fail); HM-REQ-103 (share floor, not zero opening characters lost) |
+| 11 | `CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 28)` | none | HM-REQ-013 (share at least 0.80 at 18 dB, not whole-sure pass/fail); HM-REQ-103 (share floor, not zero opening characters lost) |
+| 12 | `CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 30)` | none | HM-REQ-013 (share at least 0.80 at 18 dB, not whole-sure pass/fail); HM-REQ-103 (share floor, not zero opening characters lost) |
+| 13 | `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 18)` | none | HM-REQ-012 (correct share at least 0.66, not sure coverage 0.90 at the sensitivity floor); HM-REQ-013 (18 dB rows at 0.66, not whole) |
+| 14 | `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 3)` | none | HM-REQ-012 (correct share at least 0.66, not sure coverage 0.90 at the sensitivity floor); HM-REQ-013 (18 dB rows at 0.66, not whole) |
+| 15 | `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 18)` | none | HM-REQ-012 (correct share at least 0.66, not sure coverage 0.90 at the sensitivity floor); HM-REQ-013 (18 dB rows at 0.66, not whole) |
+| 16 | `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 3)` | none | HM-REQ-012 (correct share at least 0.66, not sure coverage 0.90 at the sensitivity floor); HM-REQ-013 (18 dB rows at 0.66, not whole) |
+| 17 | `CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 6)` | none | HM-REQ-012 (correct share at least 0.66, not sure coverage 0.90 at the sensitivity floor); HM-REQ-013 (18 dB rows at 0.66, not whole) |
+| 18 | `CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400)` | none | HM-REQ-090 (only 400-875 Hz, not 300 and 900) |
+| 19 | `CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 500)` | none | HM-REQ-090 (only 400-875 Hz, not 300 and 900) |
+| 20 | `CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 750)` | none | HM-REQ-090 (only 400-875 Hz, not 300 and 900) |
+| 21 | `CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 875)` | none | HM-REQ-090 (only 400-875 Hz, not 300 and 900) |
+| 22 | `CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead` | none | HM-REQ-090 (one pitch, 400 Hz, from cold) |
+| 23 | `CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage` | none | HM-REQ-065 (one candidate, the station's own image about 35 dB down over a 0.005 band; N is not ruled so the requirement's threshold is not tested) |
+| 24 | `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom` | none | HM-REQ-034 (speed is null on noise, not a three-valued proof state); HM-REQ-031 (18 WPM read accepted anywhere in 14-24, far looser than 10 %) |
+| 25 | `CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm")` | none | HM-REQ-012 (per-fixture readable share of 0.25-1.0 counting dim as read, not MET-COVERAGE >= 0.90 sure at the floor) |
+| 26 | `CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm")` | none | HM-REQ-012 (per-fixture readable share of 0.25-1.0 counting dim as read, not MET-COVERAGE >= 0.90 sure at the floor) |
+| 27 | `CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm")` | none | HM-REQ-012 (per-fixture readable share of 0.25-1.0 counting dim as read, not MET-COVERAGE >= 0.90 sure at the floor) |
+| 28 | `CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm")` | none | HM-REQ-012 (per-fixture readable share of 0.25-1.0 counting dim as read, not MET-COVERAGE >= 0.90 sure at the floor) |
+| 29 | `CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm")` | none | HM-REQ-012 (per-fixture readable share of 0.25-1.0 counting dim as read, not MET-COVERAGE >= 0.90 sure at the floor) |
+| 30 | `CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm")` | none | HM-REQ-012 (per-fixture readable share of 0.25-1.0 counting dim as read, not MET-COVERAGE >= 0.90 sure at the floor) |
+| 31 | `CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")` | HM-REQ-031 | HM-REQ-013 (clean-12/18wpm sit near 27 dB in the 2500 Hz reference, not at 15 dB) |
+| 32 | `CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")` | HM-REQ-031 | HM-REQ-013 (clean-12/18wpm sit near 27 dB in the 2500 Hz reference, not at 15 dB) |
+| 33 | `CwFixtureTests.TheProsignRecordingDecodesItsProsigns` | HM-REQ-011 | HM-REQ-071 (only BT and SK checked, not all seven prosigns of the row) |
+| 34 | `CwLowDutyTests.AStationKeyedForAMomentReadsAsAStrongStation` | none | HM-REQ-116 (reported SNR >= 20 dB lower bound, not within 1 dB of truth); HM-REQ-110 (infers keyed-time noise reference only from the figure being high) |
+| 35 | `CwLowDutyTests.TheHeldFigureLetsGoWhenTheStationStops` | none | - |
+| 36 | `CwLowDutyTests.TheToneIsFoundWhereItActuallyIs` | none | HM-REQ-092 (within 25 Hz, not the recommended 5 Hz); HM-REQ-090 (575-700 Hz only, not 300-900) |
+| 37 | `CwRefiningRetuneTests.AHandoverToAnotherStationStillResets` | none | - |
+| 38 | `CwRefiningRetuneTests.AMoveBeforeAnythingHasBeenReadIsAFollow` | none | - |
+| 39 | `CwRefiningRetuneTests.TheSurveySettlingBetweenTwoBinsIsNotAStationChange` | none | HM-REQ-036 (counts tracker Retunes vs Follows and a VA3VRR substring on one capture, not timing state retained under a +-10 Hz refine) |
+| 40 | `CwSurveyThresholdPinTests.TheToneInTheInterferenceCaptureIsStillFound` | none | HM-REQ-116 (SnrDb >= 15 lower bound, not within 1 dB of truth) |
+| 41 | `Fixtures.CwAdjudicationTests.ASpeedChangeInRealisticAudio` | none | HM-REQ-032 (asserts only that some speed was named; no characters-to-new-estimate bound) |
+| 42 | `Fixtures.CwReceiverFixtureTests.NothingIsEmittedDuringTheOperatorsOwnTransmission` | none | HM-REQ-094 (asserts zero characters emitted during own transmit and the guard saw over 3 s, not that received-station state is unchanged) |
+| 43 | `Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "coverage-easy")` | none | HM-REQ-013 HM-REQ-050 HM-REQ-080 (spaces stripped so MET-WBE unchecked; run-up excluded and leading insertions tolerated by EndsWith; SNR stated in the passband not the 2500 Hz reference) |
+| 44 | `Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "exchange-easy")` | none | HM-REQ-013 HM-REQ-050 HM-REQ-080 (spaces stripped so MET-WBE unchecked; run-up excluded and leading insertions tolerated by EndsWith; SNR stated in the passband not the 2500 Hz reference) |
+| 45 | `Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "tightfist-easy")` | none | HM-REQ-013 HM-REQ-050 HM-REQ-080 (spaces stripped so MET-WBE unchecked; run-up excluded and leading insertions tolerated by EndsWith; SNR stated in the passband not the 2500 Hz reference) |
+| 46 | `OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-23-001952")` | none | - |
+| 47 | `OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-012922")` | none | - |
+| 48 | `OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-005051")` | none | - |
+| 49 | `TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001520", characters: 5, elements: 45, unsure: 1)` | none | - |
+| 50 | `TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013637", characters: 63, elements: 164, unsure: 3)` | none | - |
+| 51 | `ThePitchCanBeHeldTests.UnlockingLetsTheTrackerSteerAgain` | none | - |
+
+### The known-reds block of `docs/carry-forward-tests.txt` - 7 entries, no CW test named
+
+| line | requirement it is evidence for |
+|---|---|
+| `CW: none`, the CW line since unit 401, naming no test | none: it names no test |
+| the `Ft8Sharp.Deep.Tests` whole-type-list tripwire | none: FT8, not CW |
+| HM-OPEN-088's ten | none: not CW |
+| `TheAchievementsScreenTests.WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` | none: not CW |
+| `TheAchievementsScreenTests.TheWindowDrawsEverySixRows` | none: not CW |
+| `TheFitGuardAsksAboutTheGridTheSendIsOnTests` (engine) | none: not CW |
+| unit 320's item 46 | none: not CW |
+
+
+### `docs/cw-retired-tests.txt` - 20 names
+
+Retired under R49 by unit 398 on 2026-09-23. Each method no longer exists in the tree, so each was read from the commit that last held it. **None proved a must-tier requirement, so none is a finding under this criterion.**
+
+| name | requirement it was evidence for | note |
+|---|---|---|
+| `TheScoreSaysWhatItIsMeasuringTests.APerfectReadScoresOne` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `TheScoreSaysWhatItIsMeasuringTests.ABlockIsADeletionAndNotASubstitution` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `TheScoreSaysWhatItIsMeasuringTests.RefusingEverythingYieldsNothing` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `TheScoreSaysWhatItIsMeasuringTests.OnlyTheSpanWithTruthIsScored` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `TheScoreSaysWhatItIsMeasuringTests.InsertionsAndDeletionsAreCountedApart` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `TheScoreSaysWhatItIsMeasuringTests.NothingReadIsScoredAsEveryCharacterLost` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `TheScoreSaysWhatItIsMeasuringTests.SpacingIsNormalizedRatherThanScored` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `TheScoreSaysWhatItIsMeasuringTests.TheScoreIsDeterministic` | none | a self-test of the removed `CwAccuracy` scorer; no requirement states a scorer, and the nearest are `CW_SPEC.md` section 11's MET-* definitions |
+| `ThePosteriorSurvivesItsOwnArithmeticTests.LogSumStaysFinite` | none | the arithmetic of a removed internal (`LogSum`, `Posterior`), a mechanism |
+| `ThePosteriorSurvivesItsOwnArithmeticTests.TwoEqualTermsDoubleTheEvidence` | none | the arithmetic of a removed internal (`LogSum`, `Posterior`), a mechanism |
+| `ThePosteriorSurvivesItsOwnArithmeticTests.NegativeInfinityIsTheIdentity` | none | the arithmetic of a removed internal (`LogSum`, `Posterior`), a mechanism |
+| `ThePosteriorSurvivesItsOwnArithmeticTests.EveryPosteriorIsAProbability` | none | the arithmetic of a removed internal (`LogSum`, `Posterior`), a mechanism |
+| `ThePosteriorSurvivesItsOwnArithmeticTests.DigitalSilenceProducesNothingRatherThanANumber` | none | the arithmetic of a removed internal (`LogSum`, `Posterior`), a mechanism |
+| `ThePosteriorSurvivesItsOwnArithmeticTests.NoHopsProduceNoPosterior` | none | the arithmetic of a removed internal (`LogSum`, `Posterior`), a mechanism |
+| `FittingKeyUpAgainstAssumingItTests.WhatFittingKeyUpDoesToEveryRecording` | none | a printer over the recordings, asserting nothing |
+| `Audio.TheReadPathDoesNotAllocateTests.TheKeyingMeterSizesItsWindowOnceAndReusesIt` | none | allocation in the keying meter, outside the receive decoder's boundary |
+| `Audio.TheTapIsNotBehindTheDecoderTests.TheTapIsWholeWhileTheDecoderCrawls` | none | the audio tap's plumbing |
+| `Audio.TheTapIsNotBehindTheDecoderTests.AFullQueueDropsAndCounts` | none | the audio tap's queue |
+| `NothingActsOnTheAdmissionVerdictTests.AnUnmeasuredPitchIsStillReportedAndSaysSo` | none; measures something else for HM-REQ-093 | builds a `CwDecodeReport` by hand with `PitchWasMeasured: false` and asserts the flag reads back, not that the decoder reports a proof state |
+| `WhatDecodeScoringCostsTests.AShortScoringWindowBreaksTheSilenceProperty` | none; measures something else for HM-REQ-005 | a scoring window's effect on silence, a mechanism |
 
 ## 3. Every CW test and what it proves (criterion 0.1)
 

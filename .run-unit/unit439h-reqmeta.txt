@@ -1,0 +1,68 @@
+HM-REQ-001|must|A|The decoder shall attach exactly one confidence class — sure, dim or placeholder — to every character it emits.
+HM-REQ-002|must|A|If an element pattern matches no entry in the v1 character table, then the decoder shall emit a placeholder.
+HM-REQ-003|must|A|The decoder shall derive each character's confidence class from measurements of the audio alone, and from no property of the surrounding text.
+HM-REQ-004|must (pending ruling)|A|The decoder shall use no knowledge beyond the character table and the timing of the audio when choosing a character.
+HM-REQ-005|must|A|While no keyed tone is present in the passband, the decoder shall emit zero characters and report the band as "not measured".
+HM-REQ-006|must|A|If the measured mark and gap timings do not form Morse, then the decoder shall emit nothing sure.
+HM-REQ-007|must|A|The decoder shall report "nothing read" and "nothing there" as two distinct states.
+HM-REQ-008|must|A|When a co-channel signal (INT-COCHAN) is present within the detector bandwidth of the tracked tone, the decoder shall emit no sure character.
+HM-REQ-009|must|A|The decoder shall report every value as a measurement of the audio and never as a statement about a station, the band, or anybody's equipment.
+HM-REQ-010|must|B|On every must-tier condition at or above the sensitivity floor, the decoder shall keep MET-CER-SURE below 1 %.
+HM-REQ-011|must|B|On every condition at or above the sensitivity floor, the decoder shall keep MET-INVENTED at zero.
+HM-REQ-012|must|B|On every must-tier condition at the sensitivity floor, the decoder shall emit at least 90 % of sent characters as sure (MET-COVERAGE ≥ 0.90).
+HM-REQ-013|must|B|On every must-tier sender profile at 15 dB reference on CH-AWGN, the decoder shall emit every sent character as sure and correct.
+HM-REQ-014|must|B|Over the corpus of each must-tier condition, characters the decoder emits as dim shall be correct at least 70 % of the time.
+HM-REQ-015|must|B|The decoder shall make each character's confidence class available at the moment the character is emitted.
+HM-REQ-020|must|C|On CH-AWGN with TX-ITU at 20 WPM, the decoder shall meet HM-REQ-010 and HM-REQ-011 down to −7 dB reference.
+HM-REQ-021|must|C|Across the speed range, the sensitivity floor of HM-REQ-020 shall scale by 3 dB per doubling of speed.
+HM-REQ-022|must|C|If the measured SNR is below the sensitivity floor for the measured speed, then the decoder shall emit no sure character.
+HM-REQ-023|must|C|The decoder shall not perform worse on any metric at a higher SNR than at a lower SNR on the same condition profile.
+HM-REQ-030|must|D|The decoder shall meet every must-tier requirement at any sending speed from 5 to 45 WPM inclusive.
+HM-REQ-031|must|D|After acquisition on TX-ITU, the decoder shall report speed within 10 % of true (MET-WPM-ERR ≤ 10 %).
+HM-REQ-032|must (threshold TBD)|D|When the sending speed changes by 25 % or more, the decoder shall report the new speed within N characters.
+HM-REQ-033|must|D|The decoder shall acquire speed at any speed in range without a prior speed to iterate from.
+HM-REQ-034|must|D|The decoder shall report the speed estimate with a proof state of proved, hypothesis, or none.
+HM-REQ-035|must|D|When the transcript is cleared, the decoder shall retain its speed, pitch and noise-floor state.
+HM-REQ-036|must|D|When the pitch is refined for the same station, the decoder shall retain its timing state.
+HM-REQ-040|must|E|On CH-LM and CH-MM with TX-ITU at 20 WPM, the decoder shall meet HM-REQ-010, HM-REQ-011 and HM-REQ-012 down to −4 dB reference.
+HM-REQ-041|must|E|On CH-HM with TX-ITU at 20 WPM, the decoder shall meet HM-REQ-010, HM-REQ-011 and HM-REQ-012 down to −1 dB reference.
+HM-REQ-042|should|E|On CH-LD, CH-MD and CH-HD with TX-ITU at 20 WPM, the decoder shall meet HM-REQ-010 and HM-REQ-011 down to an SNR to be set when first measured.
+HM-REQ-043|must|E|While the signal is below the sensitivity floor during a fade, the decoder shall emit no sure character.
+HM-REQ-044|must|E|When the signal returns above the sensitivity floor after a fade, the decoder shall resume emitting sure characters within one character.
+HM-REQ-050|must|F|On each of TX-ITU, TX-KEYER-W, TX-FARNS and TX-TIGHT, the decoder shall meet HM-REQ-013.
+HM-REQ-051|must|F|On each of TX-KEYER-W, TX-FARNS and TX-TIGHT on CH-AWGN, the decoder shall reach a sensitivity (MET-SENS) within 3 dB of its TX-ITU sensitivity.
+HM-REQ-052|should|F|On TX-BUG and TX-STRAIGHT, the decoder shall meet HM-REQ-013 and a MET-SENS floor to be set when first measured.
+HM-REQ-053|later|F|On TX-SLOPPY, the decoder shall meet HM-REQ-011 and HM-REQ-006.
+HM-REQ-054|must|F|On TX-FARNS whose character gap is up to 7 units at character speed, the decoder shall place word boundaries where the sender placed them.
+HM-REQ-060|must|G|With INT-ADJ(100 Hz, 0 dB, any speed) present, the decoder shall hold the wanted station and meet HM-REQ-010 and HM-REQ-011 on it.
+HM-REQ-061|must|G|With INT-ADJ(50 Hz, −6 dB, any speed) present, the decoder shall hold the wanted station and meet HM-REQ-010 and HM-REQ-011 on it.
+HM-REQ-062|must|G|With INT-CARRIER at any offset and any level present, the decoder shall not select the carrier over a keyed station.
+HM-REQ-063|must|G|While INT-PILEUP is present with no readable station, the decoder shall emit placeholders and then nothing, and no sure character.
+HM-REQ-064|must|G|When the tracked station ends and a second station begins at a different speed or pitch, the decoder shall emit no invented character across the handover.
+HM-REQ-065|must (threshold TBD)|G|While a station is confirmed, the decoder shall not abandon it for a candidate more than N dB below it.
+HM-REQ-066|must|G|When a second keyed signal is within the veto margin of the tracked one, the decoder shall report it as a competing station.
+HM-REQ-070|must|H|The decoder shall recognise exactly the v1 character table of `CW_SPEC.md` §6.2, generated from the vendored M.1677-1 file and the cited prosign source.
+HM-REQ-071|must|H|When a run of elements is sent with no character gap in it and matches a prosign, the decoder shall emit it as one symbol.
+HM-REQ-072|must|H|Where one pattern has both a punctuation name and a prosign name, the decoder shall emit one symbol and name it per the terminal's setting.
+HM-REQ-073|must|H|When the error signal (eight dits) is received, the decoder shall emit it as the error symbol.
+HM-REQ-080|must|I|On every must-tier sender profile at 15 dB reference on CH-AWGN, the decoder shall place every word boundary where the sender placed it (MET-WBE = 0).
+HM-REQ-081|must|I|On every must-tier condition at the sensitivity floor, the decoder shall keep MET-WBE at or below 5 % of words.
+HM-REQ-082|must|I|The decoder shall score word-boundary errors separately from character errors.
+HM-REQ-083|must|I|The decoder shall emit one set of word boundaries for any span, such that a live rendering and a settled rendering of that span do not differ in boundaries.
+HM-REQ-084|must|I|On the acceptance spans named in DEV_ANALYSIS_2026-08-27 §4, the decoder shall emit `WEEKEND`, `THINKING`, `FLEX`, `ABOVE`, `BREEZE` and `USED TO USE A FIRM`.
+HM-REQ-090|must|J|The decoder shall acquire and track a keyed tone at any pitch from 300 to 900 Hz inclusive.
+HM-REQ-091|must|J|The decoder shall choose the tracked pitch by keying quality and never by level alone or by the operator's configured pitch.
+HM-REQ-092|must (threshold TBD)|J|After acquisition, the decoder shall report the pitch it is demodulating at, within N Hz of true (MET-PITCH-ERR ≤ N).
+HM-REQ-093|must|J|The decoder shall report pitch with a proof state of proved, hypothesis, or none.
+HM-REQ-094|must|J|While the operator is transmitting, the decoder shall not use that audio as evidence about any received station.
+HM-REQ-100|must|K|When a transmission begins with a run-up of at least five characters, the decoder shall emit its first sure character within 2.0 s of the first element at 20 WPM, scaled by dit length at other speeds (MET-TACQ).
+HM-REQ-101|must|K|In steady state, the decoder shall emit each sure character no more than two characters and no more than 3.0 s behind the air (MET-LAT).
+HM-REQ-102|must|K|While acquiring, the decoder shall emit no sure character.
+HM-REQ-103|must|K|When a run-up precedes the message, the decoder shall not lose the opening characters of the message to acquisition.
+HM-REQ-110|must|L|The decoder shall measure the noise reference inside the receiver passband, beside the tone, while the tone is keyed.
+HM-REQ-111|must|L|If the receiver passband is unknown, then the decoder shall report the noise reference as "unknown".
+HM-REQ-112|must|L|The decoder shall report every signal measurement with its bandwidth, its provenance and its age.
+HM-REQ-113|must|L|The decoder shall record the parameters it ran with (pitch, speed estimate, thresholds) alongside each output record.
+HM-REQ-114|must|L|The decoder shall report counts of characters emitted, dimmed, placeholders and rejections for each span.
+HM-REQ-115|must|L|The decoder shall not assert two incompatible things about the same span in one record.
+HM-REQ-116|must|L|The decoder shall report tone level with an honest narrowband figure in dB relative to the noise reference.
