@@ -1,0 +1,4 @@
+RULE: no-advance at one criterion
+CRITERIA: 7.4
+DETAIL: units 5 and 6 both ran against criterion 7.4 and neither moved it
+COUNT: 3
