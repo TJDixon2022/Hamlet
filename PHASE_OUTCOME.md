@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 429 - STEP 7
+
+STEP: 7
+APPROACH: trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+MOVE: work around
+WHY: Criterion 3.6 has five span and feature routes measured with none separating added from right single elements, and unit 428 did not advance, so a sixth would be a loop and a second non-advance in a row; 7.3 is an untried, dependency-free trace on recordings in the tree, and its litter is the same stray E and T 3.6 chases, seen against a locked stretch from the same sender.
+STATE: partial
+DECIDED: author's, overrulable - routing from 3.6 to 7.3 rather than 6.5 (HM-OPEN-087) or 7.8 (P27, the owner's); 3.4 is left for the next step 3 unit, since two consecutive step 3 units have kept nothing and the criterion asks three; unit 428's items 1 and 2 parked as P35 and P36; which locked recording is compared, how the overlaps are spliced, and the per-type timeouts are the unit's, reported
+LICENCE: PHASE_PLAN.md R68, R64, R65, R72, section 6 and criterion 7.3; ARBITER.md section 4; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ADVANCES: step 7 criterion 3
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.115 to 1.13.116. PHASE_STATUS.md names unit 429 and CURRENT_STEP 7. HEAD at entry f94886a1. Unit 428's section 4 items 1 and 2 parked in docs/phase-correctness/PARKED.md as P35 and P36 with 428's proposed rulings; item 3 was for the record and is not parked. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 369 s; APP carry-forward 277 of 278 in 164 s, the one loss TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing on You've caused dispatcher loop in 1 ms, the type 3 of 3 alone; captures 51 of 51 in 119 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; WhatTheStrayLettersRestOnTests 2 of 2: 892 named on the 23 keyed recordings, 353 right, 56 wrong, 17 added (8 single-element). Keyed, baseline and adjudicated output identical to unit 428's exit but for timing lines. THE NUMBERS TO HOLD: 165 over 565, 17 added, captures 51 of 51.
+
 ## UNIT 428 - STEP 3
 
 STEP: 3
@@ -628,3 +641,21 @@ STATE_AFTER: partial
 STATE_WHY: Every exit criterion is met except 6.5, and the report says the Have a look button is still open under HM-OPEN-087 with no work on it and no owner decision it is waiting for.
 ADVANCED: blocker
 ATTEMPT: 5.1 | unit 1 launched 2026-09-25T01:41:45.314Z | blocker | executed | build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+
+## UNIT 1 - STEP 3
+
+STEP: 3
+APPROACH: trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - All three items are about test fixtures, which figure to trace and a record note on admission tests, and none touches keying, transmit, money or what the product states to the operator.
+MOVE: continue
+WHY: PHASE_PLAN.md step 3 criterion 3.6 asks that the stray single-element characters be traced and attacked with the count of added letters reported before and after, and unit 421 measured that no fixed bar separates them
+DECIDED: the window, the ratio, and the per-type timeouts are the author's, overrulable, and are chosen from the traced distributions rather than from which changes they admit
+LICENCE: PHASE_PLAN.md R66, R69, R71, R72, R73, section 3, section 6; HM-DEC-181; HM-DEC-091; HM-DEC-155; CLAUDE.md 0.0 and 0.2
+COST: 3.707350199999999
+ACCOMPLISHED: the litter between real words stops reaching the transcript as confident text, or the project knows on measured distributions that relative span cannot find it either
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 3.1, 3.2, 3.3, 3.5 and 3.7 are ticked, and the report quotes the exit round in support of 3.5, but 3.6 is not met because nothing was built and added letters stayed at 17 before and after, and 3.4 is not met, while the missing traffic net recordings are not one of the three things the phase stops for.
+ADVANCED: no
+ATTEMPT: 3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | no | executed | trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
+REASON: 3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | the unit ran to completion and the criterion did not flip from unmet to met

@@ -1,0 +1,79 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-134712", floor: 11) [6 s]
+  Standard Output Messages:
+ named | cw-2026-08-17-134712 | 11 at or above the span bar against a floor of 11 | 11 named, 0 below the bar | 0 edits over 3 characters against an inferred key, 0 unsure per 3 named (0.000) | region `N4L`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031838", floor: 40) [6 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-031838 | 40 at or above the span bar against a floor of 40 | 40 named, 0 below the bar | 19 edits over 35 characters against an inferred key, 1 unsure per 20 named (0.050) | region `D  ■T TTT TEAH A MEAN TOF 2 TT    `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032129", floor: 65) [6 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032129 | 65 at or above the span bar against a floor of 65 | 65 named, 0 below the bar | 23 edits over 42 characters against an inferred key, 0 unsure per 28 named (0.000) | region `TJ26 PGOPAGATION EE EE EIIEE I E EE `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-18-004507", floor: 49) [5 s]
+  Standard Output Messages:
+ named | cw-2026-08-18-004507 | 49 at or above the span bar against a floor of 49 | 49 named, 0 below the bar | 10 edits over 57 characters against an inferred key, 0 unsure per 46 named (0.000) | region ` T AR O L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE P`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032050", floor: 44) [3 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032050 | 44 at or above the span bar against a floor of 44 | 44 named, 0 below the bar | 21 edits over 59 characters against an inferred key, 1 unsure per 37 named (0.027) | region `    IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-18-003758", floor: 43) [3 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-18-003758 | 43 at or above the span bar against a floor of 43 | 43 named, 0 below the bar | 3 edits over 12 characters against an inferred key, 0 unsure per 11 named (0.000) | region `EETMP/4 QNIK`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-24-012403", floor: 19) [4 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-24-012403 | 19 at or above the span bar against a floor of 19 | 19 named, 0 below the bar | 0 edits over 16 characters against an inferred key, 0 unsure per 13 named (0.000) | region `DE KD0UN KD0UN K`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032113", floor: 47) [3 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032113 | 47 at or above the span bar against a floor of 47 | 47 named, 0 below the bar | 11 edits over 28 characters against an inferred key, 2 unsure per 22 named (0.091) | region `A KET■ A N O INT ERNE T ■ E ROIONS`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-032012", floor: 43) [3 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-032012 | 43 at or above the span bar against a floor of 43 | 43 named, 0 below the bar | 5 edits over 51 characters against an inferred key, 0 unsure per 43 named (0.000) | region `T F 117.1. LINKS TO ARTICLESOR OTHER WEBSITES MENTI`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031905", floor: 36) [3 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-031905 | 36 at or above the span bar against a floor of 36 | 36 named, 0 below the bar | 17 edits over 39 characters against an inferred key, 0 unsure per 30 named (0.000) | region `DICTED 10.7  IAIEI TANI   WLUX IS 125,,  `
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "cw-2026-08-17-013347", floor: 57) [4 s]
+  Standard Output Messages:
+ named | cw-2026-08-17-013347 | 57 at or above the span bar against a floor of 57 | 57 named, 0 below the bar | 0 edits over 6 characters against an inferred key, 0 unsure per 6 named (0.000) | region `VA3VRR`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-09-23-173723", floor: 46) [3 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-09-23-173723 | 46 at or above the span bar against a floor of 46 | 46 named, 0 below the bar | 19 edits over 25 characters against an inferred key, 0 unsure per 28 named (0.000) | region `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`
+
+
+[xUnit.net 00:00:59.74]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll(name: "unadjudicated/cw-2026-08-22-031948", floor: 31) [3 s]
+  Standard Output Messages:
+ named | unadjudicated/cw-2026-08-22-031948 | 31 at or above the span bar against a floor of 31 | 31 named, 0 below the bar | 2 edits over 36 characters against an inferred key, 0 unsure per 27 named (0.000) | region `150 110, AND 110 WITH A MEAN OF 117`
+
+
+
+Test Run Successful.
+Total tests: 13
+     Passed: 13
+ Total time: 1.0003 Minutes
+RC=0 WALL=60s

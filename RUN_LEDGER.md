@@ -279,3 +279,5 @@ the owner reads instead of watching.
 | 1 | 2026-09-24T21:41 | 2026-09-24T22:33 | complete | 10.528144399999999 | ran unattended, 214 turns, 10 denied call(s) worked around, report valid |
 | 1 | 2026-09-24T22:34 | 2026-09-24T22:34 | note | none - not a run | blocker-clear - cleared a blocker: criterion 5.1 |
 | phase | 2026-09-24T22:34 | 2026-09-24T22:34 | ending | 0 | ENDED - a ruling is wanted on one of the three. stop 3: a ruling is wanted on one of the three - judged, not counted |
+| 1 | 2026-09-24T22:58 | 2026-09-24T23:48 | complete | 3.707350199999999 | ran unattended, 98 turns, 8 denied call(s) worked around, report valid |
+| 1 | 2026-09-24T23:49 | 2026-09-24T23:49 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |

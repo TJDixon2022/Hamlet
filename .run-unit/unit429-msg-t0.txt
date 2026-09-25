@@ -1,0 +1,5 @@
+unit429 task 0: the record - PHASE_OUTCOME.md UNIT 429 - STEP 7 from the decision block with the entry round; PHASE_STATUS.md unit 429, CURRENT_STEP 7; PARKED.md P35 and P36, unit 428's section 4 items 1 and 2 verbatim with their proposed rulings; version 1.13.115 to 1.13.116
+
+Entry round, one type per invocation: build 0 errors; engine carry-forward 178 of 178; app carry-forward 277 of 278, the one loss TheWindowHoldsBelowItsMinimumTests on the dispatcher loop, 3 of 3 alone; captures 51 of 51 in 119 s; adjudicated 13 of 13; keyed floors 13 of 13; all keyed 165 edits over 565, the ten 35 over 156; 17 added letters on the keyed recordings, 8 single-element - the numbers to hold.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

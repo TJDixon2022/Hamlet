@@ -448,3 +448,19 @@ gives a row whose hover has no station, no entity and no kind - only the offset,
 and the time - where `CQ CQ CQ de W1AW W1AW pse K` gives all of them, and an over carrying
 `QTH FN10` gives the grid and the distance. The parser is the engine's and was not opened. It
 bears on the phase goal - Hamlet reads a CQ call correctly - for the keyboard modes. Not blocking.
+
+## P35 - bank the 2026-09-25 traffic net and re-run the trace on it
+
+**Raised by unit 428, 2026-09-24, section 4 item 1; parked by unit 429 task 0.** Verbatim:
+
+**1. Bank the 2026-09-25 traffic net and re-run the trace on it.** Proposed ruling: the 7.052 captures the instruction describes are copied into `tests/fixtures/cw/captured/unadjudicated` with a key file for at least the stretches the instruction quotes (`OPERATION`, `ALL LOGS WILL BE UPLOADED`). A unit then adds them to the trace's recordings and re-runs `WhatTheNeighborsSayTests` unchanged. Reasoning: HM-DEC-181 was drawn from that recording, and the keyed corpus holds only 17 added letters, 6 of them in one weak passage on 17:37. A strong, single-signal recording with hundreds of litter characters is the case the ruling describes and the one the tree lacks. Rejected: building the rule anyway on the instruction's quoted figures, because the trace on the tree's recordings says it costs right letters, and section 10 forbids building what the trace does not support.
+
+Not blocking.
+
+## P36 - whether 3.6 is reachable on the span at all
+
+**Raised by unit 428, 2026-09-24, section 4 item 2; parked by unit 429 task 0.** Verbatim:
+
+**2. Whether 3.6 is reachable on the span at all.** Proposed ruling: with raw span, per-hop span (units 421 and 425), span over neighbors, and span per mark over neighbors all traced and none separating the 8 added single elements from the 62 right ones, the next 3.6 unit traces something other than a span figure, or 3.6 waits for item 1's recording. Reasoning: four figures measured on one corpus all overlap. Rejected: lowering a floor to admit a relative bar, which R71 and R73 forbid outside key-aligned added letters.
+
+Not blocking.
