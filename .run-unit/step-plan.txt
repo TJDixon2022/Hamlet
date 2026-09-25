@@ -1,19 +1,120 @@
-﻿STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
-## Step 6 - The screen stops saying what is not so
+﻿STEP: 7 | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
+## Step 7 - The decoder hears what is there
 
-**Delivers:** R62. What Tim reads while he is deciding whether to trust the app.
+**Delivers:** R67 and R68. What the decoder cannot hear at all, and the receiver it listens
+through.
 
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
-- [x] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
-- [x] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
-- [x] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
-- [x] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
-- [x] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
-- [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
-- [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
+- [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
+- [ ] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
+- [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+- [x] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
+- [x] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
+- [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [ ] 7.8 The preamp is set from what the radio's manual states and nothing contradicts it (R74): the CW conditions carry preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz, with the manual's page cited in the condition's own text; the preamp is turned off when the receiver reports overloading rather than by band; no component asks the operator to change the preamp, or any other field a condition states, after Hamlet has set it - watched failing first at 7.030 MHz, where the old rule turned it off, and at 14.050, where a voice contradicted the setup; and the report prints, for one frequency on each HF band and at 50 MHz, what is asked for, what is written, and every sentence the app would say about the preamp there.
 
-**Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
+**Depends on:** nothing. Independent of every other step.
 
+## Â§5 Dependencies
+
+Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
+and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
+else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
+and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
+halt.
+
+## Â§6 Branching
+
+- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
+  fact the product states to the operator about a signal, a station or a send. A test's
+  shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
+- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **7.5 changes what is written to the radio, and that is its point** (R67). It may make the
+  app write *less* - a value already correct is not rewritten - and it may carry a band rule
+  the condition's own text already states. **It may not change what a condition asks for**,
+  and nothing that keys or transmits is touched.
+- **Removing a below-bar character is not lowering a floor** (R71), once 3.7 has set the bar.
+  A row whose above-bar count falls is a regression and the change goes back out. Until 3.7
+  is met, every named character counts as it does today.
+- **A character the key aligns as added may leave a floor** (R73), inside a scored stretch of
+  a keyed recording and nowhere else, with every removed character named in the report.
+- **No voice asks the operator to change a setting Hamlet set** (R74). A criterion is met by
+  making the setting right and the sentences agree with it, never by silencing a voice that
+  is telling the truth.
+- **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
+  movement fails 3.2's third test, and a report invoking the clause prints the reading
+  before and after.
+- **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
+  without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
+  finding noticed on the way past **never halts the loop**, whatever it touches. The
+  arbiter parks it and authors the next unit.
+- **When a unit cannot advance its criterion, the next unit is authored against a different
+  open criterion** (R64, R65). The loop halts only at stop 1, when nothing but the owner's
+  verdict is left.
+- **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
+  touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
+- **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
+  headless dispatcher loop - counts neither way and is re-run once.
+- **A correctness number is never reported alone** (Â§3.1). A report that gives a percentage
+  without edits, scored length and the key's kind is incomplete and the arbiter says so.
+- **No key may be invented for audio nobody could read** (R61). If the scored region is
+  unclear, score less rather than guess more.
+- **A named floor from 2.2 is never lowered**, and a capture row's named count is never
+  lowered. Placeholders are free (R57).
+- **The generator is never the sole evidence** for keeping a change (1.4, Â§12.5).
+- **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+  is met by making a sentence true, never by deleting the sentence and saying nothing, and
+  never by changing a radio setting to match a claim.
+- **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
+  should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
+  no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
+  expect*, and the loop halted at stop 7 with the unit's work complete.
+- **A unit that cannot advance its own criterion does not halt the phase** (R64). It reports
+  what it measured, and the arbiter authors the next unit against a different criterion.
+  Preference when nothing is blocked: step 3 first, then step 6.
+- **Tonight's thirteen floors are never lowered and the older rows are never retired** (R63).
+- **Anything would change what keys or transmits.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
+  alone with its own timeout.
+
+## Â§7 Carried
+
+The restore phase's 5.1, Tim's, at `docs/phase-cw-run/`; `#15`, `#43`, `#44` and `#42`,
+parked there with their measurements; `PHASE_GOAL.md`'s 80 percent, which this phase
+measures toward but does not promise; W1AW as an exact-key confirmation whenever a bulletin
+lands; the scanner; the screen findings in `OPEN_ISSUES.md` - the RF gain sentence, the
+window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wording;
+HM-OPEN-063 and HM-OPEN-070.
+
+## Â§8 Revision record
+
+- **2026-09-24, after unit 423.** R73 a key-identified added character may leave a floor, so
+  3.6 can pass; R74 Hamlet sets the radio from the manual and nothing contradicts what it set,
+  as criterion 7.8.
+- **2026-09-24, after unit 420.** R71: a floor counts characters at or above a stated span
+  bar, so the stray-letter work can proceed; criterion 3.7 re-measures the 51 rows once.
+- **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as
+  criterion 7.7, so 7.5's last hole closes and 7.030 behaves.
+- **2026-09-24, after unit 418.** R67 entering a mode sets the receiver correctly and it
+  stays set, as criterion 7.5; R68 step 7 for the speed ceiling and acquisition; R69 the
+  stray single-element letters as criterion 3.6.
+- **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
+  own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
+  moved - can be re-applied.
+- **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
+  a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
+  only when the criterion being worked needs the ruling. Written after unit 412 completed
+  its work and the loop halted at stop 3 on an ask 412 had carried rather than on anything
+  blocking a criterion.
+- **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
+  measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
+  the keys by differencing, 2.5 the floors, 6.7 tonePeak.
+- **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
+  always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
+  report was refused over one word.
+- **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
+  from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.

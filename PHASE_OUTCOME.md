@@ -569,3 +569,21 @@ STATE_WHY: Criteria 3.1, 3.2, 3.3, 3.5 and 3.7 are met, and 3.6's trace clause i
 ADVANCED: no
 ATTEMPT: 3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | no | executed | separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
 REASON: 3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | the unit ran to completion and the criterion did not flip from unmet to met
+
+## UNIT 3 - STEP 7
+
+STEP: 7
+APPROACH: follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only question put to the owner is whether a true hint about the attenuator may appear outside an owned block, and a hint's wording is never a promise, while every other item is either marked not blocking or carried for another step.
+MOVE: work around
+WHY: Unit 424 met 7.8 at the tune-in only and surveyed the preamp alone; the overflow flag is already polled live, so the missing clause is an act on a reading the tree has, not a new instrument. 3.6 was the other redirect choice, but its remaining route (a join) moves unkeyed floors that R73 keeps as they are, so 7.8 is the less exhausted of the two.
+DECIDED: author's, overrulable - self-ruling 1 of 2 citing PHASE_PLAN.md R74 and criterion 7.8: the preamp alone may be written outside a tune-in, on the Overflow flag only, while the block owns it, never while transmitting, and never after his hand has moved it, recorded as HM-DEC-179 with P22 taken up; the hysteresis is chosen from the measured poll cadence; writing the band value back on clear is the drop candidate; per-type timeouts are the unit's
+LICENCE: PHASE_PLAN.md R74, R67, R65, section 6 and criterion 7.8; HM-DEC-177; HM-DEC-174; HM-DEC-056; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2; FACT-006
+COST: 10.732327199999995
+ACCOMPLISHED: when a band starts overloading while Tim is listening to Morse, Hamlet turns the preamp off itself as the manual says, leaves it alone once he has touched it, and nothing on screen asks him to change anything Hamlet set
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 7.5 and 7.7 are met, but 7.1 to 7.4 have no work toward them, and 7.8 stays open because the report shows 12 attenuator sentences still asking the operator to change a field after he moves on, so the step is not done.
+ADVANCED: no
+ATTEMPT: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | no | executed | follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
+REASON: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | the unit ran to completion and the criterion did not flip from unmet to met

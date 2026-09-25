@@ -1,12 +1,12 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-24T17:04:58-04:00  root C:\Source\HamLet
+measured 2026-09-24T21:08:22-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0176.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0179.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
@@ -22,7 +22,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : d06981da
+  HEAD   : 77926ee6
   uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -33,7 +33,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0176
+  highest in CLAUDE.md section 1 : CPS-DEC-0179
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -41,7 +41,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  443 lines, 36755 bytes
+  484 lines, 40586 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -255,6 +255,38 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   leave the 40 unkeyed captures unguarded during exactly the work most likely to lose
   characters; leaving P17 and closing 3.6 unmet.
   
+  **R73 - Tim, 2026-09-24: a character the key says was never sent may leave a floor.** Unit
+  421 measured that the eight added single-element characters all stand above the span bar, and
+  unit 422 found every floor they sit under exactly at its count, so no change can remove them
+  without a floor falling. The narrow answer: **a character the inferred key aligns as added,
+  inside a scored stretch of a keyed recording, may leave a floor.** It applies nowhere else -
+  the 29 unkeyed rows keep their floors as they are - the three adjudicated readings must be
+  unchanged as the independent check, and **every character a change removes is listed by name
+  in the report, with its recording**, so the owner can see what left.
+  
+  **R74 - Tim, 2026-09-24: Hamlet sets the radio; the operator is not rig control.** *"I want to
+  use the radio like I use my car radio. I tune to the place I want and it just happens... You
+  know the mode we're in. You know the range. Why do I have to control this? I don't know the
+  radio."* And: *"If it's set where it should be, then Hamlet shouldn't be whining about it."*
+  
+  **Two things follow.** First, **the app may not hold two beliefs about one setting**: if a
+  condition sets the preamp to 1 and any voice then tells the operator it should be off, one of
+  them is false and the app is stating a falsehood either way (Â§0.0). **A voice never asks the
+  operator to change a setting Hamlet itself established** - if the setting is wrong for the
+  conditions, Hamlet changes it.
+  
+  **Second, the CW preamp condition is wrong, and the manual says so.** `IC-7300_ENG_FM_12b`,
+  *Receiving and Transmitting*, page 4-3: P.AMP1 is the wide dynamic range preamp, P.AMP2 the
+  high-gain one for the 50 MHz bands; *"when you use the preamp while receiving strong signals,
+  the signal may be distorted. In such a case, turn OFF the preamp"*; and each band memorizes
+  its own setting. Icom's published sensitivity figures are quoted **with Preamp 1 on for 1.8 to
+  29.999 MHz and Preamp 2 on for 50 MHz**. The condition in the tree reads *preamp 1 above 40 m,
+  off at 40 m and below*, which turns the preamp off across the low bands where Icom specifies
+  it on, and says nothing about 6 m or about overload. **The rule, from the manual: preamp 1 on
+  every HF band from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and the preamp off when the receiver
+  is overloading** - which Hamlet already reads, since `Overflow` is on the capture sheet.
+  Rejected: leaving the band rule as it stood; asking the owner which he wants.
+  
   ## Â§3 What is different from the phases before it
   
   This phase scores text for the first time, so two things bind every unit:
@@ -390,6 +422,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
   - [x] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
   - [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+  - [ ] 7.8 The preamp is set from what the radio's manual states and nothing contradicts it (R74): the CW conditions carry preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz, with the manual's page cited in the condition's own text; the preamp is turned off when the receiver reports overloading rather than by band; no component asks the operator to change the preamp, or any other field a condition states, after Hamlet has set it - watched failing first at 7.030 MHz, where the old rule turned it off, and at 14.050, where a voice contradicted the setup; and the report prints, for one frequency on each HF band and at 50 MHz, what is asked for, what is written, and every sentence the app would say about the preamp there.
   
   **Depends on:** nothing. Independent of every other step.
   
@@ -414,6 +447,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - **Removing a below-bar character is not lowering a floor** (R71), once 3.7 has set the bar.
     A row whose above-bar count falls is a regression and the change goes back out. Until 3.7
     is met, every named character counts as it does today.
+  - **A character the key aligns as added may leave a floor** (R73), inside a scored stretch of
+    a keyed recording and nowhere else, with every removed character named in the report.
+  - **No voice asks the operator to change a setting Hamlet set** (R74). A criterion is met by
+    making the setting right and the sentences agree with it, never by silencing a voice that
+    is telling the truth.
   - **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
     movement fails 3.2's third test, and a report invoking the clause prints the reading
     before and after.
@@ -462,6 +500,9 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-24, after unit 423.** R73 a key-identified added character may leave a floor, so
+    3.6 can pass; R74 Hamlet sets the radio from the manual and nothing contradicts what it set,
+    as criterion 7.8.
   - **2026-09-24, after unit 420.** R71: a floor counts characters at or above a stated span
     bar, so the stray-letter work can proceed; criterion 3.7 re-measures the 51 rows once.
   - **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as
@@ -487,13 +528,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
   --- PHASE_STATUS.md ---
-  14 lines, 2435 bytes
+  14 lines, 2439 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 423 - the window holds still outside his privileges
-  HEARTBEAT: 2026-09-24 17:04:57
+  WORK_INSTRUCTION: 426 - the preamp follows the overload after the tune-in
+  HEARTBEAT: 2026-09-24 21:08:19
   STEP: 0 | done | The number exists - a scorer that measures edit distance against a key over a scored region, every keyed recording in the tree scored, and the numbers tabled as the phase's baseline.
   STEP: 1 | done | There are enough keys - synthetic CQ calls at known speeds and signal strengths with exact keys by construction, plus a written rule for inferring a key from a CQ call on the air, and every one of them scored.
   STEP: 2 | done | The number cannot be gamed - unsure characters per named character carried beside every correctness number, and a named floor on how much of each keyed recording is read at all.
@@ -504,7 +545,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
   --- PHASE_OUTCOME.md ---
-  496 lines, 104435 bytes
+  589 lines, 118216 bytes
   PHASE: Hamlet reads a CQ call correctly
   PHASE_SET: 2026-09-23
   DESCRIPTION: The restore phase put the decoder back and stopped it printing what it does not believe, but nothing in the tree ever measured whether the text is right. This phase builds that measurement - edit distance against a key, over a scored region - gets enough keys to work with without asking Tim to read Morse, carries an unsure-per-real guard so the decoder cannot score well by going quiet, and then attacks the fault the first measurement found: the letters are right and the word boundaries are wrong. Judged by a correctness number and, at the end, by Tim at the radio.
@@ -516,6 +557,45 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
   STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
   STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
+  
+  ## UNIT 426 - STEP 7
+  
+  STEP: 7
+  APPROACH: follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
+  MOVE: work around
+  WHY: Unit 424 met 7.8 at the tune-in only and surveyed the preamp alone; the overflow flag is already polled live, so the missing clause is an act on a reading the tree has, not a new instrument. 3.6 was the other redirect choice, but its remaining route (a join) moves unkeyed floors that R73 keeps as they are, so 7.8 is the less exhausted of the two.
+  STATE: partial
+  DECIDED: author's, overrulable - self-ruling 1 of 2 citing PHASE_PLAN.md R74 and criterion 7.8: the preamp alone may be written outside a tune-in, on the Overflow flag only, while the block owns it, never while transmitting, and never after his hand has moved it, recorded as HM-DEC-179 with P22 taken up; the hysteresis is chosen from the measured poll cadence; writing the band value back on clear is the drop candidate; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R74, R67, R65, section 6 and criterion 7.8; HM-DEC-177; HM-DEC-174; HM-DEC-056; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2; FACT-006
+  ADVANCES: step 7 criterion 8
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.112 to 1.13.113. PHASE_STATUS.md names unit 426 and CURRENT_STEP 7. HEAD at entry 972510e6. The reading recorded as HM-DEC-179; P22 marked taken up. No ruling in DECISIONS.md or PHASE_PLAN.md forbids, in its own words, every write outside a tune-in. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 275 of 278, the three lost to the dispatcher loop (ThePowerIsOfferedTests twice, TheRecordNamesTheSubModePressedTests Olivia) green alone, 3 of 3 and 12 of 12; captures 51 of 51; adjudicated 13 of 13; keyed floors 13 of 13; every Rig type, 45 types, 342 of 342; OneVoiceOnThePreampTests 16 of 16; WhatIsSaidAboutThePreampTests 1 of 1; TheOverloadSentenceLeavesTheModesFieldsTests 4 of 4; DecisionLogOrderTests red on the missing HM-DEC-166 row only (P25), as expected.
+  
+  ## UNIT 425 - STEP 3
+  
+  STEP: 3
+  APPROACH: separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+  MOVE: work around
+  WHY: Unit 421's span route reached none of the eight added single-element strays, because all eight stand above the span bar and above the lowest right letter. R73 now lets a key-aligned added character leave a floor, so 3.6 is reachable by a different measure. The spacing comes first in R64's order, and the loop test found no prior entry for this approach.
+  STATE: partial
+  DECIDED: author's, overrulable - the measures task 1 prints; the rule that a change must touch no unkeyed above-bar character and no key-aligned right or wrong character; a limit of one narrower variant; and floors moved under R73 are lowered in the judging commit with each removed character named beside them.
+  LICENCE: PHASE_PLAN.md R69, R71, R73, R66, section 6 and criterion 3.6; HM-DEC-176; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.2 and 12.5
+  ADVANCES: step 3 criterion 6
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.111 to 1.13.112. PHASE_STATUS.md names unit 425 and CURRENT_STEP 3. HEAD at entry b12cbbe4. R73 recorded as HM-DEC-178; P19 marked answered. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 276 of 278, the two lost to the dispatcher loop (TheStopIsAlwaysOnScreenTests) green alone, 5 of 5; captures 51 of 51; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1; TheBaselineIsScoredTests 2 of 2; WhatTheStrayLettersRestOnTests 1 of 1, its eight added single-element letters identical to the work instruction's table, 165 edits over 565 against inferred keys, 17 added, 8 single-element, 56 wrong, 31 single-element; DecisionLogOrderTests red on the missing HM-DEC-166 row only (P25), as expected.
+  
+  ## UNIT 424 - STEP 7
+  
+  STEP: 7
+  APPROACH: set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 7 criterion 7.8 asks that the preamp be set from what the radio's manual states with the page cited, that the off case be keyed to the receiver overloading rather than to a band, and that no component ask the operator to change a field a condition states after Hamlet has set it
+  STATE: partial
+  DECIDED: how the frequency-dependent value is carried, which overload reading is used if any, how each voice is scoped, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R67, R74, section 6; HM-DEC-176; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155
+  ADVANCES: step 7 criterion 8
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ENTRY: Version 1.13.110 to 1.13.111. PHASE_STATUS.md names unit 424 and CURRENT_STEP 7. HEAD at entry e4085d43. The ruling is recorded as HM-DEC-177: the work instruction names it HM-DEC-176, which DECISIONS.md already holds for unit 421's floor-bar ruling, so the LICENCE line above keeps the instruction's words and the record takes the next free id. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 277 of 278, the one lost to the dispatcher loop (ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed) green alone, ThePsk31OfferTests 2 of 2; captures 51 of 51 under the bar; adjudicated 13 of 13; keyed floors 13 of 13; every Rig type, 44 types, 325 of 325.
   
   ## UNIT 423 - STEP 6
   
@@ -1001,9 +1081,63 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: Criterion 6.3 is now met with the red message, the before and after table, the green run and the changed words and color quoted, but 6.5 on the Have a look button is still unmet, so not every exit criterion of step 6 is met.
   ADVANCED: yes
   ATTEMPT: 6.3 | unit 3 launched 2026-09-24T20:10:29.208Z | yes | executed | trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
+  
+  ## UNIT 1 - STEP 7
+  
+  STEP: 7
+  APPROACH: set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, and each of the five items is the unit's own recommendation on receive behaviour, wording, band scope, the decision log or a flaky test, so none asks the owner to decide anything about keying, transmit, radio safety, money or a promise.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 7 criterion 7.8 asks that the preamp be set from what the radio's manual states with the page cited, that the off case be keyed to the receiver overloading rather than to a band, and that no component ask the operator to change a field a condition states after Hamlet has set it
+  DECIDED: how the frequency-dependent value is carried, which overload reading is used if any, how each voice is scoped, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R67, R74, section 6; HM-DEC-176; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155
+  COST: 10.3315016
+  ACCOMPLISHED: Tim tunes to a band and the preamp is what the radio's own manual says it should be, and nothing on screen argues with it
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Step 7 still has 7.1 to 7.4 open, and 7.8 is only partly met, since the preamp rows and page citation are in place and contradicting sentences fall from 28 to 0 with the full table printed, but the preamp is turned off for overloading only at the tune-in and not after it, and other condition fields were not re-surveyed once the operator moves on, which the report itself says leaves 7.8 unticked.
+  ADVANCED: no
+  ATTEMPT: 7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | no | executed | set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+  REASON: 7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 2 - STEP 3
+  
+  STEP: 3
+  APPROACH: separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only question is whether merging split elements counts as lowering a floor on an unkeyed row, which is about how a test threshold is counted and not about keying, money, or a fact the product states to the operator, and the other two items say they are not blocking.
+  MOVE: work around
+  WHY: Unit 421's span route reached none of the eight added single-element strays, because all eight stand above the span bar and above the lowest right letter. R73 now lets a key-aligned added character leave a floor, so 3.6 is reachable by a different measure. The spacing comes first in R64's order, and the loop test found no prior entry for this approach.
+  DECIDED: author's, overrulable - the measures task 1 prints; the rule that a change must touch no unkeyed above-bar character and no key-aligned right or wrong character; a limit of one narrower variant; and floors moved under R73 are lowered in the judging commit with each removed character named beside them.
+  LICENCE: PHASE_PLAN.md R69, R71, R73, R66, section 6 and criterion 3.6; HM-DEC-176; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.2 and 12.5
+  COST: 4.1728277999999985
+  ACCOMPLISHED: the stray E and T letters that were never sent stop printing between the words of a CQ call, and no real letter is lost
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 3.1, 3.2, 3.3, 3.5 and 3.7 are met, and 3.6's trace clause is delivered with its printed table, but no change was built, so total edits stayed at 165 and added letters at 17, which leaves 3.6 unmet, and 3.4 is also unmet because the count of units with no kept change is only 1, while the open question about joins and unkeyed floors is about a number, not one of the three things the phase stops for.
+  ADVANCED: no
+  ATTEMPT: 3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | no | executed | separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+  REASON: 3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 3 - STEP 7
+  
+  STEP: 7
+  APPROACH: follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only question put to the owner is whether a true hint about the attenuator may appear outside an owned block, and a hint's wording is never a promise, while every other item is either marked not blocking or carried for another step.
+  MOVE: work around
+  WHY: Unit 424 met 7.8 at the tune-in only and surveyed the preamp alone; the overflow flag is already polled live, so the missing clause is an act on a reading the tree has, not a new instrument. 3.6 was the other redirect choice, but its remaining route (a join) moves unkeyed floors that R73 keeps as they are, so 7.8 is the less exhausted of the two.
+  DECIDED: author's, overrulable - self-ruling 1 of 2 citing PHASE_PLAN.md R74 and criterion 7.8: the preamp alone may be written outside a tune-in, on the Overflow flag only, while the block owns it, never while transmitting, and never after his hand has moved it, recorded as HM-DEC-179 with P22 taken up; the hysteresis is chosen from the measured poll cadence; writing the band value back on clear is the drop candidate; per-type timeouts are the unit's
+  LICENCE: PHASE_PLAN.md R74, R67, R65, section 6 and criterion 7.8; HM-DEC-177; HM-DEC-174; HM-DEC-056; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2; FACT-006
+  COST: 10.732327199999995
+  ACCOMPLISHED: when a band starts overloading while Tim is listening to Morse, Hamlet turns the preamp off itself as the manual says, leaves it alone once he has touched it, and nothing on screen asks him to change anything Hamlet set
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 7.5 and 7.7 are met, but 7.1 to 7.4 have no work toward them, and 7.8 stays open because the report shows 12 attenuator sentences still asking the operator to change a field after he moves on, so the step is not done.
+  ADVANCED: no
+  ATTEMPT: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | no | executed | follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
+  REASON: 7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | the unit ran to completion and the criterion did not flip from unmet to met
 
   --- CLAUDE.md ---
-  1399 lines, 207267 bytes
+  1402 lines, 209936 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -1023,17 +1157,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 821 bytes
+  19 lines, 884 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: TASK 4 of 4
-  WORK_INSTRUCTION: 423 - the window holds still outside his privileges
+  WORK_INSTRUCTION: 426 - the preamp follows the overload after the tune-in
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-24T17:03:30-04:00
-  NOTE: Unit 423 complete: 6.3 ticked - tuned outside his privileges the card, sun map and rig face keep their columns at every size, words and color still change; row height parked as P21; P16 and P20 red as at entry
+  UPDATED: 2026-09-24T21:06:57-04:00
+  NOTE: Unit 426 complete and pushed: the preamp now goes off on an overload after the tune-in and back when it clears, his hand wins; asks to change a field Hamlet set 60 to 12, 0 where the block owns it; 7.8 left unticked for the attenuator sentence (P27); output.md written
   
   ---
   

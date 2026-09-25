@@ -266,3 +266,12 @@ the owner reads instead of watching.
 | 3 | 2026-09-24T16:10 | 2026-09-24T17:03 | complete | 8.439169200000004 | ran unattended, 168 turns, 10 denied call(s) worked around, report valid |
 | 4 | 2026-09-24T17:08 | 2026-09-24T17:09 | complete | 0.3995104 | ran unattended, 8 turns, no denials, report valid |
 | phase | 2026-09-24T17:10 | 2026-09-24T17:10 | failure | 26.6732 | STOPPED, AND A STOP IS FAILURE - stop 11: no report was written by this unit - output.md at the root was written BEFORE this unit was launched - it is not this unit-s report - the file at the root says UNIT: 423 - complete at task 4 of 4, none dropped - 2026-09-24 17:01 |
+| 1 | 2026-09-24T17:55 | 2026-09-24T18:55 | complete | 10.3315016 | ran unattended, 218 turns, 9 denied call(s) worked around, report valid |
+| 1 | 2026-09-24T18:56 | 2026-09-24T18:56 | note | none - not a run | no advance - step 7 criterion 8 was unmet and is unmet |
+| 2 | 2026-09-24T19:00 | 2026-09-24T19:43 | complete | 4.1728277999999985 | ran unattended, 92 turns, 4 denied call(s) worked around, report valid |
+| 2 | 2026-09-24T19:44 | 2026-09-24T19:44 | note | none - not a run | no advance - step 3 criterion 6 was unmet and is unmet |
+| 3 | 2026-09-24T19:44 | 2026-09-24T19:44 | note | none - not a run | redirected - no-advance at two different criteria: units 1 and 2 ran against criteria 7.8 and 3.6 and moved neither. The next instruction must name one of 7.8 3.6 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |
+| 3 | 2026-09-24T19:47 | 2026-09-24T21:07 | complete | 10.732327199999995 | ran unattended, 211 turns, 14 denied call(s) worked around, report valid |
+| 3 | 2026-09-24T21:08 | 2026-09-24T21:08 | note | none - not a run | no advance - step 7 criterion 8 was unmet and is unmet |
+| 4 | 2026-09-24T21:08 | 2026-09-24T21:08 | note | none - not a run | redirected - no-advance at two different criteria: units 2 and 3 ran against criteria 3.6 and 7.8 and moved neither. The next instruction must name one of 3.6 7.8 with an approach the record does not show failing at it. Redirect 1 of this run, which is not a cap. |
+| phase | 2026-09-24T21:08 | 2026-09-24T21:08 | failure | 25.2366 | STOPPED, AND A STOP IS FAILURE - the arbiter session failed - exit 1 |

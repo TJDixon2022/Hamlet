@@ -74,9 +74,9 @@ FOLLOWS: report   the criterion was chosen because the last report
 and where it is report, one more line saying what it cited instead:
 FOLLOWED: one sentence, plain text
 
-The instruction it produced named  step 6 criterion 3  and gave this WHY:
+The instruction it produced named  step 7 criterion 8  and gave this WHY:
 
-Step 3 cannot advance until the owner rules on P19, and 3.4 cannot fire after unit 421's kept change, so R64 and R65 send the loop to the screen. 6.5 turns on HM-OPEN-087, which is Tim's, so 6.3 is the step 6 criterion no ruling holds.
+Unit 424 met 7.8 at the tune-in only and surveyed the preamp alone; the overflow flag is already polled live, so the missing clause is an act on a reading the tree has, not a new instrument. 3.6 was the other redirect choice, but its remaining route (a join) moves unkeyed floors that R73 keeps as they are, so 7.8 is the less exhausted of the two.
 
 Answer with the lines asked for above and nothing else, beginning with:
 
@@ -85,225 +85,482 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 6 | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
-## Step 6 - The screen stops saying what is not so
+﻿STEP: 7 | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
+## Step 7 - The decoder hears what is there
 
-**Delivers:** R62. What Tim reads while he is deciding whether to trust the app.
+**Delivers:** R67 and R68. What the decoder cannot hear at all, and the receiver it listens
+through.
 
 **Entry:** `PHASE_STATUS.md` names this phase; the tree is Hamlet's.
 
 **Exit:**
-- [x] 6.1 The RF gain banner states what the radio actually reported: when a read-back for RF gain is held, the banner says the value and when it was read, and the "did not confirm, so I do not know where it is now" wording appears only when no read-back is held; watched failing first against a held read-back, and the report quotes both sentences.
-- [x] 6.2 Every sentence the capture sidecar states about a signal is true of that capture or says plainly that it is not measured: `tonePeak` is a figure about this recording or is not printed as one, `elementHz` does not report nothing measured while the line above it resolves elements, and the `keying` line does not say no keying at a pitch in the same breath as counting key-downs there; each is watched failing first on a saved capture that shows the contradiction.
-- [x] 6.7 `tonePeak` in a per-capture sidecar is a figure measured over that recording and is labeled as such, watched failing first against the held-and-decaying figure, with the cost at the moment of capture measured and stated (R63).
-- [x] 6.8 The RF gain condition and its read-back are compared on one scale under R65, so a gain already at the wanted value is recognized rather than written and filed unconfirmed; watched failing first against a radio already at that value, with the report stating what is written to the radio before and after and showing that no new byte is sent when the value already matches.
-- [x] 6.3 The window keeps its arrangement when the operator tunes outside his privileges: at a frequency his license does not cover, the map, the neighborhood panel and the radio panel occupy the same columns as at a frequency it does, proved by a headless test that measures the panels' placement at both frequencies; the words and the color of the panel still change.
-- [x] 6.4 Every control on the CW tab and the band row carries hover text saying what it does - Send, Clear, CQ, RST, 73, the band buttons, the connect or disconnect button, the save star and the circled question marks - proved by a test that names each control and fails when one has none.
-- [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
-- [x] 6.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
+- [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
+- [ ] 7.3 The acquisition failure is traced: for the 7.052 session's opening, a fact that asserts nothing prints what the decoder was doing through the stretch that read `E ET E E` - the speed it held, the pitch it mixed at, the unit it estimated, and the scores it admitted characters on - beside the same figures from the stretch after it locked, and the report names the line or property that differs.
+- [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+- [x] 7.5 Entering CW mode and entering data mode each set the receiver correctly and it stays set: every condition the mode states is written once when the radio is not already at it and not written when it is; the band rule in a condition's own text is carried by what is written, not by a comment; exactly one component decides each field, and no other component asks the operator to change a field the setup has just set; the operator's own change is not overwritten by a later tune-in of the same mode (HM-DEC-056); and the report tables every field for CW and for data mode - what was asked, what the radio answered, whether it was written, and which component owns it (R67).
+- [x] 7.7 Every block of the CW family states the CW conditions (R70): entering Morse in the `CW DX` and `QRP` blocks sets the receiver exactly as the plain CW block does, watched failing first at 7.030 MHz where the preamp rule says off, with the field table printed for one frequency in each of the three blocks and the count of blocks that state conditions reported before and after; the conditions themselves are unchanged, and a condition marked unconfirmed is still not written.
+- [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+- [ ] 7.8 The preamp is set from what the radio's manual states and nothing contradicts it (R74): the CW conditions carry preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz, with the manual's page cited in the condition's own text; the preamp is turned off when the receiver reports overloading rather than by band; no component asks the operator to change the preamp, or any other field a condition states, after Hamlet has set it - watched failing first at 7.030 MHz, where the old rule turned it off, and at 14.050, where a voice contradicted the setup; and the report prints, for one frequency on each HF band and at 50 MHz, what is asked for, what is written, and every sentence the app would say about the preamp there.
 
-**Depends on:** nothing. Independent of every other step: when the CW work blocks, the arbiter works this.
+**Depends on:** nothing. Independent of every other step.
 
+## Â§5 Dependencies
 
---- what the script saw ---
-criteria-count.bat saw step 6 criterion 3 flip from unmet to met in
-PHASE_PLAN.md during this unit. THE COUNT IS THE SCRIPT'S; you do not count.
-Answer one more line after WHY:
-HONEST: yes   if the report shows that criterion honestly met
-HONEST: no    if the marker was turned without the criterion being met
+Step 0 depends on nothing and everything depends on it. **Step 6 depends on nothing either
+and is independent of every other step.** Steps 1, 2 and 4 depend on step 0 and on nothing
+else, so with step 6 there are four places to route when one blocks. Step 3 waits on 0
+and 2. Step 5 waits on 3 and 4. When step 0 blocks there is nowhere to route - work it or
+halt.
+
+## Â§6 Branching
+
+- **Three stops only**: keying, transmit or the radio's safety; money past the budget; a
+  fact the product states to the operator about a signal, a station or a send. A test's
+  shape, a threshold, a recipe, a filter, a timeout: decide, mark author's, continue.
+- **The later ruling wins. A done step is closed. Every remaining step Tim's: halt.**
+- **7.5 changes what is written to the radio, and that is its point** (R67). It may make the
+  app write *less* - a value already correct is not rewritten - and it may carry a band rule
+  the condition's own text already states. **It may not change what a condition asks for**,
+  and nothing that keys or transmits is touched.
+- **Removing a below-bar character is not lowering a floor** (R71), once 3.7 has set the bar.
+  A row whose above-bar count falls is a regression and the change goes back out. Until 3.7
+  is met, every named character counts as it does today.
+- **A character the key aligns as added may leave a floor** (R73), inside a scored stretch of
+  a keyed recording and nowhere else, with every removed character named in the report.
+- **No voice asks the operator to change a setting Hamlet set** (R74). A criterion is met by
+  making the setting right and the sentences agree with it, never by silencing a voice that
+  is telling the truth.
+- **An adjudicated reading may move only onto its own adjudicated text** (R66). Any other
+  movement fails 3.2's third test, and a report invoking the clause prints the reading
+  before and after.
+- **A stop 3 is legitimate only when a criterion of the step being worked cannot be met
+  without the ruling** (R65). A carried ask, a section 4 question, a `PARKED.md` item or a
+  finding noticed on the way past **never halts the loop**, whatever it touches. The
+  arbiter parks it and authors the next unit.
+- **When a unit cannot advance its criterion, the next unit is authored against a different
+  open criterion** (R64, R65). The loop halts only at stop 1, when nothing but the owner's
+  verdict is left.
+- **A stop is for the work, not for a mention** (R54). A carried ask or a finding that
+  touches one of the three but blocks no criterion goes to `PARKED.md` and the loop goes on.
+- **A run lost before any assertion** - the test host crash inside `Cw` (HM-OPEN-063) or the
+  headless dispatcher loop - counts neither way and is re-run once.
+- **A correctness number is never reported alone** (Â§3.1). A report that gives a percentage
+  without edits, scored length and the key's kind is incomplete and the arbiter says so.
+- **No key may be invented for audio nobody could read** (R61). If the scored region is
+  unclear, score less rather than guess more.
+- **A named floor from 2.2 is never lowered**, and a capture row's named count is never
+  lowered. Placeholders are free (R57).
+- **The generator is never the sole evidence** for keeping a change (1.4, Â§12.5).
+- **Step 6 changes what the operator reads, never what the radio does.** A screen criterion
+  is met by making a sentence true, never by deleting the sentence and saying nothing, and
+  never by changing a radio setting to match a claim.
+- **A report's four headings are exactly** `## 1. What Claude did`, `## 2. What the owner
+  should expect`, `## 3. What you should see`, `## 4. What's blocking us`. No other wording,
+  no fifth top-level heading. Unit 410's report was refused for writing *What Tim should
+  expect*, and the loop halted at stop 7 with the unit's work complete.
+- **A unit that cannot advance its own criterion does not halt the phase** (R64). It reports
+  what it measured, and the arbiter authors the next unit against a different criterion.
+  Preference when nothing is blocked: step 3 first, then step 6.
+- **Tonight's thirteen floors are never lowered and the older rows are never retired** (R63).
+- **Anything would change what keys or transmits.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A CW test costs more than 300 s**: it never goes on a carry-forward line and is run
+  alone with its own timeout.
+
+## Â§7 Carried
+
+The restore phase's 5.1, Tim's, at `docs/phase-cw-run/`; `#15`, `#43`, `#44` and `#42`,
+parked there with their measurements; `PHASE_GOAL.md`'s 80 percent, which this phase
+measures toward but does not promise; W1AW as an exact-key confirmation whenever a bulletin
+lands; the scanner; the screen findings in `OPEN_ISSUES.md` - the RF gain sentence, the
+window reflow, hover text; `tonePeak`, `elementHz` and the `keying` line's wording;
+HM-OPEN-063 and HM-OPEN-070.
+
+## Â§8 Revision record
+
+- **2026-09-24, after unit 423.** R73 a key-identified added character may leave a floor, so
+  3.6 can pass; R74 Hamlet sets the radio from the manual and nothing contradicts what it set,
+  as criterion 7.8.
+- **2026-09-24, after unit 420.** R71: a floor counts characters at or above a stated span
+  bar, so the stray-letter work can proceed; criterion 3.7 re-measures the 51 rows once.
+- **2026-09-24, after unit 419.** R70: the CW conditions apply to every CW-family block, as
+  criterion 7.7, so 7.5's last hole closes and 7.030 behaves.
+- **2026-09-24, after unit 418.** R67 entering a mode sets the receiver correctly and it
+  stays set, as criterion 7.5; R68 step 7 for the speed ceiling and acquisition; R69 the
+  stray single-element letters as criterion 3.6.
+- **2026-09-24, after unit 415.** R66: 3.2's third test allows a reading to move onto its
+  own adjudicated text, so unit 415's narrowed relabel `b68be0dd` - 185 over 565, no letter
+  moved - can be re-applied.
+- **2026-09-24, night.** R65: the RF gain scale licensed as criterion 6.8; a carried ask,
+  a section 4 question or a parked item never halts the loop, and a stop 3 is legitimate
+  only when the criterion being worked needs the ruling. Written after unit 412 completed
+  its work and the loop halted at stop 3 on an ask 412 had carried rather than on anything
+  blocking a criterion.
+- **2026-09-24.** R63 tonight's thirteen banked as the benchmark, older rows kept, tonePeak
+  measured over its own recording; R64 the loop moves rather than halting. New criteria 1.6
+  the keys by differencing, 2.5 the floors, 6.7 tonePeak.
+- **2026-09-23, night.** R62: step 6, the screen work, depending on nothing so the loop
+  always has somewhere to route; Â§6 gains the exact four report headings after unit 410's
+  report was refused over one word.
+- **2026-09-23.** Written from the interview: R59 to R61; six steps; the baseline taken
+  from `cw-2026-09-23-173723` at 29 edits over 46 named characters against an inferred key.
 
 --- the unit's report follows ---
 
 READ IN THIS ORDER.
 
-A. Phase goal: Hamlet reads a CQ call correctly. Steps 0, 1, 2 done;
-   3 partial on 3.4 and 3.6, with 3.6 parked as P19 on the floors;
-   4 and 5 not started; 6 partial on 6.5 alone now that 6.3 is met; 7 partial on
-   7.1 to 7.4 and 7.6.
-B. Step 6, criterion 6.3 clause by clause: General, 14.050 MHz covered and
-   14.010 MHz not, both from the privileges file's rows; the three panels'
-   left edges and widths at both, before and after; the lines that moved
-   them (BandGovernsTheMapPanel's two fit questions); the test watched red,
-   its message quoted, then green; the panel's words and color shown still
-   changing. Then 6.6 at exit, held.
-C. The rest. Section 4 raises 9 items, 8 carried and 1 new (P21, the row's
-   height). None of them is in the way of 6.3.
+A. Phase goal: Hamlet reads a CQ call correctly. Steps 0, 1, 2 done; 3, 6 and 7 partial; 4 and
+   5 not started. This unit moved step 7. The preamp is now turned off on an overload that
+   starts after the tune-in, not only on one read at it. Nothing in the decoder moved.
+B. Step 7's criterion 7.8, clause by clause:
+   - **The manual's rows with the page:** still true. The CW row is unchanged: preamp 1 from
+     1.8 to 29.999 MHz, preamp 2 from 50 to 54 MHz, off while overloading, citing
+     `IC-7300_ENG_FM_12b` page 4-3.
+   - **Off when overloading:** met at the tune-in and now after it. At every one of the six
+     traced frequencies, one write of off follows an overload that holds; the band's value goes
+     back once it clears; nothing is written after his hand, while transmitting, or in a block
+     that does not state the preamp.
+   - **No voice asking him to change a field Hamlet set:** 0 at the tune-in and after it, for
+     all nine fields, where the tuned block still owns the field. Once he has moved on,
+     sentences asking him to change a field the CW tune-in left went from 60 to 12. The 12 are
+     one true sentence about the attenuator (section 4, item 1).
+   - **The table:** printed in section 3 for 160 m to 10 m and 50.100 MHz. 160 m, 12 m and 6 m
+     find no block on the map (P23).
+   - **Can 7.8 be ticked?** Only if clause three is read as the fields the tuned block owns.
+     Read strictly, the 12 attenuator sentences after moving on keep it open. I have not ticked
+     it.
+   - **7.6 at exit:** holds. All three floors and both carry-forward lines are green, and
+     nothing green at entry is red.
+C. The rest. Section 4 raises 9 items: 3 new ones and 6 carried. Item 1 bears on ticking 7.8;
+   none stands in the way of the preamp work.
 
 ```
-UNIT:       423 - complete at task 4 of 4, none dropped - 2026-09-24 17:01
-PHASE GOAL: Hamlet reads a Morse CQ call correctly, measured against a key, and the screen stops asserting what it does not know while the decoder work waits on the owner.
-UNIT GOAL:  Tuning to a frequency Tim's license does not cover no longer moves the map, the neighborhood card or the rig face; only the privilege panel's words and color change, and a headless test proves it at both frequencies.
-ADVANCED:   yes - 6.3 met and ticked: its test was committed red at fb11154c and is green at 89394369 at all four sizes, going out and coming back
-NUMBER:     panels that move outside his privileges at the default size, 0 of 3 -> 0 of 3 (nothing moved at 1100 x 780 even before); largest shift at any size 562 px -> 0 px (the sun map at 1400 x 1040)
-DRIFT:      0
+UNIT:       426 - complete at task 4 of 4, none dropped - 2026-09-24 21:04
+PHASE GOAL: Hamlet prints a CQ call as it was sent, and the receiver is set right for the mode and stays right while he listens
+UNIT GOAL:  When the band starts overloading after he has tuned in to Morse, Hamlet turns the preamp off itself and back when it clears, leaves it alone once he has touched it, and nothing on screen asks him to change any of the nine fields the CW row sets
+ADVANCED:   yes - 7.8's second clause now holds after the tune-in, with one preamp-off write at each of six frequencies, 0 before; sentences asking him to change a field Hamlet set fell 60 to 12
+NUMBER:     sentences asking him to change a field Hamlet set, all nine fields, after the tune-in: 60 -> 12, and 0 -> 0 where the tuned block still owns the field; preamp writes on a live overload at 7.030: 0 -> 1
+DRIFT:      0 consecutive units without advance, was 1 in unit 425's report and 0 in the work instruction
 ```
 
 ## 1. What Claude did
 
-**Complete, 4 of 4 tasks, none dropped.** Machine QUIVERFULL, project claimed Hamlet, confirmed by `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present and `CoreHMI.sln` and `MURC.sln` absent at `C:\Source\HamLet`. Branch `main`. Everything was measured on the development computer, headless, so **nothing in this report is evidence about the radio** (HM-DEC-093).
+**Complete, at task 4 of 4, none dropped.** The drop candidate, writing the band's value back
+when the overload clears, is built. The run was on QUIVERFULL, in C:\Source\HamLet, on branch
+`main`. The gate confirmed Hamlet. All five commits are pushed.
 
-**Section 5 checks, reported and not repaired.**
-- Section 4's claims hold, with one exception. `TopRow` is at line 3143 with `*,Auto` and `MaxHeight="300"`. `BandRow` is at 3161. `TopRowCardScroller` holds `widget.map`. `GreenZoneMap` is there. `BandGovernsTheMapPanel.cs` was 273 lines at entry, with `MeasureOverride` at 92. The tone bindings are at 706 to 791, and Culture, Reassurance and UpgradePrompt at 931 to 957. `PrivilegeTone` is `Unknown`, `Yours`, `ListenOnly`, with amber for outside privileges. The five top-row types and the two licensing types all exist.
-  - **Mismatch:** `BandRow`'s third child is not `ctl:RigDisplayControl` itself. It is the amber `Border` at line 3211 that wraps it; the control is at 3223. The trace measures the `Border`, because that is what the panel places.
-- **Clause 4 was the smaller half of the cause.**
-  - Clause 4 (`CardFits`, the map giving width back) moved things at 1280 x 720 and 1366 x 728.
-  - The large jump was the left-edge question from work instruction 389 (`AtTheLeftEdge`).
-- **The license class** is `AppSettings.Operator.LicenseClass`, read by `MainWindowViewModel.UpdatePrivileges`. A test sets it in the settings it hands the view model, plus a `FixedLicenseLookup` giving the same answer for KC3QIS, so nothing reaches the network.
-- **The two frequencies** come from `data\privileges\us-part97-privileges.json`, both CW on 20 m. CW is allowed on any authorized frequency (97.305(a), the file's line 167).
-  - **Covered: 14.050 MHz**, in General's 20 m row `14025000 to 14150000`, line 132, 97.301(d).
-  - **Not covered: 14.010 MHz.** On 20 m only Extra's row `14000000 to 14350000` reaches it, line 97, 97.301(b). General's 20 m rows start at 14.025.
-- **How a headless test tunes: the rig face's own write.** The wheel over a digit calls `SetCurrentValue(RigDisplayControl.FrequencyHzProperty, ...)`. That property is two-way bound to `MainWindowViewModel.FrequencyHz`, and its change handler runs `UpdateModeLine` and then `UpdatePrivileges`. The tests write the same property the same way.
-  - Connected, the training radio goes through `ToggleConnectCommand`, as in unit 422. The radio answers on 40 m, so the trace presses the 20 m pill before tuning.
-- **Window sizes the existing top-row tests use:**
-  - 1920 x 1040, 1400 x 1040, 1100 x 780 (the opening size, `MainWindow.axaml:12`), 900 x 620, 1280 x 720, 1366 x 728, 1536 x 824, 1920 x 1017 and 2560 x 1400
-  - 1200 x 900 and 1400 x 900
-  - 1100 x 620, 580, 540 and 500
-- **The reload's two disagreements, repaired neither.**
-  - `PROJECT_STATUS.md`'s `RULES_AT` reads HM-DEC-165. `CLAUDE.md` §1's top row is **HM-DEC-176** (2026-09-24), not "CPS-DEC-0176" as the reload wrote it.
-  - The four root files were uncommitted at entry. `RUN_LEDGER.md` and `WORK_INSTRUCTIONS.md` are left uncommitted.
-  - `PHASE_OUTCOME.md` and `PHASE_STATUS.md` had to be committed for task 0, so ae6b0092 also carries the launcher's own additions to them: the appended `UNIT 2 - STEP 6` block and the `HEARTBEAT` line.
+- **Task 0, `c14c8089`.** HM-DEC-179 is in `DECISIONS.md` with the five limits, marked as the
+  arbiter's reading and overrulable by Tim, with the two rejected options. It has a row at the
+  top of `CLAUDE.md` §1 dated 2026-09-24. P22 is marked taken up. `PHASE_OUTCOME.md` has
+  UNIT 426 - STEP 7 with the entry round. `PHASE_STATUS.md` names unit 426 at CURRENT_STEP 7.
+  The version went from 1.13.112 to 1.13.113. Entry round, one type per invocation:
+  - build: 0 errors
+  - engine carry-forward: 178 of 178
+  - app carry-forward: 275 of 278. The 3 misses were the dispatcher loop: `ThePowerIsOfferedTests`
+    twice and `TheRecordNamesTheSubModePressedTests` Olivia. Alone they pass, 3 of 3 and 12 of 12.
+  - floors: captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13
+  - every Rig type: 45 types, 342 of 342
+  - `OneVoiceOnThePreampTests` 16 of 16, `WhatIsSaidAboutThePreampTests` 1 of 1,
+    `TheOverloadSentenceLeavesTheModesFieldsTests` 4 of 4
+  - `DecisionLogOrderTests`: red on the missing HM-DEC-166 row (P25), as expected.
+- **Task 1, `5200a490`.** I added `WhatHappensWhenTheBandOverloadsTests.PrintWhatHappens`, a fact
+  that asserts nothing, at 3.530, 7.030, 14.050, 21.050, 28.050 and 50.100 MHz. It runs four
+  points: a quiet tune-in; `Overflow` overloading for 12 polls; clear for 40; then his hand sets
+  the preamp and the overload comes back. At each point it prints what the preamp is asked for,
+  every write, the read-back, and every sentence the setup's voice, Receive Help
+  (`ReceiveAdvice`), `RigObservations`, `ReceiveObstructions`, the front-end chip and the
+  overload sentence say about each of the nine fields. It does this in the block, moved into a
+  block that states nothing, and moved into FT8's block, and counts per field and point.
+  - **The line that would have to act:** `MainWindowViewModel.ApplyRigState`, at
+    `MainWindowViewModel.cs:10983-10987` at entry. It read the flag into
+    `FrontEndIsOverloading` and nothing acted on it.
+  - **The sentences that contradicted what Hamlet set:**
+    - `ReceiveAdvice.Gain` (`ReceiveAdvice.cs:456-486`), once he has moved on: *"Open the
+      receive gain all the way. It is at about 39 percent"*, with the gain at 100 percent. This
+      is false as well as a request to change a field the CW row set.
+    - The unowned overload sentence (`MainWindowViewModel.cs:9094-9101`): *"Press P.AMP/ATT ...
+      until the preamp reads off"*, while the preamp Hamlet left was on through an overload.
+  - **A second fact, `MeasureTheLivePollCadence`,** times the live pass: 7 fields, then the
+    plan's 250 ms. `ScriptedRadio` now answers the transmit flag, and the live meters when asked.
+- **Task 2, `507b14da`, red by itself.** The tests and their messages are in section 3. I moved
+  the tune-in and poll into `LivePollBench`, shared by the trace and the engine tests and linked
+  into the app tests. Its `OnPollAsync` is what the app does with a poll, and at that commit it
+  wrote nothing.
+- **Task 3, `40691542`.** I built `ReceiverSetup.FollowOverloadAsync`, in the one component that
+  owns the preamp:
+  - **Off:** 4 readings of overloading in a row write off once.
+  - **Back on:** 20 readings of quiet write the band's own value back once.
+  - **Relapse:** if the overload comes back and holds within 20 readings of the preamp going
+    back on, it goes off and stays off until the next tune-in.
+  - **Limits:** it writes only while the last tune-in's block states the preamp with an overload
+    rule. It never writes while the radio is transmitting or while the transmit flag is unread.
+  - **Read before and after:** it reads the preamp before and after writing, as the setup does.
+    A hand found at write time stops it, and he is told in the setup's own words.
+  - **One list for every voice:** it replaces the preamp's result in the tune-in's list, so every
+    voice that reads the list reads what the radio now holds.
 
-**Task 0, the record, ae6b0092.**
-- Version 1.13.109 to 1.13.110.
-- `PHASE_STATUS.md` names unit 423 and `CURRENT_STEP: 6`.
-- `PHASE_OUTCOME.md` has its `UNIT 423 - STEP 6` entry.
-- Entry round, one type per invocation:
-  - build with warnings as errors: green
-  - engine carry-forward 178 of 178
-  - app carry-forward 276 of 278, with two lost to the dispatcher loop and green alone (`ThePowerIsOfferedTests` 3 of 3, `BindingHealthTests` 1 of 1)
-  - floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, keyed 13 of 13
-  - `EveryControlSaysWhatItDoesTests` 3 of 3
-  - top-row types: `TheBandRowIsWhereItWasRuledTests` 8 of 8, `TheTopRowTests` 15 of 15, `Unit376TheTopBandTests` 5 of 5, `TheSunMapStandsWhereItWasLeftTests` 2 of 2, `TheWindowHoldsBelowItsMinimumTests` 3 of 3
-  - `OutOfBandTests` 16 of 16 and `PrivilegeStatusLineTests` 9 of 9
-  - red as expected: P16 and P20
+  `ApplyRigState` hands it each fresh `Overflow` reading, once. The app never runs it while a
+  tune-in or another follow write is on the bus, and drops its result if a newer tune-in has
+  overtaken it. After a write it re-reads the preamp at once, rather than at the 30 s sweep.
+  `ReceiveAdvice.Gain` now compares on the read's scale. The owned overload sentence says where
+  the preamp is and why. Task 2's tests went green, 7 of 7.
+- **Task 4, this commit.** I added `PrintTheTable` for the 7.8 table. The replaced result now
+  carries the follow's reason instead of the row's band reason. The exit round follows.
 
-**Task 1, the trace, 987858b6.** `WhereThePanelsStandOutsideHisPrivilegesTests` asserts nothing.
-- It runs at all 15 sizes on the CW and the Digital tab. At each size a General operator is tuned 14.050, then 14.010, then back to 14.050.
-- It widens to every class at 1100 x 780, against 14.010 and against 14.360 (out of band), and to the connected state at 1100 x 780 and 1920 x 1040.
-- For each state it prints: the three panels' bounds, the tone, the green block's background, every sentence it draws with drawn and wanted width, and the panel's decision (map height, left edge or not, pills reach, the card's slot, width given back, the card's content height).
-- **The report was right, and the window moved at five sizes out of fifteen.** Section 3 has the figures.
-- **Two sizes did worse than move.** At 1920 x 1040 and 1920 x 1017, tuning to 14.010 threw Avalonia's *Infinite layout loop detected*.
-- **What moved them:** `BandGovernsTheMapPanel.MeasureOverride`'s two fit questions on the card's height, `CardFits` (`card.DesiredSize.Height <= rowHeight + 0.5`) and `AtTheLeftEdge` (`> rowHeight + 0.5`). Outside his privileges the green block adds *Receiving is never restricted. Any license may listen anywhere.* and the *What would Extra unlock?* button, and the verdict grows from *yours to use* to *listen all you like, but don't transmit*. The card gets 22 to 42 px taller, the fit fails, and the map is placed again.
-- **Other classes and out of band:**
-  - For Novice, Technician and Unknown, 14.050 and 14.010 have the same tone, so nothing changes between them.
-  - For Extra both are covered.
-  - 14.360 grows the card further at 1100 x 780. No left edge or width moved there for any class.
+**Section 5 checks. Nothing was repaired.**
+- `RigField.Overflow => RigPollRate.Live` is at `RigPollPlan.cs:145`, and `LiveInterval` is
+  250 ms at `:64`. **Not in the instruction:** the preamp itself is not in the plan, so it falls
+  to the default `RigPollRate.Session`, 30 s (`:177`). That is why task 3 re-reads it after a
+  write.
+- `ReceiverSetup` read `Overflow` only in `ResolveAsync`, at the tune-in: lines 349-352 for the
+  attenuator and 372-375 for the preamp. The instruction's "around 350 to 375" matches.
+- The other readers of `Overflow` in `src`:
+  - `ReceiveAdvice.cs:380`
+  - `MainWindowViewModel.cs:10983` (`ApplyRigState`)
+  - `DigitalCaptureSheet.cs:202` and `:664`
+  - `CivDecode.cs:83`
+  - `CivReads.cs:202`
+  - `RigReadout.cs:138`
+- The CW preamp row carries 1800000 to 29999999 at 1 and 50000000 to 54000000 at 2, with
+  `whenOverloading` 0, citing `IC-7300_ENG_FM_12b` page 4-3. It matches.
+- The operator's hand is recorded by `ReceiverSetupMemory.MovedByHandSince`, at
+  `ReceiverSetup.cs:101` at entry. The record is at `:79`.
+- Transmitting is `RigState.IsTransmitting` (`RigState.cs:186`), read from `TransmitStatus`,
+  which is polled live (`RigPollPlan.cs:124`).
+- `DecisionLogOrderTests` is red at entry and at exit on the same assertion (P25).
+- `EveryElementCarriesItsOwnPitchTests` and `NoSenderIsSplitInTwoTests` are still
+  `Compile Remove`d. They were not on this unit's list.
+- **No ruling forbids every write outside a tune-in in its own words.** The closest is
+  HM-DEC-174's *"Every condition a mode states is written once when the radio is not already at
+  it and not written when it is"*. That is about not rewriting a value already right, not about
+  when a write may happen. The "once per tune-in, then hands off" wording is a code comment in
+  `ReceiverSetup`, not a ruling. So the full build went ahead.
 
-**Task 2, the test, fb11154c, committed red and alone.** `ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests` builds the window headless on the CW tab and tunes by the rig face's write. It runs at 1100 x 780 (the default), 1280 x 720 (the smallest size where task 1 saw the panels move), and also 1400 x 1040 (the largest jump) and 1920 x 1040 (the layout loop). It reads the left edge and width of the card, the map and the rig face off the laid-out window, and fails when:
-- any of the six figures moves more than a pixel, naming the panel and both figures
-- the layout does not settle
-- the tone, the green block's color or its words are the same at both frequencies
+**Exit round (7.6), run twice.** It ran once, then again after the task 4 change to the
+replaced result's reason. The figures below are the second run, on the final source.
+- `Hamlet.sln` builds non-incremental with warnings as errors: 0 warnings, 0 errors.
+- Engine carry-forward: 178 of 178. App carry-forward: 278 of 278, both runs.
+- Captures: 51 of 51 in 119 s. Adjudicated 13 of 13. Keyed floors 13 of 13.
+- Every Rig type: 47 types, 351 of 351. That is the entry's 342 plus the 9 new tests.
+- Touched app types:
+  - `WhatHappensWhenTheBandOverloadsTests` 3 of 3
+  - `TheOverloadSentenceSaysWhereThePreampIsTests` 2 of 2
+  - `OneVoiceOnThePreampTests` 16 of 16
+  - `WhatIsSaidAboutThePreampTests` 1 of 1
+  - `TheOverloadSentenceLeavesTheModesFieldsTests` 4 of 4
+  - `TheFrontEndIsOnThePanelTests` 6 of 6
+  - `HowMuchTheApplicationSaysTests` 5 of 5
+  - `BindingHealthTests` 1 of 1
+  - `WhichPathsPutNarrationOnTheBarTests` 6 of 6
+  - `TheStatusBarStopsLecturingTests` 4 of 4
+  - `WhatElseIsComposedAtRuntimeTests` 1 of 1
+  - `RigDiagnosticsTests` 10 of 10
+  - `ReceiveHelpViewModelTests` matches no test, as at unit 424.
+- `DecisionLogOrderTests`: red on HM-DEC-166, as at entry. **Nothing green at entry is red.**
+- `src/Hamlet.RadioEngine/Cw` prints nothing against entry `972510e6`. The transmit files print
+  nothing against `7e209cb4`. `data` prints nothing against entry. `src` changed only in
+  `ReceiverSetup.cs`, `ReceiveAdvice.cs` and `MainWindowViewModel.cs`.
 
-**Task 3, the columns held, 89394369.** Three changes to `BandGovernsTheMapPanel`, each measured:
-1. **`OutsideTheFit`**, an attached flag set in `MainWindow.axaml` on the reassurance sentence, the upgrade row and the ladder. These are the lines drawn only outside his privileges. They are still measured, arranged and drawn, but they are left out of the two fit questions. This alone ended the 1920 layout loop, but at 1280 and 1400 the longer verdict still moved the map.
-2. **`HeldAcross`**, bound to `PrivilegeStatus.Tone`. If the width, the rig face and the pills row are the same as when the arrangement was decided and only the tone differs, the panel keeps that arrangement. Any other change decides afresh, as before.
-3. **A stale-measure guard.** After the first two changes, the trace showed the map coming back from 14.010 to 327 x 178 beside the card at 1400 x 1040, where it had started at 393 x 214 at the left edge. A probe found the cause:
-   - The rig face's new digits get the row re-measured before the card's changed lines.
-   - The card, asked again at the width it had last had, answers from its cache with the outside-privileges height.
-   - The fallback then re-measures everything, so nothing ever asks again.
+**Decisions I made myself.**
+- **The hold, from the measured cadence.** The live pass gives a fresh `Overflow` reading every
+  252.9 ms median (249.9 min, 265.8 max) against the scripted radio. On the IC-7300 add about
+  14 ms of wire a pass, by `PollBudgetTests`' 2 ms a read. I chose:
+  - `OverloadHoldReadings = 4`, about 1 s.
+  - `ClearHoldReadings = 20`, about 5 s. This is also the relapse window.
 
-   The fix: before the fit questions, any card line still waiting to be measured marks the path up to the card as waiting too. The first try, dropping `AffectsMeasure` from `HeldAcross`, was not enough on its own, and `HeldAcross` stays without it.
-
-**Decisions recorded for myself under §12.1, each overrulable, in full:**
-- *Holding across the tone.* Where only the privilege panel's tone has changed since the arrangement was decided, the card, the map and the rig face stay where they were decided. Why: the verdict line exists inside his privileges too, so leaving it out of the fit would change arrangements the existing tests pin. A hold keyed on the tone changes nothing inside his privileges.
-  - Rejected: holding across every change of the card's words, which would break `TheSunMapStandsWhereItWasLeftTests`' FT8 to PSK31 switch in one window.
-  - Rejected: fitting the card as if it were always outside privileges, which would move the map off the left edge at 1400 on FT8 inside his privileges.
-  - Known consequence: a window opened outside his privileges keeps that arrangement when he tunes inside, until a resize or a change inside the card under one tone.
-- *The ladder is marked `OutsideTheFit`* along with the reassurance and the upgrade row. It is drawn only outside his privileges and only when he presses the upgrade button.
-- *The test's sizes go beyond the two named.* 1400 x 1040 and 1920 x 1040 are added, because the largest jump and the layout loop are there.
-- *A return check was added to task 2's test in task 3*: back at 14.050 the panels must stand where they stood at 14.050. It was never committed red on its own. Its red is the trace's 1400 x 1040 figure above, before the stale-measure guard.
-- *P21 is parked* (section 4).
-
-**Task 4, the exit round (6.6 held).**
-- `Hamlet.sln` builds non-incremental with warnings as errors: 0 warnings, 0 errors. The DLLs were rebuilt at 16:46.
-- Carry-forward: engine 178 of 178. App 277 of 278; `TheTestsStayOffTheNetworkTests.ThePlainFixtureTakesGeneralFromTheFixedAnswer` was lost to the dispatcher loop, and the type is 5 of 5 alone.
-- Floors: captures 51 of 51, adjudicated 13 of 13, clean 2 of 2, keyed 13 of 13.
-- Green: `BindingHealthTests` 1, `EveryControlSaysWhatItDoesTests` 3, `WhatEveryControlSaysOnHoverTests` 1, the five top-row types at their entry counts (8, 15, 5, 2, 3), task 2's test 1 of 1, task 1's fact 1 of 1, `OutOfBandTests` 16, `PrivilegeStatusLineTests` 9.
-- Other types that read the band row, green: `TheFavoritesAreChipsTests` 4, `TheWorkingPanelsTests` 8, `Unit388TraceTests` 1, `Unit389TraceTests` 2.
-- Red as at entry: P16 and P20.
-- The transmit files print nothing against `7e209cb4`. `src/Hamlet.RadioEngine` and `data` print nothing against entry `0456cad7`. `src` differs only in `BandGovernsTheMapPanel.cs` and `MainWindow.axaml`.
-- **Nothing is red that was green at entry. 6.3 is ticked** in `PHASE_PLAN.md`.
-- Pushed: yes, each task's commit pushed to `origin main` with rc 0. Task 4's push result is in the delivery message.
+  No radio is on this machine (FACT-006), so the wire figure is an estimate, not a measurement.
+- **The hold counts readings, not wall time.** The app hands over each distinct `Overflow`
+  reading once, keyed on its timestamp.
+- **An unread transmit flag counts as not safe.** HM-DEC-179 says never while transmitting; I
+  also refuse to write when the radio will not say.
+- **One write, not a retry loop.** A follow write the radio does not confirm is said as
+  unconfirmed, and the follow stops until the next tune-in.
+- **The follow acts only on a preamp the tune-in left right, found or set.** A preamp the tune-in
+  found in his hand, could not read, or could not confirm is not followed.
+- **The RF gain repair.** Task 1 found the RF gain contradicted once he has moved on, so task 2
+  gave it a test and task 3 fixed the comparison. `RigWriteTests` had four RF gain readings
+  written as raw 107 and 255 beside the texts "42%" and "100%". The real decode is the percent,
+  so I moved those four numbers to 42 and 100, the values their own texts state. The assertions
+  are unchanged, and the type is green, 351 of 351 with the rest.
+- **What the trace counts.** It counts a sentence as asking him to change a field Hamlet set
+  and still owns when the field holds the value Hamlet last left, and the tuned block's tune-in
+  states that field. Requests on a field Hamlet left but no longer owns, once he has moved on,
+  are counted apart and marked. Both columns are in section 3.
+- **`ScriptedRadio` changes, test code only.** It answers `1C 00` when a test sets
+  `Transmitting`, and the live meters when `AnswersMeters` is on. Both are off by default, so
+  older tests see the radio as before.
 
 ## 2. What the owner should expect
 
-Tuning outside your privileges no longer moves the map, the neighborhood panel or the radio panel: each keeps its left edge and its width, going out and coming back, at every window size the tests use. What still changes is the privilege panel's words and color: the verdict turns to *listen all you like, but don't transmit*, *Receiving is never restricted* and the *What would Extra unlock?* button appear, and the block goes from green to amber. What caused the jump: the row asked whether the neighborhood card still fit beside the map at full size, and outside your privileges those extra lines made the card too tall, so the map was moved or shrunk to make room.
+Say you are listening to Morse in a CW block and the band starts overloading the radio. Once it
+has held for about a second, Hamlet turns the preamp off itself, as the IC-7300 manual says for
+strong signals. It tells you so behind the mark on the status line. The overload sentence on the
+panel now says the preamp is off and why, instead of saying the mode only sets it when you tune
+in. When the overload has been gone for about five seconds, Hamlet puts the preamp back to the
+band's setting: preamp 1 on HF, preamp 2 on 6 m. If the overload comes straight back, it leaves
+the preamp off until you next tune in. If you set the preamp yourself at any point, Hamlet leaves
+it exactly where you put it until you next tune in, and says so. Hamlet never touches it while
+you are transmitting. Nothing else on the radio is followed this way.
 
-**What will look wrong but is not.**
-- **The top row still gets taller outside your privileges.** At 1400 x 1040 the extra lines make it 42 px taller and the working panels below move down by that much. That is P21, parked for your call. The columns hold; the height follows the words, as before.
-- **The two red tests are the known baseline.** `ModeFollowsTheMapAgainTests.NothingButTheModeIsEverWritten` is P16 and `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen` is P20. Both were red at entry.
-- **The figures are headless.** The test host draws text in a fixed-width stand-in font, so a pixel here is not a pixel on your screen. Every top-row test measures the same way.
+What will look wrong but is not: the radio's preamp may change without you touching it, a second
+or so after an overload starts. Receive Help also stops telling you to open a receive gain that
+is already fully open. It used to call full "about 39 percent".
 
 ## 3. What you should see
 
-**Task 1's table: the three panels at 14.050 (covered) and 14.010 (not covered), General, CW tab.** Left and width; top and height where they differ. "Before" is 987858b6's code, "after" is 89394369. At 14.050 the two are identical.
+**1. Task 2's red messages, quoted, at `507b14da`.**
+- `ThePreampFollowsTheOverloadTests`, 0 of 3:
+  - `AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce`: *Assert.Equal() Failure:
+    Collections differ. Expected: int[] [0]. Actual: List<int> []*
+  - `AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing`: the same, on its first
+    assertion. There was no off write for his hand to follow.
+  - `NothingIsWrittenWhileTheRadioTransmits`: the same, on its second half. The rise during
+    transmit wrote nothing at HEAD too, so the test also asks for the one write once receiving.
+- `TheReceiveGainIsReadOnItsOwnScaleTests`, 0 of 2:
+  - `AGainAtFullIsAlreadyOpenOnceHeHasMovedOn`: *Open the receive gain all the way. It is at
+    about 39 percent, and a gain control turned down is the one thing that quietly undoes
+    everything else.*
+  - `AGainTurnedDownIsSaidAsThePercentTheRadioReads`: *Assert.Contains() Failure: Sub-string not
+    found ... Not found: "about 50 percent"*
+- `TheOverloadSentenceSaysWhereThePreampIsTests`, 0 of 2:
+  - `WithThePreampOffItSaysItIsOffAsTheManualHasIt`: *Not found: "The preamp is off"*
+  - `WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis`: *Not found: "turns it off"*
 
-| Size | Panel | 14.050, before and after | 14.010, before | 14.010, after |
+All 7 are green at exit. Task 3 added 4 more: the hold, the relapse, FT8's block, and an unread
+transmit flag.
+
+**2. The live-overload script at 7.030 and 14.050, before and after.** Both frequencies trace
+identically. 7.030 is the QRP block and 14.050 is CW main street; both state all nine conditions.
+- **Point 1, quiet tune-in, both runs:** written noise blanker 0, AGC 1, preamp 1; read back
+  preamp 1. The setup says *"I set the preamp to preamp 1 because that is what the radio's own
+  manual gives for this band and this front end."*
+- **Point 2, overloading for 12 polls:**
+  - *Before:* written nothing; read back preamp 1. The chip reads *overloading · preamp 1*. The
+    overload sentence says *"... The preamp and the attenuator are set by this mode when you tune
+    in, so Hamlet is not asking you to change them here."*
+  - *After:* written preamp 0; read back off. Narrated: *"I turned the preamp off because the
+    radio says its front end is overloading, and the radio's manual has the preamp off with
+    strong signals."* The chip reads *overloading · preamp off*. The overload sentence says
+    *"... The preamp is off, which is where the radio's manual has it while the front end is
+    overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to
+    change either of them here."* Receive Help: *"The preamp is covered by what this mode states
+    when you tune in, so Hamlet is leaving it out of these suggestions."*
+- **Point 3, clear for 40 polls:**
+  - *Before:* written nothing; read back preamp 1.
+  - *After:* written preamp 1; read back preamp 1. Narrated: *"I set the preamp back to preamp 1
+    because the radio's front end has stopped overloading, and that is what the radio's manual
+    gives for this band."*
+- **Point 4, he sets preamp 2, then overload for 12 and clear for 40:**
+  - *Before and after:* written nothing; read back preamp 2 throughout.
+  - *After:* narrated *"Your preamp is preamp 2 and I have left it there, because you moved it
+    after I last set it."*
+- **Moved on, at point 2:**
+  - *Before:* Receive Help says the receive gain is at *"about 39 percent"*. The overload
+    sentence says *"Press P.AMP/ATT on the front of the radio until the preamp reads off."*
+  - *After:* Receive Help says *"The receive gain is already open all the way"* and *"The preamp
+    is off, and the radio says its front end is overloading, which is when the radio's manual
+    has it off."* The overload sentence says *"... the preamp is already off, so the next thing
+    to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in."* (Section 4, item 1.)
+- **The 14.050 red test's own script,** a hand on the preamp while it is still overloading: one
+  off write, then nothing through a 12-poll overload, a 40-poll clear and a 12-poll return.
+
+**3. Per field, contradicting sentences before and after.** Six frequencies; in the block, moved
+into a block that states nothing, and moved into FT8.
+
+| field | Hamlet set and still owns: points 1 / 2 / 3 / 4 | left and no longer owns, moved on: 1 / 2 / 3 / 4 |
+|---|---|---|
+| auto notch, manual notch, noise blanker, noise reduction, AGC, squelch | 0 / 0 / 0 / 0 -> 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 -> 0 / 0 / 0 / 0 |
+| RF gain | 0 / 0 / 0 / 0 -> 0 / 0 / 0 / 0 | 12 / 12 / 12 / 12 -> 0 / 0 / 0 / 0 |
+| attenuator | 0 / 0 / 0 / 0 -> 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 -> 0 / 12 / 0 / 0 |
+| preamp | 0 / 0 / 0 / 0 -> 0 / 0 / 0 / 0 | 0 / 12 / 0 / 0 -> 0 / 0 / 0 / 0 |
+| **all nine** | **0 -> 0** | **60 -> 12** |
+
+**4. The 7.8 table, at exit, in the block.** For all ten rows, overloading after the tune-in
+reads the same: asked preamp 0; written 0; read back off. The follow's narration and the
+owned overload sentence are the quoted ones in item 2.
+
+| frequency | block | quiet: asked, written, read back | Receive Help, quiet and overloading | chip, overloading |
 |---|---|---|---|---|
-| 1100 x 780 (default) | card | 16.0, 248.0 (h 345) | 16.0, 248.0 (h 523) | 16.0, 248.0 (h 523) |
-| | map | 278.0, 246.0 | 278.0, 246.0 | 278.0, 246.0 |
-| | rig | 538.0, 546.0 | 538.0, 546.0 | 538.0, 546.0 |
-| 1280 x 720 | card | 16.0, 401.0 | 16.0, **428.0** | 16.0, 401.0 |
-| | map | 431.0, 273.0 x 149 | **458.0, 246.0** x 134 | 431.0, 273.0 x 149 |
-| | rig | 718.0, 546.0 | 718.0, 546.0 | 718.0, 546.0 |
-| 1366 x 728 | card | 16.0, 433.0 | 16.0, **514.0** | 16.0, 433.0 |
-| | map | 463.0, 327.0 x 178 | **544.0, 246.0** x 134 | 463.0, 327.0 x 178 |
-| | rig | 804.0, 546.0 | 804.0, 546.0 | 804.0, 546.0 |
-| 1400 x 1040 | card | 423.0, 401.0 | **16.0, 548.0** | 423.0, 401.0 |
-| | map | 16.0, 393.0 x 214 (left edge, top 83) | **578.0, 246.0** x 134 (top 119) | 16.0, 393.0 x 214 (left edge, top 83) |
-| | rig | 838.0, 546.0 | 838.0, 546.0 | 838.0, 546.0 |
-| 1536 x 824 | card | 423.0, 537.0 | **16.0, 684.0** | 423.0, 537.0 |
-| | map | 16.0, 393.0 x 214 (left edge) | **714.0, 246.0** x 134 | 16.0, 393.0 x 214 (left edge) |
-| | rig | 974.0, 546.0 | 974.0, 546.0 | 974.0, 546.0 |
-| 1920 x 1040 | all three | card 423.0, 921.0; map 16.0, 393.0; rig 1358.0, 546.0 | **Infinite layout loop detected** | same as 14.050, settled |
+| 1.810, 160 m | **none on the map (P23)**: the app writes nothing; CW row driven directly | 1, 1, preamp 1 | covered by the mode (row driven directly) | overloading · preamp off |
+| 3.530, 80 m | CW main street | 1, 1, preamp 1 | covered by the mode | overloading · preamp off |
+| 7.030, 40 m | QRP watering hole | 1, 1, preamp 1 | covered by the mode | overloading · preamp off |
+| 10.110, 30 m | QRP watering hole | 1, 1, preamp 1 | covered by the mode | overloading · preamp off |
+| 14.050, 20 m | CW main street | 1, 1, preamp 1 | covered by the mode | overloading · preamp off |
+| 18.080, 17 m | CW main street | 1, 1, preamp 1 | covered by the mode | overloading · preamp off |
+| 21.050, 15 m | CW main street | 1, 1, preamp 1 | covered by the mode | overloading · preamp off |
+| 24.900, 12 m | **none on the map (P23)**: the app writes nothing; CW row driven directly | 1, 1, preamp 1 | covered by the mode (row driven directly) | overloading · preamp off |
+| 28.050, 10 m | CW main street | 1, 1, preamp 1 | covered by the mode | overloading · preamp off |
+| 50.100, 6 m | **none on the map (P23)**: the app writes nothing; CW row driven directly | 2, 2, preamp 2 | covered by the mode (row driven directly) | overloading · preamp off |
 
-- **All 15 sizes, both tabs, after:** every panel's left and width moved 0.0 px. This includes 1400 x 900 and 1920 x 1017, which moved or looped before, and connected at 1100 x 780 and 1920 x 1040.
-- **Back at 14.050 after 14.010:** the arrangement is the one it started from at every size.
-- **Heights after, card and rig face:** +2 px at 1920, +22 at 1536 x 824, +42 at 1280 x 720, 1366 x 728 and 1400 x 1040, +90 at 1200 x 900, and 345 to 523 at 1100 x 780 (P21).
-- **The words and color still change** at every size:
-  - tone `Yours` to `ListenOnly`
-  - block background `#ffe9f6ec` to `#fffdf1e0`
-  - verdict *Morse · yours to use* to *Morse · listen all you like, but don't transmit*
-  - license line *Your General license covers Morse here. Call away · 97.305(a)* to *General privileges do not reach this frequency; it needs Extra · 97.301(d)*
-  - two lines added: *Receiving is never restricted. Any license may listen anywhere.* and *What would Extra unlock?*
-
-**The red message, fb11154c:**
-
-```
-1280 x 720: the neighborhood panel's width is 401.0 at 14.050 MHz and 428.0 at 14.010 MHz
-1280 x 720: the sun map's left edge is 431.0 at 14.050 MHz and 458.0 at 14.010 MHz
-1280 x 720: the sun map's width is 273.0 at 14.050 MHz and 246.0 at 14.010 MHz
-1400 x 1040: the neighborhood panel's left edge is 423.0 at 14.050 MHz and 16.0 at 14.010 MHz
-1400 x 1040: the neighborhood panel's width is 401.0 at 14.050 MHz and 548.0 at 14.010 MHz
-1400 x 1040: the sun map's left edge is 16.0 at 14.050 MHz and 578.0 at 14.010 MHz
-1400 x 1040: the sun map's width is 393.0 at 14.050 MHz and 246.0 at 14.010 MHz
-1920 x 1040: tuned to 14.010 MHz the layout did not settle - InvalidOperationException: Infinite layout loop detected
-```
-
-**The green run:** at 89394369 and again at exit, `ThePanelsHoldTheirColumnsOutsideHisPrivilegesTests` passes 1 of 1 at all four sizes, with the return check included.
+- **Quiet, every row:** the setup's clause is *"I set the preamp to preamp N because that is
+  what the radio's own manual gives for this band and this front end."* No observation mentions
+  the preamp, and the overload sentence says nothing.
+- **Overloading, every row:** the setup's clause becomes *"I turned the preamp off because the
+  radio says its front end is overloading, and the radio's manual has the preamp off with strong
+  signals."*
+- **Full text:** every sentence is in
+  `.run-unit/unit426-type-exit2-WhatHappensWhenTheBandOverloadsTests.txt`. Task 1's before trace
+  is `.run-unit/unit426-type-t1-a-WhatHappensWhenTheBandOverloadsTests.txt`.
 
 ## 4. What's blocking us
 
-Nothing here blocks 6.3, and nothing halts the phase (R65). The carried items are copied word for word from the work instruction (HM-DEC-139).
-
-1. **P19**: 3.6's added strays stand above the bar and every floor they sit under is at its count, so none can leave without the owner's ruling. The ruling is proposed in `PARKED.md`.
-2. **P12** stays parked: the `captured` and `broadcast` clock lines.
-3. **The `clipping` and `inputFloor` question** stays parked.
-4. **P14, P15, P16 and P18** stay parked. *(P16 was red again at exit, message unchanged.)*
-5. **P20** stays parked: `Unit302CeilingHoldsStillTests.TheLiveReadoutsAreStillOnScreen` looks for `TurnRingCountText`, and no element in `src` carries that name. *(Red again at exit.)*
-6. **Unit 421's R71 count:** R71's prose says 40 unkeyed captures, and the tree has 29 unkeyed rows of 51. Recorded, not a ruling.
-7. **Unit 421's `SpanMarginForRecord` remark** stays until a unit touching `CwCharacter` rewrites it with the trace beside it (12.6).
-8. **Unit 422's reading of "the band row"**: the header strip that holds Connect, plus `BandRow` and `BandPills`. It is author's and overrulable.
-9. **New, P21, parked: outside his privileges the top row still grows taller.**
-   - **Proposed, the owner's:** leave the height following the words, as now.
-   - **Reasoning:** holding the height too would make the card scroll *Receiving is never restricted* and the upgrade button out of sight inside the row. §0.5 allows that, but it hides the sentence that removes the fear until he scrolls.
-   - **Rejected:** capping the card at the row's height in this unit. 6.3 names columns, not heights, and the choice between a moving panel edge and a hidden sentence is his.
-   - **Measured:** the rise is 2 to 90 px at the tested sizes (42 at 1400 x 1040). Where the row is under the 300 px cap, the working panels below move down by that much.
+1. **Once he has moved on, the overload sentence asks for the attenuator the CW tune-in left
+   off. This bears on ticking 7.8. Parked as P27.**
+   - **What happens:** with the preamp now off on an overload, the sentence outside an owned
+     block reads *"the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring
+     it in"*. It appears 12 times in the trace, and it is true. Before this unit the same view
+     asked him to turn the preamp off instead.
+   - **Proposed ruling, the owner's:** 7.8's third clause covers the fields the tuned block owns.
+     Once he is in a block that does not state a field, a true voice about it may speak.
+   - **Reasoning:** HM-DEC-179 lets the preamp follow only while the block owns it, and forbids
+     following the attenuator at all. The attenuator's 20 dB write is P14. The only way to
+     remove the sentence without a ruling would be to silence a true voice, which R74 forbids.
+   - **Rejected:**
+     - following the attenuator live, which HM-DEC-179 forbids;
+     - rewording the sentence to stop naming the attenuator, which would be silencing it.
+2. **A band that starts overloading after he has moved into a block that does not state the
+   preamp is not followed.** This is HM-DEC-179's third limit, as ruled.
+   - **What happens:** the unowned overload sentence then asks him to press P.AMP/ATT until the
+     preamp reads off. That is true and it stands.
+   - **Proposed:** leave it as ruled unless Tim widens the licence.
+   - Not blocking.
+3. **Receive Help's USB level has the RF gain's scale mismatch. Parked as P28.**
+   - **What happens:** `ReceiveAdvice.UsbLevel` compares a percent to 77 on the 0-255 scale, so
+     50 percent, where the radio ships, would be asked to turn up.
+   - It is not one of the nine fields, and it was not changed.
+   - **Proposed:** a step 6 unit repairs it as this unit repaired the RF gain.
    - Not blocking.
 
-**Asks still outstanding**
+**Carried per HM-DEC-139, verbatim. None of these is this unit's to answer:**
 
-- P19, first raised by unit 421 on 2026-09-24. It waits on the owner's ruling on whether a key-aligned added character may leave a floor. The floors are in the engine's floor tests, and the proposal is in `docs\phase-correctness\PARKED.md` P19.
-- P20, first raised by unit 422 on 2026-09-24. It waits on whether the slot countdown returns to the Digital tab or the test retires. The test is `tests\Hamlet.App.Tests\Views\Unit302CeilingHoldsStillTests.cs`, and the entry is `PARKED.md` P20.
-- Unit 422's reading of "the band row", 2026-09-24. It waits on the owner's reading. The lists are in `tests\Hamlet.App.Tests\Views\EveryControlSaysWhatItDoesTests.cs`.
-- P21, new from unit 423, 2026-09-24. It waits on whether the top row's height should also hold outside his privileges. The change sits in `src\Hamlet.App\Controls\BandGovernsTheMapPanel.cs`, and the entry is `PARKED.md` P21.
+4. **P23 - 6 m has no block on the map, and its top edge is not in the tree.** "The CW row states
+   preamp 2 from 50.000 to 54.000 MHz (HM-DEC-177), and `ReceiverSetup` writes 2 when driven there
+   directly, but `HfBands.Names` is 80 to 10 m and `data/bands/us-neighborhoods.json` has no 6 m
+   rows, so tuning to 50.100 in the app finds no block and writes nothing. 160 m and 12 m are the
+   same (1.810 and 24.900 find no block). The 54 MHz top edge is 47 CFR 97.301's and no file in
+   the tree carries it: `data/privileges/us-part97-privileges.json` has no 6 m row. Adding bands
+   to the map is the scope decision `HfBands` names. Not blocking."
+5. **P24 - the attenuator's sentence gives the quiet band's reason when it writes 20 dB.** "Since
+   unit 424 the setup says a conditional row as the value the radio read back rather than as the
+   rule. For the attenuator that will read *I set the attenuator to 20 dB because twenty decibels
+   thrown away on a signal that had none to spare* once a 20 dB write lands, which gives the off
+   case's reason for the on case. It cannot be heard today, because the 20 dB write is refused
+   (P14). The row's `says` is the attenuator's, which is another receive condition and not this
+   unit's; its page in `IC-7300_ENG_FM_12b` was not checked, because the manual is not in the
+   tree. Not blocking."
+6. **P25 - the decision log's index has no HM-DEC-166 row.**
+   "`DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes` is red at entry
+   `e4085d43` and after: *Expected [105, 136], Actual [105, 136, 166]*. `DECISIONS.md` holds
+   HM-DEC-166 and the `CLAUDE.md` §1 table has no row for it. Unit 424 did not repair it (report,
+   repair nothing)." Still red at unit 426's entry and exit, and not repaired.
+7. **P26 - a ceiling test's added paragraph comes back 64 characters longer at some times.**
+   "`HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed` failed twice ...
+   with *Expected 1779, Actual 1843* ... Something on the Digital tab adds 64 characters between
+   the two measurements at some wall-clock times. Not traced by unit 424. Not blocking." It was
+   5 of 5 in both of unit 426's rounds.
+8. **Step 3's join question, from unit 425.** "3.6 clause two may need a join, and a join moves
+   the unkeyed floors ... A ruling would be needed on whether that counts as a floor lowered on
+   an unkeyed row." It is step 3's.
+9. **P19** was answered by HM-DEC-178 at unit 425. It is step 3's and is listed only so the
+   carry is complete.

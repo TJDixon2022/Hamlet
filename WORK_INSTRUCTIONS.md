@@ -1,9 +1,9 @@
-# Work instruction 424 - the preamp is what the manual says, and nothing argues with it
+# Work instruction 427 - the grid wins, and the fourteen are checked on screen
 
-**Seed under `--seed`.** Tim has raised this three times: he sets the preamp, Hamlet sets it
-back, and something tells him it should be off. The condition in the tree disagrees with the
-radio's own manual, and more than one voice speaks about the field. **Both are fixed here.**
-Four tasks, drop from the back.
+**Seed under `--seed`.** Thirteen of the owner's fourteen UI items are marked built by units
+376 to 390. One, the grid-against-prefix rule, has never been written. **This unit builds
+that one and then drives all fourteen to see what is actually on screen**, because ticked and
+right have come apart twice this week. Five tasks, drop from the back.
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -41,6 +41,9 @@ If all four hold, say "Hamlet confirmed" and continue.
 its top comment says. **Never background and poll.** One type per invocation, each with its
 own `timeout`. The captures type is 51 rows; give it 600 s.
 
+**This unit works in the app project.** The headless dispatcher loop loses a name most runs;
+a loss before any assertion is re-run once and counts neither way.
+
 **The report's four top-level headings are exactly these, character for character:**
 
 ```
@@ -52,9 +55,7 @@ own `timeout`. The captures type is 51 rows; give it 600 s.
 
 **The `UNIT:` line carries no parentheses**, and no `&`, `|`, `<`, `>`, `^`.
 
-**Write `output.md` at the root before the session ends, whatever else happened.** Unit 423's
-follow-on session wrote none and the launcher halted at stop 11 reading the previous unit's
-file.
+**Write `output.md` at the root before the session ends, whatever else happened.**
 
 **Nothing in section 4 halts this phase** (R65). Park it and go on.
 
@@ -63,12 +64,13 @@ file.
 Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
 refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
 `git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step commands
-go into `.run-unit\unit424-<name>.sh` and run with `sh`. Unit 423's scripts can be copied.
+go into `.run-unit\unit427-<name>.sh` and run with `sh`.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139, verbatim in section 4. **P19 is answered by R73 and leaves the carried
-list; it is step 3's, not this unit's.** Nothing else is this unit's to answer.
+Carried per HM-DEC-139, verbatim in section 4. **P27, the attenuator sentence outside an owned
+block, is the owner's and is not this unit's** - 7.8 stays unticked until he rules. Nothing
+else is this unit's to answer.
 
 ---
 
@@ -76,111 +78,110 @@ list; it is step 3's, not this unit's.** Nothing else is this unit's to answer.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  The preamp is set from what the radio's manual states, and no
-            component tells the operator to change what Hamlet set.
-ADVANCES:   step 7 criterion 8
+UNIT GOAL:  A station's grid beats his prefix's entity on the card, and all
+            fourteen of the owner's UI items are checked against the screen.
+ADVANCES:   none - clears a blocker: criterion 5.1
 DRIFT:      0
 ```
 
-**Tim, 2026-09-24:** *"I want to use the radio like I use my car radio. I tune to the place I
-want and it just happens... You know the mode we're in. You know the range. Why do I have to
-control this? I don't know the radio."* And: *"If it's set where it should be, then Hamlet
-shouldn't be whining about it."*
+**The owner's list, 2026-09-21 to 09-23, in his words, with what the record says of each.**
+Items 1 to 13 are marked built by units 376 to 390; unit 390's own report records *7.5 earned,
+9.3 under ruling A, 9.2/9.4/9.5/7.2/4.3/0.1/10.3 ticked with numbers, favorites as chips*.
+**Item 14 has never been written.**
 
-**Fault one: the condition disagrees with the manual.** The tree's CW preamp condition reads
-`"wanted": 1` with `wantedText` *preamp 1 above 40 m, off at 40 m and below*. The radio's
-manual, `IC-7300_ENG_FM_12b`, *Receiving and Transmitting*, page 4-3, says:
-
-- **P.AMP1** - *"Wide dynamic range preamplifier. It is most effective for the HF low bands."*
-- **P.AMP2** - *"High-gain preamplifier. It is most effective for the 50 MHz bands."*
-- *"NOTE: When you use the preamp while receiving strong signals, the signal may be distorted.
-  In such a case, turn OFF the preamp."*
-- *"Each band memorizes the Preamplifier setting."*
-
-Icom's published receive sensitivity is quoted **with Preamp 1 on for 1.8 to 29.999 MHz** and
-**Preamp 2 on for 50 MHz**. So the condition turns the preamp off across the low bands where
-Icom specifies it on, says nothing about 6 m, and keys the off case to the band rather than to
-overload. **It is wrong on all three counts.**
-
-**Fault two: more than one voice speaks about the field.** Unit 419 scoped six voices and
-Tim still hears the complaint on the current build, so at least one was missed - look at
-`ReceiveObstructions` (which HM-DEC-148 says states obstructions and does not write them),
-`RigObservations` beyond the attenuator pair 419 scoped, and anything else that mentions the
-preamp. **A voice that tells him to change a field Hamlet set is the app contradicting itself,
-whichever of the two is right** (§0.0).
+1. A PSK31/Olivia row right-clicks into a canned list - seven framed lines from
+   `data/psk31/canned.json`, one click sends. Menu opens on **every** row, callsign read or
+   not; lines needing a callsign disabled with a word; Capture and *make a card anyway*
+   always present, and *make a card anyway* makes a **card**, not a note. Units 378, 387, 390.
+2. The row hover says what the row knows - station, country, grid and distance if sent, offset
+   and strength, when he started and stopped, whether he spoke to you, the parser's kind and
+   certainty, what a click and a right-click do - **never the text again**. Unit 378.
+3. The top gives back height - one band, pills half height, strip thinner, green zone one
+   line, rig display shorter with drive and power beside the frequency. Unit 376, 214 px.
+4. The sun map grows to the band's height, aspect kept, width from the neighborhood strip; the
+   band does not grow. Unit 389, 393 x 214 at the band's left edge; drops back below 1400 wide
+   or when the strayed-frequency line shows.
+5. PSK31 and Olivia count for achievements exactly as FT8 does - Modes badge, Hall of Fame
+   first, every per-contact record, the quill. Unit 379.
+6. The mode chip's fill and the send-status line name **the mode chosen, never the family** -
+   under Olivia the Olivia chip is filled and PSK31 is not; a 29-second Olivia CQ reads
+   *29 s of Olivia*. Unit 390 task 3.
+7. Every card has a dismiss X, and the press is recorded. Unit 385.
+8. A station's live carrier is visible - his row and card colored, the word *sending* - and the
+   send buttons are held with *he is still sending* until his hand-back. Unit 385; **the hold
+   releases on K or BTU, not on carrier drop, by design**.
+9. Log is on every conversation card from the start; RST fields editable, heard values marked
+   *heard* and typed ones *yours*, the rest of the dialog read-only. Unit 385, unit 390 task 5.
+10. Every hand-back moves the turn, certain or guessed - *Your turn?* for a guess. Unit 385.
+11. Favorites: the star saves dial and mode with a name; the spots live **under the green
+    zone** as a row of **chips**, each in its mode's color, one click tunes, x on hover
+    forgets, the star fills on a saved spot; empty reads *no spots saved yet - press the star
+    to keep this one*. Unit 390.
+12. A blind-found Olivia or PSK31 carrier shows text only from blocks the decoder reports
+    confident; otherwise *heard, not readable yet*. Unit 387.
+13. The man talking to you gets a card **while he is talking** - the parser reads a row's text
+    as it grows; *KC3QIS de VE3YX* opens his card mid-over marked *he is sending to you*,
+    buttons held until his hand-back; the right-click names him. Any keyboard mode. Unit 390.
+14. **Not built.** When a station's grid contradicts his prefix's entity, **the grid wins**;
+    the card says both - *WL7E, an Alaska callsign, operating from CM98 in California* - and
+    **no new-entity quill for him**. The word is **entity**, with a note that DXCC counts
+    Alaska apart from the lower 48.
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-Check every quotation above against `IC-7300_ENG_FM_12b` in project knowledge if it is
-reachable, and report any mismatch; **if the manual is not in the tree, say so and take the
-quotations in section 4 as given** - they are the web thread's reading of it and the citation
-goes in the condition's text either way.
+Check, report any mismatch, repair nothing:
 
-Then also:
-
-- The CW preamp condition's current `wanted`, `wantedText` and `confirmed`, and how unit 419's
-  band rule is carried - the band rule now lives in the written value, so find where.
-- Every component that names the preamp: which ones write it, which ones speak about it, and
-  which ones unit 419 scoped. **Name them all in the report.**
-- Whether `RigState` or the capture sheet exposes an overload indicator the setup can read -
-  the sheet prints `Overflow  not overloading`, so something holds it.
-- Whether the conditions file can state a value that depends on frequency now, after 419 and
-  420, or whether the setup derives it.
+- Where a card's entity is decided from a callsign prefix, and where a grid is read from a
+  received message.
+- Whether anything already compares the two, and what an entity is called in the code today -
+  *country*, *entity*, *DXCC* or otherwise.
+- Where the new-entity quill is awarded, and what it keys on.
+- `data/psk31/canned.json` exists with seven lines; the favorites chips live under the green
+  zone; the mode chip is filled by chosen mode.
+- **If any of items 1 to 13 cannot be driven by a test at all** - no seam, no view model
+  property - say which, and task 2 reports them as unverifiable rather than as failures.
 
 ## 6. Rulings in force - do not re-argue
 
 `PHASE_PLAN.md` R59 to R74, §3 and §6.
 
-**R74** Hamlet sets the radio; the operator is not rig control. **No voice asks him to change
-a setting Hamlet established.** A criterion is met by making the setting right and the
-sentences agree with it, **never by silencing a voice that is telling the truth** - if a voice
-is right, the setting changes.
-**R67 / HM-DEC-174** a condition is written once when the radio is not already at it, one
-component decides each field, and the operator's hand is not overwritten by a later tune-in.
-**HM-DEC-056** his hand wins. **HM-DEC-148** as `ReceiveObstructions` records it.
-**§0.0** the app may not state two contradictory things about one setting.
-**§0.2** nothing that keys, transmits or sets power is touched. **§12.4** a setting changed on
-a guess is the prime directive broken with a byte - **so every value here is cited to the
-manual**.
+**The owner's ruling on item 14**, 2026-09-23: the grid wins; the card states both; no
+new-entity quill; the word is *entity*, with a note that DXCC counts Alaska apart from the
+lower 48.
+**§0.0** never state as known what is not known - a card that gives an entity from a prefix
+while a grid says otherwise is stating a falsehood.
+**§0.2** nothing that keys or transmits is touched. **§0.6** color is never the sole carrier -
+item 8's *sending* is a word as well as a color, and item 11's chips carry their mode in text.
+**§0.5** family color is text only.
 **HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006**.
 
-**Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's
-table dated 2026-09-24, headline **The preamp is set from the manual, and nothing contradicts
-what Hamlet set**, ref HM-DEC-176:**
+**Record this in `DECISIONS.md`, newest first, and one row at the top of `CLAUDE.md` §1's table
+dated 2026-09-24, headline **A station's grid beats his prefix's entity**, ref HM-DEC-180:**
 
 ```
 ---
-id: HM-DEC-176
+id: HM-DEC-180
 date: 2026-09-24
-refs: PHASE_PLAN.md R74 and criterion 7.8, IC-7300_ENG_FM_12b page 4-3, data/bands/mode-receiver-conditions.json, HM-DEC-174, HM-DEC-056, HM-DEC-148, CLAUDE.md 0.0 and 12.4, work instruction 424
+refs: work instruction 427, CLAUDE.md 0.0, the owner's UI list 2026-09-21 to 09-23 item 14
 ---
 
-**The preamp is set from what the radio's manual states, and no component asks the operator
-to change what Hamlet set.** Tim, 2026-09-24: *"You know the mode we're in. You know the
-range. Why do I have to control this? I don't know the radio."*
+**When a station's grid contradicts the entity his callsign prefix implies, the grid wins.**
+Tim, 2026-09-23.
 
-**What the manual states.** Page 4-3: P.AMP1 is the wide dynamic range preamplifier, most
-effective for the HF low bands; P.AMP2 is the high-gain preamplifier, most effective for the
-50 MHz bands; when the preamp is used while receiving strong signals the signal may be
-distorted, and in that case the preamp is turned off; each band memorizes its own setting.
-Icom's published receive sensitivity is quoted with Preamp 1 on from 1.8 to 29.999 MHz and
-with Preamp 2 on at 50 MHz.
+**What is ruled.** The card states both - for example *WL7E, an Alaska callsign, operating
+from CM98 in California* - and the station earns no new-entity quill on the strength of the
+prefix. The word used is **entity**, and the card notes that DXCC counts Alaska apart from the
+lower 48.
 
-**What was wrong.** The CW condition read *preamp 1 above 40 m, off at 40 m and below*, which
-turns the preamp off across the low bands where Icom specifies it on, says nothing about 6 m,
-and keys the off case to the band rather than to overload. And more than one component spoke
-about the field, so the app set the preamp and then told the operator it should be otherwise.
+**Why.** A prefix says where a callsign was issued, not where the operator is. A grid he sent
+says where he is. Stating the prefix's entity as his location while holding a grid that says
+otherwise is CLAUDE.md 0.0 broken: the app would be stating as known something it holds
+evidence against.
 
-**What is ruled.** Preamp 1 for 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and the preamp off
-when the receiver reports overloading. The condition cites the manual page it comes from. No
-component asks the operator to change a field a condition states, after Hamlet has set it; if
-a voice is right that a setting is wrong, the setting changes rather than the operator.
-
-**Whose words are whose.** The ruling is Tim's and the values are Icom's; the wording is work
-instruction 424's record of them. Rejected: leaving the band rule as it stood; asking the
-owner which he wants.
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 427's record
+of it.
 ```
 
 ## 7. Status cadence
@@ -193,96 +194,104 @@ As the header says.
 
 ### Task 0 - the record
 
-`PHASE_OUTCOME.md` gets its `## UNIT 424 - STEP 7` entry from the decision block at the foot
-of this file. `PHASE_STATUS.md` names unit 424 and `CURRENT_STEP: 7`. Patch-bump
-`Directory.Build.props`. `DECISIONS.md` HM-DEC-176 and the `CLAUDE.md` row. **Entry round:**
-both carry-forward lines, the three floor tests, and every Rig type, recorded.
+`PHASE_OUTCOME.md` gets its `## UNIT 427 - STEP 6` entry from the decision block at the foot of
+this file. `PHASE_STATUS.md` names unit 427. Patch-bump `Directory.Build.props`.
+`DECISIONS.md` HM-DEC-180 and the `CLAUDE.md` row. **Entry round:** both carry-forward lines
+and the three floor tests, recorded.
 
 **Drop candidate:** none.
 
-### Task 1 - what is said about the preamp today
+### Task 1 - the grid wins (item 14)
 
-A fact that asserts nothing, driving the real setup against `ScriptedRadio`, tuning into CW at
-**7.030, 14.050, 21.050, 28.050 and 50.100 MHz** and printing per frequency:
+Watch a test fail first: a station whose prefix implies one entity and whose received grid
+falls in another - `WL7E` from `CM98` is the owner's own example - and assert that the card
+states both, in his form, and that no new-entity quill is awarded for that station.
 
-- what the condition asks for and what is written;
-- **every sentence any component would say to the operator about the preamp there** - the
-  setup's own voice, the advice, the obstructions, the observations, and anything else task
-  5's survey found;
-- the same again with the receiver reporting overload, if the setup can see that.
+Then build it. **The card's exact wording is the author's** and goes in the report, but it
+must name the callsign's entity, say *operating from*, and give the grid and where it is, and
+it must use the word **entity**. The DXCC note about Alaska goes wherever the card explains
+itself.
 
-**Print the sentences verbatim.** This is the evidence for both halves of the fix, and it goes
-in section 3.
-
-**Drop candidate:** none.
-
-### Task 2 - the condition, from the manual (7.8)
-
-Watch a test fail first at **7.030**, where today's rule turns the preamp off and the manual
-says on. Then:
-
-1. The CW conditions carry **preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz**, applied
-   to every CW-family block as unit 420 left them.
-2. The condition's own text **cites the manual page** - `IC-7300` page 4-3 - so the next
-   reader does not have to guess where the value came from.
-3. **The off case is keyed to the receiver overloading, not to a band.** If the setup can read
-   an overload indicator, use it and say which; **if it cannot, do not invent one** - state
-   plainly in the report that the off case is unimplemented and park it. §12.4: no guess.
-
-**How the frequency-dependent value is carried is the author's**, and the reason goes in
-DECIDED. It must be the same mechanism unit 419 built for the band rule if that mechanism
-fits.
-
-**Drop candidate:** item 3, with the reason stated.
-
-### Task 3 - one voice (7.8, second half)
-
-Every component task 1 found speaking about the preamp is scoped so that **none asks the
-operator to change it after the setup has set it**. Watch a test fail first at **14.050**,
-where Tim hears the complaint on the current build.
-
-**Do not silence a voice that is right.** If a component objects to the value the condition
-now sets, that objection is evidence the condition is still wrong: report it, and say which
-you believe and why. A voice that speaks about a field **no condition states** keeps its
-voice - that is not a contradiction.
+**Where the grid is absent or unparseable, nothing changes** - the prefix's entity stands, and
+the card says what it always said.
 
 **Drop candidate:** none.
 
-### Task 4 - the exit round (7.6 holds)
+### Task 2 - the fourteen on screen
+
+A fact that asserts nothing, in the app test project, driving each of items 1 to 13 and
+printing **what is actually there**: for each item, the property, the text and the numbers.
+Specifically:
+
+- **1**: open the menu on a row with a callsign and on one without; print every entry, which
+  are disabled, the disabled word, and whether *make a card anyway* produces a card or a note.
+- **2**: print the hover text of a row, whole, and say whether the text of the transmission
+  appears in it.
+- **3, 4**: print the band's height, the pills' height, the sun map's width and height, and its
+  left edge against the band's, at 1600 wide and at 1300 wide.
+- **5**: print whether a PSK31 contact and an Olivia contact each reach the Modes badge, the
+  Hall of Fame, the per-contact records and the quill.
+- **6**: under Olivia, print which chip is filled and what the send-status line says for a
+  29-second CQ.
+- **7**: print whether a card has a dismiss X and whether the press is recorded.
+- **8**: print the row and card state while a carrier is live, the word shown, and what the
+  send buttons say; **say plainly that the hold releases on K or BTU rather than carrier drop**.
+- **9**: print which Log fields are editable, and how heard and typed values are marked.
+- **10**: print what the turn does on a certain hand-back and on a guessed one.
+- **11**: print whether the spots are chips, where they sit, their colors, what the star does
+  on a saved spot, and the empty text verbatim.
+- **12**: print what a blind-found carrier shows before the decoder is confident.
+- **13**: print whether a card opens mid-over for *KC3QIS de VE3YX*, what it is marked, and
+  what the buttons say.
+
+**Each is reported as built-and-right, built-but-different, or unverifiable, with the
+difference quoted.** Repair nothing here - a difference is a finding for a later unit.
+
+**Drop candidate:** items 3, 4 and 5 last, if the clock runs short.
+
+### Task 3 - repair what is one line wrong
+
+**Only** items task 2 found built-but-different where the difference is a word, a color or a
+number the owner's list states plainly - the empty favorites text, the disabled word, *29 s of
+Olivia*, a chip that should be filled. Each watched failing first, each in its own commit.
+
+**Anything larger than that is a finding**, written to `docs\phase-correctness\PARKED.md` with
+what was expected and what is there. **Do not rebuild a feature in this unit.**
+
+**Drop candidate:** whole task. Say what was left.
+
+### Task 4 - the exit round
 
 `Hamlet.sln` builds with warnings as errors. Both carry-forward lines, the three floor tests
-with captures at 51, every Rig type, the sheet tests from 411, 417 and 418, and every type
-touched. **`src\Hamlet.RadioEngine\Cw` prints nothing against entry** - no decoder change -
-and the transmit files print nothing against `7e209cb4`. **Print task 1's table again, after
-the changes, beside the before version.**
+with captures at 51, and every type touched. `src\Hamlet.RadioEngine\Cw` prints nothing against
+entry; the transmit files print nothing against `7e209cb4`.
 
 ---
 
 ## 9. Parked - do not touch, do not raise
 
-- **3.6 and the stray letters**, now unblocked by R73. Step 3's, not this unit's.
-- **Step 4 the pitch judge; 7.1 to 7.4 the speed ceiling and acquisition; 6.5 the dead button.**
-- **Any other receive condition.** Only the preamp is ruled here; if another field looks wrong
-  against the manual, **write it in `PARKED.md` with the page and move on**.
-- **The attenuator's 0x14 against BCD 0x20**, parked by unit 419.
+- **P27, the attenuator sentence.** The owner's; 7.8 waits on him.
+- **3.6 the stray letters, step 4 the pitch judge, 7.1 to 7.4 the speed ceiling and
+  acquisition, 6.5 the dead button.** The arbiter routes there next; not this unit's.
+- **The hold releasing on K or BTU rather than carrier drop.** By design; report it, do not
+  change it.
+- **Any feature rebuild.** Findings only.
 
 ## 10. What not to do
 
-- **Do not choose a preamp value from anything but the manual**, and cite the page for each.
-- **Do not silence a voice that is telling the truth.** Fix the setting instead.
-- **Do not invent an overload reading.** If the setup cannot see one, say so.
-- **Do not touch what keys, transmits or sets power.** Not one byte.
-- **Do not change the decoder.**
-- **Do not ask the operator to decide a radio setting**, in any sentence this unit writes.
+- **Do not rebuild anything in items 1 to 13.** Report the difference.
+- **Do not award a new-entity quill on a prefix** the grid contradicts.
+- **Do not use the word *country* where the ruling says *entity*.**
+- **Do not change what keys or transmits, or the decoder.**
 - **Do not halt for a question.** Park it.
-- **Write `output.md` before the session ends, whatever happened.**
+- **Write `output.md` before the session ends.**
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
+- **Report mismatches; repair nothing beyond task 3's one-line cases. American spelling.
+  UTF-8. The four headings exactly.**
 
 ## 11. Committing and pushing
 
-Commit per task, each change with its red quoted in the message. Push at the end and say
-whether it succeeded.
+Commit per task. Push at the end and say whether it succeeded.
 
 ---
 
@@ -293,37 +302,35 @@ whether it succeeded.
 ```
 READ IN THIS ORDER.
 
-A. What the preamp is set to on each band now, and every sentence the app
-   says about it, before and after.
-B. Step 7's criterion 7.8, clause by clause, and 7.6 at exit.
+A. Item 14 built, with the card's wording quoted.
+B. The fourteen, one line each: built-and-right, built-but-different with
+   the difference quoted, or unverifiable.
 C. The rest. Section 4 raises <n> items, none blocking.
 ```
 
 ```
-UNIT:       424 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       427 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
-ADVANCED:   yes | no - <why, on the line>
-NUMBER:     sentences contradicting what Hamlet set: <n> -> <n>
+ADVANCED:   no - a blocker-clear by design
+NUMBER:     of the owner's fourteen: <n> built-and-right, <n> different, <n> unverifiable
 DRIFT:      0
 ```
 
-**Section 2 tells the owner in one paragraph** what the preamp will be on 40 m, on 20 m and on
-6 m when he tunes there, what happens when the receiver overloads, and that nothing will ask
-him to change it.
+**Section 3 leads with the fourteen-line table.** That is what the owner asked for.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 7
-APPROACH: set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+STEP: 6
+APPROACH: build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
 MOVE: continue
-WHY: PHASE_PLAN.md step 7 criterion 7.8 asks that the preamp be set from what the radio's manual states with the page cited, that the off case be keyed to the receiver overloading rather than to a band, and that no component ask the operator to change a field a condition states after Hamlet has set it
+WHY: PHASE_PLAN.md step 6 asks that every sentence the app states about the radio or a signal be true or say it does not know, and a card that gives an entity from a prefix while holding a grid that contradicts it states a falsehood; the sweep clears the way to criterion 5.1, the owner's verdict
 STATE: partial
-DECIDED: how the frequency-dependent value is carried, which overload reading is used if any, how each voice is scoped, and the per-type timeouts are the author's, overrulable
-LICENCE: PHASE_PLAN.md R67, R74, section 6; HM-DEC-176; HM-DEC-174; HM-DEC-056; HM-DEC-148; CLAUDE.md 0.0, 0.2 and 12.4; HM-DEC-155
-ACCOMPLISHED: Tim tunes to a band and the preamp is what the radio's own manual says it should be, and nothing on screen argues with it
-ADVANCES: step 7 criterion 8
+DECIDED: the card's exact wording, the form of the sweep, which differences count as one-line repairs, and the per-type timeouts are the author's, overrulable
+LICENCE: HM-DEC-180; PHASE_PLAN.md R65, R74, section 6; CLAUDE.md 0.0, 0.2, 0.5 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+ACCOMPLISHED: a station's card says where he actually is, and the owner has a written answer on all fourteen of the things he asked for this week
+ADVANCES: none - clears a blocker: criterion 5.1
 END-ARBITER-DECISION
 ```
