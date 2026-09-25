@@ -1,0 +1,5 @@
+unit430 task 2: the change (7.4) - CwDecoder.Step: the mixdown follows a measured move to another station only once a later survey confirms keying there
+
+The first measured pitch is taken at once, and so is a move within one coarse bin, 25 Hz, the distance the tracker's own Switch calls refining. A move further than that is held as pending, and the mixdown stays on the pitch it was reading until a later survey's verdict, not the one that made the move, carries confirmed keying within 25 Hz of it. The tracker's choice, the survey's scoring, the speed search, the gap structure, the gates, CharacterMargin and StrayElementSpan are untouched; HM-DEC-095 and HM-DEC-127 stand. Judged under 3.2's four tests in the next commit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
