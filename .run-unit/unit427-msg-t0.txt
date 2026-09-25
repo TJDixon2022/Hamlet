@@ -1,0 +1,16 @@
+unit427 task 0: the record - DECISIONS.md HM-DEC-180 and the CLAUDE.md row, a station's grid beats his prefix's entity; PHASE_OUTCOME.md UNIT 427 - STEP 6 from the decision block with the entry round and the instruction checked against the tree; PHASE_STATUS.md unit 427, CURRENT_STEP 6; version 1.13.113 to 1.13.114
+
+The instruction checked against the tree: the card's entity is decided from the prefix in
+Ft8ContactCard.WhereHeIs and CountryOf through DxccPrefixes.EntityOf; the text row's hover
+names it in DigitalDecodeRow line 2. The grid comes from Ft8MessageSplit.IsGrid into
+Ft8CardFacts.Grid and DigitalDecodeRow.HisGrid. Nothing compares the two, and
+EntityQualifier's remarks rule the opposite (the callsign wins), which HM-DEC-180 overrules.
+No grid-to-place table exists. The code says entity in the engine and country on the card.
+The new-entity quill is NudgeSet.WouldOpen, keyed on the callsign alone. canned.json has
+seven lines.
+
+Entry round, one type per invocation: build 0 errors; engine carry-forward 178 of 178; app
+carry-forward 277 of 278, the one lost to the dispatcher loop green alone; captures 51 of 51;
+adjudicated 13 of 13; keyed floors 13 of 13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

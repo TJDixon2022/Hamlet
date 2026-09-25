@@ -4,6 +4,28 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-180
+date: 2026-09-24
+refs: work instruction 427, CLAUDE.md 0.0, the owner's UI list 2026-09-21 to 09-23 item 14
+---
+
+**When a station's grid contradicts the entity his callsign prefix implies, the grid wins.**
+Tim, 2026-09-23.
+
+**What is ruled.** The card states both - for example *WL7E, an Alaska callsign, operating
+from CM98 in California* - and the station earns no new-entity quill on the strength of the
+prefix. The word used is **entity**, and the card notes that DXCC counts Alaska apart from the
+lower 48.
+
+**Why.** A prefix says where a callsign was issued, not where the operator is. A grid he sent
+says where he is. Stating the prefix's entity as his location while holding a grid that says
+otherwise is CLAUDE.md 0.0 broken: the app would be stating as known something it holds
+evidence against.
+
+**Whose words are whose.** The ruling is Tim's; the wording is work instruction 427's record
+of it.
+
+---
 id: HM-DEC-179
 date: 2026-09-24
 refs: PHASE_PLAN.md R74, R67 and criterion 7.8, HM-DEC-177, HM-DEC-174, HM-DEC-056, docs/phase-correctness/PARKED.md P22, src/Hamlet.RadioEngine/Rig/ReceiverSetup.cs, src/Hamlet.RadioEngine/Rig/RigPollPlan.cs, work instruction 426

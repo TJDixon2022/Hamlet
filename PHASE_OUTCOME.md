@@ -10,7 +10,18 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
-## UNIT 426 - STEP 7
+## UNIT 427 - STEP 6
+
+STEP: 6
+APPROACH: build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+MOVE: continue
+WHY: PHASE_PLAN.md step 6 asks that every sentence the app states about the radio or a signal be true or say it does not know, and a card that gives an entity from a prefix while holding a grid that contradicts it states a falsehood; the sweep clears the way to criterion 5.1, the owner's verdict
+STATE: partial
+DECIDED: the card's exact wording, the form of the sweep, which differences count as one-line repairs, and the per-type timeouts are the author's, overrulable
+LICENCE: HM-DEC-180; PHASE_PLAN.md R65, R74, section 6; CLAUDE.md 0.0, 0.2, 0.5 and 0.6; HM-DEC-155; HM-DEC-139; FACT-004
+ADVANCES: none - clears a blocker: criterion 5.1
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.113 to 1.13.114. PHASE_STATUS.md names unit 427 and CURRENT_STEP 6. HEAD at entry 79ac7034. HM-DEC-180 recorded with its CLAUDE.md row. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178; APP carry-forward 277 of 278, the one lost to the dispatcher loop (TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow) green alone, 1 of 1; captures 51 of 51 in 122 s; adjudicated 13 of 13; keyed floors 13 of 13. THE INSTRUCTION AGAINST THE TREE: a card's entity is decided from the prefix in Ft8ContactCard.WhereHeIs and CountryOf (DxccPrefixes.EntityOf, then EntityQualifier.DescribeFromGrid and EntitySpoken.Short); the PSK31 and Olivia row hover names it in DigitalDecodeRow's hover, line 2. A grid is read from a received message by Ft8MessageSplit.IsGrid into Ft8CardFacts.Grid for the card and into DigitalDecodeRow.HisGrid for a text row. Nothing compares the two: EntityQualifier's remarks rule the opposite, THE COUNTRY NEVER COMES FROM THE GRID - where the two disagree the callsign wins, and Ft8ContactCard.WhereHeIs says NOTHING BELOW THE COUNTRY IS EVER INFERRED, not from the grid; HM-DEC-180 now overrules the first, and no grid-to-place table exists in the tree. The code says entity in the engine (DxccPrefixes, EntityQualifier, EntitySpoken, NudgeSet) and country on the card (Ft8ContactCard._country, CountryOf) and in NudgeKind.Visible's text. The new-entity quill is the nudge mark, NudgeSet.WouldOpen, keyed on the callsign alone through DxccPrefixes.EntityOf, asked by MainWindowViewModel.MarkIfItOpensSomething for a row and Nudged for a card. data/psk31/canned.json exists with seven lines. Favorites under the green zone and the chip filled by chosen mode are checked by task 2 on the screen rather than here.
 
 STEP: 7
 APPROACH: follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
