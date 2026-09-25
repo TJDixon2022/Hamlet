@@ -1,0 +1,41 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.23]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheFrontEndIsOnThePanelTests.ASettingNeverReadSaysUnknown [3 ms]
+  Standard Output Messages:
+ 'preamp unknown · attenuator unknown'
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheFrontEndIsOnThePanelTests.ThePreampComesFirstAndTheAttenuatorOnlyAfterIt(preamp: 1, names: "preamp", doesNotName: "attenuator") [< 1 ms]
+  Standard Output Messages:
+ preamp 1: 'The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off.'
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheFrontEndIsOnThePanelTests.ThePreampComesFirstAndTheAttenuatorOnlyAfterIt(preamp: 0, names: "attenuator", doesNotName: null) [< 1 ms]
+  Standard Output Messages:
+ preamp 0: 'The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own.'
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheFrontEndIsOnThePanelTests.ThePreampComesFirstAndTheAttenuatorOnlyAfterIt(preamp: 2, names: "preamp", doesNotName: "attenuator") [< 1 ms]
+  Standard Output Messages:
+ preamp 2: 'The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off.'
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheFrontEndIsOnThePanelTests.OverflowPutsTheMessageUpAndClearingTakesItDown [1 ms]
+  Standard Output Messages:
+ overloading: 'The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off.'
+ clear:       ''
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheFrontEndIsOnThePanelTests.NothingHereWritesToTheRadio [32 ms]
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 0.5031 Seconds
+RC=0 WALL=2s

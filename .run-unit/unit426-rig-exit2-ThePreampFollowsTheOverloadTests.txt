@@ -1,0 +1,19 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AnOverloadThatComesBackOnceThePreampIsOnAgainLeavesItOff [82 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.ABlockThatDoesNotStateThePreampIsNotFollowed [3 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AShortBurstWritesNothingAndOneThatHoldsWritesOnce [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.NothingIsWrittenWhileTheRadioTransmits [3 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtFourteenFiftyHisHandWhileItOverloadsStopsTheFollowing [8 ms]
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AtSevenThirtyAnOverloadThatHoldsTurnsThePreampOffOnce [2 ms]
+[xUnit.net 00:00:09.47]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Rig.ThePreampFollowsTheOverloadTests.AnUnreadTransmitFlagWritesNothing [9 s]
+
+Test Run Successful.
+Total tests: 7
+     Passed: 7
+ Total time: 9.7145 Seconds

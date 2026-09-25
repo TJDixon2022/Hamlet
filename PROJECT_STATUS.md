@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 3 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 426 - the preamp follows the overload after the tune-in
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-24T20:28:26-04:00
-NOTE: Touched types round t3: RigDiagnosticsTests, 12 of 12
+UPDATED: 2026-09-24T21:06:57-04:00
+NOTE: Unit 426 complete and pushed: the preamp now goes off on an overload after the tune-in and back when it clears, his hand wins; asks to change a field Hamlet set 60 to 12, 0 where the block owns it; 7.8 left unticked for the attenuator sentence (P27); output.md written
 
 ---
 

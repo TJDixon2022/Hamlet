@@ -1,0 +1,15 @@
+unit426 task 4: exit round (7.6 held) - Hamlet.sln builds non-incremental with warnings as errors, 0 warnings; engine 178 of 178; app 278 of 278; captures 51 of 51 in 119 s, adjudicated 13 of 13, keyed floors 13 of 13; every Rig type, 47 types, 351 of 351; every touched type green; DecisionLogOrderTests red as at entry (P25); src/Hamlet.RadioEngine/Cw nothing against entry, transmit files nothing against 7e209cb4; the 7.8 table printed for 160 m to 10 m and 50.100, 160, 12 and 6 m without a block (P23); PARKED.md P27 and P28; output.md
+
+WhatHappensWhenTheBandOverloadsTests.PrintTheTable prints, per frequency, quiet and then
+overloading after the tune-in: asked, written, read back, and every sentence about the preamp.
+Every row: quiet asks and writes the band's preamp; overloading after the tune-in asks 0,
+writes 0, reads back off.
+
+The follow's replaced result now carries the follow's reason, not the row's band reason, so
+the setup's clause for an off written on an overload says the radio is overloading. The exit
+round was run again on that final source, every figure above from the second run.
+
+7.8 is not ticked: clause three holds for every field the tuned block owns, and 12 true
+sentences asking for the attenuator remain once he has moved on (P27).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

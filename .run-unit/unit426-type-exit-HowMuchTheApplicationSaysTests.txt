@@ -1,0 +1,669 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.TheCeilingIsTightEnoughToHaveCaughtTheParagraph [742 ms]
+  Standard Output Messages:
+ the paragraph        : 997 characters
+ the CW tab now       : 547
+ with it on the bar   : 1544
+ its ceiling          : 550
+
+
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed [226 ms]
+  Standard Output Messages:
+ before : 1379  ceiling 1450
+ added  : 400 characters
+ after  : 1779
+
+
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.EveryCeilingIsTheMeasuredFigurePlusTheStatedMargin [< 1 ms]
+  Standard Output Messages:
+ MainWindow — CW tab           426 + 100, to the next 50 =   550   set: 550
+ MainWindow — Digital tab     1333 + 100, to the next 50 =  1450   set: 1450
+ MainWindow — Digital tab, working 1332 + 100, to the next 50 =  1450   set: 1450
+ MainWindow — Voice tab        468 + 100, to the next 50 =   600   set: 600
+ SettingsWindow               1628 + 100, to the next 50 =  1750   set: 1750
+ RigDiagnosticsWindow         1346 + 100, to the next 50 =  1450   set: 1450
+ AboutWindow                   726 + 100, to the next 50 =   850   set: 850
+ LogContactWindow              716 + 100, to the next 50 =   850   set: 850
+ FavoritesWindow               280 + 100, to the next 50 =   400   set: 400
+ ContactLogWindow              246 + 100, to the next 50 =   350   set: 350
+ DecisionLogWindow             196 + 100, to the next 50 =   300   set: 300
+ AchievementsWindow            158 + 100, to the next 50 =   300   set: 300
+ AchievementsWindow, worked    153 + 100, to the next 50 =   300   set: 300
+
+
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.NoSurfaceSaysMoreThanItsCeiling [1 s]
+  Standard Output Messages:
+   547 /   550   set from   426   MainWindow — CW tab
+  1379 /  1450   set from  1333   MainWindow — Digital tab
+  1378 /  1450   set from  1332   MainWindow — Digital tab, working
+   589 /   600   set from   468   MainWindow — Voice tab
+  1628 /  1750   set from  1628   SettingsWindow
+  1346 /  1450   set from  1346   RigDiagnosticsWindow
+   726 /   850   set from   726   AboutWindow
+   766 /   850   set from   716   LogContactWindow
+   280 /   400   set from   280   FavoritesWindow
+   246 /   350   set from   246   ContactLogWindow
+   196 /   300   set from   196   DecisionLogWindow
+     0 /   300   set from   158   AchievementsWindow
+     0 /   300   set from   153   AchievementsWindow, worked
+
+
+[xUnit.net 00:00:03.52]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.TheWholeApplicationIsMeasuredForWords [1 s]
+  Standard Output Messages:
+ === MainWindow — CW tab — 584 chars in 48 blocks
+     61  Your General license covers Morse here. Call away · 97.305(a)
+     45  no spots saved yet - press ☆ to keep this one
+     42  scroll wheel over a digit tunes that digit
+     37  Brevity is the soul of wit, and of CW
+     35  preamp unknown · attenuator unknown
+     28  Training radio (no hardware)
+     28  CW main street · 7.000–7.125
+     23  Pick a port and connect
+     22  where the sun is · you
+     20  Morse · yours to use
+     19  what you would send
+     16  Neighborhood map
+     16  I hear a station
+     15  % of full scale
+     14  Transmit drive
+     13  not listening
+     11  CW terminal
+     10  -12.0 dBFS
+      9  7.028 MHz
+      8  _Explore
+      7  Connect
+      7  Digital
+      6  _Radio
+      6  _Tools
+      5  _File
+      5  _Help
+      5  Voice
+      5  Clear
+      5  Clear
+      4  40 m
+      4  80 m
+      4  40 m
+      4  30 m
+      4  20 m
+      4  17 m
+      4  15 m
+      4  10 m
+      4  Send
+      4  Send
+      4  Stop
+      3  Ham
+      3  let
+      3  RST
+      2  CW
+      2  CQ
+      2  73
+      1  ▾
+      1  ▾
+ 
+ ===     of which CWWorkspace — 120 chars in 13 blocks
+     35  preamp unknown · attenuator unknown
+     19  what you would send
+     16  I hear a station
+     13  not listening
+     11  CW terminal
+      5  Clear
+      5  Clear
+      4  Send
+      4  Send
+      3  RST
+      2  CQ
+      2  73
+      1  ▾
+ 
+ === MainWindow — Digital tab — 1441 chars in 93 blocks
+    235  nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.
+    117  nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+     76  Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)
+     62  Nothing will come of nothing — speak again, you're breaking up
+     61  Nothing more has been heard from W3YNI. He may have moved on.
+     46  Confirm, and tell him how he is coming through
+     45  no spots saved yet - press ☆ to keep this one
+     42  scroll wheel over a digit tunes that digit
+     35  214130 UTC · 1 shown · newest first
+     28  Training radio (no hardware)
+     28  CW main street · 7.000–7.125
+     28  21:41:30 UTC · 2 minutes ago
+     24  keep the last 30 seconds
+     24  United States · 40 miles
+     23  Pick a port and connect
+     22  where the sun is · you
+     21  no level measured yet
+     21  Would open a new area
+     20  Morse · yours to use
+     19  +02 · 2 minutes ago
+     17  not listening yet
+     16  Neighborhood map
+     16  nothing sent yet
+     16  Log this contact
+     16  16:27 by the sun
+     15  % of full scale
+     15  40 miles · east
+     14  Transmit drive
+     14  no contact yet
+     12  newest first
+     12  Decoded text
+     10  -12.0 dBFS
+     10  everything
+     10  Gone quiet
+     10  Last heard
+      9  7.028 MHz
+      9  Waterfall
+      9  1 for you
+      9  show them
+      8  _Explore
+      8  tune to:
+      8  Distance
+      8  His time
+      8  Messages
+      8  Achieves
+      7  Connect
+      7  Digital
+      7  message
+      7  For you
+      6  _Radio
+      6  _Tools
+      6  Olivia
+      6  214130
+      5  _File
+      5  _Help
+      5  Voice
+      5  PSK31
+      5  clear
+      5  W3YNI
+      5  W3YNI
+      4  40 m
+      4  80 m
+      4  40 m
+      4  30 m
+      4  20 m
+      4  17 m
+      4  15 m
+      4  10 m
+      4  WSPR
+      4  FN00
+      4  Grid
+      4  FN00
+      4  Stop
+      3  Ham
+      3  let
+      3  FT8
+      3  FT4
+      3  utc
+      3  snr
+      3  -11
+      2  CW
+      2  CQ
+      2  CQ
+      2  CQ
+      1  ▾
+      1  ◷
+      1  ▾
+      1  ▾
+      1  ▾
+      1  ?
+      1  ✕
+      1  1
+      1  ·
+ 
+ ===     of which DigitalWorkspace — 884 chars in 54 blocks
+    235  nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.
+    117  nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+     61  Nothing more has been heard from W3YNI. He may have moved on.
+     46  Confirm, and tell him how he is coming through
+     35  214130 UTC · 1 shown · newest first
+     28  21:41:30 UTC · 2 minutes ago
+     24  keep the last 30 seconds
+     24  United States · 40 miles
+     21  Would open a new area
+     19  +02 · 2 minutes ago
+     17  not listening yet
+     16  Log this contact
+     16  16:27 by the sun
+     15  40 miles · east
+     12  newest first
+     12  Decoded text
+     10  everything
+     10  Gone quiet
+     10  Last heard
+      9  Waterfall
+      9  1 for you
+      9  show them
+      8  tune to:
+      8  Distance
+      8  His time
+      8  Messages
+      8  Achieves
+      7  message
+      7  For you
+      6  Olivia
+      6  214130
+      5  PSK31
+      5  clear
+      5  W3YNI
+      5  W3YNI
+      4  WSPR
+      4  FN00
+      4  Grid
+      4  FN00
+      3  FT8
+      3  FT4
+      3  utc
+      3  snr
+      3  -11
+      2  CQ
+      2  CQ
+      1  ◷
+      1  ▾
+      1  ▾
+      1  ▾
+      1  ?
+      1  ✕
+      1  1
+      1  ·
+ 
+ === MainWindow — Voice tab — 609 chars in 37 blocks
+    109  voice is not authorized on this frequency for any class. this part of the band is for other modes · 97.305(c)
+     63  Receiving is never restricted. Any license may listen anywhere.
+     47  Morse · listen all you like, but don't transmit
+     45  no spots saved yet - press ☆ to keep this one
+     42  scroll wheel over a digit tunes that digit
+     28  Training radio (no hardware)
+     28  CW main street · 7.000–7.125
+     24  What would Extra unlock?
+     23  Pick a port and connect
+     22  where the sun is · you
+     20  The band's the thing
+     16  Neighborhood map
+     15  % of full scale
+     14  Transmit drive
+     10  -12.0 dBFS
+      9  7.028 MHz
+      8  _Explore
+      7  Connect
+      7  Digital
+      6  _Radio
+      6  _Tools
+      5  _File
+      5  _Help
+      5  Voice
+      4  40 m
+      4  80 m
+      4  40 m
+      4  30 m
+      4  20 m
+      4  17 m
+      4  15 m
+      4  10 m
+      4  Stop
+      3  Ham
+      3  let
+      2  CW
+      1  ▾
+ 
+ ===     of which VoiceWorkspace — 0 chars in 0 blocks
+ 
+ === SettingsWindow — 1628 chars in 95 blocks
+    227  Off until you have joined the SOTA Reflector's "API-consumers" group and had Hamlet approved. The SOTA API's terms require both, and one of them is about AI-written code. Hamlet will not connect on your behalf until you say so.
+    183  Your callsign is sent to RBN as the login, and to POTA and SOTA in the User-Agent, because those services are owed knowing who is calling them. It is still never written to telemetry.
+    112  Not set yet. Hamlet fills this in from your callsign, and until it does it won't guess how far away anything is.
+     96  Off by default now that the live feeds work. Leaving it on mixes made-up spots into a real list.
+     75  C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-30984\scan-segments.json
+     73  License class not set, so the band map will not guess at your privileges.
+     56  C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-30984
+     44  Only let me transmit where my license allows
+     42  Connect to my last radio when Hamlet opens
+     39  Hamlet fills this in from your callsign
+     38  Set the mode to match where I am tuned
+     36  Where the scanner may take your dial
+     35  How long a spot stays worth chasing
+     32  Microphone (EMEET SmartCam C960)
+     27  Park and summit activations
+     26  how you want to be greeted
+     24  Currently using 0.00 MB.
+     21  Where spots come from
+     16  Contest activity
+     15  % of full scale
+     15  Every 5 minutes
+     15  Skimmer reports
+     15  Clear telemetry
+     14  Transmit drive
+     14  words a minute
+     13  Happening now
+     12  Auto-refresh
+     11  city, state
+     11  Grid square
+     11  Morse speed
+     11  Diagnostics
+     11  Performance
+     11  Data folder
+     11  Open folder
+     10  Disk limit
+      9  Listening
+      9  Telemetry
+      8  Operator
+      8  Callsign
+      8  Location
+      8  Transmit
+      8  CW pitch
+      8  Decoding
+      7  License
+      7  Unknown
+      7  Open it
+      7  Explore
+      6  Sample
+      6  Tuning
+      5  Class
+      5  Input
+      5  Radio
+      5  Close
+      4  Name
+      4  POTA
+      4  SOTA
+      3  Off
+      3  Off
+      3  Off
+      3  min
+      3  min
+      3  min
+      3  Off
+      3  Off
+      3  RBN
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      2  On
+      2  Hz
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  MB
+      1  ●
+      1  ⚑
+      1  ◆
+      1  ⚑
+      1  ●
+      1  ▲
+      1  ■
+ 
+ === AboutWindow — 726 chars in 28 blocks
+    257  Hamlet exists to make amateur radio intuitive for people who have a license but not fifty years at the key. The bands are not a mystery to be earned. They are a place, and this app draws the map, names what you are hearing, and takes you there in one click.
+     77  Copy this into a bug report. It carries no callsign, no name and no location.
+     56  C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-30984
+     38  8 of 8 categories on · 0.00 MB on disk
+     35  Let me ham. The radio, demystified.
+     30  GPL-3.0 · free and open source
+     29  github.com/TJDixon2022/Hamlet
+     25  no telemetry this session
+     20  2026-09-25 00:29 UTC
+     16  Copy diagnostics
+     16  Open data folder
+     11  .NET 8.0.24
+     11  Diagnostics
+     11  Data folder
+     10  This build
+     10  Session id
+      9  by KC3QIS
+      9  Telemetry
+      8  1.13.113
+      8  Avalonia
+      7  Version
+      7  License
+      6  11.3.0
+      5  Built
+      5  Close
+      4  .NET
+      3  Ham
+      3  let
+ 
+ === ContactLogWindow — 246 chars in 4 blocks
+    198  Nothing here yet. Hamlet writes a line into this log every time you fill in the contact dialog after working somebody, and this window is where those lines come back. The file lives at contacts.adi.
+     18  0 contacts logged.
+     18  10 to go until 10.
+     12  contacts.adi
+ 
+ === RigDiagnosticsWindow — 1346 chars in 140 blocks
+     27  0 of 45 read from the radio
+     26  Scope data to the computer
+     21  Noise reduction level
+     21  Audio to the computer
+     21  Copy for a bug report
+     19  Noise blanker level
+     19  Ask the radio again
+     18  no radio connected
+     18  Front end overload
+     18  Audio output level
+     18  Audio squelch gate
+     15  Noise reduction
+     14  Transmit power
+     14  Spectrum scope
+     13  Squelch level
+     13  Noise blanker
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  Filter width
+     12  not read yet
+     12  not read yet
+     12  Transmitting
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  Manual notch
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     11  Keyer speed
+     10  Attenuator
+     10  Auto notch
+      9  Frequency
+      9  Data mode
+      8  Break-in
+      8  CW pitch
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  S-meter
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  RF gain
+      7  unknown
+      7  unknown
+      7  Squelch
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      6  Filter
+      6  Preamp
+      5  Split
+      5  Close
+      4  Mode
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  AGC
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+ 
+ === FavoritesWindow — 280 chars in 5 blocks
+    248  Nothing saved yet. Tune somewhere worth coming back to and press the star in the display, and Hamlet will remember the frequency and what lives there. Anywhere you have already been is below, and the star beside it does the same job after the fact.
+     10  Save names
+      9  Move down
+      7  Move up
+      6  Remove
+ 
+ === DecisionLogWindow — 196 chars in 3 blocks
+    170  Nothing decided yet. When Hamlet works out whether it can send, or whether the scope is running, or why a decode was thrown away, it lands here with the reason beside it.
+     21  Copy for a bug report
+      5  Close
+ 
+ === LogContactWindow — 766 chars in 39 blocks
+    141  Hamlet heard 1 of these 11. The rest are empty because it did not hear them, and they will be left out of the file rather than written blank.
+    101  Hamlet did not record the dial for this row, so the frequency and the band are left out of the entry.
+     49  Hamlet did not hear this - type it if you have it
+     49  Hamlet did not hear this - type it if you have it
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     17  QSO_DATE, TIME_ON
+     16  Log this contact
+     16  Report they sent
+     16  STATION_CALLSIGN
+     15  heard by Hamlet
+     15  Report you sent
+     13  Your callsign
+     13  MY_GRIDSQUARE
+     11  Save to log
+     10  Their grid
+     10  GRIDSQUARE
+     10  Your notes
+      9  Frequency
+      9  Your grid
+      8  RST_SENT
+      8  RST_RCVD
+      8  TIME_OFF
+      7  Station
+      7  Started
+      6  Cancel
+      5  W3YNI
+      5  Ended
+      4  CALL
+      4  Band
+      4  BAND
+      4  FREQ
+      4  Mode
+      4  MODE
+ 
+ PERMANENTLY-VISIBLE TEXT, SCREEN BY SCREEN
+ 
+    584 chars    48 blocks   MainWindow — CW tab
+    120 chars    13 blocks       of which CWWorkspace
+   1441 chars    93 blocks   MainWindow — Digital tab
+    884 chars    54 blocks       of which DigitalWorkspace
+    609 chars    37 blocks   MainWindow — Voice tab
+      0 chars     0 blocks       of which VoiceWorkspace
+   1628 chars    95 blocks   SettingsWindow
+    726 chars    28 blocks   AboutWindow
+    246 chars     4 blocks   ContactLogWindow
+   1346 chars   140 blocks   RigDiagnosticsWindow
+    280 chars     5 blocks   FavoritesWindow
+    196 chars     3 blocks   DecisionLogWindow
+    766 chars    39 blocks   LogContactWindow
+ 
+ TOTAL (indented rows excluded, they are subsets): 7822
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 3.8369 Seconds
+RC=0 WALL=4s

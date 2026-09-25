@@ -606,7 +606,16 @@ public static class ReceiverSetup
 
         return new PreampFollowStep(
             next, memory.Remember(RigField.Preamp, wanted),
-            With(new ConditionResult(condition, ConditionOutcome.Changed, before.Text, after.Text, after.AtUtc)),
+            With(new ConditionResult(
+                // The reason is the follow's, not the row's band reason: an off written for
+                // an overload said "because that is what the manual gives for this band".
+                condition with
+                {
+                    Says = wanted == condition.WhenOverloading
+                        ? "the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals"
+                        : "the radio's front end has stopped overloading, and that is what the radio's manual gives for this band",
+                },
+                ConditionOutcome.Changed, before.Text, after.Text, after.AtUtc)),
             said);
     }
 

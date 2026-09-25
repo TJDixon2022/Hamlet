@@ -147,6 +147,75 @@ public sealed class WhatHappensWhenTheBandOverloadsTests
     // PollBudgetTests.WireMilliseconds, restated because that type is in the engine's tests.
     private const double PollBudgetWireMs = 2.0;
 
+    /// <summary>
+    /// **THE 7.8 TABLE** (work instruction 426 task 4): one frequency on each HF band from
+    /// 160 m to 10 m and 50.100 MHz, quiet at the tune-in and then overloading after it -
+    /// what is asked for, what is written, what is read back, and every sentence the app
+    /// would say about the preamp there, in the block.
+    /// </summary>
+    [Fact]
+    public async Task PrintTheTable()
+    {
+        foreach (var (band, hz) in WhatIsSaidAboutThePreampTests.Frequencies)
+        {
+            var block = ModeEntryBench.BlockAt(hz);
+            var fromBlock = ReceiverConditions.ForBlock(block);
+
+            _output.WriteLine("");
+            _output.WriteLine($"=== {hz / 1e6:0.000} MHz, {band}: "
+                              + (fromBlock.Count > 0
+                                  ? $"{block!.Name} ({block.ShortName})"
+                                  : (block is null ? "NO BLOCK ON THE MAP (P23)" : $"{block.Name} states nothing")
+                                    + " - the app tunes in nothing here and writes nothing; the CW row is driven directly"));
+
+            var run = await LivePollBench.TuneInQuietAsync(hz);
+            using var rig = run.Rig;
+            var tuneInWrites = LivePollBench.PreampWrites(run.Radio);
+            var state = await LivePollBench.PollAsync(run);
+            Row(run, "quiet at the tune-in", state, tuneInWrites);
+
+            ModeEntryBench.ClearWrites(run.Radio);
+            run.Radio.Overloading = true;
+            state = await LivePollBench.PollAsync(run, 12);
+            Row(run, "overloading after the tune-in, 12 polls", state, LivePollBench.PreampWrites(run.Radio));
+        }
+    }
+
+    private void Row(Run run, string when, RigState state, IReadOnlyList<int> writes)
+    {
+        var row = run.Conditions.First(c => c.Field == RigField.Preamp);
+        var overloading = state[RigField.Overflow] is { IsKnown: true, Number: 1 };
+        var asked = overloading && row.WhenOverloading is { } off
+            ? off
+            : row.Bands.FirstOrDefault(b => b.Contains(run.Radio.FrequencyHz))?.Wanted;
+        var owned = ReceiverSetup.Owns(run.Results);
+        var preampOn = state[RigField.Preamp] is { IsKnown: true, Number: 1 or 2 };
+
+        _output.WriteLine($"  {when}: asked preamp {asked?.ToString(CultureInfo.InvariantCulture) ?? "nothing"}; "
+                          + $"written {(writes.Count == 0 ? "nothing" : string.Join(",", writes))}; "
+                          + $"read back {state[RigField.Preamp].Text}");
+        var said = new List<string>
+        {
+            "setup: " + Quote(ReceiverSetupVoice.Say(run.Results.Where(r => r.Condition.Field == RigField.Preamp).ToList())),
+            "narrated after the tune-in: " + (run.Narrated.Count == 0 ? "(nothing)" : string.Join(" | ", run.Narrated.Select(Quote))),
+            "Receive Help: " + Quote(ReceiveAdvice.For(state, owned).First(a => a.Write.Field == RigField.Preamp).Says),
+            "observations: " + string.Join(" | ", RigObservations.For(state, owned).Where(o => o.Contains("preamp", StringComparison.OrdinalIgnoreCase)).DefaultIfEmpty("(nothing about the preamp)")),
+            "chip: " + Quote(MainWindowViewModel.FrontEndTextFor(
+                overloading,
+                MainWindowViewModel.PreampLabel(state[RigField.Preamp].IsKnown ? (int?)state[RigField.Preamp].Number : null),
+                MainWindowViewModel.AttenuatorLabel(state[RigField.Attenuator].IsKnown ? (int?)state[RigField.Attenuator].Number : null))),
+            "overload sentence: " + Quote(MainWindowViewModel.OverflowAdviceFor(
+                overloading, preampOn,
+                owned.Contains(RigField.Preamp) && owned.Contains(RigField.Attenuator),
+                state[RigField.Attenuator] is { IsKnown: true, Number: > 0 })),
+        };
+
+        foreach (var line in said)
+        {
+            _output.WriteLine($"    {line}");
+        }
+    }
+
     private void PrintTable(Dictionary<(string Point, RigField Field), int> counts)
     {
         _output.WriteLine("  " + "field".PadRight(16) + string.Join("", Points.Select(p => p[..1].PadLeft(4))) + "   total");

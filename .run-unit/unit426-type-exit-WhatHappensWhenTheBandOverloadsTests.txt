@@ -1,0 +1,1066 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.WhatHappensWhenTheBandOverloadsTests.PrintTheTable [96 ms]
+  Standard Output Messages:
+ 
+ === 1.810 MHz, 160 m: NO BLOCK ON THE MAP (P23) - the app tunes in nothing here and writes nothing; the CW row is driven directly
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 3.530 MHz, 80 m: CW main street (CW)
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 7.030 MHz, 40 m: QRP watering hole (QRP)
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 10.110 MHz, 30 m: QRP watering hole (QRP)
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 14.050 MHz, 20 m: CW main street (CW)
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 18.080 MHz, 17 m: CW main street (CW)
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 21.050 MHz, 15 m: CW main street (CW)
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 24.900 MHz, 12 m: NO BLOCK ON THE MAP (P23) - the app tunes in nothing here and writes nothing; the CW row is driven directly
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 28.050 MHz, 10 m: CW main street (CW)
+   quiet at the tune-in: asked preamp 1; written 1; read back preamp 1
+     setup: "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 1 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+ 
+ === 50.100 MHz, 6 m: NO BLOCK ON THE MAP (P23) - the app tunes in nothing here and writes nothing; the CW row is driven directly
+   quiet at the tune-in: asked preamp 2; written 2; read back preamp 2
+     setup: "I set the preamp to preamp 2 because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: (nothing)
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "preamp 2 · att off"
+     overload sentence: (says nothing)
+   overloading after the tune-in, 12 polls: asked preamp 0; written 0; read back off
+     setup: "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+     narrated after the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     Receive Help: "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+     observations: (nothing about the preamp)
+     chip: "overloading · preamp off"
+     overload sentence: "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+
+
+  Passed Hamlet.App.Tests.ViewModels.WhatHappensWhenTheBandOverloadsTests.PrintWhatHappens [72 ms]
+  Standard Output Messages:
+ THE CW PREAMP CONDITION
+   wantedText preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, and off while the front end reads overloading (IC-7300 manual IC-7300_ENG_FM_12b, page 4-3)
+   condition  band, whenOverloading 0
+   one poll is one live pass, a fresh Overflow reading every 252.9 ms median (MeasureTheLivePollCadence)
+ 
+ =================== 3.530 MHz, 80 m
+   block: CW main street (CW), states 9 conditions
+ 
+   --- point 1 quiet tune-in: tune-in with the front end quiet, then one poll
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: NoiseBlanker 0, Agc 1, Preamp 1
+     preamp read back: preamp 1; attenuator off
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 2 overflow rising: Overflow reads overloading for 12 polls (about 3 s of live poll)
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: Preamp 0
+     preamp read back: off; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+ 
+   --- point 3 overflow clearing: Overflow reads not overloading for 40 polls (about 10 s of live poll)
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: Preamp 1
+     preamp read back: preamp 1; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 4 his hand, then overload again: he sets the preamp to 2 himself, then Overflow overloading 12 polls; sentences as it overloads
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: none
+     preamp read back: preamp 2; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band." | "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is on, and Hamlet turns it off itself once the overload holds, unless you have set the preamp yourself since Hamlet last did. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     ...then clear 40 polls: preamp reads preamp 2, writes in all of point 4: none
+ 
+ =================== 7.030 MHz, 40 m
+   block: QRP watering hole (QRP), states 9 conditions
+ 
+   --- point 1 quiet tune-in: tune-in with the front end quiet, then one poll
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: NoiseBlanker 0, Agc 1, Preamp 1
+     preamp read back: preamp 1; attenuator off
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 2 overflow rising: Overflow reads overloading for 12 polls (about 3 s of live poll)
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: Preamp 0
+     preamp read back: off; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+ 
+   --- point 3 overflow clearing: Overflow reads not overloading for 40 polls (about 10 s of live poll)
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: Preamp 1
+     preamp read back: preamp 1; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 4 his hand, then overload again: he sets the preamp to 2 himself, then Overflow overloading 12 polls; sentences as it overloads
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: none
+     preamp read back: preamp 2; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band." | "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is on, and Hamlet turns it off itself once the overload holds, unless you have set the preamp yourself since Hamlet last did. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     ...then clear 40 polls: preamp reads preamp 2, writes in all of point 4: none
+ 
+ =================== 14.050 MHz, 20 m
+   block: CW main street (CW), states 9 conditions
+ 
+   --- point 1 quiet tune-in: tune-in with the front end quiet, then one poll
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: NoiseBlanker 0, Agc 1, Preamp 1
+     preamp read back: preamp 1; attenuator off
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 2 overflow rising: Overflow reads overloading for 12 polls (about 3 s of live poll)
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: Preamp 0
+     preamp read back: off; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+ 
+   --- point 3 overflow clearing: Overflow reads not overloading for 40 polls (about 10 s of live poll)
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: Preamp 1
+     preamp read back: preamp 1; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 4 his hand, then overload again: he sets the preamp to 2 himself, then Overflow overloading 12 polls; sentences as it overloads
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: none
+     preamp read back: preamp 2; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band." | "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is on, and Hamlet turns it off itself once the overload holds, unless you have set the preamp yourself since Hamlet last did. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     ...then clear 40 polls: preamp reads preamp 2, writes in all of point 4: none
+ 
+ =================== 21.050 MHz, 15 m
+   block: CW main street (CW), states 9 conditions
+ 
+   --- point 1 quiet tune-in: tune-in with the front end quiet, then one poll
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: NoiseBlanker 0, Agc 1, Preamp 1
+     preamp read back: preamp 1; attenuator off
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 2 overflow rising: Overflow reads overloading for 12 polls (about 3 s of live poll)
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: Preamp 0
+     preamp read back: off; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+ 
+   --- point 3 overflow clearing: Overflow reads not overloading for 40 polls (about 10 s of live poll)
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: Preamp 1
+     preamp read back: preamp 1; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 4 his hand, then overload again: he sets the preamp to 2 himself, then Overflow overloading 12 polls; sentences as it overloads
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: none
+     preamp read back: preamp 2; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band." | "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is on, and Hamlet turns it off itself once the overload holds, unless you have set the preamp yourself since Hamlet last did. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     ...then clear 40 polls: preamp reads preamp 2, writes in all of point 4: none
+ 
+ =================== 28.050 MHz, 10 m
+   block: CW main street (CW), states 9 conditions
+ 
+   --- point 1 quiet tune-in: tune-in with the front end quiet, then one poll
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: NoiseBlanker 0, Agc 1, Preamp 1
+     preamp read back: preamp 1; attenuator off
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 2 overflow rising: Overflow reads overloading for 12 polls (about 3 s of live poll)
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: Preamp 0
+     preamp read back: off; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+ 
+   --- point 3 overflow clearing: Overflow reads not overloading for 40 polls (about 10 s of live poll)
+     asked for: preamp 1 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: Preamp 1
+     preamp read back: preamp 1; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 1 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 1 · att off"
+ 
+   --- point 4 his hand, then overload again: he sets the preamp to 2 himself, then Overflow overloading 12 polls; sentences as it overloads
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: none
+     preamp read back: preamp 2; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 1 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band." | "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "Your preamp is preamp 2 and I have left it there, because you moved it after I last set it."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is on, and Hamlet turns it off itself once the overload holds, unless you have set the preamp yourself since Hamlet last did. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 2"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     ...then clear 40 polls: preamp reads preamp 2, writes in all of point 4: none
+ 
+ =================== 50.100 MHz, 6 m
+   block: none on the map (P23) - THE APP WRITES NOTHING HERE; the CW row is driven directly below
+ 
+   --- point 1 quiet tune-in: tune-in with the front end quiet, then one poll
+     asked for: preamp 2 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: NoiseBlanker 0, Agc 1, Preamp 2
+     preamp read back: preamp 2; attenuator off
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 2 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 2 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 2 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 2 · att off"
+ 
+   --- point 2 overflow rising: Overflow reads overloading for 12 polls (about 3 s of live poll)
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: Preamp 0
+     preamp read back: off; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I turned the preamp off because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is off, which is where the radio's manual has it while the front end is overloading. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is off, and the radio says its front end is overloading, which is when the radio's manual has it off."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp off"
+       Attenuator: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, and the preamp is already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it in. A strong band in daylight can do this on its own." [asks him to change a field Hamlet left, not owned here]
+ 
+   --- point 3 overflow clearing: Overflow reads not overloading for 40 polls (about 10 s of live poll)
+     asked for: preamp 2 (overflow not overloading, transmit receiving)
+     writes to the radio in this point: Preamp 2
+     preamp read back: preamp 2; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 2 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "I set the preamp to preamp 2 because that is what the radio's own manual gives for this band and this front end."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "preamp 2 · att off"
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 2 · att off"
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "preamp 2 · att off"
+ 
+   --- point 4 his hand, then overload again: he sets the preamp to 1 himself, then Overflow overloading 12 polls; sentences as it overloads
+     asked for: preamp 0 (overflow overloading, transmit receiving)
+     writes to the radio in this point: none
+     preamp read back: preamp 1; attenuator off
+     narrated since the tune-in: "I turned the preamp off because the radio says its front end is overloading, and the radio's manual has the preamp off with strong signals." | "I set the preamp back to preamp 2 because the radio's front end has stopped overloading, and that is what the radio's manual gives for this band." | "Your preamp is preamp 1 and I have left it there, because you moved it after I last set it."
+     IN THE BLOCK (owned: the nine)
+       NoiseBlanker: setup (ReceiverSetupVoice.Say): "I turned the noise blanker off because it chops holes in keying instead of in the noise."
+       Agc: setup (ReceiverSetupVoice.Say): "I set the AGC to fast because slow gain rides over the gaps and hides the keying."
+       Preamp: setup (ReceiverSetupVoice.Say): "Your preamp is preamp 1 and I have left it there, because you moved it after I last set it."
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 1"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. The preamp is on, and Hamlet turns it off itself once the overload holds, unless you have set the preamp yourself since Hamlet last did. This mode sets the attenuator when you tune in, so Hamlet is not asking you to change either of them here."
+     MOVED INTO A BLOCK THAT STATES NOTHING (owned: none)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is already off, which is what Morse wants."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is already off."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is already off."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is already on its fast setting."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 1"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     MOVED INTO FT8's BLOCK (owned: Agc, AutoNotch, NoiseBlanker, NoiseReduction)
+       AutoNotch: Receive Help (ReceiveAdvice): "The automatic notch is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseReduction: Receive Help (ReceiveAdvice): "The noise reduction is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       NoiseBlanker: Receive Help (ReceiveAdvice): "The noise blanker is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Agc: Receive Help (ReceiveAdvice): "The gain control is covered by what this mode states when you tune in, so Hamlet is leaving it out of these suggestions."
+       Preamp: Receive Help (ReceiveAdvice): "The preamp is already on."
+       RfGain: Receive Help (ReceiveAdvice): "The receive gain is already open all the way, so there is nothing to do there."
+       Preamp: panel chip (FrontEndTextFor): "overloading · preamp 1"
+       Preamp: panel overload sentence (OverflowAdviceFor): "The radio says its front end is overloading, which means the signal coming in is stronger than the receiver can handle and everything in the passband is being squashed together. Nothing will decode until that stops. Press P.AMP/ATT on the front of the radio until the preamp reads off."
+     ...then clear 40 polls: preamp reads preamp 1, writes in all of point 4: none
+ 
+ SENTENCES ASKING HIM TO CHANGE A FIELD HAMLET SET AND STILL OWNS, per field and point (in the block, after moving on and in FT8, all six frequencies):
+   field              1   2   3   4   total
+   AutoNotch          0   0   0   0   0
+   ManualNotch        0   0   0   0   0
+   NoiseBlanker       0   0   0   0   0
+   NoiseReduction     0   0   0   0   0
+   Agc                0   0   0   0   0
+   RfGain             0   0   0   0   0
+   Squelch            0   0   0   0   0
+   Attenuator         0   0   0   0   0
+   Preamp             0   0   0   0   0
+   all nine fields: 0
+ 
+ SENTENCES ASKING HIM TO CHANGE A FIELD HAMLET LEFT AND NO LONGER OWNS (moved on), counted apart:
+   field              1   2   3   4   total
+   AutoNotch          0   0   0   0   0
+   ManualNotch        0   0   0   0   0
+   NoiseBlanker       0   0   0   0   0
+   NoiseReduction     0   0   0   0   0
+   Agc                0   0   0   0   0
+   RfGain             0   0   0   0   0
+   Squelch            0   0   0   0   0
+   Attenuator         0  12   0   0   12
+   Preamp             0   0   0   0   0
+   all nine fields: 12
+
+
+[xUnit.net 00:00:05.50]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.WhatHappensWhenTheBandOverloadsTests.MeasureTheLivePollCadence [5 s]
+  Standard Output Messages:
+ live fields per pass: 7 (Frequency, SMeter, TransmitStatus, Overflow, Swr, PowerOut, SquelchStatus); plan interval 250 ms
+ unanswered by the scripted radio: none
+ gap between fresh Overflow readings over 19 passes, ms: min 250.1, median 253.2, max 264.6
+ wire estimate on the IC-7300 at 19200 baud: 7 reads x 2 ms = 14 ms a pass on top of that
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 5.7924 Seconds
+RC=0 WALL=6s

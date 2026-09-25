@@ -1,0 +1,16 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.20]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOnItSaysHamletTurnsItOffUnlessItIsHis [1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheOverloadSentenceSaysWhereThePreampIsTests.WithThePreampOffItSaysItIsOffAsTheManualHasIt [< 1 ms]
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 0.4719 Seconds
+RC=0 WALL=1s

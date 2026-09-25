@@ -367,3 +367,23 @@ failed twice, its output files written at 18:30:19 and 18:31:13 Eastern, with *E
 Actual 1843* (1379 before, 400 added), and passed at 18:31:47 on the task 2 tree and at 18:32:34
 on the same source that had failed (times are the output files' own, read from the disk). Something on the Digital tab adds 64 characters between the two measurements at some
 wall-clock times. Not traced by unit 424. Not blocking.
+
+## P27 - once he has moved on, the overload sentence asks for the attenuator the CW tune-in left off
+
+**Found by unit 426, 2026-09-24.** With the preamp now turned off on a live overload
+(HM-DEC-179), the overload sentence outside a block that owns the front end reads *the preamp is
+already off, so the next thing to try is the attenuator. Hold P.AMP/ATT for a moment to bring it
+in*, 12 times in unit 426's trace (six frequencies, two moved-on views, the overload point). It
+is true, and it is on a field no tune-in owns there; before unit 426 the same view asked him to
+turn off the preamp instead. The attenuator is a condition the CW row states (20 dB while
+overloading) and is set at the tune-in only; HM-DEC-179 forbids following it, and its 20 dB write
+is P14. Whether a voice may ask for a field the last CW tune-in set once he has moved into a block
+that does not state it is the owner's reading of 7.8's third clause. Not blocking.
+
+## P28 - Receive Help's USB level has the RF gain's scale mismatch
+
+**Found by unit 426, 2026-09-24.** `ReceiveAdvice.UsbLevel` compares the `AccUsbAfLevel` reading,
+which `CivDecode.DecodePercent` gives as a percent, to `LowUsbLevel = 77` on the 0 to 255 write
+scale, the same mismatch unit 426 repaired for the RF gain (R65, HM-DEC-172). A level at 50
+percent, where the radio ships, would read as low and be asked to turn up. It is not one of the
+nine fields the CW row states and was not changed. Not blocking.
