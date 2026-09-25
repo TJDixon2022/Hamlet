@@ -1,0 +1,9 @@
+unit436 task 1: the trace (7.4) - WhatTheOpeningHeardTests.WhereTheDitMeetsTheDah and WhereTheDahRuleFires, printers that assert nothing and write nothing; the ratio test fires on 14 of the 33 reads in the stream 30 to 46.2 s, 13 of them at 17.6 to 21.8 WPM where the entry gave 43.6 to 68.6, so the stop does not hold and task 2 builds
+
+Stream 27.0 to 46.2 s: 39 reads, 19 to the grid at entry, fires on 15, 14 inside the grid,
+13 grid reads handed to the stream. Locked 004108 13.8 to 30 s: ratio 3.12 to 3.43, fires on
+none. 003919 cold: fires on 4 of 55, 3.0 to 4.5 s, 30.0 to 34.3 WPM where the entry gave 80.
+Forecast, not a gate: fires on 35 of 52 recordings, and moves a speed the stream already took
+on 23 of them.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

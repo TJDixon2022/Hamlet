@@ -1431,6 +1431,229 @@ public sealed class WhatTheOpeningHeardTests
         }
     }
 
+    private static readonly MethodInfo TwoMeansMethod = EstimatorMethod("TwoMeansOnLogs");
+    private static readonly MethodInfo ShortMedianMethod = EstimatorMethod("ShortClusterMedian");
+
+    private static MethodInfo EstimatorMethod(string name)
+        => typeof(CwUnitEstimator).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)
+           ?? throw new InvalidOperationException($"CwUnitEstimator has no method {name}");
+
+    /// <summary>Work instruction 436's ratio: a long mark centroid further than this above the short one fires the rule.</summary>
+    private const double DahOverDitBar = 4.5;
+
+    /// <summary>What one read's window said about the dit and the dah, and what the rule would make of it.</summary>
+    /// <param name="Seconds">Seconds on the audio clock.</param>
+    /// <param name="Marks">How many marks the trigger produced.</param>
+    /// <param name="ShortCentroidMs">The short mark centroid, NaN when there were too few marks or gaps.</param>
+    /// <param name="LongCentroidMs">The long mark centroid.</param>
+    /// <param name="ShortMedianMs">The short mark cluster's median, the entry's dit mark.</param>
+    /// <param name="LongMedianMs">The long mark cluster's median.</param>
+    /// <param name="ShortGapMs">The short gap cluster's median.</param>
+    /// <param name="EntryUnitMs">What <see cref="CwUnitEstimator.Measure"/> returns at entry, nought when not ready.</param>
+    /// <param name="HeldWpm">The speed the read decoded at.</param>
+    /// <param name="Fires">Whether the long centroid stands more than 4.5 times the short one.</param>
+    /// <param name="RuleUnitMs">The rule's unit: the long median over 3 when it fires, the entry's otherwise.</param>
+    /// <param name="Mark">Every mark in the window, milliseconds.</param>
+    /// <param name="Gap">Every gap in the window, milliseconds.</param>
+    internal sealed record DitAgainstDah(
+        double Seconds,
+        int Marks,
+        double ShortCentroidMs,
+        double LongCentroidMs,
+        double ShortMedianMs,
+        double LongMedianMs,
+        double ShortGapMs,
+        double EntryUnitMs,
+        double HeldWpm,
+        bool Fires,
+        double RuleUnitMs,
+        IReadOnlyList<double> Mark,
+        IReadOnlyList<double> Gap)
+    {
+        /// <summary>The long centroid over the short.</summary>
+        public double Ratio => LongCentroidMs / ShortCentroidMs;
+
+        /// <summary>The speed the entry's unit implies.</summary>
+        public double EntryWpm => EntryUnitMs > 0 ? 1200.0 / EntryUnitMs : 0;
+
+        /// <summary>The speed the rule's unit implies.</summary>
+        public double RuleWpm => RuleUnitMs > 0 ? 1200.0 / RuleUnitMs : 0;
+
+        /// <summary>Whether the stream takes the entry's speed rather than searching the grid.</summary>
+        public bool EntryTaken => InRange(EntryWpm);
+
+        /// <summary>Whether the stream would take the rule's speed.</summary>
+        public bool RuleTaken => InRange(RuleWpm);
+
+        private static bool InRange(double wpm)
+            => wpm > 0 && wpm >= CwProbabilisticDecoder.SlowestWpm && wpm <= CwProbabilisticDecoder.FastestWpm;
+    }
+
+    /// <summary>
+    /// Drive the decoder a hop at a time and, on every read, take the window
+    /// apart the way <see cref="CwUnitEstimator.Measure"/> does.
+    /// </summary>
+    /// <remarks>
+    /// The two private cluster functions are called by reflection and nothing is
+    /// written; the long cluster's median is taken above the same boundary
+    /// `ShortClusterMedian` cuts at, member `n / 2` as it takes its own.
+    /// </remarks>
+    private static IReadOnlyList<DitAgainstDah> DitsAgainstDahs(float[] samples, int sampleRate, double toSeconds = double.PositiveInfinity)
+    {
+        var decoder = new CwDecoder(sampleRate, 600);
+        var stream = decoder.Stream;
+        var hop = decoder.Tracker.HopSamples;
+        var rows = new List<DitAgainstDah>();
+
+        for (var at = 0L; at + hop <= samples.Length && at / (double)sampleRate <= toSeconds; at += hop)
+        {
+            decoder.Process(new AudioChunk(at, sampleRate, samples.AsSpan((int)at, hop)));
+
+            if (stream.HopsSinceAnswer != 0
+                || stream.EnvelopeHops * CwProbabilisticDecoder.HopMilliseconds < CwProbabilisticStream.RefillSeconds * 1000.0)
+            {
+                continue;
+            }
+
+            var seconds = (long)HopsSeenField.GetValue(stream)! * CwProbabilisticDecoder.HopMilliseconds / 1000.0;
+            var envelope = (double[])EnvelopeField.GetValue(stream)!;
+            var window = envelope.Take(stream.EnvelopeHops).ToArray();
+            var entry = CwUnitEstimator.Measure(window, CwProbabilisticDecoder.HopMilliseconds);
+            var (marks, gaps) = CwUnitEstimator.Elements(window, CwProbabilisticDecoder.HopMilliseconds);
+            var held = decoder.Reading.WordsPerMinute;
+
+            if (marks.Count < 8 || gaps.Count < 8)
+            {
+                rows.Add(new DitAgainstDah(seconds, marks.Count, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN,
+                    entry.UnitMilliseconds, held, false, entry.UnitMilliseconds, marks, gaps));
+                continue;
+            }
+
+            var (low, high) = ((double, double))TwoMeansMethod.Invoke(null, new object[] { marks })!;
+            var shortMedian = (double)ShortMedianMethod.Invoke(null, new object[] { marks })!;
+            var shortGap = (double)ShortMedianMethod.Invoke(null, new object[] { gaps })!;
+            var boundary = Math.Sqrt(low * high);
+            var longMembers = marks.Where(v => v > boundary).OrderBy(v => v).ToArray();
+            var longMedian = high <= low || longMembers.Length == 0 ? high : longMembers[longMembers.Length / 2];
+            var fires = entry.IsReady && high > DahOverDitBar * low;
+
+            rows.Add(new DitAgainstDah(seconds, marks.Count, low, high, shortMedian, longMedian, shortGap,
+                entry.UnitMilliseconds, held, fires, fires ? longMedian / 3 : entry.UnitMilliseconds, marks, gaps));
+        }
+
+        return rows;
+    }
+
+    /// <summary>
+    /// 7.4, work instruction 436 task 1: every read's short and long mark clusters
+    /// through the opening, through `003919` cold and through the locked stretch,
+    /// and the speed the dit-against-dah rule would give each.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A PRINTER. IT ASSERTS NOTHING AND WRITES NOTHING.** The rule is
+    /// the instruction's, fixed before this ran: when the long mark centroid
+    /// stands more than 4.5 times the short one, the unit is the long cluster's
+    /// median over 3.</para>
+    /// <para>The locked stretch is the stream's 90.0 to 106.2 s, which is
+    /// `004108` 13.8 to 30.0 s, read warm as 7.3 read it.</para>
+    /// </remarks>
+    /// <param name="run">`stream` for the spliced session, or a recording cold.</param>
+    [Theory]
+    [InlineData("stream")]
+    [InlineData("cw-2026-09-24-003919")]
+    public void WhereTheDitMeetsTheDah(string run)
+    {
+        var stretches = run == "stream"
+            ? new[] { ("opening", 27.0, 46.2), ("locked, 004108 13.8 to 30.0 s", 90.0, 106.2) }
+            : new[] { ("cold", 0.0, 1000.0) };
+        float[] samples;
+        int rate;
+
+        if (run == "stream")
+        {
+            (samples, rate, _) = Splice(Session);
+        }
+        else
+        {
+            var audio = WavAudio.Read(Path.Combine(Folder, run + ".wav"));
+            samples = audio.Samples;
+            rate = audio.SampleRate;
+        }
+
+        var rows = DitsAgainstDahs(samples, rate, stretches.Max(s => s.Item3));
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"dah check | run {run}; {rows.Count} reads; the rule fires above {DahOverDitBar:0.0} and divides the long median by 3; grid {CwProbabilisticDecoder.SlowestWpm:0} to {CwProbabilisticDecoder.FastestWpm:0} wpm"));
+
+        foreach (var (label, from, to) in stretches)
+        {
+            var inside = rows.Where(r => r.Seconds >= from && r.Seconds < to).ToList();
+
+            _output.WriteLine("");
+            _output.WriteLine(string.Create(Invariant, $"DAH {label.ToUpperInvariant()} | {run} {from:0.0} to {to:0.0} s | {inside.Count} reads"));
+            _output.WriteLine($"dah {label} | s | marks | short centroid ms | long centroid ms | ratio | short median ms | long median ms | short gap ms | entry unit ms | entry wpm | entry from | held wpm | fires | rule unit ms | rule wpm | rule from");
+
+            foreach (var r in inside)
+            {
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"dah {label} | {r.Seconds:0.0} | {r.Marks} | {r.ShortCentroidMs:0.0} | {r.LongCentroidMs:0.0} | {r.Ratio:0.00} | {r.ShortMedianMs:0.0} | {r.LongMedianMs:0.0} | {r.ShortGapMs:0.0} | {r.EntryUnitMs:0.0} | {r.EntryWpm:0.0} | {(r.EntryTaken ? "stream" : "grid")} | {r.HeldWpm:0} | {(r.Fires ? "yes" : "no")} | {r.RuleUnitMs:0.0} | {r.RuleWpm:0.0} | {(r.RuleTaken ? "stream" : "grid")}"));
+            }
+
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"dah {label} summary | reads {inside.Count} | entry to the grid {inside.Count(r => !r.EntryTaken)} | fires {inside.Count(r => r.Fires)} | fires with the rule's speed inside the grid {inside.Count(r => r.Fires && r.RuleTaken)} | grid reads the rule hands to the stream {inside.Count(r => !r.EntryTaken && r.RuleTaken)} | stream reads the rule hands to the grid {inside.Count(r => r.EntryTaken && !r.RuleTaken)}"));
+
+            // What the halved readings' clusters actually held: every read the grid decided.
+            foreach (var r in inside.Where(r => !r.EntryTaken))
+            {
+                _output.WriteLine(string.Create(
+                    Invariant,
+                    $"dah {label} held | {r.Seconds:0.0} | marks {string.Join(" ", r.Mark.OrderBy(v => v).Select(v => v.ToString("0", Invariant)))} | gaps {string.Join(" ", r.Gap.OrderBy(v => v).Select(v => v.ToString("0", Invariant)))}"));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 7.4, work instruction 436 task 1: over every capture row and every keyed
+    /// recording, how many reads the dit-against-dah rule fires on.
+    /// </summary>
+    /// <remarks>
+    /// **A FORECAST FOR THE FOUR TESTS, NOT A GATE, AND IT ASSERTS NOTHING.** Each
+    /// recording is driven cold from 600 Hz, as the captures type drives it.
+    /// </remarks>
+    [Fact]
+    public void WhereTheDahRuleFires()
+    {
+        var names = TheCapturesThatDecodeKeepDecodingTests.Floors
+            .Select(row => (string)row[0])
+            .Concat(WhatTheStrayLettersRestOnTests.KeyedRecordings.Select(k => k.Name))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        var touched = new List<string>();
+
+        _output.WriteLine($"fires | recording | reads | entry to the grid | fires | fires inside the grid | grid reads handed to the stream | stream reads handed to the grid | stream reads whose speed moves | {names.Count} recordings");
+
+        foreach (var name in names)
+        {
+            var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+            var rows = DitsAgainstDahs(audio.Samples, audio.SampleRate);
+            var fires = rows.Count(r => r.Fires);
+
+            if (fires > 0)
+            {
+                touched.Add(string.Create(Invariant, $"{name} {fires}"));
+            }
+
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"fires | {name} | {rows.Count} | {rows.Count(r => !r.EntryTaken)} | {fires} | {rows.Count(r => r.Fires && r.RuleTaken)} | {rows.Count(r => !r.EntryTaken && r.RuleTaken)} | {rows.Count(r => r.EntryTaken && !r.RuleTaken)} | {rows.Count(r => r.Fires && r.EntryTaken && r.RuleTaken)}"));
+        }
+
+        _output.WriteLine($"fires | touched | {touched.Count} of {names.Count} | {string.Join(", ", touched)}");
+    }
+
     private static IReadOnlyList<Heard> InStretch(Traced traced, double from, double to)
         => traced.Settled
             .Where(h => h.Character.At.TotalSeconds >= from && h.Character.At.TotalSeconds < to)
