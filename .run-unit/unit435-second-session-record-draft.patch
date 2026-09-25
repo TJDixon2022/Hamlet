@@ -1,0 +1,41 @@
+diff --git a/Directory.Build.props b/Directory.Build.props
+index 7582103c..aeb71e7e 100644
+--- a/Directory.Build.props
++++ b/Directory.Build.props
+@@ -1332,8 +1332,15 @@
+     hover text changes; no command, binding, visibility or layout, and nothing that keys, transmits
+     or sets power.
+   -->
++  <!--
++    1.13.121 -> 1.13.122, WORK INSTRUCTION 435 TASK 0. A PATCH, STEP 7 OF THE CORRECTNESS PHASE,
++    CRITERION 7.4, THE SPEED HOLDS WHEN THE UNIT ESTIMATE HALVES: a read whose estimator speed is
++    unusable or departs by more than 1.5 times from the speed carried within 3.0 s uses the carried
++    speed, and a departure on two consecutive reads is taken. The tracker, the tone survey and the
++    mixdown do not change, and nothing that keys, transmits or sets power changes.
++  -->
+   <PropertyGroup>
+-    <Version>1.13.121</Version>
++    <Version>1.13.122</Version>
+   </PropertyGroup>
+ 
+   <!--
+diff --git a/PHASE_OUTCOME.md b/PHASE_OUTCOME.md
+index b843fbcf..ad3db058 100644
+--- a/PHASE_OUTCOME.md
++++ b/PHASE_OUTCOME.md
+@@ -801,3 +801,15 @@ STATE_WHY: Criteria 7.3, 7.5 and 7.7 are ticked, and 7.4 closed partial without
+ ADVANCED: no
+ ATTEMPT: 7.4 | unit 6 launched 2026-09-25T08:48:58.634Z | no | executed | hold a pending mixdown move unless the keying contrast measured at the new pitch over the decoder's last hops beats the contrast at the current mix pitch, head to head - Envelope at 45 Hz over the survey's 3 s, 90th over 10th percentile, replay-gated against the entry on the opening's 525 Hz move and 032113's 650 Hz move, then built once and judged under 3.2's four tests
+ REASON: 7.4 | unit 6 launched 2026-09-25T08:48:58.634Z | the unit ran to completion and the criterion did not flip from unmet to met
++
++## UNIT 435 - STEP 7
++
++STEP: 7
++APPROACH: carry the held speed when the unit estimate halves - at CwProbabilisticStream.cs 431 to 435 a single read whose estimator speed is unusable or departs by more than 1.5 times from the carried speed uses the speed carried within 3.0 s instead of the grid, a departure on two consecutive reads is taken; traced per read on the opening, then built once and judged under 3.2's four tests, mixdown and tracker untouched
++MOVE: work around
++WHY: PHASE_PLAN.md criterion 7.4 asks for a change against what 7.3 names, and 7.3 named two figures - the mix pitch at CwDecoder.cs 617 to 621 and then the speed at CwProbabilisticStream.cs 428 to 435, where the estimator halved and the grid took 38 WPM for a 22 WPM sender; every recorded 7.4 attempt was a mixdown follow rule, which R75 closes and R76 keeps from the tracker, so the speed is the named figure no unit has built against.
++STATE: partial
++DECIDED: author's, overrulable - the rule and its two numbers, 1.5 and 3.0 s, fixed before the trace; the one stop is a rule that changes no read in the stream 30 to 46.2 s; one narrower variant, the carry on an unusable estimate alone, only on a single-row or single-test failure; test 1 reads does not rise, as unit 430's arbiter decided; a change the opening's text does not move is not kept; 7.4 ticks only on a kept change, superseding P48's closure, and otherwise P48 gains the measurement. No self-ruling authorizes work outside the tasks.
++LICENCE: PHASE_PLAN.md criteria 7.3 and 7.4, R64, R65, R66, R71, R73, R75, R76 and section 6; PARKED.md P42 and P48; unit 429's trace (003f2c98); unit 430's arbiter decision on test 1; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
++ACCOMPLISHED: the first minute on a new frequency no longer reads the sender at nearly twice his speed because one window's estimate halved, or the project knows that the pitch alone is what still breaks it
++ADVANCES: step 7 criterion 4

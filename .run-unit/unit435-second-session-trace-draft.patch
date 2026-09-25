@@ -1,0 +1,226 @@
+diff --git a/tests/Hamlet.RadioEngine.Tests/Cw/WhatTheOpeningHeardTests.cs b/tests/Hamlet.RadioEngine.Tests/Cw/WhatTheOpeningHeardTests.cs
+index 5888bd1e..eea93b51 100644
+--- a/tests/Hamlet.RadioEngine.Tests/Cw/WhatTheOpeningHeardTests.cs
++++ b/tests/Hamlet.RadioEngine.Tests/Cw/WhatTheOpeningHeardTests.cs
+@@ -1431,6 +1431,221 @@ public sealed class WhatTheOpeningHeardTests
+         }
+     }
+ 
++    /// <summary>How far the estimator may depart from the carried speed, either way, before it is set aside (work instruction 435, section 6).</summary>
++    private const double DepartureFactor = 1.5;
++
++    /// <summary>How long a speed taken from the estimator may be carried, in seconds of audio (work instruction 435, section 6).</summary>
++    private const double CarrySeconds = 3.0;
++
++    /// <summary>What the speed rule of work instruction 435 would have used on one read.</summary>
++    /// <param name="Read">The read, as the decoder made it.</param>
++    /// <param name="EstimatorWpm">The estimator's own speed on the read's window, or nought when it was not ready.</param>
++    /// <param name="Usable">Whether the entry decoder took it: ready and inside the range.</param>
++    /// <param name="RuleWpm">The speed the rule would have used, or null for the grid.</param>
++    /// <param name="Clause">Which clause of the rule decided it.</param>
++    internal sealed record RuleRead(Read Read, double EstimatorWpm, bool Usable, double? RuleWpm, string Clause)
++    {
++        /// <summary>True where the rule would have decoded at a speed the entry did not.</summary>
++        public bool Differs => Clause.StartsWith("carried", StringComparison.Ordinal)
++            && RuleWpm is { } wpm
++            && Math.Abs(wpm - Read.HeldWpm) > 1e-6;
++
++        /// <summary>The rule's speed as printed.</summary>
++        public string RuleText => RuleWpm is { } wpm ? wpm.ToString("0.0", Invariant) : "grid";
++    }
++
++    /// <summary>
++    /// The rule of work instruction 435, section 6, replayed over the reads a
++    /// run made. It changes nothing the run decoded.
++    /// </summary>
++    /// <remarks>
++    /// The estimator measures the window, and the window does not depend on the
++    /// speed a read decodes at, so the estimator's figure on every read is the
++    /// same with or without the rule and the replay is exact about which speed
++    /// the rule would have handed the path. What the path would then have spelled
++    /// is task 2's to measure.
++    /// </remarks>
++    internal static IReadOnlyList<RuleRead> UnderTheRule(IReadOnlyList<Read> reads)
++    {
++        var ruled = new List<RuleRead>();
++        double? carried = null;
++        var carriedAt = 0.0;
++        var departedLast = false;
++
++        foreach (var r in reads)
++        {
++            var estimator = r.EstimatorUnitMs > 0 ? 1200.0 / r.EstimatorUnitMs : 0;
++            var fresh = carried is not null && r.Seconds - carriedAt <= CarrySeconds + 1e-9;
++            double? wpm;
++            string clause;
++
++            if (r.FromEstimator)
++            {
++                var departs = fresh
++                    && Math.Max(estimator / carried!.Value, carried.Value / estimator) > DepartureFactor;
++
++                if (!departs)
++                {
++                    clause = fresh ? "estimator, within 1.5 of the carried" : "estimator, nothing carried within 3.0 s";
++                    wpm = estimator;
++                    carried = estimator;
++                    carriedAt = r.Seconds;
++                    departedLast = false;
++                }
++                else if (departedLast)
++                {
++                    clause = "estimator, departed on two consecutive reads, taken";
++                    wpm = estimator;
++                    carried = estimator;
++                    carriedAt = r.Seconds;
++                    departedLast = false;
++                }
++                else
++                {
++                    clause = "carried, the estimator departs by more than 1.5";
++                    wpm = carried;
++                    departedLast = true;
++                }
++            }
++            else
++            {
++                departedLast = false;
++
++                if (fresh)
++                {
++                    clause = estimator > 0 ? "carried, the estimator is outside the range" : "carried, the estimator is not ready";
++                    wpm = carried;
++                }
++                else
++                {
++                    clause = "grid, nothing carried within 3.0 s";
++                    wpm = null;
++                }
++            }
++
++            ruled.Add(new RuleRead(r, estimator, r.FromEstimator, wpm, clause));
++        }
++
++        return ruled;
++    }
++
++    private void PrintRuleReads(string label, IEnumerable<RuleRead> ruled)
++    {
++        _output.WriteLine($"{label} | s | estimator wpm | estimator unit ms | estimator | entry wpm | entry from | rule wpm | rule clause | differs");
++
++        foreach (var x in ruled)
++        {
++            _output.WriteLine(string.Create(
++                Invariant,
++                $"{label} | {x.Read.Seconds:0.0} | {x.EstimatorWpm:0.0} | {x.Read.EstimatorUnitMs:0.0} | {(x.EstimatorWpm <= 0 ? "not ready" : x.Usable ? "usable" : "outside the range")} | {x.Read.HeldWpm:0.0} | {x.Read.SpeedFrom} | {x.RuleText} | {x.Clause} | {(x.Differs ? "yes" : "-")}"));
++        }
++    }
++
++    /// <summary>
++    /// 7.4, work instruction 435 task 1: per read, the speed the estimator
++    /// measured, the speed the entry decoder used, and the speed the carry rule
++    /// of section 6 would have used, on the opening and on a locked stretch.
++    /// </summary>
++    /// <remarks>
++    /// <para>**A PRINTER. IT ASSERTS NOTHING AND WRITES NOTHING.** The rule is
++    /// replayed over the reads by <see cref="UnderTheRule"/>; nothing under `src`
++    /// is consulted for it.</para>
++    /// <para>The opening is the spliced stream 27.0 to 46.2 s, three seconds
++    /// before 7.4's stretch so the carry has the reads before it; the locked
++    /// stretch is the stream 90.0 to 106.2 s, which is `004108` 13.8 to 30 s; and
++    /// `003919` is decoded cold, whole.</para>
++    /// </remarks>
++    [Fact]
++    public void WhatTheSpeedRuleWouldHaveUsed()
++    {
++        _output.WriteLine(string.Create(
++            Invariant,
++            $"check | rule: carry the estimator's last taken speed {CarrySeconds:0.0} s; set aside an estimate unready, outside {CwProbabilisticDecoder.SlowestWpm:0} to {CwProbabilisticDecoder.FastestWpm:0} wpm, or departing by more than {DepartureFactor:0.0} either way; a departure on two consecutive reads is taken; no carry, the grid"));
++
++        var (samples, rate, pieces) = Splice(Session);
++        var stream = Trace(samples, rate);
++        var ruled = UnderTheRule(stream.Reads);
++
++        foreach (var (label, from, to) in new[] { ("opening", 27.0, 46.2), ("locked", 90.0, 106.2) })
++        {
++            var piece = pieces.Last(p => p.StreamStart / (double)rate <= from);
++            var offset = (piece.Skip - piece.StreamStart) / (double)rate;
++
++            _output.WriteLine("");
++            _output.WriteLine(string.Create(
++                Invariant,
++                $"{label.ToUpperInvariant()} | stream {from:0.0} to {to:0.0} s, which is {piece.Name} {from + offset:0.0} to {to + offset:0.0} s | text {stream.Text(from, to)}"));
++            PrintRuleReads(label, ruled.Where(x => x.Read.Seconds >= from && x.Read.Seconds < to));
++        }
++
++        var inOpening = ruled.Where(x => x.Read.Seconds >= 30.0 && x.Read.Seconds < 46.2).ToList();
++
++        _output.WriteLine("");
++        _output.WriteLine(string.Create(
++            Invariant,
++            $"stop | stream 30 to 46.2 s: {inOpening.Count} reads, {inOpening.Count(x => !x.Usable)} at the grid at entry, {inOpening.Count(x => x.Differs)} where the rule's speed differs from the entry's"));
++
++        var cold = WavAudio.Read(Path.Combine(Folder, "cw-2026-09-24-003919.wav"));
++        var coldRun = Trace(cold.Samples, cold.SampleRate);
++        var coldRuled = UnderTheRule(coldRun.Reads);
++
++        _output.WriteLine("");
++        _output.WriteLine($"COLD 003919 | whole | text {coldRun.Text()}");
++        PrintRuleReads("003919 cold", coldRuled);
++        _output.WriteLine($"stop | 003919 cold: {coldRuled.Count} reads, {coldRuled.Count(x => !x.Usable)} at the grid at entry, {coldRuled.Count(x => x.Differs)} where the rule's speed differs");
++    }
++
++    /// <summary>
++    /// 7.4, work instruction 435 task 1: over every capture row and every keyed
++    /// recording, how many reads the carry rule would have decoded at a speed the
++    /// entry did not.
++    /// </summary>
++    /// <remarks>
++    /// A forecast for 3.2's four tests and not a gate. Each recording is decoded
++    /// cold, as the captures type and the keyed scorers decode it, and once even
++    /// where it is both.
++    /// </remarks>
++    [Fact]
++    public void WhereTheSpeedRuleWouldDiffer()
++    {
++        var names = TheCapturesThatDecodeKeepDecodingTests.Floors
++            .Select(row => (string)row[0])
++            .Concat(WhatTheStrayLettersRestOnTests.KeyedRecordings.Select(k => k.Name))
++            .Distinct(StringComparer.Ordinal)
++            .ToList();
++
++        var keyed = WhatTheStrayLettersRestOnTests.KeyedRecordings.Select(k => k.Name).ToHashSet(StringComparer.Ordinal);
++        var rows = TheCapturesThatDecodeKeepDecodingTests.Floors.Select(row => (string)row[0]).ToHashSet(StringComparer.Ordinal);
++        var touched = new List<string>();
++        var allReads = 0;
++        var allDiffer = 0;
++
++        _output.WriteLine("differ | recording | capture row | keyed | reads | at the grid at entry | carried on unready or outside | carried on a departure | differs | s where it differs");
++
++        foreach (var name in names)
++        {
++            var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
++            var ruled = UnderTheRule(Trace(audio.Samples, audio.SampleRate).Reads);
++            var differ = ruled.Where(x => x.Differs).ToList();
++
++            allReads += ruled.Count;
++            allDiffer += differ.Count;
++
++            if (differ.Count > 0)
++            {
++                touched.Add(name);
++            }
++
++            _output.WriteLine(string.Create(
++                Invariant,
++                $"differ | {name} | {(rows.Contains(name) ? "yes" : "-")} | {(keyed.Contains(name) ? "yes" : "-")} | {ruled.Count} | {ruled.Count(x => !x.Usable)} | {differ.Count(x => !x.Usable)} | {differ.Count(x => x.Usable)} | {differ.Count} | {string.Join(" ", differ.Select(x => x.Read.Seconds.ToString("0.0", Invariant)))}"));
++        }
++
++        _output.WriteLine(string.Create(
++            Invariant,
++            $"differ | all | {names.Count} recordings, {rows.Count} capture rows, {keyed.Count} keyed | {allReads} reads | {allDiffer} differ | on {touched.Count} recordings: {string.Join(", ", touched)}"));
++    }
++
+     private static IReadOnlyList<Heard> InStretch(Traced traced, double from, double to)
+         => traced.Settled
+             .Where(h => h.Character.At.TotalSeconds >= from && h.Character.At.TotalSeconds < to)

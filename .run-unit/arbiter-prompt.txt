@@ -1,0 +1,308 @@
+THE PHASE GOAL IS THE PRIME DIRECTIVE. The last report is an indicator that tunes
+your approach and never your target.
+
+Read ARBITER.md at this repository root and act as it says.
+
+You are the arbiter. Author the next WORK_INSTRUCTIONS.md.
+============================================================
+ THE PHASE, AND THE STEP YOU ARE AUTHORING AGAINST
+============================================================
+
+PHASE GOAL: Hamlet reads a CQ call correctly
+
+THE STEP TO WORK: step 3 - The spacing is repaired - the fault the baseline names, where letters are right and word boundaries wrong, attacked on the correctness number with nothing kept that costs a named floor or an anchor.  [partial by its checkboxes, 6 of 7 met]
+
+ITS UNMET CRITERIA. THESE ARE THE WORK:
+  - [ ] 3.6 The stray single-element characters are attacked: the trace names, per keyed recording, every added or wrong character whose decode rests on one element and what score admitted it, printed by a fact that asserts nothing; then each change is judged under 3.2's four tests, and the total edit count over all keyed recordings falls, with the count of added letters reported before and after (R69).
+
+already met, for context only:
+  - [x] 3.1 The dominant error kind named in 0.3 is traced to a named line or property in `src/Hamlet.RadioEngine/Cw`, printed by a fact that asserts nothing, before any change is built.
+  - [x] 3.2 Each change is built in its own commit and kept only if the total edit count over all keyed recordings falls, no named floor from 2.2 is broken, the three adjudicated readings are unchanged character for character or changed to exactly their own adjudicated text (R66), with any reading that moves printed before and after in the report, and no capture row's named count falls; a change that fails any of those goes back out in the next commit and the report says so.
+  - [x] 3.3 The edit count on `cw-2026-09-23-173723` over its scored region is reported before and after every kept change, and the phase's running total is in `docs/phase-correctness/baseline.md`.
+  - [x] 3.4 After three consecutive units with no kept change, the trace and the measurements are written to `PARKED.md` and the step closes partial rather than holding the loop.
+  - [x] 3.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+  - [x] 3.7 All 51 capture rows are re-measured once under R71 in a single commit, with the span bar named and the old count, the above-bar count and the below-bar count printed per row; the bar's choice is justified from 3.6's trace and not from which changes it admits; the three adjudicated readings and the keyed totals are run at that commit and are unchanged or better, and the report states plainly that no character above the bar was lost.
+
+THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
+  step 4 - The pitch judge is worth trusting - an instrument whose resolution is finer than the tolerance it judges, the pitch table re-run with it, and the tracker question answered on that table.  [not started]
+    - [ ] 4.1 A pitch instrument whose resolution is finer than 25 Hz is built and shown, on the synthetic cases whose tone is known by construction, to land within one of its own bins of the truth - the restore phase's sweep missed those by 60 to 85 Hz - with its error against the known tone tabled per case, the count of cases it admits at all stated, and its cost per hop measured; it shares no line of code with `CwToneTracker` (R76).
+    - [ ] 4.2 The 38-case pitch table is re-run with it, and the report states how many cases it admits as single-sender and how many are more than one of its bins apart.
+    - [ ] 4.3 Every case the new table calls apart is either repaired in `CwToneTracker` under the keep rule of 3.2, or listed with its measurement and parked; the report says which and why.
+    - [ ] 4.4 The three floor tests and both carry-forward lines are green at exit.
+    - [ ] 4.5 The instrument is turned on the moment the tracker gets wrong: at 30.54 s of the 7.052 opening, and on `cw-2026-09-24-135641` and `cw-2026-09-24-152135` where the decoder mixed 75 Hz off a tone the survey named, it reports what pitch was there, and the report states for each whether it would have named the sender's pitch over the one the tracker took.
+    - [ ] 4.6 Once 4.1 and 4.5 are met, a change to `CwToneTracker` is built under R75 and judged by 3.2's four tests with the instrument's table beside them; the report names which clause of HM-DEC-095 or HM-DEC-127 it works against and why; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+    - [ ] 4.7 With a tracker change kept, criteria 3.6 and 7.4 are re-measured and reported - added letters over the keyed recordings, and the opening's named characters from 30 to 46.2 s - and their boxes are re-opened or ticked on what the numbers say (R76).
+  step 5 - Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.  [not started]
+    - [ ] 5.1 Tim, at the radio, on CW on 20 m or 40 m, sees text on the CW tab that reads as what was sent, and says it read. No script can evaluate this.   *owner-s verdict* - never name it
+  step 6 - The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.  [partial]
+    - [ ] 6.5 The CW tab's *Have a look* button either does what its words promise or is not on screen, and the report says which and why (HM-OPEN-087).
+  step 7 - The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.  [partial]
+    - [ ] 7.1 The speed search reaches the speeds stations send at: the range's top is raised past 40 WPM, chosen from what the corpus and the independent sweep measure rather than from a round number, and `cw-2026-09-24-135641` - which read nothing in 44 minutes at about 44 WPM - emits named characters, with the winning speed and the margin over silence reported.
+    - [ ] 7.2 The wider search costs nothing already held: the total edit count over all keyed recordings does not rise, no named floor breaks, the three adjudicated readings are unchanged or move onto their own adjudicated text, no capture row's named count falls, and the captures type's wall time is reported before and after.
+    - [ ] 7.4 A change against what 7.3 names is judged under 3.2's four tests, and the named characters read in the opening 60 seconds of `cw-2026-09-24-003901` and `-003919` are reported before and after; after three consecutive units with no kept change the trace goes to `PARKED.md` and the criterion closes partial.
+    - [ ] 7.6 The three floor tests and both carry-forward lines are green at exit, and nothing is red that was green at entry.
+    - [ ] 7.8 The preamp is set from what the radio's manual states and nothing contradicts it (R74): the CW conditions carry preamp 1 for 1.8 to 29.999 MHz and preamp 2 at 50 MHz, with the manual's page cited in the condition's own text; the preamp is turned off when the receiver reports overloading rather than by band; no component asks the operator to change the preamp, or any other field a condition states, after Hamlet has set it - watched failing first at 7.030 MHz, where the old rule turned it off, and at 14.050, where a voice contradicted the setup; and the report prints, for one frequency on each HF band and at 50 MHz, what is asked for, what is written, and every sentence the app would say about the preamp there.
+
+ADVANCES MUST NAME ONE OF THE WORK CRITERIA ABOVE - never a parked one, never
+the owner-s. Everything below this block is context for CHOOSING among them -
+what has been tried, and what the last unit reported. None of it is a list of
+work to do.
+
+
+============================================================
+ YOU HAVE BEEN REDIRECTED. READ THIS BEFORE YOU CHOOSE.
+============================================================
+
+The loop did NOT halt. It sent you back, because:
+
+  units 3 and 4 both ran against criterion 7.4 and neither moved it
+
+YOUR NEXT INSTRUCTION MUST NAME ONE OF THESE CRITERIA:
+  7.4
+
+and must name an APPROACH THE RECORD DOES NOT ALREADY SHOW FAILING at it.
+The attempts are listed further down this prompt. An instruction that names
+another criterion, or repeats an approach recorded as failing, is refused
+and you are redirected again - it costs an iteration and buys nothing.
+
+THIS IS NOT A COMPLAINT TO ANSWER. It is the plan telling you that the route
+you took did not move the criterion. Find another route TO THE SAME
+CRITERION. Do not go looking in the last report for something else to do.
+
+(redirect 1 of this run - there is no limit on these, and
+running out of routes is not something you may assert. If every approach you
+can see is recorded as failing, say so in WHY and name the one you judge
+least exhausted.)
+
+
+THE PLAN, THE ATTEMPT RECORD AND THE LAST REPORT ARE ALL IN THIS PROMPT -
+the criteria above, the rest below. One thing is not:
+
+  .run-unit\reload.txt   - the measured picture, disagreements first.
+                           READ THIS. Nothing else here carries it.
+
+  PHASE_PLAN.md          - open it if you need a step's full text. The
+                           criteria above are quoted from it verbatim.
+
+  output.md              - the last report, AN INDICATOR. A bounded extract is
+                           at the BOTTOM of this prompt. Open the whole file
+                           only to check something the extract raised about
+                           the criterion you have ALREADY chosen from the plan
+                           - never as your starting point, never to find work
+                           in it, and never to choose a target.
+
+Run the loop test before you propose an approach.
+
+You stop the phase - MOVE: stop - for exactly two things, ARBITER.md
+section 6: anything that touches keying, transmit or the radio's
+safety; a decision that changes what the product promises the
+operator. Money is NOT one of them - the owner's ruling of 2026-09-23:
+his plan supplies the capacity, and a spend is yours to decide and
+report, never to stop for. On everything else - including a
+question the last report left in its section 4 - take your own
+recommendation, put it in DECIDED marked author's, overrulable, and
+author the unit on it.
+
+PROGRESS IS COUNTED IN CRITERIA, AND THE COUNT IS THE SCRIPT'S - ARBITER.md
+section 7. ADVANCES must read  step N criterion k  - one line of PHASE_PLAN.md
+in the form  - [ ] N.k  - or  none - clears a blocker:  naming the unit number
+or criterion it unblocks. The launcher counts that criterion before and after
+the unit; if it did not flip, the unit did not advance, and two such units in a
+row are redirected. A STEP WHOSE EVERY CRITERION IS TICKED IS done AND IS
+CLOSED, whatever any header says - the owner's ruling of 2026-09-23, a step's
+state is its checkboxes. Do not author into it. The launcher refuses it before
+the unit runs, and only the owner reopens a step, by unticking a line or a
+ruling in the plan.
+
+THE OWNER'S VERDICT IS MARKED AND ENDS THE RUN - ARBITER.md section 7. A
+criterion ending *owner's verdict* is the owner's alone: never name one in
+ADVANCES, and never author a unit toward a verdict the loop cannot give.
+
+YOUR SELF-RULINGS ARE BOUNDED - the owner's ruling of 2026-09-14. At most two
+self-rulings that authorize work outside the instruction's tasks, each citing
+the plan line it applies; if a third is needed, the plan or the instruction
+is unclear - report it as a mismatch instead of ruling a third time.
+Decisions about how to carry out an assigned task are uncapped, and every
+one is reported. NO SELF-RULING MAY OVERRULE AN EARLIER ARBITER RULING -
+only the owner does that, and a report claiming one halts the loop.
+
+Write WORK_INSTRUCTIONS.md and end it with the ARBITER-DECISION
+block exactly as ARBITER.md section 7 specifies. Write nothing else.
+
+--- WHAT HAS ALREADY BEEN TRIED, BY CRITERION ---
+
+Every attempt this phase has recorded, criterion first. READ THIS BEFORE
+YOU CHOOSE AN APPROACH. An approach recorded as no against a criterion is
+REFUSED BEFORE THE UNIT RUNS if you name that criterion again, and the
+iteration is spent on the refusal. yes means it succeeded and does not
+block; blocker means it cleared something and moved no criterion.
+
+  0.2 | unit 1 launched 2026-09-23T22:44:00.058Z | yes | executed | build a scorer that reports edits, scored length and the key's kind, score the 17:37 capture and the three adjudicated recordings at HEAD into a baseline table, and count what kind of error dominates
+  1.1 | unit 2 launched 2026-09-24T04:07:07.356Z | yes | executed | generate synthetic CQ calls at three speeds and three signal strengths with exact keys by construction, score each at HEAD with CwScorer outside the 3.2 total, and write the rule for inferring a key off the air with 17:37 worked and what the synthetics do not prove
+  2.5 | unit 1 launched 2026-09-24T01:35:11.319Z | yes | executed | bank the thirteen captures of 2026-09-24 as named-character and element floors measured at what they produced tonight, set the unsure-per-named guard and a read-at-all floor per keyed recording, prove the guard by breaking it, and key the locked-on run by differencing consecutive transcripts
+  3.1 | unit 1 launched 2026-09-24T03:07:13.064Z | yes | executed | trace every inserted space in the ten keyed recordings to the gap and the thresholds that caused it, name the line that decides it, then build the change that trace names - unit 405's G1 the first candidate - and judge it on total edits, the named floors, the adjudicated readings and all 51 capture rows
+  3.2 | unit 1 launched 2026-09-24T12:08:39.542Z | yes | executed | re-apply unit 415's narrowed space-only relabel b68be0dd unchanged, run all four of 3.2's tests and print each as a number, and keep it under R66's amended third test
+  3.2 | unit 3 launched 2026-09-24T04:54:56.095Z | no | executed | leave the decoder path untouched and relabel only character-gap against word-gap segments afterward from the sender's measured character centroid, so no letter can join or split and named counts cannot move, judged under 3.2
+  3.6 | unit 1 launched 2026-09-25T02:58:03.256Z | no | executed | trace each emitted character's span against the median span of the characters around it, over the keyed recordings and the 2026-09-25 traffic net, and demote a character whose ratio falls far below its neighbors only if the added and the right separate on that ratio
+  3.6 | unit 2 launched 2026-09-24T23:00:11.608Z | no | executed | separate the above-bar added single-element strays from right single-element letters by features other than span - window Gate score, gaps in units, standing alone, pitch, energy - and build one change on the separating feature, judged under 3.2 with R73 letting key-aligned added characters leave a floor
+  3.6 | unit 4 launched 2026-09-25T06:43:19.918Z | no | executed | re-apply G1 - MeasureGaps refusing a held gap reading whose character gap stands past its word gap, so split letters join - and judge it under 3.2's four tests as R71's span bar and R73's key-aligned added exemption now read them, after tracing which of the 8 single-element added letters a split made
+  3.7 | unit 1 launched 2026-09-24T17:53:45.290Z | yes | executed | trace every single-element added or wrong character with its span, choose a span bar from that trace, re-measure all 51 capture rows under R71 in one commit, then build one change against the below-bar strays
+  5.1 | unit 1 launched 2026-09-25T01:41:45.314Z | blocker | executed | build the grid-beats-prefix rule with the card stating both and no new-entity quill, then drive the owner's other thirteen UI items and print what is actually on screen for each, repairing only one-line differences
+  6.1 | unit 1 launched 2026-09-24T00:45:09.815Z | yes | executed | make the RF gain banner state what the radio actually reported when a read-back is held, and make the capture sidecar's tonePeak, elementHz and keying lines either true of the capture or honestly silent, each watched failing first
+  6.2 | unit 3 launched 2026-09-24T14:02:00.835Z | yes | executed | audit every sentence of the capture sidecar against the tree and make the keying caption name the sweep range KeyingEnvelope actually sweeps, watched failing first
+  6.3 | unit 3 launched 2026-09-24T20:10:29.208Z | yes | executed | trace the three top-row panels' bounds headless at a covered and an uncovered frequency, name the line that moves them, commit a column test red, then hold the columns while the privilege panel's words and color still change
+  6.4 | unit 2 launched 2026-09-24T19:15:08.069Z | yes | executed | inventory every pressable control on the CW tab and the band row headless with its tip and what its command does, commit a test naming each control red, then give each a true hover tip, Send's element unchanged but for the tip
+  6.7 | unit 2 launched 2026-09-24T13:12:43.596Z | yes | executed | measure tonePeak over the capture's own recording and label it in the sidecar, watched failing first against the held-and-decaying figure, capture cost measured
+  7.3 | unit 2 launched 2026-09-25T03:52:47.073Z | yes | executed | trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+  7.4 | unit 1 launched 2026-09-25T12:11:53.762Z | no | executed | carry the held speed when the unit estimate halves - at CwProbabilisticStream.cs 431 to 435 a single read whose estimator speed is unusable or departs by more than 1.5 times from the carried speed uses the speed carried within 3.0 s instead of the grid, a departure on two consecutive reads is taken; traced per read on the opening, then built once and judged under 3.2's four tests, mixdown and tracker untouched
+  7.4 | unit 2 launched 2026-09-25T12:23:34.777Z | no | executed | unit estimator checks its dit cluster against its dah cluster - in CwUnitEstimator.Measure, when the long mark centroid stands more than 4.5 times the short one, the short heap is broken marks and the unit is taken as the long cluster's median over 3; traced per read on the opening, then built once and judged under 3.2's four tests, stream speed choice, grid, mixdown and tracker untouched
+  7.4 | unit 3 launched 2026-09-25T04:55:53.495Z | no | executed | trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+  7.4 | unit 3 launched 2026-09-25T13:58:24.289Z | no | executed | re-mix the stream's held window at the new pitch when the mixdown moves - CwProbabilisticStream keeps 12 s of raw audio and, on a move of 25 Hz or more, recomputes the mixed arms and every envelope hop in the window at the new pitch; when and where the mix moves, the refill guard, speed choice, estimator and tracker untouched; replayed offline on the opening first, then built once and judged under 3.2's four tests
+  7.4 | unit 4 launched 2026-09-25T15:25:47.415Z | no | executed | cut the unit estimator's trigger locally in time - in CwUnitEstimator.Measure only, the Otsu level is taken per 0.5 s block over the 3 s around it instead of once over the whole 12 s window, falling back to the window's cut where a span holds no keying, so marks are not chopped into half-unit pieces where the level moves; hysteresis depth, shortest run, clustering, MeasureGaps, stream, mixdown and tracker untouched; replayed offline on the opening first, then built once and judged under 3.2's four tests
+  7.4 | unit 5 launched 2026-09-25T07:45:38.665Z | no | executed | release a pending mixdown pitch move once any survey read since the mix was last set confirmed keying within 25 Hz of it (P39), checked first by replaying 032113's two held moves and the opening's 525 Hz move against four release rules, then built once and judged under 3.2's four tests
+  7.4 | unit 6 launched 2026-09-25T08:48:58.634Z | no | executed | hold a pending mixdown move unless the keying contrast measured at the new pitch over the decoder's last hops beats the contrast at the current mix pitch, head to head - Envelope at 45 Hz over the survey's 3 s, 90th over 10th percentile, replay-gated against the entry on the opening's 525 Hz move and 032113's 650 Hz move, then built once and judged under 3.2's four tests
+  7.5 | unit 1 launched 2026-09-24T15:11:22.436Z | no | executed | table every receive condition for CW at two frequencies and for each data mode the conditions file speaks for, then carry the preamp's band rule in the written value, give each field one owner, stop rewriting a value the radio already holds, and let the operator's own change stand
+  7.7 | unit 1 launched 2026-09-24T16:16:07.028Z | yes | executed | state the CW receiver conditions for the CW DX and QRP blocks by sameAs lines in the conditions file, watched failing first at 7.030, with the field table in all three blocks and the operator's hand held across blocks of one band
+  7.8 | unit 1 launched 2026-09-24T21:55:26.932Z | no | executed | set the CW preamp condition from the radio's manual - preamp 1 from 1.8 to 29.999 MHz, preamp 2 at 50 MHz, off on overload rather than by band, with the page cited - and scope every component so none asks the operator to change a field Hamlet has set
+  7.8 | unit 3 launched 2026-09-24T23:47:22.063Z | no | executed | follow the live-polled overflow flag after the tune-in to turn the preamp off and back, his hand winning, then survey every condition field's sentences after he moves on
+
+If every route you can see at a criterion is recorded as no, say so in WHY
+and choose another criterion or another step. Do not restate a failed
+approach in different words: the refusal matches on the words that carry
+meaning, not on the phrasing.
+
+============================================================
+ THE PREVIOUS UNIT-S REPORT - AN INDICATOR: EVIDENCE, NOT A LIST OF WORK, AND
+ NEVER A SOURCE OF TARGETS
+============================================================
+AN INDICATOR TUNES HOW YOU APPROACH THE CRITERION YOU HAVE ALREADY CHOSEN FROM THE
+PLAN ABOVE. IT NEVER CHOOSES THE CRITERION - the owner-s ruling of 2026-09-23: the
+phase goal is the prime directive, and this is a helper. A WHY that gives this
+report as its reason for choosing a criterion is refused before the unit runs.
+
+Read this as EVIDENCE ABOUT A CRITERION: what was measured, what was found, what
+a check missed. It is NOT the next thing to work on, and a question it raises is
+not a task. THE WORK IS THE UNMET CRITERIA AT THE TOP OF THIS PROMPT. If nothing
+here bears on one of them, author from them anyway.
+
+THIS REPORT WAS TOO LONG FOR ITS SHARE OF THE PROMPT AND WAS SELECTED FROM.
+Kept, in this order: section 4, then any line naming a mismatch, then section 3.
+The whole file is at the repository root if you need the rest.
+
+## 4. What's blocking us
+
+1. **`TheUnitIsMeasuredNotSearchedTests.TheFiveToEightDecibelPlateauHolds` is still red at HEAD,
+   exactly as at entry,** after the build, and at exit: 1 dB 165 marks against 117. It is outside
+   the carry-forward.
+   - It was red at this unit's entry, so it does not count against HM-DEC-165.
+   - **Proposed ruling:** park it as a standing red for whichever unit opens the hysteresis.
+   - **Reasoning:** §9 parks `HysteresisDb`, and §12.5 says repair nothing.
+   - **Rejected:** repairing it here.
+   - Not blocking 7.4.
+2. **The launcher-overlap ruling is still the owner's and still carried:** the launcher should end
+   a redirected session before it launches the next.
+   - There was no collision. Nothing was live at 11:26, and task 0's check held.
+   - Interactive claude.exe 26364, started 2026-09-24, ran beside this session throughout. It
+     started no test and committed nothing. I did not touch it.
+   - Not blocking 7.4.
+3. **The build's opening came with a different tracker path, so it cannot be credited to the cut
+   alone.**
+   - Under the build the tracker held 600 Hz to 34.0 s and moved to 625 at 34.5 s. It never made
+     the move to 525 at 30.53 s that R75 and R76 hold.
+   - The offline replay held the entry's pitch, and there the local cut did not lengthen the
+     unit.
+   - So the opening reading at 24 WPM needed the cut and the tracker's changed path together, and
+     this unit cannot separate them without touching the tracker, which R76 forbids.
+   - **Proposed ruling:** record that 7.4's opening reads as it does cold once the tracker does not
+     move to 525. Hold the next 7.4 attempt for 4.7 unless a route is found that does not act
+     through the tracker.
+   - **Reasoning:** every route downstream of the pitch has now been built against 7.4, and each
+     cost other recordings (HM-DEC-091): four follow rules (R75), the speed carry, the
+     dit-against-dah rule, the window re-mix, and now the local cut. This one moved the opening
+     furthest, and apparently by way of the tracker.
+   - **Rejected:** keeping the cut for the opening, because it costs 16 capture rows, 5 floors and
+     `VA3VRR`.
+   - This is the author's or the owner's to rule, not this unit's. It is not blocking 7.4 as a
+     criterion.
+
+Two corrections to the pushed commit messages. P48 and this report carry the correct figures.
+- Task 1's message says the local cut "stands higher than the whole window's". It stands higher
+  only in the blocks before the splice. At the sender it stands lower, as section 3 shows.
+- The same message gives the entry unit from 34.5 to 44.5 s as 25 to 45 ms and the local one as
+  20 to 40. Those were short-mark medians read from the wrong column. The units were 17.5 to 35 ms
+  at entry and 17.5 to 40 ms under the local cut.
+
+- **Section 5 matched the tree, with no mismatch.**
+## 3. What you should see
+
+**The opening, text and named count:**
+
+| Stretch | Before, and at exit | Under the built change |
+|---|---|---|
+| stream 30 to 46.2 s | `UIEH EE E E T I  NIEEE E  E ET N ■IK`, 22 named | `EANQNID  EAN■IK`, 12 named |
+| 003901 cold | `EII E T NHHK`, 9 named | `EII E T NXNIK`, 10 named |
+| 003919 cold | `EITEETNXNIK  EANQNID  EANQNIK`, 25 named | `E ANETNXNIK  EANQNID  EANQNIK`, 24 named |
+
+**No visible change.** The change was taken back out, and at exit the decoder is identical to
+entry.
+
+**Task 1's per-read rows, the stream, offline replay.** The unit is in ms, then WPM and where the
+speed came from. Cuts are in dB. Every row is in `.run-unit/unit438-trace.txt`.
+
+| s | mix Hz | whole cut | block cuts | fell back | entry marks, unit, speed | local marks, unit, speed | entry settles | local settles |
+|---|---|---|---|---|---|---|---|---|
+| 30.0 | 600 | -33.4 | -34.4 to -31.1 | 13 of 24 | 20, 85.0, 14.1 est | 21, 52.5, 22.9 est | `  ` | ` ` |
+| 31.0 | 525 | -34.6 | -34.6 to -31.1 | 11 | 25, 67.5, 17.8 est | 24, 87.5, 13.7 est | | |
+| 31.5 | 525 | -35.3 | -41.3 to -30.9 | 8 | 43, 40.0, 30.0 est | 44, 45.0, 26.7 est | | |
+| 32.0 | 525 | -36.3 | -41.7 to -31.1 | 8 | 65, 30.0, 40.0 est | 58, 27.5, 43.6 grid | ` UIEH` | `■` |
+| 32.5 to 34.0 | 525 | -37.2 to -39.0 | -42.8 to -31.1 | 8 | 69 to 76, 22.5 to 27.5, 43.6 to 53.3 grid | 69 to 82, 17.5 to 25, 48 to 68.6 grid | `EE`, `E`, `E T`, `I` | the same |
+| 34.5 to 35.5 | 525 | -39.5 to -40.6 | -44.8 to -31.2 | 8 | 70 to 79, 25 to 27.5, 43.6 to 48 grid | 81 to 86, 17.5, 68.6 grid | `NI`, `EEE` | the same |
+| 36.0 to 41.0 | 525, then 625 at 36.5 | -41.0 to -41.8 | -44.8 to -40.6 | 13 to 15 | 67 to 79, 17.5 to 25, 48 to 68.6 grid | 78 to 90, 17.5 to 20, 60 to 68.6 grid | nothing | nothing |
+| 41.5 | 625 | -40.8 | -44.8 to -33.5 | 12 | 76, 27.5, 43.6 grid | 80, 22.5, 53.3 grid | `E  E ET` | the same |
+| 42.0 | 625 | -40.5 | -44.8 to -33.3 | 12 | 75, 30.0, 40.0 est | 82, 25.0, 48.0 grid | `N` | `N` |
+| 42.5 | 625 | -40.2 | -44.8 to -33.3 | 12 | 78, 32.5, 36.9 est | 85, 22.5, 53.3 grid | | `TT` |
+| 43.0 to 44.0 | 625 | -38.5 to -39.8 | -44.0 to -33.3 | 12 | 75 to 81, 30 to 35, 34.3 to 40 est | 80 to 82, 22.5 to 27.5, 43.6 to 53.3 grid | | |
+| 44.5 | 625 | -38.0 | -41.7 to -33.3 | 12 | 78, 32.5, 36.9 est | 72, 40.0, 30.0 est | | |
+| 45.0 to 46.0 | 575 | -36.7 to -37.2 | -37.2 to -33.3 | 18 | 60 to 63, 37.5 to 45, 26.7 to 32 est | 58 to 59, 42.5 to 45, 26.7 to 28.2 est | | |
+
+- **The locked stretch** (stream 90 to 106.2 s, `004108` 13.8 to 30 s): identical both ways on all
+  33 reads. The unit was 55 ms at 21.8 WPM, and 0 blocks fell back.
+- **Cold:** `003901` settled differently on 5 of 55 reads, at 24.5, 25.0, 25.5, 27.0 and 30.0 s. `003919`
+  settled differently on 5 of 55, at 6.0, 6.5, 14.5, 22.5 and 30.0 s.
+
+**Under the built change, the stream's own reads beside entry.** The build carries its own reads
+forward, and the tracker sees them.
+
+| s | entry mix, unit, speed | built mix, unit, speed | built settles |
+|---|---|---|---|
+| 31.0 | 525, 67.5, 17.8 est | 600, 52.5, 22.9 est | |
+| 31.5 to 34.0 | 525, 22.5 to 40, 30 to 40 est then 38 grid | 600, 50.0, 24.0 est | `E` 32.0, `AN` 32.5, `Q` 33.5, `NI` 34.0 |
+| 34.5 to 36.0 | 525, 17.5 to 27.5, 30 to 38 grid | 625, 50.0, 24.0 est | `D` 34.5 |
+| 36.5 to 41.5 | 625, 17.5 to 27.5, 36 to 38 grid | 625, 47.5 to 67.5, 17.8 to 25.3 est | `E` 41.0, `A` 41.5 |
+| 42.0 to 44.5 | 625, 30 to 35, 34.3 to 40 est | 625, 45 to 52.5, 22.9 to 26.7 est | `N` 42.0, `■` 43.0, `I` 43.5, `K` 44.0 |
+| 45.0 to 46.0 | 575, 37.5 to 45, 26.7 to 32 est | 575, 35 to 40, 30 to 34.3 est | |
+
+**The question, answered.** With the marks cut where they stand, the build's opening from 34.5 s
+does read at about the sender's 22 WPM. Its unit was 45 to 67.5 ms, 50 ms on most reads, and 24
+WPM, always from the estimator. It reads `EANQNID  EAN■IK`, which is what the same audio reads
+cold. No key scores the opening, so whether that is the sender's text is not established here.
+The offline replay at the entry's pitch did not lengthen the unit. So the build's reading came
+with the tracker holding 600 Hz and never moving to 525, and cannot be credited to the cut alone.
+
+**The pieces**, reads 34.5 to 44.5 s. There were 464 marks under 40 ms at entry, 102 distinct.
+The local cut left 390 alone, joined 48 and removed 26. These are the ones on the first read,
+34.5 s:
+
+| at s | length ms | gap after ms | its block's cut dB | local |
+|---|---|---|---|---|
+| 25.040 | 25 | 35 | -34.4 | gone |
+| 25.685 to 29.800 | 10 to 30, 10 of them | 10 to 95 | -39.5 to -40.6, fallback | each stands alone |
+| 30.120, 30.155 | 20, 20 | 15, 15 | -41.5 | joined both sides, into one 235 ms mark |
+| 31.115 | 30 | 35 | -42.9 | joined to the one after, 130 ms |
+| 32.050 | 15 | 335 | -44.8 | stands alone |
+| 32.725 | 20 | 30 | -43.8 | joined to the one after, 105 ms |
+| 32.905, 33.075 | 25, 35 | 145, 500 | -43.8, -43.6 | stand alone |
+| 33.905 | 35 | 40 | -43.6 | joined both sides, 595 ms |
+
+Every piece on every read is in `.run-unit/unit438-trace.txt`, on the `piece |` lines.
+
