@@ -1,0 +1,138 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:36.27]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureWrongLettersComeFromTests.EverySureWrongCharacterAndWhatItShares [1 m 36 s]
+  Standard Output Messages:
+ wrong | recording | at s | sent | emitted | sent pattern | emitted pattern | group | span | span before | span after | wpm | unit ms | pitch at hop Hz | sender pitch Hz | off Hz | beside an inserted space | envelope marks | envelope gaps | gap reading
+ wrong | unadjudicated/cw-2026-09-23-173723 | 24.020 | `B` | `E` | -... | . | split: a part of the sent letter | 39.83 | 34.7 | 43.36 | 17 | 70.6 | 585.0 | 585.0 | 0.0 | no | 75ms/1.1u | 65ms/0.9u | held element 10 ms, character 828 ms, word 250 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-09-23-173723 | 24.395 | `6` | `E` | -.... | . | split: a part of the sent letter | 43.36 | 39.83 | 194.1 | 17 | 70.6 | 585.0 | 585.0 | 0.0 | no | 75ms/1.1u | 70ms/1.0u | held element 10 ms, character 828 ms, word 250 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-09-23-173723 | 27.350 | `W` | `T` | .-- | - | split: a part of the sent letter | 101.2 | 138.1 | 171.9 | 17 | 70.6 | 600.0 | 585.0 | 15.0 | no | 220ms/3.1u | 65ms/0.9u | held element 10 ms, character 828 ms, word 250 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-09-23-173723 | 28.970 | `6` | `7` | -.... | --... | one element of the wrong kind | 328.6 | 171.9 | 39.39 | 17 | 70.6 | 600.0 | 585.0 | 15.0 | yes | 500ms/7.1u 70ms/1.0u 70ms/1.0u 75ms/1.1u | 70ms/1.0u 65ms/0.9u 75ms/1.1u 75ms/1.1u | held element 60 ms, character 138 ms, word 436 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-09-23-173723 | 29.195 | `R` | `E` | .-. | . | split: a part of the sent letter | 39.39 | 328.6 | 47.53 | 17 | 70.6 | 600.0 | 585.0 | 15.0 | yes | 75ms/1.1u | 75ms/1.1u | held element 60 ms, character 138 ms, word 436 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-09-23-173723 | 30.000 | `D` | `I` | -.. | .. | split: a part of the sent letter | 92.98 | 47.53 | NaN | 17 | 70.6 | 600.0 | 585.0 | 15.0 | yes | 85ms/1.2u | 70ms/1.0u 50ms/0.7u | held element 60 ms, character 138 ms, word 436 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-08-18-003758 | 10.640 | `A` | `E` | .- | . | split: a part of the sent letter | 306 | 311.9 | 315.3 | 40 | 30.0 | 500.0 | 500.0 | 0.0 | no | 60ms/2.0u | 25ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-18-003758 | 10.740 | `A` | `E` | .- | . | split: a part of the sent letter | 315.3 | 306 | 1203 | 40 | 30.0 | 500.0 | 500.0 | 0.0 | no | 60ms/2.0u | 25ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-18-003758 | 10.940 | `4` | `T` | ....- | - | split: a part of the sent letter | 1203 | 315.3 | 3030 | 40 | 30.0 | 500.0 | 500.0 | 0.0 | no | 160ms/5.3u | 25ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | cw-2026-08-18-004507 | 5.420 | `R` | `O` | .-. | --- | same length, several elements differ | 338 | 334.7 | 569.4 | 40 | 30.0 | 525.0 | 500.0 | 25.0 | yes | 105ms/3.5u 170ms/5.7u 70ms/2.3u | 30ms/1.0u 30ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 14.225 | `2` | `D` | ..--- | -.. | none of these | 326.8 | 241.1 | 115.3 | 19 | 63.2 | 525.0 | 525.0 | 0.0 | yes | 200ms/3.2u 75ms/1.2u 85ms/1.3u | 45ms/0.7u 55ms/0.9u 50ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 109 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 15.550 | `A` | `T` | .- | - | split: a part of the sent letter | 115.3 | 326.8 | 59.23 | 34 | 35.3 | 525.0 | 525.0 | 0.0 | yes | 165ms/4.7u | 30ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 16.045 | `N` | `T` | -. | - | split: a part of the sent letter | 59.23 | 115.3 | 118.8 | 34 | 35.3 | 525.0 | 525.0 | 0.0 | yes |  |  | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 16.310 | `D` | `T` | -.. | - | split: a part of the sent letter | 118.8 | 59.23 | 109.6 | 34 | 35.3 | 525.0 | 525.0 | 0.0 | no | 220ms/6.2u | 25ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 16.530 | `2` | `T` | ..--- | - | split: a part of the sent letter | 109.6 | 118.8 | 60.17 | 40 | 30.0 | 525.0 | 525.0 | 0.0 | no | 170ms/5.7u | 25ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 16.795 | `W` | `T` | .-- | - | split: a part of the sent letter | 60.17 | 109.6 | 34.92 | 40 | 30.0 | 525.0 | 525.0 | 0.0 | no | 115ms/3.8u |  | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 16.895 | `I` | `E` | .. | . | split: a part of the sent letter | 34.92 | 60.17 | 231.4 | 40 | 30.0 | 525.0 | 525.0 | 0.0 | no | 55ms/1.8u | 20ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 17.290 | `T` | `A` | - | .- | merged: the sent letter and part of a neighbor | 231.4 | 34.92 | 388.9 | 28 | 42.9 | 525.0 | 525.0 | 0.0 | no | 335ms/7.8u |  | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 24.185 | `R` | `T` | .-. | - | none of these | 26.04 | 400.2 | 55.67 | 34 | 35.3 | 525.0 | 525.0 | 0.0 | yes | 120ms/3.4u |  | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 24.410 | `E` | `T` | . | - | one element of the wrong kind | 55.67 | 26.04 | NaN | 34 | 35.3 | 525.0 | 525.0 | 0.0 | no | 170ms/4.8u | 30ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 14.155 | `C` | `I` | -.-. | .. | none of these | 21.04 | 1612 | 182.1 | 18 | 66.7 | 300.0 | 500.0 | 200.0 | no |  |  | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 14.635 | `E` | `A` | . | .- | merged: the sent letter and part of a neighbor | 182.1 | 21.04 | 156.8 | 18 | 66.7 | 300.0 | 500.0 | 200.0 | no | 65ms/1.0u 175ms/2.6u | 70ms/1.1u 65ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 14.980 | `N` | `I` | -. | .. | one element of the wrong kind | 156.8 | 182.1 | 55.02 | 18 | 66.7 | 300.0 | 500.0 | 200.0 | no | 40ms/0.6u 85ms/1.3u | 65ms/1.0u 20ms/0.3u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 15.150 | `T` | `E` | - | . | one element of the wrong kind | 55.02 | 156.8 | 121.2 | 22 | 54.5 | 300.0 | 500.0 | 200.0 | no | 25ms/0.5u | 55ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 94 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.000 | `E` | `T` | . | - | one element of the wrong kind | 471 | 121.2 | 802.2 | 28 | 42.9 | 300.0 | 500.0 | 200.0 | yes | 125ms/2.9u | 35ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.260 | `T` | `A` | - | .- | merged: the sent letter and part of a neighbor | 802.2 | 471 | 999.6 | 28 | 42.9 | 300.0 | 500.0 | 200.0 | no | 170ms/4.0u | 35ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.615 | `E` | `N` | . | -. | merged: the sent letter and part of a neighbor | 999.6 | 802.2 | 826.5 | 30 | 40.0 | 300.0 | 500.0 | 200.0 | no | 150ms/3.8u | 35ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 69 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.880 | `R` | `I` | .-. | .. | one element lost inside the letter | 826.5 | 999.6 | 8227 | 30 | 40.0 | 300.0 | 500.0 | 200.0 | no | 30ms/0.8u 60ms/1.5u | 40ms/1.0u 25ms/0.6u | textbook 1, 3, 7 units, element-to-character crossover 69 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 18.285 | `F` | `W` | ..-. | .-- | none of these | 8227 | 826.5 | 6032 | 34 | 35.3 | 500.0 | 500.0 | 0.0 | no | 120ms/3.4u 90ms/2.6u | 105ms/3.0u 45ms/1.3u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 26.255 | `5` | `,` | ..... | --..-- | none of these | 3.661E+04 | 3.779E+04 | 2137 | 24 | 50.0 | 500.0 | 500.0 | 0.0 | no | 260ms/5.2u 165ms/3.3u 85ms/1.7u 85ms/1.7u 180ms/3.6u 220ms/4.4u | 50ms/1.0u 50ms/1.0u 50ms/1.0u 45ms/0.9u 45ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 87 ms
+ wrong | unadjudicated/cw-2026-08-22-031948 | 4.690 | `1` | `5` | .---- | ..... | same length, several elements differ | 610.4 | 4330 | 2109 | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no | 85ms/1.3u 85ms/1.3u 80ms/1.2u 85ms/1.3u 80ms/1.2u | 60ms/0.9u 45ms/0.7u 55ms/0.8u 30ms/0.5u 50ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | --- | - | split: a part of the sent letter | 9535 | NaN | 7659 | 23 | 52.2 | 500.0 | 500.0 | 0.0 | yes | 180ms/3.5u | 45ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 90 ms
+ wrong | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | ..- | .- | split: a part of the sent letter | 293 | 74.14 | 237.9 | 34 | 35.3 | 500.0 | 500.0 | 0.0 | yes | 50ms/1.4u 210ms/6.0u | 35ms/1.0u 35ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | .--. | .-- | split: a part of the sent letter | 1167 | 145.8 | 1039 | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no | 40ms/0.6u 215ms/3.2u 290ms/4.4u | 60ms/0.9u 50ms/0.8u 45ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | -. | - | split: a part of the sent letter | 1439 | 289.2 | 1639 | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no | 210ms/3.2u | 70ms/1.1u 50ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | -.. | --- | same length, several elements differ | 1171 | 628.1 | 454.9 | 30 | 40.0 | 500.0 | 500.0 | 0.0 | yes | 10ms/0.3u 230ms/5.8u 85ms/2.1u 85ms/2.1u | 10ms/0.3u 50ms/1.3u | textbook 1, 3, 7 units, element-to-character crossover 69 ms
+ wrong | unadjudicated/cw-2026-08-22-032113 | 11.760 | `S` | `O` | ... | --- | same length, several elements differ | 1013 | 2020 | 385.6 | 30 | 40.0 | 500.0 | 500.0 | 0.0 | no | 80ms/2.0u 80ms/2.0u 85ms/2.1u | 40ms/1.0u 55ms/1.4u 50ms/1.3u | textbook 1, 3, 7 units, element-to-character crossover 69 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | ..--- | - | split: a part of the sent letter | 36.91 | 192.9 | 931.2 | 32 | 37.5 | 500.0 | 650.0 | 150.0 | no | 20ms/0.5u 85ms/2.3u | 15ms/0.4u | textbook 1, 3, 7 units, element-to-character crossover 65 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | ----- | .--- | none of these | 931.2 | 36.91 | 946.5 | 18 | 66.7 | 500.0 | 650.0 | 150.0 | no | 85ms/1.3u 280ms/4.2u 215ms/3.2u 155ms/2.3u | 60ms/0.9u 55ms/0.8u 55ms/0.8u 50ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | .-. | --. | one element of the wrong kind | 386.3 | 942.2 | 1073 | 28 | 42.9 | 500.0 | 650.0 | 150.0 | no | 90ms/2.1u 210ms/4.9u 80ms/1.9u | 40ms/0.9u 55ms/1.3u 55ms/1.3u | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 15.335 | `L` | `E` | .-.. | . | split: a part of the sent letter | 1128 | 680.4 | 1219 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | yes | 140ms/1.4u 30ms/0.3u | 10ms/0.1u 20ms/0.2u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 16.365 | `L` | `E` | .-.. | . | split: a part of the sent letter | 1219 | 1128 | 32.43 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | yes | 80ms/0.8u | 95ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 17.400 | `T` | `E` | - | . | one element of the wrong kind | 324.6 | 32.43 | 252.2 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | yes | 50ms/0.5u 10ms/0.1u 25ms/0.3u | 100ms/1.0u 40ms/0.4u 10ms/0.1u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 18.470 | `A` | `I` | .- | .. | one element of the wrong kind | 312.5 | 252.2 | 394.1 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | no | 125ms/1.3u 40ms/0.4u | 100ms/1.0u 20ms/0.2u 70ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 18.865 | `R` | `E` | .-. | . | split: a part of the sent letter | 394.1 | 312.5 | 525.3 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | no | 30ms/0.3u 25ms/0.3u | 110ms/1.1u 75ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 19.330 | `L` | `E` | .-.. | . | split: a part of the sent letter | 525.3 | 394.1 | 69.69 | 8 | 150.0 | 650.0 | 650.0 | 0.0 | yes | 60ms/0.4u 25ms/0.2u | 155ms/1.0u 100ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 260 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 20.065 | `P` | `I` | .--. | .. | none of these | 69.69 | 525.3 | 220.5 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | yes | 85ms/0.9u 30ms/0.3u | 100ms/1.0u 105ms/1.1u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 20.660 | `0` | `E` | ----- | . | none of these | 220.5 | 69.69 | 314.8 | 8 | 150.0 | 650.0 | 650.0 | 0.0 | yes | 15ms/0.1u 45ms/0.3u 30ms/0.2u 30ms/0.2u | 110ms/0.7u 10ms/0.1u 20ms/0.1u 105ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 260 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 21.945 | `3` | `E` | ...-- | . | split: a part of the sent letter | 314.8 | 220.5 | 166.6 | 8 | 150.0 | 650.0 | 650.0 | 0.0 | yes | 30ms/0.2u 95ms/0.6u 20ms/0.1u | 145ms/1.0u 35ms/0.2u 115ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 260 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 22.345 | `4` | `E` | ....- | . | split: a part of the sent letter | 166.6 | 314.8 | 937.3 | 13 | 92.3 | 650.0 | 650.0 | 0.0 | no | 45ms/0.5u 75ms/0.8u | 25ms/0.3u | textbook 1, 3, 7 units, element-to-character crossover 160 ms
+ wrong | unadjudicated/cw-2026-09-24-004108 | 14.340 | `E` | `G` | . | --. | merged: the sent letter and part of a neighbor | 1202 | 1219 | 1529 | 22 | 54.5 | 625.0 | 625.0 | 0.0 | no | 165ms/3.0u 165ms/3.0u 55ms/1.0u | 50ms/0.9u 55ms/1.0u 55ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 94 ms
+ wrong | unadjudicated/cw-2026-09-24-004108 | 17.775 | `V` | `6` | ...- | -.... | none of these | 1578 | 2855 | 380.7 | 22 | 54.5 | 625.0 | 625.0 | 0.0 | yes | 165ms/3.0u 50ms/0.9u 55ms/1.0u 55ms/1.0u 50ms/0.9u | 50ms/0.9u 60ms/1.1u 55ms/1.0u 55ms/1.0u 60ms/1.1u | textbook 1, 3, 7 units, element-to-character crossover 94 ms
+ wrong | unadjudicated/cw-2026-09-24-004234 | 7.715 | `O` | `T` | --- | - | split: a part of the sent letter | 410.5 | 375.1 | 439.9 | 22 | 54.5 | 620.0 | 625.0 | 5.0 | no | 160ms/2.9u | 50ms/0.9u | held element 17 ms, character 295 ms, word 331 ms, element-to-character crossover 72 ms
+ wrong | unadjudicated/cw-2026-09-24-004234 | 8.045 | `U` | `T` | ..- | - | split: a part of the sent letter | 439.9 | 410.5 | 486.9 | 22 | 54.5 | 620.0 | 625.0 | 5.0 | no | 170ms/3.1u | 50ms/0.9u | held element 17 ms, character 295 ms, word 330 ms, element-to-character crossover 72 ms
+ group | group | count | beside an inserted space | mixed 25 Hz or more off the sender | read under held gaps | recordings | sent -> emitted
+ group | split: a part of the sent letter | 27 | 10 | 1 | 7 | 7 | L->E x3, W->T x2, R->E x2, A->E x2, N->T x2, 2->T x2, O->T x2, B->E x1, 6->E x1, D->I x1, 4->T x1, A->T x1, D->T x1, I->E x1, U->A x1, P->W x1, 3->E x1, 4->E x1, U->T x1
+ group | none of these | 9 | 5 | 2 | 0 | 4 | 2->D x1, R->T x1, C->I x1, F->W x1, 5->, x1, 0->J x1, P->I x1, 0->E x1, V->6 x1
+ group | one element of the wrong kind | 8 | 3 | 4 | 1 | 4 | E->T x2, T->E x2, 6->7 x1, N->I x1, R->G x1, A->I x1
+ group | merged: the sent letter and part of a neighbor | 5 | 0 | 3 | 0 | 3 | T->A x2, E->A x1, E->N x1, E->G x1
+ group | same length, several elements differ | 4 | 2 | 1 | 0 | 3 | R->O x1, 1->5 x1, D->O x1, S->O x1
+ group | one element lost inside the letter | 1 | 0 | 1 | 0 | 1 | R->I x1
+ pair | sent -> emitted | count | group
+ pair | L .-.. -> E . | 3 | split: a part of the sent letter
+ pair | W .-- -> T - | 2 | split: a part of the sent letter
+ pair | R .-. -> E . | 2 | split: a part of the sent letter
+ pair | A .- -> E . | 2 | split: a part of the sent letter
+ pair | N -. -> T - | 2 | split: a part of the sent letter
+ pair | 2 ..--- -> T - | 2 | split: a part of the sent letter
+ pair | T - -> A .- | 2 | merged: the sent letter and part of a neighbor
+ pair | E . -> T - | 2 | one element of the wrong kind
+ pair | T - -> E . | 2 | one element of the wrong kind
+ pair | O --- -> T - | 2 | split: a part of the sent letter
+ pair | B -... -> E . | 1 | split: a part of the sent letter
+ pair | 6 -.... -> E . | 1 | split: a part of the sent letter
+ pair | 6 -.... -> 7 --... | 1 | one element of the wrong kind
+ pair | D -.. -> I .. | 1 | split: a part of the sent letter
+ pair | 4 ....- -> T - | 1 | split: a part of the sent letter
+ pair | R .-. -> O --- | 1 | same length, several elements differ
+ pair | 2 ..--- -> D -.. | 1 | none of these
+ pair | A .- -> T - | 1 | split: a part of the sent letter
+ pair | D -.. -> T - | 1 | split: a part of the sent letter
+ pair | I .. -> E . | 1 | split: a part of the sent letter
+ pair | R .-. -> T - | 1 | none of these
+ pair | C -.-. -> I .. | 1 | none of these
+ pair | E . -> A .- | 1 | merged: the sent letter and part of a neighbor
+ pair | N -. -> I .. | 1 | one element of the wrong kind
+ pair | E . -> N -. | 1 | merged: the sent letter and part of a neighbor
+ pair | R .-. -> I .. | 1 | one element lost inside the letter
+ pair | F ..-. -> W .-- | 1 | none of these
+ pair | 5 ..... -> , --..-- | 1 | none of these
+ pair | 1 .---- -> 5 ..... | 1 | same length, several elements differ
+ pair | U ..- -> A .- | 1 | split: a part of the sent letter
+ pair | P .--. -> W .-- | 1 | split: a part of the sent letter
+ pair | D -.. -> O --- | 1 | same length, several elements differ
+ pair | S ... -> O --- | 1 | same length, several elements differ
+ pair | 0 ----- -> J .--- | 1 | none of these
+ pair | R .-. -> G --. | 1 | one element of the wrong kind
+ pair | A .- -> I .. | 1 | one element of the wrong kind
+ pair | P .--. -> I .. | 1 | none of these
+ pair | 0 ----- -> E . | 1 | none of these
+ pair | 3 ...-- -> E . | 1 | split: a part of the sent letter
+ pair | 4 ....- -> E . | 1 | split: a part of the sent letter
+ pair | E . -> G --. | 1 | merged: the sent letter and part of a neighbor
+ pair | V ...- -> 6 -.... | 1 | none of these
+ pair | U ..- -> T - | 1 | split: a part of the sent letter
+ recording | recording | sure wrong
+ recording | unadjudicated/cw-2026-08-22-032129 | 13
+ recording | unadjudicated/cw-2026-08-22-031838 | 10
+ recording | unadjudicated/cw-2026-08-22-031905 | 10
+ recording | unadjudicated/cw-2026-09-23-173723 | 6
+ recording | unadjudicated/cw-2026-08-18-003758 | 3
+ recording | unadjudicated/cw-2026-08-22-032050 | 3
+ recording | unadjudicated/cw-2026-08-22-032113 | 2
+ recording | unadjudicated/cw-2026-09-24-004108 | 2
+ recording | unadjudicated/cw-2026-09-24-004234 | 2
+ recording | cw-2026-08-18-004507 | 1
+ recording | unadjudicated/cw-2026-08-22-031948 | 1
+ recording | unadjudicated/cw-2026-08-22-032012 | 1
+ total | 54 sure-but-wrong characters over 12 recordings, inferred keys | 0 left out as key-doubtful: no scored stretch's key file calls its own reading doubtful | 20 beside a space the decoder inserted | 12 mixed 25 Hz or more off the sender
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.6093 Minutes
+RC=0 WALL=97s

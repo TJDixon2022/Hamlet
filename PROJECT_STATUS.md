@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 2 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 440 - the decoder stops being sure and wrong (run by hand, outside the loop)
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T18:47:51-04:00
-NOTE: Running TheBaselineIsScoredTests alone, the baseline and outside totals
+UPDATED: 2026-09-25T19:06:15-04:00
+NOTE: Unit 440 by hand complete: 54 sure-wrong traced (split 27); G1 cut MET-CER-SURE 0.1573 to 0.1337 but not kept because MET-COVERAGE as written fell; src unchanged
 
 ---
 

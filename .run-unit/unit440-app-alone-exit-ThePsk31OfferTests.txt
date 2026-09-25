@@ -1,0 +1,30 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.19]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.02]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31OfferTests.TheCardNamesTheMacroOnHisTurnAndOnlyAReportWhenItIsAGuess [239 ms]
+  Standard Output Messages:
+ 01-textbook through line 3: [Your turn] offers [Report]
+ 01-textbook through line 4: [His turn] offers []
+ 01-textbook through line 5: [Your turn] offers [Confirm]
+ unknown: [Unknown] offers []
+ guessed: [Your turn?] offers [Report] note [not sure it is your turn]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed [497 ms]
+  Standard Output Messages:
+ the card offers [Confirm]
+ drawn: W1AW | United States · 360 miles | Your turn | ✕ | W1AW handed over to you, and it is your turn. | Confirm, and sign off | Log this contact | Say something to him | Send | Distance | 360 miles · east-northeast | Grid | FN31 | Achieves | Would open a new area
+ visible buttons: ✕ | Confirm, and sign off | Log this contact | Send | Avalonia.Controls.Border | Would open a new area
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 1.3228 Seconds
+RC=0 WALL=2s
