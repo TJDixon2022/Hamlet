@@ -1,0 +1,120 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.39]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.55]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.55]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.87]     Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheRowEarnsNoQuillOnThePrefix [FAIL]
+[xUnit.net 00:00:02.87]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.87]       Expected: None
+[xUnit.net 00:00:02.87]       Actual:   Visible
+[xUnit.net 00:00:02.87]       Stack Trace:
+[xUnit.net 00:00:02.87]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheGridBeatsThePrefixTests.cs(86,0): at Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheRowEarnsNoQuillOnThePrefix()
+[xUnit.net 00:00:02.87]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.87]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.87]       Output:
+[xUnit.net 00:00:02.87]         WL7E -> Visible
+[xUnit.net 00:00:02.87]         KL7AB -> Visible
+[xUnit.net 00:00:02.87]          -> None
+[xUnit.net 00:00:02.87]     Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.WL7EFromCM98IsInCaliforniaAndTheCardSaysBoth [FAIL]
+[xUnit.net 00:00:02.87]       Assert.StartsWith() Failure: String start does not match
+[xUnit.net 00:00:02.87]       String:         ""
+[xUnit.net 00:00:02.87]       Expected start: "WL7E, an Alaska callsign, operating from "···
+[xUnit.net 00:00:02.87]       Stack Trace:
+[xUnit.net 00:00:02.87]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheGridBeatsThePrefixTests.cs(50,0): at Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.WL7EFromCM98IsInCaliforniaAndTheCardSaysBoth()
+[xUnit.net 00:00:02.87]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.87]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.87]       Output:
+[xUnit.net 00:00:02.87]         place     : Alaska · 2,200 miles
+[xUnit.net 00:00:02.87]         line      : 
+[xUnit.net 00:00:02.87]         hover     :
+[xUnit.net 00:00:02.87]         •  Grid CM98 · 2,200 miles west
+•  1 slot ago
+[xUnit.net 00:00:02.89]     Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheCardEarnsNoQuillOnThePrefix [FAIL]
+[xUnit.net 00:00:02.89]       Assert.False() Failure
+[xUnit.net 00:00:02.89]       Expected: False
+[xUnit.net 00:00:02.89]       Actual:   True
+[xUnit.net 00:00:02.89]       Stack Trace:
+[xUnit.net 00:00:02.89]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheGridBeatsThePrefixTests.cs(115,0): at Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheCardEarnsNoQuillOnThePrefix()
+[xUnit.net 00:00:02.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.89]       Output:
+[xUnit.net 00:00:02.89]         place     : Alaska · 2,200 miles
+[xUnit.net 00:00:02.89]         line      : 
+[xUnit.net 00:00:02.89]         hover     :
+[xUnit.net 00:00:02.89]         •  Grid CM98 · 2,200 miles west
+•  1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot
+•  02:11:00 to 02:11:15 UTC · 3 slots ago
+•  He last sent CM98
+[xUnit.net 00:00:02.89]         quill     : True
+[xUnit.net 00:00:02.89]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.WithoutAGridThatSettlesItThePrefixStands [40 ms]
+  Standard Output Messages:
+ [null] place: Alaska | line: []
+ [] place: Alaska | line: []
+ [ZZ99] place: Alaska | line: []
+ [CM9] place: Alaska | line: []
+ [JN88] place: Alaska · 4,400 miles | line: []
+ [BP51] place: Alaska · 3,200 miles | line: []
+
+
+  Failed Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheRowEarnsNoQuillOnThePrefix [242 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: None
+Actual:   Visible
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheRowEarnsNoQuillOnThePrefix() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheGridBeatsThePrefixTests.cs:line 86
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ WL7E -> Visible
+ KL7AB -> Visible
+  -> None
+
+
+  Failed Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.WL7EFromCM98IsInCaliforniaAndTheCardSaysBoth [3 ms]
+  Error Message:
+   Assert.StartsWith() Failure: String start does not match
+String:         ""
+Expected start: "WL7E, an Alaska callsign, operating from "···
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.WL7EFromCM98IsInCaliforniaAndTheCardSaysBoth() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheGridBeatsThePrefixTests.cs:line 50
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ place     : Alaska · 2,200 miles
+ line      : 
+ hover     :
+ •  Grid CM98 · 2,200 miles west
+•  1 slot ago
+
+
+  Failed Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheCardEarnsNoQuillOnThePrefix [16 ms]
+  Error Message:
+   Assert.False() Failure
+Expected: False
+Actual:   True
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.TheGridBeatsThePrefixTests.TheCardEarnsNoQuillOnThePrefix() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\TheGridBeatsThePrefixTests.cs:line 115
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ place     : Alaska · 2,200 miles
+ line      : 
+ hover     :
+ •  Grid CM98 · 2,200 miles west
+•  1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot
+•  02:11:00 to 02:11:15 UTC · 3 slots ago
+•  He last sent CM98
+ quill     : True
+
+
+
+Test Run Failed.
+Total tests: 4
+     Passed: 1
+     Failed: 3
+ Total time: 3.2182 Seconds
+RC=1 WALL=4s

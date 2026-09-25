@@ -616,6 +616,12 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>True where there is anything to say about where he is.</summary>
     public bool HasPlace => _place.Length > 0;
 
+    /// <summary>His callsign's entity and where his grid says he is, where the two disagree.</summary>
+    public string EntityLine => "";
+
+    /// <summary>True where the grid contradicts the prefix.</summary>
+    public bool HasEntityLine => EntityLine.Length > 0;
+
     /// <summary>The state, in one word a newcomer can read.</summary>
     /// <remarks>
     /// **A WORD AND NOT A SLOT COUNT** (Tim's ruling, 2026-09-08). *Gone quiet,

@@ -114,6 +114,7 @@
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\callsigns\dxcc-prefixes.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-prefixes.json" />
     <EmbeddedResource Include="..\..\data\callsigns\entity-extents.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.entity-extents.json" />
+    <EmbeddedResource Include="..\..\data\callsigns\grid-places.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.grid-places.json" />
 
     <!-- The continent column of the same publication, transcribed into
          tools/dxcc/arrl-dxcc-continents.txt and generated into this file by

@@ -1,0 +1,9 @@
+unit427 task 1a: watched failing first (item 14) - TheGridBeatsThePrefixTests red 1 of 4: the row for CQ WL7E CM98 carries the new-entity quill (Visible, expected None); the card's entity line is empty where WL7E, an Alaska callsign, operating from CM98 in California is expected; his card's quill preview is open (True); the guard that no grid, an unreadable grid and a grid the table does not place change nothing passes, as it must before and after
+
+Also here, not yet wired to anything: data/callsigns/grid-places.json, twelve boxes whose land
+lies wholly in one entity, each with its reason, embedded in the engine; GridPlaces.Of and
+GridPlaces.Contradiction, which place a four-character square only where the whole square
+lies inside one box. Ft8ContactCard.EntityLine and HasEntityLine exist as stubs returning
+empty so the test compiles.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
