@@ -206,8 +206,7 @@ What will look wrong but is not:
   their MET-CER-SURE has no number.
 - **Version 1.13.126 carries no code change.**
 
-**Push:** `git push origin main` after the closing commit; the result is recorded in the
-commit that follows it.
+**Push:** succeeded, `7734ecbe..aa691e3e main -> main`, and this line's own commit pushed after it.
 
 ## 3. What you should see
 
