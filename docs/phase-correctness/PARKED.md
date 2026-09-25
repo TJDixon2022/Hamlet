@@ -735,3 +735,44 @@ HM-DEC-127 leave with the tracker and so with the owner, or a keyed opening. Nei
 to make.
 
 Not blocking.
+
+**Unit 436, 2026-09-25: the estimator's dit checked against its dah.** Nothing kept, 7.4 still
+unticked. In `CwUnitEstimator.Measure`, when the long mark centroid stood more than 4.5 times the
+short one, the unit was taken as the long cluster's median over 3. Both numbers were fixed before
+the trace. Built at `4ffe7ef6` and taken back out in the next commit. Unit 435 before it built
+nothing (its session stopped at task 0).
+- **The trace** (`WhatTheOpeningHeardTests.WhereTheDitMeetsTheDah`). On the stream from 30 to
+  46.2 s the ratio fires on 14 of 33 reads, at 32.5 s and 35.5 to 41.5 s. There the short heap
+  sits at 19 to 34 ms, the long at 150 to 187 ms, and the short gap at 10 to 15 ms. The rule gives
+  17.6 to 21.8 WPM on 13 of them, where the entry gave 43.6 to 68.6 and the grid took 30 to 38.
+  On the locked `004108` stretch from 13.8 to 30 s the ratio is 3.12 to 3.43 and never fires.
+  Over all 52 recordings it fires on 35. On 23 of them it moves a speed the stream had already
+  taken (`WhereTheDahRuleFires`).
+- **3.2's four tests.**
+  1. Passes: 165 to 156 edits over 565. 17:37 holds at 19 over 25. Added letters 17 to 16, 8
+     single-element.
+  2. Fails on 4 of 13 floors: `031838` 40 to 36, `003758` 43 to 40, `031905` 36 to 35, `031948`
+     31 to 30.
+  3. Passes. The adjudicated output is identical: VA3VRR 6 of 6, MP/4 QNIK 9 of 12, DE KD0UN
+     KD0UN K 16 of 16.
+  4. Fails on 14 of 51 rows.
+     - Above-bar characters fall on 7: `001831` 43 to 38, `021825` 19 to 15, `031838` 40 to 36,
+       `013622` 49 to 47, `012823` 23 to 22, `021629` 27 to 26, `031905` 36 to 35.
+     - Above-bar elements fall on 9: `013347` 106 to 104, `004507` 117 to 116, `003016` 146 to
+       145, `001952` 103 to 102, `031838` 91 to 90, `031905` 108 to 106, `032050` 105 to 100,
+       `032113` 102 to 100, `021410` 88 to 87.
+  - Two tests failed on many rows, so the narrower variant was not built.
+- **The opening under the change.** The stream from 30 to 46.2 s went from 22 named,
+  `UIEH EE E E T I NIEEE E E ET N ■IK`, to 17 named and 2 placeholders,
+  `UIEH EE E E T I NI■ EA N ■IK`. Grid speeds went from 15 of 23 settled to 8 of 19. `003901` cold
+  stayed `EII E T NHHK` and `003919` cold stayed `EITEETNXNIK EANQNID EANQNIK`.
+- **Unit 429's hypothesis, answered: no.** From 35.5 to 41.5 s the speed held at 17.6 to 21.8 WPM.
+  The mix was at 525 Hz, 100 Hz off the sender, until 36.0 s. It stood at the sender's 625 Hz from
+  36.5 to 44.5 s, and was the same at entry. Each read's 12 s window still reached back before
+  36.5 s into audio mixed at 525. The window ratio was 0.53 to 0.96 from 36.5 to 41.0 s, both at
+  entry and under the change. Those reads gave `NI■ EA N ■`, not the sender's text. A held speed
+  was not enough through a window mixed that far off the sender.
+- **What this settles.** The halving is in the estimator's clustering: the short mark heap and
+  the short gap heap both fill with pieces, and a dah-based unit undoes it where it fires. But in
+  this opening it is the pitch that still breaks the text. Elsewhere the same rule costs
+  recordings that read today.

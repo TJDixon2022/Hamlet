@@ -1,0 +1,14 @@
+unit436 task 2: take-out (7.4) - the dit-against-dah rule of 4ffe7ef6 comes back out, failing 3.2's second test on 4 floors and its fourth on 14 capture rows; the variant not built because two tests failed; src identical to 91d87c5e; P48 gains the measurement; 7.4 not ticked
+
+Test 1 passed, 165 to 156 over 565, 17:37 19 over 25, added 17 to 16 with 8 single.
+Test 2 failed: 031838 40 to 36, 003758 43 to 40, 031905 36 to 35, 031948 31 to 30.
+Test 3 passed: adjudicated output identical.
+Test 4 failed on 14 rows: above-bar characters fell on 001831 43 to 38, 021825 19 to 15,
+031838 40 to 36, 013622 49 to 47, 012823 23 to 22, 021629 27 to 26, 031905 36 to 35, and
+above-bar elements fell on 013347, 004507, 003016, 001952, 031838, 031905, 032050, 032113,
+021410.
+The opening moved: stream 30 to 46.2 s 22 named UIEH EE E E T I NIEEE E E ET N (placeholder) IK
+to 17 named UIEH EE E E T I NI (placeholder) EA N (placeholder) IK; grid speeds 15 of 23 to 8 of 19;
+003901 and 003919 cold unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

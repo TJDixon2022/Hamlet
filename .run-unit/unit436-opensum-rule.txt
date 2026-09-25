@@ -1,0 +1,164 @@
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheOpeningHeardTests.WhatTheDecoderHeldAtEachCharacter(run: "stream", openingFrom: 30, openingTo: 46.200000000000003, lockedFrom: 90, lockedTo: 106.2) [28 s]
+  Standard Output Messages:
+ check | run stream; opening 30.0 to 46.2 s, locked 90.0 to 106.2 s; Gate 1.40, CharacterMargin 1.0, StrayElementSpan 13.0, grid 8 to 40 wpm
+ 
+ OPENING | stream 30.0 to 46.2 s, which is cw-2026-09-24-003919 13.8 to 30.0 s; the survey's tone on that recording, live, 625.0 Hz
+ opening | text | UIEH EE E E T I  NI■      EA N ■IK
+ opening | at s | in cw-2026-09-24-003919 s | text | pattern | elements | held wpm | held unit ms | from | estimator unit ms | estimator wpm | structure | held gaps ms | mix Hz | tracker Hz | survey Hz | window ratio | span margin | raw span | settled at s
+ opening | 30.250 | 14.050 | `U` | ..- | 3 | 40 | 30.0 | estimator | 30.0 | 40.0 | - | - | 600.0 | 600.0 | 625.0 | 3.316 | 1.517 | 39.4 | 32.0
+ opening | 30.435 | 14.235 | `I` | .. | 2 | 40 | 30.0 | estimator | 30.0 | 40.0 | - | - | 600.0 | 600.0 | 625.0 | 3.316 | 2.781 | 44.5 | 32.0
+ opening | 30.550 | 14.350 | `E` | . | 1 | 40 | 30.0 | estimator | 30.0 | 40.0 | - | - | 600.0 | 600.0 | 625.0 | 3.316 | 30.120 | 301.2 | 32.0
+ opening | 30.815 | 14.615 | `H` | .... | 4 | 40 | 30.0 | estimator | 30.0 | 40.0 | - | - | 525.0 | 525.0 | 625.0 | 3.316 | 3.380 | 138.6 | 32.0
+ opening | 31.125 | 14.925 | `E` | . | 1 | 38 | 31.6 | grid | 26.7 | 45.0 | - | - | 525.0 | 525.0 | 625.0 | 3.298 | 7.267 | 14.5 | 32.5
+ opening | 31.190 | 14.990 | `E` | . | 1 | 38 | 31.6 | grid | 26.7 | 45.0 | - | - | 525.0 | 525.0 | 625.0 | 3.298 | 7.203 | 14.4 | 32.5
+ opening | 31.575 | 15.375 | `E` | . | 1 | 38 | 31.6 | grid | 25.0 | 48.0 | - | - | 525.0 | 525.0 | 625.0 | 3.228 | 14.163 | 99.1 | 33.0
+ opening | 32.060 | 15.860 | `E` | . | 1 | 38 | 31.6 | grid | 27.5 | 43.6 | - | - | 525.0 | 525.0 | 625.0 | 2.774 | 11.593 | 23.2 | 33.5
+ opening | 32.460 | 16.260 | `T` | - | 1 | 38 | 31.6 | grid | 27.5 | 43.6 | - | - | 525.0 | 525.0 | 625.0 | 2.774 | 19.269 | 327.6 | 33.5
+ opening | 32.815 | 16.615 | `I` | .. | 2 | 38 | 31.6 | grid | 22.5 | 53.3 | - | - | 525.0 | 525.0 | 625.0 | 2.756 | 7.987 | 151.7 | 34.0
+ opening | 33.755 | 17.555 | `N` | -. | 2 | 38 | 31.6 | grid | 27.5 | 43.6 | - | - | 525.0 | 525.0 | 625.0 | 1.925 | 2.266 | 77.0 | 35.0
+ opening | 33.915 | 17.715 | `I` | .. | 2 | 38 | 31.6 | grid | 27.5 | 43.6 | - | - | 525.0 | 525.0 | 625.0 | 1.925 | 1.834 | 36.7 | 35.0
+ opening | 34.245 | 18.045 | `■` | ....... | 7 | 21 | 56.7 | estimator | 56.7 | 21.2 | - | - | 525.0 | 525.0 | 625.0 | 1.653 | 1.854 | 237.3 | 35.5
+ opening | 39.815 | 23.615 | `E` | . | 1 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 1.437 | 7.497 | 67.5 | 41.5
+ opening | 40.245 | 24.045 | `A` | .- | 2 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 1.437 | 4.662 | 228.4 | 41.5
+ opening | 40.685 | 24.485 | `N` | -. | 2 | 40 | 30.0 | estimator | 30.0 | 40.0 | - | - | 625.0 | 625.0 | 625.0 | 1.741 | 4.587 | 188.1 | 42.0
+ opening | 41.845 | 25.645 | `■` | --.--. | 6 | 24 | 50.0 | estimator | 50.0 | 24.0 | - | - | 625.0 | 625.0 | 625.0 | 1.442 | 4.544 | 849.7 | 48.0
+ opening | 42.095 | 25.895 | `I` | .. | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | - | - | 625.0 | 625.0 | 625.0 | 1.442 | 3.959 | 102.9 | 48.0
+ opening | 42.740 | 26.540 | `K` | -.- | 3 | 24 | 50.0 | estimator | 50.0 | 24.0 | - | - | 625.0 | 625.0 | 625.0 | 1.442 | 5.518 | 496.7 | 48.0
+ opening, same audio cold | text | EANQNID        EANQNIK
+ opening, same audio cold | at s | in cw-2026-09-24-003919 s | text | pattern | elements | held wpm | held unit ms | from | estimator unit ms | estimator wpm | structure | held gaps ms | mix Hz | tracker Hz | survey Hz | window ratio | span margin | raw span | settled at s
+ opening, same audio cold | 14.350 | 14.350 | `E` | . | 1 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 45/269/1137 | 600.0 | 600.0 | 625.0 | 3.856 | 18.677 | 149.4 | 15.5
+ opening, same audio cold | 14.855 | 14.855 | `A` | .- | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 44/201/524 | 600.0 | 600.0 | 625.0 | 4.267 | 13.761 | 674.3 | 16.0
+ opening, same audio cold | 15.275 | 15.275 | `N` | -. | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 46/184/574 | 600.0 | 600.0 | 625.0 | 4.606 | 15.252 | 747.4 | 16.5
+ opening, same audio cold | 16.100 | 16.100 | `Q` | --.- | 4 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 49/172/614 | 600.0 | 600.0 | 625.0 | 4.276 | 12.825 | 1654.4 | 17.5
+ opening, same audio cold | 16.455 | 16.455 | `N` | -. | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 49/172/614 | 600.0 | 600.0 | 625.0 | 4.276 | 12.377 | 470.3 | 17.5
+ opening, same audio cold | 16.750 | 16.750 | `I` | .. | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 47/166/635 | 600.0 | 600.0 | 625.0 | 4.151 | 9.711 | 271.9 | 18.0
+ opening, same audio cold | 17.275 | 17.275 | `D` | -.. | 3 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 50/166/636 | 600.0 | 600.0 | 625.0 | 3.636 | 13.508 | 1013.1 | 18.5
+ opening, same audio cold | 23.615 | 23.615 | `E` | . | 1 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 48/173/672 | 600.0 | 600.0 | 625.0 | 2.996 | 18.259 | 164.3 | 25.0
+ opening, same audio cold | 24.040 | 24.040 | `A` | .- | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 48/173/672 | 600.0 | 600.0 | 625.0 | 3.280 | 12.046 | 578.2 | 25.5
+ opening, same audio cold | 24.480 | 24.480 | `N` | -. | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 48/173/672 | 600.0 | 600.0 | 625.0 | 3.280 | 11.733 | 457.6 | 25.5
+ opening, same audio cold | 25.305 | 25.305 | `Q` | --.- | 4 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 53/165/639 | 600.0 | 600.0 | 625.0 | 3.943 | 13.997 | 1651.7 | 26.5
+ opening, same audio cold | 25.640 | 25.640 | `N` | -. | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 52/172/613 | 600.0 | 600.0 | 625.0 | 3.838 | 14.691 | 705.2 | 27.0
+ opening, same audio cold | 25.890 | 25.890 | `I` | .. | 2 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 52/172/613 | 600.0 | 600.0 | 625.0 | 3.838 | 8.217 | 189.0 | 27.0
+ opening, same audio cold | 26.540 | 26.540 | `K` | -.- | 3 | 24 | 50.0 | estimator | 50.0 | 24.0 | held | 54/172/614 | 600.0 | 600.0 | 625.0 | 3.007 | 15.425 | 1372.8 | 28.0
+ 
+ LOCKED | stream 90.0 to 106.2 s, which is cw-2026-09-24-004108 13.8 to 30.0 s; the survey's tone on that recording, live, 625.0 Hz
+ locked | text | GK 2 6 STM W OH SEP19 E C
+ locked | at s | in cw-2026-09-24-004108 s | text | pattern | elements | held wpm | held unit ms | from | estimator unit ms | estimator wpm | structure | held gaps ms | mix Hz | tracker Hz | survey Hz | window ratio | span margin | raw span | settled at s
+ locked | 90.540 | 14.340 | `G` | --. | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 650.0 | 650.0 | 625.0 | 4.268 | 2.298 | 218.4 | 92.0
+ locked | 91.485 | 15.285 | `K` | -.- | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 4.356 | 14.093 | 1367.0 | 92.5
+ locked | 93.050 | 16.850 | `2` | ..--- | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.704 | 18.030 | 2974.9 | 94.5
+ locked | 93.975 | 17.775 | `6` | -.... | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.529 | 14.073 | 1660.6 | 95.0
+ locked | 94.975 | 18.775 | `S` | ... | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.561 | 7.460 | 395.4 | 96.0
+ locked | 95.445 | 19.245 | `T` | - | 1 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 4.960 | 12.172 | 377.3 | 96.5
+ locked | 96.135 | 19.935 | `M` | -- | 2 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 630.0 | 630.0 | 625.0 | 4.645 | 4.700 | 352.5 | 97.5
+ locked | 97.045 | 20.845 | `W` | .-- | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 630.0 | 630.0 | 625.0 | 4.953 | 5.403 | 513.2 | 98.5
+ locked | 98.345 | 22.145 | `O` | --- | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.153 | 15.313 | 1837.6 | 99.5
+ locked | 98.990 | 22.790 | `H` | .... | 4 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.234 | 10.026 | 751.9 | 100.0
+ locked | 99.980 | 23.780 | `S` | ... | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 630.0 | 630.0 | 625.0 | 5.793 | 13.930 | 752.2 | 101.0
+ locked | 100.255 | 24.055 | `E` | . | 1 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 630.0 | 630.0 | 625.0 | 5.855 | 29.558 | 266.0 | 101.5
+ locked | 101.035 | 24.835 | `P` | .--. | 4 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.937 | 18.701 | 2225.5 | 102.5
+ locked | 102.355 | 26.155 | `1` | .---- | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.888 | 12.990 | 2403.1 | 103.5
+ locked | 103.565 | 27.365 | `9` | ----. | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.656 | 11.513 | 2129.9 | 105.0
+ locked | 104.775 | 28.575 | `E` | . | 1 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 600.0 | 600.0 | 625.0 | 5.371 | 2.629 | 18.4 | 106.5
+ locked | 106.180 | 29.980 | `C` | -.-. | 4 | 22 | 55.0 | estimator | 55.0 | 21.8 | held | 63/284/450 | 625.0 | 625.0 | 625.0 | 5.803 | 11.005 | 1309.6 | 107.5
+ locked, same audio cold | text | G K 2 6 STMW OH SEP19 RI
+ locked, same audio cold | at s | in cw-2026-09-24-004108 s | text | pattern | elements | held wpm | held unit ms | from | estimator unit ms | estimator wpm | structure | held gaps ms | mix Hz | tracker Hz | survey Hz | window ratio | span margin | raw span | settled at s
+ locked, same audio cold | 14.340 | 14.340 | `G` | --. | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.473 | 12.518 | 1201.7 | 15.5
+ locked, same audio cold | 15.285 | 15.285 | `K` | -.- | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.310 | 15.767 | 1529.4 | 16.5
+ locked, same audio cold | 16.850 | 16.850 | `2` | ..--- | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.777 | 17.306 | 2855.5 | 18.0
+ locked, same audio cold | 17.775 | 17.775 | `6` | -.... | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.303 | 13.373 | 1578.0 | 19.0
+ locked, same audio cold | 18.775 | 18.775 | `S` | ... | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.027 | 7.184 | 380.7 | 20.0
+ locked, same audio cold | 19.245 | 19.245 | `T` | - | 1 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 630.0 | 630.0 | 625.0 | 5.645 | 11.861 | 367.7 | 20.5
+ locked, same audio cold | 19.935 | 19.935 | `M` | -- | 2 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 630.0 | 630.0 | 625.0 | 5.499 | 4.389 | 329.2 | 21.0
+ locked, same audio cold | 20.845 | 20.845 | `W` | .-- | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.610 | 5.197 | 493.7 | 22.0
+ locked, same audio cold | 22.145 | 22.145 | `O` | --- | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.869 | 14.724 | 1766.9 | 23.5
+ locked, same audio cold | 22.790 | 22.790 | `H` | .... | 4 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.680 | 9.357 | 701.8 | 24.0
+ locked, same audio cold | 23.780 | 23.780 | `S` | ... | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.575 | 12.119 | 630.2 | 25.0
+ locked, same audio cold | 24.050 | 24.050 | `E` | . | 1 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.224 | 33.752 | 270.0 | 25.5
+ locked, same audio cold | 24.835 | 24.835 | `P` | .--. | 4 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 7.228 | 16.532 | 1967.3 | 26.0
+ locked, same audio cold | 26.155 | 26.155 | `1` | .---- | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.622 | 13.317 | 2463.7 | 27.5
+ locked, same audio cold | 27.365 | 27.365 | `9` | ----. | 5 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 6.159 | 11.884 | 2198.6 | 28.5
+ locked, same audio cold | 28.580 | 28.580 | `R` | .-. | 3 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.593 | 7.958 | 588.9 | 30.0
+ locked, same audio cold | 29.065 | 29.065 | `I` | .. | 2 | 22 | 55.0 | estimator | 55.0 | 21.8 | - | - | 625.0 | 625.0 | 625.0 | 5.593 | 5.424 | 162.7 | 30.0
+ 
+ SUMMARY | each figure over the characters settled in each stretch: n | min | quartile | median | quartile | max
+ summary | held speed wpm | opening | 19 | 21.176 | 24 | 38 | 40 | 40
+ summary | held speed wpm | opening, same audio cold | 14 | 24 | 24 | 24 | 24 | 24
+ summary | held speed wpm | locked | 17 | 21.818 | 21.818 | 21.818 | 21.818 | 21.818
+ summary | held speed wpm | locked, same audio cold | 17 | 21.818 | 21.818 | 21.818 | 21.818 | 21.818
+ summary | held unit ms | opening | 19 | 30 | 30 | 31.579 | 50 | 56.667
+ summary | held unit ms | opening, same audio cold | 14 | 50 | 50 | 50 | 50 | 50
+ summary | held unit ms | locked | 17 | 55 | 55 | 55 | 55 | 55
+ summary | held unit ms | locked, same audio cold | 17 | 55 | 55 | 55 | 55 | 55
+ summary | estimator unit ms | opening | 19 | 22.5 | 27.5 | 30 | 50 | 56.667
+ summary | estimator unit ms | opening, same audio cold | 14 | 50 | 50 | 50 | 50 | 50
+ summary | estimator unit ms | locked | 17 | 55 | 55 | 55 | 55 | 55
+ summary | estimator unit ms | locked, same audio cold | 17 | 55 | 55 | 55 | 55 | 55
+ summary | speed from the estimator, 1 or 0 | opening | 19 | 0 | 0 | 1 | 1 | 1
+ summary | speed from the estimator, 1 or 0 | opening, same audio cold | 14 | 1 | 1 | 1 | 1 | 1
+ summary | speed from the estimator, 1 or 0 | locked | 17 | 1 | 1 | 1 | 1 | 1
+ summary | speed from the estimator, 1 or 0 | locked, same audio cold | 17 | 1 | 1 | 1 | 1 | 1
+ summary | gap structure held, 1 or 0 | opening | 19 | 0 | 0 | 0 | 0 | 0
+ summary | gap structure held, 1 or 0 | opening, same audio cold | 14 | 1 | 1 | 1 | 1 | 1
+ summary | gap structure held, 1 or 0 | locked | 17 | 0 | 0 | 0 | 0 | 1
+ summary | gap structure held, 1 or 0 | locked, same audio cold | 17 | 0 | 0 | 0 | 0 | 0
+ summary | mix pitch Hz | opening | 19 | 525 | 525 | 525 | 625 | 625
+ summary | mix pitch Hz | opening, same audio cold | 14 | 600 | 600 | 600 | 600 | 600
+ summary | mix pitch Hz | locked | 17 | 600 | 625 | 625 | 630 | 650
+ summary | mix pitch Hz | locked, same audio cold | 17 | 625 | 625 | 625 | 625 | 630
+ summary | tracker pitch Hz | opening | 19 | 525 | 525 | 525 | 625 | 625
+ summary | tracker pitch Hz | opening, same audio cold | 14 | 600 | 600 | 600 | 600 | 600
+ summary | tracker pitch Hz | locked | 17 | 600 | 625 | 625 | 630 | 650
+ summary | tracker pitch Hz | locked, same audio cold | 17 | 625 | 625 | 625 | 625 | 630
+ summary | window ratio per hop | opening | 19 | 1.437 | 1.442 | 2.756 | 3.298 | 3.316
+ summary | window ratio per hop | opening, same audio cold | 14 | 2.996 | 3.28 | 3.847 | 4.267 | 4.606
+ summary | window ratio per hop | locked | 17 | 4.268 | 4.96 | 5.529 | 5.793 | 6.937
+ summary | window ratio per hop | locked, same audio cold | 17 | 5.473 | 5.61 | 6.027 | 6.31 | 7.228
+ summary | span margin per hop | opening | 19 | 1.517 | 2.781 | 4.662 | 7.987 | 30.12
+ summary | span margin per hop | opening, same audio cold | 14 | 8.217 | 12.046 | 13.634 | 15.252 | 18.677
+ summary | span margin per hop | locked | 17 | 2.298 | 7.46 | 12.172 | 14.093 | 29.558
+ summary | span margin per hop | locked, same audio cold | 17 | 4.389 | 7.958 | 12.119 | 14.724 | 33.752
+ summary | raw span | opening | 19 | 14.406 | 39.434 | 102.926 | 237.304 | 849.699
+ summary | raw span | opening, same audio cold | 14 | 149.415 | 271.91 | 626.233 | 1013.067 | 1654.444
+ summary | raw span | locked | 17 | 18.401 | 377.32 | 752.235 | 1837.596 | 2974.93
+ summary | raw span | locked, same audio cold | 17 | 162.715 | 380.747 | 701.765 | 1766.923 | 2855.493
+ summary | elements | opening | 19 | 1 | 1 | 2 | 3 | 7
+ summary | elements | opening, same audio cold | 14 | 1 | 2 | 2 | 3 | 4
+ summary | elements | locked | 17 | 1 | 3 | 3 | 4 | 5
+ summary | elements | locked, same audio cold | 17 | 1 | 3 | 3 | 4 | 5
+ summary | single element, 1 or 0 | opening | 19 | 0 | 0 | 0 | 1 | 1
+ summary | single element, 1 or 0 | opening, same audio cold | 14 | 0 | 0 | 0 | 0 | 1
+ summary | single element, 1 or 0 | locked | 17 | 0 | 0 | 0 | 0 | 1
+ summary | single element, 1 or 0 | locked, same audio cold | 17 | 0 | 0 | 0 | 0 | 1
+ 
+ SUMMARY OF READS | each figure over every read made inside each stretch, twice a second
+ reads | held speed wpm | opening | 33 | 14.118 | 18.462 | 26.667 | 38 | 40
+ reads | held speed wpm | opening, same audio cold | 33 | 14.118 | 22.857 | 24 | 24 | 28.235
+ reads | held speed wpm | locked | 33 | 21.818 | 21.818 | 21.818 | 21.818 | 21.818
+ reads | held speed wpm | locked, same audio cold | 32 | 21.818 | 21.818 | 21.818 | 21.818 | 21.818
+ reads | estimator unit ms | opening | 33 | 22.5 | 30 | 45 | 65 | 85
+ reads | estimator unit ms | opening, same audio cold | 33 | 42.5 | 50 | 50 | 52.5 | 85
+ reads | estimator unit ms | locked | 33 | 55 | 55 | 55 | 55 | 55
+ reads | estimator unit ms | locked, same audio cold | 32 | 55 | 55 | 55 | 55 | 55
+ reads | speed from the estimator, 1 or 0 | opening | 33 | 0 | 1 | 1 | 1 | 1
+ reads | speed from the estimator, 1 or 0 | opening, same audio cold | 33 | 1 | 1 | 1 | 1 | 1
+ reads | speed from the estimator, 1 or 0 | locked | 33 | 1 | 1 | 1 | 1 | 1
+ reads | speed from the estimator, 1 or 0 | locked, same audio cold | 32 | 1 | 1 | 1 | 1 | 1
+ reads | gap structure held, 1 or 0 | opening | 33 | 0 | 0 | 0 | 0 | 0
+ reads | gap structure held, 1 or 0 | opening, same audio cold | 33 | 1 | 1 | 1 | 1 | 1
+ reads | gap structure held, 1 or 0 | locked | 33 | 0 | 0 | 0 | 0 | 0
+ reads | gap structure held, 1 or 0 | locked, same audio cold | 32 | 0 | 0 | 0 | 0 | 0
+ reads | mix pitch Hz | opening | 33 | 525 | 525 | 625 | 625 | 625
+ reads | mix pitch Hz | opening, same audio cold | 33 | 600 | 600 | 600 | 600 | 750
+ reads | mix pitch Hz | locked | 33 | 600 | 625 | 625 | 630 | 650
+ reads | mix pitch Hz | locked, same audio cold | 32 | 625 | 625 | 625 | 625 | 650
+ reads | tracker pitch Hz | opening | 33 | 525 | 525 | 625 | 625 | 625
+ reads | tracker pitch Hz | opening, same audio cold | 33 | 600 | 600 | 600 | 600 | 750
+ reads | tracker pitch Hz | locked | 33 | 600 | 625 | 625 | 630 | 650
+ reads | tracker pitch Hz | locked, same audio cold | 32 | 625 | 625 | 625 | 625 | 650
+ reads | window ratio per hop | opening | 33 | 0.532 | 0.798 | 1.193 | 2.756 | 3.316
+ reads | window ratio per hop | opening, same audio cold | 33 | 2.063 | 2.251 | 3.007 | 3.663 | 4.606
+ reads | window ratio per hop | locked | 33 | 3.841 | 4.953 | 5.248 | 5.793 | 7.228
+ reads | window ratio per hop | locked, same audio cold | 32 | 5.194 | 5.59 | 6.086 | 6.43 | 7.228
+ 
+ TIMELINE | every read from the start of the run to the end of the locked stretch
