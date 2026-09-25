@@ -486,3 +486,53 @@ Not blocking.
 - **Rejected:** repairing it here; section 10 forbids it and it touches nothing 7.3 or 7.4 depends on.
 
 Not blocking.
+
+## P39 - what the second 7.4 unit builds
+
+**Raised by unit 430, 2026-09-25, section 4 item 1; parked by unit 431 task 0.** Verbatim:
+
+**1. What the second 7.4 unit builds.**
+- **Proposed ruling:** the next 7.4 unit builds the variant's intent correctly. The mixdown follows at once any move that a survey read has confirmed since the mix's own pitch was last set, not only one confirmed on the read just before the move, and still waits after a `Switch` made on the read that confirmed it. It is judged on the same four tests, with `032113` watched first.
+- **Reasoning:** both attempts cured the opening and lowered the keyed total. Both failed only on `032113`. The measured reason for the variant's failure is a hold that spanned two reads, which that rule covers. This unit could not build it: the instruction allows no third attempt.
+- **Rejected:**
+  - Moving the tracker's choice, because the trace shows HM-DEC-095 governing the move.
+  - Excusing `032113` as outside the scored stretch, because R73 excuses only key-aligned added characters inside one.
+
+Not blocking.
+
+## P40 - AHeldPitchDoesNotOutliveItsEvidenceTests red at entry, 1 of 4
+
+**Raised by unit 430, 2026-09-25, section 4 item 2; parked by unit 431 task 0.** Verbatim:
+
+**2. `AHeldPitchDoesNotOutliveItsEvidenceTests` is red at entry, 1 of 4.**
+- **Proposed ruling:** open an issue and have a later unit find when `CwDecoder.Retuned()` stopped releasing on a QSY. The unit that finds it does not repair it without a ruling.
+- **Reasoning:**
+  - `Retuned()` is now only `Unlock()`.
+  - The three red tests expect a move of the dial to release, in their words, the pitch measured before it, the held peak, and the speed.
+  - The type is not on the carry-forward list, so no unit's round would have caught it.
+  - This is the 2026-08-26 fault the file describes, a decoder still pointed at a pitch measured on another frequency.
+- **Rejected:** repairing it here, which section 10 forbids.
+
+Not blocking.
+
+## P41 - the named pitch test
+
+**Raised by unit 430, 2026-09-25, section 4 item 3; parked by unit 431 task 0.** Verbatim:
+
+**3. The instruction's named test.** For the record.
+- **Proposed ruling:** future instructions name `CwAdjudicationTests.ASignalOffTheExpectedPitchIsFoundInRealisticAudio`.
+- **Reasoning:** `ASignalAtTheWrongPitchIsStillFound` exists in the tree only in comments. Two pitch-named files, `EveryElementCarriesItsOwnPitchTests` and `ThePeakFindsThePitchTheTrackerMissedTests`, are `Compile Remove`d, so a "run every pitch type" line runs 0 tests on them.
+- **Rejected:** nothing.
+
+Not blocking.
+
+## P42 - the opening's figure
+
+**Raised by unit 430, 2026-09-25, section 4 item 4; parked by unit 431 task 0.** Verbatim:
+
+**4. The opening's figure.** For the record.
+- **Proposed ruling:** 7.4's figure is the stream opening's text set beside the cold group `EANQNID`, and not its named count alone.
+- **Reasoning:** a repair that removes litter lowers the named count, 31 to 21 here.
+- **Rejected:** scoring the opening against a key, which no recording in the tree carries (R72 rules out inventing one).
+
+Not blocking.

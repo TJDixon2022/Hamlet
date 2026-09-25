@@ -1,8 +1,17 @@
-# Work instruction 429 - what the decoder was doing while it read E ET E E
+# Work instruction 431 - the split letters joined back, judged under the rules that now allow it
 
-**Seed under `--seed`.** The first two minutes of the 7.052 session on 2026-09-24 read
-`E ET E E   E  E E  E` before the decoder locked and read a whole QSO. This unit measures why,
-and builds nothing. Four tasks, drop from the back.
+**Seed under `--seed`.** On `cw-2026-09-23-173723` the sender keyed `WB6RED` and the decoder
+reads `W T E E T E  E ERE D`. The stray `E` and `T` here are not noise between words. They are
+pieces of real letters, split by a gap the decoder read as a character gap. Unit 413 traced 8
+of 17:37's splits to one cause: a held gap reading whose character gap stands past its word
+gap. It built G1, `687aab1a`, which refuses that reading. G1 took all keyed recordings from
+217 to 193 edits and 17:37 from 29 to 11. It went back out only because joining the pieces
+lowered two named counts, 17:37 46 to 38 and `004133` 30 to 25. **Both are keyed
+recordings.** R71 and R73 did not exist then. Under R73, a character the key aligns as added,
+inside a scored stretch, may now leave a floor. This unit asks whether G1 passes 3.2's tests
+under the rules as they now stand, and is kept if it does. If nothing is kept, this is the
+third consecutive step 3 unit with no kept change, and 3.4 closes the step partial. Five
+tasks, drop from the back.
 
 **Status.** `sh tools/status.sh`, real clock, after every commit and every task, and
 immediately before every `dotnet test`. **Write files as UTF-8.**
@@ -36,11 +45,13 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## 1. The rules that killed sessions
 
-**HM-DEC-155.** No suite. Only this unit's names and `docs\carry-forward-tests.txt`, run as
-its top comment says. **Never background and poll.** One type per invocation, each with its
-own `timeout`. The captures type is 51 rows and ran 119 s in unit 428; give it 600 s. The new
-fact decodes a handful of 30 s recordings; give it 600 s, and if it runs past 300 s it goes on
-no carry-forward line (section 6 of the plan).
+**HM-DEC-155.** No suite. Run only this unit's named types and `docs\carry-forward-tests.txt`,
+as its top comment says. **Never background and poll.** One type per invocation, each with its
+own `timeout`. The engine carry-forward line ran 375 s at unit 430's entry; give it 600 s.
+The captures type is 51 rows and ran 120 s; give it 600 s. Give `WhereTheWordsBreakTests` and
+`WhatTheStrayLettersRestOnTests` 600 s each. A run lost before any assertion counts neither
+way and is re-run once, alone. That means the test host crash inside `Cw` (HM-OPEN-063) or the
+headless dispatcher loop.
 
 **The report's four top-level headings are exactly these, character for character:**
 
@@ -59,18 +70,27 @@ no carry-forward line (section 6 of the plan).
 
 ## 2. The tool facts
 
-Apostrophes in quoted heredocs break; doubled backslashes collapse; `;` is refused; `rm` is
-refused; Python cannot run here; `-m` more than once for a multi-line commit. A bare
-`git worktree`, `git checkout` and `git show` are refused at the prompt. Multi-step commands
-go into `.run-unit\unit429-<name>.sh` and run with `sh`. Unit 428's scripts can be copied.
+These are known limits of the shell here:
+- Apostrophes in quoted heredocs break, and doubled backslashes collapse.
+- `;` and `rm` are refused, and Python cannot run.
+- A multi-line commit needs `-m` more than once.
+- A bare `git worktree`, `git checkout` or `git show` is refused at the prompt.
+
+Put multi-step commands in `.run-unit\unit431-<name>.sh` and run them with `sh`. Unit 430's
+scripts can be copied. **To take a change back out, commit a revert** (`git revert --no-edit
+<sha>` in a script). Never reset or rewrite history.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139, verbatim in section 4. **None is this unit's.** P27 stays the owner's;
-P29 to P34 stay parked. Unit 428's section 4 items 1 and 2 (banking the 2026-09-25 traffic
-net, and whether 3.6 is reachable on any span figure) are parked by task 0 as P35 and P36 with
-428's own proposed rulings. Item 3 was for the record and is not parked. This unit answers
-nothing but its own criterion.
+Carried per HM-DEC-139. **None is this unit's.** P27 stays the owner's, and P29 to P38 stay
+parked. Task 0 parks unit 430's four section 4 items verbatim as P39 to P42, with their
+proposed rulings:
+- P39: what the second 7.4 unit builds.
+- P40: `AHeldPitchDoesNotOutliveItsEvidenceTests` red at entry, 1 of 4.
+- P41: the named pitch test.
+- P42: the opening's figure.
+
+This unit answers nothing but its own criterion.
 
 ---
 
@@ -78,42 +98,37 @@ nothing but its own criterion.
 
 ```
 PHASE GOAL: Hamlet reads a CQ call correctly.
-UNIT GOAL:  Say, from the decoder's own figures, what differs between the
-            opening that read E ET E E and the stretch after it locked.
-ADVANCES:   step 7 criterion 3
+UNIT GOAL:  Join the stray E and T that are pieces of split letters back into
+            the letters the sender keyed, kept only under 3.2's four tests.
+ADVANCES:   step 3 criterion 6
 DRIFT:      0
 ```
 
-**The count today.** Steps 0, 1 and 2 done. Step 3 partial, 3.4 and 3.6 open. Step 4 not
-started. Step 5 is the owner's verdict. Step 6 partial, 6.5 open. Step 7 partial, 7.1 to 7.4,
-7.6 and 7.8 open.
+**The count today.** Steps 0, 1 and 2 are done. Step 3 is partial, with 3.4 and 3.6 open.
+Step 4 is not started. Step 5 is the owner's verdict. Step 6 is partial, with 6.5 open. Step
+7 is partial, with 7.1, 7.2, 7.4, 7.6 and 7.8 open. **Unit 430 did not advance.** If this
+unit also does not flip 3.6, that is two in a row.
 
-**Why not 3.6 again.** Five routes at the stray single elements have been measured: a fixed span
-bar (421); per-hop span; features other than span, meaning Gate score, gaps, standing alone,
-pitch and energy (425); span against neighbors; and span per mark against neighbors (428). None
-separated the 8 added single elements from the 62 right ones, and unit 428 ended with the
-criterion unmoved. A sixth span-shaped trace would be the loop that §4 of `ARBITER.md` names.
-Two step 3 units in a row have kept nothing. If the next one also keeps nothing, it is the
-third, and 3.4 then closes the step partial with the traces in `PARKED.md`. That is for a later
-unit, not this one.
+**Why step 3, and why 3.6.** R64 puts the spacing first. 3.6 is step 3's open work, and 3.4
+exists only to close it. Units 421, 425 and 428 each looked for a figure that tells an
+emitted stray apart from a right letter. They tried raw span, per-hop span, span over
+neighbors, the Gate score, gaps in units, standing alone, pitch and energy. None separated
+them (P36). **A sixth figure would be a loop, so this unit does not look for one.** It
+attacks the strays where unit 413 found they are made: the gap reading that splits a letter.
 
-**Why 7.3.** The opening's litter is the same thing 3.6 chases: single dits and dahs read as
-`E` and `T` with confidence. But here there is a clean comparison the keyed corpus never gave:
-**the same sender, the same pitch, the same receiver, minutes apart**, reading junk and then
-reading `KA2GJV` and `AA3SB`. Whatever the decoder held differently in those two stretches is
-the cause, and 7.3 asks only that it be named. It depends on nothing, touches no floor, and
-the recordings are in the tree.
+**Why this is not a loop.** G1 was tried once, under 3.1, and it cut edits more than any
+change since. It went out on 3.2's second and fourth tests alone. Since then the owner has
+changed both tests on purpose:
+- **R71:** a floor counts at or above a raw span bar.
+- **R73:** a key-aligned added character inside a scored stretch may leave a floor.
 
-**What the owner read**, from the sidecar of `cw-2026-09-24-003901`, the first 30 s after the
-transcript was cleared at 00:38:54 UTC:
+Unit 416 is the precedent: it re-applied a change taken out under a test that R66 later
+amended, and kept it. Judging G1 again under the amended tests is new evidence, not a repeat.
+The loop test found no entry for this approach.
 
-```
-decoderWpm 24
-text       E ET E E   E  E E  E  E E  E    E A TE E T N QNIK     EE
-```
-
-`-003919` says `decoderWpm withdrawn (the clock is being re-acquired; the decoder's own best
-hypothesis was 34 WPM)`. By `-004108` it holds 22 WPM and reads `DE KA2 G J V HR NR 2 0`.
+**Why not 7.4 again.** The prompt's step is 3. Unit 430's item 1 is a real 7.4 route and is
+parked as P39 for step 7's next unit. Unit 430 also measured that its mixdown change left
+the 8 single-element added letters where they were, so it is not 3.6's route.
 
 ---
 
@@ -121,36 +136,83 @@ hypothesis was 34 WPM)`. By `-004108` it holds 22 WPM and reads `DE KA2 G J V HR
 
 Check each of these. Report any mismatch and repair nothing:
 
-- `cw-2026-09-24-003901`, `-003919`, `-004027`, `-004108` and the later captures of the run are
-  in `tests\fixtures\cw\captured\unadjudicated`, each 30 s. **The recordings overlap**: `-003901`
-  was kept at 00:39:01 and `-003919` at 00:39:19. Say how much, from the sidecars.
-- **Whether the bench reproduces the opening at all.** The live decoder ran continuously from
-  00:38:54, but the bench decodes each recording from a cold start. Decode `-003901` and
-  `-003919` as the captures type does and quote the bench's text beside the sidecar's. If the
-  bench reads the opening cleanly, or reads the locked stretch as junk, that is the first
-  finding and it is stated before anything else.
-- Where the decoder holds each of 7.3's four figures: the speed (the WPM the search won, and
-  the unit it implies), the pitch it mixes at (`CwToneTracker`), the unit it estimates
-  (`CwUnitEstimator`), and the score a character is admitted on (`CwProbabilisticDecoder.Judged`,
-  `CharacterMargin` 1.0 per hop, and `StrayElementSpan` 13.0 raw for single elements).
-- The keyed totals at HEAD: all keyed 165 over 565 against inferred keys, and added letters 17.
+- `687aab1a` added one check to `CwUnitEstimator.MeasureGaps`. After `word` is computed, it
+  returns `textbook` when `character >= word`. `b4ccab9e` took it out. `CwUnitEstimator.cs`
+  has changed since: 57 lines were added between `687aab1a~1` and HEAD. Say where the check
+  now goes, and whether the reading it refuses is still computed the same way.
+- The following types are in `tests\Hamlet.RadioEngine.Tests\Cw`:
+  - `WhereTheWordsBreakTests`, which is unit 413's trace;
+  - `WhatTheStrayLettersRestOnTests`;
+  - `WhatTheNeighborsSayTests`;
+  - `TheBenchmarkIsKeyedTests`.
+- `cw-2026-09-23-173723` and `cw-2026-09-24-004133` each carry a `.key.md` with a scored
+  region.
+- The keyed totals at HEAD are:
+  - all keyed: **165 edits over 565**, against inferred keys;
+  - added letters: **17**, of which 8 are single-element;
+  - captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
+- The launcher writes to `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and
+  `WORK_INSTRUCTIONS.md` at the root, and to `.run-unit` files. The reload will show them as
+  modified. Task 0 commits the root files with its record as they stand, and says so.
+
+**Expected failures.** Report each of these and repair none of them:
+- the dispatcher-loop losses on the app carry-forward line, each re-run alone;
+- `AHeldPitchDoesNotOutliveItsEvidenceTests` at 1 of 4. It was red at unit 430's entry, and
+  it is P40.
 
 ## 6. Rulings in force - do not re-argue
 
-`PHASE_PLAN.md` R59 to R74, §3 and §6.
+`PHASE_PLAN.md` R59 to R74, with §3 and §6.
 
-**R68** the acquisition failure is step 7's: the first two minutes of the 7.052 session read
-`E ET E E` before the decoder locks.
-**R72** no word, dictionary or callsign prior, in any form.
-**R63** the fourteen captures of 2026-09-24 are the benchmark; their floors are never lowered.
-**R71** the floors count at or above raw span 13.0. **R73** only a key-aligned added character
-inside a scored stretch may leave a floor.
-**3.2's four tests** are the keep rule for any later change against what this unit names.
-**§0.0** no decode is called what was sent. **§0.2** nothing that keys or transmits is touched.
-**§12.5** a fixture built from the same misunderstanding as the code proves nothing.
-**HM-DEC-091**, **HM-DEC-155**, **HM-DEC-165**, **FACT-004**, **FACT-006**.
+**3.2's four tests are the keep rule.** A change is kept only if all four hold:
+1. The total edit count over all keyed recordings **falls** below 165 over 565, against
+   inferred keys.
+2. No named floor from 2.2 is broken.
+3. The three adjudicated readings are unchanged character for character, or changed to
+   exactly their own adjudicated text (R66). A reading that moves is printed before and after.
+4. No capture row's above-bar named count falls (R71, raw span 13.0), except as R73 allows.
 
-No new decision is recorded. The unit reports its own choices; it does not rule on them.
+**R73:** a character the inferred key aligns as added, inside a scored stretch of a keyed
+recording, may leave a floor, and nowhere else. The 29 unkeyed rows keep their floors as they
+are. **Every character a change removes is listed by name in the report, with its recording.**
+
+**Other rulings:**
+- **R66:** an adjudicated reading may move onto its own adjudicated text.
+- **R69:** the strays are 3.6.
+- **R72:** no word, dictionary or callsign prior, in any form.
+- **R63:** the fourteen captures of 2026-09-24 are the benchmark, and the older rows are not
+  retired.
+- **R61:** no key is invented, and no scored region is changed.
+- **§0.0:** no decode is called what was sent.
+- **§0.2:** nothing that keys or transmits is touched.
+- **§12.5:** a fixture built from the same misunderstanding as the code proves nothing. No
+  synthetic case is the sole evidence for keeping a change (1.4).
+- **HM-DEC-091:** a change that reads one recording and costs another is not a fix.
+- Also in force: **HM-DEC-155**, **HM-DEC-165**, **FACT-004** and **FACT-006**.
+
+**The author's decisions, overrulable, recorded as decisions and not as rulings:**
+
+- **How R73 reads for a join.** A join removes fragments and leaves a letter, so the
+  alignment decides which characters "left". On a keyed recording, the above-bar named count
+  may fall only if all three of these hold:
+  - the whole fall is inside scored stretches;
+  - the fall is no larger than the fall in key-aligned added characters there;
+  - no key-aligned right character is lost anywhere.
+
+  Outside scored stretches, nothing may fall. On an unkeyed row, nothing may fall at all.
+  This is stricter than counting characters one by one, and a change that needs a looser
+  reading fails.
+- **A keyed floor under 2.2 moved by R73 is lowered in the judging commit.** Each removed
+  character is named beside the floor, as unit 425 was told.
+- **3.6 ticks only when a kept change removes at least one of the 8 single-element added
+  letters.** The criterion's words also need the total to fall and the added letters to be
+  reported before and after. A kept change that lowers the total but leaves all 8 in place
+  meets 3.2 and is reported, but it is not 3.6.
+- **Only one attempt at G1, plus one narrower variant.** The variant is allowed only if the
+  first attempt fails on a single row or test and task 1's trace says why. There is no third
+  attempt.
+- **3.4's count.** Units 425 and 428 were step 3 units that kept nothing. If this unit keeps
+  nothing, it is the third, and task 3 closes 3.4.
 
 ## 7. Status cadence
 
@@ -162,144 +224,201 @@ As the header says.
 
 ### Task 0 - the record
 
-`PHASE_OUTCOME.md` gets its `## UNIT 429 - STEP 7` entry from the decision block at the foot of
-this file. `PHASE_STATUS.md` names unit 429 and `CURRENT_STEP: 7`. Patch-bump
-`Directory.Build.props`. Park unit 428's items 1 and 2 in `docs\phase-correctness\PARKED.md` as
-P35 and P36, verbatim from its section 4 with its proposed rulings. **Entry round:** both
-carry-forward lines, the three floor tests with captures at 51, the keyed totals and the added
-letters, recorded as the numbers to hold.
+- Add `## UNIT 431 - STEP 3` to `PHASE_OUTCOME.md`, from the decision block at the foot of
+  this file.
+- `PHASE_STATUS.md` names unit 431 and `CURRENT_STEP: 3`.
+- Patch-bump `Directory.Build.props` from 1.13.117 to 1.13.118.
+- Park unit 430's section 4 items 1 to 4 verbatim in `docs\phase-correctness\PARKED.md` as P39
+  to P42.
+
+**Entry round.** Run each of these:
+- both carry-forward lines;
+- the three floor tests, with captures at 51;
+- the keyed totals, per recording and all together;
+- the added letters, split into single-element and not;
+- `WhatTheStrayLettersRestOnTests`.
+
+Record these as the numbers to hold.
 
 **Drop candidate:** none.
 
-### Task 1 - the opening, on the bench and live (7.3)
+### Task 1 - which strays a split made (3.6)
 
-Before any figure is traced, establish what the bench reads. For `-003901`, `-003919` and one
-recording from after the lock (`-004108` or later, your choice, and say why), print the bench's
-text beside the sidecar's `text` line for the same 30 s.
+Build nothing in this task. Add one member to `WhereTheWordsBreakTests` or
+`WhatTheStrayLettersRestOnTests`, whichever holds the pieces. It **asserts nothing**. For each
+of the 17 added letters on the keyed recordings, it prints:
+- the character, its recording, its settle time and its element count;
+- the `MeasureGaps` verdict in force when it was read: held, separated or textbook;
+- for a held reading, its character and word gaps, and whether the character gap stands at or
+  past the word gap.
 
-**If the bench decodes each recording from a cold start, the locked recording also starts
-cold.** So also feed the run as one continuous stream: the recordings in capture order, with
-each overlap removed using the sidecars' own timestamps. Print the text of that stream per
-30 s. The splicing is yours; say how the overlaps were found and cut. If the continuous stream
-does not reproduce the opening's litter followed by a lock, say so plainly. Task 2 then traces
-whichever stretch does show it, and the report names the gap between live and bench as a
-finding.
+It also prints, per keyed recording, the characters around each such reading, so a reader
+can see the split.
 
-**Drop candidate:** the continuous stream, if the cold decodes already show the litter on the
-opening and clean text on the locked recording. Say which was dropped.
+**State one count:** how many of the 8 single-element added letters were read under a held
+reading with the character gap at or past the word gap. **If that count is 0, G1 does not
+reach 3.6's strays.** In that case, build nothing in task 2, say so, and go to task 3.
 
-### Task 2 - the trace (7.3)
+**Drop candidate:** the neighbors print, if the count is plain without it.
 
-Write one new fact in `tests\Hamlet.RadioEngine.Tests\Cw` that **asserts nothing**, and name it
-for what it shows, for example `WhatTheOpeningHeardTests`. Over the opening stretch that reads
-`E ET E E`, and over a stretch of the same length after the lock, print **for every character
-emitted**:
+### Task 2 - G1 again, judged under R71 and R73 (3.6)
 
-- time in the recording, and the character;
-- the speed the decoder held at that moment, in WPM and as the unit in milliseconds;
-- the pitch it mixed at, in Hz, and the tone the survey measured on the same recording;
-- the unit its estimator held, if that is a different figure from the speed's;
-- the score that admitted the character: its margin against `CharacterMargin`, its raw span,
-  and its element count.
+Re-apply `687aab1a`'s check to `CwUnitEstimator.MeasureGaps` **in its own commit**. Adapt it
+only as far as the tree has moved since, and say how. Do not touch any of these:
+- the word-boundary trough;
+- `90840b1f`'s path boundary;
+- the relabel;
+- the gates;
+- `CharacterMargin`, `StrayElementSpan` or the span bar;
+- the tracker or the mixdown.
 
-Then print a side-by-side summary: each figure's median and spread in the opening against the
-locked stretch. **Name the line or property in `src\Hamlet.RadioEngine\Cw` that differs**, with
-the file and line number, and say how far apart the two stretches are on it. If two differ,
-name both and say which moves first in time. If none differs, say that plainly. The opening's
-litter may then be what the decoder makes of a stretch with no sender in it, and the report
-says how the trace tells those two cases apart.
+Then run each of these, one type per invocation:
+- the keyed totals, per recording, with 17:37's edits over its scored region;
+- the added letters, single-element and not;
+- the keyed floors;
+- adjudicated;
+- captures: all 51 rows, each with its old, above-bar and below-bar counts and its elements.
 
-**Build nothing.** No file under `src` changes in this unit.
+Judge the change under section 6's four tests, with R73 read for a join as section 6 states.
+Print each test as a number. **For every row whose above-bar count falls, list every
+character that left.** Give its recording and time, and say what the key aligned it as
+before: added, wrong or right. Say whether the fall sits wholly inside a scored stretch.
+
+**If the change fails any test, take it back out in the next commit** and say which test
+failed.
+
+**One narrower variant is allowed**, under section 6's condition. It gets its own commit, is
+judged the same way, and is taken back out the same way.
+
+**If a change is kept:**
+- Lower each keyed floor it moved under R73 in the judging commit, naming each character.
+- Add its row to `docs\phase-correctness\baseline.md`'s running total, with 17:37 before and
+  after (3.3).
+- Tick 3.6 in `PHASE_PLAN.md` only under section 6's condition.
+
+**Drop candidate:** the narrower variant.
+
+### Task 3 - 3.4, only if nothing was kept
+
+If task 2 kept a change, skip this task and say so.
+
+Otherwise, write a `P43` in `docs\phase-correctness\PARKED.md` titled *step 3 closes
+partial*. It gives:
+- the three step 3 units with no kept change: 425, 428 and 431;
+- what each attempted, and the test that failed it or the trace that stopped it;
+- the numbers step 3 leaves standing: 165 over 565 against inferred keys, 17:37's edits over
+  its scored region, and 17 added letters with 8 single-element;
+- task 1's count, and task 2's four tests as numbers.
+
+Then tick 3.4 in `PHASE_PLAN.md`. Set step 3 to `partial` in `PHASE_STATUS.md`, marked closed
+under 3.4. 3.6 stays unticked.
 
 **Drop candidate:** none.
-
-### Task 3 - the second session (7.3)
-
-Run task 2's fact unchanged on a second opening stretch: `-003919`'s own opening if task 2
-used `-003901`, otherwise the next recording of the run. Say whether the same property differs
-the same way. One stretch is a reading; two that agree are evidence.
-
-**Drop candidate:** whole task, with what was measured stated.
 
 ### Task 4 - the exit round
 
-Run both carry-forward lines, the three floor tests with captures at 51, the keyed totals and
-the added letters (all as at entry), and the new fact's type. `src` and `data` show no change
-against entry, and the transmit files show no change against `7e209cb4`.
+Run each of these:
+- both carry-forward lines;
+- the three floor tests, with captures at 51;
+- the keyed totals and the added letters;
+- `WhatTheStrayLettersRestOnTests`.
+
+Then check two things against the tree:
+- none of the eleven transmit files differs from `7e209cb4`;
+- `data` is unchanged from entry.
+
+If nothing was kept, `src` is also unchanged from entry.
+
+**Drop candidate:** none.
 
 ---
 
 ## 9. Parked - do not touch, do not raise
 
-- **3.6 and the stray single elements.** Five routes measured; not this unit's.
-- **7.1 and 7.2, the speed ceiling.** If the trace shows the top of the search mattering in the
-  opening, report it as a finding and build nothing.
-- **7.4, the change.** That is the next unit's, against what this one names.
-- **7.8, the attenuator sentences.** P27 and HM-DEC-179 stay as they stand.
-- **Step 4 the pitch judge; 6.5 the dead button.**
-- **P27, P29 to P36.**
-- **Any key, scored region, floor or bar.** Fixed.
+- **7.4 and the mixdown** (P39). It is step 7's next unit, not this one.
+- **`AHeldPitchDoesNotOutliveItsEvidenceTests`** (P40). Report its count and nothing more.
+- **7.1, 7.2 and 7.8. Step 4. 6.5.**
+- **The held gaps on `004535`** (P37). If G1 moves `004535`, report it as a finding and do not
+  claim it for 7.4.
+- **The 2026-09-25 traffic net** (P35). It stays unbanked.
+- **P27, P29 to P42.**
+- **Any key, scored region or span bar.** These are fixed. A keyed floor moves only under R73,
+  as task 2 says.
 
 ## 10. What not to do
 
-- **Do not change any file under `src` or `data`.** 7.3 is a trace; 7.4 builds.
+- **Do not look for another figure that separates strays from right letters.** Units 421,
+  425 and 428 closed that route (P36).
+- **Do not change more than the one check in `MeasureGaps`.** The trough, the path boundary,
+  the relabel, the gates, the bar, the tracker and the mixdown stay as they are.
+- **Do not excuse a fall outside a scored stretch, or on an unkeyed row.** R73 does not reach
+  either one.
+- **Do not lower any floor except a keyed floor moved under R73**, and name each character
+  when you do.
+- **Do not keep a change on 17:37's figures alone.** The four tests decide.
 - **Do not add a word, dictionary or callsign prior** (R72).
-- **Do not claim 7.4 or 7.6.** Tick 7.3 only if the report names a line or property from the
-  printed figures, or states plainly that none differs, with the figures shown.
+- **Do not tick 3.6 and 3.4 together.** A kept change ticks 3.6 or nothing. No kept change
+  ticks 3.4.
 - **Do not touch what keys or transmits.**
 - **Do not halt for a question.** Park it.
 - **Write `output.md` before the session ends.**
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Report mismatches; repair nothing. American spelling. UTF-8. The four headings exactly.**
+- **Report mismatches and repair nothing. American spelling. UTF-8. Use the four headings
+  exactly.**
 
 ## 11. Committing and pushing
 
-Commit after each task. Push at the end and say whether it succeeded.
+Commit after each task. The change and any revert each go in their own commit. Push at the end
+and say whether the push succeeded.
 
 ---
 
 ## 12. Reporting
 
-`output.md` at the root, the four headings exactly as section 1 gives them.
+Write `output.md` at the root, with the four headings exactly as section 1 gives them.
 
 ```
 READ IN THIS ORDER.
 
 A. Hamlet reads a CQ call correctly. Steps 0 to 2 done; 3 partial with 3.4
    and 3.6 open; 4 not started; 5 the owner's; 6 partial with 6.5 open;
-   7 partial with 7.1 to 7.4, 7.6 and 7.8 open.
-B. Step 7, criterion 7.3: whether the bench reproduces the opening, and the
-   line or property that differs between the E ET E E stretch and the
-   locked one - met or not, and why.
+   7 partial with 7.1, 7.2, 7.4, 7.6 and 7.8 open.
+B. Step 3, criterion 3.6: G1 - the out-of-order held gap reading refused -
+   re-judged under 3.2's four tests as R71 and R73 now read them; kept or
+   taken back out, which test decided it, the added letters and the 8
+   single-element ones before and after; and, if nothing was kept, 3.4
+   closing step 3 partial.
 C. The rest, weighed against A and B. Section 4 raises <n> items; say
-   whether any stands in the way of 7.3 or 7.4.
+   whether any stands in the way of 3.6.
 ```
 
 ```
-UNIT:       429 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
+UNIT:       431 - <complete|stopped> at task N of 4, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   yes | no - <why, on the line>
-NUMBER:     the named difference - <property, opening figure against locked figure>; keyed 165 -> <n> over 565, unchanged
-DRIFT:      <0 if a criterion moved>
+NUMBER:     keyed 165 -> <n> over 565, inferred keys; 17:37 <before> -> <after> over its scored region; added letters 17 -> <n>, single-element 8 -> <n>
+DRIFT:      <0 if a criterion moved, else 1>
 ```
 
-**Section 3 leads with the side-by-side summary**: each of the four figures, opening against
-locked, and the one line it names. **Then the bench's text beside the sidecar's** for the
-opening, so the owner can see the trace is of the thing he read.
+**Section 3 leads with the four tests as a table.** Give each test, the number before, the
+number after, pass or fail, and whether the change was kept. **Then give 17:37's reading
+before and after**, beside its key, so the owner can see whether `WB6RED` came back. **Then
+list every character that left**, by recording, with how the key aligned it. **Then give task
+1's count**, which is how many of the 8 single-element added letters a split made.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 7
-APPROACH: trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+STEP: 3
+APPROACH: re-apply G1 - MeasureGaps refusing a held gap reading whose character gap stands past its word gap, so split letters join - and judge it under 3.2's four tests as R71's span bar and R73's key-aligned added exemption now read them, after tracing which of the 8 single-element added letters a split made
 MOVE: work around
-WHY: Criterion 3.6 has five span and feature routes measured with none separating added from right single elements, and unit 428 did not advance, so a sixth would be a loop and a second non-advance in a row; 7.3 is an untried, dependency-free trace on recordings in the tree, and its litter is the same stray E and T 3.6 chases, seen against a locked stretch from the same sender.
+WHY: Units 421, 425 and 428 found no figure that separates strays from right letters, so a sixth would be a loop. Unit 413 traced 17:37's strays to split letters and G1 cut edits 217 to 193, going out only on floors of two keyed recordings, and R71 and R73 have since changed exactly those tests. If G1 still fails, this is step 3's third unit with no kept change, and 3.4 closes the step partial.
 STATE: partial
-DECIDED: author's, overrulable - routing from 3.6 to 7.3 rather than 6.5 (HM-OPEN-087) or 7.8 (P27, the owner's); 3.4 is left for the next step 3 unit, since two consecutive step 3 units have kept nothing and the criterion asks three; unit 428's items 1 and 2 parked as P35 and P36; which locked recording is compared, how the overlaps are spliced, and the per-type timeouts are the unit's, reported
-LICENCE: PHASE_PLAN.md R68, R64, R65, R72, section 6 and criterion 7.3; ARBITER.md section 4; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
-ACCOMPLISHED: the project knows, from the decoder's own figures, why the first minutes on 7.052 read E ET E E before the QSO came through clean, and which line a repair has to change
-ADVANCES: step 7 criterion 3
+DECIDED: author's, overrulable - R73 read for a join: a keyed row's above-bar count may fall only inside scored stretches, by no more than the fall in key-aligned added characters there, and with no key-aligned right character lost; unkeyed rows may not fall at all. Keyed floors moved under R73 are lowered in the judging commit, with each character named. 3.6 ticks only if a kept change removes at least one of the 8 single-element added letters. One narrower variant is allowed. If nothing is kept, this is 3.4's third unit (425, 428, 431), and task 3 parks P43 and ticks 3.4. Unit 430's four items are parked as P39 to P42. Per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md R69, R71, R73, R66, R64, R65, section 6 and criteria 3.2, 3.3, 3.4 and 3.6; PARKED.md P6, P19 and P36; unit 416's re-apply under R66 as precedent; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ACCOMPLISHED: the stray E and T that are pieces of a split letter join back into the letter the sender keyed, so 17:37 reads WB6 where it read W T E E T E, with no real letter lost - or step 3 closes partial with its measurements on record, so the loop stops spending on it
+ADVANCES: step 3 criterion 6
 END-ARBITER-DECISION
 ```

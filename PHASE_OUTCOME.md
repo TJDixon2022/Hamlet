@@ -10,6 +10,19 @@ STEP: 5 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW ta
 STEP: 6 | partial | The screen stops saying what is not so - every sentence the app states about the radio or a signal is true or says it does not know, the window keeps its arrangement outside his privileges, and every control tells him what it does.
 STEP: 7 | partial | The decoder hears what is there - the speed search reaches the speeds stations actually send at, the first minutes of a session read like the rest of it, and the receiver is set correctly for the mode and stays set.
 
+## UNIT 431 - STEP 3
+
+STEP: 3
+APPROACH: re-apply G1 - MeasureGaps refusing a held gap reading whose character gap stands past its word gap, so split letters join - and judge it under 3.2's four tests as R71's span bar and R73's key-aligned added exemption now read them, after tracing which of the 8 single-element added letters a split made
+MOVE: work around
+WHY: Units 421, 425 and 428 found no figure that separates strays from right letters, so a sixth would be a loop. Unit 413 traced 17:37's strays to split letters and G1 cut edits 217 to 193, going out only on floors of two keyed recordings, and R71 and R73 have since changed exactly those tests. If G1 still fails, this is step 3's third unit with no kept change, and 3.4 closes the step partial.
+STATE: partial
+DECIDED: author's, overrulable - R73 read for a join: a keyed row's above-bar count may fall only inside scored stretches, by no more than the fall in key-aligned added characters there, and with no key-aligned right character lost; unkeyed rows may not fall at all. Keyed floors moved under R73 are lowered in the judging commit, with each character named. 3.6 ticks only if a kept change removes at least one of the 8 single-element added letters. One narrower variant is allowed. If nothing is kept, this is 3.4's third unit (425, 428, 431), and task 3 parks P43 and ticks 3.4. Unit 430's four items are parked as P39 to P42. Per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md R69, R71, R73, R66, R64, R65, section 6 and criteria 3.2, 3.3, 3.4 and 3.6; PARKED.md P6, P19 and P36; unit 416's re-apply under R66 as precedent; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ADVANCES: step 3 criterion 6
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: Version 1.13.117 to 1.13.118. PHASE_STATUS.md names unit 431; the launcher had already written CURRENT_STEP 3 there, and it stands. HEAD at entry 242168fc. PHASE_OUTCOME.md, PHASE_STATUS.md, RUN_LEDGER.md and WORK_INSTRUCTIONS.md were modified and uncommitted at entry by the launcher (the UNIT 3 - STEP 7 block, the heartbeat and CURRENT_STEP, two ledger rows, this instruction) and are committed with this record as they stood. Unit 430's section 4 items 1 to 4 parked verbatim in docs/phase-correctness/PARKED.md as P39 to P42. Section 5 against the tree: 687aab1a's check sat after word = wordBoundary * wordBoundary / character and before the return; MeasureGaps is unchanged between 687aab1a~1 and HEAD - the 57 added lines are a new method after it, MeasureCharacterGap (unit 415) - so the check goes back at the same place, CwUnitEstimator.cs between lines 237 and 239, and the reading it refuses is computed exactly as it was. Entry round, one type per invocation: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 371 s; APP carry-forward 275 of 278 in 164 s, the three losses TheRecordNamesTheSubModePressedTests (Olivia, FT4) and TheChipSaysTheChosenModeTests (FT8) on You've caused dispatcher loop, the two types 12 of 12 and 6 of 6 alone; captures 51 of 51 in 118 s; adjudicated 13 of 13; keyed floors 13 of 13; TheBenchmarkIsKeyedTests 1 of 1, the ten 35 edits over 156 at the bench, 41 over 156 live; TheBaselineIsScoredTests 2 of 2, baseline 22 over 46, outside 108 over 363; all keyed 165 edits over 565 against inferred keys; 17:37 19 edits over its 25-character scored region, reading CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I; WhatTheStrayLettersRestOnTests 2 of 2: 892 named on the 23 keyed recordings, 353 right, 56 wrong, 17 added (8 single-element). Keyed, baseline, adjudicated, captures and strays output identical to unit 430's exit but for timing lines. THE NUMBERS TO HOLD: 165 over 565, 17:37 19 over 25, 17 added with 8 single-element, captures 51 of 51, adjudicated 13 of 13, keyed floors 13 of 13.
+
 ## UNIT 430 - STEP 7
 
 STEP: 7
@@ -689,3 +702,21 @@ STATE_AFTER: partial
 STATE_WHY: 7.3 is met, but 7.1, 7.2, 7.4, 7.6 and 7.8 are still open, so step 7 is not done.
 ADVANCED: yes
 ATTEMPT: 7.3 | unit 2 launched 2026-09-25T03:52:47.073Z | yes | executed | trace the decoder's held speed, mixing pitch, unit estimate and admission scores through the opening stretch of 003901 and 003919 beside the locked stretch, name the line that differs, build nothing
+
+## UNIT 3 - STEP 7
+
+STEP: 7
+APPROACH: trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The section says nothing blocks the phase, and its four parked items cover decoder mixdown work, a red test to raise as an issue, and notes on test naming and figures, none of which asks the owner to decide anything about transmit, money, or a promise to the operator.
+MOVE: continue
+WHY: Unit 429 ticked 7.3 and named CwDecoder.cs 617 to 621, where the mix left the sender a second before the speed collapsed. 7.4 is the change against that line, untried and with its instrument already in the tree, while 3.6 has five span and feature routes measured with none separating and a sixth would be a loop.
+DECIDED: author's, overrulable - unit 429's items 1 and 2 taken as decisions, not rulings: the mixdown pitch changes first, and the opening is reported cold and on the spliced stream 0 to 46.2 s; for 7.4, 3.2's first test reads does not rise, since no key scores the opening; 7.4 ticks only on a kept change; 3.4's count is not moved by a step 7 unit; items 3 and 4 parked as P37 and P38; one narrower variant allowed; per-type timeouts are the unit's. No self-ruling authorizes work outside the tasks.
+LICENCE: PHASE_PLAN.md R68, R64, R65, R66, R71, R72, R73, section 6 and criteria 7.3 and 7.4; HM-DEC-095; HM-DEC-127; HM-DEC-091; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+COST: 7.2853632000000035
+ACCOMPLISHED: the decoder stays on the sender it is reading when a session opens, so the first minutes on 7.052 read the group that was sent rather than E ET E E, with nothing already read lost - or, if the change fails, the measured reason it failed
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 7.3, 7.5 and 7.7 are met, but 7.1, 7.2, 7.4, 7.6 and 7.8 are still open, and 7.4 is not met because both mixdown changes failed 3.2's second and fourth tests on cw-2026-08-22-032113 and were reverted, which is only the first of the three units with no kept change needed before 7.4 closes partial.
+ADVANCED: no
+ATTEMPT: 7.4 | unit 3 launched 2026-09-25T04:55:53.495Z | no | executed | trace why the tracker moved the mixdown from 600 to 525 Hz at stream 31.0 s while the sender stood at 625, then build one change to how the mixdown at CwDecoder.cs 617 to 621 follows the pitch, judged under 3.2's four tests and on the spliced stream opening
+REASON: 7.4 | unit 3 launched 2026-09-25T04:55:53.495Z | the unit ran to completion and the criterion did not flip from unmet to met
