@@ -1,0 +1,125 @@
+  Determining projects to restore...
+  Restored C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Hamlet.RadioEngine.Tests.csproj (in 181 ms).
+  3 of 4 projects are up-to-date for restore.
+  Ft8Sharp -> C:\Source\HamLet\src\Ft8Sharp\bin\Debug\net8.0\Ft8Sharp.dll
+  Ft8Sharp.Deep -> C:\Source\HamLet\src\Ft8Sharp.Deep\bin\Debug\net8.0\Ft8Sharp.Deep.dll
+  Hamlet.RadioEngine -> C:\Source\HamLet\src\Hamlet.RadioEngine\bin\Debug\net8.0\Hamlet.RadioEngine.dll
+  Hamlet.RadioEngine.Tests -> C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.65]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.87]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.87]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.92]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.TheDecodersOwnCharactersCarryTheirClasses [FAIL]
+[xUnit.net 00:00:01.92]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.92]       Expected: 1
+[xUnit.net 00:00:01.92]       Actual:   0
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(149,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.TheDecodersOwnCharactersCarryTheirClasses()
+[xUnit.net 00:00:01.92]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.92]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.92]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsInvented [FAIL]
+[xUnit.net 00:00:01.92]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.92]       Expected: 1
+[xUnit.net 00:00:01.92]       Actual:   0
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(57,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsInvented()
+[xUnit.net 00:00:01.92]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.92]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.92]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.APlaceholderIsNeverInvented [FAIL]
+[xUnit.net 00:00:01.92]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.92]       Expected: 5
+[xUnit.net 00:00:01.92]       Actual:   0
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(71,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.APlaceholderIsNeverInvented()
+[xUnit.net 00:00:01.92]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.92]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.92]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AWholeCallCountsItsLitterAndNotItsBlocks [FAIL]
+[xUnit.net 00:00:01.92]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.92]       Expected: 2
+[xUnit.net 00:00:01.92]       Actual:   0
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(120,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AWholeCallCountsItsLitterAndNotItsBlocks()
+[xUnit.net 00:00:01.92]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.92]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.92]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AProsignIsOneCharacterAndItsLettersAreTwo [FAIL]
+[xUnit.net 00:00:01.92]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.92]       Expected: Tuple (0, 4)
+[xUnit.net 00:00:01.92]       Actual:   Tuple (0, 0)
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(86,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AProsignIsOneCharacterAndItsLettersAreTwo()
+[xUnit.net 00:00:01.92]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.92]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.92]     Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureLetterNobodySentIsInvented [FAIL]
+[xUnit.net 00:00:01.93]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.93]       Expected: 1
+[xUnit.net 00:00:01.93]       Actual:   0
+[xUnit.net 00:00:01.93]       Stack Trace:
+[xUnit.net 00:00:01.93]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs(40,0): at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureLetterNobodySentIsInvented()
+[xUnit.net 00:00:01.93]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.93]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.93]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.TheDecodersOwnCharactersCarryTheirClasses [20 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.TheDecodersOwnCharactersCarryTheirClasses() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 149
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsInvented [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureWrongLetterIsInvented() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 57
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.APlaceholderIsNeverInvented [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 5
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.APlaceholderIsNeverInvented() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 71
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AWholeCallCountsItsLitterAndNotItsBlocks [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AWholeCallCountsItsLitterAndNotItsBlocks() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 120
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AProsignIsOneCharacterAndItsLettersAreTwo [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (0, 4)
+Actual:   Tuple (0, 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AProsignIsOneCharacterAndItsLettersAreTwo() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 86
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.AMissingSpaceInventsNothing [< 1 ms]
+  Failed Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureLetterNobodySentIsInvented [< 1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheMetricsCountWhatAHandCountsTests.ASureLetterNobodySentIsInvented() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheMetricsCountWhatAHandCountsTests.cs:line 40
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 7
+     Passed: 1
+     Failed: 6
+ Total time: 2.2321 Seconds
+RC=1 WALL=8s
