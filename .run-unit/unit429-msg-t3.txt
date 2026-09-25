@@ -1,0 +1,7 @@
+unit429 task 3: the second session (7.3) - WhatTheDecoderHeldAtEachCharacter unchanged on two more stretches of the stream: 004027's opening, the next recording as the instruction names, and 004535's run of E, beyond the instruction's choice
+
+004027 0 to 16.2 s does not show the litter: warm and cold read the same QNE K E E 2 G IK KA2GJV, both at 23 to 24 wpm from the estimator with the mix within 25 Hz of the survey's 600, so it neither confirms nor contradicts task 2; the live litter before KA2GJ V was heard in the 36.6 s never kept.
+
+004535 5.0 to 21.2 s does, and a different figure differs: the speed is right, 24 wpm from a 50 ms estimator unit, and the mix is 585 to 605 against a survey of 600, but the run EEETEDEEEEETEEES begins at 324.6 s with the held gap lengths at 12/345/306 ms, element, character, word, where the same audio cold holds 48/238/443 and reads DN5EIN5. Those lengths are held and replaced at CwProbabilisticStream.cs 459 to 464 and handed to the path at 483 to 494. So the two litter stretches do not agree on one property: the opening's is the mix pitch and then the speed, the later one's is the held gaps. One reading each, not evidence of a single cause.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

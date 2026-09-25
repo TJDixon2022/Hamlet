@@ -469,6 +469,8 @@ public sealed class WhatTheOpeningHeardTests
     /// </remarks>
     [Theory]
     [InlineData("stream", 30.0, 46.2, 90.0, 106.2)]
+    [InlineData("stream", 46.2, 62.4, 90.0, 106.2)] // task 3: the next recording's opening, 004027 0 to 16.2 s, after the 36.6 s never kept
+    [InlineData("stream", 316.3, 332.5, 90.0, 106.2)] // task 3, beyond the instruction's choice: 004535, the one later stretch where stream and live both read a run of E
     public void WhatTheDecoderHeldAtEachCharacter(
         string run, double openingFrom, double openingTo, double lockedFrom, double lockedTo)
     {
