@@ -489,6 +489,9 @@ Not blocking.
 
 ## P39 - what the second 7.4 unit builds
 
+**Taken up by unit 432, 2026-09-25.** Work instruction 432 builds this release rule once, gated
+first on a replay of the recorded survey reads, and judges it under 3.2's four tests.
+
 **Raised by unit 430, 2026-09-25, section 4 item 1; parked by unit 431 task 0.** Verbatim:
 
 **1. What the second 7.4 unit builds.**
@@ -607,3 +610,34 @@ owner's reading of R73 that counts a join by the letters it leaves rather than t
 removes, would let it be judged again. Neither is this unit's to make.
 
 Not blocking.
+
+## P44 - whether a join may be judged by the letters it leaves
+
+**Raised by unit 431, 2026-09-25, section 4 item 1; parked by unit 432 task 0.** Verbatim:
+
+**1. Whether a join may be judged by the letters it leaves.**
+- **Proposed ruling:** the owner decides one of two things:
+  - key `004133` from 7.0 to 11.0 s, where it reads `ARTETE■E`;
+  - or rule that on a keyed recording, a join is judged by the key-aligned right characters before and after, rather than by each character removed.
+
+  Either would let G1 be judged a third time, as a new unit. Without one, G1 stays out.
+- **Reasoning:**
+  - G1 is the only change on record that restores 17:37's `WB6`, cuts keyed edits by 11, and removes 6 of the 8 single-element strays.
+  - It is held off by two things. One is an unscored stretch on `004133`. The other is one right `E` on 17:37 that became part of a right `B`, after which 17:37's right count rose from 13 to 17.
+  - Section 6 set a strict reading and said a looser one fails, so this unit did not take one.
+- **Rejected:**
+  - Inventing a key for `004133`, which R61 forbids.
+  - Building a narrower variant, which section 6 did not allow for a two-row failure.
+
+Not blocking. The owner's.
+
+## P45 - the app carry-forward line and the dispatcher loop
+
+**Raised by unit 431, 2026-09-25, section 4 item 2; parked by unit 432 task 0.** Verbatim:
+
+**2. The app carry-forward line loses one to three types to the dispatcher loop on every run, a different set each time.** For the record.
+- **Proposed ruling:** none. It is HM-OPEN-063's neighbor and already known.
+- **Reasoning:** this unit saw it on both runs: three types at entry and one at exit, all green alone.
+- **Rejected:** nothing.
+
+Not blocking. For the record.

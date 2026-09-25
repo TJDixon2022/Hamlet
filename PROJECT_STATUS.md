@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 431 - the split letters joined back, judged under the rules that now allow it
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 3
+WORK_INSTRUCTION: 432 - the mixdown follows a move once any read since it was set has confirmed it
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T03:40:55-04:00
-NOTE: Unit 431 complete and pushed: G1 made 5 of the 8 single-element strays and cut keyed edits 165 to 154, bringing back WB6 on 17:37, but failed tests 2 and 4 on 17:37 and 004133 with R73 excusing neither, so it was reverted; 3.6 unmet, 3.4 ticked and step 3 closed partial in P43; output.md written
+UPDATED: 2026-09-25T04:16:07-04:00
+NOTE: Committing the record: entry round identical to unit 431's exit, 165 over 565 held, P44 and P45 parked
 
 ---
 

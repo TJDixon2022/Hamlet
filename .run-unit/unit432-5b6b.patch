@@ -1,0 +1,74 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+index 86e4b0f5..e0507fd3 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@ -76,6 +76,22 @@ public sealed class CwDecoder
+     /// </remarks>
+     private double _lastMeasuredToneHz = double.NaN;
+ 
++    /// <summary>
++    /// A measured pitch the tracker has moved to and the mixdown has not yet
++    /// followed, or NaN.
++    /// </summary>
++    private double _pendingToneHz = double.NaN;
++
++    /// <summary>The survey's verdict on the read that made the pending move.</summary>
++    private ToneVerdict _verdictAtMove;
++
++    /// <summary>
++    /// How far a measured pitch may move and still be the station the mixdown is
++    /// reading: one coarse bin, the distance the tracker's own `Switch` calls
++    /// refining rather than a station change.
++    /// </summary>
++    internal const double SameStationHz = 25;
++
+     private int _charactersEmitted;
+     private int _charactersUnsure;
+     private int _elementsResolved;
+@@ -597,9 +613,45 @@ public sealed class CwDecoder
+         // its station sits at 500.09, so the callsign was only ever read because
+         // an unmeasured number happened to land on it. Honesty and that callsign
+         // are in tension and the ruling is Tim's (§0.0, HM-DEC-009).
++        //
++        // **AND A MOVE TO ANOTHER STATION IS FOLLOWED ON THE SURVEY'S NEXT WORD,
++        // NOT ON THE MOVE ITSELF** (work instruction 430, criterion 7.4). The
++        // tracker's choice stands exactly as its rules made it (HM-DEC-095,
++        // HM-DEC-127, both untouched); what waits is the mixdown. Measured on the
++        // 7.052 session spliced into one stream: in the sender's pause the survey
++        // admitted 525 Hz alone on two reads, lift 2.5 dB and fifteen words a
++        // minute, the tracker switched to it, and the mixdown followed in the same
++        // hop and stayed 100 Hz off the sender for five and a half seconds while
++        // he sent. The survey never admitted 525 again. So the first measured
++        // pitch is taken at once, a move within one coarse bin is taken at once,
++        // and a move further than that is taken only once a later survey confirms
++        // keying there - until then the mixdown stays on the pitch it was reading.
+         if (_tracker.HasMeasuredPitch)
+         {
+-            _lastMeasuredToneHz = _tracker.ToneHz;
++            var heard = _tracker.ToneHz;
++
++            if (double.IsNaN(_lastMeasuredToneHz)
++                || Math.Abs(heard - _lastMeasuredToneHz) <= SameStationHz)
++            {
++                _lastMeasuredToneHz = heard;
++                _pendingToneHz = double.NaN;
++            }
++            else if (double.IsNaN(_pendingToneHz)
++                     || Math.Abs(heard - _pendingToneHz) > SameStationHz)
++            {
++                _pendingToneHz = heard;
++                _verdictAtMove = _tracker.Verdict;
++            }
++            // A later survey is told from the one that made the move by its
++            // verdict: every read writes one, and the tracker keeps a keyed
++            // verdict only when it has confirmed the keying twice.
++            else if (_tracker.Verdict != _verdictAtMove
++                     && _tracker.Verdict.Keyed is { } again
++                     && Math.Abs(again.ToneHz - heard) <= SameStationHz)
++            {
++                _lastMeasuredToneHz = heard;
++                _pendingToneHz = double.NaN;
++            }
+         }
+ 
+         // **THE OPERATOR'S LOCK FIRST, THEN THE LAST MEASURED PITCH, THEN THE

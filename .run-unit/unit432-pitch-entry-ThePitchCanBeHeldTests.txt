@@ -1,0 +1,39 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.22]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.TheMeasuredPeakLandsBetweenTheBins [142 ms]
+  Standard Output Messages:
+ sent 613.7 Hz, tracker bin 613.7 Hz, measured peak 613.64 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.UnlockingLetsTheTrackerSteerAgain [116 ms]
+  Standard Output Messages:
+ unlocked; tracker 613.7 Hz, decoder 613.7 Hz
+
+
+[xUnit.net 00:00:01.64]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.WhileLockedTheTrackerDoesNotSteerTheDecoder [1 s]
+  Standard Output Messages:
+ locked at 613.70 Hz, tracker now says 500.0 Hz, decoder is reading 613.70 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.LockingTakesTheMeasuredPeakAndSaysWhatItTook [107 ms]
+  Standard Output Messages:
+ locked to 613.70 Hz; the tracker measured 613.70 and its peak reads 613.64
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.WithNothingMeasuredNothingIsLocked [4 ms]
+  Standard Output Messages:
+ refused, which is right
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 1.8921 Seconds
+RC=0 WALL=2s
