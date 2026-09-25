@@ -536,3 +536,74 @@ Not blocking.
 - **Rejected:** scoring the opening against a key, which no recording in the tree carries (R72 rules out inventing one).
 
 Not blocking.
+
+## P43 - step 3 closes partial
+
+**Written by unit 431, 2026-09-25, task 3, under criterion 3.4.** Three consecutive step 3 units
+kept no change, so the trace and the measurements are written here and step 3 closes partial rather
+than holding the loop. 3.6 stays unmet.
+
+**The three units.**
+- **Unit 425.** Traced every single-element named character on the keyed recordings and the 29
+  unkeyed rows against measures other than span: the window Gate score, the gaps either side in
+  units, key-down length, standing alone between word gaps, pitch off the sender's, and energy over
+  its neighbors, one at a time and in pairs. No measure and no pair separated the 8 added
+  single-element letters from the right ones without taking right or unkeyed letters with them.
+  The trace stopped it: no change was built.
+- **Unit 428.** Traced each emitted character's span against the median span of its neighbors, and
+  span per mark over neighbors. Neither separated the 8 added single elements from the 62 right
+  ones (P36). The trace stopped it: no change was built, because the rule would cost right letters
+  (P35).
+- **Unit 431.** Re-applied unit 413's G1 (`687aab1a`): `CwUnitEstimator.MeasureGaps` returns the
+  textbook gaps when the clipped character gap stands at or past the word gap. Built in `856d226e`
+  and taken back out in `4701969d`. It failed 3.2's second test on 17:37 and its fourth on
+  `004133`, and R73, read for a join, excused neither (below).
+
+**Unit 431's task 1 count.** 5 of the 8 single-element added letters were read under a held reading
+whose character gap stood at or past its word gap. All five are on 17:37:
+- `T` 22.540 s and `E` 22.720 s, under character 552 ms and word 295 ms;
+- `E` 26.250 s, `T` 26.515 s and `T` 26.820 s, under character 828 ms and word 250 ms.
+
+The other three: `E` at 17:37 21.170 s was read under a held reading in order, and `T` on `031838`
+and `T` on `032050` were read under textbook gaps.
+
+**Unit 431's task 2, 3.2's four tests as numbers.**
+
+| Test | Entry | Under G1 | Result |
+|---|---|---|---|
+| 1. All keyed edits fall | 165 over 565 | 154 over 565 | pass |
+| 2. No named floor from 2.2 broken | 13 of 13 | 12 of 13; 17:37 46 to 38 | fail |
+| 3. Adjudicated readings unchanged or onto their own text | 13 of 13 | 13 of 13; `032012` `ARTICLESOR` to `ARTICLES OR`, its adjudicated text (R66) | pass |
+| 4. No capture row's above-bar count falls, except under R73 | 51 of 51 | 50 of 51; `004133` 28 to 25 | fail |
+
+Why R73 did not reach either fall:
+- **`004133`.** Seven characters left, and every one was outside every scored stretch: `T` 7.040 s,
+  `E` 7.260 s, `T` 8.265 s, `E` 8.485 s, `E` 10.855 s, and a `K` and an `A` later in the file.
+  R73 reaches only inside a scored stretch.
+- **17:37.** The whole fall of 8 is inside its scored region. But it is larger than the fall in
+  key-aligned added characters there, 8 to 1, which is 7. The characters that left also include
+  the key-aligned right `E` at 22.990 s, which became part of the right `B` settled at the same
+  moment. The characters that left were:
+  - added: `T` 22.540, `E` 22.720, `E` 26.250, `T` 26.515, `T` 26.820 s;
+  - wrong: `T` 23.460, `E` 23.740, `E` 24.020, `E` 24.395, `T` 27.350 s;
+  - right: `E` 22.990 s.
+
+  Under G1, 17:37 read `CQ CQ CQ DEWB6 RE D W B 7E E I`, 10 edits over 25, where entry reads
+  `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`, 19 over 25. The key is `CQ CQ CQ DE WB6RED WB6RED`.
+  Added letters on the keyed recordings went from 17 to 10, and the single-element ones from 8 to 2.
+
+The narrower variant was not built. It was allowed only if the first attempt failed on a single
+row or test, and G1 failed on two rows and two tests.
+
+**The numbers step 3 leaves standing.**
+- 165 edits over 565 characters on all keyed recordings, against inferred keys.
+- 17:37: 19 edits over its 25-character scored region.
+- 17 added letters on the keyed recordings, 8 of them single-element.
+
+**What would reopen it.** G1 is the only change on record that turns 17:37's split `W T E E T E`
+back into `WB6`. It is held off by `004133`'s unscored stretch and by one right `E` on 17:37.
+Either a key covering `004133` from 7.0 to 11.0 s (P35's recording is the other route), or an
+owner's reading of R73 that counts a join by the letters it leaves rather than the characters it
+removes, would let it be judged again. Neither is this unit's to make.
+
+Not blocking.
