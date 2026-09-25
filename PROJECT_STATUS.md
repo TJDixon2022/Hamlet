@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 3
+TASK: TASK 2 of 3
 WORK_INSTRUCTION: 430 - the mix that walked off the sender
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T01:22:33-04:00
-NOTE: Task 1: running WhyTheMixMoved alone, the survey reads from stream 28 to 38 s, the locked stretch warm and cold
+UPDATED: 2026-09-25T01:43:39-04:00
+NOTE: Pitch types round t2: CwDisplacementFloorTests alone, 13 of 13
 
 ---
 

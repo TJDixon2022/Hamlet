@@ -732,6 +732,7 @@ public sealed class WhatTheOpeningHeardTests
     [InlineData("stream", 90.0, 106.2)] // the locked stretch: 004108 13.8 to 30.0 s, warm
     [InlineData("cw-2026-09-24-004108", 13.8, 30.0)] // the same stretch cold
     [InlineData("cw-2026-09-24-003919", 11.8, 21.8)] // beyond the instruction's list: the opening's own audio cold, stream 28 to 38 s less 16.2
+    [InlineData("cw-2026-08-22-032113", 0.0, 60.0)] // task 2: the one recording whose floor the change cost, the whole file
     public void WhyTheMixMoved(string run, double from, double to)
     {
         float[] samples;
