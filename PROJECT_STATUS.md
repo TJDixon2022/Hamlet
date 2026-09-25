@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 2 of 3
+STATE: COMPLETED
+TASK: TASK 3 of 3
 WORK_INSTRUCTION: 439 - every CW test is traced to a requirement
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T13:54:08-04:00
-NOTE: Take-out: the bridge failed tests 2 and 4 and the 032012 anchor; src back to entry, P48 appended; committing, then the exit round
+UPDATED: 2026-09-25T14:36:44-04:00
+NOTE: Unit 439 complete and pushed: the bridge across dips of 15 ms or less lifted the opening's unit to 25-50 ms but never the sender's 55, read 13 named against 22, and cost 5 floors, the 032012 anchor and 15 capture rows, so it came back out; 7.4 not ticked; output.md written
 
 ---
 
