@@ -833,13 +833,15 @@ trace. Built at `63ce84bf` and taken back out in the next commit.
 - **The trace** (`WhatTheOpeningHeardTests.WhereTheTriggerCuts`). Each read of the decoder's own
   stream was cut both ways and followed through the stream's speed choice, starting from the
   stream's state before that read. The entry column reproduced the stream on every read: 0 units
-  and 0 settlings differed. On the opening the local cut stood higher than the whole window's cut,
-  and 8 to 18 of 24 blocks fell back. It made more marks, not fewer: 86 against 79 at 34.5 s. From
-  34.5 to 44.5 s the entry's unit was 25 to 45 ms and the local cut's 20 to 40 ms, so it stayed
+  and 0 settlings differed. On the opening the block cuts ran from -44.8 to -31.2 dB around a whole
+  cut of -32.9 to -41.8 dB, and 8 to 18 of 24 blocks fell back to the whole cut. It made more marks,
+  not fewer: 86 against 79 at 34.5 s. From
+  34.5 to 44.5 s the entry's unit was 17.5 to 35 ms and the local cut's 17.5 to 40 ms, so it stayed
   under 40 ms on 20 of 21 reads, and the other read was exactly 40.0 ms. It settled differently on
   3 of 33 reads from 30 to 46.2 s. The stop did not hold on its letter, so the change was built.
-  There were 464 marks under 40 ms at entry on those reads, and the local cut joined 48 of them to
-  a neighbor. The locked stretch was identical both ways, at 55 ms on all 33 reads. One local-cut
+  There were 464 marks under 40 ms at entry on those reads, 102 distinct marks. The local cut
+  joined 48 to a neighbor and removed 26, and 390 stood alone, most of them in blocks whose span
+  fell back to the whole cut. The locked stretch was identical both ways, at 55 ms on all 33 reads. One local-cut
   `Measure` over 2400 hops costs a median 0.25 ms here, against 0.045 ms at entry and a 500 ms read
   cadence.
 - **3.2's four tests.**
@@ -866,10 +868,13 @@ trace. Built at `63ce84bf` and taken back out in the next commit.
   `003919` cold gives for that audio. `003901` cold went from 9 named, `EII E T NHHK`, to 10,
   `EII E T NXNIK`. `003919` cold went from 25 named, `EITEETNXNIK EANQNID EANQNIK`, to 24,
   `E ANETNXNIK EANQNID EANQNIK`.
-- **Unit 437's question, answered: yes, in the opening.** From 31.5 to 44.5 s, every read took the
+- **Unit 437's question, answered under the build: yes, in the opening.** From 31.5 to 44.5 s, every read took the
   estimator's speed. Its unit was 45 to 67.5 ms, at 17.8 to 26.7 WPM, against the sender's 55 ms,
   and 50 ms on 17 of those 27 reads. At entry those reads took 17.5 to 40 ms, and the grid decided
   32.5 to 41.5 s at 30 to 38 WPM.
-- **What this settles.** A cut taken where the marks are removes the halving on the opening, and the
-  opening reads what the same audio reads cold. Across the corpus the same cut costs 16 capture
-  rows, 5 floors and `VA3VRR`, so as built it is not a fix (HM-DEC-091).
+- **What this settles, and what it does not.** Built, the opening read at the sender's speed and
+  read what the same audio reads cold. But the tracker also took a different path, holding 600 Hz
+  and never moving to 525. At the entry's pitch, the per-read replay found the local cut alone did
+  not lift the unit: 17.5 to 40 ms from 34.5 to 44.5 s. So the gain cannot be credited to the cut
+  alone, apart from the tracker's move, which R76 holds. Across the corpus the same cut costs 16
+  capture rows, 5 floors and `VA3VRR`, so as built it is not a fix (HM-DEC-091).

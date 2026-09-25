@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: ACTIVE
+STATE: COMPLETED
 TASK: TASK 3 of 3
 WORK_INSTRUCTION: 438 - the unit's trigger is cut where the marks are
-BALL: claude
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T12:20:47-04:00
-NOTE: Local cut built, judged and taken out: it read the opening at the sender's speed but failed tests 2, 3 and 4; P48 appended; starting the exit round
+UPDATED: 2026-09-25T12:51:27-04:00
+NOTE: Unit 438 complete and pushed: the local trigger cut read the opening at 24 WPM, 12 named EANQNID EAN(placeholder)IK, but cost 5 floors, VA3VRR and 16 capture rows, so it came back out; the gain came with the tracker never moving to 525; 7.4 not ticked; output.md written
 
 ---
 
