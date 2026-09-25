@@ -1,0 +1,7 @@
+unit429 task 2: the trace (7.3) - WhatTheOpeningHeardTests.WhatTheDecoderHeldAtEachCharacter, a theory that asserts nothing: every character settled in the stream's opening, 003919 13.8 to 30 s, and in the locked 004108 13.8 to 30 s, with the speed held, the estimator's unit, the gap structure, the mix and tracker pitch, the window ratio, span margin and raw span, and each stretch decoded again cold on the same audio
+
+Two figures differ and the pitch moves first. The mix pitch, set at CwDecoder.cs 617 to 621 from CwToneTracker.ToneHz, sits at 525 Hz for the litter, median 525 against 625 locked and the survey's 625; it moves 600 to 525 at 31.0 s. The estimator's unit, read at CwProbabilisticStream.cs 428 to 435, then falls 67.5 to 40 to 30 ms and from 32.5 s is 27.5 ms, 43.6 wpm, outside the 8 to 40 grid, so the speed comes from the grid at 38 wpm: opening median 38 wpm, 31.6 ms, against locked 21.8 wpm, 55 ms from the estimator. The litter settles from 32.0 s.
+
+The same audio decoded cold mixes at 600 Hz, holds 24 wpm from a 50 ms estimator unit and reads EANQNID EANQNIK, so a sender is present and the litter is not an empty stretch. Gap structure is not held in the opening or in the locked stretch, so it is not what separates them. The stream's reading lines agree with the live sidecars at both captures: 24 wpm, 3.0 at 003901's end; a re-acquiring clock and about 0.8 at 003919's.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

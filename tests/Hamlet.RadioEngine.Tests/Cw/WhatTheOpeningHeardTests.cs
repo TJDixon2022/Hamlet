@@ -446,6 +446,187 @@ public sealed class WhatTheOpeningHeardTests
         _output.WriteLine(string.Create(Invariant, $"stream | whole | {spliced.Text()}"));
     }
 
+    /// <summary>
+    /// 7.3, task 2: for every character settled in an opening stretch and in a
+    /// locked stretch of the same length, what the decoder held when it settled it.
+    /// </summary>
+    /// <param name="run">`stream` for the spliced session, or one recording decoded cold.</param>
+    /// <param name="openingFrom">Where the opening stretch starts on the run's clock, in seconds.</param>
+    /// <param name="openingTo">Where it ends.</param>
+    /// <param name="lockedFrom">Where the locked stretch starts.</param>
+    /// <param name="lockedTo">Where it ends.</param>
+    /// <remarks>
+    /// <para>**THE STRETCHES ARE THE STREAM'S, BECAUSE THE COLD DECODE DOES NOT
+    /// REPRODUCE THE OPENING** (task 1). The opening is 003919's new 16.2 s, where
+    /// the stream carried warm from 003901 reads `UIEH EE E E T I NIEEE E`; the
+    /// locked stretch is the same 16.2 s of 004108, 13.8 s into it as the opening
+    /// is into 003919, so the window holds nothing from across the jump before it
+    /// (author's, overrulable).</para>
+    /// <para>**AND EACH STRETCH OF THE STREAM IS DECODED A SECOND TIME, COLD, ON THE
+    /// SAME AUDIO**: the recording it came from, from its own start. The audio is
+    /// identical sample for sample, so whatever differs between the two readings of
+    /// one stretch is something the decoder carried in, not something it heard.</para>
+    /// </remarks>
+    [Theory]
+    [InlineData("stream", 30.0, 46.2, 90.0, 106.2)]
+    public void WhatTheDecoderHeldAtEachCharacter(
+        string run, double openingFrom, double openingTo, double lockedFrom, double lockedTo)
+    {
+        Traced traced;
+        IReadOnlyList<Piece> pieces;
+        int rate;
+
+        if (run == "stream")
+        {
+            var (samples, sampleRate, joined) = Splice(Session);
+            traced = Trace(samples, sampleRate);
+            pieces = joined;
+            rate = sampleRate;
+        }
+        else
+        {
+            var audio = WavAudio.Read(Path.Combine(Folder, run + ".wav"));
+            traced = Trace(audio.Samples, audio.SampleRate);
+            pieces = new[] { new Piece(run, 0, 0, audio.Samples.Length, "cold") };
+            rate = audio.SampleRate;
+        }
+
+        _output.WriteLine(string.Create(
+            Invariant,
+            $"check | run {run}; opening {openingFrom:0.0} to {openingTo:0.0} s, locked {lockedFrom:0.0} to {lockedTo:0.0} s; Gate {CwProbabilisticDecoder.Gate:0.00}, CharacterMargin {CwProbabilisticDecoder.CharacterMargin:0.0}, StrayElementSpan {CwProbabilisticDecoder.StrayElementSpan:0.0}, grid {CwProbabilisticDecoder.SlowestWpm:0} to {CwProbabilisticDecoder.FastestWpm:0} wpm"));
+
+        var stretches = new List<(string Label, IReadOnlyList<Heard> Settled, IReadOnlyList<Read> Reads)>();
+
+        foreach (var (label, from, to) in new[] { ("opening", openingFrom, openingTo), ("locked", lockedFrom, lockedTo) })
+        {
+            var piece = pieces.Last(p => p.StreamStart / (double)rate <= from);
+            var offset = (piece.Skip - piece.StreamStart) / (double)rate;
+            var survey = Sidecar(piece.Name)["toneHz"].Split(' ')[0];
+
+            _output.WriteLine("");
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"{label.ToUpperInvariant()} | {run} {from:0.0} to {to:0.0} s, which is {piece.Name} {from + offset:0.0} to {to + offset:0.0} s; the survey's tone on that recording, live, {survey} Hz"));
+            _output.WriteLine($"{label} | text | {traced.Text(from, to)}");
+
+            var settled = InStretch(traced, from, to);
+            Print(label, run, settled, piece, offset, survey);
+            stretches.Add((label, settled, ReadsIn(traced, from, to)));
+
+            if (run == "stream")
+            {
+                // The same audio, cold: the recording this stretch came from, from its own start.
+                var audio = WavAudio.Read(Path.Combine(Folder, piece.Name + ".wav"));
+                var cold = Trace(audio.Samples, audio.SampleRate);
+                var coldLabel = label + ", same audio cold";
+                var coldSettled = InStretch(cold, from + offset, to + offset);
+
+                _output.WriteLine($"{coldLabel} | text | {cold.Text(from + offset, to + offset)}");
+                Print(coldLabel, piece.Name, coldSettled, new Piece(piece.Name, 0, 0, audio.Samples.Length, "cold"), 0, survey);
+                stretches.Add((coldLabel, coldSettled, ReadsIn(cold, from + offset, to + offset)));
+            }
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine("SUMMARY | each figure over the characters settled in each stretch: n | min | quartile | median | quartile | max");
+
+        var figures = new (string Name, Func<Heard, double> Of)[]
+        {
+            ("held speed wpm", h => h.By.HeldWpm),
+            ("held unit ms", h => h.By.HeldUnitMs),
+            ("estimator unit ms", h => h.By.EstimatorUnitMs > 0 ? h.By.EstimatorUnitMs : double.NaN),
+            ("speed from the estimator, 1 or 0", h => h.By.FromEstimator ? 1 : 0),
+            ("gap structure held, 1 or 0", h => h.By.StructureHeld ? 1 : 0),
+            ("mix pitch Hz", h => h.MixHz),
+            ("tracker pitch Hz", h => h.TrackerHz),
+            ("window ratio per hop", h => h.By.WindowRatio),
+            ("span margin per hop", h => h.Character.SpanMarginForRecord),
+            ("raw span", h => h.Character.SpanLogLikelihoodRatio),
+            ("elements", h => h.Elements),
+            ("single element, 1 or 0", h => h.Elements == 1 ? 1 : 0),
+        };
+
+        foreach (var (name, of) in figures)
+        {
+            foreach (var (label, settled, _) in stretches)
+            {
+                _output.WriteLine($"summary | {name} | {label} | {Spread(settled.Where(h => !h.Character.IsWordGap).Select(of))}");
+            }
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine("SUMMARY OF READS | each figure over every read made inside each stretch, twice a second");
+
+        var readFigures = new (string Name, Func<Read, double> Of)[]
+        {
+            ("held speed wpm", r => r.HeldWpm),
+            ("estimator unit ms", r => r.EstimatorUnitMs > 0 ? r.EstimatorUnitMs : double.NaN),
+            ("speed from the estimator, 1 or 0", r => r.FromEstimator ? 1 : 0),
+            ("gap structure held, 1 or 0", r => r.StructureHeld ? 1 : 0),
+            ("mix pitch Hz", r => r.MixHz),
+            ("tracker pitch Hz", r => r.TrackerHz),
+            ("window ratio per hop", r => r.WindowRatio),
+        };
+
+        foreach (var (name, of) in readFigures)
+        {
+            foreach (var (label, _, reads) in stretches)
+            {
+                _output.WriteLine($"reads | {name} | {label} | {Spread(reads.Select(of))}");
+            }
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine("TIMELINE | every read from the start of the run to the end of the locked stretch");
+        _output.WriteLine("read | s | held wpm | from | estimator unit ms | estimator marks | structure | held gaps ms | mix Hz | tracker Hz | measured | window ratio | kept");
+
+        foreach (var r in traced.Reads.Where(r => r.Seconds <= lockedTo))
+        {
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"read | {r.Seconds:0.0} | {r.HeldWpm:0} | {r.SpeedFrom} | {r.EstimatorUnitMs:0.0} | {r.EstimatorMarks} | {(r.StructureHeld ? "held" : "-")} | {r.HeldGaps} | {r.MixHz:0.0} | {r.TrackerHz:0.0} | {(r.Measured ? "yes" : "no")} | {r.WindowRatio:0.000} | {r.Named}"));
+        }
+    }
+
+    private static IReadOnlyList<Heard> InStretch(Traced traced, double from, double to)
+        => traced.Settled
+            .Where(h => h.Character.At.TotalSeconds >= from && h.Character.At.TotalSeconds < to)
+            .ToList();
+
+    private static IReadOnlyList<Read> ReadsIn(Traced traced, double from, double to)
+        => traced.Reads.Where(r => r.Seconds >= from && r.Seconds < to).ToList();
+
+    private void Print(string label, string run, IReadOnlyList<Heard> settled, Piece piece, double offset, string survey)
+    {
+        _output.WriteLine($"{label} | at s | in {piece.Name} s | text | pattern | elements | held wpm | held unit ms | from | estimator unit ms | estimator wpm | structure | held gaps ms | mix Hz | tracker Hz | survey Hz | window ratio | span margin | raw span | settled at s");
+
+        foreach (var h in settled.Where(h => !h.Character.IsWordGap))
+        {
+            var c = h.Character;
+            var r = h.By;
+
+            _output.WriteLine(string.Create(
+                Invariant,
+                $"{label} | {c.At.TotalSeconds:0.000} | {c.At.TotalSeconds + offset:0.000} | `{c.Text}` | {c.Pattern} | {h.Elements} | {r.HeldWpm:0} | {r.HeldUnitMs:0.0} | {r.SpeedFrom} | {r.EstimatorUnitMs:0.0} | {(r.EstimatorUnitMs > 0 ? 1200.0 / r.EstimatorUnitMs : 0):0.0} | {(r.StructureHeld ? "held" : "-")} | {r.HeldGaps} | {h.MixHz:0.0} | {h.TrackerHz:0.0} | {survey} | {r.WindowRatio:0.000} | {c.SpanMarginForRecord:0.000} | {c.SpanLogLikelihoodRatio:0.0} | {r.Seconds:0.0}"));
+        }
+    }
+
+    private static string Spread(IEnumerable<double> values)
+    {
+        var sorted = values.Where(v => !double.IsNaN(v)).OrderBy(v => v).ToArray();
+
+        if (sorted.Length == 0)
+        {
+            return "0 | - | - | - | - | -";
+        }
+
+        double At(double q) => sorted[(int)Math.Round(q * (sorted.Length - 1))];
+
+        return string.Create(
+            Invariant,
+            $"{sorted.Length} | {sorted[0]:0.###} | {At(0.25):0.###} | {Median(sorted):0.###} | {At(0.75):0.###} | {sorted[^1]:0.###}");
+    }
+
     /// <summary>The middle value, the mean of the two middle ones for an even count.</summary>
     internal static double Median(IEnumerable<double> values)
     {
