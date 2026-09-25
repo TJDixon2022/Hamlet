@@ -578,8 +578,8 @@ and `T` on `032050` were read under textbook gaps.
 
 Why R73 did not reach either fall:
 - **`004133`.** Seven characters left, and every one was outside every scored stretch: `T` 7.040 s,
-  `E` 7.260 s, `T` 8.265 s, `E` 8.485 s, `E` 10.855 s, and a `K` and an `A` later in the file.
-  R73 reaches only inside a scored stretch.
+  `E` 7.260 s, `T` 8.265 s, `E` 8.485 s, `E` 10.855 s, `K` 14.510 s, which became a placeholder,
+  and `A` 19.195 s, which read `U`. R73 reaches only inside a scored stretch.
 - **17:37.** The whole fall of 8 is inside its scored region. But it is larger than the fall in
   key-aligned added characters there, 8 to 1, which is 7. The characters that left also include
   the key-aligned right `E` at 22.990 s, which became part of the right `B` settled at the same

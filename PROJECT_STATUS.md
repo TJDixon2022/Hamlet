@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 3 of 4
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 431 - the split letters joined back, judged under the rules that now allow it
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T03:20:06-04:00
-NOTE: Task 2 closed, G1 reverted and nothing kept; task 3 starting - writing P43, step 3 closes partial under 3.4
+UPDATED: 2026-09-25T03:40:55-04:00
+NOTE: Unit 431 complete and pushed: G1 made 5 of the 8 single-element strays and cut keyed edits 165 to 154, bringing back WB6 on 17:37, but failed tests 2 and 4 on 17:37 and 004133 with R73 excusing neither, so it was reverted; 3.6 unmet, 3.4 ticked and step 3 closed partial in P43; output.md written
 
 ---
 
