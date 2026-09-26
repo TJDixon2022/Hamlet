@@ -1,0 +1,18 @@
+unit456 task 3: HM-REQ-122's case not read - the port emits GARIS CQ for PARIS CQ, fldigi's first-element loss after noise key-down, not tuned; headers 7 of 7; 9.1 stays open (9.1)
+
+TheSecondDecoderIsAFaithfulPortTests names HM-REQ-122. The key is
+typed from M.1677-1 in the test and checked against the rendered
+marks. PARIS CQ at 18 WPM, 600 Hz, 8000 Hz, band 300-2800 Hz noise at
++10 dB in 2500 Hz, seed 20260926, 10 s lead-in, 1.5 s tail.
+
+Run 1, expectation deliberately wrong (PARIS CQ X), 3 s lead-in:
+failed, emitted NES CQ. Run 2, 10 s lead-in (five of fldigi's 2 s
+decay constants): emitted GARIS CQ. Run 3 traced the key events: the
+first dot joins a noise key-down, a spike after it sets RS_IDLE
+(cw.cxx:818) and the next key-down clears the held dots (cw.cxx:793).
+Run 4, expectation corrected to PARIS CQ with fldigi's trailing word
+space: red, GARIS CQ. Squelch off as fldigi's own benchmark ships it
+(benchmark.cxx:54). The port gains a read-only key-event log beside
+its print log; no behaviour changes. 9.1 is not ticked.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

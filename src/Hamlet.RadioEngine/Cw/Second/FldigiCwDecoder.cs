@@ -65,6 +65,33 @@ public sealed record FldigiCwEmission(
     string Representation);
 
 /// <summary>
+/// One key event inside fldigi's receiver, observed and not acted on.
+/// </summary>
+/// <param name="Kind">down, up, spike (an up shorter than the noise-spike threshold) or overflow (more than six elements).</param>
+/// <param name="InputSample">How many 8000 Hz samples had been given to the decoder.</param>
+/// <param name="Element">For an up, the element's length in samples; otherwise zero.</param>
+/// <param name="Value">The normalised detector value.</param>
+/// <param name="Upper"><c>CWupper</c> at the event.</param>
+/// <param name="Lower"><c>CWlower</c> at the event.</param>
+/// <param name="AgcPeak"><c>agc_peak</c>.</param>
+/// <param name="NoiseFloor"><c>noise_floor</c>.</param>
+/// <param name="SigAvg"><c>sig_avg</c>.</param>
+/// <param name="TwoDots"><c>two_dots</c>.</param>
+/// <param name="Representation">The dots and dashes held after the event.</param>
+public sealed record FldigiCwKeyEvent(
+    string Kind,
+    long InputSample,
+    int Element,
+    double Value,
+    double Upper,
+    double Lower,
+    double AgcPeak,
+    double NoiseFloor,
+    double SigAvg,
+    long TwoDots,
+    string Representation);
+
+/// <summary>
 /// fldigi's CW receive modem, ported as the second decoder (HM-REQ-122,
 /// R84). Samples in at 8000 Hz, characters out, carrier frequency given by
 /// the caller. Left as ported (HM-REQ-129).
@@ -179,6 +206,8 @@ public sealed class FldigiCwDecoder
     private readonly List<FldigiCwEmission> emissions = new();
     private long input_samples;
     private string last_representation = string.Empty;
+    private readonly List<FldigiCwKeyEvent> keyEvents = new();
+    private double observed_value;
 
     /// <summary>
     /// Ports <c>cw::cw</c> (cw.cxx:299) and then <c>cw::init</c> (cw.cxx:256),
@@ -280,6 +309,9 @@ public sealed class FldigiCwDecoder
 
     /// <summary>Each string printed, with the receiver's speed and thresholds at that moment.</summary>
     public IReadOnlyList<FldigiCwEmission> Emissions => emissions;
+
+    /// <summary>Every key-down and key-up the receiver saw, observed and not acted on.</summary>
+    public IReadOnlyList<FldigiCwKeyEvent> KeyEvents => keyEvents;
 
     /// <summary><c>cw_receive_speed</c> now, words a minute.</summary>
     public int ReceiveSpeed => cw_receive_speed;
@@ -493,6 +525,8 @@ public sealed class FldigiCwDecoder
         progdefaults.CWupper = norm_sig - (0.2 * diff);
         progdefaults.CWlower = norm_noise + (0.7 * diff);
 
+        observed_value = value;
+
         if (!sqlonoff || metric > sldrSquelchValue)
         {
             // Power detection using hysterisis detector
@@ -594,6 +628,7 @@ public sealed class FldigiCwDecoder
                 // Set state to indicate we are inside a tone.
                 old_cw_receive_state = cw_receive_state;
                 cw_receive_state = CW_RX_STATE.RS_IN_TONE;
+                Observe("down", 0);
                 return CW_ERROR;
             case CW_EVENT.CW_KEYUP_EVENT:
                 // The receive state is expected to be inside a tone.
@@ -611,6 +646,7 @@ public sealed class FldigiCwDecoder
                     && element_usec < cw_noise_spike_threshold)
                 {
                     cw_receive_state = CW_RX_STATE.RS_IDLE;
+                    Observe("spike", element_usec);
                     return CW_ERROR;
                 }
 
@@ -652,6 +688,7 @@ public sealed class FldigiCwDecoder
                     cw_rr_current = 0; // reset decoding pointer
                     cw_ptr = 0;
                     smpl_ctr = 0; // reset audio sample counter
+                    Observe("overflow", element_usec);
                     return CW_ERROR;
                 }
                 else
@@ -661,6 +698,7 @@ public sealed class FldigiCwDecoder
                 }
                 // All is well.  Move to the more normal after-tone state.
                 cw_receive_state = CW_RX_STATE.RS_AFTER_TONE;
+                Observe("up", element_usec);
                 return CW_ERROR;
             case CW_EVENT.CW_QUERY_EVENT:
                 // this should be called quite often (faster than inter-character gap) It looks after timing
@@ -713,6 +751,15 @@ public sealed class FldigiCwDecoder
         }
         // should never get here... catch all
         return CW_ERROR;
+    }
+
+    // Not fldigi's: records a key event, and changes nothing the receiver reads.
+    private void Observe(string kind, int element)
+    {
+        keyEvents.Add(new FldigiCwKeyEvent(
+            kind, input_samples, element, observed_value,
+            progdefaults.CWupper, progdefaults.CWlower, agc_peak, noise_floor, sig_avg,
+            two_dots, rx_rep_buf.ToString()));
     }
 
     // Not fldigi's: stands where decode_stream calls put_rx_char (cw.cxx:671-674).

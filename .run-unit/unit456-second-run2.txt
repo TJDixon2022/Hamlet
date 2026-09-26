@@ -1,0 +1,63 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.92]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.14]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.14]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.34]     Hamlet.RadioEngine.Tests.Cw.TheSecondDecoderIsAFaithfulPortTests.ItReadsASendWhoseKeyIsExact [FAIL]
+[xUnit.net 00:00:01.34]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.34]                  ↓ (pos 0)
+[xUnit.net 00:00:01.34]       Expected: "PARIS CQ X"
+[xUnit.net 00:00:01.34]       Actual:   "GARIS CQ "
+[xUnit.net 00:00:01.34]                  ↑ (pos 0)
+[xUnit.net 00:00:01.34]       Stack Trace:
+[xUnit.net 00:00:01.34]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSecondDecoderIsAFaithfulPortTests.cs(108,0): at Hamlet.RadioEngine.Tests.Cw.TheSecondDecoderIsAFaithfulPortTests.ItReadsASendWhoseKeyIsExact()
+[xUnit.net 00:00:01.34]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.34]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.34]       Output:
+[xUnit.net 00:00:01.34]         HM-REQ-122 | recipe | `PARIS CQ` at 18 WPM, 600 Hz, peak 0.5, 8000 Hz, lead-in 10.0 s, tail 1.5 s, band 300-2800 Hz noise RMS 0.11180, SNR 10.0 dB in 2500 Hz, seed 20260926, 133067 samples
+[xUnit.net 00:00:01.34]         HM-REQ-122 | key `PARIS CQ` | emitted `GARIS CQ ` | expected `PARIS CQ X`
+[xUnit.net 00:00:01.34]         emission | text | at sample | at s | rep | cw_receive_speed | two_dots | CWupper | CWlower
+[xUnit.net 00:00:01.34]         emission | `G` | 88064 | 11.008 | --. | 19 | 965 | 0.3344 | 0.3083
+[xUnit.net 00:00:01.34]         emission | `A` | 92160 | 11.520 | .- | 19 | 972 | 0.3487 | 0.3191
+[xUnit.net 00:00:01.34]         emission | `R` | 97280 | 12.160 | .-. | 19 | 993 | 0.3696 | 0.3366
+[xUnit.net 00:00:01.34]         emission | `I` | 101376 | 12.672 | .. | 19 | 993 | 0.3647 | 0.3326
+[xUnit.net 00:00:01.34]         emission | `S` | 105472 | 13.184 | ... | 19 | 993 | 0.3644 | 0.3324
+[xUnit.net 00:00:01.34]         emission | ` ` | 106496 | 13.312 |  | 19 | 993 | 0.3490 | 0.3188
+[xUnit.net 00:00:01.34]         emission | `C` | 114688 | 14.336 | -.-. | 18 | 1014 | 0.3850 | 0.3497
+[xUnit.net 00:00:01.34]         emission | `Q` | 122880 | 15.360 | --.- | 18 | 1022 | 0.4407 | 0.3987
+[xUnit.net 00:00:01.34]         emission | ` ` | 123904 | 15.488 |  | 18 | 1022 | 0.4179 | 0.3784
+[xUnit.net 00:00:01.34]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.TheSecondDecoderIsAFaithfulPortTests.ItReadsASendWhoseKeyIsExact [171 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "PARIS CQ X"
+Actual:   "GARIS CQ "
+           ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheSecondDecoderIsAFaithfulPortTests.ItReadsASendWhoseKeyIsExact() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSecondDecoderIsAFaithfulPortTests.cs:line 108
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ HM-REQ-122 | recipe | `PARIS CQ` at 18 WPM, 600 Hz, peak 0.5, 8000 Hz, lead-in 10.0 s, tail 1.5 s, band 300-2800 Hz noise RMS 0.11180, SNR 10.0 dB in 2500 Hz, seed 20260926, 133067 samples
+ HM-REQ-122 | key `PARIS CQ` | emitted `GARIS CQ ` | expected `PARIS CQ X`
+ emission | text | at sample | at s | rep | cw_receive_speed | two_dots | CWupper | CWlower
+ emission | `G` | 88064 | 11.008 | --. | 19 | 965 | 0.3344 | 0.3083
+ emission | `A` | 92160 | 11.520 | .- | 19 | 972 | 0.3487 | 0.3191
+ emission | `R` | 97280 | 12.160 | .-. | 19 | 993 | 0.3696 | 0.3366
+ emission | `I` | 101376 | 12.672 | .. | 19 | 993 | 0.3647 | 0.3326
+ emission | `S` | 105472 | 13.184 | ... | 19 | 993 | 0.3644 | 0.3324
+ emission | ` ` | 106496 | 13.312 |  | 19 | 993 | 0.3490 | 0.3188
+ emission | `C` | 114688 | 14.336 | -.-. | 18 | 1014 | 0.3850 | 0.3497
+ emission | `Q` | 122880 | 15.360 | --.- | 18 | 1022 | 0.4407 | 0.3987
+ emission | ` ` | 123904 | 15.488 |  | 18 | 1022 | 0.4179 | 0.3784
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 1.6307 Seconds
+RC=1 WALL=2s
