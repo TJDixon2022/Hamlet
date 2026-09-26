@@ -1,0 +1,44 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.45]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.57]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.57]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:00.60]     Hamlet.App.Tests.Cw.TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.TheTerminalHasASettingThatNamesThem [FAIL]
+[xUnit.net 00:00:00.60]       HM-REQ-072 not met: no terminal setting names -...- and .-.-.; the terminal shows <BT> and <AR> and nothing else
+[xUnit.net 00:00:00.60]       Stack Trace:
+[xUnit.net 00:00:00.60]         C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.cs(68,0): at Hamlet.App.Tests.Cw.TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.TheTerminalHasASettingThatNamesThem()
+[xUnit.net 00:00:00.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.60]       Output:
+[xUnit.net 00:00:00.60]         HM-REQ-072 | setting | none
+[xUnit.net 00:00:01.46]   Finished:    Hamlet.App.Tests
+  Failed Hamlet.App.Tests.Cw.TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.TheTerminalHasASettingThatNamesThem [2 ms]
+  Error Message:
+   HM-REQ-072 not met: no terminal setting names -...- and .-.-.; the terminal shows <BT> and <AR> and nothing else
+  Stack Trace:
+     at Hamlet.App.Tests.Cw.TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.TheTerminalHasASettingThatNamesThem() in C:\Source\HamLet\tests\Hamlet.App.Tests\Cw\TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.cs:line 68
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ HM-REQ-072 | setting | none
+
+
+  Passed Hamlet.App.Tests.Cw.TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.EachSendIsOneSymbol(pattern: "-...-", prosign: "BT") [457 ms]
+  Standard Output Messages:
+ HM-REQ-072 | -...- | read ` W1AW DE K2ABC <BT> R TU <BT> `
+
+
+  Passed Hamlet.App.Tests.Cw.TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests.EachSendIsOneSymbol(pattern: ".-.-.", prosign: "AR") [403 ms]
+  Standard Output Messages:
+ HM-REQ-072 | .-.-. | read ` W1AW DE K2ABC <AR> R TU <AR> `
+
+
+
+Test Run Failed.
+Total tests: 3
+     Passed: 2
+     Failed: 1
+ Total time: 1.7598 Seconds
+RC=1 WALL=3s

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 455 - a prosign arrives as a prosign
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T13:35:24-04:00
-NOTE: Task 1 done: 5 of 9 prosigns one symbol, 4 not in the table; task 2 writing the HM-REQ-071 and 072 tests to watch them fail
+UPDATED: 2026-09-26T13:38:03-04:00
+NOTE: Task 2 done, 6.2 ticked: 071 red on VE CT BK CL, 072 red for want of a setting; task 3 building the naming setting, default prosign
 
 ---
 

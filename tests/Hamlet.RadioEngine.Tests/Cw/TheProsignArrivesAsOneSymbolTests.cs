@@ -73,6 +73,46 @@ public sealed class TheProsignArrivesAsOneSymbolTests
     }
 
     /// <summary>
+    /// HM-REQ-071: the prosign, sent as one run, comes back as that prosign at
+    /// both places it was sent, with nothing added either side of it.
+    /// </summary>
+    /// <param name="name">The prosign.</param>
+    /// <remarks>
+    /// **ALL NINE OF `CW_SPEC.md` 6.2, NOT ONLY THE ONES THE TABLE HOLDS.** The
+    /// requirement is written against the specification's table, and a prosign
+    /// the decoder's table lacks comes back as a placeholder. That is red here on
+    /// purpose, and it is 6.1's to fix from cited data (HM-REQ-070), never by a
+    /// constant typed in to turn this green.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(Names))]
+    public void EachProsignArrivesAsOneSymbol(string name)
+    {
+        var send = Send(name);
+        var spans = Spans(send, Message(name), name);
+
+        _output.WriteLine($"HM-REQ-071 | {name} | read `{send.Text}` | at the prosign {string.Join(" and ", spans.Select(s => $"`{s}`"))}");
+
+        Assert.Equal(new[] { $"<{name}>", $"<{name}>" }, spans);
+    }
+
+    /// <summary>
+    /// HM-REQ-071's other side: `A` and `R` with a real character gap between
+    /// them are two letters, so the test above cannot pass by merging runs.
+    /// </summary>
+    [Fact]
+    public void ARealCharacterGapKeepsTheLettersApart()
+    {
+        var letters = CwDecodeHarness.Decode(new CwSignalRequest(
+            "W1AW DE K2ABC AR R TU AR", WordsPerMinute, NoiseAmplitude: Band));
+
+        _output.WriteLine($"HM-REQ-071 | A then R | read `{letters.Text}`");
+
+        Assert.DoesNotContain("<AR>", letters.Text, StringComparison.Ordinal);
+        Assert.Equal("W1AW DE K2ABC AR R TU AR", letters.Text);
+    }
+
+    /// <summary>
     /// The trace of work instruction 455 task 1, which asserts nothing: each
     /// prosign's pattern, what the table returns for it, what `prosigns-18wpm`
     /// gives back where it carries it, and what a send of it reads as.

@@ -1,0 +1,16 @@
+unit455 task 2: HM-REQ-071 and 072 each have a test naming them, 071 not met on 4 of 9 prosigns, 072 not met, 6.2 ticked (6.2)
+
+TheProsignArrivesAsOneSymbolTests names HM-REQ-071: all nine
+prosigns of CW_SPEC.md 6.2 sent as one run, and A then R with a real
+character gap. Watched failing on a deliberately wrong expectation
+(10 of 10 red), then corrected: SK AS KN BT AR one symbol at both
+places, green; VE CT BK CL read as a placeholder mid-message and
+nothing at the end, red - not in MorseAlphabet, 6.1's to generate;
+the gapped pair reads AR as two letters, green. 6 of 10 green.
+
+TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests names HM-REQ-072:
+-...- and .-.-. each one symbol per send (watched failing on a wrong
+count, then green); no terminal setting names them, red. Both red
+tests are on no carry-forward line. 6.2 ticked in both plan copies.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
