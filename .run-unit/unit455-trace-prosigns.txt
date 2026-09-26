@@ -1,0 +1,38 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.64]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.85]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.86]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignAsTheTableAndTheDecoderReadIt [4 s]
+  Standard Output Messages:
+ fixture | prosigns-18wpm | sent `W1AW DE K2ABC ^BT R TU ^SK` | read `W1AW DE K2ABC <BT> R TU <SK>`
+ prosign | pattern | keyed as the pattern | MorseAlphabet | on prosigns-18wpm | on its own send | one symbol or split
+ prosign | VE | ...-. | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | CT | -.-.- | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | SK | ...-.- | yes | <SK> | `<SK>` | `<SK>` and `<SK>` of `W1AW DE K2ABC <SK> R TU <SK>` | one symbol
+ prosign | AS | .-... | yes | <AS> | not in the fixture | `<AS>` and `<AS>` of `W1AW DE K2ABC <AS> R TU <AS>` | one symbol
+ prosign | KN | -.--. | yes | <KN> | not in the fixture | `<KN>` and `<KN>` of `W1AW DE K2ABC <KN> R TU <KN>` | one symbol
+ prosign | BK | -...-.- | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | CL | -.-..-.. | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | BT | -...- | yes | <BT> | `<BT>` | `<BT>` and `<BT>` of `W1AW DE K2ABC <BT> R TU <BT>` | one symbol
+ prosign | AR | .-.-. | yes | <AR> | not in the fixture | `<AR>` and `<AR>` of `W1AW DE K2ABC <AR> R TU <AR>` | one symbol
+ gapped | A then R with a character gap | read `W1AW DE K2ABC AR R TU AR`
+ prosigns in MorseAlphabet: <AR> .-.-., <SK> ...-.-, <BT> -...-, <KN> -.--., <AS> .-..., <HH> ........
+
+
+[xUnit.net 00:00:59.33]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EveryProsignTheRealKeysCarry [52 s]
+  Standard Output Messages:
+ real | cw-2026-08-18-004507 | key <BT> | emitted <BT> | Sure | key around `NET<BT>EAC` | read around `NET<BT>EAC`
+ real | unadjudicated/cw-2026-09-24-004234 | key <BT> | emitted <BT> | Sure | key around `COM<BT>THA` | read around `_OM<BT>THA`
+ real | 2 prosign steps over 23 keyed recordings
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 59.6951 Seconds
+RC=0 WALL=61s

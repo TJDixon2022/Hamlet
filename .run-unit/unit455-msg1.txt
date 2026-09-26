@@ -1,0 +1,15 @@
+unit455 task 1: the prosign trace - 5 of 9 prosigns of 6.2 arrive as one symbol, VE CT BK CL are not in the table and read as a placeholder, none split (6.2)
+
+Nothing in src. TheProsignArrivesAsOneSymbolTests carries the trace as two
+facts that assert nothing. Each prosign is keyed from its M.1677-1 or
+ARRL pattern written in the test, checked against the generator's
+keying (all nine yes), and sent in prosigns-18wpm's own shape.
+SK AS KN BT AR: one symbol at both places. VE CT BK CL: not in
+MorseAlphabet, read as a placeholder mid-message and as nothing at the
+end - a 6.1 finding, not hand-added. A then R with a character gap
+reads as two letters. prosigns-18wpm reads <BT> and <SK>. The real
+keys carry two prosigns, both <BT> (004507, 09-24-004234), both
+emitted <BT> sure. No terminal setting names =/BT or +/AR: the name
+is fixed in MorseAlphabet.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
