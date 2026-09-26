@@ -65,7 +65,7 @@ public sealed class TheRestOfTheSheetIsTrueTests
     public void TheUnkeyedLineSaysTheCountIsNotAllFromThisPitch()
     {
         var yes = Line(
-            Sheet("cw-2026-08-28-005051", r => r with { CharactersEmitted = 252, PitchWasMeasured = false }),
+            Sheet("cw-2026-08-28-005051", r => r with { CharactersEmitted = 252, PitchProof = CwPitchProof.None }),
             "unkeyed ");
         var no = Line(Sheet("cw-2026-09-23-173723"), "unkeyed ");
 

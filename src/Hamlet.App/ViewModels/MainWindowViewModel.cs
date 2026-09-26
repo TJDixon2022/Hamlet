@@ -12715,11 +12715,25 @@ public partial class MainWindowViewModel : ObservableObject
         // admits keying at `_binHz[bin]` (CwToneSurvey.cs) and the tracker reports
         // that number unchanged; 17:37 reads 600.000 and 013347 625.000, both on
         // the five hertz grid.
-        if (report.PitchWasMeasured)
+        // **PROVED OR A HYPOTHESIS, AND THE SHEET SAYS WHICH** (HM-REQ-093, work
+        // instruction 450). This line used to print every held pitch as measured
+        // from keying, and a held pitch outlives its keying: the station stops, the
+        // survey finds nothing, and the number stays. The operator was reading more
+        // certainty than the decoder had.
+        if (report.PitchProof == CwPitchProof.Proved)
         {
-            return $"{report.ToneHz:0.0} Hz  (measured from the keying the "
-                + "survey admitted: the centre of the survey bin it was admitted in, "
-                + "not interpolated between bins)";
+            return $"{report.ToneHz:0.0} Hz  (proved: the survey's latest verdict "
+                + "confirms keying at this pitch. Measured from that keying: the "
+                + "centre of the survey bin it was admitted in, not interpolated "
+                + "between bins)";
+        }
+
+        if (report.PitchProof == CwPitchProof.Hypothesis)
+        {
+            return $"{report.ToneHz:0.0} Hz  (HYPOTHESIS, NOT PROVED NOW: keying "
+                + "was found at this pitch earlier, the centre of the survey bin it "
+                + "was admitted in, and the survey's latest verdict does not confirm "
+                + "it. The number is held, not measured from keying now)";
         }
 
         // **"THE MIDDLE OF THE BANK" STOPPED BEING TRUE ON 2026-08-27** and this

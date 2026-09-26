@@ -33,11 +33,11 @@ namespace Hamlet.RadioEngine.Cw;
 /// transcript comes out unspaced (HM-DEC-142). Distinct from an empty
 /// transcript, which is the decoder producing nothing.
 /// </param>
-/// <param name="PitchWasMeasured">
-/// True when <see cref="ToneHz"/> came from keying the survey admitted, false
-/// when it is the middle of whatever bank the tracker is pointed at. **The two
-/// are different facts and a sheet that prints one number for both is asserting
-/// a measurement nobody took** (§0.0, HM-DEC-009).
+/// <param name="PitchProof">
+/// Whether <see cref="ToneHz"/> is proved by the latest survey's keying, a
+/// hypothesis held from keying found earlier, or none at all (HM-REQ-093). **A
+/// pitch confirmed half a second ago and one last confirmed a minute ago on a
+/// station that has stopped are different facts** (§0.0, work instruction 450).
 /// </param>
 /// <param name="Competitor">
 /// Somebody else keying inside the same passband, where the survey found one.
@@ -58,8 +58,22 @@ public readonly record struct CwDecodeReport(
     double OwnTransmitSeconds = 0,
     bool WordSpacingUnmeasured = false,
     CwCompetitor? Competitor = null,
-    bool PitchWasMeasured = false)
+    CwPitchProof PitchProof = CwPitchProof.None)
 {
+    /// <summary>
+    /// True when <see cref="ToneHz"/> came from keying the survey admitted, now
+    /// or earlier; false when it is the middle of whatever bank the tracker is
+    /// pointed at.
+    /// </summary>
+    /// <remarks>
+    /// **READ FROM <see cref="PitchProof"/> SO THE TWO CANNOT DISAGREE** (work
+    /// instruction 450). It is true for proved and for a hypothesis, which is what
+    /// it has always meant: a number keying set, as against a starting point. Which
+    /// of the two the pitch is now is the proof state's to say, and the sheet's
+    /// pitch line says it.
+    /// </remarks>
+    public bool PitchWasMeasured => PitchProof != CwPitchProof.None;
+
     /// <summary>
     /// True when the pitch is one the operator asserted. Never, for this decoder.
     /// </summary>

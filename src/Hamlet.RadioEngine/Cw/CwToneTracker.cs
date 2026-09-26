@@ -460,6 +460,27 @@ public sealed class CwToneTracker
     /// </remarks>
     public bool HasMeasuredPitch => !double.IsNaN(_reportedHz);
 
+    /// <summary>What can be said about <see cref="ToneHz"/> now (HM-REQ-093).</summary>
+    /// <remarks>
+    /// <para>**PROVED ONLY WHILE THE SURVEY THAT SET THE PITCH IS THE LATEST ONE**
+    /// (work instruction 450). Every path that sets `_reportedHz` sets it to the
+    /// pitch of the confirmed keyed verdict it stores beside it in
+    /// <see cref="Verdict"/> (the move, and the two readings inside reach, below),
+    /// and every later survey replaces that verdict. So the two are one number
+    /// exactly while the keying that chose the pitch is current. A pitch still held
+    /// after a survey that found no keying, refused a candidate, or saw one
+    /// elsewhere it is waiting to move to is a hypothesis: keying set it, and the
+    /// evidence is remembered rather than current.</para>
+    /// <para>**IT DESCRIBES THE PITCH AND NOTHING HERE OR IN THE DECODER READS
+    /// IT.** Proved is a subset of <see cref="HasMeasuredPitch"/>, so no pitch is
+    /// stated with more certainty than before, only less.</para>
+    /// </remarks>
+    public CwPitchProof PitchProof => double.IsNaN(_reportedHz)
+        ? CwPitchProof.None
+        : Verdict.Keyed is { } keyed && keyed.ToneHz == _reportedHz
+            ? CwPitchProof.Proved
+            : CwPitchProof.Hypothesis;
+
     /// <summary>Watches for the operator's own transmissions (HM-DEC-095).</summary>
     public CwTransmitGuard Guard { get; }
 

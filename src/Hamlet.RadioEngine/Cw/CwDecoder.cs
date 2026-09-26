@@ -252,7 +252,7 @@ public sealed class CwDecoder
         _tracker.Verdict.Interference,
         (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
         Competitor: _tracker.Competitor,
-        PitchWasMeasured: _tracker.HasMeasuredPitch);
+        PitchProof: _tracker.PitchProof);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>
