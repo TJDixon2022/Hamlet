@@ -1,222 +1,315 @@
 READ IN THIS ORDER.
 
-A. Hamlet meets the CW requirements: step 5 at 1 of 6, step 4 at 5 of 7, step 2 at 3 of 5,
-   step 3 at 3 of 6 by the plan's checkboxes, steps 0 and 1 done, 6, 7 and 8 not started.
-B. Step 5, criterion 5.5 (HM-REQ-034, 035, 036): speed proof state built; 034 test
-   TheSpeedSaysWhetherItWasProvedTests green, watched failing on first moments, the stale hold and
-   re-acquiring; 035 met; 036 met; recordings whose text changed 0 of 63; real-set hops proved
-   61328, hypothesis 54494, none 22178; synthetic proved hops more than 10% off 0; 5.5 ticked;
-   5.1 to 5.4 and 5.6 open.
-C. This report adds a three-valued speed proof state in the decode report, and every speed display
-   (the sheet's two speed lines, the header, the collapsed summary, the reacquiring pill, the
-   transmit offer and the roster) says which state it is in. It also adds the trace of every path
-   that reports, holds or withholds a speed, and tests naming HM-REQ-035 and 036, both green.
-   Section 4 raises 2 items; neither is in the way of a criterion in B. 5.6 stays red on 443's
-   DECIDED (3) and the three named floors, as at entry.
+A. Hamlet meets the CW requirements: step 6 at 1 of 6, step 5 at 1 of 6, step 4 at 5 of 7,
+   step 2 at 3 of 5, step 3 at 3 of 6 by the plan's checkboxes, steps 0 and 1 done, 7 and 8 not
+   started.
+B. Step 6, criterion 6.3 (HM-REQ-080, 081): MET-WBE real 46 over 113 (39 inserted, 7
+   deleted), synthetic 48 over 84, per condition in section 3; HM-REQ-080 not met on 17:37 (7 over
+   6, inferred) and on the character-gap-5 15 dB passband case, met on the TX-ITU 15 dB passband
+   case; HM-REQ-081 not met on both 0 dB passband cases; conditions not measurable here 20; the
+   change kept, MET-WBE real 46 to 37, 17:37 7 to 7; 6.3 ticked; 6.1, 6.2, 6.4 to 6.6 open.
+C. This report adds MET-WBE per condition with inserted and deleted boundaries apart, a trace of
+   all 94 wrong boundaries in seven groups, and one kept change: where nothing is measured or held,
+   the relabel reads the sender's letter spacing from the gaps the path already placed between
+   letters. No letter moved. Section 4 raises 3 items; none is in the way of a criterion in B.
+   6.6 stays red on 443's DECIDED (3) and the same three named floors.
 
-UNIT:       451 - complete at task 3 of 3, none dropped - 2026-09-26 10:03
+UNIT:       452 - complete at task 3 of 3, none dropped - 2026-09-26 11:33
 PHASE GOAL: Every must-tier CW requirement in CW_REQUIREMENTS.md is met and shown met by a test naming it, step by step, ending with Tim reading real CW on the air.
-UNIT GOAL:  The decoder says whether the speed it reports was proved on keying still arriving, is a hypothesis it is holding or supposing, or is none. Every place the operator sees a speed says which, the clear and the pitch refinement are measured by tests naming 035 and 036, and not one decoded character changes.
-ADVANCED:   yes - PHASE_PLAN.md 5.5 flipped from [ ] to [x] in both copies, on a green HM-REQ-034 test watched red first, 035 and 036 tests run and green, and 63 of 63 recordings' text identical
-NUMBER:     text changed 0 of 63; proved 61328, hypothesis 54494, none 22178 hops real; synthetic proved over 10% off 0; 035 met; 036 met
-DRIFT:      step 2 0; step 3 0; step 4 1; step 5 1
+UNIT GOAL:  Say, per condition and with the key's kind, how often the decoder breaks a word or runs two together, state HM-REQ-080 and 081 against that, trace every wrong boundary to its cause, and fix the largest movable cause without making any recording's boundaries or letters worse.
+ADVANCED:   yes - PHASE_PLAN.md 6.3 flipped from [ ] to [x] in both copies, on MET-WBE per condition with inserted and deleted apart, 080 and 081 stated per condition, and the figure in metrics.md
+NUMBER:     MET-WBE real 46 -> 37 over 113; synthetic 48 -> 44 over 84; 17:37 7 -> 7; 080 not met; 081 not met
+DRIFT:      step 2 0; step 3 0; step 4 1; step 5 1; step 6 0
 
 ## 1. What Claude did
 
-**Complete, at task 3 of 3. Nothing was dropped**, including task 1's named drop candidate, the per-recording rows of the real-set table, which are kept.
+**Complete, at task 3 of 3. Nothing was dropped.** That includes task 1's drop candidate, the
+per-boundary rows of the synthetic 0 dB cases, which are kept in the printout.
 
-**Provenance.** Claude Code on the Windows machine, project Hamlet confirmed by the gate (SHACK_FACTS.md, CwProbabilisticDecoder.cs, CW_REQUIREMENTS.md and CW_SPEC.md present; no CoreHMI.sln or MURC.sln), branch `main`.
+**Provenance.** Claude Code on the Windows machine. Project Hamlet was confirmed by the gate:
+SHACK_FACTS.md, CwProbabilisticDecoder.cs, CW_REQUIREMENTS.md and CW_SPEC.md are present, and
+there is no CoreHMI.sln or MURC.sln. Branch `main`.
 
 **Commits**, all pushed to `origin/main`:
-- `ba05e6e1`, task 0;
-- `05c53b1a`, task 1;
-- `c3c83c94`, the state, the display changes and the tests, on their own;
-- `0dfd889e`, task 2, the tick;
-- the exit commit, which carries this report.
+- `a523b39e`, task 0: the entry, with the runner's writes committed as they were.
+- `ad0d78d1`, task 1: the measurement, the tick, and the trace printer. **This departs from the
+  instruction**, which asked for the measurement in a commit of its own. My first commit, meant for
+  the printer, stopped when `git add` refused an ignored `.tmp` file. The printer was already
+  staged, so it went in with the measurement.
+- `50069134`, the change on its own.
+- `97d08f0a`, task 2, the change kept. **Its message says 30 recordings' text changed. The diff
+  shows 27.** That count is corrected here and in the exit commit.
+- The exit commit, which carries this report.
 
 **Quoted from the documents, as section 1 of the instruction asks:**
-- **HM-REQ-034:** "The decoder shall report the speed estimate with a proof state of proved, hypothesis, or none." Rationale: "A speed the decoder has not earned is not a number." Verification row 034: "I, T | any | proof state field | present, three values | — | synthetic". Matches.
-- **HM-REQ-035:** "When the transcript is cleared, the decoder shall retain its speed, pitch and noise-floor state." Row 035: "T | clear mid-transmission | state retained | yes | — | synthetic". Matches.
-- **HM-REQ-036:** "When the pitch is refined for the same station, the decoder shall retain its timing state." Row 036: "T | pitch refine ±10 Hz same station | timing state retained | yes | — | synthetic". **This is a mismatch with the instruction**, which asked for "a step task 1 names". The row's ±10 Hz wins. The test runs +10 and −10 Hz, and also task 1's 25 Hz step.
-- **HM-REQ-031:** "After acquisition on TX-ITU, the decoder shall report speed within 10 % of true (MET-WPM-ERR ≤ 10 %)." Printed here as evidence only.
-- **`CW_SPEC.md` §2:** "the running speed estimate with its proof state (proved / hypothesis / none)". Matches. Section D of `CW_REQUIREMENTS.md` is Speed, as the instruction says.
+- **HM-REQ-080:** "On every must-tier sender profile at 15 dB reference on CH-AWGN, the decoder
+  shall place every word boundary where the sender placed it (MET-WBE = 0)." Rationale: "Part of
+  "decoded whole". `DEW B 6 RE D` is not whole." Verification row 080: "T | each must TX at 15 dB |
+  MET-WBE | 0 | — | synthetic + WB6RED key (inferred)". Matches the instruction.
+- **HM-REQ-081:** "On every must-tier condition at the sensitivity floor, the decoder shall keep
+  MET-WBE at or below 5 % of words." Row 081: "T | each must condition at floor | MET-WBE | ≤ 5 % |
+  — | synthetic". Matches.
+- **HM-REQ-082:** "The decoder shall score word-boundary errors separately from character
+  errors." Row 082: "I, A | scoring code | MET-WBE separate from MET-CER | yes". Matches.
+- **MET-WBE** (`CW_SPEC.md` 11): "Word gaps inserted or deleted relative to truth / words sent.
+  Scored on boundaries alone, separately from MET-CER."
+- **The sensitivity floor** (8.3): "−7 dB reference at 20 WPM on CH-AWGN with TX-ITU. It scales
+  at 3 dB per doubling of speed."
+- **Must-tier senders** (10): TX-ITU, TX-KEYER-W, TX-FARNS and TX-TIGHT. TX-BUG and TX-STRAIGHT are
+  should-tier, and TX-SLOPPY is later. **Must-tier channels** (9.2): CH-LM, CH-MM and CH-HM, each
+  with an allowance against the CH-AWGN floor.
 
 **Mismatches between the instruction and the tree** (reported, not repaired):
-1. **The "four-part guard" is three parts.** `CwDecoder.WordsPerMinute` (445-454) checks only three things: the window's text is non-empty, the clock is not re-acquiring, and the rounded speed is within 6 to 48. It checks for no located tone and no settled pass that proved a dit. The sheet's remarks at `MainWindowViewModel.cs` 12813-12816 make the same four-part claim; they are now corrected to three.
-2. **HEAD called a non-reading a "hypothesis".** At HEAD, `SpeedForTheRecord` printed "the decoder's own best hypothesis was N WPM" even when the gate had refused the whole window (`CwProbabilisticDecoder.cs` 811-818). In that case `Reading.WordsPerMinute` is the grid's winner over noise.
-3. **The instruction's facts that hold.** HEAD `f96cd04e`. Both copies of the plan had 4.1, 4.2, 4.3, 4.5 and 4.6 ticked, 4.4 and 4.7 not, and no step 5 line ticked. `CwDecodeReport` carried `PitchProof` and no speed state. `WordsPerMinute` is `int?` (439). `SpeedIsReacquiring` is a boolean (421). `Retuned()` is only `Unlock()` (385).
-4. **Traceability** rows 94-96 are as the instruction says: no proving test for 034, 035 or 036, and the tests it names measure something else. Row 94 lists five of them. Not edited (R80).
-5. **`AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh` against HM-REQ-036.** The test asserts that `Reading.WordsPerMinute` goes to 0 after `Retuned()`. It is red at entry and at exit (3 of 4, as logged). Its own remarks call the call a QSY. The application calls `Retuned()` only for a dial move of 500 Hz or more (`MainWindowViewModel.cs` 13606-13610), so a nudge never reaches it. A QSY is not a refinement for the same station, so the assertion does not contradict HM-REQ-036 as the requirement is worded. It would if `Retuned()` were ever called for a nudge, and `Retuned()` itself takes no size to tell the two apart. Nothing in the test was edited.
-6. **Known items, each confirmed and none edited.**
-   - `PHASE_OUTCOME.md`'s header still has the old titles for steps 2, 3 and 8.
-   - `CW_SPEC.md` 327 still defines MET-COVERAGE as sure over sent.
+1. **The tree has no condition that is HM-REQ-080's own.** The instruction lists "TX-ITU at 15, 5
+   and 0 dB". The synthetic set's SNR is measured inside the 350 to 870 Hz passband, and its
+   noise is a shaped band that has not been shown to be CH-AWGN. By arithmetic alone, 15 dB in 520
+   Hz is about 8.2 dB in the 2500 Hz reference, and 0 dB is about −6.8. So the "15 dB" case is not
+   080's 15 dB, and the 0 dB case is only near the floor. I state the verdicts on those cases
+   because the instruction asks for them. The requirements' own 20 conditions are listed as not
+   measurable here.
+2. **The character-gap-5 row is not a full TX-FARNS profile.** Its character speed equals its
+   overall speed. The tree labels it "inside TX-FARNS's 3 to 7", and so does this report.
+3. **The scorer.** MET-WBE is computed by `CwMetrics.WordBoundaries`. It splits inserted from
+   deleted in `CwBoundaryErrors`, and `TheRequirementsAreMeasuredTests` prints both per recording.
+   Its per-condition row prints only the combined "boundaries wrong". The per-condition split in
+   this report comes from the new printer, which agrees with the metric's count on every condition.
+   The scorer is unchanged.
+4. **What the instruction says that holds:** HEAD was `6d40cc90`. In both copies of the plan, 5.5
+   was ticked, no step 6 line was ticked, 2.1 to 2.3 were ticked, and 2.4 and 2.5 were not. 17:37's
+   key is `CQ CQ CQ DE WB6RED WB6RED`, inferred, 7 wrong over 6 words.
+5. **The known items.** Each was confirmed and none was edited:
+   - `PHASE_OUTCOME.md`'s header still carries the old titles for steps 2, 3 and 8.
+   - `CW_SPEC.md` 11 still defines MET-COVERAGE as sure over sent.
    - `PARKED.md`'s header says a session never writes it.
-   - `TheQuietestBinNoLongerWinsTests` and `ThePitchControlsAreOffThePanelTests` are excluded by `Compile Remove`.
-   - The RULES_AT item does not hold as stated: `CLAUDE.md` 376 carries HM-DEC-165, which matches `PROJECT_STATUS.md`, and CPS-DEC-0183 does not appear in it. Unit 450 reported the same.
-7. **Expected failures, as listed.**
-   - The named floors were red at entry and exit with the same readings: 17:37 38 of 46, `032113` 43 of 45, `032129` 42 of 64.
-   - `AHeldPitchDoesNotOutliveItsEvidenceTests` is 3 of 4 red.
-   - The app line lost 3 at entry: `ThePsk31OfferTests` 1 and `TheFavoritesAreUnderTheGreenZoneTests` 2, each green alone. It lost 1 at exit: `TheCarrierHoldsTheButtonsTests` 1, green alone, 8 of 8. There was no hang.
-   - `TheFiveToEightDecibelPlateauHolds` is in neither line and was not run.
+   - `TheQuietestBinNoLongerWinsTests` and `ThePitchControlsAreOffThePanelTests` are excluded by
+     `Compile Remove`.
+   - The RULES_AT item does not hold as stated: `CLAUDE.md` 376 carries HM-DEC-165, which matches
+     `PROJECT_STATUS.md`, and CPS-DEC-0183 does not appear in it. Units 450 and 451 reported the
+     same.
+6. **Expected failures, as listed.**
+   - The three named floors were red at entry, under the change and at exit, with the same
+     readings: 17:37 38 of 46, `032113` 43 of 45, `032129` 42 of 64.
+   - `TheFiveToEightDecibelPlateauHolds` and `AHeldPitchDoesNotOutliveItsEvidenceTests` are on
+     neither line. Neither was touched or run.
+   - The app line lost 2 at entry, `TheTestsStayOffTheNetworkTests`, to the dispatcher loop. Run
+     alone, that type first lost 1 of 5 to a 2-pixel layout re-read, then passed 5 of 5 on the one
+     rerun. At exit the line lost 2, `TheFavoritesAreUnderTheGreenZoneTests`, to the dispatcher loop,
+     and that type passed 3 of 3 alone. There was no hang.
 
-**Entry (task 0).**
-- Build 0 errors in 15 s.
-- Engine line 178 of 178 in 376 s. App line 275 of 278 in 160 s.
-- Captures 51 of 51 in 129 s, adjudicated 13 of 13 in 32 s, named 10 of 13 in 67 s.
-- All four metrics and MET-PITCH-ERR (9 files) matched the instruction's table.
-- The runner's writes were committed unedited, and 63 recordings' text was saved to `.run-unit/unit451-text-before.txt`.
+**Task 0.** The build had 0 errors. The engine line passed 178 of 178 in 375 s and the app line
+276 of 278 in 163 s. Captures were 51 of 51 in 129 s, adjudicated 13 of 13 in 32 s, and named 10
+of 13 in 68 s. The four metrics were as unit 451 left them. 9 files were more than 25 Hz off
+(264 s). 63 recordings' text was saved, identical to 451's.
 
-**Task 1.**
-- `WhatTheSpeedCanSayItProvedTests` is the sibling of 450's pitch printer. It asserts nothing and changes nothing in `src`. It reads the proposed state off the decoder hop by hop. The unit's provenance was not published at HEAD, so it recomputes that from the stream's own envelope with the stream's own calls.
-- The output is `.run-unit/unit451-trace-speed-state.txt`, and the notes, path table and display inventory are `.run-unit/unit451-trace-notes.md`.
-- `TheSpeedLineSaysWhatWasProvedTests` printed every speed surface's words on the 23 keyed recordings at HEAD, before `src` changed (`.run-unit/unit451-app-speedlines-before.txt`).
+**Task 1, the measurement and the trace.** The printer is `WhereTheWordBoundariesGoWrongTests`,
+and it asserts nothing. Each recording is decoded as the metrics decode it, and the stream's state
+is taken by reflection at each settle. That state covers:
+- the unit, and whether it was measured;
+- the speed's proof state;
+- the held gaps and the read that set them;
+- this read's character gap, and why the estimator refused one;
+- the word-from.
 
-**Task 2.**
-- **The 034 test came first**, with `StateOf` read from HEAD's field: a named number is proved, anything else none. It went **red** on three cases (`.run-unit/unit451-req034-red2.txt`, and once more on the final cases in `-red3.txt`):
-  - first moments: 2107 hops with a reading were called none;
-  - the stale hold: 780 of 6121 hops past the lapse were proved;
-  - re-acquiring: 972 of 2400 proved and 1428 none.
-- **The 035 and 036 tests came next, run at HEAD**, and both were green (`-req035-head.txt`, `-req036-head3.txt`). The final 036 test, with the row's ±10 Hz steps, is also green at the entry code `f96cd04e` in a separate worktree (`.run-unit/unit451-athead-ARefinementKeepsTheTimingTests.txt`, 23 green checks).
-- **Then the state went in**, and 034 is green on it.
-- **(c) holds:**
-  - 63 of 63 recordings' text is byte-identical (`cmp`).
-  - The four metrics are identical on both sets. V-11 compared 35 recordings and found 0 worse.
-  - The floors match entry.
-  - MET-PITCH-ERR: 69 captures, 0 changed, 248 → 248 windows, 9 files over 25 Hz.
-  - The task 1 printer and the built `CwDecoder.SpeedProof` disagree on 0 hops, so the trace totals are the shipped state's.
-- 5.5 was ticked in both copies, and one line was added to `metrics.md`.
+The printer re-runs the relabel on the same inputs to find the spaces it took out. For each wrong
+boundary it prints:
+- the gap in ms and in units;
+- what the path and the relabel did;
+- the marks and key-ups of the letters either side;
+- the key and the decode around it.
 
-**Exit (task 3).**
-- **Build and carry-forward lines.** Build 0 errors in 8 s. Engine line 178 of 178 in 374 s. App line 277 of 278 in 165 s, with the loss green alone.
-- **Floors.** Captures 51 of 51 in 136 s, adjudicated 13 of 13 in 33 s, named 10 of 13 (the same three).
-- **Metrics.**
-  - Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 46 over 113.
-  - Synthetic, exact: 14 of 173, 14 over 252, 159 over 252, 48 over 84.
-  - MET-PITCH-ERR in 253 s: 9 files, 0 changed.
-- **Touched types, each run alone.**
-  - Engine, green: `TheSpeedSaysWhetherItWasProvedTests` 1/1 (29 s), `ARefinementKeepsTheTimingTests` 1/1, `WhatTheSpeedCanSayItProvedTests` 1/1 (63 s), `CwSpeedSilenceTests` 4/4, `CwCaseCountsSayWhatTheyCountTests` 7/7, `TheSwingIsTheFigureThatHoldsTests` 4/4, `ThePitchSaysWhetherItWasProvedTests` 1/1.
-  - Engine, red as logged: `AHeldPitchDoesNotOutliveItsEvidenceTests` 1 of 4.
-  - App, green: `TheSpeedLineSaysWhatWasProvedTests` 1/1 (113 s), `AClearKeepsWhatTheDecoderWorkedOutTests` 1/1, `ThePitchLineSaysWhatWasProvedTests` 1/1, `TheRestOfTheSheetIsTrueTests` 10/10, `EverySentenceOnTheSheetTests` 1/1, `TheSheetSaysWhatEachElementWasSentAtTests` 4/4, `CaseRosterSurvivesAnEveningTests` 6/6, `ASheetSaysWhichInstrumentSpokeTests` 3/3, `TheCarrierHoldsTheButtonsTests` 8/8.
+Its counts agree with `CwMetrics.WordBoundaries` on all 10 conditions. The printout is
+`.run-unit/unit452-wbe-trace.txt`. I grouped the 94 wrong boundaries by the mechanism that set the
+boundary in force. One grouping was tried and corrected before the groups were fixed: the marks the
+envelope shows inside a gap proved unreliable, because the path's letter spans sit late against the
+marks. Whether letters were lost is therefore read from the alignment.
 
-**What changed in `src`, file by file.** None of it keys or transmits. **Nothing in the decode path, the tracker or the pitch reads the new state.** The two new reads (`UnitWasMeasured`, `LastKeyedHz`) are read only by `CwDecoder.SpeedProof`.
-- `Cw/CwSpeedProof.cs` (new): the enum None, Hypothesis, Proved.
-- `Cw/CwDecoder.cs`: `SpeedProof`, computed from existing state, and passed into `Report`.
-- `Cw/CwDecodeReport.cs`: `SpeedProof` and `WordsPerMinute` fields, and `SpeedWasProved`, which is read from the state.
-- `Cw/CwProbabilisticStream.cs`: `UnitWasMeasured` is set where the read already decides between the estimator's speed, the grid and the marks' overrule, and it is reset in `Restart()`. It is an assignment beside `Last`; the decode is untouched, as the identical text shows.
-- `Cw/CwToneTracker.cs`: `LastKeyedHz`, a read-only view of `_lastKeyedHz`.
-- `Cw/CwCaseRoster.cs`: an optional `SpeedProof` on `CwCase`. The speed cell adds " (hypothesis, not proved)" to a hypothesis.
-- `ViewModels/MainWindowViewModel.cs`: `DetectedSpeedProof`, the header, the collapsed summary, the pill, `SpeedForTheRecord`, `FitLine`, and the roster row's state.
-- `ViewModels/CwTransmitViewModel.cs`: `HeardSpeedProof` and `SpeedOffer`'s wording.
+**Task 2, the change.** **The group chosen was G1**, the largest: 21 real and 18 synthetic. Its
+cause is in the audio. Each kept gap is a letter space of 4.6 to 7 units, shorter than that
+sender's own word spaces, and the two do not overlap. G1 exists because the envelope's three heaps
+found no character heap:
+- in 8 reads, a 15 to 20 ms key-up took the shortest heap;
+- in 29 reads, there was no trough between the first two heaps;
+- 2 reads had under 12 gaps.
 
-**Decisions Claude made for itself, in full:**
-- **(1) The definition, in one sentence.** Proved means three things hold:
-  - `CwDecoder.WordsPerMinute` names a number (445-454);
-  - the window's unit behind it was measured from the keying, not won on the grid (the estimator's dit or the marks' overrule, `CwProbabilisticStream.cs` 431-435 and 505-514);
-  - the tracker found keying within half the mixdown filter, 30 Hz, of the pitch being read, inside its own recent span of six surveys (`KeyingRecently` 712 and `KeyingFoundAt` 1217-1224; the half-width is the one `CwDecoder.cs` 733 uses for the same sender).
+**The groups not attacked:**
+- G2, 9 real: the measured character gap itself is wrong there, not the fallback.
+- G3 and G7, 7 real on 17:37: its spacing overlaps, recorded no by unit 444.
+- G4, 5 synthetic: the relabel's 1.53 share against the character-gap-5 sender's ratio of 1.4.
+- G5 and G6, 9 real and 24 synthetic at 0 dB: letters not read, not a spacing.
 
-  Hypothesis means the window holds a reading and any one of those fails. None means nothing has been read, or the gate refused the whole window. It is never "acquired", and nothing gates on it.
-- **(2) Six surveys, not the latest survey.** The first reading used the latest survey's keyed verdict alone, as 450 did for the pitch (`.run-unit/unit451-trace-speed-state-run1.txt`). It proved a clean 12 wpm send at 15 dB on only 900 of 5681 hops, because the survey does not confirm keying on every half second of a slow sender. The tree's own remarks at `CwToneTracker.cs` 702-712 say that asking the settled reading whether somebody is keying right now "asks the wrong question". Section 4 item 1 asks the owner to confirm this.
-- **(3) `SpeedIsReacquiring` stays** as the decoder's fact about the clock. It is one of the state's inputs, not a restatement of the state: re-acquiring withholds the number, and so the state is never proved while it holds. The new boolean `SpeedWasProved` is read from the state.
-- **(4) A proved number now carries a suffix.** The sheet's proved line reads "17  (proved: ...)" where HEAD printed "17". The header's proved text is unchanged ("17 WPM"). The not-named branches of the sheet open with the state word. HEAD's "the settled pass has no clock" (there is no settled pass) now reads "the window read nothing".
-- **(5) The 034 re-acquiring case was rebuilt once.** Run first from the join itself, it went red on 72 hops in the first 0.35 s after the join, proved at 16 wpm. That is the first station's own speed, in the generator's 1 s of band before the second station's first mark, where nothing has changed yet (`-req034-green2.txt`). The case now starts at that first mark, which is constructed and not read from the decoder, and it adds a check that anything proved before the mark is the first station's 16. The final cases were watched red again on HEAD's field (`-red3.txt`).
-- **(6) The 036 precondition was restated once.** Run first as "the tracker moved toward the new note by half the step", the +10 Hz case was red because the tracker already read 650 on the 640 Hz send, so the new note was where it stood (`-req036-exit.txt`). The check is now "the tracker ends within half the step of the new note, with no follow". Every timing assertion was green in both runs. **So only −10 and +25 moved the tracker. At +10 there was nothing to refine**, which is 4.4's pitch bias, not 036's.
-- **(7) The 035 test is in the app project**, because the clear is the app's command (`ClearTerminalCommand`). It runs on the tree's own `cq-18wpm-15db` recording, exact by construction, since the generator is not in the app test project. It compares hop for hop with a twin decoder that is never cleared.
-- **(8) The roster's speed cell marks a hypothesis in its own text** rather than in a new column, so the column count is unchanged.
+**The rule, set before any number was run** (`.run-unit/unit452-rule.md`): where a read measures no
+character gap and the stream holds no gaps of the sender's own, the relabel takes the median of
+that read's own gaps between letters, when it has at least 12, as the sender's character gap. It
+then takes out a word gap shorter than that times the root of seven thirds, and it never lowers the
+boundary below the path's textbook word-from.
+- It uses durations only, under R72.
+- **How it differs from 444's rule:** 444 removed key-ups from the envelope's clustering in both
+  estimators, which moved the held structure and the letters. This rule touches neither estimator,
+  the path, the held gaps nor the speed. It only raises the relabel's fallback boundary, so it can
+  only take a space out.
+- 444's three recordings do not get worse: 17:37 goes 7 to 7, `031905` 1 to 1, and the
+  character-gap-5 case at 5 dB 10 to 8.
+
+It was tried once and kept. The trace printer now re-runs the relabel with the new boundary where
+the tree has it.
+
+**Task 3, the exit round.** Each result, with its wall time:
+- **Build:** 0 errors, 16 s.
+- **Engine line:** 178 of 178, 387 s. It was also 178 of 178 while judging the change, in 382 s.
+- **App line:** 276 of 278, 165 s. The losses are as in item 6 above.
+- **Captures:** 51 of 51, 132 s.
+- **Adjudicated:** 13 of 13, 32 s.
+- **Named:** 10 of 13, 67 s, the same three at the same counts.
+- **The four metrics:** as under the change, 64 s.
+- **MET-PITCH-ERR:** 9 files more than 25 Hz off, 259 s.
+- **The one test type touched,** `WhereTheWordBoundariesGoWrongTests`: green, 65 s.
+- **Text:** identical to the change round's, 140 s.
+
+**What changed in `src`, file by file.** Only `src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs`,
+44 lines: `LetterSpaceBoundary`, `LetterSpacesToMeasure`, and four lines in `Read` that raise the
+relabel's `wordFrom`. In `tests`, one new printer. **None of it keys or transmits.**
+
+**Ticks:** 6.3 only, under the instruction's §3 (a). No other line was ticked. DRIFT follows §3 (e):
+step 6 is at 0 because the change was kept.
 
 ## 2. What the owner should expect
 
-The operator now reads whether the speed in front of them was earned now. A number the decoder measured on keying still arriving at the station's pitch reads as it did ("22 WPM", "They are sending at about 22 words a minute"). A number it is holding from a window whose sender has stopped, or one it won on the search without measuring a dit, now reads "22 WPM, not proved", and the sheet says "HYPOTHESIS, NOT PROVED NOW" and why. A blank speed says whether there is a reading behind it (hypothesis, while the clock re-acquires) or nothing at all (none).
-
-**In 21 of the 23 real recordings, the unit now says hypothesis on hops where HEAD showed a bare number**: 30042 hops of 91370. **At the end of the file**, where the sheet is written, that is 7 recordings: 013347, 003758, 031905, 031948, 032012, 032129 and 004550. Across all 23 at the end of the file, 12 are proved, 10 hypothesis and 1 none. No number appears anywhere HEAD withheld one, and no decoded letter changed.
-
-**A clear does not cost the decoder its speed today.** On `cq-18wpm-15db`, the speed (18), the pitch (625.0 Hz) and the held noise figure (35.494 dB) are identical across the clear. The rest of the file is identical to a twin decoder that was never cleared, over 1953 hops. **A refinement does not cost it either.** On a +10, −10 and +25 Hz step of the note, and on the operator's lock, there was no re-acquisition, no moved discontinuity, and the speed stayed within 1 wpm of an unrefined control on every hop.
-
-**The evidence is synthetic and exact.** The real set's states are inferred-key facts about the decoder, not about the senders (V-13).
-
-**What the synthetic cases do not prove** (§12.5):
-- They are one textbook sender at a time, at 15 dB in generated noise, with a clean step.
-- A real drifting note, a clear during a follow, and a speed change on one pitch are not tested.
-- The held gap structure was never established in the 036 sends, so its "not dropped" check held trivially.
-
-**What will look wrong but is not:**
-- A steady station's header can flip between "22 WPM" and "22 WPM, not proved" across the gaps between overs. That is the keying lapsing for six surveys, and it is what the state says.
-- The sheet's proved line now carries a parenthesis after the number.
-- The roster's wpm cell can read "18 (hypothesis, not proved)". Anything that parses that column as a bare number will need to allow for it.
+**What the operator sees.** Today, on the 23 keyed recordings, the operator meets a word broken
+in two, or two words run together, at about one boundary in three words: 37 over 113, down from
+46. The inferred keys cannot prove any single boundary wrong (V-13).
+- **It is worst on 17:37**, where `CQ CQ CQ DEWB6 RE D W B 7E E I` is still 7 wrong over 6 words.
+  That sender's letter and word spaces overlap, so no rule on durations gives them back.
+- **It is also bad on the 7.052 traffic net:** 5 over 11.
+- **The change mended** `AR R L` to `ARRL` on the traffic net, `INT ERNE T` to `INTERNET` on the
+  W1AW bulletin, and `FOTA ND` to `FOTAND` (sent as `FOUND`). On unkeyed recordings it mended
+  `BOXE S F OR` to `BOXES FOR`, `Q SO WITH WB 4 ET` to `QSO WITH WB4ET`, `MY SELF O CC UPI ED` to
+  `MYSELF OCCUPIED`, and `BR EE Z E` to `BREEZE`, one of HM-REQ-084's named spans. No letter changed
+  anywhere.
+- **What will look wrong but is not a regression the metrics missed:** on `031838`, `W IAH A MEAN`
+  became `WIAHA MEAN`. One inserted space went and one true boundary was lost, so the count stays
+  1.
+- **What may be a real cost the metrics cannot see:** on unkeyed recordings the same rule also ran
+  words together. `MONTHS OR S O` became `MONTHSORSO`, and `SAY73 ES T KS T K` became
+  `SAY73ESTKSTK`. There is no key to count these, and section 4 asks whether they should weigh.
+- **What the synthetic cases do not prove** (12.5): they are clean 1:3:7 or 1:5:7 senders in a
+  shaped band, not CH-AWGN, not a fading channel and not a hand fist. That TX-ITU at 15 and 5 dB
+  reads with no boundary wrong says nothing about a real TX-ITU sender through a CH-* channel.
 
 ## 3. What you should see
 
-**The answer: the speed carries a proof state, and every speed display says which.** HM-REQ-034 is met (green, watched red first), HM-REQ-035 is met, HM-REQ-036 is met, and 0 of 63 recordings' text changed.
+**The answer: MET-WBE falls from 46 to 37 over 113 words on the real set, and from 48 to 44 over 84
+on the synthetic set. HM-REQ-080 and 081 are not met wherever the tree can measure them.**
 
-**Every way the decoder reports, holds or withholds a speed** (task 1; the hop counts are over every keyed and synthetic recording):
+| condition | key | words | inserted | deleted | MET-WBE at HEAD | after the change | HM-REQ-080 | HM-REQ-081 |
+|---|---|---|---|---|---|---|---|---|
+| real, sender not stated (20 recordings) | inferred | 97 | 32 -> 24 | 7 -> 8 | 0.4021 | 0.3299 | not a CH-* condition (7.4) | not a CH-* condition (7.4) |
+| real, TX-FARNS, traffic net `004507` | inferred | 11 | 7 -> 5 | 0 -> 0 | 0.6364 | 0.4545 | not a CH-* condition | not a CH-* condition |
+| real, TX-ITU, KD0UN `012403` | inferred | 4 | 0 | 0 | 0.0000 | 0.0000 | not a CH-* condition | not a CH-* condition |
+| real, TX-TIGHT, `013347` | inferred | 1 | 0 | 0 | 0.0000 | 0.0000 | not a CH-* condition | not a CH-* condition |
+| real, 17:37 alone | inferred | 6 | 6 -> 6 | 1 -> 1 | 1.1667 | 1.1667 | **not met**, 7 over 6 | - |
+| synthetic TX-ITU, 15 dB in the passband | exact | 21 | 0 | 0 | 0.0000 | 0.0000 | met on this case | - |
+| synthetic TX-ITU, 5 dB | exact | 21 | 0 | 0 | 0.0000 | 0.0000 | - | - |
+| synthetic TX-ITU, 0 dB | exact | 21 | 0 | 18 | 0.8571 | 0.8571 | - | **not met**, 0.857 |
+| synthetic character gap 5, 15 dB | exact | 7 | 10 -> 7 | 4 -> 5 | 2.0000 | 1.7143 | **not met**, 12 over 7 | - |
+| synthetic character gap 5, 5 dB | exact | 7 | 9 -> 6 | 1 -> 2 | 1.4286 | 1.1429 | - | - |
+| synthetic character gap 5, 0 dB | exact | 7 | 0 | 6 | 0.8571 | 0.8571 | - | **not met**, 0.857 |
 
-| # | where | evidence | current or remembered | state | hops |
-|---|---|---|---|---|---|
-| 1 | `CwProbabilisticStream.cs` 185, 401-404: nothing read until 3 s of window | nothing | - | none | 20965 |
-| 2 | `CwProbabilisticDecoder.cs` 811-818: the gate refused the window, the grid's winner over noise | nothing | current, no reading | none | 24638 |
-| 3 | `CwDecoder.cs` 421-425, 445: re-acquiring after a follow of 30 Hz or more (728-737) | the rolling reading, straddling two pitches | current, two senders | hypothesis | 24452 |
-| 4 | `CwDecoder.cs` 452-454: rounded outside 6 to 48 | the rolling reading | current | hypothesis | 0 (the search is 8 to 40) |
-| 5 | `CwProbabilisticStream.cs` 431-435: no dit measured, the grid's winner | the rolling reading | current | hypothesis | 1901 |
-| 6 | `CwToneTracker.cs` 1008-1010, 1217-1224: no keying found for six surveys | a measured dit in a window whose keying stopped | remembered, up to 12 s | hypothesis | 35997 |
-| 7 | last keying more than 30 Hz from the pitch being read | a measured dit, keying elsewhere | remembered at this pitch | hypothesis | 200 |
-| 8 | all pass: on the latest survey / within six surveys | a measured dit, keying at the pitch | current | proved | 55742 / 30004 |
-| - | `MainWindowViewModel.cs` 12820-12823: no decoder | nothing | - | sheet: "not tracking" | - |
+**Not measurable here: 20 conditions.**
+- HM-REQ-080 on TX-ITU, TX-KEYER-W, TX-FARNS and TX-TIGHT, each at 15 dB reference on CH-AWGN.
+- HM-REQ-081 on CH-AWGN, CH-LM, CH-MM and CH-HM at their floors, each with the four must-tier
+  senders.
 
-**What a clear and a refinement do, beside the tests.**
-- **The clear.** It is `ClearTerminal` (10827-10832): it stamps `_clearedUtc` and clears `Transcript`, and does not reach the decoder. The stream's window (`CwProbabilisticStream.cs` 185), the tracker, and the held noise figure (`CwDecoder.cs` 795-814) run on. `Restart()` is reachable only behind `ClearOnAStationChange`, which is `const false` (159, 698). **HM-REQ-035: green at HEAD and after**, identical across the clear and against the twin.
-- **The refinement.** It is the tracker's `Switch` with `refining` (`CwToneTracker.cs` 1236-1260): a move of at most 25 Hz while a pitch is held, which counts `Retunes` and not `Follows`. It can also be the fine bank's in-reach reading (1181-1190). `CwDecoder` watches only `Follows`, and marks a discontinuity only at 30 Hz or more (728-737), so a refinement leaves the clock and the window alone. The operator's `Lock()` re-points the mixdown only. **HM-REQ-036: green at HEAD (the entry code in a worktree) and after**:
-  - +10 Hz: the tracker stayed at 650, already on the note;
-  - −10 Hz: 650 to 625, 7 to 10 retunes, 1 follow throughout;
-  - +25 Hz: 650 to 675, 7 to 14 retunes;
-  - the lock at 16.3 s: speed 18 on every hop after.
+Both are built by 7.1 and 7.2.
 
-**The sheet's speed line, before and after:**
+**The groups of wrong boundaries at HEAD** (real / synthetic above 0 dB / synthetic at 0 dB), one
+example of each, with the key beside it. A bar marks the boundary.
 
-| recording | state | before (HEAD) | after |
+| group | at HEAD | after | example: key / decode |
 |---|---|---|---|
-| `cw-2026-09-23-173723` | proved | `decoderWpm 17` | `decoderWpm 17  (proved: the dit was measured on keying still arriving at the pitch being read)` |
-| `cw-2026-08-18-003758` | hypothesis, where HEAD showed a number | `decoderWpm 24` | `decoderWpm 24  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)` |
-| `cw-2026-08-22-031838` | none | `decoderWpm not proved (the settled pass has no clock; the decoder's own best hypothesis was 20 WPM)` | `decoderWpm none, not proved (the window read nothing; the search's winner over a window that read nothing was 20 WPM, which describes nobody)` |
+| G1 inserted: no character gap measured, so the textbook 4.58 u is under the letter space | 21 / 18 / 0 | 12 / 12 / 0 | `004507` 5.42 s: key `AT_AR|RL_DOT` / decode `AR_|R_L` |
+| G2 inserted: this read's character gap x 1.53 is under the gap | 9 / 0 / 0 | 9 / 0 / 0 | `004507` 7.75 s: key `ARRL_D|OT_NET` / decode `D_|O_T` |
+| G3 inserted: the held gaps' word-from is under the gap | 6 / 1 / 0 | 6 / 1 / 0 | 17:37 24.82 s: key `DE_WB6|RED_WB6RED` / decode `DEWB6_|RE_D` |
+| G4 deleted: the relabel took out the word gap the path read | 0 / 5 / 0 | 1 / 7 / 0 | `cq-18wpm-15db-char5` 4.15 s: key `CQ_|CQ_CQ` / decode `C_Q|CQCQDEN0_C` |
+| G5 key letters lost between the two decoded letters | 5 / 0 / 0 | 4 / 0 / 0 | `032050` 2.88 s: key `THIS_|BULLETIN_CAN` / decode `I|ULLETIN_CAN` |
+| G6 no decoded letter on one side | 4 / 0 / 24 | 4 / 0 / 24 | `032012` 1.77 s: key `N_|OF_117.` / decode `|T_F` |
+| G7 deleted: the path read a letter gap | 1 / 0 / 0 | 1 / 0 / 0 | 17:37 22.05 s: key `DE_|WB6RED_WB6RED` / decode `CQ_DE|WB6_RE` |
 
-**Every other speed display, before and after** (on 003758 unless named):
-- **Sheet `reading` line:** "24 WPM won out of 8 to 40, 5.94 better than silence per hop against a gate of 1.40  (this is the last 12 second window…)" becomes "…against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window…)". A proved one adds "; the speed is proved", and 031838 adds "; the speed is none: the window read nothing".
-- **Terminal header:** "24 WPM" becomes "24 WPM, not proved". The proved 173723 still reads "17 WPM".
-- **Collapsed summary:** "24 WPM · tail" becomes "24 WPM, not proved · tail".
-- **Transmit panel:** "They are sending at about 24 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at." becomes "Hamlet's reading of their speed is about 24 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at." A proved speed keeps HEAD's sentence.
-- **Reacquiring pill** (134712, 032050, 032113): "working out the speed" becomes "working out the speed, nothing proved yet".
-- **Roster wpm cell:** "24" becomes "24 (hypothesis, not proved)". Proved and none are unchanged ("22", "not tracking").
+**17:37 as the operator reads it**, against the key `CQ CQ CQ DE WB6RED WB6RED`:
+- at HEAD: `CQ CQ CQ DEWB6 RE D W B 7E E I`
+- after the change: `CQ CQ CQ DEWB6 RE D W B 7E E I`, unchanged. It is not at 5 or fewer, so
+  nothing arises under §3 (c).
 
-**Hops by state, with the synthetic speed error beside proved:**
+**Every recording whose text changed, before -> after.** There are 27, and only spaces changed.
+Leading and trailing blanks are trimmed here.
+1. `cq-18wpm-15db-char5` (key `CQ CQ CQ DE N0CALL N0CALL K`): `C QCQCQDEN0 C A E L N 0 C A L L K` -> `C QCQCQDEN0 C A E LN 0CAL L K`
+2. `cq-18wpm-5db-char5`: `C QC Q C Q TEE T ■KTDUUEUE N 0 C A L L K` -> `C QC Q C Q TEE T ■KTDUUEUEN 0CAL L K`
+3. `cw-2026-08-17-013347`: `E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRR` -> `E EI I HIAEIHEEEA E EEE HEEIEE IEEETE I EE IEEI TEEITEHAEWVRRVA3VRRR`
+4. `cw-2026-08-17-013622`: `E ISIIHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I` -> `E ISIIHE II 5EIEIEEEETETE ESE E IE UEEETSET TEEE A E ET EEE II I`
+5. `cw-2026-08-17-134712`: `E     ■   NT    N4LQ K` -> `E ■   NT    N4LQ K`
+6. `cw-2026-08-18-004507`: `E5 I E A T AR R L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE` -> `E5 I E A T ARRL D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE`
+7. `003758`: `■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E` -> `■R L T U   IAN EANDE A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E`
+8. `031838`: `A 3, AT3 , 2TT 2, AND  ■ W IAH A MEAN OF 2 TT` -> `A 3, AT3 , 2TT 2, AND ■ WIAHA MEAN OF 2 TT`
+9. `032050`: `IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E    H IE S T S SI I` -> `IULLETIN CAN BE FOTAND IN TELEWRITTER, PA■ KE    H IE S TSSI I`
+10. `032113`: `A KET■ A N O INT ERNE T ■ E RSIONS OF  200J6   I I I TT E E I I I WE  T I` -> `A KET■ A N O INTERNET ■ERSIONS OF  200J6   I I ITT EEIIIWE TI`
+11. `001831`: `E IE E U  KT■TQ   O Q <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV` -> `E IE E U  KT■TQ  OQ <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV`
+12. `001952`: `HET E  E ■HIN WEFU  EENE MCON TA K8T     I  ■ E I II II EE   MN S    B0` -> `HET E  E ■HINWEFU  EENEMCON TA K8T     I  ■ E I IIIIEE   MNS    B0`
+13. `002016`: `H■ S   B■   I E E      O NA■T SIT E■      EE  I I   E      K TIE0NH VNN JEENG` -> `H■ S   B■ IEE   ONA■T SIT E■      EE  I I   E     KTIE0NH VNN JEENG`
+14. `012823`: `E S SE EE  TTN T K E M TE E O IN U T     E` -> `E S SE EE  TTNT KEMTEEO IN U T  E`
+15. `012922`: `I W W M     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH` -> `I W W M   E TTTTT II  WA T T S WI QJ SAY73ESTKSTK S73 D NDH`
+16. `013303`: `G ALL BOXE S F OR FOC EESSS    HPE YOU INJOY UR LONG WAI T 5 EE ■` -> `G ALL BOXES FOR FOC EESSS    HPE YOU INJOY UR LONG WAI T 5 EE ■`
+17. `013402`: `W■E IN Q SO WITH WB 4 ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE` -> `W■E IN QSO WITH WB4ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE`
+18. `013520`: `MONTHS OR S O I GUESS BUT ALL GUD ES  CAN KE E G KI KE EP MY SELF O CC UPI ED A` -> `MONTHSORSO I GUESS BUT ALL GUD ES  CAN KE E G KI KE EP MYSELF OCCUPIED A`
+19. `013637`: `TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO` -> `TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EEZE ALL DAY JUST AWE SO`
+20. `021410`: `A    T O MTT T  Y M TT  O AO IHI DT RIGHR IS  FLENT 66OAM` -> `A    T O MTTT  YMTT  O AOIHI DT RIGHR IS  FLENT 66OAM`
+21. `021825`: `I E   E I ETO U E NT  K OC 1 UEK K` -> `IE E IETOUENT KOC1UEK K`
+22. `003901`: `EII E T NHHK` -> `EII ETNHHK`
+23. `004027`: `QNE K  E E  2 G ■ 2G KA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q` -> `QNE K  E E 2G■ 2GKA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q`
+24. `004108`: `HR NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC` -> `HR NR 2 0 R H X G K E8 W G K2 6 STMW OH SEP19 RIC`
+25. `004133`: `1 9 R I C H ARD D J GEL ■ 0 D T  UT 5 0 0 5 H ■ 8` -> `1 9 R I C H ARD D J GEL ■ 0 DT UT 50 0 5 H ■ 8`
+26. `004427`: `■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2 G K88NET TU EAT` -> `■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2G K88NET TU EAT`
+27. `004535`: `AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN 1 TH N B O TEI NANX K A3HT` -> `AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN1 THNBOTEINANX K A3HT`
 
-| set | key | proved | hypothesis | none | proved hops more than 10% off the constructed speed | HEAD's shown hops now hypothesis |
-|---|---|---|---|---|---|---|
-| real, 23 | inferred | 61328 | 54494 | 22178 | - | 30042 of 91370, in 21 recordings |
-| synthetic, 12 | exact | 24418 | 8056 | 23425 | 0 of 24418 | 8056 of 32474 |
+The adjudicated readings on 013347 (`VA3VRR`), 134712 (`N4L`) and 003758 (`MP/4 QNIK`) still read,
+13 of 13.
 
-**The (c) table:**
+**The §3 (b) table:**
 
-| | entry | after the change | exit |
+| part of R78 | before (`a523b39e`) | under the change | verdict |
 |---|---|---|---|
-| recordings compared / changed | 63 saved | 63 / 0 | - |
-| MET-CER-SURE real, inferred | 33 of 436 | 33 of 436 | 33 of 436 |
-| MET-CER-SURE synthetic, exact | 14 of 173 | 14 of 173 | 14 of 173 |
-| MET-INVENTED real / synthetic | 33 / 473, 14 / 252 | same | same |
-| coverage real / synthetic | 403 / 473, 159 / 252 | same | same |
-| MET-WBE real / synthetic | 46 / 113, 48 / 84 | same | same |
-| captures / adjudicated / named | 51/51, 13/13, 10/13 | 51/51, 13/13, 10/13 | 51/51, 13/13, 10/13 |
-| MET-PITCH-ERR files over 25 Hz | 9 | 9, 69 captures 0 changed | 9, 0 changed |
+| MET-WBE, real, inferred | 46 (39 ins, 7 del) over 113, 0.4071 | 37 (29 ins, 8 del), 0.3274 | falls |
+| MET-WBE, synthetic, exact | 48 (19, 29) over 84, 0.5714 | 44 (13, 31), 0.5238 | does not rise |
+| MET-CER-SURE, real / synthetic | 33 of 436 / 14 of 173 | 33 of 436 / 14 of 173 | rise on neither |
+| MET-INVENTED, real / synthetic | 33 over 473 / 14 over 252 | same | rise on neither |
+| sure-and-right coverage, real / synthetic | 403 over 473 / 159 over 252 | same | falls on neither |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| **V-11**, 35 recordings: boundaries wrong and sure-wrong letters per recording | - | 0 worse. Boundaries: `004507` 7->5, `032050` 4->2, `032113` 7->3, `004108` 2->1, char-gap-5 15 dB 14->12, 5 dB 10->8, 17:37 7->7, `031905` 1->1, `031838` 1->1; every other recording unchanged. Sure-wrong letters unchanged on every recording | holds |
+| capture rows, named floors | 51 of 51; 10 of 13 | 51 of 51; 10 of 13, the same three at the same counts (`032113`'s edits 10 -> 6) | as at entry |
 
-**Ticks:** 5.5 ticked in both copies of `PHASE_PLAN.md`. 5.1 to 5.4 and 5.6 are not ticked, and nothing in steps 2, 3 or 4 was ticked. **DRIFT:** step 2 0, step 3 0, step 4 1, step 5 1 (§3 (f)).
+The full per-recording V-11 column is in `.run-unit/unit452-v11-change.txt`, and the running figure
+is in `docs/phase-requirements/metrics.md` under unit 452.
 
 ## 4. What's blocking us
 
-1. **What "current" means for a proved speed. Ruling wanted, and it does not block 5.5.** The unit reads it as keying found at the pitch within the tracker's own six-survey span, three seconds (`KeyingRecently`).
-   - **Reasoning.** The tree says the settled reading trails the survey, and that gating it on keying right now asks the wrong question (`CwToneTracker.cs` 702-712).
-   - **Rejected: the latest survey alone**, which unit 450 used for the pitch. It proved a clean 12 wpm send at 15 dB on 900 of 5681 hops, and the real set on 40559 hops against 61328.
-   - **The cost of the reading taken:** a speed stays proved for up to about six and a half seconds after a sender stops.
-   - The owner may prefer the stricter or a looser span. It is one comparison in `CwDecoder.SpeedProof`, and it changes no decoded character either way.
-2. **A speed change at one pitch is proved at speeds nobody sent. A finding for HM-REQ-032's line, not repaired here.**
-   - **The case.** Printed, not judged, by the 034 test: 16 wpm then 24 wpm at 640 Hz, in the 12 s after the change. The window straddles the two speeds, and the proved hops name 16 (x93), 17 (x400), 19 (x300), 23 (x400) and 24 (x535). 17, 19 and 23 are more than 10% off whichever speed was being sent. The path is row 8: a measured dit, keying current at the pitch.
-   - **Why the state cannot see it.** The tree has no re-acquisition for a speed change without a pitch move, so a straddle is not visible to it.
-   - **Reasoning.** Proved says the dit was measured on current keying, not that the window holds one sender's speed.
-   - **Rejected: calling a straddle a hypothesis this unit.** It would need a new detector for a speed change, and section 7 forbids changing how the speed is found or re-acquired.
-   - **Wanted:** a ruling on whether 5.x should give the speed its own re-acquisition on a change of 25% or more, as HM-REQ-032 implies.
+None of these is in the way of 6.3. The first bears on HM-REQ-054 and 080 for TX-FARNS.
+
+1. **The relabel's share against a Farnsworth sender's ratio.** The relabel treats a word gap as at
+   least the root of seven thirds (1.53) times the character gap. TX-FARNS allows a character gap
+   up to 7 units, whose word gap may be only a little longer. On the character-gap-5 case (1:5:7,
+   ratio 1.4) the relabel took out 5 true word gaps at HEAD and 7 under the change: group G4. A
+   ruling is asked on whether HM-REQ-054's TX-FARNS spacing binds the relabel's share, and so which
+   of 1.53 and the sender's own ratio should govern.
+   - Rejected: changing the share here. It is a second value of an existing rule, and it would move
+     G2 as well.
+2. **V-11 per recording, read net or boundary by boundary.** On `031838` the change removed one
+   inserted space and lost one true boundary (`WIAHA MEAN` for `WITH A MEAN`). The recording stays
+   at 1 wrong. I read V-11 as the per-recording count, which does not rise. A ruling is asked on
+   whether a recording that trades one wrong boundary for another fails V-11.
+   - Rejected: refusing the change on this reading. The instruction's column is a count per
+     recording.
+3. **Unkeyed recordings.** The keep rule judges only the 35 keyed recordings. Of the 27 whose text
+   changed, most are unkeyed. There, the change mended words (`BOXES FOR`, `QSO WITH WB4ET`,
+   `MYSELF OCCUPIED`, `BREEZE`) and also ran some together (`MONTHSORSO`, `SAY73ESTKSTK`). A ruling
+   is asked on whether an unkeyed recording's text should weigh in R78, for example by keying more
+   of these recordings, since today nothing can count either kind of change on them.
+   - Rejected: judging them by eye here. That would be word reasoning on an inferred reading (R72,
+     V-13).

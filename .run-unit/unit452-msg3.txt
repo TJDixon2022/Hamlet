@@ -1,0 +1,13 @@
+unit452 task 3: exit round - 6.3 ticked, MET-WBE real 37 over 113, synthetic 44 over 84, letters identical, floors as at entry; 6.1, 6.2, 6.4 to 6.6 open (6.3)
+
+Build 0 errors in 16 s; engine line 178 of 178 in 387 s; app line 276 of
+278 in 165 s, the 2 dispatcher-loop losses green alone (3 of 3), no hang;
+captures 51 of 51 in 132 s; adjudicated 13 of 13; named 10 of 13, the
+same three at the same counts; MET-CER-SURE 33 of 436 real, 14 of 173
+synthetic, MET-INVENTED and coverage unchanged; MET-PITCH-ERR 9 files over
+25 Hz; WhereTheWordBoundariesGoWrongTests green; text identical to the
+change round. src: CwProbabilisticStream.cs only, the relabel's fallback;
+nothing keys or transmits. Correction to task 2's message: 27 recordings'
+text changed, not 30. output.md written and validated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
