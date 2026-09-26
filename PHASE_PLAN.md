@@ -195,7 +195,7 @@ between real words.
 **Entry:** steps 0 and 1 met.
 
 **Exit:**
-- [ ] 4.1 A pitch instrument finer than 25 Hz is built and shown, on tones known by construction, to land within one of its own bins of the truth, sharing no line of code with `CwToneTracker` or `CwToneSurvey` (R76); its error per case and its cost per hop are tabled.
+- [x] 4.1 A pitch instrument finer than 25 Hz is built and shown, on tones known by construction, to land within one of its own bins of the truth, sharing no line of code with `CwToneTracker` or `CwToneSurvey` (R76); its error per case and its cost per hop are tabled.
 - [ ] 4.2 MET-PITCH-ERR is measured with it on every capture, and the report names every case where the decoder demodulated more than 25 Hz from the tone the instrument found - `cw-2026-09-24-135641` and `-152135` at 75 Hz are the known ones.
 - [ ] 4.3 HM-REQ-091, the tracked pitch chosen by keying quality and never by level alone or by the operator's configured pitch, has a test naming it and the report states whether it is met.
 - [ ] 4.4 A change to `CwToneTracker` under R75 is judged by R78's keep rule with the instrument's table beside it, and the report names the clause of HM-DEC-095 or HM-DEC-127 it works against; after three consecutive units with no kept change the step closes partial.

@@ -1,0 +1,20 @@
+unit447 task 1: pitch instrument, 30 of 30 cases within its 0.5 Hz bin, worst 0.024 Hz - 4.1 ticked (4.1)
+
+CwPitchInstrument, under the tests and never in the decode path: a hand FFT
+finds the bin that keys hardest (90th over 20th percentile, relative to each
+frame's median bin, muted frames out), its frames above the midpoint are the
+marks, and a direct Fourier sum over only those samples, under a 2 s Hann,
+finds the note on a 0.25 then 0.02 Hz grid. Bin 0.5 Hz (1 over the window).
+It references only the BCL; ItSharesNoCodeWithTheTracker checks its source.
+
+ThePitchInstrumentIsProvedTests names HM-REQ-092 and 4.1: nine pitches 300 to
+900 at 12, 20, 30 WPM and 15 dB, 625 at 5 dB, 625 keyed under a steady 525 six
+dB louder, and a slide of 20 Hz over 30 s. It failed first against a truth 1 Hz
+wrong (0 of 30 inside, worst 1.024 Hz), then passed 30 of 30. A first build
+with a flat 20 Hz fine reach missed 900 Hz and three off-bin cases; the reach
+became one coarse bin plus 2 Hz. Cost on cw-2026-09-24-003919 at 48 kHz: median
+of three 926 ms over 30 s, 31944 us per 1 s instrument hop, 154 us per 5 ms
+decoder hop. CwFixtureRecipe gains DriftHzPerSecond, default 0, which leaves
+every existing recipe rendered sample for sample as before. src unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

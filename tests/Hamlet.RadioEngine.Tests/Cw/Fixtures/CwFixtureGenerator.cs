@@ -30,6 +30,11 @@ namespace Hamlet.RadioEngine.Tests.Cw.Fixtures;
 /// receiver hears it: element-patterned mutes rather than silence.
 /// </param>
 /// <param name="Seed">Seeds the noise, so the file is the same every time.</param>
+/// <param name="DriftHzPerSecond">
+/// A steady slide of the note, in hertz a second from the start of the file, on
+/// top of <paramref name="DriftHz"/>'s swing (work instruction 447). Nought, the
+/// default, renders every existing recipe sample for sample as before.
+/// </param>
 public readonly record struct CwFixtureRecipe(
     string Name,
     string Text,
@@ -44,7 +49,8 @@ public readonly record struct CwFixtureRecipe(
     double QsbHz = 0,
     double QsbDepthDb = 0,
     double PreambleSeconds = 0,
-    int Seed = 20260817)
+    int Seed = 20260817,
+    double DriftHzPerSecond = 0)
 {
     /// <summary>The sending speed these element lengths imply.</summary>
     public double WordsPerMinute => 1200.0 / DitMilliseconds;
@@ -578,6 +584,11 @@ public static class CwFixtureGenerator
             // bin watches it leave.
             var toneHz = recipe.ToneHz
                 + (recipe.DriftHz * Math.Sin(2 * Math.PI * t / DriftSeconds));
+
+            if (recipe.DriftHzPerSecond != 0)
+            {
+                toneHz += recipe.DriftHzPerSecond * t;
+            }
 
             phase += 2 * Math.PI * toneHz / SampleRate;
 
