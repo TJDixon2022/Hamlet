@@ -1,0 +1,17 @@
+unit449 task 1: the forty traced with the instrument's pitch - largest open group, 9 wrong vs 6 right, read after the tracker left the station for a quieter keyed candidate (2.4)
+
+WhatTheFortySureWrongLettersRestOnTests, a sibling of
+WhereTheSureWrongLettersComeFromTests, prints every sure wrong or added
+letter at HEAD (40 real, inferred keys; 14 synthetic, exact keys) with its
+span, speeds, decoder and instrument pitch, retunes, marks and gaps, 445's
+verdict, rival margin and rival reading, whether it came before the first
+keyed verdict (a fact only), and the excluded routes that cover it. It
+asserts only that it counted MET-CER-SURE's own 40.
+
+src: CwProbabilisticDecoder.Rival returns the rival reading RivalMargin
+already compared against, carried to CwCharacter.RivalReading for the
+record. Nothing decides on it; all 126 recording texts are identical.
+
+Output: .run-unit/unit449-trace-head.txt.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -705,6 +705,7 @@ public sealed class CwProbabilisticStream
             SpanLogLikelihoodRatio = character.SpanLogLikelihoodRatio,
             SpanHops = character.SpanHops,
             MarginLlr = character.RivalMargin,
+            RivalReading = character.RivalReading,
         };
     }
 

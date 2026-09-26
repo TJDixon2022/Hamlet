@@ -1,0 +1,200 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.41]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.60]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.60]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheFortySureWrongLettersRestOnTests.EverySureWrongLetterWithThePitchBesideIt [2 m 28 s]
+  Standard Output Messages:
+ dim | real | dim precision (HM-REQ-014): 0 right of 0 dim, NaN | dim rate: 0 dim of 433 named letters emitted in the scored stretches, 0.0000
+ trace | set | recording | at s | span s | sent | emitted | class | pattern | rival | margin nats | wpm in force | wpm the window's marks imply | wpm its own marks imply | decoder mix Hz | tracker Hz | instrument Hz | decoder less instrument Hz | tracker retune | largest step Hz | marks ms/u | inner gaps ms/u | worst mark | worst gap | 445 verdict | before first keyed verdict | evidence per hop | true pitch Hz | true wpm | excluded routes covering it
+ trace | real | unadjudicated/cw-2026-09-23-173723 | 28.970 | 28.06 to 28.97 | `6` | `7` | wrong | --... | - -... | 0.872 | 17 | 16.2 | 11.1 | 600.0 | 600.0 | 585.9 | +14.1 | no | 0.0 | 500/7.1u 70/1.0u 70/1.0u 75/1.1u | 65/0.9u 75/1.1u 75/1.1u | 2.36 | 1.09 | inside 6.5, sure | no | 1.81 | NaN | NaN | 442 rival margin; 441 marks' speed
+ trace | real | unadjudicated/cw-2026-09-23-173723 | 29.195 | 29.13 to 29.20 | `R` | `E` | wrong | . | - | Infinity | 17 | 16.2 | 16.0 | 600.0 | 600.0 | 585.9 | +14.1 | no | 0.0 | 75/1.1u |  | 1.06 | 1.00 | inside 6.5, sure | no | 2.81 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-09-23-173723 | 30.000 | 29.79 to 30.00 | `D` | `I` | wrong | .. | . . | 1.776 | 17 | 16.2 | 14.1 | 600.0 | 600.0 | 585.9 | +14.1 | no | 0.0 | 85/1.2u |  | 1.20 | 1.00 | inside 6.5, sure | no | 2.21 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-18-003758 | 10.640 | 10.60 to 10.64 | `A` | `E` | wrong | . | - | 1.29 | 40 | 45.4 | 20.0 | 500.0 | 500.0 | 500.8 | -0.8 | no | 0.0 | 60/2.0u |  | 1.50 | 1.00 | inside 6.5, sure | no | 34.00 | NaN | NaN | 441 marks' speed; 446 speed bounds
+ trace | real | unadjudicated/cw-2026-08-18-003758 | 10.740 | 10.70 to 10.74 | `A` | `E` | wrong | . | - | 1.29 | 40 | 45.4 | 20.0 | 500.0 | 500.0 | 500.8 | -0.8 | no | 0.0 | 60/2.0u |  | 1.50 | 1.00 | inside 6.5, sure | no | 35.03 | NaN | NaN | 441 marks' speed; 446 speed bounds
+ trace | real | unadjudicated/cw-2026-08-18-003758 | 10.940 | 10.80 to 10.94 | `4` | `T` | wrong | - | .- | 91.75 | 40 | 45.4 | 22.5 | 500.0 | 500.0 | 500.8 | -0.8 | no | 0.0 | 160/5.3u |  | 1.78 | 1.00 | inside 6.5, sure | no | 41.47 | NaN | NaN | 441 marks' speed; 446 speed bounds
+ trace | real | unadjudicated/cw-2026-08-22-031838 | 8.675 | 8.50 to 8.68 | `2` | `T` | wrong | - | -. | 2.519 | 23 | 22.8 | 16.7 | 525.0 | 525.0 | 499.9 | +25.1 | inside | 25.0 | 215/4.1u |  | 1.37 | 1.00 | inside 6.5, sure | no | 1.84 | NaN | NaN | 441 marks' speed
+ trace | real | unadjudicated/cw-2026-08-22-031838 | 9.685 | 9.49 to 9.69 | `,` | `T` | wrong | - | .- | 3.423 | 28 | 24.8 | 16.4 | 525.0 | 525.0 | 499.9 | +25.1 | within 1 s | 25.0 | 220/5.1u |  | 1.71 | 1.00 | inside 6.5, sure | no | 1.30 | NaN | NaN | 441 marks' speed
+ trace | real | unadjudicated/cw-2026-08-22-031838 | 17.290 | 17.01 to 17.29 | `T` | `A` | wrong | .- | . - | 2.614 | 28 | 30.0 | NaN | 525.0 | 525.0 | 500.0 | +25.0 | no | 0.0 |  |  | Infinity | 1.00 | inside 6.5, sure | no | 4.13 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-22-031838 | 24.185 | 24.12 to 24.19 | `R` | `T` | wrong | - | . | 1.29 | 34 | 34.6 | NaN | 525.0 | 525.0 | 499.9 | +25.1 | no | 0.0 |  |  | Infinity | 1.00 | inside 6.5, sure | no | 1.86 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-22-031838 | 24.410 | 24.26 to 24.41 | `E` | `T` | wrong | - | -. | 6.576 | 34 | 34.6 | 21.2 | 525.0 | 525.0 | 499.9 | +25.1 | no | 0.0 | 170/4.8u |  | 1.61 | 1.00 | inside 6.5, sure | no | 1.80 | NaN | NaN | 441 marks' speed
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 14.155 | 14.07 to 14.16 | `C` | `I` | wrong | .. | . | 23.22 | 18 | 22.2 | NaN | 300.0 | 300.0 | 499.5 | -199.5 | no | 0.0 |  |  | Infinity | 1.00 | inside 6.5, sure | no | 1.24 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 14.635 | 14.37 to 14.64 | `E` | `A` | wrong | .- | . - | 0.6254 | 18 | 24.8 | 19.5 | 300.0 | 300.0 | 499.5 | -199.5 | no | 0.0 | 65/1.0u 175/2.6u | 65/1.0u | 1.14 | 1.03 | inside 6.5, sure | no | 3.37 | NaN | NaN | 442 rival margin
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 14.980 | 14.88 to 14.98 | `N` | `I` | wrong | .. | . | 102 | 18 | 24.8 | 35.6 | 300.0 | 300.0 | 499.5 | -199.5 | no | 0.0 | 40/0.6u 85/1.3u | 20/0.3u | 1.67 | 3.33 | inside 6.5, sure | no | 7.84 | NaN | NaN | 444 gap duration
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 15.150 | 15.13 to 15.15 | `T` | `E` | wrong | . | - | Infinity | 22 | 24.8 | 48.0 | 300.0 | 300.0 | 499.9 | -199.9 | no | 0.0 | 25/0.5u |  | 2.18 | 1.00 | inside 6.5, sure | no | 13.76 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 16.000 | 15.91 to 16.00 | `E` | `T` | wrong | - | .. | 53.53 | 28 | 24.2 | 28.8 | 300.0 | 300.0 | 499.9 | -199.9 | no | 0.0 | 125/2.9u |  | 1.03 | 1.00 | inside 6.5, sure | no | 24.79 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 16.260 | 16.11 to 16.26 | `T` | `A` | wrong | .- | ... | 15.37 | 28 | 24.2 | NaN | 300.0 | 300.0 | 499.9 | -199.9 | no | 0.0 | 170/4.0u |  | 1.32 | 1.00 | inside 6.5, sure | no | 26.74 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 16.615 | 16.48 to 16.62 | `E` | `N` | wrong | -. | .. | 0.7112 | 30 | 26.2 | NaN | 300.0 | 300.0 | 499.9 | -199.9 | no | 0.0 | 150/3.8u |  | 1.25 | 1.00 | inside 6.5, sure | no | 37.02 | NaN | NaN | 442 rival margin
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 16.880 | 16.78 to 16.88 | `R` | `I` | wrong | .. | .- | 8.761 | 30 | 26.2 | 49.0 | 300.0 | 300.0 | 499.9 | -199.9 | no | 0.0 | 30/0.8u 60/1.5u | 25/0.6u | 1.50 | 1.60 | inside 6.5, sure | no | 41.33 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-08-22-031905 | 18.285 | 17.97 to 18.29 | `F` | `W` | wrong | .-- | . -- | 0.09246 | 34 | 36.2 | NaN | 500.0 | 500.0 | 499.9 | +0.1 | inside | 200.0 | 120/3.4u 90/2.6u | 45/1.3u | 1.18 | 1.28 | inside 6.5, sure | no | 130.58 | NaN | NaN | 442 rival margin
+ trace | real | unadjudicated/cw-2026-08-22-031948 | 4.690 | 4.11 to 4.69 | `1` | `5` | wrong | ..... | .-... | 16 | 18 | 15.4 | 14.1 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 85/1.3u 85/1.3u 80/1.2u 85/1.3u 80/1.2u | 45/0.7u 55/0.8u 30/0.5u 50/0.8u | 1.28 | 2.22 | inside 6.5, sure | no | 5.26 | NaN | NaN | 441 marks' speed; 444 gap duration
+ trace | real | unadjudicated/cw-2026-08-22-032012 | 1.765 | 1.60 to 1.77 | `O` | `T` | wrong | - | -. | 1205 | 23 | 28.3 | 20.0 | 500.0 | 500.0 | 499.9 | +0.1 | within 1 s | 100.0 | 180/3.5u |  | 1.15 | 1.00 | inside 6.5, sure | yes | 288.93 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032012 | 7.425 | 6.39 to 7.43 | `-` | `.` | added | .-.-.- | .-.-- | 2.123 | 18 | 15.4 | 15.4 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 85/1.3u 160/2.4u 80/1.2u 300/4.5u 215/3.2u | 55/0.8u 55/0.8u 50/0.8u 50/0.8u | 1.50 | 1.33 | inside 6.5, sure | yes | 5.62 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032012 | 8.640 | 7.61 to 8.64 | `-` | `1` | added | .---- | .- --- | 2.775 | 18 | 15.8 | 18.5 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 60/0.9u 210/3.2u 175/2.6u 215/3.2u 175/2.6u | 55/0.8u 55/0.8u 50/0.8u 50/0.8u | 1.14 | 1.33 | inside 6.5, sure | yes | 3.54 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032050 | 11.195 | 11.12 to 11.20 | `-` | `T` | added | - | . | 1.909 | 34 | 50.4 | 40.0 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 90/2.6u |  | 1.18 | 1.00 | inside 6.5, sure | yes | 4.94 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032050 | 11.545 | 11.26 to 11.55 | `U` | `A` | wrong | .- | -- | 3.065 | 34 | 50.4 | 20.3 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 50/1.4u 210/6.0u | 35/1.0u | 1.98 | 1.01 | inside 6.5, sure | yes | 5.14 | NaN | NaN | 441 marks' speed; 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032050 | 16.375 | 15.75 to 16.38 | `P` | `W` | wrong | .-- | .--. | 16.61 | 18 | 17.4 | 19.3 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 40/0.6u 215/3.2u 290/4.4u | 50/0.8u 45/0.7u | 1.67 | 1.48 | inside 6.5, sure | yes | 9.33 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032050 | 17.745 | 17.54 to 17.75 | `N` | `T` | wrong | - | .- | 223.1 | 18 | 23.6 | 17.1 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 210/3.2u |  | 1.05 | 1.00 | inside 6.5, sure | yes | 35.10 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032050 | 26.130 | 25.81 to 26.13 | `D` | `H` | wrong | .... | -... | 1.344 | 21 | 21.0 | 37.5 | 325.0 | 325.0 | 499.9 | -174.9 | no | 0.0 | 110/1.9u 205/3.6u 15/0.3u | 10/0.2u 10/0.2u | 3.81 | 5.71 | inside 6.5, sure | no | 183.44 | NaN | NaN | 444 gap duration
+ trace | real | unadjudicated/cw-2026-08-22-032113 | 6.135 | 5.71 to 6.14 | `D` | `O` | wrong | --- | --. | 0.09246 | 30 | 27.3 | 14.9 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 230/5.8u 85/2.1u 85/2.1u | 10/0.3u 50/1.3u | 1.92 | 4.00 | inside 6.5, sure | yes | 13.77 | NaN | NaN | 442 rival margin; 441 marks' speed; 444 gap duration; 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032129 | 4.175 | 4.11 to 4.18 | `2` | `T` | wrong | - | . | 0.006638 | 32 | 26.2 | 42.4 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 85/2.3u |  | 1.32 | 1.00 | inside 6.5, sure | yes | 2.84 | NaN | NaN | 442 rival margin; 444 gap duration; 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032129 | 4.990 | 4.11 to 4.99 | `0` | `J` | wrong | .--- | .--. | 1.931 | 18 | 28.3 | 15.4 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 85/1.3u 280/4.2u 215/3.2u 155/2.3u | 55/0.8u 55/0.8u 50/0.8u | 1.40 | 1.33 | inside 6.5, sure | yes | 5.29 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032129 | 7.810 | 7.34 to 7.81 | `R` | `G` | wrong | --. | .-. | 0.1675 | 28 | 23.1 | 15.1 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 90/2.1u 210/4.9u 80/1.9u | 55/1.3u 55/1.3u | 1.63 | 1.28 | inside 6.5, sure | yes | 4.07 | NaN | NaN | 442 rival margin; 441 marks' speed; 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032129 | 20.250 | 19.91 to 20.25 | `-` | `A` | added | .- | -- | 66.52 | 18 | 15.8 | 15.8 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 80/1.2u 215/3.2u | 55/0.8u | 1.20 | 1.21 | inside 6.5, sure | yes | 24.07 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-08-22-032129 | 20.460 | 20.39 to 20.46 | `L` | `E` | wrong | . | - | Infinity | 18 | 15.8 | 15.0 | 500.0 | 500.0 | 499.9 | +0.1 | no | 0.0 | 80/1.2u |  | 1.20 | 1.00 | inside 6.5, sure | yes | 24.41 | NaN | NaN | 448 from cold (acquisition, parked)
+ trace | real | unadjudicated/cw-2026-09-24-004108 | 14.340 | 13.86 to 14.34 | `E` | `G` | wrong | --. | - -. | 2.764 | 22 | 23.2 | 21.8 | 625.0 | 625.0 | 625.9 | -0.9 | no | 0.0 | 165/3.0u 165/3.0u 55/1.0u | 55/1.0u 55/1.0u | 1.01 | 1.01 | inside 6.5, sure | no | 12.52 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-09-24-004108 | 17.775 | 17.19 to 17.78 | `V` | `6` | wrong | -.... | - .... | 2.764 | 22 | 23.2 | 21.8 | 625.0 | 625.0 | 625.7 | -0.7 | no | 0.0 | 165/3.0u 50/0.9u 55/1.0u 55/1.0u 50/0.9u | 60/1.1u 55/1.0u 55/1.0u 60/1.1u | 1.09 | 1.10 | inside 6.5, sure | no | 13.37 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-09-24-004234 | 7.715 | 7.57 to 7.72 | `O` | `T` | wrong | - | .- | 20.61 | 22 | 23.2 | 22.5 | 620.0 | 620.0 | 626.9 | -6.9 | within 1 s | 10.0 | 160/2.9u |  | 1.02 | 1.00 | inside 6.5, sure | no | 13.68 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-09-24-004234 | 8.045 | 7.89 to 8.05 | `U` | `T` | wrong | - | .. | 21.15 | 22 | 23.2 | 21.2 | 620.0 | 620.0 | 626.9 | -6.9 | inside | 10.0 | 170/3.1u |  | 1.04 | 1.00 | inside 6.5, sure | no | 14.19 | NaN | NaN | none
+ trace | real | unadjudicated/cw-2026-09-24-004347 | 19.280 | 18.70 to 19.28 | `-` | `O` | added | --- | ..-- | 19.95 | 22 | 23.2 | 21.8 | 620.0 | 620.0 | 627.5 | -7.5 | no | 0.0 | 155/2.8u 175/3.2u 165/3.0u | 65/1.2u 45/0.8u | 1.07 | 1.21 | inside 6.5, sure | no | 3.72 | NaN | NaN | none
+ route | set | excluded route | its test | wrong or added it covers | right it covers
+ route | real | 442 rival margin | rival margin under 1 nat | 7 | 16
+ route | real | 441 marks' speed | window's marks over 1.25 times the path's unit, or the letter's own | 11 | 70
+ route | real | 444 gap duration | a key-up under half a unit inside the letter | 5 | 80
+ route | real | 445 mark-shape edge | worst mark or inner gap past the farthest right letter's | 0 | 0
+ route | real | 448 from cold (acquisition, parked) | before the tracker's first keyed verdict | 13 | 108
+ route | real | 446 speed bounds | speed at the grid's edge | 3 | 0
+ group | set | signal the decoder computes | wrong or added | of them, no excluded route covers | right | right, no excluded route covers
+ group | real | a single element (E or T) | 17 | 6 | 64 | 32
+ group | real | envelope's whole marks differ in number from the pattern's | 10 | 5 | 49 | 13
+ group | real | mixed 100 Hz or more from the pitch the decoder mixed at longest in the file | 9 | 5 | 6 | 0
+ group | real | alone between two word gaps | 6 | 3 | 41 | 17
+ group | real | the tracker retuned inside the letter or within 1 s of it | 6 | 2 | 129 | 90
+ group | real | evidence per hop under 2 | 6 | 2 | 9 | 3
+ group | real | the tracker retuned inside the letter | 3 | 1 | 35 | 29
+ group | real | window's marks under 0.80 times the path's unit | 6 | 0 | 112 | 37
+ group | real | single element alone between two word gaps | 1 | 0 | 10 | 5
+ group | real | evidence per hop under 1 | 0 | 0 | 0 | 0
+ mixed | set | recording | decoder mix Hz | instrument Hz (median) | right | wrong or added | span s
+ mixed | real | unadjudicated/cw-2026-08-18-003758 | 500 | 499.1 | 8 | 3 | 10.6 to 16.1
+ mixed | real | unadjudicated/cw-2026-08-22-031838 | 525 | 499.9 | 16 | 5 | 8.5 to 24.4
+ mixed | real | unadjudicated/cw-2026-08-22-031905 | 500 | 499.9 | 19 | 1 | 4.8 to 26.3
+ mixed | real | unadjudicated/cw-2026-08-22-031905 | 300 | 499.9 | 1 | 8 | 14.1 to 16.9
+ mixed | real | unadjudicated/cw-2026-08-22-031948 | 500 | 499.9 | 26 | 1 | 2.9 to 28.1
+ mixed | real | unadjudicated/cw-2026-08-22-032012 | 500 | 499.9 | 40 | 3 | 1.6 to 30.0
+ mixed | real | unadjudicated/cw-2026-08-22-032050 | 500 | 499.9 | 33 | 4 | 2.1 to 24.0
+ mixed | real | unadjudicated/cw-2026-08-22-032050 | 325 | 499.9 | 2 | 1 | 25.8 to 27.1
+ mixed | real | unadjudicated/cw-2026-08-22-032113 | 500 | 499.9 | 21 | 1 | 1.5 to 13.9
+ mixed | real | unadjudicated/cw-2026-08-22-032129 | 500 | 499.9 | 34 | 5 | 4.1 to 28.7
+ mixed | real | unadjudicated/cw-2026-09-23-173723 | 575 | 585.9 | 5 | 0 | 13.2 to 21.2
+ mixed | real | unadjudicated/cw-2026-09-23-173723 | 585 | 585.9 | 7 | 0 | 14.2 to 24.8
+ mixed | real | unadjudicated/cw-2026-09-23-173723 | 600 | 585.9 | 5 | 3 | 25.0 to 30.0
+ mixed | real | unadjudicated/cw-2026-09-24-004108 | 625 | 626.3 | 2 | 2 | 13.9 to 17.8
+ mixed | real | unadjudicated/cw-2026-09-24-004234 | 625 | 627.6 | 4 | 0 | 2.3 to 5.7
+ mixed | real | unadjudicated/cw-2026-09-24-004234 | 630 | 627.8 | 3 | 0 | 6.0 to 7.3
+ mixed | real | unadjudicated/cw-2026-09-24-004234 | 620 | 626.9 | 0 | 2 | 7.6 to 8.0
+ mixed | real | unadjudicated/cw-2026-09-24-004347 | 625 | 627.0 | 14 | 0 | 3.6 to 16.9
+ mixed | real | unadjudicated/cw-2026-09-24-004347 | 630 | 626.8 | 1 | 0 | 5.8 to 6.3
+ mixed | real | unadjudicated/cw-2026-09-24-004347 | 620 | 626.8 | 8 | 1 | 6.5 to 20.7
+ level | set | peak over the last 10 s's median peak | wrong or added | right
+ level | real | fewer than 3 letters before | 10 | 59
+ level | real | under 0.25 | 2 | 0
+ level | real | 0.25 to 0.5 | 6 | 3
+ level | real | 0.5 to 2 | 21 | 324
+ level | real | 2 to 4 | 1 | 7
+ level | real | 4 and over | 0 | 0
+ pitch | set | decoder less instrument | wrong or added | right
+ pitch | real | no instrument window | 0 | 0
+ pitch | real | within 12.5 Hz | 23 | 355
+ pitch | real | 12.5 to 25 Hz | 3 | 18
+ pitch | real | more than 25 Hz | 14 | 20
+ edge | real | evidence per hop | farthest right letter 1.038 | wrong or added past it 0 | 
+ edge | real | rival margin | farthest right letter 0.02477 | wrong or added past it 1 | unadjudicated/cw-2026-08-22-032129 4.175 `2`->`T` 0.006638
+ edge | real | window ratio | farthest right letter 1.196 | wrong or added past it 2 | unadjudicated/cw-2026-08-22-032129 4.175 `2`->`T` 1.222, unadjudicated/cw-2026-08-22-032129 7.810 `R`->`G` 1.212
+ total | real | 433 sure: 393 right, 35 wrong, 5 added | 14 of the 40 covered by no excluded route | 13 before the first keyed verdict | 6 with a retune inside or within 1 s | 14 mixed more than 25 Hz off the instrument
+ dim | synthetic | dim precision (HM-REQ-014): 0 right of 0 dim, NaN | dim rate: 0 dim of 173 named letters emitted in the scored stretches, 0.0000
+ trace | set | recording | at s | span s | sent | emitted | class | pattern | rival | margin nats | wpm in force | wpm the window's marks imply | wpm its own marks imply | decoder mix Hz | tracker Hz | instrument Hz | decoder less instrument Hz | tracker retune | largest step Hz | marks ms/u | inner gaps ms/u | worst mark | worst gap | 445 verdict | before first keyed verdict | evidence per hop | true pitch Hz | true wpm | excluded routes covering it
+ trace | synthetic | cq-25wpm-15db | 14.885 | 14.46 to 14.89 | `-` | `K` | added | -.- | -. - | 42.71 | 25 | 22.9 | NaN | 615.0 | 615.0 | 616.6 | -1.6 | within 1 s | 15.0 | 150/3.1u 85/1.8u 150/3.1u | 40/0.8u 15/0.3u | 1.69 | 3.20 | inside 6.5, sure | no | 109.42 | 615 | 25.0 | 444 gap duration
+ trace | synthetic | cq-25wpm-5db | 14.885 | 14.46 to 14.89 | `-` | `K` | added | -.- | - .- | 2.831 | 25 | 26.2 | 22.5 | 620.0 | 620.0 | 616.6 | +3.4 | within 1 s | 5.0 | 150/3.1u 50/1.0u 170/3.5u | 45/0.9u 40/0.8u | 1.18 | 1.20 | inside 6.5, sure | no | 5.43 | 615 | 25.0 | none
+ trace | synthetic | cq-18wpm-15db-char5 | 14.145 | 14.08 to 14.15 | `L` | `E` | wrong | . | - | Infinity | 18 | 16.8 | 16.0 | 625.0 | 625.0 | 616.5 | +8.5 | within 1 s | 50.0 | 75/1.1u |  | 1.13 | 1.00 | inside 6.5, sure | no | 77.02 | 615 | 18.0 | none
+ trace | synthetic | cq-18wpm-5db-char5 | 8.405 | 8.22 to 8.41 | `-` | `T` | added | - | .- | 6.032 | 18 | 18.2 | 17.1 | 625.0 | 625.0 | 612.2 | +12.8 | within 1 s | 25.0 | 210/3.2u |  | 1.05 | 1.00 | inside 6.5, sure | no | 7.60 | 615 | 18.0 | none
+ trace | synthetic | cq-18wpm-5db-char5 | 8.680 | 8.62 to 8.68 | `D` | `E` | wrong | . | .. | 30.06 | 18 | 18.2 | 20.0 | 625.0 | 625.0 | 612.2 | +12.8 | within 1 s | 25.0 | 60/0.9u |  | 1.11 | 1.00 | inside 6.5, sure | no | 8.21 | 615 | 18.0 | none
+ trace | synthetic | cq-18wpm-5db-char5 | 9.745 | 9.56 to 9.75 | `-` | `T` | added | - | .- | 5.232 | 18 | 18.5 | 18.9 | 625.0 | 625.0 | 612.6 | +12.4 | within 1 s | 25.0 | 190/2.9u |  | 1.05 | 1.00 | inside 6.5, sure | no | 6.84 | 615 | 18.0 | none
+ trace | synthetic | cq-18wpm-5db-char5 | 11.475 | 11.05 to 11.48 | `-` | `K` | added | -.- | -- | -0.5774 | 18 | 18.2 | NaN | 625.0 | 625.0 | 616.6 | +8.4 | no | 0.0 | 220/3.3u 200/3.0u | 40/0.6u | 1.10 | 1.67 | inside 6.5, sure | no | 3.36 | 615 | 18.0 | 442 rival margin
+ trace | synthetic | cq-18wpm-5db-char5 | 12.005 | 11.82 to 12.01 | `-` | `T` | added | - | .- | 7.928 | 18 | 18.5 | 18.0 | 625.0 | 625.0 | 616.6 | +8.4 | no | 0.0 | 200/3.0u |  | 1.00 | 1.00 | inside 6.5, sure | no | 5.58 | 615 | 18.0 | none
+ trace | synthetic | cq-18wpm-5db-char5 | 12.545 | 12.24 to 12.55 | `N` | `D` | wrong | -.. | -. | -0.6105 | 18 | 18.2 | 20.6 | 625.0 | 625.0 | 617.7 | +7.3 | within 1 s | 10.0 | 185/2.8u 55/0.8u | 65/1.0u | 1.21 | 1.03 | inside 6.5, sure | no | 4.21 | 615 | 18.0 | 442 rival margin
+ trace | synthetic | cq-18wpm-5db-char5 | 13.215 | 12.89 to 13.22 | `0` | `U` | wrong | ..- | .- | 4.201 | 18 | 18.2 | 18.1 | 615.0 | 615.0 | 617.8 | -2.8 | inside | 10.0 | 60/0.9u 220/3.3u | 80/1.2u | 1.11 | 1.20 | inside 6.5, sure | no | 4.42 | 615 | 18.0 | none
+ trace | synthetic | cq-18wpm-5db-char5 | 13.870 | 13.56 to 13.87 | `C` | `U` | wrong | ..- | .... | 7.53 | 18 | 18.2 | 16.5 | 625.0 | 625.0 | 617.8 | +7.2 | within 1 s | 10.0 | 65/1.0u 245/3.7u | 65/1.0u | 1.23 | 1.03 | inside 6.5, sure | no | 4.35 | 615 | 18.0 | none
+ trace | synthetic | cq-18wpm-5db-char5 | 14.145 | 14.09 to 14.15 | `A` | `E` | wrong | . | .. | 21.48 | 18 | 18.2 | 12.6 | 620.0 | 620.0 | 616.5 | +3.5 | within 1 s | 10.0 | 95/1.4u |  | 1.43 | 1.00 | inside 6.5, sure | no | 6.29 | 615 | 18.0 | 441 marks' speed
+ trace | synthetic | cq-18wpm-5db-char5 | 14.805 | 14.49 to 14.81 | `L` | `U` | wrong | ..- | .- | 0.1384 | 18 | 20.1 | 14.7 | 620.0 | 620.0 | 616.5 | +3.5 | within 1 s | 10.0 | 100/1.5u 200/3.0u | 30/0.5u | 1.50 | 2.22 | inside 6.5, sure | no | 5.08 | 615 | 18.0 | 442 rival margin; 444 gap duration
+ trace | synthetic | cq-18wpm-5db-char5 | 15.075 | 15.02 to 15.08 | `L` | `E` | wrong | . | .. | 19.18 | 18 | 18.2 | 17.1 | 620.0 | 620.0 | 615.7 | +4.3 | within 1 s | 5.0 | 70/1.1u |  | 1.05 | 1.00 | inside 6.5, sure | no | 7.22 | 615 | 18.0 | none
+ route | set | excluded route | its test | wrong or added it covers | right it covers
+ route | synthetic | 442 rival margin | rival margin under 1 nat | 3 | 4
+ route | synthetic | 441 marks' speed | window's marks over 1.25 times the path's unit, or the letter's own | 1 | 3
+ route | synthetic | 444 gap duration | a key-up under half a unit inside the letter | 2 | 8
+ route | synthetic | 445 mark-shape edge | worst mark or inner gap past the farthest right letter's | 0 | 0
+ route | synthetic | 448 from cold (acquisition, parked) | before the tracker's first keyed verdict | 0 | 27
+ route | synthetic | 446 speed bounds | speed at the grid's edge | 0 | 0
+ group | set | signal the decoder computes | wrong or added | of them, no excluded route covers | right | right, no excluded route covers
+ group | synthetic | the tracker retuned inside the letter or within 1 s of it | 12 | 8 | 108 | 82
+ group | synthetic | a single element (E or T) | 7 | 6 | 8 | 7
+ group | synthetic | envelope's whole marks differ in number from the pattern's | 5 | 2 | 2 | 2
+ group | synthetic | alone between two word gaps | 2 | 2 | 26 | 22
+ group | synthetic | single element alone between two word gaps | 2 | 2 | 0 | 0
+ group | synthetic | the tracker retuned inside the letter | 1 | 1 | 31 | 21
+ group | synthetic | mixed 100 Hz or more from the pitch the decoder mixed at longest in the file | 0 | 0 | 0 | 0
+ group | synthetic | evidence per hop under 1 | 0 | 0 | 0 | 0
+ group | synthetic | evidence per hop under 2 | 0 | 0 | 1 | 1
+ group | synthetic | window's marks under 0.80 times the path's unit | 0 | 0 | 10 | 10
+ mixed | set | recording | decoder mix Hz | instrument Hz (median) | right | wrong or added | span s
+ mixed | synthetic | cq-18wpm-15db-char5 | 600 | 617.2 | 6 | 0 | 1.0 to 13.2
+ mixed | synthetic | cq-18wpm-15db-char5 | 625 | 616.5 | 7 | 1 | 2.1 to 17.5
+ mixed | synthetic | cq-18wpm-15db-char5 | 615 | 612.8 | 7 | 0 | 5.8 to 22.1
+ mixed | synthetic | cq-18wpm-5db-char5 | 600 | 612.8 | 3 | 0 | 1.0 to 20.1
+ mixed | synthetic | cq-18wpm-5db-char5 | 625 | 616.6 | 5 | 7 | 2.1 to 22.1
+ mixed | synthetic | cq-18wpm-5db-char5 | 615 | 612.9 | 6 | 1 | 5.8 to 19.2
+ mixed | synthetic | cq-18wpm-5db-char5 | 620 | 616.5 | 0 | 3 | 14.1 to 15.1
+ mixed | synthetic | cq-25wpm-15db | 600 | 617.2 | 1 | 0 | 1.0 to 1.5
+ mixed | synthetic | cq-25wpm-15db | 625 | 617.2 | 7 | 0 | 1.7 to 13.0
+ mixed | synthetic | cq-25wpm-15db | 620 | 617.8 | 4 | 0 | 3.3 to 14.1
+ mixed | synthetic | cq-25wpm-15db | 615 | 613.6 | 9 | 1 | 5.9 to 14.9
+ mixed | synthetic | cq-25wpm-5db | 600 | 617.3 | 1 | 0 | 1.0 to 1.5
+ mixed | synthetic | cq-25wpm-5db | 625 | 617.8 | 2 | 0 | 1.7 to 3.2
+ mixed | synthetic | cq-25wpm-5db | 615 | 614.4 | 15 | 0 | 3.3 to 14.1
+ mixed | synthetic | cq-25wpm-5db | 620 | 616.7 | 3 | 1 | 4.3 to 14.9
+ level | set | peak over the last 10 s's median peak | wrong or added | right
+ level | synthetic | fewer than 3 letters before | 0 | 24
+ level | synthetic | under 0.25 | 0 | 0
+ level | synthetic | 0.25 to 0.5 | 0 | 0
+ level | synthetic | 0.5 to 2 | 14 | 135
+ level | synthetic | 2 to 4 | 0 | 0
+ level | synthetic | 4 and over | 0 | 0
+ pitch | set | decoder less instrument | wrong or added | right
+ pitch | synthetic | no instrument window | 0 | 0
+ pitch | synthetic | within 12.5 Hz | 12 | 131
+ pitch | synthetic | 12.5 to 25 Hz | 2 | 28
+ pitch | synthetic | more than 25 Hz | 0 | 0
+ edge | synthetic | evidence per hop | farthest right letter 1.392 | wrong or added past it 0 | 
+ edge | synthetic | rival margin | farthest right letter 0.2644 | wrong or added past it 3 | cq-18wpm-5db-char5 11.475 `-`->`K` -0.5774, cq-18wpm-5db-char5 12.545 `N`->`D` -0.6105, cq-18wpm-5db-char5 14.805 `L`->`U` 0.1384
+ edge | synthetic | window ratio | farthest right letter 1.093 | wrong or added past it 0 | 
+ total | synthetic | 173 sure: 159 right, 8 wrong, 6 added | 9 of the 14 covered by no excluded route | 0 before the first keyed verdict | 12 with a retune inside or within 1 s | 0 mixed more than 25 Hz off the instrument
+
+
+[xUnit.net 00:02:37.96]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheFortySureWrongLettersRestOnTests.WhereTheTrackerLeftTheStation [8 s]
+  Standard Output Messages:
+ move | unadjudicated/cw-2026-08-22-031905 | 1.54 | 600.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 44.06750074725285, PresentFraction = 0.6866666666666666 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 44.06750074725285, PresentFraction = 0.6866666666666666 } }
+ keyed | unadjudicated/cw-2026-08-22-031905 | 7.00 | on 500.0 | keyed 500 Hz lift NaN keyed -27.8 dB separation 4.58 marks 14 | strongest  Hz lift  present 
+ keyed | unadjudicated/cw-2026-08-22-031905 | 7.50 | on 500.0 | keyed 500 Hz lift NaN keyed -27.5 dB separation 4.69 marks 13 | strongest  Hz lift  present 
+ keyed | unadjudicated/cw-2026-08-22-031905 | 12.50 | on 500.0 | keyed 300 Hz lift 27.7 keyed -49.4 dB separation 4.73 marks 11 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031905 | 13.04 | 500.0 -> 300.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 51.66098358756618, PresentFraction = 0.6266666666666667 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 51.66098358756618, PresentFraction = 0.6266666666666667 } }
+ keyed | unadjudicated/cw-2026-08-22-031905 | 18.00 | on 300.0 | keyed 500 Hz lift 49.1 keyed -27.9 dB separation 4.42 marks 11 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031905 | 18.04 | 300.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = , Strongest = ToneInterference { ToneHz = 500, LiftDb = 49.291889861777975, PresentFraction = 0.5066666666666667 } }
+ keyed | unadjudicated/cw-2026-08-22-031905 | 26.50 | on 500.0 | keyed 300 Hz lift 26.6 keyed -52.7 dB separation 5.42 marks 16 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031905 | 26.54 | 500.0 -> 300.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 56.5509406718438, PresentFraction = 0.73 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 56.5509406718438, PresentFraction = 0.73 } }
+ move | unadjudicated/cw-2026-08-22-032050 | 2.04 | 600.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 47.72046042001375, PresentFraction = 0.435 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 47.72046042001375, PresentFraction = 0.435 } }
+ move | unadjudicated/cw-2026-08-22-032050 | 24.04 | 500.0 -> 325.0 | keyed 325 Hz lift 33.1 dB separation 5.08 ratio 3.16 marks 11 keyed -45.3 dB | verdict ToneVerdict { Keyed = KeyingCandidate { ToneHz = 325, DitMilliseconds = 44.285714285714285, DahMilliseconds = 140, Ratio = 3.161290322580645, Separation = 5.077312033477604, LiftDb = 33.07323896270437, Marks = 11, KeyedDb = -45.26259935516672, WordsPerMinute = 27.096774193548388 }, Interference = ToneInterference { ToneHz = 500, LiftDb = 52.32211102379693, PresentFraction = 0.6533333333333333 }, Strongest =  }
+ keyed | unadjudicated/cw-2026-08-22-032050 | 24.50 | on 325.0 | keyed 325 Hz lift 33.1 keyed -45.3 dB separation 5.08 marks 11 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031838 | 1.54 | 600.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 56.53110443385302, PresentFraction = 0.7333333333333333 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 56.53110443385302, PresentFraction = 0.7333333333333333 } }
+ keyed | unadjudicated/cw-2026-08-22-031838 | 5.00 | on 500.0 | keyed 525 Hz lift 47.5 keyed -33.5 dB separation 4.06 marks 17 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031838 | 8.54 | 500.0 -> 525.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = , Strongest = ToneInterference { ToneHz = 500, LiftDb = 50.302303044388935, PresentFraction = 0.6366666666666667 } }
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 2.6374 Minutes
+RC=0 WALL=159s

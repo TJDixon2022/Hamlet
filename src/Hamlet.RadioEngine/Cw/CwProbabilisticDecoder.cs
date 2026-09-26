@@ -120,13 +120,18 @@ public readonly record struct CwPathGap(int StartHop, int EndHop, bool IsWordGap
 /// character, or the same elements split into several. NaN where unmeasured.
 /// See <see cref="CwProbabilisticDecoder.RivalMargin"/>.
 /// </param>
+/// <param name="RivalReading">
+/// The rival that margin was taken against, dits and dahs with a space where
+/// it splits the letter; null where there is none. For the record only.
+/// </param>
 public readonly record struct CwProbabilisticCharacter(
     string Text,
     string Pattern,
     int EndHop,
     double SpanLogLikelihoodRatio = 0,
     int SpanHops = 0,
-    double RivalMargin = double.NaN)
+    double RivalMargin = double.NaN,
+    string? RivalReading = null)
 {
     /// <summary>
     /// The character's own evidence per hop, in the units
@@ -1343,10 +1348,58 @@ public static class CwProbabilisticDecoder
         }
 
         return characters
-            .Select(c => c.Pattern.Length == 0
-                ? c
-                : c with { RivalMargin = RivalMargin(c.Pattern, c.EndHop - c.SpanHops, c.EndHop, downTo, upTo, want) })
+            .Select(c =>
+            {
+                if (c.Pattern.Length == 0)
+                {
+                    return c;
+                }
+
+                var (margin, rival) = Rival(c.Pattern, c.EndHop - c.SpanHops, c.EndHop, downTo, upTo, want);
+
+                return c with { RivalMargin = margin, RivalReading = rival };
+            })
             .ToList();
+    }
+
+    /// <summary>
+    /// <see cref="RivalMargin"/>, and the rival reading it was taken against.
+    /// </summary>
+    /// <param name="pattern">The reading emitted, dits and dahs.</param>
+    /// <param name="from">The hop its first mark began at.</param>
+    /// <param name="to">The hop its last mark ended at.</param>
+    /// <param name="downTo">Cumulative key-down log-likelihood.</param>
+    /// <param name="upTo">Cumulative key-up log-likelihood.</param>
+    /// <param name="want">Each kind's expected length in hops, at the path's speed and gaps.</param>
+    /// <returns>
+    /// The margin, and the rival's dits and dahs with a space where it splits
+    /// the letter; null where there is no rival.
+    /// </returns>
+    /// <remarks>
+    /// **FOR THE RECORD ONLY** (work instruction 449, task 1). The reading is what
+    /// the margin already compared against; nothing reads it back.
+    /// </remarks>
+    internal static (double Margin, string? Reading) Rival(
+        string pattern, int from, int to, double[] downTo, double[] upTo, double[] want)
+    {
+        ulong? rival = null;
+        var margin = MarginAndRival(pattern, from, to, downTo, upTo, want, code => rival = code);
+
+        if (rival is not { } code)
+        {
+            return (margin, null);
+        }
+
+        var tokens = new List<char>();
+
+        for (; code > 1; code >>= 2)
+        {
+            tokens.Add((code & 3) switch { 1 => '.', 2 => '-', _ => ' ' });
+        }
+
+        tokens.Reverse();
+
+        return (margin, new string(tokens.ToArray()));
     }
 
     /// <summary>
@@ -1390,6 +1443,10 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     internal static double RivalMargin(
         string pattern, int from, int to, double[] downTo, double[] upTo, double[] want)
+        => MarginAndRival(pattern, from, to, downTo, upTo, want, null);
+
+    private static double MarginAndRival(
+        string pattern, int from, int to, double[] downTo, double[] upTo, double[] want, Action<ulong>? rival)
     {
         var length = to - from;
 
@@ -1511,8 +1568,15 @@ public static class CwProbabilisticDecoder
 
         if (codes[length, 1, 0] == emitted)
         {
+            if (!double.IsNegativeInfinity(second))
+            {
+                rival?.Invoke(codes[length, 1, 1]);
+            }
+
             return double.IsNegativeInfinity(second) ? double.PositiveInfinity : best - second;
         }
+
+        rival?.Invoke(codes[length, 1, 0]);
 
         // Second, the rival first; or not in the two best, so two rivals beat it.
         return codes[length, 1, 1] == emitted && !double.IsNegativeInfinity(second)

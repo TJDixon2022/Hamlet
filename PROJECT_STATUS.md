@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 449 - the forty sure-wrong letters left, one more change, or step 2 closes
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T05:43:24-04:00
-NOTE: Entry done: metrics as 448 left them, app line lost 5 all green alone; next the trace of the forty
+UPDATED: 2026-09-26T06:05:46-04:00
+NOTE: Trace done: 40 real and 14 synthetic traced; largest open group 9 wrong vs 6 right, the tracker leaving the station for a quieter keyed candidate; next the test
 
 ---
 

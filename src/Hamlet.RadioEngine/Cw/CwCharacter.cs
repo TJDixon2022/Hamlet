@@ -170,6 +170,15 @@ public sealed record CwCharacter(
     /// </remarks>
     public double MarginLlr { get; init; } = double.NaN;
 
+    /// <summary>
+    /// The rival reading <see cref="MarginLlr"/> was taken against, dits and dahs
+    /// with a space where it splits the letter; null where there is none.
+    /// </summary>
+    /// <remarks>
+    /// For the record only (work instruction 449, task 1). Nothing decides on it.
+    /// </remarks>
+    public string? RivalReading { get; init; }
+
     /// <summary>The margin's share of the span, for the record.</summary>
     /// <remarks>
     /// HEAD's arithmetic (work instruction 392). NaN wherever

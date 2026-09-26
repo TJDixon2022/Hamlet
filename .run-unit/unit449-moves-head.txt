@@ -1,0 +1,33 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.45]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.65]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.65]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:10.27]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheFortySureWrongLettersRestOnTests.WhereTheTrackerLeftTheStation [8 s]
+  Standard Output Messages:
+ move | unadjudicated/cw-2026-08-22-031905 | 1.54 | 600.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 44.06750074725285, PresentFraction = 0.6866666666666666 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 44.06750074725285, PresentFraction = 0.6866666666666666 } }
+ keyed | unadjudicated/cw-2026-08-22-031905 | 7.00 | on 500.0 | keyed 500 Hz lift NaN keyed -27.8 dB separation 4.58 marks 14 | strongest  Hz lift  present 
+ keyed | unadjudicated/cw-2026-08-22-031905 | 7.50 | on 500.0 | keyed 500 Hz lift NaN keyed -27.5 dB separation 4.69 marks 13 | strongest  Hz lift  present 
+ keyed | unadjudicated/cw-2026-08-22-031905 | 12.50 | on 500.0 | keyed 300 Hz lift 27.7 keyed -49.4 dB separation 4.73 marks 11 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031905 | 13.04 | 500.0 -> 300.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 51.66098358756618, PresentFraction = 0.6266666666666667 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 51.66098358756618, PresentFraction = 0.6266666666666667 } }
+ keyed | unadjudicated/cw-2026-08-22-031905 | 18.00 | on 300.0 | keyed 500 Hz lift 49.1 keyed -27.9 dB separation 4.42 marks 11 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031905 | 18.04 | 300.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = , Strongest = ToneInterference { ToneHz = 500, LiftDb = 49.291889861777975, PresentFraction = 0.5066666666666667 } }
+ keyed | unadjudicated/cw-2026-08-22-031905 | 26.50 | on 500.0 | keyed 300 Hz lift 26.6 keyed -52.7 dB separation 5.42 marks 16 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031905 | 26.54 | 500.0 -> 300.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 56.5509406718438, PresentFraction = 0.73 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 56.5509406718438, PresentFraction = 0.73 } }
+ move | unadjudicated/cw-2026-08-22-032050 | 2.04 | 600.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 47.72046042001375, PresentFraction = 0.435 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 47.72046042001375, PresentFraction = 0.435 } }
+ move | unadjudicated/cw-2026-08-22-032050 | 24.04 | 500.0 -> 325.0 | keyed 325 Hz lift 33.1 dB separation 5.08 ratio 3.16 marks 11 keyed -45.3 dB | verdict ToneVerdict { Keyed = KeyingCandidate { ToneHz = 325, DitMilliseconds = 44.285714285714285, DahMilliseconds = 140, Ratio = 3.161290322580645, Separation = 5.077312033477604, LiftDb = 33.07323896270437, Marks = 11, KeyedDb = -45.26259935516672, WordsPerMinute = 27.096774193548388 }, Interference = ToneInterference { ToneHz = 500, LiftDb = 52.32211102379693, PresentFraction = 0.6533333333333333 }, Strongest =  }
+ keyed | unadjudicated/cw-2026-08-22-032050 | 24.50 | on 325.0 | keyed 325 Hz lift 33.1 keyed -45.3 dB separation 5.08 marks 11 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031838 | 1.54 | 600.0 -> 500.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = ToneInterference { ToneHz = 500, LiftDb = 56.53110443385302, PresentFraction = 0.7333333333333333 }, Strongest = ToneInterference { ToneHz = 500, LiftDb = 56.53110443385302, PresentFraction = 0.7333333333333333 } }
+ keyed | unadjudicated/cw-2026-08-22-031838 | 5.00 | on 500.0 | keyed 525 Hz lift 47.5 keyed -33.5 dB separation 4.06 marks 17 | strongest  Hz lift  present 
+ move | unadjudicated/cw-2026-08-22-031838 | 8.54 | 500.0 -> 525.0 | keyed none | verdict ToneVerdict { Keyed = , Interference = , Strongest = ToneInterference { ToneHz = 500, LiftDb = 50.302303044388935, PresentFraction = 0.6366666666666667 } }
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 10.5838 Seconds
+RC=0 WALL=11s
