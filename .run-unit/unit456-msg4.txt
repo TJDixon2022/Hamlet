@@ -1,0 +1,13 @@
+unit456 task 4: a first look - the port beside ours and the key on 12 synthetic cases and three captures, printed, not scored (9.1)
+
+WhatTheSecondDecoderReadsFirstTests.BesideOursAndTheKey, a printer
+that asserts nothing; printout .run-unit/unit456-first-look.txt. Pitch
+from CwPitchInstrument (median of its windows), not our tracker; the
+captures reach the port at 8000 Hz through FldigiRateAdapter. Captures:
+17:37, cw-2026-08-17-013347 (VA3VRR) and cw-2026-09-24-004108, the
+first of the ten with a keyed stretch. Seen, not counted: at 15 dB the
+port reads the body and loses the start of the send; at 5-unit
+character gaps it spaces every letter, by its rule of a word space
+past 4 dots. Scoring is 9.2's.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
