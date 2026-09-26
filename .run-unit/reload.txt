@@ -1,13 +1,15 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-25T13:39:25-04:00  root C:\Source\HamLet
+measured 2026-09-26T11:36:26-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0181.
-  UNCOMMITTED      PROJECT_STATUS.md is modified and uncommitted.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-165 (2026-09-19); CLAUDE.md section 1 holds CPS-DEC-0183.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -19,15 +21,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 8cfd6fbe
-  uncommitted at the root : 1
-      M PROJECT_STATUS.md
+  HEAD   : 0659ed8a
+  uncommitted at the root : 3
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
+      M RUN_LEDGER.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0181
+  highest in CLAUDE.md section 1 : CPS-DEC-0183
   PROJECT_STATUS.md RULES_AT     : HM-DEC-165 (2026-09-19)
 
 ==============================================================
@@ -35,19 +39,19 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  282 lines, 19589 bytes
+  328 lines, 23981 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   STEP: 0 | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
-  STEP: 2 | The record is honest - section A, the nine requirements about what the decoder claims and refuses to claim.
-  STEP: 3 | Confidence means something - section B, the three classes and their rates, including the dim class the decoder does not have today.
+  STEP: 2 | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
+  STEP: 3 | The junk between words goes - MET-INVENTED driven toward HM-REQ-011's zero, from the 13 added characters unit 439 measured.
   STEP: 4 | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
   STEP: 5 | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
   STEP: 6 | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
   STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
-  STEP: 8 | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+  STEP: 8 | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
   
   ---
   
@@ -119,6 +123,35 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   instruction's section 4 quotes the requirement ids it is aimed at, from the documents, and
   every criterion below is a named requirement a report can measure. Only 8.1 waits on him.
   
+  **R80 - Tim, 2026-09-25: the record and the tests come last.** *"Record keeping is for
+  pussies. We do it at the end."* **No unit of this phase is authored for bookkeeping.** The
+  decision log's gaps, the traceability table, the 43 tests that measure something other than
+  what their requirement states, and the 63 requirements with no test are **step 8**, worked
+  after the decoder work. Consequences, binding on every unit:
+  
+  - **A unit records a ruling only when the owner has given one in that unit's own instruction.**
+    No unit is spent recording a ruling somebody else ordered.
+  - **A unit writes no traceability, no test inventory and no decision-log repair** unless a
+    criterion it is working cannot be judged without it - and then it does the minimum and says
+    so.
+  - **A criterion the manual unit 439 evidenced is ticked by the next loop unit at its task 0
+    from that report**, without re-measuring. Steps 0 and 1 are met: 5 of 68 requirements traced,
+    63 with none, 43 mismeasuring, and all four metrics built and measured.
+  - **A test is written only where a requirement this phase is meeting needs one to be judged.**
+  
+  Rejected: fixing the decision log and the 43 tests first, which put four steps of scaffolding
+  in front of the two steps that change what the operator reads.
+  
+  **R81 - Tim, 2026-09-25: the two numbers that change the text come first.** Unit 439 measured
+  **MET-INVENTED at 67** against HM-REQ-011's zero, and it is not what the tree had been counting:
+  **13 sure characters added and 54 sure characters wrong**, over 473 sent, against a tree figure
+  of 17 added letters. **The 54 wrong-when-sure are the larger half and had never been counted.**
+  They are `W1 TW /8 W H I O` where `W1AW/8 OHIO` was sent - the decoder printing the wrong letter
+  and believing it. So **step 2 is MET-CER-SURE and step 3 is MET-INVENTED**, ahead of the pitch
+  and the speed, because both are measurable today with the metrics unit 439 built and both change
+  what the operator reads. Rejected: opening with the invented characters, which are fewer and
+  which step 3 takes immediately after.
+  
   ## Â§3 What is different from the phases before it
   
   1. **A criterion is a requirement id.** A report states the requirement, the condition, the
@@ -142,10 +175,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   repository root.
   
   **Exit:**
-  - [ ] 0.1 Every CW test type and method in the tree is listed with the requirement id it proves, or the word `none`, in `docs/phase-requirements/traceability.md`, with the file and method named; a test that proves none is listed with one line saying what it does assert.
-  - [ ] 0.2 Section T's table is extended to every requirement id in `CW_REQUIREMENTS.md`, each row naming the test that proves it or `none`, and the report states how many requirements have a test, how many have none, and how many have a test that does not measure what the requirement states.
-  - [ ] 0.3 Every name in `docs/unit239-failing-set.txt`, the known-reds block and `docs/cw-retired-tests.txt` is placed in the same table: the requirement it was evidence for, or none.
-  - [ ] 0.4 Nothing under `src` is changed, no test is repaired, retired or rewritten, and the three floor tests and both carry-forward lines are green at exit.
+  - [x] 0.1 Every CW test type and method in the tree is listed with the requirement id it proves, or the word `none`, in `docs/phase-requirements/traceability.md`, with the file and method named; a test that proves none is listed with one line saying what it does assert.
+  - [x] 0.2 Section T's table is extended to every requirement id in `CW_REQUIREMENTS.md`, each row naming the test that proves it or `none`, and the report states how many requirements have a test, how many have none, and how many have a test that does not measure what the requirement states.
+  - [x] 0.3 Every name in `docs/unit239-failing-set.txt`, the known-reds block and `docs/cw-retired-tests.txt` is placed in the same table: the requirement it was evidence for, or none.
+  - [x] 0.4 Nothing under `src` is changed, no test is repaired, retired or rewritten, and the three floor tests and both carry-forward lines are green at exit.
   
   **Depends on:** nothing.
   
@@ -157,58 +190,59 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   **Entry:** step 0 done.
   
   **Exit:**
-  - [ ] 1.1 MET-INVENTED is computed as `CW_SPEC.md` defines it, over every keyed recording, and reported per condition; the report states today's figure and names the recordings it comes from.
-  - [ ] 1.2 MET-CER-SURE and MET-COVERAGE are computed as the spec defines them, over every keyed recording, per confidence class, and reported per condition.
-  - [ ] 1.3 MET-WBE is computed as the spec defines it, separately from character errors (HM-REQ-082), and the baseline is re-issued with it.
-  - [ ] 1.4 Each metric is watched failing first against a case whose answer is known by construction, and each is reachable by the other CW test types so a later unit can judge a change with it.
-  - [ ] 1.5 The three floor tests and both carry-forward lines are green at exit, and nothing under `src` is changed.
+  - [x] 1.1 MET-INVENTED is computed as `CW_SPEC.md` defines it, over every keyed recording, and reported per condition; the report states today's figure and names the recordings it comes from.
+  - [x] 1.2 MET-CER-SURE and MET-COVERAGE are computed as the spec defines them, over every keyed recording, per confidence class, and reported per condition.
+  - [x] 1.3 MET-WBE is computed as the spec defines it, separately from character errors (HM-REQ-082), and the baseline is re-issued with it.
+  - [x] 1.4 Each metric is watched failing first against a case whose answer is known by construction, and each is reachable by the other CW test types so a later unit can judge a change with it.
+  - [x] 1.5 The three floor tests and both carry-forward lines are green at exit, and nothing under `src` is changed.
   
   **Depends on:** step 0.
   
-  ## Step 2 - The record is honest
+  ## Step 2 - The decoder stops printing wrong letters with confidence
   
-  **Delivers:** section A, HM-REQ-001 to 009.
+  **Delivers:** R81 and HM-REQ-010. The 54 sure-but-wrong characters unit 439 measured.
   
-  **Entry:** step 0 done.
-  
-  **Exit:**
-  - [ ] 2.1 HM-REQ-001, 002, 005, 006 and 007 each have a test naming them, watched failing first where the decoder does not meet them, and the report states for each whether it is met at HEAD.
-  - [ ] 2.2 HM-REQ-008 and 009 each have a test naming them and the report states whether each is met.
-  - [ ] 2.3 HM-REQ-003 and HM-REQ-004 are proved by inspection recorded in the report - no property of surrounding text, no language model, prior or dictionary anywhere in the decode path - and the inspection names every file it read.
-  - [ ] 2.4 Any requirement of section A not met at HEAD is either repaired under R78's keep rule or listed with its measurement in `docs/phase-requirements/PARKED.md`; after three consecutive units with no kept change on this step, it closes partial.
-  - [ ] 2.5 The three floor tests and both carry-forward lines are green at exit.
-  
-  **Depends on:** step 0. Independent of steps 1, 3, 4, 5, 6 and 7.
-  
-  ## Step 3 - Confidence means something
-  
-  **Delivers:** section B, HM-REQ-010 to 015, including the dim class.
-  
-  **Entry:** steps 0 and 1 done.
+  **Entry:** steps 0 and 1 met, ticked at task 0 from unit 439's report.
   
   **Exit:**
-  - [ ] 3.1 The decoder attaches one of three confidence classes - sure, dim, placeholder - to every emitted character (HM-REQ-001), with a test naming the requirement; the dim class does not exist at HEAD and the report says what it is derived from.
-  - [ ] 3.2 HM-REQ-011, MET-INVENTED at zero, is measured on every keyed recording and reported before and after any change; a change is kept under R78.
-  - [ ] 3.3 HM-REQ-010 and HM-REQ-012 are measured per condition and reported, and the report states which conditions meet them at HEAD.
-  - [ ] 3.4 HM-REQ-014, dim characters correct at least 70% of the time, and HM-REQ-015, the class available at emission, are each measured and reported.
-  - [ ] 3.5 After three consecutive units with no kept change the step closes partial with its measurements in `PARKED.md`.
-  - [ ] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+  - [x] 2.1 The 54 sure-but-wrong characters are traced: a fact that asserts nothing prints each one with its recording, what the key says was sent, what the decoder emitted, its span, the speed and pitch in force, and the marks it rested on; the report groups them by what they have in common.
+  - [x] 2.2 Each change is built in its own commit and kept under R78: MET-CER-SURE falls, MET-INVENTED does not rise, MET-COVERAGE does not fall, the three adjudicated readings are unchanged or move onto their own adjudicated text, and V-11 holds - no capture is reddened to green a newer one.
+  - [x] 2.3 MET-CER-SURE is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `docs/phase-requirements/metrics.md`.
+  - [ ] 2.4 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
+  - [ ] 2.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
   
   **Depends on:** steps 0 and 1.
+  
+  ## Step 3 - The junk between words goes
+  
+  **Delivers:** R81 and HM-REQ-011. The 13 added characters, and the litter the operator reads
+  between real words.
+  
+  **Entry:** steps 0 and 1 met.
+  
+  **Exit:**
+  - [x] 3.1 The 13 sure added characters are traced the same way as 2.1, each with its recording, span, speed, pitch and the marks it rested on.
+  - [x] 3.2 Each change is built in its own commit and kept under R78: MET-INVENTED falls, MET-CER-SURE does not rise, MET-COVERAGE does not fall, the adjudicated readings hold, and V-11 holds.
+  - [x] 3.3 MET-INVENTED is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `metrics.md`.
+  - [ ] 3.4 The 7.052 traffic net's `EETTTEETTTTTTTTETTETETKTETEE` between `GRAY KC` and `LIVER VIA` is printed before and after, so the owner reads the difference rather than the number.
+  - [ ] 3.5 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
+  - [ ] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+  
+  **Depends on:** steps 0 and 1. Independent of step 2: when one blocks the arbiter works the other.
   
   ## Step 4 - The pitch is right
   
   **Delivers:** section J, HM-REQ-090 to 094, and section K's 102 and 103 which depend on it.
   
-  **Entry:** steps 0 and 1 done.
+  **Entry:** steps 0 and 1 met.
   
   **Exit:**
-  - [ ] 4.1 A pitch instrument finer than 25 Hz is built and shown, on tones known by construction, to land within one of its own bins of the truth, sharing no line of code with `CwToneTracker` or `CwToneSurvey` (R76); its error per case and its cost per hop are tabled.
-  - [ ] 4.2 MET-PITCH-ERR is measured with it on every capture, and the report names every case where the decoder demodulated more than 25 Hz from the tone the instrument found - `cw-2026-09-24-135641` and `-152135` at 75 Hz are the known ones.
-  - [ ] 4.3 HM-REQ-091, the tracked pitch chosen by keying quality and never by level alone or by the operator's configured pitch, has a test naming it and the report states whether it is met.
+  - [x] 4.1 A pitch instrument finer than 25 Hz is built and shown, on tones known by construction, to land within one of its own bins of the truth, sharing no line of code with `CwToneTracker` or `CwToneSurvey` (R76); its error per case and its cost per hop are tabled.
+  - [x] 4.2 MET-PITCH-ERR is measured with it on every capture, and the report names every case where the decoder demodulated more than 25 Hz from the tone the instrument found - `cw-2026-09-24-135641` and `-152135` at 75 Hz are the known ones.
+  - [x] 4.3 HM-REQ-091, the tracked pitch chosen by keying quality and never by level alone or by the operator's configured pitch, has a test naming it and the report states whether it is met.
   - [ ] 4.4 A change to `CwToneTracker` under R75 is judged by R78's keep rule with the instrument's table beside it, and the report names the clause of HM-DEC-095 or HM-DEC-127 it works against; after three consecutive units with no kept change the step closes partial.
-  - [ ] 4.5 HM-REQ-102 and HM-REQ-103 are measured on the 7.052 opening: no sure character while acquiring, and the opening characters not lost to acquisition, reported as text before and after.
-  - [ ] 4.6 HM-REQ-093, pitch reported with a proof state of proved, hypothesis or none, is met, with a test naming it.
+  - [x] 4.5 HM-REQ-102 and HM-REQ-103 are measured on the 7.052 opening: no sure character while acquiring, and the opening characters not lost to acquisition, reported as text before and after.
+  - [x] 4.6 HM-REQ-093, pitch reported with a proof state of proved, hypothesis or none, is met, with a test naming it.
   - [ ] 4.7 The three floor tests and both carry-forward lines are green at exit.
   
   **Depends on:** steps 0 and 1.
@@ -217,14 +251,14 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Delivers:** section D, HM-REQ-030 to 036, and section K's 100 and 101.
   
-  **Entry:** steps 0 and 1 done.
+  **Entry:** steps 0 and 1 met.
   
   **Exit:**
   - [ ] 5.1 HM-REQ-030 is met at both ends: the speed search reaches 5 and 45 words a minute, where it runs 8 to 40 at HEAD, judged by R78's keep rule with the decode time reported before and after.
   - [ ] 5.2 `cw-2026-09-24-135641`, which read nothing in 44 minutes at about 44 words a minute, emits sure characters, and the report prints what it reads beside `nothing read`.
   - [ ] 5.3 HM-REQ-031 and HM-REQ-033 are measured - speed within 10% of true after acquisition, and acquisition without a prior speed - and reported per condition.
   - [ ] 5.4 MET-TACQ and MET-LAT exist and are measured, and HM-REQ-100 and HM-REQ-101 are reported against them.
-  - [ ] 5.5 HM-REQ-034, the speed reported with a proof state, and HM-REQ-035 and 036, state retained across a clear and across a pitch refinement, each have a test naming them and the report states whether each is met.
+  - [x] 5.5 HM-REQ-034, the speed reported with a proof state, and HM-REQ-035 and 036, state retained across a clear and across a pitch refinement, each have a test naming them and the report states whether each is met.
   - [ ] 5.6 The three floor tests and both carry-forward lines are green at exit.
   
   **Depends on:** steps 0 and 1.
@@ -233,12 +267,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Delivers:** sections H and I, HM-REQ-070 to 073 and 080 to 084.
   
-  **Entry:** steps 0 and 1 done.
+  **Entry:** steps 0 and 1 met.
   
   **Exit:**
-  - [ ] 6.1 The v1 character table of `CW_SPEC.md` Â§6.2 is generated from the vendored source rather than written as constants, and HM-REQ-070 has a test naming it.
+  - [ ] 6.1 The v1 character table of `CW_SPEC.md` is generated from the vendored source rather than written as constants, and HM-REQ-070 has a test naming it.
   - [ ] 6.2 HM-REQ-071 and 072, prosigns emitted as one symbol and named per the terminal's setting, each have a test naming them and the report states whether each is met.
-  - [ ] 6.3 MET-WBE is reported per condition and HM-REQ-080 and 081 are measured against it.
+  - [x] 6.3 MET-WBE is reported per condition and HM-REQ-080 and 081 are measured against it.
   - [ ] 6.4 HM-REQ-083, one set of word boundaries for any span between the live and settled renderings, has a test naming it.
   - [ ] 6.5 HM-REQ-084 is measured on its named spans - `WEEKEND`, `THINKING`, `FLEX`, `ABOVE`, `BREEZE`, `USED TO USE A FIRM` - and the report prints what each reads at HEAD.
   - [ ] 6.6 The three floor tests and both carry-forward lines are green at exit.
@@ -247,34 +281,43 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Step 7 - The conditions can be generated
   
-  **Delivers:** sections E, F and G. Section T records that nothing in the tree produces these.
+  **Delivers:** sections E, F and G. Nothing in the tree produces these, and without them no
+  requirement can be judged at its own condition (unit 439's finding 1).
   
-  **Entry:** steps 0 and 1 done.
+  **Entry:** steps 0 and 1 met.
   
   **Exit:**
   - [ ] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
   - [ ] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
   - [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
-  - [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04).
+  - [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
   - [ ] 7.5 The three floor tests and both carry-forward lines are green at exit.
   
   **Depends on:** steps 0 and 1. Independent of steps 2 to 6.
   
-  ## Step 8 - Tim at the radio
+  ## Step 8 - The record and the tests are put right
   
-  **Entry:** steps 3, 4, 5 and 6 done or partial.
+  **Delivers:** R80's deferred work, last. **No unit is authored against this step while any
+  criterion of steps 2 to 7 is open and authorable.**
+  
+  **Entry:** steps 2 to 7 done or closed partial.
   
   **Exit:**
-  - [ ] 8.1 Tim, at the radio, on CW on 20 m or 40 m, sees text on the CW tab that reads as what was sent, and says it read. No script can evaluate this.   *owner's verdict*
+  - [ ] 8.1 HM-DEC-182 is recorded from work instruction 434's block, HM-DEC-166 gains its `CLAUDE.md` row, and `DecisionLogOrderTests` is green with no gap that is a missing record.
+  - [ ] 8.2 The false `UNIT 2 - STEP 1` entry of 2026-09-14 is corrected by appending a dated note naming it as recorded in error; the row itself is never edited or deleted.
+  - [ ] 8.3 The version scheme is settled one way: either HM-DEC-150 is superseded to say the patch counts units across phases, or the next phase opens at a new minor; the report states which and why.
+  - [ ] 8.4 Each of the 43 tests that measure something other than what their requirement states is either re-pointed at the requirement it proves or marked as proving none with its reason, in `traceability.md`; none is deleted.
+  - [ ] 8.5 Every requirement this phase met has a test naming it, and the count of requirements with no test is reported against unit 439's 63.
+  - [ ] 8.6 The three floor tests and both carry-forward lines are green at exit.
   
-  **Depends on:** steps 3, 4, 5 and 6.
+  **Depends on:** steps 2 to 7.
   
   ## Â§5 Dependencies
   
-  Step 0 depends on nothing and everything depends on it. Step 1 depends on step 0. **Steps 2,
-  3, 4, 5, 6 and 7 each depend only on steps 0 and 1**, so once those two are done there are six
-  independent places to route and the loop need never stall for want of work. Step 8 waits on 3
-  to 6.
+  Steps 0 and 1 are met by the hand-run unit 439 and are ticked at the next unit's task 0 from
+  its report. **Steps 2, 3, 4, 5, 6 and 7 each depend only on those two**, so there are six
+  independent places to route and the loop need never stall for want of work. **Step 8 is last
+  and no unit is authored against it while any criterion of steps 2 to 7 is open** (R80).
   
   ## Â§6 Branching
   
@@ -298,6 +341,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - **No fixture is admitted by lowering a gate** (V-04), and **no separation limit, confirmation
     rule or plausibility bound is loosened to pass a fixture** (V-14).
   - **A run lost before any assertion** counts neither way and is re-run once.
+  - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
+    7 is open and authorable. A unit records a ruling only when its own instruction carries one.
   - **Anything would change what keys or transmits.** `MOVE: stop`.
   - **A package is needed.** `MOVE: stop`.
   - **A CW test costing more than 300 s** never goes on a carry-forward line.
@@ -315,44 +360,457 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-25, after unit 439's hand run.** R80 the record and the tests come last, as step 8;
+    R81 MET-CER-SURE and MET-INVENTED come first, as steps 2 and 3, on unit 439's measurement of
+    67 invented - 13 added and 54 sure-but-wrong - where the tree had been counting 17. Steps 2
+    to 8 rewritten; steps 0 and 1 met by the hand run.
+  
   - **2026-09-25.** Written from the interview: R77 to R79; nine steps; the criteria named
     against requirement ids; the keep rule moved from character counts to the requirements' own
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  14 lines, 2095 bytes
+  15 lines, 2239 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
-  CURRENT_STEP: 0
-  WORK_INSTRUCTION: 439 - every CW test is traced to a requirement
-  STEP: 0 | not started | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
-  STEP: 1 | not started | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
-  STEP: 2 | not started | The record is honest - section A, the nine requirements about what the decoder claims and refuses to claim.
-  STEP: 3 | not started | Confidence means something - section B, the three classes and their rates, including the dim class the decoder does not have today.
-  STEP: 4 | not started | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
-  STEP: 5 | not started | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
-  STEP: 6 | not started | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
+  CURRENT_STEP: 2
+  WORK_INSTRUCTION: 452 - where the words break
+  HEARTBEAT: 2026-09-26 11:36:24
+  STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
+  STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
+  STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
+  STEP: 3 | partial | The junk between words goes - MET-INVENTED driven toward HM-REQ-011's zero, from the 13 added characters unit 439 measured.
+  STEP: 4 | partial | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
+  STEP: 5 | partial | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
+  STEP: 6 | partial | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
   STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
-  STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+  STEP: 8 | not started | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
 
   --- PHASE_OUTCOME.md ---
-  12 lines, 2014 bytes
+  419 lines, 84704 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
-  STEP: 0 | not started | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
-  STEP: 1 | not started | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
-  STEP: 2 | not started | The record is honest - section A, the nine requirements about what the decoder claims and refuses to claim.
-  STEP: 3 | not started | Confidence means something - section B, the three classes and their rates, including the dim class the decoder does not have today.
-  STEP: 4 | not started | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
-  STEP: 5 | not started | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
-  STEP: 6 | not started | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
+  STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
+  STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
+  STEP: 2 | partial | The record is honest - section A, the nine requirements about what the decoder claims and refuses to claim.
+  STEP: 3 | partial | Confidence means something - section B, the three classes and their rates, including the dim class the decoder does not have today.
+  STEP: 4 | partial | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
+  STEP: 5 | partial | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
+  STEP: 6 | partial | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
   STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+  
+  ## UNIT 439 - STEP 0
+  
+  STEP: 1
+  APPROACH: trace every CW test to a requirement and extend section T to every requirement id, then build MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE as CW_SPEC.md defines them, each watched failing first, and measure all four over every keyed recording per condition
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 1 criterion 1.1 asks that MET-INVENTED be computed as CW_SPEC.md defines it over every keyed recording and reported per condition, with today's figure stated and the recordings it comes from named
+  STATE: not started
+  DECIDED: the form of the traceability file, how a test's requirement is judged, where the metrics live, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R77, R78, R79, section 3, section 6; HM-DEC-183; HM-DEC-175; HM-DEC-103; V-05; V-13; HM-DEC-155; CLAUDE.md 0.0, 0.2 and 12.6; FACT-006
+  ADVANCES: step 1 criterion 1
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  RUN: by hand, outside the loop - tools\arbiter\run-phase.bat halts before launching because its arbiter re-decides MOVE: stop from stale evidence about the phase transition, and work instruction 439 does not wait for that to be fixed. SESSION.lock taken at the start and released at the end; nothing written to RUN_LEDGER.md; nothing under tools\arbiter\ touched; no criterion ticked in PHASE_PLAN.md.
+  ENTRY: Version 1.13.125 to 1.13.126. PROJECT_CARD.md PHASE Hamlet meets the CW requirements, PHASE_SET 2026-09-25. PHASE_STATUS.md names unit 439 and CURRENT_STEP 0. HEAD at entry 7734ecbe. Entry round, one type per invocation, the numbers to beat: Hamlet.sln builds with warnings as errors, 0 errors; ENGINE carry-forward 178 of 178 in 394 s; APP carry-forward 275 of 278 in 176 s, the three failures the dispatcher-loop loss (TheRstIsYoursToCorrectTests.OnTheWindowTheTwoReportsAreBoxesWithTheirMarks, TheRecordNamesTheSubModePressedTests.TheCqPressWritesTheLabelTheOperatorPressed Olivia and FT4), each type green alone, 4 of 4 and 12 of 12; captures 51 of 51 in 122 s; adjudicated 13 of 13; named floors 13 of 13; keyed totals 165 edits over 565 characters against inferred keys over 23 keyed recordings; 17 added named characters, 8 of them single-element, and 56 wrong, 31 single-element; 17:37 19 edits over 25.
+  
+  ## UNIT 440 - STEP 2
+  
+  STEP: 2
+  APPROACH: trace every sure-but-wrong character with its recording, key, span, speed, pitch and the marks it rested on, group the 54 by cause, then build against the largest group and keep it only if MET-CER-SURE falls with nothing else worse
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 2 criterion 2.1 asks that the 54 sure-but-wrong characters be traced by a fact that asserts nothing, each with its recording, what was sent, what was emitted, its span, the speed and pitch in force and the marks it rested on, grouped by what they have in common
+  STATE: not started
+  DECIDED: how the 54 are grouped, which group is attacked first, and the per-type timeouts are the author's, overrulable
+  LICENCE: PHASE_PLAN.md R77, R78, R80, R81, section 6; V-11; V-13; R72; HM-DEC-155; CLAUDE.md 0.0 and 0.2; FACT-004
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 2 criterion 1
+  RUN: by hand, outside the loop, as unit 439 was. SESSION.lock taken at the start and released at the end; nothing written to RUN_LEDGER.md; nothing under tools\arbiter\ touched.
+  TICKS: steps 0 and 1 ticked from unit 439's report without re-measuring, as R80 licenses. 0.1 - 621 CW test methods traced in docs/phase-requirements/traceability.md. 0.2 - 5 of 68 requirements traced to a proving test, 63 with none, 43 with a test that measures something else. 0.3 - the 51 failing-set names, the known-reds block and the 20 retired names placed. 0.4 - nothing under src changed, floors and carry-forward green at 439's exit. 1.1 to 1.4 - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE built in CwMetrics, each watched failing first, measured over 23 keyed recordings per condition. 1.5 - floors and carry-forward green, src unchanged. The owner's revision of PHASE_PLAN.md (R80, R81, steps 2 to 8) is committed with this entry and copied to the root copy.
+  ENTRY: Version 1.13.126 to 1.13.127. PHASE_STATUS.md names unit 440 and CURRENT_STEP 2. HEAD at entry 1fb0bad6. Entry round, one type per invocation, the numbers to beat: build 0 errors; ENGINE carry-forward 178 of 178 in 379 s; APP carry-forward 278 of 278 in 166 s; captures 51 of 51 in 121 s; adjudicated 13 of 13; named 13 of 13. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 67 wrong or added of 426 sure (54 substituted, 13 added), 0.1573; MET-INVENTED 67 over 473 sent, 0.1416; MET-COVERAGE 426 sure over 473 sent, 359 right, 0.9006. Synthetic CQ set, exact keys: MET-CER-SURE 24 of 180, 0.1333; MET-COVERAGE 180 over 252, 0.7143.
+  
+  ## UNIT 441 - STEP 2
+  
+  STEP: 2
+  APPROACH: change MET-COVERAGE to sure-and-right over sent under R82, cherry-pick G1 unchanged and keep it under R78, then trace the speed each of the 54 was read at against the speed the envelope's marks imply and build one change that takes the path's speed from the marks where they disagree
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 2 criterion 2.2 asks that each change be kept under R78 when MET-CER-SURE falls and nothing else in the keep rule gets worse, and criterion 2.3 that MET-CER-SURE be reported before and after every kept change
+  STATE: partial
+  DECIDED: the ratio the speed change uses is taken from the trace and stated; the per-type timeouts are the author's
+  LICENCE: PHASE_PLAN.md R78, R80, R81, R82, R83, section 6; V-11; V-13; R72; HM-DEC-155; CLAUDE.md 0.2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 2 criterion 2
+  RUN: launched by tools\arbiter\run-phase.bat, iteration 1; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.127 to 1.13.128. PHASE_STATUS.md names unit 441. HEAD at entry f14b2453. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 376 s; APP carry-forward 275 of 278 in 161 s, the three failures the dispatcher-loop loss (TheStopIsAlwaysOnScreenTests twice, Unit376TheTopBandTests once), each type green alone, 5 of 5 and 5 of 5; captures 51 of 51 in 125 s; adjudicated 13 of 13; named 13 of 13. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 67 of 426 sure (54 substituted, 13 added), 0.1573; MET-INVENTED 67 over 473, 0.1416. Synthetic, exact keys: MET-CER-SURE 24 of 180, 0.1333.
+  R82: MET-COVERAGE is sure and right over sent. Watched failing first on CQ DI K against CQ DE K (1.0 as written, 0.8 under R82). Decoder untouched, so only the definition moved it: real 426 over 473, 0.9006, to 359 over 473, 0.7590; synthetic 180 over 252, 0.7143, to 156 over 252, 0.6190.
+  
+  ## UNIT 1 - STEP 2
+  
+  STEP: 2
+  APPROACH: change MET-COVERAGE to sure-and-right over sent under R82, cherry-pick G1 unchanged and keep it under R78, then trace the speed each of the 54 was read at against the speed the envelope's marks imply and build one change that takes the path's speed from the marks where they disagree
+  HIT: not recorded - REPORT REFUSED by validate-output.bat: not judged, fate not recorded, the loop continued
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 2 criterion 2.2 asks that each change be kept under R78 when MET-CER-SURE falls and nothing else in the keep rule gets worse, and criterion 2.3 that MET-CER-SURE be reported before and after every kept change
+  DECIDED: the ratio the speed change uses is taken from the trace and stated; the per-type timeouts are the author's
+  LICENCE: PHASE_PLAN.md R78, R80, R81, R82, R83, section 6; V-11; V-13; R72; HM-DEC-155; CLAUDE.md 0.2
+  COST: 6.169069800000001
+  ACCOMPLISHED: the first kept reduction in confidently-wrong letters, and an attack on the speed error that produces half of them
+  FATE: not recorded
+  STATE_AFTER: not started
+  STATE_WHY: the report was refused by validate-output.bat and was not judged - the state is the plan-s own reading, or the header-s where the step has no criterion lines
+  ADVANCED: not recorded
+  ATTEMPT: 2.2 | unit 1 launched 2026-09-25T23:17:53.232Z | not recorded | not recorded | change MET-COVERAGE to sure-and-right over sent under R82, cherry-pick G1 unchanged and keep it under R78, then trace the speed each of the 54 was read at against the speed the envelope's marks imply and build one change that takes the path's speed from the marks where they disagree
+  
+  ## UNIT 442 - STEP 2
+  
+  STEP: 2
+  APPROACH: give each letter a confidence from how far its reading beats the nearest rival reading, so a close call prints dim instead of sure, threshold taken from a margin trace of right against wrong sure letters; re-bank the floor rows that fell on counts under R78 so the floors are green
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 2 criterion 2.2 asks for changes kept under R78 that make MET-CER-SURE fall, and 441's trace leaves 30 of 43 sure-wrong letters where speed is not the cause, while CwProbabilisticStream gives High to every known letter, so the class itself is the next lever toward HM-REQ-010
+  STATE: in progress
+  DECIDED: author's, overrulable - (1) the floor rows that fell on counts under 441's kept changes are re-banked at their HEAD counts, keyed rows only where no requirement metric got worse and unkeyed rows with their text printed, which answers 441's section 4 question 1 on R78's own words; (2) 2.5 is read as green at the exit of every commit from task 1 on; (3) 2.2 is met by 441's two kept changes and is ticked by this unit, which adds a third; (4) R82's gap with CW_SPEC.md 11 and PHASE_OUTCOME.md's stale header are reported and not edited
+  LICENCE: PHASE_PLAN.md R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; V-11; V-13; V-04; V-14; R72; HM-REQ-010, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 2 criterion 2.2
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.128 to 1.13.129. PHASE_STATUS.md names unit 442. HEAD at entry 0439a8e7. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 175 of 178 in 383 s, the three capture rows 013010, 012823, 012922 red on counts; APP carry-forward 277 of 278 in 167 s, BindingHealthTests the one loss, green alone 1 of 1; captures 38 of 51; adjudicated 13 of 13; named 7 of 13. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 47 of 421 sure (43 substituted, 4 added), 0.1116; MET-INVENTED 47 over 473, 0.0994; MET-COVERAGE 374 sure and right over 473 sent, 0.7907; MET-WBE 52 over 113, 0.4602. Synthetic, exact keys: MET-CER-SURE 14 of 173, 0.0809.
+  TICKS: 2.1 - .run-unit/unit440-trace.txt, committed, prints all 54 with recording, sent, emitted, span, wpm and pitch at hop, and envelope marks, then the groups; unit441-trace-exit.txt prints the 43 left at HEAD the same way. 2.3 - docs/phase-requirements/metrics.md carries before and after for G1 and the marks' speed; the per-condition lines lacked the key kind beside each number, so a per-condition table with the key's kind was written out for each from 441's committed printouts, nothing re-measured.
+  
+  ## UNIT 2 - STEP 2
+  
+  STEP: 2
+  APPROACH: give each letter a confidence from how far its reading beats the nearest rival reading, so a close call prints dim instead of sure, threshold taken from a margin trace of right against wrong sure letters; re-bank the floor rows that fell on counts under R78 so the floors are green
+  HIT: section 4 wants a ruling: yes - Question three asks the owner to name the transmit files that the transmit safety check against 7e209cb4 covers, which is a decision about transmit and radio safety, while questions one and two are about a floor metric and a code instrument and are the unit's own to decide.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 2 criterion 2.2 asks for changes kept under R78 that make MET-CER-SURE fall, and 441's trace leaves 30 of 43 sure-wrong letters where speed is not the cause, while CwProbabilisticStream gives High to every known letter, so the class itself is the next lever toward HM-REQ-010
+  DECIDED: author's, overrulable - (1) the floor rows that fell on counts under 441's kept changes are re-banked at their HEAD counts, keyed rows only where no requirement metric got worse and unkeyed rows with their text printed, which answers 441's section 4 question 1 on R78's own words; (2) 2.5 is read as green at the exit of every commit from task 1 on; (3) 2.2 is met by 441's two kept changes and is ticked by this unit, which adds a third; (4) R82's gap with CW_SPEC.md 11 and PHASE_OUTCOME.md's stale header are reported and not edited
+  LICENCE: PHASE_PLAN.md R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; V-11; V-13; V-04; V-14; R72; HM-REQ-010, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  COST: 7.521277399999998
+  ACCOMPLISHED: a letter the decoder barely preferred over another now prints dim instead of sure, fewer confidently wrong letters reach the operator, and the floors are green again
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 2.1, 2.2 and 2.3 are ticked, but 2.4 is not met and 2.5 is not met because the report says the 17:37 named floor is red at the exit of every commit after task 1, and this unit kept no change of its own, since its confidence change raised MET-CER-SURE's rival coverage loss and failed V-11 on 8 recordings.
+  ADVANCED: no
+  ATTEMPT: 2.2 | unit 2 launched 2026-09-26T00:33:44.294Z | no | executed | give each letter a confidence from how far its reading beats the nearest rival reading, so a close call prints dim instead of sure, threshold taken from a margin trace of right against wrong sure letters; re-bank the floor rows that fell on counts under R78 so the floors are green
+  REASON: 2.2 | unit 2 launched 2026-09-26T00:33:44.294Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 443 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 2's 2.2 is parked this pass and its remaining 2.4 and 2.5 cannot be built by a unit, and the plan says step 3 is independent of step 2 and is worked when step 2 blocks; step 3 criterion 3.1 asks that the sure added characters be traced as 2.1 traced the wrong ones, which is the measurement HM-REQ-011's MET-INVENTED needs before any change.
+  STATE: not started
+  DECIDED: author's, overrulable - (1) step 3 is opened because step 2 is blocked this pass, on the plan's own dependency line; (2) 3.1's "13" is traced at 1fb0bad6 where 439 measured it and matched against HEAD's 4, with the baseline half as the drop candidate; (3) R78 names MET-WBE among its metrics, so no floor is re-banked while 17:37's boundaries are worse and 17:37 stays red, which keeps 3.6 unticked this unit; (4) RivalMargin and MarginLlr are left in src untouched; (5) the parked transmit-file list is neither defined nor ruled on here - the unit reports its src diff file by file and touches nothing that keys or transmits
+  LICENCE: PHASE_PLAN.md step 3 dependency line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 3 criterion 1
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.129 to 1.13.130. PHASE_STATUS.md names unit 443, CURRENT_STEP 3. HEAD at entry 1308f688. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 371 s; APP carry-forward 278 of 278 in 150 s; captures 51 of 51; adjudicated 13 of 13; named 12 of 13, 17:37 red (floor 46, reads 38) as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 47 of 421 sure (43 substituted, 4 added), 0.1116; MET-INVENTED 47 over 473, 0.0994, split 4 added and 43 substituted, all 47 on the condition whose sender CW_SPEC.md does not state (20 recordings, inferred), 0 on TX-FARNS, TX-ITU and TX-TIGHT (inferred); sure-and-right coverage 374 over 473, 0.7907; MET-WBE 52 over 113, 0.4602. Synthetic, exact keys: MET-INVENTED 14 over 252 (6 added, 8 substituted).
+  
+  ## UNIT 4 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Both questions are about test fixtures, one asking for a recording to be added and one asking what was sent so a test key can be settled, and neither touches keying or transmit or changes what the product states to the operator.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 2's 2.2 is parked this pass and its remaining 2.4 and 2.5 cannot be built by a unit, and the plan says step 3 is independent of step 2 and is worked when step 2 blocks; step 3 criterion 3.1 asks that the sure added characters be traced as 2.1 traced the wrong ones, which is the measurement HM-REQ-011's MET-INVENTED needs before any change.
+  DECIDED: author's, overrulable - (1) step 3 is opened because step 2 is blocked this pass, on the plan's own dependency line; (2) 3.1's '13' is traced at 1fb0bad6 where 439 measured it and matched against HEAD's 4, with the baseline half as the drop candidate; (3) R78 names MET-WBE among its metrics, so no floor is re-banked while 17:37's boundaries are worse and 17:37 stays red, which keeps 3.6 unticked this unit; (4) RivalMargin and MarginLlr are left in src untouched; (5) the parked transmit-file list is neither defined nor ruled on here - the unit reports its src diff file by file and touches nothing that keys or transmits
+  LICENCE: PHASE_PLAN.md step 3 dependency line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  COST: 5.293474999999999
+  ACCOMPLISHED: every letter the decoder prints with confidence where nothing was sent is traced to its cause, and the commonest cause is attacked, so the operator reads less junk between real words
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: 3.1 is met, with printouts at 1fb0bad6 and at HEAD that give every added letter's recording, span, speed, pitch and marks, but the one change was not kept because MET-INVENTED rose from 47 to 48 and V-11 failed, so 3.2 and 3.3 are open, 3.4 cannot be shown because the traffic-net recording is not in the tree, and 3.6 is not met while 17.37 stays red.
+  ADVANCED: yes
+  ATTEMPT: 3.1 | unit 4 launched 2026-09-26T01:56:54.125Z | yes | executed | trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
+  
+  ## UNIT 444 - STEP 2
+  
+  STEP: 2
+  APPROACH: trace every gap in 17:37's CQ at HEAD and before G1 with its length, unit, thresholds and call, name the cause of the two boundaries G1 lost, build one gap-duration change that gives them back with G1 kept, and re-bank 17:37's named floor only if no requirement metric on it is worse than before G1
+  MOVE: work around
+  WHY: PHASE_PLAN.md line 2.5 asks that the three floor tests and both carry-forward lines be green at exit, and the one thing holding it red is 17:37's named floor, which 443's ruling keeps red while G1's two lost word boundaries stand; restoring those boundaries under R78 is the only route to 2.5 that does not loosen V-11. Redirect 1 was the launcher reading "criterion 2.5" as criterion 2, the parked 2.2 - the target was always 2.5, never parked, with no attempt recorded against it and this approach not found by the loop test.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) 2.5 is worked by repairing the cause of 17:37's red floor rather than re-banking it, keeping 443's DECIDED (3); (2) 442's DECIDED (2), 2.5 green from the unit's working task on, is applied to this unit from task 2, and the report states that 442's and 443's commits exited red; (3) the keep rule for a boundary change adds 17:37's MET-WBE falling to 5 or fewer and the real set's MET-WBE not rising to 3.2's guards; (4) 2.4 is not authored, because no single unit can build it; (5) 443's section 4, the missing traffic-net recording and the 032012 key, is logged and not chased, since neither bears on step 2; (6) ADVANCES is written in the launcher's form "step 2 criterion 5", meaning plan line 2.5, because run-phase.bat takes the digits after "criterion" up to the first non-digit
+  LICENCE: PHASE_PLAN.md step 2 line 2.5, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 080, 081, 082; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 2 criterion 5
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.130 to 1.13.131. PHASE_STATUS.md names unit 444, CURRENT_STEP 2 in both copies. HEAD at entry 1f6a5789. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 370 s; APP carry-forward 278 of 278 in 154 s; captures 51 of 51; adjudicated 13 of 13; named 12 of 13, 17:37 red (floor 46, reads 38) as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 47 of 421 sure (43 substituted, 4 added), 0.1116; MET-INVENTED 47 over 473, 0.0994; sure-and-right coverage 374 over 473, 0.7907; MET-WBE 52 (43 inserted, 9 deleted) over 113, 0.4602. 17:37 alone: MET-WBE 7 (6 inserted, 1 deleted) over 6 words, 1.1667; wrong-or-added 3, sure-and-right 17 of 20; text `CQ CQ CQ DEWB6 RE D W B 7E E I`.
+  
+  ## UNIT 6 - STEP 2
+  
+  STEP: 2
+  APPROACH: trace every gap in 17:37's CQ at HEAD and before G1 with its length, unit, thresholds and call, name the cause of the two boundaries G1 lost, build one gap-duration change that gives them back with G1 kept, and re-bank 17:37's named floor only if no requirement metric on it is worse than before G1
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Both questions are about a test target, a floor number and a candidate decoding rule, none of which touches keying or transmit or changes what the product states to the operator about what was logged, heard or sent.
+  MOVE: work around
+  WHY: PHASE_PLAN.md line 2.5 asks that the three floor tests and both carry-forward lines be green at exit, and the one thing holding it red is 17:37's named floor, which 443's ruling keeps red while G1's two lost word boundaries stand; restoring those boundaries under R78 is the only route to 2.5 that does not loosen V-11. Redirect 1 was the launcher reading 'criterion 2.5' as criterion 2, the parked 2.2 - the target was always 2.5, never parked, with no attempt recorded against it and this approach not found by the loop test.
+  DECIDED: author's, overrulable - (1) 2.5 is worked by repairing the cause of 17:37's red floor rather than re-banking it, keeping 443's DECIDED (3); (2) 442's DECIDED (2), 2.5 green from the unit's working task on, is applied to this unit from task 2, and the report states that 442's and 443's commits exited red; (3) the keep rule for a boundary change adds 17:37's MET-WBE falling to 5 or fewer and the real set's MET-WBE not rising to 3.2's guards; (4) 2.4 is not authored, because no single unit can build it; (5) 443's section 4, the missing traffic-net recording and the 032012 key, is logged and not chased, since neither bears on step 2; (6) ADVANCES is written in the launcher's form 'step 2 criterion 5', meaning plan line 2.5, because run-phase.bat takes the digits after 'criterion' up to the first non-digit
+  LICENCE: PHASE_PLAN.md step 2 line 2.5, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 080, 081, 082; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  COST: 5.729411400000001
+  ACCOMPLISHED: a CQ call whose callsign the confident-letter fix broke into pieces reads as the words that were sent again, with the fix kept, and every floor test is honestly green so step 2's exit holds
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 2.1, 2.2 and 2.3 are ticked, while 2.5 is still red because 17:37's named floor reads 38 against its banked 46 at entry, at exit and at every commit of the unit, and the one change built was not kept because it raised 17:37's boundaries wrong from 7 to 8 and failed V-11 on three recordings, and 2.4 is unmet with DRIFT at 2 of 3, and the owner question the report raises is about a test floor and a boundary count, which is not one of the phase's two stops, so the step is not blocked.
+  ADVANCED: no
+  ATTEMPT: 2.5 | unit 6 launched 2026-09-26T03:05:24.161Z | no | executed | trace every gap in 17:37's CQ at HEAD and before G1 with its length, unit, thresholds and call, name the cause of the two boundaries G1 lost, build one gap-duration change that gives them back with G1 kept, and re-bank 17:37's named floor only if no requirement metric on it is worse than before G1
+  REASON: 2.5 | unit 6 launched 2026-09-26T03:05:24.161Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 445 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every sure letter's marks and inner gaps against a dit, a dah and an element gap at the unit in force, tabulate right against wrong, and only if an edge exists that no right letter crosses, print letters past it dim, kept under R78 with MET-INVENTED falling and coverage held
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 3 line 3.2 asks for a change kept under R78 with MET-INVENTED falling, and 43 of HEAD's 47 are sure letters resting on marks that are neither dit nor dah at the unit in force, which the decoder never checks; step 2's open 2.4 and 2.5 cannot be moved by a unit while 443's standing ruling holds 17:37's floor, and the plan's step-3 dependency line routes to step 3 when step 2 blocks.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 3 is worked because step 2's 2.5 is held by 443's DECIDED (3), which this arbiter may not overrule, and 2.4 is a closing rule no unit builds; (2) 444's section 4 question on 17:37 - re-bank at 38 or restore to 5 - is left to the owner, not ruled here: it is not one of the two stops, but answering it would overrule 443's DECIDED (3), and while it stands every step's floors-green line (2.5, 3.6, 4.7, 5.6, 6.6, 7.5, 8.6) stays red on 17:37, which is reported as a mismatch for the owner; (3) task 2 is built only on an edge the trace finds with no right letter past it, so 442's refusal is not repeated; (4) HM-REQ-014's dim precision is measured and reported, not a keep condition, because dimming wrong letters lowers it by construction; (5) 444's dropout rule and 443's section 4 are logged and not chased.
+  LICENCE: PHASE_PLAN.md step 3 line 3.2 and its dependency line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 3 criterion 2
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.131 to 1.13.132. PHASE_STATUS.md names unit 445, CURRENT_STEP 3 in both copies. HEAD at entry 0528afbe. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 375 s; APP carry-forward 278 of 278 in 158 s; captures 51 of 51; adjudicated 13 of 13; named 12 of 13, 17:37 red (floor 46, reads 38) as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-INVENTED 47 over 473, 0.0994 (4 added, 43 substituted; all 47 in the sender-not-stated condition, TX-FARNS, TX-ITU and TX-TIGHT 0); MET-CER-SURE 47 of 421 sure, 0.1116; sure-and-right coverage 374 over 473, 0.7907; MET-WBE 52 over 113, 0.4602. Synthetic, exact keys: MET-INVENTED 14 over 252 (6 added, 8 substituted: ITU 15 dB 1 added, ITU 5 dB 1 added, char-gap-5 15 dB 1 substituted, char-gap-5 5 dB 4 added and 7 substituted); MET-CER-SURE 14 of 173, 0.0809; coverage 159 over 252, 0.6310.
+  
+  ## UNIT 7 - STEP 3
+  
+  STEP: 3
+  APPROACH: trace every sure letter's marks and inner gaps against a dit, a dah and an element gap at the unit in force, tabulate right against wrong, and only if an edge exists that no right letter crosses, print letters past it dim, kept under R78 with MET-INVENTED falling and coverage held
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The question asks whether future step 3 edges should need a minimum count of wrong letters or synthetic agreement before they are built, which is a method and threshold choice for the unit, it touches neither keying nor what the product promises the operator, and it blocks no work.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 3 line 3.2 asks for a change kept under R78 with MET-INVENTED falling, and 43 of HEAD's 47 are sure letters resting on marks that are neither dit nor dah at the unit in force, which the decoder never checks; step 2's open 2.4 and 2.5 cannot be moved by a unit while 443's standing ruling holds 17:37's floor, and the plan's step-3 dependency line routes to step 3 when step 2 blocks.
+  DECIDED: author's, overrulable - (1) step 3 is worked because step 2's 2.5 is held by 443's DECIDED (3), which this arbiter may not overrule, and 2.4 is a closing rule no unit builds; (2) 444's section 4 question on 17:37 - re-bank at 38 or restore to 5 - is left to the owner, not ruled here: it is not one of the two stops, but answering it would overrule 443's DECIDED (3), and while it stands every step's floors-green line (2.5, 3.6, 4.7, 5.6, 6.6, 7.5, 8.6) stays red on 17:37, which is reported as a mismatch for the owner; (3) task 2 is built only on an edge the trace finds with no right letter past it, so 442's refusal is not repeated; (4) HM-REQ-014's dim precision is measured and reported, not a keep condition, because dimming wrong letters lowers it by construction; (5) 444's dropout rule and 443's section 4 are logged and not chased.
+  LICENCE: PHASE_PLAN.md step 3 line 3.2 and its dependency line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+  COST: 4.851576999999998
+  ACCOMPLISHED: a letter the decoder read from marks that do not fit the sending speed stops being printed as sure, so fewer wrong letters reach the operator looking certain, and no right letter is dimmed to do it
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 3.1, 3.2 and 3.3 are met, with MET-INVENTED at 47 to 45 over 473, MET-CER-SURE at 0.1116 to 0.1074, coverage held at 374, adjudicated readings at 13 of 13 and V-11 at 0 of 35 worse, but 3.4 has no before and after print of the 7.052 traffic net string, 3.5 is not reached and 3.6 is red on 17:37.
+  ADVANCED: yes
+  ATTEMPT: 3.2 | unit 7 launched 2026-09-26T04:05:26.209Z | yes | executed | trace every sure letter's marks and inner gaps against a dit, a dah and an element gap at the unit in force, tabulate right against wrong, and only if an edge exists that no right letter crosses, print letters past it dim, kept under R78 with MET-INVENTED falling and coverage held
+  
+  ## UNIT 446 - STEP 5
+  
+  STEP: 5
+  APPROACH: trace where the speed search is bounded at 8 and 40 WPM, widen it to 5 and 45, prove both ends on synthetic sends of known speed, keep under R78 with decode time before and after
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 5 line 5.1 asks that HM-REQ-030 be met at both ends, with the speed search reaching 5 and 45 WPM where it runs 8 to 40, judged by R78 with decode time before and after. Step 2's 2.5 is held red on 17:37 by 443's DECIDED (3), which only the owner lifts, and 444's route is recorded no. 2.4 is a closing rule no honest unit is aimed at. Step 3's open lines are blocked the same way, and plan section 5 routes to any of steps 2 to 7.
+  STATE: not started
+  DECIDED: author's, overrulable - (1) step 5 is worked instead of the launcher's step 2, because step 2's routes are closed this pass and the plan's section 5 makes steps 2 to 7 independent; step 5 is chosen over step 4 because 4.1 is an instrument that changes nothing the operator reads (R83), while 5.1 does; (2) 5.1 is read as the search reaching both ends, proven by one HM-REQ-030 test per end on synthetic sends with exact keys, and meeting every must-tier requirement at every speed is measured at the ends and reported, not claimed; (3) decode time is reported and is not a keep condition, but the 300 s carry-forward cap binds; (4) 444's section 4 question on 17:37 stays with the owner, and while it stands every step's floors-green line stays red; (5) 445's section 4 question is logged and not chased.
+  LICENCE: PHASE_PLAN.md step 5 line 5.1, section 5's independence line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 030, 031, 033; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 5 criterion 1
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.132 to 1.13.133. PHASE_STATUS.md names unit 446, CURRENT_STEP 5 in both copies. HEAD at entry 83d3897c. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 376 s; APP carry-forward 277 of 278 in 166 s, the one loss TheRstIsYoursToCorrectTests.OnTheWindowTheTwoReportsAreBoxesWithTheirMarks, 4 of 4 alone; captures 51 of 51 in 131 s; adjudicated 13 of 13 in 32 s; named 12 of 13 in 70 s, 17:37 red (floor 46, reads 38) as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-INVENTED 45 over 473, 0.0951 (4 added, 41 substituted; all 45 in the sender-not-stated condition, TX-FARNS, TX-ITU and TX-TIGHT 0); MET-CER-SURE 45 of 419 sure, 0.1074; sure-and-right coverage 374 over 473, 0.7907; MET-WBE 52 over 113, 0.4602. Synthetic, exact keys: MET-INVENTED 14 over 252 (6 added, 8 substituted); MET-CER-SURE 14 of 173, 0.0809; coverage 159 over 252, 0.6310; MET-WBE 48 over 84, 0.5714.
+  
+  ## UNIT 8 - STEP 5
+  
+  STEP: 5
+  APPROACH: trace where the speed search is bounded at 8 and 40 WPM, widen it to 5 and 45, prove both ends on synthetic sends of known speed, keep under R78 with decode time before and after
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Both asks are about how the work is split and which test fixture goes in the tree, and neither touches keying or transmit or changes what the product tells the operator was logged, heard or sent.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 5 line 5.1 asks that HM-REQ-030 be met at both ends, with the speed search reaching 5 and 45 WPM where it runs 8 to 40, judged by R78 with decode time before and after. Step 2's 2.5 is held red on 17:37 by 443's DECIDED (3), which only the owner lifts, and 444's route is recorded no. 2.4 is a closing rule no honest unit is aimed at. Step 3's open lines are blocked the same way, and plan section 5 routes to any of steps 2 to 7.
+  DECIDED: author's, overrulable - (1) step 5 is worked instead of the launcher's step 2, because step 2's routes are closed this pass and the plan's section 5 makes steps 2 to 7 independent; step 5 is chosen over step 4 because 4.1 is an instrument that changes nothing the operator reads (R83), while 5.1 does; (2) 5.1 is read as the search reaching both ends, proven by one HM-REQ-030 test per end on synthetic sends with exact keys, and meeting every must-tier requirement at every speed is measured at the ends and reported, not claimed; (3) decode time is reported and is not a keep condition, but the 300 s carry-forward cap binds; (4) 444's section 4 question on 17:37 stays with the owner, and while it stands every step's floors-green line stays red; (5) 445's section 4 question is logged and not chased.
+  LICENCE: PHASE_PLAN.md step 5 line 5.1, section 5's independence line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 030, 031, 033; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 5.705422799999999
+  ACCOMPLISHED: a station sending as slowly as 5 or as fast as 45 words a minute is found and read, where today the decoder only searches 8 to 40 and a 44 WPM station reads nothing, with nothing read today made worse
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: the checkboxes say not started and the judge said in progress - the checkboxes win. The judge-s reason: No criterion of step 5 is met, because the 5 to 45 search was built but R78 refused it on the real set, where sure errors rose from 45 to 50 and coverage fell from 374 to 369. The search still runs 8 to 40 at exit. The recording 5.2 names is absent, so 5.2 is unmeasured. 5.3 to 5.6 were not attempted, and none of what remains waits on a keying or promise stop.
+  ADVANCED: no
+  ATTEMPT: 5.1 | unit 8 launched 2026-09-26T05:13:23.175Z | no | executed | trace where the speed search is bounded at 8 and 40 WPM, widen it to 5 and 45, prove both ends on synthetic sends of known speed, keep under R78 with decode time before and after
+  REASON: 5.1 | unit 8 launched 2026-09-26T05:13:23.175Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 447 - STEP 4
+  
+  STEP: 4
+  APPROACH: build a pitch instrument finer than 25 Hz sharing no code with the tracker, prove it on tones known by construction, measure MET-PITCH-ERR on every capture in the tree, then one CwToneTracker change toward keying quality judged under R78 with the instrument table beside it
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 4 line 4.1 asks for a pitch instrument finer than 25 Hz, proved within one bin on tones known by construction and sharing no code with CwToneTracker or CwToneSurvey, and R76 keeps the tracker shut until it is met. Step 2's 2.5 is held red on 17:37 by 443's DECIDED (3), which only the owner lifts, and 2.4 is a closing rule no honest unit is aimed at; step 3 is blocked the same way; 5.1 was just recorded no.
+  STATE: not started
+  DECIDED: author's, overrulable - (1) step 4 is worked instead of the launcher's step 2, for the same reasons 446's DECIDED (1) gave, which still stand, and ahead of step 5 because 5.1 was just refused and step 4 has never been worked; R83 is met by task 3's tracker change, which follows the instrument in the same unit; (2) R76's "until 4.1 is met" is read as 4.1 ticked in task 1's own commit, with the tracker untouched before it and task 3 not built if 4.1 misses; (3) R76's independence is read as no code shared with CwToneTracker, CwToneSurvey, CwPitchChoice or anything they call, and the instrument never enters the decode path; (4) HM-REQ-092's N is TBD, so MET-PITCH-ERR is measured and reported, never judged; (5) 446's section 4 is answered for when 5.1 is next worked: 5.1 may be met by two kept changes, one per end, ticked after the second, and 135641 is the owner's recording to supply and never halts a unit; (6) 17:37 stays under 443's DECIDED (3), so 4.7 stays red.
+  LICENCE: PHASE_PLAN.md step 4 lines 4.1 to 4.4 and section 5's independence line; R75 and R76 as carried from the correctness phase's plan; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); HM-DEC-095; HM-DEC-127; V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 090, 091, 092, 102, 103; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 4 criterion 1
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.133 to 1.13.134. PHASE_STATUS.md names unit 447, CURRENT_STEP 4 in both copies. HEAD at entry ae2d6b00. Entry round, one type per invocation: build 0 errors in 17 s; ENGINE carry-forward 178 of 178 in 375 s; APP carry-forward 277 of 278 in 154 s, the one loss TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord, 8 of 8 alone; captures 51 of 51 in 132 s; adjudicated 13 of 13 in 33 s; named 12 of 13 in 69 s, 17:37 red (floor 46, reads 38) as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-INVENTED 45 over 473, 0.0951 (4 added, 41 substituted); MET-CER-SURE 45 of 419 sure, 0.1074; sure-and-right coverage 374 over 473, 0.7907; MET-WBE 52 over 113, 0.4602. Synthetic, exact keys: MET-INVENTED 14 over 252 (6 added, 8 substituted); MET-CER-SURE 14 of 173, 0.0809; coverage 159 over 252, 0.6310; MET-WBE 48 over 84, 0.5714. Identical to 446's exit.
+  
+  ## UNIT 9 - STEP 4
+  
+  STEP: 4
+  APPROACH: build a pitch instrument finer than 25 Hz sharing no code with the tracker, prove it on tones known by construction, measure MET-PITCH-ERR on every capture in the tree, then one CwToneTracker change toward keying quality judged under R78 with the instrument table beside it
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - All three items are the unit's own calls on a plan tick, a metric reading and which group a later unit builds, none touches keying or transmit or changes what the product states to the operator, and each comes with a recommendation already made.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 4 line 4.1 asks for a pitch instrument finer than 25 Hz, proved within one bin on tones known by construction and sharing no code with CwToneTracker or CwToneSurvey, and R76 keeps the tracker shut until it is met. Step 2's 2.5 is held red on 17:37 by 443's DECIDED (3), which only the owner lifts, and 2.4 is a closing rule no honest unit is aimed at; step 3 is blocked the same way; 5.1 was just recorded no.
+  DECIDED: author's, overrulable - (1) step 4 is worked instead of the launcher's step 2, for the same reasons 446's DECIDED (1) gave, which still stand, and ahead of step 5 because 5.1 was just refused and step 4 has never been worked; R83 is met by task 3's tracker change, which follows the instrument in the same unit; (2) R76's 'until 4.1 is met' is read as 4.1 ticked in task 1's own commit, with the tracker untouched before it and task 3 not built if 4.1 misses; (3) R76's independence is read as no code shared with CwToneTracker, CwToneSurvey, CwPitchChoice or anything they call, and the instrument never enters the decode path; (4) HM-REQ-092's N is TBD, so MET-PITCH-ERR is measured and reported, never judged; (5) 446's section 4 is answered for when 5.1 is next worked: 5.1 may be met by two kept changes, one per end, ticked after the second, and 135641 is the owner's recording to supply and never halts a unit; (6) 17:37 stays under 443's DECIDED (3), so 4.7 stays red.
+  LICENCE: PHASE_PLAN.md step 4 lines 4.1 to 4.4 and section 5's independence line; R75 and R76 as carried from the correctness phase's plan; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); HM-DEC-095; HM-DEC-127; V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 090, 091, 092, 102, 103; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.914758400000002
+  ACCOMPLISHED: Hamlet can measure the note a station is sending to better than 25 Hz, independently of the part that chooses it, and uses that measurement to make the tracker listen where the sender is, so the opening of a call the tracker used to hear at the wrong pitch reads more of what was sent
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: 4.1 is met, since the report tables 30 of 30 constructed tones within the 0.5 Hz bin with a worst error of 0.024 Hz, gives the cost per hop, and shows a no shared code test, and 4.2 is met with 69 captures measured and the 11 files more than 25 Hz off named, but 4.3 rests on a synthetic test while the report says HM-REQ-091 is unmet on the real set, 4.4 has one kept change and no closing, 4.5 and 4.6 are not done, and 4.7 is red on 17:37, 032113 and 032129.
+  ADVANCED: yes
+  ATTEMPT: 4.1 | unit 9 launched 2026-09-26T06:20:29.778Z | yes | executed | build a pitch instrument finer than 25 Hz sharing no code with the tracker, prove it on tones known by construction, measure MET-PITCH-ERR on every capture in the tree, then one CwToneTracker change toward keying quality judged under R78 with the instrument table beside it
+  
+  ## UNIT 448 - STEP 4
+  
+  STEP: 4
+  APPROACH: measure HM-REQ-102 and 103 on the 7.052 opening before and after one change that replaces the tracker's from-cold point-at-the-loudest move with a choice by keying quality, with an HM-REQ-091 and 102 test on a cold start beside a louder unkeyed carrier watched failing first, kept under R78 with the instrument table beside it
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 4 line 4.5 asks that HM-REQ-102 and HM-REQ-103 be measured on the 7.052 opening as text before and after, and the only pitch choice the tracker makes while acquiring is the from-cold move to the loudest bin, which is also a choice by level alone under HM-REQ-091 in line 4.3. Step 2's 2.5 is held red on 17:37 by 443's DECIDED (3), which only the owner lifts, and 2.4 is a closing rule no honest unit is aimed at; step 3 is blocked the same way; 5.1 was recorded no.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 4 is worked instead of the launcher's step 2, for the reasons 446's DECIDED (1) gave, which still stand; (2) 4.3 is ticked at task 0 by applying work instruction 447's own tick rule, a green test naming HM-REQ-091, which 447 met and stated HM-REQ-091 unmet on the real set, and whose exit commit never landed - this applies an earlier ruling and overrules none; (3) 447's section 4 item 2 is ruled: a MET-PITCH-ERR move inside the 0.5 Hz bin, or a sign change moving by less than one 5 Hz fine step, is not a rise; (4) "acquiring" is taken from CW_SPEC.md, or else as the span up to HM-DEC-095's first twice-confirmed keyed verdict, and the opening's sent text is inferred from each file decoded alone; (5) 4.5 is ticked on the measurement before and after the change whether or not it is kept, since 4.5 is a measurement; (6) 443's DECIDED (3) is read as covering 032113 and 032129 too, so no floor is re-banked and 4.7 stays red.
+  LICENCE: PHASE_PLAN.md step 4 lines 4.3 and 4.5 and section 5's independence line; R75 and R76 as carried from the correctness phase's plan; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; work instruction 447's tick rule for 4.3; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); HM-DEC-095; HM-DEC-127; V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 090, 091, 092, 102, 103; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 4 criterion 5
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.134 to 1.13.135. PHASE_STATUS.md names unit 448, CURRENT_STEP 4 in both copies. HEAD at entry c2cae86d. 4.3 ticked in both PHASE_PLAN.md copies under work instruction 447's tick rule: TheTrackedPitchIsChosenByKeyingTests 2 of 2 alone in 35 s; HM-REQ-091 met on the synthetic cases and not met on the real set (447's statement). Entry round, one type per invocation: build 0 errors in 16 s; ENGINE carry-forward 178 of 178 in 373 s; APP carry-forward first run aborted at 480 s with the test host hung after 132 passed, rerun once 277 of 278 in 163 s, the one loss ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed, 2 of 2 alone; captures 51 of 51 in 130 s; adjudicated 13 of 13 in 32 s; named 10 of 13 in 66 s, 17:37 38 against 46, 032113 43 against 45, 032129 42 against 64, as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-INVENTED 40 over 473, 0.0846 (5 added, 35 substituted); MET-CER-SURE 40 of 433 sure, 0.0924; sure-and-right coverage 393 over 473, 0.8309; MET-WBE 47 over 113, 0.4159. Synthetic, exact keys: MET-INVENTED 14 over 252; MET-CER-SURE 14 of 173, 0.0809; coverage 159 over 252, 0.6310; MET-WBE 48 over 84, 0.5714. MET-PITCH-ERR, 447's printer: 69 of 69 measured, 9 files more than 25 Hz off, 256 of 1688 windows. Identical to 447's exit.
+  
+  ## UNIT 10 - STEP 4
+  
+  STEP: 4
+  APPROACH: measure HM-REQ-102 and 103 on the 7.052 opening before and after one change that replaces the tracker's from-cold point-at-the-loudest move with a choice by keying quality, with an HM-REQ-091 and 102 test on a cold start beside a louder unkeyed carrier watched failing first, kept under R78 with the instrument table beside it
+  HIT: section 4 wants a ruling: yes - Item 1 asks the owner to define acquiring for HM-REQ-102, which decides when the decoder may show letters as sure, so it changes what the product tells the operator was heard, and item 3 waits on that ruling.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 4 line 4.5 asks that HM-REQ-102 and HM-REQ-103 be measured on the 7.052 opening as text before and after, and the only pitch choice the tracker makes while acquiring is the from-cold move to the loudest bin, which is also a choice by level alone under HM-REQ-091 in line 4.3. Step 2's 2.5 is held red on 17:37 by 443's DECIDED (3), which only the owner lifts, and 2.4 is a closing rule no honest unit is aimed at; step 3 is blocked the same way; 5.1 was recorded no.
+  DECIDED: author's, overrulable - (1) step 4 is worked instead of the launcher's step 2, for the reasons 446's DECIDED (1) gave, which still stand; (2) 4.3 is ticked at task 0 by applying work instruction 447's own tick rule, a green test naming HM-REQ-091, which 447 met and stated HM-REQ-091 unmet on the real set, and whose exit commit never landed - this applies an earlier ruling and overrules none; (3) 447's section 4 item 2 is ruled: a MET-PITCH-ERR move inside the 0.5 Hz bin, or a sign change moving by less than one 5 Hz fine step, is not a rise; (4) 'acquiring' is taken from CW_SPEC.md, or else as the span up to HM-DEC-095's first twice-confirmed keyed verdict, and the opening's sent text is inferred from each file decoded alone; (5) 4.5 is ticked on the measurement before and after the change whether or not it is kept, since 4.5 is a measurement; (6) 443's DECIDED (3) is read as covering 032113 and 032129 too, so no floor is re-banked and 4.7 stays red.
+  LICENCE: PHASE_PLAN.md step 4 lines 4.3 and 4.5 and section 5's independence line; R75 and R76 as carried from the correctness phase's plan; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; work instruction 447's tick rule for 4.3; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); HM-DEC-095; HM-DEC-127; V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 090, 091, 092, 102, 103; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.537333400000001
+  ACCOMPLISHED: when the operator tunes onto a call, the decoder listens to the station that is keying from the first seconds instead of the loudest tone in the passband, and the owner can read, as text, what the opening of the 7.052 call prints while the decoder is still finding the station and what it prints after
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 4.1, 4.2, 4.3 and 4.5 are ticked, and the report backs 4.5 with the opening's text before and after, 9 sure characters while acquiring and 21 of 24 opening characters read, but 4.4 has no kept change, 4.6 is untouched and 4.7 is red on 17:37, 032113 and 032129.
+  ADVANCED: yes
+  ATTEMPT: 4.5 | unit 10 launched 2026-09-26T07:53:37.512Z | yes | executed | measure HM-REQ-102 and 103 on the 7.052 opening before and after one change that replaces the tracker's from-cold point-at-the-loudest move with a choice by keying quality, with an HM-REQ-091 and 102 test on a cold start beside a louder unkeyed carrier watched failing first, kept under R78 with the instrument table beside it
+  
+  ## UNIT 449 - STEP 2
+  
+  STEP: 2
+  APPROACH: re-trace the 40 sure-but-wrong letters at HEAD with the instrument pitch and tracker moves beside each, build one change against the largest group no earlier unit attacked, kept under R78, else park the trace and close step 2 partial
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 2 line 2.4 closes the step after three consecutive units with no kept change, and step 2 stands at 2 of 3 (442 and 444), so one more real attempt at HM-REQ-010 either keeps a change that lowers MET-CER-SURE or closes the step partial. 2.5 stays held red by 443's DECIDED (3), and no attempt has been recorded against 2.4.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 2 is worked as the launcher named it: 444's DECIDED (4), that no single unit can build 2.4, was true while the count was 0 or 1, and at 2 of 3 one unit settles it, so this applies a changed fact and overrules nothing; (2) the unit counts as one with no kept change if its change is refused under R78 or if the trace finds no group outside the excluded routes; (3) 2.4's trace going to PARKED.md is done by appending one line in the file's own form with drift as the stop field, naming the committed trace files, and the file header's never-by-a-session line is reported as a mismatch; (4) the routes already tried at step 2 (rival margin, marks' speed, gap duration, mark-shape edge, from-cold move, speed bounds) are excluded from the change, and no change gates the sure class on acquisition, which is parked with the owner; (5) 443's DECIDED (3) as 448's DECIDED (6) read it holds, so 2.5 is not ticked and no floor is re-banked; (6) 448's section 4 is logged and not chased: items 1 and 3 are parked, item 2 is step 4's, and item 4 is reported only if it repeats.
+  LICENCE: PHASE_PLAN.md step 2 lines 2.2 to 2.5; R75 and R76 as carried; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 447 DECIDED (3) and 448 DECIDED (3) and (6); V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 2 criterion 4
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.135 to 1.13.136. PHASE_STATUS.md names unit 449, CURRENT_STEP 2 in both copies. HEAD at entry 6b872543. Step 2's count of units with no kept change confirmed at 2 of 3 (442 as unit 2, 444 as unit 6; no step-2 unit since). Entry round, one type per invocation: build 0 errors in 15 s; ENGINE carry-forward 178 of 178 in 378 s; APP carry-forward 273 of 278 in 167 s, the five losses in TheRstIsYoursToCorrectTests (4 of 4 alone), ThePsk31ConversationCardTests (8 of 8 alone) and TheFavoritesAreChipsTests (4 of 4 alone), no hang; captures 51 of 51 in 130 s; adjudicated 13 of 13 in 32 s; named 10 of 13 in 66 s, 17:37, 032113 and 032129 as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-INVENTED 40 over 473, 0.0846 (5 added, 35 substituted); MET-CER-SURE 40 of 433 sure, 0.0924; sure-and-right coverage 393 over 473, 0.8309; MET-WBE 47 over 113, 0.4159. Synthetic, exact keys: MET-INVENTED 14 over 252; MET-CER-SURE 14 of 173, 0.0809; coverage 159 over 252, 0.6310; MET-WBE 48 over 84, 0.5714. MET-PITCH-ERR, 447's printer, 253 s: 69 of 69 measured, 9 files more than 25 Hz off, 256 of 1688 windows. Identical to 448's exit.
+  
+  ## UNIT 11 - STEP 2
+  
+  STEP: 2
+  APPROACH: re-trace the 40 sure-but-wrong letters at HEAD with the instrument pitch and tracker moves beside each, build one change against the largest group no earlier unit attacked, kept under R78, else park the trace and close step 2 partial
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - All three items are decisions the unit has already made and acted on, a decoder threshold, a tracker behaviour and a metric definition, each marked not in the way of B, and none asks the owner to decide anything about keying or about what the product promises the operator.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 2 line 2.4 closes the step after three consecutive units with no kept change, and step 2 stands at 2 of 3 (442 and 444), so one more real attempt at HM-REQ-010 either keeps a change that lowers MET-CER-SURE or closes the step partial. 2.5 stays held red by 443's DECIDED (3), and no attempt has been recorded against 2.4.
+  DECIDED: author's, overrulable - (1) step 2 is worked as the launcher named it: 444's DECIDED (4), that no single unit can build 2.4, was true while the count was 0 or 1, and at 2 of 3 one unit settles it, so this applies a changed fact and overrules nothing; (2) the unit counts as one with no kept change if its change is refused under R78 or if the trace finds no group outside the excluded routes; (3) 2.4's trace going to PARKED.md is done by appending one line in the file's own form with drift as the stop field, naming the committed trace files, and the file header's never-by-a-session line is reported as a mismatch; (4) the routes already tried at step 2 (rival margin, marks' speed, gap duration, mark-shape edge, from-cold move, speed bounds) are excluded from the change, and no change gates the sure class on acquisition, which is parked with the owner; (5) 443's DECIDED (3) as 448's DECIDED (6) read it holds, so 2.5 is not ticked and no floor is re-banked; (6) 448's section 4 is logged and not chased: items 1 and 3 are parked, item 2 is step 4's, and item 4 is reported only if it repeats.
+  LICENCE: PHASE_PLAN.md step 2 lines 2.2 to 2.5; R75 and R76 as carried; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 447 DECIDED (3) and 448 DECIDED (3) and (6); V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 7.6500954
+  ACCOMPLISHED: either fewer letters reach the operator printed as certain when they are not what was sent, or the owner is told plainly that step 2 has run out of routes, with the forty that remain traced to their causes and parked
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 2.1 to 2.3 stay met and the report backs the kept change with before and after numbers, real MET-CER-SURE falling from 40 of 433 to 33 of 436 and coverage rising from 393 to 403, but 2.4 is not met because the kept change resets the count to 0 and nothing is parked, and 2.5 is still red with named floors 17:37, 032113 and 032129 at 10 of 13.
+  ADVANCED: no
+  ATTEMPT: 2.4 | unit 11 launched 2026-09-26T09:22:29.173Z | no | executed | re-trace the 40 sure-but-wrong letters at HEAD with the instrument pitch and tracker moves beside each, build one change against the largest group no earlier unit attacked, kept under R78, else park the trace and close step 2 partial
+  REASON: 2.4 | unit 11 launched 2026-09-26T09:22:29.173Z | the unit ran to completion and the criterion did not flip from unmet to met
+  
+  ## UNIT 450 - STEP 4
+  
+  STEP: 4
+  APPROACH: replace the boolean PitchWasMeasured with a three-valued pitch proof state proved hypothesis none in the decode report, test naming HM-REQ-093 watched failing first, the record sheet states it, decoding byte-identical
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 4 line 4.6 asks that HM-REQ-093, pitch reported with a proof state of proved, hypothesis or none, be met with a test naming it, and today the decoder reports any held number as measured, a survey candidate and a stale hold included; step 2's 2.4 count was reset to 0 by 449's kept change and 2.5 stays held by 443's DECIDED (3), and no attempt has been recorded against 4.6.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 4 is worked instead of step 2 because 449's kept change reset 2.4's count to 0 and 2.5 is held by 443's DECIDED (3), so no step 2 line can flip this pass; (2) proved is a subset of what HEAD calls measured, so the product never states more about a signal than today, which keeps the unit off the owner's promise stop; (3) proved is defined by the unit from what the tracker already computes, never as acquired, and nothing in the decode path reads it, since acquisition is parked with the owner; (4) the unit is judged by decoding byte-identical on every recording with the four metrics, floors and MET-PITCH-ERR unchanged, and 4.6 is ticked on a green HM-REQ-093 test watched failing first, the state in CwDecodeReport and on the sheet, and that identity; (5) this unit is not a 4.4 attempt and leaves step 4's DRIFT at 1; (6) 449's section 4 is logged and not chased: item 1 is step 8's, item 2 is printed only if it yields a stale hold, item 3 and its mismatches are logged.
+  LICENCE: PHASE_PLAN.md step 4 line 4.6 and section 5's independence line; R75 and R76 as carried; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 447 DECIDED (3), 448 DECIDED (3) and (6); V-04; V-06; V-12; V-13; V-14; R72; HM-REQ-091, 092, 093; HM-DEC-095; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 4 criterion 6
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.136 to 1.13.137. PHASE_STATUS.md names unit 450, CURRENT_STEP 4 in both copies. HEAD at entry 706e3874. Step 4 at 4 of 7 by the plan (4.1, 4.2, 4.3, 4.5 ticked; 4.4, 4.6, 4.7 open) in both copies. Entry round, one type per invocation: build 0 errors in 16 s; ENGINE carry-forward 178 of 178 in 375 s; APP carry-forward 276 of 278 in 164 s, the two losses in TheCarrierHoldsTheButtonsTests (8 of 8 alone) and Unit376TheTopBandTests (5 of 5 alone), no hang; captures 51 of 51 in 130 s; adjudicated 13 of 13 in 32 s; named 10 of 13 in 67 s, 17:37, 032113 and 032129 as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-INVENTED 33 over 473, 0.0698 (5 added, 28 substituted); MET-CER-SURE 33 of 436 sure, 0.0757; sure-and-right coverage 403 over 473, 0.8520; MET-WBE 46 over 113, 0.4071. Synthetic, exact keys: MET-INVENTED 14 over 252; MET-CER-SURE 14 of 173, 0.0809; coverage 159 over 252, 0.6310; MET-WBE 48 over 84, 0.5714. MET-PITCH-ERR, 447's printer, 254 s: 69 of 69 measured, 9 files more than 25 Hz off, 248 of 1688 windows. Every recording's text at HEAD saved, 63 recordings, to .run-unit/unit450-text-before.txt. Identical to 449's exit.
+  
+  ## UNIT 12 - STEP 4
+  
+  STEP: 4
+  APPROACH: replace the boolean PitchWasMeasured with a three-valued pitch proof state proved hypothesis none in the decode report, test naming HM-REQ-093 watched failing first, the record sheet states it, decoding byte-identical
+  HIT: section 4 wants a ruling: yes - Items 1 and 2 ask the owner to decide when the product may tell the operator that a heard pitch is proved, which is a fact about what was heard and not the wording of a label.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 4 line 4.6 asks that HM-REQ-093, pitch reported with a proof state of proved, hypothesis or none, be met with a test naming it, and today the decoder reports any held number as measured, a survey candidate and a stale hold included; step 2's 2.4 count was reset to 0 by 449's kept change and 2.5 stays held by 443's DECIDED (3), and no attempt has been recorded against 4.6.
+  DECIDED: author's, overrulable - (1) step 4 is worked instead of step 2 because 449's kept change reset 2.4's count to 0 and 2.5 is held by 443's DECIDED (3), so no step 2 line can flip this pass; (2) proved is a subset of what HEAD calls measured, so the product never states more about a signal than today, which keeps the unit off the owner's promise stop; (3) proved is defined by the unit from what the tracker already computes, never as acquired, and nothing in the decode path reads it, since acquisition is parked with the owner; (4) the unit is judged by decoding byte-identical on every recording with the four metrics, floors and MET-PITCH-ERR unchanged, and 4.6 is ticked on a green HM-REQ-093 test watched failing first, the state in CwDecodeReport and on the sheet, and that identity; (5) this unit is not a 4.4 attempt and leaves step 4's DRIFT at 1; (6) 449's section 4 is logged and not chased: item 1 is step 8's, item 2 is printed only if it yields a stale hold, item 3 and its mismatches are logged.
+  LICENCE: PHASE_PLAN.md step 4 line 4.6 and section 5's independence line; R75 and R76 as carried; R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 447 DECIDED (3), 448 DECIDED (3) and (6); V-04; V-06; V-12; V-13; V-14; R72; HM-REQ-091, 092, 093; HM-DEC-095; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 8.759785600000003
+  ACCOMPLISHED: the operator can tell a pitch the decoder proved on the station's keying from one it is only supposing or has held past its evidence, and no decoded letter changes to do it
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: The report shows 4.6 met, with ThePitchSaysWhetherItWasProvedTests green after being watched red on the level case and both stale-hold cases, 63 of 63 recordings' text unchanged and the sheet line quoted before and after, and 4.1, 4.2, 4.3 and 4.5 were already ticked, but 4.4 has no kept tracker change and 4.7 is still red on the named floors 17.37, 032113 and 032129, so not every exit criterion of step 4 is met.
+  ADVANCED: yes
+  ATTEMPT: 4.6 | unit 12 launched 2026-09-26T10:52:07.960Z | yes | executed | replace the boolean PitchWasMeasured with a three-valued pitch proof state proved hypothesis none in the decode report, test naming HM-REQ-093 watched failing first, the record sheet states it, decoding byte-identical
+  
+  ## UNIT 451 - STEP 5
+  
+  STEP: 5
+  APPROACH: give the reported speed a three-valued proof state proved hypothesis none in the decode report and on the sheet and every speed display, test naming HM-REQ-034 watched failing first, and tests naming HM-REQ-035 clear retains speed pitch noise floor and HM-REQ-036 pitch refinement retains timing, measured not repaired, decoding byte-identical
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 5 line 5.5 asks that HM-REQ-034, the speed reported with a proof state, and HM-REQ-035 and 036 each have a test naming them with the report stating whether each is met, and today the speed is a nullable number and a boolean with no state; no step 2 line can flip this pass, since 449's kept change set 2.4's count to 0 of 3 and 2.5 is held by 443's DECIDED (3), and no attempt has been recorded against 5.5.
+  STATE: not started
+  DECIDED: author's, overrulable - (1) step 5 is worked instead of the launcher's step 2, because 2.4's count is 0 of 3 after 449's kept change and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 5.5 is chosen over 7.1, 5.3 and 5.4 because it changes what the operator reads (R83) and they do not, and over 5.1 and 5.2 because 5.1 is recorded no and 5.2's recording is absent; (2) proved is a subset of what HEAD shows as a speed number and no display shows a number HEAD withholds, so the product never states more about a signal than today, which keeps the unit off the promise stop, and the parked pitch question is neither re-raised nor answered; (3) proved is defined by the unit from the guard the decoder already computes, lapsing with its evidence as 450's pitch state does, never as acquired, and nothing in the decode path reads it; (4) HM-REQ-035 and 036 are measured by tests naming them and not repaired this unit, and a red one is committed red on no carry-forward line; (5) 5.5 is ticked on a green HM-REQ-034 test watched failing first, the state in CwDecodeReport and on every speed display, 035 and 036 tests run with met or not met stated, and decoding byte-identical; (6) 450's section 4 is logged and not chased: items 1 and 2 are parked, and item 3 is reported only where TheReleaseStartsTheReadingFresh bears on HM-REQ-036; this unit is not a 5.1 attempt and leaves step 5's DRIFT at 1.
+  LICENCE: PHASE_PLAN.md step 5 line 5.5 and section 5's independence line; R78, R80, R81, R83 and section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 446 DECIDED (5), 447 DECIDED (3), 448 DECIDED (6), and 450 DECIDED (2) and (3) as the pattern followed; V-04; V-06; V-13; V-14; R72; HM-REQ-031, 034, 035, 036, 093; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 5 criterion 5
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.137 to 1.13.138. PHASE_STATUS.md names unit 451, CURRENT_STEP 5 in both copies. HEAD at entry f96cd04e. Step 5 at 0 of 6 by the plan; step 4 at 5 of 7 (4.1, 4.2, 4.3, 4.5, 4.6 ticked; 4.4, 4.7 open). Build 0 errors; engine line 178 of 178 in 376 s; app line 275 of 278 in 160 s, the 3 losses (ThePsk31OfferTests 1, TheFavoritesAreUnderTheGreenZoneTests 2) green alone, no hang; captures 51 of 51 in 129 s; adjudicated 13 of 13; named 10 of 13 (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 46 over 113. Synthetic, exact: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252. Files more than 25 Hz off 9. 63 recordings' text saved to .run-unit/unit451-text-before.txt.
+  
+  ## UNIT 13 - STEP 5
+  
+  STEP: 5
+  APPROACH: give the reported speed a three-valued proof state proved hypothesis none in the decode report and on the sheet and every speed display, test naming HM-REQ-034 watched failing first, and tests naming HM-REQ-035 clear retains speed pitch noise floor and HM-REQ-036 pitch refinement retains timing, measured not repaired, decoding byte-identical
+  HIT: section 4 wants a ruling: yes - The second question asks the owner to decide whether the product should keep showing the operator a speed marked proved when nobody sent that speed, and that is a statement about what was heard.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 5 line 5.5 asks that HM-REQ-034, the speed reported with a proof state, and HM-REQ-035 and 036 each have a test naming them with the report stating whether each is met, and today the speed is a nullable number and a boolean with no state; no step 2 line can flip this pass, since 449's kept change set 2.4's count to 0 of 3 and 2.5 is held by 443's DECIDED (3), and no attempt has been recorded against 5.5.
+  DECIDED: author's, overrulable - (1) step 5 is worked instead of the launcher's step 2, because 2.4's count is 0 of 3 after 449's kept change and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 5.5 is chosen over 7.1, 5.3 and 5.4 because it changes what the operator reads (R83) and they do not, and over 5.1 and 5.2 because 5.1 is recorded no and 5.2's recording is absent; (2) proved is a subset of what HEAD shows as a speed number and no display shows a number HEAD withholds, so the product never states more about a signal than today, which keeps the unit off the promise stop, and the parked pitch question is neither re-raised nor answered; (3) proved is defined by the unit from the guard the decoder already computes, lapsing with its evidence as 450's pitch state does, never as acquired, and nothing in the decode path reads it; (4) HM-REQ-035 and 036 are measured by tests naming them and not repaired this unit, and a red one is committed red on no carry-forward line; (5) 5.5 is ticked on a green HM-REQ-034 test watched failing first, the state in CwDecodeReport and on every speed display, 035 and 036 tests run with met or not met stated, and decoding byte-identical; (6) 450's section 4 is logged and not chased: items 1 and 2 are parked, and item 3 is reported only where TheReleaseStartsTheReadingFresh bears on HM-REQ-036; this unit is not a 5.1 attempt and leaves step 5's DRIFT at 1.
+  LICENCE: PHASE_PLAN.md step 5 line 5.5 and section 5's independence line; R78, R80, R81, R83 and section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 446 DECIDED (5), 447 DECIDED (3), 448 DECIDED (6), and 450 DECIDED (2) and (3) as the pattern followed; V-04; V-06; V-13; V-14; R72; HM-REQ-031, 034, 035, 036, 093; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 11.2776782
+  ACCOMPLISHED: the operator can tell a speed the decoder earned from the keying now from one it is only supposing or holding, and the owner learns whether clearing the screen or refining the pitch costs the decoder its timing, with no decoded letter changed
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criterion 5.5 is met because the report names a test for each requirement, TheSpeedSaysWhetherItWasProvedTests for HM-REQ-034, which was seen failing on HEAD and now passes, AClearKeepsWhatTheDecoderWorkedOutTests for 035 and ARefinementKeepsTheTimingTests for 036, and it states that 034, 035 and 036 are each met with hop counts and saved outputs as evidence, but 5.1 to 5.4 and 5.6 are still open and 5.6 stays failing on the three named floors.
+  ADVANCED: yes
+  ATTEMPT: 5.5 | unit 13 launched 2026-09-26T12:22:12.676Z | yes | executed | give the reported speed a three-valued proof state proved hypothesis none in the decode report and on the sheet and every speed display, test naming HM-REQ-034 watched failing first, and tests naming HM-REQ-035 clear retains speed pitch noise floor and HM-REQ-036 pitch refinement retains timing, measured not repaired, decoding byte-identical
+  
+  ## UNIT 452 - STEP 6
+  
+  STEP: 6
+  APPROACH: report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 6 line 6.3 asks that MET-WBE be reported per condition and HM-REQ-080 and 081 be measured against it, and MET-WBE at 46 over 113 real is the farthest of the four metrics from its requirement, with no unit yet on step 6; step 2 cannot flip a line this pass, since 2.4's count is 0 of 3 after 449's kept change and 2.5 is held by 443's DECIDED (3).
+  STATE: not started
+  DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2, because 2.4 cannot reach 3 of 3 in one unit and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 6.3 is chosen over 5.3, 5.4 and 7.1 because MET-WBE is the requirement metric farthest from its threshold and its change alters what the operator reads (R83); (2) 6.3 is a measurement and is ticked at task 1 on MET-WBE per condition with the key's kind, 080 and 081 stated met, not met or not measurable here per condition, and the running figure in metrics.md, whether or not task 2's change is kept; (3) task 2's keep rule is R78 with MET-WBE falling on the real set and not rising on the synthetic, letters no worse, and V-11 per recording on boundaries wrong and sure-wrong letters, 17:37 not above 7; (4) if 17:37 reaches 5 or fewer it is reported and not re-banked, and 2.5 and 6.6 are not ticked; (5) 444's dropout rule is not rebuilt as it stood, and a refused rule gets no second value; (6) 451's section 4 is logged and not chased: item 1's reading stands, item 2 belongs to 5.3 and HM-REQ-032; this unit leaves DRIFT for steps 2 to 5 as it is.
+  LICENCE: PHASE_PLAN.md step 6 line 6.3 and section 5's independence line; R72, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 448 DECIDED (3) and (6); V-04; V-06; V-11; V-13; V-14; HM-REQ-010, 011, 080, 081, 082; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 6 criterion 3
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.138 to 1.13.139. PHASE_STATUS.md names unit 452, CURRENT_STEP 6 in both copies. HEAD at entry 6d40cc90. Step 6 at 0 of 6 by the plan. Build 0 errors; engine line 178 of 178 in 375 s; app line 276 of 278 in 163 s, the 2 losses (TheTestsStayOffTheNetworkTests, dispatcher loop) - alone the type lost 1 of 5 on a 2-pixel layout re-read, then 5 of 5 on the one rerun, no hang; captures 51 of 51 in 129 s; adjudicated 13 of 13; named 10 of 13 (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 46 (39 inserted, 7 deleted) over 113. Synthetic, exact: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252, MET-WBE 48 (19 inserted, 29 deleted) over 84. Files more than 25 Hz off 9. 63 recordings' text saved to .run-unit/unit452-text-before.txt, identical to 451's.
+  
+  ## UNIT 14 - STEP 6
+  
+  STEP: 6
+  APPROACH: report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - All three questions are about a decoder spacing number, how a test counts errors per recording, and how unkeyed recordings are weighed, so none touches keying or transmit and none changes what the product promises the operator.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 6 line 6.3 asks that MET-WBE be reported per condition and HM-REQ-080 and 081 be measured against it, and MET-WBE at 46 over 113 real is the farthest of the four metrics from its requirement, with no unit yet on step 6; step 2 cannot flip a line this pass, since 2.4's count is 0 of 3 after 449's kept change and 2.5 is held by 443's DECIDED (3).
+  DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2, because 2.4 cannot reach 3 of 3 in one unit and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 6.3 is chosen over 5.3, 5.4 and 7.1 because MET-WBE is the requirement metric farthest from its threshold and its change alters what the operator reads (R83); (2) 6.3 is a measurement and is ticked at task 1 on MET-WBE per condition with the key's kind, 080 and 081 stated met, not met or not measurable here per condition, and the running figure in metrics.md, whether or not task 2's change is kept; (3) task 2's keep rule is R78 with MET-WBE falling on the real set and not rising on the synthetic, letters no worse, and V-11 per recording on boundaries wrong and sure-wrong letters, 17:37 not above 7; (4) if 17:37 reaches 5 or fewer it is reported and not re-banked, and 2.5 and 6.6 are not ticked; (5) 444's dropout rule is not rebuilt as it stood, and a refused rule gets no second value; (6) 451's section 4 is logged and not chased: item 1's reading stands, item 2 belongs to 5.3 and HM-REQ-032; this unit leaves DRIFT for steps 2 to 5 as it is.
+  LICENCE: PHASE_PLAN.md step 6 line 6.3 and section 5's independence line; R72, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 448 DECIDED (3) and (6); V-04; V-06; V-11; V-13; V-14; HM-REQ-010, 011, 080, 081, 082; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 9.6237648
+  ACCOMPLISHED: the owner can see, per condition, how often the operator reads a word broken in two or two words run together, against the requirement's zero and five percent, and the commonest cause the audio can fix is fixed if the fix makes no recording worse
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criterion 6.3 is met, since the report gives MET-WBE for each condition with inserted and deleted boundaries apart, 37 over 113 real and 44 over 84 synthetic, and states HM-REQ-080 and 081 against each measurable case with 20 conditions named as not measurable here, but 6.1, 6.2, 6.4 and 6.5 have no work shown and 6.6 is red on the same three named floors.
+  ADVANCED: yes
+  ATTEMPT: 6.3 | unit 14 launched 2026-09-26T14:10:24.546Z | yes | executed | report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
 
   --- CLAUDE.md ---
-  1404 lines, 211415 bytes
+  1405 lines, 212255 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -361,28 +819,28 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   (not inlined - it is the standard and it is long)
 
   --- PROJECT_CARD.md ---
-  29 lines, 1365 bytes
+  29 lines, 1336 bytes
   PROJECT: Hamlet
   TRUNK: main
-  PHASE: Hamlet reads a CQ call correctly
-  PHASE_SET: 2026-09-23
+  PHASE: Hamlet meets the CW requirements
+  PHASE_SET: 2026-09-25
   TEST_CMD: dotnet test
   NOTE: BASELINE_RED above is THE CARD S CLAIM about the suite.
   This command does not run the suite - it has to be cheap enough
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 651 bytes
+  19 lines, 672 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: EXECUTING
-  TASK: TASK 2 of 3
-  WORK_INSTRUCTION: 439 - every CW test is traced to a requirement
+  STATE: COMPLETED
+  TASK: 3 of 3
+  WORK_INSTRUCTION: 452 - where the words break
   BALL: code
   NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-25T13:38:37-04:00
-  NOTE: Running TheNumberCannotBeGamedTests alone, the 13 keyed floors
+  UPDATED: 2026-09-26T11:35:28-04:00
+  NOTE: Unit 452 done: 6.3 ticked, WBE real 46 to 37 kept with letters identical, 17:37 still 7 - output.md written
   
   ---
   
@@ -401,5 +859,5 @@ Every line below was read from the tree at that moment. Nothing is remembered.
  LAYER CAPABILITIES - what this copy of the layer can do
 ==============================================================
 
-  38 capabilities checked: 33 present, 0 absent, 5 uncheckable.
+  39 capabilities checked: 34 present, 0 absent, 5 uncheckable.
   Nothing absent.

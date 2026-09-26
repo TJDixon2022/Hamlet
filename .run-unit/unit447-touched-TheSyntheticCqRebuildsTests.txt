@@ -1,0 +1,79 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-12wpm-0db") [39 ms]
+  Standard Output Messages:
+ cq-12wpm-0db: 502444 bytes committed, 502444 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-25wpm-0db") [11 ms]
+  Standard Output Messages:
+ cq-25wpm-0db: 261996 bytes committed, 261996 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-18wpm-15db-char5") [16 ms]
+  Standard Output Messages:
+ cq-18wpm-15db-char5: 378178 bytes committed, 378178 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-25wpm-15db") [11 ms]
+  Standard Output Messages:
+ cq-25wpm-15db: 261996 bytes committed, 261996 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-18wpm-0db") [16 ms]
+  Standard Output Messages:
+ cq-18wpm-0db: 348310 bytes committed, 348310 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-25wpm-5db") [12 ms]
+  Standard Output Messages:
+ cq-25wpm-5db: 261996 bytes committed, 261996 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-12wpm-15db") [23 ms]
+  Standard Output Messages:
+ cq-12wpm-15db: 502444 bytes committed, 502444 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-18wpm-15db") [16 ms]
+  Standard Output Messages:
+ cq-18wpm-15db: 348310 bytes committed, 348310 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-18wpm-0db-char5") [17 ms]
+  Standard Output Messages:
+ cq-18wpm-0db-char5: 378178 bytes committed, 378178 built
+
+
+[xUnit.net 00:00:00.47]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-12wpm-5db") [24 ms]
+  Standard Output Messages:
+ cq-12wpm-5db: 502444 bytes committed, 502444 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-18wpm-5db") [14 ms]
+  Standard Output Messages:
+ cq-18wpm-5db: 348310 bytes committed, 348310 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.TheCommittedCaseIsWhatItsRecipeBuilds(name: "cq-18wpm-5db-char5") [15 ms]
+  Standard Output Messages:
+ cq-18wpm-5db-char5: 378178 bytes committed, 378178 built
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.TheSyntheticCqRebuildsTests.WriteTheSetWhenAsked [< 1 ms]
+  Standard Output Messages:
+ not asked: HAMLET_WRITE_SYNTHETIC_CQ is not 1, nothing written
+
+
+
+Test Run Successful.
+Total tests: 13
+     Passed: 13
+ Total time: 0.7311 Seconds
+RC=0 WALL=1s

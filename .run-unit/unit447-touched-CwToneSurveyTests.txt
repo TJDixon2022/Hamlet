@@ -1,0 +1,36 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.ASurveyWithNoHistorySaysNothing [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.TheStrongSignalThatIsNotKeyingIsReportedAsInterference [700 ms]
+  Standard Output Messages:
+ interference: 500 Hz, 31.5 dB over the band, present 52% of the time
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.ACarrierNeverConvincesTheTrackerItIsAStation [1 s]
+  Standard Output Messages:
+ tracked 625 Hz, keying claimed on 0 measurements
+
+
+[xUnit.net 00:00:03.77]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.TheStationAnsweringACallIsFoundByItsKeying [666 ms]
+  Standard Output Messages:
+ blocked 15.5 s of 30
+ keyed: 625 Hz, dit 99 ms, dah 280 ms, ratio 2.84, separation 30.2, 12 marks
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwToneSurveyTests.NoKeyingIsClaimedWhereNoneWasFound [717 ms]
+  Standard Output Messages:
+ keyed: none
+
+
+
+Test Run Successful.
+Total tests: 5
+     Passed: 5
+ Total time: 4.0261 Seconds
+RC=0 WALL=4s

@@ -10,6 +10,7 @@ STEP: 5 | The speed is right - section D, five to forty-five words a minute, acq
 STEP: 6 | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
 STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
 STEP: 8 | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
+STEP: 9 | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
 ---
 
@@ -109,6 +110,26 @@ and believing it. So **step 2 is MET-CER-SURE and step 3 is MET-INVENTED**, ahea
 and the speed, because both are measurable today with the metrics unit 439 built and both change
 what the operator reads. Rejected: opening with the invented characters, which are fewer and
 which step 3 takes immediately after.
+
+**R84 - Tim, 2026-09-26: two decoders must read the same audio.** *"Why aren't we using
+something similar to Skimmer? Why don't we borrow known technology? We should have done this
+months ago."* Ruled as section M of `CW_REQUIREMENTS.md`, v1.1, HM-REQ-120 to 129, and that
+section governs; this plan only orders it. **fldigi's CW receive modem** - `src/cw_rtty/cw.cxx`,
+GPL-3, W1HKJ and AG1LE - is ported faithfully as the second decoder (122). Every character the
+operator sees has been read by both (120); the operator sees one transcript (121). **The order
+is fixed by the requirements**: the second decoder is scored beside ours on every recording
+before it votes (123); it votes only where its confidence is calibrated against the keys (124);
+agreement emits with the more confident's class (125); disagreement goes to the higher
+calibrated confidence (126); a tie is dim, never sure (127); and the arbitration is switched off
+on any condition where it loses to the better decoder alone (128). Rejected: the port as a bench
+instrument only; replacing ours with the port.
+
+**R85 - Tim, 2026-09-25: a CW question is never raised to the owner.** *"I don't know jack
+squat about CW... I'm the answerer of last resort."* A question about a metric, a threshold, a
+floor, a definition or what the decoder should do is answered from `CW_REQUIREMENTS.md`,
+`CW_SPEC.md`, the radio's manual, the second decoder's source and research, recorded as the
+arbiter's reading and overrulable, and **never parked for the owner**. The owner is asked about
+what he sees on screen, what he hears at the radio, and the three stops. Nothing else.
 
 ## §3 What is different from the phases before it
 
@@ -270,12 +291,31 @@ criterion of steps 2 to 7 is open and authorable.**
 
 **Depends on:** steps 2 to 7.
 
+## Step 9 - Two decoders read the same audio
+
+**Delivers:** section M, HM-REQ-120 to 129. **Preferred over steps 2 to 7 until 9.2 is met**,
+because every later change to ours is better aimed with the comparison in hand.
+
+**Entry:** steps 0 and 1 met; `CW_REQUIREMENTS.md` v1.1 with section M at the root.
+
+**Exit:**
+- [ ] 9.1 HM-REQ-122: fldigi's CW receive modem is ported to C# under `src/Hamlet.RadioEngine/Cw/Second/` as `FldigiCwDecoder`, faithful to the upstream source, receive path only, no word or dictionary logic, with the GPL-3 notice, the authors and the upstream commit in the file; it decodes one synthetic case whose key is exact, and the report names every function ported and every one left out.
+- [ ] 9.2 HM-REQ-123: both decoders read every keyed recording and the synthetic set through the same harness and are scored through the same scorer and metrics; `docs/phase-requirements/parity.md` tables MET-CER-SURE, MET-INVENTED, sure-and-right coverage and MET-WBE for each, per recording and per condition, with the key's kind, and states how the second decoder's unclassed output was mapped.
+- [ ] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
+- [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
+- [ ] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
+- [ ] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
+- [ ] 9.7 HM-REQ-128: the arbitrated output is measured against each decoder alone on every metric of sections B and I on every condition, and where it loses on a condition the arbitration is switched off there and the better decoder alone is used; the report tables all three per condition.
+- [ ] 9.8 The three floor tests and both carry-forward lines are green at exit.
+
+**Depends on:** steps 0 and 1.
+
 ## §5 Dependencies
 
 Steps 0 and 1 are met by the hand-run unit 439 and are ticked at the next unit's task 0 from
 its report. **Steps 2, 3, 4, 5, 6 and 7 each depend only on those two**, so there are six
-independent places to route and the loop need never stall for want of work. **Step 8 is last
-and no unit is authored against it while any criterion of steps 2 to 7 is open** (R80).
+independent places to route and the loop need never stall for want of work. **Step 9 is preferred until 9.2 is met** (R84). **Step 8 is last
+and no unit is authored against it while any criterion of steps 2 to 7 or 9 is open** (R80).
 
 ## §6 Branching
 
@@ -299,6 +339,11 @@ and no unit is authored against it while any criterion of steps 2 to 7 is open**
 - **No fixture is admitted by lowering a gate** (V-04), and **no separation limit, confirmation
   rule or plausibility bound is loosened to pass a fixture** (V-14).
 - **A run lost before any assertion** counts neither way and is re-run once.
+- **A CW question is answered from the documents, never raised to the owner** (R85).
+- **The second decoder is faithful, not improved** (HM-REQ-122, 129). A technique goes into
+  ours, judged under R78; the second decoder stays as ported.
+- **The second decoder votes only where it is calibrated** (HM-REQ-124), and the arbitration
+  is switched off on any condition where it loses to a single decoder (HM-REQ-128).
 - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
   7 is open and authorable. A unit records a ruling only when its own instruction carries one.
 - **Anything would change what keys or transmits.** `MOVE: stop`.
@@ -317,6 +362,10 @@ scope; the seven rulings of section R, of which the first is answered by R72; th
 sentence outside an owned block.
 
 ## §8 Revision record
+
+- **2026-09-26.** R84 two decoders read the same audio, ordered by section M of
+  `CW_REQUIREMENTS.md` v1.1; step 9 with eight criteria, preferred until the parity table
+  exists. R85 a CW question is answered from the documents and never raised to the owner.
 
 - **2026-09-25, after unit 439's hand run.** R80 the record and the tests come last, as step 8;
   R81 MET-CER-SURE and MET-INVENTED come first, as steps 2 and 3, on unit 439's measurement of

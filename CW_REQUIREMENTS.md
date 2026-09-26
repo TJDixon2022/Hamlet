@@ -1,6 +1,6 @@
 **PROJECT: Hamlet**
 
-# CW receive decoder — requirements, v1 (draft for freeze)
+# CW receive decoder — requirements, v1.1 (draft for freeze; §M added 2026-09-26)
 
 | Field | Value |
 |---|---|
@@ -159,6 +159,29 @@ grade — the lowest grade acceptable for the corpus used.
 
 ---
 
+## M. Two decoders (ruled 2026-09-26)
+
+Hamlet carries its own probabilistic decoder and a second decoder ported from fldigi's CW
+modem (`src/cw_rtty/cw.cxx`, GPL-3, W1HKJ and AG1LE). The owner's ruling, 2026-09-26: *"Two
+decoders must read the same audio. When the decoders agree, there's no problem. When they
+disagree, we need to decide how to arbitrate that. Each decoder needs to give a confidence
+score, and the higher score wins. On a tie, dim."* The order of work is fixed by these rows:
+the second decoder exists and is compared before it votes, and it votes only once its
+confidence is calibrated.
+
+| id | statement | rationale | source | tier |
+|---|---|---|---|---|
+| HM-REQ-120 | Two decoders shall read the same audio: every character the operator sees has been read by both decoders from the same samples at the same time. | One decoder alone was three months of rediscovering what a mature one had settled; two opinions on the same audio is the point. | owner 2026-09-26, R84 | must |
+| HM-REQ-121 | The operator shall see one transcript. Which decoder produced a character is never shown on the CW tab; the capture sheet records it per character. | The screen carries the reading, not the machinery. | owner 2026-09-26, CLAUDE.md §0.0 | must |
+| HM-REQ-122 | The second decoder shall be a faithful port of its upstream source, receive path only, with its license, authors and upstream commit kept in the file, and no word, dictionary or callsign logic (HM-REQ-004). | A reference that has been improved is no longer a reference; the comparison is worthless. | R84, R72 | must |
+| HM-REQ-123 | Before the second decoder votes, both decoders shall be scored on every keyed recording and the synthetic set through the same scorer and metrics, and the result tabled per recording and per condition. | Nothing arbitrates between two decoders whose relative performance is unknown. | R84, V-13 | must |
+| HM-REQ-124 | Each decoder shall attach a calibrated confidence to every character it emits: over the keyed corpus, per condition, characters emitted at confidence p shall be right within 5 points of p. A decoder whose confidence is not calibrated on a condition does not vote on that condition; its output is advisory there. | Unit 442 measured our decoder certain and wrong 13 times in 47; an uncalibrated confidence picks the louder liar. fldigi's modem carries no confidence at all and must be given one. | HM-REQ-013, HM-REQ-014, unit 442 | must |
+| HM-REQ-125 | Where both decoders emit the same character for the same span, it is emitted with the class of the more confident decoder. | Agreement is the easy case and is not to be made harder. | owner 2026-09-26 | must |
+| HM-REQ-126 | Where the decoders disagree on a span, the character of the decoder with the higher calibrated confidence is emitted, and the disagreement is recorded on the sheet with both characters and both confidences. | The owner's rule: the higher score wins. | owner 2026-09-26 | must |
+| HM-REQ-127 | Where the two confidences are within a margin of each other, the winning character is emitted in the dim class and never sure, and the sheet records the tie. The margin is **TBD, needs ruling** (recommended 0.05). | A tie is the decoder saying it does not know; the dim class exists for exactly that (HM-REQ-001). | owner 2026-09-26 | must (threshold TBD) |
+| HM-REQ-128 | The arbitrated output shall be no worse than the better single decoder on every metric of §B and §I, on every condition. If arbitration loses to either decoder alone on any condition, it is switched off for that condition and the better decoder alone is used there. | Two decoders combined badly are worse than one; the combination has to earn its place. | owner 2026-09-26 | must |
+| HM-REQ-129 | Where a technique of the second decoder is taken into the first, it is taken as a change to the first, judged as any other change, and the second decoder is left as ported. | The teacher is not edited to match the student. | R84 | must |
+
 ## V. Verification table
 
 Method T = test against fixture, A = analysis of logged output, I =
@@ -236,6 +259,16 @@ in every outcome report.
 | 114 | I, T | any span | counts present and sum | yes | — | synthetic | |
 | 115 | A | sidecar-equivalent record | contradictions | 0 | — | any | |
 | 116 | T | synthetic tone at known level | reported tone dB | within 1 dB of truth | — | synthetic | FIELD_REPORT §4 |
+| 120 | I, T | any | — | every emitted char carries both decoders' readings on the sheet | — | synthetic | schema check |
+| 121 | I | — | — | no decoder name on the CW tab | — | — | inspection |
+| 122 | I | — | — | header carries license, authors, commit; no transmit path; no word logic | — | — | inspection of the ported file |
+| 123 | T, A | all keyed and synthetic | MET-CER-SURE, MET-INVENTED, MET-COVERAGE, MET-WBE, both decoders | tabled per recording and condition | — | inferred | parity.md |
+| 124 | T | per condition, keyed | confidence calibration | right within 5 pts of stated p | uncalibrated = no vote | inferred | per decoder |
+| 125 | T | synthetic, agreement injected | class of emitted char | class of the more confident | — | synthetic | |
+| 126 | T | synthetic, disagreement injected | emitted char, sheet record | higher confidence's char; both recorded | — | synthetic | |
+| 127 | T | synthetic, tie injected | class | dim, never sure; tie recorded | dim is correct | synthetic | margin TBD |
+| 128 | T, A | every condition | every metric of B and I | arbitrated ≥ better single decoder | — | inferred | switched off per condition on a loss |
+| 129 | I | — | — | second decoder's diff against upstream is attribution only | — | — | inspection |
 
 ## V-rules. Corpus and verification rules (harvested, apply to every row)
 
@@ -282,6 +315,7 @@ the spec asks for.
 | 010, 011, 012, 014 | — | none: needs MET-CER-SURE / MET-COVERAGE / MET-CAL scoring |
 | 100, 101 | — | none: needs MET-TACQ / MET-LAT instrumentation |
 | 092, 116 | FIELD_REPORT carrier captures | fixtures exist; test does not |
+| 120–129 | none | §M is new on 2026-09-26; the port, the parity table and the calibration are the first work under it |
 
 ---
 
@@ -289,7 +323,8 @@ the spec asks for.
 
 | item | requirement | recommendation |
 |---|---|---|
-| Knowledge rule (no LM / prior / dictionary) | 004 | adopt as ruled |
+| Knowledge rule (no LM / prior / dictionary) | 004 | **ruled 2026-09-24 as HM-DEC-175 (R72): adopted** |
+| Tie margin between decoders' confidences | 127 | 0.05 |
 | Speed-change tracking, characters | 032 | 5 |
 | Station-retention margin, dB | 065 | 6 |
 | Pitch error, Hz | 092 | 5 |
@@ -314,9 +349,10 @@ requirement).
 
 | | must | should | later | TBD threshold | pending ruling |
 |---|---|---|---|---|---|
-| Requirements | 65 | 2 | 1 | 3 | 1 |
+| Requirements | 75 | 2 | 1 | 4 | 0 |
 
-Sixty-eight requirements from 109 candidates and eleven rulings (the must
-column includes the three with a TBD threshold and the one pending a ruling).
+Seventy-eight requirements: sixty-eight from 109 candidates and eleven rulings, plus the ten
+of §M ruled 2026-09-26 (the must column includes the four with a TBD threshold; the knowledge
+rule was ruled 2026-09-24 and is no longer pending).
 Every row has a verification entry; the rows marked *none* in §T have no
 harness test yet, and those are the spec's first work.

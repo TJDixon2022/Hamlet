@@ -347,3 +347,4 @@ the owner reads instead of watching.
 | 13 | 2026-09-26T08:22 | 2026-09-26T10:06 | complete | 11.2776782 | ran unattended, 219 turns, 9 denied call(s) worked around, report valid |
 | 13 | 2026-09-26T10:06 | 2026-09-26T10:06 | note | none - not a run | parked - criterion 5.5: promise - The second question asks the owner to decide whether the product should keep showing the operator a speed marked proved when nobody sent that speed, and that is a statement about what was heard.. It is in PARKED.md, that criterion is not authorable this pass, and the loop carries on to the plan-s other work |
 | 14 | 2026-09-26T10:10 | 2026-09-26T11:35 | complete | 9.6237648 | ran unattended, 175 turns, 14 denied call(s) worked around, report valid |
+| 15 | 2026-09-26T11:41 | 2026-09-26T12:41 | complete | 7.216400199999997 | ran unattended, 146 turns, 12 denied call(s) worked around, report valid |

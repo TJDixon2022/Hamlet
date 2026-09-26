@@ -1,0 +1,248 @@
+THE PHASE GOAL IS THE PRIME DIRECTIVE. The last report is an indicator that tunes
+your approach and never your target.
+
+Read ARBITER.md at this repository root and act as it says.
+
+You are the arbiter. Author the next WORK_INSTRUCTIONS.md.
+============================================================
+ THE PHASE, AND THE STEP YOU ARE AUTHORING AGAINST
+============================================================
+
+PHASE GOAL: Hamlet meets the CW requirements
+
+THE STEP TO WORK: step 2 - The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.  [partial by its checkboxes, 3 of 5 met]
+
+ITS UNMET CRITERIA. THESE ARE THE WORK:
+  - [ ] 2.4 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
+  - [ ] 2.5 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+
+already met, for context only:
+  - [x] 2.1 The 54 sure-but-wrong characters are traced: a fact that asserts nothing prints each one with its recording, what the key says was sent, what the decoder emitted, its span, the speed and pitch in force, and the marks it rested on; the report groups them by what they have in common.
+  - [x] 2.2 Each change is built in its own commit and kept under R78: MET-CER-SURE falls, MET-INVENTED does not rise, MET-COVERAGE does not fall, the three adjudicated readings are unchanged or move onto their own adjudicated text, and V-11 holds - no capture is reddened to green a newer one.
+  - [x] 2.3 MET-CER-SURE is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `docs/phase-requirements/metrics.md`.
+
+THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
+  step 3 - The junk between words goes - MET-INVENTED driven toward HM-REQ-011's zero, from the 13 added characters unit 439 measured.  [partial]
+    - [ ] 3.4 The 7.052 traffic net's `EETTTEETTTTTTTTETTETETKTETEE` between `GRAY KC` and `LIVER VIA` is printed before and after, so the owner reads the difference rather than the number.
+    - [ ] 3.5 After three consecutive units with no kept change the trace goes to `PARKED.md` and the step closes partial.
+    - [ ] 3.6 The three floor tests and both carry-forward lines are green at the exit of every commit of the step.
+  step 4 - The pitch is right - section J, and the acquisition requirements of section K that depend on it.  [partial]
+    - [ ] 4.4 A change to `CwToneTracker` under R75 is judged by R78's keep rule with the instrument's table beside it, and the report names the clause of HM-DEC-095 or HM-DEC-127 it works against; after three consecutive units with no kept change the step closes partial.
+    - [ ] 4.7 The three floor tests and both carry-forward lines are green at exit.
+  step 5 - The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.  [partial]
+    - [ ] 5.1 HM-REQ-030 is met at both ends: the speed search reaches 5 and 45 words a minute, where it runs 8 to 40 at HEAD, judged by R78's keep rule with the decode time reported before and after.
+    - [ ] 5.2 `cw-2026-09-24-135641`, which read nothing in 44 minutes at about 44 words a minute, emits sure characters, and the report prints what it reads beside `nothing read`.
+    - [ ] 5.3 HM-REQ-031 and HM-REQ-033 are measured - speed within 10% of true after acquisition, and acquisition without a prior speed - and reported per condition.
+    - [ ] 5.4 MET-TACQ and MET-LAT exist and are measured, and HM-REQ-100 and HM-REQ-101 are reported against them.
+    - [ ] 5.6 The three floor tests and both carry-forward lines are green at exit.
+  step 6 - The text is right - sections H and I, the character table, the prosigns and the word boundaries.  [partial]
+    - [ ] 6.1 The v1 character table of `CW_SPEC.md` is generated from the vendored source rather than written as constants, and HM-REQ-070 has a test naming it.
+    - [ ] 6.2 HM-REQ-071 and 072, prosigns emitted as one symbol and named per the terminal's setting, each have a test naming them and the report states whether each is met.
+    - [ ] 6.4 HM-REQ-083, one set of word boundaries for any span between the live and settled renderings, has a test naming it.
+    - [ ] 6.5 HM-REQ-084 is measured on its named spans - `WEEKEND`, `THINKING`, `FLEX`, `ABOVE`, `BREEZE`, `USED TO USE A FIRM` - and the report prints what each reads at HEAD.
+    - [ ] 6.6 The three floor tests and both carry-forward lines are green at exit.
+  step 7 - The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.  [not started]
+    - [ ] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
+    - [ ] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
+    - [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
+    - [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
+    - [ ] 7.5 The three floor tests and both carry-forward lines are green at exit.
+  step 8 - The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.  [not started]
+    - [ ] 8.1 HM-DEC-182 is recorded from work instruction 434's block, HM-DEC-166 gains its `CLAUDE.md` row, and `DecisionLogOrderTests` is green with no gap that is a missing record.
+    - [ ] 8.2 The false `UNIT 2 - STEP 1` entry of 2026-09-14 is corrected by appending a dated note naming it as recorded in error; the row itself is never edited or deleted.
+    - [ ] 8.3 The version scheme is settled one way: either HM-DEC-150 is superseded to say the patch counts units across phases, or the next phase opens at a new minor; the report states which and why.
+    - [ ] 8.4 Each of the 43 tests that measure something other than what their requirement states is either re-pointed at the requirement it proves or marked as proving none with its reason, in `traceability.md`; none is deleted.
+    - [ ] 8.5 Every requirement this phase met has a test naming it, and the count of requirements with no test is reported against unit 439's 63.
+    - [ ] 8.6 The three floor tests and both carry-forward lines are green at exit.
+
+ADVANCES MUST NAME ONE OF THE WORK CRITERIA ABOVE - never a parked one, never
+the owner-s. Everything below this block is context for CHOOSING among them -
+what has been tried, and what the last unit reported. None of it is a list of
+work to do.
+
+
+THE PLAN, THE ATTEMPT RECORD AND THE LAST REPORT ARE ALL IN THIS PROMPT -
+the criteria above, the rest below. One thing is not:
+
+  .run-unit\reload.txt   - the measured picture, disagreements first.
+                           READ THIS. Nothing else here carries it.
+
+  PHASE_PLAN.md          - open it if you need a step's full text. The
+                           criteria above are quoted from it verbatim.
+
+  output.md              - the last report, AN INDICATOR. A bounded extract is
+                           at the BOTTOM of this prompt. Open the whole file
+                           only to check something the extract raised about
+                           the criterion you have ALREADY chosen from the plan
+                           - never as your starting point, never to find work
+                           in it, and never to choose a target.
+
+Run the loop test before you propose an approach.
+
+You stop the phase - MOVE: stop - for exactly two things, ARBITER.md
+section 6: anything that touches keying, transmit or the radio's
+safety; a decision that changes what the product promises the
+operator. Money is NOT one of them - the owner's ruling of 2026-09-23:
+his plan supplies the capacity, and a spend is yours to decide and
+report, never to stop for. On everything else - including a
+question the last report left in its section 4 - take your own
+recommendation, put it in DECIDED marked author's, overrulable, and
+author the unit on it.
+
+PROGRESS IS COUNTED IN CRITERIA, AND THE COUNT IS THE SCRIPT'S - ARBITER.md
+section 7. ADVANCES must read  step N criterion k  - one line of PHASE_PLAN.md
+in the form  - [ ] N.k  - or  none - clears a blocker:  naming the unit number
+or criterion it unblocks. The launcher counts that criterion before and after
+the unit; if it did not flip, the unit did not advance, and two such units in a
+row are redirected. A STEP WHOSE EVERY CRITERION IS TICKED IS done AND IS
+CLOSED, whatever any header says - the owner's ruling of 2026-09-23, a step's
+state is its checkboxes. Do not author into it. The launcher refuses it before
+the unit runs, and only the owner reopens a step, by unticking a line or a
+ruling in the plan.
+
+THE OWNER'S VERDICT IS MARKED AND ENDS THE RUN - ARBITER.md section 7. A
+criterion ending *owner's verdict* is the owner's alone: never name one in
+ADVANCES, and never author a unit toward a verdict the loop cannot give.
+
+YOUR SELF-RULINGS ARE BOUNDED - the owner's ruling of 2026-09-14. At most two
+self-rulings that authorize work outside the instruction's tasks, each citing
+the plan line it applies; if a third is needed, the plan or the instruction
+is unclear - report it as a mismatch instead of ruling a third time.
+Decisions about how to carry out an assigned task are uncapped, and every
+one is reported. NO SELF-RULING MAY OVERRULE AN EARLIER ARBITER RULING -
+only the owner does that, and a report claiming one halts the loop.
+
+Write WORK_INSTRUCTIONS.md and end it with the ARBITER-DECISION
+block exactly as ARBITER.md section 7 specifies. Write nothing else.
+
+--- WHAT HAS ALREADY BEEN TRIED, BY CRITERION ---
+
+Every attempt this phase has recorded, criterion first. READ THIS BEFORE
+YOU CHOOSE AN APPROACH. An approach recorded as no against a criterion is
+REFUSED BEFORE THE UNIT RUNS if you name that criterion again, and the
+iteration is spent on the refusal. yes means it succeeded and does not
+block; blocker means it cleared something and moved no criterion.
+
+  2.2 | unit 1 launched 2026-09-25T23:17:53.232Z | not recorded | not recorded | change MET-COVERAGE to sure-and-right over sent under R82, cherry-pick G1 unchanged and keep it under R78, then trace the speed each of the 54 was read at against the speed the envelope's marks imply and build one change that takes the path's speed from the marks where they disagree
+  2.2 | unit 2 launched 2026-09-26T00:33:44.294Z | no | executed | give each letter a confidence from how far its reading beats the nearest rival reading, so a close call prints dim instead of sure, threshold taken from a margin trace of right against wrong sure letters; re-bank the floor rows that fell on counts under R78 so the floors are green
+  2.4 | unit 11 launched 2026-09-26T09:22:29.173Z | no | executed | re-trace the 40 sure-but-wrong letters at HEAD with the instrument pitch and tracker moves beside each, build one change against the largest group no earlier unit attacked, kept under R78, else park the trace and close step 2 partial
+  2.5 | unit 6 launched 2026-09-26T03:05:24.161Z | no | executed | trace every gap in 17:37's CQ at HEAD and before G1 with its length, unit, thresholds and call, name the cause of the two boundaries G1 lost, build one gap-duration change that gives them back with G1 kept, and re-bank 17:37's named floor only if no requirement metric on it is worse than before G1
+  3.1 | unit 4 launched 2026-09-26T01:56:54.125Z | yes | executed | trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
+  3.2 | unit 7 launched 2026-09-26T04:05:26.209Z | yes | executed | trace every sure letter's marks and inner gaps against a dit, a dah and an element gap at the unit in force, tabulate right against wrong, and only if an edge exists that no right letter crosses, print letters past it dim, kept under R78 with MET-INVENTED falling and coverage held
+  4.1 | unit 9 launched 2026-09-26T06:20:29.778Z | yes | executed | build a pitch instrument finer than 25 Hz sharing no code with the tracker, prove it on tones known by construction, measure MET-PITCH-ERR on every capture in the tree, then one CwToneTracker change toward keying quality judged under R78 with the instrument table beside it
+  4.5 | unit 10 launched 2026-09-26T07:53:37.512Z | yes | executed | measure HM-REQ-102 and 103 on the 7.052 opening before and after one change that replaces the tracker's from-cold point-at-the-loudest move with a choice by keying quality, with an HM-REQ-091 and 102 test on a cold start beside a louder unkeyed carrier watched failing first, kept under R78 with the instrument table beside it
+  4.6 | unit 12 launched 2026-09-26T10:52:07.960Z | yes | executed | replace the boolean PitchWasMeasured with a three-valued pitch proof state proved hypothesis none in the decode report, test naming HM-REQ-093 watched failing first, the record sheet states it, decoding byte-identical
+  5.1 | unit 8 launched 2026-09-26T05:13:23.175Z | no | executed | trace where the speed search is bounded at 8 and 40 WPM, widen it to 5 and 45, prove both ends on synthetic sends of known speed, keep under R78 with decode time before and after
+  5.5 | unit 13 launched 2026-09-26T12:22:12.676Z | yes | executed | give the reported speed a three-valued proof state proved hypothesis none in the decode report and on the sheet and every speed display, test naming HM-REQ-034 watched failing first, and tests naming HM-REQ-035 clear retains speed pitch noise floor and HM-REQ-036 pitch refinement retains timing, measured not repaired, decoding byte-identical
+  6.3 | unit 14 launched 2026-09-26T14:10:24.546Z | yes | executed | report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
+
+If every route you can see at a criterion is recorded as no, say so in WHY
+and choose another criterion or another step. Do not restate a failed
+approach in different words: the refusal matches on the words that carry
+meaning, not on the phrasing.
+
+============================================================
+ THE PREVIOUS UNIT-S REPORT - AN INDICATOR: EVIDENCE, NOT A LIST OF WORK, AND
+ NEVER A SOURCE OF TARGETS
+============================================================
+AN INDICATOR TUNES HOW YOU APPROACH THE CRITERION YOU HAVE ALREADY CHOSEN FROM THE
+PLAN ABOVE. IT NEVER CHOOSES THE CRITERION - the owner-s ruling of 2026-09-23: the
+phase goal is the prime directive, and this is a helper. A WHY that gives this
+report as its reason for choosing a criterion is refused before the unit runs.
+
+Read this as EVIDENCE ABOUT A CRITERION: what was measured, what was found, what
+a check missed. It is NOT the next thing to work on, and a question it raises is
+not a task. THE WORK IS THE UNMET CRITERIA AT THE TOP OF THIS PROMPT. If nothing
+here bears on one of them, author from them anyway.
+
+THIS REPORT WAS TOO LONG FOR ITS SHARE OF THE PROMPT AND WAS SELECTED FROM.
+Kept, in this order: section 4, then any line naming a mismatch, then section 3.
+The whole file is at the repository root if you need the rest.
+
+## 4. What's blocking us
+
+None of these is in the way of 6.3. The first bears on HM-REQ-054 and 080 for TX-FARNS.
+
+1. **The relabel's share against a Farnsworth sender's ratio.** The relabel treats a word gap as at
+   least the root of seven thirds (1.53) times the character gap. TX-FARNS allows a character gap
+   up to 7 units, whose word gap may be only a little longer. On the character-gap-5 case (1:5:7,
+   ratio 1.4) the relabel took out 5 true word gaps at HEAD and 7 under the change: group G4. A
+   ruling is asked on whether HM-REQ-054's TX-FARNS spacing binds the relabel's share, and so which
+   of 1.53 and the sender's own ratio should govern.
+   - Rejected: changing the share here. It is a second value of an existing rule, and it would move
+     G2 as well.
+2. **V-11 per recording, read net or boundary by boundary.** On `031838` the change removed one
+   inserted space and lost one true boundary (`WIAHA MEAN` for `WITH A MEAN`). The recording stays
+   at 1 wrong. I read V-11 as the per-recording count, which does not rise. A ruling is asked on
+   whether a recording that trades one wrong boundary for another fails V-11.
+   - Rejected: refusing the change on this reading. The instruction's column is a count per
+     recording.
+3. **Unkeyed recordings.** The keep rule judges only the 35 keyed recordings. Of the 27 whose text
+   changed, most are unkeyed. There, the change mended words (`BOXES FOR`, `QSO WITH WB4ET`,
+   `MYSELF OCCUPIED`, `BREEZE`) and also ran some together (`MONTHSORSO`, `SAY73ESTKSTK`). A ruling
+   is asked on whether an unkeyed recording's text should weigh in R78, for example by keying more
+   of these recordings, since today nothing can count either kind of change on them.
+   - Rejected: judging them by eye here. That would be word reasoning on an inferred reading (R72,
+     V-13).
+
+**Mismatches between the instruction and the tree** (reported, not repaired):
+## 3. What you should see
+
+**The answer: MET-WBE falls from 46 to 37 over 113 words on the real set, and from 48 to 44 over 84
+on the synthetic set. HM-REQ-080 and 081 are not met wherever the tree can measure them.**
+
+| condition | key | words | inserted | deleted | MET-WBE at HEAD | after the change | HM-REQ-080 | HM-REQ-081 |
+|---|---|---|---|---|---|---|---|---|
+| real, sender not stated (20 recordings) | inferred | 97 | 32 -> 24 | 7 -> 8 | 0.4021 | 0.3299 | not a CH-* condition (7.4) | not a CH-* condition (7.4) |
+| real, TX-FARNS, traffic net `004507` | inferred | 11 | 7 -> 5 | 0 -> 0 | 0.6364 | 0.4545 | not a CH-* condition | not a CH-* condition |
+| real, TX-ITU, KD0UN `012403` | inferred | 4 | 0 | 0 | 0.0000 | 0.0000 | not a CH-* condition | not a CH-* condition |
+| real, TX-TIGHT, `013347` | inferred | 1 | 0 | 0 | 0.0000 | 0.0000 | not a CH-* condition | not a CH-* condition |
+| real, 17:37 alone | inferred | 6 | 6 -> 6 | 1 -> 1 | 1.1667 | 1.1667 | **not met**, 7 over 6 | - |
+| synthetic TX-ITU, 15 dB in the passband | exact | 21 | 0 | 0 | 0.0000 | 0.0000 | met on this case | - |
+| synthetic TX-ITU, 5 dB | exact | 21 | 0 | 0 | 0.0000 | 0.0000 | - | - |
+| synthetic TX-ITU, 0 dB | exact | 21 | 0 | 18 | 0.8571 | 0.8571 | - | **not met**, 0.857 |
+| synthetic character gap 5, 15 dB | exact | 7 | 10 -> 7 | 4 -> 5 | 2.0000 | 1.7143 | **not met**, 12 over 7 | - |
+| synthetic character gap 5, 5 dB | exact | 7 | 9 -> 6 | 1 -> 2 | 1.4286 | 1.1429 | - | - |
+| synthetic character gap 5, 0 dB | exact | 7 | 0 | 6 | 0.8571 | 0.8571 | - | **not met**, 0.857 |
+
+**Not measurable here: 20 conditions.**
+- HM-REQ-080 on TX-ITU, TX-KEYER-W, TX-FARNS and TX-TIGHT, each at 15 dB reference on CH-AWGN.
+- HM-REQ-081 on CH-AWGN, CH-LM, CH-MM and CH-HM at their floors, each with the four must-tier
+  senders.
+
+Both are built by 7.1 and 7.2.
+
+**The groups of wrong boundaries at HEAD** (real / synthetic above 0 dB / synthetic at 0 dB), one
+example of each, with the key beside it. A bar marks the boundary.
+
+| group | at HEAD | after | example: key / decode |
+|---|---|---|---|
+| G1 inserted: no character gap measured, so the textbook 4.58 u is under the letter space | 21 / 18 / 0 | 12 / 12 / 0 | `004507` 5.42 s: key `AT_AR|RL_DOT` / decode `AR_|R_L` |
+| G2 inserted: this read's character gap x 1.53 is under the gap | 9 / 0 / 0 | 9 / 0 / 0 | `004507` 7.75 s: key `ARRL_D|OT_NET` / decode `D_|O_T` |
+| G3 inserted: the held gaps' word-from is under the gap | 6 / 1 / 0 | 6 / 1 / 0 | 17:37 24.82 s: key `DE_WB6|RED_WB6RED` / decode `DEWB6_|RE_D` |
+| G4 deleted: the relabel took out the word gap the path read | 0 / 5 / 0 | 1 / 7 / 0 | `cq-18wpm-15db-char5` 4.15 s: key `CQ_|CQ_CQ` / decode `C_Q|CQCQDEN0_C` |
+| G5 key letters lost between the two decoded letters | 5 / 0 / 0 | 4 / 0 / 0 | `032050` 2.88 s: key `THIS_|BULLETIN_CAN` / decode `I|ULLETIN_CAN` |
+| G6 no decoded letter on one side | 4 / 0 / 24 | 4 / 0 / 24 | `032012` 1.77 s: key `N_|OF_117.` / decode `|T_F` |
+| G7 deleted: the path read a letter gap | 1 / 0 / 0 | 1 / 0 / 0 | 17:37 22.05 s: key `DE_|WB6RED_WB6RED` / decode `CQ_DE|WB6_RE` |
+
+**17:37 as the operator reads it**, against the key `CQ CQ CQ DE WB6RED WB6RED`:
+- at HEAD: `CQ CQ CQ DEWB6 RE D W B 7E E I`
+- after the change: `CQ CQ CQ DEWB6 RE D W B 7E E I`, unchanged. It is not at 5 or fewer, so
+  nothing arises under §3 (c).
+
+**Every recording whose text changed, before -> after.** There are 27, and only spaces changed.
+Leading and trailing blanks are trimmed here.
+1. `cq-18wpm-15db-char5` (key `CQ CQ CQ DE N0CALL N0CALL K`): `C QCQCQDEN0 C A E L N 0 C A L L K` -> `C QCQCQDEN0 C A E LN 0CAL L K`
+2. `cq-18wpm-5db-char5`: `C QC Q C Q TEE T ■KTDUUEUE N 0 C A L L K` -> `C QC Q C Q TEE T ■KTDUUEUEN 0CAL L K`
+3. `cw-2026-08-17-013347`: `E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRR` -> `E EI I HIAEIHEEEA E EEE HEEIEE IEEETE I EE IEEI TEEITEHAEWVRRVA3VRRR`
+4. `cw-2026-08-17-013622`: `E ISIIHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I` -> `E ISIIHE II 5EIEIEEEETETE ESE E IE UEEETSET TEEE A E ET EEE II I`
+5. `cw-2026-08-17-134712`: `E     ■   NT    N4LQ K` -> `E ■   NT    N4LQ K`
+6. `cw-2026-08-18-004507`: `E5 I E A T AR R L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE` -> `E5 I E A T ARRL D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE`
+7. `003758`: `■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E` -> `■R L T U   IAN EANDE A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E`
+8. `031838`: `A 3, AT3 , 2TT 2, AND  ■ W IAH A MEAN OF 2 TT` -> `A 3, AT3 , 2TT 2, AND ■ WIAHA MEAN OF 2 TT`
+9. `032050`: `IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E    H IE S T S SI I` -> `IULLETIN CAN BE FOTAND IN TELEWRITTER, PA■ KE    H IE S TSSI I`
+10. `032113`: `A KET■ A N O INT ERNE T ■ E RSIONS OF  200J6   I I I TT E E I I I WE  T I` -> `A KET■ A N O INTERNET ■ERSIONS OF  200J6   I I ITT EEIIIWE TI`
+11. `001831`: `E IE E U  KT■TQ   O Q <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV` -> `E IE E U  KT■TQ  OQ <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV`
+12. `001952`: `HET E  E ■HIN WEFU  EENE MCON TA K8T     I  ■ E I II II EE   MN S    B0` -> `HET E  E ■HINWEFU  EENEMCON TA K8T     I  ■ E I IIIIEE   MNS    B0`
+13. `002016`: `H■ S   B■   I E E      O NA■T SIT E■      EE  I I   E      K TIE0NH VNN JEENG` -> `H■ S   B■ IEE   ONA■T SIT E■      EE  I I   E     KTIE0NH VNN JEENG`
+14. `012823`: `E S SE EE  TTN T K E M TE E O IN U T     E` -> `E S SE EE  TTNT KEMTEEO IN U T  E`

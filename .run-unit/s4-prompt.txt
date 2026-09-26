@@ -1,0 +1,84 @@
+You are judging one thing and nothing else.
+
+Below is section 4 of a work unit's report. Its heading is
+"What's blocking us". The convention is that a unit writes here
+any question that needs a ruling from the owner - and that an
+empty section 4 is a real answer meaning nothing is blocked.
+
+THE OWNER IS STOPPED FOR EXACTLY TWO THINGS - his ruling of
+2026-09-12, narrowed by his ruling of 2026-09-23:
+
+  1  anything that touches keying, transmit, or the radio's safety -
+     in a project that is not a radio, what the project can make
+     happen outside the machine it runs on
+  2  a decision that changes what the product promises the operator -
+     what a card asserts, what a click does, what is logged as true
+
+MONEY IS NOT ONE OF THEM. Until 2026-09-23 the list had a third item,
+money past the budget; the owner's plan now supplies the capacity, and
+a question about spend, cost or budget is the unit's own to decide and
+is NOT a ruling request.
+
+WHAT THE SECOND MEANS - the owner's ruling of 2026-09-13, which defines it
+and does not widen it: A promise is a fact the product states to the
+operator about the radio, a contact, or a send - what was logged, what was
+heard, what went out. THE WORDING OF A HINT, A LABEL, A TARGET, A CARD'S
+NEXT LINE, OR A NAME IS NEVER A PROMISE AND NEVER A STOP.
+
+A QUESTION ABOUT ANYTHING ELSE IS NOT A RULING REQUEST, however it is
+worded - even when it offers options, and even when it says the work
+is waiting on the owner. Layout, wording, a test's shape, a number, a
+mechanism in the plan that arithmetic will not allow, a plan line a
+later ruling contradicts: the unit's own recommendation is taken on
+those, marked author's, overrulable, and the work goes on.
+
+Many units write a sentence SAYING nothing is blocking rather
+than leaving it blank. THAT IS NOT A RULING REQUEST. Neither is
+a note, an observation, a thing reported for the record, or a
+recommendation the unit has already acted on.
+
+A RULING IS WANTED only where the text asks the owner to decide
+something INSIDE ONE OF THE TWO, or says work is stopped until he
+decides something inside one of the two. Where one question is
+inside the two and others are outside, a ruling is wanted.
+
+Answer with these lines and nothing else. Where a ruling is wanted, three:
+
+VERDICT: ruling
+WHICH: keying     or   WHICH: promise
+WHY: one sentence, plain text, no punctuation beyond commas and full stops
+
+WHICH names the one of the two it touches - keying for the first, promise
+for the second. Where no ruling is wanted, two:
+
+or
+
+VERDICT: none
+WHY: one sentence, plain text, no punctuation beyond commas and full stops
+
+--- the section 4 text follows ---
+
+﻿
+None of these is in the way of 6.3. The first bears on HM-REQ-054 and 080 for TX-FARNS.
+
+1. **The relabel's share against a Farnsworth sender's ratio.** The relabel treats a word gap as at
+   least the root of seven thirds (1.53) times the character gap. TX-FARNS allows a character gap
+   up to 7 units, whose word gap may be only a little longer. On the character-gap-5 case (1:5:7,
+   ratio 1.4) the relabel took out 5 true word gaps at HEAD and 7 under the change: group G4. A
+   ruling is asked on whether HM-REQ-054's TX-FARNS spacing binds the relabel's share, and so which
+   of 1.53 and the sender's own ratio should govern.
+   - Rejected: changing the share here. It is a second value of an existing rule, and it would move
+     G2 as well.
+2. **V-11 per recording, read net or boundary by boundary.** On `031838` the change removed one
+   inserted space and lost one true boundary (`WIAHA MEAN` for `WITH A MEAN`). The recording stays
+   at 1 wrong. I read V-11 as the per-recording count, which does not rise. A ruling is asked on
+   whether a recording that trades one wrong boundary for another fails V-11.
+   - Rejected: refusing the change on this reading. The instruction's column is a count per
+     recording.
+3. **Unkeyed recordings.** The keep rule judges only the 35 keyed recordings. Of the 27 whose text
+   changed, most are unkeyed. There, the change mended words (`BOXES FOR`, `QSO WITH WB4ET`,
+   `MYSELF OCCUPIED`, `BREEZE`) and also ran some together (`MONTHSORSO`, `SAY73ESTKSTK`). A ruling
+   is asked on whether an unkeyed recording's text should weigh in R78, for example by keying more
+   of these recordings, since today nothing can count either kind of change on them.
+   - Rejected: judging them by eye here. That would be word reasoning on an inferred reading (R72,
+     V-13).

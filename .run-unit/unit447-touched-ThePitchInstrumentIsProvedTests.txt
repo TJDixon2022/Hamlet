@@ -1,0 +1,63 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchInstrumentIsProvedTests.EveryCaseLandsWithinOneOfItsOwnBinsOfTheTruth [7 s]
+  Standard Output Messages:
+ instrument | bin 0.50 Hz | window 2.0 s every 1.0 s | keying swing at least 12 dB | at least 0.3 s keyed | truth offset 0.0 Hz
+ case | truth Hz | estimate Hz (median of windows; first to last on the slide) | worst error Hz | bin Hz | inside one bin | windows | coarse Hz | keyed s
+ case | 300 Hz, 12 WPM, 15 dB | 300 | 300.00 | +0.002 | 0.50 | yes | 30 | 312.5 | 31.3
+ case | 400 Hz, 12 WPM, 15 dB | 400 | 400.00 | -0.006 | 0.50 | yes | 30 | 406.3,375.0 | 30.5
+ case | 523 Hz, 12 WPM, 15 dB | 523 | 523.00 | -0.010 | 0.50 | yes | 30 | 531.3 | 30.2
+ case | 600 Hz, 12 WPM, 15 dB | 600 | 600.00 | +0.012 | 0.50 | yes | 30 | 593.8 | 30.3
+ case | 625 Hz, 12 WPM, 15 dB | 625 | 625.00 | +0.006 | 0.50 | yes | 30 | 625.0 | 30.1
+ case | 640 Hz, 12 WPM, 15 dB | 640 | 640.00 | +0.014 | 0.50 | yes | 30 | 656.3,625.0 | 30.5
+ case | 675 Hz, 12 WPM, 15 dB | 675 | 675.00 | -0.008 | 0.50 | yes | 30 | 687.5,656.3 | 30.4
+ case | 750 Hz, 12 WPM, 15 dB | 750 | 750.00 | +0.003 | 0.50 | yes | 30 | 750.0 | 30.3
+ case | 900 Hz, 12 WPM, 15 dB | 900 | 900.00 | -0.003 | 0.50 | yes | 30 | 875.0 | 31.3
+ case | 300 Hz, 20 WPM, 15 dB | 300 | 300.00 | -0.003 | 0.50 | yes | 18 | 312.5 | 18.8
+ case | 400 Hz, 20 WPM, 15 dB | 400 | 400.00 | +0.004 | 0.50 | yes | 18 | 406.3 | 17.9
+ case | 523 Hz, 20 WPM, 15 dB | 523 | 523.00 | +0.006 | 0.50 | yes | 18 | 531.3,500.0 | 17.7
+ case | 600 Hz, 20 WPM, 15 dB | 600 | 600.00 | -0.006 | 0.50 | yes | 18 | 593.8 | 17.8
+ case | 625 Hz, 20 WPM, 15 dB | 625 | 625.00 | -0.007 | 0.50 | yes | 18 | 625.0 | 17.8
+ case | 640 Hz, 20 WPM, 15 dB | 640 | 640.00 | -0.011 | 0.50 | yes | 18 | 656.3,625.0 | 17.8
+ case | 675 Hz, 20 WPM, 15 dB | 675 | 675.00 | +0.006 | 0.50 | yes | 18 | 687.5 | 17.9
+ case | 750 Hz, 20 WPM, 15 dB | 750 | 750.00 | -0.004 | 0.50 | yes | 18 | 750.0 | 17.8
+ case | 900 Hz, 20 WPM, 15 dB | 900 | 900.00 | +0.003 | 0.50 | yes | 18 | 875.0 | 18.7
+ case | 300 Hz, 30 WPM, 15 dB | 300 | 300.00 | -0.003 | 0.50 | yes | 13 | 312.5 | 13.2
+ case | 400 Hz, 30 WPM, 15 dB | 400 | 400.00 | -0.015 | 0.50 | yes | 13 | 406.3,375.0 | 12.0
+ case | 523 Hz, 30 WPM, 15 dB | 523 | 523.00 | -0.006 | 0.50 | yes | 12 | 531.3 | 11.4
+ case | 600 Hz, 30 WPM, 15 dB | 600 | 600.00 | -0.010 | 0.50 | yes | 12 | 593.8 | 11.3
+ case | 625 Hz, 30 WPM, 15 dB | 625 | 625.00 | +0.011 | 0.50 | yes | 13 | 625.0 | 11.7
+ case | 640 Hz, 30 WPM, 15 dB | 640 | 640.00 | -0.005 | 0.50 | yes | 12 | 625.0,656.3 | 11.6
+ case | 675 Hz, 30 WPM, 15 dB | 675 | 675.00 | +0.006 | 0.50 | yes | 12 | 687.5 | 11.6
+ case | 750 Hz, 30 WPM, 15 dB | 750 | 750.00 | +0.015 | 0.50 | yes | 13 | 750.0 | 11.5
+ case | 900 Hz, 30 WPM, 15 dB | 900 | 900.00 | -0.002 | 0.50 | yes | 13 | 875.0 | 13.1
+ case | 625 Hz, 20 WPM, 5 dB | 625 | 625.00 | +0.022 | 0.50 | yes | 18 | 625.0 | 17.5
+ case | 625 Hz keyed, 525 Hz carrier +6 dB unkeyed, 20 WPM | 625 | 625.00 | +0.007 | 0.50 | yes | 18 | 625.0 | 17.5
+ case | 615 Hz sliding +20 Hz per 30 s, 20 WPM, 15 dB | 615 + 0.667 t | 615.88 to 638.87 | -0.024 | 0.50 | yes | 36 | 625.0,656.3 | 35.8
+ total | 30 of 30 cases admitted | 30 of 30 inside one bin | worst 0.024 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchInstrumentIsProvedTests.ItSharesNoCodeWithTheTracker [2 ms]
+  Standard Output Messages:
+ source | C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\Instruments\CwPitchInstrument.cs | 339 lines of code
+ usings | none
+ forbidden names on a code line | 0
+
+
+[xUnit.net 00:00:09.72]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.ThePitchInstrumentIsProvedTests.ItsCostPerHopIsPrinted [2 s]
+  Standard Output Messages:
+ cost | cw-2026-09-24-003919 | 48000 samples a second | 30.00 s | runs 662.7, 664.5, 673.0 ms | median 664.5 ms | 29 instrument hops of 1.0 s: 22914 us per instrument hop | 6000 decoder hops of 5 ms: 110.8 us per decoder hop | 13 windows keyed
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 9.9769 Seconds
+RC=0 WALL=11s

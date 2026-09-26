@@ -1,5 +1,5 @@
 # cw-2026-08-22-014113.wav, the whole sheet regenerated through CaptureNotes by work instruction 418; a fresh decoder and a fresh meter, this file only, no radio
-captured   2026-09-24 16:02:44 UTC
+captured   2026-09-26 13:59:56 UTC
 audioSeen  1440000 samples
 fingerprint 9756213d8035
 seconds    30.0
@@ -19,12 +19,12 @@ inThis     not derived (the decoder's own history does not reach back over these
 unkeyed    nothing emitted
 elements   0 seen, 0 resolved  (since the decoder started listening)
 characters 0 emitted, 0 unsure  (since the decoder started listening)
-decoderWpm not proved (a tone but no resolved character; the decoder's own best hypothesis was 20 WPM)
+decoderWpm none, not proved (a tone but no resolved character; the search's winner over a window that read nothing was 20 WPM, which describes nobody)
 text       nothing read
 textCovers everything read since the decoder started listening
 spanLlr    nothing read yet
 competing  none admitted, and the survey is not silent: it names a tone at 600 Hz, +10.0 dB over the band floor and above it 29% of the time. Nothing has judged it to be a station
-reading    20 WPM won out of 8 to 40, 0.75 better than silence per hop against a gate of 1.40  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+reading    20 WPM won out of 8 to 40, 0.75 better than silence per hop against a gate of 1.40; the speed is none: the window read nothing  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
 keying     no keying at 650 Hz: 211 rises above the threshold, median 48 ms, 14 dB swing; not called keying on a keying score of 0.06 where it needs 0.10 and a 14 dB swing where it needs 20  (an independent sweep of 300 to 900 Hz in 25 Hz steps over the 6 seconds the meter last read before the press, taking the same audio as the decoder and the tracker's own range, and none of the decoder's code or its choice of pitch)
 duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
 elementHz  each element's own pitch not measured  (read again for this line, the audio in this file gave no characters, which is too few elements to say anything about how they spread; the counts above are for the stretch they name)

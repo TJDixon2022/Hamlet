@@ -1,0 +1,45 @@
+commit cce7985d52fcfdaa495e0074f002ef10c295b97d
+Author: timdixon@outlook.com <timdixon@outlook.com>
+Date:   Fri Sep 25 18:48:44 2026 -0400
+
+    unit440 task 2: G1 re-applied against the split group (2.2), not yet judged
+    
+    Task 1's trace, WhereTheSureWrongLettersComeFromTests (a printer; asserts
+    only that it traced the metric's 54): split 27, none of these 9, one
+    element of the wrong kind 8, merged 5, several elements differ 4, one
+    element lost 1; 46 of 54 read on textbook spacing, 8 under held gaps, 3
+    of the splits under a held reading whose character gap stands past its
+    word gap.
+    
+    The change is unit 431's G1 as built in 856d226e, unchanged:
+    CwUnitEstimator.MeasureGaps returns textbook when the clipped character
+    gap stands at or past the word gap. No threshold.
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+diff --git a/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs b/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+index e2162a1f..e3a460b9 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@ -236,6 +236,21 @@ public static class CwUnitEstimator
+ 
+         word = wordBoundary * wordBoundary / character;
+ 
++        // **A CLIPPED READING THAT PUTS THE CHARACTER GAP PAST THE WORD GAP IS NOT
++        // SEPARATED** (unit 405's G1, built by work instructions 413 and 431 and
++        // re-applied by 440 under R78). The clip carries a short element centroid
++        // back into the character gap as boundary squared over element, and the
++        // kinds then cost backwards: every gap nearer the word want than the
++        // character want becomes a space, and a letter breaks where its own element
++        // gap sat. Unit 440 traced 3 of the 27 split sure-wrong letters on the keyed
++        // recordings to exactly this reading. Refused, the stream keeps the last gaps
++        // it stood behind. It was taken out twice on character counts, which R78 no
++        // longer judges by.
++        if (character >= word)
++        {
++            return textbook;
++        }
++
+         return new CwGapLengths(
+             element,
+             character,

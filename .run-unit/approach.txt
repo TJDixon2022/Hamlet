@@ -1,1 +1,1 @@
-stop - the owner archived the correctness phase at d925a633 and seeded Hamlet meets the CW requirements while correctness unit 439 (bridging key-up dips in CwUnitEstimator) was still live; no unit authored
+measure HM-REQ-084 on its named acceptance spans in 021410 and 013637, print each span with every mark and gap in units, trace why each misreads, one change from the audio against the commonest cause kept under R78

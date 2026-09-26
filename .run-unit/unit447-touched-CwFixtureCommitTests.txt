@@ -1,0 +1,135 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "coverage-easy") [5 ms]
+  Standard Output Messages:
+ coverage-easy: reference    96% of the message  [VVV 1234567890 QRZ▯ DE/N0CALL]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "exchange-edge") [< 1 ms]
+  Standard Output Messages:
+ exchange-edge: reference    100% of the message  [CQ CQ DE N0CALL N0CALL K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "fast-working") [1 ms]
+  Standard Output Messages:
+ fast-working: reference    58% of the message  [C M T C M T D E R ▯T C A E L T 1 N E A L E I K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "coverage-working") [< 1 ms]
+  Standard Output Messages:
+ coverage-working: reference    52% of the message  [W TI M W V567 G 90 QA G ▯ TEE/N0 F TAEL E]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "coverage-edge") [< 1 ms]
+  Standard Output Messages:
+ coverage-edge: reference    96% of the message  [E 1234567890 QRZ▯ DE/N0CALL]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "tightfist-working") [< 1 ms]
+  Standard Output Messages:
+ tightfist-working: reference    73% of the message  [TEIETNE TEEEETK]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "exchange-working") [< 1 ms]
+  Standard Output Messages:
+ exchange-working: reference    53% of the message  [K GE NIQ DE N▯ CALL T M M FAA R K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "prosigns-easy") [< 1 ms]
+  Standard Output Messages:
+ prosigns-easy: reference    100% of the message  [<BT> N0CALL <AR> <SK>]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "farnsworth-heavy") [< 1 ms]
+  Standard Output Messages:
+ farnsworth-heavy: reference    100% of the message  [CQ DE N0CALL K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "fast-edge") [< 1 ms]
+  Standard Output Messages:
+ fast-edge: reference    26% of the message  [E N N T T E T T E T E T TET T T E T T T T T T E T E A E T E E E T E E T E T T T T T N E T E TE ET T TA E E N E E E ET I]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "qsk-preamble") [< 1 ms]
+  Standard Output Messages:
+ qsk-preamble: reference    100% of the message  [▯ ▯ ▯ TEST DE TEST K TEST DE TEST K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "fast-easy") [< 1 ms]
+  Standard Output Messages:
+ fast-easy: reference    100% of the message  [CQ CQ DE N0CALL N0CALL K T/A]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "tightfist-edge") [< 1 ms]
+  Standard Output Messages:
+ tightfist-edge: reference    read nothing (do not cluster as Morse)
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "two-station-second") [2 ms]
+  Standard Output Messages:
+ two-station-second: reference    100% of the message  [N0CALL DE W1XYZ K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "two-station-first") [< 1 ms]
+  Standard Output Messages:
+ two-station-first: reference    100% of the message  [CQ CQ DE N0CALL K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "tightfist-easy") [< 1 ms]
+  Standard Output Messages:
+ tightfist-easy: reference    100% of the message  [VVV TEST DE TEST K T]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "exchange-easy") [< 1 ms]
+  Standard Output Messages:
+ exchange-easy: reference    100% of the message  [VVV CQ CQ DE N0CALL N0CALL K I]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "farnsworth-light") [< 1 ms]
+  Standard Output Messages:
+ farnsworth-light: reference    100% of the message  [CQ DE N0CALL K]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "prosigns-working") [< 1 ms]
+  Standard Output Messages:
+ prosigns-working: reference    83% of the message  [B T 0CAL D <AR> <SK>]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheReferenceHasScoredThisFixture(name: "prosigns-edge") [< 1 ms]
+  Standard Output Messages:
+ prosigns-edge: reference    83% of the message  [<BT> N0CALL ▯ <SK>]
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "prosigns-edge") [23 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "coverage-edge") [29 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "tightfist-working") [7 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "tightfist-easy") [6 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "tightfist-edge") [5 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "exchange-edge") [17 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "farnsworth-light") [9 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "coverage-easy") [26 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "coverage-working") [24 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "exchange-working") [20 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "fast-working") [10 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "prosigns-working") [10 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "exchange-easy") [20 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "prosigns-easy") [9 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "two-station-second") [8 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "fast-easy") [13 ms]
+[xUnit.net 00:00:00.57]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "two-station-first") [13 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "farnsworth-heavy") [6 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "qsk-preamble") [19 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheCommittedFileIsWhatTheRecipeBuilds(name: "fast-edge") [10 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.Fixtures.CwFixtureCommitTests.TheHeldOutListIsSmallerThanTheSuiteItIsHeldOutOf [< 1 ms]
+
+Test Run Successful.
+Total tests: 41
+     Passed: 41
+ Total time: 0.8408 Seconds
+RC=0 WALL=1s

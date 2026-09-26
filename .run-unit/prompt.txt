@@ -1,0 +1,20 @@
+PROJECT: Hamlet
+Execute WORK_INSTRUCTIONS.md.
+
+Status cadence, for this and every session:
+
+After each task, before starting the next, update PROJECT_STATUS.md per
+CLAUDE.md - STATE, TASK: n of m, BALL, UPDATED from the clock, and
+NOTE saying what is moving inside the task, not restating the task name.
+
+Do the same every ten minutes while a task is running.
+
+Commit and push each task before starting the next.
+
+Before you stop, for any reason at all, write output.md per
+CLAUDE_CODE.md section 8, opening with the ordering block: A the phase
+goal, B this step and its exit criteria, C what this report adds and
+whether any of it bears on A or B. Complete, blocked, failed or stopped early are
+all reported the same way and there is no exit that leaves the file
+unwritten. If you are stopping with tasks remaining, name them and
+say why in section 1.
