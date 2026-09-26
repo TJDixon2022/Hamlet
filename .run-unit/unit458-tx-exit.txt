@@ -1,0 +1,33 @@
+== git diff 7e209cb4 over the eleven transmit files:
+== end transmit
+== src this unit against 845fd70f, file by file:
+== git diff 845fd70f -- src/Hamlet.RadioEngine/Cw/Second/ (empty means no line changed):
+== end Cw/Second
+== text: diff of every recording's text against task 0's save
+(no difference)
+== parity.md against its commit, numbers only (decode times move run to run):
+ docs/phase-requirements/parity.md | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+-| real HF, inferred keys | 23 | 690.0 | 52.66 | 3.70 | 9.09 |
+-| synthetic, exact keys | 12 | 279.5 | 8.39 | 1.48 | 0.00 |
++| real HF, inferred keys | 23 | 690.0 | 52.60 | 3.70 | 8.94 |
++| synthetic, exact keys | 12 | 279.5 | 8.38 | 1.48 | 0.00 |
+== git status --short at exit
+ M .run-unit/unit458-exit-print.sh
+ M .run-unit/watched.cpu
+ M PROJECT_STATUS.md
+ M docs/phase-requirements/parity.md
+?? .run-unit/fldigi/
+?? .run-unit/unit458-adjudicated-exit.txt
+?? .run-unit/unit458-build-exit.txt
+?? .run-unit/unit458-captures-exit.txt
+?? .run-unit/unit458-cf-app-exit.txt
+?? .run-unit/unit458-cf-engine-exit.txt
+?? .run-unit/unit458-metrics-exit.txt
+?? .run-unit/unit458-named-exit.txt
+?? .run-unit/unit458-parity-exit.txt
+?? .run-unit/unit458-second-exit.txt
+?? .run-unit/unit458-text-exit.sorted.txt
+?? .run-unit/unit458-text-exit.txt
+?? .run-unit/unit458-tx-exit.txt
+?? SESSION.lock

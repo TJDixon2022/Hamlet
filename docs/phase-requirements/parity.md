@@ -79,8 +79,8 @@ Wall time inside each decoder on this machine, summed per condition: ours from t
 
 | condition | recordings | audio s | ours s | port s | resampling s |
 |---|---|---|---|---|---|
-| real HF, inferred keys | 23 | 690.0 | 52.66 | 3.70 | 9.09 |
-| synthetic, exact keys | 12 | 279.5 | 8.39 | 1.48 | 0.00 |
+| real HF, inferred keys | 23 | 690.0 | 52.60 | 3.70 | 8.94 |
+| synthetic, exact keys | 12 | 279.5 | 8.38 | 1.48 | 0.00 |
 
 ## 5. What the table does not prove
 

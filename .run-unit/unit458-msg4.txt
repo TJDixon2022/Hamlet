@@ -1,0 +1,15 @@
+unit458 task 4: exit round - 9.2 and 9.3 ticked, every metric and floor as at entry, harness 5 of 5, text byte-identical, no src line changed (9.2)
+
+Build 0 errors; engine line 178 of 178; app line 278 of 278 on the
+first run; captures 51 of 51; adjudicated 13 of 13; named 10 of 13
+as held (17:37 38, 032113 43, 032129 42). Real, inferred: 33 of 436,
+33 / 473, 403 / 473, 37 (29, 8) / 113. Synthetic, exact: 14 of 173,
+14 / 252, 159 / 252, 44 (13, 31) / 84 - all equal to entry.
+TheSecondDecoderIsAFaithfulPortTests 8 of 8;
+BothDecodersAreScoredAlikeTests 5 of 5. The transmit diff against
+7e209cb4, the Cw/Second diff against 845fd70f and the src diff are
+empty; 126 text lines identical to task 0's save. parity.md carries
+the exit run's decode times, its only change. output.md written and
+validated; .run-unit/fldigi untracked.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
