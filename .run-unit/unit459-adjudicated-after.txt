@@ -1,0 +1,128 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.28]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.TheShortfallIsPrintedRatherThanPapered [2 ms]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 6 of 6 characters, 100 %
+ cw-2026-08-17-134712: 2 of 3 characters, 67 %
+ unadjudicated/cw-2026-08-18-003758: 9 of 12 characters, 75 %
+ unadjudicated/cw-2026-08-24-012403: 16 of 16 characters, 100 %
+ cw-2026-08-18-004507: 22 of 57 characters, 39 %
+ unadjudicated/cw-2026-08-22-031838: 5 of 35 characters, 14 %
+ unadjudicated/cw-2026-08-22-031905: 11 of 39 characters, 28 %
+ unadjudicated/cw-2026-08-22-031948: 31 of 36 characters, 86 %
+ unadjudicated/cw-2026-08-22-032012: 22 of 51 characters, 43 %
+ unadjudicated/cw-2026-08-22-032050: 17 of 59 characters, 29 %
+ unadjudicated/cw-2026-08-22-032113: 3 of 28 characters, 11 %
+ unadjudicated/cw-2026-08-22-032129: 9 of 42 characters, 21 %
+ across every adjudicated reading: 153 of 384 characters, 40 %
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-17-013347, Adjudicated = VA3VRR, Anchor = VA3VRR, Ruling = HM-DEC-145, Retired =  }) [2 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347 (HM-DEC-145): looking for "VA3VRR" — 6 of 6 adjudicated characters
+   read:  E EI I HIAEIHEEEA E EEE HEEIEE IEEETE I EE IEEIEEEITEHAEWVRRVA3VRRR  
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-17-134712, Adjudicated = N4L, Anchor = N4, Ruling = HM-DEC-144, Retired = the peak measures 501.2 Hz against a station at 500.09, and the callsign was only ever read because an unmeasured bank centre of 500.0 landed on it (Tim, 2026-08-30) }) [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-134712 (HM-DEC-144): RETIRED — the peak measures 501.2 Hz against a station at 500.09, and the callsign was only ever read because an unmeasured bank centre of 500.0 landed on it (Tim, 2026-08-30)
+   it reads:    EE5 U   N4LQ K     
+   it would come back if "N4" appeared: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-18-003758, Adjudicated = AA4MP/4 QNIK, Anchor = MP/4 QNIK, Ruling = HM-DEC-126, Retired =  }) [1 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758 (HM-DEC-126): looking for "MP/4 QNIK" — 9 of 12 adjudicated characters
+   read:    ■R L TU  IAN EANDE AA4MP/4 QNIKK   EAN EANQNIK        EAN E
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-24-012403, Adjudicated = DE KD0UN KD0UN K, Anchor = DE KD0UN KD0UN K, Ruling = work instruction 011, Retired =  }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-24-012403 (work instruction 011): looking for "DE KD0UN KD0UN K" — 16 of 16 adjudicated characters
+   read:  DEQ 6Q  Q DE KD0UN KD0UN K 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-18-004507, Adjudicated = AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P, Anchor = N HANDLING THIS MESSAG, Ruling = HM-DEC-115, Retired =  }) [2 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507 (HM-DEC-115): looking for "N HANDLING THIS MESSAG" — 22 of 57 adjudicated characters
+   read: E5 I E A T ARRL D O T N E T <BT> I ACH STATION HANDLING THIS MESSAGE PE
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031838, Adjudicated = 2, 2, AND 2 WITH A MEAN OF 2.9. PRE, Anchor = , AND, Ruling = Tim 2026-08-25, Retired =  }) [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031838 (Tim 2026-08-25): looking for ", AND" — 5 of 35 adjudicated characters
+   read:   A 3, 30 2 2, AND  ■ WIAH A MEAN OF 2 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031905, Adjudicated = DICTED 10.7 CENTIMETER FLUX IS 125, 125, Anchor = DICTED 10.7, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031905 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:  ■ PLDICTED 10.7 K NTIMETER FLAX IS 125, 125T
+   it would come back if "DICTED 10.7" appeared: True
+
+
+[xUnit.net 00:00:22.51]     Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031948, Adjudicated = 110, 110, AND 110 WITH A MEAN OF 117, Anchor = 110, AND 110 WITH A MEAN OF 117, Ruling = Tim 2026-08-25, Retired =  }) [FAIL]
+[xUnit.net 00:00:22.51]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:22.51]       String:    "    TM 150 11■ AND 110 WITH A MEAN OF 117"···
+[xUnit.net 00:00:22.51]       Not found: "110, AND 110 WITH A MEAN OF 117"
+[xUnit.net 00:00:22.51]       Stack Trace:
+[xUnit.net 00:00:22.51]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheAdjudicatedReadingsKeepReadingTests.cs(257,0): at Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(Reading reading)
+[xUnit.net 00:00:22.51]            at InvokeStub_TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(Object, Span`1)
+[xUnit.net 00:00:22.51]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:22.51]       Output:
+[xUnit.net 00:00:22.51]         unadjudicated/cw-2026-08-22-031948 (Tim 2026-08-25): looking for "110, AND 110 WITH A MEAN OF 117" — 31 of 36 adjudicated characters
+[xUnit.net 00:00:22.51]           read:     TM 150 11■ AND 110 WITH A MEAN OF 117.W
+  Failed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031948, Adjudicated = 110, 110, AND 110 WITH A MEAN OF 117, Anchor = 110, AND 110 WITH A MEAN OF 117, Ruling = Tim 2026-08-25, Retired =  }) [2 s]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "    TM 150 11■ AND 110 WITH A MEAN OF 117"···
+Not found: "110, AND 110 WITH A MEAN OF 117"
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(Reading reading) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheAdjudicatedReadingsKeepReadingTests.cs:line 257
+   at InvokeStub_TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031948 (Tim 2026-08-25): looking for "110, AND 110 WITH A MEAN OF 117" — 31 of 36 adjudicated characters
+   read:     TM 150 11■ AND 110 WITH A MEAN OF 117.W
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032012, Adjudicated = N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI, Anchor = R OTHER WEBSITES MENTI, Ruling = Tim 2026-08-25, Retired =  }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032012 (Tim 2026-08-25): looking for "R OTHER WEBSITES MENTI" — 22 of 51 adjudicated characters
+   read:   T F 117.1. LINKS TO ARTICLES OR OTHER WEBSITES MENTI
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032050, Adjudicated = THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE, Anchor = ULLETIN CAN BE FO, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032050 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:     IULLETIN CAN BE FOUND IN TELEWRITTER, PACKE   H E SEEIE
+   it would come back if "ULLETIN CAN BE FO" appeared: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032113, Adjudicated = ACKET, AND INTERNET VERSIONS, Anchor = INT, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032113 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:    A KET■ AND INTERNET VERSIONS OF  200J6    E I IE EEEIIWW AI
+   it would come back if "INT" appeared: True
+
+
+[xUnit.net 00:00:31.68]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032129, Adjudicated = 2026 PROPAGATION FORECAST BULLETIN ARLP034, Anchor = OPAGATION, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032129 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:  ■ MTMTJ26 PGOPAGATION FORECAST BUAELETIN ARLP034 
+   it would come back if "OPAGATION" appeared: True
+
+
+
+Test Run Failed.
+Total tests: 13
+     Passed: 12
+     Failed: 1
+ Total time: 31.9545 Seconds
+RC=1 WALL=32s

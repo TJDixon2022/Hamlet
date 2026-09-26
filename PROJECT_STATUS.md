@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 4 of 4
 WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decoder, judged under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T18:31:44-04:00
-NOTE: Task 2: change committed; judging it - real CER-SURE 33 to 25 but V-11 shows 004507, 031948 and 032050 worse; running adjudicated, floors, parity
+UPDATED: 2026-09-26T18:40:35-04:00
+NOTE: Task 2 refused and reverted (adjudicated 031948 broke, V-11 three worse); task 3, the drop candidate, shed; exit round next
 
 ---
 

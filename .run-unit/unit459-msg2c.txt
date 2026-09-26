@@ -1,0 +1,22 @@
+unit459 task 2: refused and reverted - the pair speed took real MET-CER-SURE 33/436 to 25/431 and coverage 403 to 406, but broke the adjudicated 031948, made 004507, 031948 and 032050 worse (V-11) and dropped three floors; 9.4 stays open (9.4)
+
+Judged by R78 with the change in (6a0b65a1):
+- real, inferred: MET-CER-SURE 33 of 436 to 25 of 431; MET-INVENTED 33
+  to 25 over 473; coverage 403 to 406 over 473; MET-WBE 37 (29 ins, 8
+  del) to 37 (28 ins, 9 del) over 113.
+- synthetic, exact: all four unchanged (14 of 173, 14, 159, 44).
+- adjudicated 12 of 13: unadjudicated/cw-2026-08-22-031948, ruled
+  `110, AND 110 WITH A MEAN OF 117`, read `11■ AND 110 WITH A MEAN OF
+  117` - not its own adjudicated text (R66). Refused on this alone.
+- V-11, worse: cw-2026-08-18-004507 sure wrong 0 to 1, right 43 to 42
+  (`E ACH` to `I ACH`); 031948 right 26 to 24; 032050 word boundaries
+  wrong 2 to 4 while its sure errors fell 5 to 4. Better: 003758 3 to
+  0 wrong (`EET` to `AA4`), 031838 5 to 1, 032113 1 to 0.
+- named floors: 003758 43 to 38, 031838 29 to 23, 031948 31 to 29
+  newly below; the three held red unchanged (38, 43, 42).
+- decode time, real: 52.0 s to 53.5 s over 690 s of audio. The port's
+  texts byte-identical.
+Both source files restored to 1fcb0376; git diff 1fcb0376 -- src is
+empty. The task 2 test stays red at 28 of 31 and is kept as written.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
