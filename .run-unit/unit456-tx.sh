@@ -9,5 +9,5 @@ do
   [ -f "$C/$f.cs" ] || echo "missing $C/$f.cs"
 done
 echo "== end transmit"
-echo "== src this unit against 905ba7de, file by file:"
-git diff --stat 905ba7de HEAD -- src
+echo "== src this unit against 40de86e2, file by file:"
+git diff --stat 40de86e2 HEAD -- src

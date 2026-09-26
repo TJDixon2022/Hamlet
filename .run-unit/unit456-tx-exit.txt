@@ -1,0 +1,56 @@
+== git diff 7e209cb4 over the eleven transmit files:
+== end transmit
+== src this unit against 40de86e2, file by file:
+ .../Cw/Second/FldigiCwDecoder.cs                   | 773 +++++++++++++++++++++
+ src/Hamlet.RadioEngine/Cw/Second/FldigiFft.cs      | 116 ++++
+ .../Cw/Second/FldigiFftFilter.cs                   | 220 ++++++
+ src/Hamlet.RadioEngine/Cw/Second/FldigiMisc.cs     |  58 ++
+ src/Hamlet.RadioEngine/Cw/Second/FldigiMorse.cs    | 297 ++++++++
+ .../Cw/Second/FldigiMovingAverage.cs               |  98 +++
+ .../Cw/Second/FldigiProgdefaults.cs                | 161 +++++
+ .../Cw/Second/FldigiRateAdapter.cs                 |  84 +++
+ 8 files changed, 1807 insertions(+)
+== git status --short at exit
+ M .run-unit/approach.txt
+ M .run-unit/arbiter-prompt.txt
+ M .run-unit/arbiter.json
+ M .run-unit/denials.txt
+ M .run-unit/last-run.json
+ M .run-unit/launch.stamp
+ D .run-unit/parked.txt
+ M .run-unit/reload.txt
+ M .run-unit/s4-prompt.txt
+ M .run-unit/s4-verdict.json
+ M .run-unit/section4.txt
+ M .run-unit/state-prompt.txt
+ M .run-unit/state-verdict.json
+ M .run-unit/step-plan.txt
+ M .run-unit/step-states.txt
+ M .run-unit/unit456-tx.sh
+ M .run-unit/watched-runner.bat
+ M .run-unit/watched.born
+ M .run-unit/watched.cpu
+ M .run-unit/watched.pid
+ D .run-unit/watched.rc
+ M .run-unit/why.txt
+ M PROJECT_STATUS.md
+ D STOP
+?? .run-unit/fldigi/
+?? .run-unit/reports/unit-1-output-22.md
+?? .run-unit/reports/unit-2-output-13.md
+?? .run-unit/unit456-adjudicated-exit.txt
+?? .run-unit/unit456-build-exit.txt
+?? .run-unit/unit456-captures-exit.txt
+?? .run-unit/unit456-cf-app-exit-rerun.txt
+?? .run-unit/unit456-cf-app-exit.txt
+?? .run-unit/unit456-cf-engine-exit.txt
+?? .run-unit/unit456-exit-print.sh
+?? .run-unit/unit456-metrics-exit.txt
+?? .run-unit/unit456-named-exit.txt
+?? .run-unit/unit456-second-exit.txt
+?? .run-unit/unit456-text-exit.sorted.txt
+?? .run-unit/unit456-text-exit.txt
+?? .run-unit/unit456-tx-exit.txt
+?? SESSION.lock
+== text: diff of every recording's text against task 0's save
+(no difference)

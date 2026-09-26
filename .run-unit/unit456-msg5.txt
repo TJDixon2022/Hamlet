@@ -1,0 +1,13 @@
+unit456 task 5: exit round - port in the tree at 61b97f41, case read as GARIS CQ so 9.1 stays open, 34 ported and 54 left out, every metric and floor as at entry, text byte-identical (9.1)
+
+Build 0 errors; engine line 178 of 178; app line 277 of 278 on the
+first run (Avalonia dispatcher loop), 278 of 278 on the one rerun;
+captures 51 of 51; adjudicated 13 of 13; named 10 of 13 (38, 43, 42).
+Real: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403
+over 473, MET-WBE 37 over 113. Synthetic: 14 of 173, 14 over 252, 159
+over 252, 44 over 84. All as at entry. New test 7 of 8, the case red.
+git diff 7e209cb4 over the eleven transmit files prints nothing; 126
+text lines identical to task 0's save; .run-unit/fldigi untracked.
+output.md written and validated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
