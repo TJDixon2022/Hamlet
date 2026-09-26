@@ -711,6 +711,14 @@ public sealed class CwToneTracker
     /// </remarks>
     public bool KeyingRecently => _keyedProtects > 0;
 
+    /// <summary>Where keying was last found, or NaN before any has been.</summary>
+    /// <remarks>
+    /// **READ BY THE SPEED'S PROOF STATE AND BY NOTHING HERE** (work instruction
+    /// 451, HM-REQ-034): with <see cref="KeyingRecently"/> it says whether the
+    /// keying a speed was measured on is still arriving at the pitch being read.
+    /// </remarks>
+    public double LastKeyedHz => _lastKeyedHz;
+
     /// <summary>
     /// Follow the sending speed, which decides how finely the tracker listens.
     /// </summary>

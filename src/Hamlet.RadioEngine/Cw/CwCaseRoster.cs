@@ -48,6 +48,11 @@ namespace Hamlet.RadioEngine.Cw;
 /// is a verdict** — `N4L` sends a dah of 4.24 dits and is a real station read by
 /// hand (HM-DEC-144) — and nothing in the decoder reads either of them.
 /// </param>
+/// <param name="SpeedProof">
+/// Whether <paramref name="Wpm"/> was proved, or null where the row was built
+/// without saying (HM-REQ-034). A number that is a hypothesis says so in its own
+/// cell; one that is proved, or not stated, is written as it always was.
+/// </param>
 /// <param name="SeedWpm">
 /// The speed the operator told Hamlet he was hearing, or null when he did not
 /// A case read at a speed he supplied and one read at a speed
@@ -68,7 +73,8 @@ public sealed record CwCase(
     CwCountsCover Covers = CwCountsCover.Session,
     string Meter = "",
     int? SeedWpm = null,
-    string Fit = "");
+    string Fit = "",
+    CwSpeedProof? SpeedProof = null);
 
 /// <summary>What a pair of counts on a roster row is counting.</summary>
 public enum CwCountsCover
@@ -218,6 +224,7 @@ public static class CwCaseRoster
                 : "unread",
             one.Wpm is { } wpm && wpm > 0
                 ? wpm.ToString(CultureInfo.InvariantCulture)
+                  + (one.SpeedProof is CwSpeedProof.Hypothesis ? " (hypothesis, not proved)" : "")
                 : "not tracking",
 
             // **WHETHER THE OPERATOR WAS HELPING**, which changes what the row

@@ -26,24 +26,69 @@ public sealed class TheSpeedLineSaysWhatWasProvedTests
     /// <param name="output">Where the lines are printed.</param>
     public TheSpeedLineSaysWhatWasProvedTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>Every speed surface's words, per keyed recording.</summary>
+    /// <summary>
+    /// HM-REQ-034 on every speed surface: each state named, a hypothesis never
+    /// presented as measured, and no number shown where HEAD withheld one.
+    /// </summary>
+    /// <remarks>
+    /// **IT ASSERTS THE WORDING, NOT THE STATE.** Which state a recording ends in is
+    /// the decoder's. HEAD's words for every recording are
+    /// `.run-unit/unit451-app-speedlines-before.txt`, printed by this type before
+    /// `src` changed; decoding is unchanged, so the number is the same.
+    /// </remarks>
     [Fact]
     public void EachKeyedRecordingsSpeedLinesAsTheyRead()
     {
+        var tally = new Dictionary<CwSpeedProof, int>();
+        var hypothesisShown = 0;
+
         foreach (var stamp in ThePitchLineSaysWhatWasProvedTests.Keyed)
         {
             var lines = SpeedLines(stamp);
 
-            _output.WriteLine($"speed | {stamp} | shown {lines.Shown?.ToString() ?? "null"} | reacquiring {lines.Reacquiring}");
+            tally[lines.State] = tally.GetValueOrDefault(lines.State) + 1;
+
+            _output.WriteLine($"speed | {stamp} | shown {lines.Shown?.ToString() ?? "null"} | reacquiring {lines.Reacquiring} | state {lines.State}");
             _output.WriteLine($"  sheet   | {lines.Sheet}");
             _output.WriteLine($"  reading | {lines.Reading}");
             _output.WriteLine($"  header  | {lines.Header}");
             _output.WriteLine($"  pill    | {lines.Pill}");
             _output.WriteLine($"  offer   | {lines.Offer}");
+
+            if (lines.Shown is { } wpm)
+            {
+                if (lines.State == CwSpeedProof.Proved)
+                {
+                    Assert.StartsWith($"decoderWpm {wpm}  (proved:", lines.Sheet, StringComparison.Ordinal);
+                    Assert.Equal($"{wpm} WPM", lines.Header);
+                    Assert.StartsWith("They are sending at about", lines.Offer, StringComparison.Ordinal);
+                    Assert.Contains("; the speed is proved", lines.Reading, StringComparison.Ordinal);
+                }
+                else
+                {
+                    hypothesisShown++;
+                    Assert.Equal(CwSpeedProof.Hypothesis, lines.State);
+                    Assert.StartsWith($"decoderWpm {wpm}  HYPOTHESIS, NOT PROVED NOW (", lines.Sheet, StringComparison.Ordinal);
+                    Assert.Equal($"{wpm} WPM, not proved", lines.Header);
+                    Assert.DoesNotContain("They are sending at", lines.Offer, StringComparison.Ordinal);
+                    Assert.Contains("not proved", lines.Offer, StringComparison.Ordinal);
+                    Assert.Contains("HYPOTHESIS, NOT PROVED NOW", lines.Reading, StringComparison.Ordinal);
+                }
+            }
+            else
+            {
+                // No number anywhere HEAD withheld one (work instruction 451, 3 (a)).
+                Assert.NotEqual(CwSpeedProof.Proved, lines.State);
+                Assert.Equal("", lines.Header);
+                Assert.Equal("", lines.Offer);
+                Assert.StartsWith($"decoderWpm {(lines.State == CwSpeedProof.Hypothesis ? "hypothesis" : "none")}, ", lines.Sheet, StringComparison.Ordinal);
+            }
         }
+
+        _output.WriteLine($"total | {ThePitchLineSaysWhatWasProvedTests.Keyed.Count} keyed recordings at the end of the file | {string.Join(", ", Enum.GetValues<CwSpeedProof>().Select(s => $"{s} {tally.GetValueOrDefault(s)}"))} | a hypothesis where HEAD showed the number bare {hypothesisShown}");
     }
 
-    internal sealed record Lines(int? Shown, bool Reacquiring, string Sheet, string Reading, string Header, string Pill, string Offer);
+    internal sealed record Lines(int? Shown, bool Reacquiring, CwSpeedProof State, string Sheet, string Reading, string Header, string Pill, string Offer);
 
     internal static Lines SpeedLines(string stamp)
     {
@@ -81,6 +126,7 @@ public sealed class TheSpeedLineSaysWhatWasProvedTests
         return new Lines(
             decoder.WordsPerMinute,
             decoder.SpeedIsReacquiring,
+            report.SpeedProof,
             rows.Single(l => l.StartsWith("decoderWpm ", StringComparison.Ordinal)),
             rows.Single(l => l.StartsWith("reading ", StringComparison.Ordinal)),
             model.TerminalSpeedText,

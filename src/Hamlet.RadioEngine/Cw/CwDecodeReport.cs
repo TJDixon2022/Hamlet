@@ -39,6 +39,15 @@ namespace Hamlet.RadioEngine.Cw;
 /// pitch confirmed half a second ago and one last confirmed a minute ago on a
 /// station that has stopped are different facts** (§0.0, work instruction 450).
 /// </param>
+/// <param name="SpeedProof">
+/// Whether <see cref="WordsPerMinute"/> is proved from a dit measured on keying
+/// still arriving, a hypothesis the window holds, or none at all (HM-REQ-034).
+/// **A speed the decoder has not earned is not a number.**
+/// </param>
+/// <param name="WordsPerMinute">
+/// The guarded speed, <see cref="CwDecoder.WordsPerMinute"/>, or null where it
+/// names none.
+/// </param>
 /// <param name="Competitor">
 /// Somebody else keying inside the same passband, where the survey found one.
 /// **Null says the survey did not find one and never that the frequency is
@@ -58,8 +67,17 @@ public readonly record struct CwDecodeReport(
     double OwnTransmitSeconds = 0,
     bool WordSpacingUnmeasured = false,
     CwCompetitor? Competitor = null,
-    CwPitchProof PitchProof = CwPitchProof.None)
+    CwPitchProof PitchProof = CwPitchProof.None,
+    CwSpeedProof SpeedProof = CwSpeedProof.None,
+    int? WordsPerMinute = null)
 {
+    /// <summary>True when <see cref="WordsPerMinute"/> is proved.</summary>
+    /// <remarks>
+    /// **READ FROM <see cref="SpeedProof"/> SO THE TWO CANNOT DISAGREE** (work
+    /// instruction 451), as <see cref="PitchWasMeasured"/> is read from the pitch's.
+    /// </remarks>
+    public bool SpeedWasProved => SpeedProof == CwSpeedProof.Proved;
+
     /// <summary>
     /// True when <see cref="ToneHz"/> came from keying the survey admitted, now
     /// or earlier; false when it is the middle of whatever bank the tracker is

@@ -793,11 +793,22 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// A measurement and an offer, and nothing about whether it suits anybody.
     /// "24 words a minute" is what the decoder read; "24 is fine for you" would
     /// be a claim against a number nobody has ever taken (HM-OPEN-006).
+    /// <para>**AN UNPROVED SPEED IS OFFERED AS ONE** (HM-REQ-034, work instruction
+    /// 451): the number is the same, and the sentence stops calling it what they
+    /// are sending at.</para>
     /// </remarks>
     public string SpeedOffer => HeardWpm is { } wpm
-        ? $"They are sending at about {wpm} words a minute. You can set the radio's "
-          + "keyer to match, or to whatever you would rather send at."
+        ? HeardSpeedProof == CwSpeedProof.Proved
+            ? $"They are sending at about {wpm} words a minute. You can set the radio's "
+              + "keyer to match, or to whatever you would rather send at."
+            : $"Hamlet's reading of their speed is about {wpm} words a minute, and it "
+              + "is not proved: the keying it came from has stopped or was not measured. "
+              + "Set the radio's keyer to whatever you would rather send at."
         : "";
+
+    /// <summary>Whether <see cref="HeardWpm"/> is proved, a hypothesis, or none (HM-REQ-034).</summary>
+    [ObservableProperty]
+    private CwSpeedProof _heardSpeedProof;
 
     /// <summary>
     /// What Hamlet cannot do about character spacing, said plainly.
@@ -1227,6 +1238,8 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     partial void OnAlwaysConfirmChanged(bool value) => ClearStaged();
 
     partial void OnHeardWpmChanged(int? value) => OnPropertyChanged(nameof(SpeedOffer));
+
+    partial void OnHeardSpeedProofChanged(CwSpeedProof value) => OnPropertyChanged(nameof(SpeedOffer));
 
     partial void OnSupportsCharacterSpacingChanged(bool value)
         => OnPropertyChanged(nameof(SpacingNote));

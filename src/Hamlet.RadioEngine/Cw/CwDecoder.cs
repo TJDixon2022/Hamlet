@@ -252,7 +252,9 @@ public sealed class CwDecoder
         _tracker.Verdict.Interference,
         (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
         Competitor: _tracker.Competitor,
-        PitchProof: _tracker.PitchProof);
+        PitchProof: _tracker.PitchProof,
+        SpeedProof: SpeedProof,
+        WordsPerMinute: WordsPerMinute);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>
@@ -452,6 +454,52 @@ public sealed class CwDecoder
             return wpm >= SlowestPlausibleWpm && wpm <= FastestPlausibleWpm
                 ? wpm
                 : null;
+        }
+    }
+
+    /// <summary>What can be said about the speed now (HM-REQ-034).</summary>
+    /// <remarks>
+    /// <para>**PROVED ONLY WHERE <see cref="WordsPerMinute"/> NAMES A NUMBER, THE
+    /// DIT BEHIND IT WAS MEASURED, AND ITS KEYING IS STILL ARRIVING** (work
+    /// instruction 451). The number is the guard's above. Measured is the
+    /// stream's (<see cref="CwProbabilisticStream.UnitWasMeasured"/>): the
+    /// estimator's dit or the marks' overrule, not the grid's winner. Still
+    /// arriving is the tracker's own recent span, six surveys
+    /// (<see cref="CwToneTracker.KeyingRecently"/>), at a pitch within half the
+    /// mixdown filter of the one being read, the line the follow above already
+    /// uses for the same sender. **Six surveys and not the latest one**, because
+    /// the survey does not confirm keying on every half second of a slow sender
+    /// and this reading trails it (see <see cref="CwToneTracker.KeyingRecently"/>).</para>
+    /// <para>**A HYPOTHESIS WHERE THE WINDOW HOLDS A READING AND ANY OF THOSE
+    /// FAILS**: the clock re-acquiring, the unit won on the grid, or no keying at
+    /// the pitch for six surveys, which is a speed held in a window whose sender
+    /// has stopped. **None where nothing has been read**, or the gate refused the
+    /// whole window, whose grid winner describes nobody.</para>
+    /// <para>**IT DESCRIBES THE SPEED AND NOTHING READS IT** in the decode, the
+    /// tracker or the pitch. Proved is a subset of a named number, so no speed is
+    /// stated with more certainty than before, only less.</para>
+    /// </remarks>
+    public CwSpeedProof SpeedProof
+    {
+        get
+        {
+            var reading = _probabilistic.Last;
+
+            if (reading.WordsPerMinute <= 0 || reading.Text.Length == 0)
+            {
+                return CwSpeedProof.None;
+            }
+
+            var lastKeyedHz = _tracker.LastKeyedHz;
+
+            return WordsPerMinute is not null
+                   && _probabilistic.UnitWasMeasured
+                   && _tracker.KeyingRecently
+                   && !double.IsNaN(lastKeyedHz)
+                   && Math.Abs(lastKeyedHz - _probabilistic.ToneHz)
+                      < CwProbabilisticDecoder.BandwidthHz / 2
+                ? CwSpeedProof.Proved
+                : CwSpeedProof.Hypothesis;
         }
     }
 

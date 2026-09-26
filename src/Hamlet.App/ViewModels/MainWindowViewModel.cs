@@ -1039,6 +1039,12 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(HasDetectedSpeed))]
     private int _detectedWpm;
 
+    /// <summary>Whether that speed is proved, a hypothesis, or none (HM-REQ-034).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TerminalSummary))]
+    [NotifyPropertyChangedFor(nameof(TerminalSpeedText))]
+    private CwSpeedProof _detectedSpeedProof;
+
     /// <summary>Whether the decoder is listening to anything.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TerminalSummary))]
@@ -9213,8 +9219,18 @@ public partial class MainWindowViewModel : ObservableObject
     public bool HasDetectedSpeed => DetectedWpm > 0;
 
     /// <summary>The live speed readout on the terminal's header.</summary>
+    /// <remarks>
+    /// **A NUMBER THE DECODER HAS NOT PROVED SAYS SO BESIDE IT** (HM-REQ-034, work
+    /// instruction 451). The number is the one HEAD showed, and no more of them:
+    /// what changes is that a speed held in a window whose sender has stopped, or
+    /// one won on the grid, is no longer shown as though it were measured now.
+    /// </remarks>
     public string TerminalSpeedText
-        => DetectedWpm > 0 ? $"{DetectedWpm} WPM" : "";
+        => DetectedWpm > 0 ? $"{DetectedWpm} WPM{SpeedNotProvedMark}" : "";
+
+    /// <summary>What follows a speed that is shown and not proved, or "".</summary>
+    private string SpeedNotProvedMark
+        => DetectedSpeedProof == CwSpeedProof.Proved ? "" : ", not proved";
 
     /// <summary>
     /// Why the speed field is empty, or empty itself (HM-OPEN-022).
@@ -9227,7 +9243,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// this is the sentence that makes it read as Hamlet working.</para>
     /// </remarks>
     public string SpeedReacquiringText
-        => SpeedIsReacquiring ? "working out the speed" : "";
+        => SpeedIsReacquiring ? "working out the speed, nothing proved yet" : "";
 
     /// <summary>True while no speed has been proved.</summary>
     [ObservableProperty]
@@ -9298,7 +9314,7 @@ public partial class MainWindowViewModel : ObservableObject
                 return "listening";
             }
 
-            var speed = DetectedWpm > 0 ? $"{DetectedWpm} WPM · " : "";
+            var speed = DetectedWpm > 0 ? $"{DetectedWpm} WPM{SpeedNotProvedMark} · " : "";
             var tail = Transcript.Tail(28);
 
             return $"{speed}{tail}";
@@ -11355,6 +11371,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         IsDecoding = false;
         DetectedWpm = 0;
+        DetectedSpeedProof = CwSpeedProof.None;
         AudioInputName = "";
         Transcript.Clear();
         OnPropertyChanged(nameof(TerminalSummary));
@@ -11373,6 +11390,7 @@ public partial class MainWindowViewModel : ObservableObject
         // ONE GUARDED ANSWER (HM-DEC-090). Zero means nothing has earned the
         // right to name a speed, and every surface that shows one reads this.
         DetectedWpm = _decoder.WordsPerMinute ?? 0;
+        DetectedSpeedProof = _decoder.SpeedProof;
 
         // **THE RADIO SAYS WHETHER IT IS TRANSMITTING, AND THE DECODER IS TOLD**
         // (HM-DEC-091). Hamlet has read `1C 00` for months, the diagnostics
@@ -11465,6 +11483,7 @@ public partial class MainWindowViewModel : ObservableObject
         // NO DECODE MEANS NO STATION, SO THE LINE IS ABSENT (HM-DEC-090). It
         // read "they are sending at about 62 words a minute" with nobody
         // sending, which is the phantom speed reaching a third surface.
+        Transmit.HeardSpeedProof = _decoder.SpeedProof;
         Transmit.HeardWpm = _decoder.WordsPerMinute;
 
         // **AND THE FT8 SLOT WATCH RIDES THE SAME TICK** (unit 225). Four looks a
@@ -12810,10 +12829,15 @@ public partial class MainWindowViewModel : ObservableObject
     /// The speed at the moment of the press, or why there is not one.
     /// </summary>
     /// <remarks>
-    /// The guard on <see cref="CwDecoder.WordsPerMinute"/> withholds a number
-    /// until a tone has been located, a character has resolved, the clock is not
-    /// being re-acquired, and the settled pass has proved a dit. All four
-    /// failures used to print the same three words (HM-DEC-091).
+    /// <para>The guard on <see cref="CwDecoder.WordsPerMinute"/> withholds a number
+    /// until a tone has been located, a character has resolved and the clock is
+    /// not being re-acquired. All the failures used to print the same three words
+    /// (HM-DEC-091).</para>
+    /// <para>**AND A NUMBER IT NAMES SAYS WHETHER IT WAS PROVED** (HM-REQ-034, work
+    /// instruction 451). Every line opens with the state, proved, hypothesis or
+    /// none. A named number that is a hypothesis says so in capitals and why, and
+    /// the grid's winner over a window that read nothing is no longer called the
+    /// decoder's hypothesis: there is no reading for it to be a hypothesis of.</para>
     /// </remarks>
     private string SpeedForTheRecord()
     {
@@ -12822,30 +12846,49 @@ public partial class MainWindowViewModel : ObservableObject
             return "not tracking (nothing is listening)";
         }
 
+        var proof = decoder.SpeedProof;
+
         if (decoder.WordsPerMinute is { } wpm)
         {
-            return $"{wpm}";
+            if (proof == CwSpeedProof.Proved)
+            {
+                return $"{wpm}  (proved: the dit was measured on keying still arriving "
+                    + "at the pitch being read)";
+            }
+
+            var why = decoder.Stream.UnitWasMeasured
+                ? "no keying has been found at the pitch being read for six surveys, "
+                  + "so it is held from a window whose sender has stopped"
+                : $"it won the search across {CwProbabilisticDecoder.SlowestWpm:0} to "
+                  + $"{CwProbabilisticDecoder.FastestWpm:0} and no dit was measured from "
+                  + "the keying";
+
+            return $"{wpm}  HYPOTHESIS, NOT PROVED NOW ({why})";
         }
 
         var report = decoder.Report;
-        var rolling = decoder.Reading.WordsPerMinute > 0
-            ? $"the decoder's own best hypothesis was "
-              + $"{decoder.Reading.WordsPerMinute:0} WPM"
-            : "the decoder had no hypothesis worth naming";
+        var rolling = decoder.Reading.WordsPerMinute <= 0
+            ? "the decoder had no hypothesis worth naming"
+            : proof == CwSpeedProof.Hypothesis
+                ? $"the decoder's own best hypothesis was "
+                  + $"{decoder.Reading.WordsPerMinute:0} WPM"
+                : $"the search's winner over a window that read nothing was "
+                  + $"{decoder.Reading.WordsPerMinute:0} WPM, which describes nobody";
+        var state = proof == CwSpeedProof.Hypothesis ? "hypothesis" : "none";
 
         if (!report.HasTone)
         {
-            return $"not tracking (no tone was located; {rolling})";
+            return $"{state}, not tracking (no tone was located; {rolling})";
         }
 
         if (report.CharactersEmitted == 0)
         {
-            return $"not proved (a tone but no resolved character; {rolling})";
+            return $"{state}, not proved (a tone but no resolved character; {rolling})";
         }
 
         return decoder.SpeedIsReacquiring
-            ? $"withdrawn (the clock is being re-acquired; {rolling})"
-            : $"not proved (the settled pass has no clock; {rolling})";
+            ? $"{state}, withdrawn (the clock is being re-acquired; {rolling})"
+            : $"{state}, not proved (the window read nothing; {rolling})";
     }
 
     /// <summary>What the clock fit looked like, as one line.</summary>
@@ -12903,10 +12946,19 @@ public partial class MainWindowViewModel : ObservableObject
         // reading is taken here, when the sheet is composed, which since unit 417
         // is after the press has waited for the tone measurement while the
         // decoder reads its window again every half second.
+        // **THE WINNER IS NOT A PROOF, AND THE LINE SAYS WHICH IT IS** (HM-REQ-034,
+        // work instruction 451): the same state the decoderWpm line opens with.
+        var proof = decoder.SpeedProof switch
+        {
+            CwSpeedProof.Proved => "; the speed is proved",
+            CwSpeedProof.Hypothesis => "; the speed is a HYPOTHESIS, NOT PROVED NOW",
+            _ => "; the speed is none: the window read nothing",
+        };
+
         return string.Format(
             CultureInfo.InvariantCulture,
             "{0:0} WPM won out of {1} to {2}, {3:0.00} better than silence per "
-            + "hop against a gate of {4:0.00}{5}  (this is the last {6:0} second "
+            + "hop against a gate of {4:0.00}{5}{7}  (this is the last {6:0} second "
             + "window alone, as it stood when this sheet was written just after the "
             + "recording was saved, and not the whole recording)",
             reading.WordsPerMinute,
@@ -12915,7 +12967,8 @@ public partial class MainWindowViewModel : ObservableObject
             reading.LikelihoodRatio,
             CwProbabilisticDecoder.Gate,
             atEdge,
-            CwProbabilisticStream.WindowSeconds);
+            CwProbabilisticStream.WindowSeconds,
+            proof);
     }
 
     /// <summary>What the meter said, as one line for a record.</summary>
@@ -20965,7 +21018,10 @@ public partial class MainWindowViewModel : ObservableObject
                 // And what the fit behind the speed looked like, so a row with no
                 // speed on it can be told from a row whose speed came out of a
                 // fit that was not a fist.
-                FitLine()));
+                FitLine(),
+
+                // Whether the speed column's number was proved (HM-REQ-034).
+                _decoder?.SpeedProof));
     }
 
     /// <summary>

@@ -166,6 +166,13 @@ public sealed class WhatTheSpeedCanSayItProvedTests
 
             var (state, path) = Proposed(decoder, measured);
 
+            // After task 2 the decoder reports its own state; any hop where it
+            // and this reading differ is counted, so the totals are the built state's.
+            if (!string.Equals(decoder.SpeedProof.ToString(), state, StringComparison.OrdinalIgnoreCase))
+            {
+                Interlocked.Increment(ref _disagreements);
+            }
+
             hops.Add(new Hop((at + hop) / (double)audio.SampleRate, decoder.WordsPerMinute, decoder.Reading.WordsPerMinute, state, path));
         }
 
@@ -217,7 +224,11 @@ public sealed class WhatTheSpeedCanSayItProvedTests
         {
             _output.WriteLine($"path | {path} | {count} hops over every recording above");
         }
+
+        _output.WriteLine($"agreement | hops where CwDecoder.SpeedProof differs from this reading | {_disagreements}");
     }
+
+    private static int _disagreements;
 
     private void Row(
         string group, string name, MonoAudio audio, double startingHz, double constructedWpm,

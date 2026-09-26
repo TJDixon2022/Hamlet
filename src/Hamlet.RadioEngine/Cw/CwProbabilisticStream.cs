@@ -185,6 +185,19 @@ public sealed class CwProbabilisticStream
     public CwProbabilisticResult Last { get; private set; } = CwProbabilisticResult.None;
 
     /// <summary>
+    /// True when the speed behind <see cref="Last"/> was measured from the
+    /// window's keying rather than won on the grid.
+    /// </summary>
+    /// <remarks>
+    /// **MEASURED IS THE ESTIMATOR'S DIT OR THE MARKS' OVERRULE; THE GRID IS A
+    /// WINNER** (work instruction 451, HM-REQ-034). Where the window holds too
+    /// little keying to cluster, the path is searched across every speed and the
+    /// best one is kept, which is a hypothesis and not a measurement. It is
+    /// recorded as the read makes it and nothing in the decode reads it.
+    /// </remarks>
+    public bool UnitWasMeasured { get; private set; }
+
+    /// <summary>
     /// True when the last read left the winning path inside a character.
     /// </summary>
     /// <remarks>
@@ -331,6 +344,7 @@ public sealed class CwProbabilisticStream
             1, (int)(RefillSeconds * 1000.0 / CwProbabilisticDecoder.HopMilliseconds));
 
         Last = CwProbabilisticResult.None;
+        UnitWasMeasured = false;
 
         // The tip belonged to the station that is no longer being read.
         LeadingEdgeChanged?.Invoke(Array.Empty<CwCharacter>());
@@ -501,6 +515,7 @@ public sealed class CwProbabilisticStream
         // other side did not separate the two and is left alone.
         var marksUnit = CwUnitEstimator.MarkUnit(
             CwUnitEstimator.Elements(window, CwProbabilisticDecoder.HopMilliseconds).Marks);
+        var unitMeasured = speed is not null;
 
         if (result.WordsPerMinute > 0
             && marksUnit * result.WordsPerMinute / 1200.0 > MarksOverruleRatio)
@@ -511,10 +526,12 @@ public sealed class CwProbabilisticStream
                 && marksWpm <= CwProbabilisticDecoder.FastestWpm)
             {
                 result = CwProbabilisticDecoder.Decode(window, ToneHz, marksWpm, gapMilliseconds);
+                unitMeasured = true;
             }
         }
 
         Last = result;
+        UnitWasMeasured = unitMeasured;
 
         // **THIS SENDER'S CHARACTER GAP, FOR THE SPACES ONLY** (work instruction
         // 415). Measured from the same window whether or not the word trough
