@@ -1,0 +1,18 @@
+unit458 task 1: the trace - spans are located in text, so the port joins at Measure with no stamp; its no-match output is * (cw.cxx:893-898); latency 0.30 s against ours 1.27 s; pitch tabled for all 35 (9.2)
+
+Our decoder hands TheRequirementsAreMeasuredTests.Measure a list of
+CwCharacter; CwSymbol.Of classes each as word gap, placeholder or
+sure; every stretch is located in the decode's text (FromFirst,
+Within, Whole) and CwCharacter.At is never read. The port prints
+through Print where cw.cxx calls put_rx_char: rx_lookup's prt, <BT>
+for a prosign with the shipped CW_prosign_display off; CW_noise, *
+by default (configuration.h:249-251), where the table has no match;
+a space past 4 dot lengths. Its InputSample recorder (456) already
+times each string, so no stamp was added and src is unchanged.
+BothDecodersAreScoredAlikeTests, a printer for now, drives both over
+23 keyed recordings and 12 synthetic cases in 112 s: every file has
+keyed windows, so the port runs on all 35. On cq-18wpm-15db the port
+puts a right character out 0.30 s after its last mark (median of 18),
+ours 1.27 s (median of 21). Written to .run-unit/unit458-scoring-path.txt.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

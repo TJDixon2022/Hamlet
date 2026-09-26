@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 2 of 4
 WORK_INSTRUCTION: 458 - both decoders on the same audio, the same scorer and one parity table
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T16:44:03-04:00
-NOTE: Task 0 done, every entry figure as 457 left it; task 1 tracing how our text reaches CwMetrics and where the port's text joins it
+UPDATED: 2026-09-26T16:53:00-04:00
+NOTE: Task 1 committed (trace: text-located spans, port no-match *, latency 0.30 s vs 1.27 s); task 2 adding sameness with a deliberately wrong figure to watch it fail
 
 ---
 

@@ -1,0 +1,211 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.62]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.87]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.88]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:51.38]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.BothDecodersAreScoredAlikeTests.TheScoringPathThePitchAndTheLatency [1 m 49 s]
+  Standard Output Messages:
+ corpus | recording | set | key | audio | seconds | condition
+ corpus | unadjudicated/cw-2026-09-23-173723 | 17:37 | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-23-173723.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | cw-2026-08-17-013347 | baseline | inferred | tests/fixtures/cw/captured/cw-2026-08-17-013347.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender TX-TIGHT (CW_SPEC.md 10, HM-DEC-101)
+ corpus | cw-2026-08-17-134712 | baseline | inferred | tests/fixtures/cw/captured/cw-2026-08-17-134712.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-18-003758 | baseline | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-18-003758.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-24-012403 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-24-012403.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender TX-ITU (CW_SPEC.md 10, the KD0UN capture)
+ corpus | cw-2026-08-18-004507 | outside | inferred | tests/fixtures/cw/captured/cw-2026-08-18-004507.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender TX-FARNS (CW_SPEC.md 6.4 and 10, HM-DEC-115's traffic net)
+ corpus | unadjudicated/cw-2026-08-22-031838 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-22-031838.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-22-031905 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-22-031905.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-22-031948 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-22-031948.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-22-032012 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-22-032012.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-22-032050 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-22-032050.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-22-032113 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-22-032113.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-08-22-032129 | outside | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-08-22-032129.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004108 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004108.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004133 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004133.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004205 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004205.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004234 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004234.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004322 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004322.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004347 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004347.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004405 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004405.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004427 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004427.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004510 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004510.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | unadjudicated/cw-2026-09-24-004550 | the ten | inferred | tests/fixtures/cw/captured/unadjudicated/cw-2026-09-24-004550.wav | 30.00 | real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md
+ corpus | cq-12wpm-15db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-12wpm-15db.wav | 31.40 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-12wpm-5db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-12wpm-5db.wav | 31.40 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-12wpm-0db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-12wpm-0db.wav | 31.40 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-18wpm-15db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-18wpm-15db.wav | 21.77 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-18wpm-5db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-18wpm-5db.wav | 21.77 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-18wpm-0db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-18wpm-0db.wav | 21.77 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-25wpm-15db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-25wpm-15db.wav | 16.37 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 15 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-25wpm-5db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-25wpm-5db.wav | 16.37 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 5 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-25wpm-0db | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-25wpm-0db.wav | 16.37 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), TX-ITU (1:3:1:3:7), 0 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-18wpm-15db-char5 | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-18wpm-15db-char5.wav | 23.63 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 15 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-18wpm-5db-char5 | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-18wpm-5db-char5.wav | 23.63 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 5 dB in the passband (not restated in the 2500 Hz reference)
+ corpus | cq-18wpm-0db-char5 | synthetic | exact | tests/fixtures/cw/synthetic-cq/cq-18wpm-0db-char5.wav | 23.63 | synthetic, no fading, shaped noise band (not shown to be CH-AWGN), character gap 5 units, inside TX-FARNS's 3 to 7, 0 dB in the passband (not restated in the 2500 Hz reference)
+ span | recording | decoder | stretch | key | scored text | first put out s | last put out s | first At s | last At s
+ span | unadjudicated/cw-2026-09-23-173723 | ours | 1 | `CQ CQ CQ DE WB6RED WB6RED` | `CQ CQ CQ DEWB6 RE D W B 7E E I` | 15.000 | 30.000 | 13.995 | 30.000
+ span | unadjudicated/cw-2026-09-23-173723 | port | 1 | `CQ CQ CQ DE WB6RED WB6RED` | `CQDW SRED` | 16.640 | 26.112 | 16.640 | 26.112
+ span | cw-2026-08-17-013347 | ours | 1 | `VA3VRR` | `VA3VRR` | 24.500 | 29.000 | 23.310 | 27.690
+ span | cw-2026-08-17-013347 | port | 1 | `VA3VRR` | `IAE ` | 18.816 | 28.160 | 18.816 | 28.160
+ span | cw-2026-08-17-134712 | ours | 1 | `N4L` | `N4L` | 23.000 | 24.500 | 21.530 | 23.000
+ span | cw-2026-08-17-134712 | port | 1 | `N4L` | `N■L` | 21.760 | 23.168 | 21.760 | 23.168
+ span | unadjudicated/cw-2026-08-18-003758 | ours | 1 | `AA4MP/4 QNIK` | `EETMP/4 QNIK` | 12.000 | 17.500 | 10.640 | 16.090
+ span | unadjudicated/cw-2026-08-18-003758 | port | 1 | `AA4MP/4 QNIK` | `EA4M■ /4_NIK` | 9.600 | 16.384 | 9.600 | 16.384
+ span | unadjudicated/cw-2026-08-24-012403 | ours | 1 | `DE KD0UN KD0UN K` | `DE KD0UN KD0UN K` | 25.500 | 30.000 | 20.445 | 29.420
+ span | unadjudicated/cw-2026-08-24-012403 | port | 1 | `DE KD0UN KD0UN K` | ` EXUKD0` | 17.920 | 27.648 | 17.920 | 27.648
+ span | cw-2026-08-18-004507 | ours | 1 | `AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P` | ` T ARRL D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE P` | 4.500 | 30.000 | 3.065 | 29.765
+ span | cw-2026-08-18-004507 | port | 1 | `AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P` | `T ARRL OT NT <BT>E EAC STON HANÉ IG T HISEMSGE ` | 3.456 | 28.928 | 3.456 | 28.928
+ span | unadjudicated/cw-2026-08-22-031838 | ours | 1 | `2, 2, AND 2 WITH A MEAN OF 2.9. PRE` | `TT 2, AND ■ WIAHA MEAN OF 2 TT ` | 10.000 | 28.000 | 8.675 | 26.685
+ span | unadjudicated/cw-2026-08-22-031838 | port | 1 | `2, 2, AND 2 WITH A MEAN OF 2.9. PRE` | `2, 2, AN■TWV2F 2P` | 8.576 | 29.056 | 8.576 | 29.056
+ span | unadjudicated/cw-2026-08-22-031905 | ours | 1 | `DICTED 10.7 CENTIMETER FLUX IS 125, 125` | `DICTED 10.7 K NTIMETER FLAX IS 125, 125` | 6.500 | 30.000 | 5.175 | 29.570
+ span | unadjudicated/cw-2026-08-22-031905 | port | 1 | `DICTED 10.7 CENTIMETER FLUX IS 125, 125` | `EITED10TÖ NIMTFXISO■15` | 5.376 | 29.824 | 5.376 | 29.824
+ span | unadjudicated/cw-2026-08-22-031948 | ours | 1 | `110, 110, AND 110 WITH A MEAN OF 117` | `150 110, AND 110 WITH A MEAN OF 117` | 5.000 | 29.500 | 3.945 | 28.055
+ span | unadjudicated/cw-2026-08-22-031948 | port | 1 | `110, 110, AND 110 WITH A MEAN OF 117` | `H01■,AN110 W MNJF 7` | 4.992 | 28.288 | 4.992 | 28.288
+ span | unadjudicated/cw-2026-08-22-032012 | ours | 1 | `N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI` | `T F 117.1. LINKS TO ARTICLES OR OTHER WEBSITES MENTI` | 3.000 | 30.000 | 1.765 | 30.000
+ span | unadjudicated/cw-2026-08-22-032012 | port | 1 | `N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI` | `O7■. LOÈICLOROTIDI` | 5.504 | 27.392 | 5.504 | 27.392
+ span | unadjudicated/cw-2026-08-22-032050 | ours | 1 | `THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE` | `    IULLETIN CAN BE FOTAND IN TELEWRITTER, PA■ KE    H IE` | 3.000 | 29.000 | 0.565 | 27.090
+ span | unadjudicated/cw-2026-08-22-032050 | port | 1 | `THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE` | `EN<AR> OUÉTERAW■CTY I` | 4.864 | 28.416 | 4.864 | 28.416
+ span | unadjudicated/cw-2026-08-22-032113 | ours | 1 | `ACKET, AND INTERNET VERSIONS` | `A KET■ A N O INTERNET ■ERSIONS` | 3.000 | 15.000 | 1.690 | 13.940
+ span | unadjudicated/cw-2026-08-22-032113 | port | 1 | `ACKET, AND INTERNET VERSIONS` | `T TNDINE OJ ` | 4.608 | 20.992 | 4.608 | 20.992
+ span | unadjudicated/cw-2026-08-22-032129 | ours | 1 | `2026 PROPAGATION FORECAST BULLETIN ARLP034` | `TJ26 PGOPAGATION FORECAST BUAELETIN ARLP034` | 5.500 | 30.000 | 4.175 | 28.735
+ span | unadjudicated/cw-2026-08-22-032129 | port | 1 | `2026 PROPAGATION FORECAST BULLETIN ARLP034` | `M6 PATNNORE■BEE0` | 5.248 | 27.136 | 5.248 | 27.136
+ span | unadjudicated/cw-2026-09-24-004108 | ours | 1 | `DE KA2GJV` | ` G K2 6 ` | 15.000 | 20.000 | 13.860 | 18.510
+ span | unadjudicated/cw-2026-09-24-004108 | port | 1 | `DE KA2GJV` | ` E ` | 27.648 | 28.288 | 27.648 | 28.288
+ span | unadjudicated/cw-2026-09-24-004133 | ours | 1 | `ICHARD` | ` C H ARD` | 5.500 | 8.500 | 4.155 | 7.265
+ span | unadjudicated/cw-2026-09-24-004133 | port | 1 | `ICHARD` | `I51 8 ` | 25.600 | 29.184 | 25.600 | 29.184
+ span | unadjudicated/cw-2026-09-24-004205 | ours | 1 | `AT YAHOO D` | `AT YAH OO D` | 24.000 | 30.000 | 22.645 | 28.680
+ span | unadjudicated/cw-2026-09-24-004205 | port | 1 | `AT YAHOO D` | `A AH I D` | 23.296 | 28.928 | 23.296 | 28.928
+ span | unadjudicated/cw-2026-09-24-004234 | ours | 1 | `OT COM <BT> THANK YOU` | `O M <BT> T HANTT ` | 4.000 | 10.000 | 2.910 | 8.740
+ span | unadjudicated/cw-2026-09-24-004234 | port | 1 | `OT COM <BT> THANK YOU` | `T T AN■U O ` | 4.992 | 14.208 | 4.992 | 14.208
+ span | unadjudicated/cw-2026-09-24-004322 | ours | 1 | `THE ARRL SPONSORED AMERICA` | `  P O N S ORED AMERICA` | 3.000 | 12.000 | 0.590 | 10.680
+ span | unadjudicated/cw-2026-09-24-004322 | ours | 2 | `OPERATION` | `OPERATION` | 17.000 | 21.500 | 15.865 | 20.430
+ span | unadjudicated/cw-2026-09-24-004322 | ours | 3 | `ALL LOGS W` | `ALL LOGS W` | 24.000 | 30.000 | 22.630 | 28.505
+ span | unadjudicated/cw-2026-09-24-004322 | port | 1 | `THE ARRL SPONSORED AMERICA` | ` OE LAA ION A` | 14.720 | 22.912 | 14.720 | 22.912
+ span | unadjudicated/cw-2026-09-24-004322 | port | 2 | `OPERATION` | `E LAA ION` | 17.280 | 20.736 | 17.280 | 20.736
+ span | unadjudicated/cw-2026-09-24-004322 | port | 3 | `ALL LOGS W` | `AA ION ` | 18.432 | 20.736 | 18.432 | 20.736
+ span | unadjudicated/cw-2026-09-24-004347 | ours | 1 | `ILL BE UPLOADED TO ARRL LOTW` | `ILL BE UPLOADED TO ARRL L OOTW` | 5.000 | 22.000 | 3.725 | 20.655
+ span | unadjudicated/cw-2026-09-24-004347 | port | 1 | `ILL BE UPLOADED TO ARRL LOTW` | `PLE TJ M RREET A NH O` | 8.448 | 25.728 | 8.448 | 25.728
+ span | unadjudicated/cw-2026-09-24-004405 | ours | 1 | `OORDIN` | `OORDIN` | 27.000 | 30.000 | 25.655 | 28.795
+ span | unadjudicated/cw-2026-09-24-004405 | port | 1 | `OORDIN` | `O D I ` | 26.752 | 28.672 | 26.752 | 28.672
+ span | unadjudicated/cw-2026-09-24-004427 | ours | 1 | `ATOR` | `ATOR` | 8.500 | 10.500 | 7.115 | 9.090
+ span | unadjudicated/cw-2026-09-24-004427 | ours | 2 | `QSL TNX` | `QSL TN` | 13.500 | 16.000 | 12.295 | 14.710
+ span | unadjudicated/cw-2026-09-24-004427 | port | 1 | `ATOR` | `INOR` | 6.400 | 9.344 | 6.400 | 9.344
+ span | unadjudicated/cw-2026-09-24-004427 | port | 2 | `QSL TNX` | `E I IN` | 5.248 | 6.912 | 5.248 | 6.912
+ span | unadjudicated/cw-2026-09-24-004510 | ours | 1 | `KA2GJV` | `KA2GJV` | 19.500 | 23.000 | 18.145 | 21.825
+ span | unadjudicated/cw-2026-09-24-004510 | ours | 2 | `AA3SB` | `AA3SB` | 26.500 | 29.000 | 25.440 | 27.840
+ span | unadjudicated/cw-2026-09-24-004510 | port | 1 | `KA2GJV` | `K■T V` | 18.432 | 22.016 | 18.432 | 22.016
+ span | unadjudicated/cw-2026-09-24-004510 | port | 2 | `AA3SB` | `UA3B` | 25.728 | 28.032 | 25.728 | 28.032
+ span | unadjudicated/cw-2026-09-24-004550 | ours | 1 | `DE KA2GJV` | `DE KA2 GJV` | 17.000 | 22.000 | 15.925 | 20.795
+ span | unadjudicated/cw-2026-09-24-004550 | port | 1 | `DE KA2GJV` | `D■2 GJV` | 16.128 | 20.992 | 16.128 | 20.992
+ span | cq-12wpm-15db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `CQ CQ CQ DE N0CALL N0CALL K` | 3.500 | 31.000 | 2.110 | 29.910
+ span | cq-12wpm-15db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `CQ CQ DE N0CALL N0CALL K` | 5.760 | 30.208 | 5.760 | 30.208
+ span | cq-12wpm-5db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `CQ CQ CQ DE N0CALL N0CALL K` | 3.500 | 31.000 | 2.110 | 29.910
+ span | cq-12wpm-5db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `■ CQ DE 0CADL N0CAL K` | 7.424 | 30.208 | 7.424 | 30.208
+ span | cq-12wpm-0db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `` | nothing covered
+ span | cq-12wpm-0db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `ME ITJ NHL 4UTT E` | 10.752 | 30.464 | 10.752 | 30.464
+ span | cq-18wpm-15db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `CQ CQ CQ DE N0CALL N0CALL K` | 3.000 | 21.500 | 1.745 | 20.280
+ span | cq-18wpm-15db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `EQ CQ DE N0CALL N0CALL K` | 4.224 | 20.608 | 4.224 | 20.608
+ span | cq-18wpm-5db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `■Q CQ CQ DE N0CALL N0CALL K` | 3.000 | 21.500 | 1.745 | 20.270
+ span | cq-18wpm-5db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `IQ DEN0CALL N0RALL K` | 6.528 | 20.608 | 6.528 | 20.608
+ span | cq-18wpm-0db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `` | nothing covered
+ span | cq-18wpm-0db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `SEBE NIE` | 7.552 | 20.736 | 7.552 | 20.736
+ span | cq-25wpm-15db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `CQ CQ CQ DE N0CALL N0CALL KK` | 3.000 | 16.372 | 1.540 | 14.890
+ span | cq-25wpm-15db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `E CQ DE N0CALL N0CALL K` | 4.224 | 15.104 | 4.224 | 15.104
+ span | cq-25wpm-5db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `CQ CQ CQ DE N0CALL N0CALL KK` | 3.000 | 16.372 | 1.540 | 14.890
+ span | cq-25wpm-5db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `E EE N0CALL 0CALL K` | 5.888 | 15.104 | 5.888 | 15.104
+ span | cq-25wpm-0db | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `` | nothing covered
+ span | cq-25wpm-0db | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `XNENHEE` | 9.344 | 15.872 | 9.344 | 15.872
+ span | cq-18wpm-15db-char5 | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `C QCQCQDEN0 C A E LN 0CAL L K` | 3.000 | 23.500 | 1.745 | 22.145
+ span | cq-18wpm-15db-char5 | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `E Q C Q D E N 0 C A L L N 0 C A L L K` | 4.352 | 22.400 | 4.352 | 22.400
+ span | cq-18wpm-5db-char5 | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `C QC Q C Q TEE T ■KTDUUEUEN 0CAL L K` | 3.000 | 23.500 | 1.745 | 22.140
+ span | cq-18wpm-5db-char5 | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `E Q D N 0 C T L L 0C A L L K E` | 6.784 | 23.168 | 6.784 | 23.168
+ span | cq-18wpm-0db-char5 | ours | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `` | nothing covered
+ span | cq-18wpm-0db-char5 | port | 1 | `CQ CQ CQ DE N0CALL N0CALL K` | `■AE<AS>` | 11.776 | 20.480 | 11.776 | 20.480
+ pitch | recording | set | ours tracked (median of measured hops) Hz | port given (instrument median) Hz | instrument windows | constructed Hz
+ pitch | unadjudicated/cw-2026-09-23-173723 | 17:37 | 585.0 | 585.9 | 29 | none: a real recording
+ pitch | cw-2026-08-17-013347 | baseline | 600.0 | 613.7 | 19 | none: a real recording
+ pitch | cw-2026-08-17-134712 | baseline | none | 501.4 | 9 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-18-003758 | baseline | 500.0 | 499.7 | 23 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-24-012403 | outside | 435.0 | 439.9 | 23 | none: a real recording
+ pitch | cw-2026-08-18-004507 | outside | 500.0 | 500.8 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-22-031838 | outside | 525.0 | 499.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-22-031905 | outside | 500.0 | 499.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-22-031948 | outside | 500.0 | 499.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-22-032012 | outside | 500.0 | 499.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-22-032050 | outside | 325.0 | 499.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-22-032113 | outside | 600.0 | 499.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-08-22-032129 | outside | none | 499.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004108 | the ten | 625.0 | 626.3 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004133 | the ten | 625.0 | 626.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004205 | the ten | 625.0 | 626.7 | 28 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004234 | the ten | 625.0 | 627.0 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004322 | the ten | 625.0 | 627.0 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004347 | the ten | 625.0 | 626.9 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004405 | the ten | 625.0 | 626.8 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004427 | the ten | 615.0 | 621.5 | 29 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004510 | the ten | 600.0 | 600.2 | 25 | none: a real recording
+ pitch | unadjudicated/cw-2026-09-24-004550 | the ten | 625.0 | 610.1 | 29 | none: a real recording
+ pitch | cq-12wpm-15db | synthetic | 615.0 | 615.0 | 30 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-12wpm-5db | synthetic | 615.0 | 615.0 | 30 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-12wpm-0db | synthetic | 625.0 | 617.3 | 15 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-18wpm-15db | synthetic | 625.0 | 615.2 | 20 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-18wpm-5db | synthetic | 620.0 | 615.1 | 20 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-18wpm-0db | synthetic | none | 617.0 | 9 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-25wpm-15db | synthetic | 615.0 | 616.6 | 15 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-25wpm-5db | synthetic | 615.0 | 616.6 | 15 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-25wpm-0db | synthetic | none | 614.4 | 5 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-18wpm-15db-char5 | synthetic | 615.0 | 615.7 | 22 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-18wpm-5db-char5 | synthetic | 620.0 | 615.7 | 22 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ pitch | cq-18wpm-0db-char5 | synthetic | none | 616.0 | 14 | 615 with 3 Hz of drift either side (CwFixtureRecipe)
+ latency | cq-18wpm-15db | put out minus the end of the character's last mark, for each character read sure and right
+ latency | decoder | key index | character | mark ends s | put out s | latency s
+ latency | ours | 0 | C | 1.733 | 3.000 | 1.267
+ latency | ours | 1 | Q | 2.800 | 4.000 | 1.200
+ latency | ours | 2 | C | 4.000 | 5.500 | 1.500
+ latency | ours | 3 | Q | 5.067 | 6.500 | 1.433
+ latency | ours | 4 | C | 6.267 | 7.500 | 1.233
+ latency | ours | 5 | Q | 7.333 | 8.500 | 1.167
+ latency | ours | 6 | D | 8.267 | 9.500 | 1.233
+ latency | ours | 7 | E | 8.533 | 10.000 | 1.467
+ latency | ours | 8 | N | 9.333 | 10.500 | 1.167
+ latency | ours | 9 | 0 | 10.800 | 12.000 | 1.200
+ latency | ours | 10 | C | 11.733 | 13.000 | 1.267
+ latency | ours | 11 | A | 12.267 | 13.500 | 1.233
+ latency | ours | 12 | L | 13.067 | 14.500 | 1.433
+ latency | ours | 13 | L | 13.867 | 15.000 | 1.133
+ latency | ours | 14 | N | 14.667 | 16.000 | 1.333
+ latency | ours | 15 | 0 | 16.133 | 17.500 | 1.367
+ latency | ours | 16 | C | 17.067 | 18.500 | 1.433
+ latency | ours | 17 | A | 17.600 | 19.000 | 1.400
+ latency | ours | 18 | L | 18.400 | 19.500 | 1.100
+ latency | ours | 19 | L | 19.200 | 20.500 | 1.300
+ latency | ours | 20 | K | 20.267 | 21.500 | 1.233
+ latency | port | 3 | Q | 5.067 | 5.376 | 0.309
+ latency | port | 4 | C | 6.267 | 6.528 | 0.261
+ latency | port | 5 | Q | 7.333 | 7.552 | 0.219
+ latency | port | 6 | D | 8.267 | 8.576 | 0.309
+ latency | port | 7 | E | 8.533 | 8.832 | 0.299
+ latency | port | 8 | N | 9.333 | 9.600 | 0.267
+ latency | port | 9 | 0 | 10.800 | 11.136 | 0.336
+ latency | port | 10 | C | 11.733 | 12.032 | 0.299
+ latency | port | 11 | A | 12.267 | 12.544 | 0.277
+ latency | port | 12 | L | 13.067 | 13.312 | 0.245
+ latency | port | 13 | L | 13.867 | 14.208 | 0.341
+ latency | port | 14 | N | 14.667 | 14.976 | 0.309
+ latency | port | 15 | 0 | 16.133 | 16.384 | 0.251
+ latency | port | 16 | C | 17.067 | 17.408 | 0.341
+ latency | port | 17 | A | 17.600 | 17.920 | 0.320
+ latency | port | 18 | L | 18.400 | 18.688 | 0.288
+ latency | port | 19 | L | 19.200 | 19.456 | 0.256
+ latency | port | 20 | K | 20.267 | 20.608 | 0.341
+ latency | cq-18wpm-15db | ours median 1.267 s over 21 | port median 0.299 s over 18
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.8622 Minutes
+RC=0 WALL=112s

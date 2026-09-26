@@ -1,0 +1,91 @@
+UNIT 458 TASK 1 - HOW OURS IS SCORED, AND WHERE FLDIGI'S TEXT ENTERS THE SAME PATH
+Read from the tree at bf9a3f59 and fldigi at 61b97f41 (.run-unit/fldigi, untracked). Nothing in src changed.
+The measured parts below (corpus, spans, pitch, latency) are the printout of
+BothDecodersAreScoredAlikeTests.TheScoringPathThePitchAndTheLatency, .run-unit/unit458-trace-t1.txt.
+
+== 1. THE CORPUS
+
+23 keyed real recordings, WhatTheStrayLettersRestOnTests.KeyedRecordings
+(tests/Hamlet.RadioEngine.Tests/Cw/WhatTheStrayLettersRestOnTests.cs:88-134), every key inferred (V-13):
+  - 17:37 (1): unadjudicated/cw-2026-09-23-173723. Key TheSeventeenThirtySevenCaptureTests.InferredKey
+    `CQ CQ CQ DE WB6RED WB6RED`, reasoned from the form of a call. Stretch: the decode from the first `CQ`
+    to the last character (CwScorer.FromFirst, CwScorer.cs:212-229), scored whole (CwScorer.Whole, :177-178).
+  - baseline and outside (12): TheAdjudicatedReadingsKeepReadingTests.All, key = the adjudicated reading.
+    Stretch: the best-fitting stretch of the decode, free ends (CwScorer.Within, CwScorer.cs:198-199).
+  - the ten (10): TheBenchmarkIsKeyedTests.Stretches(name), keys by differencing consecutive transcripts
+    (HM-DEC-171), one to three stretches each, each located by CwScorer.Within.
+12 synthetic cases, SyntheticCq.All (tests/.../Cw/Fixtures/SyntheticCq.cs:95-117), key exact:
+  `CQ CQ CQ DE N0CALL N0CALL K`, 12/18/25 WPM at 15/5/0 dB, plus 18 WPM with a 5-unit character gap at
+  the three levels. 8000 Hz, 1.0 s of band noise before the first mark, 1.5 s after (CwFixtureGenerator.cs:140-143).
+  Stretch: the whole decode, its two ends' spaces trimmed, against the whole key (SyntheticCq.Whole, :169-170,
+  as TheRequirementsAreMeasuredTests.cs:148-159 takes it).
+Condition rows: TheRequirementsAreMeasuredTests.RealCondition (:84-86) - real HF, no CH-* profile, SNR_2500
+not measured, grouped by the sender CW_SPEC.md section 10 names (TX-TIGHT, TX-ITU, TX-FARNS) or "not stated";
+SyntheticCondition (:164-174) - shaped band noise not shown to be CH-AWGN, TX-ITU or a 5-unit character gap,
+and the in-passband level. No row is a CH-* condition, and no real capture is counted toward one (7.4).
+Each recording's audio file, set, key kind, length and condition: the `corpus |` lines below. The scored span
+on the recording's clock, for each decoder: the `span |` lines below.
+
+== 2. THE SCORER'S INPUT (OUR DECODER)
+
+- The decoder hands the scorer a list of CwCharacter (src/Hamlet.RadioEngine/Cw/CwCharacter.cs:88-95), in
+  the order CharacterSettled raised them: TheRequirementsAreMeasuredTests.cs:176-194 (synthetic) and
+  TheSeventeenThirtySevenCaptureTests.cs:37-58 (real), CwDecoder from 600 Hz, fed hop by hop from sample 0.
+- Text: CwCharacter.Text. A word gap is Text == " " (CwCharacter.cs:101, MorseAlphabet.WordGap); a prosign
+  is one character, `<BT>`.
+- Class: CwSymbol.Of (tests/.../Cw/CwMetrics.cs:48-51) - WordGap if IsWordGap; Placeholder if Confidence is
+  Unreadable (text MorseAlphabet.Unreadable, U+25A0); Sure if Confidence is High; NotSure otherwise (none
+  emitted today). CwReading.Of (CwScorer.cs:24-38) carries the same split as unsure flags for the locator.
+- Time: CwCharacter.At exists (CwCharacter.cs:78, 95) and THE SPAN RULE DOES NOT USE IT. Every stretch is
+  located in the decode's TEXT: FromFirst by the first `CQ`, Within by the least-cost alignment with free ends,
+  Whole by trimming spaces. TheRequirementsAreMeasuredTests.Covered (:92-110) maps the text region back to
+  characters, and Measure (:120-135) aligns CwMetrics.Symbols(Covered(...)) against the key with
+  CwMetrics.Align (CwMetrics.cs:229-317). The four metrics are counted from that alignment
+  (Invented :322, SureErrors :349, Coverage :378, WordBoundaries :410).
+
+== 3. THE PORT'S OUTPUT
+
+- What it emits: FldigiCwDecoder.Print (src/.../Cw/Second/FldigiCwDecoder.cs:832-838), standing where
+  decode_stream calls put_rx_char (upstream cw.cxx:665-674), once per string sc the query returns:
+  * a character or prosign: morse->rx_lookup(rx_rep_buf) (cw.cxx:892), which returns the table's `prt`
+    (morse.cxx:248-250) with CW_prosign_display false, the shipped default (FldigiProgdefaults.cs:94) -
+    so a prosign prints as `<BT>`, the same form the keys use. fldigi's table includes accented letters and
+    `_`; each is printed as itself.
+  * NO MATCH: rx_lookup returns "" (morse.cxx:254), and the caller prints the CW_noise character
+    (cw.cxx:893-898): `*` with the shipped default (configuration.h:249-251; FldigiProgdefaults.cs:85).
+    `*` is not in fldigi's table (FldigiMorse.cs), so it is only ever the no-match output.
+  * a word space: " " once, after more than 4 dot lengths of silence (cw.cxx:909-914) - 456's finding that a
+    5-unit character gap reads as a word space.
+- Time: fldigi's put_rx_char carries none. The port already records one, NOT FLDIGI'S: FldigiCwEmission.InputSample
+  (FldigiCwDecoder.cs:51-65, 238-241, 615, 835-837; unit 456), the count of 8000 Hz input samples given when the
+  string was printed. It is written by the recorder and read by nothing in the receiver. No new stamp was needed
+  and none was added; src is unchanged this task.
+
+== 4. THE JOIN
+
+One place: TheRequirementsAreMeasuredTests.Measure(name, set, condition, kind, settled, scores) (:120-135), the
+call our text enters. BothDecodersAreScoredAlikeTests hands it the port's emissions as CwCharacter, mapped by
+BothDecodersAreScoredAlikeTests.Mapped (458 DECIDED (2)): " " -> word gap; `*` -> placeholder (Confidence
+Unreadable, text MorseAlphabet.Unreadable, so the locator treats it as it treats ours); every other string ->
+itself at Confidence High (sure). At = InputSample / 8000. The scores come from the same per-recording rule
+(KeyedRecordings[i].Score or SyntheticCq.Whole) applied to the port's own reading.
+What it lacks: nothing the scorer reads. The port has no span-level evidence (SpanLogLikelihoodRatio is NaN)
+and no confidence; neither enters the four metrics. One property of the scorer, not of the join: Within locates
+each stretch independently, so on a text far from its keys two stretches can land on overlapping characters
+(the port on cw-2026-09-24-004322, stretches 1 to 3, below). It is the rule ours is scored by, applied unchanged.
+
+== 5. LATENCY (one synthetic case, cq-18wpm-15db)
+
+Our characters come out of the settled pass about 1.27 s after the character's last mark ends (median over the
+21 read sure and right); the port's about 0.30 s after (median over 18). No span edge rests on a time, so this
+difference cannot move a stretch; it is reported so a reader does not mistake it for a decoding difference.
+
+== 6. THE PITCH EACH DECODER IS GIVEN
+
+Ours starts at 600 Hz and tracks its own; the figure is the median of CwToneTracker.ToneHz over the hops on
+which HasMeasuredPitch was true ("none" where it never measured one). The port is given the median of
+CwPitchInstrument's keyed windows over the whole file (as WhatTheSecondDecoderReadsFirstTests did, unit 456),
+synthetic cases included, never the construction pitch (615 Hz with 3 Hz of drift) and never our tracker's.
+Every recording had at least 5 keyed windows, so the port was run on all 35.
+
+== MEASURED
