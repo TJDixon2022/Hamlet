@@ -242,6 +242,76 @@ public sealed class WhatPitchTheDecoderIsOnTests
             $"opening | total | {beside.Count} windows keyed | MET-PITCH-ERR median {(beside.Count == 0 ? double.NaN : Median(beside.Select(b => b.ErrorHz))):+0.0;-0.0;0.0} | {beside.Count(b => Math.Abs(b.ErrorHz) > FlagHz)} windows more than 25 Hz"));
     }
 
+    /// <summary>The files task 2 found more than 25 Hz off at HEAD `0bcf2996`.</summary>
+    internal static IReadOnlyList<string> OffAtEntry { get; } = new[]
+    {
+        "unadjudicated/cw-2026-08-20-014935", "unadjudicated/cw-2026-08-22-014308",
+        "unadjudicated/cw-2026-08-22-031838", "unadjudicated/cw-2026-08-22-032129",
+        "unadjudicated/cw-2026-08-25-012823", "unadjudicated/cw-2026-08-28-005158",
+        "unadjudicated/cw-2026-08-28-005218", "unadjudicated/cw-2026-08-28-005243",
+        "unadjudicated/cw-2026-08-31-002424", "unadjudicated/cw-2026-08-31-002443",
+        "unadjudicated/cw-2026-08-31-002829",
+    };
+
+    /// <summary>
+    /// Task 3: every move of the tracker's pitch on the files more than 25 Hz off,
+    /// and what the survey's verdict held when it moved.
+    /// </summary>
+    /// <remarks>
+    /// A move is a hop on which <see cref="CwToneTracker.ToneHz"/> changed by more
+    /// than 15 Hz. The verdict is <see cref="CwToneTracker.Verdict"/> after that
+    /// hop; `_readingDb`, the level of the station last confirmed, is read by
+    /// reflection before it and written nowhere.
+    /// </remarks>
+    [Fact]
+    public void WhatTheTrackerWeighedWhereItMoved()
+    {
+        var readingField = typeof(CwToneTracker).GetField("_readingDb", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?? throw new InvalidOperationException("CwToneTracker has no field _readingDb");
+        var tally = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        _output.WriteLine("move | file | s | from Hz | to Hz | kind | candidate lift dB | separation | ratio | marks | keyed dB | reading dB before");
+
+        foreach (var name in OffAtEntry)
+        {
+            var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var hop = decoder.Tracker.HopSamples;
+            var last = decoder.Tracker.ToneHz;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                var reading = (double)readingField.GetValue(decoder.Tracker)!;
+
+                decoder.Process(new AudioChunk(at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+
+                var now = decoder.Tracker.ToneHz;
+
+                if (Math.Abs(now - last) > 15)
+                {
+                    var keyed = decoder.Tracker.Verdict.Keyed;
+                    var kind = keyed is not { } k
+                        ? "no keyed verdict (from cold, the loudest)"
+                        : double.IsNaN(k.LiftDb) ? "keyed, lift unmeasured"
+                        : k.LiftDb < CwToneSurvey.InterferenceLiftDb ? "keyed, lift under 10 dB"
+                        : "keyed, lift 10 dB or more";
+
+                    tally[kind] = tally.GetValueOrDefault(kind) + 1;
+
+                    _output.WriteLine(string.Create(Invariant,
+                        $"move | {name} | {(at + hop) / (double)audio.SampleRate:0.00} | {last:0.0} | {now:0.0} | {kind} | {keyed?.LiftDb:0.0} | {keyed?.Separation:0.00} | {keyed?.Ratio:0.00} | {keyed?.Marks} | {keyed?.KeyedDb:0.0} | {reading:0.0}"));
+                }
+
+                last = now;
+            }
+        }
+
+        foreach (var (kind, count) in tally.OrderByDescending(p => p.Value))
+        {
+            _output.WriteLine($"moves | {kind} | {count}");
+        }
+    }
+
     private static double Median(IEnumerable<double> values)
     {
         var sorted = values.Where(v => !double.IsNaN(v)).OrderBy(v => v).ToList();

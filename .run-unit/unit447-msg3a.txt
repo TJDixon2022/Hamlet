@@ -1,0 +1,21 @@
+unit447 task 3: the tracker does not move to a keyed candidate under 10 dB of lift, kept - real MET-CER-SURE 45 to 40 (4.4)
+
+CwToneTracker.ReadSurvey: after HM-DEC-095's twice-confirmation, a candidate
+outside the fine bank's reach whose measured lift is under
+CwToneSurvey.InterferenceLiftDb (10 dB, the survey's own line for band noise
+having a good moment) is not moved to. Works against HM-DEC-095's clause that
+two agreeing surveys rest on six seconds of evidence and noise does not repeat
+in the same bin: they share 2.5 s of 3, and on the 7.052 opening 525 Hz was
+admitted at 2.4 and 2.5 dB of lift at 30.04 and 30.54 s and followed, while the
+pitch instrument found the keying at 599 Hz. All 8 keyed-verdict moves on the
+11 captures more than 25 Hz off went to candidates under 10 dB of lift.
+
+R78, real inferred keys: MET-CER-SURE 45 of 419 to 40 of 433; MET-INVENTED 45
+to 40 over 473; sure-and-right 374 to 393; MET-WBE 52 to 47 over 113. Synthetic
+exact unchanged (14 of 173, 159 right, WBE 48). V-11: 35 recordings, 0 worse.
+Adjudicated 13 of 13; captures 51 of 51. Named floors: 032113 45 to 43 and
+032129 64 to 42 reported, not re-banked; 17:37 38 as at entry. MET-PITCH-ERR:
+over 25 Hz 11 to 9 captures, 304 to 256 windows; the opening at 30 to 34 s
+-74 to -76 Hz to +1.3 to -1.0. Does not key or transmit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

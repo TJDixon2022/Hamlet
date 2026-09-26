@@ -1,0 +1,12 @@
+unit447 task 3: the change's record - metrics.md before and after, the move log, an HM-REQ-091 test (4.4)
+
+metrics.md gains unit 447: every R78 item before and after b4884813 with the
+key's kind, per condition, and the MET-PITCH-ERR column. WhatPitchTheDecoderIsOn
+gains WhatTheTrackerWeighedWhereItMoved: on the 11 captures more than 25 Hz off,
+48 moves were from cold to the loudest bin with nothing confirmed and 8 went to
+a keyed candidate under 10 dB of lift. TheTrackedPitchIsChosenByKeyingTests
+names HM-REQ-091: a louder unkeyed carrier and the configured 600 Hz do not hold
+the tracker off a keyed station (green before and after), and prints task 1's
+cases through the tracker (unchanged by the change).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

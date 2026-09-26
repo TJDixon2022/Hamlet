@@ -9,6 +9,71 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 447 - the tracker does not move to a keyed candidate under 10 dB of lift, kept
+
+Step 4, 4.4, HM-REQ-091 with HM-REQ-010, 011 and 012 as guards; MET-PITCH-ERR from
+`CwPitchInstrument` (4.1, tests only, sharing no code with the tracker). The change, `b4884813`:
+in `CwToneTracker.ReadSurvey`, after HM-DEC-095's twice-confirmation, a candidate outside the fine
+bank's reach whose measured lift is under `CwToneSurvey.InterferenceLiftDb` (10 dB) is not moved
+to. It works against HM-DEC-095's clause that two agreeing surveys "rest on six seconds of
+evidence, and noise does not repeat itself in the same bin": they share 2.5 s of 3, and on the
+7.052 opening 525 Hz was admitted at 2.4 and 2.5 dB of lift at 30.04 and 30.54 s and followed,
+where the instrument found the keying at 599 Hz. On the 11 captures more than 25 Hz off at entry,
+all 8 moves the survey's keying verdict made went to a candidate under 10 dB of lift.
+
+| part of R78 | before (HEAD `0bcf2996`) | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 45 of 419, 0.1074 | 40 of 433 (35 substituted, 5 added), 0.0924 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 14 of 173, 0.0809 | unchanged |
+| MET-INVENTED, real, inferred | 45 over 473 (4 added, 41 wrong), 0.0951 | 40 over 473 (5 added, 35 wrong), 0.0846 | falls |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 14 over 252 | unchanged |
+| sure-and-right coverage, real, inferred | 374 over 473, 0.7907 | 393 over 473, 0.8309 | rises |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252, 0.6310 | holds |
+| MET-WBE, real, inferred | 52 over 113, 0.4602 | 47 over 113, 0.4159 | falls |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, four metrics | - | 0 worse; one moved, `032129` wrong-or-added 10 to 5, right 15 to 34, boundaries wrong 5 to 0 | holds |
+| MET-PITCH-ERR, instrument, 69 captures | 11 more than 25 Hz off; 304 of 1688 windows | 9; 256 of 1688 windows | falls |
+| capture rows | 51 of 51 | 51 of 51 | hold |
+| named floors | 12 of 13, 17:37 at 38 | 10 of 13; `032113` 45 to 43, `032129` 64 to 42, 17:37 at 38 | reported, not re-banked |
+
+Per condition, key's kind beside each, before -> after, with MET-PITCH-ERR (median over the
+condition's captures of tracker less instrument, instrument windows only). Real, sender not stated
+(20 recordings), inferred: MET-CER-SURE 45 of 357, 0.1261 -> 40 of 371, 0.1078; MET-WBE 45 of 97 ->
+40 of 97. TX-FARNS, TX-ITU and TX-TIGHT, inferred: 0 of 43, 0 of 13 and 0 of 6, and MET-WBE 7 of 11,
+0 of 4 and 0 of 1 -> the same. Every synthetic condition, exact: unchanged on all four metrics,
+and task 1's 30 cases through the tracker print the same before and after.
+
+MET-PITCH-ERR per capture that moved (tracker less instrument, median over its keyed windows;
+windows more than 25 Hz off):
+
+| capture | before | after |
+|---|---|---|
+| `08-22-032129` | +150.1, 17 of 29 | +0.1, 1 of 29 |
+| `08-28-005051` | +4.2, 5 of 26 | +4.4, 3 of 26 |
+| `08-28-005158` | -34.1, 12 of 17 | -34.1, 11 of 17 |
+| `08-28-005218` | +150.7, 28 of 29 | -32.2, 16 of 29 |
+| `08-31-002424` | -86.8, 6 of 6 | +38.2, 6 of 6 (the tracker stays at the configured 600) |
+| `08-31-002443` | -86.3, 7 of 7 | +38.7, 7 of 7 (the same) |
+| `08-31-002829` | +183.6, 17 of 29 | +7.5, 0 of 29 |
+| the 7.052 opening, spliced | -1.7, 14 of 154; 30 to 34 s -73.7, -74.7, -76.0 | -1.5, 14 of 154; 30 to 34 s +1.3, +0.3, -1.0 |
+
+On the opening the tracker now holds 625 at 45 to 49 s where it held 575; the instrument finds
+599 to 600 there, so those three windows go from -24.2, -24.9, -25.0 to +25.8, +25.1, +25.0.
+
+Texts that changed (every recording's, `.run-unit/unit447-text-change.sorted.txt` against
+`unit447-text-before.sorted.txt`):
+
+| recording | key | before | after |
+|---|---|---|---|
+| `032129` | inferred | `■ MTMTJ26 PGOPAGATION E EE [E]IIEE I [E] EE [I]EEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI` | `■ MTMTJ26 PGOPAGATION FORECAST BUAELETIN ARLP034` |
+| `032113` | inferred, outside its scored stretch | `... 200J6 I I I TT E EI EEEEI I E E` | `... 200J6 I I I TT E E I I I WE T I` |
+| `003919` | none | `EITEETNXNIK EANQNID EANQNIK` | `EITEETNXNIK EANQNID EANQNIK E` |
+| 7.052 opening, spliced, 30 to 46.2 s | none | `UIEH EE E E T I <HH> EA N ■IK` | `EANQNID EAN■IK` |
+
+**Kept.** Every R78 metric holds or improves, real and synthetic, and V-11 holds; the real
+movement is one recording, `032129`, against an inferred key (V-13). The named floors of `032113`
+and `032129` fall and are reported with their text, not re-banked (R78, 443's DECIDED (3)).
+
 ## Unit 446 - the speed search runs 5 to 45 WPM, not kept
 
 Step 5, 5.1, HM-REQ-030 with HM-REQ-010, 011 and 012 as guards. The trace

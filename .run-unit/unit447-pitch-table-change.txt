@@ -1,0 +1,88 @@
+capture | file | tracker Hz (median over keyed windows) | instrument Hz (median) | MET-PITCH-ERR Hz (median of tracker less instrument) | worst window Hz | windows more than 25 Hz off | flag
+capture | unadjudicated/cw-2026-08-20-014935 | tracker 625.0 | instrument 580.0 | MET-PITCH-ERR +45.0 | worst 174.7 | 8 of 10 windows >25 | >25
+capture | unadjudicated/cw-2026-08-22-014308 | tracker 575.0 | instrument 607.2 | MET-PITCH-ERR -32.2 | worst 158.1 | 16 of 22 windows >25 | >25
+capture | unadjudicated/cw-2026-08-22-031838 | tracker 525.0 | instrument 499.9 | MET-PITCH-ERR +25.1 | worst 100.1 | 21 of 29 windows >25 | >25
+capture | unadjudicated/cw-2026-08-25-012823 | tracker 450.0 | instrument 500.3 | MET-PITCH-ERR -49.2 | worst 199.5 | 18 of 27 windows >25 | >25
+capture | unadjudicated/cw-2026-08-28-005158 | tracker 575.0 | instrument 607.4 | MET-PITCH-ERR -34.1 | worst 199.2 | 11 of 17 windows >25 | >25
+capture | unadjudicated/cw-2026-08-28-005218 | tracker 575.0 | instrument 607.8 | MET-PITCH-ERR -32.2 | worst 38.0 | 16 of 29 windows >25 | >25
+capture | unadjudicated/cw-2026-08-28-005243 | tracker 575.0 | instrument 607.2 | MET-PITCH-ERR -32.1 | worst 38.2 | 15 of 29 windows >25 | >25
+capture | unadjudicated/cw-2026-08-31-002424 | tracker 600.0 | instrument 561.8 | MET-PITCH-ERR +38.2 | worst 293.2 | 6 of 6 windows >25 | >25
+capture | unadjudicated/cw-2026-08-31-002443 | tracker 600.0 | instrument 561.3 | MET-PITCH-ERR +38.7 | worst 293.2 | 7 of 7 windows >25 | >25
+capture | cw-2026-08-17-134712 | tracker 500.0 | instrument 501.4 | MET-PITCH-ERR -0.8 | worst 98.6 | 2 of 9 windows >25 | windows >25
+capture | cw-2026-08-18-004507 | tracker 500.0 | instrument 500.8 | MET-PITCH-ERR -0.8 | worst 99.3 | 2 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-18-003016 | tracker 670.0 | instrument 668.7 | MET-PITCH-ERR +1.3 | worst 68.3 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-18-003126 | tracker 670.0 | instrument 669.1 | MET-PITCH-ERR +0.9 | worst 69.0 | 2 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-18-003758 | tracker 500.0 | instrument 499.7 | MET-PITCH-ERR +0.3 | worst 103.2 | 1 of 23 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-20-014854 | tracker 600.0 | instrument 606.7 | MET-PITCH-ERR -6.5 | worst 69.2 | 3 of 22 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-22-014113 | tracker 600.0 | instrument 607.0 | MET-PITCH-ERR -6.5 | worst 137.3 | 7 of 23 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-22-031905 | tracker 500.0 | instrument 499.9 | MET-PITCH-ERR +0.1 | worst 199.9 | 9 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-22-031948 | tracker 500.0 | instrument 499.9 | MET-PITCH-ERR +0.1 | worst 100.1 | 2 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-22-032012 | tracker 500.0 | instrument 499.9 | MET-PITCH-ERR +0.1 | worst 100.1 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-22-032050 | tracker 500.0 | instrument 499.9 | MET-PITCH-ERR +0.1 | worst 174.9 | 7 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-22-032113 | tracker 500.0 | instrument 499.9 | MET-PITCH-ERR +0.1 | worst 100.1 | 9 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-22-032129 | tracker 500.0 | instrument 499.9 | MET-PITCH-ERR +0.1 | worst 100.0 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-23-001831 | tracker 525.0 | instrument 526.9 | MET-PITCH-ERR -1.9 | worst 268.0 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-23-001952 | tracker 525.0 | instrument 520.2 | MET-PITCH-ERR +4.4 | worst 254.7 | 12 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-23-002016 | tracker 525.0 | instrument 520.4 | MET-PITCH-ERR +4.3 | worst 150.2 | 11 of 26 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-24-012403 | tracker 450.0 | instrument 439.9 | MET-PITCH-ERR +9.9 | worst 60.0 | 1 of 23 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-011552 | tracker 500.0 | instrument 500.3 | MET-PITCH-ERR -0.3 | worst 99.8 | 2 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-012748 | tracker 400.0 | instrument 400.8 | MET-PITCH-ERR +2.0 | worst 196.8 | 4 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-012922 | tracker 500.0 | instrument 492.2 | MET-PITCH-ERR +7.7 | worst 108.8 | 1 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-013010 | tracker 500.0 | instrument 501.4 | MET-PITCH-ERR -1.4 | worst 98.0 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-013150 | tracker 500.0 | instrument 501.5 | MET-PITCH-ERR -1.2 | worst 62.9 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-013303 | tracker 500.0 | instrument 501.3 | MET-PITCH-ERR -1.3 | worst 99.0 | 2 of 27 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-013402 | tracker 540.0 | instrument 536.5 | MET-PITCH-ERR +3.4 | worst 63.2 | 2 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-013520 | tracker 540.0 | instrument 536.1 | MET-PITCH-ERR +3.7 | worst 64.8 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-013637 | tracker 525.0 | instrument 535.5 | MET-PITCH-ERR -10.3 | worst 63.8 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-021410 | tracker 540.0 | instrument 540.7 | MET-PITCH-ERR -2.7 | worst 59.4 | 1 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-021629 | tracker 500.0 | instrument 504.6 | MET-PITCH-ERR -4.6 | worst 95.2 | 1 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-25-021825 | tracker 400.0 | instrument 393.8 | MET-PITCH-ERR +6.1 | worst 146.7 | 2 of 13 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-26-125941 | tracker 400.0 | instrument 403.1 | MET-PITCH-ERR -2.4 | worst 96.7 | 1 of 14 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-28-004844 | tracker 425.0 | instrument 429.4 | MET-PITCH-ERR -2.2 | worst 169.8 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-28-004902 | tracker 427.5 | instrument 429.6 | MET-PITCH-ERR -0.8 | worst 170.8 | 2 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-28-004915 | tracker 430.0 | instrument 429.9 | MET-PITCH-ERR -0.3 | worst 169.3 | 1 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-28-005051 | tracker 450.0 | instrument 449.6 | MET-PITCH-ERR +4.4 | worst 124.5 | 3 of 26 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-31-002734 | tracker 600.0 | instrument 607.0 | MET-PITCH-ERR -5.6 | worst 185.0 | 2 of 19 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-31-002759 | tracker 600.0 | instrument 610.1 | MET-PITCH-ERR -9.7 | worst 183.5 | 1 of 25 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-31-003212 | tracker 600.0 | instrument 587.8 | MET-PITCH-ERR +3.7 | worst 217.1 | 6 of 20 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-31-003229 | tracker 575.0 | instrument 585.3 | MET-PITCH-ERR -10.2 | worst 239.9 | 7 of 23 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-31-003408 | tracker 600.0 | instrument 601.9 | MET-PITCH-ERR -1.0 | worst 237.7 | 4 of 26 windows >25 | windows >25
+capture | unadjudicated/cw-2026-08-31-003419 | tracker 600.0 | instrument 613.3 | MET-PITCH-ERR -1.1 | worst 83.6 | 3 of 23 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004027 | tracker 600.0 | instrument 600.3 | MET-PITCH-ERR -0.3 | worst 27.1 | 1 of 26 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004108 | tracker 625.0 | instrument 626.3 | MET-PITCH-ERR -1.3 | worst 28.0 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004133 | tracker 625.0 | instrument 626.9 | MET-PITCH-ERR -1.7 | worst 25.6 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004205 | tracker 625.0 | instrument 626.6 | MET-PITCH-ERR -1.6 | worst 26.3 | 1 of 28 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004234 | tracker 625.0 | instrument 627.0 | MET-PITCH-ERR -1.8 | worst 28.7 | 3 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004322 | tracker 625.0 | instrument 627.0 | MET-PITCH-ERR -2.1 | worst 27.3 | 2 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004347 | tracker 625.0 | instrument 626.9 | MET-PITCH-ERR -2.0 | worst 26.5 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004405 | tracker 625.0 | instrument 626.8 | MET-PITCH-ERR -1.8 | worst 26.3 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004427 | tracker 615.0 | instrument 621.5 | MET-PITCH-ERR -1.8 | worst 27.1 | 3 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004535 | tracker 600.0 | instrument 599.7 | MET-PITCH-ERR -0.8 | worst 28.0 | 1 of 29 windows >25 | windows >25
+capture | unadjudicated/cw-2026-09-24-004550 | tracker 610.0 | instrument 610.1 | MET-PITCH-ERR -0.4 | worst 25.5 | 1 of 29 windows >25 | windows >25
+capture | cw-2026-08-17-013347 | tracker 600.0 | instrument 613.7 | MET-PITCH-ERR -12.7 | worst 18.0 | 0 of 19 windows >25 | -
+capture | cw-2026-08-17-013622 | tracker 600.0 | instrument 612.5 | MET-PITCH-ERR -12.2 | worst 13.8 | 0 of 14 windows >25 | -
+capture | unadjudicated/cw-2026-08-23-001520 | tracker 600.0 | instrument 600.0 | MET-PITCH-ERR 0.0 | worst 0.0 | 0 of 26 windows >25 | -
+capture | unadjudicated/cw-2026-08-31-002829 | tracker 625.0 | instrument 612.5 | MET-PITCH-ERR +7.5 | worst 19.3 | 0 of 29 windows >25 | -
+capture | unadjudicated/cw-2026-09-23-125515 | tracker 622.5 | instrument 618.7 | MET-PITCH-ERR +3.3 | worst 18.6 | 0 of 6 windows >25 | -
+capture | unadjudicated/cw-2026-09-23-173723 | tracker 585.0 | instrument 585.9 | MET-PITCH-ERR -0.9 | worst 14.2 | 0 of 29 windows >25 | -
+capture | unadjudicated/cw-2026-09-24-003901 | tracker 600.0 | instrument 599.6 | MET-PITCH-ERR +0.4 | worst 1.5 | 0 of 5 windows >25 | -
+capture | unadjudicated/cw-2026-09-24-003919 | tracker 600.0 | instrument 599.7 | MET-PITCH-ERR +0.3 | worst 2.8 | 0 of 13 windows >25 | -
+capture | unadjudicated/cw-2026-09-24-004510 | tracker 600.0 | instrument 600.2 | MET-PITCH-ERR -0.7 | worst 9.3 | 0 of 25 windows >25 | -
+absent | cw-2026-09-24-135641 | not in the tree, unmeasured
+absent | cw-2026-09-24-152135 | not in the tree, unmeasured
+total | 69 captures in the tree | 69 with keying found | 0 with none | 9 with MET-PITCH-ERR more than 25 Hz | 60 with any window more than 25 Hz | 256 of 1688 windows more than 25 Hz
+join | cw-2026-09-24-003901 | stream 0.00 to 30.00 s | skip 0.000 s | first
+join | cw-2026-09-24-003919 | stream 30.00 to 46.20 s | skip 13.800 s | holds 30.54 s | overlap found at 16.200 s into the one before, audioSeen said 16.200 s; 13.800 s dropped, 662400 of 662400 samples identical
+join | cw-2026-09-24-004027 | stream 46.20 to 76.20 s | skip 0.000 s | no overlap on audioSeen: 36.61 s never kept before it, a jump
+join | cw-2026-09-24-004108 | stream 76.20 to 106.20 s | skip 0.000 s | no overlap on audioSeen: 10.83 s never kept before it, a jump
+join | cw-2026-09-24-004133 | stream 106.20 to 131.43 s | skip 4.770 s | overlap found at 25.230 s into the one before, audioSeen said 25.230 s; 4.770 s dropped, 228960 of 228960 samples identical
+join | cw-2026-09-24-004205 | stream 131.43 to 161.43 s | skip 0.000 s | no overlap on audioSeen: 1.60 s never kept before it, a jump
+join | cw-2026-09-24-004234 | stream 161.43 to 190.73 s | skip 0.700 s | overlap found at 29.300 s into the one before, audioSeen said 29.300 s; 0.700 s dropped, 33600 of 33600 samples identical
+opening | at 30.54 s | window 29 to 31 s | instrument 607.8 | tracker 600.0 | mix 600.0 | err -7.8
+opening | at 30.54 s | window 30 to 32 s | instrument 598.7 | tracker 600.0 | mix 600.0 | err +1.3
+opening | characters 0 to 46.2 s, text@seconds/tracker Hz/class | E@20.6/600/Sure I@21.1/600/Sure I@21.5/600/Sure E@21.8/600/Sure T@22.2/600/Sure N@22.6/600/Sure H@23.3/600/Sure H@24.0/600/Sure K@24.7/600/Sure E@30.6/600/Sure A@31.1/600/Sure N@31.5/600/Sure Q@32.3/600/Sure N@32.7/600/Sure I@33.0/600/Sure D@33.5/600/Sure E@39.8/625/Sure A@40.2/625/Sure N@40.7/625/Sure ■@41.8/625/Placeholder I@42.1/625/Sure K@42.7/625/Sure
+opening | first sure character | E at 20.64 s, tracker 600.0, mix 600.0
+opening | text 0 to 46.2 s | EII E T NHHK         EANQNID          EAN■IK
+opening | text 30 to 46.2 s | EANQNID          EAN■IK
+opening | text, whole stream | EII E T NHHK         EANQNID          EAN■IK      QNE KK   E  E  2 G ■ 2G KA2GJV QNK CAT WWI2TN HRK 5 I HRHCE Q  HR NA 2 0 R H X G K E 8 W GK 2 6 STM W OH SEP19 E CHARD D 2UGEL  K 0 D G AT 5 0 0 5 H ■ 8 ■ ■ EM MAHA NE 6 8135 ■ EMIRR R J U G E L AT Y A H OO DOT COM<BT> THANK YOU FOR ON HYPHEN UIR QSO WITH W
+opening | total | 154 windows keyed | MET-PITCH-ERR median -1.5 | 14 windows more than 25 Hz
