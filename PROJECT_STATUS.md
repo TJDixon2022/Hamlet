@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 453 - the words the owner named
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T12:04:50-04:00
-NOTE: Entry done: numbers as 452 left them, text identical; next each named span measured and every mark and gap under it traced
+UPDATED: 2026-09-26T12:18:44-04:00
+NOTE: Task 1 done: 0 of 3 measurable spans met, WEEKEND and THINKING not in 021410's audio, 6.5 ticked; next choosing whether any cause is movable outside the excluded routes
 
 ---
 

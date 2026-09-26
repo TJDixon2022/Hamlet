@@ -9,6 +9,59 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 453 - HM-REQ-084 measured on its named spans (6.5)
+
+HM-REQ-084: "On the acceptance spans named in DEV_ANALYSIS_2026-08-27 §4, the decoder shall emit
+`WEEKEND`, `THINKING`, `FLEX`, `ABOVE`, `BREEZE` and `USED TO USE A FIRM`." Truth grade **inferred**
+(V-13): the six words are the only key, nobody wrote down what was sent, and they are a judging
+key only, never a decoder input (R72). At HEAD `ed4ec1ee`, which decodes as `0659ed8a` did.
+Printed by `WhatTheNamedWordsReadTests` (asserts nothing); printout
+`.run-unit/unit453-span-trace.txt`. A span is a stretch of audio fixed on the recording's clock;
+`met` is the word with a boundary each side, none inside, every letter sure. Distance is the edit
+distance between the span's text with its edge boundaries and ` WORD `, spaces counted.
+
+| word | recording | span | the operator reads (every letter's class) | result | distance | DEV_ANALYSIS §4 recorded |
+|---|---|---|---|---|---|---|
+| `ABOVE` | `unadjudicated/cw-2026-08-25-013637` | 9.40 to 11.50 s | `AB OVE` (all sure) | not met | 1 | `AB OVE` |
+| `BREEZE` | same | 20.30 to 22.47 s | `BR EEZE` (all sure) | not met | 1 | `BREE Z E` |
+| `FLEX` | `unadjudicated/cw-2026-08-25-021410` | 22.25 to 24.97 s | `FLENT` (all sure) | not met | 2 | `FLENX` |
+| `WEEKEND` | same | - | **not measurable here - the span is not in the recording's audio** | not measurable here | - | `ATEEKEND` |
+| `THINKING` | same | - | **not measurable here - the span is not in the recording's audio** | not measurable here | - | `TTHINKING` |
+| `USED TO USE A FIRM` | `011447` / `011514` | - | **not measurable here - recording not in the tree** (never committed) | not measurable here | - | `USEDTOUSEAFIRM` |
+
+**0 of 3 measurable spans met at HEAD; 3 not measurable here.** Every letter over the three spans
+is sure and right except `FLEX`'s X, which reads as a sure `N` and a sure `T`.
+
+**Why `WEEKEND` and `THINKING` are not in `021410`.** The file is the last 30.0 s the application
+held. Its sidecar's `text` line covers "everything read since the decoder started listening, about a
+minute ago", and `inThis` credits 37 characters to this file's audio. `THINKING` stands 47 characters
+back from that line's end, and `WEEKEND` 60. The file's envelope holds nothing at the sender's
+level before 2.175 s (the loudest hop 7.4 dB under the sender's peak, noise between -30 and -57
+dB). The first keying is `A` (.-), then a 2.2 s pause, then `TUBE XMT R HIHI DT RIGHR IS FLEX 66O...`,
+hand-read from the half-amplitude marks against Morse (judging only). That is the tail of
+2026-08-25's line from the `A` after `NG` (`A ■ AUBE XMT R HIHI DT ■RIGHR IS ■ FLENX 66O`).
+**021410 does not read less today than it did. The two words were never in the file.**
+
+**The departures, per span, first place the read leaves the word's own Morse** (half-amplitude
+marks and gaps, units of the unit in force):
+
+| span | first departure | kind | in force |
+|---|---|---|---|
+| `ABOVE` | B-to-O letter gap, 215 ms (6.81 u of 32 ms; 5.4 u of the sender's 40), read as a word gap | gap misread, letter read as word | settled in read 18 at 38.0 WPM, speed Hypothesis, unit from the grid; held gaps 23/104/162 ms, relabel 159 ms from this read's character gap 104 ms x 1.53; the path's gap 220 ms. The sender's word gap after `ABOVE`'s E is **185 ms**, shorter than this letter gap |
+| `BREEZE` | R-to-E letter gap, 180 ms (4.50 u of 40 ms), read as a word gap | gap misread, letter read as word | settled in read 40 at 30.0 WPM, speed Hypothesis; held gaps 24/112/224 ms from read 29, word-from 159 ms, no character gap measured, so the relabel's boundary is 159 ms; the path's gap 180 ms. E-to-Z (180 ms) and Z-to-E (190 ms) settled in later reads at a 244 ms boundary and are letter gaps |
+| `FLEX` | the X's third mark, a dit of 25 ms (0.37 u of 68 ms) at 24.645 s, not read as a mark | mark misread (lost) | 17.8 WPM, speed Proved; pitch 540 Hz, Proved. The X's key-ups are filled to -26 to -33 dB against the sender's -21 dB, so its two inner dits stand about 7 to 10 dB over them (35 and 25 ms at half amplitude, against 75 ms dits elsewhere in the word) |
+
+**Groups:** gap misread, a letter gap read as a word gap: 2 (`ABOVE`, `BREEZE`). Mark misread: 1
+(`FLEX`). Nothing emitted: 0.
+
+**Gap clusters at HEAD, against DEV_ANALYSIS §4** (three heaps on logs, as the estimator takes
+them):
+- `021410`: 51 / 236 / 1122 ms at the estimator's level over the whole recording, and 56 / 216 /
+  709 ms at half amplitude, at 18.5 WPM. §4 had 53 / 221 / 913 ms at 18.2 WPM.
+- `013637`: 23 / 119 / 710 ms at the estimator's level, and 32 / 135 / 382 ms at half amplitude, at
+  30.0 WPM. §4 had 24 / 28 / 171 ms at 30.6 WPM. **At HEAD the element and character heaps are 96
+  to 103 ms apart, not 4.**
+
 ## Unit 452 - MET-WBE per condition, HM-REQ-080 and 081 measured (6.3)
 
 MET-WBE = word gaps inserted or deleted / words sent (`CW_SPEC.md` 11), scored by
