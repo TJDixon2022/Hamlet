@@ -1,0 +1,16 @@
+unit460 task 0: entry at step 2 - every figure as at 459's exit, named 10 of 13 with 17:37 38 of 46, 032113 43 of 45 and 032129 42 of 64 red as recorded, texts saved (2.5)
+
+Build 0 errors in 18 s; engine line 178 of 178 in 382 s; app line 275 of
+278 in 165 s, all three losses "You've caused dispatcher loop"
+(ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed and
+two TheStopIsAlwaysOnScreenTests cases), the one rerun under DECIDED (7)
+278 of 278 in 162 s. Captures 51 of 51; adjudicated 13 of 13; named 10 of
+13 as recorded. Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33
+over 473, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over
+113. Synthetic, exact: 14 of 173, 14 over 252, 159 over 252, 44 (13, 31)
+over 84. Our 126 text lines saved, byte-identical to 459's exit and to
+453's before. Version 1.13.146 to 1.13.147. The runner's writes committed
+as they were; there is no .run-unit/watched.rc in the tree.
+.run-unit/fldigi not staged. SESSION.lock is the launcher's and not staged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

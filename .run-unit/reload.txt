@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-26T17:31:01-04:00  root C:\Source\HamLet
+measured 2026-09-26T19:02:06-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -21,7 +21,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 19109b51
+  HEAD   : 1f1c915d
   uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -419,13 +419,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  16 lines, 2600 bytes
+  16 lines, 2606 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 2
-  WORK_INSTRUCTION: 458 - both decoders on the same audio, the same scorer and one parity table
-  HEARTBEAT: 2026-09-26 17:30:58
+  WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decoder, judged under R78
+  HEARTBEAT: 2026-09-26 19:02:03
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -438,7 +438,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
   --- PHASE_OUTCOME.md ---
-  590 lines, 119471 bytes
+  621 lines, 126265 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -1029,6 +1029,37 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: The report backs 9.2 with evidence, 23 keyed recordings and 12 synthetic cases read by both decoders and passed through the same Measure and CwMetrics calls, sameness watched failing at 01b6a651 and then green 5 of 5, and parity.md giving the four metrics per recording and per condition with the key's kind and the mapping stated, but 9.4 to 9.8 are still open so the step is not done.
   ADVANCED: yes
   ATTEMPT: 9.2 | unit 5 launched 2026-09-26T20:22:18.127Z | yes | executed | score FldigiCwDecoder and our decoder on the same audio of every keyed recording and the synthetic set through the same CwMetrics calls, sameness of our row watched failing first, map the port's unclassed characters to sure and its no-match output to placeholder, and table MET-CER-SURE MET-INVENTED coverage and MET-WBE per recording and per condition in parity.md
+  
+  ## UNIT 459 - STEP 9
+  
+  STEP: 9
+  APPROACH: trace every sure letter ours prints wrong where the fldigi port reads it right, classify the lost element as never keyed, spiked, misclassed or cut by a gap or speed rule, then build the port mechanism behind the largest group into our decoder in its own commit, kept under R78, the port untouched
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 9 line 9.4 (HM-REQ-129) is step 9's first open line and the one that changes what the operator reads, aimed at HM-REQ-010's sure-but-wrong letters with evidence 9.3 put in the tree. No approach has been recorded against it and the loop test finds none. Step 2 cannot flip a line this pass: 2.4's count is 0 after 449's kept change, and 2.5 is held by 443's DECIDED (3).
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 9 is worked instead of the launcher's step 2, on the plan's section 5 independence of steps and 9.4 being the next open line of the preferred step; (2) the technique is chosen by task 1's trace, the port mechanism behind the largest group of lost elements, and not by the report's six print-less wins, which no technique is taken to reproduce; (3) the keep rule is R78 with MET-WBE not rising, the synthetic set not worse, adjudicated 13 of 13 or moved onto their own text, and V-11 per recording on the four metrics, and 9.4 is ticked only on a kept change; (4) if the first technique is refused, a second from a different group is the drop candidate, and a second technique is never stacked on a kept one in the same unit; (5) 458's DECIDED (2) mapping and 456's DECIDED (2) to (5) stand, and parity.md is re-run with the port's row unchanged; (6) the app line's headless dispatcher-loop loss: if the one rerun also loses a test, each lost type is run alone and must pass, and the report names them; (7) 457's section 4 items 1 and 2 and 458's items 2 to 5 are logged, not chased, and a kept change here is reported as bearing on step 2's MET-CER-SURE without ticking any step 2 line.
+  LICENCE: PHASE_PLAN.md step 9 line 9.4 and sections 5 and 6; CW_REQUIREMENTS.md section M HM-REQ-122 and 129, section B HM-REQ-010 and 012, HM-REQ-004; CW_SPEC.md metric definitions; R66, R72, R75, R76, R77, R78, R80, R84, R85; arbiter rulings 443 DECIDED (3), 448 DECIDED (6), 456 DECIDED (2) to (5), 458 DECIDED (2); V-04, V-11, V-13, V-14; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5; GPL-3
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 9 criterion 4
+  RUN: session launched with SESSION.lock already present (PID 16540, 17:33:59); the lock is the launcher's and was not taken or released by the session.
+  
+  ## UNIT 6 - STEP 9
+  
+  STEP: 9
+  APPROACH: trace every sure letter ours prints wrong where the fldigi port reads it right, classify the lost element as never keyed, spiked, misclassed or cut by a gap or speed rule, then build the port mechanism behind the largest group into our decoder in its own commit, kept under R78, the port untouched
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The five items cover a red test left in the tree, what the next author should try, a measured lever, a list mismatch and a source note, and none of them asks the owner to decide anything about keying or transmit or about what the product states to the operator.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 9 line 9.4 (HM-REQ-129) is step 9's first open line and the one that changes what the operator reads, aimed at HM-REQ-010's sure-but-wrong letters with evidence 9.3 put in the tree. No approach has been recorded against it and the loop test finds none. Step 2 cannot flip a line this pass: 2.4's count is 0 after 449's kept change, and 2.5 is held by 443's DECIDED (3).
+  DECIDED: author's, overrulable - (1) step 9 is worked instead of the launcher's step 2, on the plan's section 5 independence of steps and 9.4 being the next open line of the preferred step; (2) the technique is chosen by task 1's trace, the port mechanism behind the largest group of lost elements, and not by the report's six print-less wins, which no technique is taken to reproduce; (3) the keep rule is R78 with MET-WBE not rising, the synthetic set not worse, adjudicated 13 of 13 or moved onto their own text, and V-11 per recording on the four metrics, and 9.4 is ticked only on a kept change; (4) if the first technique is refused, a second from a different group is the drop candidate, and a second technique is never stacked on a kept one in the same unit; (5) 458's DECIDED (2) mapping and 456's DECIDED (2) to (5) stand, and parity.md is re-run with the port's row unchanged; (6) the app line's headless dispatcher-loop loss: if the one rerun also loses a test, each lost type is run alone and must pass, and the report names them; (7) 457's section 4 items 1 and 2 and 458's items 2 to 5 are logged, not chased, and a kept change here is reported as bearing on step 2's MET-CER-SURE without ticking any step 2 line.
+  LICENCE: PHASE_PLAN.md step 9 line 9.4 and sections 5 and 6; CW_REQUIREMENTS.md section M HM-REQ-122 and 129, section B HM-REQ-010 and 012, HM-REQ-004; CW_SPEC.md metric definitions; R66, R72, R75, R76, R77, R78, R80, R84, R85; arbiter rulings 443 DECIDED (3), 448 DECIDED (6), 456 DECIDED (2) to (5), 458 DECIDED (2); V-04, V-11, V-13, V-14; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5; GPL-3
+  COST: 11.680058000000004
+  ACCOMPLISHED: Hamlet's own decoder borrows one proven piece of fldigi's receiver, the one that keeps the dits and dahs ours drops, so letters like the R and D of WB6RED or the 2 of a propagation bulletin stop printing confidently wrong, with fldigi's copy left untouched as the reference
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: 9.1, 9.2 and 9.3 were already ticked, and this unit met none of 9.4 to 9.8. Its one technique for 9.4, fldigi's pair speed tracking from cw.cxx 524-535 and 831-843, was refused under R78 and reverted, because the adjudicated 031948 reading broke, V-11 found 004507, 031948 and 032050 worse, and three floors fell. The report shows the port byte-identical and git diff 1fcb0376 over src empty, so the trace and the red test are left behind but no criterion was met.
+  ADVANCED: no
+  ATTEMPT: 9.4 | unit 6 launched 2026-09-26T21:33:57.611Z | no | executed | trace every sure letter ours prints wrong where the fldigi port reads it right, classify the lost element as never keyed, spiked, misclassed or cut by a gap or speed rule, then build the port mechanism behind the largest group into our decoder in its own commit, kept under R78, the port untouched
+  REASON: 9.4 | unit 6 launched 2026-09-26T21:33:57.611Z | the unit ran to completion and the criterion did not flip from unmet to met
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -1051,17 +1082,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 763 bytes
+  19 lines, 790 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 4 of 4
-  WORK_INSTRUCTION: 458 - both decoders on the same audio, the same scorer and one parity table
+  WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decoder, judged under R78
   BALL: code
   NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-26T17:29:26-04:00
-  NOTE: Unit 458 done: both decoders tabled in parity.md (real CER-SURE ours 33/436, port 62/239), 9.2 and 9.3 ticked, text byte-identical - output.md written
+  UPDATED: 2026-09-26T19:00:48-04:00
+  NOTE: Unit 459 done: pair speed from fldigi refused under R78 (real CER-SURE 33 to 25 but 031948 adjudicated broke, 3 recordings worse) and reverted; 9.4 open; output.md written
   
   ---
   

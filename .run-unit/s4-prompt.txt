@@ -59,53 +59,28 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Nothing blocks the next step. Five items are recorded, most-consequential first.
-
-1. **The mapping of the port's output (458 DECIDED (2), the author's, overrulable). Applied, not
-   blocking.**
-   - **Ruling as applied:**
-     - every non-space character the port prints is sure;
-     - `*` is a placeholder;
-     - spaces are word boundaries.
-   - **Reasoning:** fldigi shows every character alike, and an operator reads each as asserted.
-     Mapping to dim would hide its errors from MET-CER-SURE.
-   - **Rejected:** mapping the port's characters to dim, or to anything but themselves.
-   - **If overruled:** the port's MET-CER-SURE, MET-INVENTED and coverage columns change. Ours do
-     not. It bears on 9.5, where the port first gets a confidence.
-2. **The reading on which 9.3 was ticked. Recorded, not blocking.**
-   - **Ruling as applied:** "names from its source what it does differently on that stretch" is
-     met by naming the `cw.cxx` lines behind each difference. That naming comes from the aligned
-     texts and the decoders' own evidence printed beside each departure: our pattern and speed,
-     and the port's representation, speed and `two_dots`.
-   - **Reasoning:** the evidence identifies the class of difference on each stretch, such as an
-     element lost, a speed off or a gap rule. The criterion asks for the source, not a trace.
-   - **Rejected:** a sample-by-sample trace of all 13 in this unit, which would have been 13 units
-     of 457's task 2.
-   - **If overruled:** 9.3 returns to open with 13 of 13 printed, and the traces become the next
-     unit's work before 9.4.
-3. **A scorer property the port's text exposes. Recorded in `parity.md` part 5.**
-   - **What happened:** `CwScorer.Within` locates each stretch independently with free ends. On a
-     text far from its keys, two stretches can land on overlapping characters, as with the port's
-     three stretches on 004322.
-   - **Ruling as applied:** left as it is, because it is the rule ours is scored by and the scorer
-     is not this unit's to change. The table is as tabled.
-   - **Effect:** it can only flatter or penalise the port on the ten's multi-stretch rows. Ours has
-     no overlap.
-4. **The app line at entry lost tests on both runs. Housekeeping.**
-   - **What happened:** 3, then 1, each to the headless dispatcher loop. DECIDED (6) was applied:
-     each lost type was run alone, and all four passed. At exit the line passed 278 of 278 on the
-     first run.
-5. **`parity.md` is rewritten by every run of the harness. Housekeeping.**
-   - **What happened:** its decode-time rows are wall clock, so the tracked file shows a diff after
-     any run. The exit commit carries the exit run's figures.
-   - **Proposal:** if that noise is unwanted, a later unit could move decode time to the test
-     output only.
-
-**Asks still outstanding**
-- **457's section 4 item 1, first made 2026-09-26.** This is the reading on which 9.1 was ticked.
-  The state reader judged it not honestly supported. The ask waits on the owner's word. The tick
-  sits in `PHASE_PLAN.md` line 302 from `20a13aaf`. This unit logged it and did not re-work it, per
-  the instruction's section 7. This unit's table scores every file from sample 0 with nothing
-  added, so the port's first-element loss shows in the synthetic rows.
-
-No other ask from an earlier session is waiting on a ruling. Parked items were not touched.
+1. **The task 2 test is left in the tree red.** Ruling taken by the session, overrulable:
+   `TheSpeedFollowsTheSendersMarkPairsTests` stays as written, failing at 28 of 31 sure wrong at
+   HEAD, as the standing evidence for HM-REQ-010 under bursts between letters. Reasoning: it was
+   built from 032050's measured window before the change, the change it was written for was
+   refused, and it is the test the next 9.4 attempt should turn green. It is outside both
+   carry-forward lines, so the lines stay green. Rejected: deleting it, which throws away an exact
+   case of the failure; marking it skipped, which hides a red requirement; loosening its assertion
+   to the change's 1 of 22, which is V-14's fixture fitting. Needs the owner only if a red test in
+   the tree is unwanted between units.
+2. **What 9.4 tries next.** Ruling for the next author, not taken here: the refused pair speed
+   fixed the speed overshoots it was aimed at, and it broke three reads it was not aimed at
+   (031948's `110,`, 004507's `EACH`, 031905's `PREDICTED`). The next unit should trace those
+   three reads - which windows moved speed, and whether the pairs there were few or mixed - before
+   any second form is built. Rejected here: narrowing the rule (a larger edge, a full 16-pair
+   average) after seeing R78's numbers, which is tuning a constant to the fixture that refused it;
+   and taking (A) as task 3, which the trace says cannot recover 17:37's dahs.
+3. **Step 2's MET-CER-SURE has a measured lever.** Recorded, not ruled: the refused change took the
+   real set from 33 of 436 to 25 of 431 with coverage up by 3 and MET-WBE level. No step 2 line is
+   ticked or moved (443 DECIDED (3)).
+4. **The instruction's departure list disagreed with the tree twice** (003758's first A, 004234's
+   U, where the port is wrong too). Taken as the tree has it; logged, not repaired.
+5. **CW reading taken from fldigi's source (R85), one line:** fldigi seeds its tracker at the
+   operator's speed setting (`cw.cxx:272-273`, `progdefaults.CWspeed` 18); ours took no seed and
+   started at the first pair, as `Cmovavg::run` does when empty (`filters.cxx:273`), because
+   Hamlet's receiver has no operator speed and a default would be a prior on the sender.

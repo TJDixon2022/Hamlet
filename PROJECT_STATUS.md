@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decoder, judged under R78
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 460 - the three named floors settled on the owner's answer, and step 2's commits kept green
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T19:00:48-04:00
-NOTE: Unit 459 done: pair speed from fldigi refused under R78 (real CER-SURE 33 to 25 but 031948 adjudicated broke, 3 recordings worse) and reverted; 9.4 open; output.md written
+UPDATED: 2026-09-26T19:31:27-04:00
+NOTE: Task 0 committed at 10 of 13 named as recorded; task 1 reading each red floor's last banking and its condition's four metrics then and now
 
 ---
 

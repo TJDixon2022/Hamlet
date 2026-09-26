@@ -9,6 +9,97 @@ Ids are `FG-###` and are never reused.
 
 ---
 
+## FG-014 — "Give me a challenge"
+
+Tim's idea, 2026-09-26. One button, **Give me a challenge.** Hamlet asks a
+question or two, such as how hard tonight should be, then sets a short
+multi-part task for this session. Tim's example of the shape:
+
+> Make six contacts on FT8 in at least three different countries. Then make
+> two on PSK31 or Olivia. Then find four CW signals. The total distance has to
+> exceed 15,000 miles.
+
+**Why it exists.** The achievements answer "what next?" across weeks. This
+answers it for tonight, for the operator who sits down with no plan. That is
+most evenings, and it is the moment ACHIEVEMENTS_PHILOSOPHY.md §1 was written
+about: once FT8 has shown him the band, outside a contest it gets boring
+quickly. It also does the Explorer's teaching with a reason attached. A
+challenge that asks for two PSK31 contacts sends him to a mode he would never
+have tried, and he arrives with a purpose instead of a lesson. The challenge is
+the excuse and the learning is the point (philosophy §3.5).
+
+**HAMLET OFFERS ONLY WHAT THE BAND IS SHOWING TONIGHT, AND THIS RULE SHAPES
+EVERYTHING ELSE.** A challenge drawn from a table without looking at the air
+will ask for Olivia on an evening nobody is on Olivia. An operator who cannot
+finish it concludes, again, that the fault is his. So each part is built from
+what the feeds and decoders report now, and carries that evidence on its face:
+"PSK31: four stations spotted on 20 m in the last fifteen minutes." That is a
+statement of what was observed, never a promise the part can be done (§0.0).
+When the band cannot support the difficulty asked for, Hamlet says so and
+offers a smaller challenge. On a quiet band, a small challenge is the correct
+answer, the same way the lead card's "nothing here, try 40 m" is.
+
+**EVERY PART IS COUNTED FROM HAMLET'S OWN RECORD**, the first question every
+achievement already has to pass (philosophy §5).
+
+- A contact counts when it is in the log, and it counts as worked. Nothing in
+  a challenge says confirmed (philosophy §4).
+- "Find four CW signals" counts on sure copy from the decoder, which is
+  FG-009's stopping condition, and never on signal strength.
+- Distance counts only where both ends have a grid (HM-DEC-038: no grid, no
+  distance). FT8 carries grids and CW mostly does not. So a distance part
+  names which contacts count toward it, and the generator never pairs a
+  mileage total with a mode that rarely supplies a grid.
+- A country part counts entities the way the CQ-list marks already do,
+  resolved from the callsign (philosophy §3.6), and says so. A prefix is
+  where the license was issued, not where the operator is standing
+  (HM-DEC-038).
+
+**IT ASKS ONLY FOR WHAT HAMLET CAN HEAR.** There is no Olivia decoder here, and
+PSK31 is phase 3. Hamlet cannot honestly mark done a part it cannot verify. So
+a mode enters the generator's vocabulary only when Hamlet decodes it, or when
+its contacts reach the log by import. Tim's example is the target shape, not
+the first one that ships.
+
+**UNFINISHED IS NOT FAILED.** A challenge half done at bedtime is two contacts
+he did not have yesterday. There is no failed state, no broken streak and no
+record of abandoned challenges, which is philosophy §4's "nothing shames"
+applied to a new surface. Completed parts stay credited. The rest can be
+dropped quietly or carried to another night. A carried part rechecks its
+evidence, since last night's spots say nothing about tonight. The philosophy's
+§2 constraint binds harder here than on the achievements screen, because the
+word "challenge" carries a deadline in it.
+
+**IT NEVER TRANSMITS.** Like the hunt (FG-009), a challenge points and counts.
+It never keys the radio, never answers a CQ, and never runs anything
+unattended to satisfy itself. Philosophy §4 already holds the achievements to
+one click, one transmission, and a challenge inherits it unchanged (§0.2).
+
+**It reuses what exists.** The CQ-list marks from philosophy §3.6 are the
+natural place to show which stations would advance tonight's challenge, under
+§3.7's restraint: the strongest one or two, never every eligible row. A
+finished challenge may earn a record card by the same restraint.
+
+**Open, for Tim's ruling when it graduates:**
+
+- **The name.** Philosophy §3.4 already calls the always-visible achievement
+  targets "named challenges" (first contact past 5,000 miles, first below
+  -22, first on every continent). Two features sharing one word will confuse
+  the operator and every session that reads the records, so one of them needs
+  another name.
+- **Difficulty.** Asking easy, medium or hard sits beside FG-010's point that
+  nobody should be asked to assess themselves. A difficulty chosen for one
+  evening is closer to a mood than a self-assessment, and that may be what
+  makes it fine. It should be ruled rather than assumed. Asking how much time
+  he has, instead of how hard, is one way through.
+- **What "hard" is made of.** More contacts, rarer modes, more distance or
+  weaker signals. Each teaches something different.
+
+**Waits on** the achievements work being settled, since this shares its log
+and its CQ-list marks, and on a decoder for every mode a challenge names.
+
+---
+
 ## FG-012 — RTTY, but decoded from the audio
 
 Tim has ruled RTTY off the list, and this is the thinking rather than a deletion
