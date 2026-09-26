@@ -1,0 +1,676 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.70]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.90]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.90]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:05.12]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheSureLettersMarksLookLikeTests.EverySureLetterAgainstADitADahAndAnElementGap [1 m 3 s]
+  Standard Output Messages:
+ letter | set | recording | at s | sent | emitted | class | pattern | unit ms | unit from | marks ms/units/distance | inner gaps ms/units/distance | worst mark | worst gap | marks against elements
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 13.995 | `C` | `C` | right | -.-. | 70.0 | estimator | 210ms/3.00u/d1.00 75ms/1.07u/d1.07 210ms/3.00u/d1.00 75ms/1.07u/d1.07 | 70ms/1.00u/d1.00 75ms/1.07u/d1.07 60ms/0.86u/d1.17 | 1.07 | 1.17 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 15.150 | `Q` | `Q` | right | --.- | 70.0 | estimator | 215ms/3.07u/d1.02 220ms/3.14u/d1.05 80ms/1.14u/d1.14 215ms/3.07u/d1.02 | 65ms/0.93u/d1.08 60ms/0.86u/d1.17 65ms/0.93u/d1.08 | 1.14 | 1.17 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 16.355 | `C` | `C` | right | -.-. | 70.0 | estimator | 215ms/3.07u/d1.02 70ms/1.00u/d1.00 205ms/2.93u/d1.02 80ms/1.14u/d1.14 | 70ms/1.00u/d1.00 75ms/1.07u/d1.07 65ms/0.93u/d1.08 | 1.14 | 1.08 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 17.500 | `Q` | `Q` | right | --.- | 70.0 | estimator | 220ms/3.14u/d1.05 225ms/3.21u/d1.07 80ms/1.14u/d1.14 240ms/3.43u/d1.14 | 60ms/0.86u/d1.17 55ms/0.79u/d1.27 60ms/0.86u/d1.17 | 1.14 | 1.27 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 18.785 | `C` | `C` | right | -.-. | 70.0 | estimator | 220ms/3.14u/d1.05 80ms/1.14u/d1.14 235ms/3.36u/d1.12 80ms/1.14u/d1.14 | 55ms/0.79u/d1.27 65ms/0.93u/d1.08 50ms/0.71u/d1.40 | 1.14 | 1.40 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 19.950 | `Q` | `Q` | right | --.- | 70.0 | estimator | 230ms/3.29u/d1.10 210ms/3.00u/d1.00 75ms/1.07u/d1.07 215ms/3.07u/d1.02 | 50ms/0.71u/d1.40 70ms/1.00u/d1.00 65ms/0.93u/d1.08 | 1.10 | 1.40 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 20.825 | `D` | `D` | right | -.. | 70.0 | estimator | 215ms/3.07u/d1.02 75ms/1.07u/d1.07 90ms/1.29u/d1.29 | 70ms/1.00u/d1.00 65ms/0.93u/d1.08 | 1.29 | 1.08 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 21.170 | `E` | `E` | right | . | 70.0 | estimator | 75ms/1.07u/d1.07 |  | 1.07 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 22.050 | `W` | `W` | right | .-- | 70.0 | estimator | 75ms/1.07u/d1.07 215ms/3.07u/d1.02 220ms/3.14u/d1.05 | 65ms/0.93u/d1.08 65ms/0.93u/d1.08 | 1.07 | 1.08 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 22.990 | `B` | `B` | right | -... | 70.0 | estimator | 220ms/3.14u/d1.05 80ms/1.14u/d1.14 75ms/1.07u/d1.07 75ms/1.07u/d1.07 | 60ms/0.86u/d1.17 65ms/0.93u/d1.08 60ms/0.86u/d1.17 | 1.14 | 1.17 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 24.020 | `6` | `6` | right | -.... | 70.0 | estimator | 240ms/3.43u/d1.14 75ms/1.07u/d1.07 85ms/1.21u/d1.21 80ms/1.14u/d1.14 75ms/1.07u/d1.07 | 40ms/0.57u/d1.75 65ms/0.93u/d1.08 55ms/0.79u/d1.27 60ms/0.86u/d1.17 | 1.21 | 1.75 | 5 of 5
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 24.820 | `R` | `R` | right | .-. | 70.0 | estimator | 70ms/1.00u/d1.00 170ms/2.43u/d1.24 | 110ms/1.57u/d1.57 | 1.24 | 1.57 | 2 of 3
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 25.100 | `E` | `E` | right | . | 70.0 | estimator | 80ms/1.14u/d1.14 |  | 1.14 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 25.840 | `D` | `D` | right | -.. | 70.0 | estimator | 225ms/3.21u/d1.07 80ms/1.14u/d1.14 90ms/1.29u/d1.29 | 55ms/0.79u/d1.27 70ms/1.00u/d1.00 | 1.29 | 1.27 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 26.820 | `W` | `W` | right | .-- | 70.0 | estimator | 80ms/1.14u/d1.14 215ms/3.07u/d1.02 210ms/3.00u/d1.00 | 65ms/0.93u/d1.08 70ms/1.00u/d1.00 | 1.14 | 1.08 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 27.775 | `B` | `B` | right | -... | 70.0 | estimator | 220ms/3.14u/d1.05 125ms/1.79u/d1.68 85ms/1.21u/d1.21 90ms/1.29u/d1.29 | 60ms/0.86u/d1.17 15ms/0.21u/d4.67 60ms/0.86u/d1.17 | 1.68 | 4.67 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 28.970 | `6` | `7` | wrong | --... | 70.0 | estimator | 500ms/7.14u/d2.38 70ms/1.00u/d1.00 70ms/1.00u/d1.00 75ms/1.07u/d1.07 | 65ms/0.93u/d1.08 75ms/1.07u/d1.07 75ms/1.07u/d1.07 | 2.38 | 1.08 | 4 of 5
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 29.195 | `R` | `E` | wrong | . | 70.0 | estimator | 75ms/1.07u/d1.07 |  | 1.07 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 29.530 | `E` | `E` | right | . | 70.0 | estimator | 70ms/1.00u/d1.00 |  | 1.00 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-23-173723 | 30.000 | `D` | `I` | wrong | .. | 70.0 | estimator | 85ms/1.21u/d1.21 |  | 1.21 | 1.00 | 1 of 2
+ letter | real | cw-2026-08-17-013347 | 23.310 | `V` | `V` | right | ...- | 62.5 | estimator | 90ms/1.44u/d1.44 85ms/1.36u/d1.36 100ms/1.60u/d1.60 275ms/4.40u/d1.47 | 90ms/1.44u/d1.44 80ms/1.28u/d1.28 70ms/1.12u/d1.12 | 1.60 | 1.44 | 4 of 4
+ letter | real | cw-2026-08-17-013347 | 23.925 | `A` | `A` | right | .- | 62.5 | estimator | 85ms/1.36u/d1.36 270ms/4.32u/d1.44 | 80ms/1.28u/d1.28 | 1.44 | 1.28 | 2 of 2
+ letter | real | cw-2026-08-17-013347 | 25.230 | `3` | `3` | right | ...-- | 62.5 | estimator | 115ms/1.84u/d1.63 95ms/1.52u/d1.52 95ms/1.52u/d1.52 265ms/4.24u/d1.41 270ms/4.32u/d1.44 | 55ms/0.88u/d1.14 80ms/1.28u/d1.28 85ms/1.36u/d1.36 80ms/1.28u/d1.28 | 1.63 | 1.36 | 5 of 5
+ letter | real | cw-2026-08-17-013347 | 26.175 | `V` | `V` | right | ...- | 62.5 | estimator | 110ms/1.76u/d1.70 100ms/1.60u/d1.60 100ms/1.60u/d1.60 275ms/4.40u/d1.47 | 60ms/0.96u/d1.04 75ms/1.20u/d1.20 75ms/1.20u/d1.20 | 1.70 | 1.20 | 4 of 4
+ letter | real | cw-2026-08-17-013347 | 26.925 | `R` | `R` | right | .-. | 62.5 | estimator | 100ms/1.60u/d1.60 270ms/4.32u/d1.44 105ms/1.68u/d1.68 | 75ms/1.20u/d1.20 80ms/1.28u/d1.28 | 1.68 | 1.28 | 3 of 3
+ letter | real | cw-2026-08-17-013347 | 27.690 | `R` | `R` | right | .-. | 62.5 | estimator | 90ms/1.44u/d1.44 275ms/4.40u/d1.47 100ms/1.60u/d1.60 | 80ms/1.28u/d1.28 75ms/1.20u/d1.20 | 1.60 | 1.28 | 3 of 3
+ letter | real | cw-2026-08-17-134712 | 21.530 | `N` | `N` | right | -. | 66.7 | grid | 230ms/3.45u/d1.15 65ms/0.98u/d1.03 | 20ms/0.30u/d3.33 | 1.15 | 3.33 | 2 of 2
+ letter | real | cw-2026-08-17-134712 | 22.330 | `4` | `4` | right | ....- | 75.0 | grid | 65ms/0.87u/d1.15 65ms/0.87u/d1.15 70ms/0.93u/d1.07 65ms/0.87u/d1.15 250ms/3.33u/d1.11 | 30ms/0.40u/d2.50 30ms/0.40u/d2.50 30ms/0.40u/d2.50 25ms/0.33u/d3.00 | 1.15 | 3.00 | 5 of 5
+ letter | real | cw-2026-08-17-134712 | 23.000 | `L` | `L` | right | .-.. | 66.7 | grid | 70ms/1.05u/d1.05 255ms/3.83u/d1.28 60ms/0.90u/d1.11 65ms/0.98u/d1.03 | 15ms/0.23u/d4.44 30ms/0.45u/d2.22 35ms/0.53u/d1.90 | 1.28 | 4.44 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 10.640 | `A` | `E` | wrong | . | 30.0 | estimator | 60ms/2.00u/d1.50 |  | 1.50 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 10.740 | `A` | `E` | wrong | . | 30.0 | estimator | 60ms/2.00u/d1.50 |  | 1.50 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 10.940 | `4` | `T` | wrong | - | 30.0 | estimator | 160ms/5.33u/d1.78 |  | 1.78 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 11.475 | `M` | `M` | right | -- | 50.0 | estimator | 155ms/3.10u/d1.03 160ms/3.20u/d1.07 | 45ms/0.90u/d1.11 | 1.07 | 1.11 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 12.190 | `P` | `P` | right | .--. | 50.0 | estimator | 100ms/2.00u/d1.50 160ms/3.20u/d1.07 160ms/3.20u/d1.07 60ms/1.20u/d1.20 | 40ms/0.80u/d1.25 40ms/0.80u/d1.25 40ms/0.80u/d1.25 | 1.50 | 1.25 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 13.055 | `/` | `/` | right | -..-. | 50.0 | estimator | 60ms/1.20u/d1.20 55ms/1.10u/d1.10 155ms/3.10u/d1.03 55ms/1.10u/d1.10 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 45ms/0.90u/d1.11 | 1.20 | 1.11 | 4 of 5
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 13.755 | `4` | `4` | right | ....- | 50.0 | estimator | 55ms/1.10u/d1.10 55ms/1.10u/d1.10 55ms/1.10u/d1.10 55ms/1.10u/d1.10 155ms/3.10u/d1.03 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 45ms/0.90u/d1.11 45ms/0.90u/d1.11 | 1.10 | 1.11 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 14.725 | `Q` | `Q` | right | --.- | 50.0 | estimator | 155ms/3.10u/d1.03 155ms/3.10u/d1.03 55ms/1.10u/d1.10 155ms/3.10u/d1.03 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 45ms/0.90u/d1.11 | 1.10 | 1.11 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 15.110 | `N` | `N` | right | -. | 50.0 | estimator | 160ms/3.20u/d1.07 55ms/1.10u/d1.10 | 45ms/0.90u/d1.11 | 1.10 | 1.11 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 15.420 | `I` | `I` | right | .. | 50.0 | estimator | 55ms/1.10u/d1.10 55ms/1.10u/d1.10 | 45ms/0.90u/d1.11 | 1.10 | 1.11 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-18-003758 | 16.090 | `K` | `K` | right | -.- | 50.0 | estimator | 150ms/3.00u/d1.00 55ms/1.10u/d1.10 155ms/3.10u/d1.03 | 50ms/1.00u/d1.00 45ms/0.90u/d1.11 | 1.10 | 1.11 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 20.445 | `D` | `D` | right | -.. | 60.0 | estimator | 185ms/3.08u/d1.03 70ms/1.17u/d1.17 70ms/1.17u/d1.17 | 50ms/0.83u/d1.20 50ms/0.83u/d1.20 | 1.17 | 1.20 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 20.680 | `E` | `E` | right | . | 60.0 | estimator | 40ms/0.67u/d1.50 70ms/1.17u/d1.17 15ms/0.25u/d4.00 | 30ms/0.50u/d2.00 | 4.00 | 2.00 | 3 of 1
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 21.620 | `K` | `K` | right | -.- | 60.0 | estimator | 210ms/3.50u/d1.17 60ms/1.00u/d1.00 175ms/2.92u/d1.03 | 55ms/0.92u/d1.09 65ms/1.08u/d1.08 | 1.17 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 22.215 | `D` | `D` | right | -.. | 60.0 | estimator | 190ms/3.17u/d1.06 70ms/1.17u/d1.17 70ms/1.17u/d1.17 | 45ms/0.75u/d1.33 50ms/0.83u/d1.20 | 1.17 | 1.33 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 23.515 | `0` | `0` | right | ----- | 60.0 | estimator | 180ms/3.00u/d1.00 190ms/3.17u/d1.06 180ms/3.00u/d1.00 185ms/3.08u/d1.03 190ms/3.17u/d1.06 | 50ms/0.83u/d1.20 55ms/0.92u/d1.09 55ms/0.92u/d1.09 50ms/0.83u/d1.20 | 1.06 | 1.20 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 24.105 | `U` | `U` | right | ..- | 60.0 | estimator | 65ms/1.08u/d1.08 70ms/1.17u/d1.17 190ms/3.17u/d1.06 | 50ms/0.83u/d1.20 50ms/0.83u/d1.20 | 1.17 | 1.20 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 24.580 | `N` | `N` | right | -. | 60.0 | estimator | 185ms/3.08u/d1.03 75ms/1.25u/d1.25 | 45ms/0.75u/d1.33 | 1.25 | 1.33 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 25.525 | `K` | `K` | right | -.- | 57.5 | estimator | 190ms/3.30u/d1.10 65ms/1.13u/d1.13 180ms/3.13u/d1.04 | 50ms/0.87u/d1.15 55ms/0.96u/d1.05 | 1.13 | 1.15 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 26.110 | `D` | `D` | right | -.. | 57.5 | estimator | 185ms/3.22u/d1.07 70ms/1.22u/d1.22 65ms/1.13u/d1.13 | 50ms/0.87u/d1.15 50ms/0.87u/d1.15 | 1.22 | 1.15 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 27.410 | `0` | `0` | right | ----- | 57.5 | estimator | 185ms/3.22u/d1.07 185ms/3.22u/d1.07 185ms/3.22u/d1.07 190ms/3.30u/d1.10 180ms/3.13u/d1.04 | 50ms/0.87u/d1.15 55ms/0.96u/d1.05 50ms/0.87u/d1.15 50ms/0.87u/d1.15 | 1.10 | 1.15 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 28.005 | `U` | `U` | right | ..- | 57.5 | estimator | 65ms/1.13u/d1.13 70ms/1.22u/d1.22 180ms/3.13u/d1.04 | 50ms/0.87u/d1.15 55ms/0.96u/d1.05 | 1.22 | 1.15 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 28.475 | `N` | `N` | right | -. | 57.5 | estimator | 185ms/3.22u/d1.07 70ms/1.22u/d1.22 | 50ms/0.87u/d1.15 | 1.22 | 1.15 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-24-012403 | 29.420 | `K` | `K` | right | -.- | 57.5 | estimator | 300ms/5.22u/d1.74 190ms/3.30u/d1.10 | 45ms/0.78u/d1.28 | 1.74 | 1.28 | 2 of 3
+ letter | real | cw-2026-08-18-004507 | 3.230 | `T` | `T` | right | - | 54.5 | grid | 175ms/3.21u/d1.07 |  | 1.07 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 4.245 | `A` | `A` | right | .- | 54.5 | grid | 180ms/3.30u/d1.10 |  | 1.10 | 1.00 | 1 of 2
+ letter | real | cw-2026-08-18-004507 | 4.820 | `R` | `R` | right | .-. | 54.5 | grid | 70ms/1.28u/d1.28 170ms/3.12u/d1.04 70ms/1.28u/d1.28 | 30ms/0.55u/d1.82 30ms/0.55u/d1.82 | 1.28 | 1.82 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 5.420 | `R` | `R` | right | .-. | 38.7 | marks (441) | 170ms/4.39u/d1.46 70ms/1.81u/d1.66 | 30ms/0.77u/d1.29 | 1.66 | 1.29 | 2 of 3
+ letter | real | cw-2026-08-18-004507 | 6.085 | `L` | `L` | right | .-.. | 54.5 | grid | 75ms/1.38u/d1.38 170ms/3.12u/d1.04 70ms/1.28u/d1.28 70ms/1.28u/d1.28 | 30ms/0.55u/d1.82 30ms/0.55u/d1.82 30ms/0.55u/d1.82 | 1.38 | 1.82 | 4 of 4
+ letter | real | cw-2026-08-18-004507 | 6.940 | `D` | `D` | right | -.. | 54.5 | grid | 175ms/3.21u/d1.07 75ms/1.38u/d1.38 75ms/1.38u/d1.38 | 25ms/0.46u/d2.18 25ms/0.46u/d2.18 | 1.38 | 2.18 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 7.750 | `O` | `O` | right | --- | 54.5 | grid | 170ms/3.12u/d1.04 175ms/3.21u/d1.07 170ms/3.12u/d1.04 | 25ms/0.46u/d2.18 30ms/0.55u/d1.82 | 1.07 | 2.18 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 8.160 | `T` | `T` | right | - | 54.5 | grid | 190ms/3.48u/d1.16 |  | 1.16 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 8.955 | `N` | `N` | right | -. | 54.5 | grid | 75ms/1.38u/d1.38 |  | 1.38 | 1.00 | 1 of 2
+ letter | real | cw-2026-08-18-004507 | 9.265 | `E` | `E` | right | . | 54.5 | grid | 140ms/2.57u/d1.17 |  | 1.17 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 9.720 | `T` | `T` | right | - | 54.5 | grid | 165ms/3.03u/d1.01 |  | 1.01 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 10.900 | `<BT>` | `<BT>` | right | -...- | 54.5 | grid | 190ms/3.48u/d1.16 75ms/1.38u/d1.38 75ms/1.38u/d1.38 75ms/1.38u/d1.38 175ms/3.21u/d1.07 | 30ms/0.55u/d1.82 25ms/0.46u/d2.18 25ms/0.46u/d2.18 25ms/0.46u/d2.18 | 1.38 | 2.18 | 5 of 5
+ letter | real | cw-2026-08-18-004507 | 11.965 | `E` | `E` | right | . | 32.5 | estimator | 70ms/2.15u/d1.39 |  | 1.39 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 12.515 | `A` | `A` | right | .- | 50.0 | estimator | 65ms/1.30u/d1.30 170ms/3.40u/d1.13 | 35ms/0.70u/d1.43 | 1.30 | 1.43 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 13.280 | `C` | `C` | right | -.-. | 50.0 | estimator | 165ms/3.30u/d1.10 65ms/1.30u/d1.30 165ms/3.30u/d1.10 55ms/1.10u/d1.10 | 35ms/0.70u/d1.43 35ms/0.70u/d1.43 40ms/0.80u/d1.25 | 1.30 | 1.43 | 4 of 4
+ letter | real | cw-2026-08-18-004507 | 13.890 | `H` | `H` | right | .... | 50.0 | estimator | 70ms/1.40u/d1.40 70ms/1.40u/d1.40 70ms/1.40u/d1.40 70ms/1.40u/d1.40 | 30ms/0.60u/d1.67 30ms/0.60u/d1.67 30ms/0.60u/d1.67 | 1.40 | 1.67 | 4 of 4
+ letter | real | cw-2026-08-18-004507 | 14.700 | `S` | `S` | right | ... | 50.0 | estimator | 65ms/1.30u/d1.30 65ms/1.30u/d1.30 65ms/1.30u/d1.30 | 35ms/0.70u/d1.43 35ms/0.70u/d1.43 | 1.30 | 1.43 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 15.075 | `T` | `T` | right | - | 50.0 | estimator | 170ms/3.40u/d1.13 |  | 1.13 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 15.520 | `A` | `A` | right | .- | 50.0 | estimator | 60ms/1.20u/d1.20 165ms/3.30u/d1.10 | 40ms/0.80u/d1.25 | 1.20 | 1.25 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 15.905 | `T` | `T` | right | - | 50.0 | estimator | 165ms/3.30u/d1.10 |  | 1.10 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 16.270 | `I` | `I` | right | .. | 50.0 | estimator | 90ms/1.80u/d1.67 75ms/1.50u/d1.50 | 25ms/0.50u/d2.00 | 1.67 | 2.00 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 17.095 | `O` | `O` | right | --- | 50.0 | estimator | 170ms/3.40u/d1.13 170ms/3.40u/d1.13 170ms/3.40u/d1.13 | 30ms/0.60u/d1.67 30ms/0.60u/d1.67 | 1.13 | 1.67 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 17.580 | `N` | `N` | right | -. | 50.0 | estimator | 165ms/3.30u/d1.10 65ms/1.30u/d1.30 | 35ms/0.70u/d1.43 | 1.30 | 1.43 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 18.675 | `H` | `H` | right | .... | 50.0 | estimator | 65ms/1.30u/d1.30 65ms/1.30u/d1.30 65ms/1.30u/d1.30 65ms/1.30u/d1.30 | 35ms/0.70u/d1.43 35ms/0.70u/d1.43 35ms/0.70u/d1.43 | 1.30 | 1.43 | 4 of 4
+ letter | real | cw-2026-08-18-004507 | 19.160 | `A` | `A` | right | .- | 50.0 | estimator | 70ms/1.40u/d1.40 170ms/3.40u/d1.13 | 30ms/0.60u/d1.67 | 1.40 | 1.67 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 19.640 | `N` | `N` | right | -. | 50.0 | estimator | 165ms/3.30u/d1.10 65ms/1.30u/d1.30 | 35ms/0.70u/d1.43 | 1.30 | 1.43 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 20.240 | `D` | `D` | right | -.. | 52.5 | estimator | 170ms/3.24u/d1.08 70ms/1.33u/d1.33 70ms/1.33u/d1.33 | 30ms/0.57u/d1.75 30ms/0.57u/d1.75 | 1.33 | 1.75 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 20.955 | `L` | `L` | right | .-.. | 50.0 | estimator | 65ms/1.30u/d1.30 160ms/3.20u/d1.07 60ms/1.20u/d1.20 65ms/1.30u/d1.30 | 35ms/0.70u/d1.43 40ms/0.80u/d1.25 40ms/0.80u/d1.25 | 1.30 | 1.43 | 4 of 4
+ letter | real | cw-2026-08-18-004507 | 21.365 | `I` | `I` | right | .. | 50.0 | estimator | 65ms/1.30u/d1.30 60ms/1.20u/d1.20 | 35ms/0.70u/d1.43 | 1.30 | 1.43 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 21.855 | `N` | `N` | right | -. | 50.0 | estimator | 15ms/0.30u/d3.33 170ms/3.40u/d1.13 70ms/1.40u/d1.40 | 20ms/0.40u/d2.50 35ms/0.70u/d1.43 | 3.33 | 2.50 | 3 of 2
+ letter | real | cw-2026-08-18-004507 | 22.495 | `G` | `G` | right | --. | 50.0 | estimator | 195ms/3.90u/d1.30 170ms/3.40u/d1.13 70ms/1.40u/d1.40 | 30ms/0.60u/d1.67 30ms/0.60u/d1.67 | 1.40 | 1.67 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 23.295 | `T` | `T` | right | - | 50.0 | estimator | 165ms/3.30u/d1.10 |  | 1.10 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 23.915 | `H` | `H` | right | .... | 50.0 | estimator | 80ms/1.60u/d1.60 65ms/1.30u/d1.30 65ms/1.30u/d1.30 80ms/1.60u/d1.60 | 20ms/0.40u/d2.50 35ms/0.70u/d1.43 30ms/0.60u/d1.67 | 1.60 | 2.50 | 4 of 4
+ letter | real | cw-2026-08-18-004507 | 24.295 | `I` | `I` | right | .. | 50.0 | estimator | 60ms/1.20u/d1.20 65ms/1.30u/d1.30 | 40ms/0.80u/d1.25 | 1.30 | 1.25 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 24.745 | `S` | `S` | right | ... | 50.0 | estimator | 70ms/1.40u/d1.40 75ms/1.50u/d1.50 75ms/1.50u/d1.50 | 30ms/0.60u/d1.67 25ms/0.50u/d2.00 | 1.50 | 2.00 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 25.715 | `M` | `M` | right | -- | 50.0 | estimator | 165ms/3.30u/d1.10 170ms/3.40u/d1.13 | 35ms/0.70u/d1.43 | 1.13 | 1.43 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 25.995 | `E` | `E` | right | . | 50.0 | estimator | 10ms/0.20u/d5.00 85ms/1.70u/d1.70 | 10ms/0.20u/d5.00 | 5.00 | 5.00 | 2 of 1
+ letter | real | cw-2026-08-18-004507 | 26.540 | `S` | `S` | right | ... | 50.0 | estimator | 60ms/1.20u/d1.20 65ms/1.30u/d1.30 60ms/1.20u/d1.20 | 40ms/0.80u/d1.25 35ms/0.70u/d1.43 | 1.30 | 1.43 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 27.025 | `S` | `S` | right | ... | 50.0 | estimator | 60ms/1.20u/d1.20 60ms/1.20u/d1.20 65ms/1.30u/d1.30 | 40ms/0.80u/d1.25 35ms/0.70u/d1.43 | 1.30 | 1.43 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 27.510 | `A` | `A` | right | .- | 50.0 | estimator | 60ms/1.20u/d1.20 165ms/3.30u/d1.10 | 35ms/0.70u/d1.43 | 1.20 | 1.43 | 2 of 2
+ letter | real | cw-2026-08-18-004507 | 28.205 | `G` | `G` | right | --. | 50.0 | estimator | 165ms/3.30u/d1.10 170ms/3.40u/d1.13 70ms/1.40u/d1.40 | 30ms/0.60u/d1.67 30ms/0.60u/d1.67 | 1.40 | 1.67 | 3 of 3
+ letter | real | cw-2026-08-18-004507 | 28.585 | `E` | `E` | right | . | 50.0 | estimator | 60ms/1.20u/d1.20 |  | 1.20 | 1.00 | 1 of 1
+ letter | real | cw-2026-08-18-004507 | 29.765 | `P` | `P` | right | .--. | 50.0 | estimator | 80ms/1.60u/d1.60 170ms/3.40u/d1.13 170ms/3.40u/d1.13 70ms/1.40u/d1.40 | 35ms/0.70u/d1.43 30ms/0.60u/d1.67 30ms/0.60u/d1.67 | 1.60 | 1.67 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 8.675 | `2` | `T` | wrong | - | 52.7 | marks (441) | 215ms/4.08u/d1.36 |  | 1.36 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 9.685 | `,` | `T` | wrong | - | 42.5 | estimator | 220ms/5.18u/d1.73 |  | 1.73 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 11.030 | `2` | `2` | right | ..--- | 45.2 | marks (441) | 30ms/0.66u/d1.51 85ms/1.88u/d1.59 90ms/1.99u/d1.51 175ms/3.87u/d1.29 210ms/4.65u/d1.55 180ms/3.98u/d1.33 | 45ms/1.00u/d1.00 50ms/1.11u/d1.11 55ms/1.22u/d1.22 50ms/1.11u/d1.11 | 1.59 | 1.22 | 6 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 12.415 | `,` | `,` | right | --..-- | 57.5 | estimator | 200ms/3.48u/d1.16 210ms/3.65u/d1.22 80ms/1.39u/d1.39 50ms/0.87u/d1.15 215ms/3.74u/d1.25 210ms/3.65u/d1.22 | 30ms/0.52u/d1.92 55ms/0.96u/d1.05 55ms/0.96u/d1.05 40ms/0.70u/d1.44 55ms/0.96u/d1.05 | 1.39 | 1.92 | 6 of 6
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 13.140 | `A` | `A` | right | .- | 62.5 | estimator | 305ms/4.88u/d1.63 |  | 1.63 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 13.620 | `N` | `N` | right | -. | 62.5 | estimator | 185ms/2.96u/d1.01 80ms/1.28u/d1.28 | 55ms/0.88u/d1.14 | 1.28 | 1.14 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 14.225 | `D` | `D` | right | -.. | 62.5 | estimator | 200ms/3.20u/d1.07 75ms/1.20u/d1.20 85ms/1.36u/d1.36 | 55ms/0.88u/d1.14 50ms/0.80u/d1.25 | 1.36 | 1.25 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 16.530 | `W` | `W` | right | .-- | 43.9 | marks (441) | 115ms/2.62u/d1.14 220ms/5.01u/d1.67 170ms/3.87u/d1.29 | 45ms/1.03u/d1.03 50ms/1.14u/d1.14 | 1.67 | 1.14 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 16.895 | `I` | `I` | right | .. | 42.5 | estimator | 55ms/1.29u/d1.29 |  | 1.29 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 17.290 | `T` | `A` | wrong | .- | 42.5 | estimator |  |  | Infinity | 1.00 | 0 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 17.905 | `H` | `H` | right | .... | 54.5 | grid | 85ms/1.56u/d1.56 85ms/1.56u/d1.56 80ms/1.47u/d1.47 75ms/1.38u/d1.38 | 50ms/0.92u/d1.09 50ms/0.92u/d1.09 50ms/0.92u/d1.09 | 1.56 | 1.09 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 18.640 | `A` | `A` | right | .- | 54.5 | grid | 55ms/1.01u/d1.01 215ms/3.94u/d1.31 | 35ms/0.64u/d1.56 | 1.31 | 1.56 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 19.490 | `M` | `M` | right | -- | 54.5 | grid | 180ms/3.30u/d1.10 |  | 1.10 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 19.755 | `E` | `E` | right | . | 60.0 | grid |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 20.250 | `A` | `A` | right | .- | 60.0 | grid | 65ms/1.08u/d1.08 215ms/3.58u/d1.19 | 55ms/0.92u/d1.09 | 1.19 | 1.09 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 20.745 | `N` | `N` | right | -. | 54.5 | grid | 255ms/4.68u/d1.56 85ms/1.56u/d1.56 | 45ms/0.83u/d1.21 | 1.56 | 1.21 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 21.845 | `O` | `O` | right | --- | 54.5 | grid | 215ms/3.94u/d1.31 175ms/3.21u/d1.07 215ms/3.94u/d1.31 | 40ms/0.73u/d1.36 50ms/0.92u/d1.09 | 1.31 | 1.36 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 22.560 | `F` | `F` | right | ..-. | 60.0 | grid | 85ms/1.42u/d1.42 85ms/1.42u/d1.42 185ms/3.08u/d1.03 85ms/1.42u/d1.42 | 45ms/0.75u/d1.33 45ms/0.75u/d1.33 45ms/0.75u/d1.33 | 1.42 | 1.33 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 23.920 | `2` | `2` | right | ..--- | 60.0 | grid | 130ms/2.17u/d1.38 80ms/1.33u/d1.33 170ms/2.83u/d1.06 215ms/3.58u/d1.19 175ms/2.92u/d1.03 | 55ms/0.92u/d1.09 55ms/0.92u/d1.09 50ms/0.83u/d1.20 55ms/0.92u/d1.09 | 1.38 | 1.20 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 24.185 | `R` | `T` | wrong | - | 35.0 | estimator |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031838 | 24.410 | `E` | `T` | wrong | - | 35.0 | estimator | 170ms/4.86u/d1.62 |  | 1.62 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 5.175 | `D` | `D` | right | -.. | 67.5 | estimator | 200ms/2.96u/d1.01 85ms/1.26u/d1.26 80ms/1.19u/d1.19 | 50ms/0.74u/d1.35 50ms/0.74u/d1.35 | 1.26 | 1.35 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 5.535 | `I` | `I` | right | .. | 67.5 | estimator | 40ms/0.59u/d1.69 75ms/1.11u/d1.11 | 55ms/0.81u/d1.23 | 1.69 | 1.23 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 6.395 | `C` | `C` | right | -.-. | 67.5 | estimator | 195ms/2.89u/d1.04 80ms/1.19u/d1.19 215ms/3.19u/d1.06 50ms/0.74u/d1.35 | 20ms/0.30u/d3.38 50ms/0.74u/d1.35 55ms/0.81u/d1.23 | 1.35 | 3.38 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 6.780 | `T` | `T` | right | - | 67.5 | estimator | 215ms/3.19u/d1.06 |  | 1.06 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 7.005 | `E` | `E` | right | . | 67.5 | estimator | 85ms/1.26u/d1.26 |  | 1.26 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 7.635 | `D` | `D` | right | -.. | 67.5 | estimator | 310ms/4.59u/d1.53 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 | 1.53 | 1.23 | 2 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 9.115 | `1` | `1` | right | .---- | 67.5 | estimator | 100ms/1.48u/d1.48 210ms/3.11u/d1.04 205ms/3.04u/d1.01 210ms/3.11u/d1.04 215ms/3.19u/d1.06 | 50ms/0.74u/d1.35 25ms/0.37u/d2.70 55ms/0.81u/d1.23 15ms/0.22u/d4.50 | 1.48 | 4.50 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 10.420 | `0` | `0` | right | ----- | 67.5 | estimator | 160ms/2.37u/d1.27 215ms/3.19u/d1.06 170ms/2.52u/d1.19 215ms/3.19u/d1.06 160ms/2.37u/d1.27 | 50ms/0.74u/d1.35 55ms/0.81u/d1.23 55ms/0.81u/d1.23 45ms/0.67u/d1.50 | 1.27 | 1.50 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 11.640 | `.` | `.` | right | .-.-.- | 67.5 | estimator | 90ms/1.33u/d1.33 170ms/2.52u/d1.19 80ms/1.19u/d1.19 210ms/3.11u/d1.04 30ms/0.44u/d2.25 210ms/3.11u/d1.04 | 50ms/0.74u/d1.35 35ms/0.52u/d1.93 55ms/0.81u/d1.23 60ms/0.89u/d1.13 50ms/0.74u/d1.35 | 2.25 | 1.93 | 6 of 6
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 12.615 | `7` | `7` | right | --... | 67.5 | estimator | 170ms/2.52u/d1.19 220ms/3.26u/d1.09 155ms/2.30u/d1.31 85ms/1.26u/d1.26 | 50ms/0.74u/d1.35 50ms/0.74u/d1.35 55ms/0.81u/d1.23 | 1.31 | 1.35 | 4 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 14.155 | `C` | `I` | wrong | .. | 65.0 | estimator |  |  | Infinity | 1.00 | 0 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 14.635 | `E` | `A` | wrong | .- | 65.0 | estimator | 65ms/1.00u/d1.00 175ms/2.69u/d1.11 | 65ms/1.00u/d1.00 | 1.11 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 14.980 | `N` | `I` | wrong | .. | 65.0 | estimator | 40ms/0.62u/d1.63 85ms/1.31u/d1.31 | 20ms/0.31u/d3.25 | 1.63 | 3.25 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 15.150 | `T` | `E` | wrong | . | 55.0 | estimator | 25ms/0.45u/d2.20 |  | 2.20 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 15.410 | `I` | `I` | right | .. | 55.0 | estimator |  |  | Infinity | 1.00 | 0 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 16.000 | `E` | `T` | wrong | - | 42.5 | estimator | 125ms/2.94u/d1.02 |  | 1.02 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 16.260 | `T` | `A` | wrong | .- | 42.5 | estimator | 170ms/4.00u/d1.33 |  | 1.33 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 16.615 | `E` | `N` | wrong | -. | 40.0 | estimator | 150ms/3.75u/d1.25 |  | 1.25 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 16.880 | `R` | `I` | wrong | .. | 40.0 | estimator | 30ms/0.75u/d1.33 60ms/1.50u/d1.50 | 25ms/0.63u/d1.60 | 1.50 | 1.60 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 18.285 | `F` | `W` | wrong | .-- | 35.0 | estimator | 120ms/3.43u/d1.14 90ms/2.57u/d1.17 | 45ms/1.29u/d1.29 | 1.17 | 1.29 | 2 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 18.995 | `L` | `L` | right | .-.. | 42.5 | estimator | 80ms/1.88u/d1.59 215ms/5.06u/d1.69 80ms/1.88u/d1.59 65ms/1.53u/d1.53 | 50ms/1.18u/d1.18 55ms/1.29u/d1.29 25ms/0.59u/d1.70 | 1.69 | 1.70 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 19.610 | `U` | `U` | right | ..- | 47.5 | estimator | 80ms/1.68u/d1.68 300ms/6.32u/d2.11 | 50ms/1.05u/d1.05 | 2.11 | 1.05 | 2 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 20.465 | `X` | `X` | right | -..- | 52.5 | estimator | 180ms/3.43u/d1.14 85ms/1.62u/d1.62 80ms/1.52u/d1.52 170ms/3.24u/d1.08 | 50ms/0.95u/d1.05 50ms/0.95u/d1.05 55ms/1.05u/d1.05 | 1.62 | 1.05 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 21.090 | `I` | `I` | right | .. | 60.0 | estimator | 80ms/1.33u/d1.33 80ms/1.33u/d1.33 | 50ms/0.83u/d1.20 | 1.33 | 1.20 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 21.585 | `S` | `S` | right | ... | 60.0 | estimator | 80ms/1.33u/d1.33 40ms/0.67u/d1.50 80ms/1.33u/d1.33 | 50ms/0.83u/d1.20 55ms/0.92u/d1.09 | 1.50 | 1.20 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 23.055 | `1` | `1` | right | .---- | 60.0 | estimator | 115ms/1.92u/d1.57 220ms/3.67u/d1.22 200ms/3.33u/d1.11 215ms/3.58u/d1.19 180ms/3.00u/d1.00 | 45ms/0.75u/d1.33 15ms/0.25u/d4.00 50ms/0.83u/d1.20 50ms/0.83u/d1.20 | 1.57 | 4.00 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 24.155 | `2` | `2` | right | ..--- | 65.0 | estimator | 115ms/1.77u/d1.70 45ms/0.69u/d1.44 215ms/3.31u/d1.10 190ms/2.92u/d1.03 215ms/3.31u/d1.10 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 50ms/0.77u/d1.30 20ms/0.31u/d3.25 | 1.70 | 3.25 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 24.875 | `5` | `5` | right | ..... | 47.5 | estimator | 60ms/1.26u/d1.26 85ms/1.79u/d1.68 85ms/1.79u/d1.68 85ms/1.79u/d1.68 45ms/0.95u/d1.06 | 35ms/0.74u/d1.36 45ms/0.95u/d1.06 50ms/1.05u/d1.05 50ms/1.05u/d1.05 | 1.68 | 1.36 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031905 | 26.250 | `,` | `,` | right | --..-- | 65.0 | estimator | 260ms/4.00u/d1.33 165ms/2.54u/d1.18 85ms/1.31u/d1.31 85ms/1.31u/d1.31 180ms/2.77u/d1.08 220ms/3.38u/d1.13 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 50ms/0.77u/d1.30 45ms/0.69u/d1.44 45ms/0.69u/d1.44 | 1.33 | 1.44 | 6 of 6
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 3.945 | `1` | `1` | right | .---- | 65.0 | estimator | 80ms/1.23u/d1.23 210ms/3.23u/d1.08 215ms/3.31u/d1.10 215ms/3.31u/d1.10 215ms/3.31u/d1.10 | 15ms/0.23u/d4.33 55ms/0.85u/d1.18 20ms/0.31u/d3.25 50ms/0.77u/d1.30 | 1.23 | 4.33 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 4.690 | `1` | `5` | wrong | ..... | 65.0 | estimator | 85ms/1.31u/d1.31 85ms/1.31u/d1.31 80ms/1.23u/d1.23 85ms/1.31u/d1.31 80ms/1.23u/d1.23 | 45ms/0.69u/d1.44 55ms/0.85u/d1.18 30ms/0.46u/d2.17 50ms/0.77u/d1.30 | 1.31 | 2.17 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 6.040 | `0` | `0` | right | ----- | 65.0 | estimator | 225ms/3.46u/d1.15 215ms/3.31u/d1.10 165ms/2.54u/d1.18 220ms/3.38u/d1.13 185ms/2.85u/d1.05 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.18 | 1.30 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 7.515 | `1` | `1` | right | .---- | 65.0 | estimator | 130ms/2.00u/d1.50 220ms/3.38u/d1.13 180ms/2.77u/d1.08 215ms/3.31u/d1.10 175ms/2.69u/d1.11 | 50ms/0.77u/d1.30 45ms/0.69u/d1.44 50ms/0.77u/d1.30 55ms/0.85u/d1.18 | 1.50 | 1.44 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 8.770 | `1` | `1` | right | .---- | 67.5 | estimator | 85ms/1.26u/d1.26 175ms/2.59u/d1.16 215ms/3.19u/d1.06 175ms/2.59u/d1.16 220ms/3.26u/d1.09 | 50ms/0.74u/d1.35 55ms/0.81u/d1.23 50ms/0.74u/d1.35 50ms/0.74u/d1.35 | 1.26 | 1.35 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 10.120 | `0` | `0` | right | ----- | 67.5 | estimator | 235ms/3.48u/d1.16 220ms/3.26u/d1.09 175ms/2.59u/d1.16 220ms/3.26u/d1.09 180ms/2.67u/d1.13 | 45ms/0.67u/d1.50 50ms/0.74u/d1.35 50ms/0.74u/d1.35 45ms/0.67u/d1.50 | 1.16 | 1.50 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 11.470 | `,` | `,` | right | --..-- | 65.0 | estimator | 175ms/2.69u/d1.11 220ms/3.38u/d1.13 85ms/1.31u/d1.31 55ms/0.85u/d1.18 215ms/3.31u/d1.10 180ms/2.77u/d1.08 | 50ms/0.77u/d1.30 45ms/0.69u/d1.44 50ms/0.77u/d1.30 40ms/0.62u/d1.63 50ms/0.77u/d1.30 | 1.31 | 1.63 | 6 of 6
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 12.225 | `A` | `A` | right | .- | 65.0 | estimator | 45ms/0.69u/d1.44 215ms/3.31u/d1.10 | 50ms/0.77u/d1.30 | 1.44 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 12.700 | `N` | `N` | right | -. | 65.0 | estimator | 165ms/2.54u/d1.18 85ms/1.31u/d1.31 | 45ms/0.69u/d1.44 | 1.31 | 1.44 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 13.330 | `D` | `D` | right | -.. | 65.0 | estimator | 230ms/3.54u/d1.18 85ms/1.31u/d1.31 85ms/1.31u/d1.31 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.31 | 1.30 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 14.805 | `1` | `1` | right | .---- | 65.0 | estimator | 130ms/2.00u/d1.50 180ms/2.77u/d1.08 220ms/3.38u/d1.13 175ms/2.69u/d1.11 215ms/3.31u/d1.10 | 50ms/0.77u/d1.30 45ms/0.69u/d1.44 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.50 | 1.44 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 16.020 | `1` | `1` | right | .---- | 65.0 | estimator | 100ms/1.54u/d1.54 215ms/3.31u/d1.10 180ms/2.77u/d1.08 220ms/3.38u/d1.13 175ms/2.69u/d1.11 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 45ms/0.69u/d1.44 50ms/0.77u/d1.30 | 1.54 | 1.44 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 17.410 | `0` | `0` | right | ----- | 52.5 | estimator | 220ms/4.19u/d1.40 170ms/3.24u/d1.08 215ms/4.10u/d1.37 185ms/3.52u/d1.17 220ms/4.19u/d1.40 | 55ms/1.05u/d1.05 55ms/1.05u/d1.05 40ms/0.76u/d1.31 50ms/0.95u/d1.05 | 1.40 | 1.31 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 18.395 | `W` | `W` | right | .-- | 65.0 | estimator | 75ms/1.15u/d1.15 175ms/2.69u/d1.11 215ms/3.31u/d1.10 | 60ms/0.92u/d1.08 50ms/0.77u/d1.30 | 1.15 | 1.30 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 18.755 | `I` | `I` | right | .. | 65.0 | estimator | 80ms/1.23u/d1.23 75ms/1.15u/d1.15 | 60ms/0.92u/d1.08 | 1.23 | 1.08 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 19.090 | `T` | `T` | right | - | 67.5 | estimator | 150ms/2.22u/d1.35 |  | 1.35 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 19.715 | `H` | `H` | right | .... | 67.5 | estimator | 75ms/1.11u/d1.11 75ms/1.11u/d1.11 80ms/1.19u/d1.19 80ms/1.19u/d1.19 | 60ms/0.89u/d1.13 15ms/0.22u/d4.50 55ms/0.81u/d1.23 | 1.19 | 4.50 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 20.475 | `A` | `A` | right | .- | 67.5 | estimator | 75ms/1.11u/d1.11 250ms/3.70u/d1.23 | 55ms/0.81u/d1.23 | 1.23 | 1.23 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 21.310 | `M` | `M` | right | -- | 65.0 | estimator | 150ms/2.31u/d1.30 220ms/3.38u/d1.13 | 50ms/0.77u/d1.30 | 1.30 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 21.535 | `E` | `E` | right | . | 67.5 | estimator | 55ms/0.81u/d1.23 |  | 1.23 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 22.020 | `A` | `A` | right | .- | 67.5 | estimator | 145ms/2.15u/d1.40 170ms/2.52u/d1.19 | 50ms/0.74u/d1.35 | 1.40 | 1.35 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 22.505 | `N` | `N` | right | -. | 65.0 | estimator | 65ms/1.00u/d1.00 |  | 1.00 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 23.625 | `O` | `O` | right | --- | 67.5 | estimator | 190ms/2.81u/d1.07 210ms/3.11u/d1.04 175ms/2.59u/d1.16 | 55ms/0.81u/d1.23 55ms/0.81u/d1.23 | 1.16 | 1.23 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 24.385 | `F` | `F` | right | ..-. | 67.5 | estimator | 80ms/1.19u/d1.19 50ms/0.74u/d1.35 215ms/3.19u/d1.06 80ms/1.19u/d1.19 | 45ms/0.67u/d1.50 50ms/0.74u/d1.35 55ms/0.81u/d1.23 | 1.35 | 1.50 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 25.850 | `1` | `1` | right | .---- | 67.5 | estimator | 85ms/1.26u/d1.26 180ms/2.67u/d1.13 215ms/3.19u/d1.06 175ms/2.59u/d1.16 215ms/3.19u/d1.06 | 50ms/0.74u/d1.35 50ms/0.74u/d1.35 50ms/0.74u/d1.35 55ms/0.81u/d1.23 | 1.26 | 1.35 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 27.065 | `1` | `1` | right | .---- | 67.5 | estimator | 95ms/1.41u/d1.41 215ms/3.19u/d1.06 175ms/2.59u/d1.16 215ms/3.19u/d1.06 175ms/2.59u/d1.16 | 50ms/0.74u/d1.35 55ms/0.81u/d1.23 50ms/0.74u/d1.35 55ms/0.81u/d1.23 | 1.41 | 1.35 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-031948 | 28.055 | `7` | `7` | right | --... | 67.5 | estimator | 440ms/6.52u/d2.17 80ms/1.19u/d1.19 60ms/0.89u/d1.13 80ms/1.19u/d1.19 | 50ms/0.74u/d1.35 55ms/0.81u/d1.23 35ms/0.52u/d1.93 | 2.17 | 1.93 | 4 of 5
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | wrong | - | 52.5 | estimator | 180ms/3.43u/d1.14 |  | 1.14 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 2.525 | `F` | `F` | right | ..-. | 52.5 | estimator | 80ms/1.52u/d1.52 50ms/0.95u/d1.05 215ms/4.10u/d1.37 80ms/1.52u/d1.52 | 45ms/0.86u/d1.17 50ms/0.95u/d1.05 55ms/1.05u/d1.05 | 1.52 | 1.17 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 3.990 | `1` | `1` | right | .---- | 60.0 | estimator | 85ms/1.42u/d1.42 180ms/3.00u/d1.00 215ms/3.58u/d1.19 175ms/2.92u/d1.03 215ms/3.58u/d1.19 | 50ms/0.83u/d1.20 50ms/0.83u/d1.20 50ms/0.83u/d1.20 55ms/0.92u/d1.09 | 1.42 | 1.20 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 5.205 | `1` | `1` | right | .---- | 67.5 | estimator | 95ms/1.41u/d1.41 215ms/3.19u/d1.06 175ms/2.59u/d1.16 215ms/3.19u/d1.06 175ms/2.59u/d1.16 | 50ms/0.74u/d1.35 55ms/0.81u/d1.23 50ms/0.74u/d1.35 55ms/0.81u/d1.23 | 1.41 | 1.35 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 6.195 | `7` | `7` | right | --... | 67.5 | estimator | 440ms/6.52u/d2.17 80ms/1.19u/d1.19 60ms/0.89u/d1.13 80ms/1.19u/d1.19 | 50ms/0.74u/d1.35 55ms/0.81u/d1.23 35ms/0.52u/d1.93 | 2.17 | 1.93 | 4 of 5
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 7.425 | `-` | `.` | added | .-.-.- | 67.5 | estimator | 85ms/1.26u/d1.26 160ms/2.37u/d1.27 80ms/1.19u/d1.19 300ms/4.44u/d1.48 215ms/3.19u/d1.06 | 55ms/0.81u/d1.23 55ms/0.81u/d1.23 50ms/0.74u/d1.35 50ms/0.74u/d1.35 | 1.48 | 1.35 | 5 of 6
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 8.640 | `-` | `1` | added | .---- | 65.0 | estimator | 60ms/0.92u/d1.08 210ms/3.23u/d1.08 175ms/2.69u/d1.11 215ms/3.31u/d1.10 175ms/2.69u/d1.11 | 55ms/0.85u/d1.18 55ms/0.85u/d1.18 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.11 | 1.30 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 9.885 | `.` | `.` | right | .-.-.- | 65.0 | estimator | 85ms/1.31u/d1.31 175ms/2.69u/d1.11 80ms/1.23u/d1.23 215ms/3.31u/d1.10 50ms/0.77u/d1.30 215ms/3.31u/d1.10 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 55ms/0.85u/d1.18 55ms/0.85u/d1.18 30ms/0.46u/d2.17 | 1.31 | 2.17 | 6 of 6
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 11.125 | `L` | `L` | right | .-.. | 65.0 | estimator | 45ms/0.69u/d1.44 220ms/3.38u/d1.13 80ms/1.23u/d1.23 65ms/1.00u/d1.00 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.44 | 1.30 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 11.500 | `I` | `I` | right | .. | 65.0 | estimator | 85ms/1.31u/d1.31 80ms/1.23u/d1.23 | 50ms/0.77u/d1.30 | 1.31 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 11.995 | `N` | `N` | right | -. | 65.0 | estimator | 220ms/3.38u/d1.13 85ms/1.31u/d1.31 | 50ms/0.77u/d1.30 | 1.31 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 12.715 | `K` | `K` | right | -.- | 67.5 | estimator | 215ms/3.19u/d1.06 80ms/1.19u/d1.19 170ms/2.52u/d1.19 | 55ms/0.81u/d1.23 55ms/0.81u/d1.23 | 1.19 | 1.23 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 13.195 | `S` | `S` | right | ... | 67.5 | estimator | 75ms/1.11u/d1.11 55ms/0.81u/d1.23 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 30ms/0.44u/d2.25 | 1.23 | 2.25 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 13.825 | `T` | `T` | right | - | 65.0 | estimator |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 14.655 | `O` | `O` | right | --- | 65.0 | estimator | 170ms/2.62u/d1.15 215ms/3.31u/d1.10 150ms/2.31u/d1.30 | 55ms/0.85u/d1.18 55ms/0.85u/d1.18 | 1.30 | 1.18 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 15.415 | `A` | `A` | right | .- | 65.0 | estimator | 40ms/0.62u/d1.63 215ms/3.31u/d1.10 | 50ms/0.77u/d1.30 | 1.63 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 16.035 | `R` | `R` | right | .-. | 65.0 | estimator | 25ms/0.38u/d2.60 215ms/3.31u/d1.10 80ms/1.23u/d1.23 | 55ms/0.85u/d1.18 50ms/0.77u/d1.30 | 2.60 | 1.30 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 16.385 | `T` | `T` | right | - | 65.0 | estimator | 45ms/0.69u/d1.44 225ms/3.46u/d1.15 | 10ms/0.15u/d6.50 | 1.44 | 6.50 | 2 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 16.720 | `I` | `I` | right | .. | 65.0 | estimator | 15ms/0.23u/d4.33 160ms/2.46u/d1.22 | 10ms/0.15u/d6.50 | 4.33 | 6.50 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 17.585 | `C` | `C` | right | -.-. | 65.0 | estimator | 215ms/3.31u/d1.10 80ms/1.23u/d1.23 215ms/3.31u/d1.10 45ms/0.69u/d1.44 | 35ms/0.54u/d1.86 50ms/0.77u/d1.30 55ms/0.85u/d1.18 | 1.44 | 1.86 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 18.335 | `L` | `L` | right | .-.. | 65.0 | estimator | 85ms/1.31u/d1.31 215ms/3.31u/d1.10 80ms/1.23u/d1.23 80ms/1.23u/d1.23 | 45ms/0.69u/d1.44 15ms/0.23u/d4.33 55ms/0.85u/d1.18 | 1.31 | 4.33 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 18.600 | `E` | `E` | right | . | 65.0 | estimator | 80ms/1.23u/d1.23 |  | 1.23 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 19.095 | `S` | `S` | right | ... | 65.0 | estimator | 15ms/0.23u/d4.33 95ms/1.46u/d1.46 85ms/1.31u/d1.31 85ms/1.31u/d1.31 | 20ms/0.31u/d3.25 50ms/0.77u/d1.30 45ms/0.69u/d1.44 | 4.33 | 3.25 | 4 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 20.175 | `O` | `O` | right | --- | 65.0 | estimator | 175ms/2.69u/d1.11 220ms/3.38u/d1.13 175ms/2.69u/d1.11 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.13 | 1.30 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 20.800 | `R` | `R` | right | .-. | 65.0 | estimator | 80ms/1.23u/d1.23 180ms/2.77u/d1.08 80ms/1.23u/d1.23 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.23 | 1.30 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 21.910 | `O` | `O` | right | --- | 67.5 | estimator | 255ms/3.78u/d1.26 165ms/2.44u/d1.23 215ms/3.19u/d1.06 | 50ms/0.74u/d1.35 50ms/0.74u/d1.35 | 1.26 | 1.35 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 22.270 | `T` | `T` | right | - | 67.5 | estimator | 185ms/2.74u/d1.09 |  | 1.09 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 22.900 | `H` | `H` | right | .... | 67.5 | estimator | 85ms/1.26u/d1.26 50ms/0.74u/d1.35 85ms/1.26u/d1.26 85ms/1.26u/d1.26 | 45ms/0.67u/d1.50 45ms/0.67u/d1.50 50ms/0.74u/d1.35 | 1.35 | 1.50 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 23.110 | `E` | `E` | right | . | 67.5 | estimator | 20ms/0.30u/d3.38 60ms/0.89u/d1.13 | 25ms/0.37u/d2.70 | 3.38 | 2.70 | 2 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 23.720 | `R` | `R` | right | .-. | 67.5 | estimator | 80ms/1.19u/d1.19 195ms/2.89u/d1.04 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 20ms/0.30u/d3.38 | 1.19 | 3.38 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 24.710 | `W` | `W` | right | .-- | 67.5 | estimator | 80ms/1.19u/d1.19 210ms/3.11u/d1.04 175ms/2.59u/d1.16 | 55ms/0.81u/d1.23 55ms/0.81u/d1.23 | 1.19 | 1.23 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 24.975 | `E` | `E` | right | . | 67.5 | estimator | 90ms/1.33u/d1.33 |  | 1.33 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 25.695 | `B` | `B` | right | -... | 67.5 | estimator | 215ms/3.19u/d1.06 80ms/1.19u/d1.19 65ms/0.96u/d1.04 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 50ms/0.74u/d1.35 30ms/0.44u/d2.25 | 1.19 | 2.25 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 26.185 | `S` | `S` | right | ... | 67.5 | estimator | 150ms/2.22u/d1.35 180ms/2.67u/d1.13 | 45ms/0.67u/d1.50 | 1.35 | 1.50 | 2 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 26.590 | `I` | `I` | right | .. | 65.0 | estimator | 80ms/1.23u/d1.23 75ms/1.15u/d1.15 | 55ms/0.85u/d1.18 | 1.23 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 26.950 | `T` | `T` | right | - | 65.0 | estimator | 215ms/3.31u/d1.10 |  | 1.10 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 27.175 | `E` | `E` | right | . | 65.0 | estimator | 55ms/0.85u/d1.18 |  | 1.18 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 27.670 | `S` | `S` | right | ... | 65.0 | estimator | 135ms/2.08u/d1.44 90ms/1.38u/d1.38 70ms/1.08u/d1.08 | 45ms/0.69u/d1.44 20ms/0.31u/d3.25 | 1.44 | 3.25 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 28.540 | `M` | `M` | right | -- | 65.0 | estimator | 205ms/3.15u/d1.05 215ms/3.31u/d1.10 | 50ms/0.77u/d1.30 | 1.10 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 28.765 | `E` | `E` | right | . | 65.0 | estimator |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 29.240 | `N` | `N` | right | -. | 65.0 | estimator | 155ms/2.38u/d1.26 80ms/1.23u/d1.23 | 55ms/0.85u/d1.18 | 1.26 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 29.625 | `T` | `T` | right | - | 65.0 | estimator | 190ms/2.92u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032012 | 30.000 | `I` | `I` | right | .. | 65.0 | estimator | 75ms/1.15u/d1.15 |  | 1.15 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 2.295 | `I` | `I` | right | .. | 67.5 | estimator | 80ms/1.19u/d1.19 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 | 1.19 | 1.23 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 2.880 | `U` | `U` | right | ..- | 67.5 | estimator | 130ms/1.93u/d1.56 80ms/1.19u/d1.19 175ms/2.59u/d1.16 | 50ms/0.74u/d1.35 50ms/0.74u/d1.35 | 1.56 | 1.35 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 3.640 | `L` | `L` | right | .-.. | 65.0 | estimator | 115ms/1.77u/d1.70 175ms/2.69u/d1.11 85ms/1.31u/d1.31 85ms/1.31u/d1.31 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.70 | 1.30 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 4.350 | `L` | `L` | right | .-.. | 65.0 | estimator | 110ms/1.69u/d1.69 210ms/3.23u/d1.08 80ms/1.23u/d1.23 45ms/0.69u/d1.44 | 55ms/0.85u/d1.18 55ms/0.85u/d1.18 45ms/0.69u/d1.44 | 1.69 | 1.44 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 4.615 | `E` | `E` | right | . | 65.0 | estimator | 85ms/1.31u/d1.31 |  | 1.31 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 4.955 | `T` | `T` | right | - | 65.0 | estimator | 180ms/2.77u/d1.08 |  | 1.08 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 5.305 | `I` | `I` | right | .. | 50.0 | estimator | 100ms/2.00u/d1.50 45ms/0.90u/d1.11 | 35ms/0.70u/d1.43 | 1.50 | 1.43 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 5.800 | `N` | `N` | right | -. | 65.0 | estimator | 255ms/3.92u/d1.31 40ms/0.62u/d1.63 | 50ms/0.77u/d1.30 | 1.63 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 6.900 | `C` | `C` | right | -.-. | 60.0 | estimator | 175ms/2.92u/d1.03 80ms/1.33u/d1.33 285ms/4.75u/d1.58 | 50ms/0.83u/d1.20 55ms/0.92u/d1.09 | 1.58 | 1.20 | 3 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 7.390 | `A` | `A` | right | .- | 52.5 | estimator | 85ms/1.62u/d1.62 175ms/3.33u/d1.11 | 50ms/0.95u/d1.05 | 1.62 | 1.05 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 7.875 | `N` | `N` | right | -. | 60.0 | estimator | 210ms/3.50u/d1.17 70ms/1.17u/d1.17 | 15ms/0.25u/d4.00 | 1.17 | 4.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 8.840 | `B` | `B` | right | -... | 65.0 | estimator | 230ms/3.54u/d1.18 85ms/1.31u/d1.31 175ms/2.69u/d1.11 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.31 | 1.30 | 3 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 9.105 | `E` | `E` | right | . | 65.0 | estimator | 85ms/1.31u/d1.31 |  | 1.31 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 10.095 | `F` | `F` | right | ..-. | 65.0 | estimator | 80ms/1.23u/d1.23 80ms/1.23u/d1.23 195ms/3.00u/d1.00 80ms/1.23u/d1.23 | 55ms/0.85u/d1.18 30ms/0.46u/d2.17 55ms/0.85u/d1.18 | 1.23 | 2.17 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 10.925 | `O` | `O` | right | --- | 65.0 | estimator | 155ms/2.38u/d1.26 215ms/3.31u/d1.10 170ms/2.62u/d1.15 | 50ms/0.77u/d1.30 55ms/0.85u/d1.18 | 1.26 | 1.30 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 11.195 | `-` | `T` | added | - | 35.0 | estimator | 90ms/2.57u/d1.17 |  | 1.17 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | wrong | .- | 35.0 | estimator | 50ms/1.43u/d1.43 210ms/6.00u/d2.00 | 35ms/1.00u/d1.00 | 2.00 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 12.025 | `N` | `N` | right | -. | 65.0 | estimator | 160ms/2.46u/d1.22 75ms/1.15u/d1.15 | 60ms/0.92u/d1.08 | 1.22 | 1.08 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 12.655 | `D` | `D` | right | -.. | 67.5 | estimator | 175ms/2.59u/d1.16 70ms/1.04u/d1.04 75ms/1.11u/d1.11 | 60ms/0.89u/d1.13 65ms/0.96u/d1.04 | 1.16 | 1.13 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 13.280 | `I` | `I` | right | .. | 65.0 | estimator | 75ms/1.15u/d1.15 75ms/1.15u/d1.15 | 55ms/0.85u/d1.18 | 1.15 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 13.765 | `N` | `N` | right | -. | 65.0 | estimator | 205ms/3.15u/d1.05 |  | 1.05 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 14.315 | `T` | `T` | right | - | 65.0 | estimator | 145ms/2.23u/d1.34 |  | 1.34 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 14.585 | `E` | `E` | right | . | 65.0 | estimator | 75ms/1.15u/d1.15 |  | 1.15 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 15.295 | `L` | `L` | right | .-.. | 65.0 | estimator | 35ms/0.54u/d1.86 210ms/3.23u/d1.08 75ms/1.15u/d1.15 45ms/0.69u/d1.44 | 60ms/0.92u/d1.08 60ms/0.92u/d1.08 50ms/0.77u/d1.30 | 1.86 | 1.30 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 15.555 | `E` | `E` | right | . | 65.0 | estimator | 80ms/1.23u/d1.23 |  | 1.23 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | wrong | .-- | 65.0 | estimator | 40ms/0.62u/d1.63 215ms/3.31u/d1.10 290ms/4.46u/d1.49 | 50ms/0.77u/d1.30 45ms/0.69u/d1.44 | 1.63 | 1.44 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 17.005 | `R` | `R` | right | .-. | 65.0 | estimator | 90ms/1.38u/d1.38 175ms/2.69u/d1.11 85ms/1.31u/d1.31 | 50ms/0.77u/d1.30 50ms/0.77u/d1.30 | 1.38 | 1.30 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 17.345 | `I` | `I` | right | .. | 65.0 | estimator | 110ms/1.69u/d1.69 45ms/0.69u/d1.44 | 25ms/0.38u/d2.60 | 1.69 | 2.60 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | wrong | - | 67.5 | estimator | 210ms/3.11u/d1.04 |  | 1.04 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 18.215 | `T` | `T` | right | - | 67.5 | estimator | 210ms/3.11u/d1.04 |  | 1.04 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 18.435 | `E` | `E` | right | . | 67.5 | estimator | 90ms/1.33u/d1.33 |  | 1.33 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 19.050 | `R` | `R` | right | .-. | 67.5 | estimator | 95ms/1.41u/d1.41 165ms/2.44u/d1.23 85ms/1.26u/d1.26 | 50ms/0.74u/d1.35 50ms/0.74u/d1.35 | 1.41 | 1.35 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 20.345 | `,` | `,` | right | --..-- | 65.0 | estimator | 155ms/2.38u/d1.26 210ms/3.23u/d1.08 150ms/2.31u/d1.30 225ms/3.46u/d1.15 160ms/2.46u/d1.22 | 55ms/0.85u/d1.18 55ms/0.85u/d1.18 55ms/0.85u/d1.18 45ms/0.69u/d1.44 | 1.30 | 1.44 | 5 of 6
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 21.735 | `P` | `P` | right | .--. | 67.5 | estimator | 80ms/1.19u/d1.19 170ms/2.52u/d1.19 215ms/3.19u/d1.06 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 55ms/0.81u/d1.23 55ms/0.81u/d1.23 | 1.19 | 1.23 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 22.225 | `A` | `A` | right | .- | 67.5 | estimator | 80ms/1.19u/d1.19 215ms/3.19u/d1.06 | 50ms/0.74u/d1.35 | 1.19 | 1.35 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 23.800 | `K` | `K` | right | -.- | 65.0 | estimator | 175ms/2.69u/d1.11 75ms/1.15u/d1.15 175ms/2.69u/d1.11 | 55ms/0.85u/d1.18 55ms/0.85u/d1.18 | 1.15 | 1.18 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 24.045 | `E` | `E` | right | . | 42.5 | estimator | 95ms/2.24u/d1.34 |  | 1.34 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 26.130 | `D` | `H` | wrong | .... | 57.0 | marks (441) | 110ms/1.93u/d1.55 205ms/3.60u/d1.20 15ms/0.26u/d3.80 | 10ms/0.18u/d5.70 10ms/0.18u/d5.70 | 3.80 | 5.70 | 3 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 27.085 | `I` | `I` | right | .. | 38.2 | marks (441) | 105ms/2.75u/d1.09 |  | 1.09 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032050 | 27.090 | `E` | `E` | right | . | 75.0 | grid | 150ms/2.00u/d1.50 |  | 1.50 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 1.690 | `A` | `A` | right | .- | 40.0 | marks (441) | 30ms/0.75u/d1.33 85ms/2.13u/d1.41 | 45ms/1.13u/d1.13 | 1.41 | 1.13 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 2.410 | `K` | `K` | right | -.- | 42.5 | estimator | 175ms/4.12u/d1.37 80ms/1.88u/d1.59 175ms/4.12u/d1.37 | 50ms/1.18u/d1.18 55ms/1.29u/d1.29 | 1.59 | 1.29 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 2.675 | `E` | `E` | right | . | 65.0 | estimator |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 3.015 | `T` | `T` | right | - | 52.5 | estimator | 150ms/2.86u/d1.05 |  | 1.05 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 5.040 | `A` | `A` | right | .- | 42.5 | estimator | 170ms/4.00u/d1.33 |  | 1.33 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 5.515 | `N` | `N` | right | -. | 42.5 | estimator | 190ms/4.47u/d1.49 80ms/1.88u/d1.59 | 15ms/0.35u/d2.83 | 1.59 | 2.83 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | wrong | --- | 40.0 | estimator | 230ms/5.75u/d1.92 85ms/2.13u/d1.41 85ms/2.13u/d1.41 | 10ms/0.25u/d4.00 50ms/1.25u/d1.25 | 1.92 | 4.00 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 6.740 | `I` | `I` | right | .. | 50.0 | estimator | 85ms/1.70u/d1.70 |  | 1.70 | 1.00 | 1 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 7.215 | `N` | `N` | right | -. | 50.0 | estimator | 190ms/3.80u/d1.27 90ms/1.80u/d1.67 | 45ms/0.90u/d1.11 | 1.67 | 1.11 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 7.555 | `T` | `T` | right | - | 42.5 | estimator | 195ms/4.59u/d1.53 |  | 1.53 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 7.820 | `E` | `E` | right | . | 42.5 | estimator |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 8.375 | `R` | `R` | right | .-. | 42.5 | estimator | 220ms/5.18u/d1.73 35ms/0.82u/d1.21 | 45ms/1.06u/d1.06 | 1.73 | 1.06 | 2 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 8.900 | `N` | `N` | right | -. | 42.5 | estimator | 220ms/5.18u/d1.73 85ms/2.00u/d1.50 | 50ms/1.18u/d1.18 | 1.73 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 9.105 | `E` | `E` | right | . | 42.5 | estimator | 90ms/2.12u/d1.42 |  | 1.42 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 9.455 | `T` | `T` | right | - | 42.5 | estimator | 190ms/4.47u/d1.49 |  | 1.49 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 10.670 | `E` | `E` | right | . | 42.5 | estimator |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 11.285 | `R` | `R` | right | .-. | 71.2 | marks (441) | 25ms/0.35u/d2.85 60ms/0.84u/d1.19 220ms/3.09u/d1.03 85ms/1.19u/d1.19 | 15ms/0.21u/d4.75 25ms/0.35u/d2.85 45ms/0.63u/d1.58 | 2.85 | 4.75 | 4 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 11.760 | `S` | `S` | right | ... | 71.2 | marks (441) | 80ms/1.12u/d1.12 80ms/1.12u/d1.12 80ms/1.12u/d1.12 | 55ms/0.77u/d1.29 55ms/0.77u/d1.29 | 1.12 | 1.29 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 12.100 | `I` | `I` | right | .. | 67.5 | estimator | 70ms/1.04u/d1.04 85ms/1.26u/d1.26 | 50ms/0.74u/d1.35 | 1.26 | 1.35 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 12.955 | `O` | `O` | right | --- | 67.5 | estimator | 180ms/2.67u/d1.13 215ms/3.19u/d1.06 170ms/2.52u/d1.19 | 50ms/0.74u/d1.35 55ms/0.81u/d1.23 | 1.19 | 1.35 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 13.445 | `N` | `N` | right | -. | 67.5 | estimator | 235ms/3.48u/d1.16 60ms/0.89u/d1.13 | 35ms/0.52u/d1.93 | 1.16 | 1.93 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032113 | 13.940 | `S` | `S` | right | ... | 67.5 | estimator | 145ms/2.15u/d1.40 80ms/1.19u/d1.19 70ms/1.04u/d1.04 | 50ms/0.74u/d1.35 25ms/0.37u/d2.70 | 1.40 | 2.70 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | wrong | - | 37.5 | estimator | 85ms/2.27u/d1.32 |  | 1.32 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | wrong | .--- | 67.5 | estimator | 85ms/1.26u/d1.26 280ms/4.15u/d1.38 215ms/3.19u/d1.06 155ms/2.30u/d1.31 | 55ms/0.81u/d1.23 55ms/0.81u/d1.23 50ms/0.74u/d1.35 | 1.38 | 1.35 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 4.995 | `2` | `2` | right | ..--- | 47.5 | estimator | 10ms/0.21u/d4.75 85ms/1.79u/d1.68 290ms/6.11u/d2.04 215ms/4.53u/d1.51 155ms/3.26u/d1.09 | 20ms/0.42u/d2.38 50ms/1.05u/d1.05 50ms/1.05u/d1.05 50ms/1.05u/d1.05 | 4.75 | 2.38 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 5.850 | `6` | `6` | right | -.... | 62.5 | estimator | 165ms/2.64u/d1.14 85ms/1.36u/d1.36 85ms/1.36u/d1.36 85ms/1.36u/d1.36 105ms/1.68u/d1.68 | 45ms/0.72u/d1.39 50ms/0.80u/d1.25 50ms/0.80u/d1.25 50ms/0.80u/d1.25 | 1.68 | 1.39 | 5 of 5
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 7.180 | `P` | `P` | right | .--. | 47.5 | estimator | 95ms/2.00u/d1.50 215ms/4.53u/d1.51 215ms/4.53u/d1.51 85ms/1.79u/d1.68 | 50ms/1.05u/d1.05 15ms/0.32u/d3.17 50ms/1.05u/d1.05 | 1.68 | 3.17 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | wrong | --. | 42.5 | estimator | 95ms/2.24u/d1.34 215ms/5.06u/d1.69 85ms/2.00u/d1.50 | 50ms/1.18u/d1.18 50ms/1.18u/d1.18 | 1.69 | 1.18 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 8.645 | `O` | `O` | right | --- | 50.0 | estimator | 175ms/3.50u/d1.17 210ms/4.20u/d1.40 | 55ms/1.10u/d1.10 | 1.40 | 1.10 | 2 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 9.495 | `P` | `P` | right | .--. | 62.5 | estimator | 45ms/0.72u/d1.39 215ms/3.44u/d1.15 180ms/2.88u/d1.04 85ms/1.36u/d1.36 | 50ms/0.80u/d1.25 50ms/0.80u/d1.25 45ms/0.72u/d1.39 | 1.39 | 1.39 | 4 of 4
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 9.990 | `A` | `A` | right | .- | 62.5 | estimator | 85ms/1.36u/d1.36 175ms/2.80u/d1.07 | 50ms/0.80u/d1.25 | 1.36 | 1.25 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 10.750 | `G` | `G` | right | --. | 65.0 | estimator | 15ms/0.23u/d4.33 175ms/2.69u/d1.11 220ms/3.38u/d1.13 85ms/1.31u/d1.31 | 25ms/0.38u/d2.60 50ms/0.77u/d1.30 45ms/0.69u/d1.44 | 4.33 | 2.60 | 4 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 11.245 | `A` | `A` | right | .- | 65.0 | estimator | 80ms/1.23u/d1.23 215ms/3.31u/d1.10 | 55ms/0.85u/d1.18 | 1.23 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 11.600 | `T` | `T` | right | - | 65.0 | estimator | 210ms/3.23u/d1.08 |  | 1.08 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 11.940 | `I` | `I` | right | .. | 65.0 | estimator | 55ms/0.85u/d1.18 85ms/1.31u/d1.31 | 35ms/0.54u/d1.86 | 1.31 | 1.86 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 12.835 | `O` | `O` | right | --- | 47.5 | estimator | 250ms/5.26u/d1.75 215ms/4.53u/d1.51 210ms/4.42u/d1.47 | 15ms/0.32u/d3.17 50ms/1.05u/d1.05 | 1.75 | 3.17 | 3 of 3
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 13.315 | `N` | `N` | right | -. | 71.6 | marks (441) | 255ms/3.56u/d1.19 70ms/0.98u/d1.02 | 55ms/0.77u/d1.30 | 1.19 | 1.30 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 15.335 | `E` | `E` | right | . | 99.1 | marks (441) | 140ms/1.41u/d1.41 30ms/0.30u/d3.30 | 20ms/0.20u/d4.95 | 3.30 | 4.95 | 2 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 16.365 | `L` | `E` | wrong | . | 100.0 | grid | 80ms/0.80u/d1.25 |  | 1.25 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 16.855 | `E` | `E` | right | . | 100.0 | grid | 25ms/0.25u/d4.00 25ms/0.25u/d4.00 | 40ms/0.40u/d2.50 | 4.00 | 2.50 | 2 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 17.400 | `T` | `E` | wrong | . | 100.0 | grid | 50ms/0.50u/d2.00 10ms/0.10u/d10.00 25ms/0.25u/d4.00 | 40ms/0.40u/d2.50 10ms/0.10u/d10.00 | 10.00 | 10.00 | 3 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 17.930 | `I` | `I` | right | .. | 100.0 | grid | 30ms/0.30u/d3.33 20ms/0.20u/d5.00 90ms/0.90u/d1.11 | 80ms/0.80u/d1.25 30ms/0.30u/d3.33 | 5.00 | 3.33 | 3 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 18.470 | `A` | `I` | wrong | .. | 100.0 | grid | 125ms/1.25u/d1.25 40ms/0.40u/d2.50 | 20ms/0.20u/d5.00 | 2.50 | 5.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 18.865 | `R` | `E` | wrong | . | 100.0 | grid | 30ms/0.30u/d3.33 25ms/0.25u/d4.00 | 75ms/0.75u/d1.33 | 4.00 | 1.33 | 2 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 19.330 | `L` | `E` | wrong | . | 150.0 | grid | 60ms/0.40u/d2.50 25ms/0.17u/d6.00 | 100ms/0.67u/d1.50 | 6.00 | 1.50 | 2 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 20.065 | `P` | `I` | wrong | .. | 100.0 | grid | 85ms/0.85u/d1.18 30ms/0.30u/d3.33 | 105ms/1.05u/d1.05 | 3.33 | 1.05 | 2 of 2
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 20.660 | `0` | `E` | wrong | . | 150.0 | grid | 15ms/0.10u/d10.00 45ms/0.30u/d3.33 30ms/0.20u/d5.00 30ms/0.20u/d5.00 | 10ms/0.07u/d15.00 20ms/0.13u/d7.50 105ms/0.70u/d1.43 | 10.00 | 15.00 | 4 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 21.945 | `3` | `E` | wrong | . | 150.0 | grid | 30ms/0.20u/d5.00 95ms/0.63u/d1.58 20ms/0.13u/d7.50 | 35ms/0.23u/d4.29 115ms/0.77u/d1.30 | 7.50 | 4.29 | 3 of 1
+ letter | real | unadjudicated/cw-2026-08-22-032129 | 22.345 | `4` | `E` | wrong | . | 92.5 | estimator | 75ms/0.81u/d1.23 |  | 1.23 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004108 | 14.340 | `E` | `G` | wrong | --. | 55.0 | estimator | 165ms/3.00u/d1.00 165ms/3.00u/d1.00 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.00 | 1.00 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004108 | 15.285 | `K` | `K` | right | -.- | 55.0 | estimator | 160ms/2.91u/d1.03 55ms/1.00u/d1.00 165ms/3.00u/d1.00 | 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 1.03 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004108 | 16.850 | `2` | `2` | right | ..--- | 55.0 | estimator | 60ms/1.09u/d1.09 55ms/1.00u/d1.00 165ms/3.00u/d1.00 165ms/3.00u/d1.00 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.09 | 1.09 | 5 of 5
+ letter | real | unadjudicated/cw-2026-09-24-004108 | 17.775 | `V` | `6` | wrong | -.... | 55.0 | estimator | 165ms/3.00u/d1.00 50ms/0.91u/d1.10 55ms/1.00u/d1.00 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 55ms/1.00u/d1.00 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.10 | 1.09 | 5 of 5
+ letter | real | unadjudicated/cw-2026-09-24-004133 | 4.750 | `C` | `C` | right | -.-. | 55.0 | estimator | 160ms/2.91u/d1.03 50ms/0.91u/d1.10 160ms/2.91u/d1.03 60ms/1.09u/d1.09 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 1.10 | 1.09 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004133 | 5.505 | `H` | `H` | right | .... | 55.0 | estimator | 50ms/0.91u/d1.10 50ms/0.91u/d1.10 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 1.10 | 1.09 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004133 | 6.085 | `A` | `A` | right | .- | 55.0 | estimator | 60ms/1.09u/d1.09 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 | 1.09 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004133 | 6.645 | `R` | `R` | right | .-. | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 55ms/1.00u/d1.00 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.10 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004133 | 7.265 | `D` | `D` | right | -.. | 55.0 | estimator | 170ms/3.09u/d1.03 50ms/0.91u/d1.10 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.10 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 22.645 | `A` | `A` | right | .- | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 | 60ms/1.09u/d1.09 | 1.10 | 1.09 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 23.020 | `T` | `T` | right | - | 55.0 | estimator | 160ms/2.91u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 24.425 | `Y` | `Y` | right | -.-- | 55.0 | estimator | 160ms/2.91u/d1.03 50ms/0.91u/d1.10 155ms/2.82u/d1.06 155ms/2.82u/d1.06 | 60ms/1.09u/d1.09 65ms/1.18u/d1.18 65ms/1.18u/d1.18 | 1.10 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 25.015 | `A` | `A` | right | .- | 55.0 | estimator | 60ms/1.09u/d1.09 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 | 1.09 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 25.730 | `H` | `H` | right | .... | 55.0 | estimator | 15ms/0.27u/d3.67 55ms/1.00u/d1.00 50ms/0.91u/d1.10 50ms/0.91u/d1.10 60ms/1.09u/d1.09 | 25ms/0.45u/d2.20 60ms/1.09u/d1.09 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 3.67 | 2.20 | 5 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 26.750 | `O` | `O` | right | --- | 55.0 | estimator | 165ms/3.00u/d1.00 165ms/3.00u/d1.00 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.00 | 1.00 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 27.640 | `O` | `O` | right | --- | 55.0 | estimator | 165ms/3.00u/d1.00 165ms/3.00u/d1.00 160ms/2.91u/d1.03 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.03 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004205 | 28.680 | `D` | `D` | right | -.. | 55.0 | estimator | 165ms/3.00u/d1.00 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.10 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 2.910 | `O` | `O` | right | --- | 55.0 | estimator | 155ms/2.82u/d1.06 165ms/3.00u/d1.00 160ms/2.91u/d1.03 | 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 1.06 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 3.565 | `M` | `M` | right | -- | 55.0 | estimator | 165ms/3.00u/d1.00 160ms/2.91u/d1.03 | 65ms/1.18u/d1.18 | 1.03 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 4.670 | `<BT>` | `<BT>` | right | -...- | 55.0 | estimator | 160ms/2.91u/d1.03 55ms/1.00u/d1.00 55ms/1.00u/d1.00 55ms/1.00u/d1.00 165ms/3.00u/d1.00 | 60ms/1.09u/d1.09 55ms/1.00u/d1.00 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.03 | 1.09 | 5 of 5
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 5.670 | `T` | `T` | right | - | 55.0 | estimator | 160ms/2.91u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 6.335 | `H` | `H` | right | .... | 55.0 | estimator | 50ms/0.91u/d1.10 50ms/0.91u/d1.10 50ms/0.91u/d1.10 50ms/0.91u/d1.10 | 65ms/1.18u/d1.18 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.10 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 6.835 | `A` | `A` | right | .- | 55.0 | estimator | 55ms/1.00u/d1.00 160ms/2.91u/d1.03 | 60ms/1.09u/d1.09 | 1.03 | 1.09 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 7.330 | `N` | `N` | right | -. | 55.0 | estimator | 150ms/2.73u/d1.10 55ms/1.00u/d1.00 | 65ms/1.18u/d1.18 | 1.10 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 7.715 | `O` | `T` | wrong | - | 55.0 | estimator | 160ms/2.91u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004234 | 8.045 | `U` | `T` | wrong | - | 55.0 | estimator | 170ms/3.09u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 1.730 | `P` | `P` | right | .--. | 55.0 | estimator | 55ms/1.00u/d1.00 165ms/3.00u/d1.00 170ms/3.09u/d1.03 60ms/1.09u/d1.09 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 40ms/0.73u/d1.38 | 1.09 | 1.38 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 2.705 | `O` | `O` | right | --- | 55.0 | estimator | 160ms/2.91u/d1.03 165ms/3.00u/d1.00 160ms/2.91u/d1.03 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.03 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 3.225 | `N` | `N` | right | -. | 55.0 | estimator | 195ms/3.55u/d1.18 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 | 1.18 | 1.09 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 3.820 | `S` | `S` | right | ... | 55.0 | estimator | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 1.09 | 1.10 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 4.750 | `O` | `O` | right | --- | 55.0 | estimator | 165ms/3.00u/d1.00 165ms/3.00u/d1.00 170ms/3.09u/d1.03 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.03 | 1.00 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 5.330 | `R` | `R` | right | .-. | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 55ms/1.00u/d1.00 | 65ms/1.18u/d1.18 55ms/1.00u/d1.00 | 1.10 | 1.18 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 5.615 | `E` | `E` | right | . | 55.0 | estimator | 120ms/2.18u/d1.38 |  | 1.38 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 6.235 | `D` | `D` | right | -.. | 55.0 | estimator | 170ms/3.09u/d1.03 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.03 | 1.00 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 7.315 | `A` | `A` | right | .- | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 | 65ms/1.18u/d1.18 | 1.10 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 7.990 | `M` | `M` | right | -- | 55.0 | estimator | 155ms/2.82u/d1.06 155ms/2.82u/d1.06 | 65ms/1.18u/d1.18 | 1.06 | 1.18 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 8.300 | `E` | `E` | right | . | 55.0 | estimator | 60ms/1.09u/d1.09 |  | 1.09 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 8.920 | `R` | `R` | right | .-. | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 55ms/1.00u/d1.00 | 65ms/1.18u/d1.18 60ms/1.09u/d1.09 | 1.10 | 1.18 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 9.335 | `I` | `I` | right | .. | 55.0 | estimator | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 55ms/1.00u/d1.00 | 1.09 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 10.190 | `C` | `C` | right | -.-. | 55.0 | estimator | 165ms/3.00u/d1.00 55ms/1.00u/d1.00 165ms/3.00u/d1.00 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.00 | 1.00 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 10.680 | `A` | `A` | right | .- | 55.0 | estimator | 50ms/0.91u/d1.10 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 | 1.10 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 15.865 | `O` | `O` | right | --- | 55.0 | estimator | 170ms/3.09u/d1.03 180ms/3.27u/d1.09 165ms/3.00u/d1.00 | 40ms/0.73u/d1.38 55ms/1.00u/d1.00 | 1.09 | 1.38 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 16.685 | `P` | `P` | right | .--. | 55.0 | estimator | 55ms/1.00u/d1.00 160ms/2.91u/d1.03 155ms/2.82u/d1.06 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 65ms/1.18u/d1.18 60ms/1.09u/d1.09 | 1.10 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 17.050 | `E` | `E` | right | . | 55.0 | estimator | 55ms/1.00u/d1.00 |  | 1.00 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 17.670 | `R` | `R` | right | .-. | 55.0 | estimator | 55ms/1.00u/d1.00 165ms/3.00u/d1.00 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.00 | 1.00 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 18.180 | `A` | `A` | right | .- | 55.0 | estimator | 55ms/1.00u/d1.00 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 | 1.00 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 18.645 | `T` | `T` | right | - | 55.0 | estimator | 160ms/2.91u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 19.070 | `I` | `I` | right | .. | 55.0 | estimator | 75ms/1.36u/d1.36 60ms/1.09u/d1.09 | 50ms/0.91u/d1.10 | 1.36 | 1.10 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 19.945 | `O` | `O` | right | --- | 55.0 | estimator | 170ms/3.09u/d1.03 165ms/3.00u/d1.00 165ms/3.00u/d1.00 | 50ms/0.91u/d1.10 60ms/1.09u/d1.09 | 1.03 | 1.10 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 20.430 | `N` | `N` | right | -. | 55.0 | estimator | 170ms/3.09u/d1.03 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 | 1.03 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 22.630 | `A` | `A` | right | .- | 55.0 | estimator | 50ms/0.91u/d1.10 145ms/2.64u/d1.14 | 70ms/1.27u/d1.27 | 1.14 | 1.27 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 23.315 | `L` | `L` | right | .-.. | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 1.10 | 1.09 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 23.970 | `L` | `L` | right | .-.. | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 65ms/1.18u/d1.18 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.10 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 25.110 | `L` | `L` | right | .-.. | 55.0 | estimator | 55ms/1.00u/d1.00 175ms/3.18u/d1.06 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 45ms/0.82u/d1.22 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.06 | 1.22 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 26.030 | `O` | `O` | right | --- | 55.0 | estimator | 160ms/2.91u/d1.03 165ms/3.00u/d1.00 160ms/2.91u/d1.03 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.03 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 26.790 | `G` | `G` | right | --. | 55.0 | estimator | 160ms/2.91u/d1.03 165ms/3.00u/d1.00 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.10 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 27.380 | `S` | `S` | right | ... | 55.0 | estimator | 85ms/1.55u/d1.55 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 1.55 | 1.10 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004322 | 28.505 | `W` | `W` | right | .-- | 55.0 | estimator | 50ms/0.91u/d1.10 155ms/2.82u/d1.06 160ms/2.91u/d1.03 | 65ms/1.18u/d1.18 65ms/1.18u/d1.18 | 1.10 | 1.18 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 3.725 | `I` | `I` | right | .. | 55.0 | estimator | 50ms/0.91u/d1.10 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 | 1.10 | 1.09 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 4.410 | `L` | `L` | right | .-.. | 55.0 | estimator | 55ms/1.00u/d1.00 160ms/2.91u/d1.03 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 65ms/1.18u/d1.18 60ms/1.09u/d1.09 | 1.10 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 5.075 | `L` | `L` | right | .-.. | 55.0 | estimator | 55ms/1.00u/d1.00 165ms/3.00u/d1.00 50ms/0.91u/d1.10 50ms/0.91u/d1.10 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.10 | 1.09 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 6.250 | `B` | `B` | right | -... | 57.5 | estimator | 160ms/2.78u/d1.08 55ms/0.96u/d1.05 55ms/0.96u/d1.05 45ms/0.78u/d1.28 | 55ms/0.96u/d1.05 55ms/0.96u/d1.05 65ms/1.13u/d1.13 | 1.28 | 1.13 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 6.525 | `E` | `E` | right | . | 57.5 | estimator |  |  | Infinity | 1.00 | 0 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 7.440 | `U` | `U` | right | ..- | 57.5 | estimator | 50ms/0.87u/d1.15 55ms/0.96u/d1.05 160ms/2.78u/d1.08 | 60ms/1.04u/d1.04 60ms/1.04u/d1.04 | 1.15 | 1.04 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 8.240 | `P` | `P` | right | .--. | 55.0 | estimator | 55ms/1.00u/d1.00 165ms/3.00u/d1.00 165ms/3.00u/d1.00 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.00 | 1.00 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 9.025 | `L` | `L` | right | .-.. | 55.0 | estimator | 50ms/0.91u/d1.10 160ms/2.91u/d1.03 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 65ms/1.18u/d1.18 60ms/1.09u/d1.09 | 1.10 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 9.975 | `O` | `O` | right | --- | 55.0 | estimator | 165ms/3.00u/d1.00 160ms/2.91u/d1.03 165ms/3.00u/d1.00 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.03 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 10.425 | `A` | `A` | right | .- | 55.0 | estimator | 100ms/1.82u/d1.65 170ms/3.09u/d1.03 | 55ms/1.00u/d1.00 | 1.65 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 11.085 | `D` | `D` | right | -.. | 55.0 | estimator | 160ms/2.91u/d1.03 70ms/1.27u/d1.27 50ms/0.91u/d1.10 | 55ms/1.00u/d1.00 45ms/0.82u/d1.22 | 1.27 | 1.22 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 11.435 | `E` | `E` | right | . | 55.0 | estimator | 50ms/0.91u/d1.10 |  | 1.10 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 12.100 | `D` | `D` | right | -.. | 55.0 | estimator | 165ms/3.00u/d1.00 45ms/0.82u/d1.22 45ms/0.82u/d1.22 | 60ms/1.09u/d1.09 70ms/1.27u/d1.27 | 1.22 | 1.27 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 13.020 | `T` | `T` | right | - | 55.0 | estimator | 165ms/3.00u/d1.00 |  | 1.00 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 13.860 | `O` | `O` | right | --- | 55.0 | estimator | 165ms/3.00u/d1.00 160ms/2.91u/d1.03 160ms/2.91u/d1.03 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.03 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 14.820 | `A` | `A` | right | .- | 55.0 | estimator | 60ms/1.09u/d1.09 160ms/2.91u/d1.03 | 55ms/1.00u/d1.00 | 1.09 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 15.555 | `R` | `R` | right | .-. | 55.0 | estimator | 65ms/1.18u/d1.18 165ms/3.00u/d1.00 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 1.18 | 1.10 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 16.175 | `R` | `R` | right | .-. | 55.0 | estimator | 55ms/1.00u/d1.00 170ms/3.09u/d1.03 60ms/1.09u/d1.09 | 50ms/0.91u/d1.10 55ms/1.00u/d1.00 | 1.09 | 1.10 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 16.870 | `L` | `L` | right | .-.. | 55.0 | estimator | 80ms/1.45u/d1.45 165ms/3.00u/d1.00 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 50ms/0.91u/d1.10 55ms/1.00u/d1.00 | 1.45 | 1.10 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 18.190 | `L` | `L` | right | .-.. | 55.0 | estimator | 60ms/1.09u/d1.09 165ms/3.00u/d1.00 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.09 | 1.09 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 19.280 | `-` | `O` | added | --- | 55.0 | estimator | 155ms/2.82u/d1.06 175ms/3.18u/d1.06 165ms/3.00u/d1.00 | 65ms/1.18u/d1.18 45ms/0.82u/d1.22 | 1.06 | 1.22 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 19.285 | `O` | `O` | right | --- | 55.0 | estimator | 155ms/2.82u/d1.06 175ms/3.18u/d1.06 165ms/3.00u/d1.00 | 65ms/1.18u/d1.18 45ms/0.82u/d1.22 | 1.06 | 1.22 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 19.820 | `T` | `T` | right | - | 55.0 | estimator | 165ms/3.00u/d1.00 |  | 1.00 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004347 | 20.655 | `W` | `W` | right | .-- | 55.0 | estimator | 85ms/1.55u/d1.55 165ms/3.00u/d1.00 165ms/3.00u/d1.00 | 25ms/0.45u/d2.20 55ms/1.00u/d1.00 | 1.55 | 2.20 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004405 | 25.655 | `O` | `O` | right | --- | 55.0 | estimator | 165ms/3.00u/d1.00 165ms/3.00u/d1.00 160ms/2.91u/d1.03 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.03 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004405 | 26.515 | `O` | `O` | right | --- | 55.0 | estimator | 25ms/0.45u/d2.20 165ms/3.00u/d1.00 170ms/3.09u/d1.03 170ms/3.09u/d1.03 | 15ms/0.27u/d3.67 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 2.20 | 3.67 | 4 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004405 | 27.130 | `R` | `R` | right | .-. | 55.0 | estimator | 50ms/0.91u/d1.10 165ms/3.00u/d1.00 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 | 1.10 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004405 | 27.825 | `D` | `D` | right | -.. | 55.0 | estimator | 165ms/3.00u/d1.00 50ms/0.91u/d1.10 50ms/0.91u/d1.10 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.10 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004405 | 28.285 | `I` | `I` | right | .. | 55.0 | estimator | 55ms/1.00u/d1.00 50ms/0.91u/d1.10 | 60ms/1.09u/d1.09 | 1.10 | 1.09 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004405 | 28.795 | `N` | `N` | right | -. | 55.0 | estimator | 160ms/2.91u/d1.03 55ms/1.00u/d1.00 | 60ms/1.09u/d1.09 | 1.03 | 1.09 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 7.115 | `A` | `A` | right | .- | 55.0 | estimator | 55ms/1.00u/d1.00 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 | 1.00 | 1.00 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 7.615 | `T` | `T` | right | - | 55.0 | estimator | 165ms/3.00u/d1.00 |  | 1.00 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 8.510 | `O` | `O` | right | --- | 55.0 | estimator | 165ms/3.00u/d1.00 165ms/3.00u/d1.00 160ms/2.91u/d1.03 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 | 1.03 | 1.00 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 9.090 | `R` | `R` | right | .-. | 55.0 | estimator | 60ms/1.09u/d1.09 160ms/2.91u/d1.03 50ms/0.91u/d1.10 | 50ms/0.91u/d1.10 60ms/1.09u/d1.09 | 1.10 | 1.10 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 12.295 | `Q` | `Q` | right | --.- | 55.0 | estimator | 180ms/3.27u/d1.09 175ms/3.18u/d1.06 75ms/1.36u/d1.36 180ms/3.27u/d1.09 | 50ms/0.91u/d1.10 55ms/1.00u/d1.00 40ms/0.73u/d1.38 | 1.36 | 1.38 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 12.780 | `S` | `S` | right | ... | 55.0 | estimator | 90ms/1.64u/d1.64 65ms/1.18u/d1.18 65ms/1.18u/d1.18 | 25ms/0.45u/d2.20 55ms/1.00u/d1.00 | 1.64 | 2.20 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 13.485 | `L` | `L` | right | .-.. | 55.0 | estimator | 60ms/1.09u/d1.09 175ms/3.18u/d1.06 65ms/1.18u/d1.18 60ms/1.09u/d1.09 | 65ms/1.18u/d1.18 50ms/0.91u/d1.10 55ms/1.00u/d1.00 | 1.18 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 14.105 | `T` | `T` | right | - | 57.5 | estimator | 175ms/3.04u/d1.01 |  | 1.01 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004427 | 14.710 | `N` | `N` | right | -. | 57.5 | estimator | 175ms/3.04u/d1.01 80ms/1.39u/d1.39 | 55ms/0.96u/d1.05 | 1.39 | 1.05 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 18.145 | `K` | `K` | right | -.- | 55.0 | estimator | 155ms/2.82u/d1.06 55ms/1.00u/d1.00 150ms/2.73u/d1.10 | 45ms/0.82u/d1.22 50ms/0.91u/d1.10 | 1.10 | 1.22 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 18.620 | `A` | `A` | right | .- | 52.5 | estimator | 50ms/0.95u/d1.05 150ms/2.86u/d1.05 | 50ms/0.95u/d1.05 | 1.05 | 1.05 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 19.560 | `2` | `2` | right | ..--- | 52.5 | estimator | 55ms/1.05u/d1.05 55ms/1.05u/d1.05 155ms/2.95u/d1.02 155ms/2.95u/d1.02 155ms/2.95u/d1.02 | 45ms/0.86u/d1.17 45ms/0.86u/d1.17 45ms/0.86u/d1.17 45ms/0.86u/d1.17 | 1.05 | 1.17 | 5 of 5
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 20.275 | `G` | `G` | right | --. | 52.5 | estimator | 155ms/2.95u/d1.02 155ms/2.95u/d1.02 50ms/0.95u/d1.05 | 45ms/0.86u/d1.17 50ms/0.95u/d1.05 | 1.05 | 1.17 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 21.145 | `J` | `J` | right | .--- | 50.0 | marks (441) | 55ms/1.10u/d1.10 155ms/3.10u/d1.03 150ms/3.00u/d1.00 155ms/3.10u/d1.03 | 45ms/0.90u/d1.11 50ms/1.00u/d1.00 45ms/0.90u/d1.11 | 1.10 | 1.11 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 21.825 | `V` | `V` | right | ...- | 50.0 | marks (441) | 60ms/1.20u/d1.20 50ms/1.00u/d1.00 50ms/1.00u/d1.00 155ms/3.10u/d1.03 | 50ms/1.00u/d1.00 50ms/1.00u/d1.00 50ms/1.00u/d1.00 | 1.20 | 1.00 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 25.440 | `A` | `A` | right | .- | 50.0 | marks (441) | 60ms/1.20u/d1.20 155ms/3.10u/d1.03 | 45ms/0.90u/d1.11 | 1.20 | 1.11 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 25.885 | `A` | `A` | right | .- | 50.0 | marks (441) | 45ms/0.90u/d1.11 150ms/3.00u/d1.00 | 55ms/1.10u/d1.10 | 1.11 | 1.10 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 26.705 | `3` | `3` | right | ...-- | 50.0 | marks (441) | 55ms/1.10u/d1.10 55ms/1.10u/d1.10 55ms/1.10u/d1.10 155ms/3.10u/d1.03 | 50ms/1.00u/d1.00 45ms/0.90u/d1.11 45ms/0.90u/d1.11 | 1.10 | 1.11 | 4 of 5
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 27.135 | `S` | `S` | right | ... | 50.0 | marks (441) | 55ms/1.10u/d1.10 55ms/1.10u/d1.10 55ms/1.10u/d1.10 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 | 1.10 | 1.11 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004510 | 27.840 | `B` | `B` | right | -... | 50.0 | marks (441) | 160ms/3.20u/d1.07 50ms/1.00u/d1.00 50ms/1.00u/d1.00 50ms/1.00u/d1.00 | 45ms/0.90u/d1.11 50ms/1.00u/d1.00 50ms/1.00u/d1.00 | 1.07 | 1.11 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 15.925 | `D` | `D` | right | -.. | 52.5 | estimator | 165ms/3.14u/d1.05 55ms/1.05u/d1.05 55ms/1.05u/d1.05 | 55ms/1.05u/d1.05 55ms/1.05u/d1.05 | 1.05 | 1.05 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 16.150 | `E` | `E` | right | . | 52.5 | estimator | 50ms/0.95u/d1.05 |  | 1.05 | 1.00 | 1 of 1
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 16.935 | `K` | `K` | right | -.- | 52.5 | estimator | 155ms/2.95u/d1.02 55ms/1.05u/d1.05 160ms/3.05u/d1.02 | 60ms/1.14u/d1.14 60ms/1.14u/d1.14 | 1.05 | 1.14 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 17.365 | `A` | `A` | right | .- | 52.5 | estimator | 50ms/0.95u/d1.05 170ms/3.24u/d1.08 | 55ms/1.05u/d1.05 | 1.08 | 1.05 | 2 of 2
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 18.380 | `2` | `2` | right | ..--- | 55.0 | estimator | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 170ms/3.09u/d1.03 165ms/3.00u/d1.00 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 50ms/0.91u/d1.10 60ms/1.09u/d1.09 | 1.03 | 1.10 | 5 of 5
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 19.120 | `G` | `G` | right | --. | 55.0 | estimator | 165ms/3.00u/d1.00 160ms/2.91u/d1.03 50ms/0.91u/d1.10 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 | 1.10 | 1.09 | 3 of 3
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 20.070 | `J` | `J` | right | .--- | 55.0 | estimator | 55ms/1.00u/d1.00 160ms/2.91u/d1.03 160ms/2.91u/d1.03 155ms/2.82u/d1.06 | 60ms/1.09u/d1.09 60ms/1.09u/d1.09 65ms/1.18u/d1.18 | 1.06 | 1.18 | 4 of 4
+ letter | real | unadjudicated/cw-2026-09-24-004550 | 20.795 | `V` | `V` | right | ...- | 55.0 | estimator | 55ms/1.00u/d1.00 55ms/1.00u/d1.00 50ms/0.91u/d1.10 165ms/3.00u/d1.00 | 55ms/1.00u/d1.00 60ms/1.09u/d1.09 55ms/1.00u/d1.00 | 1.10 | 1.09 | 4 of 4
+ bin | real | worst mark | distance | right | wrong | added | wrong or added | right at or past the bin | wrong or added at or past the bin
+ bin | real | worst mark | 1.00 to 1.25 | 194 | 12 | 3 | 15 | 374 | 47
+ bin | real | worst mark | 1.25 to 1.50 | 98 | 7 | 1 | 8 | 180 | 32
+ bin | real | worst mark | 1.50 to 2.00 | 55 | 10 | 0 | 10 | 82 | 24
+ bin | real | worst mark | 2.00 to 3.00 | 7 | 4 | 0 | 4 | 27 | 14
+ bin | real | worst mark | 3.00 to 5.00 | 10 | 3 | 0 | 3 | 20 | 10
+ bin | real | worst mark | 5.00 and over | 2 | 4 | 0 | 4 | 10 | 7
+ bin | real | worst mark | no whole mark | 8 | 3 | 0 | 3 | 8 | 3
+ edge | real | worst mark | farthest right letter Infinity (Infinity) | wrong or added past it 0 of 47 | 
+ farthest right | real | worst mark | unadjudicated/cw-2026-08-22-031838 19.755 `E` Infinity, unadjudicated/cw-2026-08-22-031905 15.410 `I` Infinity, unadjudicated/cw-2026-08-22-032012 13.825 `T` Infinity, unadjudicated/cw-2026-08-22-032012 28.765 `E` Infinity, unadjudicated/cw-2026-08-22-032113 2.675 `E` Infinity
+ bin | real | worst gap | distance | right | wrong | added | wrong or added | right at or past the bin | wrong or added at or past the bin
+ bin | real | worst gap | 1.00 to 1.25 | 218 | 29 | 2 | 31 | 374 | 47
+ bin | real | worst gap | 1.25 to 1.50 | 84 | 4 | 2 | 6 | 156 | 16
+ bin | real | worst gap | 1.50 to 2.00 | 26 | 2 | 0 | 2 | 72 | 10
+ bin | real | worst gap | 2.00 to 3.00 | 22 | 1 | 0 | 1 | 46 | 8
+ bin | real | worst gap | 3.00 to 5.00 | 21 | 3 | 0 | 3 | 24 | 7
+ bin | real | worst gap | 5.00 and over | 3 | 4 | 0 | 4 | 3 | 4
+ bin | real | worst gap | no whole mark | 0 | 0 | 0 | 0 | 0 | 0
+ edge | real | worst gap | farthest right letter 6.500 (6.5) | wrong or added past it 2 of 47 | unadjudicated/cw-2026-08-22-032129 17.400 `T`->`E` 10.00, unadjudicated/cw-2026-08-22-032129 20.660 `0`->`E` 15.00
+ farthest right | real | worst gap | unadjudicated/cw-2026-08-22-032012 16.385 `T` 6.50, unadjudicated/cw-2026-08-22-032012 16.720 `I` 6.50, cw-2026-08-18-004507 25.995 `E` 5.00, unadjudicated/cw-2026-08-22-032129 15.335 `E` 4.95, unadjudicated/cw-2026-08-22-032113 11.285 `R` 4.75
+ bin | real | together, the worse of the two | distance | right | wrong | added | wrong or added | right at or past the bin | wrong or added at or past the bin
+ bin | real | together, the worse of the two | 1.00 to 1.25 | 159 | 11 | 2 | 13 | 374 | 47
+ bin | real | together, the worse of the two | 1.25 to 1.50 | 92 | 7 | 2 | 9 | 215 | 34
+ bin | real | together, the worse of the two | 1.50 to 2.00 | 64 | 8 | 0 | 8 | 123 | 25
+ bin | real | together, the worse of the two | 2.00 to 3.00 | 20 | 4 | 0 | 4 | 59 | 17
+ bin | real | together, the worse of the two | 3.00 to 5.00 | 27 | 4 | 0 | 4 | 39 | 13
+ bin | real | together, the worse of the two | 5.00 and over | 4 | 6 | 0 | 6 | 12 | 9
+ bin | real | together, the worse of the two | no whole mark | 8 | 3 | 0 | 3 | 8 | 3
+ edge | real | together, the worse of the two | farthest right letter Infinity (Infinity) | wrong or added past it 0 of 47 | 
+ farthest right | real | together, the worse of the two | unadjudicated/cw-2026-08-22-031838 19.755 `E` Infinity, unadjudicated/cw-2026-08-22-031905 15.410 `I` Infinity, unadjudicated/cw-2026-08-22-032012 13.825 `T` Infinity, unadjudicated/cw-2026-08-22-032012 28.765 `E` Infinity, unadjudicated/cw-2026-08-22-032113 2.675 `E` Infinity
+ total | real | 421 sure letters: 374 right, 43 wrong, 4 added | 64 whose whole marks differ in number from the pattern's elements | unit from: estimator 369, grid 34, marks (441) 18 | 0 whose rounded unit differs from the character's wpm
+ letter | set | recording | at s | sent | emitted | class | pattern | unit ms | unit from | marks ms/units/distance | inner gaps ms/units/distance | worst mark | worst gap | marks against elements
+ letter | synthetic | cq-12wpm-15db | 2.110 | `C` | `C` | right | -.-. | 100.0 | grid | 305ms/3.05u/d1.02 105ms/1.05u/d1.05 305ms/3.05u/d1.02 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.05 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 3.710 | `Q` | `Q` | right | --.- | 100.0 | estimator | 305ms/3.05u/d1.02 310ms/3.10u/d1.03 105ms/1.05u/d1.05 305ms/3.05u/d1.02 | 95ms/0.95u/d1.05 90ms/0.90u/d1.11 95ms/0.95u/d1.05 | 1.05 | 1.11 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 5.515 | `C` | `C` | right | -.-. | 100.0 | estimator | 305ms/3.05u/d1.02 105ms/1.05u/d1.05 305ms/3.05u/d1.02 110ms/1.10u/d1.10 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.10 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 7.110 | `Q` | `Q` | right | --.- | 100.0 | estimator | 305ms/3.05u/d1.02 305ms/3.05u/d1.02 115ms/1.15u/d1.15 305ms/3.05u/d1.02 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 85ms/0.85u/d1.18 | 1.15 | 1.18 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 8.910 | `C` | `C` | right | -.-. | 100.0 | estimator | 305ms/3.05u/d1.02 105ms/1.05u/d1.05 310ms/3.10u/d1.03 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 90ms/0.90u/d1.11 | 1.05 | 1.11 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 10.510 | `Q` | `Q` | right | --.- | 100.0 | estimator | 305ms/3.05u/d1.02 305ms/3.05u/d1.02 105ms/1.05u/d1.05 305ms/3.05u/d1.02 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.05 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 11.910 | `D` | `D` | right | -.. | 100.0 | estimator | 305ms/3.05u/d1.02 110ms/1.10u/d1.10 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 90ms/0.90u/d1.11 | 1.10 | 1.11 | 3 of 3
+ letter | synthetic | cq-12wpm-15db | 12.310 | `E` | `E` | right | . | 100.0 | estimator | 105ms/1.05u/d1.05 |  | 1.05 | 1.00 | 1 of 1
+ letter | synthetic | cq-12wpm-15db | 13.510 | `N` | `N` | right | -. | 100.0 | estimator | 305ms/3.05u/d1.02 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 | 1.05 | 1.05 | 2 of 2
+ letter | synthetic | cq-12wpm-15db | 15.710 | `0` | `0` | right | ----- | 100.0 | estimator | 305ms/3.05u/d1.02 305ms/3.05u/d1.02 305ms/3.05u/d1.02 310ms/3.10u/d1.03 310ms/3.10u/d1.03 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 95ms/0.95u/d1.05 90ms/0.90u/d1.11 | 1.03 | 1.11 | 5 of 5
+ letter | synthetic | cq-12wpm-15db | 17.110 | `C` | `C` | right | -.-. | 100.0 | estimator | 320ms/3.20u/d1.07 105ms/1.05u/d1.05 305ms/3.05u/d1.02 105ms/1.05u/d1.05 | 80ms/0.80u/d1.25 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.07 | 1.25 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 17.910 | `A` | `A` | right | .- | 100.0 | estimator | 105ms/1.05u/d1.05 315ms/3.15u/d1.05 | 95ms/0.95u/d1.05 | 1.05 | 1.05 | 2 of 2
+ letter | synthetic | cq-12wpm-15db | 19.110 | `L` | `L` | right | .-.. | 100.0 | estimator | 105ms/1.05u/d1.05 305ms/3.05u/d1.02 105ms/1.05u/d1.05 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.05 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 20.310 | `L` | `L` | right | .-.. | 100.0 | estimator | 105ms/1.05u/d1.05 305ms/3.05u/d1.02 105ms/1.05u/d1.05 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.05 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 21.510 | `N` | `N` | right | -. | 100.0 | estimator | 305ms/3.05u/d1.02 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 | 1.05 | 1.05 | 2 of 2
+ letter | synthetic | cq-12wpm-15db | 23.710 | `0` | `0` | right | ----- | 100.0 | estimator | 310ms/3.10u/d1.03 305ms/3.05u/d1.02 315ms/3.15u/d1.05 305ms/3.05u/d1.02 305ms/3.05u/d1.02 | 90ms/0.90u/d1.11 95ms/0.95u/d1.05 85ms/0.85u/d1.18 95ms/0.95u/d1.05 | 1.05 | 1.18 | 5 of 5
+ letter | synthetic | cq-12wpm-15db | 25.110 | `C` | `C` | right | -.-. | 100.0 | estimator | 315ms/3.15u/d1.05 110ms/1.10u/d1.10 310ms/3.10u/d1.03 120ms/1.20u/d1.20 | 85ms/0.85u/d1.18 95ms/0.95u/d1.05 85ms/0.85u/d1.18 | 1.20 | 1.18 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 25.910 | `A` | `A` | right | .- | 100.0 | estimator | 120ms/1.20u/d1.20 305ms/3.05u/d1.02 | 80ms/0.80u/d1.25 | 1.20 | 1.25 | 2 of 2
+ letter | synthetic | cq-12wpm-15db | 27.110 | `L` | `L` | right | .-.. | 100.0 | estimator | 110ms/1.10u/d1.10 305ms/3.05u/d1.02 110ms/1.10u/d1.10 110ms/1.10u/d1.10 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 90ms/0.90u/d1.11 | 1.10 | 1.11 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 28.310 | `L` | `L` | right | .-.. | 100.0 | estimator | 105ms/1.05u/d1.05 305ms/3.05u/d1.02 105ms/1.05u/d1.05 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.05 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-15db | 29.910 | `K` | `K` | right | -.- | 100.0 | estimator | 305ms/3.05u/d1.02 105ms/1.05u/d1.05 305ms/3.05u/d1.02 | 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 1.05 | 1.05 | 3 of 3
+ letter | synthetic | cq-12wpm-5db | 2.110 | `C` | `C` | right | -.-. | 100.0 | grid | 350ms/3.50u/d1.17 95ms/0.95u/d1.05 295ms/2.95u/d1.02 105ms/1.05u/d1.05 | 45ms/0.45u/d2.22 105ms/1.05u/d1.05 100ms/1.00u/d1.00 | 1.17 | 2.22 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 3.710 | `Q` | `Q` | right | --.- | 102.5 | estimator | 295ms/2.88u/d1.04 290ms/2.83u/d1.06 90ms/0.88u/d1.14 295ms/2.88u/d1.04 | 110ms/1.07u/d1.07 120ms/1.17u/d1.17 100ms/0.98u/d1.03 | 1.14 | 1.17 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 5.510 | `C` | `C` | right | -.-. | 100.0 | marks (441) | 300ms/3.00u/d1.00 100ms/1.00u/d1.00 310ms/3.10u/d1.03 110ms/1.10u/d1.10 | 100ms/1.00u/d1.00 100ms/1.00u/d1.00 90ms/0.90u/d1.11 | 1.10 | 1.11 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 7.110 | `Q` | `Q` | right | --.- | 100.0 | marks (441) | 305ms/3.05u/d1.02 335ms/3.35u/d1.12 95ms/0.95u/d1.05 300ms/3.00u/d1.00 | 95ms/0.95u/d1.05 70ms/0.70u/d1.43 105ms/1.05u/d1.05 | 1.12 | 1.43 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 8.915 | `C` | `C` | right | -.-. | 100.0 | marks (441) | 305ms/3.05u/d1.02 75ms/0.75u/d1.33 320ms/3.20u/d1.07 105ms/1.05u/d1.05 | 115ms/1.15u/d1.15 100ms/1.00u/d1.00 85ms/0.85u/d1.18 | 1.33 | 1.18 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 10.510 | `Q` | `Q` | right | --.- | 100.0 | marks (441) | 305ms/3.05u/d1.02 295ms/2.95u/d1.02 100ms/1.00u/d1.00 300ms/3.00u/d1.00 | 100ms/1.00u/d1.00 105ms/1.05u/d1.05 100ms/1.00u/d1.00 | 1.02 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 11.910 | `D` | `D` | right | -.. | 100.0 | marks (441) | 300ms/3.00u/d1.00 105ms/1.05u/d1.05 100ms/1.00u/d1.00 | 95ms/0.95u/d1.05 100ms/1.00u/d1.00 | 1.05 | 1.05 | 3 of 3
+ letter | synthetic | cq-12wpm-5db | 12.305 | `E` | `E` | right | . | 100.0 | estimator | 115ms/1.15u/d1.15 |  | 1.15 | 1.00 | 1 of 1
+ letter | synthetic | cq-12wpm-5db | 13.510 | `N` | `N` | right | -. | 100.0 | marks (441) | 300ms/3.00u/d1.00 105ms/1.05u/d1.05 | 95ms/0.95u/d1.05 | 1.05 | 1.05 | 2 of 2
+ letter | synthetic | cq-12wpm-5db | 15.710 | `0` | `0` | right | ----- | 100.0 | marks (441) | 300ms/3.00u/d1.00 350ms/3.50u/d1.17 305ms/3.05u/d1.02 300ms/3.00u/d1.00 315ms/3.15u/d1.05 | 100ms/1.00u/d1.00 50ms/0.50u/d2.00 95ms/0.95u/d1.05 105ms/1.05u/d1.05 | 1.17 | 2.00 | 5 of 5
+ letter | synthetic | cq-12wpm-5db | 17.115 | `C` | `C` | right | -.-. | 100.0 | estimator | 300ms/3.00u/d1.00 105ms/1.05u/d1.05 295ms/2.95u/d1.02 110ms/1.10u/d1.10 | 95ms/0.95u/d1.05 105ms/1.05u/d1.05 100ms/1.00u/d1.00 | 1.10 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 17.905 | `A` | `A` | right | .- | 100.0 | marks (441) | 105ms/1.05u/d1.05 310ms/3.10u/d1.03 | 95ms/0.95u/d1.05 | 1.05 | 1.05 | 2 of 2
+ letter | synthetic | cq-12wpm-5db | 19.105 | `L` | `L` | right | .-.. | 102.5 | estimator | 110ms/1.07u/d1.07 295ms/2.88u/d1.04 95ms/0.93u/d1.08 110ms/1.07u/d1.07 | 90ms/0.88u/d1.14 105ms/1.02u/d1.02 105ms/1.02u/d1.02 | 1.08 | 1.14 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 20.310 | `L` | `L` | right | .-.. | 100.0 | estimator | 95ms/0.95u/d1.05 300ms/3.00u/d1.00 100ms/1.00u/d1.00 100ms/1.00u/d1.00 | 105ms/1.05u/d1.05 100ms/1.00u/d1.00 105ms/1.05u/d1.05 | 1.05 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 21.510 | `N` | `N` | right | -. | 102.5 | estimator | 310ms/3.02u/d1.01 105ms/1.02u/d1.02 | 80ms/0.78u/d1.28 | 1.02 | 1.28 | 2 of 2
+ letter | synthetic | cq-12wpm-5db | 23.700 | `0` | `0` | right | ----- | 100.0 | marks (441) | 295ms/2.95u/d1.02 295ms/2.95u/d1.02 305ms/3.05u/d1.02 305ms/3.05u/d1.02 295ms/2.95u/d1.02 | 110ms/1.10u/d1.10 95ms/0.95u/d1.05 100ms/1.00u/d1.00 95ms/0.95u/d1.05 | 1.02 | 1.10 | 5 of 5
+ letter | synthetic | cq-12wpm-5db | 25.100 | `C` | `C` | right | -.-. | 100.0 | marks (441) | 325ms/3.25u/d1.08 100ms/1.00u/d1.00 330ms/3.30u/d1.10 115ms/1.15u/d1.15 | 75ms/0.75u/d1.33 95ms/0.95u/d1.05 75ms/0.75u/d1.33 | 1.15 | 1.33 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 25.910 | `A` | `A` | right | .- | 100.0 | marks (441) | 115ms/1.15u/d1.15 300ms/3.00u/d1.00 | 90ms/0.90u/d1.11 | 1.15 | 1.11 | 2 of 2
+ letter | synthetic | cq-12wpm-5db | 27.110 | `L` | `L` | right | .-.. | 100.0 | estimator | 100ms/1.00u/d1.00 295ms/2.95u/d1.02 95ms/0.95u/d1.05 95ms/0.95u/d1.05 | 100ms/1.00u/d1.00 105ms/1.05u/d1.05 105ms/1.05u/d1.05 | 1.05 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 28.310 | `L` | `L` | right | .-.. | 100.0 | estimator | 110ms/1.10u/d1.10 290ms/2.90u/d1.03 100ms/1.00u/d1.00 100ms/1.00u/d1.00 | 95ms/0.95u/d1.05 105ms/1.05u/d1.05 100ms/1.00u/d1.00 | 1.10 | 1.05 | 4 of 4
+ letter | synthetic | cq-12wpm-5db | 29.910 | `K` | `K` | right | -.- | 100.0 | marks (441) | 300ms/3.00u/d1.00 100ms/1.00u/d1.00 310ms/3.10u/d1.03 | 100ms/1.00u/d1.00 105ms/1.05u/d1.05 | 1.03 | 1.05 | 3 of 3
+ letter | synthetic | cq-18wpm-15db | 1.745 | `C` | `C` | right | -.-. | 67.5 | estimator | 210ms/3.11u/d1.04 70ms/1.04u/d1.04 205ms/3.04u/d1.01 75ms/1.11u/d1.11 | 55ms/0.81u/d1.23 65ms/0.96u/d1.04 60ms/0.89u/d1.13 | 1.11 | 1.23 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 2.810 | `Q` | `Q` | right | --.- | 67.5 | estimator | 210ms/3.11u/d1.04 205ms/3.04u/d1.01 75ms/1.11u/d1.11 205ms/3.04u/d1.01 | 60ms/0.89u/d1.13 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.11 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 4.010 | `C` | `C` | right | -.-. | 67.5 | estimator | 205ms/3.04u/d1.01 70ms/1.04u/d1.04 210ms/3.11u/d1.04 75ms/1.11u/d1.11 | 65ms/0.96u/d1.04 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.11 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 5.075 | `Q` | `Q` | right | --.- | 65.0 | estimator | 210ms/3.23u/d1.08 205ms/3.15u/d1.05 75ms/1.15u/d1.15 205ms/3.15u/d1.05 | 55ms/0.85u/d1.18 60ms/0.92u/d1.08 60ms/0.92u/d1.08 | 1.15 | 1.18 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 6.275 | `C` | `C` | right | -.-. | 65.0 | estimator | 205ms/3.15u/d1.05 70ms/1.08u/d1.08 205ms/3.15u/d1.05 70ms/1.08u/d1.08 | 60ms/0.92u/d1.08 65ms/1.00u/d1.00 60ms/0.92u/d1.08 | 1.08 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 7.345 | `Q` | `Q` | right | --.- | 65.0 | estimator | 205ms/3.15u/d1.05 210ms/3.23u/d1.08 70ms/1.08u/d1.08 205ms/3.15u/d1.05 | 60ms/0.92u/d1.08 60ms/0.92u/d1.08 65ms/1.00u/d1.00 | 1.08 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 8.280 | `D` | `D` | right | -.. | 65.0 | estimator | 235ms/3.62u/d1.21 75ms/1.15u/d1.15 90ms/1.38u/d1.38 | 30ms/0.46u/d2.17 60ms/0.92u/d1.08 | 1.38 | 2.17 | 3 of 3
+ letter | synthetic | cq-18wpm-15db | 8.545 | `E` | `E` | right | . | 65.0 | estimator | 75ms/1.15u/d1.15 |  | 1.15 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-15db | 9.345 | `N` | `N` | right | -. | 65.0 | estimator | 210ms/3.23u/d1.08 75ms/1.15u/d1.15 | 55ms/0.85u/d1.18 | 1.15 | 1.18 | 2 of 2
+ letter | synthetic | cq-18wpm-15db | 10.810 | `0` | `0` | right | ----- | 67.5 | estimator | 205ms/3.04u/d1.01 205ms/3.04u/d1.01 205ms/3.04u/d1.01 205ms/3.04u/d1.01 205ms/3.04u/d1.01 | 60ms/0.89u/d1.13 60ms/0.89u/d1.13 65ms/0.96u/d1.04 60ms/0.89u/d1.13 | 1.01 | 1.13 | 5 of 5
+ letter | synthetic | cq-18wpm-15db | 11.745 | `C` | `C` | right | -.-. | 65.0 | estimator | 205ms/3.15u/d1.05 80ms/1.23u/d1.23 205ms/3.15u/d1.05 75ms/1.15u/d1.15 | 60ms/0.92u/d1.08 55ms/0.85u/d1.18 60ms/0.92u/d1.08 | 1.23 | 1.18 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 12.280 | `A` | `A` | right | .- | 65.0 | estimator | 75ms/1.15u/d1.15 220ms/3.38u/d1.13 | 55ms/0.85u/d1.18 | 1.15 | 1.18 | 2 of 2
+ letter | synthetic | cq-18wpm-15db | 13.075 | `L` | `L` | right | .-.. | 67.5 | estimator | 75ms/1.11u/d1.11 210ms/3.11u/d1.04 80ms/1.19u/d1.19 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 55ms/0.81u/d1.23 55ms/0.81u/d1.23 | 1.19 | 1.23 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 13.875 | `L` | `L` | right | .-.. | 67.5 | estimator | 70ms/1.04u/d1.04 220ms/3.26u/d1.09 70ms/1.04u/d1.04 70ms/1.04u/d1.04 | 60ms/0.89u/d1.13 45ms/0.67u/d1.50 65ms/0.96u/d1.04 | 1.09 | 1.50 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 14.675 | `N` | `N` | right | -. | 65.0 | estimator | 210ms/3.23u/d1.08 70ms/1.08u/d1.08 | 60ms/0.92u/d1.08 | 1.08 | 1.08 | 2 of 2
+ letter | synthetic | cq-18wpm-15db | 16.145 | `0` | `0` | right | ----- | 65.0 | estimator | 210ms/3.23u/d1.08 215ms/3.31u/d1.10 210ms/3.23u/d1.08 205ms/3.15u/d1.05 210ms/3.23u/d1.08 | 55ms/0.85u/d1.18 50ms/0.77u/d1.30 60ms/0.92u/d1.08 60ms/0.92u/d1.08 | 1.10 | 1.30 | 5 of 5
+ letter | synthetic | cq-18wpm-15db | 17.080 | `C` | `C` | right | -.-. | 65.0 | estimator | 210ms/3.23u/d1.08 70ms/1.08u/d1.08 205ms/3.15u/d1.05 75ms/1.15u/d1.15 | 60ms/0.92u/d1.08 60ms/0.92u/d1.08 60ms/0.92u/d1.08 | 1.15 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 17.610 | `A` | `A` | right | .- | 65.0 | estimator | 75ms/1.15u/d1.15 205ms/3.15u/d1.05 | 60ms/0.92u/d1.08 | 1.15 | 1.08 | 2 of 2
+ letter | synthetic | cq-18wpm-15db | 18.410 | `L` | `L` | right | .-.. | 65.0 | estimator | 75ms/1.15u/d1.15 205ms/3.15u/d1.05 70ms/1.08u/d1.08 70ms/1.08u/d1.08 | 60ms/0.92u/d1.08 60ms/0.92u/d1.08 65ms/1.00u/d1.00 | 1.15 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 19.210 | `L` | `L` | right | .-.. | 65.0 | estimator | 70ms/1.08u/d1.08 205ms/3.15u/d1.05 75ms/1.15u/d1.15 70ms/1.08u/d1.08 | 65ms/1.00u/d1.00 60ms/0.92u/d1.08 60ms/0.92u/d1.08 | 1.15 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-15db | 20.280 | `K` | `K` | right | -.- | 65.0 | estimator | 205ms/3.15u/d1.05 70ms/1.08u/d1.08 205ms/3.15u/d1.05 | 65ms/1.00u/d1.00 60ms/0.92u/d1.08 | 1.08 | 1.08 | 3 of 3
+ letter | synthetic | cq-18wpm-5db | 2.810 | `Q` | `Q` | right | --.- | 65.0 | estimator | 190ms/2.92u/d1.03 215ms/3.31u/d1.10 90ms/1.38u/d1.38 190ms/2.92u/d1.03 | 80ms/1.23u/d1.23 40ms/0.62u/d1.63 55ms/0.85u/d1.18 | 1.38 | 1.63 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 4.000 | `C` | `C` | right | -.-. | 65.0 | estimator | 210ms/3.23u/d1.08 65ms/1.00u/d1.00 220ms/3.38u/d1.13 65ms/1.00u/d1.00 | 65ms/1.00u/d1.00 70ms/1.08u/d1.08 40ms/0.62u/d1.63 | 1.13 | 1.63 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 5.070 | `Q` | `Q` | right | --.- | 65.0 | estimator | 190ms/2.92u/d1.03 210ms/3.23u/d1.08 65ms/1.00u/d1.00 200ms/3.08u/d1.03 | 65ms/1.00u/d1.00 60ms/0.92u/d1.08 65ms/1.00u/d1.00 | 1.08 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 6.275 | `C` | `C` | right | -.-. | 65.0 | estimator | 200ms/3.08u/d1.03 75ms/1.15u/d1.15 205ms/3.15u/d1.05 65ms/1.00u/d1.00 | 70ms/1.08u/d1.08 50ms/0.77u/d1.30 65ms/1.00u/d1.00 | 1.15 | 1.30 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 7.325 | `Q` | `Q` | right | --.- | 65.0 | estimator | 195ms/3.00u/d1.00 200ms/3.08u/d1.03 80ms/1.23u/d1.23 225ms/3.46u/d1.15 | 75ms/1.15u/d1.15 65ms/1.00u/d1.00 45ms/0.69u/d1.44 | 1.23 | 1.44 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 8.275 | `D` | `D` | right | -.. | 65.0 | estimator | 230ms/3.54u/d1.18 65ms/1.00u/d1.00 80ms/1.23u/d1.23 | 40ms/0.62u/d1.63 70ms/1.08u/d1.08 | 1.23 | 1.63 | 3 of 3
+ letter | synthetic | cq-18wpm-5db | 8.545 | `E` | `E` | right | . | 65.0 | estimator | 80ms/1.23u/d1.23 |  | 1.23 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db | 9.340 | `N` | `N` | right | -. | 65.0 | estimator | 200ms/3.08u/d1.03 65ms/1.00u/d1.00 | 70ms/1.08u/d1.08 | 1.03 | 1.08 | 2 of 2
+ letter | synthetic | cq-18wpm-5db | 10.810 | `0` | `0` | right | ----- | 65.0 | estimator | 205ms/3.15u/d1.05 195ms/3.00u/d1.00 175ms/2.69u/d1.11 200ms/3.08u/d1.03 215ms/3.31u/d1.10 | 65ms/1.00u/d1.00 95ms/1.46u/d1.46 85ms/1.31u/d1.31 50ms/0.77u/d1.30 | 1.11 | 1.46 | 5 of 5
+ letter | synthetic | cq-18wpm-5db | 11.745 | `C` | `C` | right | -.-. | 65.0 | estimator | 210ms/3.23u/d1.08 60ms/0.92u/d1.08 205ms/3.15u/d1.05 70ms/1.08u/d1.08 | 65ms/1.00u/d1.00 70ms/1.08u/d1.08 60ms/0.92u/d1.08 | 1.08 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 12.275 | `A` | `A` | right | .- | 65.0 | estimator | 55ms/0.85u/d1.18 195ms/3.00u/d1.00 | 75ms/1.15u/d1.15 | 1.18 | 1.15 | 2 of 2
+ letter | synthetic | cq-18wpm-5db | 13.075 | `L` | `L` | right | .-.. | 67.5 | estimator | 65ms/0.96u/d1.04 195ms/2.89u/d1.04 65ms/0.96u/d1.04 50ms/0.74u/d1.35 | 70ms/1.04u/d1.04 65ms/0.96u/d1.04 80ms/1.19u/d1.19 | 1.35 | 1.19 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 13.875 | `L` | `L` | right | .-.. | 67.5 | estimator | 65ms/0.96u/d1.04 195ms/2.89u/d1.04 75ms/1.11u/d1.11 65ms/0.96u/d1.04 | 70ms/1.04u/d1.04 75ms/1.11u/d1.11 55ms/0.81u/d1.23 | 1.11 | 1.23 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 14.680 | `N` | `N` | right | -. | 67.5 | estimator | 205ms/3.04u/d1.01 85ms/1.26u/d1.26 | 70ms/1.04u/d1.04 | 1.26 | 1.04 | 2 of 2
+ letter | synthetic | cq-18wpm-5db | 16.145 | `0` | `0` | right | ----- | 67.5 | estimator | 195ms/2.89u/d1.04 195ms/2.89u/d1.04 195ms/2.89u/d1.04 200ms/2.96u/d1.01 190ms/2.81u/d1.07 | 75ms/1.11u/d1.11 70ms/1.04u/d1.04 65ms/0.96u/d1.04 75ms/1.11u/d1.11 | 1.07 | 1.11 | 5 of 5
+ letter | synthetic | cq-18wpm-5db | 17.075 | `C` | `C` | right | -.-. | 67.5 | estimator | 215ms/3.19u/d1.06 65ms/0.96u/d1.04 195ms/2.89u/d1.04 55ms/0.81u/d1.23 | 55ms/0.81u/d1.23 65ms/0.96u/d1.04 75ms/1.11u/d1.11 | 1.23 | 1.23 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 17.610 | `A` | `A` | right | .- | 67.5 | estimator | 70ms/1.04u/d1.04 185ms/2.74u/d1.09 | 75ms/1.11u/d1.11 | 1.09 | 1.11 | 2 of 2
+ letter | synthetic | cq-18wpm-5db | 18.410 | `L` | `L` | right | .-.. | 67.5 | estimator | 70ms/1.04u/d1.04 240ms/3.56u/d1.19 70ms/1.04u/d1.04 80ms/1.19u/d1.19 | 60ms/0.89u/d1.13 30ms/0.44u/d2.25 65ms/0.96u/d1.04 | 1.19 | 2.25 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 19.210 | `L` | `L` | right | .-.. | 67.5 | estimator | 65ms/0.96u/d1.04 195ms/2.89u/d1.04 70ms/1.04u/d1.04 60ms/0.89u/d1.13 | 75ms/1.11u/d1.11 70ms/1.04u/d1.04 65ms/0.96u/d1.04 | 1.13 | 1.11 | 4 of 4
+ letter | synthetic | cq-18wpm-5db | 20.270 | `K` | `K` | right | -.- | 67.5 | estimator | 210ms/3.11u/d1.04 60ms/0.89u/d1.13 205ms/3.04u/d1.01 | 55ms/0.81u/d1.23 60ms/0.89u/d1.13 | 1.13 | 1.23 | 3 of 3
+ letter | synthetic | cq-25wpm-15db | 1.540 | `C` | `C` | right | -.-. | 50.0 | estimator | 150ms/3.00u/d1.00 50ms/1.00u/d1.00 145ms/2.90u/d1.03 50ms/1.00u/d1.00 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 45ms/0.90u/d1.11 | 1.03 | 1.11 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 2.305 | `Q` | `Q` | right | --.- | 50.0 | estimator | 150ms/3.00u/d1.00 145ms/2.90u/d1.03 55ms/1.10u/d1.10 155ms/3.10u/d1.03 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 40ms/0.80u/d1.25 | 1.10 | 1.25 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 3.170 | `C` | `C` | right | -.-. | 50.0 | estimator | 145ms/2.90u/d1.03 50ms/1.00u/d1.00 145ms/2.90u/d1.03 60ms/1.20u/d1.20 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 50ms/1.00u/d1.00 | 1.20 | 1.11 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 3.940 | `Q` | `Q` | right | --.- | 50.0 | estimator | 145ms/2.90u/d1.03 155ms/3.10u/d1.03 50ms/1.00u/d1.00 145ms/2.90u/d1.03 | 45ms/0.90u/d1.11 40ms/0.80u/d1.25 45ms/0.90u/d1.11 | 1.03 | 1.25 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 4.800 | `C` | `C` | right | -.-. | 50.0 | estimator | 155ms/3.10u/d1.03 60ms/1.20u/d1.20 165ms/3.30u/d1.10 55ms/1.10u/d1.10 | 40ms/0.80u/d1.25 35ms/0.70u/d1.43 30ms/0.60u/d1.67 | 1.20 | 1.67 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 5.570 | `Q` | `Q` | right | --.- | 50.0 | estimator | 150ms/3.00u/d1.00 150ms/3.00u/d1.00 55ms/1.10u/d1.10 150ms/3.00u/d1.00 | 40ms/0.80u/d1.25 45ms/0.90u/d1.11 40ms/0.80u/d1.25 | 1.10 | 1.25 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 6.245 | `D` | `D` | right | -.. | 50.0 | estimator | 150ms/3.00u/d1.00 55ms/1.10u/d1.10 50ms/1.00u/d1.00 | 45ms/0.90u/d1.11 40ms/0.80u/d1.25 | 1.10 | 1.25 | 3 of 3
+ letter | synthetic | cq-25wpm-15db | 6.435 | `E` | `E` | right | . | 50.0 | estimator | 55ms/1.10u/d1.10 |  | 1.10 | 1.00 | 1 of 1
+ letter | synthetic | cq-25wpm-15db | 7.010 | `N` | `N` | right | -. | 50.0 | estimator | 150ms/3.00u/d1.00 50ms/1.00u/d1.00 | 45ms/0.90u/d1.11 | 1.00 | 1.11 | 2 of 2
+ letter | synthetic | cq-25wpm-15db | 8.065 | `0` | `0` | right | ----- | 50.0 | estimator | 150ms/3.00u/d1.00 150ms/3.00u/d1.00 155ms/3.10u/d1.03 150ms/3.00u/d1.00 150ms/3.00u/d1.00 | 40ms/0.80u/d1.25 40ms/0.80u/d1.25 40ms/0.80u/d1.25 40ms/0.80u/d1.25 | 1.03 | 1.25 | 5 of 5
+ letter | synthetic | cq-25wpm-15db | 8.740 | `C` | `C` | right | -.-. | 50.0 | estimator | 150ms/3.00u/d1.00 55ms/1.10u/d1.10 150ms/3.00u/d1.00 50ms/1.00u/d1.00 | 40ms/0.80u/d1.25 45ms/0.90u/d1.11 40ms/0.80u/d1.25 | 1.10 | 1.25 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 9.125 | `A` | `A` | right | .- | 50.0 | estimator | 55ms/1.10u/d1.10 150ms/3.00u/d1.00 | 45ms/0.90u/d1.11 | 1.10 | 1.11 | 2 of 2
+ letter | synthetic | cq-25wpm-15db | 9.700 | `L` | `L` | right | .-.. | 50.0 | estimator | 55ms/1.10u/d1.10 145ms/2.90u/d1.03 50ms/1.00u/d1.00 55ms/1.10u/d1.10 | 45ms/0.90u/d1.11 45ms/0.90u/d1.11 45ms/0.90u/d1.11 | 1.10 | 1.11 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 10.275 | `L` | `L` | right | .-.. | 50.0 | estimator | 60ms/1.20u/d1.20 150ms/3.00u/d1.00 55ms/1.10u/d1.10 55ms/1.10u/d1.10 | 35ms/0.70u/d1.43 45ms/0.90u/d1.11 40ms/0.80u/d1.25 | 1.20 | 1.43 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 10.850 | `N` | `N` | right | -. | 50.0 | estimator | 150ms/3.00u/d1.00 50ms/1.00u/d1.00 | 45ms/0.90u/d1.11 | 1.00 | 1.11 | 2 of 2
+ letter | synthetic | cq-25wpm-15db | 11.905 | `0` | `0` | right | ----- | 50.0 | estimator | 150ms/3.00u/d1.00 150ms/3.00u/d1.00 145ms/2.90u/d1.03 150ms/3.00u/d1.00 150ms/3.00u/d1.00 | 40ms/0.80u/d1.25 45ms/0.90u/d1.11 45ms/0.90u/d1.11 40ms/0.80u/d1.25 | 1.03 | 1.25 | 5 of 5
+ letter | synthetic | cq-25wpm-15db | 12.580 | `C` | `C` | right | -.-. | 50.0 | estimator | 150ms/3.00u/d1.00 60ms/1.20u/d1.20 155ms/3.10u/d1.03 55ms/1.10u/d1.10 | 40ms/0.80u/d1.25 40ms/0.80u/d1.25 35ms/0.70u/d1.43 | 1.20 | 1.43 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 12.960 | `A` | `A` | right | .- | 50.0 | estimator | 55ms/1.10u/d1.10 145ms/2.90u/d1.03 | 45ms/0.90u/d1.11 | 1.10 | 1.11 | 2 of 2
+ letter | synthetic | cq-25wpm-15db | 13.540 | `L` | `L` | right | .-.. | 47.5 | estimator | 55ms/1.16u/d1.16 150ms/3.16u/d1.05 50ms/1.05u/d1.05 55ms/1.16u/d1.16 | 40ms/0.84u/d1.19 45ms/0.95u/d1.06 45ms/0.95u/d1.06 | 1.16 | 1.19 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 14.115 | `L` | `L` | right | .-.. | 47.5 | estimator | 55ms/1.16u/d1.16 145ms/3.05u/d1.02 55ms/1.16u/d1.16 50ms/1.05u/d1.05 | 45ms/0.95u/d1.06 45ms/0.95u/d1.06 40ms/0.84u/d1.19 | 1.16 | 1.19 | 4 of 4
+ letter | synthetic | cq-25wpm-15db | 14.885 | `-` | `K` | added | -.- | 47.5 | estimator | 150ms/3.16u/d1.05 85ms/1.79u/d1.68 150ms/3.16u/d1.05 | 40ms/0.84u/d1.19 15ms/0.32u/d3.17 | 1.68 | 3.17 | 3 of 3
+ letter | synthetic | cq-25wpm-15db | 14.890 | `K` | `K` | right | -.- | 47.5 | estimator | 150ms/3.16u/d1.05 85ms/1.79u/d1.68 150ms/3.16u/d1.05 | 40ms/0.84u/d1.19 15ms/0.32u/d3.17 | 1.68 | 3.17 | 3 of 3
+ letter | synthetic | cq-25wpm-5db | 1.540 | `C` | `C` | right | -.-. | 45.0 | estimator | 130ms/2.89u/d1.04 35ms/0.78u/d1.29 165ms/3.67u/d1.22 40ms/0.89u/d1.13 | 55ms/1.22u/d1.22 60ms/1.33u/d1.33 25ms/0.56u/d1.80 | 1.29 | 1.80 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 2.305 | `Q` | `Q` | right | --.- | 45.0 | estimator | 135ms/3.00u/d1.00 145ms/3.22u/d1.07 50ms/1.11u/d1.11 165ms/3.67u/d1.22 | 50ms/1.11u/d1.11 45ms/1.00u/d1.00 50ms/1.11u/d1.11 | 1.22 | 1.11 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 3.170 | `C` | `C` | right | -.-. | 45.0 | estimator | 145ms/3.22u/d1.07 50ms/1.11u/d1.11 150ms/3.33u/d1.11 40ms/0.89u/d1.13 | 50ms/1.11u/d1.11 50ms/1.11u/d1.11 40ms/0.89u/d1.13 | 1.13 | 1.13 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 3.935 | `Q` | `Q` | right | --.- | 47.5 | estimator | 145ms/3.05u/d1.02 130ms/2.74u/d1.10 45ms/0.95u/d1.06 140ms/2.95u/d1.02 | 55ms/1.16u/d1.16 55ms/1.16u/d1.16 50ms/1.05u/d1.05 | 1.10 | 1.16 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 4.795 | `C` | `C` | right | -.-. | 47.5 | estimator | 150ms/3.16u/d1.05 45ms/0.95u/d1.06 145ms/3.05u/d1.02 50ms/1.05u/d1.05 | 45ms/0.95u/d1.06 50ms/1.05u/d1.05 50ms/1.05u/d1.05 | 1.06 | 1.06 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 5.575 | `Q` | `Q` | right | --.- | 45.0 | estimator | 155ms/3.44u/d1.15 155ms/3.44u/d1.15 85ms/1.89u/d1.59 145ms/3.22u/d1.07 | 30ms/0.67u/d1.50 35ms/0.78u/d1.29 20ms/0.44u/d2.25 | 1.59 | 2.25 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 6.240 | `D` | `D` | right | -.. | 45.0 | estimator | 145ms/3.22u/d1.07 65ms/1.44u/d1.44 45ms/1.00u/d1.00 | 45ms/1.00u/d1.00 30ms/0.67u/d1.50 | 1.44 | 1.50 | 3 of 3
+ letter | synthetic | cq-25wpm-5db | 6.430 | `E` | `E` | right | . | 45.0 | estimator | 70ms/1.56u/d1.56 |  | 1.56 | 1.00 | 1 of 1
+ letter | synthetic | cq-25wpm-5db | 7.010 | `N` | `N` | right | -. | 45.0 | estimator | 145ms/3.22u/d1.07 45ms/1.00u/d1.00 | 45ms/1.00u/d1.00 | 1.07 | 1.00 | 2 of 2
+ letter | synthetic | cq-25wpm-5db | 8.065 | `0` | `0` | right | ----- | 47.5 | estimator | 135ms/2.84u/d1.06 140ms/2.95u/d1.02 130ms/2.74u/d1.10 160ms/3.37u/d1.12 140ms/2.95u/d1.02 | 50ms/1.05u/d1.05 65ms/1.37u/d1.37 50ms/1.05u/d1.05 35ms/0.74u/d1.36 | 1.12 | 1.37 | 5 of 5
+ letter | synthetic | cq-25wpm-5db | 8.740 | `C` | `C` | right | -.-. | 47.5 | estimator | 135ms/2.84u/d1.06 45ms/0.95u/d1.06 135ms/2.84u/d1.06 45ms/0.95u/d1.06 | 60ms/1.26u/d1.26 55ms/1.16u/d1.16 55ms/1.16u/d1.16 | 1.06 | 1.26 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 9.115 | `A` | `A` | right | .- | 47.5 | estimator | 30ms/0.63u/d1.58 130ms/2.74u/d1.10 | 65ms/1.37u/d1.37 | 1.58 | 1.37 | 2 of 2
+ letter | synthetic | cq-25wpm-5db | 9.700 | `L` | `L` | right | .-.. | 47.5 | estimator | 55ms/1.16u/d1.16 145ms/3.05u/d1.02 40ms/0.84u/d1.19 | 40ms/0.84u/d1.19 50ms/1.05u/d1.05 | 1.19 | 1.19 | 3 of 4
+ letter | synthetic | cq-25wpm-5db | 10.275 | `L` | `L` | right | .-.. | 47.5 | estimator | 45ms/0.95u/d1.06 165ms/3.47u/d1.16 85ms/1.79u/d1.68 50ms/1.05u/d1.05 | 50ms/1.05u/d1.05 25ms/0.53u/d1.90 15ms/0.32u/d3.17 | 1.68 | 3.17 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 10.845 | `N` | `N` | right | -. | 47.5 | estimator | 135ms/2.84u/d1.06 40ms/0.84u/d1.19 | 55ms/1.16u/d1.16 | 1.19 | 1.16 | 2 of 2
+ letter | synthetic | cq-25wpm-5db | 11.905 | `0` | `0` | right | ----- | 47.5 | estimator | 140ms/2.95u/d1.02 145ms/3.05u/d1.02 165ms/3.47u/d1.16 140ms/2.95u/d1.02 145ms/3.05u/d1.02 | 55ms/1.16u/d1.16 45ms/0.95u/d1.06 30ms/0.63u/d1.58 50ms/1.05u/d1.05 | 1.16 | 1.58 | 5 of 5
+ letter | synthetic | cq-25wpm-5db | 12.580 | `C` | `C` | right | -.-. | 47.5 | estimator | 140ms/2.95u/d1.02 45ms/0.95u/d1.06 140ms/2.95u/d1.02 60ms/1.26u/d1.26 | 55ms/1.16u/d1.16 50ms/1.05u/d1.05 50ms/1.05u/d1.05 | 1.26 | 1.16 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 12.960 | `A` | `A` | right | .- | 47.5 | estimator | 70ms/1.47u/d1.47 145ms/3.05u/d1.02 | 25ms/0.53u/d1.90 | 1.47 | 1.90 | 2 of 2
+ letter | synthetic | cq-25wpm-5db | 13.535 | `L` | `L` | right | .-.. | 47.5 | estimator | 45ms/0.95u/d1.06 160ms/3.37u/d1.12 60ms/1.26u/d1.26 35ms/0.74u/d1.36 | 45ms/0.95u/d1.06 35ms/0.74u/d1.36 35ms/0.74u/d1.36 | 1.36 | 1.36 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 14.115 | `L` | `L` | right | .-.. | 47.5 | estimator | 45ms/0.95u/d1.06 135ms/2.84u/d1.06 60ms/1.26u/d1.26 50ms/1.05u/d1.05 | 55ms/1.16u/d1.16 55ms/1.16u/d1.16 35ms/0.74u/d1.36 | 1.26 | 1.36 | 4 of 4
+ letter | synthetic | cq-25wpm-5db | 14.885 | `-` | `K` | added | -.- | 47.5 | estimator | 150ms/3.16u/d1.05 50ms/1.05u/d1.05 170ms/3.58u/d1.19 | 45ms/0.95u/d1.06 40ms/0.84u/d1.19 | 1.19 | 1.19 | 3 of 3
+ letter | synthetic | cq-25wpm-5db | 14.890 | `K` | `K` | right | -.- | 47.5 | estimator | 150ms/3.16u/d1.05 50ms/1.05u/d1.05 170ms/3.58u/d1.19 | 45ms/0.95u/d1.06 40ms/0.84u/d1.19 | 1.19 | 1.19 | 3 of 3
+ letter | synthetic | cq-18wpm-15db-char5 | 1.745 | `C` | `C` | right | -.-. | 67.5 | estimator | 205ms/3.04u/d1.01 75ms/1.11u/d1.11 205ms/3.04u/d1.01 75ms/1.11u/d1.11 | 60ms/0.89u/d1.13 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.11 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 2.945 | `Q` | `Q` | right | --.- | 67.5 | estimator | 205ms/3.04u/d1.01 205ms/3.04u/d1.01 70ms/1.04u/d1.04 205ms/3.04u/d1.01 | 65ms/0.96u/d1.04 60ms/0.89u/d1.13 65ms/0.96u/d1.04 | 1.04 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 4.145 | `C` | `C` | right | -.-. | 67.5 | estimator | 205ms/3.04u/d1.01 75ms/1.11u/d1.11 205ms/3.04u/d1.01 80ms/1.19u/d1.19 | 60ms/0.89u/d1.13 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.19 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 5.345 | `Q` | `Q` | right | --.- | 67.5 | estimator | 205ms/3.04u/d1.01 205ms/3.04u/d1.01 80ms/1.19u/d1.19 215ms/3.19u/d1.06 | 65ms/0.96u/d1.04 60ms/0.89u/d1.13 55ms/0.81u/d1.23 | 1.19 | 1.23 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 6.545 | `C` | `C` | right | -.-. | 67.5 | estimator | 205ms/3.04u/d1.01 70ms/1.04u/d1.04 205ms/3.04u/d1.01 75ms/1.11u/d1.11 | 65ms/0.96u/d1.04 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.11 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 7.745 | `Q` | `Q` | right | --.- | 67.5 | estimator | 205ms/3.04u/d1.01 205ms/3.04u/d1.01 75ms/1.11u/d1.11 205ms/3.04u/d1.01 | 65ms/0.96u/d1.04 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.11 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 8.675 | `D` | `D` | right | -.. | 67.5 | estimator | 210ms/3.11u/d1.04 90ms/1.33u/d1.33 70ms/1.04u/d1.04 | 60ms/0.89u/d1.13 40ms/0.59u/d1.69 | 1.33 | 1.69 | 3 of 3
+ letter | synthetic | cq-18wpm-15db-char5 | 9.080 | `E` | `E` | right | . | 67.5 | estimator | 80ms/1.19u/d1.19 |  | 1.19 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-15db-char5 | 9.880 | `N` | `N` | right | -. | 67.5 | estimator | 210ms/3.11u/d1.04 80ms/1.19u/d1.19 | 55ms/0.81u/d1.23 | 1.19 | 1.23 | 2 of 2
+ letter | synthetic | cq-18wpm-15db-char5 | 11.480 | `0` | `0` | right | ----- | 67.5 | estimator | 210ms/3.11u/d1.04 205ms/3.04u/d1.01 205ms/3.04u/d1.01 205ms/3.04u/d1.01 210ms/3.11u/d1.04 | 55ms/0.81u/d1.23 65ms/0.96u/d1.04 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.04 | 1.23 | 5 of 5
+ letter | synthetic | cq-18wpm-15db-char5 | 12.545 | `C` | `C` | right | -.-. | 67.5 | estimator | 205ms/3.04u/d1.01 65ms/0.96u/d1.04 205ms/3.04u/d1.01 85ms/1.26u/d1.26 | 65ms/0.96u/d1.04 65ms/0.96u/d1.04 60ms/0.89u/d1.13 | 1.26 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 13.215 | `A` | `A` | right | .- | 67.5 | estimator | 75ms/1.11u/d1.11 205ms/3.04u/d1.01 | 60ms/0.89u/d1.13 | 1.11 | 1.13 | 2 of 2
+ letter | synthetic | cq-18wpm-15db-char5 | 14.145 | `L` | `E` | wrong | . | 67.5 | estimator | 75ms/1.11u/d1.11 |  | 1.11 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-15db-char5 | 15.080 | `L` | `L` | right | .-.. | 67.5 | estimator | 75ms/1.11u/d1.11 205ms/3.04u/d1.01 75ms/1.11u/d1.11 75ms/1.11u/d1.11 | 60ms/0.89u/d1.13 60ms/0.89u/d1.13 60ms/0.89u/d1.13 | 1.11 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 15.880 | `N` | `N` | right | -. | 67.5 | estimator | 205ms/3.04u/d1.01 70ms/1.04u/d1.04 | 60ms/0.89u/d1.13 | 1.04 | 1.13 | 2 of 2
+ letter | synthetic | cq-18wpm-15db-char5 | 17.480 | `0` | `0` | right | ----- | 65.0 | estimator | 205ms/3.15u/d1.05 205ms/3.15u/d1.05 200ms/3.08u/d1.03 205ms/3.15u/d1.05 210ms/3.23u/d1.08 | 65ms/1.00u/d1.00 60ms/0.92u/d1.08 65ms/1.00u/d1.00 60ms/0.92u/d1.08 | 1.08 | 1.08 | 5 of 5
+ letter | synthetic | cq-18wpm-15db-char5 | 18.545 | `C` | `C` | right | -.-. | 65.0 | estimator | 205ms/3.15u/d1.05 75ms/1.15u/d1.15 210ms/3.23u/d1.08 75ms/1.15u/d1.15 | 60ms/0.92u/d1.08 60ms/0.92u/d1.08 55ms/0.85u/d1.18 | 1.15 | 1.18 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 19.210 | `A` | `A` | right | .- | 67.5 | estimator | 75ms/1.11u/d1.11 215ms/3.19u/d1.06 | 60ms/0.89u/d1.13 | 1.11 | 1.13 | 2 of 2
+ letter | synthetic | cq-18wpm-15db-char5 | 20.145 | `L` | `L` | right | .-.. | 65.0 | estimator | 70ms/1.08u/d1.08 210ms/3.23u/d1.08 70ms/1.08u/d1.08 70ms/1.08u/d1.08 | 60ms/0.92u/d1.08 60ms/0.92u/d1.08 60ms/0.92u/d1.08 | 1.08 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 21.080 | `L` | `L` | right | .-.. | 65.0 | estimator | 70ms/1.08u/d1.08 205ms/3.15u/d1.05 75ms/1.15u/d1.15 70ms/1.08u/d1.08 | 65ms/1.00u/d1.00 60ms/0.92u/d1.08 60ms/0.92u/d1.08 | 1.15 | 1.08 | 4 of 4
+ letter | synthetic | cq-18wpm-15db-char5 | 22.145 | `K` | `K` | right | -.- | 65.0 | estimator | 205ms/3.15u/d1.05 65ms/1.00u/d1.00 200ms/3.08u/d1.03 | 65ms/1.00u/d1.00 65ms/1.00u/d1.00 | 1.05 | 1.00 | 3 of 3
+ letter | synthetic | cq-18wpm-5db-char5 | 1.745 | `C` | `C` | right | -.-. | 67.5 | estimator | 210ms/3.11u/d1.04 65ms/0.96u/d1.04 205ms/3.04u/d1.01 70ms/1.04u/d1.04 | 55ms/0.81u/d1.23 70ms/1.04u/d1.04 65ms/0.96u/d1.04 | 1.04 | 1.23 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 2.940 | `Q` | `Q` | right | --.- | 70.0 | estimator | 190ms/2.71u/d1.11 220ms/3.14u/d1.05 75ms/1.07u/d1.07 185ms/2.64u/d1.14 | 65ms/0.93u/d1.08 50ms/0.71u/d1.40 65ms/0.93u/d1.08 | 1.14 | 1.40 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 4.140 | `C` | `C` | right | -.-. | 67.5 | estimator | 195ms/2.89u/d1.04 75ms/1.11u/d1.11 195ms/2.89u/d1.04 65ms/0.96u/d1.04 | 75ms/1.11u/d1.11 55ms/0.81u/d1.23 70ms/1.04u/d1.04 | 1.11 | 1.23 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 5.340 | `Q` | `Q` | right | --.- | 67.5 | estimator | 205ms/3.04u/d1.01 250ms/3.70u/d1.23 70ms/1.04u/d1.04 190ms/2.81u/d1.07 | 55ms/0.81u/d1.23 20ms/0.30u/d3.38 65ms/0.96u/d1.04 | 1.23 | 3.38 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 6.545 | `C` | `C` | right | -.-. | 67.5 | estimator | 200ms/2.96u/d1.01 60ms/0.89u/d1.13 195ms/2.89u/d1.04 70ms/1.04u/d1.04 | 70ms/1.04u/d1.04 75ms/1.11u/d1.11 70ms/1.04u/d1.04 | 1.13 | 1.11 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 7.725 | `Q` | `Q` | right | --.- | 67.5 | estimator | 200ms/2.96u/d1.01 210ms/3.11u/d1.04 70ms/1.04u/d1.04 240ms/3.56u/d1.19 | 60ms/0.89u/d1.13 60ms/0.89u/d1.13 65ms/0.96u/d1.04 | 1.19 | 1.13 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 8.405 | `-` | `T` | added | - | 65.0 | estimator | 210ms/3.23u/d1.08 |  | 1.08 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db-char5 | 8.680 | `D` | `E` | wrong | . | 65.0 | estimator | 60ms/0.92u/d1.08 |  | 1.08 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db-char5 | 9.075 | `E` | `E` | right | . | 65.0 | estimator | 75ms/1.15u/d1.15 |  | 1.15 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db-char5 | 9.745 | `-` | `T` | added | - | 65.0 | marks (441) | 190ms/2.92u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db-char5 | 11.475 | `-` | `K` | added | -.- | 65.0 | estimator | 220ms/3.38u/d1.13 200ms/3.08u/d1.03 | 40ms/0.62u/d1.63 | 1.13 | 1.63 | 2 of 3
+ letter | synthetic | cq-18wpm-5db-char5 | 12.005 | `-` | `T` | added | - | 65.0 | marks (441) | 200ms/3.08u/d1.03 |  | 1.03 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db-char5 | 12.545 | `N` | `D` | wrong | -.. | 65.0 | estimator | 185ms/2.85u/d1.05 55ms/0.85u/d1.18 | 65ms/1.00u/d1.00 | 1.18 | 1.00 | 2 of 3
+ letter | synthetic | cq-18wpm-5db-char5 | 13.215 | `0` | `U` | wrong | ..- | 65.0 | estimator | 60ms/0.92u/d1.08 220ms/3.38u/d1.13 | 80ms/1.23u/d1.23 | 1.13 | 1.23 | 2 of 3
+ letter | synthetic | cq-18wpm-5db-char5 | 13.870 | `C` | `U` | wrong | ..- | 65.0 | estimator | 65ms/1.00u/d1.00 245ms/3.77u/d1.26 | 65ms/1.00u/d1.00 | 1.26 | 1.00 | 2 of 3
+ letter | synthetic | cq-18wpm-5db-char5 | 14.145 | `A` | `E` | wrong | . | 65.0 | estimator | 95ms/1.46u/d1.46 |  | 1.46 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db-char5 | 14.805 | `L` | `U` | wrong | ..- | 65.0 | estimator | 100ms/1.54u/d1.54 200ms/3.08u/d1.03 | 30ms/0.46u/d2.17 | 1.54 | 2.17 | 2 of 3
+ letter | synthetic | cq-18wpm-5db-char5 | 15.075 | `L` | `E` | wrong | . | 65.0 | estimator | 70ms/1.08u/d1.08 |  | 1.08 | 1.00 | 1 of 1
+ letter | synthetic | cq-18wpm-5db-char5 | 15.880 | `N` | `N` | right | -. | 67.5 | estimator | 200ms/2.96u/d1.01 85ms/1.26u/d1.26 | 70ms/1.04u/d1.04 | 1.26 | 1.04 | 2 of 2
+ letter | synthetic | cq-18wpm-5db-char5 | 17.455 | `0` | `0` | right | ----- | 65.0 | estimator | 195ms/3.00u/d1.00 190ms/2.92u/d1.03 195ms/3.00u/d1.00 195ms/3.00u/d1.00 190ms/2.92u/d1.03 | 75ms/1.15u/d1.15 75ms/1.15u/d1.15 70ms/1.08u/d1.08 75ms/1.15u/d1.15 | 1.03 | 1.15 | 5 of 5
+ letter | synthetic | cq-18wpm-5db-char5 | 18.540 | `C` | `C` | right | -.-. | 67.5 | estimator | 205ms/3.04u/d1.01 65ms/0.96u/d1.04 200ms/2.96u/d1.01 55ms/0.81u/d1.23 | 65ms/0.96u/d1.04 65ms/0.96u/d1.04 70ms/1.04u/d1.04 | 1.23 | 1.04 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 19.215 | `A` | `A` | right | .- | 67.5 | estimator | 60ms/0.89u/d1.13 215ms/3.19u/d1.06 | 70ms/1.04u/d1.04 | 1.13 | 1.04 | 2 of 2
+ letter | synthetic | cq-18wpm-5db-char5 | 20.145 | `L` | `L` | right | .-.. | 67.5 | estimator | 80ms/1.19u/d1.19 190ms/2.81u/d1.07 100ms/1.48u/d1.48 90ms/1.33u/d1.33 | 55ms/0.81u/d1.23 85ms/1.26u/d1.26 25ms/0.37u/d2.70 | 1.48 | 2.70 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 21.075 | `L` | `L` | right | .-.. | 67.5 | estimator | 80ms/1.19u/d1.19 205ms/3.04u/d1.01 60ms/0.89u/d1.13 65ms/0.96u/d1.04 | 45ms/0.67u/d1.50 75ms/1.11u/d1.11 65ms/0.96u/d1.04 | 1.19 | 1.50 | 4 of 4
+ letter | synthetic | cq-18wpm-5db-char5 | 22.140 | `K` | `K` | right | -.- | 67.5 | estimator | 200ms/2.96u/d1.01 55ms/0.81u/d1.23 220ms/3.26u/d1.09 | 75ms/1.11u/d1.11 70ms/1.04u/d1.04 | 1.23 | 1.11 | 3 of 3
+ bin | synthetic | worst mark | distance | right | wrong | added | wrong or added | right at or past the bin | wrong or added at or past the bin
+ bin | synthetic | worst mark | 1.00 to 1.25 | 139 | 5 | 5 | 10 | 159 | 14
+ bin | synthetic | worst mark | 1.25 to 1.50 | 15 | 2 | 0 | 2 | 20 | 4
+ bin | synthetic | worst mark | 1.50 to 2.00 | 5 | 1 | 1 | 2 | 5 | 2
+ bin | synthetic | worst mark | 2.00 to 3.00 | 0 | 0 | 0 | 0 | 0 | 0
+ bin | synthetic | worst mark | 3.00 to 5.00 | 0 | 0 | 0 | 0 | 0 | 0
+ bin | synthetic | worst mark | 5.00 and over | 0 | 0 | 0 | 0 | 0 | 0
+ bin | synthetic | worst mark | no whole mark | 0 | 0 | 0 | 0 | 0 | 0
+ edge | synthetic | worst mark | farthest right letter 1.676 (1.6764705882352942) | wrong or added past it 0 of 14 | 
+ farthest right | synthetic | worst mark | cq-25wpm-15db 14.890 `K` 1.68, cq-25wpm-5db 10.275 `L` 1.68, cq-25wpm-5db 5.575 `Q` 1.59, cq-25wpm-5db 9.115 `A` 1.58, cq-25wpm-5db 6.430 `E` 1.56
+ bin | synthetic | worst gap | distance | right | wrong | added | wrong or added | right at or past the bin | wrong or added at or past the bin
+ bin | synthetic | worst gap | 1.00 to 1.25 | 115 | 7 | 4 | 11 | 159 | 14
+ bin | synthetic | worst gap | 1.25 to 1.50 | 24 | 0 | 0 | 0 | 44 | 3
+ bin | synthetic | worst gap | 1.50 to 2.00 | 11 | 0 | 1 | 1 | 20 | 3
+ bin | synthetic | worst gap | 2.00 to 3.00 | 6 | 1 | 0 | 1 | 9 | 2
+ bin | synthetic | worst gap | 3.00 to 5.00 | 3 | 0 | 1 | 1 | 3 | 1
+ bin | synthetic | worst gap | 5.00 and over | 0 | 0 | 0 | 0 | 0 | 0
+ bin | synthetic | worst gap | no whole mark | 0 | 0 | 0 | 0 | 0 | 0
+ edge | synthetic | worst gap | farthest right letter 3.375 (3.375) | wrong or added past it 0 of 14 | 
+ farthest right | synthetic | worst gap | cq-18wpm-5db-char5 5.340 `Q` 3.38, cq-25wpm-15db 14.890 `K` 3.17, cq-25wpm-5db 10.275 `L` 3.17, cq-18wpm-5db-char5 20.145 `L` 2.70, cq-18wpm-5db 18.410 `L` 2.25
+ bin | synthetic | together, the worse of the two | distance | right | wrong | added | wrong or added | right at or past the bin | wrong or added at or past the bin
+ bin | synthetic | together, the worse of the two | 1.00 to 1.25 | 108 | 5 | 4 | 9 | 159 | 14
+ bin | synthetic | together, the worse of the two | 1.25 to 1.50 | 29 | 2 | 0 | 2 | 51 | 5
+ bin | synthetic | together, the worse of the two | 1.50 to 2.00 | 13 | 0 | 1 | 1 | 22 | 3
+ bin | synthetic | together, the worse of the two | 2.00 to 3.00 | 6 | 1 | 0 | 1 | 9 | 2
+ bin | synthetic | together, the worse of the two | 3.00 to 5.00 | 3 | 0 | 1 | 1 | 3 | 1
+ bin | synthetic | together, the worse of the two | 5.00 and over | 0 | 0 | 0 | 0 | 0 | 0
+ bin | synthetic | together, the worse of the two | no whole mark | 0 | 0 | 0 | 0 | 0 | 0
+ edge | synthetic | together, the worse of the two | farthest right letter 3.375 (3.375) | wrong or added past it 0 of 14 | 
+ farthest right | synthetic | together, the worse of the two | cq-18wpm-5db-char5 5.340 `Q` 3.38, cq-25wpm-15db 14.890 `K` 3.17, cq-25wpm-5db 10.275 `L` 3.17, cq-18wpm-5db-char5 20.145 `L` 2.70, cq-18wpm-5db 18.410 `L` 2.25
+ total | synthetic | 173 sure letters: 159 right, 8 wrong, 6 added | 6 whose whole marks differ in number from the pattern's elements | unit from: grid 2, estimator 157, marks (441) 14 | 0 whose rounded unit differs from the character's wpm
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.0903 Minutes
+RC=0 WALL=66s

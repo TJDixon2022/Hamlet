@@ -1,0 +1,12 @@
+unit445 task 2: the change's record - metrics.md per condition, texts and callsigns before and after (3.2, 3.3)
+
+docs/phase-requirements/metrics.md carries unit 445: the trace's edge,
+R78 part by part, and MET-INVENTED and MET-CER-SURE before and after per
+condition with the key's kind beside each. The operator-text printer
+(WhereTheSureAddedLettersComeFromTests) also prints what CallsignResolver
+resolves on each recording. One recording's text changes, 032129: two
+wrong E (key T and 0) and one unkeyed I print dim. No callsign is gained
+or lost on any capture or synthetic case. Printouts of the metrics,
+floors, texts and the trace under the change are in .run-unit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,24 @@
+unit445 task 2: a letter with an inner gap past 6.5 units either way prints dim (3.2)
+
+CwProbabilisticStream.Character emits a known letter as CwConfidence.Low
+instead of High where a gap between two whole marks inside it, read from
+the window the stream holds at emission (the letter's span one unit either
+side, cut as CwUnitEstimator.Elements cuts), is more than 6.5 times longer
+or shorter than one unit of the speed the path was read at. 6.5 is the
+farthest any sure-right letter lay in task 1's trace over the real keyed
+recordings, taken from the trace and not moved. It never reads the
+letters beside it (R72). CallsignResolver, ContactTracker, G1, the marks'
+speed, RivalMargin and MarginLlr are untouched.
+
+CwUnitEstimator.InnerElements is the segmentation the trace used, moved
+into src so the rule and the trace run the same code; the trace now calls
+it.
+
+Judged under R78: MET-INVENTED real, inferred 47 -> 45 over 473;
+MET-CER-SURE real 47 of 421 (0.1116) -> 45 of 419 (0.1074), synthetic,
+exact 14 of 173 (0.0809) unchanged; sure-and-right coverage real 374 over
+473 and synthetic 159 over 252 unchanged; adjudicated 13 of 13; V-11 0 of
+35 recordings worse on any of the four. Captures 51 of 51; named 12 of
+13, 17:37 red at 38 against 46 as at entry. Kept.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

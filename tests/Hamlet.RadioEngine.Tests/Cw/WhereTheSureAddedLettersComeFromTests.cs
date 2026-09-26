@@ -313,6 +313,7 @@ public sealed class WhereTheSureAddedLettersComeFromTests
             var heard = Decode(Path.Combine(CapturedSignalTests.Folder, name + ".wav"), 600);
 
             _output.WriteLine($"text | {name} | {Text(heard.Settled)}");
+            _output.WriteLine($"callsigns | {name} | {Callsigns(heard.Settled)}");
             printed++;
         }
 
@@ -321,6 +322,7 @@ public sealed class WhereTheSureAddedLettersComeFromTests
             var heard = Decode(Path.Combine(SyntheticCq.Folder, recipe.Name + ".wav"), SyntheticCq.StartingPitchHz);
 
             _output.WriteLine($"text | {recipe.Name} | {Text(heard.Settled)}");
+            _output.WriteLine($"callsigns | {recipe.Name} | {Callsigns(heard.Settled)}");
         }
 
         Assert.Equal(names.Count, printed);
@@ -331,6 +333,10 @@ public sealed class WhereTheSureAddedLettersComeFromTests
             c.IsWordGap ? " "
             : c.IsUnreadable || c.Confidence == CwConfidence.High ? c.Text
             : $"[{c.Text}]"));
+
+    // What the resolver makes of the same characters (work instruction 445, task 2).
+    private static string Callsigns(IReadOnlyList<CwCharacter> settled)
+        => string.Join(", ", CallsignResolver.Resolve(settled).Select(r => $"{r.Callsign} {r.Role}"));
 
     /// <remarks>
     /// Proves 3.1: every sure character MET-INVENTED counts as added, on the real

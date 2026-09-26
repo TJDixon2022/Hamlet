@@ -9,6 +9,55 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 445 - a letter with an inner gap past 6.5 units either way prints dim, kept
+
+Step 3, 3.2, HM-REQ-011 with HM-REQ-010 and 012 as guards. The trace
+(`WhatTheSureLettersMarksLookLikeTests`) read every sure letter's whole envelope marks and the gaps
+between them over its span one unit either side, each as a ratio of one or more from the nearer of
+1 and 3 units (gaps from 1 unit), at the unit the path was read with. Real, inferred, 421 sure (374
+right, 43 wrong, 4 added): worst mark, no edge (right letters in every bin, 8 with no whole mark);
+worst inner gap, edge 6.5, past it 0 right and 2 wrong, both `032129` (17.400 s `T` read `E`, 10.0;
+20.660 s `0` read `E`, 15.0), each on a 10 ms key-up at a grid unit of 100 and 150 ms; together, no
+edge. Synthetic, exact, 173 sure: no wrong-or-added letter past the farthest right one on any
+measure (mark 1.676, gap 3.375), so no edge there and nothing either side of 6.5. The change:
+`CwProbabilisticStream.Character` emits `Low` where a known letter's worst inner gap is past 6.5.
+
+| part of R78 | before (HEAD `0528afbe`) | under the change | verdict |
+|---|---|---|---|
+| MET-INVENTED, real, inferred | 47 over 473 (4 added, 43 wrong), 0.0994 | 45 over 473 (4 added, 41 wrong), 0.0951 | falls |
+| MET-INVENTED, synthetic, exact | 14 over 252 (6 added, 8 wrong) | 14 over 252 (6 added, 8 wrong) | unchanged |
+| MET-CER-SURE, real, inferred | 47 of 421, 0.1116 | 45 of 419, 0.1074 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 14 of 173, 0.0809 | unchanged |
+| sure-and-right coverage, real, inferred | 374 over 473, 0.7907 | 374 over 473, 0.7907 | holds |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252, 0.6310 | holds |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, four metrics | - | 0 worse; `032129` wrong-or-added 12 to 10, right 15 held | holds |
+| MET-WBE, real, inferred | 52 over 113, 0.4602 | 52 over 113, 0.4602 | unchanged |
+| dim precision (HM-REQ-014), real, keyed stretches | no dim letter | 0 right of 2 dim, 0.0000 | reported |
+| capture rows | 51 of 51 | 51 of 51 | hold |
+| named floors | 12 of 13, 17:37 at 38 | 12 of 13, 17:37 at 38 | as at entry |
+
+Per condition, key's kind beside each, before -> after:
+
+| condition | key | MET-INVENTED | MET-CER-SURE |
+|---|---|---|---|
+| real, sender not stated (20 recordings) | inferred | 47 over 410 (4 added, 43 wrong) -> 45 over 410 (4 added, 41 wrong) | 47 of 359, 0.1309 -> 45 of 357, 0.1261 |
+| real, TX-FARNS | inferred | 0 over 44 -> 0 over 44 | 0 of 43 -> 0 of 43 |
+| real, TX-ITU | inferred | 0 over 13 -> 0 over 13 | 0 of 13 -> 0 of 13 |
+| real, TX-TIGHT | inferred | 0 over 6 -> 0 over 6 | 0 of 6 -> 0 of 6 |
+| synthetic, ITU 0 dB | exact | 0 over 63 -> 0 over 63 | no sure letter -> no sure letter |
+| synthetic, ITU 5 dB | exact | 1 over 63 (1 added) -> the same | 1 of 63, 0.0159 -> the same |
+| synthetic, ITU 15 dB | exact | 1 over 63 (1 added) -> the same | 1 of 64, 0.0156 -> the same |
+| synthetic, char gap 5, 0 dB | exact | 0 over 21 -> 0 over 21 | no sure letter -> no sure letter |
+| synthetic, char gap 5, 5 dB | exact | 11 over 21 (4 added, 7 wrong) -> the same | 11 of 25, 0.4400 -> the same |
+| synthetic, char gap 5, 15 dB | exact | 1 over 21 (1 wrong) -> the same | 1 of 21, 0.0476 -> the same |
+
+**Kept: MET-INVENTED falls and nothing in R78 gets worse.** One recording's text changes, `032129`:
+`E EE EIIEE I E EE IEEEE` -> `E EE [E]IIEE I [E] EE [I]EEEE`. The two dim `E`s are the key's `T` and
+`0`; the dim `I` is outside the keyed stretch and has no key. No callsign is gained or lost on any
+capture or synthetic case. The edge is narrow: two letters, both on 10 ms key-ups at slow grid
+units, so it says as much about the grid's unit as about the letter's shape.
+
 ## Unit 444 - key-ups under half a dit left out of the gap clustering, not kept
 
 Step 2, 2.5, HM-REQ-080/081 on 17:37 with HM-REQ-010/011 as guards. The trace
