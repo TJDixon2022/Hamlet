@@ -1,0 +1,50 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.97]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.EachCharacterAnswersForItselfTests.TheGapExistsOnWholeFilesAndNotOnTheStreamingPath [1 s]
+  Standard Output Messages:
+ whole file, unadjudicated/cw-2026-08-20-014854: 82 characters, highest margin 4.6
+ whole file, unadjudicated/cw-2026-08-20-014935: 127 characters, highest margin 4.0
+ whole file, cw-2026-08-18-004507: weakest character 6.1
+ streaming, cw-2026-08-18-004507: weakest character 3.3
+ so the whole-file gap is 4.6 to 6.1, and the streaming path puts a real character at 3.3 inside it
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.EachCharacterAnswersForItselfTests.WordGapsAreNeverMarked [296 ms]
+  Standard Output Messages:
+ 13 word gaps
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.EachCharacterAnswersForItselfTests.ACleanSignalStillReadsWholeWithNothingMarked [76 ms]
+  Standard Output Messages:
+ ' CQ DE W1AW K '
+ C:1155 Q:1102 D:1675 E:1946 W:1325 1:821 A:794 W:1257 K:1539
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.EachCharacterAnswersForItselfTests.AudioHoldingNoStationStillEmitsNothing(name: "unadjudicated/cw-2026-08-20-014935", toneHz: 825) [242 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935: window 0.13, ''
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.EachCharacterAnswersForItselfTests.AudioHoldingNoStationStillEmitsNothing(name: "unadjudicated/cw-2026-08-20-014854", toneHz: 600) [256 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854: window 0.65, ''
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.EachCharacterAnswersForItselfTests.AWeakCharacterIsNotPrinted [483 ms]
+  Standard Output Messages:
+ 113 before, 111 after, 2 below the bar
+  E EI EE 5EEETEEE V EEEA E E EE IEEEE I EE IEET E T E EE E E EETEM E TEEEE T E IEEET E O EEETETTW EEMAEAMJOW   
+
+
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 3.2396 Seconds
+RC=0 WALL=4s

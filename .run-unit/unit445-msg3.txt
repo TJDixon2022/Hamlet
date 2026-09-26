@@ -1,0 +1,14 @@
+unit445: closing - exit round, 3.2 and 3.3 ticked, output.md, status COMPLETED (3.2)
+
+Exit round, one type per invocation: build 0 errors; engine carry-forward
+178 of 178; app 278 of 278; captures 51 of 51; adjudicated 13 of 13;
+named 12 of 13 (17:37 red at 38 against 46, as at entry). Real, inferred:
+MET-INVENTED 45 over 473, 0.0951 (4 added, 41 wrong); MET-CER-SURE 45 of
+419, 0.1074; sure-and-right coverage 374 over 473; MET-WBE 52 over 113.
+Synthetic, exact, unchanged. Touched types green except
+TheFiveToEightDecibelPlateauHolds, the correctness phase's recorded red.
+
+3.2 and 3.3 ticked in both copies of PHASE_PLAN.md; 3.4, 3.5, 3.6, 2.4
+and 2.5 not ticked. output.md validated VALID.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

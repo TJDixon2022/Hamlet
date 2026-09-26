@@ -1,247 +1,230 @@
 READ IN THIS ORDER.
 
-A. Hamlet meets the CW requirements: step 2 at 3 of 5, step 3 at 1 of 6 by the plan's
+A. Hamlet meets the CW requirements: step 3 at 3 of 6, step 2 at 3 of 5 by the plan's
    checkboxes, steps 0 and 1 done, 4 to 8 not started.
-B. Step 2, criterion 2.5, with HM-REQ-080/081 on 17:37 and HM-REQ-010/011 as guards: the change
-   not kept, because 17:37's boundaries wrong rose instead of falling to 5 or fewer and V-11 failed on
-   three recordings. 17:37 boundaries wrong 7 -> 7 (8 under the change); MET-WBE 52 -> 52 over 113
-   (43 under the change); MET-CER-SURE 0.1116 -> 0.1116 (0.1082 under the change); 17:37's floor red
-   at 38; 2.5 not ticked, because no change was kept and 17:37 was not re-banked.
-C. Section 4 raises 2 items; item 1 (whether 2.5 can be met on 17:37 by any honest gap rule) is in
-   the way of 2.5. This report adds the first gap-by-gap trace of 17:37, measured at f14b2453 and
-   at HEAD. It shows the 5 boundaries before G1 came from a backwards gap reading whose 455 ms
-   threshold happened to take out two letter spaces of 310 and 320 ms. It also records a rule that
-   improves the real set but fails 17:37.
+B. Step 3, criterion 3.2, HM-REQ-011 with HM-REQ-010 and 012 as guards: the trace named an edge
+   at 6.5 on the worst inner gap, catching 2 wrong for 0 right; the change kept. MET-INVENTED
+   47 -> 45 over 473; MET-CER-SURE 0.1116 -> 0.1074; coverage 374 -> 374; 3.2 ticked, and 3.3
+   with it; 3.6 red on 17:37.
+C. What this report adds: the first mark-shape trace of every sure letter, one kept change that
+   dims two wrong letters and no right one, and a finding that the edge is narrow.
+   Section 4 raises 1 item; none is in the way of a criterion in B.
 
-UNIT:       444 - complete at task 3 of 3, none dropped - 2026-09-25 23:58
-PHASE GOAL: The CW decoder meets CW_REQUIREMENTS.md, measured requirement by requirement, and at the end Tim at the radio says it reads.
-UNIT GOAL:  Get 17:37's CQ to read DE and WB6RED as the words sent, keeping G1's letters, so that its named floor turns green honestly and step 2's exit holds.
-ADVANCED:   no - no criterion flipped in PHASE_PLAN.md; the one change built failed R78 on 17:37 itself.
-NUMBER:     17:37 boundaries wrong 7 -> 7; MET-WBE 52 -> 52; MET-CER-SURE 0.1116 -> 0.1116
-DRIFT:      2 consecutive step-2 units without a kept change (was 1)
+UNIT:       445 - complete at task 3 of 3, none dropped - 2026-09-26 01:07
+PHASE GOAL: Hamlet's CW decoder meets its written requirements, above all that it never prints a guessed letter as a sure one.
+UNIT GOAL:  Stop printing as sure a letter whose marks or gaps do not fit the speed in force, but only past a line no right letter crosses, so fewer wrong letters look certain and none of the right ones dim.
+ADVANCED:   yes - 3.2 and 3.3 flipped in both copies of PHASE_PLAN.md
+NUMBER:     MET-INVENTED 47 -> 45 over 473; MET-CER-SURE 0.1116 -> 0.1074; coverage 374 -> 374; edge 6.5 (worst inner gap)
+DRIFT:      step 3 0; step 2 2
 
 ## 1. What Claude did
 
-**Exit state: complete, at task 3 of 3, none dropped.** This ran on QUIVERFULL in Claude Code, on
-project Hamlet, confirmed by the six-item gate, on branch `main`. Every commit was pushed to
-`origin/main`: `8e08b146` (task 0), `cc1f9d0b` (task 1), `5a5643e7` (task 2), plus a closing
-commit with this report.
+**Complete, 3 of 3 tasks, none dropped.** QUIVERFULL, `C:\Source\HamLet`, Hamlet confirmed by
+the six-file gate, branch `main`, every commit pushed to `origin/main`: `3dc62a7f` (task 0),
+`5513d7cf` (task 1), `72c2c75c` (the change, on its own), `73a4e08a` (its record), then this
+closing commit.
 
-**Task 0, the entry.**
-- `PHASE_OUTCOME.md` gained `## UNIT 444 - STEP 2` in both copies, from the decision block, plus an
-  `ENTRY:` line.
-- `PHASE_STATUS.md` names 444 with `CURRENT_STEP: 2` in both copies. The docs copy still said 3.
-- The version went from 1.13.130 to 1.13.131.
-- The runner's uncommitted `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and
-  `WORK_INSTRUCTIONS.md` were committed as the runner wrote them. My only edits to those files were
-  the 444 lines.
+**Task 0, the entry.** `PHASE_OUTCOME.md` has `## UNIT 445 - STEP 3` from the decision block,
+in both copies. `PHASE_STATUS.md` names 445 at `CURRENT_STEP: 3` in both copies. Version went
+1.13.131 to 1.13.132. The runner's `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and
+`WORK_INSTRUCTIONS.md` were committed as the runner wrote them.
 
 Entry round, one type per invocation:
-- Build: 0 errors.
-- Engine carry-forward: 178 of 178.
-- App carry-forward: 278 of 278.
-- Captures: 51 of 51.
-- Adjudicated: 13 of 13.
-- Named: 12 of 13. 17:37 is red: banked 46, reads 38.
+- build: 0 errors;
+- engine carry-forward: 178 of 178;
+- app carry-forward: 278 of 278;
+- captures: 51 of 51;
+- adjudicated: 13 of 13;
+- named: 12 of 13, with 17:37 red (banked 46, reads 38).
 
-Metrics, real recordings, inferred keys:
-- MET-CER-SURE: 47 of 421, 0.1116.
-- MET-INVENTED: 47 over 473, 0.0994, of which 4 added and 43 substituted.
-- Sure-and-right coverage: 374 over 473, 0.7907.
+MET-INVENTED at entry, per condition, with the key's kind:
+- real, sender not stated: 47 over 410 (4 added, 43 substituted), inferred;
+- real, TX-FARNS, TX-ITU and TX-TIGHT: 0 each, inferred;
+- synthetic: 14 over 252 (6 added, 8 substituted), exact. ITU 5 dB and ITU 15 dB have 1 added
+  each. Char-gap-5 15 dB has 1 substituted, and char-gap-5 5 dB has 4 added and 7 substituted.
+
+The other metrics at entry, real and inferred:
+- MET-CER-SURE: 47 of 421, 0.1116;
+- coverage: 374 over 473, 0.7907;
 - MET-WBE: 52 over 113, 0.4602.
-- **17:37 alone:** MET-WBE 7 over 6 words (6 inserted, 1 deleted), 1.1667. It reads
-  `CQ CQ CQ DEWB6 RE D W B 7E E I`.
 
-**The named floor.** It is `TheNumberCannotBeGamedTests.EachKeyedRecordingIsReadAtAll`, in
-`tests/Hamlet.RadioEngine.Tests/Cw/TheNumberCannotBeGamedTests.cs`, row
-`{ TheSeventeenThirtySevenCaptureTests.Name, 46 }` in `NamedFloors` at line 56. It counts the named
-characters over the **whole recording**, not just the scored region. A named character is one that
-is neither a word gap nor a placeholder, and it is counted only at or above the span bar.
+**Task 1, the trace.** `WhatTheSureLettersMarksLookLikeTests` asserts nothing. It covers every sure
+letter on the real keyed recordings and on the synthetic set: 421 real (374 right, 43 wrong,
+4 added) and 173 synthetic (159, 8, 6). Those counts reconcile with the metric. For each letter it
+prints:
+- the recording, time, key and emission;
+- the unit in force, taken from `Stream.Last`, with its source (estimator 369, grid 34, the marks'
+  speed 18);
+- every whole envelope mark and inner gap, in ms, in units and as a distance;
+- the worst mark and worst gap distances;
+- the number of marks against the pattern's elements.
 
-**Task 1, the trace.** I added a printer,
-`HowSeventeenThirtySevensGapsAreCalledTests.EveryGapInTheCqAndHowItWasCalled`. For every gap between
-marks from 17:37's first `C` to the end, it prints:
-- the time, and the length in ms and in units;
-- the read that decided it, with that read's unit and its source (held measured gaps, or textbook
-  1/3/7);
-- the letter, word and relabel thresholds in force;
-- what the read's window measured, and whether G1's condition held there;
-- the path's call and the decoder's call;
-- the key's call;
-- the marks either side.
+The marks come from the letter's span, one unit either side, cut the way `Elements` cuts. Only whole
+marks count, and only the gaps between two of them. A distance is a ratio of one or more, taken
+against the nearer of 1 and 3 units for a mark and against 1 unit for a gap. The bins were fixed
+before any number was read: 1.25, 1.5, 2, 3 and 5.
 
-The key's call comes from lining the envelope's marks, as dit or dah, up with the key's elements.
-All 61 marks matched. The key's second `WB6RED` runs past the audio.
+Findings:
+- **Worst mark: no edge.** Right letters lie in every bin: 2 at 5 and over, and 8 with no whole
+  mark at all.
+- **Worst inner gap: edge 6.5**, exactly. Past it lie 0 right letters and 2 wrong ones, both on
+  `032129`: 17.400 s `T` read `E` (distance 10.0) and 20.660 s `0` read `E` (15.0).
+- **Together: no edge**, because of the same 8 right letters with no whole mark.
+- **Synthetic, exact keys: no edge on any measure.** No wrong-or-added letter lies past the
+  farthest right one (mark 1.676, gap 3.375). At 6.5 the synthetic set has nothing on either
+  side. The two sets therefore do not confirm each other. They also do not conflict.
 
-It ran twice, and **both columns are measured**. The second run had `src/Hamlet.RadioEngine/Cw`
-checked out at `f14b2453`, and `src` was restored afterwards. The same 60 gaps line up one for one.
-Changed under G1:
-- **Nine element gaps** inside `B`, `6` and `W` went from letter to element. The key agrees with G1
-  on all nine. These are G1's letters.
-- **Two letter spaces became word spaces:**
-  - 6|R at 24.030 s: 310 ms, 4.43 u.
-  - W|B at 26.830 s: 320 ms, 4.57 u.
-  - On both, the key agrees with the old call. These two are the whole of 5 -> 7.
+**Task 2, the one change, kept.** In `CwProbabilisticStream.Character`, a known letter is now
+emitted `Low` if any gap between two of its whole marks is more than 6.5 times longer or shorter
+than one unit at the path's speed. The gap is read from the window the stream holds at emission
+(HM-REQ-015). It never reads the neighbours (R72). The edge was taken from the trace and not moved.
+`CwUnitEstimator.InnerElements` is the trace's segmentation moved into `src`, and the trace now
+calls it, so the rule and the trace run the same code. `CallsignResolver`, `ContactTracker`, G1,
+the marks' speed, `RivalMargin` and `MarginLlr` are untouched.
 
-**Cause:** on 17:37, G1's condition is made by one key-up of 10 to 15 ms (0.14 to 0.21 u, 1 of 44
-gaps). That is a dropout inside a mark, and it takes the shortest gap cluster to itself. G1 refuses
-the window, no character gap is measured in it, and the stream stays on a spacing whose word
-threshold sits below those two letter spaces: 303 ms (4.33 u) at 24.030 s and 254 ms (3.63 u) at
-26.830 s. Before G1, the refused reading itself was held (10/828/250 ms). Its backwards relabel
-boundary of 455 ms (6.5 u) took the path's spaces out.
+Judged against §3, item by item:
+- MET-INVENTED, real: 47 -> 45. It falls.
+- MET-CER-SURE: real 47 of 421 -> 45 of 419 (0.1074); synthetic 14 of 173, unchanged.
+- Coverage: real 374 over 473 and synthetic 159 over 252, both held.
+- Adjudicated readings: 13 of 13.
+- V-11: 0 of 35 recordings worse on any of the four metrics.
+- Dim precision (HM-REQ-014), real, keyed stretches: 0 right of 2 dim, 0.0000. It is not a keep
+  condition. Dimming only wrong letters puts it at zero by construction, and the number says so.
+- Floors under the change: captures 51 of 51; named 12 of 13 with 17:37 at 38, as at entry.
 
-**Other recordings.** Comparing boundaries wrong per recording, f14b2453 -> HEAD, **only 17:37
-rose**. So the cause reaches no other keyed recording whose MET-WBE rose under G1, because there is
-none. `031838` fell 5 -> 1, `032012` 3 -> 2 and `032129` 7 -> 5. Real MET-WBE went 57 -> 52.
-
-**Task 2, one change.** The rule came from the trace and was set before any numbers: **the gap
-clustering in `CwUnitEstimator.MeasureGaps` and `MeasureCharacterGap` leaves out key-ups shorter than
-half a unit.** The trace puts the dropouts at 0.14 to 0.40 u and the shortest element gap the key
-confirms at 0.57 u. G1, the marks' speed, `RivalMargin` and `MarginLlr` were not touched.
-
-| part of R78 | before | under the change | verdict |
-|---|---|---|---|
-| MET-WBE, 17:37 | 7 | 8 | **rises; 5 or fewer needed** |
-| MET-WBE, real | 52 over 113 | 43 over 113 | falls |
-| MET-CER-SURE, real | 47 of 421, 0.1116 | 46 of 425, 0.1082 | falls |
-| MET-INVENTED, real | 47 over 473 | 46 over 473 | falls |
-| sure-and-right, real | 374 | 379 | rises |
-| adjudicated | 13 of 13 | 13 of 13 | hold |
-| V-11, 35 recordings | - | 17:37 7 -> 8, `031905` 2 -> 3, `cq-18wpm-5db-char5` 10 -> 14 boundaries | **fails** |
-| 17:37 wrong-or-added / sure-right | 3 / 17 | 3 / 17 | G1's letters stay removed |
-| capture rows | 51 of 51 | 49 of 51 (`004234` 36 -> 34, `004427` 42 -> 41) | reported |
-
-**Not kept: 17:37's boundaries rise and V-11 fails.** The diff is
-`.run-unit/unit444-wbe-notkept.diff`, and `src` carries none of it. It is recorded in
-`docs/phase-requirements/metrics.md` per condition, with the key's kind beside each number. 17:37
-was not re-banked.
+`metrics.md` carries the table and the per-condition before and after, with the key's kind. The
+re-run trace under the change shows 419 sure, 0 wrong past 6.5, and the same 374 right.
 
 **Task 3, the exit round.**
-- Build: 0 errors.
-- Engine carry-forward: 178 of 178.
-- App carry-forward: 276 of 278. Both losses are `ThePowerIsOfferedTests` ("You've caused dispatcher
-  loop"). That type passes 3 of 3 alone, so this is the recorded dispatcher-loop loss.
-- Captures: 51 of 51.
-- Adjudicated: 13 of 13.
-- Named: 12 of 13. 17:37 is red at 38.
-- Metrics: identical to entry.
-- `HowSeventeenThirtySevensGapsAreCalledTests`: 1 of 1.
-- `TheFiveToEightDecibelPlateauHolds` was not run. It is in neither line.
+- build: 0 errors;
+- engine carry-forward: 178 of 178;
+- app carry-forward: 278 of 278;
+- captures: 51 of 51;
+- adjudicated: 13 of 13;
+- named: 12 of 13, with 17:37 red at 38 as at entry;
+- metrics: as under the change.
 
-**`src` at exit against entry `1f6a5789`: no file changed.** Nothing that keys or transmits was
-touched. The one tree change outside the record is the new printer in `tests/`.
+Types touched or exercising the touched code, one invocation each:
+- `EachCharacterAnswersForItselfTests` 6 of 6;
+- `TheShortRunFilterDropsWithoutMergingTests` 2 of 2;
+- `CallsignResolverTests` 29 of 29;
+- `WhereTheSureAddedLettersComeFromTests` 2 of 2;
+- `WhatTheSureLettersMarksLookLikeTests` 1 of 1;
+- `WhereTheSureWrongLettersComeFromTests` 3 of 3;
+- `TheUnitIsMeasuredNotSearchedTests` 4 of 5. The one failure is `TheFiveToEightDecibelPlateauHolds`,
+  the correctness phase's recorded red.
 
-**2.5 is not ticked**, because no change was kept and 17:37 was not re-banked. The commits of units
-442 and 443 all exited with 17:37 red, and so did every commit of this unit. **2.4 is not ticked.**
-DRIFT for step 2 is 2: 441 kept a change, and 442 and 444 did not.
+**`src`, file by file, against entry `0528afbe`:**
+- `src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs`: `InnerGapEdge = 6.5`, `GapsFitTheUnit`,
+  and `Character` taking the window and choosing `Low`.
+- `src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs`: `InnerElements`.
 
-**Mismatches with the instruction, reported and not repaired:**
-- **V-11 is in `CW_REQUIREMENTS.md` (line 254), not `CW_SPEC.md`.** It reads: "No change may make
-  an earlier capture or the synthetic corpus go red to make a newer one green."
-- **HM-REQ-010:** "On every must-tier condition at or above the sensitivity floor, the decoder shall
-  keep MET-CER-SURE below 1 %."
-- **HM-REQ-011:** "On every condition at or above the sensitivity floor, the decoder shall keep
-  MET-INVENTED at zero."
-- **HM-REQ-080:** "On every must-tier sender profile at 15 dB reference on CH-AWGN, the decoder shall
-  place every word boundary where the sender placed it (MET-WBE = 0)."
-- **HM-REQ-081:** "On every must-tier condition at the sensitivity floor, the decoder shall keep
-  MET-WBE at or below 5 % of words."
-- **HM-REQ-082:** "The decoder shall score word-boundary errors separately from character errors."
-- None of the five names 17:37's condition. That condition is real HF with no CH-* profile, and its
-  sender is not stated in `CW_SPEC.md`.
-- **The instruction's facts that held:**
-  - G1 and 14f515bd are in HEAD's ancestry.
-  - G1 is in `MeasureGaps` as described.
-  - `metrics.md` gives both texts.
-  - The counts 5 before G1 and 7 after were confirmed by measurement at both commits.
-- **Known and not mine, reported once:**
-  - `PHASE_OUTCOME.md`'s header has stale step titles.
-  - `CW_SPEC.md` §11 still has the old MET-COVERAGE text.
-  - On RULES_AT: `CLAUDE.md` holds HM-DEC-165 in its log (line 376). A search of `CLAUDE.md` finds no
-    CPS-DEC-0183.
+Neither file keys or transmits. The only "key" words in the diff are `keyDown`, the envelope's
+key-up/key-down state on the receive side.
 
-**Decisions I made myself:**
-1. I measured the before-G1 half rather than reasoning it, since the unit had time.
-2. I also ran the metrics at f14b2453, to get the per-recording comparison.
-3. The key's call on a gap comes from an edit alignment of marks (dit or dah) to the key's
-   elements, not from the letter alignment.
-4. The printer reads the stream's held spacing by reflection, so the same file runs at both commits.
-5. I added the character-gap column to the trace before any rule was chosen.
-6. The half-unit line was set from the trace alone, and I did not try a second value or a second rule.
+**3.2 and 3.3 ticked** in both copies. 3.4, 3.5, 3.6, 2.4 and 2.5 were not ticked.
+**DRIFT:** step 3 is 0, because this unit's change was kept. Step 2 is 2, unchanged.
 
-**`validate-output.bat` was not run: my permissions refused the call.** I checked its rules by hand:
-- The ordering block is at lines 1 to 14, with `READ IN THIS ORDER.` and lines starting `A.`, `B.`
-  and `C.`.
-- Line C carries `Section 4 raises 2 items`.
-- The `UNIT:` line has no brackets.
-- There are exactly the four headings, and section 3 is not empty.
+**Mismatches against the instruction:**
+1. V-11 is in `CW_REQUIREMENTS.md` line 254, not in `CW_SPEC.md`. Its text there: "No change may
+   make an earlier capture or the synthetic corpus go red to make a newer one green."
+2. `CwProbabilisticStream.cs` sets `known ? High : Unreadable` at line 685 at entry, as stated.
+   `CallsignResolver` acts only on `High` at line 257, and `ContactTracker` at line 216. Confirmed.
+3. §2 says `CLAUDE.md` §1 holds CPS-DEC-0183. The string does not occur anywhere in `CLAUDE.md`.
+4. The quoted requirements, from `CW_REQUIREMENTS.md`:
+   - HM-REQ-010: "keep MET-CER-SURE below 1 %".
+   - HM-REQ-011: "keep MET-INVENTED at zero".
+   - HM-REQ-012: "emit at least 90 % of sent characters as sure (MET-COVERAGE ≥ 0.90) ... Without a
+     floor, dimming everything satisfies HM-REQ-010". Its wording is sure over sent, not R82's
+     sure-and-right. This is the same known item as `CW_SPEC.md` §11.
+   - HM-REQ-014: "characters the decoder emits as dim shall be correct at least 70 % of the time".
+   - HM-REQ-015: "make each character's confidence class available at the moment the character
+     is emitted".
+
+   HM-REQ-010, 011 and 012 speak of must-tier conditions at or above the sensitivity floor. As
+   `metrics.md` already records, no real row is such a condition.
+5. Known, not mine, reported once and not edited: `PHASE_OUTCOME.md`'s stale step titles,
+   `CW_SPEC.md` §11's coverage text, and RULES_AT HM-DEC-165 (for which see 3).
+6. A finding from the trace: 441's printer passes `CwUnitEstimator.Elements` over the letter's
+   span, one unit either side. `Runs` records the leading run, so every gap list that printer gave
+   includes the padding's partial gap before the letter. This unit's trace keeps only inner gaps.
+
+**A slip of my own, corrected.** At task 1's start I ran `tools/status.sh` from `.run-unit`, and it
+overwrote the tracked `.run-unit/PROJECT_STATUS.md`. I restored it with `git checkout` to its
+committed content. It was never committed changed. Every later status call went through
+`.run-unit/unit445-st.sh`, which runs from the root.
 
 ## 2. What the owner should expect
 
-No: the operator still reads `CQ CQ CQ DEWB6 RE D W B`. Nothing the decoder prints changed, because
-the one change was not kept. Letters are unchanged, and no sure letter was turned wrong. The evidence
-is an inferred key only (V-13). Floors are as recorded: 17:37 is red at 38, and everything else is
-green.
+Yes, the operator now sees fewer wrong letters printed as sure, and no right letter turned dim.
+The evidence, on inferred keys (V-13):
+- Across the 23 real keyed recordings, 45 wrong letters remain sure instead of 47.
+- On `032129`, the key's `T` and `0` that were read as `E` now print dim.
+- All 374 right letters stay sure.
+- No recording is worse on any metric (V-11, 35 of 35).
+- No callsign is gained or lost on any capture or synthetic case.
+- The synthetic set is untouched.
+- The floors are as green as at entry: captures 51 of 51, adjudicated 13 of 13, and named 12 of 13
+  with 17:37 red at 38, as recorded. Both carry-forward lines are green.
 
-What is new is why the "5 before G1" was 5. The pre-G1 decoder held a backwards gap reading, where
-the character gap was longer than the word gap. By accident, that put a 455 ms threshold above
-this sender's 310 and 320 ms letter spaces. This sender's letter spaces (135 to 320 ms) and word
-spaces (245 to 485 ms) overlap. `DE|W` is a 245 ms word space, shorter than six letter spaces
-around it, so no duration rule can place it.
+Two things will look wrong but are not:
+- Dim precision reads 0 of 2. That is by construction, because the only keyed letters dimmed are
+  the wrong ones.
+- A third letter on `032129`, an `I`, also prints dim. It sits outside the keyed stretch, so no key
+  can say whether it was right.
 
-**What will look wrong but is not:**
-- The app line reads 276 of 278 at exit. The two losses are the recorded dispatcher loop, and that
-  type is green alone.
-- The rejected rule improved the real set: MET-WBE 52 -> 43, and `004234` read `THANK YOU FOR`
-  instead of `T HANTT TK■ET FOR`. It is still out, by R78 and V-11.
+The gain is small, 2 of 47. The mark distance itself separated nothing, because right letters sit
+at every distance from a dit or a dah.
 
 ## 3. What you should see
 
-**17:37, as the operator reads it** (key `CQ CQ CQ DE WB6RED WB6RED`, inferred):
+The trace's table on the real set, inferred keys. Right against wrong-or-added, by worst mark
+distance. **No edge:** right letters lie past every distance.
 
-| when | text | boundaries wrong |
+| worst mark distance | right | wrong or added |
 |---|---|---|
-| before G1 (f14b2453) | `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I` | 5 |
-| at entry (1f6a5789) | `CQ CQ CQ DEWB6 RE D W B 7E E I` | 7 |
-| at exit (src unchanged) | `CQ CQ CQ DEWB6 RE D W B 7E E I` | 7 |
-| under the not-kept rule | `CQ CQ CQ DEWB 6 RE D W B 7E E I` | 8 |
+| 1.00 to 1.25 | 194 | 15 |
+| 1.25 to 1.50 | 98 | 8 |
+| 1.50 to 2.00 | 55 | 10 |
+| 2.00 to 3.00 | 7 | 4 |
+| 3.00 to 5.00 | 10 | 3 |
+| 5.00 and over | 2 | 4 |
+| no whole mark | 8 | 3 |
 
-**No other recording's text changed at exit.** Under the rule while it was built, 16 texts changed.
-The full diff is in `.run-unit/unit444-text-diff.txt`. The ones an operator would notice:
+By worst inner gap distance. **The edge is 6.5, inside the 5.00-and-over bin.** Past it lie 0 right
+and 2 wrong.
 
-| recording | at HEAD | under the rule |
+| worst inner gap distance | right | wrong or added |
 |---|---|---|
-| `004234` | `C O M <BT> T HANTT TK■ET FOR ON` | `C OM <BT> THANK YOU FOR ON` |
-| `032113` | `A KET■ A N O INT ERNE T ■ E RSIONS OF` | `A KET■ ANO INTERNET ■ERSIONS OF` |
-| `032050` | `CAN BE FOTA ND IN` | `CAN BE FOTAND IN` |
-| `004405` | `A N T HONY LUSCRE` | `ANTHONY LUSCRE` |
-| `004347` | `W ILL BE UPLOADED` | `WILL BE UPLOADED` |
-| `004427` | `QSL TN6TBRE C E` | `QSL TN6BRE C E` |
-| `031905` | `IAIEI TANI   WLUX` | `IAIEI TA NI   WLUX` |
-| `013637` | `S KY LI TE ... ALL DAY JUST AWE SO` | `S KY L I TE ... ALL D AY  JU S T A WE H O` |
-| `cq-18wpm-5db-char5` | `C QC Q C Q TEE T ■KTDUUEUE N 0 C A L L K` | `C QCQCQDEN0 NC A L L N 0 C A L L K` |
+| 1.00 to 1.25 | 218 | 31 |
+| 1.25 to 1.50 | 84 | 6 |
+| 1.50 to 2.00 | 26 | 2 |
+| 2.00 to 3.00 | 22 | 1 |
+| 3.00 to 5.00 | 21 | 3 |
+| 5.00 to 6.50 | 3 | 2 |
+| **past 6.50 (edge)** | **0** | **2** |
 
-Where to look:
-- The gap-by-gap line-up is `.run-unit/unit444-lineup.txt`.
-- The trace summary is `.run-unit/unit444-trace-summary.md`.
-- The per-recording V-11 table is `.run-unit/unit444-v11-change.txt`.
+What the operator reads, for the one recording whose text or dimming changed, `032129`. Brackets
+mark a dim letter.
+
+- before: `MTMTJ26 PGOPAGATION E EE EIIEE I E EE IEEEE I HE EE I ...`
+- after:  `MTMTJ26 PGOPAGATION E EE [E]IIEE I [E] EE [I]EEEE I HE EE I ...`
+- `[E]` at 17.400 s: key `T` (inferred).
+- `[E]` at 20.660 s: key `0` (inferred).
+- `[I]`: outside the keyed stretch, no key.
+
+No other capture and no synthetic case changed text or dimming. Callsigns gained: none. Callsigns
+lost: none.
 
 ## 4. What's blocking us
 
-1. **Rule whether 2.5 is to be met on 17:37 by a boundary count of 5 or fewer, or whether 17:37's
-   named floor may be re-banked at 38 with its boundaries at 7.**
-   - Reasoning: the trace shows the pre-G1 count of 5 was produced by a backwards gap reading, not
-     by a rule that measured this sender. The two boundaries G1 "lost" are letter spaces of 310 and
-     320 ms, while this sender also sends word spaces of 245 and 330 ms.
-   - Under R72, any duration rule that restores both must place a boundary between 320 and 330 ms
-     in the reads that decide them. That is tuning to one recording.
-   - While 443's DECIDED (3) stands, no unit can tick 2.5.
-   - Rejected: building a second rule to reach 5, which the instruction forbids and V-11 would test
-     on a knife edge. Also rejected: re-banking here, which 443's ruling forbids.
-2. **Consider the half-unit dropout rule (`.run-unit/unit444-wbe-notkept.diff`) as a candidate for
-   step 6's word-boundary work.**
-   - Reasoning: on the real set it takes MET-WBE from 52 to 43 over 113, MET-CER-SURE from 0.1116
-     to 0.1082 and MET-INVENTED from 47 to 46, and it reads `004234`'s `THANK YOU FOR`.
-   - It failed here only on 17:37 (7 -> 8), `031905` (2 -> 3) and the synthetic character-gap-5 case
-     at 5 dB (10 -> 14).
-   - Rejected: keeping it now, because R78 and V-11 refuse it and step 6 is parked for this unit.
+1. **The edge is two letters wide, and it is set by the unit as much as by the shape.** The two
+   letters it caught both sit on `032129`. Each rests on a 10 ms key-up, the envelope's 2-hop
+   minimum, read against a slow grid unit of 100 and 150 ms. The two right letters at exactly 6.5
+   are a 10 ms key-up at a 65 ms unit. A rule of the form "an inner gap past N units" therefore
+   partly reads "the grid chose a slow unit". Ruling wanted: should a later step-3 edge need a
+   minimum number of wrong letters past it, or agreement from the synthetic set, before it is
+   built? Reasoning: the instruction's definition, an edge no right letter crosses, was met and
+   the change was kept under R78 as written. But one more right letter at 7 would have erased
+   this edge. Rejected: moving or widening the edge in this unit, because the instruction forbids
+   it. Not in the way of any criterion in B.

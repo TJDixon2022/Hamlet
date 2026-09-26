@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 445 - a letter whose marks do not fit the speed is not printed as sure
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T00:42:26-04:00
-NOTE: Change kept and pushed; committing metrics.md per condition and the before/after texts
+UPDATED: 2026-09-26T01:08:30-04:00
+NOTE: Unit 445 complete: one kept change dims 2 wrong letters and no right one on 032129 (MET-INVENTED 47 to 45, coverage held); 3.2 and 3.3 ticked
 
 ---
 

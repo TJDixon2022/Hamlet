@@ -1,0 +1,43 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.ACallsignShapedStringInLooseTextIsNotClaimed(text: "SOME TEXT W1AW MORE TEXT") [7 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.ACallsignShapedStringInLooseTextIsNotClaimed(text: "W1AW") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.ACallsignShapedStringInLooseTextIsNotClaimed(text: "QRM HR W1AW QSB") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.NoiseElsewhereDoesNotStopACleanCallsign [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.RitualWordsAndReportsAreNeverClaimed(text: "DE 599 K") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.RitualWordsAndReportsAreNeverClaimed(text: "DE TU K") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.RitualWordsAndReportsAreNeverClaimed(text: "DE CQ K") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.RitualWordsAndReportsAreNeverClaimed(text: "DE QSL K") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.RitualWordsAndReportsAreNeverClaimed(text: "UR RST 579 579 BK") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.RitualWordsAndReportsAreNeverClaimed(text: "DE 5NN K") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "VE3XYZ", claimed: True) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "HELLO", claimed: False) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "KC3QIS", claimed: True) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "W1AW", claimed: True) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "2E0ABC", claimed: True) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "123456", claimed: False) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "W1", claimed: False) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "ABCDEF", claimed: False) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "W1AW/P", claimed: True) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheShapeGateAcceptsCallsignsAndRejectsNearMisses(token: "G0ABC", claimed: True) [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheStationSigningInFrontOfAProsignIsClaimed(text: "W1AW K") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheStationSigningInFrontOfAProsignIsClaimed(text: "W1AW SK") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheStationSigningInFrontOfAProsignIsClaimed(text: "W1AW KN") [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.SomebodyAnsweringAnotherStationIsNotAnsweringYou [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheStationBeforeDeIsWhoTheyAreCalling [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.NothingHeardIsNothingClaimed [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.OneBlockedCharacterAndNothingIsClaimed [< 1 ms]
+[xUnit.net 00:00:00.27]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.OneDimmedCharacterAndNothingIsClaimed [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.CallsignResolverTests.TheStationAfterDeIsClaimed [< 1 ms]
+
+Test Run Successful.
+Total tests: 29
+     Passed: 29
+ Total time: 0.5303 Seconds
+RC=0 WALL=1s
