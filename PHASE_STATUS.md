@@ -1,15 +1,15 @@
 PHASE: Hamlet meets the CW requirements
 PHASE_SET: 2026-09-25
 DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
-CURRENT_STEP: 5
-WORK_INSTRUCTION: 451 - the speed says whether it was proved
-HEARTBEAT: 2026-09-26 08:22:12
+CURRENT_STEP: 6
+WORK_INSTRUCTION: 452 - where the words break
+HEARTBEAT: 2026-09-26 10:10:24
 STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
 STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
 STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
 STEP: 3 | partial | The junk between words goes - MET-INVENTED driven toward HM-REQ-011's zero, from the 13 added characters unit 439 measured.
 STEP: 4 | partial | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
-STEP: 5 | not started | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
+STEP: 5 | partial | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
 STEP: 6 | not started | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
 STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
 STEP: 8 | not started | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.

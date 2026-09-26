@@ -1,45 +1,32 @@
-# Work instruction 451 - the speed says whether it was proved
+# Work instruction 452 - where the words break
 
-**Authored by the arbiter against step 5's open criterion 5.5.** Steps 0 and 1 are done. By the
-plan's checkboxes, step 2 is at 3 of 5, step 3 at 3 of 6, step 4 at 5 of 7 and step 5 at 0 of 6.
+**The arbiter wrote this against step 6's open criterion 6.3.** Steps 0 and 1 are done. By the
+plan's checkboxes, step 2 is at 3 of 5, step 3 at 3 of 6, step 4 at 5 of 7 and step 5 at 1 of 6.
 Steps 6, 7 and 8 are at 0.
 
-**Why not step 2, which the launcher named.** Step 2 has two open lines, and neither can flip this
-pass:
-- **2.4** closes the step after three consecutive units with no kept change. Unit 449 kept a change
-  (real MET-CER-SURE 40 of 433 to 33 of 436), which set the count to **0 of 3**. No step 2 unit has
-  run since.
-- **2.5** needs the three named floors green. It is held red by 443's DECIDED (3), as 448's
-  DECIDED (6) read it: no floor is re-banked. Only the owner lifts that. Unit 444 showed that no
-  honest gap rule gives 17:37 its boundaries back, and that route is recorded no.
+**Why not step 2, which the launcher named.** Neither of its two open lines can flip in one unit:
+- **2.4** closes the step after three units in a row keep no change. Unit 449 kept a change, which
+  set the count to **0 of 3**. No step 2 unit has run since. One unit takes the count to 1 at most.
+- **2.5** needs all three named floors green. 443's DECIDED (3), as 448's DECIDED (6) read it, holds
+  it red: no floor is re-banked. Only the owner can lift that ruling. Unit 444 measured that 17:37's
+  sender has overlapping letter spaces (135 to 320 ms) and word spaces (245 to 485 ms), so no honest
+  duration rule gives 17:37 its boundaries back. That route is recorded no.
 
-Step 3's open lines have the same shape: 3.4 needs a recording that is not in the tree, 3.5 is a
-closing count, and 3.6 is the same red floors. Step 4's 4.4 is a closing rule, and 4.7 is the same
-red floors.
+**Why 6.3.** Of the four metrics the requirements are written in, word-boundary error is the
+farthest from its requirement:
 
-**Why 5.5.** HM-REQ-034 is must-tier and no unit has attempted it: *"The decoder shall report the
-speed estimate with a proof state of proved, hypothesis, or none."* Its rationale reads: *"A speed
-the decoder has not earned is not a number."*
+| metric | real set, inferred key, at HEAD | the requirement |
+|---|---|---|
+| MET-WBE | 46 over 113 words, 0.41 | HM-REQ-081 at or below 0.05; HM-REQ-080 at 0 |
+| MET-CER-SURE | 0.076 | HM-REQ-010 below 0.01 |
+| MET-INVENTED | 0.070 | HM-REQ-011 at 0 |
+| sure-and-right coverage | 0.85 | at or above 0.90 |
 
-Today the speed has no state:
-- `CwDecoder.WordsPerMinute` is a nullable number behind a four-part guard.
-- `SpeedIsReacquiring` is a separate boolean.
-- The sheet's `SpeedForTheRecord` builds its wording from both of them and from
-  `Reading.WordsPerMinute`.
-
-Nothing tells the operator whether the number in front of them was earned now or is being held.
-HM-REQ-035 (a clear keeps speed, pitch and noise floor) and HM-REQ-036 (a pitch refinement keeps
-timing) sit on the same line of the plan, and neither has a test that measures what it states.
-
-**This unit changes what the operator reads (R83):** the speed line on the sheet, and every surface
-that shows the speed, states which of the three it is. Unit 450 did the same for the pitch in one
-unit (4.6). This is the speed's half.
-
-Why not the other routes:
-- **7.1 and 5.3/5.4.** A generator or a measurement changes nothing the operator reads, so R83
-  refuses it as a unit on its own.
-- **5.1.** It is recorded no.
-- **5.2.** Its recording is not in the tree.
+- **No unit has worked step 6.**
+- **HM-REQ-080 names a recording in the tree.** Its rationale reads: *"`DEW B 6 RE D` is not whole."*
+  That is 17:37's CQ, and its verification row cites the WB6RED key.
+- **This unit changes what the operator reads (R83).** Where a word breaks in the middle, or two
+  words run together, the operator reads the words wrong.
 
 ---
 
@@ -69,89 +56,91 @@ If all six hold, say "Hamlet confirmed" and continue.
 
 ## 1. Why this unit exists
 
-The count today is **step 5 at 0 of 6**, step 4 at 5 of 7 (4.1, 4.2, 4.3, 4.5, 4.6), step 2 at 3 of
-5 and step 3 at 3 of 6. These are the figures at HEAD `f96cd04e`, from unit 450's exit, which
-changed no decoded character:
+These are the counts at HEAD `6d40cc90`, from unit 451's exit. That unit changed no decoded
+character:
 
 | metric | condition, key | count | value |
 |---|---|---|---|
+| MET-WBE | real, inferred | 46 over 113 words | 0.4071 |
+| MET-WBE | synthetic, exact | 48 over 84 words | 0.5714 |
+| MET-WBE | 17:37 alone, inferred | 7 over 6 words (last measured by unit 444) | |
 | MET-CER-SURE | real, inferred | 33 of 436 sure | 0.0757 |
 | MET-CER-SURE | synthetic, exact | 14 of 173 | 0.0809 |
 | MET-INVENTED | real, inferred | 33 over 473 | 0.0698 |
 | MET-INVENTED | synthetic, exact | 14 over 252 | |
 | sure-and-right coverage (R82) | real, inferred | 403 over 473 | 0.8520 |
 | sure-and-right coverage (R82) | synthetic, exact | 159 over 252 | 0.6310 |
-| MET-WBE | real, inferred | 46 over 113 | 0.4071 |
 | MET-PITCH-ERR | files more than 25 Hz off | 9 of 69 | |
 
-The floors at the same HEAD are captures 51 of 51, adjudicated 13 of 13 and named 10 of 13. The red
-named floors are 17:37 (38 against 46), `032113` (43 against 45) and `032129` (42 against 64).
-**Task 0 re-measures all of these, and its numbers win over this table.**
+The floors at the same HEAD:
+- captures 51 of 51;
+- adjudicated 13 of 13;
+- named 10 of 13. The three red rows are 17:37 (38 against 46), `032113` (43 against 45) and
+  `032129` (42 against 64).
+
+**Task 0 re-measures all of these, and where its numbers differ from this table, its numbers win.**
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  The speed the decoder reports carries a proof state of proved, hypothesis or
-            none (HM-REQ-034), and the sheet and every speed display say which one the
-            operator is looking at. HM-REQ-035 (a clear keeps speed, pitch and noise floor)
-            and HM-REQ-036 (a pitch refinement keeps timing) each get a test naming them,
-            and the report says whether each is met. Not one decoded character changes.
-ADVANCES:   step 5 criterion 5 - the plan's line 5.5
+UNIT GOAL:  Word-boundary error is reported per condition, with the key's kind, and
+            HM-REQ-080 and HM-REQ-081 are measured against it on every condition the tree
+            holds. Every wrong boundary is traced to its cause, and one change against the
+            largest cause is built and kept under R78 only if MET-WBE falls and no recording's
+            boundaries or letters get worse.
+ADVANCES:   step 6 criterion 3 - the plan's line 6.3
 ```
 
-`step 5 criterion 5` is the launcher's form, and it means the plan's line `- [ ] 5.5`.
+`step 6 criterion 3` is the launcher's form. It means the plan's line `- [ ] 6.3`.
 
-**Read `CW_REQUIREMENTS.md` first, then `CW_SPEC.md`.** In `CW_SPEC.md`, read §2 (the decoded
-record) and whatever it says about the speed and its proof state. In `CW_REQUIREMENTS.md`, read
-section D and the verification table's rows for 034, 035 and 036. Where the documents differ from
-this instruction, the documents win. **Quote each id below from the document in section 1 of your
-report, and report any difference as a mismatch.**
+**Read `CW_REQUIREMENTS.md` first, then `CW_SPEC.md`.** Read these parts:
+- in `CW_REQUIREMENTS.md`, section I and the verification table's rows 080, 081 and 082;
+- in `CW_SPEC.md`, MET-WBE's definition, the sensitivity floor, and which TX-* sender profiles are
+  must-tier.
 
-- **HM-REQ-034:** speed reported with a proof state of proved, hypothesis or none. **This is the
-  requirement the unit meets.**
-- **HM-REQ-035:** "When the transcript is cleared, the decoder shall retain its speed, pitch and
-  noise-floor state." **Measured by a test naming it. Not repaired here** (§3 (d)).
-- **HM-REQ-036:** "When the pitch is refined for the same station, the decoder shall retain its
-  timing state." **Measured by a test naming it. Not repaired here** (§3 (d)).
-- **HM-REQ-031:** speed within 10% of true after acquisition. It is 5.3's. This unit prints the
-  speed error of `proved` hops on the synthetic set as evidence only, and judges nothing by it.
-- **HM-REQ-093:** the pitch's proof state, met by unit 450. The speed's state follows its pattern,
-  and the pitch's state is not changed.
+Where the documents differ from this instruction, the documents win. **In section 1 of your report,
+quote each id below from the document, and report any difference as a mismatch.**
+
+- **HM-REQ-080:** "On every must-tier sender profile at 15 dB reference on CH-AWGN, the decoder
+  shall place every word boundary where the sender placed it (MET-WBE = 0)." **Measured.**
+- **HM-REQ-081:** "On every must-tier condition at the sensitivity floor, the decoder shall keep
+  MET-WBE at or below 5 % of words." **Measured.**
+- **HM-REQ-082:** word-boundary errors scored separately from character errors. Step 1 built this
+  (1.3). It is the scorer this unit uses, and it is not changed.
+- **HM-REQ-010 and HM-REQ-011:** guards on the change. A boundary change must not make a letter
+  worse.
+- **HM-REQ-083 and 084** belong to 6.4 and 6.5, not this unit.
 
 ## 2. Verify this instruction against the tree
 
 Check each of these. **Where one is wrong, report it as a mismatch in section 1 and carry on. Do not
 repair it.**
 
-- **HEAD and the plan.** HEAD is `f96cd04e`, unit 450's exit commit. In both copies of
-  `PHASE_PLAN.md`:
-  - 4.1, 4.2, 4.3, 4.5 and 4.6 are ticked, and 4.4 and 4.7 are not.
-  - No line of step 5 is ticked.
-- **The speed today.** Confirm each of these:
-  - `CwDecodeReport` carries `CwPitchProof PitchProof` and has no speed state.
-  - `CwDecoder.WordsPerMinute` (about line 439) is `int?`.
-  - `SpeedIsReacquiring` is a boolean (about line 421).
-  - `CwDecoder.Retuned()` is only `Unlock()` (line 385).
-  - `MainWindowViewModel.SpeedForTheRecord` (about line 12818) prints the sheet's speed line from
-    those, and from `Reading.WordsPerMinute` as "the decoder's own best hypothesis".
-- **The traceability table.** `docs/phase-requirements/traceability.md` rows 94 to 96 list HM-REQ-034,
-  035 and 036 with no proving test. The tests they list measure something else:
-  - `CwSpeedSilenceTests.TheReacquiringStateIsReadable`;
-  - `CwAdjudicationTests.ClearingTheScreenLeavesTheDecoderAloneOnRealisticAudio`;
-  - `CwRefiningRetuneTests.TheSurveySettlingBetweenTwoBinsIsNotAStationChange`;
-  - and others.
-
-  Confirm this. **Do not edit the traceability table** (R80). Only the new tests' own names and
-  comments carry the ids.
-- **A known conflict with HM-REQ-036.** `AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh`
-  asserts that the speed goes to 0 after `Retuned()`. That type is 3 of 4 red at HEAD, and unit 450
-  logged it. Report how its assertion stands against HM-REQ-036, and edit nothing in it.
+- **HEAD and the plan.** HEAD is `6d40cc90`. In both copies of `PHASE_PLAN.md`:
+  - 5.5 is ticked;
+  - no line of step 6 is ticked;
+  - 2.1, 2.2 and 2.3 are ticked, and 2.4 and 2.5 are not.
+- **The scorer.** MET-WBE is computed in `CwMetrics` and scored separately from MET-CER.
+  - Name the method that computes it.
+  - Say whether it splits inserted boundaries from deleted ones.
+  - Say whether it can report per recording and per condition.
+- **The conditions the tree holds.** List the synthetic cases and what each was built as: sender
+  profile, speed, character gap and SNR. The running figures in `metrics.md` name these: TX-ITU at
+  15, 5 and 0 dB, and a character-gap-5 sender at 15, 5 and 0 dB. List the real recordings'
+  conditions as 443's entry grouped them: sender not stated, TX-FARNS, TX-ITU and TX-TIGHT, all
+  with inferred keys.
+  - **State which of these are must-tier sender profiles at 15 dB (HM-REQ-080), and which sit at
+    the sensitivity floor (HM-REQ-081).** Name every condition either requirement asks for that the
+    tree does not hold. **No CH-* channel profile exists until step 7 builds one.** A real
+    recording is never counted toward a CH-* condition (7.4).
+- **17:37's key** is `CQ CQ CQ DE WB6RED WB6RED`, inferred. The second `WB6RED` runs past the audio
+  (444).
 - **Expected failures at entry. They are not yours to fix:**
-  - The named floors 17:37, `032113` and `032129`, as §1 gives them.
-  - `TheFiveToEightDecibelPlateauHolds`.
-  - `AHeldPitchDoesNotOutliveItsEvidenceTests`, 3 of 4. It is in neither carry-forward line.
-  - The app line losing up to 5 to the dispatcher loop, each type green alone. **If the host hangs,
-    rerun once and report it.**
-- **Known, and not yours.** Report each once and edit none of them:
+  - the three named floors in §1;
+  - `TheFiveToEightDecibelPlateauHolds`;
+  - `AHeldPitchDoesNotOutliveItsEvidenceTests`, 3 of 4. It is in neither carry-forward line;
+  - the app line losing up to 5 to the dispatcher loop, with each type green alone. **If the host
+    hangs, rerun once and report it.**
+- **Known, and not yours.** Report each once, and edit none of them:
   - `PHASE_OUTCOME.md`'s header still carries the old titles for steps 2, 3 and 8.
   - `CW_SPEC.md` §11 still defines MET-COVERAGE as sure over sent.
   - `PROJECT_STATUS.md` RULES_AT says HM-DEC-165, while `CLAUDE.md` §1 holds CPS-DEC-0183.
@@ -163,80 +152,78 @@ repair it.**
 
 - **`PHASE_PLAN.md` R77 to R81 and §6, and R82 and R83** as work instruction 441 recorded them.
   **R83:** a unit of this phase changes what the operator reads, or it is not authored. Here, what
-  changes is the speed line and every speed display.
-- **R75 and R76**, carried. The pitch instrument never enters `src` (447's DECIDED (3)).
+  changes is where the words break. **R78 is the keep rule.** It judges on the requirements'
+  metrics, never on character counts.
+- **R72:** no word, dictionary or callsign prior, in any form. **A boundary may never be placed or
+  removed because the letters on either side do or do not make a word or a callsign.** A boundary
+  comes from the audio: gap durations, the unit in force, the marks, and energy.
+- **R75 and R76**, carried. The pitch instrument never enters `src`.
 - **Arbiter rulings carried:**
-  - **443's DECIDED (3), as 448's DECIDED (6) read it:** no floor is re-banked. So 5.6, like 2.5, 3.6
-    and 4.7, stays red.
+  - **443's DECIDED (3), as 448's DECIDED (6) read it:** no floor is re-banked. So 6.6, like 2.5,
+    3.6, 4.7 and 5.6, stays red.
   - **442's DECIDED (2):** a floors line is read as green at the exit of every commit from the
     unit's working task on.
-  - **446's DECIDED (5):** 5.1 may be met by two kept changes, one per end. `135641` is the owner's
-    recording to supply, and its absence never halts a unit.
-- **Parked with the owner, and not re-raised here** (`PARKED.md`):
+  - **448's DECIDED (3):** a MET-PITCH-ERR move inside the 0.5 Hz bin is not a rise.
+- **Parked with the owner, and not raised again here** (`PARKED.md`):
+  - 444's question on 17:37: whether it is met at 5 or fewer boundaries wrong, or re-banked at 38;
   - 448's question on what "acquiring" means;
   - 450's questions on when a heard pitch may be called proved.
+- **This unit's own readings. They are the author's, and the owner may overrule them:**
+  - **(a) The tick rule for 6.3.** 6.3 is a measurement. It is ticked whether or not task 2's change
+    is kept, when all of these hold:
+    - MET-WBE is reported per condition, with inserted and deleted boundaries split, and the key's
+      kind beside each number. This is done at HEAD, and again after the change if one is kept;
+    - HM-REQ-080 is stated met or not met on each must-tier sender profile at 15 dB that the tree
+      holds, and on 17:37 against its inferred key;
+    - HM-REQ-081 is stated met or not met on each condition at the sensitivity floor that the tree
+      holds;
+    - every condition either requirement names that the tree does not hold is listed as `not
+      measurable here`, with the step that would build it;
+    - the running figure is in `docs/phase-requirements/metrics.md`.
+  - **(b) The keep rule for task 2's change, under R78. Every one of these must hold:**
+    - MET-WBE on the real set falls;
+    - MET-WBE on the synthetic set does not rise;
+    - MET-CER-SURE and MET-INVENTED rise on neither set;
+    - sure-and-right coverage falls on neither set;
+    - the adjudicated readings hold, or move onto their own adjudicated text (R66);
+    - **V-11, per recording:** no recording, real or synthetic, gains a boundary wrong or a
+      sure-wrong letter. **In particular, 17:37 may not go above 7.**
 
-  **So `proved` is never defined as "acquired", and nothing gates on acquisition.** The unit builds
-  the strict reading 450 built for the pitch, and does not argue the parked question again.
-- **This unit's own readings. They are author's, and overrulable:**
-  - **(a) The state claims no more than today.** `proved` is a subset of what HEAD shows as a
-    number: wherever `WordsPerMinute` is null at HEAD, the state is never `proved`. No surface shows
-    a speed number that it withholds at HEAD. **The product therefore never states more about a
-    signal than it does today, only less.** That keeps the unit off the owner's promise stop.
-  - **(b) What `proved` rests on is the unit's to define from the tree**, in words taken from what
-    the decoder already computes. The likely source is the guard on `WordsPerMinute` (a located tone,
-    a resolved character, not re-acquiring, a settled pass that proved a dit), **held only while its
-    evidence is current, not after the keying has stopped.**
-    - The unit states its definition in one sentence and cites the lines it rests on.
-    - It names each path that yields `hypothesis`. Those include the rolling reading with the guard
-      failing, a speed held past its keying, and a re-acquiring clock.
-    - It names each path that yields `none`.
-  - **(c) Decoding is unchanged, byte for byte.** This is a reporting change, and R78's keep rule is
-    met by showing that nothing it measures moved:
-    - every recording's text is identical;
-    - the four metrics, the three floor tests and MET-PITCH-ERR are identical.
-
-    **If any character anywhere changes, the change is wrong. Find why. Do not judge it under R78.**
-  - **(d) HM-REQ-035 and 036 are measured, not repaired, this unit.** Each test asserts what its
-    requirement states, on synthetic sends of exact construction.
-    - **If one is red at HEAD:** it is committed red, named in the report with the lines that make
-      it fail, and put on no carry-forward line. Its repair is a later unit's.
-    - **A test that passes only because it asserts less than the requirement does not count.**
-  - **(e) The tick rule for 5.5.** It needs all of these:
-    - the HM-REQ-034 test is green, and was watched failing first;
-    - the three values reach `CwDecodeReport`, and the sheet and every speed display print them;
-    - tests naming HM-REQ-035 and HM-REQ-036 exist and ran;
-    - the report states met or not met for each of 034, 035 and 036, with the evidence;
-    - (c) holds.
-
-    A red 035 or 036 does not stop the tick, because 5.5 asks that the report state whether each is
-    met.
-  - **(f) Step 5's count.** This unit is not a 5.1 attempt. **DRIFT for step 5 stays at 1.**
+    A capture row or named row whose character count falls is reported, not refused, when every
+    item above holds.
+  - **(c) If 17:37 falls to 5 or fewer boundaries wrong**, report it with the text. **Do not re-bank
+    its floor, and do not tick 2.5 or 6.6.** That floor's fate belongs to the next arbiter, against
+    443's DECIDED (3).
+  - **(d) 444's half-unit dropout rule** (`.run-unit/unit444-wbe-notkept.diff`) **is not rebuilt as
+    it stood.** It failed V-11 on 17:37, `031905` and the synthetic character-gap-5 case at 5 dB.
+    The change comes from task 1's trace, whatever group it names.
+    - If the trace names the group that rule answered, the change must say how it differs.
+    - Before it is kept, it must show those three recordings not getting worse.
+  - **(e) Step counts.** This unit is not a 2.4, 3.5 or 4.4 attempt. **DRIFT stays as it is: step 2
+    at 0, step 3 at 0, step 4 at 1, step 5 at 1.** Step 6 is at 0 if the change is kept, and 1 if it
+    is not.
 - **V-04 and V-14:** no fixture is admitted by lowering a gate. No separation limit, confirmation
   rule or plausibility bound is loosened. **V-06:** no digital silence in a synthetic case. **V-13:**
   an inferred key is not proof by itself.
 - **`CLAUDE.md` §12.5:** a fixture built from the same misunderstanding as the code proves nothing.
-  The synthetic cases get their truth from construction: the speed sent, when the keying stopped,
-  where the speed changed, and when the clear or the refinement happened. **Their truth never comes
-  from what the decoder reports.**
-- **R72:** no word, dictionary or callsign prior. **`CLAUDE.md` §0.0:** never present a guess as a
-  decode. **§0.2:** nothing that keys or transmits.
-- **HM-DEC-155:** no suite. Named types only, one per invocation, each with its own `timeout`.
+  A synthetic case's boundaries come from its construction, never from what the decoder reports.
+- **`CLAUDE.md` §0.0:** never present a guess as a decode. **§0.2:** nothing that keys or transmits.
+- **HM-DEC-155:** no suite. Run named types only, one per invocation, each with its own `timeout`.
   Captures get 600 s. **Never background and poll.**
 - **HM-DEC-165, FACT-004.** **If a package is needed: `MOVE: stop` (§6).**
 
 ## 4. Status cadence
 
 At the start of each task, run `sh tools/status.sh EXECUTING "<n> of 3" code none "<one line>"`. At
-the end, run `COMPLETED`. `SESSION.lock` belongs to the runner, so do not take or release it. Write
-nothing to `RUN_LEDGER.md`, and touch nothing under `tools\arbiter\`.
+the end, run it with `COMPLETED`. `SESSION.lock` belongs to the runner, so do not take or release
+it. Write nothing to `RUN_LEDGER.md`, and touch nothing under `tools\arbiter\`.
 
 What breaks in this shell:
 - Apostrophes in quoted heredocs break, and doubled backslashes collapse.
 - `;` is refused, `rm` is refused, and Python cannot run here.
 - A multi-line commit uses `-m` more than once.
 
-Scripts go in `.run-unit\unit451-<name>.sh` and run with `sh`. **Never compose a timestamp. Read the
+Scripts go in `.run-unit\unit452-<name>.sh` and run with `sh`. **Never compose a timestamp. Read the
 clock.**
 
 ---
@@ -245,130 +232,88 @@ clock.**
 
 ### Task 0 - the entry
 
-- Add `## UNIT 451 - STEP 5` to `PHASE_OUTCOME.md`, from the decision block at the foot.
-- Name 451 in `PHASE_STATUS.md` with `CURRENT_STEP: 5`, and patch-bump the version.
+- Add `## UNIT 452 - STEP 6` to `PHASE_OUTCOME.md`, from the decision block at the foot.
+- Name 452 in `PHASE_STATUS.md` with `CURRENT_STEP: 6`, and patch-bump the version.
 - Commit the entry together with the root's uncommitted `PARKED.md`, `PHASE_OUTCOME.md`,
   `PHASE_STATUS.md` and `RUN_LEDGER.md`. **These are the runner's writes. Commit them as they are,
   without editing them.**
-- Run the entry round and print each result as a number:
+- Run the entry round, and print each result as a number:
   - the build;
   - both carry-forward lines, **each with its wall time**;
   - the three floor tests, with the captures type's wall time;
   - the four metrics per condition, with the key's kind beside each number;
   - the count of files more than 25 Hz off, from 447's printer.
-- **Save every recording's decoded text at HEAD** to `.run-unit/unit451-text-before.txt`. Clause
-  (c) is judged against this file.
+- **Save every recording's decoded text at HEAD** to `.run-unit/unit452-text-before.txt`.
 
-### Task 1 - the trace: every way the decoder comes to report a speed
+### Task 1 - the measurement, then the trace of every wrong boundary
 
-Read `CwDecoder`, the settled pass, the clock and re-acquisition code, and every place
-`WordsPerMinute`, `SpeedIsReacquiring` and `Reading.WordsPerMinute` are set, cleared or read.
-**Also find every place in `src` that shows a speed to the operator**, not only the sheet.
+**First, the measurement, which is 6.3's substance.** Print MET-WBE at HEAD:
+- per condition, with inserted and deleted boundaries split and the key's kind beside each number;
+- per recording, for every recording with at least one boundary wrong.
 
-For **every path that sets, holds or withholds a reported speed**, print:
-- the file and line;
-- what evidence it rests on: a proved dit, the rolling reading, a hold, a re-acquisition, or
-  nothing;
-- whether that evidence is current at the hop, or remembered;
-- the state it should yield under §3 (b), with one line of reason.
+Beside the numbers, state for each of HM-REQ-080 and 081, on every condition from §2, one of:
+- `met`;
+- `not met`, with the number;
+- `not measurable here`, with the step that would build the condition.
 
-Then, for the same code, **trace what a transcript clear and a pitch refinement do to the timing,
-the speed, the pitch and the noise floor**, citing lines. Say what "a refinement for the same
-station" is in the tree: the tracker's follow against its retune, and `Retuned()`. **This is the
-evidence 035's and 036's tests are built on.**
+**Then the trace.** For **every wrong boundary** on the real and synthetic sets, inserted or
+deleted, print:
+- the recording, the time, and the words either side as the key and as the decoder give them;
+- the gap's length in ms and in units of the unit in force;
+- the letter and word thresholds in force, and where the read that set them came from;
+- the marks either side, and any key-up shorter than half a unit inside them;
+- the speed in force and its proof state (unit 451's);
+- whether it is inserted or deleted.
 
-**Then print the proposed state over the sets**, as a fact that asserts nothing. Compute it from a
-read-only reading, with nothing in `src` changed yet.
-- **Real set.** For each of the 23 keyed recordings, give the hops in each state.
-- **Synthetic set.** Give the same, plus, **for the `proved` hops, the reported speed against the
-  constructed speed.** Show the count more than 10% off. That is HM-REQ-031's measure, printed as
-  evidence only.
-- **If `proved` covers a hop more than 10% off the constructed speed, that is a finding.** Print
-  the path that produced it.
+For each sender with at least five boundaries, also **print the distribution of its letter spaces
+and word spaces against the key**, in units, and say whether they overlap. Unit 444 found that they
+overlap on 17:37. A group whose spaces overlap cannot be fixed by duration, so say so rather than
+build against it.
 
-Commit the printer beside unit 450's pitch-state printer, or as its sibling, and commit its output
-as `.run-unit/unit451-trace-speed-state.txt`.
+**Group the wrong boundaries by what they have in common**, and give each group's size, split real
+from synthetic. Commit the printer as a fact that asserts nothing, and commit its output as
+`.run-unit/unit452-wbe-trace.txt`.
 
-**Drop candidate:** the per-recording rows of the real-set table. Keep the totals per state and the
-synthetic set's speed error, and say what was dropped. **Tasks 2 and 3 are not dropped.**
+**Write the measurement into `docs/phase-requirements/metrics.md`**, and commit it on its own:
+`unit452 task 1: MET-WBE per condition, HM-REQ-080 and 081 measured (6.3)`.
 
-### Task 2 - the tests, then the state, then the displays
+**Tick 6.3 in both copies of `PHASE_PLAN.md` in that commit, under §3 (a).** The after-figures,
+if task 2 keeps a change, are added by task 2.
 
-**Write the HM-REQ-034 test first.** Name HM-REQ-034 in its type or method name and in its comment,
-along with the verification table's row. Build it on synthetic sends with exact construction, at
-15 dB, in a shaped noise band (V-06). Give it at least these cases:
-- **none:** a noise band with no tone;
-- **proved:** a keyed tone at a known speed, read well after the guard's evidence is in. The
-  reported speed is within 10% of the constructed speed;
-- **hypothesis, not yet proved:** the first moments on a keyed tone, where the rolling reading
-  exists and the guard withholds the number. **This case applies only if the tree has such a
-  window.** If it has none, say so and use the next case instead;
-- **hypothesis or none, stale hold:** the keying stops, and the band is read past the point §3 (b)
-  says the evidence lapses;
-- **hypothesis, re-acquiring:** a speed change of at least 25%, read inside the re-acquisition.
+**Drop candidate:** the per-boundary rows for the synthetic 0 dB cases. Keep their totals, and say
+what was dropped. **The measurement and the grouping are never dropped.**
 
-**Watch it fail first.** The first time the test runs, derive the state from today's fields:
-- `WordsPerMinute` present maps to `proved`;
-- otherwise, `none`.
+### Task 2 - one change against the largest group that can be moved
 
-It must fail on the stale-hold case, the hypothesis case, or both, and the output must print which.
-**If it passes, the cases do not separate what the requirement separates. Rebuild them.**
-
-**Write the HM-REQ-035 and HM-REQ-036 tests**, each named for its id, from task 1's evidence:
-- **035:** decode a keyed send, clear the transcript at a constructed instant, and keep decoding
-  the same station. Assert that the speed, the pitch and the noise floor after the clear equal those
-  just before it, within the decoder's own resolution. State that resolution in the test's
-  comment.
-- **036:** decode a keyed send, then refine the pitch for the same station by the tree's own
-  refinement path, at a step task 1 names. Assert that the timing state (the unit, the speed, and
-  whatever task 1 names) is kept across it.
-- **Run each alone at HEAD and record green or red.** Do not change `src` to make either green
-  (§3 (d)).
-
-**Then build the state:**
-- Add the three-valued speed proof state to `CwDecodeReport`, set by the decoder from what it
-  already knows.
-  - The type, its name, and whether `SpeedIsReacquiring` stays beside it are yours.
-  - **Any boolean that stays must be read from the state**, as `PitchWasMeasured` now is, so the two
-    cannot disagree.
-  - **Nothing in the decode path reads the new state.**
-- Make `SpeedForTheRecord` print the state in plain words, and every other speed display task 1
-  found state it.
-  - A `hypothesis` speed is never presented as measured.
-  - No display shows a number that HEAD withholds (§3 (a)).
-  - The wording is yours.
-- Run the app types that cover the sheet and those displays, each alone.
-
-**Then judge it under §3 (c).**
-- Decode every recording again and compare the result with `.run-unit/unit451-text-before.txt`.
-  Print the count of recordings compared and the count that differ, which must be 0.
-- Print the four metrics, the three floor tests and the MET-PITCH-ERR count beside the entry
-  figures.
-
-**If (c) holds and the HM-REQ-034 test is green:**
-- Commit the state, the display changes and the three tests on their own.
-- **Tick 5.5 in both copies of `PHASE_PLAN.md`** under §3 (e).
-- Write one line to `docs/phase-requirements/metrics.md` giving:
-  - HM-REQ-034 met;
-  - 035 and 036 met or not met;
-  - task 1's totals per state;
-  - the synthetic `proved` count more than 10% off, with the key's kind.
-
-**If (c) fails, or the 034 test cannot be made green without changing decoding:**
-- Leave `src` as it was.
-- Commit the diff with its tests as `.run-unit/unit451-notkept.diff`.
-- Name what failed. **Do not tick 5.5.**
+- **Choose the group** from the trace: the largest group whose cause is in the audio and not in
+  overlapping spacing. Say why you chose it, and name the groups you did not attack.
+- **Set the rule from the trace before any numbers are run**, and state it in one sentence.
+  - It follows R72: no word or callsign reasoning.
+  - It follows §3 (d).
+  - Try one rule. **If it is refused, do not try a second value of it.**
+- **Build it in its own commit.** Judge it under §3 (b) with this table: every metric per
+  condition, before and after, with the key's kind, and the per-recording V-11 column for
+  boundaries wrong and for sure-wrong letters. Also print:
+  - **17:37's text, before and after**;
+  - every recording whose text changed, with its before and after text.
+- **If it is kept:**
+  - Commit it: `unit452 task 2: <the rule> - MET-WBE <n> to <n> real (6.3)`.
+  - Add the after-figures to `metrics.md` beside task 1's.
+  - Restate HM-REQ-080 and 081 against them.
+- **If it is refused:**
+  - Leave `src` as it was.
+  - Commit the diff as `.run-unit/unit452-notkept.diff`.
+  - Name the line of §3 (b) that refused it.
+  - Record the refused figures in `metrics.md`.
 
 ### Task 3 - the exit round
 
 - Run the build, both carry-forward lines, the three floor tests, the four metrics, MET-PITCH-ERR
   and every type touched. Print each result as a number, with its wall time.
-- **Report what changed in `src`, file by file.** Say that none of it keys or transmits, and that
-  nothing in the decode path reads the new state.
-- **Ticks:** confirm whether 5.5 is ticked, per task 2. **Do not tick 5.1 to 5.4, 5.6,** or anything
-  in steps 2, 3 or 4.
+- **Report what changed in `src`, file by file.** Say that none of it keys or transmits.
+- **Ticks:** confirm 6.3, per §3 (a). **Do not tick any other line.**
 - **Make the exit commit and push it.**
-- Report DRIFT: step 2 0, step 3 0, step 4 1, step 5 1 (§3 (f)).
+- Report DRIFT per §3 (e).
 
 ---
 
@@ -380,15 +325,17 @@ It must fail on the stale-hold case, the hypothesis case, or both, and the outpu
   - 448's question on what "acquiring" means;
   - 450's questions on when a pitch may be called proved.
 - 17:37's floor and 444's section 4 question, which stay with the owner.
-- **450's section 4.** Items 1 and 2 are parked. Item 3 (`AHeldPitchDoesNotOutliveItsEvidenceTests`
-  red, and the two `Compile Remove` types) is logged. **This unit only reports how
-  `TheReleaseStartsTheReadingFresh` stands against HM-REQ-036, and edits nothing in it.**
-- Earlier units' section 4 items, and 444's half-unit dropout rule.
+- **451's section 4, logged and not chased:**
+  - Item 1, the span for which a speed stays proved: 451's reading stands.
+  - Item 2, a speed change at one pitch being proved at speeds nobody sent: this is HM-REQ-032's
+    line, and belongs to when 5.3 is worked.
+- Earlier units' section 4 items.
 - **Work that belongs to other lines:**
-  - the repair of HM-REQ-035 or 036 if either is red;
-  - the speed search (5.1), `135641` (5.2), MET-WPM-ERR as a judged metric (5.3), MET-TACQ and
-    MET-LAT (5.4);
-  - 4.4's tracker change;
+  - live against settled boundaries (6.4, HM-REQ-083);
+  - the named spans (6.5, HM-REQ-084);
+  - the character table and the prosigns (6.1, 6.2);
+  - the channel profiles (7.1);
+  - the speed search (5.1);
   - the traffic-net print (3.4).
 - The correctness phase's 5.1, which is Tim's, and all of `PHASE_PLAN.md` §7 (Carried).
 - The decision log, the traceability table, and the 43 tests that measure something else. These are
@@ -396,16 +343,14 @@ It must fail on the stale-hold case, the hypothesis case, or both, and the outpu
 
 ## 7. What not to do
 
-- Do not change how the speed is found, held, cleared or re-acquired. Do not change the pitch's proof
-  state.
-- Do not let any character's class, any emission gate or any pitch path read the speed state.
-- Do not define `proved` as "acquired", and do not gate anything on acquisition.
-- Do not report `proved`, or show a number, anywhere HEAD withholds the speed (§3 (a)).
-- Do not repair HM-REQ-035 or 036 this unit. Do not weaken either test until it passes.
-- Do not wire the pitch instrument into `src`.
-- Do not re-bank any floor. Do not tick 5.6, 2.5, 3.6 or 4.7.
-- Do not edit `traceability.md`, the decision log, any line of `PARKED.md`, or
-  `AHeldPitchDoesNotOutliveItsEvidenceTests`.
+- Do not change MET-WBE's definition or its scorer (HM-REQ-082). If the scorer looks wrong, report
+  it as a mismatch.
+- Do not place or remove a boundary on what the letters spell (R72).
+- Do not rebuild 444's dropout rule as it stood (§3 (d)). Do not try a second value of a refused
+  rule.
+- Do not change the pitch path, the tracker, the speed search, or any proof state.
+- Do not re-bank any floor. Do not tick 2.5, 3.6, 4.7, 5.6 or 6.6.
+- Do not edit `traceability.md`, the decision log, or any line of `PARKED.md`.
 - Do not correct any ruling. Report the disagreement.
 - Do not add a package. If one is needed, stop and report it.
 - Do not halt on a question. Write one line in section 4 and go on.
@@ -413,9 +358,9 @@ It must fail on the stale-hold case, the hypothesis case, or both, and the outpu
 
 ## 8. Committing and pushing
 
-Make one commit per task, and **one commit for the state, the display changes and the three tests
-on their own**. Each message names the criterion it serves: `unit451 task N: <what> (5.5)`. Push to
-`origin/main` after each commit. End every commit message with:
+Make one commit per task, and **one commit for the change on its own** whether or not it is kept.
+Each message names the criterion it serves: `unit452 task N: <what> (6.3)`. Push to `origin/main`
+after each commit. End every commit message with:
 
 ```
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
@@ -437,53 +382,53 @@ Write `output.md` at the root. **`validate-output.bat` refuses it unless every o
 ```
 READ IN THIS ORDER.
 
-A. Hamlet meets the CW requirements: step 5 at <n> of 6, step 4 at 5 of 7, step 2 at 3 of 5,
-   step 3 at 3 of 6 by the plan's checkboxes, steps 0 and 1 done, 6, 7 and 8 not started.
-B. Step 5, criterion 5.5 (HM-REQ-034, 035, 036): speed proof state <built | not built>; 034 test
-   <name> <green, watched failing on <case>>; 035 <met | not met>; 036 <met | not met>;
-   recordings whose text changed <n> of <n>; real-set hops proved <n>, hypothesis <n>, none <n>;
-   synthetic proved hops more than 10% off <n>; 5.5 <ticked | not ticked>; 5.1 to 5.4 and 5.6 open.
+A. Hamlet meets the CW requirements: step 6 at <n> of 6, step 5 at 1 of 6, step 4 at 5 of 7,
+   step 2 at 3 of 5, step 3 at 3 of 6 by the plan's checkboxes, steps 0 and 1 done, 7 and 8 not
+   started.
+B. Step 6, criterion 6.3 (HM-REQ-080, 081): MET-WBE real <n> over <n> (<ins> inserted, <del>
+   deleted), synthetic <n> over <n>, per condition in section 3; HM-REQ-080 <met | not met on
+   <conditions>>; HM-REQ-081 <met | not met on <conditions>>; conditions not measurable here <n>;
+   the change <kept | refused by <line>>, MET-WBE real <n> to <n>, 17:37 <n> to <n>; 6.3
+   <ticked | not ticked>; 6.1, 6.2, 6.4 to 6.6 open.
 C. What this report adds, and whether it stands in the way of a criterion in B.
    Section 4 raises <N> items; <which, if any, is in the way of a criterion in B>.
 ```
 
 ```
-UNIT:       451 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
+UNIT:       452 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   <yes|no> - <which criteria flipped in PHASE_PLAN.md>
-NUMBER:     text changed <n> of <n>; proved <n>, hypothesis <n>, none <n> hops real; synthetic proved over 10% off <n>; 035 <met|not met>; 036 <met|not met>
-DRIFT:      step 2 0; step 3 0; step 4 1; step 5 1
+NUMBER:     MET-WBE real <n> -> <n> over 113; synthetic <n> -> <n> over 84; 17:37 <n> -> <n>; 080 <met|not met>; 081 <met|not met>
+DRIFT:      step 2 0; step 3 0; step 4 1; step 5 1; step 6 <0|1>
 ```
 
-**Section 3 opens with task 1's path table**: one row for every way the decoder comes to report,
-hold or withhold a speed, with its evidence and the state it yields. Then give:
-- **what a clear and a refinement do**, with lines cited, beside 035's and 036's test results;
-- **the sheet's speed line as text, before and after**, on three recordings: one `proved`, one
-  where HEAD showed a number and the unit now says `hypothesis` (if any exists), and one `none`.
-  The owner reads the difference rather than the number;
-- every other speed display, before and after;
-- the per-state table, with the synthetic speed error beside `proved`;
-- the (c) table: recordings compared and recordings changed, and the four metrics, the floors and
-  MET-PITCH-ERR, before and after.
+**Section 3 opens with the per-condition table:** each condition, its key's kind, words, boundaries
+inserted, boundaries deleted, MET-WBE, and the verdict on 080 and 081 (met, not met, or not
+measurable here). Then give:
+- the groups of wrong boundaries, with sizes and one example of each, printed as text with the key
+  beside it;
+- **17:37 as the operator reads it**, at HEAD and after the change, with its key;
+- every recording whose text changed under the change, before and after, as text. The owner reads
+  the difference rather than the number;
+- the §3 (b) table, including the V-11 column.
 
-**Section 2, in one paragraph:** What does the operator now read about the speed that they did not
-read before? In how many real recordings does it now say `hypothesis` where HEAD showed a number?
-Does a clear or a refinement cost the decoder its speed today? Give the evidence (V-13), and say
-what the synthetic cases do not prove (§12.5).
+**Section 2, in one paragraph:** How often does the operator read a word broken in two, or two words
+run together, today? Where is it worst? Did the change make that better, and on which recordings?
+Give the evidence (V-13), and say what the synthetic cases do not prove (§12.5).
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 5
-APPROACH: give the reported speed a three-valued proof state proved hypothesis none in the decode report and on the sheet and every speed display, test naming HM-REQ-034 watched failing first, and tests naming HM-REQ-035 clear retains speed pitch noise floor and HM-REQ-036 pitch refinement retains timing, measured not repaired, decoding byte-identical
+STEP: 6
+APPROACH: report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
 MOVE: work around
-WHY: PHASE_PLAN.md step 5 line 5.5 asks that HM-REQ-034, the speed reported with a proof state, and HM-REQ-035 and 036 each have a test naming them with the report stating whether each is met, and today the speed is a nullable number and a boolean with no state; no step 2 line can flip this pass, since 449's kept change set 2.4's count to 0 of 3 and 2.5 is held by 443's DECIDED (3), and no attempt has been recorded against 5.5.
+WHY: PHASE_PLAN.md step 6 line 6.3 asks that MET-WBE be reported per condition and HM-REQ-080 and 081 be measured against it, and MET-WBE at 46 over 113 real is the farthest of the four metrics from its requirement, with no unit yet on step 6; step 2 cannot flip a line this pass, since 2.4's count is 0 of 3 after 449's kept change and 2.5 is held by 443's DECIDED (3).
 STATE: not started
-DECIDED: author's, overrulable - (1) step 5 is worked instead of the launcher's step 2, because 2.4's count is 0 of 3 after 449's kept change and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 5.5 is chosen over 7.1, 5.3 and 5.4 because it changes what the operator reads (R83) and they do not, and over 5.1 and 5.2 because 5.1 is recorded no and 5.2's recording is absent; (2) proved is a subset of what HEAD shows as a speed number and no display shows a number HEAD withholds, so the product never states more about a signal than today, which keeps the unit off the promise stop, and the parked pitch question is neither re-raised nor answered; (3) proved is defined by the unit from the guard the decoder already computes, lapsing with its evidence as 450's pitch state does, never as acquired, and nothing in the decode path reads it; (4) HM-REQ-035 and 036 are measured by tests naming them and not repaired this unit, and a red one is committed red on no carry-forward line; (5) 5.5 is ticked on a green HM-REQ-034 test watched failing first, the state in CwDecodeReport and on every speed display, 035 and 036 tests run with met or not met stated, and decoding byte-identical; (6) 450's section 4 is logged and not chased: items 1 and 2 are parked, and item 3 is reported only where TheReleaseStartsTheReadingFresh bears on HM-REQ-036; this unit is not a 5.1 attempt and leaves step 5's DRIFT at 1.
-LICENCE: PHASE_PLAN.md step 5 line 5.5 and section 5's independence line; R78, R80, R81, R83 and section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 446 DECIDED (5), 447 DECIDED (3), 448 DECIDED (6), and 450 DECIDED (2) and (3) as the pattern followed; V-04; V-06; V-13; V-14; R72; HM-REQ-031, 034, 035, 036, 093; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
-ACCOMPLISHED: the operator can tell a speed the decoder earned from the keying now from one it is only supposing or holding, and the owner learns whether clearing the screen or refining the pitch costs the decoder its timing, with no decoded letter changed
-ADVANCES: step 5 criterion 5
+DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2, because 2.4 cannot reach 3 of 3 in one unit and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 6.3 is chosen over 5.3, 5.4 and 7.1 because MET-WBE is the requirement metric farthest from its threshold and its change alters what the operator reads (R83); (2) 6.3 is a measurement and is ticked at task 1 on MET-WBE per condition with the key's kind, 080 and 081 stated met, not met or not measurable here per condition, and the running figure in metrics.md, whether or not task 2's change is kept; (3) task 2's keep rule is R78 with MET-WBE falling on the real set and not rising on the synthetic, letters no worse, and V-11 per recording on boundaries wrong and sure-wrong letters, 17:37 not above 7; (4) if 17:37 reaches 5 or fewer it is reported and not re-banked, and 2.5 and 6.6 are not ticked; (5) 444's dropout rule is not rebuilt as it stood, and a refused rule gets no second value; (6) 451's section 4 is logged and not chased: item 1's reading stands, item 2 belongs to 5.3 and HM-REQ-032; this unit leaves DRIFT for steps 2 to 5 as it is.
+LICENCE: PHASE_PLAN.md step 6 line 6.3 and section 5's independence line; R72, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 448 DECIDED (3) and (6); V-04; V-06; V-11; V-13; V-14; HM-REQ-010, 011, 080, 081, 082; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ACCOMPLISHED: the owner can see, per condition, how often the operator reads a word broken in two or two words run together, against the requirement's zero and five percent, and the commonest cause the audio can fix is fixed if the fix makes no recording worse
+ADVANCES: step 6 criterion 3
 END-ARBITER-DECISION
 ```

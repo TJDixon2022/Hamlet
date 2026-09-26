@@ -1,0 +1,10 @@
+unit452 task 0: entry at step 6 - MET-WBE 46 over 113 real (39 inserted, 7 deleted), 48 over 84 synthetic, floors as at 451's exit, 63 recordings' text saved (6.3)
+
+Build 0 errors; engine line 178 of 178 in 375 s; app line 276 of 278 in
+163 s, the losing type green alone on the one rerun, no hang; captures
+51 of 51 in 129 s; adjudicated 13 of 13; named 10 of 13 as recorded.
+Real, inferred keys: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473,
+coverage 403 over 473. 9 files more than 25 Hz off. The runner's writes
+committed as they were, with the entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

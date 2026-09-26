@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 451 - the speed says whether it was proved
+TASK: 0 of 3
+WORK_INSTRUCTION: 452 - where the words break
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T10:05:44-04:00
-NOTE: Unit 451 done: speed proof state built, 5.5 ticked, 035 and 036 met, text 63 of 63 identical - output.md written
+UPDATED: 2026-09-26T10:33:24-04:00
+NOTE: Entry done: WBE 46 over 113 real and 48 over 84 synthetic, floors as 451 left them; next the per-condition split and the trace of every wrong boundary
 
 ---
 
