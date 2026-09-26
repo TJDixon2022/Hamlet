@@ -1,0 +1,15 @@
+unit458 task 2: the harness, sameness watched red - expected sure-wrong one too many, red on both totals and nowhere else (9.2)
+
+BothDecodersAreScoredAlikeTests gains OurRowIsTheMetricsOwnRow,
+EveryRecordingHasARowForBothDecoders and TheParityTableIsWritten.
+Sameness compares our decoder's row through this harness with
+TheRequirementsAreMeasuredTests' own, per recording and in total, on
+all four metrics. This commit expects SureWrong one too many in each
+total, on purpose: 3 of 4 green in 173 s, the one red saying real
+here 33 of 436 against expected 34, synthetic here 14 of 173 against
+15; all 35 per-recording rows equal. Here: real 33 of 436, 33 / 473,
+403 / 473, 37 (29, 8) / 113; synthetic 14 of 173, 14 / 252,
+159 / 252, 44 (13, 31) / 84 - the entry figures. parity.md is not
+in this commit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

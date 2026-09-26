@@ -308,6 +308,56 @@ public sealed class BothDecodersAreScoredAlikeTests
         return ends;
     }
 
+    /// <summary>The four metrics in their parts, summed over whatever was measured.</summary>
+    /// <param name="SureWrong">Sure characters where the key has a different one.</param>
+    /// <param name="SureAdded">Sure characters where the key has none.</param>
+    /// <param name="SureEmitted">Sure characters emitted inside the stretches.</param>
+    /// <param name="Invented">MET-INVENTED's count, counted by <see cref="CwMetrics.Invented"/>.</param>
+    /// <param name="Sent">Characters sent.</param>
+    /// <param name="SureRight">Sure characters the key has in place.</param>
+    /// <param name="Inserted">Word boundaries inserted.</param>
+    /// <param name="Deleted">Word boundaries deleted.</param>
+    /// <param name="Words">Words sent.</param>
+    /// <param name="Measured">Recordings measured.</param>
+    /// <param name="Recordings">Recordings in all.</param>
+    internal sealed record Totals(
+        int SureWrong, int SureAdded, int SureEmitted, int Invented, int Sent, int SureRight,
+        int Inserted, int Deleted, int Words, int Measured, int Recordings)
+    {
+        /// <summary>MET-CER-SURE's numerator.</summary>
+        public int SureErrors => SureWrong + SureAdded;
+
+        /// <summary>The four metrics summed over recordings measured, each counted by its own <see cref="CwMetrics"/> call.</summary>
+        /// <param name="measured">One entry per recording; null where a decoder could not be run.</param>
+        /// <returns>The sums.</returns>
+        public static Totals Of(IReadOnlyList<TheRequirementsAreMeasuredTests.Measured?> measured)
+        {
+            var stretches = measured.Where(m => m is { NotComputable: null }).SelectMany(m => m!.Stretches).ToList();
+            var e = stretches.Select(CwMetrics.SureErrors).ToList();
+            var n = stretches.Select(CwMetrics.Invented).ToList();
+            var c = stretches.Select(CwMetrics.Coverage).ToList();
+            var w = stretches.Select(CwMetrics.WordBoundaries).ToList();
+
+            return new Totals(
+                e.Sum(x => x.SureWrong), e.Sum(x => x.SureAdded), e.Sum(x => x.SureEmitted),
+                n.Sum(x => x.Count), n.Sum(x => x.Sent), c.Sum(x => x.SureRight),
+                w.Sum(x => x.Inserted), w.Sum(x => x.Deleted), w.Sum(x => x.WordsSent),
+                measured.Count(m => m is { NotComputable: null }), measured.Count);
+        }
+    }
+
+    private static string Share(int count, int of) => of == 0
+        ? "no number"
+        : (count / (double)of).ToString("0.000", Invariant);
+
+    private static string CerSure(Totals t) => $"{t.SureErrors} of {t.SureEmitted} ({Share(t.SureErrors, t.SureEmitted)})";
+
+    private static string InventedText(Totals t) => $"{t.Invented} / {t.Sent} ({Share(t.Invented, t.Sent)})";
+
+    private static string CoverageText(Totals t) => $"{t.SureRight} / {t.Sent} ({Share(t.SureRight, t.Sent)})";
+
+    private static string Wbe(Totals t) => $"{t.Inserted + t.Deleted} ({t.Inserted} ins, {t.Deleted} del) / {t.Words} ({Share(t.Inserted + t.Deleted, t.Words)})";
+
     private static string Hz(double hz) => double.IsNaN(hz) ? "none" : hz.ToString("0.0", Invariant);
 
     private static string S(double seconds) => seconds.ToString("0.000", Invariant);
@@ -360,6 +410,248 @@ public sealed class BothDecodersAreScoredAlikeTests
         Latency("cq-18wpm-15db");
 
         Assert.Equal(WhatTheStrayLettersRestOnTests.KeyedRecordings.Count + SyntheticCq.All.Count, Rows.Count);
+    }
+
+    /// <remarks>
+    /// HM-REQ-123, sameness: our decoder's row through this harness equals
+    /// <see cref="TheRequirementsAreMeasuredTests"/>' own, recording by recording
+    /// and in total, on all four metrics. Watched failing first with a wrong
+    /// expected figure (work instruction 458, task 2).
+    /// </remarks>
+    [Fact]
+    public void OurRowIsTheMetricsOwnRow()
+    {
+        var theirs = TheRequirementsAreMeasuredTests.Real.Concat(TheRequirementsAreMeasuredTests.Synthetic)
+            .ToDictionary(m => m.Name, StringComparer.Ordinal);
+        var failures = new List<string>();
+
+        _output.WriteLine("sameness | recording | here: CER-SURE, INVENTED, coverage, WBE | TheRequirementsAreMeasuredTests");
+
+        foreach (var r in Rows)
+        {
+            var here = Totals.Of(new TheRequirementsAreMeasuredTests.Measured?[] { r.OursMeasured });
+            var there = Totals.Of(new TheRequirementsAreMeasuredTests.Measured?[] { theirs[r.Name] });
+
+            _output.WriteLine($"sameness | {r.Name} | {CerSure(here)}, {InventedText(here)}, {CoverageText(here)}, {Wbe(here)} | "
+                + $"{CerSure(there)}, {InventedText(there)}, {CoverageText(there)}, {Wbe(there)}");
+
+            if (here != there)
+            {
+                failures.Add($"{r.Name}: here {here}, there {there}");
+            }
+        }
+
+        foreach (var real in new[] { true, false })
+        {
+            var here = Totals.Of(Rows.Where(r => r.Real == real).Select(r => (TheRequirementsAreMeasuredTests.Measured?)r.OursMeasured).ToList());
+            var there = Totals.Of((real ? TheRequirementsAreMeasuredTests.Real : TheRequirementsAreMeasuredTests.Synthetic)
+                .Select(m => (TheRequirementsAreMeasuredTests.Measured?)m).ToList());
+
+            // Watched failing first: the expected figure deliberately one too many.
+            var expected = there with { SureWrong = there.SureWrong + 1 };
+            var set = real ? "real, inferred" : "synthetic, exact";
+
+            _output.WriteLine($"sameness | total {set} | here {CerSure(here)}, {InventedText(here)}, {CoverageText(here)}, {Wbe(here)} | "
+                + $"expected {CerSure(expected)}, {InventedText(expected)}, {CoverageText(expected)}, {Wbe(expected)}");
+
+            if (here != expected)
+            {
+                failures.Add($"total {set}: here {here}, expected {expected}");
+            }
+        }
+
+        _output.WriteLine("sameness | entry, 457's exit | real 33 of 436, 33 / 473, 403 / 473, 37 (29 ins, 8 del) / 113 | synthetic 14 of 173, 14 / 252, 159 / 252, 44 (13 ins, 31 del) / 84");
+
+        Assert.True(failures.Count == 0, string.Join(Environment.NewLine, failures));
+    }
+
+    /// <remarks>
+    /// HM-REQ-123, coverage: every keyed recording and every synthetic case has a
+    /// row for both decoders, or a row saying why a decoder could not be run on
+    /// it, with the error.
+    /// </remarks>
+    [Fact]
+    public void EveryRecordingHasARowForBothDecoders()
+    {
+        var wanted = WhatTheStrayLettersRestOnTests.KeyedRecordings.Select(k => k.Name)
+            .Concat(SyntheticCq.All.Select(c => c.Name))
+            .ToList();
+
+        foreach (var r in Rows)
+        {
+            _output.WriteLine(r.PortNotRun is { } why
+                ? $"row | {r.Name} | ours {(r.OursMeasured.NotComputable ?? "measured")} | port not run: {why}"
+                : $"row | {r.Name} | ours {(r.OursMeasured.NotComputable ?? "measured")} | port {(r.PortMeasured!.NotComputable ?? "measured")}");
+        }
+
+        Assert.Equal(wanted, Rows.Select(r => r.Name).ToList());
+        Assert.All(Rows, r => Assert.True(r.PortMeasured is not null || r.PortNotRun is not null, r.Name));
+        Assert.All(Rows, r => Assert.True(r.OursMeasured.NotComputable is not null || r.OursMeasured.Stretches.Count > 0, r.Name));
+        Assert.All(Rows.Where(r => r.PortMeasured is not null),
+            r => Assert.True(r.PortMeasured!.NotComputable is not null || r.PortMeasured.Stretches.Count > 0, r.Name));
+    }
+
+    /// <remarks>
+    /// HM-REQ-123, the table: writes `docs/phase-requirements/parity.md` - the
+    /// mapping, both decoders per recording and per condition on the four
+    /// metrics, each decoder's decode time, and what the table does not prove -
+    /// and prints each decoder's scored text beside the key. Asserts only that
+    /// the file was written with its five parts.
+    /// </remarks>
+    [Fact]
+    public void TheParityTableIsWritten()
+    {
+        var path = Path.Combine(CwToneSurveyTests.RepositoryRoot(), "docs", "phase-requirements", "parity.md");
+        var text = ParityMarkdown();
+
+        File.WriteAllText(path, text);
+
+        foreach (var r in Rows)
+        {
+            for (var i = 0; i < r.OursMeasured.Scores.Count; i++)
+            {
+                _output.WriteLine($"text | {r.Name} | {i + 1} | key `{r.OursMeasured.Scores[i].Key}`");
+                _output.WriteLine($"text | {r.Name} | {i + 1} | ours `{r.OursMeasured.Scores[i].Region}`");
+
+                if (r.PortMeasured is { NotComputable: null } p)
+                {
+                    _output.WriteLine($"text | {r.Name} | {i + 1} | port `{p.Scores[i].Region}`");
+                }
+            }
+
+            _output.WriteLine($"text | {r.Name} | all | port printed `{r.Port?.Raw}`");
+        }
+
+        _output.WriteLine(text);
+
+        foreach (var part in new[] { "## 1. ", "## 2. ", "## 3. ", "## 4. ", "## 5. " })
+        {
+            Assert.Contains(part, text, StringComparison.Ordinal);
+        }
+    }
+
+    private static string ParityMarkdown()
+    {
+        var md = new System.Text.StringBuilder();
+        var portRuns = Rows.Where(r => r.Port is not null).Select(r => r.Port!).ToList();
+        var portAll = portRuns.SelectMany(p => p.Settled).Select(c => CwSymbol.Of(c).Class).ToList();
+        var portScored = Rows.Where(r => r.PortMeasured is { NotComputable: null })
+            .SelectMany(r => r.PortMeasured!.Stretches).SelectMany(a => a.Steps)
+            .Where(s => s.Decoded is not null).Select(s => s.Decoded!.Value.Class).ToList();
+        var portGaps = Rows.Where(r => r.PortMeasured is { NotComputable: null })
+            .SelectMany(r => r.PortMeasured!.Stretches).SelectMany(a => a.Steps).Count(s => s.Decoded is not null && s.GapBefore);
+
+        md.Append("# Parity: Hamlet's decoder and the fldigi port on the same audio (HM-REQ-123)\n\n");
+        md.Append("Written by `BothDecodersAreScoredAlikeTests.TheParityTableIsWritten` (work instruction 458, PHASE_PLAN.md 9.2). ");
+        md.Append("Both decoders start cold at sample 0 of each file with nothing added or removed. Ours is fed hop by hop from 600 Hz, as ");
+        md.Append("`TheRequirementsAreMeasuredTests` feeds it; the port is given the file at 8000 Hz through `FldigiRateAdapter` and the pitch ");
+        md.Append("instrument's median over the file's keyed windows, with fldigi's shipped defaults at `61b97f41` and the squelch off. ");
+        md.Append("Both texts go through `TheRequirementsAreMeasuredTests.Measure` and the same `CwMetrics` calls, each stretch located in ");
+        md.Append("each decoder's own text by the same rule. Neither decoder was changed. Every number carries its key's kind (V-13).\n\n");
+
+        md.Append("## 1. The mapping of the port's unclassed output\n\n");
+        md.Append("458 DECIDED (2), the author's, overrulable: every non-space character the port prints is scored as sure, because fldigi ");
+        md.Append("shows every character alike and an operator reads it as asserted (CLAUDE.md 0.0), and mapping it to dim would hide its ");
+        md.Append("errors from MET-CER-SURE; its no-match output at `rx_lookup`'s caller is scored as a placeholder, as ours is; its spaces ");
+        md.Append("are word boundaries as emitted, 456's 5-unit finding included.\n\n");
+        md.Append("- **No-match output:** `rx_lookup` returns `\"\"` when the table has no entry (`src/cw_rtty/morse.cxx:254`); its caller then ");
+        md.Append("prints `CW_noise` (`src/cw_rtty/cw.cxx:892-898`), `*` by default (`src/include/configuration.h:249-251`). `*` is not ");
+        md.Append("in fldigi's table, so it is only ever this. Scored as a placeholder: never wrong, never coverage.\n");
+        md.Append("- **Characters:** the table's printed form, `<BT>` for a prosign with `CW_prosign_display` off, accented letters and `_` ");
+        md.Append("included, each scored as itself at sure. None is mapped to another character or to dim.\n");
+        md.Append("- **Spaces:** printed once after more than 4 dot lengths of silence (`cw.cxx:909-914`), each a word boundary.\n\n");
+        md.Append($"Counts over everything the port printed on the {portRuns.Count} files: {portAll.Count(c => c == CwSymbolClass.Sure)} sure, ");
+        md.Append($"{portAll.Count(c => c == CwSymbolClass.Placeholder)} placeholder (`*`), {portAll.Count(c => c == CwSymbolClass.WordGap)} word boundaries, ");
+        md.Append($"{portAll.Count(c => c == CwSymbolClass.NotSure)} not sure. Inside the scored stretches: {portScored.Count(c => c == CwSymbolClass.Sure)} sure, ");
+        md.Append($"{portScored.Count(c => c == CwSymbolClass.Placeholder)} placeholder, {portGaps} word boundaries between scored characters.\n\n");
+
+        md.Append("## 2. Per recording\n\n");
+        md.Append("MET-CER-SURE is sure characters wrong or added of sure emitted; MET-INVENTED is sure added plus sure wrong over characters sent; ");
+        md.Append("coverage is sure and right over characters sent (R82); MET-WBE is word boundaries inserted plus deleted over words sent. ");
+        md.Append("Summed over a recording's stretches.\n\n");
+        md.Append("| recording | key | CER-SURE ours | CER-SURE port | INVENTED ours | INVENTED port | coverage ours | coverage port | WBE ours | WBE port |\n");
+        md.Append("|---|---|---|---|---|---|---|---|---|---|\n");
+
+        foreach (var r in Rows)
+        {
+            var o = Totals.Of(new TheRequirementsAreMeasuredTests.Measured?[] { r.OursMeasured });
+            var ours = r.OursMeasured.NotComputable;
+            var port = r.PortNotRun ?? r.PortMeasured?.NotComputable;
+            var p = Totals.Of(new[] { r.PortMeasured });
+
+            md.Append($"| {r.Name} | {CwMetrics.KindWord(r.Kind)} | ");
+            md.Append(ours is null ? CerSure(o) : "no number: " + ours).Append(" | ");
+            md.Append(port is null ? CerSure(p) : "no number: " + port).Append(" | ");
+            md.Append(ours is null ? InventedText(o) : "-").Append(" | ");
+            md.Append(port is null ? InventedText(p) : "-").Append(" | ");
+            md.Append(ours is null ? CoverageText(o) : "-").Append(" | ");
+            md.Append(port is null ? CoverageText(p) : "-").Append(" | ");
+            md.Append(ours is null ? Wbe(o) : "-").Append(" | ");
+            md.Append(port is null ? Wbe(p) : "-").Append(" |\n");
+        }
+
+        md.Append("\n## 3. Per condition\n\n");
+        md.Append("The two conditions the tree has: real recordings with inferred keys, and the synthetic set with exact keys (458 DECIDED (4)). ");
+        md.Append("**Neither is a `CH-*` condition, and no real capture is counted toward one (PHASE_PLAN.md 7.4).** Under each, the finer rows ");
+        md.Append("`TheRequirementsAreMeasuredTests` states: for a real recording the sender `CW_SPEC.md` section 10 names, for a synthetic case ");
+        md.Append("its character gap and in-passband level.\n\n");
+        md.Append("| condition | key | recordings | CER-SURE ours | CER-SURE port | INVENTED ours | INVENTED port | coverage ours | coverage port | WBE ours | WBE port |\n");
+        md.Append("|---|---|---|---|---|---|---|---|---|---|---|\n");
+
+        foreach (var real in new[] { true, false })
+        {
+            var set = Rows.Where(r => r.Real == real).ToList();
+
+            ConditionRow(md, real ? "**real HF, all**" : "**synthetic, all**", set);
+
+            foreach (var g in set.GroupBy(r => r.Condition).OrderBy(g => g.Key, StringComparer.Ordinal))
+            {
+                ConditionRow(md, g.Key, g.ToList());
+            }
+        }
+
+        md.Append("\n## 4. Decode time\n\n");
+        md.Append("Wall time inside each decoder on this machine, summed per condition: ours from the first hop to `Flush`; the port inside ");
+        md.Append("`rx_process`, with `FldigiRateAdapter`'s resampling to 8000 Hz given apart. The pitch instrument is in neither. ");
+        md.Append("These figures move from run to run; nothing asserts them.\n\n");
+        md.Append("| condition | recordings | audio s | ours s | port s | resampling s |\n|---|---|---|---|---|---|\n");
+
+        foreach (var real in new[] { true, false })
+        {
+            var set = Rows.Where(r => r.Real == real).ToList();
+
+            md.Append(string.Create(Invariant,
+                $"| {(real ? "real HF, inferred keys" : "synthetic, exact keys")} | {set.Count} | {set.Sum(r => r.Seconds):0.0} | "
+                + $"{set.Sum(r => r.Ours.DecodeTime.TotalSeconds):0.00} | {set.Sum(r => r.Port?.DecodeTime.TotalSeconds ?? 0):0.00} | "
+                + $"{set.Sum(r => r.ResampleTime.TotalSeconds):0.00} |\n"));
+        }
+
+        md.Append("\n## 5. What the table does not prove\n\n");
+        md.Append("- **The keys on the real rows are inferred** (V-13): reasoned from the form of a call, adjudicated, or differenced from ");
+        md.Append("consecutive transcripts, never transcribed. A disagreement with one is not by itself proof either decoder is wrong.\n");
+        md.Append("- **The synthetic set is never sole evidence** (CLAUDE.md 12.5): one generator, one text, shaped band noise not shown to be ");
+        md.Append("`CH-AWGN`, and a 1.0 s lead-in of noise before the first mark, where the port loses its first element (457's verdict (b), ");
+        md.Append("fldigi's own); that loss is scored here, not excused.\n");
+        md.Append("- **Neither decoder has a calibrated confidence yet** (HM-REQ-124, 9.5). The port has none at all and every character it ");
+        md.Append("prints is counted sure by the mapping above, so its MET-CER-SURE is its whole character error; ours marks some characters as ");
+        md.Append("placeholders, which are never wrong. The two MET-CER-SURE columns therefore do not measure the same kind of restraint.\n");
+        md.Append("- **The port runs on fldigi's shipped defaults at 18 WPM with tracking on**, given the instrument's pitch; fldigi at the ");
+        md.Append("radio would take its pitch from the operator's cursor. Nothing here says how fldigi performs with other settings.\n");
+        md.Append("- **The stretches are located in each decoder's own text by the same rule.** `CwScorer.Within` fits each key to the text ");
+        md.Append("with free ends, independently, so on a text far from its keys two stretches can fall on overlapping characters, and a ");
+        md.Append("text that reads little can be fitted where it happens to resemble the key. It is the rule ours is scored by, unchanged.\n");
+
+        return md.ToString();
+    }
+
+    private static void ConditionRow(System.Text.StringBuilder md, string label, IReadOnlyList<Row> rows)
+    {
+        var o = Totals.Of(rows.Select(r => (TheRequirementsAreMeasuredTests.Measured?)r.OursMeasured).ToList());
+        var p = Totals.Of(rows.Select(r => r.PortMeasured).ToList());
+        var kinds = string.Join(" and ", rows.Select(r => CwMetrics.KindWord(r.Kind)).Distinct());
+
+        md.Append($"| {label} | {kinds} | ours {o.Measured} of {o.Recordings}, port {p.Measured} of {p.Recordings} | {CerSure(o)} | {CerSure(p)} | ");
+        md.Append($"{InventedText(o)} | {InventedText(p)} | {CoverageText(o)} | {CoverageText(p)} | {Wbe(o)} | {Wbe(p)} |\n");
     }
 
     private void SpanLines(string name, string decoder, Decoded run, TheRequirementsAreMeasuredTests.Measured m)

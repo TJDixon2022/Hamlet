@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 458 - both decoders on the same audio, the same scorer and one
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T16:53:00-04:00
-NOTE: Task 1 committed (trace: text-located spans, port no-match *, latency 0.30 s vs 1.27 s); task 2 adding sameness with a deliberately wrong figure to watch it fail
+UPDATED: 2026-09-26T16:58:25-04:00
+NOTE: Task 2 - sameness watched red on the deliberate +1 only (both totals); committing the red harness, then correcting it
 
 ---
 
