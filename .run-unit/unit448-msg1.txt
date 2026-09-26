@@ -1,0 +1,15 @@
+unit448 task 1: the acquiring trace - opening acquires 0 to 26.04 s with 9 sure letters; 48 of 60 cold moves by level alone (4.5)
+
+A printer that asserts nothing, WhatTheDecoderDoesWhileAcquiringTests.
+Acquiring is defined as the start of the file to the tracker's first keyed
+verdict (neither CW_SPEC.md nor CW_REQUIREMENTS.md defines it). The opening:
+first keyed verdict at 26.04 s at 600 Hz, no cold move, 9 sure characters while
+acquiring, 21 of 24 opening characters sure and right against each file read
+alone (inferred). The eleven: 60 cold moves, 48 by level alone. The keyed 23:
+26 cold moves, 23 by level alone, 245 sure characters while acquiring.
+
+For the trace, CwToneSurvey.Structures and CwToneTracker.CoarseStructures give
+each bin's lift, key-down over key-up contrast and clean marks, admitted or not.
+Diagnostic only: every recording's text is identical to 447's, 126 lines.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -487,6 +487,10 @@ public sealed class CwToneTracker
     /// <returns>One entry per admitted bin.</returns>
     public IReadOnlyList<KeyingCandidate> CoarseCandidates() => _survey.Candidates();
 
+    /// <summary>What every coarse bin shows of keying, admitted or not, for diagnosis only.</summary>
+    /// <returns>The coarse survey's own reading; see <see cref="CwToneSurvey.Structures"/>.</returns>
+    public IReadOnlyList<KeyedStructure> CoarseStructures() => _survey.Structures();
+
     /// <summary>
     /// Where the strongest tone in the fine bank actually sits, between the bins.
     /// </summary>

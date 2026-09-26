@@ -1,0 +1,298 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.76]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.96]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.96]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:47.33]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheDecoderDoesWhileAcquiringTests.OnTheElevenFilesOff [45 s]
+  Standard Output Messages:
+ span | unadjudicated/cw-2026-08-20-014935 | acquiring 0.00 to 30.00 s | never confirmed | first admitted at 13.20 s, 550 Hz, lift -5.8 dB, separation 5.18 | cold moves 16, by level alone 15
+ cold move | unadjudicated/cw-2026-08-20-014935 | 1.54 s | 600.0 -> 625.0 | loudest 625 Hz lift 34.8 dB | moved-to lift 34.8 dB contrast 10.0 dB marks 8 not admitted | best-keyed 675 Hz lift 32.7 dB contrast 10.6 dB marks 8 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 15.04 s | 625.0 -> 675.0 | loudest 675 Hz lift 32.8 dB | moved-to lift 32.8 dB contrast 8.6 dB marks 19 not admitted | best-keyed 700 Hz lift 32.4 dB contrast 10.9 dB marks 18 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 16.54 s | 675.0 -> 775.0 | loudest 775 Hz lift 33.9 dB | moved-to lift 33.9 dB contrast 9.4 dB marks 19 not admitted | best-keyed 800 Hz lift 33.8 dB contrast 10.9 dB marks 14 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 18.04 s | 775.0 -> 800.0 | loudest 800 Hz lift 34.0 dB | moved-to lift 34.0 dB contrast 11.0 dB marks 17 not admitted | best-keyed 800 Hz lift 34.0 dB contrast 11.0 dB marks 17 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-20-014935 | 18.54 s | 800.0 -> 750.0 | loudest 750 Hz lift 33.7 dB | moved-to lift 33.7 dB contrast 8.5 dB marks 30 not admitted | best-keyed 800 Hz lift 33.0 dB contrast 11.7 dB marks 19 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 19.04 s | 750.0 -> 625.0 | loudest 625 Hz lift 33.2 dB | moved-to lift 33.2 dB contrast 9.6 dB marks 16 not admitted | best-keyed 800 Hz lift 33.0 dB contrast 10.9 dB marks 17 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 19.54 s | 625.0 -> 750.0 | loudest 750 Hz lift 33.6 dB | moved-to lift 33.6 dB contrast 7.9 dB marks 27 not admitted | best-keyed 700 Hz lift 33.0 dB contrast 10.6 dB marks 20 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 23.04 s | 750.0 -> 625.0 | loudest 625 Hz lift 34.5 dB | moved-to lift 34.5 dB contrast 9.2 dB marks 25 not admitted | best-keyed 725 Hz lift 33.6 dB contrast 10.8 dB marks 16 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 24.54 s | 625.0 -> 650.0 | loudest 650 Hz lift 33.5 dB | moved-to lift 33.5 dB contrast 8.5 dB marks 23 not admitted | best-keyed 625 Hz lift 32.9 dB contrast 9.8 dB marks 20 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 25.04 s | 650.0 -> 800.0 | loudest 800 Hz lift 33.3 dB | moved-to lift 33.3 dB contrast 8.4 dB marks 26 not admitted | best-keyed 625 Hz lift 32.5 dB contrast 10.4 dB marks 20 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 25.54 s | 800.0 -> 750.0 | loudest 750 Hz lift 33.6 dB | moved-to lift 33.6 dB contrast 7.2 dB marks 19 not admitted | best-keyed 650 Hz lift 32.5 dB contrast 10.6 dB marks 14 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 26.04 s | 750.0 -> 800.0 | loudest 800 Hz lift 33.7 dB | moved-to lift 33.7 dB contrast 9.1 dB marks 27 not admitted | best-keyed 650 Hz lift 32.5 dB contrast 10.5 dB marks 11 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 26.54 s | 800.0 -> 775.0 | loudest 775 Hz lift 32.9 dB | moved-to lift 32.9 dB contrast 9.1 dB marks 25 not admitted | best-keyed 650 Hz lift 31.8 dB contrast 10.1 dB marks 12 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 27.04 s | 775.0 -> 800.0 | loudest 800 Hz lift 33.0 dB | moved-to lift 33.0 dB contrast 8.8 dB marks 24 not admitted | best-keyed 850 Hz lift 28.0 dB contrast 9.7 dB marks 19 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 28.54 s | 800.0 -> 650.0 | loudest 650 Hz lift 33.3 dB | moved-to lift 33.3 dB contrast 8.0 dB marks 17 not admitted | best-keyed 775 Hz lift 32.9 dB contrast 10.3 dB marks 19 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-20-014935 | 29.54 s | 650.0 -> 825.0 | loudest 825 Hz lift 33.6 dB | moved-to lift 33.6 dB contrast 9.7 dB marks 22 not admitted | best-keyed 775 Hz lift 32.9 dB contrast 10.1 dB marks 24 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-20-014935 | 0 to 2 s | 581.3 Hz | tracker there 600.0 | swing 16.4 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 1 to 3 s | 799.3 Hz | tracker there 625.0 | swing 12.3 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 2 to 4 s | 799.7 Hz | tracker there 625.0 | swing 12.7 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 5 to 7 s | 579.3 Hz | tracker there 625.0 | swing 15.3 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 6 to 8 s | 580.3 Hz | tracker there 625.0 | swing 16.0 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 8 to 10 s | 579.7 Hz | tracker there 625.0 | swing 12.9 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 9 to 11 s | 579.3 Hz | tracker there 625.0 | swing 15.6 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 10 to 12 s | 579.3 Hz | tracker there 625.0 | swing 14.8 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 11 to 13 s | 579.3 Hz | tracker there 625.0 | swing 17.5 dB
+ instrument | unadjudicated/cw-2026-08-20-014935 | 12 to 14 s | 601.2 Hz | tracker there 625.0 | swing 12.4 dB
+ hm-req-102 | unadjudicated/cw-2026-08-20-014935 | sure characters while acquiring 0 |  | no key
+ span | unadjudicated/cw-2026-08-22-014308 | acquiring 0.00 to 30.00 s | never confirmed | first admitted at 10.10 s, 625 Hz, lift -2.2 dB, separation 4.42 | cold moves 8, by level alone 8
+ cold move | unadjudicated/cw-2026-08-22-014308 | 7.54 s | 600.0 -> 575.0 | loudest 575 Hz lift 18.6 dB | moved-to lift 18.6 dB contrast 7.8 dB marks 17 not admitted | best-keyed 600 Hz lift 12.9 dB contrast 12.1 dB marks 18 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-22-014308 | 9.04 s | 575.0 -> 475.0 | loudest 475 Hz lift 28.0 dB | moved-to lift 28.0 dB contrast 9.1 dB marks 19 not admitted | best-keyed 550 Hz lift 27.5 dB contrast 10.9 dB marks 13 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-22-014308 | 9.54 s | 475.0 -> 450.0 | loudest 450 Hz lift 29.1 dB | moved-to lift 29.1 dB contrast 8.4 dB marks 20 not admitted | best-keyed 550 Hz lift 28.1 dB contrast 11.6 dB marks 11 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-22-014308 | 10.54 s | 450.0 -> 475.0 | loudest 475 Hz lift 29.8 dB | moved-to lift 29.8 dB contrast 8.5 dB marks 19 not admitted | best-keyed 550 Hz lift 29.3 dB contrast 10.6 dB marks 19 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-22-014308 | 11.04 s | 475.0 -> 450.0 | loudest 450 Hz lift 31.0 dB | moved-to lift 31.0 dB contrast 8.2 dB marks 23 not admitted | best-keyed 500 Hz lift 29.7 dB contrast 11.0 dB marks 12 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-22-014308 | 12.04 s | 450.0 -> 575.0 | loudest 575 Hz lift 29.9 dB | moved-to lift 29.9 dB contrast 9.7 dB marks 25 not admitted | best-keyed 425 Hz lift 28.9 dB contrast 10.9 dB marks 15 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-22-014308 | 14.54 s | 575.0 -> 475.0 | loudest 475 Hz lift 30.3 dB | moved-to lift 30.3 dB contrast 8.9 dB marks 19 not admitted | best-keyed 575 Hz lift 30.1 dB contrast 10.2 dB marks 16 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-22-014308 | 15.04 s | 475.0 -> 575.0 | loudest 575 Hz lift 30.5 dB | moved-to lift 30.5 dB contrast 9.8 dB marks 17 not admitted | best-keyed 525 Hz lift 29.3 dB contrast 10.4 dB marks 19 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-22-014308 | 0 to 2 s | 606.6 Hz | tracker there 600.0 | swing 15.2 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 1 to 3 s | 606.3 Hz | tracker there 600.0 | swing 15.2 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 2 to 4 s | 606.2 Hz | tracker there 600.0 | swing 14.1 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 4 to 6 s | 606.1 Hz | tracker there 600.0 | swing 15.0 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 5 to 7 s | 605.9 Hz | tracker there 600.0 | swing 19.6 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 6 to 8 s | 607.8 Hz | tracker there 600.0 | swing 16.6 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 10 to 12 s | 608.1 Hz | tracker there 475.0 | swing 12.0 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 11 to 13 s | 597.8 Hz | tracker there 450.0 | swing 12.3 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 13 to 15 s | 606.4 Hz | tracker there 575.0 | swing 12.5 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 14 to 16 s | 606.3 Hz | tracker there 475.0 | swing 12.2 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 15 to 17 s | 607.1 Hz | tracker there 575.0 | swing 18.8 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 16 to 18 s | 607.4 Hz | tracker there 575.0 | swing 21.2 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 17 to 19 s | 607.2 Hz | tracker there 575.0 | swing 22.1 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 18 to 20 s | 609.4 Hz | tracker there 575.0 | swing 23.6 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 19 to 21 s | 607.2 Hz | tracker there 575.0 | swing 21.9 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 20 to 22 s | 609.5 Hz | tracker there 575.0 | swing 19.7 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 21 to 23 s | 608.3 Hz | tracker there 575.0 | swing 19.4 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 22 to 24 s | 607.2 Hz | tracker there 575.0 | swing 20.3 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 23 to 25 s | 607.6 Hz | tracker there 575.0 | swing 21.9 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 24 to 26 s | 607.8 Hz | tracker there 575.0 | swing 17.0 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 26 to 28 s | 608.8 Hz | tracker there 575.0 | swing 18.6 dB
+ instrument | unadjudicated/cw-2026-08-22-014308 | 27 to 29 s | 609.1 Hz | tracker there 575.0 | swing 19.3 dB
+ hm-req-102 | unadjudicated/cw-2026-08-22-014308 | sure characters while acquiring 0 |  | no key
+ span | unadjudicated/cw-2026-08-22-031838 | acquiring 0.00 to 4.54 s | first keyed verdict at 4.54 s, 525.0 Hz | first admitted at 3.90 s, 525 Hz, lift 47.7 dB, separation 4.02 | cold moves 1, by level alone 1
+ cold move | unadjudicated/cw-2026-08-22-031838 | 1.54 s | 600.0 -> 500.0 | loudest 500 Hz lift 56.5 dB | moved-to lift 56.5 dB contrast 25.9 dB marks 7 not admitted | best-keyed 450 Hz lift 42.0 dB contrast 23.3 dB marks 14 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-22-031838 | 0 to 2 s | 499.9 Hz | tracker there 600.0 | swing 36.4 dB
+ instrument | unadjudicated/cw-2026-08-22-031838 | 1 to 3 s | 499.9 Hz | tracker there 500.0 | swing 36.9 dB
+ instrument | unadjudicated/cw-2026-08-22-031838 | 2 to 4 s | 499.9 Hz | tracker there 500.0 | swing 36.5 dB
+ instrument | unadjudicated/cw-2026-08-22-031838 | 3 to 5 s | 499.9 Hz | tracker there 500.0 | swing 36.6 dB
+ instrument | unadjudicated/cw-2026-08-22-031838 | 4 to 6 s | 499.9 Hz | tracker there 500.0 | swing 34.5 dB
+ hm-req-103 | unadjudicated/cw-2026-08-22-031838 | first scored stretch: 16 of 26 sent read sure and right (21 sure emitted), inferred key
+ hm-req-102 | unadjudicated/cw-2026-08-22-031838 | sure characters while acquiring 3 | A@1.86/500/unscored 3@3.08/500/unscored ,@4.44/500/unscored | against the inferred key
+ span | unadjudicated/cw-2026-08-22-032129 | acquiring 0.00 to 30.00 s | never confirmed | first admitted at 4.50 s, 600 Hz, lift 15.2 dB, separation 5.30 | cold moves 1, by level alone 1
+ cold move | unadjudicated/cw-2026-08-22-032129 | 1.54 s | 600.0 -> 500.0 | loudest 500 Hz lift 53.8 dB | moved-to lift 53.8 dB contrast 19.1 dB marks 7 not admitted | best-keyed 450 Hz lift 38.9 dB contrast 20.6 dB marks 11 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-22-032129 | 0 to 2 s | 500.0 Hz | tracker there 600.0 | swing 36.4 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 1 to 3 s | 499.9 Hz | tracker there 500.0 | swing 36.4 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 2 to 4 s | 499.9 Hz | tracker there 500.0 | swing 33.5 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 3 to 5 s | 499.9 Hz | tracker there 500.0 | swing 32.9 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 4 to 6 s | 499.9 Hz | tracker there 500.0 | swing 37.2 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 5 to 7 s | 499.9 Hz | tracker there 500.0 | swing 39.2 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 6 to 8 s | 499.9 Hz | tracker there 500.0 | swing 38.5 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 7 to 9 s | 499.9 Hz | tracker there 500.0 | swing 38.8 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 8 to 10 s | 499.9 Hz | tracker there 500.0 | swing 40.0 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 9 to 11 s | 499.9 Hz | tracker there 500.0 | swing 40.5 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 10 to 12 s | 499.9 Hz | tracker there 500.0 | swing 41.3 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 11 to 13 s | 499.9 Hz | tracker there 500.0 | swing 39.5 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 12 to 14 s | 499.9 Hz | tracker there 500.0 | swing 40.2 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 13 to 15 s | 499.9 Hz | tracker there 500.0 | swing 41.2 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 14 to 16 s | 499.9 Hz | tracker there 500.0 | swing 42.4 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 15 to 17 s | 499.9 Hz | tracker there 500.0 | swing 43.0 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 16 to 18 s | 499.9 Hz | tracker there 500.0 | swing 39.6 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 17 to 19 s | 499.9 Hz | tracker there 500.0 | swing 39.9 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 18 to 20 s | 499.9 Hz | tracker there 500.0 | swing 39.5 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 19 to 21 s | 499.9 Hz | tracker there 500.0 | swing 36.1 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 20 to 22 s | 499.8 Hz | tracker there 500.0 | swing 36.5 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 21 to 23 s | 499.8 Hz | tracker there 500.0 | swing 34.7 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 22 to 24 s | 499.9 Hz | tracker there 500.0 | swing 37.2 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 23 to 25 s | 499.9 Hz | tracker there 500.0 | swing 38.1 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 24 to 26 s | 499.9 Hz | tracker there 500.0 | swing 40.3 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 25 to 27 s | 499.9 Hz | tracker there 500.0 | swing 40.2 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 26 to 28 s | 499.9 Hz | tracker there 500.0 | swing 40.5 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 27 to 29 s | 499.9 Hz | tracker there 500.0 | swing 41.3 dB
+ instrument | unadjudicated/cw-2026-08-22-032129 | 28 to 30 s | 499.9 Hz | tracker there 500.0 | swing 40.2 dB
+ hm-req-103 | unadjudicated/cw-2026-08-22-032129 | first scored stretch: 34 of 38 sent read sure and right (39 sure emitted), inferred key
+ hm-req-102 | unadjudicated/cw-2026-08-22-032129 | sure characters while acquiring 42 | M@3.20/500/unscored T@3.42/500/unscored M@3.91/500/unscored T@4.18/500/wrong J@4.99/500/wrong 2@5.00/500/right 6@5.85/500/right P@7.18/500/right G@7.81/500/wrong O@8.65/500/right P@9.49/500/right A@9.99/500/right G@10.75/500/right A@11.24/500/right T@11.60/500/right I@11.94/500/right O@12.83/500/right N@13.32/500/right F@14.27/500/right O@15.10/500/right R@15.71/500/right E@15.94/500/right C@16.83/500/right A@17.32/500/right S@17.82/500/right T@18.18/500/right B@19.15/500/right U@19.78/500/right A@20.25/500/added E@20.46/500/wrong L@21.20/500/right E@21.41/500/right T@21.80/500/right I@22.15/500/right N@22.61/500/right A@23.35/500/right R@23.95/500/right L@24.69/500/right P@25.54/500/right 0@26.88/500/right 3@27.85/500/right 4@28.74/500/right | against the inferred key
+ span | unadjudicated/cw-2026-08-25-012823 | acquiring 0.00 to 13.54 s | first keyed verdict at 13.54 s, 450.0 Hz | first admitted at 4.30 s, 500 Hz, lift 45.4 dB, separation 6.47 | cold moves 2, by level alone 0
+ cold move | unadjudicated/cw-2026-08-25-012823 | 1.54 s | 600.0 -> 400.0 | loudest 400 Hz lift 48.2 dB | moved-to lift 48.2 dB contrast 13.5 dB marks 9 not admitted | best-keyed 400 Hz lift 48.2 dB contrast 13.5 dB marks 9 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-25-012823 | 3.04 s | 400.0 -> 500.0 | loudest 500 Hz lift 41.6 dB | moved-to lift 41.6 dB contrast 16.4 dB marks 18 not admitted | best-keyed 500 Hz lift 41.6 dB contrast 16.4 dB marks 18 | admitted none | to the best-keyed bin
+ instrument | unadjudicated/cw-2026-08-25-012823 | 0 to 2 s | 400.5 Hz | tracker there 600.0 | swing 27.0 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 1 to 3 s | 502.8 Hz | tracker there 400.0 | swing 25.8 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 2 to 4 s | 500.8 Hz | tracker there 400.0 | swing 24.1 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 3 to 5 s | 501.0 Hz | tracker there 500.0 | swing 23.4 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 4 to 6 s | 502.9 Hz | tracker there 500.0 | swing 20.6 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 5 to 7 s | 500.0 Hz | tracker there 500.0 | swing 21.7 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 6 to 8 s | 499.8 Hz | tracker there 500.0 | swing 22.2 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 7 to 9 s | 501.8 Hz | tracker there 500.0 | swing 18.8 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 8 to 10 s | 501.1 Hz | tracker there 500.0 | swing 16.2 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 11 to 13 s | 501.7 Hz | tracker there 500.0 | swing 14.6 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 12 to 14 s | 500.3 Hz | tracker there 500.0 | swing 17.9 dB
+ instrument | unadjudicated/cw-2026-08-25-012823 | 13 to 15 s | 502.3 Hz | tracker there 500.0 | swing 20.2 dB
+ hm-req-102 | unadjudicated/cw-2026-08-25-012823 | sure characters while acquiring 22 | E@0.46/600/unscored S@1.33/600/unscored S@1.76/400/unscored E@1.88/400/unscored E@2.08/400/unscored E@2.09/400/unscored T@3.16/500/unscored T@3.32/500/unscored N@3.75/500/unscored T@4.09/500/unscored K@4.91/500/unscored E@5.24/500/unscored M@5.62/500/unscored T@6.04/500/unscored E@6.21/500/unscored E@6.44/500/unscored O@6.97/500/unscored I@7.52/500/unscored N@7.84/500/unscored U@8.51/500/unscored T@9.34/500/unscored E@12.14/500/unscored | no key
+ span | unadjudicated/cw-2026-08-28-005158 | acquiring 0.00 to 30.00 s | never confirmed | first admitted at 4.60 s, 800 Hz, lift -62.8 dB, separation 4.01 | cold moves 13, by level alone 12
+ cold move | unadjudicated/cw-2026-08-28-005158 | 1.54 s | 600.0 -> 425.0 | loudest 425 Hz lift 54.4 dB | moved-to lift 54.4 dB contrast 10.0 dB marks 9 not admitted | best-keyed 525 Hz lift 52.8 dB contrast 10.6 dB marks 9 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 3.04 s | 425.0 -> 400.0 | loudest 400 Hz lift 54.1 dB | moved-to lift 54.1 dB contrast 9.7 dB marks 24 not admitted | best-keyed 425 Hz lift 53.9 dB contrast 11.0 dB marks 15 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 4.04 s | 400.0 -> 450.0 | loudest 450 Hz lift 54.4 dB | moved-to lift 54.4 dB contrast 8.4 dB marks 25 not admitted | best-keyed 425 Hz lift 53.5 dB contrast 11.0 dB marks 16 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 4.54 s | 450.0 -> 475.0 | loudest 475 Hz lift 54.3 dB | moved-to lift 54.3 dB contrast 8.9 dB marks 19 not admitted | best-keyed 425 Hz lift 53.6 dB contrast 11.2 dB marks 18 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 5.04 s | 475.0 -> 550.0 | loudest 550 Hz lift 54.4 dB | moved-to lift 54.4 dB contrast 9.5 dB marks 18 not admitted | best-keyed 300 Hz lift 32.8 dB contrast 11.0 dB marks 23 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 7.54 s | 550.0 -> 450.0 | loudest 450 Hz lift 54.4 dB | moved-to lift 54.4 dB contrast 9.2 dB marks 20 not admitted | best-keyed 575 Hz lift 53.0 dB contrast 12.5 dB marks 12 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 8.54 s | 450.0 -> 525.0 | loudest 525 Hz lift 53.6 dB | moved-to lift 53.6 dB contrast 8.1 dB marks 20 not admitted | best-keyed 350 Hz lift 46.5 dB contrast 11.7 dB marks 17 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 9.04 s | 525.0 -> 450.0 | loudest 450 Hz lift 53.7 dB | moved-to lift 53.7 dB contrast 9.2 dB marks 21 not admitted | best-keyed 350 Hz lift 46.6 dB contrast 11.5 dB marks 18 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 9.54 s | 450.0 -> 425.0 | loudest 425 Hz lift 53.8 dB | moved-to lift 53.8 dB contrast 10.2 dB marks 19 not admitted | best-keyed 350 Hz lift 46.3 dB contrast 11.4 dB marks 18 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 10.54 s | 425.0 -> 400.0 | loudest 400 Hz lift 54.1 dB | moved-to lift 54.1 dB contrast 9.3 dB marks 20 not admitted | best-keyed 350 Hz lift 46.5 dB contrast 10.9 dB marks 18 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 13.04 s | 400.0 -> 500.0 | loudest 500 Hz lift 54.3 dB | moved-to lift 54.3 dB contrast 8.3 dB marks 20 not admitted | best-keyed 425 Hz lift 54.0 dB contrast 10.0 dB marks 23 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 13.54 s | 500.0 -> 400.0 | loudest 400 Hz lift 54.9 dB | moved-to lift 54.9 dB contrast 9.4 dB marks 23 not admitted | best-keyed 375 Hz lift 53.5 dB contrast 10.6 dB marks 16 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-28-005158 | 14.04 s | 400.0 -> 575.0 | loudest 575 Hz lift 58.5 dB | moved-to lift 58.5 dB contrast 12.8 dB marks 14 not admitted | best-keyed 575 Hz lift 58.5 dB contrast 12.8 dB marks 14 | admitted none | to the best-keyed bin
+ instrument | unadjudicated/cw-2026-08-28-005158 | 12 to 14 s | 599.2 Hz | tracker there 400.0 | swing 19.0 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 13 to 15 s | 599.2 Hz | tracker there 400.0 | swing 22.1 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 14 to 16 s | 599.2 Hz | tracker there 575.0 | swing 22.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 15 to 17 s | 614.1 Hz | tracker there 575.0 | swing 28.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 16 to 18 s | 599.4 Hz | tracker there 575.0 | swing 21.5 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 17 to 19 s | 599.2 Hz | tracker there 575.0 | swing 18.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 18 to 20 s | 599.5 Hz | tracker there 575.0 | swing 25.5 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 19 to 21 s | 612.7 Hz | tracker there 575.0 | swing 29.2 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 20 to 22 s | 611.4 Hz | tracker there 575.0 | swing 28.0 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 21 to 23 s | 610.7 Hz | tracker there 575.0 | swing 27.1 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 22 to 24 s | 610.5 Hz | tracker there 575.0 | swing 24.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 23 to 25 s | 609.1 Hz | tracker there 575.0 | swing 25.4 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 24 to 26 s | 608.5 Hz | tracker there 575.0 | swing 22.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 25 to 27 s | 599.2 Hz | tracker there 575.0 | swing 17.5 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 26 to 28 s | 611.8 Hz | tracker there 575.0 | swing 22.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 27 to 29 s | 607.4 Hz | tracker there 575.0 | swing 25.5 dB
+ instrument | unadjudicated/cw-2026-08-28-005158 | 28 to 30 s | 598.7 Hz | tracker there 575.0 | swing 21.2 dB
+ hm-req-102 | unadjudicated/cw-2026-08-28-005158 | sure characters while acquiring 21 | E@5.60/550/unscored E@5.73/550/unscored I@6.91/550/unscored E@10.74/400/unscored E@12.81/400/unscored M@15.38/575/unscored E@15.59/575/unscored N@17.23/575/unscored S@17.61/575/unscored I@17.91/575/unscored I@18.66/575/unscored V@19.46/575/unscored S@21.27/575/unscored 5@22.01/575/unscored E@22.22/575/unscored H@23.59/575/unscored E@24.61/575/unscored N@25.23/575/unscored I@25.56/575/unscored A@26.22/575/unscored U@28.31/575/unscored | no key
+ span | unadjudicated/cw-2026-08-28-005218 | acquiring 0.00 to 30.00 s | never confirmed | first admitted at 2.50 s, 875 Hz, lift -38.9 dB, separation 6.64 | cold moves 1, by level alone 1
+ cold move | unadjudicated/cw-2026-08-28-005218 | 1.54 s | 600.0 -> 575.0 | loudest 575 Hz lift 58.3 dB | moved-to lift 58.3 dB contrast 13.1 dB marks 4 not admitted | best-keyed 475 Hz lift 52.2 dB contrast 10.7 dB marks 9 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-28-005218 | 0 to 2 s | 611.5 Hz | tracker there 600.0 | swing 25.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 1 to 3 s | 608.9 Hz | tracker there 575.0 | swing 26.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 2 to 4 s | 610.1 Hz | tracker there 575.0 | swing 25.3 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 3 to 5 s | 607.1 Hz | tracker there 575.0 | swing 24.0 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 4 to 6 s | 608.6 Hz | tracker there 575.0 | swing 24.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 5 to 7 s | 607.8 Hz | tracker there 575.0 | swing 22.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 6 to 8 s | 611.9 Hz | tracker there 575.0 | swing 23.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 7 to 9 s | 608.0 Hz | tracker there 575.0 | swing 24.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 8 to 10 s | 611.9 Hz | tracker there 575.0 | swing 25.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 9 to 11 s | 610.4 Hz | tracker there 575.0 | swing 25.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 10 to 12 s | 599.4 Hz | tracker there 575.0 | swing 24.3 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 11 to 13 s | 599.3 Hz | tracker there 575.0 | swing 21.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 12 to 14 s | 599.2 Hz | tracker there 575.0 | swing 23.4 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 13 to 15 s | 613.0 Hz | tracker there 575.0 | swing 24.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 14 to 16 s | 608.0 Hz | tracker there 575.0 | swing 26.4 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 15 to 17 s | 599.3 Hz | tracker there 575.0 | swing 23.0 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 16 to 18 s | 607.2 Hz | tracker there 575.0 | swing 22.4 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 17 to 19 s | 599.3 Hz | tracker there 575.0 | swing 20.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 18 to 20 s | 610.9 Hz | tracker there 575.0 | swing 16.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 19 to 21 s | 599.3 Hz | tracker there 575.0 | swing 20.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 20 to 22 s | 598.6 Hz | tracker there 575.0 | swing 23.5 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 21 to 23 s | 611.5 Hz | tracker there 575.0 | swing 20.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 22 to 24 s | 599.4 Hz | tracker there 575.0 | swing 16.4 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 23 to 25 s | 599.6 Hz | tracker there 575.0 | swing 19.1 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 24 to 26 s | 599.4 Hz | tracker there 575.0 | swing 20.1 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 25 to 27 s | 599.4 Hz | tracker there 575.0 | swing 24.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 26 to 28 s | 599.3 Hz | tracker there 575.0 | swing 25.3 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 27 to 29 s | 612.0 Hz | tracker there 575.0 | swing 25.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005218 | 28 to 30 s | 611.4 Hz | tracker there 575.0 | swing 25.4 dB
+ hm-req-102 | unadjudicated/cw-2026-08-28-005218 | sure characters while acquiring 26 | S@1.65/575/unscored 5@2.38/575/unscored S@3.97/575/unscored A@5.61/575/unscored A@8.69/575/unscored T@10.85/575/unscored H@13.59/575/unscored S@14.92/575/unscored S@15.39/575/unscored E@15.60/575/unscored I@15.95/575/unscored B@16.58/575/unscored 4@18.79/575/unscored H@19.23/575/unscored I@20.18/575/unscored H@20.52/575/unscored <AR>@22.04/575/unscored H@22.52/575/unscored I@23.46/575/unscored S@24.15/575/unscored S@24.15/575/unscored S@25.37/575/unscored E@25.60/575/unscored F@26.36/575/unscored T@26.61/575/unscored H@27.95/575/unscored | no key
+ span | unadjudicated/cw-2026-08-28-005243 | acquiring 0.00 to 30.00 s | never confirmed | first admitted at 11.80 s, 825 Hz, lift -31.9 dB, separation 6.18 | cold moves 1, by level alone 1
+ cold move | unadjudicated/cw-2026-08-28-005243 | 2.04 s | 600.0 -> 575.0 | loudest 575 Hz lift 58.4 dB | moved-to lift 58.4 dB contrast 13.1 dB marks 4 not admitted | best-keyed 500 Hz lift 46.7 dB contrast 11.2 dB marks 9 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-28-005243 | 0 to 2 s | 599.2 Hz | tracker there 600.0 | swing 25.2 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 1 to 3 s | 611.2 Hz | tracker there 600.0 | swing 25.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 2 to 4 s | 612.0 Hz | tracker there 575.0 | swing 25.3 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 3 to 5 s | 611.3 Hz | tracker there 575.0 | swing 24.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 4 to 6 s | 607.4 Hz | tracker there 575.0 | swing 23.5 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 5 to 7 s | 599.5 Hz | tracker there 575.0 | swing 21.4 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 6 to 8 s | 599.3 Hz | tracker there 575.0 | swing 21.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 7 to 9 s | 598.5 Hz | tracker there 575.0 | swing 18.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 8 to 10 s | 609.2 Hz | tracker there 575.0 | swing 20.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 9 to 11 s | 611.8 Hz | tracker there 575.0 | swing 20.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 10 to 12 s | 608.0 Hz | tracker there 575.0 | swing 23.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 11 to 13 s | 607.2 Hz | tracker there 575.0 | swing 28.3 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 12 to 14 s | 598.7 Hz | tracker there 575.0 | swing 14.9 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 13 to 15 s | 599.6 Hz | tracker there 575.0 | swing 23.2 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 14 to 16 s | 611.9 Hz | tracker there 575.0 | swing 24.8 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 15 to 17 s | 586.9 Hz | tracker there 575.0 | swing 14.2 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 16 to 18 s | 607.1 Hz | tracker there 575.0 | swing 29.4 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 17 to 19 s | 599.2 Hz | tracker there 575.0 | swing 18.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 18 to 20 s | 610.6 Hz | tracker there 575.0 | swing 25.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 19 to 21 s | 599.1 Hz | tracker there 575.0 | swing 22.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 20 to 22 s | 611.3 Hz | tracker there 575.0 | swing 25.7 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 21 to 23 s | 611.0 Hz | tracker there 575.0 | swing 25.0 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 22 to 24 s | 613.2 Hz | tracker there 575.0 | swing 23.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 23 to 25 s | 608.3 Hz | tracker there 575.0 | swing 28.5 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 24 to 26 s | 599.4 Hz | tracker there 575.0 | swing 26.6 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 25 to 27 s | 599.3 Hz | tracker there 575.0 | swing 25.0 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 26 to 28 s | 610.5 Hz | tracker there 575.0 | swing 23.0 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 27 to 29 s | 599.2 Hz | tracker there 575.0 | swing 23.1 dB
+ instrument | unadjudicated/cw-2026-08-28-005243 | 28 to 30 s | 599.4 Hz | tracker there 575.0 | swing 22.1 dB
+ hm-req-102 | unadjudicated/cw-2026-08-28-005243 | sure characters while acquiring 29 | E@0.17/600/unscored F@0.93/600/unscored T@1.19/600/unscored S@2.52/575/unscored T@3.47/575/unscored S@4.81/575/unscored E@5.31/575/unscored I@5.66/575/unscored I@6.91/575/unscored H@7.36/575/unscored E@8.49/575/unscored <HH>@9.84/575/unscored H@10.28/575/unscored I@13.82/575/unscored E@17.28/575/unscored U@19.98/575/unscored E@20.17/575/unscored S@21.50/575/unscored A@21.82/575/unscored D@22.23/575/unscored A@22.60/575/unscored L@24.21/575/unscored H@25.18/575/unscored H@27.19/575/unscored S@27.75/575/unscored T@28.51/575/unscored A@28.83/575/unscored E@29.02/575/unscored U@29.84/575/unscored | no key
+ span | unadjudicated/cw-2026-08-31-002424 | acquiring 0.00 to 13.71 s | never confirmed | first admitted at 3.90 s, 475 Hz, lift 2.3 dB, separation 4.43 | cold moves 2, by level alone 1
+ cold move | unadjudicated/cw-2026-08-31-002424 | 10.54 s | 600.0 -> 750.0 | loudest 750 Hz lift 10.3 dB | moved-to lift 10.3 dB contrast 13.1 dB marks 17 not admitted | best-keyed 750 Hz lift 10.3 dB contrast 13.1 dB marks 17 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-31-002424 | 11.04 s | 750.0 -> 575.0 | loudest 575 Hz lift 13.8 dB | moved-to lift 13.8 dB contrast 13.6 dB marks 13 not admitted | best-keyed 750 Hz lift 11.2 dB contrast 15.2 dB marks 15 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-31-002424 | 3 to 5 s | 306.8 Hz | tracker there 600.0 | swing 14.8 dB
+ instrument | unadjudicated/cw-2026-08-31-002424 | 7 to 9 s | 713.9 Hz | tracker there 600.0 | swing 16.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002424 | 8 to 10 s | 764.3 Hz | tracker there 600.0 | swing 22.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002424 | 9 to 11 s | 562.3 Hz | tracker there 600.0 | swing 27.2 dB
+ instrument | unadjudicated/cw-2026-08-31-002424 | 10 to 12 s | 561.3 Hz | tracker there 750.0 | swing 24.9 dB
+ instrument | unadjudicated/cw-2026-08-31-002424 | 11 to 13 s | 510.2 Hz | tracker there 575.0 | swing 16.7 dB
+ hm-req-102 | unadjudicated/cw-2026-08-31-002424 | sure characters while acquiring 0 |  | no key
+ span | unadjudicated/cw-2026-08-31-002443 | acquiring 0.00 to 14.41 s | never confirmed | first admitted at 3.90 s, 475 Hz, lift 2.3 dB, separation 4.43 | cold moves 2, by level alone 1
+ cold move | unadjudicated/cw-2026-08-31-002443 | 10.54 s | 600.0 -> 750.0 | loudest 750 Hz lift 10.3 dB | moved-to lift 10.3 dB contrast 13.1 dB marks 17 not admitted | best-keyed 750 Hz lift 10.3 dB contrast 13.1 dB marks 17 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-31-002443 | 11.04 s | 750.0 -> 575.0 | loudest 575 Hz lift 13.8 dB | moved-to lift 13.8 dB contrast 13.6 dB marks 13 not admitted | best-keyed 750 Hz lift 11.2 dB contrast 15.2 dB marks 15 | admitted none | by level alone
+ instrument | unadjudicated/cw-2026-08-31-002443 | 3 to 5 s | 306.8 Hz | tracker there 600.0 | swing 14.8 dB
+ instrument | unadjudicated/cw-2026-08-31-002443 | 7 to 9 s | 713.9 Hz | tracker there 600.0 | swing 16.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002443 | 8 to 10 s | 764.3 Hz | tracker there 600.0 | swing 22.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002443 | 9 to 11 s | 562.3 Hz | tracker there 600.0 | swing 27.2 dB
+ instrument | unadjudicated/cw-2026-08-31-002443 | 10 to 12 s | 561.3 Hz | tracker there 750.0 | swing 24.9 dB
+ instrument | unadjudicated/cw-2026-08-31-002443 | 11 to 13 s | 510.2 Hz | tracker there 575.0 | swing 16.7 dB
+ instrument | unadjudicated/cw-2026-08-31-002443 | 12 to 14 s | 511.9 Hz | tracker there 575.0 | swing 18.4 dB
+ hm-req-102 | unadjudicated/cw-2026-08-31-002443 | sure characters while acquiring 0 |  | no key
+ span | unadjudicated/cw-2026-08-31-002829 | acquiring 0.00 to 30.00 s | never confirmed | first admitted at 7.20 s, 600 Hz, lift 12.5 dB, separation 4.06 | cold moves 13, by level alone 7
+ cold move | unadjudicated/cw-2026-08-31-002829 | 3.54 s | 600.0 -> 625.0 | loudest 625 Hz lift 14.8 dB | moved-to lift 14.8 dB contrast 13.0 dB marks 15 not admitted | best-keyed 600 Hz lift 14.4 dB contrast 14.4 dB marks 12 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-31-002829 | 4.54 s | 625.0 -> 600.0 | loudest 600 Hz lift 15.1 dB | moved-to lift 15.1 dB contrast 13.4 dB marks 13 not admitted | best-keyed 600 Hz lift 15.1 dB contrast 13.4 dB marks 13 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-31-002829 | 5.04 s | 600.0 -> 625.0 | loudest 625 Hz lift 16.1 dB | moved-to lift 16.1 dB contrast 12.7 dB marks 16 not admitted | best-keyed 600 Hz lift 15.7 dB contrast 13.4 dB marks 15 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-31-002829 | 7.04 s | 625.0 -> 600.0 | loudest 600 Hz lift 13.0 dB | moved-to lift 13.0 dB contrast 13.0 dB marks 16 not admitted | best-keyed 625 Hz lift 12.7 dB contrast 13.0 dB marks 13 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-31-002829 | 10.54 s | 600.0 -> 625.0 | loudest 625 Hz lift 16.8 dB | moved-to lift 16.8 dB contrast 14.0 dB marks 14 not admitted | best-keyed 625 Hz lift 16.8 dB contrast 14.0 dB marks 14 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-31-002829 | 13.54 s | 625.0 -> 600.0 | loudest 600 Hz lift 17.6 dB | moved-to lift 17.6 dB contrast 12.7 dB marks 13 not admitted | best-keyed 625 Hz lift 17.6 dB contrast 13.7 dB marks 13 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-31-002829 | 18.54 s | 600.0 -> 625.0 | loudest 625 Hz lift 17.8 dB | moved-to lift 17.8 dB contrast 14.3 dB marks 14 not admitted | best-keyed 625 Hz lift 17.8 dB contrast 14.3 dB marks 14 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-31-002829 | 22.54 s | 625.0 -> 600.0 | loudest 600 Hz lift 16.2 dB | moved-to lift 16.2 dB contrast 14.4 dB marks 9 not admitted | best-keyed 600 Hz lift 16.2 dB contrast 14.4 dB marks 9 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-31-002829 | 23.04 s | 600.0 -> 625.0 | loudest 625 Hz lift 15.7 dB | moved-to lift 15.7 dB contrast 11.7 dB marks 9 not admitted | best-keyed 600 Hz lift 15.3 dB contrast 14.8 dB marks 8 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-31-002829 | 24.04 s | 625.0 -> 600.0 | loudest 600 Hz lift 15.6 dB | moved-to lift 15.6 dB contrast 14.0 dB marks 7 not admitted | best-keyed 625 Hz lift 15.5 dB contrast 12.4 dB marks 11 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-31-002829 | 24.54 s | 600.0 -> 625.0 | loudest 625 Hz lift 14.4 dB | moved-to lift 14.4 dB contrast 12.4 dB marks 12 not admitted | best-keyed 600 Hz lift 14.0 dB contrast 13.6 dB marks 8 | admitted none | by level alone
+ cold move | unadjudicated/cw-2026-08-31-002829 | 25.04 s | 625.0 -> 600.0 | loudest 600 Hz lift 14.1 dB | moved-to lift 14.1 dB contrast 12.9 dB marks 8 not admitted | best-keyed 600 Hz lift 14.1 dB contrast 12.9 dB marks 8 | admitted none | to the best-keyed bin
+ cold move | unadjudicated/cw-2026-08-31-002829 | 25.54 s | 600.0 -> 625.0 | loudest 625 Hz lift 13.4 dB | moved-to lift 13.4 dB contrast 12.5 dB marks 15 not admitted | best-keyed 625 Hz lift 13.4 dB contrast 12.5 dB marks 15 | admitted none | to the best-keyed bin
+ instrument | unadjudicated/cw-2026-08-31-002829 | 0 to 2 s | 615.9 Hz | tracker there 600.0 | swing 18.6 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 1 to 3 s | 609.0 Hz | tracker there 600.0 | swing 19.8 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 2 to 4 s | 613.4 Hz | tracker there 600.0 | swing 21.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 3 to 5 s | 610.6 Hz | tracker there 625.0 | swing 22.8 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 4 to 6 s | 609.7 Hz | tracker there 600.0 | swing 21.3 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 5 to 7 s | 609.8 Hz | tracker there 625.0 | swing 20.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 6 to 8 s | 611.1 Hz | tracker there 625.0 | swing 14.8 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 7 to 9 s | 618.0 Hz | tracker there 600.0 | swing 18.6 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 8 to 10 s | 618.8 Hz | tracker there 600.0 | swing 24.8 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 9 to 11 s | 619.3 Hz | tracker there 600.0 | swing 26.9 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 10 to 12 s | 610.9 Hz | tracker there 625.0 | swing 25.4 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 11 to 13 s | 616.5 Hz | tracker there 625.0 | swing 24.5 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 12 to 14 s | 608.7 Hz | tracker there 625.0 | swing 25.0 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 13 to 15 s | 601.5 Hz | tracker there 600.0 | swing 15.2 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 14 to 16 s | 601.4 Hz | tracker there 600.0 | swing 15.6 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 15 to 17 s | 615.0 Hz | tracker there 600.0 | swing 19.0 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 16 to 18 s | 615.1 Hz | tracker there 600.0 | swing 24.4 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 17 to 19 s | 610.2 Hz | tracker there 600.0 | swing 28.4 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 18 to 20 s | 617.5 Hz | tracker there 625.0 | swing 28.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 19 to 21 s | 608.6 Hz | tracker there 625.0 | swing 22.8 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 20 to 22 s | 608.0 Hz | tracker there 625.0 | swing 22.7 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 21 to 23 s | 618.3 Hz | tracker there 625.0 | swing 25.4 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 22 to 24 s | 616.4 Hz | tracker there 600.0 | swing 23.7 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 23 to 25 s | 614.1 Hz | tracker there 625.0 | swing 21.6 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 24 to 26 s | 612.5 Hz | tracker there 625.0 | swing 19.7 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 25 to 27 s | 610.9 Hz | tracker there 625.0 | swing 25.1 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 26 to 28 s | 612.7 Hz | tracker there 625.0 | swing 23.5 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 27 to 29 s | 613.2 Hz | tracker there 625.0 | swing 21.4 dB
+ instrument | unadjudicated/cw-2026-08-31-002829 | 28 to 30 s | 610.9 Hz | tracker there 625.0 | swing 17.5 dB
+ hm-req-102 | unadjudicated/cw-2026-08-31-002829 | sure characters while acquiring 50 | H@1.17/600/unscored E@1.31/600/unscored T@1.58/600/unscored T@2.21/600/unscored T@2.51/600/unscored N@3.50/600/unscored I@3.75/625/unscored E@4.19/625/unscored A@4.42/625/unscored I@4.65/600/unscored S@5.04/625/unscored E@5.21/625/unscored H@5.70/625/unscored N@6.06/625/unscored S@8.00/600/unscored E@8.16/600/unscored A@8.51/600/unscored S@9.04/600/unscored A@9.44/600/unscored N@10.45/600/unscored I@10.71/625/unscored A@11.36/625/unscored E@11.55/625/unscored V@12.22/625/unscored U@12.65/625/unscored N@13.01/625/unscored A@13.96/600/unscored T@16.70/600/unscored U@17.11/600/unscored N@17.44/600/unscored V@18.11/600/unscored A@18.41/600/unscored M@18.84/625/unscored T@19.02/625/unscored N@19.42/625/unscored I@19.72/625/unscored R@20.61/625/unscored I@21.76/625/unscored S@22.15/625/unscored I@23.39/625/unscored M@23.94/625/unscored T@24.11/600/unscored I@24.49/600/unscored B@25.02/625/unscored H@25.81/625/unscored T@26.11/625/unscored O@27.01/625/unscored I@28.58/625/unscored T@28.81/625/unscored E@29.12/625/unscored | no key
+ total | the eleven | cold moves 60 | by level alone 48
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 47.6064 Seconds
+RC=0 WALL=48s

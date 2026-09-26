@@ -1,0 +1,41 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:30.75]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheDecoderDoesWhileAcquiringTests.OnTheOpening [30 s]
+  Standard Output Messages:
+ join | cw-2026-09-24-003901 | stream 0.00 to 30.00 s | file starts at stream 0.00 s
+ join | cw-2026-09-24-003919 | stream 30.00 to 46.20 s | file starts at stream 16.20 s
+ join | cw-2026-09-24-004027 | stream 46.20 to 76.20 s | file starts at stream 46.20 s
+ join | cw-2026-09-24-004108 | stream 76.20 to 106.20 s | file starts at stream 76.20 s
+ join | cw-2026-09-24-004133 | stream 106.20 to 131.43 s | file starts at stream 101.43 s
+ join | cw-2026-09-24-004205 | stream 131.43 to 161.43 s | file starts at stream 131.43 s
+ join | cw-2026-09-24-004234 | stream 161.43 to 190.73 s | file starts at stream 160.73 s
+ span | opening | acquiring 0.00 to 26.04 s | first keyed verdict at 26.04 s, 600.0 Hz | first admitted at 1.60 s, 850 Hz, lift -19.0 dB, separation 4.26 | cold moves 0, by level alone 0
+ instrument | opening | 20 to 22 s | 599.4 Hz | tracker there 600.0 | swing 32.9 dB
+ instrument | opening | 21 to 23 s | 599.7 Hz | tracker there 600.0 | swing 35.5 dB
+ instrument | opening | 22 to 24 s | 598.5 Hz | tracker there 600.0 | swing 31.8 dB
+ instrument | opening | 23 to 25 s | 600.0 Hz | tracker there 600.0 | swing 34.4 dB
+ instrument | opening | 24 to 26 s | 599.6 Hz | tracker there 600.0 | swing 36.1 dB
+ alone | cw-2026-09-24-003901 | acquiring 0.00 to 26.04 s of the file (stream 0.00 to 26.04) | confirmed at 600.0 Hz | text EII E T NHHK
+ alone | cw-2026-09-24-003919 | acquiring 0.00 to 30.00 s of the file (stream 16.20 to 46.20) | confirmed at NaN Hz | text EITEETNXNIK       EANQNID        EANQNIK    E
+ opening | sent, inferred: each file read alone, 0 to 46.2 s, placeholders dropped | EII E T NHHK EANQNID EANQNIK E
+ hm-req-102 | opening | sure characters while acquiring 9 | E@20.64/600/right I@21.07/600/right I@21.49/600/right E@21.82/600/right T@22.22/600/right N@22.56/600/right H@23.33/600/right H@24.01/600/right K@24.68/600/right | against each file read alone
+ opening | cw-2026-09-24-003919 alone over stream 16.20 to 30.00 s | EITEETNXNIK
+ hm-req-102 | opening against cw-2026-09-24-003919's own decoding | sure characters while acquiring in stream 16.20 to 30.00 s: 9 | E@20.64/right I@21.07/right I@21.49/wrong E@21.82/right T@22.22/right N@22.56/right H@23.33/wrong H@24.01/wrong K@24.68/right
+ opening | text 0 to 46.2 s, marked | {        EII E T NHHK  }       EANQNID          EAN(■)IK
+ opening | HM-REQ-103 | 21 of 24 opening characters read sure and right (21 sure emitted), inferred
+ opening | HM-REQ-103, after the acquiring span | 12 sure and right after 26.04 s
+ total | opening | cold moves 0 | by level alone 0
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 31.0236 Seconds
+RC=0 WALL=32s

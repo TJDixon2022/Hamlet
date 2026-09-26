@@ -34,6 +34,22 @@ public readonly record struct KeyingCandidate(
 }
 
 /// <summary>
+/// What one bin's history shows of keying, whether or not it is admitted as a
+/// candidate.
+/// </summary>
+/// <param name="ToneHz">Where it is.</param>
+/// <param name="LiftDb">How far its key-down level stands over the band beside it.</param>
+/// <param name="ContrastDb">
+/// How far its key-down level stands over its own key-up level: the two levels
+/// its history clusters into. A carrier that is always there has next to none
+/// however loud it is; a keyed tone has its whole depth of keying.
+/// </param>
+/// <param name="Marks">How many clean marks its history holds.</param>
+/// <param name="Admitted">Whether the survey admits it as a keying candidate.</param>
+public readonly record struct KeyedStructure(
+    double ToneHz, double LiftDb, double ContrastDb, int Marks, bool Admitted);
+
+/// <summary>
 /// Something strong enough to matter that is not somebody sending Morse.
 /// </summary>
 /// <param name="ToneHz">Where it was measured.</param>
@@ -291,7 +307,7 @@ public sealed class CwToneSurvey
 
         for (var b = 0; b < _bins; b++)
         {
-            var candidate = Examine(b, _bandNoise[b], out var lift, out var present);
+            var candidate = Examine(b, _bandNoise[b], out var lift, out var present, out _, out _);
 
             if (!double.IsNaN(lift)
                 && (strongest is not { } peak || lift > peak.LiftDb))
@@ -357,9 +373,43 @@ public sealed class CwToneSurvey
 
         for (var b = 0; b < _bins; b++)
         {
-            if (Examine(b, _bandNoise[b], out _, out _) is { } candidate)
+            if (Examine(b, _bandNoise[b], out _, out _, out _, out _) is { } candidate)
             {
                 found.Add(candidate);
+            }
+        }
+
+        return found;
+    }
+
+    /// <summary>
+    /// What every bin shows of keying, admitted or not, for diagnosis only.
+    /// </summary>
+    /// <returns>One entry per bin whose history clusters into two levels, in bin order.</returns>
+    /// <remarks>
+    /// Like <see cref="Candidates"/> this changes nothing the survey decides (work
+    /// instruction 448). Before anything is admitted the verdict holds no keying
+    /// measure at all, so a trace of where the tracker points meanwhile had
+    /// nothing to set the loudest bin against.
+    /// </remarks>
+    public IReadOnlyList<KeyedStructure> Structures()
+    {
+        if (!IsReady)
+        {
+            return Array.Empty<KeyedStructure>();
+        }
+
+        MeasureBandNoise();
+
+        var found = new List<KeyedStructure>();
+
+        for (var b = 0; b < _bins; b++)
+        {
+            var candidate = Examine(b, _bandNoise[b], out var lift, out _, out var contrast, out var marks);
+
+            if (!double.IsNaN(contrast))
+            {
+                found.Add(new KeyedStructure(_binHz[b], lift, contrast, marks, candidate is not null));
             }
         }
 
@@ -476,10 +526,13 @@ public sealed class CwToneSurvey
     /// Everything about one bin: is it keying, and how far over the band is it.
     /// </summary>
     private KeyingCandidate? Examine(
-        int bin, double bandDb, out double liftDb, out double presentFraction)
+        int bin, double bandDb, out double liftDb, out double presentFraction,
+        out double contrastDb, out int marks)
     {
         liftDb = double.NaN;
         presentFraction = 0;
+        contrastDb = double.NaN;
+        marks = 0;
 
         // Two clusters in the bin's own levels give the threshold, which is what
         // makes this follow a fade instead of being stranded above one.
@@ -489,6 +542,7 @@ public sealed class CwToneSurvey
         }
 
         liftDb = double.IsNaN(bandDb) ? double.NaN : high - bandDb;
+        contrastDb = high - low;
 
         // **THE HALF-AMPLITUDE CORRECTION IS NOT APPLIED HERE, AND THAT IS A
         // MEASUREMENT RATHER THAN AN OVERSIGHT** (HM-DEC-105). Deciding at half
@@ -546,7 +600,7 @@ public sealed class CwToneSurvey
 
         Deglitch();
 
-        var marks = CollectMarks();
+        marks = CollectMarks();
 
         return marks < MinimumMarks ? null : Judge(bin, marks, liftDb, high);
     }
