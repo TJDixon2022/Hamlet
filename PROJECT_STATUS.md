@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 441 - keep the fix, then fix the speed it was hiding
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T20:10:34-04:00
-NOTE: Speed change kept: CER-SURE 0.1337 to 0.1116, 031838 reads MEAN OF 2; committing, exit round next
+UPDATED: 2026-09-25T20:28:14-04:00
+NOTE: Unit 441 complete: sure-wrong-or-added 67 to 47, CER-SURE 0.1573 to 0.1116, G1 and marks speed kept; floors red on counts
 
 ---
 

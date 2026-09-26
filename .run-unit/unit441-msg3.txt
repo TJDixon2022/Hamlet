@@ -1,0 +1,11 @@
+unit441: closing - exit round, output.md, status COMPLETED
+
+Complete at task 3 of 3. MET-CER-SURE 67 of 426 to 47 of 421 (0.1573 to
+0.1116), sure-and-right 359 to 374 over 473; G1 and the marks' speed
+both kept. Exit: build 0 errors; engine carry-forward 175 of 178, the
+three capture rows on counts; app 275 of 278, dispatcher-loop, each
+type alone 8 of 8; captures 38 of 51, adjudicated 13 of 13, named 7 of
+13; touched types 24 of 25, the plateau red recorded by the correctness
+phase. Transmit files print nothing against 7e209cb4.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

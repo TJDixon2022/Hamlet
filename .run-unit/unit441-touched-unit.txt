@@ -1,0 +1,188 @@
+Test run for C:\Source\HamLet\tests\Ft8Sharp.Deep.Tests\bin\Debug\net8.0\Ft8Sharp.Deep.Tests.dll (.NETCoreApp,Version=v8.0)
+Test run for C:\Source\HamLet\tests\Ft8Sharp.Tests\bin\Debug\net8.0\Ft8Sharp.Tests.dll (.NETCoreApp,Version=v8.0)
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Ft8Sharp.Deep.Tests\bin\Debug\net8.0\Ft8Sharp.Deep.Tests.dll
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Ft8Sharp.Tests\bin\Debug\net8.0\Ft8Sharp.Tests.dll
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.26]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhenTheWindowIsEmptiedTests.ASmallerMoveDoesNot [2 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.WhenTheWindowIsEmptiedTests.ALongMoveWithNobodyBeingReadDoesNot [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.WhenTheWindowIsEmptiedTests.AMoveWiderThanTheFilterWhileReadingEmptiesIt [< 1 ms]
+  Standard Output Messages:
+ the decoder listens through 60 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheRefillGuardActuallyRunsTests.AStreamFedLessThanARefillReadsNothingAtAll [34 ms]
+  Standard Output Messages:
+ 2.6 s in, 520 hops held, '' read, 0 settled
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.ItSaysNothingWhenThereIsNothingToMeasure [77 ms]
+  Standard Output Messages:
+ eight hops: ready False
+
+
+[xUnit.net 00:00:00.49]     Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.TheFiveToEightDecibelPlateauHolds [FAIL]
+[xUnit.net 00:00:00.49]       one decibel gave 165 against 117, so the chatter a two-level trigger exists to remove is no longer there
+[xUnit.net 00:00:00.49]       Stack Trace:
+[xUnit.net 00:00:00.49]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheUnitIsMeasuredNotSearchedTests.cs(126,0): at Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.TheFiveToEightDecibelPlateauHolds()
+[xUnit.net 00:00:00.49]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.49]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.49]       Output:
+[xUnit.net 00:00:00.49]         1 dB: 165 marks
+[xUnit.net 00:00:00.49]         3 dB: 130 marks
+[xUnit.net 00:00:00.49]         5 dB: 118 marks
+[xUnit.net 00:00:00.49]         6 dB: 117 marks
+[xUnit.net 00:00:00.49]         8 dB: 116 marks
+[xUnit.net 00:00:00.36]   Discovering: Ft8Sharp.Deep.Tests
+[xUnit.net 00:00:00.39]   Discovered:  Ft8Sharp.Deep.Tests
+[xUnit.net 00:00:00.39]   Starting:    Ft8Sharp.Deep.Tests
+[xUnit.net 00:00:00.40]   Finished:    Ft8Sharp.Deep.Tests
+No test matches the given testcase filter `FullyQualifiedName~.TheUnitIsMeasuredNotSearchedTests.|FullyQualifiedName~.TheProbabilisticDecoderTests.|FullyQualifiedName~.CwFixtureTests.TheCleanRecordingsDecodeExactly|FullyQualifiedName~.WhenTheWindowIsEmptiedTests.|FullyQualifiedName~.TheRefillGuardA...` in C:\Source\HamLet\tests\Ft8Sharp.Deep.Tests\bin\Debug\net8.0\Ft8Sharp.Deep.Tests.dll
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.ItRecoversASpeedItWasNeverTold(wordsPerMinute: 25) [10 ms]
+  Standard Output Messages:
+ true 25 wpm, noise 0.02: measured 25.3 wpm, mark alone 20.0, gap alone 34.3
+ true 25 wpm, noise 0.08: measured 25.3 wpm, mark alone 21.8, gap alone 30.0
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.ItRecoversASpeedItWasNeverTold(wordsPerMinute: 18) [13 ms]
+  Standard Output Messages:
+ true 18 wpm, noise 0.02: measured 18.5 wpm, mark alone 15.0, gap alone 24.0
+ true 18 wpm, noise 0.08: measured 17.8 wpm, mark alone 16.0, gap alone 20.0
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.ItRecoversASpeedItWasNeverTold(wordsPerMinute: 12) [20 ms]
+  Standard Output Messages:
+ true 12 wpm, noise 0.02: measured 12.0 wpm, mark alone 10.0, gap alone 15.0
+ true 12 wpm, noise 0.08: measured 12.0 wpm, mark alone 10.9, gap alone 13.3
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.TheFiveToEightDecibelPlateauHolds [73 ms]
+  Error Message:
+   one decibel gave 165 against 117, so the chatter a two-level trigger exists to remove is no longer there
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheUnitIsMeasuredNotSearchedTests.TheFiveToEightDecibelPlateauHolds() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheUnitIsMeasuredNotSearchedTests.cs:line 126
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ 1 dB: 165 marks
+ 3 dB: 130 marks
+ 5 dB: 118 marks
+ 6 dB: 117 marks
+ 8 dB: 116 marks
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhenTheWindowIsEmptiedTests.EmptyingDropsTheEdgeAndKeepsWhatWasSettled [213 ms]
+  Standard Output Messages:
+ settled before the move: ' CQ CQ DE W1AW W1AW'
+ envelope after: 0 hops
+ last reading after: ''
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheRefillGuardActuallyRunsTests.AStreamFedMoreThanARefillReadsAsItAlwaysDid [186 ms]
+  Standard Output Messages:
+ 14.2 s in: 'CQ CQ DE W1AW W1AW K '
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "unadjudicated/cw-2026-08-18-003016.wav", reference: 20.899999999999999) [352 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016.wav: Hamlet 22 WPM, reference 20.9, ratio 4.5
+     'I<BT> HADA KPT15TT ITWAS #K <BT> STILL HVE MY ETO 91B TT JUST VFB TUB LIN'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheRefillGuardActuallyRunsTests.AFreshStreamAndAnEmptiedOneHoldBackForTheSameLength [136 ms]
+  Standard Output Messages:
+ fresh:   ''
+ emptied: ''
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [367 ms]
+[xUnit.net 00:00:01.43]   Discovering: Ft8Sharp.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [136 ms]
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "unadjudicated/cw-2026-08-18-003126.wav", reference: null) [310 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003126.wav: Hamlet 28 WPM, reference refuses, ratio 6.0
+     'A OM <BT>  <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT   , WESTERNS , E'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "unadjudicated/cw-2026-08-18-003758.wav", reference: 21.199999999999999) [291 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758.wav: Hamlet 28 WPM, reference 21.2, ratio 10.8
+     'K I S QR L TU  E AN E AN D E AA4MP /4 QNI K      E AN E ANQNI K         E RN E'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "cw-2026-08-18-004507.wav", reference: 6.7000000000000002) [293 ms]
+  Standard Output Messages:
+ cw-2026-08-18-004507.wav: Hamlet 18 WPM, reference 6.7, ratio 7.0
+     'E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ARecordingWithNoStationInItSaysNothing(name: "unadjudicated/cw-2026-08-20-014854.wav") [315 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854.wav: ratio 0.6 against a gate of 1.4
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ARecordingWithNoStationInItSaysNothing(name: "unadjudicated/cw-2026-08-20-014935.wav") [265 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935.wav: ratio 0.2 against a gate of 1.4
+
+
+[xUnit.net 00:00:02.12]   Discovered:  Ft8Sharp.Tests
+[xUnit.net 00:00:02.13]   Starting:    Ft8Sharp.Tests
+[xUnit.net 00:00:02.13]   Finished:    Ft8Sharp.Tests
+No test matches the given testcase filter `FullyQualifiedName~.TheUnitIsMeasuredNotSearchedTests.|FullyQualifiedName~.TheProbabilisticDecoderTests.|FullyQualifiedName~.CwFixtureTests.TheCleanRecordingsDecodeExactly|FullyQualifiedName~.WhenTheWindowIsEmptiedTests.|FullyQualifiedName~.TheRefillGuardA...` in C:\Source\HamLet\tests\Ft8Sharp.Tests\bin\Debug\net8.0\Ft8Sharp.Tests.dll
+
+[xUnit.net 00:00:02.35]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.49]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.50]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:02.52]   Finished:    Hamlet.App.Tests
+No test matches the given testcase filter `FullyQualifiedName~.TheUnitIsMeasuredNotSearchedTests.|FullyQualifiedName~.TheProbabilisticDecoderTests.|FullyQualifiedName~.CwFixtureTests.TheCleanRecordingsDecodeExactly|FullyQualifiedName~.WhenTheWindowIsEmptiedTests.|FullyQualifiedName~.TheRefillGuardA...` in C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ItReadsWhatTheReferenceReads [286 ms]
+  Standard Output Messages:
+ 18 WPM, ratio 7.0
+ 'E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.NothingIsSettledFromAnEmptyBandLive(name: "unadjudicated/cw-2026-08-20-014854.wav") [840 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854.wav: 0 settled, 0 on the edge, ratio 0.9
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.NothingIsSettledFromAnEmptyBandLive(name: "unadjudicated/cw-2026-08-20-014935.wav") [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935.wav: 0 settled, 0 on the edge, ratio 0.1
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ItKeepsUpWithLiveAudio [337 ms]
+  Standard Output Messages:
+ 1.1% of real time, 61 characters
+ 'E J J AT ARRL DOT NET ■ IACH STATION HANDLING THIS MESSAGE PE'
+
+
+[xUnit.net 00:00:07.89]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheGateSitsInAWideGap [1 s]
+  Standard Output Messages:
+ with a station 4.5 to 10.8, without 0.2 to 0.6, gate 1.4
+
+
+
+Test Run Failed.
+Total tests: 25
+     Passed: 24
+     Failed: 1
+ Total time: 8.1869 Seconds
+RC=1 WALL=9s
