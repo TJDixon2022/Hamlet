@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 444 - WB6RED read as one callsign again
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T23:43:23-04:00
-NOTE: Dropout rule not kept (17:37 boundaries 7 to 8, V-11 fails on 3); committing its diff and record
+UPDATED: 2026-09-25T23:59:45-04:00
+NOTE: Unit 444 complete: G1's two lost spaces traced to a dropout; the dropout rule was not kept (17:37 boundaries 7 to 8), so 2.5 stays open
 
 ---
 

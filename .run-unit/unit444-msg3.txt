@@ -1,0 +1,14 @@
+unit444: closing - exit round, 2.5 not ticked, output.md, status COMPLETED (2.5)
+
+Exit round, one type per invocation: build 0 errors; engine carry-forward
+178 of 178; app 276 of 278, both losses ThePowerIsOfferedTests
+(dispatcher loop), 3 of 3 alone; captures 51 of 51; adjudicated 13 of 13;
+named 12 of 13 (17:37 red at 38, as recorded); metrics identical to
+entry: MET-CER-SURE 47 of 421, 0.1116; MET-INVENTED 47 over 473;
+sure-and-right 374 over 473; MET-WBE 52 over 113; 17:37 boundaries wrong
+7. HowSeventeenThirtySevensGapsAreCalledTests 1 of 1.
+
+src against entry 1f6a5789: no file changed. 2.5 not ticked (no change
+kept, 17:37 not re-banked); 2.4 not ticked. DRIFT for step 2: 2.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
