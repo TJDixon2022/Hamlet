@@ -62,6 +62,35 @@ them):
   30.0 WPM. §4 had 24 / 28 / 171 ms at 30.6 WPM. **At HEAD the element and character heaps are 96
   to 103 ms apart, not 4.**
 
+### Task 2 - nothing built: no departure's cause is outside the excluded routes
+
+Work instruction 453 §3 (e) lists the routes already tried or excluded. Against each kind:
+- **A letter gap read as a word gap (2: `ABOVE`, `BREEZE`), the commonest kind.** The cause is in
+  the audio. On `013637` the sender's letter gap inside `ABOVE` (B to O, 215 ms) is longer than the
+  word gap after it (E to `7`, 185 ms). Inside the two spans the letter gaps run 105 to 215 ms and
+  the word gaps at their edges 185 to 435 ms. Any duration boundary that takes out the B-to-O space
+  also takes out the E-to-`7` space. That is a gap-duration threshold where the letter and word
+  spaces overlap (444). `BREEZE`'s space was set by the held gaps' word-from (159 ms). Moving it is
+  the same kind of threshold on the same recording, and the relabel's share is closed by 452's
+  §3 (d). **Not attacked; excluded.**
+- **A mark misread (1: `FLEX`).** The cause is in the audio: the X's inner key-ups are filled to
+  within 7 to 10 dB of its dits, and the lost dit is 25 ms at half amplitude (0.37 u). A rule that
+  reads it as a mark accepts a shorter or lower mark than the path does now, which loosens a
+  plausibility bound (V-14). The honest alternative, printing `N` and `T` dim, is the rival-margin
+  dim class (442). With one instance, the trace sets no rule. **Not attacked.**
+- **Nothing emitted: 0.**
+
+`src` is unchanged, so every metric stands as at entry (task 3's exit round). Spans met: 0 to 0 of
+3 measurable.
+
+**Is the joint decoder of DEV_ANALYSIS §4 the only route left?** For `BREEZE` and `FLEX`, yes, by
+the trace. `BREEZE`'s letter gaps (105 to 190 ms) sit apart from the word gaps beside it (345 and
+435 ms), so a decode that weighs a stretch's gaps together could place it. `FLEX` needs the
+mark decision taken with the letters around it. For `ABOVE`, the joint decoder is not a route
+either. Without a word prior (R72) it scores the B-to-O gap on duration alone, and in that
+recording the gap is longer than a word gap the same sender left two letters later. `AB OVE` and
+`ABOVE` are both valid Morse.
+
 ## Unit 452 - MET-WBE per condition, HM-REQ-080 and 081 measured (6.3)
 
 MET-WBE = word gaps inserted or deleted / words sent (`CW_SPEC.md` 11), scored by

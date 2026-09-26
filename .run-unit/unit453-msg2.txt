@@ -1,0 +1,10 @@
+unit453 task 2: nothing built - both letter-gap departures sit where 013637's letter and word spaces overlap (444), and FLEX's lost 25 ms dit could only be read by loosening a mark bound (V-14); spans met 0 to 0 of 3 (6.5)
+
+ABOVE's B-to-O letter gap is 215 ms and the same sender's word gap
+after its E is 185 ms, so no duration boundary places both. BREEZE's
+space came from the held gaps' word-from of 159 ms, a threshold on the
+same recording. FLEX's third X mark stands 7 to 10 dB over a filled
+key-up at 0.37 u; reading it loosens a plausibility bound, and dimming
+it is 442's excluded dim class. src unchanged. Recorded in metrics.md.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
