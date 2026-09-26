@@ -50,10 +50,11 @@ public sealed class TheNumberCannotBeGamedTests
     public static TheoryData<string, int> NamedFloors { get; } = new()
     {
         // The baseline's four (PHASE_PLAN.md 0.2).
-        // **NOT RE-BANKED BY UNIT 442, AND LEFT RED** (V-11): 17:37 reads 38 at
-        // `0439a8e7`, and its word boundaries wrong went 5 to 7 under G1, so a
-        // requirement metric got worse on it.
-        { TheSeventeenThirtySevenCaptureTests.Name, 46 },
+        // **LEFT RED BY UNIT 442, RE-BANKED BY UNIT 460** (9a329cdb): 17:37 has read
+        // 38 since G1 (`42d5dbb9`), and its word boundaries wrong went 5 to 7. The
+        // owner answered on 2026-09-26: re-bank at 38, HM-REQ-081 being measured per
+        // condition, and the condition's four metrics are no worse than at 46.
+        { TheSeventeenThirtySevenCaptureTests.Name, 38 }, // re-banked by unit 460 from 46 (9a329cdb)
         { "cw-2026-08-17-013347", 57 },
         { "cw-2026-08-17-134712", 8 },                    // re-banked by unit 442 from 11 (R78)
         { "unadjudicated/cw-2026-08-18-003758", 43 },     // 44 named, 1 below the bar
@@ -66,8 +67,8 @@ public sealed class TheNumberCannotBeGamedTests
         { "unadjudicated/cw-2026-08-22-031948", 31 },
         { "unadjudicated/cw-2026-08-22-032012", 43 },
         { "unadjudicated/cw-2026-08-22-032050", 44 },
-        { "unadjudicated/cw-2026-08-22-032113", 45 },     // re-banked by unit 442 from 47 (R78)
-        { "unadjudicated/cw-2026-08-22-032129", 64 },     // re-banked by unit 442 from 65 (R78)
+        { "unadjudicated/cw-2026-08-22-032113", 43 },     // re-banked by unit 460 from 45 (R78, 448 DECIDED (6))
+        { "unadjudicated/cw-2026-08-22-032129", 42 },     // re-banked by unit 460 from 64 (R78, 448 DECIDED (6))
     };
 
     /// <summary>A keyed recording scored as the baseline scores it.</summary>

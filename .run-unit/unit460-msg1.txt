@@ -1,0 +1,20 @@
+unit460 task 1: the three named floors re-banked - 17:37 46 to 38 on 9a329cdb, 032113 45 to 43 and 032129 64 to 42 on the condition test (R78, 448 DECIDED (6)); the five green (2.5)
+
+The condition of all three is real HF, sender not stated in CW_SPEC.md,
+inferred keys. Its four metrics are read from committed printouts
+(unit441-metrics-r82 for 17:37 at 46, unit442-metrics-entry for 032113 and
+032129 at 3cf9f9ea) and are better at HEAD on all four: MET-CER-SURE 66/364
+and 47/359 to 33/374, MET-INVENTED 66 and 47 to 33 over 410, coverage 298
+and 312 to 341 over 410, MET-WBE 50 and 45 to 32 over 97. The one worsening
+is 17:37's own boundaries wrong, 5 to 7 over 6 words, which is what the
+owner's answer covers. 032113's and 032129's own four are no worse, and
+032129 went from 15 to 34 right of 38. Both fell at b4884813 (447).
+.run-unit/unit460-floors.txt has all of it, with the texts.
+
+At this commit: build 0 errors; named 13 of 13; captures 51 of 51;
+adjudicated 13 of 13; engine line 178 of 178; app line 276 of 278, both
+losses "You've caused dispatcher loop"
+(ThePsk31ConversationCardTests, two cases), the one rerun 278 of 278
+(DECIDED (7)). No src line changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

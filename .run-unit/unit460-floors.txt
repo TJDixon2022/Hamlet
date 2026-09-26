@@ -1,0 +1,106 @@
+unit 460 task 1 - the three red named floors, settled (PHASE_PLAN.md 2.5; 443 DECIDED (3) as 9a329cdb resolved it; 448 DECIDED (6))
+
+Every figure below is read from a committed printout, which is named beside it. Nothing was re-measured,
+because each banking point has a committed metrics printout at the same decoder.
+
+Condition, all three: "real HF, no CH-* profile, SNR_2500 not measured, sender not stated in CW_SPEC.md"
+(the condition CW_SPEC.md sections 6 and 10 give a real recording whose sender is not named there; 20 of
+the 23 keyed recordings). Key: inferred, all three (V-13).
+
+Metric columns: MET-CER-SURE = sure wrong or added / sure emitted; MET-INVENTED = sure wrong + sure added
+over sent; MET-COVERAGE = sure and right over sent (R82); MET-WBE = boundaries wrong (inserted + deleted)
+over words sent.
+
+======================================================================================================
+1. 17:37  unadjudicated/cw-2026-09-23-173723  floor 46, HEAD 38
+------------------------------------------------------------------------------------------------------
+Last banking:  46, set at 3105d7c8 (unit 412) and re-measured at 46 under the span bar at df26a5d7
+               (unit 421 task 2); 46 at every named printout from 421 to 441's entry.
+               No Cw source changed between 421's exit (bdd0070b) and 441's entry, so
+               unit441-metrics-r82.txt (441 task 0, R82 scoring, before G1) is that decoder measured.
+Count fell:    46 to 38 at 42d5dbb9 (unit 441 task 1, G1 kept); 38 at every printout since.
+
+Condition metrics            then (unit441-metrics-r82)     now (unit460-metrics-entry)   worse?
+  MET-CER-SURE               66 of 364  0.1813              33 of 374  0.0882             no
+  MET-INVENTED               66 over 410 (13 added, 53 wr)  33 over 410 (5 added, 28 wr)  no
+  MET-COVERAGE (R82)         298 over 410  0.7268           341 over 410  0.8317          no
+  MET-WBE                    50 over 97  0.5155             32 over 97  0.3299            no
+
+Recording metrics            then                           now                           worse?
+  MET-CER-SURE               14 of 28 (6 wrong, 8 added)    3 of 20 (3 wrong, 0 added)    no
+  MET-INVENTED               14 over 20                     3 over 20                     no
+  MET-COVERAGE               14 over 20  0.7000             17 over 20  0.8500            no
+  MET-WBE                    5 over 6 (4 ins, 1 del) 0.8333 7 over 6 (6 ins, 1 del) 1.1667  YES, 5 to 7
+
+Text (the scored region, as TheNumberCannotBeGamedTests prints it):
+  key   CQ CQ CQ DE WB6RED WB6RED                  (inferred; TheSeventeenThirtySevenCaptureTests.InferredKey)
+  then  CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I       (unit421-named-exit.txt, 441-named-entry.txt)
+  now   CQ CQ CQ DEWB6 RE D W B 7E E I             (unit460-named-entry.txt)
+
+Rule:   re-banked at 38 on the owner's answer in 9a329cdb ("re-bank at 38"). HEAD reads 38, so there
+        is no mismatch. The condition's four metrics are also no worse. The recording's own MET-WBE is
+        worse, 5 to 7, and that is the worsening the owner's answer was given on.
+Note:   the answer says "the condition's MET-WBE fell 58 to 52". Those are the real set's total
+        MET-WBE, 58 at G1 (unit441-metrics-g1.txt) and 52 at 442's entry, not this condition's
+        (51 to 45 over the same two printouts). The direction is the same, and at HEAD both are lower
+        still (37 total, 32 in the condition).
+
+======================================================================================================
+2. 032113  unadjudicated/cw-2026-08-22-032113  floor 45, HEAD 43
+------------------------------------------------------------------------------------------------------
+Last banking:  45, re-banked from 47 by unit 442 in 3cf9f9ea (task 1) at the decoder of 0439a8e7
+               (441's closing; 442's task 0 changed no src). The instruction names 0439a8e7 as 442's
+               commit; the edit to the test is 3cf9f9ea. Printout: unit442-metrics-entry.txt.
+Count fell:    45 to 43 at b4884813 (unit 447 task 3, CwToneTracker: no move to a keyed candidate
+               under 10 dB of lift); 43 at every printout since.
+
+Condition metrics            then (unit442-metrics-entry)   now (unit460-metrics-entry)   worse?
+  MET-CER-SURE               47 of 359  0.1309              33 of 374  0.0882             no
+  MET-INVENTED               47 over 410 (4 added, 43 wr)   33 over 410 (5 added, 28 wr)  no
+  MET-COVERAGE (R82)         312 over 410  0.7610           341 over 410  0.8317          no
+  MET-WBE                    45 over 97  0.4639             32 over 97  0.3299            no
+
+Recording metrics            then                           now                           worse?
+  MET-CER-SURE               1 of 22  0.0455                1 of 22  0.0455               no (same)
+  MET-INVENTED               1 over 25                      1 over 25                     no (same)
+  MET-COVERAGE               21 over 25  0.8400             21 over 25  0.8400            no (same)
+  MET-WBE                    7 over 4 (7 ins) 1.7500        3 over 4 (3 ins) 0.7500       no
+
+Text:
+  key   ACKET, AND INTERNET VERSIONS               (inferred; TheAdjudicatedReadingsKeepReadingTests, Tim 2026-08-25)
+  then  A KET■ A N O INT ERNE T ■ E RSIONS         (unit442-named-rebank.txt)
+  now   A KET■ A N O INTERNET ■ERSIONS             (unit460-named-entry.txt)
+  whole recording at HEAD: "   A KET■ A N O INTERNET ■ERSIONS OF  200J6   I I ITT EEIIIWE TI"
+
+Rule:   the condition's four are all no worse, and so are the recording's own four. Re-banked at 43
+        (R78, 448 DECIDED (6)).
+
+======================================================================================================
+3. 032129  unadjudicated/cw-2026-08-22-032129  floor 64, HEAD 42
+------------------------------------------------------------------------------------------------------
+Last banking:  64, re-banked from 65 by unit 442 in 3cf9f9ea at the decoder of 0439a8e7, as 032113.
+Count fell:    64 to 42 at b4884813 (unit 447 task 3), as 032113; 42 at every printout since.
+
+Condition metrics            then (unit442-metrics-entry)   now (unit460-metrics-entry)   worse?
+  (the same condition as 032113, the same two printouts - no worse on all four)
+
+Recording metrics            then                           now                           worse?
+  MET-CER-SURE               12 of 27  0.4444               5 of 39  0.1282               no
+  MET-INVENTED               12 over 38 (0 added, 12 wr)    5 over 38 (1 added, 4 wr)     no
+  MET-COVERAGE               15 over 38  0.3947             34 over 38  0.8947            no
+  MET-WBE                    5 over 5 (4 ins, 1 del) 1.0000 0 over 5  0.0000              no
+
+Text:
+  key   2026 PROPAGATION FORECAST BULLETIN ARLP034 (inferred; TheAdjudicatedReadingsKeepReadingTests, Tim 2026-08-25)
+  then  TJ26 PGOPAGATION E EE EIIEE I E EE         (unit442-named-rebank.txt)
+  now   TJ26 PGOPAGATION FORECAST BUAELETIN ARLP034 (unit460-named-entry.txt)
+  whole recording at HEAD: " ■ MTMTJ26 PGOPAGATION FORECAST BUAELETIN ARLP034 "
+
+Rule:   the condition's four are all no worse, and so are the recording's own four. The count fell
+        by 22 because the E and I litter went, and the rest of the bulletin's name is now read.
+        Re-banked at 42 (R78, 448 DECIDED (6)).
+
+======================================================================================================
+Outcome: all three re-banked - 17:37 46 to 38 (9a329cdb), 032113 45 to 43 and 032129 64 to 42
+(R78, 448 DECIDED (6)). No row is left red on the rule. The only worsening is 17:37's own word
+boundaries, 5 to 7 wrong over 6 words, which is the worsening the owner's answer covers.
