@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 448 - the decoder listens for keying from cold, and the opening is measured
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T04:39:54-04:00
-NOTE: Task 1 done: opening acquires to 26.04 s, 9 sure letters inside; 48 of 60 cold moves by level alone; next the test, then the change
+UPDATED: 2026-09-26T04:56:05-04:00
+NOTE: Task 2 done: from-cold change refused by R78 on every item, reverted; 4.5 ticked on the opening's before and after
 
 ---
 

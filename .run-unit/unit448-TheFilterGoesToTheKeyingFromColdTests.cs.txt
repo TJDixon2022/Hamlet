@@ -1,0 +1,82 @@
+using System.Globalization;
+using Hamlet.RadioEngine.Tests.Cw.Fixtures;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Hamlet.RadioEngine.Tests.Cw;
+
+/// <summary>
+/// HM-REQ-091 and HM-REQ-102 from cold (work instruction 448, task 2): before the
+/// first keyed verdict the filter points at the keyed tone and never at a louder
+/// carrier beside it, and nothing is printed sure until that verdict.
+/// </summary>
+/// <remarks>
+/// <para>**ITS OWN TYPE**, apart from <see cref="TheTrackedPitchIsChosenByKeyingTests"/>,
+/// whose green 4.3 was ticked on; this one was written red and its HM-REQ-102 half
+/// is red whatever the tracker points at, because the decoder prints sure
+/// characters before the tracker confirms anything.</para>
+/// </remarks>
+public sealed class TheFilterGoesToTheKeyingFromColdTests
+{
+    private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
+
+    private readonly ITestOutputHelper _output;
+
+    /// <summary>Creates the tests.</summary>
+    /// <param name="output">Where the case is printed.</param>
+    public TheFilterGoesToTheKeyingFromColdTests(ITestOutputHelper output)
+        => _output = output;
+
+    /// <summary>
+    /// HM-REQ-091 and HM-REQ-102: from cold, the filter goes to the keying and not to
+    /// a louder carrier, and nothing is sure before the first keyed verdict.
+    /// </summary>
+    /// <remarks>
+    /// <para>700 Hz keyed at 15 dB over the generator's shaped noise band (V-06),
+    /// exact key, and a steady 790 Hz carrier six decibels louder, on from the first
+    /// sample to the last, 90 Hz away. The decoder starts at the operator's 600 Hz,
+    /// on neither. "Points at" is within half the 25 Hz coarse spacing.</para>
+    /// <para>The first keyed verdict is HM-DEC-095's twice-confirmation, read as
+    /// <see cref="WhatTheDecoderDoesWhileAcquiringTests"/> reads it. The seed is
+    /// 20260448, author's.</para>
+    /// <para>**WHAT THIS DOES NOT PROVE** (CLAUDE.md 12.5): one carrier, one speed,
+    /// one level, built by the same generator the instrument was proved on. On the
+    /// air the loudest bin is usually the station, and the keying next to it shows
+    /// structure too.</para>
+    /// </remarks>
+    [Fact]
+    public void FromColdTheFilterGoesToTheKeyingNotTheLouderCarrier()
+    {
+        const double keyedHz = 700;
+        const double carrierHz = 790;
+        const double within = 12.5;
+
+        var recipe = SyntheticCq.Recipe(20, CwFixtureCatalogue.EasyDb, 20260448) with { ToneHz = keyedHz, DriftHz = 0 };
+        var (keyed, _) = CwFixtureGenerator.Generate(recipe);
+        var lead = (int)(0.9 * keyed.SampleRate);
+        var bandRms = Math.Sqrt(keyed.Samples.Take(lead).Sum(v => (double)v * v) / lead);
+        var carrierPeak = Math.Sqrt(2) * bandRms * Math.Pow(10, (CwFixtureCatalogue.EasyDb + 6) / 20);
+        var both = new float[keyed.Samples.Length];
+
+        for (var n = 0; n < both.Length; n++)
+        {
+            both[n] = keyed.Samples[n] + (float)(carrierPeak * Math.Sin(2 * Math.PI * carrierHz * n / keyed.SampleRate));
+        }
+
+        var run = WhatTheDecoderDoesWhileAcquiringTests.Drive(both, keyed.SampleRate);
+        var before = run.TrackerHz.Take((int)Math.Round(run.SpanEnd / run.HopSeconds)).ToList();
+        var onKeyed = before.Count(hz => Math.Abs(hz - keyedHz) <= within);
+        var onCarrier = before.Count(hz => Math.Abs(hz - carrierHz) <= within);
+        var sure = run.Settled
+            .Where(c => c.At.TotalSeconds < run.SpanEnd && CwSymbol.Of(c).Class == CwSymbolClass.Sure)
+            .ToList();
+
+        _output.WriteLine(string.Create(Invariant,
+            $"HM-REQ-091, 102 | first keyed verdict {run.ConfirmedSeconds:0.00} s at {run.ConfirmedHz:0.0} Hz | hops before it {before.Count}: on the keyed {keyedHz:0} Hz {onKeyed}, on the carrier {carrierHz:0} Hz {onCarrier} | cold moves {string.Join(", ", run.Moves.Select(m => string.Create(Invariant, $"{m.Seconds:0.00} s {m.FromHz:0} -> {m.ToHz:0}")))} | sure before the verdict {sure.Count}: {string.Concat(sure.Select(c => c.Text))} | text {string.Concat(run.Settled.Select(c => c.Text)).Trim()}"));
+
+        Assert.False(double.IsNaN(run.ConfirmedSeconds), "the keyed tone was never confirmed");
+        Assert.True(onCarrier == 0, string.Create(Invariant, $"before the first keyed verdict the filter sat on the {carrierHz:0} Hz carrier for {onCarrier} hops"));
+        Assert.True(onKeyed > 0, string.Create(Invariant, $"before the first keyed verdict the filter never pointed at the keyed {keyedHz:0} Hz"));
+        Assert.True(sure.Count == 0, $"{sure.Count} sure characters before the first keyed verdict: {string.Concat(sure.Select(c => c.Text))}");
+    }
+}

@@ -9,6 +9,59 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 448 - from cold, the filter points at the deepest keying instead of the loudest bin, not kept
+
+Step 4, 4.5, HM-REQ-091, 102 and 103 with HM-REQ-010, 011 and 012 as guards. The change, in
+`CwToneTracker.ReadSurvey`'s from-cold move and `CwToneSurvey.Analyze`: while nothing has been
+confirmed and the survey admits no keying, the fine bank is pointed at the bin keyed deepest (its
+key-down over its own key-up) among bins standing 10 dB over the band with 8 clean marks, instead
+of the survey's strongest bin; where no bin shows that, it does not move. Neither HM-DEC-095's
+clauses nor HM-DEC-127's: the move runs only when there is no keying candidate; the tracker's own
+"FROM COLD, POINT AT THE LOUDEST THING" comment recorded it. The diff and its test are
+`.run-unit/unit448-coldmove-notkept.diff`. **Refused by every R78 item below.** The test
+(`TheFilterGoesToTheKeyingFromColdTests`, 700 Hz keyed at 15 dB, a steady 790 Hz carrier 6 dB
+louder, cold from 600) was red at HEAD - the filter sat on the carrier 700 hops and printed `TT`
+sure - and under the change its HM-REQ-091 half passed (600 -> 700 at 3.54 s, 0 hops on the
+carrier) and its HM-REQ-102 half stayed red (`IQ` sure before the 5.04 s verdict).
+
+| part of R78 | before (HEAD `3c4e1f75`) | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 40 of 433, 0.0924 | 64 of 377 (63 substituted, 1 added), 0.1698 | rises - refuses |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 16 of 163 (13 substituted, 3 added), 0.0982 | rises - refuses |
+| MET-INVENTED, real, inferred | 40 over 473, 0.0846 | 64 over 473, 0.1353 | rises - refuses |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 16 over 252 | rises - refuses |
+| sure-and-right coverage, real, inferred | 393 over 473, 0.8309 | 313 over 473, 0.6617 | falls - refuses |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 147 over 252, 0.5833 | falls - refuses |
+| MET-WBE, real, inferred | 47 over 113, 0.4159 | 67 over 113, 0.5929 | rises - refuses |
+| adjudicated readings | 13 of 13 | 11 of 13; `003758` and `031948` lost | refuses |
+| V-11, 35 recordings, four metrics | - | 16 worse | refuses |
+| from-cold moves by level alone, the eleven and the opening | 48 of 60 | 0 of 162 | falls, by the printer's own definition |
+| MET-PITCH-ERR, instrument, 69 captures | 9 more than 25 Hz off; 256 of 1688 windows | 16; 486 of 1688 windows | rises - refuses |
+| 447's 30 cases through the tracker | medians as before | medians hold; 17 worst windows grow, 9 cases gain a window more than 25 Hz off | worse |
+| opening, HM-REQ-102: sure while acquiring 0 to 26.04 s | 9 | 9 | unchanged, not met |
+| opening, HM-REQ-103: sure and right of 24, inferred | 21 | 21 | unchanged |
+| capture rows, named floors | 51 of 51; 10 of 13 | not run under the refused change | - |
+
+Per condition, key's kind beside each, before -> after. Real, sender not stated (20 recordings),
+inferred: MET-CER-SURE 40 of 371, 0.1078 -> 64 of 315, 0.2032; MET-WBE 40 of 97 -> 60 of 97.
+TX-FARNS, TX-ITU and TX-TIGHT, inferred: 0 of 43, 0 of 13, 0 of 6 and MET-WBE 7 of 11, 0 of 4, 0 of
+1 -> the same. Synthetic, exact: TX-ITU 15 dB CER-SURE 1 of 64 -> 6 of 64, WBE 0 -> 1 of 21; TX-ITU
+5 dB 1 of 63 -> 4 of 58, WBE 0 -> 3 of 21; character gap 5, 15 dB 1 of 21 -> 3 of 20, WBE 14 -> 10
+of 7; character gap 5, 5 dB 11 of 25 -> 3 of 21, WBE 10 -> 12 of 7; both 0 dB conditions 0 sure,
+WBE 18 of 21 and 6 of 7, unchanged. MET-PITCH-ERR over all 69 captures, instrument windows only: 9
+-> 16 files more than 25 Hz off; 50 of 69 captures moved, among them `021629` -4.6 -> -179.5,
+`021825` +6.1 -> +180.6, `005243` -32.1 -> -124.3, `002424` +38.2 -> +113.2, and `002829` +7.5 ->
+-5.5 the one that improved.
+
+**Why, from the trace** (`WhatTheDecoderDoesWhileAcquiringTests`): on real audio nearly every bin
+10 dB over the band shows keyed structure - the station's own leakage 25 to 50 Hz away and the
+receiver's AGC pumping the rest - so the deepest keying moves from survey to survey and the filter
+followed it: 60 cold moves became 162. On `032129` the station at 500 Hz, which the loudest-bin move
+found at 1.54 s and the tracker never confirms in 30 s, lost to 450 Hz, and its text went from
+`... PGOPAGATION FORECAST BUAELETIN ARLP034` to scattered E and I.
+
+Nothing re-banked. No text below changes, since nothing was kept.
+
 ## Unit 447 - the tracker does not move to a keyed candidate under 10 dB of lift, kept
 
 Step 4, 4.4, HM-REQ-091 with HM-REQ-010, 011 and 012 as guards; MET-PITCH-ERR from

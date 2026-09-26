@@ -1,0 +1,19 @@
+unit448 task 2: the from-cold move by deepest keying, not kept - real MET-CER-SURE 40 to 64, coverage 393 to 313; 4.5 ticked (4.5)
+
+The change pointed the filter, before anything is confirmed, at the bin keyed
+deepest among those 10 dB over the band with 8 clean marks, instead of the
+loudest. Its test (700 Hz keyed, 790 Hz carrier 6 dB louder, cold from 600) was
+red at HEAD - filter on the carrier, TT printed sure - and under the change its
+HM-REQ-091 half passed and its HM-REQ-102 half stayed red (IQ before the
+verdict). R78 refused it on every item: real MET-INVENTED 40 to 64, MET-WBE 47
+to 67, synthetic CER-SURE 14 of 173 to 16 of 163, adjudicated 13 to 11, V-11
+16 of 35 worse, files more than 25 Hz off 9 to 16. Level-alone cold moves 48 of
+60 to 0 of 162. Left out of src; diff and test in
+.run-unit/unit448-coldmove-notkept.diff; recorded in metrics.md.
+
+4.5: on the 7.052 opening, acquiring 0 to 26.04 s, 9 sure characters while
+acquiring before and after (HM-REQ-102 not met), 21 of 24 opening characters
+sure and right before and after, inferred (HM-REQ-103). The opening has no cold
+move, so the change could not touch it.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

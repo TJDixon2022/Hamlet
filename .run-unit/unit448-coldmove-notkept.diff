@@ -1,0 +1,201 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs b/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+index 0d1ebc90..162ff2bb 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+@@ -75,6 +75,11 @@ public readonly record struct ToneInterference(
+ /// The loudest thing found, keyed or not, so a caller that rejects the keying
+ /// verdict does not also lose the fact that something is there.
+ /// </param>
++/// <param name="DeepestKeying">
++/// Of the bins standing <see cref="CwToneSurvey.InterferenceLiftDb"/> over the band
++/// with <see cref="CwToneSurvey.MinimumMarks"/> clean marks, the one keyed deepest,
++/// admitted or not; null where no bin shows that much keying.
++/// </param>
+ /// <remarks>
+ /// **KEEPING THESE APART IS NOT TIDINESS.** The tracker refuses a keying
+ /// candidate that has not been seen twice, and while it is refusing one the
+@@ -86,7 +91,8 @@ public readonly record struct ToneInterference(
+ public readonly record struct ToneVerdict(
+     KeyingCandidate? Keyed,
+     ToneInterference? Interference,
+-    ToneInterference? Strongest = null)
++    ToneInterference? Strongest = null,
++    KeyedStructure? DeepestKeying = null)
+ {
+     /// <summary>Nothing found either way.</summary>
+     public static ToneVerdict Empty { get; } = new(null, null, null);
+@@ -304,10 +310,11 @@ public sealed class CwToneSurvey
+         KeyingCandidate? best = null;
+         ToneInterference? unkeyed = null;
+         ToneInterference? strongest = null;
++        KeyedStructure? deepest = null;
+ 
+         for (var b = 0; b < _bins; b++)
+         {
+-            var candidate = Examine(b, _bandNoise[b], out var lift, out var present, out _, out _);
++            var candidate = Examine(b, _bandNoise[b], out var lift, out var present, out var contrast, out var marks);
+ 
+             if (!double.IsNaN(lift)
+                 && (strongest is not { } peak || lift > peak.LiftDb))
+@@ -315,6 +322,16 @@ public sealed class CwToneSurvey
+                 strongest = new ToneInterference(_binHz[b], lift, present);
+             }
+ 
++            // Keyed structure, ranked by its own depth and not by how loud the
++            // bin is: a carrier that never goes away has almost none (work
++            // instruction 448, HM-REQ-091).
++            if (lift >= InterferenceLiftDb
++                && marks >= MinimumMarks
++                && (deepest is not { } deeper || contrast > deeper.ContrastDb))
++            {
++                deepest = new KeyedStructure(_binHz[b], lift, contrast, marks, candidate is not null);
++            }
++
+             if (candidate is { } keyed)
+             {
+                 if (Beats(keyed, best))
+@@ -346,7 +363,7 @@ public sealed class CwToneSurvey
+             strongest = null;
+         }
+ 
+-        return new ToneVerdict(best, unkeyed, strongest);
++        return new ToneVerdict(best, unkeyed, strongest, deepest);
+     }
+ 
+     /// <summary>
+diff --git a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+index 30f61890..ff62528d 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@ -997,13 +997,28 @@ public sealed class CwToneTracker
+             Verdict = new ToneVerdict(
+                 null, Filtered(coarse.Interference ?? coarse.Strongest), coarse.Strongest);
+ 
+-            // **FROM COLD, POINT AT THE LOUDEST THING AND LET THE DECODER LOOK.**
++            // **FROM COLD, POINT AT THE DEEPEST KEYING AND LET THE DECODER LOOK.**
+             // Deciding somebody is keying takes three seconds of evidence and it
+             // should, but refusing even to listen anywhere else until then leaves
+             // the decoder pointed at the operator's configured pitch through the
+             // opening of every signal that is not on it. That is most of a short
+             // call.
+             //
++            // **NOT AT THE LOUDEST THING** (work instruction 448, HM-REQ-091). It
++            // used to point at the survey's strongest bin, which is a choice by
++            // level alone: a steady carrier six decibels over a keyed station took
++            // the filter from cold and the decoder printed the carrier's `TT` over
++            // the `CQ`. On the eleven captures 447 found off pitch, 48 of the 60
++            // moves made here went to a bin that was not the one keyed deepest. It
++            // now points where the survey sees the deepest keying, key-down over
++            // key-up, among bins standing ten decibels over the band with eight
++            // clean marks - the survey's own lines for "something there" and for a
++            // verdict - and where nothing shows that much, it does not move. This
++            // is neither HM-DEC-095's clause nor HM-DEC-127's: both are about what
++            // the tracker does with a keying candidate, and this runs only when
++            // there is none. What recorded it was this comment, from phase 3's
++            // opening fix.
++            //
+             // This is not a claim and does not set the verdict: it moves where
+             // the filter points, nothing else, and only while nothing has ever
+             // been confirmed. Once a signal has been found, the confirmation rule
+@@ -1017,10 +1032,10 @@ public sealed class CwToneTracker
+             // however the move came to be made.
+             if (!MidCharacter
+                 && double.IsNaN(_lastKeyedHz)
+-                && coarse.Strongest is { } loudest
+-                && Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
++                && coarse.DeepestKeying is { } keying
++                && Math.Abs(keying.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+             {
+-                CenterFineBank(loudest.ToneHz);
++                CenterFineBank(keying.ToneHz);
+                 _fineSurvey.Reset();
+                 _tracked = _fineHz.Length / 2;
+                 _reportedHz = double.NaN;
+diff --git a/tests/Hamlet.RadioEngine.Tests/Cw/TheFilterGoesToTheKeyingFromColdTests.cs b/tests/Hamlet.RadioEngine.Tests/Cw/TheFilterGoesToTheKeyingFromColdTests.cs
+new file mode 100644
+index 00000000..bcccbdd4
+--- /dev/null
++++ b/tests/Hamlet.RadioEngine.Tests/Cw/TheFilterGoesToTheKeyingFromColdTests.cs
+@@ -0,0 +1,82 @@
++using System.Globalization;
++using Hamlet.RadioEngine.Tests.Cw.Fixtures;
++using Xunit;
++using Xunit.Abstractions;
++
++namespace Hamlet.RadioEngine.Tests.Cw;
++
++/// <summary>
++/// HM-REQ-091 and HM-REQ-102 from cold (work instruction 448, task 2): before the
++/// first keyed verdict the filter points at the keyed tone and never at a louder
++/// carrier beside it, and nothing is printed sure until that verdict.
++/// </summary>
++/// <remarks>
++/// <para>**ITS OWN TYPE**, apart from <see cref="TheTrackedPitchIsChosenByKeyingTests"/>,
++/// whose green 4.3 was ticked on; this one was written red and its HM-REQ-102 half
++/// is red whatever the tracker points at, because the decoder prints sure
++/// characters before the tracker confirms anything.</para>
++/// </remarks>
++public sealed class TheFilterGoesToTheKeyingFromColdTests
++{
++    private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
++
++    private readonly ITestOutputHelper _output;
++
++    /// <summary>Creates the tests.</summary>
++    /// <param name="output">Where the case is printed.</param>
++    public TheFilterGoesToTheKeyingFromColdTests(ITestOutputHelper output)
++        => _output = output;
++
++    /// <summary>
++    /// HM-REQ-091 and HM-REQ-102: from cold, the filter goes to the keying and not to
++    /// a louder carrier, and nothing is sure before the first keyed verdict.
++    /// </summary>
++    /// <remarks>
++    /// <para>700 Hz keyed at 15 dB over the generator's shaped noise band (V-06),
++    /// exact key, and a steady 790 Hz carrier six decibels louder, on from the first
++    /// sample to the last, 90 Hz away. The decoder starts at the operator's 600 Hz,
++    /// on neither. "Points at" is within half the 25 Hz coarse spacing.</para>
++    /// <para>The first keyed verdict is HM-DEC-095's twice-confirmation, read as
++    /// <see cref="WhatTheDecoderDoesWhileAcquiringTests"/> reads it. The seed is
++    /// 20260448, author's.</para>
++    /// <para>**WHAT THIS DOES NOT PROVE** (CLAUDE.md 12.5): one carrier, one speed,
++    /// one level, built by the same generator the instrument was proved on. On the
++    /// air the loudest bin is usually the station, and the keying next to it shows
++    /// structure too.</para>
++    /// </remarks>
++    [Fact]
++    public void FromColdTheFilterGoesToTheKeyingNotTheLouderCarrier()
++    {
++        const double keyedHz = 700;
++        const double carrierHz = 790;
++        const double within = 12.5;
++
++        var recipe = SyntheticCq.Recipe(20, CwFixtureCatalogue.EasyDb, 20260448) with { ToneHz = keyedHz, DriftHz = 0 };
++        var (keyed, _) = CwFixtureGenerator.Generate(recipe);
++        var lead = (int)(0.9 * keyed.SampleRate);
++        var bandRms = Math.Sqrt(keyed.Samples.Take(lead).Sum(v => (double)v * v) / lead);
++        var carrierPeak = Math.Sqrt(2) * bandRms * Math.Pow(10, (CwFixtureCatalogue.EasyDb + 6) / 20);
++        var both = new float[keyed.Samples.Length];
++
++        for (var n = 0; n < both.Length; n++)
++        {
++            both[n] = keyed.Samples[n] + (float)(carrierPeak * Math.Sin(2 * Math.PI * carrierHz * n / keyed.SampleRate));
++        }
++
++        var run = WhatTheDecoderDoesWhileAcquiringTests.Drive(both, keyed.SampleRate);
++        var before = run.TrackerHz.Take((int)Math.Round(run.SpanEnd / run.HopSeconds)).ToList();
++        var onKeyed = before.Count(hz => Math.Abs(hz - keyedHz) <= within);
++        var onCarrier = before.Count(hz => Math.Abs(hz - carrierHz) <= within);
++        var sure = run.Settled
++            .Where(c => c.At.TotalSeconds < run.SpanEnd && CwSymbol.Of(c).Class == CwSymbolClass.Sure)
++            .ToList();
++
++        _output.WriteLine(string.Create(Invariant,
++            $"HM-REQ-091, 102 | first keyed verdict {run.ConfirmedSeconds:0.00} s at {run.ConfirmedHz:0.0} Hz | hops before it {before.Count}: on the keyed {keyedHz:0} Hz {onKeyed}, on the carrier {carrierHz:0} Hz {onCarrier} | cold moves {string.Join(", ", run.Moves.Select(m => string.Create(Invariant, $"{m.Seconds:0.00} s {m.FromHz:0} -> {m.ToHz:0}")))} | sure before the verdict {sure.Count}: {string.Concat(sure.Select(c => c.Text))} | text {string.Concat(run.Settled.Select(c => c.Text)).Trim()}"));
++
++        Assert.False(double.IsNaN(run.ConfirmedSeconds), "the keyed tone was never confirmed");
++        Assert.True(onCarrier == 0, string.Create(Invariant, $"before the first keyed verdict the filter sat on the {carrierHz:0} Hz carrier for {onCarrier} hops"));
++        Assert.True(onKeyed > 0, string.Create(Invariant, $"before the first keyed verdict the filter never pointed at the keyed {keyedHz:0} Hz"));
++        Assert.True(sure.Count == 0, $"{sure.Count} sure characters before the first keyed verdict: {string.Concat(sure.Select(c => c.Text))}");
++    }
++}

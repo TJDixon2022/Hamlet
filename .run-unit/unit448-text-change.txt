@@ -1,0 +1,144 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:24.20]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureAddedLettersComeFromTests.EveryRecordingAsTheOperatorReadsIt [2 m 23 s]
+  Standard Output Messages:
+ text | cw-2026-08-17-013347 |  E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI E TEEI T E HA EWVRR VA3VRRR  
+ callsigns | cw-2026-08-17-013347 | 
+ text | cw-2026-08-17-134712 |          E     ■  K EE  N4LQ D   E     EE
+ callsigns | cw-2026-08-17-134712 | 
+ text | cw-2026-08-18-004507 | E5 I E A T AR R L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE
+ callsigns | cw-2026-08-18-004507 | 
+ text | unadjudicated/cw-2026-08-24-012403 |   T G MAEA  TTGT   TAI  5   K E EQ DE KD0UN KD0UN K 
+ callsigns | unadjudicated/cw-2026-08-24-012403 | KD0UN Sender
+ text | unadjudicated/cw-2026-08-22-031838 |    ■■ 2, AND ■ WIU H A MEAN OF 2 TT 
+ callsigns | unadjudicated/cw-2026-08-22-031838 | 
+ text | unadjudicated/cw-2026-08-22-031905 |  K PREDICTED 10.7  IAIEI TANI   WLUX IS 125,
+ callsigns | unadjudicated/cw-2026-08-22-031905 | 
+ text | unadjudicated/cw-2026-08-22-031948 |  [U] EE II  E TTMTT TTTTT TTTTT TTTTT TTTAT ATTTTT 110 WITH A MEAN OF 117.W
+ callsigns | unadjudicated/cw-2026-08-22-031948 | 
+ text | unadjudicated/cw-2026-08-22-032012 |  I 5 I■  E   E  TTMT ETTTT TTTTA  ETTE TT TTMKS TO ARTICLES OR OTHER WEBSITES MENTI
+ callsigns | unadjudicated/cw-2026-08-22-032012 | 
+ text | unadjudicated/cw-2026-08-22-032050 |  E I ■ ■E I    T T N TE      K  S■ I E S ES EETE  IE5 E ISE S ■SIS I I I   P TT TMT TKE   ■ E E U E EEE E
+ callsigns | unadjudicated/cw-2026-08-22-032050 | 
+ text | unadjudicated/cw-2026-08-22-032113 |  E I E E N E 5N H EEE E ■  I EI■EISISS E I II I T EIS  N TN TTTTF   II E  TMTTTTTTTM    E I N EE E E E E I I WE  TI
+ callsigns | unadjudicated/cw-2026-08-22-032113 | 
+ text | unadjudicated/cw-2026-08-22-032129 |   H I   5 E E E IEEII E I  SI I ES EEIEE  T  I   I E  IETIN EE   E  S     TTEM TTAT   
+ callsigns | unadjudicated/cw-2026-08-22-032129 | 
+ text | cw-2026-08-17-013622 | E ISIIHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I
+ callsigns | cw-2026-08-17-013622 | 
+ text | unadjudicated/cw-2026-08-18-003016 |   IADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN
+ callsigns | unadjudicated/cw-2026-08-18-003016 | 
+ text | unadjudicated/cw-2026-08-18-003126 | E ■ E I E S  BSS  U I WA T CH AT L EAST 2 MOVIESA DAY WID X■ WHY NNOTT   , WESNRNS , E
+ callsigns | unadjudicated/cw-2026-08-18-003126 | 
+ text | unadjudicated/cw-2026-08-18-003758 |  II E RL TU   E AN EANDE AA4 M ETTE /4 QNIKK   EAN EANQNIK        EAN E
+ callsigns | unadjudicated/cw-2026-08-18-003758 | 
+ text | unadjudicated/cw-2026-08-23-001520 |   T  ■  
+ callsigns | unadjudicated/cw-2026-08-23-001520 | 
+ text | unadjudicated/cw-2026-08-23-001831 |  H ■ EIE IT 5[<HH>]E S <HH>  I IESE E ■ E E E E I E  EI E ER DEELA ETRR EI TNN TA O   TUKV
+ callsigns | unadjudicated/cw-2026-08-23-001831 | 
+ text | unadjudicated/cw-2026-08-23-001952 | HET I IEISS  I[I]4R[I] 5INW■■  EE E S E I HSE I E I ■■H  IIE [H]I      IESII I  I
+ callsigns | unadjudicated/cw-2026-08-23-001952 | 
+ text | unadjudicated/cw-2026-08-23-002016 |     E[I] E E ■   E E        KBB0IIE■      EE  I I   E      K TIE0NH VNN JEENG  
+ callsigns | unadjudicated/cw-2026-08-23-002016 | 
+ text | unadjudicated/cw-2026-08-25-011552 |  T C <AS> R 4  XDE K ■GJAK1Z JA  K1ZJA <AR>    
+ callsigns | unadjudicated/cw-2026-08-25-011552 | K1ZJA Sender
+ text | unadjudicated/cw-2026-08-25-012748 | I  S I A 
+ callsigns | unadjudicated/cw-2026-08-25-012748 | 
+ text | unadjudicated/cw-2026-08-25-012823 |    AMXEN T O T MAEED IN 
+ callsigns | unadjudicated/cw-2026-08-25-012823 | 
+ text | unadjudicated/cw-2026-08-25-012922 |    N I  U E[5] EE  HE  ■ E■ ■ H S ■ SH ■■ I I I ■ N   T73 E S  EE N I SH   S T3 TID NDH
+ callsigns | unadjudicated/cw-2026-08-25-012922 | 
+ text | unadjudicated/cw-2026-08-25-013010 |   T■L ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE   
+ callsigns | unadjudicated/cw-2026-08-25-013010 | 
+ text | unadjudicated/cw-2026-08-25-013150 |   4  N I I I ■ SSTHE E ■  E I I E E  IICE TO HEAR Y OU AGN ■EEE <BT> BEEN SEVERAL MONT
+ callsigns | unadjudicated/cw-2026-08-25-013150 | 
+ text | unadjudicated/cw-2026-08-25-013303 |    G ALL BOXE S F OR FOC EESSS    HPE YOU INJOY UR LONG WAI T 5 EE ■  
+ callsigns | unadjudicated/cw-2026-08-25-013303 | 
+ text | unadjudicated/cw-2026-08-25-013402 |   EH H ET II I■ E F I E E TITH WB4ET ES S I CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE 
+ callsigns | unadjudicated/cw-2026-08-25-013402 | 
+ text | unadjudicated/cw-2026-08-25-013520 |    ESHH ■ ■ SS I GUESS BUE ALL GUD ES  CAN KE E G KI KE EP MY SELF O CC UPI ED A
+ callsigns | unadjudicated/cw-2026-08-25-013520 | 
+ text | unadjudicated/cw-2026-08-25-013637 |   T  5■ E I 5 IE E EE S E EN S E IX S E DE ■ E   R SKKY LITE BREEZE ALL DAY JUST AWE SO
+ callsigns | unadjudicated/cw-2026-08-25-013637 | 
+ text | unadjudicated/cw-2026-08-25-021410 | E E  VEIIE I  E  T   TU MM T AY M T  O AO IHI DT RIGHR IS  FLENT 66OAM
+ callsigns | unadjudicated/cw-2026-08-25-021410 | 
+ text | unadjudicated/cw-2026-08-25-021629 | E E   I E  E■■ <HH> HIEH S EE SEHHE  EE■   E E  
+ callsigns | unadjudicated/cw-2026-08-25-021629 | 
+ text | unadjudicated/cw-2026-08-25-021825 | E  S IHE SEE HS5I ■ EI  J TTT E O  K     
+ callsigns | unadjudicated/cw-2026-08-25-021825 | 
+ text | unadjudicated/cw-2026-08-26-125941 | 
+ callsigns | unadjudicated/cw-2026-08-26-125941 | 
+ text | unadjudicated/cw-2026-08-20-014854 | EG IUM RQ R D E WIE PET  
+ callsigns | unadjudicated/cw-2026-08-20-014854 | 
+ text | unadjudicated/cw-2026-08-20-014935 | 
+ callsigns | unadjudicated/cw-2026-08-20-014935 | 
+ text | unadjudicated/cw-2026-08-22-014113 | 
+ callsigns | unadjudicated/cw-2026-08-22-014113 | 
+ text | unadjudicated/cw-2026-08-22-014308 | 
+ callsigns | unadjudicated/cw-2026-08-22-014308 | 
+ text | unadjudicated/cw-2026-09-24-003901 |         EII E T NHHK        
+ callsigns | unadjudicated/cw-2026-09-24-003901 | 
+ text | unadjudicated/cw-2026-09-24-003919 |     EITEETNXNIK       EANQNID        EANQNIK    E
+ callsigns | unadjudicated/cw-2026-09-24-003919 | 
+ text | unadjudicated/cw-2026-09-24-004027 | QNE T    E     E  2G ■ 2G KA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q
+ callsigns | unadjudicated/cw-2026-09-24-004027 | 
+ text | unadjudicated/cw-2026-09-24-004108 |  HR NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC
+ callsigns | unadjudicated/cw-2026-09-24-004108 | 
+ text | unadjudicated/cw-2026-09-24-004133 | 1 M  R I C H ARD D  J  GEL ■ 0 D T  UT 5 0 0 5 H ■ 8 
+ callsigns | unadjudicated/cw-2026-09-24-004133 | 
+ text | unadjudicated/cw-2026-09-24-004205 |  ■ EMM A HAA NE 6 8 1 3 5 ■ E MAIR F JU G EL AT YAH OO DOE
+ callsigns | unadjudicated/cw-2026-09-24-004205 | 
+ text | unadjudicated/cw-2026-09-24-004234 | M T <AR> O M <BT> T HANK Y OU FOR ONN HYP N  UIR QSO WITH W
+ callsigns | unadjudicated/cw-2026-09-24-004234 | 
+ text | unadjudicated/cw-2026-09-24-004322 |  S P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA
+ callsigns | unadjudicated/cw-2026-09-24-004322 | 
+ text | unadjudicated/cw-2026-09-24-004347 |  O M   WILL BE UPL OADED TO ARRL L OOTW <BT> ANTHONY LUSN
+ callsigns | unadjudicated/cw-2026-09-24-004347 | 
+ text | unadjudicated/cw-2026-09-24-004405 | E O T E T <BT> ANTHONY LUSCRE K 8 Z T W1AW/88 ■OORDINAT
+ callsigns | unadjudicated/cw-2026-09-24-004405 | 
+ text | unadjudicated/cw-2026-09-24-004427 | 8 ■OORDINAT OR <AR> N QSL T N6TBRE C E DEWI2 G K88NET TU EAT
+ callsigns | unadjudicated/cw-2026-09-24-004427 | 
+ text | unadjudicated/cw-2026-09-24-004510 |   1U RLTT    S SB YAKYAK  E  KA2GJV TQNV AA3SB SE I
+ callsigns | unadjudicated/cw-2026-09-24-004510 | 
+ text | unadjudicated/cw-2026-09-24-004535 | AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN 1 TH N B O TEI NANX K A3HT
+ callsigns | unadjudicated/cw-2026-09-24-004535 | 
+ text | unadjudicated/cw-2026-09-24-004550 | I N 5 3RN 1 TH N B OTEI NANX K A3HB DE KA2 GJV HW ROBIN?   T 
+ callsigns | unadjudicated/cw-2026-09-24-004550 | A3HB Addressed
+ text | cq-12wpm-15db |  N 5 CQ CG DE N0CALL N0CALL K 
+ callsigns | cq-12wpm-15db | N0CALL Sender
+ text | cq-12wpm-5db |    DE N0CALL N0CALL K 
+ callsigns | cq-12wpm-5db | N0CALL Sender
+ text | cq-12wpm-0db | 
+ callsigns | cq-12wpm-0db | 
+ text | cq-18wpm-15db |  CE  RQ CQ DE N0CALL N0CALL K  
+ callsigns | cq-18wpm-15db | N0CALL Sender
+ text | cq-18wpm-5db |  CG RQ CQ DE N0CALL N0CALL K  
+ callsigns | cq-18wpm-5db | N0CALL Sender
+ text | cq-18wpm-0db | 
+ callsigns | cq-18wpm-0db | 
+ text | cq-25wpm-15db |   CQ CQ CQ DE N0CALL N0CALL KK  
+ callsigns | cq-25wpm-15db | N0CALL Sender
+ text | cq-25wpm-5db |   CQ CQ CQ DE N06ALL N0CALL KK  
+ callsigns | cq-25wpm-5db | N06ALL Sender, N0CALL Sender
+ text | cq-25wpm-0db | 
+ callsigns | cq-25wpm-0db | 
+ text | cq-18wpm-15db-char5 |  K  F Q C Q D E N0CA E L N 0 C A L L K  
+ callsigns | cq-18wpm-15db-char5 | 
+ text | cq-18wpm-5db-char5 |  K  F Q C Q DE N 0 NC A L L N 0 C A L L K  
+ callsigns | cq-18wpm-5db-char5 | 
+ text | cq-18wpm-0db-char5 | 
+ callsigns | cq-18wpm-0db-char5 | 
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.4077 Minutes
+RC=0 WALL=145s
