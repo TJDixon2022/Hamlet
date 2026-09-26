@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 1 of 3
+STATE: EXECUTING
+TASK: 2 of 3
 WORK_INSTRUCTION: 452 - where the words break
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T10:51:51-04:00
-NOTE: Measured: WBE 46 over 113 real, 48 over 84 synthetic, 080 and 081 not met where measurable, 20 conditions not measurable; 6.3 ticked; next one change against G1
+UPDATED: 2026-09-26T10:53:04-04:00
+NOTE: Change built and committed alone; next the judging round: metrics, trace, text, floors
 
 ---
 

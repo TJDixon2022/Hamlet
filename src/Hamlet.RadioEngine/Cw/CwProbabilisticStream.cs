@@ -551,6 +551,16 @@ public sealed class CwProbabilisticStream
             ? Math.Sqrt(_heldGaps.CharacterMilliseconds * _heldGaps.WordMilliseconds)
             : Math.Sqrt(3 * 7) * unitMs;
 
+        // **WITH NOTHING MEASURED AND NOTHING HELD, THE LETTER SPACES THE PATH
+        // ALREADY PLACED** (work instruction 452, task 2). The textbook boundary
+        // kept 21 letter spaces as word gaps on the real keyed recordings and 18
+        // on the synthetic set, each 4.6 to 7 units and shorter than that
+        // sender's own word spaces.
+        if (!_structureHeld && characterGap is null)
+        {
+            wordFrom = Math.Max(wordFrom, LetterSpaceBoundary(result));
+        }
+
         // Where the window starts on the audio clock, so a character's hop can be
         // turned into a moment somebody can point at (§0.0.1).
         var windowStartHop = _hopsSeen - _envelopeCount;
@@ -642,6 +652,40 @@ public sealed class CwProbabilisticStream
     /// low flat plateau with no emptier place to move to.
     /// </remarks>
     internal static readonly double WordGapShare = Math.Sqrt(7.0 / 3.0);
+
+    /// <summary>How many gaps between letters a read must hold before their median is taken for the sender's.</summary>
+    /// <remarks>The count <see cref="CwUnitEstimator.MeasureGaps"/> asks for before it clusters.</remarks>
+    internal const int LetterSpacesToMeasure = 12;
+
+    /// <summary>
+    /// The relabel's boundary from the gaps the path placed between letters, or
+    /// nought where the read holds too few.
+    /// </summary>
+    /// <param name="result">What the read made of the window.</param>
+    /// <returns>The median gap times <see cref="WordGapShare"/>, in milliseconds.</returns>
+    /// <remarks>
+    /// <para>**THE MEDIAN GAP BETWEEN LETTERS IS THE SENDER'S CHARACTER GAP**
+    /// (work instruction 452, task 2, author's, overrulable). Letters outnumber
+    /// words several to one, so the middle of the gaps between them is a letter
+    /// space whichever way the path labelled each. Used only where
+    /// <see cref="CwUnitEstimator.MeasureCharacterGap"/> found no character heap
+    /// and no gaps are held: unit 452's trace found the envelope's three heaps
+    /// splitting the element gaps in two there, by a dropout or by an empty middle
+    /// heap, so the letter spaces fell in with the word spaces.</para>
+    /// <para>**DURATIONS ONLY** (R72). It never reads which letters they are, and
+    /// it only feeds the relabel, which can only take a space out.</para>
+    /// </remarks>
+    private static double LetterSpaceBoundary(CwProbabilisticResult result)
+    {
+        if (result.Gaps.Count < LetterSpacesToMeasure)
+        {
+            return 0;
+        }
+
+        var spans = result.Gaps.Select(g => g.SpanHops).OrderBy(s => s).ToArray();
+
+        return spans[spans.Length / 2] * CwProbabilisticDecoder.HopMilliseconds * WordGapShare;
+    }
 
     /// <summary>
     /// The read's characters in order, each marked where the sender's character

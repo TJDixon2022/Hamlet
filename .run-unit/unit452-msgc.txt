@@ -1,0 +1,11 @@
+unit452 change: with no character gap measured and no gaps held, the relabel's boundary is the median gap the path placed between letters times the root of seven thirds, never under the textbook word-from (6.3)
+
+Against G1 of task 1's trace: 21 real and 18 synthetic inserted spaces
+kept by the textbook word-from (4.58 u), each a letter space of 4.6 to
+7 u shorter than that sender's word spaces. Durations only (R72). Not
+444's rule: neither estimator, the path, the held gaps, the speed nor any
+letter moves; the relabel can only take a space out. The trace printer
+re-runs the relabel with the new boundary where the tree has it. Judged
+under R78 in task 2 before it is kept.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

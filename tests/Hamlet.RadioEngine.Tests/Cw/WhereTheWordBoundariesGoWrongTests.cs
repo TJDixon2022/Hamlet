@@ -55,6 +55,10 @@ public sealed class WhereTheWordBoundariesGoWrongTests
     private static readonly MethodInfo Spaced = typeof(CwProbabilisticStream)
         .GetMethod("Spaced", BindingFlags.NonPublic | BindingFlags.Static)!;
 
+    /// <summary>Unit 452's letter-space boundary, where the tree has it, so the relabel is re-run as the stream runs it.</summary>
+    private static readonly MethodInfo? LetterSpaceBoundary = typeof(CwProbabilisticStream)
+        .GetMethod("LetterSpaceBoundary", BindingFlags.NonPublic | BindingFlags.Static);
+
     private static readonly MethodInfo ThreeMeans = typeof(CwUnitEstimator)
         .GetMethod("ThreeMeansOnLogs", BindingFlags.NonPublic | BindingFlags.Static)!;
 
@@ -206,6 +210,11 @@ public sealed class WhereTheWordBoundariesGoWrongTests
             var wordFrom = held
                 ? Math.Sqrt(gaps.CharacterMilliseconds * gaps.WordMilliseconds)
                 : Math.Sqrt(3 * 7) * unitMs;
+
+            if (!held && characterGap is null && LetterSpaceBoundary is { } letterSpaces)
+            {
+                wordFrom = Math.Max(wordFrom, (double)letterSpaces.Invoke(null, new object[] { last })!);
+            }
 
             current = new Read(reads + 1, last, stream.UnitWasMeasured, decoder.SpeedProof, held, gaps, heldFrom,
                 characterGap, wordFrom, window, (long)HopsSeen.GetValue(stream)! - count, CharacterGapWhy(window, measured));
