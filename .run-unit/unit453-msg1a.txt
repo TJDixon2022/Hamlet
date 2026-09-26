@@ -1,0 +1,10 @@
+unit453 task 1: the named-span printer and its trace - every mark and gap under ABOVE, BREEZE and FLEX against the words' Morse (6.5)
+
+WhatTheNamedWordsReadTests decodes 013637 and 021410 as the metrics
+do, times every mark and gap at half amplitude of the decoder's own
+envelope, ties each mark to the letter it overlaps, and lays the
+decoder's call beside the word's own Morse, with the speed, pitch and
+thresholds in force. A printer; it asserts nothing. The words live
+only in the test (R72). Output: .run-unit/unit453-span-trace.txt.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

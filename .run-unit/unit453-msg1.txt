@@ -1,0 +1,16 @@
+unit453 task 1: HM-REQ-084 measured on its named spans (6.5)
+
+0 of 3 measurable spans met at HEAD, all letters sure: ABOVE reads
+AB OVE, BREEZE reads BR EEZE, FLEX reads FLENT. WEEKEND and THINKING
+are not measurable here: 021410's 30 s holds only the tail of the
+2026-08-25 line, from the A after NG, and its first keying is at
+2.175 s. USED TO USE A FIRM is not measurable here: 011447 and 011514
+were never in the tree. The first departures: two letter gaps read as
+word gaps (ABOVE 215 ms, BREEZE 180 ms) and one dit of 25 ms lost
+inside FLEX's X.
+
+The printer is WhatTheNamedWordsReadTests, a fact that asserts
+nothing; the six words live only in it (R72). 6.5 ticked in both
+copies of PHASE_PLAN.md.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

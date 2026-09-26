@@ -1,0 +1,725 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.48]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.69]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.69]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:10.99]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheNamedWordsReadTests.EachNamedSpanAsTheOperatorReadsIt [9 s]
+  Standard Output Messages:
+ recording | unadjudicated/cw-2026-08-25-013637 | 86 settled | pitch record 86 | text ` TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EEZE ALL DAY JUST AWE SO`
+ char | unadjudicated/cw-2026-08-25-013637 | 0 | 1.760 to 1.760 s | ` ` | space |  | 10.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 1
+ char | unadjudicated/cw-2026-08-25-013637 | 1 | 1.755 to 1.880 s | `T` | sure | - | 32.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 2
+ char | unadjudicated/cw-2026-08-25-013637 | 2 | 2.030 to 2.080 s | `E` | sure | . | 32.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 2
+ char | unadjudicated/cw-2026-08-25-013637 | 3 | 2.255 to 2.255 s | ` ` | space |  | 32.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 2
+ char | unadjudicated/cw-2026-08-25-013637 | 4 | 2.255 to 2.530 s | `M` | sure | -- | 32.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 3
+ char | unadjudicated/cw-2026-08-25-013637 | 5 | 2.675 to 3.105 s | `P` | sure | .--. | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 4
+ char | unadjudicated/cw-2026-08-25-013637 | 6 | 3.575 to 3.575 s | ` ` | space |  | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 5
+ char | unadjudicated/cw-2026-08-25-013637 | 7 | 3.575 to 3.775 s | `N` | sure | -. | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 5
+ char | unadjudicated/cw-2026-08-25-013637 | 8 | 3.870 to 3.915 s | `E` | sure | . | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 5
+ char | unadjudicated/cw-2026-08-25-013637 | 9 | 4.055 to 4.410 s | `V` | sure | ...- | 32.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 6
+ char | unadjudicated/cw-2026-08-25-013637 | 10 | 4.530 to 4.575 s | `E` | sure | . | 24.6 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 7
+ char | unadjudicated/cw-2026-08-25-013637 | 11 | 4.685 to 4.885 s | `N` | sure | -. | 24.6 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 7
+ char | unadjudicated/cw-2026-08-25-013637 | 12 | 5.435 to 5.435 s | ` ` | space |  | 24.6 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 8
+ char | unadjudicated/cw-2026-08-25-013637 | 13 | 5.435 to 5.555 s | `T` | sure | - | 22.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 9
+ char | unadjudicated/cw-2026-08-25-013637 | 14 | 6.040 to 6.040 s | ` ` | space |  | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 10
+ char | unadjudicated/cw-2026-08-25-013637 | 15 | 6.040 to 6.275 s | `R` | sure | .-. | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 10
+ char | unadjudicated/cw-2026-08-25-013637 | 16 | 6.380 to 6.425 s | `E` | sure | . | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 10
+ char | unadjudicated/cw-2026-08-25-013637 | 17 | 6.560 to 6.915 s | `V` | sure | ...- | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 11
+ char | unadjudicated/cw-2026-08-25-013637 | 18 | 6.560 to 7.055 s | `■` | unknown | ...-. | 22.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 12
+ char | unadjudicated/cw-2026-08-25-013637 | 19 | 7.210 to 7.485 s | `R` | sure | .-. | 22.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 12
+ char | unadjudicated/cw-2026-08-25-013637 | 20 | 7.875 to 7.875 s | ` ` | space |  | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 13
+ char | unadjudicated/cw-2026-08-25-013637 | 21 | 7.875 to 8.225 s | `G` | sure | --. | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 14
+ char | unadjudicated/cw-2026-08-25-013637 | 22 | 8.415 to 8.415 s | ` ` | space |  | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 14
+ char | unadjudicated/cw-2026-08-25-013637 | 23 | 8.415 to 8.845 s | `O` | sure | --- | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 15
+ char | unadjudicated/cw-2026-08-25-013637 | 24 | 8.980 to 9.100 s | `T` | sure | - | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 16
+ char | unadjudicated/cw-2026-08-25-013637 | 25 | 9.440 to 9.440 s | ` ` | space |  | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 16
+ char | unadjudicated/cw-2026-08-25-013637 | 26 | 9.440 to 9.640 s | `A` | sure | .- | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 17
+ char | unadjudicated/cw-2026-08-25-013637 | 27 | 9.755 to 10.110 s | `B` | sure | -... | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 18
+ char | unadjudicated/cw-2026-08-25-013637 | 28 | 10.330 to 10.330 s | ` ` | space |  | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 18
+ char | unadjudicated/cw-2026-08-25-013637 | 29 | 10.330 to 10.760 s | `O` | sure | --- | 38.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 19
+ char | unadjudicated/cw-2026-08-25-013637 | 30 | 10.870 to 11.230 s | `V` | sure | ...- | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 20
+ char | unadjudicated/cw-2026-08-25-013637 | 31 | 11.405 to 11.450 s | `E` | sure | . | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 20
+ char | unadjudicated/cw-2026-08-25-013637 | 32 | 11.800 to 11.800 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 21
+ char | unadjudicated/cw-2026-08-25-013637 | 33 | 11.930 to 12.440 s | `7` | sure | --... | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 22
+ char | unadjudicated/cw-2026-08-25-013637 | 34 | 12.705 to 12.705 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 23
+ char | unadjudicated/cw-2026-08-25-013637 | 35 | 12.705 to 13.075 s | `5` | sure | ..... | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 24
+ char | unadjudicated/cw-2026-08-25-013637 | 36 | 13.245 to 13.245 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 24
+ char | unadjudicated/cw-2026-08-25-013637 | 37 | 13.245 to 13.600 s | `F` | sure | ..-. | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 25
+ char | unadjudicated/cw-2026-08-25-013637 | 38 | 13.985 to 13.985 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 25
+ char | unadjudicated/cw-2026-08-25-013637 | 39 | 13.985 to 14.030 s | `E` | sure | . | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 26
+ char | unadjudicated/cw-2026-08-25-013637 | 40 | 14.170 to 14.375 s | `S` | sure | ... | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 26
+ char | unadjudicated/cw-2026-08-25-013637 | 41 | 14.855 to 14.855 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 27
+ char | unadjudicated/cw-2026-08-25-013637 | 42 | 15.010 to 15.440 s | `C` | sure | -.-. | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, None | read 28
+ char | unadjudicated/cw-2026-08-25-013637 | 43 | 15.575 to 15.940 s | `L` | sure | .-.. | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Proved | read 29
+ char | unadjudicated/cw-2026-08-25-013637 | 44 | 16.090 to 16.135 s | `E` | sure | . | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Proved | read 30
+ char | unadjudicated/cw-2026-08-25-013637 | 45 | 16.265 to 16.465 s | `A` | sure | .- | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Proved | read 30
+ char | unadjudicated/cw-2026-08-25-013637 | 46 | 16.545 to 16.820 s | `R` | sure | .-. | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 31
+ char | unadjudicated/cw-2026-08-25-013637 | 47 | 17.175 to 17.175 s | ` ` | space |  | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 32
+ char | unadjudicated/cw-2026-08-25-013637 | 48 | 17.175 to 17.375 s | `S` | sure | ... | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 32
+ char | unadjudicated/cw-2026-08-25-013637 | 49 | 17.535 to 17.535 s | ` ` | space |  | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 33
+ char | unadjudicated/cw-2026-08-25-013637 | 50 | 17.535 to 17.890 s | `K` | sure | -.- | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 33
+ char | unadjudicated/cw-2026-08-25-013637 | 51 | 18.000 to 18.515 s | `Y` | sure | -.-- | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 35
+ char | unadjudicated/cw-2026-08-25-013637 | 52 | 18.880 to 18.880 s | ` ` | space |  | 30.0 wpm, speed Proved | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 35
+ char | unadjudicated/cw-2026-08-25-013637 | 53 | 18.880 to 19.235 s | `L` | sure | .-.. | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 36
+ char | unadjudicated/cw-2026-08-25-013637 | 54 | 19.385 to 19.510 s | `I` | sure | .. | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 37
+ char | unadjudicated/cw-2026-08-25-013637 | 55 | 19.670 to 19.670 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 37
+ char | unadjudicated/cw-2026-08-25-013637 | 56 | 19.670 to 19.800 s | `T` | sure | - | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 37
+ char | unadjudicated/cw-2026-08-25-013637 | 57 | 19.945 to 19.995 s | `E` | sure | . | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 37
+ char | unadjudicated/cw-2026-08-25-013637 | 58 | 20.430 to 20.430 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 38
+ char | unadjudicated/cw-2026-08-25-013637 | 59 | 20.430 to 20.780 s | `B` | sure | -... | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 39
+ char | unadjudicated/cw-2026-08-25-013637 | 60 | 20.890 to 21.170 s | `R` | sure | .-. | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 40
+ char | unadjudicated/cw-2026-08-25-013637 | 61 | 21.350 to 21.350 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 40
+ char | unadjudicated/cw-2026-08-25-013637 | 62 | 21.350 to 21.395 s | `E` | sure | . | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 40
+ char | unadjudicated/cw-2026-08-25-013637 | 63 | 21.535 to 21.580 s | `E` | sure | . | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 41
+ char | unadjudicated/cw-2026-08-25-013637 | 64 | 21.760 to 22.195 s | `Z` | sure | --.. | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 42
+ char | unadjudicated/cw-2026-08-25-013637 | 65 | 22.385 to 22.430 s | `E` | sure | . | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 42
+ char | unadjudicated/cw-2026-08-25-013637 | 66 | 22.785 to 22.785 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 43
+ char | unadjudicated/cw-2026-08-25-013637 | 67 | 22.785 to 22.990 s | `A` | sure | .- | 30.0 wpm, speed Hypothesis | pitch 525.0 Hz, tracker 525.0 Hz, Hypothesis | read 43
+ char | unadjudicated/cw-2026-08-25-013637 | 68 | 23.075 to 23.435 s | `L` | sure | .-.. | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 44
+ char | unadjudicated/cw-2026-08-25-013637 | 69 | 23.560 to 23.915 s | `L` | sure | .-.. | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 45
+ char | unadjudicated/cw-2026-08-25-013637 | 70 | 24.250 to 24.250 s | ` ` | space |  | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 46
+ char | unadjudicated/cw-2026-08-25-013637 | 71 | 24.250 to 24.520 s | `D` | sure | -.. | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 47
+ char | unadjudicated/cw-2026-08-25-013637 | 72 | 24.665 to 24.860 s | `A` | sure | .- | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 47
+ char | unadjudicated/cw-2026-08-25-013637 | 73 | 24.960 to 25.470 s | `Y` | sure | -.-- | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 48
+ char | unadjudicated/cw-2026-08-25-013637 | 74 | 25.995 to 25.995 s | ` ` | space |  | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 49
+ char | unadjudicated/cw-2026-08-25-013637 | 75 | 25.995 to 26.505 s | `J` | sure | .--- | 30.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 51
+ char | unadjudicated/cw-2026-08-25-013637 | 76 | 26.635 to 26.905 s | `U` | sure | ..- | 30.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 51
+ char | unadjudicated/cw-2026-08-25-013637 | 77 | 27.050 to 27.250 s | `S` | sure | ... | 30.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 52
+ char | unadjudicated/cw-2026-08-25-013637 | 78 | 27.395 to 27.515 s | `T` | sure | - | 24.1 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 53
+ char | unadjudicated/cw-2026-08-25-013637 | 79 | 27.910 to 27.910 s | ` ` | space |  | 24.1 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 53
+ char | unadjudicated/cw-2026-08-25-013637 | 80 | 27.910 to 28.105 s | `A` | sure | .- | 30.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 54
+ char | unadjudicated/cw-2026-08-25-013637 | 81 | 28.275 to 28.625 s | `W` | sure | .-- | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 55
+ char | unadjudicated/cw-2026-08-25-013637 | 82 | 28.760 to 28.800 s | `E` | sure | . | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 55
+ char | unadjudicated/cw-2026-08-25-013637 | 83 | 29.245 to 29.245 s | ` ` | space |  | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 56
+ char | unadjudicated/cw-2026-08-25-013637 | 84 | 29.245 to 29.445 s | `S` | sure | ... | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 56
+ char | unadjudicated/cw-2026-08-25-013637 | 85 | 29.620 to 30.000 s | `O` | sure | --- | 30.0 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 0.000 s | gap | 1505 ms | 40.13 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 1.505 s | mark | 55 ms | 1.47 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 1.560 s | gap | 195 ms | 5.20 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 1.755 s | mark | 135 ms | 3.60 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 1.890 s | gap | 90 ms | 2.40 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 1.980 s | mark | 15 ms | 0.40 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 1.995 s | gap | 35 ms | 0.93 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 2.030 s | mark | 60 ms | 1.60 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 2.090 s | gap | 160 ms | 4.27 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 2.250 s | mark | 135 ms | 3.60 u of 38 ms | read 2
+ run | unadjudicated/cw-2026-08-25-013637 | 2.385 s | gap | 20 ms | 0.53 u of 38 ms | read 3
+ run | unadjudicated/cw-2026-08-25-013637 | 2.405 s | mark | 135 ms | 3.60 u of 38 ms | read 3
+ run | unadjudicated/cw-2026-08-25-013637 | 2.540 s | gap | 130 ms | 3.47 u of 38 ms | read 3
+ run | unadjudicated/cw-2026-08-25-013637 | 2.670 s | mark | 55 ms | 1.47 u of 38 ms | read 3
+ run | unadjudicated/cw-2026-08-25-013637 | 2.725 s | gap | 25 ms | 0.67 u of 38 ms | read 3
+ run | unadjudicated/cw-2026-08-25-013637 | 2.750 s | mark | 130 ms | 3.47 u of 38 ms | read 3
+ run | unadjudicated/cw-2026-08-25-013637 | 2.880 s | gap | 25 ms | 0.63 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 2.905 s | mark | 130 ms | 3.25 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.035 s | gap | 25 ms | 0.63 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.060 s | mark | 55 ms | 1.38 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.115 s | gap | 85 ms | 2.13 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.200 s | mark | 15 ms | 0.38 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.215 s | gap | 20 ms | 0.50 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.235 s | mark | 15 ms | 0.38 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.250 s | gap | 165 ms | 4.13 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.415 s | mark | 45 ms | 1.13 u of 40 ms | read 4
+ run | unadjudicated/cw-2026-08-25-013637 | 3.460 s | gap | 115 ms | 3.64 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 3.575 s | mark | 130 ms | 4.12 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 3.705 s | gap | 25 ms | 0.79 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 3.730 s | mark | 50 ms | 1.58 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 3.780 s | gap | 85 ms | 2.69 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 3.865 s | mark | 60 ms | 1.90 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 3.925 s | gap | 90 ms | 2.85 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 4.015 s | mark | 10 ms | 0.32 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 4.025 s | gap | 25 ms | 0.79 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 4.050 s | mark | 60 ms | 1.90 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 4.110 s | gap | 20 ms | 0.63 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 4.130 s | mark | 55 ms | 1.74 u of 32 ms | read 5
+ run | unadjudicated/cw-2026-08-25-013637 | 4.185 s | gap | 25 ms | 0.67 u of 38 ms | read 6
+ run | unadjudicated/cw-2026-08-25-013637 | 4.210 s | mark | 55 ms | 1.47 u of 38 ms | read 6
+ run | unadjudicated/cw-2026-08-25-013637 | 4.265 s | gap | 20 ms | 0.53 u of 38 ms | read 6
+ run | unadjudicated/cw-2026-08-25-013637 | 4.285 s | mark | 135 ms | 3.60 u of 38 ms | read 6
+ run | unadjudicated/cw-2026-08-25-013637 | 4.420 s | gap | 110 ms | 2.93 u of 38 ms | read 6
+ run | unadjudicated/cw-2026-08-25-013637 | 4.530 s | mark | 55 ms | 1.13 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.585 s | gap | 70 ms | 1.43 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.655 s | mark | 15 ms | 0.31 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.670 s | gap | 10 ms | 0.20 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.680 s | mark | 135 ms | 2.77 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.815 s | gap | 25 ms | 0.51 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.840 s | mark | 55 ms | 1.13 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.895 s | gap | 90 ms | 1.84 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 4.985 s | mark | 15 ms | 0.31 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 5.000 s | gap | 40 ms | 0.82 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 5.040 s | mark | 115 ms | 2.36 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 5.155 s | gap | 275 ms | 5.63 u of 49 ms | read 7
+ run | unadjudicated/cw-2026-08-25-013637 | 5.430 s | mark | 140 ms | 2.57 u of 55 ms | read 9
+ run | unadjudicated/cw-2026-08-25-013637 | 5.570 s | gap | 335 ms | 6.14 u of 55 ms | read 9
+ run | unadjudicated/cw-2026-08-25-013637 | 5.905 s | mark | 45 ms | 0.83 u of 55 ms | read 9
+ run | unadjudicated/cw-2026-08-25-013637 | 5.950 s | gap | 120 ms | 3.80 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.070 s | mark | 135 ms | 4.28 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.205 s | gap | 20 ms | 0.63 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.225 s | mark | 55 ms | 1.74 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.280 s | gap | 100 ms | 3.17 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.380 s | mark | 55 ms | 1.74 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.435 s | gap | 120 ms | 3.80 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.555 s | mark | 55 ms | 1.74 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.610 s | gap | 25 ms | 0.79 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.635 s | mark | 55 ms | 1.74 u of 32 ms | read 10
+ run | unadjudicated/cw-2026-08-25-013637 | 6.690 s | gap | 25 ms | 0.79 u of 32 ms | read 11
+ run | unadjudicated/cw-2026-08-25-013637 | 6.715 s | mark | 55 ms | 1.74 u of 32 ms | read 11
+ run | unadjudicated/cw-2026-08-25-013637 | 6.770 s | gap | 20 ms | 0.63 u of 32 ms | read 11
+ run | unadjudicated/cw-2026-08-25-013637 | 6.790 s | mark | 130 ms | 4.12 u of 32 ms | read 11
+ run | unadjudicated/cw-2026-08-25-013637 | 6.920 s | gap | 85 ms | 2.69 u of 32 ms | read 11
+ run | unadjudicated/cw-2026-08-25-013637 | 7.005 s | mark | 60 ms | 1.10 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.065 s | gap | 140 ms | 2.57 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.205 s | mark | 55 ms | 1.01 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.260 s | gap | 25 ms | 0.46 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.285 s | mark | 130 ms | 2.38 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.415 s | gap | 25 ms | 0.46 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.440 s | mark | 55 ms | 1.01 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.495 s | gap | 205 ms | 3.76 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 7.700 s | mark | 300 ms | 5.50 u of 55 ms | read 12
+ run | unadjudicated/cw-2026-08-25-013637 | 8.000 s | gap | 25 ms | 0.79 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.025 s | mark | 130 ms | 4.12 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.155 s | gap | 25 ms | 0.79 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.180 s | mark | 55 ms | 1.74 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.235 s | gap | 85 ms | 2.69 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.320 s | mark | 20 ms | 0.63 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.340 s | gap | 35 ms | 1.11 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.375 s | mark | 170 ms | 5.38 u of 32 ms | read 14
+ run | unadjudicated/cw-2026-08-25-013637 | 8.545 s | gap | 25 ms | 0.79 u of 32 ms | read 15
+ run | unadjudicated/cw-2026-08-25-013637 | 8.570 s | mark | 130 ms | 4.12 u of 32 ms | read 15
+ run | unadjudicated/cw-2026-08-25-013637 | 8.700 s | gap | 25 ms | 0.79 u of 32 ms | read 15
+ run | unadjudicated/cw-2026-08-25-013637 | 8.725 s | mark | 130 ms | 4.12 u of 32 ms | read 15
+ run | unadjudicated/cw-2026-08-25-013637 | 8.855 s | gap | 120 ms | 3.80 u of 32 ms | read 15
+ run | unadjudicated/cw-2026-08-25-013637 | 8.975 s | mark | 135 ms | 4.28 u of 32 ms | read 16
+ run | unadjudicated/cw-2026-08-25-013637 | 9.110 s | gap | 240 ms | 7.60 u of 32 ms | read 16
+ run | unadjudicated/cw-2026-08-25-013637 | 9.350 s | mark | 140 ms | 4.43 u of 32 ms | read 16
+ run | unadjudicated/cw-2026-08-25-013637 | 9.490 s | gap | 25 ms | 0.79 u of 32 ms | read 17
+ run | unadjudicated/cw-2026-08-25-013637 | 9.515 s | mark | 135 ms | 4.28 u of 32 ms | read 17
+ run | unadjudicated/cw-2026-08-25-013637 | 9.650 s | gap | 100 ms | 3.17 u of 32 ms | read 17
+ run | unadjudicated/cw-2026-08-25-013637 | 9.750 s | mark | 135 ms | 4.28 u of 32 ms | read 17
+ run | unadjudicated/cw-2026-08-25-013637 | 9.885 s | gap | 20 ms | 0.63 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 9.905 s | mark | 55 ms | 1.74 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 9.960 s | gap | 25 ms | 0.79 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 9.985 s | mark | 55 ms | 1.74 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 10.040 s | gap | 25 ms | 0.79 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 10.065 s | mark | 50 ms | 1.58 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 10.115 s | gap | 200 ms | 6.33 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 10.315 s | mark | 140 ms | 4.43 u of 32 ms | read 18
+ run | unadjudicated/cw-2026-08-25-013637 | 10.455 s | gap | 25 ms | 0.79 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 10.480 s | mark | 130 ms | 4.12 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 10.610 s | gap | 25 ms | 0.79 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 10.635 s | mark | 130 ms | 4.12 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 10.765 s | gap | 100 ms | 3.17 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 10.865 s | mark | 60 ms | 1.90 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 10.925 s | gap | 25 ms | 0.79 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 10.950 s | mark | 55 ms | 1.74 u of 32 ms | read 19
+ run | unadjudicated/cw-2026-08-25-013637 | 11.005 s | gap | 20 ms | 0.50 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.025 s | mark | 55 ms | 1.38 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.080 s | gap | 25 ms | 0.63 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.105 s | mark | 135 ms | 3.38 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.240 s | gap | 65 ms | 1.63 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.305 s | mark | 15 ms | 0.38 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.320 s | gap | 80 ms | 2.00 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.400 s | mark | 55 ms | 1.38 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.455 s | gap | 125 ms | 3.13 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.580 s | mark | 140 ms | 3.50 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.720 s | gap | 205 ms | 5.13 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 11.925 s | mark | 135 ms | 3.38 u of 40 ms | read 20
+ run | unadjudicated/cw-2026-08-25-013637 | 12.060 s | gap | 20 ms | 0.50 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.080 s | mark | 135 ms | 3.38 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.215 s | gap | 25 ms | 0.63 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.240 s | mark | 50 ms | 1.25 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.290 s | gap | 25 ms | 0.63 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.315 s | mark | 55 ms | 1.38 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.370 s | gap | 25 ms | 0.63 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.395 s | mark | 55 ms | 1.38 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.450 s | gap | 180 ms | 4.50 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.630 s | mark | 140 ms | 3.50 u of 40 ms | read 22
+ run | unadjudicated/cw-2026-08-25-013637 | 12.770 s | gap | 20 ms | 0.50 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 12.790 s | mark | 60 ms | 1.50 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 12.850 s | gap | 20 ms | 0.50 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 12.870 s | mark | 55 ms | 1.38 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 12.925 s | gap | 25 ms | 0.63 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 12.950 s | mark | 55 ms | 1.38 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.005 s | gap | 20 ms | 0.50 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.025 s | mark | 55 ms | 1.38 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.080 s | gap | 75 ms | 1.88 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.155 s | mark | 55 ms | 1.38 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.210 s | gap | 30 ms | 0.75 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.240 s | mark | 60 ms | 1.50 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.300 s | gap | 20 ms | 0.50 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.320 s | mark | 55 ms | 1.38 u of 40 ms | read 24
+ run | unadjudicated/cw-2026-08-25-013637 | 13.375 s | gap | 25 ms | 0.63 u of 40 ms | read 25
+ run | unadjudicated/cw-2026-08-25-013637 | 13.400 s | mark | 130 ms | 3.25 u of 40 ms | read 25
+ run | unadjudicated/cw-2026-08-25-013637 | 13.530 s | gap | 25 ms | 0.63 u of 40 ms | read 25
+ run | unadjudicated/cw-2026-08-25-013637 | 13.555 s | mark | 55 ms | 1.38 u of 40 ms | read 25
+ run | unadjudicated/cw-2026-08-25-013637 | 13.610 s | gap | 130 ms | 3.25 u of 40 ms | read 25
+ run | unadjudicated/cw-2026-08-25-013637 | 13.740 s | mark | 20 ms | 0.50 u of 40 ms | read 25
+ run | unadjudicated/cw-2026-08-25-013637 | 13.760 s | gap | 60 ms | 1.50 u of 40 ms | read 25
+ run | unadjudicated/cw-2026-08-25-013637 | 13.820 s | mark | 30 ms | 0.75 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 13.850 s | gap | 130 ms | 3.25 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 13.980 s | mark | 60 ms | 1.50 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.040 s | gap | 125 ms | 3.13 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.165 s | mark | 60 ms | 1.50 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.225 s | gap | 25 ms | 0.63 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.250 s | mark | 55 ms | 1.38 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.305 s | gap | 20 ms | 0.50 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.325 s | mark | 55 ms | 1.38 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.380 s | gap | 190 ms | 4.75 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.570 s | mark | 20 ms | 0.50 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.590 s | gap | 15 ms | 0.38 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.605 s | mark | 65 ms | 1.63 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.670 s | gap | 40 ms | 1.00 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.710 s | mark | 80 ms | 2.00 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.790 s | gap | 65 ms | 1.63 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.855 s | mark | 15 ms | 0.38 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 14.870 s | gap | 135 ms | 3.38 u of 40 ms | read 26
+ run | unadjudicated/cw-2026-08-25-013637 | 15.005 s | mark | 135 ms | 3.38 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.140 s | gap | 20 ms | 0.50 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.160 s | mark | 55 ms | 1.38 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.215 s | gap | 25 ms | 0.63 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.240 s | mark | 130 ms | 3.25 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.370 s | gap | 25 ms | 0.63 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.395 s | mark | 55 ms | 1.38 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.450 s | gap | 110 ms | 2.75 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.560 s | mark | 75 ms | 1.88 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.635 s | gap | 25 ms | 0.63 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.660 s | mark | 130 ms | 3.25 u of 40 ms | read 28
+ run | unadjudicated/cw-2026-08-25-013637 | 15.790 s | gap | 25 ms | 0.63 u of 40 ms | read 29
+ run | unadjudicated/cw-2026-08-25-013637 | 15.815 s | mark | 55 ms | 1.38 u of 40 ms | read 29
+ run | unadjudicated/cw-2026-08-25-013637 | 15.870 s | gap | 25 ms | 0.63 u of 40 ms | read 29
+ run | unadjudicated/cw-2026-08-25-013637 | 15.895 s | mark | 55 ms | 1.38 u of 40 ms | read 29
+ run | unadjudicated/cw-2026-08-25-013637 | 15.950 s | gap | 80 ms | 2.00 u of 40 ms | read 29
+ run | unadjudicated/cw-2026-08-25-013637 | 16.030 s | mark | 15 ms | 0.38 u of 40 ms | read 29
+ run | unadjudicated/cw-2026-08-25-013637 | 16.045 s | gap | 40 ms | 1.00 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.085 s | mark | 55 ms | 1.38 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.140 s | gap | 95 ms | 2.38 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.235 s | mark | 85 ms | 2.13 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.320 s | gap | 20 ms | 0.50 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.340 s | mark | 135 ms | 3.38 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.475 s | gap | 65 ms | 1.63 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.540 s | mark | 55 ms | 1.38 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.595 s | gap | 25 ms | 0.63 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.620 s | mark | 130 ms | 3.25 u of 40 ms | read 30
+ run | unadjudicated/cw-2026-08-25-013637 | 16.750 s | gap | 25 ms | 0.63 u of 40 ms | read 31
+ run | unadjudicated/cw-2026-08-25-013637 | 16.775 s | mark | 55 ms | 1.38 u of 40 ms | read 31
+ run | unadjudicated/cw-2026-08-25-013637 | 16.830 s | gap | 190 ms | 4.75 u of 40 ms | read 31
+ run | unadjudicated/cw-2026-08-25-013637 | 17.020 s | mark | 30 ms | 0.75 u of 40 ms | read 31
+ run | unadjudicated/cw-2026-08-25-013637 | 17.050 s | gap | 10 ms | 0.25 u of 40 ms | read 31
+ run | unadjudicated/cw-2026-08-25-013637 | 17.060 s | mark | 25 ms | 0.63 u of 40 ms | read 31
+ run | unadjudicated/cw-2026-08-25-013637 | 17.085 s | gap | 90 ms | 2.25 u of 40 ms | read 31
+ run | unadjudicated/cw-2026-08-25-013637 | 17.175 s | mark | 55 ms | 1.38 u of 40 ms | read 32
+ run | unadjudicated/cw-2026-08-25-013637 | 17.230 s | gap | 20 ms | 0.50 u of 40 ms | read 32
+ run | unadjudicated/cw-2026-08-25-013637 | 17.250 s | mark | 60 ms | 1.50 u of 40 ms | read 32
+ run | unadjudicated/cw-2026-08-25-013637 | 17.310 s | gap | 20 ms | 0.50 u of 40 ms | read 32
+ run | unadjudicated/cw-2026-08-25-013637 | 17.330 s | mark | 55 ms | 1.38 u of 40 ms | read 32
+ run | unadjudicated/cw-2026-08-25-013637 | 17.385 s | gap | 145 ms | 3.63 u of 40 ms | read 32
+ run | unadjudicated/cw-2026-08-25-013637 | 17.530 s | mark | 135 ms | 3.38 u of 40 ms | read 32
+ run | unadjudicated/cw-2026-08-25-013637 | 17.665 s | gap | 25 ms | 0.63 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 17.690 s | mark | 55 ms | 1.38 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 17.745 s | gap | 25 ms | 0.63 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 17.770 s | mark | 130 ms | 3.25 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 17.900 s | gap | 95 ms | 2.38 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 17.995 s | mark | 140 ms | 3.50 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 18.135 s | gap | 20 ms | 0.50 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 18.155 s | mark | 55 ms | 1.38 u of 40 ms | read 33
+ run | unadjudicated/cw-2026-08-25-013637 | 18.210 s | gap | 25 ms | 0.63 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.235 s | mark | 130 ms | 3.25 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.365 s | gap | 25 ms | 0.63 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.390 s | mark | 130 ms | 3.25 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.520 s | gap | 220 ms | 5.50 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.740 s | mark | 25 ms | 0.63 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.765 s | gap | 110 ms | 2.75 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.875 s | mark | 55 ms | 1.38 u of 40 ms | read 35
+ run | unadjudicated/cw-2026-08-25-013637 | 18.930 s | gap | 25 ms | 0.63 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 18.955 s | mark | 130 ms | 3.25 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 19.085 s | gap | 25 ms | 0.63 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 19.110 s | mark | 55 ms | 1.38 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 19.165 s | gap | 25 ms | 0.63 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 19.190 s | mark | 55 ms | 1.38 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 19.245 s | gap | 125 ms | 3.13 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 19.370 s | mark | 70 ms | 1.75 u of 40 ms | read 36
+ run | unadjudicated/cw-2026-08-25-013637 | 19.440 s | gap | 25 ms | 0.63 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 19.465 s | mark | 55 ms | 1.38 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 19.520 s | gap | 145 ms | 3.63 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 19.665 s | mark | 140 ms | 3.50 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 19.805 s | gap | 140 ms | 3.50 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 19.945 s | mark | 55 ms | 1.38 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.000 s | gap | 65 ms | 1.63 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.065 s | mark | 60 ms | 1.50 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.125 s | gap | 40 ms | 1.00 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.165 s | mark | 15 ms | 0.38 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.180 s | gap | 100 ms | 2.50 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.280 s | mark | 60 ms | 1.50 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.340 s | gap | 10 ms | 0.25 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.350 s | mark | 205 ms | 5.13 u of 40 ms | read 37
+ run | unadjudicated/cw-2026-08-25-013637 | 20.555 s | gap | 25 ms | 0.63 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.580 s | mark | 55 ms | 1.38 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.635 s | gap | 20 ms | 0.50 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.655 s | mark | 55 ms | 1.38 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.710 s | gap | 25 ms | 0.63 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.735 s | mark | 55 ms | 1.38 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.790 s | gap | 95 ms | 2.38 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.885 s | mark | 60 ms | 1.50 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.945 s | gap | 25 ms | 0.63 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 20.970 s | mark | 130 ms | 3.25 u of 40 ms | read 39
+ run | unadjudicated/cw-2026-08-25-013637 | 21.100 s | gap | 25 ms | 0.63 u of 40 ms | read 40
+ run | unadjudicated/cw-2026-08-25-013637 | 21.125 s | mark | 55 ms | 1.38 u of 40 ms | read 40
+ run | unadjudicated/cw-2026-08-25-013637 | 21.180 s | gap | 170 ms | 4.25 u of 40 ms | read 40
+ run | unadjudicated/cw-2026-08-25-013637 | 21.350 s | mark | 55 ms | 1.38 u of 40 ms | read 40
+ run | unadjudicated/cw-2026-08-25-013637 | 21.405 s | gap | 125 ms | 3.13 u of 40 ms | read 40
+ run | unadjudicated/cw-2026-08-25-013637 | 21.530 s | mark | 55 ms | 1.38 u of 40 ms | read 41
+ run | unadjudicated/cw-2026-08-25-013637 | 21.585 s | gap | 135 ms | 3.38 u of 40 ms | read 41
+ run | unadjudicated/cw-2026-08-25-013637 | 21.720 s | mark | 25 ms | 0.63 u of 40 ms | read 41
+ run | unadjudicated/cw-2026-08-25-013637 | 21.745 s | gap | 15 ms | 0.38 u of 40 ms | read 41
+ run | unadjudicated/cw-2026-08-25-013637 | 21.760 s | mark | 130 ms | 3.25 u of 40 ms | read 41
+ run | unadjudicated/cw-2026-08-25-013637 | 21.890 s | gap | 25 ms | 0.63 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 21.915 s | mark | 130 ms | 3.25 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.045 s | gap | 25 ms | 0.63 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.070 s | mark | 55 ms | 1.38 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.125 s | gap | 25 ms | 0.63 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.150 s | mark | 55 ms | 1.38 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.205 s | gap | 85 ms | 2.13 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.290 s | mark | 145 ms | 3.63 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.435 s | gap | 170 ms | 4.25 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.605 s | mark | 45 ms | 1.13 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.650 s | gap | 35 ms | 0.88 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.685 s | mark | 35 ms | 0.88 u of 40 ms | read 42
+ run | unadjudicated/cw-2026-08-25-013637 | 22.720 s | gap | 50 ms | 1.25 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 22.770 s | mark | 75 ms | 1.88 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 22.845 s | gap | 20 ms | 0.50 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 22.865 s | mark | 135 ms | 3.38 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 23.000 s | gap | 75 ms | 1.88 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 23.075 s | mark | 55 ms | 1.38 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 23.130 s | gap | 25 ms | 0.63 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 23.155 s | mark | 130 ms | 3.25 u of 40 ms | read 43
+ run | unadjudicated/cw-2026-08-25-013637 | 23.285 s | gap | 25 ms | 0.63 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.310 s | mark | 55 ms | 1.38 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.365 s | gap | 25 ms | 0.63 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.390 s | mark | 55 ms | 1.38 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.445 s | gap | 110 ms | 2.75 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.555 s | mark | 55 ms | 1.38 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.610 s | gap | 20 ms | 0.50 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.630 s | mark | 135 ms | 3.38 u of 40 ms | read 44
+ run | unadjudicated/cw-2026-08-25-013637 | 23.765 s | gap | 25 ms | 0.63 u of 40 ms | read 45
+ run | unadjudicated/cw-2026-08-25-013637 | 23.790 s | mark | 55 ms | 1.38 u of 40 ms | read 45
+ run | unadjudicated/cw-2026-08-25-013637 | 23.845 s | gap | 20 ms | 0.50 u of 40 ms | read 45
+ run | unadjudicated/cw-2026-08-25-013637 | 23.865 s | mark | 55 ms | 1.38 u of 40 ms | read 45
+ run | unadjudicated/cw-2026-08-25-013637 | 23.920 s | gap | 160 ms | 4.00 u of 40 ms | read 45
+ run | unadjudicated/cw-2026-08-25-013637 | 24.080 s | mark | 295 ms | 7.38 u of 40 ms | read 45
+ run | unadjudicated/cw-2026-08-25-013637 | 24.375 s | gap | 20 ms | 0.50 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.395 s | mark | 60 ms | 1.50 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.455 s | gap | 20 ms | 0.50 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.475 s | mark | 60 ms | 1.50 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.535 s | gap | 85 ms | 2.13 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.620 s | mark | 30 ms | 0.75 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.650 s | gap | 10 ms | 0.25 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.660 s | mark | 60 ms | 1.50 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.720 s | gap | 20 ms | 0.50 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.740 s | mark | 135 ms | 3.38 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.875 s | gap | 85 ms | 2.13 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 24.960 s | mark | 135 ms | 3.38 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 25.095 s | gap | 20 ms | 0.50 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 25.115 s | mark | 55 ms | 1.38 u of 40 ms | read 47
+ run | unadjudicated/cw-2026-08-25-013637 | 25.170 s | gap | 20 ms | 0.50 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.190 s | mark | 135 ms | 3.38 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.325 s | gap | 20 ms | 0.50 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.345 s | mark | 135 ms | 3.38 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.480 s | gap | 260 ms | 6.50 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.740 s | mark | 30 ms | 0.75 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.770 s | gap | 55 ms | 1.38 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.825 s | mark | 155 ms | 3.88 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.980 s | gap | 10 ms | 0.25 u of 40 ms | read 48
+ run | unadjudicated/cw-2026-08-25-013637 | 25.990 s | mark | 55 ms | 1.38 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.045 s | gap | 25 ms | 0.63 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.070 s | mark | 135 ms | 3.38 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.205 s | gap | 20 ms | 0.50 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.225 s | mark | 135 ms | 3.38 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.360 s | gap | 20 ms | 0.50 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.380 s | mark | 135 ms | 3.38 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.515 s | gap | 115 ms | 2.88 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.630 s | mark | 55 ms | 1.38 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.685 s | gap | 20 ms | 0.50 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.705 s | mark | 60 ms | 1.50 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.765 s | gap | 20 ms | 0.50 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.785 s | mark | 135 ms | 3.38 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 26.920 s | gap | 120 ms | 3.00 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 27.040 s | mark | 70 ms | 1.75 u of 40 ms | read 51
+ run | unadjudicated/cw-2026-08-25-013637 | 27.110 s | gap | 15 ms | 0.38 u of 40 ms | read 52
+ run | unadjudicated/cw-2026-08-25-013637 | 27.125 s | mark | 55 ms | 1.38 u of 40 ms | read 52
+ run | unadjudicated/cw-2026-08-25-013637 | 27.180 s | gap | 25 ms | 0.63 u of 40 ms | read 52
+ run | unadjudicated/cw-2026-08-25-013637 | 27.205 s | mark | 55 ms | 1.38 u of 40 ms | read 52
+ run | unadjudicated/cw-2026-08-25-013637 | 27.260 s | gap | 130 ms | 3.25 u of 40 ms | read 52
+ run | unadjudicated/cw-2026-08-25-013637 | 27.390 s | mark | 130 ms | 2.61 u of 50 ms | read 53
+ run | unadjudicated/cw-2026-08-25-013637 | 27.520 s | gap | 270 ms | 5.43 u of 50 ms | read 53
+ run | unadjudicated/cw-2026-08-25-013637 | 27.790 s | mark | 25 ms | 0.50 u of 50 ms | read 53
+ run | unadjudicated/cw-2026-08-25-013637 | 27.815 s | gap | 90 ms | 2.25 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 27.905 s | mark | 55 ms | 1.38 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 27.960 s | gap | 25 ms | 0.63 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 27.985 s | mark | 130 ms | 3.25 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 28.115 s | gap | 155 ms | 3.88 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 28.270 s | mark | 55 ms | 1.38 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 28.325 s | gap | 25 ms | 0.63 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 28.350 s | mark | 135 ms | 3.38 u of 40 ms | read 54
+ run | unadjudicated/cw-2026-08-25-013637 | 28.485 s | gap | 20 ms | 0.50 u of 40 ms | read 55
+ run | unadjudicated/cw-2026-08-25-013637 | 28.505 s | mark | 130 ms | 3.25 u of 40 ms | read 55
+ run | unadjudicated/cw-2026-08-25-013637 | 28.635 s | gap | 120 ms | 3.00 u of 40 ms | read 55
+ run | unadjudicated/cw-2026-08-25-013637 | 28.755 s | mark | 55 ms | 1.38 u of 40 ms | read 55
+ run | unadjudicated/cw-2026-08-25-013637 | 28.810 s | gap | 145 ms | 3.63 u of 40 ms | read 55
+ run | unadjudicated/cw-2026-08-25-013637 | 28.955 s | mark | 35 ms | 0.88 u of 40 ms | read 55
+ run | unadjudicated/cw-2026-08-25-013637 | 28.990 s | gap | 190 ms | 4.75 u of 40 ms | read 55
+ run | unadjudicated/cw-2026-08-25-013637 | 29.180 s | mark | 50 ms | 1.25 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.230 s | gap | 10 ms | 0.25 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.240 s | mark | 55 ms | 1.38 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.295 s | gap | 25 ms | 0.63 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.320 s | mark | 55 ms | 1.38 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.375 s | gap | 20 ms | 0.50 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.395 s | mark | 60 ms | 1.50 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.455 s | gap | 165 ms | 4.13 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.620 s | mark | 130 ms | 3.25 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.750 s | gap | 20 ms | 0.50 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.770 s | mark | 135 ms | 3.38 u of 40 ms | read 56
+ run | unadjudicated/cw-2026-08-25-013637 | 29.905 s | gap | 20 ms | 0.50 u of 40 ms | read 56
+ recording | unadjudicated/cw-2026-08-25-021410 | 57 settled | pitch record 57 | text `    A    T O MTTT  YMTT  O AOIHI DT RIGHR IS  FLENT 66OAM`
+ char | unadjudicated/cw-2026-08-25-021410 | 0 | 0.570 to 0.570 s | ` ` | space |  | 32.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, None | read 1
+ char | unadjudicated/cw-2026-08-25-021410 | 1 | 1.160 to 1.160 s | ` ` | space |  | 32.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, None | read 1
+ char | unadjudicated/cw-2026-08-25-021410 | 2 | 1.750 to 1.750 s | ` ` | space |  | 32.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, None | read 1
+ char | unadjudicated/cw-2026-08-25-021410 | 3 | 2.175 to 2.175 s | ` ` | space |  | 23.4 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 6
+ char | unadjudicated/cw-2026-08-25-021410 | 4 | 2.175 to 2.505 s | `A` | sure | .- | 23.4 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 6
+ char | unadjudicated/cw-2026-08-25-021410 | 5 | 3.290 to 3.290 s | ` ` | space |  | 23.4 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 6
+ char | unadjudicated/cw-2026-08-25-021410 | 6 | 4.095 to 4.095 s | ` ` | space |  | 23.4 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 6
+ char | unadjudicated/cw-2026-08-25-021410 | 7 | 4.410 to 4.410 s | ` ` | space |  | 29.4 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 7
+ char | unadjudicated/cw-2026-08-25-021410 | 8 | 4.670 to 4.670 s | ` ` | space |  | 29.4 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 7
+ char | unadjudicated/cw-2026-08-25-021410 | 9 | 4.670 to 4.870 s | `T` | sure | - | 29.4 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 7
+ char | unadjudicated/cw-2026-08-25-021410 | 10 | 5.095 to 5.095 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 8
+ char | unadjudicated/cw-2026-08-25-021410 | 11 | 5.095 to 5.565 s | `O` | sure | --- | 30.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 9
+ char | unadjudicated/cw-2026-08-25-021410 | 12 | 5.810 to 5.810 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 9
+ char | unadjudicated/cw-2026-08-25-021410 | 13 | 5.810 to 6.150 s | `M` | sure | -- | 36.9 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 10
+ char | unadjudicated/cw-2026-08-25-021410 | 14 | 6.225 to 6.290 s | `T` | sure | - | 36.9 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 10
+ char | unadjudicated/cw-2026-08-25-021410 | 15 | 6.350 to 6.425 s | `T` | sure | - | 36.9 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 10
+ char | unadjudicated/cw-2026-08-25-021410 | 16 | 6.650 to 6.730 s | `T` | sure | - | 34.3 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 11
+ char | unadjudicated/cw-2026-08-25-021410 | 17 | 7.265 to 7.265 s | ` ` | space |  | 34.3 wpm, speed Hypothesis | pitch 550.0 Hz, tracker 550.0 Hz, Hypothesis | read 12
+ char | unadjudicated/cw-2026-08-25-021410 | 18 | 7.285 to 7.285 s | ` ` | space |  | 28.2 wpm, speed Hypothesis | pitch 545.0 Hz, tracker 545.0 Hz, Proved | read 13
+ char | unadjudicated/cw-2026-08-25-021410 | 19 | 7.285 to 8.010 s | `Y` | sure | -.-- | 28.2 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Proved | read 14
+ char | unadjudicated/cw-2026-08-25-021410 | 20 | 8.260 to 8.730 s | `M` | sure | -- | 28.2 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 15
+ char | unadjudicated/cw-2026-08-25-021410 | 21 | 8.985 to 9.185 s | `T` | sure | - | 34.3 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 16
+ char | unadjudicated/cw-2026-08-25-021410 | 22 | 8.985 to 9.190 s | `T` | sure | - | 30.0 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 17
+ char | unadjudicated/cw-2026-08-25-021410 | 23 | 9.800 to 9.800 s | ` ` | space |  | 30.0 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 17
+ char | unadjudicated/cw-2026-08-25-021410 | 24 | 9.845 to 9.845 s | ` ` | space |  | 28.2 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 18
+ char | unadjudicated/cw-2026-08-25-021410 | 25 | 10.065 to 10.535 s | `O` | sure | --- | 28.2 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 19
+ char | unadjudicated/cw-2026-08-25-021410 | 26 | 11.135 to 11.135 s | ` ` | space |  | 28.2 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 20
+ char | unadjudicated/cw-2026-08-25-021410 | 27 | 11.075 to 11.215 s | `A` | sure | .- | 34.3 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 21
+ char | unadjudicated/cw-2026-08-25-021410 | 28 | 11.280 to 11.615 s | `O` | sure | --- | 34.3 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 21
+ char | unadjudicated/cw-2026-08-25-021410 | 29 | 11.820 to 12.030 s | `I` | sure | .. | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 22
+ char | unadjudicated/cw-2026-08-25-021410 | 30 | 12.250 to 12.725 s | `H` | sure | .... | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 23
+ char | unadjudicated/cw-2026-08-25-021410 | 31 | 12.955 to 13.160 s | `I` | sure | .. | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 24
+ char | unadjudicated/cw-2026-08-25-021410 | 32 | 13.705 to 13.705 s | ` ` | space |  | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 25
+ char | unadjudicated/cw-2026-08-25-021410 | 33 | 13.705 to 14.165 s | `D` | sure | -.. | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 26
+ char | unadjudicated/cw-2026-08-25-021410 | 34 | 14.370 to 14.570 s | `T` | sure | - | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 27
+ char | unadjudicated/cw-2026-08-25-021410 | 35 | 15.570 to 15.570 s | ` ` | space |  | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 29
+ char | unadjudicated/cw-2026-08-25-021410 | 36 | 15.880 to 16.345 s | `R` | sure | .-. | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 30
+ char | unadjudicated/cw-2026-08-25-021410 | 37 | 16.565 to 16.755 s | `I` | sure | .. | 18.5 wpm, speed Hypothesis | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 31
+ char | unadjudicated/cw-2026-08-25-021410 | 38 | 17.015 to 17.620 s | `G` | sure | --. | 18.5 wpm, speed Proved | pitch 535.0 Hz, tracker 535.0 Hz, Proved | read 33
+ char | unadjudicated/cw-2026-08-25-021410 | 39 | 17.855 to 18.335 s | `H` | sure | .... | 18.5 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 34
+ char | unadjudicated/cw-2026-08-25-021410 | 40 | 18.545 to 19.025 s | `R` | sure | .-. | 18.5 wpm, speed Proved | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 36
+ char | unadjudicated/cw-2026-08-25-021410 | 41 | 19.780 to 19.780 s | ` ` | space |  | 18.5 wpm, speed Proved | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 37
+ char | unadjudicated/cw-2026-08-25-021410 | 42 | 19.780 to 19.985 s | `I` | sure | .. | 18.5 wpm, speed Proved | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 37
+ char | unadjudicated/cw-2026-08-25-021410 | 43 | 20.175 to 20.520 s | `S` | sure | ... | 18.5 wpm, speed Proved | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 39
+ char | unadjudicated/cw-2026-08-25-021410 | 44 | 21.545 to 21.545 s | ` ` | space |  | 17.8 wpm, speed Hypothesis | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 41
+ char | unadjudicated/cw-2026-08-25-021410 | 45 | 22.275 to 22.275 s | ` ` | space |  | 18.5 wpm, speed Hypothesis | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 42
+ char | unadjudicated/cw-2026-08-25-021410 | 46 | 22.275 to 22.885 s | `F` | sure | ..-. | 17.8 wpm, speed Hypothesis | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 43
+ char | unadjudicated/cw-2026-08-25-021410 | 47 | 23.075 to 23.685 s | `L` | sure | .-.. | 17.8 wpm, speed Hypothesis | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 45
+ char | unadjudicated/cw-2026-08-25-021410 | 48 | 23.915 to 23.985 s | `E` | sure | . | 17.8 wpm, speed Hypothesis | pitch 540.0 Hz, tracker 540.0 Hz, Hypothesis | read 45
+ char | unadjudicated/cw-2026-08-25-021410 | 49 | 24.210 to 24.545 s | `N` | sure | -. | 17.8 wpm, speed Proved | pitch 540.0 Hz, tracker 540.0 Hz, Proved | read 47
+ char | unadjudicated/cw-2026-08-25-021410 | 50 | 24.740 to 24.945 s | `T` | sure | - | 17.8 wpm, speed Proved | pitch 540.0 Hz, tracker 540.0 Hz, Proved | read 47
+ char | unadjudicated/cw-2026-08-25-021410 | 51 | 25.940 to 25.940 s | ` ` | space |  | 17.8 wpm, speed Proved | pitch 535.0 Hz, tracker 535.0 Hz, Proved | read 49
+ char | unadjudicated/cw-2026-08-25-021410 | 52 | 25.940 to 26.675 s | `6` | sure | -.... | 17.8 wpm, speed Proved | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 51
+ char | unadjudicated/cw-2026-08-25-021410 | 53 | 26.980 to 27.690 s | `6` | sure | -.... | 17.8 wpm, speed Proved | pitch 535.0 Hz, tracker 535.0 Hz, Hypothesis | read 53
+ char | unadjudicated/cw-2026-08-25-021410 | 54 | 27.960 to 28.665 s | `O` | sure | --- | 17.8 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 55
+ char | unadjudicated/cw-2026-08-25-021410 | 55 | 28.875 to 29.235 s | `A` | sure | .- | 17.8 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 56
+ char | unadjudicated/cw-2026-08-25-021410 | 56 | 29.530 to 30.000 s | `M` | sure | -- | 17.8 wpm, speed Proved | pitch 550.0 Hz, tracker 550.0 Hz, Proved | read 56
+ run | unadjudicated/cw-2026-08-25-021410 | 0.000 s | gap | 2180 ms | 42.55 u of 51 ms | read 6
+ run | unadjudicated/cw-2026-08-25-021410 | 2.180 s | mark | 75 ms | 1.46 u of 51 ms | read 6
+ run | unadjudicated/cw-2026-08-25-021410 | 2.255 s | gap | 55 ms | 1.07 u of 51 ms | read 6
+ run | unadjudicated/cw-2026-08-25-021410 | 2.310 s | mark | 205 ms | 4.00 u of 51 ms | read 6
+ run | unadjudicated/cw-2026-08-25-021410 | 2.515 s | gap | 2155 ms | 42.06 u of 51 ms | read 6
+ run | unadjudicated/cw-2026-08-25-021410 | 4.670 s | mark | 210 ms | 5.14 u of 41 ms | read 7
+ run | unadjudicated/cw-2026-08-25-021410 | 4.880 s | gap | 215 ms | 5.27 u of 41 ms | read 7
+ run | unadjudicated/cw-2026-08-25-021410 | 5.095 s | mark | 80 ms | 1.96 u of 41 ms | read 7
+ run | unadjudicated/cw-2026-08-25-021410 | 5.175 s | gap | 45 ms | 1.10 u of 41 ms | read 7
+ run | unadjudicated/cw-2026-08-25-021410 | 5.220 s | mark | 90 ms | 2.25 u of 40 ms | read 9
+ run | unadjudicated/cw-2026-08-25-021410 | 5.310 s | gap | 50 ms | 1.25 u of 40 ms | read 9
+ run | unadjudicated/cw-2026-08-25-021410 | 5.360 s | mark | 215 ms | 5.38 u of 40 ms | read 9
+ run | unadjudicated/cw-2026-08-25-021410 | 5.575 s | gap | 235 ms | 5.88 u of 40 ms | read 9
+ run | unadjudicated/cw-2026-08-25-021410 | 5.810 s | mark | 220 ms | 5.50 u of 40 ms | read 9
+ run | unadjudicated/cw-2026-08-25-021410 | 6.030 s | gap | 50 ms | 1.54 u of 33 ms | read 10
+ run | unadjudicated/cw-2026-08-25-021410 | 6.080 s | mark | 80 ms | 2.46 u of 33 ms | read 10
+ run | unadjudicated/cw-2026-08-25-021410 | 6.160 s | gap | 65 ms | 2.00 u of 33 ms | read 10
+ run | unadjudicated/cw-2026-08-25-021410 | 6.225 s | mark | 75 ms | 2.31 u of 33 ms | read 10
+ run | unadjudicated/cw-2026-08-25-021410 | 6.300 s | gap | 50 ms | 1.54 u of 33 ms | read 10
+ run | unadjudicated/cw-2026-08-25-021410 | 6.350 s | mark | 85 ms | 2.62 u of 33 ms | read 10
+ run | unadjudicated/cw-2026-08-25-021410 | 6.435 s | gap | 215 ms | 6.62 u of 33 ms | read 10
+ run | unadjudicated/cw-2026-08-25-021410 | 6.650 s | mark | 85 ms | 2.43 u of 35 ms | read 11
+ run | unadjudicated/cw-2026-08-25-021410 | 6.735 s | gap | 300 ms | 8.57 u of 35 ms | read 11
+ run | unadjudicated/cw-2026-08-25-021410 | 7.035 s | mark | 20 ms | 0.57 u of 35 ms | read 11
+ run | unadjudicated/cw-2026-08-25-021410 | 7.055 s | gap | 230 ms | 6.57 u of 35 ms | read 11
+ run | unadjudicated/cw-2026-08-25-021410 | 7.285 s | mark | 210 ms | 6.00 u of 35 ms | read 11
+ run | unadjudicated/cw-2026-08-25-021410 | 7.495 s | gap | 50 ms | 1.18 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 7.545 s | mark | 80 ms | 1.88 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 7.625 s | gap | 50 ms | 1.18 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 7.675 s | mark | 80 ms | 1.88 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 7.755 s | gap | 50 ms | 1.18 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 7.805 s | mark | 215 ms | 5.06 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 8.020 s | gap | 240 ms | 5.65 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 8.260 s | mark | 210 ms | 4.94 u of 43 ms | read 14
+ run | unadjudicated/cw-2026-08-25-021410 | 8.470 s | gap | 60 ms | 1.41 u of 43 ms | read 15
+ run | unadjudicated/cw-2026-08-25-021410 | 8.530 s | mark | 210 ms | 4.94 u of 43 ms | read 15
+ run | unadjudicated/cw-2026-08-25-021410 | 8.740 s | gap | 245 ms | 5.76 u of 43 ms | read 15
+ run | unadjudicated/cw-2026-08-25-021410 | 8.985 s | mark | 210 ms | 6.00 u of 35 ms | read 16
+ run | unadjudicated/cw-2026-08-25-021410 | 9.195 s | gap | 485 ms | 12.13 u of 40 ms | read 17
+ run | unadjudicated/cw-2026-08-25-021410 | 9.680 s | mark | 55 ms | 1.38 u of 40 ms | read 17
+ run | unadjudicated/cw-2026-08-25-021410 | 9.735 s | gap | 330 ms | 8.25 u of 40 ms | read 17
+ run | unadjudicated/cw-2026-08-25-021410 | 10.065 s | mark | 85 ms | 2.00 u of 43 ms | read 19
+ run | unadjudicated/cw-2026-08-25-021410 | 10.150 s | gap | 50 ms | 1.18 u of 43 ms | read 19
+ run | unadjudicated/cw-2026-08-25-021410 | 10.200 s | mark | 210 ms | 4.94 u of 43 ms | read 19
+ run | unadjudicated/cw-2026-08-25-021410 | 10.410 s | gap | 50 ms | 1.18 u of 43 ms | read 19
+ run | unadjudicated/cw-2026-08-25-021410 | 10.460 s | mark | 80 ms | 1.88 u of 43 ms | read 19
+ run | unadjudicated/cw-2026-08-25-021410 | 10.540 s | gap | 595 ms | 14.00 u of 43 ms | read 19
+ run | unadjudicated/cw-2026-08-25-021410 | 11.135 s | mark | 90 ms | 2.57 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.225 s | gap | 55 ms | 1.57 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.280 s | mark | 85 ms | 2.43 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.365 s | gap | 45 ms | 1.29 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.410 s | mark | 80 ms | 2.29 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.490 s | gap | 50 ms | 1.43 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.540 s | mark | 80 ms | 2.29 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.620 s | gap | 200 ms | 5.71 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.820 s | mark | 85 ms | 2.43 u of 35 ms | read 21
+ run | unadjudicated/cw-2026-08-25-021410 | 11.905 s | gap | 50 ms | 0.77 u of 65 ms | read 22
+ run | unadjudicated/cw-2026-08-25-021410 | 11.955 s | mark | 85 ms | 1.31 u of 65 ms | read 22
+ run | unadjudicated/cw-2026-08-25-021410 | 12.040 s | gap | 210 ms | 3.23 u of 65 ms | read 22
+ run | unadjudicated/cw-2026-08-25-021410 | 12.250 s | mark | 80 ms | 1.23 u of 65 ms | read 22
+ run | unadjudicated/cw-2026-08-25-021410 | 12.330 s | gap | 50 ms | 0.77 u of 65 ms | read 22
+ run | unadjudicated/cw-2026-08-25-021410 | 12.380 s | mark | 85 ms | 1.31 u of 65 ms | read 23
+ run | unadjudicated/cw-2026-08-25-021410 | 12.465 s | gap | 50 ms | 0.77 u of 65 ms | read 23
+ run | unadjudicated/cw-2026-08-25-021410 | 12.515 s | mark | 90 ms | 1.38 u of 65 ms | read 23
+ run | unadjudicated/cw-2026-08-25-021410 | 12.605 s | gap | 45 ms | 0.69 u of 65 ms | read 23
+ run | unadjudicated/cw-2026-08-25-021410 | 12.650 s | mark | 85 ms | 1.31 u of 65 ms | read 23
+ run | unadjudicated/cw-2026-08-25-021410 | 12.735 s | gap | 220 ms | 3.38 u of 65 ms | read 23
+ run | unadjudicated/cw-2026-08-25-021410 | 12.955 s | mark | 80 ms | 1.23 u of 65 ms | read 24
+ run | unadjudicated/cw-2026-08-25-021410 | 13.035 s | gap | 50 ms | 0.77 u of 65 ms | read 24
+ run | unadjudicated/cw-2026-08-25-021410 | 13.085 s | mark | 80 ms | 1.23 u of 65 ms | read 24
+ run | unadjudicated/cw-2026-08-25-021410 | 13.165 s | gap | 540 ms | 8.31 u of 65 ms | read 24
+ run | unadjudicated/cw-2026-08-25-021410 | 13.705 s | mark | 215 ms | 3.31 u of 65 ms | read 26
+ run | unadjudicated/cw-2026-08-25-021410 | 13.920 s | gap | 55 ms | 0.85 u of 65 ms | read 26
+ run | unadjudicated/cw-2026-08-25-021410 | 13.975 s | mark | 75 ms | 1.15 u of 65 ms | read 26
+ run | unadjudicated/cw-2026-08-25-021410 | 14.050 s | gap | 50 ms | 0.77 u of 65 ms | read 26
+ run | unadjudicated/cw-2026-08-25-021410 | 14.100 s | mark | 85 ms | 1.31 u of 65 ms | read 26
+ run | unadjudicated/cw-2026-08-25-021410 | 14.185 s | gap | 55 ms | 0.85 u of 65 ms | read 26
+ run | unadjudicated/cw-2026-08-25-021410 | 14.240 s | mark | 340 ms | 5.23 u of 65 ms | read 26
+ run | unadjudicated/cw-2026-08-25-021410 | 14.580 s | gap | 1300 ms | 20.00 u of 65 ms | read 27
+ run | unadjudicated/cw-2026-08-25-021410 | 15.880 s | mark | 75 ms | 1.15 u of 65 ms | read 30
+ run | unadjudicated/cw-2026-08-25-021410 | 15.955 s | gap | 55 ms | 0.85 u of 65 ms | read 30
+ run | unadjudicated/cw-2026-08-25-021410 | 16.010 s | mark | 210 ms | 3.23 u of 65 ms | read 30
+ run | unadjudicated/cw-2026-08-25-021410 | 16.220 s | gap | 50 ms | 0.77 u of 65 ms | read 30
+ run | unadjudicated/cw-2026-08-25-021410 | 16.270 s | mark | 85 ms | 1.31 u of 65 ms | read 30
+ run | unadjudicated/cw-2026-08-25-021410 | 16.355 s | gap | 210 ms | 3.23 u of 65 ms | read 30
+ run | unadjudicated/cw-2026-08-25-021410 | 16.565 s | mark | 65 ms | 1.00 u of 65 ms | read 31
+ run | unadjudicated/cw-2026-08-25-021410 | 16.630 s | gap | 50 ms | 0.77 u of 65 ms | read 31
+ run | unadjudicated/cw-2026-08-25-021410 | 16.680 s | mark | 85 ms | 1.31 u of 65 ms | read 31
+ run | unadjudicated/cw-2026-08-25-021410 | 16.765 s | gap | 250 ms | 3.85 u of 65 ms | read 31
+ run | unadjudicated/cw-2026-08-25-021410 | 17.015 s | mark | 215 ms | 3.31 u of 65 ms | read 31
+ run | unadjudicated/cw-2026-08-25-021410 | 17.230 s | gap | 50 ms | 0.77 u of 65 ms | read 33
+ run | unadjudicated/cw-2026-08-25-021410 | 17.280 s | mark | 220 ms | 3.38 u of 65 ms | read 33
+ run | unadjudicated/cw-2026-08-25-021410 | 17.500 s | gap | 50 ms | 0.77 u of 65 ms | read 33
+ run | unadjudicated/cw-2026-08-25-021410 | 17.550 s | mark | 80 ms | 1.23 u of 65 ms | read 33
+ run | unadjudicated/cw-2026-08-25-021410 | 17.630 s | gap | 225 ms | 3.46 u of 65 ms | read 33
+ run | unadjudicated/cw-2026-08-25-021410 | 17.855 s | mark | 80 ms | 1.23 u of 65 ms | read 33
+ run | unadjudicated/cw-2026-08-25-021410 | 17.935 s | gap | 65 ms | 1.00 u of 65 ms | read 33
+ run | unadjudicated/cw-2026-08-25-021410 | 18.000 s | mark | 75 ms | 1.15 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.075 s | gap | 50 ms | 0.77 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.125 s | mark | 85 ms | 1.31 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.210 s | gap | 50 ms | 0.77 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.260 s | mark | 85 ms | 1.31 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.345 s | gap | 200 ms | 3.08 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.545 s | mark | 90 ms | 1.38 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.635 s | gap | 50 ms | 0.77 u of 65 ms | read 34
+ run | unadjudicated/cw-2026-08-25-021410 | 18.685 s | mark | 210 ms | 3.23 u of 65 ms | read 36
+ run | unadjudicated/cw-2026-08-25-021410 | 18.895 s | gap | 55 ms | 0.85 u of 65 ms | read 36
+ run | unadjudicated/cw-2026-08-25-021410 | 18.950 s | mark | 85 ms | 1.31 u of 65 ms | read 36
+ run | unadjudicated/cw-2026-08-25-021410 | 19.035 s | gap | 745 ms | 11.46 u of 65 ms | read 36
+ run | unadjudicated/cw-2026-08-25-021410 | 19.780 s | mark | 80 ms | 1.23 u of 65 ms | read 37
+ run | unadjudicated/cw-2026-08-25-021410 | 19.860 s | gap | 50 ms | 0.77 u of 65 ms | read 37
+ run | unadjudicated/cw-2026-08-25-021410 | 19.910 s | mark | 85 ms | 1.31 u of 65 ms | read 37
+ run | unadjudicated/cw-2026-08-25-021410 | 19.995 s | gap | 180 ms | 2.77 u of 65 ms | read 37
+ run | unadjudicated/cw-2026-08-25-021410 | 20.175 s | mark | 80 ms | 1.23 u of 65 ms | read 37
+ run | unadjudicated/cw-2026-08-25-021410 | 20.255 s | gap | 55 ms | 0.85 u of 65 ms | read 39
+ run | unadjudicated/cw-2026-08-25-021410 | 20.310 s | mark | 85 ms | 1.31 u of 65 ms | read 39
+ run | unadjudicated/cw-2026-08-25-021410 | 20.395 s | gap | 45 ms | 0.69 u of 65 ms | read 39
+ run | unadjudicated/cw-2026-08-25-021410 | 20.440 s | mark | 85 ms | 1.31 u of 65 ms | read 39
+ run | unadjudicated/cw-2026-08-25-021410 | 20.525 s | gap | 1750 ms | 26.92 u of 65 ms | read 39
+ run | unadjudicated/cw-2026-08-25-021410 | 22.275 s | mark | 80 ms | 1.19 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 22.355 s | gap | 55 ms | 0.81 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 22.410 s | mark | 80 ms | 1.19 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 22.490 s | gap | 55 ms | 0.81 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 22.545 s | mark | 220 ms | 3.26 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 22.765 s | gap | 50 ms | 0.74 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 22.815 s | mark | 75 ms | 1.11 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 22.890 s | gap | 185 ms | 2.74 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 23.075 s | mark | 85 ms | 1.26 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 23.160 s | gap | 50 ms | 0.74 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 23.210 s | mark | 215 ms | 3.19 u of 68 ms | read 43
+ run | unadjudicated/cw-2026-08-25-021410 | 23.425 s | gap | 55 ms | 0.81 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 23.480 s | mark | 80 ms | 1.19 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 23.560 s | gap | 55 ms | 0.81 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 23.615 s | mark | 80 ms | 1.19 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 23.695 s | gap | 220 ms | 3.26 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 23.915 s | mark | 110 ms | 1.63 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 24.025 s | gap | 185 ms | 2.74 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 24.210 s | mark | 280 ms | 4.15 u of 68 ms | read 45
+ run | unadjudicated/cw-2026-08-25-021410 | 24.490 s | gap | 30 ms | 0.44 u of 68 ms | read 47
+ run | unadjudicated/cw-2026-08-25-021410 | 24.520 s | mark | 60 ms | 0.89 u of 68 ms | read 47
+ run | unadjudicated/cw-2026-08-25-021410 | 24.580 s | gap | 65 ms | 0.96 u of 68 ms | read 47
+ run | unadjudicated/cw-2026-08-25-021410 | 24.645 s | mark | 50 ms | 0.74 u of 68 ms | read 47
+ run | unadjudicated/cw-2026-08-25-021410 | 24.695 s | gap | 45 ms | 0.67 u of 68 ms | read 47
+ run | unadjudicated/cw-2026-08-25-021410 | 24.740 s | mark | 215 ms | 3.19 u of 68 ms | read 47
+ run | unadjudicated/cw-2026-08-25-021410 | 24.955 s | gap | 985 ms | 14.59 u of 68 ms | read 47
+ run | unadjudicated/cw-2026-08-25-021410 | 25.940 s | mark | 215 ms | 3.19 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.155 s | gap | 50 ms | 0.74 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.205 s | mark | 80 ms | 1.19 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.285 s | gap | 50 ms | 0.74 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.335 s | mark | 85 ms | 1.26 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.420 s | gap | 55 ms | 0.81 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.475 s | mark | 75 ms | 1.11 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.550 s | gap | 60 ms | 0.89 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.610 s | mark | 80 ms | 1.19 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.690 s | gap | 255 ms | 3.78 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 26.945 s | mark | 220 ms | 3.26 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 27.165 s | gap | 45 ms | 0.67 u of 68 ms | read 51
+ run | unadjudicated/cw-2026-08-25-021410 | 27.210 s | mark | 105 ms | 1.56 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.315 s | gap | 25 ms | 0.37 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.340 s | mark | 95 ms | 1.41 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.435 s | gap | 50 ms | 0.74 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.485 s | mark | 80 ms | 1.19 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.565 s | gap | 50 ms | 0.74 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.615 s | mark | 90 ms | 1.33 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.705 s | gap | 255 ms | 3.78 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 27.960 s | mark | 215 ms | 3.19 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 28.175 s | gap | 50 ms | 0.74 u of 68 ms | read 53
+ run | unadjudicated/cw-2026-08-25-021410 | 28.225 s | mark | 215 ms | 3.19 u of 68 ms | read 55
+ run | unadjudicated/cw-2026-08-25-021410 | 28.440 s | gap | 50 ms | 0.74 u of 68 ms | read 55
+ run | unadjudicated/cw-2026-08-25-021410 | 28.490 s | mark | 215 ms | 3.19 u of 68 ms | read 55
+ run | unadjudicated/cw-2026-08-25-021410 | 28.705 s | gap | 60 ms | 0.89 u of 68 ms | read 55
+ run | unadjudicated/cw-2026-08-25-021410 | 28.765 s | mark | 215 ms | 3.19 u of 68 ms | read 55
+ run | unadjudicated/cw-2026-08-25-021410 | 28.980 s | gap | 60 ms | 0.89 u of 68 ms | read 56
+ run | unadjudicated/cw-2026-08-25-021410 | 29.040 s | mark | 210 ms | 3.11 u of 68 ms | read 56
+ run | unadjudicated/cw-2026-08-25-021410 | 29.250 s | gap | 280 ms | 4.15 u of 68 ms | read 56
+ run | unadjudicated/cw-2026-08-25-021410 | 29.530 s | mark | 210 ms | 3.11 u of 68 ms | read 56
+ run | unadjudicated/cw-2026-08-25-021410 | 29.740 s | gap | 55 ms | 0.81 u of 68 ms | read 56
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 11.2858 Seconds
+RC=0 WALL=12s
