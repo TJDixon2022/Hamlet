@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: BLOCKED
 TASK: 1 of 4
 WORK_INSTRUCTION: 454 - the second decoder reads beside ours
-BALL: code
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T13:06:28-04:00
-NOTE: Task 0 done, numbers as 453 left them; task 1 blocked - the fldigi clone was refused, recording the request for the four files
+UPDATED: 2026-09-26T13:07:51-04:00
+NOTE: Stopped at task 1: fldigi clone refused in the session - place its source under .run-unit/fldigi, then rerun 454; output.md written
 
 ---
 

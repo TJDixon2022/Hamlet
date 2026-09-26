@@ -1,0 +1,8 @@
+unit454 task 1: stopped - git clone of w1hkj/fldigi refused in the session; the owner is asked to place the source under .run-unit/fldigi; no port, no parity table (9.1)
+
+The clone was refused as needing approval and treated as a denial per
+the work instruction's section 3; no other route was tried. Tasks 1 to
+4 not started. output.md written with the request in section 4.
+Entry figures stand as at 453's exit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
