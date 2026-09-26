@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 450 - the pitch says whether it was proved
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T07:22:39-04:00
-NOTE: Trace done: real hops proved 40664, hypothesis 50810, none 46526; proved-majority windows 0 of 179 over 25 Hz; next the HM-REQ-093 test, watched red
+UPDATED: 2026-09-26T07:45:27-04:00
+NOTE: State built and kept: text 63 of 63 identical, HM-REQ-093 green after red, 4.6 ticked; next the exit round
 
 ---
 

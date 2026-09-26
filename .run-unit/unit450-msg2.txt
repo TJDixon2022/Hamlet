@@ -1,0 +1,12 @@
+unit450 task 2: 4.6 ticked - HM-REQ-093 test green, watched red on the level and stale-hold cases; text 63 of 63 identical; the sheet says proved, hypothesis or none (4.6)
+
+The tick rests on all five of work instruction 450's 3 (d): the test
+naming HM-REQ-093 is green; it was watched red first on HEAD's flags; the
+three values reach CwDecodeReport; the sheet's toneHz line prints the
+state; and (c) holds - every recording's text identical, 63 of 63, the
+four metrics, the three floors and MET-PITCH-ERR as at entry. The app
+types covering the sheet are green alone; ThePitchControlsAreOffThePanel
+is excluded from compilation in its csproj and did not run. 4.4 and 4.7
+not ticked. One line to metrics.md.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

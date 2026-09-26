@@ -1,0 +1,47 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.70]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.91]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.92]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:25.89]     Hamlet.RadioEngine.Tests.Cw.ThePitchSaysWhetherItWasProvedTests.HmReq093ThePitchIsReportedAsProvedHypothesisOrNone [FAIL]
+[xUnit.net 00:00:25.89]       HM-REQ-093 red on: proved, the pitch (proved at 640.0, 635.0, 625.0, 650.0, 645.0); level, after the keying (841 of 841 hops past the lapse proved, beside the carrier alone); stale hold, the band (past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops); stale hold, key held down (past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops)
+[xUnit.net 00:00:25.89]       Stack Trace:
+[xUnit.net 00:00:25.89]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ThePitchSaysWhetherItWasProvedTests.cs(124,0): at Hamlet.RadioEngine.Tests.Cw.ThePitchSaysWhetherItWasProvedTests.HmReq093ThePitchIsReportedAsProvedHypothesisOrNone()
+[xUnit.net 00:00:25.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:25.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:25.89]       Output:
+[xUnit.net 00:00:25.89]         HM-REQ-093 | none | green | 0 of 7520 hops not none
+[xUnit.net 00:00:25.89]         HM-REQ-093 | proved, the construction | green | instrument 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0
+[xUnit.net 00:00:25.89]         HM-REQ-093 | proved | green | 3701 of 3701 middle hops proved
+[xUnit.net 00:00:25.89]         HM-REQ-093 | proved, the pitch | RED | proved at 640.0, 635.0, 625.0, 650.0, 645.0
+[xUnit.net 00:00:25.89]         HM-REQ-093 | level, on the carrier | green | 0 hops proved at the carrier
+[xUnit.net 00:00:25.89]         HM-REQ-093 | level, after the keying | RED | 841 of 841 hops past the lapse proved, beside the carrier alone
+[xUnit.net 00:00:25.89]         HM-REQ-093 | stale hold, the band | RED | past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops
+[xUnit.net 00:00:25.89]         HM-REQ-093 | stale hold, key held down | RED | past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops
+[xUnit.net 00:00:25.89]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.ThePitchSaysWhetherItWasProvedTests.HmReq093ThePitchIsReportedAsProvedHypothesisOrNone [23 s]
+  Error Message:
+   HM-REQ-093 red on: proved, the pitch (proved at 640.0, 635.0, 625.0, 650.0, 645.0); level, after the keying (841 of 841 hops past the lapse proved, beside the carrier alone); stale hold, the band (past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops); stale hold, key held down (past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.ThePitchSaysWhetherItWasProvedTests.HmReq093ThePitchIsReportedAsProvedHypothesisOrNone() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ThePitchSaysWhetherItWasProvedTests.cs:line 124
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ HM-REQ-093 | none | green | 0 of 7520 hops not none
+ HM-REQ-093 | proved, the construction | green | instrument 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0, 640.0
+ HM-REQ-093 | proved | green | 3701 of 3701 middle hops proved
+ HM-REQ-093 | proved, the pitch | RED | proved at 640.0, 635.0, 625.0, 650.0, 645.0
+ HM-REQ-093 | level, on the carrier | green | 0 hops proved at the carrier
+ HM-REQ-093 | level, after the keying | RED | 841 of 841 hops past the lapse proved, beside the carrier alone
+ HM-REQ-093 | stale hold, the band | RED | past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops
+ HM-REQ-093 | stale hold, key held down | RED | past 41.6 s: None 0, Hypothesis 0, Proved 841 of 841 hops
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 26.2554 Seconds
+RC=1 WALL=27s

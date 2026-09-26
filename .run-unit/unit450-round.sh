@@ -34,6 +34,10 @@ case "$1" in
   state)
     sh $R "trace-pitch-state-$2" engine 600 "$3" "Trace: every hop's proposed pitch state beside the instrument, 23 keyed, the over-25 files and the synthetic set" "FullyQualifiedName~.WhatThePitchCanSayItProvedTests.EveryHopsStateBesideTheInstrument" --no-build
     ;;
+  req093)
+    sh $R "req093-$2" engine 300 "$3" "Test: the HM-REQ-093 cases alone" "FullyQualifiedName~.ThePitchSaysWhetherItWasProvedTests." --no-build
+    grep -a "HM-REQ-093 |" .run-unit/unit450-req093-$2.txt | cut -c1-400
+    ;;
   trace)
     sh $R "trace-$2" engine 600 "$3" "Tracing the sure-wrong letters with their speeds" "FullyQualifiedName~.WhereTheSureWrongLettersComeFromTests." --no-build
     ;;

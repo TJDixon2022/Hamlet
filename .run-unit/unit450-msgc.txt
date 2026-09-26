@@ -1,0 +1,23 @@
+unit450 change: the pitch carries a proof state, proved, hypothesis or none, and the sheet says which - text 63 of 63 identical, HM-REQ-093 test green, watched red first (4.6)
+
+CwPitchProof is new. CwToneTracker.PitchProof is proved while the latest
+survey's confirmed keyed verdict names the reported pitch, hypothesis
+while a pitch is held that it does not name, none while no pitch is held.
+CwDecodeReport carries it in place of the positional PitchWasMeasured,
+which is now read from it (true for proved and hypothesis, as before), so
+the two cannot disagree. The sheet's toneHz line says proved or
+HYPOTHESIS, NOT PROVED NOW; a held pitch is no longer printed as measured
+from keying. Nothing in the decode path reads the state.
+
+ThePitchSaysWhetherItWasProvedTests names HM-REQ-093: red on HEAD's flags
+(the level case past the lapse and both stale holds, 841 of 841 hops
+proved each), green on the state. ThePitchLineSaysWhatWasProvedTests
+prints the line on the 23 keyed recordings: 6 proved, 15 hypothesis
+where HEAD said measured, 2 none. TheRestOfTheSheetIsTrueTests' one
+hand-built report renamed to the new field.
+
+(c): every recording's text identical, 63 of 63; the four metrics, the
+three floors and MET-PITCH-ERR (69 captures, 0 changed, 248 windows over
+25 Hz) as at entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

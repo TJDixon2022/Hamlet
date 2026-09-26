@@ -200,7 +200,7 @@ between real words.
 - [x] 4.3 HM-REQ-091, the tracked pitch chosen by keying quality and never by level alone or by the operator's configured pitch, has a test naming it and the report states whether it is met.
 - [ ] 4.4 A change to `CwToneTracker` under R75 is judged by R78's keep rule with the instrument's table beside it, and the report names the clause of HM-DEC-095 or HM-DEC-127 it works against; after three consecutive units with no kept change the step closes partial.
 - [x] 4.5 HM-REQ-102 and HM-REQ-103 are measured on the 7.052 opening: no sure character while acquiring, and the opening characters not lost to acquisition, reported as text before and after.
-- [ ] 4.6 HM-REQ-093, pitch reported with a proof state of proved, hypothesis or none, is met, with a test naming it.
+- [x] 4.6 HM-REQ-093, pitch reported with a proof state of proved, hypothesis or none, is met, with a test naming it.
 - [ ] 4.7 The three floor tests and both carry-forward lines are green at exit.
 
 **Depends on:** steps 0 and 1.
