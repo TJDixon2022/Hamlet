@@ -1,0 +1,1215 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.28]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.40]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.43]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.TheEventsCarryWhatWasAskedAndNothingPersonal [257 ms]
+  Standard Output Messages:
+ started : {"mode":"psk31","dialHz":7028000,"deviceSampleRate":48000,"seconds":120}
+ finished: {"mode":"psk31","seconds":1,"bytes":96044,"sha256":"6d7cb8624118699665ba587b3d76d45c8f7a00c034a9d45688a6360c8d676039","deviceSampleRate":48000,"earlyStop":true,"carriersHeld":0,"carriers":[]}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.ThePressBelongsToPsk31 [3 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.ThePanelSaysWhereTheFileWent [21 ms]
+  Standard Output Messages:
+ the panel says: Kept 0:01 of receive audio at 48000 Hz in C:\Users\TimDi\AppData\Local\Temp\hamlet-capture-736983f88d3c422399b7aebccc9a1344\captures\psk31-2026-09-26-080230.wav. Copy it into assets\fixtures\captured\ and commit it, and the next change to the demodulator gets proved against real air instead of against audio this program made itself.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.PressingUnderOliviaWritesTheWavAndTheEventsWithModeOlivia [373 ms]
+  Standard Output Messages:
+ wrote olivia-2026-09-26-080230.wav: 48000 Hz, 2.00 s
+ the panel says: Kept 0:02 of receive audio at 48000 Hz in C:\Users\TimDi\AppData\Local\Temp\hamlet-capture-070566cce22c4d45b3b9eaa6c9331d27\captures\olivia-2026-09-26-080230.wav. Copy it into assets\fixtures\captured\ and commit it, and the next change to the demodulator gets proved against real air instead of against audio this program made itself.
+ started : {"mode":"olivia","dialHz":7028000,"deviceSampleRate":null,"seconds":120}
+ finished: {"mode":"olivia","seconds":2,"bytes":192044,"sha256":"e9e68b9838d06e6e2f01728f6e13b3d13e418d1a8e6ec38b28615976c44902d6","deviceSampleRate":48000,"earlyStop":true,"carriersHeld":0,"carriers":[]}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.APressKeepsTheDeviceStreamAndNotHamletsVersionOfIt [47 ms]
+  Standard Output Messages:
+ wrote psk31-2026-09-26-080230.wav: 48000 Hz, 96000 samples, 2.00 s, 192044 bytes
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCaptureButtonTests.ItStopsAtTwoMinutesOnItsOwn [231 ms]
+  Standard Output Messages:
+ offered 180 s, kept 120.00 s; the press reads 'captured · 2:00'
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqReceiptTests.TheLogHoverDoesNotNameAStationEither [27 ms]
+  Standard Output Messages:
+ tip: []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqReceiptTests.TheReceiptOffersNoLog [7 ms]
+  Standard Output Messages:
+ kind        : None
+ has action  : False
+ label       : []
+ shows link  : False
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqReceiptTests.NothingOnTheReceiptSaysHeOrNotAnswered [4 ms]
+  Standard Output Messages:
+ CQ |  | Calling | Your call went out to anyone listening. | 08:02:45 UTC · just now |  |  | Sent CQ KC3QIS FN00 · At 08:02:45 UTC | Log this contact | 
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqReceiptTests.AConversationCardStillCarriesEveryStationFact [20 ms]
+  Standard Output Messages:
+ callsign     : K9XP
+ place        : United States · 500 miles
+ state word   : Your turn
+ sentence     : K9XP came back to you, and it is your turn to answer him.
+ shows globe  : True
+ detail       : Grid EN52 · 500 miles west-northwest · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 02:11:00 to 02:11:30 UTC · 1 slot ago · He last sent RR73
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqReceiptTests.APressMakesAReceiptAndItExposesNoStationFacts [5 ms]
+  Standard Output Messages:
+ is a receipt : True
+ callsign     : [CQ]
+ place        : []
+ state word   : [Calling]
+ sentence     : [Your call went out to anyone listening.]
+ time line    : [08:02:45 UTC · just now]
+ action label : []
+ shows globe  : False
+ detail       : [Sent CQ KC3QIS FN00 · At 08:02:45 UTC]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqReceiptTests.CqNeverReachesTheEntityLookup [1 ms]
+  Standard Output Messages:
+ EntityOf(CQ)          : (null)
+ ForCallsign(CQ)       : (null)
+ WouldOpen(CQ)         : None
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCqReceiptTests.NoCountOfCallsAppearsOnIt [17 ms]
+  Standard Output Messages:
+ after five presses:
+ CQ |  | Calling | Your call went out to anyone listening. | 08:02:45 UTC · just now |  |  | Sent CQ KC3QIS FN00 · At 08:02:45 UTC | Log this contact | 
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheQuillMarksAnOliviaRowAsItMarksAPsk31Row [25 ms]
+  Standard Output Messages:
+ variant []: nudge Visible [Costa Rica · new country], lift 1
+ variant [8/250]: nudge Visible [Costa Rica · new country], lift 1
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheHoverShowsTheWholeMessageOnBoth [5 ms]
+  Standard Output Messages:
+ variant []: has whole message True: "TI2ABC  \u00B7  080231\n\nCQ CQ CQ de TI2ABC TI2ABC K\nW9ZZZ de TI2ABC GM OM TNX FER CALL UR RST 599 599 NAME JUAN QTH SAN JOSE HW? W9ZZZ de TI2ABC K"
+ variant [8/250]: has whole message True: "TI2ABC  \u00B7  080231\n\nCQ CQ CQ de TI2ABC TI2ABC K\nW9ZZZ de TI2ABC GM OM TNX FER CALL UR RST 599 599 NAME JUAN QTH SAN JOSE HW? W9ZZZ de TI2ABC K"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheCorpusThroughOliviaRowsGetsTheSameVerdictsAsThroughPsk31Rows [69 ms]
+  Standard Output Messages:
+ corpus.json sha256 964b9729bec883bff9d54fd63afa9bddb21874e9e86ec34439644aec658e26ba, 8 transcripts, 32 lines, operator KC3QIS
+ transcripts 8; row readings compared 32; parser verdicts compared 31; differences 0
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.EntityOfResolvesTheStationAndRefusesCqOnBoth [4 ms]
+  Standard Output Messages:
+ variant []: sender TI2ABC -> Costa Rica; addressee CQ -> (refused); hover [Who sent it. TI2ABC is a callsign from Costa Rica.] [Who this is addressed to. CQ means anyone.]
+ variant [8/250]: sender TI2ABC -> Costa Rica; addressee CQ -> (refused); hover [Who sent it. TI2ABC is a callsign from Costa Rica.] [Who this is addressed to. CQ means anyone.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.TheCqFilterPutsEachOliviaRowWhereItPutsThePsk31Row [10 ms]
+  Standard Output Messages:
+ PSK31 : addressee [CQ] shown; addressee [W9ZZZ] shown; addressee [KC3QIS] his side; addressee [] shown
+ Olivia: addressee [CQ] shown; addressee [W9ZZZ] shown; addressee [KC3QIS] his side; addressee [] shown
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaRowsReadLikePsk31Tests.WorkedFadeDimsAnOliviaRowAsItDimsAPsk31Row [5 ms]
+  Standard Output Messages:
+ PSK31 opacity 0.55 [You logged a contact with TI2ABC on 09/07/26]; Olivia opacity 0.55 [You logged a contact with TI2ABC on 09/07/26]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheQuillAndThePageMeanTheSameTests.TheCqListNamesTheModeEachRowIsAndClaimsNoneForAnFt8Row [49 ms]
+  Standard Output Messages:
+ IK4LZH -> Mode ""
+ G4XYZ -> Mode "PSK31"
+ W1AW -> Mode "Olivia"
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.ItIsOfferedWhereTheTurnIsUnknownAndNotWhereItIsCertainlyHis [1 ms]
+  Standard Output Messages:
+ Unknown                can type True
+ His turn               can type False
+ His turn, a guess      can type True
+ Your turn              can type True
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.ACharacterOutsideTheTableIsDroppedAndTheCardSaysSo [22 ms]
+  Standard Output Messages:
+ send line: Sent "EI4GNB de KC3QIS  Thats a fine signalvery readablehere  BTU EI4GNB de KC3QIS K" - 21.2 s of PSK31.
+ note     : Sent. 3 characters were dropped: PSK31 carries the Latin-1 set and nothing else.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.TheSendIsOneUnslottedPsk31Transmission [7 ms]
+  Standard Output Messages:
+ the sink was called 1 time(s), 180883 samples
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.TheRefusalIsCapAndTheRecordSaysSixty [30 ms]
+  Standard Output Messages:
+ composed: {"macro":"typed","characters":302,"seconds":80.64,"capSeconds":60,"withinCap":false,"offsetHz":1234,"announced":true,"rsidCode":1}
+ refused : {"reason":"cap","macro":"typed","stage":"arm"}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.ALineThatIsOnlyWhitespaceSendsNothing [3 ms]
+  Standard Output Messages:
+ note: Type something first.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.ALongLineSendsAndALongerOneIsRefusedWithTheCount [43 ms]
+  Standard Output Messages:
+ 190 chars: 48.7 s of text
+ send line: Sent "EI4GNB de KC3QIS  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  BTU EI4GNB de KC3QIS K" - 50.6 s of PSK31.
+ 260 chars: 87.1 s of text, too long to send
+ note     : Too long to send: 260 characters comes to 87.1 s of text, and the most a typed line may be is 60 s. Nothing was sent. Shorten it and press Send again.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.ATypedLineComposesTheFramedTextExactly [11 ms]
+  Standard Output Messages:
+ send line: Sent "EI4GNB de KC3QIS  Nice signal here in Trafford, running 40 watts  BTU EI4GNB de KC3QIS K" - 23.5 s of PSK31.
+ framed   : EI4GNB de KC3QIS  Nice signal here in Trafford, running 40 watts  BTU EI4GNB de KC3QIS K
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.AMacroIsStillHeldToThirtySeconds [16 ms]
+  Standard Output Messages:
+ a macro's cap is 30 s and a typed line's is 60 s
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTypedLineGoesOutTests.TheRecordSaysTypedAndHoldsNoneOfHisWords [13 ms]
+  Standard Output Messages:
+ composed: {"macro":"typed","characters":77,"seconds":20.61,"capSeconds":60,"withinCap":true,"offsetHz":1234,"announced":true,"rsidCode":1}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.EveryHandBackMovesTheTurnAndTheGuessedOneSaysSo [12 ms]
+  Standard Output Messages:
+ his first hand-back : [Your turn] guess False, offered Report
+ after Hamlet answered: [His turn] guess False
+ his second hand-back: [Your turn?] guess True, offered None
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.AtTheSecondHandBackTheCardReadsYourTurnQuestion [11 ms]
+  Standard Output Messages:
+ the card reads: Your turn?
+ the sentence  : W1ABC seems to have handed over to you, but part of it did not read cleanly, so that is a guess. Waiting to be sure it is your turn before offering anything to send.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.AGuessedTurnOffersTheReportAndNeverTheConfirm [12 ms]
+  Standard Output Messages:
+ on the guess: turn [Your turn?], offered None, note []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheTurnMovesOnEveryHandBackTests.AnOliviaStationsHandBacksMoveTheTurnToo [39 ms]
+  Standard Output Messages:
+ olivia: first [Your turn] then [Your turn?] guess True
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.APressOnAnEmptyBandIsNotRefused [16 ms]
+  Standard Output Messages:
+ a CQ on an empty band: keyings 1, line [Sending "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" now, at 1300 Hz in the passband.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.WhenHisCarrierDropsTheSamePressGoesOut [12 ms]
+  Standard Output Messages:
+ after his carrier dropped: keyings 1, line [Sending "W1ABC de KC3QIS  HELLO OM  BTU W1ABC de KC3QIS K" now, at 1300 Hz in the passband.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.ACallToAnybodyIsNotHeldByAnotherStationsCarrier [10 ms]
+  Standard Output Messages:
+ a CQ while he is sending: keyings 1, line [Sending "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" now, at 1300 Hz in the passband.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.HisRowAndHisCardSayItAndTheFourControlsAreHeld [8 ms]
+  Standard Output Messages:
+ row  : sending [sending] ended []
+ card : live True, word [he is still sending], note [he is still sending], press False, typed send False, typed note [he is still sending]
+ canned: 1 entries, first [Hamlet is offering nothing to send: he is still sending. The lines come back the moment his carrier drops.]
+ after : row sending [] ended [ended], card live False, press True, typed send True
+ canned after: 7 entries, 5 pressable
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.AHandBackReleasesTheHoldWhileHisCarrierIsStillUp [24 ms]
+  Standard Output Messages:
+ after his hand-back: row ended False, held False, press True
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.APressWhileHisCarrierIsUpIsRefusedAndNothingIsComposed [5 ms]
+  Standard Output Messages:
+ screen: Hamlet did not send that: he is still sending. Transmitting now would put your signal on top of his, and neither of you would be readable. It goes out the moment his carrier drops.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.TheReportHeSentOnTopOfTheCarrierWouldNowBeHeld [4 ms]
+  Standard Output Messages:
+ what he would see now: Hamlet did not send that: he is still sending. Transmitting now would put your signal on top of his, and neither of you would be readable. It goes out the moment his carrier drops.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord [644 ms]
+  Standard Output Messages:
+ card: [he is still sending] visible True 190 px, brush #ff0f7b4d
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.NothingPersonalReachesAnyOfIt [15 ms]
+  Standard Output Messages:
+ transmit events scanned: 8
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.AMacroOverTheCapIsRefusedAndNothingStages [28 ms]
+  Standard Output Messages:
+ composed 379 characters, 103.8 s against a cap of 30
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.EachOfTheFourMacrosWritesWhatItComposed [15 ms]
+  Standard Output Messages:
+ cq      38 characters, 13.31 s, cap 30, within True
+ answer  23 characters, 9.70 s, cap 30, within True
+ report  96 characters, 26.66 s, cap 30, within True
+ confirm 62 characters, 18.11 s, cap 30, within True
+ idle either side: 1.536 s, RSID burst in front: 1.858 s
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.APsk31PressComposesPsk31AndWithNoRadioNothingKeys [8 ms]
+  Standard Output Messages:
+ send line: Hamlet composed the PSK31 call and sent nothing: no radio is connected and no transmit audio device is named in Settings.
+ composed: {"macro":"cq","characters":38,"seconds":13.31,"capSeconds":30,"withinCap":true,"offsetHz":1300,"announced":true,"rsidCode":1}
+ stage: {"stage":"composed","entered":true,"detail":"Psk31","slotted":false}
+
+
+  Passed Hamlet.App.Tests.Telemetry.ThePsk31TransmitTelemetryTests.WithNoRadioTheRecordSaysTheRadioDidNotAnswer [3 ms]
+  Standard Output Messages:
+ {"answered":false,"transmitting":null,"transmittingAgeMs":null,"powerPercent":null,"powerAgeMs":null}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.OnlyTheTwoReportsAreEditableAndFt8KeepsItsOwnField [3 ms]
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.WithNoHeardReportItStartsBlankAndIsYoursWhenTyped [21 ms]
+  Standard Output Messages:
+ before: [] Hamlet did not hear this - type it if you have it
+ after : [559] yours - typed by you
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.AHeard599IsShownAndMarkedAndTyping579ReplacesItAndLogsIt [15 ms]
+  Standard Output Messages:
+ before: [599] heard by Hamlet (heard)
+ after : [579] yours - typed by you (yours)
+ {"ts":"2026-09-26T08:02:32.606Z","sessionId":"3bbe4034","level":"info","appVersion":"390","category":"psk31","event":"psk31_contact_logged","data":{"rstSent":"599","rstReceived":"579","rstSentSource":"heard","rstReceivedSource":"yours","mode":"PSK","submode":"PSK31","gridCarried":false}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRstIsYoursToCorrectTests.OnTheWindowTheTwoReportsAreBoxesWithTheirMarks [39 ms]
+  Standard Output Messages:
+ box [599] read-only False, enabled True
+ box [] read-only False, enabled True
+ marks: heard by Hamlet | Hamlet did not hear this - type it if you have it
+
+
+  Passed Hamlet.App.Tests.ViewModels.PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4 [617 ms]
+  Standard Output Messages:
+   grid     : 7.50 s slots, 5.04 s transmission
+   slots    : 4
+   decoder  : Ft8Sharp
+   row      : 11:59:30.0   1000.0 Hz  score  35  snr   4.3  CQ K1ABC FN42
+   row      : 11:59:37.5   1250.0 Hz  score  38  snr   3.9  K1ABC W9XYZ EM12
+   row      : 11:59:45.0   1500.0 Hz  score  35  snr   3.7  W9XYZ K1ABC -11
+   row      : 11:59:52.5   1750.0 Hz  score  39  snr   4.4  K1ABC W9XYZ RR73
+   read 4 of 4, 0 missed, 0 wrong
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheKeyboardModesEarnWhatFt8EarnsTests.AnOliviaContactEarnsWhatTheSameFt8ContactEarns [104 ms]
+  Standard Output Messages:
+ kind            FT8        Olivia
+ hall_of_fame    1          2
+ continents      1          1
+ countries       1          1
+ states          0          0
+ grids           1          1
+ total_miles     358        358
+ bands           1          1
+ modes           1          1
+ FT8   firsts: first_contact
+ Olivia firsts: first_contact, first_olivia
+ totals: FT8 31, Olivia 46
+
+
+  Passed Hamlet.App.Tests.Views.BindingHealthTests.TheMainWindowBindsWithoutOneComplaint [202 ms]
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeChipsCostTheTopBandNothing [271 ms]
+  Standard Output Messages:
+ 1920: the band is 214 px with the pills, three chips saved
+ 1400: the band is 214 px with the pills, three chips saved
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.AClickTunesTheStarFillsAndTheCrossForgetsAndThatPersists [313 ms]
+  Standard Output Messages:
+ after one click on the CW chip the dial reads 14,050,000 Hz, star filled True
+ hovering the net's chip at [816,247 281x13]: pointer over it True, the cross's opacity 1
+ after the cross on the net: the FT8 watering hole | slow CW on Sunday; settings hold 2
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.ThreeSavedSpotsAreThreeChipsWithTheirWordsAndTheirFamilysInk [125 ms]
+  Standard Output Messages:
+ chip 0: [14.074 USB-D] [the FT8 watering hole] ink #ff2b2360 at [438,235 301x13]
+ chip 1: [14.050 CW] [slow CW on Sunday] ink #ff5e3800 at [743,235 271x13]
+ chip 2: [14.250 USB] [the Tuesday net] ink #ff0b3b5c at [1018,235 281x13]
+ the row's window on the chips [438,235 659x13] in the card [423,119 921x178]
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreChipsTests.EmptyTheRowSaysHowToKeepASpot [123 ms]
+  Standard Output Messages:
+ empty row reads [no spots saved yet - press the star to keep this one], visible True
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreUnderTheGreenZoneTests.TheStarIsDrawnAndHittableAtAllNineSizesAndNoCaretIsAnywhereOnTheRigFace [8 s]
+  Standard Output Messages:
+ 1920 x 1040    face 520 x 106 | star [62,2 67x26]
+ 900 x 620      face 520 x 106 | star [62,2 67x26]
+ 1100 x 780     face 520 x 106 | star [62,2 67x26]
+ 1280 x 720     face 520 x 106 | star [62,2 67x26]
+ 1366 x 728     face 520 x 106 | star [62,2 67x26]
+ 1536 x 824     face 520 x 106 | star [62,2 67x26]
+ 1400 x 1040    face 520 x 106 | star [62,2 67x26]
+ 1920 x 1017    face 520 x 106 | star [62,2 67x26]
+ 2560 x 1400    face 520 x 106 | star [62,2 67x26]
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreUnderTheGreenZoneTests.PressingTheStarSavesTheDialAndTheModeWithANameAndPressingItAgainRemovesIt [69 ms]
+  Standard Output Messages:
+ after one press on the star: 14,074,000 Hz, mode [], band [20 m], name [14.074, FT8 city]
+
+
+  Passed Hamlet.App.Tests.Views.TheFavoritesAreUnderTheGreenZoneTests.TheWayBackInCostTheTopBandNothing [153 ms]
+  Standard Output Messages:
+ 1920: the band is 214 px with the pills and 178 without, against the ratchet of 214; the favorites row is at [438,235 891x9]
+ 1400: the band is 214 px with the pills and 178 without, against the ratchet of 214; the favorites row is at [438,273 371x9]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheModeIsEnumeratedInTheDigitalFamily [4 ms]
+  Standard Output Messages:
+ the strip carries: FT8, FT4, PSK31, WSPR, Olivia
+ family        : Digital
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.SelectingItAsksTheRadioForTheCallingSpotFromTheCitedRow [17 ms]
+  Standard Output Messages:
+ bands with a calling row: 80 m, 40 m, 30 m, 20 m, 17 m, 15 m, 10 m
+   80 m  center 3583000, asked 3581500, mode Usb data True · Olivia on 80 m: the radio confirmed 3.581500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 3.583000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   40 m  center 7073000, asked 7071500, mode Usb data True · Olivia on 40 m: the radio confirmed 7.071500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 7.073000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   30 m  center 10143000, asked 10141500, mode Usb data True · Olivia on 30 m: the radio confirmed 10.141500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 10.143000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   20 m  center 14073000, asked 14071500, mode Usb data True · Olivia on 20 m: the radio confirmed 14.071500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 14.073000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   17 m  center 18103000, asked 18101500, mode Usb data True · Olivia on 17 m: the radio confirmed 18.101500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 18.103000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   15 m  center 21073000, asked 21071500, mode Usb data True · Olivia on 15 m: the radio confirmed 21.071500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 21.073000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+   10 m  center 28123000, asked 28121500, mode Usb data True · Olivia on 10 m: the radio confirmed 28.121500 MHz, but the radio did not take USB-D (the fake radio records modes and sets none), which puts the calling spot at 28.123000 MHz in the middle of the passband. The spot is a community convention, not a band plan.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheRecordSaysOliviaAndNothingPersonalIsInIt [5 ms]
+  Standard Output Messages:
+ {"ts":"2026-09-26T08:02:42.951Z","sessionId":"38e5beb4","level":"info","appVersion":"seam","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-26T08:02:42.951Z","sessionId":"38e5beb4","level":"info","appVersion":"seam","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-26T08:02:42.951Z","sessionId":"38e5beb4","level":"warn","appVersion":"seam","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-26T08:02:42.951Z","sessionId":"38e5beb4","level":"info","appVersion":"seam","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-26T08:02:42.952Z","sessionId":"38e5beb4","level":"info","appVersion":"seam","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.UnderFt8TheSameAudioWritesNoRsidEvent [10 ms]
+  Standard Output Messages:
+ tab: FT8
+ lines written: 7
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.UnderOliviaABurstThroughTheTapWritesRsidHeardAndMovesNothing(deviceRate: 48000) [5 s]
+  Standard Output Messages:
+ at 48000 Hz: radio asked 1 time(s), mode 1, dial 14071500, frequency 14071500, tab Olivia, rows 1, cards 0
+ {"ts":"2026-09-26T08:02:42.968Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-26T08:02:42.969Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-26T08:02:42.969Z","sessionId":"98c3889b","level":"warn","appVersion":"rsid","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-26T08:02:42.969Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-26T08:02:42.970Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"tuning","event":"band_changed","data":{"band":"20 m"}}
+ {"ts":"2026-09-26T08:02:42.970Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+ {"ts":"2026-09-26T08:02:42.970Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"tuning","event":"tune_requested","data":{"hz":14071500,"source":"digital_mode_press"}}
+ {"ts":"2026-09-26T08:02:42.970Z","sessionId":"98c3889b","level":"warn","appVersion":"rsid","category":"tuning","event":"tune_written","data":{"outcome":"confirmed","reason":"write_failed","hz":14071500,"seconds":null}}
+ {"ts":"2026-09-26T08:02:42.970Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"tuning","event":"recent_dwell_short","data":{"hz":14030000,"shortBySeconds":19.9995218}}
+ {"ts":"2026-09-26T08:02:42.970Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"rig","event":"mode_followed","data":{"mode":"Usb","dataMode":true,"outcome":"NotSupported"}}
+ {"ts":"2026-09-26T08:02:42.991Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_listening_started","data":{"dialHz":14071500,"passbandLowHz":200,"passbandHighHz":3000,"sampleRate":8000,"deviceSampleRate":48000,"resampleRatio":6,"threshold":4,"replaySeconds":6.144,"mode":"olivia"}}
+ {"ts":"2026-09-26T08:02:43.006Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_audio_level","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-90,"clipping":false,"nearlySilent":true,"mode":"olivia"}}
+ {"ts":"2026-09-26T08:02:43.055Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_finished","data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured","detail":"the server answered in 87 ms","offsetSeconds":0.364,"roundTripMs":86.8}}
+ {"ts":"2026-09-26T08:02:43.055Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"clock_offset","from":"unknown","to":"known","why":"a time server answered, so slots can be cut and cards counted","mode":"Digital"}}
+ {"ts":"2026-09-26T08:02:43.373Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"explore","event":"spots_refreshed","data":{"trigger":"band_changed","spotCount":11,"newCount":0}}
+ {"ts":"2026-09-26T08:02:43.373Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"explore","event":"lead_card_built","data":{"hasSuggestion":true,"score":104}}
+ {"ts":"2026-09-26T08:02:43.566Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"decode","event":"rsid_heard","data":{"code":69,"mode":"OLIVIA","variant":"8/250","centerHz":1000.3,"quality":0.899,"tonesRight":15}}
+ {"ts":"2026-09-26T08:02:43.636Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_channel","data":{"mode":"olivia","variant":"8/250","state":"opened","id":1,"found":"rsid","centerHz":1000.32,"atSeconds":3.498,"readFromSeconds":1.858,"replaySeconds":6.144}}
+ {"ts":"2026-09-26T08:02:43.638Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_carrier_appeared","data":{"carrierId":1,"offsetHz":1000.3,"strengthDb":null,"quality":null,"passesAsCandidate":null,"found":"rsid","mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:43.638Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000.3,"open":false,"quality":0,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:43.638Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000.3,"reading":false,"afcHz":0,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:44.632Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":1.878,"snr":2.88,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:45.044Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":2.338,"snr":15.4,"accepted":true,"characters":3,"blocksDecoded":1,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:45.044Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000,"open":true,"quality":15.4,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:45.044Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000,"reading":true,"afcHz":-0.3,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:45.455Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":4.386,"snr":55.58,"accepted":true,"characters":3,"blocksDecoded":2,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:45.868Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":6.434,"snr":46.25,"accepted":true,"characters":3,"blocksDecoded":3,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:46.334Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":8.482,"snr":85.77,"accepted":true,"characters":3,"blocksDecoded":4,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:46.743Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":10.53,"snr":42.88,"accepted":true,"characters":3,"blocksDecoded":5,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:47.153Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":12.578,"snr":87.8,"accepted":true,"characters":3,"blocksDecoded":6,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:47.567Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":14.626,"snr":84.52,"accepted":true,"characters":3,"blocksDecoded":7,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:47.979Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":16.674,"snr":94.37,"accepted":true,"characters":3,"blocksDecoded":8,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:48.395Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":18.722,"snr":87.63,"accepted":true,"characters":3,"blocksDecoded":9,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:48.899Z","sessionId":"98c3889b","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":20.77,"snr":97.85,"accepted":true,"characters":3,"blocksDecoded":10,"blocksRejected":1,"threshold":4}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.UnderOliviaABurstThroughTheTapWritesRsidHeardAndMovesNothing(deviceRate: 8000) [5 s]
+  Standard Output Messages:
+ at 8000 Hz: radio asked 1 time(s), mode 1, dial 14071500, frequency 14071500, tab Olivia, rows 1, cards 0
+ {"ts":"2026-09-26T08:02:48.947Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-26T08:02:48.971Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-26T08:02:48.972Z","sessionId":"f383dfc7","level":"warn","appVersion":"rsid","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-26T08:02:48.972Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-26T08:02:48.972Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"tuning","event":"band_changed","data":{"band":"20 m"}}
+ {"ts":"2026-09-26T08:02:48.973Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+ {"ts":"2026-09-26T08:02:48.973Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"tuning","event":"tune_requested","data":{"hz":14071500,"source":"digital_mode_press"}}
+ {"ts":"2026-09-26T08:02:48.973Z","sessionId":"f383dfc7","level":"warn","appVersion":"rsid","category":"tuning","event":"tune_written","data":{"outcome":"confirmed","reason":"write_failed","hz":14071500,"seconds":null}}
+ {"ts":"2026-09-26T08:02:48.973Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"tuning","event":"recent_dwell_short","data":{"hz":14030000,"shortBySeconds":19.9996911}}
+ {"ts":"2026-09-26T08:02:48.973Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"rig","event":"mode_followed","data":{"mode":"Usb","dataMode":true,"outcome":"NotSupported"}}
+ {"ts":"2026-09-26T08:02:48.988Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_listening_started","data":{"dialHz":14071500,"passbandLowHz":200,"passbandHighHz":3000,"sampleRate":8000,"deviceSampleRate":8000,"resampleRatio":1,"threshold":4,"replaySeconds":6.144,"mode":"olivia"}}
+ {"ts":"2026-09-26T08:02:48.999Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_audio_level","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-90,"clipping":false,"nearlySilent":true,"mode":"olivia"}}
+ {"ts":"2026-09-26T08:02:49.123Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"explore","event":"spots_refreshed","data":{"trigger":"band_changed","spotCount":11,"newCount":0}}
+ {"ts":"2026-09-26T08:02:49.123Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"explore","event":"lead_card_built","data":{"hasSuggestion":true,"score":104}}
+ {"ts":"2026-09-26T08:02:49.132Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"diagnostics","event":"clock_query_finished","data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured","detail":"the server answered in 184 ms","offsetSeconds":0.344,"roundTripMs":184.3}}
+ {"ts":"2026-09-26T08:02:49.132Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"diagnostics","event":"state_changed","data":{"what":"clock_offset","from":"unknown","to":"known","why":"a time server answered, so slots can be cut and cards counted","mode":"Digital"}}
+ {"ts":"2026-09-26T08:02:49.567Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"decode","event":"rsid_heard","data":{"code":69,"mode":"OLIVIA","variant":"8/250","centerHz":1000.3,"quality":0.899,"tonesRight":15}}
+ {"ts":"2026-09-26T08:02:49.647Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_channel","data":{"mode":"olivia","variant":"8/250","state":"opened","id":1,"found":"rsid","centerHz":1000.32,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}}
+ {"ts":"2026-09-26T08:02:49.648Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_carrier_appeared","data":{"carrierId":1,"offsetHz":1000.3,"strengthDb":null,"quality":null,"passesAsCandidate":null,"found":"rsid","mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:49.648Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000.3,"open":false,"quality":0,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:49.648Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000.3,"reading":false,"afcHz":0,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:50.595Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":1.878,"snr":2.75,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:50.971Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":2.338,"snr":15.4,"accepted":true,"characters":3,"blocksDecoded":1,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:50.971Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_squelch","data":{"offsetHz":1000,"open":true,"quality":15.4,"threshold":4,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:50.971Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"psk31_reading","data":{"offsetHz":1000,"reading":true,"afcHz":-0.3,"mode":"olivia","variant":"8/250"}}
+ {"ts":"2026-09-26T08:02:51.339Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":4.386,"snr":58.03,"accepted":true,"characters":3,"blocksDecoded":2,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:51.715Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":6.434,"snr":45.93,"accepted":true,"characters":3,"blocksDecoded":3,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:52.135Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":8.482,"snr":86.19,"accepted":true,"characters":3,"blocksDecoded":4,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:52.505Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":10.53,"snr":42.37,"accepted":true,"characters":3,"blocksDecoded":5,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:52.885Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":12.578,"snr":87.78,"accepted":true,"characters":3,"blocksDecoded":6,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:53.251Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":14.626,"snr":84.69,"accepted":true,"characters":3,"blocksDecoded":7,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:53.620Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":16.674,"snr":95.47,"accepted":true,"characters":3,"blocksDecoded":8,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:53.985Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":18.722,"snr":87.66,"accepted":true,"characters":3,"blocksDecoded":9,"blocksRejected":1,"threshold":4}}
+ {"ts":"2026-09-26T08:02:54.396Z","sessionId":"f383dfc7","level":"info","appVersion":"rsid","category":"psk31","event":"olivia_block","data":{"mode":"olivia","variant":"8/250","id":1,"found":"rsid","centerHz":1000,"atSeconds":20.77,"snr":97.96,"accepted":true,"characters":3,"blocksDecoded":10,"blocksRejected":1,"threshold":4}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.NoDecoderIsAttachedAndNothingIsComposedUntilAPress [174 ms]
+  Standard Output Messages:
+ slot looks    : 0
+ slots read    : 0
+ rows          : 0
+ send line     : "nothing sent yet"
+ {"ts":"2026-09-26T08:02:54.438Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"diagnostics","event":"clock_query_started","data":{"server":"pool.ntp.org"}}
+ {"ts":"2026-09-26T08:02:54.469Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+ {"ts":"2026-09-26T08:02:54.469Z","sessionId":"e349df00","level":"warn","appVersion":"keying","category":"diagnostics","event":"license_lookup_failed","data":{"outcome":"Unavailable"}}
+ {"ts":"2026-09-26T08:02:54.469Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+ {"ts":"2026-09-26T08:02:54.470Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"diagnostics","event":"state_changed","data":{"what":"clock_offset","from":"unknown","to":"known","why":"a time server answered, so slots can be cut and cards counted","mode":"Digital"}}
+ {"ts":"2026-09-26T08:02:54.470Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"diagnostics","event":"state_changed","data":{"what":"digital_sub_mode","from":"unknown","to":"Olivia","why":"the operator pressed the mode chip","mode":"Olivia"}}
+ {"ts":"2026-09-26T08:02:54.510Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"diagnostics","event":"clock_query_finished","data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured","detail":"the server answered in 72 ms","offsetSeconds":0.379,"roundTripMs":71.5}}
+ {"ts":"2026-09-26T08:02:54.539Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"psk31","event":"olivia_listening_started","data":{"dialHz":7028000,"passbandLowHz":200,"passbandHighHz":3000,"sampleRate":8000,"deviceSampleRate":12000,"resampleRatio":1.5,"threshold":4,"replaySeconds":6.144,"mode":"olivia"}}
+ {"ts":"2026-09-26T08:02:54.608Z","sessionId":"e349df00","level":"info","appVersion":"keying","category":"psk31","event":"psk31_audio_level","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-90,"clipping":false,"nearlySilent":true,"mode":"olivia"}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.AnUnreadableTableMovesNothingAndThePanelSaysWhy [10 ms]
+  Standard Output Messages:
+ tune line : The dial has not moved. Hamlet could not read its Olivia calling table, data/bands/olivia-calling.json, because it is not readable JSON (line 1), so there is no Olivia spot to tune to and none is guessed.
+ strip line: Hamlet could not read its Olivia calling table, data/bands/olivia-calling.json, because it is not readable JSON (line 1), so there is no Olivia spot to tune to and none is guessed. the radio is on the Olivia calling frequency and Hamlet cannot read Olivia yet, so nothing will appear below. You can still hear it, and it sounds like a warble you could almost hum.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheMapPicksOutTheOliviaSpotWhenTheTabIsSelected [5 ms]
+  Standard Output Messages:
+ 20 m spot     : 14073000 on a map of 13970834 to 14379166
+   80 m  3583000
+   40 m  7073000
+   30 m  10143000
+   20 m  14073000
+   17 m  18103000
+   15 m  21073000
+   10 m  28123000
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.ThePanelNamesTheModeAndPromisesNoSlot [1 ms]
+  Standard Output Messages:
+ mode strip        : listening for Olivia across the whole passband. Every signal Hamlet is sure is Olivia gets a line of its own below, with where it sits, how strong it is and its text as it arrives, and a line from somebody calling anybody carries an Answer that replies on his own frequency.
+ decoded idle      : nothing decoded yet. Every station Hamlet is sure is sending Olivia gets a line here, filling in a few characters at a time as each block is read. A signal it is not sure of gets no line at all rather than a guess, so an empty panel can mean a quiet band or a signal too weak to read. Capture keeps two minutes of what the radio hears.
+ waterfall header  : 200–3000 Hz · Olivia, one continuous carrier a station
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaSeamTests.TheLogOffersOlivia [< 1 ms]
+  Standard Output Messages:
+ log entry     : Olivia -> MODE=OLIVIA
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence [7 ms]
+  Standard Output Messages:
+ screen: No transmit device is chosen. Open Settings and pick the radio's sound card.
+ sentence: No transmit device is chosen. Open Settings and pick the radio's sound card.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.OnceItHasBeenConfidentAFadeDoesNotTakeTheWordsBack [2 ms]
+  Standard Output Messages:
+ after the fade the row still reads: [CQ CQ de W1AW K /]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.TheBoundaryIsWhereTheEnginesOwnNumbersPutIt(decoded: 12, rejected: 11, shown: True, why: "a busy carrier that is mostly being read") [1 ms]
+  Standard Output Messages:
+ 12 read, 11 refused -> [de W1AW K /]   (a busy carrier that is mostly being read)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.TheBoundaryIsWhereTheEnginesOwnNumbersPutIt(decoded: 2, rejected: 3, shown: False, why: "more thrown away than read") [1 ms]
+  Standard Output Messages:
+ 2 read, 3 refused -> [heard, not readable yet]   (more thrown away than read)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.TheBoundaryIsWhereTheEnginesOwnNumbersPutIt(decoded: 2, rejected: 2, shown: True, why: "as many read as refused, which is not fewer") [1 ms]
+  Standard Output Messages:
+ 2 read, 2 refused -> [de W1AW K /]   (as many read as refused, which is not fewer)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.TheBoundaryIsWhereTheEnginesOwnNumbersPutIt(decoded: 1, rejected: 11, shown: False, why: "Tim's own row") [1 ms]
+  Standard Output Messages:
+ 1 read, 11 refused -> [heard, not readable yet]   (Tim's own row)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.TheBoundaryIsWhereTheEnginesOwnNumbersPutIt(decoded: 2, rejected: 0, shown: True, why: "two clean blocks and nothing refused") [1 ms]
+  Standard Output Messages:
+ 2 read, 0 refused -> [de W1AW K /]   (two clean blocks and nothing refused)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.TheBoundaryIsWhereTheEnginesOwnNumbersPutIt(decoded: 1, rejected: 0, shown: False, why: "one block is not a reading, whatever the rest did") [1 ms]
+  Standard Output Messages:
+ 1 read, 0 refused -> [heard, not readable yet]   (one block is not a reading, whatever the rest did)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.TheThirteenThirtySevenRowShowsNoTextAndSaysWhatItIs [1 ms]
+  Standard Output Messages:
+ the 4/500 row reads: [heard, not readable yet], variant 4/500
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.ABlindFoundCarrierThatIsBeingReadShowsWhatItRead [1 ms]
+  Standard Output Messages:
+ the 8/250 row reads: [CQ CQ CQ de W1AW W1AW pse K /]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheBlindCarrierShowsNoInventedTextTests.AnRsidAnnouncedChannelIsNotGatedAndShowsWhatItReadOnTheFirstBlock [1 ms]
+  Standard Output Messages:
+ the RSID-announced 4/500 row reads: [CQ de W1AW]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31CarrierLivesTests.TheRetireRuleAndItsNumberLiveInOneNamedPlace [< 1 ms]
+  Standard Output Messages:
+ rule   : a channel is retired when its carrier is, and its carrier is retired only when the search and the channel's own demodulator have both lost it: the place it sits fails the candidate test on RetireAfterPasses passes of the newest spectrum window in a row, AND the demodulator has had neither its squelch open nor its quality at KeepReadableQuality or better within the last KeepReadableSeconds, so a channel is gone within RetiredWithinSeconds of its carrier stopping. **It is never retired for saying nothing** and never for idling, which is what a PSK31 station does between words. Separately, any character it read after the keying measure last stood behind the carrier, less LetGoSeconds, is held and is dropped rather than shown if the carrier goes before that measure catches up.
+ passes : 8
+ seconds: 1.024 at 8000 Hz
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31CarrierLivesTests.AHeldCarrierWithTheSquelchShutIsADimmedRowThatSaysSo [2 ms]
+  Standard Output Messages:
+ shut  : "heard, not readable yet" at opacity 0.55
+ open  : "CQ CQ de W1AW W1AW K" at opacity 1.00
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31CarrierLivesTests.TheFourSignalFixtureRetiresFourCarriersBecauseTheSignalWent [172 ms]
+  Standard Output Messages:
+ retired at 1100.5 Hz, SignalGone, lifetime 31.9 s, 101 characters
+ retired at 699.6 Hz, ListeningStopped, lifetime 38.6 s, 120 characters
+ retired at 1608.0 Hz, ListeningStopped, lifetime 38.6 s, 120 characters
+ retired at 2200.0 Hz, ListeningStopped, lifetime 38.6 s, 142 characters
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31CarrierLivesTests.AHeardRowGoesWhenItsCarrierGoes [2 ms]
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31CarrierLivesTests.TheRecordSaysReadingAndNoLongerSaysLock [163 ms]
+  Standard Output Messages:
+ psk31_reading 8 event(s), psk31_lock 0
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31CarrierLivesTests.EightSecondsOfIdleInTheMiddleOfASignalKeepsOneCarrier [102 ms]
+  Standard Output Messages:
+ appeared at 1000.0 Hz, id 1
+ retired at 1000.2 Hz, id 1, SignalGone, lifetime 38.4 s, 80 characters
+
+
+  Passed Hamlet.App.Tests.Views.TheWindowHoldsBelowItsMinimumTests.TheWorkingPanelsScrollInsideThemselvesRatherThanCollapsing [405 ms]
+  Standard Output Messages:
+ 1100 x 580 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 540 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 500 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 1100 x 620 (drawn 1100 x 620):
+     TopRow                16,119 1068 x 300  whole True
+     DigitalModeStrip      29,487 1042 x 33  whole True
+     DigitalTuneStrip      29,487 0 x 0  whole False
+     WorkspaceBoundary     16,474 1068 x 72  whole True
+     DigitalPanes          29,600 1042 x 72  whole False
+     DigitalSendReserved   290,448 794 x 22  whole True
+     StatusBar             16,558 1068 x 46  whole True
+     the rig display       551,123 520 x 106  so TopRow can spare 194 px without clipping it
+     panel waterfall       29,600 325 x 72  whole False  viewport 24 extent 360
+     panel decoded         364,600 378 x 72  whole False  viewport 13 extent 36
+     panel For You         747,600 325 x 72  whole False  viewport 24 extent 360
+     the canvas viewport 46, extent 185, so it scrolls 139 px
+     waterfall at rest 29,600 325 x 72; canvas at its end 29,461 325 x 72
+     decoded   at rest 364,600 378 x 72; canvas at its end 364,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 747,600 325 x 72; canvas at its end 747,461 325 x 72
+     For You scrolled to 336, showing up to 360 of 360
+ 900 x 620 (drawn 900 x 620):
+     TopRow                16,119 868 x 186  whole True
+     DigitalModeStrip      29,373 842 x 33  whole True
+     DigitalTuneStrip      29,373 0 x 0  whole False
+     WorkspaceBoundary     16,360 868 x 186  whole True
+     DigitalPanes          29,486 842 x 72  whole True
+     DigitalSendReserved   290,334 594 x 23  whole True
+     StatusBar             16,558 868 x 46  whole True
+     the rig display       351,123 520 x 106  so TopRow can spare 80 px without clipping it
+     panel waterfall       29,486 225 x 72  whole True  viewport 24 extent 371
+     panel decoded         264,486 378 x 72  whole True  viewport 13 extent 36
+     panel For You         647,486 225 x 72  whole True  viewport 24 extent 371
+     the canvas viewport 160, extent 185, so it scrolls 25 px
+     waterfall at rest 29,486 225 x 72; canvas at its end 29,461 225 x 72
+     decoded   at rest 264,486 378 x 72; canvas at its end 264,461 378 x 72
+     decoded scrolled to 23, showing up to 36 of 36
+     For You   at rest 647,486 225 x 72; canvas at its end 647,461 225 x 72
+     For You scrolled to 347, showing up to 371 of 371
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "FT8") [6 ms]
+  Standard Output Messages:
+ FT8: FT8     filled True, chosen True, dial in its block False, hover [14.074 · FT8 - chosen, the dial is not there]
+ FT8: FT4     filled False, chosen False, dial in its block False, hover [14.080 · FT4]
+ FT8: PSK31   filled False, chosen False, dial in its block True, hover [14.070 · PSK31]
+ FT8: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ FT8: Olivia  filled False, chosen False, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "Olivia") [2 ms]
+  Standard Output Messages:
+ Olivia: FT8     filled False, chosen False, dial in its block False, hover [14.074 · FT8]
+ Olivia: FT4     filled False, chosen False, dial in its block False, hover [14.080 · FT4]
+ Olivia: PSK31   filled False, chosen False, dial in its block True, hover [14.070 · PSK31]
+ Olivia: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ Olivia: Olivia  filled True, chosen True, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "FT4") [1 ms]
+  Standard Output Messages:
+ FT4: FT8     filled False, chosen False, dial in its block False, hover [14.074 · FT8]
+ FT4: FT4     filled True, chosen True, dial in its block False, hover [14.080 · FT4 - chosen, the dial is not there]
+ FT4: PSK31   filled False, chosen False, dial in its block True, hover [14.070 · PSK31]
+ FT4: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ FT4: Olivia  filled False, chosen False, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.ExactlyOneChipIsFilledAndItIsTheChosenOne(mode: "PSK31") [2 ms]
+  Standard Output Messages:
+ PSK31: FT8     filled False, chosen False, dial in its block False, hover [14.074 · FT8]
+ PSK31: FT4     filled False, chosen False, dial in its block False, hover [14.080 · FT4]
+ PSK31: PSK31   filled True, chosen True, dial in its block True, hover [14.070 · PSK31]
+ PSK31: WSPR    filled False, chosen False, dial in its block False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ PSK31: Olivia  filled False, chosen False, dial in its block True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.EveryChipIsAButtonThatSaysWhereItGoesAndTheLabelSaysTuneTo [39 ms]
+  Standard Output Messages:
+ the strip's label reads [tune to:]
+ FT8     cursor Hand, enabled True, filled on screen False, hover [14.074 · FT8]
+ FT4     cursor Hand, enabled True, filled on screen False, hover [14.080 · FT4]
+ PSK31   cursor Hand, enabled True, filled on screen False, hover [14.070 · PSK31]
+ WSPR    cursor Hand, enabled True, filled on screen False, hover [No WSPR on 20 m in the band data - a press says where there is one]
+ Olivia  cursor Hand, enabled True, filled on screen True, hover [14.073 · Olivia (dial 14.0715)]
+
+
+  Passed Hamlet.App.Tests.Views.TheChipSaysTheChosenModeTests.TheSendLineNamesTheChosenModeAfterAFedSend [26 ms]
+  Standard Output Messages:
+ Olivia: [Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 29 s of Olivia.]
+ PSK31 : [Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 13.3 s of PSK31.]
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.AtEachOf354sNineSizesStopIsInTheStatusBarAndOnTheWindow [1 s]
+  Standard Output Messages:
+ FT8 1920 x 1040 licensed: window 0,0 1920 x 1040; status bar 16,978 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 900 x 620 licensed: window 0,0 900 x 620; status bar 16,558 870 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 799,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1100 x 780 licensed: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1280 x 720 licensed: window 0,0 1280 x 720; status bar 16,658 1248 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1177,663 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1366 x 728 licensed: window 0,0 1366 x 728; status bar 16,666 1334 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1263,671 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1536 x 824 licensed: window 0,0 1536 x 824; status bar 16,762 1504 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1433,767 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1400 x 1040 licensed: window 0,0 1400 x 1040; status bar 16,978 1368 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1297,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 1920 x 1017 licensed: window 0,0 1920 x 1017; status bar 16,955 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,960 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ FT8 2560 x 1400 licensed: window 0,0 2560 x 1400; status bar 16,1338 2528 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 2457,1343 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1920 x 1040 licensed: window 0,0 1920 x 1040; status bar 16,978 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 900 x 620 licensed: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1100 x 780 licensed: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1280 x 720 licensed: window 0,0 1280 x 720; status bar 16,658 1248 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1177,663 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1366 x 728 licensed: window 0,0 1366 x 728; status bar 16,666 1334 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1263,671 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1536 x 824 licensed: window 0,0 1536 x 824; status bar 16,762 1504 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1433,767 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1400 x 1040 licensed: window 0,0 1400 x 1040; status bar 16,978 1368 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1297,983 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 1920 x 1017 licensed: window 0,0 1920 x 1017; status bar 16,955 1888 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 1817,960 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ PSK31 2560 x 1400 licensed: window 0,0 2560 x 1400; status bar 16,1338 2528 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 2457,1343 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Digital tab 900 x 620 plain: window 0,0 900 x 620; status bar 16,558 868 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 797,563 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Digital tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ CW tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+ Voice tab 1100 x 780 plain: window 0,0 1100 x 780; status bar 16,718 1068 x 46 (inside 36, 46 tall without Stop); Stop [Stop] 997,723 74 x 36 in the bar True, visible True, whole on the window True, collapsible ancestors 0, buttons bound to the stop command 1
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.AtEachOfTheNineSizesTheSendAreaIsWholeOnTheWindow [575 ms]
+  Standard Output Messages:
+ 1920 x 1040  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1920 x 1040  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1920 x 1040  DigitalStopButton         1817,983 74 x 36  visible True  whole True
+ 1920 x 1040  DigitalTransmitDriveNote  1371,281 100 x 9  visible True  whole True
+    1920 x 1040  TopRow                    16,119 1888 x 186
+ 900 x 620  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 900 x 620  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 900 x 620  DigitalStopButton         797,563 74 x 36  visible True  whole True
+ 900 x 620  DigitalTransmitDriveNote  351,281 100 x 9  visible True  whole True
+    900 x 620  TopRow                    16,119 868 x 186
+ 1100 x 780  DigitalSendCqButton       290,448 54 x 22  visible True  whole True
+ 1100 x 780  DigitalModeChipStrip      132,495 364 x 17  visible True  whole True
+ 1100 x 780  DigitalStopButton         997,723 74 x 36  visible True  whole True
+ 1100 x 780  DigitalTransmitDriveNote  551,281 100 x 9  visible True  whole True
+    1100 x 780  TopRow                    16,119 1068 x 300
+ 1280 x 720  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1280 x 720  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1280 x 720  DigitalStopButton         1177,663 74 x 36  visible True  whole True
+ 1280 x 720  DigitalTransmitDriveNote  731,281 100 x 9  visible True  whole True
+    1280 x 720  TopRow                    16,119 1248 x 186
+ 1366 x 728  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1366 x 728  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1366 x 728  DigitalStopButton         1263,671 74 x 36  visible True  whole True
+ 1366 x 728  DigitalTransmitDriveNote  817,281 100 x 9  visible True  whole True
+    1366 x 728  TopRow                    16,119 1334 x 186
+ 1536 x 824  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1536 x 824  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1536 x 824  DigitalStopButton         1433,767 74 x 36  visible True  whole True
+ 1536 x 824  DigitalTransmitDriveNote  987,281 100 x 9  visible True  whole True
+    1536 x 824  TopRow                    16,119 1504 x 186
+ 1400 x 1040  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1400 x 1040  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1400 x 1040  DigitalStopButton         1297,983 74 x 36  visible True  whole True
+ 1400 x 1040  DigitalTransmitDriveNote  851,281 100 x 9  visible True  whole True
+    1400 x 1040  TopRow                    16,119 1368 x 186
+ 1920 x 1017  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 1920 x 1017  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 1920 x 1017  DigitalStopButton         1817,960 74 x 36  visible True  whole True
+ 1920 x 1017  DigitalTransmitDriveNote  1371,281 100 x 9  visible True  whole True
+    1920 x 1017  TopRow                    16,119 1888 x 186
+ 2560 x 1400  DigitalSendCqButton       290,334 54 x 22  visible True  whole True
+ 2560 x 1400  DigitalModeChipStrip      132,381 364 x 17  visible True  whole True
+ 2560 x 1400  DigitalStopButton         2457,1343 74 x 36  visible True  whole True
+ 2560 x 1400  DigitalTransmitDriveNote  2011,281 100 x 9  visible True  whole True
+    2560 x 1400  TopRow                    16,119 2528 x 186
+ 
+ the send area is 22 tall at 1920 x 1040
+ the send area is 23 tall at 900 x 620
+ the send area is 22 tall at 1100 x 780
+ the send area is 22 tall at 1280 x 720
+ the send area is 22 tall at 1366 x 728
+ the send area is 22 tall at 1536 x 824
+ the send area is 22 tall at 1400 x 1040
+ the send area is 22 tall at 1920 x 1017
+ the send area is 22 tall at 2560 x 1400
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.ArmedAtTheOpeningSizeAClickOnTheBarUnarmsItAsBefore [50 ms]
+  Standard Output Messages:
+ armed: [Stop transmitting] live True at 865,723 206 x 36
+ after the click: Stopped: "W1ABC KC3QIS -10" was taken off before its slot and will not go out, and the radio was told to stop transmitting.
+ wire: FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns [66 ms]
+  Standard Output Messages:
+ keyed: [Stop transmitting] enabled True at 865,723 206 x 36; wire FE FE 94 E0 1C 00 01 FD
+ wire the instant the press returns: FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD
+ wire settled: FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD
+ sound stopped by the token True, 96 samples played
+
+
+  Passed Hamlet.App.Tests.Views.TheStopIsAlwaysOnScreenTests.WithNothingKeyedItSaysStopAndIsStillPressable [36 ms]
+  Standard Output Messages:
+ 1100 x 780, nothing armed: [Stop] live False, enabled True, can execute True, centre 1034, 741, hit ContentPresenter
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.TheXTakesTheCardOffTheScreenAndRecordsIt [9 ms]
+  Standard Output Messages:
+ after the X: cards 0, rows 1, ledger still there
+ press : {"action":"card_dismissed","mode":"Digital","detail":"asked"}
+ left  : {"kind":"card","state":"removed","by":"dismissed","count":1,"subMode":"PSK31","atDropped":1}
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.LogIsOnTheCardFromTheMomentThereIsSomebodyToLog [3 ms]
+  Standard Output Messages:
+ card W1ABC: ShowsLogLink True, label [Log this contact], complete True
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.LogIsNeverOnAReceipt [6 ms]
+  Standard Output Messages:
+ receipt CQ: ShowsLogLink False, ActionKind None
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.TheXTakesAReceiptOffTheScreenOnOnePress [7 ms]
+  Standard Output Messages:
+ after the X on a receipt: cards 0
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCardOffersLogAndAnXTests.TheLogEntryCarriesWhatPassedAndInventsNothing [3 ms]
+  Standard Output Messages:
+ call W1ABC, mode PSK/PSK31, band 20m, rstRx [599] rstTx [] grid []
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheRowHoverSaysWhatItKnowsTests.TheHoverSaysTheFactsInTimsOrderAndNeverTheText [5 ms]
+  Standard Output Messages:
+ ---- the hover ----
+ W1AW
+United States of America
+Grid FN31 · 360 miles east-northeast
+1000 Hz · +10 dB
+Heard since 08:02:58 UTC
+This one is addressed to you.
+He sent a signal report, read for certain
+Click the message to read the whole of it. Right-click for the lines you can send.
+ -------------------
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.ACostaRicanStationCallingCqGetsTheSameEntityFadeAndQuillAsOnFt8 [4 ms]
+  Standard Output Messages:
+ FT8  : sender TI2ABC, entity Costa Rica, hover [Who sent it. TI2ABC is a callsign from Costa Rica.], nudge Visible [Costa Rica · new country], lift 1, opacity 1
+ PSK31: sender TI2ABC, entity Costa Rica, hover [Who sent it. TI2ABC is a callsign from Costa Rica.], nudge Visible [Costa Rica · new country], lift 1, opacity 1
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.AnUncertainParseSaysSoAsAMemberAndAWord [40 ms]
+  Standard Output Messages:
+ 05-garbled after line 3: IsGuess True, word [guess], caption [080258 · guess]
+ 05-garbled after line 4: IsGuess True, word [guess], caption [080258 · guess]
+ 05-garbled line 3: sender K3ABC, IsGuess True, word [guess], caption [080258 · guess]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.TheCqToggleHoldsNoPsk31RowBack [8 ms]
+  Standard Output Messages:
+ after line 1, the CQ filter holds: W1AW (CQ) at 500, G4XYZ (CQ) at 750, VE3XN (CQ) at 1000, F4DIA (CQ) at 1250, K3ABC (CQ) at 1500, JA1XYZ (CQ DX) at 1750, N4ZEK (CQ) at 2000, KD8WYT/P (CQ) at 2250
+ after line 2, the CQ filter holds: KC3QIS (W1AW) at 500, KC3QIS (G4XYZ) at 750, KC3QIS (VE3XN) at 1000, EI4GNB (F4DIA) at 1250, KC3QIS (K3ABC) at 1500, JA1XYZ (CQ DX) at 1750, KC3QIS (N4ZEK) at 2000, KC3QIS (KD8WYT/P) at 2250
+ after line 3, the CQ filter holds: F4DIA (EI4GNB) at 1250, JA1XYZ (CQ DX) at 1750
+ after line 4, the CQ filter holds: KC3QIS (W1AW) at 500, KC3QIS (G4XYZ) at 750, KC3QIS (VE3XN) at 1000, EI4GNB (F4DIA) at 1250, JA1XYZ (CQ DX) at 1750, KC3QIS (N4ZEK) at 2000
+ after line 5, the CQ filter holds: KC3QIS (VE3XN) at 1000, EI4GNB (F4DIA) at 1250, KC3QIS (K3ABC) at 1500, JA1XYZ (CQ DX) at 1750, KC3QIS (N4ZEK) at 2000
+   answer in         7 row-steps
+   cq in             12 row-steps
+   end for him       3 row-steps
+   end in            4 row-steps
+   report for him    8 row-steps
+   report in         6 row-steps
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.TheCodeTheseRowsReuseIsUnchanged [1 ms]
+  Standard Output Messages:
+ src/Hamlet.RadioEngine/Explore/DxccPrefixes.cs f5ebf765a62defe87c0e25bc88c4a005ac3614d02dd8b51bb9a5d6a432351ef2 unchanged
+ src/Hamlet.RadioEngine/Contacts/NudgeSet.cs e7f0026f00b6afcac02818ba9ba4d951ac692413105683264fb1622ecd206080 unchanged
+ src/Hamlet.App/ViewModels/NudgeWords.cs 98d85db8cf9691895b8f1922ff55547dfb0a8cd65025af8839c1090e1942828e unchanged
+ public bool HasWorkedBefore => _workedBefore.Length > 0; found 1 time(s)
+ public double RowOpacity => HasWorkedBefore || HeardNotReadable || Ended ? 0.55 : 1.0; found 1 time(s)
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.ARowWithNoSpeakerHasNoSenderNoAddresseeNoCountryAndIsNotACq [3 ms]
+  Standard Output Messages:
+ [yes copy all fine here, nice signal into PA tonight]: sender [], addressee [], hover [Who sent it.], word []
+ [CQ CQ CQ de K3A~C K3A~C pse K]: sender [], addressee [], hover [Who sent it.], word []
+ parsed with no speaker: sender [], addressee [], word [unknown]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.ARowAddressedToTheOperatorIsOnHisSideAndNotInTheLeftList [14 ms]
+  Standard Output Messages:
+ 01-textbook after line 1: W1AW > CQ, left list
+ 01-textbook after line 2: KC3QIS > W1AW, left list
+ 01-textbook after line 3: W1AW > KC3QIS, his side
+ 01-textbook after line 4: KC3QIS > W1AW, left list
+ 01-textbook after line 5: W1AW > KC3QIS, his side
+ 02-chatty after line 1: G4XYZ > CQ, left list
+ 02-chatty after line 2: KC3QIS > G4XYZ, left list
+ 02-chatty after line 3: G4XYZ > KC3QIS, his side
+ 02-chatty after line 4: KC3QIS > G4XYZ, left list
+ 02-chatty after line 5: G4XYZ > KC3QIS, his side
+ 03-no-report after line 1: VE3XN > CQ, left list
+ 03-no-report after line 2: KC3QIS > VE3XN, left list
+ 03-no-report after line 3: VE3XN > KC3QIS, his side
+ 03-no-report after line 4: KC3QIS > VE3XN, left list
+ 04-not-for-me after line 1: F4DIA > CQ, left list
+ 04-not-for-me after line 2: EI4GNB > F4DIA, left list
+ 04-not-for-me after line 3: F4DIA > EI4GNB, left list
+ 04-not-for-me after line 4: EI4GNB > F4DIA, left list
+ 05-garbled after line 1: K3ABC > CQ, left list
+ 05-garbled after line 2: KC3QIS > K3ABC, left list
+ 05-garbled after line 3: K3ABC > KC3QIS, his side
+ 05-garbled after line 4: K3ABC > KC3QIS, his side
+ 05-garbled after line 5: KC3QIS > K3ABC, left list
+ 06-cq-dx after line 1: JA1XYZ > CQ DX, left list
+ 06-cq-dx after line 2: JA1XYZ > CQ DX, left list
+ 07-odd-ending after line 1: N4ZEK > CQ, left list
+ 07-odd-ending after line 2: KC3QIS > N4ZEK, left list
+ 07-odd-ending after line 3: N4ZEK > KC3QIS, his side
+ 07-odd-ending after line 4: KC3QIS > N4ZEK, left list
+ 08-lowercase-and-slashes after line 1: KD8WYT/P > CQ, left list
+ 08-lowercase-and-slashes after line 2: KC3QIS > KD8WYT/P, left list
+ 08-lowercase-and-slashes after line 3: KD8WYT/P > KC3QIS, his side
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.NoFt8MessageIsOnAPsk31RowAndWhatItOffersIsTheCannedSeven [6 ms]
+  Standard Output Messages:
+ an FT8 row from W1AW has a menu: True
+ PSK31 rows right-clicked: 39, cards on the panel: 9, send line [nothing sent yet]
+ rows naming a station: 27, of those with a menu: 27, of those NOT a certain CQ and offered anyway: 15
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePsk31ReadsTheConversationTests.WorkedFadeDimsAPsk31RowToTheSameOpacity [5 ms]
+  Standard Output Messages:
+ FT8 opacity 0.55 [You logged a contact with TI2ABC on 09/07/26], PSK31 opacity 0.55 [You logged a contact with TI2ABC on 09/07/26]
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePowerIsOfferedTests.AMeasuredAlcBecomesASentenceAndALineAndNothingIsJudged [14 ms]
+  Standard Output Messages:
+ ALC 96: [Your radio's level control read 96 of 120 during this send. Hamlet has no reference to compare that with yet and is not judging it, and it takes one from your next FT8 or FT4 send. Nothing for you to do.]
+         {"ts":"2026-09-26T08:02:58.784Z","sessionId":"ddec9a59","level":"info","appVersion":"323","category":"psk31","event":"psk31_send_alc","data":{"measured":true,"alc":96,"scaleTop":120,"ageMs":0,"judged":false,"zone":null,"pastTheZone":false,"reference":null,"margin":15,"referenceMode":null}}
+ ALC 12: [Your radio's level control read 12 of 120 during this send. Hamlet has no reference to compare that with yet and is not judging it, and it takes one from your next FT8 or FT4 send. Nothing for you to do.]
+         {"ts":"2026-09-26T08:02:58.787Z","sessionId":"e00f104d","level":"info","appVersion":"323","category":"psk31","event":"psk31_send_alc","data":{"measured":true,"alc":12,"scaleTop":120,"ageMs":0,"judged":false,"zone":null,"pastTheZone":false,"reference":null,"margin":15,"referenceMode":null}}
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel [31 ms]
+  Standard Output Messages:
+ offer  : PSK31 sends a steady carrier, so it runs warmer than voice. Hamlet can set your radio's transmit power to 50% for you. Nothing else on the radio changes, and nothing is set unless you press this.
+ button : Set my power to 50%
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePowerIsOfferedTests.AcceptingWritesOnceAndDecliningWritesNothing [248 ms]
+  Standard Output Messages:
+ wrote RfPower = 128
+ after declining: 0 write(s)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed [95 ms]
+  Standard Output Messages:
+ the card is showing variant "8/250", grid "FN31"
+ <CALL:4>W1AW
+<STATION_CALLSIGN:6>KC3QIS
+<QSO_DATE:8>20260926
+<TIME_ON:6>080259
+<TIME_OFF:6>080259
+<BAND:3>20m
+<MODE:6>OLIVIA
+<SUBMODE:12>OLIVIA 8/250
+<FREQ:9>14.071500
+<RST_SENT:3>599
+<RST_RCVD:3>599
+<GRIDSQUARE:4>FN31
+<MY_GRIDSQUARE:6>FN00DJ
+<EOR>
+
+
+
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.OnlyTheLinesThatNeedHisCallsignAreDrawnGreyAndTheyCarryTheWord [4 ms]
+  Standard Output Messages:
+ GREY Answer him - needs your callsign in Settings
+ note Send my report - not offered: your name, location or grid square is not s...
+ GREY Confirm and 73 - needs your callsign in Settings
+ live Say again?
+ live Please repeat your report
+ live QRZ?
+ live 73 and out
+
+
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.WithSettingsFilledInNotOneLineIsDrawnGreyAndTheSendableOnesStillSend [6 ms]
+  Standard Output Messages:
+ live send lines across the fixture: 15
+
+
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.CaptureIsLiveOnEveryRowAndItIsThePanelsOwnCommand [3 ms]
+  Passed Hamlet.App.Tests.Views.TheMenuIsOnEveryDecodedRowTests.EveryRowOpensAMenuAndCaptureAndTheCardLineAreOnAllOfThem [5 ms]
+  Standard Output Messages:
+ -- PSK31, six carriers - three naming a station, three not -------------------------------------
+   [CQ CQ CQ de W1AW W1AW pse K /]              station W1AW     | 9 items
+       Answer him
+       Send my report - not offered: his conversation card is not open yet.
+       Confirm and 73 - not offered: his conversation card is not open yet.
+       Say again?
+       Please repeat your report
+       QRZ?
+       73 and out
+       Capture 2 minutes
+       Make a card anyway
+   [KC3QIS de K3ABC  RST 599 599  BTU KC3QIS de K3ABC K /] station K3ABC    | 9 items
+       Answer him - not offered: the parser is not certain he is calling CQ on t...
+       Send my report
+       Confirm and 73 - not offered: it is not your turn on this contact, or the...
+       Say again?
+       Please repeat your report
+       QRZ?
+       73 and out
+       Capture 2 minutes
+       Make a card anyway
+   [K9XYZ de N2DEF  R R TNX 73 73 SK /]         station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [heard, not readable yet]                    station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [...-.- the band is long tonight and the qsb is deep /] station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [e5 ttt tu ee /]                             station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+ 
+ -- OLIVIA, four channels - two naming a station, two not -------------------------------------
+   [CQ CQ CQ de W1AW W1AW pse K /]              station W1AW     | 9 items
+       Answer him
+       Send my report - not offered: his conversation card is not open yet.
+       Confirm and 73 - not offered: his conversation card is not open yet.
+       Say again?
+       Please repeat your report
+       QRZ?
+       73 and out
+       Capture 2 minutes
+       Make a card anyway
+   [heard, not readable yet]                    station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+   [heard, not readable yet]                    station -        | 2 items
+       Capture 2 minutes
+       Make a card anyway - Hamlet read no callsign on this row, so a card would...
+ 
+ ROWS OFFERING A MENU: 9 of 9 (unit 387 task 1 measured 3 of 9 before this unit)
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcSentenceTests.APsk31SendAboveTheReferencePointsAtTheDriveOnThisScreen [4 ms]
+  Standard Output Messages:
+ past    : Your radio is holding this signal back: its level control read 90 of 120 against the 62 Hamlet measured on a clean FT8 send, and that is what makes  spread into the people either side of you. Turn the transmit drive on this screen down one step and send again.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcSentenceTests.NotOneFormSendsHimToTheRadio [1 ms]
+  Standard Output Messages:
+ [Your radio's level control read 62 of 120 during this send. Hamlet has no reference to compare that with yet and is not judging it, and it takes one from your next FT8 or FT4 send. Nothing for you to do.]
+ [Your radio's level control read 62 of 120 during this send. That is Hamlet's reference from now on, and a PSK31 send that reads well above it will get a sentence here. Nothing for you to do.]
+ [Level 58 of 120, inside the 62 Hamlet measured on a clean FT8 send. Nothing for you to do.]
+ [Your radio is holding this signal back: its level control read 90 of 120 against the 62 Hamlet measured on a clean FT8 send, and that is what makes  spread into the people either side of you. Turn the transmit drive on this screen down one step and send again.]
+ [Hamlet has a reference for your radio's level control: 62 out of 120, learned from FT8 send at 08:02:59 UTC, 0 s ago.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcSentenceTests.TheSendThatSetsTheReferenceNamesIt [1 ms]
+  Standard Output Messages:
+ set     : Your radio's level control read 62 of 120 during this send. That is Hamlet's reference from now on, and a PSK31 send that reads well above it will get a sentence here. Nothing for you to do.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcSentenceTests.WithNoReferenceItReportsAndJudgesNothing [1 ms]
+  Standard Output Messages:
+ no ref  : Your radio's level control read 62 of 120 during this send. Hamlet has no reference to compare that with yet and is not judging it, and it takes one from your next FT8 or FT4 send. Nothing for you to do.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheAlcSentenceTests.ALaterSendInsideTheReferenceGetsOneLine [1 ms]
+  Standard Output Messages:
+ inside  : Level 58 of 120, inside the 62 Hamlet measured on a clean FT8 send. Nothing for you to do.
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePressingOfCqTests.AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard [1 ms]
+  Standard Output Messages:
+ CARD  K9XP
+   face   : 02:11:15 UTC · 15 seconds ago
+   action : Tell him how he is coming through
+   detail : Grid EN52 · 540 miles west-northwest · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 1 slot ago · He last sent EN52
+ 
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePressingOfCqTests.ASecondAnsweringStationGetsItsOwnCard [1 ms]
+  Standard Output Messages:
+ CARD  K9XP
+   face   : 02:11:15 UTC · 15 seconds ago
+   action : Tell him how he is coming through
+   detail : Grid EN52 · 540 miles west-northwest · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 1 slot ago · He last sent EN52
+ 
+ CARD  W1ABC
+   face   : 02:11:15 UTC · 15 seconds ago
+   action : Tell him how he is coming through
+   detail : Grid FN31 · 320 miles east-northeast · 1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot · 1 slot ago · He last sent FN31
+ 
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePressingOfCqTests.ACqMakesACardOfItsOwn [1 ms]
+  Standard Output Messages:
+ CARD  CQ
+   face   : 02:11:00 UTC · 15 seconds ago
+   action : 
+   detail : Sent CQ KC3QIS FN00 · At 02:11:00 UTC
+ 
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePressingOfCqTests.TheCqCardCarriesNoWayToLogAndTheStationCardDoes [1 ms]
+  Standard Output Messages:
+ card         : CQ
+ action       : None
+ log link     : False
+ answered     : K9XP, action Send, log link True
+
+
+  Passed Hamlet.App.Tests.ViewModels.ThePressingOfCqTests.ASecondCqCountsUpInTheSameCard [2 ms]
+  Standard Output Messages:
+ CARD  CQ
+   face   : 02:12:00 UTC · 15 seconds ago
+   action : 
+   detail : Sent CQ KC3QIS FN00 · At 02:12:00 UTC
+ 
+
+
+The active test run was aborted. Reason: Test host process crashed
+
+Test Run Aborted.
+Total tests: Unknown
+     Passed: 132
+ Total time: 7.9938 Minutes
+RC=124 WALL=481s

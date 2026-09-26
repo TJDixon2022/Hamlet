@@ -1,0 +1,55 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.62]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.83]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.84]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackedPitchIsChosenByKeyingTests.NeitherALouderCarrierNorTheConfiguredPitchHoldsTheTracker [2 s]
+  Standard Output Messages:
+ HM-REQ-091 | 675 Hz, 20 WPM, 15 dB | truth 675.0 | tracker over the last half of the keyed windows 675.0 | error 0.0
+ HM-REQ-091 | 625 Hz keyed, 525 Hz carrier +6 dB unkeyed, 20 WPM | truth 625.0 | tracker over the last half of the keyed windows 625.0 | error 0.0
+
+
+[xUnit.net 00:00:34.28]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheTrackedPitchIsChosenByKeyingTests.TheInstrumentCasesThroughTheTracker [30 s]
+  Standard Output Messages:
+ tracker case | case | truth Hz | tracker Hz (median over keyed windows, after the first measured hop) | MET-PITCH-ERR against the truth | worst window | windows more than 25 Hz off
+ tracker case | 300 Hz, 12 WPM, 15 dB | 300 | NaN | NaN | NaN | 0 of 0
+ tracker case | 400 Hz, 12 WPM, 15 dB | 400 | 400.0 | 0.0 | 25.0 | 0 of 20
+ tracker case | 523 Hz, 12 WPM, 15 dB | 523 | 525.0 | +2.0 | 2.0 | 0 of 20
+ tracker case | 600 Hz, 12 WPM, 15 dB | 600 | 600.0 | 0.0 | 0.0 | 0 of 20
+ tracker case | 625 Hz, 12 WPM, 15 dB | 625 | 625.0 | 0.0 | 0.0 | 0 of 20
+ tracker case | 640 Hz, 12 WPM, 15 dB | 640 | 650.0 | +10.0 | 10.0 | 0 of 21
+ tracker case | 675 Hz, 12 WPM, 15 dB | 675 | 675.0 | 0.0 | 25.0 | 0 of 20
+ tracker case | 750 Hz, 12 WPM, 15 dB | 750 | 750.0 | 0.0 | 25.0 | 0 of 20
+ tracker case | 900 Hz, 12 WPM, 15 dB | 900 | 900.0 | 0.0 | 0.0 | 0 of 20
+ tracker case | 300 Hz, 20 WPM, 15 dB | 300 | NaN | NaN | NaN | 0 of 0
+ tracker case | 400 Hz, 20 WPM, 15 dB | 400 | 425.0 | +25.0 | 25.0 | 0 of 14
+ tracker case | 523 Hz, 20 WPM, 15 dB | 523 | 525.0 | +2.0 | 3.0 | 0 of 14
+ tracker case | 600 Hz, 20 WPM, 15 dB | 600 | 600.0 | 0.0 | 25.0 | 0 of 14
+ tracker case | 625 Hz, 20 WPM, 15 dB | 625 | 625.0 | 0.0 | 0.0 | 0 of 14
+ tracker case | 640 Hz, 20 WPM, 15 dB | 640 | 640.0 | 0.0 | 10.0 | 0 of 14
+ tracker case | 675 Hz, 20 WPM, 15 dB | 675 | 675.0 | 0.0 | 5.0 | 0 of 14
+ tracker case | 750 Hz, 20 WPM, 15 dB | 750 | 750.0 | 0.0 | 25.0 | 0 of 14
+ tracker case | 900 Hz, 20 WPM, 15 dB | 900 | 900.0 | 0.0 | 0.0 | 0 of 12
+ tracker case | 300 Hz, 30 WPM, 15 dB | 300 | NaN | NaN | NaN | 0 of 0
+ tracker case | 400 Hz, 30 WPM, 15 dB | 400 | 405.0 | +5.0 | 25.0 | 0 of 11
+ tracker case | 523 Hz, 30 WPM, 15 dB | 523 | 525.0 | +2.0 | 3.0 | 0 of 10
+ tracker case | 600 Hz, 30 WPM, 15 dB | 600 | 600.0 | 0.0 | 0.0 | 0 of 10
+ tracker case | 625 Hz, 30 WPM, 15 dB | 625 | 625.0 | 0.0 | 5.0 | 0 of 11
+ tracker case | 640 Hz, 30 WPM, 15 dB | 640 | 640.0 | 0.0 | 15.0 | 0 of 9
+ tracker case | 675 Hz, 30 WPM, 15 dB | 675 | 675.0 | 0.0 | 0.0 | 0 of 10
+ tracker case | 750 Hz, 30 WPM, 15 dB | 750 | 747.5 | -2.5 | 5.0 | 0 of 6
+ tracker case | 900 Hz, 30 WPM, 15 dB | 900 | NaN | NaN | NaN | 0 of 0
+ tracker case | 625 Hz, 20 WPM, 5 dB | 625 | 625.0 | 0.0 | 0.0 | 0 of 14
+ tracker case | 625 Hz keyed, 525 Hz carrier +6 dB unkeyed, 20 WPM | 625 | 625.0 | 0.0 | 100.0 | 1 of 16
+ tracker case | 615 Hz sliding +20 Hz per 30 s, 20 WPM, 15 dB | 615 + 0.667 t | 630.0 | 0.0 | 13.9 | 0 of 32
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 34.6099 Seconds
+RC=0 WALL=35s

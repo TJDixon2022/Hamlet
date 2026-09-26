@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 4
-WORK_INSTRUCTION: 447 - a pitch instrument, then the tracker hears the sender's own note
+TASK: 0 of 3
+WORK_INSTRUCTION: 448 - the decoder listens for keying from cold, and the opening is measured
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T03:21:21-04:00
-NOTE: Tracker change kept at b4884813: real MET-CER-SURE 45 to 40, coverage 374 to 393, the opening at 30.54 on 600 not 525; record committing before the exit round
+UPDATED: 2026-09-26T04:23:35-04:00
+NOTE: Entry done: 4.3 ticked, metrics as 447 left them, 9 files over 25 Hz; next the acquiring trace
 
 ---
 

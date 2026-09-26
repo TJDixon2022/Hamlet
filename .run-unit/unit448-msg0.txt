@@ -1,0 +1,11 @@
+unit448 task 0: entry at step 4, 4.3 ticked under 447's rule - MET-INVENTED 40 over 473, 9 files over 25 Hz (4.5)
+
+447's lost tick: TheTrackedPitchIsChosenByKeyingTests 2 of 2 alone, so 4.3 is
+ticked in both PHASE_PLAN.md copies; HM-REQ-091 met on synthetic, not on the
+real set. Build 0 errors; engine line 178 of 178 in 373 s; app line 277 of 278
+in 163 s on a rerun (first run's host hung at 480 s), the loss 2 of 2 alone;
+captures 51 of 51 in 130 s; adjudicated 13 of 13; named 10 of 13 as recorded.
+Real, inferred keys: MET-CER-SURE 40 of 433, coverage 393 over 473, MET-WBE 47
+over 113. The runner's and 447's writes committed as they were, with the entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
