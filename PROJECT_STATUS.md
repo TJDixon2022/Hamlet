@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 448 - the decoder listens for keying from cold, and the opening is measured
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T04:56:05-04:00
-NOTE: Task 2 done: from-cold change refused by R78 on every item, reverted; 4.5 ticked on the opening's before and after
+UPDATED: 2026-09-26T05:17:14-04:00
+NOTE: Unit 448 done: 4.3 and 4.5 ticked; from-cold change refused by R78; HM-REQ-102 fails in the decoder, not the tracker - output.md written
 
 ---
 

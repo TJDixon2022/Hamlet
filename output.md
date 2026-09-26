@@ -1,338 +1,364 @@
 READ IN THIS ORDER.
 
-A. Hamlet meets the CW requirements: step 4 at 2 of 7, step 2 at 3 of 5, step 3 at 3 of 6,
+A. Hamlet meets the CW requirements: step 4 at 4 of 7, step 2 at 3 of 5, step 3 at 3 of 6,
    step 5 at 0 of 6 by the plan's checkboxes, steps 0 and 1 done, 6, 7 and 8 not started.
-B. Step 4, criterion 4.1 (HM-REQ-092 measured, N TBD): the instrument's bin 0.5 Hz, 30 of 30
-   cases within one bin, cost 24411 us per 1 s instrument hop (118 us per 5 ms decoder hop),
-   4.1 ticked; 4.2 69 captures measured, 11 more than 25 Hz off; the tracker change kept,
-   against HM-DEC-095's clause that two agreeing surveys rest on six seconds of evidence and
-   noise does not repeat in the same bin; MET-CER-SURE 45 -> 40; MET-INVENTED 45 -> 40;
-   coverage 374 -> 393; 4.7 red on 17:37.
-C. This report adds the instrument, the MET-PITCH-ERR table over the tree, what the tracker weighed
-   at 30.54 s, and one kept tracker change. Section 4 raises 3 items; none is in the way of a
-   criterion in B. They are: whether 4.3 stands on a test the real set contradicts, whether two
-   sub-bin or sign-flipped MET-PITCH-ERR moves count as "rises", and whether a group other than
-   the largest could be the one built.
+B. Step 4, criterion 4.5 (HM-REQ-102 and 103 on the 7.052 opening): acquiring 0.00 to 26.04 s;
+   sure characters while acquiring 9 -> 9; opening characters read sure and right 21 -> 21
+   of 24; 4.5 ticked. 4.3 ticked at task 0. The from-cold change not kept; level-alone moves
+   48 -> 48 (0 of 162 under the refused change); HM-REQ-091 on the real set not met;
+   MET-CER-SURE 40 -> 40 (64 under the refused change); MET-INVENTED 40 -> 40 (64);
+   coverage 393 -> 393 (313); 4.7 red on 17:37, 032113 and 032129.
+C. This report adds the acquiring trace, which shows HM-REQ-102 failing because the decoder
+   prints sure letters before the tracker confirms anything (9 on the opening, 245 on the keyed
+   23), and one refused tracker change. Section 4 raises 4 items; item 1 stands in the way of
+   HM-REQ-102 being met, not in the way of 4.5, which is a measurement and is ticked.
 
-UNIT:       447 - complete at task 4 of 4, none dropped - 2026-09-26 03:46
-PHASE GOAL: Hamlet meets every must-tier CW requirement in CW_REQUIREMENTS.md, measured against its own metrics.
-UNIT GOAL:  Build a pitch ruler that owes nothing to the tracker, prove it on known tones, read MET-PITCH-ERR over every capture with it, then make one tracker change that puts the decoder on the note the sender is keying.
-ADVANCED:   yes - 4.1, 4.2 and 4.3 flipped in PHASE_PLAN.md (4.3 on a synthetic test; see section 4)
-NUMBER:     instrument bin 0.5 Hz, worst case 0.024 Hz; >25 Hz cases 11 -> 9; MET-CER-SURE 45 -> 40; MET-INVENTED 45 -> 40
-DRIFT:      step 4 0; step 2 2; step 3 0; step 5 1
+UNIT:       448 - complete at task 3 of 3, none dropped - 2026-09-26 05:16
+PHASE GOAL: Hamlet meets every must-tier CW requirement in CW_REQUIREMENTS.md, measured by the metrics CW_SPEC.md defines.
+UNIT GOAL:  Measure what the decoder prints on the 7.052 opening while it is still finding the station, before and after one change to where the tracker points its filter before anything is confirmed.
+ADVANCED:   yes - 4.3 (task 0, 447's lost tick) and 4.5 (task 2, the measurement) flipped in both PHASE_PLAN.md copies
+NUMBER:     sure while acquiring 9 -> 9; opening sure-right 21 -> 21; level-alone moves 48 -> 48; MET-CER-SURE 40 -> 40; MET-INVENTED 40 -> 40
+DRIFT:      step 4 1; step 2 2; step 3 0; step 5 1
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4, none dropped.** Claude Code on QUIVERFULL, project Hamlet, branch
-`main`, HEAD at entry `ae2d6b00`. Commits: `41311294` (task 0), `9b283b20` (task 1), `0bcf2996`
-(task 2), `b4884813` (the tracker change, on its own), `c2cae86d` (task 3's record), and the exit
-commit. All pushed to `origin/main`.
+**Complete at task 3 of 3. Nothing was dropped: the keyed 23 were traced too.** Claude Code on
+this machine, project Hamlet, branch `main`, HEAD at entry `c2cae86d`. Commits: `0804fd31`
+(task 0), `3c4e1f75` (task 1), `2c3048d2` (task 2, the refused change as a diff), and the exit
+commit. All pushed to `origin/main`. The change was not kept, so it never had a commit of its own
+in `src`. Its diff and its test are committed in `.run-unit/unit448-coldmove-notkept.diff`.
 
-**Gate.** Hamlet confirmed: the four MUST EXIST files present, `CoreHMI.sln` and `MURC.sln` absent,
-root `C:\Source\HamLet`.
+**Gate.** Hamlet confirmed: the four MUST EXIST files are present, `CoreHMI.sln` and `MURC.sln`
+are absent, and the root is `C:\Source\HamLet`.
 
-**The ids, quoted from the documents.**
-- HM-REQ-092: "After acquisition, the decoder shall report the pitch it is demodulating at, within
-  N Hz of true (MET-PITCH-ERR ≤ N)." N is "TBD, needs ruling (recommended 5 Hz)". Matches.
-- HM-REQ-090: "The decoder shall acquire and track a keyed tone at any pitch from 300 to 900 Hz
-  inclusive." Matches.
+**The ids, quoted from `CW_REQUIREMENTS.md`.** Every one matches the instruction's summary. None
+is a mismatch.
+- HM-REQ-102: "While acquiring, the decoder shall emit no sure character."
+- HM-REQ-103: "When a run-up precedes the message, the decoder shall not lose the opening
+  characters of the message to acquisition."
 - HM-REQ-091: "The decoder shall choose the tracked pitch by keying quality and never by level
-  alone or by the operator's configured pitch." Matches.
-- HM-REQ-102: "While acquiring, the decoder shall emit no sure character." HM-REQ-103: "When a
-  run-up precedes the message, the decoder shall not lose the opening characters of the message to
-  acquisition." Both match.
-- HM-REQ-010, 011 and 012 match as the instruction states them. `CW_SPEC.md` §11: "MET-PITCH-ERR |
-  Pitch error | estimated − true, hertz, after acquisition." V-11 as stated.
+  alone or by the operator's configured pitch."
+- HM-REQ-090: "The decoder shall acquire and track a keyed tone at any pitch from 300 to 900 Hz
+  inclusive."
+- HM-REQ-092: "After acquisition, the decoder shall report the pitch it is demodulating at, within
+  N Hz of true (MET-PITCH-ERR ≤ N)." N is "TBD, needs ruling (recommended 5 Hz)". Measured here,
+  not judged.
+- HM-REQ-010, 011 and 012: MET-CER-SURE below 1 %, MET-INVENTED at zero, and MET-COVERAGE ≥ 0.90
+  at the sensitivity floor.
+- `CW_SPEC.md` §11 defines MET-TACQ ("first element on the air to first sure character, under a
+  named run-up") and MET-PITCH-ERR ("estimated − true, hertz, after acquisition").
+
+**"Acquiring" is defined in neither document.** MET-TACQ ends at the first sure character, and
+using that would make HM-REQ-102 true by definition. So the instruction's fallback is used:
+acquiring runs from the start of the file to the tracker's first keyed verdict, which is
+HM-DEC-095's twice-confirmation.
+- In code, that verdict is the first hop on which `_lastKeyedHz` is set. The printer reads it by
+  reflection.
+- `_lastKeyedHz` is never cleared, so the tracker has no "keyed signal after silence" state. Each
+  file has one acquiring span, starting at its first sample.
 
 **Checked against the tree, section 2 of the instruction.**
-- `CwToneTracker.cs`, `CwToneSurvey.cs` and `CwPitchChoice.cs` are all present. **Mismatch on the
-  bin:**
-  - The tracker's coarse bank is 25 Hz (`CoarseSpacingHz`), 300 to 900.
-  - A fine bank 5 Hz apart (`FineSpacingHz`, ±15 Hz reach) is what it reports from, with a 1 Hz
-    refine step (`RefineStepHz`).
-  - The survey works on whatever bins it is given: the coarse 25 Hz bank and the fine 5 Hz bank.
-  - "The plan says 25 Hz" describes the coarse stage only.
-  - To find a pitch, the tracker calls its own `Goertzel` and `Coefficient`, a Hann taper
-    (`BuildHann`, `BuildGateHann`, `Taper`) and `CwToneSurvey.Analyze`. There is no FFT.
-- **30.54 s is in `cw-2026-09-24-003919`.** The splice puts `003919` at stream 30.00 to 46.20 s,
-  after 13.8 s of it overlapped `003901`.
-- `cw-2026-09-24-135641` and `-152135` are not in the tree. Confirmed; not added.
-- The generator is `CwFixtureGenerator` (`tests/.../Cw/Fixtures`). It keys a tone at a stated pitch
-  over a shaped noise band (350 to 870 Hz, out-of-band 30 dB down, never digital silence).
-  `SyntheticCq.Recipe` gives PARIS timing.
-- Known and not mine, reported once each, none edited:
+- **447's lost tick: confirmed.** 4.1 and 4.2 were ticked and 4.3 was not, in both copies of
+  `PHASE_PLAN.md`.
+- **The from-cold move: confirmed.** It is at `CwToneTracker.cs:1014-1025` (comment from 996),
+  guarded by `!MidCharacter`, `double.IsNaN(_lastKeyedHz)`, `coarse.Strongest` and the fine
+  bank's 15 Hz reach. It runs only when `coarse.Keyed` is null.
+- **What `Strongest` ranks by: lift alone.** Lift is a bin's key-down cluster level over the
+  median of the baselines of bins at least 125 Hz away. It is taken over every bin, keyed or not,
+  and is reported only at 10 dB or more (`CwToneSurvey.Analyze`).
+- **Mismatch: `WhatTheTrackerWeighedWhereItMoved` cannot be run over the opening or the keyed 23
+  as it stands.** It is hard-wired to the 11 files of `OffAtEntry`, and its "from cold" tally
+  counts every move of more than 15 Hz with no keyed verdict. I wrote a new printer rather than
+  edit it. My count is every retune while nothing is confirmed: 60 on the 11 files, with at least
+  one in each file. 447 counted 48 in 9 of the 11.
+- **`TheTrackedPitchIsChosenByKeyingTests` holds two facts:**
+  - `NeitherALouderCarrierNorTheConfiguredPitchHoldsTheTracker`, with two cases: 625 Hz keyed
+    beside a 525 Hz carrier 6 dB louder, and 675 Hz with the decoder started at 600.
+  - `TheInstrumentCasesThroughTheTracker`, a printer.
+
+  **Yes, the carrier case starts cold beside a louder unkeyed carrier.** It asserts only the
+  pitch over the last half of the message, so it never looks at the from-cold move.
+- **The opening: confirmed.** 003901 to 004234 are spliced as `WhatTheOpeningHeardTests` does it.
+  `003919` covers stream 30.00 to 46.20 s, and its file starts at 16.20 s, so 30.54 s is in
+  `003919`.
+- **Expected failures, as stated:**
+  - The named floors: 17:37 38 against 46, `032113` 43 against 45, `032129` 42 against 64.
+  - The app line lost 1 at entry and 3 at exit. Each losing type is green alone.
+- **Not expected: the first entry run of the app line aborted at the 480 s timeout.** The test
+  host hung after 132 had passed (`.run-unit/unit448-cf-app-entry.txt`). One rerun gave 277 of
+  278 in 163 s.
+- **Known and not mine.** Each is reported once and none was edited:
   - `PHASE_OUTCOME.md`'s header still carries the old titles for steps 2, 3 and 8.
   - `CW_SPEC.md` §11 still defines MET-COVERAGE as sure over sent.
-  - `PROJECT_STATUS.md` RULES_AT says HM-DEC-165 while `CLAUDE.md` §1 holds CPS-DEC-0183.
-- Expected failures at entry, as stated: 17:37's named floor red (46 banked, reads 38); the app
-  line lost 1 at entry and 5 at exit, each losing type green alone.
+  - `PROJECT_STATUS.md` RULES_AT says HM-DEC-165, while `CLAUDE.md` §1 holds CPS-DEC-0183.
+  - R75 names the sender at 625 Hz at 30.54 s. The instrument finds 598.5 to 600.0 Hz from 20 to
+    26 s here, and 447 found 599 to 601 at 30 to 34 s.
+- **Mismatch with the instruction's premise.** The instruction reasons that the from-cold move
+  "decides what the decoder hears while it acquires" on the opening. **On the opening it makes no
+  move at all.** The station is on the configured 600 Hz, and the tracker never retunes before
+  its first keyed verdict at 26.04 s. So no from-cold change can move 4.5's numbers there, and
+  none did.
 
-**Task 0, the entry.**
-- Version 1.13.133 -> 1.13.134. `PHASE_STATUS.md` names 447 at `CURRENT_STEP: 4` in both copies.
-- Build 0 errors in 17 s. Engine carry-forward 178 of 178 in 375 s. App carry-forward 277 of 278
-  in 154 s; the loss, `TheCarrierHoldsTheButtonsTests`, is 8 of 8 alone.
-- Floors: captures 51 of 51 in 132 s; adjudicated 13 of 13 in 33 s; named 12 of 13 in 69 s.
-- Metrics identical to 446's exit.
-- The runner's `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` were committed as they
-  were, with the 447 entry added.
+**Task 0.**
+- Version 1.13.134 -> 1.13.135. `PHASE_STATUS.md` names 448 at `CURRENT_STEP: 4` in both copies.
+- The runner's and 447's uncommitted writes were committed as they were, with the 448 entry:
+  `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `PROJECT_STATUS.md`, `RUN_LEDGER.md`, 447's
+  `output.md` and `WORK_INSTRUCTIONS.md`.
+- **4.3: `TheTrackedPitchIsChosenByKeyingTests` was 2 of 2 alone in 35 s, so 4.3 is ticked in
+  both copies.** Under 447's tick rule, its statement is 447's: HM-REQ-091 is met on the synthetic
+  cases and not met on the real set.
+- Entry round:
+  - build: 0 errors in 16 s;
+  - engine carry-forward: 178 of 178 in 373 s;
+  - app carry-forward: 277 of 278 in 163 s on the rerun; the loss, `ThePsk31OfferTests`, is 2
+    of 2 alone;
+  - floors: captures 51 of 51 in 130 s, adjudicated 13 of 13 in 32 s, named 10 of 13 in 66 s;
+  - metrics: as 447's exit (the table is in section 3);
+  - MET-PITCH-ERR, with 447's printer: 69 of 69 measured, **9 files more than 25 Hz off**, 256
+    of 1688 windows.
 
-**Task 1, the instrument (4.1).** `CwPitchInstrument`, in
-`tests/Hamlet.RadioEngine.Tests/Cw/Instruments/`.
-- **Under the tests, because only a measurement uses it.** A type under `src` would sit in the
-  product for something to call, and R76 and §12.5 need it out of the decode path.
-- **What it references:** `Math`, `float[]`, `double[]`, `List<T>`, `Array.Sort`, value tuples and
-  its own `PitchWindow` record. No `using` line at all. `ItSharesNoCodeWithTheTracker` reads its
-  source and finds no code line naming `CwToneTracker`, `CwToneSurvey`, `CwPitchChoice`, Goertzel,
-  `Hamlet.RadioEngine.Cw` or `.Audio`, `CwDecoder`, `CwProbabilistic`, `CwCompetitor`,
-  `ToneReading` or `ToneVerdict`. It reads no tracker state.
-- **Method, stage 1: where keying is.**
-  - A radix-2 FFT and Hann written in the file, on frames of the next power of two above 30 ms,
-    a quarter-frame apart.
-  - Each bin from 300 to 900 Hz is taken relative to the frame's median bin and smoothed over
-    three frames. Frames 30 dB under the median frame count as the receiver muted and are
-    dropped.
-  - In each 2 s window, stepped 1 s, the bin that swings hardest (90th over 20th percentile) is
-    where somebody is keying, if all of these hold:
-    - its swing is at least 12 dB;
-    - its 90th percentile stands at least 8 dB over the median bin;
-    - at least 0.3 s is keyed.
-  - Its frames above the midpoint are the marks. None of this decision comes from the tracker.
-- **Method, stage 2: what the note is.**
-  - A direct Fourier sum over only the marks' samples, under a 2 s Hann.
-  - Evaluated every 0.25 Hz across one coarse bin plus 2 Hz either side, then every 0.02 Hz
-    across ±0.25 Hz, then a parabola through the best three.
-  - **Bin 0.5 Hz**, one over the window.
-- **The cases.** 30 in all, every one built by the generator at 15 dB over its noise band, exact
-  keys, the generator's 3 Hz swing set to 0:
-  - nine pitches (300, 400, 523, 600, 625, 640, 675, 750 and 900 Hz) at 12, 20 and 30 WPM;
-  - 625 Hz at 20 WPM and 5 dB;
-  - 625 Hz keyed under a continuous 525 Hz carrier 6 dB louder;
-  - 615 Hz sliding 20 Hz per 30 s over a 35 s message. For this, `CwFixtureRecipe` gained
-    `DriftHzPerSecond`, default 0, guarded so every existing recipe renders sample for sample as
-    before.
-- **The test.** `ThePitchInstrumentIsProvedTests.EveryCaseLandsWithinOneOfItsOwnBinsOfTheTruth`,
-  naming HM-REQ-092 and 4.1.
-  - It failed first against a truth 1 Hz wrong: 0 of 30 inside, worst 1.024 Hz.
-  - Then it passed: 30 of 30 inside, worst 0.024 Hz.
-  - A first build with a flat ±20 Hz fine reach missed 900 Hz and three off-bin cases (−5 to
-    −13.5 Hz). The reach became one coarse bin plus 2 Hz before the pass.
-- **Cost.** On `cw-2026-09-24-003919`, 48 kHz, 30 s, median of three runs: 707.9 ms, which is
-  **24411 us per 1 s instrument hop** and 118.0 us per 5 ms decoder hop.
-- 30 of 30 cases admitted. 4.1 ticked in task 1's commit.
-- **Decision made for myself, reported in full.** The instrument was revised in task 2, after the
-  tick, and re-proved on the same 30 cases (30 of 30, worst 0.024 Hz); the figures above are the
-  revised instrument's. The first real run found "keying" at 780 to 896 Hz, at and past the
-  receiver's filter edge, swinging with the station being read. That is the radio's AGC pulling
-  the band's noise down on key-down while a bin outside the filter does not move. The revision
-  added one rule: a bin counts only if its keyed level stands 8 dB over the median bin. A tone
-  keyed at 5 dB in the passband stands about 15 dB over it. The pre-revision cost was 31944 us
-  per hop.
+**Task 1: the trace, `WhatTheDecoderDoesWhileAcquiringTests`.** A printer that asserts nothing,
+with three facts: the opening, the eleven, and the keyed 23.
+- **Its keying score.** At HEAD no bin is ever admitted at a from-cold move, because the move
+  runs only when the verdict holds no keying. So "the survey's keying score" needed a reading
+  that exists for every bin.
+  - `CwToneSurvey.Structures()` and `CwToneTracker.CoarseStructures()` report each bin's lift,
+    key-down over key-up contrast, clean marks, and whether the survey admits it. They are
+    diagnostic only.
+  - The printer's score: of the bins at least 10 dB over the band with at least 8 clean marks,
+    the one keyed deepest. A move is by **level alone** if it went anywhere else, or if no bin
+    shows keying.
+  - Every recording's text at this commit is identical to 447's, all 126 lines.
+- **Results at HEAD:**
+  - **The opening:** acquiring 0.00 to 26.04 s; first keyed verdict at 600 Hz; 0 cold moves;
+    **9 sure characters while acquiring**.
+  - **The eleven:** 60 cold moves, **48 by level alone**.
+  - **The keyed 23:** 26 cold moves, 23 by level alone. **245 sure characters were printed while
+    acquiring.** Many of them are right against the key. For example, `032113` printed 29 sure
+    in its first 20.54 s and `032050` printed 36 in its first 24.04 s.
+- **The opening's "sent" text is inferred.** It is each file read alone for the part that file
+  contributes: `003901` for 0 to 30 s, and `003919` from 30 s. Because 0 to 30 s is the same audio
+  as `003901`, that half is its own reference. So the printer also checks the 16.2 to 30 s
+  stretch against `003919`'s own reading of the same audio.
 
-**Task 2, MET-PITCH-ERR over the tree (4.2).** `WhatPitchTheDecoderIsOnTests`, a printer that
-asserts nothing.
-- **What it covers:** every WAV under `tests/fixtures/cw/captured`, 69 of them. They hold the 51
-  capture rows, the 23 keyed recordings and all 14 files of the 7.052 session.
-- **What it compares:** the decoder is driven cold from 600 Hz, hop by hop. The tracker's `ToneHz`
-  is sampled on every hop and its median taken over each 2 s instrument window where keying was
-  found. MET-PITCH-ERR is tracker less instrument; a file's figure is the median over its windows.
-- **What it found:** all 69 measured; keying found in all 69. **11 files more than 25 Hz off**,
-  named in section 3. 61 files have at least one window more than 25 Hz off, 304 of 1688 windows.
-- `135641` and `152135` are absent and unmeasured.
-- 4.2 ticked.
-- One definitional choice: the error is taken over every hop in a keyed window, before
-  acquisition as well as after. `CW_SPEC.md` §11 says "after acquisition". The move log below
-  shows what that choice includes.
+**Task 2: the change, not kept.**
+- **The test came first:** `TheFilterGoesToTheKeyingFromColdTests`, naming HM-REQ-091 and 102.
+  - The case: 700 Hz keyed at 15 dB over the shaped band, an exact key, and a steady 790 Hz
+    carrier 6 dB louder, 90 Hz away. The decoder starts cold at 600.
+  - **At HEAD it was red.** The cold move went 600 -> 800, the carrier's bin. The filter sat on
+    the carrier for 700 of 1007 hops before the 5.04 s verdict, and the carrier printed `TT`
+    sure.
+- **The method.** While nothing is confirmed and no bin is admitted, the fine bank is pointed at
+  the survey's new `DeepestKeying`: the bin keyed deepest among those 10 dB over the band with
+  8 clean marks. Where no bin shows that, the filter stays where it is.
+  - It replaces the move; it does not remove it.
+  - The confirmation, HM-DEC-095's carrier guard, 447's under-10 dB guard and HM-DEC-127 are
+    untouched. So are G1, the marks' speed, the dim edge, `RivalMargin`, `MarginLlr` and the
+    speed bounds.
+  - The instrument is not called.
+- **The clause, per R75.** The thing changed is **a clause of neither** HM-DEC-095 nor HM-DEC-127.
+  Both concern what the tracker does with a keying candidate, and this move runs only when there
+  is none. What records it is the tracker's own "FROM COLD, POINT AT THE LOUDEST THING" comment.
+- **The test under the change:**
+  - **Its HM-REQ-091 half passed.** The filter went 600 -> 700 at 3.54 s and spent 0 hops on the
+    carrier. The text went from `TT IK DE N0CALL N0CALL K` to `IQ CQ DE N0CALL N0CALL K`.
+  - **Its HM-REQ-102 half stayed red:** `IQ` was printed sure before the 5.04 s verdict.
+- **R78 refused it on every item** (the table is in section 3). Real MET-CER-SURE went 40 of 433
+  -> 64 of 377, and coverage 393 -> 313. Files more than 25 Hz off went 9 -> 16.
+- **It is out of `src`.** The diff and the test are in `.run-unit/unit448-coldmove-notkept.diff`,
+  and the test's source is also in `.run-unit/unit448-TheFilterGoesToTheKeyingFromColdTests.cs.txt`.
+  No red test was left in `tests`. It is recorded in `docs/phase-requirements/metrics.md`. No
+  second change was built.
+- **4.5 is ticked.** HM-REQ-102 and 103 were measured on the opening, at HEAD and with the change
+  built, and printed as text.
+  - **HM-REQ-102: not met, before and after.**
+  - **HM-REQ-103: 21 of 24, before and after.**
 
-**Task 3, what the tracker weighed, and one change.**
-- **At 30.54 s.** The existing printer `WhatTheOpeningHeardTests.WhyTheMixMoved("stream", 28, 38)`
-  shows the tracker weighed the survey's keying score and the confirmation rule:
-  - 525 Hz was admitted at 30.04 and 30.54 s: separation 4.57 and 4.60 against the 4.0 limit,
-    ratio 3.59 and 3.33, 18 marks, lift 2.4 and 2.5 dB.
-  - It was confirmed twice. Nothing had yet been confirmed, so `_readingDb` was NaN and
-    HM-DEC-127's abandon rule had nothing to protect.
-  - The tracker switched 600 -> 525.
-  - The instrument puts the keying at 598.7 to 601.0 Hz across 30 to 34 s, with swings of 34 to
-    37 dB.
-  - **This does not agree with R75's "the sender's actual 625 Hz"** for that stretch. The
-    instrument finds 625 to 628 Hz only from 76 s on.
-- **The groups.** A new fact, `WhatTheTrackerWeighedWhereItMoved`, logs every move of more than
-  15 Hz on the 11 files:
-  - **A:** 51 moves on a read with no keyed verdict. 48 are the from-cold "point at the loudest"
-    move (`CwToneTracker.cs` 1014 to 1025), in 9 of the 11 files, made before anything is
-    confirmed.
-  - **B:** all 8 moves made on a keyed verdict went to a candidate under 10 dB of lift, from +2.7
-    down to −35.1 dB, in 5 files.
-  - The opening's 525 at 2.5 dB is group B.
-  - **Decision made for myself:** I built against B, not the largest group A. Reasons:
-    - A happens before acquisition, and MET-PITCH-ERR is defined after it.
-    - A is the pre-confirmation fallback, whose removal the tracker's own comments record as
-      costing openings.
-    - B holds the opening, which is what R83 and this unit's ACCOMPLISHED line aim at.
-  - Raised in section 4.
-- **The change, `b4884813`.** In `ReadSurvey`, after HM-DEC-095's twice-confirmation, a candidate
-  outside the fine bank's reach whose measured lift is under `CwToneSurvey.InterferenceLiftDb`
-  (10 dB, the survey's own line for "band noise having a good moment") is not moved to.
-  - **It works against HM-DEC-095's clause** "Two agreeing surveys half a second apart rest on
-    six seconds of evidence, and noise does not repeat itself in the same bin". The two surveys
-    share 2.5 of their 3 s, and on the opening the noise did repeat.
-  - The choice is still made by keying structure.
-  - The instrument is not called by the tracker.
-  - G1, the marks' speed, the dim edge, `RivalMargin`, `MarginLlr` and the speed bounds are
-    untouched.
-- **Judged under R78: kept.** The full table is in `docs/phase-requirements/metrics.md` under
-  unit 447. Every item as a number:
-  - MET-CER-SURE, real, inferred: 45 of 419 -> 40 of 433. Synthetic, exact: 14 of 173 unchanged.
-  - MET-INVENTED, real: 45 -> 40 over 473. Synthetic: 14 -> 14.
-  - Sure-and-right coverage, real: 374 -> 393 over 473. Synthetic: 159 -> 159.
-  - MET-WBE, real: 52 -> 47 over 113.
-  - Adjudicated 13 of 13.
-  - V-11: 35 recordings, 0 worse; the one that moved is `032129`.
-  - MET-PITCH-ERR: 11 -> 9 files more than 25 Hz off, 304 -> 256 windows.
-  - Task 1's cases through the tracker are unchanged.
-- **Floors.** Captures 51 of 51. Named floors: `032113` 45 -> 43 and `032129` 64 -> 42, reported
-  with text, not re-banked.
-- **4.3.** `TheTrackedPitchIsChosenByKeyingTests` names HM-REQ-091 and is green before and after
-  the change, so 4.3 is ticked. Whether HM-REQ-091 is met: **on these two synthetic cases yes; on
-  the real set no.** Group A's 48 moves to the loudest bin are choice by level alone.
+**Task 3: the exit round.**
+- Build: 0 errors in 8 s.
+- Engine carry-forward: 178 of 178 in 377 s.
+- App carry-forward: 275 of 278 in 169 s. The losses are `TheWindowHoldsBelowItsMinimumTests`
+  (3 of 3 alone) and `TheRecordNamesTheSubModePressedTests` (12 of 12 alone).
+- Floors: captures 51 of 51 in 129 s, adjudicated 13 of 13 in 32 s, named 10 of 13 in 66 s, as
+  at entry.
+- Metrics: identical to entry.
+- Every type touched, each run alone:
 
-**Task 4, the exit round.**
-- Build 0 errors in 15 s.
-- Engine carry-forward 178 of 178 in 376 s.
-- App carry-forward 273 of 278 in 168 s. The 5 losses are `TheRecordNamesTheSubModePressedTests`
-  (4), 12 of 12 alone, and `BindingHealthTests` (1), 1 of 1 alone.
-- Captures 51 of 51 in 130 s. Adjudicated 13 of 13 in 31 s.
-- Named 10 of 13 in 66 s: 17:37 at 38, `032113` at 43, `032129` at 42.
-- Metrics as under the change.
-- Every type touched: TOUCHED_RESULTS.
-- **`src` changed in one file, `src/Hamlet.RadioEngine/Cw/CwToneTracker.cs`**, +30 lines, one
-  guard in `ReadSurvey`. It changes which pitch the receive filter points at. Nothing in it keys
-  or transmits. Pushed.
-- **Ticks:** 4.1 (task 1), 4.2 (task 2) and 4.3 (exit) ticked. 4.4 to 4.7 not ticked, nor anything
-  in steps 2, 3 or 5. 4.7 stays red on 17:37, and now also on `032113` and `032129`.
-- DRIFT: step 4 0, the change kept; step 2 2; step 3 0; step 5 1.
+  | type | result | wall time |
+  |---|---|---|
+  | `CwToneSurveyTests` | 5 of 5 | 5 s |
+  | `CwSurveyThresholdPinTests` | 3 of 3 | 8 s |
+  | `CwTrackerSwitchTests` | 2 of 2 | 2 s |
+  | `TheTrackedPitchIsChosenByKeyingTests` | 2 of 2 | 34 s |
+  | `WhatTheDecoderDoesWhileAcquiringTests` | 3 of 3 | 159 s |
+
+- **`src`, file by file, `c2cae86d` to exit:**
+  - `src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs`, +60 -2: the `KeyedStructure` record, the
+    contrast and mark count out of `Examine`, and the diagnostic `Structures()`.
+  - `src/Hamlet.RadioEngine/Cw/CwToneTracker.cs`, +4: the diagnostic `CoarseStructures()`.
+
+  Neither changes a decision: the text of every recording is identical. **None of it keys or
+  transmits.** Pushed.
+- **Ticks:**
+  - 4.3 was ticked at task 0, and 4.5 at task 2.
+  - **HM-REQ-091 on the real set: not met.** Level-alone moves on the eleven and the opening were
+    48 of 60 before, and still 48 of 60 at exit, since nothing was kept.
+  - 4.4, 4.6 and 4.7 are not ticked, and nothing in steps 2, 3 or 5 is. **4.7 stays red** on
+    17:37, `032113` and `032129`.
+- DRIFT: step 4 1 (not kept), step 2 2, step 3 0, step 5 1.
+
+**Decisions made for myself, in full.**
+1. **The printer's keying score is my own construction.** Nothing is admitted at a from-cold
+   move, so the survey's own measure, separation, does not exist there.
+   - I chose key-down over key-up contrast among bins with the survey's 10 dB lift line and
+     8-mark line, and I fixed it in task 1, before the change was built.
+   - The change used the same score. So its "level alone 48 -> 0" is true by construction, and
+     the instrument and R78 are the independent check.
+2. **The survey's first admission is ignored as a pointer.** It was a fluke on the opening
+   (850 Hz, 19 dB *below* the band, at 1.60 s). On the eleven it came late or at the configured
+   pitch (`032129`: 600 Hz at 4.50 s, where the station is at 500). A change that points only at
+   admitted candidates would have lost `032129` outright.
+3. **The test lives in its own type.** Its HM-REQ-102 half was red at HEAD for a reason no
+   pointing can fix. Putting it inside `TheTrackedPitchIsChosenByKeyingTests` would have turned
+   red the type 4.3 was ticked on.
+4. **The capture and named floors were not run under the refused change.** R78 had already
+   refused it on its metrics.
 
 ## 2. What the owner should expect
 
-**The decoder now stays on the note being keyed in more of the places it used to wander from, and
-the operator reads more of what was sent where that happened.** On the 7.052 opening the decoder
-no longer jumps from 600 to 525 Hz at 30.54 s. From 30 to 34 s the instrument puts the keyer at
-599 to 601 Hz, and the decoder now sits at 600 there, about 1 Hz off, where it used to be 74 to
-76 Hz off. The stretch from 30 s now reads `EANQNID EAN■IK`, the same run of letters `003919` reads
-decoded on its own, where it read `UIEH EE E E T I <HH> EA N ■IK`. On the W1AW bulletin `032129`
-the tail of E and I junk becomes `FORECAST BUAELETIN ARLP034`, and that one recording carries every
-metric movement: against its inferred key, wrong-or-added 10 -> 5 and right 15 -> 34.
-
-**What reads worse, or looks wrong but is not:**
-- `032129` and `032113` now fail their named-character floors: 64 -> 42 and 45 -> 43. The
-  characters lost are junk E and I; the scored stretches are better or unchanged. R78 reports
-  this and does not reject it.
-- On the opening from 45 to 49 s the decoder now sits at 625 instead of 575. The instrument says
-  600 there, so it is 25 Hz off on the other side.
-- On `002424` and `002443` the decoder no longer moves to 475 and stays at the configured 600. The
-  instrument says 562, so the error goes from −87 to +38 Hz. The decoder is still off there, just
-  by less and the other way.
-
-**The evidence is thin on the real side (V-13).** Every real metric movement is one recording
-against an inferred key, and the opening has no key at all. **The synthetic cases prove the
-ruler, not the decoder.** They show the instrument lands within 0.024 Hz on tones it was built
-against. They do not show it reads real audio right: it needed one real-audio fix already (the
-AGC edge), and it still finds "keying" in the four recordings the floors call empty. Its reading
-of 600 rather than 625 at the opening's 30 to 34 s is a measurement nobody has checked by ear.
+**No, the decoder does not now listen to the keying station from the first seconds. Nothing the
+operator sees has changed in this unit, and the opening reads as it did.** The one change built
+did send the filter to a keyed tone instead of a louder steady carrier in the synthetic case: the
+opening `TT IK` became `IQ CQ`. On real recordings, though, nearly every loud bin shows keying,
+because of the station's own leakage and the receiver's AGC. Pointing at the deepest keying
+chased that from survey to survey: 60 moves became 162. It lost the W1AW bulletin `032129`,
+whose loudest bin was the station all along, and it raised sure-but-wrong letters from 40 to 64.
+It was refused and is not in the build. **What looks wrong but is not:** the 7.052 opening still
+prints 9 sure letters, `EII E T NHHK` from 20.6 to 24.7 s, before the tracker has confirmed a
+station. The station there is already on the configured 600 Hz, so no tracker change reaches
+it. Those letters come from the decoder, which prints sure before the tracker confirms anything,
+on 245 characters across the keyed 23, and many of them are right. **The evidence is thin (V-13).**
+Every real key is inferred, the opening has no key, and its "sent" text is the files read alone.
+**What the synthetic case does not prove (§12.5):** one carrier, one speed and one level, from
+the same generator the instrument was proved on. It shows the move can be made by keying. It
+does not show that keying depth picks the station on the air, and the real set says it does not.
 
 ## 3. What you should see
 
-**The instrument (4.1): bin 0.5 Hz, 30 of 30 within one bin, 24411 us per 1 s hop (118 us per 5 ms
-decoder hop).** The truth, the estimate (median of windows) and the worst error, in Hz; every case
-is inside one bin:
+**The 7.052 opening, 0 to 46.2 s, before and after: identical, because there was no cold move to
+change.** `{ }` marks what settled while acquiring (0.00 to 26.04 s). A character read sure and
+right against each file alone stands as itself; anything else is in `( )`.
 
-| case | truth | estimate | worst error |
-|---|---|---|---|
-| 300, 12 / 20 / 30 WPM | 300 | 300.00 / 300.00 / 300.00 | +0.002 / −0.003 / −0.003 |
-| 400, 12 / 20 / 30 | 400 | 400.00 each | −0.006 / +0.004 / −0.015 |
-| 523, 12 / 20 / 30 | 523 | 523.00 each | −0.010 / +0.006 / −0.006 |
-| 600, 12 / 20 / 30 | 600 | 600.00 each | +0.012 / −0.006 / −0.010 |
-| 625, 12 / 20 / 30 | 625 | 625.00 each | +0.006 / −0.007 / +0.011 |
-| 640, 12 / 20 / 30 | 640 | 640.00 each | +0.014 / −0.011 / −0.005 |
-| 675, 12 / 20 / 30 | 675 | 675.00 each | −0.008 / +0.006 / +0.006 |
-| 750, 12 / 20 / 30 | 750 | 750.00 each | +0.003 / −0.004 / +0.015 |
-| 900, 12 / 20 / 30 | 900 | 900.00 each | −0.003 / +0.003 / −0.002 |
-| 625, 20 WPM, 5 dB | 625 | 625.00 | +0.022 |
-| 625 keyed, 525 carrier +6 dB | 625 | 625.00 | +0.007 |
-| 615 sliding +20 Hz / 30 s | 615 + 0.667 t | 615.88 to 638.87 | −0.024 |
-
-**MET-PITCH-ERR over the tree at entry, the `>25` cases first.** This is tracker less instrument,
-the median over the file's keyed windows, then windows more than 25 Hz off:
-
-| file | tracker | instrument | MET-PITCH-ERR | windows >25 |
-|---|---|---|---|---|
-| 08-20-014935 | 625.0 | 580.0 | +45.0 | 8 of 10 |
-| 08-22-014308 | 575.0 | 607.2 | −32.2 | 16 of 22 |
-| 08-22-031838 | 525.0 | 499.9 | +25.1 | 21 of 29 |
-| 08-22-032129 | 650.0 | 499.9 | +150.1 | 17 of 29 |
-| 08-25-012823 | 450.0 | 500.3 | −49.2 | 18 of 27 |
-| 08-28-005158 | 575.0 | 607.4 | −34.1 | 12 of 17 |
-| 08-28-005218 | 750.0 | 607.8 | +150.7 | 28 of 29 |
-| 08-28-005243 | 575.0 | 607.2 | −32.1 | 15 of 29 |
-| 08-31-002424 | 475.0 | 561.8 | −86.8 | 6 of 6 |
-| 08-31-002443 | 475.0 | 561.3 | −86.3 | 7 of 7 |
-| 08-31-002829 | 800.0 | 612.5 | +183.6 | 17 of 29 |
-
-- The other 58 are within 25 Hz on their median, 50 of them with at least one window more than
-  25 Hz off. The full table is `.run-unit/unit447-pitch-table-head.txt`.
-- The opening's files, one by one: `003901` +0.4, `003919` +0.3, `004027` −0.3, `004108` −1.3,
-  `004133` −1.7, `004205` −1.6, `004234` −1.8.
-- `135641` and `152135`: not in the tree, unmeasured.
-- After the change, 9 files are more than 25 Hz off; `032129` (+0.1) and `002829` (+7.5) leave the
-  list.
-
-**The 7.052 opening (003901 to 004234 spliced; 30.54 s is in 003919):**
-
-| | before | after |
+| | HEAD `3c4e1f75` | under the refused change |
 |---|---|---|
-| text, 30 to 46.2 s | `UIEH EE E E T I <HH> EA N ■IK` | `EANQNID EAN■IK` |
-| decoder's pitch at 30 to 34 s | 525 | 600 |
-| instrument, 30 to 34 s | 598.7, 599.7, 601.0 | the same |
-| MET-PITCH-ERR, 30 to 34 s | −73.7, −74.7, −76.0 | +1.3, +0.3, −1.0 |
-| first sure character | `E` at 20.64 s, at 600 Hz | the same |
+| text, marked | `{ EII E T NHHK }  EANQNID  EAN(■)IK` | the same |
+| acquiring | 0.00 to 26.04 s; first keyed verdict at 600 Hz | the same |
+| HM-REQ-102: sure while acquiring | 9: `E@20.64 I@21.07 I@21.49 E@21.82 T@22.22 N@22.56 H@23.33 H@24.01 K@24.68`, all at 600 Hz | the same |
+| the same 9 against `003919`'s own reading (`EITEETNXNIK`) | 6 right, 3 wrong (`I@21.49`, `H@23.33`, `H@24.01`) | the same |
+| HM-REQ-103: opening sure and right | 21 of 24 (21 sure emitted), inferred; 12 of them after 26.04 s | the same |
+| decoder's pitch, 20 to 26 s | 600.0 | the same |
+| instrument, 20 to 26 s | 599.4, 599.7, 598.5, 600.0, 599.6 | the same |
+| decoder / instrument, 30 to 34 s (447's figures, HEAD) | 600 / 598.7 to 601.0 | the same |
 
-The characters from 0 to 30 s (`EII E T NHHK`, all sure, at 600) are unchanged. HM-REQ-102 and 103
-are printed here and not judged; that is 4.5.
+**HM-REQ-102 is not met on the opening, and HM-REQ-103 cannot be judged: 21 of 24 is measured
+against an inferred text, and its reference for 0 to 30 s is the same audio.**
 
-**Every recording whose text changed, with its key:**
-- `032129`, inferred: `■ MTMTJ26 PGOPAGATION E EE [E]IIEE I [E] EE [I]EEEE I HE EE I E E S E E E E
-  IEEE E I SE IE I E E EEI` -> `■ MTMTJ26 PGOPAGATION FORECAST BUAELETIN ARLP034`
-- `032113`, inferred, the change outside its scored stretch: `... 200J6 I I I TT E EI EEEEI I E E`
-  -> `... 200J6 I I I TT E E I I I WE T I`
-- `003919`, no key: `EITEETNXNIK EANQNID EANQNIK` -> `EITEETNXNIK EANQNID EANQNIK E`
+**The from-cold moves, the eleven, before -> under the refused change.** Each file shows its
+first move with the lift and keying of where it went and of the best-keyed bin (contrast is
+key-down over key-up). Every line is in `.run-unit/unit448-acq-eleven-head.txt` and
+`-change.txt`.
 
-What the operator would see at the radio: on a call like the 7.052 opening, the decoder stays on
-the station it hears keying instead of jumping to a quiet tone 75 Hz away, so the letters in that
-stretch come from the station.
+| file | moves, level alone | first move at HEAD | first move under the change |
+|---|---|---|---|
+| `014935` | 16, 15 -> 23, 0 | 600 -> 625, loudest 34.8 dB, contrast 10.0; best-keyed 675 at 32.7 dB, 10.6 | 600 -> 675 |
+| `014308` | 8, 8 -> 34, 0 | 600 -> 575, 18.6 dB, 7.8; best 600 at 12.9 dB, 12.1 | 600 -> 550 |
+| `031838` | 1, 1 -> 2, 0 | 600 -> 500, 56.5 dB, 25.9, 7 marks; best 450 at 42.0 dB, 23.3 | 600 -> 450 |
+| `032129` | 1, 1 -> 11, 0 | 600 -> 500, 53.8 dB, 19.1, 7 marks; best 450 at 38.9 dB, 20.6 | 600 -> 450 |
+| `012823` | 2, 0 -> 3, 0 | 600 -> 400, 48.2 dB, 13.5; it was the best | the same |
+| `005158` | 13, 12 -> 28, 0 | 600 -> 425, 54.4 dB, 10.0; best 525 at 52.8 dB, 10.6 | 600 -> 525 |
+| `005218` | 1, 1 -> 25, 0 | 600 -> 575, 58.3 dB, 13.1, 4 marks; best 475 at 52.2 dB, 10.7 | 600 -> 475 |
+| `005243` | 1, 1 -> 23, 0 | 600 -> 575, 58.4 dB, 13.1, 4 marks; best 500 at 46.7 dB, 11.2 | 600 -> 500 |
+| `002424` | 2, 1 -> 2, 0 | 600 -> 750, 10.3 dB, 13.1; it was the best | the same |
+| `002443` | 2, 1 -> 2, 0 | the same as `002424` | the same |
+| `002829` | 13, 7 -> 9, 0 | 600 -> 625, 14.8 dB, 13.0; best 600 at 14.4 dB, 14.4 | 600 -> 625 at 7.04 s |
+| the opening | 0, 0 -> 0, 0 | none | none |
+| **total** | **60, 48 -> 162, 0** | | |
+
+No bin was admitted by the survey at any of them. The instrument puts `031838` and `032129` at
+499.9 Hz, so there the loudest bin was right and the deepest keying was 50 Hz off.
+
+**R78, every item a number, before (HEAD) -> under the refused change:**
+
+| item | before | under the change |
+|---|---|---|
+| MET-CER-SURE, real, inferred | 40 of 433, 0.0924 | 64 of 377, 0.1698 - rises |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 16 of 163, 0.0982 - rises |
+| MET-INVENTED, real, inferred | 40 over 473, 0.0846 | 64 over 473, 0.1353 - rises |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 16 over 252 - rises |
+| coverage, sure and right, real, inferred | 393 over 473, 0.8309 | 313 over 473, 0.6617 - falls |
+| coverage, synthetic, exact | 159 over 252, 0.6310 | 147 over 252, 0.5833 - falls |
+| MET-WBE, real, inferred | 47 over 113 | 67 over 113 - rises |
+| adjudicated | 13 of 13 | 11 of 13 (`003758`, `031948`) |
+| V-11, 35 recordings | - | 16 worse |
+| level-alone cold moves, eleven and opening | 48 of 60 | 0 of 162 |
+| MET-PITCH-ERR: files more than 25 Hz off / windows | 9 / 256 of 1688 | 16 / 486 of 1688 - rises |
+| 447's 30 cases through the tracker | medians on the truth | medians hold; 9 cases gain a window more than 25 Hz off, worst 300 Hz |
+| opening: sure while acquiring / sure-right | 9 / 21 of 24 | 9 / 21 of 24 |
+
+Per condition, the key's kind, and every MET-PITCH-ERR row that moved are in
+`docs/phase-requirements/metrics.md` under unit 448.
+
+**Every recording whose text changed.** None changed in the build, since nothing was kept. Under
+the refused change, 42 of 63 recordings' texts changed, and 2 of their callsign lines (all are
+in `.run-unit/unit448-text-change.sorted.txt` against `-before`). The ones with a key:
+
+| recording | key | HEAD | under the change |
+|---|---|---|---|
+| `032129` | inferred | `■ MTMTJ26 PGOPAGATION FORECAST BUAELETIN ARLP034` | `H I 5 E E E IEEII E I SI I ES EEIEE T I I E IETIN EE E S TTEM TTAT` |
+| `031948` | inferred | `TM 150 110, AND 110 WITH A MEAN OF 117.W` | `[U] EE II E TTMTT TTTTT TTTTT TTTTT TTTAT ATTTTT 110 WITH A MEAN OF 117.W` |
+| `032113` | inferred | `A KET■ A N O INT ERNE T ■ E RSIONS OF 200J6 ...` | `E I E E N E 5N H EEE E ■ I EI■EISISS ...` |
+| `012403` | inferred | `DEQ 6Q Q DE KD0UN KD0UN K` | `T G MAEA TTGT TAI 5 K E EQ DE KD0UN KD0UN K` |
+| `004234` | inferred | `E C O M <BT> T HANTT TK■ET FOR ON HYPP N AIR QSO WITH W` | `M T <AR> O M <BT> T HANK Y OU FOR ONN HYP N UIR QSO WITH W` |
+| `cq-12wpm-5db` | exact | `CQ CQ CQ DE N0CALL N0CALL K` | `DE N0CALL N0CALL K` |
+| `cq-18wpm-15db` | exact | `CQ CQ CQ DE N0CALL N0CALL K` | `CE RQ CQ DE N0CALL N0CALL K` |
+
+What the operator would see: nothing new. The build decodes exactly as it did at unit 447's
+exit. The trace makes visible that the decoder prints confident letters before it has confirmed
+a station, on every file.
 
 ## 4. What's blocking us
 
-Nothing blocks a criterion in B. Three items need a ruling for the record:
-
-1. **4.3 is ticked on a synthetic test while the real set shows HM-REQ-091 unmet.**
-   - Proposed ruling: 4.3's "the report states whether it is met" is satisfied by stating
-     "no, on the real set". The tick stands.
-   - Reasoning: the plan line asks for a test naming the requirement and a statement, not that the
-     requirement be met.
-   - Rejected: leaving 4.3 unticked, which the instruction's own test for it ("a test naming
-     HM-REQ-091 written and green") does not support.
-2. **Whether R78's "rises on none" was met.** Two MET-PITCH-ERR movements need a reading:
-   - `005051`'s median moved +4.2 -> +4.4 Hz, inside the instrument's 0.5 Hz bin, while its
-     windows more than 25 Hz off fell 5 -> 3.
-   - Three opening windows at 45 to 49 s moved from −24.2/−24.9/−25.0 to +25.8/+25.1/+25.0.
-   - Proposed ruling: neither is a rise, the first being below the ruler's bin and the second a
-     sign change of the same size within 1.6 Hz.
-   - Rejected: refusing the change, which would give back the 30 to 34 s fix and `032129`'s text
-     over sub-bin and same-size movements.
-3. **The largest group was not the one built.**
-   - Group A is the from-cold move to the loudest bin, before anything is confirmed: 48 moves in
-     9 of 11 files, and choice by level alone under HM-REQ-091.
-   - Proposed ruling: a later step 4 unit takes group A, since that is where HM-REQ-091 actually
-     fails.
-   - Reasoning: A is before acquisition, which MET-PITCH-ERR excludes, and the tracker's own
-     comments record that removing it costs openings. B holds the opening R83 aims at.
-   - Rejected: building against A this unit, as one change per unit.
+1. **HM-REQ-102 cannot be met by the tracker, and "acquiring" needs a definition.**
+   - Under the fallback definition (up to the tracker's first keyed verdict), the decoder prints
+     sure letters while acquiring on 22 of the 23 keyed recordings and on the opening. Many of
+     them are right, and `032129`'s whole bulletin is read before a verdict that never comes.
+   - Proposed ruling: define acquiring in `CW_SPEC.md` §11, beside MET-TACQ, as the span until
+     the decoder's own first confident speed and pitch hold, not the tracker's survey verdict.
+     Then measure HM-REQ-102 against that in a decoder unit, not a tracker one.
+   - Reasoning: the tracker's verdict is late or absent on real audio (never in 30 s on 7 of
+     the 11). Gating sure letters on it would trade HM-REQ-102 for HM-REQ-103 and HM-REQ-012.
+   - Rejected: gating the decoder's sure class on the tracker's verdict. It is not built, and it
+     would blank most of the openings that read correctly today.
+2. **What counts as "keying quality" before anything is confirmed.**
+   - The trace shows that on the air the loudest bin is usually the station, and that depth of
+     keying does not separate it from its leakage or from AGC pumping.
+   - Proposed ruling: a later step 4 unit tries HM-DEC-095's own cross-range ranking before
+     confirmation - the loudest among the bins that show keyed structure - with the carrier
+     case above as its test.
+   - Reasoning: that is the ranking the survey already uses once candidates exist, and it keeps
+     the 500 Hz station on `032129` and `031838`.
+   - Rejected: re-reading "level alone" so that a keyed-gated loudest counts as keying quality
+     in this unit. That would have redefined the metric after seeing the result.
+3. **`TheFilterGoesToTheKeyingFromColdTests` is not in the tree.**
+   - Proposed ruling: add it as a recorded red, named in `PHASE_PLAN.md` beside the plateau
+     test, once item 1 is ruled.
+   - Reasoning: it is the only test that watches the from-cold move, and it is red at HEAD on
+     HM-REQ-091.
+   - Rejected: committing it red now without a ruling on its HM-REQ-102 half, which item 1
+     decides.
+4. **The app carry-forward line hung once at entry: the host was aborted at 480 s after 132
+   passed.**
+   - Proposed ruling: none needed now. Report it if it repeats.
+   - Reasoning: the rerun was 277 of 278, and the exit run was 275 of 278 with both losing types
+     green alone.
+   - Rejected: raising the timeout, which would hide a hang.

@@ -1,0 +1,12 @@
+unit448 task 3: exit round - metrics as entry, floors as recorded, 4.3 and 4.5 ticked, 4.7 red (4.5)
+
+Build 0 errors; engine line 178 of 178 in 377 s; app line 275 of 278 in 169 s,
+both losing types green alone; captures 51 of 51 in 129 s; adjudicated 13 of
+13; named 10 of 13 (17:37 38, 032113 43, 032129 42), not re-banked. Real,
+inferred: MET-CER-SURE 40 of 433, MET-INVENTED 40 over 473, coverage 393 over
+473, MET-WBE 47 over 113, identical to entry. Every type touched green alone.
+src: CwToneSurvey.cs and CwToneTracker.cs gain diagnostic readings only; nothing
+keys or transmits. HM-REQ-091 on the real set not met, 48 of 60 cold moves by
+level alone. output.md written and validated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
