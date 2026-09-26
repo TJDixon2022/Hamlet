@@ -16,6 +16,9 @@ case "$1" in
   metrics)
     sh $R "metrics-$2" engine 300 "$3" "The four metrics over every keyed recording" "FullyQualifiedName~.TheRequirementsAreMeasuredTests." --no-build
     ;;
+  speed)
+    sh $R "speed-$2" engine 600 "$3" "Speed cases at 5, 8, 40 and 45 WPM and the trace of every bound on the search" "FullyQualifiedName~.TheSpeedSearchReachesBothEndsTests." --no-build
+    ;;
   hand)
     sh $R "hand-$2" engine 120 "$3" "The metrics against hand-built pairs" "FullyQualifiedName~.TheMetricsCountWhatAHandCountsTests." --no-build
     ;;

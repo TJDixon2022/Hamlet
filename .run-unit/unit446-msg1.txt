@@ -1,0 +1,22 @@
+unit446 task 1: speed trace - 8 bounds stop an end, 5 fitted at 8 and 45 shown as 36 at HEAD (5.1)
+
+TheSpeedSearchReachesBothEndsTests. EveryBoundOnTheSpeedSearch asserts
+nothing: it prints 22 bounds with file, line and value from the source,
+what 5 and 45 WPM need of each, and which end each stops. Stopping 5:
+SlowestWpm (CwProbabilisticDecoder.cs:466), the loop start (:763), the
+stream's measured-speed range (CwProbabilisticStream.cs:432), the marks'
+re-read range (:510), CwDecoder.SlowestPlausibleWpm (CwDecoder.cs:388).
+Stopping 45: FastestWpm (:487), the loop end (:764), the stream's range
+(:433). WpmStep (:509) puts neither end on a grid point. No window,
+delay or span is sized from a speed in a way that stops either end.
+
+The cases, SyntheticCq's CQ at PARIS timing, 15 dB, exact key, cold:
+- 5 WPM: shown 8, 60 % fast; MET-CER-SURE 35 of 51, MET-INVENTED 35
+  over 21, coverage 16 over 21. Fails.
+- 45 WPM: text right, 21 of 21, shown 36, 20 % slow. Fails on HM-REQ-031.
+- 8 and 40 WPM, the controls: pass.
+
+cw-2026-09-24-135641 is not in the tree, so it is not printed and 5.2
+is unmeasured.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
