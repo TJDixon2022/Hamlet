@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
+STATE: EXECUTING
 TASK: 1 of 4
-WORK_INSTRUCTION: 454 - the second decoder reads beside ours
-BALL: tim
+WORK_INSTRUCTION: 455 - a prosign arrives as a prosign
+BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T13:07:51-04:00
-NOTE: Stopped at task 1: fldigi clone refused in the session - place its source under .run-unit/fldigi, then rerun 454; output.md written
+UPDATED: 2026-09-26T13:30:06-04:00
+NOTE: Task 0 done, numbers as 454 left them; task 1 tracing each prosign's pattern, table entry and decoded text on prosigns-18wpm
 
 ---
 

@@ -349,3 +349,5 @@ the owner reads instead of watching.
 | 14 | 2026-09-26T10:10 | 2026-09-26T11:35 | complete | 9.6237648 | ran unattended, 175 turns, 14 denied call(s) worked around, report valid |
 | 15 | 2026-09-26T11:41 | 2026-09-26T12:41 | complete | 7.216400199999997 | ran unattended, 146 turns, 12 denied call(s) worked around, report valid |
 | phase | 2026-09-26T12:46 | 2026-09-26T12:46 | ending | 0 | ENDED - the owner stopped the run. ended: the owner stopped the run - after iteration 0 - his reason: no reason written - the file was empty - the STOP file was deleted |
+| 1 | 2026-09-26T12:46 | 2026-09-26T13:08 | failed | 1.8505345999999996 | run-unit exit 4: 8 denied call(s), is_error=False, terminal=completed |
+| 1 | 2026-09-26T13:08 | 2026-09-26T13:08 | note | none - not a run | report refused - validate-output.bat refused unit 1's report; it was not judged, its fate is recorded as not recorded, the record does not tick its criterion, and the loop continued |

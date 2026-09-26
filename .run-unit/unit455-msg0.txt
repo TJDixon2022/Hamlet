@@ -1,0 +1,11 @@
+unit455 task 0: entry at step 6 - floors and metrics as at 454's exit, every recording's text saved (6.2)
+
+Build 0 errors; engine line 178 of 178; app line 278 of 278 on the
+first run; captures 51 of 51; adjudicated 13 of 13; named 10 of 13
+as recorded (17:37 38, 032113 43, 032129 42). Real, inferred keys:
+MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over
+473, MET-WBE 37 over 113. Synthetic, exact: 14 of 173, 14 over 252,
+159 over 252, 44 over 84. 126 text lines saved, identical to 453's.
+The runner's writes committed as they were, with the entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

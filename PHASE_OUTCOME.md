@@ -446,3 +446,34 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 ADVANCES: step 9 criterion 2
 RUN: session launched with SESSION.lock already present (PID 42976, 12:46:47); the lock is the launcher's and was not taken or released by the session.
 ENTRY: Version 1.13.140 to 1.13.141. PHASE_STATUS.md names unit 454, CURRENT_STEP 9 in both copies. HEAD at entry d81d8e0a. Step 9 at 0 of 6 by the plan. Build 0 errors in 17 s; engine line 178 of 178 in 388 s; app line 274 of 278 in 173 s on the first run (4 failed in 1 ms each with Avalonia's headless "You've caused dispatcher loop", no source changed), 278 of 278 in 168 s on the one rerun, no hang; captures 51 of 51 in 131 s; adjudicated 13 of 13 in 34 s; named 10 of 13 in 67 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113. Synthetic, exact: MET-CER-SURE 14 of 173, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. All as at 453's exit. git clone of github.com/w1hkj/fldigi from the session was refused as needing approval; recorded as a denial and not routed around.
+
+## UNIT 1 - STEP 9
+
+STEP: 9
+APPROACH: port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
+HIT: not recorded - REPORT REFUSED by validate-output.bat: not judged, fate not recorded, the loop continued
+MOVE: continue
+WHY: PHASE_PLAN.md step 9 criterion 9.2, carrying HM-REQ-123, asks that both decoders read every keyed recording and the synthetic set through the same harness and be scored through the same scorer and metrics, tabled per recording and per condition in parity.md, before either votes
+DECIDED: which of fldigi's decoder modes is ported, how its unclassed output is mapped to sure for the metrics, and the per-type timeouts are the author's, overrulable
+LICENCE: CW_REQUIREMENTS.md section M, HM-REQ-120 122 123 129; PHASE_PLAN.md R78, R80, R84, R85, section 6; R72; HM-DEC-155; CLAUDE.md 0.2 and 12.5; FACT-004; GPL-3
+COST: 1.8505345999999996
+ACCOMPLISHED: Hamlet knows, in numbers, how far its CW decoder stands from a known one, and which technique to take first
+FATE: not recorded
+STATE_AFTER: not started
+STATE_WHY: the report was refused by validate-output.bat and was not judged - the state is the plan-s own reading, or the header-s where the step has no criterion lines
+ADVANCED: not recorded
+ATTEMPT: 9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
+
+## UNIT 455 - STEP 6
+
+STEP: 6
+APPROACH: test naming HM-REQ-071 prosign one symbol and HM-REQ-072 prosign naming per terminal setting, watched failing first on synthetic keyed prosigns, state met or not, one change to emit a run with no character gap as one prosign symbol kept under R78
+MOVE: work around
+WHY: PHASE_PLAN.md step 6 line 6.2 asks that HM-REQ-071 and 072 each have a test naming them with the report stating whether each is met, and a prosign split into letters is a wrong letter the operator reads; step 2 cannot flip a line this pass (2.4 at 0 of 3 after 449's kept change, 2.5 held by 443's DECIDED (3)) and step 9 waits on fldigi's source, which is still absent.
+STATE: partial
+DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2 for the reason in WHY, and step 9 is not authored while .run-unit/fldigi is absent, the source request being 454's section 4 and logged, not chased; (2) 6.2 is ticked at task 2 on two tests naming HM-REQ-071 and 072, each watched failing first, with met or not met stated, whether or not task 3 runs; (3) under R85, HM-REQ-072's terminal setting, if absent, is built with the prosign name as default so the default rendering is byte-identical, and naming is not a claim about the signal, so this is not the promise stop; (4) a prosign missing from the table is a 6.1 finding and is not hand-added; (5) 443's DECIDED (3) holds, and 2.5 and 6.6 are not ticked; (6) 454's section 4 is logged and not chased.
+LICENCE: PHASE_PLAN.md step 6 line 6.2 and section 5's independence line; CW_REQUIREMENTS.md HM-REQ-071, 072, HM-REQ-004; CW_SPEC.md 6.2; R72, R77, R78, R80, R85, section 6; R83 as recorded in work instruction 441; arbiter rulings 443 DECIDED (3), 448 DECIDED (6); V-11; HM-DEC-048; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 6 criterion 2
+RUN: session launched with SESSION.lock already present (PID 10636, 13:11:19); the lock is the launcher's and was not taken or released by the session.
+ENTRY: Version 1.13.141 to 1.13.142. PHASE_STATUS.md names unit 455, CURRENT_STEP 6 in both copies. HEAD at entry 905ba7de. Step 6 at 2 of 6 by the plan. Build 0 errors in 17 s; engine line 178 of 178 in 389 s; app line 278 of 278 in 174 s on the first run, no loss, no hang; captures 51 of 51 in 130 s; adjudicated 13 of 13 in 31 s; named 10 of 13 in 66 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113. Synthetic, exact: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. 126 text lines saved to .run-unit/unit455-text-before.txt, identical to 453's before.
