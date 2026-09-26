@@ -1,0 +1,196 @@
+UNIT 456 TASK 1 - fldigi's CW receiver, traced from cw::rx_process down
+Upstream: https://github.com/w1hkj/fldigi at 61b97f4133c488063f3de1795c894d22d5032e8a
+Tree read: .run-unit/fldigi (untracked, unmodified). Lines are at that commit.
+
+== THE CLONE
+.git/HEAD -> refs/heads/master = 61b97f4133c488063f3de1795c894d22d5032e8a; origin
+https://github.com/w1hkj/fldigi.git. Present: src/cw_rtty/cw.cxx, src/cw_rtty/morse.cxx,
+src/include/cw.h, src/include/morse.h, src/filters/ (fftfilt.cxx, filters.cxx, viterbi.cxx),
+src/include/configuration.h.
+PARTIAL CHECKOUT: the working tree holds only src/cw_rtty, src/filters, src/include and
+src/misc. Missing from it, and read by the receive path: src/misc/status.cxx (progStatus
+initialiser: sqlonoff, sldrSquelchValue), src/modem.cxx or wherever modem::modem sets
+`metric`, src/fl_digi.cxx (put_rx_char, display_metric). A read of the local object store
+(git --git-dir=.run-unit/fldigi/.git ls-tree) was refused and is recorded as a denial; nothing
+was fetched.
+
+== SAMPLE RATES
+fldigi's CW modem: CW_SAMPLERATE 8000 (cw.h:41), set as samplerate in cw::cw (cw.cxx:314).
+Every timing in the receiver is a count of 8000 Hz samples (KWPM = 12*8000/10 = 9600
+samples per dot at 1 WPM, cw.h:55); the variables are named usec but hold samples.
+Corpus: CwProbabilisticDecoder takes whatever rate the audio carries (CwProbabilisticDecoder.cs
+Envelope, IntegratorWindow). tests/fixtures/cw/captured: 68 WAVs at 48000 Hz, 1 at 8000 Hz;
+tests/fixtures/cw/synthetic-cq: 12 WAVs at 8000 Hz (read from each header,
+.run-unit/unit456-rates.sh).
+
+== DECODER MODES AT 61b97f41
+1. DEFAULT - hysteresis detector and timing table: mix to baseband, fftfilt low-pass,
+   decimate by 16, magnitude, 16-tap moving average, AGC'd thresholds CWupper/CWlower
+   (recomputed every sample), key-down/key-up events, dot/dash split at two_dots, character
+   at 2-4 dot lengths of silence, word space past 4, pattern looked up in cMorse's table.
+   PORTED.
+2. SOM decoding (CWuseSOMdecoding, default false, configuration.h:543): the same element
+   durations classified by nearest vector in som_table (cw.cxx:86) via normalize and
+   find_winner. A separate classifier with its own table, not the same code under a
+   switch. LEFT OUT, named.
+3. Matched filter (CWmfilt, default false, configuration.h:540): the same fftfilt with its
+   bandwidth set to 5*CWspeed/1.2 (cw.cxx:353, 395). The same code under a switch. PORTED
+   as that switch, off by default.
+4. rx_FIRprocess (cw.h:239): declared, no definition in cw.cxx at this commit. Not a mode.
+5. view_cw (src/cw_rtty/view_cw.cxx): the multichannel signal browser, its own decoders
+   feeding a display (cw.cxx:741-743). UI. LEFT OUT.
+
+== THE RECEIVE CALL GRAPH, port or leave out
+file:line | function | what it does | verdict | reason if left out
+cw.cxx:719 | cw::rx_process | per block: reinit table on prosign setting change, guard re-entry, reset_rx_filter, rx_FFTprocess, then display | port | -
+cw.cxx:717 | cwprocessing (static) | re-entry guard around rx_process | port | (instance field)
+cw.cxx:386 | cw::reset_rx_filter | rebuild filter and speed state when CWmfilt, CWspeed or CWbandwidth changed | port | two REQ() lines to waterfall and slider (403-406) are UI, left out
+cw.cxx:683 | cw::rx_FFTprocess | mix each sample to baseband at `frequency`, fftfilt, count samples, keep every 16th, magnitude, bitfilter, decode_stream | port | -
+cw.cxx:593 | cw::decode_stream | sig_avg / noise_floor / agc_peak tracking, normalise, metric, recompute CWupper/CWlower, squelch gate, key-down/key-up on hysteresis, query for a character | port | pipe[] scope writes (643-644), update_syncscope and synchscope (659-660, 676-679) are display; put_rx_char becomes the port's output
+cw.cxx:771 | cw::handle_event | RESET / KEYDOWN / KEYUP / QUERY state machine: element timing, noise-spike reject, speed-tracking pairs, dot or dash, 6-element overflow, character at 2-4 dots of silence, word space past 4 | port | -
+cw.cxx:754 | cw::usec_diff | later minus earlier, 0 if not later | port | -
+cw.cxx:524 | cw::update_tracking | accept a dot/dash pair within bounds, feed (d1+d2)/2 to trackingfilter as two_dots, sync_parameters | port | -
+cw.cxx:466 | cw::sync_parameters | receive speed from two_dots when tracking, dot/dash lengths, noise-spike threshold, tracking range limits | port | nanoIO block (470-479) is keying; put_cwRcvWPM (486) is UI
+cw.cxx:443 | cw::sync_transmit_parameters | called first by sync_parameters; sets cw_send_dot_length (read by receive at 485 and 505) and transmit symbol lengths and edges | port in part | cw_send_dot_length/dash_length ported; nusymbollen, nufsymlen, risetime, QSKshape, create_edges are transmit
+cw.cxx:299 | cw::cw | constructor: speed, two_dots, spike threshold, dot lengths, symbollen (sizes bitfilter), bandwidth or matched-filter bandwidth, fftfilt 2048, bitfilter, trackingfilter, sync_parameters, noise_floor 1.0, sig_avg 0, agc_peak 1.0 | port in part | tx_frequency, risetime, QSKshape, fsymlen, create_edges, nano_*, REQ() UI, update_Status, cal_wpm, start_cwio_thread are transmit, keying or UI
+cw.cxx:256 | cw::init | frequency from sweet spot / waterfall, trackingfilter reset, two_dots from it, morse init, rx_init | port in part | wf->Reverse/USB (reverse is not read by receive), set_freq from waterfall -> caller supplies the frequency; put_cwRcvWPM UI; outbuf/qskbuf memset transmit; nanoIO keying
+cw.cxx:240 | cw::rx_init | state IDLE, smpl_ctr 0, pointers 0, agc_peak 0 | port in part | set_scope_mode, update_Status, scope_clear, viewcw.restart are UI
+misc.h:59 | decayavg | exponential average with integer weight | port | -
+misc.h:53 | clamp | clamp to range | port | -
+fftfilt.cxx:105 | fftfilt::fftfilt(f, len) | low-pass constructor | port | -
+fftfilt.cxx:69 | fftfilt::init_filter | allocate buffers, flen2 = flen/2, one g_fft | port | -
+fftfilt.h:66 | fftfilt::create_lpf | create_filter(0, f) | port | -
+fftfilt.cxx:124 | fftfilt::create_filter | windowed-sinc h(t) in first half, Blackman window, FFT, normalise peak |H| to 1, pass = 1 | port | -
+fftfilt.cxx:55 | fftfilt::clear_filter | zero all buffers, inptr 0 | port | -
+fftfilt.h:47 | fftfilt::fsinc | sinc tap centred on len/2 | port | -
+fftfilt.h:51 | fftfilt::_blackman | Blackman window | port | -
+fftfilt.cxx:202 | fftfilt::run | overlap-add: collect flen/2, FFT (second half zero), multiply, inverse, add overlap, hold output until 2 passes | port | -
+gfft.h:3316 | g_fft::ComplexFFT | in-place forward complex DFT (Green's radix-2/4/8) | port as equivalent | see departures: a radix-2 DFT with the same unscaled forward and 1/N inverse (gfft.h:2253)
+gfft.h:3332 | g_fft::InverseComplexFFT | in-place inverse, scaled 1/N | port as equivalent | as above
+filters.cxx:261 | Cmovavg::Cmovavg | moving average of filtlen | port | -
+filters.cxx:273 | Cmovavg::run | first call fills the window with the sample and returns it; after, running sum / len | port | -
+filters.cxx:294 | Cmovavg::setLength | new length, empty | port | -
+filters.cxx:304 | Cmovavg::reset | empty | port | -
+morse.h:45 | cMorse::cMorse | init() | port | -
+morse.cxx:177 | cMorse::init | prosign chr from CW_prosigns, enable/disable extended and punctuation per progdefaults | port | -
+morse.cxx:167 | cMorse::enable | set one entry's enabled by chr or prt | port | -
+morse.cxx:242 | cMorse::rx_lookup | first enabled entry whose pattern matches; chr if CW_prosign_display else prt; "" if none | port | -
+morse.cxx:44 | cMorse::cw_table | the table rx_lookup reads | port | -
+
+== IN THE FILES, NOT IN THE RECEIVE PATH, LEFT OUT
+cw.cxx:292 cw::~cw - destructor, stops the cwio thread; C# has no destructor to port and the thread is keying
+cw.cxx:226 cw::tx_init - transmit
+cw.cxx:538 cw::update_Status - UI (put_MODEstatus)
+cw.cxx:550 cw::update_syncscope - UI (sync scope, put_cwRcvWPM, update_Status)
+cw.cxx:568 cw::clear_syncscope - UI
+cw.cxx:576 cw::mixer - not called by the receive path (rx_FFTprocess mixes inline with FFTphase)
+cw.cxx:164 cw::normalize - SOM mode, off by default
+cw.cxx:189 cw::find_winner - SOM mode, off by default
+cw.cxx:86 cw::som_table - SOM mode, off by default
+cw.cxx:932 cw::create_edges - transmit
+cw.cxx:969 cw::nco - transmit
+cw.cxx:976 cw::qsknco - transmit (QSK)
+cw.cxx:1004 cw::send_symbol - transmit
+cw.cxx:1071 cw::send_ch - transmit
+cw.cxx:1151 cw::tx_process - transmit
+cw.cxx:1257 cw::incWPM - UI / transmit speed
+cw.cxx:1269 cw::decWPM - UI / transmit speed
+cw.cxx:1281 cw::toggleWPM - UI / transmit speed
+cw.h:246 cw::calWPM (both) - keying calibration
+cw.cxx:1301 open_CW_KEYLINE - keying
+cw.cxx:1340 close_CW_KEYLINE - keying
+cw.cxx:1370 flrig_cwio_send - keying
+cw.cxx:1409 cwio_key - keying
+cw.cxx:1427 cwio_ptt - keying
+cw.cxx:1457 cwio_now - keying clock
+cw.cxx:1489 cwio_bit - keying
+cw.cxx:1557 send_cwio - keying
+cw.cxx:1618 cwio_calibrate_finished - keying
+cw.cxx:1632 cwio_calibrate - keying
+cw.cxx:1651 cwio_loop - keying thread
+cw.cxx:1681 calibrate_cwio - keying
+cw.cxx:1695 stop_cwio_thread - keying
+cw.cxx:1719 start_cwio_thread - keying
+cw.cxx:1747 cw::send_CW - keying
+cw.cxx:1772 CAT_keying_calibrate_finished - keying
+cw.cxx:1786 do_CAT_keying_calibrate - keying
+cw.cxx:1855 CAT_keying_calibrate - keying
+cw.cxx:1870 CAT_keying_test_finished - keying
+cw.cxx:1876 do_CAT_keying_test - keying
+cw.cxx:1932 CAT_keying_test - keying
+cw.h:239 cw::rx_FIRprocess - declared, not defined at this commit
+morse.cxx:257 cMorse::tx_lookup - transmit
+morse.cxx:299 cMorse::tx_length - transmit
+morse.h:54 cMorse::tx_print - transmit
+fftfilt.cxx:95 fftfilt::fftfilt(f1, f2, len) - band-pass constructor, not used by CW
+fftfilt.h:69 fftfilt::create_hpf - not used by CW
+fftfilt.cxx:83 fftfilt::flush_size - not used by CW receive
+fftfilt.cxx:245 fftfilt::rtty_filter - RTTY
+fftfilt.cxx:112 fftfilt::~fftfilt - destructor
+filters.h:128 Cmovavg::value - not read by CW
+filters.cxx:268 Cmovavg::~Cmovavg - destructor
+gfft.h:3347 g_fft::RealFFT, 3364 InverseRealFFT, 3376/3386 Get*Scale - not used by fftfilt
+view_cw.cxx (whole file) - signal browser display
+fl_digi.cxx put_rx_char, display_metric - UI; the port returns the characters instead
+
+COUNT, one per row above: PORTED 34, LEFT OUT 54.
+Ported whole (28): rx_process, cwprocessing, reset_rx_filter, rx_FFTprocess, decode_stream,
+handle_event, usec_diff, update_tracking, sync_parameters, decayavg, clamp,
+fftfilt(f,len), init_filter, create_lpf, create_filter, clear_filter, fsinc, _blackman,
+fftfilt::run, Cmovavg ctor, Cmovavg::run, setLength, reset, cMorse ctor, cMorse::init,
+cMorse::enable, cMorse::rx_lookup, cw_table.
+Ported in part (4): cw::cw, cw::init, cw::rx_init, sync_transmit_parameters.
+Ported as equivalent (2): g_fft::ComplexFFT, g_fft::InverseComplexFFT.
+Left out (54 rows): 41 from cw.cxx/cw.h (19 transmit, UI or SOM members, 21 keying
+functions, rx_FIRprocess), 3 from morse (transmit), 5 from fftfilt, 2 from Cmovavg, 1 row of
+g_fft real-FFT and scale functions, view_cw.cxx, and fl_digi.cxx's put_rx_char/display_metric.
+
+== R72
+No word, dictionary or callsign logic anywhere in the receive path. cMorse is a character
+table; handle_event emits one character or one space at a time. Nothing to leave out on R72.
+
+== progdefaults THE RECEIVE PATH READS, with shipped default at 61b97f41
+field | type | default | where | read at
+CWspeed | double | 18 | configuration.h:513 | cw.cxx:317, 326, 332, 389, 393, 396, 408, 416, 448, 451, 483, 489
+CWbandwidth | int | 150 | configuration.h:525 | cw.cxx:318, 352, 356, 390, 398
+CWmfilt | bool | false | configuration.h:540 | cw.cxx:350, 388, 392
+CWtrack | bool | true | configuration.h:537 | cw.cxx:482, 488
+CWrange | int | 10 | configuration.h:546 | cw.cxx:492, 493
+CWlowerlimit | int | 5 | configuration.h:549 | cw.cxx:494, 495
+CWupperlimit | int | 50 | configuration.h:552 | cw.cxx:496, 497
+CWupper | double | 0.6 | configuration.h:531 | cw.cxx:343; OVERWRITTEN every decimated sample at cw.cxx:640 and read at 649
+CWlower | double | 0.4 | configuration.h:528 | cw.cxx:344; OVERWRITTEN every decimated sample at cw.cxx:641 and read at 653
+CW_noise | int (char) | '*' | configuration.h:249 | cw.cxx:895-897 (and 216-222, SOM)
+CWuseSOMdecoding | bool | false | configuration.h:543 | cw.cxx:661
+cwrx_attack | int | 1 (-> attack 200) | configuration.h:555 | cw.cxx:599
+cwrx_decay | int | 1 (-> decay 1000) | configuration.h:559 | cw.cxx:604
+CWfarnsworth | double | 18 | configuration.h:516 | cw.cxx:327, 417, 446 (fsymlen, transmit only)
+CW_use_paren | bool | false | configuration.h:617 | cw.cxx:280, 721
+CW_prosigns | string | "=~<>%+&{}" | configuration.h:620 | cw.cxx:281, 722; morse.cxx:180
+CW_prosign_display | bool | false | configuration.h:623 | morse.cxx:248
+A_umlaut true 629, A_aelig false 632, A_ring true 635, C_cedilla true 638, E_grave true 641,
+E_acute true 644, O_acute false 647, O_umlaut true 650, O_slash false 653, N_tilde true 656,
+U_umlaut true 659, U_circ false 662 | morse.cxx:199-222
+CW_backslash, CW_single_quote, CW_dollar_sign, CW_open_paren, CW_close_paren, CW_colon,
+CW_semi_colon, CW_underscore, CW_at_symbol, CW_exclamation: all true, configuration.h:219-248 |
+morse.cxx:224-233
+CWsweetspot | double | 1500 | configuration.h:201 | cw.cxx:263, 306 - replaced: the caller gives the frequency
+rx_lowercase | bool | false | configuration.h:327 | read in put_rx_char (fl_digi.cxx, not in the tree); default false leaves the text as the table prints it
+CWmfiltlen | int | 100 | configuration.h:534 | not read by the receive path at this commit
+progStatus fields read:
+sqlonoff, sldrSquelchValue | status.h:93, 88 | default in src/misc/status.cxx, NOT IN THE PARTIAL
+TREE. The port takes the squelch off (sqlonoff false), under which cw.cxx:646 passes every
+key event; both are constructor parameters. R85 reading: the squelch is the operator's
+setting, not a detection default, and off is the setting that leaves fldigi's detector as
+the only gate.
+modem::metric | modem.h:82 | initialiser not in the tree; the port starts it at 0.0. It is
+read only by the squelch gate, which is off.
+
+== DERIVED STATE AT THE DEFAULTS (8000 Hz)
+KWPM 9600; two_dots 1066; cw_send_dot_length 533; symbollen round(533.3) = 533; bitfilter
+length 533/32 = 16 decimated samples (32 ms); fftfilt low-pass 150/8000 = 0.01875, 2048
+points, output in blocks of 1024 after two blocks; decimation 16 -> 500 Hz decision rate;
+cw_receive_speed 9600/533 = 18; cw_receive_dot_length 533; noise-spike threshold 266
+samples (33 ms); character at 1066..2132 samples of silence (133..267 ms), word space past
+2132 (267 ms); tracking range 8..28 WPM, cw_lower_limit 685, cw_upper_limit 2400 (computed,
+not read); update_tracking bounds min_dot 48, max_dash 5760.

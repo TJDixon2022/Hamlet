@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 456 - fldigi's CW receiver, ported as the second decoder
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T14:33:06-04:00
-NOTE: Task 0 done, numbers as 455 left them; task 1 tracing fldigi's receive call graph from cw::rx_process down
+UPDATED: 2026-09-26T14:39:28-04:00
+NOTE: Task 1 done: 34 upstream functions to port, 54 left out; task 2 writing the C# port under Cw/Second, filters first
 
 ---
 

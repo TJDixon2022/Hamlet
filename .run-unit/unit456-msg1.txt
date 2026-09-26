@@ -1,0 +1,15 @@
+unit456 task 1: the trace - fldigi's receive path from cw::rx_process, 34 functions to port and 54 left out, default mode the hysteresis detector at 8000 Hz, shipped defaults read from configuration.h (9.1)
+
+.run-unit/unit456-fldigi-rx.txt. Modes: hysteresis and table (default,
+ported), matched filter (same code under CWmfilt, ported off), SOM
+(separate classifier, left out), rx_FIRprocess (declared, undefined),
+view_cw (display). fldigi runs at 8000 Hz; the captures are 68 at 48000
+and 1 at 8000, the synthetic set 12 at 8000. Defaults: CWspeed 18,
+CWbandwidth 150, CWtrack true, CWrange 10, CWmfilt false, CWupper 0.6 and
+CWlower 0.4 (both overwritten every sample), CW_noise '*', attack 1,
+decay 1, limits 5 and 50. The clone's working tree is partial:
+src/misc/status.cxx, which holds the squelch defaults, is absent; the
+port takes the squelch off. No word or callsign logic found (R72).
+Nothing in src changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
