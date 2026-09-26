@@ -1,0 +1,121 @@
+UNIT 457 TASK 3 - THE CASE, CHOSEN BEFORE THE PORT READS IT
+
+Written and committed before FldigiCwDecoder is run on this case. The port has not been given
+this audio. The commit that runs it comes after this file's commit.
+
+-------------------------------------------------------------------------------------------------
+1. THE VERDICT IT IS DERIVED FROM (task 2, .run-unit/unit457-first-dit.txt)
+-------------------------------------------------------------------------------------------------
+(b) upstream behaviour. After seconds of noise alone, fldigi's AGC sits on the noise
+(cw.cxx:246, 610-623), its thresholds sit a hair apart inside it (640-641) and its detector keys
+on it (649-655, squelch off). A first element is swallowed by a noise key-down already under way,
+or cleared after a noise spike in the next gap (818-822, 793-798). fldigi reads an element once
+agc_peak has been raised by earlier key-down at the signal's own level: in 456's case, after the
+first dit and dah (about 0.27 s of mark, against the 0.4 s attack constant), no gap raised a noise
+event again. What it needs is a settled AGC from earlier keying at the same level, within its
+2.0 s decay constant.
+
+-------------------------------------------------------------------------------------------------
+2. THE CONTROL (V-04: the real recording is the generator's control)
+-------------------------------------------------------------------------------------------------
+Printer: WhatPrecedesAKeysFirstElementOnTheAirTests.OnEveryKeyedRecording, output in
+.run-unit/unit457-control.txt. On every keyed recording (WhatTheStrayLettersRestOnTests
+.KeyedRecordings, 23): the pitch instrument's median pitch; the key located in our decoder's
+reading (17:37's first CQ, an adjudicated anchor, a benchmark stretch's key); the key's first
+element is the mark at that pitch nearest the located character's arrival less its measured
+length; then the 5 s before that element, on this printer's own 10 ms envelope at the pitch.
+
+recording                              | set      | pitch | 5 s before the key's first element holds | marks | keyed s | last mark ends before | mark level vs element (median) | floor vs element
+unadjudicated/cw-2026-09-23-173723     | 17:37    | 585.9 | the same operator's earlier keying | 24 | 2.29 | 0.070 s | +0.4 dB | -13.2 dB
+cw-2026-08-17-013347 (456's)           | baseline | 613.7 | not located: no mark within 0.5 s of the arrival estimate
+cw-2026-08-17-134712                   | baseline | 501.4 | the same operator's earlier keying | 31 | 1.52 | 0.115 s | -5.7 dB | -17.4 dB
+unadjudicated/cw-2026-08-18-003758     | baseline | 499.7 | the same operator's earlier keying | 37 | 2.59 | 0.160 s | -0.1 dB | -23.1 dB (anchor 3 chars into the key)
+unadjudicated/cw-2026-08-24-012403     | outside  | 439.9 | the same operator's earlier keying | 37 | 2.76 | 0.250 s | -0.5 dB | -12.1 dB
+cw-2026-08-18-004507                   | outside  | 500.8 | the same operator's earlier keying | 39 | 2.64 | 0.025 s | -0.3 dB | -18.6 dB (anchor 32 in)
+unadjudicated/cw-2026-08-22-031838     | outside  | 499.9 | the same operator's earlier keying | 36 | 3.46 | 0.035 s | -0.1 dB | -15.6 dB (anchor 4 in)
+unadjudicated/cw-2026-08-22-031905     | outside  | 499.9 | the same operator's earlier keying | 31 | 3.36 | 0.010 s | +1.1 dB | -10.6 dB
+unadjudicated/cw-2026-08-22-031948     | outside  | 499.9 | the same operator's earlier keying | 31 | 3.40 | 0.020 s | +3.1 dB | -13.9 dB (anchor 5 in)
+unadjudicated/cw-2026-08-22-032012     | outside  | 499.9 | the same operator's earlier keying | 37 | 3.25 | 0.010 s | +5.3 dB | -13.4 dB (anchor 29 in)
+unadjudicated/cw-2026-08-22-032050     | outside  | 499.9 | the same operator's earlier keying | 22 | 1.30 | 0.065 s | -0.2 dB | -15.6 dB (anchor 6 in)
+unadjudicated/cw-2026-08-22-032113     | outside  | 499.9 | the same operator's earlier keying | 41 | 3.34 | 0.060 s | -1.7 dB | -16.2 dB (anchor 11 in)
+unadjudicated/cw-2026-08-22-032129     | outside  | 499.9 | the same operator's earlier keying | 36 | 3.33 | 0.060 s | -0.0 dB | -17.5 dB (anchor 7 in)
+unadjudicated/cw-2026-09-24-004108 (456's) | the ten | 626.3 | not located: the stretch's key is not in our reading
+unadjudicated/cw-2026-09-24-004133     | the ten  | 626.9 | the same operator's earlier keying | 25 | 1.82 | 0.015 s | -0.5 dB | -16.2 dB
+unadjudicated/cw-2026-09-24-004205     | the ten  | 626.7 | not located
+unadjudicated/cw-2026-09-24-004234     | the ten  | 627.0 | not located
+unadjudicated/cw-2026-09-24-004322     | the ten  | 627.0 | not located
+unadjudicated/cw-2026-09-24-004347     | the ten  | 626.9 | not located
+unadjudicated/cw-2026-09-24-004405     | the ten  | 626.8 | the same operator's earlier keying | 37 | 2.36 | 0.055 s | -1.9 dB | -16.8 dB
+unadjudicated/cw-2026-09-24-004427     | the ten  | 621.5 | the same operator's earlier keying | 29 | 2.32 | 0.250 s | -0.0 dB | -17.3 dB
+unadjudicated/cw-2026-09-24-004510     | the ten  | 600.2 | the same operator's earlier keying | 46 | 1.53 | 0.100 s | -4.8 dB | -15.5 dB
+unadjudicated/cw-2026-09-24-004550     | the ten  | 610.1 | the same operator's earlier keying | 46 | 2.53 | 0.030 s | -0.4 dB | -17.6 dB
+
+Located 17 of 23 (456's 17:37 among them; 456's 013347 and 004108 not located, with the reasons
+above). In all 17 the 5 s before the key's first element hold the same operator's earlier keying:
+1.30 to 3.46 s of mark in the 5 s, at the element's own level (median -5.7 to +5.3 dB, 13 of 17
+within 2 dB), the last mark ending 0.010 to 0.250 s before the element - an element, character
+or word gap. None holds noise alone, another station (no second pitch in any window) or a
+carrier (no mark longer than 0.43 s). No recording in the tree starts its key after seconds of
+noise alone, which is the one condition 456's case gave fldigi.
+
+The condition task 2 says fldigi needs - earlier keying at the signal's level within its time
+constants - is therefore what the air gives before every located key, and the construction gives
+fldigi exactly that and no more.
+
+-------------------------------------------------------------------------------------------------
+3. THE RULE
+-------------------------------------------------------------------------------------------------
+One construction: the scored send is preceded, as on the air, by the same operator's earlier
+keying at the same level and speed, ending one word gap (7 units) before the scored send's first
+element, and filling the 5 s before it. The earlier keying is the same send once: the case keys
+`PARIS CQ PARIS CQ`, and the scored text is the second `PARIS CQ`. Nothing else changes from
+456's recipe: the same speed, pitch, level, edges, noise, seed, SNR, lead-in and tail.
+
+Why the same send once: at 18 WPM `PARIS CQ` is 77 units, 5.13 s, so with the word gap it fills
+the 5 s window the control measured, and it holds 40 units of mark, 2.67 s, inside the control's
+1.30 to 3.46 s. It adds no text chosen for the port: repeating a call is the on-air habit the
+control's 17:37 (CQ CQ CQ) and 012403 (DE KD0UN KD0UN) show.
+
+The earlier send is not scored and not asserted: fldigi's reading of it is printed only. That is
+the first element after seconds of noise, which task 2 has already shown fldigi loses, and the
+real recordings never ask it to read.
+
+The scored span, fixed here: the last ten characters fldigi prints, which must be ` PARIS CQ ` -
+the word space fldigi prints for the 7-unit gap before the scored send (more than 4 dot lengths,
+cw.cxx:910-914), the key, and the word space the 1.5 s tail gives. The leading space is what makes
+the span the scored send's own: it proves P was not joined to anything before it. Expected text
+of the scored send, spaced by fldigi's own rules: `PARIS CQ ` preceded by its word space.
+
+-------------------------------------------------------------------------------------------------
+4. THE RECIPE (enough to rebuild it)
+-------------------------------------------------------------------------------------------------
+- Send: `PARIS CQ PARIS CQ`, patterns from CW_SPEC.md 6 (ITU-R M.1677-1), typed in the test,
+  not from fldigi's morse.cxx and not from MorseAlphabet (CLAUDE.md 12.5):
+  P .--.  A .-  R .-.  I ..  S ...  C -.-.  Q --.-
+  Plain letters, one word space inside each send, one word space between the two sends.
+  The rendered marks are measured back into letters and checked against the patterns before the
+  port is run.
+- Speed: 18 WPM, fldigi's shipped CWspeed (configuration.h:513). One unit 1.2/18 s = 66.67 ms.
+  Marks 1 and 3 units; gaps 1 (element), 3 (character), 7 (word).
+- Pitch: 600 Hz, given to the port as fldigi's waterfall cursor would give it.
+- Level and edges: peak 0.5; raised-cosine edges of 5 ms at each end of every mark.
+- Rate: 8000 Hz, fldigi's own, so no resampling.
+- Lead-in: 10.0 s of noise before the first mark of the earlier send (456's).
+- Tail: 1.5 s of noise after the last mark of the scored send (456's).
+- Noise: white Gaussian from xorshift32 (state seeded with 20260926, shifts 13, 17, 5; uniform
+  ((state & 0xFFFFFF) + 1) / 16777217) and Box-Muller in pairs; shaped to 300-2800 Hz by a
+  257-tap Blackman-windowed sinc band-pass; scaled so tone power (peak^2 / 2) over band-noise power
+  is +10 dB. In a 2500 Hz band that is +10 dB at the CW_SPEC.md 8.1 reference. Never digital
+  silence (V-06). Seed 20260926, 456's, not searched.
+- The port: FldigiCwDecoder(600), fldigi's shipped progdefaults at 61b97f41, squelch off per
+  benchmark.cxx:54 (456 DECIDED (1)), all audio given in one rx_process call.
+
+-------------------------------------------------------------------------------------------------
+5. HOW IT IS RUN
+-------------------------------------------------------------------------------------------------
+TheSecondDecoderIsAFaithfulPortTests.ItReadsASendWhoseKeyIsExact, naming HM-REQ-122, is changed to
+this case. First with a deliberately wrong expectation, ` PARIS CQX`, watched red; then with
+` PARIS CQ `. Both runs are recorded. The seven header cases stay. It is run on this case once.
+If the port does not read it, 9.1 stays open and what it emitted is printed with task 2's columns
+at each character; no second seed, SNR, lead-in or level is tried, nothing more is keyed in front,
+the span does not move, and no garbled character is mapped into the expectation.

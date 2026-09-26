@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 457 - why fldigi's port loses the first dit, and a case chosen
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T15:48:08-04:00
-NOTE: Task 2 done, verdict (b) upstream behaviour; task 3 reading six real recordings' 5 s before the first keyed element as the generator's control
+UPDATED: 2026-09-26T15:54:00-04:00
+NOTE: Task 3: control measured on 23 keyed recordings, 16 located, all 16 hold the same operator's keying before the key; writing unit457-case.txt before any run
 
 ---
 

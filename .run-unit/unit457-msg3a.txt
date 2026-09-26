@@ -1,0 +1,15 @@
+unit457 task 3: the case written before it is read - PARIS CQ keyed twice, the second scored, as the air gives it: 17 of 17 located keys follow the same operator's keying at the same level (9.1)
+
+The control, WhatPrecedesAKeysFirstElementOnTheAirTests, measures the
+5 s before each keyed recording's key: 17 of 23 located, every one
+holding the same operator's earlier keying (1.30 to 3.46 s of mark,
+median level -5.7 to +5.3 dB of the element, last mark 10 to 250 ms
+before it); none noise alone, another station or a carrier. From
+task 2's verdict (b), the case gives fldigi that and no more: the
+same send once before the scored one, one word gap apart, all else
+456's recipe (18 WPM, 600 Hz, peak 0.5, 5 ms edges, 10.0 s lead-in,
+1.5 s tail, 300-2800 Hz noise at +10 dB reference, seed 20260926).
+Scored span fixed: the last ten characters, ` PARIS CQ `. The port
+has not been run on it.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
