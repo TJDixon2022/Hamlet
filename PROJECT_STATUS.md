@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 451 - the speed says whether it was proved
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T08:58:49-04:00
-NOTE: Trace done: 30042 real hops that show a number at HEAD would say hypothesis; next the three tests, then the state
+UPDATED: 2026-09-26T09:33:00-04:00
+NOTE: 5.5 ticked: speed state built, 034 green after red, 035 and 036 green, text 63 of 63 identical; next the exit round
 
 ---
 

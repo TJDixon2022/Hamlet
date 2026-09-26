@@ -1,0 +1,157 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:02.30]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:02.42]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:02.43]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:01:50.56]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.TheSpeedLineSaysWhatWasProvedTests.EachKeyedRecordingsSpeedLinesAsTheyRead [1 m 48 s]
+  Standard Output Messages:
+ speed | cw-2026-09-23-173723 | shown 17 | reacquiring False | state Proved
+   sheet   | decoderWpm 17  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    17 WPM won out of 8 to 40, 1.48 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 17 WPM
+   pill    | 
+   offer   | They are sending at about 17 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-08-17-013347 | shown 16 | reacquiring False | state Hypothesis
+   sheet   | decoderWpm 16  HYPOTHESIS, NOT PROVED NOW (it won the search across 8 to 40 and no dit was measured from the keying)
+   reading | reading    16 WPM won out of 8 to 40, 4.00 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 16 WPM, not proved
+   pill    | 
+   offer   | Hamlet's reading of their speed is about 16 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at.
+ speed | cw-2026-08-17-134712 | shown null | reacquiring True | state Hypothesis
+   sheet   | decoderWpm hypothesis, withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 18 WPM)
+   reading | reading    18 WPM won out of 8 to 40, 12.89 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 
+   pill    | working out the speed, nothing proved yet
+   offer   | 
+ speed | cw-2026-08-18-003758 | shown 24 | reacquiring False | state Hypothesis
+   sheet   | decoderWpm 24  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)
+   reading | reading    24 WPM won out of 8 to 40, 5.94 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 24 WPM, not proved
+   pill    | 
+   offer   | Hamlet's reading of their speed is about 24 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at.
+ speed | cw-2026-08-24-012403 | shown 21 | reacquiring False | state Proved
+   sheet   | decoderWpm 21  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    21 WPM won out of 8 to 40, 1.57 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 21 WPM
+   pill    | 
+   offer   | They are sending at about 21 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-08-18-004507 | shown 24 | reacquiring False | state Proved
+   sheet   | decoderWpm 24  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    24 WPM won out of 8 to 40, 5.69 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 24 WPM
+   pill    | 
+   offer   | They are sending at about 24 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-08-22-031838 | shown null | reacquiring False | state None
+   sheet   | decoderWpm none, not proved (the window read nothing; the search's winner over a window that read nothing was 20 WPM, which describes nobody)
+   reading | reading    20 WPM won out of 8 to 40, 1.22 better than silence per hop against a gate of 1.40; the speed is none: the window read nothing  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 
+   pill    | 
+   offer   | 
+ speed | cw-2026-08-22-031905 | shown 18 | reacquiring False | state Hypothesis
+   sheet   | decoderWpm 18  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)
+   reading | reading    18 WPM won out of 8 to 40, 7.28 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 18 WPM, not proved
+   pill    | 
+   offer   | Hamlet's reading of their speed is about 18 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at.
+ speed | cw-2026-08-22-031948 | shown 18 | reacquiring False | state Hypothesis
+   sheet   | decoderWpm 18  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)
+   reading | reading    18 WPM won out of 8 to 40, 3.90 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 18 WPM, not proved
+   pill    | 
+   offer   | Hamlet's reading of their speed is about 18 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at.
+ speed | cw-2026-08-22-032012 | shown 18 | reacquiring False | state Hypothesis
+   sheet   | decoderWpm 18  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)
+   reading | reading    18 WPM won out of 8 to 40, 7.54 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 18 WPM, not proved
+   pill    | 
+   offer   | Hamlet's reading of their speed is about 18 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at.
+ speed | cw-2026-08-22-032050 | shown null | reacquiring True | state Hypothesis
+   sheet   | decoderWpm hypothesis, withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 28 WPM)
+   reading | reading    28 WPM won out of 8 to 40, 25.85 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 
+   pill    | working out the speed, nothing proved yet
+   offer   | 
+ speed | cw-2026-08-22-032113 | shown null | reacquiring True | state Hypothesis
+   sheet   | decoderWpm hypothesis, withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 28 WPM)
+   reading | reading    28 WPM won out of 8 to 40, 28.42 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 
+   pill    | working out the speed, nothing proved yet
+   offer   | 
+ speed | cw-2026-08-22-032129 | shown 18 | reacquiring False | state Hypothesis
+   sheet   | decoderWpm 18  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)
+   reading | reading    18 WPM won out of 8 to 40, 7.21 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 18 WPM, not proved
+   pill    | 
+   offer   | Hamlet's reading of their speed is about 18 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at.
+ speed | cw-2026-09-24-004108 | shown 22 | reacquiring False | state Proved
+   sheet   | decoderWpm 22  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    22 WPM won out of 8 to 40, 5.59 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM
+   pill    | 
+   offer   | They are sending at about 22 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004133 | shown 22 | reacquiring False | state Proved
+   sheet   | decoderWpm 22  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    22 WPM won out of 8 to 40, 4.46 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM
+   pill    | 
+   offer   | They are sending at about 22 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004205 | shown 22 | reacquiring False | state Proved
+   sheet   | decoderWpm 22  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    22 WPM won out of 8 to 40, 6.93 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM
+   pill    | 
+   offer   | They are sending at about 22 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004234 | shown 22 | reacquiring False | state Proved
+   sheet   | decoderWpm 22  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    22 WPM won out of 8 to 40, 5.29 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM
+   pill    | 
+   offer   | They are sending at about 22 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004322 | shown 22 | reacquiring False | state Proved
+   sheet   | decoderWpm 22  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    22 WPM won out of 8 to 40, 7.34 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM
+   pill    | 
+   offer   | They are sending at about 22 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004347 | shown 22 | reacquiring False | state Proved
+   sheet   | decoderWpm 22  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    22 WPM won out of 8 to 40, 6.02 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM
+   pill    | 
+   offer   | They are sending at about 22 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004405 | shown 22 | reacquiring False | state Proved
+   sheet   | decoderWpm 22  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    22 WPM won out of 8 to 40, 7.17 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM
+   pill    | 
+   offer   | They are sending at about 22 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004427 | shown 21 | reacquiring False | state Proved
+   sheet   | decoderWpm 21  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    21 WPM won out of 8 to 40, 2.66 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 21 WPM
+   pill    | 
+   offer   | They are sending at about 21 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004510 | shown 24 | reacquiring False | state Proved
+   sheet   | decoderWpm 24  (proved: the dit was measured on keying still arriving at the pitch being read)
+   reading | reading    24 WPM won out of 8 to 40, 5.21 better than silence per hop against a gate of 1.40; the speed is proved  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 24 WPM
+   pill    | 
+   offer   | They are sending at about 24 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at.
+ speed | cw-2026-09-24-004550 | shown 22 | reacquiring False | state Hypothesis
+   sheet   | decoderWpm 22  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)
+   reading | reading    22 WPM won out of 8 to 40, 6.18 better than silence per hop against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window alone, as it stood when this sheet was written just after the recording was saved, and not the whole recording)
+   header  | 22 WPM, not proved
+   pill    | 
+   offer   | Hamlet's reading of their speed is about 22 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at.
+ total | 23 keyed recordings at the end of the file | None 1, Hypothesis 10, Proved 12 | a hypothesis where HEAD showed the number bare 7
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.8481 Minutes
+RC=0 WALL=111s

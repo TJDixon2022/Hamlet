@@ -216,7 +216,7 @@ between real words.
 - [ ] 5.2 `cw-2026-09-24-135641`, which read nothing in 44 minutes at about 44 words a minute, emits sure characters, and the report prints what it reads beside `nothing read`.
 - [ ] 5.3 HM-REQ-031 and HM-REQ-033 are measured - speed within 10% of true after acquisition, and acquisition without a prior speed - and reported per condition.
 - [ ] 5.4 MET-TACQ and MET-LAT exist and are measured, and HM-REQ-100 and HM-REQ-101 are reported against them.
-- [ ] 5.5 HM-REQ-034, the speed reported with a proof state, and HM-REQ-035 and 036, state retained across a clear and across a pitch refinement, each have a test naming them and the report states whether each is met.
+- [x] 5.5 HM-REQ-034, the speed reported with a proof state, and HM-REQ-035 and 036, state retained across a clear and across a pitch refinement, each have a test naming them and the report states whether each is met.
 - [ ] 5.6 The three floor tests and both carry-forward lines are green at exit.
 
 **Depends on:** steps 0 and 1.

@@ -1,0 +1,32 @@
+unit451 change: the speed carries a proof state, proved, hypothesis or none, and every speed display says which - text 63 of 63 identical, HM-REQ-034 test green, watched red first (5.5)
+
+CwSpeedProof is new. CwDecoder.SpeedProof is proved where WordsPerMinute
+names a number, the window's unit was measured (the estimator's dit or
+the marks' overrule, now published as CwProbabilisticStream.UnitWasMeasured)
+and the tracker found keying within half the mixdown filter of the pitch
+being read in its own six-survey span (KeyingRecently, the new read-only
+LastKeyedHz); hypothesis where the window holds a reading and any of those
+fails; none where nothing was read or the gate refused the window.
+CwDecodeReport carries SpeedProof and WordsPerMinute; SpeedWasProved is
+read from the state. Nothing in the decode path, the tracker or the pitch
+reads it.
+
+Displays: the sheet's decoderWpm line opens with the state and a named
+hypothesis says HYPOTHESIS, NOT PROVED NOW and why; the reading line says
+the state; the header and collapsed summary add ", not proved"; the
+reacquiring pill says nothing is proved yet; the transmit panel's offer
+stops calling an unproved speed what they are sending at; the roster's
+speed cell marks a hypothesis. No number is shown where HEAD withheld one.
+
+Tests: TheSpeedSaysWhetherItWasProvedTests names HM-REQ-034, red on HEAD's
+field (first moments 2107 hops, the stale hold 780 of 6121, re-acquiring
+972 of 2400 proved), green on the state. AClearKeepsWhatTheDecoderWorkedOutTests
+names HM-REQ-035 and ARefinementKeepsTheTimingTests HM-REQ-036: both green
+at HEAD and after. TheSpeedLineSaysWhatWasProvedTests asserts the wording
+on the 23 keyed recordings: 12 proved, 10 hypothesis, 1 none at the end of
+the file. The task 1 printer agrees with the built state on every hop.
+
+(c): every recording's text byte-identical, 63 of 63; the four metrics,
+the three floors and MET-PITCH-ERR (69 captures, 0 changed) as at entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

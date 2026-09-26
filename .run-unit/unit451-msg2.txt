@@ -1,0 +1,14 @@
+unit451 task 2: 5.5 ticked - HM-REQ-034 test green, watched red on first moments, the stale hold and re-acquiring; 035 and 036 met; text 63 of 63 identical (5.5)
+
+5.5 ticked in both copies of PHASE_PLAN.md under 3 (e): the HM-REQ-034
+test green and watched red first; the state reaches CwDecodeReport and the
+sheet, header, summary, pill, transmit offer and roster print it; tests
+naming HM-REQ-035 and 036 exist, ran, and are green; (c) holds: 63 of 63
+recordings' text byte-identical, MET-CER-SURE real 33 of 436 and synthetic
+14 of 173, captures 51 of 51, adjudicated 13 of 13, named 10 of 13 as at
+entry, MET-PITCH-ERR 69 captures 0 changed, 9 files over 25 Hz.
+
+One line in docs/phase-requirements/metrics.md. The run outputs are kept
+under .run-unit/unit451-*.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -9,6 +9,10 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 451 - HM-REQ-034 met: the speed carries a proof state
+
+HM-REQ-034 met by `TheSpeedSaysWhetherItWasProvedTests` (synthetic, exact construction); HM-REQ-035 met by `AClearKeepsWhatTheDecoderWorkedOutTests` and HM-REQ-036 met by `ARefinementKeepsTheTimingTests` (synthetic, exact construction, each green at HEAD before the change); task 1's hops by state over the 23 real keyed recordings, inferred keys: proved 61328, hypothesis 54494, none 22178, of which 30042 hypothesis hops in 21 recordings showed a bare number at HEAD; synthetic, exact keys: proved 24418, hypothesis 8056, none 23425, proved hops more than 10% off the constructed speed 0 of 24418; decoding unchanged, 63 of 63 recordings' text identical.
+
 ## Unit 450 - HM-REQ-093 met: the pitch carries a proof state
 
 HM-REQ-093 met by `ThePitchSaysWhetherItWasProvedTests` (synthetic, exact construction); task 1's hops by state over the 23 real keyed recordings, inferred keys: proved 40664, hypothesis 50810, none 46526, windows more than 25 Hz off the instrument by majority state 0 of 179, 38 of 253, 24 of 188; synthetic, exact keys: proved 14183, hypothesis 19209, none 22507; decoding unchanged, 63 of 63 recordings' text identical.

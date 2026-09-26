@@ -1,0 +1,49 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.72]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.96]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.96]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:14.51]     Hamlet.RadioEngine.Tests.Cw.TheSpeedSaysWhetherItWasProvedTests.HmReq034TheSpeedIsReportedAsProvedHypothesisOrNone [FAIL]
+[xUnit.net 00:00:14.52]       HM-REQ-034 red on: first moments (before the number: None 2706, Hypothesis 0, Proved 0 of 2706 hops; with a reading: None 2107, Hypothesis 0, Proved 0 of 2107); stale hold (past 44.6 s: None 0, Hypothesis 0, Proved 241 of 241 hops, 241 of them naming a number); re-acquiring (24.2 to 36.2 s: None 1228, Hypothesis 0, Proved 1172 of 2400 hops; with a reading None 1228, Hypothesis 0, Proved 1172 of 2400)
+[xUnit.net 00:00:14.52]       Stack Trace:
+[xUnit.net 00:00:14.52]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSpeedSaysWhetherItWasProvedTests.cs(134,0): at Hamlet.RadioEngine.Tests.Cw.TheSpeedSaysWhetherItWasProvedTests.HmReq034TheSpeedIsReportedAsProvedHypothesisOrNone()
+[xUnit.net 00:00:14.52]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:14.52]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:14.52]       Output:
+[xUnit.net 00:00:14.52]         HM-REQ-034 | none | green | 0 of 7520 hops not none
+[xUnit.net 00:00:14.52]         HM-REQ-034 | proved | green | 2758 of 3510 middle hops proved
+[xUnit.net 00:00:14.52]         HM-REQ-034 | proved, within 10% of 20 wpm | green | proved hops by speed 20 x4814
+[xUnit.net 00:00:14.52]         HM-REQ-034 | first moments, the window | number first named at 13.54 s | 2107 hops before it hold a reading
+[xUnit.net 00:00:14.52]         HM-REQ-034 | first moments | RED | before the number: None 2706, Hypothesis 0, Proved 0 of 2706 hops; with a reading: None 2107, Hypothesis 0, Proved 0 of 2107
+[xUnit.net 00:00:14.52]         HM-REQ-034 | stale hold | RED | past 44.6 s: None 0, Hypothesis 0, Proved 241 of 241 hops, 241 of them naming a number
+[xUnit.net 00:00:14.52]         HM-REQ-034 | re-acquiring | RED | 24.2 to 36.2 s: None 1228, Hypothesis 0, Proved 1172 of 2400 hops; with a reading None 1228, Hypothesis 0, Proved 1172 of 2400
+[xUnit.net 00:00:14.52]         HM-REQ-034 | re-acquiring, after the window | proved hops by speed, 24 sent 24 x2400
+[xUnit.net 00:00:14.52]         HM-REQ-034 | speed change at one pitch, printed not judged (HM-REQ-032's) | 24.2 to 36.2 s: None 0, Hypothesis 0, Proved 2400 | proved hops by speed, 16 then 24 sent: 16 x665, 17 x400, 19 x300, 23 x400, 24 x635
+[xUnit.net 00:00:14.52]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.TheSpeedSaysWhetherItWasProvedTests.HmReq034TheSpeedIsReportedAsProvedHypothesisOrNone [12 s]
+  Error Message:
+   HM-REQ-034 red on: first moments (before the number: None 2706, Hypothesis 0, Proved 0 of 2706 hops; with a reading: None 2107, Hypothesis 0, Proved 0 of 2107); stale hold (past 44.6 s: None 0, Hypothesis 0, Proved 241 of 241 hops, 241 of them naming a number); re-acquiring (24.2 to 36.2 s: None 1228, Hypothesis 0, Proved 1172 of 2400 hops; with a reading None 1228, Hypothesis 0, Proved 1172 of 2400)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheSpeedSaysWhetherItWasProvedTests.HmReq034TheSpeedIsReportedAsProvedHypothesisOrNone() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSpeedSaysWhetherItWasProvedTests.cs:line 134
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ HM-REQ-034 | none | green | 0 of 7520 hops not none
+ HM-REQ-034 | proved | green | 2758 of 3510 middle hops proved
+ HM-REQ-034 | proved, within 10% of 20 wpm | green | proved hops by speed 20 x4814
+ HM-REQ-034 | first moments, the window | number first named at 13.54 s | 2107 hops before it hold a reading
+ HM-REQ-034 | first moments | RED | before the number: None 2706, Hypothesis 0, Proved 0 of 2706 hops; with a reading: None 2107, Hypothesis 0, Proved 0 of 2107
+ HM-REQ-034 | stale hold | RED | past 44.6 s: None 0, Hypothesis 0, Proved 241 of 241 hops, 241 of them naming a number
+ HM-REQ-034 | re-acquiring | RED | 24.2 to 36.2 s: None 1228, Hypothesis 0, Proved 1172 of 2400 hops; with a reading None 1228, Hypothesis 0, Proved 1172 of 2400
+ HM-REQ-034 | re-acquiring, after the window | proved hops by speed, 24 sent 24 x2400
+ HM-REQ-034 | speed change at one pitch, printed not judged (HM-REQ-032's) | 24.2 to 36.2 s: None 0, Hypothesis 0, Proved 2400 | proved hops by speed, 16 then 24 sent: 16 x665, 17 x400, 19 x300, 23 x400, 24 x635
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 14.8981 Seconds
+RC=1 WALL=16s
