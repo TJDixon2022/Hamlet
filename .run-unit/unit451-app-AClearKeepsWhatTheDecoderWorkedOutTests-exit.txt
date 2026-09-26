@@ -1,0 +1,24 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:03.05]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.AClearKeepsWhatTheDecoderWorkedOutTests.HmReq035AClearKeepsTheSpeedThePitchAndTheNoiseFloor [2 s]
+  Standard Output Messages:
+ HM-REQ-035 | the transcript before the clear | "CQ CQ CQ DE N0" | after | "CALL N0CALL K" (the rest of the file)
+ HM-REQ-035 | just before the clear | speed 18 (rolling 17.8), pitch 625.0 Hypothesis, held SNR 35.494 dB, tone True, reacquiring False
+ HM-REQ-035 | just after the clear  | speed 18 (rolling 17.8), pitch 625.0 Hypothesis, held SNR 35.494 dB, tone True, reacquiring False
+ HM-REQ-035 | a speed named before the clear | green | 18
+ HM-REQ-035 | speed, pitch and noise floor across the clear | green | identical
+ HM-REQ-035 | the rest of the file against the twin | green | 1953 hops compared, all identical
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 3.3207 Seconds
+RC=0 WALL=4s

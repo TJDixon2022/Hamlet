@@ -14,9 +14,10 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// PHASE_PLAN.md 5.5). Measured, not repaired: red is committed red.
 /// </summary>
 /// <remarks>
-/// <para>**TWO REFINEMENTS, BOTH THE TREE'S OWN.** The station's note steps 25 Hz,
-/// one coarse bin, the refinement's own limit (`CwToneTracker.cs` 248,
-/// `ConfirmWithinHz`), and the tracker is checked to have followed it; that is
+/// <para>**TWO REFINEMENTS, BOTH THE TREE'S OWN.** The station's note steps plus
+/// and minus 10 Hz, verification row 036's condition, and 25 Hz, one coarse bin,
+/// the refinement's own limit (`CwToneTracker.cs` 248, `ConfirmWithinHz`), and
+/// the tracker is checked to have gone with it; that is
 /// what a dial nudge under the 500 Hz line does to the audio: the application
 /// does not call `Retuned()` for it (`MainWindowViewModel.cs` 13606-13610), and
 /// the tracker's refinement (`Switch` with `refining`, 1236-1260, or the fine
@@ -36,8 +37,11 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// </remarks>
 public sealed class ARefinementKeepsTheTimingTests
 {
-    /// <summary>The step: one coarse bin, `ConfirmWithinHz`, the refinement's own limit.</summary>
-    private const double StepHz = 25;
+    /// <summary>
+    /// The steps: row 036's plus and minus 10 Hz, and one coarse bin,
+    /// `ConfirmWithinHz`, the refinement's own limit.
+    /// </summary>
+    private static readonly double[] Steps = { 10, -10, 25 };
 
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
@@ -56,31 +60,41 @@ public sealed class ARefinementKeepsTheTimingTests
 
     private sealed record Hop(double Seconds, int? Wpm, bool Reacquiring, long Discontinuity, bool StructureHeld, double ToneHz, int Retunes, int Follows);
 
-    /// <summary>HM-REQ-036: a 25 Hz refinement of the note, and the operator's lock, keep the timing.</summary>
+    /// <summary>HM-REQ-036: a 10 Hz refinement either way, one of 25 Hz, and the operator's lock, keep the timing.</summary>
     [Fact]
     public void HmReq036ARefinementForTheSameStationKeepsTheTiming()
     {
         var failures = new List<string>();
         var seed = 20260036;
 
-        // The note steps one coarse bin, 25 Hz, at the join: the same sender, the
-        // same timing, the largest move the tracker still calls a refinement.
+        // The note steps at the join: the same sender, the same timing. Plus and
+        // minus 10 Hz are verification row 036's own condition; 25 Hz, one coarse
+        // bin, is the largest move the tracker still calls a refinement.
         var a = Keyed(640, seed);
         var b = Keyed(640, seed + 1);
         var (control, at) = Joined(a, b);
-        var (stepped, _) = Joined(a, b with { ToneHz = 640 + StepHz });
-        var steppedHops = Drive(stepped, double.NaN);
+        var controlHops = Drive(control, double.NaN);
 
-        // The construction's own check: the tracker went with the note by a
-        // refinement and not a follow, so the refinement path ran. Where it did
-        // not, the case tests nothing. How close it lands is HM-REQ-092's.
-        var end = steppedHops[^1];
-        var join = steppedHops.Last(h => h.Seconds <= at);
-        var refined = end.ToneHz - join.ToneHz >= StepHz / 2 && end.Follows == join.Follows && end.Retunes > join.Retunes;
+        foreach (var step in Steps)
+        {
+            var name = string.Create(Invariant, $"a {step:+0;-0} Hz step of the note");
+            var (stepped, _) = Joined(a, b with { ToneHz = 640 + step });
+            var steppedHops = Drive(stepped, double.NaN);
 
-        Check(failures, "a 25 Hz step of the note", "the tracker refined with the note, no follow", refined,
-            string.Create(Invariant, $"pitch {join.ToneHz:0.0} at the join, {end.ToneHz:0.0} at the end, {640 + StepHz:0} sent; retunes {join.Retunes} to {end.Retunes}, follows {join.Follows} to {end.Follows}"));
-        Compare(failures, "a 25 Hz step of the note", Drive(control, double.NaN), steppedHops, at);
+            // The construction's own check: the tracker ends on the new note,
+            // within half the step, without a follow. Where it does not, the case
+            // tests nothing. Run first as "moved toward it by half the step", the
+            // +10 case was red because the tracker already read 650 on the 640 Hz
+            // send, so the new note was where it stood
+            // (`.run-unit/unit451-req036-exit.txt`). How close it lands is HM-REQ-092's.
+            var end = steppedHops[^1];
+            var join = steppedHops.Last(h => h.Seconds <= at);
+            var refined = Math.Abs(end.ToneHz - (640 + step)) <= Math.Abs(step) / 2 && end.Follows == join.Follows;
+
+            Check(failures, name, "the tracker ends on the new note, no follow", refined,
+                string.Create(Invariant, $"pitch {join.ToneHz:0.0} at the join, {end.ToneHz:0.0} at the end, {640 + step:0} sent; retunes {join.Retunes} to {end.Retunes}, follows {join.Follows} to {end.Follows}"));
+            Compare(failures, name, controlHops, steppedHops, at);
+        }
 
         // The operator locks at the measured peak three quarters of the way
         // through the first send, well after its first characters.

@@ -1,0 +1,85 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.78]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.02]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.03]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:11.85]     Hamlet.RadioEngine.Tests.Cw.ARefinementKeepsTheTimingTests.HmReq036ARefinementForTheSameStationKeepsTheTiming [FAIL]
+[xUnit.net 00:00:11.85]       HM-REQ-036 red on: a +10 Hz step of the note, the tracker refined with the note, no follow (pitch 650.0 at the join, 650.0 at the end, 650 sent; retunes 7 to 9, follows 1 to 1)
+[xUnit.net 00:00:11.85]       Stack Trace:
+[xUnit.net 00:00:11.85]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ARefinementKeepsTheTimingTests.cs(103,0): at Hamlet.RadioEngine.Tests.Cw.ARefinementKeepsTheTimingTests.HmReq036ARefinementForTheSameStationKeepsTheTiming()
+[xUnit.net 00:00:11.85]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:11.85]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:11.85]       Output:
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +10 Hz step of the note | the tracker refined with the note, no follow | RED | pitch 650.0 at the join, 650.0 at the end, 650 sent; retunes 7 to 9, follows 1 to 1
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +10 Hz step of the note | construction | at 21.77 s | pitch before 650.0, 3 s after 650.0, at the end 650.0 | retunes 7 to 9, follows 1 to 1 | control's retunes 11, follows 1
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +10 Hz step of the note | a speed named just before | green | 18 wpm at 21.77 s
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +10 Hz step of the note | no re-acquisition the control does not have | green | 0 of 4353 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +10 Hz step of the note | the discontinuity mark not moved | green | 0 of 4353 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +10 Hz step of the note | the held gap structure not dropped | green | 0 of 4353 hops, held before False
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +10 Hz step of the note | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 4353 hops; speeds after 18 x4353
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a -10 Hz step of the note | the tracker refined with the note, no follow | green | pitch 650.0 at the join, 625.0 at the end, 630 sent; retunes 7 to 10, follows 1 to 1
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a -10 Hz step of the note | construction | at 21.77 s | pitch before 650.0, 3 s after 650.0, at the end 625.0 | retunes 7 to 10, follows 1 to 1 | control's retunes 11, follows 1
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a -10 Hz step of the note | a speed named just before | green | 18 wpm at 21.77 s
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a -10 Hz step of the note | no re-acquisition the control does not have | green | 0 of 4353 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a -10 Hz step of the note | the discontinuity mark not moved | green | 0 of 4353 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a -10 Hz step of the note | the held gap structure not dropped | green | 0 of 4353 hops, held before False
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a -10 Hz step of the note | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 4353 hops; speeds after 18 x4353
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +25 Hz step of the note | the tracker refined with the note, no follow | green | pitch 650.0 at the join, 675.0 at the end, 665 sent; retunes 7 to 14, follows 1 to 1
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +25 Hz step of the note | construction | at 21.77 s | pitch before 650.0, 3 s after 650.0, at the end 675.0 | retunes 7 to 14, follows 1 to 1 | control's retunes 11, follows 1
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +25 Hz step of the note | a speed named just before | green | 18 wpm at 21.77 s
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +25 Hz step of the note | no re-acquisition the control does not have | green | 0 of 4353 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +25 Hz step of the note | the discontinuity mark not moved | green | 0 of 4353 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +25 Hz step of the note | the held gap structure not dropped | green | 0 of 4353 hops, held before False
+[xUnit.net 00:00:11.85]         HM-REQ-036 | a +25 Hz step of the note | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 4353 hops; speeds after 18 x4353
+[xUnit.net 00:00:11.85]         HM-REQ-036 | the operator's lock at the measured peak | construction | at 16.32 s | pitch before 640.0, 3 s after 640.0, at the end 640.0 | retunes 5 to 11, follows 1 to 1 | control's retunes 11, follows 1
+[xUnit.net 00:00:11.85]         HM-REQ-036 | the operator's lock at the measured peak | a speed named just before | green | 18 wpm at 16.32 s
+[xUnit.net 00:00:11.85]         HM-REQ-036 | the operator's lock at the measured peak | no re-acquisition the control does not have | green | 0 of 5442 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | the operator's lock at the measured peak | the discontinuity mark not moved | green | 0 of 5442 hops after
+[xUnit.net 00:00:11.85]         HM-REQ-036 | the operator's lock at the measured peak | the held gap structure not dropped | green | 0 of 5442 hops, held before False
+[xUnit.net 00:00:11.85]         HM-REQ-036 | the operator's lock at the measured peak | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 5442 hops; speeds after 18 x5442
+[xUnit.net 00:00:11.85]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.ARefinementKeepsTheTimingTests.HmReq036ARefinementForTheSameStationKeepsTheTiming [9 s]
+  Error Message:
+   HM-REQ-036 red on: a +10 Hz step of the note, the tracker refined with the note, no follow (pitch 650.0 at the join, 650.0 at the end, 650 sent; retunes 7 to 9, follows 1 to 1)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.ARefinementKeepsTheTimingTests.HmReq036ARefinementForTheSameStationKeepsTheTiming() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\ARefinementKeepsTheTimingTests.cs:line 103
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ HM-REQ-036 | a +10 Hz step of the note | the tracker refined with the note, no follow | RED | pitch 650.0 at the join, 650.0 at the end, 650 sent; retunes 7 to 9, follows 1 to 1
+ HM-REQ-036 | a +10 Hz step of the note | construction | at 21.77 s | pitch before 650.0, 3 s after 650.0, at the end 650.0 | retunes 7 to 9, follows 1 to 1 | control's retunes 11, follows 1
+ HM-REQ-036 | a +10 Hz step of the note | a speed named just before | green | 18 wpm at 21.77 s
+ HM-REQ-036 | a +10 Hz step of the note | no re-acquisition the control does not have | green | 0 of 4353 hops after
+ HM-REQ-036 | a +10 Hz step of the note | the discontinuity mark not moved | green | 0 of 4353 hops after
+ HM-REQ-036 | a +10 Hz step of the note | the held gap structure not dropped | green | 0 of 4353 hops, held before False
+ HM-REQ-036 | a +10 Hz step of the note | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 4353 hops; speeds after 18 x4353
+ HM-REQ-036 | a -10 Hz step of the note | the tracker refined with the note, no follow | green | pitch 650.0 at the join, 625.0 at the end, 630 sent; retunes 7 to 10, follows 1 to 1
+ HM-REQ-036 | a -10 Hz step of the note | construction | at 21.77 s | pitch before 650.0, 3 s after 650.0, at the end 625.0 | retunes 7 to 10, follows 1 to 1 | control's retunes 11, follows 1
+ HM-REQ-036 | a -10 Hz step of the note | a speed named just before | green | 18 wpm at 21.77 s
+ HM-REQ-036 | a -10 Hz step of the note | no re-acquisition the control does not have | green | 0 of 4353 hops after
+ HM-REQ-036 | a -10 Hz step of the note | the discontinuity mark not moved | green | 0 of 4353 hops after
+ HM-REQ-036 | a -10 Hz step of the note | the held gap structure not dropped | green | 0 of 4353 hops, held before False
+ HM-REQ-036 | a -10 Hz step of the note | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 4353 hops; speeds after 18 x4353
+ HM-REQ-036 | a +25 Hz step of the note | the tracker refined with the note, no follow | green | pitch 650.0 at the join, 675.0 at the end, 665 sent; retunes 7 to 14, follows 1 to 1
+ HM-REQ-036 | a +25 Hz step of the note | construction | at 21.77 s | pitch before 650.0, 3 s after 650.0, at the end 675.0 | retunes 7 to 14, follows 1 to 1 | control's retunes 11, follows 1
+ HM-REQ-036 | a +25 Hz step of the note | a speed named just before | green | 18 wpm at 21.77 s
+ HM-REQ-036 | a +25 Hz step of the note | no re-acquisition the control does not have | green | 0 of 4353 hops after
+ HM-REQ-036 | a +25 Hz step of the note | the discontinuity mark not moved | green | 0 of 4353 hops after
+ HM-REQ-036 | a +25 Hz step of the note | the held gap structure not dropped | green | 0 of 4353 hops, held before False
+ HM-REQ-036 | a +25 Hz step of the note | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 4353 hops; speeds after 18 x4353
+ HM-REQ-036 | the operator's lock at the measured peak | construction | at 16.32 s | pitch before 640.0, 3 s after 640.0, at the end 640.0 | retunes 5 to 11, follows 1 to 1 | control's retunes 11, follows 1
+ HM-REQ-036 | the operator's lock at the measured peak | a speed named just before | green | 18 wpm at 16.32 s
+ HM-REQ-036 | the operator's lock at the measured peak | no re-acquisition the control does not have | green | 0 of 5442 hops after
+ HM-REQ-036 | the operator's lock at the measured peak | the discontinuity mark not moved | green | 0 of 5442 hops after
+ HM-REQ-036 | the operator's lock at the measured peak | the held gap structure not dropped | green | 0 of 5442 hops, held before False
+ HM-REQ-036 | the operator's lock at the measured peak | the speed within 1 wpm of the control's | green | withheld where the control names one 0, more than 1 wpm apart 0, of 5442 hops; speeds after 18 x5442
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 12.2135 Seconds
+RC=1 WALL=13s

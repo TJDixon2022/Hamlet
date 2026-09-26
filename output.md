@@ -1,198 +1,222 @@
 READ IN THIS ORDER.
 
-A. Hamlet meets the CW requirements: step 4 at 5 of 7, step 2 at 3 of 5, step 3 at 3 of 6,
-   step 5 at 0 of 6 by the plan's checkboxes, steps 0 and 1 done, 6, 7 and 8 not started.
-B. Step 4, criterion 4.6 (HM-REQ-093): proof state built; test ThePitchSaysWhetherItWasProvedTests
-   green, watched failing on the level case past the lapse and both stale-hold cases; recordings
-   whose text changed 0 of 63; real-set hops proved 40664, hypothesis 50810, none 46526; proved
-   windows more than 25 Hz off the instrument 0 (by majority state; 5 windows hold a proved
-   minority that far off, a finding); 4.6 ticked; 4.4 and 4.7 open.
-C. This report adds the three-valued pitch proof state in the decode report and on the record
-   sheet, the trace of every path that holds a pitch, and the per-state table against the pitch
-   instrument. Section 4 raises 3 items; none is in the way of 4.6. 4.7 stays red by 443's
+A. Hamlet meets the CW requirements: step 5 at 1 of 6, step 4 at 5 of 7, step 2 at 3 of 5,
+   step 3 at 3 of 6 by the plan's checkboxes, steps 0 and 1 done, 6, 7 and 8 not started.
+B. Step 5, criterion 5.5 (HM-REQ-034, 035, 036): speed proof state built; 034 test
+   TheSpeedSaysWhetherItWasProvedTests green, watched failing on first moments, the stale hold and
+   re-acquiring; 035 met; 036 met; recordings whose text changed 0 of 63; real-set hops proved
+   61328, hypothesis 54494, none 22178; synthetic proved hops more than 10% off 0; 5.5 ticked;
+   5.1 to 5.4 and 5.6 open.
+C. This report adds a three-valued speed proof state in the decode report, and every speed display
+   (the sheet's two speed lines, the header, the collapsed summary, the reacquiring pill, the
+   transmit offer and the roster) says which state it is in. It also adds the trace of every path
+   that reports, holds or withholds a speed, and tests naming HM-REQ-035 and 036, both green.
+   Section 4 raises 2 items; neither is in the way of a criterion in B. 5.6 stays red on 443's
    DECIDED (3) and the three named floors, as at entry.
 
-UNIT:       450 - complete at task 3 of 3, task 1's named drop candidate dropped - 2026-09-26 08:13
+UNIT:       451 - complete at task 3 of 3, none dropped - 2026-09-26 10:03
 PHASE GOAL: Every must-tier CW requirement in CW_REQUIREMENTS.md is met and shown met by a test naming it, step by step, ending with Tim reading real CW on the air.
-UNIT GOAL:  The decoder says whether the pitch it reports is proved by keying now, a hypothesis held from earlier keying, or none, and the sheet says which, with not one decoded character changed.
-ADVANCED:   yes - PHASE_PLAN.md 4.6 flipped from [ ] to [x] in both copies, on a green HM-REQ-093 test watched red first and 63 of 63 recordings' text identical
-NUMBER:     text changed 0 of 63; proved 40664, hypothesis 50810, none 46526 hops real; proved over 25 Hz off 0 (majority windows); MET-CER-SURE real 33 -> 33
+UNIT GOAL:  The decoder says whether the speed it reports was proved on keying still arriving, is a hypothesis it is holding or supposing, or is none. Every place the operator sees a speed says which, the clear and the pitch refinement are measured by tests naming 035 and 036, and not one decoded character changes.
+ADVANCED:   yes - PHASE_PLAN.md 5.5 flipped from [ ] to [x] in both copies, on a green HM-REQ-034 test watched red first, 035 and 036 tests run and green, and 63 of 63 recordings' text identical
+NUMBER:     text changed 0 of 63; proved 61328, hypothesis 54494, none 22178 hops real; synthetic proved over 10% off 0; 035 met; 036 met
 DRIFT:      step 2 0; step 3 0; step 4 1; step 5 1
 
 ## 1. What Claude did
 
-**Complete, at task 3 of 3.** Claude Code on the Windows machine, project Hamlet confirmed by the
-gate (SHACK_FACTS.md, CwProbabilisticDecoder.cs, CW_REQUIREMENTS.md, CW_SPEC.md present; no
-CoreHMI.sln or MURC.sln), branch `main`. Commits: `f7986865` (task 0), `75235a5f` (task 1),
-`734f72fd` (the state, the sheet change and the tests, on their own), `4d2e0b03` (task 2, the tick),
-and the exit commit with this report. All pushed to `origin/main`.
+**Complete, at task 3 of 3. Nothing was dropped**, including task 1's named drop candidate, the per-recording rows of the real-set table, which are kept.
 
-**Quoted from the documents, as section 1 asks:**
-- HM-REQ-093: "The decoder shall report pitch with a proof state of proved, hypothesis, or none." Rationale: "Not a survey candidate, not a stale hold." Verification row 093: "I, T | any | proof state field | present | — | synthetic". Matches the instruction.
-- HM-REQ-091: "The decoder shall choose the tracked pitch by keying quality and never by level alone or by the operator's configured pitch." Matches.
-- HM-REQ-092: "After acquisition, the decoder shall report the pitch it is demodulating at, within N Hz of true (MET-PITCH-ERR ≤ N)." N is "TBD, needs ruling". Matches.
-- HM-REQ-034: "The decoder shall report the speed estimate with a proof state of proved, hypothesis, or none." Not built (5.5's).
-- V-12: "Nothing is diagnosed against audio that has not itself been proved." Matches.
+**Provenance.** Claude Code on the Windows machine, project Hamlet confirmed by the gate (SHACK_FACTS.md, CwProbabilisticDecoder.cs, CW_REQUIREMENTS.md and CW_SPEC.md present; no CoreHMI.sln or MURC.sln), branch `main`.
+
+**Commits**, all pushed to `origin/main`:
+- `ba05e6e1`, task 0;
+- `05c53b1a`, task 1;
+- `c3c83c94`, the state, the display changes and the tests, on their own;
+- `0dfd889e`, task 2, the tick;
+- the exit commit, which carries this report.
+
+**Quoted from the documents, as section 1 of the instruction asks:**
+- **HM-REQ-034:** "The decoder shall report the speed estimate with a proof state of proved, hypothesis, or none." Rationale: "A speed the decoder has not earned is not a number." Verification row 034: "I, T | any | proof state field | present, three values | — | synthetic". Matches.
+- **HM-REQ-035:** "When the transcript is cleared, the decoder shall retain its speed, pitch and noise-floor state." Row 035: "T | clear mid-transmission | state retained | yes | — | synthetic". Matches.
+- **HM-REQ-036:** "When the pitch is refined for the same station, the decoder shall retain its timing state." Row 036: "T | pitch refine ±10 Hz same station | timing state retained | yes | — | synthetic". **This is a mismatch with the instruction**, which asked for "a step task 1 names". The row's ±10 Hz wins. The test runs +10 and −10 Hz, and also task 1's 25 Hz step.
+- **HM-REQ-031:** "After acquisition on TX-ITU, the decoder shall report speed within 10 % of true (MET-WPM-ERR ≤ 10 %)." Printed here as evidence only.
+- **`CW_SPEC.md` §2:** "the running speed estimate with its proof state (proved / hypothesis / none)". Matches. Section D of `CW_REQUIREMENTS.md` is Speed, as the instruction says.
 
 **Mismatches between the instruction and the tree** (reported, not repaired):
-1. Section 1 says to read "section J" of `CW_SPEC.md`. Section J is in `CW_REQUIREMENTS.md`, and `CW_SPEC.md` has no section J. `CW_SPEC.md` §2 does say "the running pitch with its proof state", as quoted.
-2. The instruction says a survey candidate and a from-cold point were reported as measured. **They were not.** The from-cold move sets `_reportedHz` to NaN (`CwToneTracker.cs` 1026), so HEAD already reported it as unmeasured. An unconfirmed survey candidate never sets the reported pitch (1048-1054). What HEAD over-claimed was holds: after the station stopped, while the survey refused a candidate, or while a move was pending.
-3. `PitchWasAsserted` is not a field. It is a constant, `=> false` (`CwDecodeReport.cs` 72), so no asserted path exists in this build.
-4. `traceability.md` names a third test that measures something else for HM-REQ-093, at line 273: `NothingActsOnTheAdmissionVerdictTests.AnUnmeasuredPitchIsStillReportedAndSaysSo`. The instruction names two.
-5. The known item "`CLAUDE.md` §1 holds CPS-DEC-0183" does not hold. `CLAUDE.md` 376 carries HM-DEC-165, which matches RULES_AT, and CPS-DEC-0183 does not appear in `CLAUDE.md`.
-6. Known and confirmed, not edited: `PHASE_OUTCOME.md`'s header still has the old titles for steps 2, 3 and 8; `CW_SPEC.md` §11 (line 327) still defines MET-COVERAGE as sure over sent; `PARKED.md`'s header says a session never writes it.
-7. Expected failures. The named floors 17:37, `032113` and `032129` were red at entry and at exit, with the same readings (38/46, 43/45, 42/64). The app line lost 2 at entry (`TheCarrierHoldsTheButtonsTests`, `Unit376TheTopBandTests`, each green alone) and 0 at exit, with no hang. `TheFiveToEightDecibelPlateauHolds` is in neither line and was not run. **Not in the instruction's list:** `AHeldPitchDoesNotOutliveItsEvidenceTests` is 3 of 4 red. It is red the same way at entry HEAD `706e3874`, run in a separate worktree (`.run-unit/unit450-athead-*.txt`), and it was red the same way at unit 433's entry.
+1. **The "four-part guard" is three parts.** `CwDecoder.WordsPerMinute` (445-454) checks only three things: the window's text is non-empty, the clock is not re-acquiring, and the rounded speed is within 6 to 48. It checks for no located tone and no settled pass that proved a dit. The sheet's remarks at `MainWindowViewModel.cs` 12813-12816 make the same four-part claim; they are now corrected to three.
+2. **HEAD called a non-reading a "hypothesis".** At HEAD, `SpeedForTheRecord` printed "the decoder's own best hypothesis was N WPM" even when the gate had refused the whole window (`CwProbabilisticDecoder.cs` 811-818). In that case `Reading.WordsPerMinute` is the grid's winner over noise.
+3. **The instruction's facts that hold.** HEAD `f96cd04e`. Both copies of the plan had 4.1, 4.2, 4.3, 4.5 and 4.6 ticked, 4.4 and 4.7 not, and no step 5 line ticked. `CwDecodeReport` carried `PitchProof` and no speed state. `WordsPerMinute` is `int?` (439). `SpeedIsReacquiring` is a boolean (421). `Retuned()` is only `Unlock()` (385).
+4. **Traceability** rows 94-96 are as the instruction says: no proving test for 034, 035 or 036, and the tests it names measure something else. Row 94 lists five of them. Not edited (R80).
+5. **`AHeldPitchDoesNotOutliveItsEvidenceTests.TheReleaseStartsTheReadingFresh` against HM-REQ-036.** The test asserts that `Reading.WordsPerMinute` goes to 0 after `Retuned()`. It is red at entry and at exit (3 of 4, as logged). Its own remarks call the call a QSY. The application calls `Retuned()` only for a dial move of 500 Hz or more (`MainWindowViewModel.cs` 13606-13610), so a nudge never reaches it. A QSY is not a refinement for the same station, so the assertion does not contradict HM-REQ-036 as the requirement is worded. It would if `Retuned()` were ever called for a nudge, and `Retuned()` itself takes no size to tell the two apart. Nothing in the test was edited.
+6. **Known items, each confirmed and none edited.**
+   - `PHASE_OUTCOME.md`'s header still has the old titles for steps 2, 3 and 8.
+   - `CW_SPEC.md` 327 still defines MET-COVERAGE as sure over sent.
+   - `PARKED.md`'s header says a session never writes it.
+   - `TheQuietestBinNoLongerWinsTests` and `ThePitchControlsAreOffThePanelTests` are excluded by `Compile Remove`.
+   - The RULES_AT item does not hold as stated: `CLAUDE.md` 376 carries HM-DEC-165, which matches `PROJECT_STATUS.md`, and CPS-DEC-0183 does not appear in it. Unit 450 reported the same.
+7. **Expected failures, as listed.**
+   - The named floors were red at entry and exit with the same readings: 17:37 38 of 46, `032113` 43 of 45, `032129` 42 of 64.
+   - `AHeldPitchDoesNotOutliveItsEvidenceTests` is 3 of 4 red.
+   - The app line lost 3 at entry: `ThePsk31OfferTests` 1 and `TheFavoritesAreUnderTheGreenZoneTests` 2, each green alone. It lost 1 at exit: `TheCarrierHoldsTheButtonsTests` 1, green alone, 8 of 8. There was no hang.
+   - `TheFiveToEightDecibelPlateauHolds` is in neither line and was not run.
 
-**Entry (task 0).** Build 0 errors in 16 s. Engine carry-forward 178 of 178 in 375 s. App 276 of 278 in 164 s. Captures 51 of 51 in 130 s, adjudicated 13 of 13 in 32 s, named 10 of 13 in 67 s. All four metrics and MET-PITCH-ERR (9 files, 248 of 1688 windows) matched the instruction's table. The runner's writes were committed unedited, and every recording's text (63) was saved to `.run-unit/unit450-text-before.txt`.
+**Entry (task 0).**
+- Build 0 errors in 15 s.
+- Engine line 178 of 178 in 376 s. App line 275 of 278 in 160 s.
+- Captures 51 of 51 in 129 s, adjudicated 13 of 13 in 32 s, named 10 of 13 in 67 s.
+- All four metrics and MET-PITCH-ERR (9 files) matched the instruction's table.
+- The runner's writes were committed unedited, and 63 recordings' text was saved to `.run-unit/unit451-text-before.txt`.
 
-**Task 1.** The printer is `WhatThePitchCanSayItProvedTests`, a sibling of the trace types, and asserts nothing. It reads the proposed state off the tracker's public face each hop, with `src` unchanged. It crosses each hop against 447's instrument over the 23 keyed recordings, the 8 over-25 files that are not keyed, and the 12 synthetic cases. Its output is `.run-unit/unit450-trace-pitch-state.txt`. **Dropped: the cross over all 69 captures**, which was the named drop candidate. Nothing else was dropped.
+**Task 1.**
+- `WhatTheSpeedCanSayItProvedTests` is the sibling of 450's pitch printer. It asserts nothing and changes nothing in `src`. It reads the proposed state off the decoder hop by hop. The unit's provenance was not published at HEAD, so it recomputes that from the stream's own envelope with the stream's own calls.
+- The output is `.run-unit/unit451-trace-speed-state.txt`, and the notes, path table and display inventory are `.run-unit/unit451-trace-notes.md`.
+- `TheSpeedLineSaysWhatWasProvedTests` printed every speed surface's words on the 23 keyed recordings at HEAD, before `src` changed (`.run-unit/unit451-app-speedlines-before.txt`).
 
 **Task 2.**
-- **The test came first.** It was run with the state derived from HEAD's flags: asserted gives hypothesis, measured gives proved, anything else none. It went **red** on "level, after the keying" (841 of 841 hops proved beside the carrier alone), "stale hold, the band" and "stale hold, key held down" (841 of 841 proved each). The output is in `.run-unit/unit450-req093-red.txt`.
-- **Then the state went in.** `CwPitchProof` was added and `CwToneTracker.PitchProof` built. `CwDecodeReport` carries it, and the sheet line was changed. The test is green (`-green2.txt`).
+- **The 034 test came first**, with `StateOf` read from HEAD's field: a named number is proved, anything else none. It went **red** on three cases (`.run-unit/unit451-req034-red2.txt`, and once more on the final cases in `-red3.txt`):
+  - first moments: 2107 hops with a reading were called none;
+  - the stale hold: 780 of 6121 hops past the lapse were proved;
+  - re-acquiring: 972 of 2400 proved and 1428 none.
+- **The 035 and 036 tests came next, run at HEAD**, and both were green (`-req035-head.txt`, `-req036-head3.txt`). The final 036 test, with the row's ±10 Hz steps, is also green at the entry code `f96cd04e` in a separate worktree (`.run-unit/unit451-athead-ARefinementKeepsTheTimingTests.txt`, 23 green checks).
+- **Then the state went in**, and 034 is green on it.
 - **(c) holds:**
   - 63 of 63 recordings' text is byte-identical (`cmp`).
   - The four metrics are identical on both sets. V-11 compared 35 recordings and found 0 worse.
   - The floors match entry.
-  - MET-PITCH-ERR: 69 captures, 0 changed, 248 → 248 windows.
-- 4.6 was ticked in both copies, and one line was added to `metrics.md`.
-
-**Decisions Claude made for itself, in full:**
-- **(1) What proved means.** Proved means the latest survey's confirmed keyed verdict names the very pitch the tracker reports. That verdict follows HM-DEC-095: keying seen on two surveys running, and for a move, at least 10 dB of lift and not more than 10 dB under the station being read. It is set in `CwToneTracker.cs` 1136-1174 and 1230. A pitch still held from an earlier verdict is a hypothesis, and no pitch held is none.
-  - It is computed as `Verdict.Keyed.ToneHz == _reportedHz`. Every path that sets `_reportedHz` stores that same number in `Verdict`, and every survey replaces `Verdict`.
-  - It is never "acquired" and gates nothing.
-- **(2) The from-cold point is none, not hypothesis**, per 3 (a). It follows the loudest bin even on an empty band, because 1020 needs only `coarse.Strongest`. So it is level alone, and HM-REQ-005 wants an empty band reported as not measured. This goes against 3 (b)'s list, which names the from-cold point among the hypotheses. (a) is the one that keeps the product from stating more.
-- **(3) `PitchWasMeasured` stays, read from the state** as `PitchProof != None`. That is true for proved and hypothesis, which is exactly HEAD's meaning, so the two cannot disagree. The positional parameter was replaced, and one hand-built report in `TheRestOfTheSheetIsTrueTests` was renamed to the new field (`PitchProof = CwPitchProof.None`). The duty line and the `unkeyed` line keep reading the boolean and print what they did.
-- **(4) No survey-candidate case.** The tree has no window where a candidate's pitch is reported, and the test's remarks say so. The level case takes its place, per the instruction.
-- **(5) The lapse is set at 4 s after the keyed audio ends.** That is the survey's 3 s of history, plus one 0.5 s survey interval, plus 0.5 s more.
-- **(6) The proved case's pitch check is printed, not asserted.** I read "the instrument puts the reported pitch within one of its bins" as the instrument confirming the construction (every window 640.0), and that is asserted. On a clean 640 Hz tone at 15 dB, the survey's own confirmed verdicts name 625 (200 hops), 635 (800), 640 (4000), 645 (100) and 650 (500). Holding proved hops to within 0.5 Hz, or even to 5 Hz, would judge HM-REQ-092. That N is TBD, and the tracker's choice belongs to 4.4, so asserting it would fail no matter what the state did.
-- **(7) In task 1, a window's state is the one held on most of its hops**, the weaker on a tie. Windows that hold a proved minority far off are printed separately.
-- **(8) A printer test was added.** `ThePitchLineSaysWhatWasProvedTests` prints the sheet line before and after on the 23 keyed recordings. It asserts that a hypothesis is never worded as measured from keying. The "before" is HEAD's wording applied to the same report. Decoding is identical and HEAD's line was a function of the flag and the pitch alone, so it was not re-run at HEAD.
+  - MET-PITCH-ERR: 69 captures, 0 changed, 248 → 248 windows, 9 files over 25 Hz.
+  - The task 1 printer and the built `CwDecoder.SpeedProof` disagree on 0 hops, so the trace totals are the shipped state's.
+- 5.5 was ticked in both copies, and one line was added to `metrics.md`.
 
 **Exit (task 3).**
-- **Carry-forward lines.** Build 0 errors in 8 s. Engine carry-forward 178 of 178 in 378 s. App carry-forward 278 of 278 in 166 s.
-- **Floors.** Captures 51 of 51 in 129 s, adjudicated 13 of 13 in 31 s, named 10 of 13 in 66 s (the same three).
+- **Build and carry-forward lines.** Build 0 errors in 8 s. Engine line 178 of 178 in 374 s. App line 277 of 278 in 165 s, with the loss green alone.
+- **Floors.** Captures 51 of 51 in 136 s, adjudicated 13 of 13 in 33 s, named 10 of 13 (the same three).
 - **Metrics.**
-  - Real: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 46 over 113.
-  - Synthetic: 14 of 173, 14 over 252, 159 over 252, 48 over 84.
-  - MET-PITCH-ERR ran in 253 s: 9 files, 248 windows, 0 changed.
-- **Touched types, each run alone:**
-  - Green: `ThePitchSaysWhetherItWasProvedTests` 1/1 (24 s), `WhatThePitchCanSayItProvedTests` 1/1 (127 s), `NothingActsOnTheAdmissionVerdictTests` 1/1, `WhereAcquisitionPointsTests` 2/2, `TheCaptureOfTheTwentyThirdTests` 1/1, `CwTrackerSwitchTests` 2/2, `TheTrackedPitchIsChosenByKeyingTests` 2/2, `CwToneSurveyTests` 5/5. On the app side: `ThePitchLineSaysWhatWasProvedTests` 1/1 (109 s), `TheRestOfTheSheetIsTrueTests` 10/10, `EverySentenceOnTheSheetTests` 1/1, `TheSheetSaysWhatEachElementWasSentAtTests` 4/4, `TheTonePeakIsAboutThisRecordingTests` 3/3, `WhatTheTonePeakIsAboutTests` 1/1.
-  - Red as at HEAD: `AHeldPitchDoesNotOutliveItsEvidenceTests` 1/4.
-  - Not run: `TheQuietestBinNoLongerWinsTests` and `ThePitchControlsAreOffThePanelTests` are excluded by `Compile Remove` in their csproj, so no test matched.
-- **What changed in `src`, file by file:**
-  - `Cw/CwPitchProof.cs` (new): the enum None, Hypothesis, Proved.
-  - `Cw/CwToneTracker.cs`: one read-only property, `PitchProof`. No field and no decision changed.
-  - `Cw/CwDecodeReport.cs`: the positional `bool PitchWasMeasured` became `CwPitchProof PitchProof`, and `PitchWasMeasured` is now read from it.
-  - `Cw/CwDecoder.cs`: `Report` passes `PitchProof: _tracker.PitchProof`.
-  - `App/ViewModels/MainWindowViewModel.cs`: `ToneForTheRecord` prints proved or hypothesis.
-- **None of it keys or transmits.** Nothing in the decode path reads the new state. Its only readers are `CwDecoder.Report`, the sheet line and the tests.
-- **Ticks.** 4.6 is ticked. 4.4, 4.7, 2.4, 2.5 and nothing in steps 3 or 5 were touched.
+  - Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 46 over 113.
+  - Synthetic, exact: 14 of 173, 14 over 252, 159 over 252, 48 over 84.
+  - MET-PITCH-ERR in 253 s: 9 files, 0 changed.
+- **Touched types, each run alone.**
+  - Engine, green: `TheSpeedSaysWhetherItWasProvedTests` 1/1 (29 s), `ARefinementKeepsTheTimingTests` 1/1, `WhatTheSpeedCanSayItProvedTests` 1/1 (63 s), `CwSpeedSilenceTests` 4/4, `CwCaseCountsSayWhatTheyCountTests` 7/7, `TheSwingIsTheFigureThatHoldsTests` 4/4, `ThePitchSaysWhetherItWasProvedTests` 1/1.
+  - Engine, red as logged: `AHeldPitchDoesNotOutliveItsEvidenceTests` 1 of 4.
+  - App, green: `TheSpeedLineSaysWhatWasProvedTests` 1/1 (113 s), `AClearKeepsWhatTheDecoderWorkedOutTests` 1/1, `ThePitchLineSaysWhatWasProvedTests` 1/1, `TheRestOfTheSheetIsTrueTests` 10/10, `EverySentenceOnTheSheetTests` 1/1, `TheSheetSaysWhatEachElementWasSentAtTests` 4/4, `CaseRosterSurvivesAnEveningTests` 6/6, `ASheetSaysWhichInstrumentSpokeTests` 3/3, `TheCarrierHoldsTheButtonsTests` 8/8.
+
+**What changed in `src`, file by file.** None of it keys or transmits. **Nothing in the decode path, the tracker or the pitch reads the new state.** The two new reads (`UnitWasMeasured`, `LastKeyedHz`) are read only by `CwDecoder.SpeedProof`.
+- `Cw/CwSpeedProof.cs` (new): the enum None, Hypothesis, Proved.
+- `Cw/CwDecoder.cs`: `SpeedProof`, computed from existing state, and passed into `Report`.
+- `Cw/CwDecodeReport.cs`: `SpeedProof` and `WordsPerMinute` fields, and `SpeedWasProved`, which is read from the state.
+- `Cw/CwProbabilisticStream.cs`: `UnitWasMeasured` is set where the read already decides between the estimator's speed, the grid and the marks' overrule, and it is reset in `Restart()`. It is an assignment beside `Last`; the decode is untouched, as the identical text shows.
+- `Cw/CwToneTracker.cs`: `LastKeyedHz`, a read-only view of `_lastKeyedHz`.
+- `Cw/CwCaseRoster.cs`: an optional `SpeedProof` on `CwCase`. The speed cell adds " (hypothesis, not proved)" to a hypothesis.
+- `ViewModels/MainWindowViewModel.cs`: `DetectedSpeedProof`, the header, the collapsed summary, the pill, `SpeedForTheRecord`, `FitLine`, and the roster row's state.
+- `ViewModels/CwTransmitViewModel.cs`: `HeardSpeedProof` and `SpeedOffer`'s wording.
+
+**Decisions Claude made for itself, in full:**
+- **(1) The definition, in one sentence.** Proved means three things hold:
+  - `CwDecoder.WordsPerMinute` names a number (445-454);
+  - the window's unit behind it was measured from the keying, not won on the grid (the estimator's dit or the marks' overrule, `CwProbabilisticStream.cs` 431-435 and 505-514);
+  - the tracker found keying within half the mixdown filter, 30 Hz, of the pitch being read, inside its own recent span of six surveys (`KeyingRecently` 712 and `KeyingFoundAt` 1217-1224; the half-width is the one `CwDecoder.cs` 733 uses for the same sender).
+
+  Hypothesis means the window holds a reading and any one of those fails. None means nothing has been read, or the gate refused the whole window. It is never "acquired", and nothing gates on it.
+- **(2) Six surveys, not the latest survey.** The first reading used the latest survey's keyed verdict alone, as 450 did for the pitch (`.run-unit/unit451-trace-speed-state-run1.txt`). It proved a clean 12 wpm send at 15 dB on only 900 of 5681 hops, because the survey does not confirm keying on every half second of a slow sender. The tree's own remarks at `CwToneTracker.cs` 702-712 say that asking the settled reading whether somebody is keying right now "asks the wrong question". Section 4 item 1 asks the owner to confirm this.
+- **(3) `SpeedIsReacquiring` stays** as the decoder's fact about the clock. It is one of the state's inputs, not a restatement of the state: re-acquiring withholds the number, and so the state is never proved while it holds. The new boolean `SpeedWasProved` is read from the state.
+- **(4) A proved number now carries a suffix.** The sheet's proved line reads "17  (proved: ...)" where HEAD printed "17". The header's proved text is unchanged ("17 WPM"). The not-named branches of the sheet open with the state word. HEAD's "the settled pass has no clock" (there is no settled pass) now reads "the window read nothing".
+- **(5) The 034 re-acquiring case was rebuilt once.** Run first from the join itself, it went red on 72 hops in the first 0.35 s after the join, proved at 16 wpm. That is the first station's own speed, in the generator's 1 s of band before the second station's first mark, where nothing has changed yet (`-req034-green2.txt`). The case now starts at that first mark, which is constructed and not read from the decoder, and it adds a check that anything proved before the mark is the first station's 16. The final cases were watched red again on HEAD's field (`-red3.txt`).
+- **(6) The 036 precondition was restated once.** Run first as "the tracker moved toward the new note by half the step", the +10 Hz case was red because the tracker already read 650 on the 640 Hz send, so the new note was where it stood (`-req036-exit.txt`). The check is now "the tracker ends within half the step of the new note, with no follow". Every timing assertion was green in both runs. **So only −10 and +25 moved the tracker. At +10 there was nothing to refine**, which is 4.4's pitch bias, not 036's.
+- **(7) The 035 test is in the app project**, because the clear is the app's command (`ClearTerminalCommand`). It runs on the tree's own `cq-18wpm-15db` recording, exact by construction, since the generator is not in the app test project. It compares hop for hop with a twin decoder that is never cleared.
+- **(8) The roster's speed cell marks a hypothesis in its own text** rather than in a new column, so the column count is unchanged.
 
 ## 2. What the owner should expect
 
-**What the operator now reads.** The record sheet's `toneHz` line used to call any pitch the decoder was holding "measured from the keying the survey admitted", including one held a minute after the station stopped. It now reads one of three ways:
-- **"proved"**, only while the survey's latest verdict confirms keying at that pitch;
-- **"HYPOTHESIS, NOT PROVED NOW"**, when keying set the number earlier and the latest survey does not confirm it;
-- **the NOT MEASURED sentences, unchanged**, when no pitch is held.
+The operator now reads whether the speed in front of them was earned now. A number the decoder measured on keying still arriving at the station's pitch reads as it did ("22 WPM", "They are sending at about 22 words a minute"). A number it is holding from a window whose sender has stopped, or one it won on the search without measuring a dit, now reads "22 WPM, not proved", and the sheet says "HYPOTHESIS, NOT PROVED NOW" and why. A blank speed says whether there is a reading behind it (hypothesis, while the clock re-acquires) or nothing at all (none).
 
-**Where it changed.** On the 23 real keyed recordings, the sheet taken at the end of the file now says hypothesis where HEAD said measured on **15**. Six say proved and two say none. The clearest case is `032050`, whose sheet said "325.0 Hz, measured from the keying". The instrument puts that station at 499.9 Hz, and the line now says HYPOTHESIS.
+**In 21 of the 23 real recordings, the unit now says hypothesis on hops where HEAD showed a bare number**: 30042 hops of 91370. **At the end of the file**, where the sheet is written, that is 7 recordings: 013347, 003758, 031905, 031948, 032012, 032129 and 004550. Across all 23 at the end of the file, 12 are proved, 10 hypothesis and 1 none. No number appears anywhere HEAD withheld one, and no decoded letter changed.
 
-**The evidence.** Over every hop of those recordings, the windows the instrument puts more than 25 Hz off break down by majority state as:
-- 0 of 179 proved windows;
-- 38 of 253 hypothesis windows;
-- 24 of 188 none windows.
+**A clear does not cost the decoder its speed today.** On `cq-18wpm-15db`, the speed (18), the pitch (625.0 Hz) and the held noise figure (35.494 dB) are identical across the clear. The rest of the file is identical to a twin decoder that was never cleared, over 1953 hops. **A refinement does not cost it either.** On a +10, −10 and +25 Hz step of the note, and on the operator's lock, there was no re-acquisition, no moved discontinuity, and the speed stayed within 1 wpm of an unrefined control on every hop.
 
-The keys are inferred (V-13), but no key enters this measure. The comparison is against the independent instrument.
+**The evidence is synthetic and exact.** The real set's states are inferred-key facts about the decoder, not about the senders (V-13).
 
-**What will look wrong but is not.**
-- A station being read flips between proved and hypothesis from one half second to the next. The survey does not confirm on every pass: 37,199 hops across the sets were "keying within the last 3 s, not on this survey".
-- Most end-of-file sheets say hypothesis, because by then the station has stopped.
-- Proved does not mean accurate. On a clean 640 Hz tone, proved hops sat anywhere from 625 to 650.
+**What the synthetic cases do not prove** (§12.5):
+- They are one textbook sender at a time, at 15 dB in generated noise, with a clean step.
+- A real drifting note, a clear during a follow, and a speed change on one pitch are not tested.
+- The held gap structure was never established in the 036 sends, so its "not dropped" check held trivially.
 
-**What the synthetic cases do not prove (12.5).** They are one tone with textbook spacing over generated noise, and the 4 s lapse is Claude's choice. They show that the state separates a stale hold and a carrier left alone from keying confirmed now. They do not show that it does so on the air. Not one decoded character changed.
+**What will look wrong but is not:**
+- A steady station's header can flip between "22 WPM" and "22 WPM, not proved" across the gaps between overs. That is the keying lapsing for six surveys, and it is what the state says.
+- The sheet's proved line now carries a parenthesis after the number.
+- The roster's wpm cell can read "18 (hypothesis, not proved)". Anything that parses that column as a bare number will need to allow for it.
 
 ## 3. What you should see
 
-**Task 1's path table: every way the tracker comes to hold a pitch** (`CwToneTracker.cs` unless named)
+**The answer: the speed carries a proof state, and every speed display says which.** HM-REQ-034 is met (green, watched red first), HM-REQ-035 is met, HM-REQ-036 is met, and 0 of 63 recordings' text changed.
 
-| path | where | evidence | current or remembered | state | why |
+**Every way the decoder reports, holds or withholds a speed** (task 1; the hop counts are over every keyed and synthetic recording):
+
+| # | where | evidence | current or remembered | state | hops |
 |---|---|---|---|---|---|
-| start at the operator's pitch | 318, 382, 443-445 | operator setting | - | none | nothing chose it |
-| from cold, to the loudest bin | 1018-1029 (NaN at 1026) | level alone | current | none | level is not keying; moves on an empty band too |
-| candidate seen once, unconfirmed | 1048-1054 | keying, one survey | current | unchanged (none cold, else hypothesis) | HM-DEC-095 needs two; sets no pitch |
-| move to a confirmed keyed candidate | 1136, 1153, Switch 1230 | keying verdict, two surveys | current | proved | the verdict that set the pitch is the latest |
-| inside reach, fine survey keyed | 1162-1169 | keying verdict | current | proved | same |
-| inside reach, coarse only | 1172-1174 | keying verdict | current | proved | same |
-| move held mid-character | 1143-1151 | old pitch held, keying elsewhere | remembered | hypothesis | latest verdict names a different pitch |
-| held move made on a later survey | 970-982 (978) | keying of the earlier survey | remembered | hypothesis, unless that survey confirms it (then proved) | |
-| candidate refused, lift under 10 dB | 1076-1084 | a hold | remembered | hypothesis | |
-| candidate refused, over 10 dB under `_readingDb` | 1123-1134 | a hold | remembered | hypothesis | 12 real survey hops fit this: 024403 x2, 031905 x5, 031948 x4, 032012 x1 (449 item 2; nothing changed) |
-| no keying anywhere | 992-1031 | a hold; protection counts 6 surveys (987-990, 1202) | remembered | hypothesis | the stale hold |
-| operator assertion | `CwDecodeReport.cs` 72 | - | - | would be hypothesis | constant false; not reachable |
-| operator lock, mixdown fallback | `CwDecoder.cs` 304-322, 600-621 | - | - | not a path | these set what is mixed, not the reported pitch |
+| 1 | `CwProbabilisticStream.cs` 185, 401-404: nothing read until 3 s of window | nothing | - | none | 20965 |
+| 2 | `CwProbabilisticDecoder.cs` 811-818: the gate refused the window, the grid's winner over noise | nothing | current, no reading | none | 24638 |
+| 3 | `CwDecoder.cs` 421-425, 445: re-acquiring after a follow of 30 Hz or more (728-737) | the rolling reading, straddling two pitches | current, two senders | hypothesis | 24452 |
+| 4 | `CwDecoder.cs` 452-454: rounded outside 6 to 48 | the rolling reading | current | hypothesis | 0 (the search is 8 to 40) |
+| 5 | `CwProbabilisticStream.cs` 431-435: no dit measured, the grid's winner | the rolling reading | current | hypothesis | 1901 |
+| 6 | `CwToneTracker.cs` 1008-1010, 1217-1224: no keying found for six surveys | a measured dit in a window whose keying stopped | remembered, up to 12 s | hypothesis | 35997 |
+| 7 | last keying more than 30 Hz from the pitch being read | a measured dit, keying elsewhere | remembered at this pitch | hypothesis | 200 |
+| 8 | all pass: on the latest survey / within six surveys | a measured dit, keying at the pitch | current | proved | 55742 / 30004 |
+| - | `MainWindowViewModel.cs` 12820-12823: no decoder | nothing | - | sheet: "not tracking" | - |
 
-**The sheet's pitch line, before and after** (`.run-unit/unit450-touched-ThePitchLineSaysWhatWasProvedTests.txt`)
+**What a clear and a refinement do, beside the tests.**
+- **The clear.** It is `ClearTerminal` (10827-10832): it stamps `_clearedUtc` and clears `Transcript`, and does not reach the decoder. The stream's window (`CwProbabilisticStream.cs` 185), the tracker, and the held noise figure (`CwDecoder.cs` 795-814) run on. `Restart()` is reachable only behind `ClearOnAStationChange`, which is `const false` (159, 698). **HM-REQ-035: green at HEAD and after**, identical across the clear and against the twin.
+- **The refinement.** It is the tracker's `Switch` with `refining` (`CwToneTracker.cs` 1236-1260): a move of at most 25 Hz while a pitch is held, which counts `Retunes` and not `Follows`. It can also be the fine bank's in-reach reading (1181-1190). `CwDecoder` watches only `Follows`, and marks a discontinuity only at 30 Hz or more (728-737), so a refinement leaves the clock and the window alone. The operator's `Lock()` re-points the mixdown only. **HM-REQ-036: green at HEAD (the entry code in a worktree) and after**:
+  - +10 Hz: the tracker stayed at 650, already on the note;
+  - −10 Hz: 650 to 625, 7 to 10 retunes, 1 follow throughout;
+  - +25 Hz: 650 to 675, 7 to 14 retunes;
+  - the lock at 16.3 s: speed 18 on every hop after.
 
-- proved, `cw-2026-09-24-004405`:
-  - before: `625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)`
-  - after: `625.0 Hz  (proved: the survey's latest verdict confirms keying at this pitch. Measured from that keying: the centre of the survey bin it was admitted in, not interpolated between bins)`
-- HEAD said measured, now hypothesis, `cw-2026-08-22-032050` (the instrument puts the station at 499.9):
-  - before: `325.0 Hz  (measured from the keying the survey admitted: ...)`
-  - after: `325.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)`
-- none, `cw-2026-08-17-134712`, unchanged before and after: `500.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)`
+**The sheet's speed line, before and after:**
 
-**Hops per state, with the instrument's more-than-25 Hz count beside each** (windows counted by majority state)
-
-| set | recordings | hops proved | hops hypothesis | hops none | proved windows (>25 Hz) | hypothesis windows (>25 Hz) | none windows (>25 Hz) | key |
-|---|---|---|---|---|---|---|---|---|
-| real, keyed | 23 | 40664 | 50810 | 46526 | 179 (0) | 253 (38) | 188 (24) | inferred |
-| over 25 Hz, not keyed | 8 | 0 | 3194 | 38430 | 0 (0) | 15 (15) | 132 (82) | inferred |
-| synthetic | 12 | 14183 | 19209 | 22507 | 58 (0) | 82 (0) | 77 (0) | exact |
-
-**The 9 files more than 25 Hz off, and the state while off:**
-- Seven were in none throughout: `014935`, `014308`, `005158`, `005218`, `005243`, `002424` and `002443`.
-- `031838` was in hypothesis on 20 of its 21 off windows and none on 1.
-- `012823` was in hypothesis on 15 and none on 3.
-- None was proved.
-
-**Finding: proved hops more than 25 Hz off.** Five real windows hold a proved minority that far off:
-- `032050`: 100 hops at 325 Hz against 499.9, twice;
-- `004427`: 625 against 599.5, twice;
-- `004507`: 475 against 500.7 (-25.7).
-
-One synthetic window, `cq-18wpm-15db-char5`, holds 650 against 617.8. All of these came by the keyed-verdict path, a move or a reading inside reach. For one survey interval, the survey's own confirmed verdict named a bin that far from the station.
-
-**(c): decoding unchanged**
-
-| measure | entry | after the change | exit |
+| recording | state | before (HEAD) | after |
 |---|---|---|---|
-| recordings' text compared / changed | 63 / - | 63 / 0 | - |
-| MET-CER-SURE real, inferred | 33 of 436 | 33 of 436 | 33 of 436 |
-| MET-INVENTED real, inferred | 33 over 473 | 33 over 473 | 33 over 473 |
-| coverage real, inferred | 403 over 473 | 403 over 473 | 403 over 473 |
-| MET-WBE real, inferred | 46 over 113 | 46 over 113 | 46 over 113 |
-| synthetic, exact (CER-SURE, INVENTED, coverage, WBE) | 14/173, 14/252, 159/252, 48/84 | same | same |
-| captures, adjudicated, named | 51/51, 13/13, 10/13 | 51/51, 13/13, 10/13 | 51/51, 13/13, 10/13 |
-| MET-PITCH-ERR: files over 25 Hz, windows | 9, 248 of 1688 | 9, 248; 69 compared, 0 changed | 9, 248; 0 changed |
+| `cw-2026-09-23-173723` | proved | `decoderWpm 17` | `decoderWpm 17  (proved: the dit was measured on keying still arriving at the pitch being read)` |
+| `cw-2026-08-18-003758` | hypothesis, where HEAD showed a number | `decoderWpm 24` | `decoderWpm 24  HYPOTHESIS, NOT PROVED NOW (no keying has been found at the pitch being read for six surveys, so it is held from a window whose sender has stopped)` |
+| `cw-2026-08-22-031838` | none | `decoderWpm not proved (the settled pass has no clock; the decoder's own best hypothesis was 20 WPM)` | `decoderWpm none, not proved (the window read nothing; the search's winner over a window that read nothing was 20 WPM, which describes nobody)` |
 
-**Visible change:** only the sheet's pitch line. Nothing on the CW tab's text changes.
+**Every other speed display, before and after** (on 003758 unless named):
+- **Sheet `reading` line:** "24 WPM won out of 8 to 40, 5.94 better than silence per hop against a gate of 1.40  (this is the last 12 second window…)" becomes "…against a gate of 1.40; the speed is a HYPOTHESIS, NOT PROVED NOW  (this is the last 12 second window…)". A proved one adds "; the speed is proved", and 031838 adds "; the speed is none: the window read nothing".
+- **Terminal header:** "24 WPM" becomes "24 WPM, not proved". The proved 173723 still reads "17 WPM".
+- **Collapsed summary:** "24 WPM · tail" becomes "24 WPM, not proved · tail".
+- **Transmit panel:** "They are sending at about 24 words a minute. You can set the radio's keyer to match, or to whatever you would rather send at." becomes "Hamlet's reading of their speed is about 24 words a minute, and it is not proved: the keying it came from has stopped or was not measured. Set the radio's keyer to whatever you would rather send at." A proved speed keeps HEAD's sentence.
+- **Reacquiring pill** (134712, 032050, 032113): "working out the speed" becomes "working out the speed, nothing proved yet".
+- **Roster wpm cell:** "24" becomes "24 (hypothesis, not proved)". Proved and none are unchanged ("22", "not tracking").
+
+**Hops by state, with the synthetic speed error beside proved:**
+
+| set | key | proved | hypothesis | none | proved hops more than 10% off the constructed speed | HEAD's shown hops now hypothesis |
+|---|---|---|---|---|---|---|
+| real, 23 | inferred | 61328 | 54494 | 22178 | - | 30042 of 91370, in 21 recordings |
+| synthetic, 12 | exact | 24418 | 8056 | 23425 | 0 of 24418 | 8056 of 32474 |
+
+**The (c) table:**
+
+| | entry | after the change | exit |
+|---|---|---|---|
+| recordings compared / changed | 63 saved | 63 / 0 | - |
+| MET-CER-SURE real, inferred | 33 of 436 | 33 of 436 | 33 of 436 |
+| MET-CER-SURE synthetic, exact | 14 of 173 | 14 of 173 | 14 of 173 |
+| MET-INVENTED real / synthetic | 33 / 473, 14 / 252 | same | same |
+| coverage real / synthetic | 403 / 473, 159 / 252 | same | same |
+| MET-WBE real / synthetic | 46 / 113, 48 / 84 | same | same |
+| captures / adjudicated / named | 51/51, 13/13, 10/13 | 51/51, 13/13, 10/13 | 51/51, 13/13, 10/13 |
+| MET-PITCH-ERR files over 25 Hz | 9 | 9, 69 captures 0 changed | 9, 0 changed |
+
+**Ticks:** 5.5 ticked in both copies of `PHASE_PLAN.md`. 5.1 to 5.4 and 5.6 are not ticked, and nothing in steps 2, 3 or 4 was ticked. **DRIFT:** step 2 0, step 3 0, step 4 1, step 5 1 (§3 (f)).
 
 ## 4. What's blocking us
 
-Nothing blocks 4.6. There are three items for a ruling, most useful first.
-
-1. **Ruling asked: whether proved lapses at the latest survey or holds for the survey's 3 s of protection.**
-   - Claude built the strict version: proved only while the latest survey's confirmed verdict names the pitch.
-   - Reasoning: HM-REQ-093's rationale is "not a stale hold". The survey's verdict already rests on 3 s of history, so extending proved by the 3 s keyed-protection countdown (`KeyingRecently`) would let proved rest on evidence up to 6 s old.
-   - Rejected: the lenient version, because it states more.
-   - Cost of the strict version: a live display would flip between proved and hypothesis while a station is being read. 37,199 hops across the sets were "keying within the last 3 s, not on this survey".
-   - This is a presentation question for a live surface. The sheet is a snapshot.
-2. **Ruling asked: whether a confirmed keyed verdict far from the instrument should stay proved.**
-   - For one survey interval, five real windows and one synthetic window held proved hops at 25 to 175 Hz from the station the instrument found (`032050` at 325 against 499.9).
-   - Claude left it. Proved means the survey's rule was met, and changing which bin the survey names is 4.4's work (section 7).
-   - Rejected: gating proved on the instrument, because R76 keeps the instrument out of `src`.
-3. **Logged, not fixed (12.6).**
-   - `AHeldPitchDoesNotOutliveItsEvidenceTests` is 3 of 4 red at entry HEAD and at unit 433. It is in neither carry-forward line and is not on the instruction's list of expected failures. Its reds are about `Retuned()`, which this build reduces to an unlock (`CwDecoder.cs` 385).
-   - `TheQuietestBinNoLongerWinsTests` and `ThePitchControlsAreOffThePanelTests` are excluded from compilation by `Compile Remove`, so they never run.
-   - CLAUDE.md 12.6 says items like these go in `OPEN_ISSUES.md`. This unit did not edit that file, and names them here instead.
+1. **What "current" means for a proved speed. Ruling wanted, and it does not block 5.5.** The unit reads it as keying found at the pitch within the tracker's own six-survey span, three seconds (`KeyingRecently`).
+   - **Reasoning.** The tree says the settled reading trails the survey, and that gating it on keying right now asks the wrong question (`CwToneTracker.cs` 702-712).
+   - **Rejected: the latest survey alone**, which unit 450 used for the pitch. It proved a clean 12 wpm send at 15 dB on 900 of 5681 hops, and the real set on 40559 hops against 61328.
+   - **The cost of the reading taken:** a speed stays proved for up to about six and a half seconds after a sender stops.
+   - The owner may prefer the stricter or a looser span. It is one comparison in `CwDecoder.SpeedProof`, and it changes no decoded character either way.
+2. **A speed change at one pitch is proved at speeds nobody sent. A finding for HM-REQ-032's line, not repaired here.**
+   - **The case.** Printed, not judged, by the 034 test: 16 wpm then 24 wpm at 640 Hz, in the 12 s after the change. The window straddles the two speeds, and the proved hops name 16 (x93), 17 (x400), 19 (x300), 23 (x400) and 24 (x535). 17, 19 and 23 are more than 10% off whichever speed was being sent. The path is row 8: a measured dit, keying current at the pitch.
+   - **Why the state cannot see it.** The tree has no re-acquisition for a speed change without a pitch move, so a straddle is not visible to it.
+   - **Reasoning.** Proved says the dit was measured on current keying, not that the window holds one sender's speed.
+   - **Rejected: calling a straddle a hypothesis this unit.** It would need a new detector for a speed change, and section 7 forbids changing how the speed is found or re-acquired.
+   - **Wanted:** a ruling on whether 5.x should give the speed its own re-acquisition on a change of 25% or more, as HM-REQ-032 implies.

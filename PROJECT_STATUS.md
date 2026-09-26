@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 451 - the speed says whether it was proved
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T09:33:00-04:00
-NOTE: 5.5 ticked: speed state built, 034 green after red, 035 and 036 green, text 63 of 63 identical; next the exit round
+UPDATED: 2026-09-26T10:05:44-04:00
+NOTE: Unit 451 done: speed proof state built, 5.5 ticked, 035 and 036 met, text 63 of 63 identical - output.md written
 
 ---
 

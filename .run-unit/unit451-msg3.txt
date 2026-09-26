@@ -1,0 +1,14 @@
+unit451 task 3: exit round - 5.5 ticked, text 63 of 63 identical, MET-CER-SURE real 33 of 436, floors as at entry; 5.1 to 5.4 and 5.6 open (5.5)
+
+Build 0 errors; engine line 178 of 178 in 374 s; app line 277 of 278 in
+165 s, the loss green alone, no hang; captures 51 of 51, adjudicated 13 of
+13, named 10 of 13 as at entry; the four metrics and MET-PITCH-ERR (9 files,
+0 changed) as at entry; every touched type run alone, green but the logged
+AHeldPitchDoesNotOutliveItsEvidenceTests 3 of 4.
+
+ARefinementKeepsTheTimingTests now carries verification row 036's own
+plus and minus 10 Hz beside the 25 Hz step: green, and green at the entry
+code f96cd04e in a worktree. A comment in SpeedForTheRecord corrected to
+the guard's three conditions. output.md written and validated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

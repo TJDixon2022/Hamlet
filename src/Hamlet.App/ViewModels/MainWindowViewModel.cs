@@ -12830,9 +12830,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     /// <remarks>
     /// <para>The guard on <see cref="CwDecoder.WordsPerMinute"/> withholds a number
-    /// until a tone has been located, a character has resolved and the clock is
-    /// not being re-acquired. All the failures used to print the same three words
-    /// (HM-DEC-091).</para>
+    /// until the window has read a character, the clock is not being re-acquired,
+    /// and the speed is within the plausible range; the lines below also say
+    /// whether a tone was located. All the failures used to print the same three
+    /// words (HM-DEC-091).</para>
     /// <para>**AND A NUMBER IT NAMES SAYS WHETHER IT WAS PROVED** (HM-REQ-034, work
     /// instruction 451). Every line opens with the state, proved, hypothesis or
     /// none. A named number that is a hypothesis says so in capitals and why, and
