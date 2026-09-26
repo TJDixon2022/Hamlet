@@ -1,0 +1,12 @@
+unit453 task 3: exit round - 6.5 ticked, 0 of 3 measurable spans met (ABOVE AB OVE, BREEZE BR EEZE, FLEX FLENT), WEEKEND and THINKING not in 021410's audio, nothing built, every metric and floor as at entry; 6.1, 6.2, 6.4, 6.6 open (6.5)
+
+Build 0 errors; engine line 178 of 178 in 384 s; app line 277 of 278
+in 161 s, the loss a dispatcher loop, the type 5 of 5 alone; captures
+51 of 51; adjudicated 13 of 13; named 10 of 13 as at entry. Real,
+inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage
+403 over 473, MET-WBE 37 over 113. Synthetic, exact: 14 of 173, 14
+over 252, 159 over 252, 44 over 84. 9 files more than 25 Hz off. src
+unchanged since 0659ed8a; nothing keys or transmits. DRIFT: step 2 0,
+step 3 0, step 4 1, step 5 1, step 6 1. output.md written and VALID.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -39,7 +39,9 @@ back from that line's end, and `WEEKEND` 60. The file's envelope holds nothing a
 level before 2.175 s (the loudest hop 7.4 dB under the sender's peak, noise between -30 and -57
 dB). The first keying is `A` (.-), then a 2.2 s pause, then `TUBE XMT R HIHI DT RIGHR IS FLEX 66O...`,
 hand-read from the half-amplitude marks against Morse (judging only). That is the tail of
-2026-08-25's line from the `A` after `NG` (`A ■ AUBE XMT R HIHI DT ■RIGHR IS ■ FLENX 66O`).
+2026-08-25's line from the `A` after `NG` (`A ■ AUBE XMT R HIHI DT ■RIGHR IS ■ FLENX 66O`, 33
+characters). The other 4 of the 37 were most likely settled during the file's first second from
+audio before it, since the stream settles 1.0 s behind. That is an inference, not a measurement.
 **021410 does not read less today than it did. The two words were never in the file.**
 
 **The departures, per span, first place the read leaves the word's own Morse** (half-amplitude
@@ -49,7 +51,7 @@ marks and gaps, units of the unit in force):
 |---|---|---|---|
 | `ABOVE` | B-to-O letter gap, 215 ms (6.81 u of 32 ms; 5.4 u of the sender's 40), read as a word gap | gap misread, letter read as word | settled in read 18 at 38.0 WPM, speed Hypothesis, unit from the grid; held gaps 23/104/162 ms, relabel 159 ms from this read's character gap 104 ms x 1.53; the path's gap 220 ms. The sender's word gap after `ABOVE`'s E is **185 ms**, shorter than this letter gap |
 | `BREEZE` | R-to-E letter gap, 180 ms (4.50 u of 40 ms), read as a word gap | gap misread, letter read as word | settled in read 40 at 30.0 WPM, speed Hypothesis; held gaps 24/112/224 ms from read 29, word-from 159 ms, no character gap measured, so the relabel's boundary is 159 ms; the path's gap 180 ms. E-to-Z (180 ms) and Z-to-E (190 ms) settled in later reads at a 244 ms boundary and are letter gaps |
-| `FLEX` | the X's third mark, a dit of 25 ms (0.37 u of 68 ms) at 24.645 s, not read as a mark | mark misread (lost) | 17.8 WPM, speed Proved; pitch 540 Hz, Proved. The X's key-ups are filled to -26 to -33 dB against the sender's -21 dB, so its two inner dits stand about 7 to 10 dB over them (35 and 25 ms at half amplitude, against 75 ms dits elsewhere in the word) |
+| `FLEX` | the X's third mark, a dit of 25 ms (0.37 u of 68 ms) at 24.645 s, not read as a mark | mark misread (lost) | 17.8 WPM, speed Proved; pitch 540 Hz, Proved. The X's key-ups are filled to -26 to -40 dB, mostly -27 to -33, against the sender's -21 dB and the recording's quiet fifth of -38.7 dB. So its two inner dits, peaking at -23.1 and -23.4 dB, stand about 7 to 10 dB over them (35 and 25 ms at half amplitude, against 75 ms dits elsewhere in the word) |
 
 **Groups:** gap misread, a letter gap read as a word gap: 2 (`ABOVE`, `BREEZE`). Mark misread: 1
 (`FLEX`). Nothing emitted: 0.
