@@ -1,0 +1,17 @@
+unit459 task 2: the red test - a 15 WPM sender with 20 ms bursts in every gap, built from 032050's window, read at 32-37 WPM with 28 of 31 sure characters wrong at HEAD (9.4)
+
+TheSpeedFollowsTheSendersMarkPairsTests (HM-REQ-010, HM-REQ-129):
+dit 80, dah 190, element gap 50 ms, letter and word gaps of three and
+seven dits, 15 dB, one 20 ms burst at the sender's pitch and level in
+the middle of every letter and word gap - the numbers of the window on
+unadjudicated/cw-2026-08-22-032050 that read U as A (short marks 20
+ms, short gaps 50 ms, 34.3 WPM, the port at 17). Exact key. It asserts
+no sure character wrong or added and coverage of at least 0.90. At
+HEAD it reads `MME■ E ■E■ E ■E■EOET E ME0E■EME■E■ ...` at 32 to 37
+WPM: 28 of 31 sure wrong or added, 3 of 21 sent right. Red as
+written, one construction, one seed. Also in the trace printer: the
+speed evidence at each departure (WhatSetTheSpeedAtEachDeparture):
+where ours overshot, a port-style pair rule over the same window's
+marks holds 17 to 22 WPM, the port 17 to 26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

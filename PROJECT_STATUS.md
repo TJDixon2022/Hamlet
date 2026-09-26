@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T18:15:39-04:00
-NOTE: Task 1 committed: (D) speed tracking chosen from 18 traced letters; task 2 writing the red test from the 003758 and 032050 evidence
+UPDATED: 2026-09-26T18:29:02-04:00
+NOTE: Task 2: red test committed (28 of 31 sure wrong at HEAD); building the mark-pair speed in CwProbabilisticStream
 
 ---
 

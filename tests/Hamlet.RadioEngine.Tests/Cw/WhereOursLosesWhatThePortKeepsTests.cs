@@ -267,6 +267,9 @@ public sealed class WhereOursLosesWhatThePortKeepsTests
         /// <summary>More than 25 Hz off: the port was handed the pitch, which no mechanism of its signal path is.</summary>
         public bool OffPitch => Math.Abs(PitchOffHz) > 25;
 
+        /// <summary>Where ours stands in what it settled.</summary>
+        public int Index { get; init; } = -1;
+
         /// <summary>Our own lattice, at the port's speed on the same window, reads the key letter there.</summary>
         public bool SpeedCaused { get; init; }
 
@@ -515,6 +518,7 @@ public sealed class WhereOursLosesWhatThePortKeepsTests
                 {
                     PitchOffHz = r.ToneHz - row.GivenPitchHz,
                     SpeedCaused = speedCaused,
+                    Index = index,
                 });
             }
         }
@@ -563,6 +567,102 @@ public sealed class WhereOursLosesWhatThePortKeepsTests
         ["x"] = "none of (A) to (E) by itself: an element ours added",
         ["?"] = "not traced",
     };
+
+    /// <summary>
+    /// The speed the port's pair rule holds over a run of marks in order: a mark under
+    /// half the held dot is a spike and skipped; each mark more than two and less than
+    /// four times the one before it, or the reverse, puts their mean into a 16-long
+    /// moving average that fills with its first value (cw.cxx:524-535, 815-843; Cmovavg).
+    /// </summary>
+    internal static (double Wpm, int Pairs) PairSpeed(IReadOnlyList<double> marksMs)
+    {
+        var filter = new Queue<double>();
+        var last = 0.0;
+        var twoDots = double.NaN;
+        var pairs = 0;
+
+        foreach (var mark in marksMs)
+        {
+            if (!double.IsNaN(twoDots) && mark < twoDots / 4)
+            {
+                continue;
+            }
+
+            if (last > 0)
+            {
+                var (dot, dash) = mark > 2 * last && mark < 4 * last ? (last, mark)
+                    : last > 2 * mark && last < 4 * mark ? (mark, last)
+                    : (0.0, 0.0);
+
+                if (dot > 0)
+                {
+                    var two = (dot + dash) / 2;
+
+                    if (filter.Count == 0)
+                    {
+                        for (var i = 0; i < 16; i++)
+                        {
+                            filter.Enqueue(two);
+                        }
+                    }
+                    else
+                    {
+                        filter.Dequeue();
+                        filter.Enqueue(two);
+                    }
+
+                    twoDots = filter.Average();
+                    pairs++;
+                }
+            }
+
+            last = mark;
+        }
+
+        return (double.IsNaN(twoDots) ? double.NaN : 1200.0 / (twoDots / 2), pairs);
+    }
+
+    /// <remarks>
+    /// Proves nothing about either decoder; work instruction 459 task 2's evidence
+    /// before any change: at each departure's read, the window's short mark and
+    /// short gap clusters that set our speed, the unit its marks imply, and the
+    /// speed the port's pair rule would hold over the same window's marks in order.
+    /// </remarks>
+    [Fact]
+    public void WhatSetTheSpeedAtEachDeparture()
+    {
+        var hopMs = CwProbabilisticDecoder.HopMilliseconds;
+
+        _output.WriteLine("speedset | recording | key | ours | wpm read | short mark ms | short gap ms | window's measured wpm | marks' wpm | pairs' wpm | pairs | port wpm");
+
+        var all = Trace(out _, out _);
+
+        foreach (var row in BothDecodersAreScoredAlikeTests.Rows.Where(r => r.Port is not null))
+        {
+            var departures = all.Where(d => d.Name == row.Name).ToList();
+
+            if (departures.Count == 0)
+            {
+                continue;
+            }
+
+            var file = System.IO.Path.Combine(CwToneSurveyTests.RepositoryRoot(), row.AudioFile);
+            var (settled, readings) = Drive(file, row.Real ? 600 : SyntheticCq.StartingPitchHz);
+
+            foreach (var d in departures)
+            {
+                var r = readings[d.Index];
+                var measured = CwUnitEstimator.Measure(r.Window, hopMs);
+                var marks = CwUnitEstimator.Elements(r.Window, hopMs).Marks;
+                var (pairWpm, pairs) = PairSpeed(marks);
+
+                _output.WriteLine(string.Create(Invariant,
+                    $"speedset | {d.Name} | `{d.Key}` | `{d.Ours.Text}` | {r.Last.WordsPerMinute:0.0} | {measured.DitMarkMilliseconds:0} | {measured.ElementGapMilliseconds:0} | "
+                    + $"{measured.WordsPerMinute:0.0} | {1200.0 / CwUnitEstimator.MarkUnit(marks):0.0} | {pairWpm:0.0} | {pairs} | {d.PortNote}"));
+                _output.WriteLine($"speedmarks | {d.Name} | `{d.Key}` | marks in order, ms | {string.Join(" ", marks.Select(m => m.ToString("0", Invariant)))}");
+            }
+        }
+    }
 
     /// <remarks>
     /// Proves nothing about either decoder; prints work instruction 459 task 1

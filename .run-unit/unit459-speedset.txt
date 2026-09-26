@@ -1,0 +1,55 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.79]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.01]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.01]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:27.61]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereOursLosesWhatThePortKeepsTests.WhatSetTheSpeedAtEachDeparture [2 m 25 s]
+  Standard Output Messages:
+ speedset | recording | key | ours | wpm read | short mark ms | short gap ms | window's measured wpm | marks' wpm | pairs' wpm | pairs | port wpm
+ speedset | unadjudicated/cw-2026-09-23-173723 | `R` | `E` | 17.1 | 75 | 65 | 17.1 | 16.2 | 16.0 | 14 | rep .-. at 16 WPM, two_dots 1191, given 585.9 Hz
+ speedmarks | unadjudicated/cw-2026-09-23-173723 | `R` | marks in order, ms | 220 80 230 80 230 215 110 215 215 75 90 75 75 215 220 220 80 80 75 240 75 85 80 75 75 215 130 70 225 75 85 75 215 210 210 90 75 75 505 70 75 80 75 65 75
+ speedset | unadjudicated/cw-2026-09-23-173723 | `D` | `I` | 17.1 | 75 | 65 | 17.1 | 16.2 | 16.0 | 14 | rep -.. at 16 WPM, two_dots 1196, given 585.9 Hz
+ speedmarks | unadjudicated/cw-2026-09-23-173723 | `D` | marks in order, ms | 220 80 230 80 230 215 110 215 215 75 90 75 75 215 220 220 80 80 75 240 75 85 80 75 75 215 130 70 225 75 85 75 215 210 210 90 75 75 505 70 75 80 75 65 75
+ speedset | unadjudicated/cw-2026-08-18-003758 | `A` | `E` | 40.0 | 20 | 40 | 40.0 | 45.4 | 22.0 | 21 | rep .- at 26 WPM, two_dots 739, given 499.7 Hz
+ speedmarks | unadjudicated/cw-2026-08-18-003758 | `A` | marks in order, ms | 10 100 110 105 135 160 155 55 160 65 160 60 15 20 55 155 55 60 115 165 40 60 60 155 225 15 55 145 15 30 160 30 150 80 20 80 155 20 160 60 25 55 85 70 80 60 160 210 60 175 60 60 135 35 35 60 160 60 160 15 65 60 60 60 160 165 160 115 160
+ speedset | unadjudicated/cw-2026-08-18-003758 | `4` | `T` | 40.0 | 20 | 40 | 40.0 | 45.4 | 22.0 | 21 | rep ....- at 25 WPM, two_dots 756, given 499.7 Hz
+ speedmarks | unadjudicated/cw-2026-08-18-003758 | `4` | marks in order, ms | 10 100 110 105 135 160 155 55 160 65 160 60 15 20 55 155 55 60 115 165 40 60 60 155 225 15 55 145 15 30 160 30 150 80 20 80 155 20 160 60 25 55 85 70 80 60 160 210 60 175 60 60 135 35 35 60 160 60 160 15 65 60 60 60 160 165 160 115 160
+ speedset | unadjudicated/cw-2026-08-22-031838 | `2` | `T` | 22.8 | 60 | 20 | 30.0 | 22.8 | 17.0 | 8 | rep ..--- at 19 WPM, two_dots 998, given 499.9 Hz
+ speedmarks | unadjudicated/cw-2026-08-22-031838 | `2` | marks in order, ms | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 220 45 135 10
+ speedset | unadjudicated/cw-2026-08-22-031838 | `,` | `T` | 28.2 | 65 | 20 | 28.2 | 24.8 | 17.1 | 9 | rep --..-- at 19 WPM, two_dots 981, given 499.9 Hz
+ speedmarks | unadjudicated/cw-2026-08-22-031838 | `,` | marks in order, ms | 65 220 200 85 60 85 220 205 45 15 200 220 90 45 230 185 120 85 45 80 85 160 260 25 185 220 165 235 180 30 45 215 35 85 225 200 215 240 170 85 80 175 220 45 135 10 70 80 85 175 210 175 20 40 205
+ speedset | unadjudicated/cw-2026-08-22-031838 | `T` | `A` | 28.2 | 60 | 25 | 28.2 | 30.0 | 20.3 | 18 | rep - at 20 WPM, two_dots 916, given 499.9 Hz
+ speedmarks | unadjudicated/cw-2026-08-22-031838 | `T` | marks in order, ms | 235 180 30 155 40 35 85 220 200 215 215 170 85 80 175 215 40 135 10 70 80 85 175 210 175 20 40 200 215 80 50 215 215 115 25 305 20 30 185 80 200 75 85 35 125 20 110 80 170 215 160 190 30 80 215 165 60 80 45 335 80 80 80 70 70 25 30 60 55
+ speedset | unadjudicated/cw-2026-08-22-032012 | `O` | `T` | 22.9 | 65 | 40 | 22.9 | 28.3 | 18.1 | 4 | rep --- at 18 WPM, two_dots 1058, given 499.9 Hz
+ speedmarks | unadjudicated/cw-2026-08-22-032012 | `O` | marks in order, ms | 65 80 140 185 210 60 220 85 10 120 105 45
+ speedset | unadjudicated/cw-2026-08-22-032050 | `U` | `A` | 34.3 | 20 | 50 | 34.3 | 50.4 | 17.9 | 22 | rep ..- at 17 WPM, two_dots 1068, given 499.9 Hz
+ speedmarks | unadjudicated/cw-2026-08-22-032050 | `U` | marks in order, ms | 80 80 80 80 170 10 85 175 80 80 110 210 80 45 15 85 185 80 35 215 40 20 175 80 285 85 175 30 210 70 195 85 175 85 75 80 80 195 80 155 215 170 20 90 60 215 170 80 175 75 80 20 60 30 20
+ speedset | unadjudicated/cw-2026-08-22-032113 | `D` | `O` | 30.0 | 65 | 15 | 30.0 | 27.3 | 19.1 | 15 | rep -.. at 18 WPM, two_dots 1047, given 499.9 Hz
+ speedmarks | unadjudicated/cw-2026-08-22-032113 | `D` | marks in order, ms | 30 85 175 80 175 40 120 55 155 425 80 290 215 45 45 145 165 25 255 80 15 225 85 85 100 65 130 85 35 190 85
+ speedset | unadjudicated/cw-2026-09-24-004234 | `O` | `T` | 21.8 | 50 | 60 | 21.8 | 23.2 | 22.7 | 12 | rep --- at 21 WPM, two_dots 878, given 627.0 Hz
+ speedmarks | unadjudicated/cw-2026-09-24-004234 | `O` | marks in order, ms | 125 140 160 20 160 55 165 50 155 165 160 165 160 105 155 50 50 55 165 160 50 50 50 50 55 160 150 50 155 50 160 165
+ speedset | cq-18wpm-15db-char5 | `L` | `E` | 17.8 | 75 | 60 | 17.8 | 16.8 | 17.1 | 24 | rep .-.. at 17 WPM, two_dots 1108, given 615.7 Hz
+ speedmarks | cq-18wpm-15db-char5 | `L` | marks in order, ms | 120 75 205 80 205 205 80 215 205 75 205 75 205 205 70 200 210 90 70 75 205 70 210 205 205 205 205 205 65 205 100 75 205 90 205 70 75 70 205 70 75
+ speedset | cq-18wpm-5db-char5 | `D` | `E` | 18.5 | 65 | 65 | 18.5 | 18.2 | 17.8 | 21 | rep -.. at 17 WPM, two_dots 1069, given 615.7 Hz
+ speedmarks | cq-18wpm-5db-char5 | `D` | marks in order, ms | 210 65 205 70 190 220 75 190 195 75 195 65 205 250 70 190 200 65 195 70 200 205 65 240 210 195 65 195 50
+ speedset | cq-18wpm-5db-char5 | `N` | `D` | 18.5 | 65 | 65 | 18.5 | 18.2 | 18.1 | 23 | rep -. at 17 WPM, two_dots 1075, given 615.7 Hz
+ speedmarks | cq-18wpm-5db-char5 | `N` | marks in order, ms | 190 220 75 190 195 75 195 65 205 250 70 190 200 65 195 70 200 205 65 240 210 195 65 195 50 195 195 185 220 200 200 65 190 55 60 225 65
+ speedset | cq-18wpm-5db-char5 | `0` | `U` | 18.5 | 65 | 65 | 18.5 | 18.2 | 17.3 | 23 | rep ----- at 17 WPM, two_dots 1080, given 615.7 Hz
+ speedmarks | cq-18wpm-5db-char5 | `0` | marks in order, ms | 70 75 190 195 75 195 65 205 250 70 190 200 65 195 70 200 205 65 240 210 195 65 195 50 195 195 185 220 200 200 65 190 55 60 225 65 355 95
+ speedset | cq-18wpm-5db-char5 | `C` | `U` | 18.5 | 65 | 65 | 18.5 | 18.2 | 17.7 | 24 | rep -.-. at 17 WPM, two_dots 1079, given 615.7 Hz
+ speedmarks | cq-18wpm-5db-char5 | `C` | marks in order, ms | 195 75 195 65 205 245 70 190 200 65 195 70 200 205 65 240 210 195 65 190 50 195 195 185 220 200 200 65 190 55 60 220 65 250 90 95 100 200 55
+ speedset | cq-18wpm-5db-char5 | `L` | `U` | 18.5 | 65 | 65 | 18.5 | 20.1 | 17.6 | 23 | rep .-.. at 17 WPM, two_dots 1080, given 615.7 Hz
+ speedmarks | cq-18wpm-5db-char5 | `L` | marks in order, ms | 15 65 205 245 70 190 200 65 195 70 200 205 65 240 210 195 65 190 50 195 195 185 220 200 200 65 190 55 60 220 65 250 90 95 100 200 55 70 200 90
+ speedset | cq-18wpm-5db-char5 | `L` | `E` | 18.5 | 65 | 65 | 18.5 | 18.2 | 17.5 | 23 | rep .-.. at 17 WPM, two_dots 1092, given 615.7 Hz
+ speedmarks | cq-18wpm-5db-char5 | `L` | marks in order, ms | 195 245 70 190 200 65 195 70 200 205 65 240 210 195 65 190 50 195 195 185 220 200 200 65 190 55 60 220 65 250 90 95 100 200 55 70 200 90 195
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.4670 Minutes
+RC=0 WALL=148s
