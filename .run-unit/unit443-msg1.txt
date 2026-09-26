@@ -1,0 +1,25 @@
+unit443 task 1: the added trace - 13 at 1fb0bad6, 5 at G1, 4 at HEAD (3.1)
+
+WhereTheSureAddedLettersComeFromTests.EverySureAddedCharacterAndWhatItShares,
+a printer beside the sure-wrong one (which is unchanged). For every sure
+character MET-INVENTED counts as added, real and synthetic: recording, time,
+key and decoder text either side, emitted character and pattern, span and
+neighbors' spans, gaps to them, speed and unit, pitch at the hop and the
+sender's, envelope marks and gaps in ms and units, inserted or missed word
+space, and energy against noise - the decoder carries none at the hop
+(SignalToNoiseDb NaN on the probabilistic path), so the span's ratio against
+silence is printed as the decoder's figure and a quarter-point level over
+noise as the printer's. Asserts only the metric's own count on each set.
+
+Run three times, decoder src checked out and restored as 442 did:
+1fb0bad6 13 real added (439's 13), 42d5dbb9 (G1 alone) 5, HEAD 4.
+G1 removed 8, all on 17:37; the marks' speed (14f515bd) removed 1,
+031838 at 21.355 s; 4 old remain, 0 new. Synthetic, exact keys: 13, 6, 6.
+
+At HEAD the real 4 share no cause (every group a single). The one cause
+shared by more than one added letter is the same marks read twice - a
+span overlapping its neighbor's: 004347's O at 19.280 s and both 25 WPM
+synthetic Ks at 14.885 s, 3 of 10. The 7.052 traffic-net text of 3.4 is
+in no recording in the tree.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

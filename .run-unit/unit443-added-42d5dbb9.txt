@@ -1,0 +1,68 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.66]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.85]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.86]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:48.89]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureAddedLettersComeFromTests.EverySureAddedCharacterAndWhatItShares [1 m 47 s]
+  Standard Output Messages:
+ added | recording | set | key | at s | sent before | sent after | emitted before | emitted | emitted after | pattern | span | span before | span after | gap before ms/u | gap after ms/u | wpm | unit ms | pitch at hop Hz | sender pitch Hz | off Hz | word space | envelope marks | envelope gaps | decoder SignalToNoiseDb | span per hop | printer level over noise dB | recording median dB | sure-right before it
+ added | unadjudicated/cw-2026-08-22-031838 | real | inferred | 21.355 | ` A MEAN ` | `OF 2.9. ` | `AH A MEAN ` | `T` | `OF 2 TT   ` | - | 159.2 | 211.9 | 387.2 | 415/13.8u | -195/-6.5u | 40 | 30.0 | 525.0 | 525.0 | 0.0 | no boundary error beside it | 240ms/8.0u |  | NaN, not carried | 4.082 | 10.2 | 11.1 | 6
+ added | unadjudicated/cw-2026-08-22-032012 | real | inferred | 7.425 | `N OF 117` | `. LINKS ` | `  T F 117` | `.` | `1. LINKS T` | .-.-.- | 1164 | 933.9 | 729.7 | 195/2.9u | 185/2.8u | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no boundary error beside it | 85ms/1.3u 160ms/2.4u 80ms/1.2u 300ms/4.5u 215ms/3.2u | 60ms/0.9u 55ms/0.8u 55ms/0.8u 50ms/0.8u 50ms/0.8u | NaN, not carried | 5.623 | 12.6 | 15.4 | 4
+ added | unadjudicated/cw-2026-08-22-032012 | real | inferred | 8.640 | `N OF 117` | `. LINKS ` | `  T F 117.` | `1` | `. LINKS TO` | .---- | 729.7 | 1164 | 1240 | 185/2.8u | 200/3.0u | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no boundary error beside it | 60ms/0.9u 210ms/3.2u 175ms/2.6u 215ms/3.2u 175ms/2.6u | 60ms/0.9u 55ms/0.8u 55ms/0.8u 50ms/0.8u 50ms/0.8u | NaN, not carried | 3.542 | 10.2 | 15.4 | 4
+ added | unadjudicated/cw-2026-08-22-032050 | real | inferred | 11.195 | `AN BE FO` | `UND IN T` | ` CAN BE FO` | `T` | `A ND IN TE` | - | 74.14 | 473.4 | 293 | 195/5.5u | 65/1.8u | 34 | 35.3 | 500.0 | 500.0 | 0.0 | no boundary error beside it | 90ms/2.6u | 30ms/0.9u | NaN, not carried | 4.943 | 11.7 | 15.7 | 15
+ added | unadjudicated/cw-2026-09-24-004347 | real | inferred | 19.280 | `O ARRL L` | `OTW` | `TO ARRL L ` | `O` | `OTW <BT> ANTH` | --- | 431.9 | 878.2 | 442.3 | 510/9.4u | -580/-10.6u | 22 | 54.5 | 620.0 | 625.0 | 5.0 | beside an inserted space | 155ms/2.8u 175ms/3.2u 165ms/3.0u | 50ms/0.9u 65ms/1.2u 45ms/0.8u | NaN, not carried | 3.724 | 12.0 | 16.3 | 20
+ added | cq-25wpm-15db | synthetic | exact | 14.885 | ` N0CALL ` | `K` | `LL N0CALL ` | `K` | `K  ` | -.- | 9300 | 4512 | 8914 | 345/7.2u | -425/-8.9u | 25 | 48.0 | 615.0 | 620.0 | 5.0 | no boundary error beside it | 150ms/3.1u 85ms/1.8u 150ms/3.1u | 45ms/0.9u 40ms/0.8u 15ms/0.3u | NaN, not carried | 109.4 | 25.2 | 21.5 | 20
+ added | cq-25wpm-5db | synthetic | exact | 14.885 | ` N0CALL ` | `K` | `LL N0CALL ` | `K` | `K  ` | -.- | 461.3 | 291.7 | 456.4 | 345/7.2u | -425/-8.9u | 25 | 48.0 | 620.0 | 615.0 | 5.0 | no boundary error beside it | 150ms/3.1u 50ms/1.0u 170ms/3.5u | 45ms/0.9u 45ms/0.9u 40ms/0.8u | NaN, not carried | 5.428 | 13.7 | 12.9 | 20
+ added | cq-18wpm-5db-char5 | synthetic | exact | 8.405 | `Q CQ CQ ` | `DE N0CAL` | ` QC Q C Q ` | `T` | `EE T ■KTDU` | - | 281.1 | 928.2 | 98.5 | 495/7.4u | 215/3.2u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | no boundary error beside it | 210ms/3.2u | 65ms/1.0u | NaN, not carried | 7.598 | 13.8 | 12.5 | 6
+ added | cq-18wpm-5db-char5 | synthetic | exact | 9.745 | `Q CQ DE ` | `N0CALL N` | `Q C Q TEE ` | `T` | ` ■KTDUUEUE` | - | 259.9 | 86.95 | 289.3 | 480/7.2u | 1300/19.5u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | no boundary error beside it | 190ms/2.9u | 70ms/1.1u | NaN, not carried | 6.84 | 12.7 | 12.5 | 7
+ added | cq-18wpm-5db-char5 | synthetic | exact | 11.475 | `Q CQ DE ` | `N0CALL N` | ` Q TEE T ■` | `K` | `TDUUEUE N ` | -.- | 289.3 | 259.9 | 206.4 | 1300/19.5u | 345/5.2u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | beside a missed space | 220ms/3.3u 200ms/3.0u | 45ms/0.7u 40ms/0.6u | NaN, not carried | 3.364 | 11.0 | 12.5 | 7
+ added | cq-18wpm-5db-char5 | synthetic | exact | 12.005 | `Q CQ DE ` | `N0CALL N` | `Q TEE T ■K` | `T` | `DUUEUE N 0` | - | 206.4 | 289.3 | 257.1 | 345/5.2u | 235/3.5u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | beside a missed space | 200ms/3.0u | 65ms/1.0u | NaN, not carried | 5.577 | 12.1 | 12.5 | 7
+ feature | real | shape | one element | 2
+ feature | real | shape | 6 elements | 1
+ feature | real | shape | 5 elements | 1
+ feature | real | shape | 3 elements | 1
+ feature | synthetic | shape | 3 elements | 3
+ feature | synthetic | shape | one element | 3
+ feature | real | word space | no boundary error beside it | 4
+ feature | real | word space | beside an inserted space | 1
+ feature | synthetic | word space | no boundary error beside it | 4
+ feature | synthetic | word space | beside a missed space | 2
+ feature | real | overlap | its span is its own | 3
+ feature | real | overlap | its span overlaps a neighbor's: the same marks read twice | 2
+ feature | synthetic | overlap | its span is its own | 4
+ feature | synthetic | overlap | its span overlaps a neighbor's: the same marks read twice | 2
+ feature | real | isolation | crowded, under two units to a neighbor | 3
+ feature | real | isolation | character gaps both sides | 2
+ feature | synthetic | isolation | crowded, under two units to a neighbor | 2
+ feature | synthetic | isolation | character gaps both sides | 2
+ feature | synthetic | isolation | alone in a word-length gap both sides | 2
+ feature | real | level | level with the recording's letters | 5
+ feature | synthetic | level | level with the recording's letters | 6
+ feature | real | acquisition | after acquisition | 5
+ feature | synthetic | acquisition | after acquisition | 6
+ feature | real | pitch | on the sender's pitch | 5
+ feature | synthetic | pitch | on the sender's pitch | 6
+ group | real | its span overlaps a neighbor's: the same marks read twice; one element; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-08-22-031838@21.355 `T`
+ group | real | its span is its own; 6 elements; no boundary error beside it; character gaps both sides; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-08-22-032012@7.425 `.`
+ group | real | its span is its own; 5 elements; no boundary error beside it; character gaps both sides; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-08-22-032012@8.640 `1`
+ group | real | its span is its own; one element; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-08-22-032050@11.195 `T`
+ group | real | its span overlaps a neighbor's: the same marks read twice; 3 elements; beside an inserted space; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-09-24-004347@19.280 `O`
+ largest | real | its span overlaps a neighbor's: the same marks read twice; one element; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 1 of 5 | tied with the next
+ group | synthetic | its span overlaps a neighbor's: the same marks read twice; 3 elements; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 2 | cq-25wpm-15db@14.885 `K`, cq-25wpm-5db@14.885 `K`
+ group | synthetic | its span is its own; one element; no boundary error beside it; character gaps both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@8.405 `T`
+ group | synthetic | its span is its own; one element; no boundary error beside it; alone in a word-length gap both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@9.745 `T`
+ group | synthetic | its span is its own; 3 elements; beside a missed space; alone in a word-length gap both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@11.475 `K`
+ group | synthetic | its span is its own; one element; beside a missed space; character gaps both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@12.005 `T`
+ largest | synthetic | its span overlaps a neighbor's: the same marks read twice; 3 elements; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 2 of 6
+ total | 5 sure added on the real keyed recordings, inferred keys (metric 5) | 6 on the synthetic set, exact keys (metric 6)
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.8194 Minutes
+RC=0 WALL=110s

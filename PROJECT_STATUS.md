@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 443 - the letters the decoder adds between words
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T22:12:41-04:00
-NOTE: Entry round done: 4 sure added at HEAD, 17:37 red as recorded; committing the entry
+UPDATED: 2026-09-25T22:27:43-04:00
+NOTE: Task 1 traced: 13 -> 5 (G1) -> 4 (marks speed); double-read group named; committing
 
 ---
 

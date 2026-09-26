@@ -1,0 +1,28 @@
+counts: base real 13, g1 real 5, head real 4
+counts: base synthetic 13, g1 synthetic 6, head synthetic 6
+cq-12wpm-5db	`A`	base@29.485
+cq-12wpm-5db	`EA`	base@29.255
+cq-18wpm-15db	`EELTK  `	base@18.130
+cq-18wpm-15db	`ELTK  `	base@18.265
+cq-18wpm-15db	`ETEELTK  `	base@17.610
+cq-18wpm-15db	`TEELTK  `	base@17.860
+cq-18wpm-15db	`TETEELTK  `	base@17.325
+cq-18wpm-5db-char5	` ■KTDUUEUE`	base@9.745 g1@9.745 head@9.745
+cq-18wpm-5db-char5	`DUUEUE N 0`	base@12.005 g1@12.005 head@12.005
+cq-18wpm-5db-char5	`EE T ■KTDU`	base@8.405 g1@8.405 head@8.405
+cq-18wpm-5db-char5	`TDUUEUE N `	base@11.475 g1@11.475 head@11.475
+cq-25wpm-15db	`K  `	base@14.885 g1@14.885 head@14.885
+cq-25wpm-5db	`K  `	base@14.885 g1@14.885 head@14.885
+unadjudicated/cw-2026-08-22-031838	`OF 2 TT   `	base@21.355 g1@21.355
+unadjudicated/cw-2026-08-22-032012	`. LINKS TO`	base@8.640 g1@8.640 head@8.640
+unadjudicated/cw-2026-08-22-032012	`1. LINKS T`	base@7.425 g1@7.425 head@7.425
+unadjudicated/cw-2026-08-22-032050	`A ND IN TE`	base@11.195 g1@11.195 head@11.195
+unadjudicated/cw-2026-09-23-173723	`EEERE D ET`	base@23.460
+unadjudicated/cw-2026-09-23-173723	`EERE D ETT`	base@23.740
+unadjudicated/cw-2026-09-23-173723	`EETEEERE D`	base@22.540
+unadjudicated/cw-2026-09-23-173723	`ETEEERE D `	base@22.720
+unadjudicated/cw-2026-09-23-173723	`TB 7E E I`	base@26.820
+unadjudicated/cw-2026-09-23-173723	`TEEERE D E`	base@22.990
+unadjudicated/cw-2026-09-23-173723	`TTB 7E E I`	base@26.515
+unadjudicated/cw-2026-09-23-173723	`TTTB 7E E `	base@26.250
+unadjudicated/cw-2026-09-24-004347	`OTW <BT> ANTH`	base@19.280 g1@19.280 head@19.280
