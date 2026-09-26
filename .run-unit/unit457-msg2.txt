@@ -1,0 +1,16 @@
+unit457 task 2: the first dit traced - verdict (b), fldigi's own: a noise key-down 52 ms before the dit swallows it into a dash, and a spike in the next gap clears it (cw.cxx:610-623, 640-641, 818-822, 793-798) (9.1)
+
+A read-only per-decision trace (TraceDecisions, not fldigi's; it
+changes nothing the receiver reads) and its printer,
+WhereTheSecondDecodersFirstDitGoesTests, naming HM-REQ-122 and
+proving none. Over the last second of noise the detector is keyed
+down 227 of 500 samples, CWupper 0.839 against CWlower 0.840. The
+dit joins a noise key-down at t_in 9.9499 as one 1168-sample
+element, over two_dots 955; agc_peak rises only 0.029 to 0.059 over
+it (attack 200 = 0.4 s), so noise in the gap spikes 80 samples,
+RS_IDLE, and P's first dah clears the held dash from idle. After the
+first dah agc_peak is 0.13 and no gap raises a noise event. fldigi
+needs a settled AGC from earlier keying at the signal's level.
+Emitted text unchanged, GARIS CQ.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

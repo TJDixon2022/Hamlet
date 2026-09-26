@@ -92,6 +92,40 @@ public sealed record FldigiCwKeyEvent(
     string Representation);
 
 /// <summary>
+/// One decision sample inside fldigi's receiver (every DEC_RATIO-th filtered
+/// sample, 500 Hz), observed and not acted on. Not fldigi's.
+/// </summary>
+/// <param name="FilteredSample">How many filtered 8000 Hz samples the filter had given, this one included; the filter's output lags its input by 512 samples.</param>
+/// <param name="Magnitude"><c>FFTvalue</c>, the filtered magnitude after the bit filter, as decode_stream received it.</param>
+/// <param name="Value">The magnitude over <c>agc_peak</c>, as the detector compared it.</param>
+/// <param name="AgcPeak"><c>agc_peak</c>.</param>
+/// <param name="NoiseFloor"><c>noise_floor</c>.</param>
+/// <param name="SigAvg"><c>sig_avg</c>.</param>
+/// <param name="Upper"><c>CWupper</c> as written at cw.cxx:640.</param>
+/// <param name="Lower"><c>CWlower</c> as written at cw.cxx:641.</param>
+/// <param name="State"><c>cw_receive_state</c> after the sample: idle, tone or after.</param>
+/// <param name="SmplCtr"><c>smpl_ctr</c>.</param>
+/// <param name="TwoDots"><c>two_dots</c>.</param>
+/// <param name="Events">The key events this sample raised, with the element's <c>usec_diff</c> for an up or a spike.</param>
+/// <param name="Printed">What the query printed at this sample, or empty.</param>
+/// <param name="Held">The dots and dashes held after the sample.</param>
+public sealed record FldigiCwDecisionRow(
+    long FilteredSample,
+    double Magnitude,
+    double Value,
+    double AgcPeak,
+    double NoiseFloor,
+    double SigAvg,
+    double Upper,
+    double Lower,
+    string State,
+    uint SmplCtr,
+    long TwoDots,
+    string Events,
+    string Printed,
+    string Held);
+
+/// <summary>
 /// fldigi's CW receive modem, ported as the second decoder (HM-REQ-122,
 /// R84). Samples in at 8000 Hz, characters out, carrier frequency given by
 /// the caller. Left as ported (HM-REQ-129).
@@ -208,6 +242,9 @@ public sealed class FldigiCwDecoder
     private string last_representation = string.Empty;
     private readonly List<FldigiCwKeyEvent> keyEvents = new();
     private double observed_value;
+    private readonly List<FldigiCwDecisionRow> decisions = new();
+    private long filtered_samples;
+    private string observed_events = string.Empty;
 
     /// <summary>
     /// Ports <c>cw::cw</c> (cw.cxx:299) and then <c>cw::init</c> (cw.cxx:256),
@@ -312,6 +349,12 @@ public sealed class FldigiCwDecoder
 
     /// <summary>Every key-down and key-up the receiver saw, observed and not acted on.</summary>
     public IReadOnlyList<FldigiCwKeyEvent> KeyEvents => keyEvents;
+
+    /// <summary>When set before the audio is given, every decision sample's state is kept in <see cref="Decisions"/>. Not fldigi's.</summary>
+    public bool TraceDecisions { get; set; }
+
+    /// <summary>Every decision sample's state, when <see cref="TraceDecisions"/> is set; observed and not acted on.</summary>
+    public IReadOnlyList<FldigiCwDecisionRow> Decisions => decisions;
 
     /// <summary><c>cw_receive_speed</c> now, words a minute.</summary>
     public int ReceiveSpeed => cw_receive_speed;
@@ -548,6 +591,9 @@ public sealed class FldigiCwDecoder
             if (sc.Length > 0)
                 Print(sc);
         }
+
+        if (TraceDecisions)
+            Trace(sc);
     }
 
     // Ports cw::rx_FFTprocess (cw.cxx:683).
@@ -576,6 +622,7 @@ public sealed class FldigiCwDecoder
             {
                 // update the basic sample counter used for morse timing
                 ++smpl_ctr;
+                filtered_samples++;
 
                 if (smpl_ctr % DEC_RATIO != 0) continue; // decimate by DEC_RATIO
 
@@ -760,6 +807,25 @@ public sealed class FldigiCwDecoder
             kind, input_samples, element, observed_value,
             progdefaults.CWupper, progdefaults.CWlower, agc_peak, noise_floor, sig_avg,
             two_dots, rx_rep_buf.ToString()));
+
+        if (TraceDecisions)
+            observed_events += (observed_events.Length > 0 ? " " : string.Empty) + (element > 0 ? $"{kind} {element}" : kind);
+    }
+
+    // Not fldigi's: records one decision sample, and changes nothing the receiver reads.
+    private void Trace(string sc)
+    {
+        decisions.Add(new FldigiCwDecisionRow(
+            filtered_samples, FFTvalue, observed_value, agc_peak, noise_floor, sig_avg,
+            progdefaults.CWupper, progdefaults.CWlower,
+            cw_receive_state switch
+            {
+                CW_RX_STATE.RS_IN_TONE => "tone",
+                CW_RX_STATE.RS_AFTER_TONE => "after",
+                _ => "idle",
+            },
+            smpl_ctr, two_dots, observed_events, sc, rx_rep_buf.ToString()));
+        observed_events = string.Empty;
     }
 
     // Not fldigi's: stands where decode_stream calls put_rx_char (cw.cxx:671-674).

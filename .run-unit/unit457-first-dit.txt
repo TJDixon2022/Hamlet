@@ -1,0 +1,101 @@
+UNIT 457 TASK 2 - THE FIRST DIT, SAMPLE BY SAMPLE
+
+The port as it stands after task 1 (no repair: 177 lines audited, 0 differ), on 456's case:
+`PARIS CQ` at 18 WPM, 600 Hz, peak 0.5, 5 ms edges, 10.0 s of 300-2800 Hz noise at +10 dB
+(CW_SPEC.md 8.1 reference), seed 20260926, 1.5 s tail, 8000 Hz, squelch off. Emitted `GARIS CQ `.
+
+Instrument: FldigiCwDecoder.TraceDecisions, read-only, not fldigi's (it records each decision
+sample and changes nothing the receiver reads; the port's emitted text is the same with it on).
+Printer: WhereTheSecondDecodersFirstDitGoesTests.ThroughTheCaseSampleBySample, whole output in
+.run-unit/unit457-first-dit-trace.txt (8256 decision samples, 1256 rows printed, t_in 9.0026 to 11.5143).
+
+Times: t_in = (filtered sample - 513) / 8000, the input time a row stands for (the fftfilt sinc
+is centred in its 1024 taps, so its output lags by 512 samples); the 16-sample bit filter's
+32 ms rise is not subtracted. Rows are at 500 Hz, every 16th filtered sample (DEC_RATIO).
+
+THE MARKS (input time)
+  P: dit 10.0026-10.0643 (493 samples), dah 10.1359-10.3309, dah 10.4025-10.5975,
+     dit 10.6693-10.7309;  A: dit 10.9359-10.9975, dah 11.0693-11.2643.
+
+THE LAST SECOND OF NOISE (t_in 9.0026 to 10.0026, 500 decision samples)
+  in tone 227 of 500; key-downs 22; spikes 18; element key-ups 4
+  mean CWupper 0.8389, mean CWlower 0.8395, mean normalised value 0.8404
+  at its end: agc_peak 0.02862, noise_floor 0.02273, sig_avg 0.02400, mean magnitude 0.02390
+  So fldigi's thresholds sit inside the noise's own spread (the value runs 0.68 to 1.09 around
+  them), a hair apart, and the detector is keyed down on noise 45% of the time.
+
+THE ROWS AROUND THE KEY-DOWN (task 2's columns; value = magnitude / agc_peak)
+  t_in    | magnitude | value  | agc_peak | CWupper | CWlower | state | event        | two_dots | held
+  9.9339  | 0.02430   | 0.8543 | 0.02844  | 0.8313  | 0.8273  | tone  | down (noise) | 955 |
+  9.9379  | 0.02275   | 0.8000 | 0.02844  | 0.8312  | 0.8273  | idle  | spike 32     | 955 |
+  9.9459  | 0.02364   | 0.8314 | 0.02844  | 0.8309  | 0.8270  | tone  | down (noise) | 955 |
+  9.9479  | 0.02335   | 0.8211 | 0.02844  | 0.8309  | 0.8270  | idle  | spike 16     | 955 |
+  9.9499  | 0.02534   | 0.8911 | 0.02844  | 0.8311  | 0.8271  | tone  | down (noise) | 955 |
+  9.9599  | 0.03113   | 1.0935 | 0.02847  | 0.8310  | 0.8269  | tone  |              | 955 |
+  9.9879  | 0.02579   | 0.9012 | 0.02862  | 0.8290  | 0.8247  | tone  |  noise still above CWlower
+  10.0019 | 0.03095   | 1.0813 | 0.02862  | 0.8297  | 0.8252  | tone  |  the dit's energy arrives
+  10.0139 | 0.10954   | 3.6519 | 0.03000  | 0.7998  | 0.7945  | tone  |              | 955 |
+  10.0339 | 0.24587   | 6.5278 | 0.03767  | 0.6712  | 0.6628  | tone  |  mark plateau | 955 |
+  10.0639 | 0.24805   | 4.6455 | 0.05339  | 0.5246  | 0.5122  | tone  |  dit ends     | 955 |
+  10.0939 | 0.03064   | 0.5207 | 0.05884  | 0.4958  | 0.4821  | tone  |              | 955 |
+  10.0959 | 0.02295   | 0.3900 | 0.05884  | 0.4957  | 0.4820  | after | up 1168      | 955 | -
+  10.1139 | 0.03017   | 0.5127 | 0.05884  | 0.4953  | 0.4817  | tone  | down (noise, in the gap) | 955 | -
+  10.1239 | 0.02676   | 0.4548 | 0.05884  | 0.4953  | 0.4818  | idle  | spike 80     | 955 | -
+  10.1359 | 0.03068   | 0.5215 | 0.05884  | 0.4951  | 0.4817  | tone  | down (P's first dah), from idle: held cleared | 955 |
+  10.3599 | 0.03653   | 0.2799 | 0.13049  | 0.3480  | 0.3264  | after | up 1792      | 955 | -
+  10.4059 | 0.05592   | 0.4287 | 0.13042  | 0.3455  | 0.3243  | tone  | down         | 955 | -
+  10.6259 | 0.04479   | 0.2582 | 0.17343  | 0.3440  | 0.3176  | after | up 1760      | 955 | --
+  10.6739 | 0.06563   | 0.3784 | 0.17343  | 0.3397  | 0.3139  | tone  | down         | 955 | --
+  10.7599 | 0.04398   | 0.2436 | 0.18053  | 0.3490  | 0.3214  | after | up 688       | 965 | --.
+  10.8879 | 0.02550   | 0.1413 | 0.18053  | 0.3344  | 0.3083  | idle  | printed G    | 965 |
+  10.9399 |           |        | 0.18053  | 0.3303  | 0.3049  | tone  | down (A's dit) | 965 |
+  11.0239 |           |        | 0.18613  | 0.3413  | 0.3141  | after | up 672       | 965 | .
+  11.0759 |           |        | 0.18602  | 0.3366  | 0.3100  | tone  | down         | 965 | .
+  11.2899 |           |        | 0.20562  | 0.3640  | 0.3326  | after | up 1712      | 972 | .-
+  11.4179 |           |        | 0.20562  | 0.3487  | 0.3191  | idle  | printed A    | 972 |
+  From P's first dah on there is no noise event in any gap: once agc_peak has risen to 0.13,
+  noise normalises to about 0.2, under CWlower.
+
+THE ANSWER TO TASK 2'S QUESTION
+  Both, in order, and the first alone already costs the dit its identity:
+  1. The detector IS keyed down on noise when the dit arrives. A noise key-down at t_in 9.9499,
+     52 ms before the dit, is still held (the noise stays above CWlower 0.825) when the dit's
+     energy arrives, so the dit joins it: one element of 1168 samples, over two_dots 955, classed
+     a dash (cw.cxx:847-855).
+  2. The AGC has not risen far enough. agc_peak went from 0.0286 to only 0.0588 over the dit
+     (attack weight 200 decision samples = 0.4 s against a 67 ms dit), so in the next gap the
+     noise normalises to about 0.5, across CWupper 0.495: a key-down at 10.1139 and an 80-sample
+     key-up, under the spike threshold, which sets RS_IDLE and leaves `-` held (cw.cxx:818-822);
+     P's first dah then keys down from idle and clears it (cw.cxx:793-798). P's remaining `--.`
+     reads G.
+
+VERDICT: (b) UPSTREAM BEHAVIOUR.
+  Task 1 read 177 lines and found none that differs; the trace shows every step taken by an
+  upstream line. The lines that lose the element:
+  - cw.cxx:246 and 610-623: agc_peak starts at 0 and rises only while value > sig_avg, by
+    decayavg with the attack weight 200 (cwrx_attack 1, cw.cxx:599-603), 0.4 s at 500 Hz; in 10 s
+    of noise it settles on the noise, 0.0286.
+  - cw.cxx:625-626 and 640-641: CWupper = norm_sig - 0.2 diff and CWlower = norm_noise + 0.7 diff,
+    from sig_avg and noise_floor over agc_peak. On noise alone all three sit in the noise, so the
+    thresholds sit a hair apart inside it (0.831 / 0.827).
+  - cw.cxx:646 with the squelch off (456 DECIDED (1), benchmark.cxx:54): nothing else gates it.
+  - cw.cxx:649-655: the hysteresis detector keys on that noise.
+  - cw.cxx:818-822: a key-up under cw_noise_spike_threshold (cw.cxx:515, half a receive dot) sets
+    RS_IDLE without clearing rx_rep_buf.
+  - cw.cxx:793-798: the next key-down from RS_IDLE clears rx_rep_buf.
+
+WHAT FLDIGI NEEDS BEFORE A FIRST ELEMENT TO READ IT, IN ITS OWN TIME CONSTANTS
+  A settled AGC: agc_peak raised by earlier key-down at the signal's own level, until noise over
+  agc_peak sits under CWlower in a gap. It rises only during marks, with the attack weight 200
+  decision samples (0.4 s). Here the first dit and dah, about 0.27 s of mark, took it from 0.029
+  to 0.13 (4.6 times the noise's level), and from then on no gap raised a noise event. The level
+  relation alone does not supply it: after long noise the thresholds are relative to agc_peak and
+  settle inside the noise at any SNR, so the pre-dit noise key-down (45% of the time here) does
+  not depend on the level. A quiet interval does not supply it either: the case is never digital
+  silence (V-06), and noise is what keys the detector. So the element fldigi can read is one that
+  follows keying at the same level within a few of its decay constants (sig_avg and a falling
+  agc_peak decay by the weight 1000, 2.0 s), not one that follows seconds of noise alone.
+
+  This is the loss 456's first look saw on every send ("loses the start of every send"), and the
+  squelch (parked, status.cxx not in the tree) is not what turns it: task 2's verdict does not
+  rest on the squelch, so the parked item is not re-opened.

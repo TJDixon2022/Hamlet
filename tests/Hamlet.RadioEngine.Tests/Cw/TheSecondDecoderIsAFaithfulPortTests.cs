@@ -168,7 +168,8 @@ public sealed class TheSecondDecoderIsAFaithfulPortTests
     }
 
     /// <summary>Keys the send, measures its marks, and adds the noise band.</summary>
-    private static (double[] Audio, List<(bool On, int Start, int End)> Runs, double NoiseRms) Render()
+    /// <remarks>Internal so the first-dit trace (work instruction 457, task 2) reads the same audio.</remarks>
+    internal static (double[] Audio, List<(bool On, int Start, int End)> Runs, double NoiseRms) Render()
     {
         var unit = 1.2 / WordsPerMinute;
         var segments = new List<(bool On, double Units)>();
