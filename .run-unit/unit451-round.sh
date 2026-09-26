@@ -34,6 +34,17 @@ case "$1" in
   state)
     sh $R "trace-pitch-state-$2" engine 600 "$3" "Trace: every hop's proposed pitch state beside the instrument, 23 keyed, the over-25 files and the synthetic set" "FullyQualifiedName~.WhatThePitchCanSayItProvedTests.EveryHopsStateBesideTheInstrument" --no-build
     ;;
+  speedstate)
+    sh $R "trace-speed-state-$2" engine 600 "$3" "Trace: every hop's proposed speed state, 23 keyed and the synthetic set with the speed error of proved hops" "FullyQualifiedName~.WhatTheSpeedCanSayItProvedTests.EveryHopsSpeedState" --no-build
+    ;;
+  req034)
+    sh $R "req034-$2" engine 300 "$3" "Test: the HM-REQ-034 cases alone" "FullyQualifiedName~.TheSpeedSaysWhetherItWasProvedTests." --no-build
+    grep -a "HM-REQ-034 |" .run-unit/unit451-req034-$2.txt | cut -c1-400
+    ;;
+  req036)
+    sh $R "req036-$2" engine 300 "$3" "Test: the HM-REQ-036 cases alone" "FullyQualifiedName~.ARefinementKeepsTheTimingTests." --no-build
+    grep -a "HM-REQ-036 |" .run-unit/unit451-req036-$2.txt | cut -c1-400
+    ;;
   req093)
     sh $R "req093-$2" engine 300 "$3" "Test: the HM-REQ-093 cases alone" "FullyQualifiedName~.ThePitchSaysWhetherItWasProvedTests." --no-build
     grep -a "HM-REQ-093 |" .run-unit/unit451-req093-$2.txt | cut -c1-400

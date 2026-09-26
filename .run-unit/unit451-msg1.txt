@@ -1,0 +1,15 @@
+unit451 task 1: the speed-state trace - real hops proved 61328, hypothesis 54494, none 22178; synthetic proved over 10% off 0 of 24418 (5.5)
+
+WhatTheSpeedCanSayItProvedTests prints the proposed state hop by hop with
+nothing in src changed: proved where the guarded number is named, the
+window's unit was measured and not won on the grid, and the tracker found
+keying at the pitch within its own six-survey span. Real, inferred: 30042
+hops in 21 of 23 recordings show a number at HEAD that the state calls a
+hypothesis. Synthetic, exact: proved 24418, none more than 10% off the
+constructed speed. Run 1 on the latest survey alone is kept beside it.
+
+TheSpeedLineSaysWhatWasProvedTests prints every speed surface's words on
+the 23 keyed recordings at HEAD. The notes give the path table, every
+speed display in src, and what a clear and a refinement do, with lines.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

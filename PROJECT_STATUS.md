@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 451 - the speed says whether it was proved
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T08:45:01-04:00
-NOTE: Entry done: metrics and floors as 450 left them, app line lost 3 all green alone; next the trace of every path that reports a speed
+UPDATED: 2026-09-26T08:58:49-04:00
+NOTE: Trace done: 30042 real hops that show a number at HEAD would say hypothesis; next the three tests, then the state
 
 ---
 

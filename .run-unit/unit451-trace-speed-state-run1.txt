@@ -1,0 +1,64 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.54]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.74]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.75]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:01:04.17]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatTheSpeedCanSayItProvedTests.EveryHopsSpeedState [1 m 2 s]
+  Standard Output Messages:
+ row | set | recording | hops proved | hypothesis | none | hops HEAD shows a number | of those hypothesis | state at the end | proved speeds (wpm x hops)
+ row | real | unadjudicated/cw-2026-09-23-173723 | 3394 | 1707 | 899 | 5101 | 1707 | proved | 17 x3394
+ row | real | cw-2026-08-17-013347 | 900 | 4501 | 599 | 5401 | 4501 | hypothesis | 19 x707, 20 x193
+ row | real | cw-2026-08-17-134712 | 0 | 2101 | 3899 | 0 | 0 | hypothesis | 
+ row | real | unadjudicated/cw-2026-08-18-003758 | 1200 | 4201 | 599 | 3294 | 2094 | hypothesis | 24 x1200
+ row | real | unadjudicated/cw-2026-08-24-012403 | 694 | 207 | 5099 | 901 | 207 | proved | 21 x694
+ row | real | cw-2026-08-18-004507 | 1294 | 4107 | 599 | 2994 | 1700 | proved | 24 x1194, 25 x100
+ row | real | unadjudicated/cw-2026-08-22-031838 | 0 | 5200 | 800 | 3093 | 3093 | none | 
+ row | real | unadjudicated/cw-2026-08-22-031905 | 100 | 5301 | 599 | 3294 | 3194 | hypothesis | 18 x100
+ row | real | unadjudicated/cw-2026-08-22-031948 | 0 | 5401 | 599 | 3194 | 3194 | hypothesis | 
+ row | real | unadjudicated/cw-2026-08-22-032012 | 0 | 5401 | 599 | 3294 | 3294 | hypothesis | 
+ row | real | unadjudicated/cw-2026-08-22-032050 | 0 | 5301 | 699 | 2000 | 2000 | hypothesis | 
+ row | real | unadjudicated/cw-2026-08-22-032113 | 0 | 5401 | 599 | 1500 | 1500 | hypothesis | 
+ row | real | unadjudicated/cw-2026-08-22-032129 | 0 | 5401 | 599 | 3294 | 3294 | hypothesis | 
+ row | real | unadjudicated/cw-2026-09-24-004108 | 3100 | 2301 | 599 | 5401 | 2301 | hypothesis | 22 x3100
+ row | real | unadjudicated/cw-2026-09-24-004133 | 2994 | 2407 | 599 | 5401 | 2407 | proved | 22 x2901, 24 x93
+ row | real | unadjudicated/cw-2026-09-24-004205 | 3300 | 2101 | 599 | 5401 | 2101 | hypothesis | 22 x3300
+ row | real | unadjudicated/cw-2026-09-24-004234 | 3300 | 2101 | 599 | 5401 | 2101 | hypothesis | 22 x3300
+ row | real | unadjudicated/cw-2026-09-24-004322 | 3994 | 1407 | 599 | 5401 | 1407 | proved | 22 x3994
+ row | real | unadjudicated/cw-2026-09-24-004347 | 3901 | 1500 | 599 | 5401 | 1500 | proved | 21 x907, 22 x2994
+ row | real | unadjudicated/cw-2026-09-24-004405 | 4294 | 1107 | 599 | 5401 | 1107 | proved | 21 x300, 22 x3994
+ row | real | unadjudicated/cw-2026-09-24-004427 | 3094 | 2307 | 599 | 5401 | 2307 | proved | 20 x600, 21 x1087, 22 x1407
+ row | real | unadjudicated/cw-2026-09-24-004510 | 1700 | 3701 | 599 | 5401 | 3701 | hypothesis | 23 x493, 24 x1207
+ row | real | unadjudicated/cw-2026-09-24-004550 | 3300 | 2101 | 599 | 5401 | 2101 | hypothesis | 22 x1207, 23 x500, 24 x1593
+ row | synthetic | cq-12wpm-15db | 900 | 4781 | 599 | 5681 | 4781 | hypothesis | 12 x900
+ row | synthetic | cq-12wpm-5db | 800 | 4881 | 599 | 5681 | 4881 | hypothesis | 12 x800
+ row | synthetic | cq-12wpm-0db | 0 | 0 | 6280 | 0 | 0 | none | 
+ row | synthetic | cq-18wpm-15db | 2200 | 1554 | 599 | 3754 | 1554 | hypothesis | 18 x2200
+ row | synthetic | cq-18wpm-5db | 2247 | 1507 | 599 | 3754 | 1507 | proved | 18 x2247
+ row | synthetic | cq-18wpm-0db | 0 | 0 | 4353 | 0 | 0 | none | 
+ row | synthetic | cq-25wpm-15db | 2468 | 207 | 599 | 2675 | 207 | proved | 24 x2193, 25 x275
+ row | synthetic | cq-25wpm-5db | 1768 | 907 | 599 | 2675 | 907 | proved | 25 x1175, 27 x593
+ row | synthetic | cq-25wpm-0db | 0 | 0 | 3274 | 0 | 0 | none | 
+ row | synthetic | cq-18wpm-15db-char5 | 2200 | 1927 | 599 | 4127 | 1927 | hypothesis | 18 x2200
+ row | synthetic | cq-18wpm-5db-char5 | 2600 | 1527 | 599 | 4127 | 1527 | hypothesis | 18 x2600
+ row | synthetic | cq-18wpm-0db-char5 | 0 | 0 | 4726 | 0 | 0 | none | 
+ total | real | 23 recordings | hops proved 40559 | hypothesis 75263 | none 22178 | HEAD shows a number on 91370 | of those hypothesis 50811, in 22 recordings | recordings ending proved 8, hypothesis 14, none 1 | key inferred
+ total | synthetic | 12 recordings | hops proved 15183 | hypothesis 17291 | none 23425 | HEAD shows a number on 32474 | of those hypothesis 17291, in 8 recordings | recordings ending proved 3, hypothesis 5, none 4 | key exact
+ HM-REQ-031, evidence only | synthetic proved hops 15183 | more than 10% off the constructed speed 0 | HEAD's shown hops more than 10% off 0 of 32474 | key exact
+ path | number named, unit measured, keying current at the pitch | 55742 hops over every recording above
+ path | number named, measured, held past its keying: none at the pitch for 3 s or more | 35997 hops over every recording above
+ path | number named, measured, no keying at the pitch on the latest survey (keying within 3 s) | 30204 hops over every recording above
+ path | the gate refused the window: the grid's winner over it is no reading | 24638 hops over every recording above
+ path | a reading, the clock re-acquiring after a follow: number withheld | 24452 hops over every recording above
+ path | nothing read yet: the window has not refilled | 20965 hops over every recording above
+ path | number named, the unit won on the grid and not measured | 1901 hops over every recording above
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.0753 Minutes
+RC=0 WALL=65s
