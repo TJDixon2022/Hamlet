@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 450 - the pitch says whether it was proved
+TASK: 0 of 3
+WORK_INSTRUCTION: 451 - the speed says whether it was proved
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T08:15:36-04:00
-NOTE: Unit 450 done: pitch proof state built, 4.6 ticked, text 63 of 63 identical - output.md written
+UPDATED: 2026-09-26T08:45:01-04:00
+NOTE: Entry done: metrics and floors as 450 left them, app line lost 3 all green alone; next the trace of every path that reports a speed
 
 ---
 

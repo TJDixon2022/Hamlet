@@ -1,0 +1,10 @@
+unit451 task 0: entry at step 5 - MET-CER-SURE 33 of 436 real, 14 of 173 synthetic, 9 files over 25 Hz, 63 recordings' text saved (5.5)
+
+Build 0 errors; engine line 178 of 178 in 376 s; app line 275 of 278 in
+160 s, each losing type green alone, no hang; captures 51 of 51 in 129 s;
+adjudicated 13 of 13; named 10 of 13 as recorded. Real, inferred keys:
+MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 46 over 113.
+Identical to 450's exit. The runner's writes committed as they were, with
+the entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
