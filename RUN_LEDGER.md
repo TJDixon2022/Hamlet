@@ -335,3 +335,5 @@ the owner reads instead of watching.
 | 6 | 2026-09-25T23:05 | 2026-09-26T00:00 | complete | 5.729411400000001 | ran unattended, 124 turns, 14 denied call(s) worked around, report valid |
 | 6 | 2026-09-26T00:00 | 2026-09-26T00:00 | note | none - not a run | no advance - step 2 criterion 5 was unmet and is unmet |
 | 7 | 2026-09-26T00:05 | 2026-09-26T01:08 | complete | 4.851576999999998 | ran unattended, 145 turns, 12 denied call(s) worked around, report valid |
+| 8 | 2026-09-26T01:13 | 2026-09-26T02:15 | complete | 5.705422799999999 | ran unattended, 131 turns, 13 denied call(s) worked around, report valid |
+| 8 | 2026-09-26T02:16 | 2026-09-26T02:16 | note | none - not a run | no advance - step 5 criterion 1 was unmet and is unmet |

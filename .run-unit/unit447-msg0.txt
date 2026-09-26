@@ -1,0 +1,9 @@
+unit447 task 0: entry at step 4 - MET-INVENTED 45 over 473, floors as recorded (4.1)
+
+Build 0 errors; engine line 178 of 178 in 375 s; app line 277 of 278 in 154 s,
+the loss 8 of 8 alone; captures 51 of 51 in 132 s; adjudicated 13 of 13; named
+12 of 13, 17:37 red (46 banked, reads 38). Real, inferred keys: MET-CER-SURE 45
+of 419, coverage 374 over 473, MET-WBE 52 over 113. Runner's PHASE_OUTCOME,
+PHASE_STATUS and RUN_LEDGER writes committed as they were, with the 447 entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
