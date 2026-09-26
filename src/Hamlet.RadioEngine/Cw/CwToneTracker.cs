@@ -1049,6 +1049,36 @@ public sealed class CwToneTracker
             return;
         }
 
+        // **A CANDIDATE THAT DOES NOT STAND OVER THE BAND IS NOT MOVED TO**
+        // (work instruction 447, R75; HM-REQ-091). This works against one clause
+        // of HM-DEC-095 above: that two agreeing surveys "rest on six seconds of
+        // evidence, and noise does not repeat itself in the same bin". The two
+        // surveys are half a second apart over three seconds of history, so they
+        // share two and a half of it, and on the 7.052 opening noise did repeat:
+        // 525 Hz was admitted at 30.04 and 30.54 s with its key-down 2.4 and 2.5 dB
+        // over the band beside it, and the tracker left 600, where the pitch
+        // instrument measured the keying at 599 Hz, for it. On the eleven captures
+        // task 2 found more than 25 Hz off, all eight moves the survey's keying
+        // verdict made went to a candidate under 10 dB of lift, five of them below
+        // the band altogether.
+        //
+        // **THE LINE IS THE SURVEY'S OWN, NOT ONE FITTED HERE.**
+        // <see cref="CwToneSurvey.InterferenceLiftDb"/> is where the survey stops
+        // calling something "band noise having a good moment". The choice is
+        // still made by keying structure (HM-DEC-095's reasoning stands); this
+        // only refuses to act on keying the survey's own measure puts inside the
+        // noise, and only for a move - inside the fine bank's reach nothing
+        // changes. A lift that cannot be measured is not refused.
+        if (!double.IsNaN(keyed.LiftDb)
+            && keyed.LiftDb < CwToneSurvey.InterferenceLiftDb
+            && Math.Abs(keyed.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+        {
+            Verdict = new ToneVerdict(
+                null, Filtered(coarse.Interference ?? coarse.Strongest), coarse.Strongest);
+
+            return;
+        }
+
         // **A CONFIRMED STATION IS NOT ABANDONED FOR A CANDIDATE FAR BELOW IT**
         // (HM-DEC-127). The survey scores every bin for keying structure, and a
         // station's own image in a distant bin has the station's dit, the
