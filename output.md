@@ -1,81 +1,144 @@
 READ IN THIS ORDER.
 
-A. The parity totals: none. fldigi's source could not be fetched, so there is no second decoder
-   and nothing to table. Ours at entry, for the comparison when it comes: real, inferred keys,
-   MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, sure-and-right coverage 403 over 473,
-   MET-WBE 37 over 113; synthetic, exact keys, 14 of 173, 14 over 252, 159 over 252, 44 over 84.
-B. Step 9 (0 of 6 by the plan, unchanged): 9.1 not started, since the port needs the source and
-   `git clone` of github.com/w1hkj/fldigi was refused in this session; 9.2 the table, 9.3 the wins
-   and 9.5 the recordings it reads that we do not are all behind 9.1.
-C. This report adds the entry round at step 9, with every floor and metric as 453 left them, and
-   one request in section 4 that unblocks all of B: put fldigi's source under `.run-unit\fldigi\`,
-   or allow the clone. Nothing else here bears on A or B.
+A. Phase goal: Hamlet meets the CW requirements. Steps by the plan -
+   0 done, 1 done, 2 3 of 5, 3 3 of 6, 4 5 of 7, 5 1 of 6, 6 3 of 6,
+   7 0 of 5, 8 0 of 6, 9 0 of 8 (blocked on fldigi's source).
+B. Step 6, criterion 6.2: HM-REQ-071 not met (met on 5 of the 9 prosigns of
+   `CW_SPEC.md` 6.2; VE, CT, BK and CL are not in the decoder's table), named by
+   `TheProsignArrivesAsOneSymbolTests`; HM-REQ-072 met after task 3's kept change,
+   named by `TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests`; 6.2 ticked in both
+   copies of `PHASE_PLAN.md`. 6.1 open (its table is where 071's four misses live),
+   6.4 open, 6.6 red on the same three named floors.
+C. This report adds the prosign trace, the two tests and the naming setting.
+   Section 4 raises 3 items. None is in the way of a criterion in B. Item 1 is the
+   CW reading this unit worked under. Items 2 and 3 are findings for 6.1, and 6.1
+   is already open.
 
-UNIT:       454 - stopped at task 1 of 4, none dropped (tasks 1 to 4 blocked by the refused clone) - 2026-09-26 13:07
-PHASE GOAL: Hamlet's CW decoder meets every must-tier requirement in CW_REQUIREMENTS.md, shown by tests that name them, ending with Tim reading real CW off the air.
-UNIT GOAL:  Put a faithful port of fldigi's CW receiver beside ours, read every recording with both through the same scorer, and say where fldigi does better and, from its source, why.
-ADVANCED:   no - the port was not built because the source could not be fetched; nothing in step 9 moved
-NUMBER:     MET-CER-SURE ours 33 of 436 real, 14 of 173 synthetic; fldigi not measured; recordings fldigi wins not measured, ours wins not measured, tie not measured
-DRIFT:      step 9 1 (was 0); step 2 0; step 3 0; step 4 1; step 5 1; step 6 1, carried from 453
+UNIT:       455 - complete at task 4 of 4, none dropped - 2026-09-26 14:09
+PHASE GOAL: Hamlet's CW decoder meets the requirements in CW_REQUIREMENTS.md, each shown by a test that names it, ending with Tim reading real CW off the air.
+UNIT GOAL:  A prosign sent as one unbroken run reaches the screen as one symbol, called by the name the operator chose, with a test for each of HM-REQ-071 and 072 saying whether that holds.
+ADVANCED:   yes - 6.2 ticked: both requirements have a test naming them and a stated verdict, and 072 went from not met to met with every recording's text byte-identical
+NUMBER:     HM-REQ-071 not met - met on 5 of 9 prosigns; HM-REQ-072 not met -> met; MET-CER-SURE real 33 of 436, synthetic 14 of 173 (unchanged)
+DRIFT:      step 2 0; step 3 0; step 4 1; step 5 1; step 6 0 (was 1); step 9 1
 
 ## 1. What Claude did
 
-**Stopped at task 1 of 4.** Task 0 is done. Tasks 1, 2, 3 and 4 were not started. The work
-instruction's §3 says that if `git clone` is refused, the session records the denial, asks for the
-files, and stops at task 1. It was refused, so that is what I did. Task 3 was the named drop
-candidate. Tasks 1, 2 and 4 are **not** drop candidates: they were stopped by the block, not by a
-sizing choice of mine.
+**Complete: all four tasks were done, tasks 0 to 4, and nothing was dropped.** Task 3 ran only for
+HM-REQ-072. No prosign run is split, so HM-REQ-071 had nothing that task 3's "if a run is split"
+change could act on.
 
 **Provenance.** Claude Code on the Windows development machine (QUIVERFULL). The prompt claimed
 Hamlet, and the gate confirmed it: `SHACK_FACTS.md`, `CwProbabilisticDecoder.cs`,
 `CW_REQUIREMENTS.md` and `CW_SPEC.md` are present, `CoreHMI.sln` and `MURC.sln` are absent, and the
-root is `C:\Source\HamLet`. Branch `main`. Nothing in this report is evidence about the radio.
-`CW_REQUIREMENTS.md` has section M (v1.1, 2026-09-26), as the instruction requires.
+root is `C:\Source\HamLet`. Branch `main`. Every commit was pushed to `origin/main`. Nothing in this
+report is evidence about the radio.
 
-**The denial.** Command: `git clone --depth 1 https://github.com/w1hkj/fldigi.git
-C:/Source/HamLet/.run-unit/fldigi`. The session's permission layer answered "This command requires
-approval", and this session cannot grant approval. I treated that as a denial and did not try any
-other route: no curl, no archive download, no web fetch. `.run-unit\fldigi\` does not exist.
+**Commits:**
 
-**Task 0, commit `2daa8ad1`, pushed to `origin/main`:**
-- `PHASE_OUTCOME.md` has `## UNIT 454 - STEP 9`, with the arbiter block and an ENTRY line, in both
-  copies.
-- `PHASE_STATUS.md` names 454 with `CURRENT_STEP: 9`, in both copies.
-- Version bumped from 1.13.140 to 1.13.141.
-- The runner's uncommitted writes (`PHASE_STATUS.md`, `PHASE_OUTCOME.md`, `RUN_LEDGER.md`) were
-  committed as they were, following 453's precedent.
+| task | commit | what |
+|---|---|---|
+| 0 | `54e74c8f` | entry: record edits, version 1.13.141 to 1.13.142, the runner's writes, entry round, text saved |
+| 1 | `a2a9f596` | the prosign trace; nothing in `src` |
+| 2 | `9469589f` | the two tests, each watched failing first; 6.2 ticked |
+| 3 | `078a8303` | HM-REQ-072's naming setting, kept under R78 |
+| 4 | this commit | exit round, report, status |
 
-**Entry round.** All figures are at HEAD `d81d8e0a` plus the record edits; `src` was not changed.
+**Verified against the tree (§3). Where the tree differs from the instruction, the tree is the fact:**
+- **`MorseAlphabet.cs` holds five prosigns:** `<AR>` `.-.-.`, `<SK>` `...-.-`, `<BT>` `-...-`,
+  `<KN>` `-.--.` and `<AS>` `.-...`, plus `<HH>` for the error signal (073's, not touched).
+  - **KN is in the table. BK and CL are not, and neither are VE and CT.**
+  - At HEAD the name was fixed in code. Nothing the operator could set named `=`/`BT` or `+`/`AR`,
+    as the instruction expected.
+- **The fixture.** `prosigns-18wpm` (`CwFixtures.cs:99`) sends `W1AW DE K2ABC ^BT R TU ^SK`, so it
+  carries only BT and SK. The instruction points at `CwProbabilisticDecoder.cs:1137`; that line
+  only names the fixture in a comment. A prosign reaches the transcript at
+  `CwProbabilisticDecoder.cs:1717` and `1737`, as `MorseAlphabet.Lookup(spelled) ?? "#"` on the
+  whole run between character gaps.
+- **Existing prosign tests. Neither names a requirement, and I did not re-point either (R80):**
+  - `CwFixtureTests.TheProsignRecordingDecodesItsProsigns` asserts `<BT>` and `<SK>` on the fixture.
+  - `TheProsignsFixtureAtABandTests` prints and asserts nothing.
+  - **Mismatch:** `CwReceiverFixtureTests.cs:168` refers to a test named
+    `TheProsignsArriveAsProsigns`, and no test of that name exists in the tree.
+- **Expected failures, as stated:** the three named floors are red at the stated values. The app
+  carry-forward line lost nothing on either run this unit.
 
-| check | entry |
-|---|---|
-| build, warnings as errors | 0 errors, 17 s |
-| engine carry-forward line | 178 of 178, 388 s |
-| app carry-forward line | first run 274 of 278, 173 s: 4 lost in 1 ms each to Avalonia headless "You've caused dispatcher loop" (`ThePsk31ConversationCardTests` x2, `TheFavoritesAreChipsTests` x2). Rerun once: 278 of 278, 168 s. No hang. |
-| captures floor | 51 of 51, 131 s |
-| adjudicated floor | 13 of 13, 34 s |
-| named floors | 10 of 13, 67 s: 17:37 38 of 46, `032113` 43 of 45, `032129` 42 of 64 (red as at 453) |
-| MET-CER-SURE | real, inferred: 33 of 436, 0.0757. Synthetic, exact: 14 of 173, 0.0809 |
-| MET-INVENTED | real: 33 over 473. Synthetic: 14 over 252 |
-| coverage (R82) | real: 403 over 473, 0.8520. Synthetic: 159 over 252, 0.6310 |
-| MET-WBE | real: 37 (29 inserted, 8 deleted) over 113. Synthetic: 44 (13 inserted, 31 deleted) over 84 |
-| metrics run | 64 s |
+**Task 0: the entry round, at HEAD `905ba7de` plus the record edits:**
+- The build had 0 errors, in 17 s.
+- Engine line 178 of 178, in 389 s. App line 278 of 278 on the first run, in 174 s.
+- Captures 51 of 51. Adjudicated 13 of 13. Named floors 10 of 13, with the three red values as
+  stated.
+- The four metrics are in section 3's table below, and they equal 454's exit.
+- 126 text lines were saved to `.run-unit/unit455-text-before.txt`, identical to 453's save.
 
-Each figure equals 453's exit.
+**Task 1: the trace.** It lives as two facts in the 071 test class that assert nothing.
+- **How each prosign was sent:**
+  - Its pattern is written literally in the test from M.1677-1 (and ARRL for KN, BK and CL).
+  - The generator's keying of `^XX` is checked against that literal, and all nine matched. Under
+    §12.5, the key does not come from `MorseAlphabet`.
+  - Each prosign was sent in `prosigns-18wpm`'s own shape, `W1AW DE K2ABC ^XX R TU ^XX`, at 18 wpm
+    on the same noise band.
+- **The results are the table in section 3.**
+- **The real keys** carry two prosigns, both `<BT>`: in `cw-2026-08-18-004507` (`NET<BT>EAC`) and in
+  `unadjudicated/cw-2026-09-24-004234` (`COM<BT>THA`). Both were emitted `<BT>`, sure.
 
-**Verified against the tree (§3), as far as it reaches without the source:**
-- `CwDecodeHarness.Decode(MonoAudio, expectedToneHz)` builds a decoder from `audio.SampleRate`,
-  pumps a `BufferedAudioSource` through `Listen`, then calls `Flush`, and collects
-  `CharacterSettled`. The second decoder has to be driven through the same `MonoAudio` and pump
-  for the comparison to be fair.
-- fldigi's internal rate and block size are **not verified**, because the source is not here. The
-  port's input stage is named in the unit that has the source.
+**Task 2: the two tests. Both were watched failing first:**
+- **`TheProsignArrivesAsOneSymbolTests` names HM-REQ-071.**
+  - First run, on a deliberately wrong expectation (the bare letters): 10 of 10 red.
+  - Corrected: 6 of 10 green. SK, AS, KN, BT and AR read as one symbol at both places, and A then R
+    with a real gap reads as two letters.
+  - Red: VE, CT, BK and CL. Each reads `■` mid-message and nothing at the end.
+- **`TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests` names HM-REQ-072.**
+  - The one-symbol-per-send case was watched failing on a wrong count (17 for 16), then corrected
+    to green.
+  - At HEAD, the check for a naming setting was red: "HM-REQ-072 not met: no terminal setting names
+    -...- and .-.-.".
+- Both red tests are on no carry-forward line. 6.2 is ticked in both copies of `PHASE_PLAN.md`.
+
+**Task 3: the change for HM-REQ-072, kept.**
+- **What was built:**
+  - `CwProsignNaming` (`Prosign`, `Punctuation`) and `MorseAlphabet.Name` in the engine.
+  - `AppSettings.CwProsignNaming`, default `Prosign`.
+  - `CwTranscript.Render`, used where the terminal draws each settled character
+    (`CwTerminalControl.cs`) and in the tip.
+  - A switch on the settings screen: "Show BT and AR in the CW terminal as = and +".
+  - The decoder is untouched.
+- **Judged under R78:**
+  - All four metrics are identical before and after, real and synthetic.
+  - The three floors are at their entry values. No capture changed, so V-11 holds.
+  - Every recording's text is byte-identical to task 0's save.
+- **Its test is 7 of 7** (one symbol per send, both names both ways, and the default).
+- **Four failures in the app types the change touches** are also there at HEAD with the change
+  stashed. None is on a carry-forward line:
+  - `VoiceTests.NoOperatorFacingStringUsesABritishSpelling` (`centre` at `MainWindowViewModel.cs`
+    12744 and 12752 at HEAD);
+  - `HowMuchTheApplicationSaysTests` x2 (the CW tab at 554 against a ceiling of 550; not a surface
+    this unit changed);
+  - `SettingsCarriesTheTransmitDriveTests.TheNoteSaysItIsAStartingPointToBeSetAgainstTheRadiosAlc`.
+- The settings window's text goes from 1626 to 1677 characters, against its ceiling of 1750.
 
 **Decisions I made for myself:**
-1. I reran the app carry-forward line once after the dispatcher-loop failures, and recorded both
-   runs. No source had changed, and 453 saw the same intermittent loss at its exit.
-2. I did not continue to other tasks. Task 2 needs task 1's port. Task 4's exit round would repeat
-   task 0's, with `src` untouched.
+1. **The 071 test covers all nine prosigns of `CW_SPEC.md` 6.2, not only the five in the decoder's
+   table.** The instruction says "each prosign in the table", and its §2 says the requirements win.
+   HM-REQ-071's verification row lists AR, SK, BT, KN, BK, CL and AS. So four cases are committed
+   red, and they stay red until 6.1 generates the table.
+2. **At HEAD, 072's red was the setting's absence, found by reflection.** A typed test could not
+   compile against a type that did not exist. Task 3 replaced it with the typed both-ways theory.
+   Both runs are recorded: `.run-unit/unit455-req072-head2.txt`, then `unit455-req072-change2.txt`.
+3. **The naming is applied on the screen only**: the terminal's settled text and the tip.
+   - The transcript's own text keeps the decoder's symbol, and so do the callsign resolver, the case
+     sheet and the collapsed panel's one-line summary (`Transcript.Tail`).
+   - So under the punctuation setting, that 28-character summary still shows `<BT>`.
+4. **I put the setting on the settings screen as a switch, not only in the settings file.** The
+   requirement says "per the terminal's setting", and the operator can reach a switch without
+   editing a file.
+5. **The transmit files are unit 435's eleven.** That list is what "the transmit files" has meant
+   in every exit round since. A wider grep of `src` also catches the FT8 transmit files, which have
+   changed since `7e209cb4` in earlier units. None changed in this unit.
+6. **To check whether the four app failures predate the change, I stashed the change, built HEAD,
+   ran them, and restored it** (`.run-unit/unit455-athead.sh`).
+7. **I did not enter section 4's two findings in `OPEN_ISSUES.md`.** §12.6 names that file, but its
+   entries carry `HM-OPEN` ids, and assigning one is a record decision I left to the owner. Both
+   findings are in section 4.
 
 Nothing was recorded under `CLAUDE.md` §12.1. Nothing in this unit keys or transmits.
 
@@ -84,41 +147,100 @@ work instruction states the task count (4).
 
 ## 2. What the owner should expect
 
-Nothing about CW has changed today. Hamlet reads every recording exactly as it did after
-yesterday's run. It still gets about one letter in thirteen wrong while showing it as sure, and on
-the W1AW bulletin it still prints `PGOPAGATION FORECAST BUAELETIN`. How far that is from a mature
-decoder is still unmeasured, because the fldigi source could not be downloaded from inside this
-session. Once the source is in the folder named in section 4, the next session can port it and
-produce the side-by-side table. **What will look wrong but is not:**
-- The app test line lost 4 tests on its first run and passed 278 of 278 on the rerun. That is a
-  known intermittent fault in the test host, not a regression.
-- The three named floors are red, the same three at the same values as 453 left them.
+**What the operator sees:**
+- When a station signs off with AR or SK sent as one run, the terminal shows `<AR>` or `<SK>` as one
+  symbol, never `EN`, `RK` or loose letters. The same holds when a station sends BT between
+  paragraphs (`<BT>`), and for KN and AS.
+- On the settings screen there is now a switch, "Show BT and AR in the CW terminal as = and +". It
+  is off by default, so the screen reads exactly as it did yesterday. Turned on, the next `<BT>`
+  shows as `=` and the next `<AR>` as `+`. Characters already on screen stay as they were drawn.
+- VE, CT, BK and CL still come out as the filled block `■` mid-over, because the decoder's table
+  does not know them yet. Sent as the very last thing in an over, one of those four currently shows
+  nothing at all.
+
+**What will look wrong but is not:**
+- `TheProsignArrivesAsOneSymbolTests` is red on 4 of its 12 cases (VE, CT, BK, CL). That is
+  HM-REQ-071 measured and not met, committed red on purpose.
+- The three named floors are red at the stated values: 17:37 38 of 46, `032113` 43 of 45, `032129`
+  42 of 64.
+- Four app tests outside the carry-forward line are red at HEAD without this change (voice spelling
+  `centre`, the CW tab's text ceiling at 554 of 550, and the drive note).
+
+**The build and tests at exit:** 0 errors. Engine line 178 of 178; app line 278 of 278 on the first
+run. Pushed to `origin/main`.
 
 ## 3. What you should see
 
-**No visible change. This unit produced no parity table and no second decoder.** The question it
-was commissioned to answer, how ours compares with fldigi on the four metrics, is **not answered**:
-fldigi 0 of 0 measured, against ours at 33 of 436 sure-wrong on the real recordings and 14 of 173
-on the synthetic set. Nothing changed in the application.
+**The prosign table: every prosign, its pattern, and what the operator reads.** The two reads are
+from a synthetic send of each prosign, taken mid-message and then at the end.
+
+| prosign | pattern | in the decoder's table | at HEAD | after task 3, default | after task 3, switch on | one symbol? |
+|---|---|---|---|---|---|---|
+| AR | `.-.-.` | yes | `<AR>`, `<AR>` | `<AR>` | `+` | yes |
+| SK | `...-.-` | yes | `<SK>`, `<SK>` | `<SK>` | `<SK>` | yes |
+| BT | `-...-` | yes | `<BT>`, `<BT>` | `<BT>` | `=` | yes |
+| KN | `-.--.` | yes | `<KN>`, `<KN>` | `<KN>` | `<KN>` | yes |
+| AS | `.-...` | yes | `<AS>`, `<AS>` | `<AS>` | `<AS>` | yes |
+| VE | `...-.` | no | `■`, nothing | same | same | not the prosign |
+| CT | `-.-.-` | no | `■`, nothing | same | same | not the prosign |
+| BK | `-...-.-` | no | `■`, nothing | same | same | not the prosign |
+| CL | `-.-..-..` | no | `■`, nothing | same | same | not the prosign |
+| A then R, gapped | `.-` `.-.` | - | `AR` as two letters | same | same | two, as sent |
+
+- **HM-REQ-071: not met.** It is met on 5 of 9. None of the 9 is split into letters. The 4 misses
+  are prosigns the table lacks.
+- **HM-REQ-072: met**, where it was not met at HEAD.
+- `prosigns-18wpm` reads `W1AW DE K2ABC <BT> R TU <SK>`. The two `<BT>`s in the real keys read
+  `<BT>`.
+
+**What changes for the operator:** they can now choose to see `=` and `+` instead of BT and AR.
+Nothing else they read has changed.
+
+**Entry and exit, side by side:**
+
+| check | entry | exit |
+|---|---|---|
+| build | 0 errors | 0 errors |
+| engine carry-forward | 178 of 178, 389 s | 178 of 178, 383 s |
+| app carry-forward | 278 of 278, 174 s | 278 of 278, 160 s |
+| captures | 51 of 51 | 51 of 51 |
+| adjudicated | 13 of 13 | 13 of 13 |
+| named floors | 10 of 13 (38, 43, 42) | 10 of 13 (38, 43, 42) |
+| MET-CER-SURE | real, inferred: 33 of 436; synthetic, exact: 14 of 173 | same |
+| MET-INVENTED | real 33 over 473; synthetic 14 over 252 | same |
+| coverage (R82) | real 403 over 473; synthetic 159 over 252 | same |
+| MET-WBE | real 37 (29 ins, 8 del) over 113; synthetic 44 (13, 31) over 84 | same |
+| `TheProsignArrivesAsOneSymbolTests` | - | 8 of 12 (VE, CT, BK, CL red) |
+| `TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests` | 2 of 3 at HEAD | 7 of 7 |
+| app types touched (14) | 117 of 121 with the change; the same 4 red at HEAD | 117 of 121 |
+| `git diff 7e209cb4` over the eleven transmit files | - | prints nothing |
+| every recording's text against task 0 | - | byte-identical, 126 lines |
 
 ## 4. What's blocking us
 
-1. **Ruling proposed: the owner places fldigi's source under `C:\Source\HamLet\.run-unit\fldigi\`.**
-   - **Simplest way:** run
-     `git clone https://github.com/w1hkj/fldigi.git C:\Source\HamLet\.run-unit\fldigi` from any
-     shell. That brings the commit hash for the attribution. The alternative is allowing that one
-     command in the session's permissions.
-   - **Minimum set, if you copy files instead:** `src/cw_rtty/cw.cxx`, `src/include/cw.h`, and
-     the DSP helpers they include (the FFT filter, the moving average and the sliding FFT), with
-     the commit hash written beside them.
-   - **Reasoning:** the work instruction's §3 routes a refused clone to exactly this request, and
-     forbids routing around it.
-   - **Rejected:** fetching the source by another route (curl, web fetch, archive). The clone
-     refusal is a denial, and a second route around it is what §3 and §6 forbid.
-   - This blocks tasks 1 to 4 and all of step 9.
-2. **CW reading under R85:** none needed this unit, because no CW question arose before the block.
+Nothing blocks the next step. Three items, the first a reading and the other two findings, all for
+the record:
+
+1. **The CW reading under R85.** HM-REQ-071 is read against `CW_SPEC.md` 6.2's nine prosigns and its
+   verification row, not against the decoder's table. A prosign the table lacks is "not met", and
+   its fix is 6.1's generated table (HM-REQ-070). No constant was added by hand.
+2. **Finding for 6.1: KN's pattern `-.--.` is also M.1677-1's open bracket `(`.**
+   - That makes it a two-named pattern that `CW_SPEC.md` 6.2 does not list as one. 6.2 names only
+     `=`/`BT` and `+`/`AR`.
+   - Read under R85, 6.2 wins: KN is named KN, and the switch does not rename it.
+   - When 6.1 generates the table from the vendored M.1677-1 file, `(` and `)` will need the same
+     ruling 6.2 gave `=` and `+`.
+3. **Finding for 6.1: a run the table lacks is dropped entirely when it is the last thing sent.**
+   - VE, CT, BK and CL each read `■` mid-message but emit nothing at all at the end of a send.
+   - That is "something was heard and nothing is shown", which is §0.0's concern rather than 071's.
+   - I named it here and did not repair it (§12.6).
 
 **Asks still outstanding**
+- From unit 454, 2026-09-26: **Ruling proposed: the owner places fldigi's source under
+  `C:\Source\HamLet\.run-unit\fldigi\`.** The simplest way is to run
+  `git clone https://github.com/w1hkj/fldigi.git C:\Source\HamLet\.run-unit\fldigi` from any shell,
+  or to allow that one command in the session's permissions. It waits on the owner, and it blocks
+  all of step 9. No change sits in the tree for it. `.run-unit\fldigi\` is still absent.
 - From unit 453, 2026-09-26: whether 6.5 stands ticked on three spans measured and three not
   measurable here. It waits on the owner's ruling. The tick is in both copies of `PHASE_PLAN.md`,
   and the measurement is in `docs/phase-requirements/metrics.md`. R85 may settle it as a CW

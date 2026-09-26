@@ -1,0 +1,1431 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.17]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.ThereIsOneStableEventName [9 ms]
+  Standard Output Messages:
+ events written: 1
+ name          : startup_snapshot
+ category      : Diagnostics
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.ADeviceThatIsPresentRaisesNoAlarm [12 ms]
+  Standard Output Messages:
+ lines written   : 0
+ warnings written: 0
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.ADeviceThatHasGoneIsAStateChange [13 ms]
+  Standard Output Messages:
+   {"ts":"2026-09-26T18:08:08.859Z","sessionId":"4297089c","level":"warn","appVersion":"1.12.267","category":"diagnostics","event":"state_changed","data":{"what":"transmitDevicePresent","from":"true","to":"false","why":"settings name {0.0.0.00000000}.{a-device-that-is-gone} and this machine has 2 output devices, none of them that one","mode":"unknown"}}
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.NothingPersonalReachesTheSnapshot [< 1 ms]
+  Standard Output Messages:
+ when=at_start appVersion=1.13.142+078a830345207b8f495ef1dca22718862ead141e ft8SharpVersion=unknown ft8SharpVersionWhy=Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded ft8SharpDeepVersion=unknown ft8SharpDeepVersionWhy=Ft8Sharp.Deep is not loaded in this process yet, which is ordinary before anything has decoded framework=.NET 8.0.24 osBuild=Microsoft Windows 10.0.26200 processBits=64 audioInputCount=2 audioInputs={in}.{mic} Microphone | {in}.{codec} USB Audio CODEC audioInputSelected=(none named, so Hamlet preselects and never claims) audioInputPresent=unknown audioInputPresentWhy=nothing supplied this fact audioInputChosenBy=not remembered audioOutputCount=2 audioOutputs={0.0.0.00000000}.{speakers} Speakers | {0.0.0.00000000}.{usb-codec} USB Audio CODEC transmitDeviceSelected=(none named, so a send refuses) transmitDevicePresent=unknown transmitDevicePresentWhy=nothing supplied this fact radioConnected=unknown radioConnectedWhy=nothing supplied this fact radioPort=unknown radioPortWhy=nothing supplied this fact radioBaud=unknown radioBaudWhy=nothing supplied this fact radioCivAddress=unknown radioCivAddressWhy=nothing supplied this fact radioModel=unknown radioModelWhy=nothing supplied this fact radioLastAnsweredSecondsAgo=unknown radioLastAnsweredSecondsAgoWhy=nothing supplied this fact clockOffsetKnown=unknown clockOffsetKnownWhy=nothing supplied this fact clockOffsetSeconds=unknown clockOffsetSecondsWhy=nothing supplied this fact clockOffsetAgeSeconds=unknown clockOffsetAgeSecondsWhy=nothing supplied this fact clockLastQueryReason=unknown clockLastQueryReasonWhy=nothing supplied this fact transmitReadiness=unknown transmitReadinessWhy=nothing supplied this fact transmitReadinessDecidedBy=unknown transmitReadinessDecidedByWhy=nothing supplied this fact appOperatingMode=unknown appOperatingModeWhy=nothing supplied this fact appDigitalMode=unknown appDigitalModeWhy=nothing supplied this fact settingsLoaded=True settingsPathExists=False settingsNamedButAbsent=(none) telemetryCategoriesOn=Diagnostics | Rig | Tuning | Explore | Decode | Transmit | Performance | Psk31 telemetryCategoriesOff=(none) telemetryEventsDropped=0
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.ItIsWrittenEvenWhenTheGatheringFallsOver [1 ms]
+  Standard Output Messages:
+ still wrote 58 fields
+ audioOutputs    : unknown
+ audioOutputsWhy : InvalidOperationException: no audio subsystem at all
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.TheSnapshotSaysWhichCategoriesAreOff [< 1 ms]
+  Standard Output Messages:
+ on  : Diagnostics | Rig | Tuning | Explore | Decode | Performance | Psk31
+ off : Transmit
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.TheSnapshotCarriesEveryFactTaskOneAskedFor [1 ms]
+  Standard Output Messages:
+   appDigitalMode                unknown
+   appDigitalModeWhy             nothing supplied this fact
+   appOperatingMode              unknown
+   appOperatingModeWhy           nothing supplied this fact
+   appVersion                    1.13.142+078a830345207b8f495ef1dca22718862ead141e
+   audioInputChosenBy            not remembered
+   audioInputCount               2
+   audioInputPresent             unknown
+   audioInputPresentWhy          nothing supplied this fact
+   audioInputSelected            (none named, so Hamlet preselects and never claims)
+   audioInputs                   {in}.{mic} Microphone | {in}.{codec} USB Audio CODEC
+   audioOutputCount              2
+   audioOutputs                  {0.0.0.00000000}.{speakers} Speakers | {0.0.0.00000000}.{usb-codec} USB Audio CODEC
+   clockLastQueryReason          unknown
+   clockLastQueryReasonWhy       nothing supplied this fact
+   clockOffsetAgeSeconds         unknown
+   clockOffsetAgeSecondsWhy      nothing supplied this fact
+   clockOffsetKnown              unknown
+   clockOffsetKnownWhy           nothing supplied this fact
+   clockOffsetSeconds            unknown
+   clockOffsetSecondsWhy         nothing supplied this fact
+   framework                     .NET 8.0.24
+   ft8SharpDeepVersion           unknown
+   ft8SharpDeepVersionWhy        Ft8Sharp.Deep is not loaded in this process yet, which is ordinary before anything has decoded
+   ft8SharpVersion               unknown
+   ft8SharpVersionWhy            Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded
+   osBuild                       Microsoft Windows 10.0.26200
+   processBits                   64
+   radioBaud                     unknown
+   radioBaudWhy                  nothing supplied this fact
+   radioCivAddress               unknown
+   radioCivAddressWhy            nothing supplied this fact
+   radioConnected                unknown
+   radioConnectedWhy             nothing supplied this fact
+   radioLastAnsweredSecondsAgo   unknown
+   radioLastAnsweredSecondsAgoWhynothing supplied this fact
+   radioModel                    unknown
+   radioModelWhy                 nothing supplied this fact
+   radioPort                     unknown
+   radioPortWhy                  nothing supplied this fact
+   settingsLoaded                True
+   settingsNamedButAbsent        (none)
+   settingsPathExists            False
+   telemetryCategoriesOff        (none)
+   telemetryCategoriesOn         Diagnostics | Rig | Tuning | Explore | Decode | Transmit | Performance | Psk31
+   telemetryEventsDropped        0
+   transmitDevicePresent         unknown
+   transmitDevicePresentWhy      nothing supplied this fact
+   transmitDeviceSelected        (none named, so a send refuses)
+   transmitReadiness             unknown
+   transmitReadinessDecidedBy    unknown
+   transmitReadinessDecidedByWhy nothing supplied this fact
+   transmitReadinessWhy          nothing supplied this fact
+   when                          at_start
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.AFactThatCannotBeDeterminedSaysUnknownAndWhy [1 ms]
+  Standard Output Messages:
+ audioInputs    : unknown
+ audioInputsWhy : InvalidOperationException: the sound card driver fell over
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304SnapshotTests.AMissingTransmitDeviceIsVisibleInOneField [< 1 ms]
+  Standard Output Messages:
+ transmitDeviceSelected : {0.0.0.00000000}.{a-device-that-is-gone}
+ transmitDevicePresent  : False
+ settingsNamedButAbsent : transmit device {0.0.0.00000000}.{a-device-that-is-gone}
+ audioOutputs           : {0.0.0.00000000}.{speakers} Speakers | {0.0.0.00000000}.{usb-codec} USB Audio CODEC
+
+
+[xUnit.net 00:00:00.98]     Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.TheCeilingIsTightEnoughToHaveCaughtTheParagraph [FAIL]
+[xUnit.net 00:00:00.98]       the CW tab is already over its ceiling at 554
+[xUnit.net 00:00:00.98]       Stack Trace:
+[xUnit.net 00:00:00.98]         C:\Source\HamLet\tests\Hamlet.App.Tests\Views\HowMuchTheApplicationSaysTests.cs(333,0): at Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.TheCeilingIsTightEnoughToHaveCaughtTheParagraph()
+[xUnit.net 00:00:00.98]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.98]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.98]       Output:
+[xUnit.net 00:00:00.98]         the paragraph        : 997 characters
+[xUnit.net 00:00:00.98]         the CW tab now       : 554
+[xUnit.net 00:00:00.98]         with it on the bar   : 1551
+[xUnit.net 00:00:00.98]         its ceiling          : 550
+  Passed Hamlet.App.Tests.Views.HistoryRecedesAndCurrentCopyDoesNotTests.NothingIsDeleted [14 ms]
+  Standard Output Messages:
+ 720 characters written, 720 on the screen
+
+
+  Passed Hamlet.App.Tests.Views.HistoryRecedesAndCurrentCopyDoesNotTests.AShortTranscriptIsAllCurrentCopy [< 1 ms]
+  Standard Output Messages:
+ 120 characters, 1 runs
+
+
+  Passed Hamlet.App.Tests.Views.HistoryRecedesAndCurrentCopyDoesNotTests.RecededInkKeepsItsOwnHueAndStaysReadable [4 ms]
+  Standard Output Messages:
+ High       receded to #ff276c52
+ Low        receded to #ff224f40
+ Unreadable receded to #ff594426
+
+
+  Passed Hamlet.App.Tests.Views.HistoryRecedesAndCurrentCopyDoesNotTests.EverythingBeforeTheRecentStretchRecedes [1 ms]
+  Standard Output Messages:
+ 6 runs, 240 characters bright, 480 receded, recent stretch is 240
+
+
+  Failed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.TheCeilingIsTightEnoughToHaveCaughtTheParagraph [627 ms]
+  Error Message:
+   the CW tab is already over its ceiling at 554
+  Stack Trace:
+     at Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.TheCeilingIsTightEnoughToHaveCaughtTheParagraph() in C:\Source\HamLet\tests\Hamlet.App.Tests\Views\HowMuchTheApplicationSaysTests.cs:line 333
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ the paragraph        : 997 characters
+ the CW tab now       : 554
+ with it on the bar   : 1551
+ its ceiling          : 550
+
+
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.AddingASentenceToACappedSurfaceTurnsItRed [152 ms]
+  Standard Output Messages:
+ before : 1386  ceiling 1450
+ added  : 400 characters
+ after  : 1786
+
+
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.EveryCeilingIsTheMeasuredFigurePlusTheStatedMargin [< 1 ms]
+  Standard Output Messages:
+ MainWindow — CW tab           426 + 100, to the next 50 =   550   set: 550
+ MainWindow — Digital tab     1333 + 100, to the next 50 =  1450   set: 1450
+ MainWindow — Digital tab, working 1332 + 100, to the next 50 =  1450   set: 1450
+ MainWindow — Voice tab        468 + 100, to the next 50 =   600   set: 600
+ SettingsWindow               1628 + 100, to the next 50 =  1750   set: 1750
+ RigDiagnosticsWindow         1346 + 100, to the next 50 =  1450   set: 1450
+ AboutWindow                   726 + 100, to the next 50 =   850   set: 850
+ LogContactWindow              716 + 100, to the next 50 =   850   set: 850
+ FavoritesWindow               280 + 100, to the next 50 =   400   set: 400
+ ContactLogWindow              246 + 100, to the next 50 =   350   set: 350
+ DecisionLogWindow             196 + 100, to the next 50 =   300   set: 300
+ AchievementsWindow            158 + 100, to the next 50 =   300   set: 300
+ AchievementsWindow, worked    153 + 100, to the next 50 =   300   set: 300
+
+
+[xUnit.net 00:00:02.19]     Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.NoSurfaceSaysMoreThanItsCeiling [FAIL]
+[xUnit.net 00:00:02.19]       these surfaces have grown past what they are allowed to say: MainWindow — CW tab holds 554, ceiling 550
+[xUnit.net 00:00:02.19]       Stack Trace:
+[xUnit.net 00:00:02.19]         C:\Source\HamLet\tests\Hamlet.App.Tests\Views\HowMuchTheApplicationSaysTests.cs(291,0): at Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.NoSurfaceSaysMoreThanItsCeiling()
+[xUnit.net 00:00:02.19]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.19]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.19]       Output:
+[xUnit.net 00:00:02.19]           554 /   550   set from   426   MainWindow — CW tab
+[xUnit.net 00:00:02.19]          1386 /  1450   set from  1333   MainWindow — Digital tab
+[xUnit.net 00:00:02.19]          1385 /  1450   set from  1332   MainWindow — Digital tab, working
+[xUnit.net 00:00:02.19]           596 /   600   set from   468   MainWindow — Voice tab
+[xUnit.net 00:00:02.19]          1677 /  1750   set from  1628   SettingsWindow
+[xUnit.net 00:00:02.19]          1346 /  1450   set from  1346   RigDiagnosticsWindow
+[xUnit.net 00:00:02.19]           726 /   850   set from   726   AboutWindow
+[xUnit.net 00:00:02.19]           766 /   850   set from   716   LogContactWindow
+[xUnit.net 00:00:02.19]           280 /   400   set from   280   FavoritesWindow
+[xUnit.net 00:00:02.19]           246 /   350   set from   246   ContactLogWindow
+[xUnit.net 00:00:02.19]           196 /   300   set from   196   DecisionLogWindow
+[xUnit.net 00:00:02.19]             0 /   300   set from   158   AchievementsWindow
+[xUnit.net 00:00:02.19]             0 /   300   set from   153   AchievementsWindow, worked
+  Failed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.NoSurfaceSaysMoreThanItsCeiling [1 s]
+  Error Message:
+   these surfaces have grown past what they are allowed to say: MainWindow — CW tab holds 554, ceiling 550
+  Stack Trace:
+     at Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.NoSurfaceSaysMoreThanItsCeiling() in C:\Source\HamLet\tests\Hamlet.App.Tests\Views\HowMuchTheApplicationSaysTests.cs:line 291
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+   554 /   550   set from   426   MainWindow — CW tab
+  1386 /  1450   set from  1333   MainWindow — Digital tab
+  1385 /  1450   set from  1332   MainWindow — Digital tab, working
+   596 /   600   set from   468   MainWindow — Voice tab
+  1677 /  1750   set from  1628   SettingsWindow
+  1346 /  1450   set from  1346   RigDiagnosticsWindow
+   726 /   850   set from   726   AboutWindow
+   766 /   850   set from   716   LogContactWindow
+   280 /   400   set from   280   FavoritesWindow
+   246 /   350   set from   246   ContactLogWindow
+   196 /   300   set from   196   DecisionLogWindow
+     0 /   300   set from   158   AchievementsWindow
+     0 /   300   set from   153   AchievementsWindow, worked
+
+
+  Passed Hamlet.App.Tests.Views.HowMuchTheApplicationSaysTests.TheWholeApplicationIsMeasuredForWords [866 ms]
+  Standard Output Messages:
+ === MainWindow — CW tab — 602 chars in 48 blocks
+     61  Your General license covers Morse here. Call away · 97.305(a)
+     52  no spots saved yet - press the star to keep this one
+     48  The rest is silence — or possibly a dead battery
+     42  scroll wheel over a digit tunes that digit
+     35  preamp unknown · attenuator unknown
+     28  Training radio (no hardware)
+     28  CW main street · 7.000–7.125
+     23  Pick a port and connect
+     22  where the sun is · you
+     20  Morse · yours to use
+     19  what you would send
+     16  Neighborhood map
+     16  I hear a station
+     15  % of full scale
+     14  Transmit drive
+     13  not listening
+     11  CW terminal
+     10  -12.0 dBFS
+      9  7.028 MHz
+      8  _Explore
+      7  Connect
+      7  Digital
+      6  _Radio
+      6  _Tools
+      5  _File
+      5  _Help
+      5  Voice
+      5  Clear
+      5  Clear
+      4  40 m
+      4  80 m
+      4  40 m
+      4  30 m
+      4  20 m
+      4  17 m
+      4  15 m
+      4  10 m
+      4  Send
+      4  Send
+      4  Stop
+      3  Ham
+      3  let
+      3  RST
+      2  CW
+      2  CQ
+      2  73
+      1  ▾
+      1  ▾
+ 
+ ===     of which CWWorkspace — 120 chars in 13 blocks
+     35  preamp unknown · attenuator unknown
+     19  what you would send
+     16  I hear a station
+     13  not listening
+     11  CW terminal
+      5  Clear
+      5  Clear
+      4  Send
+      4  Send
+      3  RST
+      2  CQ
+      2  73
+      1  ▾
+ 
+ === MainWindow — Digital tab — 1428 chars in 93 blocks
+    235  nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.
+    117  nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+     76  Your General license covers digital modes here. Call away · 97.305(c)(3)(iv)
+     61  Nothing more has been heard from W3YNI. He may have moved on.
+     52  no spots saved yet - press the star to keep this one
+     46  Confirm, and tell him how he is coming through
+     42  Something is rotten in the state of my SWR
+     42  scroll wheel over a digit tunes that digit
+     35  214130 UTC · 1 shown · newest first
+     28  Training radio (no hardware)
+     28  CW main street · 7.000–7.125
+     28  21:41:30 UTC · 2 minutes ago
+     24  keep the last 30 seconds
+     24  United States · 40 miles
+     23  Pick a port and connect
+     22  where the sun is · you
+     21  no level measured yet
+     21  Would open a new area
+     20  Morse · yours to use
+     19  +02 · 2 minutes ago
+     17  not listening yet
+     16  Neighborhood map
+     16  nothing sent yet
+     16  Log this contact
+     16  16:27 by the sun
+     15  % of full scale
+     15  40 miles · east
+     14  Transmit drive
+     14  no contact yet
+     12  newest first
+     12  Decoded text
+     10  -12.0 dBFS
+     10  everything
+     10  Gone quiet
+     10  Last heard
+      9  7.028 MHz
+      9  Waterfall
+      9  1 for you
+      9  show them
+      8  _Explore
+      8  tune to:
+      8  Distance
+      8  His time
+      8  Messages
+      8  Achieves
+      7  Connect
+      7  Digital
+      7  message
+      7  For you
+      6  _Radio
+      6  _Tools
+      6  Olivia
+      6  214130
+      5  _File
+      5  _Help
+      5  Voice
+      5  PSK31
+      5  clear
+      5  W3YNI
+      5  W3YNI
+      4  40 m
+      4  80 m
+      4  40 m
+      4  30 m
+      4  20 m
+      4  17 m
+      4  15 m
+      4  10 m
+      4  WSPR
+      4  FN00
+      4  Grid
+      4  FN00
+      4  Stop
+      3  Ham
+      3  let
+      3  FT8
+      3  FT4
+      3  utc
+      3  snr
+      3  -11
+      2  CW
+      2  CQ
+      2  CQ
+      2  CQ
+      1  ▾
+      1  ◷
+      1  ▾
+      1  ▾
+      1  ▾
+      1  ?
+      1  ✕
+      1  1
+      1  ·
+ 
+ ===     of which DigitalWorkspace — 884 chars in 54 blocks
+    235  nothing is listening yet, so there is no audio arriving here at all and none of it can be cut into slots however busy the band is. Hamlet opens the sound card when it starts listening, and until it does this tab has nothing to work on.
+    117  nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+     61  Nothing more has been heard from W3YNI. He may have moved on.
+     46  Confirm, and tell him how he is coming through
+     35  214130 UTC · 1 shown · newest first
+     28  21:41:30 UTC · 2 minutes ago
+     24  keep the last 30 seconds
+     24  United States · 40 miles
+     21  Would open a new area
+     19  +02 · 2 minutes ago
+     17  not listening yet
+     16  Log this contact
+     16  16:27 by the sun
+     15  40 miles · east
+     12  newest first
+     12  Decoded text
+     10  everything
+     10  Gone quiet
+     10  Last heard
+      9  Waterfall
+      9  1 for you
+      9  show them
+      8  tune to:
+      8  Distance
+      8  His time
+      8  Messages
+      8  Achieves
+      7  message
+      7  For you
+      6  Olivia
+      6  214130
+      5  PSK31
+      5  clear
+      5  W3YNI
+      5  W3YNI
+      4  WSPR
+      4  FN00
+      4  Grid
+      4  FN00
+      3  FT8
+      3  FT4
+      3  utc
+      3  snr
+      3  -11
+      2  CQ
+      2  CQ
+      1  ◷
+      1  ▾
+      1  ▾
+      1  ▾
+      1  ?
+      1  ✕
+      1  1
+      1  ·
+ 
+ === MainWindow — Voice tab — 618 chars in 37 blocks
+    109  voice is not authorized on this frequency for any class. this part of the band is for other modes · 97.305(c)
+     63  Receiving is never restricted. Any license may listen anywhere.
+     52  no spots saved yet - press the star to keep this one
+     47  Morse · listen all you like, but don't transmit
+     42  scroll wheel over a digit tunes that digit
+     28  Training radio (no hardware)
+     28  CW main street · 7.000–7.125
+     24  What would Extra unlock?
+     23  Pick a port and connect
+     22  Get thee to a repeater
+     22  where the sun is · you
+     16  Neighborhood map
+     15  % of full scale
+     14  Transmit drive
+     10  -12.0 dBFS
+      9  7.028 MHz
+      8  _Explore
+      7  Connect
+      7  Digital
+      6  _Radio
+      6  _Tools
+      5  _File
+      5  _Help
+      5  Voice
+      4  40 m
+      4  80 m
+      4  40 m
+      4  30 m
+      4  20 m
+      4  17 m
+      4  15 m
+      4  10 m
+      4  Stop
+      3  Ham
+      3  let
+      2  CW
+      1  ▾
+ 
+ ===     of which VoiceWorkspace — 0 chars in 0 blocks
+ 
+ === SettingsWindow — 1677 chars in 98 blocks
+    227  Off until you have joined the SOTA Reflector's "API-consumers" group and had Hamlet approved. The SOTA API's terms require both, and one of them is about AI-written code. Hamlet will not connect on your behalf until you say so.
+    183  Your callsign is sent to RBN as the login, and to POTA and SOTA in the User-Agent, because those services are owed knowing who is calling them. It is still never written to telemetry.
+    112  Not set yet. Hamlet fills this in from your callsign, and until it does it won't guess how far away anything is.
+     96  Off by default now that the live feeds work. Leaving it on mixes made-up spots into a real list.
+     75  C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-45240\scan-segments.json
+     73  License class not set, so the band map will not guess at your privileges.
+     56  C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-45240
+     44  Only let me transmit where my license allows
+     44  Show BT and AR in the CW terminal as = and +
+     42  Connect to my last radio when Hamlet opens
+     39  Hamlet fills this in from your callsign
+     38  Set the mode to match where I am tuned
+     36  Where the scanner may take your dial
+     35  How long a spot stays worth chasing
+     32  Microphone (EMEET SmartCam C960)
+     27  Park and summit activations
+     26  how you want to be greeted
+     24  Currently using 0.00 MB.
+     21  Where spots come from
+     16  Contest activity
+     15  % of full scale
+     15  Every 5 minutes
+     15  Skimmer reports
+     15  Clear telemetry
+     14  Transmit drive
+     14  words a minute
+     13  Happening now
+     12  Auto-refresh
+     11  city, state
+     11  Grid square
+     11  Morse speed
+     11  Diagnostics
+     11  Performance
+     11  Data folder
+     11  Open folder
+     10  Disk limit
+      9  Listening
+      9  Telemetry
+      8  Operator
+      8  Callsign
+      8  Location
+      8  Transmit
+      8  CW pitch
+      8  Decoding
+      7  License
+      7  Unknown
+      7  Open it
+      7  Explore
+      6  Sample
+      6  Tuning
+      5  Class
+      5  Input
+      5  Radio
+      5  Close
+      4  Name
+      4  POTA
+      4  SOTA
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  min
+      3  min
+      3  min
+      3  Off
+      3  Off
+      3  RBN
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      3  Off
+      2  On
+      2  Hz
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  On
+      2  MB
+      1  ●
+      1  ⚑
+      1  ◆
+      1  ⚑
+      1  ●
+      1  ▲
+      1  ■
+ 
+ === AboutWindow — 726 chars in 28 blocks
+    257  Hamlet exists to make amateur radio intuitive for people who have a license but not fifty years at the key. The bands are not a mystery to be earned. They are a place, and this app draws the map, names what you are hearing, and takes you there in one click.
+     77  Copy this into a bug report. It carries no callsign, no name and no location.
+     56  C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-45240
+     38  8 of 8 categories on · 0.00 MB on disk
+     35  Let me ham. The radio, demystified.
+     30  GPL-3.0 · free and open source
+     29  github.com/TJDixon2022/Hamlet
+     25  no telemetry this session
+     20  2026-09-26 17:50 UTC
+     16  Copy diagnostics
+     16  Open data folder
+     11  .NET 8.0.24
+     11  Diagnostics
+     11  Data folder
+     10  This build
+     10  Session id
+      9  by KC3QIS
+      9  Telemetry
+      8  1.13.142
+      8  Avalonia
+      7  Version
+      7  License
+      6  11.3.0
+      5  Built
+      5  Close
+      4  .NET
+      3  Ham
+      3  let
+ 
+ === ContactLogWindow — 246 chars in 4 blocks
+    198  Nothing here yet. Hamlet writes a line into this log every time you fill in the contact dialog after working somebody, and this window is where those lines come back. The file lives at contacts.adi.
+     18  0 contacts logged.
+     18  10 to go until 10.
+     12  contacts.adi
+ 
+ === RigDiagnosticsWindow — 1346 chars in 140 blocks
+     27  0 of 45 read from the radio
+     26  Scope data to the computer
+     21  Noise reduction level
+     21  Audio to the computer
+     21  Copy for a bug report
+     19  Noise blanker level
+     19  Ask the radio again
+     18  no radio connected
+     18  Front end overload
+     18  Audio output level
+     18  Audio squelch gate
+     15  Noise reduction
+     14  Transmit power
+     14  Spectrum scope
+     13  Squelch level
+     13  Noise blanker
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  Filter width
+     12  not read yet
+     12  not read yet
+     12  Transmitting
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  Manual notch
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     12  not read yet
+     11  Keyer speed
+     10  Attenuator
+     10  Auto notch
+      9  Frequency
+      9  Data mode
+      8  Break-in
+      8  CW pitch
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  S-meter
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  RF gain
+      7  unknown
+      7  unknown
+      7  Squelch
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      7  unknown
+      6  Filter
+      6  Preamp
+      5  Split
+      5  Close
+      4  Mode
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  AGC
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+      3  VFO
+ 
+ === FavoritesWindow — 280 chars in 5 blocks
+    248  Nothing saved yet. Tune somewhere worth coming back to and press the star in the display, and Hamlet will remember the frequency and what lives there. Anywhere you have already been is below, and the star beside it does the same job after the fact.
+     10  Save names
+      9  Move down
+      7  Move up
+      6  Remove
+ 
+ === DecisionLogWindow — 196 chars in 3 blocks
+    170  Nothing decided yet. When Hamlet works out whether it can send, or whether the scope is running, or why a decode was thrown away, it lands here with the reason beside it.
+     21  Copy for a bug report
+      5  Close
+ 
+ === LogContactWindow — 766 chars in 39 blocks
+    141  Hamlet heard 1 of these 11. The rest are empty because it did not hear them, and they will be left out of the file rather than written blank.
+    101  Hamlet did not record the dial for this row, so the frequency and the band are left out of the entry.
+     49  Hamlet did not hear this - type it if you have it
+     49  Hamlet did not hear this - type it if you have it
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     24  Hamlet did not hear this
+     17  QSO_DATE, TIME_ON
+     16  Log this contact
+     16  Report they sent
+     16  STATION_CALLSIGN
+     15  heard by Hamlet
+     15  Report you sent
+     13  Your callsign
+     13  MY_GRIDSQUARE
+     11  Save to log
+     10  Their grid
+     10  GRIDSQUARE
+     10  Your notes
+      9  Frequency
+      9  Your grid
+      8  RST_SENT
+      8  RST_RCVD
+      8  TIME_OFF
+      7  Station
+      7  Started
+      6  Cancel
+      5  W3YNI
+      5  Ended
+      4  CALL
+      4  Band
+      4  BAND
+      4  FREQ
+      4  Mode
+      4  MODE
+ 
+ PERMANENTLY-VISIBLE TEXT, SCREEN BY SCREEN
+ 
+    602 chars    48 blocks   MainWindow — CW tab
+    120 chars    13 blocks       of which CWWorkspace
+   1428 chars    93 blocks   MainWindow — Digital tab
+    884 chars    54 blocks       of which DigitalWorkspace
+    618 chars    37 blocks   MainWindow — Voice tab
+      0 chars     0 blocks       of which VoiceWorkspace
+   1677 chars    98 blocks   SettingsWindow
+    726 chars    28 blocks   AboutWindow
+    246 chars     4 blocks   ContactLogWindow
+   1346 chars   140 blocks   RigDiagnosticsWindow
+    280 chars     5 blocks   FavoritesWindow
+    196 chars     3 blocks   DecisionLogWindow
+    766 chars    39 blocks   LogContactWindow
+ 
+ TOTAL (indented rows excluded, they are subsets): 7885
+
+
+  Passed Hamlet.App.Tests.VoiceTests.TheStaleCannotWorkSentenceIsNowhereInTheSource [77 ms]
+[xUnit.net 00:00:03.37]     Hamlet.App.Tests.VoiceTests.NoOperatorFacingStringUsesABritishSpelling [FAIL]
+[xUnit.net 00:00:03.37]       2 operator-facing strings carry a British spelling:
+[xUnit.net 00:00:03.37]       MainWindowViewModel.cs:12748 [centre]
+[xUnit.net 00:00:03.37]       MainWindowViewModel.cs:12756 [centre]
+[xUnit.net 00:00:03.37]       Stack Trace:
+[xUnit.net 00:00:03.37]         C:\Source\HamLet\tests\Hamlet.App.Tests\VoiceTests.cs(145,0): at Hamlet.App.Tests.VoiceTests.NoOperatorFacingStringUsesABritishSpelling()
+[xUnit.net 00:00:03.37]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.37]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Hamlet.App.Tests.VoiceTests.TheSweepIsActuallyReadingTheCopy [148 ms]
+  Failed Hamlet.App.Tests.VoiceTests.NoOperatorFacingStringUsesABritishSpelling [79 ms]
+  Error Message:
+   2 operator-facing strings carry a British spelling:
+MainWindowViewModel.cs:12748 [centre]
+MainWindowViewModel.cs:12756 [centre]
+  Stack Trace:
+     at Hamlet.App.Tests.VoiceTests.NoOperatorFacingStringUsesABritishSpelling() in C:\Source\HamLet\tests\Hamlet.App.Tests\VoiceTests.cs:line 145
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed Hamlet.App.Tests.VoiceTests.NoPassageOfCopyCarriesTwoEmDashes [82 ms]
+  Passed Hamlet.App.Tests.VoiceTests.CommentsAreNotMistakenForCopy [< 1 ms]
+  Passed Hamlet.App.Tests.Views.BindingHealthTests.TheMainWindowBindsWithoutOneComplaint [170 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.TheSevenNamedValuesLoadFromTheFileWrittenAt_1_13_40 [12 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.AReferenceLearnedInOneSessionIsOnThePanelInTheNext [13 ms]
+  Standard Output Messages:
+ next session reads: Hamlet has a reference for your radio's level control: 95 out of 120, learned from FT8 send at 23:40:12 UTC, 9748 minutes ago.
+
+
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.TheLoadedFileRoundTrips(version: "1.13.30", json: "{\n  \"WindowX\": 120,\n  \"WindowY\": 64,\n  \"Wi"···) [7 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.TheLoadedFileRoundTrips(version: "1.13.40", json: "{\n  \"WindowX\": 300,\n  \"WindowY\": 180,\n  \"W"···) [2 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.TheLoadedFileRoundTrips(version: "HEAD", json: "{\n  \"WindowX\": 0,\n  \"WindowY\": 0,\n  \"Windo"···) [1 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.TheSevenNamedValuesLoadFromTheFileWrittenAtHead [1 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.AFileThatIsNotJsonIsStillDefaults [1 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.NothingTheFileCarriesIsDropped(version: "1.13.30", json: "{\n  \"WindowX\": 120,\n  \"WindowY\": 64,\n  \"Wi"···) [1 ms]
+  Standard Output Messages:
+ 1.13.30: 0 value(s) lost
+
+
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.NothingTheFileCarriesIsDropped(version: "HEAD", json: "{\n  \"WindowX\": 0,\n  \"WindowY\": 0,\n  \"Windo"···) [1 ms]
+  Standard Output Messages:
+ HEAD: 0 value(s) lost
+
+
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.NothingTheFileCarriesIsDropped(version: "1.13.40", json: "{\n  \"WindowX\": 300,\n  \"WindowY\": 180,\n  \"W"···) [1 ms]
+  Standard Output Messages:
+ 1.13.40: 0 value(s) lost
+
+
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.AFavoriteSavedBeforeNotesAndOneSavedTonightBothSurviveTheUpgrade [4 ms]
+  Standard Output Messages:
+ the rig face's list would read: 7.030, the CW watering hole
+ the rig face's list would read: 14.070, PSK31 corner
+
+
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.OneUnreadableValueCostsThatValueAndNotTheFile [3 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.AnUnreadableValueInsideTheProfileCostsThatFieldAlone [2 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.TheSevenNamedValuesLoadFromTheFileWrittenAt_1_13_30 [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.TheAlcReferenceSurvivesARestartCarryingItsOwnAge [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.TheSettingsSurviveAnUpgradeTests.AFieldTheFileLacksTakesItsDefaultAndTheRestIsUntouched [1 ms]
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.TheWarningIsOnTheRealizedWindow [149 ms]
+  Standard Output Messages:
+ on screen: The sound card Hamlet was told to transmit through is not on this machine just now, so sending is refused until it comes back or you pick another one. It was saved as {0.0.0.00000000}.{a-device-that-is-gone}.
+ visible  : True
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.TheOperatorIsToldWhichDeviceIsMissing [57 ms]
+  Standard Output Messages:
+ says: The sound card Hamlet was told to transmit through is not on this machine just now, so sending is refused until it comes back or you pick another one. It was saved as {0.0.0.00000000}.{a-device-that-is-gone}.
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.NothingIsSubstituted [55 ms]
+  Standard Output Messages:
+ selected: (nothing)
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.ChoosingARealDeviceStillReplacesTheSavedOne [57 ms]
+  Standard Output Messages:
+ after picking Speakers: {0.0.0.00000000}.{speakers}
+ warning now: (none)
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.APresentDeviceIsSelectedAndSaysNothing [56 ms]
+  Standard Output Messages:
+ selected: USB Audio CODEC
+ warning : (none)
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.WhatTheLoadPathDoesWithADeviceThatIsGone [56 ms]
+  Standard Output Messages:
+ saved id      : {0.0.0.00000000}.{a-device-that-is-gone}
+ endpoints now : Speakers, USB Audio CODEC
+ selected      : (nothing)
+ saved id after: {0.0.0.00000000}.{a-device-that-is-gone}
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.ClearingThePickerDoesNotEraseAnAbsentDevice [59 ms]
+  Standard Output Messages:
+ after the selection went null: {0.0.0.00000000}.{a-device-that-is-gone}
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit303LostDeviceTests.OpeningSettingsDoesNotEraseAnAbsentDevice [150 ms]
+  Standard Output Messages:
+ after opening Settings, saved id: {0.0.0.00000000}.{a-device-that-is-gone}
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit304BundleTests.ItSaysWhatItDoesNotKnowInTheSameWords [210 ms]
+  Standard Output Messages:
+ appDigitalMode: unknown
+ appOperatingMode: unknown
+ audioInputPresent: unknown
+ clockLastQueryReason: unknown
+ clockOffsetAgeSeconds: unknown
+ clockOffsetKnown: unknown
+ clockOffsetSeconds: unknown
+ ft8SharpDeepVersion: unknown
+ ft8SharpVersion: unknown
+ radioBaud: unknown
+ radioCivAddress: unknown
+ radioConnected: unknown
+ radioLastAnsweredSecondsAgo: unknown
+ radioModel: unknown
+ radioPort: unknown
+ telemetryEventsDropped: unknown
+ transmitDevicePresent: unknown
+ transmitReadiness: unknown
+ transmitReadinessDecidedBy: unknown
+ 
+ 19 facts say unknown
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit304BundleTests.TheButtonsPromiseSurvivesTheGrowth [249 ms]
+  Standard Output Messages:
+ bundle is 3279 characters
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit304BundleTests.TheBundleCarriesTheStateNotOnlyTheVersions [197 ms]
+  Standard Output Messages:
+ Hamlet 1.13.142 (built 2026-09-26 17:50 UTC)
+ OS: Microsoft Windows 10.0.26200
+ .NET: .NET 8.0.24
+ Avalonia: 11.3.0
+ Session: no telemetry this session
+ Data folder: C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-45240
+ Telemetry: 8 of 8 categories on, 0.00 MB, 0 events dropped
+ 
+ --- state now ---
+ appDigitalMode: unknown
+ appDigitalModeWhy: nothing supplied this fact
+ appOperatingMode: unknown
+ appOperatingModeWhy: nothing supplied this fact
+ appVersion: 1.13.142+078a830345207b8f495ef1dca22718862ead141e
+ audioInputChosenBy: not remembered
+ audioInputCount: 2
+ audioInputPresent: unknown
+ audioInputPresentWhy: nothing supplied this fact
+ audioInputSelected: (none named, so Hamlet preselects and never claims)
+ audioInputs: {0.0.1.00000000}.{76cfa9aa-ed33-4c7a-a48e-7e3d66e19491} Microphone (USB Audio) | {0.0.1.00000000}.{8efd33e7-83f7-4d1b-bab1-96b2b9714d4e} Microphone (EMEET SmartCam C960)
+ audioOutputCount: 4
+ audioOutputs: {0.0.0.00000000}.{00738daa-dcd6-404f-9add-85460631e817} S34J55x (3- HD Audio Driver for Display Audio) | {0.0.0.00000000}.{0b19eea6-1ea5-4e30-8b38-c9669f45a0ba} S34J55x -2 (HD Audio Driver for Display Audio) | {0.0.0.00000000}.{3f9b91e6-4099-458f-b350-a8c379fe491f} Ball Speaker (USBAudio2.0) | {0.0.0.00000000}.{522d6c5e-e44f-495f-894e-0b22e264aa87} Speakers (USB Audio)
+ clockLastQueryReason: unknown
+ clockLastQueryReasonWhy: nothing supplied this fact
+ clockOffsetAgeSeconds: unknown
+ clockOffsetAgeSecondsWhy: nothing supplied this fact
+ clockOffsetKnown: unknown
+ clockOffsetKnownWhy: nothing supplied this fact
+ clockOffsetSeconds: unknown
+ clockOffsetSecondsWhy: nothing supplied this fact
+ framework: .NET 8.0.24
+ ft8SharpDeepVersion: unknown
+ ft8SharpDeepVersionWhy: Ft8Sharp.Deep is not loaded in this process yet, which is ordinary before anything has decoded
+ ft8SharpVersion: unknown
+ ft8SharpVersionWhy: Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded
+ osBuild: Microsoft Windows 10.0.26200
+ processBits: 64
+ radioBaud: unknown
+ radioBaudWhy: nothing supplied this fact
+ radioCivAddress: unknown
+ radioCivAddressWhy: nothing supplied this fact
+ radioConnected: unknown
+ radioConnectedWhy: nothing supplied this fact
+ radioLastAnsweredSecondsAgo: unknown
+ radioLastAnsweredSecondsAgoWhy: nothing supplied this fact
+ radioModel: unknown
+ radioModelWhy: nothing supplied this fact
+ radioPort: unknown
+ radioPortWhy: nothing supplied this fact
+ settingsLoaded: True
+ settingsNamedButAbsent: (none)
+ settingsPathExists: True
+ telemetryCategoriesOff: (none)
+ telemetryCategoriesOn: Diagnostics | Rig | Tuning | Explore | Decode | Transmit | Performance | Psk31
+ telemetryEventsDropped: unknown
+ telemetryEventsDroppedWhy: nothing supplied this fact
+ transmitDevicePresent: unknown
+ transmitDevicePresentWhy: nothing supplied this fact
+ transmitDeviceSelected: (none named, so a send refuses)
+ transmitReadiness: unknown
+ transmitReadinessDecidedBy: unknown
+ transmitReadinessDecidedByWhy: nothing supplied this fact
+ transmitReadinessWhy: nothing supplied this fact
+ when: at_start
+ 
+ --- last 40 telemetry lines ---
+ (the telemetry could not be read: DirectoryNotFoundException: Could not find a part of the path 'C:\Users\TimDi\AppData\Local\Temp\hamlet-app-tests-45240\telemetry'.)
+ 
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit304BundleTests.ItCarriesTheRunUpToTheFault [198 ms]
+  Standard Output Messages:
+ the bundle asks for the last 40 lines
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit304BundleTests.ItIsOnePasteAndThisIsHowBig [200 ms]
+  Standard Output Messages:
+ characters : 3279
+ lines      : 68
+ kilobytes  : 3.2
+
+
+  Passed Hamlet.App.Tests.ViewModels.Unit304BundleTests.AMachineThatCannotDescribeItselfStillGetsABundle [203 ms]
+  Standard Output Messages:
+ it built, 3279 characters
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304CostTests.WhatTheSnapshotAndTheBundleCost [202 ms]
+  Standard Output Messages:
+ THE SNAPSHOT
+   one line, 2562 bytes, written once per session
+   against an ordinary day of about 2,600 events, that is 2.50 KB added per start
+ 
+ THE BUNDLE
+   3279 characters, 68 lines, 3.2 KB
+   it is a paste rather than a file, and a chat window takes it
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304CostTests.HowMuchABusyEveningGrowsBy [4 ms]
+  Standard Output Messages:
+ a healthy evening, Settings opened 12 times:
+   total lines written : 1
+   state_changed lines : 0
+   bytes               : 2498
+ 
+ THE STATE-CHANGE EVENTS FIRE ON CHANGE, NOT ON A TICK. On a machine where nothing goes wrong the evening's growth is one snapshot line and nothing else. On the machine that lost its transmit device it would be one line per time Settings was opened, which is exactly when somebody is looking for the answer.
+
+
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.AnEmptyMarkIsNotDrawnAndHoldsNoTooltip [1 ms]
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.AFaultIsReadWithoutHovering [196 ms]
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.TheAdviceSettingsStoppedShowingIsStillThere [239 ms]
+  Standard Output Messages:
+ 32 marks on the Settings window:
+    458  tip —  Words a minute is how Morse speed is counted, and 13 is about the pace of the clubs that exist for people still finding their feet. Hamlet uses it to sort the list, so stations sending around there come up first and faster ones say how much faster they are. Nothing is hidden and nothing is being tested here. Hamlet has never heard you copy anything, so it will not tell you what you can manage. Move it up as the letters start arriving on their own.
+    376  tip —  Some sounds in Morse have two names. The one a sender uses between paragraphs is BT to an operator and an equals sign to the rulebook, and the one that ends a message is AR or a plus sign, because it is the same sound whichever the sender had in mind. Hamlet hears it the same either way, and this only changes what the terminal calls it, so pick whichever you learned.
+    376  what Hamlet can see —  Each network Hamlet asks about what is on the air. Every request identifies Hamlet, its version and your callsign, because these are volunteer-run services and they are owed knowing who is calling. A source that stops answering leaves its last spots on screen, ageing, and Hamlet says which network went quiet rather than pretending the band went quiet.
+    356  what Hamlet can see —  The scanner will not tune outside the stretches in this file, whatever else goes wrong, so it is worth a look before you first run one. Hamlet wrote it once from the Morse parts of its own band data and will never touch it again, and every stretch in it says where its numbers came from. Delete one and the scanner will not go there.
+    344  tip —  This is the note a CW signal turns into when your radio is tuned to it, and the IC-7300 puts it anywhere from 300 to 900 Hz. Set it to match the radio and the decoder starts in the right place. It hunts a little either side of this anyway, because nobody lands exactly on a signal and the sender has no idea where you are listening from.
+    339  what Hamlet can see —  The question is not how old a spot is, it is whether that person is probably still on that frequency. A park or summit activator hauled gear somewhere and stays put working callers, so their spot is good for a long while. A skimmer report only means somebody called CQ at that moment, which says much less about now.
+    333  tip —  Every part of a band has a mode the people there are using, and getting it wrong is why a beginner hears nothing. Hamlet changes the radio to match the block you are tuned into, and says in the line at the bottom of the window what it did and why. Change the mode yourself at any time and it stops until you next switch bands.
+    266  tip —  Your class decides what the band map shows as yours to use. Hamlet looks it up from your callsign when it can, and never overwrites a value you set yourself. If they disagree it shows you both and lets you choose. Listening is never restricted by any of this.
+    263  what Hamlet can see —  Pick the radio's own USB audio input, which is what carries FT8 out of the computer. Hamlet will not choose one for you: with none named it refuses to transmit rather than playing the tones into whatever this computer happens to default to.
+    256  tip —  Saves clicking Connect every time. If the radio is switched off, or Windows has moved it to a different COM port, Hamlet says so in the line at the bottom of the window and carries on with the training radio. It tries once and then leaves it to you.
+    240  what Hamlet can see —  Holds a transmission back when the frequency is outside your privileges. It never restricts tuning or receiving, because those are not regulated. There is no transmit path yet, so this takes effect when CW send lands.
+    230  tip —  That's a short code for where you are, a bit like a postal code for the planet. Hamlet works it out from your callsign and uses it to tell you how far away a station is, and when the sun rises and sets where you're sitting.
+    187  what Hamlet can see —  Who is at the key. Used for display in the app and, later, for your log (FG-004). Stored on this computer only. It is never written to telemetry and never uploaded.
+    182  tip —  Reverse Beacon Network. Automated receivers reporting every CW signal they decode. Filtered to your band and to receivers on your continent, or it would be thousands a minute.
+    179  what Hamlet can see —  Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written.
+    164  tip —  How often the spot feed reloads. The panel always shows how old its data is, whatever this is set to, and refreshing pauses while the window is out of sight.
+    152  tip —  Pick the input the radio's audio arrives on. With an IC-7300 that is its own USB codec, which Hamlet chooses for you when it recognizes the name.
+    151  tip —  Parks on the Air. Operators calling from parks, and the friendliest contacts on the band: they want to be found and they will slow down for you.
+    114  tip —  Built-in sample spots, labeled "sample" on every card. For seeing how the Explorer behaves with no network.
+    107  tip —  Summits on the Air. Operators calling from mountain tops, often on slow CW, often short of contacts.
+    105  what Hamlet can see —  An automated receiver heard somebody call. Weaker evidence they are still calling.
+     93  tip —  Band changes and where a tune came from: the map, the dial tape, the digits or a spot.
+     91  tip —  Daily files are kept until the folder passes this size, then the oldest are deleted.
+     87  tip —  Which neighborhoods and field-guide cards get opened, and which spots get tuned.
+     80  tip —  Connect attempts, timeouts and CI-V errors, with the port and radio type.
+     71  tip —  They stay put for the whole activation, often well over an hour.
+     71  tip —  That a decode ran and how confident it was. Never what was said.
+     67  tip —  Refresh spots by hand any time from Explore ▸ Refresh spots.
+     65  tip —  Contest stations sit on one frequency for the whole event.
+     60  tip —  Frame rates and render timings, for finding slowness.
+     58  tip —  App start and stop, version, and unexpected errors.
+     25  measurement —  -12.0 dBFS
+
+
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.EveryKindIsToldApartWithoutTheGlyph [< 1 ms]
+  Passed Hamlet.App.Tests.Views.AdviceWaitsToBeAskedTests.EverySentenceThatLeftTheMainWindowIsStillOneHoverAway [296 ms]
+  Standard Output Messages:
+ 169 tooltips across the three tabs
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304ReplayTests.MysteryOneAClockQueryThatNeverHappens [3 ms]
+  Standard Output Messages:
+ {"ts":"2026-09-26T18:08:15.189Z","sessionId":"6db29e7c","level":"info","appVersion":"1.12.267","category":"diagnostics","event":"startup_snapshot","data":{"when":"at_start","appVersion":"1.13.142\u002B078a830345207b8f495ef1dca22718862ead141e","ft8SharpVersion":"unknown","ft8SharpVersionWhy":"Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded","ft8SharpDeepVer …
+ 
+ a clock query was attempted : False
+ the snapshot says the offset: "unknown"
+ 
+ COULD IT BE DIAGNOSED FROM THE FILE ALONE? **YES.** The snapshot says the clock offset is unknown and why nobody supplied it, and there is no clock_query_started anywhere in the file - which since unit 303 means nothing tried, rather than tried and failed. Those two were the same empty file on the day it cost twenty minutes.
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304ReplayTests.MysteryTwoATransmitDeviceThatIsNotPresent [4 ms]
+  Standard Output Messages:
+ {"ts":"2026-09-26T18:08:15.194Z","sessionId":"993c0493","level":"info","appVersion":"1.12.267","category":"diagnostics","event":"startup_snapshot","data":{"when":"at_start","appVersion":"1.13.142\u002B078a830345207b8f495ef1dca22718862ead141e","ft8SharpVersion":"unknown","ft8SharpVersionWhy":"Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded","ft8SharpDeepVer …
+ {"ts":"2026-09-26T18:08:15.194Z","sessionId":"993c0493","level":"warn","appVersion":"1.12.267","category":"diagnostics","event":"state_changed","data":{"what":"transmitDevicePresent","from":"true","to":"false","why":"settings name {0.0.0.00000000}.{a-device-that-is-gone} and this machine has 2 output devices, none of them that one","mode":"unknown"}}
+ 
+ transmitDevicePresent : false
+ settingsNamedButAbsent: "transmit device {0.0.0.00000000
+ 
+ COULD IT BE DIAGNOSED FROM THE FILE ALONE? **YES.** One field says the transmit device is not present, one names it, and one lists every device that is - so a reader can see both what was wanted and what was there. On the day, 56 refusals named the field that decided each one and not one named the missing device.
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304ReplayTests.TwoOfTheThreeAreDiagnosableFromTheFileAlone [< 1 ms]
+  Standard Output Messages:
+ 1. a clock query that never happened  : YES
+ 2. a transmit device that is not there: YES
+ 3. did anything actually transmit     : NO
+ 
+ Today it was none of the three. The third needs the radio's own transmit state joined to the transmission record, which is ask 1 and is parked by this instruction.
+
+
+  Passed Hamlet.App.Tests.Telemetry.Unit304ReplayTests.MysteryThreeATransmissionThatPlayedButNeverKeyed [4 ms]
+  Standard Output Messages:
+ {"ts":"2026-09-26T18:08:15.196Z","sessionId":"054a1b6a","level":"info","appVersion":"1.12.267","category":"diagnostics","event":"startup_snapshot","data":{"when":"at_start","appVersion":"1.13.142\u002B078a830345207b8f495ef1dca22718862ead141e","ft8SharpVersion":"0.12.0","ft8SharpDeepVersion":"unknown","ft8SharpDeepVersionWhy":"Ft8Sharp.Deep is not loaded in this process yet, which is ordinary befor …
+ {"ts":"2026-09-26T18:08:15.197Z","sessionId":"054a1b6a","level":"info","appVersion":"1.12.267","category":"transmit","event":"ft8_transmission","data":{"slotStartUtc":"2026-09-10T12:00:00.0000000Z","startSecondsIntoSlot":0.5,"frequencyHz":14074000,"durationSeconds":12.6,"sampleRate":48000,"sampleCount":604800,"messageType":"Standard","messageLength":13,"carriedHashedCallsign":false,"outcome":"Play …
+ 
+ the outcome now reads : "Played"
+ 
+ COULD IT BE DIAGNOSED FROM THE FILE ALONE? **NO, AND ONLY PARTLY BETTER.** The record no longer claims the signal went out - unit 303 renamed Sent to Played, so it says what was actually established: the audio was composed and played and the keying frames were written. **But the question was *did anything transmit*, and the file still cannot answer it.**
+ 
+ WHAT IS MISSING: whether the radio was at the other end of that port at that moment, and whether it keyed. Hamlet already polls 1C 00 four times a second and reads 15 11 for power made, so it is knowable - but joining those to the transmission record is ask 1, which is Tim's and which this instruction parks.
+ 
+ WHAT DID IMPROVE: the snapshot beside it names which audio devices exist and which was selected, so *played into the wrong sound card* is now separable from *played into the right one*. That was not answerable on the day either.
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsNamesTheTransmitEndpointTests.TheNoteNamesTheRadiosOwnUsbAudioInput [< 1 ms]
+  Standard Output Messages:
+ Pick the radio's own USB audio input, which is what carries FT8 out of the computer. Hamlet will not choose one for you: with none named it refuses to transmit rather than playing the tones into whatever this computer happens to default to.
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsNamesTheTransmitEndpointTests.ChoosingAnEndpointNamesItInTheSettings [< 1 ms]
+  Standard Output Messages:
+ named: {0.0.0.00000000}.{usb-codec}
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsNamesTheTransmitEndpointTests.AnIdThatNamesNothingSelectsNothingAndNeverTheDefault [< 1 ms]
+  Standard Output Messages:
+ selected: nothing
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsNamesTheTransmitEndpointTests.EnumerationThatThrowsLeavesAnEmptyListRatherThanAFault [< 1 ms]
+  Standard Output Messages:
+ Hamlet cannot see a playback device on this computer just now, so there is nothing to name here yet. Plug the radio in and reopen this window.
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsNamesTheTransmitEndpointTests.AnEndpointAlreadyNamedComesBackSelected [< 1 ms]
+  Standard Output Messages:
+ selected: USB Audio CODEC
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsNamesTheTransmitEndpointTests.WithNoEndpointsTheBoxIsDisabledAndTheNoteSaysSo [< 1 ms]
+  Standard Output Messages:
+ Hamlet cannot see a playback device on this computer just now, so there is nothing to name here yet. Plug the radio in and reopen this window.
+
+
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.SpotRefreshInterval_Persists(minutes: 0) [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.SpotRefreshInterval_Persists(minutes: 1) [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.SpotRefreshInterval_Persists(minutes: 15) [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.PanelCollapseState_SurvivesTheExplorerReorder [1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.DefaultProfile_HasCallsignOnly [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.ModeFollowingTheMap_IsOnByDefaultAndSurvivesBeingTurnedOff [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.CopySpeed_PersistsAndStartsGentle [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.CorruptSettingsFile_YieldsDefaults [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.AFavoriteWrittenBeforeNotesExistedStillLoads [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.Byline_DegradesToWhatIsKnown(name: "", call: "", expected: "") [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.Byline_DegradesToWhatIsKnown(name: "", call: "KC3QIS", expected: "by KC3QIS") [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.Byline_DegradesToWhatIsKnown(name: "Tim", call: "", expected: "by Tim") [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.Byline_DegradesToWhatIsKnown(name: "Tim", call: "KC3QIS", expected: "by Tim, KC3QIS") [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.TheChosenLensAndTheWatermarkSurviveARestart [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.RecentStations_SurviveARestart [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.StartupReconnect_IsOnByDefaultAndSurvivesBeingTurnedOff [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.RecentStations_AreEmptyInAProfileWrittenBeforeThem [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.PanelCollapseState_PersistsAcrossLoad [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.FavoritesSurviveARestartWithTheirReasonAttached [< 1 ms]
+  Passed Hamlet.App.Tests.Settings.SettingsRoundTripTests.OperatorProfile_RoundTripsThroughSettingsJson [1 ms]
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.TheWholeBandRowIsInsideTheWindow(width: 1200) [125 ms]
+  Standard Output Messages:
+ 1200 px: the row ends at 715 of 1200
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.TheWholeBandRowIsInsideTheWindow(width: 1400) [109 ms]
+  Standard Output Messages:
+ 1400 px: the row ends at 715 of 1400
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.NothingBetweenTheCardsAndTheWindowClipsTheBadge(width: 1200) [89 ms]
+  Standard Output Messages:
+ 1200 px: first clipping ancestor above a band card is MainWindow; card at 16, 83, 93, 30
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.NothingBetweenTheCardsAndTheWindowClipsTheBadge(width: 1400) [138 ms]
+  Standard Output Messages:
+ 1400 px: first clipping ancestor above a band card is MainWindow; card at 16, 83, 93, 30
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.ReceiveIsWideEnoughToReadALineOfMorse(width: 1200) [96 ms]
+  Standard Output Messages:
+ 1200 px: receive w=812, terminal w=754, 10.0 px a character, **75 characters to a line**
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.ReceiveIsWideEnoughToReadALineOfMorse(width: 1400) [85 ms]
+  Standard Output Messages:
+ 1400 px: receive w=1012, terminal w=954, 10.0 px a character, **95 characters to a line**
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.BandPlanThenTheNeighborhoodAndTheRadio(width: 1200) [193 ms]
+  Standard Output Messages:
+ 1200 px: bands y=83, neighborhood y=146 x=31 w=318, radio y=123 x=651 w=520
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.BandPlanThenTheNeighborhoodAndTheRadio(width: 1400) [123 ms]
+  Standard Output Messages:
+ 1400 px: bands y=83, neighborhood y=146 x=31 w=408, radio y=123 x=851 w=520
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.EveryBandLabelRendersInsideItsOwnCard(width: 1200) [107 ms]
+  Standard Output Messages:
+   80 m   wants 40, has 62
+   40 m   wants 40, has 62
+   30 m   wants 40, has 62
+   20 m   wants 40, has 62
+   17 m   wants 40, has 62
+   15 m   wants 40, has 62
+   10 m   wants 40, has 62
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.EveryBandLabelRendersInsideItsOwnCard(width: 1400) [111 ms]
+  Standard Output Messages:
+   80 m   wants 40, has 62
+   40 m   wants 40, has 62
+   30 m   wants 40, has 62
+   20 m   wants 40, has 62
+   17 m   wants 40, has 62
+   15 m   wants 40, has 62
+   10 m   wants 40, has 62
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.TheNeighborhoodAndTheRadioDoNotOverlap(width: 1200) [113 ms]
+  Standard Output Messages:
+ 1200 px: neighborhood right edge 349, radio left edge 651
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.TheNeighborhoodAndTheRadioDoNotOverlap(width: 1400) [116 ms]
+  Standard Output Messages:
+ 1400 px: neighborhood right edge 439, radio left edge 851
+
+
+  Passed Hamlet.App.Tests.Views.TheOperatingScreenIsLaidOutAsRuledTests.TheOperatingAreaHoldsTwoPanelsAndNoWidgets [117 ms]
+  Standard Output Messages:
+ 2 panels in the CW workspace
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheDriveIsSetWhereHeIsLookingTests.TheControlUnderTheWaterfallOpensShowingTheLevelInForce [232 ms]
+  Standard Output Messages:
+ peak in settings : 0.250000
+ control shows    : 25 %
+ DigitalStopButton at : 1297, 1343  size 74, 36
+ with 0.4 in settings, control shows : 40.0000005960464 %
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheDriveIsSetWhereHeIsLookingTests.AfterTheTabMovesItTheSettingsScreenShowsTheSameLevel [117 ms]
+  Standard Output Messages:
+ tab wrote peak      : 0.400000
+ settings screen says: 40.00000059604645 %
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheDriveIsSetWhereHeIsLookingTests.ALevelTheComposerWouldRefuseIsNotWrittenAndItSaysSoInTheComposersWords [135 ms]
+  Standard Output Messages:
+ asked for : 0 %
+ peak now  : 0.300000
+ note      : That is not a transmit level, so Hamlet is still using 30 %. A transmit drive level of 0 is not a level. At or below zero there is no transmission to send, only a keyed transmitter sending silence. Set a peak amplitude above 0 and no more than 1 - 0.25 is -12.04 dBFS and is where Hamlet starts.
+ asked for : -10 %
+ peak now  : 0.300000
+ note      : That is not a transmit level, so Hamlet is still using 30 %. A transmit drive level of -0.1 is not a level. At or below zero there is no transmission to send, only a keyed transmitter sending silence. Set a peak amplitude above 0 and no more than 1 - 0.25 is -12.04 dBFS and is where Hamlet starts.
+ asked for : 101 %
+ peak now  : 0.300000
+ note      : That is not a transmit level, so Hamlet is still using 30 %. A transmit drive level of 1.01 is above full scale. Every sample past the rail would be clamped on the way out and counted as a clip, which is distortion on the band rather than a louder signal. Set a peak amplitude above 0 and no more than 1 - 0.25 is -12.04 dBFS and is where Hamlet starts.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheDriveIsSetWhereHeIsLookingTests.TheLevelInDbfsIsOnScreenBeforeAnythingIsSent [111 ms]
+  Standard Output Messages:
+ nothing sent yet, the send line reads:
+   nothing sent yet
+ and the drive note under the waterfall reads:
+   -12.0 dBFS
+ after moving the control to 40 %:
+   -8.0 dBFS
+
+
+[xUnit.net 00:00:08.86]     Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.TheNoteSaysItIsAStartingPointToBeSetAgainstTheRadiosAlc [FAIL]
+[xUnit.net 00:00:08.86]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:08.86]       String:    "-12.0 dBFS"
+[xUnit.net 00:00:08.86]       Not found: "starting point, not a specification"
+[xUnit.net 00:00:08.86]       Stack Trace:
+[xUnit.net 00:00:08.86]         C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\SettingsCarriesTheTransmitDriveTests.cs(121,0): at Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.TheNoteSaysItIsAStartingPointToBeSetAgainstTheRadiosAlc()
+[xUnit.net 00:00:08.86]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:08.86]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:08.86]       Output:
+[xUnit.net 00:00:08.86]         -12.0 dBFS
+  Passed Hamlet.App.Tests.ViewModels.TheDriveIsSetWhereHeIsLookingTests.MovingTheControlWritesThePeakIntoTheSettings [114 ms]
+  Standard Output Messages:
+ asked for : 40 % on the screen
+ peak now  : 0.400000
+
+
+  Failed Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.TheNoteSaysItIsAStartingPointToBeSetAgainstTheRadiosAlc [3 ms]
+  Error Message:
+   Assert.Contains() Failure: Sub-string not found
+String:    "-12.0 dBFS"
+Not found: "starting point, not a specification"
+  Stack Trace:
+     at Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.TheNoteSaysItIsAStartingPointToBeSetAgainstTheRadiosAlc() in C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\SettingsCarriesTheTransmitDriveTests.cs:line 121
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ -12.0 dBFS
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.ChangingTheDriveWritesItIntoTheSettings [< 1 ms]
+  Standard Output Messages:
+ peak now : 0.4
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.ALevelTheComposerWouldRefuseIsNotWrittenToTheSettings(percent: 101) [< 1 ms]
+  Standard Output Messages:
+ asked for : 101 %
+ peak now  : 0.3
+ note      : That is not a transmit level, so Hamlet is still using 30 %. A transmit drive level of 1.01 is above full scale. Every sample past the rail would be clamped on the way out and counted as a clip, which is distortion on the band rather than a louder signal. Set a peak amplitude above 0 and no more than 1 - 0.25 is -12.04 dBFS and is where Hamlet starts.
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.ALevelTheComposerWouldRefuseIsNotWrittenToTheSettings(percent: 0) [< 1 ms]
+  Standard Output Messages:
+ asked for : 0 %
+ peak now  : 0.3
+ note      : That is not a transmit level, so Hamlet is still using 30 %. A transmit drive level of 0 is not a level. At or below zero there is no transmission to send, only a keyed transmitter sending silence. Set a peak amplitude above 0 and no more than 1 - 0.25 is -12.04 dBFS and is where Hamlet starts.
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.ALevelTheComposerWouldRefuseIsNotWrittenToTheSettings(percent: -10) [< 1 ms]
+  Standard Output Messages:
+ asked for : -10 %
+ peak now  : 0.3
+ note      : That is not a transmit level, so Hamlet is still using 30 %. A transmit drive level of -0.1 is not a level. At or below zero there is no transmission to send, only a keyed transmitter sending silence. Set a peak amplitude above 0 and no more than 1 - 0.25 is -12.04 dBFS and is where Hamlet starts.
+
+
+  Passed Hamlet.App.Tests.ViewModels.SettingsCarriesTheTransmitDriveTests.TheBoxShowsTheLevelTheSettingsFileHolds [< 1 ms]
+  Standard Output Messages:
+ percent shown : 25
+ peak in file  : 0.25
+
+
+  Passed Hamlet.App.Tests.ViewModels.TwoStageTranscriptTests.TheLeadingEdgeWaitsInTheTipRatherThanEnteringTheTranscript [< 1 ms]
+  Standard Output Messages:
+ tip 'CQ', body ''
+
+
+  Passed Hamlet.App.Tests.ViewModels.TwoStageTranscriptTests.SettledTextLandsBehindTheLeadingEdge [< 1 ms]
+  Standard Output Messages:
+ 'CQ' + tip 'DE'
+
+
+[xUnit.net 00:00:08.87]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TwoStageTranscriptTests.ClearingTakesTheLeadingEdgeWithIt [< 1 ms]
+  Passed Hamlet.App.Tests.ViewModels.TwoStageTranscriptTests.AReadingWithNothingBehindItIsKeptAndMarkedRatherThanDropped [< 1 ms]
+  Standard Output Messages:
+ tip '', body 'VA'
+
+
+  Passed Hamlet.App.Tests.ViewModels.TwoStageTranscriptTests.TheTipCannotGrowWithoutLimit [< 1 ms]
+  Standard Output Messages:
+ tip is 120 characters
+
+
+  Passed Hamlet.App.Tests.ViewModels.TwoStageTranscriptTests.TheSettledPassOvertakesTheTipAndReplacesIt [< 1 ms]
+  Standard Output Messages:
+ tip 'E', body 'CQ'
+
+
+
+Test Run Failed.
+Total tests: 121
+     Passed: 117
+     Failed: 4
+ Total time: 9.1615 Seconds
+RC=1 WALL=10s

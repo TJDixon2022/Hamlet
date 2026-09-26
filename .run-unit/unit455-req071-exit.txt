@@ -1,0 +1,177 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.25]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.25]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "KN") [467 ms]
+  Standard Output Messages:
+ HM-REQ-071 | KN | read `W1AW DE K2ABC <KN> R TU <KN>` | at the prosign `<KN>` and `<KN>`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "SK") [402 ms]
+  Standard Output Messages:
+ HM-REQ-071 | SK | read `W1AW DE K2ABC <SK> R TU <SK>` | at the prosign `<SK>` and `<SK>`
+
+
+[xUnit.net 00:00:02.27]     Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "VE") [FAIL]
+[xUnit.net 00:00:02.27]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:02.27]                               ↓ (pos 0)
+[xUnit.net 00:00:02.27]       Expected: string[]     ["<VE>", "<VE>"]
+[xUnit.net 00:00:02.27]       Actual:   List<string> ["■", "nothing"]
+[xUnit.net 00:00:02.27]                               ↑ (pos 0)
+[xUnit.net 00:00:02.27]       Stack Trace:
+[xUnit.net 00:00:02.27]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name)
+[xUnit.net 00:00:02.27]            at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+[xUnit.net 00:00:02.27]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.27]       Output:
+[xUnit.net 00:00:02.27]         HM-REQ-071 | VE | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "AS") [370 ms]
+  Standard Output Messages:
+ HM-REQ-071 | AS | read `W1AW DE K2ABC <AS> R TU <AS>` | at the prosign `<AS>` and `<AS>`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "AR") [383 ms]
+  Standard Output Messages:
+ HM-REQ-071 | AR | read `W1AW DE K2ABC <AR> R TU <AR>` | at the prosign `<AR>` and `<AR>`
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "VE") [371 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                        ↓ (pos 0)
+Expected: string[]     ["<VE>", "<VE>"]
+Actual:   List<string> ["■", "nothing"]
+                        ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs:line 96
+   at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ HM-REQ-071 | VE | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "BT") [382 ms]
+  Standard Output Messages:
+ HM-REQ-071 | BT | read `W1AW DE K2ABC <BT> R TU <BT>` | at the prosign `<BT>` and `<BT>`
+
+
+[xUnit.net 00:00:03.10]     Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "CL") [FAIL]
+[xUnit.net 00:00:03.10]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:03.10]                               ↓ (pos 0)
+[xUnit.net 00:00:03.10]       Expected: string[]     ["<CL>", "<CL>"]
+[xUnit.net 00:00:03.10]       Actual:   List<string> ["■", "nothing"]
+[xUnit.net 00:00:03.10]                               ↑ (pos 0)
+[xUnit.net 00:00:03.10]       Stack Trace:
+[xUnit.net 00:00:03.10]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name)
+[xUnit.net 00:00:03.10]            at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+[xUnit.net 00:00:03.10]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.10]       Output:
+[xUnit.net 00:00:03.10]         HM-REQ-071 | CL | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+[xUnit.net 00:00:03.52]     Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "CT") [FAIL]
+[xUnit.net 00:00:03.52]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:03.52]                               ↓ (pos 0)
+[xUnit.net 00:00:03.52]       Expected: string[]     ["<CT>", "<CT>"]
+[xUnit.net 00:00:03.52]       Actual:   List<string> ["■", "nothing"]
+[xUnit.net 00:00:03.52]                               ↑ (pos 0)
+[xUnit.net 00:00:03.52]       Stack Trace:
+[xUnit.net 00:00:03.52]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name)
+[xUnit.net 00:00:03.52]            at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+[xUnit.net 00:00:03.52]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.52]       Output:
+[xUnit.net 00:00:03.52]         HM-REQ-071 | CT | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+[xUnit.net 00:00:03.94]     Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "BK") [FAIL]
+[xUnit.net 00:00:03.94]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:03.94]                               ↓ (pos 0)
+[xUnit.net 00:00:03.94]       Expected: string[]     ["<BK>", "<BK>"]
+[xUnit.net 00:00:03.94]       Actual:   List<string> ["■", "nothing"]
+[xUnit.net 00:00:03.94]                               ↑ (pos 0)
+[xUnit.net 00:00:03.94]       Stack Trace:
+[xUnit.net 00:00:03.94]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs(96,0): at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name)
+[xUnit.net 00:00:03.94]            at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+[xUnit.net 00:00:03.94]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.94]       Output:
+[xUnit.net 00:00:03.94]         HM-REQ-071 | BK | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+  Failed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "CL") [443 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                        ↓ (pos 0)
+Expected: string[]     ["<CL>", "<CL>"]
+Actual:   List<string> ["■", "nothing"]
+                        ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs:line 96
+   at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ HM-REQ-071 | CL | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "CT") [421 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                        ↓ (pos 0)
+Expected: string[]     ["<CT>", "<CT>"]
+Actual:   List<string> ["■", "nothing"]
+                        ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs:line 96
+   at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ HM-REQ-071 | CT | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+
+
+  Failed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(name: "BK") [423 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+                        ↓ (pos 0)
+Expected: string[]     ["<BK>", "<BK>"]
+Actual:   List<string> ["■", "nothing"]
+                        ↑ (pos 0)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(String name) in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheProsignArrivesAsOneSymbolTests.cs:line 96
+   at InvokeStub_TheProsignArrivesAsOneSymbolTests.EachProsignArrivesAsOneSymbol(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Standard Output Messages:
+ HM-REQ-071 | BK | read `W1AW DE K2ABC ■ R TU` | at the prosign `■` and `nothing`
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EachProsignAsTheTableAndTheDecoderReadIt [4 s]
+  Standard Output Messages:
+ fixture | prosigns-18wpm | sent `W1AW DE K2ABC ^BT R TU ^SK` | read `W1AW DE K2ABC <BT> R TU <SK>`
+ prosign | pattern | keyed as the pattern | MorseAlphabet | on prosigns-18wpm | on its own send | one symbol or split
+ prosign | VE | ...-. | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | CT | -.-.- | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | SK | ...-.- | yes | <SK> | `<SK>` | `<SK>` and `<SK>` of `W1AW DE K2ABC <SK> R TU <SK>` | one symbol
+ prosign | AS | .-... | yes | <AS> | not in the fixture | `<AS>` and `<AS>` of `W1AW DE K2ABC <AS> R TU <AS>` | one symbol
+ prosign | KN | -.--. | yes | <KN> | not in the fixture | `<KN>` and `<KN>` of `W1AW DE K2ABC <KN> R TU <KN>` | one symbol
+ prosign | BK | -...-.- | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | CL | -.-..-.. | yes | not in the table | not in the fixture | `■` and `nothing` of `W1AW DE K2ABC ■ R TU` | one symbol, not the prosign
+ prosign | BT | -...- | yes | <BT> | `<BT>` | `<BT>` and `<BT>` of `W1AW DE K2ABC <BT> R TU <BT>` | one symbol
+ prosign | AR | .-.-. | yes | <AR> | not in the fixture | `<AR>` and `<AR>` of `W1AW DE K2ABC <AR> R TU <AR>` | one symbol
+ gapped | A then R with a character gap | read `W1AW DE K2ABC AR R TU AR`
+ prosigns in MorseAlphabet: <AR> .-.-., <SK> ...-.-, <BT> -...-, <KN> -.--., <AS> .-..., <HH> ........
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.EveryProsignTheRealKeysCarry [53 s]
+  Standard Output Messages:
+ real | cw-2026-08-18-004507 | key <BT> | emitted <BT> | Sure | key around `NET<BT>EAC` | read around `NET<BT>EAC`
+ real | unadjudicated/cw-2026-09-24-004234 | key <BT> | emitted <BT> | Sure | key around `COM<BT>THA` | read around `_OM<BT>THA`
+ real | 2 prosign steps over 23 keyed recordings
+
+
+[xUnit.net 00:01:01.87]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProsignArrivesAsOneSymbolTests.ARealCharacterGapKeepsTheLettersApart [390 ms]
+  Standard Output Messages:
+ HM-REQ-071 | A then R | read `W1AW DE K2ABC AR R TU AR`
+
+
+
+Test Run Failed.
+Total tests: 12
+     Passed: 8
+     Failed: 4
+ Total time: 1.0356 Minutes
+RC=1 WALL=63s
