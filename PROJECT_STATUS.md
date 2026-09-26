@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 443 - the letters the decoder adds between words
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T22:39:15-04:00
-NOTE: Task 2: re-read rule not kept (MET-INVENTED 47 to 48); committing diff and metrics.md
+UPDATED: 2026-09-25T22:59:43-04:00
+NOTE: Unit 443 complete: added letters traced 13 to 4, 3.1 ticked; double-read rule not kept (MET-INVENTED 47 to 48)
 
 ---
 

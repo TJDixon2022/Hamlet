@@ -1,0 +1,133 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureAddedLettersComeFromTests.EveryRecordingAsTheOperatorReadsIt [2 m 15 s]
+  Standard Output Messages:
+ text | cw-2026-08-17-013347 |  E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRR  
+ text | cw-2026-08-17-134712 |          E     ■   NT    N4LQ K     
+ text | cw-2026-08-18-004507 | E5 I E A T AR R L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE
+ text | unadjudicated/cw-2026-08-24-012403 |  DEQ 6Q  Q DE KD0UN KD0UN K 
+ text | unadjudicated/cw-2026-08-22-031838 |   A 3, AT3 , 2TT 2, AND  ■ W IAH A MEAN OF 2 TT 
+ text | unadjudicated/cw-2026-08-22-031905 |  ■ PREDICTED 10.7  IAIEI TANI   WLUX IS 125,
+ text | unadjudicated/cw-2026-08-22-031948 |     TM 150 110, AND 110 WITH A MEAN OF 117.W
+ text | unadjudicated/cw-2026-08-22-032012 |   T F 117.1. LINKS TO ARTICLES OR OTHER WEBSITES MENTI
+ text | unadjudicated/cw-2026-08-22-032050 |     IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E    H IE S T S SI I
+ text | unadjudicated/cw-2026-08-22-032113 |    A KET■ A N O INT ERNE T ■ E RSIONS OF  200J6   I I I TT E EI  EEEEI I E E
+ text | unadjudicated/cw-2026-08-22-032129 |  ■ MTMTJ26 PGOPAGATION E EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI
+ text | cw-2026-08-17-013622 | E ISIIHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I
+ text | unadjudicated/cw-2026-08-18-003016 |   IADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN
+ text | unadjudicated/cw-2026-08-18-003126 |    U <BT> I WATCH AT L EAST 2 MOVIESA DAY WID X■ WHY NNOTT   , WESNRNS , E
+ text | unadjudicated/cw-2026-08-18-003758 |    ■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E
+ text | unadjudicated/cw-2026-08-23-001520 |   T  ■  
+ text | unadjudicated/cw-2026-08-23-001831 |  E IE E U  KT■TQ   O Q <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV
+ text | unadjudicated/cw-2026-08-23-001952 | HET E  E ■HIN WEFU  EENE MCON TA K8T     I  ■ E I II II EE   MN S    B0   
+ text | unadjudicated/cw-2026-08-23-002016 |   H■ S   B■   I E E      O NA■T SIT E■      EE  I I   E      K TIE0NH VNN JEENG  
+ text | unadjudicated/cw-2026-08-25-011552 |  T C <AS> R 4  XDE K ■GJAK1Z JA  K1ZJA <AR>    
+ text | unadjudicated/cw-2026-08-25-012748 |  ■ AT ■
+ text | unadjudicated/cw-2026-08-25-012823 |  E S SE EE  TTN T K E M TE E O IN U T     E
+ text | unadjudicated/cw-2026-08-25-012922 |  I W W M     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH
+ text | unadjudicated/cw-2026-08-25-013010 |   T■L ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE   
+ text | unadjudicated/cw-2026-08-25-013150 |    4 MO ■4 MW K   F  GE GE TE ES NICE TO HEAR YOU AGN ■EEE <BT> BEEN SEVERAL MONT
+ text | unadjudicated/cw-2026-08-25-013303 |    G ALL BOXE S F OR FOC EESSS    HPE YOU INJOY UR LONG WAI T 5 EE ■  
+ text | unadjudicated/cw-2026-08-25-013402 |     W■E IN Q SO WITH WB 4 ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE 
+ text | unadjudicated/cw-2026-08-25-013520 |    MONTHS OR S O I GUESS BUT ALL GUD ES  CAN KE E G KI KE EP MY SELF O CC UPI ED A
+ text | unadjudicated/cw-2026-08-25-013637 |  TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO
+ text | unadjudicated/cw-2026-08-25-021410 |     A    T O MTT T  Y M TT  O AO IHI DT RIGHR IS  FLENT 66OAM
+ text | unadjudicated/cw-2026-08-25-021629 |     ET MTT  OET    O ATT  MT S T  5 5 99 5 5  ■■ IN M I  M
+ text | unadjudicated/cw-2026-08-25-021825 |      I E   E I ETO U E NT  K OC 1 UEK K    
+ text | unadjudicated/cw-2026-08-26-125941 | 
+ text | unadjudicated/cw-2026-08-20-014854 | 
+ text | unadjudicated/cw-2026-08-20-014935 | 
+ text | unadjudicated/cw-2026-08-22-014113 | 
+ text | unadjudicated/cw-2026-08-22-014308 | 
+ text | unadjudicated/cw-2026-09-24-003901 |         EII E T NHHK        
+ text | unadjudicated/cw-2026-09-24-003919 |     EITEETNXNIK       EANQNID        EANQNIK     
+ text | unadjudicated/cw-2026-09-24-004027 | QNE K  E E  2 G ■ 2G KA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q
+ text | unadjudicated/cw-2026-09-24-004108 |  HR NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC
+ text | unadjudicated/cw-2026-09-24-004133 | 1 9 R I C H ARD D J GEL ■ 0 D T  UT 5 0 0 5 H ■ 8 
+ text | unadjudicated/cw-2026-09-24-004205 |  ■ EM M AHA NE 6 8 135 ■ EMAIR F JU G EL AT YAH OO DOE
+ text | unadjudicated/cw-2026-09-24-004234 | E  C O M <BT> T HANTT TK■ET FOR ON HYPP N AIR QSO WITH W
+ text | unadjudicated/cw-2026-09-24-004322 |   P O N S ORED AMERICA 25 9 OPERATION X ALL LOGS WILA
+ text | unadjudicated/cw-2026-09-24-004347 | O G S W ILL BE UPLOADED TO ARRL L OOTW <BT> ANTHONY LUSN
+ text | unadjudicated/cw-2026-09-24-004405 |   T W <BT> A N T HONY LUSCRE K 8 Z T W1AW/88 ■OORDINAT
+ text | unadjudicated/cw-2026-09-24-004427 | ■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2 G K88NET TU EAT
+ text | unadjudicated/cw-2026-09-24-004510 |   1U RLTT  S SB YAKYAK  E  KA2GJV TQNV AA3SB SE I
+ text | unadjudicated/cw-2026-09-24-004535 | AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN 1 TH N B O TEI NANX K A3HT
+ text | unadjudicated/cw-2026-09-24-004550 | I N 5 3RN 1 TH N B OTEI NANX K A3HB DE KA2 GJV HW ROBIN?   T 
+ text | cq-12wpm-15db |  CQ CQ CQ DE N0CALL N0CALL K 
+ text | cq-12wpm-5db |  CQ CQ CQ DE N0CALL N0CALL K 
+ text | cq-12wpm-0db | 
+ text | cq-18wpm-15db |  CQ CQ CQ DE N0CALL N0CALL K  
+ text | cq-18wpm-5db |  ■Q CQ CQ DE N0CALL N0CALL K  
+ text | cq-18wpm-0db | 
+ text | cq-25wpm-15db |   CQ CQ CQ DE N0CALL N0CALL KK  
+ text | cq-25wpm-5db |   CQ CQ CQ DE N0CALL N0CALL KK  
+ text | cq-25wpm-0db | 
+ text | cq-18wpm-15db-char5 |  C QCQCQDEN0 C A E L N 0 C A L L K  
+ text | cq-18wpm-5db-char5 |  C QC Q C Q TEE T ■KTDUUEUE N 0 C A L L K  
+ text | cq-18wpm-0db-char5 | 
+
+
+[xUnit.net 00:04:18.11]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureAddedLettersComeFromTests.EverySureAddedCharacterAndWhatItShares [2 m 2 s]
+  Standard Output Messages:
+ added | recording | set | key | at s | sent before | sent after | emitted before | emitted | emitted after | pattern | span | span before | span after | gap before ms/u | gap after ms/u | wpm | unit ms | pitch at hop Hz | sender pitch Hz | off Hz | word space | envelope marks | envelope gaps | decoder SignalToNoiseDb | span per hop | printer level over noise dB | recording median dB | sure-right before it
+ added | unadjudicated/cw-2026-08-22-032012 | real | inferred | 7.425 | `N OF 117` | `. LINKS ` | `  T F 117` | `.` | `1. LINKS T` | .-.-.- | 1164 | 933.9 | 729.7 | 195/2.9u | 185/2.8u | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no boundary error beside it | 85ms/1.3u 160ms/2.4u 80ms/1.2u 300ms/4.5u 215ms/3.2u | 60ms/0.9u 55ms/0.8u 55ms/0.8u 50ms/0.8u 50ms/0.8u | NaN, not carried | 5.623 | 12.6 | 15.4 | 4
+ added | unadjudicated/cw-2026-08-22-032012 | real | inferred | 8.640 | `N OF 117` | `. LINKS ` | `  T F 117.` | `1` | `. LINKS TO` | .---- | 729.7 | 1164 | 1240 | 185/2.8u | 200/3.0u | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no boundary error beside it | 60ms/0.9u 210ms/3.2u 175ms/2.6u 215ms/3.2u 175ms/2.6u | 60ms/0.9u 55ms/0.8u 55ms/0.8u 50ms/0.8u 50ms/0.8u | NaN, not carried | 3.542 | 10.2 | 15.4 | 4
+ added | unadjudicated/cw-2026-08-22-032050 | real | inferred | 11.195 | `AN BE FO` | `UND IN T` | ` CAN BE FO` | `T` | `A ND IN TE` | - | 74.14 | 473.4 | 293 | 195/5.5u | 65/1.8u | 34 | 35.3 | 500.0 | 500.0 | 0.0 | no boundary error beside it | 90ms/2.6u | 30ms/0.9u | NaN, not carried | 4.943 | 11.7 | 15.7 | 15
+ added | unadjudicated/cw-2026-09-24-004347 | real | inferred | 19.280 | `O ARRL L` | `OTW` | `TO ARRL L ` | `O` | `OTW <BT> ANTH` | --- | 431.9 | 878.2 | 442.3 | 510/9.4u | -580/-10.6u | 22 | 54.5 | 620.0 | 625.0 | 5.0 | beside an inserted space | 155ms/2.8u 175ms/3.2u 165ms/3.0u | 50ms/0.9u 65ms/1.2u 45ms/0.8u | NaN, not carried | 3.724 | 12.0 | 16.3 | 20
+ added | cq-25wpm-15db | synthetic | exact | 14.885 | ` N0CALL ` | `K` | `LL N0CALL ` | `K` | `K  ` | -.- | 9300 | 4512 | 8914 | 345/7.2u | -425/-8.9u | 25 | 48.0 | 615.0 | 620.0 | 5.0 | no boundary error beside it | 150ms/3.1u 85ms/1.8u 150ms/3.1u | 45ms/0.9u 40ms/0.8u 15ms/0.3u | NaN, not carried | 109.4 | 25.2 | 21.5 | 20
+ added | cq-25wpm-5db | synthetic | exact | 14.885 | ` N0CALL ` | `K` | `LL N0CALL ` | `K` | `K  ` | -.- | 461.3 | 291.7 | 456.4 | 345/7.2u | -425/-8.9u | 25 | 48.0 | 620.0 | 615.0 | 5.0 | no boundary error beside it | 150ms/3.1u 50ms/1.0u 170ms/3.5u | 45ms/0.9u 45ms/0.9u 40ms/0.8u | NaN, not carried | 5.428 | 13.7 | 12.9 | 20
+ added | cq-18wpm-5db-char5 | synthetic | exact | 8.405 | `Q CQ CQ ` | `DE N0CAL` | ` QC Q C Q ` | `T` | `EE T ■KTDU` | - | 281.1 | 928.2 | 98.5 | 495/7.4u | 215/3.2u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | no boundary error beside it | 210ms/3.2u | 65ms/1.0u | NaN, not carried | 7.598 | 13.8 | 12.5 | 6
+ added | cq-18wpm-5db-char5 | synthetic | exact | 9.745 | `Q CQ DE ` | `N0CALL N` | `Q C Q TEE ` | `T` | ` ■KTDUUEUE` | - | 259.9 | 86.95 | 289.3 | 480/7.2u | 1300/19.5u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | no boundary error beside it | 190ms/2.9u | 70ms/1.1u | NaN, not carried | 6.84 | 12.7 | 12.5 | 7
+ added | cq-18wpm-5db-char5 | synthetic | exact | 11.475 | `Q CQ DE ` | `N0CALL N` | ` Q TEE T ■` | `K` | `TDUUEUE N ` | -.- | 289.3 | 259.9 | 206.4 | 1300/19.5u | 345/5.2u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | beside a missed space | 220ms/3.3u 200ms/3.0u | 45ms/0.7u 40ms/0.6u | NaN, not carried | 3.364 | 11.0 | 12.5 | 7
+ added | cq-18wpm-5db-char5 | synthetic | exact | 12.005 | `Q CQ DE ` | `N0CALL N` | `Q TEE T ■K` | `T` | `DUUEUE N 0` | - | 206.4 | 289.3 | 257.1 | 345/5.2u | 235/3.5u | 18 | 66.7 | 625.0 | 620.0 | 5.0 | beside a missed space | 200ms/3.0u | 65ms/1.0u | NaN, not carried | 5.577 | 12.1 | 12.5 | 7
+ feature | real | shape | 6 elements | 1
+ feature | real | shape | 5 elements | 1
+ feature | real | shape | one element | 1
+ feature | real | shape | 3 elements | 1
+ feature | synthetic | shape | 3 elements | 3
+ feature | synthetic | shape | one element | 3
+ feature | real | word space | no boundary error beside it | 3
+ feature | real | word space | beside an inserted space | 1
+ feature | synthetic | word space | no boundary error beside it | 4
+ feature | synthetic | word space | beside a missed space | 2
+ feature | real | overlap | its span is its own | 3
+ feature | real | overlap | its span overlaps a neighbor's: the same marks read twice | 1
+ feature | synthetic | overlap | its span is its own | 4
+ feature | synthetic | overlap | its span overlaps a neighbor's: the same marks read twice | 2
+ feature | real | isolation | character gaps both sides | 2
+ feature | real | isolation | crowded, under two units to a neighbor | 2
+ feature | synthetic | isolation | crowded, under two units to a neighbor | 2
+ feature | synthetic | isolation | character gaps both sides | 2
+ feature | synthetic | isolation | alone in a word-length gap both sides | 2
+ feature | real | level | level with the recording's letters | 4
+ feature | synthetic | level | level with the recording's letters | 6
+ feature | real | acquisition | after acquisition | 4
+ feature | synthetic | acquisition | after acquisition | 6
+ feature | real | pitch | on the sender's pitch | 4
+ feature | synthetic | pitch | on the sender's pitch | 6
+ group | real | its span is its own; 6 elements; no boundary error beside it; character gaps both sides; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-08-22-032012@7.425 `.`
+ group | real | its span is its own; 5 elements; no boundary error beside it; character gaps both sides; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-08-22-032012@8.640 `1`
+ group | real | its span is its own; one element; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-08-22-032050@11.195 `T`
+ group | real | its span overlaps a neighbor's: the same marks read twice; 3 elements; beside an inserted space; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 1 | unadjudicated/cw-2026-09-24-004347@19.280 `O`
+ largest | real | its span is its own; 6 elements; no boundary error beside it; character gaps both sides; level with the recording's letters; after acquisition | 1 of 4 | tied with the next
+ group | synthetic | its span overlaps a neighbor's: the same marks read twice; 3 elements; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 2 | cq-25wpm-15db@14.885 `K`, cq-25wpm-5db@14.885 `K`
+ group | synthetic | its span is its own; one element; no boundary error beside it; character gaps both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@8.405 `T`
+ group | synthetic | its span is its own; one element; no boundary error beside it; alone in a word-length gap both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@9.745 `T`
+ group | synthetic | its span is its own; 3 elements; beside a missed space; alone in a word-length gap both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@11.475 `K`
+ group | synthetic | its span is its own; one element; beside a missed space; character gaps both sides; level with the recording's letters; after acquisition | 1 | cq-18wpm-5db-char5@12.005 `T`
+ largest | synthetic | its span overlaps a neighbor's: the same marks read twice; 3 elements; no boundary error beside it; crowded, under two units to a neighbor; level with the recording's letters; after acquisition | 2 of 6
+ total | 4 sure added on the real keyed recordings, inferred keys (metric 4) | 6 on the synthetic set, exact keys (metric 6)
+
+
+
+Test Run Successful.
+Total tests: 2
+     Passed: 2
+ Total time: 4.3062 Minutes
+RC=0 WALL=259s

@@ -179,7 +179,7 @@ between real words.
 **Entry:** steps 0 and 1 met.
 
 **Exit:**
-- [ ] 3.1 The 13 sure added characters are traced the same way as 2.1, each with its recording, span, speed, pitch and the marks it rested on.
+- [x] 3.1 The 13 sure added characters are traced the same way as 2.1, each with its recording, span, speed, pitch and the marks it rested on.
 - [ ] 3.2 Each change is built in its own commit and kept under R78: MET-INVENTED falls, MET-CER-SURE does not rise, MET-COVERAGE does not fall, the adjudicated readings hold, and V-11 holds.
 - [ ] 3.3 MET-INVENTED is reported before and after every kept change, per condition, with the key kind beside each number, and the running figure is in `metrics.md`.
 - [ ] 3.4 The 7.052 traffic net's `EETTTEETTTTTTTTETTETETKTETEE` between `GRAY KC` and `LIVER VIA` is printed before and after, so the owner reads the difference rather than the number.

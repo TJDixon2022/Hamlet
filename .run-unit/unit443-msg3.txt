@@ -1,0 +1,15 @@
+unit443: closing - exit round, 3.1 ticked, output.md, status COMPLETED (3.1)
+
+Exit round, one type per invocation: build 0 errors; engine carry-forward
+178 of 178; app 274 of 278, the 4 losses TheStopIsAlwaysOnScreenTests,
+5 of 5 alone; captures 51 of 51; adjudicated 13 of 13; named 12 of 13
+(17:37 red at 38, as recorded); metrics as at entry, MET-INVENTED 47
+over 473 (4 added), MET-CER-SURE 0.1116; WhereTheSureAddedLettersComeFromTests
+2 of 2. src unchanged against entry 1308f688.
+
+3.1 ticked in both copies of PHASE_PLAN.md: unit443-added-1fb0bad6.txt
+and unit443-added-head.txt print every added letter with every field,
+unit443-match.txt matches and groups them. 3.2, 3.3, 3.4, 3.6 not ticked.
+validate-output.bat was refused by permissions; its rules were checked by hand.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
