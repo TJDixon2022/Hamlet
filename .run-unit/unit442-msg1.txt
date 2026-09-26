@@ -1,0 +1,47 @@
+unit442 task 1: the floors re-banked at HEAD under R78 (2.5)
+
+Unit 441's two kept changes made fewer, longer characters; R78 has a
+count falling reported, not rejected. 13 capture rows and 5 named
+floors set to what they read at 0439a8e7. Keyed rows (134712, 031838,
+031905, 032113, 032129, 004133) only after no requirement metric got
+worse on the recording (V-11, per recording, r82 to entry).
+
+Left red: 17:37's named floor, 46 banked, 38 now - its word boundaries
+wrong went 5 to 7 under G1, a requirement metric worse (V-11).
+
+Exit: captures 51 of 51; adjudicated 13 of 13; named 12 of 13 (17:37);
+engine carry-forward 178 of 178; app 273 of 278, TheFavoritesAreChips
+(4) and TheFavoritesAreUnderTheGreenZone (1) green alone, 4 of 4, 3 of 3.
+
+Unkeyed rows, named/elements banked -> HEAD, text before -> after:
+001952 46/103 -> 39/86
+  ETBEE 5  I A  E   #FN 5IN WEFIT   EENE MCOM T A K8T    I  # E I II II EE   MN S    B0
+  HET E  E #HIN WEFU  EENE MCON TA K8T     I  # E I II II EE   MN S    B0
+134712 11/31 -> 8/22 (keyed in the metrics, 3 sent, unchanged 0 of 3 wrong)
+  I        I#5   NT    N4LZT K
+  E     #   NT    N4LQ K
+013622 49/78 -> 50/77
+  E I5 SHE II 5EIEIE EEETE TE ESE ...
+  E ISIIHE II 5EIEIE EEETE TE ESE ...
+003016 54/146 -> 54/145
+  SADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN
+  IADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN
+001831 43/107 -> 40/105
+  AE E K     K N YT T TTA   # MA  <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV
+  E IE E U  KT#TQ   O Q <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV
+012823 23/37 -> 22/36
+  E S SE EE  TTN T K T M TE E O IN U T    E T
+  E S SE EE  TTN T K E M TE E O IN U T     E
+012922 43/104 -> 40/102
+  I W TM TTM     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH
+  I W W M     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH
+013010 48/122 -> 47/118
+  TLL ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE
+  T#L ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE
+(# is the placeholder.) Every row, keyed ones included, with its text
+before and after: .run-unit/unit442-floorrows.txt.
+
+WhatTheFloorRowsReadTests: a printer, asserts nothing - each floor
+row's banked count, count now and text, dim letters in brackets.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

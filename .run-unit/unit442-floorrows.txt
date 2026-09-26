@@ -1,0 +1,97 @@
+# Unit 442 task 1 - the floor rows red at 0439a8e7, before (f14b2453, 441's entry) and at HEAD
+
+capture|cw-2026-08-17-013622 | named banked 49, at HEAD 50 | elements banked 78, at HEAD 77 | RED
+    before: `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I `
+    after:  `E ISIIHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I`
+capture|cw-2026-08-17-134712 | named banked 11, at HEAD 8 | elements banked 31, at HEAD 22 | RED
+    before: `                     I        I■5   NT    N4LZT K      `
+    after:  `         E     ■   NT    N4LQ K     `
+capture|unadjudicated/cw-2026-08-18-003016 | named banked 54, at HEAD 54 | elements banked 146, at HEAD 145 | RED
+    before: `   SADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN`
+    after:  `  IADA KP T15TT IT WAS JUNK <BT> STILAIHVEMY ETO 91B TT JETST VFB TUB LIN`
+capture|unadjudicated/cw-2026-08-22-031838 | named banked 40, at HEAD 29 | elements banked 91, at HEAD 86 | RED
+    before: `  A 3, AT3 M, E2TT TTTTT , AND  ■T TTT TEAH A MEAN TOF 2 TT    `
+    after:  `  A 3, AT3 , 2TT 2, AND  ■ W IAH A MEAN OF 2 TT `
+capture|unadjudicated/cw-2026-08-22-031905 | named banked 36, at HEAD 32 | elements banked 108, at HEAD 99 | RED
+    before: ` ■ PREDICTED 10.7  IAIEI TANI   WLUX IS 125,,  E T T`
+    after:  ` ■ PREDICTED 10.7  IAIEI TANI   WLUX IS 125,`
+capture|unadjudicated/cw-2026-08-22-032113 | named banked 47, at HEAD 45 | elements banked 102, at HEAD 97 | RED
+    before: `   A KET■ A N O INT ERNE T ■ E ROIONS OF  200J6   I  NN I TT E E I  E SEE EIE E I`
+    after:  `   A KET■ A N O INT ERNE T ■ E RSIONS OF  200J6   I I I TT E EI  EEEEI I E E`
+capture|unadjudicated/cw-2026-08-22-032129 | named banked 65, at HEAD 64 | elements banked 114, at HEAD 113 | RED
+    before: ` ■ MTMTJ26 PGOPAGATION EE EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI`
+    after:  ` ■ MTMTJ26 PGOPAGATION E EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI`
+capture|unadjudicated/cw-2026-08-23-001831 | named banked 43, at HEAD 40 | elements banked 107, at HEAD 105 | RED
+    before: `  AE E K     K N YT T TTA   ■ MA  <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV`
+    after:  ` E IE E U  KT■TQ   O Q <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV`
+capture|unadjudicated/cw-2026-08-23-001952 | named banked 46, at HEAD 39 | elements banked 103, at HEAD 86 | RED
+    before: ` ETBEE 5  I A  E   ■FN 5IN WEFIT   EENE MCOM T A K8T    I  ■ E I II II EE   MN S    B0   `
+    after:  `HET E  E ■HIN WEFU  EENE MCON TA K8T     I  ■ E I II II EE   MN S    B0   `
+capture|unadjudicated/cw-2026-08-25-012823 | named banked 23, at HEAD 22 | elements banked 37, at HEAD 36 | RED
+    before: ` E S SE EE  TTN T K T M TE E O IN U T    E T`
+    after:  ` E S SE EE  TTN T K E M TE E O IN U T     E`
+capture|unadjudicated/cw-2026-08-25-012922 | named banked 43, at HEAD 40 | elements banked 104, at HEAD 102 | RED
+    before: ` I W TM TTM     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH`
+    after:  ` I W W M     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH`
+capture|unadjudicated/cw-2026-08-25-013010 | named banked 48, at HEAD 47 | elements banked 122, at HEAD 118 | RED
+    before: `  TLL ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE   `
+    after:  `  T■L ES NICE TO OR K U <BT> LAS EEE SRI  ULSO NICE TO MEET YOU 73ES GE   `
+capture|unadjudicated/cw-2026-09-24-004133 | named banked 28, at HEAD 25 | elements banked 85, at HEAD 88 | RED
+    before: `1 9 R I C H ARTETE■E GEL K 0 D T AT 5 0 0 5 H ■ 8 `
+    after:  `1 9 R I C H ARD D J GEL ■ 0 D T  UT 5 0 0 5 H ■ 8 `
+named|cw-2026-08-17-134712 | named banked 11, at HEAD 8 | elements banked -, at HEAD 22 | RED
+    before: `                     I        I■5   NT    N4LZT K      `
+    after:  `         E     ■   NT    N4LQ K     `
+named|unadjudicated/cw-2026-08-22-031838 | named banked 40, at HEAD 29 | elements banked -, at HEAD 86 | RED
+    before: `  A 3, AT3 M, E2TT TTTTT , AND  ■T TTT TEAH A MEAN TOF 2 TT    `
+    after:  `  A 3, AT3 , 2TT 2, AND  ■ W IAH A MEAN OF 2 TT `
+named|unadjudicated/cw-2026-08-22-031905 | named banked 36, at HEAD 32 | elements banked -, at HEAD 99 | RED
+    before: ` ■ PREDICTED 10.7  IAIEI TANI   WLUX IS 125,,  E T T`
+    after:  ` ■ PREDICTED 10.7  IAIEI TANI   WLUX IS 125,`
+named|unadjudicated/cw-2026-08-22-032113 | named banked 47, at HEAD 45 | elements banked -, at HEAD 97 | RED
+    before: `   A KET■ A N O INT ERNE T ■ E ROIONS OF  200J6   I  NN I TT E E I  E SEE EIE E I`
+    after:  `   A KET■ A N O INT ERNE T ■ E RSIONS OF  200J6   I I I TT E EI  EEEEI I E E`
+named|unadjudicated/cw-2026-08-22-032129 | named banked 65, at HEAD 64 | elements banked -, at HEAD 113 | RED
+    before: ` ■ MTMTJ26 PGOPAGATION EE EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI`
+    after:  ` ■ MTMTJ26 PGOPAGATION E EE EIIEE I E EE IEEEE I HE EE I E E S E E E E IEEE E I SE IE I E E EEI`
+named|unadjudicated/cw-2026-09-23-173723 | named banked 46, at HEAD 38 | elements banked -, at HEAD 112 | RED
+    before: ` T EABNIREDWBZ WB6RED CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`
+    after:  ` T EABNIREDWBZ WB6RED CQ CQ CQ DEWB6 RE D W B 7E E I`
+
+# V-11 per keyed recording across 441's two changes (unit441-metrics-r82.txt to unit442-metrics-entry.txt)
+cq-12wpm-0db  wrong-or-added 0 -> 0  CER-SURE - -> -  right 0 -> 0  boundaries wrong 6 -> 6
+cq-12wpm-15db  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 21 -> 21  boundaries wrong 0 -> 0
+cq-12wpm-5db  wrong-or-added 3 -> 0  CER-SURE 0.1304 -> 0.0000  right 20 -> 21  boundaries wrong 0 -> 0
+cq-18wpm-0db  wrong-or-added 0 -> 0  CER-SURE - -> -  right 0 -> 0  boundaries wrong 6 -> 6
+cq-18wpm-0db-char5  wrong-or-added 0 -> 0  CER-SURE - -> -  right 0 -> 0  boundaries wrong 6 -> 6
+cq-18wpm-15db  wrong-or-added 7 -> 0  CER-SURE 0.2692 -> 0.0000  right 19 -> 21  boundaries wrong 1 -> 0
+cq-18wpm-15db-char5  wrong-or-added 1 -> 1  CER-SURE 0.0476 -> 0.0476  right 20 -> 20  boundaries wrong 14 -> 14
+cq-18wpm-5db  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 20 -> 20  boundaries wrong 0 -> 0
+cq-18wpm-5db-char5  wrong-or-added 11 -> 11  CER-SURE 0.4400 -> 0.4400  right 14 -> 14  boundaries wrong 10 -> 10
+cq-25wpm-0db  wrong-or-added 0 -> 0  CER-SURE - -> -  right 0 -> 0  boundaries wrong 6 -> 6
+cq-25wpm-15db  wrong-or-added 1 -> 1  CER-SURE 0.0455 -> 0.0455  right 21 -> 21  boundaries wrong 0 -> 0
+cq-25wpm-5db  wrong-or-added 1 -> 1  CER-SURE 0.0455 -> 0.0455  right 21 -> 21  boundaries wrong 0 -> 0
+cw-2026-08-17-013347  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 6 -> 6  boundaries wrong 0 -> 0
+cw-2026-08-17-134712  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 3 -> 3  boundaries wrong 0 -> 0
+cw-2026-08-18-004507  wrong-or-added 1 -> 0  CER-SURE 0.0233 -> 0.0000  right 42 -> 43  boundaries wrong 7 -> 7
+unadjudicated/cw-2026-08-18-003758  wrong-or-added 3 -> 3  CER-SURE 0.2727 -> 0.2727  right 8 -> 8  boundaries wrong 0 -> 0
+unadjudicated/cw-2026-08-22-031838  wrong-or-added 11 -> 5  CER-SURE 0.5500 -> 0.2381  right 9 -> 16  boundaries wrong 5 -> 1
+unadjudicated/cw-2026-08-22-031905  wrong-or-added 10 -> 9  CER-SURE 0.3333 -> 0.3103  right 20 -> 20  boundaries wrong 2 -> 2
+unadjudicated/cw-2026-08-22-031948  wrong-or-added 1 -> 1  CER-SURE 0.0370 -> 0.0370  right 26 -> 26  boundaries wrong 0 -> 0
+unadjudicated/cw-2026-08-22-032012  wrong-or-added 3 -> 3  CER-SURE 0.0698 -> 0.0698  right 40 -> 40  boundaries wrong 3 -> 2
+unadjudicated/cw-2026-08-22-032050  wrong-or-added 4 -> 5  CER-SURE 0.1081 -> 0.1250  right 33 -> 35  boundaries wrong 4 -> 4  WORSE
+unadjudicated/cw-2026-08-22-032113  wrong-or-added 2 -> 1  CER-SURE 0.0909 -> 0.0455  right 20 -> 21  boundaries wrong 7 -> 7
+unadjudicated/cw-2026-08-22-032129  wrong-or-added 13 -> 12  CER-SURE 0.4643 -> 0.4444  right 15 -> 15  boundaries wrong 7 -> 5
+unadjudicated/cw-2026-08-24-012403  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 13 -> 13  boundaries wrong 0 -> 0
+unadjudicated/cw-2026-09-23-173723  wrong-or-added 14 -> 3  CER-SURE 0.5000 -> 0.1500  right 14 -> 17  boundaries wrong 5 -> 7  WORSE
+unadjudicated/cw-2026-09-24-004108  wrong-or-added 2 -> 2  CER-SURE 0.5000 -> 0.5000  right 2 -> 2  boundaries wrong 2 -> 2
+unadjudicated/cw-2026-09-24-004133  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 4 -> 5  boundaries wrong 2 -> 2
+unadjudicated/cw-2026-09-24-004205  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 8 -> 8  boundaries wrong 1 -> 1
+unadjudicated/cw-2026-09-24-004234  wrong-or-added 2 -> 2  CER-SURE 0.2222 -> 0.2222  right 7 -> 7  boundaries wrong 4 -> 4
+unadjudicated/cw-2026-09-24-004322  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 32 -> 32  boundaries wrong 6 -> 6
+unadjudicated/cw-2026-09-24-004347  wrong-or-added 1 -> 1  CER-SURE 0.0417 -> 0.0417  right 23 -> 23  boundaries wrong 1 -> 1
+unadjudicated/cw-2026-09-24-004405  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 6 -> 6  boundaries wrong 0 -> 0
+unadjudicated/cw-2026-09-24-004427  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 9 -> 9  boundaries wrong 0 -> 0
+unadjudicated/cw-2026-09-24-004510  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 11 -> 11  boundaries wrong 0 -> 0
+unadjudicated/cw-2026-09-24-004550  wrong-or-added 0 -> 0  CER-SURE 0.0000 -> 0.0000  right 8 -> 8  boundaries wrong 1 -> 1
+recordings compared 35, worse 2

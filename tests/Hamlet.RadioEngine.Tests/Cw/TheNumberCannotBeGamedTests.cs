@@ -50,21 +50,24 @@ public sealed class TheNumberCannotBeGamedTests
     public static TheoryData<string, int> NamedFloors { get; } = new()
     {
         // The baseline's four (PHASE_PLAN.md 0.2).
+        // **NOT RE-BANKED BY UNIT 442, AND LEFT RED** (V-11): 17:37 reads 38 at
+        // `0439a8e7`, and its word boundaries wrong went 5 to 7 under G1, so a
+        // requirement metric got worse on it.
         { TheSeventeenThirtySevenCaptureTests.Name, 46 },
         { "cw-2026-08-17-013347", 57 },
-        { "cw-2026-08-17-134712", 11 },                   // 21 named, 10 below the bar
+        { "cw-2026-08-17-134712", 8 },                    // re-banked by unit 442 from 11 (R78)
         { "unadjudicated/cw-2026-08-18-003758", 43 },     // 44 named, 1 below the bar
 
         // The other adjudicated recordings, scored outside the baseline total.
         { "unadjudicated/cw-2026-08-24-012403", 19 },     // 21 named, 2 below the bar
         { "cw-2026-08-18-004507", 49 },
-        { "unadjudicated/cw-2026-08-22-031838", 40 },     // 43 named, 3 below the bar
-        { "unadjudicated/cw-2026-08-22-031905", 36 },
+        { "unadjudicated/cw-2026-08-22-031838", 29 },     // re-banked by unit 442 from 40 (R78)
+        { "unadjudicated/cw-2026-08-22-031905", 32 },     // re-banked by unit 442 from 36 (R78)
         { "unadjudicated/cw-2026-08-22-031948", 31 },
         { "unadjudicated/cw-2026-08-22-032012", 43 },
         { "unadjudicated/cw-2026-08-22-032050", 44 },
-        { "unadjudicated/cw-2026-08-22-032113", 47 },
-        { "unadjudicated/cw-2026-08-22-032129", 65 },
+        { "unadjudicated/cw-2026-08-22-032113", 45 },     // re-banked by unit 442 from 47 (R78)
+        { "unadjudicated/cw-2026-08-22-032129", 64 },     // re-banked by unit 442 from 65 (R78)
     };
 
     /// <summary>A keyed recording scored as the baseline scores it.</summary>

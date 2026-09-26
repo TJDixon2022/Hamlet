@@ -109,32 +109,38 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
     /// the commit that re-stated them did not touch. Eighteen rows changed, each
     /// by exactly the characters it settles below the bar; the other thirty-three
     /// have none. The old named counts are in unit 421's report.</para>
+    /// <para>**THIRTEEN RE-BANKED 2026-09-25 UNDER R78** (work instruction 442,
+    /// task 1). Unit 441's two kept changes, G1 and the marks' speed, made fewer
+    /// and longer characters, and R78 has a count falling reported, not rejected.
+    /// Each row is set to what it reads at `0439a8e7`; the six keyed ones only
+    /// after no requirement metric got worse on that recording (V-11). The text
+    /// each read before and after is in `.run-unit/unit442-floorrows.txt`.</para>
     /// </remarks>
     public static TheoryData<string, int, int, int> Floors { get; } = new()
     {
         // Adjudicated or independently corroborated content.
         { "cw-2026-08-17-013347", 57, 106, 2 },
-        { "cw-2026-08-17-134712", 11, 31, 42 },      // 21 named, 10 below the bar: the trailing run of `E`s after `N4L`
+        { "cw-2026-08-17-134712", 8, 22, 1 },        // re-banked by unit 442 from 11, 31 (R78); was 21 named, 10 below the bar
         { "cw-2026-08-18-004507", 49, 117, 1 },
         { "unadjudicated/cw-2026-08-24-012403", 19, 60, 1 },   // 21 named, 2 below the bar
 
         // The seven W1AW propagation-bulletin captures of 2026-08-22.
-        { "unadjudicated/cw-2026-08-22-031838", 40, 91, 15 },  // 43 named, 3 below the bar
-        { "unadjudicated/cw-2026-08-22-031905", 36, 108, 6 },
+        { "unadjudicated/cw-2026-08-22-031838", 29, 86, 1 },   // re-banked by unit 442 from 40, 91 (R78)
+        { "unadjudicated/cw-2026-08-22-031905", 32, 99, 1 },   // re-banked by unit 442 from 36, 108 (R78)
         { "unadjudicated/cw-2026-08-22-031948", 31, 111, 3 },
         { "unadjudicated/cw-2026-08-22-032012", 43, 119, 1 },
         { "unadjudicated/cw-2026-08-22-032050", 44, 105, 9 },
-        { "unadjudicated/cw-2026-08-22-032113", 47, 102, 8 },
-        { "unadjudicated/cw-2026-08-22-032129", 65, 114, 1 },
+        { "unadjudicated/cw-2026-08-22-032113", 45, 97, 2 },   // re-banked by unit 442 from 47, 102 (R78)
+        { "unadjudicated/cw-2026-08-22-032129", 64, 113, 1 },  // re-banked by unit 442 from 65, 114 (R78)
 
         // Nothing adjudicated in any of these.
-        { "cw-2026-08-17-013622", 49, 78, 4 },         // 51 named, 2 below the bar
-        { "unadjudicated/cw-2026-08-18-003016", 54, 146, 3 },
+        { "cw-2026-08-17-013622", 50, 77, 0 },         // re-banked by unit 442 from 49, 78 (R78)
+        { "unadjudicated/cw-2026-08-18-003016", 54, 145, 0 },  // re-banked by unit 442 from 54, 146 (R78)
         { "unadjudicated/cw-2026-08-18-003126", 48, 131, 6 },
         { "unadjudicated/cw-2026-08-18-003758", 43, 92, 19 },    // 44 named, 1 below the bar
         { "unadjudicated/cw-2026-08-23-001520", 1, 1, 4 },
-        { "unadjudicated/cw-2026-08-23-001831", 43, 107, 11 },   // 44 named, 1 below the bar
-        { "unadjudicated/cw-2026-08-23-001952", 46, 103, 19 },   // 57 named, 11 below the bar
+        { "unadjudicated/cw-2026-08-23-001831", 40, 105, 1 },    // re-banked by unit 442 from 43, 107 (R78)
+        { "unadjudicated/cw-2026-08-23-001952", 39, 86, 2 },     // re-banked by unit 442 from 46, 103 (R78), unkeyed
         { "unadjudicated/cw-2026-08-23-002016", 34, 74, 31 },    // 44 named, 10 below the bar
 
 
@@ -151,9 +157,9 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         // the decoder now produces, with the loss on the record. Why the replay
         // destroys this one recording is its own question and it is unanswered.
         { "unadjudicated/cw-2026-08-25-012748", 2, 3, 2 },   // **Bug A**, and the one capture the re-read hurts
-        { "unadjudicated/cw-2026-08-25-012823", 23, 37, 15 },   // **the negative control** — the tone lands 50 Hz off and the reading is soup; 26 named, 3 below the bar
-        { "unadjudicated/cw-2026-08-25-012922", 43, 104, 5 },   // lock recovering; 45 named, 2 below the bar
-        { "unadjudicated/cw-2026-08-25-013010", 48, 122, 6 },   // a whole contact; the gate must not damage it
+        { "unadjudicated/cw-2026-08-25-012823", 22, 36, 0 },    // **the negative control** — the tone lands 50 Hz off and the reading is soup; re-banked by unit 442 from 23, 37 (R78)
+        { "unadjudicated/cw-2026-08-25-012922", 40, 102, 0 },   // lock recovering; re-banked by unit 442 from 43, 104 (R78)
+        { "unadjudicated/cw-2026-08-25-013010", 47, 118, 1 },   // a whole contact; the gate must not damage it; re-banked by unit 442 from 48, 122 (R78)
         { "unadjudicated/cw-2026-08-25-013150", 51, 123, 7 },   // `CQ CQ CQ DE ND4K`
         { "unadjudicated/cw-2026-08-25-013303", 44, 127, 10 },   // **the beat-the-chain case**
         { "unadjudicated/cw-2026-08-25-013402", 56, 150, 5 },   // nought unsure at the old grid ceiling
@@ -189,7 +195,7 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         { "unadjudicated/cw-2026-09-24-003919", 25, 52, 0 },    // live 110 emitted, 0 unsure, 253 elements; 27 named, 2 below the bar
         { "unadjudicated/cw-2026-09-24-004027", 39, 118, 1 },   // live 51 emitted, 1 unsure, 125 elements; 40 named, 1 below the bar
         { "unadjudicated/cw-2026-09-24-004108", 32, 107, 0 },   // live 32 emitted, 0 unsure, 109 elements
-        { "unadjudicated/cw-2026-09-24-004133", 28, 85, 2 },    // live 31 emitted, 2 unsure, 106 elements; 30 named, 2 below the bar
+        { "unadjudicated/cw-2026-09-24-004133", 25, 88, 2 },    // live 31 emitted, 2 unsure, 106 elements; re-banked by unit 442 from 28, 85 (R78)
         { "unadjudicated/cw-2026-09-24-004205", 34, 96, 2 },    // live 36 emitted, 2 unsure, 107 elements
         { "unadjudicated/cw-2026-09-24-004234", 36, 95, 1 },    // live 36 emitted, 0 unsure, 103 elements; 37 named, 1 below the bar
         { "unadjudicated/cw-2026-09-24-004322", 39, 112, 0 },   // live 39 emitted, 0 unsure, 114 elements

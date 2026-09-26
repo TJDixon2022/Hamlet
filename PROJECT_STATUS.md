@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 442 - sure has to mean something
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T20:51:39-04:00
-NOTE: Entry round done at 47 of 421 sure-wrong; 2.1 and 2.3 ticked; committing task 0
+UPDATED: 2026-09-25T21:13:36-04:00
+NOTE: Floors re-banked: captures 51/51, named 12/13 (17:37 left red, V-11), CF engine 178/178; committing
 
 ---
 
