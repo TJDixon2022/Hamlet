@@ -1,0 +1,17 @@
+unit459 task 1: the trace - 18 letters ours prints sure and wrong where the port reads them right; (a) and (d) tie at 5, (D) speed tracking is behind 6, 5 real; our own lattice at the port's speed reads 4, U, D and , whole (9.4)
+
+WhereOursLosesWhatThePortKeepsTests prints, for every key letter ours
+prints sure and wrong where the port is sure and right, our path's
+dits, dahs and gaps in ms, samples and units (a copy of DecodeAt that
+spells what the decoder spelled on 18 of 18 reads), the speed, pitch
+and thresholds in force, each segment's level in noise sigmas, and our
+own lattice re-run on the same window at the port's speed. Groups:
+(a) never keyed 5 (3 real), (d) cut by a gap rule or speed 5 (4 real),
+(b) thrown away 4, (c) classed otherwise 2, an element added 2. By the
+port mechanism behind them, (D) speed tracking (cw.cxx:524-535,
+831-843, 502) is behind 6, 5 of them real. Chosen over (A) because the
+17:37 dahs stand no higher than noise in our envelope. Mismatches with
+the instruction: the port reads 003758's first A wrong too, and misses
+004234's U. No src line changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

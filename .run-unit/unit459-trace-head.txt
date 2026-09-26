@@ -1,0 +1,76 @@
+UNIT 459 TASK 1 (9.4) - WHERE OURS LOSES THE ELEMENT THE PORT KEEPS
+
+Source: WhereOursLosesWhatThePortKeepsTests.EveryLetterOursLosesThatThePortKeeps, run at HEAD 124c87b1 with no src
+change (.run-unit/unit459-trace-t1.txt). Both decoders as BothDecodersAreScoredAlikeTests scores them - the same
+stretches, the same alignments. A departure is a key letter ours prints SURE AND WRONG where the port is SURE AND
+RIGHT on the same key letter of the same stretch. 032129 and 004108 are left out by name (the port wins there by
+printing less); the 0 dB cases and 17:37's opening fall out by the rule (ours prints nothing sure-wrong there that
+the port reads right). Keys: real rows INFERRED (V-13), synthetic rows EXACT (never sole evidence, 12.5).
+
+HOW OURS WAS READ. Ours was driven again hop by hop exactly as the harness drives it; at each settled letter the
+window, the read's speed, the gaps it was given and its mix pitch were kept. The winning path was re-run segment by
+segment by a copy of CwProbabilisticDecoder.DecodeAt - 18 of 18 reads spelled exactly what the decoder spelled - so
+every dit, dah and gap printed below is the decoder's own. Our decoder forms no threshold: "mark" is a hop where the
+key-down log-likelihood beats key-up; dit|dah and element|letter gap cross at 1.73 units (geometric mean, the ratio
+penalty), letter|word at 4.58 units, or at the geometric means of the held gaps; a letter prints at 1.0 per hop and,
+one element alone, at a span of 13. Levels are the envelope in units of the noise scale (sigma) against the keyed
+level (97th percentile), both over the 2.5 s around, as the decoder takes them.
+
+WHERE THE ELEMENT WENT, in addition to the four kinds: our own lattice was re-run on the same window at the port's
+speed for that letter. Where it then reads the key letter there, every element was keyed and the speed lost it.
+
+MISMATCHES WITH THE INSTRUCTION'S LIST (the tree is the fact):
+  - 003758: the instruction names A, A and 4. The port reads the FIRST A as E too (`[A>E]A4M`), so only the second A
+    and the 4 are departures.
+  - 004234: the instruction names O and U. The port misses U (`O[-U]`), so only O is a departure.
+  - Added from the printout and the other keyed recordings: 031838 `T` (ours `A`), 032012 `O` (ours `T`), 032050 `U`
+    (ours `A`), 032113 `D` (ours `O`), and seven on the synthetic cq-18wpm-15db-char5 / -5db-char5 cases.
+
+THE 18 DEPARTURES
+  key  ours  recording (key)         wpm ours/port  where it went
+  R    E     17:37 (inferred)        17.1 / 16      (a) never keyed: the dah sits in a key-up of median 1.0 sigma, peak 2.3, keyed level 3.9
+  D    I     17:37 (inferred)        17.1 / 16      (a) never keyed: the dah is not above noise in our envelope
+  A    E     003758 (inferred)       40.0 / 26      (d) cut: the 55 ms element gap is 1.83u at 40 WPM, past 1.73u, read as a letter gap
+  4    T     003758 (inferred)       40.0 / 25      (d) speed: at 25 WPM our own lattice reads `4` ....- on the same window
+  2    T     031838 (inferred)       22.8 / 19      (c) two mark runs read as one dah (our mix 525 Hz, 25 Hz off the port's)
+  ,    T     031838 (inferred)       28.2 / 19      (d) speed: at 19 WPM our own lattice reads `,` --..-- there (not printed, 0.12 per hop)
+  T    A     031838 (inferred)       28.2 / 20      (x) an element added: a 25 ms dit at 2.8 sigma before the dah
+  O    T     032012 (inferred)       22.9 / 18      (a) never keyed: the two dahs before sit under a keyed level of 36.8 sigma set by a burst
+  U    A     032050 (inferred)       34.3 / 17      (d) speed: at 17 WPM our own lattice reads `U` ..- there
+  D    O     032113 (inferred)       30.0 / 18      (c) speed: 70 ms marks are 1.75u at 30 WPM, dahs; at 18 WPM our own lattice reads `D` -..
+  O    T     004234 (inferred)       21.8 / 21      (b) a 45 ms mark run (0.82u, peak 6.2 sigma) the path took as key-up
+  L    E     cq-18wpm-15db-char5     17.8 / 17      (a) no mark run for the missing elements near ours
+  D    E     cq-18wpm-5db-char5      18.5 / 17      (b) a 0.62u mark run the path took as key-up
+  N    D     cq-18wpm-5db-char5      18.5 / 17      (x) an element added: a 25 ms dit at 0.6 sigma (noise) inside the letter
+  0    U     cq-18wpm-5db-char5      18.5 / 17      (a) no mark run for the missing elements near ours
+  C    U     cq-18wpm-5db-char5      18.5 / 17      (b) a 0.92u mark run the path took as key-up
+  L    U     cq-18wpm-5db-char5      18.5 / 17      (b) a 0.77u mark run the path took as key-up
+  L    E     cq-18wpm-5db-char5      18.5 / 17      (d) by the split rule only: ours `E` + next `D` spell .-.. across a 475 ms (7.31u) gap -
+                                                    a coincidence of patterns, not a letter cut by a gap rule; counted as the rule gives it
+
+GROUPS, (a) to (d), with the port mechanism behind each (cw.cxx at 61b97f41)
+  (a) never keyed as a mark ........ 5 (3 real: 17:37 R and D, 032012 O)  - (A) detection, cw.cxx:610-623, 640-641, 649-656
+  (d) ended by a gap rule or speed .. 5 (4 real: 003758 A and 4, 031838 `,`, 032050 U; 1 synthetic, the coincidence above)
+                                        - (D) speed tracking, cw.cxx:524-535 (update_tracking), 831-843 (the pairs), 502
+                                          (the receive speed from two_dots); with (E) the gap rule, cw.cxx:880-888
+  (b) keyed and thrown away ......... 4 (1 real: 004234 O)                - (B) spike rule, cw.cxx:515, 818-822
+  (c) classed as the other element .. 2 (2 real: 031838 `2`, 032113 D)    - (C) classing against two_dots, cw.cxx:846-855
+  (x) an element added .............. 2 (1 real)                          - none of (A) to (E)
+  By mechanism behind them: (D) 6 - the five (d) and 032113's (c), where the speed classed 70 ms marks as dahs - 5 real;
+  (A) 5, 3 real; (B) 4, 1 real; (C) 1; none 2.
+
+THE LARGEST GROUP. (a) and (d) tie at 5. The technique is (D), the port's speed tracking: it is behind 6 departures,
+5 of them real, and on 4 of those our own lattice on the same window at the port's speed reads the key letter.
+WHY (D) AND NOT (A), IN ONE LINE: on 17:37 the missing dahs of R and D stand no higher than noise in our envelope
+(median 1.0 sigma, peak 2.3, against a keyed level of 3.9), so no detection rule on our envelope keeps them, while at
+the port's tracked speed our own decoder already reads 4, U and D whole from marks it keyed.
+
+WHAT (D) IS IN THE PORT. On every key-up the port times the mark; a mark shorter than half its tracked dot is a
+spike and never reaches the tracker (cw.cxx:515, 818-822); otherwise, when this mark and the one before it are a
+dot-dash or dash-dot pair - one more than two and less than four times the other (831-843) - update_tracking
+(524-535) takes their mean, which is two dots, into a 16-long moving average, two_dots (533), from which the receive
+speed follows (sync_parameters, 466-516; the speed at 502). It is a speed with memory, fed only by pairs of marks.
+Ours takes its speed afresh from each 12 s window's two short clusters (CwUnitEstimator.Measure), with an overrule to
+the window's marks where they say the path runs slow (CwProbabilisticStream, 441), and no memory from read to read.
+
+== THE PRINTOUT
