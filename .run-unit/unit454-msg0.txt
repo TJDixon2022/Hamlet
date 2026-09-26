@@ -1,0 +1,13 @@
+unit454 task 0: entry at step 9 - floors and metrics as at 453's exit; git clone of fldigi refused from the session (9.2)
+
+Build 0 errors; engine line 178 of 178 in 388 s; app line 274 of 278
+on the first run (4 Avalonia headless dispatcher-loop failures, no
+source changed), 278 of 278 on the one rerun; captures 51 of 51;
+adjudicated 13 of 13; named 10 of 13 as recorded (17:37 38, 032113
+43, 032129 42). Real, inferred keys: MET-CER-SURE 33 of 436, coverage
+403 over 473, MET-WBE 37 over 113. Synthetic, exact: 14 of 173,
+159 over 252, 44 over 84. The clone of w1hkj/fldigi was refused as
+needing approval; a denial, not routed around. The runner's writes
+committed as they were, with the entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

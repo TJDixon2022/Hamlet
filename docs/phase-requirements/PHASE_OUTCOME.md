@@ -223,3 +223,17 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 ADVANCES: step 6 criterion 5
 RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
 ENTRY: Version 1.13.139 to 1.13.140. PHASE_STATUS.md names unit 453, CURRENT_STEP 6 in both copies. HEAD at entry 0659ed8a. Step 6 at 1 of 6 by the plan. Build 0 errors in 17 s; engine line 178 of 178 in 386 s; app line 278 of 278 in 172 s, no loss, no hang; captures 51 of 51 in 132 s; adjudicated 13 of 13 in 33 s; named 10 of 13 in 68 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113; 17:37 alone 7 over 6. Synthetic, exact: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. Files more than 25 Hz off 9. 63 recordings' text saved to .run-unit/unit453-text-before.txt, identical to 452's exit.
+
+## UNIT 454 - STEP 9
+
+STEP: 9
+APPROACH: port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
+MOVE: continue
+WHY: PHASE_PLAN.md step 9 criterion 9.2, carrying HM-REQ-123, asks that both decoders read every keyed recording and the synthetic set through the same harness and be scored through the same scorer and metrics, tabled per recording and per condition in parity.md, before either votes
+STATE: not started
+DECIDED: which of fldigi's decoder modes is ported, how its unclassed output is mapped to sure for the metrics, and the per-type timeouts are the author's, overrulable
+LICENCE: CW_REQUIREMENTS.md section M, HM-REQ-120 122 123 129; PHASE_PLAN.md R78, R80, R84, R85, section 6; R72; HM-DEC-155; CLAUDE.md 0.2 and 12.5; FACT-004; GPL-3
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 9 criterion 2
+RUN: session launched with SESSION.lock already present (PID 42976, 12:46:47); the lock is the launcher's and was not taken or released by the session.
+ENTRY: Version 1.13.140 to 1.13.141. PHASE_STATUS.md names unit 454, CURRENT_STEP 9 in both copies. HEAD at entry d81d8e0a. Step 9 at 0 of 6 by the plan. Build 0 errors in 17 s; engine line 178 of 178 in 388 s; app line 274 of 278 in 173 s on the first run (4 failed in 1 ms each with Avalonia's headless "You've caused dispatcher loop", no source changed), 278 of 278 in 168 s on the one rerun, no hang; captures 51 of 51 in 131 s; adjudicated 13 of 13 in 34 s; named 10 of 13 in 67 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113. Synthetic, exact: MET-CER-SURE 14 of 173, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. All as at 453's exit. git clone of github.com/w1hkj/fldigi from the session was refused as needing approval; recorded as a denial and not routed around.

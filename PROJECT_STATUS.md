@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 453 - the words the owner named
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 454 - the second decoder reads beside ours
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T12:41:40-04:00
-NOTE: Unit 453 done: 6.5 ticked, 0 of 3 measurable named spans met, WEEKEND and THINKING not in the audio, nothing built - output.md written
+UPDATED: 2026-09-26T13:06:28-04:00
+NOTE: Task 0 done, numbers as 453 left them; task 1 blocked - the fldigi clone was refused, recording the request for the four files
 
 ---
 
