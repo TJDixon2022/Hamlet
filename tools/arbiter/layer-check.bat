@@ -60,8 +60,8 @@ rem  THIS IS THE FAILURE MODE OF THIS SCRIPT: it goes stale and
 rem  reports green on a project that is behind. It cannot detect
 rem  that on its own - see the limit printed below.
 rem ============================================================
-set "LIST_UPDATED=2026-09-24"
-set "LIST_UNIT=088"
+set "LIST_UPDATED=2026-09-26"
+set "LIST_UNIT=089"
 
 set "RC=0"
 set /a NPRESENT=0
@@ -162,6 +162,7 @@ call :cap "the prompt leads with the prime directive" "tools\arbiter\run-phase.b
 call :cap "a refusal is handed back, never a halt" "tools\arbiter\run-phase.bat" "^:refused$" "PHASE_UPLIFT.md 31"
 call :cap "a hiccup is retried once, then routed" "tools\arbiter\run-phase.bat" "^:launchcheck$" "PHASE_UPLIFT.md 32"
 call :cap "an owner's decision can be answered" "tools\arbiter\run-phase.bat" "^:stopanswered$" "PHASE_UPLIFT.md 33"
+call :cap "the owner can stop a night" "tools\arbiter\run-phase.bat" "^:ownerstop$" "PHASE_UPLIFT.md 34"
 call :cap "reload present"           "tools\arbiter\reload.bat"      "*"                      "PHASE_UPLIFT.md 3"
 call :cap "CRLF pinned for .bat"     ".gitattributes"                "eol=crlf"               "PHASE_UPLIFT.md 13" req
 call :cap "panel per-field degrade"  "app\PROJECT_ANNUNCIATOR.html"  "function deriveStatus"  "PHASE_UPLIFT.md 14"

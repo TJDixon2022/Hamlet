@@ -210,6 +210,11 @@ set "FLIPK="
 for /f "usebackq delims=" %%F in ("%CD%\.flip") do set "FLIPK=%%F"
 if defined FLIPK powershell -NoProfile -Command "$p='%CD%\PHASE_PLAN.md'; $t=[IO.File]::ReadAllText($p); [IO.File]::WriteAllText($p, $t.Replace('- [ ] %FLIPK% ', '- [x] %FLIPK% '), (New-Object System.Text.UTF8Encoding($false)))"
 :unitreport
+rem  089: A .stopmid FILE MAKES THE UNIT DROP THE OWNER'S STOP FILE AT THE ROOT
+rem  while it is running, carrying the .stopmid's own text as the reason - the
+rem  owner walking up mid-unit. The unit then finishes exactly as it would have.
+if exist "%CD%\.stopmid" copy /y "%CD%\.stopmid" "%CD%\STOP" >nul
+if exist "%CD%\.stopmid" echo FIXTURE: the unit dropped a STOP file at the root mid-run
 rem  065: a .report file in the root names which report the unit writes -
 rem  output-reversal.md or output-nine.md from this folder. Without one the
 rem  unit writes the plain valid report, as it did for 064.
@@ -238,6 +243,11 @@ echo {"type":"result","subtype":"success","is_error":false,"terminal_reason":"co
 exit /b 0
 
 :judge
+rem  089: A .stopjudge FILE MAKES THE STATE JUDGE DROP THE OWNER'S STOP FILE -
+rem  the file appearing after the unit has finished and before the next
+rem  iteration, which is the between-iterations case.
+if exist "%CD%\.stopjudge" copy /y "%CD%\.stopjudge" "%CD%\STOP" >nul
+if exist "%CD%\.stopjudge" echo FIXTURE: the state judge dropped a STOP file at the root between iterations
 if exist "%CD%\.realjudge" goto :realjudge
 rem  083: STDIN IS KEPT, NOT DRAINED, so the stand-in can tell the section-4
 rem  judge's prompt - "Below is section 4 of a work unit's report" - from the

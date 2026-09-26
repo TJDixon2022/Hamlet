@@ -328,6 +328,13 @@ rem  durable, append-only log of the questions themselves - is never cleared.
 rem  Nothing about a parked question is ever written to the plan or the record.
 call :parkedclear
 
+rem  089: THE OWNER'S BRAKE, READ AT THE DOOR. A STOP file at the phase root
+rem  ends a run launched with it present - here, before the first reload and
+rem  before anything is authored - and again at the top of every iteration.
+call :ownerstop
+if "%OS_KEYING%"=="1" goto :arbstop
+if "%OS_END%"=="1" goto :stopped
+
 rem ============================================================
 rem  THE LOOP
 rem ============================================================
@@ -352,6 +359,15 @@ if %ITER% GTR %MAXITER% (
   set "STOPWHY=backstop: %MAXITER% iterations, no stop condition fired"
   goto :stopped
 )
+
+rem  089: THE OWNER'S BRAKE, READ AT THE TOP OF EVERY ITERATION - after the
+rem  backstop and before the scratch, the reload and the arbiter, so a file
+rem  dropped while a unit was running takes effect the moment that unit has
+rem  finished, been judged, appended and recorded, with nothing new authored.
+rem  Never mid-unit: a unit that has launched runs to its own end.
+call :ownerstop
+if "%OS_KEYING%"=="1" goto :arbstop
+if "%OS_END%"=="1" goto :stopped
 
 rem --- 1. the scratch, emptied ---------------------------------
 rem  PHASE_PLAN.md, 2026-08-31: .run-unit\scratch\ is the permitted
@@ -1669,6 +1685,77 @@ set "NOWSTAMP="
 for /f "usebackq delims=" %%D in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyy-MM-ddTHH:mm')"`) do set "NOWSTAMP=%%D"
 call "%HERE%ledger.bat" "%ITER%" "%NOWSTAMP%" "%NOWSTAMP%" "note" "%~1" "none - not a run" "%ROOT%" >nul
 echo       ledger     : noted - %~1
+goto :eof
+
+rem ============================================================
+rem  089: THE OWNER'S BRAKE. A file named STOP at the phase root, no extension,
+rem  empty or carrying his reason. Read at the door and at the top of every
+rem  iteration, never mid-unit. The owner, 2026-09-25: he can start a night
+rem  and could not end one without being at the machine when a unit happened
+rem  to finish. This is the ninth ending and it is the first kind - a decision
+rem  he reserved, him saying stop - so it exits 0, is recorded as an ending in
+rem  that word, and writes the review sheet as any ending does. THE FILE IS
+rem  CONSUMED when acted on, and the console and the ledger say so: a file
+rem  left in place would halt every future launch, which is 088's permanent
+rem  halt in another coat. Where it cannot be deleted - read-only, held - the
+rem  run still ends and the console says in plain words to remove it by hand.
+rem  A KEYING STOP WINS: where a seeded instruction on disk says MOVE: stop,
+rem  that stop halts first and the file is left in place, untouched and said.
+rem  No timeout, no countdown, no second file. Author's, overrulable.
+rem  THE ROUTINE SETS A FLAG AND THE CALLER JUMPS. Found by the first smoke: a
+rem  goto :stopped from inside a called routine runs the halt block and then,
+rem  when the file ends, RETURNS to the caller - the ending was printed, the
+rem  file deleted, and the loop went on to run a unit. OS_END and OS_KEYING
+rem  are read at both call sites, which do the goto in the main flow.
+:ownerstop
+set "OS_END="
+set "OS_KEYING="
+if not exist "%ROOT%\STOP" goto :eof
+if not "%SEED%"=="1" goto :ownerstopread
+if %ITER% GTR 1 goto :ownerstopread
+call :readdecision
+if /i not "%A_MOVE%"=="stop" goto :ownerstopread
+echo.
+echo   A STOP FILE IS AT THE ROOT, AND SO IS A SEEDED MOVE: stop. THE KEYING STOP
+echo   WINS - it halts first, and the STOP file is left in place, not acted on.
+echo   Remove it by hand if the next launch should run.
+set "OS_KEYING=1"
+goto :eof
+:ownerstopread
+set "OS_REASON=no reason written - the file was empty"
+rem  the iteration that FINISHED: at the top of iteration N the counter already
+rem  reads N, so the one that finished is N-1; at the door it is 0.
+set "OS_AFTER=0"
+if %ITER% GTR 0 set /a OS_AFTER=ITER-1
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$f='%ROOT%\STOP'; $t=''; try{ $t=[IO.File]::ReadAllText($f) }catch{}; $t=(($t -replace '\s+',' ').Trim()) -replace '[&|<>^%%]',''; if($t -ne ''){ 'OS_REASON=' + $t }"`) do set "%%A=%%B"
+echo.
+echo   ================================================================
+echo   ENDED: THE OWNER STOPPED THE RUN.
+echo   ================================================================
+if "%OS_AFTER%"=="0" echo   A STOP file was at the root when this run was launched. Nothing was authored,
+if "%OS_AFTER%"=="0" echo   nothing was launched, nothing was spent.
+if not "%OS_AFTER%"=="0" echo   A STOP file was found at the top of iteration %ITER% - after iteration %OS_AFTER%
+if not "%OS_AFTER%"=="0" echo   finished, was judged, appended and recorded, and before anything new was authored.
+if not "%OS_AFTER%"=="0" if defined ADVNOTE echo   the last unit : %ADVNOTE%
+echo   his reason    : %OS_REASON%
+echo   THIS IS AN ENDING, NOT A STOP - the owner's ruling of 2026-09-23: a night ends
+echo   for a decision he reserved, and stopping his own run is the plainest one.
+del /q "%ROOT%\STOP" 2>nul
+if exist "%ROOT%\STOP" goto :ownerstopstuck
+echo   the STOP file was DELETED - acted on, and a file left in place would halt
+echo   every future launch.
+set "STOPWHY=ended: the owner stopped the run - after iteration %OS_AFTER% - his reason: %OS_REASON% - the STOP file was deleted"
+set "OS_END=1"
+goto :eof
+:ownerstopstuck
+echo.
+echo   ****************************************************
+echo   THE STOP FILE COULD NOT BE DELETED - it is read-only or held open.
+echo   REMOVE IT BY HAND BEFORE THE NEXT LAUNCH: %ROOT%\STOP
+echo   Left in place it will end every launch at the door.
+echo   ****************************************************
+set "STOPWHY=ended: the owner stopped the run - after iteration %OS_AFTER% - his reason: %OS_REASON% - THE STOP FILE COULD NOT BE DELETED, remove %ROOT%\STOP by hand before the next launch"
+set "OS_END=1"
 goto :eof
 
 rem ============================================================
@@ -3610,6 +3697,8 @@ rem  failure. Every other STOPWHY still exits 1, unchanged.
 set "RC=1"
 if "%STOPWHY:~0,7%"=="stop 1:" set "RC=0"
 if "%STOPWHY:~0,8%"=="ending: " set "RC=0"
+rem  089: `ended: ` is the owner's brake - an ending, exit 0.
+if "%STOPWHY:~0,7%"=="ended: " set "RC=0"
 call :ledgerstop
 rem  072 task 4: THE REVIEW SHEET IS WRITTEN AT AN ENDING, not only at the
 rem  owner-s-verdict one. Criterion 5.3 says at an ending, and after 071 there
@@ -4388,6 +4477,8 @@ rem  085: the drift ending shares the prefix above and is told apart by the
 rem  next word, so the general test runs first and this one overrides it.
 rem  ~0,21 is the length of `stop 1: ended - drift`, counted.
 if "%STOPWHY:~0,21%"=="stop 1: ended - drift" set "LEDKIND=the arbiter could not resolve the work back to the phase goal - every open criterion drifted on and parked"
+rem  089: the owner's brake - ~0,7 is the length of `ended: `, counted.
+if "%STOPWHY:~0,7%"=="ended: " set "LEDKIND=the owner stopped the run"
 rem  ~0,41 AND NOT ~0,40: the first cut was one character short, so the test
 rem  literal carried a trailing space the substring did not, it never matched,
 rem  and a night that ended because a ruling was wanted on one of the three was
