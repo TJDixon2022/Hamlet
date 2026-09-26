@@ -233,9 +233,10 @@ public sealed class CwTerminalControl : SelectableTextBlock
         // characters always land behind it rather than after it.
         RemoveTip();
 
+        // Named here, where it is drawn, under the terminal's setting (HM-REQ-072).
         foreach (var character in _drained)
         {
-            AppendCharacter(character);
+            AppendCharacter(character, transcript.Render(character));
         }
 
         DrawTip();
@@ -248,7 +249,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
     /// Add one character, extending the current run when the decoder feels the
     /// same way about it.
     /// </summary>
-    private void AppendCharacter(CwCharacter character)
+    private void AppendCharacter(CwCharacter character, string text)
     {
         if (_run is null
             || character.Confidence != _runConfidence
@@ -265,9 +266,9 @@ public sealed class CwTerminalControl : SelectableTextBlock
             Inlines?.Add(_run);
         }
 
-        _run.Text += character.Text;
-        _runLength += character.Text.Length;
-        _characters += character.Text.Length;
+        _run.Text += text;
+        _runLength += text.Length;
+        _characters += text.Length;
     }
 
     private void RemoveTip()

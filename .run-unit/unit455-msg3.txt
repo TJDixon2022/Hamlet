@@ -1,0 +1,20 @@
+unit455 task 3: HM-REQ-072 met - the terminal names -...- and .-.-. as the operator sets it, default the prosign name, kept under R78 (6.2)
+
+CwProsignNaming (Prosign, Punctuation) in the engine and
+MorseAlphabet.Name applying it; AppSettings.CwProsignNaming, default
+Prosign; CwTranscript.Render names each character where the terminal
+draws it and in the tip, the transcript itself keeping the decoder's
+symbol; a switch on the settings screen, "Show BT and AR in the CW
+terminal as = and +". The decoder is not touched.
+
+TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests 7 of 7: one symbol
+per send, = and + under Punctuation, <BT> and <AR> by default. R78:
+real MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403
+over 473, MET-WBE 37 over 113; synthetic 14 of 173, 14 over 252,
+159 over 252, 44 over 84 - all as at entry. Captures 51 of 51,
+adjudicated 13 of 13, named 10 of 13 at the entry values. Every
+recording's text byte-identical to task 0's save. Four app failures
+in the touched types (voice spelling, CW tab ceiling, drive note)
+are there at HEAD with the change stashed, and on no carry-forward line.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

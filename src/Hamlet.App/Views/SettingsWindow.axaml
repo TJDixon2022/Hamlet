@@ -336,6 +336,27 @@
                                        VerticalAlignment="Center" />
                         </Grid>
 
+                        <!-- A naming choice and not a claim about the signal
+                             (HM-REQ-072): the decoder emits one symbol either
+                             way and only the terminal's word for it changes. -->
+                        <Border Background="White" CornerRadius="8" Padding="12,10"
+                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                BorderThickness="1">
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Margin="0,0,10,0"
+                                           Text="Show BT and AR in the CW terminal as = and +"
+                                           FontWeight="SemiBold" FontSize="13"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap" />
+                                <ctl:HintMarkControl Grid.Column="1" Kind="Tip"
+                                    VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Foreground="{StaticResource HmGreenBrush}"
+                                    Text="Some sounds in Morse have two names. The one a sender uses between paragraphs is BT to an operator and an equals sign to the rulebook, and the one that ends a message is AR or a plus sign, because it is the same sound whichever the sender had in mind. Hamlet hears it the same either way, and this only changes what the terminal calls it, so pick whichever you learned." />
+                                <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
+                                              IsChecked="{Binding ShowPunctuationNames}" />
+                            </Grid>
+                        </Border>
+
                         <!-- Beside the audio settings rather than buried, since
                              it is about the same thing: what Hamlet is listening
                              to when you open it (HM-DEC-052). -->

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Settings;
 using Hamlet.App.Licensing;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.App.Telemetry;
@@ -94,6 +95,10 @@ public partial class SettingsViewModel : ObservableObject
     /// </remarks>
     [ObservableProperty]
     private int _copySpeedWpm;
+
+    /// <summary>Whether the terminal calls <c>-...-</c> and <c>.-.-.</c> "=" and "+" rather than BT and AR (HM-REQ-072).</summary>
+    [ObservableProperty]
+    private bool _showPunctuationNames;
 
     /// <summary>Reconnect to the last radio when the app opens.</summary>
     [ObservableProperty]
@@ -193,6 +198,7 @@ public partial class SettingsViewModel : ObservableObject
         _transmitDrivePercent = settings.TransmitDrivePeak * 100.0;
         _cwPitchHz = settings.CwPitchHz;
         _copySpeedWpm = settings.CopySpeedWpm;
+        _showPunctuationNames = settings.CwProsignNaming == CwProsignNaming.Punctuation;
         _reconnectOnStartup = settings.ReconnectOnStartup;
         _modeFollowsTheMap = settings.ModeFollowsTheMap;
 
@@ -551,6 +557,12 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnReconnectOnStartupChanged(bool value)
     {
         _settings.ReconnectOnStartup = value;
+        SettingsStore.Save(_settings);
+    }
+
+    partial void OnShowPunctuationNamesChanged(bool value)
+    {
+        _settings.CwProsignNaming = value ? CwProsignNaming.Punctuation : CwProsignNaming.Prosign;
         SettingsStore.Save(_settings);
     }
 

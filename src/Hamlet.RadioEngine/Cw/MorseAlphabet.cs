@@ -22,9 +22,11 @@ namespace Hamlet.RadioEngine.Cw;
 /// a guess about the signal (§0.0). On the air <c>-...-</c> is the same sound
 /// whether the sender was thinking "BT" or thinking "=", and <c>.-.-.</c> is
 /// the same sound for "AR" and for "+". Where a pattern has both a punctuation
-/// name and a prosign name, the prosign wins, because that is overwhelmingly
-/// what it means inside a contact and it is the reading a newcomer needs
-/// explained rather than the one they can look up.</para>
+/// name and a prosign name, the table carries the prosign, because that is
+/// overwhelmingly what it means inside a contact and it is the reading a
+/// newcomer needs explained rather than the one they can look up. The terminal
+/// may name it the other way (<see cref="Name"/>, HM-REQ-072); the symbol is
+/// the same one either way.</para>
 /// </remarks>
 public static class MorseAlphabet
 {
@@ -64,6 +66,25 @@ public static class MorseAlphabet
 
     /// <summary>Every pattern the decoder can name, for tests and tooling.</summary>
     public static IReadOnlyDictionary<string, string> All => Table;
+
+    /// <summary>
+    /// What a decoded character is called on the screen, under the terminal's
+    /// naming setting (HM-REQ-072).
+    /// </summary>
+    /// <param name="text">The character's text as the decoder emitted it.</param>
+    /// <param name="naming">The setting.</param>
+    /// <returns>
+    /// <c>=</c> for <c>&lt;BT&gt;</c> and <c>+</c> for <c>&lt;AR&gt;</c> under
+    /// <see cref="CwProsignNaming.Punctuation"/>; the text unchanged otherwise.
+    /// </returns>
+    public static string Name(string text, CwProsignNaming naming)
+        => naming != CwProsignNaming.Punctuation ? text
+            : text switch
+            {
+                "<BT>" => "=",
+                "<AR>" => "+",
+                _ => text,
+            };
 
     private static Dictionary<string, string> BuildTable()
     {

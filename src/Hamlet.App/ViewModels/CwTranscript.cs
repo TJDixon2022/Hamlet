@@ -51,6 +51,28 @@ public sealed class CwTranscript
 
     private int _version;
 
+    /// <summary>
+    /// The setting the terminal names the two-named patterns by, read each time
+    /// a character is drawn so a change on the settings screen shows on the next
+    /// one (HM-REQ-072).
+    /// </summary>
+    /// <remarks>
+    /// Only the screen is renamed. The transcript keeps the decoder's own symbol,
+    /// so the callsign resolver, the case sheet and the record read what the
+    /// decoder emitted whichever name the operator chose.
+    /// </remarks>
+    public Func<CwProsignNaming> Naming { get; set; } = () => CwProsignNaming.Prosign;
+
+    /// <summary>What a character is called on the screen, under <see cref="Naming"/>.</summary>
+    /// <param name="character">The character.</param>
+    /// <returns>Its text as the terminal shows it.</returns>
+    public string Render(CwCharacter character)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+
+        return MorseAlphabet.Name(character.Text, Naming());
+    }
+
     /// <summary>How many characters have been decoded since the last clear.</summary>
     public int CharacterCount
     {
@@ -204,7 +226,7 @@ public sealed class CwTranscript
             {
                 return _tip.Count == 0
                     ? ""
-                    : string.Concat(_tip.Select(c => c.Text));
+                    : string.Concat(_tip.Select(Render));
             }
         }
     }

@@ -1,4 +1,5 @@
 using Hamlet.App.Settings;
+using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Training;
@@ -56,18 +57,57 @@ public sealed class TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests
         Assert.Equal(pattern, letters[15].Pattern);
     }
 
-    /// <summary>The terminal has a setting that chooses the name of the two-named patterns.</summary>
-    [Fact]
-    public void TheTerminalHasASettingThatNamesThem()
+    /// <summary>The name each send carries follows the terminal's setting, both ways.</summary>
+    /// <param name="naming">The terminal's setting.</param>
+    /// <param name="prosign">The prosign name the pattern is sent as.</param>
+    /// <param name="named">What the terminal should call it.</param>
+    /// <param name="notNamed">The other name, which must not appear.</param>
+    /// <remarks>
+    /// Through <see cref="CwTranscript"/>, the way the application wires it
+    /// (`MainWindowViewModel`'s `CharacterSettled += Transcript.Settle`), and read
+    /// back as the terminal reads it: the tip and each settled character through
+    /// <see cref="CwTranscript.Render"/>.
+    /// </remarks>
+    [Theory]
+    [InlineData(CwProsignNaming.Prosign, "BT", "<BT>", "=")]
+    [InlineData(CwProsignNaming.Punctuation, "BT", "=", "<BT>")]
+    [InlineData(CwProsignNaming.Prosign, "AR", "<AR>", "+")]
+    [InlineData(CwProsignNaming.Punctuation, "AR", "+", "<AR>")]
+    public void TheNameFollowsTheSetting(CwProsignNaming naming, string prosign, string named, string notNamed)
     {
-        var setting = typeof(AppSettings).GetProperties()
-            .SingleOrDefault(p => p.PropertyType.IsEnum && p.PropertyType.Name == "CwProsignNaming");
+        var settings = new AppSettings { CwProsignNaming = naming };
+        var transcript = new CwTranscript { Naming = () => settings.CwProsignNaming };
 
-        _output.WriteLine($"HM-REQ-072 | setting | {setting?.Name ?? "none"}");
+        foreach (var c in Settle(prosign))
+        {
+            transcript.Settle(c);
+        }
 
-        Assert.True(
-            setting is not null,
-            "HM-REQ-072 not met: no terminal setting names -...- and .-.-.; the terminal shows <BT> and <AR> and nothing else");
+        var drained = new List<CwCharacter>();
+        transcript.Drain(drained);
+        var shown = string.Concat(drained.Select(transcript.Render));
+
+        _output.WriteLine($"HM-REQ-072 | {naming} | {prosign} | shown `{shown}`");
+
+        Assert.Equal($" W1AW DE K2ABC {named} R TU {named} ", shown);
+        Assert.DoesNotContain(notNamed, shown, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// The setting ships as the prosign name, so the terminal reads exactly as
+    /// it did before the setting existed until the operator changes it.
+    /// </summary>
+    [Fact]
+    public void TheSettingShipsAsTheProsignName()
+    {
+        var transcript = new CwTranscript();
+
+        Assert.Equal(CwProsignNaming.Prosign, new AppSettings().CwProsignNaming);
+
+        foreach (var c in Settle("BT").Concat(Settle("AR")))
+        {
+            Assert.Equal(c.Text, transcript.Render(c));
+        }
     }
 
     private static IReadOnlyList<CwCharacter> Settle(string prosign)

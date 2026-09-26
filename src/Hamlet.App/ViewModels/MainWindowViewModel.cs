@@ -9365,6 +9365,10 @@ public partial class MainWindowViewModel : ObservableObject
         _settings = settings;
         _telemetry = telemetry;
 
+        // The terminal names BT and AR by the operator's setting, read as each
+        // character is drawn so the settings screen takes effect at once (HM-REQ-072).
+        Transcript.Naming = () => _settings.CwProsignNaming;
+
         // **THE DRIVE CONTROL UNDER THE WATERFALL OPENS ON THE LEVEL IN FORCE**
         // (work instruction 269, task 2), read the same way
         // `SettingsViewModel.cs:163` reads it, off the one `AppSettings` both

@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hamlet.App.ViewModels;
+using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Transmit;
@@ -436,6 +437,18 @@ public sealed class AppSettings
 
     /// <summary>The CW pitch the app ships with, in hertz.</summary>
     public const int DefaultCwPitchHz = 600;
+
+    /// <summary>
+    /// What the CW terminal calls the two patterns that have both a prosign
+    /// name and a punctuation name (HM-REQ-072).
+    /// </summary>
+    /// <remarks>
+    /// Naming and never a claim about the signal: the decoder emits one symbol
+    /// either way. It ships as the prosign name, which is what the terminal
+    /// showed before the setting existed, so nothing the operator reads changes
+    /// until they change it.
+    /// </remarks>
+    public CwProsignNaming CwProsignNaming { get; set; } = CwProsignNaming.Prosign;
 
     /// <summary>Lowest CW pitch the radio offers, in hertz.</summary>
     public const int MinimumCwPitchHz = 300;
