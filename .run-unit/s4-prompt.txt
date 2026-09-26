@@ -59,32 +59,32 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
-Three items, most-blocking first. None needs the owner under R85; each is a reading recorded so the
-next author can overrule it.
+1. **The reading on which 9.1 was ticked. Recorded, not blocking.**
+   - **Ruling as applied:** under verdict (b), the instruction's task 3 rule lets the case give
+     fldigi what it needs as far as the real recordings show it on the air. 17 of 17 located
+     keys follow the same operator's keying at the same level. So the case keys the send once
+     before the scored one. That was written and committed before the run, and run once.
+   - **Reasoning:** the "no preamble in front of the scored text" line sits under "if the port
+     does not read it" and is called tuning because it would follow a failure. This construction
+     came from evidence, before any run.
+   - **Rejected:** keeping 456's case, which follows 10 s of noise alone. No recording in the
+     tree shows that condition, and fldigi loses its first element there by its own lines.
+   - **If overruled,** 9.1 returns to open. Every clause except the case stands: the port, the
+     headers and the function list. 9.1 would then need a clause fldigi can meet, for example a
+     key scored from its second character.
+2. **Two of 456's three first-look captures were not located by the control printer.**
+   - **Ruling as applied:** logged, not chased.
+   - **What happened:** in 013347 no mark lay within 0.5 s of the arrival estimate. In 004108,
+     and four more of the ten, the stretch's key is not in our bench reading.
+   - **Reasoning:** the instruction asked for 456's three and at least three more. 17 of 23 were
+     located, all agreeing, which settles the control.
+   - **Rejected:** widening the locator after seeing the result, which would be choosing the
+     control by its outcome.
+3. **The app line did not pass on one rerun, as units 451 to 456 saw.**
+   - **What happened:** it lost one test to Avalonia's headless "dispatcher loop" on each of two
+     runs, a different test each time. Both types pass alone, and no app code changed.
+   - **Ruling as applied:** housekeeping. The flake is the known one. If it now spans reruns,
+     the carry-forward rule of "pass on one rerun" may need a second rerun or a per-type run.
 
-1. **9.1's case is not read, and the reading of why stays with the next unit.**
-   - **The reading:** V-04 says a fixture the reference decoder cannot read is a generator defect,
-     with the real recording as the generator's control. The port is now a reference reader.
-     - So the next step is on the case, not the port. Test whether a noise-led send is what fldigi
-       meets on the air, against the real captures in the first look: fldigi also loses the start
-       there.
-     - Then choose a case construction from that evidence, never from trying values against the key.
-   - **Why this unit did not re-choose the case:** re-choosing a seed, an SNR or a lead-in until
-     the text comes out right is tuning toward the key. HM-REQ-122 and 129, and the instruction,
-     forbid it.
-   - **Rejected:** mapping the garble into the expectation, which would assert a wrong letter as
-     right (Â§0.0). Also rejected: a skip, which would hide a measured result.
-2. **The squelch default was read from benchmark.cxx, not status.cxx.**
-   - **The reading:** fldigi's own file benchmark ships the squelch off (benchmark.cxx:54). The
-     port does the same, and both values are parameters.
-   - **Rejected:** guessing `status.cxx`'s initialiser, which the partial clone does not hold and
-     whose object-store read was refused.
-   - **If the owner's copy is ever completed,** the next unit checks `sqlonoff` there. No change
-     sits waiting for it.
-3. **Finding for 9.2, not in its way:** fldigi keys on band noise with the squelch off. It loses the
-   start of a send, and it turns a 5-unit character gap into a word space. 9.2's scorer will count
-   both against the second decoder, and both are upstream behaviour (HM-REQ-129). 9.2 states how
-   the unclassed output, fldigi's `*` included, is mapped.
-
-**Asks resolved:** unit 454's ask for fldigi's source is answered. The clone is at
-`.run-unit/fldigi` at `61b97f41`.
+Parked items were not touched. The squelch default is not re-opened, because task 2's verdict
+does not rest on it. The gap-to-space finding stays 9.2's. `parity.md` was not written.

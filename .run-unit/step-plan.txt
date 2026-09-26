@@ -7,7 +7,7 @@ because every later change to ours is better aimed with the comparison in hand.
 **Entry:** steps 0 and 1 met; `CW_REQUIREMENTS.md` v1.1 with section M at the root.
 
 **Exit:**
-- [ ] 9.1 HM-REQ-122: fldigi's CW receive modem is ported to C# under `src/Hamlet.RadioEngine/Cw/Second/` as `FldigiCwDecoder`, faithful to the upstream source, receive path only, no word or dictionary logic, with the GPL-3 notice, the authors and the upstream commit in the file; it decodes one synthetic case whose key is exact, and the report names every function ported and every one left out.
+- [x] 9.1 HM-REQ-122: fldigi's CW receive modem is ported to C# under `src/Hamlet.RadioEngine/Cw/Second/` as `FldigiCwDecoder`, faithful to the upstream source, receive path only, no word or dictionary logic, with the GPL-3 notice, the authors and the upstream commit in the file; it decodes one synthetic case whose key is exact, and the report names every function ported and every one left out.
 - [ ] 9.2 HM-REQ-123: both decoders read every keyed recording and the synthetic set through the same harness and are scored through the same scorer and metrics; `docs/phase-requirements/parity.md` tables MET-CER-SURE, MET-INVENTED, sure-and-right coverage and MET-WBE for each, per recording and per condition, with the key's kind, and states how the second decoder's unclassed output was mapped.
 - [ ] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
 - [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.

@@ -1,0 +1,16 @@
+unit458 task 0: entry at step 9 - floors and metrics as at 457's exit, the port 8 of 8, every recording's text saved (9.2)
+
+Build 0 errors; engine line 178 of 178; app line 275 of 278 then
+277 of 278 on the one rerun, every loss Avalonia's headless
+dispatcher loop, and each lost type alone green (Unit376TheTopBand 5,
+TheFavoritesAreUnderTheGreenZone 3, TheRstIsYoursToCorrect 4,
+TheRecordNamesTheSubModePressed 12); captures 51 of 51; adjudicated
+13 of 13; named 10 of 13 as recorded (17:37 38, 032113 43, 032129
+42). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over
+473, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over
+113. Synthetic, exact: 14 of 173, 14 over 252, 159 over 252, 44 (13,
+31) over 84. TheSecondDecoderIsAFaithfulPortTests 8 of 8. 126 text
+lines saved, identical to 457's exit. Version 1.13.145. The runner's
+writes committed as they were. .run-unit/fldigi not staged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

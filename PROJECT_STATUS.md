@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 457 - why fldigi's port loses the first dit, and a case chosen before it is read
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 458 - both decoders on the same audio, the same scorer and one parity table
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T16:18:10-04:00
-NOTE: Unit 457 done: lost first dit is fldigi's own (verdict b), case committed before its run read as keyed, 9.1 ticked, text byte-identical - output.md written
+UPDATED: 2026-09-26T16:44:03-04:00
+NOTE: Task 0 done, every entry figure as 457 left it; task 1 tracing how our text reaches CwMetrics and where the port's text joins it
 
 ---
 

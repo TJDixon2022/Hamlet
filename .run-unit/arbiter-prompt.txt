@@ -52,8 +52,7 @@ THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
     - [ ] 8.4 Each of the 43 tests that measure something other than what their requirement states is either re-pointed at the requirement it proves or marked as proving none with its reason, in `traceability.md`; none is deleted.
     - [ ] 8.5 Every requirement this phase met has a test naming it, and the count of requirements with no test is reported against unit 439's 63.
     - [ ] 8.6 The three floor tests and both carry-forward lines are green at exit.
-  step 9 - Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.  [not started]
-    - [ ] 9.1 HM-REQ-122: fldigi's CW receive modem is ported to C# under `src/Hamlet.RadioEngine/Cw/Second/` as `FldigiCwDecoder`, faithful to the upstream source, receive path only, no word or dictionary logic, with the GPL-3 notice, the authors and the upstream commit in the file; it decodes one synthetic case whose key is exact, and the report names every function ported and every one left out.
+  step 9 - Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.  [partial]
     - [ ] 9.2 HM-REQ-123: both decoders read every keyed recording and the synthetic set through the same harness and are scored through the same scorer and metrics; `docs/phase-requirements/parity.md` tables MET-CER-SURE, MET-INVENTED, sure-and-right coverage and MET-WBE for each, per recording and per condition, with the key's kind, and states how the second decoder's unclassed output was mapped.
     - [ ] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
     - [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
@@ -144,6 +143,7 @@ block; blocker means it cleared something and moved no criterion.
   6.2 | unit 2 launched 2026-09-26T17:11:17.928Z | yes | executed | test naming HM-REQ-071 prosign one symbol and HM-REQ-072 prosign naming per terminal setting, watched failing first on synthetic keyed prosigns, state met or not, one change to emit a run with no character gap as one prosign symbol kept under R78
   6.3 | unit 14 launched 2026-09-26T14:10:24.546Z | yes | executed | report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
   9.1 | unit 3 launched 2026-09-26T18:14:50.259Z | no | executed | port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
+  9.1 | unit 4 launched 2026-09-26T19:20:27.666Z | no | executed | audit FldigiCwDecoder against upstream cw.cxx line by line on the first element's path and trace the lost first dit sample by sample to a port-defect or upstream-behaviour verdict, repair toward upstream only, then fix the synthetic case construction in a committed file from that verdict and the real recordings as control before running it once
   9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
 
 If every route you can see at a criterion is recorded as no, say so in WHY
@@ -171,140 +171,125 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-Three items, most-blocking first. None needs the owner under R85; each is a reading recorded so the
-next author can overrule it.
+1. **The reading on which 9.1 was ticked. Recorded, not blocking.**
+   - **Ruling as applied:** under verdict (b), the instruction's task 3 rule lets the case give
+     fldigi what it needs as far as the real recordings show it on the air. 17 of 17 located
+     keys follow the same operator's keying at the same level. So the case keys the send once
+     before the scored one. That was written and committed before the run, and run once.
+   - **Reasoning:** the "no preamble in front of the scored text" line sits under "if the port
+     does not read it" and is called tuning because it would follow a failure. This construction
+     came from evidence, before any run.
+   - **Rejected:** keeping 456's case, which follows 10 s of noise alone. No recording in the
+     tree shows that condition, and fldigi loses its first element there by its own lines.
+   - **If overruled,** 9.1 returns to open. Every clause except the case stands: the port, the
+     headers and the function list. 9.1 would then need a clause fldigi can meet, for example a
+     key scored from its second character.
+2. **Two of 456's three first-look captures were not located by the control printer.**
+   - **Ruling as applied:** logged, not chased.
+   - **What happened:** in 013347 no mark lay within 0.5 s of the arrival estimate. In 004108,
+     and four more of the ten, the stretch's key is not in our bench reading.
+   - **Reasoning:** the instruction asked for 456's three and at least three more. 17 of 23 were
+     located, all agreeing, which settles the control.
+   - **Rejected:** widening the locator after seeing the result, which would be choosing the
+     control by its outcome.
+3. **The app line did not pass on one rerun, as units 451 to 456 saw.**
+   - **What happened:** it lost one test to Avalonia's headless "dispatcher loop" on each of two
+     runs, a different test each time. Both types pass alone, and no app code changed.
+   - **Ruling as applied:** housekeeping. The flake is the known one. If it now spans reruns,
+     the carry-forward rule of "pass on one rerun" may need a second rerun or a per-type run.
 
-1. **9.1's case is not read, and the reading of why stays with the next unit.**
-   - **The reading:** V-04 says a fixture the reference decoder cannot read is a generator defect,
-     with the real recording as the generator's control. The port is now a reference reader.
-     - So the next step is on the case, not the port. Test whether a noise-led send is what fldigi
-       meets on the air, against the real captures in the first look: fldigi also loses the start
-       there.
-     - Then choose a case construction from that evidence, never from trying values against the key.
-   - **Why this unit did not re-choose the case:** re-choosing a seed, an SNR or a lead-in until
-     the text comes out right is tuning toward the key. HM-REQ-122 and 129, and the instruction,
-     forbid it.
-   - **Rejected:** mapping the garble into the expectation, which would assert a wrong letter as
-     right (§0.0). Also rejected: a skip, which would hide a measured result.
-2. **The squelch default was read from benchmark.cxx, not status.cxx.**
-   - **The reading:** fldigi's own file benchmark ships the squelch off (benchmark.cxx:54). The
-     port does the same, and both values are parameters.
-   - **Rejected:** guessing `status.cxx`'s initialiser, which the partial clone does not hold and
-     whose object-store read was refused.
-   - **If the owner's copy is ever completed,** the next unit checks `sqlonoff` there. No change
-     sits waiting for it.
-3. **Finding for 9.2, not in its way:** fldigi keys on band noise with the squelch off. It loses the
-   start of a send, and it turns a 5-unit character gap into a word space. 9.2's scorer will count
-   both against the second decoder, and both are upstream behaviour (HM-REQ-129). 9.2 states how
-   the unclassed output, fldigi's `*` included, is mapped.
+Parked items were not touched. The squelch default is not re-opened, because task 2's verdict
+does not rest on it. The gap-to-space finding stays 9.2's. `parity.md` was not written.
 
-**Asks resolved:** unit 454's ask for fldigi's source is answered. The clone is at
-`.run-unit/fldigi` at `61b97f41`.
-
-- **Mismatch: the working tree is partial.** Only `src/cw_rtty`, `src/filters`, `src/include` and
 ## 3. What you should see
 
-**Upstream functions in the receive call graph, at `61b97f41`:**
+**Task 2's verdict: (b), fldigi's own behaviour.** Task 1 found no differing line, and every step
+of the loss is an upstream line:
+- **cw.cxx:246 and 610-623.** `agc_peak` starts at 0 and rises only while value > sig_avg, with
+  attack weight 200 (0.4 s at 500 Hz). After 10 s of noise it sits on the noise, at 0.0286.
+- **cw.cxx:625-626 and 640-641.** CWupper and CWlower come from sig_avg and noise_floor over
+  agc_peak. On noise alone they sit a hair apart inside the noise.
+- **cw.cxx:646.** The squelch is off (456 DECIDED (1)), so nothing else gates the detector.
+- **cw.cxx:649-655.** The detector keys on the noise: in tone for 227 of the last 500 decision
+  samples.
+- **cw.cxx:818-822.** A key-up under the spike threshold sets RS_IDLE and leaves the held
+  element in place.
+- **cw.cxx:793-798.** The next key-down from idle clears the held element.
 
-| file:line | function | verdict | why, if left out |
-|---|---|---|---|
-| cw.cxx:719 | cw::rx_process | ported | |
-| cw.cxx:717 | cwprocessing guard | ported | |
-| cw.cxx:386 | cw::reset_rx_filter | ported | the two REQ() UI lines are dropped |
-| cw.cxx:683 | cw::rx_FFTprocess | ported | |
-| cw.cxx:593 | cw::decode_stream | ported | the scope pipe and syncscope are display; put_rx_char becomes the output |
-| cw.cxx:771 | cw::handle_event | ported | |
-| cw.cxx:754 | cw::usec_diff | ported | |
-| cw.cxx:524 | cw::update_tracking | ported | |
-| cw.cxx:466 | cw::sync_parameters | ported | the nanoIO block is keying; put_cwRcvWPM is UI |
-| cw.cxx:443 | cw::sync_transmit_parameters | in part | the send lengths the receiver reads are ported; edges, QSK and risetime are transmit |
-| cw.cxx:299 | cw::cw | in part | tx frequency, risetime, QSK, farnsworth, create_edges, nano, UI and the cwio thread are left out |
-| cw.cxx:256 | cw::init | in part | the waterfall frequency is replaced by the caller's; the outbuf/qskbuf memset and nanoIO are transmit |
-| cw.cxx:240 | cw::rx_init | in part | scope mode, status and viewcw are UI |
-| misc.h:59, 53 | decayavg, clamp | ported | |
-| fftfilt.cxx:105, 69, 124, 55, 202; fftfilt.h:66, 47, 51 | fftfilt(f,len), init_filter, create_filter, clear_filter, run, create_lpf, fsinc, _blackman | ported | |
-| gfft.h:3316, 3332 | g_fft::ComplexFFT, InverseComplexFFT | as equivalent | departure 1 below |
-| filters.cxx:261, 273, 294, 304 | Cmovavg ctor, run, setLength, reset | ported | |
-| morse.h:45; morse.cxx:177, 167, 242, 44 | cMorse ctor, init, enable, rx_lookup, cw_table | ported | |
+**What fldigi needs before a first element to read it** is a settled AGC: earlier key-down at the
+signal's own level. Here about 0.27 s of mark took agc_peak to 0.13, after which no gap raised a
+noise event, within its 2.0 s decay. The level relation alone does not give it, because on noise
+the thresholds are relative and sit inside the noise at any SNR. A quiet interval does not give it
+either, because V-06 rules out silence and noise is what keys the detector.
 
-**Left out: 54 entries.** The full list with lines is in `.run-unit/unit456-fldigi-rx.txt`.
-- **Transmit:** tx_init 226, create_edges 932, nco 969, qsknco 976, send_symbol 1004, send_ch 1071,
-  tx_process 1151, cMorse tx_lookup/tx_length/tx_print.
-- **Keying:** open/close_CW_KEYLINE 1301/1340, flrig_cwio_send 1370, cwio_key 1409, cwio_ptt 1427,
-  cwio_now 1457, cwio_bit 1489, send_cwio 1557, the cwio_calibrate family 1618-1681, the cwio
-  threads 1695/1719, send_CW 1747, and the six CAT_keying functions 1772-1932.
-- **UI:** update_Status 538, update_syncscope 550, clear_syncscope 568, inc/dec/toggleWPM
-  1257-1281, calWPM, view_cw.cxx, put_rx_char/display_metric.
-- **SOM mode:** normalize 164, find_winner 189, som_table 86.
-- **Not called by the receive path:** mixer 576, fftfilt band-pass ctor 95, create_hpf, flush_size
-  83, rtty_filter 245, Cmovavg::value, g_fft's real-FFT and scale functions.
-- **Destructors:** ~cw 292, ~fftfilt 112, ~Cmovavg 268.
-- **Not defined at this commit:** rx_FIRprocess.
+**1. The first dit's trace rows around the key-down.** 456's case: P's first dit is the mark
+10.0026 to 10.0643 s. The times are t_in, the input time. The filter's 512-sample lag is removed;
+the bit filter's 32 ms rise is not.
 
-**`progdefaults` read, at their shipped defaults (configuration.h line):**
-- **Speed and filter:** CWspeed 18 (513), CWbandwidth 150 (525), CWmfilt false (540), CWtrack true
-  (537), CWrange 10 (546), CWlowerlimit 5 (549), CWupperlimit 50 (552).
-- **Thresholds:** CWupper 0.6 (531) and CWlower 0.4 (528). Both are overwritten at every decision
-  sample (cw.cxx:640-641).
-- **Detector timing and noise:** CW_noise `'*'` (249), cwrx_attack 1 = 200 (555), cwrx_decay 1 =
-  1000 (559), CWuseSOMdecoding false (543).
-- **Prosigns:** CW_use_paren false (617), CW_prosigns `=~<>%+&{}` (620), CW_prosign_display false
-  (623).
-- **The table's switches:** the extended-character switches (629-662) and the punctuation switches,
-  all true (219-248).
-- **Replaced by the caller:** CWsweetspot 1500 (201), in place of the caller's frequency.
-- **Not read by the receive path:** CWmfiltlen 100 (534) is not read at this commit. CWfarnsworth 18
-  (516) is read only for transmit.
-- **The squelch:** sqlonoff and sldrSquelchValue are not in the tree. They are off, per
-  benchmark.cxx:54.
+| t_in s | magnitude | value | agc_peak | CWupper | CWlower | state | event | two_dots | held |
+|---|---|---|---|---|---|---|---|---|---|
+| 9.9459 | 0.02364 | 0.8314 | 0.02844 | 0.8309 | 0.8270 | tone | down (noise) | 955 | |
+| 9.9479 | 0.02335 | 0.8211 | 0.02844 | 0.8309 | 0.8270 | idle | spike 16 | 955 | |
+| 9.9499 | 0.02534 | 0.8911 | 0.02844 | 0.8311 | 0.8271 | tone | down (noise), held to the dit | 955 | |
+| 9.9879 | 0.02579 | 0.9012 | 0.02862 | 0.8290 | 0.8247 | tone | noise still over CWlower | 955 | |
+| 10.0139 | 0.10954 | 3.6519 | 0.03000 | 0.7998 | 0.7945 | tone | the dit | 955 | |
+| 10.0639 | 0.24805 | 4.6455 | 0.05339 | 0.5246 | 0.5122 | tone | dit ends | 955 | |
+| 10.0959 | 0.02295 | 0.3900 | 0.05884 | 0.4957 | 0.4820 | after | up 1168: a dash | 955 | `-` |
+| 10.1139 | 0.03017 | 0.5127 | 0.05884 | 0.4953 | 0.4817 | tone | down (noise, in the gap) | 955 | `-` |
+| 10.1239 | 0.02676 | 0.4548 | 0.05884 | 0.4953 | 0.4818 | idle | spike 80 | 955 | `-` |
+| 10.1359 | 0.03068 | 0.5215 | 0.05884 | 0.4951 | 0.4817 | tone | down (P's first dah) from idle: held cleared | 955 | |
+| 10.3599 | 0.03653 | 0.2799 | 0.13049 | 0.3480 | 0.3264 | after | up 1792 | 955 | `-` |
+| 10.7599 | 0.04398 | 0.2436 | 0.18053 | 0.3490 | 0.3214 | after | up 688 | 965 | `--.` |
+| 10.8879 | 0.02550 | 0.1413 | 0.18053 | 0.3344 | 0.3083 | idle | printed G | 965 | |
 
-**Departures forced by C# (upstream line):**
-1. **The FFT:** `g_fft` Green radix-2/4/8 (gfft.h:3316, 3332, 2253) → iterative radix-2 with the same
-   scaling. It agrees to rounding.
-2. **The complex type:** `cmplx` = `std::complex<double>` (complex.h:31) → `System.Numerics.Complex`,
-   and `abs` → `Complex.Abs`.
-3. **Settings:** the process-wide `progdefaults` → one `FldigiProgdefaults` per decoder. The
-   receiver writes into it: CWupper and CWlower at cw.cxx:640-641, and CWbandwidth at 354 and 396.
-4. **The frequency:** the static `modem::frequency` (modem.h:49), set from the waterfall
-   (cw.cxx:262-270) → a constructor argument from the caller.
-5. **Statics made instance fields:** `static bool cwprocessing` (cw.cxx:717), and the function
-   statics `space_sent` and `last_element` (cw.cxx:773-774).
-6. **The Morse table:** the static `cMorse::cw_table` (morse.cxx:44) → an instance array. UTF-8 byte
-   strings → .NET strings.
-7. **Output:** `put_rx_char` per byte (cw.cxx:671-674) → the whole string appended to `Text`, with
-   one `Emissions` entry.
-8. **Buffers:**
-   - `std::string rx_rep_buf` → `StringBuilder`, and `memset(cw_buffer)` → `Array.Clear`.
-   - `const double *buf, int len` → `ReadOnlySpan<double>`.
-   - `cmplx **out` → `out Complex[]`, the same buffer.
-9. **Rounding and integer width:**
-   - `round()` (cw.cxx:326, 416, 451) → `Math.Round(..., AwayFromZero)`.
-   - `long int` → `long`. Every value fits in 32 bits either way.
-10. **Startup:** `cw::cw` then `cw::init` run together in the constructor. fldigi calls init when
-    the modem starts. `modem::metric` starts at 0.0, because modem.cxx is not in the tree.
-11. **SOM mode:** `CWuseSOMdecoding` true → `NotSupportedException`, because the mode is not ported.
-12. **update_tracking:** its function statics `min_dot` and `max_dash` (cw.cxx:526-527) → `const`,
-    with the same values, 48 and 5760.
+The answer to task 2's question: both happen, in order.
+1. The detector was already keyed down on noise, 52 ms before the dit, so the dit joined it as
+   one 1168-sample element, over two_dots 955. That is a dash.
+2. The AGC had risen only from 0.029 to 0.059 over the dit, so the noise in the next gap crossed
+   CWupper. The resulting spike set the receiver idle, and P's first dah cleared the held
+   element.
 
-None of these changes a decision.
+The last second of noise, 500 decision samples: in tone 227, key-downs 22, spikes 18, element
+key-ups 4. Mean CWupper 0.8389, mean CWlower 0.8395.
 
-**The synthetic case.**
-- **Recipe:**
-  - **Send:** `PARIS CQ` at 18 WPM (fldigi's CWspeed), one unit 1200/18 ms, marks 1 and 3, gaps
-    1, 3 and 7.
-  - **Key:** patterns typed from M.1677-1 in the test, and checked against the rendered marks before
-    decoding (§12.5).
-  - **Tone:** 600 Hz, peak 0.5, raised-cosine 5 ms edges, at 8000 Hz.
-  - **Timing:** 10.0 s lead-in and 1.5 s tail.
-  - **Noise:** white Gaussian from xorshift32 and Box-Muller, seed 20260926, shaped by a 257-tap
-    Blackman-windowed sinc band-pass to 300-2800 Hz. It is scaled to tone power over noise power
-    of +10 dB, which in that 2500 Hz band is the `CW_SPEC.md` 8.1 reference SNR. Noise RMS 0.11180.
-- **The port** is given 600 Hz with the squelch off.
-- **Key `PARIS CQ`. Emitted `GARIS CQ `.** The emissions, with fldigi's speed and thresholds:
+**2. Task 1's count by mark:** 177 lines, 152 **same**, 25 **departure listed**, **0 differs**.
+No line is marked differs, so there is none to give in full. The whole table is in
+`.run-unit/unit457-fidelity.txt`.
 
-| text | at s | held | speed | two_dots | CWupper | CWlower |
+**3. The control and the construction.** The case was committed at **`7f77dd67`**, before its run
+at `20a13aaf`. The table covers the 5 s before the key's first keyed element, at the pitch
+instrument's pitch:
+
+| recording | holds | marks | keyed s | last mark ends before | marks vs element | floor vs element |
 |---|---|---|---|---|---|---|
-| G | 11.008 | `--.` | 19 | 965 | 0.3344 | 0.3083 |
-| A | 11.520 | `.-` | 19 | 972 | 0.3487 | 0.3191 |
-| R | 12.160 | `.-.` | 19 | 993 | 0.3696 | 0.3366 |
-| I | 12.672 | `..` | 19 | 993 | 0.3647 | 0.3326 |
+| 17:37 `cw-2026-09-23-173723` (456's) | same operator's earlier keying | 24 | 2.29 | 0.070 s | +0.4 dB | -13.2 dB |
+| `cw-2026-08-17-013347` (456's) | not located: no mark within 0.5 s of the arrival estimate | | | | | |
+| `cw-2026-08-17-134712` | same operator's earlier keying | 31 | 1.52 | 0.115 s | -5.7 dB | -17.4 dB |
+| `cw-2026-08-18-003758` | same operator's earlier keying | 37 | 2.59 | 0.160 s | -0.1 dB | -23.1 dB |
+| `cw-2026-08-24-012403` | same operator's earlier keying | 37 | 2.76 | 0.250 s | -0.5 dB | -12.1 dB |
+| `cw-2026-08-18-004507` | same operator's earlier keying | 39 | 2.64 | 0.025 s | -0.3 dB | -18.6 dB |
+| `cw-2026-08-22-031838` | same operator's earlier keying | 36 | 3.46 | 0.035 s | -0.1 dB | -15.6 dB |
+| `cw-2026-08-22-031905` | same operator's earlier keying | 31 | 3.36 | 0.010 s | +1.1 dB | -10.6 dB |
+| `cw-2026-08-22-031948` | same operator's earlier keying | 31 | 3.40 | 0.020 s | +3.1 dB | -13.9 dB |
+| `cw-2026-08-22-032012` | same operator's earlier keying | 37 | 3.25 | 0.010 s | +5.3 dB | -13.4 dB |
+| `cw-2026-08-22-032050` | same operator's earlier keying | 22 | 1.30 | 0.065 s | -0.2 dB | -15.6 dB |
+| `cw-2026-08-22-032113` | same operator's earlier keying | 41 | 3.34 | 0.060 s | -1.7 dB | -16.2 dB |
+| `cw-2026-08-22-032129` | same operator's earlier keying | 36 | 3.33 | 0.060 s | -0.0 dB | -17.5 dB |
+| `cw-2026-09-24-004108` (456's) | not located: the stretch's key is not in our reading | | | | | |
+| `cw-2026-09-24-004133` | same operator's earlier keying | 25 | 1.82 | 0.015 s | -0.5 dB | -16.2 dB |
+| `cw-2026-09-24-004205`, `004234`, `004322`, `004347` | not located, as 004108 | | | | | |
+| `cw-2026-09-24-004405` | same operator's earlier keying | 37 | 2.36 | 0.055 s | -1.9 dB | -16.8 dB |
+| `cw-2026-09-24-004427` | same operator's earlier keying | 29 | 2.32 | 0.250 s | -0.0 dB | -17.3 dB |
+| `cw-2026-09-24-004510` | same operator's earlier keying | 46 | 1.53 | 0.100 s | -4.8 dB | -15.5 dB |
+| `cw-2026-09-24-004550` | same operator's earlier keying | 46 | 2.53 | 0.030 s | -0.4 dB | -17.6 dB |
+
+17 of 23 were located, and all 17 hold the same operator's earlier keying at the element's level.
+None holds noise alone, another station (no second pitch in any window) or a carrier (the longest
+mark is 0.43 s).
+
+**Construction:** `PARIS CQ PARIS CQ`, with the second send scored.
+- **Patterns:** CW_SPEC.md 6, M.1677-1, typed in the test.
+- **Timing:** 18 WPM; marks 1 and 3 units; gaps 1, 3 and 7 units.
+- **Tone:** 600 Hz, peak 0.5, raised-cosine edges of 5 ms, at 8000 Hz.
+- **Lead-in and tail:** 10.0 s of noise before and 1.5 s after.
+- **Noise:** white Gaussian from xorshift32 and Box-Muller, seed 20260926, shaped by a 257-tap
