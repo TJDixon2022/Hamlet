@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 441 - keep the fix, then fix the speed it was hiding
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 442 - sure has to mean something
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T20:28:14-04:00
-NOTE: Unit 441 complete: sure-wrong-or-added 67 to 47, CER-SURE 0.1573 to 0.1116, G1 and marks speed kept; floors red on counts
+UPDATED: 2026-09-25T20:51:39-04:00
+NOTE: Entry round done at 47 of 421 sure-wrong; 2.1 and 2.3 ticked; committing task 0
 
 ---
 

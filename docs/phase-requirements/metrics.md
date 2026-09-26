@@ -32,6 +32,22 @@ bin edge in the trace where sure-wrong outnumber sure-right, 8 to 2, against 28 
 Per condition, real: TX-FARNS (`004507`) MET-CER-SURE 0.0233 to 0.0000, coverage 0.9545 to
 0.9773; sender not stated 0.1541 to 0.1309, coverage 0.7366 to 0.7610. No condition gets worse.
 
+Every condition, MET-CER-SURE G1 in to under the change, with the key's kind (unit 442 wrote this
+out from `.run-unit/unit441-metrics-g1.txt` and `-speed.txt`; nothing re-measured):
+
+| condition | key | G1 in | under the change |
+|---|---|---|---|
+| real, TX-FARNS | inferred | 1 of 43, 0.0233 | 0 of 43, 0.0000 |
+| real, TX-ITU | inferred | 0 of 13, 0.0000 | 0 of 13, 0.0000 |
+| real, TX-TIGHT | inferred | 0 of 6, 0.0000 | 0 of 6, 0.0000 |
+| real, sender not stated | inferred | 55 of 357, 0.1541 | 47 of 359, 0.1309 |
+| synthetic, TX-ITU, 15 dB | exact | 1 of 64, 0.0156 | 1 of 64, 0.0156 |
+| synthetic, TX-ITU, 5 dB | exact | 1 of 63, 0.0159 | 1 of 63, 0.0159 |
+| synthetic, TX-ITU, 0 dB | exact | none sure, no number | none sure, no number |
+| synthetic, character gap 5, 15 dB | exact | 1 of 21, 0.0476 | 1 of 21, 0.0476 |
+| synthetic, character gap 5, 5 dB | exact | 11 of 25, 0.4400 | 11 of 25, 0.4400 |
+| synthetic, character gap 5, 0 dB | exact | none sure, no number | none sure, no number |
+
 | recording | G1 in | under the change |
 |---|---|---|
 | `031838` | `D  ■T TTT TEAH A MEAN TOF 2 TT` | `TT 2, AND  ■ W IAH A MEAN OF 2 TT` |
@@ -60,6 +76,22 @@ marks and the path agree within 1.25.
 Per condition, real, sender not stated (20 recordings): MET-CER-SURE 0.1813 to 0.1541, coverage
 0.7268 to 0.7366. Synthetic TX-ITU 15 dB: 0.1159 to 0.0156, coverage 0.9683 to 1.0000; 5 dB:
 0.0615 to 0.0159, coverage 0.9683 to 0.9841. No condition gets worse.
+
+Every condition, MET-CER-SURE before to under G1, with the key's kind (unit 442 wrote this out
+from `.run-unit/unit441-metrics-r82.txt` and `-g1.txt`; nothing re-measured):
+
+| condition | key | before | under G1 |
+|---|---|---|---|
+| real, TX-FARNS | inferred | 1 of 43, 0.0233 | 1 of 43, 0.0233 |
+| real, TX-ITU | inferred | 0 of 13, 0.0000 | 0 of 13, 0.0000 |
+| real, TX-TIGHT | inferred | 0 of 6, 0.0000 | 0 of 6, 0.0000 |
+| real, sender not stated | inferred | 66 of 364, 0.1813 | 55 of 357, 0.1541 |
+| synthetic, TX-ITU, 15 dB | exact | 8 of 69, 0.1159 | 1 of 64, 0.0156 |
+| synthetic, TX-ITU, 5 dB | exact | 4 of 65, 0.0615 | 1 of 63, 0.0159 |
+| synthetic, TX-ITU, 0 dB | exact | none sure, no number | none sure, no number |
+| synthetic, character gap 5, 15 dB | exact | 1 of 21, 0.0476 | 1 of 21, 0.0476 |
+| synthetic, character gap 5, 5 dB | exact | 11 of 25, 0.4400 | 11 of 25, 0.4400 |
+| synthetic, character gap 5, 0 dB | exact | none sure, no number | none sure, no number |
 
 17:37 before `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`, under G1 `CQ CQ CQ DEWB6 RE D W B 7E E I`.
 

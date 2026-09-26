@@ -1,0 +1,18 @@
+unit442 task 0: entry, 2.1 and 2.3 ticked from the tree (2.1, 2.3)
+
+Outcome entry for unit 442 in both copies, PHASE_STATUS.md names 442,
+version 1.13.128 to 1.13.129.
+
+Entry round, one type per invocation: build 0 errors; engine
+carry-forward 175 of 178 (013010, 012823, 012922 red on counts); app
+277 of 278, BindingHealthTests green alone; captures 38 of 51;
+adjudicated 13 of 13; named 7 of 13. Real, inferred: MET-CER-SURE 47
+of 421, 0.1116; MET-INVENTED 47 over 473; sure-and-right coverage 374
+over 473, 0.7907; MET-WBE 52 over 113.
+
+2.1: .run-unit/unit440-trace.txt prints all 54 with recording, sent,
+emitted, span, wpm and pitch, envelope marks, and the groups.
+2.3: metrics.md gains a per-condition table with the key's kind for
+G1 and the marks' speed, written from 441's committed printouts.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
