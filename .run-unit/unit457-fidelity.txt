@@ -1,0 +1,295 @@
+UNIT 457 TASK 1 - THE FIRST ELEMENT'S PATH, PORT AGAINST UPSTREAM, LINE BY LINE
+
+Upstream: fldigi at 61b97f4133c488063f3de1795c894d22d5032e8a, the owner's partial tree at
+.run-unit/fldigi (untracked, unmodified, read only).
+Port: src/Hamlet.RadioEngine/Cw/Second at HEAD 62b1db20 (unchanged since f20adf82).
+D = FldigiCwDecoder.cs, F = FldigiFftFilter.cs, G = FldigiFft.cs, M = FldigiMovingAverage.cs,
+X = FldigiMisc.cs, P = FldigiProgdefaults.cs, O = FldigiMorse.cs.
+
+Marks: SAME = the port's line does what the upstream line does, to the bit where C# allows it;
+DEPARTURE n = one of 456's twelve listed departures (456 report, section 3), or 456 DECIDED (1)
+for the squelch; DIFFERS = the port does something else, stated.
+Lines upstream drops from the receive path as display, transmit or keying are listed at the foot
+of each block as LEFT OUT (456's list) and are not counted as audited lines.
+
+Every row is one upstream statement the first element's samples, state or character touch.
+
+-------------------------------------------------------------------------------------------------
+A. THE STATE THE ELEMENT MEETS
+-------------------------------------------------------------------------------------------------
+
+A1. modem::modem (modem.cxx, NOT IN THE TREE)
+  row | upstream | text | port | mark
+  A1.1 | modem.h:49 static frequency; set in init | the carrier | D:147-148, 244 | DEPARTURE 4 (caller's 600 Hz)
+  A1.2 | modem.cxx (absent) | metric's initial value | D:152, 241 metric = 0.0 | DEPARTURE 10 - read only by the squelch (cw.cxx:646), which is off
+
+A2. cw::cw (cw.cxx:299-383), receive half
+  A2.1  | cw.cxx:306 | frequency = progdefaults.CWsweetspot; | D:244 this.frequency = frequency; | DEPARTURE 4
+  A2.2  | cw.cxx:311 | cw_ptr = 0; | D:187 field, C# zero | SAME
+  A2.3  | cw.cxx:314 | samplerate = CW_SAMPLERATE; | D:246 | SAME (8000)
+  A2.4  | cw.cxx:317 | wpm = cw_speed = progdefaults.CWspeed; | D:248 cw_speed = (int)CWspeed; | SAME (double 18 into int 18; wpm is transmit)
+  A2.5  | cw.cxx:318 | bandwidth = progdefaults.CWbandwidth; | D:249 | SAME (150)
+  A2.6  | cw.cxx:320 | cw_send_speed = cw_speed; | D:251 | SAME
+  A2.7  | cw.cxx:321 | cw_receive_speed = cw_speed; | D:252 | SAME
+  A2.8  | cw.cxx:322 | two_dots = 2 * KWPM / cw_speed; | D:253 | SAME (int: 19200/18 = 1066)
+  A2.9  | cw.cxx:323 | cw_noise_spike_threshold = two_dots / 4; | D:254 | SAME (266)
+  A2.10 | cw.cxx:324 | cw_send_dot_length = KWPM / cw_send_speed; | D:255 | SAME (int: 533)
+  A2.11 | cw.cxx:325 | cw_send_dash_length = 3 * cw_send_dot_length; | D:256 | SAME (1599)
+  A2.12 | cw.cxx:326 | symbollen = (int)round(samplerate * 1.2 / CWspeed); | D:257 Math.Round(.., AwayFromZero) | DEPARTURE 9 (533.33 -> 533 either way)
+  A2.13 | cw.cxx:329 | rx_rep_buf.clear(); | D:259 | DEPARTURE 8 (StringBuilder)
+  A2.14 | cw.cxx:336 | cwTrack = true; | D:261 | SAME
+  A2.15 | cw.cxx:338 | FFTphase = 0.0; | D:262 | SAME
+  A2.16 | cw.cxx:339 | FFTvalue = 0.0; | D:263 | SAME
+  A2.17 | cw.cxx:343 | upper_threshold = progdefaults.CWupper; | D:265 | SAME (never read by rx)
+  A2.18 | cw.cxx:344 | lower_threshold = progdefaults.CWlower; | D:266 | SAME (never read by rx)
+  A2.19 | cw.cxx:347 | agc_peak = 1.0; | D:268 | SAME (overwritten by rx_init, A4.5)
+  A2.20 | cw.cxx:350 | use_matched_filter = progdefaults.CWmfilt; | D:270 | SAME (false)
+  A2.21 | cw.cxx:352 | bandwidth = progdefaults.CWbandwidth; | D:272 | SAME
+  A2.22 | cw.cxx:353-354 | if (use_matched_filter) progdefaults.CWbandwidth = bandwidth = 5.0*CWspeed/1.2; | D:273-277 | SAME (int truncation into CWbandwidth, double into bandwidth; not taken at defaults)
+  A2.23 | cw.cxx:356 | cw_FFT_filter = new fftfilt(1.0 * CWbandwidth / samplerate, CW_FFT_SIZE); | D:279 | SAME (0.01875, 2048)
+  A2.24 | cw.cxx:358-359 | bfv = symbollen / (2 * DEC_RATIO); if (bfv < 1) bfv = 1; | D:281-282 | SAME (int: 533/32 = 16)
+  A2.25 | cw.cxx:361 | bitfilter = new Cmovavg(bfv); | D:284 | SAME
+  A2.26 | cw.cxx:363 | trackingfilter = new Cmovavg(TRACKING_FILTER_SIZE); | D:286 | SAME (16)
+  A2.27 | cw.cxx:370 | sync_parameters(); | D:288 | SAME (see C3)
+  A2.28 | cw.cxx:376 | noise_floor = 1.0; | D:290 | SAME
+  A2.29 | cw.cxx:377 | sig_avg = 0.0; | D:291 | SAME
+  LEFT OUT: 301-305, 307-309, 312, 315, 327, 332-334, 337, 340-341, 345, 348, 365, 367-368,
+  371-373, 375, 379, 381 (capability flags, transmit, pipe/scope, nano, UI, cwio thread).
+
+A3. cw::init (cw.cxx:256-290), receive half
+  A3.1 | cw.cxx:258-270 | reverse, set_freq(sweetspot | progStatus.carrier | wf->Carrier()) | D:244 | DEPARTURE 4
+  A3.2 | cw.cxx:272 | trackingfilter->reset(); | D:294 | SAME
+  A3.3 | cw.cxx:273 | two_dots = (long int)trackingfilter->run(2 * cw_send_dot_length); | D:295 | SAME (first run of an empty Cmovavg returns its input: 1066)
+  A3.4 | cw.cxx:279 | morse->init(); | D:297 | SAME
+  A3.5 | cw.cxx:280 | use_paren = progdefaults.CW_use_paren; | D:298 | SAME
+  A3.6 | cw.cxx:281 | prosigns = progdefaults.CW_prosigns; | D:299 | SAME
+  A3.7 | cw.cxx:283 | rx_init(); | D:301 | SAME
+  A3.8 | trx (not in tree) calls init after cw::cw when the modem starts | D:224-302 one constructor | DEPARTURE 10
+  LEFT OUT: 274 put_cwRcvWPM (UI), 276-277 outbuf/qskbuf (transmit), 285-288 (transmit, nanoIO).
+
+A4. cw::rx_init (cw.cxx:240-254), receive half
+  A4.1 | cw.cxx:242 | cw_receive_state = RS_IDLE; | D:322 | SAME
+  A4.2 | cw.cxx:243 | smpl_ctr = 0; | D:323 | SAME
+  A4.3 | cw.cxx:244 | cw_rr_current = 0; | D:324 | SAME
+  A4.4 | cw.cxx:245 | cw_ptr = 0; | D:325 | SAME
+  A4.5 | cw.cxx:246 | agc_peak = 0; | D:326 | SAME - the AGC starts from zero upstream as in the port
+  LEFT OUT: 247-253 (scope mode, status, usedefaultWPM, scope_clear, viewcw).
+
+A5. Initial values with no initialiser upstream, and the function statics
+  A5.1 | cw.cxx:773 | static int space_sent = true; | D:201 space_sent = 1 | DEPARTURE 5 (true == 1; no space before the first letter)
+  A5.2 | cw.cxx:774 | static int last_element = 0; | D:202 | DEPARTURE 5
+  A5.3 | cw.h:168-169 | unsigned int cw_rr_start_timestamp, cw_rr_end_timestamp; no initialiser in cw::cw or init | D:183-184, C# zero | SAME in every decision: the first read, cw.cxx:881, runs in RS_IDLE with space_sent true, where cw.cxx:883, 888-890 and 910 can return nothing but CW_ERROR whatever the value; cw.cxx:800 and 811 write both before any branch reads them
+  A5.4 | cw.h:121 | CW_RX_STATE old_cw_receive_state; no initialiser | D:170 | SAME (written at 802, never read)
+  A5.5 | cw.h:204 | double siglevel; no initialiser before 627 | D:192 | SAME (display only)
+
+A6. progdefaults read on the path, shipped defaults (configuration.h line; port P line)
+  A6.1  | configuration.h:513-515 | double CWspeed 18 | P:46 double 18 | SAME
+  A6.2  | configuration.h:525-527 | int CWbandwidth 150 | P:49 int 150 | SAME
+  A6.3  | configuration.h:528-530 | double CWlower 0.4 | P:52 | SAME (overwritten at the first decision, 641)
+  A6.4  | configuration.h:531-533 | double CWupper 0.6 | P:55 | SAME (overwritten at the first decision, 640)
+  A6.5  | configuration.h:537 | bool CWtrack true | P:58 | SAME
+  A6.6  | configuration.h:540 | bool CWmfilt false | P:61 | SAME
+  A6.7  | configuration.h:543 | bool CWuseSOMdecoding false | P:67 | SAME
+  A6.8  | configuration.h:546-548 | int CWrange 10 | P:70 | SAME
+  A6.9  | configuration.h:549-551 | int CWlowerlimit 5 | P:73 | SAME
+  A6.10 | configuration.h:552-554 | int CWupperlimit 50 | P:76 | SAME
+  A6.11 | configuration.h:555-558 | int cwrx_attack 1 | P:79 | SAME
+  A6.12 | configuration.h:559-562 | int cwrx_decay 1 | P:82 | SAME
+  A6.13 | configuration.h:249 | int CW_noise '*' | P:85 | SAME
+  A6.14 | status.h:88, 93 (status.cxx absent) | progStatus.sqlonoff, sldrSquelchValue | D:144-145, ctor false, 0 | DEPARTURE (456 DECIDED (1): off, per benchmark.cxx:54)
+
+-------------------------------------------------------------------------------------------------
+B. THE SAMPLE'S PATH TO THE DECISION
+-------------------------------------------------------------------------------------------------
+
+B1. cw::rx_process (cw.cxx:719-748)
+  B1.1 | cw.cxx:721-726 | if (use_paren != .. || prosigns != ..) { ..; morse->init(); } | D:334-340 | SAME (not taken)
+  B1.2 | cw.cxx:728-729 | if (cwprocessing) return 0; | D:342-343 | DEPARTURE 5
+  B1.3 | cw.cxx:731 | cwprocessing = true; | D:345 | DEPARTURE 5
+  B1.4 | cw.cxx:733 | reset_rx_filter(); | D:347 | SAME
+  B1.5 | cw.cxx:735 | rx_FFTprocess(buf, len); | D:349 | SAME
+  B1.6 | cw.cxx:745 | cwprocessing = false; | D:351 | SAME
+  LEFT OUT: 737 clear_syncscope, 739 display_metric, 741-743 viewcw (UI).
+
+B2. cw::reset_rx_filter (cw.cxx:386-437)
+  B2.1 | cw.cxx:388-390 | if (use_matched_filter != CWmfilt || cw_speed != CWspeed || (bandwidth != CWbandwidth && !use_matched_filter)) | D:359-361 | SAME - false at defaults (false==false, 18==18.0, 150.0==150), so the body never runs on this case
+  B2.2 | cw.cxx:392-433 | the body | D:363-396 | SAME line for line on the receive statements; not executed on this case
+  LEFT OUT: 403-410, 417, 419, 422-423 (UI, pipe, farnsworth, phaseacc).
+
+B3. cw::rx_FFTprocess (cw.cxx:683-715)
+  B3.1 | cw.cxx:688 | while (len-- > 0) { | D:562 | SAME
+  B3.2 | cw.cxx:690 | z = cmplx(*buf * cos(FFTphase), *buf * sin(FFTphase)); | D:564 | DEPARTURE 2
+  B3.3 | cw.cxx:691 | FFTphase += TWOPI * frequency / samplerate; | D:565 | SAME
+  B3.4 | cw.cxx:692 | if (FFTphase > TWOPI) FFTphase -= TWOPI; | D:566 | SAME
+  B3.5 | cw.cxx:694 | buf++; | D:568 k++ | DEPARTURE 8 (D:569 input_samples++ is not fldigi's, observation)
+  B3.6 | cw.cxx:696 | n = cw_FFT_filter->run(z, &zp); | D:571 | DEPARTURE 8
+  B3.7 | cw.cxx:698 | if (!n) continue; | D:573 | SAME
+  B3.8 | cw.cxx:700 | for (int i = 0; i < n; i++) { | D:575 | SAME
+  B3.9 | cw.cxx:702 | ++smpl_ctr; | D:578 | SAME (unsigned int / uint)
+  B3.10 | cw.cxx:704 | if (smpl_ctr % DEC_RATIO) continue; | D:580 | SAME
+  B3.11 | cw.cxx:707 | FFTvalue = abs(zp[i]); | D:583 Complex.Abs | DEPARTURE 2
+  B3.12 | cw.cxx:708 | FFTvalue = bitfilter->run(FFTvalue); | D:584 | SAME
+  B3.13 | cw.cxx:710 | decode_stream(FFTvalue); | D:586 | SAME
+
+B4. fftfilt (fftfilt.cxx, fftfilt.h), the low-pass the element passes through
+  B4.1  | fftfilt.cxx:105-110 | fftfilt(f, len): flen = len; init_filter(); create_lpf(f); | F:57-62 | SAME
+  B4.2  | fftfilt.cxx:69-80 | init_filter: flen2 = flen >> 1; new g_fft; six buffers | F:95-106 | SAME (DEPARTURE 1 for g_fft)
+  B4.3  | fftfilt.cxx:55-67 | clear_filter: zero all, inptr = 0 | F:79-92 | SAME
+  B4.4  | fftfilt.h:66-68 | create_lpf(f) { create_filter(0, f); } | F:170-173 | SAME
+  B4.5  | fftfilt.cxx:124-141 | create_filter: clear, ht zero, b_lowpass/b_highpass, ht[i] += fsinc(f2, i, flen2) | F:111-130 | SAME
+  B4.6  | fftfilt.h:47-50 | fsinc: (i == len/2) ? 2fc : sin(2 pi fc (i - len/2)) / (pi (i - len/2)) | F:66-70 | SAME (int len/2 in both)
+  B4.7  | fftfilt.cxx:143-146 | highpass delta; ht[i] *= _blackman(i, flen2) | F:132-135 | SAME
+  B4.8  | fftfilt.h:51-55 | _blackman 0.42 - 0.50 cos(2 pi i/len) + 0.08 cos(4 pi i/len) | F:73-77 | SAME
+  B4.9  | fftfilt.cxx:149 | memcpy(filter, ht, flen * sizeof(cmplx)); | F:138 Array.Copy | SAME
+  B4.10 | fftfilt.cxx:156 | fft->ComplexFFT(filter); | F:144 | DEPARTURE 1
+  B4.11 | fftfilt.cxx:160-168 | normalise to unity peak gain over the first flen2 bins | F:147-157 | SAME
+  B4.12 | fftfilt.cxx:190 | pass = 1; | F:160 | SAME - with pass 1 the FIRST 1024-sample block is already output
+  B4.13 | fftfilt.cxx:205 | timedata[inptr++] = in; | F:185 | SAME
+  B4.14 | fftfilt.cxx:207-209 | if (inptr < flen2) return 0; if (pass) --pass; | F:187-189 | SAME
+  B4.15 | fftfilt.cxx:212-213 | memcpy(freqdata, timedata, flen); ComplexFFT(freqdata); | F:192-193 | SAME (DEPARTURE 1 for the FFT)
+  B4.16 | fftfilt.cxx:216-217 | freqdata[i] *= filter[i]; | F:196-197 | SAME
+  B4.17 | fftfilt.cxx:220 | fft->InverseComplexFFT(freqdata); | F:200 | DEPARTURE 1 (scaled 1/N as gfft.h:2253 iffts1 scale = 1.0/POW2(M); G:83-84)
+  B4.18 | fftfilt.cxx:224-227 | output[i] = ovlbuf[i] + freqdata[i]; ovlbuf[i] = freqdata[i+flen2]; | F:204-208 | SAME
+  B4.19 | fftfilt.cxx:230 | inptr = 0; | F:211 | SAME
+  B4.20 | fftfilt.cxx:233-236 | if (pass) return 0; *out = output; return flen2; | F:182, 214-216 | DEPARTURE 8 (out set before the test; the caller reads it only when n != 0)
+
+B5. Cmovavg (filters.cxx:261-307), the bit filter and the tracking filter
+  B5.1 | filters.cxx:261-266 | ctor: len, new double[len], empty = true | M:44-49 | SAME
+  B5.2 | filters.cxx:273-292 | run: first call fills with a, returns a; then out = out - in[pint] + a; ...; return out / len | M:54-73 | SAME
+  B5.3 | filters.cxx:294-302 | setLength | M:77-85 | SAME
+  B5.4 | filters.cxx:304-307 | reset: empty = true | M:88-91 | SAME
+
+B6. misc.h
+  B6.1 | misc.h:53-56 | clamp | X:41-44 | SAME
+  B6.2 | misc.h:59-63 | decayavg: weight <= 1 ? input : (input - average) / (double)weight + average | X:51-55 | SAME
+
+-------------------------------------------------------------------------------------------------
+C. THE DECISION: decode_stream, handle_event, the timing
+-------------------------------------------------------------------------------------------------
+
+C1. cw::decode_stream (cw.cxx:593-681)
+  C1.1  | cw.cxx:599-603 | switch (cwrx_attack) { case 0: 400; case 1: default: 200; case 2: 100; } | D:480-485 | SAME - table below
+  C1.2  | cw.cxx:604-608 | switch (cwrx_decay) { case 0: 2000; case 1: default: 1000; case 2: 500; } | D:486-491 | SAME - table below
+  C1.3  | cw.cxx:610 | sig_avg = decayavg(sig_avg, value, decay); | D:493 | SAME
+  C1.4  | cw.cxx:612-617 | if (value < sig_avg) { if (value < noise_floor) nf = decayavg(nf, v, attack); else nf = decayavg(nf, v, decay); } | D:495-501 | SAME
+  C1.5  | cw.cxx:618-623 | if (value > sig_avg) { if (value > agc_peak) agc_peak = decayavg(agc_peak, v, attack); else agc_peak = decayavg(agc_peak, v, decay); } | D:502-508 | SAME
+  C1.6  | cw.cxx:625 | float norm_noise = noise_floor / agc_peak; | D:510 (float)(..) | SAME (double quotient narrowed to float in both)
+  C1.7  | cw.cxx:626 | float norm_sig = sig_avg / agc_peak; | D:511 | SAME
+  C1.8  | cw.cxx:627 | siglevel = norm_sig; | D:512 | SAME
+  C1.9  | cw.cxx:629-632 | if (agc_peak) value /= agc_peak; else value = 0; | D:514-517 | SAME
+  C1.10 | cw.cxx:634 | metric = 0.8 * metric; | D:519 | SAME
+  C1.11 | cw.cxx:635-636 | if (nf > 1e-4 && nf < sig_avg) metric += 0.2 * clamp(2.5 * 20 log10(sig_avg/nf), 0, 100); | D:520-521 | SAME
+  C1.12 | cw.cxx:638 | float diff = (norm_sig - norm_noise); | D:523 | SAME
+  C1.13 | cw.cxx:640 | progdefaults.CWupper = norm_sig - 0.2 * diff; | D:525 | SAME (float promoted to double by the double 0.2, stored double, in both)
+  C1.14 | cw.cxx:641 | progdefaults.CWlower = norm_noise + 0.7 * diff; | D:526 | SAME
+  C1.15 | cw.cxx:646 | if (!progStatus.sqlonoff || metric > progStatus.sldrSquelchValue) { | D:530 | DEPARTURE (456 DECIDED (1): the fields are constructor parameters, off)
+  C1.16 | cw.cxx:649-651 | if ((value > CWupper) && (cw_receive_state != RS_IN_TONE)) handle_event(CW_KEYDOWN_EVENT, sc); | D:534-537 | SAME (D:528 observed_value is not fldigi's, observation)
+  C1.17 | cw.cxx:653-655 | if ((value < CWlower) && (cw_receive_state == RS_IN_TONE)) handle_event(CW_KEYUP_EVENT, sc); | D:539-542 | SAME
+  C1.18 | cw.cxx:658 | if (handle_event(CW_QUERY_EVENT, sc) == CW_SUCCESS) { | D:545 | SAME
+  C1.19 | cw.cxx:661-669 | SOM branch | D:234-237 | DEPARTURE 11 (not taken at defaults)
+  C1.20 | cw.cxx:671-674 | for each byte of sc: put_rx_char(sc[n], ..) | D:548-549 Print(sc) | DEPARTURE 7
+  LEFT OUT: 643-644 pipe (scope), 659-660 and 676-679 syncscope (UI).
+
+  The attack and decay mapping, upstream cw.cxx:599-608, in decision samples, and in seconds at
+  the 500 Hz decision rate (8000 / DEC_RATIO 16):
+    cwrx_attack | weight | time constant      cwrx_decay | weight | time constant
+    0           | 400    | 0.8 s              0          | 2000   | 4.0 s
+    1 (shipped) | 200    | 0.4 s              1 (shipped)| 1000   | 2.0 s
+    2           | 100    | 0.2 s              2          | 500    | 1.0 s
+    default     | 200    | 0.4 s              default    | 1000   | 2.0 s
+  The port's switch is the same table (D:480-491). The trailing comments upstream (100/50/25,
+  1000/500/250) are the old values and are not code.
+
+  The order inside one decision sample (upstream = port): sig_avg (610) -> noise_floor (612-617,
+  against the new sig_avg) -> agc_peak (618-623, against the new sig_avg) -> norm_noise, norm_sig
+  (625-626, from the new values) -> value / agc_peak (629) -> metric (634-636) -> CWupper, CWlower
+  (640-641) -> key-down test (649) -> key-up test (653), both against the thresholds just written
+  -> query (658). Port D:493 -> 508 -> 510-511 -> 514-517 -> 519-521 -> 525-526 -> 534 -> 539 -> 545.
+
+  The decimation and the rates: DEC_RATIO 16 (cw.h:90, D:118). smpl_ctr counts every filtered
+  8000 Hz sample (702) before the decimation test (704), so every timing - smpl_ctr, the
+  timestamps, element_usec, two_dots, the dot lengths, the spike threshold - is in 8000 Hz samples,
+  while the envelope, AGC, noise floor and thresholds are updated at 500 Hz. The bit filter is 16
+  decision samples, 32 ms. The first key-down from idle sets smpl_ctr = 0 (794), which moves the
+  decimation phase; the port does the same (D:621).
+
+C2. cw::usec_diff (cw.cxx:754-757)
+  C2.1 | cw.cxx:756 | return (earlier >= later) ? 0 : (later - earlier); | D:594 (int)(later - earlier) | SAME (unsigned difference converted to int in both)
+
+C3. cw::sync_parameters (cw.cxx:466-517) and sync_transmit_parameters (443-464)
+  C3.1  | cw.cxx:448 | cw_send_dot_length = KWPM / progdefaults.CWspeed; | D:403 (long)(KWPM / CWspeed) | SAME (9600 / 18.0 = 533.3, truncated to 533 in both)
+  C3.2  | cw.cxx:449 | cw_send_dash_length = 3 * cw_send_dot_length; | D:404 | SAME
+  C3.3  | cw.cxx:451 | nusymbollen = (int)round(samplerate * 1.2 / CWspeed); | D:406 | DEPARTURE 9
+  C3.4  | cw.cxx:454-463 | if (symbollen != nusymbollen || nufsymlen != fsymlen || risetime .. || QSKshape ..) { ..; symbollen = nusymbollen; ..; create_edges(); } | D:408-411 | DEPARTURE (456's table: sync_transmit_parameters "in part") - the receive path reads only symbollen, equal at 533, so the block changes nothing it reads
+  C3.5  | cw.cxx:482-487 | if ((cwTrack != CWtrack) || (cw_send_speed != CWspeed)) { trackingfilter->reset(); two_dots = 2 * cw_send_dot_length; } | D:420-425 | SAME (not taken at defaults)
+  C3.6  | cw.cxx:488 | cwTrack = progdefaults.CWtrack; | D:426 | SAME
+  C3.7  | cw.cxx:489 | cw_send_speed = progdefaults.CWspeed; | D:427 (int) | SAME
+  C3.8  | cw.cxx:492-497 | lowerwpm/upperwpm = cw_send_speed -/+ CWrange, clamped to 5..50 | D:430-435 | SAME (8, 28)
+  C3.9  | cw.cxx:498-499 | cw_lower_limit = 2 * KWPM / upperwpm; cw_upper_limit = 2 * KWPM / lowerwpm; | D:436-437 | SAME (double division truncated into int in both; not read by the decision)
+  C3.10 | cw.cxx:501-506 | if (cwTrack) cw_receive_speed = KWPM / (two_dots / 2); else { .. } | D:439-447 | SAME (integer division of long in both)
+  C3.11 | cw.cxx:508-511 | cw_receive_dot_length = KWPM / cw_receive_speed (or KWPM / 5) | D:449-452 | SAME
+  C3.12 | cw.cxx:513 | cw_receive_dash_length = 3 * cw_receive_dot_length; | D:454 | SAME
+  C3.13 | cw.cxx:515 | cw_noise_spike_threshold = cw_receive_dot_length / 2; | D:456 | SAME (533 / 2 = 266 at 18 WPM)
+  LEFT OUT: 446, 452 (farnsworth), 470-479 (nanoIO, keying), 486 (put_cwRcvWPM, UI).
+
+C4. cw::update_tracking (cw.cxx:524-536)
+  C4.1 | cw.cxx:526-527 | static int min_dot = KWPM / 200; static int max_dash = 3 * KWPM / 5; | D:462-463 const | DEPARTURE 12 (48, 5760)
+  C4.2 | cw.cxx:528-531 | the four early returns | D:464-467 | SAME (upstream's duplicated dur_2 test kept)
+  C4.3 | cw.cxx:533 | two_dots = trackingfilter->run((dur_1 + dur_2) / 2); | D:469 (long)run(..) | SAME (int halving, then double to long truncation in both)
+  C4.4 | cw.cxx:535 | sync_parameters(); | D:471 | SAME
+
+C5. cw::handle_event (cw.cxx:771-921)
+  C5.1  | cw.cxx:778-786 | CW_RESET_EVENT | D:604-612 | SAME (never raised on the receive path)
+  C5.2  | cw.cxx:790-791 | KEYDOWN: if (state == RS_IN_TONE) return CW_ERROR; | D:616-617 | SAME
+  C5.3  | cw.cxx:793-798 | if (state == RS_IDLE) { smpl_ctr = 0; rx_rep_buf.clear(); cw_rr_current = 0; cw_ptr = 0; } | D:619-625 | SAME
+  C5.4  | cw.cxx:800 | cw_rr_start_timestamp = smpl_ctr; | D:627 | SAME
+  C5.5  | cw.cxx:802-803 | old_state = state; state = RS_IN_TONE; | D:629-630 | SAME
+  C5.6  | cw.cxx:804 | return CW_ERROR; | D:632 | SAME (D:631 Observe is not fldigi's)
+  C5.7  | cw.cxx:808-809 | KEYUP: if (state != RS_IN_TONE) return CW_ERROR; | D:635-636 | SAME
+  C5.8  | cw.cxx:811 | cw_rr_end_timestamp = smpl_ctr; | D:638 | SAME
+  C5.9  | cw.cxx:812 | element_usec = usec_diff(start, end); | D:639 | SAME
+  C5.10 | cw.cxx:815 | sync_parameters(); | D:642 | SAME
+  C5.11 | cw.cxx:818-822 | if (spike_threshold > 0 && element_usec < spike_threshold) { state = RS_IDLE; return CW_ERROR; } | D:645-651 | SAME - rx_rep_buf is NOT cleared here, upstream or port; the next key-down from idle clears it (C5.3)
+  C5.12 | cw.cxx:832-843 | the dot-dash / dash-dot tracking pair tests | D:654-668 | SAME
+  C5.13 | cw.cxx:844 | last_element = element_usec; | D:669 | SAME
+  C5.14 | cw.cxx:847-855 | if (element_usec <= two_dots) '.' else '-'; cw_buffer[cw_ptr++] = last_element; | D:672-682 | SAME (DEPARTURE 8 for StringBuilder)
+  C5.15 | cw.cxx:858-868 | if (rx_rep_buf.length() > MAX_MORSE_ELEMENTS) { idle; ..; smpl_ctr = 0; return; } else cw_buffer[cw_ptr] = 0; | D:685-698 | SAME
+  C5.16 | cw.cxx:870-871 | state = RS_AFTER_TONE; return CW_ERROR; | D:700-702 | SAME
+  C5.17 | cw.cxx:877-878 | QUERY: if (state == RS_IN_TONE) return CW_ERROR; | D:707-708 | SAME
+  C5.18 | cw.cxx:880 | sync_parameters(); | D:710 | SAME
+  C5.19 | cw.cxx:881 | element_usec = usec_diff(cw_rr_end_timestamp, smpl_ctr); | D:711 | SAME
+  C5.20 | cw.cxx:883-884 | if (element_usec < 2 * dot) return CW_ERROR; | D:713-714 | SAME
+  C5.21 | cw.cxx:888-890 | if (>= 2 dot && <= 4 dot && state == RS_AFTER_TONE) { | D:718-720 | SAME
+  C5.22 | cw.cxx:892 | sc = morse->rx_lookup(rx_rep_buf); | D:724 | SAME (D:723 last_representation is not fldigi's)
+  C5.23 | cw.cxx:893-899 | if (sc.empty()) sc = CW_noise ('*') | D:725-731 | SAME
+  C5.24 | cw.cxx:900-906 | clear; RS_IDLE; cw_rr_current = 0; space_sent = false; cw_ptr = 0; return CW_SUCCESS; | D:732-738 | SAME
+  C5.25 | cw.cxx:910-914 | if (element_usec > 4 * dot && !space_sent) { sc = " "; space_sent = true; return CW_SUCCESS; } | D:742-747 | SAME
+  C5.26 | cw.cxx:916, 920 | return CW_ERROR; | D:750, 753 | SAME
+
+C6. cMorse::rx_lookup (morse.cxx:242-254), where the element becomes the character
+  C6.1 | morse.cxx:244 | if (CW_table_changed) init(); | O:282 | SAME
+  C6.2 | morse.cxx:245-252 | first enabled entry whose rpr matches: prt (chr if CW_prosign_display) | O:283-294 | SAME (".--." -> "P" at morse.cxx:71, O:95)
+  C6.3 | morse.cxx:253 | return ""; | O:295 | SAME
+
+-------------------------------------------------------------------------------------------------
+COUNT
+-------------------------------------------------------------------------------------------------
+Rows audited: 177 (A1 2, A2 29, A3 8, A4 5, A5 5, A6 14, B1 6, B2 2, B3 13, B4 20, B5 4, B6 2,
+C1 20, C2 1, C3 13, C4 4, C5 26, C6 3), counted by .run-unit/unit457-count.sh.
+  SAME:              152
+  DEPARTURE listed:   25 (departures 1, 2, 4, 5, 7, 8, 9, 10, 11, 12, 456's "in part" for
+                          sync_transmit_parameters, and 456 DECIDED (1) for the squelch)
+  DIFFERS:             0
+
+No line on the first element's path differs from upstream. Nothing is repaired in task 1, and
+the existing case is therefore not re-run here (task 0's run stands: `GARIS CQ `).
+
+Three facts from the reading that task 2 must test, all upstream's own:
+  1. The AGC starts at agc_peak = 0 (cw.cxx:246) and rises only while value > sig_avg, with an
+     attack weight of 200 decision samples (0.4 s); sig_avg follows at 1000 (2.0 s).
+  2. The thresholds are rewritten every decision sample from norm_sig and norm_noise (640-641).
+     In steady noise sig_avg, noise_floor and agc_peak all sit in the noise's own spread, so
+     CWupper and CWlower sit a hair apart inside it, and the detector keys on noise.
+  3. A key-up shorter than cw_noise_spike_threshold (266 samples, 33 ms at 18 WPM) sets RS_IDLE
+     without clearing rx_rep_buf (818-822); the next key-down from idle clears it (793-798). So an
+     element already held is lost to one noise spike before the character gap closes.

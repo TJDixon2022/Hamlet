@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 457 - why fldigi's port loses the first dit, and a case chosen before it is read
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T15:39:17-04:00
-NOTE: Task 0 done, numbers as 456 left them; task 1 reading the first element's path, port against cw.cxx at 61b97f41, line by line
+UPDATED: 2026-09-26T15:44:04-04:00
+NOTE: Task 1 done: 177 lines audited, 0 differ, no repair; task 2 adding a read-only per-decision trace to follow the first dit sample by sample
 
 ---
 

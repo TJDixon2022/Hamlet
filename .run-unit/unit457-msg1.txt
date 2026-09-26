@@ -1,0 +1,14 @@
+unit457 task 1: the audit - 177 lines on the first element's path read against cw.cxx at 61b97f41, 152 same, 25 departures listed by 456, 0 differ, nothing repaired (9.1)
+
+Read, line against line, from rx_process to decode_stream's
+put_rx_char: cw::cw and init's receive half, rx_init, reset_rx_filter,
+rx_FFTprocess, fftfilt, Cmovavg, decayavg, decode_stream with the
+thresholds at cw.cxx:640-641, handle_event, usec_diff,
+update_tracking, sync_parameters and rx_lookup. agc_peak starts at 0
+(cw.cxx:246) in both; attack 1 = 200 and decay 1 = 1000 decision
+samples, 0.4 s and 2.0 s at the 500 Hz decision rate, by the same
+switch (cw.cxx:599-608). No C++ compiler here, so fidelity is by
+reading. No line differs, so no repair and no re-run; task 0's
+GARIS CQ stands. src unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
