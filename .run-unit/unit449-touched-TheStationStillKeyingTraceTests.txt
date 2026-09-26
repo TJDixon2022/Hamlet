@@ -1,0 +1,385 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheTail(name: "tightfist-easy") [1 s]
+  Standard Output Messages:
+ tail | tightfist-easy | file 11.082 s | settle delay DecisionDelaySeconds 1.0 s, reads every 0.5 s | padding 16000 samples of digital zero, 2.000 s
+ tail | tightfist-easy | last 3 s at the centre 625.0 Hz, marks: 8.165+425ms 8.605+15ms 8.795+325ms 9.140+125ms 9.285+340ms 9.685+20ms 9.765+15ms 9.825+20ms 9.890+120ms 10.035+20ms 10.085+15ms 10.165+15ms 10.235+15ms 10.265+20ms 10.350+20ms 10.450+40ms 10.525+60ms 10.640+20ms 10.700+30ms 10.770+30ms 10.845+20ms 11.035+35ms
+ tail | tightfist-easy | settled before any flush ' VVVTESTDETESTK' | last settled At 9.595 s
+ tail | tightfist-easy | as the file ends | settled 0 + 0 () | ends with expected True | own transmit 0.00 s | suspended chunks 0
+ tail | tightfist-easy | as the file ends | got 'VVVTESTDETESTK' | wanted 'TESTDETESTK'
+ tail-char | tightfist-easy | as the file ends | 'S' pattern '...' At 8.095 s | High | score 32.13 | 14 wpm
+ tail-char | tightfist-easy | as the file ends | 'T' pattern '-' At 8.525 s | High | score 32.83 | 14 wpm
+ tail-char | tightfist-easy | as the file ends | 'K' pattern '-.-' At 9.595 s | High | score 30.64 | 14 wpm
+ tail | tightfist-easy | with the air's trailing silence | settled 0 + 0 () | ends with expected True | own transmit 0.00 s | suspended chunks 0
+ tail | tightfist-easy | with the air's trailing silence | got 'VVVTESTDETESTK' | wanted 'TESTDETESTK'
+ tail-char | tightfist-easy | with the air's trailing silence | 'S' pattern '...' At 8.095 s | High | score 32.13 | 14 wpm
+ tail-char | tightfist-easy | with the air's trailing silence | 'T' pattern '-' At 8.525 s | High | score 32.83 | 14 wpm
+ tail-char | tightfist-easy | with the air's trailing silence | 'K' pattern '-.-' At 9.595 s | High | score 30.64 | 14 wpm
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheTail(name: "exchange-easy") [4 s]
+  Standard Output Messages:
+ tail | exchange-easy | file 32.000 s | settle delay DecisionDelaySeconds 1.0 s, reads every 0.5 s | padding 16000 samples of digital zero, 2.000 s
+ tail | exchange-easy | last 3 s at the centre 625.0 Hz, marks: 29.005+165ms 29.205+60ms 29.350+15ms 29.385+40ms 29.475+50ms 29.550+15ms 29.615+330ms 30.005+525ms 30.615+30ms 30.660+90ms 30.795+20ms 30.835+25ms 30.910+15ms 30.980+40ms 31.040+20ms 31.125+15ms 31.225+70ms 31.325+25ms 31.390+35ms 31.480+45ms 31.605+30ms 31.730+40ms 31.945+20ms
+ tail | exchange-easy | settled before any flush ' VVV CQ CQ I M ,CALL N0CALL K' | last settled At 30.510 s
+ tail | exchange-easy | as the file ends | settled 0 + 3 (I,M,,) | ends with expected False | own transmit 0.00 s | suspended chunks 0
+ tail | exchange-easy | as the file ends | got 'VVVCQCQIM,CALLN0CALLK' | wanted 'CQCQDEN0CALLN0CALLK'
+ tail-char | exchange-easy | as the file ends | 'K' pattern '-.-' At 30.510 s | High | score 29.82 | 12 wpm
+ tail | exchange-easy | with the air's trailing silence | settled 0 + 3 (I,M,,) | ends with expected False | own transmit 0.00 s | suspended chunks 0
+ tail | exchange-easy | with the air's trailing silence | got 'VVVCQCQIM,CALLN0CALLK' | wanted 'CQCQDEN0CALLN0CALLK'
+ tail-char | exchange-easy | with the air's trailing silence | 'K' pattern '-.-' At 30.510 s | High | score 29.82 | 12 wpm
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheTail(name: "coverage-easy") [6 s]
+  Standard Output Messages:
+ tail | coverage-easy | file 40.400 s | settle delay DecisionDelaySeconds 1.0 s, reads every 0.5 s | padding 16000 samples of digital zero, 2.000 s
+ tail | coverage-easy | last 3 s at the centre 600.0 Hz, marks: 37.575+155ms 37.750+80ms 37.925+45ms 38.010+530ms 38.615+160ms 38.800+130ms 38.975+15ms 39.025+20ms 39.125+35ms 39.185+30ms 39.280+45ms 39.345+20ms 39.475+30ms 39.585+55ms 39.700+25ms 39.860+35ms 40.225+180ms
+ tail | coverage-easy | settled before any flush ' VVV 1234567890 QRZ? DE/N0CALL' | last settled At 38.910 s
+ tail | coverage-easy | as the file ends | settled 0 + 0 () | ends with expected True | own transmit 0.00 s | suspended chunks 0
+ tail | coverage-easy | as the file ends | got 'VVV1234567890QRZ?DE/N0CALL' | wanted '1234567890QRZ?DE/N0CALL'
+ tail-char | coverage-easy | as the file ends | 'L' pattern '.-..' At 37.710 s | High | score 28.35 | 12 wpm
+ tail-char | coverage-easy | as the file ends | 'L' pattern '.-..' At 38.910 s | High | score 25.77 | 12 wpm
+ tail | coverage-easy | with the air's trailing silence | settled 0 + 0 () | ends with expected True | own transmit 0.00 s | suspended chunks 0
+ tail | coverage-easy | with the air's trailing silence | got 'VVV1234567890QRZ?DE/N0CALL' | wanted '1234567890QRZ?DE/N0CALL'
+ tail-char | coverage-easy | with the air's trailing silence | 'L' pattern '.-..' At 37.710 s | High | score 28.35 | 12 wpm
+ tail-char | coverage-easy | with the air's trailing silence | 'L' pattern '.-..' At 38.910 s | High | score 25.77 | 12 wpm
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheEasyTier(name: "coverage-easy") [2 s]
+  Standard Output Messages:
+ move | coverage-easy | red, single sender | 1.535 s | cold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 21.3 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ move | coverage-easy | red, single sender | 13.035 s | hold | 625.0 to 600.0 Hz | sender 615 | AWAY | span 0.51 s from 12.535 | centre marks 6 key-ups 5 mean lift 12.5 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 2 key-ups 1
+ move | coverage-easy | red, single sender | 22.035 s | hold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 4.51 s from 17.535 | centre marks 22 key-ups 21 mean lift 22.3 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 7 key-ups 6
+ move | coverage-easy | red, single sender | 28.535 s | hold | 625.0 to 600.0 Hz | sender 615 | AWAY | span 1.01 s from 27.535 | centre marks 10 key-ups 9 mean lift 11.2 dB -> STILL KEYING yes | last 0.5 s marks 7 key-ups 6 | survey rule marks 2 key-ups 1
+ move | coverage-easy | red, single sender | 38.035 s | direct | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 37.535 | centre marks 5 key-ups 4 mean lift 12.5 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 2 key-ups 1
+ move | coverage-easy | red, single sender | 39.535 s | hold | 625.0 to 600.0 Hz | sender 615 | AWAY | span 0.51 s from 39.035 | centre marks 6 key-ups 5 mean lift 3.6 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 0 key-ups 0
+ sum | coverage-easy | sender 615 | settled ' VVV 1234567890 QRZ? DE/N0CALL '
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheEasyTier(name: "exchange-easy") [1 s]
+  Standard Output Messages:
+ move | exchange-easy | red, single sender | 1.535 s | cold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 1.035 | centre marks 4 key-ups 3 mean lift 21.5 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ move | exchange-easy | red, single sender | 11.535 s | hold | 625.0 to 575.0 Hz | sender 615 | AWAY | span 2.01 s from 9.535 | centre marks 13 key-ups 12 mean lift 19.8 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 4 key-ups 3
+ move | exchange-easy | red, single sender | 20.035 s | hold | 575.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 19.535 | centre marks 5 key-ups 4 mean lift 7.7 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 2 key-ups 1
+ sum | exchange-easy | sender 615 | settled ' VVV CQ CQ I M ,CALL N0CALL K '
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheEasyTier(name: "tightfist-easy") [257 ms]
+  Standard Output Messages:
+ move | tightfist-easy | red, single sender | 1.535 s | cold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 1.035 | centre marks 4 key-ups 3 mean lift 18.7 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ sum | tightfist-easy | sender 615 | settled ' VVVTESTDETESTK '
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheAcquisitionReds(wordsPerMinute: 12, prefix: "VVV ") [3 s]
+  Standard Output Messages:
+ move | #15 seed 7919 | red, single sender | 1.535 s | cold | 600.0 to 650.0 Hz | sender 640 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 12.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 1 key-ups 0
+ move | #15 seed 7919 | red, single sender | 28.535 s | hold | 650.0 to 600.0 Hz | sender 640 | AWAY | span 1.01 s from 27.535 | centre marks 3 key-ups 2 mean lift 19.4 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 3 key-ups 2
+ sum | #15 seed 7919 | share 0.95 | settled ' 4V CQ CQ DE N0CALL N0CALL '
+ move | #15 seed 104729 | red, single sender | 2.035 s | cold | 600.0 to 650.0 Hz | sender 640 | TOWARD | span 0.51 s from 1.535 | centre marks 3 key-ups 2 mean lift 12.3 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ move | #15 seed 104729 | red, single sender | 20.535 s | hold | 650.0 to 700.0 Hz | sender 640 | AWAY | span 2.51 s from 18.035 | centre marks 9 key-ups 8 mean lift 19.1 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 8 key-ups 7
+ sum | #15 seed 104729 | share 0.58 | settled '  AV CQ CQ DE N0CAL TTTT  E I I I I E E H S S E S 5 TTM E H E '
+ confirm | #15 seed 104729 | 18.035 s | keyed 700 at -46.6 dB | reading level before NaN, after -46.6 dB | sender bins 625 keyed -21.5, 650 keyed -20.5 dB | bank 650.0
+ confirm | #15 seed 104729 | 18.535 s | keyed 700 at -46.1 dB | reading level before -46.6, after -46.1 dB | sender bins 625 keyed -21.7, 650 keyed -20.7 dB | bank 650.0
+ confirm | #15 seed 104729 | 19.035 s | keyed 700 at -46.1 dB | reading level before -46.1, after -46.1 dB | sender bins 625 keyed -21.8, 650 keyed -20.8 dB | bank 650.0
+ confirm | #15 seed 104729 | 19.535 s | keyed 700 at -45.6 dB | reading level before -46.1, after -45.6 dB | sender bins 625 keyed -21.9, 650 keyed -21.0 dB | bank 650.0
+ confirm | #15 seed 104729 | 20.035 s | keyed 700 at -45.2 dB | reading level before -45.6, after -45.2 dB | sender bins 625 keyed -21.9, 650 keyed -21.0 dB | bank 650.0
+ confirm | #15 seed 104729 | 20.535 s | keyed 700 at -45.6 dB | reading level before -45.2, after -45.6 dB | sender bins 625 keyed -21.9, 650 keyed -21.0 dB | bank 700.0
+ move | #15 seed 15485863 | red, single sender | 1.535 s | cold | 600.0 to 650.0 Hz | sender 640 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 12.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 1 key-ups 0
+ move | #15 seed 15485863 | red, single sender | 7.535 s | hold | 650.0 to 700.0 Hz | sender 640 | AWAY | span 2.01 s from 5.535 | centre marks 5 key-ups 4 mean lift 19.9 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 4 key-ups 3
+ sum | #15 seed 15485863 | share 0.11 | settled ' 4V C TTTT  E S E I H E E 5 I E S E I I I I E E ES S S E IE 5 S 5 E ES E I I I I E E H S S E IE 5 ITTT TM '
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheAcquisitionReds(wordsPerMinute: 25, prefix: "") [805 ms]
+  Standard Output Messages:
+ move | #6 seed 7919 | gate, held green | 1.535 s | cold | 600.0 to 650.0 Hz | sender 640 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 17.1 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 3 key-ups 2
+ move | #6 seed 7919 | gate, held green | 4.535 s | direct | 650.0 to 625.0 Hz | sender 640 | AWAY | span 0.51 s from 4.035 | centre marks 2 key-ups 1 mean lift 5.3 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 1 key-ups 0
+ move | #6 seed 7919 | gate, held green | 7.035 s | hold | 625.0 to 650.0 Hz | sender 640 | TOWARD | span 0.51 s from 6.535 | centre marks 3 key-ups 2 mean lift 15.1 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 2 key-ups 1
+ sum | #6 seed 7919 | share 0.89 | settled '  A CQ DE N0CALL N0CALL K '
+ move | #6 seed 104729 | gate, held green | 1.535 s | cold | 600.0 to 650.0 Hz | sender 640 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 18.1 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ sum | #6 seed 104729 | share 0.89 | settled '  A CQ DE N0CALL N0CALL K '
+ move | #6 seed 15485863 | gate, held green | 1.535 s | cold | 600.0 to 650.0 Hz | sender 640 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 17.7 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ sum | #6 seed 15485863 | share 0.89 | settled '  A CQ DE N0CALL N0CALL K '
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheCaptures [2 m 9 s]
+  Standard Output Messages:
+ move | cw-2026-08-17-013347 | capture | 13.035 s | cold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 12.535 | centre marks 3 key-ups 2 mean lift 4.6 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ move | cw-2026-08-17-013347 | capture | 22.535 s | hold | 625.0 to 600.0 Hz | sender 625 | AWAY | span 0.51 s from 22.035 | centre marks 4 key-ups 3 mean lift 7.2 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 2 key-ups 1
+ move | cw-2026-08-17-013347 | capture | 28.035 s | hold | 600.0 to 600.0 Hz | sender 625 | level | span 3.51 s from 24.535 | centre marks 15 key-ups 14 mean lift 16.9 dB -> STILL KEYING yes | last 0.5 s marks 1 key-ups 0 | survey rule marks 11 key-ups 10
+ move | cw-2026-08-17-013347 | capture | 28.535 s | direct | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 28.035 | centre marks 3 key-ups 2 mean lift 3.1 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 0 key-ups 0
+ cap | cw-2026-08-17-013347 | characters 57 | final tone 625.0 | moves 4
+ move | cw-2026-08-17-134712 | capture | 19.035 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 18.535 | centre marks 4 key-ups 3 mean lift 4.2 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 2 key-ups 1
+ cap | cw-2026-08-17-134712 | characters 9 | final tone 500.0 | moves 1
+ move | cw-2026-08-18-004507 | capture | 2.035 s | direct | 600.0 to 475.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.535 | centre marks 8 key-ups 7 mean lift 7.3 dB -> STILL KEYING yes | last 0.5 s marks 8 key-ups 7 | survey rule marks 3 key-ups 2
+ move | cw-2026-08-18-004507 | capture | 3.035 s | direct | 475.0 to 525.0 Hz | sender 500 | level | span 0.51 s from 2.535 | centre marks 2 key-ups 1 mean lift 20.3 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 1 key-ups 0
+ move | cw-2026-08-18-004507 | capture | 8.035 s | hold | 525.0 to 500.0 Hz | sender 500 | TOWARD | span 1.01 s from 7.035 | centre marks 6 key-ups 5 mean lift 25.9 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 7 key-ups 6
+ cap | cw-2026-08-18-004507 | characters 49 | final tone 500.0 | moves 3
+ move | unadjudicated/cw-2026-08-24-012403 | capture | 1.535 s | cold | 600.0 to 375.0 Hz | sender 440 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 26.5 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-24-012403 | capture | 2.035 s | cold | 375.0 to 475.0 Hz | sender 440 | TOWARD | span 0.51 s from 1.535 | centre marks 1 key-ups 0 mean lift 28.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-24-012403 | capture | 5.035 s | cold | 475.0 to 500.0 Hz | sender 440 | AWAY | span 0.51 s from 4.535 | centre marks 1 key-ups 0 mean lift 33.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-24-012403 | capture | 5.535 s | cold | 500.0 to 475.0 Hz | sender 440 | TOWARD | span 0.51 s from 5.035 | centre marks 1 key-ups 0 mean lift 33.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-24-012403 | capture | 6.035 s | cold | 475.0 to 500.0 Hz | sender 440 | AWAY | span 0.51 s from 5.535 | centre marks 1 key-ups 0 mean lift 31.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-24-012403 | capture | 7.535 s | cold | 500.0 to 425.0 Hz | sender 440 | TOWARD | span 0.51 s from 7.035 | centre marks 1 key-ups 0 mean lift 32.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-24-012403 | capture | 8.035 s | cold | 425.0 to 450.0 Hz | sender 440 | TOWARD | span 0.51 s from 7.535 | centre marks 1 key-ups 0 mean lift 45.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-08-24-012403 | characters 19 | final tone 440.0 | moves 7
+ move | unadjudicated/cw-2026-08-22-031838 | known-right, a row H1 cost | 1.535 s | cold | 600.0 to 500.0 Hz | sender 525 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 22.7 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-22-031838 | known-right, a row H1 cost | 8.535 s | hold | 500.0 to 525.0 Hz | sender 525 | TOWARD | span 4.01 s from 4.535 | centre marks 1 key-ups 0 mean lift 45.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 15 key-ups 14
+ cap | unadjudicated/cw-2026-08-22-031838 | characters 30 | final tone 525.0 | moves 2
+ move | unadjudicated/cw-2026-08-22-031905 | known-right, a row H1 cost | 1.535 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 19.6 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-08-22-031905 | characters 37 | final tone 500.0 | moves 1
+ move | unadjudicated/cw-2026-08-22-031948 | capture | 2.035 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.535 | centre marks 1 key-ups 0 mean lift 19.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-08-22-031948 | characters 31 | final tone 500.0 | moves 1
+ move | unadjudicated/cw-2026-08-22-032012 | capture | 1.535 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 17.5 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 2 key-ups 1
+ cap | unadjudicated/cw-2026-08-22-032012 | characters 43 | final tone 500.0 | moves 1
+ move | unadjudicated/cw-2026-08-22-032050 | capture | 2.035 s | cold | 600.0 to 500.0 Hz | sender 325 | TOWARD | span 0.51 s from 1.535 | centre marks 1 key-ups 0 mean lift 23.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-22-032050 | capture | 24.035 s | direct | 500.0 to 325.0 Hz | sender 325 | TOWARD | span 0.51 s from 23.535 | centre marks 1 key-ups 0 mean lift 46.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ cap | unadjudicated/cw-2026-08-22-032050 | characters 47 | final tone 325.0 | moves 2
+ move | unadjudicated/cw-2026-08-22-032113 | known-right, a row H1 cost | 1.535 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 21.2 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-08-22-032113 | known-right, a row H1 cost | 21.035 s | hold | 500.0 to 600.0 Hz | sender 500 | AWAY | span 0.51 s from 20.535 | centre marks 1 key-ups 0 mean lift 33.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-22-032113 | known-right, a row H1 cost | 29.535 s | hold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 29.035 | centre marks 2 key-ups 1 mean lift 18.4 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 2 key-ups 1
+ cap | unadjudicated/cw-2026-08-22-032113 | characters 45 | final tone 500.0 | moves 3
+ move | unadjudicated/cw-2026-08-22-032129 | known-right, a row H1 cost | 1.535 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 25.1 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-08-22-032129 | characters 43 | final tone 500.0 | moves 1
+ move | cw-2026-08-17-013622 | capture | 14.535 s | cold | 600.0 to 625.0 Hz | sender 600 | AWAY | span 0.51 s from 14.035 | centre marks 6 key-ups 5 mean lift 8.1 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 1 key-ups 0
+ move | cw-2026-08-17-013622 | capture | 24.535 s | cold | 625.0 to 600.0 Hz | sender 600 | TOWARD | span 0.51 s from 24.035 | centre marks 4 key-ups 3 mean lift 7.6 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 5 key-ups 4
+ cap | cw-2026-08-17-013622 | characters 50 | final tone 600.0 | moves 2
+ move | unadjudicated/cw-2026-08-18-003016 | known-right, a row H1 cost | 1.535 s | cold | 600.0 to 675.0 Hz | sender 670 | TOWARD | span 0.51 s from 1.035 | centre marks 4 key-ups 3 mean lift 5.9 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-18-003016 | known-right, a row H1 cost | 22.035 s | hold | 675.0 to 650.0 Hz | sender 670 | AWAY | span 2.51 s from 19.535 | centre marks 11 key-ups 10 mean lift 26.7 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 15 key-ups 14
+ move | unadjudicated/cw-2026-08-18-003016 | known-right, a row H1 cost | 25.535 s | hold | 650.0 to 675.0 Hz | sender 670 | TOWARD | span 1.51 s from 24.035 | centre marks 8 key-ups 7 mean lift 15.9 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 10 key-ups 9
+ cap | unadjudicated/cw-2026-08-18-003016 | characters 54 | final tone 670.0 | moves 3
+ move | unadjudicated/cw-2026-08-18-003126 | capture | 2.035 s | cold | 600.0 to 675.0 Hz | sender 665 | TOWARD | span 0.51 s from 1.535 | centre marks 5 key-ups 4 mean lift 8.2 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-18-003126 | capture | 21.535 s | hold | 675.0 to 650.0 Hz | sender 665 | AWAY | span 1.51 s from 20.035 | centre marks 6 key-ups 5 mean lift 29.5 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 10 key-ups 9
+ move | unadjudicated/cw-2026-08-18-003126 | capture | 23.035 s | hold | 650.0 to 675.0 Hz | sender 665 | TOWARD | span 1.01 s from 22.035 | centre marks 3 key-ups 2 mean lift 27.1 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-18-003126 | capture | 23.535 s | direct | 675.0 to 650.0 Hz | sender 665 | AWAY | span 0.51 s from 23.035 | centre marks 5 key-ups 4 mean lift 5.1 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-18-003126 | capture | 24.035 s | direct | 650.0 to 675.0 Hz | sender 665 | TOWARD | span 0.51 s from 23.535 | centre marks 5 key-ups 4 mean lift 4.7 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 5 key-ups 4
+ cap | unadjudicated/cw-2026-08-18-003126 | characters 49 | final tone 665.0 | moves 5
+ move | unadjudicated/cw-2026-08-18-003758 | capture | 1.535 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.035 | centre marks 7 key-ups 6 mean lift 4.9 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 5 key-ups 4
+ cap | unadjudicated/cw-2026-08-18-003758 | characters 44 | final tone 500.0 | moves 1
+ cap | unadjudicated/cw-2026-08-23-001520 | characters 2 | final tone 600.0 | moves 0
+ move | unadjudicated/cw-2026-08-23-001831 | capture | 1.535 s | cold | 600.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 26.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-23-001831 | capture | 2.035 s | cold | 525.0 to 325.0 Hz | sender 525 | AWAY | span 0.51 s from 1.535 | centre marks 2 key-ups 1 mean lift 27.9 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-23-001831 | capture | 2.535 s | cold | 325.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 2.035 | centre marks 2 key-ups 1 mean lift 23.7 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-23-001831 | capture | 18.035 s | hold | 525.0 to 500.0 Hz | sender 525 | AWAY | span 0.51 s from 17.535 | centre marks 1 key-ups 0 mean lift 41.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-23-001831 | capture | 19.535 s | direct | 500.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 19.035 | centre marks 1 key-ups 0 mean lift 37.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-08-23-001831 | characters 41 | final tone 525.0 | moves 5
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 1.535 s | cold | 600.0 to 575.0 Hz | sender 525 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 27.4 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 1 key-ups 0
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 3.535 s | cold | 575.0 to 375.0 Hz | sender 525 | AWAY | span 0.51 s from 3.035 | centre marks 1 key-ups 0 mean lift 32.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 1 key-ups 0
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 4.535 s | cold | 375.0 to 425.0 Hz | sender 525 | TOWARD | span 0.51 s from 4.035 | centre marks 2 key-ups 1 mean lift 22.8 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 5.035 s | cold | 425.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 4.535 | centre marks 3 key-ups 2 mean lift 30.2 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 19.535 s | cold | 525.0 to 450.0 Hz | sender 525 | AWAY | span 0.51 s from 19.035 | centre marks 1 key-ups 0 mean lift 30.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 22.035 s | cold | 450.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 21.535 | centre marks 1 key-ups 0 mean lift 31.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 24.035 s | cold | 525.0 to 450.0 Hz | sender 525 | AWAY | span 0.51 s from 23.535 | centre marks 1 key-ups 0 mean lift 33.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-23-001952 | capture | 27.035 s | cold | 450.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 26.535 | centre marks 1 key-ups 0 mean lift 26.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ cap | unadjudicated/cw-2026-08-23-001952 | characters 41 | final tone 525.0 | moves 8
+ move | unadjudicated/cw-2026-08-23-002016 | capture | 1.535 s | cold | 600.0 to 450.0 Hz | sender 525 | level | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 22.7 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-23-002016 | capture | 5.035 s | cold | 450.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 4.535 | centre marks 1 key-ups 0 mean lift 26.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 7 key-ups 6
+ cap | unadjudicated/cw-2026-08-23-002016 | characters 38 | final tone 525.0 | moves 2
+ move | unadjudicated/cw-2026-08-25-011552 | capture | 1.535 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 24.7 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 1 key-ups 0
+ cap | unadjudicated/cw-2026-08-25-011552 | characters 24 | final tone 500.0 | moves 1
+ move | unadjudicated/cw-2026-08-25-012748 | capture | 1.535 s | cold | 600.0 to 400.0 Hz | sender 395 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 26.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-012748 | capture | 2.535 s | direct | 400.0 to 375.0 Hz | sender 395 | AWAY | span 0.51 s from 2.035 | centre marks 1 key-ups 0 mean lift 45.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-012748 | capture | 3.035 s | direct | 375.0 to 400.0 Hz | sender 395 | TOWARD | span 0.51 s from 2.535 | centre marks 1 key-ups 0 mean lift 41.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-012748 | capture | 19.535 s | direct | 400.0 to 375.0 Hz | sender 395 | AWAY | span 0.51 s from 19.035 | centre marks 1 key-ups 0 mean lift 35.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-012748 | capture | 23.035 s | direct | 375.0 to 400.0 Hz | sender 395 | TOWARD | span 0.51 s from 22.535 | centre marks 1 key-ups 0 mean lift 31.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ cap | unadjudicated/cw-2026-08-25-012748 | characters 4 | final tone 395.0 | moves 5
+ move | unadjudicated/cw-2026-08-25-012823 | capture | 1.535 s | cold | 600.0 to 400.0 Hz | sender 450 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 26.9 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-08-25-012823 | capture | 3.035 s | cold | 400.0 to 500.0 Hz | sender 450 | level | span 0.51 s from 2.535 | centre marks 1 key-ups 0 mean lift 29.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-012823 | capture | 14.035 s | hold | 500.0 to 450.0 Hz | sender 450 | TOWARD | span 0.51 s from 13.535 | centre marks 1 key-ups 0 mean lift 38.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ cap | unadjudicated/cw-2026-08-25-012823 | characters 22 | final tone 450.0 | moves 3
+ move | unadjudicated/cw-2026-08-25-012922 | capture | 1.535 s | cold | 600.0 to 500.0 Hz | sender 475 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 22.1 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-012922 | capture | 9.035 s | cold | 500.0 to 475.0 Hz | sender 475 | TOWARD | span 0.51 s from 8.535 | centre marks 1 key-ups 0 mean lift 43.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-012922 | capture | 11.035 s | cold | 475.0 to 500.0 Hz | sender 475 | AWAY | span 0.51 s from 10.535 | centre marks 1 key-ups 0 mean lift 32.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-012922 | capture | 14.535 s | cold | 500.0 to 475.0 Hz | sender 475 | TOWARD | span 0.51 s from 14.035 | centre marks 1 key-ups 0 mean lift 40.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-012922 | capture | 17.535 s | cold | 475.0 to 500.0 Hz | sender 475 | AWAY | span 0.51 s from 17.035 | centre marks 1 key-ups 0 mean lift 37.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-012922 | capture | 29.035 s | direct | 500.0 to 475.0 Hz | sender 475 | TOWARD | span 0.51 s from 28.535 | centre marks 1 key-ups 0 mean lift 46.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ cap | unadjudicated/cw-2026-08-25-012922 | characters 40 | final tone 475.0 | moves 6
+ move | unadjudicated/cw-2026-08-25-013010 | capture | 1.535 s | cold | 600.0 to 500.0 Hz | sender 475 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 22.7 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-013010 | capture | 29.035 s | direct | 500.0 to 475.0 Hz | sender 475 | TOWARD | span 0.51 s from 28.535 | centre marks 1 key-ups 0 mean lift 35.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-08-25-013010 | characters 48 | final tone 475.0 | moves 2
+ move | unadjudicated/cw-2026-08-25-013150 | capture | 1.535 s | cold | 600.0 to 525.0 Hz | sender 495 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 27.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-013150 | capture | 9.535 s | cold | 525.0 to 500.0 Hz | sender 495 | TOWARD | span 0.51 s from 9.035 | centre marks 1 key-ups 0 mean lift 36.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ cap | unadjudicated/cw-2026-08-25-013150 | characters 53 | final tone 495.0 | moves 2
+ move | unadjudicated/cw-2026-08-25-013303 | capture | 2.035 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.535 | centre marks 3 key-ups 2 mean lift 21.0 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 2 key-ups 1
+ cap | unadjudicated/cw-2026-08-25-013303 | characters 45 | final tone 500.0 | moves 1
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 2.035 s | cold | 600.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 1.535 | centre marks 1 key-ups 0 mean lift 25.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 7.035 s | hold | 525.0 to 525.0 Hz | sender 525 | level | span 0.51 s from 6.535 | centre marks 1 key-ups 0 mean lift 40.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 9.535 s | direct | 525.0 to 550.0 Hz | sender 525 | AWAY | span 0.51 s from 9.035 | centre marks 1 key-ups 0 mean lift 39.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 14.035 s | direct | 550.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 13.535 | centre marks 1 key-ups 0 mean lift 41.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 16.535 s | hold | 525.0 to 550.0 Hz | sender 525 | AWAY | span 2.01 s from 14.535 | centre marks 1 key-ups 0 mean lift 43.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 13 key-ups 12
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 21.035 s | hold | 550.0 to 525.0 Hz | sender 525 | TOWARD | span 0.51 s from 20.535 | centre marks 1 key-ups 0 mean lift 41.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 24.035 s | hold | 525.0 to 550.0 Hz | sender 525 | AWAY | span 2.51 s from 21.535 | centre marks 1 key-ups 0 mean lift 40.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 18 key-ups 17
+ move | unadjudicated/cw-2026-08-25-013402 | capture | 27.035 s | hold | 550.0 to 525.0 Hz | sender 525 | TOWARD | span 1.51 s from 25.535 | centre marks 1 key-ups 0 mean lift 44.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 12 key-ups 11
+ cap | unadjudicated/cw-2026-08-25-013402 | characters 57 | final tone 525.0 | moves 8
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 1.535 s | cold | 600.0 to 525.0 Hz | sender 540 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 24.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 2.035 s | cold | 525.0 to 550.0 Hz | sender 540 | TOWARD | span 0.51 s from 1.535 | centre marks 1 key-ups 0 mean lift 33.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 2.535 s | cold | 550.0 to 525.0 Hz | sender 540 | AWAY | span 0.51 s from 2.035 | centre marks 1 key-ups 0 mean lift 31.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 4.535 s | hold | 525.0 to 525.0 Hz | sender 540 | level | span 1.01 s from 3.535 | centre marks 1 key-ups 0 mean lift 43.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 8 key-ups 7
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 5.035 s | direct | 525.0 to 550.0 Hz | sender 540 | TOWARD | span 0.51 s from 4.535 | centre marks 1 key-ups 0 mean lift 38.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 9.035 s | hold | 550.0 to 550.0 Hz | sender 540 | level | span 0.51 s from 8.535 | centre marks 1 key-ups 0 mean lift 43.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 18.535 s | hold | 550.0 to 525.0 Hz | sender 540 | AWAY | span 1.51 s from 17.035 | centre marks 1 key-ups 0 mean lift 40.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 9 key-ups 8
+ move | unadjudicated/cw-2026-08-25-013520 | capture | 27.535 s | direct | 525.0 to 550.0 Hz | sender 540 | TOWARD | span 0.51 s from 27.035 | centre marks 1 key-ups 0 mean lift 45.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ cap | unadjudicated/cw-2026-08-25-013520 | characters 55 | final tone 540.0 | moves 8
+ move | unadjudicated/cw-2026-08-25-013637 | capture | 1.535 s | cold | 600.0 to 525.0 Hz | sender 550 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 26.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-013637 | capture | 24.035 s | direct | 525.0 to 550.0 Hz | sender 550 | TOWARD | span 0.51 s from 23.535 | centre marks 1 key-ups 0 mean lift 45.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ cap | unadjudicated/cw-2026-08-25-013637 | characters 61 | final tone 550.0 | moves 2
+ move | unadjudicated/cw-2026-08-25-021410 | capture | 1.535 s | cold | 600.0 to 550.0 Hz | sender 550 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 22.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-021410 | capture | 29.535 s | hold | 550.0 to 550.0 Hz | sender 550 | level | span 2.51 s from 27.035 | centre marks 1 key-ups 0 mean lift 40.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 11 key-ups 10
+ cap | unadjudicated/cw-2026-08-25-021410 | characters 36 | final tone 550.0 | moves 2
+ move | unadjudicated/cw-2026-08-25-021629 | capture | 1.535 s | cold | 600.0 to 500.0 Hz | sender 500 | TOWARD | span 0.51 s from 1.035 | centre marks 2 key-ups 1 mean lift 24.2 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 6 key-ups 5
+ cap | unadjudicated/cw-2026-08-25-021629 | characters 29 | final tone 500.0 | moves 1
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 1.535 s | cold | 600.0 to 425.0 Hz | sender 400 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 26.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 3.535 s | cold | 425.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 3.035 | centre marks 1 key-ups 0 mean lift 29.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 5.035 s | cold | 400.0 to 550.0 Hz | sender 400 | AWAY | span 0.51 s from 4.535 | centre marks 1 key-ups 0 mean lift 32.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 7.035 s | cold | 550.0 to 475.0 Hz | sender 400 | TOWARD | span 0.51 s from 6.535 | centre marks 1 key-ups 0 mean lift 30.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 7.535 s | cold | 475.0 to 550.0 Hz | sender 400 | AWAY | span 0.51 s from 7.035 | centre marks 1 key-ups 0 mean lift 33.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 8.035 s | cold | 550.0 to 450.0 Hz | sender 400 | TOWARD | span 0.51 s from 7.535 | centre marks 1 key-ups 0 mean lift 31.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 9.035 s | cold | 450.0 to 475.0 Hz | sender 400 | AWAY | span 0.51 s from 8.535 | centre marks 1 key-ups 0 mean lift 30.5 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 9.535 s | cold | 475.0 to 525.0 Hz | sender 400 | AWAY | span 0.51 s from 9.035 | centre marks 1 key-ups 0 mean lift 30.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 10.035 s | cold | 525.0 to 425.0 Hz | sender 400 | TOWARD | span 0.51 s from 9.535 | centre marks 1 key-ups 0 mean lift 33.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 10.535 s | cold | 425.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 10.035 | centre marks 1 key-ups 0 mean lift 30.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 7 key-ups 6
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 11.535 s | cold | 400.0 to 500.0 Hz | sender 400 | AWAY | span 0.51 s from 11.035 | centre marks 1 key-ups 0 mean lift 30.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 12.535 s | cold | 500.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 12.035 | centre marks 2 key-ups 1 mean lift 29.2 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 13.535 s | cold | 400.0 to 500.0 Hz | sender 400 | AWAY | span 0.51 s from 13.035 | centre marks 1 key-ups 0 mean lift 32.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 14.535 s | cold | 500.0 to 375.0 Hz | sender 400 | TOWARD | span 0.51 s from 14.035 | centre marks 1 key-ups 0 mean lift 30.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 15.535 s | cold | 375.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 15.035 | centre marks 1 key-ups 0 mean lift 52.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-25-021825 | capture | 24.535 s | hold | 400.0 to 400.0 Hz | sender 400 | level | span 2.51 s from 22.035 | centre marks 1 key-ups 0 mean lift 43.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 7 key-ups 6
+ cap | unadjudicated/cw-2026-08-25-021825 | characters 19 | final tone 400.0 | moves 16
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 1.535 s | cold | 600.0 to 525.0 Hz | sender 400 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 25.3 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 2.035 s | cold | 525.0 to 450.0 Hz | sender 400 | TOWARD | span 0.51 s from 1.535 | centre marks 1 key-ups 0 mean lift 31.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 2.535 s | cold | 450.0 to 525.0 Hz | sender 400 | AWAY | span 0.51 s from 2.035 | centre marks 1 key-ups 0 mean lift 32.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 3.035 s | cold | 525.0 to 450.0 Hz | sender 400 | TOWARD | span 0.51 s from 2.535 | centre marks 1 key-ups 0 mean lift 31.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 4.035 s | cold | 450.0 to 575.0 Hz | sender 400 | AWAY | span 0.51 s from 3.535 | centre marks 1 key-ups 0 mean lift 33.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 4.535 s | cold | 575.0 to 525.0 Hz | sender 400 | TOWARD | span 0.51 s from 4.035 | centre marks 1 key-ups 0 mean lift 30.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 7 key-ups 6
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 5.035 s | cold | 525.0 to 500.0 Hz | sender 400 | TOWARD | span 0.51 s from 4.535 | centre marks 1 key-ups 0 mean lift 32.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 5.535 s | cold | 500.0 to 475.0 Hz | sender 400 | TOWARD | span 0.51 s from 5.035 | centre marks 1 key-ups 0 mean lift 34.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 7.535 s | cold | 475.0 to 425.0 Hz | sender 400 | TOWARD | span 0.51 s from 7.035 | centre marks 1 key-ups 0 mean lift 32.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 8.535 s | cold | 425.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 8.035 | centre marks 1 key-ups 0 mean lift 40.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 13.535 s | cold | 400.0 to 500.0 Hz | sender 400 | AWAY | span 0.51 s from 13.035 | centre marks 1 key-ups 0 mean lift 30.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 15.035 s | cold | 500.0 to 525.0 Hz | sender 400 | AWAY | span 0.51 s from 14.535 | centre marks 1 key-ups 0 mean lift 31.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 15.535 s | cold | 525.0 to 425.0 Hz | sender 400 | TOWARD | span 0.51 s from 15.035 | centre marks 1 key-ups 0 mean lift 35.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 16.035 s | cold | 425.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 15.535 | centre marks 1 key-ups 0 mean lift 45.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 20.535 s | cold | 400.0 to 425.0 Hz | sender 400 | AWAY | span 0.51 s from 20.035 | centre marks 1 key-ups 0 mean lift 32.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 21.035 s | cold | 425.0 to 550.0 Hz | sender 400 | AWAY | span 0.51 s from 20.535 | centre marks 1 key-ups 0 mean lift 32.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 21.535 s | cold | 550.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 21.035 | centre marks 1 key-ups 0 mean lift 31.5 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 7 key-ups 6
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 27.535 s | cold | 400.0 to 375.0 Hz | sender 400 | AWAY | span 0.51 s from 27.035 | centre marks 1 key-ups 0 mean lift 33.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 28.535 s | cold | 375.0 to 425.0 Hz | sender 400 | level | span 0.51 s from 28.035 | centre marks 1 key-ups 0 mean lift 35.5 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-26-125941 | capture | 29.035 s | cold | 425.0 to 400.0 Hz | sender 400 | TOWARD | span 0.51 s from 28.535 | centre marks 1 key-ups 0 mean lift 39.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ cap | unadjudicated/cw-2026-08-26-125941 | characters 0 | final tone 400.0 | moves 20
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 1.535 s | cold | 600.0 to 650.0 Hz | sender 600 | AWAY | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 28.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 3.035 s | cold | 650.0 to 750.0 Hz | sender 600 | AWAY | span 0.51 s from 2.535 | centre marks 1 key-ups 0 mean lift 33.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 5.035 s | cold | 750.0 to 825.0 Hz | sender 600 | AWAY | span 0.51 s from 4.535 | centre marks 2 key-ups 1 mean lift 30.1 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 5.535 s | cold | 825.0 to 650.0 Hz | sender 600 | TOWARD | span 0.51 s from 5.035 | centre marks 1 key-ups 0 mean lift 30.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 6.035 s | cold | 650.0 to 800.0 Hz | sender 600 | AWAY | span 0.51 s from 5.535 | centre marks 1 key-ups 0 mean lift 32.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 9.035 s | cold | 800.0 to 725.0 Hz | sender 600 | TOWARD | span 0.51 s from 8.535 | centre marks 1 key-ups 0 mean lift 29.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 9.535 s | cold | 725.0 to 650.0 Hz | sender 600 | TOWARD | span 0.51 s from 9.035 | centre marks 1 key-ups 0 mean lift 29.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 11.035 s | cold | 650.0 to 625.0 Hz | sender 600 | TOWARD | span 0.51 s from 10.535 | centre marks 1 key-ups 0 mean lift 29.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 12.035 s | cold | 625.0 to 600.0 Hz | sender 600 | TOWARD | span 0.51 s from 11.535 | centre marks 1 key-ups 0 mean lift 38.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 22.035 s | cold | 600.0 to 625.0 Hz | sender 600 | AWAY | span 0.51 s from 21.535 | centre marks 1 key-ups 0 mean lift 33.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 25.535 s | cold | 625.0 to 600.0 Hz | sender 600 | TOWARD | span 0.51 s from 25.035 | centre marks 1 key-ups 0 mean lift 37.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 26.535 s | cold | 600.0 to 625.0 Hz | sender 600 | AWAY | span 0.51 s from 26.035 | centre marks 1 key-ups 0 mean lift 29.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-08-20-014854 | capture | 27.035 s | cold | 625.0 to 600.0 Hz | sender 600 | TOWARD | span 0.51 s from 26.535 | centre marks 1 key-ups 0 mean lift 36.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-08-20-014854 | characters 0 | final tone 600.0 | moves 13
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 825 | TOWARD | span 0.51 s from 1.035 | centre marks 1 key-ups 0 mean lift 28.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 15.035 s | cold | 625.0 to 675.0 Hz | sender 825 | TOWARD | span 0.51 s from 14.535 | centre marks 1 key-ups 0 mean lift 30.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 16.535 s | cold | 675.0 to 775.0 Hz | sender 825 | TOWARD | span 0.51 s from 16.035 | centre marks 1 key-ups 0 mean lift 31.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 18.035 s | cold | 775.0 to 800.0 Hz | sender 825 | TOWARD | span 0.51 s from 17.535 | centre marks 1 key-ups 0 mean lift 34.2 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 18.535 s | cold | 800.0 to 750.0 Hz | sender 825 | AWAY | span 0.51 s from 18.035 | centre marks 1 key-ups 0 mean lift 30.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 19.035 s | cold | 750.0 to 625.0 Hz | sender 825 | AWAY | span 0.51 s from 18.535 | centre marks 1 key-ups 0 mean lift 34.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 19.535 s | cold | 625.0 to 750.0 Hz | sender 825 | TOWARD | span 0.51 s from 19.035 | centre marks 1 key-ups 0 mean lift 33.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 23.035 s | cold | 750.0 to 625.0 Hz | sender 825 | AWAY | span 0.51 s from 22.535 | centre marks 1 key-ups 0 mean lift 34.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 24.535 s | cold | 625.0 to 650.0 Hz | sender 825 | TOWARD | span 0.51 s from 24.035 | centre marks 1 key-ups 0 mean lift 32.5 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 25.035 s | cold | 650.0 to 800.0 Hz | sender 825 | TOWARD | span 0.51 s from 24.535 | centre marks 1 key-ups 0 mean lift 33.6 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 7 key-ups 6
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 25.535 s | cold | 800.0 to 750.0 Hz | sender 825 | AWAY | span 0.51 s from 25.035 | centre marks 1 key-ups 0 mean lift 33.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 26.035 s | cold | 750.0 to 800.0 Hz | sender 825 | TOWARD | span 0.51 s from 25.535 | centre marks 1 key-ups 0 mean lift 33.8 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 26.535 s | cold | 800.0 to 775.0 Hz | sender 825 | AWAY | span 0.51 s from 26.035 | centre marks 1 key-ups 0 mean lift 29.9 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 27.035 s | cold | 775.0 to 800.0 Hz | sender 825 | TOWARD | span 0.51 s from 26.535 | centre marks 1 key-ups 0 mean lift 32.5 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 28.535 s | cold | 800.0 to 650.0 Hz | sender 825 | AWAY | span 0.51 s from 28.035 | centre marks 1 key-ups 0 mean lift 31.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-20-014935 | capture | 29.535 s | cold | 650.0 to 825.0 Hz | sender 825 | TOWARD | span 0.51 s from 29.035 | centre marks 1 key-ups 0 mean lift 30.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 8 key-ups 7
+ cap | unadjudicated/cw-2026-08-20-014935 | characters 0 | final tone 825.0 | moves 16
+ move | unadjudicated/cw-2026-08-22-014113 | capture | 4.535 s | cold | 600.0 to 725.0 Hz | sender 600 | AWAY | span 0.51 s from 4.035 | centre marks 5 key-ups 4 mean lift 2.0 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-22-014113 | capture | 17.535 s | cold | 725.0 to 600.0 Hz | sender 600 | TOWARD | span 0.51 s from 17.035 | centre marks 3 key-ups 2 mean lift 2.1 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 4 key-ups 3
+ cap | unadjudicated/cw-2026-08-22-014113 | characters 0 | final tone 600.0 | moves 2
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 7.535 s | cold | 600.0 to 575.0 Hz | sender 575 | TOWARD | span 0.51 s from 7.035 | centre marks 3 key-ups 2 mean lift 18.3 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 9.035 s | cold | 575.0 to 475.0 Hz | sender 575 | AWAY | span 0.51 s from 8.535 | centre marks 1 key-ups 0 mean lift 29.0 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 9.535 s | cold | 475.0 to 450.0 Hz | sender 575 | AWAY | span 0.51 s from 9.035 | centre marks 1 key-ups 0 mean lift 28.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 10.535 s | cold | 450.0 to 475.0 Hz | sender 575 | TOWARD | span 0.51 s from 10.035 | centre marks 1 key-ups 0 mean lift 29.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 11.035 s | cold | 475.0 to 450.0 Hz | sender 575 | AWAY | span 0.51 s from 10.535 | centre marks 1 key-ups 0 mean lift 29.4 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 12.035 s | cold | 450.0 to 575.0 Hz | sender 575 | TOWARD | span 0.51 s from 11.535 | centre marks 1 key-ups 0 mean lift 27.7 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 14.535 s | cold | 575.0 to 475.0 Hz | sender 575 | AWAY | span 0.51 s from 14.035 | centre marks 1 key-ups 0 mean lift 30.3 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-08-22-014308 | capture | 15.035 s | cold | 475.0 to 575.0 Hz | sender 575 | TOWARD | span 0.51 s from 14.535 | centre marks 1 key-ups 0 mean lift 26.1 dB -> STILL KEYING no | last 0.5 s marks 1 key-ups 0 | survey rule marks 6 key-ups 5
+ cap | unadjudicated/cw-2026-08-22-014308 | characters 0 | final tone 575.0 | moves 8
+ cap | unadjudicated/cw-2026-09-24-003901 | characters 9 | final tone 600.0 | moves 0
+ cap | unadjudicated/cw-2026-09-24-003919 | characters 26 | final tone 600.0 | moves 0
+ cap | unadjudicated/cw-2026-09-24-004027 | characters 40 | final tone 600.0 | moves 0
+ move | unadjudicated/cw-2026-09-24-004108 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 1.035 | centre marks 4 key-ups 3 mean lift 19.0 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-09-24-004108 | capture | 23.035 s | direct | 625.0 to 650.0 Hz | sender 625 | AWAY | span 0.51 s from 22.535 | centre marks 4 key-ups 3 mean lift 15.5 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-09-24-004108 | capture | 23.535 s | direct | 650.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 23.035 | centre marks 3 key-ups 2 mean lift 4.0 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 2 key-ups 1
+ cap | unadjudicated/cw-2026-09-24-004108 | characters 32 | final tone 625.0 | moves 3
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 18.6 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 5.035 s | hold | 625.0 to 625.0 Hz | sender 625 | level | span 0.51 s from 4.535 | centre marks 4 key-ups 3 mean lift 15.8 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 7.535 s | direct | 625.0 to 650.0 Hz | sender 625 | AWAY | span 0.51 s from 7.035 | centre marks 6 key-ups 5 mean lift 12.4 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 9.035 s | direct | 650.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 8.535 | centre marks 3 key-ups 2 mean lift 4.1 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 10.535 s | direct | 625.0 to 600.0 Hz | sender 625 | AWAY | span 0.51 s from 10.035 | centre marks 3 key-ups 2 mean lift 13.8 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 1 key-ups 0
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 11.035 s | direct | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 10.535 | centre marks 4 key-ups 3 mean lift 15.2 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 17.535 s | direct | 625.0 to 650.0 Hz | sender 625 | AWAY | span 0.51 s from 17.035 | centre marks 4 key-ups 3 mean lift 5.1 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 0 key-ups 0
+ move | unadjudicated/cw-2026-09-24-004133 | capture | 24.035 s | hold | 650.0 to 625.0 Hz | sender 625 | TOWARD | span 1.01 s from 23.035 | centre marks 5 key-ups 4 mean lift 24.0 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 6 key-ups 5
+ cap | unadjudicated/cw-2026-09-24-004133 | characters 27 | final tone 625.0 | moves 8
+ move | unadjudicated/cw-2026-09-24-004205 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 630 | TOWARD | span 0.51 s from 1.035 | centre marks 4 key-ups 3 mean lift 4.1 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 5 key-ups 4
+ cap | unadjudicated/cw-2026-09-24-004205 | characters 36 | final tone 630.0 | moves 1
+ move | unadjudicated/cw-2026-09-24-004234 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 1.035 | centre marks 4 key-ups 3 mean lift 11.5 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-09-24-004234 | capture | 11.535 s | hold | 625.0 to 650.0 Hz | sender 625 | AWAY | span 0.51 s from 11.035 | centre marks 6 key-ups 5 mean lift 6.2 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 0 key-ups 0
+ move | unadjudicated/cw-2026-09-24-004234 | capture | 12.535 s | hold | 650.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 12.035 | centre marks 4 key-ups 3 mean lift 11.0 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-09-24-004234 | capture | 19.535 s | direct | 625.0 to 600.0 Hz | sender 625 | AWAY | span 0.51 s from 19.035 | centre marks 4 key-ups 3 mean lift 18.7 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-09-24-004234 | capture | 21.535 s | hold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 21.035 | centre marks 6 key-ups 5 mean lift 7.2 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-09-24-004234 | characters 37 | final tone 625.0 | moves 5
+ move | unadjudicated/cw-2026-09-24-004322 | capture | 2.035 s | cold | 600.0 to 625.0 Hz | sender 630 | TOWARD | span 0.51 s from 1.535 | centre marks 4 key-ups 3 mean lift 12.1 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-09-24-004322 | characters 39 | final tone 630.0 | moves 1
+ move | unadjudicated/cw-2026-09-24-004347 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 630 | TOWARD | span 0.51 s from 1.035 | centre marks 4 key-ups 3 mean lift 24.0 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-09-24-004347 | capture | 12.535 s | hold | 625.0 to 625.0 Hz | sender 630 | level | span 3.01 s from 9.535 | centre marks 19 key-ups 18 mean lift 14.7 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 16 key-ups 15
+ cap | unadjudicated/cw-2026-09-24-004347 | characters 40 | final tone 630.0 | moves 2
+ move | unadjudicated/cw-2026-09-24-004405 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 8.8 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 5 key-ups 4
+ move | unadjudicated/cw-2026-09-24-004405 | capture | 11.535 s | direct | 625.0 to 600.0 Hz | sender 625 | AWAY | span 0.51 s from 11.035 | centre marks 5 key-ups 4 mean lift 10.0 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-09-24-004405 | capture | 12.535 s | hold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 12.035 | centre marks 5 key-ups 4 mean lift 13.9 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 4 key-ups 3
+ move | unadjudicated/cw-2026-09-24-004405 | capture | 20.035 s | direct | 625.0 to 600.0 Hz | sender 625 | AWAY | span 0.51 s from 19.535 | centre marks 5 key-ups 4 mean lift 18.9 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 2 key-ups 1
+ move | unadjudicated/cw-2026-09-24-004405 | capture | 20.535 s | direct | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 20.035 | centre marks 4 key-ups 3 mean lift 17.2 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-09-24-004405 | capture | 23.535 s | hold | 625.0 to 600.0 Hz | sender 625 | AWAY | span 2.51 s from 21.035 | centre marks 16 key-ups 15 mean lift 17.7 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 12 key-ups 11
+ move | unadjudicated/cw-2026-09-24-004405 | capture | 24.035 s | direct | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 23.535 | centre marks 3 key-ups 2 mean lift 3.1 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 0 key-ups 0
+ cap | unadjudicated/cw-2026-09-24-004405 | characters 36 | final tone 625.0 | moves 7
+ move | unadjudicated/cw-2026-09-24-004427 | capture | 1.535 s | cold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 4.7 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 3 key-ups 2
+ move | unadjudicated/cw-2026-09-24-004427 | capture | 16.535 s | hold | 625.0 to 600.0 Hz | sender 625 | AWAY | span 3.51 s from 13.035 | centre marks 22 key-ups 21 mean lift 12.4 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 15 key-ups 14
+ move | unadjudicated/cw-2026-09-24-004427 | capture | 27.535 s | hold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 1.01 s from 26.535 | centre marks 9 key-ups 8 mean lift 10.5 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 7 key-ups 6
+ cap | unadjudicated/cw-2026-09-24-004427 | characters 43 | final tone 625.0 | moves 3
+ cap | unadjudicated/cw-2026-09-24-004510 | characters 34 | final tone 600.0 | moves 0
+ move | unadjudicated/cw-2026-09-24-004535 | capture | 17.035 s | hold | 600.0 to 575.0 Hz | sender 610 | AWAY | span 0.51 s from 16.535 | centre marks 4 key-ups 3 mean lift 8.5 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 1 key-ups 0
+ move | unadjudicated/cw-2026-09-24-004535 | capture | 22.035 s | hold | 575.0 to 600.0 Hz | sender 610 | TOWARD | span 2.51 s from 19.535 | centre marks 19 key-ups 18 mean lift 16.8 dB -> STILL KEYING yes | last 0.5 s marks 4 key-ups 3 | survey rule marks 15 key-ups 14
+ cap | unadjudicated/cw-2026-09-24-004535 | characters 48 | final tone 610.0 | moves 2
+ move | unadjudicated/cw-2026-09-24-004550 | capture | 15.535 s | hold | 600.0 to 625.0 Hz | sender 625 | TOWARD | span 0.51 s from 15.035 | centre marks 5 key-ups 4 mean lift 10.3 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 3 key-ups 2
+ cap | unadjudicated/cw-2026-09-24-004550 | characters 41 | final tone 625.0 | moves 1
+
+
+[xUnit.net 00:02:33.58]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheStationStillKeyingTraceTests.TheHandovers [3 s]
+  Standard Output Messages:
+ move | two-station | known-right, handover | 1.535 s | cold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 17.8 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 2 key-ups 1
+ move | two-station | known-right, handover | 9.535 s | cold | 625.0 to 600.0 Hz | sender 615 | AWAY | span 0.51 s from 9.035 | centre marks 3 key-ups 2 mean lift 10.0 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 2 key-ups 1
+ move | two-station | known-right, handover | 16.035 s | cold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 15.535 | centre marks 5 key-ups 4 mean lift 11.4 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 1 key-ups 0
+ move | two-station | known-right, handover | 25.035 s | cold | 625.0 to 725.0 Hz | sender 730 | TOWARD | span 0.51 s from 24.535 | centre marks 6 key-ups 5 mean lift 5.8 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 5 key-ups 4
+ move | two-station | known-right, handover | 34.535 s | hold | 725.0 to 725.0 Hz | sender 730 | level | span 4.01 s from 30.535 | centre marks 17 key-ups 16 mean lift 11.9 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 13 key-ups 12
+ move | #41 two-station quarter | known-right, handover | 1.535 s | cold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 1.035 | centre marks 3 key-ups 2 mean lift 17.8 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 2 key-ups 1
+ move | #41 two-station quarter | known-right, handover | 9.535 s | cold | 625.0 to 600.0 Hz | sender 615 | AWAY | span 0.51 s from 9.035 | centre marks 3 key-ups 2 mean lift 10.0 dB -> STILL KEYING yes | last 0.5 s marks 3 key-ups 2 | survey rule marks 2 key-ups 1
+ move | #41 two-station quarter | known-right, handover | 16.035 s | cold | 600.0 to 625.0 Hz | sender 615 | TOWARD | span 0.51 s from 15.535 | centre marks 5 key-ups 4 mean lift 11.4 dB -> STILL KEYING yes | last 0.5 s marks 5 key-ups 4 | survey rule marks 1 key-ups 0
+ move | #41 two-station quarter | known-right, handover | 25.035 s | cold | 625.0 to 725.0 Hz | sender 730 | TOWARD | span 0.51 s from 24.535 | centre marks 6 key-ups 5 mean lift 5.8 dB -> STILL KEYING yes | last 0.5 s marks 6 key-ups 5 | survey rule marks 5 key-ups 4
+ move | #41 two-station quarter | known-right, handover | 34.535 s | hold | 725.0 to 725.0 Hz | sender 730 | level | span 4.01 s from 30.535 | centre marks 17 key-ups 16 mean lift 11.9 dB -> STILL KEYING yes | last 0.5 s marks 2 key-ups 1 | survey rule marks 13 key-ups 12
+
+
+
+Test Run Successful.
+Total tests: 10
+     Passed: 10
+ Total time: 2.5641 Minutes
+RC=0 WALL=155s

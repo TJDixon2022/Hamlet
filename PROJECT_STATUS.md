@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 2 of 3
+TASK: 3 of 3
 WORK_INSTRUCTION: 449 - the forty sure-wrong letters left, one more change, or step 2 closes
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T06:23:57-04:00
-NOTE: Change kept: real MET-CER-SURE 40 of 433 to 33 of 436, coverage 393 to 403, only 031905's text moves; next the exit round
+UPDATED: 2026-09-26T06:46:54-04:00
+NOTE: Unit 449 done: one tracker change kept, real MET-CER-SURE 40 to 33, 2.4 not ticked and step 2's count at 0 - output.md written
 
 ---
 

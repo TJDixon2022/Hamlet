@@ -1,0 +1,9 @@
+unit449 task 3: exit round - MET-CER-SURE real 33 of 436, coverage 403, floors as at entry; 2.4 not ticked, step 2 open, count 0 (2.4)
+
+Build 0 errors; engine line 178 of 178 in 375 s; app line 275 of 278 in
+166 s, each losing type green alone; captures 51 of 51; adjudicated 13 of
+13; named 10 of 13, the same three. Every touched type green alone. src:
+CwToneTracker's floor, and the rival reading for the record; none of it
+keys or transmits. output.md validated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
