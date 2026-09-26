@@ -579,7 +579,7 @@ public sealed class CwProbabilisticStream
 
                 if (!removed)
                 {
-                    CharacterSettled?.Invoke(Character(character, result, at));
+                    CharacterSettled?.Invoke(Character(character, result, at, window));
                 }
 
                 continue;
@@ -587,7 +587,7 @@ public sealed class CwProbabilisticStream
 
             if (!removed)
             {
-                edge.Add(Character(character, result, at));
+                edge.Add(Character(character, result, at, window));
             }
         }
 
@@ -603,6 +603,17 @@ public sealed class CwProbabilisticStream
     /// sure-right ones, 8 to 2. Author's, from the trace, not tuned after it.
     /// </remarks>
     internal const double MarksOverruleRatio = 1.25;
+
+    /// <summary>
+    /// How many times longer or shorter than one unit a gap inside a letter may
+    /// be before the letter is shown dimmed rather than sure.
+    /// </summary>
+    /// <remarks>
+    /// The farthest any sure-right letter's worst inner gap lay in unit 445's
+    /// trace over the real keyed recordings, 6.5; past it lay 2 sure-wrong letters
+    /// and no right one. Author's, from the trace, not moved after R78's numbers.
+    /// </remarks>
+    internal const double InnerGapEdge = 6.5;
 
     /// <summary>How far past the character gap a gap must run to be a word gap.</summary>
     /// <remarks>
@@ -676,13 +687,15 @@ public sealed class CwProbabilisticStream
     /// guessed letter (HM-DEC-048).
     /// </remarks>
     private CwCharacter Character(
-        CwProbabilisticCharacter character, CwProbabilisticResult result, TimeSpan at)
+        CwProbabilisticCharacter character, CwProbabilisticResult result, TimeSpan at, double[] window)
     {
         var known = character.Text != "#";
 
         return new CwCharacter(
             known ? character.Text : MorseAlphabet.Unreadable,
-            known ? CwConfidence.High : CwConfidence.Unreadable,
+            !known ? CwConfidence.Unreadable
+                : GapsFitTheUnit(character, result, window) ? CwConfidence.High
+                : CwConfidence.Low,
             result.LikelihoodRatio,
             character.Pattern,
             double.NaN,
@@ -693,5 +706,39 @@ public sealed class CwProbabilisticStream
             SpanHops = character.SpanHops,
             MarginLlr = character.RivalMargin,
         };
+    }
+
+    /// <summary>
+    /// Whether every gap inside the letter lies within <see cref="InnerGapEdge"/>
+    /// times one unit of the speed the path was read at, either way.
+    /// </summary>
+    /// <remarks>
+    /// **READ FROM THE MARKS THE WINDOW HOLDS AT EMISSION** (HM-REQ-015, work
+    /// instruction 445): the letter's span one unit either side, cut as
+    /// <see cref="CwUnitEstimator.Elements"/> cuts, and only the gaps between two
+    /// whole marks. It never reads the letters beside it (R72). A letter with no
+    /// such gap fits.
+    /// </remarks>
+    private static bool GapsFitTheUnit(CwProbabilisticCharacter character, CwProbabilisticResult result, double[] window)
+    {
+        if (result.WordsPerMinute <= 0)
+        {
+            return true;
+        }
+
+        var hopMs = CwProbabilisticDecoder.HopMilliseconds;
+        var unitMs = 1200.0 / result.WordsPerMinute;
+        var unitHops = (int)Math.Round(unitMs / hopMs);
+        var from = Math.Max(0, character.EndHop - character.SpanHops - unitHops);
+        var to = Math.Min(window.Length, character.EndHop + unitHops);
+
+        if (to - from < 2)
+        {
+            return true;
+        }
+
+        var (_, gaps) = CwUnitEstimator.InnerElements(new ArraySegment<double>(window, from, to - from), hopMs);
+
+        return gaps.All(g => Math.Max(g / unitMs, unitMs / g) <= InnerGapEdge);
     }
 }

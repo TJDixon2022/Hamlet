@@ -65,67 +65,6 @@ public sealed class WhatTheSureLettersMarksLookLikeTests
     /// <summary>A mark's distance from the nearer of a dit and a dah.</summary>
     internal static double MarkDistance(double units) => Math.Min(Distance(units, 1), Distance(units, 3));
 
-    private static readonly Func<double[], double> Otsu = (Func<double[], double>)Delegate.CreateDelegate(
-        typeof(Func<double[], double>),
-        typeof(CwUnitEstimator).GetMethod("Otsu", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!);
-
-    private static readonly int ShortestRunHops = (int)typeof(CwUnitEstimator)
-        .GetField("ShortestRunHops", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
-        .GetRawConstantValue()!;
-
-    /// <summary>
-    /// The marks that begin and end inside the stretch and the gaps between them,
-    /// cut exactly as <see cref="CwUnitEstimator.Elements"/> cuts.
-    /// </summary>
-    /// <param name="envelope">The stretch's envelope magnitudes.</param>
-    /// <param name="hopMilliseconds">How long one hop lasts.</param>
-    /// <returns>Mark and gap lengths in milliseconds.</returns>
-    internal static (IReadOnlyList<double> Marks, IReadOnlyList<double> Gaps) Inner(
-        IReadOnlyList<double> envelope, double hopMilliseconds)
-    {
-        if (envelope.Count < 2)
-        {
-            return (Array.Empty<double>(), Array.Empty<double>());
-        }
-
-        var db = envelope.Select(e => 20 * Math.Log10(Math.Max(e, 1e-12))).ToArray();
-        var cut = Otsu(db);
-        var on = cut + CwUnitEstimator.HysteresisDb;
-        var off = cut - CwUnitEstimator.HysteresisDb;
-        var runs = new List<(bool Mark, int Hops)>();
-        var keyDown = db[0] > on;
-        var runStart = 0;
-
-        for (var i = 1; i < db.Length; i++)
-        {
-            if (!(keyDown ? db[i] < off : db[i] > on))
-            {
-                continue;
-            }
-
-            var hops = i - runStart;
-
-            // The first run touches the stretch's start, so it is not whole; the
-            // last never ends inside it and is never recorded.
-            if (runStart > 0 && hops >= ShortestRunHops)
-            {
-                runs.Add((keyDown, hops));
-            }
-
-            keyDown = !keyDown;
-            runStart = i;
-        }
-
-        var first = runs.FindIndex(r => r.Mark);
-        var last = runs.FindLastIndex(r => r.Mark);
-        var marks = runs.Where(r => r.Mark).Select(r => r.Hops * hopMilliseconds).ToList();
-        var gaps = first < 0
-            ? new List<double>()
-            : runs.Skip(first).Take(last - first + 1).Where(r => !r.Mark).Select(r => r.Hops * hopMilliseconds).ToList();
-
-        return (marks, gaps);
-    }
-
     private sealed record Heard(IReadOnlyList<CwCharacter> Settled, double[] Envelope, IReadOnlyList<(double UnitMs, string Source)> Speed);
 
     private static Heard Decode(string path, double pitchHz)
@@ -200,7 +139,7 @@ public sealed class WhatTheSureLettersMarksLookLikeTests
                 var unitHops = double.IsNaN(unitMs) ? 0 : (int)Math.Round(unitMs / hopMs);
                 var from = Math.Max(0, endHop - c.SpanHops - unitHops);
                 var to = Math.Min(heard.Envelope.Length, endHop + unitHops);
-                var (marks, gaps) = Inner(heard.Envelope.Skip(from).Take(Math.Max(0, to - from)).ToList(), hopMs);
+                var (marks, gaps) = CwUnitEstimator.InnerElements(heard.Envelope.Skip(from).Take(Math.Max(0, to - from)).ToList(), hopMs);
                 var cls = step.Key is null ? "added"
                     : string.Equals(step.Key, step.Decoded.Value.Text, StringComparison.Ordinal) ? "right" : "wrong";
 
@@ -305,7 +244,7 @@ public sealed class WhatTheSureLettersMarksLookLikeTests
                 $"{l.Name} {l.Character.At.TotalSeconds:0.000} `{l.Sent}`->`{l.Character.Text}` {pick(l):0.00}")));
 
             _output.WriteLine(string.Create(CultureInfo.InvariantCulture,
-                $"edge | {set} | {label} | farthest right letter {edge:0.000} | wrong or added past it {caught.Count} of {letters.Count(l => !l.IsRight)} | {caughtText}"));
+                $"edge | {set} | {label} | farthest right letter {edge:0.000} ({edge:R}) | wrong or added past it {caught.Count} of {letters.Count(l => !l.IsRight)} | {caughtText}"));
 
             var farthest = string.Join(", ", letters.Where(l => l.IsRight).OrderByDescending(pick).Take(5).Select(l => string.Create(CultureInfo.InvariantCulture,
                 $"{l.Name} {l.Character.At.TotalSeconds:0.000} `{l.Character.Text}` {pick(l):0.00}")));

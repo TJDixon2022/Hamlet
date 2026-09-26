@@ -459,6 +459,71 @@ public static class CwUnitEstimator
     }
 
     /// <summary>
+    /// The marks that begin and end inside a stretch and the gaps between them,
+    /// cut exactly as <see cref="Elements"/> cuts.
+    /// </summary>
+    /// <param name="envelope">The stretch's envelope magnitudes.</param>
+    /// <param name="hopMilliseconds">How long one hop lasts.</param>
+    /// <returns>Mark and gap lengths, in milliseconds.</returns>
+    /// <remarks>
+    /// **A LETTER'S OWN ELEMENTS, NOT ITS PADDING** (work instruction 445). The
+    /// first run touches the stretch's start and the last never ends inside it,
+    /// so neither is whole; a gap before the first whole mark or after the last
+    /// is the space beside the letter, not a gap inside it.
+    /// </remarks>
+    internal static (IReadOnlyList<double> Marks, IReadOnlyList<double> Gaps) InnerElements(
+        IReadOnlyList<double> envelope, double hopMilliseconds)
+    {
+        ArgumentNullException.ThrowIfNull(envelope);
+
+        if (envelope.Count < 2)
+        {
+            return (Array.Empty<double>(), Array.Empty<double>());
+        }
+
+        var db = new double[envelope.Count];
+
+        for (var i = 0; i < envelope.Count; i++)
+        {
+            db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
+        }
+
+        var cut = Otsu(db);
+        var on = cut + HysteresisDb;
+        var off = cut - HysteresisDb;
+        var runs = new List<(bool Mark, int Hops)>();
+        var keyDown = db[0] > on;
+        var runStart = 0;
+
+        for (var i = 1; i < db.Length; i++)
+        {
+            if (!(keyDown ? db[i] < off : db[i] > on))
+            {
+                continue;
+            }
+
+            var hops = i - runStart;
+
+            if (runStart > 0 && hops >= ShortestRunHops)
+            {
+                runs.Add((keyDown, hops));
+            }
+
+            keyDown = !keyDown;
+            runStart = i;
+        }
+
+        var first = runs.FindIndex(r => r.Mark);
+        var last = runs.FindLastIndex(r => r.Mark);
+        var marks = runs.Where(r => r.Mark).Select(r => r.Hops * hopMilliseconds).ToList();
+        var gaps = first < 0
+            ? new List<double>()
+            : runs.Skip(first).Take(last - first + 1).Where(r => !r.Mark).Select(r => r.Hops * hopMilliseconds).ToList();
+
+        return (marks, gaps);
+    }
+
+    /// <summary>
     /// The level that splits the envelope into two classes with the least
     /// variance inside them.
     /// </summary>
