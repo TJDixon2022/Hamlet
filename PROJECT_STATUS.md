@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 1 of 4
+TASK: 2 of 4
 WORK_INSTRUCTION: 447 - a pitch instrument, then the tracker hears the sender's own note
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T02:45:38-04:00
-NOTE: Instrument proved 30 of 30 within 0.5 Hz, worst 0.024 Hz, 4.1 ticked; committing before measuring MET-PITCH-ERR over the tree
+UPDATED: 2026-09-26T02:58:52-04:00
+NOTE: MET-PITCH-ERR measured on 69 captures, 11 over 25 Hz, the opening at 30.54 s on 525 where the keying is 599; 4.2 ticked; committing before the tracker change
 
 ---
 

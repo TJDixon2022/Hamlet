@@ -1,0 +1,26 @@
+unit447 task 2: MET-PITCH-ERR on all 69 captures, 11 more than 25 Hz off, the opening 74 Hz off at 30.54 s - 4.2 ticked (4.2)
+
+WhatPitchTheDecoderIsOnTests, a printer that asserts nothing: every WAV under
+tests/fixtures/cw/captured (69, which hold the 51 capture rows, the 23 keyed
+recordings and the whole 7.052 session), driven cold from 600 Hz, the tracker's
+ToneHz per hop beside CwPitchInstrument per 2 s window. MET-PITCH-ERR per file
+is the median of tracker less instrument over its keyed windows.
+
+11 files more than 25 Hz off: 08-20-014935 +45.0, 08-22-014308 -32.2,
+08-22-031838 +25.1, 08-22-032129 +150.1, 08-25-012823 -49.2, 08-28-005158
+-34.1, 08-28-005218 +150.7, 08-28-005243 -32.1, 08-31-002424 -86.8,
+08-31-002443 -86.3, 08-31-002829 +183.6. 61 of 69 have a window more than 25 Hz
+off, 304 of 1688 windows. 135641 and 152135 are not in the tree, unmeasured.
+
+The opening at HEAD (003901 to 004234 spliced; 30.54 s is in 003919, stream 30.0
+to 46.2): windows 30 to 34 s instrument 598.7 to 601.0 Hz, tracker and mix 525,
+MET-PITCH-ERR -73.7 to -76.0. First sure character E at 20.64 s. Text 30 to
+46.2 s: UIEH EE E E T I <HH> EA N IK.
+
+The instrument was revised before this table: its first real run read AGC
+pumping past the filter edge as keying at 780 to 896 Hz. A bin now counts only
+if its keyed level stands 8 dB over the frame's median bin. Re-proved on the
+same 30 constructed cases: 30 of 30 within 0.5 Hz, worst 0.024 Hz, 24411 us per
+1 s hop, 118 us per 5 ms decoder hop. src unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

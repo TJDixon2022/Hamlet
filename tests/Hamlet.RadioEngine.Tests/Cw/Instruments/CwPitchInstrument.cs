@@ -48,7 +48,8 @@ public sealed record PitchWindow(
 /// recording's median frame are the receiver muted and are left out. Within each
 /// analysis window the bin whose level swings hardest - 90th percentile over
 /// 20th, in decibels - is where somebody is keying, if that swing is at least
-/// <see cref="ContrastFloorDb"/>. A steady carrier does not swing, however loud;
+/// <see cref="ContrastFloorDb"/> and its 90th percentile stands at least
+/// <see cref="KeyedAboveMedianDb"/> over the frame's median bin. A steady carrier does not swing, however loud;
 /// noise swings a few decibels. Its frames above the midpoint of the two
 /// percentiles are the marks.</item>
 /// <item>**What the note is.** Only the samples inside those marks, under a Hann
@@ -84,6 +85,21 @@ public static class CwPitchInstrument
 
     /// <summary>The least swing, in decibels, that counts as somebody keying.</summary>
     public const double ContrastFloorDb = 12;
+
+    /// <summary>
+    /// How far above the frame's median bin a bin's keyed level must stand, in
+    /// decibels, for its swing to count.
+    /// </summary>
+    /// <remarks>
+    /// **A KEYED TONE STANDS ABOVE THE BAND; THE RADIO'S AGC ONLY MOVES IT.** The
+    /// first run over the captures found "keying" at 780 to 896 Hz, at and past the
+    /// receiver's filter edge, swinging as hard as the station being read and in
+    /// step with it: when a strong station keys down the AGC pulls the band's noise
+    /// down, and a bin outside the filter, which the AGC does not move, rises
+    /// against the median. It never rises above it. A tone keyed at 5 dB in the
+    /// passband stands about 15 dB over the median bin when on.
+    /// </remarks>
+    public const double KeyedAboveMedianDb = 8;
 
     /// <summary>The least keyed time a window must hold to be measured, in seconds.</summary>
     public const double LeastKeyedSeconds = 0.3;
@@ -253,7 +269,7 @@ public static class CwPitchInstrument
                 var p20 = column[(int)(0.2 * (column.Count - 1))];
                 var p90 = column[(int)(0.9 * (column.Count - 1))];
 
-                if (p90 - p20 > bestContrast)
+                if (p90 >= KeyedAboveMedianDb && p90 - p20 > bestContrast)
                 {
                     bestContrast = p90 - p20;
                     bestBin = b;
