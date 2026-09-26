@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 442 - sure has to mean something
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T21:23:38-04:00
-NOTE: Confidence: rival trace shows no edge (4 wrong vs 13 right under 0.5 nats); committing it, then building the class change
+UPDATED: 2026-09-25T21:29:10-04:00
+NOTE: Confidence change not kept: CER-SURE 0.1116 to 0.1005 but coverage 374 to 358; committing the record
 
 ---
 

@@ -9,6 +9,28 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 442 - sure only where the reading beat its rival, not kept
+
+`CwProbabilisticStream.Character` set `Low` where the letter's margin over its nearest rival
+reading (`CwProbabilisticDecoder.RivalMargin`) was under 1 nat. The trace set no edge: right
+letters outnumber wrong or added below every edge (0 to 0.5 nats 4 to 13, 0.5 to 1 3 to 3), and
+13 of the 47 sit above 128 nats. Built at 1 nat anyway, the top of the one bin not outnumbered.
+The diff is `.run-unit/unit442-dim-notkept.diff`; `src` does not carry it.
+
+| part of R78 | before | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 47 of 421, 0.1116 | 40 of 398, 0.1005 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 11 of 166, 0.0663 | falls |
+| MET-INVENTED, real, inferred | 47 over 473 | 40 over 473, 0.0846 | falls |
+| MET-COVERAGE, real, inferred | 374 over 473, 0.7907 | 358 over 473, 0.7569 | **falls** |
+| MET-COVERAGE, synthetic, exact | 159 over 252, 0.6310 | 155 over 252, 0.6151 | **falls** |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings | - | 8 lose sure-and-right, `032113` 21 to 12 | **fails** |
+| dim precision (HM-REQ-014), real | - | 16 right of 23 dim, 0.6957 | reported |
+
+**Not kept: coverage falls.** Every right letter dimmed costs one, and 16 right were dimmed for 7
+wrong or added.
+
 ## Unit 441 - the marks' speed, kept
 
 `CwProbabilisticStream.Read` re-reads a window at the speed its marks alone imply

@@ -1,0 +1,24 @@
+unit442 task 2: sure only where the reading beat its rival - not kept (2.2)
+
+Built: CwProbabilisticStream.Character sets Low where the letter's
+margin over its nearest rival is under 1 nat, the top of the one bin
+the trace did not have right outnumbering wrong (3 to 3); the trace
+set no edge at all. Measured, then taken back out of src; the diff is
+.run-unit/unit442-dim-notkept.diff.
+
+R78, real, inferred keys:
+- MET-CER-SURE 47 of 421 to 40 of 398 (0.1116 to 0.1005); synthetic
+  14 of 173 to 11 of 166.
+- MET-INVENTED 47 to 40 over 473.
+- MET-COVERAGE 374 to 358 over 473 (0.7907 to 0.7569): falls.
+  Synthetic 159 to 155.
+- Adjudicated 13 of 13. V-11: 8 recordings lose sure-and-right
+  (032113 21 to 12).
+- Dim precision 16 right of 23 dim, 0.6957.
+Not kept: coverage falls - 16 right letters dimmed for 7 wrong or added.
+
+Dropped whole: the second lever (window marks on the fast side). Only
+the bin under 0.33 separates, 1 wrong to 0 right, and the unit is at
+its hour.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,41 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+index 86adb8f5..875209ac 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ -663,6 +663,18 @@ public sealed class CwProbabilisticStream
+ 
+     private long _settledThrough = -1;
+ 
++    /// <summary>
++    /// How far, in nats, a letter's reading must beat its nearest rival to print
++    /// as sure.
++    /// </summary>
++    /// <remarks>
++    /// The top of the one bin in unit 442's margin trace where sure letters the
++    /// key calls wrong were not outnumbered by right ones, 3 to 3; below every
++    /// edge the trace set, right letters outnumber wrong. Author's, taken from
++    /// the trace before R78's numbers were read.
++    /// </remarks>
++    internal const double SureRivalMargin = 1.0;
++
+     /// <summary>
+     /// One character, in the shape every surface in this application already
+     /// reads.
+@@ -680,9 +692,16 @@ public sealed class CwProbabilisticStream
+     {
+         var known = character.Text != "#";
+ 
++        // **SURE ONLY WHERE THE READING BEAT ITS RIVAL** (work instruction 442,
++        // task 2; HM-REQ-010, HM-REQ-015). Set here, at emission, from the
++        // path's own lattice and nothing else: never from the word it is in (R72).
++        var confidence = !known ? CwConfidence.Unreadable
++            : character.RivalMargin < SureRivalMargin ? CwConfidence.Low
++            : CwConfidence.High;
++
+         return new CwCharacter(
+             known ? character.Text : MorseAlphabet.Unreadable,
+-            known ? CwConfidence.High : CwConfidence.Unreadable,
++            confidence,
+             result.LikelihoodRatio,
+             character.Pattern,
+             double.NaN,
