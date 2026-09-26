@@ -14,3 +14,4 @@ CLAUDE.md as usual; nothing reads this file back as a decision.
 ---
 
 PARKED: 2.2 | unit 2 launched 2026-09-26T00:33:44.294Z | 2026-09-25 21:50 | keying | Question three asks the owner to name the transmit files that the transmit safety check against 7e209cb4 covers, which is a decision about transmit and radio safety, while questions one and two are about a floor metric and a code instrument and are the unit's own to decide.
+PARKED: 4.5 | unit 10 launched 2026-09-26T07:53:37.512Z | 2026-09-26 05:18 | promise | Item 1 asks the owner to define acquiring for HM-REQ-102, which decides when the decoder may show letters as sure, so it changes what the product tells the operator was heard, and item 3 waits on that ruling.

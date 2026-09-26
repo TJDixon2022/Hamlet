@@ -1,0 +1,10 @@
+unit449 task 0: entry at step 2, count at 2 of 3 - MET-CER-SURE 40 of 433 real, 14 of 173 synthetic, 9 files over 25 Hz (2.4)
+
+Build 0 errors; engine line 178 of 178 in 378 s; app line 273 of 278 in
+167 s, each losing type green alone, no hang; captures 51 of 51 in 130 s;
+adjudicated 13 of 13; named 10 of 13 as recorded. Real, inferred keys:
+MET-INVENTED 40 over 473, coverage 393 over 473, MET-WBE 47 over 113.
+Identical to 448's exit. The runner's writes committed as they were, with
+the entry.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
