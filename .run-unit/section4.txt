@@ -1,30 +1,51 @@
 ﻿
-1. **The reading on which 9.1 was ticked. Recorded, not blocking.**
-   - **Ruling as applied:** under verdict (b), the instruction's task 3 rule lets the case give
-     fldigi what it needs as far as the real recordings show it on the air. 17 of 17 located
-     keys follow the same operator's keying at the same level. So the case keys the send once
-     before the scored one. That was written and committed before the run, and run once.
-   - **Reasoning:** the "no preamble in front of the scored text" line sits under "if the port
-     does not read it" and is called tuning because it would follow a failure. This construction
-     came from evidence, before any run.
-   - **Rejected:** keeping 456's case, which follows 10 s of noise alone. No recording in the
-     tree shows that condition, and fldigi loses its first element there by its own lines.
-   - **If overruled,** 9.1 returns to open. Every clause except the case stands: the port, the
-     headers and the function list. 9.1 would then need a clause fldigi can meet, for example a
-     key scored from its second character.
-2. **Two of 456's three first-look captures were not located by the control printer.**
-   - **Ruling as applied:** logged, not chased.
-   - **What happened:** in 013347 no mark lay within 0.5 s of the arrival estimate. In 004108,
-     and four more of the ten, the stretch's key is not in our bench reading.
-   - **Reasoning:** the instruction asked for 456's three and at least three more. 17 of 23 were
-     located, all agreeing, which settles the control.
-   - **Rejected:** widening the locator after seeing the result, which would be choosing the
-     control by its outcome.
-3. **The app line did not pass on one rerun, as units 451 to 456 saw.**
-   - **What happened:** it lost one test to Avalonia's headless "dispatcher loop" on each of two
-     runs, a different test each time. Both types pass alone, and no app code changed.
-   - **Ruling as applied:** housekeeping. The flake is the known one. If it now spans reruns,
-     the carry-forward rule of "pass on one rerun" may need a second rerun or a per-type run.
+Nothing blocks the next step. Five items are recorded, most-consequential first.
 
-Parked items were not touched. The squelch default is not re-opened, because task 2's verdict
-does not rest on it. The gap-to-space finding stays 9.2's. `parity.md` was not written.
+1. **The mapping of the port's output (458 DECIDED (2), the author's, overrulable). Applied, not
+   blocking.**
+   - **Ruling as applied:**
+     - every non-space character the port prints is sure;
+     - `*` is a placeholder;
+     - spaces are word boundaries.
+   - **Reasoning:** fldigi shows every character alike, and an operator reads each as asserted.
+     Mapping to dim would hide its errors from MET-CER-SURE.
+   - **Rejected:** mapping the port's characters to dim, or to anything but themselves.
+   - **If overruled:** the port's MET-CER-SURE, MET-INVENTED and coverage columns change. Ours do
+     not. It bears on 9.5, where the port first gets a confidence.
+2. **The reading on which 9.3 was ticked. Recorded, not blocking.**
+   - **Ruling as applied:** "names from its source what it does differently on that stretch" is
+     met by naming the `cw.cxx` lines behind each difference. That naming comes from the aligned
+     texts and the decoders' own evidence printed beside each departure: our pattern and speed,
+     and the port's representation, speed and `two_dots`.
+   - **Reasoning:** the evidence identifies the class of difference on each stretch, such as an
+     element lost, a speed off or a gap rule. The criterion asks for the source, not a trace.
+   - **Rejected:** a sample-by-sample trace of all 13 in this unit, which would have been 13 units
+     of 457's task 2.
+   - **If overruled:** 9.3 returns to open with 13 of 13 printed, and the traces become the next
+     unit's work before 9.4.
+3. **A scorer property the port's text exposes. Recorded in `parity.md` part 5.**
+   - **What happened:** `CwScorer.Within` locates each stretch independently with free ends. On a
+     text far from its keys, two stretches can land on overlapping characters, as with the port's
+     three stretches on 004322.
+   - **Ruling as applied:** left as it is, because it is the rule ours is scored by and the scorer
+     is not this unit's to change. The table is as tabled.
+   - **Effect:** it can only flatter or penalise the port on the ten's multi-stretch rows. Ours has
+     no overlap.
+4. **The app line at entry lost tests on both runs. Housekeeping.**
+   - **What happened:** 3, then 1, each to the headless dispatcher loop. DECIDED (6) was applied:
+     each lost type was run alone, and all four passed. At exit the line passed 278 of 278 on the
+     first run.
+5. **`parity.md` is rewritten by every run of the harness. Housekeeping.**
+   - **What happened:** its decode-time rows are wall clock, so the tracked file shows a diff after
+     any run. The exit commit carries the exit run's figures.
+   - **Proposal:** if that noise is unwanted, a later unit could move decode time to the test
+     output only.
+
+**Asks still outstanding**
+- **457's section 4 item 1, first made 2026-09-26.** This is the reading on which 9.1 was ticked.
+  The state reader judged it not honestly supported. The ask waits on the owner's word. The tick
+  sits in `PHASE_PLAN.md` line 302 from `20a13aaf`. This unit logged it and did not re-work it, per
+  the instruction's section 7. This unit's table scores every file from sample 0 with nothing
+  added, so the port's first-element loss shows in the synthetic rows.
+
+No other ask from an earlier session is waiting on a ruling. Parked items were not touched.

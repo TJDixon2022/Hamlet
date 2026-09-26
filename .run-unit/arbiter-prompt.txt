@@ -53,8 +53,6 @@ THE OTHER OPEN STEPS, AND THEIR UNMET CRITERIA:
     - [ ] 8.5 Every requirement this phase met has a test naming it, and the count of requirements with no test is reported against unit 439's 63.
     - [ ] 8.6 The three floor tests and both carry-forward lines are green at exit.
   step 9 - Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.  [partial]
-    - [ ] 9.2 HM-REQ-123: both decoders read every keyed recording and the synthetic set through the same harness and are scored through the same scorer and metrics; `docs/phase-requirements/parity.md` tables MET-CER-SURE, MET-INVENTED, sure-and-right coverage and MET-WBE for each, per recording and per condition, with the key's kind, and states how the second decoder's unclassed output was mapped.
-    - [ ] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
     - [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
     - [ ] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
     - [ ] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
@@ -145,6 +143,7 @@ block; blocker means it cleared something and moved no criterion.
   9.1 | unit 3 launched 2026-09-26T18:14:50.259Z | no | executed | port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
   9.1 | unit 4 launched 2026-09-26T19:20:27.666Z | no | executed | audit FldigiCwDecoder against upstream cw.cxx line by line on the first element's path and trace the lost first dit sample by sample to a port-defect or upstream-behaviour verdict, repair toward upstream only, then fix the synthetic case construction in a committed file from that verdict and the real recordings as control before running it once
   9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
+  9.2 | unit 5 launched 2026-09-26T20:22:18.127Z | yes | executed | score FldigiCwDecoder and our decoder on the same audio of every keyed recording and the synthetic set through the same CwMetrics calls, sameness of our row watched failing first, map the port's unclassed characters to sure and its no-match output to placeholder, and table MET-CER-SURE MET-INVENTED coverage and MET-WBE per recording and per condition in parity.md
 
 If every route you can see at a criterion is recorded as no, say so in WHY
 and choose another criterion or another step. Do not restate a failed
@@ -171,125 +170,133 @@ The whole file is at the repository root if you need the rest.
 
 ## 4. What's blocking us
 
-1. **The reading on which 9.1 was ticked. Recorded, not blocking.**
-   - **Ruling as applied:** under verdict (b), the instruction's task 3 rule lets the case give
-     fldigi what it needs as far as the real recordings show it on the air. 17 of 17 located
-     keys follow the same operator's keying at the same level. So the case keys the send once
-     before the scored one. That was written and committed before the run, and run once.
-   - **Reasoning:** the "no preamble in front of the scored text" line sits under "if the port
-     does not read it" and is called tuning because it would follow a failure. This construction
-     came from evidence, before any run.
-   - **Rejected:** keeping 456's case, which follows 10 s of noise alone. No recording in the
-     tree shows that condition, and fldigi loses its first element there by its own lines.
-   - **If overruled,** 9.1 returns to open. Every clause except the case stands: the port, the
-     headers and the function list. 9.1 would then need a clause fldigi can meet, for example a
-     key scored from its second character.
-2. **Two of 456's three first-look captures were not located by the control printer.**
-   - **Ruling as applied:** logged, not chased.
-   - **What happened:** in 013347 no mark lay within 0.5 s of the arrival estimate. In 004108,
-     and four more of the ten, the stretch's key is not in our bench reading.
-   - **Reasoning:** the instruction asked for 456's three and at least three more. 17 of 23 were
-     located, all agreeing, which settles the control.
-   - **Rejected:** widening the locator after seeing the result, which would be choosing the
-     control by its outcome.
-3. **The app line did not pass on one rerun, as units 451 to 456 saw.**
-   - **What happened:** it lost one test to Avalonia's headless "dispatcher loop" on each of two
-     runs, a different test each time. Both types pass alone, and no app code changed.
-   - **Ruling as applied:** housekeeping. The flake is the known one. If it now spans reruns,
-     the carry-forward rule of "pass on one rerun" may need a second rerun or a per-type run.
+Nothing blocks the next step. Five items are recorded, most-consequential first.
 
-Parked items were not touched. The squelch default is not re-opened, because task 2's verdict
-does not rest on it. The gap-to-space finding stays 9.2's. `parity.md` was not written.
+1. **The mapping of the port's output (458 DECIDED (2), the author's, overrulable). Applied, not
+   blocking.**
+   - **Ruling as applied:**
+     - every non-space character the port prints is sure;
+     - `*` is a placeholder;
+     - spaces are word boundaries.
+   - **Reasoning:** fldigi shows every character alike, and an operator reads each as asserted.
+     Mapping to dim would hide its errors from MET-CER-SURE.
+   - **Rejected:** mapping the port's characters to dim, or to anything but themselves.
+   - **If overruled:** the port's MET-CER-SURE, MET-INVENTED and coverage columns change. Ours do
+     not. It bears on 9.5, where the port first gets a confidence.
+2. **The reading on which 9.3 was ticked. Recorded, not blocking.**
+   - **Ruling as applied:** "names from its source what it does differently on that stretch" is
+     met by naming the `cw.cxx` lines behind each difference. That naming comes from the aligned
+     texts and the decoders' own evidence printed beside each departure: our pattern and speed,
+     and the port's representation, speed and `two_dots`.
+   - **Reasoning:** the evidence identifies the class of difference on each stretch, such as an
+     element lost, a speed off or a gap rule. The criterion asks for the source, not a trace.
+   - **Rejected:** a sample-by-sample trace of all 13 in this unit, which would have been 13 units
+     of 457's task 2.
+   - **If overruled:** 9.3 returns to open with 13 of 13 printed, and the traces become the next
+     unit's work before 9.4.
+3. **A scorer property the port's text exposes. Recorded in `parity.md` part 5.**
+   - **What happened:** `CwScorer.Within` locates each stretch independently with free ends. On a
+     text far from its keys, two stretches can land on overlapping characters, as with the port's
+     three stretches on 004322.
+   - **Ruling as applied:** left as it is, because it is the rule ours is scored by and the scorer
+     is not this unit's to change. The table is as tabled.
+   - **Effect:** it can only flatter or penalise the port on the ten's multi-stretch rows. Ours has
+     no overlap.
+4. **The app line at entry lost tests on both runs. Housekeeping.**
+   - **What happened:** 3, then 1, each to the headless dispatcher loop. DECIDED (6) was applied:
+     each lost type was run alone, and all four passed. At exit the line passed 278 of 278 on the
+     first run.
+5. **`parity.md` is rewritten by every run of the harness. Housekeeping.**
+   - **What happened:** its decode-time rows are wall clock, so the tracked file shows a diff after
+     any run. The exit commit carries the exit run's figures.
+   - **Proposal:** if that noise is unwanted, a later unit could move decode time to the test
+     output only.
+
+**Asks still outstanding**
+- **457's section 4 item 1, first made 2026-09-26.** This is the reading on which 9.1 was ticked.
+  The state reader judged it not honestly supported. The ask waits on the owner's word. The tick
+  sits in `PHASE_PLAN.md` line 302 from `20a13aaf`. This unit logged it and did not re-work it, per
+  the instruction's section 7. This unit's table scores every file from sample 0 with nothing
+  added, so the port's first-element loss shows in the synthetic rows.
+
+No other ask from an earlier session is waiting on a ruling. Parked items were not touched.
 
 ## 3. What you should see
 
-**Task 2's verdict: (b), fldigi's own behaviour.** Task 1 found no differing line, and every step
-of the loss is an upstream line:
-- **cw.cxx:246 and 610-623.** `agc_peak` starts at 0 and rises only while value > sig_avg, with
-  attack weight 200 (0.4 s at 500 Hz). After 10 s of noise it sits on the noise, at 0.0286.
-- **cw.cxx:625-626 and 640-641.** CWupper and CWlower come from sig_avg and noise_floor over
-  agc_peak. On noise alone they sit a hair apart inside the noise.
-- **cw.cxx:646.** The squelch is off (456 DECIDED (1)), so nothing else gates the detector.
-- **cw.cxx:649-655.** The detector keys on the noise: in tone for 227 of the last 500 decision
-  samples.
-- **cw.cxx:818-822.** A key-up under the spike threshold sets RS_IDLE and leaves the held
-  element in place.
-- **cw.cxx:793-798.** The next key-down from idle clears the held element.
+**No visible change.** This unit builds the measurement that every later step-9 line reads from.
+The answer it was commissioned for:
 
-**What fldigi needs before a first element to read it** is a settled AGC: earlier key-down at the
-signal's own level. Here about 0.27 s of mark took agc_peak to 0.13, after which no gap raised a
-noise event, within its 2.0 s decay. The level relation alone does not give it, because on noise
-the thresholds are relative and sit inside the noise at any SNR. A quiet interval does not give it
-either, because V-06 rules out silence and noise is what keys the detector.
+| condition | key | recordings | CER-SURE ours | CER-SURE port | INVENTED ours | INVENTED port | coverage ours | coverage port | WBE ours | WBE port | decode s ours | decode s port (+ resample) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| real HF, all (no CH-*) | inferred | 23 | 33 of 436 (0.076) | 62 of 239 (0.259) | 33 / 473 | 62 / 473 | 403 / 473 (0.852) | 177 / 473 (0.374) | 37 (29 ins, 8 del) / 113 | 86 (25 ins, 61 del) / 113 | 52.6 | 3.7 (+8.9) |
+| synthetic, all (not CH-AWGN) | exact | 12 | 14 of 173 (0.081) | 34 of 168 (0.202) | 14 / 252 | 34 / 252 | 159 / 252 (0.631) | 134 / 252 (0.532) | 44 (13 ins, 31 del) / 84 | 56 (24 ins, 32 del) / 84 | 8.4 | 1.5 |
 
-**1. The first dit's trace rows around the key-down.** 456's case: P's first dit is the mark
-10.0026 to 10.0643 s. The times are t_in, the input time. The filter's 512-sample lag is removed;
-the bit filter's 32 ms rise is not.
+The audio is 690 s real and 280 s synthetic. The finer rows, by named sender on the real
+recordings and by level and character gap on the synthetic set, are in `parity.md` part 3. Neither
+condition is a `CH-*` condition, and no real capture is counted toward one (7.4).
 
-| t_in s | magnitude | value | agc_peak | CWupper | CWlower | state | event | two_dots | held |
-|---|---|---|---|---|---|---|---|---|---|
-| 9.9459 | 0.02364 | 0.8314 | 0.02844 | 0.8309 | 0.8270 | tone | down (noise) | 955 | |
-| 9.9479 | 0.02335 | 0.8211 | 0.02844 | 0.8309 | 0.8270 | idle | spike 16 | 955 | |
-| 9.9499 | 0.02534 | 0.8911 | 0.02844 | 0.8311 | 0.8271 | tone | down (noise), held to the dit | 955 | |
-| 9.9879 | 0.02579 | 0.9012 | 0.02862 | 0.8290 | 0.8247 | tone | noise still over CWlower | 955 | |
-| 10.0139 | 0.10954 | 3.6519 | 0.03000 | 0.7998 | 0.7945 | tone | the dit | 955 | |
-| 10.0639 | 0.24805 | 4.6455 | 0.05339 | 0.5246 | 0.5122 | tone | dit ends | 955 | |
-| 10.0959 | 0.02295 | 0.3900 | 0.05884 | 0.4957 | 0.4820 | after | up 1168: a dash | 955 | `-` |
-| 10.1139 | 0.03017 | 0.5127 | 0.05884 | 0.4953 | 0.4817 | tone | down (noise, in the gap) | 955 | `-` |
-| 10.1239 | 0.02676 | 0.4548 | 0.05884 | 0.4953 | 0.4818 | idle | spike 80 | 955 | `-` |
-| 10.1359 | 0.03068 | 0.5215 | 0.05884 | 0.4951 | 0.4817 | tone | down (P's first dah) from idle: held cleared | 955 | |
-| 10.3599 | 0.03653 | 0.2799 | 0.13049 | 0.3480 | 0.3264 | after | up 1792 | 955 | `-` |
-| 10.7599 | 0.04398 | 0.2436 | 0.18053 | 0.3490 | 0.3214 | after | up 688 | 965 | `--.` |
-| 10.8879 | 0.02550 | 0.1413 | 0.18053 | 0.3344 | 0.3083 | idle | printed G | 965 | |
+**1. Per recording, the first rows** (all 35 are in `parity.md` part 2):
 
-The answer to task 2's question: both happen, in order.
-1. The detector was already keyed down on noise, 52 ms before the dit, so the dit joined it as
-   one 1168-sample element, over two_dots 955. That is a dash.
-2. The AGC had risen only from 0.029 to 0.059 over the dit, so the noise in the next gap crossed
-   CWupper. The resulting spike set the receiver idle, and P's first dah cleared the held
-   element.
+| recording | key | CER-SURE ours / port | coverage ours / port | WBE ours / port |
+|---|---|---|---|---|
+| 17:37 (173723) | inferred | 3 of 20 / 1 of 8 | 17 / 7 of 20 | 7 / 6 of 6 words |
+| 013347 | inferred | 0 of 6 / 2 of 3 | 6 / 1 of 6 | 0 / 0 of 1 |
+| 134712 | inferred | 0 of 3 / 0 of 2 | 3 / 2 of 3 | 0 / 0 of 1 |
+| 003758 | inferred | 3 of 11 / 2 of 10 | 8 / 8 of 11 | 0 / 2 of 2 |
+| 012403 (KD0UN) | inferred | 0 of 13 / 1 of 6 | 13 / 5 of 13 | 0 / 3 of 4 |
+| 004507 (traffic net) | inferred | 0 of 43 / 3 of 33 | 43 / 30 of 44 | 5 / 4 of 11 |
+| cq-18wpm-15db | exact | 0 of 21 / 1 of 19 | 21 / 18 of 21 | 0 / 1 of 7 |
+| cq-18wpm-0db | exact | no sure / 5 of 7 | 0 / 2 of 21 | 6 / 5 of 7 |
 
-The last second of noise, 500 decision samples: in tone 227, key-downs 22, spikes 18, element
-key-ups 4. Mean CWupper 0.8389, mean CWlower 0.8395.
+**2. The mapping** (`parity.md` part 1, 458 DECIDED (2)):
+- Every non-space string the port prints is scored sure and as itself.
+- Its no-match `*` (`cw.cxx:892-898`, default `configuration.h:249-251`) is a placeholder.
+- Its spaces are word boundaries.
 
-**2. Task 1's count by mark:** 177 lines, 152 **same**, 25 **departure listed**, **0 differs**.
-No line is marked differs, so there is none to give in full. The whole table is in
-`.run-unit/unit457-fidelity.txt`.
+Over all 35 files the port printed 613 sure, 24 `*` and 181 spaces. Inside the scored stretches
+that was 407 sure, 13 placeholders and 114 boundaries.
 
-**3. The control and the construction.** The case was committed at **`7f77dd67`**, before its run
-at `20a13aaf`. The table covers the 5 s before the key's first keyed element, at the pitch
-instrument's pitch:
+**3. Sameness.**
 
-| recording | holds | marks | keyed s | last mark ends before | marks vs element | floor vs element |
-|---|---|---|---|---|---|---|
-| 17:37 `cw-2026-09-23-173723` (456's) | same operator's earlier keying | 24 | 2.29 | 0.070 s | +0.4 dB | -13.2 dB |
-| `cw-2026-08-17-013347` (456's) | not located: no mark within 0.5 s of the arrival estimate | | | | | |
-| `cw-2026-08-17-134712` | same operator's earlier keying | 31 | 1.52 | 0.115 s | -5.7 dB | -17.4 dB |
-| `cw-2026-08-18-003758` | same operator's earlier keying | 37 | 2.59 | 0.160 s | -0.1 dB | -23.1 dB |
-| `cw-2026-08-24-012403` | same operator's earlier keying | 37 | 2.76 | 0.250 s | -0.5 dB | -12.1 dB |
-| `cw-2026-08-18-004507` | same operator's earlier keying | 39 | 2.64 | 0.025 s | -0.3 dB | -18.6 dB |
-| `cw-2026-08-22-031838` | same operator's earlier keying | 36 | 3.46 | 0.035 s | -0.1 dB | -15.6 dB |
-| `cw-2026-08-22-031905` | same operator's earlier keying | 31 | 3.36 | 0.010 s | +1.1 dB | -10.6 dB |
-| `cw-2026-08-22-031948` | same operator's earlier keying | 31 | 3.40 | 0.020 s | +3.1 dB | -13.9 dB |
-| `cw-2026-08-22-032012` | same operator's earlier keying | 37 | 3.25 | 0.010 s | +5.3 dB | -13.4 dB |
-| `cw-2026-08-22-032050` | same operator's earlier keying | 22 | 1.30 | 0.065 s | -0.2 dB | -15.6 dB |
-| `cw-2026-08-22-032113` | same operator's earlier keying | 41 | 3.34 | 0.060 s | -1.7 dB | -16.2 dB |
-| `cw-2026-08-22-032129` | same operator's earlier keying | 36 | 3.33 | 0.060 s | -0.0 dB | -17.5 dB |
-| `cw-2026-09-24-004108` (456's) | not located: the stretch's key is not in our reading | | | | | |
-| `cw-2026-09-24-004133` | same operator's earlier keying | 25 | 1.82 | 0.015 s | -0.5 dB | -16.2 dB |
-| `cw-2026-09-24-004205`, `004234`, `004322`, `004347` | not located, as 004108 | | | | | |
-| `cw-2026-09-24-004405` | same operator's earlier keying | 37 | 2.36 | 0.055 s | -1.9 dB | -16.8 dB |
-| `cw-2026-09-24-004427` | same operator's earlier keying | 29 | 2.32 | 0.250 s | -0.0 dB | -17.3 dB |
-| `cw-2026-09-24-004510` | same operator's earlier keying | 46 | 1.53 | 0.100 s | -4.8 dB | -15.5 dB |
-| `cw-2026-09-24-004550` | same operator's earlier keying | 46 | 2.53 | 0.030 s | -0.4 dB | -17.6 dB |
+| run | commit | result | what it says |
+|---|---|---|---|
+| red | `01b6a651` | 3 of 4 in 173 s | only the two totals failed: real here 33 of 436 against expected 34, synthetic here 14 of 173 against 15; all 35 per-recording rows equal |
+| green | `af7f92d6` | 4 of 4 in 174 s | |
+| exit | exit commit | 5 of 5 in 178 s | |
 
-17 of 23 were located, and all 17 hold the same operator's earlier keying at the element's level.
-None holds noise alone, another station (no second pitch in any window) or a carrier (the longest
-mark is 0.43 s).
+**4. Latency and pitch.**
+- **Latency** on cq-18wpm-15db is port 0.30 s against ours 1.27 s. No span is located by time, so
+  this cannot move a stretch.
+- **Pitch on the real recordings.** The instrument and our tracker agree within about 2 Hz on 14 of
+  23. On 032050 ours sat at 325 Hz against 499.9, on 032113 at 600 against 499.9, and on 031838 at
+  525 against 499.9. Ours never measured a pitch on 134712 or 032129.
+- **Pitch on the synthetic set.** Construction is 615 Hz ± 3. The instrument gave 614.4 to 617.3,
+  and ours read 615 to 625, with none at 0 dB on three cases.
 
-**Construction:** `PARIS CQ PARIS CQ`, with the second send scored.
-- **Patterns:** CW_SPEC.md 6, M.1677-1, typed in the test.
-- **Timing:** 18 WPM; marks 1 and 3 units; gaps 1, 3 and 7 units.
-- **Tone:** 600 Hz, peak 0.5, raised-cosine edges of 5 ms, at 8000 Hz.
-- **Lead-in and tail:** 10.0 s of noise before and 1.5 s after.
-- **Noise:** white Gaussian from xorshift32 and Box-Muller, seed 20260926, shaped by a 257-tap
+**5. Where the port wins** (13 of 35, all covered, in `.run-unit/unit458-where-it-wins.txt`):
+- **Six are wins only because the port printed less.** These are 17:37, 032129 and 004108, plus
+  the three plain 0 dB cases. The 0 dB cases gain 2 right characters each at a cost of 11 of 13,
+  5 of 7 and 5 of 7 wrong. fldigi has no refusal and keys whatever crosses `CWupper`
+  (`cw.cxx:649`).
+- **Real reading differences.**
+  - Ours lost elements that the port kept. On 031838 ours read `2,` as `T T` (patterns `-`, `-`)
+    where the port read `2, 2,`. On 004234 ours read `OU` as `TT`. On 17:37 ours read R and D as
+    `E` and `I`, losing the dahs. The port's detector, spike rule and classing are at
+    `cw.cxx:610-656`, 515, 818-822 and 847-855.
+  - On 003758 ours ran at 40 WPM and cut `AA4` to `EET`. The port held about 24 WPM by pair
+    tracking (`cw.cxx:524-535`, 832-843) and read `A4`.
+- **Word boundaries.** The port wins only where ours splits words: 004507 `D O T N E T` and 004133.
+  On cq-18wpm-5db-char5 its rule of more than 4 dot lengths for a space (`cw.cxx:910`) gives right
+  letters and 10 inserted spaces (456's finding, scored).
+
+On 135641: not in the tree, so not run. On the five unkeyed captures ours reads as nothing, the
+port printed the following, unscored:
+
+| capture | port |
+|---|---|
+| 014854 | `G S CNDE*IIAEEEIE M EOP ` |
+| 014935 | `SE EEEEEEUIBRUTAU6EN ST4` |
+| 014113 | `E IIWPA *TEZ K E ` |
+| 014308 | `ETJ* IE` |
+| 125941 | `I6MTI I IEU*IE ` |
+

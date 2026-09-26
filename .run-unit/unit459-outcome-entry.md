@@ -1,0 +1,13 @@
+
+## UNIT 459 - STEP 9
+
+STEP: 9
+APPROACH: trace every sure letter ours prints wrong where the fldigi port reads it right, classify the lost element as never keyed, spiked, misclassed or cut by a gap or speed rule, then build the port mechanism behind the largest group into our decoder in its own commit, kept under R78, the port untouched
+MOVE: continue
+WHY: PHASE_PLAN.md step 9 line 9.4 (HM-REQ-129) is step 9's first open line and the one that changes what the operator reads, aimed at HM-REQ-010's sure-but-wrong letters with evidence 9.3 put in the tree. No approach has been recorded against it and the loop test finds none. Step 2 cannot flip a line this pass: 2.4's count is 0 after 449's kept change, and 2.5 is held by 443's DECIDED (3).
+STATE: partial
+DECIDED: author's, overrulable - (1) step 9 is worked instead of the launcher's step 2, on the plan's section 5 independence of steps and 9.4 being the next open line of the preferred step; (2) the technique is chosen by task 1's trace, the port mechanism behind the largest group of lost elements, and not by the report's six print-less wins, which no technique is taken to reproduce; (3) the keep rule is R78 with MET-WBE not rising, the synthetic set not worse, adjudicated 13 of 13 or moved onto their own text, and V-11 per recording on the four metrics, and 9.4 is ticked only on a kept change; (4) if the first technique is refused, a second from a different group is the drop candidate, and a second technique is never stacked on a kept one in the same unit; (5) 458's DECIDED (2) mapping and 456's DECIDED (2) to (5) stand, and parity.md is re-run with the port's row unchanged; (6) the app line's headless dispatcher-loop loss: if the one rerun also loses a test, each lost type is run alone and must pass, and the report names them; (7) 457's section 4 items 1 and 2 and 458's items 2 to 5 are logged, not chased, and a kept change here is reported as bearing on step 2's MET-CER-SURE without ticking any step 2 line.
+LICENCE: PHASE_PLAN.md step 9 line 9.4 and sections 5 and 6; CW_REQUIREMENTS.md section M HM-REQ-122 and 129, section B HM-REQ-010 and 012, HM-REQ-004; CW_SPEC.md metric definitions; R66, R72, R75, R76, R77, R78, R80, R84, R85; arbiter rulings 443 DECIDED (3), 448 DECIDED (6), 456 DECIDED (2) to (5), 458 DECIDED (2); V-04, V-11, V-13, V-14; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5; GPL-3
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 9 criterion 4
+RUN: session launched with SESSION.lock already present (PID 16540, 17:33:59); the lock is the launcher's and was not taken or released by the session.

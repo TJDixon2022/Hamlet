@@ -1,0 +1,16 @@
+unit459 task 0: entry at step 9 - floors and metrics as at 458's exit, the port 8 of 8, harness 5 of 5, both decoders' texts saved (9.4)
+
+Build 0 errors in 18 s; engine line 178 of 178 in 376 s; app line 278
+of 278 in 162 s, no dispatcher-loop loss; adjudicated 13 of 13; named
+10 of 13 as recorded (17:37 38 of 46, 032113 43 of 45, 032129 42 of
+64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473,
+coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113.
+Synthetic, exact: 14 of 173, 14 over 252, 159 over 252, 44 (13, 31)
+over 84. TheSecondDecoderIsAFaithfulPortTests 8 of 8;
+BothDecodersAreScoredAlikeTests 5 of 5 (parity.md moved only in its
+wall-clock rows and is not committed here). Our 126 text lines saved,
+identical to 453's before; the port's 74 text lines saved. Version
+1.13.146. The runner's writes committed as they were; there is no
+.run-unit/watched.rc in the tree. .run-unit/fldigi not staged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

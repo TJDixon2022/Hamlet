@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 458 - both decoders on the same audio, the same scorer and one parity table
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decoder, judged under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T17:29:26-04:00
-NOTE: Unit 458 done: both decoders tabled in parity.md (real CER-SURE ours 33/436, port 62/239), 9.2 and 9.3 ticked, text byte-identical - output.md written
+UPDATED: 2026-09-26T17:54:01-04:00
+NOTE: Task 0 committed, every entry figure as 458 left it; task 1 reading our decoder's marks and gaps under each letter the port reads right
 
 ---
 

@@ -1,0 +1,74 @@
+ text | cq-12wpm-0db | 1 | port `ME ITJ NHL 4UTT E`
+ text | cq-12wpm-0db | all | port printed `ME ITJ NHL 4UTT E `
+ text | cq-12wpm-15db | 1 | port `CQ CQ DE N0CALL N0CALL K`
+ text | cq-12wpm-15db | all | port printed `CQ CQ DE N0CALL N0CALL K `
+ text | cq-12wpm-5db | 1 | port `■ CQ DE 0CADL N0CAL K`
+ text | cq-12wpm-5db | all | port printed `* CQ DE 0CADL N0CAL K `
+ text | cq-18wpm-0db | 1 | port `SEBE NIE`
+ text | cq-18wpm-0db | all | port printed `SEBE NIE`
+ text | cq-18wpm-0db-char5 | 1 | port `■AE<AS>`
+ text | cq-18wpm-0db-char5 | all | port printed `*AE<AS> `
+ text | cq-18wpm-15db | 1 | port `EQ CQ DE N0CALL N0CALL K`
+ text | cq-18wpm-15db | all | port printed `EQ CQ DE N0CALL N0CALL K `
+ text | cq-18wpm-15db-char5 | 1 | port `E Q C Q D E N 0 C A L L N 0 C A L L K`
+ text | cq-18wpm-15db-char5 | all | port printed `E Q C Q D E N 0 C A L L N 0 C A L L K `
+ text | cq-18wpm-5db | 1 | port `IQ DEN0CALL N0RALL K`
+ text | cq-18wpm-5db | all | port printed `IQ DEN0CALL N0RALL K `
+ text | cq-18wpm-5db-char5 | 1 | port `E Q D N 0 C T L L 0C A L L K E`
+ text | cq-18wpm-5db-char5 | all | port printed `E Q D N 0 C T L L 0C A L L K E`
+ text | cq-25wpm-0db | 1 | port `XNENHEE`
+ text | cq-25wpm-0db | all | port printed `XNENHEE `
+ text | cq-25wpm-15db | 1 | port `E CQ DE N0CALL N0CALL K`
+ text | cq-25wpm-15db | all | port printed `E CQ DE N0CALL N0CALL K `
+ text | cq-25wpm-5db | 1 | port `E EE N0CALL 0CALL K`
+ text | cq-25wpm-5db | all | port printed `E EE N0CALL 0CALL K `
+ text | cw-2026-08-17-013347 | 1 | port `IAE `
+ text | cw-2026-08-17-013347 | all | port printed `TEAEITÜITI<AS>ETEI*ITI<AS>ETEI*EIN\E*IAE `
+ text | cw-2026-08-17-134712 | 1 | port `N■L`
+ text | cw-2026-08-17-134712 | all | port printed `A EE EN*LQ K `
+ text | cw-2026-08-18-004507 | 1 | port `T ARRL OT NT <BT>E EAC STON HANÉ IG T HISEMSGE `
+ text | cw-2026-08-18-004507 | all | port printed `T ARRL OT NT <BT>E EAC STON HANÉ IG T HISEMSGE Ö`
+ text | unadjudicated/cw-2026-08-18-003758 | 1 | port `EA4M■ /4_NIK`
+ text | unadjudicated/cw-2026-08-18-003758 | all | port printed `I TUIEIDIEA4M* /4_NIK EDEANI K I EEN`
+ text | unadjudicated/cw-2026-08-22-031838 | 1 | port `2, 2, AN■TWV2F 2P`
+ text | unadjudicated/cw-2026-08-22-031838 | all | port printed `M02, 2, AN*TWV2F 2P`
+ text | unadjudicated/cw-2026-08-22-031905 | 1 | port `EITED10TÖ NIMTFXISO■15`
+ text | unadjudicated/cw-2026-08-22-031905 | all | port printed `EEITED10TÖ NIMTFXISO*15`
+ text | unadjudicated/cw-2026-08-22-031948 | 1 | port `H01■,AN110 W MNJF 7`
+ text | unadjudicated/cw-2026-08-22-031948 | all | port printed `H01*,AN110 W MNJF 7*`
+ text | unadjudicated/cw-2026-08-22-032012 | 1 | port `O7■. LOÈICLOROTIDI`
+ text | unadjudicated/cw-2026-08-22-032012 | all | port printed `O7*. LOÈICLOROTIDI`
+ text | unadjudicated/cw-2026-08-22-032050 | 1 | port `EN<AR> OUÉTERAW■CTY I`
+ text | unadjudicated/cw-2026-08-22-032050 | all | port printed `EN<AR> OUÉTERAW*CTY I`
+ text | unadjudicated/cw-2026-08-22-032113 | 1 | port `T TNDINE OJ `
+ text | unadjudicated/cw-2026-08-22-032113 | all | port printed `T TNDINE OJ OPATNNO`
+ text | unadjudicated/cw-2026-08-22-032129 | 1 | port `M6 PATNNORE■BEE0`
+ text | unadjudicated/cw-2026-08-22-032129 | all | port printed `M6 PATNNORE*BEE0`
+ text | unadjudicated/cw-2026-08-24-012403 | 1 | port ` EXUKD0`
+ text | unadjudicated/cw-2026-08-24-012403 | all | port printed `ETIQE6Q EXUKD0`
+ text | unadjudicated/cw-2026-09-23-173723 | 1 | port `CQDW SRED`
+ text | unadjudicated/cw-2026-09-23-173723 | all | port printed `TBZ WBHE C CQDW SRED`
+ text | unadjudicated/cw-2026-09-24-004108 | 1 | port ` E `
+ text | unadjudicated/cw-2026-09-24-004108 | all | port printed `RG G6WO H EÖ19 E `
+ text | unadjudicated/cw-2026-09-24-004133 | 1 | port `I51 8 `
+ text | unadjudicated/cw-2026-09-24-004133 | all | port printed `E ETJ EK*DEG T*E0 5 I51 8 `
+ text | unadjudicated/cw-2026-09-24-004205 | 1 | port `A AH I D`
+ text | unadjudicated/cw-2026-09-24-004205 | all | port printed `IA E89 RIJ U GEL A AH I DO `
+ text | unadjudicated/cw-2026-09-24-004234 | 1 | port `T T AN■U O `
+ text | unadjudicated/cw-2026-09-24-004234 | all | port printed `T T AN*U O O5Y* EERIRTQ TH`
+ text | unadjudicated/cw-2026-09-24-004322 | 1 | port ` OE LAA ION A`
+ text | unadjudicated/cw-2026-09-24-004322 | 2 | port `E LAA ION`
+ text | unadjudicated/cw-2026-09-24-004322 | 3 | port `AA ION `
+ text | unadjudicated/cw-2026-09-24-004322 | all | port printed `MDAERSC* * OE LAA ION ALJG5ÜIÉ`
+ text | unadjudicated/cw-2026-09-24-004347 | 1 | port `PLE TJ M RREET A NH O`
+ text | unadjudicated/cw-2026-09-24-004347 | all | port printed `VPLE TJ M RREET A NH ORY LU`
+ text | unadjudicated/cw-2026-09-24-004405 | 1 | port `O D I `
+ text | unadjudicated/cw-2026-09-24-004405 | all | port printed `ANH*Y LUC RE8 ZAW 1 AW /8 * JO D I N`
+ text | unadjudicated/cw-2026-09-24-004427 | 1 | port `INOR`
+ text | unadjudicated/cw-2026-09-24-004427 | 2 | port `E I IN`
+ text | unadjudicated/cw-2026-09-24-004427 | all | port printed `E I INOR<AR>RE ÅS IEWI2 GEK8NET AE`
+ text | unadjudicated/cw-2026-09-24-004510 | 1 | port `K■T V`
+ text | unadjudicated/cw-2026-09-24-004510 | 2 | port `UA3B`
+ text | unadjudicated/cw-2026-09-24-004510 | all | port printed `ETE)K YAK K*T VETQN UA3BE`
+ text | unadjudicated/cw-2026-09-24-004550 | 1 | port `D■2 GJV`
+ text | unadjudicated/cw-2026-09-24-004550 | all | port printed `T THNXNXK AA3 HBD*2 GJV HWROBEYN `
