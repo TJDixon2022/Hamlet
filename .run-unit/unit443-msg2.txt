@@ -1,0 +1,22 @@
+unit443 task 2: a letter starting inside one already said - not kept (3.2)
+
+Aimed at the one cause task 1 found shared by more than one added letter:
+the same marks read twice. CwProbabilisticStream.Read announces a re-read
+letter when its end is past the settled mark, so a letter starting 8.9 to
+10.6 units inside the one before it printed again (004347 L O OTW, the
+synthetic KK). The rule, taken from the trace and not moved: a letter
+whose first mark begins before the last settled letter's last mark ended
+is not announced.
+
+R78, before -> under the change: MET-INVENTED real, inferred 47 -> 48
+(4 -> 3 added, 43 -> 45 wrong); MET-CER-SURE real 0.1116 -> 0.1143;
+sure-and-right coverage 374 -> 372; adjudicated 13 of 13; V-11 fails on
+032050 and 032129; MET-WBE 52 -> 53; captures 31 of 51 (reported).
+Synthetic, exact: MET-INVENTED 14 -> 12, coverage 159 -> 159.
+
+Not kept: MET-INVENTED rises. The diff is .run-unit/unit443-added-notkept.diff,
+and src carries none of it. Recorded in metrics.md. The printer gains
+EveryRecordingAsTheOperatorReadsIt; every changed text before and after
+is in .run-unit/unit443-text-diff.txt.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

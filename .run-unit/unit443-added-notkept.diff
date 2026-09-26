@@ -1,0 +1,54 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+index 86adb8f5..177e8cdb 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+@@ -293,6 +293,7 @@ public sealed class CwProbabilisticStream
+         _sampleInHop -= hops * _hopSamples;
+         _hopsSeen += hops;
+         _settledThrough += hops;
++        _marksSettledThrough += hops;
+     }
+ 
+     /// <summary>
+@@ -571,13 +572,30 @@ public sealed class CwProbabilisticStream
+                     continue;
+                 }
+ 
++                // **A LETTER WHOSE FIRST MARK IS INSIDE ONE ALREADY SAID IS THOSE
++                // MARKS READ TWICE** (work instruction 443, task 2). The check above
++                // is on where a letter ends, so a later window that cut the same
++                // marks differently could end a letter past the mark and start it
++                // well before. Unit 443's trace found every sure letter added this
++                // way beginning eight to eleven units inside the letter before it,
++                // `LOTW` printed `L O OTW` and a closing `K` printed twice. It is
++                // not announced; it is judged on its own span against the marks
++                // already said, never on the letters either side.
++                var reread = character.Pattern.Length > 0
++                    && windowStartHop + character.EndHop - character.SpanHops < _marksSettledThrough;
++
+                 // **THE MARK MOVES EXACTLY AS THE PATH'S OWN CHARACTERS MOVE IT**,
+                 // a space the relabel took out included, so every letter settles
+                 // where and when it did before the relabel existed.
+                 _settledThrough = absolute;
+                 _settledCount++;
+ 
+-                if (!removed)
++                if (character.Pattern.Length > 0)
++                {
++                    _marksSettledThrough = absolute;
++                }
++
++                if (!removed && !reread)
+                 {
+                     CharacterSettled?.Invoke(Character(character, result, at));
+                 }
+@@ -663,6 +681,9 @@ public sealed class CwProbabilisticStream
+ 
+     private long _settledThrough = -1;
+ 
++    /// <summary>The hop the last settled letter's last mark ended at; word gaps do not move it.</summary>
++    private long _marksSettledThrough = -1;
++
+     /// <summary>
+     /// One character, in the shape every surface in this application already
+     /// reads.

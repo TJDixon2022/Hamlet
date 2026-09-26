@@ -295,6 +295,44 @@ public sealed class WhereTheSureAddedLettersComeFromTests
     private static string Off(Added a) => Math.Abs(a.ToneHz - a.PitchHz) >= 25 ? "25 Hz or more off the sender" : "on the sender's pitch";
 
     /// <remarks>
+    /// Proves nothing about the decoder; prints what the operator reads on every
+    /// capture the floor holds and every synthetic case, settled text with word
+    /// gaps as spaces, placeholders as they print, and every letter not sure in
+    /// brackets, so a change's before and after can be read recording by
+    /// recording (work instruction 443, task 2). Asserts only that it printed a
+    /// line for every floor row.
+    /// </remarks>
+    [Fact]
+    public void EveryRecordingAsTheOperatorReadsIt()
+    {
+        var names = TheCapturesThatDecodeKeepDecodingTests.Floors.Select(row => (string)row[0]).ToList();
+        var printed = 0;
+
+        foreach (var name in names)
+        {
+            var heard = Decode(Path.Combine(CapturedSignalTests.Folder, name + ".wav"), 600);
+
+            _output.WriteLine($"text | {name} | {Text(heard.Settled)}");
+            printed++;
+        }
+
+        foreach (var recipe in SyntheticCq.All)
+        {
+            var heard = Decode(Path.Combine(SyntheticCq.Folder, recipe.Name + ".wav"), SyntheticCq.StartingPitchHz);
+
+            _output.WriteLine($"text | {recipe.Name} | {Text(heard.Settled)}");
+        }
+
+        Assert.Equal(names.Count, printed);
+    }
+
+    private static string Text(IEnumerable<CwCharacter> settled)
+        => string.Concat(settled.Select(c =>
+            c.IsWordGap ? " "
+            : c.IsUnreadable || c.Confidence == CwConfidence.High ? c.Text
+            : $"[{c.Text}]"));
+
+    /// <remarks>
     /// Proves 3.1: every sure character MET-INVENTED counts as added, on the real
     /// keyed recordings and the synthetic set, with its recording and time, the
     /// key's text and the decoder's either side, what was emitted and its

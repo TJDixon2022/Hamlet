@@ -9,6 +9,40 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 443 - a letter starting inside one already said is not announced, not kept
+
+Step 3, HM-REQ-011. The trace (`WhereTheSureAddedLettersComeFromTests`) put 439's 13 real sure
+added at 1fb0bad6, 5 under G1 alone (42d5dbb9), 4 at HEAD: G1 removed 8, all on 17:37; the marks'
+speed removed 1, `031838` at 21.355 s. The 4 left share no cause. The one cause shared by more than
+one added letter, real or synthetic, is the same marks read twice: a letter whose span begins 8.9
+to 10.6 units inside the letter settled before it (`004347` `L O OTW`, both 25 WPM synthetic `KK`).
+`CwProbabilisticStream.Read` checks only where a re-read letter ends. The change dropped a letter
+whose first mark began before the last settled letter's last mark ended. The diff is
+`.run-unit/unit443-added-notkept.diff`, and `src` does not carry it.
+
+| part of R78 | before | under the change | verdict |
+|---|---|---|---|
+| MET-INVENTED, real, inferred | 47 over 473 (4 added, 43 wrong), 0.0994 | 48 over 473 (3 added, 45 wrong), 0.1015 | **rises** |
+| MET-INVENTED, synthetic, exact | 14 over 252 (6 added, 8 wrong) | 12 over 252 (4 added, 8 wrong) | falls |
+| MET-CER-SURE, real, inferred | 47 of 421, 0.1116 | 48 of 420, 0.1143 | **rises** |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 12 of 171, 0.0702 | falls |
+| sure-and-right coverage, real, inferred | 374 over 473, 0.7907 | 372 over 473, 0.7865 | **falls** |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252, 0.6310 | holds |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings | - | `032050` and `032129` each lose one sure-and-right | **fails** |
+| MET-WBE, real, inferred | 52 over 113, 0.4602 | 53 over 113, 0.4690 | rises by one |
+| capture rows | 51 of 51 | 31 of 51, 20 rows fall on counts | reported |
+
+Per condition, real, inferred keys, MET-INVENTED before -> after: sender not stated (20
+recordings) 47 over 410 (4 added, 43 wrong) -> 48 over 410 (3 added, 45 wrong); TX-FARNS 0 over 44
+-> 0; TX-ITU 0 over 13 -> 0; TX-TIGHT 0 over 6 -> 0. MET-CER-SURE: not stated 47 of 359, 0.1309 ->
+48 of 358, 0.1341; TX-FARNS, TX-ITU and TX-TIGHT 0 before and after.
+
+**Not kept: MET-INVENTED rises on the real set.** It took out the doubled letters the operator
+sees: `VA3VRRR` to `VA3VRR`, `NNOTT` to `NOT`, `QNIKK` to `QNIK`, `W1AW/88` to `W1AW/8` and
+`OOTW` to `OTW`. It also took out letters whose first mark was shared but which carried new marks
+after it: `200J6` to `20J6`, `MCON` to `MON`, `TN6TBRE` to `TN6TRE`.
+
 ## Unit 442 - sure only where the reading beat its rival, not kept
 
 `CwProbabilisticStream.Character` set `Low` where the letter's margin over its nearest rival
