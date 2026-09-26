@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 4 of 5
+STATE: COMPLETED
+TASK: 5 of 5
 WORK_INSTRUCTION: 457 - why fldigi's port loses the first dit, and a case chosen before it is read
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T15:56:32-04:00
-NOTE: Task 3 done, 9.1 ticked; task 4 skipped (no repair made), starting the exit round: build, carry-forward lines, floors, metrics
+UPDATED: 2026-09-26T16:18:10-04:00
+NOTE: Unit 457 done: lost first dit is fldigi's own (verdict b), case committed before its run read as keyed, 9.1 ticked, text byte-identical - output.md written
 
 ---
 

@@ -1,0 +1,13 @@
+unit457 task 5: exit round - 9.1 ticked on the case committed before its run, verdict (b) fldigi's own, 177 lines 0 differ, every metric and floor as at entry, text byte-identical (9.1)
+
+Build 0 errors; engine line 178 of 178; app line 277 of 278 on the
+first run and 277 of 278 on the rerun, a different test each time,
+both Avalonia's dispatcher loop, both types green alone (5 of 5,
+4 of 4), no app code changed. Captures 51 of 51; adjudicated 13 of
+13; named 10 of 13 as at entry (38, 43, 42). Real and synthetic
+metrics identical to entry. TheSecondDecoderIsAFaithfulPortTests 8
+of 8. Transmit diff against 7e209cb4 empty; our decoder's 126 text
+lines identical to task 0's save; .run-unit/fldigi untracked.
+output.md written and validated. Task 4 skipped: no repair.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

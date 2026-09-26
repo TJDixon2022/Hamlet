@@ -1,0 +1,26 @@
+== git diff 7e209cb4 over the eleven transmit files:
+== end transmit
+== src this unit against f20adf82, file by file:
+ .../Cw/Second/FldigiCwDecoder.cs                   | 66 ++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+== git status --short at exit
+ M .run-unit/watched.cpu
+ M PROJECT_STATUS.md
+?? .run-unit/fldigi/
+?? .run-unit/unit457-adjudicated-exit.txt
+?? .run-unit/unit457-app-rst-alone.txt
+?? .run-unit/unit457-app-topband-alone.txt
+?? .run-unit/unit457-build-exit.txt
+?? .run-unit/unit457-captures-exit.txt
+?? .run-unit/unit457-cf-app-exit-rerun.txt
+?? .run-unit/unit457-cf-app-exit.txt
+?? .run-unit/unit457-cf-engine-exit.txt
+?? .run-unit/unit457-metrics-exit.txt
+?? .run-unit/unit457-named-exit.txt
+?? .run-unit/unit457-second-exit.txt
+?? .run-unit/unit457-text-exit.sorted.txt
+?? .run-unit/unit457-text-exit.txt
+?? .run-unit/unit457-tx-exit.txt
+?? SESSION.lock
+== text: diff of every recording's text against task 0's save
+(no difference)
