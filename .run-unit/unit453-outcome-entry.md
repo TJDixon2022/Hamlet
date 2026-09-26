@@ -1,0 +1,13 @@
+
+## UNIT 453 - STEP 6
+
+STEP: 6
+APPROACH: measure HM-REQ-084 on its named acceptance spans in 021410 and 013637, print each span with every mark and gap in units, trace why each misreads, one change from the audio against the commonest cause kept under R78
+MOVE: work around
+WHY: PHASE_PLAN.md step 6 line 6.5 asks that HM-REQ-084 be measured on its named spans and the report print what each reads at HEAD; two of its three recordings are in the tree, no unit has measured it, and it is the one must-tier requirement written as text the operator reads. Step 2 cannot flip a line this pass: 2.4's count is 0 of 3 after 449's kept change, and 2.5 is held by 443's DECIDED (3) with 17:37's question parked with the owner.
+STATE: partial
+DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2, because 2.4 cannot reach 3 of 3 in one unit and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 6.5 is chosen over 6.1, 6.2 and 6.4 because it is written as the text the operator reads (R83); (2) 6.5 is a measurement, ticked at task 1 on the five spans in the tree printed at HEAD with met or not met, and USED TO USE A FIRM stated not measurable here because 011447 was never in the tree, on 6.3's precedent for conditions not held; (3) the keep rule is R78 with V-11 by the count per recording, every moved boundary printed, and no measurable span reading further from its word, with the words a judging key only and never a decoder input (R72); (4) 452's section 4 is answered for this unit: the relabel share stays at 1.53, V-11 is judged by the count per recording with every moved boundary printed, and unkeyed text weighs only through the named spans; (5) the change excludes every route recorded no or kept at steps 2, 3 and 6, a per-gap threshold on 013637's 4 ms split, and the joint decoder DEV_ANALYSIS section 4 reserves for a ruling; if nothing is left, nothing is built and that is reported; (6) DRIFT for steps 2 to 5 stays as it is.
+LICENCE: PHASE_PLAN.md step 6 line 6.5 and section 5's independence line; R72, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 448 DECIDED (3) and (6), 452 section 3 (a) and (d); V-04; V-06; V-11; V-13; V-14; HM-REQ-004, 010, 011, 080, 081, 084; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 6 criterion 5
+RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.

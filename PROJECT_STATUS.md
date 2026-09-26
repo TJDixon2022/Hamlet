@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 452 - where the words break
+TASK: 0 of 3
+WORK_INSTRUCTION: 453 - the words the owner named
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T11:35:28-04:00
-NOTE: Unit 452 done: 6.3 ticked, WBE real 46 to 37 kept with letters identical, 17:37 still 7 - output.md written
+UPDATED: 2026-09-26T12:04:50-04:00
+NOTE: Entry done: numbers as 452 left them, text identical; next each named span measured and every mark and gap under it traced
 
 ---
 
