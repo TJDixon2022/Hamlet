@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 445 - a letter whose marks do not fit the speed is not printed as sure
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T00:21:13-04:00
-NOTE: Entry round done, MET-INVENTED 47 over 473 and floors as recorded; committing the entry
+UPDATED: 2026-09-26T00:26:44-04:00
+NOTE: Trace done: no mark edge; gap edge 6.5 catches 2 wrong on 032129, 0 right; committing
 
 ---
 

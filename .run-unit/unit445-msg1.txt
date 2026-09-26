@@ -1,0 +1,22 @@
+unit445 task 1: mark-shape trace - no mark edge, gap edge 6.5 catches 2 wrong for 0 right (3.2)
+
+WhatTheSureLettersMarksLookLikeTests prints every sure letter, right,
+wrong and added, with its complete envelope marks and inner gaps over its
+span one unit either side, cut as CwUnitEstimator.Elements cuts, each as a
+distance (ratio, one or more) from the nearer of 1 and 3 units, gaps from
+1 unit, at the unit the path was read with. It asserts nothing.
+
+Real, inferred keys, 421 sure (374 right, 43 wrong, 4 added):
+- worst mark: no edge. Right letters lie in every bin, 2 at 5 and over
+  and 8 with no whole mark.
+- worst gap: edge 6.5. Past it 0 right and 2 wrong, both on 032129:
+  17.400 T read E (gap distance 10.0) and 20.660 0 read E (15.0). Both
+  rest on 10 ms dropouts, the 2-hop minimum, at grid units of 100 and
+  150 ms, so the edge is set by the unit as much as by the shape.
+- together: no edge (the 8 right letters with no whole mark).
+Synthetic, exact keys, 173 sure (159 right, 8 wrong, 6 added): no
+wrong-or-added letter lies past the farthest right one on any measure
+(mark 1.676, gap 3.375), so the synthetic set names no edge and has
+nothing either side of 6.5.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

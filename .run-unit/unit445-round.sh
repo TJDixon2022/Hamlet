@@ -19,6 +19,9 @@ case "$1" in
   hand)
     sh $R "hand-$2" engine 120 "$3" "The metrics against hand-built pairs" "FullyQualifiedName~.TheMetricsCountWhatAHandCountsTests." --no-build
     ;;
+  shape)
+    sh $R "shape-$2" engine 600 "$3" "Mark-shape trace: every sure letter's marks and inner gaps against a dit, a dah and an element gap, real then synthetic" "FullyQualifiedName~.WhatTheSureLettersMarksLookLikeTests." --no-build
+    ;;
   trace)
     sh $R "trace-$2" engine 600 "$3" "Tracing the sure-wrong letters with their speeds" "FullyQualifiedName~.WhereTheSureWrongLettersComeFromTests." --no-build
     ;;
