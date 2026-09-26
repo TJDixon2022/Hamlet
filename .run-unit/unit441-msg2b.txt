@@ -1,0 +1,26 @@
+unit441 task 2: the path takes the marks' speed where they say slower (2.2)
+
+CwUnitEstimator.MarkUnit: the unit the marks alone imply, dits and dahs
+split at the geometric mean, no gap asked. CwProbabilisticStream.Read
+re-reads the window at that speed when it is more than 1.25 times the
+path's unit (MarksOverruleRatio, the trace's bin edge: 8 wrong to 2
+right above it, 28 to 263 between 0.80 and 1.25). The fast side did not
+separate and is left alone.
+
+Judged under R78 with R82's coverage, against G1 in:
+- MET-CER-SURE real 56 of 419 to 47 of 421 (0.1337 to 0.1116);
+  synthetic unchanged 0.0809. TX-FARNS 0.0233 to 0.0000.
+- MET-INVENTED 56 to 47 over 473.
+- MET-COVERAGE real 0.7674 to 0.7907 (363 to 374 right).
+- MET-WBE real 58 to 52.
+- Adjudicated 13 of 13. V-11: no recording goes red; 032050 4 to 5
+  wrong-or-added with 33 to 35 right, edits 21 to 20.
+- Reported: captures 38 of 51, named 7 of 13; unkeyed rows lose
+  elements (001952 103 to 86, 134712 31 to 22). Engine carry-forward
+  175 of 178, the three capture rows 013010, 012823, 012922.
+
+031838: D  #T TTT TEAH A MEAN TOF 2 TT -> TT 2, AND  # W IAH A MEAN OF 2 TT
+003758: EETMP/4 QNIK unchanged
+032129: TJ26 PGOPAGATION EE EE EIIEE I E EE -> TJ26 PGOPAGATION E EE EIIEE I E EE
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

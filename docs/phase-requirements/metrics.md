@@ -9,6 +9,39 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 441 - the marks' speed, kept
+
+`CwProbabilisticStream.Read` re-reads a window at the speed its marks alone imply
+(`CwUnitEstimator.MarkUnit`) when that unit is more than 1.25 times the path's. The ratio is the
+bin edge in the trace where sure-wrong outnumber sure-right, 8 to 2, against 28 to 263 between
+0.80 and 1.25.
+
+| part of R78, R82's coverage | G1 in | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 56 of 419, 0.1337 | 47 of 421, 0.1116 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 14 of 173, 0.0809 | unchanged |
+| MET-INVENTED, real, inferred | 56 over 473 (5 added, 51 wrong) | 47 over 473 (4 added, 43 wrong), 0.0994 | falls |
+| MET-COVERAGE, real, inferred | 363 over 473, 0.7674 | 374 over 473, 0.7907 | rises |
+| MET-COVERAGE, synthetic, exact | 0.6310 | 0.6310 | unchanged |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings | - | none goes red; `032050` 4 to 5 wrong-or-added with 33 to 35 right, edits 21 to 20 | holds, reported |
+| capture rows | 50 of 51 | 38 of 51; elements lost on unkeyed rows, `001952` 103 to 86, `134712` 31 to 22 | reported |
+| named floors | 12 of 13 | 7 of 13 | reported |
+| MET-WBE, real | 58 over 113 | 52 over 113, 0.4602 | falls |
+
+Per condition, real: TX-FARNS (`004507`) MET-CER-SURE 0.0233 to 0.0000, coverage 0.9545 to
+0.9773; sender not stated 0.1541 to 0.1309, coverage 0.7366 to 0.7610. No condition gets worse.
+
+| recording | G1 in | under the change |
+|---|---|---|
+| `031838` | `D  ■T TTT TEAH A MEAN TOF 2 TT` | `TT 2, AND  ■ W IAH A MEAN OF 2 TT` |
+| `003758` | `EETMP/4 QNIK` | `EETMP/4 QNIK` (window ratio 0.88, not touched) |
+| `032129` | `TJ26 PGOPAGATION EE EE EIIEE I E EE` | `TJ26 PGOPAGATION E EE EIIEE I E EE` |
+
+What is left, 43 sure-wrong: none in a window whose marks say slower than the path; 8 read at a
+grid speed the marks put two to four times too slow (`032129`), and 30 in windows where the
+marks and the path agree within 1.25.
+
 ## Unit 441 - G1 kept (`cce7985d` re-applied unchanged)
 
 | part of R78, R82's coverage | before | under G1 | verdict |

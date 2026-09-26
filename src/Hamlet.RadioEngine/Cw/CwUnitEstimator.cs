@@ -398,6 +398,44 @@ public static class CwUnitEstimator
         return centres.Select(Math.Exp).ToArray();
     }
 
+    /// <summary>The unit the marks alone imply, dits and dahs taken apart.</summary>
+    /// <param name="marks">Mark lengths in milliseconds.</param>
+    /// <returns>The unit in milliseconds, or NaN where the marks are all one kind.</returns>
+    /// <remarks>
+    /// **NO GAP IS ASKED** (work instruction 441). <see cref="Measure"/> averages the
+    /// short marks with the short gaps to cancel the cut's skirt, and a fade that
+    /// drops out inside a mark puts a fifteen-millisecond gap in the short heap and
+    /// drags the unit down with it: `031838` measured a 55 ms dit mark beside a
+    /// 15 ms element gap and was read at 34 words a minute with dahs of 165 to 220
+    /// ms. Where the longest mark is at least twice the shortest both kinds are
+    /// there; they are split at the geometric mean, and the unit is the geometric
+    /// mean of the dits' median and a third of the dahs' median. It reads long by
+    /// the skirt.
+    /// </remarks>
+    public static double MarkUnit(IReadOnlyList<double> marks)
+    {
+        ArgumentNullException.ThrowIfNull(marks);
+
+        if (marks.Count == 0)
+        {
+            return double.NaN;
+        }
+
+        var min = marks.Min();
+        var max = marks.Max();
+
+        if (max < 2 * min)
+        {
+            return double.NaN;
+        }
+
+        var boundary = Math.Sqrt(min * max);
+        var dits = marks.Where(m => m <= boundary).OrderBy(m => m).ToArray();
+        var dahs = marks.Where(m => m > boundary).OrderBy(m => m).ToArray();
+
+        return Math.Sqrt(dits[dits.Length / 2] * dahs[dahs.Length / 2] / 3);
+    }
+
     /// <summary>Every mark and every gap the trigger produces.</summary>
     /// <param name="envelope">Envelope magnitudes.</param>
     /// <param name="hopMilliseconds">How long one hop lasts.</param>

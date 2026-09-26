@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 441 - keep the fix, then fix the speed it was hiding
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T19:55:48-04:00
-NOTE: Trace says window marks over 1.25 of the path's unit: 8 wrong to 2 right; committing it, then building that one change
+UPDATED: 2026-09-25T20:10:34-04:00
+NOTE: Speed change kept: CER-SURE 0.1337 to 0.1116, 031838 reads MEAN OF 2; committing, exit round next
 
 ---
 

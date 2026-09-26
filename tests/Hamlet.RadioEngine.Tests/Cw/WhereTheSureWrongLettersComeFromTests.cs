@@ -165,16 +165,9 @@ public sealed class WhereTheSureWrongLettersComeFromTests
             return s[s.Length / 2];
         }
 
-        var min = marks.Min();
-        var max = marks.Max();
-
-        if (max >= 2 * min)
+        if (marks.Max() >= 2 * marks.Min())
         {
-            var boundary = Math.Sqrt(min * max);
-            var dit = MedianOf(marks.Where(m => m <= boundary));
-            var dah = MedianOf(marks.Where(m => m > boundary));
-
-            return Math.Sqrt(dit * dah / 3);
+            return CwUnitEstimator.MarkUnit(marks);
         }
 
         return pattern switch

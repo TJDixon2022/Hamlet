@@ -480,18 +480,39 @@ public sealed class CwProbabilisticStream
             _structureHeld = false;
         }
 
-        var result = CwProbabilisticDecoder.Decode(
-            window,
-            ToneHz,
-            speed,
-            _structureHeld
-                ? new[]
-                {
-                    _heldGaps.ElementMilliseconds,
-                    _heldGaps.CharacterMilliseconds,
-                    _heldGaps.WordMilliseconds,
-                }
-                : null);
+        var gapMilliseconds = _structureHeld
+            ? new[]
+            {
+                _heldGaps.ElementMilliseconds,
+                _heldGaps.CharacterMilliseconds,
+                _heldGaps.WordMilliseconds,
+            }
+            : null;
+
+        var result = CwProbabilisticDecoder.Decode(window, ToneHz, speed, gapMilliseconds);
+
+        // **WHERE THE MARKS SAY THE SENDER IS SLOWER THAN THE PATH WAS TIMED, THE
+        // MARKS' SPEED IS USED** (work instruction 441, task 2). A clock that runs
+        // fast makes a letter's own element gap long enough to end it, and the
+        // first piece prints as a sure `E` or `T`. Unit 441's trace put 8 of the
+        // 51 sure-wrong letters and 2 of the 363 sure-right ones in windows whose
+        // marks imply a unit more than 1.25 times the path's, against 28 and 263
+        // between 0.80 and 1.25; that edge is the ratio, taken from the trace. The
+        // other side did not separate the two and is left alone.
+        var marksUnit = CwUnitEstimator.MarkUnit(
+            CwUnitEstimator.Elements(window, CwProbabilisticDecoder.HopMilliseconds).Marks);
+
+        if (result.WordsPerMinute > 0
+            && marksUnit * result.WordsPerMinute / 1200.0 > MarksOverruleRatio)
+        {
+            var marksWpm = 1200.0 / marksUnit;
+
+            if (marksWpm >= CwProbabilisticDecoder.SlowestWpm
+                && marksWpm <= CwProbabilisticDecoder.FastestWpm)
+            {
+                result = CwProbabilisticDecoder.Decode(window, ToneHz, marksWpm, gapMilliseconds);
+            }
+        }
 
         Last = result;
 
@@ -572,6 +593,16 @@ public sealed class CwProbabilisticStream
 
         LeadingEdgeChanged?.Invoke(edge);
     }
+
+    /// <summary>
+    /// How much longer than the path's unit the window's marks must imply before
+    /// the path is re-read at the marks' speed.
+    /// </summary>
+    /// <remarks>
+    /// The bin edge in unit 441's trace past which sure-wrong letters outnumber
+    /// sure-right ones, 8 to 2. Author's, from the trace, not tuned after it.
+    /// </remarks>
+    internal const double MarksOverruleRatio = 1.25;
 
     /// <summary>How far past the character gap a gap must run to be a word gap.</summary>
     /// <remarks>
