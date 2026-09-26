@@ -1,0 +1,33 @@
+== git diff 7e209cb4 over the eleven transmit files:
+== end transmit
+== src this unit against 19109b51, file by file:
+== git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/ (empty means no line changed):
+== end Cw/Second
+== git diff 19109b51 -- src (empty means no src line changed over the unit):
+== end src
+== the port's texts against task 0's save
+(byte-identical)
+== our texts: diff of every recording's text against task 0's save
+(no difference)
+== git status --short at exit
+ M .run-unit/watched.cpu
+ M PROJECT_STATUS.md
+ M docs/phase-requirements/parity.md
+?? .run-unit/fldigi/
+?? .run-unit/unit459-adjudicated-exit.txt
+?? .run-unit/unit459-build-exit.txt
+?? .run-unit/unit459-cf-app-exit.txt
+?? .run-unit/unit459-cf-engine-exit.txt
+?? .run-unit/unit459-exit-print.sh
+?? .run-unit/unit459-metrics-exit.txt
+?? .run-unit/unit459-named-exit.txt
+?? .run-unit/unit459-parity-exit.md
+?? .run-unit/unit459-parity-exit.txt
+?? .run-unit/unit459-port-exit.txt
+?? .run-unit/unit459-red-exit.txt
+?? .run-unit/unit459-second-exit.txt
+?? .run-unit/unit459-text-exit.sorted.txt
+?? .run-unit/unit459-text-exit.txt
+?? .run-unit/unit459-tx-exit.txt
+?? .run-unit/unit459-v11-exit.txt
+?? SESSION.lock

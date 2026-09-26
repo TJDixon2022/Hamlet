@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decoder, judged under R78
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T18:40:35-04:00
-NOTE: Task 2 refused and reverted (adjudicated 031948 broke, V-11 three worse); task 3, the drop candidate, shed; exit round next
+UPDATED: 2026-09-26T19:00:48-04:00
+NOTE: Unit 459 done: pair speed from fldigi refused under R78 (real CER-SURE 33 to 25 but 031948 adjudicated broke, 3 recordings worse) and reverted; 9.4 open; output.md written
 
 ---
 

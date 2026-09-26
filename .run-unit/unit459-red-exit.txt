@@ -1,0 +1,39 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.24]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.25]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.90]     Hamlet.RadioEngine.Tests.Cw.TheSpeedFollowsTheSendersMarkPairsTests.BurstsBetweenLettersDoNotSetTheSpeed [FAIL]
+[xUnit.net 00:00:00.90]       28 sure characters wrong or added of 31: `  MME■ E ■E■ E ■E■EOET E ME0E■EME■E■ E ME0E■EME■E■ E O   `
+[xUnit.net 00:00:00.90]       Stack Trace:
+[xUnit.net 00:00:00.90]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSpeedFollowsTheSendersMarkPairsTests.cs(168,0): at Hamlet.RadioEngine.Tests.Cw.TheSpeedFollowsTheSendersMarkPairsTests.BurstsBetweenLettersDoNotSetTheSpeed()
+[xUnit.net 00:00:00.90]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:00.90]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.90]       Output:
+[xUnit.net 00:00:00.90]         key  | CQ CQ CQ DE N0CALL N0CALL K
+[xUnit.net 00:00:00.90]         read |   MME■ E ■E■ E ■E■EOET E ME0E■EME■E■ E ME0E■EME■E■ E O   
+[xUnit.net 00:00:00.90]         speeds | 37 34 32 WPM
+[xUnit.net 00:00:00.90]         metric | sure wrong or added 28 of 31 sure | sure and right 3 of 21 sent
+[xUnit.net 00:00:00.91]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.TheSpeedFollowsTheSendersMarkPairsTests.BurstsBetweenLettersDoNotSetTheSpeed [633 ms]
+  Error Message:
+   28 sure characters wrong or added of 31: `  MME■ E ■E■ E ■E■EOET E ME0E■EME■E■ E ME0E■EME■E■ E O   `
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheSpeedFollowsTheSendersMarkPairsTests.BurstsBetweenLettersDoNotSetTheSpeed() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheSpeedFollowsTheSendersMarkPairsTests.cs:line 168
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ key  | CQ CQ CQ DE N0CALL N0CALL K
+ read |   MME■ E ■E■ E ■E■EOET E ME0E■EME■E■ E ME0E■EME■E■ E O   
+ speeds | 37 34 32 WPM
+ metric | sure wrong or added 28 of 31 sure | sure and right 3 of 21 sent
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 1.1861 Seconds
+RC=1 WALL=2s

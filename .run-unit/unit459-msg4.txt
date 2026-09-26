@@ -1,0 +1,15 @@
+unit459 task 4: exit round - every metric, floor and text as at entry, adjudicated 13 of 13, harness 5 of 5, the port byte-identical, no src line changed over the unit; 9.4 open, task 3 dropped (9.4)
+
+Build 0 errors; engine line 178 of 178; app line 278 of 278; named 10
+of 13 as recorded (17:37 38, 032113 43, 032129 42); adjudicated 13 of
+13. Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473,
+coverage 403 over 473, MET-WBE 37 (29 ins, 8 del) over 113. Synthetic,
+exact: 14 of 173, 14, 159, 44 (13, 31). TheSecondDecoderIsAFaithful-
+PortTests 8 of 8; BothDecodersAreScoredAlikeTests 5 of 5 (parity.md
+moved only in its decode-time rows). The task 2 test red at 28 of 31
+as committed. git diff 7e209cb4 over the transmit files, git diff
+19109b51 -- src/Hamlet.RadioEngine/Cw/Second/ and -- src all empty; the
+port's texts byte-identical and ours identical to task 0's saves.
+.run-unit/fldigi untracked. output.md validated, six of six.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
