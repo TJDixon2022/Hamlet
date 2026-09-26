@@ -391,6 +391,164 @@ public sealed class WhereTheSureWrongLettersComeFromTests
         Assert.Equal(metric, wrongs.Count);
     }
 
+    /// <summary>
+    /// The margin bins, set before any margin was read (work instruction 442,
+    /// task 2): below nought, then doubling from a half to 128 nats.
+    /// </summary>
+    internal static readonly double[] MarginEdges = { 0, 0.5, 1, 2, 4, 8, 16, 32, 64, 128 };
+
+    private static string MarginBin(double margin)
+    {
+        if (double.IsNaN(margin))
+        {
+            return "unmeasured";
+        }
+
+        if (margin < MarginEdges[0])
+        {
+            return "below 0";
+        }
+
+        for (var e = 1; e < MarginEdges.Length; e++)
+        {
+            if (margin < MarginEdges[e])
+            {
+                return string.Create(CultureInfo.InvariantCulture, $"{MarginEdges[e - 1]} to {MarginEdges[e]}");
+            }
+        }
+
+        return string.Create(CultureInfo.InvariantCulture, $"{MarginEdges[^1]} and over");
+    }
+
+    /// <summary>
+    /// The edge below which the sure letters the key calls wrong or added
+    /// outnumber the ones it calls right, counted over everything below it; the
+    /// highest such edge, or null where there is none.
+    /// </summary>
+    /// <param name="bad">Each wrong or added letter's margin.</param>
+    /// <param name="good">Each right letter's margin.</param>
+    /// <returns>The edge, or null.</returns>
+    /// <remarks>
+    /// The rule was written before the table was read (work instruction 442,
+    /// task 2): "the bin edge below which the trace shows wrong letters outnumber
+    /// right", read as everything below the edge. A letter with no margin
+    /// counts in no bin.
+    /// </remarks>
+    internal static double? MarginEdge(IReadOnlyList<double> bad, IReadOnlyList<double> good)
+    {
+        double? edge = null;
+
+        foreach (var e in MarginEdges)
+        {
+            if (bad.Count(m => m < e) > good.Count(m => m < e))
+            {
+                edge = e;
+            }
+        }
+
+        return edge;
+    }
+
+    /// <remarks>
+    /// Proves nothing about the decoder; prints the fact task 2 of work
+    /// instruction 442 asks for. For every sure letter on the keyed recordings,
+    /// right, wrong and added: the recording, the sent and emitted letters, the
+    /// margin of the reading emitted over its best rival on the path's own
+    /// lattice (<see cref="CwCharacter.MarginLlr"/>), the span's ratio against
+    /// silence, and the window's marks' unit over the path's unit as unit 441's
+    /// printer gives it. Then the margin in fixed bins, wrong or added against
+    /// right, and the edge the rule in <see cref="MarginEdge"/> takes from it.
+    /// Asserts only that it traced the metric's own sure count.
+    /// </remarks>
+    [Fact]
+    public void EachSureLetterAgainstItsNearestRival()
+    {
+        var letters = new List<(string Name, CwCharacter C, string Sent, string Class, double WindowRatio)>();
+
+        foreach (var keyed in WhatTheStrayLettersRestOnTests.KeyedRecordings)
+        {
+            var heard = Decode(keyed.Name);
+            var settled = heard.Settled;
+
+            foreach (var score in keyed.Score(CwReading.Of(settled)))
+            {
+                var covered = TheRequirementsAreMeasuredTests.Covered(settled, score);
+                var characters = covered.Where(c => !c.IsWordGap).ToList();
+                var alignment = CwMetrics.Align(CwMetrics.Symbols(covered), score.Key, CwKeyKind.Inferred);
+                var d = 0;
+
+                foreach (var step in alignment.Steps)
+                {
+                    if (step.Decoded is null)
+                    {
+                        continue;
+                    }
+
+                    var c = characters[d++];
+
+                    if (step.Decoded.Value.Class != CwSymbolClass.Sure)
+                    {
+                        continue;
+                    }
+
+                    var at = settled.ToList().IndexOf(c);
+                    var unitMs = c.WordsPerMinute > 0 ? 1200.0 / c.WordsPerMinute : double.NaN;
+                    var kind = step.Key is null ? "added"
+                        : string.Equals(step.Key, step.Decoded.Value.Text, StringComparison.Ordinal) ? "right" : "wrong";
+
+                    letters.Add((keyed.Name, c, step.Key ?? "-", kind, heard.Speed[at].WindowMarksUnit / unitMs));
+                }
+            }
+        }
+
+        _output.WriteLine("rival | recording | at s | sent | emitted | class | pattern | margin over the rival, nats | span ratio against silence | margin over span | window marks over the path's unit | bin");
+
+        foreach (var (name, c, sent, kind, windowRatio) in letters)
+        {
+            _output.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"rival | {name} | {c.At.TotalSeconds:0.000} | `{sent}` | `{c.Text}` | {kind} | {c.Pattern} | {c.MarginLlr:G4} | "
+                + $"{c.SpanLogLikelihoodRatio:G4} | {c.MarginShareForRecord:G3} | {windowRatio:0.00} | {MarginBin(c.MarginLlr)}"));
+        }
+
+        var bad = letters.Where(l => l.Class != "right").Select(l => l.C.MarginLlr).Where(m => !double.IsNaN(m)).ToList();
+        var good = letters.Where(l => l.Class == "right").Select(l => l.C.MarginLlr).Where(m => !double.IsNaN(m)).ToList();
+
+        _output.WriteLine("bin | margin, nats | wrong or added | right | wrong or added below the bin's top | right below the bin's top");
+
+        var bins = new[] { "below 0" }
+            .Concat(MarginEdges.Zip(MarginEdges.Skip(1), (a, b) => string.Create(CultureInfo.InvariantCulture, $"{a} to {b}")))
+            .Concat(new[] { string.Create(CultureInfo.InvariantCulture, $"{MarginEdges[^1]} and over"), "unmeasured" });
+        int cumBad = 0, cumGood = 0;
+
+        foreach (var bin in bins)
+        {
+            var inBad = letters.Count(l => l.Class != "right" && MarginBin(l.C.MarginLlr) == bin);
+            var inGood = letters.Count(l => l.Class == "right" && MarginBin(l.C.MarginLlr) == bin);
+
+            cumBad += bin == "unmeasured" ? 0 : inBad;
+            cumGood += bin == "unmeasured" ? 0 : inGood;
+
+            _output.WriteLine($"bin | {bin} | {inBad} | {inGood} | {cumBad} | {cumGood}");
+        }
+
+        var edge = MarginEdge(bad, good);
+
+        _output.WriteLine(
+            $"total | {letters.Count} sure letters: {letters.Count(l => l.Class == "right")} right, "
+            + $"{letters.Count(l => l.Class == "wrong")} wrong, {letters.Count(l => l.Class == "added")} added | "
+            + $"{letters.Count(l => double.IsNaN(l.C.MarginLlr))} unmeasured | "
+            + (edge is { } e
+                ? string.Create(CultureInfo.InvariantCulture, $"edge {e} nats: below it {bad.Count(m => m < e)} wrong or added against {good.Count(m => m < e)} right")
+                : "no edge: nowhere below an edge do wrong or added outnumber right"));
+
+        var metric = TheRequirementsAreMeasuredTests.Real
+            .Where(m => m.NotComputable is null)
+            .SelectMany(m => m.Stretches)
+            .Sum(a => CwMetrics.SureErrors(a).SureEmitted);
+
+        Assert.Equal(metric, letters.Count);
+    }
+
     private static string Reading(Wrong w)
         => w.Held
             ? string.Create(CultureInfo.InvariantCulture,

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 442 - sure has to mean something
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T21:13:36-04:00
-NOTE: Floors re-banked: captures 51/51, named 12/13 (17:37 left red, V-11), CF engine 178/178; committing
+UPDATED: 2026-09-25T21:23:38-04:00
+NOTE: Confidence: rival trace shows no edge (4 wrong vs 13 right under 0.5 nats); committing it, then building the class change
 
 ---
 

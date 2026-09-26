@@ -1,0 +1,35 @@
+unit442 task 2: the rival trace - every sure letter's margin over its nearest rival (2.2)
+
+CwProbabilisticDecoder.RivalMargin: on the path's own lattice, over a
+letter's own span, the two best distinct readings (dits, dahs and
+where letters split), scored as DecodeAt scores; margin is the emitted
+reading's score less the best other one's, in nats. The stream carries
+it into CwCharacter.MarginLlr, the sidecar's seam that was never set.
+The class is not changed here: every letter still prints as it did.
+Floors unchanged: captures 51 of 51, adjudicated 13 of 13, named 12 of
+13 (17:37, left red at task 1); captures 125 s to 130 s.
+
+EachSureLetterAgainstItsNearestRival, a printer: all 421 sure letters
+on the 23 keyed recordings, inferred keys. Bins set before reading:
+
+  margin, nats | wrong or added | right
+  below 0      |  0 |   0
+  0 to 0.5     |  4 |  13
+  0.5 to 1     |  3 |   3
+  1 to 2       |  7 |  28
+  2 to 4       |  8 |  84
+  4 to 8       |  1 |  35
+  8 to 16      |  3 |  54
+  16 to 32     |  5 |  60
+  32 to 64     |  1 |  32
+  64 to 128    |  2 |  25
+  128 and over | 13 |  40
+
+No edge: below every edge right letters outnumber wrong or added, and
+no bin holds only wrong letters. 13 of the 47 sit above 128 nats.
+
+Window marks over the path's unit, same letters: under 0.33 1 to 0;
+0.33 to 0.50 5 to 17; 0.50 to 0.67 3 to 39; 0.67 to 0.80 5 to 43;
+0.80 to 1.25 33 to 275.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

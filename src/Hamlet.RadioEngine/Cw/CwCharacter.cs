@@ -155,22 +155,25 @@ public sealed record CwCharacter(
     public const double WidestRecordedLlr = 1_000_000;
 
     /// <summary>
-    /// The margin between the winning path and its best rival over this
-    /// character. Not measured by this decoder.
+    /// The margin between the reading emitted and its best rival over this
+    /// character's own span.
     /// </summary>
     /// <remarks>
-    /// **NaN, BECAUSE THIS DECODER NEVER COMPARES TWO PATHS AND NEVER SETS IT**
-    /// (work instruction 392, a seam for today's application and its tests;
-    /// §0.0). The figure belongs to the posterior the August rework added and
-    /// step 1 took back out; the sheet prints NaN as "unmeasured". HEAD's shape,
-    /// so a test of the sheet can still hand it a figure.
+    /// <para>**SET BY THE STREAM FROM THE PATH'S OWN LATTICE** (work instruction
+    /// 442, task 2; <see cref="CwProbabilisticDecoder.RivalMargin"/>): the path's
+    /// score for the reading emitted less its score for the best different
+    /// reading of the same span, another letter or the same elements split, in
+    /// natural log. Negative where a rival scores better.</para>
+    /// <para>It was a seam for the sheet until then (work instruction 392), and
+    /// the sheet prints NaN as "unmeasured", which a pass that does not measure
+    /// it still returns.</para>
     /// </remarks>
     public double MarginLlr { get; init; } = double.NaN;
 
     /// <summary>The margin's share of the span, for the record.</summary>
     /// <remarks>
     /// HEAD's arithmetic (work instruction 392). NaN wherever
-    /// <see cref="MarginLlr"/> is, which for this decoder is always.
+    /// <see cref="MarginLlr"/> is.
     /// </remarks>
     public double MarginShareForRecord
         => double.IsNaN(SpanLogLikelihoodRatio)

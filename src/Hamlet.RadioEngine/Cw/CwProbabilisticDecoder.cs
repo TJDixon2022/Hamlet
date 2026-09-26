@@ -114,12 +114,19 @@ public readonly record struct CwPathGap(int StartHop, int EndHop, bool IsWordGap
 /// explains as well or better, which is exactly HM-DEC-007's case: a wrong
 /// decode with the evidence attached is a regression test.</para>
 /// </remarks>
+/// <param name="RivalMargin">
+/// How much better the reading emitted explains this character's span than the
+/// best different reading of the same span, in the path's own score: another
+/// character, or the same elements split into several. NaN where unmeasured.
+/// See <see cref="CwProbabilisticDecoder.RivalMargin"/>.
+/// </param>
 public readonly record struct CwProbabilisticCharacter(
     string Text,
     string Pattern,
     int EndHop,
     double SpanLogLikelihoodRatio = 0,
-    int SpanHops = 0)
+    int SpanHops = 0,
+    double RivalMargin = double.NaN)
 {
     /// <summary>
     /// The character's own evidence per hop, in the units
@@ -778,6 +785,14 @@ public static class CwProbabilisticDecoder
 
         var ratio = (bestScore - nothingAtAll) / envelope.Count;
 
+        // **EACH LETTER AGAINST ITS NEAREST RIVAL, ON THE SAME LATTICE** (work
+        // instruction 442, task 2). Only where something will be read, so a
+        // window of noise costs nothing more than it did.
+        if (ungated || ratio >= Gate)
+        {
+            bestCharacters = WithRivals(bestCharacters, bestWpm, keyDown, keyUp, gapMilliseconds);
+        }
+
         if (ungated)
         {
             return new CwProbabilisticResult(
@@ -1287,6 +1302,222 @@ public static class CwProbabilisticDecoder
             best[count],
             Spell(count, fromHop, kindAt, downTo, upTo),
             kindAt[count]);
+    }
+
+    /// <summary>Every character with its margin over the best rival reading of its span.</summary>
+    /// <param name="characters">What the path spelled.</param>
+    /// <param name="wpm">The speed the path was read at.</param>
+    /// <param name="keyDown">Per-hop log-likelihood the key is down.</param>
+    /// <param name="keyUp">Per-hop log-likelihood the key is up.</param>
+    /// <param name="gapMilliseconds">This sender's own gaps, or null for one, three and seven units.</param>
+    /// <returns>The same characters, each carrying <see cref="CwProbabilisticCharacter.RivalMargin"/>.</returns>
+    private static IReadOnlyList<CwProbabilisticCharacter> WithRivals(
+        IReadOnlyList<CwProbabilisticCharacter> characters,
+        double wpm,
+        double[] keyDown,
+        double[] keyUp,
+        IReadOnlyList<double>? gapMilliseconds)
+    {
+        if (characters.Count == 0 || wpm <= 0)
+        {
+            return characters;
+        }
+
+        var count = keyDown.Length;
+        var downTo = new double[count + 1];
+        var upTo = new double[count + 1];
+
+        for (var i = 0; i < count; i++)
+        {
+            downTo[i + 1] = downTo[i] + keyDown[i];
+            upTo[i + 1] = upTo[i] + keyUp[i];
+        }
+
+        var want = new double[Kinds.Length];
+
+        for (var k = 0; k < Kinds.Length; k++)
+        {
+            want[k] = gapMilliseconds is { Count: 3 } && !Kinds[k].IsKeyDown
+                ? gapMilliseconds[k - 2] / HopMilliseconds
+                : Kinds[k].Units * (1200.0 / wpm / HopMilliseconds);
+        }
+
+        return characters
+            .Select(c => c.Pattern.Length == 0
+                ? c
+                : c with { RivalMargin = RivalMargin(c.Pattern, c.EndHop - c.SpanHops, c.EndHop, downTo, upTo, want) })
+            .ToList();
+    }
+
+    /// <summary>
+    /// How much better one reading of a span scores than the best different
+    /// reading of the same span.
+    /// </summary>
+    /// <param name="pattern">The reading emitted, dits and dahs.</param>
+    /// <param name="from">The hop its first mark began at.</param>
+    /// <param name="to">The hop its last mark ended at.</param>
+    /// <param name="downTo">Cumulative key-down log-likelihood.</param>
+    /// <param name="upTo">Cumulative key-up log-likelihood.</param>
+    /// <param name="want">Each kind's expected length in hops, at the path's speed and gaps.</param>
+    /// <returns>
+    /// The margin in the path's own score; negative where a rival scores better
+    /// than the reading emitted, and negative infinity where two do; positive
+    /// infinity where the span admits no other reading; NaN where the span cannot
+    /// be read at all.
+    /// </returns>
+    /// <remarks>
+    /// <para>**THE SAME LATTICE THE PATH WAS CHOSEN ON, OVER THE LETTER'S OWN
+    /// SPAN** (work instruction 442, task 2). Every segment is scored exactly as
+    /// <see cref="DecodeAt"/> scores it, evidence less the length penalty, between
+    /// the same shortest and longest spans. The span begins where the letter's
+    /// first mark began and ends where its last mark ended, so the gaps either
+    /// side of it are the path's and are shared by every reading; they cancel.</para>
+    /// <para>**A READING IS THE DITS AND DAHS AND WHERE THE LETTERS SPLIT.** A
+    /// gap between letters and a gap between words both split, and are one token,
+    /// so a rival differs from the letter in what an operator would read. Two
+    /// segmentations that spell the same reading are the same reading, and the
+    /// better of them stands for it.</para>
+    /// <para>**TWO BEST DISTINCT READINGS INTO EACH HOP ARE ENOUGH, AND EXACTLY.**
+    /// What follows a hop is scored the same whatever came before it, so a prefix
+    /// that two others beat into a hop cannot finish ahead of both of them; and
+    /// only the best and second best are wanted at the end. Each hop keeps its two
+    /// best apart by whether the segment into it was a mark, where
+    /// <see cref="DecodeAt"/> keeps one; the rival can therefore score better than
+    /// the letter the path emitted, and the margin is then negative.</para>
+    /// <para>**THE UNIT IS A NATURAL LOG, THE PATH'S OWN.** It is the log of how
+    /// many times likelier the audio is under the reading emitted than under its
+    /// rival, length penalty included.</para>
+    /// </remarks>
+    internal static double RivalMargin(
+        string pattern, int from, int to, double[] downTo, double[] upTo, double[] want)
+    {
+        var length = to - from;
+
+        if (from < 0 || length <= 0 || to >= downTo.Length || pattern.Length > 31)
+        {
+            return double.NaN;
+        }
+
+        // [hop from the span's start, 1 when the segment into it was a mark, slot]
+        var codes = new ulong[length + 1, 2, 2];
+        var scores = new double[length + 1, 2, 2];
+
+        for (var i = 0; i <= length; i++)
+        {
+            for (var d = 0; d < 2; d++)
+            {
+                scores[i, d, 0] = double.NegativeInfinity;
+                scores[i, d, 1] = double.NegativeInfinity;
+            }
+        }
+
+        // The span opens on a gap the path chose, so the first segment is a mark.
+        codes[0, 0, 0] = 1;
+        scores[0, 0, 0] = 0;
+
+        void Offer(int i, int d, ulong code, double score)
+        {
+            if (codes[i, d, 0] == code && !double.IsNegativeInfinity(scores[i, d, 0]))
+            {
+                scores[i, d, 0] = Math.Max(scores[i, d, 0], score);
+                return;
+            }
+
+            if (codes[i, d, 1] == code && !double.IsNegativeInfinity(scores[i, d, 1]))
+            {
+                scores[i, d, 1] = Math.Max(scores[i, d, 1], score);
+            }
+            else if (score > scores[i, d, 1])
+            {
+                codes[i, d, 1] = code;
+                scores[i, d, 1] = score;
+            }
+            else
+            {
+                return;
+            }
+
+            if (scores[i, d, 1] > scores[i, d, 0])
+            {
+                (codes[i, d, 0], codes[i, d, 1]) = (codes[i, d, 1], codes[i, d, 0]);
+                (scores[i, d, 0], scores[i, d, 1]) = (scores[i, d, 1], scores[i, d, 0]);
+            }
+        }
+
+        for (var i = 1; i <= length; i++)
+        {
+            for (var k = 0; k < Kinds.Length; k++)
+            {
+                var kind = Kinds[k];
+                var shortest = Math.Max(1, (int)(want[k] * ShortestShare));
+                var longest = Math.Max(shortest + 1, (int)(want[k] * LongestShare));
+                var ceiling = Math.Min(longest, i);
+                var down = kind.IsKeyDown ? 1 : 0;
+                ulong token = k switch { 0 => 1UL, 1 => 2UL, 2 => 0UL, _ => 3UL };
+
+                for (var span = shortest; span <= ceiling; span++)
+                {
+                    var j = i - span;
+                    var off = Math.Log(Math.Max(span, 1e-9) / want[k]) / LengthToleranceShare;
+                    var evidence = kind.IsKeyDown
+                        ? downTo[from + i] - downTo[from + j]
+                        : upTo[from + i] - upTo[from + j];
+                    var step = evidence - (0.5 * off * off);
+
+                    // Elements alternate: into a mark only from a gap, and back.
+                    var before = 1 - down;
+
+                    for (var slot = 0; slot < 2; slot++)
+                    {
+                        var prior = scores[j, before, slot];
+
+                        if (double.IsNegativeInfinity(prior))
+                        {
+                            continue;
+                        }
+
+                        var code = codes[j, before, slot];
+
+                        if (token != 0)
+                        {
+                            if (code >= 1UL << 62)
+                            {
+                                continue;
+                            }
+
+                            code = (code << 2) | token;
+                        }
+
+                        Offer(i, down, code, prior + step);
+                    }
+                }
+            }
+        }
+
+        var emitted = 1UL;
+
+        foreach (var element in pattern)
+        {
+            emitted = (emitted << 2) | (element == '-' ? 2UL : 1UL);
+        }
+
+        var best = scores[length, 1, 0];
+        var second = scores[length, 1, 1];
+
+        if (double.IsNegativeInfinity(best))
+        {
+            return double.NaN;
+        }
+
+        if (codes[length, 1, 0] == emitted)
+        {
+            return double.IsNegativeInfinity(second) ? double.PositiveInfinity : best - second;
+        }
+
+        // Second, the rival first; or not in the two best, so two rivals beat it.
+        return codes[length, 1, 1] == emitted && !double.IsNegativeInfinity(second)
+            ? second - best
+            : double.NegativeInfinity;
     }
 
     /// <summary>
