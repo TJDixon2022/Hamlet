@@ -49,6 +49,9 @@ case "$1" in
     sh $R "req093-$2" engine 300 "$3" "Test: the HM-REQ-093 cases alone" "FullyQualifiedName~.ThePitchSaysWhetherItWasProvedTests." --no-build
     grep -a "HM-REQ-093 |" .run-unit/unit452-req093-$2.txt | cut -c1-400
     ;;
+  wbetrace)
+    sh $R "wbe-trace-$2" engine 600 "$3" "Trace: MET-WBE per condition and every wrong word boundary with its gap, thresholds, marks and spacing" "FullyQualifiedName~.WhereTheWordBoundariesGoWrongTests." --no-build
+    ;;
   trace)
     sh $R "trace-$2" engine 600 "$3" "Tracing the sure-wrong letters with their speeds" "FullyQualifiedName~.WhereTheSureWrongLettersComeFromTests." --no-build
     ;;

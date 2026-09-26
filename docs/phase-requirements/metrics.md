@@ -9,6 +9,77 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 452 - MET-WBE per condition, HM-REQ-080 and 081 measured (6.3)
+
+MET-WBE = word gaps inserted or deleted / words sent (`CW_SPEC.md` 11), scored by
+`CwMetrics.WordBoundaries` apart from the letters (HM-REQ-082). At HEAD `a523b39e`, which decodes as
+`6d40cc90` did. Printed by `WhereTheWordBoundariesGoWrongTests` (asserts nothing), whose counts
+agree with the metric's on every condition; printout `.run-unit/unit452-wbe-trace.txt`.
+
+| condition | key | words | inserted | deleted | MET-WBE | HM-REQ-080 | HM-REQ-081 |
+|---|---|---|---|---|---|---|---|
+| real, sender not stated in `CW_SPEC.md` (20 recordings) | inferred | 97 | 32 | 7 | 0.4021 | not a CH-* condition (7.4) | not a CH-* condition (7.4) |
+| real, TX-FARNS, 7.052 traffic net `004507` | inferred | 11 | 7 | 0 | 0.6364 | not a CH-* condition (7.4) | not a CH-* condition (7.4) |
+| real, TX-ITU, KD0UN `012403` | inferred | 4 | 0 | 0 | 0.0000 | not a CH-* condition (7.4) | not a CH-* condition (7.4) |
+| real, TX-TIGHT, `013347` | inferred | 1 | 0 | 0 | 0.0000 | not a CH-* condition (7.4) | not a CH-* condition (7.4) |
+| **real, total** | inferred | 113 | 39 | 7 | **0.4071** | | |
+| real, 17:37 alone, key `CQ CQ CQ DE WB6RED WB6RED` | inferred | 6 | 6 | 1 | 1.1667 | **not met, 7 over 6** (the row's named key) | - |
+| synthetic, TX-ITU, 15 dB in the passband (12, 18, 25 WPM) | exact | 21 | 0 | 0 | 0.0000 | met on this case; its own condition not measurable here | - |
+| synthetic, TX-ITU, 5 dB in the passband | exact | 21 | 0 | 0 | 0.0000 | - | - |
+| synthetic, TX-ITU, 0 dB in the passband | exact | 21 | 0 | 18 | 0.8571 | - | not met on this case, 0.857 against 0.05; its own condition not measurable here |
+| synthetic, character gap 5, 15 dB in the passband (18 WPM) | exact | 7 | 10 | 4 | 2.0000 | not met on this case, 14 over 7; its own condition not measurable here | - |
+| synthetic, character gap 5, 5 dB in the passband | exact | 7 | 9 | 1 | 1.4286 | - | - |
+| synthetic, character gap 5, 0 dB in the passband | exact | 7 | 0 | 6 | 0.8571 | - | not met on this case, 0.857; its own condition not measurable here |
+| **synthetic, total** | exact | 84 | 19 | 29 | **0.5714** | | |
+
+**What each case is.** The synthetic set sends `CQ CQ CQ DE N0CALL N0CALL K`, 1:3:1:3:7 scaled from
+the dit, at 12, 18 and 25 WPM, and a 1:5 character gap row at 18 WPM; the noise is a shaped band,
+350 to 870 Hz, with the SNR measured in that 520 Hz passband, no fading. Neither is `CH-AWGN`, and
+no level is stated in the 2500 Hz reference. By arithmetic alone 15, 5 and 0 dB in 520 Hz are
+about 8.2, -1.8 and -6.8 dB in 2500 Hz, so the 15 dB case is not HM-REQ-080's 15 dB and the 0 dB
+case is only near the floor (-7 dB at 20 WPM; about -9.2, -7.5 and -6.0 at 12, 18 and 25). The
+character-gap-5 row is inside TX-FARNS's character gap and is not a full TX-FARNS profile (its
+character speed equals its overall speed). The verdicts on these cases are stated because the
+instruction asks for them; none is the requirement's own condition.
+
+**Not measurable here** - every condition either requirement names:
+- HM-REQ-080 on TX-ITU, TX-KEYER-W, TX-FARNS and TX-TIGHT, each at 15 dB reference on CH-AWGN:
+  4 conditions. Built by 7.1 (CH-AWGN as a named profile) and 7.2 (the TX-* profiles).
+- HM-REQ-081 on every must-tier condition at the sensitivity floor: CH-AWGN, CH-LM, CH-MM and
+  CH-HM (`CW_SPEC.md` 9.2) at their floors, each with the four must-tier senders - 16 conditions.
+  Built by 7.1 and 7.2. No real recording is counted toward any of them (7.4).
+
+**Per recording**, every one with a boundary wrong, key's kind beside each: 17:37 inserted 6,
+deleted 1 over 6 words; `004507` 7, 0 over 11; `031838` 1, 0 over 10; `031905` 1, 0 over 7;
+`032012` 1, 1 over 10; `032050` 3, 1 over 10; `032113` 7, 0 over 4; `004108` 2, 0 over 2;
+`004133` 2, 0 over 1; `004205` 1, 0 over 3; `004234` 2, 2 over 5; `004322` 4, 2 over 8; `004347`
+1, 0 over 6; `004550` 1, 0 over 2 (all inferred); `cq-12wpm-0db`, `cq-18wpm-0db`, `cq-25wpm-0db`
+and `cq-18wpm-0db-char5` 0, 6 over 7 each; `cq-18wpm-15db-char5` 10, 4 over 7; `cq-18wpm-5db-char5`
+9, 1 over 7 (all exact).
+
+**The groups** (mechanism only, from the stream's own state; real, synthetic above 0 dB,
+synthetic at 0 dB):
+
+| group | real | synth | 0 dB | what they share |
+|---|---|---|---|---|
+| G1 inserted, no character gap measured, textbook word-from 4.58 u under the gap | 21 | 18 | 0 | the relabel had only the path's textbook boundary, and the gap it kept was a letter space of 4.6 to 7 u of the unit in force, shorter than that sender's shortest word space; of the 39 reads, 8 refused the character gap because the shortest heap was a key-up of 15 to 20 ms, 29 because there was no trough between the first two heaps, and 2 had under 12 gaps; 26 of the 39 windows hold a key-up under half a unit (`004507`, `031838`, `031905`, `032012`, `032050`, `032113`, `004133`, `004234`, `004322`, the character-gap-5 row) |
+| G2 inserted, this read's character gap x 1.53 under the gap | 9 | 0 | 0 | a character gap was measured, 4 of them on `004507` at 75 to 91 ms against that read's letter spaces of 250 to 300 ms |
+| G3 inserted, held gaps' word-from under the gap | 6 | 1 | 0 | 17:37 under held structure; its letter and word spaces overlap |
+| G4 deleted, the relabel took out a word gap the path read | 0 | 5 | 0 | the character-gap-5 row: its word gap is 1.4 times its letter gap, under the relabel's 1.53 |
+| G5 key letters lost between the two decoded letters | 5 | 0 | 0 | the space stands where letters were not read |
+| G6 no decoded letter on one side | 4 | 0 | 24 | nothing read there; at 0 dB nothing sure is read at all |
+| G7 deleted, the path read a letter gap | 1 | 0 | 0 | 17:37's `DE|WB6RED`, 245 ms against letter spaces to 320 ms |
+
+Spacing against the key, per recording: letter and word spaces overlap on 17:37 (letters to 4.71
+u, words from 3.50 u; 11 letter spaces at or past the shortest word space), as unit 444 found. On
+`031838`, `031905` and the character-gap-5 row at 15 dB the overlap is one outlier at a boundary the
+decode broke; every other recording's letter and word spaces are apart.
+
+**6.3 ticked** under the instruction's §3 (a): MET-WBE per condition with inserted and deleted
+apart and the key's kind beside each number; HM-REQ-080 not met on 17:37 (7 over 6, inferred),
+met on the TX-ITU 15 dB passband case and not met on the character-gap-5 15 dB case (exact);
+HM-REQ-081 not met on both 0 dB passband cases (0.857, exact); 20 conditions not measurable here.
+
 ## Unit 451 - HM-REQ-034 met: the speed carries a proof state
 
 HM-REQ-034 met by `TheSpeedSaysWhetherItWasProvedTests` (synthetic, exact construction); HM-REQ-035 met by `AClearKeepsWhatTheDecoderWorkedOutTests` and HM-REQ-036 met by `ARefinementKeepsTheTimingTests` (synthetic, exact construction, each green at HEAD before the change); task 1's hops by state over the 23 real keyed recordings, inferred keys: proved 61328, hypothesis 54494, none 22178, of which 30042 hypothesis hops in 21 recordings showed a bare number at HEAD; synthetic, exact keys: proved 24418, hypothesis 8056, none 23425, proved hops more than 10% off the constructed speed 0 of 24418; decoding unchanged, 63 of 63 recordings' text identical.

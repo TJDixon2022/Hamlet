@@ -1,0 +1,11 @@
+unit452 task 1: MET-WBE per condition, HM-REQ-080 and 081 measured (6.3)
+
+Real, inferred: 46 over 113 (39 inserted, 7 deleted), 0.4071. Synthetic,
+exact: 48 over 84 (19 inserted, 29 deleted), 0.5714. HM-REQ-080 not met
+on 17:37 against its inferred key (7 over 6); met on the TX-ITU 15 dB
+passband case, not met on the character-gap-5 15 dB case (14 over 7).
+HM-REQ-081 not met on both 0 dB passband cases (0.857). 20 conditions
+not measurable here, built by 7.1 and 7.2. 6.3 ticked in both copies of
+PHASE_PLAN.md under the instruction's 3 (a).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

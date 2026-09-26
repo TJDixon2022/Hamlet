@@ -1,0 +1,11 @@
+unit452 task 1: the word-boundary trace - 46 real wrong boundaries in 7 groups, largest G1 21 real and 18 synthetic: textbook word-from 4.58 u kept a letter space where no character gap was measured (6.3)
+
+WhereTheWordBoundariesGoWrongTests prints MET-WBE per condition with
+inserted and deleted apart and the key's kind, per recording, and every
+wrong boundary with its gap in ms and units, the thresholds in force and
+the read that set them, the speed and its proof state, the marks either
+side, and each recording's letter and word spaces against the key. Its
+counts agree with CwMetrics.WordBoundaries on every condition. It asserts
+nothing. Printout .run-unit/unit452-wbe-trace.txt. src untouched.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
