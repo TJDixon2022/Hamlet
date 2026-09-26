@@ -1,0 +1,180 @@
+13.440 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<321 ms/4.58u (path's word threshold) [no trough] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<321 ms/4.58u (path's word threshold) [no trough] (path element)
+13.585 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<321 ms/4.58u (path's word threshold) [no trough] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<321 ms/4.58u (path's word threshold) [no trough] (path element)
+13.870 | 60 ms/0.86u / 60 ms/0.86u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<321 ms/4.58u (path's word threshold) [no trough] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<321 ms/4.58u (path's word threshold) [no trough] (path element)
+14.005 | 235 ms/3.36u / 235 ms/3.36u | before: letter | HEAD: letter | key: letter |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path letter)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path letter)
+14.460 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path element)
+14.745 | 55 ms/0.79u / 55 ms/0.79u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path element)
+14.885 | 60 ms/0.86u / 60 ms/0.86u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<325 ms/4.65u (character gap x sqrt(7/3)) [measured (centroids 63/213/410 ms, clipped 63/213/410)] (path element)
+15.165 | 415 ms/5.93u / 415 ms/5.93u | before: word | HEAD: word | key: word |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<339 ms/4.84u (character gap x sqrt(7/3)) [measured (centroids 63/222/410 ms, clipped 63/222/410)] (path word)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<339 ms/4.84u (character gap x sqrt(7/3)) [measured (centroids 63/222/410 ms, clipped 63/222/410)] (path word)
+15.800 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<336 ms/4.80u (character gap x sqrt(7/3)) [measured (centroids 63/220/410 ms, clipped 63/220/410)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<336 ms/4.80u (character gap x sqrt(7/3)) [measured (centroids 63/220/410 ms, clipped 63/220/410)] (path element)
+15.940 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<336 ms/4.80u (character gap x sqrt(7/3)) [measured (centroids 63/220/410 ms, clipped 63/220/410)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<336 ms/4.80u (character gap x sqrt(7/3)) [measured (centroids 63/220/410 ms, clipped 63/220/410)] (path element)
+16.220 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<336 ms/4.80u (character gap x sqrt(7/3)) [measured (centroids 63/220/410 ms, clipped 63/220/410)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<336 ms/4.80u (character gap x sqrt(7/3)) [measured (centroids 63/220/410 ms, clipped 63/220/410)] (path element)
+16.365 | 225 ms/3.21u / 225 ms/3.21u | before: letter | HEAD: letter | key: letter |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path letter)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path letter)
+16.810 | 60 ms/0.86u / 60 ms/0.86u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path element)
+17.085 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path element)
+17.230 | 60 ms/0.86u / 60 ms/0.86u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<338 ms/4.83u (character gap x sqrt(7/3)) [measured (centroids 62/221/427 ms, clipped 62/221/427)] (path element)
+17.530 | 485 ms/6.69u / 485 ms/6.69u | before: word | HEAD: word | key: word |  
+   before stood on: textbook 1/3/7 on the path's unit 73/218/508 letter<126 ms/1.73u word<332 ms/4.58u relabel<342 ms/4.71u (character gap x sqrt(7/3)) [measured (centroids 62/224/427 ms, clipped 62/224/427)] (path word)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 73/218/508 letter<126 ms/1.73u word<332 ms/4.58u relabel<342 ms/4.71u (character gap x sqrt(7/3)) [measured (centroids 62/224/427 ms, clipped 62/224/427)] (path word)
+18.235 | 55 ms/0.79u / 55 ms/0.79u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 61/224/427 ms, clipped 61/224/427)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 61/224/427 ms, clipped 61/224/427)] (path element)
+18.370 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 61/224/427 ms, clipped 61/224/427)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 61/224/427 ms, clipped 61/224/427)] (path element)
+18.670 | 50 ms/0.71u / 50 ms/0.71u | before: element (inside `C`) | HEAD: element (inside `C`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 61/224/427 ms, clipped 61/224/427)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 61/224/427 ms, clipped 61/224/427)] (path element)
+18.800 | 240 ms/3.43u / 240 ms/3.43u | before: letter | HEAD: letter | key: letter |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path letter)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path letter)
+19.270 | 50 ms/0.71u / 50 ms/0.71u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path element)
+19.535 | 60 ms/0.86u / 60 ms/0.86u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path element)
+19.675 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `Q`) | HEAD: element (inside `Q`) | key: element |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path element)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<342 ms/4.88u (character gap x sqrt(7/3)) [measured (centroids 62/224/425 ms, clipped 62/224/425)] (path element)
+19.955 | 380 ms/5.43u / 380 ms/5.43u | before: word | HEAD: word | key: word |  
+   before stood on: textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<355 ms/5.07u (character gap x sqrt(7/3)) [measured (centroids 62/232/425 ms, clipped 62/232/425)] (path word)
+   HEAD stood on:   textbook 1/3/7 on the path's unit 70/210/490 letter<121 ms/1.73u word<321 ms/4.58u relabel<355 ms/5.07u (character gap x sqrt(7/3)) [measured (centroids 62/232/425 ms, clipped 62/232/425)] (path word)
+20.550 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `D`) | HEAD: element (inside `D`) | key: element |  
+   before stood on: measured gaps, held 63/232/425 letter<121 ms/1.72u word<314 ms/4.49u relabel<355 ms/5.07u (character gap x sqrt(7/3)) [measured (centroids 63/232/425 ms, clipped 63/232/425)] (path element)
+   HEAD stood on:   measured gaps, held 63/232/425 letter<121 ms/1.72u word<314 ms/4.49u relabel<355 ms/5.07u (character gap x sqrt(7/3)) [measured (centroids 63/232/425 ms, clipped 63/232/425)] (path element)
+20.695 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `D`) | HEAD: element (inside `D`) | key: element |  
+   before stood on: measured gaps, held 63/232/425 letter<121 ms/1.72u word<314 ms/4.49u relabel<355 ms/5.07u (character gap x sqrt(7/3)) [measured (centroids 63/232/425 ms, clipped 63/232/425)] (path element)
+   HEAD stood on:   measured gaps, held 63/232/425 letter<121 ms/1.72u word<314 ms/4.49u relabel<355 ms/5.07u (character gap x sqrt(7/3)) [measured (centroids 63/232/425 ms, clipped 63/232/425)] (path element)
+20.850 | 250 ms/3.57u / 250 ms/3.57u | before: letter | HEAD: letter | key: letter |  
+   before stood on: measured gaps, held 64/230/399 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/399 ms, clipped 64/230/399)] (path letter)
+   HEAD stood on:   measured gaps, held 64/230/399 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/399 ms, clipped 64/230/399)] (path letter)
+21.175 | 245 ms/3.50u / 245 ms/3.50u | before: letter | HEAD: letter | key: word |  
+   before stood on: measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/400 ms, clipped 64/230/400)] (path letter)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/400 ms, clipped 64/230/400)] (path letter)
+21.495 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `W`) | HEAD: element (inside `W`) | key: element |  
+   before stood on: measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/400 ms, clipped 64/230/400)] (path element)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/400 ms, clipped 64/230/400)] (path element)
+21.775 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `W`) | HEAD: element (inside `W`) | key: element |  
+   before stood on: measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/400 ms, clipped 64/230/400)] (path element)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<351 ms/5.02u (character gap x sqrt(7/3)) [measured (centroids 64/230/400 ms, clipped 64/230/400)] (path element)
+22.060 | 310 ms/4.43u / 310 ms/4.43u | before: letter | HEAD: letter | key: letter |  
+   before stood on: measured gaps, held 15/552/295 letter<91 ms/1.30u word<403 ms/5.76u relabel<403 ms/5.76u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path word)
+22.590 | 60 ms/0.86u / 60 ms/0.86u | before: letter | HEAD: element (inside `B`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 15/552/295 letter<91 ms/1.30u word<403 ms/5.76u relabel<403 ms/5.76u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path element)
+22.730 | 60 ms/0.86u / 60 ms/0.86u | before: letter | HEAD: element (inside `B`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 15/552/295 letter<91 ms/1.30u word<403 ms/5.76u relabel<403 ms/5.76u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path element)
+22.870 | 60 ms/0.86u / 60 ms/0.86u | before: letter | HEAD: element (inside `B`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 15/552/295 letter<91 ms/1.30u word<403 ms/5.76u relabel<403 ms/5.76u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 15/63/295 ms, clipped 15/552/295)] (path element)
+23.005 | 250 ms/3.57u / 250 ms/3.57u | before: letter | HEAD: letter | key: letter |  
+   before stood on: measured gaps, held 15/552/295 letter<91 ms/1.30u word<403 ms/5.76u relabel<403 ms/5.76u (path's word threshold) [no trough] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path letter)
+23.495 | 40 ms/0.57u / 40 ms/0.57u | before: letter | HEAD: element (inside `6`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 15/552/295 letter<91 ms/1.30u word<403 ms/5.76u relabel<403 ms/5.76u (path's word threshold) [no trough] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path element)
+23.610 | 65 ms/0.93u / 65 ms/0.93u | before: letter | HEAD: element (inside `6`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 15/552/295 letter<91 ms/1.30u word<403 ms/5.76u relabel<403 ms/5.76u (path's word threshold) [no trough] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path element)
+23.760 | 55 ms/0.79u / 55 ms/0.79u | before: letter | HEAD: element (inside `6`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 10/828/250 letter<91 ms/1.30u word<455 ms/6.50u relabel<455 ms/6.50u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path element)
+23.895 | 60 ms/0.86u / 60 ms/0.86u | before: letter | HEAD: element (inside `6`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 10/828/250 letter<91 ms/1.30u word<455 ms/6.50u relabel<455 ms/6.50u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path element)
+24.030 | 310 ms/4.43u / 310 ms/4.43u | before: letter | HEAD: word | key: letter | CHANGED key agrees with the old call
+   before stood on: measured gaps, held 10/828/250 letter<91 ms/1.30u word<455 ms/6.50u relabel<455 ms/6.50u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path word)
+   HEAD stood on:   measured gaps, held 64/230/400 letter<121 ms/1.73u word<303 ms/4.33u relabel<303 ms/4.33u (path's word threshold) [G1's condition: character past word (centroids 10/63/273 ms, clipped 10/828/250)] (path word)
+24.415 | 65 ms/0.93u / 65 ms/0.93u | before: element (inside `R`) | HEAD: element (inside `R`) | key: element |  
+   before stood on: measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [measured (centroids 63/135/290 ms, clipped 63/135/445)] (path element)
+   HEAD stood on:   measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [measured (centroids 63/135/290 ms, clipped 63/135/445)] (path element)
+24.695 | 80 ms/1.14u / 80 ms/1.14u | before: element (inside `R`) | HEAD: element (inside `R`) | key: element |  
+   before stood on: measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [measured (centroids 63/135/290 ms, clipped 63/135/445)] (path element)
+   HEAD stood on:   measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [measured (centroids 63/135/290 ms, clipped 63/135/445)] (path element)
+24.905 | 135 ms/1.93u / 135 ms/1.93u | before: letter | HEAD: letter | key: letter |  
+   before stood on: measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [not separated] (path letter)
+   HEAD stood on:   measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [not separated] (path letter)
+25.110 | 240 ms/3.43u / 240 ms/3.43u | before: word | HEAD: word | key: letter |  
+   before stood on: measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [not separated] (path word)
+   HEAD stood on:   measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [not separated] (path word)
+25.575 | 60 ms/0.86u / 60 ms/0.86u | before: element (inside `D`) | HEAD: element (inside `D`) | key: element |  
+   before stood on: measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [no trough] (path element)
+   HEAD stood on:   measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [no trough] (path element)
+25.710 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `D`) | HEAD: element (inside `D`) | key: element |  
+   before stood on: measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [no trough] (path element)
+   HEAD stood on:   measured gaps, held 63/135/445 letter<92 ms/1.32u word<245 ms/3.50u relabel<206 ms/2.95u (character gap x sqrt(7/3)) [no trough] (path element)
+25.865 | 330 ms/4.55u / 330 ms/4.55u | before: word | HEAD: word | key: word |  
+   before stood on: measured gaps, held 63/141/455 letter<94 ms/1.30u word<254 ms/3.50u relabel<254 ms/3.50u (path's word threshold) [measured (centroids 63/135/291 ms, clipped 63/141/455)] (path word)
+   HEAD stood on:   measured gaps, held 63/141/455 letter<94 ms/1.30u word<254 ms/3.50u relabel<254 ms/3.50u (path's word threshold) [measured (centroids 63/135/291 ms, clipped 63/141/455)] (path word)
+26.270 | 65 ms/0.93u / 65 ms/0.93u | before: letter | HEAD: element (inside `W`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 10/828/250 letter<91 ms/1.30u word<455 ms/6.50u relabel<455 ms/6.50u (path's word threshold) [G1's condition: character past word (centroids 10/60/274 ms, clipped 10/828/250)] (path word)
+   HEAD stood on:   measured gaps, held 63/141/455 letter<94 ms/1.35u word<254 ms/3.63u relabel<254 ms/3.63u (path's word threshold) [G1's condition: character past word (centroids 10/60/274 ms, clipped 10/828/250)] (path element)
+26.550 | 70 ms/1.00u / 70 ms/1.00u | before: letter | HEAD: element (inside `W`) | key: element | CHANGED key agrees with the new call
+   before stood on: measured gaps, held 10/828/250 letter<91 ms/1.30u word<455 ms/6.50u relabel<455 ms/6.50u (path's word threshold) [G1's condition: character past word (centroids 10/60/274 ms, clipped 10/828/250)] (path word)
+   HEAD stood on:   measured gaps, held 63/141/455 letter<94 ms/1.35u word<254 ms/3.63u relabel<254 ms/3.63u (path's word threshold) [G1's condition: character past word (centroids 10/60/274 ms, clipped 10/828/250)] (path element)
+26.830 | 320 ms/4.57u / 320 ms/4.57u | before: letter | HEAD: word | key: letter | CHANGED key agrees with the old call
+   before stood on: measured gaps, held 10/828/250 letter<91 ms/1.30u word<455 ms/6.50u relabel<455 ms/6.50u (path's word threshold) [no trough] (path word)
+   HEAD stood on:   measured gaps, held 63/141/455 letter<94 ms/1.35u word<254 ms/3.63u relabel<254 ms/3.63u (path's word threshold) [no trough] (path word)
+27.360 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `B`) | HEAD: element (inside `B`) | key: element |  
+   before stood on: measured gaps, held 60/137/438 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/135/296 ms, clipped 60/137/438)] (path element)
+   HEAD stood on:   measured gaps, held 60/137/438 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/135/296 ms, clipped 60/137/438)] (path element)
+27.520 | 45 ms/0.64u / 45 ms/0.64u | before: element (inside `B`) | HEAD: element (inside `B`) | key: element |  
+   before stood on: measured gaps, held 60/137/438 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/135/296 ms, clipped 60/137/438)] (path element)
+   HEAD stood on:   measured gaps, held 60/137/438 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/135/296 ms, clipped 60/137/438)] (path element)
+27.640 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `B`) | HEAD: element (inside `B`) | key: element |  
+   before stood on: measured gaps, held 60/137/438 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/135/296 ms, clipped 60/137/438)] (path element)
+   HEAD stood on:   measured gaps, held 60/137/438 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/135/296 ms, clipped 60/137/438)] (path element)
+27.785 | 275 ms/3.93u / 275 ms/3.93u | before: word | HEAD: word | key: letter |  
+   before stood on: measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/137/295 ms, clipped 60/138/436)] (path word)
+   HEAD stood on:   measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [measured (centroids 60/137/295 ms, clipped 60/138/436)] (path word)
+28.565 | 60 ms/0.86u / 60 ms/0.86u | before: element (inside `7`) | HEAD: element (inside `7`) | key: the alignment cannot say |  
+   before stood on: measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path element)
+   HEAD stood on:   measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path element)
+28.695 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `7`) | HEAD: element (inside `7`) | key: letter |  
+   before stood on: measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path element)
+   HEAD stood on:   measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path element)
+28.840 | 70 ms/1.00u / 70 ms/1.00u | before: element (inside `7`) | HEAD: element (inside `7`) | key: the alignment cannot say |  
+   before stood on: measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path element)
+   HEAD stood on:   measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path element)
+28.990 | 140 ms/2.00u / 140 ms/2.00u | before: letter | HEAD: letter | key: letter |  
+   before stood on: measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path letter)
+   HEAD stood on:   measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path letter)
+29.205 | 270 ms/3.86u / 270 ms/3.86u | before: word | HEAD: word | key: the alignment cannot say |  
+   before stood on: measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path word)
+   HEAD stood on:   measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path word)
+29.535 | 255 ms/3.64u / 255 ms/3.64u | before: word | HEAD: word | key: element |  
+   before stood on: measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path word)
+   HEAD stood on:   measured gaps, held 60/138/436 letter<91 ms/1.30u word<245 ms/3.50u relabel<245 ms/3.50u (path's word threshold) [no trough] (path word)
