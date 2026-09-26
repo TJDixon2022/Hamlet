@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-26T11:36:26-04:00  root C:\Source\HamLet
+measured 2026-09-26T15:17:23-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -10,6 +10,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      STOP is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,11 +22,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 0659ed8a
-  uncommitted at the root : 3
+  HEAD   : f20adf82
+  uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
+      D STOP
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -39,7 +41,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  328 lines, 23981 bytes
+  377 lines, 29344 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -52,6 +54,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 6 | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
   STEP: 7 | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
+  STEP: 9 | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
   
   ---
   
@@ -151,6 +154,26 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   and the speed, because both are measurable today with the metrics unit 439 built and both change
   what the operator reads. Rejected: opening with the invented characters, which are fewer and
   which step 3 takes immediately after.
+  
+  **R84 - Tim, 2026-09-26: two decoders must read the same audio.** *"Why aren't we using
+  something similar to Skimmer? Why don't we borrow known technology? We should have done this
+  months ago."* Ruled as section M of `CW_REQUIREMENTS.md`, v1.1, HM-REQ-120 to 129, and that
+  section governs; this plan only orders it. **fldigi's CW receive modem** - `src/cw_rtty/cw.cxx`,
+  GPL-3, W1HKJ and AG1LE - is ported faithfully as the second decoder (122). Every character the
+  operator sees has been read by both (120); the operator sees one transcript (121). **The order
+  is fixed by the requirements**: the second decoder is scored beside ours on every recording
+  before it votes (123); it votes only where its confidence is calibrated against the keys (124);
+  agreement emits with the more confident's class (125); disagreement goes to the higher
+  calibrated confidence (126); a tie is dim, never sure (127); and the arbitration is switched off
+  on any condition where it loses to the better decoder alone (128). Rejected: the port as a bench
+  instrument only; replacing ours with the port.
+  
+  **R85 - Tim, 2026-09-25: a CW question is never raised to the owner.** *"I don't know jack
+  squat about CW... I'm the answerer of last resort."* A question about a metric, a threshold, a
+  floor, a definition or what the decoder should do is answered from `CW_REQUIREMENTS.md`,
+  `CW_SPEC.md`, the radio's manual, the second decoder's source and research, recorded as the
+  arbiter's reading and overrulable, and **never parked for the owner**. The owner is asked about
+  what he sees on screen, what he hears at the radio, and the three stops. Nothing else.
   
   ## Â§3 What is different from the phases before it
   
@@ -271,10 +294,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Exit:**
   - [ ] 6.1 The v1 character table of `CW_SPEC.md` is generated from the vendored source rather than written as constants, and HM-REQ-070 has a test naming it.
-  - [ ] 6.2 HM-REQ-071 and 072, prosigns emitted as one symbol and named per the terminal's setting, each have a test naming them and the report states whether each is met.
+  - [x] 6.2 HM-REQ-071 and 072, prosigns emitted as one symbol and named per the terminal's setting, each have a test naming them and the report states whether each is met.
   - [x] 6.3 MET-WBE is reported per condition and HM-REQ-080 and 081 are measured against it.
   - [ ] 6.4 HM-REQ-083, one set of word boundaries for any span between the live and settled renderings, has a test naming it.
-  - [ ] 6.5 HM-REQ-084 is measured on its named spans - `WEEKEND`, `THINKING`, `FLEX`, `ABOVE`, `BREEZE`, `USED TO USE A FIRM` - and the report prints what each reads at HEAD.
+  - [x] 6.5 HM-REQ-084 is measured on its named spans - `WEEKEND`, `THINKING`, `FLEX`, `ABOVE`, `BREEZE`, `USED TO USE A FIRM` - and the report prints what each reads at HEAD.
   - [ ] 6.6 The three floor tests and both carry-forward lines are green at exit.
   
   **Depends on:** steps 0 and 1.
@@ -312,12 +335,31 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   **Depends on:** steps 2 to 7.
   
+  ## Step 9 - Two decoders read the same audio
+  
+  **Delivers:** section M, HM-REQ-120 to 129. **Preferred over steps 2 to 7 until 9.2 is met**,
+  because every later change to ours is better aimed with the comparison in hand.
+  
+  **Entry:** steps 0 and 1 met; `CW_REQUIREMENTS.md` v1.1 with section M at the root.
+  
+  **Exit:**
+  - [ ] 9.1 HM-REQ-122: fldigi's CW receive modem is ported to C# under `src/Hamlet.RadioEngine/Cw/Second/` as `FldigiCwDecoder`, faithful to the upstream source, receive path only, no word or dictionary logic, with the GPL-3 notice, the authors and the upstream commit in the file; it decodes one synthetic case whose key is exact, and the report names every function ported and every one left out.
+  - [ ] 9.2 HM-REQ-123: both decoders read every keyed recording and the synthetic set through the same harness and are scored through the same scorer and metrics; `docs/phase-requirements/parity.md` tables MET-CER-SURE, MET-INVENTED, sure-and-right coverage and MET-WBE for each, per recording and per condition, with the key's kind, and states how the second decoder's unclassed output was mapped.
+  - [ ] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
+  - [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
+  - [ ] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
+  - [ ] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
+  - [ ] 9.7 HM-REQ-128: the arbitrated output is measured against each decoder alone on every metric of sections B and I on every condition, and where it loses on a condition the arbitration is switched off there and the better decoder alone is used; the report tables all three per condition.
+  - [ ] 9.8 The three floor tests and both carry-forward lines are green at exit.
+  
+  **Depends on:** steps 0 and 1.
+  
   ## Â§5 Dependencies
   
   Steps 0 and 1 are met by the hand-run unit 439 and are ticked at the next unit's task 0 from
   its report. **Steps 2, 3, 4, 5, 6 and 7 each depend only on those two**, so there are six
-  independent places to route and the loop need never stall for want of work. **Step 8 is last
-  and no unit is authored against it while any criterion of steps 2 to 7 is open** (R80).
+  independent places to route and the loop need never stall for want of work. **Step 9 is preferred until 9.2 is met** (R84). **Step 8 is last
+  and no unit is authored against it while any criterion of steps 2 to 7 or 9 is open** (R80).
   
   ## Â§6 Branching
   
@@ -341,6 +383,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - **No fixture is admitted by lowering a gate** (V-04), and **no separation limit, confirmation
     rule or plausibility bound is loosened to pass a fixture** (V-14).
   - **A run lost before any assertion** counts neither way and is re-run once.
+  - **A CW question is answered from the documents, never raised to the owner** (R85).
+  - **The second decoder is faithful, not improved** (HM-REQ-122, 129). A technique goes into
+    ours, judged under R78; the second decoder stays as ported.
+  - **The second decoder votes only where it is calibrated** (HM-REQ-124), and the arbitration
+    is switched off on any condition where it loses to a single decoder (HM-REQ-128).
   - **No unit is authored for the record or for the tests** (R80) while a criterion of steps 2 to
     7 is open and authorable. A unit records a ruling only when its own instruction carries one.
   - **Anything would change what keys or transmits.** `MOVE: stop`.
@@ -360,6 +407,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§8 Revision record
   
+  - **2026-09-26.** R84 two decoders read the same audio, ordered by section M of
+    `CW_REQUIREMENTS.md` v1.1; step 9 with eight criteria, preferred until the parity table
+    exists. R85 a CW question is answered from the documents and never raised to the owner.
+  
   - **2026-09-25, after unit 439's hand run.** R80 the record and the tests come last, as step 8;
     R81 MET-CER-SURE and MET-INVENTED come first, as steps 2 and 3, on unit 439's measurement of
     67 invented - 13 added and 54 sure-but-wrong - where the tree had been counting 17. Steps 2
@@ -370,13 +421,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  15 lines, 2239 bytes
+  16 lines, 2585 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 2
-  WORK_INSTRUCTION: 452 - where the words break
-  HEARTBEAT: 2026-09-26 11:36:24
+  WORK_INSTRUCTION: 456 - fldigi's CW receiver, ported as the second decoder
+  HEARTBEAT: 2026-09-26 15:17:20
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -386,9 +437,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 6 | partial | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
   STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | not started | The record and the tests are put right - last, not first: the decision log, the traceability table, the 43 tests that measure something other than what their requirement states, and the 63 requirements with no test.
+  STEP: 9 | not started | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
   --- PHASE_OUTCOME.md ---
-  419 lines, 84704 bytes
+  528 lines, 104876 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -401,6 +453,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 6 | partial | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
   STEP: 7 | not started | The conditions can be generated - sections E, F and G: channel, sender and interference profiles, which nothing in the tree produces today.
   STEP: 8 | not started | Tim at the radio - CW on 20 m or 40 m, text on the CW tab that reads as what was sent, and he says it read.
+  STEP: 9 | not started | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
   
   ## UNIT 439 - STEP 0
   
@@ -808,6 +861,114 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: Criterion 6.3 is met, since the report gives MET-WBE for each condition with inserted and deleted boundaries apart, 37 over 113 real and 44 over 84 synthetic, and states HM-REQ-080 and 081 against each measurable case with 20 conditions named as not measurable here, but 6.1, 6.2, 6.4 and 6.5 have no work shown and 6.6 is red on the same three named floors.
   ADVANCED: yes
   ATTEMPT: 6.3 | unit 14 launched 2026-09-26T14:10:24.546Z | yes | executed | report MET-WBE per condition and measure HM-REQ-080 and 081 against it, trace every wrong word boundary on the real and synthetic sets with gap length in units, thresholds, marks and spacing overlap, group by cause, build one boundary change against the largest movable group, kept under R78 with MET-WBE falling and V-11 holding per recording
+  
+  ## UNIT 453 - STEP 6
+  
+  STEP: 6
+  APPROACH: measure HM-REQ-084 on its named acceptance spans in 021410 and 013637, print each span with every mark and gap in units, trace why each misreads, one change from the audio against the commonest cause kept under R78
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 6 line 6.5 asks that HM-REQ-084 be measured on its named spans and the report print what each reads at HEAD; two of its three recordings are in the tree, no unit has measured it, and it is the one must-tier requirement written as text the operator reads. Step 2 cannot flip a line this pass: 2.4's count is 0 of 3 after 449's kept change, and 2.5 is held by 443's DECIDED (3) with 17:37's question parked with the owner.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2, because 2.4 cannot reach 3 of 3 in one unit and 2.5 is held by 443's DECIDED (3) as 448's DECIDED (6) read it; 6.5 is chosen over 6.1, 6.2 and 6.4 because it is written as the text the operator reads (R83); (2) 6.5 is a measurement, ticked at task 1 on the five spans in the tree printed at HEAD with met or not met, and USED TO USE A FIRM stated not measurable here because 011447 was never in the tree, on 6.3's precedent for conditions not held; (3) the keep rule is R78 with V-11 by the count per recording, every moved boundary printed, and no measurable span reading further from its word, with the words a judging key only and never a decoder input (R72); (4) 452's section 4 is answered for this unit: the relabel share stays at 1.53, V-11 is judged by the count per recording with every moved boundary printed, and unkeyed text weighs only through the named spans; (5) the change excludes every route recorded no or kept at steps 2, 3 and 6, a per-gap threshold on 013637's 4 ms split, and the joint decoder DEV_ANALYSIS section 4 reserves for a ruling; if nothing is left, nothing is built and that is reported; (6) DRIFT for steps 2 to 5 stays as it is.
+  LICENCE: PHASE_PLAN.md step 6 line 6.5 and section 5's independence line; R72, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2), 443 DECIDED (3), 448 DECIDED (3) and (6), 452 section 3 (a) and (d); V-04; V-06; V-11; V-13; V-14; HM-REQ-004, 010, 011, 080, 081, 084; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 6 criterion 5
+  RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+  ENTRY: Version 1.13.139 to 1.13.140. PHASE_STATUS.md names unit 453, CURRENT_STEP 6 in both copies. HEAD at entry 0659ed8a. Step 6 at 1 of 6 by the plan. Build 0 errors in 17 s; engine line 178 of 178 in 386 s; app line 278 of 278 in 172 s, no loss, no hang; captures 51 of 51 in 132 s; adjudicated 13 of 13 in 33 s; named 10 of 13 in 68 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113; 17:37 alone 7 over 6. Synthetic, exact: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. Files more than 25 Hz off 9. 63 recordings' text saved to .run-unit/unit453-text-before.txt, identical to 452's exit.
+  
+  ## UNIT 454 - STEP 9
+  
+  STEP: 9
+  APPROACH: port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 9 criterion 9.2, carrying HM-REQ-123, asks that both decoders read every keyed recording and the synthetic set through the same harness and be scored through the same scorer and metrics, tabled per recording and per condition in parity.md, before either votes
+  STATE: not started
+  DECIDED: which of fldigi's decoder modes is ported, how its unclassed output is mapped to sure for the metrics, and the per-type timeouts are the author's, overrulable
+  LICENCE: CW_REQUIREMENTS.md section M, HM-REQ-120 122 123 129; PHASE_PLAN.md R78, R80, R84, R85, section 6; R72; HM-DEC-155; CLAUDE.md 0.2 and 12.5; FACT-004; GPL-3
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 9 criterion 2
+  RUN: session launched with SESSION.lock already present (PID 42976, 12:46:47); the lock is the launcher's and was not taken or released by the session.
+  ENTRY: Version 1.13.140 to 1.13.141. PHASE_STATUS.md names unit 454, CURRENT_STEP 9 in both copies. HEAD at entry d81d8e0a. Step 9 at 0 of 6 by the plan. Build 0 errors in 17 s; engine line 178 of 178 in 388 s; app line 274 of 278 in 173 s on the first run (4 failed in 1 ms each with Avalonia's headless "You've caused dispatcher loop", no source changed), 278 of 278 in 168 s on the one rerun, no hang; captures 51 of 51 in 131 s; adjudicated 13 of 13 in 34 s; named 10 of 13 in 67 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113. Synthetic, exact: MET-CER-SURE 14 of 173, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. All as at 453's exit. git clone of github.com/w1hkj/fldigi from the session was refused as needing approval; recorded as a denial and not routed around.
+  
+  ## UNIT 1 - STEP 9
+  
+  STEP: 9
+  APPROACH: port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
+  HIT: not recorded - REPORT REFUSED by validate-output.bat: not judged, fate not recorded, the loop continued
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 9 criterion 9.2, carrying HM-REQ-123, asks that both decoders read every keyed recording and the synthetic set through the same harness and be scored through the same scorer and metrics, tabled per recording and per condition in parity.md, before either votes
+  DECIDED: which of fldigi's decoder modes is ported, how its unclassed output is mapped to sure for the metrics, and the per-type timeouts are the author's, overrulable
+  LICENCE: CW_REQUIREMENTS.md section M, HM-REQ-120 122 123 129; PHASE_PLAN.md R78, R80, R84, R85, section 6; R72; HM-DEC-155; CLAUDE.md 0.2 and 12.5; FACT-004; GPL-3
+  COST: 1.8505345999999996
+  ACCOMPLISHED: Hamlet knows, in numbers, how far its CW decoder stands from a known one, and which technique to take first
+  FATE: not recorded
+  STATE_AFTER: not started
+  STATE_WHY: the report was refused by validate-output.bat and was not judged - the state is the plan-s own reading, or the header-s where the step has no criterion lines
+  ADVANCED: not recorded
+  ATTEMPT: 9.2 | unit 1 launched 2026-09-26T16:46:45.870Z | not recorded | not recorded | port fldigi's CW receive modem faithfully as the second decoder of section M with its GPL-3 attribution, drive every keyed and synthetic recording through both decoders on the same harness and metrics, table the parity per HM-REQ-123, and name from the second decoder's source what it does differently where it wins
+  
+  ## UNIT 455 - STEP 6
+  
+  STEP: 6
+  APPROACH: test naming HM-REQ-071 prosign one symbol and HM-REQ-072 prosign naming per terminal setting, watched failing first on synthetic keyed prosigns, state met or not, one change to emit a run with no character gap as one prosign symbol kept under R78
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 6 line 6.2 asks that HM-REQ-071 and 072 each have a test naming them with the report stating whether each is met, and a prosign split into letters is a wrong letter the operator reads; step 2 cannot flip a line this pass (2.4 at 0 of 3 after 449's kept change, 2.5 held by 443's DECIDED (3)) and step 9 waits on fldigi's source, which is still absent.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2 for the reason in WHY, and step 9 is not authored while .run-unit/fldigi is absent, the source request being 454's section 4 and logged, not chased; (2) 6.2 is ticked at task 2 on two tests naming HM-REQ-071 and 072, each watched failing first, with met or not met stated, whether or not task 3 runs; (3) under R85, HM-REQ-072's terminal setting, if absent, is built with the prosign name as default so the default rendering is byte-identical, and naming is not a claim about the signal, so this is not the promise stop; (4) a prosign missing from the table is a 6.1 finding and is not hand-added; (5) 443's DECIDED (3) holds, and 2.5 and 6.6 are not ticked; (6) 454's section 4 is logged and not chased.
+  LICENCE: PHASE_PLAN.md step 6 line 6.2 and section 5's independence line; CW_REQUIREMENTS.md HM-REQ-071, 072, HM-REQ-004; CW_SPEC.md 6.2; R72, R77, R78, R80, R85, section 6; R83 as recorded in work instruction 441; arbiter rulings 443 DECIDED (3), 448 DECIDED (6); V-11; HM-DEC-048; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 6 criterion 2
+  RUN: session launched with SESSION.lock already present (PID 10636, 13:11:19); the lock is the launcher's and was not taken or released by the session.
+  ENTRY: Version 1.13.141 to 1.13.142. PHASE_STATUS.md names unit 455, CURRENT_STEP 6 in both copies. HEAD at entry 905ba7de. Step 6 at 2 of 6 by the plan. Build 0 errors in 17 s; engine line 178 of 178 in 389 s; app line 278 of 278 in 174 s on the first run, no loss, no hang; captures 51 of 51 in 130 s; adjudicated 13 of 13 in 31 s; named 10 of 13 in 66 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113. Synthetic, exact: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. 126 text lines saved to .run-unit/unit455-text-before.txt, identical to 453's before.
+  
+  ## UNIT 2 - STEP 6
+  
+  STEP: 6
+  APPROACH: test naming HM-REQ-071 prosign one symbol and HM-REQ-072 prosign naming per terminal setting, watched failing first on synthetic keyed prosigns, state met or not, one change to emit a run with no character gap as one prosign symbol kept under R78
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The fldigi clone, the 6.5 tick and HM-REQ-084 are asks about tooling, plan state and a decoder target, none of which touches keying or a promise to the operator, and the dropped prosign finding is only noted for the record, not put to the owner.
+  MOVE: work around
+  WHY: PHASE_PLAN.md step 6 line 6.2 asks that HM-REQ-071 and 072 each have a test naming them with the report stating whether each is met, and a prosign split into letters is a wrong letter the operator reads; step 2 cannot flip a line this pass (2.4 at 0 of 3 after 449's kept change, 2.5 held by 443's DECIDED (3)) and step 9 waits on fldigi's source, which is still absent.
+  DECIDED: author's, overrulable - (1) step 6 is worked instead of the launcher's step 2 for the reason in WHY, and step 9 is not authored while .run-unit/fldigi is absent, the source request being 454's section 4 and logged, not chased; (2) 6.2 is ticked at task 2 on two tests naming HM-REQ-071 and 072, each watched failing first, with met or not met stated, whether or not task 3 runs; (3) under R85, HM-REQ-072's terminal setting, if absent, is built with the prosign name as default so the default rendering is byte-identical, and naming is not a claim about the signal, so this is not the promise stop; (4) a prosign missing from the table is a 6.1 finding and is not hand-added; (5) 443's DECIDED (3) holds, and 2.5 and 6.6 are not ticked; (6) 454's section 4 is logged and not chased.
+  LICENCE: PHASE_PLAN.md step 6 line 6.2 and section 5's independence line; CW_REQUIREMENTS.md HM-REQ-071, 072, HM-REQ-004; CW_SPEC.md 6.2; R72, R77, R78, R80, R85, section 6; R83 as recorded in work instruction 441; arbiter rulings 443 DECIDED (3), 448 DECIDED (6); V-11; HM-DEC-048; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 6.479480199999999
+  ACCOMPLISHED: a prosign sent as one run reaches the operator as one symbol and not as stray letters, named the way the operator chose, with two tests that say so by requirement id
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criterion 6.2 is met because the report names TheProsignArrivesAsOneSymbolTests for HM-REQ-071 and gives the verdict not met on 5 of 9 prosigns, and names TheTwoNamedPatternIsNamedAsTheTerminalIsSetTests for HM-REQ-072 and gives the verdict met at 7 of 7, but 6.1 and 6.4 are still open and 6.6 is red on the same three named floors at 38, 43 and 42.
+  ADVANCED: yes
+  ATTEMPT: 6.2 | unit 2 launched 2026-09-26T17:11:17.928Z | yes | executed | test naming HM-REQ-071 prosign one symbol and HM-REQ-072 prosign naming per terminal setting, watched failing first on synthetic keyed prosigns, state met or not, one change to emit a run with no character gap as one prosign symbol kept under R78
+  
+  ## UNIT 456 - STEP 9
+  
+  STEP: 9
+  APPROACH: port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 9 is preferred over steps 2 to 7 until 9.2 is met, and its first line 9.1 (HM-REQ-122) was blocked only by fldigi's source, which the owner has now placed at .run-unit/fldigi at upstream 61b97f41; every later line of step 9 needs the port, and step 2 cannot flip a line this pass (2.4 below three units with no kept change, 2.5 held by 443's DECIDED (3)).
+  STATE: not started
+  DECIDED: author's, overrulable - (1) step 9 is worked instead of the launcher's step 2, on the plan's step 9 preference line and section 5; (2) the port uses fldigi's shipped progdefaults at 61b97f41 and its default detection path, the caller supplies the carrier frequency in place of the waterfall cursor, and any resampling sits in an adapter outside the ported files; (3) the port's output stays unclassed this unit, and the mapping to sure, dim or placeholder is left to 9.2; (4) .run-unit/fldigi stays untracked and unmodified as the owner's reference copy; (5) the port is reachable from tests only and wired to nothing the operator sees, so neither keying nor the promise is touched, and the transmit path is not ported; (6) 443's DECIDED (3) holds, and 2.5, 6.6 and 9.8 are not ticked.
+  LICENCE: PHASE_PLAN.md step 9 line 9.1, its preference line and section 5; CW_REQUIREMENTS.md section M, HM-REQ-122, 129, HM-REQ-004; R72, R77, R78, R80, R84, R85, section 6; arbiter rulings 443 DECIDED (3), 448 DECIDED (6); V-04, V-06, V-11, V-14; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5; GPL-3
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 9 criterion 1
+  RUN: session launched with SESSION.lock already present (PID 32176, 14:14:51); the lock is the launcher's and was not taken or released by the session.
+  ENTRY: Version 1.13.142 to 1.13.143. PHASE_STATUS.md names unit 456, CURRENT_STEP 9 in both copies (the runner had written 2). HEAD at entry 40de86e2. Step 9 at 0 of 8 by the plan. fldigi clone at .run-unit/fldigi, master at 61b97f4133c488063f3de1795c894d22d5032e8a from https://github.com/w1hkj/fldigi.git, the six named paths present, untracked. Cw/Second absent. Build 0 errors in 17 s; engine line 178 of 178 in 375 s; app line 278 of 278 in 166 s on the first run, no loss, no hang; captures 51 of 51 in 129 s; adjudicated 13 of 13 in 31 s; named 10 of 13 in 66 s (17:37 38 of 46, 032113 43 of 45, 032129 42 of 64). Real, inferred: MET-CER-SURE 33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 (29 inserted, 8 deleted) over 113. Synthetic, exact: MET-CER-SURE 14 of 173, MET-INVENTED 14 over 252, coverage 159 over 252, MET-WBE 44 (13 inserted, 31 deleted) over 84. 126 text lines saved to .run-unit/unit456-text-before.txt, identical to 455's before.
+  
+  ## UNIT 3 - STEP 9
+  
+  STEP: 9
+  APPROACH: port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - The three items are readings the unit has already recorded about a test case, a receive side squelch default and a scorer finding, none asks the owner to decide anything about keying or about what the product promises the operator.
+  MOVE: continue
+  WHY: PHASE_PLAN.md step 9 is preferred over steps 2 to 7 until 9.2 is met, and its first line 9.1 (HM-REQ-122) was blocked only by fldigi's source, which the owner has now placed at .run-unit/fldigi at upstream 61b97f41; every later line of step 9 needs the port, and step 2 cannot flip a line this pass (2.4 below three units with no kept change, 2.5 held by 443's DECIDED (3)).
+  DECIDED: author's, overrulable - (1) step 9 is worked instead of the launcher's step 2, on the plan's step 9 preference line and section 5; (2) the port uses fldigi's shipped progdefaults at 61b97f41 and its default detection path, the caller supplies the carrier frequency in place of the waterfall cursor, and any resampling sits in an adapter outside the ported files; (3) the port's output stays unclassed this unit, and the mapping to sure, dim or placeholder is left to 9.2; (4) .run-unit/fldigi stays untracked and unmodified as the owner's reference copy; (5) the port is reachable from tests only and wired to nothing the operator sees, so neither keying nor the promise is touched, and the transmit path is not ported; (6) 443's DECIDED (3) holds, and 2.5, 6.6 and 9.8 are not ticked.
+  LICENCE: PHASE_PLAN.md step 9 line 9.1, its preference line and section 5; CW_REQUIREMENTS.md section M, HM-REQ-122, 129, HM-REQ-004; R72, R77, R78, R80, R84, R85, section 6; arbiter rulings 443 DECIDED (3), 448 DECIDED (6); V-04, V-06, V-11, V-14; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5; GPL-3
+  COST: 9.185652
+  ACCOMPLISHED: Hamlet carries a second, known CW reader - fldigi's receiver, ported faithfully with its license and authors - that reads a known send, so the next units can score it beside Hamlet's own decoder and learn where each is better
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: the checkboxes say not started and the judge said in progress - the checkboxes win. The judge-s reason: The port is in the tree with its GPL-3 notice, authors and upstream commit 61b97f41 in all seven files, and the report lists 34 functions ported and 54 left out, but 9.1 also requires the port to decode one synthetic case with an exact key, and on that case it emitted GARIS CQ for PARIS CQ, so 9.1 is not met and 9.2 to 9.8 are still open, and nothing here needs an owner stop since a case that does not read is neither keying nor a promise.
+  ADVANCED: no
+  ATTEMPT: 9.1 | unit 3 launched 2026-09-26T18:14:50.259Z | no | executed | port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
+  REASON: 9.1 | unit 3 launched 2026-09-26T18:14:50.259Z | the unit ran to completion and the criterion did not flip from unmet to met
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -830,17 +991,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 672 bytes
+  19 lines, 721 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: 3 of 3
-  WORK_INSTRUCTION: 452 - where the words break
+  TASK: 5 of 5
+  WORK_INSTRUCTION: 456 - fldigi's CW receiver, ported as the second decoder
   BALL: code
   NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-26T11:35:28-04:00
-  NOTE: Unit 452 done: 6.3 ticked, WBE real 46 to 37 kept with letters identical, 17:37 still 7 - output.md written
+  UPDATED: 2026-09-26T15:15:43-04:00
+  NOTE: Unit 456 done: fldigi port in the tree with headers, case read as GARIS CQ so 9.1 open, text byte-identical - output.md written
   
   ---
   
@@ -859,5 +1020,5 @@ Every line below was read from the tree at that moment. Nothing is remembered.
  LAYER CAPABILITIES - what this copy of the layer can do
 ==============================================================
 
-  39 capabilities checked: 34 present, 0 absent, 5 uncheckable.
+  40 capabilities checked: 35 present, 0 absent, 5 uncheckable.
   Nothing absent.

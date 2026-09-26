@@ -1,16 +1,22 @@
-# Work instruction 456 - fldigi's CW receiver, ported as the second decoder
+# Work instruction 457 - why fldigi's port loses the first dit, and a case chosen before it is read
 
-**Loop unit.** Step 9, criterion 9.1 (HM-REQ-122). The owner has now placed fldigi's source at
-`.run-unit\fldigi\`, cloned from `https://github.com/w1hkj/fldigi.git` at upstream commit
-`61b97f4133c488063f3de1795c894d22d5032e8a`. **The output is `FldigiCwDecoder`:**
-- a faithful C# port of fldigi's CW receive path, and nothing else of fldigi;
-- under `src\Hamlet.RadioEngine\Cw\Second\`;
-- carrying fldigi's GPL-3 notice, its authors and that commit;
-- decoding one synthetic case whose key is exact;
-- with a report that lists every upstream function ported and every one left out.
+**Loop unit.** Step 9, criterion 9.1 (HM-REQ-122). Unit 456 built `FldigiCwDecoder` under
+`src\Hamlet.RadioEngine\Cw\Second\`:
+- six ported files plus the class itself;
+- headers present, 7 of 7;
+- 34 functions ported and 54 left out.
 
-It is not scored against ours, and it is not wired to anything the operator sees. Both of those
-come later in step 9. Five tasks. Drop from the back.
+On its one synthetic case it emitted `GARIS CQ ` where `PARIS CQ` was keyed. It dropped the first
+dit of `P`, the first element after 10 s of noise.
+
+**9.1 is open on one clause only:** *"it decodes one synthetic case whose key is exact."* This
+unit settles that clause in the only order that is not tuning toward the key:
+1. prove whether the lost dit is the port's defect or fldigi's own behaviour;
+2. repair the port toward upstream if it is the port's;
+3. choose the case from that evidence and from the real recordings, and write the choice down
+   before the port reads it.
+
+Five tasks. Drop from the back.
 
 ---
 
@@ -45,7 +51,12 @@ Captures get 600 s. Never run in the background and poll.
 
 Apostrophes in quoted heredocs break. Doubled backslashes collapse. `;` is refused. `rm` is
 refused. Python cannot run here. A multi-line commit uses `-m` more than once. Scripts go in
-`.run-unit\unit456-<name>.sh` and are run with `sh`.
+`.run-unit\unit457-<name>.sh` and are run with `sh`.
+
+**No C++ compiler is on this machine's path** (the arbiter checked: no `g++`, `gcc`, `clang`,
+`cl` or `cmake`). Upstream cannot be built and run beside the port, and installing a toolchain
+is a package, which is `MOVE: stop` in the plan's section 6. **Fidelity is shown by reading,
+line against line.**
 
 **The four report headings, exactly:** `## 1. What Claude did`, `## 2. What the owner should
 expect`, `## 3. What you should see`, `## 4. What's blocking us`. Write the `UNIT:` line without
@@ -75,31 +86,36 @@ owner** (R85). Section 4 records the reading in one line, and the work goes on.
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  A second CW decoder exists in the tree - fldigi's receive path,
-            ported line for line with its license, authors and upstream
-            commit - and it reads one synthetic send whose key is exact.
+UNIT GOAL:  The port's lost first dit is explained from fldigi's own source
+            line by line - a port defect repaired toward upstream, or upstream
+            behaviour named - and one synthetic case with an exact key, chosen
+            from that evidence and the real recordings before the port reads
+            it, is read by the port as keyed.
 ADVANCES:   step 9 criterion 1
 ```
 
-**Read `CW_REQUIREMENTS.md` section M first. It wins over this instruction.**
+**Read `CW_REQUIREMENTS.md` section M and V-04 first. They win over this instruction.**
 
 - **HM-REQ-122 (must):** *"The second decoder shall be a faithful port of its upstream source,
   receive path only, with its license, authors and upstream commit kept in the file, and no word,
   dictionary or callsign logic (HM-REQ-004)."*
-- **HM-REQ-129 (must):** the second decoder is left as ported. It is the teacher, and the teacher
-  is not edited to match the student.
+- **HM-REQ-129 (must):** the second decoder is left as ported. It is not edited to match the key.
+- **V-04:** *"A fixture the reference decoder cannot read is a generator defect; the control for
+  the generator is the real recording. Lowering the gate to admit a fixture is forbidden."*
 
-**Why step 9 and not the launcher's step 2.** `PHASE_PLAN.md` step 9 says: *"Preferred over steps
-2 to 7 until 9.2 is met, because every later change to ours is better aimed with the comparison
-in hand."* Section 5 says the same.
+**Why step 9 and not the launcher's step 2.**
+- `PHASE_PLAN.md` step 9 is *"preferred over steps 2 to 7 until 9.2 is met"*, and section 5 says
+  the same.
+- 9.1 is the first line of step 9, and every later line needs a port that is shown to read.
+- Step 2 cannot flip a line this pass. 2.4 counts units with no kept change, and 449's kept
+  change reset that count below three. 2.5 is held red by 443's DECIDED (3).
 
-- **What blocked step 9 is gone.** Units 454 and 455 were stopped or routed away because
-  `.run-unit\fldigi\` was absent. It is present now, as a full clone whose `.git` records the
-  commit above.
-- **9.1 comes first.** Every other line of step 9 needs the port.
-- **Step 2 cannot flip a line this pass.**
-  - 2.4 counts units with no kept change, and the count is not at three.
-  - 2.5 is held red by 443's DECIDED (3), with the floors at 38 of 46, 43 of 45 and 42 of 64.
+**Why this is not 456 again.** 456 built the port. That approach is recorded `no` against 9.1,
+and it is not repeated: **the port is not rebuilt.** This unit does four things 456 did not:
+- a line-by-line fidelity audit of the path the first element takes;
+- a sample-level trace of that element through the port's state;
+- a verdict on whether upstream would lose it too;
+- a case construction fixed in writing before the port reads it.
 
 ---
 
@@ -108,24 +124,27 @@ in hand."* Section 5 says the same.
 **Report mismatches rather than repair them.** Where this instruction and the tree disagree, the
 tree is the fact. Say so in section 1, and carry on as far as the tree allows.
 
-- **The clone.**
-  - Confirm that `.run-unit\fldigi\.git` records `61b97f41...` as `master` from
-    `https://github.com/w1hkj/fldigi.git`.
-  - Confirm that `src\cw_rtty\cw.cxx`, `src\cw_rtty\morse.cxx`, `src\include\cw.h`,
-    `src\include\morse.h`, `src\filters\` and `src\include\configuration.h` are present.
-  - If the checkout is partial, name what is missing. Do not fetch anything. A refused network
-    call is a denial and is recorded, not worked around.
-- **`src\Hamlet.RadioEngine\Cw\Second\`.** Expected: absent, or empty.
-- **The sample rate.** fldigi's CW modem runs at a fixed rate that its source names. The corpus
-  runs at the rates `CwProbabilisticDecoder` reads. State both.
-- **The defaults.** fldigi's receive path reads `progdefaults` fields for speed, bandwidth,
-  tracking, range, the matched filter, lower and upper thresholds, and `CW_noise`. Find each
-  field's shipped default in `configuration.h` at this commit.
+- **HEAD** is `f20adf82` or a runner commit on top of it.
+- **`src\Hamlet.RadioEngine\Cw\Second\`** holds `FldigiCwDecoder` and its supporting files, each
+  headed with GPL-3, the authors and `61b97f41`.
+- **`TheSecondDecoderIsAFaithfulPortTests`** exists and fails on the exact case. Its emitted text
+  is `GARIS CQ `.
+- **`.run-unit\fldigi\`** is untracked. Per 456 it is a partial working tree: `src\cw_rtty`,
+  `src\filters`, `src\include` and a few more are present, and `src\misc\status.cxx` is absent.
+  - Name what is present.
+  - Do not fetch, and do not read the object store if that was refused before. A refused call is
+    a denial, recorded and not worked around.
+- **The runner's uncommitted writes:** `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md`,
+  the deleted `STOP`, and three new files under `.run-unit\reports\`. They are the runner's.
+  Commit them as they are, on 453's to 456's precedent.
+- **The reload's `RULES_AT` disagreement** (HM-DEC-165 against CPS-DEC-0183) is logged. It is
+  not this unit's.
 
 **Expected failures, not regressions:**
-- the three red named floors, at the values above;
+- the three red named floors, at 17:37 38 of 46, 032113 43 of 45 and 032129 42 of 64;
+- `TheSecondDecoderIsAFaithfulPortTests` red, until task 3;
 - the app carry-forward line losing a few tests to Avalonia's headless "dispatcher loop" on a
-  first run, and passing on one rerun, as units 451 to 455 saw.
+  first run and passing on one rerun, as units 451 to 456 saw.
 
 ---
 
@@ -136,38 +155,37 @@ tree is the fact. Say so in section 1, and carry on as far as the tree allows.
   as the second decoder.
   - Rejected: the port as a bench instrument only.
   - Rejected: replacing ours with the port.
-  - **The order is fixed:** the port is scored beside ours (123) before it is calibrated (124),
-    and only then does it vote (125 to 128).
-- **HM-REQ-122 and 129.** Faithful, not improved. A technique goes into ours, judged under R78.
-  The second decoder stays as ported.
-- **R72.** No word, dictionary or callsign prior, in any form (HM-REQ-004, HM-DEC-175). fldigi's
-  CW receiver has none that this instruction knows of. If the trace finds any, it is left out
-  and named.
+  - **The order is fixed:** scored beside ours (123) before it is calibrated (124), and only then
+    does it vote (125 to 128).
+- **HM-REQ-122 and 129.** Faithful, not improved. A port that differs from upstream is repaired
+  toward upstream, never toward the key. The second decoder stays as ported.
+- **V-04.** A fixture the reference decoder cannot read is a generator defect. The real
+  recording is the generator's control. No gate is lowered to admit a fixture.
+- **V-06.** A synthetic case carries a shaped noise band, never digital silence.
+- **V-14.** No bound is loosened to pass a fixture.
+- **R72.** No word, dictionary or callsign prior, in any form (HM-REQ-004, HM-DEC-175).
 - **R77.** A CW test names the requirement it proves.
-- **R78.** A change to our decoder is kept on the requirements' metrics:
-  - MET-INVENTED at zero;
-  - MET-CER-SURE below 1%;
-  - MET-COVERAGE at or above 90%;
-  - MET-WBE at or below 5%.
-
-  V-11 is the overfitting guard. **This unit changes nothing in our decoder**, so every metric
-  and every recording's text must be byte-identical at exit.
-- **R80.** No unit is authored for bookkeeping. A test is written only where a requirement this
-  phase is meeting needs one to be judged.
+- **R78.** A change to our decoder is kept on the requirements' metrics: MET-INVENTED at zero,
+  MET-CER-SURE below 1%, MET-COVERAGE at or above 90%, MET-WBE at or below 5%. V-11 is the
+  overfitting guard. **This unit changes nothing in our decoder**, so every metric and every
+  recording's text must be byte-identical at exit.
+- **R80.** No unit is authored for bookkeeping.
 - **R85.** A CW question is answered from the documents and the second decoder's source, and
   never parked for the owner.
 - **443 DECIDED (3), as 448 DECIDED (6) read it.** No floor is re-banked while 17:37's
   boundaries are worse. 2.5, 6.6 and 9.8 are not ticked this unit.
+- **456 DECIDED (2) to (5).**
+  - The port uses fldigi's shipped `progdefaults` at `61b97f41` and its default detection path.
+  - The caller supplies the carrier frequency.
+  - Resampling sits outside the ported files.
+  - The output stays unclassed until 9.2.
+  - `.run-unit\fldigi\` stays untracked and unmodified.
+  - The port is wired to nothing the operator sees.
 - **`CLAUDE.md` §0.0.** Never present a guess as a decode.
-- **`CLAUDE.md` §0.2.** Nothing that keys or transmits. fldigi's transmit path, its keying
-  interfaces and its QSK code are never ported, not even as dead code.
-- **`CLAUDE.md` §12.5.** A fixture built from the same misunderstanding as the code proves
-  nothing. The synthetic case's key comes from `CW_SPEC.md`'s patterns, not from fldigi's
+- **`CLAUDE.md` §0.2.** Nothing that keys or transmits. No transmit, keying or QSK code of fldigi
+  is ported.
+- **`CLAUDE.md` §12.5.** The case's key comes from `CW_SPEC.md`'s patterns, not from fldigi's
   `morse.cxx` and not from `MorseAlphabet`.
-- **V-04, V-06, V-14.**
-  - No fixture is admitted by lowering a gate.
-  - A synthetic case carries a shaped noise band, never digital silence.
-  - No bound is loosened to pass a fixture.
 - **HM-DEC-155, HM-DEC-165, FACT-004.**
 
 ---
@@ -184,127 +202,141 @@ timeout. Nothing between those.
 
 ### Task 0 - the record and the entry numbers
 
-1. Add `## UNIT 456 - STEP 9` to `PHASE_OUTCOME.md`, from the block at the foot.
-2. Set `PHASE_STATUS.md` to name 456 with `CURRENT_STEP: 9`, in both copies.
-3. Bump the patch: 1.13.142 to 1.13.143.
-4. Commit the runner's uncommitted writes as they are, on 453's to 455's precedent.
-   - **Do not stage `.run-unit\fldigi\`.** It is a nested repository and the owner's reference
-     copy, and it stays untracked.
-   - Check `git status` before each commit.
+1. Add `## UNIT 457 - STEP 9` to `PHASE_OUTCOME.md`, from the block at the foot.
+2. Set `PHASE_STATUS.md` to name 457 with `CURRENT_STEP: 9`, in both copies.
+3. Bump the patch: 1.13.143 to 1.13.144.
+4. Commit the runner's uncommitted writes as they are. Do not stage `.run-unit\fldigi\`. Check
+   `git status` before each commit.
 5. Run the entry round:
    - build;
    - both carry-forward lines;
    - the three floor tests;
-   - the four metrics at HEAD, real and synthetic.
-6. Save every recording's text to `.run-unit\unit456-text-before.txt`.
+   - the four metrics at HEAD, real and synthetic;
+   - `TheSecondDecoderIsAFaithfulPortTests`, printing what it emits.
+6. Save every recording's text from our decoder to `.run-unit\unit457-text-before.txt`.
 
-### Task 1 - the trace: what fldigi's receiver is
+### Task 1 - the audit: the first element's path, port against upstream, line by line
 
-This task reads before anything is built. It changes nothing in `src`.
+This task only reads. It changes nothing in `src`.
 
-Starting at `cw::rx_process`, follow every call it makes, all the way down. Include:
-- `cw.cxx`;
-- `morse.cxx`;
-- the filters under `src\filters\`, such as `fftfilt` and the moving averages;
-- any helper in `src\include\`.
+Take every line the first element touches, from the sample entering `rx_process` to the
+character leaving `decode_stream`:
+- `rx_init`, `init`, `reset_rx_filter` and the constructor's receive half, which set the state
+  the element meets;
+- `rx_FFTprocess`, the filter and the moving average;
+- in `decode_stream`, the envelope, the AGC peak and its attack and decay, and the thresholds
+  written at cw.cxx:640-641;
+- `handle_event`, `usec_diff`, `update_tracking` and `sync_parameters`.
 
-Write `.run-unit\unit456-fldigi-rx.txt`. For each function in the receive call graph, give:
-- its file and line at `61b97f41`;
-- what it does, in one line;
-- **port** or **leave out**;
-- the reason for any function left out.
+For each line, set the upstream text (file:line at `61b97f41`) beside the port's line
+(file:line), and mark it:
+- **same**;
+- **departure listed**, citing 456's departure number; or
+- **differs**, stating how.
 
-Expected reasons for leaving a function out:
-- transmit (`tx_*`, `send_*`, `nco`, `qsknco`, `create_edges`);
-- UI or display (`update_syncscope`, `update_Status`, anything `FL_` or waterfall);
-- configuration persistence.
+Give particular care to four things:
+- every initial value the state starts from, including `agc_peak`, `modem::metric` (456's
+  departure 10), `cw_receive_state`, `space_sent` and `last_element`;
+- the attack and decay mapping (`cwrx_attack 1 = 200`, `cwrx_decay 1 = 1000`). Show the table
+  or switch upstream maps them through;
+- integer versus floating division, and the order of updates inside a sample;
+- the decimation factor and the rate the thresholds are timed in.
 
-Beside that list, give every `progdefaults` field the receive path reads, with its shipped
-default and where the default is defined.
+Write it to `.run-unit\unit457-fidelity.txt`.
 
-**Name the decoder modes.** fldigi's receiver has more than one detection path. Name each one,
-and the default one at this commit. **Port the default path.** Port another mode only if it is
-the same code under a switch, and name it if you do.
+**If a line differs, repair the port toward upstream in its own commit**, with the upstream line
+cited in the message. This is HM-REQ-122's own repair, not tuning. Then re-run the existing case
+once and print what it emits.
 
-### Task 2 - the port
+- **No repair is made to get the key's text.**
+- A repair must be justified by the upstream line alone, and the report shows that line.
 
-Build `FldigiCwDecoder` under `src\Hamlet.RadioEngine\Cw\Second\`. Supporting types go beside
-it, one per upstream unit they come from, for example a `FldigiFftFilter` and a `FldigiMorse`.
-The port's rules:
+### Task 2 - the trace: the first dit, sample by sample
 
-- **The file header of every ported file carries:**
-  - fldigi's GPL-3 notice, verbatim from the upstream file;
-  - every author the upstream header names (Dave Freese W1HKJ, Mauri Niininen AG1LE, and the
-    gmfsk authors credited there);
-  - the upstream path;
-  - `https://github.com/w1hkj/fldigi` at commit `61b97f4133c488063f3de1795c894d22d5032e8a`.
-- **Faithful:** the same constants, the same state, the same order of operations, the same
-  thresholds and the same defaults as the `progdefaults` values in task 1, in the same units.
-  - Name each upstream function in a one-line comment at the method that ports it.
-  - A departure forced by C++ to C# (a type, a clock, a buffer) is allowed. List each one in the
-    report with its upstream line. **No departure is an improvement.**
-- **Receive path only.** Samples in, characters out, with the carrier frequency given by the
-  caller.
-  - fldigi takes its frequency from the waterfall cursor. Here the caller supplies it, and the
-    report says so.
-  - Nothing in the port keys, transmits, or references `ICwSender`, `CwTransmitter`, `Transmit*`
-    or a keyer.
-- **No word, dictionary or callsign logic** (R72).
-- **Its own output, unclassed.** fldigi has no confidence. The port emits exactly what fldigi
-  would print, including its `CW_noise` character where fldigi prints one.
-  - Do not map the output to sure, dim or placeholder here. That mapping is 9.2's, and it is
-    stated there.
-- **Not wired to anything.**
-  - No change to `CwProbabilisticDecoder`, `CwProbabilisticStream`, the capture sheet, the CW
-    tab or any live path.
-  - It is reachable from tests only. HM-REQ-121 and 9.6 come later.
-- **The sample rate.** If the corpus rate differs from fldigi's, the port takes fldigi's rate.
-  - Put any resampling in a separate adapter outside the ported files.
-  - State the method, and state that it is not fldigi's.
-  - Use no package. A package is a `MOVE: stop` in the plan's section 6, so if one seems needed,
-    stop and report it.
+Using the port as it stands after task 1, print the port's state through the case's first two
+seconds of keying, from 0.5 s before `P`'s first key-down to the end of `A`, at the decimated
+rate. The columns are:
+- time;
+- the filtered magnitude;
+- `agc_peak`;
+- `CWupper` and `CWlower`;
+- `cw_receive_state`;
+- every event raised, with `usec_diff`;
+- `two_dots` and the element classed.
 
-### Task 3 - the case, and 9.1 (ticked here)
+Print the same for the last second of the noise lead-in. The question is whether the detector
+is key-down on noise when the dit arrives, or whether the AGC has not risen far enough to cross
+`CWupper` during the dit.
 
-Write `TheSecondDecoderIsAFaithfulPortTests`, naming HM-REQ-122.
+Then **state one verdict, from the upstream source lines**:
+- **(a) port defect.** Task 1 missed a line. Name it, repair it toward upstream in its own
+  commit, and re-run the existing case once.
+- **(b) upstream behaviour.** Name the upstream lines that make fldigi lose that element. State
+  what fldigi needs before a first element to read it: a settled AGC, a quiet interval, or a
+  level relation, in its own time constants.
 
-- **One synthetic send, key exact by construction:**
-  - The pattern comes from `CW_SPEC.md`'s table, not from fldigi's table and not from
-    `MorseAlphabet` (§12.5).
-  - Use plain letters and one word space, for example `PARIS CQ`.
-  - Send it at fldigi's default speed from task 1, at a stated pitch.
-  - Carry a shaped noise band at a stated SNR, never digital silence (V-06).
-  - State the recipe, so another unit can rebuild it.
-- **Assert** that `FldigiCwDecoder`, given that pitch, emits the key's text.
-  - Spacing follows fldigi's own rules, and the report prints the exact string emitted.
-- **Assert the header:** each ported file carries the GPL-3 notice, the named authors and the
-  upstream commit.
-- **Watch it fail first.** Run it against a deliberately wrong expectation, or before the port's
-  decode is wired, then correct it. Record both runs.
-- **If the port does not read the case,** do not tune it.
-  - Print what it emitted, with fldigi's internal speed and thresholds at each character.
-  - Check the harness first: rate, level, and frequency given.
-  - A port that differs from upstream is repaired toward upstream, never toward the key.
+Write it to `.run-unit\unit457-first-dit.txt`, and put the verdict in section 3.
+
+### Task 3 - the case, chosen before it is read, and 9.1 (ticked here)
+
+**First, write the construction down and commit it, before the port is run on the new case.**
+Put it in `.run-unit\unit457-case.txt`, committed in its own commit, which comes before the
+commit that runs the case. It states:
+
+- **The control.** Look at the real keyed recordings that 456's first look ran, and at least
+  three more. For each, state what the audio holds in the 5 s before the first keyed element of
+  the key: noise only, another station, a carrier, or the same operator's earlier keying, with
+  its level against the first element. V-04 makes the real recording the generator's control.
+- **The rule.** One construction, derived from task 2's verdict and the control.
+  - If the verdict is (b), the construction gives fldigi what task 2 says it needs, in fldigi's
+    own time constants, **only as far as the real recordings show that condition occurs on the
+    air**.
+  - If the verdict is (a) and the repaired port reads 456's case, 456's case stands unchanged and
+    this file says so.
+- **The recipe:**
+  - the send, from `CW_SPEC.md`'s patterns, with plain letters and one word space;
+  - speed, pitch and edges;
+  - lead-in, tail, noise shape, seed and SNR at the `CW_SPEC.md` 8.1 reference.
+
+  Enough that another unit can rebuild it.
+
+**Then run it once.** Update `TheSecondDecoderIsAFaithfulPortTests`, naming HM-REQ-122, to the
+case in the file.
+- Its expected text is the key, spaced by fldigi's own rules.
+- **Watch it fail first.** Use a deliberately wrong expectation, then correct it. Record both
+  runs.
+- The header assertions stay.
+
+**If the port does not read it, 9.1 stays open.** Print what it emitted, with the task 2 columns
+at each character.
+
+**Do not:**
+- try a second seed, SNR, lead-in or level;
+- key an extra element or a preamble in front of the scored text;
+- move the scored span;
+- map a garbled character into the expectation.
+
+Each of those is tuning toward the key (HM-REQ-122, 129, V-04, V-14, §0.0).
 
 **9.1 is ticked when all of these hold:**
 - the port exists under `Cw\Second\` with its headers;
-- the test is green on the exact case;
-- the report names every function ported and every one left out, from task 1's list.
+- `.run-unit\unit457-case.txt` was committed before the run;
+- the test is green on that case;
+- the report names every function ported and every one left out, from 456's list and task 1's
+  repairs.
 
-Tick it in both copies of `PHASE_PLAN.md`. If the case is not read, 9.1 stays open, and the
-report says what was emitted and why.
+Tick it in both copies of `PHASE_PLAN.md`.
 
-### Task 4 - a first look (drop candidate)
+### Task 4 - the first look again (drop candidate)
 
-Run the port over the synthetic set and over three keyed real recordings. The unit chooses the
-three and names them.
-- Give it the pitch that the pitch instrument measures, not our tracker's pitch, and say so.
-- Print its text beside ours and beside the key, one block per recording.
-- **No scoring and no table.** Scoring is 9.2's, done through the same scorer and metrics, and
-  this is not a substitute for it.
-- Commit the printout under `.run-unit\`.
+Only if task 1 or 2 repaired the port:
+- re-run 456's first look, on the same synthetic cases and the same three captures, with the
+  pitch instrument's pitch;
+- print the port's text before and after the repair, beside the key, one block per recording.
 
-**This is the drop candidate.** If the unit runs long, stop after task 3. 9.1 is ticked there.
+No scoring and no table. That is 9.2's. Commit the printout under `.run-unit\`.
+
+**This is the drop candidate.** If no repair was made, it is skipped and the report says so.
 
 ### Task 5 - the exit round
 
@@ -312,12 +344,11 @@ Run each of the following, and report every figure beside its entry figure:
 - both carry-forward lines;
 - the three floor tests;
 - the four metrics, real and synthetic;
-- the new test.
+- `TheSecondDecoderIsAFaithfulPortTests`.
 
 Also print:
 - `git diff 7e209cb4` over the eleven transmit files, which prints nothing;
-- the diff of every recording's text against task 0's save, which prints nothing because our
-  decoder is untouched;
+- the diff of our decoder's text against task 0's save, which prints nothing;
 - `git status`, showing `.run-unit\fldigi\` still untracked.
 
 ---
@@ -327,36 +358,42 @@ Also print:
 - **2.2's transmit-file list** (keying).
 - **4.5's definition of acquiring** (promise).
 - **4.6's proved pitch** and **5.5's proved speed** (promise).
-- **6.5's tick and HM-REQ-084's `ABOVE`** on 013637, both waiting on the owner.
-- **Unit 455's two 6.1 findings:**
-  - KN's pattern is also `(`;
-  - a missing prosign is dropped at the end of a send.
-
-  Both are 6.1's, and are logged.
+- **6.5's tick and HM-REQ-084's `ABOVE`** on 013637.
+- **Unit 455's two 6.1 findings:** KN's pattern is also `(`, and a missing prosign is dropped at
+  the end of a send.
+- **fldigi's squelch default in `status.cxx`.** It is not in the tree. 456's reading from
+  benchmark.cxx:54 stands, and the squelch stays off. It is not re-opened unless task 2's
+  verdict turns on it, and then only from lines that are in the tree.
+- **456's finding for 9.2:** fldigi turns a 5-unit character gap into a word space. That is
+  9.2's mapping, and is logged.
 
 ## 8. Do not
 
 - Do not change `CwProbabilisticDecoder`, `CwProbabilisticStream`, `MorseAlphabet`, the tracker
   or the scorer. This unit touches our decoder nowhere.
-- Do not improve, tune or re-threshold the port, and do not give it a confidence. That is 9.5's
-  work (HM-REQ-122, 124).
-- Do not wire the port to the CW tab, the sheet, or any live path (HM-REQ-121, 9.6).
+- Do not rebuild the port. Repair it only where a cited upstream line differs.
+- Do not tune, improve or re-threshold the port, and do not give it a confidence (HM-REQ-122,
+  124).
+- Do not choose the case by running the port on candidates. Write it first, run it once
+  (task 3).
+- Do not wire the port to the CW tab, the sheet or any live path (HM-REQ-121, 9.6).
 - Do not port anything that keys or transmits (§0.2).
+- Do not install a compiler or any package. That is `MOVE: stop` in the plan's section 6.
 - Do not stage, commit or modify `.run-unit\fldigi\`. Do not fetch from the network.
 - Do not re-bank any floor. Do not tick 2.5, 6.6 or 9.8 (443 DECIDED (3)).
 - Do not write `parity.md`. That file is 9.2's.
-- Do not re-point or retire an existing test. That is step 8's work (R80).
+- Do not re-point or retire an existing test (R80).
 - Do not raise a CW question to the owner (R85).
 - **Do not run an unfiltered `dotnet test`. Never run in the background and poll. Never compose
   a timestamp.**
 
 ## 9. Committing and pushing
 
-- **One commit per task.** Task 2 may take more than one commit if the port is committed file by
-  file.
-- **Message form:** `unit456 task N: <what> (9.1)`.
-- **Exit state:** the build and the named types are green at the exit of every commit, except
-  the three floors held red as stated.
+- **One commit per task.** Task 1 and task 2 each take one extra commit per repair. Task 3 takes
+  two commits: the case file first, then the test.
+- **Message form:** `unit457 task N: <what> (9.1)`.
+- **Exit state:** the build and the named types are green at the exit of every commit, except the
+  three floors held red as stated, and the port's test until task 3.
 - **Push each commit** to `origin/main`.
 
 ## 10. Report
@@ -370,45 +407,46 @@ READ IN THIS ORDER.
 A. Phase goal: Hamlet meets the CW requirements. Steps by the plan -
    0 done, 1 done, 2 3 of 5, 3 3 of 6, 4 5 of 7, 5 1 of 6, 6 3 of 6,
    7 0 of 5, 8 0 of 6, 9 <n> of 8.
-B. Step 9, criterion 9.1: HM-REQ-122 - FldigiCwDecoder <exists|does not>
-   under Cw\Second\ at upstream 61b97f41, the synthetic case <read|not read>
-   as <text emitted>, functions ported <n> and left out <n>, and whether
-   9.1 is ticked; 9.2 to 9.8 as they stand.
+B. Step 9, criterion 9.1: HM-REQ-122 - the lost first dit is <a port
+   defect at <upstream line>, repaired | fldigi's own behaviour at
+   <upstream lines>>; the case <456's unchanged | per unit457-case.txt>,
+   committed before its run at <hash>, key <text>, emitted <text>; 9.1
+   <ticked | open>; 9.2 to 9.8 as they stand.
 C. The findings weighed against A and B: how many items section 4 raises,
    and whether any is in the way of 9.2.
 ```
 
 ```
-UNIT:       456 - <complete|stopped> at task N of 5, <dropped or none dropped> - <date time>
+UNIT:       457 - <complete|stopped> at task N of 5, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   <yes|no> - <the criterion and why>
-NUMBER:     HM-REQ-122 <met|not met>; synthetic case key <text> emitted <text>; functions ported <n>, left out <n>; our decoder's text byte-identical <yes|no>
+NUMBER:     HM-REQ-122 <met|not met>; lines audited <n>, differing <n>, repaired <n>; first-dit verdict <a|b>; case key <text> emitted <text>; our decoder's text byte-identical <yes|no>
 DRIFT:      step 2 <n>; step 3 <n>; step 4 <n>; step 5 <n>; step 6 <n>; step 9 <n>
 ```
 
-**Section 3 leads with the function table from task 1:**
-- every upstream function in the receive call graph;
-- its file and line;
-- ported or left out, and why.
+**Section 3 leads with task 2's verdict and its upstream lines.** Then give:
+1. the first dit's trace rows around the key-down;
+2. task 1's count of lines by mark, and every line marked **differs** in full;
+3. the control table from task 3, with the construction and its commit hash;
+4. what the port emitted.
 
-Then give the departures forced by C#, each with its upstream line, and then the synthetic case:
-its recipe, its key, and what the port emitted. **Section 2, one paragraph:** nothing the
-operator sees changes yet. Hamlet now carries a second, known CW reader that the next units will
-score beside its own.
+**Section 2, one paragraph:** nothing the operator sees changes. The owner learns whether
+Hamlet's copy of fldigi misreads the first letter because the copy is wrong, or because fldigi
+itself does.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 9
-APPROACH: port fldigi cw.cxx receive path to C# as FldigiCwDecoder under Cw/Second with GPL-3 notice and upstream commit, decode one exact-key synthetic case, list functions ported and left out
-MOVE: continue
-WHY: PHASE_PLAN.md step 9 is preferred over steps 2 to 7 until 9.2 is met, and its first line 9.1 (HM-REQ-122) was blocked only by fldigi's source, which the owner has now placed at .run-unit/fldigi at upstream 61b97f41; every later line of step 9 needs the port, and step 2 cannot flip a line this pass (2.4 below three units with no kept change, 2.5 held by 443's DECIDED (3)).
-STATE: not started
-DECIDED: author's, overrulable - (1) step 9 is worked instead of the launcher's step 2, on the plan's step 9 preference line and section 5; (2) the port uses fldigi's shipped progdefaults at 61b97f41 and its default detection path, the caller supplies the carrier frequency in place of the waterfall cursor, and any resampling sits in an adapter outside the ported files; (3) the port's output stays unclassed this unit, and the mapping to sure, dim or placeholder is left to 9.2; (4) .run-unit/fldigi stays untracked and unmodified as the owner's reference copy; (5) the port is reachable from tests only and wired to nothing the operator sees, so neither keying nor the promise is touched, and the transmit path is not ported; (6) 443's DECIDED (3) holds, and 2.5, 6.6 and 9.8 are not ticked.
-LICENCE: PHASE_PLAN.md step 9 line 9.1, its preference line and section 5; CW_REQUIREMENTS.md section M, HM-REQ-122, 129, HM-REQ-004; R72, R77, R78, R80, R84, R85, section 6; arbiter rulings 443 DECIDED (3), 448 DECIDED (6); V-04, V-06, V-11, V-14; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5; GPL-3
-ACCOMPLISHED: Hamlet carries a second, known CW reader - fldigi's receiver, ported faithfully with its license and authors - that reads a known send, so the next units can score it beside Hamlet's own decoder and learn where each is better
+APPROACH: audit FldigiCwDecoder against upstream cw.cxx line by line on the first element's path and trace the lost first dit sample by sample to a port-defect or upstream-behaviour verdict, repair toward upstream only, then fix the synthetic case construction in a committed file from that verdict and the real recordings as control before running it once
+MOVE: work around
+WHY: PHASE_PLAN.md step 9 is preferred over steps 2 to 7 until 9.2 is met, and 9.1 (HM-REQ-122) is open on its one clause "it decodes one synthetic case whose key is exact" after 456's port emitted GARIS CQ for PARIS CQ; 456's approach, building the port, is recorded no and is not repeated, and this unit instead settles whether the loss is the port's or fldigi's before any case is chosen. Step 2 cannot flip a line this pass, since 2.4's count is below three after 449's kept change and 2.5 is held by 443's DECIDED (3).
+STATE: in progress
+DECIDED: author's, overrulable - (1) step 9 is worked instead of the launcher's step 2, on the plan's step 9 preference line and section 5; (2) with no C++ compiler on the path and a toolchain being a package stop, fidelity is shown by line-by-line reading and not by building upstream; (3) a port line that differs from upstream is repaired toward upstream in its own commit on the cited upstream line alone, which is HM-REQ-122's own requirement and not tuning; (4) under V-04 the case is chosen from the first-dit verdict and the real recordings as the generator's control, written and committed before the port reads it, and run once - no second seed, SNR, lead-in or level, no preamble, no moved span; (5) 456's DECIDED (2) to (5) and 443's DECIDED (3) hold, and 2.5, 6.6 and 9.8 are not ticked; (6) 456's section 4 is applied as its item 1 reads and otherwise logged: the squelch default stays off per benchmark.cxx:54, and the gap-to-space finding is 9.2's.
+LICENCE: PHASE_PLAN.md step 9 line 9.1, its preference line and section 5 and section 6; CW_REQUIREMENTS.md section M, HM-REQ-122, 129, HM-REQ-004, V-04, V-06, V-14; R72, R77, R78, R80, R84, R85; arbiter rulings 443 DECIDED (3), 448 DECIDED (6), 456 DECIDED (2) to (5); V-11; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5; GPL-3
+ACCOMPLISHED: Hamlet's copy of fldigi is shown to be faithful where the first letter is read, the owner learns whether a lost first letter is Hamlet's copying or fldigi's own habit, and the copy reads one known send chosen from what real recordings look like, so it can be scored beside Hamlet's own decoder next
 ADVANCES: step 9 criterion 1
 END-ARBITER-DECISION
 ```

@@ -1,1 +1,1 @@
-measure HM-REQ-084 on its named acceptance spans in 021410 and 013637, print each span with every mark and gap in units, trace why each misreads, one change from the audio against the commonest cause kept under R78
+audit FldigiCwDecoder against upstream cw.cxx line by line on the first element's path and trace the lost first dit sample by sample to a port-defect or upstream-behaviour verdict, repair toward upstream only, then fix the synthetic case construction in a committed file from that verdict and the real recordings as control before running it once

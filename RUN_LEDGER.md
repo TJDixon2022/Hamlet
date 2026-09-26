@@ -352,3 +352,5 @@ the owner reads instead of watching.
 | 1 | 2026-09-26T12:46 | 2026-09-26T13:08 | failed | 1.8505345999999996 | run-unit exit 4: 8 denied call(s), is_error=False, terminal=completed |
 | 1 | 2026-09-26T13:08 | 2026-09-26T13:08 | note | none - not a run | report refused - validate-output.bat refused unit 1's report; it was not judged, its fate is recorded as not recorded, the record does not tick its criterion, and the loop continued |
 | 2 | 2026-09-26T13:11 | 2026-09-26T14:10 | complete | 6.479480199999999 | ran unattended, 180 turns, 9 denied call(s) worked around, report valid |
+| 3 | 2026-09-26T14:14 | 2026-09-26T15:16 | complete | 9.185652 | ran unattended, 175 turns, 13 denied call(s) worked around, report valid |
+| 3 | 2026-09-26T15:17 | 2026-09-26T15:17 | note | none - not a run | no advance - step 9 criterion 1 was unmet and is unmet |

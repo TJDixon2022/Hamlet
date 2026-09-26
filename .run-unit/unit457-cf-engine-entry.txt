@@ -1,0 +1,1744 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.58]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.81]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.83]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.TheShortfallIsPrintedRatherThanPapered [9 ms]
+  Standard Output Messages:
+ cw-2026-08-17-013347: 6 of 6 characters, 100 %
+ cw-2026-08-17-134712: 2 of 3 characters, 67 %
+ unadjudicated/cw-2026-08-18-003758: 9 of 12 characters, 75 %
+ unadjudicated/cw-2026-08-24-012403: 16 of 16 characters, 100 %
+ cw-2026-08-18-004507: 22 of 57 characters, 39 %
+ unadjudicated/cw-2026-08-22-031838: 5 of 35 characters, 14 %
+ unadjudicated/cw-2026-08-22-031905: 11 of 39 characters, 28 %
+ unadjudicated/cw-2026-08-22-031948: 31 of 36 characters, 86 %
+ unadjudicated/cw-2026-08-22-032012: 22 of 51 characters, 43 %
+ unadjudicated/cw-2026-08-22-032050: 17 of 59 characters, 29 %
+ unadjudicated/cw-2026-08-22-032113: 3 of 28 characters, 11 %
+ unadjudicated/cw-2026-08-22-032129: 9 of 42 characters, 21 %
+ across every adjudicated reading: 153 of 384 characters, 40 %
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheKeepRuleAndItsNumbersLiveInOneNamedPlace [11 ms]
+  Standard Output Messages:
+ search  : every half spectrum window, a place where the power summed over plus and minus SignalHalfWidthHz stands at least CandidateRatio times the floor's over the same width is a candidate, the floor being the median bin or DynamicRangeDb under the strongest place, whichever is higher; a probe mixed down at its power centroid takes the differential product of each symbol with the one before as a unit phasor, squares it, and averages over MeasureSymbols symbols; the probe is listed as a carrier when that average's magnitude is at least CoherenceToAppear, the keying is no more one-way than MostlyOneWay and at least NarrowEnough of the power over the floor within three half-widths is inside one, stays listed while it is at least CoherenceToStay, and is retired only when the search and the carrier's own demodulator have both lost it - when the place it sits fails the same candidate test on RetireAfterPasses passes in a row, measured on the newest window rather than the average, and the demodulator has had neither its squelch open nor its quality at KeepReadableQuality or better within the last KeepReadableSeconds - and never because it stopped being readable and never because it stopped saying anything. Its offset is the probe's frequency plus the error the squared phasor's angle measures.
+ retire  : a channel is retired when its carrier is, and its carrier is retired only when the search and the channel's own demodulator have both lost it: the place it sits fails the candidate test on RetireAfterPasses passes of the newest spectrum window in a row, AND the demodulator has had neither its squelch open nor its quality at KeepReadableQuality or better within the last KeepReadableSeconds, so a channel is gone within RetiredWithinSeconds of its carrier stopping. **It is never retired for saying nothing** and never for idling, which is what a PSK31 station does between words. Separately, any character it read after the keying measure last stood behind the carrier, less LetGoSeconds, is held and is dropped rather than shown if the carrier goes before that measure catches up.
+ quality : 0.80  (noise 0.637, clean 1.0, squelch 0.90)
+ within  : 1.024 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 0.25) [95 ms]
+  Standard Output Messages:
+ asked 0.250, loudest sample 0.250000
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 0.5) [104 ms]
+  Standard Output Messages:
+ asked 0.500, loudest sample 0.500000
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 0.100000001) [88 ms]
+  Standard Output Messages:
+ asked 0.100, loudest sample 0.100000
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.TheFivePublishedSpotChecks [358 ms]
+  Standard Output Messages:
+ ' ' -> 1
+ 'e' -> 11
+ 't' -> 101
+ 'o' -> 111
+ 'a' -> 1011
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "BTU") [359 ms]
+  Standard Output Messages:
+ [BTU] your turn 1 character(s) after its last letter, YourTurn certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "OVER") [< 1 ms]
+  Standard Output Messages:
+ [OVER] your turn 1 character(s) after its last letter, YourTurn certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "KN") [< 1 ms]
+  Standard Output Messages:
+ [KN] your turn 1 character(s) after its last letter, YourTurn certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(word: "K") [< 1 ms]
+  Standard Output Messages:
+ [K] your turn 1 character(s) after its last letter, YourTurn certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.NoLineTheCorpusMarksUncertainComesBackCertain [360 ms]
+  Standard Output Messages:
+ asserted certain where the corpus says uncertain : 0
+ uncertain where the corpus says certain (reported): 0
+ 05-garbled line 3: K3ABC > KC3QIS Report hands over UNCERTAIN for-operator
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.NoCodeContainsTwoZerosAndEveryOneStartsAndEndsWithOne [4 ms]
+  Standard Output Messages:
+ all 256 codes are distinct, contain no 00, and start and end with 1
+ shortest: 1 bits, longest: 12 bits
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31MessageSplitTests.TextWithNoTurnoverYetYieldsNoMessage [364 ms]
+  Standard Output Messages:
+ after the space: W1AW > ANY Cq hands over certain | CQ CQ CQ de W1AW W1AW W1AW pse K
+ prose pending: W1AW de KC3QIS OK so I will SK the rig at nine and BTU later, 73 
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.UnknownBeforeAnyMessage [4 ms]
+  Standard Output Messages:
+ character steps before any message, all unknown: 250
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.TheQsoTextEncodesAndDecodesBackIdentical [1 ms]
+  Standard Output Messages:
+ characters : 255
+ bits       : 2000
+ bits/char  : 7.8
+ first 60   : 101011010011101110100100101011010011101110100100101011010011
+ separators : 255
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.TheParseHasNoMemberForNameOrQth [5 ms]
+  Standard Output Messages:
+ members: Addressee, Grid, HandsOver, IsCertain, IsForOperator, Kind, Rst, Speaker
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.All256CodesRoundTrip [< 1 ms]
+  Standard Output Messages:
+ codes in the table: 256
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.TheVaricodeTests.IdleBeforeAndAfterDecodesToTheTextAlone [< 1 ms]
+  Standard Output Messages:
+ stream is 2080 bits, 40 idle either side
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.ACertainYourTurnOffersTheMacroTheExchangeCallsForNext [367 ms]
+  Standard Output Messages:
+ table: his last message, addressed to you and handing over -> offered, and where it is a guess only a Report is: a CQ -> Answer, never reached because a CQ is addressed to anyone; his bare calls -> Report; a Report or Chat before you have sent a Report -> Report; a Report or Chat after you have -> Confirm; a Closing or End -> Confirm; anything once you have signed off -> none; Ack, Garbage or Unknown -> none.
+ 01-textbook message 3 (Report): offers Report
+ 01-textbook message 5 (End): offers Confirm
+ 02-chatty message 3 (Report): offers Report
+ 02-chatty message 5 (End): offers Confirm
+ 03-no-report message 3 (End): offers Confirm
+ 07-odd-ending message 3 (Report): offers Report
+ 08-lowercase-and-slashes message 3 (Report): offers Report
+ his answer to your CQ (Answer): offers Report
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.ThePeakNeverExceedsThePeakAskedFor(peak: 1) [81 ms]
+  Standard Output Messages:
+ asked 1.000, loudest sample 1.000000
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.MessagesToTheOperatorBesideOffersMade [3 ms]
+  Standard Output Messages:
+ transcript                to the operator  offers made
+ 01-textbook               2                2
+ 02-chatty                 2                2
+ 03-no-report              1                1
+ 04-not-for-me             0                0
+ 05-garbled                1                1
+ 06-cq-dx                  0                0
+ 07-odd-ending             1                1
+ 08-lowercase-and-slashes  1                1
+ all                       8                8
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31MessageSplitTests.OnTheGarbledTranscriptNothingIsMoreCertainThanTheLinesItHolds [7 ms]
+  Standard Output Messages:
+ message 1 holds line(s) 1 (corpus certain): K3ABC > ANY Cq hands over certain | CQ CQ CQ de K3ABC K3ABC pse K
+ message 2 holds line(s) 2 (corpus certain): KC3QIS > K3ABC Answer hands over certain | K3ABC de KC3QIS K
+ message 3 holds line(s) 3 (corpus uncertain): K3ABC > KC3QIS Report hands over UNCERTAIN | KC3Q&S de K3A~C ur rst 5#9 599 name Ann QTH Erie PA hw? KC3QIS de K3ABC K
+ message 4 holds line(s) 4+5 (corpus uncertain): KC3QIS > K3ABC Report hands over UNCERTAIN | yes copy all fine here, nice signal into PA tonight
+K3ABC de KC3QIS R 599 name Tim Trafford PA BTU K3ABC de KC3QIS K
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.CharactersAfterATurnoverWithNoNewTurnoverYetAreHeIsStillSending [6 ms]
+  Standard Output Messages:
+ character steps read as still sending: 1532
+ 01-textbook at [K] before message 2: HeIsSending certain; at the whitespace after it: HisTurn certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.AddressedToTheOperatorComesFromTheCorpusOperatorField [6 ms]
+  Standard Output Messages:
+ lines for KC3QIS: 8
+ 01-textbook lines for W1AW: 2, 4
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.ACertainMessageToTheOperatorThatHandsOverIsACertainYourTurn [2 ms]
+  Standard Output Messages:
+ rule: Whoever last handed over gave the turn away: after a message that hands over, the operator's own makes it his turn and another station's addressed to the operator makes it your turn, characters arriving after any message make it he is still sending, and everything else - no message yet, or a last message neither from nor to the operator - is unknown; a turn is certain only where that message's parse is certain, and he is still sending is certain because it is the demodulator's fact and not the parser's.
+ 01-textbook: W1AW > KC3QIS Report -> YourTurn certain
+ 01-textbook: W1AW > KC3QIS End -> YourTurn certain
+ 02-chatty: G4XYZ > KC3QIS Report -> YourTurn certain
+ 02-chatty: G4XYZ > KC3QIS End -> YourTurn certain
+ 03-no-report: VE3XN > KC3QIS End -> YourTurn certain
+ 07-odd-ending: N4ZEK > KC3QIS Report -> YourTurn certain
+ 08-lowercase-and-slashes: KD8WYT/P > KC3QIS Report -> YourTurn certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.EveryLineYieldsTheSpeakerAddresseeKindAndTurnoverTheCorpusStates [2 ms]
+  Standard Output Messages:
+ corpus.json SHA-256 964b9729bec883bff9d54fd63afa9bddb21874e9e86ec34439644aec658e26ba, operator KC3QIS
+ ok   01-textbook line 1                W1AW > ANY Cq hands over certain
+ ok   01-textbook line 2                KC3QIS > W1AW Answer hands over certain
+ ok   01-textbook line 3                W1AW > KC3QIS Report hands over certain rst 599 grid FN31 for-operator
+ ok   01-textbook line 4                KC3QIS > W1AW Report hands over certain rst 599 grid FN00
+ ok   01-textbook line 5                W1AW > KC3QIS End hands over certain for-operator
+ ok   02-chatty line 1                  G4XYZ > ANY Cq hands over certain
+ ok   02-chatty line 2                  KC3QIS > G4XYZ Answer hands over certain
+ ok   02-chatty line 3                  G4XYZ > KC3QIS Report hands over certain rst 589 for-operator
+ ok   02-chatty line 4                  KC3QIS > G4XYZ Report hands over certain rst 599
+ ok   02-chatty line 5                  G4XYZ > KC3QIS End hands over certain for-operator
+ ok   03-no-report line 1               VE3XN > ANY Cq hands over certain
+ ok   03-no-report line 2               KC3QIS > VE3XN Answer hands over certain
+ ok   03-no-report line 3               VE3XN > KC3QIS End hands over certain for-operator
+ ok   03-no-report line 4               KC3QIS > VE3XN End hands over certain
+ ok   04-not-for-me line 1              F4DIA > ANY Cq hands over certain
+ ok   04-not-for-me line 2              EI4GNB > F4DIA Answer hands over certain
+ ok   04-not-for-me line 3              F4DIA > EI4GNB Report hands over certain rst 579
+ ok   04-not-for-me line 4              EI4GNB > F4DIA End hands over certain rst 599
+ ok   05-garbled line 1                 K3ABC > ANY Cq hands over certain
+ ok   05-garbled line 2                 KC3QIS > K3ABC Answer hands over certain
+ ok   05-garbled line 3                 K3ABC > KC3QIS Report hands over UNCERTAIN for-operator
+ ok   05-garbled line 4                 unknown > unknown Chat keeps UNCERTAIN
+ ok   05-garbled line 5                 KC3QIS > K3ABC Report hands over certain rst 599
+ ok   06-cq-dx line 1                   JA1XYZ > DX Cq hands over certain
+ ok   06-cq-dx line 2                   JA1XYZ > DX Cq hands over certain
+ ok   07-odd-ending line 1              N4ZEK > ANY Cq hands over certain
+ ok   07-odd-ending line 2              KC3QIS > N4ZEK Answer hands over certain
+ ok   07-odd-ending line 3              N4ZEK > KC3QIS Report hands over certain rst 599 for-operator
+ ok   07-odd-ending line 4              KC3QIS > N4ZEK Report hands over certain rst 599
+ ok   08-lowercase-and-slashes line 1   KD8WYT/P > ANY Cq hands over certain
+ ok   08-lowercase-and-slashes line 2   KC3QIS > KD8WYT/P Answer hands over certain
+ ok   08-lowercase-and-slashes line 3   KD8WYT/P > KC3QIS Report hands over certain rst 599 grid EN91 for-operator
+ matched 32 of 32
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31MessageSplitTests.SevenTranscriptsComeBackInOrderEachParsingAsTheCorpusStates [3 ms]
+  Standard Output Messages:
+ rule: A message ends at the whitespace after K, KN, BTU, OVER, SK or CL when that word follows de, one or more clean callsigns and at most one other word - so K inside OK, and SK, BTU or OVER in the middle of a sentence, never split, 73 on its own never splits, and turnover words that arrive straight after a message are its tail and start nothing.
+ 01-textbook: 5 messages from 5 lines
+   ok    1: W1AW > ANY Cq hands over certain | CQ CQ CQ de W1AW W1AW W1AW pse K
+   ok    2: KC3QIS > W1AW Answer hands over certain | W1AW de KC3QIS KC3QIS K
+   ok    3: W1AW > KC3QIS Report hands over certain | KC3QIS de W1AW GA TNX FER CALL UR RST 599 599 NAME BOB BOB QTH NEWINGTON CT GRID FN31 FN31 HW? KC3QIS de W1AW K
+   ok    4: KC3QIS > W1AW Report hands over certain | W1AW de KC3QIS R R TNX BOB UR RST 599 599 NAME TIM TIM QTH TRAFFORD PA GRID FN00 FN00 BTU W1AW de KC3QIS K
+   ok    5: W1AW > KC3QIS End hands over certain | KC3QIS de W1AW R R TNX TIM 73 73 KC3QIS de W1AW SK
+ 02-chatty: 5 messages from 5 lines
+   ok    1: G4XYZ > ANY Cq hands over certain | CQ CQ CQ DE G4XYZ G4XYZ CQ CQ CQ DE G4XYZ G4XYZ PSE K
+   ok    2: KC3QIS > G4XYZ Answer hands over certain | G4XYZ DE KC3QIS KC3QIS KC3QIS KN
+   ok    3: G4XYZ > KC3QIS Report hands over certain | KC3QIS DE G4XYZ good evening Tim and thanks for the call. You are 589 589 here in Reading, Berkshire. Name is Dave and the rig is an FT-891 into a doublet at 30 feet. The weather has been dreadful all week. Anyway back to you Tim. KC3QIS DE G4XYZ KN
+   ok    4: KC3QIS > G4XYZ Report hands over certain | G4XYZ DE KC3QIS Hi Dave, solid copy 599 599 here. Trafford PA, IC-7300, 40 watts. First PSK31 contact for me. Over to you. G4XYZ DE KC3QIS KN
+   ok    5: G4XYZ > KC3QIS End hands over certain | KC3QIS DE G4XYZ congratulations on the first one Tim, many more to come. 73 and good DX. KC3QIS DE G4XYZ SK
+ 03-no-report: 4 messages from 4 lines
+   ok    1: VE3XN > ANY Cq hands over certain | CQ CQ de VE3XN VE3XN K
+   ok    2: KC3QIS > VE3XN Answer hands over certain | VE3XN de KC3QIS K
+   ok    3: VE3XN > KC3QIS End hands over certain | KC3QIS de VE3XN hi there, running low power tonight and about to lose the band, sorry to be brief. 73 KC3QIS de VE3XN SK
+   ok    4: KC3QIS > VE3XN End hands over certain | VE3XN de KC3QIS understood, 73 VE3XN de KC3QIS SK
+ 04-not-for-me: 4 messages from 4 lines
+   ok    1: F4DIA > ANY Cq hands over certain | CQ CQ CQ DE F4DIA F4DIA F4DIA K
+   ok    2: EI4GNB > F4DIA Answer hands over certain | F4DIA DE EI4GNB EI4GNB K
+   ok    3: F4DIA > EI4GNB Report hands over certain | EI4GNB DE F4DIA UR 579 579 NAME MARC QTH LYON EI4GNB DE F4DIA K
+   ok    4: EI4GNB > F4DIA End hands over certain | F4DIA DE EI4GNB R 599 599 NAME SEAN QTH DUBLIN 73 F4DIA DE EI4GNB SK
+ 06-cq-dx: 2 messages from 2 lines
+   ok    1: JA1XYZ > DX Cq hands over certain | CQ DX CQ DX de JA1XYZ JA1XYZ K
+   ok    2: JA1XYZ > DX Cq hands over certain | CQ DX CQ DX de JA1XYZ JA1XYZ K
+ 07-odd-ending: 4 messages from 4 lines
+   ok    1: N4ZEK > ANY Cq hands over certain | CQ CQ de N4ZEK N4ZEK K
+   ok    2: KC3QIS > N4ZEK Answer hands over certain | N4ZEK de KC3QIS K
+   ok    3: N4ZEK > KC3QIS Report hands over certain | KC3QIS de N4ZEK 599 599 Mike in Atlanta BTU KC3QIS de N4ZEK K
+   ok    4: KC3QIS > N4ZEK Report hands over certain | N4ZEK de KC3QIS R 599 Tim Trafford PA BTU N4ZEK de KC3QIS K
+ 08-lowercase-and-slashes: 3 messages from 3 lines
+   ok    1: KD8WYT/P > ANY Cq hands over certain | cq cq cq de kd8wyt/p kd8wyt/p k
+   ok    2: KC3QIS > KD8WYT/P Answer hands over certain | kd8wyt/p de kc3qis k
+   ok    3: KD8WYT/P > KC3QIS Report hands over certain | kc3qis de kd8wyt/p tnx ur 5nn 5nn name chris qth on a hilltop in ohio en91 btu kc3qis de kd8wyt/p k
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.RstAndGridWhereTheCorpusStatesThem [1 ms]
+  Standard Output Messages:
+ 01-textbook line 3                rst 599 (corpus 599), grid FN31 (corpus FN31)
+ 01-textbook line 4                rst 599 (corpus 599), grid FN00 (corpus FN00)
+ 02-chatty line 3                  rst 589 (corpus 589), grid unknown (corpus unknown)
+ 02-chatty line 4                  rst 599 (corpus 599), grid unknown (corpus unknown)
+ 04-not-for-me line 3              rst 579 (corpus 579), grid unknown (corpus unknown)
+ 05-garbled line 5                 rst 599 (corpus 599), grid unknown (corpus unknown)
+ 07-odd-ending line 3              rst 599 (corpus 599), grid unknown (corpus unknown)
+ 07-odd-ending line 4              rst 599 (corpus 599), grid unknown (corpus unknown)
+ 08-lowercase-and-slashes line 3   rst 599 (corpus 599), grid EN91 (corpus EN91)
+ fields the corpus states: 12
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.TheStateChangesWithinOneCharacterOfTheFinalTurnoverWord [2 ms]
+  Standard Output Messages:
+ 01-textbook: your turn 1 character(s) after the last letter of [K]
+ 01-textbook: your turn 1 character(s) after the last letter of [SK]
+ 02-chatty: your turn 1 character(s) after the last letter of [KN]
+ 02-chatty: your turn 1 character(s) after the last letter of [SK]
+ 03-no-report: your turn 1 character(s) after the last letter of [SK]
+ 05-garbled: your turn 1 character(s) after the last letter of [K]
+ 07-odd-ending: your turn 1 character(s) after the last letter of [K]
+ 08-lowercase-and-slashes: your turn 1 character(s) after the last letter of [k]
+ measured 8, worst 1 character(s)
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.TheUnknownRatePerTranscriptIsNotLowerThanTheCorpusExpects [1 ms]
+  Standard Output Messages:
+ transcript                 lines  uncertain  no-speaker  expected  corpus-uncertain  corpus-no-speaker
+ 01-textbook                5      0.00       0.00        0.00      0.00              0.00
+ 02-chatty                  5      0.00       0.00        0.00      0.00              0.00
+ 03-no-report               4      0.00       0.00        0.00      0.00              0.00
+ 04-not-for-me              4      0.00       0.00        0.00      0.00              0.00
+ 05-garbled                 5      0.40       0.20        0.20      0.40              0.20
+ 06-cq-dx                   2      0.00       0.00        0.00      0.00              0.00
+ 07-odd-ending              4      0.00       0.00        0.00      0.00              0.00
+ 08-lowercase-and-slashes   3      0.00       0.00        0.00      0.00              0.00
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.TheCallsignRuleIsTheOneTheTreeAlreadyUses [< 1 ms]
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.ACertainMessageTheOperatorSpokeThatHandsOverIsACertainHisTurn [2 ms]
+  Standard Output Messages:
+ 01-textbook: KC3QIS > W1AW Answer -> HisTurn certain
+ 01-textbook: KC3QIS > W1AW Report -> HisTurn certain
+ 02-chatty: KC3QIS > G4XYZ Answer -> HisTurn certain
+ 02-chatty: KC3QIS > G4XYZ Report -> HisTurn certain
+ 03-no-report: KC3QIS > VE3XN Answer -> HisTurn certain
+ 03-no-report: KC3QIS > VE3XN End -> HisTurn certain
+ 05-garbled: KC3QIS > K3ABC Answer -> HisTurn certain
+ 07-odd-ending: KC3QIS > N4ZEK Answer -> HisTurn certain
+ 07-odd-ending: KC3QIS > N4ZEK Report -> HisTurn certain
+ 08-lowercase-and-slashes: KC3QIS > KD8WYT/P Answer -> HisTurn certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ExchangeParserTests.AnExchangeWithNoReportStillEndsOn73 [< 1 ms]
+  Standard Output Messages:
+ 03-no-report line 3: VE3XN > KC3QIS End hands over certain for-operator
+ 03-no-report line 4: KC3QIS > VE3XN End hands over certain
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.TheNotForMeTranscriptOffersNothingAndTheGarbledOneOffersOnlyAReport [9 ms]
+  Standard Output Messages:
+ 04-not-for-me: 190 characters walked
+ 05-garbled   : 239 characters walked, 4 offers, kinds Report
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.AnUncertainMessageIsNeverACertainYourTurn [3 ms]
+  Standard Output Messages:
+ 05-garbled uncertain message -> YourTurn guess | KC3Q&S de K3A~C ur rst 5#9 599 name Ann QTH Erie PA hw? KC3QIS de K3ABC K
+ 05-garbled uncertain message -> HisTurn guess | yes copy all fine here, nice signal into PA tonight
+K3ABC de KC3QIS R 599 name Tim Trafford PA BTU K3ABC de KC3QIS K
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests.NothingIsOfferedUnlessItIsHisTurnAndAGuessOffersOnlyAReport [2 ms]
+  Standard Output Messages:
+ offers made on a certain your turn : 7
+ offers made on anything else       : 0
+ offers made on a guessed your turn : 4
+ of those, a Confirm                : 0
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.MessagesToTheOperatorAndOnHowManyYourTurnIsCertain [17 ms]
+  Standard Output Messages:
+ transcript                to the operator  certain your turn
+ 01-textbook               2                2
+ 02-chatty                 2                2
+ 03-no-report              1                1
+ 04-not-for-me             0                0
+ 05-garbled                1                0
+ 06-cq-dx                  0                0
+ 07-odd-ending             1                1
+ 08-lowercase-and-slashes  1                1
+ all                       8                7
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31TurnTests.TheTranscriptNotForTheOperatorNeverYieldsYourTurn [3 ms]
+  Standard Output Messages:
+ 04-not-for-me read as: HeIsSending certain, Unknown guess
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.ACarrierThatDriftsIsHeld [413 ms]
+  Standard Output Messages:
+ psk31-drift-1000-to-1020hz.wav
+   CER     : 0.0000   reference 0.0000   ceiling 0.05
+   length  : 255 of 255
+   seconds : 0.04
+   text    : CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name T…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AtMinusThreeDecibels [33 ms]
+  Standard Output Messages:
+ psk31-snr-3db-1000hz.wav
+   CER     : 0.0000   reference 0.0000   ceiling 0.10
+   length  : 255 of 255
+   seconds : 0.02
+   text    : CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name T…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.EveryCaptureOffTheAirIsReadBack [< 1 ms]
+  Standard Output Messages:
+ NO CAPTURE READ. C:\Source\HamLet\assets\fixtures\captured holds no .wav, so nothing in this run is evidence about real air. Press Capture 2 minutes on the PSK31 panel, copy the file out of %AppData%/Hamlet/captures/ into that folder and commit it, and this test reads it back on every run.
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheWeakSignalFixtureIsMeasuredAndNotGated [33 ms]
+  Standard Output Messages:
+ psk31-snr-10db-1000hz.wav
+   CER     : 0.1502   NO CEILING - this is a measurement, not a gate
+   length  : 221 of 255
+   seconds : 0.02
+   text    : CQCK3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KQIS RST 599 U9 mm Tim Qfford PA Gr…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.EveryFixtureIsTheFileTheManifestSaysItIs [18 ms]
+  Standard Output Messages:
+ psk31-clean-1000hz.wav            732b0479fba651b7…
+ psk31-snr+10db-1000hz.wav         667a6d0176ebd617…
+ psk31-snr+3db-1000hz.wav          adf810215220eee6…
+ psk31-snr-3db-1000hz.wav          b876e8312eca294d…
+ psk31-drift-1000-to-1020hz.wav    b2adf0206de874bd…
+ psk31-noise-only-30s.wav          da2663966db612d8…
+ psk31-two-signals-1000-1500hz.wav a5e150b50f43bfba…
+ psk31-snr-10db-1000hz.wav         94571483cf914ea0…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AtTenDecibels [29 ms]
+  Standard Output Messages:
+ psk31-snr+10db-1000hz.wav
+   CER     : 0.0000   reference 0.0000   ceiling 0.02
+   length  : 255 of 255
+   seconds : 0.02
+   text    : CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name T…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheCleanFixtureDecodes [32 ms]
+  Standard Output Messages:
+ psk31-clean-1000hz.wav
+   CER     : 0.0000   reference 0.0000   ceiling 0.01
+   length  : 255 of 255
+   seconds : 0.02
+   text    : CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name T…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheSquelchRuleAndItsNumberLiveInOneNamedPlace [< 1 ms]
+  Standard Output Messages:
+ rule   : the mean of |Re(d)| over the mean of |d|, where d is each symbol times the conjugate of the one before, taken over a rolling window: 1.0 on clean keying and 0.637 on uniform noise phase. Characters are emitted only while it is at or above SquelchQuality.
+ number : 0.90
+ uniform noise phase averages 0.637, clean keying 1.000
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.EachMacroComesBackIdenticalThroughHamletsOwnDemodulator(sampleRate: 48000, offsetHz: 1000) [195 ms]
+  Standard Output Messages:
+ CQ       at 48000 Hz, 1000 Hz: identical
+   sent : "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+   read : "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+ Answer   at 48000 Hz, 1000 Hz: identical
+   sent : "W1AW de KC3QIS KC3QIS K"
+   read : "W1AW de KC3QIS KC3QIS K"
+ Report   at 48000 Hz, 1000 Hz: identical
+   sent : "W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU W1AW de KC3QIS K"
+   read : "W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU W1AW de KC3QIS K"
+ Confirm  at 48000 Hz, 1000 Hz: identical
+   sent : "W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK"
+   read : "W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK"
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheFirstCharacterLatencyIsReportedAndIsUnderTheStatedCeiling [39 ms]
+  Standard Output Messages:
+ psk31-clean-1000hz.wav: first character 1.50 s after the carrier was listed, 2.75 s after the file started
+ psk31-idle-8s-1000hz.wav: first character 1.50 s after the carrier was listed, 2.75 s after the file started
+ the squelch window alone is 1.024 s; the varicode separator is 0.064 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AChannelAtOneThousandIgnoresAStationAtFifteenHundred [29 ms]
+  Standard Output Messages:
+ two signals, channel at 1000 Hz
+   CER   : 0.0000   reference 0.0000
+   time  : 0.02 s
+   text  : CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name T…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheTwoSignalFixtureYieldsTwoCarriersAndNoOthers [631 ms]
+  Standard Output Messages:
+ psk31-two-signals-1000-1500hz.wav: 2 carrier(s) listed over 66.6 s
+   id 2  median 1000.0 Hz  range 1000.0 to 1000.0  strength +8.4 dB  listed 1.25 to 66.56 s
+   id 1  median 1500.0 Hz  range 1500.0 to 1500.5  strength +5.4 dB  listed 1.25 to 66.56 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheRuleAndItsNumbersLiveInOneNamedPlace [< 1 ms]
+  Standard Output Messages:
+ rule : every half spectrum window, a place where the power summed over plus and minus SignalHalfWidthHz stands at least CandidateRatio times the floor's over the same width is a candidate, the floor being the median bin or DynamicRangeDb under the strongest place, whichever is higher; a probe mixed down at its power centroid takes the differential product of each symbol with the one before as a unit phasor, squares it, and averages over MeasureSymbols symbols; the probe is listed as a carrier when that average's magnitude is at least CoherenceToAppear, the keying is no more one-way than MostlyOneWay and at least NarrowEnough of the power over the floor within three half-widths is inside one, stays listed while it is at least CoherenceToStay, and is retired only when the search and the carrier's own demodulator have both lost it - when the place it sits fails the same candidate test on RetireAfterPasses passes in a row, measured on the newest window rather than the average, and the demodulator has had neither its squelch open nor its quality at KeepReadableQuality or better within the last KeepReadableSeconds - and never because it stopped being readable and never because it stopped saying anything. Its offset is the probe's frequency plus the error the squared phasor's angle measures.
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.TheSquelchProducesNothingFromNothing [13 ms]
+  Standard Output Messages:
+ noise-only: 0 characters in 0.01 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31DemodulatorTests.AtThreeDecibels [43 ms]
+  Standard Output Messages:
+ psk31-snr+3db-1000hz.wav
+   CER     : 0.0000   reference 0.0000   ceiling 0.05
+   length  : 255 of 255
+   seconds : 0.03
+   text    : CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K / KC3QIS de W1AW W1AW K / W1AW de KC3QIS RST 599 599 Name T…
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheFourSignalFixtureStillYieldsFourAndTheNoiseOnlyNone [682 ms]
+  Standard Output Messages:
+ psk31-four-signals.wav: 4 carrier(s) over 38.6 s, station stops at 38.6 s
+   id 4  median 700.0 Hz  listed 1.25 to 38.59 s  on 151 of 151 readings in between
+   id 3  median 1100.0 Hz  listed 1.25 to 33.00 s  on 128 of 128 readings in between
+   id 2  median 1604.5 Hz  listed 1.25 to 38.59 s  on 151 of 151 readings in between
+   id 1  median 2200.0 Hz  listed 1.25 to 38.59 s  on 151 of 151 readings in between
+ psk31-noise-only-30s.wav: 0 carrier(s) over 30.0 s, station stops at 30.0 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheNoiseOnlyFixtureYieldsNoCarriers [104 ms]
+  Standard Output Messages:
+ psk31-noise-only-30s.wav: 0 carrier(s) listed over 30.0 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.EachMacroComesBackIdenticalThroughHamletsOwnDemodulator(sampleRate: 48000, offsetHz: 1500) [186 ms]
+  Standard Output Messages:
+ CQ       at 48000 Hz, 1500 Hz: identical
+   sent : "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+   read : "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+ Answer   at 48000 Hz, 1500 Hz: identical
+   sent : "W1AW de KC3QIS KC3QIS K"
+   read : "W1AW de KC3QIS KC3QIS K"
+ Report   at 48000 Hz, 1500 Hz: identical
+   sent : "W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU W1AW de KC3QIS K"
+   read : "W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU W1AW de KC3QIS K"
+ Confirm  at 48000 Hz, 1500 Hz: identical
+   sent : "W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK"
+   read : "W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK"
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.EachMacroComesBackIdenticalThroughHamletsOwnDemodulator(sampleRate: 8000, offsetHz: 1000) [30 ms]
+  Standard Output Messages:
+ CQ       at 8000 Hz, 1000 Hz: identical
+   sent : "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+   read : "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+ Answer   at 8000 Hz, 1000 Hz: identical
+   sent : "W1AW de KC3QIS KC3QIS K"
+   read : "W1AW de KC3QIS KC3QIS K"
+ Report   at 8000 Hz, 1000 Hz: identical
+   sent : "W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU W1AW de KC3QIS K"
+   read : "W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU W1AW de KC3QIS K"
+ Confirm  at 8000 Hz, 1000 Hz: identical
+   sent : "W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK"
+   read : "W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK"
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheFt8AndFt4SendsAreByteIdenticalTests.AnFt8SendIsTheSameBytesSamplesRunAndRecord [785 ms]
+  Standard Output Messages:
+ ---- FT8: paste-ready ----
+         "boundary: Ran",
+         "port: FE FE 94 E0 1C 00 01 FD FE FE 94 E0 1C 00 00 FD",
+         "sink: 1 call, 606720 samples at 48000 Hz, sha256 a66c5929374bb079f385a728cd614a14f9a394cfad8ea7570d4c6f6fdee22af1",
+         "run.Outcome: Played",
+         "run.Reason: ",
+         "run.Citation: 0 chars, sha256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+         "run.Keyed: True",
+         "run.UnkeyedNormally: True",
+         "run.Abort: null",
+         "run.Played: 606720 in 00:00:00",
+         "run.SamplesOffered: 606720",
+         "run.SecondsOffered: 12.64",
+         "run.CameOutOfTransmit: OrdinaryUnkey",
+         "run.RadioIsInReceive: True",
+         "event: send_stage Info Transmit",
+         "  stage = String gate_asked",
+         "  entered = Boolean True",
+         "  detail = String 14074000 Hz",
+         "event: send_stage Info Transmit",
+         "  stage = String keyed",
+         "  entered = Boolean True",
+         "  detail = String unknown",
+         "event: send_stage Info Transmit",
+         "  stage = String handed_to_the_sound_card",
+         "  entered = Boolean True",
+         "  detail = String 606720 samples",
+         "event: send_stage Info Transmit",
+         "  stage = String unkeyed",
+         "  entered = Boolean True",
+         "  detail = String unknown",
+         "event: ft8_transmission Info Transmit",
+         "  slotStartUtc = String 2026-09-11T18:00:00.0000000Z",
+         "  startSecondsIntoSlot = Double 0.5",
+         "  frequencyHz = Int64 14074000",
+         "  durationSeconds = Double 12.64",
+         "  sampleRate = Int32 48000",
+         "  sampleCount = Int32 606720",
+         "  messageType = String Standard",
+         "  messageLength = Int32 14",
+         "  carriedHashedCallsign = Boolean False",
+         "  outcome = String Played",
+         "  cameOutOfTransmit = String OrdinaryUnkey",
+         "  keyed = Boolean True",
+         "  stagesEntered = String gate_asked | keyed | handed_to_the_sound_card | unkeyed",
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheFt8AndFt4SendsAreByteIdenticalTests.AnFt4SendIsTheSameBytesSamplesRunAndRecord [21 ms]
+  Standard Output Messages:
+ ---- FT4: paste-ready ----
+         "boundary: Ran",
+         "port: FE FE 94 E0 1C 00 01 FD FE FE 94 E0 1C 00 00 FD",
+         "sink: 1 call, 241920 samples at 48000 Hz, sha256 a224275149be459b4a22621ecd4240fbbb8c474e5435729af2446eeedeb9066b",
+         "run.Outcome: Played",
+         "run.Reason: ",
+         "run.Citation: 0 chars, sha256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+         "run.Keyed: True",
+         "run.UnkeyedNormally: True",
+         "run.Abort: null",
+         "run.Played: 241920 in 00:00:00",
+         "run.SamplesOffered: 241920",
+         "run.SecondsOffered: 5.04",
+         "run.CameOutOfTransmit: OrdinaryUnkey",
+         "run.RadioIsInReceive: True",
+         "event: send_stage Info Transmit",
+         "  stage = String gate_asked",
+         "  entered = Boolean True",
+         "  detail = String 14080000 Hz",
+         "event: send_stage Info Transmit",
+         "  stage = String keyed",
+         "  entered = Boolean True",
+         "  detail = String unknown",
+         "event: send_stage Info Transmit",
+         "  stage = String handed_to_the_sound_card",
+         "  entered = Boolean True",
+         "  detail = String 241920 samples",
+         "event: send_stage Info Transmit",
+         "  stage = String unkeyed",
+         "  entered = Boolean True",
+         "  detail = String unknown",
+         "event: ft8_transmission Info Transmit",
+         "  slotStartUtc = String 2026-09-11T18:00:07.5000000Z",
+         "  startSecondsIntoSlot = Double 0.5",
+         "  frequencyHz = Int64 14080000",
+         "  durationSeconds = Double 5.04",
+         "  sampleRate = Int32 48000",
+         "  sampleCount = Int32 241920",
+         "  messageType = String Standard",
+         "  messageLength = Int32 14",
+         "  carriedHashedCallsign = Boolean False",
+         "  outcome = String Played",
+         "  cameOutOfTransmit = String OrdinaryUnkey",
+         "  keyed = Boolean True",
+         "  stagesEntered = String gate_asked | keyed | handed_to_the_sound_card | unkeyed",
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheLicenceGateHoldsForASendWithNoSlot(what: "outside a Technician's privileges", licenseClass: Technician, guardEnabled: True) [810 ms]
+  Standard Output Messages:
+ outside a Technician's privileges: Ran, run RefusedByLicence - Technician privileges do not reach this frequency; it needs General.
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheReportToACompoundCallsignFitsUnderTheRulingsCeiling [35 ms]
+  Standard Output Messages:
+ text      : "VP2V/W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU VP2V/W1AW de KC3QIS K"
+ with idle : 28.19 s against R10's ceiling of 30 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheFourMacrosAreTheRulingsTextsToTheSpace [< 1 ms]
+  Standard Output Messages:
+ CQ       "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K"
+ Answer   "W1AW de KC3QIS KC3QIS K"
+ Report   "W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU W1AW de KC3QIS K"
+ Confirm  "W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK"
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheLicenceGateHoldsForASendWithNoSlot(what: "the guard is off, so the gate permits on the opera"···, licenseClass: Technician, guardEnabled: False) [14 ms]
+  Standard Output Messages:
+ the guard is off, so the gate permits on the operator's word: Ran, run RefusedByLicence - the license guard is switched off in Settings, so Hamlet has no answer it can stand behind about whether this frequency is inside your privileges. It will not key on that. What the guard said when it was last asked: Technician privileges do not reach this frequency; it needs General.
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheLicenceGateHoldsForASendWithNoSlot(what: "the class is unknown", licenseClass: Unknown, guardEnabled: True) [16 ms]
+  Standard Output Messages:
+ the class is unknown: Ran, run RefusedByLicence - Hamlet does not know your license class, so it is not checking this transmission. Set your class in Settings and it will. Hamlet will not key a transmission nothing checked.
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheRecordSaysWhetherTheSendWasAnnounced [33 ms]
+  Standard Output Messages:
+ event     : send_stage Info stage=gate_asked, entered=True, detail=14070000 Hz
+ event     : send_stage Info stage=keyed, entered=True, detail=unknown
+ event     : send_stage Info stage=handed_to_the_sound_card, entered=True, detail=639052 samples
+ event     : send_stage Info stage=unkeyed, entered=True, detail=unknown
+ event     : ft8_transmission Info mode=Psk31, frequencyHz=14070000, durationSeconds=13.313583333333334, sampleRate=48000, sampleCount=639052, messageLength=38, outcome=Played, cameOutOfTransmit=OrdinaryUnkey, keyed=True, fit=Fits, audioSeconds=13.313583333333334, announced=True, rsidCode=1, announcementSeconds=1.8575833333333334, longestSeconds=30, stagesEntered=gate_asked | keyed | handed_to_the_sound_card | unkeyed
+ event     : send_stage Info stage=gate_asked, entered=True, detail=14070000 Hz
+ event     : send_stage Info stage=keyed, entered=True, detail=unknown
+ event     : send_stage Info stage=handed_to_the_sound_card, entered=True, detail=549888 samples
+ event     : send_stage Info stage=unkeyed, entered=True, detail=unknown
+ event     : ft8_transmission Info mode=Psk31, frequencyHz=14070000, durationSeconds=11.456, sampleRate=48000, sampleCount=549888, messageLength=38, outcome=Played, cameOutOfTransmit=OrdinaryUnkey, keyed=True, fit=Fits, audioSeconds=11.456, announced=False, announcementSeconds=0, longestSeconds=30, stagesEntered=gate_asked | keyed | handed_to_the_sound_card | unkeyed
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ATextAtTheCapWithItsBurstFitsAndOneSampleMoreDoesNot(rate: 48000) [3 ms]
+  Standard Output Messages:
+ 48000 Hz: burst 89164 samples; text 1440000 samples (30.000000 s) Fits, 1440001 (30.000021 s) LongerThanTheCap
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ATextAtTheCapWithItsBurstFitsAndOneSampleMoreDoesNot(rate: 12000) [< 1 ms]
+  Standard Output Messages:
+ 12000 Hz: burst 22291 samples; text 360000 samples (30.000000 s) Fits, 360001 (30.000083 s) LongerThanTheCap
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheSymbolIsThirtyOnePointTwoFiveBaudAndTheEnvelopeDipsOnlyAtReversals [70 ms]
+  Standard Output Messages:
+ minima in the waveform      : 365
+ spacing over the idle (32) : 1535.032 samples
+ sampleRate / 31.25          : 1536.000 samples
+ measured rate               : 31.2697 baud
+ reversals, each a dip       : 363
+ no-change boundaries, flat  : 411
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheEightSecondIdleYieldsOneCarrierForTheWholeFile [197 ms]
+  Standard Output Messages:
+ psk31-idle-8s-1000hz.wav: 1 carrier(s) over 41.3 s, station stops at 31.3 s
+   id 1  median 1000.0 Hz  listed 1.25 to 39.50 s  on 154 of 154 readings in between
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheReportToACompoundCallsignFitsWithItsBurstOutsideTheCap [78 ms]
+  Standard Output Messages:
+ report to VP2V/W1AW: text 28.192 s, burst 1.858 s, audio 30.050 s, cap 30 s, fit Fits
+ event     : send_stage Info stage=gate_asked, entered=True, detail=14070000 Hz
+ event     : send_stage Info stage=keyed, entered=True, detail=unknown
+ event     : send_stage Info stage=handed_to_the_sound_card, entered=True, detail=1442380 samples
+ event     : send_stage Info stage=unkeyed, entered=True, detail=unknown
+ event     : ft8_transmission Info mode=Psk31, frequencyHz=14070000, durationSeconds=30.049583333333334, sampleRate=48000, sampleCount=1442380, messageLength=106, outcome=Played, cameOutOfTransmit=OrdinaryUnkey, keyed=True, fit=Fits, audioSeconds=30.049583333333334, announced=True, rsidCode=1, announcementSeconds=1.8575833333333334, longestSeconds=30, stagesEntered=gate_asked | keyed | handed_to_the_sound_card | unkeyed
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheCleanFixtureYieldsExactlyOne [227 ms]
+  Standard Output Messages:
+ psk31-clean-1000hz.wav: 1 carrier(s) listed over 66.6 s
+   id 1  median 1000.0 Hz  range 1000.0 to 1000.0  strength +91.1 dB  listed 1.25 to 66.56 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.TheOperatorsStopReachesASendWithNoSlotWhileItPlays [33 ms]
+  Standard Output Messages:
+ stop      : StoppedTheTransmissionAndToldTheRadio, audio told True
+ run       : Cancelled, came out by TheAbort
+ played    : 4514 of 639052
+ wire      : FE FE 94 E0 1C 00 01 FD FE FE 94 E0 17 FF FD FE FE 94 E0 1C 00 00 FD FE FE 94 E0 17 FF FD FE FE 94 E0 1C 00 00 FD
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ASendWithNoSlotUnderTheCapGoesOutAtOnceThroughTheOnePath [20 ms]
+  Standard Output Messages:
+ audio     : 13.31 s, 639052 samples at 48000 Hz
+ now       : Ran, run Played
+ wire      : FE FE 94 E0 1C 00 01 FD FE FE 94 E0 1C 00 00 FD
+ sink      : 1 call, 639052 samples at 48000 Hz
+ event     : send_stage Info stage=gate_asked, entered=True, detail=14070000 Hz
+ event     : send_stage Info stage=keyed, entered=True, detail=unknown
+ event     : send_stage Info stage=handed_to_the_sound_card, entered=True, detail=639052 samples
+ event     : send_stage Info stage=unkeyed, entered=True, detail=unknown
+ event     : ft8_transmission Info mode=Psk31, frequencyHz=14070000, durationSeconds=13.313583333333334, sampleRate=48000, sampleCount=639052, messageLength=38, outcome=Played, cameOutOfTransmit=OrdinaryUnkey, keyed=True, fit=Fits, audioSeconds=13.313583333333334, announced=True, rsidCode=1, announcementSeconds=1.8575833333333334, longestSeconds=30, stagesEntered=gate_asked | keyed | handed_to_the_sound_card | unkeyed
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.BothHalvesAreReadAtOrUnderFiveHundredthsError [146 ms]
+  Standard Output Messages:
+ read: "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n"
+ expected 78 characters, character error rate 0.000
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ASendWithNoSlotHasNoSlotStartOffsetGridOrFt8Transmission [26 ms]
+  Standard Output Messages:
+ asked for a slot start: this send has no slot, so it has no SlotStartUtc: it is Psk31 audio fired by the operator's own action, and nothing about a slot applies to it.
+ printed               : OperatorSend { Unslotted = UnslottedTransmission { Mode = Psk31, Samples = System.Single[], SampleRate = 48000, MessageLength = 38, LongestSeconds = 30, Seconds
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ASendWithNoSlotLongerThanTheCapIsRefusedBeforeItArmsWithARecord [64 ms]
+  Standard Output Messages:
+ audio     : 36.90 s against a cap of 30 s
+ arm       : RefusedAsUnsendable - this is 36.9 s of Psk31 audio, and this send may be at most 30 s so that a continuous carrier cannot run on. Nothing keyed.
+ event     : ft8_transmission Warn mode=Psk31, frequencyHz=14070000, durationSeconds=0, sampleRate=48000, sampleCount=0, messageLength=138, outcome=RefusedAsUnsendable, cameOutOfTransmit=NothingWasKeyed, keyed=False, fit=LongerThanTheCap, audioSeconds=36.89758333333333, announced=True, rsidCode=1, announcementSeconds=1.8575833333333334, longestSeconds=30, stagesEntered=unknown
+ backstop  : RefusedAsUnsendable - this is 36.9 s of Psk31 audio, and this send may be at most 30 s so that a continuous carrier cannot run on. Nothing keyed.
+ event     : send_stage Info stage=gate_asked, entered=True, detail=14070000 Hz
+ event     : ft8_transmission Warn mode=Psk31, frequencyHz=14070000, durationSeconds=0, sampleRate=48000, sampleCount=0, messageLength=138, outcome=RefusedAsUnsendable, cameOutOfTransmit=NothingWasKeyed, keyed=False, fit=LongerThanTheCap, audioSeconds=36.89758333333333, announced=True, rsidCode=1, announcementSeconds=1.8575833333333334, longestSeconds=30, stagesEntered=gate_asked
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.AnAnnouncementLongerThanTheBurstOrWithNoCodeIsLongerThanTheCap [< 1 ms]
+  Standard Output Messages:
+ one sample longer than the burst  : LongerThanTheCap
+ the burst's length with no code   : LongerThanTheCap
+ a code the file does not carry    : LongerThanTheCap
+ longer than the audio itself      : LongerThanTheCap
+ a negative length                 : LongerThanTheCap
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheFourSignalFixtureYieldsFourCarriersAndNoOthers [176 ms]
+  Standard Output Messages:
+ psk31-four-signals.wav: 4 carrier(s) listed over 38.6 s
+   id 4  median 700.0 Hz  range 699.6 to 700.1  strength +3.4 dB  listed 1.25 to 37.00 s
+   id 3  median 1100.0 Hz  range 1100.0 to 1100.5  strength +0.3 dB  listed 1.25 to 29.00 s
+   id 2  median 1604.0 Hz  range 1600.2 to 1608.0  strength +5.7 dB  listed 1.25 to 34.25 s
+   id 1  median 2200.0 Hz  range 2200.0 to 2200.1  strength -2.5 dB  listed 1.25 to 38.59 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm") [1 s]
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.PttOnHasExactlyOneUseSiteUnderSrc [116 ms]
+  Standard Output Messages:
+ PttOn used at : Hamlet.RadioEngine/Transmit/Ft8TransmitSequence.cs:513  await _port.WriteAsync(Frame(CivConstants.PttOn), cancellationToken)
+ use sites     : 1
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.TheDemodulatorLetsGoInsideTheBoundTheListenerPromises [201 ms]
+  Standard Output Messages:
+ quality fell under 0.80 at 7.20 s after the carrier stopped; the squelch shut at 5.70
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.ABoundaryNeverRunsASendWithNoSlotAndNowNeverRunsASlottedOne [18 ms]
+  Standard Output Messages:
+ a boundary with no-slot armed : HasNoSlot
+ now with a slotted send armed : WaitsForItsSlot
+
+
+  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnslottedSendTests.UnannouncedAudioIsMeasuredWholeAsBefore [< 1 ms]
+  Standard Output Messages:
+ unannounced: 360000 samples Fits, one more LongerThanTheCap; a code and no samples LongerThanTheCap
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.AnIdlingEventAndATypingEventBracketTheGap [184 ms]
+  Standard Output Messages:
+ idling id 1 at 1000.0 Hz, quality 0.999, after 12.4 s
+ typing id 1 at 1000.0 Hz, quality 0.999, after 6.3 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31StationIdlesTests.AnIdlingStationIsNominatedAtTheBalancePointOfItsTwoSidebands [26 ms]
+  Standard Output Messages:
+ idle-only: id 1 at 1000.0 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm") [312 ms]
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TheStrengthIsMeasuredAgainstTheStatedSnr [694 ms]
+  Standard Output Messages:
+ psk31-snr+10db-1000hz.wav: 1 carrier(s) listed over 66.6 s
+   id 1  median 1000.0 Hz  range 1000.0 to 1000.0  strength +10.1 dB  listed 1.25 to 66.56 s
+   stated +10.0 dB, measured +10.1 dB, off by +0.1 dB
+ psk31-snr+3db-1000hz.wav: 1 carrier(s) listed over 66.6 s
+   id 1  median 1000.0 Hz  range 1000.0 to 1000.0  strength +3.2 dB  listed 1.25 to 66.56 s
+   stated +3.0 dB, measured +3.2 dB, off by +0.2 dB
+ psk31-snr-3db-1000hz.wav: 1 carrier(s) listed over 66.6 s
+   id 1  median 1000.0 Hz  range 999.9 to 1000.1  strength -2.9 dB  listed 1.25 to 66.56 s
+   stated -3.0 dB, measured -2.9 dB, off by +0.1 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.TwoCarriersAHundredHertzApartAreBothFound [123 ms]
+  Standard Output Messages:
+ psk31-two-signals-100hz-apart.wav: 2 carrier(s) listed over 33.6 s
+   id 2  median 1000.0 Hz  range 1000.0 to 1000.0  strength +7.2 dB  listed 1.25 to 33.57 s
+   id 1  median 1100.0 Hz  range 1099.8 to 1100.0  strength +7.2 dB  listed 1.25 to 33.57 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31CarrierSearchTests.StrengthsAreOrderedAsTheFixtureWasMade [160 ms]
+  Standard Output Messages:
+ psk31-four-signals.wav: 4 carrier(s) listed over 38.6 s
+   id 4  median 700.0 Hz  range 699.6 to 700.1  strength +3.4 dB  listed 1.25 to 37.00 s
+   id 3  median 1100.0 Hz  range 1100.0 to 1100.5  strength +0.3 dB  listed 1.25 to 29.00 s
+   id 2  median 1604.0 Hz  range 1600.2 to 1608.0  strength +5.7 dB  listed 1.25 to 34.25 s
+   id 1  median 2200.0 Hz  range 2200.0 to 2200.1  strength -2.5 dB  listed 1.25 to 38.59 s
+ strengths: 1600 +5.7 dB, 700 +3.4 dB, 1100 +0.3 dB, 2200 -2.5 dB
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheTwoSignalFixtureYieldsTwoDetections [3 s]
+  Standard Output Messages:
+ olivia-two-signals-rsid.wav: 8000 Hz, 28.98 s, passband 200-3000 Hz, wall 2.872 s, process cpu 23.922 s, cpu/audio 0.826
+   expected OLIVIA_8_250 (69) at 1000 Hz
+   expected OLIVIA_16_500 (70) at 2000 Hz
+   detected OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1999.66 Hz, error 0.34 Hz, quality 0.894, tones right 15, first tone at 0.464 s
+   detected OLIVIA_8_250 (69) mode OLIVIA variant "8/250" at 1000.29 Hz, error 0.29 Hz, quality 0.891, tones right 15, first tone at 0.465 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013520", named: 55, elements: 147, placeholders: 5) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013520: 55 named, 55 at or above the span bar against a floor of 55, 0 below it; 147 named elements, 147 above the bar against 147; 0 placeholders where 5 settled when the floor was set, 55 emitted in all, at 540 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-17-013347, Adjudicated = VA3VRR, Anchor = VA3VRR, Ruling = HM-DEC-145, Retired =  }) [3 s]
+  Standard Output Messages:
+ cw-2026-08-17-013347 (HM-DEC-145): looking for "VA3VRR" — 6 of 6 adjudicated characters
+   read:  E EI I HIAEIHEEEA E EEE HEEIEE IEEETE I EE IEEI TEEITEHAEWVRRVA3VRRR  
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheIdleEitherSideIsLongerThanTheShortestThatStillReadsBack(sampleRate: 48000) [3 s]
+  Standard Output Messages:
+ at 48000 Hz
+   before: shortest that reads back 23 bits, stated 32
+   after : shortest that reads back 0 bits, stated 16
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheIdleEitherSideIsLongerThanTheShortestThatStillReadsBack(sampleRate: 8000) [513 ms]
+  Standard Output Messages:
+ at 8000 Hz
+   before: shortest that reads back 23 bits, stated 32
+   after : shortest that reads back 0 bits, stated 16
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheTableOfTheFourMacros [120 ms]
+  Standard Output Messages:
+ macro     chars  varicode bits  text s  with idle s  instruction 317
+ CQ           38            309    9.89        11.46  not stated
+ Answer       23            196    6.27         7.84  not stated
+ Report       96            726   23.23        24.80  23.2 s
+ Confirm      62            459   14.69        16.26  14.7 s
+ idle: 32 bits before, 16 after, and half a symbol of ramp at each end
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheLongestMacroIsUnderAHundredHertzWideThirtyDecibelsDown [256 ms]
+  Standard Output Messages:
+ signal     : Report macro, 1190400 samples at 48000 Hz, carrier 1000 Hz
+ window     : periodic Hann, 32768 samples, 1.46 Hz a bin, half overlap, 71 windows power-averaged
+ peak       : 1007.81 Hz
+ width  -6 dB: 23.4 Hz
+ width -20 dB: 51.3 Hz
+ width -30 dB: 57.1 Hz   (must be under 100)
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.TheCqMacroAtTheReceivePathsRateIsUnderAHundredHertzWideThirtyDecibelsDown [19 ms]
+  Standard Output Messages:
+ signal     : CQ macro, 91648 samples at 8000 Hz, carrier 1000 Hz
+ window     : periodic Hann, 16384 samples, 0.49 Hz a bin, half overlap, 10 windows power-averaged
+ peak       : 1001.46 Hz
+ width  -6 dB: 22.5 Hz
+ width -20 dB: 45.9 Hz
+ width -30 dB: 55.7 Hz   (must be under 100)
+
+
+  Passed Hamlet.RadioEngine.Tests.Psk31.ThePsk31ModulatorTests.NoCallsignIsWrittenIntoTheModulatorOrTheMacros [< 1 ms]
+  Standard Output Messages:
+ Psk31Modulator.cs: 14803 characters read
+ Psk31Macros.cs: 11282 characters read
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021629", named: 27, elements: 65, placeholders: 20) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021629: 27 named, 27 at or above the span bar against a floor of 27, 0 below it; 65 named elements, 65 above the bar against 65; 2 placeholders where 20 settled when the floor was set, 29 emitted in all, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-8-250-cq-rsid.wav") [2 s]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav: 8000 Hz, 28.98 s, passband 200-3000 Hz, wall 2.691 s, process cpu 17.156 s, cpu/audio 0.592
+   expected OLIVIA_8_250 (69) at 1000 Hz
+   detected OLIVIA_8_250 (69) mode OLIVIA variant "8/250" at 1000.32 Hz, error 0.32 Hz, quality 0.899, tones right 15, first tone at 0.465 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.EachBurstReadsBackAtThreeCentersAcrossThePassband [6 s]
+  Standard Output Messages:
+ BPSK31           at    500 Hz -> BPSK31 (1) at 500.36 Hz, tones right 15
+ BPSK31           at   1500 Hz -> BPSK31 (1) at 1500.07 Hz, tones right 15
+ BPSK31           at   2500 Hz -> BPSK31 (1) at 2499.66 Hz, tones right 15
+ OLIVIA_8_250     at    500 Hz -> OLIVIA_8_250 (69) at 500.36 Hz, tones right 15
+ OLIVIA_8_250     at   1500 Hz -> OLIVIA_8_250 (69) at 1499.94 Hz, tones right 15
+ OLIVIA_8_250     at   2500 Hz -> OLIVIA_8_250 (69) at 2499.66 Hz, tones right 15
+ OLIVIA_16_500    at    500 Hz -> OLIVIA_16_500 (70) at 500.36 Hz, tones right 15
+ OLIVIA_16_500    at   1500 Hz -> OLIVIA_16_500 (70) at 1499.94 Hz, tones right 15
+ OLIVIA_16_500    at   2500 Hz -> OLIVIA_16_500 (70) at 2499.66 Hz, tones right 15
+ OLIVIA_32_1000   at    500 Hz -> OLIVIA_32_1000 (71) at 500.36 Hz, tones right 15
+ OLIVIA_32_1000   at   1500 Hz -> OLIVIA_32_1000 (71) at 1499.94 Hz, tones right 15
+ OLIVIA_32_1000   at   2500 Hz -> OLIVIA_32_1000 (71) at 2499.66 Hz, tones right 15
+ OLIVIA_8_500     at    500 Hz -> OLIVIA_8_500 (72) at 500.36 Hz, tones right 15
+ OLIVIA_8_500     at   1500 Hz -> OLIVIA_8_500 (72) at 1499.94 Hz, tones right 15
+ OLIVIA_8_500     at   2500 Hz -> OLIVIA_8_500 (72) at 2499.66 Hz, tones right 15
+ OLIVIA_16_1000   at    500 Hz -> OLIVIA_16_1000 (73) at 500.36 Hz, tones right 15
+ OLIVIA_16_1000   at   1500 Hz -> OLIVIA_16_1000 (73) at 1499.94 Hz, tones right 15
+ OLIVIA_16_1000   at   2500 Hz -> OLIVIA_16_1000 (73) at 2499.66 Hz, tones right 15
+ OLIVIA_4_500     at    500 Hz -> OLIVIA_4_500 (74) at 500.36 Hz, tones right 15
+ OLIVIA_4_500     at   1500 Hz -> OLIVIA_4_500 (74) at 1499.94 Hz, tones right 15
+ OLIVIA_4_500     at   2500 Hz -> OLIVIA_4_500 (74) at 2499.66 Hz, tones right 15
+ OLIVIA_4_250     at    500 Hz -> OLIVIA_4_250 (75) at 500.36 Hz, tones right 15
+ OLIVIA_4_250     at   1500 Hz -> OLIVIA_4_250 (75) at 1499.94 Hz, tones right 15
+ OLIVIA_4_250     at   2500 Hz -> OLIVIA_4_250 (75) at 2499.66 Hz, tones right 15
+ read back 24 of 24
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheShippedBurstMatchesHamletsSequenceSymbolForSymbol(file: "psk31-cq-rsid.wav") [7 ms]
+  Standard Output Messages:
+ psk31-cq-rsid.wav: BPSK31 (1) at 1000 Hz, 8000 Hz
+   shipped : 0 0 8 10 9 10 1 8 2 11 9 2 3 11 1
+   Hamlet's: 0 0 8 10 9 10 1 8 2 11 9 2 3 11 1
+   made    : 0 0 8 10 9 10 1 8 2 11 9 2 3 11 1
+   matched 15 of 15
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheShippedBurstMatchesHamletsSequenceSymbolForSymbol(file: "olivia-8-250-cq-rsid.wav") [5 ms]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav: OLIVIA_8_250 (69) at 1000 Hz, 8000 Hz
+   shipped : 0 11 0 6 5 13 14 11 13 3 14 6 8 8 5
+   Hamlet's: 0 11 0 6 5 13 14 11 13 3 14 6 8 8 5
+   made    : 0 11 0 6 5 13 14 11 13 3 14 6 8 8 5
+   matched 15 of 15
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 44100) [11 ms]
+  Standard Output Messages:
+ 44100 Hz: 81920 samples, silence 20480, tones 61440 (the file's 15 over 10.7666015625 Hz is 61440), 1.8576 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 48000) [6 ms]
+  Standard Output Messages:
+ 48000 Hz: 89164 samples, silence 22291, tones 66873 (the file's 15 over 10.7666015625 Hz is 66873), 1.8576 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 12000) [1 ms]
+  Standard Output Messages:
+ 12000 Hz: 22291 samples, silence 5573, tones 16718 (the file's 15 over 10.7666015625 Hz is 16718), 1.8576 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.TheLengthIsTheFilesSymbolsOverItsRateToTheSample(rate: 8000) [< 1 ms]
+  Standard Output Messages:
+ 8000 Hz: 14861 samples, silence 3715, tones 11146 (the file's 15 over 10.7666015625 Hz is 11146), 1.8576 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidBurstTests.EveryCodeWithASequenceMakesTheFilesTones [10 ms]
+  Standard Output Messages:
+ BPSK31             1  file 0 0 8 10 9 10 1 8 2 11 9 2 3 11 1  measured 0 0 8 10 9 10 1 8 2 11 9 2 3 11 1
+ OLIVIA_8_250      69  file 0 11 0 6 5 13 14 11 13 3 14 6 8 8 5  measured 0 11 0 6 5 13 14 11 13 3 14 6 8 8 5
+ OLIVIA_16_500     70  file 0 11 1 1 7 10 13 10 11 7 12 0 13 12 6  measured 0 11 1 1 7 10 13 10 11 7 12 0 13 12 6
+ OLIVIA_32_1000    71  file 0 11 9 11 14 0 12 2 9 12 5 2 14 7 7  measured 0 11 9 11 14 0 12 2 9 12 5 2 14 7 7
+ OLIVIA_8_500      72  file 0 11 12 9 4 2 3 7 14 1 15 5 6 10 8  measured 0 11 12 9 4 2 3 7 14 1 15 5 6 10 8
+ OLIVIA_16_1000    73  file 0 11 4 3 13 8 2 15 12 10 6 7 5 1 9  measured 0 11 4 3 13 8 2 15 12 10 6 7 5 1 9
+ OLIVIA_4_500      74  file 0 11 5 4 15 15 1 14 10 14 4 1 0 5 10  measured 0 11 5 4 15 15 1 14 10 14 4 1 0 5 10
+ OLIVIA_4_250      75  file 0 11 13 14 6 5 0 6 8 5 13 3 3 14 11  measured 0 11 13 14 6 5 0 6 8 5 13 3 3 14 11
+ codes 8, tone sequences 8, symbols 15
+ BPSK31             1  15 tones
+ OLIVIA_8_250      69  15 tones
+ OLIVIA_16_500     70  15 tones
+ OLIVIA_32_1000    71  15 tones
+ OLIVIA_8_500      72  15 tones
+ OLIVIA_16_1000    73  15 tones
+ OLIVIA_4_500      74  15 tones
+ OLIVIA_4_250      75  15 tones
+ code 0 is in no row of the file: TonesFor is null and Samples throws
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-17-134712, Adjudicated = N4L, Anchor = N4, Ruling = HM-DEC-144, Retired = the peak measures 501.2 Hz against a station at 500.09, and the callsign was only ever read because an unmeasured bank centre of 500.0 landed on it (Tim, 2026-08-30) }) [4 s]
+  Standard Output Messages:
+ cw-2026-08-17-134712 (HM-DEC-144): RETIRED — the peak measures 501.2 Hz against a station at 500.09, and the callsign was only ever read because an unmeasured bank centre of 500.0 landed on it (Tim, 2026-08-30)
+   it reads:        E ■   NT    N4LQ K     
+   it would come back if "N4" appeared: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013637", named: 60, elements: 157, placeholders: 3) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013637: 60 named, 60 at or above the span bar against a floor of 60, 0 below it; 157 named elements, 157 above the bar against 157; 1 placeholders where 3 settled when the floor was set, 61 emitted in all, at 550 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-18-003758, Adjudicated = AA4MP/4 QNIK, Anchor = MP/4 QNIK, Ruling = HM-DEC-126, Retired =  }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758 (HM-DEC-126): looking for "MP/4 QNIK" — 9 of 12 adjudicated characters
+   read:    ■R L T U   IAN EANDE A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013303", named: 44, elements: 127, placeholders: 10) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013303: 44 named, 44 at or above the span bar against a floor of 44, 0 below it; 127 named elements, 127 above the bar against 127; 1 placeholders where 10 settled when the floor was set, 45 emitted in all, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-24-012403, Adjudicated = DE KD0UN KD0UN K, Anchor = DE KD0UN KD0UN K, Ruling = work instruction 011, Retired =  }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-24-012403 (work instruction 011): looking for "DE KD0UN KD0UN K" — 16 of 16 adjudicated characters
+   read:  DEQ 6Q  Q DE KD0UN KD0UN K 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021825", named: 19, elements: 43, placeholders: 16) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021825: 19 named, 19 at or above the span bar against a floor of 19, 0 below it; 43 named elements, 43 above the bar against 43; 0 placeholders where 16 settled when the floor was set, 19 emitted in all, at 400 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = cw-2026-08-18-004507, Adjudicated = AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P, Anchor = N HANDLING THIS MESSAG, Ruling = HM-DEC-115, Retired =  }) [3 s]
+  Standard Output Messages:
+ cw-2026-08-18-004507 (HM-DEC-115): looking for "N HANDLING THIS MESSAG" — 22 of 57 adjudicated characters
+   read: E5 I E A T ARRL D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "32/1000") [15 s]
+  Standard Output Messages:
+ 32/1000 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_32_1000 (71) at 1000.32 Hz, 15 tones right; 18.738 s of audio, blocks 8 decoded, 0 rejected; decode cpu 8.141 s
+ 32/1000 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_32_1000 (71) at 1000.32 Hz, 15 tones right; 12.594 s of audio, blocks 5 decoded, 0 rejected; decode cpu 3.234 s
+ 32/1000 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_32_1000 (71) at 1000.32 Hz, 15 tones right; 43.314 s of audio, blocks 20 decoded, 0 rejected; decode cpu 12.469 s
+ 32/1000 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_32_1000 (71) at 1000.32 Hz, 15 tones right; 28.978 s of audio, blocks 13 decoded, 0 rejected; decode cpu 6.094 s
+ 32/1000 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_32_1000 (71) at 1000.32 Hz, 15 tones right; 47.410 s of audio, blocks 22 decoded, 0 rejected; decode cpu 8.531 s
+ 32/1000 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_32_1000 (71) at 1499.94 Hz, 15 tones right; 18.738 s of audio, blocks 8 decoded, 0 rejected; decode cpu 3.281 s
+ 32/1000 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_32_1000 (71) at 1499.94 Hz, 15 tones right; 12.594 s of audio, blocks 5 decoded, 0 rejected; decode cpu 1.969 s
+ 32/1000 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_32_1000 (71) at 1499.94 Hz, 15 tones right; 43.314 s of audio, blocks 20 decoded, 0 rejected; decode cpu 7.563 s
+ 32/1000 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_32_1000 (71) at 1499.94 Hz, 15 tones right; 28.978 s of audio, blocks 13 decoded, 0 rejected; decode cpu 5.016 s
+ 32/1000 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_32_1000 (71) at 1499.94 Hz, 15 tones right; 47.410 s of audio, blocks 22 decoded, 0 rejected; decode cpu 8.438 s
+ 32/1000: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013150", named: 51, elements: 123, placeholders: 7) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013150: 51 named, 51 at or above the span bar against a floor of 51, 0 below it; 123 named elements, 123 above the bar against 123; 2 placeholders where 7 settled when the floor was set, 53 emitted in all, at 495 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-16-500-qso-snr-16db.wav") [11 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-16db.wav: 8000 Hz, 131.38 s, passband 200-3000 Hz, wall 11.179 s, process cpu 55.594 s, cpu/audio 0.423
+   expected OLIVIA_16_500 (70) at 1000 Hz
+   detected OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1000.77 Hz, error 0.77 Hz, quality 0.296, tones right 12, first tone at 0.469 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031838, Adjudicated = 2, 2, AND 2 WITH A MEAN OF 2.9. PRE, Anchor = , AND, Ruling = Tim 2026-08-25, Retired =  }) [4 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031838 (Tim 2026-08-25): looking for ", AND" — 5 of 35 adjudicated characters
+   read:   A 3, AT3 , 2TT 2, AND ■ WIAHA MEAN OF 2 TT 
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012823", named: 22, elements: 36, placeholders: 0) [3 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012823: 22 named, 22 at or above the span bar against a floor of 22, 0 below it; 36 named elements, 36 above the bar against 36; 0 placeholders where 0 settled when the floor was set, 22 emitted in all, at 450 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Audio.RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch [21 s]
+  Standard Output Messages:
+   device rate 48000 Hz, delivered in 480-sample chunks (10.0 ms), through a real AudioTap and a real Ft8SlotWatch
+ 
+     20m_busy/test_21.wav               1 slot(s) handed over,  17 rows, slowest slot  1785.4 ms, 17 of them in upstream's list of 34 (a witness, not a gate)
+       142230  dt  1.52    709 Hz  CQ IK4LZH JN54
+       142230  dt  1.44    891 Hz  CQ IQ5PJ JN53
+       142230  dt  0.80   1284 Hz  R8JA 4U1A -23
+       142230  dt  0.80   1344 Hz  BI8DHZ 4U1A -16
+       142230  dt  1.52   1125 Hz  DG1BQC HB9CUZ RRR
+       142230  dt  0.32    338 Hz  JO1COV RA9UJP NO25
+       142230  dt  1.44   2325 Hz  EA3YE R8AU -16
+       142230  dt  1.44    991 Hz  YC6RMT IK3JLT JN65
+       142230  dt  1.68   1931 Hz  CQ DH1NAS JO50
+       142230  dt  1.76   2456 Hz  BA7IO EA3ZD JN01
+       142230  dt  2.32   2388 Hz  CQ E75C JN93
+       142230  dt  1.60   1088 Hz  CQ R7NO KN98
+       142230  dt  0.56   1559 Hz  7Z1AL DF2FE JO51
+       142230  dt  1.36   1191 Hz  DM2DLG UR7HN -13
+       142230  dt  1.44    559 Hz  CQ F5UOU JN06
+       142230  dt  1.60    822 Hz  BI8DHZ DL1KDA -17
+       142230  dt  1.44   1678 Hz  CQ F6HUK JN06
+     20m_busy/test_05.wav               1 slot(s) handed over,  21 rows, slowest slot  1736.0 ms, 20 of them in upstream's list of 32 (a witness, not a gate)
+       142230  dt  1.60    709 Hz  CQ IK4LZH JN54
+       142230  dt  1.44   2631 Hz  CQ OR18OSB
+       142230  dt  1.44   2325 Hz  CQ R8AU MO05
+       142230  dt  1.52   1125 Hz  CQ HB9CUZ JN47
+       142230  dt  1.52   1266 Hz  CQ SV2BRA KN10
+       142230  dt  1.60    394 Hz  RV6AFG M0XMX R+03
+       142230  dt  1.44    891 Hz  CQ IQ5PJ JN53
+       142230  dt  1.52   2519 Hz  F5CCX SP4TXI R+10
+       142230  dt  0.56   1566 Hz  JI1TYA DF2FE JO51
+       142230  dt  1.52   2234 Hz  PY2DPM DL1DV JN39
+       142230  dt  1.44   1863 Hz  CQ IZ5ILK JN63
+       142230  dt  1.52    559 Hz  CQ G3ZQQ IO82
+       142230  dt  1.76   2278 Hz  CQ ON6UF JO10
+       142230  dt  0.80   1344 Hz  LY2EW 4U1A -05
+       142230  dt  2.32   2391 Hz  CQ E75C JN93
+       142230  dt  2.64    338 Hz  JO1COV YO7IUN KN24
+       142230  dt  1.44   1831 Hz  CQ F6HUK JN06
+       142230  dt  1.60    822 Hz  R3FO DL1KDA -13
+       142230  dt  2.40   1450 Hz  CQ RX3ASQ KO95
+       142230  dt  2.96   1928 Hz  UA3NFG RW6PA -09
+       142230  dt  1.68   2044 Hz  9A9A DH1NAS JO50
+     20m_busy/test_35.wav               1 slot(s) handed over,  13 rows, slowest slot  1584.5 ms, 13 of them in upstream's list of 32 (a witness, not a gate)
+       142230  dt  1.52   2722 Hz  SP5QAC R8AU MO05
+       142230  dt  1.52   2047 Hz  9A9A DJ4TM JN47
+       142230  dt  1.60    838 Hz  CQ DX G0PQO IO92
+       142230  dt  1.44    994 Hz  YC6RMT IK3JLT JN65
+       142230  dt  2.40   2388 Hz  CQ E75C JN93
+       142230  dt  0.64   2484 Hz  CQ UV5IW KN88
+       142230  dt  1.44    891 Hz  R1AV IQ5PJ -21
+       142230  dt  1.52   1266 Hz  CQ SV2BRA KN10
+       142230  dt  1.60    494 Hz  CQ R7NO KN98
+       142230  dt  1.60    709 Hz  CQ IK4LZH JN54
+       142230  dt  1.52   1122 Hz  CQ HB9CUZ JN47
+       142230  dt  1.52    338 Hz  JO1COV PE1OYB JO21
+       142230  dt  2.16   1969 Hz  CQ SQ6PZL JO80
+     20m_busy/test_07.wav               1 slot(s) handed over,  17 rows, slowest slot  1493.1 ms, 17 of them in upstream's list of 31 (a witness, not a gate)
+       142230  dt  1.44   1863 Hz  CQ IZ5ILK JN63
+       142230  dt  1.52    709 Hz  CQ IK4LZH JN54
+       142230  dt  1.44    891 Hz  CQ IQ5PJ JN53
+       142230  dt  1.44   2325 Hz  DK3EL R8AU -16
+       142230  dt  1.52   1266 Hz  CQ SV2BRA KN10
+       142230  dt  1.52   1125 Hz  DG1BQC HB9CUZ -17
+       142230  dt  1.76   2278 Hz  CQ ON6UF JO10
+       142230  dt -0.08    988 Hz  TA1NGE RA3TPE R-15
+       142230  dt  1.52   2519 Hz  F5CCX SP4TXI 73
+       142230  dt  1.44   1831 Hz  CQ F6HUK JN06
+       142230  dt  2.40   1450 Hz  CQ RX3ASQ KO95
+       142230  dt  2.40   2391 Hz  CQ E75C JN93
+       142230  dt  0.56   1566 Hz  JI1TYA DF2FE JO51
+       142230  dt  1.52    556 Hz  CQ G3ZQQ IO82
+       142230  dt  1.36   1213 Hz  HB9BIN UR7HN R+00
+       142230  dt  1.44   1409 Hz  JO1COV PA0CAH JO21
+       142230  dt  1.68    394 Hz  RV6AFG M0XMX 73
+     20m_busy/test_11.wav               1 slot(s) handed over,  19 rows, slowest slot  1675.5 ms, 19 of them in upstream's list of 31 (a witness, not a gate)
+       142230  dt  1.44    891 Hz  CQ IQ5PJ JN53
+       142230  dt  1.44    491 Hz  2E0LDW OK6LZ R-04
+       142230  dt  1.52    709 Hz  CQ IK4LZH JN54
+       142230  dt  1.52   1125 Hz  DG1BQC HB9CUZ RRR
+       142230  dt  1.76   2456 Hz  BA7IO EA3ZD JN01
+       142230  dt  0.88   1403 Hz  CQ CT3IQ IM12
+       142230  dt  1.52   2047 Hz  9A9A DJ4TM JN47
+       142230  dt  1.28    956 Hz  CQ IU8DMZ JN70
+       142230  dt  1.36   1213 Hz  CQ UR7HN KN79
+       142230  dt  1.44   1831 Hz  CQ F6HUK JN06
+       142230  dt  1.76   2278 Hz  CQ ON6UF JO10
+       142230  dt  0.80   1284 Hz  CQ 4U1A JN88
+       142230  dt  1.60   1969 Hz  MM0IMC SQ6PZL 73
+       142230  dt  1.68    334 Hz  JO1COV DH1NAS R+02
+       142230  dt  1.68    794 Hz  ZL2OK F8BBL 73
+       142230  dt  2.40   2391 Hz  PA3GAE E75C +02
+       142230  dt  1.52    556 Hz  CQ G3ZQQ IO82
+       142230  dt  1.44   2547 Hz  CQ OE8GMQ JN66
+       142230  dt  1.60    822 Hz  CQ DL1KDA JO30
+     20m_busy/test_19.wav               1 slot(s) handed over,  19 rows, slowest slot  1471.6 ms, 19 of them in upstream's list of 30 (a witness, not a gate)
+       142230  dt  1.44    891 Hz  CQ IQ5PJ JN53
+       142230  dt  1.52   1125 Hz  DG1BQC HB9CUZ RRR
+       142230  dt  0.80   1284 Hz  R8JA 4U1A -23
+       142230  dt  1.68   1931 Hz  CQ DH1NAS JO50
+       142230  dt  0.96   1403 Hz  RV6ARS CT3IQ -04
+       142230  dt  1.28   1544 Hz  CQ YO9IAB KN25
+       142230  dt  1.76   2456 Hz  BA7IO EA3ZD JN01
+       142230  dt  0.80   1344 Hz  CQ 4U1A JN88
+       142230  dt  1.60    709 Hz  CQ IK4LZH JN54
+       142230  dt  2.32   2388 Hz  CQ E75C JN93
+       142230  dt  1.36    956 Hz  CQ IU8DMZ JN70
+       142230  dt  1.44   2325 Hz  CQ R8AU MO05
+       142230  dt  1.44   2547 Hz  CQ OE8GMQ JN66
+       142230  dt  1.44   1678 Hz  CQ F6HUK JN06
+       142230  dt  1.60   1088 Hz  CQ R7NO KN98
+       142230  dt  1.76   2278 Hz  CQ ON6UF JO10
+       142230  dt  1.36   1191 Hz  DM2DLG UR7HN -16
+       142230  dt  1.52    559 Hz  CQ F5UOU JN06
+       142230  dt  1.44    991 Hz  YC6RMT IK3JLT JN65
+     websdr_test6.wav                   1 slot(s) handed over,  21 rows, slowest slot  1418.7 ms, 21 of them in upstream's list of 30 (a witness, not a gate)
+       142230  dt  1.52    272 Hz  CQ DL8ALH JN58
+       142230  dt  0.56   2244 Hz  CQ SQ7MRR JO91
+       142230  dt  1.20   2188 Hz  JH1AJT EA1RT -10
+       142230  dt  0.96   1716 Hz  SM2EKA UT7IS -06
+       142230  dt  0.88   1256 Hz  CQ DM1YS JO30
+       142230  dt  0.88   2325 Hz  CQ DK7LE JO54
+       142230  dt  0.88   2391 Hz  DJ0AH DL6WAB JO41
+       142230  dt  0.88   2747 Hz  CQ ON8GE JO20
+       142230  dt  0.88    456 Hz  CQ HF19NY
+       142230  dt  1.04   1113 Hz  CQ OE3UKW JN88
+       142230  dt  2.56    916 Hz  CQ UY5AX KO70
+       142230  dt -0.80   1316 Hz  CQ SP6ZJB JO80
+       142230  dt  0.80   1994 Hz  CQ OM7ZM JN98
+       142230  dt  0.80    697 Hz  EA8TH F8DBF R-04
+       142230  dt  0.88   1013 Hz  CQ CU2DX HM77
+       142230  dt  0.80   1891 Hz  JA6VQA EA8PP R-24
+       142230  dt  0.96   1822 Hz  DK5OK DB4BU 73
+       142230  dt  0.80   1666 Hz  CQ DL7ACN JN49
+       142230  dt  1.20    569 Hz  4X5MZ RA6FSD 73
+       142230  dt  1.04   2106 Hz  HA1BL EA2AA -09
+       142230  dt  1.04    347 Hz  OM7AZA SV8EUB -11
+     20m_busy/test_27.wav               1 slot(s) handed over,  16 rows, slowest slot  1556.8 ms, 15 of them in upstream's list of 29 (a witness, not a gate)
+       142230  dt  1.44    891 Hz  R3KCW IQ5PJ 73
+       142230  dt  1.52    709 Hz  CQ IK4LZH JN54
+       142230  dt  0.80   1344 Hz  SM3MXR 4U1A R-08
+       142230  dt  1.52   2325 Hz  CQ R8AU MO05
+       142230  dt  1.52   1125 Hz  CQ HB9CUZ JN47
+       142230  dt  1.52   1997 Hz  R4WZ PA3GAE JO21
+       142230  dt  1.68   1928 Hz  RZ9WA DH1NAS -13
+       142230  dt  0.80   1825 Hz  R4WZ UV5IW KN88
+       142230  dt  1.44    991 Hz  YC6RMT IK3JLT JN65
+       142230  dt  1.44   2631 Hz  CQ OR18OSB
+       142230  dt  1.76   2456 Hz  BA7IO EA3ZD JN01
+       142230  dt  2.08   2200 Hz  CQ BD8NBG OL36
+       142230  dt  1.28   1444 Hz  ON2RK YO9IAB KN25
+       142230  dt  1.60    825 Hz  BI8DHZ DL1KDA -17
+       142230  dt  2.32   2388 Hz  RV6ARS E75C -11
+       142230  dt  0.56   1559 Hz  7Z1AL DF2FE JO51
+     20m_busy/test_15.wav               1 slot(s) handed over,  17 rows, slowest slot  1427.8 ms, 17 of them in upstream's list of 28 (a witness, not a gate)
+       142230  dt  1.60    709 Hz  CQ IK4LZH JN54
+       142230  dt  1.44    488 Hz  2E0LDW OK6LZ 73
+       142230  dt  1.44    891 Hz  RG0S IQ5PJ RRR
+       142230  dt  1.28    338 Hz  JO1COV IZ7NLM -11
+       142230  dt  1.36   1194 Hz  CQ UR7HN KN79
+       142230  dt  1.36   1941 Hz  PD0CIF/PHOTO
+       142230  dt  1.60   2325 Hz  CQ R8AU MO05
+       142230  dt  1.44   2631 Hz  CQ OR18OSB
+       142230  dt  1.52   1125 Hz  DG1BQC HB9CUZ RRR
+       142230  dt  1.76   2278 Hz  CQ ON6UF JO10
+       142230  dt  1.76   2456 Hz  BA7IO EA3ZD JN01
+       142230  dt  0.80   1284 Hz  CQ 4U1A JN88
+       142230  dt  1.44   1681 Hz  DM2DLG F6HUK -13
+       142230  dt  1.52    822 Hz  CQ DL1KDA JO30
+       142230  dt  1.52   1088 Hz  ES1KK R7NO -07
+       142230  dt  1.28    956 Hz  CQ IU8DMZ JN70
+       142230  dt  0.24   2047 Hz  9A9A RA9UJP 73
+     20m_busy/test_25.wav               1 slot(s) handed over,  17 rows, slowest slot  1615.4 ms, 17 of them in upstream's list of 28 (a witness, not a gate)
+       142230  dt  1.44    891 Hz  R3KCW IQ5PJ RRR
+       142230  dt  1.52    709 Hz  CQ IK4LZH JN54
+       142230  dt  3.12   1191 Hz  JA1FWS RU3OX LO00
+       142230  dt  1.52   1125 Hz  DG1BQC HB9CUZ RRR
+       142230  dt  1.52   2325 Hz  CQ R8AU MO05
+       142230  dt  0.08    338 Hz  JO1COV RA9UJP 73
+       142230  dt  0.80   1344 Hz  BI8DHZ 4U1A -16
+       142230  dt  0.96   1403 Hz  UY7IV CT3IQ -07
+       142230  dt  1.44    991 Hz  YC6RMT IK3JLT JN65
+       142230  dt  1.68   1928 Hz  RZ9WA DH1NAS -13
+       142230  dt  0.80   1284 Hz  R8JA 4U1A -23
+       142230  dt  0.56   1559 Hz  7Z1AL DF2FE JO51
+       142230  dt  1.60    825 Hz  BI8DHZ DL1KDA -17
+       142230  dt  1.44   1638 Hz  SA0BYP F6HUK +01
+       142230  dt  2.32   2388 Hz  CQ E75C JN93
+       142230  dt  1.76   2456 Hz  BA7IO EA3ZD JN01
+       142230  dt  1.84   2200 Hz  CQ BD8NBG OL36
+     20m_busy/test_33.wav               1 slot(s) handed over,  15 rows, slowest slot  1421.4 ms, 15 of them in upstream's list of 28 (a witness, not a gate)
+       142230  dt  0.80   1284 Hz  SM3MXR 4U1A R-08
+       142230  dt  1.60    838 Hz  CQ DX G0PQO IO92
+       142230  dt  1.44    891 Hz  CQ IQ5PJ JN53
+       142230  dt  1.52    709 Hz  CQ IK4LZH JN54
+       142230  dt  1.44    991 Hz  YC6RMT IK3JLT JN65
+       142230  dt  1.52   1122 Hz  CQ HB9CUZ JN47
+       142230  dt  1.60   2200 Hz  RA3TPE BD8NBG -17
+       142230  dt  1.52   2325 Hz  CQ R8AU MO05
+       142230  dt  1.60    494 Hz  CQ R7NO KN98
+       142230  dt  1.36    956 Hz  CQ IU8DMZ JN70
+       142230  dt  2.32   2388 Hz  CQ E75C JN93
+       142230  dt  0.96   1403 Hz  IT9HVZ CT3IQ -02
+       142230  dt  1.44   1900 Hz  PP5AM DM7GBW JO71
+       142230  dt  3.12   2522 Hz  F5CCX F4AGZ JN38
+       142230  dt  1.52   2141 Hz  CQ PY5JO GG54
+     20m_busy/test_06.wav               1 slot(s) handed over,  17 rows, slowest slot  1646.0 ms, 17 of them in upstream's list of 27 (a witness, not a gate)
+       142230  dt  1.68    763 Hz  UR7HN HB9BIN R+01
+       142230  dt  1.36   2725 Hz  CQ R4HM LO43
+       142230  dt  2.00   1506 Hz  RX3ASQ TA3AHJ -08
+       142230  dt  2.00    266 Hz  CT3IQ EI8GVB IO63
+       142230  dt  1.44   1063 Hz  CQ EA5OL IM99
+       142230  dt  1.44   2047 Hz  CQ 9A9A JN75
+       142230  dt  2.40   1609 Hz  OZ5VO IT9HVZ JM78
+       142230  dt  1.52    394 Hz  M0XMX RV6AFG RRR
+       142230  dt  1.92   1928 Hz  RW6PA UA3NFG R-06
+       142230  dt  1.44   1559 Hz  CQ 7Z1AL LL56
+       142230  dt  1.44   1684 Hz  CQ MM0IMC IO75
+       142230  dt  1.52    338 Hz  CQ JO1COV PM95
+       142230  dt  1.52    941 Hz  JR1MVA DL4GBA JN47
+       142230  dt  2.24   1266 Hz  CQ OR7EG JO11
+       142230  dt  1.68    456 Hz  CQ ON2RK JO20
+       142230  dt  1.52   1369 Hz  SP9LKP F4VTS JN33
+       142230  dt  1.60    838 Hz  YO7IUN CT3HF -18
+ 
+   209 rows out of 12 slots at 48000 Hz. 207 of them appear in upstream's lists, which total 360 across these recordings — reported as a witness and never as a gate.
+   slowest slot anywhere in this run 1785.4 ms in 20m_busy/test_21.wav — 0.1190 of a slot.
+ 
+   This is not a radio. There is no sound card, no USB-D path, no rig
+   and no clock error in it, and it is not a sensitivity measurement of
+   anything.
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013402", named: 56, elements: 150, placeholders: 5) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013402: 56 named, 56 at or above the span bar against a floor of 56, 0 below it; 150 named elements, 150 above the bar against 150; 1 placeholders where 5 settled when the floor was set, 57 emitted in all, at 525 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031905, Adjudicated = DICTED 10.7 CENTIMETER FLUX IS 125, 125, Anchor = DICTED 10.7, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031905 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:  ■ PREDICTED 10.7 K NTIMETER FLAX IS 125, 125T
+   it would come back if "DICTED 10.7" appeared: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-021410", named: 36, elements: 88, placeholders: 11) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-021410: 36 named, 36 at or above the span bar against a floor of 36, 0 below it; 88 named elements, 88 above the bar against 88; 0 placeholders where 11 settled when the floor was set, 36 emitted in all, at 550 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-031948, Adjudicated = 110, 110, AND 110 WITH A MEAN OF 117, Anchor = 110, AND 110 WITH A MEAN OF 117, Ruling = Tim 2026-08-25, Retired =  }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-031948 (Tim 2026-08-25): looking for "110, AND 110 WITH A MEAN OF 117" — 31 of 36 adjudicated characters
+   read:     TM 150 110, AND 110 WITH A MEAN OF 117.W
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012748", named: 2, elements: 3, placeholders: 2) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012748: 2 named, 2 at or above the span bar against a floor of 2, 0 below it; 3 named elements, 3 above the bar against 3; 2 placeholders where 2 settled when the floor was set, 4 emitted in all, at 395 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032012, Adjudicated = N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI, Anchor = R OTHER WEBSITES MENTI, Ruling = Tim 2026-08-25, Retired =  }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032012 (Tim 2026-08-25): looking for "R OTHER WEBSITES MENTI" — 22 of 51 adjudicated characters
+   read:   T F 117.1. LINKS TO ARTICLES OR OTHER WEBSITES MENTI
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-16-500-qso-rsid.wav") [11 s]
+  Standard Output Messages:
+ olivia-16-500-qso-rsid.wav: 8000 Hz, 131.38 s, passband 200-3000 Hz, wall 11.217 s, process cpu 48.219 s, cpu/audio 0.367
+   expected OLIVIA_16_500 (70) at 1000 Hz
+   detected OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1000.32 Hz, error 0.32 Hz, quality 0.900, tones right 15, first tone at 0.464 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-011552", named: 22, elements: 74, placeholders: 8) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-011552: 23 named, 23 at or above the span bar against a floor of 22, 0 below it; 79 named elements, 79 above the bar against 74; 1 placeholders where 8 settled when the floor was set, 24 emitted in all, at 500 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "psk31-cq-rsid.wav") [1 s]
+  Standard Output Messages:
+ psk31-cq-rsid.wav: 8000 Hz, 14.77 s, passband 200-3000 Hz, wall 1.323 s, process cpu 5.141 s, cpu/audio 0.348
+   expected BPSK31 (1) at 1000 Hz
+   detected BPSK31 (1) mode BPSK31 variant "" at 1000.32 Hz, error 0.32 Hz, quality 0.900, tones right 15, first tone at 0.465 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032050, Adjudicated = THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE, Anchor = ULLETIN CAN BE FO, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032050 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:     IULLETIN CAN BE FOTAND IN TELEWRITTER, PA■ KE    H IE S TSSI I
+   it would come back if "ULLETIN CAN BE FO" appeared: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-012922", named: 40, elements: 102, placeholders: 0) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-012922: 40 named, 40 at or above the span bar against a floor of 40, 0 below it; 102 named elements, 102 above the bar against 102; 0 placeholders where 0 settled when the floor was set, 40 emitted in all, at 475 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032113, Adjudicated = ACKET, AND INTERNET VERSIONS, Anchor = INT, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032113 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:    A KET■ A N O INTERNET ■ERSIONS OF  200J6   I I ITT EEIIIWE TI
+   it would come back if "INT" appeared: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013010", named: 47, elements: 118, placeholders: 1) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-25-013010: 47 named, 47 at or above the span bar against a floor of 47, 0 below it; 118 named elements, 118 above the bar against 118; 1 placeholders where 1 settled when the floor was set, 48 emitted in all, at 475 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheAdjudicatedReadingsKeepReadingTests.EachAdjudicatedReadingStillComesBack(reading: Reading { Name = unadjudicated/cw-2026-08-22-032129, Adjudicated = 2026 PROPAGATION FORECAST BULLETIN ARLP034, Anchor = OPAGATION, Ruling = Tim 2026-08-25, Retired = the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30) }) [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-22-032129 (Tim 2026-08-25): RETIRED — the squelch of unit 051 blocks the stretch of this recording where the survey has not admitted a station, and this floor was set on text that included it (Tim, 2026-08-30)
+   it reads:  ■ MTMTJ26 PGOPAGATION FORECAST BUAELETIN ARLP034 
+   it would come back if "OPAGATION" appeared: True
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "8/250") [19 s]
+  Standard Output Messages:
+ 8/250 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_8_250 (69) at 1000.32 Hz, 15 tones right; 28.978 s of audio, blocks 13 decoded, 0 rejected; decode cpu 4.422 s
+ 8/250 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_8_250 (69) at 1000.32 Hz, 15 tones right; 18.738 s of audio, blocks 8 decoded, 0 rejected; decode cpu 3.063 s
+ 8/250 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_8_250 (69) at 1000.32 Hz, 15 tones right; 67.890 s of audio, blocks 32 decoded, 0 rejected; decode cpu 10.328 s
+ 8/250 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_8_250 (69) at 1000.32 Hz, 15 tones right; 45.362 s of audio, blocks 21 decoded, 0 rejected; decode cpu 6.047 s
+ 8/250 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_8_250 (69) at 1000.32 Hz, 15 tones right; 78.130 s of audio, blocks 37 decoded, 0 rejected; decode cpu 10.047 s
+ 8/250 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_8_250 (69) at 1499.94 Hz, 15 tones right; 28.978 s of audio, blocks 13 decoded, 0 rejected; decode cpu 3.406 s
+ 8/250 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_8_250 (69) at 1499.94 Hz, 15 tones right; 18.738 s of audio, blocks 8 decoded, 0 rejected; decode cpu 2.125 s
+ 8/250 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_8_250 (69) at 1499.94 Hz, 15 tones right; 67.890 s of audio, blocks 32 decoded, 0 rejected; decode cpu 8.453 s
+ 8/250 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_8_250 (69) at 1499.94 Hz, 15 tones right; 45.362 s of audio, blocks 21 decoded, 0 rejected; decode cpu 5.469 s
+ 8/250 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_8_250 (69) at 1499.94 Hz, 15 tones right; 78.130 s of audio, blocks 37 decoded, 0 rejected; decode cpu 7.328 s
+ 8/250: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-16-500-qso-snr-10db.wav") [10 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav: 8000 Hz, 131.38 s, passband 200-3000 Hz, wall 10.981 s, process cpu 29.922 s, cpu/audio 0.228
+   expected OLIVIA_16_500 (70) at 1000 Hz
+   detected OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1000.37 Hz, error 0.37 Hz, quality 0.580, tones right 14, first tone at 0.463 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "4/250") [13 s]
+  Standard Output Messages:
+ 4/250 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 21.794 s of audio, blocks 19 decoded, 0 rejected; decode cpu 1.094 s
+ 4/250 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 14.626 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.797 s
+ 4/250 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 51.490 s of audio, blocks 48 decoded, 0 rejected; decode cpu 2.844 s
+ 4/250 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 34.082 s of audio, blocks 31 decoded, 0 rejected; decode cpu 2.063 s
+ 4/250 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_250 (75) at 1000.32 Hz, 15 tones right; 58.658 s of audio, blocks 55 decoded, 0 rejected; decode cpu 3.203 s
+ 4/250 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 21.794 s of audio, blocks 19 decoded, 0 rejected; decode cpu 1.109 s
+ 4/250 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 14.626 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.734 s
+ 4/250 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 51.490 s of audio, blocks 48 decoded, 0 rejected; decode cpu 2.797 s
+ 4/250 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 34.082 s of audio, blocks 31 decoded, 0 rejected; decode cpu 1.813 s
+ 4/250 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_250 (75) at 1499.94 Hz, 15 tones right; 58.658 s of audio, blocks 55 decoded, 0 rejected; decode cpu 3.203 s
+ 4/250: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.EachSingleBurstFixtureYieldsExactlyOneDetectionWithItsCodeAndCenter(file: "olivia-32-1000-qso-rsid.wav") [8 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav: 8000 Hz, 106.80 s, passband 200-3000 Hz, wall 8.525 s, process cpu 16.656 s, cpu/audio 0.156
+   expected OLIVIA_32_1000 (71) at 1000 Hz
+   detected OLIVIA_32_1000 (71) mode OLIVIA variant "32/1000" at 1000.32 Hz, error 0.32 Hz, quality 0.900, tones right 15, first tone at 0.464 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime [5 s]
+  Standard Output Messages:
+ psk31-four-signals.wav: 8000 Hz, 38.59 s of audio, wall 3.131 s (0.081 of real time), cpu/audio 0.160, bursts heard 0
+ olivia-two-signals-rsid.wav: 8000 Hz, 28.98 s of audio, wall 2.263 s (0.078 of real time), cpu/audio 0.157, bursts heard 2; OLIVIA_16_500 at 1999.66 Hz; OLIVIA_8_250 at 1000.29 Hz
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "16/1000") [9 s]
+  Standard Output Messages:
+ 16/1000 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 12.578 s of audio, blocks 10 decoded, 0 rejected; decode cpu 0.719 s
+ 16/1000 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 8.482 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.438 s
+ 16/1000 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 26.914 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.797 s
+ 16/1000 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 18.722 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.172 s
+ 16/1000 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_1000 (73) at 1000.32 Hz, 15 tones right; 31.010 s of audio, blocks 28 decoded, 0 rejected; decode cpu 2.016 s
+ 16/1000 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 12.578 s of audio, blocks 10 decoded, 0 rejected; decode cpu 0.719 s
+ 16/1000 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 8.482 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.453 s
+ 16/1000 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 26.914 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.688 s
+ 16/1000 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 18.722 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.125 s
+ 16/1000 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_1000 (73) at 1499.94 Hz, 15 tones right; 31.010 s of audio, blocks 28 decoded, 0 rejected; decode cpu 2.000 s
+ 16/1000: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.TheBurstSixteenDecibelsBelowTheNoiseIsDetected [10 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-16db.wav: 8000 Hz, 131.38 s, passband 200-3000 Hz, wall 10.514 s, process cpu 20.703 s, cpu/audio 0.158
+   expected OLIVIA_16_500 (70) at 1000 Hz
+   detected OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1000.77 Hz, error 0.77 Hz, quality 0.296, tones right 12, first tone at 0.469 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.AFileWithNoBurstYieldsNone(file: "olivia-noise-only-30s.wav") [2 s]
+  Standard Output Messages:
+ olivia-noise-only-30s.wav: 8000 Hz, 30.00 s, passband 200-3000 Hz, wall 2.377 s, process cpu 4.688 s, cpu/audio 0.156
+   detected none
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "8/500") [11 s]
+  Standard Output Messages:
+ 8/500 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 15.650 s of audio, blocks 13 decoded, 0 rejected; decode cpu 0.875 s
+ 8/500 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 10.530 s of audio, blocks 8 decoded, 0 rejected; decode cpu 0.500 s
+ 8/500 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 35.106 s of audio, blocks 32 decoded, 0 rejected; decode cpu 2.125 s
+ 8/500 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 23.842 s of audio, blocks 21 decoded, 0 rejected; decode cpu 1.328 s
+ 8/500 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_8_500 (72) at 1000.32 Hz, 15 tones right; 40.226 s of audio, blocks 37 decoded, 0 rejected; decode cpu 2.391 s
+ 8/500 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 15.650 s of audio, blocks 13 decoded, 0 rejected; decode cpu 0.828 s
+ 8/500 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 10.530 s of audio, blocks 8 decoded, 0 rejected; decode cpu 0.531 s
+ 8/500 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 35.106 s of audio, blocks 32 decoded, 0 rejected; decode cpu 2.063 s
+ 8/500 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 23.842 s of audio, blocks 21 decoded, 0 rejected; decode cpu 1.281 s
+ 8/500 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_8_500 (72) at 1499.94 Hz, 15 tones right; 40.226 s of audio, blocks 37 decoded, 0 rejected; decode cpu 2.359 s
+ 8/500: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "4/500") [9 s]
+  Standard Output Messages:
+ 4/500 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 12.058 s of audio, blocks 19 decoded, 0 rejected; decode cpu 0.609 s
+ 4/500 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 8.474 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.422 s
+ 4/500 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 26.906 s of audio, blocks 48 decoded, 0 rejected; decode cpu 1.578 s
+ 4/500 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 18.202 s of audio, blocks 31 decoded, 0 rejected; decode cpu 0.938 s
+ 4/500 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_500 (74) at 1000.32 Hz, 15 tones right; 30.490 s of audio, blocks 55 decoded, 0 rejected; decode cpu 1.719 s
+ 4/500 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 12.058 s of audio, blocks 19 decoded, 0 rejected; decode cpu 0.625 s
+ 4/500 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 8.474 s of audio, blocks 12 decoded, 0 rejected; decode cpu 0.438 s
+ 4/500 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 26.906 s of audio, blocks 48 decoded, 0 rejected; decode cpu 1.531 s
+ 4/500 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 18.202 s of audio, blocks 31 decoded, 0 rejected; decode cpu 1.000 s
+ 4/500 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_4_500 (74) at 1499.94 Hz, 15 tones right; 30.490 s of audio, blocks 55 decoded, 0 rejected; decode cpu 1.844 s
+ 4/500: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Rsid.TheRsidDetectorTests.AFileWithNoBurstYieldsNone(file: "olivia-8-250-qso-norsid.wav") [14 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav: 8000 Hz, 172.06 s, passband 200-3000 Hz, wall 13.985 s, process cpu 27.578 s, cpu/audio 0.160
+   detected none
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical(variant: "16/500") [15 s]
+  Standard Output Messages:
+ 16/500 at 1000 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 22.834 s of audio, blocks 10 decoded, 0 rejected; decode cpu 1.313 s
+ 16/500 at 1000 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 14.642 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.844 s
+ 16/500 at 1000 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 51.506 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.547 s
+ 16/500 at 1000 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 35.122 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.078 s
+ 16/500 at 1000 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; 59.698 s of audio, blocks 28 decoded, 0 rejected; decode cpu 1.875 s
+ 16/500 at 1500 Hz, cq: 38 characters in, 38 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 22.834 s of audio, blocks 10 decoded, 0 rejected; decode cpu 0.672 s
+ 16/500 at 1500 Hz, answer: 23 characters in, 23 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 14.642 s of audio, blocks 6 decoded, 0 rejected; decode cpu 0.391 s
+ 16/500 at 1500 Hz, report: 96 characters in, 96 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 51.506 s of audio, blocks 24 decoded, 0 rejected; decode cpu 1.609 s
+ 16/500 at 1500 Hz, confirm: 62 characters in, 62 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 35.122 s of audio, blocks 16 decoded, 0 rejected; decode cpu 1.078 s
+ 16/500 at 1500 Hz, typed: 110 characters in, 110 out, identical; announced OLIVIA_16_500 (70) at 1499.94 Hz, 15 tones right; 59.698 s of audio, blocks 28 decoded, 0 rejected; decode cpu 1.797 s
+ 16/500: 10 of 10 identical
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise [21 s]
+  Standard Output Messages:
+ seed 363 (asserted): SNR set -14.00 dB in 2500 Hz, measured back -13.82 dB; RSID OLIVIA_8_250 at 1000.16 Hz, 14 tones right; CER 0.0000 (ceiling 0.10); characters 251 of 251; blocks decoded 84, rejected 0; sync snr 9.87; cpu 5.141 s (2.5's ceiling 20 s)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.TheUnannouncedCarrierIsFoundAndRead [5 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav: candidates 1; audio consumed 4.096 s; search cpu 0.734 s; passband floor -55.7 dB, loudest bin 90.21 dB over it
+    named 8/250 at 1000.00 Hz (measured middle of the tones 1000.49 Hz), confidence 75.72, after 4.096 s of audio; spacing 31.250 Hz over 8 tones; occupied 865.23-1134.77 Hz = 269.53 Hz
+       weighed 8/250    sync snr 75.72, blocks decoded 2, rejected 0, highest block 87.32
+       weighed 16/500   sync snr 0.00, blocks decoded 0, rejected 2, highest block 2.60
+       weighed 4/250    sync snr 0.00, blocks decoded 0, rejected 4, highest block 3.98
+       weighed 32/1000  sync snr 0.00, blocks decoded 0, rejected 2, highest block 2.89
+ decode after the search: 8/250 at 1000.00 Hz, CER 0.0000 (ceiling 0.05), characters 251 of 251, blocks decoded 84, rejected 0, sync snr 89.69, first block 0.016 s; decode cpu 5.094 s (2.5's ceiling 20 s)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.NoiseYieldsNoCandidate [238 ms]
+  Standard Output Messages:
+ olivia-noise-only-30s.wav: candidates 0; audio consumed 30.000 s; search cpu 0.234 s; passband floor 2.8 dB, loudest bin 0.89 dB over it
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaBlindSearchTests.TheSearchWritesItsEventWithNoTextOrCallsign [796 ms]
+  Standard Output Messages:
+ Psk31 olivia_search {"mode":"olivia","variant":"8/250","found":1,"audioSeconds":4.096,"passbandLowHz":200,"passbandHighHz":3000,"floorDb":-55.71,"peakOverFloorDb":90.21,"gateSigmas":8,"threshold":4,"centerHz":1000,"confidence":75.72,"measuredCenterHz":1000.49,"toneSpacingHz":31.25,"tonesCounted":8,"occupiedLowHz":865.23,"occupiedHighHz":1134.77,"weighed":["8/250","16/500","4/250","32/1000"],"weighedSnr":[75.72,0,0,0],"weighedBlocks":[2,0,0,0]}
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "32/1000") [1 s]
+  Standard Output Messages:
+ noise as 32/1000: characters 0, blocks decoded 0, rejected 14, highest block snr 3.15 (threshold 4), cpu 1.094 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "8/250") [918 ms]
+  Standard Output Messages:
+ noise as 8/250: characters 0, blocks decoded 0, rejected 14, highest block snr 3.45 (threshold 4), cpu 0.875 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.NoiseGivesNoCharacters(variant: "16/500") [939 ms]
+  Standard Output Messages:
+ noise as 16/500: characters 0, blocks decoded 0, rejected 14, highest block snr 3.27 (threshold 4), cpu 0.922 s
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav: detector OLIVIA_16_500 variant 16/500 at 1000.37 Hz (cpu 10.281 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.05); characters 251 of 251; blocks decoded 63, rejected 0; offset -0.37 Hz, symbol phase 5, block phase 14, mean block snr 17.68; first block 2.341 s, last 129.317 s; demodulator cpu 4.172 s
+ block snr: lowest 13.81, tenth 15.21, median 17.24, highest 21.62 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-32-1000-qso-rsid.wav") [12 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav: detector OLIVIA_32_1000 variant 32/1000 at 1000.32 Hz (cpu 8.219 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.01); characters 251 of 251; blocks decoded 51, rejected 0; offset -0.32 Hz, symbol phase 4, block phase 14, mean block snr 91.02; first block 2.338 s, last 104.738 s; demodulator cpu 3.797 s
+ block snr: lowest 86.03, tenth 88.02, median 90.89, highest 96.54 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-16-500-qso-rsid.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-rsid.wav: detector OLIVIA_16_500 variant 16/500 at 1000.32 Hz (cpu 10.156 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.01); characters 251 of 251; blocks decoded 63, rejected 0; offset -0.32 Hz, symbol phase 4, block phase 14, mean block snr 83.60; first block 2.338 s, last 129.314 s; demodulator cpu 4.109 s
+ block snr: lowest 76.95, tenth 80.37, median 83.53, highest 90.07 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText(file: "olivia-8-250-cq-rsid.wav") [3 s]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav: detector OLIVIA_8_250 variant 8/250 at 1000.32 Hz (cpu 2.250 s); 8000 Hz, 256 samples/symbol; CER 0.0000 (ceiling 0.01); characters 38 of 38; blocks decoded 13, rejected 0; offset -0.32 Hz, symbol phase 4, block phase 14, mean block snr 90.11; first block 2.338 s, last 26.914 s; demodulator cpu 0.797 s
+ block snr: lowest 85.52, tenth 86.02, median 88.36, highest 98.47 (threshold 4)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign [14 s]
+  Standard Output Messages:
+ Psk31 olivia_sync {"mode":"olivia","variant":"16/500","state":"found","centerHz":1000.32,"frequencyOffsetHz":-0.32,"symbolPhase":4,"blockPhase":14,"snr":80.97,"threshold":4,"atSeconds":2.338}
+ Psk31 olivia_run {"mode":"olivia","variant":"16/500","centerHz":1000.32,"sampleRate":8000,"samplesPerSymbol":256,"windowSamples":512,"hopSamples":32,"transformSize":2048,"frequencyOffsetHz":-0.32,"symbolPhase":4,"blockPhase":14,"blocksDecoded":63,"blocksRejected":0,"charactersOut":251,"meanSnr":83.6,"threshold":4}
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-16db.wav: detector OLIVIA_16_500 variant 16/500 at 1000.77 Hz (cpu 10.219 s); 8000 Hz, 256 samples/symbol; CER 0.9044 (ceiling none, measured and reported); characters 24 of 251; blocks decoded 6, rejected 57; offset 3.14 Hz, symbol phase 3, block phase 14, mean block snr 4.54; first block 12.578 s, last 104.738 s; demodulator cpu 4.141 s
+ block snr: lowest 2.48, tenth 2.78, median 3.18, highest 4.87 (threshold 4)
+ decoded : "C3QIS deQIS fforKC3QQTH "
+ manifest: "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\nKC3QIS de W1AW W1AW K\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\n"
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaDriftTests.ADriftingCarrierIsHeld [15 s]
+  Standard Output Messages:
+ drifted 16/500 at 20 Hz a minute: detector 16/500 at 1000.76 Hz, burst at 0.465 s; CER 0.0000 (ceiling 0.05), characters 251 of 251, blocks decoded 63, rejected 0, sync snr 81.27; cpu 4.219 s
+ offset tracked (s: Hz, against the ramp's center less the detector's): 2.9: -0.76 (0.21), 19.3: 7.06 (5.67), 35.7: 10.96 (11.13), 52.0: 14.87 (16.59), 68.4: 22.68 (22.05), 84.8: 26.59 (27.52), 101.2: 34.40 (32.98), 117.6: 38.31 (38.44), 131.4: 42.21 (43.04)
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.NoiseOpensNothing [2 s]
+  Standard Output Messages:
+ olivia-noise-only-30s.wav (manifest  at -): 30.00 s in 2000-sample pieces; channels at the end 0, most at once 0; cpu 2.516 s, 0.084 of real time; longest single Add 0.054 s wall; unit 362 whole-file: no candidate, no character
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TwoStationsAreTwoChannelsEachWithItsOwnText [4 s]
+  Standard Output Messages:
+ olivia-two-signals-rsid.wav (manifest 8/250 + 16/500 at -): 28.98 s in 2000-sample pieces; channels at the end 2, most at once 2; cpu 4.063 s, 0.140 of real time; longest single Add 0.110 s wall
+    opened 2: 8/250 at 1000.29 Hz by rsid, opened at 3.500 s
+    opened 1: 16/500 at 1999.66 Hz by rsid, opened at 3.500 s
+    channel 2: 8/250 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 13, rejected 1; characters 38; CER against half 0 0.0000, half 1 0.4737
+    channel 1: 16/500 at 2003.91 Hz, found rsid, opened 3.500 s; blocks decoded 10, rejected 4; characters 38; CER against half 0 0.4737, half 1 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-16-500-qso-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 63 blocks") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-rsid.wav (manifest 16/500 at 1000): 131.38 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 14.516 s, 0.110 of real time; longest single Add 0.069 s wall; unit 362 whole-file: CER 0.0000, 63 blocks
+    opened 1: 16/500 at 1000.32 Hz by rsid, opened at 3.500 s
+    channel 1: 16/500 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 63, rejected 1; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-8-250-cq-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 13 blocks") [3 s]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav (manifest 8/250 at 1000): 28.98 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 3.266 s, 0.113 of real time; longest single Add 0.065 s wall; unit 362 whole-file: CER 0.0000, 13 blocks
+    opened 1: 8/250 at 1000.32 Hz by rsid, opened at 3.500 s
+    channel 1: 8/250 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 13, rejected 1; characters 38; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-32-1000-qso-rsid.wav", ceiling: 0, wholeFile: "CER 0.0000, 51 blocks") [12 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav (manifest 32/1000 at 1000): 106.80 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 12.188 s, 0.114 of real time; longest single Add 0.065 s wall; unit 362 whole-file: CER 0.0000, 51 blocks
+    opened 1: 32/1000 at 1000.32 Hz by rsid, opened at 3.500 s
+    channel 1: 32/1000 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 51, rejected 1; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.EachAnnouncedFileIsOneChannelReadAsDecodeReadsIt(file: "olivia-16-500-qso-snr-10db.wav", ceiling: 0.050000000000000003, wholeFile: "CER 0.0000, 63 blocks") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav (manifest 16/500 at 1000): 131.38 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 14.594 s, 0.111 of real time; longest single Add 0.071 s wall; unit 362 whole-file: CER 0.0000, 63 blocks
+    opened 1: 16/500 at 1000.37 Hz by rsid, opened at 3.500 s
+    channel 1: 16/500 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 63, rejected 1; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TheListenersEventsCarryNoTextOrCallsign [3 s]
+  Standard Output Messages:
+ olivia-two-signals-rsid.wav (manifest 8/250 + 16/500 at -): 28.98 s in 2000-sample pieces; channels at the end 2, most at once 2; cpu 3.953 s, 0.136 of real time; longest single Add 0.107 s wall
+    opened 2: 8/250 at 1000.29 Hz by rsid, opened at 3.500 s
+    opened 1: 16/500 at 1999.66 Hz by rsid, opened at 3.500 s
+    channel 2: 8/250 at 1000.00 Hz, found rsid, opened 3.500 s; blocks decoded 13, rejected 1; characters 38; CER against half 0 0.0000, half 1 0.4737
+    channel 1: 16/500 at 2003.91 Hz, found rsid, opened 3.500 s; blocks decoded 10, rejected 4; characters 38; CER against half 0 0.4737, half 1 0.0000
+ Psk31 olivia_channel {"mode":"olivia","variant":"16/500","state":"opened","id":1,"found":"rsid","centerHz":1999.66,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}
+ Psk31 olivia_channel {"mode":"olivia","variant":"8/250","state":"opened","id":2,"found":"rsid","centerHz":1000.29,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}
+ Psk31 olivia_block {"mode":"olivia","variant":"16/500","id":1,"found":"rsid","centerHz":2000,"atSeconds":1.902,"snr":2.26,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}
+ Psk31 olivia_block {"mode":"olivia","variant":"8/250","id":2,"found":"rsid","centerHz":1000,"atSeconds":1.878,"snr":3.32,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}
+ Psk31 olivia_block {"mode":"olivia","variant":"16/500","id":1,"found":"rsid","centerHz":2000,"atSeconds":2.338,"snr":73.86,"accepted":true,"characters":4,"blocksDecoded":1,"blocksRejected":1,"threshold":4}
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaListenerTests.TheUnannouncedFileIsOneChannelFoundBlind [21 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav (manifest 8/250 at 1000): 172.06 s in 2000-sample pieces; channels at the end 1, most at once 1; cpu 21.141 s, 0.123 of real time; longest single Add 0.964 s wall; unit 362 whole-file: blind search then Decode, CER 0.0000, 84 blocks
+    opened 1: 8/250 at 1000.00 Hz by blind, opened at 10.250 s
+    channel 1: 8/250 at 1000.00 Hz, found blind, opened 10.250 s; blocks decoded 84, rejected 0; characters 251; CER against half 0 0.0000
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-snr-16db.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-16db.wav: 1 16/500 by rsid, window 28.672 s, blocks 9, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-8-250-qso-norsid.wav") [21 s]
+  Standard Output Messages:
+ olivia-8-250-qso-norsid.wav: 1 8/250 by blind, window 38.230 s, blocks 81, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-rsid.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-rsid.wav: 1 16/500 by rsid, window 28.672 s, blocks 60, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-32-1000-qso-rsid.wav") [12 s]
+  Standard Output Messages:
+ olivia-32-1000-qso-rsid.wav: 1 32/1000 by rsid, window 22.938 s, blocks 48, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-noise-only-30s.wav") [2 s]
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-8-250-cq-rsid.wav") [3 s]
+  Standard Output Messages:
+ olivia-8-250-cq-rsid.wav: 1 8/250 by rsid, window 38.230 s, blocks 10, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-16-500-qso-snr-10db.wav") [14 s]
+  Standard Output Messages:
+ olivia-16-500-qso-snr-10db.wav: 1 16/500 by rsid, window 28.672 s, blocks 60, retired False
+
+
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.NoChannelRetiresWhileItsStationIsSending(file: "olivia-two-signals-rsid.wav") [3 s]
+  Standard Output Messages:
+ olivia-two-signals-rsid.wav: 2 8/250 by rsid, window 38.230 s, blocks 10, retired False
+ olivia-two-signals-rsid.wav: 1 16/500 by rsid, window 28.672 s, blocks 10, retired False
+
+
+[xUnit.net 00:06:21.97]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Olivia.TheOliviaRetireTests.TheWindowIsTheFactorTimesTheTimingTable [< 1 ms]
+  Standard Output Messages:
+ 8/250   : 0.68267 s a character x 56 = 38.230 s
+ 16/500  : 0.512 s a character x 56 = 28.672 s
+ 32/1000 : 0.4096 s a character x 56 = 22.938 s
+
+
+
+Test Run Successful.
+Total tests: 178
+     Passed: 178
+ Total time: 6.3717 Minutes
+RC=0 WALL=383s

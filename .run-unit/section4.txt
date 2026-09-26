@@ -1,24 +1,30 @@
 ﻿
-None of these is in the way of 6.3. The first bears on HM-REQ-054 and 080 for TX-FARNS.
+Three items, most-blocking first. None needs the owner under R85; each is a reading recorded so the
+next author can overrule it.
 
-1. **The relabel's share against a Farnsworth sender's ratio.** The relabel treats a word gap as at
-   least the root of seven thirds (1.53) times the character gap. TX-FARNS allows a character gap
-   up to 7 units, whose word gap may be only a little longer. On the character-gap-5 case (1:5:7,
-   ratio 1.4) the relabel took out 5 true word gaps at HEAD and 7 under the change: group G4. A
-   ruling is asked on whether HM-REQ-054's TX-FARNS spacing binds the relabel's share, and so which
-   of 1.53 and the sender's own ratio should govern.
-   - Rejected: changing the share here. It is a second value of an existing rule, and it would move
-     G2 as well.
-2. **V-11 per recording, read net or boundary by boundary.** On `031838` the change removed one
-   inserted space and lost one true boundary (`WIAHA MEAN` for `WITH A MEAN`). The recording stays
-   at 1 wrong. I read V-11 as the per-recording count, which does not rise. A ruling is asked on
-   whether a recording that trades one wrong boundary for another fails V-11.
-   - Rejected: refusing the change on this reading. The instruction's column is a count per
-     recording.
-3. **Unkeyed recordings.** The keep rule judges only the 35 keyed recordings. Of the 27 whose text
-   changed, most are unkeyed. There, the change mended words (`BOXES FOR`, `QSO WITH WB4ET`,
-   `MYSELF OCCUPIED`, `BREEZE`) and also ran some together (`MONTHSORSO`, `SAY73ESTKSTK`). A ruling
-   is asked on whether an unkeyed recording's text should weigh in R78, for example by keying more
-   of these recordings, since today nothing can count either kind of change on them.
-   - Rejected: judging them by eye here. That would be word reasoning on an inferred reading (R72,
-     V-13).
+1. **9.1's case is not read, and the reading of why stays with the next unit.**
+   - **The reading:** V-04 says a fixture the reference decoder cannot read is a generator defect,
+     with the real recording as the generator's control. The port is now a reference reader.
+     - So the next step is on the case, not the port. Test whether a noise-led send is what fldigi
+       meets on the air, against the real captures in the first look: fldigi also loses the start
+       there.
+     - Then choose a case construction from that evidence, never from trying values against the key.
+   - **Why this unit did not re-choose the case:** re-choosing a seed, an SNR or a lead-in until
+     the text comes out right is tuning toward the key. HM-REQ-122 and 129, and the instruction,
+     forbid it.
+   - **Rejected:** mapping the garble into the expectation, which would assert a wrong letter as
+     right (Â§0.0). Also rejected: a skip, which would hide a measured result.
+2. **The squelch default was read from benchmark.cxx, not status.cxx.**
+   - **The reading:** fldigi's own file benchmark ships the squelch off (benchmark.cxx:54). The
+     port does the same, and both values are parameters.
+   - **Rejected:** guessing `status.cxx`'s initialiser, which the partial clone does not hold and
+     whose object-store read was refused.
+   - **If the owner's copy is ever completed,** the next unit checks `sqlonoff` there. No change
+     sits waiting for it.
+3. **Finding for 9.2, not in its way:** fldigi keys on band noise with the squelch off. It loses the
+   start of a send, and it turns a 5-unit character gap into a word space. 9.2's scorer will count
+   both against the second decoder, and both are upstream behaviour (HM-REQ-129). 9.2 states how
+   the unclassed output, fldigi's `*` included, is mapped.
+
+**Asks resolved:** unit 454's ask for fldigi's source is answered. The clone is at
+`.run-unit/fldigi` at `61b97f41`.
