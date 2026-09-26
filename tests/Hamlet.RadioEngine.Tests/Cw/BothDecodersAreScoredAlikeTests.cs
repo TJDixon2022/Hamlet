@@ -447,8 +447,8 @@ public sealed class BothDecodersAreScoredAlikeTests
             var there = Totals.Of((real ? TheRequirementsAreMeasuredTests.Real : TheRequirementsAreMeasuredTests.Synthetic)
                 .Select(m => (TheRequirementsAreMeasuredTests.Measured?)m).ToList());
 
-            // Watched failing first: the expected figure deliberately one too many.
-            var expected = there with { SureWrong = there.SureWrong + 1 };
+            // Watched failing first at 01b6a651, with SureWrong one too many here.
+            var expected = there;
             var set = real ? "real, inferred" : "synthetic, exact";
 
             _output.WriteLine($"sameness | total {set} | here {CerSure(here)}, {InventedText(here)}, {CoverageText(here)}, {Wbe(here)} | "

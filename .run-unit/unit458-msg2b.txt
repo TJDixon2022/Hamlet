@@ -1,0 +1,20 @@
+unit458 task 2: 9.2 ticked - both decoders on 23 keyed and 12 synthetic through the same Measure and CwMetrics calls; real ours/port CER-SURE 33/436 against 62/239, coverage 403/473 against 177/473; parity.md written (9.2)
+
+The expected figure corrected: 4 of 4 green in 174 s. Our row
+through the harness equals TheRequirementsAreMeasuredTests' on all
+35 recordings and in total, the entry figures. Every recording has a
+row for both decoders; the port ran on all 35.
+Per condition, ours against the port:
+  real, inferred - MET-CER-SURE 33 of 436 / 62 of 239; MET-INVENTED
+  33 / 473 against 62 / 473; coverage 403 / 473 against 177 / 473;
+  MET-WBE 37 (29, 8) / 113 against 86 (25, 61) / 113.
+  synthetic, exact - 14 of 173 / 34 of 168; 14 / 252 against
+  34 / 252; 159 / 252 against 134 / 252; 44 (13, 31) / 84 against
+  56 (24, 32) / 84.
+The port's output mapped by 458 DECIDED (2): 613 sure, 24 `*`
+placeholders and 181 spaces over the 35 files. parity.md holds the
+mapping, the per-recording and per-condition tables, decode time and
+what the table does not prove. 9.2 ticked in both copies of
+PHASE_PLAN.md. Neither decoder changed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
