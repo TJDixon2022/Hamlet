@@ -9,6 +9,47 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 444 - key-ups under half a dit left out of the gap clustering, not kept
+
+Step 2, 2.5, HM-REQ-080/081 on 17:37 with HM-REQ-010/011 as guards. The trace
+(`HowSeventeenThirtySevensGapsAreCalledTests`, at f14b2453 and at HEAD, both measured) found G1
+lost two letter spaces on 17:37, 6|R at 24.030 s (310 ms, 4.43 u) and W|B at 26.830 s (320 ms,
+4.57 u). In every window where G1's condition held, a single key-up of 10 to 15 ms (0.14 to 0.21 u,
+1 of 44 gaps) took the shortest cluster, so no character gap was measured and the stream stood on
+a word threshold of 303 ms or 254 ms. The change: `CwUnitEstimator.MeasureGaps` and
+`MeasureCharacterGap` cluster only key-ups of at least half the unit. G1 is untouched. The diff is
+`.run-unit/unit444-wbe-notkept.diff`, and `src` does not carry it.
+
+| part of R78 | before (HEAD `1f6a5789`) | under the change | verdict |
+|---|---|---|---|
+| MET-WBE, 17:37, inferred | 7 over 6 words (6 inserted, 1 deleted) | 8 over 6 words (7 inserted, 1 deleted) | **rises; 5 or fewer needed** |
+| MET-WBE, real, inferred | 52 over 113 (43 inserted, 9 deleted), 0.4602 | 43 over 113 (36 inserted, 7 deleted), 0.3805 | falls |
+| MET-CER-SURE, real, inferred | 47 of 421, 0.1116 | 46 of 425, 0.1082 | falls |
+| MET-INVENTED, real, inferred | 47 over 473 (4 added, 43 wrong) | 46 over 473 (4 added, 42 wrong) | falls |
+| sure-and-right coverage, real, inferred | 374 over 473, 0.7907 | 379 over 473, 0.8013 | rises |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 4 of 170, 0.0235 | falls |
+| MET-WBE, synthetic, exact | 48 over 84, 0.5714 | 52 over 84, 0.6190 | rises |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings | - | 17:37 boundaries 7 to 8, `031905` 2 to 3, `cq-18wpm-5db-char5` 10 to 14 | **fails** |
+| 17:37 wrong-or-added, sure-and-right | 3, 17 | 3, 17 | G1's letters stay removed |
+| capture rows | 51 of 51 | 49 of 51; `004234` 36 to 34, `004427` 42 to 41 | reported |
+| named floors | 12 of 13 | 12 of 13; 17:37 at 38 | reported |
+
+Per condition, real, inferred keys, before -> after. Sender not stated (20 recordings): MET-CER-SURE
+47 of 359, 0.1309 -> 46 of 363, 0.1267; MET-WBE 45 of 97, 0.4639 -> 36 of 97, 0.3711. TX-FARNS:
+MET-CER-SURE 0 of 43 -> 0 of 43; MET-WBE 7 of 11 -> 7 of 11. TX-ITU: 0 of 13 -> 0 of 13; 0 of 4 ->
+0 of 4. TX-TIGHT: 0 of 6 -> 0 of 6; 0 of 1 -> 0 of 1. Synthetic, exact keys: character gap 5 units
+at 5 dB MET-CER-SURE 11 of 25 -> 1 of 22, MET-WBE 10 of 7 -> 14 of 7; every other synthetic
+condition unchanged on both.
+
+**Not kept: 17:37's boundaries wrong rise 7 to 8, and V-11 fails on three recordings.** 17:37 reads
+`CQ CQ CQ DEWB 6 RE D W B 7E E I`: 6|R and W|B are still read as word spaces, and B|6 at 23.005 s
+(250 ms, 3.57 u) is now one too. The rule is recorded here as the trace set it, and it was not moved
+after these numbers. Elsewhere it read `004234`'s `T HANTT TK■ET FOR` as `THANK YOU FOR`.
+
+17:37 before G1 `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`, at HEAD `CQ CQ CQ DEWB6 RE D W B 7E E I`,
+under the change `CQ CQ CQ DEWB 6 RE D W B 7E E I`; key `CQ CQ CQ DE WB6RED WB6RED`, inferred.
+
 ## Unit 443 - a letter starting inside one already said is not announced, not kept
 
 Step 3, HM-REQ-011. The trace (`WhereTheSureAddedLettersComeFromTests`) put 439's 13 real sure

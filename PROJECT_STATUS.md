@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 444 - WB6RED read as one callsign again
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T23:31:34-04:00
-NOTE: Trace done: G1 lost 6-R and W-B, letter spaces of 310 and 320 ms; a 10-15 ms dropout makes G1 fire; committing
+UPDATED: 2026-09-25T23:43:23-04:00
+NOTE: Dropout rule not kept (17:37 boundaries 7 to 8, V-11 fails on 3); committing its diff and record
 
 ---
 

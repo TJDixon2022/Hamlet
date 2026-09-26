@@ -1,0 +1,46 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs b/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+index d5c8931f..64ef1f8f 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwUnitEstimator.cs
+@@ -187,7 +187,7 @@ public static class CwUnitEstimator
+             return textbook;
+         }
+ 
+-        var (_, gaps) = Elements(envelope, hopMilliseconds, hysteresisDb);
++        var gaps = KeyedGaps(Elements(envelope, hopMilliseconds, hysteresisDb).Gaps, unitMilliseconds);
+ 
+         if (gaps.Count < 12)
+         {
+@@ -297,7 +297,7 @@ public static class CwUnitEstimator
+             return null;
+         }
+ 
+-        var (_, gaps) = Elements(envelope, hopMilliseconds, hysteresisDb);
++        var gaps = KeyedGaps(Elements(envelope, hopMilliseconds, hysteresisDb).Gaps, unitMilliseconds);
+ 
+         if (gaps.Count < 12)
+         {
+@@ -317,6 +317,23 @@ public static class CwUnitEstimator
+         return boundary is >= 1.3 and <= 2.6 ? centroids[1] : null;
+     }
+ 
++    /// <summary>The gaps a sender keyed, without the dropouts inside marks.</summary>
++    /// <param name="gaps">Every key-up the trigger produced, in milliseconds.</param>
++    /// <param name="unitMilliseconds">The dit.</param>
++    /// <returns>The key-ups at least half a dit long.</returns>
++    /// <remarks>
++    /// **A KEY-UP SHORTER THAN HALF A DIT IS A FADE INSIDE A MARK, NOT A GAP** (work
++    /// instruction 444, task 2). The three clusters are seeded across the range, so
++    /// one such key-up takes the shortest cluster to itself: on 17:37 a single 10 to
++    /// 15 millisecond key-up, 0.14 to 0.21 units and 1 of 44 gaps, did it in every
++    /// window where G1's condition held, the element heap became the character heap,
++    /// and no character gap was measured. The key puts the sender's shortest element
++    /// gap on that stretch at 0.57 units. G1 is unchanged; this only stops a dropout
++    /// from making its condition.
++    /// </remarks>
++    private static List<double> KeyedGaps(IReadOnlyList<double> gaps, double unitMilliseconds)
++        => gaps.Where(g => g >= unitMilliseconds / 2).ToList();
++
+     /// <summary>
+     /// True when the geometric mean of two centroids is emptier than either of
+     /// them.
