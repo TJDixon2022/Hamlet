@@ -1,0 +1,18 @@
+unit459 task 2: the change - fldigi's dot-dash pair speed (cw.cxx:524-535, 831-843) taken into our stream as an overrule where the pairs say the sender is slower than the path was timed; the port untouched (9.4)
+
+CwUnitEstimator.PairUnit: our code following cw.cxx at 61b97f41 - a
+mark under half the tracked dit is a spike (515, 818-822); a mark more
+than two and less than four times the one before, or the reverse, is a
+pair (831-843); the pair's mean goes into a 16-long average that fills
+with its first value (524-535, Cmovavg); no seed speed is taken.
+CwProbabilisticStream.Read: after the marks' overrule, where the
+pairs' unit times the read's speed exceeds MarksOverruleRatio (1.25,
+unchanged), the window is read again at the pairs' speed, inside the
+unchanged 8 to 40 WPM bounds. Nothing under Cw/Second changes.
+
+Judged in the next commits. Measured before this commit is judged:
+the task 2 test reads CQ CQ CQ DEN0CALL N0CA<AS>LL K at 17 to 19 WPM,
+1 of 22 sure added, 21 of 21 right (was 28 of 31, 3 of 21) - still red
+on its no-sure-error assertion. Real MET-CER-SURE 33/436 to 25/431.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

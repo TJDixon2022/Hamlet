@@ -513,8 +513,8 @@ public sealed class CwProbabilisticStream
         // marks imply a unit more than 1.25 times the path's, against 28 and 263
         // between 0.80 and 1.25; that edge is the ratio, taken from the trace. The
         // other side did not separate the two and is left alone.
-        var marksUnit = CwUnitEstimator.MarkUnit(
-            CwUnitEstimator.Elements(window, CwProbabilisticDecoder.HopMilliseconds).Marks);
+        var marks = CwUnitEstimator.Elements(window, CwProbabilisticDecoder.HopMilliseconds).Marks;
+        var marksUnit = CwUnitEstimator.MarkUnit(marks);
         var unitMeasured = speed is not null;
 
         if (result.WordsPerMinute > 0
@@ -526,6 +526,29 @@ public sealed class CwProbabilisticStream
                 && marksWpm <= CwProbabilisticDecoder.FastestWpm)
             {
                 result = CwProbabilisticDecoder.Decode(window, ToneHz, marksWpm, gapMilliseconds);
+                unitMeasured = true;
+            }
+        }
+
+        // **AND WHERE THE SENDER'S DOT-DASH PAIRS SAY HE IS SLOWER STILL, THEIR
+        // SPEED IS USED** (work instruction 459, HM-REQ-129: fldigi's speed tracking,
+        // cw.cxx:524-535 and 831-843, taken into ours). Bursts and dropouts of 10 to
+        // 45 ms fill the short clusters both measures above rest on, and a sender
+        // read at twice his speed has his dits read as dahs and his letters cut:
+        // task 1 traced six sure-wrong letters to it. A burst never pairs with the
+        // marks beside it. Past the same edge as the marks' overrule, on the same
+        // side, and nothing else.
+        var pairUnit = CwUnitEstimator.PairUnit(marks);
+
+        if (result.WordsPerMinute > 0
+            && pairUnit * result.WordsPerMinute / 1200.0 > MarksOverruleRatio)
+        {
+            var pairWpm = 1200.0 / pairUnit;
+
+            if (pairWpm >= CwProbabilisticDecoder.SlowestWpm
+                && pairWpm <= CwProbabilisticDecoder.FastestWpm)
+            {
+                result = CwProbabilisticDecoder.Decode(window, ToneHz, pairWpm, gapMilliseconds);
                 unitMeasured = true;
             }
         }

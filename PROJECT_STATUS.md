@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 459 - one technique from the fldigi port taken into our decode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T18:29:02-04:00
-NOTE: Task 2: red test committed (28 of 31 sure wrong at HEAD); building the mark-pair speed in CwProbabilisticStream
+UPDATED: 2026-09-26T18:31:44-04:00
+NOTE: Task 2: change committed; judging it - real CER-SURE 33 to 25 but V-11 shows 004507, 031948 and 032050 worse; running adjudicated, floors, parity
 
 ---
 
