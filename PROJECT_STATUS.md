@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 2 of 3
 WORK_INSTRUCTION: 452 - where the words break
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T10:53:04-04:00
-NOTE: Change built and committed alone; next the judging round: metrics, trace, text, floors
+UPDATED: 2026-09-26T11:09:44-04:00
+NOTE: Change kept: WBE 46 to 37 real, 48 to 44 synthetic, letters identical, V-11 0 worse, 17:37 at 7; next the exit round
 
 ---
 

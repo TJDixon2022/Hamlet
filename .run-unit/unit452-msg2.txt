@@ -1,0 +1,13 @@
+unit452 task 2: the relabel's fallback boundary is the median gap the path placed between letters times 1.53 where nothing is measured or held - MET-WBE 46 to 37 real (6.3)
+
+Kept under R78 as the instruction's 3 (b) reads it. Real, inferred:
+MET-WBE 46 (39 inserted, 7 deleted) to 37 (29, 8) over 113. Synthetic,
+exact: 48 to 44 over 84. MET-CER-SURE, MET-INVENTED and coverage
+identical on both sets: no letter moved. Adjudicated 13 of 13. V-11 over
+35 recordings: 0 worse; 17:37 7 to 7 and its text unchanged, 031905 1 to
+1, character gap 5 at 5 dB 10 to 8. Captures 51 of 51, named 10 of 13 as
+at entry. Engine carry-forward line 178 of 178 under the change. 30
+recordings' text changed, in spaces only (.run-unit/unit452-text-diff.txt).
+031838 trades one inserted space for one lost key boundary.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

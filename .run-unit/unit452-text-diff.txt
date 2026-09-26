@@ -1,0 +1,82 @@
+70c70
+<  text | cq-18wpm-15db-char5 |  C QCQCQDEN0 C A E L N 0 C A L L K  
+---
+>  text | cq-18wpm-15db-char5 |  C QCQCQDEN0 C A E LN 0CAL L K  
+72c72
+<  text | cq-18wpm-5db-char5 |  C QC Q C Q TEE T ■KTDUUEUE N 0 C A L L K  
+---
+>  text | cq-18wpm-5db-char5 |  C QC Q C Q TEE T ■KTDUUEUEN 0CAL L K  
+76,79c76,79
+<  text | cw-2026-08-17-013347 |  E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRR  
+<  text | cw-2026-08-17-013622 | E ISIIHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEE A E ET EEE II I
+<  text | cw-2026-08-17-134712 |          E     ■   NT    N4LQ K     
+<  text | cw-2026-08-18-004507 | E5 I E A T AR R L D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE
+---
+>  text | cw-2026-08-17-013347 |  E EI I HIAEIHEEEA E EEE HEEIEE IEEETE I EE IEEI TEEITEHAEWVRRVA3VRRR  
+>  text | cw-2026-08-17-013622 | E ISIIHE II 5EIEIEEEETETE ESE E IE UEEETSET TEEE A E ET EEE II I
+>  text | cw-2026-08-17-134712 |        E ■   NT    N4LQ K     
+>  text | cw-2026-08-18-004507 | E5 I E A T ARRL D O T N E T <BT>  E ACH STATION HANDLING THIS MESSAGE PE
+82c82
+<  text | unadjudicated/cw-2026-08-18-003758 |    ■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E
+---
+>  text | unadjudicated/cw-2026-08-18-003758 |    ■R L T U   IAN EANDE A ET EEEETMP/4 QNIKK   EAN EANQNIK        EAN E
+87c87
+<  text | unadjudicated/cw-2026-08-22-031838 |   A 3, AT3 , 2TT 2, AND  ■ W IAH A MEAN OF 2 TT 
+---
+>  text | unadjudicated/cw-2026-08-22-031838 |   A 3, AT3 , 2TT 2, AND ■ WIAHA MEAN OF 2 TT 
+91,92c91,92
+<  text | unadjudicated/cw-2026-08-22-032050 |     IULLETIN CAN BE FOTA ND IN TELEWRITTER, PA■ K E    H IE S T S SI I
+<  text | unadjudicated/cw-2026-08-22-032113 |    A KET■ A N O INT ERNE T ■ E RSIONS OF  200J6   I I I TT E E I I I WE  T I
+---
+>  text | unadjudicated/cw-2026-08-22-032050 |     IULLETIN CAN BE FOTAND IN TELEWRITTER, PA■ KE    H IE S TSSI I
+>  text | unadjudicated/cw-2026-08-22-032113 |    A KET■ A N O INTERNET ■ERSIONS OF  200J6   I I ITT EEIIIWE TI
+95,97c95,97
+<  text | unadjudicated/cw-2026-08-23-001831 |  E IE E U  KT■TQ   O Q <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV
+<  text | unadjudicated/cw-2026-08-23-001952 | HET E  E ■HIN WEFU  EENE MCON TA K8T     I  ■ E I II II EE   MN S    B0   
+<  text | unadjudicated/cw-2026-08-23-002016 |   H■ S   B■   I E E      O NA■T SIT E■      EE  I I   E      K TIE0NH VNN JEENG  
+---
+>  text | unadjudicated/cw-2026-08-23-001831 |  E IE E U  KT■TQ  OQ <AR> SGEQ K5QQ 5NNDELA RR SNN TTTO  TUKV
+>  text | unadjudicated/cw-2026-08-23-001952 | HET E  E ■HINWEFU  EENEMCON TA K8T     I  ■ E I IIIIEE   MNS    B0   
+>  text | unadjudicated/cw-2026-08-23-002016 |   H■ S   B■ IEE   ONA■T SIT E■      EE  I I   E     KTIE0NH VNN JEENG  
+101,102c101,102
+<  text | unadjudicated/cw-2026-08-25-012823 |  E S SE EE  TTN T K E M TE E O IN U T     E
+<  text | unadjudicated/cw-2026-08-25-012922 |  I W W M     E  TTTTT II  WA T T S WI QJ SAY73 ES T KS T K S73 D NDH
+---
+>  text | unadjudicated/cw-2026-08-25-012823 |  E S SE EE  TTNT KEMTEEO IN U T  E
+>  text | unadjudicated/cw-2026-08-25-012922 |  I W W M   E TTTTT II  WA T T S WI QJ SAY73ESTKSTK S73 D NDH
+105,109c105,109
+<  text | unadjudicated/cw-2026-08-25-013303 |    G ALL BOXE S F OR FOC EESSS    HPE YOU INJOY UR LONG WAI T 5 EE ■  
+<  text | unadjudicated/cw-2026-08-25-013402 |     W■E IN Q SO WITH WB 4 ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE 
+<  text | unadjudicated/cw-2026-08-25-013520 |    MONTHS OR S O I GUESS BUT ALL GUD ES  CAN KE E G KI KE EP MY SELF O CC UPI ED A
+<  text | unadjudicated/cw-2026-08-25-013637 |  TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EE Z E ALL DAY JUST AWE SO
+<  text | unadjudicated/cw-2026-08-25-021410 |     A    T O MTT T  Y M TT  O AO IHI DT RIGHR IS  FLENT 66OAM
+---
+>  text | unadjudicated/cw-2026-08-25-013303 |    G ALL BOXES FOR FOC EESSS    HPE YOU INJOY UR LONG WAI T 5 EE ■  
+>  text | unadjudicated/cw-2026-08-25-013402 |     W■E IN QSO WITH WB4ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE 
+>  text | unadjudicated/cw-2026-08-25-013520 |    MONTHSORSO I GUESS BUT ALL GUD ES  CAN KE E G KI KE EP MYSELF OCCUPIED A
+>  text | unadjudicated/cw-2026-08-25-013637 |  TE MP NEVEN T REV■R G OT AB OVE 7 5 F ES CLEAR S KY LI TE BR EEZE ALL DAY JUST AWE SO
+>  text | unadjudicated/cw-2026-08-25-021410 |     A    T O MTTT  YMTT  O AOIHI DT RIGHR IS  FLENT 66OAM
+111c111
+<  text | unadjudicated/cw-2026-08-25-021825 |      I E   E I ETO U E NT  K OC 1 UEK K    
+---
+>  text | unadjudicated/cw-2026-08-25-021825 |    IE E IETOUENT KOC1UEK K    
+113c113
+<  text | unadjudicated/cw-2026-09-24-003901 |         EII E T NHHK        
+---
+>  text | unadjudicated/cw-2026-09-24-003901 |        EII ETNHHK      
+115,117c115,117
+<  text | unadjudicated/cw-2026-09-24-004027 | QNE K  E E  2 G ■ 2G KA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q
+<  text | unadjudicated/cw-2026-09-24-004108 |  HR NR 2 0 R H X G K E 8 W G K 2 6 STMW OH SEP19 RIC
+<  text | unadjudicated/cw-2026-09-24-004133 | 1 9 R I C H ARD D J GEL ■ 0 D T  UT 5 0 0 5 H ■ 8 
+---
+>  text | unadjudicated/cw-2026-09-24-004027 | QNE K  E E 2G■ 2GKA2GJV QNK CAT WI2TN HRK 5 I HRRHCE Q
+>  text | unadjudicated/cw-2026-09-24-004108 |  HR NR 2 0 R H X G K E8 W G K2 6 STMW OH SEP19 RIC
+>  text | unadjudicated/cw-2026-09-24-004133 | 1 9 R I C H ARD D J GEL ■ 0 DT UT 50 0 5 H ■ 8 
+123c123
+<  text | unadjudicated/cw-2026-09-24-004427 | ■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2 G K88NET TU EAT
+---
+>  text | unadjudicated/cw-2026-09-24-004427 | ■ FOORDINATOR <AR>N QSL TN6TBRE C E DEWI2G K88NET TU EAT
+125c125
+<  text | unadjudicated/cw-2026-09-24-004535 | AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN 1 TH N B O TEI NANX K A3HT
+---
+>  text | unadjudicated/cw-2026-09-24-004535 | AA3SB SE IFOK DN5 DN■ EEEDN5EIN5 3RN1 THNBOTEINANX K A3HT

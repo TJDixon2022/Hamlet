@@ -75,6 +75,47 @@ u, words from 3.50 u; 11 letter spaces at or past the shortest word space), as u
 `031838`, `031905` and the character-gap-5 row at 15 dB the overlap is one outlier at a boundary the
 decode broke; every other recording's letter and word spaces are apart.
 
+### Task 2 - the relabel's fallback from the path's own letter spaces, kept
+
+The rule, set from the trace before any number was run (`.run-unit/unit452-rule.md`): where a read
+measures no character gap and the stream holds no gaps of the sender's own, the relabel takes the
+median of that read's own gaps between letters, when it has at least 12, as the sender's character
+gap and takes out a word gap shorter than it times the root of seven thirds, never lowering the
+boundary below the path's textbook word-from. Against G1. Built alone in `50069134`. Durations only
+(R72); no letter moves, so the three letter metrics cannot. Not 444's rule: neither estimator, the
+path, the held gaps nor the speed changes.
+
+| part of R78 (§3 (b)) | before (`a523b39e`) | under the change | verdict |
+|---|---|---|---|
+| MET-WBE, real, inferred | 46 (39 inserted, 7 deleted) over 113, 0.4071 | 37 (29 inserted, 8 deleted) over 113, 0.3274 | falls |
+| MET-WBE, synthetic, exact | 48 (19 inserted, 29 deleted) over 84, 0.5714 | 44 (13 inserted, 31 deleted) over 84, 0.5238 | does not rise |
+| MET-CER-SURE, real, inferred | 33 of 436, 0.0757 | 33 of 436, 0.0757 | does not rise |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 14 of 173, 0.0809 | does not rise |
+| MET-INVENTED, real, inferred | 33 over 473, 0.0698 | 33 over 473, 0.0698 | does not rise |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 14 over 252 | does not rise |
+| sure-and-right coverage, real, inferred | 403 over 473, 0.8520 | 403 over 473, 0.8520 | holds |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252, 0.6310 | holds |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, boundaries wrong and sure-wrong letters | - | 0 worse; 17:37 7 -> 7, `031905` 1 -> 1, character gap 5 at 5 dB 10 -> 8 | holds |
+| capture rows, named floors | 51 of 51; 10 of 13 | 51 of 51; 10 of 13, the same three at the same counts | as at entry |
+
+Per condition after, key's kind beside each (inserted, deleted over words): real, sender not stated,
+inferred, 24, 8 over 97, 0.3299 (was 32, 7, 0.4021); real TX-FARNS `004507`, inferred, 5, 0 over
+11, 0.4545 (was 7, 0); real TX-ITU and TX-TIGHT, inferred, 0 over 4 and 0 over 1, unchanged;
+synthetic TX-ITU at 15, 5 and 0 dB, exact, 0, 0 and 18 over 21, unchanged; character gap 5 at 15
+dB, exact, 7, 5 over 7, 1.7143 (was 10, 4); at 5 dB 6, 2 over 7, 1.1429 (was 9, 1); at 0 dB 0, 6
+over 7, unchanged. Per recording, boundaries wrong before -> after: `004507` 7 -> 5, `032050` 4 ->
+2, `032113` 7 -> 3, `004108` 2 -> 1, the character-gap-5 rows 14 -> 12 and 10 -> 8; `031838` 1 ->
+1, one inserted space gone (`W IAH`) and one key boundary lost (`WIAHA MEAN` for `WITH A MEAN`),
+the one new deleted boundary on the real set; every other recording unchanged. The groups after:
+G1 12 real, 12 synthetic; G4 1 real (`031838`), 7 synthetic; the rest as before but G5 4.
+
+**HM-REQ-080 and 081 restated against the kept figures:** 080 not met on 17:37 (7 over 6,
+inferred, its text unchanged: `CQ CQ CQ DEWB6 RE D W B 7E E I`); met on the TX-ITU 15 dB passband
+case (0 over 21, exact); not met on the character-gap-5 15 dB case (12 over 7, exact). 081 not met
+on either 0 dB passband case (18 over 21 and 6 over 7, exact). The 20 conditions of the requirements'
+own not measurable here, as above.
+
 **6.3 ticked** under the instruction's §3 (a): MET-WBE per condition with inserted and deleted
 apart and the key's kind beside each number; HM-REQ-080 not met on 17:37 (7 over 6, inferred),
 met on the TX-ITU 15 dB passband case and not met on the character-gap-5 15 dB case (exact);
