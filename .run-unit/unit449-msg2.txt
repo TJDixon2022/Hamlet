@@ -1,0 +1,9 @@
+unit449 task 2: the change kept under R78 - real MET-CER-SURE 40 to 33, coverage 393 to 403; 2.4 not ticked, step 2's count to 0 (2.4)
+
+metrics.md carries the before and after per condition with the key's kind,
+the R78 table with the MET-PITCH-ERR column, and 031905's text before and
+after. The trace after the change is .run-unit/unit449-trace449-change.txt:
+33 left, 13 before the first keyed verdict, 10 covered by no excluded route.
+No floor re-banked; 2.5 not ticked.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

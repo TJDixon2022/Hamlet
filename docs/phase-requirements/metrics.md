@@ -9,6 +9,53 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 449 - HM-DEC-127's floor at the survey's 10 dB, kept
+
+Step 2, 2.4, HM-REQ-010 with HM-REQ-011 and 012 and MET-WBE as guards. The trace
+(`WhatTheFortySureWrongLettersRestOnTests`, `.run-unit/unit449-trace-head.txt`) put the
+instrument's pitch beside each of HEAD's 40. The largest group no excluded route addresses was
+read after the tracker left the station for a quieter keyed candidate: mixed 100 Hz or more from
+the pitch the decoder held longest in the file, 9 wrong or added against 6 right. On `031905` the
+tracker left 500 Hz, where the instrument measured the keying at 499.9, for a candidate at 300 Hz
+whose key-down sat 21.9 dB below the station's (-49.4 against -27.5 dB), and read 8 of 9 sure
+letters wrong there. HM-DEC-127 refused such a move only at the filter's 25 dB. The change, in
+`CwToneTracker.ReadSurvey`: the floor is `CwToneSurvey.InterferenceLiftDb`, 10 dB, the survey's own
+line, which works against HM-DEC-127's clause "there is nothing in between". The threshold is
+not fitted to the trace: the trace puts the refused moves at 21.9 dB (key-down) and 14.6 dB (lift,
+`032050`, where no station was ever confirmed, so the floor does not reach it), and HM-DEC-127's
+own measurement puts legitimate displacements within 1.5 dB. The test
+(`TheTrackerStaysWithTheStationItReadsTests`) was red at HEAD - 500 -> 300 at 15.04 s for a
+candidate 15.2 dB below, `VVV VVV VVV` printed sure, the second `N0CALL` lost - and green under
+the change.
+
+| part of R78 | before (HEAD `e8c5ad58`) | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 40 of 433 (35 substituted, 5 added), 0.0924 | 33 of 436 (28 substituted, 5 added), 0.0757 | falls |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 14 of 173, 0.0809 | does not rise |
+| MET-INVENTED, real, inferred | 40 over 473, 0.0846 | 33 over 473, 0.0698 | falls |
+| MET-INVENTED, synthetic, exact | 14 over 252 | 14 over 252 | does not rise |
+| sure-and-right coverage, real, inferred | 393 over 473, 0.8309 | 403 over 473, 0.8520 | rises |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252, 0.6310 | holds |
+| MET-WBE, real, inferred | 47 over 113, 0.4159 | 46 over 113, 0.4071 | falls |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, four metrics | - | 0 worse; one moved, `031905` wrong-or-added 9 to 2, right 20 to 30, boundaries wrong 2 to 1 | holds |
+| MET-PITCH-ERR, instrument, 69 captures | 9 more than 25 Hz off; 256 of 1688 windows | 9; 248 of 1688 windows (`031905` 9 of 29 to 1 of 29) | does not rise |
+| dim precision (HM-REQ-014), real and synthetic, scored stretches | no dim letter | no dim letter | reported |
+| capture rows, named floors | 51 of 51; 10 of 13 | 51 of 51; 10 of 13, the same three | as at entry |
+
+Per condition, key's kind beside each, before -> after: real, sender not stated (20 recordings),
+inferred, MET-CER-SURE 40 of 371, 0.1078 -> 33 of 374, 0.0882, MET-WBE 40 over 97 -> 39 over 97;
+real TX-FARNS, TX-ITU and TX-TIGHT, inferred, 0 of 43, 0 of 13 and 0 of 6 before and after; every
+synthetic condition, exact, unchanged (TX-ITU 15 dB 1 of 64, 5 dB 1 of 63, 0 dB none sure;
+character gap 5 at 15 dB 1 of 21, 5 dB 11 of 25, 0 dB none sure).
+
+**Kept. 2.4 is not ticked, and step 2's count of units with no kept change goes to 0.** One
+recording's text changes, `031905`, the W1AW bulletin's solar figures:
+`■ PREDICTED 10.7  IAIEI TANI   WLUX IS 125,` -> `■ PREDICTED 10.7 K NTIMETER FLAX IS 125, 125T`.
+What is left, 33: 13 before the tracker's first keyed verdict (acquisition, parked), 10 covered by
+no excluded route, the largest of them single-element letters, which cover 35 right letters for 4
+wrong and are not a lever.
+
 ## Unit 448 - from cold, the filter points at the deepest keying instead of the loudest bin, not kept
 
 Step 4, 4.5, HM-REQ-091, 102 and 103 with HM-REQ-010, 011 and 012 as guards. The change, in

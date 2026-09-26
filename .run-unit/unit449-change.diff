@@ -1,0 +1,27 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+index 30f61890..71369ebf 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+@@ -1108,9 +1108,21 @@ public sealed class CwToneTracker
+         // here, a candidate that legitimately displaces a confirmed station sits
+         // between nought point three decibels above it and one and a half below;
+         // the image sat thirty-five below. There is nothing in between.
++        //
++        // **THE FLOOR IS THE SURVEY'S TEN DECIBELS, NOT THE FILTER'S TWENTY-FIVE**
++        // (work instruction 449, task 2; HM-REQ-010). This works against the clause
++        // just above, "there is nothing in between": on `cw-2026-08-22-031905` the
++        // tracker left the station at 500 Hz, where the pitch instrument measured
++        // the keying, for a keyed candidate at 300 Hz whose key-down sat 21.9 dB
++        // below the station's, and eight of the nine sure letters it read there
++        // were wrong. The line is <see cref="CwToneSurvey.InterferenceLiftDb"/>, where
++        // the survey stops calling something band noise having a good moment: a
++        // candidate that far below the station being read is, beside that station,
++        // no more than that. The legitimate displacements HM-DEC-127 measured sit
++        // within one and a half decibels, so the line leaves them where they were.
+         if (!double.IsNaN(_readingDb)
+             && !double.IsNaN(keyed.KeyedDb)
+-            && keyed.KeyedDb < _readingDb - FilterRejectionDb
++            && keyed.KeyedDb < _readingDb - CwToneSurvey.InterferenceLiftDb
+             && Math.Abs(keyed.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+         {
+             // Refusing to follow it does not make it stop existing, and the

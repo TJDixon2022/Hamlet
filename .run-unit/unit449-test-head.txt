@@ -1,0 +1,33 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.73]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.92]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.92]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:02.88]     Hamlet.RadioEngine.Tests.Cw.TheTrackerStaysWithTheStationItReadsTests.AQuieterKeyedToneDoesNotTakeTheFilterFromTheStation [FAIL]
+[xUnit.net 00:00:02.88]       6 sure added and 7 sure wrong against the station's key: EQ CQ CQ DE N0CALL  S  VVV VVV VVV H  D K; moves 1.54 s 600 -> 500; 15.04 s 500 -> 300 (keyed 300 Hz, lift 11.4 dB, key-down -44.2 dB); 24.04 s 300 -> 500 (keyed 500 Hz, lift 30.5 dB, key-down -29.0 dB)
+[xUnit.net 00:00:02.89]       Stack Trace:
+[xUnit.net 00:00:02.89]         C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheTrackerStaysWithTheStationItReadsTests.cs(107,0): at Hamlet.RadioEngine.Tests.Cw.TheTrackerStaysWithTheStationItReadsTests.AQuieterKeyedToneDoesNotTakeTheFilterFromTheStation()
+[xUnit.net 00:00:02.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:02.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.89]       Output:
+[xUnit.net 00:00:02.89]         HM-REQ-010 | key CQ CQ CQ DE N0CALL N0CALL K | text EQ CQ CQ DE N0CALL  S  VVV VVV VVV H  D K | sure added 6, sure wrong 7 | moves 1.54 s 600 -> 500; 15.04 s 500 -> 300 (keyed 300 Hz, lift 11.4 dB, key-down -44.2 dB); 24.04 s 300 -> 500 (keyed 500 Hz, lift 30.5 dB, key-down -29.0 dB)
+[xUnit.net 00:00:02.89]   Finished:    Hamlet.RadioEngine.Tests
+  Failed Hamlet.RadioEngine.Tests.Cw.TheTrackerStaysWithTheStationItReadsTests.AQuieterKeyedToneDoesNotTakeTheFilterFromTheStation [929 ms]
+  Error Message:
+   6 sure added and 7 sure wrong against the station's key: EQ CQ CQ DE N0CALL  S  VVV VVV VVV H  D K; moves 1.54 s 600 -> 500; 15.04 s 500 -> 300 (keyed 300 Hz, lift 11.4 dB, key-down -44.2 dB); 24.04 s 300 -> 500 (keyed 500 Hz, lift 30.5 dB, key-down -29.0 dB)
+  Stack Trace:
+     at Hamlet.RadioEngine.Tests.Cw.TheTrackerStaysWithTheStationItReadsTests.AQuieterKeyedToneDoesNotTakeTheFilterFromTheStation() in C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Cw\TheTrackerStaysWithTheStationItReadsTests.cs:line 107
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ HM-REQ-010 | key CQ CQ CQ DE N0CALL N0CALL K | text EQ CQ CQ DE N0CALL  S  VVV VVV VVV H  D K | sure added 6, sure wrong 7 | moves 1.54 s 600 -> 500; 15.04 s 500 -> 300 (keyed 300 Hz, lift 11.4 dB, key-down -44.2 dB); 24.04 s 300 -> 500 (keyed 500 Hz, lift 30.5 dB, key-down -29.0 dB)
+
+
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 3.1866 Seconds
+RC=1 WALL=4s

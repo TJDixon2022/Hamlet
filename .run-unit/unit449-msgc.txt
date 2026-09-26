@@ -1,0 +1,17 @@
+unit449 change: HM-DEC-127's floor at the survey's 10 dB - a keyed candidate that far below the station being read does not take the filter; real MET-CER-SURE 40 of 433 to 33 of 436 (2.4)
+
+CwToneTracker refuses a move to a keyed candidate outside the fine bank's
+reach whose key-down is more than CwToneSurvey.InterferenceLiftDb (10 dB)
+below the station being read, where HM-DEC-127 refused only at the filter's
+25 dB. It works against HM-DEC-127's clause "there is nothing in between":
+on 031905 the tracker left the station at 500 Hz for a 300 Hz candidate
+21.9 dB below it and read 8 of 9 sure letters there wrong.
+
+Test first: TheTrackerStaysWithTheStationItReadsTests (HM-REQ-010), red at
+HEAD (the filter went 500 -> 300 and printed VVV sure), green under the
+change. Kept under R78: real MET-INVENTED 40 -> 33, coverage 393 -> 403,
+MET-WBE 47 -> 46, synthetic unchanged, adjudicated 13 of 13, V-11 0 of 35
+worse, files over 25 Hz 9 -> 9 (windows 256 -> 248). Only 031905's text
+changes.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
