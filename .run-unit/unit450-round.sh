@@ -31,6 +31,9 @@ case "$1" in
   trace449)
     sh $R "trace449-$2" engine 600 "$3" "The forty sure-wrong letters at HEAD with the instrument's pitch beside each" "FullyQualifiedName~.WhatTheFortySureWrongLettersRestOnTests." --no-build
     ;;
+  state)
+    sh $R "trace-pitch-state-$2" engine 600 "$3" "Trace: every hop's proposed pitch state beside the instrument, 23 keyed, the over-25 files and the synthetic set" "FullyQualifiedName~.WhatThePitchCanSayItProvedTests.EveryHopsStateBesideTheInstrument" --no-build
+    ;;
   trace)
     sh $R "trace-$2" engine 600 "$3" "Tracing the sure-wrong letters with their speeds" "FullyQualifiedName~.WhereTheSureWrongLettersComeFromTests." --no-build
     ;;

@@ -1,0 +1,16 @@
+unit450 task 1: the pitch-state trace - real hops proved 40664, hypothesis 50810, none 46526; proved-majority windows over 25 Hz off 0 of 179 (4.6)
+
+WhatThePitchCanSayItProvedTests reads the proposed state off the tracker
+hop by hop with nothing in src changed: proved where the latest survey's
+confirmed keyed verdict names the held pitch, hypothesis where a pitch is
+held that the latest survey does not name, none where no pitch is held.
+Over the 23 keyed recordings (inferred keys), windows by majority state:
+proved 179 (0 more than 25 Hz off the instrument), hypothesis 253 (38),
+none 188 (24). Synthetic (exact keys): proved 58 (0), hypothesis 82 (0),
+none 77 (0). Finding: five real windows and one synthetic hold a minority
+of proved hops more than 25 Hz off (032050 at 325 Hz, 004427 at 625,
+004507 at 475), all on the keyed-verdict path. Of the nine files over
+25 Hz, seven were in none while off and two (031838, 012823) mostly in
+hypothesis; none in proved. Dropped: the cross over all 69 captures.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

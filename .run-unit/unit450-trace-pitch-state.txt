@@ -1,0 +1,195 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:01.54]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.73]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:01.73]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:02:08.45]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhatThePitchCanSayItProvedTests.EveryHopsStateBesideTheInstrument [2 m 6 s]
+  Standard Output Messages:
+ row | set | recording | hops proved | hypothesis | none | windows proved (>25 Hz off) | hypothesis (>25) | none (>25) | hops a stale floor refused on
+ row | real, keyed | unadjudicated/cw-2026-09-23-173723 | 2900 | 1394 | 1706 | 14 (0) | 7 (0) | 8 (0) | 0
+ row | real, keyed | cw-2026-08-17-013347 | 300 | 1394 | 4306 | 0 (0) | 7 (0) | 12 (0) | 0
+ row | real, keyed | cw-2026-08-17-134712 | 0 | 0 | 6000 | 0 (0) | 0 (0) | 9 (2) | 0
+ row | real, keyed | unadjudicated/cw-2026-08-18-003758 | 2600 | 2894 | 506 | 11 (0) | 10 (0) | 2 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-08-24-012403 | 694 | 1200 | 4106 | 3 (0) | 6 (0) | 14 (1) | 2
+ proved off | cw-2026-08-18-004507 | 1 to 3 s | instrument 500.7 | proved hops 100 of 400 at median 475.0 | err -25.7 | window's state none | paths operator's configured pitch, nothing chose x206, keyed verdict on the latest survey names the pitch x100, hold, keying found within the last 3 s, not on this survey x94
+ row | real, keyed | cw-2026-08-18-004507 | 2094 | 3500 | 406 | 8 (0) | 19 (0) | 2 (2) | 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 0 to 2 s | instrument 499.9 | tracker 600.0 | err +100.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-031838 | 8 to 10 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 294, none 106
+ off window | unadjudicated/cw-2026-08-22-031838 | 9 to 11 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 10 to 12 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 11 to 13 s | instrument 500.0 | tracker 525.0 | err +25.0 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 12 to 14 s | instrument 500.0 | tracker 525.0 | err +25.0 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 13 to 15 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 14 to 16 s | instrument 500.0 | tracker 525.0 | err +25.0 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 15 to 17 s | instrument 500.0 | tracker 525.0 | err +25.0 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 16 to 18 s | instrument 500.0 | tracker 525.0 | err +25.0 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 17 to 19 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 18 to 20 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 19 to 21 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 20 to 22 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 21 to 23 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 22 to 24 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 23 to 25 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 24 to 26 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 26 to 28 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 27 to 29 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-22-031838 | 28 to 30 s | instrument 499.9 | tracker 525.0 | err +25.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ row | real, keyed and over 25 | unadjudicated/cw-2026-08-22-031838 | 0 | 4294 | 1706 | 0 (0) | 21 (20) | 8 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-08-22-031905 | 300 | 4394 | 1306 | 1 (0) | 22 (0) | 6 (1) | 5
+ row | real, keyed | unadjudicated/cw-2026-08-22-031948 | 200 | 5194 | 606 | 1 (0) | 25 (0) | 3 (2) | 4
+ row | real, keyed | unadjudicated/cw-2026-08-22-032012 | 200 | 3394 | 2406 | 1 (0) | 16 (0) | 12 (1) | 1
+ proved off | unadjudicated/cw-2026-08-22-032050 | 23 to 25 s | instrument 499.9 | proved hops 100 of 400 at median 325.0 | err -174.9 | window's state none | paths from-cold point, the loudest bin, nothing confirmed x206, keyed verdict on the latest survey names the pitch x100, hold, keying found within the last 3 s, not on this survey x94
+ proved off | unadjudicated/cw-2026-08-22-032050 | 24 to 26 s | instrument 499.9 | proved hops 100 of 400 at median 325.0 | err -174.9 | window's state hypothesis | paths from-cold point, the loudest bin, nothing confirmed x6, keyed verdict on the latest survey names the pitch x100, hold, keying found within the last 3 s, not on this survey x294
+ row | real, keyed | unadjudicated/cw-2026-08-22-032050 | 100 | 1094 | 4806 | 0 (0) | 5 (5) | 24 (2) | 0
+ row | real, keyed | unadjudicated/cw-2026-08-22-032113 | 0 | 1794 | 4206 | 0 (0) | 8 (8) | 21 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-08-22-032129 | 0 | 0 | 6000 | 0 (0) | 0 (0) | 29 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004108 | 3100 | 1794 | 1106 | 13 (0) | 11 (0) | 5 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004133 | 2694 | 2600 | 706 | 12 (0) | 14 (0) | 3 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004205 | 3300 | 1494 | 1206 | 15 (0) | 8 (0) | 5 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004234 | 3000 | 2094 | 906 | 13 (0) | 12 (2) | 4 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004322 | 3994 | 1200 | 806 | 19 (0) | 6 (0) | 4 (2) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004347 | 3894 | 1600 | 506 | 18 (0) | 9 (0) | 2 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004405 | 4094 | 1000 | 906 | 20 (0) | 5 (0) | 4 (1) | 0
+ proved off | unadjudicated/cw-2026-09-24-004427 | 27 to 29 s | instrument 599.5 | proved hops 200 of 400 at median 625.0 | err +25.5 | window's state hypothesis | paths hold, a move to a keyed candidate elsewhere pending mid-character x106, keyed verdict on the latest survey names the pitch x200, hold, keying found within the last 3 s, not on this survey x94
+ proved off | unadjudicated/cw-2026-09-24-004427 | 28 to 30 s | instrument 599.5 | proved hops 106 of 400 at median 625.0 | err +25.5 | window's state hypothesis | paths keyed verdict on the latest survey names the pitch x106, hold, keying found within the last 3 s, not on this survey x200, hold, a move to a keyed candidate elsewhere pending mid-character x94
+ row | real, keyed | unadjudicated/cw-2026-09-24-004427 | 2300 | 3094 | 606 | 9 (0) | 17 (2) | 3 (1) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004510 | 1700 | 3494 | 806 | 5 (0) | 16 (0) | 4 (0) | 0
+ row | real, keyed | unadjudicated/cw-2026-09-24-004550 | 3200 | 1894 | 906 | 16 (0) | 9 (1) | 4 (0) | 0
+ off window | unadjudicated/cw-2026-08-20-014935 | 1 to 3 s | instrument 799.3 | tracker 625.0 | err -174.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-20-014935 | 2 to 4 s | instrument 799.7 | tracker 625.0 | err -174.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-20-014935 | 5 to 7 s | instrument 579.3 | tracker 625.0 | err +45.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-20-014935 | 6 to 8 s | instrument 580.3 | tracker 625.0 | err +44.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-20-014935 | 8 to 10 s | instrument 579.7 | tracker 625.0 | err +45.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-20-014935 | 9 to 11 s | instrument 579.3 | tracker 625.0 | err +45.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-20-014935 | 10 to 12 s | instrument 579.3 | tracker 625.0 | err +45.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-20-014935 | 11 to 13 s | instrument 579.3 | tracker 625.0 | err +45.7 | state none | hops proved 0, hypothesis 0, none 400
+ row | over 25, not keyed | unadjudicated/cw-2026-08-20-014935 | 0 | 0 | 6000 | 0 (0) | 0 (0) | 10 (8) | 0
+ off window | unadjudicated/cw-2026-08-22-014308 | 10 to 12 s | instrument 608.1 | tracker 450.0 | err -158.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 11 to 13 s | instrument 597.8 | tracker 462.5 | err -135.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 13 to 15 s | instrument 606.4 | tracker 575.0 | err -31.4 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 14 to 16 s | instrument 606.3 | tracker 575.0 | err -31.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 15 to 17 s | instrument 607.1 | tracker 575.0 | err -32.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 16 to 18 s | instrument 607.4 | tracker 575.0 | err -32.4 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 17 to 19 s | instrument 607.2 | tracker 575.0 | err -32.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 18 to 20 s | instrument 609.4 | tracker 575.0 | err -34.4 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 19 to 21 s | instrument 607.2 | tracker 575.0 | err -32.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 20 to 22 s | instrument 609.5 | tracker 575.0 | err -34.5 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 21 to 23 s | instrument 608.3 | tracker 575.0 | err -33.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 22 to 24 s | instrument 607.2 | tracker 575.0 | err -32.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 23 to 25 s | instrument 607.6 | tracker 575.0 | err -32.6 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 24 to 26 s | instrument 607.8 | tracker 575.0 | err -32.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 26 to 28 s | instrument 608.8 | tracker 575.0 | err -33.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-22-014308 | 27 to 29 s | instrument 609.1 | tracker 575.0 | err -34.1 | state none | hops proved 0, hypothesis 0, none 400
+ row | over 25, not keyed | unadjudicated/cw-2026-08-22-014308 | 0 | 0 | 6000 | 0 (0) | 0 (0) | 22 (16) | 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 0 to 2 s | instrument 400.5 | tracker 600.0 | err +199.5 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-25-012823 | 1 to 3 s | instrument 502.8 | tracker 400.0 | err -102.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-25-012823 | 2 to 4 s | instrument 500.8 | tracker 400.0 | err -100.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-25-012823 | 14 to 16 s | instrument 499.0 | tracker 450.0 | err -49.0 | state hypothesis | hops proved 0, hypothesis 394, none 6
+ off window | unadjudicated/cw-2026-08-25-012823 | 15 to 17 s | instrument 499.6 | tracker 450.0 | err -49.6 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 16 to 18 s | instrument 499.9 | tracker 450.0 | err -49.9 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 17 to 19 s | instrument 499.4 | tracker 450.0 | err -49.4 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 18 to 20 s | instrument 499.4 | tracker 450.0 | err -49.4 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 19 to 21 s | instrument 499.2 | tracker 450.0 | err -49.2 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 20 to 22 s | instrument 500.3 | tracker 450.0 | err -50.3 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 21 to 23 s | instrument 501.1 | tracker 450.0 | err -51.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 22 to 24 s | instrument 500.2 | tracker 450.0 | err -50.2 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 23 to 25 s | instrument 501.8 | tracker 450.0 | err -51.8 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 24 to 26 s | instrument 498.9 | tracker 450.0 | err -48.9 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 25 to 27 s | instrument 498.4 | tracker 450.0 | err -48.4 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 26 to 28 s | instrument 501.5 | tracker 450.0 | err -51.5 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 27 to 29 s | instrument 502.1 | tracker 450.0 | err -52.1 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ off window | unadjudicated/cw-2026-08-25-012823 | 28 to 30 s | instrument 500.5 | tracker 450.0 | err -50.5 | state hypothesis | hops proved 0, hypothesis 400, none 0
+ row | over 25, not keyed | unadjudicated/cw-2026-08-25-012823 | 0 | 3194 | 2806 | 0 (0) | 15 (15) | 12 (3) | 0
+ off window | unadjudicated/cw-2026-08-28-005158 | 12 to 14 s | instrument 599.2 | tracker 400.0 | err -199.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 13 to 15 s | instrument 599.2 | tracker 500.0 | err -99.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 15 to 17 s | instrument 614.1 | tracker 575.0 | err -39.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 19 to 21 s | instrument 612.7 | tracker 575.0 | err -37.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 20 to 22 s | instrument 611.4 | tracker 575.0 | err -36.4 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 21 to 23 s | instrument 610.7 | tracker 575.0 | err -35.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 22 to 24 s | instrument 610.5 | tracker 575.0 | err -35.5 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 23 to 25 s | instrument 609.1 | tracker 575.0 | err -34.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 24 to 26 s | instrument 608.5 | tracker 575.0 | err -33.5 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 26 to 28 s | instrument 611.8 | tracker 575.0 | err -36.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005158 | 27 to 29 s | instrument 607.4 | tracker 575.0 | err -32.4 | state none | hops proved 0, hypothesis 0, none 400
+ row | over 25, not keyed | unadjudicated/cw-2026-08-28-005158 | 0 | 0 | 6000 | 0 (0) | 0 (0) | 17 (11) | 0
+ off window | unadjudicated/cw-2026-08-28-005218 | 1 to 3 s | instrument 608.9 | tracker 575.0 | err -33.9 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 2 to 4 s | instrument 610.1 | tracker 575.0 | err -35.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 3 to 5 s | instrument 607.1 | tracker 575.0 | err -32.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 4 to 6 s | instrument 608.6 | tracker 575.0 | err -33.6 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 5 to 7 s | instrument 607.8 | tracker 575.0 | err -32.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 6 to 8 s | instrument 611.9 | tracker 575.0 | err -36.9 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 7 to 9 s | instrument 608.0 | tracker 575.0 | err -33.0 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 8 to 10 s | instrument 611.9 | tracker 575.0 | err -36.9 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 9 to 11 s | instrument 610.4 | tracker 575.0 | err -35.4 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 13 to 15 s | instrument 613.0 | tracker 575.0 | err -38.0 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 14 to 16 s | instrument 608.0 | tracker 575.0 | err -33.0 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 16 to 18 s | instrument 607.2 | tracker 575.0 | err -32.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 18 to 20 s | instrument 610.9 | tracker 575.0 | err -35.9 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 21 to 23 s | instrument 611.5 | tracker 575.0 | err -36.5 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 27 to 29 s | instrument 612.0 | tracker 575.0 | err -37.0 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005218 | 28 to 30 s | instrument 611.4 | tracker 575.0 | err -36.4 | state none | hops proved 0, hypothesis 0, none 400
+ row | over 25, not keyed | unadjudicated/cw-2026-08-28-005218 | 0 | 0 | 6000 | 0 (0) | 0 (0) | 29 (16) | 0
+ off window | unadjudicated/cw-2026-08-28-005243 | 2 to 4 s | instrument 612.0 | tracker 575.0 | err -37.0 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 3 to 5 s | instrument 611.3 | tracker 575.0 | err -36.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 4 to 6 s | instrument 607.4 | tracker 575.0 | err -32.4 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 8 to 10 s | instrument 609.2 | tracker 575.0 | err -34.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 9 to 11 s | instrument 611.8 | tracker 575.0 | err -36.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 10 to 12 s | instrument 608.0 | tracker 575.0 | err -33.0 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 11 to 13 s | instrument 607.2 | tracker 575.0 | err -32.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 14 to 16 s | instrument 611.9 | tracker 575.0 | err -36.9 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 16 to 18 s | instrument 607.1 | tracker 575.0 | err -32.1 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 18 to 20 s | instrument 610.6 | tracker 575.0 | err -35.6 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 20 to 22 s | instrument 611.3 | tracker 575.0 | err -36.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 21 to 23 s | instrument 611.0 | tracker 575.0 | err -36.0 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 22 to 24 s | instrument 613.2 | tracker 575.0 | err -38.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 23 to 25 s | instrument 608.3 | tracker 575.0 | err -33.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-28-005243 | 26 to 28 s | instrument 610.5 | tracker 575.0 | err -35.5 | state none | hops proved 0, hypothesis 0, none 400
+ row | over 25, not keyed | unadjudicated/cw-2026-08-28-005243 | 0 | 0 | 6000 | 0 (0) | 0 (0) | 29 (15) | 0
+ off window | unadjudicated/cw-2026-08-31-002424 | 3 to 5 s | instrument 306.8 | tracker 600.0 | err +293.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002424 | 7 to 9 s | instrument 713.9 | tracker 600.0 | err -113.9 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002424 | 8 to 10 s | instrument 764.3 | tracker 600.0 | err -164.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002424 | 9 to 11 s | instrument 562.3 | tracker 600.0 | err +37.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002424 | 10 to 12 s | instrument 561.3 | tracker 600.0 | err +38.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002424 | 11 to 13 s | instrument 510.2 | tracker 575.0 | err +64.8 | state none | hops proved 0, hypothesis 0, none 400
+ row | over 25, not keyed | unadjudicated/cw-2026-08-31-002424 | 0 | 0 | 2742 | 0 (0) | 0 (0) | 6 (6) | 0
+ off window | unadjudicated/cw-2026-08-31-002443 | 3 to 5 s | instrument 306.8 | tracker 600.0 | err +293.2 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002443 | 7 to 9 s | instrument 713.9 | tracker 600.0 | err -113.9 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002443 | 8 to 10 s | instrument 764.3 | tracker 600.0 | err -164.3 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002443 | 9 to 11 s | instrument 562.3 | tracker 600.0 | err +37.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002443 | 10 to 12 s | instrument 561.3 | tracker 600.0 | err +38.7 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002443 | 11 to 13 s | instrument 510.2 | tracker 575.0 | err +64.8 | state none | hops proved 0, hypothesis 0, none 400
+ off window | unadjudicated/cw-2026-08-31-002443 | 12 to 14 s | instrument 511.9 | tracker 575.0 | err +63.1 | state none | hops proved 0, hypothesis 0, none 400
+ row | over 25, not keyed | unadjudicated/cw-2026-08-31-002443 | 0 | 0 | 2882 | 0 (0) | 0 (0) | 7 (7) | 0
+ row | synthetic, sent at 615 Hz | cq-12wpm-15db | 900 | 3174 | 2206 | 4 (0) | 15 (0) | 11 (0) | 5
+ row | synthetic, sent at 615 Hz | cq-12wpm-5db | 800 | 3274 | 2206 | 4 (0) | 15 (0) | 11 (0) | 0
+ row | synthetic, sent at 615 Hz | cq-12wpm-0db | 600 | 4874 | 806 | 1 (0) | 10 (0) | 4 (0) | 0
+ row | synthetic, sent at 615 Hz | cq-18wpm-15db | 2000 | 1647 | 706 | 7 (0) | 10 (0) | 3 (0) | 5
+ row | synthetic, sent at 615 Hz | cq-18wpm-5db | 1847 | 1700 | 806 | 5 (0) | 11 (0) | 4 (0) | 0
+ row | synthetic, sent at 615 Hz | cq-18wpm-0db | 0 | 0 | 4353 | 0 (0) | 0 (0) | 9 (0) | 0
+ row | synthetic, sent at 615 Hz | cq-25wpm-15db | 2068 | 600 | 606 | 9 (0) | 3 (0) | 3 (0) | 1
+ row | synthetic, sent at 615 Hz | cq-25wpm-5db | 1768 | 900 | 606 | 8 (0) | 4 (0) | 3 (0) | 0
+ row | synthetic, sent at 615 Hz | cq-25wpm-0db | 0 | 0 | 3274 | 0 (0) | 0 (0) | 5 (0) | 0
+ proved off | cq-18wpm-15db-char5 | 12 to 14 s | instrument 617.8 | proved hops 94 of 400 at median 650.0 | err +32.2 | window's state hypothesis | paths hold, a move to a keyed candidate elsewhere pending mid-character x6, hold, keying found within the last 3 s, not on this survey x300, keyed verdict on the latest survey names the pitch x94
+ row | synthetic, sent at 615 Hz | cq-18wpm-15db-char5 | 1800 | 1820 | 1106 | 8 (0) | 9 (0) | 5 (0) | 3
+ row | synthetic, sent at 615 Hz | cq-18wpm-5db-char5 | 2400 | 1220 | 1106 | 12 (0) | 5 (0) | 5 (0) | 0
+ row | synthetic, sent at 615 Hz | cq-18wpm-0db-char5 | 0 | 0 | 4726 | 0 (0) | 0 (0) | 14 (0) | 0
+ total | over 25, not keyed | 8 recordings | hops proved 0 | hypothesis 3194 | none 38430 | windows proved 0 (0 >25) | hypothesis 15 (15 >25) | none 132 (82 >25) | stale-floor refusals 0 | key inferred
+ total | real | 23 recordings | hops proved 40664 | hypothesis 50810 | none 46526 | windows proved 179 (0 >25) | hypothesis 253 (38 >25) | none 188 (24 >25) | stale-floor refusals 12 | key inferred
+ total | synthetic | 12 recordings | hops proved 14183 | hypothesis 19209 | none 22507 | windows proved 58 (0 >25) | hypothesis 82 (0 >25) | none 77 (0 >25) | stale-floor refusals 14 | key exact
+ path | from-cold point, the loudest bin, nothing confirmed | 81405 hops over every recording above
+ path | keyed verdict on the latest survey names the pitch | 54847 hops over every recording above
+ path | hold, keying found within the last 3 s, not on this survey | 37199 hops over every recording above
+ path | hold past its keying, none found for 3 s or more | 31326 hops over every recording above
+ path | operator's configured pitch, nothing chose | 26058 hops over every recording above
+ path | hold, a move to a keyed candidate elsewhere pending mid-character | 4688 hops over every recording above
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 2.1474 Minutes
+RC=0 WALL=129s

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 450 - the pitch says whether it was proved
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T07:16:13-04:00
-NOTE: Entry done: metrics and floors as 449 left them, app line lost 2 both green alone; next the trace of every path that holds a pitch
+UPDATED: 2026-09-26T07:22:39-04:00
+NOTE: Trace done: real hops proved 40664, hypothesis 50810, none 46526; proved-majority windows 0 of 179 over 25 Hz; next the HM-REQ-093 test, watched red
 
 ---
 
