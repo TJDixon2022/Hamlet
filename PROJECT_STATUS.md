@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 449 - the forty sure-wrong letters left, one more change, or step 2 closes
+TASK: 0 of 3
+WORK_INSTRUCTION: 450 - the pitch says whether it was proved
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T06:46:54-04:00
-NOTE: Unit 449 done: one tracker change kept, real MET-CER-SURE 40 to 33, 2.4 not ticked and step 2's count at 0 - output.md written
+UPDATED: 2026-09-26T07:16:13-04:00
+NOTE: Entry done: metrics and floors as 449 left them, app line lost 2 both green alone; next the trace of every path that holds a pitch
 
 ---
 

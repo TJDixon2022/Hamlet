@@ -340,3 +340,5 @@ the owner reads instead of watching.
 | 9 | 2026-09-26T02:20 | 2026-09-26T03:48 | complete | 8.914758400000002 | ran unattended, 144 turns, 10 denied call(s) worked around, report valid |
 | 10 | 2026-09-26T03:53 | 2026-09-26T05:17 | complete | 8.537333400000001 | ran unattended, 168 turns, 14 denied call(s) worked around, report valid |
 | 10 | 2026-09-26T05:18 | 2026-09-26T05:18 | note | none - not a run | parked - criterion 4.5: promise - Item 1 asks the owner to define acquiring for HM-REQ-102, which decides when the decoder may show letters as sure, so it changes what the product tells the operator was heard, and item 3 waits on that ruling.. It is in PARKED.md, that criterion is not authorable this pass, and the loop carries on to the plan-s other work |
+| 11 | 2026-09-26T05:22 | 2026-09-26T06:47 | complete | 7.6500954 | ran unattended, 156 turns, 10 denied call(s) worked around, report valid |
+| 11 | 2026-09-26T06:48 | 2026-09-26T06:48 | note | none - not a run | no advance - step 2 criterion 4 was unmet and is unmet |
