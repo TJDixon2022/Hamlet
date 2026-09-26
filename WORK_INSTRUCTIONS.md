@@ -1,45 +1,36 @@
-# Work instruction 445 - a letter whose marks do not fit the speed is not printed as sure
+# Work instruction 446 - the speed search reaches 5 and 45 words a minute
 
-**Authored by the arbiter against step 3's open criterion 3.2.** By the plan's checkboxes, step 3
-stands at 1 of 6 and step 2 at 3 of 5.
+**Authored by the arbiter against step 5's open criterion 5.1.** By the plan's checkboxes, step 2
+stands at 3 of 5, step 3 at 3 of 6, steps 0 and 1 are done, and steps 4 to 8 are not started.
 
-**Why step 3 and not step 2.** Step 2 has two open lines, and neither can be moved by a unit
-this pass:
-- **2.5** is red for one reason, 17:37's named floor. Unit 444 measured the cause. 17:37's sender
-  sends letter spaces of up to 320 ms and word spaces from 245 ms, so the two overlap. To give back
-  the two boundaries G1 lost, a duration rule would need a threshold between 320 and 330 ms that
-  fits this one sender. R72 and V-11 refuse that. The not-kept rule 444 built took 17:37 from 7 to
-  8. 443's DECIDED (3) is still in force: no floor is re-banked while 17:37's boundaries are worse
-  than before G1. It is an arbiter ruling, and only the owner can lift it.
-- **2.4** is a closing rule, and no single unit can build it.
+**Why step 5, and not step 2, which the launcher named.** Every route to step 2's two open lines
+is closed this pass:
+- **2.5** is red for one reason, 17:37's named floor (banked 46, reads 38). 443's DECIDED (3) says
+  no floor is re-banked while 17:37's boundaries are worse than before G1. It is an arbiter ruling,
+  and only the owner lifts it. The one route that did not need a re-bank was restoring the two
+  boundaries. 444 measured it: it needs a duration threshold between 320 and 330 ms that fits one
+  sender. It is recorded `no` against 2.5.
+- **2.4** is a closing rule. It is met by a third consecutive step-2 unit that keeps no change.
+  Authoring a unit so that it keeps nothing is not work toward HM-REQ-010. This arbiter does not
+  author one.
 
-The plan's step-3 dependency line says: *"Independent of step 2: when one blocks the arbiter works
-the other."* R81 puts steps 2 and 3 ahead of pitch and speed. So this unit works step 3.
+Step 3's open lines are closed too:
+- 3.4 needs the 7.052 traffic-net recording, which is not in the tree (443).
+- 3.5 is a closing rule.
+- 3.6 is red on 17:37.
 
-**Where MET-INVENTED stands.** At HEAD it is 47 over 473. Only **4 are added letters**. The other
-**43 are sure letters that are wrong**. Those 43 are the same letters step 2's MET-CER-SURE
-counts, so a change that removes them moves both numbers.
+The plan's §5 lets any of steps 2 to 7 go: *"six independent places to route and the loop need
+never stall for want of work."* Between steps 4 and 5:
+- **Step 4 opens on 4.1**, an instrument. That changes nothing the operator reads, and R83 says a
+  unit of this phase changes what the operator reads or it is not authored.
+- **Step 5 opens on 5.1**, the speed search. That does change what the operator reads.
+  `cw-2026-09-24-135641` was sent at about 44 WPM and **reads nothing at HEAD**, because the search
+  stops at 40. Any station sending 5 to 7 WPM, the slow end of HM-REQ-030, is outside the search
+  as well.
 
-441's exit trace (`.run-unit/unit441-trace-exit.txt`) prints the marks each of the 43 rested on.
-Many rest on marks that are neither a dit nor a dah at the unit in force:
-- `4` sent `....-` and read `T` on a single mark of 5.3 units;
-- `A` read `E` twice on single marks of 2.0 units;
-- `,` read `T` on a mark of 5.1 units;
-- `T` read `A` on a mark of 7.8 units;
-- the 650 Hz recording's `L`, `R`, `3`, `P` and `0` rest on marks of 0.1 to 0.5 units.
-
-The decoder calls every known letter `High` (`CwProbabilisticStream.cs:685`). It never asks
-whether the marks it read fit the letter it printed.
-
-**This unit measures first.** For every sure letter, right and wrong, it traces how far its marks
-and gaps sit from a dit, a dah and an element gap at the unit in force. **Only if that trace finds
-an edge that no right letter crosses** does the unit dim the letters past it. 442 dimmed on
-the rival margin at an edge the trace had not found. It lost 16 right letters for 7 wrong ones,
-and it was refused. This unit does not repeat that.
-
-**The owner's standing order still holds, 2026-09-25:** *"Write something that materially
-advances CW in the most significant way we can handle."* A wrong letter printed as sure is
-the thing an operator acts on.
+**The owner's standing order, 2026-09-25:** *"Write something that materially advances CW in the
+most significant way we can handle."* A station the decoder cannot hear at all is the largest
+failure an operator meets.
 
 ---
 
@@ -69,44 +60,44 @@ If all six hold, say "Hamlet confirmed" and continue.
 
 ## 1. Why this unit exists
 
-The count today: **step 2 at 3 of 5, step 3 at 1 of 6.** Steps 0 and 1 are done, and steps 4 to 8
-are not started. At HEAD `0528afbe`, on real recordings with inferred keys (unit 444's exit, `src`
-unchanged since 443):
+The count today: **step 2 at 3 of 5, step 3 at 3 of 6, step 5 at 0 of 6.** At HEAD `83d3897c`, on
+real recordings with inferred keys (unit 445's exit):
 
 | metric | count | value |
 |---|---|---|
-| MET-INVENTED | 47 over 473 (4 added, 43 substituted) | 0.0994 |
-| MET-CER-SURE | 47 of 421 sure | 0.1116 |
+| MET-INVENTED | 45 over 473 | 0.0951 |
+| MET-CER-SURE | 45 of 419 sure | 0.1074 |
 | sure-and-right coverage (R82) | 374 over 473 | 0.7907 |
 | MET-WBE | 52 over 113 | 0.4602 |
 
-Synthetic, exact keys: MET-CER-SURE 14 of 173, 0.0809. MET-INVENTED 14 over 252.
+**Task 0 re-measures all of these, and its numbers win over this table.**
 Floors: captures 51 of 51, adjudicated 13 of 13, named 12 of 13 (17:37 banked 46, reads 38).
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  A letter whose marks are neither a dit nor a dah at the speed in force stops being
-            printed as sure, where the trace shows no right letter is lost by it, so MET-INVENTED
-            and MET-CER-SURE fall with coverage held.
-ADVANCES:   step 3 criterion 2 - the plan's line 3.2
+UNIT GOAL:  The decoder finds a station sending anywhere from 5 to 45 words a minute, where
+            today it searches only 8 to 40, so a fast or slow sender is read instead of
+            ignored, and nothing it reads today gets worse.
+ADVANCES:   step 5 criterion 1 - the plan's line 5.1
 ```
 
-`step 3 criterion 2` is the launcher's form, and it means the plan's line `- [ ] 3.2`.
+`step 5 criterion 1` is the launcher's form, and it means the plan's line `- [ ] 5.1`.
 
 **Read `CW_REQUIREMENTS.md` first, then `CW_SPEC.md`**, including §11 for the metrics'
 definitions. Where they differ from this instruction, they win. Here are the requirement ids this
 unit works toward. **Quote each from the document in section 1, and report any difference as a
 mismatch.**
 
-- **HM-REQ-011:** MET-INVENTED at zero. This is the target.
-- **HM-REQ-010:** MET-CER-SURE below 1 %. This is a target too, since the 43 are shared.
-- **HM-REQ-012:** coverage at or above 90 %. This is the guard. *"Without a floor, dimming
-  everything satisfies HM-REQ-010."*
-- **HM-REQ-014:** dim letters correct at least 70 % of the time. Measure it and report it. It is not
-  a keep condition this unit, because dimming wrong letters lowers it by construction. Say so with
-  the number.
-- **HM-REQ-015:** the class is available when the letter is emitted. The rule must decide at
-  emission, from what the stream already holds.
+- **HM-REQ-030:** every must-tier requirement at any speed from 5 to 45 WPM inclusive, both ends
+  hard. Above 30.6 WPM is synthetic-only until a capture exists. **This is the target.**
+  - 5.1 asks that the search reach both ends.
+  - Meeting every must-tier requirement at every speed is more than one unit's work. Measure it
+    at 5 and 45 and report it. Do not claim it.
+- **HM-REQ-033:** speed acquired without a prior speed. The 5 and 45 cases start cold, and the
+  report says whether they acquired.
+- **HM-REQ-031:** speed within 10 % of true after acquisition. Measure it at 5 and 45 and report it
+  (5.3 is not ticked here).
+- **HM-REQ-010, 011, 012, and MET-WBE:** the guards, under R78.
 - **V-11** from `CW_SPEC.md`: no change may redden an earlier capture to green a newer one.
 
 ## 2. Verify this instruction against the tree
@@ -114,13 +105,17 @@ mismatch.**
 Check each of these. **Where one is wrong, report it as a mismatch in section 1 and carry on. Do not
 repair it.**
 
-- `CwProbabilisticStream.cs` near line 685 sets `known ? CwConfidence.High : CwConfidence.Unreadable`.
-  `CwConfidence.Low` exists in `CwCharacter.cs` and is documented as shown dimmed.
-- `CallsignResolver` and `ContactTracker` act only on `High` letters. Confirm this and name the
-  lines.
-- `.run-unit/unit441-trace-exit.txt` prints 43 sure-wrong letters with their envelope marks and gaps
-  in units. `docs/phase-requirements/metrics.md` records 442's rival-margin change as not kept,
-  with 16 right letters dimmed for 7 wrong.
+- The plan says the speed search runs **8 to 40 WPM at HEAD**. Find every place that bounds it:
+  - constants;
+  - the speed grid or its candidate list;
+  - the unit estimator's clamps;
+  - any window, history length or timeout sized from a speed.
+
+  Name each one with its file and line. If the bounds are not 8 and 40, report what they are.
+- `cw-2026-09-24-135641` is in the tree and reads nothing at HEAD. Give its length, and how the
+  captures test reads it: whole, or a clip.
+- The synthetic generator can make a send at a stated WPM with an exact key. Name it. If it cannot
+  make 5 or 45, say why.
 - **Expected failures at entry, and they are not yours to fix:**
   - 17:37's named floor is red (banked 46, reads 38).
   - `TheFiveToEightDecibelPlateauHolds` is the correctness phase's recorded red, and it is in
@@ -138,24 +133,35 @@ repair it.**
 - **`PHASE_PLAN.md` R77 to R81 and §6, and R82 and R83** as work instruction 441 recorded them:
   - **R82:** MET-COVERAGE is sure-and-right over sent.
   - **R83:** a unit of this phase changes what the operator reads, or it is not authored.
-- **R78, the keep rule, as 3.2 states it.** For this unit's change:
-  - MET-INVENTED falls on the real set;
+- **R78, the keep rule, for this unit's change:**
   - MET-CER-SURE does not rise, real or synthetic;
+  - MET-INVENTED does not rise, real or synthetic;
   - sure-and-right coverage does not fall, real or synthetic;
+  - MET-WBE does not rise on the real set;
   - the adjudicated readings hold, or move onto their own adjudicated text;
-  - V-11 holds per keyed recording on all four metrics, so no recording loses a sure-and-right
-    letter.
+  - V-11 holds per keyed recording on all four metrics;
+  - **and the change does what 5.1 asks:** the 5 WPM and 45 WPM synthetic cases each emit sure
+    characters, acquired cold, where HEAD emits none or reads them at the wrong speed.
 
   **A capture row's character count falling is reported, not rejected.**
+- **Decode time is reported before and after, as 5.1 says, and it is not a keep condition.** But
+  §6 is binding: no CW test costing more than 300 s goes on a carry-forward line. If the change
+  pushes a carry-forward type past that, report it as a finding.
 - **Arbiter rulings carried, not re-argued:**
   - **443's DECIDED (3):** no floor is re-banked while 17:37's boundaries are worse than before G1.
   - **442's DECIDED (2):** a floors line is read as green at the exit of every commit from the
     unit's working task on.
 - **V-13:** an inferred key is not proof by itself. **V-04 and V-14:** no fixture is admitted by
   lowering a gate, and no plausibility bound is loosened to pass one.
-- **R72:** no word, dictionary or callsign prior, in any form. The rule reads marks, gaps and the
-  unit in force. **It never reads the letters beside the letter, or the word they make.**
+  - Widening the speed search is what HM-REQ-030 requires. It is not the loosening of a bound.
+  - A separation limit or confirmation rule that is not a speed bound stays as it is.
+- **`CLAUDE.md` §12.5:** a fixture built from the same misunderstanding as the code proves nothing.
+  The 5 and 45 WPM cases are built by the generator at PARIS timing. **The report states what they
+  do not prove**, including: no real sender, no real channel, no Farnsworth.
+- **R72:** no word, dictionary or callsign prior, in any form.
 - **`CLAUDE.md` §0.0:** never present a guess as a decode. **§0.2:** nothing that keys or transmits.
+  The speed search is receive-only. If any bound you find is shared with the keyer or transmit
+  path, **do not change it. Stop at that bound and report it.**
 - **HM-DEC-155:** no suite. Named types only, one per invocation, each with its own `timeout`.
   Captures get 600 s and `WhatTheOpeningHeardTests` gets 900 s. **Never background and poll.**
 - **HM-DEC-165, FACT-004.**
@@ -171,7 +177,7 @@ Some shell things break here:
 - `;` is refused, `rm` is refused, and Python cannot run here.
 - A multi-line commit uses `-m` more than once.
 
-Scripts go in `.run-unit\unit445-<name>.sh` and run with `sh`. **Never compose a timestamp. Read
+Scripts go in `.run-unit\unit446-<name>.sh` and run with `sh`. **Never compose a timestamp. Read
 the clock.**
 
 ---
@@ -180,89 +186,109 @@ the clock.**
 
 ### Task 0 - the entry
 
-- `PHASE_OUTCOME.md` gets `## UNIT 445 - STEP 3` from the decision block at the foot.
-- `PHASE_STATUS.md` names 445 and `CURRENT_STEP: 3`. Patch-bump.
-- Entry round: build, both carry-forward lines, the three floor tests, and the four metrics, each
-  printed as a number. **Print MET-INVENTED split into added and substituted, per condition, with
-  the key's kind beside each number.**
+- `PHASE_OUTCOME.md` gets `## UNIT 446 - STEP 5` from the decision block at the foot.
+- `PHASE_STATUS.md` names 446 and `CURRENT_STEP: 5`. Patch-bump.
+- Entry round, each printed as a number:
+  - build;
+  - both carry-forward lines, **each with its wall time**;
+  - the three floor tests, with the captures type's wall time;
+  - the four metrics, per condition, with the key's kind beside each number.
 - Commit the root's uncommitted `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` with the
   entry. **These are the runner's writes.** Commit them as they are and do not edit them.
 
-### Task 1 - the mark-shape trace (the measurement 3.2's change is built from)
+### Task 1 - the speed trace, and both ends watched failing first
 
-**A fact that asserts nothing**, beside `WhereTheSureWrongLettersComeFromTests`. For **every sure
-letter at HEAD**, whether right, wrong or added, over the real keyed recordings, print:
+**A fact that asserts nothing, first.** It prints every bound the speed search has, with its
+file, line and value:
+- the grid or candidate list;
+- the estimator's clamps;
+- every window sized from a speed.
 
-- the recording, the time, what the key says was sent, what was emitted, and whether it is right,
-  wrong or added;
-- the unit in force at emission, and where it came from;
-- each mark it rested on, in ms and in units, and **its distance from the nearer of 1 and 3
-  units**, as a ratio;
-- each gap inside the letter, in units, and its distance from 1 unit;
-- **the letter's worst mark distance and worst gap distance**;
-- how many marks it rested on, against the elements of the letter it emitted.
+For each one, give what 5 WPM and 45 WPM need of it, as numbers:
+- the unit is 240 ms at 5 WPM and 26.7 ms at 45 WPM;
+- the longest dah is 720 ms at 5 WPM;
+- the word gap is 1680 ms at 5 WPM;
+- the shortest element is 26.7 ms at 45 WPM, which is how many envelope hops?
 
-Then **tabulate right against wrong-or-added, bin by bin**, on the worst mark distance and on the
-worst gap distance, each on its own and together. **Name the edge, if there is one:** the smallest
-distance past which no right letter lies on the real set, and how many wrong-or-added letters lie
-past it. Do the same on the synthetic set with exact keys. Say whether the two sets agree on the
-edge.
+Say which bounds would stop each end, and which would not.
 
-**There is no edge if right letters lie past every distance that catches a wrong one.** If so,
-say so in one line, print the table, and skip to task 3. Task 2 is then not built. That is
-an allowed outcome, and it is recorded as the reason 3.2 did not move.
+**Then the cases.** Build synthetic sends with the generator at **5 WPM and 45 WPM**, plus
+**8 WPM and 40 WPM** as controls:
+- PARIS timing, a CQ-shaped text with an exact key;
+- 15 dB with the generator's usual noise, and never digital silence (V-06);
+- no prior speed given to the decoder.
 
-**The drop candidate is the synthetic half.** If the unit runs long, trace the real set only, and
-say the edge is unchecked on exact keys.
+Write one test per end that names **HM-REQ-030**. It asserts sure characters emitted, and speed
+within 10 % of true once acquired. **Watch both fail at HEAD. Watch the 8 and 40 controls pass.**
+If a control fails at HEAD, report it, and treat that end's failure as not caused by the bound.
 
-Commit the fact and its printout.
+Print, per case at HEAD:
+- the text;
+- the speed reported, and when;
+- MET-CER-SURE, sure-and-right coverage and MET-INVENTED, with the exact key.
 
-### Task 2 - one change: past the edge, the letter is dim (3.2)
+Also print `cw-2026-09-24-135641` at HEAD: its text, or `nothing read`, and the speed and pitch in
+force. **This print is the drop candidate.** If the unit runs long, skip it, and say 5.2 is
+unmeasured.
 
-**Build this only if task 1 named an edge.** Build **one** change in `CwProbabilisticStream`: a
-known letter whose worst distance is past task 1's edge is emitted as `CwConfidence.Low` instead of
-`High`. Everything else is unchanged.
+Commit the fact, the tests and the printout.
 
-- **Take the edge from the trace, and do not move it after you have seen R78's numbers.** If R78
-  refuses it, it is not kept. Do not build a second edge.
-- The decision is made at emission, from the marks the stream holds (HM-REQ-015).
-- Leave `CallsignResolver` and `ContactTracker` untouched. **Print every callsign the corpus
-  resolves before and after.** A callsign that is no longer resolved because one of its letters
-  went dim is reported, with the key beside it.
-- G1, the marks' speed, `RivalMargin` and `MarginLlr` stay as they are.
+### Task 2 - one change: the search reaches 5 and 45 (5.1)
 
-**Judge the change under §3's list, every item as a number.** Also give:
-- dim precision (HM-REQ-014) on the real set;
-- the dim letters, each with its key.
+Build **one** change, in its own commit: every bound task 1 named as stopping an end is moved so
+that the search covers 5 to 45 WPM. Include any window that is sized from a speed and must grow to
+hold a 5 WPM element or gap.
+- **Move nothing else.**
+- Leave G1, the marks' speed, the mark-shape dim edge, `RivalMargin`, `MarginLlr` and the tone
+  tracker as they are.
+- If one end needs more than moving bounds, for example a new detector, then build the other end
+  alone. **Say which end is left, and why.**
 
-Print every recording whose text or dimming changes, before and after. Keep the change or do not
-keep it, and give the reason in one line.
+**Judge it under §3's list, every item as a number:**
+- the four metrics, real and synthetic, per condition with the key's kind;
+- the adjudicated readings;
+- V-11 per recording;
+- the 5, 8, 40 and 45 cases' text, speed and metrics, before and after;
+- **decode time, before and after:**
+  - each carry-forward line's wall time;
+  - the captures type's wall time;
+  - and one fixed recording's decode in ms, per minute of audio, run three times with the median
+    given.
+
+Print every recording whose text changes, before and after, with its key. If `135641` was printed
+in task 1, print it after too, beside `nothing read`.
 
 **If it is kept:**
 - Commit the change on its own.
-- Write MET-INVENTED and MET-CER-SURE before and after to `docs/phase-requirements/metrics.md`, per
-  condition, with the key's kind beside each number (3.3).
+- Write the before and after to `docs/phase-requirements/metrics.md`, per condition, with the key's
+  kind beside each number, and with the decode times.
 - Every later commit ends with the three floor tests and both carry-forward lines as green as they
   were at entry. 17:37 stays red under 443's DECIDED (3).
 - **Do not re-bank any floor.** A named or capture row whose count moved is reported with its text.
 
-**If it is not kept:** leave it out of `src`, commit its diff as
-`.run-unit/unit445-shape-notkept.diff`, and record it in `metrics.md` with the table.
+**If it is not kept:**
+- Leave it out of `src`.
+- Commit its diff as `.run-unit/unit446-speed-notkept.diff`.
+- Record it in `metrics.md` with the table.
+- Name the item of §3 that refused it. Do not build a second change to rescue it.
 
 ### Task 3 - the exit round
 
-- Build, both carry-forward lines, the three floor tests, the four metrics, and every type touched,
-  each printed as a number.
+- Build, both carry-forward lines, the three floor tests, the four metrics and every type touched,
+  each printed as a number, with the wall times.
 - **Report what changed in `src`, file by file**, that none of it keys or transmits, and that it was
   pushed.
-- **Tick 3.2** in both copies of `PHASE_PLAN.md` only if the change was kept under §3's list.
-  **Tick 3.3** as well only if `metrics.md` carries the per-condition before and after with the
-  key's kind.
-- **Do not tick 3.4, 3.5, 3.6, 2.4 or 2.5.**
-  - 3.4 needs the traffic-net recording, which is not in the tree.
-  - 3.6 and 2.5 stay red while 17:37 does.
-- Report DRIFT for step 3: consecutive step-3 units without a kept change. 443 kept none, so it is
-  0 if this unit's change was kept, and 2 if not. Report step 2's DRIFT as 2, unchanged.
+- **Tick 5.1** in both copies of `PHASE_PLAN.md` only if:
+  - the change was kept under §3's list;
+  - both the 5 and 45 WPM tests pass;
+  - the decode time is reported before and after.
+
+  If only one end was reached, do not tick it, and say which end is missing.
+- **Tick 5.2** only if `135641` now emits sure characters and the report prints them beside
+  `nothing read`.
+- **Do not tick 5.3 to 5.6, or anything in steps 2 or 3.** 5.6 stays red while 17:37 does.
+- Report DRIFT for step 5 (0 if kept, 1 if not), and for steps 2 and 3 unchanged (step 2 at 2;
+  step 3 at 0).
 
 ---
 
@@ -271,27 +297,30 @@ keep it, and give the reason in one line.
 - Everything in `PARKED.md`, including step 2's question on which files the transmit check covers.
   **This unit does not define or run a transmit-file list.** It reports its `src` diff file by file,
   and that is all.
-- 17:37's floor and 444's section 4. Leave both to the owner, as this instruction's decision block
-  says.
-- 444's half-unit dropout rule, `.run-unit/unit444-wbe-notkept.diff`. It is step 6's material, and
-  it is not rebuilt here.
+- 17:37's floor and 444's section 4 question. Both stay with the owner.
+- 445's section 4 question: whether a later edge needs a minimum number of wrong letters.
+- 444's half-unit dropout rule. It is step 6's material.
 - 443's section 4: the traffic-net recording, and the `032012` key.
+- **Pitch.**
+  - `135641` and `152135` sit 75 Hz off, and that is step 4's, under R76.
+  - If `135641` still reads nothing after the speed change, report whether the pitch is the likely
+    cause. **Do not touch `CwToneTracker` or `CwToneSurvey`.**
+- Speed tracking through a change (HM-REQ-032), the proof state (034), and state kept across a
+  clear (035) or a pitch refinement (036). These are 5.3 to 5.5.
 - The correctness phase's 5.1, which is Tim's, and everything in `PHASE_PLAN.md` §7 (Carried).
 - The decision log, the traceability table, and the 43 tests that measure something else. These
   are step 8 (R80).
-- `PHASE_OUTCOME.md`'s stale header, and `CW_SPEC.md` §11's coverage text.
-- Pitch. The 12 sure-wrong letters 25 Hz or more off the sender are step 4's, under R76. They are
-  counted here, not attacked.
 
 ## 7. What not to do
 
-- Do not build task 2 without an edge from task 1. Do not build at a best-available edge the way
-  442 did.
-- Do not move the edge after reading R78's numbers. Do not add a second rule to rescue a recording.
-- Do not read the neighbouring letters, a word or a callsign in the rule (R72).
-- Do not change `CallsignResolver`, `ContactTracker`, or what either does with a `Low` letter.
-- Do not re-bank any floor. Do not loosen a gate or a plausibility bound (V-04, V-14).
-- Do not revert G1 or the marks' speed.
+- Do not change any bound that the keyer or transmit path shares. Stop there and report it (§0.2).
+- Do not loosen a confirmation rule, separation limit or plausibility bound that is not a speed
+  bound (V-14).
+- Do not tune the change to `135641`. It is one recording. The two ends are judged on the
+  synthetic cases and guarded on the whole real set.
+- Do not add a second change to rescue a recording that R78 refuses.
+- Do not re-bank any floor.
+- Do not revert G1, the marks' speed or the dim edge.
 - Do not spend a task on the record beyond task 0's entry and the ticks.
 - Do not halt on a question. Write one line in section 4 and go on.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
@@ -299,7 +328,7 @@ keep it, and give the reason in one line.
 ## 8. Committing and pushing
 
 Make one commit per task, and **one commit for the change on its own**. Each message names the
-criterion it serves: `unit445 task N: <what> (3.2)`. Push to `origin/main` after each commit. End
+criterion it serves: `unit446 task N: <what> (5.1)`. Push to `origin/main` after each commit. End
 every commit message with:
 
 ```
@@ -324,46 +353,48 @@ your permissions refuse the call, say so, and check the rules by hand.
 ```
 READ IN THIS ORDER.
 
-A. Hamlet meets the CW requirements: step 3 at <n> of 6, step 2 at 3 of 5 by the plan's
-   checkboxes, steps 0 and 1 done, 4 to 8 not started.
-B. Step 3, criterion 3.2, HM-REQ-011 with HM-REQ-010 and 012 as guards: the trace <named an edge
-   at <d>, catching <n> wrong for 0 right | found no edge>; the change <kept | not kept | not
-   built>. MET-INVENTED <47> -> <n> over 473; MET-CER-SURE <0.1116> -> <n>; coverage <374> -> <n>;
-   3.2 <ticked, or what is missing>; 3.6 red on 17:37.
+A. Hamlet meets the CW requirements: step 5 at <n> of 6, step 2 at 3 of 5 and step 3 at 3 of 6 by
+   the plan's checkboxes, steps 0 and 1 done, 4, 6, 7 and 8 not started.
+B. Step 5, criterion 5.1, HM-REQ-030 with HM-REQ-010, 011 and 012 as guards: the search ran
+   <8 to 40> and now runs <n to n>; 5 WPM <reads | reads nothing>, 45 WPM <reads | reads
+   nothing>; the change <kept | not kept>; MET-CER-SURE <n> -> <n>; MET-INVENTED <n> -> <n>;
+   coverage <n> -> <n>; decode time <n> -> <n>; 5.1 <ticked, or what is missing>; 5.6 red on
+   17:37.
 C. What this report adds, and whether it stands in the way of a criterion in B.
    Section 4 raises <N> items; <which, if any, is in the way of a criterion in B>.
 ```
 
 ```
-UNIT:       445 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
+UNIT:       446 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   <yes|no> - <which criteria flipped in PHASE_PLAN.md>
-NUMBER:     MET-INVENTED <n> -> <n>; MET-CER-SURE <n> -> <n>; coverage <n> -> <n>; edge <d or none>
-DRIFT:      step 3 <n>; step 2 2
+NUMBER:     range <8-40> -> <n-n>; MET-CER-SURE <n> -> <n>; MET-INVENTED <n> -> <n>; decode <n> -> <n> ms/min
+DRIFT:      step 5 <n>; step 2 2; step 3 0
 ```
 
-**Section 3 opens with the trace's table:** right against wrong-or-added by worst mark distance,
-with the edge marked. Then comes what the operator reads, for every recording whose text or
-dimming changed, before and after. Mark the dim letters, and put the key beside each. Then list
-every callsign the resolver gained or lost.
+**Section 3 opens with the four speed cases.** For 5, 8, 40 and 45 WPM, give each case's text
+before and after, beside its exact key, with the speed the decoder reported. Then:
+- `135641` before and after, beside `nothing read`, or `unmeasured`;
+- every real recording whose text changed, before and after, with its key;
+- the decode-time table.
 
-**Section 2, in one paragraph:** Does the operator now see fewer wrong letters printed as sure,
-with no right letter turned dim? Give the evidence (V-13), and say whether the floors are as green
-as at entry.
+**Section 2, in one paragraph:** Will the operator now see text from a station sending at 5 or at
+45 words a minute, and is anything read today worse? Give the evidence (V-13), and say what the
+synthetic cases do not prove (§12.5).
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 3
-APPROACH: trace every sure letter's marks and inner gaps against a dit, a dah and an element gap at the unit in force, tabulate right against wrong, and only if an edge exists that no right letter crosses, print letters past it dim, kept under R78 with MET-INVENTED falling and coverage held
+STEP: 5
+APPROACH: trace where the speed search is bounded at 8 and 40 WPM, widen it to 5 and 45, prove both ends on synthetic sends of known speed, keep under R78 with decode time before and after
 MOVE: work around
-WHY: PHASE_PLAN.md step 3 line 3.2 asks for a change kept under R78 with MET-INVENTED falling, and 43 of HEAD's 47 are sure letters resting on marks that are neither dit nor dah at the unit in force, which the decoder never checks; step 2's open 2.4 and 2.5 cannot be moved by a unit while 443's standing ruling holds 17:37's floor, and the plan's step-3 dependency line routes to step 3 when step 2 blocks.
-STATE: partial
-DECIDED: author's, overrulable - (1) step 3 is worked because step 2's 2.5 is held by 443's DECIDED (3), which this arbiter may not overrule, and 2.4 is a closing rule no unit builds; (2) 444's section 4 question on 17:37 - re-bank at 38 or restore to 5 - is left to the owner, not ruled here: it is not one of the two stops, but answering it would overrule 443's DECIDED (3), and while it stands every step's floors-green line (2.5, 3.6, 4.7, 5.6, 6.6, 7.5, 8.6) stays red on 17:37, which is reported as a mismatch for the owner; (3) task 2 is built only on an edge the trace finds with no right letter past it, so 442's refusal is not repeated; (4) HM-REQ-014's dim precision is measured and reported, not a keep condition, because dimming wrong letters lowers it by construction; (5) 444's dropout rule and 443's section 4 are logged and not chased.
-LICENCE: PHASE_PLAN.md step 3 line 3.2 and its dependency line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
-ACCOMPLISHED: a letter the decoder read from marks that do not fit the sending speed stops being printed as sure, so fewer wrong letters reach the operator looking certain, and no right letter is dimmed to do it
-ADVANCES: step 3 criterion 2
+WHY: PHASE_PLAN.md step 5 line 5.1 asks that HM-REQ-030 be met at both ends, with the speed search reaching 5 and 45 WPM where it runs 8 to 40, judged by R78 with decode time before and after. Step 2's 2.5 is held red on 17:37 by 443's DECIDED (3), which only the owner lifts, and 444's route is recorded no. 2.4 is a closing rule no honest unit is aimed at. Step 3's open lines are blocked the same way, and plan section 5 routes to any of steps 2 to 7.
+STATE: not started
+DECIDED: author's, overrulable - (1) step 5 is worked instead of the launcher's step 2, because step 2's routes are closed this pass and the plan's section 5 makes steps 2 to 7 independent; step 5 is chosen over step 4 because 4.1 is an instrument that changes nothing the operator reads (R83), while 5.1 does; (2) 5.1 is read as the search reaching both ends, proven by one HM-REQ-030 test per end on synthetic sends with exact keys, and meeting every must-tier requirement at every speed is measured at the ends and reported, not claimed; (3) decode time is reported and is not a keep condition, but the 300 s carry-forward cap binds; (4) 444's section 4 question on 17:37 stays with the owner, and while it stands every step's floors-green line stays red; (5) 445's section 4 question is logged and not chased.
+LICENCE: PHASE_PLAN.md step 5 line 5.1, section 5's independence line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-04; V-06; V-11; V-13; V-14; R72; HM-REQ-010, 011, 012, 030, 031, 033; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0, 0.2 and 12.5
+ACCOMPLISHED: a station sending as slowly as 5 or as fast as 45 words a minute is found and read, where today the decoder only searches 8 to 40 and a 44 WPM station reads nothing, with nothing read today made worse
+ADVANCES: step 5 criterion 1
 END-ARBITER-DECISION
 ```

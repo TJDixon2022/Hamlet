@@ -1,0 +1,18 @@
+unit446 task 0: entry at step 5 - MET-INVENTED 45 over 473, floors as recorded (5.1)
+
+Outcome entry for unit 446 in both copies, PHASE_STATUS.md names 446 at
+CURRENT_STEP 5 in both copies, version 1.13.132 to 1.13.133. The runner's
+uncommitted PHASE_OUTCOME.md, PHASE_STATUS.md, RUN_LEDGER.md and
+WORK_INSTRUCTIONS.md are committed as the runner wrote them; the session's
+only edits to those files are the 446 lines.
+
+Entry round, one type per invocation: build 0 errors; engine
+carry-forward 178 of 178 in 376 s; app 277 of 278 in 166 s (the loss,
+TheRstIsYoursToCorrectTests, is 4 of 4 alone); captures 51 of 51 in
+131 s; adjudicated 13 of 13; named 12 of 13 (17:37 red, 46 banked,
+reads 38). Real, inferred: MET-INVENTED 45 over 473, 0.0951;
+MET-CER-SURE 45 of 419, 0.1074; sure-and-right coverage 374 over 473,
+0.7907; MET-WBE 52 over 113, 0.4602. Synthetic, exact: MET-INVENTED 14
+over 252; MET-CER-SURE 14 of 173, 0.0809; coverage 159 over 252.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

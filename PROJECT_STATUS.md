@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 445 - a letter whose marks do not fit the speed is not printed as sure
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+TASK: 0 of 3
+WORK_INSTRUCTION: 446 - the speed search reaches 5 and 45 words a minute
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T01:08:30-04:00
-NOTE: Unit 445 complete: one kept change dims 2 wrong letters and no right one on 032129 (MET-INVENTED 47 to 45, coverage held); 3.2 and 3.3 ticked
+UPDATED: 2026-09-26T01:30:20-04:00
+NOTE: Entry round done: metrics as 445 left them, 17:37 red as recorded; committing before the speed trace
 
 ---
 
