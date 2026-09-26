@@ -59,8 +59,10 @@ public sealed class BothDecodersAreScoredAlikeTests
     /// <param name="EmittedSeconds">For each character, the input time at which it was put out, in seconds of the file.</param>
     /// <param name="Raw">The text as the decoder itself printed it.</param>
     /// <param name="DecodeTime">Wall time inside the decoder, resampling and the pitch instrument excluded.</param>
+    /// <param name="Notes">For each character, the decoder's own evidence as it recorded it: our pattern, speed and confidence; the port's representation, receive speed and two_dots.</param>
     internal sealed record Decoded(
-        IReadOnlyList<CwCharacter> Settled, IReadOnlyList<double> EmittedSeconds, string Raw, TimeSpan DecodeTime);
+        IReadOnlyList<CwCharacter> Settled, IReadOnlyList<double> EmittedSeconds, string Raw, TimeSpan DecodeTime,
+        IReadOnlyList<string> Notes);
 
     /// <summary>One recording, both decoders on it, both measured the same way.</summary>
     /// <param name="Name">The recording.</param>
@@ -212,7 +214,9 @@ public sealed class BothDecodersAreScoredAlikeTests
 
         var pitch = pitches.Count == 0 ? double.NaN : pitches.OrderBy(p => p).ElementAt(pitches.Count / 2);
 
-        return (new Decoded(settled, emitted, CwReading.Of(settled).Text, watch.Elapsed), pitch);
+        var notes = settled.Select(c => $"pattern {c.Pattern} at {c.WordsPerMinute} WPM, {c.Confidence}").ToList();
+
+        return (new Decoded(settled, emitted, CwReading.Of(settled).Text, watch.Elapsed, notes), pitch);
     }
 
     /// <summary>The port over the whole file at 8000 Hz, given a pitch, as fldigi's file benchmark runs it with the squelch off.</summary>
@@ -228,7 +232,8 @@ public sealed class BothDecodersAreScoredAlikeTests
             decoder.Emissions.Select(Mapped).ToList(),
             decoder.Emissions.Select(e => e.InputSample / (double)FldigiCwDecoder.CW_SAMPLERATE).ToList(),
             decoder.Text,
-            watch.Elapsed);
+            watch.Elapsed,
+            decoder.Emissions.Select(e => $"rep {e.Representation} at {e.ReceiveSpeed} WPM, two_dots {e.TwoDots}").ToList());
     }
 
     /// <summary>The characters of a decoder's run a stretch covers, with their emission times.</summary>
@@ -642,6 +647,141 @@ public sealed class BothDecodersAreScoredAlikeTests
         md.Append("text that reads little can be fitted where it happens to resemble the key. It is the rule ours is scored by, unchanged.\n");
 
         return md.ToString();
+    }
+
+    /// <summary>The captures in the tree our decoder reads as nothing, none of them keyed (work instruction 458, task 3).</summary>
+    private static readonly string[] NothingRead =
+    {
+        "unadjudicated/cw-2026-08-20-014854",
+        "unadjudicated/cw-2026-08-20-014935",
+        "unadjudicated/cw-2026-08-22-014113",
+        "unadjudicated/cw-2026-08-22-014308",
+        "unadjudicated/cw-2026-08-26-125941",
+    };
+
+    /// <remarks>
+    /// Work instruction 458 task 3 (PHASE_PLAN.md 9.3), a printer: every recording
+    /// where the port scores better than ours on any of the four metrics, each
+    /// stretch aligned to its key for both decoders with each character's class,
+    /// and beside each departure from the key the decoder's own evidence; then
+    /// what the port reads on each capture ours reads as nothing, printed and not
+    /// scored, since none has a key. Asserts nothing about either score.
+    /// </remarks>
+    [Fact]
+    public void WhereThePortScoresBetter()
+    {
+        _output.WriteLine("class codes: a letter alone is sure and right; [K>D] sure and wrong; [+D] sure and added; [-K] missing; ■ a placeholder; a leading space a word boundary");
+
+        var wins = 0;
+
+        foreach (var r in Rows)
+        {
+            if (r.PortMeasured is not { NotComputable: null } pm || r.Port is null || r.OursMeasured.NotComputable is not null)
+            {
+                continue;
+            }
+
+            var o = Totals.Of(new TheRequirementsAreMeasuredTests.Measured?[] { r.OursMeasured });
+            var p = Totals.Of(new TheRequirementsAreMeasuredTests.Measured?[] { pm });
+            var better = new List<string>();
+
+            var cerBetter = o.SureEmitted > 0 && p.SureEmitted > 0 && p.SureErrors * o.SureEmitted < o.SureErrors * p.SureEmitted;
+
+            foreach (var (metric, isBetter) in new[]
+                     {
+                         ("MET-CER-SURE", cerBetter),
+                         ("MET-INVENTED", p.Invented < o.Invented),
+                         ("coverage", p.SureRight > o.SureRight),
+                         ("MET-WBE", p.Inserted + p.Deleted < o.Inserted + o.Deleted),
+                     })
+            {
+                if (isBetter)
+                {
+                    better.Add(metric);
+                }
+            }
+
+            if (better.Count == 0)
+            {
+                continue;
+            }
+
+            wins++;
+            _output.WriteLine($"win | {r.Name} | {CwMetrics.KindWord(r.Kind)} | port better on {string.Join(", ", better)} | "
+                + $"ours {CerSure(o)}, {InventedText(o)}, {CoverageText(o)}, {Wbe(o)} | port {CerSure(p)}, {InventedText(p)}, {CoverageText(p)}, {Wbe(p)}");
+
+            for (var i = 0; i < pm.Scores.Count; i++)
+            {
+                _output.WriteLine($"win | {r.Name} | {i + 1} | key  | {pm.Scores[i].Key}");
+                AlignedLines(r.Name, i, "ours", r.Ours, r.OursMeasured);
+                AlignedLines(r.Name, i, "port", r.Port, pm);
+            }
+        }
+
+        _output.WriteLine($"wins | {wins} of {Rows.Count} recordings where the port scores better on at least one of the four metrics");
+
+        foreach (var name in NothingRead)
+        {
+            var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+            var windows = CwPitchInstrument.Measure(audio.Samples, audio.SampleRate);
+
+            if (windows.Count == 0)
+            {
+                _output.WriteLine($"nothing | {name} | ours: nothing read | port not run: the pitch instrument found no keyed window");
+                continue;
+            }
+
+            var given = windows.Select(w => w.Hz).OrderBy(h => h).ElementAt(windows.Count / 2);
+            var port = DrivePort(FldigiRateAdapter.ToFldigiRate(audio.Samples, audio.SampleRate), given);
+
+            _output.WriteLine(string.Create(Invariant,
+                $"nothing | {name} | ours: nothing read | port given {given:0.0} Hz over {windows.Count} windows | port `{port.Raw}` | no key, not scored"));
+        }
+
+        Assert.Equal(WhatTheStrayLettersRestOnTests.KeyedRecordings.Count + SyntheticCq.All.Count, Rows.Count);
+    }
+
+    private void AlignedLines(string name, int stretch, string decoder, Decoded run, TheRequirementsAreMeasuredTests.Measured m)
+    {
+        var covered = TheRequirementsAreMeasuredTests.Covered(run.Settled, m.Scores[stretch]).Where(c => !c.IsWordGap).ToList();
+        var line = new System.Text.StringBuilder();
+        var departures = new List<string>();
+        var d = 0;
+
+        foreach (var step in m.Stretches[stretch].Steps)
+        {
+            var gap = step.Decoded is not null && step.GapBefore ? " " : string.Empty;
+            string token;
+
+            if (step.Decoded is not { } symbol)
+            {
+                token = $"[-{step.Key}]";
+                line.Append(token);
+                continue;
+            }
+
+            var character = covered[d++];
+            var note = run.Notes[IndexOf(run.Settled, character)];
+
+            token = symbol.Class == CwSymbolClass.Placeholder ? (step.Key is null ? "[+■]" : $"[{step.Key}>■]")
+                : step.Key is null ? $"[+{symbol.Text}]"
+                : step.Key == symbol.Text ? symbol.Text
+                : $"[{step.Key}>{symbol.Text}]";
+
+            line.Append(gap).Append(token);
+
+            if (token != symbol.Text)
+            {
+                departures.Add($"{token} {note}");
+            }
+        }
+
+        _output.WriteLine($"win | {name} | {stretch + 1} | {decoder} | {line}");
+
+        foreach (var departure in departures)
+        {
+            _output.WriteLine($"win | {name} | {stretch + 1} | {decoder} departs | {departure}");
+        }
     }
 
     private static void ConditionRow(System.Text.StringBuilder md, string label, IReadOnlyList<Row> rows)

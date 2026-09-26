@@ -1,0 +1,21 @@
+unit458 task 3: 9.3 ticked - 13 of 35 recordings where the port scores better, all 13 printed beside the key with each character's class and named from cw.cxx; the port on the five captures ours reads as nothing (9.3)
+
+BothDecodersAreScoredAlikeTests.WhereThePortScoresBetter, a printer,
+selects by one comparison on the four metrics and prints both aligned
+texts with our pattern and speed and the port's representation,
+speed and two_dots beside every departure. Six of the thirteen are
+better because the port printed fewer sure characters, not because
+it read the same marks better (17:37, 032129, 004108, and the three
+0 dB cases on coverage at 11 of 13, 5 of 7 and 5 of 7 wrong). Where
+it reads marks ours got wrong, the evidence is ours losing elements
+(031838, 004234, 17:37) against fldigi's detector, spike rule and
+classing (cw.cxx:610-656, 515, 818-822, 847-855), and ours at 40 WPM
+on 003758 against fldigi's pair-tracked speed (524-535, 832-843).
+Word-boundary wins only where ours splits words (004507, 004133).
+cw-2026-09-24-135641 is not in the tree; the five unkeyed captures
+ours reads as nothing are printed with the port's text, unscored.
+Named from the texts, evidence and cited lines, not traced sample by
+sample. .run-unit/unit458-where-it-wins.txt. 9.3 ticked in both
+copies of PHASE_PLAN.md.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

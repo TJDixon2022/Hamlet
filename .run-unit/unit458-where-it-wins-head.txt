@@ -1,0 +1,110 @@
+UNIT 458 TASK 3 (9.3) - WHERE THE PORT SCORES BETTER, AND WHAT IT DOES DIFFERENTLY THERE
+
+Source of the print: BothDecodersAreScoredAlikeTests.WhereThePortScoresBetter, .run-unit/unit458-wins.txt,
+at the harness committed in task 2 plus this printer. "Better" is decided by the same comparison for every recording:
+lower MET-CER-SURE (both having emitted sure characters), fewer MET-INVENTED, more sure-and-right coverage, or fewer
+MET-WBE errors. 13 of the 35 recordings qualify; all 13 are covered below. Upstream lines are cw.cxx at 61b97f41.
+HOW EACH CAUSE WAS NAMED: from the two aligned texts, the decoders' own evidence printed beside each departure (our
+pattern and speed; the port's representation, receive speed and two_dots), and the cw.cxx lines that produce that
+evidence. No stretch was traced sample by sample in this unit. Every figure is scored as it came: the port's
+first-element loss after noise, its 5-unit gap read as a word space and every character it missed are all counted.
+
+MECHANISMS CITED
+  (A) detection: hysteresis on the AGC-normalised magnitude, thresholds set between tracked floor and peak each
+      decision sample - cw.cxx:610-623 (decayavg of noise_floor, agc_peak), 640-641 (CWupper, CWlower), 649-656.
+  (B) noise-spike rule: a key-down shorter than half a dot length is thrown away, not classed - cw.cxx:515, 818-822.
+  (C) element classing: a dot is anything up to two_dots, a dash anything longer - cw.cxx:847-855.
+  (D) speed tracking: two_dots follows dot-dash and dash-dot pairs through a 16-sample moving average -
+      cw.cxx:524-535 (update_tracking), 832-843.
+  (E) gap handling: a character ends after 2 to 4 dot lengths of key-up, a word space after more than 4 -
+      cw.cxx:880-914 (888 and 910).
+  (F) overflow and no-match: more than 6 elements resets the character (858-864); a representation with no table
+      entry prints CW_noise `*` (892-898), which is scored as a placeholder.
+  (G) no refusal: nothing in the receive path declines to print on a weak or absent signal; whatever crosses CWupper
+      is keyed (649), with the squelch off as fldigi's file benchmark runs it (benchmark.cxx:54).
+
+PER RECORDING (inferred keys on the real rows, V-13; exact on the synthetic)
+
+ 1. unadjudicated/cw-2026-09-23-173723 (17:37) - port better on MET-CER-SURE 1 of 8 against 3 of 20, MET-INVENTED
+    1 against 3, MET-WBE 6 against 7; worse on coverage, 7 against 17 of 20.
+    Ours reads `W B 7 E E I` for WB6RED: R (.-.) as E with pattern `.`, D (-..) as I with `..`, 6 as 7 (`--...`) -
+    our decoder lost the dahs of R and D. The port reads RED whole, reps from its own classing at 16 WPM, which is (A)
+    keying those marks and (C) classing them against two_dots 1191. It loses the opening instead: its stretch starts
+    at the third CQ and misses `CQ CQ DE WB6` (A, its AGC settling on the opening, 457's verdict (b)), and reads 6 as
+    S (`...`, the dah not keyed). Its lower error counts come mostly from printing 8 sure characters where ours printed 20.
+
+ 2. unadjudicated/cw-2026-08-18-003758 - port better on MET-CER-SURE 2 of 10 against 3 of 11, MET-INVENTED 2 against 3.
+    Ours reads AA4 as `EET` - patterns `.`, `.`, `-` at 40 WPM: every character cut to one element. The port reads
+    `EA4M` at 24 WPM (two_dots 797): the second A and the 4 whole. What differs is (D) speed tracking - the port's
+    two_dots, updated only on dot-dash pairs, stayed near 24 WPM while ours ran at 40 - with (E) ending a character
+    only after 2 dot lengths at that speed. It prints P as `*` (`..--.`, F) and Q as `_` (`..--.-`, a table entry).
+
+ 3. cw-2026-08-18-004507 (TX-FARNS traffic net) - port better on MET-WBE only, 4 (2 ins, 2 del) against 5 (5 ins).
+    Ours splits `D O T N E T` and `E ACH` with word spaces inside words. The port prints a space only after more than
+    4 of its dot lengths (E, cw.cxx:910) at 20-21 WPM, so the Farnsworth-spaced letters stay in words. It is worse on
+    every character metric here (coverage 30 against 43 of 44), missing letters and reading L as `É` (`..-..`).
+
+ 4. unadjudicated/cw-2026-08-22-031838 - port better on MET-CER-SURE 3 of 13 against 5 of 21, MET-INVENTED 3 against 5.
+    Ours reads `2,` at the start as `T T` - patterns `-`, `-` at 23-28 WPM: the dits of `..---` and `--..--` lost.
+    The port reads `2, 2,` whole at 20 WPM. What differs is (A) and (B): its detector keyed the short marks and its
+    spike rule, half a dot at its tracked speed, kept them as dots (C). Later it misses `D 2 W` and `HA ME` and reads
+    `WVF` for `AN O` (reps `.--`, `...-`, `..---`).
+
+ 5. unadjudicated/cw-2026-08-22-032129 - port better on MET-INVENTED only, 3 against 5; worse on coverage, 11 against 34.
+    Ours invents at `2026` (`T`, `J`, patterns `-` and `.---`), `PGOPAGATION` and `BUAELETIN`. The port prints almost
+    nothing sure over those stretches: missing, not guessing. Where it prints, it is wrong in its own way (`M` for 2 as
+    `--`, `*` for `.-...-`). The difference is (F) and (B) - over-long runs reset and spikes discarded, so nothing is
+    printed - and (A) not keying the weak passages at all; it is not a better reading of the same marks.
+
+ 6. unadjudicated/cw-2026-09-24-004108 - port better on MET-CER-SURE 0 of 1 against 2 of 4, MET-INVENTED 0 against 2.
+    Ours reads `G K2 6` for `DE KA2GJV` (G `--.`, 6 `-....`). The port prints one sure character, E, in the stretch;
+    its whole file reads ` E ` late. Better by printing nothing (A, G's opposite: here its thresholds sat above the
+    marks), not by reading them.
+
+ 7. unadjudicated/cw-2026-09-24-004133 - port better on MET-WBE only, 1 (1 ins) against 2 (2 ins).
+    Ours splits `C H ARD`. The port reads `I51 8` - reps `.....`, `.----`, `---..`: letters run together because the
+    key-up between them was under 2 of its dot lengths (E, cw.cxx:888) at 24-25 WPM, so fewer boundaries of any kind.
+    Every character metric is worse (coverage 1 against 5 of 6).
+
+ 8. unadjudicated/cw-2026-09-24-004234 - port better on MET-CER-SURE 1 of 6 against 2 of 9, MET-INVENTED 1 against 2.
+    Ours reads `YOU` ending as `T T` (patterns `-`): the dits lost. The port reads `U` for Y (`..-`, its first dah lost)
+    and `O` right, and keeps `T` and `AN`. (A)/(B) as on 031838 for the dits; it misses `COM <BT>` entirely and prints
+    K as `*` (`.-.--`, F).
+
+ 9-11. cq-12wpm-0db, cq-18wpm-0db, cq-25wpm-0db (exact) - port better on coverage, 2 of 21 against 0 each; on MET-WBE
+    at 12 WPM (4 against 6) and 18 WPM (5 against 6).
+    Ours reads nothing at 0 dB. The port prints on all three (G): 13, 7 and 7 sure characters in the stretch, 2 right
+    each, so MET-CER-SURE 11 of 13, 5 of 7 and 5 of 7 - the coverage it gains costs 21 invented characters across the
+    three. Its spaces (E) land on some of the key's boundaries, which is its MET-WBE gain.
+
+ 12. cq-18wpm-5db-char5 (exact, 5-unit character gap) - port better on MET-CER-SURE 3 of 16 against 11 of 25,
+    MET-INVENTED 3 against 11; worse on MET-WBE, 12 (10 ins) against 8, and coverage 13 against 14.
+    Ours invents `TEE T ■KTDUUEUE` across DE N0CALL. The port reads `Q D N 0 C T L L 0C A L L K`: with (E) a 5-unit
+    gap is past 4 dot lengths, so every letter is ended and looked up whole and then followed by a word space - right
+    letters, wrong spaces (456's finding, scored). It loses the first `CQ C` (A, after the 1.0 s noise lead-in).
+
+ 13. cq-18wpm-0db-char5 (exact) - port better on coverage only, 1 of 21 against 0. As 9-11 (G): it prints `■AE<AS>`
+    in the stretch, A right, the rest wrong.
+
+WHAT THE THIRTEEN SAY TOGETHER
+  - Six of the thirteen are "better" because the port printed fewer sure characters, not because it read the same
+    marks better: 173723 (mostly), 032129, 004108, and the three plain 0 dB cases only on coverage at a high error cost.
+  - Where the port reads marks ours got wrong, the evidence points at two things in ours: elements lost (dits on
+    031838 and 004234, dahs on 17:37) against the port's (A)/(B)/(C), and a speed estimate far off (40 WPM on 003758)
+    against the port's (D).
+  - On word boundaries it wins only where ours splits a word (004507, 004133); on the 5-unit case its (E) costs it.
+
+RECORDINGS OURS READS AS NOTHING
+  cw-2026-09-24-135641 is not in the tree (no such file under tests/, git ls-files finds none), so it was not run.
+  Ours reads nothing on the four 0 dB synthetic cases above (scored) and on five unkeyed captures, run through the port
+  here, printed and not scored (no key):
+    unadjudicated/cw-2026-08-20-014854 - port, given 606.7 Hz: `G S CNDE*IIAEEEIE M EOP `
+    unadjudicated/cw-2026-08-20-014935 - port, given 580.3 Hz: `SE EEEEEEUIBRUTAU6EN ST4`
+    unadjudicated/cw-2026-08-22-014113 - port, given 607.0 Hz: `E IIWPA *TEZ K E `
+    unadjudicated/cw-2026-08-22-014308 - port, given 607.2 Hz: `ETJ* IE`
+    unadjudicated/cw-2026-08-26-125941 - port, given 403.2 Hz: `I6MTI I IEU*IE `
+  Ours: nothing read, on each.
+
+COVERED: 13 of 13.
+
+== THE PRINTOUT
