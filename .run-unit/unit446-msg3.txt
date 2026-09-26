@@ -1,0 +1,14 @@
+unit446: closing - exit round as entry, 5.1 not ticked, output.md, status COMPLETED (5.1)
+
+Exit round at c63ded1a, src identical to entry: build 0 errors; engine
+line 178 of 178 in 380 s; app 278 of 278 in 166 s; captures 51 of 51
+in 130 s; adjudicated 13 of 13; named 12 of 13 (17:37 red as recorded).
+Real, inferred: MET-CER-SURE 45 of 419, MET-INVENTED 45 over 473,
+coverage 374 over 473, MET-WBE 52 over 113, all as entry; V-11 0 of 35
+worse. TheSpeedSearchReachesBothEndsTests 4 of 6, the two HM-REQ-030
+ends red as at HEAD, on no line.
+
+No tick: 5.1's one change was refused under R78, and 5.2's recording is
+not in the tree. DRIFT step 5 1, step 2 2, step 3 0.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
