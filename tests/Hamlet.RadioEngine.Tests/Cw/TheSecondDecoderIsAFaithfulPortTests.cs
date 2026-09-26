@@ -17,30 +17,41 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// 456). The keyer below reads only <see cref="Patterns"/>, and the rendered
 /// marks are measured back into dots and dashes and checked against those
 /// patterns before anything is decoded.</para>
-/// <para>**THE RECIPE**, so another unit can rebuild it: `PARIS CQ` at 18 WPM
-/// (fldigi's shipped CWspeed), one unit 1200/18 ms, marks 1 and 3 units, gaps
-/// 1, 3 and 7 units; 600 Hz, peak 0.5, raised-cosine edges of 5 ms; 8000 Hz,
-/// fldigi's own rate, so no resampling; 10.0 s of noise before the first mark
-/// (five of fldigi's slowest time constants, decay weight 1000 at the 500 Hz
-/// decision rate, so its AGC has settled from noise_floor 1.0; a first run at
-/// 3.0 s read `NES CQ `) and 1.5 s after the last; the noise white Gaussian from xorshift32 and
-/// Box-Muller, seed 20260926, shaped to a 300-2800 Hz band by a 257-tap
-/// Blackman-windowed sinc band-pass and scaled so tone power over band-noise
-/// power is +10 dB, which in a 2500 Hz band is the `CW_SPEC.md` 8.1 reference
-/// SNR. Never digital silence (V-06).</para>
+/// <para>**THE CASE IS `.run-unit/unit457-case.txt`, WRITTEN AND COMMITTED
+/// BEFORE THE PORT READ IT** (work instruction 457, task 3; V-04). Unit 456's
+/// case keyed `PARIS CQ` after 10 s of noise alone and the port read `GARIS CQ `:
+/// fldigi's own behaviour (unit 457, task 2, verdict (b)), which loses a first
+/// element that follows seconds of noise alone, its AGC on the noise, its
+/// thresholds inside it and its detector keyed on it (cw.cxx:610-623, 640-641,
+/// 818-822, 793-798). The real recordings are the control: before every
+/// located key the air holds the same operator's earlier keying at the same
+/// level (17 of 17), never noise alone. So the send is keyed twice, one word
+/// gap apart, and the second is scored.</para>
+/// <para>**THE RECIPE**, so another unit can rebuild it: `PARIS CQ PARIS CQ` at
+/// 18 WPM (fldigi's shipped CWspeed), one unit 1200/18 ms, marks 1 and 3 units,
+/// gaps 1, 3 and 7 units; 600 Hz, peak 0.5, raised-cosine edges of 5 ms;
+/// 8000 Hz, fldigi's own rate, so no resampling; 10.0 s of noise before the
+/// first mark and 1.5 s after the last; the noise white Gaussian from
+/// xorshift32 and Box-Muller, seed 20260926, shaped to a 300-2800 Hz band by a
+/// 257-tap Blackman-windowed sinc band-pass and scaled so tone power over
+/// band-noise power is +10 dB, which in a 2500 Hz band is the `CW_SPEC.md` 8.1
+/// reference SNR. Never digital silence (V-06).</para>
+/// <para>**THE SCORED SPAN** is the last ten characters the port prints: the
+/// word space for the gap before the second send, the key, and the trailing
+/// word space. The earlier send is printed and not asserted.</para>
 /// <para>The decoder is given the pitch the case was keyed at, 600 Hz, as
 /// fldigi's waterfall cursor would give it, with the squelch off as fldigi's
-/// own file benchmark runs it (benchmark.cxx:54).</para>
-/// <para>**RED ON PURPOSE AT UNIT 456, AND NOT TUNED** (HM-REQ-122, 129). The
-/// port reads `GARIS CQ `: with no squelch fldigi's thresholds sit inside the
-/// noise and key on it; the send's first dot joins a noise key-down already
-/// under way, a noise spike right after it sets the receiver idle (cw.cxx:818),
-/// and the next key-down from idle clears what it held (cw.cxx:793), so
-/// `.--.` arrives as `--.`. That is upstream's logic, ported as it is.</para>
+/// own file benchmark runs it (benchmark.cxx:54). Left as ported, not tuned
+/// (HM-REQ-129).</para>
 /// </remarks>
 public sealed class TheSecondDecoderIsAFaithfulPortTests
 {
     private const string Sent = "PARIS CQ";
+
+    /// <summary>The same operator's earlier keying, one word gap before the scored send, printed and not asserted.</summary>
+    private const string Earlier = "PARIS CQ";
+
+    private const string Keyed = Earlier + " " + Sent;
     private const int WordsPerMinute = 18;
     private const double PitchHz = 600;
     private const double Peak = 0.5;
@@ -52,12 +63,12 @@ public sealed class TheSecondDecoderIsAFaithfulPortTests
     private const int Rate = FldigiCwDecoder.CW_SAMPLERATE;
 
     /// <summary>
-    /// The key as fldigi's rules print it: each letter at 2 to 4 dot lengths of
-    /// silence, a space past 4 (cw.cxx:888-914), so the word gap gives one space
-    /// and the silence after the last letter gives the trailing one; none before
-    /// the first, because space_sent starts true (cw.cxx:773).
+    /// The scored send as fldigi's rules print it: each letter at 2 to 4 dot
+    /// lengths of silence, a space past 4 (cw.cxx:888-914), so the word gap
+    /// before it gives the leading space, its own word gap one more, and the
+    /// silence after the last letter the trailing one.
     /// </summary>
-    private const string Expected = "PARIS CQ ";
+    private const string Expected = " PARIS CQ ";
 
     private const string Commit = "61b97f4133c488063f3de1795c894d22d5032e8a";
 
@@ -101,16 +112,36 @@ public sealed class TheSecondDecoderIsAFaithfulPortTests
     {
         var (audio, marks, noiseRms) = Render();
 
-        Assert.Equal(Sent, Measured(marks));
+        Assert.Equal(Keyed, Measured(marks));
 
-        var decoder = new FldigiCwDecoder(PitchHz);
+        var decoder = new FldigiCwDecoder(PitchHz) { TraceDecisions = true };
         decoder.rx_process(audio);
 
+        var text = decoder.Text;
+        var scored = text.Length >= Expected.Length ? text[^Expected.Length..] : text;
+
         _output.WriteLine(string.Create(CultureInfo.InvariantCulture,
-            $"HM-REQ-122 | recipe | `{Sent}` at {WordsPerMinute} WPM, {PitchHz:0} Hz, peak {Peak}, {Rate} Hz, "
+            $"HM-REQ-122 | recipe | `{Keyed}` at {WordsPerMinute} WPM, {PitchHz:0} Hz, peak {Peak}, {Rate} Hz, "
             + $"lead-in {LeadInSeconds:0.0} s, tail {TailSeconds:0.0} s, band 300-2800 Hz noise RMS {noiseRms:0.00000}, "
             + $"SNR {SnrDb:0.0} dB in 2500 Hz, seed {Seed}, {audio.Length} samples"));
-        _output.WriteLine($"HM-REQ-122 | key `{Sent}` | emitted `{decoder.Text}` | expected `{Expected}`");
+        _output.WriteLine($"HM-REQ-122 | keyed `{Keyed}` | emitted `{text}`");
+        _output.WriteLine($"HM-REQ-122 | key `{Sent}` | scored span `{scored}` | expected `{Expected}`");
+        _output.WriteLine("character | printed | t_filt s | magnitude | value | agc_peak | noise_floor | sig_avg | CWupper | CWlower | state | smpl_ctr | two_dots | held before");
+
+        FldigiCwDecisionRow? previous = null;
+
+        foreach (var r in decoder.Decisions)
+        {
+            if (r.Printed.Length > 0)
+            {
+                _output.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                    $"character | `{r.Printed}` | {r.FilteredSample / (double)Rate:0.000} | {r.Magnitude:0.00000} | {r.Value:0.0000} | "
+                    + $"{r.AgcPeak:0.00000} | {r.NoiseFloor:0.00000} | {r.SigAvg:0.00000} | {r.Upper:0.0000} | {r.Lower:0.0000} | "
+                    + $"{r.State} | {r.SmplCtr} | {r.TwoDots} | {previous?.Held}"));
+            }
+
+            previous = r;
+        }
         _output.WriteLine("emission | text | at sample | at s | rep | cw_receive_speed | two_dots | CWupper | CWlower");
 
         foreach (var e in decoder.Emissions)
@@ -129,7 +160,7 @@ public sealed class TheSecondDecoderIsAFaithfulPortTests
 
         _output.WriteLine($"key events | {decoder.KeyEvents.Count} in all, {decoder.KeyEvents.Count(k => k.InputSample < LeadInSeconds * Rate)} before the first mark");
 
-        Assert.Equal(Expected, decoder.Text);
+        Assert.Equal(Expected, scored);
     }
 
     /// <summary>
@@ -174,7 +205,7 @@ public sealed class TheSecondDecoderIsAFaithfulPortTests
         var unit = 1.2 / WordsPerMinute;
         var segments = new List<(bool On, double Units)>();
 
-        foreach (var word in Sent.Split(' '))
+        foreach (var word in Keyed.Split(' '))
         {
             if (segments.Count > 0) segments.Add((false, 7));
 

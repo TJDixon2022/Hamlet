@@ -1,0 +1,14 @@
+unit457 task 3: 9.1 ticked - on the case committed at 7f77dd67 the port reads the key, scored span ` PARIS CQ `, emitted GARIS CQ PARIS CQ; 8 of 8 green, headers 7 of 7 (9.1)
+
+TheSecondDecoderIsAFaithfulPortTests, naming HM-REQ-122, moved to the
+case in .run-unit/unit457-case.txt, run once: first with the
+deliberately wrong expectation ` PARIS CQX`, red, scored span
+` PARIS CQ `; then with ` PARIS CQ `, green. The earlier send reads
+GARIS CQ, fldigi's own loss of a first element after noise alone
+(task 2's verdict b), printed and not asserted. Each character is
+printed with task 2's columns. The port is unchanged since task 2.
+9.1 ticked in both copies of PHASE_PLAN.md: port under Cw/Second
+with headers, case file committed before its run, test green, 34
+functions ported and 54 left out as 456 listed, no repair.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

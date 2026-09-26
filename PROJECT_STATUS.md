@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 457 - why fldigi's port loses the first dit, and a case chosen before it is read
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-26T15:54:00-04:00
-NOTE: Task 3: control measured on 23 keyed recordings, 16 located, all 16 hold the same operator's keying before the key; writing unit457-case.txt before any run
+UPDATED: 2026-09-26T15:56:32-04:00
+NOTE: Task 3 done, 9.1 ticked; task 4 skipped (no repair made), starting the exit round: build, carry-forward lines, floors, metrics
 
 ---
 
