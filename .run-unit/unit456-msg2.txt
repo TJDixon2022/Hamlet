@@ -1,0 +1,16 @@
+unit456 task 2: the port - FldigiCwDecoder and its five supporting files under Cw/Second, each carrying fldigi's GPL-3 header, authors and commit 61b97f41; receive path only, wired to nothing (9.1)
+
+FldigiCwDecoder (cw.cxx, cw.h), FldigiFftFilter (fftfilt.cxx, .h),
+FldigiFft (gfft.h, as an equivalent radix-2 DFT, listed as a
+departure), FldigiMovingAverage (filters.cxx Cmovavg), FldigiMorse
+(morse.cxx, .h, receive half), FldigiMisc (misc.h decayavg, clamp),
+FldigiProgdefaults (configuration.h, the fields read, at their shipped
+defaults). Each method names the upstream function it ports. Squelch
+off; SOM mode not ported and refused. FldigiRateAdapter is Hamlet's
+own, outside the ported files: a 481-tap Blackman sinc at 3600 Hz and
+keep every Nth, for 48000 to 8000.
+
+No change to CwProbabilisticDecoder, the stream, MorseAlphabet, the
+tracker, the scorer or any live path. Build 0 warnings, 0 errors.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
