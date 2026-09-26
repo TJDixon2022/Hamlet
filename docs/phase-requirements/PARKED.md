@@ -1,1 +1,4 @@
 RESOLVED: 2026-09-25 13:34 | its unit 439 is executing now | unit 439 is dead, killed at 13:34, and the new plan is at the root - go on under the new plan and do not wait for it
+RESOLVED: 2026-09-25 | leave it red, or re-bank it at 38 | re-bank at 38 - HM-REQ-081 is measured per condition and the condition's MET-WBE fell 58 to 52; one recording's boundaries rising inside an improving condition is not a requirement getting worse. Author's, from CW_REQUIREMENTS.md, overrulable.
+RESOLVED: 2026-09-25 | rival margin stay in src | keep RivalMargin and MarginLlr - the sidecar seam printed unmeasured and now carries a true number, which section L requires. Author's, overrulable.
+RESOLVED: 2026-09-25 | which files are the transmit files | the eleven the restore phase's plan named in section 3: CwTransmitter, KeyerCwSender, TransmitChain, AutoCall, AutoCallAnswers, CwTransmitGuard, TransmissionWatch, TransmitReadiness, TransmitPrivileges, TransmitNotes, ICwSender. Author's.

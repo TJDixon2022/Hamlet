@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 442 - sure has to mean something
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 443 - the letters the decoder adds between words
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T21:49:43-04:00
-NOTE: Unit 442 complete: confidence-by-rival-margin measured, not kept (coverage 374 to 358); floors green but 17:37; 2.1-2.3 ticked
+UPDATED: 2026-09-25T22:12:41-04:00
+NOTE: Entry round done: 4 sure added at HEAD, 17:37 red as recorded; committing the entry
 
 ---
 
