@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 442 - sure has to mean something
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T21:29:10-04:00
-NOTE: Confidence change not kept: CER-SURE 0.1116 to 0.1005 but coverage 374 to 358; committing the record
+UPDATED: 2026-09-25T21:49:43-04:00
+NOTE: Unit 442 complete: confidence-by-rival-margin measured, not kept (coverage 374 to 358); floors green but 17:37; 2.1-2.3 ticked
 
 ---
 

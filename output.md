@@ -1,167 +1,171 @@
 READ IN THIS ORDER.
 
-A. The phase goal, and what the operator now reads. Hamlet meets the CW requirements. Three
-   recordings, before this unit and after it:
-   - `031838`: `D  ■T TTT TEAH A MEAN TOF 2 TT` becomes `TT 2, AND  ■ W IAH A MEAN OF 2 TT`.
-   - 17:37: `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I` becomes `CQ CQ CQ DEWB6 RE D W B 7E E I`.
-   - `032129`: `TJ26 PGOPAGATION EE EE EIIEE I E EE` becomes `TJ26 PGOPAGATION E EE EIIEE I E EE`.
-   - `003758`: `EETMP/4 QNIK` is unchanged.
-   On the 23 real keyed recordings, with inferred keys:
-   - MET-CER-SURE goes from 67 of 426 (0.1573) to 47 of 421 (0.1116).
-   - MET-INVENTED goes from 67 to 47 over 473.
-   - Sure-and-right coverage goes from 359 to 374 over 473 (0.7590 to 0.7907).
-B. This step and its exit criteria. Step 2: the decoder stops printing wrong letters with
-   confidence, under HM-REQ-010. Criterion 2.2 keeps a change under R78. Criterion 2.3 reports
-   MET-CER-SURE before and after every kept change. Both changes were kept:
-   - G1: MET-CER-SURE 0.1573 to 0.1337.
-   - The marks' speed: 0.1337 to 0.1116.
-   Criterion 2.5 is not met at exit: the floor tests and the engine carry-forward line are
-   red on character counts. R78 says a falling count is reported and not rejected. Section 4
-   item 1.
-C. What this report adds. The remaining 43 sure-wrong letters no longer include any read in a
-   window whose marks say the sender is slower than the path was timed. Of the rest, 8 were
-   read at a grid speed the marks call far too slow, and 30 where the path and the marks
-   agree. That bears on B: the next change is not another speed change of this kind.
+A. Hamlet meets the CW requirements: step 2 at 3 of 5 by the plan's checkboxes (2.1, 2.2, 2.3), steps 0 and 1 done,
+   3 to 8 not started. Four recordings' text is unchanged at HEAD; section 3 shows it with the letters the not-kept change dimmed marked.
+B. Step 2, HM-REQ-010: 2.1 ticked, from unit 440's committed trace of all 54; 2.2 ticked, by unit 441's two kept changes (G1 and the marks' speed),
+   because this unit's change was not kept; 2.3 ticked, after metrics.md gained the key's kind beside each per-condition number;
+   2.5 not ticked, because 17:37's named floor is red at the exit of every commit after task 1 (V-11 left it red).
+   The confidence change was not kept. R78's five: MET-CER-SURE 0.1116 -> 0.1005 falls; MET-INVENTED 47 -> 40 does not rise;
+   sure-and-right coverage 374 -> 358 FALLS; adjudicated 13 of 13 hold; V-11 fails on 8 recordings. MET-CER-SURE at HEAD 0.1116 -> 0.1116.
+C. This report adds a rival-margin trace of all 421 sure letters. It shows that how far a letter's reading beats its nearest rival
+   does not separate right letters from wrong ones: 13 of the 47 wrong-or-added letters sit above 128 nats. So dimming by margin cannot
+   move MET-CER-SURE without taking coverage with it. Section 4 raises 3 items; item 1 is in the way of criterion 2.5.
 
-```
-UNIT:       441 - complete at task 3 of 3, none dropped - 2026-09-25 20:27
-PHASE GOAL: Hamlet decodes CW to the numbers CW_REQUIREMENTS.md sets, judged on its metrics.
-UNIT GOAL:  Fewer letters printed sure and wrong: keep G1, then stop the path being timed
-            faster than the sender.
-ADVANCED:   yes - two changes kept, 20 fewer sure-wrong-or-added letters on the keyed recordings
-NUMBER:     sure-but-wrong: 54 -> 43; MET-CER-SURE 0.1573 -> 0.1116; changes kept 2 of 2
-DRIFT:      0 consecutive units without advance (the instruction carries no prior count)
-```
+UNIT:       442 - complete at task 3 of 3, second lever dropped - 2026-09-25 21:48
+PHASE GOAL: Hamlet's CW decoder meets CW_REQUIREMENTS.md, judged on its metrics. This step: a letter printed as sure is wrong less than 1 % of the time.
+UNIT GOAL:  Stop printing close calls as sure by setting each letter's class from how far its reading beats the nearest rival, and get the floors green.
+ADVANCED:   yes - 2.1, 2.2 and 2.3 flipped in PHASE_PLAN.md, all from work already in the tree; no decoder change was kept this unit
+NUMBER:     MET-CER-SURE 0.1116 -> 0.1116 (0.1005 under the not-kept change); sure-and-right coverage 374 -> 374 over 473 (358 under it); dim precision none at HEAD, which emits no dim letter (0.6957, 16 of 23, under it)
+DRIFT:      1 consecutive unit without a kept change (was 0)
 
 ## 1. What Claude did
 
-**Complete, at task 3 of 3, nothing dropped.** Claude Code on QUIVERFULL, at
-`C:\Source\HamLet`, on branch `main`. Hamlet was confirmed: the four `MUST EXIST` files are
-present, and `CoreHMI.sln` and `MURC.sln` are absent. The unit was launched by `run-phase.bat`,
-iteration 1. `SESSION.lock` belongs to the runner, so the session neither took it nor released
-it. Nothing was written to `RUN_LEDGER.md` or under `tools\arbiter\`.
+**Complete, at task 3 of 3.** The drop candidate, the second lever, was dropped whole. Run by `run-phase.bat` on QUIVERFULL,
+project Hamlet (the gate's six checks held), branch `main`. All five commits were pushed to `origin/main`: `83a652d9`, `3cf9f9ea`,
+`d5d53501`, `cdeaac36` and the closing commit. `SESSION.lock` was not touched, and nothing was written to `RUN_LEDGER.md` or `tools\arbiter\`.
 
-**Task 0 (`bd155ea3`).**
-- The outcome entry for 441 is in both copies. `PHASE_STATUS.md` names 441, and the version
-  went from 1.13.127 to 1.13.128.
-- **R82.** `CwCoverage.Share` is now sure-and-right over sent. The new test was watched
-  failing first: `CQ DI K` against `CQ DE K` scored 1.0 as written and scores 0.8 now. The
-  decoder was not touched, so this move is the definition's alone:
-  - real: 0.9006 to 0.7590 (359 over 473);
-  - synthetic: 0.7143 to 0.6190 (156 over 252).
-- **The entry round.**
-  - build: 0 errors;
-  - engine carry-forward: 178 of 178;
-  - app carry-forward: 275 of 278, the three dispatcher-loop losses, each type green alone;
-  - captures 51 of 51, adjudicated 13 of 13, named 13 of 13;
-  - MET-CER-SURE 67 of 426.
+**Task 0, entry and ticks.** Version 1.13.128 to 1.13.129, and PHASE_STATUS.md names 442 in both copies. PHASE_OUTCOME.md has
+`## UNIT 442 - STEP 2` in both copies. The root copy also carried the runner's uncommitted `UNIT 1 - STEP 2` entry, which went
+into the same commit. Entry round, one type per invocation:
+- build: 0 errors
+- engine carry-forward: 175 of 178, with 013010, 012823 and 012922 red on counts
+- app carry-forward: 277 of 278; BindingHealthTests failed and is green alone, 1 of 1
+- floors: captures 38 of 51, adjudicated 13 of 13, named 7 of 13
+- real recordings, inferred keys: MET-CER-SURE 47 of 421 (0.1116), MET-INVENTED 47 over 473 (0.0994), sure-and-right coverage 374 over 473 (0.7907), MET-WBE 52 over 113 (0.4602)
+- synthetic: MET-CER-SURE 14 of 173 (0.0809)
 
-**Task 1 (`42d5dbb9`): G1 kept.** `cce7985d` was cherry-picked, and the `src` diff is
-byte-identical to it.
-- MET-CER-SURE: real 67 of 426 to 56 of 419; synthetic 24 of 180 to 14 of 173.
-- MET-INVENTED: 67 to 56.
-- Coverage: real 0.7590 to 0.7674; synthetic 0.6190 to 0.6310.
-- Adjudicated readings: 13 of 13.
-- V-11: none of the 35 recordings gets worse.
-- Reported rather than rejected: capture `004133` goes from 28 to 25 named, and 17:37's named
-  floor from 46 to 38. Unit 440 saw both.
-- Engine carry-forward: 178 of 178.
+Ticks:
+- **2.1**: `.run-unit/unit440-trace.txt` (committed) prints all 54 with the recording, what was sent, what was emitted, the span, the wpm and the pitch at the hop, and the envelope's marks, then the groups.
+- **2.3**: metrics.md had before and after for both kept changes, but its per-condition lines carried no key kind. So I wrote out a per-condition table for each change, with the key's kind in its own column, from 441's committed printouts. Nothing was re-measured. That was my own decision, made by analogy with 2.1's "add the missing field, then tick".
 
-**Task 2, the trace (`57b1f095`).**
-`EachSureWrongLetterAgainstTheSpeedItsMarksImply` is a printer. For each of the 51 it prints:
-- the speed the path was given and where it came from: the estimator for 42, the grid for 9,
-  and 5 under held gaps;
-- the unit implied by the letter's own marks;
-- the unit implied by the window's marks;
-- each as a ratio over the path's unit.
+**Task 1, the floors.** The 13 red capture rows and 5 of the 6 red named floors were re-banked at their counts at `0439a8e7`, in one
+commit. The text each row read before (441's entry decoder, `f14b2453`, run by checking its two `src` files out temporarily) and
+after is in `.run-unit/unit442-floorrows.txt`. The unkeyed rows' text is also in the commit message.
+- **V-11 per keyed recording**, across 441's two changes, on MET-CER-SURE, wrong-or-added, sure-and-right and boundaries wrong: 17:37's boundaries wrong went 5 to 7, so **its named floor (46 banked, 38 now) was left red.** `032050` also got worse (wrong-or-added 4 to 5), but it has no red row.
+- Exit of the commit: captures 51 of 51, adjudicated 13 of 13, named 12 of 13 (17:37), engine carry-forward 178 of 178. App carry-forward was 273 of 278: TheFavoritesAreChipsTests (4) and TheFavoritesAreUnderTheGreenZoneTests (1), which are green alone, 4 of 4 and 3 of 3. **Five is more than the "up to 3" §2 expects.**
 
-It prints the same for the 363 right letters. By the window's marks:
+**Task 2, the confidence.**
 
-| window marks over the path's unit | sure wrong | sure right |
+*The margin.* `CwProbabilisticDecoder.RivalMargin` works on the path's own lattice, over each letter's own span. It finds the two
+best distinct readings, where a reading is the dits, the dahs and where the letters split. Segments are scored exactly as `DecodeAt`
+scores them. The margin is the emitted reading's score less the best different reading's, in nats. Keeping the top two readings per
+hop is exact, because a prefix that two others beat into a hop cannot finish ahead of both. The stream carries the margin into
+`CwCharacter.MarginLlr`, which was the sidecar's never-set seam. The captures floor took 130 s where it took 125 s.
+
+*The trace.* `EachSureLetterAgainstItsNearestRival` prints all 421 sure letters (374 right, 43 wrong, 4 added). For each one it
+gives the margin, the span ratio against silence, the margin over the span, and the window marks' unit over the path's unit.
+I fixed the bins before reading any number:
+
+| margin, nats | wrong or added | right |
 |---|---|---|
-| over 1.25 | 8 | 2 |
-| 0.80 to 1.25 | 28 | 263 |
-| under 0.80 | 15 | 98 |
+| below 0 | 0 | 0 |
+| 0 to 0.5 | 4 | 13 |
+| 0.5 to 1 | 3 | 3 |
+| 1 to 2 | 7 | 28 |
+| 2 to 4 | 8 | 84 |
+| 4 to 8 | 1 | 35 |
+| 8 to 16 | 3 | 54 |
+| 16 to 32 | 5 | 60 |
+| 32 to 64 | 1 | 32 |
+| 64 to 128 | 2 | 25 |
+| 128 and over | 13 | 40 |
 
-**Task 2, the change (`14f515bd`): kept.**
-- `CwUnitEstimator.MarkUnit` works out the unit from marks alone: dits and dahs are split at
-  the geometric mean, and no gap is used.
-- `CwProbabilisticStream.Read` re-reads the window at that speed when the marks' unit is more
-  than 1.25 times the path's.
-- The mechanism, from the trace: `031838`'s estimator averaged a 55 ms dit mark with a 15 ms
-  gap caused by a dropout inside a mark. It read the sender at 34 WPM, against dahs of 165 to
-  220 ms.
+**No edge.** Below every edge, right letters outnumber wrong or added, and no bin holds only wrong letters.
 
-Judged against the tree with G1 in:
-- MET-CER-SURE: 56 of 419 to 47 of 421. By condition, TX-FARNS goes from 0.0233 to 0.0000,
-  and "sender not stated" from 0.1541 to 0.1309. Synthetic is unchanged.
-- MET-INVENTED: 56 to 47.
-- Coverage: 0.7674 to 0.7907.
-- MET-WBE: 58 to 52.
-- Adjudicated readings: 13 of 13.
-- V-11: no recording goes red. On `032050`, wrong-or-added goes from 4 to 5 while right goes
-  from 33 to 35 and edits from 21 to 20.
-- Reported: captures 38 of 51 and named floors 7 of 13. Elements were lost on unkeyed rows:
-  `001952` from 103 to 86, `134712` from 31 to 22 (its adjudicated `N4L` holds).
-- The split group goes from 27 to 19.
+*The change.* §5 says to build the change anyway at the edge where wrong outnumbers right. No such edge exists, so I took 1 nat:
+the top of the only bin where wrong is not outnumbered (3 to 3). This was my own decision, made before R78 was read. The change
+set `Low` below 1 nat. Judged under R78:
 
-**Task 3, the exit round.**
-- build: 0 errors;
-- the four metrics as judged;
-- the hand pairs: 14 of 14;
-- captures 38 of 51, adjudicated 13 of 13, named 7 of 13;
-- engine carry-forward: 175 of 178. The three failures are capture rows `013010` (48 to 47),
-  `012823` (23 to 22) and `012922` (43 to 40).
-- app carry-forward: 275 of 278, the dispatcher-loop loss, each type 8 of 8 alone;
-- touched types: 24 of 25. `TheFiveToEightDecibelPlateauHolds` is the correctness phase's
-  recorded red with the same numbers, 165 against 117. It tests `Elements`, which this unit
-  did not change.
+| part of R78 | before | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real | 47 of 421, 0.1116 | 40 of 398, 0.1005 | falls |
+| MET-CER-SURE, synthetic | 14 of 173, 0.0809 | 11 of 166, 0.0663 | falls |
+| MET-INVENTED, real | 47 over 473 | 40 over 473 | does not rise |
+| sure-and-right coverage, real | 374 over 473 | 358 over 473 | falls |
+| sure-and-right coverage, synthetic | 159 | 155 | falls |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11 | - | 8 recordings lose sure-and-right, `032113` 21 to 12 | fails |
 
-The transmit files print nothing against `7e209cb4`. `src` changes in two files:
-- `CwUnitEstimator.cs`: G1 and `MarkUnit`;
-- `CwProbabilisticStream.cs`: the re-read at the marks' speed.
+**Not kept:** 16 right letters dimmed for 7 wrong or added, so coverage falls. The change was taken back out of `src`. Its diff
+is `.run-unit/unit442-dim-notkept.diff`, and it is recorded in metrics.md. Dim precision under it was 16 of 23, 0.6957.
 
-Everything is pushed to `origin/main`.
+*The second lever* is the window marks' unit over the path's unit. From the same letters, in bins fixed beforehand:
 
-**Decisions the session made for itself** (author's, overrulable):
-1. The ratio is 1.25, the one bin edge past which wrong letters outnumber right. It acts one
-   way only, because the fast side did not separate (15 wrong against 98 right).
-2. V-11 is read as its text says: a capture going red on a requirement's metric. On that
-   reading, `032050`'s one extra wrong letter, which came with two more right letters, does
-   not reject the change.
-3. The change was kept although elements fell on unkeyed captures that no metric can judge.
+| window marks over the path's unit | wrong or added | right |
+|---|---|---|
+| under 0.33 | 1 | 0 |
+| 0.33 to 0.50 | 5 | 17 |
+| 0.50 to 0.67 | 3 | 39 |
+| 0.67 to 0.80 | 5 | 43 |
+| 0.80 to 1.25 | 33 | 275 |
+
+Only the first bin separates, and it holds one letter. **Dropped whole** because the unit was at its hour; it is the named drop candidate.
+
+**Task 3, exit round at HEAD, one type per invocation.**
+- build: 0 errors
+- engine carry-forward: 178 of 178 in 369 s
+- app carry-forward: 276 of 278. TheCarrierHoldsTheButtonsTests is green alone, 8 of 8, and TheFavoritesAreUnderTheGreenZoneTests is green alone, 3 of 3.
+- floors: captures 51 of 51, adjudicated 13 of 13, named 12 of 13 (17:37)
+- metrics: unchanged from entry
+- touched types: WhereTheSureWrongLettersComeFromTests 3 of 3, TheProbabilisticDecoderTests 11 of 11, TheSpanRatioReachesTheSidecarTests 5 of 5. WhatTheFloorRowsReadTests passed at `3cf9f9ea` and under the not-kept build; it is a printer and was not re-run at exit.
+
+**`src`, file by file, all pushed:**
+- `CwProbabilisticDecoder.cs`: `RivalMargin`, `WithRivals`, and `CwProbabilisticCharacter.RivalMargin`.
+- `CwProbabilisticStream.cs`: one line, setting `MarginLlr`.
+- `CwCharacter.cs`: the `MarginLlr` doc.
+
+What prints is unchanged. PHASE_PLAN.md: 2.2 ticked in both copies, 2.4 not ticked, 2.5 not ticked.
+
+**The transmit files.** This unit's diff touches none of them: the diff against entry prints nothing. The instruction names no file list,
+so I used the 22 files under `src` whose names say transmit, PTT, keyer or sender. Against `7e209cb4`, 13 of those differ, every one
+a file created after that commit. So I cannot repeat 441's "prints nothing" on this list (section 4, item 3).
+
+**`validate-output.bat` was not run.** The session's permissions refused the call, and I did not route around them. Its six rules,
+as the script prints them, were checked with `.run-unit/unit442-check-output.sh` over the same patterns, and all six hold. A
+reading of the rules is not the validator's verdict.
+
+**Mismatches against the tree** (§2):
+- `134712` is keyed in the metrics (baseline, 3 sent, 0 wrong before and after), not unkeyed. It was re-banked either way.
+- The trace types assert that their count equals the metric's count. That is not nothing.
+- `CwMetrics` counts `Low` as NotSure: never sure and never wrong.
+- The app line lost 5 at task 1, more than the stated 3.
+- **Known and not edited:** PHASE_OUTCOME.md's header lists the old titles for steps 2, 3 and 8, and CW_SPEC.md §11 still defines MET-COVERAGE as sure over sent, where R82 has it.
 
 ## 2. What the owner should expect
 
-Yes. The decoder prints fewer wrong letters with confidence than it did this morning. On the 23
-keyed recordings, the letters it printed sure and wrong or added fell from 67 to 47. It printed
-15 more right letters than it did after the definition change, 359 to 374. The evidence is
-`TheRequirementsAreMeasuredTests` against inferred keys, 426 then 421 sure letters over 473
-sent. That evidence is an indication rather than proof (V-13).
+A letter printed as sure is no more often right than it was this morning. MET-CER-SURE is 0.1116 at HEAD, as it was at entry.
+The change that would have moved it to 0.1005 was measured and not kept, because it dimmed 16 right letters to catch 7 wrong
+ones, and sure-and-right coverage would have fallen from 374 to 358 over 473. All of that is on inferred keys (V-13).
 
-What will look wrong but is not: the capture floors and the named floors are red. They count
-characters, and merged letters make fewer, longer characters. Where it looks wrong and may be:
-`001952` and `134712` read fewer elements, and neither has a key to say whether they were
-letters.
+What will look wrong but is not:
+- The capture sheet's margin column now carries a number where it printed "unmeasured". That is `MarginLlr`, the letter's margin over its rival.
+- The capture floors read lower numbers. They were re-banked under R78.
+- 17:37's named floor is red on purpose.
+
+The trace's real finding is this: 13 of the 47 wrong-or-added letters beat their nearest rival by more than 128 nats. The model is
+confidently wrong about them, so their class cannot fix them. The error is upstream, in the evidence the path is given (pitch,
+speed, envelope), not in how sure the path is of its choice.
 
 ## 3. What you should see
 
-Sender `031838` now reads `...A MEAN OF 2 TT` where it read `...TEAH A MEAN TOF 2 TT`. The
-single `T`s it chopped out of an `A`, a `D` and a `W` are fewer, because the decoder now times
-that sender at the speed its dahs show rather than 34 WPM. 17:37's `DEWTEETEEERE` is now
-`DEWB6 RE`. `003758` still reads `EETMP/4` for `AA4MP/4`, which this change was never going to
-fix. `032129` still reads mostly `E`s, because its speed comes from the grid and the grid is
-wrong the other way.
+**What the operator reads is unchanged at HEAD.** No letter prints dim yet. Here are the four recordings as they read now, and in
+brackets the letters the not-kept change would have dimmed:
+
+| recording | at HEAD, and after this unit | under the not-kept change, dim in brackets |
+|---|---|---|
+| `003758` | `■R L T U   I AN EAND E A ET EEEETMP/4 QNIKK` | `■R L T (U)   I (A)N EAND E A ET EEEETMP/4 QNIKK` |
+| `031838` | `A 3, AT3 , 2TT 2, AND  ■ W IAH A MEAN OF 2 TT` | `A 3, (A)T3 , 2TT (2), AND  ■ W (I)AH A MEAN OF 2 TT` |
+| `032129` | `■ MTMTJ26 PGOPAGATION E EE EIIEE ...` | `■ (M)T(M)(T)J26 P(G)OPAGATION E EE EIIEE ... (S) ... (I) ...` |
+| 17:37 | `T EABNIREDWBZ WB6RED CQ CQ CQ DEWB6 RE D W B 7E E I` | `(T) EA(B)NIRE(D)WBZ WB6RED CQ CQ CQ DEWB6 RE D W B (7)E E I` |
+
+**Is a wrong letter the operator used to see as sure now dimmed? No.** The change was not kept. Under it, some would have been:
+17:37's `7` where `6` was sent, `032129`'s `G` in `PGOPAGATION`, and 5 more. But right letters beside them would have dimmed too,
+16 in all.
+
+No other visible change. The floors are green again, except 17:37's named floor.
 
 ## 4. What's blocking us
 
-Nothing is blocking. Three questions:
-
-1. **The floors, and the carry-forward line with them, are red on counts.** R78 reports a
-   falling count and does not reject it, but 2.5 and HM-DEC-165 ask for green. Re-bank the 13
-   rows at the new counts, or rule that an element loss on an unkeyed row is V-11 and take the
-   speed change out?
-2. **`001952` lost 17 of 103 elements, and there is no key** to say whether they were letters
-   or litter. A key for it would settle it.
-3. **R82 is written only in the work instruction.** `CW_SPEC.md` 11 still defines MET-COVERAGE
-   as sure-emitted over sent, and `CwMetrics` now differs from it.
+1. **17:37's named floor: leave it red, or re-bank it at 38?** Ruling wanted: whether MET-WBE counts as a "requirement metric got worse" for a re-bank under task 1. Reasoning: 17:37's boundaries wrong went 5 to 7 under G1. That is HM-REQ-080/081's metric, but R78's keep rule does not list MET-WBE. The instruction says to re-bank only where no requirement metric got worse, so the floor was left red. While it is red, 2.5 cannot be ticked. Rejected: re-banking anyway, which would read V-11 more loosely than the instruction wrote it.
+2. **Should the rival margin stay in `src` as the trace's instrument?** Ruling wanted: keep `RivalMargin` and the `MarginLlr` it fills, or take them out. Reasoning: the instruction says to leave a not-kept change out of `src` and keep the trace. The trace needs the margin, and the margin now reaches the capture sheet, while the class and every printed letter are unchanged. It costs about 4 % decode time on the captures floor. Rejected: moving the lattice into the test through reflection, which would copy the decoder's private scoring and could drift from it.
+3. **Which files are "the transmit files" for the check against `7e209cb4`?** Ruling wanted: the list, so the check can be repeated. Reasoning: nothing in CLAUDE.md or the instruction names it. On a 22-file list by name, 13 differ from `7e209cb4`, all created since. This unit touched none of them. Rejected: asserting "prints nothing" without knowing the list.

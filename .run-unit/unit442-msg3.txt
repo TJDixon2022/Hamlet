@@ -1,0 +1,13 @@
+unit442: closing - exit round, 2.2 ticked from 441's kept changes, output.md, status COMPLETED
+
+Complete at task 3 of 3; the second lever dropped whole. Exit: build 0
+errors; engine carry-forward 178 of 178; app 276 of 278, the two types
+green alone, 8 of 8 and 3 of 3; captures 51 of 51, adjudicated 13 of 13,
+named 12 of 13 (17:37, left red under V-11); metrics unchanged from
+entry, MET-CER-SURE 47 of 421, 0.1116, sure-and-right 374 over 473;
+touched types 19 of 19. No transmit file touched by this unit.
+
+2.2 ticked in both copies: 441's two kept changes meet it; this unit's
+confidence change was measured and not kept. 2.5 not ticked: 17:37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

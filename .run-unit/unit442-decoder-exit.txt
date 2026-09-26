@@ -1,0 +1,75 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.26]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "unadjudicated/cw-2026-08-18-003016.wav", reference: 20.899999999999999) [335 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003016.wav: Hamlet 22 WPM, reference 20.9, ratio 4.5
+     'I<BT> HADA KPT15TT ITWAS #K <BT> STILL HVE MY ETO 91B TT JUST VFB TUB LIN'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "unadjudicated/cw-2026-08-18-003126.wav", reference: null) [319 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003126.wav: Hamlet 28 WPM, reference refuses, ratio 6.0
+     'A OM <BT>  <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT   , WESTERNS , E'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "unadjudicated/cw-2026-08-18-003758.wav", reference: 21.199999999999999) [319 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-18-003758.wav: Hamlet 28 WPM, reference 21.2, ratio 10.8
+     'K I S QR L TU  E AN E AN D E AA4MP /4 QNI K      E AN E ANQNI K         E RN E'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheSpeedIsFoundAndNotTold(name: "cw-2026-08-18-004507.wav", reference: 6.7000000000000002) [346 ms]
+  Standard Output Messages:
+ cw-2026-08-18-004507.wav: Hamlet 18 WPM, reference 6.7, ratio 7.0
+     'E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ARecordingWithNoStationInItSaysNothing(name: "unadjudicated/cw-2026-08-20-014854.wav") [337 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854.wav: ratio 0.6 against a gate of 1.4
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ARecordingWithNoStationInItSaysNothing(name: "unadjudicated/cw-2026-08-20-014935.wav") [253 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935.wav: ratio 0.2 against a gate of 1.4
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ItReadsWhatTheReferenceReads [304 ms]
+  Standard Output Messages:
+ 18 WPM, ratio 7.0
+ 'E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE'
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.NothingIsSettledFromAnEmptyBandLive(name: "unadjudicated/cw-2026-08-20-014854.wav") [854 ms]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014854.wav: 0 settled, 0 on the edge, ratio 0.9
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.NothingIsSettledFromAnEmptyBandLive(name: "unadjudicated/cw-2026-08-20-014935.wav") [2 s]
+  Standard Output Messages:
+ unadjudicated/cw-2026-08-20-014935.wav: 0 settled, 0 on the edge, ratio 0.1
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.ItKeepsUpWithLiveAudio [508 ms]
+  Standard Output Messages:
+ 1.6% of real time, 61 characters
+ 'E J J AT ARRL DOT NET ■ IACH STATION HANDLING THIS MESSAGE PE'
+
+
+[xUnit.net 00:00:08.21]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheProbabilisticDecoderTests.TheGateSitsInAWideGap [1 s]
+  Standard Output Messages:
+ with a station 4.5 to 10.8, without 0.2 to 0.6, gate 1.4
+
+
+
+Test Run Successful.
+Total tests: 11
+     Passed: 11
+ Total time: 8.4861 Seconds
+RC=0 WALL=9s

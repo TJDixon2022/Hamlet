@@ -1,0 +1,58 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.06]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.18]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:00:01.13]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.APressOnAnEmptyBandIsNotRefused [237 ms]
+  Standard Output Messages:
+ a CQ on an empty band: keyings 1, line [Sending "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" now, at 1300 Hz in the passband.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.WhenHisCarrierDropsTheSamePressGoesOut [39 ms]
+  Standard Output Messages:
+ after his carrier dropped: keyings 1, line [Sending "W1ABC de KC3QIS  HELLO OM  BTU W1ABC de KC3QIS K" now, at 1300 Hz in the passband.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.ACallToAnybodyIsNotHeldByAnotherStationsCarrier [11 ms]
+  Standard Output Messages:
+ a CQ while he is sending: keyings 1, line [Sending "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" now, at 1300 Hz in the passband.]
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.HisRowAndHisCardSayItAndTheFourControlsAreHeld [8 ms]
+  Standard Output Messages:
+ row  : sending [sending] ended []
+ card : live True, word [he is still sending], note [he is still sending], press False, typed send False, typed note [he is still sending]
+ canned: 1 entries, first [Hamlet is offering nothing to send: he is still sending. The lines come back the moment his carrier drops.]
+ after : row sending [] ended [ended], card live False, press True, typed send True
+ canned after: 7 entries, 5 pressable
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.AHandBackReleasesTheHoldWhileHisCarrierIsStillUp [12 ms]
+  Standard Output Messages:
+ after his hand-back: row ended False, held False, press True
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.APressWhileHisCarrierIsUpIsRefusedAndNothingIsComposed [5 ms]
+  Standard Output Messages:
+ screen: Hamlet did not send that: he is still sending. Transmitting now would put your signal on top of his, and neither of you would be readable. It goes out the moment his carrier drops.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.TheReportHeSentOnTopOfTheCarrierWouldNowBeHeld [4 ms]
+  Standard Output Messages:
+ what he would see now: Hamlet did not send that: he is still sending. Transmitting now would put your signal on top of his, and neither of you would be readable. It goes out the moment his carrier drops.
+
+
+  Passed Hamlet.App.Tests.ViewModels.TheCarrierHoldsTheButtonsTests.HisCardIsDrawnInTheSendingGreenWithTheWord [548 ms]
+  Standard Output Messages:
+ card: [he is still sending] visible True 190 px, brush #ff0f7b4d
+
+
+
+Test Run Successful.
+Total tests: 8
+     Passed: 8
+ Total time: 1.4239 Seconds
+RC=0 WALL=2s

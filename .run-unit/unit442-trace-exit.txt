@@ -1,0 +1,623 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.25]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.25]   Starting:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureWrongLettersComeFromTests.EachSureWrongLetterAgainstTheSpeedItsMarksImply [1 m 50 s]
+  Standard Output Messages:
+ speed | recording | at s | sent | emitted | group | given wpm | source | gaps | estimator dit mark ms | estimator element gap ms | envelope marks ms | marks wpm, this character | ratio | marks wpm, the window | ratio
+ speed | unadjudicated/cw-2026-09-23-173723 | 28.970 | `6` | `7` | one element of the wrong kind | 17 | estimator | held | 75 | 65 | 500 70 70 75 | 11.1 | 1.53 | 16.2 | 1.05
+ speed | unadjudicated/cw-2026-09-23-173723 | 29.195 | `R` | `E` | split: a part of the sent letter | 17 | estimator | held | 75 | 65 | 75 | 16.0 | 1.06 | 16.2 | 1.05
+ speed | unadjudicated/cw-2026-09-23-173723 | 30.000 | `D` | `I` | split: a part of the sent letter | 17 | estimator | held | 75 | 65 | 85 | 14.1 | 1.20 | 16.2 | 1.05
+ speed | unadjudicated/cw-2026-08-18-003758 | 10.640 | `A` | `E` | split: a part of the sent letter | 40 | estimator | textbook | 20 | 40 | 60 | 20.0 | 2.00 | 45.4 | 0.88
+ speed | unadjudicated/cw-2026-08-18-003758 | 10.740 | `A` | `E` | split: a part of the sent letter | 40 | estimator | textbook | 20 | 40 | 60 | 20.0 | 2.00 | 45.4 | 0.88
+ speed | unadjudicated/cw-2026-08-18-003758 | 10.940 | `4` | `T` | split: a part of the sent letter | 40 | estimator | textbook | 20 | 40 | 160 | 22.5 | 1.78 | 45.4 | 0.88
+ speed | unadjudicated/cw-2026-08-22-031838 | 8.675 | `2` | `T` | split: a part of the sent letter | 23 | estimator | textbook | 60 | 20 | 215 | 16.7 | 1.37 | 22.8 | 1.01
+ speed | unadjudicated/cw-2026-08-22-031838 | 9.685 | `,` | `T` | split: a part of the sent letter | 28 | estimator | textbook | 65 | 20 | 220 | 16.4 | 1.71 | 24.8 | 1.13
+ speed | unadjudicated/cw-2026-08-22-031838 | 17.290 | `T` | `A` | merged: the sent letter and part of a neighbor | 28 | estimator | textbook | 60 | 25 | 335 | - | NaN | 30.0 | 0.93
+ speed | unadjudicated/cw-2026-08-22-031838 | 24.185 | `R` | `T` | none of these | 34 | estimator | textbook | 45 | 25 | 120 | 30.0 | 1.13 | 34.6 | 0.98
+ speed | unadjudicated/cw-2026-08-22-031838 | 24.410 | `E` | `T` | one element of the wrong kind | 34 | estimator | textbook | 45 | 25 | 170 | 21.2 | 1.61 | 34.6 | 0.98
+ speed | unadjudicated/cw-2026-08-22-031905 | 14.155 | `C` | `I` | none of these | 18 | estimator | textbook | 80 | 50 |  | - | NaN | 22.2 | 0.81
+ speed | unadjudicated/cw-2026-08-22-031905 | 14.635 | `E` | `A` | merged: the sent letter and part of a neighbor | 18 | estimator | textbook | 80 | 50 | 65 175 | 19.5 | 0.92 | 24.8 | 0.72
+ speed | unadjudicated/cw-2026-08-22-031905 | 14.980 | `N` | `I` | one element of the wrong kind | 18 | estimator | textbook | 80 | 50 | 40 85 | 35.6 | 0.50 | 24.8 | 0.72
+ speed | unadjudicated/cw-2026-08-22-031905 | 15.150 | `T` | `E` | one element of the wrong kind | 22 | estimator | textbook | 60 | 50 | 25 | 48.0 | 0.46 | 24.8 | 0.89
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.000 | `E` | `T` | one element of the wrong kind | 28 | estimator | textbook | 35 | 50 | 125 | 28.8 | 0.97 | 24.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.260 | `T` | `A` | merged: the sent letter and part of a neighbor | 28 | estimator | textbook | 35 | 50 | 170 | - | NaN | 24.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.615 | `E` | `N` | merged: the sent letter and part of a neighbor | 30 | estimator | textbook | 30 | 50 | 150 | - | NaN | 26.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 16.880 | `R` | `I` | one element lost inside the letter | 30 | estimator | textbook | 30 | 50 | 30 60 | 49.0 | 0.61 | 26.2 | 1.15
+ speed | unadjudicated/cw-2026-08-22-031905 | 18.285 | `F` | `W` | none of these | 34 | estimator | textbook | 20 | 50 | 120 90 | - | NaN | 36.2 | 0.94
+ speed | unadjudicated/cw-2026-08-22-031948 | 4.690 | `1` | `5` | same length, several elements differ | 18 | estimator | textbook | 85 | 45 | 85 85 80 85 80 | 14.1 | 1.28 | 15.4 | 1.17
+ speed | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | split: a part of the sent letter | 23 | estimator | textbook | 65 | 40 | 180 | 20.0 | 1.15 | 28.3 | 0.81
+ speed | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | split: a part of the sent letter | 34 | estimator | textbook | 20 | 50 | 50 210 | 20.3 | 1.68 | 50.4 | 0.67
+ speed | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | split: a part of the sent letter | 18 | estimator | textbook | 75 | 55 | 40 215 290 | 19.3 | 0.93 | 17.4 | 1.03
+ speed | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | split: a part of the sent letter | 18 | estimator | textbook | 80 | 55 | 210 | 17.1 | 1.05 | 23.6 | 0.76
+ speed | unadjudicated/cw-2026-08-22-032050 | 26.130 | `D` | `H` | none of these | 21 | estimator | textbook | 65 | 20 | 110 205 15 | 37.5 | 0.56 | 21.0 | 1.00
+ speed | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | same length, several elements differ | 30 | estimator | textbook | 65 | 15 | 10 230 85 85 | 71.3 | 0.42 | 27.3 | 1.10
+ speed | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | split: a part of the sent letter | 32 | estimator | textbook | 30 | 45 | 20 85 | 50.4 | 0.63 | 26.2 | 1.22
+ speed | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | none of these | 18 | estimator | textbook | 85 | 50 | 85 280 215 155 | 15.4 | 1.17 | 28.3 | 0.64
+ speed | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | one element of the wrong kind | 28 | estimator | textbook | 65 | 20 | 90 210 80 | 15.1 | 1.85 | 23.1 | 1.21
+ speed | unadjudicated/cw-2026-08-22-032129 | 16.365 | `L` | `E` | split: a part of the sent letter | 12 | grid | textbook | 10 | 40 | 80 | 15.0 | 0.80 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 17.400 | `T` | `E` | one element of the wrong kind | 12 | grid | textbook | 10 | 40 | 50 10 25 | 93.0 | 0.13 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 18.470 | `A` | `I` | one element of the wrong kind | 12 | grid | textbook | 10 | 40 | 125 40 | 29.4 | 0.41 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 18.865 | `R` | `E` | split: a part of the sent letter | 12 | grid | textbook | 10 | 40 | 30 25 | 40.0 | 0.30 | 35.8 | 0.34
+ speed | unadjudicated/cw-2026-08-22-032129 | 19.330 | `L` | `E` | split: a part of the sent letter | 8 | grid | textbook | 15 | 40 | 60 25 | 53.7 | 0.15 | 35.8 | 0.22
+ speed | unadjudicated/cw-2026-08-22-032129 | 20.065 | `P` | `I` | none of these | 12 | grid | textbook | 15 | 35 | 85 30 | 41.2 | 0.29 | 34.6 | 0.35
+ speed | unadjudicated/cw-2026-08-22-032129 | 20.660 | `0` | `E` | none of these | 8 | grid | textbook | 15 | 415 | 15 45 30 30 | 98.0 | 0.08 | 13.5 | 0.59
+ speed | unadjudicated/cw-2026-08-22-032129 | 21.945 | `3` | `E` | split: a part of the sent letter | 8 | grid | textbook | 15 | 415 | 30 95 20 | 38.9 | 0.21 | 13.5 | 0.59
+ speed | unadjudicated/cw-2026-08-22-032129 | 22.345 | `4` | `E` | split: a part of the sent letter | 13 | estimator | textbook | 15 | 170 | 45 75 | 16.0 | 0.81 | 11.8 | 1.10
+ speed | unadjudicated/cw-2026-09-24-004108 | 14.340 | `E` | `G` | merged: the sent letter and part of a neighbor | 22 | estimator | textbook | 50 | 60 | 165 165 55 | 21.8 | 1.01 | 23.2 | 0.95
+ speed | unadjudicated/cw-2026-09-24-004108 | 17.775 | `V` | `6` | none of these | 22 | estimator | textbook | 50 | 60 | 165 50 55 55 50 | 21.8 | 1.01 | 23.2 | 0.95
+ speed | unadjudicated/cw-2026-09-24-004234 | 7.715 | `O` | `T` | split: a part of the sent letter | 22 | estimator | held | 50 | 60 | 160 | 22.5 | 0.98 | 23.2 | 0.95
+ speed | unadjudicated/cw-2026-09-24-004234 | 8.045 | `U` | `T` | split: a part of the sent letter | 22 | estimator | held | 50 | 60 | 170 | 21.2 | 1.04 | 23.2 | 0.95
+ bin | ratio from this character's marks | sure wrong | sure right | wrong from the grid | wrong from the estimator
+ bin | under 0.67 | 13 | 20 | 7 | 6
+ bin | 0.67 to 0.80 | 0 | 7 | 0 | 0
+ bin | 0.80 to 1.25 | 15 | 257 | 1 | 14
+ bin | 1.25 to 1.50 | 2 | 39 | 0 | 2
+ bin | 1.50 to 2.00 | 8 | 18 | 0 | 8
+ bin | over 2.00 | 0 | 15 | 0 | 0
+ bin | marks cannot say | 5 | 18 | 0 | 5
+ bin | ratio from the window's marks | sure wrong | sure right | wrong from the grid | wrong from the estimator
+ bin | under 0.67 | 9 | 56 | 8 | 1
+ bin | 0.67 to 0.80 | 4 | 45 | 0 | 4
+ bin | 0.80 to 1.25 | 30 | 273 | 0 | 30
+ bin | 1.25 to 1.50 | 0 | 0 | 0 | 0
+ bin | 1.50 to 2.00 | 0 | 0 | 0 | 0
+ bin | over 2.00 | 0 | 0 | 0 | 0
+ bin | marks cannot say | 0 | 0 | 0 | 0
+ total | 43 sure wrong, 374 sure right | sources of the wrong: 8 grid, 35 estimator, 5 under held gaps
+
+
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureWrongLettersComeFromTests.EachSureLetterAgainstItsNearestRival [53 s]
+  Standard Output Messages:
+ rival | recording | at s | sent | emitted | class | pattern | margin over the rival, nats | span ratio against silence | margin over span | window marks over the path's unit | bin
+ rival | unadjudicated/cw-2026-09-23-173723 | 13.995 | `C` | `C` | right | -.-. | 4.903 | 487.4 | 0.0101 | 1.04 | 4 to 8
+ rival | unadjudicated/cw-2026-09-23-173723 | 15.150 | `Q` | `Q` | right | --.- | 7.681 | 581.8 | 0.0132 | 1.05 | 4 to 8
+ rival | unadjudicated/cw-2026-09-23-173723 | 16.355 | `C` | `C` | right | -.-. | 6.483 | 498.9 | 0.013 | 1.05 | 4 to 8
+ rival | unadjudicated/cw-2026-09-23-173723 | 17.500 | `Q` | `Q` | right | --.- | 18.68 | 856.5 | 0.0218 | 1.05 | 16 to 32
+ rival | unadjudicated/cw-2026-09-23-173723 | 18.785 | `C` | `C` | right | -.-. | 9.623 | 354.5 | 0.0271 | 1.05 | 8 to 16
+ rival | unadjudicated/cw-2026-09-23-173723 | 19.950 | `Q` | `Q` | right | --.- | 8.77 | 538.7 | 0.0163 | 1.05 | 8 to 16
+ rival | unadjudicated/cw-2026-09-23-173723 | 20.825 | `D` | `D` | right | -.. | 18.45 | 302.2 | 0.061 | 1.05 | 16 to 32
+ rival | unadjudicated/cw-2026-09-23-173723 | 21.170 | `E` | `E` | right | . | Infinity | 86.19 | Infinity | 1.05 | 128 and over
+ rival | unadjudicated/cw-2026-09-23-173723 | 22.050 | `W` | `W` | right | .-- | 16.82 | 484.4 | 0.0347 | 1.04 | 16 to 32
+ rival | unadjudicated/cw-2026-09-23-173723 | 22.990 | `B` | `B` | right | -... | 11.23 | 297.7 | 0.0377 | 1.05 | 8 to 16
+ rival | unadjudicated/cw-2026-09-23-173723 | 24.020 | `6` | `6` | right | -.... | 14.31 | 339.3 | 0.0422 | 1.05 | 8 to 16
+ rival | unadjudicated/cw-2026-09-23-173723 | 24.820 | `R` | `R` | right | .-. | 1.143 | 194.1 | 0.00589 | 1.05 | 1 to 2
+ rival | unadjudicated/cw-2026-09-23-173723 | 25.100 | `E` | `E` | right | . | Infinity | 30.8 | Infinity | 1.05 | 128 and over
+ rival | unadjudicated/cw-2026-09-23-173723 | 25.840 | `D` | `D` | right | -.. | 1.301 | 167 | 0.00779 | 1.04 | 1 to 2
+ rival | unadjudicated/cw-2026-09-23-173723 | 26.820 | `W` | `W` | right | .-- | 1.381 | 284.7 | 0.00485 | 1.09 | 1 to 2
+ rival | unadjudicated/cw-2026-09-23-173723 | 27.775 | `B` | `B` | right | -... | 1.292 | 171.9 | 0.00751 | 1.09 | 1 to 2
+ rival | unadjudicated/cw-2026-09-23-173723 | 28.970 | `6` | `7` | wrong | --... | 0.872 | 328.6 | 0.00265 | 1.05 | 0.5 to 1
+ rival | unadjudicated/cw-2026-09-23-173723 | 29.195 | `R` | `E` | wrong | . | Infinity | 39.39 | Infinity | 1.05 | 128 and over
+ rival | unadjudicated/cw-2026-09-23-173723 | 29.530 | `E` | `E` | right | . | Infinity | 47.53 | Infinity | 1.05 | 128 and over
+ rival | unadjudicated/cw-2026-09-23-173723 | 30.000 | `D` | `I` | wrong | .. | 1.776 | 92.98 | 0.0191 | 1.05 | 1 to 2
+ rival | cw-2026-08-17-013347 | 23.310 | `V` | `V` | right | ...- | 1.171 | 304.3 | 0.00385 | 0.88 | 1 to 2
+ rival | cw-2026-08-17-013347 | 23.925 | `A` | `A` | right | .- | 1.846 | 233.8 | 0.0079 | 0.88 | 1 to 2
+ rival | cw-2026-08-17-013347 | 25.230 | `3` | `3` | right | ...-- | 1.383 | 445.7 | 0.0031 | 0.90 | 1 to 2
+ rival | cw-2026-08-17-013347 | 26.175 | `V` | `V` | right | ...- | 1.309 | 370.7 | 0.00353 | 0.90 | 1 to 2
+ rival | cw-2026-08-17-013347 | 26.925 | `R` | `R` | right | .-. | 1.656 | 562.2 | 0.00295 | 0.90 | 1 to 2
+ rival | cw-2026-08-17-013347 | 27.690 | `R` | `R` | right | .-. | 1.656 | 829.7 | 0.002 | 0.90 | 1 to 2
+ rival | cw-2026-08-17-134712 | 21.530 | `N` | `N` | right | -. | 142.4 | 1246 | 0.114 | 0.49 | 128 and over
+ rival | cw-2026-08-17-134712 | 22.330 | `4` | `4` | right | ....- | 104.4 | 1432 | 0.0729 | 0.39 | 64 to 128
+ rival | cw-2026-08-17-134712 | 23.000 | `L` | `L` | right | .-.. | 42.94 | 609.2 | 0.0705 | 0.86 | 32 to 64
+ rival | unadjudicated/cw-2026-08-18-003758 | 10.640 | `A` | `E` | wrong | . | 1.29 | 306 | 0.00422 | 0.88 | 1 to 2
+ rival | unadjudicated/cw-2026-08-18-003758 | 10.740 | `A` | `E` | wrong | . | 1.29 | 315.3 | 0.00409 | 0.88 | 1 to 2
+ rival | unadjudicated/cw-2026-08-18-003758 | 10.940 | `4` | `T` | wrong | - | 91.75 | 1203 | 0.0763 | 0.88 | 64 to 128
+ rival | unadjudicated/cw-2026-08-18-003758 | 11.475 | `M` | `M` | right | -- | 28.67 | 3030 | 0.00946 | 1.08 | 16 to 32
+ rival | unadjudicated/cw-2026-08-18-003758 | 12.190 | `P` | `P` | right | .--. | 19.03 | 2979 | 0.00639 | 1.07 | 16 to 32
+ rival | unadjudicated/cw-2026-08-18-003758 | 13.055 | `/` | `/` | right | -..-. | 21.24 | 4375 | 0.00486 | 1.07 | 16 to 32
+ rival | unadjudicated/cw-2026-08-18-003758 | 13.755 | `4` | `4` | right | ....- | 23.89 | 2475 | 0.00965 | 1.07 | 16 to 32
+ rival | unadjudicated/cw-2026-08-18-003758 | 14.725 | `Q` | `Q` | right | --.- | 25.6 | 5147 | 0.00498 | 1.07 | 16 to 32
+ rival | unadjudicated/cw-2026-08-18-003758 | 15.110 | `N` | `N` | right | -. | 29.04 | 1754 | 0.0166 | 1.07 | 16 to 32
+ rival | unadjudicated/cw-2026-08-18-003758 | 15.420 | `I` | `I` | right | .. | 22.44 | 588.9 | 0.0381 | 1.07 | 16 to 32
+ rival | unadjudicated/cw-2026-08-18-003758 | 16.090 | `K` | `K` | right | -.- | 14.15 | 2182 | 0.00649 | 0.38 | 8 to 16
+ rival | unadjudicated/cw-2026-08-24-012403 | 20.445 | `D` | `D` | right | -.. | 9.568 | 172.9 | 0.0553 | 1.06 | 8 to 16
+ rival | unadjudicated/cw-2026-08-24-012403 | 20.680 | `E` | `E` | right | . | Infinity | 41.02 | Infinity | 1.06 | 128 and over
+ rival | unadjudicated/cw-2026-08-24-012403 | 21.620 | `K` | `K` | right | -.- | 2.478 | 232.1 | 0.0107 | 1.06 | 2 to 4
+ rival | unadjudicated/cw-2026-08-24-012403 | 22.215 | `D` | `D` | right | -.. | 14.5 | 250.5 | 0.0579 | 1.06 | 8 to 16
+ rival | unadjudicated/cw-2026-08-24-012403 | 23.515 | `0` | `0` | right | ----- | 7.877 | 479.5 | 0.0164 | 1.06 | 4 to 8
+ rival | unadjudicated/cw-2026-08-24-012403 | 24.105 | `U` | `U` | right | ..- | 13.18 | 238.9 | 0.0552 | 1.06 | 8 to 16
+ rival | unadjudicated/cw-2026-08-24-012403 | 24.580 | `N` | `N` | right | -. | 14.79 | 191.6 | 0.0772 | 1.06 | 8 to 16
+ rival | unadjudicated/cw-2026-08-24-012403 | 25.525 | `K` | `K` | right | -.- | 9.325 | 445.6 | 0.0209 | 1.05 | 8 to 16
+ rival | unadjudicated/cw-2026-08-24-012403 | 26.110 | `D` | `D` | right | -.. | 5.512 | 245.5 | 0.0225 | 1.11 | 4 to 8
+ rival | unadjudicated/cw-2026-08-24-012403 | 27.410 | `0` | `0` | right | ----- | 3.868 | 504.6 | 0.00767 | 1.11 | 2 to 4
+ rival | unadjudicated/cw-2026-08-24-012403 | 28.005 | `U` | `U` | right | ..- | 4.871 | 158.1 | 0.0308 | 1.11 | 4 to 8
+ rival | unadjudicated/cw-2026-08-24-012403 | 28.475 | `N` | `N` | right | -. | 4.312 | 102.9 | 0.0419 | 1.11 | 4 to 8
+ rival | unadjudicated/cw-2026-08-24-012403 | 29.420 | `K` | `K` | right | -.- | 7.727 | 287 | 0.0269 | 1.11 | 4 to 8
+ rival | cw-2026-08-18-004507 | 3.230 | `T` | `T` | right | - | 54.26 | 500.6 | 0.108 | 0.64 | 32 to 64
+ rival | cw-2026-08-18-004507 | 4.245 | `A` | `A` | right | .- | 7.851 | 326.9 | 0.024 | 0.63 | 4 to 8
+ rival | cw-2026-08-18-004507 | 4.820 | `R` | `R` | right | .-. | 8.693 | 334.7 | 0.026 | 0.59 | 8 to 16
+ rival | cw-2026-08-18-004507 | 5.420 | `R` | `R` | right | .-. | 0.2828 | 338 | 0.000837 | 1.00 | 0 to 0.5
+ rival | cw-2026-08-18-004507 | 6.085 | `L` | `L` | right | .-.. | 12.36 | 569.4 | 0.0217 | 0.99 | 8 to 16
+ rival | cw-2026-08-18-004507 | 6.940 | `D` | `D` | right | -.. | 10.88 | 472.5 | 0.023 | 0.70 | 8 to 16
+ rival | cw-2026-08-18-004507 | 7.750 | `O` | `O` | right | --- | 26.5 | 602.3 | 0.044 | 0.69 | 16 to 32
+ rival | cw-2026-08-18-004507 | 8.160 | `T` | `T` | right | - | 40 | 599.1 | 0.0668 | 0.64 | 32 to 64
+ rival | cw-2026-08-18-004507 | 8.955 | `N` | `N` | right | -. | 73.63 | 1208 | 0.061 | 0.73 | 64 to 128
+ rival | cw-2026-08-18-004507 | 9.265 | `E` | `E` | right | . | 170 | 367.8 | 0.462 | 0.70 | 128 and over
+ rival | cw-2026-08-18-004507 | 9.720 | `T` | `T` | right | - | 117.9 | 860.4 | 0.137 | 0.65 | 64 to 128
+ rival | cw-2026-08-18-004507 | 10.900 | `<BT>` | `<BT>` | right | -...- | 36.79 | 3042 | 0.0121 | 0.65 | 32 to 64
+ rival | cw-2026-08-18-004507 | 11.965 | `E` | `E` | right | . | 0.2082 | 179.7 | 0.00116 | 1.08 | 0 to 0.5
+ rival | cw-2026-08-18-004507 | 12.515 | `A` | `A` | right | .- | 18.52 | 817 | 0.0227 | 0.48 | 16 to 32
+ rival | cw-2026-08-18-004507 | 13.280 | `C` | `C` | right | -.-. | 13.17 | 1454 | 0.00906 | 0.61 | 8 to 16
+ rival | cw-2026-08-18-004507 | 13.890 | `H` | `H` | right | .... | 14.42 | 717.4 | 0.0201 | 0.42 | 8 to 16
+ rival | cw-2026-08-18-004507 | 14.700 | `S` | `S` | right | ... | 13.34 | 594 | 0.0225 | 1.20 | 8 to 16
+ rival | cw-2026-08-18-004507 | 15.075 | `T` | `T` | right | - | 82.1 | 584.9 | 0.14 | 1.20 | 64 to 128
+ rival | cw-2026-08-18-004507 | 15.520 | `A` | `A` | right | .- | 34.85 | 710.2 | 0.0491 | 1.20 | 32 to 64
+ rival | cw-2026-08-18-004507 | 15.905 | `T` | `T` | right | - | 53.03 | 387.8 | 0.137 | 1.20 | 32 to 64
+ rival | cw-2026-08-18-004507 | 16.270 | `I` | `I` | right | .. | 30.48 | 274.7 | 0.111 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 17.095 | `O` | `O` | right | --- | 40.72 | 1731 | 0.0235 | 1.20 | 32 to 64
+ rival | cw-2026-08-18-004507 | 17.580 | `N` | `N` | right | -. | 39.1 | 838.2 | 0.0467 | 1.20 | 32 to 64
+ rival | cw-2026-08-18-004507 | 18.675 | `H` | `H` | right | .... | 14.94 | 800.5 | 0.0187 | 1.20 | 8 to 16
+ rival | cw-2026-08-18-004507 | 19.160 | `A` | `A` | right | .- | 29.99 | 897.6 | 0.0334 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 19.640 | `N` | `N` | right | -. | 16.9 | 786.4 | 0.0215 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 20.240 | `D` | `D` | right | -.. | 20.11 | 770.3 | 0.0261 | 1.15 | 16 to 32
+ rival | cw-2026-08-18-004507 | 20.955 | `L` | `L` | right | .-.. | 18.43 | 812.1 | 0.0227 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 21.365 | `I` | `I` | right | .. | 24.34 | 195.8 | 0.124 | 1.15 | 16 to 32
+ rival | cw-2026-08-18-004507 | 21.855 | `N` | `N` | right | -. | 26.19 | 711.9 | 0.0368 | 1.15 | 16 to 32
+ rival | cw-2026-08-18-004507 | 22.495 | `G` | `G` | right | --. | 16.17 | 1482 | 0.0109 | 1.15 | 16 to 32
+ rival | cw-2026-08-18-004507 | 23.295 | `T` | `T` | right | - | 63.02 | 596 | 0.106 | 1.20 | 32 to 64
+ rival | cw-2026-08-18-004507 | 23.915 | `H` | `H` | right | .... | 16.06 | 741.5 | 0.0217 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 24.295 | `I` | `I` | right | .. | 24.53 | 366.6 | 0.0669 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 24.745 | `S` | `S` | right | ... | 9.901 | 554.5 | 0.0179 | 1.20 | 8 to 16
+ rival | cw-2026-08-18-004507 | 25.715 | `M` | `M` | right | -- | 44.36 | 860.2 | 0.0516 | 1.20 | 32 to 64
+ rival | cw-2026-08-18-004507 | 25.995 | `E` | `E` | right | . | Infinity | 105.9 | Infinity | 1.20 | 128 and over
+ rival | cw-2026-08-18-004507 | 26.540 | `S` | `S` | right | ... | 10.69 | 338 | 0.0316 | 1.20 | 8 to 16
+ rival | cw-2026-08-18-004507 | 27.025 | `S` | `S` | right | ... | 7.891 | 368 | 0.0214 | 1.20 | 4 to 8
+ rival | cw-2026-08-18-004507 | 27.510 | `A` | `A` | right | .- | 27.88 | 555.2 | 0.0502 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 28.205 | `G` | `G` | right | --. | 18.04 | 1083 | 0.0167 | 1.20 | 16 to 32
+ rival | cw-2026-08-18-004507 | 28.585 | `E` | `E` | right | . | Infinity | 123 | Infinity | 1.20 | 128 and over
+ rival | cw-2026-08-18-004507 | 29.765 | `P` | `P` | right | .--. | 20.17 | 1698 | 0.0119 | 1.20 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031838 | 8.675 | `2` | `T` | wrong | - | 2.519 | 66.38 | 0.0379 | 1.01 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031838 | 9.685 | `,` | `T` | wrong | - | 3.423 | 51.92 | 0.0659 | 1.13 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031838 | 11.030 | `2` | `2` | right | ..--- | 0.3819 | 266.9 | 0.00143 | 1.02 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-031838 | 12.415 | `,` | `,` | right | --..-- | 4.085 | 551 | 0.00741 | 0.83 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031838 | 13.140 | `A` | `A` | right | .- | 15.04 | 295.4 | 0.0509 | 0.76 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031838 | 13.620 | `N` | `N` | right | -. | 12.89 | 241.1 | 0.0535 | 0.69 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031838 | 14.225 | `D` | `D` | right | -.. | 7.894 | 326.8 | 0.0242 | 0.59 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031838 | 16.530 | `W` | `W` | right | .-- | 1.037 | 319.4 | 0.00325 | 0.99 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031838 | 16.895 | `I` | `I` | right | .. | 0.9271 | 98.6 | 0.0094 | 0.93 | 0.5 to 1
+ rival | unadjudicated/cw-2026-08-22-031838 | 17.290 | `T` | `A` | wrong | .- | 2.614 | 231.4 | 0.0113 | 0.93 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031838 | 17.905 | `H` | `H` | right | .... | 2.515 | 388.9 | 0.00647 | 0.73 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031838 | 18.640 | `A` | `A` | right | .- | 16.2 | 301.2 | 0.0538 | 0.73 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031838 | 19.490 | `M` | `M` | right | -- | 8.071 | 459.6 | 0.0176 | 0.73 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031838 | 19.755 | `E` | `E` | right | . | Infinity | 81.93 | Infinity | 0.61 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-031838 | 20.250 | `A` | `A` | right | .- | 10.77 | 223.3 | 0.0482 | 0.61 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031838 | 20.745 | `N` | `N` | right | -. | 2.214 | 211.9 | 0.0104 | 0.73 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031838 | 21.845 | `O` | `O` | right | --- | 4.607 | 387.2 | 0.0119 | 0.70 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031838 | 22.560 | `F` | `F` | right | ..-. | 5.018 | 267.5 | 0.0188 | 0.59 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031838 | 23.920 | `2` | `2` | right | ..--- | 5.191 | 400.2 | 0.013 | 0.59 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031838 | 24.185 | `R` | `T` | wrong | - | 1.29 | 26.04 | 0.0495 | 0.98 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031838 | 24.410 | `E` | `T` | wrong | - | 6.576 | 55.67 | 0.118 | 0.98 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031905 | 5.175 | `D` | `D` | right | -.. | 32.08 | 753 | 0.0426 | 1.12 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-031905 | 5.535 | `I` | `I` | right | .. | 61.61 | 240.8 | 0.256 | 1.12 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-031905 | 6.395 | `C` | `C` | right | -.-. | 52.57 | 1691 | 0.0311 | 1.12 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-031905 | 6.780 | `T` | `T` | right | - | 114.6 | 731.4 | 0.157 | 1.12 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-031905 | 7.005 | `E` | `E` | right | . | Infinity | 167.4 | Infinity | 1.12 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-031905 | 7.635 | `D` | `D` | right | -.. | 27.23 | 794.7 | 0.0343 | 1.12 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031905 | 9.115 | `1` | `1` | right | .---- | 22.54 | 1302 | 0.0173 | 1.12 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031905 | 10.420 | `0` | `0` | right | ----- | 1.616 | 511.8 | 0.00316 | 1.12 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031905 | 11.640 | `.` | `.` | right | .-.-.- | 1.72 | 463.5 | 0.00371 | 1.12 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031905 | 12.615 | `7` | `7` | right | --... | 2.317 | 1612 | 0.00144 | 1.12 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031905 | 14.155 | `C` | `I` | wrong | .. | 23.22 | 21.04 | 1.1 | 0.81 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031905 | 14.635 | `E` | `A` | wrong | .- | 0.6254 | 182.1 | 0.00344 | 0.72 | 0.5 to 1
+ rival | unadjudicated/cw-2026-08-22-031905 | 14.980 | `N` | `I` | wrong | .. | 102 | 156.8 | 0.651 | 0.72 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-031905 | 15.150 | `T` | `E` | wrong | . | Infinity | 55.02 | Infinity | 0.89 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-031905 | 15.410 | `I` | `I` | right | .. | 1.566 | 121.2 | 0.0129 | 0.89 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031905 | 16.000 | `E` | `T` | wrong | - | 53.53 | 471 | 0.114 | 1.15 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-031905 | 16.260 | `T` | `A` | wrong | .- | 15.37 | 802.2 | 0.0192 | 1.15 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031905 | 16.615 | `E` | `N` | wrong | -. | 0.7112 | 999.6 | 0.000712 | 1.15 | 0.5 to 1
+ rival | unadjudicated/cw-2026-08-22-031905 | 16.880 | `R` | `I` | wrong | .. | 8.761 | 826.5 | 0.0106 | 1.15 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031905 | 18.285 | `F` | `W` | wrong | .-- | 0.09246 | 8227 | 1.12E-05 | 0.94 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-031905 | 18.995 | `L` | `L` | right | .-.. | 0.4512 | 6032 | 7.48E-05 | 1.04 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-031905 | 19.610 | `U` | `U` | right | ..- | 1.449 | 1167 | 0.00124 | 0.96 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031905 | 20.465 | `X` | `X` | right | -..- | 2.346 | 1523 | 0.00154 | 0.81 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031905 | 21.090 | `I` | `I` | right | .. | 28.26 | 440.9 | 0.0641 | 0.71 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031905 | 21.585 | `S` | `S` | right | ... | 24.92 | 518.2 | 0.0481 | 0.71 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031905 | 23.055 | `1` | `1` | right | .---- | 10.21 | 2078 | 0.00491 | 0.75 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031905 | 24.155 | `2` | `2` | right | ..--- | 15.35 | 1671 | 0.00919 | 0.59 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031905 | 24.875 | `5` | `5` | right | ..... | 1.449 | 807.2 | 0.00179 | 0.87 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031905 | 26.250 | `,` | `,` | right | --..-- | 20.81 | 3.779E+04 | 0.000551 | 0.69 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 3.945 | `1` | `1` | right | .---- | 35.84 | 4330 | 0.00828 | 1.18 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-031948 | 4.690 | `1` | `5` | wrong | ..... | 16 | 610.4 | 0.0262 | 1.17 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 6.040 | `0` | `0` | right | ----- | 1.054 | 2109 | 0.0005 | 1.18 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031948 | 7.515 | `1` | `1` | right | .---- | 17.42 | 1018 | 0.0171 | 1.17 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 8.770 | `1` | `1` | right | .---- | 7.36 | 747.5 | 0.00985 | 1.18 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031948 | 10.120 | `0` | `0` | right | ----- | 10.19 | 1067 | 0.00955 | 0.74 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 11.470 | `,` | `,` | right | --..-- | 24.42 | 2269 | 0.0108 | 0.82 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 12.225 | `A` | `A` | right | .- | 50.46 | 820.5 | 0.0615 | 1.14 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-031948 | 12.700 | `N` | `N` | right | -. | 14.24 | 893.4 | 0.0159 | 0.77 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 13.330 | `D` | `D` | right | -.. | 30.84 | 1326 | 0.0233 | 0.77 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 14.805 | `1` | `1` | right | .---- | 29.07 | 2270 | 0.0128 | 0.77 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 16.020 | `1` | `1` | right | .---- | 8.475 | 488.8 | 0.0173 | 0.78 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 17.410 | `0` | `0` | right | ----- | 2.346 | 721.3 | 0.00325 | 1.00 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-031948 | 18.395 | `W` | `W` | right | .-- | 13.46 | 461.5 | 0.0292 | 0.72 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 18.755 | `I` | `I` | right | .. | 14.5 | 135.5 | 0.107 | 0.77 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 19.090 | `T` | `T` | right | - | 1.616 | 127.7 | 0.0127 | 0.72 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031948 | 19.715 | `H` | `H` | right | .... | 15.46 | 218.5 | 0.0707 | 0.72 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 20.475 | `A` | `A` | right | .- | 25.06 | 322.3 | 0.0777 | 0.71 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 21.310 | `M` | `M` | right | -- | 1.955 | 609.7 | 0.00321 | 0.76 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-031948 | 21.535 | `E` | `E` | right | . | Infinity | 62.89 | Infinity | 0.71 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-031948 | 22.020 | `A` | `A` | right | .- | 18.21 | 514.6 | 0.0354 | 0.71 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 22.505 | `N` | `N` | right | -. | 67.34 | 588.7 | 0.114 | 0.81 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-031948 | 23.625 | `O` | `O` | right | --- | 33.3 | 1177 | 0.0283 | 1.02 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-031948 | 24.385 | `F` | `F` | right | ..-. | 30.44 | 723.2 | 0.0421 | 1.12 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-031948 | 25.850 | `1` | `1` | right | .---- | 13.94 | 1333 | 0.0105 | 1.12 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-031948 | 27.065 | `1` | `1` | right | .---- | 5.053 | 624.9 | 0.00809 | 1.12 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-031948 | 28.055 | `7` | `7` | right | --... | 24.21 | 901 | 0.0269 | 1.12 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | wrong | - | 1205 | 9535 | 0.126 | 0.81 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032012 | 2.525 | `F` | `F` | right | ..-. | 2.346 | 7659 | 0.000306 | 1.10 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032012 | 3.990 | `1` | `1` | right | .---- | 9.776 | 1267 | 0.00771 | 0.96 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032012 | 5.205 | `1` | `1` | right | .---- | 6.989 | 604.6 | 0.0116 | 0.86 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032012 | 6.195 | `7` | `7` | right | --... | 24.9 | 933.9 | 0.0267 | 1.17 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 7.425 | `-` | `.` | added | .-.-.- | 2.123 | 1164 | 0.00182 | 1.17 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032012 | 8.640 | `-` | `1` | added | .---- | 2.775 | 729.7 | 0.0038 | 1.14 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032012 | 9.885 | `.` | `.` | right | .-.-.- | 6.473 | 1240 | 0.00522 | 1.14 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032012 | 11.125 | `L` | `L` | right | .-.. | 23.83 | 1068 | 0.0223 | 1.04 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 11.500 | `I` | `I` | right | .. | 2.482 | 374.4 | 0.00663 | 1.02 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032012 | 11.995 | `N` | `N` | right | -. | 2.482 | 807.7 | 0.00307 | 1.02 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032012 | 12.715 | `K` | `K` | right | -.- | 2.482 | 1117 | 0.00222 | 1.12 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032012 | 13.195 | `S` | `S` | right | ... | 4.334 | 405.7 | 0.0107 | 1.12 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032012 | 13.825 | `T` | `T` | right | - | 52.97 | 491.3 | 0.108 | 1.09 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032012 | 14.655 | `O` | `O` | right | --- | 1.955 | 1619 | 0.00121 | 1.09 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032012 | 15.415 | `A` | `A` | right | .- | 22.27 | 836 | 0.0266 | 1.09 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 16.035 | `R` | `R` | right | .-. | 17.4 | 1064 | 0.0163 | 1.09 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 16.385 | `T` | `T` | right | - | 75.55 | 717.1 | 0.105 | 1.09 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032012 | 16.720 | `I` | `I` | right | .. | 42.66 | 393.1 | 0.109 | 1.09 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032012 | 17.585 | `C` | `C` | right | -.-. | 16.21 | 1703 | 0.00952 | 0.71 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 18.335 | `L` | `L` | right | .-.. | 19.39 | 1532 | 0.0127 | 0.52 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 18.600 | `E` | `E` | right | . | 76.26 | 205.5 | 0.371 | 0.67 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032012 | 19.095 | `S` | `S` | right | ... | 10.66 | 706.8 | 0.0151 | 0.52 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032012 | 20.175 | `O` | `O` | right | --- | 14.63 | 1568 | 0.00933 | 0.55 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032012 | 20.800 | `R` | `R` | right | .-. | 8.912 | 616.9 | 0.0144 | 0.67 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032012 | 21.910 | `O` | `O` | right | --- | 5.908 | 1400 | 0.00422 | 0.65 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032012 | 22.270 | `T` | `T` | right | - | 106.8 | 869.3 | 0.123 | 0.65 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032012 | 22.900 | `H` | `H` | right | .... | 12.11 | 994.6 | 0.0122 | 0.65 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032012 | 23.110 | `E` | `E` | right | . | Infinity | 59.17 | Infinity | 0.65 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032012 | 23.720 | `R` | `R` | right | .-. | 5.88 | 1436 | 0.0041 | 0.65 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032012 | 24.710 | `W` | `W` | right | .-- | 8.584 | 1390 | 0.00618 | 0.63 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032012 | 24.975 | `E` | `E` | right | . | Infinity | 208.7 | Infinity | 0.63 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032012 | 25.695 | `B` | `B` | right | -... | 4.648 | 1162 | 0.004 | 0.47 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032012 | 26.185 | `S` | `S` | right | ... | 5.715 | 702.1 | 0.00814 | 0.47 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032012 | 26.590 | `I` | `I` | right | .. | 12.31 | 643.6 | 0.0191 | 0.50 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032012 | 26.950 | `T` | `T` | right | - | 123.8 | 1200 | 0.103 | 0.50 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032012 | 27.175 | `E` | `E` | right | . | Infinity | 99.41 | Infinity | 0.50 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032012 | 27.670 | `S` | `S` | right | ... | 20.8 | 567.8 | 0.0366 | 0.47 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032012 | 28.540 | `M` | `M` | right | -- | 73.17 | 1831 | 0.04 | 0.50 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032012 | 28.765 | `E` | `E` | right | . | Infinity | 176.5 | Infinity | 0.50 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032012 | 29.240 | `N` | `N` | right | -. | 1.955 | 537.6 | 0.00364 | 0.50 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032012 | 29.625 | `T` | `T` | right | - | 73.55 | 489.7 | 0.15 | 0.50 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032012 | 30.000 | `I` | `I` | right | .. | 33 | 335 | 0.0985 | 0.50 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032050 | 2.295 | `I` | `I` | right | .. | 268.9 | 3509 | 0.0766 | 1.10 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 2.880 | `U` | `U` | right | ..- | 118.2 | 3793 | 0.0312 | 1.06 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032050 | 3.640 | `L` | `L` | right | .-.. | 16.18 | 1919 | 0.00843 | 1.02 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 4.350 | `L` | `L` | right | .-.. | 42.06 | 1505 | 0.0279 | 1.02 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032050 | 4.615 | `E` | `E` | right | . | 144 | 323.3 | 0.445 | 1.02 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 4.955 | `T` | `T` | right | - | 142.4 | 909.2 | 0.157 | 1.02 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 5.305 | `I` | `I` | right | .. | 2.573 | 354.6 | 0.00726 | 0.71 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032050 | 5.800 | `N` | `N` | right | -. | 55.76 | 921.5 | 0.0605 | 0.53 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032050 | 6.900 | `C` | `C` | right | -.-. | 13.24 | 1303 | 0.0102 | 0.56 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032050 | 7.390 | `A` | `A` | right | .- | 2.346 | 429.9 | 0.00546 | 0.73 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032050 | 7.875 | `N` | `N` | right | -. | 31.99 | 437.4 | 0.0731 | 0.64 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 8.840 | `B` | `B` | right | -... | 13.84 | 611.5 | 0.0226 | 0.52 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032050 | 9.105 | `E` | `E` | right | . | Infinity | 98.19 | Infinity | 0.47 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 10.095 | `F` | `F` | right | ..-. | 15.62 | 483.3 | 0.0323 | 0.50 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032050 | 10.925 | `O` | `O` | right | --- | 2.297 | 473.4 | 0.00485 | 0.57 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032050 | 11.195 | `-` | `T` | added | - | 1.909 | 74.14 | 0.0257 | 0.67 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | wrong | .- | 3.065 | 293 | 0.0105 | 0.67 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032050 | 12.025 | `N` | `N` | right | -. | 12.25 | 237.9 | 0.0515 | 0.47 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032050 | 12.655 | `D` | `D` | right | -.. | 18.82 | 370.8 | 0.0508 | 0.67 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 13.280 | `I` | `I` | right | .. | 12.32 | 127 | 0.097 | 0.90 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032050 | 13.765 | `N` | `N` | right | -. | 12.97 | 261.8 | 0.0495 | 0.46 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032050 | 14.315 | `T` | `T` | right | - | 1.628 | 126.3 | 0.0129 | 0.46 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032050 | 14.585 | `E` | `E` | right | . | Infinity | 106.2 | Infinity | 0.46 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 15.295 | `L` | `L` | right | .-.. | 23.73 | 616.7 | 0.0385 | 0.46 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 15.555 | `E` | `E` | right | . | Infinity | 145.8 | Infinity | 0.47 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | wrong | .-- | 16.61 | 1167 | 0.0142 | 1.03 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 17.005 | `R` | `R` | right | .-. | 23.21 | 1039 | 0.0223 | 0.80 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 17.345 | `I` | `I` | right | .. | 41.48 | 289.2 | 0.143 | 0.80 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | wrong | - | 223.1 | 1439 | 0.155 | 0.76 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 18.215 | `T` | `T` | right | - | 262.5 | 1639 | 0.16 | 0.74 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 18.435 | `E` | `E` | right | . | Infinity | 538.2 | Infinity | 0.74 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 19.050 | `R` | `R` | right | .-. | 8.357 | 891.9 | 0.00937 | 0.75 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032050 | 20.345 | `,` | `,` | right | --..-- | 6.227 | 2028 | 0.00307 | 0.81 | 4 to 8
+ rival | unadjudicated/cw-2026-08-22-032050 | 21.735 | `P` | `P` | right | .--. | 19.23 | 831.8 | 0.0231 | 0.81 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 22.225 | `A` | `A` | right | .- | 28.77 | 352.3 | 0.0817 | 0.81 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032050 | 23.800 | `K` | `K` | right | -.- | 36.55 | 2177 | 0.0168 | 0.64 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032050 | 24.045 | `E` | `E` | right | . | 382.8 | 1165 | 0.329 | 1.01 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032050 | 26.130 | `D` | `H` | wrong | .... | 1.344 | 1.174E+04 | 0.000114 | 1.00 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032050 | 27.085 | `I` | `I` | right | .. | 0.8743 | 4053 | 0.000216 | 0.99 | 0.5 to 1
+ rival | unadjudicated/cw-2026-08-22-032050 | 27.090 | `E` | `E` | right | . | 1341 | 3922 | 0.342 | 0.52 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032113 | 1.690 | `A` | `A` | right | .- | 0.09246 | 4348 | 2.13E-05 | 1.00 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 2.410 | `K` | `K` | right | -.- | 0.4512 | 1.048E+04 | 4.31E-05 | 1.06 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 2.675 | `E` | `E` | right | . | Infinity | 344 | Infinity | 1.04 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032113 | 3.015 | `T` | `T` | right | - | 32.54 | 190.5 | 0.171 | 1.10 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032113 | 5.040 | `A` | `A` | right | .- | 0.4512 | 308.5 | 0.00146 | 1.14 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 5.515 | `N` | `N` | right | -. | 0.5177 | 628.1 | 0.000824 | 1.03 | 0.5 to 1
+ rival | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | wrong | --- | 0.09246 | 1171 | 7.9E-05 | 1.10 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 6.740 | `I` | `I` | right | .. | 1.909 | 454.9 | 0.0042 | 0.93 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032113 | 7.215 | `N` | `N` | right | -. | 1.739 | 1049 | 0.00166 | 0.88 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032113 | 7.555 | `T` | `T` | right | - | 69.91 | 773.3 | 0.0904 | 0.96 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032113 | 7.820 | `E` | `E` | right | . | 0.4512 | 297.4 | 0.00152 | 0.96 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 8.375 | `R` | `R` | right | .-. | 0.4512 | 1373 | 0.000329 | 0.96 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 8.900 | `N` | `N` | right | -. | 0.4512 | 1487 | 0.000303 | 0.91 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 9.105 | `E` | `E` | right | . | 0.4512 | 428.6 | 0.00105 | 0.85 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 9.455 | `T` | `T` | right | - | 108.2 | 1045 | 0.104 | 0.85 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032113 | 10.670 | `E` | `E` | right | . | 0.4512 | 362.3 | 0.00125 | 0.76 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032113 | 11.285 | `R` | `R` | right | .-. | 153.7 | 2020 | 0.0761 | 1.01 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032113 | 11.760 | `S` | `S` | right | ... | 82.06 | 1013 | 0.081 | 1.01 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032113 | 12.100 | `I` | `I` | right | .. | 72.89 | 385.6 | 0.189 | 1.07 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032113 | 12.955 | `O` | `O` | right | --- | 68.15 | 2532 | 0.0269 | 1.07 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032113 | 13.445 | `N` | `N` | right | -. | 119 | 935.1 | 0.127 | 1.07 | 64 to 128
+ rival | unadjudicated/cw-2026-08-22-032113 | 13.940 | `S` | `S` | right | ... | 35.36 | 392 | 0.0902 | 1.12 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | wrong | - | 0.006638 | 36.91 | 0.00018 | 1.22 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | wrong | .--- | 1.931 | 931.2 | 0.00207 | 0.64 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032129 | 4.995 | `2` | `2` | right | ..--- | 1.449 | 946.5 | 0.00153 | 1.08 | 1 to 2
+ rival | unadjudicated/cw-2026-08-22-032129 | 5.850 | `6` | `6` | right | -.... | 9.793 | 709.4 | 0.0138 | 0.94 | 8 to 16
+ rival | unadjudicated/cw-2026-08-22-032129 | 7.180 | `P` | `P` | right | .--. | 2.113 | 942.2 | 0.00224 | 1.07 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | wrong | --. | 0.1675 | 386.3 | 0.000434 | 1.21 | 0 to 0.5
+ rival | unadjudicated/cw-2026-08-22-032129 | 8.645 | `O` | `O` | right | --- | 2.573 | 1073 | 0.0024 | 1.04 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032129 | 9.495 | `P` | `P` | right | .--. | 22.55 | 1187 | 0.019 | 0.72 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032129 | 9.990 | `A` | `A` | right | .- | 35.41 | 881.6 | 0.0402 | 0.72 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032129 | 10.750 | `G` | `G` | right | --. | 39.05 | 1459 | 0.0268 | 0.77 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032129 | 11.245 | `A` | `A` | right | .- | 42.09 | 847.4 | 0.0497 | 0.77 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032129 | 11.600 | `T` | `T` | right | - | 35.75 | 436.9 | 0.0818 | 1.12 | 32 to 64
+ rival | unadjudicated/cw-2026-08-22-032129 | 11.940 | `I` | `I` | right | .. | 30.85 | 90.99 | 0.339 | 1.12 | 16 to 32
+ rival | unadjudicated/cw-2026-08-22-032129 | 12.835 | `O` | `O` | right | --- | 2.113 | 1470 | 0.00144 | 1.07 | 2 to 4
+ rival | unadjudicated/cw-2026-08-22-032129 | 13.315 | `N` | `N` | right | -. | 1485 | 4.312E+04 | 0.0344 | 1.02 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 15.335 | `E` | `E` | right | . | Infinity | 947.1 | Infinity | 0.99 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 16.365 | `L` | `E` | wrong | . | Infinity | 1219 | Infinity | 0.34 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 16.855 | `E` | `E` | right | . | Infinity | 32.43 | Infinity | 0.34 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 17.400 | `T` | `E` | wrong | . | Infinity | 324.6 | Infinity | 0.34 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 17.930 | `I` | `I` | right | .. | 2888 | 252.2 | 11.4 | 0.34 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 18.470 | `A` | `I` | wrong | .. | 352 | 312.5 | 1.13 | 0.34 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 18.865 | `R` | `E` | wrong | . | Infinity | 394.1 | Infinity | 0.34 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 19.330 | `L` | `E` | wrong | . | Infinity | 525.3 | Infinity | 0.22 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 20.065 | `P` | `I` | wrong | .. | 1968 | 69.69 | 28.2 | 0.35 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 20.660 | `0` | `E` | wrong | . | Infinity | 220.5 | Infinity | 0.59 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 21.945 | `3` | `E` | wrong | . | Infinity | 314.8 | Infinity | 0.59 | 128 and over
+ rival | unadjudicated/cw-2026-08-22-032129 | 22.345 | `4` | `E` | wrong | . | Infinity | 166.6 | Infinity | 1.10 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004108 | 14.340 | `E` | `G` | wrong | --. | 2.764 | 1202 | 0.0023 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004108 | 15.285 | `K` | `K` | right | -.- | 2.764 | 1529 | 0.00181 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004108 | 16.850 | `2` | `2` | right | ..--- | 2.764 | 2855 | 0.000968 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004108 | 17.775 | `V` | `6` | wrong | -.... | 2.764 | 1578 | 0.00175 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004133 | 4.750 | `C` | `C` | right | -.-. | 2.764 | 1239 | 0.00223 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004133 | 5.505 | `H` | `H` | right | .... | 2.64 | 499 | 0.00529 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004133 | 6.085 | `A` | `A` | right | .- | 2.764 | 972 | 0.00284 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004133 | 6.645 | `R` | `R` | right | .-. | 5.265 | 1355 | 0.00389 | 0.95 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004133 | 7.265 | `D` | `D` | right | -.. | 2.764 | 1442 | 0.00192 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004205 | 22.645 | `A` | `A` | right | .- | 3.649 | 634.7 | 0.00575 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004205 | 23.020 | `T` | `T` | right | - | 43.28 | 366.8 | 0.118 | 0.95 | 32 to 64
+ rival | unadjudicated/cw-2026-09-24-004205 | 24.425 | `Y` | `Y` | right | -.-- | 2.145 | 1419 | 0.00151 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004205 | 25.015 | `A` | `A` | right | .- | 2.764 | 1041 | 0.00266 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004205 | 25.730 | `H` | `H` | right | .... | 2.764 | 829.2 | 0.00333 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004205 | 26.750 | `O` | `O` | right | --- | 2.764 | 2893 | 0.000955 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004205 | 27.640 | `O` | `O` | right | --- | 2.764 | 1648 | 0.00168 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004205 | 28.680 | `D` | `D` | right | -.. | 2.764 | 663.7 | 0.00416 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004234 | 2.910 | `O` | `O` | right | --- | 2.764 | 1648 | 0.00168 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004234 | 3.565 | `M` | `M` | right | -- | 2.764 | 933.2 | 0.00296 | 0.99 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004234 | 4.670 | `<BT>` | `<BT>` | right | -...- | 2.764 | 1362 | 0.00203 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004234 | 5.670 | `T` | `T` | right | - | 84.05 | 620.1 | 0.136 | 0.95 | 64 to 128
+ rival | unadjudicated/cw-2026-09-24-004234 | 6.335 | `H` | `H` | right | .... | 2.145 | 396.8 | 0.0054 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004234 | 6.835 | `A` | `A` | right | .- | 2.764 | 497.2 | 0.00556 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004234 | 7.330 | `N` | `N` | right | -. | 2.145 | 375.1 | 0.00572 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004234 | 7.715 | `O` | `T` | wrong | - | 20.61 | 410.5 | 0.0502 | 0.95 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004234 | 8.045 | `U` | `T` | wrong | - | 21.15 | 439.9 | 0.0481 | 0.95 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004322 | 1.730 | `P` | `P` | right | .--. | 0.02477 | 121.4 | 0.000204 | 0.96 | 0 to 0.5
+ rival | unadjudicated/cw-2026-09-24-004322 | 2.705 | `O` | `O` | right | --- | 2.764 | 1827 | 0.00151 | 0.96 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 3.225 | `N` | `N` | right | -. | 2.764 | 921.3 | 0.003 | 0.96 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 3.820 | `S` | `S` | right | ... | 2.764 | 570.3 | 0.00485 | 0.96 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 4.750 | `O` | `O` | right | --- | 2.764 | 2548 | 0.00108 | 0.96 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 5.330 | `R` | `R` | right | .-. | 2.764 | 1065 | 0.00259 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 5.615 | `E` | `E` | right | . | Infinity | 163.3 | Infinity | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004322 | 6.235 | `D` | `D` | right | -.. | 2.764 | 1036 | 0.00267 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 7.315 | `A` | `A` | right | .- | 2.764 | 560.4 | 0.00493 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 7.990 | `M` | `M` | right | -- | 2.764 | 732.5 | 0.00377 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 8.300 | `E` | `E` | right | . | Infinity | 98.37 | Infinity | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004322 | 8.920 | `R` | `R` | right | .-. | 2.764 | 763.6 | 0.00362 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 9.335 | `I` | `I` | right | .. | 2.764 | 255.8 | 0.0108 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 10.190 | `C` | `C` | right | -.-. | 2.764 | 1632 | 0.00169 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 10.680 | `A` | `A` | right | .- | 4.099 | 863.8 | 0.00475 | 0.95 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004322 | 15.865 | `O` | `O` | right | --- | 2.764 | 1034 | 0.00267 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 16.685 | `P` | `P` | right | .--. | 2.145 | 1104 | 0.00194 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 17.050 | `E` | `E` | right | . | Infinity | 200.2 | Infinity | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004322 | 17.670 | `R` | `R` | right | .-. | 2.764 | 1511 | 0.00183 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 18.180 | `A` | `A` | right | .- | 2.764 | 1215 | 0.00228 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 18.645 | `T` | `T` | right | - | 150.9 | 1041 | 0.145 | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004322 | 19.070 | `I` | `I` | right | .. | 5.701 | 437.5 | 0.013 | 0.95 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004322 | 19.945 | `O` | `O` | right | --- | 2.764 | 2833 | 0.000975 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 20.430 | `N` | `N` | right | -. | 4.05 | 1059 | 0.00383 | 0.95 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004322 | 22.630 | `A` | `A` | right | .- | 1.566 | 138 | 0.0113 | 0.95 | 1 to 2
+ rival | unadjudicated/cw-2026-09-24-004322 | 23.315 | `L` | `L` | right | .-.. | 2.764 | 771.9 | 0.00358 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 23.970 | `L` | `L` | right | .-.. | 2.764 | 853.8 | 0.00324 | 0.88 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 25.110 | `L` | `L` | right | .-.. | 2.764 | 1418 | 0.00195 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 26.030 | `O` | `O` | right | --- | 2.764 | 2445 | 0.00113 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 26.790 | `G` | `G` | right | --. | 2.764 | 1909 | 0.00145 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004322 | 27.380 | `S` | `S` | right | ... | 4.162 | 491.8 | 0.00846 | 0.95 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004322 | 28.505 | `W` | `W` | right | .-- | 97.32 | 1587 | 0.0613 | 0.95 | 64 to 128
+ rival | unadjudicated/cw-2026-09-24-004347 | 3.725 | `I` | `I` | right | .. | 2.764 | 249.8 | 0.0111 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 4.410 | `L` | `L` | right | .-.. | 2.145 | 787.4 | 0.00272 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 5.075 | `L` | `L` | right | .-.. | 2.145 | 700.1 | 0.00306 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 6.250 | `B` | `B` | right | -... | 2.543 | 826 | 0.00308 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 6.525 | `E` | `E` | right | . | Infinity | 162.6 | Infinity | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004347 | 7.440 | `U` | `U` | right | ..- | 6.753 | 1151 | 0.00587 | 0.95 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004347 | 8.240 | `P` | `P` | right | .--. | 2.764 | 1980 | 0.0014 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 9.025 | `L` | `L` | right | .-.. | 2.145 | 1346 | 0.00159 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 9.975 | `O` | `O` | right | --- | 3.127 | 1538 | 0.00203 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 10.425 | `A` | `A` | right | .- | 2.764 | 725 | 0.00381 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 11.085 | `D` | `D` | right | -.. | 2.145 | 590.3 | 0.00363 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 11.435 | `E` | `E` | right | . | Infinity | 93.56 | Infinity | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004347 | 12.100 | `D` | `D` | right | -.. | 2.764 | 535.4 | 0.00516 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004347 | 13.020 | `T` | `T` | right | - | 63.44 | 432.2 | 0.147 | 0.95 | 32 to 64
+ rival | unadjudicated/cw-2026-09-24-004347 | 13.860 | `O` | `O` | right | --- | 86.62 | 1660 | 0.0522 | 0.95 | 64 to 128
+ rival | unadjudicated/cw-2026-09-24-004347 | 14.820 | `A` | `A` | right | .- | 109.4 | 1060 | 0.103 | 0.95 | 64 to 128
+ rival | unadjudicated/cw-2026-09-24-004347 | 15.555 | `R` | `R` | right | .-. | 130 | 1403 | 0.0927 | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004347 | 16.175 | `R` | `R` | right | .-. | 169.6 | 1924 | 0.0882 | 0.95 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004347 | 16.870 | `L` | `L` | right | .-.. | 110 | 1738 | 0.0633 | 0.95 | 64 to 128
+ rival | unadjudicated/cw-2026-09-24-004347 | 18.190 | `L` | `L` | right | .-.. | 62.59 | 878.2 | 0.0713 | 0.95 | 32 to 64
+ rival | unadjudicated/cw-2026-09-24-004347 | 19.280 | `-` | `O` | added | --- | 19.95 | 431.9 | 0.0462 | 0.95 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004347 | 19.285 | `O` | `O` | right | --- | 19.58 | 442.3 | 0.0443 | 0.95 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004347 | 19.820 | `T` | `T` | right | - | 31.54 | 173.2 | 0.182 | 0.95 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004347 | 20.655 | `W` | `W` | right | .-- | 27.2 | 750.6 | 0.0362 | 0.95 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004405 | 25.655 | `O` | `O` | right | --- | 2.145 | 1311 | 0.00164 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004405 | 26.515 | `O` | `O` | right | --- | 2.764 | 1561 | 0.00177 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004405 | 27.130 | `R` | `R` | right | .-. | 2.764 | 998.7 | 0.00277 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004405 | 27.825 | `D` | `D` | right | -.. | 2.764 | 1148 | 0.00241 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004405 | 28.285 | `I` | `I` | right | .. | 2.764 | 378.7 | 0.0073 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004405 | 28.795 | `N` | `N` | right | -. | 5.013 | 865.4 | 0.00579 | 0.95 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004427 | 7.115 | `A` | `A` | right | .- | 2.764 | 692.9 | 0.00399 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004427 | 7.615 | `T` | `T` | right | - | 64.9 | 454.5 | 0.143 | 0.95 | 64 to 128
+ rival | unadjudicated/cw-2026-09-24-004427 | 8.510 | `O` | `O` | right | --- | 2.764 | 1205 | 0.00229 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004427 | 9.090 | `R` | `R` | right | .-. | 2.348 | 440.2 | 0.00533 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004427 | 12.295 | `Q` | `Q` | right | --.- | 1.689 | 441 | 0.00383 | 0.95 | 1 to 2
+ rival | unadjudicated/cw-2026-09-24-004427 | 12.780 | `S` | `S` | right | ... | 2.89 | 115.7 | 0.025 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004427 | 13.485 | `L` | `L` | right | .-.. | 2.181 | 212.4 | 0.0103 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004427 | 14.105 | `T` | `T` | right | - | 10.03 | 99.4 | 0.101 | 0.95 | 8 to 16
+ rival | unadjudicated/cw-2026-09-24-004427 | 14.710 | `N` | `N` | right | -. | 11.3 | 255.9 | 0.0442 | 0.95 | 8 to 16
+ rival | unadjudicated/cw-2026-09-24-004510 | 18.145 | `K` | `K` | right | -.- | 23.41 | 1353 | 0.0173 | 0.92 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004510 | 18.620 | `A` | `A` | right | .- | 20.75 | 646.6 | 0.0321 | 0.96 | 16 to 32
+ rival | unadjudicated/cw-2026-09-24-004510 | 19.560 | `2` | `2` | right | ..--- | 14.24 | 1488 | 0.00957 | 0.96 | 8 to 16
+ rival | unadjudicated/cw-2026-09-24-004510 | 20.275 | `G` | `G` | right | --. | 10.75 | 637.7 | 0.0169 | 0.96 | 8 to 16
+ rival | unadjudicated/cw-2026-09-24-004510 | 21.145 | `J` | `J` | right | .--- | 1.847 | 1092 | 0.00169 | 1.00 | 1 to 2
+ rival | unadjudicated/cw-2026-09-24-004510 | 21.825 | `V` | `V` | right | ...- | 5.756 | 705.2 | 0.00816 | 1.00 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004510 | 25.440 | `A` | `A` | right | .- | 9.819 | 896.5 | 0.011 | 1.00 | 8 to 16
+ rival | unadjudicated/cw-2026-09-24-004510 | 25.885 | `A` | `A` | right | .- | 9.869 | 725.8 | 0.0136 | 1.00 | 8 to 16
+ rival | unadjudicated/cw-2026-09-24-004510 | 26.705 | `3` | `3` | right | ...-- | 6.266 | 1556 | 0.00403 | 1.00 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004510 | 27.135 | `S` | `S` | right | ... | 9.679 | 510.4 | 0.019 | 1.00 | 8 to 16
+ rival | unadjudicated/cw-2026-09-24-004510 | 27.840 | `B` | `B` | right | -... | 5.535 | 1100 | 0.00503 | 1.00 | 4 to 8
+ rival | unadjudicated/cw-2026-09-24-004550 | 15.925 | `D` | `D` | right | -.. | 2.346 | 1398 | 0.00168 | 0.97 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004550 | 16.150 | `E` | `E` | right | . | Infinity | 199.8 | Infinity | 0.97 | 128 and over
+ rival | unadjudicated/cw-2026-09-24-004550 | 16.935 | `K` | `K` | right | -.- | 2.346 | 2067 | 0.00114 | 0.99 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004550 | 17.365 | `A` | `A` | right | .- | 2.346 | 1094 | 0.00214 | 0.99 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004550 | 18.380 | `2` | `2` | right | ..--- | 2.764 | 2333 | 0.00118 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004550 | 19.120 | `G` | `G` | right | --. | 2.364 | 854.9 | 0.00276 | 0.71 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004550 | 20.070 | `J` | `J` | right | .--- | 2.398 | 1441 | 0.00166 | 0.95 | 2 to 4
+ rival | unadjudicated/cw-2026-09-24-004550 | 20.795 | `V` | `V` | right | ...- | 2.764 | 879.9 | 0.00314 | 0.95 | 2 to 4
+ bin | margin, nats | wrong or added | right | wrong or added below the bin's top | right below the bin's top
+ bin | below 0 | 0 | 0 | 0 | 0
+ bin | 0 to 0.5 | 4 | 13 | 4 | 13
+ bin | 0.5 to 1 | 3 | 3 | 7 | 16
+ bin | 1 to 2 | 7 | 28 | 14 | 44
+ bin | 2 to 4 | 8 | 84 | 22 | 128
+ bin | 4 to 8 | 1 | 35 | 23 | 163
+ bin | 8 to 16 | 3 | 54 | 26 | 217
+ bin | 16 to 32 | 5 | 60 | 31 | 277
+ bin | 32 to 64 | 1 | 32 | 32 | 309
+ bin | 64 to 128 | 2 | 25 | 34 | 334
+ bin | 128 and over | 13 | 40 | 47 | 374
+ bin | unmeasured | 0 | 0 | 47 | 374
+ total | 421 sure letters: 374 right, 43 wrong, 4 added | 0 unmeasured | no edge: nowhere below an edge do wrong or added outnumber right
+
+
+[xUnit.net 00:03:36.89]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.WhereTheSureWrongLettersComeFromTests.EverySureWrongCharacterAndWhatItShares [53 s]
+  Standard Output Messages:
+ wrong | recording | at s | sent | emitted | sent pattern | emitted pattern | group | span | span before | span after | wpm | unit ms | pitch at hop Hz | sender pitch Hz | off Hz | beside an inserted space | envelope marks | envelope gaps | gap reading
+ wrong | unadjudicated/cw-2026-09-23-173723 | 28.970 | `6` | `7` | -.... | --... | one element of the wrong kind | 328.6 | 171.9 | 39.39 | 17 | 70.6 | 600.0 | 585.0 | 15.0 | yes | 500ms/7.1u 70ms/1.0u 70ms/1.0u 75ms/1.1u | 70ms/1.0u 65ms/0.9u 75ms/1.1u 75ms/1.1u | held element 60 ms, character 138 ms, word 436 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-09-23-173723 | 29.195 | `R` | `E` | .-. | . | split: a part of the sent letter | 39.39 | 328.6 | 47.53 | 17 | 70.6 | 600.0 | 585.0 | 15.0 | yes | 75ms/1.1u | 75ms/1.1u | held element 60 ms, character 138 ms, word 436 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-09-23-173723 | 30.000 | `D` | `I` | -.. | .. | split: a part of the sent letter | 92.98 | 47.53 | NaN | 17 | 70.6 | 600.0 | 585.0 | 15.0 | yes | 85ms/1.2u | 70ms/1.0u 50ms/0.7u | held element 60 ms, character 138 ms, word 436 ms, element-to-character crossover 91 ms
+ wrong | unadjudicated/cw-2026-08-18-003758 | 10.640 | `A` | `E` | .- | . | split: a part of the sent letter | 306 | 311.9 | 315.3 | 40 | 30.0 | 500.0 | 500.0 | 0.0 | no | 60ms/2.0u | 25ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-18-003758 | 10.740 | `A` | `E` | .- | . | split: a part of the sent letter | 315.3 | 306 | 1203 | 40 | 30.0 | 500.0 | 500.0 | 0.0 | no | 60ms/2.0u | 25ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-18-003758 | 10.940 | `4` | `T` | ....- | - | split: a part of the sent letter | 1203 | 315.3 | 3030 | 40 | 30.0 | 500.0 | 500.0 | 0.0 | no | 160ms/5.3u | 25ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 52 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 8.675 | `2` | `T` | ..--- | - | split: a part of the sent letter | 66.38 | 775.4 | 51.92 | 23 | 52.2 | 525.0 | 525.0 | 0.0 | no | 215ms/4.1u | 45ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 90 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 9.685 | `,` | `T` | --..-- | - | split: a part of the sent letter | 51.92 | 66.38 | 266.9 | 28 | 42.9 | 525.0 | 525.0 | 0.0 | no | 220ms/5.1u | 35ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 17.290 | `T` | `A` | - | .- | merged: the sent letter and part of a neighbor | 231.4 | 98.6 | 388.9 | 28 | 42.9 | 525.0 | 525.0 | 0.0 | no | 335ms/7.8u |  | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 24.185 | `R` | `T` | .-. | - | none of these | 26.04 | 400.2 | 55.67 | 34 | 35.3 | 525.0 | 525.0 | 0.0 | yes | 120ms/3.4u |  | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031838 | 24.410 | `E` | `T` | . | - | one element of the wrong kind | 55.67 | 26.04 | NaN | 34 | 35.3 | 525.0 | 525.0 | 0.0 | no | 170ms/4.8u | 30ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 14.155 | `C` | `I` | -.-. | .. | none of these | 21.04 | 1612 | 182.1 | 18 | 66.7 | 300.0 | 500.0 | 200.0 | no |  |  | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 14.635 | `E` | `A` | . | .- | merged: the sent letter and part of a neighbor | 182.1 | 21.04 | 156.8 | 18 | 66.7 | 300.0 | 500.0 | 200.0 | no | 65ms/1.0u 175ms/2.6u | 70ms/1.1u 65ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 14.980 | `N` | `I` | -. | .. | one element of the wrong kind | 156.8 | 182.1 | 55.02 | 18 | 66.7 | 300.0 | 500.0 | 200.0 | no | 40ms/0.6u 85ms/1.3u | 65ms/1.0u 20ms/0.3u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 15.150 | `T` | `E` | - | . | one element of the wrong kind | 55.02 | 156.8 | 121.2 | 22 | 54.5 | 300.0 | 500.0 | 200.0 | no | 25ms/0.5u | 55ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 94 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.000 | `E` | `T` | . | - | one element of the wrong kind | 471 | 121.2 | 802.2 | 28 | 42.9 | 300.0 | 500.0 | 200.0 | yes | 125ms/2.9u | 35ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.260 | `T` | `A` | - | .- | merged: the sent letter and part of a neighbor | 802.2 | 471 | 999.6 | 28 | 42.9 | 300.0 | 500.0 | 200.0 | no | 170ms/4.0u | 35ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.615 | `E` | `N` | . | -. | merged: the sent letter and part of a neighbor | 999.6 | 802.2 | 826.5 | 30 | 40.0 | 300.0 | 500.0 | 200.0 | no | 150ms/3.8u | 35ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 69 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 16.880 | `R` | `I` | .-. | .. | one element lost inside the letter | 826.5 | 999.6 | 8227 | 30 | 40.0 | 300.0 | 500.0 | 200.0 | no | 30ms/0.8u 60ms/1.5u | 40ms/1.0u 25ms/0.6u | textbook 1, 3, 7 units, element-to-character crossover 69 ms
+ wrong | unadjudicated/cw-2026-08-22-031905 | 18.285 | `F` | `W` | ..-. | .-- | none of these | 8227 | 826.5 | 6032 | 34 | 35.3 | 500.0 | 500.0 | 0.0 | no | 120ms/3.4u 90ms/2.6u | 105ms/3.0u 45ms/1.3u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-031948 | 4.690 | `1` | `5` | .---- | ..... | same length, several elements differ | 610.4 | 4330 | 2109 | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no | 85ms/1.3u 85ms/1.3u 80ms/1.2u 85ms/1.3u 80ms/1.2u | 60ms/0.9u 45ms/0.7u 55ms/0.8u 30ms/0.5u 50ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032012 | 1.765 | `O` | `T` | --- | - | split: a part of the sent letter | 9535 | NaN | 7659 | 23 | 52.2 | 500.0 | 500.0 | 0.0 | yes | 180ms/3.5u | 45ms/0.9u | textbook 1, 3, 7 units, element-to-character crossover 90 ms
+ wrong | unadjudicated/cw-2026-08-22-032050 | 11.545 | `U` | `A` | ..- | .- | split: a part of the sent letter | 293 | 74.14 | 237.9 | 34 | 35.3 | 500.0 | 500.0 | 0.0 | yes | 50ms/1.4u 210ms/6.0u | 35ms/1.0u 35ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 61 ms
+ wrong | unadjudicated/cw-2026-08-22-032050 | 16.375 | `P` | `W` | .--. | .-- | split: a part of the sent letter | 1167 | 145.8 | 1039 | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no | 40ms/0.6u 215ms/3.2u 290ms/4.4u | 60ms/0.9u 50ms/0.8u 45ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032050 | 17.745 | `N` | `T` | -. | - | split: a part of the sent letter | 1439 | 289.2 | 1639 | 18 | 66.7 | 500.0 | 500.0 | 0.0 | no | 210ms/3.2u | 70ms/1.1u 50ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032050 | 26.130 | `D` | `H` | -.. | .... | none of these | 1.174E+04 | 1165 | 4053 | 21 | 57.1 | 325.0 | 500.0 | 175.0 | yes | 110ms/1.9u 205ms/3.6u 15ms/0.3u | 55ms/1.0u 10ms/0.2u 10ms/0.2u | textbook 1, 3, 7 units, element-to-character crossover 99 ms
+ wrong | unadjudicated/cw-2026-08-22-032113 | 6.135 | `D` | `O` | -.. | --- | same length, several elements differ | 1171 | 628.1 | 454.9 | 30 | 40.0 | 500.0 | 500.0 | 0.0 | yes | 10ms/0.3u 230ms/5.8u 85ms/2.1u 85ms/2.1u | 10ms/0.3u 50ms/1.3u | textbook 1, 3, 7 units, element-to-character crossover 69 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 4.175 | `2` | `T` | ..--- | - | split: a part of the sent letter | 36.91 | 192.9 | 931.2 | 32 | 37.5 | 500.0 | 650.0 | 150.0 | no | 20ms/0.5u 85ms/2.3u | 15ms/0.4u | textbook 1, 3, 7 units, element-to-character crossover 65 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 4.990 | `0` | `J` | ----- | .--- | none of these | 931.2 | 36.91 | 946.5 | 18 | 66.7 | 500.0 | 650.0 | 150.0 | no | 85ms/1.3u 280ms/4.2u 215ms/3.2u 155ms/2.3u | 60ms/0.9u 55ms/0.8u 55ms/0.8u 50ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 115 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 7.810 | `R` | `G` | .-. | --. | one element of the wrong kind | 386.3 | 942.2 | 1073 | 28 | 42.9 | 500.0 | 650.0 | 150.0 | no | 90ms/2.1u 210ms/4.9u 80ms/1.9u | 40ms/0.9u 55ms/1.3u 55ms/1.3u | textbook 1, 3, 7 units, element-to-character crossover 74 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 16.365 | `L` | `E` | .-.. | . | split: a part of the sent letter | 1219 | 947.1 | 32.43 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | yes | 80ms/0.8u | 95ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 17.400 | `T` | `E` | - | . | one element of the wrong kind | 324.6 | 32.43 | 252.2 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | yes | 50ms/0.5u 10ms/0.1u 25ms/0.3u | 100ms/1.0u 40ms/0.4u 10ms/0.1u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 18.470 | `A` | `I` | .- | .. | one element of the wrong kind | 312.5 | 252.2 | 394.1 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | no | 125ms/1.3u 40ms/0.4u | 100ms/1.0u 20ms/0.2u 70ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 18.865 | `R` | `E` | .-. | . | split: a part of the sent letter | 394.1 | 312.5 | 525.3 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | no | 30ms/0.3u 25ms/0.3u | 110ms/1.1u 75ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 19.330 | `L` | `E` | .-.. | . | split: a part of the sent letter | 525.3 | 394.1 | 69.69 | 8 | 150.0 | 650.0 | 650.0 | 0.0 | yes | 60ms/0.4u 25ms/0.2u | 155ms/1.0u 100ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 260 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 20.065 | `P` | `I` | .--. | .. | none of these | 69.69 | 525.3 | 220.5 | 12 | 100.0 | 650.0 | 650.0 | 0.0 | yes | 85ms/0.9u 30ms/0.3u | 100ms/1.0u 105ms/1.1u | textbook 1, 3, 7 units, element-to-character crossover 173 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 20.660 | `0` | `E` | ----- | . | none of these | 220.5 | 69.69 | 314.8 | 8 | 150.0 | 650.0 | 650.0 | 0.0 | yes | 15ms/0.1u 45ms/0.3u 30ms/0.2u 30ms/0.2u | 110ms/0.7u 10ms/0.1u 20ms/0.1u 105ms/0.7u | textbook 1, 3, 7 units, element-to-character crossover 260 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 21.945 | `3` | `E` | ...-- | . | split: a part of the sent letter | 314.8 | 220.5 | 166.6 | 8 | 150.0 | 650.0 | 650.0 | 0.0 | yes | 30ms/0.2u 95ms/0.6u 20ms/0.1u | 145ms/1.0u 35ms/0.2u 115ms/0.8u | textbook 1, 3, 7 units, element-to-character crossover 260 ms
+ wrong | unadjudicated/cw-2026-08-22-032129 | 22.345 | `4` | `E` | ....- | . | split: a part of the sent letter | 166.6 | 314.8 | 937.3 | 13 | 92.3 | 650.0 | 650.0 | 0.0 | no | 45ms/0.5u 75ms/0.8u | 25ms/0.3u | textbook 1, 3, 7 units, element-to-character crossover 160 ms
+ wrong | unadjudicated/cw-2026-09-24-004108 | 14.340 | `E` | `G` | . | --. | merged: the sent letter and part of a neighbor | 1202 | 1219 | 1529 | 22 | 54.5 | 625.0 | 625.0 | 0.0 | no | 165ms/3.0u 165ms/3.0u 55ms/1.0u | 50ms/0.9u 55ms/1.0u 55ms/1.0u | textbook 1, 3, 7 units, element-to-character crossover 94 ms
+ wrong | unadjudicated/cw-2026-09-24-004108 | 17.775 | `V` | `6` | ...- | -.... | none of these | 1578 | 2855 | 380.7 | 22 | 54.5 | 625.0 | 625.0 | 0.0 | yes | 165ms/3.0u 50ms/0.9u 55ms/1.0u 55ms/1.0u 50ms/0.9u | 50ms/0.9u 60ms/1.1u 55ms/1.0u 55ms/1.0u 60ms/1.1u | textbook 1, 3, 7 units, element-to-character crossover 94 ms
+ wrong | unadjudicated/cw-2026-09-24-004234 | 7.715 | `O` | `T` | --- | - | split: a part of the sent letter | 410.5 | 375.1 | 439.9 | 22 | 54.5 | 620.0 | 625.0 | 5.0 | no | 160ms/2.9u | 50ms/0.9u | held element 17 ms, character 295 ms, word 331 ms, element-to-character crossover 72 ms
+ wrong | unadjudicated/cw-2026-09-24-004234 | 8.045 | `U` | `T` | ..- | - | split: a part of the sent letter | 439.9 | 410.5 | 486.9 | 22 | 54.5 | 620.0 | 625.0 | 5.0 | no | 170ms/3.1u | 50ms/0.9u | held element 17 ms, character 295 ms, word 330 ms, element-to-character crossover 72 ms
+ group | group | count | beside an inserted space | mixed 25 Hz or more off the sender | read under held gaps | recordings | sent -> emitted
+ group | split: a part of the sent letter | 19 | 7 | 1 | 4 | 7 | R->E x2, A->E x2, 2->T x2, O->T x2, L->E x2, D->I x1, 4->T x1, ,->T x1, U->A x1, P->W x1, N->T x1, 3->E x1, 4->E x1, U->T x1
+ group | one element of the wrong kind | 8 | 3 | 4 | 1 | 4 | E->T x2, T->E x2, 6->7 x1, N->I x1, R->G x1, A->I x1
+ group | none of these | 8 | 5 | 3 | 0 | 5 | R->T x1, C->I x1, F->W x1, D->H x1, 0->J x1, P->I x1, 0->E x1, V->6 x1
+ group | merged: the sent letter and part of a neighbor | 5 | 0 | 3 | 0 | 3 | T->A x2, E->A x1, E->N x1, E->G x1
+ group | same length, several elements differ | 2 | 1 | 0 | 0 | 2 | 1->5 x1, D->O x1
+ group | one element lost inside the letter | 1 | 0 | 1 | 0 | 1 | R->I x1
+ pair | sent -> emitted | count | group
+ pair | R .-. -> E . | 2 | split: a part of the sent letter
+ pair | A .- -> E . | 2 | split: a part of the sent letter
+ pair | 2 ..--- -> T - | 2 | split: a part of the sent letter
+ pair | T - -> A .- | 2 | merged: the sent letter and part of a neighbor
+ pair | E . -> T - | 2 | one element of the wrong kind
+ pair | T - -> E . | 2 | one element of the wrong kind
+ pair | O --- -> T - | 2 | split: a part of the sent letter
+ pair | L .-.. -> E . | 2 | split: a part of the sent letter
+ pair | 6 -.... -> 7 --... | 1 | one element of the wrong kind
+ pair | D -.. -> I .. | 1 | split: a part of the sent letter
+ pair | 4 ....- -> T - | 1 | split: a part of the sent letter
+ pair | , --..-- -> T - | 1 | split: a part of the sent letter
+ pair | R .-. -> T - | 1 | none of these
+ pair | C -.-. -> I .. | 1 | none of these
+ pair | E . -> A .- | 1 | merged: the sent letter and part of a neighbor
+ pair | N -. -> I .. | 1 | one element of the wrong kind
+ pair | E . -> N -. | 1 | merged: the sent letter and part of a neighbor
+ pair | R .-. -> I .. | 1 | one element lost inside the letter
+ pair | F ..-. -> W .-- | 1 | none of these
+ pair | 1 .---- -> 5 ..... | 1 | same length, several elements differ
+ pair | U ..- -> A .- | 1 | split: a part of the sent letter
+ pair | P .--. -> W .-- | 1 | split: a part of the sent letter
+ pair | N -. -> T - | 1 | split: a part of the sent letter
+ pair | D -.. -> H .... | 1 | none of these
+ pair | D -.. -> O --- | 1 | same length, several elements differ
+ pair | 0 ----- -> J .--- | 1 | none of these
+ pair | R .-. -> G --. | 1 | one element of the wrong kind
+ pair | A .- -> I .. | 1 | one element of the wrong kind
+ pair | P .--. -> I .. | 1 | none of these
+ pair | 0 ----- -> E . | 1 | none of these
+ pair | 3 ...-- -> E . | 1 | split: a part of the sent letter
+ pair | 4 ....- -> E . | 1 | split: a part of the sent letter
+ pair | E . -> G --. | 1 | merged: the sent letter and part of a neighbor
+ pair | V ...- -> 6 -.... | 1 | none of these
+ pair | U ..- -> T - | 1 | split: a part of the sent letter
+ recording | recording | sure wrong
+ recording | unadjudicated/cw-2026-08-22-032129 | 12
+ recording | unadjudicated/cw-2026-08-22-031905 | 9
+ recording | unadjudicated/cw-2026-08-22-031838 | 5
+ recording | unadjudicated/cw-2026-08-22-032050 | 4
+ recording | unadjudicated/cw-2026-09-23-173723 | 3
+ recording | unadjudicated/cw-2026-08-18-003758 | 3
+ recording | unadjudicated/cw-2026-09-24-004108 | 2
+ recording | unadjudicated/cw-2026-09-24-004234 | 2
+ recording | unadjudicated/cw-2026-08-22-031948 | 1
+ recording | unadjudicated/cw-2026-08-22-032012 | 1
+ recording | unadjudicated/cw-2026-08-22-032113 | 1
+ total | 43 sure-but-wrong characters over 11 recordings, inferred keys | 0 left out as key-doubtful: no scored stretch's key file calls its own reading doubtful | 16 beside a space the decoder inserted | 12 mixed 25 Hz or more off the sender
+
+
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 3.6194 Minutes
+RC=0 WALL=218s
