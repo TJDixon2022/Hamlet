@@ -4,7 +4,7 @@ DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the sp
 STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
 STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
 STEP: 2 | partial | The record is honest - section A, the nine requirements about what the decoder claims and refuses to claim.
-STEP: 3 | not started | Confidence means something - section B, the three classes and their rates, including the dim class the decoder does not have today.
+STEP: 3 | partial | Confidence means something - section B, the three classes and their rates, including the dim class the decoder does not have today.
 STEP: 4 | not started | The pitch is right - section J, and the acquisition requirements of section K that depend on it.
 STEP: 5 | not started | The speed is right - section D, five to forty-five words a minute, acquired cold and tracked through a change.
 STEP: 6 | not started | The text is right - sections H and I, the character table, the prosigns and the word boundaries.
@@ -118,3 +118,34 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 ADVANCES: step 3 criterion 1
 RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
 ENTRY: Version 1.13.129 to 1.13.130. PHASE_STATUS.md names unit 443, CURRENT_STEP 3. HEAD at entry 1308f688. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 371 s; APP carry-forward 278 of 278 in 150 s; captures 51 of 51; adjudicated 13 of 13; named 12 of 13, 17:37 red (floor 46, reads 38) as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 47 of 421 sure (43 substituted, 4 added), 0.1116; MET-INVENTED 47 over 473, 0.0994, split 4 added and 43 substituted, all 47 on the condition whose sender CW_SPEC.md does not state (20 recordings, inferred), 0 on TX-FARNS, TX-ITU and TX-TIGHT (inferred); sure-and-right coverage 374 over 473, 0.7907; MET-WBE 52 over 113, 0.4602. Synthetic, exact keys: MET-INVENTED 14 over 252 (6 added, 8 substituted).
+
+## UNIT 4 - STEP 3
+
+STEP: 3
+APPROACH: trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
+HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Both questions are about test fixtures, one asking for a recording to be added and one asking what was sent so a test key can be settled, and neither touches keying or transmit or changes what the product states to the operator.
+MOVE: work around
+WHY: PHASE_PLAN.md step 2's 2.2 is parked this pass and its remaining 2.4 and 2.5 cannot be built by a unit, and the plan says step 3 is independent of step 2 and is worked when step 2 blocks; step 3 criterion 3.1 asks that the sure added characters be traced as 2.1 traced the wrong ones, which is the measurement HM-REQ-011's MET-INVENTED needs before any change.
+DECIDED: author's, overrulable - (1) step 3 is opened because step 2 is blocked this pass, on the plan's own dependency line; (2) 3.1's '13' is traced at 1fb0bad6 where 439 measured it and matched against HEAD's 4, with the baseline half as the drop candidate; (3) R78 names MET-WBE among its metrics, so no floor is re-banked while 17:37's boundaries are worse and 17:37 stays red, which keeps 3.6 unticked this unit; (4) RivalMargin and MarginLlr are left in src untouched; (5) the parked transmit-file list is neither defined nor ruled on here - the unit reports its src diff file by file and touches nothing that keys or transmits
+LICENCE: PHASE_PLAN.md step 3 dependency line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+COST: 5.293474999999999
+ACCOMPLISHED: every letter the decoder prints with confidence where nothing was sent is traced to its cause, and the commonest cause is attacked, so the operator reads less junk between real words
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: 3.1 is met, with printouts at 1fb0bad6 and at HEAD that give every added letter's recording, span, speed, pitch and marks, but the one change was not kept because MET-INVENTED rose from 47 to 48 and V-11 failed, so 3.2 and 3.3 are open, 3.4 cannot be shown because the traffic-net recording is not in the tree, and 3.6 is not met while 17.37 stays red.
+ADVANCED: yes
+ATTEMPT: 3.1 | unit 4 launched 2026-09-26T01:56:54.125Z | yes | executed | trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
+
+## UNIT 444 - STEP 2
+
+STEP: 2
+APPROACH: trace every gap in 17:37's CQ at HEAD and before G1 with its length, unit, thresholds and call, name the cause of the two boundaries G1 lost, build one gap-duration change that gives them back with G1 kept, and re-bank 17:37's named floor only if no requirement metric on it is worse than before G1
+MOVE: work around
+WHY: PHASE_PLAN.md line 2.5 asks that the three floor tests and both carry-forward lines be green at exit, and the one thing holding it red is 17:37's named floor, which 443's ruling keeps red while G1's two lost word boundaries stand; restoring those boundaries under R78 is the only route to 2.5 that does not loosen V-11. Redirect 1 was the launcher reading "criterion 2.5" as criterion 2, the parked 2.2 - the target was always 2.5, never parked, with no attempt recorded against it and this approach not found by the loop test.
+STATE: partial
+DECIDED: author's, overrulable - (1) 2.5 is worked by repairing the cause of 17:37's red floor rather than re-banking it, keeping 443's DECIDED (3); (2) 442's DECIDED (2), 2.5 green from the unit's working task on, is applied to this unit from task 2, and the report states that 442's and 443's commits exited red; (3) the keep rule for a boundary change adds 17:37's MET-WBE falling to 5 or fewer and the real set's MET-WBE not rising to 3.2's guards; (4) 2.4 is not authored, because no single unit can build it; (5) 443's section 4, the missing traffic-net recording and the 032012 key, is logged and not chased, since neither bears on step 2; (6) ADVANCES is written in the launcher's form "step 2 criterion 5", meaning plan line 2.5, because run-phase.bat takes the digits after "criterion" up to the first non-digit
+LICENCE: PHASE_PLAN.md step 2 line 2.5, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 080, 081, 082; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ADVANCES: step 2 criterion 5
+RUN: launched by tools\arbiter\run-phase.bat; SESSION.lock is the runner's and was not taken or released by the session.
+ENTRY: Version 1.13.130 to 1.13.131. PHASE_STATUS.md names unit 444, CURRENT_STEP 2 in both copies. HEAD at entry 1f6a5789. Entry round, one type per invocation: build 0 errors; ENGINE carry-forward 178 of 178 in 370 s; APP carry-forward 278 of 278 in 154 s; captures 51 of 51; adjudicated 13 of 13; named 12 of 13, 17:37 red (floor 46, reads 38) as recorded. Real keyed recordings, inferred keys, 23 of 23: MET-CER-SURE 47 of 421 sure (43 substituted, 4 added), 0.1116; MET-INVENTED 47 over 473, 0.0994; sure-and-right coverage 374 over 473, 0.7907; MET-WBE 52 (43 inserted, 9 deleted) over 113, 0.4602. 17:37 alone: MET-WBE 7 (6 inserted, 1 deleted) over 6 words, 1.1667; wrong-or-added 3, sure-and-right 17 of 20; text `CQ CQ CQ DEWB6 RE D W B 7E E I`.

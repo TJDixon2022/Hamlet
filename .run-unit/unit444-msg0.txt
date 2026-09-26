@@ -1,0 +1,17 @@
+unit444 task 0: entry at step 2 - 17:37 boundaries wrong 7, floor red at 38 as recorded (2.5)
+
+Outcome entry for unit 444 in both copies, PHASE_STATUS.md names 444 at
+CURRENT_STEP 2 in both copies, version 1.13.130 to 1.13.131. The runner's
+uncommitted PHASE_OUTCOME.md, PHASE_STATUS.md, RUN_LEDGER.md and
+WORK_INSTRUCTIONS.md are committed as the runner wrote them; the session's
+only edits to those files are the 444 lines.
+
+Entry round, one type per invocation: build 0 errors; engine
+carry-forward 178 of 178; app 278 of 278; captures 51 of 51;
+adjudicated 13 of 13; named 12 of 13 (17:37 red, 46 banked, reads 38).
+Real, inferred: MET-CER-SURE 47 of 421, 0.1116; MET-INVENTED 47 over
+473, 0.0994 (4 added, 43 substituted); sure-and-right coverage 374 over
+473, 0.7907; MET-WBE 52 over 113, 0.4602. 17:37 alone: MET-WBE 7 over 6
+words (6 inserted, 1 deleted), text CQ CQ CQ DEWB6 RE D W B 7E E I.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

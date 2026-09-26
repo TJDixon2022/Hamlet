@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-WORK_INSTRUCTION: 443 - the letters the decoder adds between words
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 444 - WB6RED read as one callsign again
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-25T22:59:43-04:00
-NOTE: Unit 443 complete: added letters traced 13 to 4, 3.1 ticked; double-read rule not kept (MET-INVENTED 47 to 48)
+UPDATED: 2026-09-25T23:21:23-04:00
+NOTE: Entry round done, 17:37 boundaries wrong 7 and floor red at 38 as recorded; committing the entry
 
 ---
 

@@ -1,20 +1,27 @@
-# Work instruction 443 - the letters the decoder adds between words
+# Work instruction 444 - WB6RED read as one callsign again
 
-**Seeded by `run-phase.bat`, redirected once.** By the plan's checkboxes, step 2 stands at 3 of 5:
-2.1, 2.2 and 2.3 are ticked. 2.2 is parked for this pass because its question is waiting on the owner
-in `PARKED.md`. What is left in step 2 is 2.4, a closing rule that no single unit can build, and 2.5,
-which is held red by 17:37's named floor. **`PHASE_PLAN.md` step 3 says: "Independent of step 2: when
-one blocks the arbiter works the other."** So this unit opens step 3.
+**Authored by the arbiter against step 2's open criterion 2.5.** By the plan's checkboxes, step 2
+stands at 3 of 5: 2.1, 2.2 and 2.3 are ticked. 2.4 is a closing rule that fires after three
+consecutive step-2 units with no kept change. No unit can build it, so this unit does not aim at it.
+**2.5 is open for one reason: 17:37's named floor is red.** It was banked at 46 and now reads 38.
 
-**Step 3 is HM-REQ-011: MET-INVENTED at zero.** Unit 439 measured **13 sure added characters** over
-473 sent. After 441's two kept changes, the tree measures **4** (unit 442's entry). Those added
-characters are the litter between real words that the operator reads as text, such as the 7.052
-traffic net's `EETTTEETTTTTTTTETTETETKTETEE` between `GRAY KC` and `LIVER VIA`. Nobody has traced
-them yet. This unit traces them the way 2.1 traced the wrong ones, then builds one change against
-what the trace shows.
+17:37 went red under G1 (`42d5dbb9`), one of the two changes 441 kept for 2.2. On 17:37, G1 took
+the sure letters that were wrong or added from 14 to 3, and the right ones from 14 to 17. It also
+made the **word boundaries worse, from 5 wrong to 7**. The key, inferred, is
+`CQ CQ CQ DE WB6RED WB6RED`. Before G1 the decoder read `CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`.
+Under G1 it reads **`CQ CQ CQ DEWB6 RE D W B 7E E I`**. The letters are much closer, but the operator
+reads a callsign cut into pieces and `DE` glued to it.
+
+Units 442 and 443 did not re-bank the floor, because R78 names MET-WBE among its metrics and
+17:37's boundaries got worse (443's DECIDED 3, in force). **The only honest way to turn 17:37
+green is a change that gives the boundaries back.** A lowered floor does not count. This unit
+traces the gaps G1 re-classified on 17:37 and builds one change that restores them. If the change
+is kept and every requirement metric on 17:37 is no worse than before G1, the floor is re-banked
+and 2.5 can be ticked.
 
 **The owner's standing order still holds, 2026-09-25:** *"Write something that materially
-advances CW in the most significant way we can handle."*
+advances CW in the most significant way we can handle."* A CQ whose callsign reads as one word is
+the thing the operator answers.
 
 ---
 
@@ -44,9 +51,8 @@ If all six hold, say "Hamlet confirmed" and continue.
 
 ## 1. Why this unit exists
 
-The count today: **step 2 at 3 of 5 criteria met, and step 3 at 0 of 6.** Steps 0 and 1 are done,
-and steps 4 to 8 are not started. At HEAD `1308f688`, on real recordings with inferred keys (unit
-442's exit):
+The count today: **step 2 at 3 of 5, step 3 at 1 of 6.** Steps 0 and 1 are done, and steps 4 to 8
+are not started. At HEAD `1f6a5789`, on real recordings with inferred keys (unit 443's exit):
 
 | metric | count | value |
 |---|---|---|
@@ -55,45 +61,52 @@ and steps 4 to 8 are not started. At HEAD `1308f688`, on real recordings with in
 | sure-and-right coverage (R82) | 374 over 473 | 0.7907 |
 | MET-WBE | 52 over 113 | 0.4602 |
 
-Floors: captures 51 of 51, adjudicated 13 of 13, named 12 of 13 (17:37 is red).
+Floors: captures 51 of 51, adjudicated 13 of 13, named 12 of 13 (17:37 banked 46, reads 38).
 
 ```
 PHASE GOAL: Hamlet meets the CW requirements.
-UNIT GOAL:  Every sure character the decoder added where nothing was sent is traced, and it
-            is shown which of unit 439's 13 are already gone and why. Then one change removes
-            the largest group of what is left, without adding a wrong letter.
-ADVANCES:   step 3 criterion 1
+UNIT GOAL:  17:37's CQ reads DE and WB6RED as the words that were sent, with G1's letters kept,
+            so that no requirement metric on 17:37 is worse than before G1, its named floor
+            is honestly green, and step 2's floors and carry-forward lines are green at exit.
+ADVANCES:   step 2 criterion 5 - the plan's line 2.5
 ```
 
-**Read `CW_REQUIREMENTS.md` first, then `CW_SPEC.md`, including §11 for MET-INVENTED's
-definition.** Where they differ from this instruction, they win. Here are the requirement ids this
-unit works toward. **Quote each from the document in section 1, and report any difference from this
-instruction as a mismatch.**
+**A note on the form of ADVANCES.** The launcher reads `step N criterion k`, where k is the number
+after the step's dot. So `step 2 criterion 5` means the plan's line `- [ ] 2.5`. This arbiter's
+first draft wrote `criterion 2.5`. The launcher read that as criterion 2, took it for the parked
+2.2, and redirected it. The target has not changed. It is 2.5 throughout this instruction, and in
+the commit messages as well.
 
-- **HM-REQ-011:** MET-INVENTED at zero on the must-tier conditions.
-- **HM-REQ-010:** MET-CER-SURE below 1 %. This is the guard: a change may not remove an added letter
-  by making a sure letter wrong.
-- **HM-REQ-012, 014, 015:** the confidence classes and what "sure" promises. Quote them. A letter
-  that is not sent may go to unknown or dim. It may not be printed as sure.
+**Read `CW_REQUIREMENTS.md` first, then `CW_SPEC.md`, including §11 for MET-WBE's definition.**
+Where they differ from this instruction, they win. Here are the requirement ids this unit works
+toward. **Quote each from the document in section 1, and report any difference as a mismatch.**
+
+- **HM-REQ-010:** MET-CER-SURE below 1 %. This is the guard: the boundary change may not make a sure
+  letter wrong.
+- **HM-REQ-011:** MET-INVENTED at zero. It is a guard too: a boundary change may not add a letter.
+- **HM-REQ-080, 081, 082:** word boundaries and MET-WBE, measured separately from character errors.
+  Quote them.
+- **V-11** from `CW_SPEC.md`: no change may redden an earlier capture to green a newer one.
 
 ## 2. Verify this instruction against the tree
 
 Check each of these. **Where one is wrong, report it as a mismatch in section 1 and carry on. Do not
 repair it.**
 
-- Commits `1fb0bad6` (unit 440's entry, where 439's 13 added were measured), `f14b2453`, `42d5dbb9`
-  (G1) and `14f515bd` (the marks' speed) are in HEAD's ancestry.
-- `.run-unit/unit440-trace.txt` is the 2.1 trace and prints the sure-wrong letters only. Nothing in
-  the tree traces the added ones yet.
-- The string `EETTTEETTTTTTTTETTETETKTETEE` appears in no fixture or test, only in the plan. Find the
-  7.052 traffic-net recording it comes from by its text and its `cases-*.txt` row, and name it. If
-  it cannot be found, say so. Do not reconstruct it.
-- **Expected failures at entry, and they are not yours to fix:** 17:37's named floor is red (banked
-  46, reads 38). `TheFiveToEightDecibelPlateauHolds` is the correctness phase's recorded red. The
-  app line loses up to 5 to the dispatcher loop, and each of those types is green alone.
+- `42d5dbb9` (G1) and `14f515bd` (the marks' speed) are in HEAD's ancestry. G1 is in
+  `CwUnitEstimator.MeasureGaps`: it returns textbook gaps when the clipped character gap is at or
+  past the word gap.
+- 17:37's named floor reads 38 against a banked 46. Name the test, the file and the row that holds
+  it, and **say what the floor counts**.
+- `docs/phase-requirements/metrics.md` gives 17:37 as `CQ CQ CQ DEWB6 RE D W B 7E E I` under G1,
+  with boundaries wrong 5 before G1 and 7 after. Confirm both at HEAD.
+- **Expected failures at entry, and they are not yours to fix:** 17:37's named floor is red.
+  `TheFiveToEightDecibelPlateauHolds` is the correctness phase's recorded red and is in neither
+  line. The app line loses up to 5 to the dispatcher loop, and each of those types is green alone.
 - **Known and not yours:** `PHASE_OUTCOME.md`'s header still lists the old titles for steps 2, 3
   and 8. `CW_SPEC.md` §11 still defines MET-COVERAGE as sure over sent, where R82 makes it
-  sure-and-right. Report each once and do not edit either.
+  sure-and-right. The reload also reports that `PROJECT_STATUS.md` RULES_AT says HM-DEC-165 while
+  `CLAUDE.md` §1 holds CPS-DEC-0183. Report each once and do not edit any of them.
 
 ## 3. Rulings in force - do not re-argue
 
@@ -101,22 +114,25 @@ repair it.**
   - **R82:** MET-COVERAGE is sure-and-right over sent.
   - **R83:** a unit of this phase changes what the operator reads, or it is not authored.
 - **R78, the keep rule.** A change is kept when it moves a requirement's metric the right way and
-  breaks no other requirement. **For this unit's change, as 3.2 states it:**
-  - MET-INVENTED falls;
+  breaks no other requirement. **For this unit's change:**
+  - MET-WBE on 17:37 falls to 5 or fewer, which is its count before G1;
+  - MET-WBE over the real set does not rise;
   - MET-CER-SURE does not rise;
+  - MET-INVENTED does not rise;
   - sure-and-right coverage does not fall;
   - the adjudicated readings hold, or move onto their own adjudicated text;
-  - V-11 holds, per keyed recording.
+  - V-11 holds per keyed recording on all four metrics.
 
-  R78 lists **MET-WBE** among its four metrics, so report it before and after. **A capture row's
-  character count falling is reported, not rejected.**
-- **V-11:** no change may redden an earlier capture to green a newer one. It is judged on the
-  requirements' metrics.
+  **A capture row's character count falling is reported, not rejected.**
+- **Arbiter rulings carried, not re-argued:** 443's DECIDED (3): no floor is re-banked while
+  17:37's boundaries are worse than before G1. 442's DECIDED (2): 2.5 is read as green at the exit
+  of every commit from the unit's working task on. This unit applies it from its task 2 on.
 - **V-13:** an inferred key is not proof by itself. **V-04 and V-14:** no fixture is admitted by
   lowering a gate, and no plausibility bound is loosened to pass one.
-- **R72:** no word, dictionary or callsign prior, in any form. **A character is dropped because of
-  its marks, its gaps, its energy and its timing, never because of the letters around it or the word
-  it would make.**
+- **R72:** no word, dictionary or callsign prior, in any form. **A gap is called a word space or a
+  letter space from its duration against the unit and from the marks around it, never from the
+  letters on either side or the word they would make.** Knowing that `WB6RED` is a callsign may not
+  enter the rule in any form.
 - **`CLAUDE.md` §0.0:** never present a guess as a decode. **§0.2:** nothing that keys or transmits.
 - **HM-DEC-155:** no suite. Named types only, one per invocation, each with its own `timeout`.
   Captures get 600 s and `WhatTheOpeningHeardTests` gets 900 s. **Never background and poll.**
@@ -130,7 +146,7 @@ to `RUN_LEDGER.md` and touch nothing under `tools\arbiter\`.
 
 Apostrophes in quoted heredocs break. Doubled backslashes collapse. `;` is refused, `rm` is refused,
 and Python cannot run here. A multi-line commit uses `-m` more than once. Scripts go in
-`.run-unit\unit443-<name>.sh` and run with `sh`. **Never compose a timestamp. Read the clock.**
+`.run-unit\unit444-<name>.sh` and run with `sh`. **Never compose a timestamp. Read the clock.**
 
 ---
 
@@ -138,73 +154,65 @@ and Python cannot run here. A multi-line commit uses `-m` more than once. Script
 
 ### Task 0 - the entry
 
-- `PHASE_OUTCOME.md` gets `## UNIT 443 - STEP 3` from the decision block at the foot.
-- `PHASE_STATUS.md` names 443 and `CURRENT_STEP: 3`. Patch-bump.
+- `PHASE_OUTCOME.md` gets `## UNIT 444 - STEP 2` from the decision block at the foot.
+- `PHASE_STATUS.md` names 444 and `CURRENT_STEP: 2`. Patch-bump.
 - Entry round: build, both carry-forward lines, the three floor tests, and the four metrics, each
-  printed as a number. **MET-INVENTED is printed split into added and substituted, per condition,
-  with the key's kind beside each number.**
-- Commit the root's uncommitted `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and
-  `PARKED.md` with the entry. **These are the runner's writes.** Commit them as they are and do not
-  edit them.
+  printed as a number. **Print MET-WBE for 17:37 on its own, and 17:37's text at HEAD.**
+- Commit the root's uncommitted `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` with the
+  entry. **These are the runner's writes.** Commit them as they are and do not edit them.
 
-### Task 1 - the trace of the added characters (3.1, and 3.4's "before")
+### Task 1 - the gap trace on 17:37 (the measurement 2.5's change is built from)
 
-**A fact that asserts nothing**, in the form of `WhereTheSureWrongLettersComeFromTests`. Write it as a
-new fact beside that one and do not change the old one. For **every sure character that MET-INVENTED
-counts as added**, print:
+**A fact that asserts nothing**, beside `WhereTheSureAddedLettersComeFromTests`. For **every gap
+between marks from `CQ CQ CQ` to the end of 17:37**, print:
 
-- the recording, and the time in seconds;
-- the text either side, as sent and as emitted;
-- the character emitted, and its element pattern;
-- its span, and the spans before and after it;
-- the speed and the unit in milliseconds at the hop;
-- the pitch at the hop, and the sender's pitch;
-- the envelope's marks and gaps under it, in milliseconds and in units;
-- whether it sits beside an inserted or a missed word space;
-- its energy against the noise at the hop, if the decoder has that number. If it does not, say so.
+- the time in seconds, and its length in ms and in units;
+- the unit in force and where it came from: G1's textbook gaps, or the measured ones;
+- the word-gap and letter-gap thresholds in force at that hop;
+- how the decoder called the gap: element, letter or word;
+- how the key calls it, where the alignment can say. Where it cannot, say so;
+- the marks either side, in ms and in units.
 
-**Run it twice.** Run it at `1fb0bad6`, where 439's 13 stand, by checking out only the decoder's
-`src` files as 442 did and restoring them afterwards. Then run it at HEAD, where 4 stand. **Match
-the two lists.** Mark each of the 13 as gone or still there, and each of the 4 as old or new. For
-each one that went, name which of 441's two commits removed it. **Then group what is left at HEAD
-by what the characters have in common**, and name the largest group.
+**Run it twice:** at HEAD, and with `src/Hamlet.RadioEngine/Cw` checked out at `f14b2453`, which is
+the commit before G1. Restore `src` afterwards, as 443 did. **Line the two runs up gap by gap.**
+Mark every gap whose call changed under G1, and say whether the key agrees with the old call or the
+new one. **Name the cause in one sentence.** For example, G1's textbook gaps set the word threshold
+below gaps that are letter spaces on this sender, or the reverse. Then check whether the same cause
+reaches any other keyed recording whose MET-WBE rose under G1. Name each one.
 
-**Then print 3.4's text at HEAD:** the traffic net recording from `GRAY KC` to `LIVER VIA`, as the
-operator reads it. Print it beside the plan's `EETTTEETTTTTTTTETTETETKTETEE`, and say at which
-commit that text was read, if the tree records it. **Say whether that recording has a key.** If it
-has none, its characters are not counted by MET-INVENTED, and the report must say that plainly.
-
-**The drop candidate is the `1fb0bad6` half of the run.** If the unit runs long, drop it, trace
-HEAD only, and say that 3.1 is then met only against today's added characters and not against
-439's 13.
+**The drop candidate is the `f14b2453` half.** If the unit runs long, trace HEAD only. Give G1's
+call from `CwUnitEstimator.MeasureGaps`'s own logic, and say that the before-G1 column is reasoned,
+not measured.
 
 Commit the fact and its printout.
 
-### Task 2 - one change against the largest group (3.2)
+### Task 2 - one change that gives the boundaries back (2.5)
 
-**This is the unit's real work.** Build **one** change, aimed at the cause task 1 named for its
-largest group. That group may be a single short element in a long gap, a mark below the energy the
-others rest on, or a letter printed before acquisition. **If the added characters are few and
-share no cause, aim at the untraced litter 3.4 shows instead.** Say which you chose. **Take the rule
-from the trace. Do not tune it after you have seen R78's numbers.** A letter that is not sent may be
-dropped, or it may be printed as unknown or dim. It may not be printed as sure.
+**This is the unit's real work.** Build **one** change, aimed at the cause task 1 named. **Take the
+rule from the trace. Do not tune it after you have seen R78's numbers.** The rule works on gap
+durations, units and marks only (R72).
 
-- G1 and the marks' speed stay. Do not revert or weaken either one.
-- `RivalMargin` and `MarginLlr` stay as they are. Do not remove them, and do not extend them.
+- G1 and the marks' speed stay. Do not revert or weaken either one. **If the cause is G1's
+  condition itself, narrow the condition. Do not remove it.** Show that the 11 sure-wrong-or-added
+  letters G1 removed on 17:37 stay removed.
+- `RivalMargin` and `MarginLlr` stay as they are.
 
 **Judge the change under §3's list, every item as a number.** Print every recording whose text
 changes, before and after. Keep it or do not keep it, and give the reason in one line.
 
-**If it is kept:** commit the change on its own. Write MET-INVENTED and MET-CER-SURE before and
-after to `docs/phase-requirements/metrics.md`, per condition, with the key's kind beside each
-number (3.3). Print 3.4's text after the change. The three floor tests and both carry-forward lines
-exit green, apart from §2's recorded reds.
+**If it is kept:**
+- Commit the change on its own.
+- Write MET-WBE and MET-CER-SURE before and after to `docs/phase-requirements/metrics.md`, per
+  condition, with the key's kind beside each number.
+- Then look at 17:37's named floor. **Re-bank it only if every requirement metric on 17:37 is no
+  worse at HEAD than at `f14b2453`:** wrong-or-added, sure-and-right, and boundaries wrong. If so,
+  re-bank it at its HEAD count in its own commit. Print the rule's line and the three numbers before
+  and after in the commit message. If any one of them is worse, leave the floor red and say which.
+- **From that commit on, every commit ends with the three floor tests and both carry-forward lines
+  green**, apart from §2's recorded reds.
 
 **If it is not kept:** leave it out of `src`, commit its diff as
-`.run-unit/unit443-added-notkept.diff`, and record it in `metrics.md`.
-
-**Do not re-bank any floor.** 17:37 stays red at its recorded 38. Do not make it or any other row
-worse.
+`.run-unit/unit444-wbe-notkept.diff`, and record it in `metrics.md`. 17:37 stays red.
 
 ### Task 3 - the exit round
 
@@ -212,13 +220,17 @@ worse.
   each printed as a number.
 - **Report what changed in `src`, file by file**, that none of it keys or transmits, and that it was
   pushed.
-- **Tick 3.1** in both copies of `PHASE_PLAN.md` only if task 1's trace printed every added
-  character with every field it names, at HEAD and at `1fb0bad6`, and grouped them. Print the one
-  line of evidence. **Tick 3.2 and 3.3** only if the change was kept and every item of §3's list
-  holds. **Do not tick 3.4:** it needs "before and after" on a kept change and a text the owner
-  reads, and if task 2 kept one, report it for the next unit. **Do not tick 3.6** while 17:37 is
-  red.
-- Report DRIFT for step 3: 0 if the change was kept, 1 if not.
+- **Tick 2.5** in both copies of `PHASE_PLAN.md` only if all three hold:
+  - the change was kept;
+  - 17:37 was re-banked under task 2's rule;
+  - the three floor tests (named 13 of 13) and both carry-forward lines were green at the exit of
+    the re-bank commit and of every later commit of this unit.
+
+  Print each of those commits with its floor and carry-forward numbers as the evidence line. Say
+  plainly that the commits of 442 and 443 exited with 17:37 red.
+- **Do not tick 2.4.**
+- Report DRIFT for step 2, the consecutive step-2 units without a kept change: 441 kept, 442 did
+  not. So it is 0 if this unit's change was kept, and 2 if not.
 
 ---
 
@@ -227,29 +239,32 @@ worse.
 - Everything in `PARKED.md`, including step 2's question on which files the transmit check covers.
   **This unit does not define or run a transmit-file list.** It reports its `src` diff file by file,
   and that is all.
-- Step 2's 2.2, 2.4 and 2.5, and 17:37's named floor.
+- 443's section 4. The 7.052 traffic-net recording is not in the tree, and whether `032012` sent
+  `117.1.` is the owner's to hear. Neither bears on 2.5.
 - The correctness phase's 5.1, which is Tim's, and everything in `PHASE_PLAN.md` §7 (Carried).
 - The decision log, the traceability table, and the 43 tests that measure something else. These
   are step 8 (R80).
 - `PHASE_OUTCOME.md`'s stale header, and `CW_SPEC.md` §11's coverage text.
-- MET-WBE as a target. That is step 6.
+- MET-WBE over the corpus as a target. That is step 6. This unit moves boundaries only where G1 moved
+  them.
 
 ## 7. What not to do
 
-- Do not drop or dim a character because of the letters beside it or the word it would make (R72).
+- Do not call a gap a word space or a letter space because of the letters beside it or the word it
+  would make (R72).
+- Do not re-bank 17:37, or any floor, except under task 2's rule. Do not re-bank any other row.
 - Do not move the rule after reading R78's numbers. Do not add a second rule to rescue a recording.
 - Do not loosen a gate or a plausibility bound to pass a fixture (V-04, V-14).
-- Do not reject a change because a character count fell. Report it (R78).
-- Do not re-bank a floor. Do not revert G1 or the marks' speed.
+- Do not revert G1 or the marks' speed.
 - Do not spend a task on the record beyond task 0's entry and the ticks.
 - Do not halt on a question. Write one line in section 4 and go on.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
 
 ## 8. Committing and pushing
 
-One commit per task, and **one commit for the change on its own**. Each message names the criterion it
-serves: `unit443 task N: <what> (3.1)`. Push to `origin/main` after each commit. End every commit
-message with:
+One commit per task, **one commit for the change on its own, and one for the re-bank on its own**.
+Each message names the criterion it serves: `unit444 task N: <what> (2.5)`. Push to `origin/main`
+after each commit. End every commit message with:
 
 ```
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
@@ -273,43 +288,45 @@ your permissions refuse the call, say so, and check the rules by hand.
 ```
 READ IN THIS ORDER.
 
-A. Hamlet meets the CW requirements: step 2 at 3 of 5 (2.2 parked), step 3 at <n> of 6 by the
-   plan's checkboxes, steps 0 and 1 done, 4 to 8 not started.
-B. Step 3, HM-REQ-011 with HM-REQ-010 as the guard: 3.1 <ticked, or what is missing>; the
-   change <kept or not>, with §3's numbers. Added <13 at 1fb0bad6> -> <n at entry> -> <n at exit>;
-   MET-INVENTED <before> -> <after>; MET-CER-SURE <before> -> <after>.
+A. Hamlet meets the CW requirements: step 2 at <n> of 5, step 3 at 1 of 6 by the plan's
+   checkboxes, steps 0 and 1 done, 4 to 8 not started.
+B. Step 2, criterion 2.5, with HM-REQ-080/081 on 17:37 and HM-REQ-010/011 as guards: the change
+   <kept or not>, with §3's numbers. 17:37 boundaries wrong <7> -> <n>; MET-WBE <52> -> <n> over
+   113; MET-CER-SURE <before> -> <after>; 17:37's floor <re-banked at n, or red at 38>; 2.5
+   <ticked, or what is missing>.
 C. What this report adds, and whether it stands in the way of a criterion in B.
    Section 4 raises <N> items; <which, if any, is in the way of a criterion in B>.
 ```
 
 ```
-UNIT:       443 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
+UNIT:       444 - <complete|stopped> at task N of 3, <dropped or none dropped> - <date time>
 PHASE GOAL: <in your own words>
 UNIT GOAL:  <in your own words>
 ADVANCED:   <yes|no> - <which criteria flipped in PHASE_PLAN.md>
-NUMBER:     added <n> -> <n>; MET-INVENTED <n> -> <n>; MET-CER-SURE <n> -> <n>
-DRIFT:      <consecutive units on step 3 without a kept change>
+NUMBER:     17:37 boundaries wrong <n> -> <n>; MET-WBE <n> -> <n>; MET-CER-SURE <n> -> <n>
+DRIFT:      <consecutive step-2 units without a kept change>
 ```
 
-**Section 3 opens with what the operator reads.** Give the traffic net's text from `GRAY KC` to
-`LIVER VIA` at entry, and at exit if it changed. Then give every recording whose text changed,
-before and after, with each added character that went marked in brackets.
+**Section 3 opens with what the operator reads.** Give 17:37 before G1, at entry and at exit:
+`CQ CQ CQ DEWTEETEEERE D ETTTB 7E E I`, `CQ CQ CQ DEWB6 RE D W B 7E E I`, and the exit text, beside
+the key `CQ CQ CQ DE WB6RED WB6RED`. Then give every other recording whose text changed, before and
+after.
 
-**Section 2, in one paragraph:** Does the operator now see fewer letters where nothing was sent,
-without any letter that was sent turning wrong? On what evidence (V-13)?
+**Section 2, in one paragraph:** Does the operator now read the callsign in 17:37's CQ as one word,
+with no letter turned wrong anywhere? Say on what evidence (V-13), and whether the floors are green.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 3
-APPROACH: trace every sure added character at 439's baseline and at HEAD with span, speed, pitch, marks, gaps and energy, match the two lists to show which 441 removed, group what is left, and build one change against the largest group, kept under R78 with MET-INVENTED falling
+STEP: 2
+APPROACH: trace every gap in 17:37's CQ at HEAD and before G1 with its length, unit, thresholds and call, name the cause of the two boundaries G1 lost, build one gap-duration change that gives them back with G1 kept, and re-bank 17:37's named floor only if no requirement metric on it is worse than before G1
 MOVE: work around
-WHY: PHASE_PLAN.md step 2's 2.2 is parked this pass and its remaining 2.4 and 2.5 cannot be built by a unit, and the plan says step 3 is independent of step 2 and is worked when step 2 blocks; step 3 criterion 3.1 asks that the sure added characters be traced as 2.1 traced the wrong ones, which is the measurement HM-REQ-011's MET-INVENTED needs before any change.
-STATE: not started
-DECIDED: author's, overrulable - (1) step 3 is opened because step 2 is blocked this pass, on the plan's own dependency line; (2) 3.1's "13" is traced at 1fb0bad6 where 439 measured it and matched against HEAD's 4, with the baseline half as the drop candidate; (3) R78 names MET-WBE among its metrics, so no floor is re-banked while 17:37's boundaries are worse and 17:37 stays red, which keeps 3.6 unticked this unit; (4) RivalMargin and MarginLlr are left in src untouched; (5) the parked transmit-file list is neither defined nor ruled on here - the unit reports its src diff file by file and touches nothing that keys or transmits
-LICENCE: PHASE_PLAN.md step 3 dependency line, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 012, 014, 015; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
-ACCOMPLISHED: every letter the decoder prints with confidence where nothing was sent is traced to its cause, and the commonest cause is attacked, so the operator reads less junk between real words
-ADVANCES: step 3 criterion 1
+WHY: PHASE_PLAN.md line 2.5 asks that the three floor tests and both carry-forward lines be green at exit, and the one thing holding it red is 17:37's named floor, which 443's ruling keeps red while G1's two lost word boundaries stand; restoring those boundaries under R78 is the only route to 2.5 that does not loosen V-11. Redirect 1 was the launcher reading "criterion 2.5" as criterion 2, the parked 2.2 - the target was always 2.5, never parked, with no attempt recorded against it and this approach not found by the loop test.
+STATE: partial
+DECIDED: author's, overrulable - (1) 2.5 is worked by repairing the cause of 17:37's red floor rather than re-banking it, keeping 443's DECIDED (3); (2) 442's DECIDED (2), 2.5 green from the unit's working task on, is applied to this unit from task 2, and the report states that 442's and 443's commits exited red; (3) the keep rule for a boundary change adds 17:37's MET-WBE falling to 5 or fewer and the real set's MET-WBE not rising to 3.2's guards; (4) 2.4 is not authored, because no single unit can build it; (5) 443's section 4, the missing traffic-net recording and the 032012 key, is logged and not chased, since neither bears on step 2; (6) ADVANCES is written in the launcher's form "step 2 criterion 5", meaning plan line 2.5, because run-phase.bat takes the digits after "criterion" up to the first non-digit
+LICENCE: PHASE_PLAN.md step 2 line 2.5, R78, R80, R81, section 6; R82 and R83 as recorded in work instruction 441; arbiter rulings 442 DECIDED (2) and 443 DECIDED (3); V-11; V-13; V-04; V-14; R72; HM-REQ-010, 011, 080, 081, 082; HM-DEC-155; HM-DEC-165; CLAUDE.md 0.0 and 0.2
+ACCOMPLISHED: a CQ call whose callsign the confident-letter fix broke into pieces reads as the words that were sent again, with the fix kept, and every floor test is honestly green so step 2's exit holds
+ADVANCES: step 2 criterion 5
 END-ARBITER-DECISION
 ```
