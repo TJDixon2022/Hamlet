@@ -4,7 +4,7 @@
 cd /c/Source/HamLet || exit 1
 export LC_ALL=C
 W=${2:-600}
-P="needs|bound|grid|case"
+P="needs|bound|grid|case|decode time"
 if [ -n "$3" ]; then P="case"; fi
 grep -aE "^\s*($P)[^|]*\|" .run-unit/unit446-speed-$1.txt | sed -E "s/^\s+//" | awk '!seen[$0]++' | cut -c1-$W
 grep -aE "Assert\.|Actual|Failed " .run-unit/unit446-speed-$1.txt | head -16

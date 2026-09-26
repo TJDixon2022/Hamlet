@@ -1,0 +1,106 @@
+diff --git a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+index 86e4b0f5..ad8fbb80 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+@@ -385,7 +385,11 @@ public sealed class CwDecoder
+     public void Retuned() => Unlock();
+ 
+     /// <summary>The slowest speed anybody would call a speed.</summary>
+-    public const int SlowestPlausibleWpm = 6;
++    /// <remarks>
++    /// Five, HM-REQ-030's slow end (work instruction 446). At six, a station read
++    /// at five had its speed withheld from the operator.
++    /// </remarks>
++    public const int SlowestPlausibleWpm = 5;
+ 
+     /// <summary>The fastest the radio's own keyer sends.</summary>
+     public const int FastestPlausibleWpm = 48;
+diff --git a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+index be893abc..ba79064a 100644
+--- a/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
++++ b/src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+@@ -456,14 +456,16 @@ public static class CwProbabilisticDecoder
+ 
+     /// <summary>The slowest speed hypothesis tried.</summary>
+     /// <remarks>
+-    /// **EIGHT, BECAUSE A GRID THAT STOPS AT TEN CANNOT FIT A TEN.** A hypothesis
+-    /// at the very edge of the range wins by default rather than on evidence:
+-    /// there is nothing below it to lose to, so a sender slower than the floor is
+-    /// fitted at the floor whatever he is actually doing. The operator this
+-    /// application is for works people sending eight to twelve on a straight key,
+-    /// which is the slowest thing on the band and the easiest to copy by ear.
++    /// <para>**FIVE, BECAUSE HM-REQ-030 RULES FIVE A HARD END** (work instruction
++    /// 446). A hypothesis at the very edge of the range wins by default rather
++    /// than on evidence: there is nothing below it to lose to, so a sender slower
++    /// than the floor is fitted at the floor whatever he is actually doing.</para>
++    /// <para>**AT EIGHT, A FIVE WAS FITTED AT EIGHT**, sixty per cent fast, and a
++    /// generated CQ at five printed 35 wrong sure letters for 21 sent. The old
++    /// floor's reason - a grid that stops at ten cannot fit a ten - is the same
++    /// reason one step further down.</para>
+     /// </remarks>
+-    public const double SlowestWpm = 8;
++    public const double SlowestWpm = 5;
+ 
+     /// <summary>The fastest speed hypothesis tried.</summary>
+     /// <remarks>
+@@ -483,8 +485,12 @@ public static class CwProbabilisticDecoder
+     /// <para>**AND A WINNER AT EITHER END IS NOW SAID OUT LOUD**, so a range
+     /// limit is never again mistaken for a measurement
+     /// (<see cref="CwProbabilisticResult.SpeedIsAtTheEdge"/>).</para>
++    /// <para>**FORTY-FIVE, BECAUSE HM-REQ-030 RULES FORTY-FIVE A HARD END** (work
++    /// instruction 446). At forty, a generated CQ at forty-five read every letter
++    /// right and was shown as thirty-six: the unit the window measured was
++    /// refused for lying outside the grid, and the grid chose.</para>
+     /// </remarks>
+-    public const double FastestWpm = 40;
++    public const double FastestWpm = 45;
+ 
+     /// <summary>How far apart the speed hypotheses sit.</summary>
+     /// <remarks>
+@@ -508,6 +514,31 @@ public static class CwProbabilisticDecoder
+     /// </remarks>
+     public const double WpmStep = 2;
+ 
++    /// <summary>Every speed hypothesis the search tries, slowest first.</summary>
++    /// <remarks>
++    /// **THE EVEN SPEEDS THE GRID HAS ALWAYS TRIED, AND THE TWO ENDS** (work
++    /// instruction 446, author's, overrulable): every whole step of
++    /// <see cref="WpmStep"/> from eight that lies inside the range, which is six
++    /// to forty-four, with <see cref="SlowestWpm"/> and <see cref="FastestWpm"/>
++    /// themselves added. Stepping from five instead would move every hypothesis
++    /// onto the odd speeds, which is a different grid rather than a wider one.
++    /// </remarks>
++    public static IReadOnlyList<double> SpeedGrid { get; } = BuildSpeedGrid();
++
++    private static double[] BuildSpeedGrid()
++    {
++        const double anchor = 8;
++        var first = anchor - (Math.Floor((anchor - SlowestWpm) / WpmStep) * WpmStep);
++        var grid = new SortedSet<double> { SlowestWpm, FastestWpm };
++
++        for (var wpm = first; wpm <= FastestWpm + 1e-9; wpm += WpmStep)
++        {
++            grid.Add(wpm);
++        }
++
++        return grid.ToArray();
++    }
++
+     /// <summary>One element kind the model knows about.</summary>
+     /// <param name="Units">How many dit-lengths it is expected to last.</param>
+     /// <param name="IsKeyDown">Whether the key is down for it.</param>
+@@ -760,10 +791,11 @@ public static class CwProbabilisticDecoder
+         IReadOnlyList<CwProbabilisticCharacter> bestCharacters =
+             Array.Empty<CwProbabilisticCharacter>();
+ 
+-        var from = atWordsPerMinute ?? SlowestWpm;
+-        var to = atWordsPerMinute ?? FastestWpm;
++        var speeds = atWordsPerMinute is { } imposed
++            ? new[] { imposed }
++            : SpeedGrid;
+ 
+-        for (var wpm = from; wpm <= to + 1e-9; wpm += WpmStep)
++        foreach (var wpm in speeds)
+         {
+             var (score, characters, lastKind) =
+                 DecodeAt(envelope.Count, wpm, keyDown, keyUp, gapMilliseconds);

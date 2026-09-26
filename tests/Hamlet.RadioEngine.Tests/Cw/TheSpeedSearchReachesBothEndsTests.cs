@@ -348,6 +348,36 @@ public sealed class TheSpeedSearchReachesBothEndsTests
     [InlineData(40.0)]
     public void TheOldEndsOfTheSearchAreRead(double wpm) => AssertRead(wpm);
 
+    /// <remarks>
+    /// Serves 5.1's "decode time reported before and after" and asserts nothing:
+    /// one fixed real recording, `cw-2026-08-18-004507`, decoded three times the
+    /// way the floors decode it, in milliseconds per minute of audio, with the
+    /// median. The recording is author's: a keyed capture of ordinary length that
+    /// no end of the speed range is about.
+    /// </remarks>
+    [Fact]
+    public void OneRecordingsDecodeTime()
+    {
+        const string name = "cw-2026-08-18-004507";
+        var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+        var minutes = audio.Samples.Length / (double)audio.SampleRate / 60;
+        var runs = new List<double>();
+
+        for (var run = 0; run < 3; run++)
+        {
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+
+            TheSeventeenThirtySevenCaptureTests.Settle(name);
+            clock.Stop();
+            runs.Add(clock.Elapsed.TotalMilliseconds / minutes);
+        }
+
+        var median = runs.OrderBy(v => v).ElementAt(1);
+
+        _output.WriteLine(
+            $"decode time | {name} | {Num(minutes, "0.00")} min of audio | runs {string.Join(", ", runs.Select(r => Num(r, "0")))} ms/min | median {Num(median, "0")} ms/min");
+    }
+
     private void AssertRead(double wpm)
     {
         var c = Cases[wpm];

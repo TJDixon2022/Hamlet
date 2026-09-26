@@ -1,0 +1,20 @@
+unit446 task 2: the search at 5 to 45 WPM, not kept - real MET-CER-SURE 45 to 50, V-11 fails on 2 (5.1)
+
+The change: SlowestWpm 8 to 5, FastestWpm 40 to 45, the search tries the
+even speeds 6 to 44 and the two ends, CwDecoder.SlowestPlausibleWpm 6 to
+5. It does what 5.1 asks of the synthetic ends: 5 WPM shown 5 where it
+was 8, MET-INVENTED 35 to 10 over 21; 45 WPM shown 44 where it was 36,
+text right before and after. All six speed tests pass under it.
+
+R78 refuses it on the real set, inferred keys: MET-CER-SURE 45 to 50 of
+419, MET-INVENTED 45 to 50 over 473, sure-and-right coverage 374 to 369,
+MET-WBE 52 to 53; V-11 worse on cw-2026-08-17-134712 and 031838.
+134712 loses N4LQ. Capture rows 48 of 51, named 11 of 13. Synthetic set
+unchanged. Decode time on 004507 5721 to 4785 ms per minute, median of
+three; engine line 376 to 373 s, app line 166 to 166 s.
+
+src does not carry it: .run-unit/unit446-speed-notkept.diff. Recorded
+in docs/phase-requirements/metrics.md. OneRecordingsDecodeTime added to
+TheSpeedSearchReachesBothEndsTests, an instrument that asserts nothing.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

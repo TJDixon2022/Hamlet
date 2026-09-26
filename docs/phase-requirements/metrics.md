@@ -9,6 +9,62 @@ denominator is the sure characters emitted, unit 439's reading of `CW_SPEC.md` 1
 **From unit 441, MET-COVERAGE is sure and right over sent (R82).** The figures below under unit
 440 are as the spec wrote it then.
 
+## Unit 446 - the speed search runs 5 to 45 WPM, not kept
+
+Step 5, 5.1, HM-REQ-030 with HM-REQ-010, 011 and 012 as guards. The trace
+(`TheSpeedSearchReachesBothEndsTests.EveryBoundOnTheSpeedSearch`) named eight bounds that stop an
+end: stopping 5, `SlowestWpm` (`CwProbabilisticDecoder.cs` 466), the loop's start (763), the
+stream's measured-speed range (`CwProbabilisticStream.cs` 432), the marks' re-read range (510) and
+`CwDecoder.SlowestPlausibleWpm` (`CwDecoder.cs` 388); stopping 45, `FastestWpm` (487), the loop's
+end (764) and the stream's range (433). `WpmStep` (509) puts neither end on a grid point. No window,
+delay or span sized from a speed stops either end. The change: `SlowestWpm` 8 to 5, `FastestWpm` 40
+to 45, the search tries `SpeedGrid` - the even speeds 6 to 44 and the two ends - and
+`SlowestPlausibleWpm` 6 to 5. The diff is `.run-unit/unit446-speed-notkept.diff`, and `src` does
+not carry it.
+
+| part of R78 | before (HEAD `7e9f3161`) | under the change | verdict |
+|---|---|---|---|
+| MET-CER-SURE, real, inferred | 45 of 419, 0.1074 | 50 of 419, 0.1193 | **rises** |
+| MET-CER-SURE, synthetic, exact | 14 of 173, 0.0809 | 14 of 173, 0.0809 | unchanged |
+| MET-INVENTED, real, inferred | 45 over 473 (4 added, 41 wrong), 0.0951 | 50 over 473 (4 added, 46 wrong), 0.1057 | **rises** |
+| MET-INVENTED, synthetic, exact | 14 over 252 (6 added, 8 wrong) | 14 over 252 (6 added, 8 wrong) | unchanged |
+| sure-and-right coverage, real, inferred | 374 over 473, 0.7907 | 369 over 473, 0.7801 | **falls** |
+| sure-and-right coverage, synthetic, exact | 159 over 252, 0.6310 | 159 over 252, 0.6310 | holds |
+| MET-WBE, real, inferred | 52 over 113, 0.4602 | 53 over 113 (43 inserted, 10 deleted), 0.4690 | **rises** |
+| adjudicated readings | 13 of 13 | 13 of 13 | hold |
+| V-11, 35 recordings, four metrics | - | 2 worse: `134712` wrong-or-added 0 to 1, right 3 to 1; `031838` wrong-or-added 5 to 9, right 16 to 13, boundaries wrong 1 to 2 | **fails** |
+| 5.1: 5 WPM case, exact | shown 8, MET-CER-SURE 35 of 51, MET-INVENTED 35 over 21, coverage 16 over 21 | shown 5, 10 of 29, 10 over 21, 19 over 21 | does what 5.1 asks |
+| 5.1: 45 WPM case, exact | shown 36, 20 % slow; 0 of 21, 0 over 21, 21 over 21 | shown 44, 2.2 % slow; the same | does what 5.1 asks |
+| capture rows | 51 of 51 | 48 of 51; `134712` elements 22 to 18, `012823` 36 to 35, `003126` 131 to 127 | reported |
+| named floors | 12 of 13, 17:37 at 38 | 11 of 13; `134712` 8 to 7, 17:37 at 38 | reported |
+
+Per condition, key's kind beside each, before -> after. Real, sender not stated (20 recordings),
+inferred: MET-CER-SURE 45 of 357, 0.1261 -> 50 of 357, 0.1401; MET-WBE 45 of 97 -> 46 of 97.
+TX-FARNS, TX-ITU and TX-TIGHT, inferred: 0 of 43, 0 of 13 and 0 of 6 -> the same; MET-WBE 7 of 11,
+0 of 4 and 0 of 1 -> the same. Every synthetic condition, exact: unchanged on all four metrics.
+
+The four speed cases, `SyntheticCq`'s CQ at PARIS timing, 15 dB, exact key `CQ CQ CQ DE N0CALL
+N0CALL K`, cold, speed shown after the first sure letter as a median:
+
+| case | before: text, speed | after: text, speed |
+|---|---|---|
+| 5 WPM | `TTC Q CTQ TTCTTTQ DE TT MMET■EATTTT TA TTTT TTTL TNTTEIZI■■CALL K`, 8 | `TTCQ CQ CQ DE NNN■ACALL NNIBIL■CALL K`, 5 |
+| 8 WPM | `C Q CQ CQ DE NGWCALL NGGWCALL K`, 8 | `CQ CQ CQ DE NGWCALL NGGWCALL K`, 8 |
+| 40 WPM | `CQ CQ CQ DE N0CALL N0CALL K`, 40 | the same, 40 |
+| 45 WPM | `CQ CQ CQ DE N0CALL N0CALL K`, 36 | the same, 44 |
+
+Decode time: the engine carry-forward line 376 s -> 373 s, the app line 166 s -> 166 s, the
+captures type 131 s -> 130 s; `cw-2026-08-18-004507`, 0.50 min, three runs 5721, 5618, 5831 ->
+4849, 4785, 4777 ms per minute of audio, median 5721 -> 4785.
+
+**Not kept: real MET-CER-SURE and MET-INVENTED rise 45 to 50, coverage falls 374 to 369, MET-WBE
+rises 52 to 53, and V-11 fails on two recordings.** Thirteen recordings' texts change (`.run-unit/unit446-text-change.sorted.txt` against
+`unit446-text-before.sorted.txt`); `134712`
+loses its callsign, `N4LQ K` -> `K ■ LQ K`. The synthetic set is unmoved, so what reddened the real
+ones is where a real recording's measured or marks' speed fell between 5 and 8 or between 40 and
+45 and is now taken, or where 5, 6, 42, 44 or 45 won the grid; which of those it is was not
+measured.
+
 ## Unit 445 - a letter with an inner gap past 6.5 units either way prints dim, kept
 
 Step 3, 3.2, HM-REQ-011 with HM-REQ-010 and 012 as guards. The trace
