@@ -1,0 +1,26 @@
+Test run for C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\bin\Debug\net8.0\Hamlet.RadioEngine.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.05]   Discovering: Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Discovered:  Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:00.23]   Starting:    Hamlet.RadioEngine.Tests
+[xUnit.net 00:00:04.16]   Finished:    Hamlet.RadioEngine.Tests
+  Passed Hamlet.RadioEngine.Tests.Cw.TheCaptureOfTheTwentyThirdTests.PrintsWhatTheDecoderReads [3 s]
+  Standard Output Messages:
+ capture: unadjudicated/cw-2026-09-23-125515.wav, 1440000 samples at 48000 Hz
+ transcript: [E  EE         ■ T ES T IVDW <BT>]
+ characters emitted: 13
+ characters unsure: 1
+ elements seen: 32
+ elements resolved: 32
+ winning speed: 30 wpm
+ tone admitted: 615 Hz, measured True
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 4.4235 Seconds
+RC=0 WALL=5s

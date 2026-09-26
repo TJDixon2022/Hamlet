@@ -1,0 +1,88 @@
+Test run for C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+C:\Source\HamLet\tests\Hamlet.App.Tests\bin\Debug\net8.0\Hamlet.App.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.07]   Discovering: Hamlet.App.Tests
+[xUnit.net 00:00:00.21]   Discovered:  Hamlet.App.Tests
+[xUnit.net 00:00:00.21]   Starting:    Hamlet.App.Tests
+[xUnit.net 00:01:48.56]   Finished:    Hamlet.App.Tests
+  Passed Hamlet.App.Tests.Cw.ThePitchLineSaysWhatWasProvedTests.EachKeyedRecordingsPitchLineNamesItsState [1 m 48 s]
+  Standard Output Messages:
+ sheet | cw-2026-09-23-173723 | state Hypothesis | hasTone True
+   before | toneHz     600.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     600.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-17-013347 | state Hypothesis | hasTone True
+   before | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     625.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-17-134712 | state None | hasTone True
+   before | toneHz     500.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+   after  | toneHz     500.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+ sheet | cw-2026-08-18-003758 | state Hypothesis | hasTone True
+   before | toneHz     500.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     500.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-24-012403 | state Proved | hasTone True
+   before | toneHz     440.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     440.0 Hz  (proved: the survey's latest verdict confirms keying at this pitch. Measured from that keying: the centre of the survey bin it was admitted in, not interpolated between bins)
+ sheet | cw-2026-08-18-004507 | state Proved | hasTone True
+   before | toneHz     500.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     500.0 Hz  (proved: the survey's latest verdict confirms keying at this pitch. Measured from that keying: the centre of the survey bin it was admitted in, not interpolated between bins)
+ sheet | cw-2026-08-22-031838 | state Hypothesis | hasTone True
+   before | toneHz     525.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     525.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-22-031905 | state Hypothesis | hasTone True
+   before | toneHz     500.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     500.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-22-031948 | state Hypothesis | hasTone True
+   before | toneHz     500.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     500.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-22-032012 | state Hypothesis | hasTone True
+   before | toneHz     500.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     500.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-22-032050 | state Hypothesis | hasTone True
+   before | toneHz     325.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     325.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-22-032113 | state Hypothesis | hasTone True
+   before | toneHz     500.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     500.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-08-22-032129 | state None | hasTone True
+   before | toneHz     500.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+   after  | toneHz     500.0 Hz  (NOT MEASURED: the survey has admitted no keying and nothing has chosen a bin, so this is the middle of the bank the decoder is pointed at rather than a station)
+ sheet | cw-2026-09-24-004108 | state Hypothesis | hasTone True
+   before | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     625.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-09-24-004133 | state Proved | hasTone True
+   before | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     625.0 Hz  (proved: the survey's latest verdict confirms keying at this pitch. Measured from that keying: the centre of the survey bin it was admitted in, not interpolated between bins)
+ sheet | cw-2026-09-24-004205 | state Hypothesis | hasTone True
+   before | toneHz     630.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     630.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-09-24-004234 | state Hypothesis | hasTone True
+   before | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     625.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-09-24-004322 | state Proved | hasTone True
+   before | toneHz     630.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     630.0 Hz  (proved: the survey's latest verdict confirms keying at this pitch. Measured from that keying: the centre of the survey bin it was admitted in, not interpolated between bins)
+ sheet | cw-2026-09-24-004347 | state Proved | hasTone True
+   before | toneHz     630.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     630.0 Hz  (proved: the survey's latest verdict confirms keying at this pitch. Measured from that keying: the centre of the survey bin it was admitted in, not interpolated between bins)
+ sheet | cw-2026-09-24-004405 | state Proved | hasTone True
+   before | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     625.0 Hz  (proved: the survey's latest verdict confirms keying at this pitch. Measured from that keying: the centre of the survey bin it was admitted in, not interpolated between bins)
+ sheet | cw-2026-09-24-004427 | state Hypothesis | hasTone True
+   before | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     625.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-09-24-004510 | state Hypothesis | hasTone True
+   before | toneHz     600.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     600.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ sheet | cw-2026-09-24-004550 | state Hypothesis | hasTone True
+   before | toneHz     625.0 Hz  (measured from the keying the survey admitted: the centre of the survey bin it was admitted in, not interpolated between bins)
+   after  | toneHz     625.0 Hz  (HYPOTHESIS, NOT PROVED NOW: keying was found at this pitch earlier, the centre of the survey bin it was admitted in, and the survey's latest verdict does not confirm it. The number is held, not measured from keying now)
+ total | 23 keyed recordings | None 2, Hypothesis 15, Proved 6 | hypothesis where HEAD's line said measured from keying 15
+
+
+
+Test Run Successful.
+Total tests: 1
+     Passed: 1
+ Total time: 1.8149 Minutes
+RC=0 WALL=109s

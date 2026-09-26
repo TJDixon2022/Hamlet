@@ -1,0 +1,13 @@
+unit450 task 3: exit round - 4.6 ticked, text 63 of 63 identical, MET-CER-SURE real 33 of 436, floors as at entry; 4.4 and 4.7 open (4.6)
+
+Build 0 errors; engine line 178 of 178 in 378 s; app line 278 of 278 in
+166 s; captures 51 of 51; adjudicated 13 of 13; named 10 of 13, the same
+three. MET-PITCH-ERR 9 files, 248 windows, 0 changed. Every touched type
+green alone but AHeldPitchDoesNotOutliveItsEvidenceTests, 3 of 4 red as
+at entry HEAD 706e3874 (run in a worktree). src: CwPitchProof new;
+CwToneTracker.PitchProof, read-only; CwDecodeReport carries it;
+CwDecoder passes it; the sheet's toneHz line prints it. None of it keys
+or transmits, and nothing in the decode path reads the state.
+output.md validated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
