@@ -105,7 +105,7 @@ before and after: `{EII ETNHHK        EANQNI}D          {EAN(■)IK     }`. The 
 of the 35 recordings, mostly outside the scored stretches. Most of those moves keep the letter
 and its class and change only p. Where they change text, they add a letter (`004133` `D`,
 `004234` `E`, `004550` `A`, `cq-18wpm-5db-char5` `T`), drop one (`013347` `R`, `003758` `K`,
-`cq-25wpm-5db` `K`), or move a word space. Every recording's text and classes before and after
+`004405` `8`, `cq-25wpm-5db` `K`), or move a word space. Every recording's text and classes before and after
 are `.run-unit/unit471-texts-entry.txt` and `unit471-text-change.txt`.
 
 **Not kept. Step 2's count of units with no kept change goes to 3 of 3.** Every reachable letter

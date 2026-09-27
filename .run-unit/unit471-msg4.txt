@@ -1,0 +1,9 @@
+unit471 task 4: exit round - every entry figure as at entry, texts byte-identical; src, port and transmit diffs empty; output.md written - re-read refused on MET-CER-SURE, step 2 closed partial, 2.4 ticked (2.4)
+
+Build 0 errors; engine line 178 of 178; app line 278 of 278 on the first run; named 13 of 13, captures 51 of 51, adjudicated 13 of 13.
+Real, inferred: MET-CER-SURE 33/436, MET-INVENTED 33/473, coverage 403/473, MET-WBE 37/113. Synthetic, exact: 14/173, 14/252, 159/252, 44/84.
+TheArbitrationEarnsItsPlaceTests (a) 5/5, (b) harness 1/1, live 2/2. TheSpeedFollowsTheSendersMarkPairsTests red at 28 of 31, not required.
+git diff a2e07f6d -- src, git diff 19109b51 -- Cw/Second/ and git diff 7e209cb4 over the eleven transmit files: all empty. .run-unit/fldigi/ untracked.
+metrics.md's Unit 471 paragraph now names 004405's dropped `8`, which the task 2 commit left out. output.md passes validate-output.bat.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
