@@ -1,0 +1,24 @@
+unit466 task 0: the record, 1.13.153, the runner's writes; entry round as at 465's exit; ours alone, the port alone and the arbitrated transcript, harness and live, saved with class and p (9.7)
+
+Entry, measured: build 0 errors; engine line 178 of 178; app line 278 of 278;
+named floors 13 of 13, captures 51 of 51, adjudicated 13 of 13; real MET-CER-SURE
+33 of 436, MET-INVENTED 33 over 473, coverage 403 over 473, MET-WBE 37 over 113
+(inferred keys); synthetic 14 of 173, 14 over 252, 159 over 252, 44 over 84 (exact
+keys); the port per parity.md real 62 of 239, coverage 177, synthetic 34 of 168,
+coverage 134; BothDecodersAreScoredAlikeTests 5 of 5; EveryCharacterCarriesA-
+ConfidenceTests 2 of 2; the port's own tests 8 of 8; TheHigherCalibratedReading-
+WinsTests 8 of 8, BothDecodersReadTheSameSamplesTests 3 of 3, TheOperatorSeesOne-
+TranscriptTests 3 of 3. Decode time on the live path over 690 s of real audio:
+ours, the port and the arbiter 64.71 s; ours alone 51.83 s.
+
+Saves, every byte-identical check of this unit is made against them:
+.run-unit/unit466-ours-before.txt (1467 lines), unit466-port-before.txt (818),
+unit466-arb-before.txt (1467, harness), unit466-arb-live-before.txt (1467, live);
+ours and port byte-identical to 465's task 0 saves, and both arbitrated saves
+byte-identical to 465's save of ours.
+
+Tree mismatch: .run-unit/watched.rc is not present; the runner modified
+.run-unit/watched.cpu instead, committed as it is. .run-unit/fldigi/ and
+SESSION.lock untracked and not staged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

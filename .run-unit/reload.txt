@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-27T04:01:03-04:00  root C:\Source\HamLet
+measured 2026-09-27T06:17:17-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -21,7 +21,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 71ac86be
+  HEAD   : 9cc2c74b
   uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -346,7 +346,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   - [x] 9.3 For every recording where the second decoder scores better, the report prints both texts and names from its source what it does differently on that stretch; where it reads text on a recording ours reads as nothing, it says so by name.
   - [ ] 9.4 HM-REQ-129: one technique 9.3 named is taken into our decoder as a change in its own commit, judged under R78, with the second decoder left as ported.
   - [x] 9.5 HM-REQ-124: each decoder attaches a confidence to every character, and calibration is measured per condition on the keyed corpus - characters emitted at confidence p right within 5 points of p - with the conditions where each decoder is calibrated named; the second decoder is given a confidence, since fldigi carries none, and the report says what it is derived from.
-  - [ ] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
+  - [x] 9.6 HM-REQ-120, 121, 125, 126, 127: both decoders read the same samples at the same time; agreement emits with the more confident's class; disagreement emits the higher calibrated confidence's character with both recorded on the sheet; a tie within the margin emits dim, never sure; the CW tab shows one transcript and no decoder name; each watched failing first on an injected synthetic case.
   - [ ] 9.7 HM-REQ-128: the arbitrated output is measured against each decoder alone on every metric of sections B and I on every condition, and where it loses on a condition the arbitration is switched off there and the better decoder alone is used; the report tables all three per condition.
   - [ ] 9.8 The three floor tests and both carry-forward lines are green at exit.
   
@@ -420,13 +420,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     metrics after six units were rejected on counts that no requirement states.
 
   --- PHASE_STATUS.md ---
-  16 lines, 2657 bytes
+  16 lines, 2677 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
   CURRENT_STEP: 2
-  WORK_INSTRUCTION: 464 - a number on every letter: both decoders give each character a confidence p, calibration measured per condition on the keyed corpus
-  HEARTBEAT: 2026-09-27 04:01:01
+  WORK_INSTRUCTION: 465 - one transcript from two readers: both decoders read the same samples live, an arbiter emits each character by agreement, calibrated confidence and tie
+  HEARTBEAT: 2026-09-27 06:17:15
   STEP: 0 | done | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
   STEP: 1 | done | The metrics exist - MET-INVENTED, MET-CER-SURE, MET-COVERAGE and MET-WBE are computed over the corpus and reported per condition, so the requirements can be measured at all.
   STEP: 2 | partial | The decoder stops printing wrong letters with confidence - MET-CER-SURE driven toward HM-REQ-010's one in a hundred, from the 54 sure-but-wrong characters unit 439 measured.
@@ -439,7 +439,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 9 | partial | Two decoders read the same audio - section M: fldigi's CW modem ported faithfully as the second decoder, both scored on every recording before either votes, both confidences calibrated against the keys, and the arbitration that emits one transcript, never worse than the better decoder alone.
 
   --- PHASE_OUTCOME.md ---
-  774 lines, 166574 bytes
+  804 lines, 175370 bytes
   PHASE: Hamlet meets the CW requirements
   PHASE_SET: 2026-09-25
   DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
@@ -1214,6 +1214,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STATE_WHY: the checkboxes say partial and the judge said done - the checkboxes win. The judge-s reason: The report shows every part of 9.5 met, since the test found p on all 1683 characters of both decoders, held-out calibration was measured per condition against the 5 point line with full reliability tables, the conditions where each decoder is calibrated are named with the port on none, and the port's p is stated as coming from its level margin at cw.cxx 635-636 and its timing margin at cw.cxx 847.
   ADVANCED: yes
   ATTEMPT: 9.5 | unit 3 launched 2026-09-27T05:57:13.517Z | yes | executed | attach a numeric confidence p to every character of both decoders - ours from its rival margin, the port from its own AGC level and element timing read outside Cw/Second - fit one logistic per decoder fixed before any number is seen, and measure calibration held-out by recording per condition in ten reliability bins against HM-REQ-124's 5 points, no letter or class changed
+  
+  ## UNIT 465 - STEP 9
+  
+  STEP: 9
+  APPROACH: build the arbiter that runs both decoders on the same samples, aligns their characters by span, emits agreement with the more confident class, disagreement by the higher calibrated p with the uncalibrated decoder advisory, a tie within 0.05 dim, one transcript on the CW tab, both recorded on the sheet, each watched failing first on an injected synthetic case
+  MOVE: work around
+  WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so the launcher's step 2 line 2.4 cannot move, and 9.4's "one technique 9.3 named" has no route now that all five mechanisms 9.3 named are recorded refused; 9.5 is ticked, so step 9's next line in section M's fixed order is 9.6 (HM-REQ-120, 121, 125 to 127), which R86 permits, no unit has attempted, and the loop test does not find.
+  STATE: partial
+  DECIDED: author's, overrulable - (1) step 9 criterion 9.6 is worked instead of the launcher's step 2 on R86 (PHASE_PLAN.md section 6, the owner's commit 6de324b1), as units 462 to 464's arbiters did; 9.4 is not re-attempted; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) the same span, under R85: two characters on the common sample clock whose spans overlap by at least half the shorter span, fixed at task 1 before any arbitrated text; (3) the vote table is calibration.md's held-out verdicts as unit 464 measured them, a decoder voting only on a condition where it is calibrated (HM-REQ-124), and the live product runs under the real HF, all row because no sender or channel profile is known live; so today ours votes live and the port is advisory everywhere; (4) an advisory decoder's character and p go on the sheet and never displace a character or raise a class, and where neither decoder votes ours is emitted as it prints today, because HM-REQ-124 withdraws the vote and not the reading, and per-condition switching is 9.7's (HM-REQ-128); a span only one decoder read is emitted from it at its own class only if it votes, else from ours as today, and is marked one-sided on the sheet; (5) HM-REQ-127's margin is its recommended 0.05 on the absolute difference of the two p's, a named constant held until the owner rules, since section 6 says a TBD threshold is the owner's and never halts a unit; (6) no character reaches the CW tab until both decoders have read its span, and a live rendering that cannot wait without breaking HM-REQ-083 is reported with its seam and not forced; (7) under today's table the arbitrated transcript must equal ours character and class on all 35 recordings, a difference being a defect and not a result, so R78 is not engaged; (8) the port runs outside Second at 8000 Hz on the same chunks at our tracked pitch, following a pitch change only by means that change no line under Second; (9) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 9 lines 9.4, 9.5 and 9.6, section R (R84, R85), section 6 (R86, the second decoder is faithful, the TBD-threshold rule, V-14, R78), R61, R72, R77, R80; CW_REQUIREMENTS.md HM-REQ-001, 083, 120, 121, 122, 124, 125, 126, 127, 128, 129, V-11, V-13, V-14; docs/phase-requirements/calibration.md and parity.md sections 1 and 3; unit 464's report sections 3 and 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  ADVANCES: step 9 criterion 6
+  RUN: session launched with SESSION.lock already present (PID 40680, 04:05:14); the lock is the launcher's and was not taken or released by the session.
+  
+  ## UNIT 4 - STEP 9
+  
+  STEP: 9
+  APPROACH: build the arbiter that runs both decoders on the same samples, aligns their characters by span, emits agreement with the more confident class, disagreement by the higher calibrated p with the uncalibrated decoder advisory, a tie within 0.05 dim, one transcript on the CW tab, both recorded on the sheet, each watched failing first on an injected synthetic case
+  HIT: section 4 asked nothing inside the two stops - author's, overrulable, the loop continued - Every item is a reading or an author's choice already acted on, and none asks the owner to decide anything about keying, transmit, or what the product states as heard, logged or sent.
+  MOVE: work around
+  WHY: PHASE_PLAN.md section 6's R86 bars steps 2 to 8 until 9.4 has a kept change, so the launcher's step 2 line 2.4 cannot move, and 9.4's 'one technique 9.3 named' has no route now that all five mechanisms 9.3 named are recorded refused; 9.5 is ticked, so step 9's next line in section M's fixed order is 9.6 (HM-REQ-120, 121, 125 to 127), which R86 permits, no unit has attempted, and the loop test does not find.
+  DECIDED: author's, overrulable - (1) step 9 criterion 9.6 is worked instead of the launcher's step 2 on R86 (PHASE_PLAN.md section 6, the owner's commit 6de324b1), as units 462 to 464's arbiters did; 9.4 is not re-attempted; this is not a step-2 unit and 2.4's count stays at 1 of 3; (2) the same span, under R85: two characters on the common sample clock whose spans overlap by at least half the shorter span, fixed at task 1 before any arbitrated text; (3) the vote table is calibration.md's held-out verdicts as unit 464 measured them, a decoder voting only on a condition where it is calibrated (HM-REQ-124), and the live product runs under the real HF, all row because no sender or channel profile is known live; so today ours votes live and the port is advisory everywhere; (4) an advisory decoder's character and p go on the sheet and never displace a character or raise a class, and where neither decoder votes ours is emitted as it prints today, because HM-REQ-124 withdraws the vote and not the reading, and per-condition switching is 9.7's (HM-REQ-128); a span only one decoder read is emitted from it at its own class only if it votes, else from ours as today, and is marked one-sided on the sheet; (5) HM-REQ-127's margin is its recommended 0.05 on the absolute difference of the two p's, a named constant held until the owner rules, since section 6 says a TBD threshold is the owner's and never halts a unit; (6) no character reaches the CW tab until both decoders have read its span, and a live rendering that cannot wait without breaking HM-REQ-083 is reported with its seam and not forced; (7) under today's table the arbitrated transcript must equal ours character and class on all 35 recordings, a difference being a defect and not a result, so R78 is not engaged; (8) the port runs outside Second at 8000 Hz on the same chunks at our tracked pitch, following a pitch change only by means that change no line under Second; (9) the app line's headless dispatcher-loop loss: one rerun, and any type lost again is run alone and must pass, named in the report.
+  LICENCE: PHASE_PLAN.md step 9 lines 9.4, 9.5 and 9.6, section R (R84, R85), section 6 (R86, the second decoder is faithful, the TBD-threshold rule, V-14, R78), R61, R72, R77, R80; CW_REQUIREMENTS.md HM-REQ-001, 083, 120, 121, 122, 124, 125, 126, 127, 128, 129, V-11, V-13, V-14; docs/phase-requirements/calibration.md and parity.md sections 1 and 3; unit 464's report sections 3 and 4; HM-DEC-155; HM-DEC-165; FACT-004; CLAUDE.md 0.0, 0.2 and 12.5
+  COST: 11.630518799999997
+  ACCOMPLISHED: fldigi's decoder now listens to the same audio as Hamlet's own, live, and every letter on the CW tab has been heard by both; where they agree the surer one sets how bright it prints, where they disagree the one whose confidence has proved honest wins, a near tie prints dim instead of sure, and the sheet keeps both readings, while the tab still shows one clean transcript with no decoder named
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: the checkboxes say partial and the judge said done - the checkboxes win. The judge-s reason: The report shows every part of 9.6 with evidence, both decoders read the same hops live, agreement, disagreement and tie are each tested in TheHigherCalibratedReadingWinsTests, both readings go on the sheet, the tab shows one transcript with no decoder name, and each requirement was watched failing first against a named stub with a saved red printout, although two supporting HM-REQ-120 cases were not watched red and the port votes on no condition today.
+  ADVANCED: yes
+  ATTEMPT: 9.6 | unit 4 launched 2026-09-27T08:05:13.180Z | yes | executed | build the arbiter that runs both decoders on the same samples, aligns their characters by span, emits agreement with the more confident class, disagreement by the higher calibrated p with the uncalibrated decoder advisory, a tie within 0.05 dim, one transcript on the CW tab, both recorded on the sheet, each watched failing first on an injected synthetic case
 
   --- CLAUDE.md ---
   1405 lines, 212255 bytes
@@ -1236,17 +1266,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 869 bytes
+  19 lines, 888 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 4 of 4
-  WORK_INSTRUCTION: 464 - a number on every letter: both decoders give each character a confidence p, calibration measured per condition on the keyed corpus
+  WORK_INSTRUCTION: 465 - one transcript from two readers: both decoders read the same samples live, an arbiter emits each character by agreement, calibrated confidence and tie
   BALL: tim
   NEXT_PASTE: none
   RULES_AT: HM-DEC-165 (2026-09-19)
-  UPDATED: 2026-09-27T03:59:27-04:00
-  NOTE: Unit 464 done: 9.5 ticked - both decoders carry p; held-out, ours calibrated on 4 of 12 conditions, the port on none (advisory everywhere under HM-REQ-124); texts byte-identical; output.md written
+  UPDATED: 2026-09-27T06:16:03-04:00
+  NOTE: Unit 465 done: 9.6 ticked - the port reads live beside ours, one arbiter, one transcript, both readings on the sheet; port advisory everywhere today, so the screen is unchanged; output.md written
   
   ---
   
