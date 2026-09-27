@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 2 of 2
 WORK_INSTRUCTION: 467 - HM-REQ-128 judged on conditions as CW_SPEC.md defines them: a union row is a summary, not a condition, and 9.7 is closed on the switch unit 466 built
-BALL: code
+BALL: tim
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T10:34:10-04:00
-NOTE: Task 2 - exit round green on all five, first run; 9.8 ticked in both plan copies; writing output.md
+UPDATED: 2026-09-27T10:36:08-04:00
+NOTE: Unit 467 done: 9.7 and 9.8 ticked - HM-REQ-128 holds on all 10 condition rows and the live row, synthetic, all printed as a summary; step 9 open only at 9.4, R86 leaves no authorable step; screen unchanged
 
 ---
 

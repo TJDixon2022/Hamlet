@@ -1,0 +1,5 @@
+unit467: tick 9.7 - HM-REQ-128 met on all 10 condition rows (harness) and on real HF, all (live) under the switch unit 466 built; re-watched red on the 4 losing condition rows at 1b51e222 (9.7)
+
+All five of the instruction's section 2 conditions hold: arbitration.md section 8 classifies every row, quoting CW_SPEC.md section 4; every condition row emits no worse than the better decoder alone; TheArbitrationEarnsItsPlaceTests asserts exactly those rows, watched red then green; the summary row synthetic, all is printed with all three figures and the emitted output, worse than ours alone on 012 and 081 and said so; the report tables all three per condition. Which rows are conditions is the arbiter's reading, overrulable.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

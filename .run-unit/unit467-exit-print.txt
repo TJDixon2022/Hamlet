@@ -1,0 +1,40 @@
+== git diff 19109b51 -- src/Hamlet.RadioEngine/Cw/Second/
+== (end port diff)
+== git diff d34a0563 -- src
+== (end src diff)
+== git diff 7e209cb4 over the eleven transmit files PARKED.md names
+== (end transmit diff)
+== git status
+ M .run-unit/unit467-exit-keep.sh
+ M .run-unit/unit467-exit-print.sh
+ M .run-unit/watched.cpu
+ M PROJECT_STATUS.md
+?? .run-unit/fldigi/
+?? .run-unit/unit467-a-exit.txt
+?? .run-unit/unit467-adjudicated-exit.txt
+?? .run-unit/unit467-b-harness-exit.txt
+?? .run-unit/unit467-b-live-exit.txt
+?? .run-unit/unit467-build-exit.txt
+?? .run-unit/unit467-captures-exit.txt
+?? .run-unit/unit467-cf-app-exit.txt
+?? .run-unit/unit467-cf-engine-exit.txt
+?? .run-unit/unit467-confidence-exit.txt
+?? .run-unit/unit467-exit-print.txt
+?? .run-unit/unit467-metrics-exit.txt
+?? .run-unit/unit467-msg-97.txt
+?? .run-unit/unit467-named-exit.txt
+?? .run-unit/unit467-one-exit.txt
+?? .run-unit/unit467-pairs-exit.txt
+?? .run-unit/unit467-parity-exit.md
+?? .run-unit/unit467-parity-exit.txt
+?? .run-unit/unit467-same-exit.txt
+?? .run-unit/unit467-second-exit.txt
+?? .run-unit/unit467-tick.sh
+?? .run-unit/unit467-v11-entry.txt
+?? .run-unit/unit467-v11-exit.txt
+?? .run-unit/unit467-wins-exit.txt
+?? SESSION.lock
+== this unit's commits
+3fadb6f6 unit467: tick 9.7 - HM-REQ-128 met on all 10 condition rows (harness) and on real HF, all (live) under the switch unit 466 built; re-watched red on the 4 losing condition rows at 1b51e222 (9.7)
+1b51e222 unit467 task 1: conditions named under CW_SPEC.md section 4 - 10 condition rows, the live row real HF, all, the summary synthetic, all; HM-REQ-128 part (b) narrowed to them and re-watched red against an empty table on TX-FARNS, TX-ITU 0 dB, char-gap-5 0 dB and char-gap-5 5 dB, then green (9.7)
+000ee77c unit467 task 0: the record, 1.13.154, the runner's writes; entry round as at 466's exit, HM-REQ-128 (b) harness red on synthetic, all only; emitted transcript, harness and live, saved with class and p (9.7)
