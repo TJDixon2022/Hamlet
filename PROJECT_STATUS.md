@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
+STATE: COMPLETED
+TASK: 3 of 3
 WORK_INSTRUCTION: 470 - no letter is printed sure while the decoder is still acquiring: HM-REQ-102's gate judged under R78 as step 2's next change against HM-REQ-010
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-27T15:44:35-04:00
-NOTE: Task 2 done - gate refused on coverage (real 403 to 110, synthetic 159 to 66); patch kept, src restored, refusal in metrics.md; committing documents only
+UPDATED: 2026-09-27T16:11:04-04:00
+NOTE: Unit 470 done: the no-sure-while-acquiring gate refused - it would dim 293 right real letters to catch 29 wrong; screen unchanged, patch kept; exit round as at entry; step 2's count now 2 of 3
 
 ---
 
