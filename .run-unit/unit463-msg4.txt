@@ -1,0 +1,12 @@
+unit463 task 4: exit round - every figure as at entry, no src line changed, the port byte-identical; A1 and A2 refused, every mechanism 9.3 named now refused, 9.4 open; output.md written (9.4)
+
+Build 0 errors. Engine line 178 of 178, app line 278 of 278. Floors: named 13
+of 13, captures 51 of 51, adjudicated 13 of 13. Real 33/436, 33, 403, 37;
+synthetic 14/173, 14, 159, 44 - as at entry; V-11 0 of 35 moved. Both
+decoders scored alike 5 of 5, the port's tests 8 of 8,
+TheSpeedFollowsTheSendersMarkPairsTests red at 28 of 31 as expected.
+git diff f40a97f9 -- src, 19109b51 -- Cw/Second and 7e209cb4 over the eleven
+transmit files all print nothing; the port's texts byte-identical and ours
+identical to task 0's saves. Ours decodes 690 s in 52.45 s.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
