@@ -1,4 +1,4 @@
-PHASE: Hamlet meets the CW requirements
+﻿PHASE: Hamlet meets the CW requirements
 PHASE_SET: 2026-09-25
 DESCRIPTION: CW_REQUIREMENTS.md and CW_SPEC.md at the repository root are the specification from here on. Sixty-eight requirements, sixty-five of them must-tier, and section T shows fourteen groups with no test at all. This phase traces what exists, builds the metrics the requirements are written in - invented characters, sure-character error, coverage, word-boundary error, acquisition time - and then meets the requirements group by group, highest tier first. Every unit recenters on those two documents. Judged by requirement ids and, at the end, by Tim at the radio.
 STEP: 0 | Every CW test is traced - section T names, for each requirement, the test that proves it or the word none, and every existing CW test names the requirement it proves or is marked as proving none.
@@ -21,7 +21,7 @@ finishing CW based on the specifications and requirements. I want the arbiter to
 itself during every iteration on these two documents."* And on unit tests: *"We should be
 tracing to requirements."*
 
-## §1 What this phase is
+## Â§1 What this phase is
 
 The correctness phase, *Hamlet reads a CQ call correctly*, is archived at
 `docs/phase-correctness-run/` with **5.1 open - Tim's verdict, which stays his** - and with
@@ -33,14 +33,14 @@ floors and the scorer; the receiver conditions set from the radio's manual; the 
 sentences made true; the card that says where a station is.
 
 **Why the phase changes shape.** Six units on 2026-09-25 built changes that read the opening
-correctly - at 24 WPM, `EANQNID EAN■IK` where a week of junk had stood - and every one was
+correctly - at 24 WPM, `EANQNID EANâ– IK` where a week of junk had stood - and every one was
 rejected because capture rows' character counts fell. **Character counts are not a requirement
 anywhere in `CW_REQUIREMENTS.md`.** What is required is MET-INVENTED at zero, MET-CER-SURE
 below 1%, coverage at or above 90%, and MET-WBE at or below 5%. A change that removes invented
 characters *lowers* a character count and *meets* the requirements. The old keep rule was
 measuring the wrong thing, and it cost six units.
 
-## §2 What is the same
+## Â§2 What is the same
 
 **`CW_REQUIREMENTS.md` and `CW_SPEC.md` at the repository root are the specification.** Every
 unit of this phase reads them before it reads anything else. Where this plan and those
@@ -56,11 +56,11 @@ ruled it on 2026-09-24 as HM-DEC-175, so section R's first row is answered**; **
 sets the radio and the operator is not rig control; **R75** the tone tracker is open; **R76**
 the pitch instrument is built and proved before the tracker is changed.
 
-`CLAUDE.md` **§0.0** never present a guess as a decode; **§0.2** transmit safety; **§12.5** a
+`CLAUDE.md` **Â§0.0** never present a guess as a decode; **Â§0.2** transmit safety; **Â§12.5** a
 fixture built from the same misunderstanding as the code proves nothing; **HM-DEC-091**,
 **HM-DEC-103**, **HM-DEC-155**, **HM-DEC-165**, **HM-DEC-168**, **FACT-004**, **FACT-006**.
 
-## §R Rulings, Tim, 2026-09-25
+## Â§R Rulings, Tim, 2026-09-25
 
 **R77 - the requirements are the specification, and the tests trace to them.** *"We will now
 focus moving forward on finishing CW based on the specifications and requirements."* Every
@@ -131,7 +131,7 @@ floor, a definition or what the decoder should do is answered from `CW_REQUIREME
 arbiter's reading and overrulable, and **never parked for the owner**. The owner is asked about
 what he sees on screen, what he hears at the radio, and the three stops. Nothing else.
 
-## §3 What is different from the phases before it
+## Â§3 What is different from the phases before it
 
 1. **A criterion is a requirement id.** A report states the requirement, the condition, the
    metric and the number. *"HM-REQ-011, MET-INVENTED, TX-ITU at 20 WPM on CH-AWGN: 17 to 0"*,
@@ -140,7 +140,7 @@ what he sees on screen, what he hears at the radio, and the three stops. Nothing
    method (T, A or I), condition, threshold, unknown-versus-wrong, truth grade.
 3. **The documents are read first, every unit.** Not this plan's summary of them.
 
-## §4 The steps
+## Â§4 The steps
 
 Exit criteria carry ids `N.k`; met is `[x]`; R45 gives the form. A step's exit is its own
 assertions, the three floor tests, and `docs/carry-forward-tests.txt` run as its comment says -
@@ -269,7 +269,7 @@ requirement can be judged at its own condition (unit 439's finding 1).
 - [x] 7.1 The generator produces the CH-* channel profiles `CW_SPEC.md` names, each carrying a shaped noise band and never digital silence (V-06), with the recipe for every case stated so another unit can rebuild them.
 - [ ] 7.2 The generator produces the TX-* sender profiles, and HM-REQ-050 is measured on each must-tier profile at 15 dB reference.
 - [ ] 7.3 The generator produces the INT-* interference profiles, and HM-REQ-060, 061, 062 and 066 are measured against them.
-- [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
+- [ ] 7.4 Every generated fixture carries its exact key by construction, and the report states what each does not prove (Â§12.5, V-04); a real capture is reported by the sender profile the spec names or as `not stated`, and is never counted toward a CH-* condition.
 - [x] 7.5 The three floor tests and both carry-forward lines are green at exit.
 
 **Depends on:** steps 0 and 1. Independent of steps 2 to 6.
@@ -310,14 +310,14 @@ because every later change to ours is better aimed with the comparison in hand.
 
 **Depends on:** steps 0 and 1.
 
-## §5 Dependencies
+## Â§5 Dependencies
 
 Steps 0 and 1 are met by the hand-run unit 439 and are ticked at the next unit's task 0 from
 its report. **Steps 2, 3, 4, 5, 6 and 7 each depend only on those two**, so there are six
 independent places to route and the loop need never stall for want of work. **Step 9 is preferred until 9.2 is met** (R84). **Step 8 is last
 and no unit is authored against it while any criterion of steps 2 to 7 or 9 is open** (R80).
 
-## §6 Branching
+## Â§6 Branching
 
 - **Three stops only**: keying, transmit or the radio's safety; money past the budget; a fact
   the product states to the operator about a signal, a station or a send. A threshold, a
@@ -339,6 +339,7 @@ and no unit is authored against it while any criterion of steps 2 to 7 or 9 is o
 - **No fixture is admitted by lowering a gate** (V-04), and **no separation limit, confirmation
   rule or plausibility bound is loosened to pass a fixture** (V-14).
 - **A run lost before any assertion** counts neither way and is re-run once.
+- **Steps 2 to 8 are not authorable until 9.4 has a kept change** (R86). Every unit is step 9's until a technique from the second decoder is kept in ours.
 - **A CW question is answered from the documents, never raised to the owner** (R85).
 - **The second decoder is faithful, not improved** (HM-REQ-122, 129). A technique goes into
   ours, judged under R78; the second decoder stays as ported.
@@ -350,7 +351,7 @@ and no unit is authored against it while any criterion of steps 2 to 7 or 9 is o
 - **A package is needed.** `MOVE: stop`.
 - **A CW test costing more than 300 s** never goes on a carry-forward line.
 
-## §7 Carried
+## Â§7 Carried
 
 The correctness phase's 5.1, Tim's, at `docs/phase-correctness-run/`; its 3.6, 6.5, 7.1, 7.2,
 7.4, 7.6 and 7.8, each reappearing here as a requirement id; every item of its `PARKED.md`;
@@ -361,7 +362,7 @@ license covers Morse on an FT8 frequency** - both banked 2026-09-25 and not in t
 scope; the seven rulings of section R, of which the first is answered by R72; the attenuator
 sentence outside an owned block.
 
-## §8 Revision record
+## Â§8 Revision record
 
 - **2026-09-26.** R84 two decoders read the same audio, ordered by section M of
   `CW_REQUIREMENTS.md` v1.1; step 9 with eight criteria, preferred until the parity table
