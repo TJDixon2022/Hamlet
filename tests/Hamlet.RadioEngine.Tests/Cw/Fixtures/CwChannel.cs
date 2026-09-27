@@ -139,7 +139,6 @@ public static class CwChannel
     internal static CwChannelParts Render(
         string profileId, double snrDb, string message, double wordsPerMinute, double pitchHz, int seed)
     {
-        var profile = Profile(profileId);
         var key = Key(message);
 
         // TX-ITU: SyntheticCq's textbook recipe, 1:3:1:3:7 from the dit, the pitch
@@ -150,6 +149,30 @@ public static class CwChannel
             ToneHz = pitchHz,
             DriftHz = 0,
         };
+
+        var sender = string.Create(CultureInfo.InvariantCulture,
+            $"TX-ITU, 1:3:1:3:7, {recipe.WordsPerMinute:0.#} wpm, dit {recipe.DitMilliseconds:0.###} ms, 5 ms raised-cosine edges");
+
+        return RenderKeyed(profileId, snrDb, recipe, pitchHz, seed, sender);
+    }
+
+    /// <summary>
+    /// One case keyed from a recipe the caller built - a TX-* sender's lengths
+    /// (work instruction 468) - rather than TX-ITU's. Everything after the edges
+    /// is <see cref="Render"/>'s: the same band, the same reference, the same paths.
+    /// </summary>
+    /// <param name="profileId">The CH-* profile.</param>
+    /// <param name="snrDb">Signal-to-noise in the 2500 Hz reference (8.1).</param>
+    /// <param name="recipe">The keying: its text is the key and its five lengths the sender's.</param>
+    /// <param name="pitchHz">The tone.</param>
+    /// <param name="seed">Seeds the band and both paths.</param>
+    /// <param name="sender">The sidecar's sender line.</param>
+    /// <returns>The case and its pieces.</returns>
+    internal static CwChannelParts RenderKeyed(
+        string profileId, double snrDb, CwFixtureRecipe recipe, double pitchHz, int seed, string sender)
+    {
+        var profile = Profile(profileId);
+        var key = Key(recipe.Text);
 
         var edges = CwFixtureGenerator.KeyEdges(recipe, out var messageStart);
         var seconds = (edges.Length > 0 ? edges[^1] : messageStart) + TailSeconds;
@@ -216,7 +239,7 @@ public static class CwChannel
         }
 
         var output = new MonoAudio(SampleRate, audio);
-        var sidecar = Sidecar(profile, snrDb, key, recipe, pitchHz, seed, output, n0, power, delay, messageStart, clipped);
+        var sidecar = Sidecar(profile, snrDb, key, sender, pitchHz, seed, output, n0, power, delay, messageStart, clipped);
 
         return new CwChannelParts(output, key, sidecar, profile, edges, delay, amplitude, path1, path2, signal, noise, clipped);
     }
@@ -428,7 +451,7 @@ public static class CwChannel
     // The key is the message as keyed: words split by spaces, every character one
     // the table spells or a prosign caret. Anything else is refused rather than
     // skipped, because a skipped character would be in the key and not the audio.
-    private static string Key(string message)
+    internal static string Key(string message)
     {
         var words = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
@@ -444,7 +467,7 @@ public static class CwChannel
     }
 
     private static string Sidecar(
-        CwChannelProfile profile, double snrDb, string key, CwFixtureRecipe recipe, double pitchHz, int seed,
+        CwChannelProfile profile, double snrDb, string key, string sender, double pitchHz, int seed,
         MonoAudio audio, double n0, double power, int delay, double messageStart, int clipped)
     {
         var i = CultureInfo.InvariantCulture;
@@ -464,7 +487,7 @@ public static class CwChannel
         Line($"seconds       {audio.Duration.TotalSeconds:0.00}");
         text.AppendLine();
         Line($"key           {key}");
-        Line($"sender        TX-ITU, 1:3:1:3:7, {recipe.WordsPerMinute:0.#} wpm, dit {recipe.DitMilliseconds:0.###} ms, 5 ms raised-cosine edges");
+        Line($"sender        {sender}");
         Line($"messageStart  {messageStart:0.00} s");
         Line($"toneHz        {pitchHz:0.#} Hz, no drift");
         text.AppendLine();
